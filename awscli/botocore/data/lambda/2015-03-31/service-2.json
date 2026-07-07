@@ -65,8 +65,12 @@
       "output":{"shape":"CheckpointDurableExecutionResponse"},
       "errors":[
         {"shape":"InvalidParameterValueException"},
+        {"shape":"KMSInvalidStateException"},
         {"shape":"ServiceException"},
-        {"shape":"TooManyRequestsException"}
+        {"shape":"TooManyRequestsException"},
+        {"shape":"KMSNotFoundException"},
+        {"shape":"KMSAccessDeniedException"},
+        {"shape":"KMSDisabledException"}
       ],
       "documentation":"<p>Saves the progress of a <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/durable-functions.html\">durable function</a> execution during runtime. This API is used by the Lambda durable functions SDK to checkpoint completed steps and schedule asynchronous operations. You typically don't need to call this API directly as the SDK handles checkpointing automatically.</p> <p>Each checkpoint operation consumes the current checkpoint token and returns a new one for the next checkpoint. This ensures that checkpoints are applied in the correct order and prevents duplicate or out-of-order state updates.</p>",
       "idempotent":true
@@ -463,9 +467,13 @@
       "output":{"shape":"GetDurableExecutionResponse"},
       "errors":[
         {"shape":"InvalidParameterValueException"},
+        {"shape":"KMSInvalidStateException"},
         {"shape":"ServiceException"},
         {"shape":"TooManyRequestsException"},
-        {"shape":"ResourceNotFoundException"}
+        {"shape":"KMSNotFoundException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"KMSAccessDeniedException"},
+        {"shape":"KMSDisabledException"}
       ],
       "documentation":"<p>Retrieves detailed information about a specific <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/durable-functions.html\">durable execution</a>, including its current status, input payload, result or error information, and execution metadata such as start time and usage statistics.</p>",
       "readonly":true
@@ -481,9 +489,13 @@
       "output":{"shape":"GetDurableExecutionHistoryResponse"},
       "errors":[
         {"shape":"InvalidParameterValueException"},
+        {"shape":"KMSInvalidStateException"},
         {"shape":"ServiceException"},
         {"shape":"TooManyRequestsException"},
-        {"shape":"ResourceNotFoundException"}
+        {"shape":"KMSNotFoundException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"KMSAccessDeniedException"},
+        {"shape":"KMSDisabledException"}
       ],
       "documentation":"<p>Retrieves the execution history for a <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/durable-functions.html\">durable execution</a>, showing all the steps, callbacks, and events that occurred during the execution. This provides a detailed audit trail of the execution's progress over time.</p> <p>The history is available while the execution is running and for a retention period after it completes (1-90 days, default 30 days). You can control whether to include execution data such as step results and callback payloads.</p>",
       "readonly":true
@@ -499,8 +511,12 @@
       "output":{"shape":"GetDurableExecutionStateResponse"},
       "errors":[
         {"shape":"InvalidParameterValueException"},
+        {"shape":"KMSInvalidStateException"},
         {"shape":"ServiceException"},
-        {"shape":"TooManyRequestsException"}
+        {"shape":"TooManyRequestsException"},
+        {"shape":"KMSNotFoundException"},
+        {"shape":"KMSAccessDeniedException"},
+        {"shape":"KMSDisabledException"}
       ],
       "documentation":"<p>Retrieves the current execution state required for the replay process during <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/durable-functions.html\">durable function</a> execution. This API is used by the Lambda durable functions SDK to get state information needed for replay. You typically don't need to call this API directly as the SDK handles state management automatically.</p> <p>The response contains operations ordered by start sequence number in ascending order. Completed operations with children don't include child operation details since they don't need to be replayed.</p>",
       "readonly":true
@@ -1403,10 +1419,14 @@
       "output":{"shape":"SendDurableExecutionCallbackFailureResponse"},
       "errors":[
         {"shape":"InvalidParameterValueException"},
+        {"shape":"KMSInvalidStateException"},
         {"shape":"ServiceException"},
         {"shape":"TooManyRequestsException"},
+        {"shape":"KMSNotFoundException"},
         {"shape":"ResourceNotFoundException"},
-        {"shape":"CallbackTimeoutException"}
+        {"shape":"CallbackTimeoutException"},
+        {"shape":"KMSAccessDeniedException"},
+        {"shape":"KMSDisabledException"}
       ],
       "documentation":"<p>Sends a failure response for a callback operation in a durable execution. Use this API when an external system cannot complete a callback operation successfully.</p>"
     },
@@ -1439,10 +1459,14 @@
       "output":{"shape":"SendDurableExecutionCallbackSuccessResponse"},
       "errors":[
         {"shape":"InvalidParameterValueException"},
+        {"shape":"KMSInvalidStateException"},
         {"shape":"ServiceException"},
         {"shape":"TooManyRequestsException"},
+        {"shape":"KMSNotFoundException"},
         {"shape":"ResourceNotFoundException"},
-        {"shape":"CallbackTimeoutException"}
+        {"shape":"CallbackTimeoutException"},
+        {"shape":"KMSAccessDeniedException"},
+        {"shape":"KMSDisabledException"}
       ],
       "documentation":"<p>Sends a successful completion response for a callback operation in a durable execution. Use this API when an external system has successfully completed a callback operation.</p>"
     },
@@ -1457,9 +1481,13 @@
       "output":{"shape":"StopDurableExecutionResponse"},
       "errors":[
         {"shape":"InvalidParameterValueException"},
+        {"shape":"KMSInvalidStateException"},
         {"shape":"ServiceException"},
         {"shape":"TooManyRequestsException"},
-        {"shape":"ResourceNotFoundException"}
+        {"shape":"KMSNotFoundException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"KMSAccessDeniedException"},
+        {"shape":"KMSDisabledException"}
       ],
       "documentation":"<p>Stops a running <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/durable-functions.html\">durable execution</a>. The execution transitions to STOPPED status and cannot be resumed. Any in-progress operations are terminated.</p>"
     },
@@ -3444,6 +3472,10 @@
     "DurableConfig":{
       "type":"structure",
       "members":{
+        "KMSKeyArn":{
+          "shape":"KMSKeyArn",
+          "documentation":"<p>The ARN of the Key Management Service (KMS) customer managed key that is used to encrypt your durable execution's payload data, including input, output, and error payloads.</p>"
+        },
         "RetentionPeriodInDays":{
           "shape":"RetentionPeriodInDays",
           "documentation":"<p>The number of days to retain execution history after a durable execution completes. After this period, execution history is no longer available through the GetDurableExecutionHistory API.</p>"
@@ -3453,7 +3485,7 @@
           "documentation":"<p>The maximum time (in seconds) that a durable execution can run before timing out. This timeout applies to the entire durable execution, not individual function invocations.</p>"
         }
       },
-      "documentation":"<p>Configuration settings for <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/durable-functions.html\">durable functions</a>, including execution timeout and retention period for execution history.</p>"
+      "documentation":"<p>Configuration settings for <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/durable-functions.html\">durable functions</a>, including execution timeout, retention period for execution history, and an optional ARN of the Key Management Service (KMS) customer managed key that is used to encrypt your durable execution's payload data, including input, output, and error payloads.</p>"
     },
     "DurableExecutionAlreadyStartedException":{
       "type":"structure",
@@ -4166,9 +4198,17 @@
         "EndTimestamp":{
           "shape":"ExecutionTimestamp",
           "documentation":"<p>The date and time when the durable execution ended, in <a href=\"https://www.w3.org/TR/NOTE-datetime\">ISO-8601 format</a> (YYYY-MM-DDThh:mm:ss.sTZD).</p>"
+        },
+        "KMSKeyArn":{
+          "shape":"KMSKeyArn",
+          "documentation":"<p>The ARN of the Key Management Service (KMS) customer managed key that is used to encrypt your durable execution's payload data, including input, output, and error payloads.</p>"
         }
       },
       "documentation":"<p>Information about a <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/durable-functions.html\">durable execution</a>.</p>"
+    },
+    "ExecutionDataIncluded":{
+      "type":"boolean",
+      "box":true
     },
     "ExecutionDetails":{
       "type":"structure",
@@ -4943,6 +4983,12 @@
           "documentation":"<p>The Amazon Resource Name (ARN) of the durable execution.</p>",
           "location":"uri",
           "locationName":"DurableExecutionArn"
+        },
+        "IncludeExecutionData":{
+          "shape":"IncludeExecutionData",
+          "documentation":"<p>Specifies whether to include execution data such as input payload, result, and error information in the response. Set to <code>false</code> for a more compact response that includes only execution metadata. The default value is set to <code>true</code>.</p>",
+          "location":"querystring",
+          "locationName":"IncludeExecutionData"
         }
       }
     },
@@ -4999,6 +5045,14 @@
         "TraceHeader":{
           "shape":"TraceHeader",
           "documentation":"<p>The trace headers associated with the durable execution.</p>"
+        },
+        "ExecutionDataIncluded":{
+          "shape":"ExecutionDataIncluded",
+          "documentation":"<p>Indicates whether execution data is included in this response. Returns <code>false</code> when <code>IncludeExecutionData</code> is set to <code>false</code> in the request.</p>"
+        },
+        "DurableConfig":{
+          "shape":"DurableConfig",
+          "documentation":"<p>Configuration settings for the durable execution, including execution timeout, retention period for execution history, and an optional ARN of the Key Management Service (KMS) customer managed key that is used to encrypt your durable execution's payload data, including input, output, and error payloads.</p>"
         }
       },
       "documentation":"<p>The response from the GetDurableExecution operation, containing detailed information about the durable execution.</p>"
@@ -5791,7 +5845,7 @@
         },
         "DurableExecutionName":{
           "shape":"DurableExecutionName",
-          "documentation":"<p>Optional unique name for the durable execution. When you start your special function, you can give it a unique name to identify this specific execution. It's like giving a nickname to a task.</p>",
+          "documentation":"<p>A unique name for the durable execution. If you invoke a durable function using a name that already exists with the same payload, Lambda returns the existing execution instead of creating a duplicate. If the payload differs, Lambda returns a <code>DurableExecutionAlreadyStartedException</code> error.</p> <p>If not specified, Lambda generates a unique identifier automatically. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/durable-execution-idempotency.html#durable-idempotency-execution-names\">Execution names</a>.</p>",
           "location":"header",
           "locationName":"X-Amz-Durable-Execution-Name"
         },
@@ -9591,7 +9645,7 @@
         },
         "DurableConfig":{
           "shape":"DurableConfig",
-          "documentation":"<p>Configuration settings for durable functions. Allows updating execution timeout and retention period for functions with durability enabled.</p>"
+          "documentation":"<p>Configuration settings for <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/durable-functions.html\">durable functions</a>, including execution timeout, retention period for execution history, and an optional ARN of the Key Management Service (KMS) customer managed key that is used to encrypt your durable execution's payload data, including input, output, and error payloads.</p>"
         }
       }
     },

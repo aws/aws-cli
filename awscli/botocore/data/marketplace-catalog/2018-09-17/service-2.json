@@ -2568,6 +2568,10 @@
         "LastModifiedDate":{
           "shape":"ResaleAuthorizationLastModifiedDateFilter",
           "documentation":"<p>Allows filtering on the <code>LastModifiedDate</code> of a ResaleAuthorization.</p>"
+        },
+        "ResellerRole":{
+          "shape":"ResaleAuthorizationResellerRoleFilter",
+          "documentation":"<p>Allows filtering on the <code>ResellerRole</code> of a ResaleAuthorization.</p>"
         }
       },
       "documentation":"<p>Object containing all the filter fields for resale authorization entity. Client can add only one wildcard filter and a maximum of 8 filters in a single <code>ListEntities</code> request.</p>"
@@ -2842,6 +2846,29 @@
       "min":1,
       "pattern":"^(.)+$"
     },
+    "ResaleAuthorizationResellerRoleFilter":{
+      "type":"structure",
+      "members":{
+        "ValueList":{
+          "shape":"ResaleAuthorizationResellerRoleFilterValueList",
+          "documentation":"<p>Allows filtering on the <code>ResellerRole</code> of a ResaleAuthorization with list input.</p>"
+        }
+      },
+      "documentation":"<p>Allows filtering on the <code>ResellerRole</code> of a ResaleAuthorization.</p>"
+    },
+    "ResaleAuthorizationResellerRoleFilterValueList":{
+      "type":"list",
+      "member":{"shape":"ResaleAuthorizationResellerRoleString"},
+      "max":10,
+      "min":1
+    },
+    "ResaleAuthorizationResellerRoleString":{
+      "type":"string",
+      "enum":[
+        "ChannelPartner",
+        "Distributor"
+      ]
+    },
     "ResaleAuthorizationSort":{
       "type":"structure",
       "members":{
@@ -2944,6 +2971,10 @@
         "AvailabilityEndDate":{
           "shape":"DateTimeISO8601",
           "documentation":"<p>The availability end date of the ResaleAuthorization.</p>"
+        },
+        "ResellerRole":{
+          "shape":"ResaleAuthorizationResellerRoleString",
+          "documentation":"<p>The reseller role of the ResaleAuthorization.</p>"
         }
       },
       "documentation":"<p>Summarized information about a Resale Authorization.</p>"

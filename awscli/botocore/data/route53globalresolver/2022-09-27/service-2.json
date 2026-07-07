@@ -702,7 +702,7 @@
       "name":"ListHostedZoneAssociations",
       "http":{
         "method":"GET",
-        "requestUri":"/hosted-zone-associations/resource-arn/{resourceArn+}",
+        "requestUri":"/hosted-zone-associations",
         "responseCode":200
       },
       "input":{"shape":"ListHostedZoneAssociationsInput"},
@@ -714,7 +714,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Lists all hosted zone associations for a Route 53 Global Resolver resource with pagination support.</p> <important> <p>Route 53 Global Resolver is a global service that supports resolvers in multiple Amazon Web Services Regions but you must specify the US East (Ohio) Region to create, update, or otherwise work with Route 53 Global Resolver resources. That is, for example, specify <code>--region us-east-2</code> on Amazon Web Services CLI commands.</p> </important>",
+      "documentation":"<p>Lists hosted zone associations with pagination support. Specify a DNS view through the <code>resourceArn</code> parameter to list the hosted zone associations for that DNS view, or omit it to list all hosted zone associations in your Amazon Web Services account.</p> <important> <p>Route 53 Global Resolver is a global service that supports resolvers in multiple Amazon Web Services Regions but you must specify the US East (Ohio) Region to create, update, or otherwise work with Route 53 Global Resolver resources. That is, for example, specify <code>--region us-east-2</code> on Amazon Web Services CLI commands.</p> </important>",
       "readonly":true
     },
     "ListManagedFirewallDomainLists":{
@@ -733,6 +733,24 @@
         {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Returns a paginated list of the Amazon Web Services Managed DNS Lists and the categories for DNS Firewall. The categories are either <code>THREAT</code> or <code>CONTENT</code>.</p> <important> <p>Route 53 Global Resolver is a global service that supports resolvers in multiple Amazon Web Services Regions but you must specify the US East (Ohio) Region to create, update, or otherwise work with Route 53 Global Resolver resources. That is, for example, specify <code>--region us-east-2</code> on Amazon Web Services CLI commands.</p> </important>",
+      "readonly":true
+    },
+    "ListSharedDNSViews":{
+      "name":"ListSharedDNSViews",
+      "http":{
+        "method":"GET",
+        "requestUri":"/shared-dns-views",
+        "responseCode":200
+      },
+      "input":{"shape":"ListSharedDNSViewsInput"},
+      "output":{"shape":"ListSharedDNSViewsOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Lists the DNS views that have been shared with your Amazon Web Services account through Amazon Web Services Resource Access Manager (Amazon Web Services RAM), with pagination support.</p> <important> <p>Route 53 Global Resolver is a global service that supports resolvers in multiple Amazon Web Services Regions but you must specify the US East (Ohio) Region to create, update, or otherwise work with Route 53 Global Resolver resources. That is, for example, specify <code>--region us-east-2</code> on Amazon Web Services CLI commands.</p> </important>",
       "readonly":true
     },
     "ListTagsForResource":{
@@ -1063,6 +1081,12 @@
     "AccessTokens":{
       "type":"list",
       "member":{"shape":"AccessTokenItem"}
+    },
+    "AccountId":{
+      "type":"string",
+      "max":32,
+      "min":12,
+      "pattern":"[0-9]+"
     },
     "AssociateHostedZoneInput":{
       "type":"structure",
@@ -4309,7 +4333,6 @@
     },
     "ListHostedZoneAssociationsInput":{
       "type":"structure",
-      "required":["resourceArn"],
       "members":{
         "maxResults":{
           "shape":"Integer",
@@ -4325,8 +4348,8 @@
         },
         "resourceArn":{
           "shape":"ResourceArn",
-          "documentation":"<p>Amazon Resource Name (ARN) of the DNS view.</p>",
-          "location":"uri",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the DNS view to list hosted zone associations for. This parameter is optional; if you omit it, all hosted zone associations in your Amazon Web Services account are returned.</p>",
+          "location":"querystring",
           "locationName":"resourceArn"
         }
       }
@@ -4380,6 +4403,37 @@
         "managedFirewallDomainLists":{
           "shape":"ManagedFirewallDomainLists",
           "documentation":"<p>List of the Managed Domain Lists.</p>"
+        }
+      }
+    },
+    "ListSharedDNSViewsInput":{
+      "type":"structure",
+      "members":{
+        "maxResults":{
+          "shape":"Integer",
+          "documentation":"<p>The maximum number of results to retrieve in a single call.</p>",
+          "location":"querystring",
+          "locationName":"max_results"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>A pagination token used for large sets of results that can't be returned in a single response.</p>",
+          "location":"querystring",
+          "locationName":"next_token"
+        }
+      }
+    },
+    "ListSharedDNSViewsOutput":{
+      "type":"structure",
+      "required":["dnsViews"],
+      "members":{
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>A pagination token used for large sets of results that can't be returned in a single response. Provide this token in the next call to get the results not returned in this call.</p>"
+        },
+        "dnsViews":{
+          "shape":"SharedDNSViews",
+          "documentation":"<p>An array of information about the DNS views shared with your Amazon Web Services account, including the Amazon Web Services account that owns each DNS view.</p>"
         }
       }
     },
@@ -4538,6 +4592,82 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "SharedDNSViewSummary":{
+      "type":"structure",
+      "required":[
+        "id",
+        "arn",
+        "clientToken",
+        "dnssecValidation",
+        "ednsClientSubnet",
+        "firewallRulesFailOpen",
+        "name",
+        "globalResolverId",
+        "createdAt",
+        "updatedAt",
+        "status",
+        "ownerAccountId"
+      ],
+      "members":{
+        "id":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique identifier of the DNS view.</p>"
+        },
+        "arn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the DNS view.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>The unique string that identifies the request and ensures idempotency.</p>"
+        },
+        "dnssecValidation":{
+          "shape":"DnsSecValidationType",
+          "documentation":"<p>Whether DNSSEC validation is enabled for the DNS view.</p>"
+        },
+        "ednsClientSubnet":{
+          "shape":"EdnsClientSubnetType",
+          "documentation":"<p>Whether EDNS Client Subnet injection is enabled for the DNS view.</p>"
+        },
+        "firewallRulesFailOpen":{
+          "shape":"FirewallRulesFailOpenType",
+          "documentation":"<p>Whether firewall rules fail open when they cannot be evaluated.</p>"
+        },
+        "name":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the DNS view.</p>"
+        },
+        "description":{
+          "shape":"ResourceDescription",
+          "documentation":"<p>A description of the DNS view.</p>"
+        },
+        "globalResolverId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The ID of the global resolver that the DNS view is associated with.</p>"
+        },
+        "createdAt":{
+          "shape":"ISO8601TimeString",
+          "documentation":"<p>The date and time when the DNS view was created.</p>"
+        },
+        "updatedAt":{
+          "shape":"ISO8601TimeString",
+          "documentation":"<p>The date and time when the DNS view was last updated.</p>"
+        },
+        "status":{
+          "shape":"ProfileResourceStatus",
+          "documentation":"<p>The current status of the DNS view.</p>"
+        },
+        "ownerAccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that owns the DNS view and shared it with your Amazon Web Services account.</p>"
+        }
+      },
+      "documentation":"<p>Summary information about a DNS view that has been shared with your Amazon Web Services account through Amazon Web Services RAM.</p>"
+    },
+    "SharedDNSViews":{
+      "type":"list",
+      "member":{"shape":"SharedDNSViewSummary"}
     },
     "Sni":{
       "type":"string",

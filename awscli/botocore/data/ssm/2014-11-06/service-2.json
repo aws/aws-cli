@@ -143,6 +143,21 @@
       ],
       "documentation":"<p>Associates the specified Amazon Web Services Systems Manager document (SSM document) with the specified managed nodes or targets.</p> <p>When you associate a document with one or more managed nodes using IDs or tags, Amazon Web Services Systems Manager Agent (SSM Agent) running on the managed node processes the document and configures the node as specified.</p> <p>If you associate a document with a managed node that already has an associated document, the system returns the AssociationAlreadyExists exception.</p>"
     },
+    "CreateCloudConnector":{
+      "name":"CreateCloudConnector",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateCloudConnectorRequest"},
+      "output":{"shape":"CreateCloudConnectorResult"},
+      "errors":[
+        {"shape":"InternalServerError"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Creates a cloud connector that establishes a connection between Systems Manager and a third-party cloud environment.</p>"
+    },
     "CreateDocument":{
       "name":"CreateDocument",
       "http":{
@@ -275,6 +290,21 @@
         {"shape":"TooManyUpdates"}
       ],
       "documentation":"<p>Disassociates the specified Amazon Web Services Systems Manager document (SSM document) from the specified managed node. If you created the association by using the <code>Targets</code> parameter, then you must delete the association by using the association ID.</p> <p>When you disassociate a document from a managed node, it doesn't change the configuration of the node. To change the configuration state of a managed node after you disassociate a document, you must create a new document with the desired configuration and associate it with the node.</p>"
+    },
+    "DeleteCloudConnector":{
+      "name":"DeleteCloudConnector",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteCloudConnectorRequest"},
+      "output":{"shape":"DeleteCloudConnectorResult"},
+      "errors":[
+        {"shape":"InternalServerError"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Deletes a cloud connector.</p>"
     },
     "DeleteDocument":{
       "name":"DeleteDocument",
@@ -1037,6 +1067,21 @@
       ],
       "documentation":"<p>Gets the state of a Amazon Web Services Systems Manager change calendar at the current time or a specified time. If you specify a time, <code>GetCalendarState</code> returns the state of the calendar at that specific time, and returns the next time that the change calendar state will transition. If you don't specify a time, <code>GetCalendarState</code> uses the current time. Change Calendar entries have two possible states: <code>OPEN</code> or <code>CLOSED</code>.</p> <p>If you specify more than one calendar in a request, the command returns the status of <code>OPEN</code> only if all calendars in the request are open. If one or more calendars in the request are closed, the status returned is <code>CLOSED</code>.</p> <p>For more information about Change Calendar, a tool in Amazon Web Services Systems Manager, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-change-calendar.html\">Amazon Web Services Systems Manager Change Calendar</a> in the <i>Amazon Web Services Systems Manager User Guide</i>.</p>"
     },
+    "GetCloudConnector":{
+      "name":"GetCloudConnector",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetCloudConnectorRequest"},
+      "output":{"shape":"GetCloudConnectorResult"},
+      "errors":[
+        {"shape":"InternalServerError"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Returns detailed information about a cloud connector.</p>",
+      "readonly":true
+    },
     "GetCommandInvocation":{
       "name":"GetCommandInvocation",
       "http":{
@@ -1290,7 +1335,7 @@
         {"shape":"ParameterNotFound"},
         {"shape":"ParameterVersionNotFound"}
       ],
-      "documentation":"<p>Get information about a single parameter by specifying the parameter name.</p> <p>Parameter names can't contain spaces. The service removes any spaces specified for the beginning or end of a parameter name. If the specified name for a parameter contains spaces between characters, the request fails with a <code>ValidationException</code> error.</p> <note> <p>To get information about more than one parameter at a time, use the <a>GetParameters</a> operation.</p> </note>"
+      "documentation":"<p>Get information about a single parameter by specifying the parameter name.</p> <p>Parameter names can't contain spaces. The service removes any spaces specified for the beginning or end of a parameter name. If the specified name for a parameter contains spaces between characters, the request fails with a <code>ValidationException</code> error.</p> <note> <p>To get information about more than one parameter at a time, use the <a>GetParameters</a> operation.</p> </note> <note> <p>Parameter Store throughput defines the number of API transactions per second (TPS) that Systems Manager can process. This applies to <code>GetParameter</code>, <code>GetParameters</code>, and <code>PutParameter</code> API calls for your Amazon Web Services account and Amazon Web Services Region. By default, Parameter Store is configured with a standard throughput quota suitable for low- to moderate-volume workloads. Applications that retrieve configuration data infrequently or operate at smaller scale can use this default setting without additional cost.</p> <p>For higher-volume workloads, you can enable higher throughput. This increases the maximum number of supported transactions per second for your account and Region. Increased throughput supports applications and workloads that need concurrent access to multiple parameters. If you experience <code>ThrottlingException: Rate exceeded</code> errors, enable higher throughput. For more information, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/parameter-store-throughput.html\">Changing Parameter Store throughput</a>.</p> </note>"
     },
     "GetParameterHistory":{
       "name":"GetParameterHistory",
@@ -1320,7 +1365,7 @@
         {"shape":"InvalidKeyId"},
         {"shape":"InternalServerError"}
       ],
-      "documentation":"<p>Get information about one or more parameters by specifying multiple parameter names.</p> <note> <p>To get information about a single parameter, you can use the <a>GetParameter</a> operation instead.</p> </note> <p>Parameter names can't contain spaces. The service removes any spaces specified for the beginning or end of a parameter name. If the specified name for a parameter contains spaces between characters, the request fails with a <code>ValidationException</code> error.</p>"
+      "documentation":"<p>Get information about one or more parameters by specifying multiple parameter names.</p> <note> <p>To get information about a single parameter, you can use the <a>GetParameter</a> operation instead.</p> </note> <p>Parameter names can't contain spaces. The service removes any spaces specified for the beginning or end of a parameter name. If the specified name for a parameter contains spaces between characters, the request fails with a <code>ValidationException</code> error.</p> <note> <p>Parameter Store throughput defines the number of API transactions per second (TPS) that Systems Manager can process. This applies to <code>GetParameter</code>, <code>GetParameters</code>, and <code>PutParameter</code> API calls for your Amazon Web Services account and Amazon Web Services Region. By default, Parameter Store is configured with a standard throughput quota suitable for low- to moderate-volume workloads. Applications that retrieve configuration data infrequently or operate at smaller scale can use this default setting without additional cost.</p> <p>For higher-volume workloads, you can enable higher throughput. This increases the maximum number of supported transactions per second for your account and Region. Increased throughput supports applications and workloads that need concurrent access to multiple parameters. If you experience <code>ThrottlingException: Rate exceeded</code> errors, enable higher throughput. For more information, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/parameter-store-throughput.html\">Changing Parameter Store throughput</a>.</p> </note>"
     },
     "GetParametersByPath":{
       "name":"GetParametersByPath",
@@ -1442,6 +1487,20 @@
         {"shape":"InvalidNextToken"}
       ],
       "documentation":"<p>Returns all State Manager associations in the current Amazon Web Services account and Amazon Web Services Region. You can limit the results to a specific State Manager association document or managed node by specifying a filter. State Manager is a tool in Amazon Web Services Systems Manager.</p>"
+    },
+    "ListCloudConnectors":{
+      "name":"ListCloudConnectors",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListCloudConnectorsRequest"},
+      "output":{"shape":"ListCloudConnectorsResult"},
+      "errors":[
+        {"shape":"InternalServerError"}
+      ],
+      "documentation":"<p>Returns a list of cloud connectors in the current Amazon Web Services account and Amazon Web Services Region.</p>",
+      "readonly":true
     },
     "ListCommandInvocations":{
       "name":"ListCommandInvocations",
@@ -1781,7 +1840,7 @@
         {"shape":"InvalidPolicyAttributeException"},
         {"shape":"IncompatiblePolicyException"}
       ],
-      "documentation":"<p>Create or update a parameter in Parameter Store.</p>"
+      "documentation":"<p>Create or update a parameter in Parameter Store.</p> <note> <p>Parameter Store throughput defines the number of API transactions per second (TPS) that Systems Manager can process. This applies to <code>GetParameter</code>, <code>GetParameters</code>, and <code>PutParameter</code> API calls for your Amazon Web Services account and Amazon Web Services Region. By default, Parameter Store is configured with a standard throughput quota suitable for low- to moderate-volume workloads. Applications that retrieve configuration data infrequently or operate at smaller scale can use this default setting without additional cost.</p> <p>For higher-volume workloads, you can enable higher throughput. This increases the maximum number of supported transactions per second for your account and Region. Increased throughput supports applications and workloads that need concurrent access to multiple parameters. If you experience <code>ThrottlingException: Rate exceeded</code> errors, enable higher throughput. For more information, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/parameter-store-throughput.html\">Changing Parameter Store throughput</a>.</p> </note>"
     },
     "PutResourcePolicy":{
       "name":"PutResourcePolicy",
@@ -2138,6 +2197,21 @@
       ],
       "documentation":"<p>Updates the status of the Amazon Web Services Systems Manager document (SSM document) associated with the specified managed node.</p> <p> <code>UpdateAssociationStatus</code> is primarily used by the Amazon Web Services Systems Manager Agent (SSM Agent) to report status updates about your associations and is only used for associations created with the <code>InstanceId</code> legacy parameter.</p>"
     },
+    "UpdateCloudConnector":{
+      "name":"UpdateCloudConnector",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateCloudConnectorRequest"},
+      "output":{"shape":"UpdateCloudConnectorResult"},
+      "errors":[
+        {"shape":"InternalServerError"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Updates an existing cloud connector with new configuration details.</p>"
+    },
     "UpdateDocument":{
       "name":"UpdateDocument",
       "http":{
@@ -2329,6 +2403,21 @@
         {"shape":"TooManyUpdates"}
       ],
       "documentation":"<p> <code>ServiceSetting</code> is an account-level setting for an Amazon Web Services service. This setting defines how a user interacts with or uses a service or a feature of a service. For example, if an Amazon Web Services service charges money to the account based on feature or service usage, then the Amazon Web Services service team might create a default setting of \"false\". This means the user can't use this feature unless they change the setting to \"true\" and intentionally opt in for a paid feature.</p> <p>Services map a <code>SettingId</code> object to a setting value. Amazon Web Services services teams define the default value for a <code>SettingId</code>. You can't create a new <code>SettingId</code>, but you can overwrite the default value if you have the <code>ssm:UpdateServiceSetting</code> permission for the setting. Use the <a>GetServiceSetting</a> API operation to view the current value. Or, use the <a>ResetServiceSetting</a> to change the value back to the original value defined by the Amazon Web Services service team.</p> <p>Update the service setting for the account. </p>"
+    },
+    "ValidateCloudConnector":{
+      "name":"ValidateCloudConnector",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ValidateCloudConnectorRequest"},
+      "output":{"shape":"ValidateCloudConnectorResult"},
+      "errors":[
+        {"shape":"InternalServerError"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Validates the configuration and connectivity of a cloud connector.</p>",
+      "readonly":true
     }
   },
   "shapes":{
@@ -3066,7 +3155,8 @@
         "LastExecutedBefore",
         "LastExecutedAfter",
         "AssociationName",
-        "ResourceGroupName"
+        "ResourceGroupName",
+        "CloudConnectorId"
       ]
     },
     "AssociationFilterList":{
@@ -3918,6 +4008,101 @@
         "Local"
       ]
     },
+    "AvailabilityZone":{
+      "type":"string",
+      "max":120
+    },
+    "AvailabilityZoneId":{
+      "type":"string",
+      "max":50
+    },
+    "AzureApplicationDisplayName":{
+      "type":"string",
+      "max":256,
+      "min":0,
+      "pattern":"^([\\p{L}\\p{Z}\\p{N}\\p{P}\\p{M}]*)$"
+    },
+    "AzureApplicationId":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+    "AzureConfiguration":{
+      "type":"structure",
+      "required":[
+        "TenantId",
+        "ApplicationId"
+      ],
+      "members":{
+        "TenantId":{
+          "shape":"AzureTenantId",
+          "documentation":"<p>The ID of the Azure tenant.</p>"
+        },
+        "TenantDisplayName":{
+          "shape":"AzureTenantDisplayName",
+          "documentation":"<p>The display name of the Azure tenant.</p>"
+        },
+        "ApplicationId":{
+          "shape":"AzureApplicationId",
+          "documentation":"<p>The ID of the Azure application registration used for authentication.</p>"
+        },
+        "ApplicationDisplayName":{
+          "shape":"AzureApplicationDisplayName",
+          "documentation":"<p>The display name of the Azure application registration.</p>"
+        },
+        "Targets":{
+          "shape":"ConfigurationTargets",
+          "documentation":"<p>The target Azure subscriptions for the cloud connector.</p>"
+        }
+      },
+      "documentation":"<p>The access details and targets for connecting to a Microsoft Azure tenant, including the application registration used for authentication and the subscriptions to target.</p>"
+    },
+    "AzureSubscription":{
+      "type":"structure",
+      "required":["Id"],
+      "members":{
+        "Id":{
+          "shape":"AzureSubscriptionId",
+          "documentation":"<p>The ID of the Azure subscription.</p>"
+        },
+        "DisplayName":{
+          "shape":"AzureSubscriptionDisplayName",
+          "documentation":"<p>The display name of the Azure subscription.</p>"
+        }
+      },
+      "documentation":"<p>Information about an Azure subscription targeted by the cloud connector.</p>"
+    },
+    "AzureSubscriptionDisplayName":{
+      "type":"string",
+      "max":128,
+      "min":0,
+      "pattern":"^([\\p{L}\\p{Z}\\p{N}\\p{P}\\p{M}]*)$"
+    },
+    "AzureSubscriptionId":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+    "AzureSubscriptionList":{
+      "type":"list",
+      "member":{"shape":"AzureSubscription"},
+      "max":75,
+      "min":1
+    },
+    "AzureTenantDisplayName":{
+      "type":"string",
+      "max":256,
+      "min":0,
+      "pattern":"^([\\p{L}\\p{Z}\\p{N}\\p{P}\\p{M}]*)$"
+    },
+    "AzureTenantId":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
     "BaselineDescription":{
       "type":"string",
       "max":1024,
@@ -4058,6 +4243,118 @@
       "type":"string",
       "max":64,
       "min":1
+    },
+    "CloudConnectorArn":{
+      "type":"string",
+      "max":2048,
+      "min":20,
+      "pattern":"^arn:aws(-cn|-us-gov)?:ssm:([^:]+):\\d{12}:cloud-connector/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+    },
+    "CloudConnectorConfiguration":{
+      "type":"structure",
+      "members":{
+        "AzureConfiguration":{
+          "shape":"AzureConfiguration",
+          "documentation":"<p>The access details and targets for connecting to a Microsoft Azure environment.</p>"
+        }
+      },
+      "documentation":"<p>The configuration that provides access details and targets for connecting to a third-party cloud environment.</p>",
+      "union":true
+    },
+    "CloudConnectorDescription":{
+      "type":"string",
+      "max":1024,
+      "min":0,
+      "pattern":"^([\\p{L}\\p{Z}\\p{N}\\p{P}\\p{M}]*)$"
+    },
+    "CloudConnectorFilter":{
+      "type":"structure",
+      "members":{
+        "FilterKey":{
+          "shape":"CloudConnectorFilterKey",
+          "documentation":"<p>The name of the filter key.</p>"
+        },
+        "FilterValues":{
+          "shape":"CloudConnectorFilterValues",
+          "documentation":"<p>The filter values. Valid values for each filter key are as follows:</p> <dl> <dt>SubscriptionId</dt> <dd> <p>The Azure subscription ID to filter by. To return only tenant-level connectors, specify <code>NONE</code>.</p> </dd> <dt>TenantId</dt> <dd> <p>The Azure tenant ID to filter by. Filters the results to connectors that target the specified tenant.</p> </dd> </dl>"
+        }
+      },
+      "documentation":"<p>A filter for listing cloud connectors.</p>"
+    },
+    "CloudConnectorFilterKey":{
+      "type":"string",
+      "enum":[
+        "SubscriptionId",
+        "TenantId"
+      ]
+    },
+    "CloudConnectorFilterList":{
+      "type":"list",
+      "member":{"shape":"CloudConnectorFilter"},
+      "max":2,
+      "min":1
+    },
+    "CloudConnectorFilterValue":{
+      "type":"string",
+      "max":256,
+      "min":1
+    },
+    "CloudConnectorFilterValues":{
+      "type":"list",
+      "member":{"shape":"CloudConnectorFilterValue"},
+      "max":1,
+      "min":1
+    },
+    "CloudConnectorIamRoleArn":{
+      "type":"string",
+      "max":2048,
+      "min":20,
+      "pattern":"^arn:aws[a-z0-9-]*:iam::\\d{12}:role\\/[\\w-\\/.@+=,]{1,1017}$"
+    },
+    "CloudConnectorId":{
+      "type":"string",
+      "max":36,
+      "min":36,
+      "pattern":"^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+    },
+    "CloudConnectorMaxResults":{
+      "type":"integer",
+      "max":10,
+      "min":0
+    },
+    "CloudConnectorSummary":{
+      "type":"structure",
+      "members":{
+        "CloudConnectorId":{
+          "shape":"CloudConnectorId",
+          "documentation":"<p>The ID of the cloud connector.</p>"
+        },
+        "DisplayName":{
+          "shape":"DisplayName",
+          "documentation":"<p>The friendly name of the cloud connector.</p>"
+        },
+        "Description":{
+          "shape":"CloudConnectorDescription",
+          "documentation":"<p>The description of the cloud connector.</p>"
+        },
+        "RoleArn":{
+          "shape":"CloudConnectorIamRoleArn",
+          "documentation":"<p>The ARN of the IAM role used by the cloud connector.</p>"
+        },
+        "CreatedAt":{
+          "shape":"DateTime",
+          "documentation":"<p>The date and time the cloud connector was created.</p>"
+        },
+        "UpdatedAt":{
+          "shape":"DateTime",
+          "documentation":"<p>The date and time the cloud connector was last updated.</p>"
+        }
+      },
+      "documentation":"<p>Summary information about a cloud connector.</p>"
+    },
+    "CloudConnectorSummaryList":{
+      "type":"list",
+      "member":{"shape":"CloudConnectorSummary"}
     },
     "CloudWatchLogGroupName":{
       "type":"string",
@@ -4691,6 +4988,31 @@
       "max":255,
       "min":1
     },
+    "ConfigConnectorArn":{
+      "type":"string",
+      "max":512,
+      "min":1,
+      "pattern":"^arn:aws(-cn|-us-gov)?:config:([^:]+):\\d{12}:connector/.+$"
+    },
+    "ConfigurationTargets":{
+      "type":"structure",
+      "members":{
+        "Subscriptions":{
+          "shape":"AzureSubscriptionList",
+          "documentation":"<p>A list of Azure subscriptions to target.</p>"
+        }
+      },
+      "documentation":"<p>The target resources in the third-party cloud environment.</p>",
+      "union":true
+    },
+    "ConflictException":{
+      "type":"structure",
+      "members":{
+        "Message":{"shape":"String"}
+      },
+      "documentation":"<p>An error occurred because of a conflict with a concurrent request or the current state of the resource. Retry your request.</p>",
+      "exception":true
+    },
     "ConnectionStatus":{
       "type":"string",
       "enum":[
@@ -4933,7 +5255,7 @@
         },
         "TargetLocations":{
           "shape":"TargetLocations",
-          "documentation":"<p>A location is a combination of Amazon Web Services Regions and Amazon Web Services accounts where you want to run the association. Use this action to create an association in multiple Regions and multiple accounts.</p> <note> <p>The <code>IncludeChildOrganizationUnits</code> parameter is not supported by State Manager.</p> </note>"
+          "documentation":"<p>A location is a combination of Amazon Web Services Regions and Amazon Web Services accounts where you want to run the association. Use this action to create an association in multiple Regions and multiple accounts.</p> <note> <p>The <code>TargetLocationAlarmConfiguration</code> parameter is not supported by State Manager.</p> </note>"
         },
         "ScheduleOffset":{
           "shape":"ScheduleOffset",
@@ -4969,6 +5291,50 @@
         "AssociationDescription":{
           "shape":"AssociationDescription",
           "documentation":"<p>Information about the association.</p>"
+        }
+      }
+    },
+    "CreateCloudConnectorRequest":{
+      "type":"structure",
+      "required":[
+        "DisplayName",
+        "RoleArn",
+        "Configuration",
+        "ConfigConnectorArn"
+      ],
+      "members":{
+        "DisplayName":{
+          "shape":"DisplayName",
+          "documentation":"<p>A friendly name for the cloud connector.</p>"
+        },
+        "RoleArn":{
+          "shape":"CloudConnectorIamRoleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role that the cloud connector uses to communicate with the third-party cloud environment.</p>"
+        },
+        "Description":{
+          "shape":"CloudConnectorDescription",
+          "documentation":"<p>A description for the cloud connector.</p>"
+        },
+        "Configuration":{
+          "shape":"CloudConnectorConfiguration",
+          "documentation":"<p>The configuration details for connecting to the third-party cloud environment.</p>"
+        },
+        "ConfigConnectorArn":{
+          "shape":"ConfigConnectorArn",
+          "documentation":"<p>The ARN of the Amazon Web Services Config connector associated with this cloud connector.</p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>Optional metadata that you assign to a resource. Tags enable you to categorize a resource in different ways, such as by purpose, owner, or environment.</p>"
+        }
+      }
+    },
+    "CreateCloudConnectorResult":{
+      "type":"structure",
+      "members":{
+        "CloudConnectorId":{
+          "shape":"CloudConnectorId",
+          "documentation":"<p>The ID of the cloud connector that was created.</p>"
         }
       }
     },
@@ -5393,6 +5759,25 @@
     "DeleteAssociationResult":{
       "type":"structure",
       "members":{}
+    },
+    "DeleteCloudConnectorRequest":{
+      "type":"structure",
+      "required":["CloudConnectorId"],
+      "members":{
+        "CloudConnectorId":{
+          "shape":"CloudConnectorId",
+          "documentation":"<p>The ID of the cloud connector to delete.</p>"
+        }
+      }
+    },
+    "DeleteCloudConnectorResult":{
+      "type":"structure",
+      "members":{
+        "CloudConnectorId":{
+          "shape":"CloudConnectorId",
+          "documentation":"<p>The ID of the cloud connector that was deleted.</p>"
+        }
+      }
     },
     "DeleteDocumentRequest":{
       "type":"structure",
@@ -6970,6 +7355,12 @@
       "type":"structure",
       "members":{}
     },
+    "DisplayName":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"^([\\p{L}\\p{Z}\\p{N}\\p{P}\\p{M}]*)$"
+    },
     "DocumentARN":{
       "type":"string",
       "pattern":"^[a-zA-Z0-9_\\-.:/]{3,128}$"
@@ -7854,6 +8245,53 @@
         "NextTransitionTime":{
           "shape":"ISO8601String",
           "documentation":"<p>The time, as an <a href=\"https://en.wikipedia.org/wiki/ISO_8601\">ISO 8601</a> string, that the calendar state will change. If the current calendar state is <code>OPEN</code>, <code>NextTransitionTime</code> indicates when the calendar state changes to <code>CLOSED</code>, and vice-versa.</p>"
+        }
+      }
+    },
+    "GetCloudConnectorRequest":{
+      "type":"structure",
+      "required":["CloudConnectorId"],
+      "members":{
+        "CloudConnectorId":{
+          "shape":"CloudConnectorId",
+          "documentation":"<p>The ID of the cloud connector to retrieve information about.</p>"
+        }
+      }
+    },
+    "GetCloudConnectorResult":{
+      "type":"structure",
+      "members":{
+        "CloudConnectorArn":{
+          "shape":"CloudConnectorArn",
+          "documentation":"<p>The ARN of the cloud connector.</p>"
+        },
+        "DisplayName":{
+          "shape":"DisplayName",
+          "documentation":"<p>The friendly name of the cloud connector.</p>"
+        },
+        "Description":{
+          "shape":"CloudConnectorDescription",
+          "documentation":"<p>The description of the cloud connector.</p>"
+        },
+        "RoleArn":{
+          "shape":"CloudConnectorIamRoleArn",
+          "documentation":"<p>The ARN of the IAM role used by the cloud connector.</p>"
+        },
+        "Configuration":{
+          "shape":"CloudConnectorConfiguration",
+          "documentation":"<p>The configuration details for the third-party cloud environment connection.</p>"
+        },
+        "ConfigConnectorArn":{
+          "shape":"ConfigConnectorArn",
+          "documentation":"<p>The ARN of the Amazon Web Services Config connector associated with this cloud connector.</p>"
+        },
+        "CreatedAt":{
+          "shape":"DateTime",
+          "documentation":"<p>The date and time the cloud connector was created.</p>"
+        },
+        "UpdatedAt":{
+          "shape":"DateTime",
+          "documentation":"<p>The date and time the cloud connector was last updated.</p>"
         }
       }
     },
@@ -8853,7 +9291,7 @@
         },
         "OperatingSystem":{
           "shape":"OperatingSystem",
-          "documentation":"<p>Returns the operating system rule specified for patch groups using the patch baseline.</p>"
+          "documentation":"<p>Returns the operating system rule specified for patch groups using the patch baseline. The default value is <code>WINDOWS</code>. </p>"
         }
       }
     },
@@ -9263,6 +9701,10 @@
           "shape":"ManagedStatus",
           "documentation":"<p>Indicates whether the node is managed by Systems Manager.</p>"
         },
+        "Name":{
+          "shape":"NodeName",
+          "documentation":"<p>The name assigned to the managed node.</p>"
+        },
         "PlatformType":{
           "shape":"PlatformType",
           "documentation":"<p>The operating system platform type of the managed node.</p>"
@@ -9278,6 +9720,26 @@
         "ResourceType":{
           "shape":"ResourceType",
           "documentation":"<p>The type of instance, either an EC2 instance or another supported machine type in a hybrid fleet.</p>"
+        },
+        "SourceType":{
+          "shape":"SourceType",
+          "documentation":"<p>The type of the source resource. For IoT Greengrass devices, <code>SourceType</code> is <code>AWS::IoT::Thing</code>.</p>"
+        },
+        "SourceId":{
+          "shape":"SourceId",
+          "documentation":"<p>The ID of the source resource. For IoT Greengrass devices, <code>SourceId</code> is the Thing name.</p>"
+        },
+        "SourceLocation":{
+          "shape":"SourceLocation",
+          "documentation":"<p>The location of the source resource in the third-party cloud environment.</p>"
+        },
+        "AvailabilityZone":{
+          "shape":"AvailabilityZone",
+          "documentation":"<p>The Availability Zone where the managed node is located.</p>"
+        },
+        "AvailabilityZoneId":{
+          "shape":"AvailabilityZoneId",
+          "documentation":"<p>The Availability Zone ID where the managed node is located.</p>"
         }
       },
       "documentation":"<p>Details about a specific managed node.</p>"
@@ -9370,7 +9832,11 @@
         },
         "SourceType":{
           "shape":"SourceType",
-          "documentation":"<p>The type of the source resource. For IoT Greengrass devices, <code>SourceType</code> is <code>AWS::IoT::Thing</code>. </p>"
+          "documentation":"<p>The type of the source resource. For IoT Greengrass devices, <code>SourceType</code> is <code>AWS::IoT::Thing</code>. For Azure Virtual Machines, <code>SourceType</code> is <code>Microsoft.Compute/virtualMachines</code>.</p>"
+        },
+        "SourceLocation":{
+          "shape":"SourceLocation",
+          "documentation":"<p>The location of the source resource in the third-party cloud environment.</p>"
         }
       },
       "documentation":"<p>Describes a filter for a specific list of managed nodes. </p>"
@@ -9434,7 +9900,7 @@
       "members":{
         "Key":{
           "shape":"InstanceInformationStringFilterKey",
-          "documentation":"<p>The filter key name to describe your managed nodes.</p> <p>Valid filter key values: ActivationIds | AgentVersion | AssociationStatus | IamRole | InstanceIds | PingStatus | PlatformType | ResourceType | SourceIds | SourceTypes | \"tag-key\" | \"tag:<code>{keyname}</code> </p> <ul> <li> <p>Valid values for the <code>AssociationStatus</code> filter key: Success | Pending | Failed</p> </li> <li> <p>Valid values for the <code>PingStatus</code> filter key: Online | ConnectionLost | Inactive (deprecated)</p> </li> <li> <p>Valid values for the <code>PlatformType</code> filter key: Windows | Linux | MacOS</p> </li> <li> <p>Valid values for the <code>ResourceType</code> filter key: EC2Instance | ManagedInstance</p> </li> <li> <p>Valid values for the <code>SourceType</code> filter key: AWS::EC2::Instance | AWS::SSM::ManagedInstance | AWS::IoT::Thing</p> </li> <li> <p>Valid tag examples: <code>Key=tag-key,Values=Purpose</code> | <code>Key=tag:Purpose,Values=Test</code>.</p> </li> </ul>"
+          "documentation":"<p>The filter key name to describe your managed nodes.</p> <p>Valid filter key values: ActivationIds | AgentVersion | AssociationStatus | IamRole | InstanceIds | PingStatus | PlatformTypes | ResourceType | SourceIds | SourceTypes | \"tag-key\" | \"tag:<code>{keyname}</code> </p> <ul> <li> <p>Valid values for the <code>AssociationStatus</code> filter key: Success | Pending | Failed</p> </li> <li> <p>Valid values for the <code>PingStatus</code> filter key: Online | ConnectionLost | Inactive (deprecated)</p> </li> <li> <p>Valid values for the <code>PlatformTypes</code> filter key: Windows | Linux | MacOS</p> </li> <li> <p>Valid values for the <code>ResourceType</code> filter key: EC2Instance | ManagedInstance</p> </li> <li> <p>Valid values for the <code>SourceType</code> filter key: AWS::EC2::Instance | AWS::SSM::ManagedInstance | AWS::IoT::Thing | Microsoft.Compute/virtualMachines</p> </li> <li> <p>Valid tag examples: <code>Key=tag-key,Values=Purpose</code> | <code>Key=tag:Purpose,Values=Test</code>.</p> </li> </ul>"
         },
         "Values":{
           "shape":"InstanceInformationFilterValueSet",
@@ -9735,7 +10201,15 @@
         },
         "SourceType":{
           "shape":"SourceType",
-          "documentation":"<p>The type of the source resource.</p>"
+          "documentation":"<p>The type of the source resource. Valid values: <code>AWS::EC2::Instance</code> | <code>AWS::SSM::ManagedInstance</code> | <code>AWS::IoT::Thing</code> | <code>Microsoft.Compute/virtualMachines</code>.</p>"
+        },
+        "SourceLocation":{
+          "shape":"SourceLocation",
+          "documentation":"<p>The location of the source resource in the third-party cloud environment.</p>"
+        },
+        "AvailabilityZone":{
+          "shape":"AvailabilityZone",
+          "documentation":"<p>The Availability Zone where the managed node is located.</p>"
         }
       },
       "documentation":"<p>An object containing various properties of a managed node.</p>"
@@ -10821,6 +11295,37 @@
         "NextToken":{
           "shape":"NextToken",
           "documentation":"<p>The token to use when requesting the next set of items. If there are no additional items to return, the string is empty.</p>"
+        }
+      }
+    },
+    "ListCloudConnectorsRequest":{
+      "type":"structure",
+      "members":{
+        "MaxResults":{
+          "shape":"CloudConnectorMaxResults",
+          "documentation":"<p>The maximum number of items to return for this call.</p>",
+          "box":true
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of items to return. (You received this token from a previous call.)</p>"
+        },
+        "Filters":{
+          "shape":"CloudConnectorFilterList",
+          "documentation":"<p>One or more filters to limit the cloud connectors returned in the response.</p>"
+        }
+      }
+    },
+    "ListCloudConnectorsResult":{
+      "type":"structure",
+      "members":{
+        "CloudConnectors":{
+          "shape":"CloudConnectorSummaryList",
+          "documentation":"<p>A list of cloud connector summary objects.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to use when requesting the next set of items.</p>"
         }
       }
     },
@@ -11970,7 +12475,7 @@
         },
         "TaskArn":{
           "shape":"MaintenanceWindowTaskArn",
-          "documentation":"<p>The resource that the task uses during execution. For <code>RUN_COMMAND</code> and <code>AUTOMATION</code> task types, <code>TaskArn</code> is the Amazon Web Services Systems Manager (SSM document) name or ARN. For <code>LAMBDA</code> tasks, it's the function name or ARN. For <code>STEP_FUNCTIONS</code> tasks, it's the state machine ARN.</p>"
+          "documentation":"<p>The resource that the task uses during execution. For <code>RUN_COMMAND</code> and <code>AUTOMATION</code> task types, <code>TaskArn</code> is the Amazon Web Services Systems Manager (SSM document) name or ARN. For <code>LAMBDA</code> tasks, it's the function name or ARN. For <code>STEP_FUNCTIONS</code> tasks, it's the state machine ARN.</p> <note> <p>Maintenance Window does not validate the TaskArn when you register a task. A successful registration does not guarantee that the TaskArn is valid.</p> </note>"
         },
         "Type":{
           "shape":"MaintenanceWindowTaskType",
@@ -12337,7 +12842,9 @@
         "PlatformType",
         "PlatformVersion",
         "Region",
-        "ResourceType"
+        "ResourceType",
+        "SourceType",
+        "AvailabilityZone"
       ]
     },
     "NodeCaptureTime":{"type":"timestamp"},
@@ -12380,7 +12887,12 @@
         "OrganizationalUnitId",
         "OrganizationalUnitPath",
         "Region",
-        "AccountId"
+        "AccountId",
+        "SourceType",
+        "SourceId",
+        "SourceLocation",
+        "AvailabilityZone",
+        "AvailabilityZoneId"
       ]
     },
     "NodeFilterList":{
@@ -12418,6 +12930,12 @@
       "member":{"shape":"Node"},
       "max":50,
       "min":0
+    },
+    "NodeName":{
+      "type":"string",
+      "max":256,
+      "min":0,
+      "pattern":"^([\\p{L}\\p{Z}\\p{N}_.:/=+\\-@]*)$"
     },
     "NodeOrganizationalUnitId":{
       "type":"string",
@@ -14472,7 +14990,7 @@
         },
         "ApproveAfterDays":{
           "shape":"ApproveAfterDays",
-          "documentation":"<p>The number of days after the release date of each patch matched by the rule that the patch is marked as approved in the patch baseline. For example, a value of <code>7</code> means that patches are approved seven days after they are released.</p> <p>Patch Manager evaluates patch release dates using Coordinated Universal Time (UTC). If the day represented by <code>7</code> is <code>2025-11-16</code>, patches released between <code>2025-11-16T00:00:00Z</code> and <code>2025-11-16T23:59:59Z</code> will be included in the approval.</p> <p>This parameter is marked as <code>Required: No</code>, but your request must include a value for either <code>ApproveAfterDays</code> or <code>ApproveUntilDate</code>.</p> <p>Not supported for Debian Server or Ubuntu Server.</p> <important> <p>Use caution when setting this value for Windows Server patch baselines. Because patch updates that are replaced by later updates are removed, setting too broad a value for this parameter can result in crucial patches not being installed. For more information, see the <b>Windows Server</b> tab in the topic <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/patch-manager-selecting-patches.html\">How security patches are selected</a> in the <i>Amazon Web Services Systems Manager User Guide</i>.</p> </important>",
+          "documentation":"<p>The number of days after the release date of each patch matched by the rule that the patch is marked as approved in the patch baseline. For example, a value of <code>7</code> means that patches are approved seven days after they are released.</p> <p>Patch Manager evaluates patch release dates using Coordinated Universal Time (UTC). If a patch is released at <code>2025-11-09T18:00:00Z</code> and <code>ApproveAfterDays</code> is set to <code>7</code>, the patch will be approved after <code>2025-11-16T18:00:00Z</code>.</p> <p>This parameter is marked as <code>Required: No</code>, but your request must include a value for either <code>ApproveAfterDays</code> or <code>ApproveUntilDate</code>.</p> <p>Not supported for Debian Server or Ubuntu Server.</p> <important> <p>Use caution when setting this value for Windows Server patch baselines. Because patch updates that are replaced by later updates are removed, setting too broad a value for this parameter can result in crucial patches not being installed. For more information, see the <b>Windows Server</b> tab in the topic <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/patch-manager-selecting-patches.html\">How security patches are selected</a> in the <i>Amazon Web Services Systems Manager User Guide</i>.</p> </important>",
           "box":true
         },
         "ApproveUntilDate":{
@@ -15607,7 +16125,8 @@
         "OpsItem",
         "OpsMetadata",
         "Automation",
-        "Association"
+        "Association",
+        "CloudConnector"
       ]
     },
     "ResponseCode":{"type":"integer"},
@@ -16263,12 +16782,19 @@
       "min":0,
       "pattern":"^[a-zA-Z0-9:_-]*$"
     },
+    "SourceLocation":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"^.{1,128}$"
+    },
     "SourceType":{
       "type":"string",
       "enum":[
         "AWS::EC2::Instance",
         "AWS::IoT::Thing",
-        "AWS::SSM::ManagedInstance"
+        "AWS::SSM::ManagedInstance",
+        "Microsoft.Compute/virtualMachines"
       ]
     },
     "StandardErrorContent":{
@@ -16857,7 +17383,7 @@
         },
         "IncludeChildOrganizationUnits":{
           "shape":"Boolean",
-          "documentation":"<p>Indicates whether to include child organizational units (OUs) that are children of the targeted OUs. The default is <code>false</code>.</p> <note> <p>This parameter is not supported by State Manager.</p> </note>"
+          "documentation":"<p>Indicates whether to include child organizational units (OUs) that are children of the targeted OUs. The default is <code>false</code>.</p>"
         },
         "ExcludeAccounts":{
           "shape":"ExcludeAccounts",
@@ -17211,7 +17737,7 @@
         },
         "TargetLocations":{
           "shape":"TargetLocations",
-          "documentation":"<p>A location is a combination of Amazon Web Services Regions and Amazon Web Services accounts where you want to run the association. Use this action to update an association in multiple Regions and multiple accounts.</p> <note> <p>The <code>IncludeChildOrganizationUnits</code> parameter is not supported by State Manager.</p> </note>"
+          "documentation":"<p>A location is a combination of Amazon Web Services Regions and Amazon Web Services accounts where you want to run the association. Use this action to update an association in multiple Regions and multiple accounts.</p> <note> <p>The <code>TargetLocationAlarmConfiguration</code> parameter is not supported by State Manager.</p> </note>"
         },
         "ScheduleOffset":{
           "shape":"ScheduleOffset",
@@ -17273,6 +17799,37 @@
         "AssociationDescription":{
           "shape":"AssociationDescription",
           "documentation":"<p>Information about the association.</p>"
+        }
+      }
+    },
+    "UpdateCloudConnectorRequest":{
+      "type":"structure",
+      "required":["CloudConnectorId"],
+      "members":{
+        "CloudConnectorId":{
+          "shape":"CloudConnectorId",
+          "documentation":"<p>The ID of the cloud connector to update.</p>"
+        },
+        "DisplayName":{
+          "shape":"DisplayName",
+          "documentation":"<p>A new friendly name for the cloud connector.</p>"
+        },
+        "Configuration":{
+          "shape":"CloudConnectorConfiguration",
+          "documentation":"<p>The updated configuration details for connecting to the third-party cloud environment.</p>"
+        },
+        "Description":{
+          "shape":"CloudConnectorDescription",
+          "documentation":"<p>A new description for the cloud connector.</p>"
+        }
+      }
+    },
+    "UpdateCloudConnectorResult":{
+      "type":"structure",
+      "members":{
+        "CloudConnectorId":{
+          "shape":"CloudConnectorId",
+          "documentation":"<p>The ID of the cloud connector that was updated.</p>"
         }
       }
     },
@@ -18011,6 +18568,43 @@
       "type":"list",
       "member":{"shape":"ValidNextStep"}
     },
+    "ValidateCloudConnectorMaxResults":{
+      "type":"integer",
+      "max":75,
+      "min":0
+    },
+    "ValidateCloudConnectorRequest":{
+      "type":"structure",
+      "required":["CloudConnectorId"],
+      "members":{
+        "CloudConnectorId":{
+          "shape":"CloudConnectorId",
+          "documentation":"<p>The ID of the cloud connector to validate.</p>"
+        },
+        "MaxResults":{
+          "shape":"ValidateCloudConnectorMaxResults",
+          "documentation":"<p>The maximum number of validation findings to return.</p>",
+          "box":true
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of items to return. (You received this token from a previous call.)</p>"
+        }
+      }
+    },
+    "ValidateCloudConnectorResult":{
+      "type":"structure",
+      "members":{
+        "ValidationFindings":{
+          "shape":"ValidationFindingList",
+          "documentation":"<p>A list of validation findings for the cloud connector.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to use when requesting the next set of items.</p>"
+        }
+      }
+    },
     "ValidationException":{
       "type":"structure",
       "members":{
@@ -18022,6 +18616,79 @@
       },
       "documentation":"<p>The request isn't valid. Verify that you entered valid contents for the command and try again.</p>",
       "exception":true
+    },
+    "ValidationFinding":{
+      "type":"structure",
+      "members":{
+        "Type":{
+          "shape":"ValidationFindingType",
+          "documentation":"<p>The type of the validation finding.</p>"
+        },
+        "Code":{
+          "shape":"ValidationFindingCode",
+          "documentation":"<p>A code that identifies the specific validation finding.</p>"
+        },
+        "Message":{
+          "shape":"String",
+          "documentation":"<p>A message that describes the validation finding.</p>"
+        },
+        "ProviderMessage":{
+          "shape":"String",
+          "documentation":"<p>A message from the third-party cloud provider related to the validation finding.</p>"
+        },
+        "Scope":{
+          "shape":"ValidationFindingScope",
+          "documentation":"<p>The scope of the validation finding, identifying the specific resource affected.</p>"
+        }
+      },
+      "documentation":"<p>A validation finding from a cloud connector validation check.</p>"
+    },
+    "ValidationFindingCode":{
+      "type":"string",
+      "enum":[
+        "TargetInaccessible",
+        "TargetUnusable",
+        "TargetStateWarning",
+        "AwsRoleAssumptionFailed",
+        "WebIdentityTokenFailed",
+        "OutboundWebIdentityFederationDisabled",
+        "ProviderCredentialCreationFailed",
+        "TenantSummary",
+        "SubscriptionAccessible"
+      ]
+    },
+    "ValidationFindingList":{
+      "type":"list",
+      "member":{"shape":"ValidationFinding"}
+    },
+    "ValidationFindingScope":{
+      "type":"structure",
+      "members":{
+        "Type":{
+          "shape":"ValidationFindingScopeType",
+          "documentation":"<p>The type of the resource scope.</p>"
+        },
+        "Id":{
+          "shape":"String",
+          "documentation":"<p>The ID of the resource within the scope.</p>"
+        }
+      },
+      "documentation":"<p>Identifies the specific resource scope of a validation finding.</p>"
+    },
+    "ValidationFindingScopeType":{
+      "type":"string",
+      "enum":[
+        "azure:tenant",
+        "azure:subscription"
+      ]
+    },
+    "ValidationFindingType":{
+      "type":"string",
+      "enum":[
+        "INFO",
+        "WARN",
+        "ERROR"
+      ]
     },
     "Version":{
       "type":"string",

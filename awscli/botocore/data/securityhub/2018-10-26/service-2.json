@@ -341,6 +341,26 @@
       ],
       "documentation":"<p> Creates a configuration policy with the defined configuration. Only the Security Hub CSPM delegated administrator can invoke this operation from the home Region. </p>"
     },
+    "CreateConnector":{
+      "name":"CreateConnector",
+      "http":{
+        "method":"POST",
+        "requestUri":"/connectors"
+      },
+      "input":{"shape":"CreateConnectorRequest"},
+      "output":{"shape":"CreateConnectorResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"InvalidAccessException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ServiceQuotaExceededException"}
+      ],
+      "documentation":"<p>Creates a cloud service provider management (CSPM) connector in Security Hub CSPM. A connector establishes a connection between Security Hub CSPM and a third-party cloud provider, enabling Security Hub CSPM to ingest security findings and resource data from the connected environment.</p>"
+    },
     "CreateConnectorV2":{
       "name":"CreateConnectorV2",
       "http":{
@@ -516,6 +536,25 @@
         {"shape":"ResourceConflictException"}
       ],
       "documentation":"<p> Deletes a configuration policy. Only the Security Hub CSPM delegated administrator can invoke this operation from the home Region. For the deletion to succeed, you must first disassociate a configuration policy from target accounts, organizational units, or the root by invoking the <code>StartConfigurationPolicyDisassociation</code> operation. </p>"
+    },
+    "DeleteConnector":{
+      "name":"DeleteConnector",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/connectors/{ConnectorId+}"
+      },
+      "input":{"shape":"DeleteConnectorRequest"},
+      "output":{"shape":"DeleteConnectorResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"InvalidAccessException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Deletes a CSPM connector. When you delete a connector, Security Hub CSPM stops ingesting findings and resource data from the connected cloud provider environment.</p>"
     },
     "DeleteConnectorV2":{
       "name":"DeleteConnectorV2",
@@ -784,6 +823,23 @@
       ],
       "documentation":"<p>Disables Security Hub CSPM in your account only in the current Amazon Web Services Region. To disable Security Hub CSPM in all Regions, you must submit one request per Region where you have enabled Security Hub CSPM.</p> <p>You can't disable Security Hub CSPM in an account that is currently the Security Hub CSPM administrator.</p> <p>When you disable Security Hub CSPM, your existing findings and insights and any Security Hub CSPM configuration settings are deleted after 90 days and cannot be recovered. Any standards that were enabled are disabled, and your administrator and member account associations are removed.</p> <p>If you want to save your existing findings, you must export them before you disable Security Hub CSPM.</p>"
     },
+    "DisableSecurityHubFeatureV2":{
+      "name":"DisableSecurityHubFeatureV2",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/hubv2/feature/{FeatureName}"
+      },
+      "input":{"shape":"DisableSecurityHubFeatureV2Request"},
+      "output":{"shape":"DisableSecurityHubFeatureV2Response"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Disables an opt-in feature for the calling account in the current Amazon Web Services Region. The operation is idempotent. If the feature is already disabled, no changes are made. You cannot disable a feature that is managed by an organization policy.</p>"
+    },
     "DisableSecurityHubV2":{
       "name":"DisableSecurityHubV2",
       "http":{
@@ -798,7 +854,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p>Disable the service for the current Amazon Web Services Region or specified Amazon Web Services Region.</p>"
+      "documentation":"<p>Disable the service for the current Amazon Web Services Region or specified Amazon Web Services Region. Disabling the service also disables all opt-in features that are currently enabled in that Region.</p>"
     },
     "DisassociateFromAdministratorAccount":{
       "name":"DisassociateFromAdministratorAccount",
@@ -904,6 +960,23 @@
         {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Enables Security Hub CSPM for your account in the current Region or the Region you specify in the request.</p> <p>When you enable Security Hub CSPM, you grant to Security Hub CSPM the permissions necessary to gather findings from other services that are integrated with Security Hub CSPM.</p> <p>When you use the <code>EnableSecurityHub</code> operation to enable Security Hub CSPM, you also automatically enable the following standards:</p> <ul> <li> <p>Center for Internet Security (CIS) Amazon Web Services Foundations Benchmark v1.2.0</p> </li> <li> <p>Amazon Web Services Foundational Security Best Practices</p> </li> </ul> <p>Other standards are not automatically enabled. </p> <p>To opt out of automatically enabled standards, set <code>EnableDefaultStandards</code> to <code>false</code>.</p> <p>After you enable Security Hub CSPM, to enable a standard, use the <code>BatchEnableStandards</code> operation. To disable a standard, use the <code>BatchDisableStandards</code> operation.</p> <p>To learn more, see the <a href=\"https://docs.aws.amazon.com/securityhub/latest/userguide/securityhub-settingup.html\">setup information</a> in the <i>Security Hub CSPM User Guide</i>.</p>"
+    },
+    "EnableSecurityHubFeatureV2":{
+      "name":"EnableSecurityHubFeatureV2",
+      "http":{
+        "method":"POST",
+        "requestUri":"/hubv2/feature/{FeatureName}"
+      },
+      "input":{"shape":"EnableSecurityHubFeatureV2Request"},
+      "output":{"shape":"EnableSecurityHubFeatureV2Response"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Enables an opt-in feature for the calling account in the current Amazon Web Services Region. The service must be enabled before you can enable a feature. The operation is idempotent. If the feature is already enabled, no changes are made. You cannot enable a feature that is managed by an organization policy.</p>"
     },
     "EnableSecurityHubV2":{
       "name":"EnableSecurityHubV2",
@@ -1027,6 +1100,25 @@
         {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p> Returns the association between a configuration and a target account, organizational unit, or the root. The configuration can be a configuration policy or self-managed behavior. Only the Security Hub CSPM delegated administrator can invoke this operation from the home Region. </p>"
+    },
+    "GetConnector":{
+      "name":"GetConnector",
+      "http":{
+        "method":"GET",
+        "requestUri":"/connectors/{ConnectorId+}"
+      },
+      "input":{"shape":"GetConnectorRequest"},
+      "output":{"shape":"GetConnectorResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"InvalidAccessException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Retrieves details for a CSPM connector based on the connector ID.</p>"
     },
     "GetConnectorV2":{
       "name":"GetConnectorV2",
@@ -1447,6 +1539,25 @@
       ],
       "documentation":"<p> Provides information about the associations for your configuration policies and self-managed behavior. Only the Security Hub CSPM delegated administrator can invoke this operation from the home Region. </p>"
     },
+    "ListConnectors":{
+      "name":"ListConnectors",
+      "http":{
+        "method":"GET",
+        "requestUri":"/connectors"
+      },
+      "input":{"shape":"ListConnectorsRequest"},
+      "output":{"shape":"ListConnectorsResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"InvalidAccessException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Lists the CSPM connectors and their metadata for the calling account.</p>"
+    },
     "ListConnectorsV2":{
       "name":"ListConnectorsV2",
       "http":{
@@ -1747,6 +1858,25 @@
         {"shape":"ResourceConflictException"}
       ],
       "documentation":"<p> Updates a configuration policy. Only the Security Hub CSPM delegated administrator can invoke this operation from the home Region. </p>"
+    },
+    "UpdateConnector":{
+      "name":"UpdateConnector",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/connectors/{ConnectorId+}"
+      },
+      "input":{"shape":"UpdateConnectorRequest"},
+      "output":{"shape":"UpdateConnectorResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidAccessException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Updates a CSPM connector's configuration, such as the scope or regions for the connected cloud provider.</p>"
     },
     "UpdateConnectorV2":{
       "name":"UpdateConnectorV2",
@@ -2682,6 +2812,18 @@
         "AwsAccountName":{
           "shape":"StringFilterList",
           "documentation":"<p>The name of the Amazon Web Services account in which a finding was generated. </p> <p> Array Members: Minimum number of 1 item. Maximum number of 20 items. </p>"
+        },
+        "ResourceProvider":{
+          "shape":"StringFilterList",
+          "documentation":"<p>The cloud provider that the resource belongs to. Valid values are <code>AWS</code> and <code>Azure</code>.</p>"
+        },
+        "ResourceOwnerAccountId":{
+          "shape":"StringFilterList",
+          "documentation":"<p>The unique identifier of the account that owns the resource that the finding applies to, for example, Azure Subscription Id or Amazon Web Services Account Id</p>"
+        },
+        "ResourceOwnerOrgId":{
+          "shape":"StringFilterList",
+          "documentation":"<p>The unique identifier of the organization that owns the resource that the finding applies to, for example, Azure Tenant Id</p>"
         }
       },
       "documentation":"<p> The criteria that determine which findings a rule applies to. </p>"
@@ -15074,6 +15216,18 @@
         "ResourceApplicationArn":{
           "shape":"StringFilterList",
           "documentation":"<p> The ARN of the application that is related to a finding. </p>"
+        },
+        "ResourceOwnerAccountId":{
+          "shape":"StringFilterList",
+          "documentation":"<p>The unique identifier of the account that owns the resource that the finding applies to, for example, Azure Subscription Id or Amazon Web Services Account Id</p>"
+        },
+        "ResourceOwnerOrgId":{
+          "shape":"StringFilterList",
+          "documentation":"<p>The unique identifier of the organization that owns the resource that the finding applies to, for example, Azure Tenant Id</p>"
+        },
+        "ResourceProvider":{
+          "shape":"StringFilterList",
+          "documentation":"<p>The cloud provider that the resource belongs to. Valid values are <code>AWS</code> and <code>Azure</code>.</p>"
         }
       },
       "documentation":"<p>A collection of filters that are applied to all active findings aggregated by Security Hub CSPM.</p> <p>You can filter by up to ten finding attributes. For each attribute, you can provide up to 20 filter values.</p>"
@@ -16114,6 +16268,97 @@
       },
       "documentation":"<p>Information about the encryption configuration for X-Ray.</p>"
     },
+    "AzureDetail":{
+      "type":"structure",
+      "required":[
+        "AWSConfigConnectorArn",
+        "ScopeConfiguration",
+        "AzureRegions"
+      ],
+      "members":{
+        "AWSConfigConnectorArn":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The ARN of the AWS Config connector used to establish the connection to Azure.</p>"
+        },
+        "ScopeConfiguration":{
+          "shape":"AzureScopeConfiguration",
+          "documentation":"<p>The scope configuration that defines which Azure resources are monitored.</p>"
+        },
+        "AzureRegions":{
+          "shape":"AzureRegionList",
+          "documentation":"<p>The list of Azure regions being monitored.</p>"
+        }
+      },
+      "documentation":"<p>The detailed Azure configuration for a connector.</p>"
+    },
+    "AzureProviderConfiguration":{
+      "type":"structure",
+      "required":[
+        "AWSConfigConnectorArn",
+        "ScopeConfiguration",
+        "AzureRegions"
+      ],
+      "members":{
+        "AWSConfigConnectorArn":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The ARN of the AWS Config connector used to establish the connection to Azure.</p>"
+        },
+        "ScopeConfiguration":{
+          "shape":"AzureScopeConfiguration",
+          "documentation":"<p>The scope configuration that defines which Azure resources are monitored.</p>"
+        },
+        "AzureRegions":{
+          "shape":"AzureRegionList",
+          "documentation":"<p>The list of Azure regions to monitor.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for connecting to an Azure environment.</p>"
+    },
+    "AzureRegionList":{
+      "type":"list",
+      "member":{"shape":"NonEmptyString"},
+      "max":100,
+      "min":1
+    },
+    "AzureResourceDetails":{
+      "type":"structure",
+      "members":{},
+      "documentation":"<p>Details about an Azure resource that is related to a finding. This field is a JSON object that contains provider-specific resource details.</p>",
+      "document":true
+    },
+    "AzureScopeConfiguration":{
+      "type":"structure",
+      "required":["ScopeType"],
+      "members":{
+        "ScopeType":{
+          "shape":"ScopeType",
+          "documentation":"<p>The type of scope. Valid values are <code>tenant</code> and <code>subscription</code>.</p>"
+        },
+        "ScopeValues":{
+          "shape":"ScopeValueList",
+          "documentation":"<p>The list of scope values, such as subscription IDs, when the scope type is <code>subscription</code>.</p>"
+        }
+      },
+      "documentation":"<p>The scope configuration for an Azure connector, defining the tenant or subscription scope.</p>"
+    },
+    "AzureUpdateConfiguration":{
+      "type":"structure",
+      "required":[
+        "ScopeConfiguration",
+        "AzureRegions"
+      ],
+      "members":{
+        "ScopeConfiguration":{
+          "shape":"AzureScopeConfiguration",
+          "documentation":"<p>The updated scope configuration.</p>"
+        },
+        "AzureRegions":{
+          "shape":"AzureRegionList",
+          "documentation":"<p>The updated list of Azure regions to monitor.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for updating an Azure connector's scope and regions.</p>"
+    },
     "BatchDeleteAutomationRulesRequest":{
       "type":"structure",
       "required":["AutomationRulesArns"],
@@ -16667,6 +16912,13 @@
       "min":1,
       "pattern":"^[\\x21-\\x7E]{1,64}$"
     },
+    "CloudProviderName":{
+      "type":"string",
+      "enum":[
+        "Azure",
+        "AWS"
+      ]
+    },
     "CloudWatchLogsLogGroupArnConfigDetails":{
       "type":"structure",
       "members":{
@@ -16971,16 +17223,19 @@
       "type":"string",
       "enum":[
         "JIRA_CLOUD",
-        "SERVICENOW"
+        "SERVICENOW",
+        "AZURE"
       ]
     },
     "ConnectorStatus":{
       "type":"string",
       "enum":[
         "CONNECTED",
+        "DEGRADED",
         "FAILED_TO_CONNECT",
+        "PENDING_AUTHORIZATION",
         "PENDING_CONFIGURATION",
-        "PENDING_AUTHORIZATION"
+        "UNKNOWN"
       ]
     },
     "ConnectorSummary":{
@@ -17015,6 +17270,14 @@
         "CreatedAt":{
           "shape":"Timestamp",
           "documentation":"<p>ISO 8601 UTC timestamp for the time create the connectorV2.</p>"
+        },
+        "EnablementStatus":{
+          "shape":"EnablementStatus",
+          "documentation":"<p>The enablement status of the connector.</p>"
+        },
+        "EnablementStatusReason":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The reason for the current enablement status. Provides additional context when the connector is in a failed state.</p>"
         }
       },
       "documentation":"<p>A condensed overview of the connectorV2..</p>"
@@ -17330,6 +17593,61 @@
         }
       }
     },
+    "CreateConnectorRequest":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Provider"
+      ],
+      "members":{
+        "Name":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The name of the connector. Must be unique within the account.</p>"
+        },
+        "Description":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The description of the connector.</p>"
+        },
+        "Provider":{
+          "shape":"CspmProviderConfiguration",
+          "documentation":"<p>The configuration for the cloud provider to connect to. Currently supports Azure.</p>"
+        },
+        "Tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags to add to the connector resource.</p>"
+        },
+        "ClientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique identifier used to ensure idempotency of the request.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "CreateConnectorResponse":{
+      "type":"structure",
+      "required":[
+        "ConnectorArn",
+        "ConnectorId"
+      ],
+      "members":{
+        "ConnectorArn":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the connector.</p>"
+        },
+        "ConnectorId":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The unique identifier of the connector.</p>"
+        },
+        "ConnectorStatus":{
+          "shape":"CspmConnectorStatus",
+          "documentation":"<p>The connectivity status of the connector.</p>"
+        },
+        "EnablementStatus":{
+          "shape":"CspmEnablementStatus",
+          "documentation":"<p>The enablement status of the connector.</p>"
+        }
+      }
+    },
     "CreateConnectorV2Request":{
       "type":"structure",
       "required":[
@@ -17386,6 +17704,10 @@
         "ConnectorStatus":{
           "shape":"ConnectorStatus",
           "documentation":"<p>The current status of the connectorV2.</p>"
+        },
+        "EnablementStatus":{
+          "shape":"EnablementStatus",
+          "documentation":"<p>The enablement status of the connector after creation.</p>"
         }
       }
     },
@@ -17530,6 +17852,150 @@
       "type":"integer",
       "max":50,
       "min":1
+    },
+    "CspmConnectorProviderName":{
+      "type":"string",
+      "documentation":"<p>The name of the cloud provider for a CSPM connector.</p>",
+      "enum":["AZURE"]
+    },
+    "CspmConnectorStatus":{
+      "type":"string",
+      "documentation":"<p>The connectivity status of a CSPM connector.</p>",
+      "enum":[
+        "CONNECTED",
+        "DEGRADED",
+        "FAILED_TO_CONNECT",
+        "UNKNOWN"
+      ]
+    },
+    "CspmConnectorSummary":{
+      "type":"structure",
+      "members":{
+        "ConnectorArn":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the connector.</p>"
+        },
+        "ConnectorId":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The unique identifier of the connector.</p>"
+        },
+        "Name":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The name of the connector.</p>"
+        },
+        "Description":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The description of the connector.</p>"
+        },
+        "ProviderSummary":{
+          "shape":"CspmProviderSummary",
+          "documentation":"<p>A summary of the cloud provider configuration for the connector.</p>"
+        },
+        "CreatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The ISO 8601 UTC timestamp indicating when the connector was created.</p>"
+        },
+        "CreatedBy":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The service principal that created the connector.</p>"
+        },
+        "EnablementStatus":{
+          "shape":"CspmEnablementStatus",
+          "documentation":"<p>The enablement status of the connector.</p>"
+        }
+      },
+      "documentation":"<p>A summary of a CSPM connector.</p>"
+    },
+    "CspmConnectorSummaryList":{
+      "type":"list",
+      "member":{"shape":"CspmConnectorSummary"}
+    },
+    "CspmEnablementStatus":{
+      "type":"string",
+      "documentation":"<p>The enablement status of a CSPM connector. Indicates the lifecycle state of the connector resource.</p>",
+      "enum":[
+        "ENABLED",
+        "PENDING_ENABLEMENT",
+        "PENDING_UPDATE",
+        "PENDING_DELETION"
+      ]
+    },
+    "CspmHealthCheck":{
+      "type":"structure",
+      "required":[
+        "ConnectorStatus",
+        "LastCheckedAt"
+      ],
+      "members":{
+        "ConnectorStatus":{
+          "shape":"CspmConnectorStatus",
+          "documentation":"<p>The connectivity status of the connector.</p>"
+        },
+        "Message":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>A message describing the reason for the current connector status.</p>"
+        },
+        "LastCheckedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The ISO 8601 UTC timestamp indicating when the health status was last checked.</p>"
+        },
+        "Issues":{
+          "shape":"HealthIssueList",
+          "documentation":"<p>A list of health issues associated with the connector.</p>"
+        }
+      },
+      "documentation":"<p>Information about the operational status and health of a CSPM connector.</p>"
+    },
+    "CspmProviderConfiguration":{
+      "type":"structure",
+      "members":{
+        "Azure":{
+          "shape":"AzureProviderConfiguration",
+          "documentation":"<p>The Azure provider configuration.</p>"
+        }
+      },
+      "documentation":"<p>The cloud provider configuration for creating a connector. This is a union type that currently supports Azure.</p>",
+      "union":true
+    },
+    "CspmProviderDetail":{
+      "type":"structure",
+      "members":{
+        "Azure":{
+          "shape":"AzureDetail",
+          "documentation":"<p>The Azure provider detail.</p>"
+        }
+      },
+      "documentation":"<p>The detailed cloud provider configuration for a connector. This is a union type that currently supports Azure.</p>",
+      "union":true
+    },
+    "CspmProviderSummary":{
+      "type":"structure",
+      "members":{
+        "ProviderName":{
+          "shape":"CspmConnectorProviderName",
+          "documentation":"<p>The name of the cloud provider.</p>"
+        },
+        "ConnectorStatus":{
+          "shape":"CspmConnectorStatus",
+          "documentation":"<p>The connectivity status of the connector.</p>"
+        },
+        "ProviderConfiguration":{
+          "shape":"CspmProviderDetail",
+          "documentation":"<p>The provider configuration details.</p>"
+        }
+      },
+      "documentation":"<p>A summary of the cloud provider configuration for a connector.</p>"
+    },
+    "CspmProviderUpdateConfiguration":{
+      "type":"structure",
+      "members":{
+        "Azure":{
+          "shape":"AzureUpdateConfiguration",
+          "documentation":"<p>The Azure update configuration.</p>"
+        }
+      },
+      "documentation":"<p>The cloud provider configuration for updating a connector. This is a union type that currently supports Azure.</p>",
+      "union":true
     },
     "CustomDataIdentifiersDetections":{
       "type":"structure",
@@ -17759,6 +18225,27 @@
       "type":"structure",
       "members":{}
     },
+    "DeleteConnectorRequest":{
+      "type":"structure",
+      "required":["ConnectorId"],
+      "members":{
+        "ConnectorId":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The unique identifier of the connector to delete.</p>",
+          "location":"uri",
+          "locationName":"ConnectorId"
+        }
+      }
+    },
+    "DeleteConnectorResponse":{
+      "type":"structure",
+      "members":{
+        "EnablementStatus":{
+          "shape":"CspmEnablementStatus",
+          "documentation":"<p>The enablement status of the connector after the delete request.</p>"
+        }
+      }
+    },
     "DeleteConnectorV2Request":{
       "type":"structure",
       "required":["ConnectorId"],
@@ -17773,7 +18260,12 @@
     },
     "DeleteConnectorV2Response":{
       "type":"structure",
-      "members":{}
+      "members":{
+        "EnablementStatus":{
+          "shape":"EnablementStatus",
+          "documentation":"<p>The enablement status of the connector after deletion.</p>"
+        }
+      }
     },
     "DeleteFindingAggregatorRequest":{
       "type":"structure",
@@ -18016,8 +18508,12 @@
           "documentation":"<p>The ARN of the service resource.</p>"
         },
         "SubscribedAt":{
-          "shape":"NonEmptyString",
+          "shape":"IsoString",
           "documentation":"<p>The date and time when the service was enabled in the account.</p>"
+        },
+        "Features":{
+          "shape":"Features",
+          "documentation":"<p>A map of opt-in features and their current status and metadata for the account in the current Region.</p>"
         }
       }
     },
@@ -18072,6 +18568,12 @@
           "documentation":"<p>The maximum number of standards to return.</p>",
           "location":"querystring",
           "locationName":"MaxResults"
+        },
+        "Providers":{
+          "shape":"StandardsProviders",
+          "documentation":"<p>A list of cloud providers to filter the standards by. For example, specify <code>Azure</code> to return only standards that evaluate Azure resources.</p>",
+          "location":"querystring",
+          "locationName":"Providers"
         }
       }
     },
@@ -18129,6 +18631,22 @@
       }
     },
     "DisableOrganizationAdminAccountResponse":{
+      "type":"structure",
+      "members":{}
+    },
+    "DisableSecurityHubFeatureV2Request":{
+      "type":"structure",
+      "required":["FeatureName"],
+      "members":{
+        "FeatureName":{
+          "shape":"FeatureName",
+          "documentation":"<p>The name of the feature to disable.</p>",
+          "location":"uri",
+          "locationName":"FeatureName"
+        }
+      }
+    },
+    "DisableSecurityHubFeatureV2Response":{
       "type":"structure",
       "members":{}
     },
@@ -18265,6 +18783,22 @@
         }
       }
     },
+    "EnableSecurityHubFeatureV2Request":{
+      "type":"structure",
+      "required":["FeatureName"],
+      "members":{
+        "FeatureName":{
+          "shape":"FeatureName",
+          "documentation":"<p>The name of the feature to enable.</p>",
+          "location":"uri",
+          "locationName":"FeatureName"
+        }
+      }
+    },
+    "EnableSecurityHubFeatureV2Response":{
+      "type":"structure",
+      "members":{}
+    },
     "EnableSecurityHubRequest":{
       "type":"structure",
       "members":{
@@ -18312,6 +18846,18 @@
       "type":"list",
       "member":{"shape":"NonEmptyString"}
     },
+    "EnablementStatus":{
+      "type":"string",
+      "enum":[
+        "ENABLED",
+        "PENDING_ENABLEMENT",
+        "FAILED_TO_ENABLE",
+        "PENDING_UPDATE",
+        "FAILED_TO_UPDATE",
+        "PENDING_DELETION",
+        "FAILED_TO_DELETE"
+      ]
+    },
     "EnumConfigurationOptions":{
       "type":"structure",
       "members":{
@@ -18353,6 +18899,43 @@
         }
       },
       "documentation":"<p>Defines the settings and parameters required for integrating external security tools and services.</p>"
+    },
+    "FeatureDetail":{
+      "type":"structure",
+      "members":{
+        "FeatureStatus":{
+          "shape":"FeatureStatus",
+          "documentation":"<p>The current enablement status of the feature. Valid values: <code>ENABLED</code> | <code>DISABLED</code>.</p>"
+        },
+        "UpdatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time when the feature status was last updated.</p>"
+        }
+      },
+      "documentation":"<p>Contains the status and metadata for an opt-in feature.</p>"
+    },
+    "FeatureName":{
+      "type":"string",
+      "documentation":"<p>The name of an opt-in feature. Valid values: <code>NETWORK_SCANNING</code>.</p>",
+      "enum":["NETWORK_SCANNING"]
+    },
+    "FeatureNameKey":{
+      "type":"string",
+      "documentation":"<p>The name of a feature, used as a key in the features map.</p>"
+    },
+    "FeatureStatus":{
+      "type":"string",
+      "documentation":"<p>The enablement status of a feature. Valid values: <code>ENABLED</code> | <code>DISABLED</code>.</p>",
+      "enum":[
+        "ENABLED",
+        "DISABLED"
+      ]
+    },
+    "Features":{
+      "type":"map",
+      "key":{"shape":"FeatureNameKey"},
+      "value":{"shape":"FeatureDetail"},
+      "documentation":"<p>A map of feature names to their current detail, including enablement status and metadata.</p>"
     },
     "FieldMap":{
       "type":"map",
@@ -18571,7 +19154,11 @@
         "finding_control_id",
         "finding_class_name",
         "finding_provider",
-        "finding_activity_name"
+        "finding_activity_name",
+        "resource_cloud_providers",
+        "resource_regions",
+        "resource_owner_ids",
+        "resource_owner_organization_ids"
       ]
     },
     "FindingsTrendsStringFilter":{
@@ -18579,7 +19166,7 @@
       "members":{
         "FieldName":{
           "shape":"FindingsTrendsStringField",
-          "documentation":"<p>The name of the findings field to filter on.</p>"
+          "documentation":"<p>The name of the findings field to filter on. You can specify one of the following fields.</p> <ul> <li> <p> <code>account_id</code> – The Amazon Web Services account ID associated with the finding.</p> </li> <li> <p> <code>region</code> – The Amazon Web Services Region associated with the finding.</p> </li> <li> <p> <code>finding_types</code> – The finding types associated with the finding.</p> </li> <li> <p> <code>finding_status</code> – The status of the finding.</p> </li> <li> <p> <code>finding_cve_ids</code> – The Common Vulnerabilities and Exposures (CVE) identifiers associated with the finding.</p> </li> <li> <p> <code>finding_compliance_status</code> – The compliance status of the finding.</p> </li> <li> <p> <code>finding_control_id</code> – The identifier of the security control associated with the finding.</p> </li> <li> <p> <code>finding_class_name</code> – The finding class, such as <code>Compliance Finding</code>.</p> </li> <li> <p> <code>finding_provider</code> – The name of the product that generated the finding.</p> </li> <li> <p> <code>finding_activity_name</code> – The activity name associated with the finding.</p> </li> <li> <p> <code>resource_cloud_providers</code> – The cloud providers of the resources that the finding is associated with. Valid values are <code>AWS</code> and <code>Azure</code>.</p> </li> <li> <p> <code>resource_regions</code> – The Regions of the associated resources. For an Amazon Web Services resource, this is the Amazon Web Services Region. For an Azure resource, this is the Azure Region, such as <code>eastus</code>.</p> </li> <li> <p> <code>resource_owner_ids</code> – The identifiers of the accounts that own the associated resources. For an Amazon Web Services resource, this is the Amazon Web Services account ID. For an Azure resource, this is the Azure subscription ID.</p> </li> <li> <p> <code>resource_owner_organization_ids</code> – The identifiers of the organizations that own the associated resources. For an Amazon Web Services resource, this is the Amazon Web Services organization ID. For an Azure resource, this is the Azure tenant ID.</p> </li> </ul>"
         },
         "Filter":{"shape":"StringFilter"}
       },
@@ -18901,6 +19488,71 @@
         }
       }
     },
+    "GetConnectorRequest":{
+      "type":"structure",
+      "required":["ConnectorId"],
+      "members":{
+        "ConnectorId":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The unique identifier of the connector to retrieve.</p>",
+          "location":"uri",
+          "locationName":"ConnectorId"
+        }
+      }
+    },
+    "GetConnectorResponse":{
+      "type":"structure",
+      "required":[
+        "ConnectorId",
+        "Name",
+        "CreatedAt",
+        "LastUpdatedAt",
+        "Health",
+        "ProviderDetail"
+      ],
+      "members":{
+        "ConnectorArn":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the connector.</p>"
+        },
+        "ConnectorId":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The unique identifier of the connector.</p>"
+        },
+        "Name":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The name of the connector.</p>"
+        },
+        "Description":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The description of the connector.</p>"
+        },
+        "CreatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The ISO 8601 UTC timestamp indicating when the connector was created.</p>"
+        },
+        "LastUpdatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The ISO 8601 UTC timestamp indicating when the connector was last updated.</p>"
+        },
+        "Health":{
+          "shape":"CspmHealthCheck",
+          "documentation":"<p>The health status of the connector, including connectivity status and last check time.</p>"
+        },
+        "ProviderDetail":{
+          "shape":"CspmProviderDetail",
+          "documentation":"<p>The cloud provider configuration details for the connector.</p>"
+        },
+        "CreatedBy":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The service principal that created the connector.</p>"
+        },
+        "EnablementStatus":{
+          "shape":"CspmEnablementStatus",
+          "documentation":"<p>The enablement status of the connector.</p>"
+        }
+      }
+    },
     "GetConnectorV2Request":{
       "type":"structure",
       "required":["ConnectorId"],
@@ -18959,6 +19611,14 @@
         "ProviderDetail":{
           "shape":"ProviderDetail",
           "documentation":"<p>The third-party provider detail for a service configuration.</p>"
+        },
+        "EnablementStatus":{
+          "shape":"EnablementStatus",
+          "documentation":"<p>The enablement status of the connector.</p>"
+        },
+        "EnablementStatusReason":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The reason for the current enablement status. Provides additional context when the connector is in a failed state.</p>"
         }
       }
     },
@@ -18976,6 +19636,10 @@
         "MaxResults":{
           "shape":"MaxResults",
           "documentation":"<p>The maximum number of results to return in the response.</p>"
+        },
+        "Providers":{
+          "shape":"StandardsProviders",
+          "documentation":"<p>A list of cloud providers to filter the enabled standards by. For example, specify <code>Azure</code> to return only enabled standards that evaluate Azure resources.</p>"
         }
       }
     },
@@ -19534,6 +20198,13 @@
         "metadata.product.name",
         "metadata.product.uid",
         "resources.type",
+        "resources.cloud_partition",
+        "resources.name",
+        "resources.owner.account.uid",
+        "resources.owner.org.uid",
+        "resources.owner.account.name",
+        "resources.provider",
+        "resources.region",
         "resources.uid",
         "severity",
         "status",
@@ -19620,9 +20291,48 @@
         "LastCheckedAt":{
           "shape":"Timestamp",
           "documentation":"<p>ISO 8601 UTC timestamp for the time check the health status of the connectorV2.</p>"
+        },
+        "Issues":{
+          "shape":"HealthIssueList",
+          "documentation":"<p>A list of health issues associated with the connector, including error codes and messages.</p>"
         }
       },
       "documentation":"<p>Information about the operational status and health of a connectorV2.</p>"
+    },
+    "HealthIssue":{
+      "type":"structure",
+      "required":[
+        "Code",
+        "Message"
+      ],
+      "members":{
+        "Code":{
+          "shape":"HealthIssueCode",
+          "documentation":"<p>The error code that identifies the type of health issue.</p>"
+        },
+        "Message":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>A human-readable message that describes the health issue.</p>"
+        }
+      },
+      "documentation":"<p>Represents a specific health issue detected for a connector.</p>"
+    },
+    "HealthIssueCode":{
+      "type":"string",
+      "documentation":"<p>The error code for a connector health issue.</p>",
+      "enum":[
+        "AUTHENTICATION_FAILURE",
+        "STREAM_AUTHORIZATION_FAILURE",
+        "DISCOVERY_FAILURE",
+        "STREAM_LIMIT_EXCEEDED",
+        "STREAM_DISCONNECTED",
+        "RECORDING_FAILURE",
+        "NO_HEALTH_DATA"
+      ]
+    },
+    "HealthIssueList":{
+      "type":"list",
+      "member":{"shape":"HealthIssue"}
     },
     "IcmpTypeCode":{
       "type":"structure",
@@ -19983,6 +20693,7 @@
       "type":"list",
       "member":{"shape":"Ipv6CidrBlockAssociation"}
     },
+    "IsoString":{"type":"string"},
     "JiraCloudDetail":{
       "type":"structure",
       "members":{
@@ -20203,6 +20914,55 @@
         }
       }
     },
+    "ListConnectorsRequest":{
+      "type":"structure",
+      "members":{
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The pagination token to request the next page of results.</p>",
+          "location":"querystring",
+          "locationName":"NextToken"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return.</p>",
+          "location":"querystring",
+          "locationName":"MaxResults"
+        },
+        "ProviderName":{
+          "shape":"CspmConnectorProviderName",
+          "documentation":"<p>The name of the cloud provider to filter connectors by.</p>",
+          "location":"querystring",
+          "locationName":"ProviderName"
+        },
+        "ConnectorStatus":{
+          "shape":"CspmConnectorStatus",
+          "documentation":"<p>The connectivity status to filter connectors by.</p>",
+          "location":"querystring",
+          "locationName":"ConnectorStatus"
+        },
+        "EnablementStatus":{
+          "shape":"CspmEnablementStatus",
+          "documentation":"<p>The enablement status to filter connectors by.</p>",
+          "location":"querystring",
+          "locationName":"EnablementStatus"
+        }
+      }
+    },
+    "ListConnectorsResponse":{
+      "type":"structure",
+      "required":["Connectors"],
+      "members":{
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The pagination token to use to request the next page of results. If there are no additional results, this value is null.</p>"
+        },
+        "Connectors":{
+          "shape":"CspmConnectorSummaryList",
+          "documentation":"<p>An array of connector summaries.</p>"
+        }
+      }
+    },
     "ListConnectorsV2Request":{
       "type":"structure",
       "members":{
@@ -20229,6 +20989,12 @@
           "documentation":"<p>The status for the connectorV2.</p>",
           "location":"querystring",
           "locationName":"ConnectorStatus"
+        },
+        "EnablementStatus":{
+          "shape":"EnablementStatus",
+          "documentation":"<p>The enablement status to filter connectors by.</p>",
+          "location":"querystring",
+          "locationName":"EnablementStatus"
         }
       }
     },
@@ -20432,6 +21198,12 @@
           "documentation":"<p> An optional parameter that limits the total results of the API response to the specified number. If this parameter isn't provided in the request, the results include the first 25 security controls that apply to the specified standard. The results also include a <code>NextToken</code> parameter that you can use in a subsequent API call to get the next 25 controls. This repeats until all controls for the standard are returned. </p>",
           "location":"querystring",
           "locationName":"MaxResults"
+        },
+        "Providers":{
+          "shape":"SecurityControlsProviders",
+          "documentation":"<p>A list of cloud providers to filter the security control definitions by. For example, specify <code>Azure</code> to return only controls that evaluate Azure resources.</p>",
+          "location":"querystring",
+          "locationName":"Providers"
         }
       }
     },
@@ -21216,6 +21988,11 @@
         "remediation.desc",
         "remediation.references",
         "resources.cloud_partition",
+        "resources.name",
+        "resources.owner.account.uid",
+        "resources.owner.org.uid",
+        "resources.owner.account.name",
+        "resources.provider",
         "resources.region",
         "resources.type",
         "resources.uid",
@@ -21448,7 +22225,10 @@
       "enum":[
         "aws",
         "aws-cn",
-        "aws-us-gov"
+        "aws-us-gov",
+        "aws-us-iso",
+        "aws-us-iso-b",
+        "AzureCloud"
       ]
     },
     "PatchSummary":{
@@ -21728,6 +22508,10 @@
         "ServiceNow":{
           "shape":"ServiceNowProviderConfiguration",
           "documentation":"<p>The configuration settings required to establish an integration with ServiceNow ITSM.</p>"
+        },
+        "Azure":{
+          "shape":"AzureProviderConfiguration",
+          "documentation":"<p>The configuration settings required to establish a CSPM integration with Microsoft Azure.</p>"
         }
       },
       "documentation":"<p>The initial configuration settings required to establish an integration between Security Hub and third-party provider.</p>",
@@ -21743,6 +22527,10 @@
         "ServiceNow":{
           "shape":"ServiceNowDetail",
           "documentation":"<p>Details about a ServiceNow ITSM integration.</p>"
+        },
+        "Azure":{
+          "shape":"AzureDetail",
+          "documentation":"<p>Details about a Microsoft Azure CSPM integration.</p>"
         }
       },
       "documentation":"<p>The third-party provider detail for a service configuration.</p>",
@@ -21758,7 +22546,8 @@
         "ConnectorStatus":{
           "shape":"ConnectorStatus",
           "documentation":"<p>The status for the connectorV2.</p>"
-        }
+        },
+        "ProviderConfiguration":{"shape":"ProviderDetail"}
       },
       "documentation":"<p>The connectorV2 third-party provider configuration summary.</p>"
     },
@@ -21772,6 +22561,10 @@
         "ServiceNow":{
           "shape":"ServiceNowUpdateConfiguration",
           "documentation":"<p>The parameters required to update the configuration for a ServiceNow integration.</p>"
+        },
+        "Azure":{
+          "shape":"AzureUpdateConfiguration",
+          "documentation":"<p>The parameters required to update the configuration for a Microsoft Azure CSPM integration.</p>"
         }
       },
       "documentation":"<p>The parameters required to update the configuration of an integration provider.</p>",
@@ -21981,6 +22774,14 @@
           "shape":"NonEmptyString",
           "documentation":"<p>The canonical Amazon Web Services external Region name where this resource is located.</p> <p>Length Constraints: Minimum length of 1. Maximum length of 16.</p>"
         },
+        "Provider":{
+          "shape":"CloudProviderName",
+          "documentation":"<p>The cloud provider that the resource belongs to. Valid values are <code>AWS</code> and <code>Azure</code>.</p>"
+        },
+        "Owner":{
+          "shape":"ResourceOwner",
+          "documentation":"<p>Information about the account and organization that own the resource.</p>"
+        },
         "ResourceRole":{
           "shape":"NonEmptyString",
           "documentation":"<p>Identifies the role of the resource in the finding. A resource is either the actor or target of the finding activity,</p>"
@@ -22022,6 +22823,7 @@
         "AI/ML",
         "Identity",
         "Network",
+        "Messaging",
         "Other"
       ]
     },
@@ -22430,6 +23232,10 @@
         "CodeRepository":{
           "shape":"CodeRepositoryDetails",
           "documentation":"<p> Details about an external code repository with which you can connect your Amazon Web Services resources. The connection is established through Amazon Inspector. </p>"
+        },
+        "AzureResource":{
+          "shape":"AzureResourceDetails",
+          "documentation":"<p>Details about an Azure resource that is related to a finding.</p>"
         }
       },
       "documentation":"<p>Additional details about a resource related to a finding.</p> <p>To provide the details, use the object that corresponds to the resource type. For example, if the resource type is <code>AwsEc2Instance</code>, then you use the <code>AwsEc2Instance</code> object to provide the details.</p> <p>If the type-specific object does not contain all of the fields you want to populate, then you use the <code>Other</code> object to populate those additional fields.</p> <p>You also use the <code>Other</code> object to populate the details when the selected type does not have a corresponding object.</p>"
@@ -22469,7 +23275,13 @@
       "type":"string",
       "enum":[
         "AccountId",
+        "AccountName",
         "Region",
+        "ResourceProvider",
+        "ResourceOwnerAccountId",
+        "ResourceOwnerOrgId",
+        "ResourceCloudPartition",
+        "ResourceRegion",
         "ResourceCategory",
         "ResourceType",
         "ResourceName",
@@ -22519,12 +23331,47 @@
       "error":{"httpStatusCode":404},
       "exception":true
     },
+    "ResourceOwner":{
+      "type":"structure",
+      "members":{
+        "Account":{
+          "shape":"ResourceOwnerAccount",
+          "documentation":"<p>Information about the account that owns the resource, for example, an Azure Subscription or Amazon Web Services Account.</p>"
+        },
+        "Org":{
+          "shape":"ResourceOwnerOrg",
+          "documentation":"<p>Information about the organization that owns the resource, for example, an Azure Tenant.</p>"
+        }
+      },
+      "documentation":"<p>Information about the owner of a resource, including the account and organization that the resource belongs to.</p>"
+    },
+    "ResourceOwnerAccount":{
+      "type":"structure",
+      "members":{
+        "Id":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The unique identifier of the account that owns the resource, for example, Azure Subscription Id or Amazon Web Services Account Id.</p>"
+        }
+      },
+      "documentation":"<p>Information about the account that owns a resource, for example, an Azure Subscription or Amazon Web Services Account.</p>"
+    },
+    "ResourceOwnerOrg":{
+      "type":"structure",
+      "members":{
+        "Id":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The unique identifier of the organization that owns the resource, for example, Azure Tenant Id.</p>"
+        }
+      },
+      "documentation":"<p>Information about the organization that owns a resource, for example, an Azure Tenant.</p>"
+    },
     "ResourceResult":{
       "type":"structure",
       "required":[
         "ResourceId",
         "AccountId",
         "Region",
+        "ResourceType",
         "ResourceDetailCaptureTimeDt",
         "ResourceConfig"
       ],
@@ -22539,11 +23386,35 @@
         },
         "AccountId":{
           "shape":"NonEmptyString",
-          "documentation":"<p>The Amazon Web Services account that owns the resource.</p>"
+          "documentation":"<p>The Amazon Web Services account that recorded the resource data in Security Hub.</p>"
+        },
+        "AccountName":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The name of the Amazon Web Services account that's associated with the resource.</p>"
         },
         "Region":{
           "shape":"NonEmptyString",
-          "documentation":"<p>The Amazon Web Services Region where the resource is located.</p>"
+          "documentation":"<p>The Amazon Web Services Region that recorded the resource data in Security Hub.</p>"
+        },
+        "ResourceProvider":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The cloud provider where the resource exists. Valid values are <code>AWS</code> and <code>Azure</code>. This field is always included.</p>"
+        },
+        "ResourceOwnerAccountId":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The identifier of the cloud account that owns the resource. For Amazon Web Services resources, this is the Amazon Web Services account ID. For Azure resources, this is the Azure subscription ID.</p>"
+        },
+        "ResourceOwnerOrgId":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The identifier of the cloud organization that owns the resource. For Amazon Web Services resources, this is the Organizations ID. For Azure resources, this is the Azure tenant ID.</p>"
+        },
+        "ResourceCloudPartition":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The cloud partition where the resource exists. For Amazon Web Services, valid values include <code>aws</code>, <code>aws-cn</code>, and <code>aws-us-gov</code>. This field isn't returned for cloud providers that don't use partitions.</p>"
+        },
+        "ResourceRegion":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The native cloud region where the resource is located. For Amazon Web Services, this is an Amazon Web Services Region (for example, <code>us-east-1</code>). For Azure resources, this is the Azure region (for example, <code>westus2</code>). This field is always included.</p>"
         },
         "ResourceCategory":{
           "shape":"ResourceCategory",
@@ -22789,7 +23660,13 @@
         "ResourceGuid",
         "ResourceId",
         "AccountId",
+        "AccountName",
         "Region",
+        "ResourceProvider",
+        "ResourceOwnerAccountId",
+        "ResourceOwnerOrgId",
+        "ResourceCloudPartition",
+        "ResourceRegion",
         "ResourceCategory",
         "ResourceType",
         "ResourceName",
@@ -22876,7 +23753,11 @@
         "account_id",
         "region",
         "resource_type",
-        "resource_category"
+        "resource_category",
+        "resource_cloud_provider",
+        "resource_region",
+        "resource_owner_id",
+        "resource_owner_organization_id"
       ]
     },
     "ResourcesTrendsStringFilter":{
@@ -22884,7 +23765,7 @@
       "members":{
         "FieldName":{
           "shape":"ResourcesTrendsStringField",
-          "documentation":"<p>The name of the resources field to filter on, such as resourceType, accountId, or region.</p>"
+          "documentation":"<p>The name of the resources field to filter on. You can specify one of the following fields.</p> <ul> <li> <p> <code>account_id</code> – The Amazon Web Services account ID that owns the resource.</p> </li> <li> <p> <code>region</code> – The Amazon Web Services Region of the resource.</p> </li> <li> <p> <code>resource_type</code> – The type of the resource.</p> </li> <li> <p> <code>resource_category</code> – The category of the resource.</p> </li> <li> <p> <code>resource_cloud_provider</code> – The cloud provider of the resource. Valid values are <code>AWS</code> and <code>Azure</code>.</p> </li> <li> <p> <code>resource_region</code> – The Region of the resource. For an Amazon Web Services resource, this is the Amazon Web Services Region. For an Azure resource, this is the Azure Region, such as <code>eastus</code>.</p> </li> <li> <p> <code>resource_owner_id</code> – The identifier of the account that owns the resource. For an Amazon Web Services resource, this is the Amazon Web Services account ID. For an Azure resource, this is the Azure subscription ID.</p> </li> <li> <p> <code>resource_owner_organization_id</code> – The identifier of the organization that owns the resource. For an Amazon Web Services resource, this is the Amazon Web Services organization ID. For an Azure resource, this is the Azure tenant ID.</p> </li> </ul>"
         },
         "Filter":{"shape":"StringFilter"}
       },
@@ -23363,6 +24244,20 @@
         "DISABLED"
       ]
     },
+    "ScopeType":{
+      "type":"string",
+      "documentation":"<p>The type of scope for an Azure connector. Valid values are <code>TENANT</code> (monitor all subscriptions in the tenant) and <code>SUBSCRIPTION</code> (monitor specific subscriptions).</p>",
+      "enum":[
+        "TENANT",
+        "SUBSCRIPTION"
+      ]
+    },
+    "ScopeValueList":{
+      "type":"list",
+      "member":{"shape":"NonEmptyString"},
+      "max":100,
+      "min":0
+    },
     "SecurityControl":{
       "type":"structure",
       "required":[
@@ -23414,6 +24309,10 @@
         "LastUpdateReason":{
           "shape":"AlphaNumericNonEmptyString",
           "documentation":"<p> The most recent reason for updating the customizable properties of a security control. This differs from the <code>UpdateReason</code> field of the <a href=\"https://docs.aws.amazon.com/securityhub/1.0/APIReference/API_BatchUpdateStandardsControlAssociations.html\"> <code>BatchUpdateStandardsControlAssociations</code> </a> API, which tracks the reason for updating the enablement status of a control. This field accepts alphanumeric characters in addition to white spaces, dashes, and underscores. </p>"
+        },
+        "Provider":{
+          "shape":"SecurityControlsProvider",
+          "documentation":"<p>The cloud provider whose resources the security control evaluates. For example, <code>AWS</code> or <code>Azure</code>.</p>"
         }
       },
       "documentation":"<p> A security control in Security Hub CSPM describes a security best practice related to a specific resource. </p>"
@@ -23478,6 +24377,10 @@
         "ParameterDefinitions":{
           "shape":"ParameterDefinitions",
           "documentation":"<p> An object that provides a security control parameter name, description, and the options for customizing it. This object is excluded for a control that doesn't support custom parameters. </p>"
+        },
+        "Provider":{
+          "shape":"SecurityControlsProvider",
+          "documentation":"<p>The cloud provider whose resources the security control evaluates. For example, <code>AWS</code> or <code>Azure</code>.</p>"
         }
       },
       "documentation":"<p> Provides metadata for a security control, including its unique standard-agnostic identifier, title, description, severity, availability in Amazon Web Services Regions, and a link to remediation steps. </p>"
@@ -23529,6 +24432,17 @@
         }
       },
       "documentation":"<p> An object that defines which security controls are enabled in an Security Hub CSPM configuration policy. The enablement status of a control is aligned across all of the enabled standards in an account. </p>"
+    },
+    "SecurityControlsProvider":{
+      "type":"string",
+      "enum":[
+        "AWS",
+        "Azure"
+      ]
+    },
+    "SecurityControlsProviders":{
+      "type":"list",
+      "member":{"shape":"SecurityControlsProvider"}
     },
     "SecurityGroups":{
       "type":"list",
@@ -23967,6 +24881,10 @@
           "shape":"Boolean",
           "documentation":"<p>Whether the standard is enabled by default. When Security Hub CSPM is enabled from the console, if a standard is enabled by default, the check box for that standard is selected by default.</p> <p>When Security Hub CSPM is enabled using the <code>EnableSecurityHub</code> API operation, the standard is enabled by default unless <code>EnableDefaultStandards</code> is set to <code>false</code>.</p>"
         },
+        "Provider":{
+          "shape":"StandardsProvider",
+          "documentation":"<p>The cloud provider whose resources the standard evaluates. For example, <code>AWS</code> or <code>Azure</code>.</p>"
+        },
         "StandardsManagedBy":{
           "shape":"StandardsManagedBy",
           "documentation":"<p>Provides details about the management of a standard. </p>"
@@ -24219,6 +25137,17 @@
       },
       "documentation":"<p>Provides details about the management of a security standard.</p>"
     },
+    "StandardsProvider":{
+      "type":"string",
+      "enum":[
+        "AWS",
+        "Azure"
+      ]
+    },
+    "StandardsProviders":{
+      "type":"list",
+      "member":{"shape":"StandardsProvider"}
+    },
     "StandardsStatus":{
       "type":"string",
       "enum":[
@@ -24272,6 +25201,10 @@
         "StandardsStatusReason":{
           "shape":"StandardsStatusReason",
           "documentation":"<p>The reason for the current status.</p>"
+        },
+        "Provider":{
+          "shape":"StandardsProvider",
+          "documentation":"<p>The cloud provider whose resources the standard evaluates. For example, <code>AWS</code> or <code>Azure</code>.</p>"
         }
       },
       "documentation":"<p>A resource that represents your subscription to a supported standard.</p>"
@@ -24429,6 +25362,7 @@
       "enum":[
         "NO_AVAILABLE_CONFIGURATION_RECORDER",
         "MAXIMUM_NUMBER_OF_CONFIG_RULES_EXCEEDED",
+        "NO_AVAILABLE_MULTICLOUD_CONNECTOR",
         "INTERNAL_ERROR"
       ]
     },
@@ -25127,6 +26061,39 @@
         }
       }
     },
+    "UpdateConnectorRequest":{
+      "type":"structure",
+      "required":["ConnectorId"],
+      "members":{
+        "ConnectorId":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The unique identifier of the connector to update.</p>",
+          "location":"uri",
+          "locationName":"ConnectorId"
+        },
+        "Description":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The updated description of the connector.</p>"
+        },
+        "Provider":{
+          "shape":"CspmProviderUpdateConfiguration",
+          "documentation":"<p>The updated cloud provider configuration for the connector.</p>"
+        }
+      }
+    },
+    "UpdateConnectorResponse":{
+      "type":"structure",
+      "members":{
+        "ConnectorStatus":{
+          "shape":"CspmConnectorStatus",
+          "documentation":"<p>The connectivity status of the connector after the update.</p>"
+        },
+        "EnablementStatus":{
+          "shape":"CspmEnablementStatus",
+          "documentation":"<p>The enablement status of the connector after the update.</p>"
+        }
+      }
+    },
     "UpdateConnectorV2Request":{
       "type":"structure",
       "required":["ConnectorId"],
@@ -25149,7 +26116,16 @@
     },
     "UpdateConnectorV2Response":{
       "type":"structure",
-      "members":{}
+      "members":{
+        "ConnectorStatus":{
+          "shape":"ConnectorStatus",
+          "documentation":"<p>The status of the connector after the update.</p>"
+        },
+        "EnablementStatus":{
+          "shape":"EnablementStatus",
+          "documentation":"<p>The enablement status of the connector after the update.</p>"
+        }
+      }
     },
     "UpdateFindingAggregatorRequest":{
       "type":"structure",

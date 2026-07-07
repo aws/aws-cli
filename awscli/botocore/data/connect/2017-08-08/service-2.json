@@ -625,6 +625,24 @@
       ],
       "documentation":"<p>Creates an attached file for a completed voice contact by copying a recording from a source S3 URI into Connect Customer managed storage. Use this API to attach voice recordings to contacts for downstream processing such as conversational analytics.</p> <important> <p>The <code>AssociatedResourceArn</code> must be the ARN of a completed voice contact, <code>FileUseCaseType</code> must be set to <code>VOICE_RECORDING</code>, and <code>FileSourceUri</code> must be a valid S3 URI.</p> </important> <note> <p>For example, you can call <code>CreateContact</code>, then <code>CreateAttachedFile</code>, then <code>StartContactConversationalAnalyticsJob</code> to create a contact, attach a recording, and run post-call analytics.</p> </note>"
     },
+    "CreateAuthCode":{
+      "name":"CreateAuthCode",
+      "http":{
+        "method":"POST",
+        "requestUri":"/auth/code/{InstanceId}"
+      },
+      "input":{"shape":"CreateAuthCodeRequest"},
+      "output":{"shape":"CreateAuthCodeResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Creates an authorization code for the specified Connect Customer instance. The authorization code can be used to establish a session with scoped permissions defined by the specified scope parameters.</p>"
+    },
     "CreateContact":{
       "name":"CreateContact",
       "http":{
@@ -1755,6 +1773,24 @@
         {"shape":"ResourceInUseException"}
       ],
       "documentation":"<p>Deletes a security profile.</p>"
+    },
+    "DeleteSession":{
+      "name":"DeleteSession",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/auth/sessions/{InstanceId}/{SessionId}"
+      },
+      "input":{"shape":"DeleteSessionRequest"},
+      "output":{"shape":"DeleteSessionResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Deletes a session for the specified Connect Customer instance.</p>"
     },
     "DeleteTaskTemplate":{
       "name":"DeleteTaskTemplate",
@@ -3018,7 +3054,8 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"UserNotFoundException"},
         {"shape":"InternalServiceException"},
-        {"shape":"DuplicateResourceException"}
+        {"shape":"DuplicateResourceException"},
+        {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Supports SAML sign-in for Connect Customer. Retrieves a token for federation. The token is for the Connect Customer user which corresponds to the IAM credentials that were used to invoke this action. </p> <p>For more information about how SAML sign-in works in Connect Customer, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/configure-saml.html \">Configure SAML with IAM for Connect Customer in the <i>Connect Customer Administrator Guide</i>.</a> </p> <note> <p>This API doesn't support root users. If you try to invoke GetFederationToken with root credentials, an error message similar to the following one appears: </p> <p> <code>Provided identity: Principal: .... User: .... cannot be used for federation with Connect Customer</code> </p> </note>"
     },
@@ -8515,6 +8552,38 @@
       "documentation":"<p>Contains information for score and potential quality issues for Audio</p>"
     },
     "AudioQualityScore":{"type":"float"},
+    "AuthCode":{
+      "type":"string",
+      "sensitive":true
+    },
+    "AuthCodeEntityType":{
+      "type":"string",
+      "documentation":"<p>The type of entity associated with an authorization code in Connect Customer.</p>",
+      "enum":["CUSTOMER_PROFILE"]
+    },
+    "AuthScope":{
+      "type":"structure",
+      "required":["EntityType"],
+      "members":{
+        "SecurityProfileIds":{
+          "shape":"SecurityProfileIds",
+          "documentation":"<p>The list of security profile identifiers to scope the session to. Maximum of 10 security profiles.</p>"
+        },
+        "EntityType":{
+          "shape":"AuthCodeEntityType",
+          "documentation":"<p>The type of entity to scope the session to.</p>"
+        },
+        "EntityId":{
+          "shape":"EntityId",
+          "documentation":"<p>The identifier of the entity to scope the session to.</p>"
+        },
+        "DomainName":{
+          "shape":"CustomerProfilesDomainName",
+          "documentation":"<p>The name of the Customer Profiles domain to scope the session to.</p>"
+        }
+      },
+      "documentation":"<p>Contains the scope configuration for an authorization code. Defines the permissions and access boundaries for the session.</p>"
+    },
     "AuthenticationError":{
       "type":"string",
       "max":2048,
@@ -11291,6 +11360,56 @@
       },
       "documentation":"Response from CreateAttachedFile API."
     },
+    "CreateAuthCodeRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "Scope",
+        "SessionInactivityDurationMinutes"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Connect Customer instance. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "Scope":{
+          "shape":"AuthScope",
+          "documentation":"<p>The scope for the authorization code. Defines the permissions and access boundaries for the session.</p>"
+        },
+        "MaxSessionDurationMinutes":{
+          "shape":"MaxSessionDurationMinutes",
+          "documentation":"<p>The maximum duration of the session, in minutes. Minimum value of 1440 (24 hours). Maximum value of 43200 (30 days). If no value is provided, the session will expire after 400 days.</p>",
+          "box":true
+        },
+        "SessionInactivityDurationMinutes":{
+          "shape":"SessionInactivityDurationMinutes",
+          "documentation":"<p>The duration of inactivity, in minutes, after which the session expires. Minimum value of 1440 (24 hours). Maximum value of 20160 (14 days).</p>"
+        }
+      }
+    },
+    "CreateAuthCodeResponse":{
+      "type":"structure",
+      "members":{
+        "AuthCode":{
+          "shape":"AuthCode",
+          "documentation":"<p>The authorization code to use for establishing a session.</p>"
+        },
+        "SessionId":{
+          "shape":"SessionId",
+          "documentation":"<p>The identifier of the session created with the authorization code.</p>"
+        },
+        "EntityType":{
+          "shape":"AuthCodeEntityType",
+          "documentation":"<p>The type of entity associated with the authorization code.</p>"
+        },
+        "EntityId":{
+          "shape":"EntityId",
+          "documentation":"<p>The identifier of the entity associated with the authorization code.</p>"
+        }
+      }
+    },
     "CreateCaseActionDefinition":{
       "type":"structure",
       "required":[
@@ -13333,7 +13452,7 @@
           "documentation":"<p>An access token generated for a federated user to access Connect Customer.</p>"
         },
         "AccessTokenExpiration":{
-          "shape":"timestamp",
+          "shape":"Timestamp",
           "documentation":"<p>A token generated with an expiration time for the session a user is logged in to Connect Customer.</p>"
         },
         "RefreshToken":{
@@ -13341,7 +13460,7 @@
           "documentation":"<p>Renews a token generated for a user to access the Connect Customer instance.</p>"
         },
         "RefreshTokenExpiration":{
-          "shape":"timestamp",
+          "shape":"Timestamp",
           "documentation":"<p>Renews the expiration timer for a generated token.</p>"
         }
       },
@@ -13486,6 +13605,12 @@
       "type":"string",
       "max":32,
       "min":1
+    },
+    "CustomerProfilesDomainName":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"^[a-zA-Z0-9_-]+$"
     },
     "CustomerQualityMetrics":{
       "type":"structure",
@@ -14799,6 +14924,31 @@
           "locationName":"SecurityProfileId"
         }
       }
+    },
+    "DeleteSessionRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "SessionId"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Connect Customer instance. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "SessionId":{
+          "shape":"SessionId",
+          "documentation":"<p>The identifier of the session to delete.</p>",
+          "location":"uri",
+          "locationName":"SessionId"
+        }
+      }
+    },
+    "DeleteSessionResponse":{
+      "type":"structure",
+      "members":{}
     },
     "DeleteTaskTemplateRequest":{
       "type":"structure",
@@ -17350,6 +17500,12 @@
     "EntityArn":{
       "type":"string",
       "min":1
+    },
+    "EntityId":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":".*"
     },
     "EntityType":{
       "type":"string",
@@ -20430,6 +20586,14 @@
     "GetFederationTokenResponse":{
       "type":"structure",
       "members":{
+        "UserId":{
+          "shape":"AgentResourceId",
+          "documentation":"<p>The identifier for the user. This can be the ID or the ARN of the user.</p>"
+        },
+        "UserArn":{
+          "shape":"ARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the user.</p>"
+        },
         "Credentials":{
           "shape":"Credentials",
           "documentation":"<p>The credentials to use for federation.</p>"
@@ -20437,14 +20601,6 @@
         "SignInUrl":{
           "shape":"Url",
           "documentation":"<p>The URL to sign into the user's instance. </p>"
-        },
-        "UserArn":{
-          "shape":"ARN",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the user.</p>"
-        },
-        "UserId":{
-          "shape":"AgentResourceId",
-          "documentation":"<p>The identifier for the user. This can be the ID or the ARN of the user.</p>"
         }
       }
     },
@@ -25653,6 +25809,12 @@
       "type":"integer",
       "max":100,
       "min":1
+    },
+    "MaxSessionDurationMinutes":{
+      "type":"integer",
+      "box":true,
+      "max":43200,
+      "min":1440
     },
     "MaximumResultReturnedException":{
       "type":"structure",
@@ -32273,6 +32435,15 @@
       },
       "documentation":"<p>The reason for the exception.</p>",
       "union":true
+    },
+    "SessionId":{
+      "type":"string",
+      "max":36
+    },
+    "SessionInactivityDurationMinutes":{
+      "type":"integer",
+      "max":20160,
+      "min":0
     },
     "SignInConfig":{
       "type":"structure",

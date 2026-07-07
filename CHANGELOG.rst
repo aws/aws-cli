@@ -2,6 +2,42 @@
 CHANGELOG
 =========
 
+2.35.16
+=======
+
+* api-change:``mailmanager``: This release adds Smithy RPC v2 CBOR as an additional protocol alongside the existing AWS JSON 1.0. The SDK will prioritize its most performant protocol.
+* api-change:``logs``: Added PutStorageTierPolicy and GetStorageTierPolicy APIs to Amazon CloudWatch Logs. Customers can now configure account-level Intelligent Tiering to automatically optimize log storage costs by moving infrequently accessed data to lower-cost storage tiers.
+* api-change:``opensearch``: This release introduces Saved Object Migration APIs, enabling users to migrate dashboards, visualizations, index patterns, and other saved objects from a data source into an Amazon OpenSearch Service application workspace with configurable export filters and conflict resolution strategies.
+* api-change:``billing``: Adds support for managing AWS account credits and billing preferences, including retrieving credit details, viewing per-month credit allocation history, redeeming promotional codes, and configuring credit sharing and billing preferences.
+
+
+2.35.15
+=======
+
+* api-change:``customer-profiles``: Amazon Connect Customer Profiles adds support for diversityConfig to recommenderConfig which can be used for diversifying the recommendations. This release also includes model versioning support which helps customer to rollback trained models.
+* api-change:``outposts``: Tighten Outpost site ContactPhoneNumber regex to perform phone number validation.
+* bugfix:``sso``: Fix SSO login failure for non-commercial partition URLs (China and EUSC)
+* api-change:``cognito-idp``: Add support for provisioned limit management, enabling customers to view and update their provisioned API rate limits for Amazon Cognito User Pools programmatically through the new GetProvisionedLimit and UpdateProvisionedLimit APIs.
+* api-change:``config``: AWS Config now supports tag-on-create for organization-managed Config rules and conformance packs through the PutOrganizationConfigRule and PutOrganizationConformancePack APIs.
+* api-change:``mediatailor``: Added dual-stack (IPv4 and IPv6) endpoint fields to SSAI and Channel Assembly API responses.
+* enhancement:awscrt: Update awscrt version requirement to ``0.35.0``. This adds support for direct IO on downloads (GET requests) when the ``direct_io`` S3 configuration value is enabled.
+
+
+2.35.14
+=======
+
+* api-change:``mediaconvert``: Adds support for integer-second duration normalization and the option to disable explicit weighted prediction.
+* api-change:``gameliftstreams``: Added CreateStreamSessionAdminShell API operation to enable customers to establish secure terminal connections to the live runtime environment of streaming sessions for troubleshooting purposes.
+* api-change:``artifact``: Add support for Assurance Assistant APIs for managing compliance inquiries along with tagging features.
+* api-change:``cloud9``: Since Amazon Linux 2 (AL2) will reach its end-of-life (EOL) and stop receiving security updates on June 30, 2026, Cloud9 will remove AL2 from AMI options in public API create-environment-ec2.
+* api-change:``quicksight``: Adding support for FileSource PhysicalTables.  This adds support for datasets with file sources.
+* api-change:``ec2``: Use declarative policies to enable VPC Encryption Controls across your organization or select accounts. Added AMD SEV-SNP support for EC2 Dedicated Hosts. Managed resource visibility settings control whether AWS-provisioned resources in your account appear in console views and API list operations.
+* enhancement:OpenSSL: Upgraded the OpenSSL module that is bundled with AWS CLI v2 Linux installers to version ``3.5.7``.
+* api-change:``connect``: Adds a new Amazon Connect Service API, SendOutboundWebNotification, that delivers web notifications to end-customer chat widget sessions. Callable only by the Amazon Connect Outbound Campaigns service principal.
+* api-change:``meteringmarketplace``: The usage reporting window for the BatchMeterUsage API has been extended from 6 hours to 24 hours. Sellers can now submit usage records for up to 24 hours after a metered event occurs.
+* api-change:``opensearch``: To create a Mustang domain via the AWS CLI, you must pass EngineMode OPTIMIZED (along with UseCase OBSERVABILITY or MIXED)  without it, the domain defaults to a regular (GENERAL) domain. Also this release includes Insights Feedback API which user can use to provide feedback for Insight API.
+
+
 2.35.13
 =======
 

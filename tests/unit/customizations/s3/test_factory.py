@@ -79,6 +79,10 @@ def test_crt_get_optimized_platforms_match_expected_platforms():
         'p5.48xlarge',
         'trn1n.32xlarge',
         'trn1.32xlarge',
+        'p5e.48xlarge',
+        'p5en.48xlarge',
+        'p6-b200.48xlarge',
+        'p6-b300.48xlarge',
     }
     actual_platforms = set(awscrt.s3.get_optimized_platforms())
     assert expected_platforms == actual_platforms, (

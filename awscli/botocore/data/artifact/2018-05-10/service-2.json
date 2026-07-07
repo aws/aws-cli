@@ -13,6 +13,42 @@
     "uid":"artifact-2018-05-10"
   },
   "operations":{
+    "CreateComplianceInquiry":{
+      "name":"CreateComplianceInquiry",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v1/compliance-inquiry/create",
+        "responseCode":202
+      },
+      "input":{"shape":"CreateComplianceInquiryRequest"},
+      "output":{"shape":"CreateComplianceInquiryResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Create a new compliance inquiry.</p>"
+    },
+    "ExportComplianceInquiry":{
+      "name":"ExportComplianceInquiry",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v1/compliance-inquiry/export",
+        "responseCode":200
+      },
+      "input":{"shape":"ExportComplianceInquiryRequest"},
+      "output":{"shape":"ExportComplianceInquiryResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Export a compliance inquiry report.</p>"
+    },
     "GetAccountSettings":{
       "name":"GetAccountSettings",
       "http":{
@@ -32,6 +68,25 @@
         {"shape":"ServiceQuotaExceededException"}
       ],
       "documentation":"<p>Get the account settings for Artifact.</p>",
+      "readonly":true
+    },
+    "GetComplianceInquiryMetadata":{
+      "name":"GetComplianceInquiryMetadata",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v1/compliance-inquiry/getMetadata",
+        "responseCode":200
+      },
+      "input":{"shape":"GetComplianceInquiryMetadataRequest"},
+      "output":{"shape":"GetComplianceInquiryMetadataResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Get the metadata for a single compliance inquiry.</p>",
       "readonly":true
     },
     "GetReport":{
@@ -96,6 +151,44 @@
       "documentation":"<p>Get the Term content associated with a single report.</p>",
       "readonly":true
     },
+    "ListComplianceInquiries":{
+      "name":"ListComplianceInquiries",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v1/compliance-inquiry/list",
+        "responseCode":200
+      },
+      "input":{"shape":"ListComplianceInquiriesRequest"},
+      "output":{"shape":"ListComplianceInquiriesResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>List available compliance inquiries.</p>",
+      "readonly":true
+    },
+    "ListComplianceInquiryQueries":{
+      "name":"ListComplianceInquiryQueries",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v1/compliance-inquiry/listQueries",
+        "responseCode":200
+      },
+      "input":{"shape":"ListComplianceInquiryQueriesRequest"},
+      "output":{"shape":"ListComplianceInquiryQueriesResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>List queries within a compliance inquiry.</p>",
+      "readonly":true
+    },
     "ListCustomerAgreements":{
       "name":"ListCustomerAgreements",
       "http":{
@@ -154,6 +247,25 @@
       "documentation":"<p>List available reports.</p>",
       "readonly":true
     },
+    "ListTagsForResource":{
+      "name":"ListTagsForResource",
+      "http":{
+        "method":"GET",
+        "requestUri":"/tags/{resourceArn}",
+        "responseCode":200
+      },
+      "input":{"shape":"ListTagsForResourceRequest"},
+      "output":{"shape":"ListTagsForResourceResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>List tags for a resource.</p>",
+      "readonly":true
+    },
     "PutAccountSettings":{
       "name":"PutAccountSettings",
       "http":{
@@ -173,6 +285,43 @@
         {"shape":"ServiceQuotaExceededException"}
       ],
       "documentation":"<p>Put the account settings for Artifact.</p>",
+      "idempotent":true
+    },
+    "TagResource":{
+      "name":"TagResource",
+      "http":{
+        "method":"POST",
+        "requestUri":"/tags/{resourceArn}",
+        "responseCode":204
+      },
+      "input":{"shape":"TagResourceRequest"},
+      "output":{"shape":"TagResourceResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Add tags to a resource.</p>"
+    },
+    "UntagResource":{
+      "name":"UntagResource",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/tags/{resourceArn}",
+        "responseCode":204
+      },
+      "input":{"shape":"UntagResourceRequest"},
+      "output":{"shape":"UntagResourceResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Remove tags from a resource.</p>",
       "idempotent":true
     }
   },
@@ -221,6 +370,33 @@
         "MODIFIED"
       ]
     },
+    "Blob":{"type":"blob"},
+    "Boolean":{
+      "type":"boolean",
+      "box":true
+    },
+    "Citation":{
+      "type":"structure",
+      "members":{
+        "sourceLabel":{
+          "shape":"ShortStringAttribute",
+          "documentation":"<p>Label identifying the compliance source.</p>"
+        },
+        "sourceContent":{
+          "shape":"LongStringAttribute",
+          "documentation":"<p>Content text from the compliance source.</p>"
+        },
+        "sourceLink":{
+          "shape":"LongStringAttribute",
+          "documentation":"<p>Link to the compliance source.</p>"
+        }
+      },
+      "documentation":"<p>Citation information for AI-generated responses.</p>"
+    },
+    "CitationList":{
+      "type":"list",
+      "member":{"shape":"Citation"}
+    },
     "ConflictException":{
       "type":"structure",
       "required":[
@@ -245,6 +421,49 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "CreateComplianceInquiryRequest":{
+      "type":"structure",
+      "required":[
+        "name",
+        "inquiryContent"
+      ],
+      "members":{
+        "name":{
+          "shape":"String",
+          "documentation":"<p>Title of the inquiry.</p>"
+        },
+        "inquiryContent":{
+          "shape":"InquiryContent",
+          "documentation":"<p>Content for creating a compliance inquiry - either a single query or file content.</p>"
+        },
+        "clientToken":{
+          "shape":"IdempotentClientToken",
+          "documentation":"<p>Idempotency token for the request.</p>",
+          "idempotencyToken":true
+        },
+        "supportMode":{
+          "shape":"InquirySupportMode",
+          "documentation":"<p>Support mode for inquiry processing. Only supported for file upload mode. Defaults to AI_ONLY if not specified.</p>"
+        },
+        "tags":{
+          "shape":"TagsMap",
+          "documentation":"<p>Tags to associate with the compliance inquiry resource.</p>"
+        }
+      }
+    },
+    "CreateComplianceInquiryResponse":{
+      "type":"structure",
+      "members":{
+        "complianceInquirySummary":{
+          "shape":"InquirySummary",
+          "documentation":"<p>Summary information about the created compliance inquiry.</p>"
+        },
+        "tags":{
+          "shape":"TagsMap",
+          "documentation":"<p>Tags associated with the compliance inquiry resource.</p>"
+        }
+      }
     },
     "CustomerAgreementIdAttribute":{
       "type":"string",
@@ -320,6 +539,37 @@
       },
       "documentation":"<p>Summary for customer-agreement resource.</p>"
     },
+    "ExportComplianceInquiryRequest":{
+      "type":"structure",
+      "required":["complianceInquiryId"],
+      "members":{
+        "complianceInquiryId":{
+          "shape":"InquiryId",
+          "documentation":"<p>Unique resource ID for the compliance inquiry.</p>"
+        },
+        "queryIdentifiers":{
+          "shape":"QueryIdentifiersList",
+          "documentation":"<p>List of query identifiers to include in the export.</p>"
+        },
+        "includeCitations":{
+          "shape":"Boolean",
+          "documentation":"<p>When true, include citations in the exported document.</p>"
+        }
+      }
+    },
+    "ExportComplianceInquiryResponse":{
+      "type":"structure",
+      "members":{
+        "documentPresignedUrl":{
+          "shape":"PresignedUrl",
+          "documentation":"<p>Presigned S3 URL to access the exported compliance inquiry report.</p>"
+        },
+        "tags":{
+          "shape":"TagsMap",
+          "documentation":"<p>Tags associated with the compliance inquiry resource.</p>"
+        }
+      }
+    },
     "GetAccountSettingsRequest":{
       "type":"structure",
       "members":{}
@@ -328,6 +578,31 @@
       "type":"structure",
       "members":{
         "accountSettings":{"shape":"AccountSettings"}
+      }
+    },
+    "GetComplianceInquiryMetadataRequest":{
+      "type":"structure",
+      "required":["complianceInquiryId"],
+      "members":{
+        "complianceInquiryId":{
+          "shape":"InquiryId",
+          "documentation":"<p>Unique resource ID for the compliance inquiry.</p>",
+          "location":"querystring",
+          "locationName":"complianceInquiryId"
+        }
+      }
+    },
+    "GetComplianceInquiryMetadataResponse":{
+      "type":"structure",
+      "members":{
+        "complianceInquiryDetail":{
+          "shape":"InquiryDetail",
+          "documentation":"<p>Detailed information about the compliance inquiry.</p>"
+        },
+        "tags":{
+          "shape":"TagsMap",
+          "documentation":"<p>Tags associated with the compliance inquiry resource.</p>"
+        }
       }
     },
     "GetReportMetadataRequest":{
@@ -434,6 +709,185 @@
       "max":10240,
       "min":1
     },
+    "IdempotentClientToken":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"[\\w\\-]+"
+    },
+    "InputSource":{
+      "type":"string",
+      "enum":[
+        "TEXT",
+        "FILE"
+      ]
+    },
+    "InquiriesList":{
+      "type":"list",
+      "member":{"shape":"InquirySummary"}
+    },
+    "InquiryContent":{
+      "type":"structure",
+      "members":{
+        "query":{
+          "shape":"LongStringAttribute",
+          "documentation":"<p>Single text query for AI-generated answer.</p>"
+        },
+        "fileContent":{
+          "shape":"InquiryFileContent",
+          "documentation":"<p>File content with multiple questions.</p>"
+        }
+      },
+      "documentation":"<p>Content for creating a compliance inquiry - either a single query or file content.</p>",
+      "sensitive":true,
+      "union":true
+    },
+    "InquiryDetail":{
+      "type":"structure",
+      "required":[
+        "arn",
+        "name",
+        "id",
+        "status",
+        "statusMessage",
+        "inputSource",
+        "createdAt"
+      ],
+      "members":{
+        "arn":{
+          "shape":"String",
+          "documentation":"<p>ARN of the compliance inquiry resource.</p>"
+        },
+        "name":{
+          "shape":"String",
+          "documentation":"<p>Title of the inquiry.</p>"
+        },
+        "id":{
+          "shape":"InquiryId",
+          "documentation":"<p>Unique resource ID for the compliance inquiry.</p>"
+        },
+        "status":{
+          "shape":"InquiryStatus",
+          "documentation":"<p>Current processing status of the inquiry.</p>"
+        },
+        "statusMessage":{
+          "shape":"InquiryStatusMessage",
+          "documentation":"<p>Status message providing additional context.</p>"
+        },
+        "inputSource":{
+          "shape":"InputSource",
+          "documentation":"<p>Type of inquiry content (text or file).</p>"
+        },
+        "createdAt":{
+          "shape":"TimestampAttribute",
+          "documentation":"<p>Timestamp indicating when the resource was created.</p>"
+        },
+        "updatedAt":{
+          "shape":"TimestampAttribute",
+          "documentation":"<p>Timestamp indicating when the resource was last modified.</p>"
+        },
+        "supportMode":{
+          "shape":"InquirySupportMode",
+          "documentation":"<p>Support mode for this inquiry. AI_ONLY provides AI-generated responses. FULL_SUPPORT includes human expert review.</p>"
+        }
+      },
+      "documentation":"<p>Detailed information about a compliance inquiry.</p>"
+    },
+    "InquiryFileContent":{
+      "type":"structure",
+      "required":["content"],
+      "members":{
+        "fileSections":{
+          "shape":"InquiryFileContentFileSectionsList",
+          "documentation":"<p>List of file sections/sheets to process.</p>"
+        },
+        "content":{
+          "shape":"Blob",
+          "documentation":"<p>Binary content of the uploaded file.</p>"
+        }
+      },
+      "documentation":"<p>File content structure for compliance inquiry uploads.</p>"
+    },
+    "InquiryFileContentFileSectionsList":{
+      "type":"list",
+      "member":{"shape":"ShortStringAttribute"},
+      "max":30,
+      "min":0
+    },
+    "InquiryId":{
+      "type":"string",
+      "pattern":"compliance-inquiry-[a-zA-Z0-9]{16}"
+    },
+    "InquiryStatus":{
+      "type":"string",
+      "enum":[
+        "PROCESSING",
+        "HUMAN_REVIEW",
+        "COMPLETED",
+        "FAILED"
+      ]
+    },
+    "InquiryStatusMessage":{
+      "type":"string",
+      "enum":[
+        "Compliance inquiry processing is complete.",
+        "Malware was detected on the file. Provide a new file and try again.",
+        "Compliance inquiry processing is in-progress.",
+        "An internal error occurred while processing the inquiry. Try again at a later time.",
+        "Human review is in progress.",
+        "Compliance inquiry processing is complete. One or more queries encountered errors during processing."
+      ]
+    },
+    "InquirySummary":{
+      "type":"structure",
+      "required":[
+        "arn",
+        "name",
+        "id",
+        "status",
+        "statusMessage",
+        "inputSource",
+        "createdAt"
+      ],
+      "members":{
+        "arn":{
+          "shape":"String",
+          "documentation":"<p>ARN of the compliance inquiry resource.</p>"
+        },
+        "name":{
+          "shape":"String",
+          "documentation":"<p>Title of the inquiry.</p>"
+        },
+        "id":{
+          "shape":"InquiryId",
+          "documentation":"<p>Unique resource ID for the compliance inquiry.</p>"
+        },
+        "status":{
+          "shape":"InquiryStatus",
+          "documentation":"<p>Current processing status of the inquiry.</p>"
+        },
+        "statusMessage":{
+          "shape":"InquiryStatusMessage",
+          "documentation":"<p>Status message providing additional context.</p>"
+        },
+        "inputSource":{
+          "shape":"InputSource",
+          "documentation":"<p>Type of inquiry content (text or file).</p>"
+        },
+        "createdAt":{
+          "shape":"TimestampAttribute",
+          "documentation":"<p>Timestamp indicating when the resource was created.</p>"
+        }
+      },
+      "documentation":"<p>Summary information about a compliance inquiry.</p>"
+    },
+    "InquirySupportMode":{
+      "type":"string",
+      "enum":[
+        "AI_ONLY",
+        "FULL_SUPPORT"
+      ]
+    },
     "Integer":{
       "type":"integer",
       "box":true
@@ -455,6 +909,73 @@
       "exception":true,
       "fault":true,
       "retryable":{"throttling":false}
+    },
+    "ListComplianceInquiriesRequest":{
+      "type":"structure",
+      "members":{
+        "maxResults":{
+          "shape":"MaxResultsAttribute",
+          "documentation":"<p>Maximum number of resources to return in the paginated response.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"NextTokenAttribute",
+          "documentation":"<p>Pagination token to request the next page of resources.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListComplianceInquiriesResponse":{
+      "type":"structure",
+      "members":{
+        "complianceInquiries":{
+          "shape":"InquiriesList",
+          "documentation":"<p>List of compliance inquiry resources.</p>"
+        },
+        "nextToken":{
+          "shape":"NextTokenAttribute",
+          "documentation":"<p>Pagination token to request the next page of resources.</p>"
+        }
+      }
+    },
+    "ListComplianceInquiryQueriesRequest":{
+      "type":"structure",
+      "required":["complianceInquiryId"],
+      "members":{
+        "complianceInquiryId":{
+          "shape":"InquiryId",
+          "documentation":"<p>Unique resource ID for the compliance inquiry.</p>",
+          "location":"querystring",
+          "locationName":"complianceInquiryId"
+        },
+        "maxResults":{
+          "shape":"MaxResultsAttribute",
+          "documentation":"<p>Maximum number of resources to return in the paginated response.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"NextTokenAttribute",
+          "documentation":"<p>Pagination token to request the next page of resources.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListComplianceInquiryQueriesResponse":{
+      "type":"structure",
+      "members":{
+        "queries":{
+          "shape":"QueriesList",
+          "documentation":"<p>List of compliance query summaries.</p>"
+        },
+        "nextToken":{
+          "shape":"NextTokenAttribute",
+          "documentation":"<p>Pagination token to request the next page of resources.</p>"
+        }
+      }
     },
     "ListCustomerAgreementsRequest":{
       "type":"structure",
@@ -555,9 +1076,30 @@
         }
       }
     },
+    "ListTagsForResourceRequest":{
+      "type":"structure",
+      "required":["resourceArn"],
+      "members":{
+        "resourceArn":{
+          "shape":"LongStringAttribute",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource.</p>",
+          "location":"uri",
+          "locationName":"resourceArn"
+        }
+      }
+    },
+    "ListTagsForResourceResponse":{
+      "type":"structure",
+      "members":{
+        "tags":{
+          "shape":"TagsMap",
+          "documentation":"<p>Tags associated with the resource.</p>"
+        }
+      }
+    },
     "LongStringAttribute":{
       "type":"string",
-      "max":1024,
+      "max":2048,
       "min":1,
       "pattern":"[^<>]*"
     },
@@ -578,6 +1120,11 @@
         "SUBSCRIBED",
         "NOT_SUBSCRIBED"
       ]
+    },
+    "PresignedUrl":{
+      "type":"string",
+      "documentation":"<p>A pre-signed URL for accessing content.</p>",
+      "sensitive":true
     },
     "PublishedState":{
       "type":"string",
@@ -600,6 +1147,81 @@
       "members":{
         "accountSettings":{"shape":"AccountSettings"}
       }
+    },
+    "QueriesList":{
+      "type":"list",
+      "member":{"shape":"QuerySummary"}
+    },
+    "QueryIdentifiersList":{
+      "type":"list",
+      "member":{"shape":"Integer"}
+    },
+    "QueryStatus":{
+      "type":"string",
+      "enum":[
+        "PROCESSING",
+        "COMPLETED",
+        "FAILED"
+      ]
+    },
+    "QueryStatusMessage":{
+      "type":"string",
+      "enum":[
+        "Query processing is complete.",
+        "Query processing is in-progress.",
+        "An internal error occurred while processing the query. Try again at a later time.",
+        "Query is pending human review.",
+        "Query contains restricted or unsupported content."
+      ]
+    },
+    "QuerySummary":{
+      "type":"structure",
+      "required":[
+        "queryIdentifier",
+        "query",
+        "status",
+        "statusMessage",
+        "createdAt"
+      ],
+      "members":{
+        "queryIdentifier":{
+          "shape":"Integer",
+          "documentation":"<p>Sequential identifier of the query within the inquiry.</p>"
+        },
+        "query":{
+          "shape":"LongStringAttribute",
+          "documentation":"<p>The actual query text.</p>"
+        },
+        "response":{
+          "shape":"LongStringAttribute",
+          "documentation":"<p>Generated response to the query.</p>"
+        },
+        "reviewType":{
+          "shape":"ReviewType",
+          "documentation":"<p>Type of review for the response.</p>"
+        },
+        "citations":{
+          "shape":"CitationList",
+          "documentation":"<p>Supporting citations for the response.</p>"
+        },
+        "status":{
+          "shape":"QueryStatus",
+          "documentation":"<p>Current processing status of the query.</p>"
+        },
+        "statusMessage":{
+          "shape":"QueryStatusMessage",
+          "documentation":"<p>Descriptive status message.</p>"
+        },
+        "createdAt":{
+          "shape":"TimestampAttribute",
+          "documentation":"<p>Timestamp when the query was created.</p>"
+        },
+        "updatedResponseVersions":{
+          "shape":"ResponseVersionList",
+          "documentation":"<p>Ordered list of response version history entries, oldest first.</p>"
+        }
+      },
+      "documentation":"<p>Summary information about a single query within a compliance inquiry.</p>"
     },
     "ReportDetail":{
       "type":"structure",
@@ -786,6 +1408,35 @@
       },
       "exception":true
     },
+    "ResponseVersion":{
+      "type":"structure",
+      "required":[
+        "responseText",
+        "timestamp"
+      ],
+      "members":{
+        "responseText":{
+          "shape":"LongStringAttribute",
+          "documentation":"<p>The response text for this version.</p>"
+        },
+        "timestamp":{
+          "shape":"TimestampAttribute",
+          "documentation":"<p>ISO 8601 timestamp of when this edit was made.</p>"
+        }
+      },
+      "documentation":"<p>A versioned snapshot of a response edit.</p>"
+    },
+    "ResponseVersionList":{
+      "type":"list",
+      "member":{"shape":"ResponseVersion"}
+    },
+    "ReviewType":{
+      "type":"string",
+      "enum":[
+        "HUMAN",
+        "AI"
+      ]
+    },
     "SequenceNumberAttribute":{
       "type":"long",
       "box":true,
@@ -834,6 +1485,58 @@
     },
     "StatusMessage":{"type":"string"},
     "String":{"type":"string"},
+    "TagKey":{
+      "type":"string",
+      "documentation":"<p>A tag key.</p>",
+      "max":128,
+      "min":1,
+      "pattern":"[a-zA-Z0-9\\s_.:/=+\\-@]*"
+    },
+    "TagKeys":{
+      "type":"list",
+      "member":{"shape":"TagKey"},
+      "documentation":"<p>A list of tag keys.</p>",
+      "max":50,
+      "min":1
+    },
+    "TagResourceRequest":{
+      "type":"structure",
+      "required":[
+        "resourceArn",
+        "tags"
+      ],
+      "members":{
+        "resourceArn":{
+          "shape":"LongStringAttribute",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource.</p>",
+          "location":"uri",
+          "locationName":"resourceArn"
+        },
+        "tags":{
+          "shape":"TagsMap",
+          "documentation":"<p>Tags to add to the resource.</p>"
+        }
+      }
+    },
+    "TagResourceResponse":{
+      "type":"structure",
+      "members":{}
+    },
+    "TagValue":{
+      "type":"string",
+      "documentation":"<p>A tag value.</p>",
+      "max":256,
+      "min":0,
+      "pattern":"[a-zA-Z0-9\\s_.:/=+\\-@]*"
+    },
+    "TagsMap":{
+      "type":"map",
+      "key":{"shape":"TagKey"},
+      "value":{"shape":"TagValue"},
+      "documentation":"<p>A map of tag keys to tag values.</p>",
+      "max":50,
+      "min":0
+    },
     "ThrottlingException":{
       "type":"structure",
       "required":["message"],
@@ -865,6 +1568,31 @@
     "TimestampAttribute":{
       "type":"timestamp",
       "timestampFormat":"iso8601"
+    },
+    "UntagResourceRequest":{
+      "type":"structure",
+      "required":[
+        "resourceArn",
+        "tagKeys"
+      ],
+      "members":{
+        "resourceArn":{
+          "shape":"LongStringAttribute",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource.</p>",
+          "location":"uri",
+          "locationName":"resourceArn"
+        },
+        "tagKeys":{
+          "shape":"TagKeys",
+          "documentation":"<p>Tag keys to remove from the resource.</p>",
+          "location":"querystring",
+          "locationName":"tagKeys"
+        }
+      }
+    },
+    "UntagResourceResponse":{
+      "type":"structure",
+      "members":{}
     },
     "UploadState":{
       "type":"string",

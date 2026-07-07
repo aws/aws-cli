@@ -69,7 +69,7 @@
         {"shape":"ValidationException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
-      "documentation":"<p>Creates an application resource in Amazon GameLift Streams, which specifies the application content you want to stream, such as a game build or other software, and configures the settings to run it.</p> <p> Before you create an application, upload your application content files to an Amazon Simple Storage Service (Amazon S3) bucket. For more information, see <b>Getting Started</b> in the Amazon GameLift Streams Developer Guide. </p> <important> <p> Make sure that your files in the Amazon S3 bucket are the correct version you want to use. If you change the files at a later time, you will need to create a new Amazon GameLift Streams application. </p> </important> <p> If the request is successful, Amazon GameLift Streams begins to create an application and sets the status to <code>INITIALIZED</code>. When an application reaches <code>READY</code> status, you can use the application to set up stream groups and start streams. To track application status, call <a href=\"https://docs.aws.amazon.com/gameliftstreams/latest/apireference/API_GetApplication.html\">GetApplication</a>. </p>"
+      "documentation":"<p>Creates an application resource in Amazon GameLift Streams, which specifies the application content you want to stream, such as a game build or other software, and configures the settings to run it.</p> <p> Before you create an application, upload your application content files to an Amazon Simple Storage Service (Amazon S3) bucket. For more information, see <b>Getting Started</b> in the Amazon GameLift Streams Developer Guide. </p> <important> <p> Make sure that your files in the Amazon S3 bucket are the correct version you want to use. If you change the files at a later time, you will need to create a new Amazon GameLift Streams application. </p> </important> <note> <p> Creating an application is the only time Amazon GameLift Streams accesses your Amazon S3 bucket. After the application reaches <code>READY</code> status, you can delete the original files from your Amazon S3 bucket without affecting the application. </p> </note> <p> If the request is successful, Amazon GameLift Streams begins to create an application and sets the status to <code>INITIALIZED</code>. When an application reaches <code>READY</code> status, you can use the application to set up stream groups and start streams. To track application status, call <a href=\"https://docs.aws.amazon.com/gameliftstreams/latest/apireference/API_GetApplication.html\">GetApplication</a>. </p>"
     },
     "CreateStreamGroup":{
       "name":"CreateStreamGroup",
@@ -91,6 +91,25 @@
       ],
       "documentation":"<p> Stream groups manage how Amazon GameLift Streams allocates resources and handles concurrent streams, allowing you to effectively manage capacity and costs. Within a stream group, you specify an application to stream, streaming locations and their capacity, and the stream class you want to use when streaming applications to your end-users. A stream class defines the hardware configuration of the compute resources that Amazon GameLift Streams will use when streaming, such as the CPU, GPU, and memory. </p> <p> Stream capacity represents the number of concurrent streams that can be active at a time. You set stream capacity per location, per stream group. The following capacity settings are available: </p> <ul> <li> <p> <b>Always-on capacity</b>: This setting, if non-zero, indicates minimum streaming capacity which is allocated to you and is never released back to the service. You pay for this base level of capacity at all times, whether used or idle. </p> </li> <li> <p> <b>Maximum capacity</b>: This indicates the maximum capacity that the service can allocate for you. Newly created streams may take a few minutes to start. Capacity is released back to the service when idle. You pay for capacity that is allocated to you until it is released. </p> </li> <li> <p> <b>Target-idle capacity</b>: This indicates idle capacity which the service pre-allocates and holds for you in anticipation of future activity. This helps to insulate your users from capacity-allocation delays. You pay for capacity which is held in this intentional idle state. </p> </li> </ul> <p>Values for capacity must be whole number multiples of the tenancy value of the stream group's stream class.</p> <p> To adjust the capacity of any <code>ACTIVE</code> stream group, call <a href=\"https://docs.aws.amazon.com/gameliftstreams/latest/apireference/API_UpdateStreamGroup.html\">UpdateStreamGroup</a>. </p> <p> If the <code>CreateStreamGroup</code> request is successful, Amazon GameLift Streams assigns a unique ID to the stream group resource and sets the status to <code>ACTIVATING</code>. It can take a few minutes for Amazon GameLift Streams to finish creating the stream group while it searches for unallocated compute resources and provisions them. When complete, the stream group status will be <code>ACTIVE</code> and you can start stream sessions by using <a href=\"https://docs.aws.amazon.com/gameliftstreams/latest/apireference/API_StartStreamSession.html\">StartStreamSession</a>. To check the stream group's status, call <a href=\"https://docs.aws.amazon.com/gameliftstreams/latest/apireference/API_GetStreamGroup.html\">GetStreamGroup</a>. </p> <p>Stream groups should be recreated every 3-4 weeks to pick up important service updates and fixes. Stream groups that are older than 180 days can no longer be updated with new application associations. Stream groups expire when they are 365 days old, at which point they can no longer stream sessions. The exact expiration date is indicated by the date value in the <code>ExpiresAt</code> field.</p>",
       "idempotent":true
+    },
+    "CreateStreamSessionAdminShell":{
+      "name":"CreateStreamSessionAdminShell",
+      "http":{
+        "method":"POST",
+        "requestUri":"/streamgroups/{Identifier}/streamsessions/{StreamSessionIdentifier}/access",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateStreamSessionAdminShellInput"},
+      "output":{"shape":"CreateStreamSessionAdminShellOutput"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"StreamSessionAccessNotReadyException"}
+      ],
+      "documentation":"<p>Creates an administrative terminal session with full access to the live runtime environment of the Amazon GameLift Streams stream session. Use the returned credentials (<code>SessionId</code>, <code>StreamUrl</code> and <code>TokenValue</code>) with the Amazon Web Services Systems Manager <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/session-manager-working-with-install-plugin.html\">Session Manager plugin</a> for the CLI to access the terminal session.</p> <p>The stream session must be in one of the following statuses: <code>ACTIVE</code>, <code>CONNECTED</code>, <code>PENDING_CLIENT_RECONNECTION</code>, or <code>RECONNECTING</code>.</p> <p>The <code>StreamUrl</code> is valid for 60 seconds. After it expires, call this operation again to get a new URL.</p> <important> <p>The returned credentials grant full access to the live runtime environment of the Amazon GameLift Streams stream session. The operator who connects to the terminal session has the same level of access that your Amazon GameLift Streams applications have, including potentially user input, screen images, and application data files. Grant permissions to call this operation only to trusted IAM identities that require live runtime environment access.</p> </important>"
     },
     "CreateStreamSessionConnection":{
       "name":"CreateStreamSessionConnection",
@@ -861,6 +880,44 @@
         "AssociatedApplications":{
           "shape":"ArnList",
           "documentation":"<p> A set of applications that this stream group is associated to. You can stream any of these applications by using this stream group. </p> <p>This value is a set of <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference-arns.html\">Amazon Resource Names (ARNs)</a> that uniquely identify application resources. Example ARN: <code>arn:aws:gameliftstreams:us-west-2:111122223333:application/a-9ZY8X7Wv6</code>. </p>"
+        }
+      }
+    },
+    "CreateStreamSessionAdminShellInput":{
+      "type":"structure",
+      "required":[
+        "Identifier",
+        "StreamSessionIdentifier"
+      ],
+      "members":{
+        "Identifier":{
+          "shape":"Identifier",
+          "documentation":"<p>The stream group that runs this stream session.</p> <p>This value is an <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference-arns.html\">Amazon Resource Name (ARN)</a> or ID that uniquely identifies the stream group resource. Example ARN: <code>arn:aws:gameliftstreams:us-west-2:111122223333:streamgroup/sg-1AB2C3De4</code>. Example ID: <code>sg-1AB2C3De4</code>. </p>",
+          "location":"uri",
+          "locationName":"Identifier"
+        },
+        "StreamSessionIdentifier":{
+          "shape":"Identifier",
+          "documentation":"<p>An <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference-arns.html\">Amazon Resource Name (ARN)</a> or ID that uniquely identifies the stream session resource. Example ARN: <code>arn:aws:gameliftstreams:us-west-2:111122223333:streamsession/sg-1AB2C3De4/ABC123def4567</code>. Example ID: <code>ABC123def4567</code>. </p>",
+          "location":"uri",
+          "locationName":"StreamSessionIdentifier"
+        }
+      }
+    },
+    "CreateStreamSessionAdminShellOutput":{
+      "type":"structure",
+      "members":{
+        "SessionId":{
+          "shape":"SessionId",
+          "documentation":"<p>An Amazon Web Services Systems Manager session identifier that uniquely identifies the requested terminal session. Use this value with the Amazon Web Services Systems Manager Session Manager plugin.</p>"
+        },
+        "StreamUrl":{
+          "shape":"StreamUrl",
+          "documentation":"<p>An Amazon Web Services Systems Manager WebSocket connection endpoint for the requested terminal session.</p>"
+        },
+        "TokenValue":{
+          "shape":"TokenValue",
+          "documentation":"<p>An Amazon Web Services Systems Manager authentication token that authenticates your access to the session ID and WebSocket URL. This token must be treated with the same level of security as other user credentials. The token value is only valid for establishing a new connection within 60 seconds of generation.</p>"
         }
       }
     },
@@ -1804,6 +1861,11 @@
       },
       "exception":true
     },
+    "SessionId":{
+      "type":"string",
+      "max":256,
+      "min":1
+    },
     "SessionLengthSeconds":{
       "type":"integer",
       "box":true,
@@ -2071,6 +2133,23 @@
       "type":"list",
       "member":{"shape":"StreamGroupSummary"}
     },
+    "StreamSessionAccessNotReadyException":{
+      "type":"structure",
+      "required":["Message"],
+      "members":{
+        "Message":{
+          "shape":"String",
+          "documentation":"<p>Description of the error.</p>"
+        }
+      },
+      "documentation":"<p>The terminal connection to the stream session is not yet available. Wait before retrying the request.</p>",
+      "error":{
+        "httpStatusCode":409,
+        "senderFault":true
+      },
+      "exception":true,
+      "retryable":{"throttling":false}
+    },
     "StreamSessionStatus":{
       "type":"string",
       "enum":[
@@ -2149,6 +2228,7 @@
       "type":"list",
       "member":{"shape":"StreamSessionSummary"}
     },
+    "StreamUrl":{"type":"string"},
     "String":{"type":"string"},
     "TagKey":{
       "type":"string",
@@ -2240,6 +2320,12 @@
       "retryable":{"throttling":true}
     },
     "Timestamp":{"type":"timestamp"},
+    "TokenValue":{
+      "type":"string",
+      "max":1024,
+      "min":0,
+      "sensitive":true
+    },
     "UntagResourceRequest":{
       "type":"structure",
       "required":[

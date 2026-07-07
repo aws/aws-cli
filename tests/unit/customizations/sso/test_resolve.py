@@ -39,6 +39,14 @@ class TestIsAwsOwnedDomain:
             'awsapps.com',
             'identitycenter.amazonaws.com',
             'identitycenter.amazonaws.com.',
+            'd-abc123.awsapps.cn',
+            'myalias.awsapps.cn',
+            'ssoins-abc123.cn-north-1.portal.amazonaws.com.cn',
+            'ssoins-abc123.cn-northwest-1.portal.amazonaws.com.cn',
+            'identitycenter.amazonaws.com.cn',
+            'ssoins-abc123.portal.cn-north-1.app.amazonwebservices.com.cn',
+            'ssoins-abc123.eusc-de-east-1.portal.amazonaws.eu',
+            'ssoins-abc123.portal.eusc-de-east-1.api.amazonwebservices.eu',
         ],
     )
     def test_aws_owned_returns_true(self, hostname):
@@ -56,6 +64,9 @@ class TestIsAwsOwnedDomain:
             'notidentitycenter.amazonaws.com',
             'example.com',
             '',
+            'awsapps.cn.evil.net',
+            'evil-awsapps.cn',
+            'portal.amazonaws.com.cn.evil.net',
         ],
     )
     def test_non_aws_owned_returns_false(self, hostname):
@@ -72,6 +83,23 @@ class TestExtractRegionFromHostname:
             ('ssoins-abc.portal.cn-north-1.app.aws', 'cn-north-1'),
             ('ssoins-abc.us-gov-west-1.portal.amazonaws.com', 'us-gov-west-1'),
             ('ssoins-abc.us-west-2.portal.amazonaws.com', 'us-west-2'),
+            ('ssoins-abc.cn-north-1.portal.amazonaws.com.cn', 'cn-north-1'),
+            (
+                'ssoins-abc.cn-northwest-1.portal.amazonaws.com.cn',
+                'cn-northwest-1',
+            ),
+            (
+                'ssoins-abc.portal.cn-north-1.app.amazonwebservices.com.cn',
+                'cn-north-1',
+            ),
+            (
+                'ssoins-abc.eusc-de-east-1.portal.amazonaws.eu',
+                'eusc-de-east-1',
+            ),
+            (
+                'ssoins-abc.portal.eusc-de-east-1.api.amazonwebservices.eu',
+                'eusc-de-east-1',
+            ),
         ],
     )
     def test_extracts_region(self, hostname, expected_region):
@@ -81,7 +109,9 @@ class TestExtractRegionFromHostname:
         'hostname',
         [
             'd-abc123.awsapps.com',
+            'd-abc123.awsapps.cn',
             'identitycenter.amazonaws.com',
+            'identitycenter.amazonaws.com.cn',
             'aws.mycompany.com',
         ],
     )

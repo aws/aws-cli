@@ -2,6 +2,23 @@
 CHANGELOG
 =========
 
+1.45.42
+=======
+
+* api-change:``config``: Added support for connecting AWS Config to third-party cloud service providers. New APIs include PutConnector, GetConnector, DeleteConnector, and ListConnectors for managing connectors, and PutThirdPartyServiceLinkedConfigurationRecorder for creating third-party service-linked recorders.
+* api-change:``connect``: Adds support for CreateAuthCode and DeleteSession APIs.
+* api-change:``ec2``: This launch surfaces the public SSM parameter associated with public AMIs in the AMI metadata.
+* api-change:``endpoint-rules``: Update endpoint-rules command to latest version
+* api-change:``inspector2``: This release extends vulnerability management to Azure VM, container registries and function apps. Adds support for per-member-account scan configuration settings.
+* api-change:``lambda``: AWS Lambda Durable Functions now supports customer managed KMS keys. This allows customers to configure a KMS key in Durable Config to have all their durable execution data encrypted.
+* api-change:``marketplace-catalog``: This release enhances the ListEntities API to support ResellerRole filter for ResaleAuthorization entity.
+* api-change:``meteringmarketplace``: The usage reporting window for the BatchMeterUsage API has been extended from 6 hours to 24 hours. Sellers can now submit usage records for up to 24 hours after a metered event occurs. The existing 6-hour grace period at the end of a billing cycle still applies.
+* api-change:``partnercentral-revenue-measurement``: Add support for AWS Partner Central Revenue Measurement API for creating, managing, and tracking revenue attributions and marketplace revenue share allocations.
+* api-change:``route53globalresolver``: Adds ListSharedDNSViews operation to list all DNS Views shared with caller using AWS Resource Access Manager. Also updates ListHostedZoneAssociations operation so that resource ARN param is optional, allowing caller to list all HostedZoneAssociations in account.
+* api-change:``securityhub``: release SecurityHub MultiCloud integration with Azure
+* api-change:``ssm``: Adding SSM Cloud Connector to support Azure Virtual Machines onboarding to AWS Systems Manager
+
+
 1.45.41
 =======
 

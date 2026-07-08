@@ -2,6 +2,18 @@
 CHANGELOG
 =========
 
+2.35.18
+=======
+
+* api-change:``ecs``: Amazon ECS now automatically detects the correct CPU architecture for Express Mode services.
+* api-change:``geo-places``: Added AddressNamesMode, AddressNameTranslations, MobilityMode, PostalCodeMode, SecondaryAddresses, and DriveThrough features across Places V2 APIs to support address name formatting,  multilingual translations, travel-aware search, multi-city postal codes, and unit-level address resolution.
+* api-change:``ec2``: Replace Root Volume now supports a VolumeId parameter. This allows the customer to pass in a pre-prepared volume as the target root volume for an RRV workflow.
+* api-change:``appconfig``: Update ExperimentRun APIs to support ConflictExceptions.
+* api-change:``iotwireless``: Default session downlink transmission parameters have been added to the existing Multicast Group APIs. Explicit transmission parameters are no longer required when starting a multicast session during the FUOTA procedure.
+* api-change:``bedrock-agentcore-control``: AgentCore Gateway now supports mapping allowed scopes to separate advertised scopes on the inbound authorizer.
+* api-change:``resiliencehubv2``: Next Generation Resilience Hub now supports filtering and sorting failure mode assessments, resource type filtering in ListResources, cross-region and cross-account topology edges, data recovery achievability status, and more granular dependency discovery progress tracking.
+
+
 2.35.17
 =======
 

@@ -1187,7 +1187,7 @@
       },
       "input":{"shape":"CreateReplaceRootVolumeTaskRequest"},
       "output":{"shape":"CreateReplaceRootVolumeTaskResult"},
-      "documentation":"<p>Replaces the EBS-backed root volume for a <code>running</code> instance with a new volume that is restored to the original root volume's launch state, that is restored to a specific snapshot taken from the original root volume, or that is restored from an AMI that has the same key characteristics as that of the instance.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/replace-root.html\">Replace a root volume</a> in the <i>Amazon EC2 User Guide</i>.</p>"
+      "documentation":"<p>Replaces the EBS-backed root volume for a <code>running</code> instance with a new volume that is restored to the original root volume's launch state, that is restored to a specific snapshot taken from the original root volume, that is restored from an AMI that has the same key characteristics as that of the instance, or that is replaced by a specified volume.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/replace-root.html\">Replace a root volume</a> in the <i>Amazon EC2 User Guide</i>.</p>"
     },
     "CreateReservedInstancesListing":{
       "name":"CreateReservedInstancesListing",
@@ -18424,7 +18424,7 @@
         },
         "SnapshotId":{
           "shape":"SnapshotId",
-          "documentation":"<p>The ID of the snapshot from which to restore the replacement root volume. The specified snapshot must be a snapshot that you previously created from the original root volume.</p> <p>If you want to restore the replacement root volume to the initial launch state, or if you want to restore the replacement root volume from an AMI, omit this parameter.</p>"
+          "documentation":"<p>The ID of the snapshot from which to restore the replacement root volume. The specified snapshot must be a snapshot that you previously created from the original root volume.</p> <p>If you want to restore the replacement root volume to the initial launch state, if you want to restore the replacement root volume from an AMI, or if you want to replace the root volume with a specified volume, omit this parameter.</p>"
         },
         "ClientToken":{
           "shape":"String",
@@ -18442,7 +18442,7 @@
         },
         "ImageId":{
           "shape":"ImageId",
-          "documentation":"<p>The ID of the AMI to use to restore the root volume. The specified AMI must have the same product code, billing information, architecture type, and virtualization type as that of the instance.</p> <p>If you want to restore the replacement volume from a specific snapshot, or if you want to restore it to its launch state, omit this parameter.</p>"
+          "documentation":"<p>The ID of the AMI to use to restore the root volume. The specified AMI must have the same product code, billing information, architecture type, and virtualization type as that of the instance.</p> <p>If you want to restore the replacement volume from a specific snapshot, if you want to restore it to its launch state, or if you want to replace the root volume with a specified volume, omit this parameter.</p>"
         },
         "DeleteReplacedRootVolume":{
           "shape":"Boolean",
@@ -18451,6 +18451,10 @@
         "VolumeInitializationRate":{
           "shape":"Long",
           "documentation":"<p>Specifies the Amazon EBS Provisioned Rate for Volume Initialization (volume initialization rate), in MiB/s, at which to download the snapshot blocks from Amazon S3 to the replacement root volume. This is also known as <i>volume initialization</i>. Specifying a volume initialization rate ensures that the volume is initialized at a predictable and consistent rate after creation.</p> <p>Omit this parameter if:</p> <ul> <li> <p>You want to create the volume using fast snapshot restore. You must specify a snapshot that is enabled for fast snapshot restore. In this case, the volume is fully initialized at creation.</p> <note> <p>If you specify a snapshot that is enabled for fast snapshot restore and a volume initialization rate, the volume will be initialized at the specified rate instead of fast snapshot restore.</p> </note> </li> <li> <p>You want to create a volume that is initialized at the default rate.</p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/ebs/latest/userguide/initalize-volume.html\"> Initialize Amazon EBS volumes</a> in the <i>Amazon EC2 User Guide</i>.</p> <p>Valid range: 100 - 300 MiB/s</p>"
+        },
+        "VolumeId":{
+          "shape":"VolumeId",
+          "documentation":"<p>The ID of the volume to use as the replacement root volume. The specified volume must be in the same Availability Zone as the instance, must be in the <code>available</code> state, and must not be attached to an instance. If the original root volume is encrypted, the specified volume must also be encrypted.</p> <p>If you want to restore the replacement root volume from a specific snapshot, an AMI, or to its launch state, omit this parameter.</p>"
         }
       }
     },

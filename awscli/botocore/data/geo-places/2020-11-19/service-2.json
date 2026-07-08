@@ -28,7 +28,7 @@
         {"shape":"ValidationException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p> <code>Autocomplete</code> completes potential places and addresses as the user types, based on the partial input. The API enhances the efficiency and accuracy of address by completing query based on a few entered keystrokes. It helps you by completing partial queries with valid address completion. Also, the API supports the filtering of results based on geographic location, country, or specific place types, and can be tailored using optional parameters like language and political views.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/location/latest/developerguide/autocomplete.html\">Autocomplete</a> in the <i>Amazon Location Service Developer Guide</i>.</p>",
+      "documentation":"<p> <code>Autocomplete</code> completes potential places and addresses as the user types, based on the partial input. The API enhances the efficiency and accuracy of address by completing query based on a few entered keystrokes. It helps you by completing partial queries with valid address completion. Also, the API supports the filtering of results based on geographic location, country, or specific place types, and can be tailored using optional parameters like language and political views. Not supported in <code>ap-southeast-1</code> and <code>ap-southeast-5</code> regions for <a href=\"https://docs.aws.amazon.com/location/latest/developerguide/GrabMaps.html\">GrabMaps</a> customers.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/location/latest/developerguide/autocomplete.html\">Autocomplete</a> in the <i>Amazon Location Service Developer Guide</i>.</p>",
       "readonly":true
     },
     "Geocode":{
@@ -46,7 +46,7 @@
         {"shape":"ValidationException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p> <code>Geocode</code> converts a textual address or place into geographic coordinates. You can obtain geographic coordinates, address component, and other related information. It supports flexible queries, including free-form text or structured queries with components like street names, postal codes, and regions. The Geocode API can also provide additional features such as time zone information and the inclusion of political views.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/location/latest/developerguide/geocode.html\">Geocode</a> in the <i>Amazon Location Service Developer Guide</i>.</p>",
+      "documentation":"<p> <code>Geocode</code> converts a textual address or place into geographic coordinates. You can obtain geographic coordinates, address component, and other related information. It supports flexible queries, including free-form text or structured queries with components like street names, postal codes, and regions. The Geocode API can also provide additional features such as time zone information and the inclusion of political views. Not supported in <code>ap-southeast-1</code> and <code>ap-southeast-5</code> regions for <a href=\"https://docs.aws.amazon.com/location/latest/developerguide/GrabMaps.html\">GrabMaps</a> customers.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/location/latest/developerguide/geocode.html\">Geocode</a> in the <i>Amazon Location Service Developer Guide</i>.</p>",
       "readonly":true
     },
     "GetPlace":{
@@ -100,7 +100,7 @@
         {"shape":"ValidationException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p> <code>SearchNearby</code> queries for points of interest within a radius from a central coordinates, returning place results with optional filters such as categories, business chains, food types and more. The API returns details such as a place name, address, phone, category, food type, contact, opening hours. Also, the API can return phonemes, time zones and more based on requested parameters.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/location/latest/developerguide/search-nearby.html\">Search Nearby</a> in the <i>Amazon Location Service Developer Guide</i>.</p>",
+      "documentation":"<p> <code>SearchNearby</code> queries for points of interest within a radius from a central coordinates, returning place results with optional filters such as categories, business chains, food types and more. The API returns details such as a place name, address, phone, category, food type, contact, opening hours. Also, the API can return phonemes, time zones and more based on requested parameters. Not supported in <code>ap-southeast-1</code> and <code>ap-southeast-5</code> regions for <a href=\"https://docs.aws.amazon.com/location/latest/developerguide/GrabMaps.html\">GrabMaps</a> customers.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/location/latest/developerguide/search-nearby.html\">Search Nearby</a> in the <i>Amazon Location Service Developer Guide</i>.</p>",
       "readonly":true
     },
     "SearchText":{
@@ -163,6 +163,18 @@
         "Position":{
           "shape":"Position",
           "documentation":"<p>The position in World Geodetic System (WGS 84) format: [longitude, latitude].</p>"
+        },
+        "Type":{
+          "shape":"AccessPointType",
+          "documentation":"<p>The type of access point, indicating its intended use. Only applies to results of type place.</p>"
+        },
+        "Primary":{
+          "shape":"SensitiveBoolean",
+          "documentation":"<p>Set to <code>true</code> for the primary access position when the place has more than one access point.</p>"
+        },
+        "Label":{
+          "shape":"SensitiveString",
+          "documentation":"<p>A short textual description of the access point, such as <code>\"North Entrance\"</code>.</p>"
         }
       },
       "documentation":"<p>Position of the access point represented by longitude and latitude for a vehicle.</p>"
@@ -172,6 +184,18 @@
       "member":{"shape":"AccessPoint"},
       "max":100,
       "min":0
+    },
+    "AccessPointType":{
+      "type":"string",
+      "enum":[
+        "Delivery",
+        "Emergency",
+        "Entrance",
+        "Loading",
+        "Other",
+        "Parking",
+        "Taxi"
+      ]
     },
     "AccessRestriction":{
       "type":"structure",
@@ -429,6 +453,49 @@
       "min":0,
       "sensitive":true
     },
+    "AddressTranslationComponent":{
+      "type":"string",
+      "enum":[
+        "District",
+        "Locality",
+        "Region",
+        "SubRegion"
+      ]
+    },
+    "AddressTranslationComponentList":{
+      "type":"list",
+      "member":{"shape":"AddressTranslationComponent"},
+      "max":4,
+      "min":1
+    },
+    "AdminNames":{
+      "type":"structure",
+      "required":["Names"],
+      "members":{
+        "Names":{
+          "shape":"TranslationNameList",
+          "documentation":"<p>A list of translation names for the administrative address component, including name variants and translations in available languages.</p>"
+        },
+        "Preference":{
+          "shape":"AdminNamesPreference",
+          "documentation":"<p>Indicates the preference level of the administrative name. Valid values are <code>Primary</code> and <code>Alternative</code>.</p>"
+        }
+      },
+      "documentation":"<p>The official administrative names for an address component, returned when <code>AddressNamesMode</code> is set to <code>Administrative</code>.</p>"
+    },
+    "AdminNamesList":{
+      "type":"list",
+      "member":{"shape":"AdminNames"},
+      "max":2,
+      "min":1
+    },
+    "AdminNamesPreference":{
+      "type":"string",
+      "enum":[
+        "Alternative",
+        "Primary"
+      ]
+    },
     "ApiKey":{
       "type":"string",
       "max":1000,
@@ -530,13 +597,19 @@
       "type":"string",
       "enum":[
         "Locality",
-        "PostalCode"
+        "PostalCode",
+        "Street",
+        "Intersection",
+        "PointAddress",
+        "InterpolatedAddress",
+        "Country",
+        "Region"
       ]
     },
     "AutocompleteFilterPlaceTypeList":{
       "type":"list",
       "member":{"shape":"AutocompleteFilterPlaceType"},
-      "max":2,
+      "max":8,
       "min":1
     },
     "AutocompleteHighlights":{
@@ -579,7 +652,7 @@
         },
         "PostalCodeMode":{
           "shape":"PostalCodeMode",
-          "documentation":"<p>The <code>PostalCodeMode</code> affects how postal code results are returned. If a postal code spans multiple localities and this value is empty, partial district or locality information may be returned under a single postal code result entry. If it's populated with the value <code>EnumerateSpannedLocalities</code>, all cities in that postal code are returned.</p>"
+          "documentation":"<p>The <code>PostalCodeMode</code> affects how postal code results are returned. If a postal code spans multiple localities and this value is empty, partial district or locality information may be returned under a single postal code result entry. If it's populated with the value <code>EnumerateSpannedLocalities</code>, all cities in that postal code are returned. If it's populated with the value <code>EnumerateSpannedDistricts</code>, all combinations of the postal code with the corresponding district and city names are returned.</p>"
         },
         "AdditionalFeatures":{
           "shape":"AutocompleteAdditionalFeatureList",
@@ -587,7 +660,7 @@
         },
         "Language":{
           "shape":"LanguageTag",
-          "documentation":"<p>A list of <a href=\"https://en.wikipedia.org/wiki/IETF_language_tag\">BCP 47</a> compliant language codes for the results to be rendered in. If there is no data for the result in the requested language, data will be returned in the default language for the entry.</p>"
+          "documentation":"<p>A list of <a href=\"https://www.iana.org/assignments/language-subtag-registry/language-subtag-registry\">BCP 47</a> compliant language codes for the results to be rendered in. If there is no data for the result in the requested language, data will be returned in the default language for the entry.</p>"
         },
         "PoliticalView":{
           "shape":"CountryCode",
@@ -663,7 +736,7 @@
         },
         "Language":{
           "shape":"LanguageTag",
-          "documentation":"<p>A list of <a href=\"https://en.wikipedia.org/wiki/IETF_language_tag\">BCP 47</a> compliant language codes for the results to be rendered in. If there is no data for the result in the requested language, data will be returned in the default language for the entry.</p>"
+          "documentation":"<p>A list of <a href=\"https://www.iana.org/assignments/language-subtag-registry/language-subtag-registry\">BCP 47</a> compliant language codes for the results to be rendered in. If there is no data for the result in the requested language, data will be returned in the default language for the entry.</p>"
         },
         "PoliticalView":{
           "shape":"CountryCode3",
@@ -672,6 +745,10 @@
         "Highlights":{
           "shape":"AutocompleteHighlights",
           "documentation":"<p>Indicates the starting and ending index of the place in the text query that match the found title. </p>"
+        },
+        "EstimatedPointAddress":{
+          "shape":"SensitiveBoolean",
+          "documentation":"<p>If <code>true</code>, indicates that the coordinates of the position and access points of the point address are estimated.</p>"
         }
       },
       "documentation":"<p>A result matching the input query text.</p>"
@@ -920,6 +997,46 @@
       "min":0,
       "sensitive":true
     },
+    "CrossReference":{
+      "type":"structure",
+      "required":[
+        "Source",
+        "SourcePlaceId"
+      ],
+      "members":{
+        "Source":{
+          "shape":"CrossReferenceSourceString",
+          "documentation":"<p>The name of the third-party data supplier (for example, <code>Yelp</code> or <code>TripAdvisor</code>).</p>"
+        },
+        "SourcePlaceId":{
+          "shape":"CrossReferenceSourcePlaceIdString",
+          "documentation":"<p>The place identifier assigned by the third-party supplier.</p>"
+        },
+        "SourceCategories":{
+          "shape":"CategoryList",
+          "documentation":"<p>The list of place category identifiers this supplier reference relates to.</p>"
+        }
+      },
+      "documentation":"<p>A reference to a third-party supplier's identifier for a place, enabling correlation of places across external systems.</p>"
+    },
+    "CrossReferenceList":{
+      "type":"list",
+      "member":{"shape":"CrossReference"},
+      "max":100,
+      "min":0
+    },
+    "CrossReferenceSourcePlaceIdString":{
+      "type":"string",
+      "max":100,
+      "min":1,
+      "sensitive":true
+    },
+    "CrossReferenceSourceString":{
+      "type":"string",
+      "max":100,
+      "min":1,
+      "sensitive":true
+    },
     "DistanceMeters":{
       "type":"long",
       "max":4294967295,
@@ -1044,6 +1161,13 @@
       "max":4,
       "min":1
     },
+    "GeocodeAddressNamesMode":{
+      "type":"string",
+      "enum":[
+        "Matched",
+        "Administrative"
+      ]
+    },
     "GeocodeFilter":{
       "type":"structure",
       "members":{
@@ -1066,14 +1190,18 @@
         "Intersection",
         "Street",
         "PointAddress",
-        "InterpolatedAddress"
+        "InterpolatedAddress",
+        "SecondaryAddress",
+        "PointOfInterest",
+        "Country",
+        "Region"
       ],
       "sensitive":true
     },
     "GeocodeFilterPlaceTypeList":{
       "type":"list",
       "member":{"shape":"GeocodeFilterPlaceType"},
-      "max":6,
+      "max":10,
       "min":1
     },
     "GeocodeIntendedUse":{
@@ -1151,6 +1279,10 @@
         "SecondaryAddressComponents":{
           "shape":"ParsedQuerySecondaryAddressComponentList",
           "documentation":"<p>Parsed secondary address components from the provided query text.</p> <note> <p>Coverage for <code>ParsedQuery.Address.SecondaryAddressComponents</code> is available in the following countries:</p> <p>AUS, AUT, BRA, CAN, ESP, FRA, GBR, HKG, IDN, IND, NZL, TUR, TWN, USA</p> </note>"
+        },
+        "OtherComponents":{
+          "shape":"ParsedQueryComponentList",
+          "documentation":"<p>Additional information extracted from the query that does not correspond to standard address components.</p>"
         }
       },
       "documentation":"<p>Parsed address components in the provided QueryText.</p>"
@@ -1275,7 +1407,7 @@
         },
         "Language":{
           "shape":"LanguageTag",
-          "documentation":"<p>A list of <a href=\"https://en.wikipedia.org/wiki/IETF_language_tag\">BCP 47</a> compliant language codes for the results to be rendered in. If there is no data for the result in the requested language, data will be returned in the default language for the entry.</p>"
+          "documentation":"<p>A list of <a href=\"https://www.iana.org/assignments/language-subtag-registry/language-subtag-registry\">BCP 47</a> compliant language codes for the results to be rendered in. If there is no data for the result in the requested language, data will be returned in the default language for the entry.</p>"
         },
         "PoliticalView":{
           "shape":"CountryCode",
@@ -1290,6 +1422,18 @@
           "documentation":"<p>Optional: The API key to be used for authorization. Either an API key or valid SigV4 signature must be provided when making a request.</p>",
           "location":"querystring",
           "locationName":"key"
+        },
+        "PostalCodeMode":{
+          "shape":"PostalCodeMode",
+          "documentation":"<p>The <code>PostalCodeMode</code> affects how postal code results are returned. If a postal code spans multiple localities and this value is empty, partial district or locality information may be returned under a single postal code result entry. If it's populated with the value <code>EnumerateSpannedLocalities</code>, all cities in that postal code are returned. If it's populated with the value <code>EnumerateSpannedDistricts</code>, all combinations of the postal code with the corresponding district and city names are returned.</p>"
+        },
+        "AddressTranslations":{
+          "shape":"AddressTranslationComponentList",
+          "documentation":"<p>Specifies which address components to include translations for. Translations include all name variants and alternative names for the requested fields in all available languages. Valid values are <code>District</code>, <code>Locality</code>, <code>Region</code>, and <code>SubRegion</code>.</p>"
+        },
+        "AddressNamesMode":{
+          "shape":"GeocodeAddressNamesMode",
+          "documentation":"<p>Specifies how address names are returned. If not set, the service returns normalized (official) names by default. When set to <code>Matched</code>, address names in the response are based on the input query rather than official names. When set to <code>Administrative</code>, the service returns the official administrative names for address components. <code>Administrative</code> currently applies only to addresses in the United States.</p>"
         }
       }
     },
@@ -1404,6 +1548,14 @@
         "SecondaryAddresses":{
           "shape":"RelatedPlaceList",
           "documentation":"<p>All secondary addresses that are associated with a main address. A secondary address is one that includes secondary designators, such as a Suite or Unit Number, Building, or Floor information.</p> <note> <p>Coverage for this functionality is available in the following countries: AUS, CAN, NZL, USA, PRI.</p> </note>"
+        },
+        "Translations":{
+          "shape":"TranslationDetails",
+          "documentation":"<p>All name translations and alternative names for the requested address fields in all available languages.</p>"
+        },
+        "EstimatedPointAddress":{
+          "shape":"SensitiveBoolean",
+          "documentation":"<p>If <code>true</code>, indicates that the coordinates of the position and access points of the point address are estimated.</p>"
         }
       },
       "documentation":"<p>The Geocoded result.</p>"
@@ -1433,14 +1585,19 @@
         "Phonemes",
         "Access",
         "Contact",
-        "SecondaryAddresses"
+        "SecondaryAddresses",
+        "CrossReferences"
       ]
     },
     "GetPlaceAdditionalFeatureList":{
       "type":"list",
       "member":{"shape":"GetPlaceAdditionalFeature"},
-      "max":5,
+      "max":6,
       "min":1
+    },
+    "GetPlaceAddressNamesMode":{
+      "type":"string",
+      "enum":["Administrative"]
     },
     "GetPlaceIntendedUse":{
       "type":"string",
@@ -1467,7 +1624,7 @@
         },
         "Language":{
           "shape":"LanguageTag",
-          "documentation":"<p> A list of <a href=\"https://en.wikipedia.org/wiki/IETF_language_tag\">BCP 47</a> compliant language codes for the results to be rendered in. If there is no data for the result in the requested language, data will be returned in the default language for the entry. For <a href=\"https://docs.aws.amazon.com/location/latest/developerguide/GrabMaps.html\">GrabMaps</a> customers, <code>ap-southeast-1</code> and <code>ap-southeast-5</code> regions support only the following codes: <code>en, id, km, lo, ms, my, pt, th, tl, vi, zh</code> </p>",
+          "documentation":"<p> A list of <a href=\"https://www.iana.org/assignments/language-subtag-registry/language-subtag-registry\">BCP 47</a> compliant language codes for the results to be rendered in. If there is no data for the result in the requested language, data will be returned in the default language for the entry. For <a href=\"https://docs.aws.amazon.com/location/latest/developerguide/GrabMaps.html\">GrabMaps</a> customers, <code>ap-southeast-1</code> and <code>ap-southeast-5</code> regions support only the following codes: <code>en, id, km, lo, ms, my, pt, th, tl, vi, zh</code> </p>",
           "location":"querystring",
           "locationName":"language"
         },
@@ -1488,6 +1645,12 @@
           "documentation":"<p>Optional: The API key to be used for authorization. Either an API key or valid SigV4 signature must be provided when making a request.</p>",
           "location":"querystring",
           "locationName":"key"
+        },
+        "AddressNamesMode":{
+          "shape":"GetPlaceAddressNamesMode",
+          "documentation":"<p>Specifies how address names are returned. When set to <code>Administrative</code>, the service returns the official administrative names for address components. <code>Administrative</code> currently applies only to addresses in the United States.</p>",
+          "location":"querystring",
+          "locationName":"address-names-mode"
         }
       }
     },
@@ -1591,6 +1754,18 @@
         "SecondaryAddresses":{
           "shape":"RelatedPlaceList",
           "documentation":"<p> All secondary addresses that are associated with a main address. A secondary address is one that includes secondary designators, such as a Suite or Unit Number, Building, or Floor information. Not available in <code>ap-southeast-1</code> and <code>ap-southeast-5</code> regions for <a href=\"https://docs.aws.amazon.com/location/latest/developerguide/GrabMaps.html\">GrabMaps</a> customers. </p> <note> <p>Coverage for this functionality is available in the following countries: AUS, CAN, NZL, USA, PRI.</p> </note>"
+        },
+        "PlaceAttributes":{
+          "shape":"PlaceAttributeList",
+          "documentation":"<p>A list of place attributes for the result, such as whether the business offers drive-through service.</p>"
+        },
+        "EstimatedPointAddress":{
+          "shape":"SensitiveBoolean",
+          "documentation":"<p>If <code>true</code>, indicates that the coordinates of the position and access points of the point address are estimated.</p>"
+        },
+        "CrossReferences":{
+          "shape":"CrossReferenceList",
+          "documentation":"<p>The list of supplier references available for this place. Requires the <code>CrossReferences</code> additional feature to be enabled.</p>"
         }
       }
     },
@@ -1988,7 +2163,7 @@
         },
         "Language":{
           "shape":"LanguageTag",
-          "documentation":"<p>A list of <a href=\"https://en.wikipedia.org/wiki/IETF_language_tag\">BCP 47</a> compliant language codes for the results to be rendered in. If there is no data for the result in the requested language, data will be returned in the default language for the entry.</p>"
+          "documentation":"<p>A list of <a href=\"https://www.iana.org/assignments/language-subtag-registry/language-subtag-registry\">BCP 47</a> compliant language codes for the results to be rendered in. If there is no data for the result in the requested language, data will be returned in the default language for the entry.</p>"
         },
         "Preferred":{
           "shape":"SensitiveBoolean",
@@ -2008,6 +2183,17 @@
       "max":50,
       "min":0,
       "sensitive":true
+    },
+    "PlaceAttribute":{
+      "type":"string",
+      "enum":["DriveThrough"],
+      "sensitive":true
+    },
+    "PlaceAttributeList":{
+      "type":"list",
+      "member":{"shape":"PlaceAttribute"},
+      "max":1,
+      "min":0
     },
     "PlaceType":{
       "type":"string",
@@ -2085,7 +2271,8 @@
       "type":"string",
       "enum":[
         "MergeAllSpannedLocalities",
-        "EnumerateSpannedLocalities"
+        "EnumerateSpannedLocalities",
+        "EnumerateSpannedDistricts"
       ]
     },
     "PostalCodeType":{
@@ -2274,6 +2461,10 @@
       "max":3,
       "min":1
     },
+    "ReverseGeocodeAddressNamesMode":{
+      "type":"string",
+      "enum":["Administrative"]
+    },
     "ReverseGeocodeFilter":{
       "type":"structure",
       "members":{
@@ -2291,13 +2482,15 @@
         "Intersection",
         "Street",
         "PointAddress",
-        "InterpolatedAddress"
+        "InterpolatedAddress",
+        "SecondaryAddress",
+        "PointOfInterest"
       ]
     },
     "ReverseGeocodeFilterPlaceTypeList":{
       "type":"list",
       "member":{"shape":"ReverseGeocodeFilterPlaceType"},
-      "max":5,
+      "max":7,
       "min":1
     },
     "ReverseGeocodeIntendedUse":{
@@ -2334,7 +2527,7 @@
         },
         "Language":{
           "shape":"LanguageTag",
-          "documentation":"<p> A list of <a href=\"https://en.wikipedia.org/wiki/IETF_language_tag\">BCP 47</a> compliant language codes for the results to be rendered in. If there is no data for the result in the requested language, data will be returned in the default language for the entry. For <a href=\"https://docs.aws.amazon.com/location/latest/developerguide/GrabMaps.html\">GrabMaps</a> customers, <code>ap-southeast-1</code> and <code>ap-southeast-5</code> regions support only the following codes: <code>en, id, km, lo, ms, my, pt, th, tl, vi, zh</code> </p>"
+          "documentation":"<p> A list of <a href=\"https://www.iana.org/assignments/language-subtag-registry/language-subtag-registry\">BCP 47</a> compliant language codes for the results to be rendered in. If there is no data for the result in the requested language, data will be returned in the default language for the entry. For <a href=\"https://docs.aws.amazon.com/location/latest/developerguide/GrabMaps.html\">GrabMaps</a> customers, <code>ap-southeast-1</code> and <code>ap-southeast-5</code> regions support only the following codes: <code>en, id, km, lo, ms, my, pt, th, tl, vi, zh</code> </p>"
         },
         "PoliticalView":{
           "shape":"CountryCode",
@@ -2353,6 +2546,10 @@
         "Heading":{
           "shape":"Heading",
           "documentation":"<p>The heading in degrees from true north in a navigation context. The heading is measured as the angle clockwise from the North direction.</p> <p>Example: North is <code>0</code> degrees, East is <code>90</code> degrees, South is <code>180</code> degrees, and West is <code>270</code> degrees.</p>"
+        },
+        "AddressNamesMode":{
+          "shape":"ReverseGeocodeAddressNamesMode",
+          "documentation":"<p>Specifies how address names are returned. When set to <code>Administrative</code>, the service returns the official administrative names for address components. <code>Administrative</code> currently applies only to addresses in the United States.</p>"
         }
       }
     },
@@ -2451,6 +2648,14 @@
         "Intersections":{
           "shape":"IntersectionList",
           "documentation":"<p> All Intersections that are near the provided address. Not available in <code>ap-southeast-1</code> and <code>ap-southeast-5</code> regions for <a href=\"https://docs.aws.amazon.com/location/latest/developerguide/GrabMaps.html\">GrabMaps</a> customers. </p>"
+        },
+        "MainAddress":{
+          "shape":"RelatedPlace",
+          "documentation":"<p>The main address corresponding to a place of type Secondary Address.</p>"
+        },
+        "EstimatedPointAddress":{
+          "shape":"SensitiveBoolean",
+          "documentation":"<p>If <code>true</code>, indicates that the coordinates of the position and access points of the point address are estimated.</p>"
         }
       },
       "documentation":"<p>The returned location from the <code>Reverse Geocode</code> action.</p>"
@@ -2479,13 +2684,14 @@
         "TimeZone",
         "Phonemes",
         "Access",
-        "Contact"
+        "Contact",
+        "CrossReferences"
       ]
     },
     "SearchNearbyAdditionalFeatureList":{
       "type":"list",
       "member":{"shape":"SearchNearbyAdditionalFeature"},
-      "max":4,
+      "max":5,
       "min":1
     },
     "SearchNearbyFilter":{
@@ -2560,7 +2766,7 @@
         },
         "Language":{
           "shape":"LanguageTag",
-          "documentation":"<p>A list of <a href=\"https://en.wikipedia.org/wiki/IETF_language_tag\">BCP 47</a> compliant language codes for the results to be rendered in. If there is no data for the result in the requested language, data will be returned in the default language for the entry.</p>"
+          "documentation":"<p>A list of <a href=\"https://www.iana.org/assignments/language-subtag-registry/language-subtag-registry\">BCP 47</a> compliant language codes for the results to be rendered in. If there is no data for the result in the requested language, data will be returned in the default language for the entry.</p>"
         },
         "PoliticalView":{
           "shape":"CountryCode",
@@ -2693,6 +2899,14 @@
         "Phonemes":{
           "shape":"PhonemeDetails",
           "documentation":"<p>How the various components of the result's address are pronounced in various languages.</p>"
+        },
+        "PlaceAttributes":{
+          "shape":"PlaceAttributeList",
+          "documentation":"<p>A list of place attributes for the result, such as whether the business offers drive-through service.</p>"
+        },
+        "CrossReferences":{
+          "shape":"CrossReferenceList",
+          "documentation":"<p>The list of supplier references available for this place. Requires the <code>CrossReferences</code> additional feature to be enabled.</p>"
         }
       },
       "documentation":"<p>The search results of nearby places.</p>"
@@ -2721,13 +2935,14 @@
         "TimeZone",
         "Phonemes",
         "Access",
-        "Contact"
+        "Contact",
+        "CrossReferences"
       ]
     },
     "SearchTextAdditionalFeatureList":{
       "type":"list",
       "member":{"shape":"SearchTextAdditionalFeature"},
-      "max":4,
+      "max":5,
       "min":1
     },
     "SearchTextFilter":{
@@ -2781,7 +2996,7 @@
         },
         "Language":{
           "shape":"LanguageTag",
-          "documentation":"<p>A list of <a href=\"https://en.wikipedia.org/wiki/IETF_language_tag\">BCP 47</a> compliant language codes for the results to be rendered in. If there is no data for the result in the requested language, data will be returned in the default language for the entry. For <a href=\"https://docs.aws.amazon.com/location/latest/developerguide/GrabMaps.html\">GrabMaps</a> customers, <code>ap-southeast-1</code> and <code>ap-southeast-5</code> regions support only the following codes: <code>en, id, km, lo, ms, my, pt, th, tl, vi, zh</code> </p>"
+          "documentation":"<p>A list of <a href=\"https://www.iana.org/assignments/language-subtag-registry/language-subtag-registry\">BCP 47</a> compliant language codes for the results to be rendered in. If there is no data for the result in the requested language, data will be returned in the default language for the entry. For <a href=\"https://docs.aws.amazon.com/location/latest/developerguide/GrabMaps.html\">GrabMaps</a> customers, <code>ap-southeast-1</code> and <code>ap-southeast-5</code> regions support only the following codes: <code>en, id, km, lo, ms, my, pt, th, tl, vi, zh</code> </p>"
         },
         "PoliticalView":{
           "shape":"CountryCode",
@@ -2794,6 +3009,10 @@
         "NextToken":{
           "shape":"Token",
           "documentation":"<p>If <code>nextToken</code> is returned, there are more results available. The value of <code>nextToken</code> is a unique pagination token for each page. </p>"
+        },
+        "TravelMode":{
+          "shape":"SearchTextTravelMode",
+          "documentation":"<p>Indicates the mode of mobility used by the end user. This is used to improve the relevance of search results. Valid values are <code>Car</code>, <code>Scooter</code>, and <code>Truck</code>.</p>"
         },
         "Key":{
           "shape":"ApiKey",
@@ -2899,7 +3118,7 @@
         },
         "OpeningHours":{
           "shape":"OpeningHoursList",
-          "documentation":"<p>List of opening hours objects.</p>"
+          "documentation":"<p> List of opening hours objects. Not available in <code>ap-southeast-1</code> and <code>ap-southeast-5</code> regions for <a href=\"https://docs.aws.amazon.com/location/latest/developerguide/GrabMaps.html\">GrabMaps</a> customers. </p>"
         },
         "AccessPoints":{
           "shape":"AccessPointList",
@@ -2920,6 +3139,14 @@
         "Phonemes":{
           "shape":"PhonemeDetails",
           "documentation":"<p>How the various components of the result's address are pronounced in various languages.</p>"
+        },
+        "PlaceAttributes":{
+          "shape":"PlaceAttributeList",
+          "documentation":"<p>A list of place attributes for the result, such as whether the business offers drive-through service.</p>"
+        },
+        "CrossReferences":{
+          "shape":"CrossReferenceList",
+          "documentation":"<p>The list of supplier references available for this place. Requires the <code>CrossReferences</code> additional feature to be enabled.</p>"
         }
       },
       "documentation":"<p>The text search result.</p>"
@@ -2941,6 +3168,14 @@
       "max":200,
       "min":0,
       "sensitive":true
+    },
+    "SearchTextTravelMode":{
+      "type":"string",
+      "enum":[
+        "Car",
+        "Scooter",
+        "Truck"
+      ]
     },
     "SecondaryAddressComponent":{
       "type":"structure",
@@ -2994,6 +3229,10 @@
       "box":true,
       "sensitive":true
     },
+    "SensitiveString":{
+      "type":"string",
+      "sensitive":true
+    },
     "StreetComponents":{
       "type":"structure",
       "members":{
@@ -3027,7 +3266,7 @@
         },
         "Language":{
           "shape":"LanguageTag",
-          "documentation":"<p>A <a href=\"https://en.wikipedia.org/wiki/IETF_language_tag\">BCP 47</a> compliant language codes for the results to be rendered in. If there is no data for the result in the requested language, data will be returned in the default language for the entry.</p>"
+          "documentation":"<p>A <a href=\"https://www.iana.org/assignments/language-subtag-registry/language-subtag-registry\">BCP 47</a> compliant language codes for the results to be rendered in. If there is no data for the result in the requested language, data will be returned in the default language for the entry.</p>"
         }
       },
       "documentation":"<p>Components of a street.</p>"
@@ -3115,13 +3354,14 @@
         "Core",
         "TimeZone",
         "Phonemes",
-        "Access"
+        "Access",
+        "CrossReferences"
       ]
     },
     "SuggestAdditionalFeatureList":{
       "type":"list",
       "member":{"shape":"SuggestAdditionalFeature"},
-      "max":4,
+      "max":5,
       "min":1
     },
     "SuggestAddressHighlights":{
@@ -3225,6 +3465,14 @@
         "Phonemes":{
           "shape":"PhonemeDetails",
           "documentation":"<p> How the various components of the result's address are pronounced in various languages. Not available in <code>ap-southeast-1</code> and <code>ap-southeast-5</code> regions for <a href=\"https://docs.aws.amazon.com/location/latest/developerguide/GrabMaps.html\">GrabMaps</a> customers. </p>"
+        },
+        "PlaceAttributes":{
+          "shape":"PlaceAttributeList",
+          "documentation":"<p>A list of place attributes for the result, such as whether the business offers drive-through service.</p>"
+        },
+        "CrossReferences":{
+          "shape":"CrossReferenceList",
+          "documentation":"<p>The list of supplier references available for this place. Requires the <code>CrossReferences</code> additional feature to be enabled.</p>"
         }
       },
       "documentation":"<p>The suggested place results.</p>"
@@ -3285,7 +3533,7 @@
         },
         "Language":{
           "shape":"LanguageTag",
-          "documentation":"<p> A list of <a href=\"https://en.wikipedia.org/wiki/IETF_language_tag\">BCP 47</a> compliant language codes for the results to be rendered in. If there is no data for the result in the requested language, data will be returned in the default language for the entry. For <a href=\"https://docs.aws.amazon.com/location/latest/developerguide/GrabMaps.html\">GrabMaps</a> customers, <code>ap-southeast-1</code> and <code>ap-southeast-5</code> regions support only the following codes: <code>en, id, km, lo, ms, my, pt, th, tl, vi, zh</code> </p>"
+          "documentation":"<p> A list of <a href=\"https://www.iana.org/assignments/language-subtag-registry/language-subtag-registry\">BCP 47</a> compliant language codes for the results to be rendered in. If there is no data for the result in the requested language, data will be returned in the default language for the entry. For <a href=\"https://docs.aws.amazon.com/location/latest/developerguide/GrabMaps.html\">GrabMaps</a> customers, <code>ap-southeast-1</code> and <code>ap-southeast-5</code> regions support only the following codes: <code>en, id, km, lo, ms, my, pt, th, tl, vi, zh</code> </p>"
         },
         "PoliticalView":{
           "shape":"CountryCode",
@@ -3294,6 +3542,10 @@
         "IntendedUse":{
           "shape":"SuggestIntendedUse",
           "documentation":"<p> Indicates if the query results will be persisted in customer infrastructure. Defaults to <code>SingleUse</code> (not stored). Currently, <code>Suggest</code> does not support storage of results. </p>"
+        },
+        "TravelMode":{
+          "shape":"SuggestTravelMode",
+          "documentation":"<p>Indicates the mode of mobility used by the end user. This is used to improve the relevance of search results. Valid values are <code>Car</code>, <code>Scooter</code>, and <code>Truck</code>.</p>"
         },
         "Key":{
           "shape":"ApiKey",
@@ -3387,6 +3639,14 @@
         "Query"
       ]
     },
+    "SuggestTravelMode":{
+      "type":"string",
+      "enum":[
+        "Car",
+        "Scooter",
+        "Truck"
+      ]
+    },
     "ThrottlingException":{
       "type":"structure",
       "required":["Message"],
@@ -3444,6 +3704,80 @@
       "type":"string",
       "max":2000,
       "min":1
+    },
+    "TranslationDetails":{
+      "type":"structure",
+      "members":{
+        "Locality":{
+          "shape":"AdminNamesList",
+          "documentation":"<p>A list of administrative names and translations for the locality address component.</p>"
+        },
+        "Region":{
+          "shape":"AdminNamesList",
+          "documentation":"<p>A list of administrative names and translations for the region address component.</p>"
+        },
+        "District":{
+          "shape":"AdminNamesList",
+          "documentation":"<p>A list of administrative names and translations for the district address component.</p>"
+        },
+        "SubRegion":{
+          "shape":"AdminNamesList",
+          "documentation":"<p>A list of administrative names and translations for the sub-region address component.</p>"
+        }
+      },
+      "documentation":"<p>Translation details for the address, including alternative names and translations in available languages.</p>"
+    },
+    "TranslationName":{
+      "type":"structure",
+      "required":[
+        "Value",
+        "Type"
+      ],
+      "members":{
+        "Value":{
+          "shape":"TranslationNameValueString",
+          "documentation":"<p>The translated or alternative name value.</p>"
+        },
+        "Language":{
+          "shape":"LanguageTag",
+          "documentation":"<p>A <a href=\"https://www.iana.org/assignments/language-subtag-registry/language-subtag-registry\">BCP 47</a> compliant language code for the translation name.</p>"
+        },
+        "Type":{
+          "shape":"TranslationNameType",
+          "documentation":"<p>The type of translation name. Valid values are <code>Abbreviation</code>, <code>AreaCode</code>, <code>BaseName</code>, <code>Exonym</code>, <code>Shortened</code>, and <code>Synonym</code>.</p>"
+        },
+        "Primary":{
+          "shape":"SensitiveBoolean",
+          "documentation":"<p>If <code>true</code>, indicates this is the primary name variant for the given language.</p>"
+        },
+        "Transliterated":{
+          "shape":"SensitiveBoolean",
+          "documentation":"<p>If <code>true</code>, indicates this name is a transliterated version rather than a native script translation.</p>"
+        }
+      },
+      "documentation":"<p>A translation or alternative name for an address component.</p>"
+    },
+    "TranslationNameList":{
+      "type":"list",
+      "member":{"shape":"TranslationName"},
+      "min":1
+    },
+    "TranslationNameType":{
+      "type":"string",
+      "enum":[
+        "Abbreviation",
+        "AreaCode",
+        "BaseName",
+        "Exonym",
+        "Shortened",
+        "Synonym"
+      ]
+    },
+    "TranslationNameValueString":{
+      "type":"string",
+      "max":200,
+      "min":1,
+      "sensitive":true
     },
     "TypePlacement":{
       "type":"string",
@@ -3553,5 +3887,5 @@
       "sensitive":true
     }
   },
-  "documentation":"<p> The Places API enables powerful location search and geocoding capabilities for your applications, offering global coverage with rich, detailed information. Key features include: </p> <ul> <li> <p>Forward and reverse geocoding for addresses and coordinates</p> </li> <li> <p>Comprehensive place searches with detailed information, including:</p> <ul> <li> <p>Business names and addresses</p> </li> <li> <p>Contact information</p> </li> <li> <p>Hours of operation</p> </li> <li> <p>POI (Points of Interest) categories</p> </li> <li> <p>Food types for restaurants</p> </li> <li> <p>Chain affiliation for relevant businesses</p> </li> </ul> </li> <li> <p>Global data coverage with a wide range of POI categories</p> </li> <li> <p>Regular data updates to ensure accuracy and relevance</p> </li> </ul>"
+  "documentation":"<p> The Places API enables powerful location search and geocoding capabilities for your applications, offering global coverage with rich, detailed information. Key features include: </p> <ul> <li> <p>Forward and reverse geocoding for addresses and coordinates. See <a href=\"https://docs.aws.amazon.com/location/latest/APIReference/API_geoplaces_Geocode.html\">Geocode</a> and <a href=\"https://docs.aws.amazon.com/location/latest/APIReference/API_geoplaces_ReverseGeocode.html\">ReverseGeocode</a>.</p> </li> <li> <p>Comprehensive place searches with detailed information. See <a href=\"https://docs.aws.amazon.com/location/latest/APIReference/API_geoplaces_SearchText.html\">SearchText</a>, <a href=\"https://docs.aws.amazon.com/location/latest/APIReference/API_geoplaces_SearchNearby.html\">SearchNearby</a>, and <a href=\"https://docs.aws.amazon.com/location/latest/APIReference/API_geoplaces_GetPlace.html\">GetPlace</a>. Place information you can find include:</p> <ul> <li> <p>Business names and addresses</p> </li> <li> <p>Contact information</p> </li> <li> <p>Hours of operation</p> </li> <li> <p>Points of Interest (POI) categories</p> </li> <li> <p>Food types for restaurants</p> </li> <li> <p>Chain affiliation for relevant businesses</p> </li> </ul> </li> <li> <p>Address and place completion as users type, enhancing input efficiency by completing partial queries with valid addresses. See <a href=\"https://docs.aws.amazon.com/location/latest/APIReference/API_geoplaces_Autocomplete.html\">Autocomplete</a>.</p> </li> <li> <p>Intelligent place and query recommendation based on user's input or context, returning relevant places, points of interest, query terms, or search categories. See <a href=\"https://docs.aws.amazon.com/location/latest/APIReference/API_geoplaces_Suggest.html\">Suggest</a>.</p> </li> <li> <p>Global data coverage with a wide range of POI categories.</p> </li> <li> <p>Regular data updates to ensure accuracy and relevance.</p> </li> <li> <p>Bulk address validation for verifying and standardizing large volumes of addresses in a single operation using <a href=\"https://docs.aws.amazon.com/location/latest/APIReference/Welcome.html#Welcome_Amazon_Location_Service_Jobs\">Amazon Location Service Jobs</a>.</p> </li> </ul>"
 }

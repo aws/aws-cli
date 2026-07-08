@@ -754,7 +754,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Start a failure mode assessment.</p>"
+      "documentation":"<p>Starts a failure mode assessment.</p>"
     },
     "TagResource":{
       "name":"TagResource",
@@ -973,6 +973,10 @@
         "multiRegionRtoRpo":{
           "shape":"AchievabilityStatus",
           "documentation":"<p>The achievability status of the multi-Region RTO and RPO targets for the service.</p>"
+        },
+        "dataRecoveryTimeBetweenBackups":{
+          "shape":"AchievabilityStatus",
+          "documentation":"<p>The achievability status of the data recovery time between backups for the service.</p>"
         }
       },
       "documentation":"<p>Describes the achievability status of a service's resilience targets based on the most recent assessment.</p>"
@@ -1116,6 +1120,11 @@
         "DESIGN_FILE_ACCESS_DENIED"
       ]
     },
+    "AssessmentSortField":{
+      "type":"string",
+      "documentation":"<p>The field by which to sort failure mode assessment results.</p>",
+      "enum":["STARTED_AT"]
+    },
     "AssessmentStatus":{
       "type":"string",
       "enum":[
@@ -1126,12 +1135,24 @@
         "SUCCESS"
       ]
     },
+    "AssessmentStatusList":{
+      "type":"list",
+      "member":{"shape":"AssessmentStatus"},
+      "max":5,
+      "min":0
+    },
     "AssessmentStep":{
       "type":"string",
       "enum":[
+        "TOPOLOGY_GENERATION",
+        "INPUT_VALIDATION",
+        "DESIGN_ANALYSIS",
         "TOPOLOGY_ENHANCEMENT",
         "SERVICE_FUNCTION_GENERATION",
-        "RESILIENCE_ASSESSMENT"
+        "POLICY_VALIDATION",
+        "RESILIENCE_ASSESSMENT",
+        "FAILURE_MODE_FINDINGS_CONSOLIDATION",
+        "FAILURE_MODE_FINDINGS_ENRICHMENT"
       ]
     },
     "AssessmentSummary":{
@@ -1784,9 +1805,27 @@
         "updatedAt":{
           "shape":"Timestamp",
           "documentation":"<p>The timestamp when dependency discovery was last updated.</p>"
+        },
+        "eligibleResourceCount":{
+          "shape":"DependencyDiscoveryConfigEligibleResourceCountInteger",
+          "documentation":"<p>The count of resources eligible for dependency attribution.</p>"
+        },
+        "message":{
+          "shape":"DependencyDiscoveryConfigMessageString",
+          "documentation":"<p>A status message for dependency discovery, displayed during the initialization state.</p>"
         }
       },
       "documentation":"<p>Configuration for dependency discovery on a service.</p>"
+    },
+    "DependencyDiscoveryConfigEligibleResourceCountInteger":{
+      "type":"integer",
+      "box":true,
+      "min":0
+    },
+    "DependencyDiscoveryConfigMessageString":{
+      "type":"string",
+      "max":1024,
+      "min":0
     },
     "DependencyDiscoveryInput":{
       "type":"string",
@@ -2578,6 +2617,36 @@
           "location":"querystring",
           "locationName":"serviceArn"
         },
+        "assessmentStatuses":{
+          "shape":"AssessmentStatusList",
+          "documentation":"<p>Specifies the assessment statuses to include in the results.</p>",
+          "location":"querystring",
+          "locationName":"assessmentStatuses"
+        },
+        "startedAfter":{
+          "shape":"Timestamp",
+          "documentation":"<p>Specifies that only assessments that started at or after this timestamp appear in the results.</p>",
+          "location":"querystring",
+          "locationName":"startedAfter"
+        },
+        "endedBefore":{
+          "shape":"Timestamp",
+          "documentation":"<p>Specifies that only assessments that ended at or before this timestamp appear in the results.</p>",
+          "location":"querystring",
+          "locationName":"endedBefore"
+        },
+        "sortBy":{
+          "shape":"AssessmentSortField",
+          "documentation":"<p>The field to use for sorting failure mode assessments.</p>",
+          "location":"querystring",
+          "locationName":"sortBy"
+        },
+        "sortOrder":{
+          "shape":"SortOrder",
+          "documentation":"<p>The sort order for results.</p>",
+          "location":"querystring",
+          "locationName":"sortOrder"
+        },
         "maxResults":{
           "shape":"MaxResults",
           "location":"querystring",
@@ -2773,6 +2842,18 @@
           "documentation":"<p>Filter resources by AWS Region.</p>",
           "location":"querystring",
           "locationName":"awsRegion"
+        },
+        "resourceTypes":{
+          "shape":"ResourceTypeFilterList",
+          "documentation":"<p>The CloudFormation resource types to include in the response.</p>",
+          "location":"querystring",
+          "locationName":"resourceTypes"
+        },
+        "billable":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether to filter non-billable resources. When true (the default), the operation returns only billable resources.</p>",
+          "location":"querystring",
+          "locationName":"billable"
         },
         "maxResults":{
           "shape":"MaxResults",
@@ -3641,6 +3722,17 @@
       "max":10,
       "min":0
     },
+    "ResourceTypeFilter":{
+      "type":"string",
+      "max":256,
+      "min":1
+    },
+    "ResourceTypeFilterList":{
+      "type":"list",
+      "member":{"shape":"ResourceTypeFilter"},
+      "max":5,
+      "min":1
+    },
     "ResourceTypeList":{
       "type":"list",
       "member":{"shape":"String"}
@@ -4360,6 +4452,22 @@
           "shape":"String",
           "documentation":"<p>The identifier of the destination resource.</p>"
         },
+        "sourceRegion":{
+          "shape":"AwsRegion",
+          "documentation":"<p>The AWS Region of the source resource.</p>"
+        },
+        "destinationRegion":{
+          "shape":"AwsRegion",
+          "documentation":"<p>The AWS Region of the destination resource.</p>"
+        },
+        "sourceAccount":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The AWS account ID of the source resource.</p>"
+        },
+        "destinationAccount":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The AWS account ID of the destination resource.</p>"
+        },
         "properties":{
           "shape":"EdgePropertyList",
           "documentation":"<p>The properties of the topology edge.</p>"
@@ -4399,6 +4507,14 @@
         }
       },
       "documentation":"<p>Contains the effective availability SLO value and its source.</p>"
+    },
+    "SortOrder":{
+      "type":"string",
+      "documentation":"<p>The order in which to sort results.</p>",
+      "enum":[
+        "ASC",
+        "DESC"
+      ]
     },
     "StartFailureModeAssessmentRequest":{
       "type":"structure",

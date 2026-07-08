@@ -703,6 +703,9 @@ PLUGIN_REGISTRY = {
     'building-command-table.ses': [
         ('awscli.customizations.removals', 'register_removals')
     ],
+    'building-command-table.signin': [
+        ('awscli.customizations.signin', 'register_rename_signin_commands')
+    ],
     'building-command-table.ssm': [
         ('awscli.customizations.sessionmanager', 'register_ssm_session')
     ],

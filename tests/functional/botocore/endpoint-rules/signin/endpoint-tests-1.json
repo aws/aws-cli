@@ -218,6 +218,116 @@
                 "UseFIPS": false,
                 "UseDualStack": false
             }
+        },
+        {
+            "documentation": "OAuth endpoint in us-east-1 (aws partition)",
+            "expect": {
+                "endpoint": {
+                    "url": "https://us-east-1.oauth.signin.aws",
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "name": "sigv4",
+                                "signingName": "signin",
+                                "signingRegion": "us-east-1"
+                            }
+                        ]
+                    }
+                }
+            },
+            "params": {
+                "IsOAuthEndpoint": true,
+                "Region": "us-east-1",
+                "UseFIPS": false,
+                "UseDualStack": false
+            }
+        },
+        {
+            "documentation": "OAuth endpoint in us-west-2 (aws partition)",
+            "expect": {
+                "endpoint": {
+                    "url": "https://us-west-2.oauth.signin.aws",
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "name": "sigv4",
+                                "signingName": "signin",
+                                "signingRegion": "us-west-2"
+                            }
+                        ]
+                    }
+                }
+            },
+            "params": {
+                "IsOAuthEndpoint": true,
+                "Region": "us-west-2",
+                "UseFIPS": false,
+                "UseDualStack": false
+            }
+        },
+        {
+            "documentation": "OAuth endpoint with FIPS returns an error (no FIPS variant exists)",
+            "expect": {
+                "error": "FIPS endpoints are not supported for OAuth operations. Disable FIPS or use a non-OAuth operation."
+            },
+            "params": {
+                "IsOAuthEndpoint": true,
+                "Region": "us-east-1",
+                "UseFIPS": true,
+                "UseDualStack": false
+            }
+        },
+        {
+            "documentation": "OAuth endpoint with FIPS returns an error in us-west-2 (aws partition)",
+            "expect": {
+                "error": "FIPS endpoints are not supported for OAuth operations. Disable FIPS or use a non-OAuth operation."
+            },
+            "params": {
+                "IsOAuthEndpoint": true,
+                "Region": "us-west-2",
+                "UseFIPS": true,
+                "UseDualStack": false
+            }
+        },
+        {
+            "documentation": "OAuth endpoint with FIPS returns an error in cn-north-1 (non-aws partition, error is partition-agnostic)",
+            "expect": {
+                "error": "FIPS endpoints are not supported for OAuth operations. Disable FIPS or use a non-OAuth operation."
+            },
+            "params": {
+                "IsOAuthEndpoint": true,
+                "Region": "cn-north-1",
+                "UseFIPS": true,
+                "UseDualStack": false
+            }
+        },
+        {
+            "documentation": "OAuth endpoint with FIPS returns an error even with a custom SDK endpoint override",
+            "expect": {
+                "error": "FIPS endpoints are not supported for OAuth operations. Disable FIPS or use a non-OAuth operation."
+            },
+            "params": {
+                "IsOAuthEndpoint": true,
+                "Region": "us-east-1",
+                "Endpoint": "https://custom.signin.example.com",
+                "UseFIPS": true,
+                "UseDualStack": false
+            }
+        },
+        {
+            "documentation": "OAuth operation with custom SDK endpoint override",
+            "expect": {
+                "endpoint": {
+                    "url": "https://custom.signin.example.com"
+                }
+            },
+            "params": {
+                "IsOAuthEndpoint": true,
+                "Region": "us-east-1",
+                "Endpoint": "https://custom.signin.example.com",
+                "UseFIPS": false,
+                "UseDualStack": false
+            }
         }
     ],
     "version": "1.0"

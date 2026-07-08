@@ -12,6 +12,7 @@ from awscli.customizations.update import (
     UpdateError,
     WindowsUpdateCommand,
 )
+from tests.markers import skip_if_windows
 
 USER_INSTALL = {
     'install_dir': '/home/user/.local/share/aws-cli',
@@ -164,6 +165,7 @@ class TestUnixUpdateCommand:
         with pytest.raises(UpdateError, match='exit code 8'):
             command([], global_args())
 
+    @skip_if_windows
     def test_system_detected_from_binary_path_when_no_metadata(
         self, monkeypatch
     ):
@@ -177,6 +179,7 @@ class TestUnixUpdateCommand:
 
         assert '--system' in cmd
 
+    @skip_if_windows
     def test_user_detected_from_binary_path_when_no_metadata(
         self, monkeypatch
     ):

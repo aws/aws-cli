@@ -107,9 +107,7 @@ class UnixUpdateCommand(BaseUpdateCommand):
 
     def __init__(self, session, is_elevated=None, runner=None, **kwargs):
         super().__init__(session, **kwargs)
-        self._is_elevated = (
-            os.geteuid() == 0 if is_elevated is None else is_elevated
-        )
+        self._is_elevated = is_elevated
         self._run_update = runner or self._run_install
 
     def _do_update(self):
@@ -159,7 +157,12 @@ class UnixUpdateCommand(BaseUpdateCommand):
         return aws_bin.startswith(self.SYSTEM_INSTALL_DIR + os.sep)
 
     def _assert_elevated(self):
-        if not self._is_elevated:
+        elevated = (
+            os.geteuid() == 0
+            if self._is_elevated is None
+            else self._is_elevated
+        )
+        if not elevated:
             raise UpdateError(
                 'Updating a system-wide AWS CLI installation requires root.'
             )
@@ -177,17 +180,9 @@ class WindowsUpdateCommand(BaseUpdateCommand):
         **kwargs,
     ):
         super().__init__(session, **kwargs)
-        self._is_elevated = (
-            bool(ctypes.windll.shell32.IsUserAnAdmin())
-            if is_elevated is None
-            else is_elevated
-        )
+        self._is_elevated = is_elevated
         self._run_update = runner or self._run_install
-        self._powershell_path = (
-            self._find_powershell()
-            if powershell_path is None
-            else powershell_path
-        )
+        self._powershell_path = powershell_path
 
     def _do_update(self):
         is_system = self._is_system_install(self._install_metadata)
@@ -199,7 +194,7 @@ class WindowsUpdateCommand(BaseUpdateCommand):
         self._download(self.SCRIPT_URL, script_path)
 
         wrapper_path = os.path.join(tmp, 'aws-update.cmd')
-        ps_exe = self._powershell_path
+        ps_exe = self._powershell_path or self._find_powershell()
         ps_args = f'-NoProfile -File "{script_path}"'
         if is_system:
             ps_args += ' -System'
@@ -257,7 +252,12 @@ class WindowsUpdateCommand(BaseUpdateCommand):
         return os.path.normcase(buf.value) == os.path.normcase(canonical)
 
     def _assert_elevated(self):
-        if not self._is_elevated:
+        elevated = (
+            bool(ctypes.windll.shell32.IsUserAnAdmin())
+            if self._is_elevated is None
+            else self._is_elevated
+        )
+        if not elevated:
             raise UpdateError(
                 'Updating a system-wide AWS CLI install requires an '
                 'elevated shell. Re-run from an Administrator prompt.'

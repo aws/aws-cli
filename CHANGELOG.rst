@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+2.35.19
+=======
+
+* api-change:``signin``: Adds support for OAuth 2.0 token operations in AWS Sign-In, CreateOAuth2TokenWithIAM (client credentials flow), IntrospectOAuth2TokenWithIAM (token inspection), and RevokeOAuth2TokenWithIAM (token revocation).
+
+
 2.35.18
 =======
 

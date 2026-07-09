@@ -794,7 +794,7 @@
           "documentation":"<p>User does not have sufficient access to perform this action.</p>"
         }
       },
-      "documentation":"<p/>",
+      "documentation":"<p>User does not have sufficient access to perform this action.</p>",
       "error":{
         "httpStatusCode":403,
         "senderFault":true
@@ -825,6 +825,10 @@
         "mediaTailorPlaybackConfigurations":{
           "shape":"MediaTailorPlaybackConfigurationsList",
           "documentation":"<p>List of integration configurations with MediaTailor resources. The first item in the list is the default playback configuration used for the ad configuration. To select a different configuration per viewing session, see <a href=\"https://docs.aws.amazon.com/ivs/latest/LowLatencyUserGuide/private-channels-generate-tokens.html\">Generate and Sign IVS Playback Tokens</a>.</p>"
+        },
+        "postRollConfiguration":{
+          "shape":"PostRollConfiguration",
+          "documentation":"<p>Configuration for the post-roll ad break to use for this ad configuration.</p>"
         },
         "tags":{
           "shape":"Tags",
@@ -867,6 +871,10 @@
         "mediaTailorPlaybackConfigurations":{
           "shape":"MediaTailorPlaybackConfigurationsList",
           "documentation":"<p>List of integration configurations with MediaTailor resources. The first item in the list is the default playback configuration used for the ad configuration. To select a different configuration per viewing session, see <a href=\"https://docs.aws.amazon.com/ivs/latest/LowLatencyUserGuide/private-channels-generate-tokens.html\">Generate and Sign IVS Playback Tokens</a>.</p>"
+        },
+        "postRollConfiguration":{
+          "shape":"PostRollConfiguration",
+          "documentation":"<p>Configuration for the post-roll ad break to use for this ad configuration.</p>"
         },
         "tags":{
           "shape":"Tags",
@@ -1344,7 +1352,7 @@
           "documentation":"<p>The stream is offline for the given channel ARN.</p>"
         }
       },
-      "documentation":"<p/>",
+      "documentation":"<p>The stream is offline for the given channel ARN.</p>",
       "error":{
         "httpStatusCode":404,
         "senderFault":true
@@ -1482,7 +1490,7 @@
           "documentation":"<p>Updating or deleting a resource can cause an inconsistent state.</p>"
         }
       },
-      "documentation":"<p/>",
+      "documentation":"<p>Updating or deleting a resource can cause an inconsistent state.</p>",
       "error":{
         "httpStatusCode":409,
         "senderFault":true
@@ -1507,6 +1515,10 @@
         "mediaTailorPlaybackConfigurations":{
           "shape":"MediaTailorPlaybackConfigurationsList",
           "documentation":"<p>List of integration configurations with MediaTailor resources. The first item in the list is the default playback configuration used for the ad configuration. To select a different configuration per viewing session, see <a href=\"https://docs.aws.amazon.com/ivs/latest/LowLatencyUserGuide/private-channels-generate-tokens.html\">Generate and Sign IVS Playback Tokens</a>.</p>"
+        },
+        "postRollConfiguration":{
+          "shape":"PostRollConfiguration",
+          "documentation":"<p>Configuration for the post-roll ad break to use for this ad configuration. Default: disabled (<code>enabled</code> set to false, <code>durationSeconds</code> set to 15).</p>"
         },
         "tags":{
           "shape":"Tags",
@@ -2060,7 +2072,7 @@
           "documentation":"<p>Unexpected error during processing of request.</p>"
         }
       },
-      "documentation":"<p/>",
+      "documentation":"<p>Unexpected error during processing of request.</p>",
       "error":{"httpStatusCode":500},
       "exception":true,
       "fault":true
@@ -2494,7 +2506,7 @@
           "documentation":"<p> Your account is pending verification. </p>"
         }
       },
-      "documentation":"<p/>",
+      "documentation":"<p>Your account is pending verification.</p>",
       "error":{
         "httpStatusCode":403,
         "senderFault":true
@@ -2668,6 +2680,24 @@
       "documentation":"<p>Summary information about a PlaybackRestrictionPolicy.</p>"
     },
     "PlaybackURL":{"type":"string"},
+    "PostRollConfiguration":{
+      "type":"structure",
+      "required":[
+        "durationSeconds",
+        "enabled"
+      ],
+      "members":{
+        "durationSeconds":{
+          "shape":"AdDurationSeconds",
+          "documentation":"<p>Duration of the post-roll ad break, in seconds.</p>"
+        },
+        "enabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether the post-roll ad configuration is enabled.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for the post-roll ad break to use for this ad configuration.</p>"
+    },
     "PutMetadataRequest":{
       "type":"structure",
       "required":[
@@ -2892,7 +2922,7 @@
           "documentation":"<p>Request references a resource which does not exist.</p>"
         }
       },
-      "documentation":"<p/>",
+      "documentation":"<p>Request references a resource which does not exist.</p>",
       "error":{
         "httpStatusCode":404,
         "senderFault":true
@@ -2972,7 +3002,7 @@
           "documentation":"<p>Request would cause a service quota to be exceeded.</p>"
         }
       },
-      "documentation":"<p/>",
+      "documentation":"<p>Request would cause a service quota to be exceeded.</p>",
       "error":{
         "httpStatusCode":402,
         "senderFault":true
@@ -3035,7 +3065,7 @@
           "documentation":"<p>The service is temporarily unavailable.</p>"
         }
       },
-      "documentation":"<p/>",
+      "documentation":"<p>The service is temporarily unavailable.</p>",
       "error":{"httpStatusCode":503},
       "exception":true,
       "fault":true
@@ -3418,7 +3448,7 @@
           "documentation":"<p>The stream is temporarily unavailable.</p>"
         }
       },
-      "documentation":"<p/>",
+      "documentation":"<p>The stream is temporarily unavailable.</p>",
       "error":{"httpStatusCode":503},
       "exception":true,
       "fault":true
@@ -3535,7 +3565,7 @@
           "documentation":"<p>Request was denied due to request throttling.</p>"
         }
       },
-      "documentation":"<p/>",
+      "documentation":"<p>Request was denied due to request throttling.</p>",
       "error":{
         "httpStatusCode":429,
         "senderFault":true
@@ -3635,6 +3665,10 @@
         "mediaTailorPlaybackConfigurations":{
           "shape":"MediaTailorPlaybackConfigurationsList",
           "documentation":"<p>List of integration configurations with MediaTailor resources. The first item in the list is the default playback configuration used for the ad configuration. To select a different configuration per viewing session, see <a href=\"https://docs.aws.amazon.com/ivs/latest/LowLatencyUserGuide/private-channels-generate-tokens.html\">Generate and Sign IVS Playback Tokens</a>.</p>"
+        },
+        "postRollConfiguration":{
+          "shape":"PostRollConfiguration",
+          "documentation":"<p>Configuration for the post-roll ad break to use for this ad configuration.</p>"
         }
       }
     },
@@ -3802,7 +3836,7 @@
           "documentation":"<p>The input fails to satisfy the constraints specified by an Amazon Web Services service.</p>"
         }
       },
-      "documentation":"<p/>",
+      "documentation":"<p>The input fails to satisfy the constraints specified by an Amazon Web Services service.</p>",
       "error":{
         "httpStatusCode":400,
         "senderFault":true

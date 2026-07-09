@@ -16450,6 +16450,21 @@
           "shape":"PlatformValues",
           "documentation":"<p>The value is <code>windows</code> for Windows instances in an EC2 Fleet. Otherwise, the value is blank.</p>",
           "locationName":"platform"
+        },
+        "AvailabilityZoneId":{
+          "shape":"AvailabilityZoneId",
+          "documentation":"<p>The ID of the Availability Zone in which the instance was launched. For example, <code>use2-az1</code>.</p> <p>Supported only for fleets of type <code>instant</code>.</p>",
+          "locationName":"availabilityZoneId"
+        },
+        "AvailabilityZone":{
+          "shape":"AvailabilityZoneName",
+          "documentation":"<p>The name of the Availability Zone in which the instance was launched. For example, <code>us-east-2a</code>.</p> <p>Supported only for fleets of type <code>instant</code>.</p>",
+          "locationName":"availabilityZone"
+        },
+        "SubnetId":{
+          "shape":"SubnetId",
+          "documentation":"<p>The ID of the subnet in which the instance was launched.</p> <p>Supported only for fleets of type <code>instant</code>.</p>",
+          "locationName":"subnetId"
         }
       },
       "documentation":"<p>Describes the instances that were launched by the fleet.</p>"
@@ -16523,7 +16538,7 @@
         },
         "TagSpecifications":{
           "shape":"TagSpecificationList",
-          "documentation":"<p>The key-value pair for tagging the EC2 Fleet request on creation. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Using_Tags.html#tag-resources\">Tag your resources</a>.</p> <p>If the fleet type is <code>instant</code>, specify a resource type of <code>fleet</code> to tag the fleet or <code>instance</code> to tag the instances at launch.</p> <p>If the fleet type is <code>maintain</code> or <code>request</code>, specify a resource type of <code>fleet</code> to tag the fleet. You cannot specify a resource type of <code>instance</code>. To tag instances at launch, specify the tags in a <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-launch-templates.html#create-launch-template\">launch template</a>.</p>",
+          "documentation":"<p>The key-value pair for tagging the EC2 Fleet request on creation. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Using_Tags.html#tag-resources\">Tag your resources</a>.</p> <p>If the fleet type is <code>instant</code>, specify a resource type of <code>fleet</code> to tag the fleet, <code>instance</code> to tag the instances at launch, <code>volume</code> to tag the volumes at launch, or <code>network-interface</code> to tag the network interfaces at launch.</p> <p>If the fleet type is <code>maintain</code> or <code>request</code>, specify a resource type of <code>fleet</code> to tag the fleet. You cannot specify a resource type of <code>instance</code>, <code>volume</code>, or <code>network-interface</code>. To tag instances at launch, specify the tags in a <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-launch-templates.html#create-launch-template\">launch template</a>.</p>",
           "locationName":"TagSpecification"
         },
         "Context":{
@@ -37834,6 +37849,27 @@
         "termination"
       ]
     },
+    "FleetHttpTokensState":{
+      "type":"string",
+      "enum":[
+        "optional",
+        "required"
+      ]
+    },
+    "FleetIamInstanceProfileSpecificationRequest":{
+      "type":"structure",
+      "members":{
+        "Arn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the instance profile.</p>"
+        },
+        "Name":{
+          "shape":"String",
+          "documentation":"<p>The name of the instance profile.</p>"
+        }
+      },
+      "documentation":"<p>Describes an IAM instance profile. Supported only for fleets of type <code>instant</code>.</p>"
+    },
     "FleetId":{"type":"string"},
     "FleetIdSet":{
       "type":"list",
@@ -37842,6 +37878,31 @@
     "FleetInstanceMatchCriteria":{
       "type":"string",
       "enum":["open"]
+    },
+    "FleetInstanceMetadataEndpointState":{
+      "type":"string",
+      "enum":[
+        "disabled",
+        "enabled"
+      ]
+    },
+    "FleetInstanceMetadataOptionsRequest":{
+      "type":"structure",
+      "members":{
+        "HttpTokens":{
+          "shape":"FleetHttpTokensState",
+          "documentation":"<p>Indicates whether IMDSv2 is required.</p> <ul> <li> <p> <code>optional</code> - IMDSv2 is optional, which means that you can use either IMDSv2 or IMDSv1.</p> </li> <li> <p> <code>required</code> - IMDSv2 is required, which means that IMDSv1 is disabled, and you must use IMDSv2.</p> </li> </ul>"
+        },
+        "HttpPutResponseHopLimit":{
+          "shape":"Integer",
+          "documentation":"<p>The desired HTTP PUT response hop limit for instance metadata requests. The larger the number, the further instance metadata requests can travel.</p> <p>Default: <code>1</code> </p> <p>Possible values: Integers from 1 to 64</p>"
+        },
+        "HttpEndpoint":{
+          "shape":"FleetInstanceMetadataEndpointState",
+          "documentation":"<p>Enables or disables the HTTP metadata endpoint on your instances.</p> <ul> <li> <p> <code>enabled</code> - The HTTP metadata endpoint is enabled.</p> </li> <li> <p> <code>disabled</code> - The HTTP metadata endpoint is disabled.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>Describes the metadata options for the instances. Supported only for fleets of type <code>instant</code>.</p>"
     },
     "FleetLaunchTemplateConfig":{
       "type":"structure",
@@ -37995,10 +38056,22 @@
           "shape":"Placement",
           "documentation":"<p>The location where the instance launched, if applicable.</p>"
         },
+        "KeyName":{
+          "shape":"String",
+          "documentation":"<p>The name of the key pair to use for the instances.</p> <p>Supported only for fleets of type <code>instant</code>.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html\">Amazon EC2 key pairs</a> in the <i>Amazon EC2 User Guide</i>.</p>"
+        },
         "BlockDeviceMappings":{
           "shape":"FleetBlockDeviceMappingRequestList",
           "documentation":"<p>The block device mappings, which define the EBS volumes and instance store volumes to attach to the instance at launch.</p> <p>Supported only for fleets of type <code>instant</code>.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/block-device-mapping-concepts.html\">Block device mappings for volumes on Amazon EC2 instances</a> in the <i>Amazon EC2 User Guide</i>.</p>",
           "locationName":"BlockDeviceMapping"
+        },
+        "IamInstanceProfile":{
+          "shape":"FleetIamInstanceProfileSpecificationRequest",
+          "documentation":"<p>The IAM instance profile to associate with the instances.</p> <p>Supported only for fleets of type <code>instant</code>.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/iam-roles-for-amazon-ec2.html\">IAM roles for Amazon EC2</a> in the <i>Amazon EC2 User Guide</i>.</p>"
+        },
+        "MetadataOptions":{
+          "shape":"FleetInstanceMetadataOptionsRequest",
+          "documentation":"<p>The metadata options for the instances.</p> <p>Supported only for fleets of type <code>instant</code>.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/configuring-instance-metadata-service.html\">Configure the instance metadata service</a> in the <i>Amazon EC2 User Guide</i>.</p>"
         },
         "InstanceRequirements":{
           "shape":"InstanceRequirementsRequest",
@@ -38050,6 +38123,10 @@
         "Version":{
           "shape":"String",
           "documentation":"<p>The launch template version number, <code>$Latest</code>, or <code>$Default</code>. You must specify a value, otherwise the request fails.</p> <p>If the value is <code>$Latest</code>, Amazon EC2 uses the latest version of the launch template.</p> <p>If the value is <code>$Default</code>, Amazon EC2 uses the default version of the launch template.</p>"
+        },
+        "LaunchTemplateSpecificationUserData":{
+          "shape":"SensitiveUserData",
+          "documentation":"<p>The base64-encoded user data for instances launched by the fleet. User data is limited to 16 KB, in raw form, before it is base64-encoded.</p> <p>Supported only for fleets of type <code>instant</code>.</p>"
         }
       },
       "documentation":"<p>The Amazon EC2 launch template that can be used by an EC2 Fleet to configure Amazon EC2 instances. You must specify either the ID or name of the launch template in the request, but not both.</p> <p>For information about launch templates, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-launch-templates.html\">Launch an instance from a launch template</a> in the <i>Amazon EC2 User Guide</i>.</p>"

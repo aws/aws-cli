@@ -2196,7 +2196,11 @@
           "shape":"Timestamp",
           "documentation":"<p>The date and time when the capacity provider was last modified.</p>"
         },
-        "PropagateTags":{"shape":"PropagateTags"}
+        "PropagateTags":{"shape":"PropagateTags"},
+        "TelemetryConfig":{
+          "shape":"CapacityProviderTelemetryConfig",
+          "documentation":"<p>The telemetry configuration for the capacity provider, including logging settings.</p>"
+        }
       },
       "documentation":"<p>A capacity provider manages compute resources for Lambda functions.</p>"
     },
@@ -2232,6 +2236,20 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "CapacityProviderLoggingConfig":{
+      "type":"structure",
+      "members":{
+        "SystemLogLevel":{
+          "shape":"SystemLogLevel",
+          "documentation":"<p>Set this property to filter the system logs for your capacity provider that Lambda sends to CloudWatch. Lambda only sends system logs at the selected level of detail and lower, where <code>DEBUG</code> is the highest level and <code>WARN</code> is the lowest.</p>"
+        },
+        "LogGroup":{
+          "shape":"LogGroup",
+          "documentation":"<p>The name of the Amazon CloudWatch log group the capacity provider sends logs to. By default, Lambda capacity providers send logs to a default log group named <code>/aws/lambda/capacity-provider/&lt;capacity provider name&gt;</code>. To use a different log group, enter an existing log group or enter a new log group name.</p>"
+        }
+      },
+      "documentation":"<p>The capacity provider's Amazon CloudWatch Logs configuration settings.</p>"
     },
     "CapacityProviderMaxVCpuCount":{
       "type":"integer",
@@ -2311,6 +2329,16 @@
       "member":{"shape":"SubnetId"},
       "max":16,
       "min":1
+    },
+    "CapacityProviderTelemetryConfig":{
+      "type":"structure",
+      "members":{
+        "LoggingConfig":{
+          "shape":"CapacityProviderLoggingConfig",
+          "documentation":"<p>The capacity provider's Amazon CloudWatch Logs configuration settings.</p>"
+        }
+      },
+      "documentation":"<p>Configuration that specifies the telemetry collection for the capacity provider.</p>"
     },
     "CapacityProviderVpcConfig":{
       "type":"structure",
@@ -2855,6 +2883,10 @@
         "PropagateTags":{
           "shape":"PropagateTags",
           "documentation":"<p>The tag propagation configuration for the capacity provider. Specifies tags to apply to managed resources at launch.</p>"
+        },
+        "TelemetryConfig":{
+          "shape":"CapacityProviderTelemetryConfig",
+          "documentation":"<p>The telemetry configuration for the capacity provider. Specifies logging settings for managed resources.</p>"
         }
       }
     },
@@ -5996,12 +6028,6 @@
           "location":"uri",
           "locationName":"FunctionName"
         },
-        "InvocationType":{
-          "shape":"ResponseStreamingInvocationType",
-          "documentation":"<p>Use one of the following options:</p> <ul> <li> <p> <code>RequestResponse</code> (default) – Invoke the function synchronously. Keep the connection open until the function returns a response or times out. The API operation response includes the function response and additional data.</p> </li> <li> <p> <code>DryRun</code> – Validate parameter values and verify that the IAM user or role has permission to invoke the function.</p> </li> </ul>",
-          "location":"header",
-          "locationName":"X-Amz-Invocation-Type"
-        },
         "LogType":{
           "shape":"LogType",
           "documentation":"<p>Set to <code>Tail</code> to include the execution log in the response. Applies to synchronously invoked functions only.</p>",
@@ -6029,6 +6055,12 @@
           "documentation":"<p>The identifier of the tenant in a multi-tenant Lambda function.</p>",
           "location":"header",
           "locationName":"X-Amz-Tenant-Id"
+        },
+        "InvocationType":{
+          "shape":"ResponseStreamingInvocationType",
+          "documentation":"<p>Use one of the following options:</p> <ul> <li> <p> <code>RequestResponse</code> (default) – Invoke the function synchronously. Keep the connection open until the function returns a response or times out. The API operation response includes the function response and additional data.</p> </li> <li> <p> <code>DryRun</code> – Validate parameter values and verify that the IAM user or role has permission to invoke the function.</p> </li> </ul>",
+          "location":"header",
+          "locationName":"X-Amz-Invocation-Type"
         }
       },
       "payload":"Payload"
@@ -9363,7 +9395,11 @@
           "shape":"CapacityProviderScalingConfig",
           "documentation":"<p>The updated scaling configuration for the capacity provider.</p>"
         },
-        "PropagateTags":{"shape":"PropagateTags"}
+        "PropagateTags":{"shape":"PropagateTags"},
+        "TelemetryConfig":{
+          "shape":"CapacityProviderTelemetryConfig",
+          "documentation":"<p>The updated telemetry configuration for the capacity provider.</p>"
+        }
       }
     },
     "UpdateCapacityProviderResponse":{

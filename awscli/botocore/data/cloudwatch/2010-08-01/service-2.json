@@ -1056,6 +1056,10 @@
     "AnomalyDetector":{
       "type":"structure",
       "members":{
+        "AnomalyDetectorId":{
+          "shape":"AnomalyDetectorId",
+          "documentation":"<p>The unique identifier of the anomaly detector.</p> <note> <p>The identifier does not restrict access to a specific anomaly detector in an IAM policy. Permissions for anomaly detector operations apply to all anomaly detectors in the account.</p> </note>"
+        },
         "Namespace":{
           "shape":"Namespace",
           "documentation":"<p>The namespace of the metric associated with the anomaly detection model.</p>",
@@ -1120,6 +1124,17 @@
     "AnomalyDetectorExcludedTimeRanges":{
       "type":"list",
       "member":{"shape":"Range"}
+    },
+    "AnomalyDetectorId":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"[A-Za-z0-9_./:%()+-]+"
+    },
+    "AnomalyDetectorIds":{
+      "type":"list",
+      "member":{"shape":"AnomalyDetectorId"},
+      "max":50
     },
     "AnomalyDetectorMetricStat":{
       "type":"string",
@@ -1539,6 +1554,10 @@
     "DeleteAnomalyDetectorInput":{
       "type":"structure",
       "members":{
+        "AnomalyDetectorId":{
+          "shape":"AnomalyDetectorId",
+          "documentation":"<p>Specifies the unique identifier of the anomaly detector to delete. If you specify this parameter, you do not need to specify a metric to identify the detector.</p>"
+        },
         "Namespace":{
           "shape":"Namespace",
           "documentation":"<p>The namespace associated with the anomaly detection model to delete.</p>",
@@ -1817,6 +1836,10 @@
     "DescribeAnomalyDetectorsInput":{
       "type":"structure",
       "members":{
+        "AnomalyDetectorIds":{
+          "shape":"AnomalyDetectorIds",
+          "documentation":"<p>Specifies the unique identifiers of the anomaly detectors to describe. You can specify up to 50 identifiers. If you specify this parameter, you cannot also specify the <code>Namespace</code>, <code>MetricName</code>, <code>Dimensions</code>, or <code>AnomalyDetectorTypes</code> metric filters.</p>"
+        },
         "NextToken":{
           "shape":"NextToken",
           "documentation":"<p>Use the token returned by the previous operation to request the next page of results.</p>"
@@ -4027,7 +4050,12 @@
     },
     "PutAnomalyDetectorOutput":{
       "type":"structure",
-      "members":{}
+      "members":{
+        "AnomalyDetectorId":{
+          "shape":"AnomalyDetectorId",
+          "documentation":"<p>The unique identifier of the anomaly detector that you created or updated.</p>"
+        }
+      }
     },
     "PutCompositeAlarmInput":{
       "type":"structure",

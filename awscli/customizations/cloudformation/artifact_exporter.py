@@ -182,17 +182,37 @@ def zip_folder(folder_path):
 def make_zip(filename, source_root):
     zipfile_name = "{0}.zip".format(filename)
     source_root = os.path.abspath(source_root)
+    source_root_real = os.path.realpath(source_root)
     with open(zipfile_name, 'wb') as f:
         zip_file = zipfile.ZipFile(f, 'w', zipfile.ZIP_DEFLATED)
         with contextlib.closing(zip_file) as zf:
             for root, dirs, files in os.walk(source_root, followlinks=True):
+                dirs[:] = [
+                    d for d in dirs
+                    if is_path_within_directory(
+                        os.path.realpath(os.path.join(root, d)),
+                        source_root_real
+                    )
+                ]
                 for filename in files:
                     full_path = os.path.join(root, filename)
+                    if not is_path_within_directory(
+                        os.path.realpath(full_path),
+                        source_root_real
+                    ):
+                        continue
                     relative_path = os.path.relpath(
                         full_path, source_root)
                     zf.write(full_path, relative_path)
 
     return zipfile_name
+
+
+def is_path_within_directory(path, directory):
+    try:
+        return os.path.commonpath([path, directory]) == directory
+    except ValueError:
+        return False
 
 
 @contextmanager

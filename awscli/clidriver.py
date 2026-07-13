@@ -109,8 +109,7 @@ _NO_CLI_AUTO_PROMPT_OPTION = '--no-cli-auto-prompt'
 
 
 def main():
-    with start_as_current_context():
-        return AWSCLIEntryPoint().main(sys.argv[1:])
+    return AWSCLIEntryPoint().main(sys.argv[1:])
 
 
 def create_clidriver(args=None, event_hooks=None):
@@ -239,7 +238,8 @@ class AWSCLIEntryPoint:
 
     def main(self, args):
         try:
-            rc = self._do_main(args)
+            with start_as_current_context():
+                rc = self._do_main(args)
         except BaseException as e:
             LOG.debug("Exception caught in AWSCLIEntryPoint", exc_info=True)
             return self._error_handler.handle_exception(

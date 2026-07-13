@@ -12,6 +12,8 @@
 # language governing permissions and limitations under the License.
 import os
 
+from botocore.useragent import register_feature_id
+
 from awscli.customizations.configure.writer import ConfigFileWriter
 from awscli.customizations.sso.resolve import resolve_start_url
 from awscli.customizations.sso.utils import (
@@ -62,9 +64,8 @@ class LoginCommand(BaseSSOCommand):
             verify=verify,
         )
 
-        feature_ids = []
         if resolved_url != start_url:
-            feature_ids.append('SSO_LOGIN_VANITY_URL')
+            register_feature_id('SSO_LOGIN_VANITY_URL')
 
         on_pending_authorization = None
         if parsed_args.no_browser:
@@ -80,7 +81,6 @@ class LoginCommand(BaseSSOCommand):
             session_name=sso_config.get('session_name'),
             registration_scopes=sso_config.get('registration_scopes'),
             use_device_code=parsed_args.use_device_code,
-            feature_ids=feature_ids,
         )
 
         # Only rewrite sso_region after successful login.

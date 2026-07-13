@@ -1083,6 +1083,11 @@ class TestNpmLogin(unittest.TestCase):
         scope = self.test_subject.get_scope(f'@{self.namespace}')
         self.assertEqual(scope, expected_value)
 
+    def test_get_scope_with_uppercase(self):
+        expected_value = '@Transform9'
+        scope = self.test_subject.get_scope('Transform9')
+        self.assertEqual(scope, expected_value)
+
     def test_get_commands(self):
         commands = self.test_subject.get_commands(
             self.endpoint, self.auth_token

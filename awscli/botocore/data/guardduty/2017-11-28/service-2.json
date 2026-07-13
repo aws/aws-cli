@@ -2083,6 +2083,94 @@
       },
       "exception":true
     },
+    "BedrockGuardrail":{
+      "type":"structure",
+      "members":{
+        "Arn":{
+          "shape":"BedrockGuardrailArnString",
+          "documentation":"<p>The ARN of the Bedrock guardrail.</p>",
+          "locationName":"arn"
+        },
+        "Version":{
+          "shape":"BedrockGuardrailVersionString",
+          "documentation":"<p>The version of the Bedrock guardrail.</p>",
+          "locationName":"version"
+        }
+      },
+      "documentation":"<p>Contains information about a Bedrock guardrail associated with a finding.</p>"
+    },
+    "BedrockGuardrailArnString":{
+      "type":"string",
+      "max":2048,
+      "min":0,
+      "pattern":"arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}:[0-9]{12}:guardrail/[a-z0-9]+"
+    },
+    "BedrockGuardrailDetails":{
+      "type":"structure",
+      "members":{
+        "GuardrailArn":{
+          "shape":"BedrockGuardrailDetailsGuardrailArnString",
+          "documentation":"<p>The ARN of the Bedrock guardrail. This field is deprecated. Use the <code>guardrails</code> list instead.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"Use guardrails list instead",
+          "deprecatedSince":"2026-07-13",
+          "locationName":"guardrailArn"
+        },
+        "GuardrailVersion":{
+          "shape":"BedrockGuardrailDetailsGuardrailVersionString",
+          "documentation":"<p>The version of the Bedrock guardrail. This field is deprecated. Use the <code>guardrails</code> list instead.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"Use guardrails list instead",
+          "deprecatedSince":"2026-07-13",
+          "locationName":"guardrailVersion"
+        },
+        "Guardrails":{
+          "shape":"BedrockGuardrails",
+          "documentation":"<p>The list of Bedrock guardrails associated with the finding.</p>",
+          "locationName":"guardrails"
+        },
+        "GuardrailAction":{
+          "shape":"GuardrailAction",
+          "documentation":"<p>Indicates whether the guardrail intervened or not.</p>",
+          "locationName":"guardrailAction"
+        },
+        "GuardrailSource":{
+          "shape":"GuardrailSource",
+          "documentation":"<p>Indicates whether the guardrail was applied on the input or output of the model invocation.</p>",
+          "locationName":"guardrailSource"
+        },
+        "ContentPolicyFilters":{
+          "shape":"ContentPolicyFilters",
+          "documentation":"<p>The list of content policy filters that matched during the guardrail evaluation.</p>",
+          "locationName":"contentPolicyFilters"
+        }
+      },
+      "documentation":"<p>Contains information about the Bedrock guardrail that was involved in a finding.</p>"
+    },
+    "BedrockGuardrailDetailsGuardrailArnString":{
+      "type":"string",
+      "max":2048,
+      "min":0,
+      "pattern":"arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}:[0-9]{12}:guardrail/[a-z0-9]+"
+    },
+    "BedrockGuardrailDetailsGuardrailVersionString":{
+      "type":"string",
+      "max":8,
+      "min":1,
+      "pattern":"(([1-9][0-9]{0,7})|(DRAFT))"
+    },
+    "BedrockGuardrailVersionString":{
+      "type":"string",
+      "max":8,
+      "min":1,
+      "pattern":"(([1-9][0-9]{0,7})|(DRAFT)|(ENFORCED))"
+    },
+    "BedrockGuardrails":{
+      "type":"list",
+      "member":{"shape":"BedrockGuardrail"},
+      "max":10,
+      "min":0
+    },
     "Behavior":{
       "type":"map",
       "key":{"shape":"String"},
@@ -2330,6 +2418,15 @@
       "max":50,
       "min":1
     },
+    "ConfidenceLevel":{
+      "type":"string",
+      "enum":[
+        "HIGH",
+        "MEDIUM",
+        "LOW",
+        "NONE"
+      ]
+    },
     "ConflictException":{
       "type":"structure",
       "members":{
@@ -2442,6 +2539,52 @@
     "Containers":{
       "type":"list",
       "member":{"shape":"Container"}
+    },
+    "ContentPolicyFilter":{
+      "type":"structure",
+      "members":{
+        "Type":{
+          "shape":"ContentPolicyFilterType",
+          "documentation":"<p>The type of content that was filtered by the guardrail.</p>",
+          "locationName":"type"
+        },
+        "Confidence":{
+          "shape":"ConfidenceLevel",
+          "documentation":"<p>The confidence level that the content matched the filter.</p>",
+          "locationName":"confidence"
+        },
+        "Action":{
+          "shape":"ContentPolicyFilterAction",
+          "documentation":"<p>The action taken by the guardrail filter.</p>",
+          "locationName":"action"
+        }
+      },
+      "documentation":"<p>Contains information about a content policy filter that matched during a guardrail evaluation.</p>"
+    },
+    "ContentPolicyFilterAction":{
+      "type":"string",
+      "enum":[
+        "BLOCKED",
+        "NONE"
+      ]
+    },
+    "ContentPolicyFilterType":{
+      "type":"string",
+      "enum":[
+        "PROMPT_ATTACK",
+        "JAILBREAK",
+        "HATE",
+        "INSULTS",
+        "SEXUAL",
+        "VIOLENCE",
+        "MISCONDUCT"
+      ]
+    },
+    "ContentPolicyFilters":{
+      "type":"list",
+      "member":{"shape":"ContentPolicyFilter"},
+      "max":10,
+      "min":0
     },
     "ContinuousScanDetails":{
       "type":"structure",
@@ -4123,6 +4266,7 @@
         "LAMBDA_NETWORK_LOGS",
         "EKS_RUNTIME_MONITORING",
         "RUNTIME_MONITORING",
+        "AI_PROTECTION",
         "AI_ANALYST"
       ]
     },
@@ -4194,6 +4338,7 @@
         "LAMBDA_NETWORK_LOGS",
         "EKS_RUNTIME_MONITORING",
         "RUNTIME_MONITORING",
+        "AI_PROTECTION",
         "AI_ANALYST"
       ]
     },
@@ -5288,7 +5433,8 @@
         "LAMBDA_NETWORK_LOGS",
         "EKS_RUNTIME_MONITORING",
         "EC2_RUNTIME_MONITORING",
-        "FARGATE_RUNTIME_MONITORING"
+        "FARGATE_RUNTIME_MONITORING",
+        "AI_PROTECTION"
       ]
     },
     "GeoLocation":{
@@ -6379,6 +6525,20 @@
     "GuardDutyArn":{
       "type":"string",
       "pattern":"arn:[A-Za-z_.-]{1,20}:guardduty:[A-Za-z0-9_/.-]{0,63}:\\d+:detector/[A-Za-z0-9_/.-]{32,264}"
+    },
+    "GuardrailAction":{
+      "type":"string",
+      "enum":[
+        "GUARDRAIL_INTERVENED",
+        "NONE"
+      ]
+    },
+    "GuardrailSource":{
+      "type":"string",
+      "enum":[
+        "INPUT",
+        "OUTPUT"
+      ]
     },
     "HighestSeverityThreatDetails":{
       "type":"structure",
@@ -8707,6 +8867,26 @@
         "DISABLED"
       ]
     },
+    "ModelDetail":{
+      "type":"structure",
+      "members":{
+        "ModelId":{
+          "shape":"ModelDetailModelIdString",
+          "documentation":"<p>The identifier of the AI model.</p>",
+          "locationName":"modelId"
+        }
+      },
+      "documentation":"<p>Contains information about the AI model involved in a finding.</p>"
+    },
+    "ModelDetailModelIdString":{
+      "type":"string",
+      "max":2048,
+      "min":1
+    },
+    "ModelDetails":{
+      "type":"list",
+      "member":{"shape":"ModelDetail"}
+    },
     "Name":{
       "type":"string",
       "max":300,
@@ -8952,6 +9132,10 @@
       "max":5,
       "min":0
     },
+    "ObservationNumbers":{
+      "type":"list",
+      "member":{"shape":"Long"}
+    },
     "ObservationTexts":{
       "type":"list",
       "member":{"shape":"String"}
@@ -8963,6 +9147,11 @@
           "shape":"ObservationTexts",
           "documentation":"<p>The text that was unusual.</p>",
           "locationName":"text"
+        },
+        "Number":{
+          "shape":"ObservationNumbers",
+          "documentation":"<p>The numeric values that were unusual.</p>",
+          "locationName":"number"
         }
       },
       "documentation":"<p>Contains information about the observed behavior.</p>"
@@ -8983,7 +9172,8 @@
         "RDS_LOGIN_EVENTS",
         "LAMBDA_NETWORK_LOGS",
         "EKS_RUNTIME_MONITORING",
-        "RUNTIME_MONITORING"
+        "RUNTIME_MONITORING",
+        "AI_PROTECTION"
       ]
     },
     "OrgFeatureAdditionalConfiguration":{
@@ -9613,12 +9803,17 @@
         "FREQUENT",
         "INFREQUENT",
         "UNSEEN",
-        "RARE"
+        "RARE",
+        "COUNT",
+        "AVERAGE"
       ]
     },
     "ProfileType":{
       "type":"string",
-      "enum":["FREQUENCY"]
+      "enum":[
+        "FREQUENCY",
+        "VOLUME"
+      ]
     },
     "PublicAccess":{
       "type":"structure",
@@ -9850,6 +10045,10 @@
           "shape":"String",
           "documentation":"<p>The name of the backup vault containing the recovery point.</p>",
           "locationName":"backupVaultName"
+        },
+        "ContinuousScanDetails":{
+          "shape":"ScanConfigurationContinuousScanDetails",
+          "locationName":"continuousScanDetails"
         }
       },
       "documentation":"<p>Contains details about the backup recovery point.</p>"
@@ -10009,6 +10208,16 @@
           "shape":"RecoveryPointDetails",
           "documentation":"<p>Contains details about the backup recovery point that was scanned.</p>",
           "locationName":"recoveryPointDetails"
+        },
+        "BedrockGuardrailDetails":{
+          "shape":"BedrockGuardrailDetails",
+          "documentation":"<p>Contains information about the Bedrock guardrail that was involved in a finding.</p>",
+          "locationName":"bedrockGuardrailDetails"
+        },
+        "ModelDetails":{
+          "shape":"ModelDetails",
+          "documentation":"<p>Contains information about the AI models involved in a finding.</p>",
+          "locationName":"modelDetails"
         }
       },
       "documentation":"<p>Contains information about the Amazon Web Services resource associated with the activity that prompted GuardDuty to generate a finding.</p>"
@@ -12627,7 +12836,8 @@
         "EC2_RUNTIME_MONITORING",
         "FARGATE_RUNTIME_MONITORING",
         "RDS_DBI_PROTECTION_PROVISIONED",
-        "RDS_DBI_PROTECTION_SERVERLESS"
+        "RDS_DBI_PROTECTION_SERVERLESS",
+        "AI_PROTECTION"
       ]
     },
     "UsageFeatureList":{

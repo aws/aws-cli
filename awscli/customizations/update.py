@@ -153,7 +153,9 @@ class UnixUpdateCommand(BaseUpdateCommand):
     def _is_system_install(self, install_metadata):
         if 'script_install' in install_metadata:
             return install_metadata['script_install'].get('system', False)
-        aws_bin = os.path.abspath(sys.argv[0])
+        if not sys.executable:
+            return False
+        aws_bin = os.path.realpath(sys.executable)
         return aws_bin.startswith(self.SYSTEM_INSTALL_DIR + os.sep)
 
     def _assert_elevated(self):

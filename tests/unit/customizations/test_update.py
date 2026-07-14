@@ -171,8 +171,8 @@ class TestUnixUpdateCommand:
     ):
         monkeypatch.setattr(
             update_module.sys,
-            'argv',
-            ['/usr/local/aws-cli/v2/current/bin/aws'],
+            'executable',
+            '/usr/local/aws-cli/v2/current/bin/aws',
         )
 
         cmd, _ = self._run({'install_dir': '/usr/local/aws-cli'})
@@ -185,8 +185,8 @@ class TestUnixUpdateCommand:
     ):
         monkeypatch.setattr(
             update_module.sys,
-            'argv',
-            ['/home/user/.local/share/aws-cli/v2/current/bin/aws'],
+            'executable',
+            '/home/user/.local/share/aws-cli/v2/current/bin/aws',
         )
         install = {
             'install_dir': '/home/user/.local/share/aws-cli',

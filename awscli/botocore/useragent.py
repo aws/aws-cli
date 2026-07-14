@@ -104,7 +104,29 @@ _USERAGENT_FEATURE_MAPPINGS = {
     'FLEXIBLE_CHECKSUMS_REQ_XXHASH3': 'AG',
     'FLEXIBLE_CHECKSUMS_REQ_XXHASH64': 'AH',
     'FLEXIBLE_CHECKSUMS_REQ_XXHASH128': 'AI',
+    'AGENTIC_CALLER_CLAUDE_CODE': 'AN',
+    'AGENTIC_CALLER_GEMINI_CLI': 'AO',
+    'AGENTIC_CALLER_CODEX': 'AP',
+    'AGENTIC_CALLER_KIRO': 'AQ',
+    'AGENTIC_CALLER_OPENCODE': 'AR',
+    'AGENTIC_CALLER_ANTIGRAVITY': 'AS',
+    'AGENTIC_CALLER_AMP': 'AT',
+    'AGENTIC_CALLER_PI': 'AU',
+    'AGENTIC_CALLER_COPILOT_CLI': 'AV',
+    'AGENTIC_CALLER_CURSOR': 'AW',
 }
+_USERAGENT_AGENTIC_CALLER_ENV_VAR_MAPPINGS = (
+    ('CLAUDECODE', 'AGENTIC_CALLER_CLAUDE_CODE', '1'),
+    ('GEMINI_CLI', 'AGENTIC_CALLER_GEMINI_CLI', '1'),
+    ('CODEX_THREAD_ID', 'AGENTIC_CALLER_CODEX', None),
+    ('KIRO_SESSION_ID', 'AGENTIC_CALLER_KIRO', None),
+    ('OPENCODE', 'AGENTIC_CALLER_OPENCODE', None),
+    ('ANTIGRAVITY_AGENT', 'AGENTIC_CALLER_ANTIGRAVITY', None),
+    ('AMP_CURRENT_THREAD_ID', 'AGENTIC_CALLER_AMP', None),
+    ('PI_CODING_AGENT', 'AGENTIC_CALLER_PI', 'true'),
+    ('COPILOT_CLI', 'AGENTIC_CALLER_COPILOT_CLI', '1'),
+    ('CURSOR_AGENT', 'AGENTIC_CALLER_CURSOR', '1'),
+)
 
 
 def register_feature_id(feature_id):
@@ -134,6 +156,27 @@ def register_feature_ids(feature_ids):
     """
     for feature_id in feature_ids:
         register_feature_id(feature_id)
+
+
+def _agentic_env_var_is_set(env_var, expected_value):
+    """
+    Returns true if an environment variable is set,
+    optionally with specific value
+    """
+    value = os.environ.get(env_var)
+    if expected_value is None:
+        return value not in (None, '')
+    return value == expected_value
+
+
+def _register_agentic_caller_env_features():
+    for (
+        env_var,
+        feature_id,
+        expected_value,
+    ) in _USERAGENT_AGENTIC_CALLER_ENV_VAR_MAPPINGS:
+        if _agentic_env_var_is_set(env_var, expected_value):
+            register_feature_id(feature_id)
 
 
 def sanitize_user_agent_string_component(raw_str, allow_hash):
@@ -549,6 +592,7 @@ class UserAgentString:
         Returns a single component with prefix "m" followed by a list of
         comma-separated metric values.
         """
+        _register_agentic_caller_env_features()
         ctx = get_context()
         context_features = set() if ctx is None else ctx.features
         client_features = self._client_features or set()

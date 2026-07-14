@@ -3744,7 +3744,7 @@
           "documentation":"<p>The name of the parameter used as the target resource for the rate-controlled execution. Required if you specify targets.</p>"
         },
         "Targets":{
-          "shape":"Targets",
+          "shape":"AutomationTargets",
           "documentation":"<p>Information about the resources that would be included in the actual runbook execution, if it were to be run. Both Targets and TargetMaps can't be specified together.</p>"
         },
         "TargetMaps":{
@@ -4000,6 +4000,12 @@
       "type":"string",
       "max":50,
       "min":1
+    },
+    "AutomationTargets":{
+      "type":"list",
+      "member":{"shape":"Target"},
+      "max":1,
+      "min":0
     },
     "AutomationType":{
       "type":"string",
@@ -16879,7 +16885,7 @@
           "documentation":"<p>The name of the parameter used as the target resource for the rate-controlled execution. Required if you specify targets.</p>"
         },
         "Targets":{
-          "shape":"Targets",
+          "shape":"AutomationTargets",
           "documentation":"<p>A key-value mapping to target resources. Required if you specify TargetParameterName.</p> <p>If both this parameter and the <code>TargetLocation:Targets</code> parameter are supplied, <code>TargetLocation:Targets</code> takes precedence.</p>"
         },
         "TargetMaps":{
@@ -17390,7 +17396,7 @@
           "documentation":"<p>Amazon Web Services accounts or organizational units to exclude as expanded targets.</p>"
         },
         "Targets":{
-          "shape":"Targets",
+          "shape":"AutomationTargets",
           "documentation":"<p>A list of key-value mappings to target resources. If you specify values for this data type, you must also specify a value for <code>TargetParameterName</code>.</p> <p>This <code>Targets</code> parameter takes precedence over the <code>StartAutomationExecution:Targets</code> parameter if both are supplied.</p>"
         },
         "TargetsMaxConcurrency":{

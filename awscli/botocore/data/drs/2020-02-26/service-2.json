@@ -1029,13 +1029,13 @@
       "type":"string",
       "max":255,
       "min":0,
-      "pattern":"(us(-gov)?|ap|ca|cn|eu|eusc|sa|af|me|il)-([a-z]{2}-)?(central|north|(north(?:east|west))|south|south(?:east|west)|east|west)-[0-9][a-z]"
+      "pattern":"(us(-gov)?|ap|ca|cn|eu|eusc|sa|af|me|mx|il)-([a-z]{2}-)?(central|north|(north(?:east|west))|south|south(?:east|west)|east|west)-[0-9][a-z]"
     },
     "AwsRegion":{
       "type":"string",
       "max":255,
       "min":0,
-      "pattern":"(us(-gov)?|ap|ca|cn|eu|eusc|sa|af|me|il)-([a-z]{2}-)?(central|north|(north(?:east|west))|south|south(?:east|west)|east|west)-[0-9]"
+      "pattern":"(us(-gov)?|ap|ca|cn|eu|eusc|sa|af|me|mx|il)-([a-z]{2}-)?(central|north|(north(?:east|west))|south|south(?:east|west)|east|west)-[0-9]"
     },
     "Boolean":{
       "type":"boolean",
@@ -1190,6 +1190,10 @@
         "launchIntoSourceInstance":{
           "shape":"Boolean",
           "documentation":"<p>DRS will set the 'launch into instance ID' of any source server when performing a drill, recovery or failback to the previous region or availability zone, using the instance ID of the source instance.</p>"
+        },
+        "recoveryMode":{
+          "shape":"RecoveryMode",
+          "documentation":"<p>Recovery mode.</p>"
         }
       }
     },
@@ -2689,6 +2693,10 @@
         "launchIntoInstanceProperties":{
           "shape":"LaunchIntoInstanceProperties",
           "documentation":"<p>Launch into existing instance properties.</p>"
+        },
+        "recoveryMode":{
+          "shape":"RecoveryMode",
+          "documentation":"<p>Recovery mode.</p>"
         }
       }
     },
@@ -2738,6 +2746,10 @@
         "launchIntoSourceInstance":{
           "shape":"Boolean",
           "documentation":"<p>DRS will set the 'launch into instance ID' of any source server when performing a drill, recovery or failback to the previous region or availability zone, using the instance ID of the source instance.</p>"
+        },
+        "recoveryMode":{
+          "shape":"RecoveryMode",
+          "documentation":"<p>Recovery mode.</p>"
         }
       },
       "documentation":"<p>Account level Launch Configuration Template.</p>"
@@ -3037,8 +3049,8 @@
     "PITPolicy":{
       "type":"list",
       "member":{"shape":"PITPolicyRule"},
-      "max":10,
-      "min":1
+      "max":3,
+      "min":3
     },
     "PITPolicyRule":{
       "type":"structure",
@@ -3615,6 +3627,14 @@
         }
       },
       "documentation":"<p>An object representing the Source Network recovery Lifecycle.</p>"
+    },
+    "RecoveryMode":{
+      "type":"string",
+      "documentation":"<p>Recovery mode to use during launch. <code>FAST</code> skips conversion to reduce recovery time. <code>OPTIMAL</code> runs full conversion for maximum compatibility.</p>",
+      "enum":[
+        "FAST",
+        "OPTIMAL"
+      ]
     },
     "RecoveryResult":{
       "type":"string",
@@ -4736,6 +4756,10 @@
         "launchIntoInstanceProperties":{
           "shape":"LaunchIntoInstanceProperties",
           "documentation":"<p>Launch into existing instance properties.</p>"
+        },
+        "recoveryMode":{
+          "shape":"RecoveryMode",
+          "documentation":"<p>Recovery mode.</p>"
         }
       }
     },
@@ -4778,6 +4802,10 @@
         "launchIntoSourceInstance":{
           "shape":"Boolean",
           "documentation":"<p>DRS will set the 'launch into instance ID' of any source server when performing a drill, recovery or failback to the previous region or availability zone, using the instance ID of the source instance.</p>"
+        },
+        "recoveryMode":{
+          "shape":"RecoveryMode",
+          "documentation":"<p>Recovery mode.</p>"
         }
       }
     },

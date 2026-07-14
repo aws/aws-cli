@@ -359,7 +359,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
-      "documentation":"<p>Creates a cloud service provider management (CSPM) connector in Security Hub CSPM. A connector establishes a connection between Security Hub CSPM and a third-party cloud provider, enabling Security Hub CSPM to ingest security findings and resource data from the connected environment.</p>"
+      "documentation":"<p>Creates a connector to a third-party cloud provider in Security Hub CSPM. A connector establishes a connection between Security Hub CSPM and a third-party cloud provider, enabling Security Hub CSPM to ingest security findings and resource data from the connected environment.</p>"
     },
     "CreateConnectorV2":{
       "name":"CreateConnectorV2",
@@ -1380,7 +1380,7 @@
         {"shape":"OrganizationalUnitNotFoundException"},
         {"shape":"OrganizationNotFoundException"}
       ],
-      "documentation":"<p>Retrieves statistical information about Amazon Web Services resources and their associated security findings.</p> <p>You can use the <code>Scopes</code> parameter to define the data boundary for the query. Currently, <code>Scopes</code> supports <code>AwsOrganizations</code>, which lets you aggregate resources from your entire organization or from specific organizational units. Only the delegated administrator account can use <code>Scopes</code>.</p>"
+      "documentation":"<p>Retrieves statistical information about Amazon Web Services resources and their associated security findings.</p> <p>You can use the <code>Scopes</code> parameter to define the data boundary for the query. Currently, <code>Scopes</code> supports <code>AwsOrganizations</code>, which lets you aggregate resources from your entire organization or from specific organizational units. Only the delegated administrator account can use <code>Scopes</code>.</p> <p>If you set <code>GroupByField</code> to <code>ResourceSubCategory</code>, <code>ResourceInfo.AIDetails.HostResourceType</code>, or <code>ResourceInfo.AIDetails.CanonicalId</code>, you must include a <code>ResourceCategory</code> string filter with comparison set to <code>EQUALS</code> and value <code>AI/ML</code> in the corresponding <code>ResourceGroupByRule</code>.</p>"
     },
     "GetResourcesTrendsV2":{
       "name":"GetResourcesTrendsV2",
@@ -1416,7 +1416,7 @@
         {"shape":"OrganizationalUnitNotFoundException"},
         {"shape":"OrganizationNotFoundException"}
       ],
-      "documentation":"<p>Returns a list of resources.</p> <p>You can use the <code>Scopes</code> parameter to define the data boundary for the query. Currently, <code>Scopes</code> supports <code>AwsOrganizations</code>, which lets you retrieve resources from your entire organization or from specific organizational units. Only the delegated administrator account can use <code>Scopes</code>.</p> <p>You can use the <code>Filters</code> parameter to refine results based on resource attributes. You can use <code>Scopes</code> and <code>Filters</code> independently or together. When both are provided, <code>Scopes</code> narrows the data set first, and then <code>Filters</code> refines results within that scoped data set.</p>"
+      "documentation":"<p>Returns a list of resources.</p> <p>You can use the <code>Scopes</code> parameter to define the data boundary for the query. Currently, <code>Scopes</code> supports <code>AwsOrganizations</code>, which lets you retrieve resources from your entire organization or from specific organizational units. Only the delegated administrator account can use <code>Scopes</code>.</p> <p>You can use the <code>Filters</code> parameter to refine results based on resource attributes. You can use <code>Scopes</code> and <code>Filters</code> independently or together. When both are provided, <code>Scopes</code> narrows the data set first, and then <code>Filters</code> refines results within that scoped data set.</p> <p>For AI/ML resources, the response includes the <code>ResourceSubCategory</code> field. For self-hosted AI resources and their host resources, the response also includes <code>ResourceInfo</code> with AI-specific details. Self-hosted AI resources use a <code>ResourceType</code> with the <code>SelfHosted::AI::</code> prefix, such as <code>SelfHosted::AI::Model</code>, <code>SelfHosted::AI::Agent</code>, <code>SelfHosted::AI::InferenceEndpoint</code>, and <code>SelfHosted::AI::ExternalEndpoint</code>.</p> <p>If you filter by <code>ResourceSubCategory</code>, you must also include a <code>ResourceCategory</code> string filter with comparison set to <code>EQUALS</code> and value <code>AI/ML</code> in the same request.</p>"
     },
     "GetSecurityControlDefinition":{
       "name":"GetSecurityControlDefinition",
@@ -2025,6 +2025,56 @@
     }
   },
   "shapes":{
+    "AIDetails":{
+      "type":"structure",
+      "members":{
+        "HostResourceGuid":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The identifier of the host resource that hosts the self-hosted AI resource. Present only on self-hosted AI resources.</p>"
+        },
+        "HostResourceType":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The <code>ResourceType</code> of the host resource that hosts the self-hosted AI resource, such as <code>AWS::EC2::Instance</code>. Present only on self-hosted AI resources.</p>"
+        },
+        "CanonicalId":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The canonical identifier for the AI resource, independent of where it is deployed. Multiple occurrences of the same resource on different hosts share the same <code>CanonicalId</code>. For model resources, the value follows the format <code>model/&lt;purl&gt;</code>, such as <code>model/pkg:huggingface/meta-llama/llama-3-8b</code>. Present only on self-hosted AI resources.</p>"
+        },
+        "SelfHostedAIModelResourceCount":{
+          "shape":"Integer",
+          "documentation":"<p>The number of self-hosted AI resources of <code>ResourceSubCategory</code> <code>Model</code> detected on the host resource. Present only on host resources.</p>"
+        },
+        "SelfHostedAIAgentResourceCount":{
+          "shape":"Integer",
+          "documentation":"<p>The number of self-hosted AI resources of <code>ResourceSubCategory</code> <code>Agent</code> detected on the host resource. Present only on host resources.</p>"
+        },
+        "SelfHostedAIModelServingResourceCount":{
+          "shape":"Integer",
+          "documentation":"<p>The number of self-hosted AI resources of <code>ResourceSubCategory</code> <code>ModelServing</code> detected on the host resource. Present only on host resources.</p>"
+        },
+        "SelfHostedAIExternalEndpointResourceCount":{
+          "shape":"Integer",
+          "documentation":"<p>The number of self-hosted AI resources of <code>ResourceSubCategory</code> <code>ExternalEndpoint</code> detected on the host resource. Present only on host resources.</p>"
+        },
+        "SelfHostedAIDevelopmentResourceCount":{
+          "shape":"Integer",
+          "documentation":"<p>The number of self-hosted AI resources of <code>ResourceSubCategory</code> <code>Development</code> detected on the host resource. Present only on host resources.</p>"
+        },
+        "SelfHostedAIAgentFrameworkResourceCount":{
+          "shape":"Integer",
+          "documentation":"<p>The number of self-hosted AI resources of <code>ResourceSubCategory</code> <code>AgentFramework</code> detected on the host resource. Present only on host resources.</p>"
+        },
+        "SelfHostedAIAgentToolsAndIdentityResourceCount":{
+          "shape":"Integer",
+          "documentation":"<p>The number of self-hosted AI resources of <code>ResourceSubCategory</code> <code>AgentToolsAndIdentity</code> detected on the host resource. Present only on host resources.</p>"
+        },
+        "SelfHostedTotalAIResourceCount":{
+          "shape":"Integer",
+          "documentation":"<p>The total number of all self-hosted AI resources detected on the host resource. Present only on host resources.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about self-hosted AI resources and their host resources. The fields that are present depend on the role of the resource.</p> <p>On a self-hosted AI resource (a resource with a <code>SelfHosted::AI::</code> resource type, such as <code>SelfHosted::AI::Model</code> or <code>SelfHosted::AI::Agent</code>), the <code>HostResourceGuid</code> and <code>HostResourceType</code> fields link the resource to its host. The <code>CanonicalId</code> field identifies what the resource is, enabling aggregation of identical resources across multiple hosts.</p> <p>On a host resource (such as an Amazon EC2 instance), the <code>SelfHostedAI*ResourceCount</code> fields contain the count for each <code>ResourceSubCategory</code> and the total count of self-hosted AI resources detected on the host.</p>"
+    },
     "AcceptAdministratorInvitationRequest":{
       "type":"structure",
       "required":[
@@ -16278,7 +16328,7 @@
       "members":{
         "AWSConfigConnectorArn":{
           "shape":"NonEmptyString",
-          "documentation":"<p>The ARN of the AWS Config connector used to establish the connection to Azure.</p>"
+          "documentation":"<p>The ARN of the multi-cloud configuration connector used to establish the connection to Azure.</p>"
         },
         "ScopeConfiguration":{
           "shape":"AzureScopeConfiguration",
@@ -16301,7 +16351,7 @@
       "members":{
         "AWSConfigConnectorArn":{
           "shape":"NonEmptyString",
-          "documentation":"<p>The ARN of the AWS Config connector used to establish the connection to Azure.</p>"
+          "documentation":"<p>The ARN of the multi-cloud configuration connector used to establish the connection to Azure.</p>"
         },
         "ScopeConfiguration":{
           "shape":"AzureScopeConfiguration",
@@ -18699,6 +18749,13 @@
     "DisassociateMembersResponse":{
       "type":"structure",
       "members":{}
+    },
+    "DiscoveryType":{
+      "type":"string",
+      "enum":[
+        "Managed",
+        "SelfHosted"
+      ]
     },
     "DnsRequestAction":{
       "type":"structure",
@@ -23285,7 +23342,11 @@
         "ResourceCategory",
         "ResourceType",
         "ResourceName",
-        "FindingsSummary.FindingType"
+        "FindingsSummary.FindingType",
+        "ResourceSubCategory",
+        "DiscoveryType",
+        "ResourceInfo.AIDetails.HostResourceType",
+        "ResourceInfo.AIDetails.CanonicalId"
       ]
     },
     "ResourceGroupByRule":{
@@ -23316,6 +23377,16 @@
       "documentation":"<p> The request was rejected because it conflicts with the resource's availability. For example, you tried to update a security control that's currently in the <code>UPDATING</code> state. </p>",
       "error":{"httpStatusCode":400},
       "exception":true
+    },
+    "ResourceInfo":{
+      "type":"structure",
+      "members":{
+        "AIDetails":{
+          "shape":"AIDetails",
+          "documentation":"<p>Details that are specific to self-hosted AI resources and their host resources.</p>"
+        }
+      },
+      "documentation":"<p>Additional details about a resource that are specific to its category. For AI/ML resources and their host resources, this structure contains <code>AIDetails</code>.</p>"
     },
     "ResourceList":{
       "type":"list",
@@ -23447,6 +23518,18 @@
         "ResourceConfig":{
           "shape":"ResourceConfig",
           "documentation":"<p>The configuration details of a resource.</p>"
+        },
+        "ResourceSubCategory":{
+          "shape":"ResourceSubCategory",
+          "documentation":"<p>The AI/ML sub-grouping of the resource. Present only when <code>ResourceCategory</code> is <code>AI/ML</code>.</p>"
+        },
+        "DiscoveryType":{
+          "shape":"DiscoveryType",
+          "documentation":"<p>Specifies how the resource was discovered. If the value is <code>Managed</code>, the resource is natively provided by a cloud service provider. If the value is <code>SelfHosted</code>, the resource is hosted on customer-managed infrastructure, such as a compute instance or container image.</p>"
+        },
+        "ResourceInfo":{
+          "shape":"ResourceInfo",
+          "documentation":"<p>Additional resource-type-specific details. For self-hosted AI resources and their host resources, contains an <code>AIDetails</code> structure.</p>"
         }
       },
       "documentation":"<p>Provides comprehensive details about an Amazon Web Services resource and its associated security findings.</p>"
@@ -23498,6 +23581,22 @@
         }
       },
       "documentation":"<p>A comprehensive distribution of security findings by severity level for Amazon Web Services resources.</p>"
+    },
+    "ResourceSubCategory":{
+      "type":"string",
+      "enum":[
+        "Model",
+        "ModelServing",
+        "Agent",
+        "AgentFramework",
+        "AgentToolsAndIdentity",
+        "SafetyAndGuardrail",
+        "KnowledgeAndData",
+        "OrchestrationAndPipeline",
+        "ExternalEndpoint",
+        "Development",
+        "Other"
+      ]
     },
     "ResourceTag":{
       "type":"structure",
@@ -23636,7 +23735,15 @@
         "FindingsSummary.Severities.Medium",
         "FindingsSummary.Severities.Low",
         "FindingsSummary.Severities.Informational",
-        "FindingsSummary.Severities.Unknown"
+        "FindingsSummary.Severities.Unknown",
+        "ResourceInfo.AIDetails.SelfHostedAIModelResourceCount",
+        "ResourceInfo.AIDetails.SelfHostedAIAgentResourceCount",
+        "ResourceInfo.AIDetails.SelfHostedAIModelServingResourceCount",
+        "ResourceInfo.AIDetails.SelfHostedAIExternalEndpointResourceCount",
+        "ResourceInfo.AIDetails.SelfHostedAIDevelopmentResourceCount",
+        "ResourceInfo.AIDetails.SelfHostedAIAgentFrameworkResourceCount",
+        "ResourceInfo.AIDetails.SelfHostedAIAgentToolsAndIdentityResourceCount",
+        "ResourceInfo.AIDetails.SelfHostedTotalAIResourceCount"
       ]
     },
     "ResourcesNumberFilter":{
@@ -23671,7 +23778,12 @@
         "ResourceType",
         "ResourceName",
         "FindingsSummary.FindingType",
-        "FindingsSummary.ProductName"
+        "FindingsSummary.ProductName",
+        "ResourceSubCategory",
+        "DiscoveryType",
+        "ResourceInfo.AIDetails.HostResourceGuid",
+        "ResourceInfo.AIDetails.HostResourceType",
+        "ResourceInfo.AIDetails.CanonicalId"
       ]
     },
     "ResourcesStringFilter":{

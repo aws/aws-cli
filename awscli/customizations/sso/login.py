@@ -12,6 +12,8 @@
 # language governing permissions and limitations under the License.
 import os
 
+from botocore.useragent import register_feature_id
+
 from awscli.customizations.configure.writer import ConfigFileWriter
 from awscli.customizations.sso.resolve import resolve_start_url
 from awscli.customizations.sso.utils import (
@@ -61,6 +63,9 @@ class LoginCommand(BaseSSOCommand):
             timeout=parsed_globals.connect_timeout,
             verify=verify,
         )
+
+        if resolved_url != start_url:
+            register_feature_id('SSO_LOGIN_VANITY_URL')
 
         on_pending_authorization = None
         if parsed_args.no_browser:

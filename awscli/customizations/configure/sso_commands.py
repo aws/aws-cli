@@ -33,6 +33,7 @@ from botocore import UNSIGNED
 from botocore.config import Config
 from botocore.configprovider import ConstantProvider
 from botocore.exceptions import ProfileNotFound
+from botocore.useragent import register_feature_id
 
 from awscli.customizations.configure import (
     get_section_header,
@@ -448,6 +449,7 @@ class ConfigureSSOCommand(BaseSSOConfigurationCommand):
                 self._sso_session_prompter.sso_session_config['sso_region'] = (
                     region
                 )
+                register_feature_id('SSO_LOGIN_VANITY_URL')
                 return start_url, region, resolved_url
             except Exception as e:
                 logger.debug(

@@ -26,6 +26,29 @@ from botocore.useragent import (
     sanitize_user_agent_string_component,
 )
 
+_AGENTIC_CALLER_ENV_VARS = (
+    'CLAUDECODE',
+    'GEMINI_CLI',
+    'CODEX_THREAD_ID',
+    'KIRO_SESSION_ID',
+    'OPENCODE',
+    'ANTIGRAVITY_AGENT',
+    'AMP_CURRENT_THREAD_ID',
+    'PI_CODING_AGENT',
+    'COPILOT_CLI',
+    'CURSOR_AGENT',
+)
+
+
+@pytest.fixture(autouse=True)
+def clear_agentic_caller_env(monkeypatch):
+    """
+    Unset any env vars from agentic tools running the user-agent
+    tests which could influence the user-agent
+    """
+    for env_var in _AGENTIC_CALLER_ENV_VARS:
+        monkeypatch.delenv(env_var, raising=False)
+
 
 @pytest.mark.parametrize(
     'raw_str, allow_hash, expected_str',

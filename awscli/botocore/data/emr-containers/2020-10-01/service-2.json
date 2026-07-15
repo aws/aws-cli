@@ -661,6 +661,10 @@
         "tags":{
           "shape":"TagMap",
           "documentation":"<p>The tags of the managed endpoint. </p>"
+        },
+        "sessionIdleTimeoutInMinutes":{
+          "shape":"SessionIdleTimeoutInMinutes",
+          "documentation":"<p>The idle timeout in minutes for the managed endpoint session.</p>"
         }
       }
     },
@@ -761,6 +765,10 @@
         "securityConfigurationId":{
           "shape":"ResourceIdString",
           "documentation":"<p>The ID of the security configuration.</p>"
+        },
+        "sessionEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether the virtual cluster has session support enabled.</p>"
         }
       }
     },
@@ -1018,7 +1026,7 @@
           "documentation":"<p>The namespaces of the Amazon EKS cluster.</p>"
         },
         "nodeLabel":{
-          "shape":"ResourceNameString",
+          "shape":"NodeLabelString",
           "documentation":"<p>The nodeLabel of the nodes where the resources of this virtual cluster can get scheduled. It requires relevant scaling and policy engine addons.</p>"
         }
       },
@@ -1086,6 +1094,10 @@
         "serverUrl":{
           "shape":"UriString",
           "documentation":"<p>The server URL of the endpoint.</p>"
+        },
+        "authProxyUrl":{
+          "shape":"UriString",
+          "documentation":"<p>The auth proxy URL of the endpoint.</p>"
         },
         "createdAt":{
           "shape":"Date",
@@ -1231,6 +1243,10 @@
         "credentials":{
           "shape":"Credentials",
           "documentation":"<p>The structure containing the session credentials.</p>"
+        },
+        "endpointCredentials":{
+          "shape":"Credentials",
+          "documentation":"<p>The structure containing the session token being returned.</p>"
         },
         "expiresAt":{
           "shape":"Date",
@@ -1854,6 +1870,12 @@
       "min":1,
       "pattern":".*\\S.*"
     },
+    "NodeLabelString":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"^[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$"
+    },
     "ParametricCloudWatchMonitoringConfiguration":{
       "type":"structure",
       "members":{
@@ -2012,6 +2034,10 @@
         "logUri":{
           "shape":"UriString",
           "documentation":"<p>Amazon S3 destination URI for log publishing.</p>"
+        },
+        "encryptionKeyArn":{
+          "shape":"KmsKeyArn",
+          "documentation":"<p>The Amazon resource name (ARN) of the encryption key for logs.</p>"
         }
       },
       "documentation":"<p> Amazon S3 configuration for monitoring log publishing. You can configure your jobs to send log information to Amazon S3.</p>"
@@ -2097,6 +2123,7 @@
       "max":100,
       "sensitive":true
     },
+    "SessionIdleTimeoutInMinutes":{"type":"integer"},
     "SessionTagValue":{
       "type":"string",
       "max":512,
@@ -2440,6 +2467,10 @@
         "securityConfigurationId":{
           "shape":"ResourceIdString",
           "documentation":"<p>The ID of the security configuration.</p>"
+        },
+        "sessionEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether the virtual cluster has session support enabled. </p>"
         }
       },
       "documentation":"<p>This entity describes a virtual cluster. A virtual cluster is a Kubernetes namespace that Amazon EMR is registered with. Amazon EMR uses virtual clusters to run jobs and host endpoints. Multiple virtual clusters can be backed by the same physical cluster. However, each virtual cluster maps to one namespace on an Amazon EKS cluster. Virtual clusters do not create any active resources that contribute to your bill or that require lifecycle management outside the service.</p>"

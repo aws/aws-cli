@@ -121,6 +121,19 @@
       ],
       "documentation":"<p>Deletes the specified conformance pack and all the Config rules, remediation actions, and all evaluation results within that conformance pack.</p> <p>Config sets the conformance pack to <code>DELETE_IN_PROGRESS</code> until the deletion is complete. You cannot update a conformance pack while it is in this state.</p> <note> <p> <b>Recommendation: Consider excluding the <code>AWS::Config::ResourceCompliance</code> resource type from recording before deleting rules</b> </p> <p>Deleting rules creates configuration items (CIs) for <code>AWS::Config::ResourceCompliance</code> that can affect your costs for the configuration recorder. If you are deleting rules which evaluate a large number of resource types, this can lead to a spike in the number of CIs recorded.</p> <p>To avoid the associated costs, you can opt to disable recording for the <code>AWS::Config::ResourceCompliance</code> resource type before deleting rules, and re-enable recording after the rules have been deleted.</p> <p>However, since deleting rules is an asynchronous process, it might take an hour or more to complete. During the time when recording is disabled for <code>AWS::Config::ResourceCompliance</code>, rule evaluations will not be recorded in the associated resource’s history.</p> </note>"
     },
+    "DeleteConnector":{
+      "name":"DeleteConnector",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteConnectorRequest"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Deletes the specified connector.</p>"
+    },
     "DeleteDeliveryChannel":{
       "name":"DeleteDeliveryChannel",
       "http":{
@@ -837,6 +850,20 @@
       ],
       "documentation":"<p>Returns compliance details for the conformance pack based on the cumulative compliance results of all the rules in that conformance pack.</p>"
     },
+    "GetConnector":{
+      "name":"GetConnector",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetConnectorRequest"},
+      "output":{"shape":"GetConnectorResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Returns the details of the specified connector.</p>"
+    },
     "GetCustomRulePolicy":{
       "name":"GetCustomRulePolicy",
       "http":{
@@ -1000,6 +1027,19 @@
       ],
       "documentation":"<p>Returns a list of conformance pack compliance scores. A compliance score is the percentage of the number of compliant rule-resource combinations in a conformance pack compared to the number of total possible rule-resource combinations in the conformance pack. This metric provides you with a high-level view of the compliance state of your conformance packs. You can use it to identify, investigate, and understand the level of compliance in your conformance packs.</p> <note> <p>Conformance packs with no evaluation results will have a compliance score of <code>INSUFFICIENT_DATA</code>.</p> </note>"
     },
+    "ListConnectors":{
+      "name":"ListConnectors",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListConnectorsRequest"},
+      "output":{"shape":"ListConnectorsResponse"},
+      "errors":[
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Returns a list of connectors depending on the filters you specify.</p>"
+    },
     "ListDiscoveredResources":{
       "name":"ListDiscoveredResources",
       "http":{
@@ -1141,6 +1181,22 @@
         {"shape":"MaxNumberOfConformancePacksExceededException"}
       ],
       "documentation":"<p>Creates or updates a conformance pack. A conformance pack is a collection of Config rules that can be easily deployed in an account and a region and across an organization. For information on how many conformance packs you can have per account, see <a href=\"https://docs.aws.amazon.com/config/latest/developerguide/configlimits.html\"> <b>Service Limits</b> </a> in the <i>Config Developer Guide</i>.</p> <important> <p>When you use <code>PutConformancePack</code> to deploy conformance packs in your account, the operation can create Config rules and remediation actions without requiring <code>config:PutConfigRule</code> or <code>config:PutRemediationConfigurations</code> permissions in your account IAM policies.</p> <p>This API uses the <code>AWSServiceRoleForConfigConforms</code> service-linked role in your account to create conformance pack resources. This service-linked role includes the permissions to create Config rules and remediation configurations, even if your account IAM policies explicitly deny these actions.</p> </important> <p>This API creates a service-linked role <code>AWSServiceRoleForConfigConforms</code> in your account. The service-linked role is created only when the role does not exist in your account. </p> <note> <p>You must specify only one of the follow parameters: <code>TemplateS3Uri</code>, <code>TemplateBody</code> or <code>TemplateSSMDocumentDetails</code>.</p> </note> <note> <p> <b>Tags are added at creation and cannot be updated with this operation</b> </p> <p> <code>PutConformancePack</code> is an idempotent API. Subsequent requests won't create a duplicate resource if one was already created. If a following request has different <code>tags</code> values, Config will ignore these differences and treat it as an idempotent request of the previous. In this case, <code>tags</code> will not be updated, even if they are different.</p> <p>Use <a href=\"https://docs.aws.amazon.com/config/latest/APIReference/API_TagResource.html\">TagResource</a> and <a href=\"https://docs.aws.amazon.com/config/latest/APIReference/API_UntagResource.html\">UntagResource</a> to update tags after creation.</p> </note>"
+    },
+    "PutConnector":{
+      "name":"PutConnector",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"PutConnectorRequest"},
+      "output":{"shape":"PutConnectorResponse"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"InsufficientPermissionsException"},
+        {"shape":"MaxNumberOfConnectorsExceededException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Creates a connector that specifies the connection between a third-party cloud service provider and Config.</p> <p>A connector is required to create a service-linked configuration recorder for a third-party cloud service provider using the <a href=\"https://docs.aws.amazon.com/config/latest/APIReference/API_PutThirdPartyServiceLinkedConfigurationRecorder.html\">PutThirdPartyServiceLinkedConfigurationRecorder</a> operation.</p> <p>This API creates a service-linked role <code>AWSServiceRoleForConfigThirdParty</code> in your account. The service-linked role is created only when the role does not exist in your account.</p> <note> <p> <b>Connectors cannot be updated</b> </p> <p>To update the connector configuration, you must delete all associated configuration recorders, delete the connector, and recreate it with the updated configuration.</p> </note> <note> <p> <b>Tags are added at creation and cannot be updated with this operation</b> </p> <p>Use <a href=\"https://docs.aws.amazon.com/config/latest/APIReference/API_TagResource.html\">TagResource</a> and <a href=\"https://docs.aws.amazon.com/config/latest/APIReference/API_UntagResource.html\">UntagResource</a> to update tags after creation.</p> </note>"
     },
     "PutDeliveryChannel":{
       "name":"PutDeliveryChannel",
@@ -1317,6 +1373,21 @@
         {"shape":"ResourceConcurrentModificationException"}
       ],
       "documentation":"<p>Saves a new query or updates an existing saved query. The <code>QueryName</code> must be unique for a single Amazon Web Services account and a single Amazon Web Services Region. You can create upto 300 queries in a single Amazon Web Services account and a single Amazon Web Services Region.</p> <note> <p> <b>Tags are added at creation and cannot be updated</b> </p> <p> <code>PutStoredQuery</code> is an idempotent API. Subsequent requests won’t create a duplicate resource if one was already created. If a following request has different <code>tags</code> values, Config will ignore these differences and treat it as an idempotent request of the previous. In this case, <code>tags</code> will not be updated, even if they are different.</p> </note>"
+    },
+    "PutThirdPartyServiceLinkedConfigurationRecorder":{
+      "name":"PutThirdPartyServiceLinkedConfigurationRecorder",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"PutThirdPartyServiceLinkedConfigurationRecorderRequest"},
+      "output":{"shape":"PutThirdPartyServiceLinkedConfigurationRecorderResponse"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"InsufficientPermissionsException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Creates or updates a service-linked configuration recorder that is linked to a third-party cloud service provider based on the <code>ConnectorArn</code> you specify.</p> <p>The configuration recorder's <code>name</code>, <code>recordingGroup</code>, <code>recordingMode</code>, and <code>recordingScope</code> is set by the service that is linked to the configuration recorder.</p> <p>If a service-linked configuration recorder already exists for the specified service principal and connector, calling this operation again updates the <code>ScopeConfiguration</code>.</p> <note> <p> <b>This operation can only be called by the Amazon Web Services service linked to the configuration recorder</b> </p> <p>Customers cannot call this operation directly. Only the linked Amazon Web Services service can create or update the service-linked configuration recorder.</p> </note> <note> <p> <b>Tags are added at creation and cannot be updated with this operation</b> </p> <p>Use <a href=\"https://docs.aws.amazon.com/config/latest/APIReference/API_TagResource.html\">TagResource</a> and <a href=\"https://docs.aws.amazon.com/config/latest/APIReference/API_UntagResource.html\">UntagResource</a> to update tags after creation.</p> </note>"
     },
     "SelectAggregateResourceConfig":{
       "name":"SelectAggregateResourceConfig",
@@ -1908,6 +1979,34 @@
     "AwsRegion":{
       "type":"string",
       "max":64,
+      "min":1
+    },
+    "AzureClientIdentifier":{
+      "type":"string",
+      "max":128,
+      "min":1
+    },
+    "AzureConnectorConfiguration":{
+      "type":"structure",
+      "required":[
+        "tenantIdentifier",
+        "clientIdentifier"
+      ],
+      "members":{
+        "tenantIdentifier":{
+          "shape":"AzureTenantIdentifier",
+          "documentation":"<p>The Azure tenant identifier.</p>"
+        },
+        "clientIdentifier":{
+          "shape":"AzureClientIdentifier",
+          "documentation":"<p>The Azure client identifier.</p>"
+        }
+      },
+      "documentation":"<p>The configuration details for connecting to Microsoft Azure.</p>"
+    },
+    "AzureTenantIdentifier":{
+      "type":"string",
+      "max":128,
       "min":1
     },
     "BaseConfigurationItem":{
@@ -2633,6 +2732,14 @@
         "servicePrincipal":{
           "shape":"ServicePrincipal",
           "documentation":"<p>For service-linked configuration recorders, specifies the linked Amazon Web Services service for the configuration recorder.</p>"
+        },
+        "connectorArn":{
+          "shape":"AmazonResourceName",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the connector that specifies the connection between a third-party cloud service provider and Config.</p>"
+        },
+        "scopeConfiguration":{
+          "shape":"ScopeConfiguration",
+          "documentation":"<p>Specifies the scope of resources to record from the third-party cloud service provider connected through the connector.</p>"
         }
       },
       "documentation":"<p>Records configuration changes to the resource types in scope.</p> <p>For more information about the configuration recorder, see <a href=\"https://docs.aws.amazon.com/config/latest/developerguide/stop-start-recorder.html\"> <b>Working with the Configuration Recorder</b> </a> in the <i>Config Developer Guide</i>.</p>"
@@ -2752,15 +2859,19 @@
         "recordingScope":{
           "shape":"RecordingScope",
           "documentation":"<p>Indicates whether the <a href=\"https://docs.aws.amazon.com/config/latest/APIReference/API_ConfigurationItem.html\">ConfigurationItems</a> in scope for the configuration recorder are recorded for free (<code>INTERNAL</code>) or if you are charged a service fee for recording (<code>PAID</code>).</p>"
+        },
+        "provider":{
+          "shape":"Provider",
+          "documentation":"<p>For service-linked configuration recorders that record resources from a third-party cloud service provider, indicates the cloud service provider. Currently, <code>AZURE</code> is supported.</p>"
         }
       },
-      "documentation":"<p>A summary of a configuration recorder, including the <code>arn</code>, <code>name</code>, <code>servicePrincipal</code>, and <code>recordingScope</code>.</p>"
+      "documentation":"<p>A summary of a configuration recorder, including the <code>arn</code>, <code>name</code>, <code>servicePrincipal</code>, <code>recordingScope</code>, and <code>provider</code>.</p>"
     },
     "ConfigurationStateId":{"type":"string"},
     "ConflictException":{
       "type":"structure",
       "members":{},
-      "documentation":"<p>For <a href=\"https://docs.aws.amazon.com/config/latest/APIReference/API_PutServiceLinkedConfigurationRecorder.html\">PutServiceLinkedConfigurationRecorder</a>, you cannot create a service-linked recorder because a service-linked recorder already exists for the specified service.</p> <p>For <a href=\"https://docs.aws.amazon.com/config/latest/APIReference/API_DeleteServiceLinkedConfigurationRecorder.html\">DeleteServiceLinkedConfigurationRecorder</a>, you cannot delete the service-linked recorder because it is currently in use by the linked Amazon Web Services service.</p> <p>For <a href=\"https://docs.aws.amazon.com/config/latest/APIReference/API_DeleteDeliveryChannel.html\">DeleteDeliveryChannel</a>, you cannot delete the specified delivery channel because the customer managed configuration recorder is running. Use the <a href=\"https://docs.aws.amazon.com/config/latest/APIReference/API_StopConfigurationRecorder.html\">StopConfigurationRecorder</a> operation to stop the customer managed configuration recorder.</p> <p>For <a href=\"https://docs.aws.amazon.com/config/latest/APIReference/API_AssociateResourceTypes.html\">AssociateResourceTypes</a> and <a href=\"https://docs.aws.amazon.com/config/latest/APIReference/API_DisassociateResourceTypes.html\">DisassociateResourceTypes</a>, one of the following errors:</p> <ul> <li> <p>For service-linked configuration recorders, the configuration recorder is not in use by the service. No association or dissociation of resource types is permitted.</p> </li> <li> <p>For service-linked configuration recorders, your requested change to the configuration recorder has been denied by its linked Amazon Web Services service.</p> </li> </ul>",
+      "documentation":"<p>For <a href=\"https://docs.aws.amazon.com/config/latest/APIReference/API_PutServiceLinkedConfigurationRecorder.html\">PutServiceLinkedConfigurationRecorder</a>, you cannot create a service-linked recorder because a service-linked recorder already exists for the specified service.</p> <p>For <a href=\"https://docs.aws.amazon.com/config/latest/APIReference/API_PutThirdPartyServiceLinkedConfigurationRecorder.html\">PutThirdPartyServiceLinkedConfigurationRecorder</a>, you cannot create a service-linked recorder because the specified service principal does not support multiple configuration recorders and one already exists.</p> <p>For <a href=\"https://docs.aws.amazon.com/config/latest/APIReference/API_PutThirdPartyServiceLinkedConfigurationRecorder.html\">PutThirdPartyServiceLinkedConfigurationRecorder</a>, another in-progress operation is currently referencing the same connector or service principal. Please try again later.</p> <p>For <a href=\"https://docs.aws.amazon.com/config/latest/APIReference/API_PutConnector.html\">PutConnector</a>, you cannot create a connector because a connector already exists for the specified connector configuration.</p> <p>For <a href=\"https://docs.aws.amazon.com/config/latest/APIReference/API_DeleteServiceLinkedConfigurationRecorder.html\">DeleteServiceLinkedConfigurationRecorder</a>, you cannot delete the service-linked recorder because it is currently in use by the linked Amazon Web Services service.</p> <p>For <a href=\"https://docs.aws.amazon.com/config/latest/APIReference/API_DeleteServiceLinkedConfigurationRecorder.html\">DeleteServiceLinkedConfigurationRecorder</a>, another in-progress operation is currently referencing the same connector. Please try again later.</p> <p>For <a href=\"https://docs.aws.amazon.com/config/latest/APIReference/API_DeleteConnector.html\">DeleteConnector</a>, another in-progress operation is currently referencing the connector. Please try again later.</p> <p>For <a href=\"https://docs.aws.amazon.com/config/latest/APIReference/API_DeleteDeliveryChannel.html\">DeleteDeliveryChannel</a>, you cannot delete the specified delivery channel because the customer managed configuration recorder is running. Use the <a href=\"https://docs.aws.amazon.com/config/latest/APIReference/API_StopConfigurationRecorder.html\">StopConfigurationRecorder</a> operation to stop the customer managed configuration recorder.</p> <p>For <a href=\"https://docs.aws.amazon.com/config/latest/APIReference/API_AssociateResourceTypes.html\">AssociateResourceTypes</a> and <a href=\"https://docs.aws.amazon.com/config/latest/APIReference/API_DisassociateResourceTypes.html\">DisassociateResourceTypes</a>, one of the following errors:</p> <ul> <li> <p>For service-linked configuration recorders, the configuration recorder is not in use by the service. No association or dissociation of resource types is permitted.</p> </li> <li> <p>For service-linked configuration recorders, your requested change to the configuration recorder has been denied by its linked Amazon Web Services service.</p> </li> </ul>",
       "exception":true
     },
     "ConformancePackArn":{
@@ -3119,6 +3230,112 @@
       "documentation":"<p>You have specified a template that is not valid or supported.</p>",
       "exception":true
     },
+    "Connector":{
+      "type":"structure",
+      "required":[
+        "name",
+        "arn",
+        "connectorConfiguration",
+        "createdTime"
+      ],
+      "members":{
+        "name":{
+          "shape":"ConnectorName",
+          "documentation":"<p>The name of the connector.</p>"
+        },
+        "arn":{
+          "shape":"AmazonResourceName",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the connector.</p>"
+        },
+        "connectorConfiguration":{
+          "shape":"ConnectorConfiguration",
+          "documentation":"<p>The provider-specific configuration for connecting to the third-party cloud service provider.</p>"
+        },
+        "createdTime":{
+          "shape":"Date",
+          "documentation":"<p>The date and time that the connector was created.</p>"
+        }
+      },
+      "documentation":"<p>The details of the connector, including the connector configuration and connector ARN.</p>"
+    },
+    "ConnectorConfiguration":{
+      "type":"structure",
+      "members":{
+        "azure":{
+          "shape":"AzureConnectorConfiguration",
+          "documentation":"<p>The configuration for an Azure connector.</p>"
+        }
+      },
+      "documentation":"<p>The provider-specific configuration for connecting to the third-party cloud service provider. You must specify exactly one provider configuration.</p>"
+    },
+    "ConnectorFilter":{
+      "type":"structure",
+      "members":{
+        "filterName":{
+          "shape":"ConnectorFilterName",
+          "documentation":"<p>The name of the filter. Currently, only <code>provider</code> is supported.</p>"
+        },
+        "filterValues":{
+          "shape":"FilterValueList",
+          "documentation":"<p>The value of the filter. For <code>provider</code>, valid values include: <code>AZURE</code>.</p>"
+        }
+      },
+      "documentation":"<p>Filters connectors based on the connector provider.</p>"
+    },
+    "ConnectorFilterList":{
+      "type":"list",
+      "member":{"shape":"ConnectorFilter"},
+      "max":5,
+      "min":0
+    },
+    "ConnectorFilterName":{
+      "type":"string",
+      "enum":["provider"]
+    },
+    "ConnectorName":{
+      "type":"string",
+      "max":256,
+      "min":1
+    },
+    "ConnectorSummaries":{
+      "type":"list",
+      "member":{"shape":"ConnectorSummary"},
+      "max":100,
+      "min":0
+    },
+    "ConnectorSummary":{
+      "type":"structure",
+      "required":[
+        "arn",
+        "name",
+        "provider",
+        "tenantIdentifier",
+        "createdTime"
+      ],
+      "members":{
+        "arn":{
+          "shape":"AmazonResourceName",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the connector.</p>"
+        },
+        "name":{
+          "shape":"ConnectorName",
+          "documentation":"<p>The name of the connector.</p>"
+        },
+        "provider":{
+          "shape":"Provider",
+          "documentation":"<p>The third-party cloud service provider. Currently, <code>AZURE</code> is supported.</p>"
+        },
+        "tenantIdentifier":{
+          "shape":"AzureTenantIdentifier",
+          "documentation":"<p>The Azure tenant identifier for the connector.</p>"
+        },
+        "createdTime":{
+          "shape":"Date",
+          "documentation":"<p>The date and time that the connector was created.</p>"
+        }
+      },
+      "documentation":"<p>A summary of a connector.</p>"
+    },
     "ControlsList":{
       "type":"list",
       "member":{"shape":"StringWithCharLimit128"},
@@ -3215,6 +3432,16 @@
         "ConformancePackName":{
           "shape":"ConformancePackName",
           "documentation":"<p>Name of the conformance pack you want to delete.</p>"
+        }
+      }
+    },
+    "DeleteConnectorRequest":{
+      "type":"structure",
+      "required":["Arn"],
+      "members":{
+        "Arn":{
+          "shape":"AmazonResourceName",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the connector that you want to delete.</p>"
         }
       }
     },
@@ -3355,11 +3582,14 @@
     },
     "DeleteServiceLinkedConfigurationRecorderRequest":{
       "type":"structure",
-      "required":["ServicePrincipal"],
       "members":{
         "ServicePrincipal":{
           "shape":"ServicePrincipal",
-          "documentation":"<p>The service principal of the Amazon Web Services service for the service-linked configuration recorder that you want to delete.</p>"
+          "documentation":"<p>The service principal of the Amazon Web Services service for the service-linked configuration recorder that you want to delete. This field is only supported for Amazon Web Services service principals. For third-party service-linked configuration recorders, use <code>Arn</code> instead.</p>"
+        },
+        "Arn":{
+          "shape":"AmazonResourceName",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the service-linked configuration recorder that you want to delete. For third-party service-linked configuration recorders, you must use <code>Arn</code>. You must specify exactly one of <code>Arn</code> or <code>ServicePrincipal</code>.</p>"
         }
       }
     },
@@ -3718,13 +3948,13 @@
           "shape":"ConfigRuleNames",
           "documentation":"<p>The names of the Config rules for which you want details. If you do not specify any names, Config returns details for all your rules.</p>"
         },
-        "NextToken":{
-          "shape":"String",
-          "documentation":"<p>The <code>nextToken</code> string returned on a previous page that you use to get the next page of results in a paginated response.</p>"
-        },
         "Filters":{
           "shape":"DescribeConfigRulesFilters",
           "documentation":"<p>Returns a list of Detective or Proactive Config rules. By default, this API returns an unfiltered list. For more information on Detective or Proactive Config rules, see <a href=\"https://docs.aws.amazon.com/config/latest/developerguide/evaluate-config-rules.html\"> <b>Evaluation Mode</b> </a> in the <i>Config Developer Guide</i>.</p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The <code>nextToken</code> string returned on a previous page that you use to get the next page of results in a paginated response.</p>"
         }
       },
       "documentation":"<p/>"
@@ -3817,7 +4047,7 @@
         },
         "ServicePrincipal":{
           "shape":"ServicePrincipal",
-          "documentation":"<p>For service-linked configuration recorders, you can use the service principal of the linked Amazon Web Services service to specify the configuration recorder.</p>"
+          "documentation":"<p>For service-linked configuration recorders, you can use the service principal of the linked Amazon Web Services service to specify the configuration recorder. This field is only supported for Amazon Web Services service principals. For third-party service-linked configuration recorders, use <code>Arn</code> instead.</p>"
         },
         "Arn":{
           "shape":"AmazonResourceName",
@@ -3845,7 +4075,7 @@
         },
         "ServicePrincipal":{
           "shape":"ServicePrincipal",
-          "documentation":"<p>For service-linked configuration recorders, you can use the service principal of the linked Amazon Web Services service to specify the configuration recorder.</p>"
+          "documentation":"<p>For service-linked configuration recorders, you can use the service principal of the linked Amazon Web Services service to specify the configuration recorder. This field is only supported for Amazon Web Services service principals. For third-party service-linked configuration recorders, use <code>Arn</code> instead.</p>"
         },
         "Arn":{
           "shape":"AmazonResourceName",
@@ -4622,6 +4852,12 @@
       "member":{"shape":"FieldInfo"}
     },
     "FieldName":{"type":"string"},
+    "FilterValueList":{
+      "type":"list",
+      "member":{"shape":"String"},
+      "max":10,
+      "min":0
+    },
     "GetAggregateComplianceDetailsByConfigRuleRequest":{
       "type":"structure",
       "required":[
@@ -5017,6 +5253,26 @@
         }
       }
     },
+    "GetConnectorRequest":{
+      "type":"structure",
+      "required":["Arn"],
+      "members":{
+        "Arn":{
+          "shape":"AmazonResourceName",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the connector.</p>"
+        }
+      }
+    },
+    "GetConnectorResponse":{
+      "type":"structure",
+      "required":["Connector"],
+      "members":{
+        "Connector":{
+          "shape":"Connector",
+          "documentation":"<p>The details of the specified connector.</p>"
+        }
+      }
+    },
     "GetCustomRulePolicyRequest":{
       "type":"structure",
       "members":{
@@ -5308,6 +5564,12 @@
       "exception":true
     },
     "IncludeGlobalResourceTypes":{"type":"boolean"},
+    "IncludedRegions":{
+      "type":"list",
+      "member":{"shape":"ThirdPartyCloudRegion"},
+      "max":200,
+      "min":0
+    },
     "InsufficientDeliveryPolicyException":{
       "type":"structure",
       "members":{},
@@ -5317,7 +5579,7 @@
     "InsufficientPermissionsException":{
       "type":"structure",
       "members":{},
-      "documentation":"<p>Indicates one of the following errors:</p> <ul> <li> <p>For <a href=\"https://docs.aws.amazon.com/config/latest/APIReference/API_PutConfigRule.html\">PutConfigRule</a>, the rule cannot be created because the IAM role assigned to Config lacks permissions to perform the config:Put* action.</p> </li> <li> <p>For <a href=\"https://docs.aws.amazon.com/config/latest/APIReference/API_PutConfigRule.html\">PutConfigRule</a>, the Lambda function cannot be invoked. Check the function ARN, and check the function's permissions.</p> </li> <li> <p>For <a href=\"https://docs.aws.amazon.com/config/latest/APIReference/API_PutOrganizationConfigRule.html\">PutOrganizationConfigRule</a>, organization Config rule cannot be created because you do not have permissions to call IAM <code>GetRole</code> action or create a service-linked role.</p> </li> <li> <p>For <a href=\"https://docs.aws.amazon.com/config/latest/APIReference/API_PutConformancePack.html\">PutConformancePack</a> and <a href=\"https://docs.aws.amazon.com/config/latest/APIReference/API_PutOrganizationConformancePack.html\">PutOrganizationConformancePack</a>, a conformance pack cannot be created because you do not have the following permissions: </p> <ul> <li> <p>You do not have permission to call IAM <code>GetRole</code> action or create a service-linked role.</p> </li> <li> <p>You do not have permission to read Amazon S3 bucket or call SSM:GetDocument.</p> </li> </ul> </li> <li> <p>For <a href=\"https://docs.aws.amazon.com/config/latest/APIReference/API_PutServiceLinkedConfigurationRecorder.html\">PutServiceLinkedConfigurationRecorder</a>, a service-linked configuration recorder cannot be created because you do not have the following permissions: IAM <code>CreateServiceLinkedRole</code>.</p> </li> </ul>",
+      "documentation":"<p>Indicates one of the following errors:</p> <ul> <li> <p>For <a href=\"https://docs.aws.amazon.com/config/latest/APIReference/API_PutConfigRule.html\">PutConfigRule</a>, the rule cannot be created because the IAM role assigned to Config lacks permissions to perform the config:Put* action.</p> </li> <li> <p>For <a href=\"https://docs.aws.amazon.com/config/latest/APIReference/API_PutConfigRule.html\">PutConfigRule</a>, the Lambda function cannot be invoked. Check the function ARN, and check the function's permissions.</p> </li> <li> <p>For <a href=\"https://docs.aws.amazon.com/config/latest/APIReference/API_PutOrganizationConfigRule.html\">PutOrganizationConfigRule</a>, organization Config rule cannot be created because you do not have permissions to call IAM <code>GetRole</code> action or create a service-linked role.</p> </li> <li> <p>For <a href=\"https://docs.aws.amazon.com/config/latest/APIReference/API_PutConformancePack.html\">PutConformancePack</a> and <a href=\"https://docs.aws.amazon.com/config/latest/APIReference/API_PutOrganizationConformancePack.html\">PutOrganizationConformancePack</a>, a conformance pack cannot be created because you do not have the following permissions: </p> <ul> <li> <p>You do not have permission to call IAM <code>GetRole</code> action or create a service-linked role.</p> </li> <li> <p>You do not have permission to read Amazon S3 bucket or call SSM:GetDocument.</p> </li> </ul> </li> <li> <p>For <a href=\"https://docs.aws.amazon.com/config/latest/APIReference/API_PutServiceLinkedConfigurationRecorder.html\">PutServiceLinkedConfigurationRecorder</a>, a service-linked configuration recorder cannot be created because you do not have the following permissions: IAM <code>CreateServiceLinkedRole</code>.</p> </li> <li> <p>For <a href=\"https://docs.aws.amazon.com/config/latest/APIReference/API_PutConnector.html\">PutConnector</a>, a connector cannot be created because you do not have the following permissions: IAM <code>CreateServiceLinkedRole</code>.</p> </li> </ul>",
       "exception":true
     },
     "Integer":{"type":"integer"},
@@ -5531,6 +5793,42 @@
         }
       }
     },
+    "ListConnectorsMaxResults":{
+      "type":"integer",
+      "max":100,
+      "min":0
+    },
+    "ListConnectorsRequest":{
+      "type":"structure",
+      "members":{
+        "MaxResults":{
+          "shape":"ListConnectorsMaxResults",
+          "documentation":"<p>The maximum number of results to include in the response.</p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The <code>NextToken</code> string returned on a previous page that you use to get the next page of results in a paginated response.</p>"
+        },
+        "Filters":{
+          "shape":"ConnectorFilterList",
+          "documentation":"<p>Filters the results based on a list of <code>ConnectorFilter</code> objects that you specify.</p>"
+        }
+      }
+    },
+    "ListConnectorsResponse":{
+      "type":"structure",
+      "required":["ConnectorSummaries"],
+      "members":{
+        "ConnectorSummaries":{
+          "shape":"ConnectorSummaries",
+          "documentation":"<p>A list of <code>ConnectorSummary</code> objects.</p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The <code>NextToken</code> string returned on a previous page that you use to get the next page of results in a paginated response.</p>"
+        }
+      }
+    },
     "ListDiscoveredResourcesRequest":{
       "type":"structure",
       "required":["resourceType"],
@@ -5645,7 +5943,7 @@
       "members":{
         "ResourceArn":{
           "shape":"AmazonResourceName",
-          "documentation":"<p>The Amazon Resource Name (ARN) that identifies the resource for which to list the tags. The following resources are supported:</p> <ul> <li> <p> <code>ConfigurationRecorder</code> </p> </li> <li> <p> <code>ConfigRule</code> </p> </li> <li> <p> <code>OrganizationConfigRule</code> </p> </li> <li> <p> <code>ConformancePack</code> </p> </li> <li> <p> <code>OrganizationConformancePack</code> </p> </li> <li> <p> <code>ConfigurationAggregator</code> </p> </li> <li> <p> <code>AggregationAuthorization</code> </p> </li> <li> <p> <code>StoredQuery</code> </p> </li> </ul>"
+          "documentation":"<p>The Amazon Resource Name (ARN) that identifies the resource for which to list the tags. The following resources are supported:</p> <ul> <li> <p> <code>ConfigurationRecorder</code> </p> </li> <li> <p> <code>ConfigRule</code> </p> </li> <li> <p> <code>OrganizationConfigRule</code> </p> </li> <li> <p> <code>ConformancePack</code> </p> </li> <li> <p> <code>OrganizationConformancePack</code> </p> </li> <li> <p> <code>ConfigurationAggregator</code> </p> </li> <li> <p> <code>AggregationAuthorization</code> </p> </li> <li> <p> <code>StoredQuery</code> </p> </li> <li> <p> <code>Connector</code> </p> </li> </ul>"
         },
         "Limit":{
           "shape":"Limit",
@@ -5693,6 +5991,12 @@
       "type":"structure",
       "members":{},
       "documentation":"<p>You have reached the limit of the number of conformance packs you can create in an account. For more information, see <a href=\"https://docs.aws.amazon.com/config/latest/developerguide/configlimits.html\"> <b>Service Limits</b> </a> in the <i>Config Developer Guide</i>.</p>",
+      "exception":true
+    },
+    "MaxNumberOfConnectorsExceededException":{
+      "type":"structure",
+      "members":{},
+      "documentation":"<p>You have reached the limit of the number of connectors in your account.</p>",
       "exception":true
     },
     "MaxNumberOfDeliveryChannelsExceededException":{
@@ -6476,6 +6780,10 @@
       "max":10000,
       "min":0
     },
+    "Provider":{
+      "type":"string",
+      "enum":["AZURE"]
+    },
     "PutAggregationAuthorizationRequest":{
       "type":"structure",
       "required":[
@@ -6614,6 +6922,30 @@
         "ConformancePackArn":{
           "shape":"ConformancePackArn",
           "documentation":"<p>ARN of the conformance pack.</p>"
+        }
+      }
+    },
+    "PutConnectorRequest":{
+      "type":"structure",
+      "required":["ConnectorConfiguration"],
+      "members":{
+        "ConnectorConfiguration":{
+          "shape":"ConnectorConfiguration",
+          "documentation":"<p>The provider-specific configuration for connecting to the third-party cloud service provider.</p>"
+        },
+        "Tags":{
+          "shape":"TagsList",
+          "documentation":"<p>The tags for the connector. Each tag consists of a key and an optional value, both of which you define.</p>"
+        }
+      }
+    },
+    "PutConnectorResponse":{
+      "type":"structure",
+      "required":["Arn"],
+      "members":{
+        "Arn":{
+          "shape":"AmazonResourceName",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the connector.</p>"
         }
       }
     },
@@ -6918,6 +7250,49 @@
         "QueryArn":{
           "shape":"QueryArn",
           "documentation":"<p>Amazon Resource Name (ARN) of the query. For example, arn:partition:service:region:account-id:resource-type/resource-name/resource-id.</p>"
+        }
+      }
+    },
+    "PutThirdPartyServiceLinkedConfigurationRecorderRequest":{
+      "type":"structure",
+      "required":[
+        "ServicePrincipal",
+        "ConnectorArn",
+        "ScopeConfiguration"
+      ],
+      "members":{
+        "ServicePrincipal":{
+          "shape":"ServicePrincipal",
+          "documentation":"<p>The service principal of the Amazon Web Services service for the service-linked configuration recorder that you want to create.</p>"
+        },
+        "ConnectorArn":{
+          "shape":"AmazonResourceName",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the connector that specifies the connection between the third-party cloud service provider and Config. The specified connector must exist.</p>"
+        },
+        "ScopeConfiguration":{
+          "shape":"ScopeConfiguration",
+          "documentation":"<p>Specifies the scope of resources to record from the third-party cloud service provider.</p>"
+        },
+        "Tags":{
+          "shape":"TagsList",
+          "documentation":"<p>The tags for a service-linked configuration recorder. Each tag consists of a key and an optional value, both of which you define.</p>"
+        }
+      }
+    },
+    "PutThirdPartyServiceLinkedConfigurationRecorderResponse":{
+      "type":"structure",
+      "required":[
+        "Arn",
+        "Name"
+      ],
+      "members":{
+        "Arn":{
+          "shape":"AmazonResourceName",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the specified configuration recorder.</p>"
+        },
+        "Name":{
+          "shape":"RecorderName",
+          "documentation":"<p>The name of the specified configuration recorder.</p>"
         }
       }
     },
@@ -8277,6 +8652,46 @@
       },
       "documentation":"<p>Defines which resources trigger an evaluation for an Config rule. The scope can include one or more resource types, a combination of a tag key and value, or a combination of one resource type and one resource ID. Specify a scope to constrain which resources trigger an evaluation for a rule. Otherwise, evaluations for the rule are triggered when any resource in your recording group changes in configuration.</p>"
     },
+    "ScopeConfiguration":{
+      "type":"structure",
+      "required":[
+        "scopeType",
+        "allRegions"
+      ],
+      "members":{
+        "scopeType":{
+          "shape":"ScopeType",
+          "documentation":"<p>The type of scope for the third-party cloud resources. Valid values include <code>tenant</code> and <code>subscription</code>.</p>"
+        },
+        "scopeValues":{
+          "shape":"ScopeValues",
+          "documentation":"<p>The list of specific scope values for the third-party cloud resources. For example, a list of Azure subscriptions or management groups.</p>"
+        },
+        "allRegions":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether to record resources from all supported regions for the third-party cloud service provider.</p>"
+        },
+        "includedRegions":{
+          "shape":"IncludedRegions",
+          "documentation":"<p>The list of regions from the third-party cloud service provider to include when recording resources. Used when <code>allRegions</code> is set to <code>false</code>.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the scope of resources to record from a third-party cloud service provider.</p>"
+    },
+    "ScopeType":{
+      "type":"string",
+      "max":256,
+      "min":1
+    },
+    "ScopeValue":{
+      "type":"string",
+      "max":256,
+      "min":1
+    },
+    "ScopeValues":{
+      "type":"list",
+      "member":{"shape":"ScopeValue"}
+    },
     "SelectAggregateResourceConfigRequest":{
       "type":"structure",
       "required":[
@@ -8730,7 +9145,7 @@
       "members":{
         "ResourceArn":{
           "shape":"AmazonResourceName",
-          "documentation":"<p>The Amazon Resource Name (ARN) that identifies the resource for which to list the tags. The following resources are supported:</p> <ul> <li> <p> <code>ConfigurationRecorder</code> </p> </li> <li> <p> <code>ConfigRule</code> </p> </li> <li> <p> <code>OrganizationConfigRule</code> </p> </li> <li> <p> <code>ConformancePack</code> </p> </li> <li> <p> <code>OrganizationConformancePack</code> </p> </li> <li> <p> <code>ConfigurationAggregator</code> </p> </li> <li> <p> <code>AggregationAuthorization</code> </p> </li> <li> <p> <code>StoredQuery</code> </p> </li> </ul>"
+          "documentation":"<p>The Amazon Resource Name (ARN) that identifies the resource for which to list the tags. The following resources are supported:</p> <ul> <li> <p> <code>ConfigurationRecorder</code> </p> </li> <li> <p> <code>ConfigRule</code> </p> </li> <li> <p> <code>OrganizationConfigRule</code> </p> </li> <li> <p> <code>ConformancePack</code> </p> </li> <li> <p> <code>OrganizationConformancePack</code> </p> </li> <li> <p> <code>ConfigurationAggregator</code> </p> </li> <li> <p> <code>AggregationAuthorization</code> </p> </li> <li> <p> <code>StoredQuery</code> </p> </li> <li> <p> <code>Connector</code> </p> </li> </ul>"
         },
         "Tags":{
           "shape":"TagList",
@@ -8780,6 +9195,11 @@
       },
       "documentation":"<p>This API allows you to create a conformance pack template with an Amazon Web Services Systems Manager document (SSM document). To deploy a conformance pack using an SSM document, first create an SSM document with conformance pack content, and then provide the <code>DocumentName</code> in the <a href=\"https://docs.aws.amazon.com/config/latest/APIReference/API_PutConformancePack.html\">PutConformancePack API</a>. You can also provide the <code>DocumentVersion</code>.</p> <p>The <code>TemplateSSMDocumentDetails</code> object contains the name of the SSM document and the version of the SSM document.</p>"
     },
+    "ThirdPartyCloudRegion":{
+      "type":"string",
+      "max":128,
+      "min":1
+    },
     "TimeWindow":{
       "type":"structure",
       "members":{
@@ -8819,7 +9239,7 @@
       "members":{
         "ResourceArn":{
           "shape":"AmazonResourceName",
-          "documentation":"<p>The Amazon Resource Name (ARN) that identifies the resource for which to list the tags. The following resources are supported:</p> <ul> <li> <p> <code>ConfigurationRecorder</code> </p> </li> <li> <p> <code>ConfigRule</code> </p> </li> <li> <p> <code>OrganizationConfigRule</code> </p> </li> <li> <p> <code>ConformancePack</code> </p> </li> <li> <p> <code>OrganizationConformancePack</code> </p> </li> <li> <p> <code>ConfigurationAggregator</code> </p> </li> <li> <p> <code>AggregationAuthorization</code> </p> </li> <li> <p> <code>StoredQuery</code> </p> </li> </ul>"
+          "documentation":"<p>The Amazon Resource Name (ARN) that identifies the resource for which to list the tags. The following resources are supported:</p> <ul> <li> <p> <code>ConfigurationRecorder</code> </p> </li> <li> <p> <code>ConfigRule</code> </p> </li> <li> <p> <code>OrganizationConfigRule</code> </p> </li> <li> <p> <code>ConformancePack</code> </p> </li> <li> <p> <code>OrganizationConformancePack</code> </p> </li> <li> <p> <code>ConfigurationAggregator</code> </p> </li> <li> <p> <code>AggregationAuthorization</code> </p> </li> <li> <p> <code>StoredQuery</code> </p> </li> <li> <p> <code>Connector</code> </p> </li> </ul>"
         },
         "TagKeys":{
           "shape":"TagKeyList",
@@ -8830,7 +9250,7 @@
     "ValidationException":{
       "type":"structure",
       "members":{},
-      "documentation":"<p>The requested operation is not valid. You will see this exception if there are missing required fields or if the input value fails the validation.</p> <p>For <a href=\"https://docs.aws.amazon.com/config/latest/APIReference/API_PutStoredQuery.html\">PutStoredQuery</a>, one of the following errors:</p> <ul> <li> <p>There are missing required fields.</p> </li> <li> <p>The input value fails the validation.</p> </li> <li> <p>You are trying to create more than 300 queries.</p> </li> </ul> <p>For <a href=\"https://docs.aws.amazon.com/config/latest/APIReference/API_DescribeConfigurationRecorders.html\">DescribeConfigurationRecorders</a> and <a href=\"https://docs.aws.amazon.com/config/latest/APIReference/API_DescribeConfigurationRecorderStatus.html\">DescribeConfigurationRecorderStatus</a>, one of the following errors:</p> <ul> <li> <p>You have specified more than one configuration recorder.</p> </li> <li> <p>You have provided a service principal for service-linked configuration recorder that is not valid.</p> </li> </ul> <p>For <a href=\"https://docs.aws.amazon.com/config/latest/APIReference/API_AssociateResourceTypes.html\">AssociateResourceTypes</a> and <a href=\"https://docs.aws.amazon.com/config/latest/APIReference/API_DisassociateResourceTypes.html\">DisassociateResourceTypes</a>, one of the following errors:</p> <ul> <li> <p>Your configuraiton recorder has a recording strategy that does not allow the association or disassociation of resource types.</p> </li> <li> <p>One or more of the specified resource types are already associated or disassociated with the configuration recorder.</p> </li> <li> <p>For service-linked configuration recorders, the configuration recorder does not record one or more of the specified resource types.</p> </li> </ul>",
+      "documentation":"<p>The requested operation is not valid. You will see this exception if there are missing required fields or if the input value fails the validation.</p> <p>For <a href=\"https://docs.aws.amazon.com/config/latest/APIReference/API_PutStoredQuery.html\">PutStoredQuery</a>, one of the following errors:</p> <ul> <li> <p>There are missing required fields.</p> </li> <li> <p>The input value fails the validation.</p> </li> <li> <p>You are trying to create more than 300 queries.</p> </li> </ul> <p>For <a href=\"https://docs.aws.amazon.com/config/latest/APIReference/API_DescribeConfigurationRecorders.html\">DescribeConfigurationRecorders</a> and <a href=\"https://docs.aws.amazon.com/config/latest/APIReference/API_DescribeConfigurationRecorderStatus.html\">DescribeConfigurationRecorderStatus</a>, one of the following errors:</p> <ul> <li> <p>You have specified more than one configuration recorder.</p> </li> <li> <p>You have provided a service principal for service-linked configuration recorder that is not valid.</p> </li> </ul> <p>For <a href=\"https://docs.aws.amazon.com/config/latest/APIReference/API_AssociateResourceTypes.html\">AssociateResourceTypes</a> and <a href=\"https://docs.aws.amazon.com/config/latest/APIReference/API_DisassociateResourceTypes.html\">DisassociateResourceTypes</a>, one of the following errors:</p> <ul> <li> <p>Your configuraiton recorder has a recording strategy that does not allow the association or disassociation of resource types.</p> </li> <li> <p>One or more of the specified resource types are already associated or disassociated with the configuration recorder.</p> </li> <li> <p>For service-linked configuration recorders, the configuration recorder does not record one or more of the specified resource types.</p> </li> </ul> <p>For <a href=\"https://docs.aws.amazon.com/config/latest/APIReference/API_DeleteServiceLinkedConfigurationRecorder.html\">DeleteServiceLinkedConfigurationRecorder</a>, one of the following errors:</p> <ul> <li> <p>You have provided both <code>Arn</code> and <code>ServicePrincipal</code>. Only one of <code>Arn</code> or <code>ServicePrincipal</code> can be specified.</p> </li> <li> <p>You have provided a service principal for service-linked configuration recorder that is not valid.</p> </li> </ul>",
       "exception":true
     },
     "Value":{"type":"string"},

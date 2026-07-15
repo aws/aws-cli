@@ -1187,7 +1187,7 @@
       },
       "input":{"shape":"CreateReplaceRootVolumeTaskRequest"},
       "output":{"shape":"CreateReplaceRootVolumeTaskResult"},
-      "documentation":"<p>Replaces the EBS-backed root volume for a <code>running</code> instance with a new volume that is restored to the original root volume's launch state, that is restored to a specific snapshot taken from the original root volume, or that is restored from an AMI that has the same key characteristics as that of the instance.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/replace-root.html\">Replace a root volume</a> in the <i>Amazon EC2 User Guide</i>.</p>"
+      "documentation":"<p>Replaces the EBS-backed root volume for a <code>running</code> instance with a new volume that is restored to the original root volume's launch state, that is restored to a specific snapshot taken from the original root volume, that is restored from an AMI that has the same key characteristics as that of the instance, or that is replaced by a specified volume.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/replace-root.html\">Replace a root volume</a> in the <i>Amazon EC2 User Guide</i>.</p>"
     },
     "CreateReservedInstancesListing":{
       "name":"CreateReservedInstancesListing",
@@ -16450,6 +16450,21 @@
           "shape":"PlatformValues",
           "documentation":"<p>The value is <code>windows</code> for Windows instances in an EC2 Fleet. Otherwise, the value is blank.</p>",
           "locationName":"platform"
+        },
+        "AvailabilityZoneId":{
+          "shape":"AvailabilityZoneId",
+          "documentation":"<p>The ID of the Availability Zone in which the instance was launched. For example, <code>use2-az1</code>.</p> <p>Supported only for fleets of type <code>instant</code>.</p>",
+          "locationName":"availabilityZoneId"
+        },
+        "AvailabilityZone":{
+          "shape":"AvailabilityZoneName",
+          "documentation":"<p>The name of the Availability Zone in which the instance was launched. For example, <code>us-east-2a</code>.</p> <p>Supported only for fleets of type <code>instant</code>.</p>",
+          "locationName":"availabilityZone"
+        },
+        "SubnetId":{
+          "shape":"SubnetId",
+          "documentation":"<p>The ID of the subnet in which the instance was launched.</p> <p>Supported only for fleets of type <code>instant</code>.</p>",
+          "locationName":"subnetId"
         }
       },
       "documentation":"<p>Describes the instances that were launched by the fleet.</p>"
@@ -16523,7 +16538,7 @@
         },
         "TagSpecifications":{
           "shape":"TagSpecificationList",
-          "documentation":"<p>The key-value pair for tagging the EC2 Fleet request on creation. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Using_Tags.html#tag-resources\">Tag your resources</a>.</p> <p>If the fleet type is <code>instant</code>, specify a resource type of <code>fleet</code> to tag the fleet or <code>instance</code> to tag the instances at launch.</p> <p>If the fleet type is <code>maintain</code> or <code>request</code>, specify a resource type of <code>fleet</code> to tag the fleet. You cannot specify a resource type of <code>instance</code>. To tag instances at launch, specify the tags in a <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-launch-templates.html#create-launch-template\">launch template</a>.</p>",
+          "documentation":"<p>The key-value pair for tagging the EC2 Fleet request on creation. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Using_Tags.html#tag-resources\">Tag your resources</a>.</p> <p>If the fleet type is <code>instant</code>, specify a resource type of <code>fleet</code> to tag the fleet, <code>instance</code> to tag the instances at launch, <code>volume</code> to tag the volumes at launch, or <code>network-interface</code> to tag the network interfaces at launch.</p> <p>If the fleet type is <code>maintain</code> or <code>request</code>, specify a resource type of <code>fleet</code> to tag the fleet. You cannot specify a resource type of <code>instance</code>, <code>volume</code>, or <code>network-interface</code>. To tag instances at launch, specify the tags in a <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-launch-templates.html#create-launch-template\">launch template</a>.</p>",
           "locationName":"TagSpecification"
         },
         "Context":{
@@ -18424,7 +18439,7 @@
         },
         "SnapshotId":{
           "shape":"SnapshotId",
-          "documentation":"<p>The ID of the snapshot from which to restore the replacement root volume. The specified snapshot must be a snapshot that you previously created from the original root volume.</p> <p>If you want to restore the replacement root volume to the initial launch state, or if you want to restore the replacement root volume from an AMI, omit this parameter.</p>"
+          "documentation":"<p>The ID of the snapshot from which to restore the replacement root volume. The specified snapshot must be a snapshot that you previously created from the original root volume.</p> <p>If you want to restore the replacement root volume to the initial launch state, if you want to restore the replacement root volume from an AMI, or if you want to replace the root volume with a specified volume, omit this parameter.</p>"
         },
         "ClientToken":{
           "shape":"String",
@@ -18442,7 +18457,7 @@
         },
         "ImageId":{
           "shape":"ImageId",
-          "documentation":"<p>The ID of the AMI to use to restore the root volume. The specified AMI must have the same product code, billing information, architecture type, and virtualization type as that of the instance.</p> <p>If you want to restore the replacement volume from a specific snapshot, or if you want to restore it to its launch state, omit this parameter.</p>"
+          "documentation":"<p>The ID of the AMI to use to restore the root volume. The specified AMI must have the same product code, billing information, architecture type, and virtualization type as that of the instance.</p> <p>If you want to restore the replacement volume from a specific snapshot, if you want to restore it to its launch state, or if you want to replace the root volume with a specified volume, omit this parameter.</p>"
         },
         "DeleteReplacedRootVolume":{
           "shape":"Boolean",
@@ -18451,6 +18466,10 @@
         "VolumeInitializationRate":{
           "shape":"Long",
           "documentation":"<p>Specifies the Amazon EBS Provisioned Rate for Volume Initialization (volume initialization rate), in MiB/s, at which to download the snapshot blocks from Amazon S3 to the replacement root volume. This is also known as <i>volume initialization</i>. Specifying a volume initialization rate ensures that the volume is initialized at a predictable and consistent rate after creation.</p> <p>Omit this parameter if:</p> <ul> <li> <p>You want to create the volume using fast snapshot restore. You must specify a snapshot that is enabled for fast snapshot restore. In this case, the volume is fully initialized at creation.</p> <note> <p>If you specify a snapshot that is enabled for fast snapshot restore and a volume initialization rate, the volume will be initialized at the specified rate instead of fast snapshot restore.</p> </note> </li> <li> <p>You want to create a volume that is initialized at the default rate.</p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/ebs/latest/userguide/initalize-volume.html\"> Initialize Amazon EBS volumes</a> in the <i>Amazon EC2 User Guide</i>.</p> <p>Valid range: 100 - 300 MiB/s</p>"
+        },
+        "VolumeId":{
+          "shape":"VolumeId",
+          "documentation":"<p>The ID of the volume to use as the replacement root volume. The specified volume must be in the same Availability Zone as the instance, must be in the <code>available</code> state, and must not be attached to an instance. If the original root volume is encrypted, the specified volume must also be encrypted.</p> <p>If you want to restore the replacement root volume from a specific snapshot, an AMI, or to its launch state, omit this parameter.</p>"
         }
       }
     },
@@ -26876,7 +26895,7 @@
         },
         "Filters":{
           "shape":"FilterList",
-          "documentation":"<p>The filters.</p> <ul> <li> <p> <code>architecture</code> - The image architecture (<code>i386</code> | <code>x86_64</code> | <code>arm64</code> | <code>x86_64_mac</code> | <code>arm64_mac</code>).</p> </li> <li> <p> <code>block-device-mapping.delete-on-termination</code> - A Boolean value that indicates whether the Amazon EBS volume is deleted on instance termination.</p> </li> <li> <p> <code>block-device-mapping.device-name</code> - The device name specified in the block device mapping (for example, <code>/dev/sdh</code> or <code>xvdh</code>).</p> </li> <li> <p> <code>block-device-mapping.snapshot-id</code> - The ID of the snapshot used for the Amazon EBS volume.</p> </li> <li> <p> <code>block-device-mapping.volume-size</code> - The volume size of the Amazon EBS volume, in GiB.</p> </li> <li> <p> <code>block-device-mapping.volume-type</code> - The volume type of the Amazon EBS volume (<code>io1</code> | <code>io2</code> | <code>gp2</code> | <code>gp3</code> | <code>sc1 </code>| <code>st1</code> | <code>standard</code>).</p> </li> <li> <p> <code>block-device-mapping.encrypted</code> - A Boolean that indicates whether the Amazon EBS volume is encrypted.</p> </li> <li> <p> <code>creation-date</code> - The time when the image was created, in the ISO 8601 format in the UTC time zone (YYYY-MM-DDThh:mm:ss.sssZ), for example, <code>2021-09-29T11:04:43.305Z</code>. You can use a wildcard (<code>*</code>), for example, <code>2021-09-29T*</code>, which matches an entire day.</p> </li> <li> <p> <code>description</code> - The description of the image (provided during image creation).</p> </li> <li> <p> <code>ena-support</code> - A Boolean that indicates whether enhanced networking with ENA is enabled.</p> </li> <li> <p> <code>free-tier-eligible</code> - A Boolean that indicates whether this image can be used under the Amazon Web Services Free Tier (<code>true</code> | <code>false</code>).</p> </li> <li> <p> <code>hypervisor</code> - The hypervisor type (<code>ovm</code> | <code>xen</code>).</p> </li> <li> <p> <code>image-allowed</code> - A Boolean that indicates whether the image meets the criteria specified for Allowed AMIs.</p> </li> <li> <p> <code>image-id</code> - The ID of the image.</p> </li> <li> <p> <code>image-type</code> - The image type (<code>machine</code> | <code>kernel</code> | <code>ramdisk</code>).</p> </li> <li> <p> <code>is-public</code> - A Boolean that indicates whether the image is public.</p> </li> <li> <p> <code>kernel-id</code> - The kernel ID.</p> </li> <li> <p> <code>manifest-location</code> - The location of the image manifest.</p> </li> <li> <p> <code>name</code> - The name of the AMI (provided during image creation).</p> </li> <li> <p> <code>owner-alias</code> - The owner alias (<code>amazon</code> | <code>aws-backup-vault</code> | <code>aws-marketplace</code>). The valid aliases are defined in an Amazon-maintained list. This is not the Amazon Web Services account alias that can be set using the IAM console. We recommend that you use the <b>Owner</b> request parameter instead of this filter.</p> </li> <li> <p> <code>owner-id</code> - The Amazon Web Services account ID of the owner. We recommend that you use the <b>Owner</b> request parameter instead of this filter.</p> </li> <li> <p> <code>platform</code> - The platform. The only supported value is <code>windows</code>.</p> </li> <li> <p> <code>product-code</code> - The product code.</p> </li> <li> <p> <code>product-code.type</code> - The type of the product code (<code>marketplace</code>).</p> </li> <li> <p> <code>ramdisk-id</code> - The RAM disk ID.</p> </li> <li> <p> <code>root-device-name</code> - The device name of the root device volume (for example, <code>/dev/sda1</code>).</p> </li> <li> <p> <code>root-device-type</code> - The type of the root device volume (<code>ebs</code> | <code>instance-store</code>).</p> </li> <li> <p> <code>source-image-id</code> - The ID of the source AMI from which the AMI was created.</p> </li> <li> <p> <code>source-image-region</code> - The Region of the source AMI.</p> </li> <li> <p> <code>source-instance-id</code> - The ID of the instance that the AMI was created from if the AMI was created using CreateImage. This filter is applicable only if the AMI was created using <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_CreateImage.html\">CreateImage</a>.</p> </li> <li> <p> <code>state</code> - The state of the image (<code>available</code> | <code>pending</code> | <code>failed</code>).</p> </li> <li> <p> <code>state-reason-code</code> - The reason code for the state change.</p> </li> <li> <p> <code>state-reason-message</code> - The message for the state change.</p> </li> <li> <p> <code>sriov-net-support</code> - A value of <code>simple</code> indicates that enhanced networking with the Intel 82599 VF interface is enabled.</p> </li> <li> <p> <code>tag:&lt;key&gt;</code> - The key/value combination of a tag assigned to the resource. Use the tag key in the filter name and the tag value as the filter value. For example, to find all resources that have a tag with the key <code>Owner</code> and the value <code>TeamA</code>, specify <code>tag:Owner</code> for the filter name and <code>TeamA</code> for the filter value.</p> </li> <li> <p> <code>tag-key</code> - The key of a tag assigned to the resource. Use this filter to find all resources assigned a tag with a specific key, regardless of the tag value.</p> </li> <li> <p> <code>virtualization-type</code> - The virtualization type (<code>paravirtual</code> | <code>hvm</code>).</p> </li> </ul>",
+          "documentation":"<p>The filters.</p> <ul> <li> <p> <code>architecture</code> - The image architecture (<code>i386</code> | <code>x86_64</code> | <code>arm64</code> | <code>x86_64_mac</code> | <code>arm64_mac</code>).</p> </li> <li> <p> <code>block-device-mapping.delete-on-termination</code> - A Boolean value that indicates whether the Amazon EBS volume is deleted on instance termination.</p> </li> <li> <p> <code>block-device-mapping.device-name</code> - The device name specified in the block device mapping (for example, <code>/dev/sdh</code> or <code>xvdh</code>).</p> </li> <li> <p> <code>block-device-mapping.snapshot-id</code> - The ID of the snapshot used for the Amazon EBS volume.</p> </li> <li> <p> <code>block-device-mapping.volume-size</code> - The volume size of the Amazon EBS volume, in GiB.</p> </li> <li> <p> <code>block-device-mapping.volume-type</code> - The volume type of the Amazon EBS volume (<code>io1</code> | <code>io2</code> | <code>gp2</code> | <code>gp3</code> | <code>sc1 </code>| <code>st1</code> | <code>standard</code>).</p> </li> <li> <p> <code>block-device-mapping.encrypted</code> - A Boolean that indicates whether the Amazon EBS volume is encrypted.</p> </li> <li> <p> <code>creation-date</code> - The time when the image was created, in the ISO 8601 format in the UTC time zone (YYYY-MM-DDThh:mm:ss.sssZ), for example, <code>2021-09-29T11:04:43.305Z</code>. You can use a wildcard (<code>*</code>), for example, <code>2021-09-29T*</code>, which matches an entire day.</p> </li> <li> <p> <code>description</code> - The description of the image (provided during image creation).</p> </li> <li> <p> <code>ena-support</code> - A Boolean that indicates whether enhanced networking with ENA is enabled.</p> </li> <li> <p> <code>free-tier-eligible</code> - A Boolean that indicates whether this image can be used under the Amazon Web Services Free Tier (<code>true</code> | <code>false</code>).</p> </li> <li> <p> <code>hypervisor</code> - The hypervisor type (<code>ovm</code> | <code>xen</code>).</p> </li> <li> <p> <code>image-allowed</code> - A Boolean that indicates whether the image meets the criteria specified for Allowed AMIs.</p> </li> <li> <p> <code>image-id</code> - The ID of the image.</p> </li> <li> <p> <code>image-watermark.source-image-creation-time</code> - The creation date of the source AMI, in the ISO 8601 format in the UTC time zone (<code> <i>YYYY</i>-<i>MM</i>-<i>DD</i>T<i>HH</i>:<i>MM</i>:<i>SS</i>.<i>ssssss</i>+<i>HH</i>:<i>MM</i> </code>). You can use a wildcard (<code>*</code>), for example, <code>2021-09-29T*</code>, which matches an entire day.</p> </li> <li> <p> <code>image-watermark.source-image-id</code> - The ID of the AMI to which the watermark was originally attached.</p> </li> <li> <p> <code>image-watermark.source-image-region</code> - The Region where the watermark was originally attached.</p> </li> <li> <p> <code>image-watermark.watermark-creation-time</code> - The date and time the watermark was attached to the AMI, in the ISO 8601 format in the UTC time zone (<code> <i>YYYY</i>-<i>MM</i>-<i>DD</i>T<i>HH</i>:<i>MM</i>:<i>SS</i>.<i>ssssss</i>+<i>HH</i>:<i>MM</i> </code>). You can use a wildcard (<code>*</code>), for example, <code>2021-09-29T*</code>, which matches an entire day.</p> </li> <li> <p> <code>image-watermark.watermark-key</code> - The watermark identifier, in <code>accountId:watermarkName</code> format (for example, <code>123456789012:approvedAmi</code>).</p> </li> <li> <p> <code>image-type</code> - The image type (<code>machine</code> | <code>kernel</code> | <code>ramdisk</code>).</p> </li> <li> <p> <code>is-public</code> - A Boolean that indicates whether the image is public.</p> </li> <li> <p> <code>kernel-id</code> - The kernel ID.</p> </li> <li> <p> <code>manifest-location</code> - The location of the image manifest.</p> </li> <li> <p> <code>name</code> - The name of the AMI (provided during image creation).</p> </li> <li> <p> <code>owner-alias</code> - The owner alias (<code>amazon</code> | <code>aws-backup-vault</code> | <code>aws-marketplace</code>). The valid aliases are defined in an Amazon-maintained list. This is not the Amazon Web Services account alias that can be set using the IAM console. We recommend that you use the <b>Owner</b> request parameter instead of this filter.</p> </li> <li> <p> <code>owner-id</code> - The Amazon Web Services account ID of the owner. We recommend that you use the <b>Owner</b> request parameter instead of this filter.</p> </li> <li> <p> <code>platform</code> - The platform. The only supported value is <code>windows</code>.</p> </li> <li> <p> <code>product-code</code> - The product code.</p> </li> <li> <p> <code>product-code.type</code> - The type of the product code (<code>marketplace</code>).</p> </li> <li> <p> <code>public-ssm-parameter-name</code> - The name of a public Systems Manager parameter associated with the AMI. The parameter must be in a trusted Amazon Web Services namespace under <code>aws/service/</code>. Returns all AMIs that have ever been associated with the parameter, including previous versions.</p> </li> <li> <p> <code>ramdisk-id</code> - The RAM disk ID.</p> </li> <li> <p> <code>root-device-name</code> - The device name of the root device volume (for example, <code>/dev/sda1</code>).</p> </li> <li> <p> <code>root-device-type</code> - The type of the root device volume (<code>ebs</code> | <code>instance-store</code>).</p> </li> <li> <p> <code>source-image-id</code> - The ID of the source AMI from which the AMI was created.</p> </li> <li> <p> <code>source-image-region</code> - The Region of the source AMI.</p> </li> <li> <p> <code>source-instance-id</code> - The ID of the instance that the AMI was created from if the AMI was created using CreateImage. This filter is applicable only if the AMI was created using <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_CreateImage.html\">CreateImage</a>.</p> </li> <li> <p> <code>state</code> - The state of the image (<code>available</code> | <code>pending</code> | <code>failed</code>).</p> </li> <li> <p> <code>state-reason-code</code> - The reason code for the state change.</p> </li> <li> <p> <code>state-reason-message</code> - The message for the state change.</p> </li> <li> <p> <code>sriov-net-support</code> - A value of <code>simple</code> indicates that enhanced networking with the Intel 82599 VF interface is enabled.</p> </li> <li> <p> <code>tag:&lt;key&gt;</code> - The key/value combination of a tag assigned to the resource. Use the tag key in the filter name and the tag value as the filter value. For example, to find all resources that have a tag with the key <code>Owner</code> and the value <code>TeamA</code>, specify <code>tag:Owner</code> for the filter name and <code>TeamA</code> for the filter value.</p> </li> <li> <p> <code>tag-key</code> - The key of a tag assigned to the resource. Use this filter to find all resources assigned a tag with a specific key, regardless of the tag value.</p> </li> <li> <p> <code>virtualization-type</code> - The virtualization type (<code>paravirtual</code> | <code>hvm</code>).</p> </li> </ul>",
           "locationName":"Filter"
         }
       }
@@ -37830,6 +37849,27 @@
         "termination"
       ]
     },
+    "FleetHttpTokensState":{
+      "type":"string",
+      "enum":[
+        "optional",
+        "required"
+      ]
+    },
+    "FleetIamInstanceProfileSpecificationRequest":{
+      "type":"structure",
+      "members":{
+        "Arn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the instance profile.</p>"
+        },
+        "Name":{
+          "shape":"String",
+          "documentation":"<p>The name of the instance profile.</p>"
+        }
+      },
+      "documentation":"<p>Describes an IAM instance profile. Supported only for fleets of type <code>instant</code>.</p>"
+    },
     "FleetId":{"type":"string"},
     "FleetIdSet":{
       "type":"list",
@@ -37838,6 +37878,31 @@
     "FleetInstanceMatchCriteria":{
       "type":"string",
       "enum":["open"]
+    },
+    "FleetInstanceMetadataEndpointState":{
+      "type":"string",
+      "enum":[
+        "disabled",
+        "enabled"
+      ]
+    },
+    "FleetInstanceMetadataOptionsRequest":{
+      "type":"structure",
+      "members":{
+        "HttpTokens":{
+          "shape":"FleetHttpTokensState",
+          "documentation":"<p>Indicates whether IMDSv2 is required.</p> <ul> <li> <p> <code>optional</code> - IMDSv2 is optional, which means that you can use either IMDSv2 or IMDSv1.</p> </li> <li> <p> <code>required</code> - IMDSv2 is required, which means that IMDSv1 is disabled, and you must use IMDSv2.</p> </li> </ul>"
+        },
+        "HttpPutResponseHopLimit":{
+          "shape":"Integer",
+          "documentation":"<p>The desired HTTP PUT response hop limit for instance metadata requests. The larger the number, the further instance metadata requests can travel.</p> <p>Default: <code>1</code> </p> <p>Possible values: Integers from 1 to 64</p>"
+        },
+        "HttpEndpoint":{
+          "shape":"FleetInstanceMetadataEndpointState",
+          "documentation":"<p>Enables or disables the HTTP metadata endpoint on your instances.</p> <ul> <li> <p> <code>enabled</code> - The HTTP metadata endpoint is enabled.</p> </li> <li> <p> <code>disabled</code> - The HTTP metadata endpoint is disabled.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>Describes the metadata options for the instances. Supported only for fleets of type <code>instant</code>.</p>"
     },
     "FleetLaunchTemplateConfig":{
       "type":"structure",
@@ -37991,10 +38056,22 @@
           "shape":"Placement",
           "documentation":"<p>The location where the instance launched, if applicable.</p>"
         },
+        "KeyName":{
+          "shape":"String",
+          "documentation":"<p>The name of the key pair to use for the instances.</p> <p>Supported only for fleets of type <code>instant</code>.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html\">Amazon EC2 key pairs</a> in the <i>Amazon EC2 User Guide</i>.</p>"
+        },
         "BlockDeviceMappings":{
           "shape":"FleetBlockDeviceMappingRequestList",
           "documentation":"<p>The block device mappings, which define the EBS volumes and instance store volumes to attach to the instance at launch.</p> <p>Supported only for fleets of type <code>instant</code>.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/block-device-mapping-concepts.html\">Block device mappings for volumes on Amazon EC2 instances</a> in the <i>Amazon EC2 User Guide</i>.</p>",
           "locationName":"BlockDeviceMapping"
+        },
+        "IamInstanceProfile":{
+          "shape":"FleetIamInstanceProfileSpecificationRequest",
+          "documentation":"<p>The IAM instance profile to associate with the instances.</p> <p>Supported only for fleets of type <code>instant</code>.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/iam-roles-for-amazon-ec2.html\">IAM roles for Amazon EC2</a> in the <i>Amazon EC2 User Guide</i>.</p>"
+        },
+        "MetadataOptions":{
+          "shape":"FleetInstanceMetadataOptionsRequest",
+          "documentation":"<p>The metadata options for the instances.</p> <p>Supported only for fleets of type <code>instant</code>.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/configuring-instance-metadata-service.html\">Configure the instance metadata service</a> in the <i>Amazon EC2 User Guide</i>.</p>"
         },
         "InstanceRequirements":{
           "shape":"InstanceRequirementsRequest",
@@ -38046,6 +38123,10 @@
         "Version":{
           "shape":"String",
           "documentation":"<p>The launch template version number, <code>$Latest</code>, or <code>$Default</code>. You must specify a value, otherwise the request fails.</p> <p>If the value is <code>$Latest</code>, Amazon EC2 uses the latest version of the launch template.</p> <p>If the value is <code>$Default</code>, Amazon EC2 uses the default version of the launch template.</p>"
+        },
+        "LaunchTemplateSpecificationUserData":{
+          "shape":"SensitiveUserData",
+          "documentation":"<p>The base64-encoded user data for instances launched by the fleet. User data is limited to 16 KB, in raw form, before it is base64-encoded.</p> <p>Supported only for fleets of type <code>instant</code>.</p>"
         }
       },
       "documentation":"<p>The Amazon EC2 launch template that can be used by an EC2 Fleet to configure Amazon EC2 instances. You must specify either the ID or name of the launch template in the request, but not both.</p> <p>For information about launch templates, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-launch-templates.html\">Launch an instance from a launch template</a> in the <i>Amazon EC2 User Guide</i>.</p>"
@@ -42329,6 +42410,11 @@
           "shape":"Boolean",
           "documentation":"<p>Indicates whether the image is eligible for Amazon Web Services Free Tier.</p> <ul> <li> <p>If <code>true</code>, the AMI is eligible for Free Tier and can be used to launch instances under the Free Tier limits.</p> </li> <li> <p>If <code>false</code>, the AMI is not eligible for Free Tier.</p> </li> </ul>",
           "locationName":"freeTierEligible"
+        },
+        "PublicSsmParameterName":{
+          "shape":"String",
+          "documentation":"<p>The name of the public Systems Manager parameter that resolves to this AMI, under the <code>aws/service/</code> namespace.</p>",
+          "locationName":"publicSsmParameterName"
         },
         "ImageWatermarks":{
           "shape":"ImageWatermarkList",
@@ -47783,7 +47869,200 @@
         "m8id.96xlarge",
         "m8id.metal-48xl",
         "m8id.metal-96xl",
-        "hpc8a.96xlarge"
+        "hpc8a.96xlarge",
+        "c8in.large",
+        "c8in.xlarge",
+        "c8in.2xlarge",
+        "c8in.4xlarge",
+        "c8in.8xlarge",
+        "c8in.12xlarge",
+        "c8in.16xlarge",
+        "c8in.24xlarge",
+        "c8in.32xlarge",
+        "c8in.48xlarge",
+        "c8in.96xlarge",
+        "c8in.metal-48xl",
+        "c8in.metal-96xl",
+        "c8ib.large",
+        "c8ib.xlarge",
+        "c8ib.2xlarge",
+        "c8ib.4xlarge",
+        "c8ib.8xlarge",
+        "c8ib.12xlarge",
+        "c8ib.16xlarge",
+        "c8ib.24xlarge",
+        "c8ib.32xlarge",
+        "c8ib.48xlarge",
+        "c8ib.96xlarge",
+        "c8ib.metal-48xl",
+        "c8ib.metal-96xl",
+        "r8in.large",
+        "r8in.xlarge",
+        "r8in.2xlarge",
+        "r8in.4xlarge",
+        "r8in.8xlarge",
+        "r8in.12xlarge",
+        "r8in.16xlarge",
+        "r8in.24xlarge",
+        "r8in.32xlarge",
+        "r8in.48xlarge",
+        "r8in.96xlarge",
+        "r8ib.large",
+        "r8ib.xlarge",
+        "r8ib.2xlarge",
+        "r8ib.4xlarge",
+        "r8ib.8xlarge",
+        "r8ib.12xlarge",
+        "r8ib.16xlarge",
+        "r8ib.24xlarge",
+        "r8ib.32xlarge",
+        "r8ib.48xlarge",
+        "r8ib.96xlarge",
+        "m8in.large",
+        "m8in.xlarge",
+        "m8in.2xlarge",
+        "m8in.4xlarge",
+        "m8in.8xlarge",
+        "m8in.12xlarge",
+        "m8in.16xlarge",
+        "m8in.24xlarge",
+        "m8in.32xlarge",
+        "m8in.48xlarge",
+        "m8in.96xlarge",
+        "m8ib.large",
+        "m8ib.xlarge",
+        "m8ib.2xlarge",
+        "m8ib.4xlarge",
+        "m8ib.8xlarge",
+        "m8ib.12xlarge",
+        "m8ib.16xlarge",
+        "m8ib.24xlarge",
+        "m8ib.32xlarge",
+        "m8ib.48xlarge",
+        "m8ib.96xlarge",
+        "m8ine.large",
+        "m8ine.xlarge",
+        "m8ine.2xlarge",
+        "m8ine.4xlarge",
+        "m8ine.8xlarge",
+        "m8ine.12xlarge",
+        "c8ine.large",
+        "c8ine.xlarge",
+        "c8ine.2xlarge",
+        "c8ine.4xlarge",
+        "c8ine.8xlarge",
+        "c8ine.12xlarge",
+        "m8idn.large",
+        "m8idn.xlarge",
+        "m8idn.2xlarge",
+        "m8idn.4xlarge",
+        "m8idn.8xlarge",
+        "m8idn.12xlarge",
+        "m8idn.16xlarge",
+        "m8idn.24xlarge",
+        "m8idn.32xlarge",
+        "m8idn.48xlarge",
+        "m8idn.96xlarge",
+        "r8idn.large",
+        "r8idn.xlarge",
+        "r8idn.2xlarge",
+        "r8idn.4xlarge",
+        "r8idn.8xlarge",
+        "r8idn.12xlarge",
+        "r8idn.16xlarge",
+        "r8idn.24xlarge",
+        "r8idn.32xlarge",
+        "r8idn.48xlarge",
+        "r8idn.96xlarge",
+        "m8idb.large",
+        "m8idb.xlarge",
+        "m8idb.2xlarge",
+        "m8idb.4xlarge",
+        "m8idb.8xlarge",
+        "m8idb.12xlarge",
+        "m8idb.16xlarge",
+        "m8idb.24xlarge",
+        "m8idb.32xlarge",
+        "m8idb.48xlarge",
+        "m8idb.96xlarge",
+        "r8idb.large",
+        "r8idb.xlarge",
+        "r8idb.2xlarge",
+        "r8idb.4xlarge",
+        "r8idb.8xlarge",
+        "r8idb.12xlarge",
+        "r8idb.16xlarge",
+        "r8idb.24xlarge",
+        "r8idb.32xlarge",
+        "r8idb.48xlarge",
+        "r8idb.96xlarge",
+        "mac-m3ultra.metal",
+        "m9g.large",
+        "m9g.xlarge",
+        "m9g.2xlarge",
+        "m9g.4xlarge",
+        "m9g.8xlarge",
+        "m9g.12xlarge",
+        "m9g.16xlarge",
+        "m9g.24xlarge",
+        "m9g.48xlarge",
+        "m9g.metal-24xl",
+        "m9g.metal-48xl",
+        "m9gd.large",
+        "m9gd.xlarge",
+        "m9gd.2xlarge",
+        "m9gd.4xlarge",
+        "m9gd.8xlarge",
+        "m9gd.12xlarge",
+        "m9gd.16xlarge",
+        "m9gd.24xlarge",
+        "m9gd.48xlarge",
+        "m9gd.metal-24xl",
+        "m9gd.metal-48xl",
+        "r8in.metal-48xl",
+        "r8in.metal-96xl",
+        "r8ib.metal-48xl",
+        "r8ib.metal-96xl",
+        "r8idn.metal-48xl",
+        "r8idn.metal-96xl",
+        "r8idb.metal-48xl",
+        "r8idb.metal-96xl",
+        "m8in.metal-48xl",
+        "m8in.metal-96xl",
+        "m8ib.metal-48xl",
+        "m8ib.metal-96xl",
+        "m8idn.metal-48xl",
+        "m8idn.metal-96xl",
+        "m8idb.metal-48xl",
+        "m8idb.metal-96xl",
+        "g7.2xlarge",
+        "g7.4xlarge",
+        "g7.8xlarge",
+        "g7.12xlarge",
+        "g7.24xlarge",
+        "g7.48xlarge",
+        "c9g.medium",
+        "c9g.large",
+        "c9g.xlarge",
+        "c9g.2xlarge",
+        "c9g.4xlarge",
+        "c9g.8xlarge",
+        "c9g.12xlarge",
+        "c9g.16xlarge",
+        "c9g.24xlarge",
+        "c9g.48xlarge",
+        "c9g.metal-48xl",
+        "c9gd.medium",
+        "c9gd.large",
+        "c9gd.xlarge",
+        "c9gd.2xlarge",
+        "c9gd.4xlarge",
+        "c9gd.8xlarge",
+        "c9gd.12xlarge",
+        "c9gd.16xlarge",
+        "c9gd.24xlarge",
+        "c9gd.48xlarge",
+        "c9gd.metal-48xl"
       ]
     },
     "InstanceTypeHypervisor":{

@@ -35,6 +35,26 @@
       },
       "authtype":"none"
     },
+    "CreateOAuth2TokenWithIAM":{
+      "name":"CreateOAuth2TokenWithIAM",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v1/token?x-amz-client-auth-method=iam",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateOAuth2TokenWithIAMRequest"},
+      "output":{"shape":"CreateOAuth2TokenWithIAMResponse"},
+      "errors":[
+        {"shape":"TooManyRequestsError"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Grants permission to exchange client credentials for an OAuth 2.0 access token scoped to a resource that can be used to access AWS services from applications</p>",
+      "staticContextParams":{
+        "IsOAuthEndpoint":{"value":true}
+      }
+    },
     "DeleteConsoleAuthorizationConfiguration":{
       "name":"DeleteConsoleAuthorizationConfiguration",
       "http":{
@@ -121,6 +141,27 @@
         "IsControlPlane":{"value":true}
       }
     },
+    "IntrospectOAuth2TokenWithIAM":{
+      "name":"IntrospectOAuth2TokenWithIAM",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v1/introspect?x-amz-client-auth-method=iam",
+        "responseCode":200
+      },
+      "input":{"shape":"IntrospectOAuth2TokenWithIAMRequest"},
+      "output":{"shape":"IntrospectOAuth2TokenWithIAMResponse"},
+      "errors":[
+        {"shape":"TooManyRequestsError"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Grants permission to inspect the metadata and state of an OAuth 2.0 access token or refresh token</p> <p>Implements RFC 7662 OAuth 2.0 Token Introspection over a SigV4-authenticated endpoint. Inspects the metadata of an access_token or refresh_token issued by AWS Sign-In and returns the claims associated with it.</p> <p>Inactive token semantics (RFC 7662 §2.2): when the supplied token is unknown, expired, revoked, malformed, or owned by a different account, the response body is exactly { &quot;active&quot;: false } with all other claims omitted.</p>",
+      "readonly":true,
+      "staticContextParams":{
+        "IsOAuthEndpoint":{"value":true}
+      }
+    },
     "ListResourcePermissionStatements":{
       "name":"ListResourcePermissionStatements",
       "http":{
@@ -188,6 +229,27 @@
       "staticContextParams":{
         "IsControlPlane":{"value":true}
       }
+    },
+    "RevokeOAuth2TokenWithIAM":{
+      "name":"RevokeOAuth2TokenWithIAM",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v1/revoke?x-amz-client-auth-method=iam",
+        "responseCode":200
+      },
+      "input":{"shape":"RevokeOAuth2TokenWithIAMRequest"},
+      "output":{"shape":"RevokeOAuth2TokenWithIAMResponse"},
+      "errors":[
+        {"shape":"TooManyRequestsError"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Grants permission to revoke an OAuth 2.0 refresh token and its associated refresh tokens</p> <p>Revokes a refresh_token issued by AWS Sign-In, invalidating the entire token chain so that the refresh_token can no longer be used to mint new access_tokens.</p> <p>Idempotency: revoking an already-revoked, expired, or otherwise invalid token still returns 200 OK with an empty body. Only the refresh_token type is accepted.</p>",
+      "idempotent":true,
+      "staticContextParams":{
+        "IsOAuthEndpoint":{"value":true}
+      }
     }
   },
   "shapes":{
@@ -234,8 +296,15 @@
           "locationName":"sessionToken"
         }
       },
-      "documentation":"<p>AWS credentials structure containing temporary access credentials</p> <p>The scoped-down, 15 minute duration AWS credentials. Scoping down will be based on CLI policy (CLI team needs to create it). Similar to cloud shell implementation.</p>",
+      "documentation":"<p>AWS credentials structure containing temporary access credentials</p> <p>Scoped, temporary AWS credentials with a 15-minute duration.</p>",
       "sensitive":true
+    },
+    "AccountId":{
+      "type":"string",
+      "documentation":"<p>AWS account identifier</p>",
+      "max":12,
+      "min":12,
+      "pattern":"[0-9]{12}"
     },
     "AuthorizationCode":{
       "type":"string",
@@ -243,13 +312,23 @@
       "max":512,
       "min":1
     },
+    "BearerTokenType":{
+      "type":"string",
+      "documentation":"<p>Token type for access tokens. Always &quot;Bearer&quot; per OAuth 2.1.</p>",
+      "pattern":"Bearer"
+    },
     "Boolean":{
       "type":"boolean",
       "box":true
     },
+    "ClientCredentialsGrantType":{
+      "type":"string",
+      "documentation":"<p>OAuth 2.0 grant type for client_credentials flow.</p>",
+      "pattern":"client_credentials"
+    },
     "ClientId":{
       "type":"string",
-      "documentation":"<p>Client identifier pattern for AWS Sign-In devtools clients</p> <p>The ARN used by client as part of Sign-In onboarding. Expected values:</p> <ul> <li>arn:aws:signin:::devtools/cross-device (for cross-device devtools login)</li> <li>arn:aws:signin:::devtools/same-device (for same-device devtools login)</li> </ul> <p>This will be finalized after consulting with UX as this is visible to end customer.</p>",
+      "documentation":"<p>Client identifier pattern for AWS Sign-In devtools clients</p> <p>The ARN used by client as part of Sign-In onboarding. Expected values:</p> <ul> <li>arn:aws:signin:::devtools/cross-device (for cross-device devtools login)</li> <li>arn:aws:signin:::devtools/same-device (for same-device devtools login)</li> </ul>",
       "pattern":"arn:aws:signin:::devtools/(cross-device|same-device)"
     },
     "ClientToken":{
@@ -417,6 +496,56 @@
       },
       "documentation":"<p>Response body payload for CreateOAuth2Token operation</p> <p>The response content depends on the grant_type from the request:</p> <ul> <li>grant_type=authorization_code: Returns all fields including refresh_token and id_token</li> <li>grant_type=refresh_token: Returns access_token, token_type, expires_in, refresh_token (no id_token)</li> </ul>"
     },
+    "CreateOAuth2TokenWithIAMRequest":{
+      "type":"structure",
+      "required":[
+        "grantType",
+        "resource"
+      ],
+      "members":{
+        "grantType":{
+          "shape":"ClientCredentialsGrantType",
+          "documentation":"<p>OAuth 2.0 grant type. Must be &quot;client_credentials&quot;.</p>",
+          "locationName":"grant_type"
+        },
+        "resource":{
+          "shape":"CreateOAuth2TokenWithIAMRequestResourceString",
+          "documentation":"<p>The OAuth resource for which the access token is requested. Example: &quot;aws-mcp.amazonaws.com&quot;.</p>"
+        }
+      },
+      "documentation":"<p>Input structure for CreateOAuth2TokenWithIAM operation</p>"
+    },
+    "CreateOAuth2TokenWithIAMRequestResourceString":{
+      "type":"string",
+      "max":2048,
+      "min":1
+    },
+    "CreateOAuth2TokenWithIAMResponse":{
+      "type":"structure",
+      "required":[
+        "accessToken",
+        "tokenType",
+        "expiresIn"
+      ],
+      "members":{
+        "accessToken":{
+          "shape":"OAuthAccessToken",
+          "documentation":"<p>JWT access token containing principal identity, resource scope, and session metadata</p>",
+          "locationName":"access_token"
+        },
+        "tokenType":{
+          "shape":"BearerTokenType",
+          "documentation":"<p>Always &quot;Bearer&quot; per OAuth 2.1 specification</p>",
+          "locationName":"token_type"
+        },
+        "expiresIn":{
+          "shape":"TokenExpiresIn",
+          "documentation":"<p>Token lifetime in seconds. Value is the minimum of session validity and 1 hour.</p>",
+          "locationName":"expires_in"
+        }
+      },
+      "documentation":"<p>Output structure for CreateOAuth2TokenWithIAM operation</p> <p>Contains the JWT access token, token type, and expiration per RFC 6749 §5.1.</p>"
+    },
     "DeleteConsoleAuthorizationConfigurationInput":{
       "type":"structure",
       "members":{
@@ -566,6 +695,112 @@
       "exception":true,
       "fault":true
     },
+    "IntrospectOAuth2TokenWithIAMRequest":{
+      "type":"structure",
+      "required":["token"],
+      "members":{
+        "token":{
+          "shape":"IntrospectionToken",
+          "documentation":"<p>The string value of the token to introspect. May be either an access_token or a refresh_token issued by AWS Sign-In.</p>",
+          "locationName":"token"
+        },
+        "tokenTypeHint":{
+          "shape":"TokenTypeHint",
+          "documentation":"<p>Optional hint about the type of the token submitted for introspection. The server uses this hint to optimize lookup, but still falls back to the other token type on miss. Allowed values: access_token, refresh_token.</p>",
+          "locationName":"token_type_hint"
+        }
+      },
+      "documentation":"<p>Input structure for IntrospectOAuth2TokenWithIAM operation</p> <p>RFC 7662 §2.1 introspection request. Contains the token to inspect and an optional hint about the token's type.</p>"
+    },
+    "IntrospectOAuth2TokenWithIAMResponse":{
+      "type":"structure",
+      "required":["active"],
+      "members":{
+        "active":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether the token is currently active. <code>true</code> only when the token is valid, has not expired, has not been revoked, and belongs to the caller's account.</p>"
+        },
+        "clientId":{
+          "shape":"String",
+          "documentation":"<p>Client identifier for the OAuth 2.0 client that requested the token.</p>",
+          "locationName":"client_id"
+        },
+        "userId":{
+          "shape":"String",
+          "documentation":"<p>User identifier matching sts:GetCallerIdentity's <code>UserId</code> field for the token's subject principal (e.g. &quot;AIDAEXAMPLE&quot; for an IAM user, or &quot;AROAEXAMPLE:session-name&quot; for an assumed role).</p>",
+          "locationName":"user_id"
+        },
+        "tokenType":{
+          "shape":"IntrospectedTokenType",
+          "documentation":"<p>Indicates which kind of token was introspected. One of &quot;access_token&quot; or &quot;refresh_token&quot;.</p>",
+          "locationName":"token_type"
+        },
+        "exp":{
+          "shape":"Long",
+          "documentation":"<p>Token expiration time as a NumericDate (Unix epoch seconds).</p>",
+          "locationName":"exp"
+        },
+        "iat":{
+          "shape":"Long",
+          "documentation":"<p>Token issuance time as a NumericDate (Unix epoch seconds).</p>",
+          "locationName":"iat"
+        },
+        "nbf":{
+          "shape":"Long",
+          "documentation":"<p>Token &quot;not before&quot; time as a NumericDate (Unix epoch seconds).</p>",
+          "locationName":"nbf"
+        },
+        "sub":{
+          "shape":"String",
+          "documentation":"<p>Subject of the token: the IAM principal ARN. For assumed-role sessions, this is the session ARN (matches sts:GetCallerIdentity's <code>Arn</code> field), e.g. arn:aws:sts::123456789012:assumed-role/MyRole/session-name.</p>",
+          "locationName":"sub"
+        },
+        "aud":{
+          "shape":"String",
+          "documentation":"<p>Audience of the token: the OAuth resource the token is scoped to (for example, &quot;aws-mcp.amazonaws.com&quot;). Omitted for refresh tokens.</p>",
+          "locationName":"aud"
+        },
+        "iss":{
+          "shape":"String",
+          "documentation":"<p>Issuer of the token. Always &quot;signin.amazonaws.com&quot; for AWS Sign-In.</p>",
+          "locationName":"iss"
+        },
+        "jti":{
+          "shape":"String",
+          "documentation":"<p>Unique identifier for the token.</p>",
+          "locationName":"jti"
+        },
+        "accountId":{
+          "shape":"AccountId",
+          "documentation":"<p>12-digit AWS account ID of the token's subject principal.</p>",
+          "locationName":"account_id"
+        },
+        "signinSession":{
+          "shape":"String",
+          "documentation":"<p>AWS Sign-In session ARN bound to the token, of the form arn:aws:signin:{region}:{account}:session/{uuid}.</p>",
+          "locationName":"signin_session"
+        },
+        "resource":{
+          "shape":"String",
+          "documentation":"<p>The OAuth resource the token is scoped to during Human OAuth flow. Only present for refresh token introspection.</p>",
+          "locationName":"resource"
+        }
+      },
+      "documentation":"<p>Output structure for IntrospectOAuth2TokenWithIAM operation</p> <p>RFC 7662 §2.2 introspection response. Only <code>active</code> is required; all other claims are omitted when the token is inactive.</p>"
+    },
+    "IntrospectedTokenType":{
+      "type":"string",
+      "documentation":"<p>Introspection response token_type value. Indicates which kind of token was inspected.</p>",
+      "pattern":"(access_token|refresh_token)"
+    },
+    "IntrospectionToken":{
+      "type":"string",
+      "documentation":"<p>Token string submitted for introspection. May be an AWS Sign-In access_token (prefix &quot;ASOA&quot;) or refresh_token (prefix &quot;ASOR&quot;).</p>",
+      "max":4096,
+      "min":1,
+      "pattern":"ASO[AR][A-Za-z0-9+/=_\\-]+",
+      "sensitive":true
+    },
     "ListResourcePermissionStatementsInput":{
       "type":"structure",
       "members":{
@@ -595,6 +830,10 @@
       },
       "documentation":"<p>Output for ListResourcePermissionStatements operation</p>"
     },
+    "Long":{
+      "type":"long",
+      "box":true
+    },
     "NextToken":{
       "type":"string",
       "documentation":"<p>Pagination token</p>",
@@ -616,6 +855,13 @@
         "CONFLICT",
         "SERVICE_QUOTA_EXCEEDED"
       ]
+    },
+    "OAuthAccessToken":{
+      "type":"string",
+      "documentation":"<p>OAuth 2.0 access token (JWT) containing principal identity and resource scope.</p>",
+      "max":4096,
+      "min":1,
+      "sensitive":true
     },
     "PermissionStatementSummaries":{
       "type":"list",
@@ -806,6 +1052,31 @@
       },
       "exception":true
     },
+    "RevocationToken":{
+      "type":"string",
+      "documentation":"<p>Refresh token string submitted for revocation. Must be an AWS Sign-In refresh_token (prefix &quot;ASOR&quot;).</p>",
+      "max":4096,
+      "min":1,
+      "pattern":"ASOR[A-Za-z0-9+/=_\\-]+",
+      "sensitive":true
+    },
+    "RevokeOAuth2TokenWithIAMRequest":{
+      "type":"structure",
+      "required":["token"],
+      "members":{
+        "token":{
+          "shape":"RevocationToken",
+          "documentation":"<p>The refresh_token to revoke. Must be a refresh_token issued by AWS Sign-In (prefix &quot;ASOR&quot;); access_tokens are not accepted for revocation.</p>",
+          "locationName":"token"
+        }
+      },
+      "documentation":"<p>Input structure for RevokeOAuth2TokenWithIAM operation</p> <p>RFC 7009 §2.1 revocation request. Contains the refresh_token to revoke.</p>"
+    },
+    "RevokeOAuth2TokenWithIAMResponse":{
+      "type":"structure",
+      "members":{},
+      "documentation":"<p>Output structure for RevokeOAuth2TokenWithIAM operation</p> <p>RFC 7009 §2.2 revocation response. The endpoint returns 200 OK with an empty body on success; there are no response fields.</p>"
+    },
     "ServiceQuotaExceededException":{
       "type":"structure",
       "required":[
@@ -872,10 +1143,22 @@
       "min":12,
       "pattern":"(\\d{12}|o-[a-z0-9]{10}|r-[0-9a-z]{4,32})"
     },
+    "TokenExpiresIn":{
+      "type":"integer",
+      "documentation":"<p>Token lifetime in seconds. Value is the minimum of session validity and 1 hour (3600 seconds).</p>",
+      "box":true,
+      "max":3600,
+      "min":1
+    },
     "TokenType":{
       "type":"string",
       "documentation":"<p>Token type parameter indicating credential usage</p> <p>A parameter which indicates to the client how the token must be used. Value is &quot;aws_sigv4&quot; (instead of typical &quot;Bearer&quot; for other OAuth systems) to indicate that the client must de-serialize the token and use it to generate a signature.</p>",
       "pattern":"aws_sigv4"
+    },
+    "TokenTypeHint":{
+      "type":"string",
+      "documentation":"<p>Optional RFC 7662 §2.1 token_type_hint value. One of:</p> <ul> <li>&quot;access_token&quot;</li> <li>&quot;refresh_token&quot;</li> </ul>",
+      "pattern":"(access_token|refresh_token)"
     },
     "TooManyRequestsError":{
       "type":"structure",

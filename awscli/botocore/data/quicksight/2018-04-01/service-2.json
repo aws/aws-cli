@@ -432,6 +432,28 @@
       ],
       "documentation":"<p>Creates and starts a new SPICE ingestion for a dataset. You can manually refresh datasets in an Enterprise edition account 32 times in a 24-hour period. You can manually refresh datasets in a Standard edition account 8 times in a 24-hour period. Each 24-hour period is measured starting 24 hours before the current date and time.</p> <p>Any ingestions operating on tagged datasets inherit the same tags automatically for use in access control. For an example, see <a href=\"http://aws.amazon.com/premiumsupport/knowledge-center/iam-ec2-resource-tags/\">How do I create an IAM policy to control access to Amazon EC2 resources using tags?</a> in the Amazon Web Services Knowledge Center. Tags are visible on the tagged dataset, but not on the ingestion resource.</p>"
     },
+    "CreateKnowledgeBase":{
+      "name":"CreateKnowledgeBase",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v1/accounts/{AwsAccountId}/knowledge-bases",
+        "responseCode":202
+      },
+      "input":{"shape":"CreateKnowledgeBaseRequest"},
+      "output":{"shape":"CreateKnowledgeBaseResponse"},
+      "errors":[
+        {"shape":"ResourceExistsException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"PreconditionNotMetException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Creates a knowledge base from a specified data source. Supported data source connector types include:</p> <ul> <li> <p> <code>S3_KNOWLEDGE_BASE</code> – Uses an Amazon S3 bucket as the data source.</p> </li> <li> <p> <code>WEB_CRAWLER</code> – Uses web pages indexed by the built-in web crawler as the data source.</p> </li> <li> <p> <code>GOOGLE_DRIVE</code> – Uses Google Drive as the data source. Supports service account authentication only.</p> </li> <li> <p> <code>SHAREPOINT</code> – Uses SharePoint as the data source. Supports two-legged OAuth only.</p> </li> <li> <p> <code>ONE_DRIVE</code> – Uses OneDrive as the data source. Supports two-legged OAuth only.</p> </li> </ul>"
+    },
     "CreateNamespace":{
       "name":"CreateNamespace",
       "http":{
@@ -4588,6 +4610,29 @@
       ],
       "documentation":"<p>Updates a customer managed key in a Quick Sight account.</p>"
     },
+    "UpdateKnowledgeBase":{
+      "name":"UpdateKnowledgeBase",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v1/accounts/{AwsAccountId}/knowledge-bases/{KnowledgeBaseId}",
+        "responseCode":202
+      },
+      "input":{"shape":"UpdateKnowledgeBaseRequest"},
+      "output":{"shape":"UpdateKnowledgeBaseResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"PreconditionNotMetException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Updates the properties of an existing knowledge base.</p>",
+      "idempotent":true
+    },
     "UpdateKnowledgeBasePermissions":{
       "name":"UpdateKnowledgeBasePermissions",
       "http":{
@@ -5105,6 +5150,17 @@
         }
       },
       "documentation":"<p>Configuration for API key-based authentication to external services.</p>"
+    },
+    "AccessControlConfiguration":{
+      "type":"structure",
+      "members":{
+        "isACLEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether ACLs are enabled for the knowledge base.</p>",
+          "box":true
+        }
+      },
+      "documentation":"<p>The access control settings for a knowledge base. Use this structure to enable or disable document-level access control lists (ACLs) that filter query results based on the permissions from the source data connector.</p>"
     },
     "AccessDeniedException":{
       "type":"structure",
@@ -8001,6 +8057,14 @@
         }
       },
       "documentation":"<p>Authentication configuration for connecting to external services.</p>"
+    },
+    "AuthType":{
+      "type":"string",
+      "enum":[
+        "THREE_LEGGED_OAUTH",
+        "TWO_LEGGED_OAUTH",
+        "SERVICE_ACCOUNT"
+      ]
     },
     "AuthenticationMetadata":{
       "type":"structure",
@@ -13442,6 +13506,90 @@
         }
       }
     },
+    "CreateKnowledgeBaseRequest":{
+      "type":"structure",
+      "required":[
+        "AwsAccountId",
+        "KnowledgeBaseId",
+        "Name",
+        "DataSourceArn",
+        "KnowledgeBaseConfiguration"
+      ],
+      "members":{
+        "AwsAccountId":{
+          "shape":"KbAwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that contains the knowledge base.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "KnowledgeBaseId":{
+          "shape":"KnowledgeBaseId",
+          "documentation":"<p>The unique identifier for the knowledge base.</p>"
+        },
+        "Name":{
+          "shape":"KnowledgeBaseName",
+          "documentation":"<p>The name of the knowledge base.</p>"
+        },
+        "DataSourceArn":{
+          "shape":"DataSourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the data source for the knowledge base.</p>"
+        },
+        "KnowledgeBaseConfiguration":{"shape":"KnowledgeBaseConfiguration"},
+        "Description":{
+          "shape":"KnowledgeBaseDescription",
+          "documentation":"<p>A description for the knowledge base. If you don't specify a description, the knowledge base is created without one.</p>"
+        },
+        "Permissions":{
+          "shape":"ResourcePermissionList",
+          "documentation":"<p>A list of resource permissions on the knowledge base. Each entry grants a specified Amazon QuickSight principal either owner or viewer access. If you don't specify permissions, only the primary owner (if provided) receives owner access.</p>"
+        },
+        "MediaExtractionConfiguration":{"shape":"MediaExtractionConfiguration"},
+        "AccessControlConfiguration":{
+          "shape":"AccessControlConfiguration",
+          "documentation":"<p>The access control configuration for the knowledge base. If you don't specify this parameter, document-level ACLs are disabled.</p>"
+        },
+        "PrimaryOwnerArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the primary owner for the knowledge base. The specified user is always granted owner access, regardless of what is specified in the <code>Permissions</code> field. If you don't specify a primary owner, the knowledge base is created without one.</p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>The tags to assign to the knowledge base. If you don't specify tags, the knowledge base is created without tags.</p>"
+        }
+      }
+    },
+    "CreateKnowledgeBaseResponse":{
+      "type":"structure",
+      "required":[
+        "KnowledgeBaseArn",
+        "KnowledgeBaseId",
+        "CreationStatus"
+      ],
+      "members":{
+        "KnowledgeBaseArn":{
+          "shape":"KnowledgeBaseArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the knowledge base.</p>"
+        },
+        "KnowledgeBaseId":{
+          "shape":"KnowledgeBaseId",
+          "documentation":"<p>The unique identifier for the knowledge base.</p>"
+        },
+        "CreationStatus":{
+          "shape":"DataSetStatus",
+          "documentation":"<p>The creation status of the knowledge base.</p>"
+        },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        },
+        "Status":{
+          "shape":"StatusCode",
+          "documentation":"<p>The HTTP status of the request.</p>",
+          "box":true,
+          "location":"statusCode"
+        }
+      }
+    },
     "CreateNamespaceRequest":{
       "type":"structure",
       "required":[
@@ -14255,6 +14403,14 @@
         }
       },
       "documentation":"<p>The combination of user name and password that are used as credentials.</p>"
+    },
+    "CredentialStatus":{
+      "type":"string",
+      "enum":[
+        "CONNECTED",
+        "AUTH_FAILED",
+        "NOT_VERIFIED"
+      ]
     },
     "CrossDatasetTypes":{
       "type":"string",
@@ -16474,6 +16630,14 @@
         "SecretArn":{
           "shape":"SecretArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the secret associated with the data source in Amazon Secrets Manager.</p>"
+        },
+        "CredentialStatus":{
+          "shape":"CredentialStatus",
+          "documentation":"<p>The credential verification status of the data source. Valid values include:</p> <ul> <li> <p> <code>CONNECTED</code> – Credential validation succeeded.</p> </li> <li> <p> <code>AUTH_FAILED</code> – Credential validation failed.</p> </li> <li> <p> <code>NOT_VERIFIED</code> – Credential validation has not been performed.</p> </li> </ul>"
+        },
+        "LastCredentialVerifiedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time that the credentials were last verified.</p>"
         }
       },
       "documentation":"<p>The structure of a data source.</p>"
@@ -16689,6 +16853,22 @@
         "QBusinessParameters":{
           "shape":"QBusinessParameters",
           "documentation":"<p>The parameters for Amazon Q Business.</p>"
+        },
+        "SharePointParameters":{
+          "shape":"SharePointParameters",
+          "documentation":"<p>The parameters for a SharePoint data source.</p>"
+        },
+        "GoogleDriveParameters":{
+          "shape":"GoogleDriveParameters",
+          "documentation":"<p>The parameters for a Google Drive data source.</p>"
+        },
+        "OneDriveParameters":{
+          "shape":"OneDriveParameters",
+          "documentation":"<p>The parameters for an OneDrive data source.</p>"
+        },
+        "FMKBParameters":{
+          "shape":"FMKBParameters",
+          "documentation":"<p>The parameters for a fully managed knowledge base data source.</p>"
         }
       },
       "documentation":"<p>The parameters that Quick Sight uses to connect to your underlying data source. This is a variant type structure. For this structure to be valid, only one of the attributes can be non-null.</p>"
@@ -22991,6 +23171,27 @@
       "min":1,
       "sensitive":true
     },
+    "FMKBKnowledgeBaseArn":{
+      "type":"string",
+      "max":128,
+      "min":47,
+      "pattern":"^arn:aws(-cn|-us-gov)?:bedrock:[a-zA-Z0-9-]*:[0-9]{12}:knowledge-base/[0-9a-zA-Z]+"
+    },
+    "FMKBParameters":{
+      "type":"structure",
+      "required":["KnowledgeBaseArn"],
+      "members":{
+        "KnowledgeBaseArn":{
+          "shape":"FMKBKnowledgeBaseArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon Bedrock knowledge base.</p>"
+        },
+        "LinkedDataSourceIds":{
+          "shape":"LinkedDataSourceIds",
+          "documentation":"<p>The IDs of the linked data sources.</p>"
+        }
+      },
+      "documentation":"<p>The connection parameters for a fully managed knowledge base data source. Provide these parameters in the <code>DataSourceParameters</code> object when you create or update a data source that uses a fully managed knowledge base.</p>"
+    },
     "FailedKeyRegistrationEntries":{
       "type":"list",
       "member":{"shape":"FailedKeyRegistrationEntry"}
@@ -26499,6 +26700,16 @@
       },
       "documentation":"<p>Determines the border options for a table visual.</p>"
     },
+    "GoogleDriveParameters":{
+      "type":"structure",
+      "members":{
+        "AuthType":{
+          "shape":"AuthType",
+          "documentation":"<p>The authentication type for the Google Drive data source. Valid values include:</p> <ul> <li> <p> <code>SERVICE_ACCOUNT</code> – Server-to-server authentication using a Google service account key.</p> </li> <li> <p> <code>THREE_LEGGED_OAUTH</code> – Interactive OAuth that requires user consent.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>The connection parameters for a Google Drive data source. Provide these parameters in the <code>DataSourceParameters</code> object when you create or update a data source that uses Google Drive.</p>"
+    },
     "GradientColor":{
       "type":"structure",
       "members":{
@@ -28689,6 +28900,10 @@
           "shape":"MediaExtractionConfiguration",
           "documentation":"<p>The media extraction configuration for the knowledge base.</p>"
         },
+        "AccessControlConfiguration":{
+          "shape":"AccessControlConfiguration",
+          "documentation":"<p>The access control configuration for the knowledge base.</p>"
+        },
         "Type":{
           "shape":"String",
           "documentation":"<p>The type of the knowledge base.</p>"
@@ -28707,7 +28922,7 @@
         },
         "IsEmailNotificationOptedForIngestionFailures":{
           "shape":"Boolean",
-          "documentation":"<p>Indicates whether email notifications are enabled for ingestion failures.</p>",
+          "documentation":"<p>Specifies whether email notifications are enabled for ingestion failures.</p>",
           "box":true
         },
         "FirstCompletedIngestionSummary":{
@@ -28755,11 +28970,6 @@
         "templateConfiguration":{
           "shape":"KbTemplateConfiguration",
           "documentation":"<p>The template configuration for the knowledge base.</p>"
-        },
-        "eventEnabled":{
-          "shape":"Boolean",
-          "documentation":"<p>Indicates whether event notifications are enabled for the knowledge base.</p>",
-          "box":true
         }
       },
       "documentation":"<p>The configuration settings for a knowledge base.</p>",
@@ -28834,6 +29044,7 @@
     },
     "KnowledgeBaseSearchFilterName":{
       "type":"string",
+      "documentation":"<p>The name of a field that you can use to filter knowledge base search results. Valid values include:</p> <ul> <li> <p> <code>DATASOURCE_ARN</code> – The Amazon Resource Name (ARN) of the associated data source.</p> </li> <li> <p> <code>DIRECT_QUICKSIGHT_OWNER</code> – An Amazon QuickSight user or group with direct owner permissions.</p> </li> <li> <p> <code>DIRECT_QUICKSIGHT_SOLE_OWNER</code> – An Amazon QuickSight user or group that is the sole direct owner.</p> </li> <li> <p> <code>DIRECT_QUICKSIGHT_VIEWER_OR_OWNER</code> – An Amazon QuickSight user or group with direct viewer or owner permissions.</p> </li> <li> <p> <code>KNOWLEDGE_BASE_ID</code> – The unique identifier of the knowledge base.</p> </li> <li> <p> <code>KNOWLEDGE_BASE_NAME</code> – The display name of the knowledge base.</p> </li> <li> <p> <code>KNOWLEDGE_BASE_SIZE_BYTES</code> – The size of the knowledge base in bytes.</p> </li> <li> <p> <code>PRIMARY_OWNER</code> – The Amazon Resource Name (ARN) of the primary owner of the knowledge base.</p> </li> </ul>",
       "enum":[
         "KNOWLEDGE_BASE_ID",
         "KNOWLEDGE_BASE_NAME",
@@ -28841,13 +29052,14 @@
         "DIRECT_QUICKSIGHT_VIEWER_OR_OWNER",
         "DIRECT_QUICKSIGHT_SOLE_OWNER",
         "KNOWLEDGE_BASE_SIZE_BYTES",
-        "PRIMARY_OWNER"
+        "PRIMARY_OWNER",
+        "DATASOURCE_ARN"
       ]
     },
     "KnowledgeBaseSearchFilters":{
       "type":"list",
       "member":{"shape":"KnowledgeBaseSearchFilter"},
-      "max":5,
+      "max":6,
       "min":1
     },
     "KnowledgeBaseSearchOperator":{
@@ -29505,6 +29717,18 @@
         }
       },
       "documentation":"<p>A structure that contains the configuration of a shareable link to the dashboard.</p>"
+    },
+    "LinkedDataSourceId":{
+      "type":"string",
+      "max":10,
+      "min":1,
+      "pattern":"^[0-9a-zA-Z]+$"
+    },
+    "LinkedDataSourceIds":{
+      "type":"list",
+      "member":{"shape":"LinkedDataSourceId"},
+      "max":5,
+      "min":0
     },
     "ListActionConnectorsRequest":{
       "type":"structure",
@@ -33168,6 +33392,34 @@
     "OnClause":{
       "type":"string",
       "max":512,
+      "min":1
+    },
+    "OneDriveClientId":{
+      "type":"string",
+      "max":100,
+      "min":1
+    },
+    "OneDriveParameters":{
+      "type":"structure",
+      "members":{
+        "TenantId":{
+          "shape":"OneDriveTenantId",
+          "documentation":"<p>The tenant ID for the OneDrive data source.</p>"
+        },
+        "ClientId":{
+          "shape":"OneDriveClientId",
+          "documentation":"<p>The client ID for the OneDrive data source.</p>"
+        },
+        "AuthType":{
+          "shape":"AuthType",
+          "documentation":"<p>The authentication type for the OneDrive data source. Valid values include:</p> <ul> <li> <p> <code>TWO_LEGGED_OAUTH</code> – Server-to-server authentication using client credentials that do not require user interaction.</p> </li> <li> <p> <code>THREE_LEGGED_OAUTH</code> – Interactive OAuth that requires user consent.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>The connection parameters for an OneDrive data source. Provide these parameters in the <code>DataSourceParameters</code> object when you create or update a data source that uses OneDrive.</p>"
+    },
+    "OneDriveTenantId":{
+      "type":"string",
+      "max":100,
       "min":1
     },
     "Opacity":{
@@ -38747,6 +38999,44 @@
         }
       },
       "documentation":"<p>The shape conditional formatting of a filled map visual.</p>"
+    },
+    "SharePointClientId":{
+      "type":"string",
+      "max":100,
+      "min":1
+    },
+    "SharePointDomain":{
+      "type":"string",
+      "max":1024,
+      "min":1
+    },
+    "SharePointParameters":{
+      "type":"structure",
+      "required":["SharePointDomain"],
+      "members":{
+        "SharePointDomain":{
+          "shape":"SharePointDomain",
+          "documentation":"<p>The SharePoint domain for the data source.</p>"
+        },
+        "TenantId":{
+          "shape":"SharePointTenantId",
+          "documentation":"<p>The tenant ID for the SharePoint data source.</p>"
+        },
+        "ClientId":{
+          "shape":"SharePointClientId",
+          "documentation":"<p>The client ID for the SharePoint data source.</p>"
+        },
+        "AuthType":{
+          "shape":"AuthType",
+          "documentation":"<p>The authentication type for the SharePoint data source. Valid values include:</p> <ul> <li> <p> <code>TWO_LEGGED_OAUTH</code> – Server-to-server authentication using client credentials that do not require user interaction.</p> </li> <li> <p> <code>THREE_LEGGED_OAUTH</code> – Interactive OAuth that requires user consent.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>The connection parameters for a SharePoint data source. Provide these parameters in the <code>DataSourceParameters</code> object when you create or update a data source that uses SharePoint.</p>"
+    },
+    "SharePointTenantId":{
+      "type":"string",
+      "max":100,
+      "min":1
     },
     "SharedColumnSemanticMetadata":{
       "type":"structure",
@@ -46568,6 +46858,73 @@
         "Permissions":{
           "shape":"ResourcePermissionList",
           "documentation":"<p>The resource permissions for the knowledge base.</p>"
+        },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        },
+        "Status":{
+          "shape":"StatusCode",
+          "documentation":"<p>The HTTP status of the request.</p>",
+          "box":true,
+          "location":"statusCode"
+        }
+      }
+    },
+    "UpdateKnowledgeBaseRequest":{
+      "type":"structure",
+      "required":[
+        "AwsAccountId",
+        "KnowledgeBaseId"
+      ],
+      "members":{
+        "AwsAccountId":{
+          "shape":"KbAwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that contains the knowledge base.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "KnowledgeBaseId":{
+          "shape":"KnowledgeBaseId",
+          "documentation":"<p>The unique identifier for the knowledge base.</p>",
+          "location":"uri",
+          "locationName":"KnowledgeBaseId"
+        },
+        "Name":{
+          "shape":"KnowledgeBaseName",
+          "documentation":"<p>The name of the knowledge base. If you don't specify a name, the existing name is retained.</p>"
+        },
+        "Description":{
+          "shape":"KnowledgeBaseDescription",
+          "documentation":"<p>A description for the knowledge base. If you don't specify a description, the existing description is retained.</p>"
+        },
+        "KnowledgeBaseConfiguration":{"shape":"KnowledgeBaseConfiguration"},
+        "MediaExtractionConfiguration":{"shape":"MediaExtractionConfiguration"},
+        "IsEmailNotificationOptedForIngestionFailures":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether email notifications are enabled for ingestion failures.</p>",
+          "box":true
+        },
+        "AccessControlConfiguration":{
+          "shape":"AccessControlConfiguration",
+          "documentation":"<p>The access control configuration for the knowledge base. If you don't specify this parameter, the existing setting is retained.</p>"
+        }
+      }
+    },
+    "UpdateKnowledgeBaseResponse":{
+      "type":"structure",
+      "required":[
+        "KnowledgeBaseArn",
+        "KnowledgeBaseId"
+      ],
+      "members":{
+        "KnowledgeBaseArn":{
+          "shape":"KnowledgeBaseArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the knowledge base.</p>"
+        },
+        "KnowledgeBaseId":{
+          "shape":"KnowledgeBaseId",
+          "documentation":"<p>The unique identifier for the knowledge base.</p>"
         },
         "RequestId":{
           "shape":"String",

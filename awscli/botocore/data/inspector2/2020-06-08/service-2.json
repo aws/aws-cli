@@ -265,6 +265,25 @@
       ],
       "documentation":"<p>Creates a scan configuration for code security scanning.</p>"
     },
+    "CreateConnector":{
+      "name":"CreateConnector",
+      "http":{
+        "method":"POST",
+        "requestUri":"/connector/create",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateConnectorRequest"},
+      "output":{"shape":"CreateConnectorResponse"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Creates a connector that links an external cloud provider to Amazon Inspector for vulnerability scanning.</p>"
+    },
     "CreateFilter":{
       "name":"CreateFilter",
       "http":{
@@ -374,6 +393,26 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Deletes a code security scan configuration.</p>"
+    },
+    "DeleteConnector":{
+      "name":"DeleteConnector",
+      "http":{
+        "method":"POST",
+        "requestUri":"/connector/delete",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteConnectorRequest"},
+      "output":{"shape":"DeleteConnectorResponse"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Deletes a connector from your account.</p>",
+      "idempotent":true
     },
     "DeleteFilter":{
       "name":"DeleteFilter",
@@ -619,11 +658,13 @@
       "input":{"shape":"GetConfigurationRequest"},
       "output":{"shape":"GetConfigurationResponse"},
       "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
         {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Retrieves setting configurations for Inspector scans.</p>"
+      "documentation":"<p>Retrieves setting configurations for Amazon Inspector scans. If you specify an <code>accountId</code>, this operation returns the scan configuration for that member account. You must be the delegated administrator for the specified member account. If you do not specify an <code>accountId</code>, this operation returns your own scan configuration.</p>"
     },
     "GetDelegatedAdminAccount":{
       "name":"GetDelegatedAdminAccount",
@@ -871,6 +912,42 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Lists all code security scan configurations in your account.</p>"
+    },
+    "ListConnectorScanConfigurations":{
+      "name":"ListConnectorScanConfigurations",
+      "http":{
+        "method":"POST",
+        "requestUri":"/connectorscanconfigurations/list",
+        "responseCode":200
+      },
+      "input":{"shape":"ListConnectorScanConfigurationsRequest"},
+      "output":{"shape":"ListConnectorScanConfigurationsResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Lists scan configurations for Amazon Web Services Config connectors. Results are paginated. Use the <code>nextToken</code> parameter to retrieve the next page of results.</p>",
+      "readonly":true
+    },
+    "ListConnectors":{
+      "name":"ListConnectors",
+      "http":{
+        "method":"POST",
+        "requestUri":"/connector/list",
+        "responseCode":200
+      },
+      "input":{"shape":"ListConnectorsRequest"},
+      "output":{"shape":"ListConnectorsResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Lists connectors in your account. Results are paginated. Use the <code>nextToken</code> parameter to retrieve the next page of results.</p>",
+      "readonly":true
     },
     "ListCoverage":{
       "name":"ListCoverage",
@@ -1260,7 +1337,47 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Updates setting configurations for your Amazon Inspector account. When you use this API as an Amazon Inspector delegated administrator this updates the setting for all accounts you manage. Member accounts in an organization cannot update this setting.</p>"
+      "documentation":"<p>Updates the scan configuration for your Amazon Inspector account. If you don't specify an <code>accountId</code>, this operation updates the delegated administrator's configuration and propagates it to member accounts that have not been individually configured. If you specify an <code>accountId</code>, this operation updates that member account's configuration. Only the delegated administrator can specify an <code>accountId</code>; member accounts cannot call this operation.</p>"
+    },
+    "UpdateConnector":{
+      "name":"UpdateConnector",
+      "http":{
+        "method":"POST",
+        "requestUri":"/connector/update",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateConnectorRequest"},
+      "output":{"shape":"UpdateConnectorResponse"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Updates the description or provider-specific configuration details of an existing connector.</p>",
+      "idempotent":true
+    },
+    "UpdateConnectorScanConfiguration":{
+      "name":"UpdateConnectorScanConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/connectorscanconfiguration/update",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateConnectorScanConfigurationRequest"},
+      "output":{"shape":"UpdateConnectorScanConfigurationResponse"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Updates scan configuration settings for resources associated with an Amazon Web Services Config connector.</p>",
+      "idempotent":true
     },
     "UpdateEc2DeepInspectionConfiguration":{
       "name":"UpdateEc2DeepInspectionConfiguration",
@@ -1550,6 +1667,18 @@
         "codeRepositoryAggregation":{
           "shape":"CodeRepositoryAggregation",
           "documentation":"<p>An object that contains details about an aggregation request based on code repositories.</p>"
+        },
+        "vmInstanceAggregation":{
+          "shape":"VmInstanceAggregation",
+          "documentation":"<p>An object that contains details about an aggregation request based on virtual machine (VM) instances.</p>"
+        },
+        "containerImageAggregation":{
+          "shape":"ContainerImageAggregation",
+          "documentation":"<p>An object that contains details about an aggregation request based on container images.</p>"
+        },
+        "serverlessFunctionAggregation":{
+          "shape":"ServerlessFunctionAggregation",
+          "documentation":"<p>An object that contains details about an aggregation request based on serverless functions.</p>"
         }
       },
       "documentation":"<p>Contains details about an aggregation request.</p>",
@@ -1561,7 +1690,10 @@
         "AWS_EC2_INSTANCE",
         "AWS_ECR_CONTAINER_IMAGE",
         "AWS_LAMBDA_FUNCTION",
-        "CODE_REPOSITORY"
+        "CODE_REPOSITORY",
+        "Microsoft.Compute/virtualMachines",
+        "Microsoft.ContainerRegistry/registry/containerImage",
+        "Microsoft.Web/sites"
       ]
     },
     "AggregationResponse":{
@@ -1614,6 +1746,18 @@
         "codeRepositoryAggregation":{
           "shape":"CodeRepositoryAggregationResponse",
           "documentation":"<p>An object that contains details about an aggregation response based on code repositories.</p>"
+        },
+        "vmInstanceAggregation":{
+          "shape":"VmInstanceAggregationResponse",
+          "documentation":"<p>An object that contains details about an aggregation response based on VM instances.</p>"
+        },
+        "containerImageAggregation":{
+          "shape":"ContainerImageAggregationResponse",
+          "documentation":"<p>An object that contains details about an aggregation response based on container images.</p>"
+        },
+        "serverlessFunctionAggregation":{
+          "shape":"ServerlessFunctionAggregationResponse",
+          "documentation":"<p>An object that contains details about an aggregation response based on serverless functions.</p>"
         }
       },
       "documentation":"<p>A structure that contains details about the results of an aggregation type.</p>",
@@ -1637,7 +1781,10 @@
         "ACCOUNT",
         "AWS_LAMBDA_FUNCTION",
         "LAMBDA_LAYER",
-        "CODE_REPOSITORY"
+        "CODE_REPOSITORY",
+        "VM_INSTANCE",
+        "CONTAINER_IMAGE",
+        "SERVERLESS_FUNCTION"
       ]
     },
     "AmiAggregation":{
@@ -1669,6 +1816,26 @@
         "accountId":{
           "shape":"AccountId",
           "documentation":"<p>The Amazon Web Services account ID for the AMI.</p>"
+        },
+        "cloudProvider":{
+          "shape":"Provider",
+          "documentation":"<p>The cloud service provider associated with this Amazon Machine Image (AMI) aggregation. Valid values:</p> <ul> <li> <p> <code>AWS</code> – Findings from Amazon Web Services resources.</p> </li> <li> <p> <code>AZURE</code> – Findings from Microsoft Azure resources.</p> </li> </ul>"
+        },
+        "cloudPartition":{
+          "shape":"ProviderPartition",
+          "documentation":"<p>The cloud infrastructure partition associated with this AMI aggregation. Valid values:</p> <ul> <li> <p> <code>aws</code> – Amazon Web Services commercial Regions.</p> </li> <li> <p> <code>aws-cn</code> – Amazon Web Services China Regions.</p> </li> <li> <p> <code>aws-us-gov</code> – Amazon Web Services GovCloud (US) Regions.</p> </li> <li> <p> <code>AzureCloud</code> – Azure commercial Regions.</p> </li> </ul>"
+        },
+        "cloudRegion":{
+          "shape":"ProviderRegion",
+          "documentation":"<p>The cloud Region associated with this AMI aggregation. The value format depends on the cloud provider:</p> <ul> <li> <p>An Amazon Web Services Region, such as <code>us-east-1</code>.</p> </li> <li> <p>An Azure region, such as <code>eastus</code>.</p> </li> </ul>"
+        },
+        "cloudOrgId":{
+          "shape":"ProviderOrgId",
+          "documentation":"<p>The cloud organization ID for the AMI aggregation.</p>"
+        },
+        "cloudAccountId":{
+          "shape":"ProviderAccountId",
+          "documentation":"<p>The cloud account ID for the AMI aggregation.</p>"
         },
         "severityCounts":{
           "shape":"SeverityCounts",
@@ -1823,6 +1990,46 @@
         }
       },
       "documentation":"<p>Represents which scan types are automatically enabled for new members of your Amazon Inspector organization.</p>"
+    },
+    "AwsConfigConnectorArn":{
+      "type":"string",
+      "max":512,
+      "min":1,
+      "pattern":"arn:([^:]+):config:([^:]+):([^:]+):connector/([^/]+)/([^/]+)/([^/:\\s]+)"
+    },
+    "AwsConfigConnectorArnComparison":{
+      "type":"string",
+      "enum":["EQUALS"]
+    },
+    "AwsConfigConnectorArnFilter":{
+      "type":"structure",
+      "required":[
+        "comparison",
+        "value"
+      ],
+      "members":{
+        "comparison":{
+          "shape":"AwsConfigConnectorArnComparison",
+          "documentation":"<p>The comparison operator for the Amazon Web Services Config connector ARN filter.</p>"
+        },
+        "value":{
+          "shape":"AwsConfigConnectorArn",
+          "documentation":"<p>The Amazon Web Services Config connector ARN value to filter by.</p>"
+        }
+      },
+      "documentation":"<p>A filter that matches connectors by the ARN of the associated Amazon Web Services Config connector.</p>"
+    },
+    "AwsConfigConnectorArnFilterList":{
+      "type":"list",
+      "member":{"shape":"AwsConfigConnectorArnFilter"},
+      "max":1,
+      "min":0
+    },
+    "AwsConfigConnectorArnList":{
+      "type":"list",
+      "member":{"shape":"AwsConfigConnectorArn"},
+      "max":10,
+      "min":1
     },
     "AwsEc2InstanceDetails":{
       "type":"structure",
@@ -2147,6 +2354,99 @@
         }
       },
       "documentation":"<p> A summary of information about the Amazon Web Services Lambda function.</p>"
+    },
+    "AzureProviderDetailCreate":{
+      "type":"structure",
+      "required":[
+        "awsConfigConnectorArn",
+        "scopeConfiguration",
+        "azureRegions"
+      ],
+      "members":{
+        "awsConfigConnectorArn":{
+          "shape":"AwsConfigConnectorArn",
+          "documentation":"<p>The ARN of the Amazon Web Services Config connector to associate with this connector.</p>"
+        },
+        "scopeConfiguration":{
+          "shape":"AzureScopeConfigurationInput",
+          "documentation":"<p>The scope configuration that defines which Azure resources to scan.</p>"
+        },
+        "azureRegions":{
+          "shape":"AzureRegionList",
+          "documentation":"<p>The Azure regions to scan.</p>"
+        },
+        "autoInstallVMScanner":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether to automatically install the VM scanner on connected Azure resources. Defaults to <code>true</code>.</p>"
+        }
+      },
+      "documentation":"<p>The Azure-specific configuration details for creating a connector, including the Amazon Web Services Config connector association, scan scope, and regions to scan.</p>"
+    },
+    "AzureProviderDetailUpdate":{
+      "type":"structure",
+      "members":{
+        "azureRegions":{
+          "shape":"AzureRegionList",
+          "documentation":"<p>The updated Azure regions to scan.</p>"
+        },
+        "scopeConfiguration":{
+          "shape":"AzureScopeConfigurationInput",
+          "documentation":"<p>The updated scope configuration that defines which Azure resources to scan.</p>"
+        },
+        "autoInstallVMScanner":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether to automatically install the VM scanner on connected Azure resources.</p>"
+        }
+      },
+      "documentation":"<p>The Azure-specific configuration details for updating a connector, including the scan scope and regions to scan.</p>"
+    },
+    "AzureRegion":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"[a-zA-Z0-9-]+"
+    },
+    "AzureRegionList":{
+      "type":"list",
+      "member":{"shape":"AzureRegion"},
+      "max":100,
+      "min":1
+    },
+    "AzureScopeConfiguration":{
+      "type":"structure",
+      "members":{
+        "vmScanning":{
+          "shape":"ScopeConfiguration",
+          "documentation":"<p>The scope configuration for VM scanning.</p>"
+        },
+        "containerImageScanning":{
+          "shape":"ScopeConfiguration",
+          "documentation":"<p>The scope configuration for container image scanning.</p>"
+        },
+        "serverlessScanning":{
+          "shape":"ScopeConfiguration",
+          "documentation":"<p>The scope configuration for serverless scanning.</p>"
+        }
+      },
+      "documentation":"<p>The scope of Azure resources that Amazon Inspector scans, defined separately for VM, container image, and serverless scanning. Returned as part of a connector's configuration.</p>"
+    },
+    "AzureScopeConfigurationInput":{
+      "type":"structure",
+      "members":{
+        "vmScanning":{
+          "shape":"ScopeConfigurationInput",
+          "documentation":"<p>The scope configuration input for VM scanning.</p>"
+        },
+        "containerImageScanning":{
+          "shape":"ScopeConfigurationInput",
+          "documentation":"<p>The scope configuration input for container image scanning.</p>"
+        },
+        "serverlessScanning":{
+          "shape":"ScopeConfigurationInput",
+          "documentation":"<p>The scope configuration input for serverless scanning.</p>"
+        }
+      },
+      "documentation":"<p>The scope of Azure resources to scan, defined separately for VM, container image, and serverless scanning. Provide this when you create or update an Azure connector.</p>"
     },
     "BadRequestException":{
       "type":"structure",
@@ -3250,6 +3550,26 @@
       "max":64,
       "min":1
     },
+    "CloudProvider":{
+      "type":"string",
+      "enum":[
+        "AWS",
+        "AZURE",
+        "NOT_APPLICABLE"
+      ]
+    },
+    "CloudSecurityGroupIdList":{
+      "type":"list",
+      "member":{"shape":"NonEmptyString"},
+      "max":5,
+      "min":0
+    },
+    "CloudSubnetIdList":{
+      "type":"list",
+      "member":{"shape":"NonEmptyString"},
+      "max":16,
+      "min":0
+    },
     "ClusterDetails":{
       "type":"structure",
       "required":[
@@ -3286,7 +3606,7 @@
     },
     "ClusterForImageFilterCriteriaResourceIdString":{
       "type":"string",
-      "pattern":"arn:.*:ecr:.*:\\d{12}:repository\\/(?:[a-z0-9]+(?:[._-][a-z0-9]+)*\\/)*[a-z0-9]+(?:[._-][a-z0-9]+)*(\\/sha256:[a-z0-9]{64})?"
+      "pattern":"arn:.*:ecr:.*:\\d{12}:repository\\/[a-zA-Z0-9._\\/-]+(\\/sha256:[a-z0-9]{64})?"
     },
     "ClusterInformation":{
       "type":"structure",
@@ -3895,6 +4215,518 @@
       },
       "exception":true
     },
+    "Connector":{
+      "type":"structure",
+      "required":[
+        "connectorArn",
+        "provider",
+        "createdAt",
+        "updatedAt"
+      ],
+      "members":{
+        "connectorArn":{
+          "shape":"ConnectorArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the connector.</p>"
+        },
+        "name":{
+          "shape":"ConnectorName",
+          "documentation":"<p>The name of the connector.</p>"
+        },
+        "description":{
+          "shape":"ConnectorDescription",
+          "documentation":"<p>A description of the connector.</p>"
+        },
+        "provider":{
+          "shape":"ConnectorCloudProvider",
+          "documentation":"<p>The cloud provider for the connector.</p>"
+        },
+        "enablementStatus":{
+          "shape":"EnablementStatus",
+          "documentation":"<p>The enablement status of the connector, which indicates whether the connector is active and scanning resources.</p>"
+        },
+        "enablementStatusReason":{
+          "shape":"String",
+          "documentation":"<p>Additional information about the current enablement status of the connector.</p>"
+        },
+        "health":{
+          "shape":"ConnectorHealth",
+          "documentation":"<p>The health of the connector, which indicates whether Amazon Inspector can reach and scan the connected resources.</p>"
+        },
+        "createdAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time when the connector was created.</p>"
+        },
+        "updatedAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time when the connector was last updated.</p>"
+        },
+        "azureRegions":{
+          "shape":"AzureRegionList",
+          "documentation":"<p>The Azure regions configured for the connector.</p>"
+        },
+        "awsConfigConnectorArn":{
+          "shape":"AwsConfigConnectorArn",
+          "documentation":"<p>The ARN of the Amazon Web Services Config connector associated with this connector.</p>"
+        },
+        "scopeConfiguration":{
+          "shape":"AzureScopeConfiguration",
+          "documentation":"<p>The Azure scope configuration for the connector.</p>"
+        },
+        "tags":{
+          "shape":"ConnectorTagMap",
+          "documentation":"<p>The tags associated with the connector.</p>"
+        },
+        "autoInstallVMScanner":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether the VM scanner is automatically installed on connected resources.</p>"
+        }
+      },
+      "documentation":"<p>Describes a connector that links an external cloud provider to Amazon Inspector for vulnerability scanning.</p>"
+    },
+    "ConnectorArn":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"arn:aws(-[a-z]+)*:inspector2:[a-z0-9-]+:[0-9]{12}:connector/([a-f0-9-]+|aws-service-connector/.+/[a-f0-9-]+)"
+    },
+    "ConnectorArnComparison":{
+      "type":"string",
+      "enum":["EQUALS"]
+    },
+    "ConnectorArnFilter":{
+      "type":"structure",
+      "required":[
+        "comparison",
+        "value"
+      ],
+      "members":{
+        "comparison":{
+          "shape":"ConnectorArnComparison",
+          "documentation":"<p>The comparison operator for the connector ARN filter.</p>"
+        },
+        "value":{
+          "shape":"ConnectorArn",
+          "documentation":"<p>The connector ARN value to filter by.</p>"
+        }
+      },
+      "documentation":"<p>A filter that matches connectors by connector ARN.</p>"
+    },
+    "ConnectorArnFilterList":{
+      "type":"list",
+      "member":{"shape":"ConnectorArnFilter"},
+      "max":25,
+      "min":0
+    },
+    "ConnectorArnList":{
+      "type":"list",
+      "member":{"shape":"ConnectorArn"}
+    },
+    "ConnectorCloudProvider":{
+      "type":"string",
+      "enum":["AZURE"]
+    },
+    "ConnectorContainerImageScanConfiguration":{
+      "type":"structure",
+      "members":{
+        "pushDuration":{
+          "shape":"ContainerImageRescanDuration",
+          "documentation":"<p>The amount of time after a container image is pushed to a repository during which Amazon Inspector continues to rescan the image for vulnerabilities. Valid values are <code>LIFETIME</code>, <code>DAYS_3</code>, <code>DAYS_7</code>, <code>DAYS_14</code>, <code>DAYS_30</code>, <code>DAYS_60</code>, <code>DAYS_90</code>, and <code>DAYS_180</code>.</p>"
+        },
+        "pullDuration":{
+          "shape":"ContainerImagePullDateRescanDuration",
+          "documentation":"<p>The amount of time after a container image is last pulled from a repository during which Amazon Inspector continues to rescan the image for vulnerabilities. Valid values are <code>DAYS_3</code>, <code>DAYS_7</code>, <code>DAYS_14</code>, <code>DAYS_30</code>, <code>DAYS_60</code>, <code>DAYS_90</code>, and <code>DAYS_180</code>.</p>"
+        }
+      },
+      "documentation":"<p>The container image scanning settings for a connector, including how long pushed and pulled images continue to be rescanned for vulnerabilities.</p>"
+    },
+    "ConnectorDescription":{
+      "type":"string",
+      "max":200,
+      "min":0,
+      "pattern":"[^\\p{C}]*"
+    },
+    "ConnectorFilterCriteria":{
+      "type":"structure",
+      "members":{
+        "connectorArns":{
+          "shape":"ConnectorArnFilterList",
+          "documentation":"<p>Filter by connector ARNs.</p>"
+        },
+        "accounts":{
+          "shape":"StringFilterList",
+          "documentation":"<p>Filter by Amazon Web Services account IDs.</p>"
+        },
+        "awsConfigConnectorArns":{
+          "shape":"AwsConfigConnectorArnFilterList",
+          "documentation":"<p>Filter by Amazon Web Services Config connector ARNs.</p>"
+        },
+        "connectorType":{
+          "shape":"ConnectorTypeFilterList",
+          "documentation":"<p>Filter by connector type.</p>"
+        },
+        "provider":{
+          "shape":"ProviderFilterList",
+          "documentation":"<p>Filter by cloud provider.</p>"
+        }
+      },
+      "documentation":"<p>Contains the filter criteria for narrowing the results returned by a <code>ListConnectors</code> request. You can filter by connector ARN, Amazon Web Services account ID, Amazon Web Services Config connector ARN, connector type, or cloud provider.</p>"
+    },
+    "ConnectorHealth":{
+      "type":"structure",
+      "required":[
+        "connectorStatus",
+        "lastCheckedAt"
+      ],
+      "members":{
+        "connectorStatus":{
+          "shape":"ConnectorHealthStatus",
+          "documentation":"<p>The health status of the connector.</p>"
+        },
+        "lastCheckedAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time when the connector health was last checked.</p>"
+        },
+        "message":{
+          "shape":"String",
+          "documentation":"<p>A message providing additional details about the connector health status.</p>"
+        }
+      },
+      "documentation":"<p>The health and connectivity status of a connector, including the last time the status was checked and any diagnostic message. Returned as part of the <code>Connector</code> structure.</p>"
+    },
+    "ConnectorHealthStatus":{
+      "type":"string",
+      "enum":[
+        "CONNECTED",
+        "DEGRADED",
+        "FAILED_TO_CONNECT",
+        "PENDING_AUTHORIZATION",
+        "PENDING_CONFIGURATION",
+        "UNKNOWN"
+      ]
+    },
+    "ConnectorList":{
+      "type":"list",
+      "member":{"shape":"Connector"}
+    },
+    "ConnectorName":{
+      "type":"string",
+      "max":50,
+      "min":1,
+      "pattern":"[\\p{L}\\p{N}_-]+"
+    },
+    "ConnectorNextToken":{
+      "type":"string",
+      "max":1024,
+      "min":1,
+      "sensitive":true
+    },
+    "ConnectorScanConfiguration":{
+      "type":"structure",
+      "members":{
+        "containerImageScanning":{
+          "shape":"ConnectorContainerImageScanConfiguration",
+          "documentation":"<p>The container image scanning configuration, including push and pull duration settings.</p>"
+        }
+      },
+      "documentation":"<p>The scan settings that Amazon Inspector applies to resources discovered through a connector.</p>"
+    },
+    "ConnectorScanConfigurationItem":{
+      "type":"structure",
+      "required":[
+        "awsConfigConnectorArn",
+        "connectorArns",
+        "scanConfiguration"
+      ],
+      "members":{
+        "awsConfigConnectorArn":{
+          "shape":"AwsConfigConnectorArn",
+          "documentation":"<p>The ARN of the Amazon Web Services Config connector.</p>"
+        },
+        "connectorArns":{
+          "shape":"ConnectorArnList",
+          "documentation":"<p>The list of connector ARNs associated with this Amazon Web Services Config connector.</p>"
+        },
+        "scanConfiguration":{
+          "shape":"ConnectorScanConfiguration",
+          "documentation":"<p>The scan configuration settings.</p>"
+        }
+      },
+      "documentation":"<p>Represents a scan configuration and the connectors it applies to. Returned in the results of a <code>ListConnectorScanConfigurations</code> request.</p>"
+    },
+    "ConnectorScanConfigurationItemList":{
+      "type":"list",
+      "member":{"shape":"ConnectorScanConfigurationItem"}
+    },
+    "ConnectorTagKey":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"(?!aws:)[\\p{L}\\p{Z}\\p{N}_.:/=+\\-@]*"
+    },
+    "ConnectorTagMap":{
+      "type":"map",
+      "key":{"shape":"ConnectorTagKey"},
+      "value":{"shape":"ConnectorTagValue"},
+      "max":50,
+      "min":0
+    },
+    "ConnectorTagValue":{
+      "type":"string",
+      "max":256,
+      "min":0
+    },
+    "ConnectorType":{
+      "type":"string",
+      "enum":[
+        "CUSTOMER_MANAGED",
+        "SERVICE_LINKED"
+      ]
+    },
+    "ConnectorTypeComparison":{
+      "type":"string",
+      "enum":["EQUALS"]
+    },
+    "ConnectorTypeFilter":{
+      "type":"structure",
+      "required":[
+        "comparison",
+        "value"
+      ],
+      "members":{
+        "comparison":{
+          "shape":"ConnectorTypeComparison",
+          "documentation":"<p>The comparison operator for the connector type filter.</p>"
+        },
+        "value":{
+          "shape":"ConnectorType",
+          "documentation":"<p>The connector type value to filter by.</p>"
+        }
+      },
+      "documentation":"<p>A filter that matches connectors by connector type.</p>"
+    },
+    "ConnectorTypeFilterList":{
+      "type":"list",
+      "member":{"shape":"ConnectorTypeFilter"},
+      "max":1,
+      "min":0
+    },
+    "ContainerImageAggregation":{
+      "type":"structure",
+      "members":{
+        "resourceIds":{
+          "shape":"StringFilterList",
+          "documentation":"<p>The resource IDs to aggregate findings for.</p>"
+        },
+        "imageDigests":{
+          "shape":"StringFilterList",
+          "documentation":"<p>The image digests to aggregate findings for.</p>"
+        },
+        "repositories":{
+          "shape":"StringFilterList",
+          "documentation":"<p>The image repositories to aggregate findings for.</p>"
+        },
+        "registries":{
+          "shape":"StringFilterList",
+          "documentation":"<p>The image registries to aggregate findings for.</p>"
+        },
+        "architectures":{
+          "shape":"StringFilterList",
+          "documentation":"<p>The image architectures to aggregate findings for.</p>"
+        },
+        "imageTags":{
+          "shape":"StringFilterList",
+          "documentation":"<p>The image tags to aggregate findings for.</p>"
+        },
+        "cloudProviders":{
+          "shape":"StringFilterList",
+          "documentation":"<p>The cloud providers to aggregate findings for. Valid values:</p> <ul> <li> <p> <code>AWS</code> – Findings from Amazon Web Services resources.</p> </li> <li> <p> <code>AZURE</code> – Findings from Microsoft Azure resources.</p> </li> </ul>"
+        },
+        "cloudPartitions":{
+          "shape":"StringFilterList",
+          "documentation":"<p>The cloud partitions to aggregate findings for. Valid values:</p> <ul> <li> <p> <code>aws</code> – Amazon Web Services commercial Regions.</p> </li> <li> <p> <code>aws-cn</code> – Amazon Web Services China Regions.</p> </li> <li> <p> <code>aws-us-gov</code> – Amazon Web Services GovCloud (US) Regions.</p> </li> <li> <p> <code>AzureCloud</code> – Azure commercial Regions.</p> </li> </ul>"
+        },
+        "cloudRegions":{
+          "shape":"StringFilterList",
+          "documentation":"<p>The cloud regions to aggregate findings for. The value format depends on the cloud provider:</p> <ul> <li> <p>An Amazon Web Services Region, such as <code>us-east-1</code>.</p> </li> <li> <p>An Azure region, such as <code>eastus</code>.</p> </li> </ul>"
+        },
+        "cloudOrgIds":{
+          "shape":"StringFilterList",
+          "documentation":"<p>The cloud organization IDs to aggregate findings for.</p>"
+        },
+        "cloudAccountIds":{
+          "shape":"StringFilterList",
+          "documentation":"<p>The cloud account IDs to aggregate findings for.</p>"
+        },
+        "lastInUseAt":{
+          "shape":"DateFilterList",
+          "documentation":"<p>The last in-use timestamps to aggregate findings for.</p>"
+        },
+        "inUseCount":{
+          "shape":"NumberFilterList",
+          "documentation":"<p>The in-use counts to aggregate findings for.</p>"
+        },
+        "sortOrder":{
+          "shape":"SortOrder",
+          "documentation":"<p>The order to sort results by. Valid values are <code>ASC</code> and <code>DESC</code>.</p>"
+        },
+        "sortBy":{
+          "shape":"ContainerImageSortBy",
+          "documentation":"<p>The value to sort results by. Specify a field name from the aggregation response, such as <code>CRITICAL</code>, <code>HIGH</code>, or <code>ALL</code>.</p>"
+        }
+      },
+      "documentation":"<p>An aggregation of information about container images.</p>"
+    },
+    "ContainerImageAggregationResponse":{
+      "type":"structure",
+      "required":["resourceId"],
+      "members":{
+        "resourceId":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The resource ID for the container image.</p>"
+        },
+        "cloudProvider":{
+          "shape":"Provider",
+          "documentation":"<p>The cloud service provider associated with this container image aggregation. Valid values:</p> <ul> <li> <p> <code>AWS</code> – Findings from Amazon Web Services resources.</p> </li> <li> <p> <code>AZURE</code> – Findings from Microsoft Azure resources.</p> </li> </ul>"
+        },
+        "cloudAccountId":{
+          "shape":"ProviderAccountId",
+          "documentation":"<p>The cloud account ID for the container image aggregation.</p>"
+        },
+        "cloudPartition":{
+          "shape":"ProviderPartition",
+          "documentation":"<p>The cloud infrastructure partition associated with this container image aggregation. Valid values:</p> <ul> <li> <p> <code>aws</code> – Amazon Web Services commercial Regions.</p> </li> <li> <p> <code>aws-cn</code> – Amazon Web Services China Regions.</p> </li> <li> <p> <code>aws-us-gov</code> – Amazon Web Services GovCloud (US) Regions.</p> </li> <li> <p> <code>AzureCloud</code> – Azure commercial Regions.</p> </li> </ul>"
+        },
+        "cloudRegion":{
+          "shape":"ProviderRegion",
+          "documentation":"<p>The cloud Region associated with this container image aggregation. The value format depends on the cloud provider:</p> <ul> <li> <p>An Amazon Web Services Region, such as <code>us-east-1</code>.</p> </li> <li> <p>An Azure region, such as <code>eastus</code>.</p> </li> </ul>"
+        },
+        "cloudOrgId":{
+          "shape":"ProviderOrgId",
+          "documentation":"<p>The cloud organization ID for the container image aggregation.</p>"
+        },
+        "imageDigest":{
+          "shape":"String",
+          "documentation":"<p>The image digest for the container image.</p>"
+        },
+        "repository":{
+          "shape":"String",
+          "documentation":"<p>The repository for the container image.</p>"
+        },
+        "registry":{
+          "shape":"String",
+          "documentation":"<p>The registry for the container image.</p>"
+        },
+        "architecture":{
+          "shape":"String",
+          "documentation":"<p>The architecture of the container image.</p>"
+        },
+        "imageTags":{
+          "shape":"StringList",
+          "documentation":"<p>The image tags attached to the container image.</p>"
+        },
+        "accountId":{
+          "shape":"String",
+          "documentation":"<p>The account ID associated with the container image.</p>"
+        },
+        "severityCounts":{"shape":"SeverityCounts"},
+        "lastInUseAt":{
+          "shape":"DateTimeTimestamp",
+          "documentation":"<p>The last time the container image was in use.</p>"
+        },
+        "inUseCount":{
+          "shape":"Long",
+          "documentation":"<p>The number of times the container image is in use.</p>"
+        },
+        "exploitAvailableActiveFindingsCount":{
+          "shape":"Long",
+          "documentation":"<p>The number of active findings with an exploit available for the container image.</p>"
+        },
+        "fixAvailableActiveFindingsCount":{
+          "shape":"Long",
+          "documentation":"<p>The number of active findings with a fix available for the container image.</p>"
+        }
+      },
+      "documentation":"<p>A response that contains the results of a container image aggregation.</p>"
+    },
+    "ContainerImageMetadata":{
+      "type":"structure",
+      "members":{
+        "imageTags":{
+          "shape":"TagList",
+          "documentation":"<p>The tags attached to the container image.</p>"
+        },
+        "imagePulledAt":{
+          "shape":"DateTimeTimestamp",
+          "documentation":"<p>The date and time the container image was pulled.</p>"
+        },
+        "lastInUseAt":{
+          "shape":"DateTimeTimestamp",
+          "documentation":"<p>The last time the container image was in use.</p>"
+        },
+        "inUseCount":{
+          "shape":"Long",
+          "documentation":"<p>The number of times the container image is in use.</p>"
+        }
+      },
+      "documentation":"<p>Contains metadata about a container image associated with a covered resource.</p>"
+    },
+    "ContainerImagePullDateRescanDuration":{
+      "type":"string",
+      "enum":[
+        "DAYS_3",
+        "DAYS_7",
+        "DAYS_14",
+        "DAYS_30",
+        "DAYS_60",
+        "DAYS_90",
+        "DAYS_180"
+      ]
+    },
+    "ContainerImageRescanDuration":{
+      "type":"string",
+      "enum":[
+        "LIFETIME",
+        "DAYS_3",
+        "DAYS_7",
+        "DAYS_30",
+        "DAYS_180",
+        "DAYS_14",
+        "DAYS_60",
+        "DAYS_90"
+      ]
+    },
+    "ContainerImageSortBy":{
+      "type":"string",
+      "enum":[
+        "CRITICAL",
+        "HIGH",
+        "ALL"
+      ]
+    },
+    "ContainerRegistryMetadata":{
+      "type":"structure",
+      "members":{
+        "name":{
+          "shape":"String",
+          "documentation":"<p>The name of the container registry.</p>"
+        }
+      },
+      "documentation":"<p>Contains metadata about a container registry associated with a covered resource.</p>"
+    },
+    "ContainerRepositoryMetadata":{
+      "type":"structure",
+      "members":{
+        "name":{
+          "shape":"String",
+          "documentation":"<p>The name of the container repository.</p>"
+        },
+        "scanFrequency":{
+          "shape":"String",
+          "documentation":"<p>The scan frequency for the container repository.</p>"
+        }
+      },
+      "documentation":"<p>Contains metadata about a container repository associated with a covered resource.</p>"
+    },
     "ContinuousIntegrationScanConfiguration":{
       "type":"structure",
       "required":["supportedEvents"],
@@ -4045,6 +4877,50 @@
         "lastScannedCommitId":{
           "shape":"CoverageStringFilterList",
           "documentation":"<p>Filter criteria for code repositories based on the ID of the last scanned commit.</p>"
+        },
+        "cloudProvider":{
+          "shape":"CoverageStringFilterList",
+          "documentation":"<p>The cloud provider to filter coverage results by.</p>"
+        },
+        "cloudProviderAccountId":{
+          "shape":"CoverageStringFilterList",
+          "documentation":"<p>The cloud provider account ID to filter coverage results by.</p>"
+        },
+        "cloudProviderRegion":{
+          "shape":"CoverageStringFilterList",
+          "documentation":"<p>The cloud provider region to filter coverage results by.</p>"
+        },
+        "cloudVmInstanceTags":{
+          "shape":"CoverageMapFilterList",
+          "documentation":"<p>The cloud VM instance tags to filter coverage results by.</p>"
+        },
+        "cloudContainerImageTags":{
+          "shape":"CoverageStringFilterList",
+          "documentation":"<p>The cloud container image tags to filter coverage results by.</p>"
+        },
+        "cloudContainerRepositoryName":{
+          "shape":"CoverageStringFilterList",
+          "documentation":"<p>The cloud container repository name to filter coverage results by.</p>"
+        },
+        "cloudContainerRegistryName":{
+          "shape":"CoverageStringFilterList",
+          "documentation":"<p>The cloud container registry name to filter coverage results by.</p>"
+        },
+        "cloudServerlessFunctionName":{
+          "shape":"CoverageStringFilterList",
+          "documentation":"<p>The cloud serverless function name to filter coverage results by.</p>"
+        },
+        "cloudServerlessFunctionRuntime":{
+          "shape":"CoverageStringFilterList",
+          "documentation":"<p>The cloud serverless function runtime to filter coverage results by.</p>"
+        },
+        "cloudServerlessFunctionTags":{
+          "shape":"CoverageMapFilterList",
+          "documentation":"<p>The cloud serverless function tags to filter coverage results by.</p>"
+        },
+        "cloudProviderOrgId":{
+          "shape":"CoverageStringFilterList",
+          "documentation":"<p>The cloud provider organization ID to filter coverage results by.</p>"
         }
       },
       "documentation":"<p>A structure that identifies filter criteria for <code>GetCoverageStatistics</code>.</p>"
@@ -4108,7 +4984,12 @@
         "AWS_ECR_CONTAINER_IMAGE",
         "AWS_ECR_REPOSITORY",
         "AWS_LAMBDA_FUNCTION",
-        "CODE_REPOSITORY"
+        "CODE_REPOSITORY",
+        "Microsoft.Compute/virtualMachines",
+        "Microsoft.ContainerRegistry/registry/containerImage",
+        "Microsoft.ContainerRegistry/registry/containerRepository",
+        "Microsoft.Web/sites",
+        "Microsoft.ContainerRegistry/registries"
       ]
     },
     "CoverageStringComparison":{
@@ -4187,6 +5068,26 @@
         "scanMode":{
           "shape":"ScanMode",
           "documentation":"<p>The scan method that is applied to the instance.</p>"
+        },
+        "provider":{
+          "shape":"Provider",
+          "documentation":"<p>The cloud provider of the covered resource.</p>"
+        },
+        "providerAccountId":{
+          "shape":"ProviderAccountId",
+          "documentation":"<p>The cloud provider account ID of the covered resource.</p>"
+        },
+        "providerOrgId":{
+          "shape":"ProviderOrgId",
+          "documentation":"<p>The cloud provider organization ID of the covered resource.</p>"
+        },
+        "providerRegion":{
+          "shape":"ProviderRegion",
+          "documentation":"<p>The cloud provider region of the covered resource.</p>"
+        },
+        "providerPartition":{
+          "shape":"ProviderPartition",
+          "documentation":"<p>The cloud provider partition of the covered resource.</p>"
         }
       },
       "documentation":"<p>An object that contains details about a resource covered by Amazon Inspector.</p>"
@@ -4336,6 +5237,51 @@
         "scanConfigurationArn":{
           "shape":"ScanConfigurationArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the created scan configuration.</p>"
+        }
+      }
+    },
+    "CreateConnectorRequest":{
+      "type":"structure",
+      "required":[
+        "name",
+        "provider",
+        "providerDetail"
+      ],
+      "members":{
+        "clientToken":{
+          "shape":"String",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure that the operation completes no more than one time. If this token matches a previous request, the service ignores the request but does not return an error.</p>",
+          "idempotencyToken":true
+        },
+        "name":{
+          "shape":"ConnectorName",
+          "documentation":"<p>The name of the connector.</p>"
+        },
+        "provider":{
+          "shape":"ConnectorCloudProvider",
+          "documentation":"<p>The cloud provider for the connector.</p>"
+        },
+        "description":{
+          "shape":"ConnectorDescription",
+          "documentation":"<p>A description of the connector.</p>"
+        },
+        "providerDetail":{
+          "shape":"ProviderDetailCreate",
+          "documentation":"<p>The provider-specific configuration details for the connector.</p>"
+        },
+        "tags":{
+          "shape":"ConnectorTagMap",
+          "documentation":"<p>The tags to apply to the connector.</p>"
+        }
+      }
+    },
+    "CreateConnectorResponse":{
+      "type":"structure",
+      "required":["connectorArn"],
+      "members":{
+        "connectorArn":{
+          "shape":"ConnectorArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the created connector.</p>"
         }
       }
     },
@@ -4777,6 +5723,20 @@
         }
       }
     },
+    "DeleteConnectorRequest":{
+      "type":"structure",
+      "required":["connectorArn"],
+      "members":{
+        "connectorArn":{
+          "shape":"ConnectorArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the connector to delete.</p>"
+        }
+      }
+    },
+    "DeleteConnectorResponse":{
+      "type":"structure",
+      "members":{}
+    },
     "DeleteFilterRequest":{
       "type":"structure",
       "required":["arn"],
@@ -5171,7 +6131,9 @@
         "DAYS_30",
         "DAYS_60",
         "DAYS_90",
-        "DAYS_180"
+        "DAYS_180",
+        "DAYS_3",
+        "DAYS_7"
       ]
     },
     "EcrPullDateRescanMode":{
@@ -5203,7 +6165,9 @@
         "DAYS_180",
         "DAYS_14",
         "DAYS_60",
-        "DAYS_90"
+        "DAYS_90",
+        "DAYS_3",
+        "DAYS_7"
       ]
     },
     "EcrRescanDurationState":{
@@ -5311,6 +6275,19 @@
           "documentation":"<p>Information on any accounts for which Amazon Inspector scans could not be enabled. Details are provided for each account.</p>"
         }
       }
+    },
+    "EnablementStatus":{
+      "type":"string",
+      "enum":[
+        "ENABLED",
+        "PENDING_ENABLEMENT",
+        "FAILED_TO_ENABLE",
+        "PENDING_UPDATE",
+        "FAILED_TO_UPDATE",
+        "PENDING_DELETION",
+        "DELETED",
+        "FAILED_TO_DELETE"
+      ]
     },
     "Epss":{
       "type":"structure",
@@ -5786,6 +6763,82 @@
         "codeRepositoryProviderType":{
           "shape":"StringFilterList",
           "documentation":"<p>Filter criteria for findings based on the repository provider type (such as GitHub, GitLab, etc.).</p>"
+        },
+        "cloudProvider":{
+          "shape":"StringFilterList",
+          "documentation":"<p>Filter criteria for the cloud provider.</p>"
+        },
+        "cloudProviderRegion":{
+          "shape":"StringFilterList",
+          "documentation":"<p>Filter criteria for the cloud provider region.</p>"
+        },
+        "cloudProviderAccountId":{
+          "shape":"StringFilterList",
+          "documentation":"<p>Filter criteria for the cloud provider account ID.</p>"
+        },
+        "cloudProviderOrgId":{
+          "shape":"StringFilterList",
+          "documentation":"<p>Filter criteria for the cloud provider organization ID.</p>"
+        },
+        "cloudVmImageReference":{
+          "shape":"StringFilterList",
+          "documentation":"<p>Filter criteria for the image reference of a VM instance.</p>"
+        },
+        "cloudVmNetworkId":{
+          "shape":"StringFilterList",
+          "documentation":"<p>Filter criteria for the network ID of a VM instance.</p>"
+        },
+        "cloudVmSubnetIds":{
+          "shape":"StringFilterList",
+          "documentation":"<p>Filter criteria for the subnet IDs of a VM instance.</p>"
+        },
+        "cloudImageRepositoryName":{
+          "shape":"StringFilterList",
+          "documentation":"<p>Filter criteria for the repository name of a container image.</p>"
+        },
+        "cloudImageRegistry":{
+          "shape":"StringFilterList",
+          "documentation":"<p>Filter criteria for the registry of a container image.</p>"
+        },
+        "cloudImageDigest":{
+          "shape":"StringFilterList",
+          "documentation":"<p>Filter criteria for the digest of a container image.</p>"
+        },
+        "cloudImageTags":{
+          "shape":"StringFilterList",
+          "documentation":"<p>Filter criteria for the tags of a container image.</p>"
+        },
+        "cloudImagePushedAt":{
+          "shape":"DateFilterList",
+          "documentation":"<p>Filter criteria for when a container image was pushed.</p>"
+        },
+        "cloudImageArchitecture":{
+          "shape":"StringFilterList",
+          "documentation":"<p>Filter criteria for the architecture of a container image.</p>"
+        },
+        "cloudImageLastInUseAt":{
+          "shape":"DateFilterList",
+          "documentation":"<p>Filter criteria for the last time a container image was in use.</p>"
+        },
+        "cloudImageInUseCount":{
+          "shape":"NumberFilterList",
+          "documentation":"<p>Filter criteria for the in-use count of a container image.</p>"
+        },
+        "cloudServerlessFunctionName":{
+          "shape":"StringFilterList",
+          "documentation":"<p>Filter criteria for the name of a serverless function.</p>"
+        },
+        "cloudServerlessFunctionRuntime":{
+          "shape":"StringFilterList",
+          "documentation":"<p>Filter criteria for the runtime of a serverless function.</p>"
+        },
+        "cloudServerlessFunctionLastModifiedAt":{
+          "shape":"DateFilterList",
+          "documentation":"<p>Filter criteria for when a serverless function was last modified.</p>"
+        },
+        "cloudServerlessFunctionExecutionRole":{
+          "shape":"StringFilterList",
+          "documentation":"<p>Filter criteria for the execution role of a serverless function.</p>"
         }
       },
       "documentation":"<p>Details on the criteria used to define the filter.</p>"
@@ -6082,6 +7135,26 @@
         "fixAvailableCount":{
           "shape":"Long",
           "documentation":"<p> Details about the number of fixes. </p>"
+        },
+        "cloudProvider":{
+          "shape":"String",
+          "documentation":"<p>The cloud service provider associated with this finding type aggregation. Valid values:</p> <ul> <li> <p> <code>AWS</code> – Findings from Amazon Web Services resources.</p> </li> <li> <p> <code>AZURE</code> – Findings from Microsoft Azure resources.</p> </li> </ul>"
+        },
+        "cloudAccountId":{
+          "shape":"String",
+          "documentation":"<p>The cloud account ID for the finding type aggregation.</p>"
+        },
+        "cloudOrgId":{
+          "shape":"String",
+          "documentation":"<p>The cloud organization ID for the finding type aggregation.</p>"
+        },
+        "cloudRegion":{
+          "shape":"String",
+          "documentation":"<p>The cloud Region associated with this finding type aggregation. The value format depends on the cloud provider:</p> <ul> <li> <p>An Amazon Web Services Region, such as <code>us-east-1</code>.</p> </li> <li> <p>An Azure region, such as <code>eastus</code>.</p> </li> </ul>"
+        },
+        "cloudPartition":{
+          "shape":"String",
+          "documentation":"<p>The cloud infrastructure partition associated with this finding type aggregation. Valid values:</p> <ul> <li> <p> <code>aws</code> – Amazon Web Services commercial Regions.</p> </li> <li> <p> <code>aws-cn</code> – Amazon Web Services China Regions.</p> </li> <li> <p> <code>aws-us-gov</code> – Amazon Web Services GovCloud (US) Regions.</p> </li> <li> <p> <code>AzureCloud</code> – Azure commercial Regions.</p> </li> </ul>"
         }
       },
       "documentation":"<p>A response that contains the results of a finding type aggregation.</p>"
@@ -6149,6 +7222,10 @@
         "status":{
           "shape":"FreeTrialStatus",
           "documentation":"<p>The order to sort results by.</p>"
+        },
+        "cloudProvider":{
+          "shape":"CloudProvider",
+          "documentation":"<p>The cloud provider associated with the free trial information.</p>"
         }
       },
       "documentation":"<p>An object that contains information about the Amazon Inspector free trial for an account.</p>"
@@ -6205,7 +7282,10 @@
         "ECR",
         "LAMBDA",
         "LAMBDA_CODE",
-        "CODE_REPOSITORY"
+        "CODE_REPOSITORY",
+        "VM",
+        "CONTAINER_IMAGE",
+        "SERVERLESS_FUNCTION"
       ]
     },
     "FrequencyExpression":{
@@ -6519,7 +7599,12 @@
     },
     "GetConfigurationRequest":{
       "type":"structure",
-      "members":{}
+      "members":{
+        "accountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The 12-digit Amazon Web Services account ID of the member account whose scan configuration you want to retrieve. When specified, you must be the delegated administrator for this member account. If not specified, the operation returns your own configuration.</p>"
+        }
+      }
     },
     "GetConfigurationResponse":{
       "type":"structure",
@@ -6731,14 +7816,69 @@
         "SCAN_STATUS_REASON",
         "ACCOUNT_ID",
         "RESOURCE_TYPE",
-        "ECR_REPOSITORY_NAME"
+        "ECR_REPOSITORY_NAME",
+        "PROVIDER",
+        "PROVIDER_ACCOUNT_ID",
+        "PROVIDER_REGION",
+        "PROVIDER_ORG_ID"
       ]
+    },
+    "Image":{
+      "type":"structure",
+      "members":{
+        "repositoryName":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The name of the repository the container image resides in.</p>"
+        },
+        "registry":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The registry for the container image.</p>"
+        },
+        "imageTags":{
+          "shape":"ImageTagList",
+          "documentation":"<p>The image tags attached to the container image.</p>"
+        },
+        "imageDigest":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The image digest of the container image.</p>"
+        },
+        "pushedAt":{
+          "shape":"DateTimeTimestamp",
+          "documentation":"<p>The date and time the container image was pushed.</p>"
+        },
+        "architecture":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The architecture of the container image.</p>"
+        },
+        "author":{
+          "shape":"String",
+          "documentation":"<p>The author of the container image.</p>"
+        },
+        "inUseCount":{
+          "shape":"ImageInUseCountLong",
+          "documentation":"<p>The number of times the container image is in use.</p>"
+        },
+        "lastInUseAt":{
+          "shape":"DateTimeTimestamp",
+          "documentation":"<p>The last time the container image was in use.</p>"
+        },
+        "platform":{
+          "shape":"Platform",
+          "documentation":"<p>The platform of the container image.</p>"
+        }
+      },
+      "documentation":"<p>Contains details about a container image involved in a finding.</p>"
     },
     "ImageHash":{
       "type":"string",
       "max":71,
       "min":71,
       "pattern":"sha256:[a-z0-9]{64}"
+    },
+    "ImageInUseCountLong":{
+      "type":"long",
+      "box":true,
+      "min":0
     },
     "ImageLayerAggregation":{
       "type":"structure",
@@ -6754,6 +7894,26 @@
         "layerHashes":{
           "shape":"StringFilterList",
           "documentation":"<p>The hashes associated with the layers.</p>"
+        },
+        "cloudProviders":{
+          "shape":"StringFilterList",
+          "documentation":"<p>The cloud providers to aggregate findings for. Valid values:</p> <ul> <li> <p> <code>AWS</code> – Findings from Amazon Web Services resources.</p> </li> <li> <p> <code>AZURE</code> – Findings from Microsoft Azure resources.</p> </li> </ul>"
+        },
+        "cloudAccountIds":{
+          "shape":"StringFilterList",
+          "documentation":"<p>The cloud account IDs to aggregate findings for.</p>"
+        },
+        "cloudOrgIds":{
+          "shape":"StringFilterList",
+          "documentation":"<p>The cloud organization IDs to aggregate findings for.</p>"
+        },
+        "cloudRegions":{
+          "shape":"StringFilterList",
+          "documentation":"<p>The cloud regions to aggregate findings for. The value format depends on the cloud provider:</p> <ul> <li> <p>An Amazon Web Services Region, such as <code>us-east-1</code>.</p> </li> <li> <p>An Azure region, such as <code>eastus</code>.</p> </li> </ul>"
+        },
+        "cloudPartitions":{
+          "shape":"StringFilterList",
+          "documentation":"<p>The cloud partitions to aggregate findings for. Valid values:</p> <ul> <li> <p> <code>aws</code> – Amazon Web Services commercial Regions.</p> </li> <li> <p> <code>aws-cn</code> – Amazon Web Services China Regions.</p> </li> <li> <p> <code>aws-us-gov</code> – Amazon Web Services GovCloud (US) Regions.</p> </li> <li> <p> <code>AzureCloud</code> – Azure commercial Regions.</p> </li> </ul>"
         },
         "sortOrder":{
           "shape":"SortOrder",
@@ -6791,6 +7951,26 @@
           "shape":"AccountId",
           "documentation":"<p>The ID of the Amazon Web Services account that owns the container image hosting the layer image.</p>"
         },
+        "cloudProvider":{
+          "shape":"String",
+          "documentation":"<p>The cloud service provider associated with this image layer aggregation. Valid values:</p> <ul> <li> <p> <code>AWS</code> – Findings from Amazon Web Services resources.</p> </li> <li> <p> <code>AZURE</code> – Findings from Microsoft Azure resources.</p> </li> </ul>"
+        },
+        "cloudAccountId":{
+          "shape":"String",
+          "documentation":"<p>The cloud account ID for the image layer aggregation.</p>"
+        },
+        "cloudOrgId":{
+          "shape":"String",
+          "documentation":"<p>The cloud organization ID for the image layer aggregation.</p>"
+        },
+        "cloudRegion":{
+          "shape":"String",
+          "documentation":"<p>The cloud Region associated with this image layer aggregation. The value format depends on the cloud provider:</p> <ul> <li> <p>An Amazon Web Services Region, such as <code>us-east-1</code>.</p> </li> <li> <p>An Azure region, such as <code>eastus</code>.</p> </li> </ul>"
+        },
+        "cloudPartition":{
+          "shape":"String",
+          "documentation":"<p>The cloud infrastructure partition associated with this image layer aggregation. Valid values:</p> <ul> <li> <p> <code>aws</code> – Amazon Web Services commercial Regions.</p> </li> <li> <p> <code>aws-cn</code> – Amazon Web Services China Regions.</p> </li> <li> <p> <code>aws-us-gov</code> – Amazon Web Services GovCloud (US) Regions.</p> </li> <li> <p> <code>AzureCloud</code> – Azure commercial Regions.</p> </li> </ul>"
+        },
         "severityCounts":{
           "shape":"SeverityCounts",
           "documentation":"<p>An object that represents the count of matched findings per severity.</p>"
@@ -6809,6 +7989,11 @@
     "ImageTagList":{
       "type":"list",
       "member":{"shape":"NonEmptyString"}
+    },
+    "InheritanceMode":{
+      "type":"string",
+      "documentation":"<p>The inheritance behavior for a scan-type configuration. Used with <code>UpdateConfigurationInheritance</code> to reset a member account's configuration to inherit from the delegated administrator. The only valid value is <code>INHERIT_FROM_ADMIN</code>, which resets the member account's configuration so that it inherits scan settings from the delegated administrator.</p>",
+      "enum":["INHERIT_FROM_ADMIN"]
     },
     "InspectorScoreDetails":{
       "type":"structure",
@@ -7500,6 +8685,74 @@
         "nextToken":{
           "shape":"NextToken",
           "documentation":"<p>A token to use for paginating results that are returned in the response. Set the value of this parameter to null for the first request. For subsequent calls, use the NextToken value returned from the previous request to continue listing results after the first page.</p>"
+        }
+      }
+    },
+    "ListConnectorScanConfigurationsMaxResults":{
+      "type":"integer",
+      "box":true,
+      "max":50,
+      "min":1
+    },
+    "ListConnectorScanConfigurationsRequest":{
+      "type":"structure",
+      "members":{
+        "awsConfigConnectorArns":{
+          "shape":"AwsConfigConnectorArnList",
+          "documentation":"<p>The list of Amazon Web Services Config connector ARNs to filter results.</p>"
+        },
+        "maxResults":{
+          "shape":"ListConnectorScanConfigurationsMaxResults",
+          "documentation":"<p>The maximum number of results to return in a single call. Valid range is 1 to 50. To retrieve the remaining results, make another request with the <code>nextToken</code> value returned from this request.</p>"
+        },
+        "nextToken":{
+          "shape":"ConnectorNextToken",
+          "documentation":"<p>A token to use for paginating results. Set this value to null for the first request. For subsequent calls, use the <code>nextToken</code> value returned from the previous request.</p>"
+        }
+      }
+    },
+    "ListConnectorScanConfigurationsResponse":{
+      "type":"structure",
+      "required":["scanConfigurations"],
+      "members":{
+        "scanConfigurations":{
+          "shape":"ConnectorScanConfigurationItemList",
+          "documentation":"<p>A list of scan configuration items.</p>"
+        },
+        "nextToken":{
+          "shape":"ConnectorNextToken",
+          "documentation":"<p>A pagination token. If this value is not null, there are additional results available. Use this token in the <code>nextToken</code> parameter of a subsequent request to retrieve the next page of results.</p>"
+        }
+      }
+    },
+    "ListConnectorsRequest":{
+      "type":"structure",
+      "members":{
+        "maxResults":{
+          "shape":"Integer",
+          "documentation":"<p>The maximum number of results to return in a single call. To retrieve the remaining results, make another request with the <code>nextToken</code> value returned from this request.</p>"
+        },
+        "nextToken":{
+          "shape":"ConnectorNextToken",
+          "documentation":"<p>A token to use for paginating results. Set this value to null for the first request. For subsequent calls, use the <code>nextToken</code> value returned from the previous request.</p>"
+        },
+        "filterCriteria":{
+          "shape":"ConnectorFilterCriteria",
+          "documentation":"<p>The filter criteria to apply to the list of connectors.</p>"
+        }
+      }
+    },
+    "ListConnectorsResponse":{
+      "type":"structure",
+      "required":["items"],
+      "members":{
+        "items":{
+          "shape":"ConnectorList",
+          "documentation":"<p>A list of connectors.</p>"
+        },
+        "nextToken":{
+          "shape":"ConnectorNextToken",
+          "documentation":"<p>A pagination token. If this value is not null, there are additional results available. Use this token in the <code>nextToken</code> parameter of a subsequent request to retrieve the next page of results.</p>"
         }
       }
     },
@@ -8453,6 +9706,87 @@
       "type":"string",
       "enum":["ALL"]
     },
+    "Provider":{
+      "type":"string",
+      "enum":[
+        "AWS",
+        "AZURE"
+      ]
+    },
+    "ProviderAccountId":{
+      "type":"string",
+      "max":36,
+      "min":12,
+      "pattern":"(\\d{12}|[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})"
+    },
+    "ProviderComparison":{
+      "type":"string",
+      "enum":["EQUALS"]
+    },
+    "ProviderDetailCreate":{
+      "type":"structure",
+      "members":{
+        "azure":{
+          "shape":"AzureProviderDetailCreate",
+          "documentation":"<p>The Azure-specific details for creating a connector.</p>"
+        }
+      },
+      "documentation":"<p>The provider-specific configuration details for creating a connector.</p>",
+      "union":true
+    },
+    "ProviderDetailUpdate":{
+      "type":"structure",
+      "members":{
+        "azure":{
+          "shape":"AzureProviderDetailUpdate",
+          "documentation":"<p>The Azure-specific details for updating a connector.</p>"
+        }
+      },
+      "documentation":"<p>The provider-specific configuration details for updating a connector.</p>",
+      "union":true
+    },
+    "ProviderFilter":{
+      "type":"structure",
+      "required":[
+        "comparison",
+        "value"
+      ],
+      "members":{
+        "comparison":{
+          "shape":"ProviderComparison",
+          "documentation":"<p>The comparison operator for the provider filter.</p>"
+        },
+        "value":{
+          "shape":"ConnectorCloudProvider",
+          "documentation":"<p>The cloud provider value to filter by.</p>"
+        }
+      },
+      "documentation":"<p>A filter that matches connectors by cloud provider.</p>"
+    },
+    "ProviderFilterList":{
+      "type":"list",
+      "member":{"shape":"ProviderFilter"},
+      "max":1,
+      "min":0
+    },
+    "ProviderOrgId":{
+      "type":"string",
+      "max":36,
+      "min":12,
+      "pattern":"(o-[a-z0-9]{10,32}|[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})"
+    },
+    "ProviderPartition":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"(aws(-[a-z]+)*|Azure[A-Za-z]+)"
+    },
+    "ProviderRegion":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"([a-z]{2}(-[a-z]+)+-\\d+|[a-z][a-z0-9]+)"
+    },
     "Reason":{
       "type":"string",
       "max":1024,
@@ -8573,6 +9907,26 @@
           "shape":"AccountId",
           "documentation":"<p>The ID of the Amazon Web Services account associated with the findings.</p>"
         },
+        "cloudProvider":{
+          "shape":"Provider",
+          "documentation":"<p>The cloud service provider associated with this repository aggregation. Valid values:</p> <ul> <li> <p> <code>AWS</code> – Findings from Amazon Web Services resources.</p> </li> <li> <p> <code>AZURE</code> – Findings from Microsoft Azure resources.</p> </li> </ul>"
+        },
+        "cloudPartition":{
+          "shape":"ProviderPartition",
+          "documentation":"<p>The cloud infrastructure partition associated with this repository aggregation. Valid values:</p> <ul> <li> <p> <code>aws</code> – Amazon Web Services commercial Regions.</p> </li> <li> <p> <code>aws-cn</code> – Amazon Web Services China Regions.</p> </li> <li> <p> <code>aws-us-gov</code> – Amazon Web Services GovCloud (US) Regions.</p> </li> <li> <p> <code>AzureCloud</code> – Azure commercial Regions.</p> </li> </ul>"
+        },
+        "cloudRegion":{
+          "shape":"ProviderRegion",
+          "documentation":"<p>The cloud Region associated with this repository aggregation. The value format depends on the cloud provider:</p> <ul> <li> <p>An Amazon Web Services Region, such as <code>us-east-1</code>.</p> </li> <li> <p>An Azure region, such as <code>eastus</code>.</p> </li> </ul>"
+        },
+        "cloudOrgId":{
+          "shape":"ProviderOrgId",
+          "documentation":"<p>The cloud organization ID for the repository aggregation.</p>"
+        },
+        "cloudAccountId":{
+          "shape":"ProviderAccountId",
+          "documentation":"<p>The cloud account ID for the repository aggregation.</p>"
+        },
         "severityCounts":{
           "shape":"SeverityCounts",
           "documentation":"<p>An object that represent the count of matched findings per severity.</p>"
@@ -8644,6 +9998,18 @@
         "details":{
           "shape":"ResourceDetails",
           "documentation":"<p>An object that contains details about the resource involved in a finding.</p>"
+        },
+        "provider":{
+          "shape":"Provider",
+          "documentation":"<p>The cloud provider of the resource.</p>"
+        },
+        "providerAccountId":{
+          "shape":"ProviderAccountId",
+          "documentation":"<p>The cloud provider account ID of the resource.</p>"
+        },
+        "providerOrgId":{
+          "shape":"ProviderOrgId",
+          "documentation":"<p>The cloud provider organization ID of the resource.</p>"
         }
       },
       "documentation":"<p>Details about the resource involved in a finding.</p>"
@@ -8666,6 +10032,18 @@
         "codeRepository":{
           "shape":"CodeRepositoryDetails",
           "documentation":"<p>Contains details about a code repository resource associated with a finding.</p>"
+        },
+        "vm":{
+          "shape":"Vm",
+          "documentation":"<p>An object that contains details about a VM instance involved in the finding.</p>"
+        },
+        "image":{
+          "shape":"Image",
+          "documentation":"<p>An object that contains details about a container image involved in the finding.</p>"
+        },
+        "serverlessFunction":{
+          "shape":"ServerlessFunction",
+          "documentation":"<p>An object that contains details about a serverless function involved in the finding.</p>"
         }
       },
       "documentation":"<p>Contains details about the resource involved in the finding.</p>"
@@ -8710,9 +10088,9 @@
     },
     "ResourceId":{
       "type":"string",
-      "max":341,
+      "max":1024,
       "min":10,
-      "pattern":".*(^arn:.*:ecr:.*:\\d{12}:repository\\/(?:[a-z0-9]+(?:[._-][a-z0-9]+)*\\/)*[a-z0-9]+(?:[._-][a-z0-9]+)*(\\/sha256:[a-z0-9]{64})?$)|(^i-([a-z0-9]{8}|[a-z0-9]{17}|\\\\*)$|(^arn:(aws[a-zA-Z-]*)?:lambda:[a-z]{2}(-gov)?-[a-z]+-\\d{1}:\\d{12}:function:[a-zA-Z0-9-_\\.]+(:(\\$LATEST|[a-zA-Z0-9-_]+))?$)|(^arn:(aws[a-zA-Z-]*)?:inspector2:[a-z]{2}(-gov)?-[a-z]+-\\d{1}:\\d{12}:codesecurity-integration\\/[a-f0-9-]{36}\\/project-[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$)).*"
+      "pattern":".*(^arn:.*:ecr:.*:\\d{12}:repository\\/[a-zA-Z0-9._\\/-]+(\\/sha256:[a-z0-9]{64})?$)|(^i-([a-z0-9]{8}|[a-z0-9]{17}|\\\\*)$|(^arn:(aws[a-zA-Z-]*)?:lambda:[a-z]{2}(-gov)?-[a-z]+-\\d{1}:\\d{12}:function:[a-zA-Z0-9-_\\.]+(:(\\$LATEST|[a-zA-Z0-9-_]+))?$)|(^arn:(aws[a-zA-Z-]*)?:inspector2:[a-z]{2}(-gov)?-[a-z]+-\\d{1}:\\d{12}:codesecurity-integration\\/[a-f0-9-]{36}\\/project-[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$))|(^\\/subscriptions\\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\\/resourcegroups\\/[a-z0-9_\\-\\.()]+\\/providers\\/(microsoft\\.compute\\/virtualmachines\\/[a-z0-9_\\-]+|microsoft\\.web\\/sites\\/[a-z0-9_\\-]+|microsoft\\.containerregistry\\/registries\\/[a-z0-9_\\-]+(\\/repositories\\/[a-z0-9_\\-\\/]+\\/images?\\/sha256:[a-f0-9]{64})?)$).*"
     },
     "ResourceIdFilterList":{
       "type":"list",
@@ -8793,6 +10171,26 @@
         "codeRepository":{
           "shape":"CodeRepositoryMetadata",
           "documentation":"<p>Contains metadata about scan coverage for a code repository resource.</p>"
+        },
+        "vmInstance":{
+          "shape":"VmInstanceMetadata",
+          "documentation":"<p>The VM instance metadata associated with a covered resource.</p>"
+        },
+        "containerImage":{
+          "shape":"ContainerImageMetadata",
+          "documentation":"<p>The container image metadata associated with a covered resource.</p>"
+        },
+        "containerRepository":{
+          "shape":"ContainerRepositoryMetadata",
+          "documentation":"<p>The container repository metadata associated with a covered resource.</p>"
+        },
+        "containerRegistry":{
+          "shape":"ContainerRegistryMetadata",
+          "documentation":"<p>The container registry metadata associated with a covered resource.</p>"
+        },
+        "serverlessFunction":{
+          "shape":"ServerlessFunctionMetadata",
+          "documentation":"<p>The serverless function metadata associated with a covered resource.</p>"
         }
       },
       "documentation":"<p>An object that contains details about the metadata for an Amazon ECR resource.</p>"
@@ -8913,7 +10311,10 @@
         "AWS_ECR_CONTAINER_IMAGE",
         "AWS_ECR_REPOSITORY",
         "AWS_LAMBDA_FUNCTION",
-        "CODE_REPOSITORY"
+        "CODE_REPOSITORY",
+        "Microsoft.Compute/virtualMachines",
+        "Microsoft.ContainerRegistry/registry/containerImage",
+        "Microsoft.Web/sites"
       ]
     },
     "RiskScore":{
@@ -8964,7 +10365,10 @@
         "RUBY_2_7",
         "RUBY_3_2",
         "DOTNET_10",
-        "NODEJS_24_X"
+        "NODEJS_24_X",
+        "NODEJS_22_X",
+        "JAVA_21",
+        "JAVA_25"
       ]
     },
     "SbomReportFormat":{
@@ -8990,7 +10394,8 @@
       "enum":[
         "EC2_SSM_AGENT_BASED",
         "EC2_AGENTLESS",
-        "EC2_INSPECTOR_AGENT_BASED"
+        "EC2_INSPECTOR_AGENT_BASED",
+        "VM_INSPECTOR_AGENT_BASED"
       ]
     },
     "ScanStatus":{
@@ -9054,7 +10459,9 @@
         "NO_SCAN_CONFIGURATION_ASSOCIATED",
         "SCAN_IN_PROGRESS",
         "IMAGE_ARCHIVED",
-        "UNSUPPORTED_CODE_ARTIFACTS"
+        "UNSUPPORTED_CODE_ARTIFACTS",
+        "RESOURCE_UNMANAGED",
+        "RESOURCE_STOPPED"
       ]
     },
     "ScanType":{
@@ -9088,6 +10495,44 @@
       "documentation":"<p>A schedule.</p>",
       "union":true
     },
+    "ScopeConfiguration":{
+      "type":"structure",
+      "required":["scopeType"],
+      "members":{
+        "scopeType":{
+          "shape":"ScopeType",
+          "documentation":"<p>The type of scope. Valid values are <code>TENANT</code>, which scans all resources in the Azure tenant, and <code>SUBSCRIPTION</code>, which scans only the resources in the specified Azure subscriptions.</p>"
+        },
+        "scopeValues":{
+          "shape":"ScopeValueList",
+          "documentation":"<p>The list of scope values. For subscription-level scope, these are Azure subscription IDs.</p>"
+        },
+        "state":{
+          "shape":"ScopeState",
+          "documentation":"<p>The current state of the scope configuration.</p>"
+        },
+        "stateReason":{
+          "shape":"String",
+          "documentation":"<p>The reason for the current state of the scope configuration.</p>"
+        }
+      },
+      "documentation":"<p>The scope of resources that Amazon Inspector scans for a single scanning type, including the scope level, the targeted resources, and the current state.</p>"
+    },
+    "ScopeConfigurationInput":{
+      "type":"structure",
+      "required":["scopeType"],
+      "members":{
+        "scopeType":{
+          "shape":"ScopeType",
+          "documentation":"<p>The type of scope. Valid values are <code>TENANT</code>, which scans all resources in the Azure tenant, and <code>SUBSCRIPTION</code>, which scans only the resources in the specified Azure subscriptions.</p>"
+        },
+        "scopeValues":{
+          "shape":"ScopeValueList",
+          "documentation":"<p>The list of scope values. For subscription-level scope, these are Azure subscription IDs.</p>"
+        }
+      },
+      "documentation":"<p>The scope of resources to scan for a single scanning type. Provide this as part of an <code>AzureScopeConfigurationInput</code> when you create or update a connector.</p>"
+    },
     "ScopeSettings":{
       "type":"structure",
       "members":{
@@ -9097,6 +10542,34 @@
         }
       },
       "documentation":"<p>Defines the scope of repositories to be included in code security scans.</p>"
+    },
+    "ScopeState":{
+      "type":"string",
+      "enum":[
+        "ACTIVE",
+        "PENDING",
+        "ERROR",
+        "DISABLED"
+      ]
+    },
+    "ScopeType":{
+      "type":"string",
+      "enum":[
+        "TENANT",
+        "SUBSCRIPTION"
+      ]
+    },
+    "ScopeValue":{
+      "type":"string",
+      "max":36,
+      "min":36,
+      "pattern":"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+    },
+    "ScopeValueList":{
+      "type":"list",
+      "member":{"shape":"ScopeValue"},
+      "max":100,
+      "min":0
     },
     "SearchVulnerabilitiesFilterCriteria":{
       "type":"structure",
@@ -9193,6 +10666,204 @@
     "SendCisSessionTelemetryResponse":{
       "type":"structure",
       "members":{}
+    },
+    "ServerlessFunction":{
+      "type":"structure",
+      "members":{
+        "serverlessFunctionName":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The name of the serverless function.</p>"
+        },
+        "runtime":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The runtime of the serverless function.</p>"
+        },
+        "version":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The version of the serverless function.</p>"
+        },
+        "codeDigest":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The code digest of the serverless function.</p>"
+        },
+        "lastModifiedAt":{
+          "shape":"DateTimeTimestamp",
+          "documentation":"<p>The date and time the serverless function was last modified.</p>"
+        },
+        "networkId":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The network ID associated with the serverless function.</p>"
+        },
+        "subnetIds":{
+          "shape":"CloudSubnetIdList",
+          "documentation":"<p>The subnet IDs associated with the serverless function.</p>"
+        },
+        "securityGroupIds":{
+          "shape":"CloudSecurityGroupIdList",
+          "documentation":"<p>The security group IDs associated with the serverless function.</p>"
+        },
+        "executionRole":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The execution role of the serverless function.</p>"
+        },
+        "packageType":{
+          "shape":"PackageType",
+          "documentation":"<p>The package type of the serverless function.</p>"
+        },
+        "architectures":{
+          "shape":"ArchitectureList",
+          "documentation":"<p>The architectures of the serverless function.</p>"
+        },
+        "layers":{
+          "shape":"ServerlessFunctionLayerList",
+          "documentation":"<p>The layers of the serverless function.</p>"
+        }
+      },
+      "documentation":"<p>Contains details about a serverless function involved in a finding.</p>"
+    },
+    "ServerlessFunctionAggregation":{
+      "type":"structure",
+      "members":{
+        "resourceIds":{
+          "shape":"StringFilterList",
+          "documentation":"<p>The resource IDs to aggregate findings for.</p>"
+        },
+        "functionNames":{
+          "shape":"StringFilterList",
+          "documentation":"<p>The function names to aggregate findings for.</p>"
+        },
+        "runtimes":{
+          "shape":"StringFilterList",
+          "documentation":"<p>The runtimes to aggregate findings for.</p>"
+        },
+        "functionTags":{
+          "shape":"MapFilterList",
+          "documentation":"<p>The function tags to aggregate findings for.</p>"
+        },
+        "cloudProviders":{
+          "shape":"StringFilterList",
+          "documentation":"<p>The cloud providers to aggregate findings for. Valid values:</p> <ul> <li> <p> <code>AWS</code> – Findings from Amazon Web Services resources.</p> </li> <li> <p> <code>AZURE</code> – Findings from Microsoft Azure resources.</p> </li> </ul>"
+        },
+        "cloudPartitions":{
+          "shape":"StringFilterList",
+          "documentation":"<p>The cloud partitions to aggregate findings for. Valid values:</p> <ul> <li> <p> <code>aws</code> – Amazon Web Services commercial Regions.</p> </li> <li> <p> <code>aws-cn</code> – Amazon Web Services China Regions.</p> </li> <li> <p> <code>aws-us-gov</code> – Amazon Web Services GovCloud (US) Regions.</p> </li> <li> <p> <code>AzureCloud</code> – Azure commercial Regions.</p> </li> </ul>"
+        },
+        "cloudRegions":{
+          "shape":"StringFilterList",
+          "documentation":"<p>The cloud regions to aggregate findings for. The value format depends on the cloud provider:</p> <ul> <li> <p>An Amazon Web Services Region, such as <code>us-east-1</code>.</p> </li> <li> <p>An Azure region, such as <code>eastus</code>.</p> </li> </ul>"
+        },
+        "cloudOrgIds":{
+          "shape":"StringFilterList",
+          "documentation":"<p>The cloud organization IDs to aggregate findings for.</p>"
+        },
+        "cloudAccountIds":{
+          "shape":"StringFilterList",
+          "documentation":"<p>The cloud account IDs to aggregate findings for.</p>"
+        },
+        "sortOrder":{
+          "shape":"SortOrder",
+          "documentation":"<p>The order to sort results by. Valid values are <code>ASC</code> and <code>DESC</code>.</p>"
+        },
+        "sortBy":{
+          "shape":"ServerlessFunctionSortBy",
+          "documentation":"<p>The value to sort results by. Specify a field name from the aggregation response, such as <code>CRITICAL</code>, <code>HIGH</code>, or <code>ALL</code>.</p>"
+        }
+      },
+      "documentation":"<p>An aggregation of information about serverless functions.</p>"
+    },
+    "ServerlessFunctionAggregationResponse":{
+      "type":"structure",
+      "required":["resourceId"],
+      "members":{
+        "resourceId":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The resource ID for the serverless function.</p>"
+        },
+        "cloudProvider":{
+          "shape":"Provider",
+          "documentation":"<p>The cloud service provider associated with this serverless function aggregation. Valid values:</p> <ul> <li> <p> <code>AWS</code> – Findings from Amazon Web Services resources.</p> </li> <li> <p> <code>AZURE</code> – Findings from Microsoft Azure resources.</p> </li> </ul>"
+        },
+        "cloudAccountId":{
+          "shape":"ProviderAccountId",
+          "documentation":"<p>The cloud account ID for the serverless function aggregation.</p>"
+        },
+        "cloudPartition":{
+          "shape":"ProviderPartition",
+          "documentation":"<p>The cloud infrastructure partition associated with this serverless function aggregation. Valid values:</p> <ul> <li> <p> <code>aws</code> – Amazon Web Services commercial Regions.</p> </li> <li> <p> <code>aws-cn</code> – Amazon Web Services China Regions.</p> </li> <li> <p> <code>aws-us-gov</code> – Amazon Web Services GovCloud (US) Regions.</p> </li> <li> <p> <code>AzureCloud</code> – Azure commercial Regions.</p> </li> </ul>"
+        },
+        "cloudRegion":{
+          "shape":"ProviderRegion",
+          "documentation":"<p>The cloud Region associated with this serverless function aggregation. The value format depends on the cloud provider:</p> <ul> <li> <p>An Amazon Web Services Region, such as <code>us-east-1</code>.</p> </li> <li> <p>An Azure region, such as <code>eastus</code>.</p> </li> </ul>"
+        },
+        "cloudOrgId":{
+          "shape":"ProviderOrgId",
+          "documentation":"<p>The cloud organization ID for the serverless function aggregation.</p>"
+        },
+        "functionName":{
+          "shape":"String",
+          "documentation":"<p>The name of the serverless function.</p>"
+        },
+        "runtime":{
+          "shape":"String",
+          "documentation":"<p>The runtime of the serverless function.</p>"
+        },
+        "tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags attached to the serverless function.</p>"
+        },
+        "accountId":{
+          "shape":"String",
+          "documentation":"<p>The account ID associated with the serverless function.</p>"
+        },
+        "severityCounts":{"shape":"SeverityCounts"},
+        "lastModifiedAt":{
+          "shape":"DateTimeTimestamp",
+          "documentation":"<p>The date and time the serverless function was last modified.</p>"
+        },
+        "exploitAvailableActiveFindingsCount":{
+          "shape":"Long",
+          "documentation":"<p>The number of active findings with an exploit available for the serverless function.</p>"
+        },
+        "fixAvailableActiveFindingsCount":{
+          "shape":"Long",
+          "documentation":"<p>The number of active findings with a fix available for the serverless function.</p>"
+        }
+      },
+      "documentation":"<p>A response that contains the results of a serverless function aggregation.</p>"
+    },
+    "ServerlessFunctionLayerList":{
+      "type":"list",
+      "member":{"shape":"ServerlessFunctionLayerUrn"}
+    },
+    "ServerlessFunctionLayerUrn":{
+      "type":"string",
+      "pattern":"arn:[a-zA-Z0-9-]+:lambda:[a-zA-Z0-9-]+:\\d{12}:layer:[a-zA-Z0-9-_]+:[0-9]+"
+    },
+    "ServerlessFunctionMetadata":{
+      "type":"structure",
+      "members":{
+        "serverlessFunctionName":{
+          "shape":"String",
+          "documentation":"<p>The name of the serverless function.</p>"
+        },
+        "runtime":{
+          "shape":"String",
+          "documentation":"<p>The runtime of the serverless function.</p>"
+        },
+        "functionTags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags associated with the serverless function.</p>"
+        }
+      },
+      "documentation":"<p>Contains metadata about a serverless function associated with a covered resource.</p>"
+    },
+    "ServerlessFunctionSortBy":{
+      "type":"string",
+      "enum":[
+        "CRITICAL",
+        "HIGH",
+        "ALL"
+      ]
     },
     "Service":{
       "type":"string",
@@ -9652,6 +11323,10 @@
       "max":5,
       "min":1
     },
+    "SyntheticTimestamp_date_time":{
+      "type":"timestamp",
+      "timestampFormat":"iso8601"
+    },
     "TagComparison":{
       "type":"string",
       "enum":["EQUALS"]
@@ -9842,6 +11517,10 @@
           "shape":"AggregationResourceType",
           "documentation":"<p>The resource type to aggregate on.</p>"
         },
+        "findingType":{
+          "shape":"AggregationFindingType",
+          "documentation":"<p>The type of finding to aggregate on.</p>"
+        },
         "sortOrder":{
           "shape":"SortOrder",
           "documentation":"<p>The order to sort results by.</p>"
@@ -9849,10 +11528,6 @@
         "sortBy":{
           "shape":"TitleSortBy",
           "documentation":"<p>The value to sort results by.</p>"
-        },
-        "findingType":{
-          "shape":"AggregationFindingType",
-          "documentation":"<p>The type of finding to aggregate on.</p>"
         }
       },
       "documentation":"<p>The details that define an aggregation based on finding title.</p>"
@@ -10051,9 +11726,27 @@
         }
       }
     },
+    "UpdateConfigurationInheritance":{
+      "type":"structure",
+      "members":{
+        "ec2Configuration":{
+          "shape":"InheritanceMode",
+          "documentation":"<p>The inheritance mode for Amazon EC2 scan configuration. Set to <code>INHERIT_FROM_ADMIN</code> to reset the member account's Amazon EC2 scan configuration to inherit from the delegated administrator. If omitted, the member account's existing Amazon EC2 scan configuration is not changed.</p>"
+        },
+        "ecrConfiguration":{
+          "shape":"InheritanceMode",
+          "documentation":"<p>The inheritance mode for Amazon ECR scan configuration. Set to <code>INHERIT_FROM_ADMIN</code> to reset the member account's Amazon ECR scan configuration to inherit from the delegated administrator. If omitted, the member account's existing Amazon ECR scan configuration is not changed.</p>"
+        }
+      },
+      "documentation":"<p>The per-scan-type inheritance reset settings for the <code>UpdateConfiguration</code> operation. Each member is independently optional. Including a member in this structure resets that scan type's configuration to inherit from the delegated administrator.</p>"
+    },
     "UpdateConfigurationRequest":{
       "type":"structure",
       "members":{
+        "accountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The 12-digit Amazon Web Services account ID of the member account whose scan configuration you want to update. When specified, you must be the delegated administrator for this member account. If not specified, the operation updates your own configuration and propagates changes to any member accounts that have not been individually configured.</p>"
+        },
         "ecrConfiguration":{
           "shape":"EcrConfiguration",
           "documentation":"<p>Specifies how the ECR automated re-scan will be updated for your environment.</p>"
@@ -10061,10 +11754,62 @@
         "ec2Configuration":{
           "shape":"Ec2Configuration",
           "documentation":"<p>Specifies how the Amazon EC2 automated scan will be updated for your environment.</p>"
+        },
+        "updateConfigurationInheritance":{
+          "shape":"UpdateConfigurationInheritance",
+          "documentation":"<p>Specifies which scan-type configurations to reset to the delegated administrator's inherited values for the targeted member account. Each member of this structure is independently optional. When specified, <code>ec2Configuration</code> and <code>ecrConfiguration</code> must be absent, and <code>accountId</code> must also be present. Only <code>INHERIT_FROM_ADMIN</code> is valid for each member. If not specified, the operation uses the <code>ec2Configuration</code> and <code>ecrConfiguration</code> parameters instead.</p>"
         }
       }
     },
     "UpdateConfigurationResponse":{
+      "type":"structure",
+      "members":{}
+    },
+    "UpdateConnectorRequest":{
+      "type":"structure",
+      "required":["connectorArn"],
+      "members":{
+        "connectorArn":{
+          "shape":"ConnectorArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the connector to update.</p>"
+        },
+        "description":{
+          "shape":"ConnectorDescription",
+          "documentation":"<p>The updated description of the connector.</p>"
+        },
+        "providerDetail":{
+          "shape":"ProviderDetailUpdate",
+          "documentation":"<p>The updated provider-specific configuration details for the connector.</p>"
+        }
+      }
+    },
+    "UpdateConnectorResponse":{
+      "type":"structure",
+      "members":{
+        "connectorArn":{
+          "shape":"ConnectorArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the updated connector.</p>"
+        }
+      }
+    },
+    "UpdateConnectorScanConfigurationRequest":{
+      "type":"structure",
+      "required":[
+        "awsConfigConnectorArn",
+        "scanConfiguration"
+      ],
+      "members":{
+        "awsConfigConnectorArn":{
+          "shape":"AwsConfigConnectorArn",
+          "documentation":"<p>The ARN of the Amazon Web Services Config connector.</p>"
+        },
+        "scanConfiguration":{
+          "shape":"ConnectorScanConfiguration",
+          "documentation":"<p>The scan configuration settings to apply.</p>"
+        }
+      }
+    },
+    "UpdateConnectorScanConfigurationResponse":{
       "type":"structure",
       "members":{}
     },
@@ -10264,6 +12009,10 @@
         "currency":{
           "shape":"Currency",
           "documentation":"<p>The currency type used when calculating usage data.</p>"
+        },
+        "cloudProvider":{
+          "shape":"CloudProvider",
+          "documentation":"<p>The cloud provider associated with the usage information.</p>"
         }
       },
       "documentation":"<p>Contains usage information about the cost of Amazon Inspector operation.</p>"
@@ -10311,7 +12060,11 @@
         "CODE_REPOSITORY_SAST",
         "CODE_REPOSITORY_IAC",
         "CODE_REPOSITORY_SCA",
-        "EC2_AGENTLESS_INSTANCE_HOURS"
+        "EC2_AGENTLESS_INSTANCE_HOURS",
+        "AZURE_CONTAINER_IMAGE_INITIAL_SCAN",
+        "AZURE_CONTAINER_IMAGE_RESCAN",
+        "AZURE_VM_AGENT_BASED_INSTANCE_HOURS",
+        "AZURE_SERVERLESS_FUNCTION_HOURS"
       ]
     },
     "UsageValue":{
@@ -10413,6 +12166,219 @@
     "Version":{
       "type":"string",
       "pattern":"\\$LATEST|[0-9]+"
+    },
+    "Vm":{
+      "type":"structure",
+      "members":{
+        "type":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The type of the VM instance.</p>"
+        },
+        "vmName":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The name of the VM instance.</p>"
+        },
+        "vmImageReference":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The image reference of the VM instance.</p>"
+        },
+        "ipV4Addresses":{
+          "shape":"IpV4AddressList",
+          "documentation":"<p>The IPv4 addresses of the VM instance.</p>"
+        },
+        "ipV6Addresses":{
+          "shape":"IpV6AddressList",
+          "documentation":"<p>The IPv6 addresses of the VM instance.</p>"
+        },
+        "networkId":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The network ID associated with the VM instance.</p>"
+        },
+        "subnetIds":{
+          "shape":"CloudSubnetIdList",
+          "documentation":"<p>The subnet IDs of the VM instance.</p>"
+        },
+        "securityGroupIds":{
+          "shape":"CloudSecurityGroupIdList",
+          "documentation":"<p>The security group IDs associated with the VM instance.</p>"
+        },
+        "launchedAt":{
+          "shape":"DateTimeTimestamp",
+          "documentation":"<p>The date and time the VM instance was launched.</p>"
+        },
+        "platform":{
+          "shape":"Platform",
+          "documentation":"<p>The platform of the VM instance.</p>"
+        },
+        "executionRole":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The execution role of the VM instance.</p>"
+        },
+        "keyName":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The key name associated with the VM instance.</p>"
+        }
+      },
+      "documentation":"<p>Contains details about a VM instance involved in a finding.</p>"
+    },
+    "VmInstanceAggregation":{
+      "type":"structure",
+      "members":{
+        "resourceIds":{
+          "shape":"StringFilterList",
+          "documentation":"<p>The resource IDs to aggregate findings for.</p>"
+        },
+        "operatingSystems":{
+          "shape":"StringFilterList",
+          "documentation":"<p>The operating systems to aggregate findings for.</p>"
+        },
+        "instanceTags":{
+          "shape":"MapFilterList",
+          "documentation":"<p>The instance tags to aggregate findings for.</p>"
+        },
+        "vmImageReferences":{
+          "shape":"StringFilterList",
+          "documentation":"<p>The VM image references to aggregate findings for.</p>"
+        },
+        "cloudProviders":{
+          "shape":"StringFilterList",
+          "documentation":"<p>The cloud providers to aggregate findings for. Valid values:</p> <ul> <li> <p> <code>AWS</code> – Findings from Amazon Web Services resources.</p> </li> <li> <p> <code>AZURE</code> – Findings from Microsoft Azure resources.</p> </li> </ul>"
+        },
+        "cloudPartitions":{
+          "shape":"StringFilterList",
+          "documentation":"<p>The cloud partitions to aggregate findings for. Valid values:</p> <ul> <li> <p> <code>aws</code> – Amazon Web Services commercial Regions.</p> </li> <li> <p> <code>aws-cn</code> – Amazon Web Services China Regions.</p> </li> <li> <p> <code>aws-us-gov</code> – Amazon Web Services GovCloud (US) Regions.</p> </li> <li> <p> <code>AzureCloud</code> – Azure commercial Regions.</p> </li> </ul>"
+        },
+        "cloudRegions":{
+          "shape":"StringFilterList",
+          "documentation":"<p>The cloud regions to aggregate findings for. The value format depends on the cloud provider:</p> <ul> <li> <p>An Amazon Web Services Region, such as <code>us-east-1</code>.</p> </li> <li> <p>An Azure region, such as <code>eastus</code>.</p> </li> </ul>"
+        },
+        "cloudOrgIds":{
+          "shape":"StringFilterList",
+          "documentation":"<p>The cloud organization IDs to aggregate findings for.</p>"
+        },
+        "cloudAccountIds":{
+          "shape":"StringFilterList",
+          "documentation":"<p>The cloud account IDs to aggregate findings for.</p>"
+        },
+        "sortOrder":{
+          "shape":"SortOrder",
+          "documentation":"<p>The order to sort results by. Valid values are <code>ASC</code> and <code>DESC</code>.</p>"
+        },
+        "sortBy":{
+          "shape":"VmInstanceSortBy",
+          "documentation":"<p>The value to sort results by. Specify a field name from the aggregation response, such as <code>CRITICAL</code>, <code>HIGH</code>, <code>ALL</code>, or <code>NETWORK_FINDINGS</code>.</p>"
+        }
+      },
+      "documentation":"<p>An aggregation of information about VM instances.</p>"
+    },
+    "VmInstanceAggregationResponse":{
+      "type":"structure",
+      "required":["resourceId"],
+      "members":{
+        "resourceId":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The resource ID for the VM instance.</p>"
+        },
+        "cloudProvider":{
+          "shape":"Provider",
+          "documentation":"<p>The cloud service provider associated with this VM instance aggregation. Valid values:</p> <ul> <li> <p> <code>AWS</code> – Findings from Amazon Web Services resources.</p> </li> <li> <p> <code>AZURE</code> – Findings from Microsoft Azure resources.</p> </li> </ul>"
+        },
+        "cloudAccountId":{
+          "shape":"ProviderAccountId",
+          "documentation":"<p>The cloud account ID for the VM instance aggregation.</p>"
+        },
+        "cloudPartition":{
+          "shape":"ProviderPartition",
+          "documentation":"<p>The cloud infrastructure partition associated with this VM instance aggregation. Valid values:</p> <ul> <li> <p> <code>aws</code> – Amazon Web Services commercial Regions.</p> </li> <li> <p> <code>aws-cn</code> – Amazon Web Services China Regions.</p> </li> <li> <p> <code>aws-us-gov</code> – Amazon Web Services GovCloud (US) Regions.</p> </li> <li> <p> <code>AzureCloud</code> – Azure commercial Regions.</p> </li> </ul>"
+        },
+        "cloudRegion":{
+          "shape":"ProviderRegion",
+          "documentation":"<p>The cloud Region associated with this VM instance aggregation. The value format depends on the cloud provider:</p> <ul> <li> <p>An Amazon Web Services Region, such as <code>us-east-1</code>.</p> </li> <li> <p>An Azure region, such as <code>eastus</code>.</p> </li> </ul>"
+        },
+        "cloudOrgId":{
+          "shape":"ProviderOrgId",
+          "documentation":"<p>The cloud organization ID for the VM instance aggregation.</p>"
+        },
+        "vmImageReference":{
+          "shape":"String",
+          "documentation":"<p>The VM image reference for the VM instance.</p>"
+        },
+        "operatingSystem":{
+          "shape":"String",
+          "documentation":"<p>The operating system of the VM instance.</p>"
+        },
+        "tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags attached to the VM instance.</p>"
+        },
+        "accountId":{
+          "shape":"String",
+          "documentation":"<p>The account ID associated with the VM instance.</p>"
+        },
+        "severityCounts":{"shape":"SeverityCounts"},
+        "networkFindings":{
+          "shape":"Long",
+          "documentation":"<p>The number of network findings for the VM instance. This field applies only to Amazon Web Services resources.</p>"
+        },
+        "exploitAvailableActiveFindingsCount":{
+          "shape":"Long",
+          "documentation":"<p>The number of active findings with an exploit available for the VM instance.</p>"
+        },
+        "fixAvailableActiveFindingsCount":{
+          "shape":"Long",
+          "documentation":"<p>The number of active findings with a fix available for the VM instance.</p>"
+        }
+      },
+      "documentation":"<p>A response that contains the results of a VM instance aggregation.</p>"
+    },
+    "VmInstanceMetadata":{
+      "type":"structure",
+      "members":{
+        "tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags associated with the VM instance.</p>"
+        },
+        "platform":{
+          "shape":"VmPlatform",
+          "documentation":"<p>The platform of the VM instance.</p>"
+        },
+        "inventoryHash":{
+          "shape":"VmInstanceMetadataInventoryHashString",
+          "documentation":"<p>The inventory hash of the VM instance.</p>"
+        },
+        "vmImageReference":{
+          "shape":"VmInstanceMetadataVmImageReferenceString",
+          "documentation":"<p>The image reference of the VM instance.</p>"
+        }
+      },
+      "documentation":"<p>Contains metadata about a virtual machine (VM) instance associated with a covered resource.</p>"
+    },
+    "VmInstanceMetadataInventoryHashString":{
+      "type":"string",
+      "max":256,
+      "min":0
+    },
+    "VmInstanceMetadataVmImageReferenceString":{
+      "type":"string",
+      "max":1024,
+      "min":1
+    },
+    "VmInstanceSortBy":{
+      "type":"string",
+      "enum":[
+        "CRITICAL",
+        "HIGH",
+        "ALL",
+        "NETWORK_FINDINGS"
+      ]
+    },
+    "VmPlatform":{
+      "type":"string",
+      "enum":[
+        "WINDOWS",
+        "LINUX",
+        "UNKNOWN"
+      ]
     },
     "VpcId":{
       "type":"string",

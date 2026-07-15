@@ -693,7 +693,7 @@
         {"shape":"ConflictException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Starts an experiment run for the specified experiment definition. An experiment run delivers treatments to the target audience and collects metrics. You can start multiple experiment runs from the same experiment definition.</p>"
+      "documentation":"<p>Starts an experiment run for the specified experiment definition. An experiment run delivers treatments to the target audience and collects metrics. You can start multiple experiment runs from the same experiment definition.</p> <note> <p>Billing for this experiment begins when you call this operation and continues until the experiment is stopped. For pricing details, see <a href=\"https://aws.amazon.com/systems-manager/pricing/\">AppConfig pricing</a>.</p> </note>"
     },
     "StopDeployment":{
       "name":"StopDeployment",
@@ -723,6 +723,7 @@
       "errors":[
         {"shape":"ResourceNotFoundException"},
         {"shape":"InternalServerException"},
+        {"shape":"ConflictException"},
         {"shape":"BadRequestException"}
       ],
       "documentation":"<p>Stops a running experiment. Stopping an experiment run ends audience exposure and returns users to the currently deployed feature flag configuration.</p>"
@@ -929,7 +930,7 @@
         },
         "VendedMetrics":{
           "shape":"VendedMetricsSettings",
-          "documentation":"<p>Configuration for vended metrics in the account.</p>"
+          "documentation":"<p>The configuration for vended metrics in the account.</p>"
         }
       }
     },
@@ -1969,7 +1970,7 @@
           "documentation":"<p>The tags to assign to the deployment.</p>"
         }
       },
-      "documentation":"<p>Optional deployment parameters for an experiment run, including extension parameters and tags.</p>"
+      "documentation":"<p>The deployment parameters for an experiment run, including dynamic extension parameters and tags.</p>"
     },
     "DeploymentState":{
       "type":"string",
@@ -2746,7 +2747,7 @@
       "members":{
         "Enabled":{
           "shape":"Boolean",
-          "documentation":"<p>Whether the feature flag is enabled for this treatment.</p>"
+          "documentation":"<p>Specifies whether the feature flag is enabled for this treatment.</p>"
         },
         "AttributeValues":{
           "shape":"AttributeValueMap",
@@ -3804,7 +3805,7 @@
         },
         "DeploymentParameters":{
           "shape":"DeploymentParameters",
-          "documentation":"<p>Optional deployment parameters including a KMS key for encryption.</p>"
+          "documentation":"<p>The deployment parameters for the experiment run, including a KMS key identifier for encryption.</p>"
         }
       }
     },
@@ -3877,7 +3878,7 @@
         },
         "DeploymentParameters":{
           "shape":"DeploymentParameters",
-          "documentation":"<p>Optional deployment parameters for the stop operation.</p>"
+          "documentation":"<p>The deployment parameters for the stop operation.</p>"
         }
       }
     },
@@ -4071,7 +4072,7 @@
         },
         "VendedMetrics":{
           "shape":"VendedMetricsSettings",
-          "documentation":"<p>Configuration for vended metrics in the account.</p>"
+          "documentation":"<p>The configuration for vended metrics in the account.</p>"
         }
       }
     },
@@ -4225,7 +4226,7 @@
         },
         "Treatments":{
           "shape":"TreatmentInputList",
-          "documentation":"<p>An updated list of treatments.</p>"
+          "documentation":"<p>The updated list of treatments to evaluate during the experiment. Each treatment defines a distinct variation compared to the control.</p>"
         },
         "Control":{
           "shape":"TreatmentInput",
@@ -4287,11 +4288,11 @@
         },
         "TreatmentOverrides":{
           "shape":"TreatmentOverrides",
-          "documentation":"<p>Updated treatment assignment overrides.</p>"
+          "documentation":"<p>The updated treatment assignment overrides that assign specific entity IDs to treatments, bypassing random assignment.</p>"
         },
         "DeploymentParameters":{
           "shape":"DeploymentParameters",
-          "documentation":"<p>Updated deployment parameters.</p>"
+          "documentation":"<p>The updated deployment parameters for the experiment run.</p>"
         }
       }
     },
@@ -4415,11 +4416,11 @@
       "members":{
         "Enabled":{
           "shape":"Boolean",
-          "documentation":"<p>Whether vended metrics are enabled for the account.</p>",
+          "documentation":"<p>Specifies whether vended metrics are enabled for the account.</p>",
           "box":true
         }
       },
-      "documentation":"<p>Configuration settings for vended metrics.</p>"
+      "documentation":"<p>The configuration settings for vended metrics in your AppConfig account.</p>"
     },
     "Version":{
       "type":"string",

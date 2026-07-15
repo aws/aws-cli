@@ -15,6 +15,8 @@ import json
 import os
 import re
 
+from botocore.context import start_as_current_context
+
 from awscli.testutils import mock
 from tests.functional.sso import BaseSSOTest
 
@@ -562,7 +564,8 @@ class TestLoginWithVanityUrl(BaseSSOTest):
 
     def test_vanity_url_sets_feature_id_in_user_agent(self):
         self.add_oidc_auth_code_responses(self.access_token)
-        self.run_cmd('sso login')
+        with start_as_current_context():
+            self.run_cmd('sso login')
         self.assertIn('AM', self.last_request_dict['headers']['User-Agent'])
 
 
@@ -636,6 +639,7 @@ class TestLoginWithDirectUrl(BaseSSOTest):
 
     def test_direct_url_does_not_set_vanity_feature_id(self):
         self.add_oidc_auth_code_responses(self.access_token)
-        self.run_cmd('sso login')
+        with start_as_current_context():
+            self.run_cmd('sso login')
         user_agent = self.last_request_dict['headers']['User-Agent']
         self.assertNotIn('AM', user_agent.split('m/')[-1])

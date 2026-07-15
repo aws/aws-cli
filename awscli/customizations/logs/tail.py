@@ -14,7 +14,7 @@ import json
 import re
 import time
 from collections import defaultdict
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 import colorama
 from botocore.utils import datetime2timestamp, parse_timestamp
@@ -251,6 +251,11 @@ class TailCommand(BasicCommand):
         return is_a_tty()
 
 
+def _utcnow():
+    """Return the current UTC time as a timezone-aware datetime."""
+    return datetime.now(timezone.utc)
+
+
 class TimestampUtils:
     _RELATIVE_TIMESTAMP_REGEX = re.compile(
         r"(?P<amount>\d+)(?P<unit>s|m|h|d|w)$"
@@ -266,7 +271,7 @@ class TimestampUtils:
     def __init__(self, now=None):
         self._now = now
         if now is None:
-            self._now = datetime.utcnow
+            self._now = _utcnow
 
     def to_epoch_millis(self, timestamp):
         re_match = self._RELATIVE_TIMESTAMP_REGEX.match(timestamp)

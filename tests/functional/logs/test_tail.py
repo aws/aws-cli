@@ -154,12 +154,9 @@ class TestTailCommand(BaseAWSCommandParamsTest):
             )
 
     def test_tail_defaults_to_10m(self):
-        datetime_mock = mock.Mock(wraps=datetime)
-        datetime_mock.utcnow = mock.Mock(
-            return_value=datetime(1970, 1, 1, 0, 10, 1, tzinfo=tz.tzutc())
-        )
         with mock.patch(
-            'awscli.customizations.logs.tail.datetime', new=datetime_mock
+            'awscli.customizations.logs.tail._utcnow',
+            return_value=datetime(1970, 1, 1, 0, 10, 1, tzinfo=tz.tzutc()),
         ):
             self.assert_params_for_cmd(
                 'logs tail %s' % self.group_name,
@@ -181,12 +178,9 @@ class TestTailCommand(BaseAWSCommandParamsTest):
         )
 
     def test_tail_with_relative_since(self):
-        datetime_mock = mock.Mock(wraps=datetime)
-        datetime_mock.utcnow = mock.Mock(
-            return_value=datetime(1970, 1, 1, 0, 0, 2, tzinfo=tz.tzutc())
-        )
         with mock.patch(
-            'awscli.customizations.logs.tail.datetime', new=datetime_mock
+            'awscli.customizations.logs.tail._utcnow',
+            return_value=datetime(1970, 1, 1, 0, 0, 2, tzinfo=tz.tzutc()),
         ):
             self.assert_params_for_cmd(
                 'logs tail %s --since 1s' % self.group_name,

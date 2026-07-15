@@ -201,6 +201,7 @@ class TestS3ExpressRequests:
         )
 
     def test_create_bucket(self, default_s3_client, mock_datetime):
+        mock_datetime.now.return_value = DATE
 
         with ClientHTTPStubber(default_s3_client) as stubber:
             stubber.add_response()

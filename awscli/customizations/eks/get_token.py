@@ -14,7 +14,7 @@ import base64
 import json
 import os
 import sys
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 import botocore
 from botocore.model import ServiceId
@@ -105,7 +105,7 @@ class GetTokenCommand(BasicCommand):
     ]
 
     def get_expiration_time(self):
-        token_expiration = datetime.utcnow() + timedelta(
+        token_expiration = datetime.now(timezone.utc).replace(tzinfo=None) + timedelta(
             minutes=TOKEN_EXPIRATION_MINS
         )
         return token_expiration.strftime('%Y-%m-%dT%H:%M:%SZ')

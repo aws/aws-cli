@@ -42,7 +42,7 @@ class TestBundleInstance(BaseAWSCommandParamsTest):
             mock.Mock(wraps=datetime.datetime),
         )
         mocked_datetime = self.datetime_patcher.start()
-        mocked_datetime.utcnow.return_value = datetime.datetime(2013, 8, 9)
+        mocked_datetime.now.return_value = datetime.datetime(2013, 8, 9)
 
     def tearDown(self):
         super(TestBundleInstance, self).tearDown()

@@ -2925,6 +2925,7 @@
       "input":{"shape":"UpdatePolicyRequest"},
       "output":{"shape":"UpdatePolicyResponse"},
       "errors":[
+        {"shape":"ServiceQuotaExceededException"},
         {"shape":"AccessDeniedException"},
         {"shape":"ValidationException"},
         {"shape":"ConflictException"},
@@ -12108,7 +12109,7 @@
     },
     "HarnessEndpointArn":{
       "type":"string",
-      "pattern":"arn:([^:]+)?:bedrock-agentcore:[a-z0-9-]+:[0-9]{12}:harness/[a-zA-Z][a-zA-Z0-9_]{0,39}-[a-zA-Z0-9]{10}/endpoint/[a-zA-Z][a-zA-Z0-9_]{0,47}"
+      "pattern":"arn:([^:]+)?:bedrock-agentcore:[a-z0-9-]+:[0-9]{12}:harness/[a-zA-Z][a-zA-Z0-9_]{0,39}-[a-zA-Z0-9]{10}/harness-endpoint/[a-zA-Z][a-zA-Z0-9_]{0,47}"
     },
     "HarnessEndpointDescription":{
       "type":"string",
@@ -12214,6 +12215,10 @@
         "topK":{
           "shape":"TopK",
           "documentation":"<p>The topK set when calling the model.</p>"
+        },
+        "additionalParams":{
+          "shape":"Document",
+          "documentation":"<p>Provider-specific parameters passed through to the Gemini model provider unchanged.</p>"
         }
       },
       "documentation":"<p>Configuration for a Google Gemini model provider. Requires an API key stored in AgentCore Identity.</p>"
@@ -12511,11 +12516,13 @@
     },
     "HarnessSkillGitUrl":{
       "type":"string",
+      "max":16383,
       "min":8,
       "pattern":"https://[^#@]+"
     },
     "HarnessSkillPath":{
       "type":"string",
+      "max":4096,
       "min":1
     },
     "HarnessSkillS3Source":{
@@ -12531,6 +12538,7 @@
     },
     "HarnessSkillS3Uri":{
       "type":"string",
+      "max":16383,
       "min":5,
       "pattern":"s3://.*"
     },

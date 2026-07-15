@@ -2353,6 +2353,10 @@
         "Visa":{
           "shape":"SessionKeyVisa",
           "documentation":"<p>Parameters to derive session key for a Visa payment cardfor ARQC verification.</p>"
+        },
+        "UnionPay":{
+          "shape":"SessionKeyUnionPay",
+          "documentation":"<p>Parameters to derive session key for a UnionPay payment card for Authorization Request Cryptogram (ARQC) generation and verification.</p>"
         }
       },
       "documentation":"<p>Parameters to derive a session key for Authorization Response Cryptogram (ARQC) verification.</p>",
@@ -2365,7 +2369,8 @@
         "EMV2000",
         "AMEX",
         "MASTERCARD_SESSION_KEY",
-        "VISA"
+        "VISA",
+        "UNION_PAY"
       ]
     },
     "SessionKeyDerivationValue":{
@@ -2456,6 +2461,29 @@
         }
       },
       "documentation":"<p>Parameters to derive session key for Mastercard payment card for ARQC verification.</p>"
+    },
+    "SessionKeyUnionPay":{
+      "type":"structure",
+      "required":[
+        "PrimaryAccountNumber",
+        "PanSequenceNumber",
+        "ApplicationTransactionCounter"
+      ],
+      "members":{
+        "PrimaryAccountNumber":{
+          "shape":"PrimaryAccountNumberType",
+          "documentation":"<p>The Primary Account Number (PAN) of the cardholder. A PAN is a unique identifier for a payment credit or debit card and associates the card to a specific account holder.</p>"
+        },
+        "PanSequenceNumber":{
+          "shape":"NumberLengthEquals2",
+          "documentation":"<p>A number that identifies and differentiates payment cards with the same Primary Account Number (PAN). If not used, enter <code>00</code>.</p>"
+        },
+        "ApplicationTransactionCounter":{
+          "shape":"HexLengthEquals4",
+          "documentation":"<p>The transaction counter that the terminal provides during transaction processing. This value is in hexadecimal format. For example, enter a decimal counter of 109 as <code>006D</code>.</p>"
+        }
+      },
+      "documentation":"<p>Parameters to derive session key for a UnionPay payment card for Authorization Request Cryptogram (ARQC) generation and verification.</p>"
     },
     "SessionKeyVisa":{
       "type":"structure",

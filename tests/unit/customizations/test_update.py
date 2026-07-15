@@ -1,5 +1,6 @@
 # Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 # SPDX-License-Identifier: Apache-2.0
+import os
 import subprocess
 from argparse import Namespace
 from unittest import mock
@@ -196,6 +197,28 @@ class TestUnixUpdateCommand:
         cmd, _ = self._run(install)
 
         assert '--system' not in cmd
+
+    @skip_if_windows
+    def test_resolves_symlink_before_checking_install_dir(
+        self, monkeypatch, tmp_path
+    ):
+        root = tmp_path.resolve()
+        install_dir = root / 'aws-cli'
+        real_bin = install_dir / 'v2' / 'current' / 'bin' / 'aws'
+        real_bin.parent.mkdir(parents=True)
+        real_bin.touch()
+        link = root / 'bin' / 'aws'
+        link.parent.mkdir()
+        link.symlink_to(real_bin)
+
+        monkeypatch.setattr(
+            UnixUpdateCommand, 'SYSTEM_INSTALL_DIR', str(install_dir)
+        )
+        monkeypatch.setattr(update_module.sys, 'executable', str(link))
+
+        cmd, _ = self._run({'install_dir': str(install_dir)})
+
+        assert '--system' in cmd
 
 
 class TestWindowsUpdateCommand:

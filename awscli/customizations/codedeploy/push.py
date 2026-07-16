@@ -16,7 +16,7 @@ import os
 import sys
 import tempfile
 import zipfile
-from datetime import datetime
+from datetime import datetime, timezone
 
 from botocore.exceptions import ClientError
 
@@ -131,7 +131,7 @@ class Push(BasicCommand):
             )
         if not parsed_args.description:
             parsed_args.description = (
-                f'Uploaded by AWS CLI {datetime.utcnow().isoformat()} UTC'
+                f'Uploaded by AWS CLI {datetime.now(timezone.utc).isoformat()} UTC'
             )
 
     def _push(self, params):

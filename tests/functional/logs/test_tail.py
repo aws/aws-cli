@@ -155,7 +155,7 @@ class TestTailCommand(BaseAWSCommandParamsTest):
 
     def test_tail_defaults_to_10m(self):
         datetime_mock = mock.Mock(wraps=datetime)
-        datetime_mock.utcnow = mock.Mock(
+        datetime_mock.now = mock.Mock(
             return_value=datetime(1970, 1, 1, 0, 10, 1, tzinfo=tz.tzutc())
         )
         with mock.patch(
@@ -182,7 +182,7 @@ class TestTailCommand(BaseAWSCommandParamsTest):
 
     def test_tail_with_relative_since(self):
         datetime_mock = mock.Mock(wraps=datetime)
-        datetime_mock.utcnow = mock.Mock(
+        datetime_mock.now = mock.Mock(
             return_value=datetime(1970, 1, 1, 0, 0, 2, tzinfo=tz.tzutc())
         )
         with mock.patch(

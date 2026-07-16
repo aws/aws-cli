@@ -10,11 +10,12 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import functools
 import json
 import re
 import time
 from collections import defaultdict
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 import colorama
 from botocore.utils import datetime2timestamp, parse_timestamp
@@ -266,7 +267,7 @@ class TimestampUtils:
     def __init__(self, now=None):
         self._now = now
         if now is None:
-            self._now = datetime.utcnow
+            self._now = functools.partial(datetime.now, timezone.utc)
 
     def to_epoch_millis(self, timestamp):
         re_match = self._RELATIVE_TIMESTAMP_REGEX.match(timestamp)

@@ -409,7 +409,7 @@ def request_params_for_describe_eice():
 def datetime_utcnow_patch():
     clock = datetime.datetime(2020, 1, 1, 1, 1, 1, tzinfo=tzutc())
     with mock.patch('datetime.datetime') as dt:
-        dt.utcnow.return_value = clock
+        dt.now.return_value = clock
         yield dt
 
 

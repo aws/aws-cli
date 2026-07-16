@@ -42,6 +42,7 @@ import dateutil.parser
 from awscrt.crypto import EC
 from botocore.compat import (
     MD5_AVAILABLE,
+    get_current_datetime,
     get_md5,
     get_tzinfo_options,
     json,
@@ -633,7 +634,7 @@ class InstanceMetadataFetcher(IMDSFetcher):
             refresh_interval_with_jitter = refresh_interval + random.randint(
                 120, 600
             )
-            current_time = datetime.datetime.now(datetime.timezone.utc).replace(tzinfo=None)
+            current_time = get_current_datetime()
             refresh_offset = datetime.timedelta(
                 seconds=refresh_interval_with_jitter
             )

@@ -2,6 +2,19 @@
 CHANGELOG
 =========
 
+2.36.0
+======
+
+* api-change:``omics``: Adds support for returning the task UUID (universally unique identifier) in GetRunTask and ListRunTasks responses
+* api-change:``redshift``: Amazon Redshift - Added support for rg.large and rg.12xlarge node types in CreateCluster, ModifyCluster, and ResizeCluster API operations.
+* api-change:``sagemaker``: Release support for g7 instance type for SageMaker inference endpoints.
+* api-change:``sustainability``: Adds support for retrieving estimated water allocation data.
+* api-change:``emr``: Amazon EMR updates the Session object returned by GetSession API
+* api-change:``chime-sdk-voice``: Marked CreateProxySession, DeleteProxySession, GetProxySession, ListProxySessions, UpdateProxySession, PutVoiceConnectorProxy, DeleteVoiceConnectorProxy, and GetVoiceConnectorProxy as deprecated.
+* feature:``update``: Adds the ``update`` command, which downloads and installs the latest AWS CLI version.
+* api-change:``s3``: Documentation update for removing the 30 day minimum restriction for transition to Standard-IA or OneZone-IA storage classes
+
+
 2.35.24
 =======
 

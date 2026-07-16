@@ -16,8 +16,8 @@ def read(*parts):
 
 def find_version(*file_paths):
     version_file = read(*file_paths)
-    version_match = re.search(r"^__version__ = ['\"]([^'\"]*)['\"]",
-                              version_file, re.M)
+    version_match = re.search(r"^__version__\s*=\s*['\"]([^'\"]*)['\"]",
+                          version_file, re.M)
     if version_match:
         return version_match.group(1)
     raise RuntimeError("Unable to find version string.")
@@ -81,8 +81,8 @@ if 'py2exe' in sys.argv:
             'optimize': 0,
             'skip_archive': True,
             'dll_excludes': ['crypt32.dll'],
-            'packages': ['docutils', 'urllib', 'httplib', 'HTMLParser',
-                         'awscli', 'ConfigParser', 'xml.etree', 'pipes'],
+            'packages': ['docutils', 'urllib', 'http.client', 'html.parser',
+                         'awscli', 'configparser', 'xml.etree', 'pipes'],
         }
     }
     setup_options['console'] = ['bin/aws']

@@ -37,6 +37,7 @@ _AWS_OWNED_SUFFIXES = (
 _AWS_OWNED_EXACT = (
     'identitycenter.amazonaws.com',
     'identitycenter.amazonaws.com.cn',
+    'identitycenter.amazonaws.eu',
 )
 
 _REGION_PATTERNS = (

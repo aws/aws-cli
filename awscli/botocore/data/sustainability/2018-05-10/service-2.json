@@ -51,6 +51,42 @@
       ],
       "documentation":"<p>Returns the possible dimension values available for a customer's account. We recommend using pagination to ensure that the operation returns quickly and successfully. </p>",
       "readonly":true
+    },
+    "GetEstimatedWaterAllocation":{
+      "name":"GetEstimatedWaterAllocation",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v1/estimated-water-allocation",
+        "responseCode":200
+      },
+      "input":{"shape":"GetEstimatedWaterAllocationRequest"},
+      "output":{"shape":"GetEstimatedWaterAllocationResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Returns estimated water allocation values based on customer grouping and filtering parameters. We recommend using pagination to ensure that the operation returns quickly and successfully. </p>",
+      "readonly":true
+    },
+    "GetEstimatedWaterAllocationDimensionValues":{
+      "name":"GetEstimatedWaterAllocationDimensionValues",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v1/estimated-water-allocation-dimension-values",
+        "responseCode":200
+      },
+      "input":{"shape":"GetEstimatedWaterAllocationDimensionValuesRequest"},
+      "output":{"shape":"GetEstimatedWaterAllocationDimensionValuesResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Returns the possible dimension values available for a customer's account. We recommend using pagination to ensure that the operation returns quickly and successfully. </p>",
+      "readonly":true
     }
   },
   "shapes":{
@@ -72,7 +108,7 @@
     },
     "Dimension":{
       "type":"string",
-      "documentation":"<p>Specifies the dimensions available for grouping and filtering emissions data.</p>",
+      "documentation":"<p>Specifies the dimensions available for grouping and filtering environmental impact data.</p>",
       "enum":[
         "USAGE_ACCOUNT_ID",
         "REGION",
@@ -91,7 +127,7 @@
           "documentation":"<p>The dimension type that categorizes this entry.</p>"
         },
         "Value":{
-          "shape":"String",
+          "shape":"DimensionValue",
           "documentation":"<p> The value for the specified dimension. Valid values vary based on the dimension type (e.g., <code>us-east-1</code> for the <code>REGION</code> dimension, <code>AmazonEC2</code> for the <code>SERVICE</code> dimension). </p>"
         }
       },
@@ -110,14 +146,19 @@
       "key":{"shape":"Dimension"},
       "value":{"shape":"DimensionValueList"}
     },
+    "DimensionValue":{
+      "type":"string",
+      "max":256,
+      "min":0
+    },
     "DimensionValueList":{
       "type":"list",
-      "member":{"shape":"String"}
+      "member":{"shape":"DimensionValue"}
     },
     "DimensionsMap":{
       "type":"map",
       "key":{"shape":"Dimension"},
-      "value":{"shape":"String"}
+      "value":{"shape":"DimensionValue"}
     },
     "Double":{
       "type":"double",
@@ -200,15 +241,47 @@
       "type":"list",
       "member":{"shape":"EstimatedCarbonEmissions"}
     },
+    "EstimatedWaterAllocation":{
+      "type":"structure",
+      "required":[
+        "TimePeriod",
+        "DimensionsValues",
+        "ModelVersion",
+        "AllocationValues"
+      ],
+      "members":{
+        "TimePeriod":{
+          "shape":"TimePeriod",
+          "documentation":"<p>The reporting period for water allocation values.</p>"
+        },
+        "DimensionsValues":{
+          "shape":"DimensionsMap",
+          "documentation":"<p>The dimensions used to group water allocation values.</p>"
+        },
+        "ModelVersion":{
+          "shape":"ModelVersion",
+          "documentation":"<p>The semantic version-formatted string that indicates the methodology version used to calculate the water allocation values. </p> <note> <p> The AWS Sustainability service reflects the most recent model version for every month. You will not see two entries for the same month with different <code>ModelVersion</code> values. </p> </note>"
+        },
+        "AllocationValues":{
+          "shape":"WaterAllocationMap",
+          "documentation":"<p>The allocation values for the requested water allocation types.</p>"
+        }
+      },
+      "documentation":"<p>Contains estimated water allocation data for a specific time period and dimension grouping.</p>"
+    },
+    "EstimatedWaterAllocationList":{
+      "type":"list",
+      "member":{"shape":"EstimatedWaterAllocation"}
+    },
     "FilterExpression":{
       "type":"structure",
       "members":{
         "Dimensions":{
           "shape":"DimensionListMap",
-          "documentation":"<p>Filters emission values by specific dimension values.</p>"
+          "documentation":"<p>Filters environmental impact values by specific dimension values.</p>"
         }
       },
-      "documentation":"<p>Filters emission values by specific dimension values.</p>"
+      "documentation":"<p>Filters environmental impact values by specific dimension values.</p>"
     },
     "GetEstimatedCarbonEmissionsDimensionValuesRequest":{
       "type":"structure",
@@ -219,7 +292,7 @@
       "members":{
         "TimePeriod":{
           "shape":"TimePeriod",
-          "documentation":"<p>The date range for fetching the dimension values.</p>"
+          "documentation":"<p> The date range for fetching the dimension values. The range must include the start date of a month for that month's dimensions to be included in the response. </p>"
         },
         "Dimensions":{
           "shape":"DimensionList",
@@ -227,7 +300,7 @@
         },
         "MaxResults":{
           "shape":"MaxResults",
-          "documentation":"<p>The maximum number of results to return in a single call. Default is 40.</p>"
+          "documentation":"<p>The maximum number of results to return in a single call. Default is 1000.</p>"
         },
         "NextToken":{
           "shape":"NextToken",
@@ -254,7 +327,7 @@
       "members":{
         "TimePeriod":{
           "shape":"TimePeriod",
-          "documentation":"<p>The date range for fetching estimated carbon emissions.</p>"
+          "documentation":"<p> The date range for fetching estimated carbon emissions. The range must include the start date of a month for that month's data to be included in the response. </p>"
         },
         "GroupBy":{
           "shape":"DimensionList",
@@ -262,7 +335,7 @@
         },
         "FilterBy":{
           "shape":"FilterExpression",
-          "documentation":"<p>The criteria for filtering estimated carbon emissions.</p>"
+          "documentation":"<p> The criteria for filtering estimated carbon emissions. To determine which dimensions are available to be filtered by, you can first call <a>GetEstimatedCarbonEmissionsDimensionValues</a> </p>"
         },
         "EmissionsTypes":{
           "shape":"EmissionsTypeList",
@@ -270,7 +343,7 @@
         },
         "Granularity":{
           "shape":"TimeGranularity",
-          "documentation":"<p>The time granularity for the results. If absent, uses <code>MONTHLY</code> time granularity.</p>"
+          "documentation":"<p> The time granularity for the results. If absent, uses <code>MONTHLY</code> time granularity. The smallest supported granularity for carbon emissions is <code>MONTHLY</code>. </p> <p> If requesting partial time periods, data will be returned based on the smallest supported granularity. For example, requesting <code>2025-04-01T00:00:00Z</code> to <code>2026-04-01T00:00:00Z</code> with <code>YEARLY_CALENDAR</code> granularity will return the last 9 months for 2025 and the first 3 months of 2026. </p>"
         },
         "GranularityConfiguration":{
           "shape":"GranularityConfiguration",
@@ -278,7 +351,7 @@
         },
         "MaxResults":{
           "shape":"MaxResults",
-          "documentation":"<p>The maximum number of results to return in a single call. Default is 40.</p>"
+          "documentation":"<p>The maximum number of results to return in a single call. Default is 1000.</p>"
         },
         "NextToken":{
           "shape":"NextToken",
@@ -292,6 +365,93 @@
       "members":{
         "Results":{
           "shape":"EstimatedCarbonEmissionsList",
+          "documentation":"<p>The result of the requested inputs.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The pagination token indicating there are additional pages available. You can use the token in a following request to fetch the next set of results. </p>"
+        }
+      }
+    },
+    "GetEstimatedWaterAllocationDimensionValuesRequest":{
+      "type":"structure",
+      "required":[
+        "TimePeriod",
+        "Dimensions"
+      ],
+      "members":{
+        "TimePeriod":{
+          "shape":"TimePeriod",
+          "documentation":"<p> The date range for fetching the dimension values. The range must include the start date of a year for that year's data to be included in the response. </p>"
+        },
+        "Dimensions":{
+          "shape":"DimensionList",
+          "documentation":"<p>The dimensions available for grouping estimated water allocation.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return in a single call. Default is 1000.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The pagination token specifying which page of results to return in the response. If no token is provided, the default page is the first page. </p>"
+        }
+      }
+    },
+    "GetEstimatedWaterAllocationDimensionValuesResponse":{
+      "type":"structure",
+      "required":["Results"],
+      "members":{
+        "Results":{
+          "shape":"DimensionEntryList",
+          "documentation":"<p>The list of possible dimensions over which the allocation data is aggregated.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The pagination token indicating there are additional pages available. You can use the token in a following request to fetch the next set of results. </p>"
+        }
+      }
+    },
+    "GetEstimatedWaterAllocationRequest":{
+      "type":"structure",
+      "required":["TimePeriod"],
+      "members":{
+        "TimePeriod":{
+          "shape":"TimePeriod",
+          "documentation":"<p> The date range for fetching estimated water allocation. The range must include the start date of a year for that year's data to be included in the response. </p>"
+        },
+        "GroupBy":{
+          "shape":"DimensionList",
+          "documentation":"<p>The dimensions available for grouping estimated water allocation.</p>"
+        },
+        "FilterBy":{
+          "shape":"FilterExpression",
+          "documentation":"<p> The criteria for filtering estimated water allocation. To determine which dimensions are available to be filtered by, you can first call <a>GetEstimatedWaterAllocationDimensionValues</a> </p>"
+        },
+        "AllocationTypes":{
+          "shape":"WaterAllocationTypeList",
+          "documentation":"<p>The allocation types to include in the results. If absent, returns <code>TOTAL_WATER_WITHDRAWALS</code> allocation types. </p>"
+        },
+        "Granularity":{
+          "shape":"TimeGranularity",
+          "documentation":"<p>The time granularity for the results. Only <code>YEARLY_CALENDAR</code> time granularity is currently supported for water allocation. Defaults to <code>YEARLY_CALENDAR</code> if absent.</p> <p> If requesting partial time periods, data will be returned based on the smallest supported granularity. For example, requesting <code>2025-04-01T00:00:00Z</code> to <code>2026-04-01T00:00:00Z</code> with <code>YEARLY_CALENDAR</code> will return all the data for 2026 only. </p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return in a single call. Default is 1000.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The pagination token specifying which page of results to return in the response. If no token is provided, the default page is the first page. </p>"
+        }
+      }
+    },
+    "GetEstimatedWaterAllocationResponse":{
+      "type":"structure",
+      "required":["Results"],
+      "members":{
+        "Results":{
+          "shape":"EstimatedWaterAllocationList",
           "documentation":"<p>The result of the requested inputs.</p>"
         },
         "NextToken":{
@@ -366,7 +526,7 @@
     },
     "TimeGranularity":{
       "type":"string",
-      "documentation":"<p>Specifies the time period over which emissions data is aggregated.</p>",
+      "documentation":"<p>Specifies the time period over which environmental impact data is aggregated.</p>",
       "enum":[
         "YEARLY_CALENDAR",
         "YEARLY_FISCAL",
@@ -412,7 +572,44 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "WaterAllocation":{
+      "type":"structure",
+      "required":[
+        "Value",
+        "Unit"
+      ],
+      "members":{
+        "Value":{
+          "shape":"Double",
+          "documentation":"<p>The numeric value of the allocation quantity.</p>"
+        },
+        "Unit":{
+          "shape":"WaterAllocationUnit",
+          "documentation":"<p>The unit of measurement for the allocation value.</p>"
+        }
+      },
+      "documentation":"<p>Represents a water allocation quantity with its value and unit of measurement.</p>"
+    },
+    "WaterAllocationMap":{
+      "type":"map",
+      "key":{"shape":"WaterAllocationType"},
+      "value":{"shape":"WaterAllocation"}
+    },
+    "WaterAllocationType":{
+      "type":"string",
+      "documentation":"<p>Specifies the types of water allocation calculations available.</p>",
+      "enum":["TOTAL_WATER_WITHDRAWALS"]
+    },
+    "WaterAllocationTypeList":{
+      "type":"list",
+      "member":{"shape":"WaterAllocationType"}
+    },
+    "WaterAllocationUnit":{
+      "type":"string",
+      "documentation":"<p>Specifies the unit of measurement for allocation.</p>",
+      "enum":["m3"]
     }
   },
-  "documentation":"<p>The AWS Sustainability service provides programmatic access to estimated carbon emissions data for your Amazon Web Services usage. Use the AWS Sustainability service to retrieve, analyze, and track the carbon footprint of your cloud infrastructure over time. </p> <p>With the AWS Sustainability service, you can:</p> <ul> <li> <p>Retrieve estimated carbon emissions for your Amazon Web Services usage across different time periods </p> </li> <li> <p>Group emissions data by dimensions such as account, region, and service</p> </li> <li> <p>Filter emissions data to focus on specific accounts, regions, or services</p> </li> <li> <p>Access multiple emissions calculation methodologies including Location-based Method (LBM) and Market-based Method (MBM) </p> </li> <li> <p>Aggregate emissions data at various time granularities including monthly, quarterly, and yearly periods </p> </li> </ul> <p> The API supports pagination for efficient data retrieval and provides dimension values to help you understand the available grouping and filtering options for your account. </p> <p> All emissions values are calculated using methodologies aligned with the Greenhouse Gas (GHG) Protocol and are provided in metric tons of carbon dioxide-equivalent (MTCO2e). </p>"
+  "documentation":"<p>The AWS Sustainability service provides programmatic access to estimated environmental impact data for your Amazon Web Services usage. Use the AWS Sustainability service to retrieve, analyze, and track the environmental impact of your cloud infrastructure over time. </p> <p>With the AWS Sustainability service, you can:</p> <ul> <li> <p>Retrieve estimated carbon emissions and water allocation for your Amazon Web Services usage across different time periods </p> </li> <li> <p>Group environmental impact data by dimensions such as account, region, and service</p> </li> <li> <p>Filter environmental impact data to focus on specific accounts, regions, or services</p> </li> <li> <p>Access multiple carbon emissions calculation methodologies including Location-based Method (LBM) and Market-based Method (MBM) </p> </li> <li> <p>Aggregate environmental impact data at various time granularities including monthly, quarterly, and yearly periods </p> </li> </ul> <p> The API supports pagination for efficient data retrieval and provides dimension values to help you understand the available grouping and filtering options for your account. </p>"
 }

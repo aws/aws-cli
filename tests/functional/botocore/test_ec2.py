@@ -92,7 +92,7 @@ class TestCopySnapshotCustomization(BaseSessionTest):
             '<snapshotId>%s</snapshotId>\n'
             '</CopySnapshotResponse>\n'
         )
-        self.now = datetime.datetime(2011, 9, 9, 23, 36)
+        self.now = datetime.datetime(2011, 9, 9, 23, 36, tzinfo=datetime.timezone.utc)
         self.datetime_patch = mock.patch.object(
             botocore.auth.datetime,
             'datetime',

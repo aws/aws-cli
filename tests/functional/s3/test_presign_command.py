@@ -28,7 +28,7 @@ FROZEN_TIMESTAMP = 1471305652
 DEFAULT_EXPIRES = 3600
 FROZEN_TIME = mock.Mock(return_value=FROZEN_TIMESTAMP)
 FROZEN_DATETIME = mock.Mock(
-    return_value=datetime.datetime(2016, 8, 18, 14, 33, 3, 0)
+    return_value=datetime.datetime(2016, 8, 18, 14, 33, 3, 0, tzinfo=datetime.timezone.utc)
 )
 
 

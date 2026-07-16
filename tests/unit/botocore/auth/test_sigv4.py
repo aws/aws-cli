@@ -41,7 +41,7 @@ from tests import FreezeTime
 
 SECRET_KEY = "wJalrXUtnFEMI/K7MDENG+bPxRfiCYEXAMPLEKEY"
 ACCESS_KEY = 'AKIDEXAMPLE'
-DATE = datetime.datetime(2015, 8, 30, 12, 36, 0)
+DATE = datetime.datetime(2015, 8, 30, 12, 36, 0, tzinfo=datetime.timezone.utc)
 SERVICE = 'service'
 REGION = 'us-east-1'
 

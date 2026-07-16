@@ -26,3 +26,25 @@ if [ "$ID" == "0" ]; then
     sudo ln -sf "$COMPLETER_PATH" "$COMPLETER_LINK"
     sudo echo "$COMPLETER_LINK" >> "$METADATA_PATH"
 fi
+
+INSTALL_JSON="$PATH_TO_INSTALL/awscli/data/install.json"
+if [ "${AWS_CLI_SKIP_INSTALL_JSON:-}" != "1" ]; then
+    if [ "$ID" == "0" ]; then
+    # System install - symlinks were automatically created.
+        cat > "$INSTALL_JSON" <<EOF
+{
+  "install_dir": "$PATH_TO_INSTALL",
+  "bin_dir": "$SYMLINK_DIR"
+}
+EOF
+    else
+    # User install - symlinks weren't automatically created.
+    # No way to know where user will create them or if they'll
+    # exist at all.
+        cat > "$INSTALL_JSON" <<EOF
+{
+  "install_dir": "$PATH_TO_INSTALL"
+}
+EOF
+    fi
+fi

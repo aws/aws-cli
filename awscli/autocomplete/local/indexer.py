@@ -32,6 +32,7 @@ class ModelIndexer:
         'login',
         'logout',
         'agent-toolkit',
+        'update',
     ]
 
     _CREATE_CMD_TABLE = """\

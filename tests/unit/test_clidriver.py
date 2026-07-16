@@ -12,6 +12,7 @@
 # language governing permissions and limitations under the License.
 import contextlib
 import io
+import json
 import logging
 import os
 import platform
@@ -44,6 +45,7 @@ from awscli.clidriver import (
     ServiceOperation,
     construct_cli_error_handlers_chain,
     create_clidriver,
+    get_distribution_source,
     resolve_auto_prompt_mode,
     validate_auto_prompt_args_are_mutually_exclusive,
 )
@@ -1243,6 +1245,67 @@ class TextCreateCLIDriver(unittest.TestCase):
         with contextlib.redirect_stderr(stderr):
             create_clidriver()
         self.assertIn('', stderr.getvalue())
+
+
+class TestGetDistributionSource:
+    @pytest.fixture
+    def data_dir(self, tmp_path, monkeypatch):
+        data = tmp_path / 'data'
+        data.mkdir()
+        monkeypatch.setattr(
+            awscli.clidriver, '__file__', str(tmp_path / 'clidriver.py')
+        )
+        return data
+
+    def _write_json(self, path, contents):
+        path.write_text(json.dumps(contents))
+
+    def test_defaults_to_other_when_no_files(self, data_dir):
+        assert get_distribution_source() == 'other'
+
+    def test_read_from_metadata(self, data_dir):
+        self._write_json(
+            data_dir / 'metadata.json', {'distribution_source': 'source'}
+        )
+
+        assert get_distribution_source() == 'source'
+
+    def test_read_from_install_json(self, data_dir):
+        self._write_json(
+            data_dir / 'install.json', {'distribution_source': 'script-exe'}
+        )
+
+        assert get_distribution_source() == 'script-exe'
+
+    def test_install_json_takes_precedence_over_metadata(self, data_dir):
+        self._write_json(
+            data_dir / 'metadata.json', {'distribution_source': 'exe'}
+        )
+        self._write_json(
+            data_dir / 'install.json', {'distribution_source': 'update-exe'}
+        )
+
+        assert get_distribution_source() == 'update-exe'
+
+    def test_falls_back_to_metadata_when_install_json_lacks_source(
+        self, data_dir
+    ):
+        self._write_json(
+            data_dir / 'install.json', {'install_dir': '/opt/aws-cli'}
+        )
+        self._write_json(
+            data_dir / 'metadata.json', {'distribution_source': 'exe'}
+        )
+
+        assert get_distribution_source() == 'exe'
+
+    def test_falls_back_to_other_when_no_source_field_anywhere(self, data_dir):
+        self._write_json(
+            data_dir / 'install.json', {'install_dir': '/opt/aws-cli'}
+        )
+        self._write_json(data_dir / 'metadata.json', {'version': '2.0.0'})
+
+        assert get_distribution_source() == 'other'
 
 
 if __name__ == '__main__':

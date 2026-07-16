@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+2.36.1
+======
+
+* bugfix:``sso``: Fix SSO login failure in the EUSC partition by adding the issuer domain ``identitycenter.amazonaws.eu`` to the SSO start URL resolver allowlist.
+
+
 2.36.0
 ======
 

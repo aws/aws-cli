@@ -239,6 +239,28 @@ class TestIgnoreFilesLocally(unittest.TestCase):
         self.assertFalse(filegenerator.should_ignore_file(sym_path))
         self.assertFalse(filegenerator.should_ignore_file(path))
 
+    def test_empty_filter_does_not_add_extra_exists_check(self):
+        """No --exclude/--include → should_ignore_file must not call
+        os.path.exists() before triggers_warning(). The pre-filter path
+        is pure overhead when the filter has no patterns and would
+        regress unfiltered sync/cp/mv walks on large trees.
+        """
+        from awscli.customizations.s3.filters import Filter
+
+        path = self.files.create_file('foo.txt', contents='data')
+        empty_filter = Filter({}, None, None)
+        gen = FileGenerator(
+            self.client, '', True, file_filter=empty_filter
+        )
+        with mock.patch(
+            'awscli.customizations.s3.filegenerator.os.path.exists',
+            wraps=os.path.exists,
+        ) as mock_exists:
+            gen.should_ignore_file(path)
+        # triggers_warning() makes one os.path.exists() call. Our prefilter
+        # must not add a second one for the empty-filter case.
+        self.assertEqual(mock_exists.call_count, 1)
+
 
 class TestThrowsWarning(unittest.TestCase):
     def setUp(self):

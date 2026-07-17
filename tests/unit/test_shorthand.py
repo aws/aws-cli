@@ -174,6 +174,15 @@ def test_error_parsing(expr):
         shorthand.ShorthandParser().parse(expr)
 
 
+def test_error_parsing_message_includes_caret():
+    """Error message should include the caret pointing at the parse failure position."""
+    with pytest.raises(shorthand.ShorthandParseError) as exc_info:
+        shorthand.ShorthandParser().parse("a=b,c==d")
+    msg = str(exc_info.value)
+    assert "a=b,c==d" in msg
+    assert "^" in msg
+
+
 @pytest.mark.parametrize(
     "expr", (
         # starting with " but unclosed, then repeated \

@@ -93,7 +93,7 @@ class ShorthandParseSyntaxError(ShorthandParseError):
     def _construct_msg(self):
         return (
             f"Expected: '{self.expected}', received: '{self.actual}' "
-            f"for input:\n" "{self._error_location()}"
+            f"for input:\n{self._error_location()}"
         )
 
 

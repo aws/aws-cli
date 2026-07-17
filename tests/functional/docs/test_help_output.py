@@ -92,7 +92,12 @@ def runner_browser():
     )
 
 
+@pytest.mark.validates_models
 class TestHelpOutput(BaseAWSHelpOutputTest):
+    @pytest.fixture(autouse=True)
+    def _capture_record_property(self, record_property):
+        self._record_property = record_property
+
     def test_output(self):
         self.driver.main(['help'])
         # Check for the reference label.
@@ -135,6 +140,8 @@ class TestHelpOutput(BaseAWSHelpOutputTest):
         self.assert_contains('* describe-instances')
 
     def test_operation_help_output(self):
+        self._record_property('aws_service', 'ec2')
+        self._record_property('aws_operation', 'RunInstances')
         self.driver.main(['ec2', 'run-instances', 'help'])
         # Check for the reference label.
         self.assert_contains('.. _cli:aws ec2 run-instances:')
@@ -245,6 +252,8 @@ class TestHelpOutput(BaseAWSHelpOutputTest):
         self.assert_contains('========\nExamples\n========')
 
     def test_add_help_for_dryrun(self):
+        self._record_property('aws_service', 'ec2')
+        self._record_property('aws_operation', 'RunInstances')
         self.driver.main(['ec2', 'run-instances', 'help'])
         self.assert_contains('DryRunOperation')
         self.assert_contains('UnauthorizedOperation')

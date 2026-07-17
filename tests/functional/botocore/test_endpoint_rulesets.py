@@ -314,7 +314,7 @@ def _collect_refs_from_rules(rules):
     return refs
 
 
-@pytest.mark.validates_model
+@pytest.mark.validates_models
 def test_s3_unreferenced_endpoint_ruleset_params():
     """Assert that the set of known S3 endpoint ruleset parameters that are
     not used in the rules hasn't changed. These are set in the

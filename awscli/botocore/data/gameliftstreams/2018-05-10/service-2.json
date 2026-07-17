@@ -1052,7 +1052,7 @@
     },
     "EnvironmentVariablesValueString":{
       "type":"string",
-      "max":1024,
+      "max":4096,
       "min":0
     },
     "ExecutablePath":{
@@ -1386,8 +1386,19 @@
         "ExportFilesMetadata":{
           "shape":"ExportFilesMetadata",
           "documentation":"<p>Provides details about the stream session's exported files. </p>"
+        },
+        "RoleArn":{
+          "shape":"IamRoleArn",
+          "documentation":"<p>The ARN of the AWS Identity and Access Management (IAM) role that Amazon GameLift Streams assumes on behalf of your application during the stream session.</p>"
         }
       }
+    },
+    "IamRoleArn":{
+      "type":"string",
+      "max":2048,
+      "min":20,
+      "pattern":"arn:aws[a-zA-Z-]*:iam::\\d{12}:role/.+",
+      "sensitive":true
     },
     "Id":{
       "type":"string",
@@ -1944,6 +1955,10 @@
         "PerformanceStatsConfiguration":{
           "shape":"PerformanceStatsConfiguration",
           "documentation":"<p>Configuration settings for sharing the stream session's performance stats with the client</p>"
+        },
+        "RoleArn":{
+          "shape":"IamRoleArn",
+          "documentation":"<p>The ARN of an AWS Identity and Access Management (IAM) role that Amazon GameLift Streams assumes on your behalf during the stream session. The role grants Amazon GameLift Streams permission to obtain temporary credentials for your application. The role's trust policy must allow the <code>gameliftstreams.amazonaws.com</code> service principal to assume it. The role name must start with <code>GameLiftStreams-</code>.</p>"
         }
       }
     },
@@ -2033,6 +2048,10 @@
         "ExportFilesMetadata":{
           "shape":"ExportFilesMetadata",
           "documentation":"<p>Provides details about the stream session's exported files. </p>"
+        },
+        "RoleArn":{
+          "shape":"IamRoleArn",
+          "documentation":"<p>The ARN of the AWS Identity and Access Management (IAM) role that Amazon GameLift Streams assumes on behalf of your application during the stream session.</p>"
         }
       }
     },
@@ -2170,6 +2189,7 @@
         "invalidSignalRequest",
         "placementTimeout",
         "applicationLogS3DestinationError",
+        "assumeRoleFailed",
         "applicationExit",
         "connectionTimeout",
         "reconnectionTimeout",
@@ -2220,6 +2240,10 @@
         "Location":{
           "shape":"LocationName",
           "documentation":"<p>The location where Amazon GameLift Streams hosts and streams your application. For example, <code>us-east-1</code>. For a complete list of locations that Amazon GameLift Streams supports, refer to <a href=\"https://docs.aws.amazon.com/gameliftstreams/latest/developerguide/regions-quotas.html\">Regions, quotas, and limitations</a> in the <i>Amazon GameLift Streams Developer Guide</i>. </p>"
+        },
+        "RoleArn":{
+          "shape":"IamRoleArn",
+          "documentation":"<p>The ARN of the AWS Identity and Access Management (IAM) role that Amazon GameLift Streams assumes on behalf of your application during the stream session.</p>"
         }
       },
       "documentation":"<p>Describes an Amazon GameLift Streams stream session. To retrieve additional details for the stream session, call <a href=\"https://docs.aws.amazon.com/gameliftstreams/latest/apireference/API_GetStreamSession.html\">GetStreamSession</a>.</p>"

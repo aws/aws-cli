@@ -1226,6 +1226,50 @@
       "documentation":"<p>You don't have sufficient access to perform this action. Make sure you have the required permissions and try again.</p>",
       "exception":true
     },
+    "AdminPasswordSource":{
+      "type":"string",
+      "documentation":"<p>The source of the admin password for an Autonomous Database.</p>",
+      "enum":[
+        "CUSTOMER_MANAGED_AWS_SECRET",
+        "API_REQUEST_PARAMETER"
+      ]
+    },
+    "AdminPasswordSourceConfiguration":{
+      "type":"structure",
+      "members":{
+        "customerManagedAwsSecret":{
+          "shape":"CustomerManagedAwsSecretConfiguration",
+          "documentation":"<p>The configuration for a customer-managed Amazon Web Services Secrets Manager secret used as the admin password source.</p>"
+        }
+      },
+      "documentation":"<p>The configuration of the admin password source. This is a union, so only one of the following members can be specified.</p>",
+      "union":true
+    },
+    "AdminPasswordSourceConfigurationInput":{
+      "type":"structure",
+      "members":{
+        "customerManagedAwsSecret":{
+          "shape":"CustomerManagedAwsSecretConfigurationInput",
+          "documentation":"<p>The configuration for using a customer-managed Amazon Web Services Secrets Manager secret as the admin password source.</p>"
+        }
+      },
+      "documentation":"<p>The input configuration for the admin password source. This is a union, so only one of the following members can be specified.</p>",
+      "union":true
+    },
+    "AdminPasswordSourceSummary":{
+      "type":"structure",
+      "members":{
+        "adminPasswordSource":{
+          "shape":"AdminPasswordSource",
+          "documentation":"<p>The source of the admin password for the Autonomous Database.</p>"
+        },
+        "adminPasswordSourceConfiguration":{
+          "shape":"AdminPasswordSourceConfiguration",
+          "documentation":"<p>The configuration of the admin password source for the Autonomous Database.</p>"
+        }
+      },
+      "documentation":"<p>A summary of the admin password source configuration for an Autonomous Database.</p>"
+    },
     "Arn":{
       "type":"string",
       "max":2048,
@@ -1677,6 +1721,10 @@
         "timeUndeleted":{
           "shape":"SyntheticTimestamp_date_time",
           "documentation":"<p>The date and time when the Autonomous Database was restored after deletion.</p>"
+        },
+        "adminPasswordSourceSummary":{
+          "shape":"AdminPasswordSourceSummary",
+          "documentation":"<p>The summary of the admin password source configuration for the Autonomous Database.</p>"
         }
       },
       "documentation":"<p>Information about an Autonomous Database.</p>"
@@ -2409,6 +2457,10 @@
         "timeUndeleted":{
           "shape":"SyntheticTimestamp_date_time",
           "documentation":"<p>The date and time when the Autonomous Database was restored after deletion.</p>"
+        },
+        "adminPasswordSourceSummary":{
+          "shape":"AdminPasswordSourceSummary",
+          "documentation":"<p>The summary of the admin password source configuration for the Autonomous Database.</p>"
         }
       },
       "documentation":"<p>A summary of an Autonomous Database.</p>"
@@ -2445,6 +2497,10 @@
         "timeRotated":{
           "shape":"SyntheticTimestamp_date_time",
           "documentation":"<p>The date and time when the Autonomous Database wallet was last rotated.</p>"
+        },
+        "passwordSourceSummary":{
+          "shape":"WalletPasswordSourceSummary",
+          "documentation":"<p>The summary of the password source configuration for the Autonomous Database wallet.</p>"
         }
       },
       "documentation":"<p>The wallet details for an Autonomous Database.</p>"
@@ -4034,6 +4090,14 @@
           "shape":"EncryptionKeyConfigurationInput",
           "documentation":"<p>The configuration of the encryption key to use for the Autonomous Database.</p>"
         },
+        "adminPasswordSource":{
+          "shape":"AdminPasswordSource",
+          "documentation":"<p>The source of the admin password for the Autonomous Database. When set to <code>CUSTOMER_MANAGED_AWS_SECRET</code>, the admin password is retrieved from an Amazon Web Services Secrets Manager secret.</p>"
+        },
+        "adminPasswordSourceConfiguration":{
+          "shape":"AdminPasswordSourceConfigurationInput",
+          "documentation":"<p>The configuration of the admin password source for the Autonomous Database.</p>"
+        },
         "clientToken":{
           "shape":"CreateAutonomousDatabaseInputClientTokenString",
           "documentation":"<p>A client-provided token to ensure the idempotency of the request.</p>",
@@ -4130,10 +4194,7 @@
     },
     "CreateAutonomousDatabaseWalletInput":{
       "type":"structure",
-      "required":[
-        "autonomousDatabaseId",
-        "password"
-      ],
+      "required":["autonomousDatabaseId"],
       "members":{
         "autonomousDatabaseId":{
           "shape":"ResourceIdOrArn",
@@ -4146,6 +4207,14 @@
         "password":{
           "shape":"CreateAutonomousDatabaseWalletInputPasswordString",
           "documentation":"<p>The password to encrypt the keys inside the wallet.</p>"
+        },
+        "passwordSource":{
+          "shape":"WalletPasswordSource",
+          "documentation":"<p>The source of the password for encrypting the wallet. When set to <code>CUSTOMER_MANAGED_AWS_SECRET</code>, the password is retrieved from an Amazon Web Services Secrets Manager secret.</p>"
+        },
+        "passwordSourceConfiguration":{
+          "shape":"WalletPasswordSourceConfigurationInput",
+          "documentation":"<p>The configuration of the password source for the Autonomous Database wallet.</p>"
         },
         "clientToken":{
           "shape":"CreateAutonomousDatabaseWalletInputClientTokenString",
@@ -4875,6 +4944,42 @@
     "CustomerContacts":{
       "type":"list",
       "member":{"shape":"CustomerContact"}
+    },
+    "CustomerManagedAwsSecretConfiguration":{
+      "type":"structure",
+      "members":{
+        "iamRoleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon Web Services Identity and Access Management (IAM) role that OCI assumes to retrieve the secret value.</p>"
+        },
+        "secretId":{
+          "shape":"SecretIdOrArn",
+          "documentation":"<p>The identifier or ARN of the Amazon Web Services Secrets Manager secret that contains the password.</p>"
+        },
+        "externalIdType":{
+          "shape":"ExternalIdType",
+          "documentation":"<p>The type of Oracle Cloud Identifier (OCID) used as the external ID when assuming the IAM role.</p>"
+        }
+      },
+      "documentation":"<p>The configuration of a customer-managed Amazon Web Services Secrets Manager secret used to supply a password.</p>"
+    },
+    "CustomerManagedAwsSecretConfigurationInput":{
+      "type":"structure",
+      "members":{
+        "secretId":{
+          "shape":"SecretIdOrArn",
+          "documentation":"<p>The identifier or ARN of the Amazon Web Services Secrets Manager secret that contains the password.</p>"
+        },
+        "iamRoleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon Web Services Identity and Access Management (IAM) role that OCI assumes to retrieve the secret value.</p>"
+        },
+        "externalIdType":{
+          "shape":"ExternalIdType",
+          "documentation":"<p>The type of Oracle Cloud Identifier (OCID) used as the external ID when assuming the IAM role.</p>"
+        }
+      },
+      "documentation":"<p>The input configuration for a customer-managed Amazon Web Services Secrets Manager secret used to supply a password.</p>"
     },
     "DataCollectionOptions":{
       "type":"structure",
@@ -6329,6 +6434,10 @@
         "ociIdentityDomain":{
           "shape":"Boolean",
           "documentation":"<p>The Oracle Cloud Infrastructure (OCI) identity domain configuration for service initialization.</p>"
+        },
+        "autonomousDatabaseOciAwsSecretsManagerIntegration":{
+          "shape":"Access",
+          "documentation":"<p>Specifies whether to enable or disable the OCI service-account role for Amazon Web Services Secrets Manager integration with Autonomous Database.</p>"
         }
       }
     },
@@ -7381,7 +7490,10 @@
     },
     "OciAwsIntegration":{
       "type":"string",
-      "enum":["KmsTde"]
+      "enum":[
+        "KmsTde",
+        "SecretsManager"
+      ]
     },
     "OciDnsForwardingConfig":{
       "type":"structure",
@@ -7444,6 +7556,14 @@
         "awsIntegration":{
           "shape":"OciAwsIntegration",
           "documentation":"<p>The Amazon Web Services integration configuration settings for the Amazon Web Services Identity and Access Management (IAM) service role.</p>"
+        },
+        "status":{
+          "shape":"OciIamRoleStatus",
+          "documentation":"<p>The current lifecycle status of the IAM service role.</p>"
+        },
+        "statusReason":{
+          "shape":"String",
+          "documentation":"<p>Additional information about the current status of the IAM service role, if applicable.</p>"
         }
       },
       "documentation":"<p>Information about an Amazon Web Services Identity and Access Management (IAM) service role used for Autonomous Database integration with Oracle Cloud Infrastructure (OCI).</p>"
@@ -7453,6 +7573,17 @@
       "member":{"shape":"OciIamRole"},
       "max":10,
       "min":0
+    },
+    "OciIamRoleStatus":{
+      "type":"string",
+      "documentation":"<p>The lifecycle status of an Amazon Web Services Identity and Access Management (IAM) service role used for Autonomous Database integration with Oracle Cloud Infrastructure (OCI).</p>",
+      "enum":[
+        "PROVISIONING",
+        "AVAILABLE",
+        "PROVISION_FAILED",
+        "TERMINATING",
+        "TERMINATE_FAILED"
+      ]
     },
     "OciIdentityDomain":{
       "type":"structure",
@@ -8319,6 +8450,12 @@
       "type":"list",
       "member":{"shape":"ScheduledOperationDetails"}
     },
+    "SecretIdOrArn":{
+      "type":"string",
+      "documentation":"<p>The identifier or Amazon Resource Name (ARN) of an Amazon Web Services Secrets Manager secret.</p>",
+      "max":2048,
+      "min":1
+    },
     "SensitiveString":{
       "type":"string",
       "sensitive":true
@@ -9000,6 +9137,14 @@
         "encryptionKeyConfiguration":{
           "shape":"EncryptionKeyConfigurationInput",
           "documentation":"<p>The configuration of the encryption key to use for the Autonomous Database.</p>"
+        },
+        "adminPasswordSource":{
+          "shape":"AdminPasswordSource",
+          "documentation":"<p>The source of the admin password for the Autonomous Database. When set to <code>CUSTOMER_MANAGED_AWS_SECRET</code>, the admin password is retrieved from an Amazon Web Services Secrets Manager secret.</p>"
+        },
+        "adminPasswordSourceConfiguration":{
+          "shape":"AdminPasswordSourceConfigurationInput",
+          "documentation":"<p>The configuration of the admin password source for the Autonomous Database.</p>"
         }
       }
     },
@@ -9305,6 +9450,50 @@
     "VpcEndpointType":{
       "type":"string",
       "enum":["SERVICENETWORK"]
+    },
+    "WalletPasswordSource":{
+      "type":"string",
+      "documentation":"<p>The source of the password for an Autonomous Database wallet.</p>",
+      "enum":[
+        "CUSTOMER_MANAGED_AWS_SECRET",
+        "API_REQUEST_PARAMETER"
+      ]
+    },
+    "WalletPasswordSourceConfiguration":{
+      "type":"structure",
+      "members":{
+        "customerManagedAwsSecret":{
+          "shape":"CustomerManagedAwsSecretConfiguration",
+          "documentation":"<p>The configuration for a customer-managed Amazon Web Services Secrets Manager secret used as the wallet password source.</p>"
+        }
+      },
+      "documentation":"<p>The configuration of the wallet password source. This is a union, so only one of the following members can be specified.</p>",
+      "union":true
+    },
+    "WalletPasswordSourceConfigurationInput":{
+      "type":"structure",
+      "members":{
+        "customerManagedAwsSecret":{
+          "shape":"CustomerManagedAwsSecretConfigurationInput",
+          "documentation":"<p>The configuration for using a customer-managed Amazon Web Services Secrets Manager secret as the wallet password source.</p>"
+        }
+      },
+      "documentation":"<p>The input configuration for the wallet password source. This is a union, so only one of the following members can be specified.</p>",
+      "union":true
+    },
+    "WalletPasswordSourceSummary":{
+      "type":"structure",
+      "members":{
+        "passwordSource":{
+          "shape":"WalletPasswordSource",
+          "documentation":"<p>The source of the password for the Autonomous Database wallet.</p>"
+        },
+        "passwordSourceConfiguration":{
+          "shape":"WalletPasswordSourceConfiguration",
+          "documentation":"<p>The configuration of the password source for the Autonomous Database wallet.</p>"
+        }
+      },
+      "documentation":"<p>A summary of the password source configuration for an Autonomous Database wallet.</p>"
     },
     "WalletType":{
       "type":"string",

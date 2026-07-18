@@ -174,6 +174,17 @@ def test_error_parsing(expr):
         shorthand.ShorthandParser().parse(expr)
 
 
+def test_shorthand_parse_syntax_error_includes_caret():
+    """Regression: message must interpolate _error_location(), not print the placeholder."""
+    with pytest.raises(shorthand.ShorthandParseSyntaxError) as exc:
+        shorthand.ShorthandParser().parse("a=b,c==d")
+    msg = str(exc.value)
+    assert "{self._error_location()}" not in msg
+    assert "Expected: ',', received: '=' for input:" in msg
+    assert "a=b,c==d" in msg
+    assert "^" in msg
+
+
 @pytest.mark.parametrize(
     "expr", (
         # starting with " but unclosed, then repeated \

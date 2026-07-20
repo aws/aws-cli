@@ -2,6 +2,20 @@
 CHANGELOG
 =========
 
+1.45.52
+=======
+
+* api-change:``bedrock-agentcore``: Add W3C trace context headers (traceparent, tracestate, baggage) and X-Amzn-Trace-Id to InvokeHarness request for end-to-end observability propagation. Add toolResultMetadata to the streaming content block delta for MCP tool result meta delivery without oversized SSE frames.
+* api-change:``bedrock-agentcore-control``: This release adds support for specifying a connector version on Gateway targets to pin the connector's tool schema. It also introduces web-search connector version 1.2.0, which adds agent-side domain filtering, published date range filtering, and admin-side domain allowlisting.
+* api-change:``endpoint-rules``: Update endpoint-rules command to latest version
+* api-change:``inspector2``: Adds Windows path support for deep inspection. Fixes tag propagation for connector CloudFormation stack operations.
+* api-change:``mediatailor``: This change adds api support for configuring ad decision server timeouts and concurrency fields on MediaTailor playback configurations
+* api-change:``meteringmarketplace``: For new SaaS product integrations, CustomerIdentifier is not populated in ResolveCustomer responses and is not supported in BatchMeterUsage. Use CustomerAWSAccountId and LicenseArn instead.
+* api-change:``organizations``: Updated InvalidInputException error documentation to clarify that the service validates free-text field values against common cross-site scripting (XSS) patterns.
+* api-change:``quicksight``: Adds support for custom permissions for Triggers, allowing administrators to control user access to Schedule, Inbound Email and Quick Event triggers.
+* api-change:``sesv2``: Amazon SES introduces three new Pricing Plans (Essentials, Pro, Enterprise), which bundle SES features under one pricing umbrella.  The new PutAccountPricingAttributes API lets the user set the account's plan, while current plan retrievalif done through the new PricingAttributes field on GetAccount.
+
+
 1.45.51
 =======
 

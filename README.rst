@@ -228,7 +228,7 @@ for more information.
 
 For more information about configuration options, please refer to the
 `AWS CLI Configuration Variables
-topic <http://docs.aws.amazon.com/cli/latest/topic/config-vars.html#cli-aws-help-config-vars>`__.
+topic <https://docs.aws.amazon.com/cli/latest/topic/config-vars.html#cli-aws-help-config-vars>`__.
 You can access this topic from the AWS CLI as well by running
 ``aws help config-vars``.
 

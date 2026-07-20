@@ -38,6 +38,7 @@ _AWS_OWNED_EXACT = (
     'identitycenter.amazonaws.com',
     'identitycenter.amazonaws.com.cn',
     'identitycenter.amazonaws.eu',
+    'identitycenter.us-gov.amazonaws.com',
 )
 
 _REGION_PATTERNS = (

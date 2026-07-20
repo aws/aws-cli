@@ -48,6 +48,7 @@ class TestIsAwsOwnedDomain:
             'ssoins-abc123.eusc-de-east-1.portal.amazonaws.eu',
             'ssoins-abc123.portal.eusc-de-east-1.api.amazonwebservices.eu',
             'identitycenter.amazonaws.eu',
+            'identitycenter.us-gov.amazonaws.com',
         ],
     )
     def test_aws_owned_returns_true(self, hostname):
@@ -114,6 +115,7 @@ class TestExtractRegionFromHostname:
             'identitycenter.amazonaws.com',
             'identitycenter.amazonaws.com.cn',
             'identitycenter.amazonaws.eu',
+            'identitycenter.us-gov.amazonaws.com',
             'aws.mycompany.com',
         ],
     )

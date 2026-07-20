@@ -779,6 +779,46 @@
         "PRE_ADS_REQUEST_FUNCTION_COMPLETED"
       ]
     },
+    "AdsPersonalizationConcurrency":{
+      "type":"structure",
+      "members":{
+        "MaxConcurrentAdsRequests":{
+          "shape":"__integer",
+          "documentation":"<p>The maximum number of simultaneous requests that MediaTailor makes to the ad decision server per manifest request. The default is 1.</p>"
+        },
+        "EnableVodVastParallelization":{
+          "shape":"__boolean",
+          "documentation":"<p>Enables parallel processing of ad decision server requests in VOD workflows when the ADS returns VAST responses. The default is false.</p>"
+        }
+      },
+      "documentation":"<p>The concurrency settings for ad decision server interactions during ad personalization.</p>"
+    },
+    "AdsPersonalizationTimeouts":{
+      "type":"structure",
+      "members":{
+        "AdsRequestTimeoutMilliseconds":{
+          "shape":"__integer",
+          "documentation":"<p>The maximum time, in milliseconds, that MediaTailor waits for a single ad decision server response during live or VOD playback. The default is 3000.</p>"
+        },
+        "LiveMaximumAdsPersonalizationTimeMilliseconds":{
+          "shape":"__integer",
+          "documentation":"<p>The maximum total time, in milliseconds, that MediaTailor spends on ad decision server activity for live manifests, including making requests, waiting for responses, and following VAST wrapper redirects. The default is 10000.</p>"
+        },
+        "VodMaximumAdsPersonalizationTimeMilliseconds":{
+          "shape":"__integer",
+          "documentation":"<p>The maximum total time, in milliseconds, that MediaTailor spends on ad decision server activity for VOD manifests, including making requests, waiting for responses, and following VAST wrapper redirects. The default is 10000.</p>"
+        },
+        "PrefetchAdsRequestTimeoutMilliseconds":{
+          "shape":"__integer",
+          "documentation":"<p>The maximum time, in milliseconds, that MediaTailor waits for a single ad decision server response during prefetch retrieval. If not set, the value of AdsRequestTimeoutMilliseconds is used.</p>"
+        },
+        "PrefetchMaximumAdsPersonalizationTimeMilliseconds":{
+          "shape":"__integer",
+          "documentation":"<p>The maximum total time, in milliseconds, that MediaTailor spends on ad decision server activity during prefetch retrieval, including making requests, waiting for responses, and following VAST wrapper redirects.</p>"
+        }
+      },
+      "documentation":"<p>The timeout settings for ad decision server interactions during ad personalization.</p>"
+    },
     "Alert":{
       "type":"structure",
       "required":[
@@ -2293,7 +2333,7 @@
           "documentation":"<p>The Amazon Resource Name (ARN) of the function.</p>"
         }
       },
-      "documentation":"<p>-- Define Mixin --</p>"
+      "documentation":"<p>Defines reusable logic that MediaTailor executes at lifecycle hooks during ad insertion. The <code>FunctionType</code> determines the function's runtime behavior. For more information about functions, see <a href=\"https://docs.aws.amazon.com/mediatailor/latest/ug/monetization-functions.html\">Working with functions</a> in the <i>MediaTailor User Guide</i>.</p>"
     },
     "FunctionMapping":{
       "type":"map",
@@ -2564,6 +2604,14 @@
         "FunctionMapping":{
           "shape":"FunctionMapping",
           "documentation":"<p>A map of lifecycle hook event names to function identifiers. The function mapping specifies which function MediaTailor executes at each lifecycle hook during ad insertion. Valid keys are <code>PRE_SESSION_INITIALIZATION</code> and <code>PRE_ADS_REQUEST</code>. For more information, see <a href=\"https://docs.aws.amazon.com/mediatailor/latest/ug/monetization-functions-hooks.html\">Functions lifecycle hooks</a> in the <i>MediaTailor User Guide</i>.</p>"
+        },
+        "AdsPersonalizationTimeouts":{
+          "shape":"AdsPersonalizationTimeouts",
+          "documentation":"<p>The timeout settings for ad decision server interactions. These settings control how long MediaTailor waits for ADS responses and the total time budget for ad personalization across live, VOD, and prefetch workflows.</p>"
+        },
+        "AdsPersonalizationConcurrency":{
+          "shape":"AdsPersonalizationConcurrency",
+          "documentation":"<p>The concurrency settings for ad decision server interactions. These settings control how many simultaneous ADS requests MediaTailor makes per manifest request.</p>"
         }
       }
     },
@@ -2757,7 +2805,7 @@
           "documentation":"<p>A map of HTTP header names to expression values. MediaTailor evaluates each header value expression at runtime and includes the result in the outbound HTTP request. Maximum 50 headers.</p>"
         }
       },
-      "documentation":"<p>-- Function Configuration DataStructure</p>"
+      "documentation":"<p>The configuration for an <code>HTTP_REQUEST</code> function. Specifies the HTTP method, URL, headers, body, timeout, and output expressions for the request. For more information, see <a href=\"https://docs.aws.amazon.com/mediatailor/latest/ug/monetization-functions-types-http-request.html\">HTTP_REQUEST</a> in the <i>MediaTailor User Guide</i>.</p>"
     },
     "InsertionMode":{
       "type":"string",
@@ -3417,6 +3465,14 @@
         "FunctionMapping":{
           "shape":"FunctionMapping",
           "documentation":"<p>A map of lifecycle hook event names to function identifiers. The function mapping specifies which function MediaTailor executes at each lifecycle hook during ad insertion. Valid keys are <code>PRE_SESSION_INITIALIZATION</code> and <code>PRE_ADS_REQUEST</code>. For more information, see <a href=\"https://docs.aws.amazon.com/mediatailor/latest/ug/monetization-functions-hooks.html\">Functions lifecycle hooks</a> in the <i>MediaTailor User Guide</i>.</p>"
+        },
+        "AdsPersonalizationTimeouts":{
+          "shape":"AdsPersonalizationTimeouts",
+          "documentation":"<p>The timeout settings for ad decision server interactions. These settings control how long MediaTailor waits for ADS responses and the total time budget for ad personalization across live, VOD, and prefetch workflows.</p>"
+        },
+        "AdsPersonalizationConcurrency":{
+          "shape":"AdsPersonalizationConcurrency",
+          "documentation":"<p>The concurrency settings for ad decision server interactions. These settings control how many simultaneous ADS requests MediaTailor makes per manifest request.</p>"
         }
       },
       "documentation":"<p>A playback configuration. For information about MediaTailor configurations, see <a href=\"https://docs.aws.amazon.com/mediatailor/latest/ug/configurations.html\">Working with configurations in AWS Elemental MediaTailor</a>.</p>"
@@ -3716,6 +3772,14 @@
         "FunctionMapping":{
           "shape":"FunctionMapping",
           "documentation":"<p>A map of lifecycle hook event names to function identifiers. The function mapping specifies which function MediaTailor executes at each lifecycle hook during ad insertion. Valid keys are <code>PRE_SESSION_INITIALIZATION</code> and <code>PRE_ADS_REQUEST</code>. For more information, see <a href=\"https://docs.aws.amazon.com/mediatailor/latest/ug/monetization-functions-hooks.html\">Functions lifecycle hooks</a> in the <i>MediaTailor User Guide</i>.</p>"
+        },
+        "AdsPersonalizationTimeouts":{
+          "shape":"AdsPersonalizationTimeouts",
+          "documentation":"<p>The timeout settings for ad decision server interactions. These settings control how long MediaTailor waits for ADS responses and the total time budget for ad personalization across live, VOD, and prefetch workflows.</p>"
+        },
+        "AdsPersonalizationConcurrency":{
+          "shape":"AdsPersonalizationConcurrency",
+          "documentation":"<p>The concurrency settings for ad decision server interactions. These settings control how many simultaneous ADS requests MediaTailor makes per manifest request.</p>"
         }
       }
     },
@@ -3822,6 +3886,14 @@
         "FunctionMapping":{
           "shape":"FunctionMapping",
           "documentation":"<p>A map of lifecycle hook event names to function identifiers. The function mapping specifies which function MediaTailor executes at each lifecycle hook during ad insertion. Valid keys are <code>PRE_SESSION_INITIALIZATION</code> and <code>PRE_ADS_REQUEST</code>. For more information, see <a href=\"https://docs.aws.amazon.com/mediatailor/latest/ug/monetization-functions-hooks.html\">Functions lifecycle hooks</a> in the <i>MediaTailor User Guide</i>.</p>"
+        },
+        "AdsPersonalizationTimeouts":{
+          "shape":"AdsPersonalizationTimeouts",
+          "documentation":"<p>The timeout settings for ad decision server interactions. These settings control how long MediaTailor waits for ADS responses and the total time budget for ad personalization across live, VOD, and prefetch workflows.</p>"
+        },
+        "AdsPersonalizationConcurrency":{
+          "shape":"AdsPersonalizationConcurrency",
+          "documentation":"<p>The concurrency settings for ad decision server interactions. These settings control how many simultaneous ADS requests MediaTailor makes per manifest request.</p>"
         }
       }
     },

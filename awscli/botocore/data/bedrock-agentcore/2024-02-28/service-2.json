@@ -5419,6 +5419,10 @@
         "reasoningContent":{
           "shape":"HarnessReasoningContentBlockDelta",
           "documentation":"<p>A reasoning content delta.</p>"
+        },
+        "toolResultMetadata":{
+          "shape":"HarnessToolResultMetadataBlockDelta",
+          "documentation":"<p>A tool result metadata delta.</p>"
         }
       },
       "documentation":"<p>A delta update to a content block.</p>",
@@ -5553,6 +5557,10 @@
         "topK":{
           "shape":"TopK",
           "documentation":"<p>The topK set when calling the model.</p>"
+        },
+        "additionalParams":{
+          "shape":"Document",
+          "documentation":"<p>Provider-specific parameters passed through to the Gemini model provider unchanged.</p>"
         }
       },
       "documentation":"<p>Configuration for a Google Gemini model provider. Requires an API key stored in AgentCore Identity.</p>"
@@ -5897,11 +5905,13 @@
     },
     "HarnessSkillGitUrl":{
       "type":"string",
+      "max":16383,
       "min":8,
       "pattern":"https://[^#@]+"
     },
     "HarnessSkillPath":{
       "type":"string",
+      "max":4096,
       "min":1
     },
     "HarnessSkillS3Source":{
@@ -5917,6 +5927,7 @@
     },
     "HarnessSkillS3Uri":{
       "type":"string",
+      "max":16383,
       "min":5,
       "pattern":"s3://.*"
     },
@@ -6155,6 +6166,17 @@
     "HarnessToolResultContentBlocks":{
       "type":"list",
       "member":{"shape":"HarnessToolResultContentBlock"}
+    },
+    "HarnessToolResultMetadataBlockDelta":{
+      "type":"structure",
+      "required":["metadata"],
+      "members":{
+        "metadata":{
+          "shape":"SensitiveText",
+          "documentation":"<p>The partial JSON-string fragment of the tool result metadata.</p>"
+        }
+      },
+      "documentation":"<p>Delta payload for a tool result metadata.</p>"
     },
     "HarnessToolType":{
       "type":"string",
@@ -6706,6 +6728,18 @@
           "location":"header",
           "locationName":"Mcp-Protocol-Version"
         },
+        "mcpMethod":{
+          "shape":"StringType",
+          "documentation":"<p>The MCP method being invoked. For example, <code>tools/call</code>, <code>resources/read</code>, or <code>prompts/get</code>.</p>",
+          "location":"header",
+          "locationName":"Mcp-Method"
+        },
+        "mcpName":{
+          "shape":"StringType",
+          "documentation":"<p>The name of the MCP resource, tool, or prompt being accessed. The value depends on the method:</p> <ul> <li> <p> <code>tools/call</code> – The tool name.</p> </li> <li> <p> <code>resources/read</code> – The resource URI.</p> </li> <li> <p> <code>prompts/get</code> – The prompt name.</p> </li> </ul>",
+          "location":"header",
+          "locationName":"Mcp-Name"
+        },
         "runtimeUserId":{
           "shape":"StringType",
           "documentation":"<p>The identifier of the runtime user.</p>",
@@ -6996,6 +7030,30 @@
           "location":"header",
           "locationName":"X-Amzn-Bedrock-AgentCore-Runtime-User-Id"
         },
+        "traceParent":{
+          "shape":"InvokeHarnessRequestTraceParentString",
+          "documentation":"<p>W3C trace context parent header containing version, trace ID, parent span ID, and trace flags.</p>",
+          "location":"header",
+          "locationName":"traceparent"
+        },
+        "traceState":{
+          "shape":"InvokeHarnessRequestTraceStateString",
+          "documentation":"<p>W3C trace context state header for vendor-specific trace information.</p>",
+          "location":"header",
+          "locationName":"tracestate"
+        },
+        "traceId":{
+          "shape":"InvokeHarnessRequestTraceIdString",
+          "documentation":"<p>Trace ID for maintaining observability through the operation.</p>",
+          "location":"header",
+          "locationName":"X-Amzn-Trace-Id"
+        },
+        "baggage":{
+          "shape":"InvokeHarnessRequestBaggageString",
+          "documentation":"<p>W3C Baggage header for user-defined context propagation. Format: key1=value1,key2=value2</p>",
+          "location":"header",
+          "locationName":"baggage"
+        },
         "messages":{
           "shape":"HarnessMessages",
           "documentation":"<p>The messages to send to the agent.</p>"
@@ -7038,11 +7096,31 @@
         }
       }
     },
+    "InvokeHarnessRequestBaggageString":{
+      "type":"string",
+      "max":8192,
+      "min":0
+    },
     "InvokeHarnessRequestRuntimeSessionIdString":{
       "type":"string",
       "max":100,
       "min":33,
       "pattern":"[a-zA-Z0-9][a-zA-Z0-9-_]*"
+    },
+    "InvokeHarnessRequestTraceIdString":{
+      "type":"string",
+      "max":1024,
+      "min":0
+    },
+    "InvokeHarnessRequestTraceParentString":{
+      "type":"string",
+      "max":1024,
+      "min":0
+    },
+    "InvokeHarnessRequestTraceStateString":{
+      "type":"string",
+      "max":512,
+      "min":0
     },
     "InvokeHarnessResponse":{
       "type":"structure",

@@ -264,7 +264,7 @@
         {"shape":"AlreadyExistsException"},
         {"shape":"BadRequestException"}
       ],
-      "documentation":"<p>Creates a multi-region endpoint (global-endpoint).</p> <p>The primary region is going to be the AWS-Region where the operation is executed. The secondary region has to be provided in request's parameters. From the data flow standpoint there is no difference between primary and secondary regions - sending traffic will be split equally between the two. The primary region is the region where the resource has been created and where it can be managed. </p>"
+      "documentation":"<p>Creates a multi-region endpoint (global-endpoint).</p> <p>The primary region is going to be the AWS-Region where the operation is executed. The secondary region has to be provided in request's parameters. From the data flow standpoint there is no difference between primary and secondary regions - sending traffic is divided between the two. The primary region is the region where the resource has been created and where it can be managed. </p>"
     },
     "CreateTenant":{
       "name":"CreateTenant",
@@ -1174,6 +1174,21 @@
         {"shape":"ConflictException"}
       ],
       "documentation":"<p>Update your Amazon SES account details.</p>"
+    },
+    "PutAccountPricingAttributes":{
+      "name":"PutAccountPricingAttributes",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/v2/email/account/pricing-attributes"
+      },
+      "input":{"shape":"PutAccountPricingAttributesRequest"},
+      "output":{"shape":"PutAccountPricingAttributesResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Set the pricing plan for your Amazon SES account. Use this operation to choose a billing plan that packages multiple Amazon SES features at a single rate.</p>"
     },
     "PutAccountSendingAttributes":{
       "name":"PutAccountSendingAttributes",
@@ -4107,6 +4122,10 @@
         "VdmAttributes":{
           "shape":"VdmAttributes",
           "documentation":"<p>The VDM attributes that apply to your Amazon SES account.</p>"
+        },
+        "PricingAttributes":{
+          "shape":"PricingAttributes",
+          "documentation":"<p>The pricing attributes that apply to your Amazon SES account, including the currently active pricing plan and any scheduled change.</p>"
         }
       },
       "documentation":"<p>A list of details about the email-sending capabilities of your Amazon SES account in the current Amazon Web Services Region.</p>"
@@ -6530,6 +6549,30 @@
       "type":"string",
       "documentation":"<p>The name of a dedicated IP pool.</p>"
     },
+    "PricingAttributes":{
+      "type":"structure",
+      "members":{
+        "CurrentPlan":{
+          "shape":"PricingPlan",
+          "documentation":"<p>The pricing plan that is currently active on your Amazon SES account.</p>"
+        },
+        "NextPlan":{
+          "shape":"PricingPlan",
+          "documentation":"<p>The pricing plan that will become active at the start of the next billing cycle, if a scheduled change has been requested. This field is empty when no scheduled change is pending.</p>"
+        }
+      },
+      "documentation":"<p>The pricing attributes that apply to your Amazon SES account, including the currently active pricing plan and any scheduled change for the next billing cycle.</p>"
+    },
+    "PricingPlan":{
+      "type":"string",
+      "documentation":"<p>Identifies an Amazon SES pricing plan. See <code>PutAccountPricingAttributesRequest$Plan</code> for the list of supported values and their meanings.</p>",
+      "enum":[
+        "NONE",
+        "ESSENTIALS",
+        "PRO",
+        "ENTERPRISE"
+      ]
+    },
     "PrimaryNameServer":{"type":"string"},
     "PrivateKey":{
       "type":"string",
@@ -6592,6 +6635,22 @@
       "type":"structure",
       "members":{},
       "documentation":"<p>An HTTP 200 response if the request succeeds, or an error message if the request fails.</p>"
+    },
+    "PutAccountPricingAttributesRequest":{
+      "type":"structure",
+      "required":["Plan"],
+      "members":{
+        "Plan":{
+          "shape":"PricingPlan",
+          "documentation":"<p>The pricing plan to apply to your Amazon SES account. Can be one of the following:</p> <ul> <li> <p> <code>NONE</code> – No pricing plan is applied; billing follows per-feature pricing.</p> </li> <li> <p> <code>ESSENTIALS</code> – Baseline Amazon SES capabilities and select premium features.</p> </li> <li> <p> <code>PRO</code> – Includes everything in <code>ESSENTIALS</code>, plus additional premium features for growing senders.</p> </li> <li> <p> <code>ENTERPRISE</code> – Includes everything in <code>PRO</code>, plus features intended for large-scale senders.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>A request to set the pricing plan for your Amazon SES account.</p>"
+    },
+    "PutAccountPricingAttributesResponse":{
+      "type":"structure",
+      "members":{},
+      "documentation":"<p>An HTTP 200 response if the request succeeds, or an error response if the request fails.</p>"
     },
     "PutAccountSendingAttributesRequest":{
       "type":"structure",

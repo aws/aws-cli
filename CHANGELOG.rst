@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+2.36.4
+======
+
+* bugfix:``sso``: Fix SSO login failure in the GovCloud partition by adding the issuer domain ``identitycenter.us-gov.amazonaws.com`` to the SSO start URL resolver allowlist.
+
+
 2.36.3
 ======
 

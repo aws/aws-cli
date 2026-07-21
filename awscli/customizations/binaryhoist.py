@@ -33,7 +33,7 @@ class InjectingArgument(CustomArgument):
 
     def add_to_params(self, parameters, value):
         if value is None:
-            pass
+            return
         wrapped_value = {self._original_member_name: value}
         if parameters.get(self._serialized_name):
             parameters[self._serialized_name].update(wrapped_value)

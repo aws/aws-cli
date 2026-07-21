@@ -449,13 +449,13 @@ class EndpointCreator:
         )
 
     def _validate_verify_value(self, verify):
-        if isinstance(verify, str) and not verify:
+        if isinstance(verify, str) and not verify.strip():
             raise InvalidConfigError(
                 error_msg=(
                     'Invalid CA bundle: the configured value (ca_bundle, '
                     'AWS_CA_BUNDLE, REQUESTS_CA_BUNDLE, or verify) resolved '
-                    'to an empty string. Provide a valid path to a CA bundle '
-                    'file.'
+                    'to an empty or whitespace-only string. Provide a valid '
+                    'path to a CA bundle file.'
                 )
             )
         return verify

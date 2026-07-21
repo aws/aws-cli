@@ -478,6 +478,16 @@ class TestEndpointCreator(unittest.TestCase):
                 http_session_cls=self.mock_session,
             )
 
+    def test_whitespace_verify_value_raises(self):
+        with self.assertRaises(InvalidConfigError):
+            self.creator.create_endpoint(
+                self.service_model,
+                region_name='us-west-2',
+                endpoint_url='https://example.com',
+                verify='   ',
+                http_session_cls=self.mock_session,
+            )
+
     def test_empty_cert_bundle_env_var_raises(self):
         self.environ['REQUESTS_CA_BUNDLE'] = ''
         with self.assertRaises(InvalidConfigError):

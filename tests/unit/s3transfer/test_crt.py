@@ -375,6 +375,10 @@ class TestCreateS3CRTClient:
         with pytest.raises(InvalidConfigError):
             s3transfer.crt.create_s3_crt_client('us-west-2', verify='')
 
+    def test_whitespace_verify_value_raises(self, mock_s3_crt_client):
+        with pytest.raises(InvalidConfigError):
+            s3transfer.crt.create_s3_crt_client('us-west-2', verify='   ')
+
     def test_verify_false_disables_verification(self, mock_s3_crt_client):
         with (
             mock.patch('s3transfer.crt.TlsContextOptions') as mock_tls_options,

@@ -496,6 +496,25 @@
       ],
       "documentation":"<p>Creates a zero-ETL integration or S3 event integration with Amazon Redshift.</p>"
     },
+    "CreateQev2IdcApplication":{
+      "name":"CreateQev2IdcApplication",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateQev2IdcApplicationMessage"},
+      "output":{
+        "shape":"CreateQev2IdcApplicationResult",
+        "resultWrapper":"CreateQev2IdcApplicationResult"
+      },
+      "errors":[
+        {"shape":"Qev2IdcApplicationAlreadyExistsFault"},
+        {"shape":"DependentServiceUnavailableFault"},
+        {"shape":"UnsupportedOperationFault"},
+        {"shape":"DependentServiceAccessDeniedFault"}
+      ],
+      "documentation":"<p>Creates an Amazon Redshift Query Editor (QEV2) IAM Identity Center application.</p>"
+    },
     "CreateRedshiftIdcApplication":{
       "name":"CreateRedshiftIdcApplication",
       "http":{
@@ -841,6 +860,21 @@
         {"shape":"UnsupportedOperationFault"}
       ],
       "documentation":"<p>Deletes a partner integration from a cluster. Data can still flow to the cluster until the integration is deleted at the partner's website.</p>"
+    },
+    "DeleteQev2IdcApplication":{
+      "name":"DeleteQev2IdcApplication",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteQev2IdcApplicationMessage"},
+      "errors":[
+        {"shape":"Qev2IdcApplicationNotExistsFault"},
+        {"shape":"DependentServiceUnavailableFault"},
+        {"shape":"UnsupportedOperationFault"},
+        {"shape":"DependentServiceAccessDeniedFault"}
+      ],
+      "documentation":"<p>Deletes an Amazon Redshift Query Editor (QEV2) IAM Identity Center application.</p>"
     },
     "DeleteRedshiftIdcApplication":{
       "name":"DeleteRedshiftIdcApplication",
@@ -1425,6 +1459,25 @@
         {"shape":"UnsupportedOperationFault"}
       ],
       "documentation":"<p>Returns information about the partner integrations defined for a cluster.</p>"
+    },
+    "DescribeQev2IdcApplications":{
+      "name":"DescribeQev2IdcApplications",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeQev2IdcApplicationsMessage"},
+      "output":{
+        "shape":"DescribeQev2IdcApplicationsResult",
+        "resultWrapper":"DescribeQev2IdcApplicationsResult"
+      },
+      "errors":[
+        {"shape":"Qev2IdcApplicationNotExistsFault"},
+        {"shape":"DependentServiceUnavailableFault"},
+        {"shape":"UnsupportedOperationFault"},
+        {"shape":"DependentServiceAccessDeniedFault"}
+      ],
+      "documentation":"<p>Lists the Amazon Redshift Query Editor (QEV2) IAM Identity Center applications. To retrieve additional results, use the MaxRecords and Marker parameters.</p>"
     },
     "DescribeRedshiftIdcApplications":{
       "name":"DescribeRedshiftIdcApplications",
@@ -2181,6 +2234,25 @@
         {"shape":"DependentServiceAccessDeniedFault"}
       ],
       "documentation":"<p>Modifies the lakehouse configuration for a cluster. This operation allows you to manage Amazon Redshift federated permissions and Amazon Web Services IAM Identity Center trusted identity propagation.</p>"
+    },
+    "ModifyQev2IdcApplication":{
+      "name":"ModifyQev2IdcApplication",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ModifyQev2IdcApplicationMessage"},
+      "output":{
+        "shape":"ModifyQev2IdcApplicationResult",
+        "resultWrapper":"ModifyQev2IdcApplicationResult"
+      },
+      "errors":[
+        {"shape":"Qev2IdcApplicationNotExistsFault"},
+        {"shape":"DependentServiceUnavailableFault"},
+        {"shape":"UnsupportedOperationFault"},
+        {"shape":"DependentServiceAccessDeniedFault"}
+      ],
+      "documentation":"<p>Modifies an Amazon Redshift Query Editor (QEV2) IAM Identity Center application.</p>"
     },
     "ModifyRedshiftIdcApplication":{
       "name":"ModifyRedshiftIdcApplication",
@@ -4779,6 +4851,38 @@
         }
       }
     },
+    "CreateQev2IdcApplicationMessage":{
+      "type":"structure",
+      "required":[
+        "IdcInstanceArn",
+        "Qev2IdcApplicationName",
+        "IdcDisplayName"
+      ],
+      "members":{
+        "IdcInstanceArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM Identity Center instance used to create the Amazon Redshift Query Editor (QEV2) managed application.</p>"
+        },
+        "Qev2IdcApplicationName":{
+          "shape":"Qev2IdcApplicationName",
+          "documentation":"<p>The name of the Amazon Redshift Query Editor (QEV2) application in IAM Identity Center.</p>"
+        },
+        "IdcDisplayName":{
+          "shape":"IdcDisplayNameString",
+          "documentation":"<p>The display name for the Amazon Redshift Query Editor (QEV2) IAM Identity Center application. It appears in the console.</p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>A list of tags to associate with the application. Tags are key-value pairs that you can use to organize and identify your resources.</p>"
+        }
+      }
+    },
+    "CreateQev2IdcApplicationResult":{
+      "type":"structure",
+      "members":{
+        "Qev2IdcApplication":{"shape":"Qev2IdcApplication"}
+      }
+    },
     "CreateRedshiftIdcApplicationMessage":{
       "type":"structure",
       "required":[
@@ -5427,6 +5531,16 @@
         "IntegrationArn":{
           "shape":"IntegrationArn",
           "documentation":"<p>The unique identifier of the integration to delete.</p>"
+        }
+      }
+    },
+    "DeleteQev2IdcApplicationMessage":{
+      "type":"structure",
+      "required":["Qev2IdcApplicationArn"],
+      "members":{
+        "Qev2IdcApplicationArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) for the Amazon Redshift Query Editor (QEV2) IAM Identity Center application to delete.</p>"
         }
       }
     },
@@ -6342,6 +6456,36 @@
         "PartnerIntegrationInfoList":{
           "shape":"PartnerIntegrationInfoList",
           "documentation":"<p>A list of partner integrations.</p>"
+        }
+      }
+    },
+    "DescribeQev2IdcApplicationsMessage":{
+      "type":"structure",
+      "members":{
+        "Qev2IdcApplicationArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) for the Amazon Redshift Query Editor (QEV2) application that integrates with IAM Identity Center.</p>"
+        },
+        "MaxRecords":{
+          "shape":"IntegerOptional",
+          "documentation":"<p>The maximum number of response records to return in each call. If the number of remaining response records exceeds the specified MaxRecords value, a value is returned in a marker field of the response. You can retrieve the next set of records by retrying the command with the returned marker value.</p>"
+        },
+        "Marker":{
+          "shape":"String",
+          "documentation":"<p>A value that indicates the starting point for the next set of response records in a subsequent request. If a value is returned in a response, you can retrieve the next set of records by providing this returned marker value in the Marker parameter and retrying the command. If the Marker field is empty, all response records have been retrieved for the request. </p>"
+        }
+      }
+    },
+    "DescribeQev2IdcApplicationsResult":{
+      "type":"structure",
+      "members":{
+        "Qev2IdcApplications":{
+          "shape":"Qev2IdcApplicationList",
+          "documentation":"<p>The list of Amazon Redshift Query Editor (QEV2) IAM Identity Center applications.</p>"
+        },
+        "Marker":{
+          "shape":"String",
+          "documentation":"<p>A value that indicates the starting point for the next set of response records in a subsequent request. If a value is returned in a response, you can retrieve the next set of records by providing this returned marker value in the Marker parameter and retrying the command. If the Marker field is empty, all response records have been retrieved for the request. </p>"
         }
       }
     },
@@ -8997,6 +9141,26 @@
         }
       }
     },
+    "ModifyQev2IdcApplicationMessage":{
+      "type":"structure",
+      "required":["Qev2IdcApplicationArn"],
+      "members":{
+        "Qev2IdcApplicationArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) for the Amazon Redshift Query Editor (QEV2) application that integrates with IAM Identity Center.</p>"
+        },
+        "IdcDisplayName":{
+          "shape":"IdcDisplayNameString",
+          "documentation":"<p>The display name for the Amazon Redshift Query Editor (QEV2) IAM Identity Center application. It appears in the console.</p>"
+        }
+      }
+    },
+    "ModifyQev2IdcApplicationResult":{
+      "type":"structure",
+      "members":{
+        "Qev2IdcApplication":{"shape":"Qev2IdcApplication"}
+      }
+    },
     "ModifyRedshiftIdcApplicationMessage":{
       "type":"structure",
       "required":["RedshiftIdcApplicationArn"],
@@ -9658,6 +9822,73 @@
           "documentation":"<p>The content of the updated resource policy.</p>"
         }
       }
+    },
+    "Qev2IdcApplication":{
+      "type":"structure",
+      "members":{
+        "IdcInstanceArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) for the IAM Identity Center instance that the Amazon Redshift Query Editor (QEV2) application integrates with.</p>"
+        },
+        "Qev2IdcApplicationName":{
+          "shape":"Qev2IdcApplicationName",
+          "documentation":"<p>The name of the Amazon Redshift Query Editor (QEV2) application in IAM Identity Center.</p>"
+        },
+        "Qev2IdcApplicationArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) for the Amazon Redshift Query Editor (QEV2) application that integrates with IAM Identity Center.</p>"
+        },
+        "IdcManagedApplicationArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) for the Amazon Redshift Query Editor (QEV2) IAM Identity Center managed application.</p>"
+        },
+        "IdcOnboardStatus":{
+          "shape":"String",
+          "documentation":"<p>The onboarding status for the Amazon Redshift Query Editor (QEV2) IAM Identity Center application.</p>"
+        },
+        "IdcDisplayName":{
+          "shape":"IdcDisplayNameString",
+          "documentation":"<p>The display name for the Amazon Redshift Query Editor (QEV2) IAM Identity Center application. It appears in the console.</p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>A list of tags associated with the application. Tags are key-value pairs that you can use to organize and identify your resources.</p>"
+        }
+      },
+      "documentation":"<p>Contains configuration and status information for an Amazon Redshift Query Editor (QEV2) application that is registered with IAM Identity Center.</p>",
+      "wrapper":true
+    },
+    "Qev2IdcApplicationAlreadyExistsFault":{
+      "type":"structure",
+      "members":{},
+      "documentation":"<p>The Amazon Redshift Query Editor (QEV2) IAM Identity Center application already exists. Use a different application name or describe existing applications to find the ARN.</p>",
+      "error":{
+        "code":"Qev2IdcApplicationAlreadyExists",
+        "httpStatusCode":400,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "Qev2IdcApplicationList":{
+      "type":"list",
+      "member":{"shape":"Qev2IdcApplication"}
+    },
+    "Qev2IdcApplicationName":{
+      "type":"string",
+      "max":63,
+      "min":1,
+      "pattern":"[a-z][a-z0-9]*(-[a-z0-9]+)*"
+    },
+    "Qev2IdcApplicationNotExistsFault":{
+      "type":"structure",
+      "members":{},
+      "documentation":"<p>The specified Amazon Redshift Query Editor (QEV2) IAM Identity Center application doesn't exist. Verify that the application ARN is correct and that the application exists in this Region.</p>",
+      "error":{
+        "code":"Qev2IdcApplicationNotExists",
+        "httpStatusCode":404,
+        "senderFault":true
+      },
+      "exception":true
     },
     "ReadWriteAccess":{
       "type":"structure",

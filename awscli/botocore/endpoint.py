@@ -21,7 +21,7 @@ import uuid
 
 from botocore import parsers
 from botocore.awsrequest import create_request_object
-from botocore.exceptions import HTTPClientError
+from botocore.exceptions import HTTPClientError, InvalidConfigError
 from botocore.history import get_global_history_recorder
 from botocore.hooks import first_non_none_response
 from botocore.httpchecksum import handle_checksum_body
@@ -441,7 +441,21 @@ class EndpointCreator:
         # First, if verify is not None, then the user explicitly specified
         # a value so this automatically wins.
         if verify is not None:
-            return verify
+            return self._validate_verify_value(verify)
         # Otherwise use the value from REQUESTS_CA_BUNDLE, or default to
         # True if the env var does not exist.
-        return os.environ.get('REQUESTS_CA_BUNDLE', True)
+        return self._validate_verify_value(
+            os.environ.get('REQUESTS_CA_BUNDLE', True)
+        )
+
+    def _validate_verify_value(self, verify):
+        if isinstance(verify, str) and not verify.strip():
+            raise InvalidConfigError(
+                error_msg=(
+                    'Invalid CA bundle: the configured value (ca_bundle, '
+                    'AWS_CA_BUNDLE, REQUESTS_CA_BUNDLE, or verify) resolved '
+                    'to an empty or whitespace-only string. Provide a valid '
+                    'path to a CA bundle file.'
+                )
+            )
+        return verify

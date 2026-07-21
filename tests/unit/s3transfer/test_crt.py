@@ -14,7 +14,11 @@ import io
 
 import pytest
 from botocore.credentials import Credentials, ReadOnlyCredentials
-from botocore.exceptions import ClientError, NoCredentialsError
+from botocore.exceptions import (
+    ClientError,
+    InvalidConfigError,
+    NoCredentialsError,
+)
 from botocore.session import Session
 from s3transfer.constants import GB
 from s3transfer.exceptions import TransferNotDoneError
@@ -366,6 +370,22 @@ class TestCreateS3CRTClient:
     def test_always_enables_s3express(self, mock_s3_crt_client):
         s3transfer.crt.create_s3_crt_client('us-west-2')
         assert mock_s3_crt_client.call_args[1]['enable_s3express'] is True
+
+    def test_empty_verify_value_raises(self, mock_s3_crt_client):
+        with pytest.raises(InvalidConfigError):
+            s3transfer.crt.create_s3_crt_client('us-west-2', verify='')
+
+    def test_whitespace_verify_value_raises(self, mock_s3_crt_client):
+        with pytest.raises(InvalidConfigError):
+            s3transfer.crt.create_s3_crt_client('us-west-2', verify='   ')
+
+    def test_verify_false_disables_verification(self, mock_s3_crt_client):
+        with (
+            mock.patch('s3transfer.crt.TlsContextOptions') as mock_tls_options,
+            mock.patch('s3transfer.crt.ClientTlsContext'),
+        ):
+            s3transfer.crt.create_s3_crt_client('us-west-2', verify=False)
+        assert mock_tls_options.return_value.verify_peer is False
 
     @pytest.mark.parametrize(
         'fio_options,should_stream,disk_throughput,direct_io',

@@ -42,7 +42,7 @@ from awscrt.s3 import (
 from botocore import UNSIGNED
 from botocore.compat import urlsplit
 from botocore.config import Config
-from botocore.exceptions import NoCredentialsError
+from botocore.exceptions import InvalidConfigError, NoCredentialsError
 from botocore.useragent import register_feature_id
 from botocore.utils import ArnParser, InvalidArnException, is_s3express_bucket
 from s3transfer.constants import FULL_OBJECT_CHECKSUM_ARGS, MB
@@ -146,6 +146,15 @@ def create_s3_crt_client(
         S3RequestTlsMode.ENABLED if use_ssl else S3RequestTlsMode.DISABLED
     )
     if verify is not None:
+        if isinstance(verify, str) and not verify.strip():
+            raise InvalidConfigError(
+                error_msg=(
+                    'Invalid CA bundle: the configured value (ca_bundle, '
+                    'AWS_CA_BUNDLE, REQUESTS_CA_BUNDLE, or verify) resolved '
+                    'to an empty or whitespace-only string. Provide a valid '
+                    'path to a CA bundle file.'
+                )
+            )
         tls_ctx_options = TlsContextOptions()
         if verify:
             tls_ctx_options.override_default_trust_store_from_path(

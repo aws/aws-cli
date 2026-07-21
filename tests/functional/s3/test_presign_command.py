@@ -22,13 +22,13 @@ from awscli.testutils import (
     temporary_file,
 )
 
-# Values used to fix time.time() and datetime.datetime.utcnow()
+# Values used to fix time.time() and datetime.datetime.now()
 # so we know the exact values of the signatures generated.
 FROZEN_TIMESTAMP = 1471305652
 DEFAULT_EXPIRES = 3600
 FROZEN_TIME = mock.Mock(return_value=FROZEN_TIMESTAMP)
 FROZEN_DATETIME = mock.Mock(
-    return_value=datetime.datetime(2016, 8, 18, 14, 33, 3, 0)
+    return_value=datetime.datetime(2016, 8, 18, 14, 33, 3, 0, tzinfo=datetime.timezone.utc)
 )
 
 
@@ -76,7 +76,7 @@ class TestPresignCommand(BaseAWSCommandParamsTest):
     def get_presigned_url_for_cmd(self, cmdline):
         with mock.patch('time.time', FROZEN_TIME):
             with mock.patch('datetime.datetime') as d:
-                d.utcnow = FROZEN_DATETIME
+                d.now = FROZEN_DATETIME
                 stdout = self.assert_params_for_cmd(cmdline, None)[0].strip()
                 return stdout
 

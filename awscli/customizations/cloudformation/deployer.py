@@ -15,7 +15,7 @@ import collections
 import logging
 import sys
 import time
-from datetime import datetime
+from datetime import datetime, timezone
 
 import botocore
 
@@ -98,7 +98,7 @@ class Deployer:
         :return:
         """
 
-        now = datetime.utcnow().isoformat()
+        now = datetime.now(timezone.utc).isoformat()
         description = f"Created by AWS CLI at {now} UTC"
 
         # Each changeset will get a unique name based on time

@@ -111,7 +111,7 @@ from dateutil.tz import tzoffset, tzutc
 
 from tests import FreezeTime, RawResponse, create_session, mock, unittest
 
-DATE = datetime.datetime(2021, 12, 10, 00, 00, 00)
+DATE = datetime.datetime(2021, 12, 10, 00, 00, 00, tzinfo=datetime.timezone.utc)
 DT_FORMAT = "%Y-%m-%dT%H:%M:%SZ"
 
 
@@ -3238,7 +3238,7 @@ class TestInstanceMetadataFetcher(unittest.TestCase):
 
     def _get_datetime(self, dt=None, offset=None, offset_func=operator.add):
         if dt is None:
-            dt = datetime.datetime.utcnow()
+            dt = datetime.datetime.now(datetime.timezone.utc).replace(tzinfo=None)
         if offset is not None:
             dt = offset_func(dt, offset)
 

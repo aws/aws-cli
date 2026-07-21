@@ -289,6 +289,14 @@ def get_tzinfo_options():
         return (tzlocal,)
 
 
+def get_current_datetime(remove_tzinfo=True):
+    """Retrieve the current timezone in UTC, with or without an explicit timezone."""
+    datetime_now = datetime.datetime.now(datetime.timezone.utc)
+    if remove_tzinfo:
+        datetime_now = datetime_now.replace(tzinfo=None)
+    return datetime_now
+
+
 ########################################################
 #              urllib3 compat backports                #
 ########################################################

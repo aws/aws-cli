@@ -50,7 +50,7 @@ class TestGenerateDBConnectAuthToken(BaseTestGenerateDBConnectAuthToken):
         clock = datetime.datetime(2024, 11, 7, 17, 39, 33, tzinfo=tzutc())
 
         with mock.patch('datetime.datetime') as dt:
-            dt.utcnow.return_value = clock
+            dt.now.return_value = clock
             stdout, _, _ = self.run_cmd(command, expected_rc=0)
 
         # Expected hashes are always the same as session variables come from the BaseAwsCommandParamsTest class
@@ -79,7 +79,7 @@ class TestGenerateDBConnectAuthToken(BaseTestGenerateDBConnectAuthToken):
         clock = datetime.datetime(2024, 11, 7, 17, 39, 33, tzinfo=tzutc())
 
         with mock.patch('datetime.datetime') as dt:
-            dt.utcnow.return_value = clock
+            dt.now.return_value = clock
             stdout, _, _ = self.run_cmd(command, expected_rc=252)
 
 
@@ -92,7 +92,7 @@ class TestGenerateDBConnectAdminAuthToken(BaseTestGenerateDBConnectAuthToken):
         clock = datetime.datetime(2024, 11, 7, 17, 39, 33, tzinfo=tzutc())
 
         with mock.patch('datetime.datetime') as dt:
-            dt.utcnow.return_value = clock
+            dt.now.return_value = clock
             stdout, _, _ = self.run_cmd(command, expected_rc=0)
 
         # Expected hashes are always the same as session variables come from the BaseAwsCommandParamsTest class

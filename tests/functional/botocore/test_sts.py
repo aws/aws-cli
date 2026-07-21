@@ -10,8 +10,8 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import datetime
 import re
-from datetime import datetime
 
 from botocore.config import Config
 from botocore.stub import Stubber
@@ -32,9 +32,9 @@ class TestSTSPresignedUrl(BaseSessionTest):
         self.stubber.activate()
 
     def test_presigned_url_contains_no_content_type(self):
-        timestamp = datetime(2017, 3, 22, 0, 0)
-        with mock.patch('botocore.auth.datetime') as _datetime:
-            _datetime.datetime.utcnow.return_value = timestamp
+        timestamp = datetime.datetime(2017, 3, 22, 0, 0, tzinfo=datetime.timezone.utc)
+        with mock.patch('botocore.auth.datetime.datetime') as _datetime:
+            _datetime.now.return_value = timestamp
             url = self.client.generate_presigned_url('get_caller_identity', {})
 
         # There should be no 'content-type' in x-amz-signedheaders

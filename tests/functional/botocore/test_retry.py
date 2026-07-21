@@ -263,7 +263,7 @@ class TestRetryHeader(BaseRetryTest):
             mock.Mock(wraps=datetime.datetime),
         )
         mocked_datetime = datetime_patcher.start()
-        mocked_datetime.utcnow.side_effect = utcnow_side_effects
+        mocked_datetime.now.side_effect = utcnow_side_effects
 
         client = self.session.create_client(
             'dynamodb', self.region, config=client_config

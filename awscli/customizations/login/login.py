@@ -14,6 +14,9 @@ from botocore.utils import (
 )
 
 from awscli.compat import compat_input
+from awscli.customizations.agenttoolkit.hint import (
+    maybe_prompt_agent_toolkit,
+)
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.configure.writer import ConfigFileWriter
 from awscli.customizations.exceptions import ConfigurationError
@@ -92,7 +95,8 @@ class LoginCommand(BasicCommand):
         # If the profile specified via --profile doesn't already exist
         # add it to the session so the client creation still succeeds.
         # If the login is successful we'll save the profile at the end.
-        if profile_name not in self._session.available_profiles:
+        is_new_profile = profile_name not in self._session.available_profiles
+        if is_new_profile:
             self._session._profile_map[profile_name] = {}
 
         # Abort if the profile is already configured with a different style
@@ -152,6 +156,11 @@ class LoginCommand(BasicCommand):
                 f'Use "--profile {profile_name}" to use the new credentials, '
                 f'such as "aws sts get-caller-identity --profile {profile_name}"\n'
             )
+
+        # Only nudge on first-time setup (a newly created profile), not on
+        # routine re-auth of an existing profile.
+        if is_new_profile:
+            maybe_prompt_agent_toolkit(self._session, parsed_globals)
 
     def accept_change_to_existing_profile_if_needed(
         self, profile_name, new_session_id

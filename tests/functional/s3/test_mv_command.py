@@ -48,6 +48,19 @@ class TestMvCommand(BaseS3TransferCommandTest):
             'http://someserver'
         )
 
+    def test_upload_with_tagging(self):
+        full_path = self.files.create_file('foo.txt', 'mycontent')
+        cmdline = (
+            '%s %s s3://bucket/key.txt --tags key1 value1 --tags key2 value2' %
+            (self.prefix, full_path))
+        self.parsed_responses = [{'ETag': '"c8afdb36c52cf4727836669019e69222"'}]
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assertEqual(self.operations_called[0][0].name, 'PutObject')
+        self.assertEqual(
+            self.operations_called[0][1]['Tagging'],
+            'key1=value1&key2=value2'
+        )
+
     def test_metadata_directive_copy(self):
         self.parsed_responses = [
             {

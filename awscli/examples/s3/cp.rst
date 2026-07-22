@@ -200,3 +200,12 @@ The following ``cp`` command downloads a single object (``mykey``) from the acce
 Output::
 
     download: s3://arn:aws:s3:us-west-2:123456789012:accesspoint/myaccesspoint/mykey to mydoc.txt
+
+**Example 16: Uploading an object and applying tags**
+
+The following ``cp`` command uploads a single file to a specified bucket and key and applies two tags to the object as
+it is created, so no separate ``put-object-tagging`` call is needed::
+
+    aws s3 cp test.txt s3://amzn-s3-demo-bucket/test.txt \
+        --tags Key1 Value1 \
+        --tags Key2 Value2

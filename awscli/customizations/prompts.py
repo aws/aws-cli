@@ -35,6 +35,27 @@ def yes_no_choice(prompt):
             uni_print('Invalid response. Please enter "y" or "n"\n')
 
 
+def yes_no_never_choice(prompt):
+    """
+    Prompts the user with a yes/no/never question.
+    Continually re-prompts for invalid selections.
+
+    :param prompt: Prompt text.
+    :returns: 'yes', 'no', or 'never'.
+    """
+    while True:
+        response = compat_input(prompt)
+
+        if response.lower() in ('y', 'yes') or response == '':
+            return 'yes'
+        elif response.lower() in ('n', 'no'):
+            return 'no'
+        elif response.lower() == 'never':
+            return 'never'
+        else:
+            uni_print('Invalid response. Please enter "y", "n", or "never"\n')
+
+
 def multiselect_choice(
     message,
     items,

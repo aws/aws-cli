@@ -264,7 +264,8 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"IllegalStateException"},
         {"shape":"AccessDeniedException"},
-        {"shape":"IllegalArgumentException"}
+        {"shape":"IllegalArgumentException"},
+        {"shape":"ConflictException"}
       ],
       "documentation":"<p>Starts the execution of a Region switch plan. You can execute a plan in either <code>graceful</code> or <code>ungraceful</code> mode.</p> <p>Specifing <code>ungraceful</code> mode either changes the behavior of the execution blocks in a workflow or skips specific execution blocks.</p>"
     },
@@ -784,6 +785,27 @@
     "CancelPlanExecutionResponse":{
       "type":"structure",
       "members":{}
+    },
+    "ConflictException":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{"shape":"String"},
+        "resourceId":{
+          "shape":"String",
+          "documentation":"<p>The identifier of the resource involved in the client token conflict.</p>"
+        },
+        "resourceType":{
+          "shape":"String",
+          "documentation":"<p>The type of the resource involved in the client token conflict.</p>"
+        }
+      },
+      "documentation":"<p>The client token was already used with different request parameters. A client token must map to the same parameters for every request. To retry this operation, provide a new client token.</p>",
+      "error":{
+        "httpStatusCode":409,
+        "senderFault":true
+      },
+      "exception":true
     },
     "CreatePlanRequest":{
       "type":"structure",
@@ -2916,8 +2938,19 @@
         "recoveryExecutionId":{
           "shape":"RecoveryExecutionId",
           "documentation":"<p>The execution identifier of the recovery execution that ran in the opposite region post-recovery is ran in. Required when starting a post-recovery execution.</p>"
+        },
+        "clientToken":{
+          "shape":"StartPlanExecutionRequestClientTokenString",
+          "documentation":"<p>A unique, case-sensitive identifier to ensure that the operation completes no more than one time. If this token matches a previous request, the service ignores the request and returns the result of the original successful request. If you don't provide a client token, the service automatically generates one. For more information about idempotency, see <a href=\"https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/\">Making retries safe with idempotent APIs</a>.</p>",
+          "idempotencyToken":true
         }
       }
+    },
+    "StartPlanExecutionRequestClientTokenString":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"[\\x21-\\x7E]+"
     },
     "StartPlanExecutionResponse":{
       "type":"structure",

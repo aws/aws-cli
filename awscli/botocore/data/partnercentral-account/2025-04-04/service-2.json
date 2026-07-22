@@ -287,6 +287,60 @@
       "documentation":"<p>Retrieves the visibility settings for a partner profile, determining who can see the profile information.</p>",
       "readonly":true
     },
+    "GetQualificationsAssociationDetails":{
+      "name":"GetQualificationsAssociationDetails",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetQualificationsAssociationDetailsRequest"},
+      "output":{"shape":"GetQualificationsAssociationDetailsResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Returns your current qualifications association status, the primary partner, and the full list of partners associated under the primary partner.</p>",
+      "readonly":true
+    },
+    "GetQualificationsAssociationTask":{
+      "name":"GetQualificationsAssociationTask",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetQualificationsAssociationTaskRequest"},
+      "output":{"shape":"GetQualificationsAssociationTaskResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Retrieves the status and details of the most recent qualifications association task for your partner account. Use this operation to poll the progress of an association task initiated by <code>StartQualificationsAssociationTask</code>.</p>",
+      "readonly":true
+    },
+    "GetQualificationsDisassociationTask":{
+      "name":"GetQualificationsDisassociationTask",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetQualificationsDisassociationTaskRequest"},
+      "output":{"shape":"GetQualificationsDisassociationTaskResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Retrieves the status and details of the most recent qualifications disassociation task for your partner account. Use this operation to poll the progress of a disassociation task initiated by <code>StartQualificationsDisassociationTask</code>.</p>",
+      "readonly":true
+    },
     "GetVerification":{
       "name":"GetVerification",
       "http":{
@@ -462,6 +516,44 @@
         {"shape":"ServiceQuotaExceededException"}
       ],
       "documentation":"<p>Initiates a profile update task to modify partner profile information asynchronously.</p>",
+      "idempotent":true
+    },
+    "StartQualificationsAssociationTask":{
+      "name":"StartQualificationsAssociationTask",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"StartQualificationsAssociationTaskRequest"},
+      "output":{"shape":"StartQualificationsAssociationTaskResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Initiates an asynchronous task to associate your partner qualifications with a primary account. You must be a subsidiary of the primary account with an active subsidiary connection. Use <code>GetQualificationsAssociationTask</code> to monitor task progress.</p>",
+      "idempotent":true
+    },
+    "StartQualificationsDisassociationTask":{
+      "name":"StartQualificationsDisassociationTask",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"StartQualificationsDisassociationTaskRequest"},
+      "output":{"shape":"StartQualificationsDisassociationTaskResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Initiates an asynchronous task to disassociate your partner qualifications from a primary account. You must currently be associated and cannot disassociate if you are the primary partner. Use <code>GetQualificationsDisassociationTask</code> to monitor task progress.</p>",
       "idempotent":true
     },
     "StartVerification":{
@@ -680,6 +772,13 @@
       "type":"structure",
       "members":{}
     },
+    "AssociatedPartnerList":{
+      "type":"list",
+      "member":{"shape":"QualificationsAssociationPartner"},
+      "documentation":"<p>A list of partner profile and account identifiers representing all partners associated under the primary partner.</p>",
+      "max":6,
+      "min":0
+    },
     "AwsAccountId":{
       "type":"string",
       "pattern":"[0-9]{12}"
@@ -694,7 +793,13 @@
         "INVALID_ACCOUNT_LINKING_STATUS",
         "INVALID_ACCOUNT_STATE",
         "INCOMPATIBLE_DOMAIN",
-        "INELIGIBLE_ACCOUNT_TIER"
+        "INELIGIBLE_ACCOUNT_TIER",
+        "MISSING_ACTIVE_SUBSIDIARY_CONNECTION",
+        "INCOMPATIBLE_SUBSIDIARY_CONNECTION",
+        "INCOMPATIBLE_PRIMARY_PARTNER",
+        "QUALIFICATIONS_ASSOCIATION_LIMIT_EXCEEDED",
+        "QUALIFICATIONS_ASSOCIATION_NOT_FOUND",
+        "QUALIFICATIONS_ASSOCIATION_EXISTS"
       ]
     },
     "BusinessValidationError":{
@@ -1060,7 +1165,8 @@
         "INCOMPATIBLE_CONNECTION_STATE",
         "INCOMPATIBLE_CONNECTION_PREFERENCES_REVISION",
         "ACCOUNT_ALREADY_VERIFIED",
-        "VERIFICATION_ALREADY_IN_PROGRESS"
+        "VERIFICATION_ALREADY_IN_PROGRESS",
+        "INCOMPATIBLE_QUALIFICATIONS_ASSOCIATION_TASK_STATE"
       ]
     },
     "Connection":{
@@ -2080,6 +2186,188 @@
         }
       }
     },
+    "GetQualificationsAssociationDetailsRequest":{
+      "type":"structure",
+      "required":[
+        "Catalog",
+        "Identifier"
+      ],
+      "members":{
+        "Catalog":{
+          "shape":"Catalog",
+          "documentation":"<p>The catalog in which to look up the qualifications association. Valid values: <code>AWS</code>, <code>Sandbox</code>.</p>"
+        },
+        "Identifier":{
+          "shape":"PartnerIdentifier",
+          "documentation":"<p>Your partner identifier. You can provide either a partner ID (for example, <code>partner-abc123</code>) or a partner ARN. You must own this identifier.</p>"
+        }
+      }
+    },
+    "GetQualificationsAssociationDetailsResponse":{
+      "type":"structure",
+      "required":[
+        "Catalog",
+        "Arn",
+        "Id",
+        "Status"
+      ],
+      "members":{
+        "Catalog":{
+          "shape":"Catalog",
+          "documentation":"<p>The catalog identifier echoed from the request.</p>"
+        },
+        "Arn":{
+          "shape":"PartnerArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) that uniquely identifies your partner resource.</p>"
+        },
+        "Id":{
+          "shape":"PartnerId",
+          "documentation":"<p>Your unique partner identifier in the AWS Partner Network.</p>"
+        },
+        "Status":{
+          "shape":"QualificationsAssociationStatus",
+          "documentation":"<p>The current qualifications association status. Valid values: <code>ASSOCIATED</code> (the partner is associated with a primary), <code>NOT_ASSOCIATED</code> (the partner has no active association).</p>"
+        },
+        "PrimaryPartner":{
+          "shape":"QualificationsAssociationPartner",
+          "documentation":"<p>The primary partner's profile and account identifiers. This field is null when the status is <code>NOT_ASSOCIATED</code>.</p>"
+        },
+        "AssociatedPartners":{
+          "shape":"AssociatedPartnerList",
+          "documentation":"<p>The list of all partner profile and account identifiers currently associated under the primary partner. This field is null when the status is <code>NOT_ASSOCIATED</code>.</p>"
+        },
+        "UpdatedAt":{
+          "shape":"DateTime",
+          "documentation":"<p>The timestamp when the qualifications association was last updated, in ISO 8601 format. This field is null when the status is <code>NOT_ASSOCIATED</code>.</p>"
+        }
+      }
+    },
+    "GetQualificationsAssociationTaskRequest":{
+      "type":"structure",
+      "required":[
+        "Catalog",
+        "Identifier"
+      ],
+      "members":{
+        "Catalog":{
+          "shape":"Catalog",
+          "documentation":"<p>The catalog in which to look up the qualifications association task. Valid values: <code>AWS</code>, <code>Sandbox</code>.</p>"
+        },
+        "Identifier":{
+          "shape":"PartnerIdentifier",
+          "documentation":"<p>Your partner identifier. You can provide either a partner ID (for example, <code>partner-abc123</code>) or a partner ARN. You must own this identifier.</p>"
+        }
+      }
+    },
+    "GetQualificationsAssociationTaskResponse":{
+      "type":"structure",
+      "required":[
+        "Catalog",
+        "Arn",
+        "Id",
+        "TaskId",
+        "Status",
+        "PrimaryPartner",
+        "StartedAt"
+      ],
+      "members":{
+        "Catalog":{
+          "shape":"Catalog",
+          "documentation":"<p>The catalog identifier echoed from the request.</p>"
+        },
+        "Arn":{
+          "shape":"PartnerArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) that uniquely identifies your partner resource.</p>"
+        },
+        "Id":{
+          "shape":"PartnerId",
+          "documentation":"<p>Your unique partner identifier in the AWS Partner Network.</p>"
+        },
+        "TaskId":{
+          "shape":"QualificationsAssociationTaskId",
+          "documentation":"<p>The unique identifier of the qualifications association task, in the format <code>pqatask-[a-z2-7]{13}</code>.</p>"
+        },
+        "Status":{
+          "shape":"QualificationsAssociationTaskStatus",
+          "documentation":"<p>The current status of the qualifications association task. Valid values: <code>IN_PROGRESS</code>, <code>SUCCEEDED</code>.</p>"
+        },
+        "PrimaryPartner":{
+          "shape":"QualificationsAssociationPartner",
+          "documentation":"<p>The primary partner's profile and account identifiers that the task is associating qualifications with.</p>"
+        },
+        "StartedAt":{
+          "shape":"DateTime",
+          "documentation":"<p>The timestamp when the qualifications association task started, in ISO 8601 format.</p>"
+        },
+        "EndedAt":{
+          "shape":"DateTime",
+          "documentation":"<p>The timestamp when the qualifications association task ended, in ISO 8601 format. This field is present only when the status is <code>SUCCEEDED</code>.</p>"
+        }
+      }
+    },
+    "GetQualificationsDisassociationTaskRequest":{
+      "type":"structure",
+      "required":[
+        "Catalog",
+        "Identifier"
+      ],
+      "members":{
+        "Catalog":{
+          "shape":"Catalog",
+          "documentation":"<p>The catalog in which to look up the qualifications disassociation task. Valid values: <code>AWS</code>, <code>Sandbox</code>.</p>"
+        },
+        "Identifier":{
+          "shape":"PartnerIdentifier",
+          "documentation":"<p>Your partner identifier. You can provide either a partner ID (for example, <code>partner-abc123</code>) or a partner ARN. You must own this identifier.</p>"
+        }
+      }
+    },
+    "GetQualificationsDisassociationTaskResponse":{
+      "type":"structure",
+      "required":[
+        "Catalog",
+        "Arn",
+        "Id",
+        "TaskId",
+        "Status",
+        "AssociatedPartner",
+        "StartedAt"
+      ],
+      "members":{
+        "Catalog":{
+          "shape":"Catalog",
+          "documentation":"<p>The catalog identifier echoed from the request.</p>"
+        },
+        "Arn":{
+          "shape":"PartnerArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) that uniquely identifies your partner resource.</p>"
+        },
+        "Id":{
+          "shape":"PartnerId",
+          "documentation":"<p>Your unique partner identifier in the AWS Partner Network.</p>"
+        },
+        "TaskId":{
+          "shape":"QualificationsDisassociationTaskId",
+          "documentation":"<p>The unique identifier of the qualifications disassociation task, in the format <code>pqdtask-[a-z2-7]{13}</code>.</p>"
+        },
+        "Status":{
+          "shape":"QualificationsDisassociationTaskStatus",
+          "documentation":"<p>The current status of the qualifications disassociation task. Valid values: <code>IN_PROGRESS</code>, <code>SUCCEEDED</code>.</p>"
+        },
+        "AssociatedPartner":{
+          "shape":"QualificationsAssociationPartner",
+          "documentation":"<p>The primary partner's profile and account identifiers that the task is disassociating qualifications from.</p>"
+        },
+        "StartedAt":{
+          "shape":"DateTime",
+          "documentation":"<p>The timestamp when the qualifications disassociation task started, in ISO 8601 format.</p>"
+        },
+        "EndedAt":{
+          "shape":"DateTime",
+          "documentation":"<p>The timestamp when the qualifications disassociation task ended, in ISO 8601 format. This field is present only when the status is <code>SUCCEEDED</code>.</p>"
+        }
+      }
+    },
     "GetVerificationRequest":{
       "type":"structure",
       "required":["VerificationType"],
@@ -2770,6 +3058,58 @@
         }
       }
     },
+    "QualificationsAssociationPartner":{
+      "type":"structure",
+      "members":{
+        "ProfileId":{
+          "shape":"PartnerProfileId",
+          "documentation":"<p>The unique identifier for the partner profile, in the format <code>pprofile-*</code>. Required in requests if <code>AccountId</code> is not provided.</p>"
+        },
+        "AccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The 12-digit AWS account ID linked to the partner profile. Required in requests if <code>ProfileId</code> is not provided.</p>"
+        }
+      },
+      "documentation":"<p>Identifies a partner in a qualifications association group. Contains the partner's profile identifier and AWS account identifier. In requests, provide at least one of <code>ProfileId</code> or <code>AccountId</code>. In responses, both fields are populated.</p>"
+    },
+    "QualificationsAssociationStatus":{
+      "type":"string",
+      "documentation":"<p>The current state of a partner qualifications association. Valid values: <code>ASSOCIATED</code> (the partner is associated with a primary), <code>NOT_ASSOCIATED</code> (the partner has no active association).</p>",
+      "enum":[
+        "ASSOCIATED",
+        "NOT_ASSOCIATED"
+      ]
+    },
+    "QualificationsAssociationTaskId":{
+      "type":"string",
+      "documentation":"<p>The unique identifier for a qualifications association task, in the format <code>pqatask-[a-z2-7]{13}</code>.</p>",
+      "max":80,
+      "min":1,
+      "pattern":"pqatask-[A-Za-z0-9]{13}"
+    },
+    "QualificationsAssociationTaskStatus":{
+      "type":"string",
+      "documentation":"<p>The current status of a qualifications association task. Valid values: <code>IN_PROGRESS</code> (task is running), <code>SUCCEEDED</code> (task completed successfully).</p>",
+      "enum":[
+        "IN_PROGRESS",
+        "SUCCEEDED"
+      ]
+    },
+    "QualificationsDisassociationTaskId":{
+      "type":"string",
+      "documentation":"<p>The unique identifier for a qualifications disassociation task, in the format <code>pqdtask-[a-z2-7]{13}</code>.</p>",
+      "max":80,
+      "min":1,
+      "pattern":"pqdtask-[A-Za-z0-9]{13}"
+    },
+    "QualificationsDisassociationTaskStatus":{
+      "type":"string",
+      "documentation":"<p>The current status of a qualifications disassociation task. Valid values: <code>IN_PROGRESS</code> (task is running), <code>SUCCEEDED</code> (task completed successfully).</p>",
+      "enum":[
+        "IN_PROGRESS",
+        "SUCCEEDED"
+      ]
+    },
     "RegistrantVerificationDetails":{
       "type":"structure",
       "members":{},
@@ -2940,7 +3280,9 @@
         "RECEIVER_PROFILE_NOT_FOUND",
         "CONNECTION_INVITATION_NOT_FOUND",
         "CONNECTION_NOT_FOUND",
-        "VERIFICATION_NOT_FOUND"
+        "VERIFICATION_NOT_FOUND",
+        "QUALIFICATIONS_ASSOCIATION_TASK_NOT_FOUND",
+        "QUALIFICATIONS_DISASSOCIATION_TASK_NOT_FOUND"
       ]
     },
     "Revision":{
@@ -3101,6 +3443,144 @@
         "ErrorDetailList":{
           "shape":"ErrorDetailList",
           "documentation":"<p>A list of error details if any errors occurred during the profile update task.</p>"
+        }
+      }
+    },
+    "StartQualificationsAssociationTaskRequest":{
+      "type":"structure",
+      "required":[
+        "Catalog",
+        "Identifier",
+        "PrimaryPartner"
+      ],
+      "members":{
+        "Catalog":{
+          "shape":"Catalog",
+          "documentation":"<p>The catalog in which to perform the qualifications association. Valid values: <code>AWS</code>, <code>Sandbox</code>.</p>"
+        },
+        "Identifier":{
+          "shape":"PartnerIdentifier",
+          "documentation":"<p>Your partner identifier. You can provide either a partner ID (for example, <code>partner-abc123</code>) or a partner ARN. You must own this identifier.</p>"
+        },
+        "ClientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request.</p>",
+          "idempotencyToken":true
+        },
+        "PrimaryPartner":{
+          "shape":"QualificationsAssociationPartner",
+          "documentation":"<p>The primary (acquiring) partner's profile and account identifier to associate qualifications with. You must provide at least one of <code>ProfileId</code> or <code>AccountId</code>. You cannot specify yourself as the primary partner.</p>"
+        }
+      }
+    },
+    "StartQualificationsAssociationTaskResponse":{
+      "type":"structure",
+      "required":[
+        "Catalog",
+        "Arn",
+        "Id",
+        "TaskId",
+        "Status",
+        "PrimaryPartner",
+        "StartedAt"
+      ],
+      "members":{
+        "Catalog":{
+          "shape":"Catalog",
+          "documentation":"<p>The catalog identifier echoed from the request.</p>"
+        },
+        "Arn":{
+          "shape":"PartnerArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) that uniquely identifies your partner resource.</p>"
+        },
+        "Id":{
+          "shape":"PartnerId",
+          "documentation":"<p>Your unique partner identifier in the AWS Partner Network.</p>"
+        },
+        "TaskId":{
+          "shape":"QualificationsAssociationTaskId",
+          "documentation":"<p>The unique identifier of the started qualifications association task, in the format <code>pqatask-[a-z2-7]{13}</code>.</p>"
+        },
+        "Status":{
+          "shape":"QualificationsAssociationTaskStatus",
+          "documentation":"<p>The current status of the qualifications association task. The initial value is <code>IN_PROGRESS</code>.</p>"
+        },
+        "PrimaryPartner":{
+          "shape":"QualificationsAssociationPartner",
+          "documentation":"<p>The resolved primary partner's profile and account identifiers, including both <code>ProfileId</code> and <code>AccountId</code>.</p>"
+        },
+        "StartedAt":{
+          "shape":"DateTime",
+          "documentation":"<p>The timestamp when the qualifications association task started, in ISO 8601 format.</p>"
+        }
+      }
+    },
+    "StartQualificationsDisassociationTaskRequest":{
+      "type":"structure",
+      "required":[
+        "Catalog",
+        "Identifier",
+        "AssociatedPartner"
+      ],
+      "members":{
+        "Catalog":{
+          "shape":"Catalog",
+          "documentation":"<p>The catalog in which to perform the qualifications disassociation. Valid values: <code>AWS</code>, <code>Sandbox</code>.</p>"
+        },
+        "Identifier":{
+          "shape":"PartnerIdentifier",
+          "documentation":"<p>Your partner identifier. You can provide either a partner ID (for example, <code>partner-abc123</code>) or a partner ARN. You must own this identifier.</p>"
+        },
+        "ClientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request.</p>",
+          "idempotencyToken":true
+        },
+        "AssociatedPartner":{
+          "shape":"QualificationsAssociationPartner",
+          "documentation":"<p>The primary partner's profile and account identifier that you are currently associated with and will disassociate from. You must provide at least one of <code>ProfileId</code> or <code>AccountId</code>. The specified partner must match your current primary association.</p>"
+        }
+      }
+    },
+    "StartQualificationsDisassociationTaskResponse":{
+      "type":"structure",
+      "required":[
+        "Catalog",
+        "Arn",
+        "Id",
+        "TaskId",
+        "Status",
+        "AssociatedPartner",
+        "StartedAt"
+      ],
+      "members":{
+        "Catalog":{
+          "shape":"Catalog",
+          "documentation":"<p>The catalog identifier echoed from the request.</p>"
+        },
+        "Arn":{
+          "shape":"PartnerArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) that uniquely identifies your partner resource.</p>"
+        },
+        "Id":{
+          "shape":"PartnerId",
+          "documentation":"<p>Your unique partner identifier in the AWS Partner Network.</p>"
+        },
+        "TaskId":{
+          "shape":"QualificationsDisassociationTaskId",
+          "documentation":"<p>The unique identifier of the started qualifications disassociation task, in the format <code>pqdtask-[a-z2-7]{13}</code>.</p>"
+        },
+        "Status":{
+          "shape":"QualificationsDisassociationTaskStatus",
+          "documentation":"<p>The current status of the qualifications disassociation task. The initial value is <code>IN_PROGRESS</code>.</p>"
+        },
+        "AssociatedPartner":{
+          "shape":"QualificationsAssociationPartner",
+          "documentation":"<p>The resolved primary partner's profile and account identifiers that the task is disassociating qualifications from.</p>"
+        },
+        "StartedAt":{
+          "shape":"DateTime",
+          "documentation":"<p>The timestamp when the qualifications disassociation task started, in ISO 8601 format.</p>"
         }
       }
     },

@@ -25,6 +25,25 @@ that you migrate to
 For dates, additional details, and information on how to migrate,
 please refer to the linked announcement.
 
+
+===========================
+AWS CLI v1 (Maintenance Mode)
+===========================
+
+This repository contains the **AWS Command Line Interface (AWS CLI) version 1** codebase and documentation.
+
+If you are looking for **AWS CLI v2**, please visit the `v2 branch <https://github.com/aws/aws-cli/tree/v2>`_.  
+AWS CLI v2 is the recommended version for most users.
+
+---------------------------
+Which version should I use?
+---------------------------
+
+- **Use AWS CLI v2** if you are new to the CLI or starting a new project.  
+- **Use AWS CLI v1** only if you have an existing workflow that depends on it.  
+- AWS CLI v1 will enter **maintenance mode on July 15, 2026**, and will receive only critical fixes.
+
+
 Getting Started
 ---------------
 

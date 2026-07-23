@@ -5,8 +5,11 @@
     "auth":["aws.auth#sigv4"],
     "endpointPrefix":"bcm-pricing-calculator",
     "jsonVersion":"1.0",
-    "protocol":"json",
-    "protocols":["json"],
+    "protocol":"smithy-rpc-v2-cbor",
+    "protocols":[
+      "smithy-rpc-v2-cbor",
+      "json"
+    ],
     "serviceFullName":"AWS Billing and Cost Management Pricing Calculator",
     "serviceId":"BCM Pricing Calculator",
     "signatureVersion":"v4",
@@ -718,6 +721,10 @@
         "message":{"shape":"String"}
       },
       "documentation":"<p> You do not have sufficient access to perform this action. </p>",
+      "error":{
+        "httpStatusCode":403,
+        "senderFault":true
+      },
       "exception":true
     },
     "AccountId":{
@@ -2152,6 +2159,10 @@
         }
       },
       "documentation":"<p> The request could not be processed because of conflict in the current state of the resource. </p>",
+      "error":{
+        "httpStatusCode":409,
+        "senderFault":true
+      },
       "exception":true
     },
     "CostAmount":{
@@ -2414,6 +2425,10 @@
         "message":{"shape":"String"}
       },
       "documentation":"<p> The requested data is currently unavailable. </p>",
+      "error":{
+        "httpStatusCode":400,
+        "senderFault":true
+      },
       "exception":true
     },
     "DeleteBillEstimateRequest":{
@@ -2783,6 +2798,7 @@
         }
       },
       "documentation":"<p> An internal error has occurred. Retry your request, but if the problem persists, contact Amazon Web Services support. </p>",
+      "error":{"httpStatusCode":500},
       "exception":true,
       "fault":true
     },
@@ -3455,6 +3471,10 @@
         }
       },
       "documentation":"<p> The specified resource was not found. </p>",
+      "error":{
+        "httpStatusCode":404,
+        "senderFault":true
+      },
       "exception":true
     },
     "ResourceTagKey":{
@@ -3523,6 +3543,10 @@
         }
       },
       "documentation":"<p> The request would cause you to exceed your service quota. </p>",
+      "error":{
+        "httpStatusCode":402,
+        "senderFault":true
+      },
       "exception":true
     },
     "String":{"type":"string"},
@@ -3577,6 +3601,10 @@
         }
       },
       "documentation":"<p> The request was denied due to request throttling. </p>",
+      "error":{
+        "httpStatusCode":429,
+        "senderFault":true
+      },
       "exception":true
     },
     "Timestamp":{"type":"timestamp"},
@@ -3927,6 +3955,10 @@
         }
       },
       "documentation":"<p> The input provided fails to satisfy the constraints specified by an Amazon Web Services service. </p>",
+      "error":{
+        "httpStatusCode":400,
+        "senderFault":true
+      },
       "exception":true
     },
     "ValidationExceptionField":{

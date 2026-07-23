@@ -1037,6 +1037,16 @@
         }
       }
     },
+    "DisplayConfiguration":{
+      "type":"structure",
+      "members":{
+        "Resolution":{
+          "shape":"Resolution",
+          "documentation":"<p>The resolution to apply to the stream session's virtual monitor. When specified, this value overrides the default resolution of 1920 × 1080.</p>"
+        }
+      },
+      "documentation":"<p>The virtual monitor settings for a stream session, including the resolution. If not specified, the stream session uses the default resolution of 1920 × 1080.</p>"
+    },
     "EnvironmentVariables":{
       "type":"map",
       "key":{"shape":"EnvironmentVariablesKeyString"},
@@ -1390,6 +1400,10 @@
         "RoleArn":{
           "shape":"IamRoleArn",
           "documentation":"<p>The ARN of the AWS Identity and Access Management (IAM) role that Amazon GameLift Streams assumes on behalf of your application during the stream session.</p>"
+        },
+        "DisplayConfiguration":{
+          "shape":"DisplayConfiguration",
+          "documentation":"<p>The configuration for the stream session's virtual monitor.</p>"
         }
       }
     },
@@ -1809,6 +1823,36 @@
       "type":"list",
       "member":{"shape":"ReplicationStatus"}
     },
+    "Resolution":{
+      "type":"structure",
+      "required":[
+        "Width",
+        "Height"
+      ],
+      "members":{
+        "Width":{
+          "shape":"ResolutionWidth",
+          "documentation":"<p>The width of the stream session's virtual monitor, in pixels. The value must be an even number.</p>"
+        },
+        "Height":{
+          "shape":"ResolutionHeight",
+          "documentation":"<p>The height of the stream session's virtual monitor, in pixels. The value must be an even number.</p>"
+        }
+      },
+      "documentation":"<p>Contains the width and height dimensions, in pixels, that define the resolution of the stream session's virtual monitor. The total number of pixels (width × height) must not exceed 2,073,600 (equivalent to 1920 × 1080).</p>"
+    },
+    "ResolutionHeight":{
+      "type":"integer",
+      "box":true,
+      "max":4096,
+      "min":320
+    },
+    "ResolutionWidth":{
+      "type":"integer",
+      "box":true,
+      "max":4096,
+      "min":320
+    },
     "ResourceNotFoundException":{
       "type":"structure",
       "required":["Message"],
@@ -1959,6 +2003,10 @@
         "RoleArn":{
           "shape":"IamRoleArn",
           "documentation":"<p>The ARN of an AWS Identity and Access Management (IAM) role that Amazon GameLift Streams assumes on your behalf during the stream session. The role grants Amazon GameLift Streams permission to obtain temporary credentials for your application. The role's trust policy must allow the <code>gameliftstreams.amazonaws.com</code> service principal to assume it. The role name must start with <code>GameLiftStreams-</code>.</p>"
+        },
+        "DisplayConfiguration":{
+          "shape":"DisplayConfiguration",
+          "documentation":"<p>The configuration for the stream session's virtual monitor, including the resolution settings.</p> <p>If not specified, Amazon GameLift Streams uses the default resolution of 1920 × 1080.</p>"
         }
       }
     },
@@ -2052,6 +2100,10 @@
         "RoleArn":{
           "shape":"IamRoleArn",
           "documentation":"<p>The ARN of the AWS Identity and Access Management (IAM) role that Amazon GameLift Streams assumes on behalf of your application during the stream session.</p>"
+        },
+        "DisplayConfiguration":{
+          "shape":"DisplayConfiguration",
+          "documentation":"<p>The configuration for the stream session's virtual monitor.</p>"
         }
       }
     },

@@ -5,8 +5,11 @@
     "auth":["aws.auth#sigv4"],
     "endpointPrefix":"workspaces-instances",
     "jsonVersion":"1.0",
-    "protocol":"json",
-    "protocols":["json"],
+    "protocol":"smithy-rpc-v2-cbor",
+    "protocols":[
+      "smithy-rpc-v2-cbor",
+      "json"
+    ],
     "serviceFullName":"Amazon Workspaces Instances",
     "serviceId":"Workspaces Instances",
     "signatureVersion":"v4",
@@ -264,6 +267,10 @@
         }
       },
       "documentation":"<p>Indicates insufficient permissions to perform the requested action.</p>",
+      "error":{
+        "httpStatusCode":403,
+        "senderFault":true
+      },
       "exception":true
     },
     "AmdSevSnpEnum":{
@@ -408,6 +415,7 @@
       "type":"string",
       "max":64,
       "min":1,
+      "pattern":"[\\x20-\\x7E]+",
       "sensitive":true
     },
     "ConflictException":{
@@ -432,6 +440,10 @@
         }
       },
       "documentation":"<p>Signals a conflict with the current state of the resource.</p>",
+      "error":{
+        "httpStatusCode":409,
+        "senderFault":true
+      },
       "exception":true
     },
     "ConnectionTrackingSpecificationRequest":{
@@ -1073,6 +1085,8 @@
     },
     "InstanceType":{
       "type":"string",
+      "max":64,
+      "min":1,
       "pattern":"([a-z0-9-]+)\\.([a-z0-9]+)"
     },
     "InstanceTypeInfo":{
@@ -1119,6 +1133,7 @@
         }
       },
       "documentation":"<p>Indicates an unexpected server-side error occurred.</p>",
+      "error":{"httpStatusCode":500},
       "exception":true,
       "fault":true,
       "retryable":{"throttling":false}
@@ -1627,6 +1642,10 @@
         }
       },
       "documentation":"<p>Indicates the requested resource could not be found.</p>",
+      "error":{
+        "httpStatusCode":404,
+        "senderFault":true
+      },
       "exception":true
     },
     "ResourceTypeEnum":{
@@ -1696,6 +1715,10 @@
         }
       },
       "documentation":"<p>Indicates that a service quota has been exceeded.</p>",
+      "error":{
+        "httpStatusCode":402,
+        "senderFault":true
+      },
       "exception":true
     },
     "SnapshotId":{
@@ -1883,6 +1906,10 @@
         }
       },
       "documentation":"<p>Indicates the request rate has exceeded limits.</p>",
+      "error":{
+        "httpStatusCode":429,
+        "senderFault":true
+      },
       "exception":true,
       "retryable":{"throttling":true}
     },
@@ -1937,6 +1964,10 @@
         }
       },
       "documentation":"<p>Indicates invalid input parameters in the request.</p>",
+      "error":{
+        "httpStatusCode":400,
+        "senderFault":true
+      },
       "exception":true
     },
     "ValidationExceptionField":{

@@ -3236,7 +3236,7 @@
     },
     "AgentRuntimeArn":{
       "type":"string",
-      "pattern":"arn:(-[^:]+)?:bedrock-agentcore:[a-z0-9-]+:[0-9]{12}:agent/[A-Fa-f0-9]{8}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{12}:([0-9]{0,4}[1-9][0-9]{0,4})"
+      "pattern":"arn:aws(-[^:]+)?:bedrock-agentcore:[a-z0-9-]+:[0-9]{12}:runtime/[a-zA-Z][a-zA-Z0-9_]{0,47}-[a-zA-Z0-9]{10}"
     },
     "AgentRuntimeArtifact":{
       "type":"structure",
@@ -3310,7 +3310,7 @@
     },
     "AgentRuntimeEndpointArn":{
       "type":"string",
-      "pattern":"arn:(-[^:]+)?:bedrock-agentcore:[a-z0-9-]+:[0-9]{12}:agentEndpoint/[A-Fa-f0-9]{8}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{12}"
+      "pattern":"arn:aws(-[^:]+)?:bedrock-agentcore:[a-z0-9-]+:[0-9]{12}:runtime/[a-zA-Z][a-zA-Z0-9_]{0,47}-[a-zA-Z0-9]{10}/runtime-endpoint/[a-zA-Z][a-zA-Z0-9_]{0,47}"
     },
     "AgentRuntimeEndpointId":{
       "type":"string",
@@ -3837,7 +3837,7 @@
     },
     "BrowserProfileArn":{
       "type":"string",
-      "pattern":"arn:(-[^:]+)?:bedrock-agentcore:[a-z0-9-]+:[0-9]{12}:browser-profile/[a-zA-Z][a-zA-Z0-9_]{0,47}-[a-zA-Z0-9]{10}"
+      "pattern":"arn:aws(-[^:]+)?:bedrock-agentcore:[a-z0-9-]+:[0-9]{12}:browser-profile/[a-zA-Z][a-zA-Z0-9_]{0,47}-[a-zA-Z0-9]{10}"
     },
     "BrowserProfileId":{
       "type":"string",
@@ -5080,6 +5080,10 @@
           "shape":"Certificates",
           "documentation":"<p>A list of certificates to install in the browser.</p>"
         },
+        "filesystemConfigurations":{
+          "shape":"ToolsFileSystemConfigurations",
+          "documentation":"<p>The file system configurations to mount into the browser. Use these configurations to mount your own Amazon Simple Storage Service (Amazon S3) Files or Amazon Elastic File System (Amazon EFS) access points. Your sessions can then access your data. If you don't specify this field, no file systems are mounted.</p>"
+        },
         "clientToken":{
           "shape":"ClientToken",
           "documentation":"<p>A unique, case-sensitive identifier to ensure that the operation completes no more than one time. If this token matches a previous request, Amazon Bedrock AgentCore ignores the request but does not return an error.</p>",
@@ -5144,6 +5148,10 @@
         "certificates":{
           "shape":"Certificates",
           "documentation":"<p>A list of certificates to install in the code interpreter.</p>"
+        },
+        "filesystemConfigurations":{
+          "shape":"ToolsFileSystemConfigurations",
+          "documentation":"<p>The file system configurations to mount into the code interpreter. Use these configurations to mount your own Amazon Simple Storage Service (Amazon S3) Files or Amazon Elastic File System (Amazon EFS) access points. Your sessions can then access your data. If you don't specify this field, no file systems are mounted.</p>"
         },
         "clientToken":{
           "shape":"ClientToken",
@@ -8500,6 +8508,36 @@
       },
       "documentation":"<p>Configuration for an Amazon EFS access point filesystem mounted into the AgentCore Runtime. EFS access points provide shared file storage accessible from your AgentCore Runtime sessions.</p>"
     },
+    "EfsConfiguration":{
+      "type":"structure",
+      "required":[
+        "accessPointArn",
+        "mountPath",
+        "fileSystemArn"
+      ],
+      "members":{
+        "accessPointArn":{
+          "shape":"EfsAccessPointArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon Elastic File System (Amazon EFS) access point to mount.</p>"
+        },
+        "mountPath":{
+          "shape":"MountPath",
+          "documentation":"<p>The absolute path within the session at which the access point is mounted, for example <code>/mnt/efs</code>. Each mount path must be unique across all file system configurations in the session.</p>"
+        },
+        "fileSystemArn":{
+          "shape":"EfsFileSystemArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon Elastic File System (Amazon EFS) file system that owns the access point.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for mounting an Amazon Elastic File System (Amazon EFS) access point that you own into a session.</p>"
+    },
+    "EfsFileSystemArn":{
+      "type":"string",
+      "documentation":"<p>The Amazon Resource Name (ARN) of an Amazon Elastic File System (Amazon EFS) file system. The access points you specify must belong to this file system.</p>",
+      "max":256,
+      "min":0,
+      "pattern":"arn:aws[-a-z]*:elasticfilesystem:[a-z0-9-]+:[0-9]{12}:file-system/fs-[0-9a-f]{8,40}"
+    },
     "EnabledConnectors":{
       "type":"list",
       "member":{"shape":"String"},
@@ -9874,6 +9912,10 @@
           "shape":"Certificates",
           "documentation":"<p>The list of certificates configured for the browser.</p>"
         },
+        "filesystemConfigurations":{
+          "shape":"ToolsFileSystemConfigurations",
+          "documentation":"<p>The file system configurations mounted into the browser. Each entry describes an access point and its mount path.</p>"
+        },
         "status":{
           "shape":"BrowserStatus",
           "documentation":"<p>The current status of the browser.</p>"
@@ -9944,6 +9986,10 @@
         "certificates":{
           "shape":"Certificates",
           "documentation":"<p>The list of certificates configured for the code interpreter.</p>"
+        },
+        "filesystemConfigurations":{
+          "shape":"ToolsFileSystemConfigurations",
+          "documentation":"<p>The file system configurations mounted into the code interpreter. Each entry describes an access point and its mount path.</p>"
         },
         "failureReason":{
           "shape":"String",
@@ -17849,6 +17895,36 @@
       },
       "documentation":"<p>Configuration for an Amazon S3 Files access point filesystem mounted into the AgentCore Runtime. S3 Files access points provide shared file storage accessible from your AgentCore Runtime sessions.</p>"
     },
+    "S3FilesConfiguration":{
+      "type":"structure",
+      "required":[
+        "accessPointArn",
+        "mountPath",
+        "fileSystemArn"
+      ],
+      "members":{
+        "accessPointArn":{
+          "shape":"S3FilesAccessPointArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon Simple Storage Service (Amazon S3) Files access point to mount.</p>"
+        },
+        "mountPath":{
+          "shape":"MountPath",
+          "documentation":"<p>The absolute path within the session at which the access point is mounted, for example <code>/mnt/s3data</code>. Each mount path must be unique across all file system configurations in the session.</p>"
+        },
+        "fileSystemArn":{
+          "shape":"S3FilesFileSystemArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon Simple Storage Service (Amazon S3) Files file system that owns the access point.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for mounting an Amazon Simple Storage Service (Amazon S3) Files access point that you own into a session.</p>"
+    },
+    "S3FilesFileSystemArn":{
+      "type":"string",
+      "documentation":"<p>The Amazon Resource Name (ARN) of an Amazon Simple Storage Service (Amazon S3) Files file system. The access points you specify must belong to this file system.</p>",
+      "max":256,
+      "min":0,
+      "pattern":"arn:aws[-a-z]*:s3files:[a-z0-9-]+:[0-9]{12}:file-system/fs-[0-9a-f]{17,40}"
+    },
     "S3Location":{
       "type":"structure",
       "required":[
@@ -19490,6 +19566,28 @@
         }
       },
       "documentation":"<p>The tools definition for an MCP descriptor. Contains the protocol version and inline content describing the available tools.</p>"
+    },
+    "ToolsFileSystemConfiguration":{
+      "type":"structure",
+      "members":{
+        "s3FilesConfiguration":{
+          "shape":"S3FilesConfiguration",
+          "documentation":"<p>The configuration for mounting your own Amazon Simple Storage Service (Amazon S3) Files access point into the session.</p>"
+        },
+        "efsConfiguration":{
+          "shape":"EfsConfiguration",
+          "documentation":"<p>The configuration for mounting your own Amazon Elastic File System (Amazon EFS) access point into the session.</p>"
+        }
+      },
+      "documentation":"<p>Specifies a file system to mount into the session by providing exactly one of the following:</p> <ul> <li> <p> <code>s3FilesConfiguration</code> - Mounts an Amazon Simple Storage Service (Amazon S3) Files access point.</p> </li> <li> <p> <code>efsConfiguration</code> - Mounts an Amazon Elastic File System (Amazon EFS) access point.</p> </li> </ul>",
+      "union":true
+    },
+    "ToolsFileSystemConfigurations":{
+      "type":"list",
+      "member":{"shape":"ToolsFileSystemConfiguration"},
+      "documentation":"<p>The file system configurations to mount into the session. Each configuration maps an access point to a path inside the session. You can specify up to 4 configurations. The maximum is 2 Amazon Simple Storage Service (Amazon S3) Files access points and 2 Amazon Elastic File System (Amazon EFS) access points.</p>",
+      "max":10,
+      "min":0
     },
     "TopK":{
       "type":"integer",

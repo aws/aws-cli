@@ -3344,6 +3344,28 @@
       "documentation":"<p>Starts a notebook run in Amazon SageMaker Unified Studio. A notebook run represents the execution of an <a href=\"https://docs.aws.amazon.com/sagemaker-unified-studio/latest/userguide/notebooks.html\">Amazon SageMaker notebook</a> within a project. You can configure compute, network, timeout, and environment settings for the run.</p>",
       "idempotent":true
     },
+    "StartNotebookSync":{
+      "name":"StartNotebookSync",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v2/domains/{domainIdentifier}/notebook-syncs",
+        "responseCode":201
+      },
+      "input":{"shape":"StartNotebookSyncInput"},
+      "output":{"shape":"StartNotebookSyncOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"UnauthorizedException"}
+      ],
+      "documentation":"<p>Starts a notebook sync in Amazon SageMaker Unified Studio. This operation syncs a notebook from a Git repository into a project.</p>",
+      "idempotent":true
+    },
     "StopNotebookRun":{
       "name":"StopNotebookRun",
       "http":{
@@ -5809,6 +5831,18 @@
     "ColumnNameList":{
       "type":"list",
       "member":{"shape":"String"}
+    },
+    "CommitHash":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"[a-zA-Z0-9]+"
+    },
+    "CommitMessage":{
+      "type":"string",
+      "max":2048,
+      "min":0,
+      "sensitive":true
     },
     "CompletedAt":{"type":"timestamp"},
     "ComputeConfig":{
@@ -8614,6 +8648,10 @@
         "error":{
           "shape":"NotebookError",
           "documentation":"<p>The error details if the notebook creation failed.</p>"
+        },
+        "gitMetadata":{
+          "shape":"GitMetadata",
+          "documentation":"<p>The Git metadata associated with the notebook.</p>"
         }
       }
     },
@@ -12249,6 +12287,11 @@
         "IPYNB"
       ]
     },
+    "FileName":{
+      "type":"string",
+      "max":255,
+      "min":1
+    },
     "Filter":{
       "type":"structure",
       "required":["attribute"],
@@ -14935,6 +14978,10 @@
         "error":{
           "shape":"NotebookError",
           "documentation":"<p>The error details if the notebook is in a failed state.</p>"
+        },
+        "gitMetadata":{
+          "shape":"GitMetadata",
+          "documentation":"<p>The Git metadata associated with the notebook.</p>"
         }
       }
     },
@@ -15852,6 +15899,64 @@
           "documentation":"<p>The user profile details.</p>"
         }
       }
+    },
+    "GitBranch":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "sensitive":true
+    },
+    "GitConnectionId":{
+      "type":"string",
+      "max":40,
+      "min":1,
+      "pattern":"[a-zA-Z0-9_-]+"
+    },
+    "GitMetadata":{
+      "type":"structure",
+      "required":[
+        "connectionId",
+        "repository",
+        "branch",
+        "commitHash"
+      ],
+      "members":{
+        "connectionId":{
+          "shape":"GitConnectionId",
+          "documentation":"<p>The identifier of the Git connection.</p>"
+        },
+        "repository":{
+          "shape":"GitRepository",
+          "documentation":"<p>The name of the Git repository.</p>"
+        },
+        "branch":{
+          "shape":"GitBranch",
+          "documentation":"<p>The name of the Git branch.</p>"
+        },
+        "commitHash":{
+          "shape":"CommitHash",
+          "documentation":"<p>The commit hash in the Git repository.</p>"
+        },
+        "fileName":{
+          "shape":"FileName",
+          "documentation":"<p>The name of the file in the Git repository.</p>"
+        },
+        "committedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp of when the commit was made.</p>"
+        },
+        "commitMessage":{
+          "shape":"CommitMessage",
+          "documentation":"<p>The commit message associated with the Git commit.</p>"
+        }
+      },
+      "documentation":"<p>The Git metadata for a notebook sync operation in Amazon SageMaker Unified Studio. Contains information about the Git repository, branch, and commit associated with the notebook.</p>"
+    },
+    "GitRepository":{
+      "type":"string",
+      "max":512,
+      "min":1,
+      "sensitive":true
     },
     "GlobalParameterMap":{
       "type":"map",
@@ -20445,7 +20550,9 @@
       "documentation":"<p>The status of a notebook in Amazon SageMaker Unified Studio.</p>",
       "enum":[
         "ACTIVE",
-        "ARCHIVED"
+        "ARCHIVED",
+        "SYNC_IN_PROGRESS",
+        "SYNC_FAILED"
       ]
     },
     "NotebookSummary":{
@@ -24773,6 +24880,96 @@
         }
       }
     },
+    "StartNotebookSyncInput":{
+      "type":"structure",
+      "required":[
+        "domainIdentifier",
+        "owningProjectIdentifier",
+        "sourceLocation"
+      ],
+      "members":{
+        "domainIdentifier":{
+          "shape":"DomainId",
+          "documentation":"<p>The identifier of the Amazon SageMaker Unified Studio domain in which to sync the notebook.</p>",
+          "location":"uri",
+          "locationName":"domainIdentifier"
+        },
+        "owningProjectIdentifier":{
+          "shape":"ProjectId",
+          "documentation":"<p>The identifier of the project that will own the synced notebook.</p>"
+        },
+        "sourceLocation":{
+          "shape":"SourceLocation",
+          "documentation":"<p>The source location of the notebook to sync. This specifies the Amazon Simple Storage Service URI of the notebook file.</p>"
+        },
+        "gitMetadata":{
+          "shape":"GitMetadata",
+          "documentation":"<p>The Git metadata for the notebook sync, including repository, branch, and commit information.</p>"
+        },
+        "notebookId":{
+          "shape":"NotebookId",
+          "documentation":"<p>The identifier of an existing notebook to sync. If not specified, a new notebook is created.</p>"
+        },
+        "name":{
+          "shape":"NotebookName",
+          "documentation":"<p>The name of the notebook. The name must be between 1 and 256 characters.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>The description of the notebook.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier to ensure idempotency of the request. This field is automatically populated if not provided.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "StartNotebookSyncOutput":{
+      "type":"structure",
+      "members":{
+        "notebookId":{
+          "shape":"NotebookId",
+          "documentation":"<p>The identifier of the synced notebook.</p>"
+        },
+        "status":{
+          "shape":"NotebookStatus",
+          "documentation":"<p>The status of the notebook sync.</p>"
+        },
+        "domainId":{
+          "shape":"DomainId",
+          "documentation":"<p>The identifier of the Amazon SageMaker Unified Studio domain.</p>"
+        },
+        "owningProjectId":{
+          "shape":"ProjectId",
+          "documentation":"<p>The identifier of the project that owns the synced notebook.</p>"
+        },
+        "sourceLocation":{
+          "shape":"SourceLocation",
+          "documentation":"<p>The source location from which the notebook was synced.</p>"
+        },
+        "gitMetadata":{
+          "shape":"GitMetadata",
+          "documentation":"<p>The Git metadata associated with the synced notebook.</p>"
+        },
+        "name":{
+          "shape":"NotebookName",
+          "documentation":"<p>The name of the synced notebook.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>The description of the synced notebook.</p>"
+        },
+        "createdAt":{
+          "shape":"CreatedAt",
+          "documentation":"<p>The timestamp of when the notebook sync was started.</p>"
+        },
+        "createdBy":{
+          "shape":"CreatedBy",
+          "documentation":"<p>The identifier of the user who started the notebook sync.</p>"
+        }
+      }
+    },
     "Status":{
       "type":"string",
       "enum":[
@@ -27481,6 +27678,10 @@
         "error":{
           "shape":"NotebookError",
           "documentation":"<p>The error details if the notebook is in a failed state.</p>"
+        },
+        "gitMetadata":{
+          "shape":"GitMetadata",
+          "documentation":"<p>The Git metadata associated with the notebook.</p>"
         }
       }
     },

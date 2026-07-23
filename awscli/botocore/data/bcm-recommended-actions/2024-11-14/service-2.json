@@ -5,8 +5,11 @@
     "auth":["aws.auth#sigv4"],
     "endpointPrefix":"bcm-recommended-actions",
     "jsonVersion":"1.0",
-    "protocol":"json",
-    "protocols":["json"],
+    "protocol":"smithy-rpc-v2-cbor",
+    "protocols":[
+      "smithy-rpc-v2-cbor",
+      "json"
+    ],
     "serviceFullName":"AWS Billing and Cost Management Recommended Actions",
     "serviceId":"BCM Recommended Actions",
     "signatureVersion":"v4",
@@ -40,6 +43,10 @@
         "message":{"shape":"String"}
       },
       "documentation":"<p>You do not have sufficient access to perform this action.</p>",
+      "error":{
+        "httpStatusCode":403,
+        "senderFault":true
+      },
       "exception":true
     },
     "AccountId":{
@@ -146,6 +153,7 @@
         "message":{"shape":"String"}
       },
       "documentation":"<p>An unexpected error occurred during the processing of your request.</p>",
+      "error":{"httpStatusCode":500},
       "exception":true,
       "fault":true
     },
@@ -272,6 +280,10 @@
         "message":{"shape":"String"}
       },
       "documentation":"<p>The request was denied due to request throttling.</p>",
+      "error":{
+        "httpStatusCode":429,
+        "senderFault":true
+      },
       "exception":true
     },
     "ValidationException":{
@@ -292,6 +304,10 @@
         }
       },
       "documentation":"<p>The input fails to satisfy the constraints specified by an Amazon Web Services service.</p>",
+      "error":{
+        "httpStatusCode":400,
+        "senderFault":true
+      },
       "exception":true
     },
     "ValidationExceptionField":{

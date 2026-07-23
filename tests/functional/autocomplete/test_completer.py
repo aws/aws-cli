@@ -60,6 +60,7 @@ class TestShorthandCompleter(unittest.TestCase):
                                 'string',
                                 'aws',
                                 '',
+                                'The region to use',
                                 None,
                                 False,
                                 False,
@@ -69,6 +70,7 @@ class TestShorthandCompleter(unittest.TestCase):
                                 'string',
                                 'aws',
                                 '',
+                                'The formatting style for command output',
                                 None,
                                 False,
                                 False,
@@ -78,6 +80,7 @@ class TestShorthandCompleter(unittest.TestCase):
                                 'string',
                                 'aws',
                                 '',
+                                'Turn on debug logging',
                                 None,
                                 False,
                                 False,
@@ -91,6 +94,7 @@ class TestShorthandCompleter(unittest.TestCase):
                                 'structure',
                                 'create-project',
                                 'aws.codebuild.',
+                                'Information about the build input source code for the build project',
                                 None,
                                 False,
                                 False,
@@ -100,6 +104,7 @@ class TestShorthandCompleter(unittest.TestCase):
                                 'structure',
                                 'create-project',
                                 'aws.codebuild.',
+                                'An array of ProjectSource objects',
                                 None,
                                 False,
                                 False,
@@ -113,6 +118,7 @@ class TestShorthandCompleter(unittest.TestCase):
                                 'map',
                                 'put-item',
                                 'aws.dynamodb.',
+                                'A map of attribute name/value pairs, one for  each  attribute',
                                 None,
                                 False,
                                 False,
@@ -126,6 +132,7 @@ class TestShorthandCompleter(unittest.TestCase):
                                 'structure',
                                 'bundle-instance',
                                 'aws.ec2.',
+                                'The bucket in which to store the AMI',
                                 None,
                                 False,
                                 False,
@@ -139,6 +146,7 @@ class TestShorthandCompleter(unittest.TestCase):
                                 'list',
                                 'deploy',
                                 'aws.cloudformation.',
+                                'A list of capabilities that you must specify before AWS Cloudformation can create certain stacks',
                                 None,
                                 False,
                                 False,
@@ -555,8 +563,6 @@ class TestShorthandCompleter(unittest.TestCase):
 
 class TestModelIndexCompleter(unittest.TestCase):
     def setUp(self):
-        cli_driver = CLIDriver()
-        self.cli_fetcher = fetcher.CliDriverFetcher(cli_driver)
         self.index = InMemoryIndex(
             {
                 'command_names': {
@@ -575,6 +581,7 @@ class TestModelIndexCompleter(unittest.TestCase):
                                 'string',
                                 'aws',
                                 '',
+                                "Override command's default URL with the given URL",
                                 None,
                                 False,
                                 False,
@@ -584,6 +591,7 @@ class TestModelIndexCompleter(unittest.TestCase):
                                 'string',
                                 'aws',
                                 '',
+                                'The region to use',
                                 None,
                                 False,
                                 False,
@@ -594,9 +602,7 @@ class TestModelIndexCompleter(unittest.TestCase):
             }
         )
         self.parser = parser.CLIParser(self.index)
-        self.completer = basic.ModelIndexCompleter(
-            self.index, cli_driver_fetcher=self.cli_fetcher
-        )
+        self.completer = basic.ModelIndexCompleter(self.index)
 
     def test_returns_help_text_for_params_in_global_scope(self):
         parsed = self.parser.parse('aws --re')
@@ -631,6 +637,7 @@ class TestQueryCompleter(unittest.TestCase):
                                 'string',
                                 'aws',
                                 '',
+                                'A JMESPath query to use in filtering the response data',
                                 None,
                                 False,
                                 False,
@@ -640,6 +647,7 @@ class TestQueryCompleter(unittest.TestCase):
                                 'string',
                                 'aws',
                                 '',
+                                'The formatting style for command output',
                                 None,
                                 False,
                                 False,

@@ -98,6 +98,8 @@ def test_crt_get_optimized_platforms_match_expected_platforms():
 class TestClientFactory(unittest.TestCase):
     def setUp(self):
         self.session = mock.Mock(Session)
+        self.original_factory = mock.Mock()
+        self.session.get_component.return_value = self.original_factory
         self.factory = ClientFactory(self.session)
 
     def test_create_client(self):
@@ -153,6 +155,76 @@ class TestClientFactory(unittest.TestCase):
             'paths_type': 's3s3',
         }
         self.factory.create_client(params, is_source_client=True)
+        self.session.create_client.assert_called_with(
+            's3', region_name='us-west-1', endpoint_url=None, verify=True
+        )
+
+    def test_create_listing_client_uses_temporary_identity_parser(self):
+        params = {
+            'region': 'us-west-2',
+            'endpoint_url': 'https://myendpoint',
+            'verify_ssl': True,
+        }
+        temp_factory = mock.Mock()
+        with mock.patch(
+            'awscli.customizations.s3.factory.ResponseParserFactory',
+            return_value=temp_factory,
+        ):
+            self.factory.create_listing_client(params=params)
+
+        temp_factory.set_parser_defaults.assert_called_once()
+        timestamp_parser = temp_factory.set_parser_defaults.call_args[1][
+            'timestamp_parser'
+        ]
+        self.assertEqual(timestamp_parser('timestamp'), 'timestamp')
+        self.assertEqual(
+            self.session.register_component.call_args_list,
+            [
+                mock.call('response_parser_factory', temp_factory),
+                mock.call('response_parser_factory', self.original_factory),
+            ],
+        )
+        self.session.create_client.assert_called_with(
+            's3',
+            region_name='us-west-2',
+            endpoint_url='https://myendpoint',
+            verify=True,
+        )
+
+    def test_create_listing_client_restores_factory_after_error(self):
+        params = {
+            'region': 'us-west-2',
+            'endpoint_url': None,
+            'verify_ssl': None,
+        }
+        self.session.create_client.side_effect = RuntimeError('boom')
+        temp_factory = mock.Mock()
+
+        with mock.patch(
+            'awscli.customizations.s3.factory.ResponseParserFactory',
+            return_value=temp_factory,
+        ):
+            with self.assertRaisesRegex(RuntimeError, 'boom'):
+                self.factory.create_listing_client(params=params)
+
+        self.assertEqual(
+            self.session.register_component.call_args_list[-1],
+            mock.call('response_parser_factory', self.original_factory),
+        )
+
+    def test_create_listing_client_respects_source_region_for_copies(self):
+        params = {
+            'region': 'us-west-2',
+            'endpoint_url': 'https://myendpoint',
+            'verify_ssl': True,
+            'source_region': 'us-west-1',
+            'paths_type': 's3s3',
+        }
+        with mock.patch('awscli.customizations.s3.factory.ResponseParserFactory'):
+            self.factory.create_listing_client(
+                params, is_source_client=True
+            )
+
         self.session.create_client.assert_called_with(
             's3', region_name='us-west-1', endpoint_url=None, verify=True
         )

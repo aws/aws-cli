@@ -1035,6 +1035,30 @@ class TestConfigureSSOCommand:
             ],
         )
 
+    def test_prompts_agent_toolkit_after_configuring_profile(
+        self,
+        sso_cmd,
+        ptk_stubber,
+        aws_config,
+        stub_simple_single_item_sso_responses,
+        args,
+        parsed_globals,
+        configure_sso_legacy_inputs,
+        account_id,
+        role_name,
+    ):
+        inputs = configure_sso_legacy_inputs
+        inputs.skip_account_and_role_selection()
+        ptk_stubber.user_inputs = inputs
+        stub_simple_single_item_sso_responses(account_id, role_name)
+
+        with mock.patch(
+            'awscli.customizations.configure.sso_commands.'
+            'maybe_prompt_agent_toolkit'
+        ) as prompt:
+            sso_cmd(args, parsed_globals)
+        prompt.assert_called_once()
+
     def test_no_accounts_flow_raises_error(
         self,
         sso_cmd,

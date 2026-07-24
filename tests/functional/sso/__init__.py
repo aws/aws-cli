@@ -168,14 +168,17 @@ class BaseSSOTest(BaseAWSCommandParamsTest):
             verificationUriComplete, kwargs['verificationUriComplete']
         )
 
-    def assert_auth_browser_handler_called_with(self, expected_scopes):
+    def assert_auth_browser_handler_called_with(
+        self, expected_scopes, expected_redirect_port=55555
+    ):
         # The endpoint is subject to the endpoint rules, and the
         # code_challenge is not fixed so assert against the rest of the url
         expected_url = (
             'authorize?'
             'response_type=code'
             '&client_id=auth-client-id'
-            '&redirect_uri=http%3A%2F%2F127.0.0.1%3A55555%2Foauth%2Fcallback'
+            '&redirect_uri=http%3A%2F%2F127.0.0.1%3A'
+            f'{expected_redirect_port}%2Foauth%2Fcallback'
             '&state=00000000-0000-0000-0000-000000000000'
             '&code_challenge_method=S256'
             '&scopes=' + expected_scopes
@@ -197,7 +200,9 @@ class BaseSSOTest(BaseAWSCommandParamsTest):
         )
         return content
 
-    def get_sso_session_config(self, session_name, include_profile=True):
+    def get_sso_session_config(
+        self, session_name, include_profile=True, redirect_port=None
+    ):
         content = ''
         if include_profile:
             content += (
@@ -213,7 +218,9 @@ class BaseSSOTest(BaseAWSCommandParamsTest):
         )
         if self.registration_scopes:
             scopes = ', '.join(self.registration_scopes)
-            content += f'sso_registration_scopes={scopes}'
+            content += f'sso_registration_scopes={scopes}\n'
+        if redirect_port is not None:
+            content += f'sso_redirect_port={redirect_port}\n'
         return content
 
     def set_config_file_content(self, content=None):

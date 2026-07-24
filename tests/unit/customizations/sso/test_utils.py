@@ -330,3 +330,48 @@ def test_get_auth_code_and_state_timeout():
     """
     with pytest.raises(PendingAuthorizationExpiredError):
         AuthCodeFetcher().get_auth_code_and_state()
+
+
+def test_auth_code_fetcher_default_port_is_random():
+    # Default (port=0) lets the OS pick a free port; the assigned port is
+    # non-zero after the server is bound.
+    fetcher = AuthCodeFetcher()
+    assigned_port = fetcher.http_server.server_address[1]
+    assert assigned_port != 0
+    fetcher.http_server.server_close()
+
+
+def test_auth_code_fetcher_respects_fixed_port():
+    # Regression test for #10433: when a specific port is requested the server
+    # must listen on exactly that port so SSH port-forwarding can be
+    # pre-configured.
+    fetcher = AuthCodeFetcher()
+    free_port = fetcher.http_server.server_address[1]
+    fetcher.http_server.server_close()
+
+    fetcher2 = AuthCodeFetcher(port=free_port)
+    assert fetcher2.http_server.server_address[1] == free_port
+    fetcher2.http_server.server_close()
+
+
+def test_do_sso_login_passes_redirect_port_to_auth_code_fetcher():
+    # Regression test for #10433: redirect_port must be forwarded all the way
+    # from do_sso_login() down to AuthCodeFetcher.
+    with mock.patch(
+        'awscli.customizations.sso.utils.AuthCodeFetcher'
+    ) as mock_fetcher_cls, mock.patch(
+        'awscli.customizations.sso.utils.SSOTokenFetcherAuth'
+    ) as mock_token_fetcher:
+        mock_fetcher_cls.return_value = mock.Mock()
+        mock_token_fetcher.return_value.fetch_token.return_value = {}
+        session = mock.Mock()
+        parsed_globals = mock.Mock()
+        do_sso_login(
+            session=session,
+            sso_region='us-east-1',
+            start_url='https://example.awsapps.com/start',
+            parsed_globals=parsed_globals,
+            session_name='my-sso',
+            redirect_port=34535,
+        )
+        mock_fetcher_cls.assert_called_once_with(port=34535)

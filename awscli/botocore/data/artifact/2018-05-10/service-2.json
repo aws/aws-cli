@@ -287,6 +287,26 @@
       "documentation":"<p>Put the account settings for Artifact.</p>",
       "idempotent":true
     },
+    "PutComplianceInquiryFeedback":{
+      "name":"PutComplianceInquiryFeedback",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/v1/compliance-inquiry/putFeedback",
+        "responseCode":200
+      },
+      "input":{"shape":"PutComplianceInquiryFeedbackRequest"},
+      "output":{"shape":"PutComplianceInquiryFeedbackResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Submits feedback on a compliance inquiry response.</p>",
+      "idempotent":true
+    },
     "TagResource":{
       "name":"TagResource",
       "http":{
@@ -430,7 +450,7 @@
       ],
       "members":{
         "name":{
-          "shape":"String",
+          "shape":"InquiryName",
           "documentation":"<p>Title of the inquiry.</p>"
         },
         "inquiryContent":{
@@ -569,6 +589,32 @@
           "documentation":"<p>Tags associated with the compliance inquiry resource.</p>"
         }
       }
+    },
+    "FeedbackCommentAttribute":{
+      "type":"string",
+      "max":1000,
+      "min":1,
+      "pattern":"[a-zA-Z0-9\\s.,;:!?'\\-()/@#&+=]+",
+      "sensitive":true
+    },
+    "FeedbackRating":{
+      "type":"string",
+      "enum":[
+        "THUMBS_UP",
+        "THUMBS_DOWN"
+      ]
+    },
+    "FeedbackReasonCode":{
+      "type":"string",
+      "enum":[
+        "OTHER",
+        "PARTIAL_RESPONSE",
+        "IRRELEVANT_RESPONSE"
+      ]
+    },
+    "FeedbackReasonCodeList":{
+      "type":"list",
+      "member":{"shape":"FeedbackReasonCode"}
     },
     "GetAccountSettingsRequest":{
       "type":"structure",
@@ -817,6 +863,10 @@
     "InquiryId":{
       "type":"string",
       "pattern":"compliance-inquiry-[a-zA-Z0-9]{16}"
+    },
+    "InquiryName":{
+      "type":"string",
+      "sensitive":true
     },
     "InquiryStatus":{
       "type":"string",
@@ -1146,6 +1196,54 @@
       "type":"structure",
       "members":{
         "accountSettings":{"shape":"AccountSettings"}
+      }
+    },
+    "PutComplianceInquiryFeedbackRequest":{
+      "type":"structure",
+      "required":[
+        "complianceInquiryId",
+        "rating"
+      ],
+      "members":{
+        "complianceInquiryId":{
+          "shape":"InquiryId",
+          "documentation":"<p>The unique identifier for the compliance inquiry.</p>"
+        },
+        "queryIdentifier":{
+          "shape":"Integer",
+          "documentation":"<p>The sequential identifier of the query to provide feedback on.</p>"
+        },
+        "rating":{
+          "shape":"FeedbackRating",
+          "documentation":"<p>The rating for the feedback. Valid values are THUMBS_UP and THUMBS_DOWN.</p>"
+        },
+        "responseRevisionId":{
+          "shape":"Integer",
+          "documentation":"<p>The response revision ID. Use this value to prevent submitting feedback on a stale response.</p>"
+        },
+        "reasonCodes":{
+          "shape":"FeedbackReasonCodeList",
+          "documentation":"<p>The reason codes that describe why you rated the response. Valid values are OTHER, PARTIAL_RESPONSE, and IRRELEVANT_RESPONSE.</p>"
+        },
+        "comment":{
+          "shape":"FeedbackCommentAttribute",
+          "documentation":"<p>An optional comment for the feedback.</p>"
+        },
+        "clientToken":{
+          "shape":"IdempotentClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier to ensure that the operation completes no more than one time. If this token matches a previous request, the service ignores the request, but does not return an error.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "PutComplianceInquiryFeedbackResponse":{
+      "type":"structure",
+      "required":["submittedAt"],
+      "members":{
+        "submittedAt":{
+          "shape":"TimestampAttribute",
+          "documentation":"<p>The timestamp when the feedback was submitted.</p>"
+        }
       }
     },
     "QueriesList":{

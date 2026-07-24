@@ -274,6 +274,25 @@
       ],
       "documentation":"<p>Given a username, returns details about a user profile in a user pool. You can specify alias attributes in the <code>Username</code> request parameter.</p> <p>This operation contributes to your monthly active user (MAU) count for the purpose of billing.</p> <note> <p>Amazon Cognito evaluates Identity and Access Management (IAM) policies in requests for this API operation. For this operation, you must use IAM credentials to authorize requests, and you must grant yourself the corresponding IAM permission in a policy.</p> <p class=\"title\"> <b>Learn more</b> </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_aws-signing.html\">Signing Amazon Web Services API Requests</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/user-pools-API-operations.html\">Using the Amazon Cognito user pools API and user pool endpoints</a> </p> </li> </ul> </note>"
     },
+    "AdminGetUserAuthFactors":{
+      "name":"AdminGetUserAuthFactors",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"AdminGetUserAuthFactorsRequest"},
+      "output":{"shape":"AdminGetUserAuthFactorsResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"NotAuthorizedException"},
+        {"shape":"OperationNotEnabledException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"UserNotFoundException"},
+        {"shape":"InternalErrorException"}
+      ],
+      "documentation":"<p>Lists the authentication options for a user in a user pool. Returns the following:</p> <ol> <li> <p>The user's multi-factor authentication (MFA) preferences.</p> </li> <li> <p>The user's options for choice-based authentication with the <code>USER_AUTH</code> flow.</p> </li> </ol> <note> <p>Amazon Cognito evaluates Identity and Access Management (IAM) policies in requests for this API operation. For this operation, you must use IAM credentials to authorize requests, and you must grant yourself the corresponding IAM permission in a policy.</p> <p class=\"title\"> <b>Learn more</b> </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_aws-signing.html\">Signing Amazon Web Services API Requests</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/user-pools-API-operations.html\">Using the Amazon Cognito user pools API and user pool endpoints</a> </p> </li> </ul> </note>"
+    },
     "AdminInitiateAuth":{
       "name":"AdminInitiateAuth",
       "http":{
@@ -3168,6 +3187,45 @@
       },
       "documentation":"<p>Gets the device response, as an administrator.</p>"
     },
+    "AdminGetUserAuthFactorsRequest":{
+      "type":"structure",
+      "required":[
+        "UserPoolId",
+        "Username"
+      ],
+      "members":{
+        "UserPoolId":{
+          "shape":"UserPoolIdType",
+          "documentation":"<p>The ID of the user pool where you want to get information about the user's authentication factors.</p>"
+        },
+        "Username":{
+          "shape":"UsernameType",
+          "documentation":"<p>The name of the user that you want to query or modify. The value of this parameter is typically your user's username, but it can be any of their alias attributes. If <code>username</code> isn't an alias attribute in your user pool, this value must be the <code>sub</code> of a local user or the username of a user from a third-party IdP.</p>"
+        }
+      }
+    },
+    "AdminGetUserAuthFactorsResponse":{
+      "type":"structure",
+      "required":["Username"],
+      "members":{
+        "Username":{
+          "shape":"UsernameType",
+          "documentation":"<p>The name of the user who is eligible for the authentication factors in the response.</p>"
+        },
+        "PreferredMfaSetting":{
+          "shape":"StringType",
+          "documentation":"<p>The challenge method that Amazon Cognito returns to the user in response to sign-in requests. Users can prefer SMS message, email message, or TOTP MFA.</p>"
+        },
+        "UserMFASettingList":{
+          "shape":"UserMFASettingListType",
+          "documentation":"<p>The MFA options that are activated for the user. The possible values in this list are <code>SMS_MFA</code>, <code>EMAIL_OTP</code>, and <code>SOFTWARE_TOKEN_MFA</code>.</p>"
+        },
+        "ConfiguredUserAuthFactors":{
+          "shape":"ConfiguredUserAuthFactorsListType",
+          "documentation":"<p>The authentication types that are available to the user with <code>USER_AUTH</code> sign-in, for example <code>[\"PASSWORD\", \"WEB_AUTHN\"]</code>.</p> <p> <code>PASSWORD</code> can only be used as a first authentication factor. <code>SOFTWARE_TOKEN</code> can only be used as an MFA factor. <code>EMAIL_OTP</code>, <code>SMS_OTP</code>, and <code>WEB_AUTHN</code> can be used as either a first authentication factor or an MFA factor. <code>WEB_AUTHN</code> is available as an MFA factor only when passkey MFA is enabled at the user pool level.</p>"
+        }
+      }
+    },
     "AdminGetUserRequest":{
       "type":"structure",
       "required":[
@@ -3818,7 +3876,7 @@
     "AllowedFirstAuthFactorsListType":{
       "type":"list",
       "member":{"shape":"AuthFactorType"},
-      "max":4,
+      "max":5,
       "min":1
     },
     "AnalyticsConfigurationType":{
@@ -4065,7 +4123,8 @@
         "PASSWORD",
         "EMAIL_OTP",
         "SMS_OTP",
-        "WEB_AUTHN"
+        "WEB_AUTHN",
+        "SOFTWARE_TOKEN"
       ]
     },
     "AuthFlowType":{
@@ -4988,7 +5047,7 @@
         },
         "ManagedLoginVersion":{
           "shape":"WrappedIntegerType",
-          "documentation":"<p>The version of managed login branding that you want to apply to your domain. A value of <code>1</code> indicates hosted UI (classic) and a version of <code>2</code> indicates managed login.</p> <p>Managed login requires that your user pool be configured for any <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-sign-in-feature-plans.html\">feature plan</a> other than <code>Lite</code>.</p>"
+          "documentation":"<p>The version of managed login branding that you want to apply to your domain. A value of <code>1</code> indicates hosted UI (classic) and a version of <code>2</code> indicates managed login.</p> <p>Managed login requires that your user pool be configured for any <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-sign-in-feature-plans.html\">feature plan</a> other than <code>Lite</code>.</p> <p>A <code>ManagedLoginVersion</code> value of <code>2</code> does not activate managed login pages for your app client. When you create an app client programmatically, your app client has no branding style. To use managed login, create a branding style using the <a href=\"https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_CreateManagedLoginBranding.html\">CreateManagedLoginBranding</a> operation. When you use the console, Amazon Cognito assigns a default branding style automatically. When you use the API or an SDK, you must create a branding style yourself.</p>"
         },
         "CustomDomainConfig":{
           "shape":"CustomDomainConfigType",
@@ -5101,7 +5160,7 @@
         },
         "MfaConfiguration":{
           "shape":"UserPoolMfaType",
-          "documentation":"<p>Sets multi-factor authentication (MFA) to be on, off, or optional. When <code>ON</code>, all users must set up MFA before they can sign in. When <code>OPTIONAL</code>, your application must make a client-side determination of whether a user wants to register an MFA device. For user pools with adaptive authentication with threat protection, choose <code>OPTIONAL</code>.</p> <p>When <code>MfaConfiguration</code> is <code>OPTIONAL</code>, managed login doesn't automatically prompt users to set up MFA. Amazon Cognito generates MFA prompts in API responses and in managed login for users who have chosen and configured a preferred MFA factor.</p>"
+          "documentation":"<p>Sets multi-factor authentication (MFA) to be on, off, or optional. When <code>ON</code>, all users must set up MFA before they can sign in. When <code>OPTIONAL</code>, your application must make a client-side determination of whether a user wants to register an MFA device. For user pools with adaptive authentication with threat protection, choose <code>OPTIONAL</code>.</p> <p>When <code>MfaConfiguration</code> is <code>OPTIONAL</code>, managed login doesn't automatically prompt users to set up MFA. Amazon Cognito generates MFA prompts in API responses and in managed login for users who have chosen and configured a preferred MFA factor.</p> <p>The <code>CreateUserPool</code> operation supports only SMS MFA configuration. If you set <code>MfaConfiguration</code> to either of these values, include an <code>SmsConfiguration</code> in the same request:</p> <ul> <li> <p> <code>ON</code> – Requires MFA for all users</p> </li> <li> <p> <code>OPTIONAL</code> – Makes MFA optional for each user</p> </li> </ul> <p>If you omit <code>SmsConfiguration</code>, the operation returns an <code>InvalidParameterException</code>. To configure TOTP or email MFA, use the <a href=\"https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_SetUserPoolMfaConfig.html\">SetUserPoolMfaConfig</a> operation. You can also use <code>SetUserPoolMfaConfig</code> to add MFA factors later.</p>"
         },
         "UserAttributeUpdateSettings":{
           "shape":"UserAttributeUpdateSettingsType",
@@ -6653,7 +6712,7 @@
         },
         "ConfiguredUserAuthFactors":{
           "shape":"ConfiguredUserAuthFactorsListType",
-          "documentation":"<p>The authentication types that are available to the user with <code>USER_AUTH</code> sign-in, for example <code>[\"PASSWORD\", \"WEB_AUTHN\"]</code>.</p>"
+          "documentation":"<p>The authentication types that are available to the user with <code>USER_AUTH</code> sign-in, for example <code>[\"PASSWORD\", \"WEB_AUTHN\"]</code>.</p> <p> <code>PASSWORD</code> can only be used as a first authentication factor. <code>SOFTWARE_TOKEN</code> can only be used as an MFA factor. <code>EMAIL_OTP</code>, <code>SMS_OTP</code>, and <code>WEB_AUTHN</code> can be used as either a first authentication factor or an MFA factor. <code>WEB_AUTHN</code> is available as an MFA factor only when passkey MFA is enabled at the user pool level.</p>"
         }
       }
     },
@@ -8997,7 +9056,7 @@
       "members":{
         "AllowedFirstAuthFactors":{
           "shape":"AllowedFirstAuthFactorsListType",
-          "documentation":"<p>The sign-in methods that a user pool supports as the first factor. You can permit users to start authentication with a standard username and password, or with other one-time password and hardware factors.</p>"
+          "documentation":"<p>The sign-in methods that a user pool supports as the first factor. You can permit users to start authentication with a standard username and password, or with other one-time password and hardware factors.</p> <note> <p> <code>SOFTWARE_TOKEN</code> is not currently supported as a first auth factor. Do not include this value in <code>AllowedFirstAuthFactors</code>.</p> </note>"
         }
       },
       "documentation":"<p>The policy for allowed types of authentication in a user pool. To activate this setting, your user pool must be in the <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/feature-plans-features-essentials.html\"> Essentials tier</a> or higher.</p>"

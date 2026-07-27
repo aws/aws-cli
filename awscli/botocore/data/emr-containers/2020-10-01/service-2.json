@@ -86,7 +86,7 @@
         {"shape":"InternalServerException"},
         {"shape":"EKSRequestThrottledException"}
       ],
-      "documentation":"<p>Creates a virtual cluster. Virtual cluster is a managed entity on Amazon EMR on EKS. You can create, describe, list and delete virtual clusters. They do not consume any additional resource in your system. A single virtual cluster maps to a single Kubernetes namespace. Given this relationship, you can model virtual clusters the same way you model Kubernetes namespaces to meet your requirements.</p>"
+      "documentation":"<p>Creates a virtual cluster. Virtual cluster is a managed entity on Amazon EMR on EKS. You can create, update, describe, list and delete virtual clusters. They do not consume any additional resource in your system. A single virtual cluster maps to a single Kubernetes namespace. Given this relationship, you can model virtual clusters the same way you model Kubernetes namespaces to meet your requirements.</p>"
     },
     "DeleteJobTemplate":{
       "name":"DeleteJobTemplate",
@@ -142,7 +142,7 @@
         {"shape":"ValidationException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Deletes a virtual cluster. Virtual cluster is a managed entity on Amazon EMR on EKS. You can create, describe, list and delete virtual clusters. They do not consume any additional resource in your system. A single virtual cluster maps to a single Kubernetes namespace. Given this relationship, you can model virtual clusters the same way you model Kubernetes namespaces to meet your requirements.</p>"
+      "documentation":"<p>Deletes a virtual cluster. Virtual cluster is a managed entity on Amazon EMR on EKS. You can create, update, describe, list and delete virtual clusters. They do not consume any additional resource in your system. A single virtual cluster maps to a single Kubernetes namespace. Given this relationship, you can model virtual clusters the same way you model Kubernetes namespaces to meet your requirements.</p>"
     },
     "DescribeJobRun":{
       "name":"DescribeJobRun",
@@ -217,7 +217,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Displays detailed information about a specified virtual cluster. Virtual cluster is a managed entity on Amazon EMR on EKS. You can create, describe, list and delete virtual clusters. They do not consume any additional resource in your system. A single virtual cluster maps to a single Kubernetes namespace. Given this relationship, you can model virtual clusters the same way you model Kubernetes namespaces to meet your requirements.</p>"
+      "documentation":"<p>Displays detailed information about a specified virtual cluster. Virtual cluster is a managed entity on Amazon EMR on EKS. You can create, update, describe, list and delete virtual clusters. They do not consume any additional resource in your system. A single virtual cluster maps to a single Kubernetes namespace. Given this relationship, you can model virtual clusters the same way you model Kubernetes namespaces to meet your requirements.</p>"
     },
     "GetManagedEndpointSessionCredentials":{
       "name":"GetManagedEndpointSessionCredentials",
@@ -318,7 +318,7 @@
         {"shape":"ValidationException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Lists information about the specified virtual cluster. Virtual cluster is a managed entity on Amazon EMR on EKS. You can create, describe, list and delete virtual clusters. They do not consume any additional resource in your system. A single virtual cluster maps to a single Kubernetes namespace. Given this relationship, you can model virtual clusters the same way you model Kubernetes namespaces to meet your requirements.</p>"
+      "documentation":"<p>Lists information about the specified virtual cluster. Virtual cluster is a managed entity on Amazon EMR on EKS. You can create, update, describe, list and delete virtual clusters. They do not consume any additional resource in your system. A single virtual cluster maps to a single Kubernetes namespace. Given this relationship, you can model virtual clusters the same way you model Kubernetes namespaces to meet your requirements.</p>"
     },
     "StartJobRun":{
       "name":"StartJobRun",
@@ -364,6 +364,22 @@
         {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Removes tags from resources.</p>"
+    },
+    "UpdateVirtualCluster":{
+      "name":"UpdateVirtualCluster",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/virtualclusters/{virtualClusterId}"
+      },
+      "input":{"shape":"UpdateVirtualClusterRequest"},
+      "output":{"shape":"UpdateVirtualClusterResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Updates a virtual cluster. Virtual cluster is a managed entity on Amazon EMR on EKS. You can create, update, describe, list and delete virtual clusters. They do not consume any additional resource in your system. A single virtual cluster maps to a single Kubernetes namespace. Given this relationship, you can model virtual clusters the same way you model Kubernetes namespaces to meet your requirements.</p>",
+      "idempotent":true
     }
   },
   "shapes":{
@@ -385,14 +401,14 @@
       "members":{
         "identityCenterConfiguration":{
           "shape":"IdentityCenterConfiguration",
-          "documentation":"<p>Identity Center configuration for authentication in the security configuration.</p>"
+          "documentation":"<p>The IAM Identity Center configuration to use for authentication.</p>"
         },
         "iamConfiguration":{
           "shape":"IAMConfiguration",
-          "documentation":"<p>IAM configuration for authentication in the security configuration.</p>"
+          "documentation":"<p>The IAM configuration to use for authentication.</p>"
         }
       },
-      "documentation":"<p>Authentication configuration for the security configuration.</p>"
+      "documentation":"<p>Contains the authentication settings for a security configuration, including Identity Center and IAM configuration options.</p>"
     },
     "AuthorizationConfiguration":{
       "type":"structure",
@@ -692,7 +708,7 @@
         },
         "sessionIdleTimeoutInMinutes":{
           "shape":"SessionIdleTimeoutInMinutes",
-          "documentation":"<p>The idle timeout in minutes for the managed endpoint session.</p>"
+          "documentation":"<p>The number of idle minutes before the managed endpoint session times out.</p>"
         }
       }
     },
@@ -797,6 +813,10 @@
         "sessionEnabled":{
           "shape":"Boolean",
           "documentation":"<p>Indicates whether the virtual cluster has session support enabled.</p>"
+        },
+        "schedulerConfiguration":{
+          "shape":"SchedulerConfiguration",
+          "documentation":"<p>The scheduler configuration (concurrency and queue limits) to apply to the virtual cluster at creation time. When omitted, no limits are applied.</p>"
         }
       }
     },
@@ -910,7 +930,7 @@
       "members":{
         "id":{
           "shape":"ResourceIdString",
-          "documentation":"<p>The ID of the security configuration that was deleted.</p>"
+          "documentation":"<p>The ID of the deleted security configuration.</p>"
         }
       }
     },
@@ -1150,7 +1170,7 @@
         },
         "authProxyUrl":{
           "shape":"UriString",
-          "documentation":"<p>The auth proxy URL of the endpoint.</p>"
+          "documentation":"<p>The authentication proxy URL of the endpoint.</p>"
         },
         "createdAt":{
           "shape":"Date",
@@ -1299,7 +1319,7 @@
         },
         "endpointCredentials":{
           "shape":"Credentials",
-          "documentation":"<p>The structure containing the session token being returned.</p>"
+          "documentation":"<p>The session credentials that the operation returns.</p>"
         },
         "expiresAt":{
           "shape":"Date",
@@ -1312,10 +1332,10 @@
       "members":{
         "systemRole":{
           "shape":"IAMRoleArn",
-          "documentation":"<p>The ARN of the system role used by the security configuration.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the system role used by the security configuration.</p>"
         }
       },
-      "documentation":"<p>IAM configuration for the security configuration.</p>"
+      "documentation":"<p>Contains the IAM settings for a security configuration, including the system role used for authentication.</p>"
     },
     "IAMRoleArn":{
       "type":"string",
@@ -1328,28 +1348,34 @@
       "members":{
         "enableIdentityCenter":{
           "shape":"Boolean",
-          "documentation":"<p>Determines whether Identity Center is enabled for the security configuration.</p>"
+          "documentation":"<p>Specifies whether Identity Center is enabled for the security configuration.</p>"
         },
         "identityCenterApplicationAssignmentRequired":{
           "shape":"Boolean",
-          "documentation":"<p>Determines whether user assignment is required for the Identity Center application.</p>"
+          "documentation":"<p>Specifies whether user assignment is required for the Identity Center application.</p>"
         },
         "identityCenterInstanceARN":{
           "shape":"IdentityCenterInstanceARN",
-          "documentation":"<p>The ARN of the Identity Center instance.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Identity Center instance.</p>"
         },
         "emrIdentityCenterApplicationARN":{
           "shape":"EmrIdentityCenterApplicationARN",
-          "documentation":"<p>The ARN of the EMR Identity Center application.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon EMR Identity Center application.</p>"
         }
       },
-      "documentation":"<p>Identity Center related configuration for the security configuration.</p>"
+      "documentation":"<p>Contains the IAM Identity Center settings for a security configuration, including instance ARN, application assignment requirements, and application ARN.</p>"
     },
     "IdentityCenterInstanceARN":{
       "type":"string",
       "max":1224,
       "min":10,
       "pattern":"^arn:(aws[a-zA-Z0-9-]*):sso:::instance/ssoins-[0-9a-zA-Z/\\\\-_]+"
+    },
+    "InQueueJobLimitInteger":{
+      "type":"integer",
+      "box":true,
+      "max":10000,
+      "min":100
     },
     "InTransitEncryptionConfiguration":{
       "type":"structure",
@@ -1390,6 +1416,12 @@
         }
       },
       "documentation":"<p>Specify the driver that the job runs on. Exactly one of the two available job drivers is required, either sparkSqlJobDriver or sparkSubmitJobDriver.</p>"
+    },
+    "JobLimitInteger":{
+      "type":"integer",
+      "box":true,
+      "max":10000,
+      "min":1
     },
     "JobRun":{
       "type":"structure",
@@ -1967,6 +1999,10 @@
       "min":1,
       "pattern":"^[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$"
     },
+    "NonNegativeInteger":{
+      "type":"integer",
+      "min":0
+    },
     "ParametricCloudWatchMonitoringConfiguration":{
       "type":"structure",
       "members":{
@@ -2128,10 +2164,40 @@
         },
         "encryptionKeyArn":{
           "shape":"KmsKeyArn",
-          "documentation":"<p>The Amazon resource name (ARN) of the encryption key for logs.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the encryption key for logs.</p>"
         }
       },
       "documentation":"<p> Amazon S3 configuration for monitoring log publishing. You can configure your jobs to send log information to Amazon S3.</p>"
+    },
+    "SchedulerConfiguration":{
+      "type":"structure",
+      "members":{
+        "maxInQueueJobRuns":{
+          "shape":"InQueueJobLimitInteger",
+          "documentation":"<p>The maximum number of job runs that can be in the <code>PENDING</code> or <code>SUBMITTED</code> state at any time for the virtual cluster. When the queue is full, the service rejects <code>StartJobRun</code> requests with a <code>ValidationException</code>. If you omit this field, the service applies no queue-depth limit.</p>",
+          "box":true
+        },
+        "maxConcurrentJobRuns":{
+          "shape":"JobLimitInteger",
+          "documentation":"<p>The maximum number of job runs that can be in the <code>RUNNING</code> state at any time for the virtual cluster. As running slots free up, queued job runs start automatically. If you omit this field, the service applies no concurrency limit.</p>",
+          "box":true
+        }
+      },
+      "documentation":"<p>The scheduler configuration for a virtual cluster on Amazon EMR on EKS. It controls how many job runs can run concurrently and how many can wait in the queue. When not set, no concurrency or queue limits are applied.</p>"
+    },
+    "SchedulerStatus":{
+      "type":"structure",
+      "members":{
+        "currentInQueueJobRuns":{
+          "shape":"NonNegativeInteger",
+          "documentation":"<p>The number of job runs currently waiting in the queue (<code>PENDING</code> or <code>SUBMITTED</code>) for the virtual cluster.</p>"
+        },
+        "currentConcurrentJobRuns":{
+          "shape":"NonNegativeInteger",
+          "documentation":"<p>The number of job runs currently in the <code>RUNNING</code> state for the virtual cluster.</p>"
+        }
+      },
+      "documentation":"<p>The current job-run counts for a virtual cluster, reflecting how much of the configured scheduler capacity is in use.</p>"
     },
     "SecretsManagerArn":{
       "type":"string",
@@ -2513,6 +2579,41 @@
       "type":"structure",
       "members":{}
     },
+    "UpdateVirtualClusterRequest":{
+      "type":"structure",
+      "required":[
+        "id",
+        "clientToken"
+      ],
+      "members":{
+        "id":{
+          "shape":"ResourceIdString",
+          "documentation":"<p>The ID of the virtual cluster to update.</p>",
+          "location":"uri",
+          "locationName":"virtualClusterId"
+        },
+        "schedulerConfiguration":{
+          "shape":"SchedulerConfiguration",
+          "documentation":"<p>The scheduler configuration to apply to the virtual cluster. The new configuration fully replaces the existing one. If you omit a field, the corresponding limit is removed.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure that the operation completes no more than one time. If this token matches a previous request, the service ignores the request, but does not return an error.</p>",
+          "idempotencyToken":true
+        }
+      },
+      "documentation":"<p>Contains the parameters for a request to update a virtual cluster on Amazon EMR on EKS.</p>"
+    },
+    "UpdateVirtualClusterResponse":{
+      "type":"structure",
+      "members":{
+        "virtualCluster":{
+          "shape":"VirtualCluster",
+          "documentation":"<p>The updated virtual cluster.</p>"
+        }
+      },
+      "documentation":"<p>Contains the virtual cluster returned after a successful update request.</p>"
+    },
     "UriString":{
       "type":"string",
       "max":10280,
@@ -2565,7 +2666,15 @@
         },
         "sessionEnabled":{
           "shape":"Boolean",
-          "documentation":"<p>Indicates whether the virtual cluster has session support enabled. </p>"
+          "documentation":"<p>Specifies whether the virtual cluster has session support enabled. </p>"
+        },
+        "schedulerConfiguration":{
+          "shape":"SchedulerConfiguration",
+          "documentation":"<p>The scheduler configuration (concurrency and queue limits) applied to the virtual cluster. The service does not return this field when no scheduler limits are configured.</p>"
+        },
+        "schedulerStatus":{
+          "shape":"SchedulerStatus",
+          "documentation":"<p>The current in-queue and concurrent job-run counts for the virtual cluster.</p>"
         }
       },
       "documentation":"<p>This entity describes a virtual cluster. A virtual cluster is a Kubernetes namespace that Amazon EMR is registered with. Amazon EMR uses virtual clusters to run jobs and host endpoints. Multiple virtual clusters can be backed by the same physical cluster. However, each virtual cluster maps to one namespace on an Amazon EKS cluster. Virtual clusters do not create any active resources that contribute to your bill or that require lifecycle management outside the service.</p>"

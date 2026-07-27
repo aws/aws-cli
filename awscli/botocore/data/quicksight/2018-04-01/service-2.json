@@ -10614,7 +10614,11 @@
     },
     "CapabilityState":{
       "type":"string",
-      "enum":["DENY"]
+      "documentation":"<p>The permission state of a capability in a custom permissions profile. Valid values:</p> <ul> <li> <p> <code>DENY</code> – Amazon Quick denies this capability for users assigned to the profile.</p> </li> <li> <p> <code>ALLOW</code> – Amazon Quick grants this capability to users assigned to the profile. This value is only relevant when governance is enabled for the capability's category. Without governance, the default effect is always <code>ALLOW</code>. In a governed category, this value overrides the category-level deny-by-default behavior for that capability only.</p> </li> </ul>",
+      "enum":[
+        "DENY",
+        "ALLOW"
+      ]
     },
     "CapacityBytesRangeFilter":{
       "type":"structure",
@@ -12781,6 +12785,10 @@
           "shape":"Capabilities",
           "documentation":"<p>A set of actions to include in the custom permissions profile.</p>"
         },
+        "Governance":{
+          "shape":"Governance",
+          "documentation":"<p>The governance configuration for the custom permissions profile. When governance controls are defined for a category, any capabilities in that category not explicitly set to <code>ALLOW</code> in <code>Capabilities</code> are denied. Even newly added capabilities in the category are implicitly disabled when Amazon Quick releases them.</p>"
+        },
         "Tags":{
           "shape":"TagList",
           "documentation":"<p>The tags to associate with the custom permissions profile.</p>"
@@ -14809,6 +14817,10 @@
         "Capabilities":{
           "shape":"Capabilities",
           "documentation":"<p>A set of actions in the custom permissions profile.</p>"
+        },
+        "Governance":{
+          "shape":"Governance",
+          "documentation":"<p>The governance configuration for the custom permissions profile. When you enable governance for a category, Amazon Quick denies access to any current or new capability in that category unless you explicitly set that capability to <code>ALLOW</code> in <code>Capabilities</code>.</p>"
         }
       },
       "documentation":"<p>The custom permissions profile.</p>"
@@ -17727,6 +17739,17 @@
         "VAR",
         "VARP"
       ]
+    },
+    "DefaultCategoryEffect":{
+      "type":"string",
+      "documentation":"<p>The default effect that Amazon Quick applies to capabilities in a governed category when you do not explicitly list those capabilities in <code>Capabilities</code>. Valid values:</p> <ul> <li> <p> <code>DENY_BY_DEFAULT</code> – Amazon Quick denies any capability access in the given category that the profile does not explicitly set to <code>ALLOW</code>.</p> </li> </ul>",
+      "enum":["DENY_BY_DEFAULT"]
+    },
+    "DefaultCategoryEffectsMap":{
+      "type":"map",
+      "key":{"shape":"GovernanceCategoryName"},
+      "value":{"shape":"DefaultCategoryEffect"},
+      "max":50
     },
     "DefaultDateTimePickerControlOptions":{
       "type":"structure",
@@ -26745,6 +26768,22 @@
         }
       },
       "documentation":"<p>The connection parameters for a Google Drive data source. Provide these parameters in the <code>DataSourceParameters</code> object when you create or update a data source that uses Google Drive.</p>"
+    },
+    "Governance":{
+      "type":"structure",
+      "members":{
+        "DefaultCategoryEffects":{
+          "shape":"DefaultCategoryEffectsMap",
+          "documentation":"<p>A map of <code>DefaultCategoryEffects</code>.</p>"
+        }
+      },
+      "documentation":"<p>Contains the governance configuration for a custom permissions profile. When governance controls are defined for a category, any capabilities in that category not explicitly set to <code>ALLOW</code> in <code>Capabilities</code> are denied. Even newly added capabilities in the category are implicitly disabled when Amazon Quick releases them.</p>"
+    },
+    "GovernanceCategoryName":{
+      "type":"string",
+      "documentation":"<p>The name of a governance category. A governance category groups related capabilities so that you can apply a default effect to all capabilities in the category at once. Valid values:</p> <ul> <li> <p> <code>AI</code> – Capabilities related to Amazon Quick AI features.</p> </li> </ul>",
+      "max":128,
+      "min":1
     },
     "GradientColor":{
       "type":"structure",
@@ -45729,6 +45768,10 @@
         "Capabilities":{
           "shape":"Capabilities",
           "documentation":"<p>A set of actions to include in the custom permissions profile.</p>"
+        },
+        "Governance":{
+          "shape":"Governance",
+          "documentation":"<p>The governance configuration for the custom permissions profile. The <code>UpdateCustomPermissions</code> operation replaces all existing <code>Capabilities</code> and <code>Governance</code> values. If you omit this parameter, Amazon Quick removes governance from the profile and the existing custom permission behavior applies.</p>"
         }
       }
     },

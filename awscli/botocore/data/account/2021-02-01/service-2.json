@@ -179,6 +179,25 @@
       "documentation":"<p>Retrieves the primary email address for the specified account.</p>",
       "readonly":true
     },
+    "GetPrimaryEmailUpdateStatus":{
+      "name":"GetPrimaryEmailUpdateStatus",
+      "http":{
+        "method":"POST",
+        "requestUri":"/getPrimaryEmailUpdateStatus",
+        "responseCode":200
+      },
+      "input":{"shape":"GetPrimaryEmailUpdateStatusRequest"},
+      "output":{"shape":"GetPrimaryEmailUpdateStatusResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Retrieves the status of the most recent primary email update for the specified account. For complete details about how to update the primary email address, see <a href=\"https://docs.aws.amazon.com/accounts/latest/reference/manage-acct-update-root-user-email.html\">Update the primary email address for your AWS account</a>.</p>",
+      "readonly":true
+    },
     "GetRegionOptStatus":{
       "name":"GetRegionOptStatus",
       "http":{
@@ -693,6 +712,29 @@
         }
       }
     },
+    "GetPrimaryEmailUpdateStatusRequest":{
+      "type":"structure",
+      "members":{
+        "AccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>Specifies the 12-digit account ID number of the Amazon Web Services account that you want to access or modify with this operation. To use this parameter, the caller must be an identity in the <a href=\"https://docs.aws.amazon.com/organizations/latest/userguide/orgs_getting-started_concepts.html#account\">organization's management account</a> or a delegated administrator account. The specified account ID must be a member account in the same organization. The organization must have <a href=\"https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_org_support-all-features.html\">all features enabled</a>, and the organization must have <a href=\"https://docs.aws.amazon.com/organizations/latest/userguide/orgs_integrate_services.html\">trusted access</a> enabled for the Account Management service, and optionally a <a href=\"https://docs.aws.amazon.com/organizations/latest/userguide/orgs_getting-started_concepts.html#delegated-admin\">delegated admin</a> account assigned.</p> <p>This operation can only be called from the management account or the delegated administrator account of an organization for a member account.</p> <note> <p>The management account can't specify its own <code>AccountId</code>.</p> </note>"
+        }
+      }
+    },
+    "GetPrimaryEmailUpdateStatusResponse":{
+      "type":"structure",
+      "required":["Status"],
+      "members":{
+        "Status":{
+          "shape":"PrimaryEmailUpdateStatus",
+          "documentation":"<p>The status of the most recent primary email update request.</p>"
+        },
+        "UpdatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time that the most recent primary email update status was last changed.</p>"
+        }
+      }
+    },
     "GetRegionOptStatusRequest":{
       "type":"structure",
       "required":["RegionName"],
@@ -817,7 +859,9 @@
       "type":"string",
       "enum":[
         "PENDING",
-        "ACCEPTED"
+        "ACCEPTED",
+        "COMPLETED",
+        "FAILED"
       ]
     },
     "PutAccountNameRequest":{
@@ -996,6 +1040,7 @@
       "sensitive":true
     },
     "String":{"type":"string"},
+    "Timestamp":{"type":"timestamp"},
     "Title":{
       "type":"string",
       "max":50,

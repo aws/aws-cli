@@ -174,6 +174,21 @@
       ],
       "documentation":"<p>Retrieves a list of data quality results for the specified result IDs.</p>"
     },
+    "BatchGetDataQualityRulesetEvaluationRun":{
+      "name":"BatchGetDataQualityRulesetEvaluationRun",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"BatchGetDataQualityRulesetEvaluationRunRequest"},
+      "output":{"shape":"BatchGetDataQualityRulesetEvaluationRunResponse"},
+      "errors":[
+        {"shape":"InvalidInputException"},
+        {"shape":"OperationTimeoutException"},
+        {"shape":"InternalServiceException"}
+      ],
+      "documentation":"<p>Retrieves the details of multiple evaluation runs in a single request.</p>"
+    },
     "BatchGetDevEndpoints":{
       "name":"BatchGetDevEndpoints",
       "http":{
@@ -6195,6 +6210,29 @@
         }
       }
     },
+    "BatchGetDataQualityRulesetEvaluationRunRequest":{
+      "type":"structure",
+      "required":["RunIds"],
+      "members":{
+        "RunIds":{
+          "shape":"DataQualityRulesetEvaluationRunIdList",
+          "documentation":"<p>A list of unique run identifiers for the evaluation runs to retrieve.</p>"
+        }
+      }
+    },
+    "BatchGetDataQualityRulesetEvaluationRunResponse":{
+      "type":"structure",
+      "members":{
+        "Runs":{
+          "shape":"DataQualityRulesetEvaluationRunsList",
+          "documentation":"<p>A list of evaluation run details for the requested run IDs.</p>"
+        },
+        "RunsNotFound":{
+          "shape":"DataQualityRulesetEvaluationRunIdList",
+          "documentation":"<p>A list of run IDs that were not found.</p>"
+        }
+      }
+    },
     "BatchGetDevEndpointsRequest":{
       "type":"structure",
       "required":["DevEndpointNames"],
@@ -6664,6 +6702,10 @@
       "box":true,
       "max":900,
       "min":1
+    },
+    "BinEdges":{
+      "type":"list",
+      "member":{"shape":"GenericString"}
     },
     "BinaryColumnStatisticsData":{
       "type":"structure",
@@ -7439,6 +7481,28 @@
         }
       },
       "documentation":"<p>Specifies a data store in the Glue Data Catalog.</p>"
+    },
+    "CatalogTableConfigOptions":{
+      "type":"structure",
+      "members":{
+        "DatabaseName":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the database in the Glue Data Catalog.</p>"
+        },
+        "TableName":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the table in the Glue Data Catalog.</p>"
+        },
+        "S3Location":{
+          "shape":"UriString",
+          "documentation":"<p>The Amazon S3 location for storing the results.</p>"
+        },
+        "CatalogId":{
+          "shape":"NameString",
+          "documentation":"<p>A unique identifier for the Glue Data Catalog.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for a Glue Data Catalog table used to store data quality results.</p>"
     },
     "CatalogTablesList":{
       "type":"list",
@@ -9384,6 +9448,10 @@
       "min":1
     },
     "ContinuousSync":{"type":"boolean"},
+    "Count":{
+      "type":"list",
+      "member":{"shape":"NullableInteger"}
+    },
     "Crawl":{
       "type":"structure",
       "members":{
@@ -11945,6 +12013,10 @@
         "EvaluatedMetrics":{
           "shape":"EvaluatedMetricsMap",
           "documentation":"<p>A map of metrics associated with the evaluation of the analyzer.</p>"
+        },
+        "EvaluatedDistributions":{
+          "shape":"EvaluatedDistributionsMap",
+          "documentation":"<p>A map of distribution metrics associated with the evaluation of the analyzer.</p>"
         }
       },
       "documentation":"<p>Describes the result of the evaluation of a data quality analyzer.</p>"
@@ -11994,6 +12066,30 @@
         "CustomLogGroupPrefix":{
           "shape":"GenericString",
           "documentation":"<p>A custom prefix for the CloudWatch log group names. When specified, evaluation run logs are written to <code>&lt;CustomLogGroupPrefix&gt;/error</code> and <code>&lt;CustomLogGroupPrefix&gt;/output</code> instead of the default <code>/aws-glue/data-quality/error</code> and <code>/aws-glue/data-quality/output</code> log groups.</p>"
+        },
+        "RowLevelResults":{
+          "shape":"RowLevelResultsOptions",
+          "documentation":"<p>The configuration for writing row-level evaluation results to a Glue Data Catalog table.</p>"
+        },
+        "ProfilingResults":{
+          "shape":"ProfilingResultsOptions",
+          "documentation":"<p>The configuration for writing profiling results to a Glue Data Catalog table.</p>"
+        },
+        "ObservationScope":{
+          "shape":"ObservationConfiguration",
+          "documentation":"<p>The scope of the observation for the evaluation run. Specifies whether anomaly detection is enabled or disabled.</p>"
+        },
+        "ObservationMode":{
+          "shape":"ObservationMode",
+          "documentation":"<p>The observation mode for the evaluation run. Specifies how anomaly detection bounds are calculated.</p>"
+        },
+        "DataQualityRuleResults":{
+          "shape":"DataQualityRuleResultsOptions",
+          "documentation":"<p>The configuration for writing rule results to a Glue Data Catalog table.</p>"
+        },
+        "ObservationResults":{
+          "shape":"ObservationResultsOptions",
+          "documentation":"<p>The configuration for writing observation results to a Glue Data Catalog table.</p>"
         }
       },
       "documentation":"<p>Additional run options you can specify for an evaluation run.</p>"
@@ -12227,6 +12323,16 @@
       "type":"list",
       "member":{"shape":"DataQualityResult"}
     },
+    "DataQualityRuleRecommendationRunAdditionalRunOptions":{
+      "type":"structure",
+      "members":{
+        "CustomLogGroupPrefix":{
+          "shape":"GenericString",
+          "documentation":"<p>A custom prefix for the CloudWatch log group names. When specified, recommendation run logs are written to <code>&lt;CustomLogGroupPrefix&gt;/error</code> and <code>&lt;CustomLogGroupPrefix&gt;/output</code> instead of the default <code>/aws-glue/data-quality/error</code> and <code>/aws-glue/data-quality/output</code> log groups.</p>"
+        }
+      },
+      "documentation":"<p>Additional run options you can specify for a recommendation run.</p>"
+    },
     "DataQualityRuleRecommendationRunDescription":{
       "type":"structure",
       "members":{
@@ -12245,6 +12351,10 @@
         "DataSource":{
           "shape":"DataSource",
           "documentation":"<p>The data source (Glue table) associated with the recommendation run.</p>"
+        },
+        "CreatedRulesetName":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the ruleset that was created by the recommendation run.</p>"
         }
       },
       "documentation":"<p>Describes the result of a data quality rule recommendation run.</p>"
@@ -12331,6 +12441,80 @@
       "max":2000,
       "min":0
     },
+    "DataQualityRuleResultsOptions":{
+      "type":"structure",
+      "members":{
+        "WriteDataQualityRuleResultsEnabled":{
+          "shape":"NullableBoolean",
+          "documentation":"<p>Set to true to write data quality rule results.</p>"
+        },
+        "CatalogTableConfig":{
+          "shape":"CatalogTableConfigOptions",
+          "documentation":"<p>The Glue Data Catalog table configuration for storing the rule results.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for writing data quality rule results.</p>"
+    },
+    "DataQualityRulesetEvaluationRun":{
+      "type":"structure",
+      "members":{
+        "RunId":{
+          "shape":"HashString",
+          "documentation":"<p>The unique run identifier associated with this run.</p>"
+        },
+        "DataSource":{"shape":"DataSource"},
+        "Role":{
+          "shape":"RoleString",
+          "documentation":"<p>An IAM role supplied to encrypt the results of the run.</p>"
+        },
+        "NumberOfWorkers":{
+          "shape":"NullableInteger",
+          "documentation":"<p>The number of <code>G.1X</code> workers to be used in the run. The default is 5.</p>"
+        },
+        "Timeout":{
+          "shape":"Timeout",
+          "documentation":"<p>The timeout for a run in minutes. This is the maximum time that a run can consume resources before it is terminated and enters <code>TIMEOUT</code> status. The default is 2,880 minutes (48 hours).</p>"
+        },
+        "AdditionalRunOptions":{"shape":"DataQualityEvaluationRunAdditionalRunOptions"},
+        "Status":{
+          "shape":"TaskStatusType",
+          "documentation":"<p>The status for this run.</p>"
+        },
+        "ErrorString":{
+          "shape":"GenericString",
+          "documentation":"<p>The error strings that are associated with the run.</p>"
+        },
+        "StartedOn":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time when this run started.</p>"
+        },
+        "LastModifiedOn":{
+          "shape":"Timestamp",
+          "documentation":"<p>A timestamp. The last point in time when this run was modified.</p>"
+        },
+        "CompletedOn":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time when this run was completed.</p>"
+        },
+        "ExecutionTime":{
+          "shape":"ExecutionTime",
+          "documentation":"<p>The amount of time (in seconds) that the run consumed resources.</p>"
+        },
+        "RulesetNames":{
+          "shape":"RulesetNames",
+          "documentation":"<p>A list of ruleset names for the run.</p>"
+        },
+        "ResultIds":{
+          "shape":"DataQualityResultIdList",
+          "documentation":"<p>A list of result IDs for the data quality results for the run.</p>"
+        },
+        "AdditionalDataSources":{
+          "shape":"DataSourceMap",
+          "documentation":"<p>A map of reference strings to additional data sources you can specify for an evaluation run.</p>"
+        }
+      },
+      "documentation":"<p>The details of a data quality ruleset evaluation run.</p>"
+    },
     "DataQualityRulesetEvaluationRunDescription":{
       "type":"structure",
       "members":{
@@ -12376,9 +12560,19 @@
       },
       "documentation":"<p>The filter criteria.</p>"
     },
+    "DataQualityRulesetEvaluationRunIdList":{
+      "type":"list",
+      "member":{"shape":"HashString"},
+      "max":100,
+      "min":1
+    },
     "DataQualityRulesetEvaluationRunList":{
       "type":"list",
       "member":{"shape":"DataQualityRulesetEvaluationRunDescription"}
+    },
+    "DataQualityRulesetEvaluationRunsList":{
+      "type":"list",
+      "member":{"shape":"DataQualityRulesetEvaluationRun"}
     },
     "DataQualityRulesetFilterCriteria":{
       "type":"structure",
@@ -14134,6 +14328,38 @@
       "max":128,
       "min":1
     },
+    "DistributionData":{
+      "type":"structure",
+      "members":{
+        "BinEdges":{
+          "shape":"BinEdges",
+          "documentation":"<p>The bin edge values for the distribution.</p>"
+        },
+        "Count":{
+          "shape":"Count",
+          "documentation":"<p>The frequency count for each bin in the distribution.</p>"
+        },
+        "DataType":{
+          "shape":"NameString",
+          "documentation":"<p>The data type of the column for the distribution.</p>"
+        }
+      },
+      "documentation":"<p>The distribution data for a statistic.</p>"
+    },
+    "DistributionResultsOptions":{
+      "type":"structure",
+      "members":{
+        "WriteDistributionResultsEnabled":{
+          "shape":"NullableBoolean",
+          "documentation":"<p>Set to true to write distribution results.</p>"
+        },
+        "CatalogTableConfig":{
+          "shape":"CatalogTableConfigOptions",
+          "documentation":"<p>The Glue Data Catalog table configuration for storing the distribution results.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for writing distribution results.</p>"
+    },
     "Double":{"type":"double"},
     "DoubleColumnStatisticsData":{
       "type":"structure",
@@ -14634,6 +14860,12 @@
         }
       },
       "documentation":"<p>Specifies your data quality evaluation criteria.</p>"
+    },
+    "EvaluatedDistributionsMap":{
+      "type":"map",
+      "key":{"shape":"NameString"},
+      "value":{"shape":"DistributionData"},
+      "sensitive":true
     },
     "EvaluatedMetricsMap":{
       "type":"map",
@@ -16252,6 +16484,10 @@
         "DataQualitySecurityConfiguration":{
           "shape":"NameString",
           "documentation":"<p>The name of the security configuration created with the data quality encryption option.</p>"
+        },
+        "AdditionalRunOptions":{
+          "shape":"DataQualityRuleRecommendationRunAdditionalRunOptions",
+          "documentation":"<p>Additional run options you can specify for a recommendation run.</p>"
         }
       },
       "documentation":"<p>The response for the Data Quality rule recommendation run.</p>"
@@ -21570,6 +21806,10 @@
         "MaxResults":{
           "shape":"PageSize",
           "documentation":"<p>The maximum number of results to return.</p>"
+        },
+        "Tags":{
+          "shape":"TagsMap",
+          "documentation":"<p>A list of key-value pair tags to filter recommendation runs.</p>"
         }
       }
     },
@@ -23392,6 +23632,34 @@
       },
       "documentation":"<p>A structure containing properties for OAuth2 in the CreateConnection request.</p>"
     },
+    "ObservationConfiguration":{
+      "type":"string",
+      "enum":[
+        "ALL",
+        "NONE"
+      ]
+    },
+    "ObservationMode":{
+      "type":"string",
+      "enum":[
+        "SCHEDULED",
+        "FIXED"
+      ]
+    },
+    "ObservationResultsOptions":{
+      "type":"structure",
+      "members":{
+        "WriteObservationResultsEnabled":{
+          "shape":"NullableBoolean",
+          "documentation":"<p>Set to true to write observation results.</p>"
+        },
+        "CatalogTableConfig":{
+          "shape":"CatalogTableConfigOptions",
+          "documentation":"<p>The Glue Data Catalog table configuration for storing the observation results.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for writing observation results.</p>"
+    },
     "OffsetConfiguration":{
       "type":"structure",
       "required":[
@@ -24241,6 +24509,24 @@
         }
       },
       "documentation":"<p>Specifies the job and session values that an admin configures in an Glue usage profile.</p>"
+    },
+    "ProfilingResultsOptions":{
+      "type":"structure",
+      "members":{
+        "WriteProfilingResultsEnabled":{
+          "shape":"NullableBoolean",
+          "documentation":"<p>Set to true to write profiling results.</p>"
+        },
+        "CatalogTableConfig":{
+          "shape":"CatalogTableConfigOptions",
+          "documentation":"<p>The Glue Data Catalog table configuration for storing the profiling results.</p>"
+        },
+        "DistributionResults":{
+          "shape":"DistributionResultsOptions",
+          "documentation":"<p>The configuration for writing distribution results.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for writing profiling results.</p>"
     },
     "PropertiesMap":{
       "type":"map",
@@ -25443,6 +25729,14 @@
       },
       "documentation":"<p>Configuration that defines HTTP request and response handling, validation endpoints, and entity configurations for REST API interactions.</p>"
     },
+    "ResultTypeEnum":{
+      "type":"string",
+      "enum":[
+        "ALL",
+        "PASSED_ONLY",
+        "FAILED_ONLY"
+      ]
+    },
     "ResumeWorkflowRunRequest":{
       "type":"structure",
       "required":[
@@ -25526,6 +25820,24 @@
         }
       },
       "documentation":"<p>Specifies a route node that directs data to different output paths based on defined filtering conditions.</p>"
+    },
+    "RowLevelResultsOptions":{
+      "type":"structure",
+      "members":{
+        "MaxRowsToWrite":{
+          "shape":"NullableInteger",
+          "documentation":"<p>The maximum number of rows to write in the results.</p>"
+        },
+        "ResultType":{
+          "shape":"ResultTypeEnum",
+          "documentation":"<p>The result type to include in the row-level results output.</p>"
+        },
+        "CatalogTableConfig":{
+          "shape":"CatalogTableConfigOptions",
+          "documentation":"<p>The Glue Data Catalog table configuration for storing the results.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for writing row-level evaluation results.</p>"
     },
     "RowTag":{"type":"string"},
     "RuleMetricsMap":{
@@ -28187,6 +28499,10 @@
         "ClientToken":{
           "shape":"HashString",
           "documentation":"<p>Used for idempotency and is recommended to be set to a random ID (such as a UUID) to avoid creating or starting multiple instances of the same resource.</p>"
+        },
+        "AdditionalRunOptions":{
+          "shape":"DataQualityRuleRecommendationRunAdditionalRunOptions",
+          "documentation":"<p>Additional run options you can specify for a recommendation run.</p>"
         }
       },
       "documentation":"<p>The request of the Data Quality rule recommendation request.</p>"
@@ -28708,6 +29024,10 @@
         "DoubleValue":{
           "shape":"double",
           "documentation":"<p>The value of the statistic.</p>"
+        },
+        "DistributionValue":{
+          "shape":"DistributionData",
+          "documentation":"<p>The distribution value for the statistic.</p>"
         },
         "EvaluationLevel":{
           "shape":"StatisticEvaluationLevel",

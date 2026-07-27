@@ -2413,6 +2413,24 @@
         }
       }
     },
+    "Headquarters":{
+      "type":"structure",
+      "required":[
+        "CountryCode",
+        "SubdivisionCode"
+      ],
+      "members":{
+        "CountryCode":{
+          "shape":"CountryCode",
+          "documentation":"<p>The ISO 3166-1 alpha-2 country code of the partner's headquarters. For example, <code>US</code>, <code>BR</code>, or <code>DE</code>.</p>"
+        },
+        "SubdivisionCode":{
+          "shape":"SubdivisionCode",
+          "documentation":"<p>The subdivision portion of the ISO 3166-2 code for the partner's headquarters (for example, <code>SP</code> from <code>BR-SP</code>, <code>NSW</code> from <code>AU-NSW</code>, or <code>13</code> from <code>JP-13</code>).</p>"
+        }
+      },
+      "documentation":"<p>Contains the partner's headquarters location using International Organization for Standardization (ISO) 3166 country and subdivision codes.</p>"
+    },
     "IndustrySegment":{
       "type":"string",
       "enum":[
@@ -2827,6 +2845,10 @@
         "LocalizedContents":{
           "shape":"LocalizedContentList",
           "documentation":"<p>A list of localized content versions for different languages and regions.</p>"
+        },
+        "Headquarters":{
+          "shape":"Headquarters",
+          "documentation":"<p>The ISO 3166 country and subdivision codes for the partner's headquarters location. If no headquarters location is set, this field is not included in the response.</p>"
         },
         "ProfileId":{
           "shape":"PartnerProfileId",
@@ -3634,6 +3656,12 @@
       }
     },
     "String":{"type":"string"},
+    "SubdivisionCode":{
+      "type":"string",
+      "max":3,
+      "min":1,
+      "pattern":"[A-Z0-9]{1,3}"
+    },
     "Tag":{
       "type":"structure",
       "required":[
@@ -3744,6 +3772,10 @@
         "LocalizedContents":{
           "shape":"LocalizedContentList",
           "documentation":"<p>The updated localized content for the partner profile.</p>"
+        },
+        "Headquarters":{
+          "shape":"Headquarters",
+          "documentation":"<p>The ISO 3166 country and subdivision codes for the partner's headquarters location. If you omit this field, the service retains the existing headquarters value.</p>"
         }
       },
       "documentation":"<p>Contains detailed information about a profile update task including the changes to be made.</p>"

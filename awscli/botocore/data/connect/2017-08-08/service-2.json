@@ -101,7 +101,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServiceException"}
       ],
-      "documentation":"<p>Associates a queued contact with an agent.</p> <p> <b>Use cases</b> </p> <p>Following are common uses cases for this API:</p> <ul> <li> <p>Programmatically assign queued contacts to available users.</p> </li> <li> <p>Leverage the IAM context key <code>connect:PreferredUserArn</code> to restrict contact association to specific preferred user.</p> </li> </ul> <p> <b>Important things to know</b> </p> <ul> <li> <p>Use this API with chat, email, and task contacts. It does not support voice contacts.</p> </li> <li> <p>Use it to associate contacts with users regardless of their current state, including custom states. Ensure your application logic accounts for user availability before making associations.</p> </li> <li> <p>It honors the IAM context key <code>connect:PreferredUserArn</code> to prevent unauthorized contact associations.</p> </li> <li> <p>It respects the IAM context key <code>connect:PreferredUserArn</code> to enforce authorization controls and prevent unauthorized contact associations. Verify that your IAM policies are properly configured to support your intended use cases.</p> </li> <li> <p>The service quota <i>Queues per routing profile per instance</i> applies to manually assigned queues, too. For more information about this quota, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/amazon-connect-service-limits.html#connect-quotas\">Connect Customer quotas</a> in the <i>Connect Customer Administrator Guide</i>.</p> </li> </ul> <p> <b>Endpoints</b>: See <a href=\"https://docs.aws.amazon.com/general/latest/gr/connect_region.html\">Connect Customer endpoints and quotas</a>.</p>"
+      "documentation":"<p>Associates a queued contact with an agent.</p> <p> <b>Use cases</b> </p> <p>Following are common uses cases for this API:</p> <ul> <li> <p>Programmatically assign queued contacts to available users.</p> </li> <li> <p>Leverage the IAM context key <code>connect:PreferredUserArn</code> to restrict contact association to specific preferred user.</p> </li> </ul> <p> <b>Important things to know</b> </p> <ul> <li> <p>Use this API with chat, email, task, and voice contacts. For voice callbacks, this API does not support customer-first mode.</p> </li> <li> <p>This API can be used to offer a contact to an agent even if the agent is currently at maximum concurrency for the channel.</p> </li> <li> <p>Use it to associate contacts with users regardless of their current state, including custom states. Ensure your application logic accounts for user availability before making associations.</p> </li> <li> <p>It honors the IAM context key <code>connect:PreferredUserArn</code> to prevent unauthorized contact associations.</p> </li> <li> <p>It respects the IAM context key <code>connect:PreferredUserArn</code> to enforce authorization controls and prevent unauthorized contact associations. Verify that your IAM policies are properly configured to support your intended use cases.</p> </li> <li> <p>The service quota <i>Queues per routing profile per instance</i> applies to manually assigned queues, too. For more information about this quota, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/amazon-connect-service-limits.html#connect-quotas\">Connect Customer quotas</a> in the <i>Connect Customer Administrator Guide</i>.</p> </li> </ul> <p> <b>Endpoints</b>: See <a href=\"https://docs.aws.amazon.com/general/latest/gr/connect_region.html\">Connect Customer endpoints and quotas</a>.</p>"
     },
     "AssociateDefaultVocabulary":{
       "name":"AssociateDefaultVocabulary",
@@ -8053,7 +8053,7 @@
         },
         "ManualAssignmentQueueConfigs":{
           "shape":"RoutingProfileManualAssignmentQueueConfigList",
-          "documentation":"<p>The manual assignment queues to associate with this routing profile.</p> <p>Note: Use this config for chat, email, and task contacts. It does not support voice contacts.</p>"
+          "documentation":"<p>The manual assignment queues to associate with this routing profile.</p> <note> <p>For voice contacts, manual assignment supports only agent-first callback contacts. Chat, email, and task contacts are fully supported.</p> </note>"
         }
       }
     },
@@ -12718,7 +12718,7 @@
         },
         "ManualAssignmentQueueConfigs":{
           "shape":"RoutingProfileManualAssignmentQueueConfigList",
-          "documentation":"<p>The manual assignment queues associated with the routing profile. If no queue is added, agents and supervisors can't pick or assign any contacts from this routing profile. The limit of 10 array members applies to the maximum number of RoutingProfileManualAssignmentQueueConfig objects that can be passed during a CreateRoutingProfile API request. It is different from the quota of 50 queues per routing profile per instance that is listed in Connect Customer service quotas.</p> <p>Note: Use this config for chat, email, and task contacts. It does not support voice contacts.</p>"
+          "documentation":"<p>The manual assignment queues associated with the routing profile. If no queue is added, agents and supervisors can't pick or assign any contacts from this routing profile. The limit of 10 array members applies to the maximum number of RoutingProfileManualAssignmentQueueConfig objects that can be passed during a CreateRoutingProfile API request. It is different from the quota of 50 queues per routing profile per instance that is listed in Connect Customer service quotas.</p> <note> <p>For voice contacts, manual assignment supports only agent-first callback contacts. Chat, email, and task contacts are fully supported.</p> </note>"
         },
         "MediaConcurrencies":{
           "shape":"MediaConcurrencies",
@@ -12910,7 +12910,7 @@
         },
         "ContactFlowId":{
           "shape":"ContactFlowId",
-          "documentation":"<p>The identifier of the flow that runs by default when a task is created by referencing this template.</p>"
+          "documentation":"<p>The identifier of the flow that runs by default when a task is created by referencing this template.</p> <p>Although this parameter is marked as optional, the request must contain either a <code>ContactFlowId</code> or a field of type <code>QUICK_CONNECT</code>.</p>"
         },
         "SelfAssignFlowId":{
           "shape":"ContactFlowId",
@@ -12918,7 +12918,7 @@
         },
         "Constraints":{
           "shape":"TaskTemplateConstraints",
-          "documentation":"<p>Constraints that are applicable to the fields listed.</p>"
+          "documentation":"<p>Constraints that are applicable to the fields listed. Although this parameter is marked as optional in the API model, the service requires it when calling <code>CreateTaskTemplate</code> or <code>UpdateTaskTemplate</code>. The <code>RequiredFields</code> array must contain at least one element, and the field of type <code>NAME</code> must be included in <code>RequiredFields</code>.</p>"
         },
         "Defaults":{
           "shape":"TaskTemplateDefaults",
@@ -12930,7 +12930,7 @@
         },
         "Fields":{
           "shape":"TaskTemplateFields",
-          "documentation":"<p>Fields that are part of the template.</p>"
+          "documentation":"<p>Fields that are part of the template.</p> <p>The request must contain exactly one field of type <code>NAME</code>. This field must also be listed in the <code>RequiredFields</code> array within the <code>Constraints</code> parameter.</p>"
         },
         "ClientToken":{
           "shape":"ClientToken",
@@ -20961,7 +20961,7 @@
         },
         "Constraints":{
           "shape":"TaskTemplateConstraints",
-          "documentation":"<p>Constraints that are applicable to the fields listed.</p>"
+          "documentation":"<p>Constraints that are applicable to the fields listed. Although this parameter is marked as optional in the API model, the service requires it when calling <code>CreateTaskTemplate</code> or <code>UpdateTaskTemplate</code>. The <code>RequiredFields</code> array must contain at least one element, and the field of type <code>NAME</code> must be included in <code>RequiredFields</code>.</p>"
         },
         "Defaults":{
           "shape":"TaskTemplateDefaults",
@@ -37045,7 +37045,7 @@
         },
         "ContactFlowId":{
           "shape":"ContactFlowId",
-          "documentation":"<p>The identifier of the flow that runs by default when a task is created by referencing this template.</p>"
+          "documentation":"<p>The identifier of the flow that runs by default when a task is created by referencing this template.</p> <p>Although this parameter is marked as optional, the request must contain either a <code>ContactFlowId</code> or a field of type <code>QUICK_CONNECT</code>.</p>"
         },
         "SelfAssignFlowId":{
           "shape":"ContactFlowId",
@@ -37053,7 +37053,7 @@
         },
         "Constraints":{
           "shape":"TaskTemplateConstraints",
-          "documentation":"<p>Constraints that are applicable to the fields listed.</p>"
+          "documentation":"<p>Constraints that are applicable to the fields listed. Although this parameter is marked as optional in the API model, the service requires it when calling <code>CreateTaskTemplate</code> or <code>UpdateTaskTemplate</code>. The <code>RequiredFields</code> array must contain at least one element, and the field of type <code>NAME</code> must be included in <code>RequiredFields</code>.</p>"
         },
         "Defaults":{
           "shape":"TaskTemplateDefaults",
@@ -37061,11 +37061,11 @@
         },
         "Status":{
           "shape":"TaskTemplateStatus",
-          "documentation":"<p>Marks a template as <code>ACTIVE</code> or <code>INACTIVE</code> for a task to refer to it. Tasks can only be created from <code>ACTIVE</code> templates. If a template is marked as <code>INACTIVE</code>, then a task that refers to this template cannot be created.</p>"
+          "documentation":"<p>Marks a template as <code>ACTIVE</code> or <code>INACTIVE</code> for a task to refer to it. Tasks can only be created from <code>ACTIVE</code> templates. If a template is marked as <code>INACTIVE</code>, then a task that refers to this template cannot be created.</p> <p>Although this parameter is marked as optional, the service requires it when calling <code>UpdateTaskTemplate</code>.</p>"
         },
         "Fields":{
           "shape":"TaskTemplateFields",
-          "documentation":"<p>Fields that are part of the template.</p>"
+          "documentation":"<p>Fields that are part of the template.</p> <p>The request must contain exactly one field of type <code>NAME</code>. This field must also be listed in the <code>RequiredFields</code> array within the <code>Constraints</code> parameter.</p>"
         }
       }
     },
@@ -37102,7 +37102,7 @@
         },
         "Constraints":{
           "shape":"TaskTemplateConstraints",
-          "documentation":"<p>Constraints that are applicable to the fields listed.</p>"
+          "documentation":"<p>Constraints that are applicable to the fields listed. Although this parameter is marked as optional in the API model, the service requires it when calling <code>CreateTaskTemplate</code> or <code>UpdateTaskTemplate</code>. The <code>RequiredFields</code> array must contain at least one element, and the field of type <code>NAME</code> must be included in <code>RequiredFields</code>.</p>"
         },
         "Defaults":{
           "shape":"TaskTemplateDefaults",

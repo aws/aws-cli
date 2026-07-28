@@ -296,3 +296,61 @@ def test_abort_if_profile_has_existing_credentials(
     else:
         mock_login_command._run_main(DEFAULT_ARGS, DEFAULT_GLOBAL_ARGS)
         mock_token_fetcher.assert_called_once()
+
+
+@mock.patch('awscli.customizations.login.utils.get_base_sign_in_uri')
+@mock.patch(
+    'awscli.customizations.login.utils.SameDeviceLoginTokenFetcher.fetch_token'
+)
+@mock.patch('awscli.customizations.login.login.maybe_prompt_agent_toolkit')
+def test_prompts_agent_toolkit_for_new_profile(
+    mock_prompt,
+    mock_token_fetcher,
+    mock_base_sign_in_uri,
+    mock_login_command,
+    mock_session,
+):
+    mock_base_sign_in_uri.return_value = 'https://foo'
+    mock_token_fetcher.return_value = (
+        {
+            'accessToken': 'access_token',
+            'idToken': SAMPLE_ID_TOKEN,
+            'expiresIn': 3600,
+        },
+        'arn:aws:iam::0123456789012:user/Admin',
+    )
+    # Profile does not exist yet — this is a new-profile setup.
+    mock_session.available_profiles = []
+    mock_session.full_config = {'profiles': {}}
+
+    mock_login_command._run_main(DEFAULT_ARGS, DEFAULT_GLOBAL_ARGS)
+    mock_prompt.assert_called_once()
+
+
+@mock.patch('awscli.customizations.login.utils.get_base_sign_in_uri')
+@mock.patch(
+    'awscli.customizations.login.utils.SameDeviceLoginTokenFetcher.fetch_token'
+)
+@mock.patch('awscli.customizations.login.login.maybe_prompt_agent_toolkit')
+def test_no_agent_toolkit_prompt_for_existing_profile(
+    mock_prompt,
+    mock_token_fetcher,
+    mock_base_sign_in_uri,
+    mock_login_command,
+    mock_session,
+):
+    mock_base_sign_in_uri.return_value = 'https://foo'
+    mock_token_fetcher.return_value = (
+        {
+            'accessToken': 'access_token',
+            'idToken': SAMPLE_ID_TOKEN,
+            'expiresIn': 3600,
+        },
+        'arn:aws:iam::0123456789012:user/Admin',
+    )
+    # Profile already exists — this is re-auth, not setup.
+    mock_session.available_profiles = ['profile-name']
+    mock_session.full_config = {'profiles': {'profile-name': {}}}
+
+    mock_login_command._run_main(DEFAULT_ARGS, DEFAULT_GLOBAL_ARGS)
+    mock_prompt.assert_not_called()

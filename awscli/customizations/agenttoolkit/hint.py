@@ -22,6 +22,8 @@ import json
 import logging
 import os
 
+from botocore.utils import ensure_boolean
+
 from awscli.customizations.agenttoolkit.agents import (
     get_detected_real_agents,
 )
@@ -36,9 +38,11 @@ LOG = logging.getLogger(__name__)
 
 STATE_PATH = '~/.aws/cli/agent-toolkit/state.json'
 
+HINT_DISABLED_ENV_VAR = 'AWS_CLI_AGENT_TOOLKIT_HINT_DISABLED'
+
 PROMPT_TEXT = (
-    'Configure AWS skills and the AWS MCP server for your AI coding '
-    'agent(s)? [Y/n/never]: '
+    '\nConfigure AWS skills and the AWS MCP server for your AI coding '
+    'agent(s)? [y/n/never]: '
 )
 
 
@@ -82,6 +86,8 @@ def _has_installed_skills(detected_agents):
 
 def _is_eligible(detected_agents):
     if not is_stdin_a_tty():
+        return False
+    if ensure_boolean(os.environ.get(HINT_DISABLED_ENV_VAR, '')):
         return False
     if _load_state().get('hint_dismissed'):
         return False

@@ -46,7 +46,7 @@ def yes_no_never_choice(prompt):
     while True:
         response = compat_input(prompt)
 
-        if response.lower() in ('y', 'yes') or response == '':
+        if response.lower() in ('y', 'yes'):
             return 'yes'
         elif response.lower() in ('n', 'no'):
             return 'no'

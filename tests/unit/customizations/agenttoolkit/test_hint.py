@@ -73,6 +73,18 @@ def test_skipped_when_not_a_tty(state_file, wizard_cls):
     assert not wizard_cls.called
 
 
+def test_skipped_when_env_var_true(state_file, wizard_cls, monkeypatch):
+    monkeypatch.setenv(hint.HINT_DISABLED_ENV_VAR, 'true')
+    _run(choice='yes')
+    assert not wizard_cls.called
+
+
+def test_not_skipped_when_env_var_false(state_file, wizard_cls, monkeypatch):
+    monkeypatch.setenv(hint.HINT_DISABLED_ENV_VAR, 'false')
+    _run(choice='yes')
+    assert wizard_cls.called
+
+
 def test_skipped_when_already_dismissed(state_file, wizard_cls):
     state_file.parent.mkdir(parents=True, exist_ok=True)
     state_file.write_text(json.dumps({'hint_dismissed': True}))

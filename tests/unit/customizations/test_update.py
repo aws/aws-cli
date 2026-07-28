@@ -69,23 +69,17 @@ class TestUnixUpdateCommand:
         assert command([], global_args()) == 0
         runner.assert_called_once()
 
-    def test_prompts_agent_toolkit_after_successful_update(self):
+    def test_prints_agent_toolkit_tip_after_successful_update(self, capsys):
         command = self._command(USER_INSTALL)
-        with mock.patch.object(
-            update_module, 'maybe_prompt_agent_toolkit'
-        ) as prompt:
-            command([], global_args())
-        prompt.assert_called_once()
+        command([], global_args())
+        assert 'aws configure agent-toolkit' in capsys.readouterr().out
 
-    def test_no_agent_toolkit_prompt_when_update_fails(self):
+    def test_no_agent_toolkit_tip_when_update_fails(self, capsys):
         runner = mock.Mock(side_effect=subprocess.CalledProcessError(1, 'x'))
         command = self._command(USER_INSTALL, runner=runner)
-        with mock.patch.object(
-            update_module, 'maybe_prompt_agent_toolkit'
-        ) as prompt:
-            with pytest.raises(UpdateError):
-                command([], global_args())
-        prompt.assert_not_called()
+        with pytest.raises(UpdateError):
+            command([], global_args())
+        assert 'aws configure agent-toolkit' not in capsys.readouterr().out
 
     @pytest.mark.parametrize('source', ['source', 'other', 'pip', ''])
     def test_unsupported_distribution_source_raises(self, source):
@@ -267,15 +261,10 @@ class TestWindowsUpdateCommand:
         assert cmd[2].endswith('.cmd')
         assert len(cmd) == 3
 
-    def test_does_not_prompt_agent_toolkit(self):
-        # The Windows update runs detached and the parent exits before the
-        # update completes, so there is no safe point to prompt.
+    def test_prints_agent_toolkit_tip(self, capsys):
         command = self._command(USER_INSTALL)
-        with mock.patch.object(
-            update_module, 'maybe_prompt_agent_toolkit'
-        ) as prompt:
-            command([], global_args())
-        prompt.assert_not_called()
+        command([], global_args())
+        assert 'aws configure agent-toolkit' in capsys.readouterr().out
 
     def test_downloads_install_script_referenced_by_wrapper(self):
         downloader = mock.Mock()

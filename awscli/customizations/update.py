@@ -15,9 +15,6 @@ from awscli.clidriver import (
     get_distribution_source,
 )
 from awscli.compat import is_windows
-from awscli.customizations.agenttoolkit.hint import (
-    maybe_prompt_agent_toolkit,
-)
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.utils import uni_print
 
@@ -98,11 +95,11 @@ class BaseUpdateCommand(BasicCommand):
         uni_print(f"Updating AWS CLI (source: {source})\n")
         self._no_color = parsed_globals.color == 'off'
         self._do_update()
-        self._maybe_prompt_agent_toolkit(parsed_globals)
+        uni_print(
+            "\nTip: run 'aws configure agent-toolkit' to set up AWS skills "
+            "and the AWS MCP server for your AI coding agent.\n"
+        )
         return 0
-
-    def _maybe_prompt_agent_toolkit(self, parsed_globals):
-        maybe_prompt_agent_toolkit(self._session, parsed_globals)
 
     def _do_update(self):
         raise NotImplementedError
@@ -226,13 +223,6 @@ class WindowsUpdateCommand(BaseUpdateCommand):
             'Update started. This process will exit and the '
             'update will complete shortly.\n'
         )
-
-    def _maybe_prompt_agent_toolkit(self, parsed_globals):
-        # No-op on Windows: the update runs in a detached subprocess and the
-        # actual CLI update happens after this process exits, so there is no
-        # safe point to prompt (blocking here would hold the exe lock the
-        # detached-process workaround exists to avoid).
-        pass
 
     def _run_install(self, cmd):
         subprocess.Popen(

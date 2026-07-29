@@ -1478,6 +1478,16 @@
       "output":{"shape":"CreateTransitGatewayPolicyTableResult"},
       "documentation":"<p>Creates a transit gateway policy table.</p>"
     },
+    "CreateTransitGatewayPolicyTableEntry":{
+      "name":"CreateTransitGatewayPolicyTableEntry",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateTransitGatewayPolicyTableEntryRequest"},
+      "output":{"shape":"CreateTransitGatewayPolicyTableEntryResult"},
+      "documentation":"<p>Creates an entry in a transit gateway policy table to route matching traffic to a specified route table.</p>"
+    },
     "CreateTransitGatewayPrefixListReference":{
       "name":"CreateTransitGatewayPrefixListReference",
       "http":{
@@ -2393,6 +2403,16 @@
       "input":{"shape":"DeleteTransitGatewayPolicyTableRequest"},
       "output":{"shape":"DeleteTransitGatewayPolicyTableResult"},
       "documentation":"<p>Deletes the specified transit gateway policy table.</p>"
+    },
+    "DeleteTransitGatewayPolicyTableEntry":{
+      "name":"DeleteTransitGatewayPolicyTableEntry",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteTransitGatewayPolicyTableEntryRequest"},
+      "output":{"shape":"DeleteTransitGatewayPolicyTableEntryResult"},
+      "documentation":"<p>Deletes the specified transit gateway policy table entry.</p>"
     },
     "DeleteTransitGatewayPrefixListReference":{
       "name":"DeleteTransitGatewayPrefixListReference",
@@ -6623,6 +6643,16 @@
       "input":{"shape":"ModifyTransitGatewayMeteringPolicyRequest"},
       "output":{"shape":"ModifyTransitGatewayMeteringPolicyResult"},
       "documentation":"<p>Modifies a transit gateway metering policy.</p>"
+    },
+    "ModifyTransitGatewayPolicyTableEntry":{
+      "name":"ModifyTransitGatewayPolicyTableEntry",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ModifyTransitGatewayPolicyTableEntryRequest"},
+      "output":{"shape":"ModifyTransitGatewayPolicyTableEntryResult"},
+      "documentation":"<p>Modifies the specified transit gateway policy table entry.</p>"
     },
     "ModifyTransitGatewayPrefixListReference":{
       "name":"ModifyTransitGatewayPrefixListReference",
@@ -19816,6 +19846,45 @@
         }
       }
     },
+    "CreateTransitGatewayPolicyTableEntryRequest":{
+      "type":"structure",
+      "required":[
+        "TransitGatewayPolicyTableId",
+        "PolicyRuleNumber",
+        "TargetRouteTableId"
+      ],
+      "members":{
+        "TransitGatewayPolicyTableId":{
+          "shape":"TransitGatewayPolicyTableId",
+          "documentation":"<p>The ID of the transit gateway policy table.</p>"
+        },
+        "PolicyRuleNumber":{
+          "shape":"String",
+          "documentation":"<p>The rule number for the policy table entry. Lower rule numbers are evaluated first and take precedence.</p>"
+        },
+        "PolicyRule":{
+          "shape":"TransitGatewayRequestPolicyRule",
+          "documentation":"<p>The matching criteria for the policy table entry.</p>"
+        },
+        "TargetRouteTableId":{
+          "shape":"TransitGatewayRouteTableId",
+          "documentation":"<p>The ID of the transit gateway route table to use for traffic matching this rule.</p>"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "CreateTransitGatewayPolicyTableEntryResult":{
+      "type":"structure",
+      "members":{
+        "TransitGatewayPolicyTableEntry":{
+          "shape":"TransitGatewayPolicyTableEntry",
+          "locationName":"transitGatewayPolicyTableEntry"
+        }
+      }
+    },
     "CreateTransitGatewayPolicyTableRequest":{
       "type":"structure",
       "required":["TransitGatewayId"],
@@ -20065,7 +20134,7 @@
         },
         "Ipv6Support":{
           "shape":"Ipv6SupportValue",
-          "documentation":"<p>Enable or disable IPv6 support. The default is <code>disable</code>.</p>"
+          "documentation":"<p>Specifies whether IPv6 support is enabled for the attachment. When enabled, the transit gateway network interface receives an IPv6 address. When you enable route propagation, IPv6 VPC CIDRs propagate to the transit gateway route tables. When disabled, the network interface does not receive an IPv6 address, and IPv6 routes do not propagate. The setting does not filter IPv6 traffic. The default is <code>disable</code>.</p>"
         },
         "ApplianceModeSupport":{
           "shape":"ApplianceModeSupportValue",
@@ -23479,6 +23548,36 @@
           "shape":"TransitGatewayPeeringAttachment",
           "documentation":"<p>The transit gateway peering attachment.</p>",
           "locationName":"transitGatewayPeeringAttachment"
+        }
+      }
+    },
+    "DeleteTransitGatewayPolicyTableEntryRequest":{
+      "type":"structure",
+      "required":[
+        "TransitGatewayPolicyTableId",
+        "PolicyRuleNumber"
+      ],
+      "members":{
+        "TransitGatewayPolicyTableId":{
+          "shape":"TransitGatewayPolicyTableId",
+          "documentation":"<p>The ID of the transit gateway policy table.</p>"
+        },
+        "PolicyRuleNumber":{
+          "shape":"String",
+          "documentation":"<p>The rule number of the policy table entry to delete.</p>"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "DeleteTransitGatewayPolicyTableEntryResult":{
+      "type":"structure",
+      "members":{
+        "TransitGatewayPolicyTableEntry":{
+          "shape":"TransitGatewayPolicyTableEntry",
+          "locationName":"transitGatewayPolicyTableEntry"
         }
       }
     },
@@ -41051,7 +41150,7 @@
         },
         "Filters":{
           "shape":"FilterList",
-          "documentation":"<p>The filters associated with the transit gateway policy table.</p>",
+          "documentation":"<p>One or more filters. The possible values are:</p> <ul> <li> <p> <code>policy-rule-number</code> - The rule number for the transit gateway policy table entry.</p> </li> <li> <p> <code>target-route-table-id</code> - The ID of the target route table.</p> </li> <li> <p> <code>policy-rule.source-ip</code> - The source CIDR block for the policy rule.</p> </li> <li> <p> <code>policy-rule.destination-ip</code> - The destination CIDR block for the policy rule.</p> </li> <li> <p> <code>policy-rule.source-port</code> - The source port or port range for the policy rule.</p> </li> <li> <p> <code>policy-rule.destination-port</code> - The destination port or port range for the policy rule.</p> </li> <li> <p> <code>policy-rule.protocol</code> - The protocol for the policy rule.</p> </li> <li> <p> <code>policy-rule.meta-data.key</code> - The metadata key for the policy rule.</p> </li> <li> <p> <code>policy-rule.meta-data.value</code> - The metadata value for the policy rule.</p> </li> </ul>",
           "locationName":"Filter"
         },
         "MaxResults":{
@@ -41075,6 +41174,11 @@
           "shape":"TransitGatewayPolicyTableEntryList",
           "documentation":"<p>The entries for the transit gateway policy table.</p>",
           "locationName":"transitGatewayPolicyTableEntries"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token to use to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.</p>",
+          "locationName":"nextToken"
         }
       }
     },
@@ -56630,6 +56734,44 @@
       },
       "documentation":"<p>The transit gateway options.</p>"
     },
+    "ModifyTransitGatewayPolicyTableEntryRequest":{
+      "type":"structure",
+      "required":[
+        "TransitGatewayPolicyTableId",
+        "PolicyRuleNumber"
+      ],
+      "members":{
+        "TransitGatewayPolicyTableId":{
+          "shape":"TransitGatewayPolicyTableId",
+          "documentation":"<p>The ID of the transit gateway policy table.</p>"
+        },
+        "PolicyRuleNumber":{
+          "shape":"String",
+          "documentation":"<p>The rule number of the policy table entry to modify.</p>"
+        },
+        "PolicyRule":{
+          "shape":"TransitGatewayRequestPolicyRule",
+          "documentation":"<p>The updated matching criteria for the policy table entry. Unspecified fields retain their current values.</p>"
+        },
+        "TargetRouteTableId":{
+          "shape":"TransitGatewayRouteTableId",
+          "documentation":"<p>The ID of the transit gateway route table to use for traffic matching this rule.</p>"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "ModifyTransitGatewayPolicyTableEntryResult":{
+      "type":"structure",
+      "members":{
+        "TransitGatewayPolicyTableEntry":{
+          "shape":"TransitGatewayPolicyTableEntry",
+          "locationName":"transitGatewayPolicyTableEntry"
+        }
+      }
+    },
     "ModifyTransitGatewayPrefixListReferenceRequest":{
       "type":"structure",
       "required":[
@@ -56740,7 +56882,7 @@
         },
         "Ipv6Support":{
           "shape":"Ipv6SupportValue",
-          "documentation":"<p>Enable or disable IPv6 support. The default is <code>enable</code>.</p>"
+          "documentation":"<p>Specifies whether IPv6 support is enabled for the attachment. When enabled, the transit gateway network interface receives an IPv6 address. When you enable route propagation, IPv6 VPC CIDRs propagate to the transit gateway route tables. When disabled, the network interface does not receive an IPv6 address, and IPv6 routes do not propagate. The setting does not filter IPv6 traffic.</p>"
         },
         "ApplianceModeSupport":{
           "shape":"ApplianceModeSupportValue",
@@ -72328,6 +72470,11 @@
           "documentation":"<p>The ID of the route table for the transit gateway.</p>",
           "locationName":"transitGatewayRouteTableId"
         },
+        "TransitGatewayPolicyTableId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the transit gateway policy table associated with the attachment.</p>",
+          "locationName":"transitGatewayPolicyTableId"
+        },
         "State":{
           "shape":"TransitGatewayAssociationState",
           "documentation":"<p>The state of the association.</p>",
@@ -73372,7 +73519,7 @@
         },
         "SourcePortRange":{
           "shape":"String",
-          "documentation":"<p>The port range for the transit gateway policy rule. Currently this is set to * (all).</p>",
+          "documentation":"<p>The source port or port range for the transit gateway policy rule.</p>",
           "locationName":"sourcePortRange"
         },
         "DestinationCidrBlock":{
@@ -73382,7 +73529,7 @@
         },
         "DestinationPortRange":{
           "shape":"String",
-          "documentation":"<p>The port range for the transit gateway policy rule. Currently this is set to * (all).</p>",
+          "documentation":"<p>The destination port or port range for the transit gateway policy rule.</p>",
           "locationName":"destinationPortRange"
         },
         "Protocol":{
@@ -73500,6 +73647,11 @@
           "shape":"TransitGatewayRouteTableId",
           "documentation":"<p>The ID of the target route table.</p>",
           "locationName":"targetRouteTableId"
+        },
+        "State":{
+          "shape":"TransitGatewayPolicyTableEntryState",
+          "documentation":"<p>The state of the transit gateway policy table entry.</p>",
+          "locationName":"state"
         }
       },
       "documentation":"<p>Describes a transit gateway policy table entry</p>"
@@ -73510,6 +73662,13 @@
         "shape":"TransitGatewayPolicyTableEntry",
         "locationName":"item"
       }
+    },
+    "TransitGatewayPolicyTableEntryState":{
+      "type":"string",
+      "enum":[
+        "active",
+        "deleted"
+      ]
     },
     "TransitGatewayPolicyTableId":{"type":"string"},
     "TransitGatewayPolicyTableIdStringList":{
@@ -73694,6 +73853,50 @@
         }
       },
       "documentation":"<p>Describes the options for a transit gateway.</p>"
+    },
+    "TransitGatewayRequestPolicyRule":{
+      "type":"structure",
+      "members":{
+        "SourceCidrBlock":{
+          "shape":"String",
+          "documentation":"<p>The source CIDR block for the policy rule.</p>"
+        },
+        "SourcePortRange":{
+          "shape":"String",
+          "documentation":"<p>The source port or port range for the policy rule. You can specify a port range only when <code>Protocol</code> is <code>6</code> (TCP) or <code>17</code> (UDP); for all other protocols, this value must be <code>*</code>.</p>"
+        },
+        "DestinationCidrBlock":{
+          "shape":"String",
+          "documentation":"<p>The destination CIDR block for the policy rule.</p>"
+        },
+        "DestinationPortRange":{
+          "shape":"String",
+          "documentation":"<p>The destination port or port range for the policy rule. You can specify a port range only when <code>Protocol</code> is <code>6</code> (TCP) or <code>17</code> (UDP); for all other protocols, this value must be <code>*</code>.</p>"
+        },
+        "Protocol":{
+          "shape":"String",
+          "documentation":"<p>The protocol for the policy rule. Valid values are <code>1</code> (ICMP), <code>6</code> (TCP), <code>17</code> (UDP), <code>47</code> (GRE), or <code>*</code> for all protocols.</p>"
+        },
+        "MetaData":{
+          "shape":"TransitGatewayRequestPolicyRuleMetaData",
+          "documentation":"<p>The metadata key-value pair for the policy rule.</p>"
+        }
+      },
+      "documentation":"<p>The matching criteria for a transit gateway policy table entry.</p>"
+    },
+    "TransitGatewayRequestPolicyRuleMetaData":{
+      "type":"structure",
+      "members":{
+        "MetaDataKey":{
+          "shape":"String",
+          "documentation":"<p>The key of the metadata pair for the policy rule.</p>"
+        },
+        "MetaDataValue":{
+          "shape":"String",
+          "documentation":"<p>The value of the metadata pair for the policy rule.</p>"
+        }
+      },
+      "documentation":"<p>A metadata key-value pair for a transit gateway policy rule.</p>"
     },
     "TransitGatewayRoute":{
       "type":"structure",

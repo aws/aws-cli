@@ -6703,6 +6703,24 @@
       "max":900,
       "min":1
     },
+    "BetweenConfiguration":{
+      "type":"structure",
+      "members":{
+        "LowBoundKey":{
+          "shape":"String",
+          "documentation":"<p>The parameter name used for the lower bound value in a BETWEEN filter operation.</p>"
+        },
+        "HighBoundKey":{
+          "shape":"String",
+          "documentation":"<p>The parameter name used for the upper bound value in a BETWEEN filter operation.</p>"
+        },
+        "Template":{
+          "shape":"String",
+          "documentation":"<p>A template string for constructing the BETWEEN filter expression.</p>"
+        }
+      },
+      "documentation":"<p>Configuration that defines how BETWEEN range filter operations are translated into REST API request parameters.</p>"
+    },
     "BinEdges":{
       "type":"list",
       "member":{"shape":"GenericString"}
@@ -9046,6 +9064,11 @@
       "member":{"shape":"ConnectionString"},
       "max":1000
     },
+    "ConnectionStringToStringMap":{
+      "type":"map",
+      "key":{"shape":"String"},
+      "value":{"shape":"String"}
+    },
     "ConnectionType":{
       "type":"string",
       "enum":[
@@ -9410,6 +9433,10 @@
         "PropertyType":{
           "shape":"PropertyType",
           "documentation":"<p>The data type of this property</p>"
+        },
+        "Format":{
+          "shape":"String",
+          "documentation":"<p>A format template for the property value that defines how the value should be formatted before sending it in API requests. Use <code>{value}</code> as a placeholder for the actual property value (for example, <code>SSWS {value}</code>).</p>"
         }
       },
       "documentation":"<p>Defines a property configuration for connection types, default values, and where the property should be used in requests.</p>"
@@ -15231,6 +15258,30 @@
         "FieldDataType":{
           "shape":"FieldDataType",
           "documentation":"<p>The data type of the field.</p>"
+        },
+        "ResponseDateFormat":{
+          "shape":"String",
+          "documentation":"<p>The format pattern for parsing date values from API responses. Required when the API uses a non-ISO-8601 format. Accepts Java <code>DateTimeFormatter</code> patterns (for example, <code>EEE, d MMM yyyy HH:mm:ss Z</code>), <code>EPOCH_SECONDS</code> for Unix epoch seconds, or <code>EPOCH_MILLIS</code> for Unix epoch milliseconds.</p>"
+        },
+        "IsPartitionable":{
+          "shape":"Bool",
+          "documentation":"<p>Indicates whether this field can be used for partitioning queries to the data source.</p>"
+        },
+        "IsNullable":{
+          "shape":"Bool",
+          "documentation":"<p>Indicates whether this field can contain null values.</p>"
+        },
+        "IsQueryable":{
+          "shape":"Bool",
+          "documentation":"<p>Indicates whether this field can be used in filter predicates when querying data.</p>"
+        },
+        "IsOrderable":{
+          "shape":"Bool",
+          "documentation":"<p>Indicates whether this field can be used for ordering results.</p>"
+        },
+        "FilterOverrides":{
+          "shape":"FilterOverrides",
+          "documentation":"<p>Per-field overrides for filter behavior, allowing customization of how filters are applied to this specific field.</p>"
         }
       },
       "documentation":"<p>Defines a field in an entity schema for REST connector data sources, specifying the field name and data type.</p>"
@@ -15335,6 +15386,37 @@
       },
       "documentation":"<p>Specifies a transform that splits a dataset into two, based on a filter condition.</p>"
     },
+    "FilterConfiguration":{
+      "type":"structure",
+      "required":["FilterMode"],
+      "members":{
+        "FilterMode":{
+          "shape":"FilterMode",
+          "documentation":"<p>The strategy for applying filters to requests. Use <code>QUERY_PARAMS</code> to pass filters as individual query parameters, or <code>FILTER_STRING</code> to construct a single filter expression string.</p>"
+        },
+        "OperatorMappings":{
+          "shape":"ConnectionStringToStringMap",
+          "documentation":"<p>A map of logical filter operators to their API-specific string representations. Supported operator keys are: <code>EQUAL_TO</code>, <code>NOT_EQUAL_TO</code>, <code>LESS_THAN</code>, <code>GREATER_THAN</code>, <code>LESS_THAN_OR_EQUAL_TO</code>, <code>GREATER_THAN_OR_EQUAL_TO</code>, <code>CONTAINS</code>, <code>BETWEEN</code>, <code>AND</code>, and <code>OR</code>.</p>"
+        },
+        "DateTimeFormat":{
+          "shape":"String",
+          "documentation":"<p>The global date and time format for filter expressions. Accepts Java <code>DateTimeFormatter</code> patterns (for example, <code>EEE, d MMM yyyy HH:mm:ss Z</code>), <code>EPOCH_SECONDS</code> for Unix epoch seconds, or <code>EPOCH_MILLIS</code> for Unix epoch milliseconds. If not specified, values are passed as-is in ISO-8601 format.</p>"
+        },
+        "StripQuotes":{
+          "shape":"Bool",
+          "documentation":"<p>Indicates whether surrounding double quotes should be stripped from filter values before processing.</p>"
+        },
+        "BetweenConfiguration":{
+          "shape":"BetweenConfiguration",
+          "documentation":"<p>Configuration for handling BETWEEN range filter operations.</p>"
+        },
+        "FilterStringConfiguration":{
+          "shape":"FilterStringConfiguration",
+          "documentation":"<p>Configuration for constructing filter expressions when <code>FilterMode</code> is set to <code>FILTER_STRING</code>.</p>"
+        }
+      },
+      "documentation":"<p>Configuration that defines how filter predicates are applied to REST API requests, supporting both query parameter and filter string strategies.</p>"
+    },
     "FilterExpression":{
       "type":"structure",
       "required":[
@@ -15368,6 +15450,14 @@
         "OR"
       ]
     },
+    "FilterMode":{
+      "type":"string",
+      "documentation":"<p>The strategy used to apply filter predicates to REST API requests.</p>",
+      "enum":[
+        "QUERY_PARAMS",
+        "FILTER_STRING"
+      ]
+    },
     "FilterOperation":{
       "type":"string",
       "enum":[
@@ -15391,6 +15481,28 @@
         "NE"
       ]
     },
+    "FilterOverrides":{
+      "type":"structure",
+      "members":{
+        "FieldName":{
+          "shape":"String",
+          "documentation":"<p>An override for the field name to use in filter expressions, if different from the schema field name.</p>"
+        },
+        "OperatorMappings":{
+          "shape":"ConnectionStringToStringMap",
+          "documentation":"<p>A map of logical filter operators to their field-specific API representations, overriding the global operator mappings. Supported operator keys are: <code>EQUAL_TO</code>, <code>NOT_EQUAL_TO</code>, <code>LESS_THAN</code>, <code>GREATER_THAN</code>, <code>LESS_THAN_OR_EQUAL_TO</code>, <code>GREATER_THAN_OR_EQUAL_TO</code>, <code>CONTAINS</code>, <code>BETWEEN</code>, <code>AND</code>, and <code>OR</code>.</p>"
+        },
+        "BetweenConfiguration":{
+          "shape":"BetweenConfiguration",
+          "documentation":"<p>Field-specific configuration for handling BETWEEN range filter operations.</p>"
+        },
+        "DateTimeFormat":{
+          "shape":"String",
+          "documentation":"<p>The date and time format for filter expressions on this field, overriding the global <code>DateTimeFormat</code>. Accepts Java <code>DateTimeFormatter</code> patterns (for example, <code>EEE, d MMM yyyy HH:mm:ss Z</code>), <code>EPOCH_SECONDS</code> for Unix epoch seconds, or <code>EPOCH_MILLIS</code> for Unix epoch milliseconds.</p>"
+        }
+      },
+      "documentation":"<p>Configuration that defines per-field overrides for filter behavior, allowing individual fields to customize how filter operations are applied.</p>"
+    },
     "FilterPredicate":{
       "type":"string",
       "max":100000,
@@ -15401,6 +15513,25 @@
       "max":2048,
       "min":0,
       "pattern":"[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\t]*"
+    },
+    "FilterStringConfiguration":{
+      "type":"structure",
+      "required":["QueryParameterName"],
+      "members":{
+        "QueryParameterName":{
+          "shape":"String",
+          "documentation":"<p>The query parameter name used to send the constructed filter expression string in API requests.</p>"
+        },
+        "QuoteStringValues":{
+          "shape":"Bool",
+          "documentation":"<p>Indicates whether string and date values should be wrapped with a quote character in the filter expression.</p>"
+        },
+        "QuoteCharacter":{
+          "shape":"String",
+          "documentation":"<p>The character used to quote values when <code>QuoteStringValues</code> is true. Defaults to double quotes if not specified.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for constructing filter expression strings when using the <code>FILTER_STRING</code> filter mode.</p>"
     },
     "FilterValue":{
       "type":"structure",
@@ -28051,6 +28182,10 @@
         "PaginationConfiguration":{
           "shape":"PaginationConfiguration",
           "documentation":"<p>Configuration for handling paginated responses from the REST API, supporting both cursor-based and offset-based pagination strategies.</p>"
+        },
+        "FilterConfiguration":{
+          "shape":"FilterConfiguration",
+          "documentation":"<p>Configuration for applying filter pushdown to REST API requests, defining how filter predicates are translated into query parameters or filter strings.</p>"
         }
       },
       "documentation":"<p>Configuration that defines how to make requests to endpoints, including request methods, paths, parameters, and response handling.</p>"

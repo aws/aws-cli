@@ -158,7 +158,7 @@
         {"shape":"WAFConfigurationWarningException"},
         {"shape":"WAFExpiredManagedRuleGroupVersionException"}
       ],
-      "documentation":"<p>Creates a <a>WebACL</a> per the specifications provided.</p> <p> A web ACL defines a collection of rules to use to inspect and control web requests. Each rule has a statement that defines what to look for in web requests and an action that WAF applies to requests that match the statement. In the web ACL, you assign a default action to take (allow, block) for any request that does not match any of the rules. The rules in a web ACL can be a combination of the types <a>Rule</a>, <a>RuleGroup</a>, and managed rule group. You can associate a web ACL with one or more Amazon Web Services resources to protect. The resource types include Amazon CloudFront distribution, Amazon API Gateway REST API, Application Load Balancer, AppSync GraphQL API, Amazon Cognito user pool, App Runner service, Amplify application, and Amazon Web Services Verified Access instance. </p>"
+      "documentation":"<p>Creates a <a>WebACL</a> per the specifications provided.</p> <p> A web ACL defines a collection of rules to use to inspect and control web requests. Each rule has a statement that defines what to look for in web requests and an action that WAF applies to requests that match the statement. In the web ACL, you assign a default action to take (allow, block) for any request that does not match any of the rules. The rules in a web ACL can be a combination of the types <a>Rule</a>, <a>RuleGroup</a>, and managed rule group. You can associate a web ACL with one or more Amazon Web Services resources to protect. The resource types include Amazon CloudFront distribution, Amazon API Gateway REST API, Application Load Balancer, AppSync GraphQL API, Amazon Cognito user pool, App Runner service, Amplify application, Amazon Web Services Verified Access instance, and Amazon Bedrock AgentCore Gateway. </p>"
     },
     "DeleteAPIKey":{
       "name":"DeleteAPIKey",
@@ -1037,7 +1037,7 @@
         {"shape":"WAFConfigurationWarningException"},
         {"shape":"WAFFeatureNotIncludedInPricingPlanException"}
       ],
-      "documentation":"<p>Updates the specified <a>WebACL</a>. While updating a web ACL, WAF provides continuous coverage to the resources that you have associated with the web ACL. </p> <note> <p>This operation completely replaces the mutable specifications that you already have for the web ACL with the ones that you provide to this call. </p> <p>To modify a web ACL, do the following: </p> <ol> <li> <p>Retrieve it by calling <a>GetWebACL</a> </p> </li> <li> <p>Update its settings as needed</p> </li> <li> <p>Provide the complete web ACL specification to this call</p> </li> </ol> </note> <p> A web ACL defines a collection of rules to use to inspect and control web requests. Each rule has a statement that defines what to look for in web requests and an action that WAF applies to requests that match the statement. In the web ACL, you assign a default action to take (allow, block) for any request that does not match any of the rules. The rules in a web ACL can be a combination of the types <a>Rule</a>, <a>RuleGroup</a>, and managed rule group. You can associate a web ACL with one or more Amazon Web Services resources to protect. The resource types include Amazon CloudFront distribution, Amazon API Gateway REST API, Application Load Balancer, AppSync GraphQL API, Amazon Cognito user pool, App Runner service, Amplify application, and Amazon Web Services Verified Access instance. </p> <p> <b>Temporary inconsistencies during updates</b> </p> <p>When you create or change a web ACL or other WAF resources, the changes take a small amount of time to propagate to all areas where the resources are stored. The propagation time can be from a few seconds to a number of minutes. </p> <p>The following are examples of the temporary inconsistencies that you might notice during change propagation: </p> <ul> <li> <p>After you create a web ACL, if you try to associate it with a resource, you might get an exception indicating that the web ACL is unavailable. </p> </li> <li> <p>After you add a rule group to a web ACL, the new rule group rules might be in effect in one area where the web ACL is used and not in another.</p> </li> <li> <p>After you change a rule action setting, you might see the old action in some places and the new action in others. </p> </li> <li> <p>After you add an IP address to an IP set that is in use in a blocking rule, the new address might be blocked in one area while still allowed in another.</p> </li> </ul>"
+      "documentation":"<p>Updates the specified <a>WebACL</a>. While updating a web ACL, WAF provides continuous coverage to the resources that you have associated with the web ACL. </p> <note> <p>This operation completely replaces the mutable specifications that you already have for the web ACL with the ones that you provide to this call. </p> <p>To modify a web ACL, do the following: </p> <ol> <li> <p>Retrieve it by calling <a>GetWebACL</a> </p> </li> <li> <p>Update its settings as needed</p> </li> <li> <p>Provide the complete web ACL specification to this call</p> </li> </ol> </note> <p> A web ACL defines a collection of rules to use to inspect and control web requests. Each rule has a statement that defines what to look for in web requests and an action that WAF applies to requests that match the statement. In the web ACL, you assign a default action to take (allow, block) for any request that does not match any of the rules. The rules in a web ACL can be a combination of the types <a>Rule</a>, <a>RuleGroup</a>, and managed rule group. You can associate a web ACL with one or more Amazon Web Services resources to protect. The resource types include Amazon CloudFront distribution, Amazon API Gateway REST API, Application Load Balancer, AppSync GraphQL API, Amazon Cognito user pool, App Runner service, Amplify application, Amazon Web Services Verified Access instance, and Amazon Bedrock AgentCore Gateway. </p> <p> <b>Temporary inconsistencies during updates</b> </p> <p>When you create or change a web ACL or other WAF resources, the changes take a small amount of time to propagate to all areas where the resources are stored. The propagation time can be from a few seconds to a number of minutes. </p> <p>The following are examples of the temporary inconsistencies that you might notice during change propagation: </p> <ul> <li> <p>After you create a web ACL, if you try to associate it with a resource, you might get an exception indicating that the web ACL is unavailable. </p> </li> <li> <p>After you add a rule group to a web ACL, the new rule group rules might be in effect in one area where the web ACL is used and not in another.</p> </li> <li> <p>After you change a rule action setting, you might see the old action in some places and the new action in others. </p> </li> <li> <p>After you add an IP address to an IP set that is in use in a blocking rule, the new address might be blocked in one area while still allowed in another.</p> </li> </ul>"
     }
   },
   "shapes":{
@@ -1436,6 +1436,10 @@
         "TextTransformations":{
           "shape":"TextTransformations",
           "documentation":"<p>Text transformations eliminate some of the unusual formatting that attackers use in web requests in an effort to bypass detection. Text transformations are used in rule match statements, to transform the <code>FieldToMatch</code> request component before inspecting it, and they're used in rate-based rule statements, to transform request components before using them as custom aggregation keys. If you specify one or more transformations to apply, WAF performs all transformations on the specified content, starting from the lowest priority setting, and then uses the transformed component contents. </p>"
+        },
+        "PreParseTextTransformations":{
+          "shape":"PreParseTextTransformations",
+          "documentation":"<p>Pre-parse text transformations normalize the raw query string before WAF parses it into individual query arguments. They are applied before the standard text transformations. Pre-parse text transformations are only supported when <code>FieldToMatch</code> is <code>SingleQueryArgument</code> or <code>AllQueryArguments</code>. You can specify up to 3 pre-parse text transformations per rule statement.</p>"
         },
         "PositionalConstraint":{
           "shape":"PositionalConstraint",
@@ -5282,7 +5286,8 @@
         "MONETIZATION_CONFIG",
         "WALLET_ADDRESS",
         "PRICE_AMOUNT",
-        "PAYMENT_NETWORK"
+        "PAYMENT_NETWORK",
+        "PRE_PARSE_TEXT_TRANSFORMATION"
       ]
     },
     "ParameterExceptionParameter":{
@@ -5424,6 +5429,42 @@
         "CONTAINS",
         "CONTAINS_WORD"
       ]
+    },
+    "PreParseTextTransformation":{
+      "type":"structure",
+      "required":[
+        "Priority",
+        "Type"
+      ],
+      "members":{
+        "Priority":{
+          "shape":"PreParseTextTransformationPriority",
+          "documentation":"<p>Sets the relative processing order for the pre-parse text transformations that you define. WAF processes all transformations, from lowest priority value to highest, before inspecting the transformed content. </p>"
+        },
+        "Type":{
+          "shape":"PreParseTextTransformationType",
+          "documentation":"<p>The type of pre-parse text transformation to apply to the raw query string.</p>"
+        }
+      },
+      "documentation":"<p>A pre-parse text transformation that normalizes the raw query string before WAF parses it into individual query arguments. Pre-parse text transformations are only supported when <code>FieldToMatch</code> is <code>SingleQueryArgument</code> or <code>AllQueryArguments</code>. </p>"
+    },
+    "PreParseTextTransformationPriority":{
+      "type":"integer",
+      "min":0
+    },
+    "PreParseTextTransformationType":{
+      "type":"string",
+      "enum":[
+        "NONE",
+        "URL_DECODE",
+        "URL_DECODE_UNI",
+        "COMBINE_DUPLICATE_QUERY_ARGS_BY_COMMA",
+        "REPLACE_SEMICOLONS_WITH_AMPERSANDS"
+      ]
+    },
+    "PreParseTextTransformations":{
+      "type":"list",
+      "member":{"shape":"PreParseTextTransformation"}
     },
     "Price":{
       "type":"structure",
@@ -5858,7 +5899,7 @@
       "members":{
         "RegexString":{
           "shape":"RegexPatternString",
-          "documentation":"<p>The string representing the regular expression.</p>"
+          "documentation":"<p>The string representing the regular expression. WAF enforces a quota on the maximum number of characters in a regex pattern. For the current limit, see <a href=\"https://docs.aws.amazon.com/waf/latest/developerguide/limits.html\">WAF quotas</a> in the <i>WAF Developer Guide</i>.</p>"
         }
       },
       "documentation":"<p>A single regular expression. This is used in a <a>RegexPatternSet</a> and also in the configuration for the Amazon Web Services Managed Rules rule group <code>AWSManagedRulesAntiDDoSRuleSet</code>.</p>"
@@ -5873,7 +5914,7 @@
       "members":{
         "RegexString":{
           "shape":"RegexPatternString",
-          "documentation":"<p>The string representing the regular expression.</p>"
+          "documentation":"<p>The string representing the regular expression. WAF enforces a quota on the maximum number of characters in a regex pattern. For the current limit, see <a href=\"https://docs.aws.amazon.com/waf/latest/developerguide/limits.html\">WAF quotas</a> in the <i>WAF Developer Guide</i>.</p>"
         },
         "FieldToMatch":{
           "shape":"FieldToMatch",
@@ -5882,6 +5923,10 @@
         "TextTransformations":{
           "shape":"TextTransformations",
           "documentation":"<p>Text transformations eliminate some of the unusual formatting that attackers use in web requests in an effort to bypass detection. Text transformations are used in rule match statements, to transform the <code>FieldToMatch</code> request component before inspecting it, and they're used in rate-based rule statements, to transform request components before using them as custom aggregation keys. If you specify one or more transformations to apply, WAF performs all transformations on the specified content, starting from the lowest priority setting, and then uses the transformed component contents. </p>"
+        },
+        "PreParseTextTransformations":{
+          "shape":"PreParseTextTransformations",
+          "documentation":"<p>Pre-parse text transformations normalize the raw query string before WAF parses it into individual query arguments. They are applied before the standard text transformations. Pre-parse text transformations are only supported when <code>FieldToMatch</code> is <code>SingleQueryArgument</code> or <code>AllQueryArguments</code>. You can specify up to 3 pre-parse text transformations per rule statement.</p>"
         }
       },
       "documentation":"<p>A rule statement used to search web request components for a match against a single regular expression. </p>"
@@ -5931,6 +5976,10 @@
         "TextTransformations":{
           "shape":"TextTransformations",
           "documentation":"<p>Text transformations eliminate some of the unusual formatting that attackers use in web requests in an effort to bypass detection. Text transformations are used in rule match statements, to transform the <code>FieldToMatch</code> request component before inspecting it, and they're used in rate-based rule statements, to transform request components before using them as custom aggregation keys. If you specify one or more transformations to apply, WAF performs all transformations on the specified content, starting from the lowest priority setting, and then uses the transformed component contents. </p>"
+        },
+        "PreParseTextTransformations":{
+          "shape":"PreParseTextTransformations",
+          "documentation":"<p>Pre-parse text transformations normalize the raw query string before WAF parses it into individual query arguments. They are applied before the standard text transformations. Pre-parse text transformations are only supported when <code>FieldToMatch</code> is <code>SingleQueryArgument</code> or <code>AllQueryArguments</code>. You can specify up to 3 pre-parse text transformations per rule statement.</p>"
         }
       },
       "documentation":"<p>A rule statement used to search web request components for matches with regular expressions. To use this, create a <a>RegexPatternSet</a> that specifies the expressions that you want to detect, then use the ARN of that set in this statement. A web request matches the pattern set rule statement if the request component matches any of the patterns in the set. To create a regex pattern set, see <a>CreateRegexPatternSet</a>.</p> <p>Each regex pattern set rule statement references a regex pattern set. You create and maintain the set independent of your rules. This allows you to use the single set in multiple rules. When you update the referenced set, WAF automatically updates all rules that reference it.</p>"
@@ -6841,6 +6890,10 @@
         "TextTransformations":{
           "shape":"TextTransformations",
           "documentation":"<p>Text transformations eliminate some of the unusual formatting that attackers use in web requests in an effort to bypass detection. Text transformations are used in rule match statements, to transform the <code>FieldToMatch</code> request component before inspecting it, and they're used in rate-based rule statements, to transform request components before using them as custom aggregation keys. If you specify one or more transformations to apply, WAF performs all transformations on the specified content, starting from the lowest priority setting, and then uses the transformed component contents. </p>"
+        },
+        "PreParseTextTransformations":{
+          "shape":"PreParseTextTransformations",
+          "documentation":"<p>Pre-parse text transformations normalize the raw query string before WAF parses it into individual query arguments. They are applied before the standard text transformations. Pre-parse text transformations are only supported when <code>FieldToMatch</code> is <code>SingleQueryArgument</code> or <code>AllQueryArguments</code>. You can specify up to 3 pre-parse text transformations per rule statement.</p>"
         }
       },
       "documentation":"<p>A rule statement that compares a number of bytes against the size of a request component, using a comparison operator, such as greater than (&gt;) or less than (&lt;). For example, you can use a size constraint statement to look for query strings that are longer than 100 bytes. </p> <p>If you configure WAF to inspect the request body, WAF inspects only the number of bytes in the body up to the limit for the web ACL and protected resource type. If you know that the request body for your web requests should never exceed the inspection limit, you can use a size constraint statement to block requests that have a larger request body size. For more information about the inspection limits, see <code>Body</code> and <code>JsonBody</code> settings for the <code>FieldToMatch</code> data type. </p> <p>If you choose URI for the value of Part of the request to filter on, the slash (/) in the URI counts as one character. For example, the URI <code>/logo.jpg</code> is nine characters long.</p>"
@@ -6929,6 +6982,10 @@
         "TextTransformations":{
           "shape":"TextTransformations",
           "documentation":"<p>Text transformations eliminate some of the unusual formatting that attackers use in web requests in an effort to bypass detection. Text transformations are used in rule match statements, to transform the <code>FieldToMatch</code> request component before inspecting it, and they're used in rate-based rule statements, to transform request components before using them as custom aggregation keys. If you specify one or more transformations to apply, WAF performs all transformations on the specified content, starting from the lowest priority setting, and then uses the transformed component contents. </p>"
+        },
+        "PreParseTextTransformations":{
+          "shape":"PreParseTextTransformations",
+          "documentation":"<p>Pre-parse text transformations normalize the raw query string before WAF parses it into individual query arguments. They are applied before the standard text transformations. Pre-parse text transformations are only supported when <code>FieldToMatch</code> is <code>SingleQueryArgument</code> or <code>AllQueryArguments</code>. You can specify up to 3 pre-parse text transformations per rule statement.</p>"
         },
         "SensitivityLevel":{
           "shape":"SensitivityLevel",
@@ -7143,7 +7200,17 @@
         "REPLACE_NULLS",
         "BASE64_DECODE_EXT",
         "URL_DECODE_UNI",
-        "UTF8_TO_UNICODE"
+        "UTF8_TO_UNICODE",
+        "REMOVE_WHITESPACE",
+        "TRIM",
+        "TRIM_LEFT",
+        "TRIM_RIGHT",
+        "REMOVE_COMMENTS_CHAR",
+        "UPPERCASE",
+        "CMD_LINE_WIN",
+        "CMD_LINE_UNIX",
+        "JS_DECODE_EXT",
+        "SHA256"
       ]
     },
     "TextTransformations":{
@@ -7890,7 +7957,7 @@
           "documentation":"<p>The monetization configuration for the web ACL. Required when any rule in the web ACL uses the <code>Monetize</code> action. Specifies the cryptocurrency payment networks and currency mode for AI bot monetization.</p>"
         }
       },
-      "documentation":"<p> A web ACL defines a collection of rules to use to inspect and control web requests. Each rule has a statement that defines what to look for in web requests and an action that WAF applies to requests that match the statement. In the web ACL, you assign a default action to take (allow, block) for any request that does not match any of the rules. The rules in a web ACL can be a combination of the types <a>Rule</a>, <a>RuleGroup</a>, and managed rule group. You can associate a web ACL with one or more Amazon Web Services resources to protect. The resource types include Amazon CloudFront distribution, Amazon API Gateway REST API, Application Load Balancer, AppSync GraphQL API, Amazon Cognito user pool, App Runner service, Amplify application, and Amazon Web Services Verified Access instance. </p>"
+      "documentation":"<p> A web ACL defines a collection of rules to use to inspect and control web requests. Each rule has a statement that defines what to look for in web requests and an action that WAF applies to requests that match the statement. In the web ACL, you assign a default action to take (allow, block) for any request that does not match any of the rules. The rules in a web ACL can be a combination of the types <a>Rule</a>, <a>RuleGroup</a>, and managed rule group. You can associate a web ACL with one or more Amazon Web Services resources to protect. The resource types include Amazon CloudFront distribution, Amazon API Gateway REST API, Application Load Balancer, AppSync GraphQL API, Amazon Cognito user pool, App Runner service, Amplify application, Amazon Web Services Verified Access instance, and Amazon Bedrock AgentCore Gateway. </p>"
     },
     "WebACLSummaries":{
       "type":"list",
@@ -7936,6 +8003,10 @@
         "TextTransformations":{
           "shape":"TextTransformations",
           "documentation":"<p>Text transformations eliminate some of the unusual formatting that attackers use in web requests in an effort to bypass detection. Text transformations are used in rule match statements, to transform the <code>FieldToMatch</code> request component before inspecting it, and they're used in rate-based rule statements, to transform request components before using them as custom aggregation keys. If you specify one or more transformations to apply, WAF performs all transformations on the specified content, starting from the lowest priority setting, and then uses the transformed component contents. </p>"
+        },
+        "PreParseTextTransformations":{
+          "shape":"PreParseTextTransformations",
+          "documentation":"<p>Pre-parse text transformations normalize the raw query string before WAF parses it into individual query arguments. They are applied before the standard text transformations. Pre-parse text transformations are only supported when <code>FieldToMatch</code> is <code>SingleQueryArgument</code> or <code>AllQueryArguments</code>. You can specify up to 3 pre-parse text transformations per rule statement.</p>"
         }
       },
       "documentation":"<p>A rule statement that inspects for cross-site scripting (XSS) attacks. In XSS attacks, the attacker uses vulnerabilities in a benign website as a vehicle to inject malicious client-site scripts into other legitimate web browsers. </p>"

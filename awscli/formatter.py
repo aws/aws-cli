@@ -248,7 +248,7 @@ class TextFormatter(Formatter):
                 if response.resume_token:
                     # Tell the user about the next token so they can continue
                     # if they want.
-                    self._format_response(
+                    text.format_text(
                         {'NextToken': {'NextToken': response.resume_token}},
                         stream,
                     )

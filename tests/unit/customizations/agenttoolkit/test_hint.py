@@ -37,15 +37,17 @@ def wizard_cls():
         yield cls
 
 
-def _run(choice='yes', agents=None, tty=True):
+def _run(choice='yes', agents=None, tty=True, region='us-east-1'):
     if agents is None:
         agents = [_agent()]
+    parsed_globals = MagicMock()
+    parsed_globals.region = region
     with (
         patch.object(hint, 'is_stdin_a_tty', return_value=tty),
         patch.object(hint, 'get_detected_real_agents', return_value=agents),
         patch.object(hint, 'yes_no_never_choice', return_value=choice),
     ):
-        hint.maybe_prompt_agent_toolkit(MagicMock(), MagicMock())
+        hint.maybe_prompt_agent_toolkit(MagicMock(), parsed_globals)
 
 
 def test_launches_wizard_on_yes(state_file, wizard_cls):
@@ -85,6 +87,15 @@ def test_not_skipped_when_env_var_false(state_file, wizard_cls, monkeypatch):
     assert wizard_cls.called
 
 
+def test_env_var_also_suppresses_the_tip(
+    state_file, wizard_cls, capsys, monkeypatch
+):
+    monkeypatch.setenv(hint.HINT_DISABLED_ENV_VAR, 'true')
+    _run(choice='yes', region='us-west-2')
+    assert not wizard_cls.called
+    assert capsys.readouterr().out == ''
+
+
 def test_skipped_when_already_dismissed(state_file, wizard_cls):
     state_file.parent.mkdir(parents=True, exist_ok=True)
     state_file.write_text(json.dumps({'hint_dismissed': True}))
@@ -102,10 +113,44 @@ def test_skipped_when_skills_already_installed(state_file, wizard_cls):
     assert not wizard_cls.called
 
 
+def test_non_supported_region_prints_hint_and_does_not_prompt(
+    state_file, wizard_cls, capsys
+):
+    with (
+        patch.object(hint, 'is_stdin_a_tty', return_value=True),
+        patch.object(
+            hint, 'get_detected_real_agents', return_value=[_agent()]
+        ),
+        patch.object(hint, 'yes_no_never_choice') as prompt,
+    ):
+        parsed_globals = MagicMock()
+        parsed_globals.region = 'us-west-2'
+        hint.maybe_prompt_agent_toolkit(MagicMock(), parsed_globals)
+
+    assert not prompt.called
+    assert not wizard_cls.called
+    assert '--region us-east-1' in capsys.readouterr().out
+
+
+def test_region_falls_back_to_session_config(state_file, wizard_cls):
+    session = MagicMock()
+    session.get_config_variable.return_value = 'us-east-1'
+    parsed_globals = MagicMock()
+    parsed_globals.region = None
+    with (
+        patch.object(hint, 'is_stdin_a_tty', return_value=True),
+        patch.object(
+            hint, 'get_detected_real_agents', return_value=[_agent()]
+        ),
+        patch.object(hint, 'yes_no_never_choice', return_value='yes'),
+    ):
+        hint.maybe_prompt_agent_toolkit(session, parsed_globals)
+    assert wizard_cls.called
+
+
 def test_corrupt_state_file_is_ignored(state_file, wizard_cls):
     state_file.parent.mkdir(parents=True, exist_ok=True)
     state_file.write_text('{ not valid json')
-    # Corrupt state must not suppress or crash; hint stays eligible.
     _run(choice='yes')
     assert wizard_cls.called
 
@@ -117,7 +162,6 @@ def test_detection_failure_does_not_raise(state_file, wizard_cls):
             hint, 'get_detected_real_agents', side_effect=OSError('boom')
         ),
     ):
-        # Must swallow errors so `aws configure` never fails because of it.
         hint.maybe_prompt_agent_toolkit(MagicMock(), MagicMock())
     assert not wizard_cls.called
 

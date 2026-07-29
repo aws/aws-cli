@@ -14,8 +14,9 @@
 
 After a successful ``aws configure`` that writes profile values, offer to run
 ``aws configure agent-toolkit`` when a supported AI coding agent is present and
-the toolkit is not already installed. The hint is interactive-only and can be
-permanently suppressed.
+the toolkit is not already installed. In the supported region the offer is an
+interactive prompt; elsewhere it is a non-interactive tip. Either way it only
+shows on a TTY and can be suppressed permanently.
 """
 
 import json
@@ -40,9 +41,19 @@ STATE_PATH = '~/.aws/cli/agent-toolkit/state.json'
 
 HINT_DISABLED_ENV_VAR = 'AWS_CLI_AGENT_TOOLKIT_HINT_DISABLED'
 
+# The Agent Toolkit skill APIs are only available in this region today. When
+# the caller's region differs, running the wizard inline would fail, so we
+# show a non-interactive hint pointing at the working invocation instead.
+SUPPORTED_REGION = 'us-east-1'
+
 PROMPT_TEXT = (
     '\nConfigure AWS skills and the AWS MCP server for your AI coding '
     'agent(s)? [y/n/never]: '
+)
+
+HINT_TEXT = (
+    "\nTip: run 'aws configure agent-toolkit --region us-east-1' to set up "
+    'AWS skills and the AWS MCP server for your AI coding agent(s).\n'
 )
 
 
@@ -84,10 +95,14 @@ def _has_installed_skills(detected_agents):
     return any(agent.get_installed_skills() for agent in detected_agents)
 
 
+def hint_disabled():
+    return ensure_boolean(os.environ.get(HINT_DISABLED_ENV_VAR, ''))
+
+
 def _is_eligible():
     if not is_stdin_a_tty():
         return False
-    if ensure_boolean(os.environ.get(HINT_DISABLED_ENV_VAR, '')):
+    if hint_disabled():
         return False
     if _load_state().get('hint_dismissed'):
         return False
@@ -99,9 +114,26 @@ def _is_eligible():
     return True
 
 
+def _resolve_region(session, parsed_globals):
+    region = getattr(parsed_globals, 'region', None)
+    if region:
+        return region
+    try:
+        return session.get_config_variable('region')
+    except Exception:
+        return None
+
+
 def maybe_prompt_agent_toolkit(session, parsed_globals):
     try:
         if not _is_eligible():
+            return
+        # The wizard can only install skills from SUPPORTED_REGION. If the
+        # caller is elsewhere, offering an inline "yes" would run the wizard
+        # and fail, so we print a hint pointing at the working command
+        # instead of prompting.
+        if _resolve_region(session, parsed_globals) != SUPPORTED_REGION:
+            uni_print(HINT_TEXT)
             return
         choice = yes_no_never_choice(PROMPT_TEXT)
         if choice == 'never':

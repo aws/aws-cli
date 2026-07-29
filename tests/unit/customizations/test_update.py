@@ -74,6 +74,14 @@ class TestUnixUpdateCommand:
         command([], global_args())
         assert 'aws configure agent-toolkit' in capsys.readouterr().out
 
+    def test_no_agent_toolkit_tip_when_hint_disabled(
+        self, capsys, monkeypatch
+    ):
+        monkeypatch.setenv('AWS_CLI_AGENT_TOOLKIT_HINT_DISABLED', 'true')
+        command = self._command(USER_INSTALL)
+        command([], global_args())
+        assert 'aws configure agent-toolkit' not in capsys.readouterr().out
+
     def test_no_agent_toolkit_tip_when_update_fails(self, capsys):
         runner = mock.Mock(side_effect=subprocess.CalledProcessError(1, 'x'))
         command = self._command(USER_INSTALL, runner=runner)

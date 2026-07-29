@@ -84,13 +84,14 @@ def _has_installed_skills(detected_agents):
     return any(agent.get_installed_skills() for agent in detected_agents)
 
 
-def _is_eligible(detected_agents):
+def _is_eligible():
     if not is_stdin_a_tty():
         return False
     if ensure_boolean(os.environ.get(HINT_DISABLED_ENV_VAR, '')):
         return False
     if _load_state().get('hint_dismissed'):
         return False
+    detected_agents = get_detected_real_agents()
     if not detected_agents:
         return False
     if _has_installed_skills(detected_agents):
@@ -98,18 +99,18 @@ def _is_eligible(detected_agents):
     return True
 
 
-def maybe_prompt_agent_toolkit(session, parsed_globals, stream=None):
+def maybe_prompt_agent_toolkit(session, parsed_globals):
     try:
-        detected_agents = get_detected_real_agents()
-        if not _is_eligible(detected_agents):
+        if not _is_eligible():
             return
         choice = yes_no_never_choice(PROMPT_TEXT)
         if choice == 'never':
             _dismiss_forever()
-            return
-        if choice == 'no':
-            return
-        command = ConfigureAgentToolkitCommand(session)
-        command([], parsed_globals)
+        run_wizard = choice == 'yes'
     except Exception as e:
         LOG.debug('Agent toolkit hint failed: %s', e, exc_info=True)
+        return
+
+    if run_wizard:
+        command = ConfigureAgentToolkitCommand(session)
+        command([], parsed_globals)

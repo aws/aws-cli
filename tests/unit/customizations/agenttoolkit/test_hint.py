@@ -120,3 +120,9 @@ def test_detection_failure_does_not_raise(state_file, wizard_cls):
         # Must swallow errors so `aws configure` never fails because of it.
         hint.maybe_prompt_agent_toolkit(MagicMock(), MagicMock())
     assert not wizard_cls.called
+
+
+def test_wizard_errors_are_not_swallowed(state_file, wizard_cls):
+    wizard_cls.return_value.side_effect = RuntimeError('wizard boom')
+    with pytest.raises(RuntimeError, match='wizard boom'):
+        _run(choice='yes')

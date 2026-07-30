@@ -16,6 +16,8 @@ import threading
 import time
 from concurrent.futures import Future
 
+from botocore import UNSIGNED
+from botocore.config import Config
 from botocore.session import Session
 from s3transfer.subscribers import BaseSubscriber
 
@@ -720,3 +722,34 @@ class TestCRTTransferManager(unittest.TestCase):
         )
         with self.assertRaises(awscrt.exceptions.AwsCrtError):
             future.result()
+
+    def test_download_checksum_validation_disabled_when_required(self):
+        session = Session()
+        session.set_config_variable('region', self.region)
+        client = session.create_client(
+            's3',
+            config=Config(
+                signature_version=UNSIGNED,
+                response_checksum_validation='when_required',
+            ),
+        )
+        request_serializer = s3transfer.crt.BotocoreCRTRequestSerializer(
+            session, client=client
+        )
+        transfer_manager = s3transfer.crt.CRTTransferManager(
+            crt_s3_client=self.s3_crt_client,
+            crt_request_serializer=request_serializer,
+            client=client,
+        )
+        future = transfer_manager.download(
+            self.bucket, self.key, self.filename, {}, [self.record_subscriber]
+        )
+        future.result()
+
+        callargs_kwargs = self.s3_crt_client.make_request.call_args[1]
+        self.assertEqual(
+            callargs_kwargs['checksum_config'],
+            self._get_expected_download_checksum_config(
+                validate_response=False
+            ),
+        )

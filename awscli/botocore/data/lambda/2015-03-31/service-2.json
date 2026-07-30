@@ -4460,7 +4460,7 @@
         },
         "S3ObjectStorageMode":{
           "shape":"S3ObjectStorageMode",
-          "documentation":"<p>Specifies how the deployment package is stored. Use <code>COPY</code> (default) to upload a copy of your deployment package to Lambda. Use <code>REFERENCE</code> to have Lambda reference the deployment package from the specified Amazon S3 bucket.</p>"
+          "documentation":"<p>Specifies how the deployment package is stored. Valid values:</p> <ul> <li> <p> <code>COPY</code> (default) – Uploads a copy of your deployment package to Lambda.</p> </li> <li> <p> <code>REFERENCE</code> – Lambda references the deployment package from the specified Amazon S3 bucket.</p> </li> </ul>"
         },
         "ImageUri":{
           "shape":"String",
@@ -4512,14 +4512,14 @@
       "members":{
         "ErrorCode":{
           "shape":"String",
-          "documentation":"<p>The error code for the failed retrieval.</p>"
+          "documentation":"<p>The error code that identifies why Lambda failed to retrieve the deployment package.</p>"
         },
         "Message":{
           "shape":"SensitiveString",
-          "documentation":"<p>A description of the error.</p>"
+          "documentation":"<p>The human-readable message that describes why Lambda failed to retrieve the deployment package.</p>"
         }
       },
-      "documentation":"<p>Details about an error related to retrieving a function's deployment package.</p>"
+      "documentation":"<p>Contains details about an error that occurred when Lambda attempted to retrieve a function's deployment package.</p>"
     },
     "FunctionConfiguration":{
       "type":"structure",
@@ -6381,7 +6381,10 @@
           "shape":"S3ObjectVersion",
           "documentation":"<p>For versioned objects, the version of the layer archive object to use.</p>"
         },
-        "S3ObjectStorageMode":{"shape":"S3ObjectStorageMode"},
+        "S3ObjectStorageMode":{
+          "shape":"S3ObjectStorageMode",
+          "documentation":"<p>Specifies how the layer archive is stored. Valid values:</p> <ul> <li> <p> <code>COPY</code> (default) – Uploads a copy of your layer archive to Lambda.</p> </li> <li> <p> <code>REFERENCE</code> – Lambda references the layer archive from the specified Amazon S3 bucket.</p> </li> </ul>"
+        },
         "ZipFile":{
           "shape":"Blob",
           "documentation":"<p>The base64-encoded contents of the layer archive. Amazon Web Services SDK and Amazon Web Services CLI clients handle the encoding for you.</p>"
@@ -6412,7 +6415,10 @@
           "shape":"Arn",
           "documentation":"<p>The Amazon Resource Name (ARN) of a signing job.</p>"
         },
-        "ResolvedS3Object":{"shape":"ResolvedS3Object"}
+        "ResolvedS3Object":{
+          "shape":"ResolvedS3Object",
+          "documentation":"<p>The resolved Amazon S3 object that contains the layer archive.</p>"
+        }
       },
       "documentation":"<p>Details about a version of an <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/configuration-layers.html\">Lambda layer</a>.</p>"
     },
@@ -8424,6 +8430,8 @@
         "provided",
         "provided.al2",
         "provided.al2023",
+        "nodejs26.x",
+        "python3.15",
         "java8.al2023",
         "java11.al2023",
         "java17.al2023"
@@ -8534,7 +8542,7 @@
     },
     "S3ObjectStorageMode":{
       "type":"string",
-      "documentation":"<p>The storage mode for a function's deployment package.</p>",
+      "documentation":"<p>The method Lambda uses to store a function's deployment package — either by copying the package into Lambda-managed storage (<code>COPY</code>) or by referencing it directly from the source Amazon S3 bucket (<code>REFERENCE</code>).</p>",
       "enum":[
         "COPY",
         "REFERENCE"
@@ -9566,7 +9574,7 @@
         },
         "S3ObjectStorageMode":{
           "shape":"S3ObjectStorageMode",
-          "documentation":"<p>Specifies how the deployment package is stored. Use <code>COPY</code> (default) to upload a copy of your deployment package to Lambda. Use <code>REFERENCE</code> to have Lambda reference the deployment package from the specified Amazon S3 bucket.</p>"
+          "documentation":"<p>Specifies how the deployment package is stored. Valid values:</p> <ul> <li> <p> <code>COPY</code> (default) – Uploads a copy of your deployment package to Lambda.</p> </li> <li> <p> <code>REFERENCE</code> – Lambda references the deployment package from the specified Amazon S3 bucket.</p> </li> </ul>"
         },
         "ImageUri":{
           "shape":"String",

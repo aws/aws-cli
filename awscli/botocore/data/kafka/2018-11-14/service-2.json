@@ -61,6 +61,57 @@
       ],
       "documentation": "\n            <p>Associates one or more Scram Secrets with an Amazon MSK cluster.</p>\n         "
     },
+    "CreateChannel": {
+      "name": "CreateChannel",
+      "http": {
+        "method": "POST",
+        "requestUri": "/v1/clusters/{clusterArn}/channels",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "CreateChannelRequest"
+      },
+      "output": {
+        "shape": "CreateChannelResponse",
+        "documentation": "\n            <p>200 response</p>\n         "
+      },
+      "errors": [
+        {
+          "shape": "BadRequestException",
+          "documentation": "\n            <p>The request isn't valid because the input is incorrect. Correct your input and then submit it again.</p>\n         "
+        },
+        {
+          "shape": "UnauthorizedException",
+          "documentation": "\n            <p>The request is not authorized. The provided credentials couldn't be validated.</p>\n         "
+        },
+        {
+          "shape": "InternalServerErrorException",
+          "documentation": "\n            <p>There was an unexpected internal server error. Retrying your request might resolve the issue.</p>\n         "
+        },
+        {
+          "shape": "ForbiddenException",
+          "documentation": "\n            <p>Access forbidden. Check your credentials and then retry your request.</p>\n         "
+        },
+        {
+          "shape": "NotFoundException",
+          "documentation": "\n            <p>The resource could not be found due to incorrect input. Correct the input, then retry the request.</p>\n         "
+        },
+        {
+          "shape": "ServiceUnavailableException",
+          "documentation": "\n            <p>503 response</p>\n         "
+        },
+        {
+          "shape": "TooManyRequestsException",
+          "documentation": "\n            <p>429 response</p>\n         "
+        },
+        {
+          "shape": "ConflictException",
+          "documentation": "\n            <p>This cluster name already exists. Retry your request using another name.</p>\n         "
+        }
+      ],
+      "documentation": "<p>Creates a Channel that streams records from an Amazon MSK Express cluster topic to Amazon S3 or Apache Iceberg.</p>",
+      "idempotent": true
+    },
     "CreateCluster": {
       "name": "CreateCluster",
       "http": {
@@ -405,6 +456,53 @@
       ],
       "documentation": "\n            <p>Deletes the MSK cluster specified by the Amazon Resource Name (ARN) in the request.</p>\n         "
     },
+    "DeleteChannel": {
+      "name": "DeleteChannel",
+      "http": {
+        "method": "DELETE",
+        "requestUri": "/v1/clusters/{clusterArn}/channels/{channelArn}",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "DeleteChannelRequest"
+      },
+      "output": {
+        "shape": "DeleteChannelResponse",
+        "documentation": "\n            <p>Successful response.</p>\n         "
+      },
+      "errors": [
+        {
+          "shape": "BadRequestException",
+          "documentation": "\n            <p>The request isn't valid because the input is incorrect. Correct your input and then submit it again.</p>\n         "
+        },
+        {
+          "shape": "UnauthorizedException",
+          "documentation": "\n            <p>The request is not authorized. The provided credentials couldn't be validated.</p>\n         "
+        },
+        {
+          "shape": "InternalServerErrorException",
+          "documentation": "\n            <p>There was an unexpected internal server error. Retrying your request might resolve the issue.</p>\n         "
+        },
+        {
+          "shape": "ForbiddenException",
+          "documentation": "\n            <p>Access forbidden. Check your credentials and then retry your request.</p>\n         "
+        },
+        {
+          "shape": "NotFoundException",
+          "documentation": "\n            <p>The resource could not be found due to incorrect input. Correct the input, then retry the request.</p>\n         "
+        },
+        {
+          "shape": "ServiceUnavailableException",
+          "documentation": "\n            <p>503 response</p>\n         "
+        },
+        {
+          "shape": "TooManyRequestsException",
+          "documentation": "\n            <p>429 response</p>\n         "
+        }
+      ],
+      "documentation": "<p>Deletes the channel specified by channelArn from the cluster specified by clusterArn. The channel transitions through DELETING and is removed when the asynchronous delete completes.</p>",
+      "idempotent": true
+    },
     "DeleteClusterPolicy": {
       "name": "DeleteClusterPolicy",
       "http": {
@@ -694,6 +792,53 @@
         }
       ],
       "documentation": "\n            <p>Returns a description of the MSK cluster whose Amazon Resource Name (ARN) is specified in the request.</p>\n         "
+    },
+    "DescribeChannel": {
+      "name": "DescribeChannel",
+      "http": {
+        "method": "GET",
+        "requestUri": "/v1/clusters/{clusterArn}/channels/{channelArn}",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "DescribeChannelRequest"
+      },
+      "output": {
+        "shape": "DescribeChannelResponse",
+        "documentation": "\n            <p>Successful response.</p>\n         "
+      },
+      "errors": [
+        {
+          "shape": "BadRequestException",
+          "documentation": "\n            <p>The request isn't valid because the input is incorrect. Correct your input and then submit it again.</p>\n         "
+        },
+        {
+          "shape": "UnauthorizedException",
+          "documentation": "\n            <p>The request is not authorized. The provided credentials couldn't be validated.</p>\n         "
+        },
+        {
+          "shape": "InternalServerErrorException",
+          "documentation": "\n            <p>There was an unexpected internal server error. Retrying your request might resolve the issue.</p>\n         "
+        },
+        {
+          "shape": "ForbiddenException",
+          "documentation": "\n            <p>Access forbidden. Check your credentials and then retry your request.</p>\n         "
+        },
+        {
+          "shape": "NotFoundException",
+          "documentation": "\n            <p>The resource could not be found due to incorrect input. Correct the input, then retry the request.</p>\n         "
+        },
+        {
+          "shape": "ServiceUnavailableException",
+          "documentation": "\n            <p>503 response</p>\n         "
+        },
+        {
+          "shape": "TooManyRequestsException",
+          "documentation": "\n            <p>429 response</p>\n         "
+        }
+      ],
+      "documentation": "<p>Returns the current configuration and state of a channel.</p>",
+      "readonly": true
     },
     "DescribeClusterOperation": {
       "name": "DescribeClusterOperation",
@@ -1338,6 +1483,53 @@
         }
       ],
       "documentation": "\n            <p>Returns a list of all the MSK clusters in the current Region.</p>\n         "
+    },
+    "ListChannels": {
+      "name": "ListChannels",
+      "http": {
+        "method": "GET",
+        "requestUri": "/v1/clusters/{clusterArn}/channels",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "ListChannelsRequest"
+      },
+      "output": {
+        "shape": "ListChannelsResponse",
+        "documentation": "\n            <p>Successful response.</p>\n         "
+      },
+      "errors": [
+        {
+          "shape": "BadRequestException",
+          "documentation": "\n            <p>The request isn't valid because the input is incorrect. Correct your input and then submit it again.</p>\n         "
+        },
+        {
+          "shape": "UnauthorizedException",
+          "documentation": "\n            <p>The request is not authorized. The provided credentials couldn't be validated.</p>\n         "
+        },
+        {
+          "shape": "InternalServerErrorException",
+          "documentation": "\n            <p>There was an unexpected internal server error. Retrying your request might resolve the issue.</p>\n         "
+        },
+        {
+          "shape": "ForbiddenException",
+          "documentation": "\n            <p>Access forbidden. Check your credentials and then retry your request.</p>\n         "
+        },
+        {
+          "shape": "NotFoundException",
+          "documentation": "\n            <p>The resource could not be found due to incorrect input. Correct the input, then retry the request.</p>\n         "
+        },
+        {
+          "shape": "ServiceUnavailableException",
+          "documentation": "\n            <p>503 response</p>\n         "
+        },
+        {
+          "shape": "TooManyRequestsException",
+          "documentation": "\n            <p>429 response</p>\n         "
+        }
+      ],
+      "documentation": "<p>Returns the list of channels in a cluster.</p>",
+      "readonly": true
     },
     "ListConfigurationRevisions": {
       "name": "ListConfigurationRevisions",
@@ -2094,6 +2286,45 @@
       ],
       "documentation": "\n            <p>Updates the cluster's connectivity configuration.</p>\n         "
     },
+    "UpdateChannel": {
+      "name": "UpdateChannel",
+      "http": {
+        "method": "PUT",
+        "requestUri": "/v1/clusters/{clusterArn}/channels/{channelArn}",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "UpdateChannelRequest"
+      },
+      "output": {
+        "shape": "UpdateChannelResponse"
+      },
+      "errors": [
+        {
+          "shape": "BadRequestException"
+        },
+        {
+          "shape": "UnauthorizedException"
+        },
+        {
+          "shape": "InternalServerErrorException"
+        },
+        {
+          "shape": "ForbiddenException"
+        },
+        {
+          "shape": "NotFoundException"
+        },
+        {
+          "shape": "ServiceUnavailableException"
+        },
+        {
+          "shape": "TooManyRequestsException"
+        }
+      ],
+      "documentation": "<p>Updates the destination configuration of an existing channel. Exactly one of icebergDestinationUpdate or s3DestinationUpdate must be supplied.</p>",
+      "idempotent": true
+    },
     "UpdateClusterConfiguration": {
       "name": "UpdateClusterConfiguration",
       "http": {
@@ -2753,6 +2984,102 @@
         }
       },
       "documentation": "\n            <p>Information about the current software installed on the cluster.</p>\n         "
+    },
+    "Catalog": {
+      "type": "structure",
+      "members": {
+        "CatalogArn": {
+          "shape": "__string",
+          "locationName": "catalogArn",
+          "documentation": "<p>The Amazon Resource Name (ARN) of the federated AWS Glue Data Catalog that projects the S3 Tables bucket. If omitted, MSK derives the catalog ARN from warehouseLocation.</p>"
+        },
+        "WarehouseLocation": {
+          "shape": "__string",
+          "locationName": "warehouseLocation",
+          "documentation": "<p>The Amazon Resource Name (ARN) of the S3 Tables bucket that backs the Apache Iceberg warehouse.</p>"
+        }
+      },
+      "documentation": "<p>Configuration of the AWS Glue Data Catalog and S3 Tables warehouse used by the Apache Iceberg destination.</p>"
+    },
+    "ChannelInfo": {
+      "type": "structure",
+      "members": {
+        "ChannelArn": {
+          "shape": "__string",
+          "locationName": "channelArn",
+          "documentation": "\n            <p>The Amazon Resource Name (ARN) that uniquely identifies the channel.</p>\n         "
+        },
+        "ChannelName": {
+          "shape": "__string",
+          "locationName": "channelName",
+          "documentation": "<p>The name of the channel.</p>"
+        },
+        "Status": {
+          "shape": "ChannelStatus",
+          "locationName": "status",
+          "documentation": "<p>The current lifecycle state of the channel.</p>"
+        },
+        "CreationTime": {
+          "shape": "__timestampIso8601",
+          "locationName": "creationTime",
+          "documentation": "\n            <p>The time when the channel was created.</p>\n         "
+        },
+        "DestinationType": {
+          "shape": "ChannelDestinationType",
+          "locationName": "destinationType",
+          "documentation": "<p>The type of destination configured for the channel.</p>"
+        },
+        "ClusterOperationArn": {
+          "shape": "__string",
+          "locationName": "clusterOperationArn",
+          "documentation": "<p>The Amazon Resource Name (ARN) of the in-flight cluster operation. Returned only while the channel is in CREATING, UPDATING, or DELETING.</p>"
+        }
+      },
+      "documentation": "<p>Summary information about a channel returned by ListChannels.</p>",
+      "required": [
+        "ChannelArn",
+        "ChannelName",
+        "Status",
+        "CreationTime",
+        "DestinationType"
+      ]
+    },
+    "ChannelStatus": {
+      "type": "string",
+      "documentation": "<p>The lifecycle state of a channel.</p>",
+      "enum": [
+        "CREATING",
+        "ACTIVE",
+        "UPDATING",
+        "DELETING",
+        "FAILED",
+        "SUSPENDING",
+        "SUSPENDED"
+      ]
+    },
+    "ChannelDestinationType": {
+      "type": "string",
+      "documentation": "<p>The type of destination configured for the channel.</p>",
+      "enum": [
+        "ICEBERG",
+        "S3"
+      ]
+    },
+    "ChannelStateInfo": {
+      "type": "structure",
+      "members": {
+        "Code": {
+          "shape": "__string",
+          "locationName": "code",
+          "documentation": "<p>A short, machine-readable code identifying the failure cause.</p>"
+        },
+        "Message": {
+          "shape": "__string",
+          "locationName": "message",
+          "documentation": "<p>A human-readable message describing the failure.</p>"
+        }
+      },
+      "documentation": "<p>Additional context for the current channel state, populated when the channel is in FAILED.</p>"
     },
     "ClientAuthentication": {
       "type": "structure",
@@ -3663,6 +3990,58 @@
         "ClusterName"
       ]
     },
+    "CreateChannelRequest": {
+      "type": "structure",
+      "members": {
+        "ChannelName": {
+          "shape": "__string",
+          "locationName": "channelName",
+          "documentation": "<p>The name of the channel. Must be unique within the cluster.</p>"
+        },
+        "ClusterArn": {
+          "shape": "__string",
+          "location": "uri",
+          "locationName": "clusterArn",
+          "documentation": "\n            <p>The Amazon Resource Name (ARN) that uniquely identifies the cluster.</p>\n         "
+        },
+        "EncryptionConfiguration": {
+          "shape": "EncryptionConfiguration",
+          "locationName": "encryptionConfiguration",
+          "documentation": "<p>The encryption configuration applied to the channel.</p>"
+        },
+        "IcebergDestinationConfiguration": {
+          "shape": "IcebergDestinationConfiguration",
+          "locationName": "icebergDestinationConfiguration",
+          "documentation": "<p>The Apache Iceberg destination for the channel. Mutually exclusive with s3DestinationConfiguration.</p>"
+        },
+        "S3DestinationConfiguration": {
+          "shape": "S3DestinationConfiguration",
+          "locationName": "s3DestinationConfiguration",
+          "documentation": "<p>The Amazon S3 destination for the channel. Mutually exclusive with icebergDestinationConfiguration.</p>"
+        },
+        "Tags": {
+          "shape": "__mapOf__string",
+          "locationName": "tags",
+          "documentation": "<p>The tags attached to the channel.</p>"
+        },
+        "TopicConfigurationList": {
+          "shape": "__listOfTopicConfiguration",
+          "locationName": "topicConfigurationList",
+          "documentation": "<p>The list of topic configurations for the channel. Currently exactly one topic must be specified.</p>"
+        },
+        "LoggingInfo": {
+          "shape": "ChannelLoggingInfo",
+          "locationName": "loggingInfo",
+          "documentation": "<p>The destinations to which the channel publishes operational logs.</p>"
+        }
+      },
+      "documentation": "<p>Creates a Channel that streams records from an Amazon MSK Express cluster topic to Amazon S3 or Apache Iceberg.</p>",
+      "required": [
+        "ClusterArn",
+        "ChannelName",
+        "TopicConfigurationList"
+      ]
+    },
     "CreateClusterRequest": {
       "type": "structure",
       "members": {
@@ -3737,6 +4116,25 @@
         "NumberOfBrokerNodes",
         "ClusterName"
       ]
+    },
+    "CreateChannelResponse": {
+      "type": "structure",
+      "members": {
+        "ChannelArn": {
+          "shape": "__string",
+          "locationName": "channelArn",
+          "documentation": "\n            <p>The Amazon Resource Name (ARN) that uniquely identifies the channel.</p>\n         "
+        },
+        "ClusterOperationArn": {
+          "shape": "__string",
+          "locationName": "clusterOperationArn",
+          "documentation": "\n            <p>The Amazon Resource Name (ARN) of the cluster operation.</p>\n         "
+        }
+      },
+      "required": [
+        "ChannelArn"
+      ],
+      "documentation": "<p>Returns the channel ARN and the cluster-operation ARN that tracks the asynchronous create.</p>"
     },
     "CreateClusterResponse": {
       "type": "structure",
@@ -4344,6 +4742,51 @@
         }
       }
     },
+    "DeadLetterQueueS3": {
+      "type": "structure",
+      "members": {
+        "BucketArn": {
+          "shape": "__string",
+          "locationName": "bucketArn",
+          "documentation": "<p>The Amazon Resource Name (ARN) of the dead-letter Amazon S3 bucket.</p>"
+        },
+        "ErrorOutputPrefix": {
+          "shape": "__string",
+          "locationName": "errorOutputPrefix",
+          "documentation": "<p>An optional prefix prepended to every dead-letter Amazon S3 object key.</p>"
+        },
+        "ExpectedBucketOwner": {
+          "shape": "__string",
+          "locationName": "expectedBucketOwner",
+          "documentation": "<p>Optional 12-digit AWS account ID expected to own the dead-letter Amazon S3 bucket.</p>"
+        }
+      },
+      "documentation": "<p>Configuration of the Amazon S3 bucket where records that fail to deliver are stored.</p>",
+      "required": [
+        "BucketArn"
+      ]
+    },
+    "DeleteChannelRequest": {
+      "type": "structure",
+      "members": {
+        "ChannelArn": {
+          "shape": "__string",
+          "location": "uri",
+          "locationName": "channelArn",
+          "documentation": "\n            <p>The Amazon Resource Name (ARN) that uniquely identifies the channel.</p>\n         "
+        },
+        "ClusterArn": {
+          "shape": "__string",
+          "location": "uri",
+          "locationName": "clusterArn",
+          "documentation": "\n            <p>The Amazon Resource Name (ARN) that uniquely identifies the cluster.</p>\n         "
+        }
+      },
+      "required": [
+        "ClusterArn",
+        "ChannelArn"
+      ]
+    },
     "DeleteClusterPolicyRequest": {
       "type": "structure",
       "members": {
@@ -4361,6 +4804,25 @@
     "DeleteClusterPolicyResponse": {
       "type": "structure",
       "members": {}
+    },
+    "DeleteChannelResponse": {
+      "type": "structure",
+      "members": {
+        "ChannelArn": {
+          "shape": "__string",
+          "locationName": "channelArn",
+          "documentation": "\n            <p>The Amazon Resource Name (ARN) that uniquely identifies the channel.</p>\n         "
+        },
+        "ClusterOperationArn": {
+          "shape": "__string",
+          "locationName": "clusterOperationArn",
+          "documentation": "\n            <p>The Amazon Resource Name (ARN) of the cluster operation.</p>\n         "
+        }
+      },
+      "required": [
+        "ChannelArn"
+      ],
+      "documentation": "<p>Returns the channel ARN and the cluster-operation ARN that tracks the asynchronous delete.</p>"
     },
     "DeleteConfigurationRequest": {
       "type": "structure",
@@ -4455,6 +4917,27 @@
         }
       }
     },
+    "DescribeChannelRequest": {
+      "type": "structure",
+      "members": {
+        "ChannelArn": {
+          "shape": "__string",
+          "location": "uri",
+          "locationName": "channelArn",
+          "documentation": "\n            <p>The Amazon Resource Name (ARN) that uniquely identifies the channel.</p>\n         "
+        },
+        "ClusterArn": {
+          "shape": "__string",
+          "location": "uri",
+          "locationName": "clusterArn",
+          "documentation": "\n            <p>The Amazon Resource Name (ARN) that uniquely identifies the cluster.</p>\n         "
+        }
+      },
+      "required": [
+        "ClusterArn",
+        "ChannelArn"
+      ]
+    },
     "DescribeClusterOperationRequest": {
       "type": "structure",
       "members": {
@@ -4482,6 +4965,85 @@
       "required": [
         "ClusterOperationArn"
       ]
+    },
+    "DescribeChannelResponse": {
+      "type": "structure",
+      "members": {
+        "ChannelArn": {
+          "shape": "__string",
+          "locationName": "channelArn",
+          "documentation": "\n            <p>The Amazon Resource Name (ARN) that uniquely identifies the channel.</p>\n         "
+        },
+        "ChannelName": {
+          "shape": "__string",
+          "locationName": "channelName",
+          "documentation": "<p>The name of the channel.</p>"
+        },
+        "EncryptionConfiguration": {
+          "shape": "EncryptionConfiguration",
+          "locationName": "encryptionConfiguration",
+          "documentation": "<p>The encryption configuration applied to the channel.</p>"
+        },
+        "IcebergDestinationConfiguration": {
+          "shape": "IcebergDestinationConfiguration",
+          "locationName": "icebergDestinationConfiguration",
+          "documentation": "<p>The Apache Iceberg destination for the channel, if configured.</p>"
+        },
+        "S3DestinationConfiguration": {
+          "shape": "S3DestinationConfiguration",
+          "locationName": "s3DestinationConfiguration",
+          "documentation": "<p>The Amazon S3 destination for the channel, if configured.</p>"
+        },
+        "Status": {
+          "shape": "ChannelStatus",
+          "locationName": "status",
+          "documentation": "<p>The current lifecycle state of the channel.</p>"
+        },
+        "DestinationType": {
+          "shape": "ChannelDestinationType",
+          "locationName": "destinationType",
+          "documentation": "<p>The type of destination configured for the channel.</p>"
+        },
+        "CreationTime": {
+          "shape": "__timestampIso8601",
+          "locationName": "creationTime",
+          "documentation": "\n            <p>The time when the channel was created.</p>\n         "
+        },
+        "TopicConfigurationList": {
+          "shape": "__listOfTopicConfiguration",
+          "locationName": "topicConfigurationList",
+          "documentation": "<p>The list of topic configurations for the channel.</p>"
+        },
+        "LoggingInfo": {
+          "shape": "ChannelLoggingInfo",
+          "locationName": "loggingInfo",
+          "documentation": "<p>The destinations to which the channel publishes operational logs.</p>"
+        },
+        "StateInfo": {
+          "shape": "ChannelStateInfo",
+          "locationName": "stateInfo",
+          "documentation": "<p>Additional context for the current channel state, populated when the channel is in FAILED.</p>"
+        },
+        "ClusterOperationArn": {
+          "shape": "__string",
+          "locationName": "clusterOperationArn",
+          "documentation": "<p>The Amazon Resource Name (ARN) of the in-flight cluster operation. Returned only while the channel is in CREATING, UPDATING, or DELETING.</p>"
+        },
+        "Tags": {
+          "shape": "__mapOf__string",
+          "locationName": "tags",
+          "documentation": "<p>The tags attached to the channel.</p>"
+        }
+      },
+      "required": [
+        "ChannelArn",
+        "ChannelName",
+        "TopicConfigurationList",
+        "Status",
+        "DestinationType",
+        "CreationTime"
+      ],
+      "documentation": "<p>Contains the current configuration and state of a channel.</p>"
     },
     "DescribeClusterOperationResponse": {
       "type": "structure",
@@ -4975,6 +5537,27 @@
         }
       }
     },
+    "DestinationTable": {
+      "type": "structure",
+      "members": {
+        "DestinationDatabaseName": {
+          "shape": "__string",
+          "locationName": "destinationDatabaseName",
+          "documentation": "<p>The name of the destination namespace (database) in the AWS Glue Data Catalog.</p>"
+        },
+        "DestinationTableName": {
+          "shape": "__string",
+          "locationName": "destinationTableName",
+          "documentation": "<p>The name of the destination Apache Iceberg table.</p>"
+        },
+        "PartitionSpec": {
+          "shape": "PartitionSpec",
+          "locationName": "partitionSpec",
+          "documentation": "<p>The partition specification for the destination table.</p>"
+        }
+      },
+      "documentation": "<p>Configuration of an Apache Iceberg destination table.</p>"
+    },
     "EBSStorageInfo": {
       "type": "structure",
       "members": {
@@ -4990,6 +5573,20 @@
         }
       },
       "documentation": "\n            <p>Contains information about the EBS storage volumes attached to Apache Kafka broker nodes.</p>\n         "
+    },
+    "EncryptionConfiguration": {
+      "type": "structure",
+      "members": {
+        "KmsKeyArn": {
+          "shape": "__string",
+          "locationName": "kmsKeyArn",
+          "documentation": "<p>The Amazon Resource Name (ARN) of the AWS KMS key used to encrypt the data.</p>"
+        }
+      },
+      "documentation": "<p>The AWS KMS encryption configuration applied to data at rest.</p>",
+      "required": [
+        "KmsKeyArn"
+      ]
     },
     "EncryptionAtRest": {
       "type": "structure",
@@ -5434,6 +6031,73 @@
         }
       }
     },
+    "IcebergDestinationConfiguration": {
+      "type": "structure",
+      "members": {
+        "AppendOnly": {
+          "shape": "__boolean",
+          "locationName": "appendOnly",
+          "documentation": "<p>Whether the destination is append-only. Must be true; updates and deletes are not supported.</p>"
+        },
+        "Catalog": {
+          "shape": "Catalog",
+          "locationName": "catalog",
+          "documentation": "<p>The AWS Glue Data Catalog and S3 Tables warehouse used by the destination.</p>"
+        },
+        "DataFreshnessInSeconds": {
+          "shape": "__integer",
+          "locationName": "dataFreshnessInSeconds",
+          "documentation": "<p>The maximum time, in seconds, that records buffer in MSK before being flushed to the destination. Allowed range: 300 to 900. Default: 600.</p>"
+        },
+        "DeadLetterQueueS3": {
+          "shape": "DeadLetterQueueS3",
+          "locationName": "deadLetterQueueS3",
+          "documentation": "<p>The Amazon S3 bucket and prefix where MSK writes records that fail to deliver.</p>"
+        },
+        "DestinationTableList": {
+          "shape": "__listOfDestinationTable",
+          "locationName": "destinationTableList",
+          "documentation": "<p>The destination Iceberg tables. Currently exactly one table must be specified.</p>"
+        },
+        "SchemaEvolution": {
+          "shape": "SchemaEvolution",
+          "locationName": "schemaEvolution",
+          "documentation": "<p>Configuration controlling whether the destination table's schema is evolved to match incoming records.</p>"
+        },
+        "ServiceExecutionRoleArn": {
+          "shape": "__string",
+          "locationName": "serviceExecutionRoleArn",
+          "documentation": "<p>The Amazon Resource Name (ARN) of the IAM role that MSK assumes to access the destination table, the AWS Glue Data Catalog, and the dead-letter Amazon S3 bucket.</p>"
+        },
+        "TableCreation": {
+          "shape": "TableCreation",
+          "locationName": "tableCreation",
+          "documentation": "<p>Configuration controlling whether MSK creates the destination table if it does not already exist.</p>"
+        },
+        "CompressionType": {
+          "shape": "IcebergCompressionType",
+          "locationName": "compressionType",
+          "documentation": "<p>The compression codec for Iceberg table data files. Defaults to ZSTD.</p>"
+        }
+      },
+      "documentation": "<p>Configuration of an Apache Iceberg destination for a channel.</p>",
+      "required": [
+        "DeadLetterQueueS3",
+        "DestinationTableList",
+        "ServiceExecutionRoleArn",
+        "SchemaEvolution",
+        "TableCreation",
+        "AppendOnly"
+      ]
+    },
+    "IcebergCompressionType": {
+      "type": "string",
+      "enum": [
+        "ZSTD",
+        "SNAPPY"
+      ],
+      "documentation": "<p>Compression codec for Iceberg table data files. Defaults to ZSTD.</p>"
+    },
     "InternalServerErrorException": {
       "type": "structure",
       "members": {
@@ -5746,6 +6410,54 @@
           "documentation": "\n            <p>If the response of ListClusterOperationsV2 is truncated, it returns a NextToken in the response. This NextToken should be sent in the subsequent request to ListClusterOperationsV2.</p>"
         }
       }
+    },
+    "ListChannelsRequest": {
+      "type": "structure",
+      "members": {
+        "ClusterArn": {
+          "shape": "__string",
+          "location": "uri",
+          "locationName": "clusterArn",
+          "documentation": "\n            <p>The Amazon Resource Name (ARN) that uniquely identifies the cluster.</p>\n         "
+        },
+        "MaxResults": {
+          "shape": "MaxResults",
+          "location": "querystring",
+          "locationName": "maxResults",
+          "documentation": "\n            <p>Maximum number of channels to return in a single response.</p>\n         "
+        },
+        "NextToken": {
+          "shape": "__string",
+          "location": "querystring",
+          "locationName": "nextToken",
+          "documentation": "\n            <p>If the response of ListChannels is truncated, it returns a nextToken in the response. This nextToken should be sent in the subsequent request to ListChannels.</p>\n         "
+        },
+        "TopicNameFilter": {
+          "shape": "__string",
+          "location": "querystring",
+          "locationName": "topicNameFilter",
+          "documentation": "\n            <p>Filters results to channels whose topic name matches the specified value.</p>\n         "
+        }
+      },
+      "required": [
+        "ClusterArn"
+      ]
+    },
+    "ListChannelsResponse": {
+      "type": "structure",
+      "members": {
+        "Channels": {
+          "shape": "__listOfChannelInfo",
+          "locationName": "channels",
+          "documentation": "<p>The list of channels in the cluster.</p>"
+        },
+        "NextToken": {
+          "shape": "__string",
+          "locationName": "nextToken",
+          "documentation": "<p>If the response from ListChannels is truncated, this token is included. Send it as the nextToken parameter on a subsequent ListChannels call to retrieve the next page.</p>"
+        }
+      },
+      "documentation": "<p>Returns the list of channels in the cluster.</p>"
     },
     "ListClustersRequest": {
       "type": "structure",
@@ -6331,6 +7043,27 @@
         "Enabled"
       ]
     },
+    "ChannelLoggingInfo": {
+      "type": "structure",
+      "members": {
+        "CloudWatchLogs": {
+          "shape": "CloudWatchLogs",
+          "locationName": "cloudWatchLogs",
+          "documentation": "<p>Details of the CloudWatch Logs destination for Channel logs.</p>"
+        },
+        "Firehose": {
+          "shape": "Firehose",
+          "locationName": "firehose",
+          "documentation": "<p>Details of the Kinesis Data Firehose delivery stream that is the destination for Channel logs.</p>"
+        },
+        "S3": {
+          "shape": "S3",
+          "locationName": "s3",
+          "documentation": "<p>Details of the Amazon S3 destination for Channel logs.</p>"
+        }
+      },
+      "documentation": "<p>Configuration for the destinations to which the channel publishes operational logs.</p>"
+    },
     "MutableClusterInfo": {
       "type": "structure",
       "members": {
@@ -6496,6 +7229,43 @@
         "Prometheus"
       ]
     },
+    "PartitionSource": {
+      "type": "structure",
+      "members": {
+        "SourceName": {
+          "shape": "__string",
+          "locationName": "sourceName",
+          "documentation": "\n            <p>Source name.</p>\n         "
+        }
+      },
+      "documentation": "<p>A source column used by an Apache Iceberg destination table's partition specification.</p>"
+    },
+    "PartitionSpec": {
+      "type": "structure",
+      "members": {
+        "PartitionStrategy": {
+          "shape": "PartitionStrategy",
+          "locationName": "partitionStrategy",
+          "documentation": "<p>The partitioning strategy applied to records written to the table.</p>"
+        },
+        "SourceList": {
+          "shape": "__listOfPartitionSource",
+          "locationName": "sourceList",
+          "documentation": "<p>The source columns used by the partitioning strategy. For TIME_HOUR, must contain exactly one source column whose value is a timestamp.</p>"
+        }
+      },
+      "documentation": "<p>Partition specification for an Apache Iceberg destination table.</p>",
+      "required": [
+        "PartitionStrategy"
+      ]
+    },
+    "PartitionStrategy": {
+      "type": "string",
+      "documentation": "<p>The partitioning strategy used to partition records in the destination Apache Iceberg table.</p>",
+      "enum": [
+        "TIME_HOUR"
+      ]
+    },
     "Prometheus": {
       "type": "structure",
       "members": {
@@ -6554,6 +7324,34 @@
         }
       },
       "documentation": "Public access control for brokers."
+    },
+    "RecordConverter": {
+      "type": "structure",
+      "members": {
+        "ValueConverter": {
+          "shape": "ValueConverter",
+          "locationName": "valueConverter",
+          "documentation": "<p>The deserialization format applied to Apache Kafka record values.</p>"
+        }
+      },
+      "documentation": "<p>Configuration that controls how Apache Kafka record values are deserialized for the destination.</p>",
+      "required": [
+        "ValueConverter"
+      ]
+    },
+    "RecordSchema": {
+      "type": "structure",
+      "members": {
+        "GsrArn": {
+          "shape": "__string",
+          "locationName": "gsrArn",
+          "documentation": "<p>The Amazon Resource Name (ARN) of the AWS Glue Schema Registry schema (not registry) used to validate records for the destination Apache Iceberg table.</p>"
+        }
+      },
+      "documentation": "<p>Schema configuration that controls how Apache Kafka record values are validated.</p>",
+      "required": [
+        "GsrArn"
+      ]
     },
     "PutClusterPolicyRequest": {
       "type": "structure",
@@ -6656,6 +7454,17 @@
         }
       },
       "documentation": "\n            <p>Details for client authentication using SASL.</p>\n         "
+    },
+    "SchemaEvolution": {
+      "type": "structure",
+      "members": {
+        "EnableSchemaEvolution": {
+          "shape": "__boolean",
+          "locationName": "enableSchemaEvolution",
+          "documentation": "<p>Whether to allow MSK to evolve the destination table's schema. Must be false for the current release.</p>"
+        }
+      },
+      "documentation": "<p>Configuration controlling whether the Apache Iceberg destination table's schema is evolved as incoming records change.</p>"
     },
     "Sasl": {
       "type": "structure",
@@ -7081,6 +7890,17 @@
         "TIERED"
       ]
     },
+    "TableCreation": {
+      "type": "structure",
+      "members": {
+        "EnableTableCreation": {
+          "shape": "__boolean",
+          "locationName": "enableTableCreation",
+          "documentation": "<p>Whether MSK creates the destination table on the customer's behalf. Must be true for the current release.</p>"
+        }
+      },
+      "documentation": "<p>Configuration controlling whether MSK creates the destination Apache Iceberg table if it does not already exist.</p>"
+    },
     "TagResourceRequest": {
       "type": "structure",
       "members": {
@@ -7127,6 +7947,31 @@
         }
       },
       "documentation": "\n            <p>Details for client authentication using TLS.</p>\n         "
+    },
+    "TopicConfiguration": {
+      "type": "structure",
+      "members": {
+        "RecordConverter": {
+          "shape": "RecordConverter",
+          "locationName": "recordConverter",
+          "documentation": "<p>Configuration that controls how Apache Kafka record values are deserialized for the destination.</p>"
+        },
+        "RecordSchema": {
+          "shape": "RecordSchema",
+          "locationName": "recordSchema",
+          "documentation": "<p>The schema used to validate records when the value converter requires one (for example, JSON_SCHEMA_GSR).</p>"
+        },
+        "TopicArn": {
+          "shape": "__string",
+          "locationName": "topicArn",
+          "documentation": "\n            <p>The Amazon Resource Name (ARN) that uniquely identifies the topic.</p>\n         "
+        }
+      },
+      "documentation": "<p>Configuration of an Apache Kafka topic that feeds a channel.</p>",
+      "required": [
+        "RecordConverter",
+        "TopicArn"
+      ]
     },
     "TopicInfo": {
       "type": "structure",
@@ -7466,6 +8311,175 @@
           "documentation": "\n            <p>The Amazon Resource Name (ARN) of the cluster operation.</p>\n         "
         }
       }
+    },
+    "S3CompressionType": {
+      "type": "string",
+      "enum": [
+        "NONE",
+        "GZIP",
+        "ZSTD"
+      ],
+      "documentation": "<p>The compression codec applied to delivered Amazon S3 objects.</p>"
+    },
+    "S3DestinationConfiguration": {
+      "type": "structure",
+      "members": {
+        "DataFreshnessInSeconds": {
+          "shape": "__integer",
+          "locationName": "dataFreshnessInSeconds",
+          "documentation": "<p>The maximum time, in seconds, that records buffer in MSK before being flushed to the destination. Allowed range: 300 to 900. Default: 600.</p>"
+        },
+        "DeadLetterQueueS3": {
+          "shape": "DeadLetterQueueS3",
+          "locationName": "deadLetterQueueS3",
+          "documentation": "<p>The Amazon S3 bucket and prefix where MSK writes records that fail to deliver.</p>"
+        },
+        "ServiceExecutionRoleArn": {
+          "shape": "__string",
+          "locationName": "serviceExecutionRoleArn",
+          "documentation": "<p>The Amazon Resource Name (ARN) of the IAM role that MSK assumes to write to the destination Amazon S3 bucket and the dead-letter bucket.</p>"
+        },
+        "Storage": {
+          "shape": "S3Storage",
+          "locationName": "storage",
+          "documentation": "<p>The Amazon S3 bucket, prefix, and storage class for delivered records.</p>"
+        }
+      },
+      "required": [
+        "Storage",
+        "ServiceExecutionRoleArn",
+        "DeadLetterQueueS3"
+      ],
+      "documentation": "<p>Configuration of an Amazon S3 destination for a channel.</p>"
+    },
+    "IcebergDestinationUpdate": {
+      "type": "structure",
+      "members": {
+        "DataFreshnessInSeconds": {
+          "shape": "__integer",
+          "locationName": "dataFreshnessInSeconds",
+          "documentation": "<p>The maximum time, in seconds, that records buffer in MSK before being flushed to the destination. Allowed range: 300 to 900.</p>"
+        }
+      },
+      "required": [
+        "DataFreshnessInSeconds"
+      ],
+      "documentation": "<p>Update payload for an Apache Iceberg destination.</p>"
+    },
+    "S3DestinationUpdate": {
+      "type": "structure",
+      "members": {
+        "DataFreshnessInSeconds": {
+          "shape": "__integer",
+          "locationName": "dataFreshnessInSeconds",
+          "documentation": "<p>The maximum time, in seconds, that records buffer in MSK before being flushed to the destination. Allowed range: 300 to 900.</p>"
+        }
+      },
+      "required": [
+        "DataFreshnessInSeconds"
+      ],
+      "documentation": "<p>Update payload for an Amazon S3 destination.</p>"
+    },
+    "S3Storage": {
+      "type": "structure",
+      "members": {
+        "BucketArn": {
+          "shape": "__string",
+          "locationName": "bucketArn",
+          "documentation": "<p>The Amazon Resource Name (ARN) of the destination Amazon S3 bucket.</p>"
+        },
+        "CompressionType": {
+          "shape": "S3CompressionType",
+          "locationName": "compressionType",
+          "documentation": "<p>The compression codec applied to delivered Amazon S3 objects.</p>"
+        },
+        "OutputPrefix": {
+          "shape": "__string",
+          "locationName": "outputPrefix",
+          "documentation": "<p>An optional prefix prepended to every Amazon S3 object key written by the channel.</p>"
+        },
+        "OutputKeyTemplate": {
+          "shape": "__string",
+          "locationName": "outputKeyTemplate",
+          "documentation": "<p>An optional template that controls the Amazon S3 object key for each delivered record. Supports the placeholders !{partition-id}, !{sequence-number}, and !{kafka-offset}.</p>"
+        },
+        "StorageClass": {
+          "shape": "S3StorageClass",
+          "locationName": "storageClass",
+          "documentation": "<p>The Amazon S3 storage class for delivered objects.</p>"
+        },
+        "ExpectedBucketOwner": {
+          "shape": "__string",
+          "locationName": "expectedBucketOwner",
+          "documentation": "<p>Optional 12-digit AWS account ID expected to own the Amazon S3 bucket.</p>"
+        }
+      },
+      "required": [
+        "BucketArn",
+        "StorageClass",
+        "CompressionType"
+      ],
+      "documentation": "<p>Storage configuration for an Amazon S3 destination bucket.</p>"
+    },
+    "S3StorageClass": {
+      "type": "string",
+      "enum": [
+        "STANDARD",
+        "INTELLIGENT_TIERING",
+        "GLACIER_IR"
+      ],
+      "documentation": "<p>The Amazon S3 storage class applied to delivered objects.</p>"
+    },
+    "UpdateChannelRequest": {
+      "type": "structure",
+      "members": {
+        "ChannelArn": {
+          "shape": "__string",
+          "location": "uri",
+          "locationName": "channelArn",
+          "documentation": "<p>The Amazon Resource Name (ARN) that uniquely identifies the channel.</p>"
+        },
+        "ClusterArn": {
+          "shape": "__string",
+          "location": "uri",
+          "locationName": "clusterArn",
+          "documentation": "<p>The Amazon Resource Name (ARN) that uniquely identifies the cluster.</p>"
+        },
+        "IcebergDestinationUpdate": {
+          "shape": "IcebergDestinationUpdate",
+          "locationName": "icebergDestinationUpdate",
+          "documentation": "<p>Updates fields on an Apache Iceberg destination. Use only when the channel was created with an Iceberg destination.</p>"
+        },
+        "S3DestinationUpdate": {
+          "shape": "S3DestinationUpdate",
+          "locationName": "s3DestinationUpdate",
+          "documentation": "<p>Updates fields on an Amazon S3 destination. Use only when the channel was created with an Amazon S3 destination.</p>"
+        }
+      },
+      "required": [
+        "ClusterArn",
+        "ChannelArn"
+      ],
+      "documentation": "<p>Updates an existing channel's destination configuration. You must update the same destination type the channel was created with; the destination type cannot be changed.</p>"
+    },
+    "UpdateChannelResponse": {
+      "type": "structure",
+      "members": {
+        "ChannelArn": {
+          "shape": "__string",
+          "locationName": "channelArn",
+          "documentation": "<p>The Amazon Resource Name (ARN) that uniquely identifies the channel.</p>"
+        },
+        "ClusterOperationArn": {
+          "shape": "__string",
+          "locationName": "clusterOperationArn",
+          "documentation": "\n            <p>The Amazon Resource Name (ARN) of the cluster operation.</p>\n         "
+        }
+      },
+      "required": [
+        "ChannelArn"
+      ],
+      "documentation": "<p>Returns the channel ARN and the cluster-operation ARN that tracks the asynchronous update.</p>"
     },
     "UpdateClusterConfigurationRequest": {
       "type": "structure",
@@ -7922,6 +8936,16 @@
         "AWSSERVICE"
       ]
     },
+    "ValueConverter": {
+      "type": "string",
+      "documentation": "<p>The deserialization format applied to Apache Kafka record values.</p>",
+      "enum": [
+        "BYTE_ARRAY",
+        "JSON",
+        "JSON_SCHEMA_GSR",
+        "STRING"
+      ]
+    },
     "VpcConnectionInfo": {
       "type": "structure",
       "members": {
@@ -8096,6 +9120,12 @@
         "shape": "ClusterOperationV2Summary"
       }
     },
+    "__listOfChannelInfo": {
+      "type": "list",
+      "member": {
+        "shape": "ChannelInfo"
+      }
+    },
     "__listOfClusterOperationStep": {
       "type": "list",
       "member": {
@@ -8106,6 +9136,18 @@
       "type": "list",
       "member": {
         "shape": "CompatibleKafkaVersion"
+      }
+    },
+    "__listOfDestinationTable": {
+      "type": "list",
+      "member": {
+        "shape": "DestinationTable"
+      }
+    },
+    "__listOfTopicConfiguration": {
+      "type": "list",
+      "member": {
+        "shape": "TopicConfiguration"
       }
     },
     "__listOfVpcConfig": {
@@ -8154,6 +9196,12 @@
       "type": "list",
       "member": {
         "shape": "NodeInfo"
+      }
+    },
+    "__listOfPartitionSource": {
+      "type": "list",
+      "member": {
+        "shape": "PartitionSource"
       }
     },
     "__listOfClientVpcConnection": {

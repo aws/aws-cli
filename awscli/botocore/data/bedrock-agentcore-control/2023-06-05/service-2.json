@@ -8913,6 +8913,10 @@
         "bedrockEvaluatorModelConfig":{
           "shape":"BedrockEvaluatorModelConfig",
           "documentation":"<p> The Amazon Bedrock model configuration for evaluation. </p>"
+        },
+        "responsesEvaluatorModelConfig":{
+          "shape":"OpenResponsesEvaluatorModelConfig",
+          "documentation":"<p> The OpenResponses model configuration for evaluation. </p>"
         }
       },
       "documentation":"<p> The model configuration that specifies which foundation model to use for evaluation and how to configure it. </p>",
@@ -16387,6 +16391,50 @@
         "DISABLED"
       ]
     },
+    "OpenResponsesEvaluatorModelConfig":{
+      "type":"structure",
+      "required":["modelId"],
+      "members":{
+        "modelId":{
+          "shape":"ModelId",
+          "documentation":"<p> The identifier of the model to use for evaluation. </p>"
+        },
+        "maxOutputTokens":{
+          "shape":"OpenResponsesEvaluatorModelConfigMaxOutputTokensInteger",
+          "documentation":"<p> The maximum number of tokens to generate in the model response, including visible output and reasoning tokens. </p>"
+        },
+        "temperature":{
+          "shape":"OpenResponsesEvaluatorModelConfigTemperatureFloat",
+          "documentation":"<p> The temperature value that controls randomness in the model's responses. Lower values produce more deterministic outputs. </p>"
+        },
+        "topP":{
+          "shape":"OpenResponsesEvaluatorModelConfigTopPFloat",
+          "documentation":"<p> The top-p sampling parameter that controls the diversity of the model's responses by limiting the cumulative probability of token choices. </p>"
+        },
+        "reasoning":{
+          "shape":"ReasoningConfiguration",
+          "documentation":"<p> The reasoning configuration for reasoning models. Non-reasoning models ignore this configuration. </p>"
+        }
+      },
+      "documentation":"<p> The configuration for using models served through the OpenResponses API in evaluator assessments, including model selection and inference parameters. </p>"
+    },
+    "OpenResponsesEvaluatorModelConfigMaxOutputTokensInteger":{
+      "type":"integer",
+      "box":true,
+      "min":1
+    },
+    "OpenResponsesEvaluatorModelConfigTemperatureFloat":{
+      "type":"float",
+      "box":true,
+      "max":2,
+      "min":0
+    },
+    "OpenResponsesEvaluatorModelConfigTopPFloat":{
+      "type":"float",
+      "box":true,
+      "max":1,
+      "min":0
+    },
     "OutputConfig":{
       "type":"structure",
       "required":["cloudWatchConfig"],
@@ -17382,6 +17430,21 @@
       "documentation":"<p> The rating scale that defines how evaluators should score agent performance, supporting both numerical and categorical scales. </p>",
       "sensitive":true,
       "union":true
+    },
+    "ReasoningConfiguration":{
+      "type":"structure",
+      "members":{
+        "effort":{
+          "shape":"ReasoningConfigurationEffortString",
+          "documentation":"<p> The level of reasoning effort the model applies when generating a response. For supported values, see the model provider's documentation. </p>"
+        }
+      },
+      "documentation":"<p> The reasoning configuration that controls how a reasoning model allocates effort during evaluation. </p>"
+    },
+    "ReasoningConfigurationEffortString":{
+      "type":"string",
+      "max":64,
+      "min":1
     },
     "RecordIdentifier":{
       "type":"string",

@@ -202,7 +202,9 @@ def _get_crt_throughput_target_gbps(provided_throughput_target_bytes=None):
 
 
 class CRTTransferManager:
-    def __init__(self, crt_s3_client, crt_request_serializer, osutil=None):
+    def __init__(
+        self, crt_s3_client, crt_request_serializer, osutil=None, client=None
+    ):
         """A transfer manager interface for Amazon S3 on CRT s3 client.
 
         :type crt_s3_client: awscrt.s3.S3Client
@@ -216,12 +218,16 @@ class CRTTransferManager:
         :type osutil: s3transfer.utils.OSUtils
         :param osutil: OSUtils object to use for os-related behavior when
             using with transfer manager.
+
+        :type client: botocore.client.BaseClient
+        :param client: The botocore client used for
+            serializing requests and resolving client configuration.
         """
         if osutil is None:
             self._osutil = OSUtils()
         self._crt_s3_client = crt_s3_client
         self._s3_args_creator = S3ClientArgsCreator(
-            crt_request_serializer, self._osutil
+            crt_request_serializer, self._osutil, client
         )
         self._crt_exception_translator = (
             crt_request_serializer.translate_crt_exception
@@ -449,7 +455,7 @@ class BaseCRTRequestSerializer:
 
 
 class BotocoreCRTRequestSerializer(BaseCRTRequestSerializer):
-    def __init__(self, session, client_kwargs=None):
+    def __init__(self, session, client_kwargs=None, client=None):
         """Serialize CRT HTTP request using botocore logic
         It also takes into account configuration from both the session
         and any keyword arguments that could be passed to
@@ -460,12 +466,19 @@ class BotocoreCRTRequestSerializer(BaseCRTRequestSerializer):
         :type client_kwargs: Optional[Dict[str, str]])
         :param client_kwargs: The kwargs for the botocore
             s3 client initialization.
+
+        :type client: Optional[botocore.client.BaseClient]
+        :param client: A pre-configured botocore S3 client. If provided,
+            session and client_kwargs are ignored for client creation.
         """
         self._session = session
-        if client_kwargs is None:
-            client_kwargs = {}
-        self._resolve_client_config(session, client_kwargs)
-        self._client = session.create_client(**client_kwargs)
+        if client is not None:
+            self._client = client
+        else:
+            if client_kwargs is None:
+                client_kwargs = {}
+            self._resolve_client_config(session, client_kwargs)
+            self._client = session.create_client(**client_kwargs)
         self._client.meta.events.register(
             'request-created.s3.*', self._capture_http_request
         )
@@ -715,9 +728,10 @@ class CRTTransferCoordinator:
 
 
 class S3ClientArgsCreator:
-    def __init__(self, crt_request_serializer, os_utils):
+    def __init__(self, crt_request_serializer, os_utils, client=None):
         self._request_serializer = crt_request_serializer
         self._os_utils = os_utils
+        self._client = client
 
     def get_make_request_args(
         self, request_type, call_args, coordinator, future, on_done_after_calls
@@ -819,7 +833,14 @@ class S3ClientArgsCreator:
     ):
         recv_filepath = None
         on_body = None
-        checksum_config = awscrt.s3.S3ChecksumConfig(validate_response=True)
+        validate = not (
+            self._client is not None
+            and self._client.meta.config.response_checksum_validation
+            == 'when_required'
+        )
+        checksum_config = awscrt.s3.S3ChecksumConfig(
+            validate_response=validate
+        )
         if isinstance(call_args.fileobj, str):
             final_filepath = call_args.fileobj
             recv_filepath = self._os_utils.get_temp_filename(final_filepath)

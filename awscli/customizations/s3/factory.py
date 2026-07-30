@@ -13,6 +13,7 @@
 import logging
 
 import awscrt.s3
+from botocore import UNSIGNED
 from botocore.client import Config
 from botocore.httpsession import DEFAULT_CA_BUNDLE
 from s3transfer.crt import (
@@ -114,9 +115,11 @@ class TransferManagerFactory:
 
     def _create_crt_transfer_manager(self, params, runtime_config):
         self._acquire_crt_s3_process_lock()
+        serializer_client = self._create_serializer_client(params)
         return CRTTransferManager(
             self._create_crt_client(params, runtime_config),
-            self._create_crt_request_serializer(params),
+            self._create_crt_request_serializer(params, serializer_client),
+            client=serializer_client,
         )
 
     def _create_crt_client(self, params, runtime_config):
@@ -154,13 +157,26 @@ class TransferManagerFactory:
 
         return create_s3_crt_client(**create_crt_client_kwargs)
 
-    def _create_crt_request_serializer(self, params):
+    def _create_serializer_client(self, params):
+        client_kwargs = {
+            'region_name': self._resolve_region(params),
+            'endpoint_url': params.get('endpoint_url'),
+        }
+        user_provided_config = self._session.get_default_client_config()
+        if 'config' in client_kwargs:
+            user_provided_config = client_kwargs['config']
+        client_config = Config(signature_version=UNSIGNED)
+        if user_provided_config:
+            client_config = user_provided_config.merge(client_config)
+        client_kwargs['config'] = client_config
+        return self._session.create_client(
+            service_name='s3', **client_kwargs
+        )
+
+    def _create_crt_request_serializer(self, params, client):
         return BotocoreCRTRequestSerializer(
             self._session,
-            {
-                'region_name': self._resolve_region(params),
-                'endpoint_url': params.get('endpoint_url'),
-            },
+            client=client,
         )
 
     def _create_classic_transfer_manager(

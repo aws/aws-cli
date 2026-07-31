@@ -198,7 +198,7 @@
         {"shape":"ValidationException"},
         {"shape":"ServiceUnavailableException"}
       ],
-      "documentation":"<p>Creates a lookup table by uploading CSV data. You can use lookup tables to enrich log data in CloudWatch Logs Insights queries with reference data such as user details, application names, or error descriptions.</p> <p>The table name must be unique within your account and Region. The CSV content must include a header row with column names, use UTF-8 encoding, and not exceed 10 MB.</p>"
+      "documentation":"<p>Creates a lookup table by uploading CSV data or from CloudWatch Logs query results. You can use lookup tables to enrich log data in CloudWatch Logs queries with reference data such as user details, application names, or error descriptions.</p> <p>The table name must be unique within your account and Region. You must specify either <code>tableBody</code> or <code>queryId</code>, but not both. If you use <code>tableBody</code>, the CSV content must include a header row with column names, use UTF-8 encoding, and not exceed 10 MB.</p>"
     },
     "CreateScheduledQuery":{
       "name":"CreateScheduledQuery",
@@ -1166,7 +1166,7 @@
         {"shape":"OperationAbortedException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Returns the storage tier policy for your account.</p>"
+      "documentation":"<p>Returns the storage tier policy for the account.</p>"
     },
     "GetTransformer":{
       "name":"GetTransformer",
@@ -1636,7 +1636,7 @@
         {"shape":"OperationAbortedException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Sets the storage tier policy for your account. When you set the storage tier to <code>INTELLIGENT_TIERING</code>, CloudWatch Logs automatically moves your log data between storage tiers based on access patterns to optimize costs.</p>"
+      "documentation":"<p>Sets the storage tier policy for the account. When you set the storage tier to <code>INTELLIGENT_TIERING</code>, the service automatically moves log data to the most cost-effective storage tier based on access frequency.</p>"
     },
     "PutSubscriptionFilter":{
       "name":"PutSubscriptionFilter",
@@ -1890,7 +1890,7 @@
         {"shape":"ValidationException"},
         {"shape":"ServiceUnavailableException"}
       ],
-      "documentation":"<p>Updates an existing lookup table by replacing all of its CSV content. After the update completes, queries that use this table will use the new data.</p> <p>This is a full replacement operation. All existing content is replaced with the new CSV data.</p>"
+      "documentation":"<p>Updates an existing lookup table by replacing all of its content with new CSV data or CloudWatch Logs query results. After the update completes, queries that use this table use the new data.</p> <p>This is a full replacement operation. All existing content is replaced. You must specify either <code>tableBody</code> or <code>queryId</code>, but not both.</p>"
     },
     "UpdateScheduledQuery":{
       "name":"UpdateScheduledQuery",
@@ -2718,10 +2718,7 @@
     },
     "CreateLookupTableRequest":{
       "type":"structure",
-      "required":[
-        "lookupTableName",
-        "tableBody"
-      ],
+      "required":["lookupTableName"],
       "members":{
         "lookupTableName":{
           "shape":"LookupTableName",
@@ -2733,7 +2730,11 @@
         },
         "tableBody":{
           "shape":"TableBody",
-          "documentation":"<p>The CSV content of the lookup table. The first row must be a header row with column names. The content must use UTF-8 encoding and not exceed 10 MB.</p>"
+          "documentation":"<p>The CSV content of the lookup table. The first row must be a header row with column names. The content must use UTF-8 encoding and not exceed 10 MB.</p> <p>You must specify either <code>tableBody</code> or <code>queryId</code>, but not both.</p>"
+        },
+        "queryId":{
+          "shape":"QueryId",
+          "documentation":"<p>The ID of a completed CloudWatch Logs query whose results populate the lookup table.</p> <p>You must specify either <code>tableBody</code> or <code>queryId</code>, but not both.</p>"
         },
         "kmsKeyId":{
           "shape":"KmsKeyId",
@@ -2806,7 +2807,7 @@
         },
         "destinationConfiguration":{
           "shape":"DestinationConfiguration",
-          "documentation":"<p>Configuration for where to deliver query results. Currently supports Amazon S3 destinations for storing query output.</p>"
+          "documentation":"<p>Configuration for where to deliver query results. Supports Amazon S3 destinations for storing query output and lookup table destinations for automatically refreshing lookup tables with query results. You can configure one or both destination types.</p>"
         },
         "scheduleStartTime":{
           "shape":"Timestamp",
@@ -4179,11 +4180,14 @@
     },
     "DestinationConfiguration":{
       "type":"structure",
-      "required":["s3Configuration"],
       "members":{
         "s3Configuration":{
           "shape":"S3Configuration",
           "documentation":"<p>Configuration for delivering query results to Amazon S3.</p>"
+        },
+        "lookupTableConfiguration":{
+          "shape":"LookupTableConfiguration",
+          "documentation":"<p>Configuration for delivering query results to a lookup table. The query results automatically populate or refresh the specified lookup table on each scheduled execution.</p>"
         }
       },
       "documentation":"<p>Configuration for where to deliver scheduled query results. Specifies the destination type and associated settings for result delivery.</p>"
@@ -5324,7 +5328,7 @@
         },
         "lastUpdatedTime":{
           "shape":"Timestamp",
-          "documentation":"<p>The time when the storage tier policy was last updated, expressed as the number of milliseconds after <code>Jan 1, 1970 00:00:00 UTC</code>.</p>"
+          "documentation":"<p>The time when the storage tier policy was last updated, expressed as the number of milliseconds after <code>January 1, 1970 00:00:00 UTC</code>.</p>"
         }
       }
     },
@@ -6547,6 +6551,36 @@
         }
       },
       "documentation":"<p>Contains metadata about a lookup table returned by <code>DescribeLookupTables</code>.</p>"
+    },
+    "LookupTableConfiguration":{
+      "type":"structure",
+      "required":[
+        "tableName",
+        "roleArn"
+      ],
+      "members":{
+        "tableName":{
+          "shape":"LookupTableName",
+          "documentation":"<p>The name of the lookup table to create or update with query results. The name can contain only alphanumeric characters and underscores.</p>"
+        },
+        "roleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>The ARN of the IAM role that grants permissions to create or update the lookup table with query results.</p>"
+        },
+        "description":{
+          "shape":"LookupTableDescription",
+          "documentation":"<p>A description of the lookup table.</p>"
+        },
+        "kmsKeyId":{
+          "shape":"KmsKeyId",
+          "documentation":"<p>The ARN of the KMS key to use to encrypt the lookup table data. If you don't specify a key, the data is encrypted with an Amazon Web Services-owned key.</p>"
+        },
+        "tags":{
+          "shape":"Tags",
+          "documentation":"<p>Key-value pairs to associate with the lookup table for resource management and cost allocation. The service applies tags only during initial table creation.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for a lookup table destination. Use it to automatically refresh a lookup table with query results on a schedule.</p>"
     },
     "LookupTableDescription":{
       "type":"string",
@@ -7909,7 +7943,7 @@
       "members":{
         "storageTier":{
           "shape":"StorageTier",
-          "documentation":"<p>The storage tier to set for the account. Valid values are <code>STANDARD</code> and <code>INTELLIGENT_TIERING</code>.</p>"
+          "documentation":"<p>The storage tier to set for the account. Use <code>INTELLIGENT_TIERING</code> to automatically optimize storage costs by moving log data to the appropriate tier based on access frequency.</p>"
         }
       }
     },
@@ -7918,11 +7952,11 @@
       "members":{
         "storageTier":{
           "shape":"StorageTier",
-          "documentation":"<p>The storage tier that was set.</p>"
+          "documentation":"<p>The storage tier for the account.</p>"
         },
         "lastUpdatedTime":{
           "shape":"Timestamp",
-          "documentation":"<p>The time when the storage tier policy was last updated, expressed as the number of milliseconds after <code>Jan 1, 1970 00:00:00 UTC</code>.</p>"
+          "documentation":"<p>The time when the storage tier policy was last updated, expressed as the number of milliseconds after <code>January 1, 1970 00:00:00 UTC</code>.</p>"
         }
       }
     },
@@ -7969,7 +8003,7 @@
         },
         "emitSystemFields":{
           "shape":"EmitSystemFields",
-          "documentation":"<p>A list of system fields to include in the log events sent to the subscription destination. Valid values are <code>@aws.account</code> and <code>@aws.region</code>. These fields provide source information for centralized log data in the forwarded payload.</p>"
+          "documentation":"<p>A list of system fields to include in the log events sent to the subscription destination. Valid values are <code>@aws.account</code>, <code>@aws.region</code>, and <code>@source.log</code>. These fields provide source information for centralized log data in the forwarded payload.</p>"
         }
       }
     },
@@ -8616,7 +8650,10 @@
     },
     "ScheduledQueryDestinationType":{
       "type":"string",
-      "enum":["S3"]
+      "enum":[
+        "S3",
+        "LOOKUP_TABLE"
+      ]
     },
     "ScheduledQueryIdentifier":{
       "type":"string",
@@ -9615,10 +9652,7 @@
     },
     "UpdateLookupTableRequest":{
       "type":"structure",
-      "required":[
-        "lookupTableArn",
-        "tableBody"
-      ],
+      "required":["lookupTableArn"],
       "members":{
         "lookupTableArn":{
           "shape":"Arn",
@@ -9630,7 +9664,11 @@
         },
         "tableBody":{
           "shape":"TableBody",
-          "documentation":"<p>The new CSV content to replace the existing data. The first row must be a header row with column names. The content must use UTF-8 encoding and not exceed 10 MB.</p>"
+          "documentation":"<p>The new CSV content to replace the existing data. The first row must be a header row with column names. The content must use UTF-8 encoding and not exceed 10 MB.</p> <p>You must specify either <code>tableBody</code> or <code>queryId</code>, but not both.</p>"
+        },
+        "queryId":{
+          "shape":"QueryId",
+          "documentation":"<p>The ID of a completed CloudWatch Logs query whose results replace the lookup table content.</p> <p>You must specify either <code>tableBody</code> or <code>queryId</code>, but not both.</p>"
         },
         "kmsKeyId":{
           "shape":"KmsKeyId",

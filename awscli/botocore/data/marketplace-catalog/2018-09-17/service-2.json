@@ -1802,6 +1802,29 @@
       "min":12,
       "pattern":"^\\d{12}$"
     },
+    "OfferCreatedBySourceFilter":{
+      "type":"structure",
+      "members":{
+        "ValueList":{
+          "shape":"OfferCreatedBySourceFilterValueList",
+          "documentation":"<p>Allows filtering on the <code>CreatedBySource</code> of an offer with list input.</p>"
+        }
+      },
+      "documentation":"<p>Allows filtering on the <code>CreatedBySource</code> of an offer.</p>"
+    },
+    "OfferCreatedBySourceFilterValueList":{
+      "type":"list",
+      "member":{"shape":"OfferCreatedBySourceString"},
+      "max":2,
+      "min":1
+    },
+    "OfferCreatedBySourceString":{
+      "type":"string",
+      "enum":[
+        "Seller",
+        "AwsMarketplace"
+      ]
+    },
     "OfferEntityIdFilter":{
       "type":"structure",
       "members":{
@@ -1870,6 +1893,18 @@
         "OfferSetId":{
           "shape":"OfferSetIdFilter",
           "documentation":"<p>Allows filtering on the <code>OfferSetId</code> of an offer.</p>"
+        },
+        "TargetAgreementId":{
+          "shape":"OfferTargetAgreementIdFilter",
+          "documentation":"<p>Allows filtering on the <code>TargetAgreementId</code> of an offer.</p>"
+        },
+        "TargetAgreementIntent":{
+          "shape":"OfferTargetAgreementIntentFilter",
+          "documentation":"<p>Allows filtering on the <code>TargetAgreementIntent</code> of an offer.</p>"
+        },
+        "CreatedBySource":{
+          "shape":"OfferCreatedBySourceFilter",
+          "documentation":"<p>Allows filtering on the <code>CreatedBySource</code> of an offer.</p>"
         }
       },
       "documentation":"<p>Object containing all the filter fields for offers entity. Client can add only one wildcard filter and a maximum of 8 filters in a single <code>ListEntities</code> request.</p>"
@@ -2291,7 +2326,10 @@
         "State",
         "Targeting",
         "LastModifiedDate",
-        "OfferSetId"
+        "OfferSetId",
+        "TargetAgreementId",
+        "TargetAgreementIntent",
+        "CreatedBySource"
       ]
     },
     "OfferStateFilter":{
@@ -2355,9 +2393,63 @@
         "OfferSetId":{
           "shape":"OfferSetIdString",
           "documentation":"<p>The offer set ID of the offer.</p>"
+        },
+        "TargetAgreementId":{
+          "shape":"OfferTargetAgreementIdString",
+          "documentation":"<p>The target agreement ID of the offer.</p>"
+        },
+        "TargetAgreementIntent":{
+          "shape":"OfferTargetAgreementIntentString",
+          "documentation":"<p>The target agreement intent of the offer.</p>"
+        },
+        "CreatedBySource":{
+          "shape":"OfferCreatedBySourceString",
+          "documentation":"<p>The creation source of the offer.</p>"
         }
       },
       "documentation":"<p>Summarized information about an offer.</p>"
+    },
+    "OfferTargetAgreementIdFilter":{
+      "type":"structure",
+      "members":{
+        "ValueList":{
+          "shape":"OfferTargetAgreementIdFilterValueList",
+          "documentation":"<p>Allows filtering on the <code>TargetAgreementId</code> of an offer with list input.</p>"
+        }
+      },
+      "documentation":"<p>Allows filtering on the <code>TargetAgreementId</code> of an offer.</p>"
+    },
+    "OfferTargetAgreementIdFilterValueList":{
+      "type":"list",
+      "member":{"shape":"OfferTargetAgreementIdString"},
+      "max":10,
+      "min":1
+    },
+    "OfferTargetAgreementIdString":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"^(.)+$"
+    },
+    "OfferTargetAgreementIntentFilter":{
+      "type":"structure",
+      "members":{
+        "ValueList":{
+          "shape":"OfferTargetAgreementIntentFilterValueList",
+          "documentation":"<p>Allows filtering on the <code>TargetAgreementIntent</code> of an offer with list input.</p>"
+        }
+      },
+      "documentation":"<p>Allows filtering on the <code>TargetAgreementIntent</code> of an offer.</p>"
+    },
+    "OfferTargetAgreementIntentFilterValueList":{
+      "type":"list",
+      "member":{"shape":"OfferTargetAgreementIntentString"},
+      "max":2,
+      "min":1
+    },
+    "OfferTargetAgreementIntentString":{
+      "type":"string",
+      "enum":["Renew"]
     },
     "OfferTargetingFilter":{
       "type":"structure",

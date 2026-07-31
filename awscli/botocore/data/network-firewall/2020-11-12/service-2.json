@@ -119,7 +119,7 @@
         {"shape":"InternalServerError"},
         {"shape":"InsufficientCapacityException"}
       ],
-      "documentation":"<p>Creates a container association for Network Firewall. A container association links container clusters (ECS or EKS) to Network Firewall, enabling dynamic IP resolution for firewall rules based on container attributes.</p> <p>To manage a container association's tags, use the standard Amazon Web Services resource tagging operations, <a>ListTagsForResource</a>, <a>TagResource</a>, and <a>UntagResource</a>.</p> <p>To retrieve information about container associations, use <a>ListContainerAssociations</a> and <a>DescribeContainerAssociation</a>.</p>"
+      "documentation":"<p>Creates a Network Firewall container association. The association monitors container lifecycle events in your Amazon ECS or Amazon EKS clusters and resolves running container addresses for use in firewall rules.</p>"
     },
     "CreateFirewall":{
       "name":"CreateFirewall",
@@ -290,7 +290,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InvalidOperationException"}
       ],
-      "documentation":"<p>Deletes the specified container association. When you delete a container association, Network Firewall stops monitoring the associated container clusters and removes the resolved IP addresses from firewall rules.</p>"
+      "documentation":"<p>Deletes a container association. The resource transitions to a <code>DELETING</code> state. Deletion is asynchronous - Network Firewall returns immediately while cleanup proceeds in the background. You can't delete a container association while a rule group references it.</p>"
     },
     "DeleteFirewall":{
       "name":"DeleteFirewall",
@@ -492,7 +492,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Returns the properties of a container association.</p>"
+      "documentation":"<p>Retrieves the configuration and status of a container association.</p>"
     },
     "DescribeFirewall":{
       "name":"DescribeFirewall",
@@ -831,7 +831,7 @@
         {"shape":"InternalServerError"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Retrieves the metadata for the container associations that you have defined. You can optionally page through results.</p>"
+      "documentation":"<p>Lists the container associations in your account and Region. Use the <code>NextToken</code> parameter in subsequent requests to retrieve additional results.</p>"
     },
     "ListFirewallPolicies":{
       "name":"ListFirewallPolicies",
@@ -1149,7 +1149,7 @@
         {"shape":"InternalServerError"},
         {"shape":"InvalidTokenException"}
       ],
-      "documentation":"<p>Updates the properties of an existing container association. Use this to modify the container monitoring configurations or description.</p>"
+      "documentation":"<p>Updates the monitoring configurations and description of a container association. You can't change the container type after creation. Provide an update token to enable optimistic concurrency control.</p>"
     },
     "UpdateFirewallAnalysisSettings":{
       "name":"UpdateFirewallAnalysisSettings",
@@ -1914,7 +1914,7 @@
           "documentation":"<p>The descriptive name of the container association.</p>"
         }
       },
-      "documentation":"<p>High-level information about a container association, returned by the <a>ListContainerAssociations</a> operation. You can use this information to retrieve the full details of a container association using <a>DescribeContainerAssociation</a>.</p>"
+      "documentation":"<p>The metadata for a container association returned by <code>ListContainerAssociations</code>. Contains the ARN and name that you use to identify the container association in other operations.</p>"
     },
     "ContainerAssociations":{
       "type":"list",
@@ -1929,14 +1929,14 @@
       "members":{
         "Key":{
           "shape":"ContainerAttributeKey",
-          "documentation":"<p>The key of the container attribute to filter on.</p>"
+          "documentation":"<p>The attribute key to filter on.</p>"
         },
         "Value":{
           "shape":"ContainerAttributeValue",
-          "documentation":"<p>The value of the container attribute to filter on.</p>"
+          "documentation":"<p>The attribute value to match.</p>"
         }
       },
-      "documentation":"<p>A key-value pair that defines a container attribute filter for a container monitoring configuration.</p>"
+      "documentation":"<p>A key-value filter pair used in container association monitoring configurations to narrow which containers are tracked.</p>"
     },
     "ContainerAttributeKey":{
       "type":"string",
@@ -1960,14 +1960,14 @@
       "members":{
         "ClusterArn":{
           "shape":"ResourceArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the container cluster to monitor.</p>"
+          "documentation":"<p>The ARN of the Amazon ECS or Amazon EKS cluster to monitor. The cluster must be in the same Region and account as the container association.</p>"
         },
         "AttributeFilters":{
           "shape":"ContainerAttributes",
-          "documentation":"<p>A list of key-value pairs that filter which containers within the cluster are monitored. Only containers that match the specified attributes are included.</p>"
+          "documentation":"<p>Key-value pairs that filter which containers are tracked. For Amazon EKS, you can filter by namespace and Kubernetes labels. For Amazon ECS, you can filter by container instance attributes (EC2 launch type only).</p>"
         }
       },
-      "documentation":"<p>Defines a container cluster to monitor, along with optional attribute filters that narrow the scope of monitored containers within the cluster.</p>"
+      "documentation":"<p>Contains the monitoring configuration for a single cluster in a container association. Specifies the cluster ARN and optional attribute filters to narrow which containers are tracked.</p>"
     },
     "ContainerMonitoringConfigurations":{
       "type":"list",
@@ -1999,11 +1999,11 @@
         },
         "Type":{
           "shape":"ContainerMonitoringType",
-          "documentation":"<p>The type of container orchestration platform for the clusters in this association. Valid values are <code>ECS</code> and <code>EKS</code>. You can't change the type after creation.</p>"
+          "documentation":"<p>The type of containers to monitor. You can't change the container type after creation. Valid values:</p> <ul> <li> <p> <code>ECS</code> - Amazon Elastic Container Service</p> </li> <li> <p> <code>EKS</code> - Amazon Elastic Kubernetes Service</p> </li> </ul>"
         },
         "ContainerMonitoringConfigurations":{
           "shape":"ContainerMonitoringConfigurations",
-          "documentation":"<p>The list of container monitoring configurations that define which clusters and container attributes to monitor.</p>"
+          "documentation":"<p>The monitoring configurations for the container association. Each configuration specifies an Amazon ECS or Amazon EKS cluster to monitor and optional attribute filters to narrow which containers are tracked.</p>"
         },
         "Tags":{
           "shape":"TagList",
@@ -2028,23 +2028,23 @@
         },
         "Type":{
           "shape":"ContainerMonitoringType",
-          "documentation":"<p>The type of container orchestration platform. Either <code>ECS</code> or <code>EKS</code>.</p>"
+          "documentation":"<p>The container type. Valid values:</p> <ul> <li> <p> <code>ECS</code> - Amazon Elastic Container Service</p> </li> <li> <p> <code>EKS</code> - Amazon Elastic Kubernetes Service</p> </li> </ul>"
         },
         "ContainerMonitoringConfigurations":{
           "shape":"ContainerMonitoringConfigurations",
-          "documentation":"<p>The container monitoring configurations for this container association.</p>"
+          "documentation":"<p>The monitoring configurations for the container association.</p>"
         },
         "Status":{
           "shape":"ContainerAssociationStatus",
-          "documentation":"<p>The current status of the container association.</p>"
+          "documentation":"<p>The current status of the container association. For a new container association, the status is <code>CREATING</code>.</p>"
         },
         "Tags":{
           "shape":"TagList",
-          "documentation":"<p>The key:value pairs associated with the resource.</p>"
+          "documentation":"<p>The key:value pairs to associate with the resource.</p>"
         },
         "UpdateToken":{
           "shape":"UpdateToken",
-          "documentation":"<p>A token used for optimistic locking. Network Firewall returns a token to your requests that access the container association. The token marks the state of the container association resource at the time of the request. To make an update to the container association, provide the token in your request. Network Firewall uses the token to ensure that the container association hasn't changed since you last retrieved it. If it has changed, the operation fails with an <code>InvalidTokenException</code>. If this happens, retrieve the container association again to get a current copy of it with a new token. Reapply your changes as needed, then try the operation again using the new token.</p>"
+          "documentation":"<p>A token used for optimistic locking. Network Firewall returns a token to your requests that access the container association. The token marks the state of the container association resource at the time of the request.</p> <p>To make changes to the container association, you provide the token in your request. Network Firewall uses the token to ensure that the container association hasn't changed since you last retrieved it. If it has changed, the operation fails with an <code>InvalidTokenException</code>. If this happens, retrieve the container association again to get a current copy of it with a current token. Reapply your changes as needed, then try the operation again using the new token.</p>"
         }
       }
     },
@@ -2576,11 +2576,11 @@
       "members":{
         "ContainerAssociationName":{
           "shape":"ResourceName",
-          "documentation":"<p>The descriptive name of the container association. You must specify the ARN or the name, and you can specify both.</p>"
+          "documentation":"<p>The descriptive name of the container association.</p> <p>You must specify the ARN or the name, and you can specify both. </p>"
         },
         "ContainerAssociationArn":{
           "shape":"ResourceArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the container association. You must specify the ARN or the name, and you can specify both.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the container association.</p> <p>You must specify the ARN or the name, and you can specify both. </p>"
         }
       }
     },
@@ -2597,7 +2597,7 @@
         },
         "Status":{
           "shape":"ContainerAssociationStatus",
-          "documentation":"<p>The current status of the container association.</p>"
+          "documentation":"<p>The current status of the container association. After deletion is initiated, the status is <code>DELETING</code>.</p>"
         }
       }
     },
@@ -2878,11 +2878,11 @@
       "members":{
         "ContainerAssociationName":{
           "shape":"ResourceName",
-          "documentation":"<p>The descriptive name of the container association. You must specify the ARN or the name, and you can specify both.</p>"
+          "documentation":"<p>The descriptive name of the container association.</p> <p>You must specify the ARN or the name, and you can specify both. </p>"
         },
         "ContainerAssociationArn":{
           "shape":"ResourceArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the container association. You must specify the ARN or the name, and you can specify both.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the container association.</p> <p>You must specify the ARN or the name, and you can specify both. </p>"
         }
       }
     },
@@ -2903,11 +2903,11 @@
         },
         "Type":{
           "shape":"ContainerMonitoringType",
-          "documentation":"<p>The type of container orchestration platform. Either <code>ECS</code> or <code>EKS</code>.</p>"
+          "documentation":"<p>The container type. Valid values:</p> <ul> <li> <p> <code>ECS</code> - Amazon Elastic Container Service</p> </li> <li> <p> <code>EKS</code> - Amazon Elastic Kubernetes Service</p> </li> </ul>"
         },
         "ContainerMonitoringConfigurations":{
           "shape":"ContainerMonitoringConfigurations",
-          "documentation":"<p>The container monitoring configurations for this container association.</p>"
+          "documentation":"<p>The monitoring configurations for the container association.</p>"
         },
         "Status":{
           "shape":"ContainerAssociationStatus",
@@ -2915,19 +2915,19 @@
         },
         "ResolvedCidrCount":{
           "shape":"CIDRCount",
-          "documentation":"<p>The number of CIDR blocks that have been resolved from the monitored containers for this container association.</p>"
+          "documentation":"<p>The number of CIDR blocks resolved from the monitored containers.</p>"
         },
         "LastUpdatedTime":{
           "shape":"ContainerAssociationLastUpdatedTime",
-          "documentation":"<p>The last time that the container association was updated or resolved new container IP addresses.</p>"
+          "documentation":"<p>The most recent time that Network Firewall updated the container association.</p>"
         },
         "Tags":{
           "shape":"TagList",
-          "documentation":"<p>The key:value pairs associated with the resource.</p>"
+          "documentation":"<p>The key:value pairs to associate with the resource.</p>"
         },
         "UpdateToken":{
           "shape":"UpdateToken",
-          "documentation":"<p>A token used for optimistic locking. Network Firewall returns a token to your requests that access the container association. The token marks the state of the container association resource at the time of the request.</p>"
+          "documentation":"<p>A token used for optimistic locking. Network Firewall returns a token to your requests that access the container association. The token marks the state of the container association resource at the time of the request.</p> <p>To make changes to the container association, you provide the token in your request. Network Firewall uses the token to ensure that the container association hasn't changed since you last retrieved it. If it has changed, the operation fails with an <code>InvalidTokenException</code>. If this happens, retrieve the container association again to get a current copy of it with a current token. Reapply your changes as needed, then try the operation again using the new token.</p>"
         }
       }
     },
@@ -3868,7 +3868,7 @@
         },
         "StatefulDefaultActions":{
           "shape":"StatefulActions",
-          "documentation":"<p>The default actions to take on a packet that doesn't match any stateful rules. The stateful default action is optional, and is only valid when using the strict rule order.</p> <p>Valid values of the stateful default action:</p> <ul> <li> <p>aws:drop_strict</p> </li> <li> <p>aws:drop_established</p> </li> <li> <p>aws:alert_strict</p> </li> <li> <p>aws:alert_established</p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/network-firewall/latest/developerguide/suricata-rule-evaluation-order.html#suricata-strict-rule-evaluation-order.html\">Strict evaluation order</a> in the <i>Network Firewall Developer Guide</i>. </p>"
+          "documentation":"<p>The default actions to take on a packet that doesn't match any stateful rules. The stateful default action is optional, and is only valid when using the strict rule order.</p> <p>Valid values of the stateful default action:</p> <ul> <li> <p>aws:drop_strict</p> </li> <li> <p>aws:drop_established</p> </li> <li> <p>aws:alert_strict</p> </li> <li> <p>aws:alert_established</p> </li> <li> <p>aws:drop_established_app_layer</p> </li> <li> <p>aws:alert_established_app_layer</p> </li> <li> <p>aws:drop_established_app_layer_to_server</p> </li> <li> <p>aws:alert_established_app_layer_to_server</p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/network-firewall/latest/developerguide/suricata-rule-evaluation-order.html#suricata-strict-rule-evaluation-order.html\">Strict evaluation order</a> in the <i>Network Firewall Developer Guide</i>. </p>"
         },
         "StatefulEngineOptions":{
           "shape":"StatefulEngineOptions",
@@ -4463,7 +4463,7 @@
       "members":{
         "ContainerAssociations":{
           "shape":"ContainerAssociations",
-          "documentation":"<p>The container association metadata objects.</p>"
+          "documentation":"<p>The container association metadata objects for the account and Region.</p>"
         },
         "NextToken":{
           "shape":"PaginationToken",
@@ -5867,11 +5867,11 @@
       "members":{
         "Keyword":{
           "shape":"Keyword",
-          "documentation":"<p>The keyword for the Suricata compatible rule option. You must include a <code>sid</code> (signature ID), and can optionally include other keywords. For information about Suricata compatible keywords, see <a href=\"https://suricata.readthedocs.io/en/suricata-7.0.3/rules/intro.html#rule-options\">Rule options</a> in the Suricata documentation.</p>"
+          "documentation":"<p>The keyword for the Suricata compatible rule option. You must include a <code>sid</code> (signature ID), and can optionally include other keywords. For information about Suricata compatible keywords, see <a href=\"https://suricata.readthedocs.io/en/suricata-7.0.8/rules/intro.html#rule-options\">Rule options</a> in the Suricata documentation.</p>"
         },
         "Settings":{
           "shape":"Settings",
-          "documentation":"<p>The settings of the Suricata compatible rule option. Rule options have zero or more setting values, and the number of possible and required settings depends on the <code>Keyword</code>. For more information about the settings for specific options, see <a href=\"https://suricata.readthedocs.io/en/suricata-7.0.3/rules/intro.html#rule-options\">Rule options</a>.</p>"
+          "documentation":"<p>The settings of the Suricata compatible rule option. Rule options have zero or more setting values, and the number of possible and required settings depends on the <code>Keyword</code>. For more information about the settings for specific options, see <a href=\"https://suricata.readthedocs.io/en/suricata-7.0.8/rules/intro.html#rule-options\">Rule options</a>.</p>"
         }
       },
       "documentation":"<p>Additional settings for a stateful rule. This is part of the <a>StatefulRule</a> configuration.</p>"
@@ -5946,7 +5946,7 @@
         },
         "StatefulRules":{
           "shape":"StatefulRules",
-          "documentation":"<p>An array of individual stateful rules inspection criteria to be used together in a stateful rule group. Use this option to specify simple Suricata rules with protocol, source and destination, ports, direction, and rule options. For information about the Suricata <code>Rules</code> format, see <a href=\"https://suricata.readthedocs.io/en/suricata-7.0.3/rules/intro.html\">Rules Format</a>. </p>"
+          "documentation":"<p>An array of individual stateful rules inspection criteria to be used together in a stateful rule group. Use this option to specify simple Suricata rules with protocol, source and destination, ports, direction, and rule options. For information about the Suricata <code>Rules</code> format, see <a href=\"https://suricata.readthedocs.io/en/suricata-7.0.8/rules/intro.html\">Rules Format</a>. </p>"
         },
         "StatelessRulesAndCustomActions":{
           "shape":"StatelessRulesAndCustomActions",
@@ -6241,7 +6241,7 @@
           "documentation":"<p>Configures the amount of time that can pass without any traffic sent through the firewall before the firewall determines that the connection is idle. </p>"
         }
       },
-      "documentation":"<p>Configuration settings for the handling of the stateful rule groups in a firewall policy. </p>"
+      "documentation":"<p>Configuration settings for the handling of the stateful rule groups in a firewall policy. </p> <important> <p>Updating any setting in <code>StatefulEngineOptions</code> may require a restart of the stateful engine in order to apply the changes. When this occurs, existing connections will be treated according to your stream exception policy configuration.</p> </important>"
     },
     "StatefulRule":{
       "type":"structure",
@@ -6264,7 +6264,7 @@
           "documentation":"<p>Additional options for the rule. These are the Suricata <code>RuleOptions</code> settings.</p>"
         }
       },
-      "documentation":"<p>A single Suricata rules specification, for use in a stateful rule group. Use this option to specify a simple Suricata rule with protocol, source and destination, ports, direction, and rule options. For information about the Suricata <code>Rules</code> format, see <a href=\"https://suricata.readthedocs.io/en/suricata-7.0.3/rules/intro.html\">Rules Format</a>. </p>"
+      "documentation":"<p>A single Suricata rules specification, for use in a stateful rule group. Use this option to specify a simple Suricata rule with protocol, source and destination, ports, direction, and rule options. For information about the Suricata <code>Rules</code> format, see <a href=\"https://suricata.readthedocs.io/en/suricata-7.0.8/rules/intro.html\">Rules Format</a>. </p>"
     },
     "StatefulRuleDirection":{
       "type":"string",
@@ -6911,31 +6911,31 @@
       "members":{
         "ContainerAssociationName":{
           "shape":"ResourceName",
-          "documentation":"<p>The descriptive name of the container association. You must specify the ARN or the name, and you can specify both.</p>"
+          "documentation":"<p>The descriptive name of the container association.</p> <p>You must specify the ARN or the name, and you can specify both. </p>"
         },
         "ContainerAssociationArn":{
           "shape":"ResourceArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the container association. You must specify the ARN or the name, and you can specify both.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the container association.</p> <p>You must specify the ARN or the name, and you can specify both. </p>"
         },
         "Description":{
           "shape":"Description",
-          "documentation":"<p>A description of the container association.</p>"
+          "documentation":"<p>A description of the container association. When omitted, the existing description remains unchanged. To clear the description, pass an empty string.</p>"
         },
         "Type":{
           "shape":"ContainerMonitoringType",
-          "documentation":"<p>The type of container orchestration platform. This must match the type specified when the container association was created.</p>"
+          "documentation":"<p>The container type. This value must match the existing type and can't be changed. Valid values:</p> <ul> <li> <p> <code>ECS</code> - Amazon Elastic Container Service</p> </li> <li> <p> <code>EKS</code> - Amazon Elastic Kubernetes Service</p> </li> </ul>"
         },
         "ContainerMonitoringConfigurations":{
           "shape":"ContainerMonitoringConfigurations",
-          "documentation":"<p>The updated list of container monitoring configurations that define which clusters and container attributes to monitor.</p>"
+          "documentation":"<p>The updated monitoring configurations for the container association. Each configuration specifies an Amazon ECS or Amazon EKS cluster to monitor and optional attribute filters.</p>"
         },
         "Tags":{
           "shape":"TagList",
-          "documentation":"<p>The key:value pairs associated with the resource.</p>"
+          "documentation":"<p>The key:value pairs to associate with the resource.</p>"
         },
         "UpdateToken":{
           "shape":"UpdateToken",
-          "documentation":"<p>A token used for optimistic locking. Network Firewall returns a token to your requests that access the container association. The token marks the state of the container association resource at the time of the request. To make an update to the container association, provide the token in your request. Network Firewall uses the token to ensure that the container association hasn't changed since you last retrieved it. If it has changed, the operation fails with an <code>InvalidTokenException</code>. If this happens, retrieve the container association again to get a current copy of it with a new token. Reapply your changes as needed, then try the operation again using the new token.</p>"
+          "documentation":"<p>A token used for optimistic locking. Network Firewall returns a token to your requests that access the container association. The token marks the state of the container association resource at the time of the request.</p> <p>To make changes to the container association, you provide the token in your request. Network Firewall uses the token to ensure that the container association hasn't changed since you last retrieved it. If it has changed, the operation fails with an <code>InvalidTokenException</code>. If this happens, retrieve the container association again to get a current copy of it with a current token. Reapply your changes as needed, then try the operation again using the new token.</p>"
         }
       }
     },
@@ -6956,11 +6956,11 @@
         },
         "Type":{
           "shape":"ContainerMonitoringType",
-          "documentation":"<p>The type of container orchestration platform. Either <code>ECS</code> or <code>EKS</code>.</p>"
+          "documentation":"<p>The container type. Valid values:</p> <ul> <li> <p> <code>ECS</code> - Amazon Elastic Container Service</p> </li> <li> <p> <code>EKS</code> - Amazon Elastic Kubernetes Service</p> </li> </ul>"
         },
         "ContainerMonitoringConfigurations":{
           "shape":"ContainerMonitoringConfigurations",
-          "documentation":"<p>The container monitoring configurations for this container association.</p>"
+          "documentation":"<p>The monitoring configurations for the container association.</p>"
         },
         "Status":{
           "shape":"ContainerAssociationStatus",
@@ -6968,11 +6968,11 @@
         },
         "Tags":{
           "shape":"TagList",
-          "documentation":"<p>The key:value pairs associated with the resource.</p>"
+          "documentation":"<p>The key:value pairs to associate with the resource.</p>"
         },
         "UpdateToken":{
           "shape":"UpdateToken",
-          "documentation":"<p>A token used for optimistic locking. Network Firewall returns a token to your requests that access the container association. The token marks the state of the container association resource at the time of the request.</p>"
+          "documentation":"<p>A token used for optimistic locking. Network Firewall returns a token to your requests that access the container association. The token marks the state of the container association resource at the time of the request.</p> <p>To make changes to the container association, you provide the token in your request. Network Firewall uses the token to ensure that the container association hasn't changed since you last retrieved it. If it has changed, the operation fails with an <code>InvalidTokenException</code>. If this happens, retrieve the container association again to get a current copy of it with a current token. Reapply your changes as needed, then try the operation again using the new token.</p>"
         }
       }
     },
@@ -7779,5 +7779,5 @@
       "member":{"shape":"VpcId"}
     }
   },
-  "documentation":"<p>This is the API Reference for Network Firewall. This guide is for developers who need detailed information about the Network Firewall API actions, data types, and errors. </p> <p>The REST API requires you to handle connection details, such as calculating signatures, handling request retries, and error handling. For general information about using the Amazon Web Services REST APIs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-apis.html\">Amazon Web Services APIs</a>. </p> <p>To view the complete list of Amazon Web Services Regions where Network Firewall is available, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/network-firewall.html\">Service endpoints and quotas</a> in the <i>Amazon Web Services General Reference</i>. </p> <p>To access Network Firewall using the IPv4 REST API endpoint: <code>https://network-firewall.&lt;region&gt;.amazonaws.com </code> </p> <p>To access Network Firewall using the Dualstack (IPv4 and IPv6) REST API endpoint: <code>https://network-firewall.&lt;region&gt;.aws.api </code> </p> <p>Alternatively, you can use one of the Amazon Web Services SDKs to access an API that's tailored to the programming language or platform that you're using. For more information, see <a href=\"http://aws.amazon.com/tools/#SDKs\">Amazon Web Services SDKs</a>.</p> <p>For descriptions of Network Firewall features, including and step-by-step instructions on how to use them through the Network Firewall console, see the <a href=\"https://docs.aws.amazon.com/network-firewall/latest/developerguide/\">Network Firewall Developer Guide</a>.</p> <p>Network Firewall is a stateful, managed, network firewall and intrusion detection and prevention service for Amazon Virtual Private Cloud (Amazon VPC). With Network Firewall, you can filter traffic at the perimeter of your VPC. This includes filtering traffic going to and coming from an internet gateway, NAT gateway, or over VPN or Direct Connect. Network Firewall uses rules that are compatible with Suricata, a free, open source network analysis and threat detection engine. Network Firewall supports Suricata version 7.0.3. For information about Suricata, see the <a href=\"https://suricata.io/\">Suricata website</a> and the <a href=\"https://suricata.readthedocs.io/en/suricata-7.0.3/\">Suricata User Guide</a>. </p> <p>You can use Network Firewall to monitor and protect your VPC traffic in a number of ways. The following are just a few examples: </p> <ul> <li> <p>Allow domains or IP addresses for known Amazon Web Services service endpoints, such as Amazon S3, and block all other forms of traffic.</p> </li> <li> <p>Use custom lists of known bad domains to limit the types of domain names that your applications can access.</p> </li> <li> <p>Perform deep packet inspection on traffic entering or leaving your VPC.</p> </li> <li> <p>Use stateful protocol detection to filter protocols like HTTPS, regardless of the port used.</p> </li> </ul> <p>To enable Network Firewall for your VPCs, you perform steps in both Amazon VPC and in Network Firewall. For information about using Amazon VPC, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/\">Amazon VPC User Guide</a>.</p> <p>To start using Network Firewall, do the following: </p> <ol> <li> <p>(Optional) If you don't already have a VPC that you want to protect, create it in Amazon VPC. </p> </li> <li> <p>In Amazon VPC, in each Availability Zone where you want to have a firewall endpoint, create a subnet for the sole use of Network Firewall. </p> </li> <li> <p>In Network Firewall, define the firewall behavior as follows: </p> <ol> <li> <p>Create stateless and stateful rule groups, to define the components of the network traffic filtering behavior that you want your firewall to have. </p> </li> <li> <p>Create a firewall policy that uses your rule groups and specifies additional default traffic filtering behavior. </p> </li> </ol> </li> <li> <p>In Network Firewall, create a firewall and specify your new firewall policy and VPC subnets. Network Firewall creates a firewall endpoint in each subnet that you specify, with the behavior that's defined in the firewall policy.</p> </li> <li> <p>In Amazon VPC, use ingress routing enhancements to route traffic through the new firewall endpoints.</p> </li> </ol> <p>After your firewall is established, you can add firewall endpoints for new Availability Zones by following the prior steps for the Amazon VPC setup and firewall subnet definitions. You can also add endpoints to Availability Zones that you're using in the firewall, either for the same VPC or for another VPC, by following the prior steps for the Amazon VPC setup, and defining the new VPC subnets as VPC endpoint associations. </p>"
+  "documentation":"<p>This is the API Reference for Network Firewall. This guide is for developers who need detailed information about the Network Firewall API actions, data types, and errors. </p> <p>The REST API requires you to handle connection details, such as calculating signatures, handling request retries, and error handling. For general information about using the Amazon Web Services REST APIs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-apis.html\">Amazon Web Services APIs</a>. </p> <p>To view the complete list of Amazon Web Services Regions where Network Firewall is available, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/network-firewall.html\">Service endpoints and quotas</a> in the <i>Amazon Web Services General Reference</i>. </p> <p>To access Network Firewall using the IPv4 REST API endpoint: <code>https://network-firewall.&lt;region&gt;.amazonaws.com </code> </p> <p>To access Network Firewall using the Dualstack (IPv4 and IPv6) REST API endpoint: <code>https://network-firewall.&lt;region&gt;.aws.api </code> </p> <p>Alternatively, you can use one of the Amazon Web Services SDKs to access an API that's tailored to the programming language or platform that you're using. For more information, see <a href=\"http://aws.amazon.com/tools/#SDKs\">Amazon Web Services SDKs</a>.</p> <p>For descriptions of Network Firewall features, including and step-by-step instructions on how to use them through the Network Firewall console, see the <a href=\"https://docs.aws.amazon.com/network-firewall/latest/developerguide/\">Network Firewall Developer Guide</a>.</p> <p>Network Firewall is a stateful, managed, network firewall and intrusion detection and prevention service for Amazon Virtual Private Cloud (Amazon VPC). With Network Firewall, you can filter traffic at the perimeter of your VPC. This includes filtering traffic going to and coming from an internet gateway, NAT gateway, or over VPN or Direct Connect. Network Firewall uses rules that are compatible with Suricata, a free, open source network analysis and threat detection engine. Network Firewall supports Suricata version 7.0.8. For information about Suricata, see the <a href=\"https://suricata.io/\">Suricata website</a> and the <a href=\"https://suricata.readthedocs.io/en/suricata-7.0.8/\">Suricata User Guide</a>. </p> <p>You can use Network Firewall to monitor and protect your VPC traffic in a number of ways. The following are just a few examples: </p> <ul> <li> <p>Allow domains or IP addresses for known Amazon Web Services service endpoints, such as Amazon S3, and block all other forms of traffic.</p> </li> <li> <p>Use custom lists of known bad domains to limit the types of domain names that your applications can access.</p> </li> <li> <p>Perform deep packet inspection on traffic entering or leaving your VPC.</p> </li> <li> <p>Use stateful protocol detection to filter protocols like HTTPS, regardless of the port used.</p> </li> </ul> <p>To enable Network Firewall for your VPCs, you perform steps in both Amazon VPC and in Network Firewall. For information about using Amazon VPC, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/\">Amazon VPC User Guide</a>.</p> <p>To start using Network Firewall, do the following: </p> <ol> <li> <p>(Optional) If you don't already have a VPC that you want to protect, create it in Amazon VPC. </p> </li> <li> <p>In Amazon VPC, in each Availability Zone where you want to have a firewall endpoint, create a subnet for the sole use of Network Firewall. </p> </li> <li> <p>In Network Firewall, define the firewall behavior as follows: </p> <ol> <li> <p>Create stateless and stateful rule groups, to define the components of the network traffic filtering behavior that you want your firewall to have. </p> </li> <li> <p>Create a firewall policy that uses your rule groups and specifies additional default traffic filtering behavior. </p> </li> </ol> </li> <li> <p>In Network Firewall, create a firewall and specify your new firewall policy and VPC subnets. Network Firewall creates a firewall endpoint in each subnet that you specify, with the behavior that's defined in the firewall policy.</p> </li> <li> <p>In Amazon VPC, use ingress routing enhancements to route traffic through the new firewall endpoints.</p> </li> </ol> <p>After your firewall is established, you can add firewall endpoints for new Availability Zones by following the prior steps for the Amazon VPC setup and firewall subnet definitions. You can also add endpoints to Availability Zones that you're using in the firewall, either for the same VPC or for another VPC, by following the prior steps for the Amazon VPC setup, and defining the new VPC subnets as VPC endpoint associations. </p>"
 }

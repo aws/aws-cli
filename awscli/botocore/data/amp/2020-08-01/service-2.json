@@ -1479,6 +1479,10 @@
         "tags":{
           "shape":"TagMap",
           "documentation":"<p>(Optional) The list of tag keys and values to associate with the scraper.</p>"
+        },
+        "exporters":{
+          "shape":"ExporterList",
+          "documentation":"<p>The exporter configurations for the scraper. You can configure at most one Amazon OpenSearch Service domain. If you don't specify a value, the scraper is created without an exporter configuration.</p>"
         }
       },
       "documentation":"<p>Represents the input of a <code>CreateScraper</code> operation.</p>"
@@ -2101,6 +2105,24 @@
       },
       "documentation":"<p>The <code>EksConfiguration</code> structure describes the connection to the Amazon EKS cluster from which a scraper collects metrics.</p>"
     },
+    "ExporterConfiguration":{
+      "type":"structure",
+      "members":{
+        "openSearchConfiguration":{
+          "shape":"OpenSearchExporterConfiguration",
+          "documentation":"<p>The configuration that the scraper uses to export metrics to an Amazon OpenSearch Service domain.</p>"
+        }
+      },
+      "documentation":"<p>Contains the configuration for an exporter managed by the scraper.</p>",
+      "union":true
+    },
+    "ExporterList":{
+      "type":"list",
+      "member":{"shape":"ExporterConfiguration"},
+      "documentation":"<p>A list of exporter configurations for a scraper. You can configure at most one Amazon OpenSearch Service domain.</p>",
+      "max":1,
+      "min":0
+    },
     "FilterKey":{
       "type":"string",
       "documentation":"<p>The name of the key by which to filter.</p>",
@@ -2572,6 +2594,22 @@
       "type":"long",
       "box":true,
       "min":0
+    },
+    "OpenSearchDomainArn":{
+      "type":"string",
+      "documentation":"<p>An Amazon Resource Name (ARN) that identifies an Amazon OpenSearch Service domain.</p>",
+      "pattern":"arn:aws[-a-z]*:es:[-a-z0-9]+:[0-9]{12}:domain\\/.+"
+    },
+    "OpenSearchExporterConfiguration":{
+      "type":"structure",
+      "required":["domainArn"],
+      "members":{
+        "domainArn":{
+          "shape":"OpenSearchDomainArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon OpenSearch Service domain.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for exporting metrics to an Amazon OpenSearch Service domain.</p>"
     },
     "PaginationToken":{
       "type":"string",
@@ -3190,6 +3228,10 @@
         "roleConfiguration":{
           "shape":"RoleConfiguration",
           "documentation":"<p>This structure displays information about the IAM roles used for cross-account scraping configuration.</p>"
+        },
+        "exporters":{
+          "shape":"ExporterList",
+          "documentation":"<p>The exporter configurations for the scraper, if configured. The list contains at most one configuration for an Amazon OpenSearch Service domain.</p>"
         }
       },
       "documentation":"<p>The <code>ScraperDescription</code> structure contains the full details about one scraper in your account.</p>"
@@ -3336,6 +3378,10 @@
         "roleConfiguration":{
           "shape":"RoleConfiguration",
           "documentation":"<p>This structure displays information about the IAM roles used for cross-account scraping configuration.</p>"
+        },
+        "exporters":{
+          "shape":"ExporterList",
+          "documentation":"<p>The exporter configurations for the scraper, if configured. The list contains at most one configuration for an Amazon OpenSearch Service domain.</p>"
         }
       },
       "documentation":"<p>The <code>ScraperSummary</code> structure contains a summary of the details about one scraper in your account.</p>"
@@ -3681,6 +3727,10 @@
           "shape":"IdempotencyToken",
           "documentation":"<p>A unique identifier that you can provide to ensure the idempotency of the request. Case-sensitive.</p>",
           "idempotencyToken":true
+        },
+        "exporters":{
+          "shape":"ExporterList",
+          "documentation":"<p>The exporter configurations for the scraper. You can configure at most one Amazon OpenSearch Service domain. If you don't specify a value, the existing exporter configuration remains unchanged.</p>"
         }
       }
     },

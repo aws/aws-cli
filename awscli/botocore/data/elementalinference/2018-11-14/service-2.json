@@ -513,6 +513,10 @@
           "shape":"ResourceName",
           "documentation":"<p>A user-friendly name for this feed.</p>"
         },
+        "accessRoleArn":{
+          "shape":"IamRoleArn",
+          "documentation":"<p>The ARN of an IAM role that Elemental Inference assumes to access resources in your account on your behalf. For example, the smart crop feature uses this role to read graphics-compositing templates from your Amazon S3 bucket. You specify one access role for each feed. </p>"
+        },
         "outputs":{
           "shape":"CreateOutputList",
           "documentation":"<p>An array of outputs for this feed. Each output represents a specific Elemental Inference feature. For example, there is one output type for the smart crop feature. You must specify at least one output, but you can later add outputs using AssociateFeed, or add, modify, and delete outputs using UpdateFeed. </p>"
@@ -601,7 +605,12 @@
     },
     "CroppingConfig":{
       "type":"structure",
-      "members":{},
+      "members":{
+        "templateGroups":{
+          "shape":"TemplateGroupList",
+          "documentation":"<p>An array of template groups for the crop output. Each template group provides the graphics-compositing templates that Elemental Inference applies to the cropped video. You can specify from 1 to 4 template groups. </p>"
+        }
+      },
       "documentation":"<p>A type of OutputConfig, used when the output in a feed is for the crop feature.</p>"
     },
     "DeleteDictionaryRequest":{
@@ -1016,6 +1025,12 @@
       "type":"list",
       "member":{"shape":"GetOutput"}
     },
+    "IamRoleArn":{
+      "type":"string",
+      "max":255,
+      "min":32,
+      "pattern":"arn:aws[a-z\\-]*:iam::[0-9]{12}:role/.+"
+    },
     "Integer":{
       "type":"integer",
       "box":true
@@ -1188,6 +1203,12 @@
       },
       "exception":true
     },
+    "S3Uri":{
+      "type":"string",
+      "max":255,
+      "min":10,
+      "pattern":"s3://[a-z0-9][a-z0-9.-]{1,61}[a-z0-9]/.+"
+    },
     "ServiceQuotaExceededException":{
       "type":"structure",
       "required":["message"],
@@ -1266,6 +1287,36 @@
       "type":"string",
       "max":256,
       "min":0
+    },
+    "TemplateGroup":{
+      "type":"structure",
+      "required":[
+        "name",
+        "templateUris"
+      ],
+      "members":{
+        "name":{
+          "shape":"ResourceName",
+          "documentation":"<p>A name for the template group.</p>"
+        },
+        "templateUris":{
+          "shape":"TemplateUriList",
+          "documentation":"<p>An array of Amazon S3 URIs that point to the graphics-compositing templates for this group. You can specify 1 or 2 URIs. Each URI must be in the form <code>s3://bucket-name/key</code>. Elemental Inference reads these templates using the IAM role that you specify in accessRoleArn. </p>"
+        }
+      },
+      "documentation":"<p>A named set of graphics-compositing templates used by the crop feature, specified in the templateGroups array of a CroppingConfig. </p>"
+    },
+    "TemplateGroupList":{
+      "type":"list",
+      "member":{"shape":"TemplateGroup"},
+      "max":4,
+      "min":1
+    },
+    "TemplateUriList":{
+      "type":"list",
+      "member":{"shape":"S3Uri"},
+      "max":2,
+      "min":1
     },
     "TooManyRequestException":{
       "type":"structure",
@@ -1391,6 +1442,10 @@
         "name":{
           "shape":"ResourceName",
           "documentation":"<p>Required. You can specify the existing name (to leave it unchanged) or a new name. </p>"
+        },
+        "accessRoleArn":{
+          "shape":"IamRoleArn",
+          "documentation":"<p>The ARN of an IAM role that Elemental Inference assumes to access resources in your account on your behalf. You can specify the existing role (to leave it unchanged) or a new role. You specify one access role for each feed. </p>"
         },
         "id":{
           "shape":"FeedId",

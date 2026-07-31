@@ -677,6 +677,26 @@
       ],
       "documentation":"<p>Creates a topic refresh schedule.</p>"
     },
+    "CreateTopicV2":{
+      "name":"CreateTopicV2",
+      "http":{
+        "method":"POST",
+        "requestUri":"/accounts/{AwsAccountId}/topicsV2"
+      },
+      "input":{"shape":"CreateTopicV2Request"},
+      "output":{"shape":"CreateTopicV2Response"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ResourceExistsException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalFailureException"}
+      ],
+      "documentation":"<p>Creates a new Q topic.</p>"
+    },
     "CreateVPCConnection":{
       "name":"CreateVPCConnection",
       "http":{
@@ -1335,6 +1355,24 @@
         {"shape":"InternalFailureException"}
       ],
       "documentation":"<p>Deletes a topic refresh schedule.</p>"
+    },
+    "DeleteTopicV2":{
+      "name":"DeleteTopicV2",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/accounts/{AwsAccountId}/topicsV2/{TopicId}"
+      },
+      "input":{"shape":"DeleteTopicV2Request"},
+      "output":{"shape":"DeleteTopicV2Response"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalFailureException"}
+      ],
+      "documentation":"<p>Deletes a Q topic.</p>"
     },
     "DeleteUser":{
       "name":"DeleteUser",
@@ -2513,6 +2551,23 @@
       ],
       "documentation":"<p>Describes the permissions of a topic.</p>"
     },
+    "DescribeTopicPermissionsV2":{
+      "name":"DescribeTopicPermissionsV2",
+      "http":{
+        "method":"GET",
+        "requestUri":"/accounts/{AwsAccountId}/topicsV2/{TopicId}/permissions"
+      },
+      "input":{"shape":"DescribeTopicPermissionsV2Request"},
+      "output":{"shape":"DescribeTopicPermissionsV2Response"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalFailureException"}
+      ],
+      "documentation":"<p>Describes the permissions of a topic.</p>"
+    },
     "DescribeTopicRefresh":{
       "name":"DescribeTopicRefresh",
       "http":{
@@ -2549,6 +2604,24 @@
         {"shape":"InternalFailureException"}
       ],
       "documentation":"<p>Deletes a topic refresh schedule.</p>"
+    },
+    "DescribeTopicV2":{
+      "name":"DescribeTopicV2",
+      "http":{
+        "method":"GET",
+        "requestUri":"/accounts/{AwsAccountId}/topicsV2/{TopicId}"
+      },
+      "input":{"shape":"DescribeTopicV2Request"},
+      "output":{"shape":"DescribeTopicV2Response"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalFailureException"}
+      ],
+      "documentation":"<p>Describes a Q topic.</p>",
+      "readonly":true
     },
     "DescribeUser":{
       "name":"DescribeUser",
@@ -3469,6 +3542,23 @@
       ],
       "documentation":"<p>Lists all of the topics within an account.</p>"
     },
+    "ListTopicsV2":{
+      "name":"ListTopicsV2",
+      "http":{
+        "method":"GET",
+        "requestUri":"/accounts/{AwsAccountId}/topicsV2"
+      },
+      "input":{"shape":"ListTopicsV2Request"},
+      "output":{"shape":"ListTopicsV2Response"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidNextTokenException"},
+        {"shape":"InternalFailureException"}
+      ],
+      "documentation":"<p>Lists all of the Q topics in the specified Amazon Web Services account in an Amazon Web Services Region.</p>"
+    },
     "ListUserGroups":{
       "name":"ListUserGroups",
       "http":{
@@ -3844,9 +3934,28 @@
         {"shape":"InvalidParameterValueException"},
         {"shape":"UnsupportedUserEditionException"},
         {"shape":"InvalidNextTokenException"},
+        {"shape":"AccessDeniedException"},
         {"shape":"InternalFailureException"}
       ],
       "documentation":"<p>Searches for any Q topic that exists in an Quick account.</p>"
+    },
+    "SearchTopicsV2":{
+      "name":"SearchTopicsV2",
+      "http":{
+        "method":"POST",
+        "requestUri":"/accounts/{AwsAccountId}/search/topicsV2"
+      },
+      "input":{"shape":"SearchTopicsV2Request"},
+      "output":{"shape":"SearchTopicsV2Response"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidNextTokenException"},
+        {"shape":"InternalFailureException"}
+      ],
+      "documentation":"<p>Searches for any Q topic that exists in an Amazon Web Services account.</p>"
     },
     "StartAssetBundleExportJob":{
       "name":"StartAssetBundleExportJob",
@@ -5044,6 +5153,26 @@
       ],
       "documentation":"<p>Updates the permissions of a topic.</p>"
     },
+    "UpdateTopicPermissionsV2":{
+      "name":"UpdateTopicPermissionsV2",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/accounts/{AwsAccountId}/topicsV2/{TopicId}/permissions"
+      },
+      "input":{"shape":"UpdateTopicPermissionsV2Request"},
+      "output":{"shape":"UpdateTopicPermissionsV2Response"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"UnsupportedUserEditionException"},
+        {"shape":"ConflictException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"InternalFailureException"}
+      ],
+      "documentation":"<p>Updates the permissions of a topic.</p>"
+    },
     "UpdateTopicRefreshSchedule":{
       "name":"UpdateTopicRefreshSchedule",
       "http":{
@@ -5063,6 +5192,27 @@
         {"shape":"InternalFailureException"}
       ],
       "documentation":"<p>Updates a topic refresh schedule.</p>"
+    },
+    "UpdateTopicV2":{
+      "name":"UpdateTopicV2",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/accounts/{AwsAccountId}/topicsV2/{TopicId}"
+      },
+      "input":{"shape":"UpdateTopicV2Request"},
+      "output":{"shape":"UpdateTopicV2Response"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ResourceExistsException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalFailureException"}
+      ],
+      "documentation":"<p>Updates the definition of a Q topic.</p>",
+      "idempotent":true
     },
     "UpdateUser":{
       "name":"UpdateUser",
@@ -6068,6 +6218,10 @@
           "shape":"DataSetArnsList",
           "documentation":"<p>The ARNs of the datasets of the analysis.</p>"
         },
+        "TopicArns":{
+          "shape":"TopicArnsList",
+          "documentation":"<p>The ARNs of the topics associated with the analysis.</p>"
+        },
         "ThemeArn":{
           "shape":"Arn",
           "documentation":"<p>The ARN of the theme of the analysis.</p>"
@@ -6105,6 +6259,10 @@
         "DataSetIdentifierDeclarations":{
           "shape":"DataSetIdentifierDeclarationList",
           "documentation":"<p>An array of dataset identifier declarations. This mapping allows the usage of dataset identifiers instead of dataset ARNs throughout analysis sub-structures.</p>"
+        },
+        "TopicIdentifierDeclarations":{
+          "shape":"TopicIdentifierDeclarationList",
+          "documentation":"<p>An array of topic identifier declarations. This mapping allows the usage of topic identifiers instead of topic ARNs throughout analysis sub-structures.</p>"
         },
         "Sheets":{
           "shape":"SheetDefinitionList",
@@ -6242,6 +6400,10 @@
         "DataSetReferences":{
           "shape":"DataSetReferenceList",
           "documentation":"<p>The dataset references of the source template of an analysis.</p>"
+        },
+        "TopicReferences":{
+          "shape":"TopicReferenceList",
+          "documentation":"<p>The topic references of the source template of an analysis.</p>"
         },
         "Arn":{
           "shape":"Arn",
@@ -7928,6 +8090,10 @@
         "CustomActionDefaults":{
           "shape":"VisualCustomActionDefaults",
           "documentation":"<p>A list of visual custom actions for the analysis.</p>"
+        },
+        "VisualMessages":{
+          "shape":"VisualMessages",
+          "documentation":"<p>The configuration options for the messages that are displayed on visuals in the analysis.</p>"
         }
       },
       "documentation":"<p>An array of analysis level configurations.</p>"
@@ -9554,7 +9720,6 @@
     "CalculatedField":{
       "type":"structure",
       "required":[
-        "DataSetIdentifier",
         "Name",
         "Expression"
       ],
@@ -9562,6 +9727,10 @@
         "DataSetIdentifier":{
           "shape":"DataSetIdentifier",
           "documentation":"<p>The data set that is used in this calculated field.</p>"
+        },
+        "TopicIdentifier":{
+          "shape":"TopicIdentifier",
+          "documentation":"<p>The topic that is used in this calculated field.</p>"
         },
         "Name":{
           "shape":"ColumnName",
@@ -9813,6 +9982,48 @@
           "shape":"CapabilityState",
           "documentation":"<p>The ability to use knowledge bases to specify content from external applications.</p>"
         },
+        "CreateAndUpdateKnowledgeBases":{"shape":"CapabilityState"},
+        "ShareKnowledgeBases":{"shape":"CapabilityState"},
+        "SharePointKnowledgeBase":{"shape":"CapabilityState"},
+        "CreateAndUpdateSharePointKnowledgeBase":{"shape":"CapabilityState"},
+        "ShareSharePointKnowledgeBase":{"shape":"CapabilityState"},
+        "UseSharePointKnowledgeBase":{"shape":"CapabilityState"},
+        "GoogleDriveKnowledgeBase":{"shape":"CapabilityState"},
+        "CreateAndUpdateGoogleDriveKnowledgeBase":{"shape":"CapabilityState"},
+        "ShareGoogleDriveKnowledgeBase":{"shape":"CapabilityState"},
+        "UseGoogleDriveKnowledgeBase":{"shape":"CapabilityState"},
+        "WebCrawlerKnowledgeBase":{"shape":"CapabilityState"},
+        "CreateAndUpdateWebCrawlerKnowledgeBase":{"shape":"CapabilityState"},
+        "ShareWebCrawlerKnowledgeBase":{"shape":"CapabilityState"},
+        "UseWebCrawlerKnowledgeBase":{"shape":"CapabilityState"},
+        "S3KnowledgeBase":{"shape":"CapabilityState"},
+        "CreateAndUpdateS3KnowledgeBase":{"shape":"CapabilityState"},
+        "ShareS3KnowledgeBase":{"shape":"CapabilityState"},
+        "UseS3KnowledgeBase":{"shape":"CapabilityState"},
+        "ConfluenceKnowledgeBase":{"shape":"CapabilityState"},
+        "CreateAndUpdateConfluenceKnowledgeBase":{"shape":"CapabilityState"},
+        "ShareConfluenceKnowledgeBase":{"shape":"CapabilityState"},
+        "UseConfluenceKnowledgeBase":{"shape":"CapabilityState"},
+        "OneDriveKnowledgeBase":{"shape":"CapabilityState"},
+        "CreateAndUpdateOneDriveKnowledgeBase":{"shape":"CapabilityState"},
+        "ShareOneDriveKnowledgeBase":{"shape":"CapabilityState"},
+        "UseOneDriveKnowledgeBase":{"shape":"CapabilityState"},
+        "QBusinessKnowledgeBase":{"shape":"CapabilityState"},
+        "CreateAndUpdateQBusinessKnowledgeBase":{"shape":"CapabilityState"},
+        "ShareQBusinessKnowledgeBase":{"shape":"CapabilityState"},
+        "UseQBusinessKnowledgeBase":{"shape":"CapabilityState"},
+        "BedrockManagedKnowledgeBase":{"shape":"CapabilityState"},
+        "CreateAndUpdateBedrockManagedKnowledgeBase":{"shape":"CapabilityState"},
+        "ShareBedrockManagedKnowledgeBase":{"shape":"CapabilityState"},
+        "UseBedrockManagedKnowledgeBase":{"shape":"CapabilityState"},
+        "BoxKnowledgeBase":{"shape":"CapabilityState"},
+        "CreateAndUpdateBoxKnowledgeBase":{"shape":"CapabilityState"},
+        "ShareBoxKnowledgeBase":{"shape":"CapabilityState"},
+        "UseBoxKnowledgeBase":{"shape":"CapabilityState"},
+        "IDCKnowledgeBase":{"shape":"CapabilityState"},
+        "CreateAndUpdateIDCKnowledgeBase":{"shape":"CapabilityState"},
+        "ShareIDCKnowledgeBase":{"shape":"CapabilityState"},
+        "UseIDCKnowledgeBase":{"shape":"CapabilityState"},
         "Action":{
           "shape":"CapabilityState",
           "documentation":"<p>The ability to perform actions in external services through Action connectors. Actions allow users to interact with third-party systems.</p>"
@@ -10915,11 +11126,11 @@
       "type":"structure",
       "members":{
         "CellValue":{
-          "shape":"LimitedString",
+          "shape":"SynonymString",
           "documentation":"<p>The cell value.</p>"
         },
         "Synonyms":{
-          "shape":"StringList",
+          "shape":"SensitiveStringList",
           "documentation":"<p>Other names or aliases for the cell value.</p>"
         }
       },
@@ -11279,14 +11490,15 @@
     },
     "ColumnIdentifier":{
       "type":"structure",
-      "required":[
-        "DataSetIdentifier",
-        "ColumnName"
-      ],
+      "required":["ColumnName"],
       "members":{
         "DataSetIdentifier":{
           "shape":"DataSetIdentifier",
           "documentation":"<p>The data set that the column belongs to.</p>"
+        },
+        "TopicIdentifier":{
+          "shape":"TopicIdentifier",
+          "documentation":"<p>The topic that the column belongs to.</p>"
         },
         "ColumnName":{
           "shape":"ColumnName",
@@ -12649,7 +12861,7 @@
         },
         "SourceEntity":{
           "shape":"AnalysisSourceEntity",
-          "documentation":"<p>A source entity to use for the analysis that you're creating. This metadata structure contains details that describe a source template and one or more datasets.</p> <p>Either a <code>SourceEntity</code> or a <code>Definition</code> must be provided in order for the request to be valid.</p>"
+          "documentation":"<p>A source entity to use for the analysis that you're creating. This metadata structure contains details that describe a source template and one or more datasets or topics.</p> <p>Either a <code>SourceEntity</code> or a <code>Definition</code> must be provided in order for the request to be valid.</p>"
         },
         "ThemeArn":{
           "shape":"Arn",
@@ -12846,7 +13058,7 @@
         },
         "SourceEntity":{
           "shape":"DashboardSourceEntity",
-          "documentation":"<p>The entity that you are using as a source when you create the dashboard. In <code>SourceEntity</code>, you specify the type of object you're using as source. You can only create a dashboard from a template, so you use a <code>SourceTemplate</code> entity. If you need to create a dashboard from an analysis, first convert the analysis to a template by using the <code> <a href=\"https://docs.aws.amazon.com/quicksight/latest/APIReference/API_CreateTemplate.html\">CreateTemplate</a> </code> API operation. For <code>SourceTemplate</code>, specify the Amazon Resource Name (ARN) of the source template. The <code>SourceTemplate</code>ARN can contain any Amazon Web Services account and any Amazon Quick Sight-supported Amazon Web Services Region. </p> <p>Use the <code>DataSetReferences</code> entity within <code>SourceTemplate</code> to list the replacement datasets for the placeholders listed in the original. The schema in each dataset must match its placeholder. </p> <p>Either a <code>SourceEntity</code> or a <code>Definition</code> must be provided in order for the request to be valid.</p>"
+          "documentation":"<p>The entity that you are using as a source when you create the dashboard. In <code>SourceEntity</code>, you specify the type of object you're using as source. You can only create a dashboard from a template, so you use a <code>SourceTemplate</code> entity. If you need to create a dashboard from an analysis, first convert the analysis to a template by using the <code> <a href=\"https://docs.aws.amazon.com/quicksight/latest/APIReference/API_CreateTemplate.html\">CreateTemplate</a> </code> API operation. For <code>SourceTemplate</code>, specify the Amazon Resource Name (ARN) of the source template. The <code>SourceTemplate</code>ARN can contain any Amazon Web Services account and any Amazon Quick Sight-supported Amazon Web Services Region. </p> <p>Use the <code>DataSetReferences</code> entity within <code>SourceTemplate</code> to list the replacement datasets for the placeholders listed in the original. The schema in each dataset must match its placeholder. Use the <code>TopicReferences</code> entity to list the replacement topics for the topic placeholders listed in the original. The schema in each topic must match its placeholder.</p> <p>Either a <code>SourceEntity</code> or a <code>Definition</code> must be provided in order for the request to be valid.</p>"
         },
         "Tags":{
           "shape":"TagList",
@@ -14006,7 +14218,7 @@
         },
         "SourceEntity":{
           "shape":"TemplateSourceEntity",
-          "documentation":"<p>The entity that you are using as a source when you create the template. In <code>SourceEntity</code>, you specify the type of object you're using as source: <code>SourceTemplate</code> for a template or <code>SourceAnalysis</code> for an analysis. Both of these require an Amazon Resource Name (ARN). For <code>SourceTemplate</code>, specify the ARN of the source template. For <code>SourceAnalysis</code>, specify the ARN of the source analysis. The <code>SourceTemplate</code> ARN can contain any Amazon Web Services account and any Quick Sight-supported Amazon Web Services Region. </p> <p>Use the <code>DataSetReferences</code> entity within <code>SourceTemplate</code> or <code>SourceAnalysis</code> to list the replacement datasets for the placeholders listed in the original. The schema in each dataset must match its placeholder. </p> <p>Either a <code>SourceEntity</code> or a <code>Definition</code> must be provided in order for the request to be valid.</p>"
+          "documentation":"<p>The entity that you are using as a source when you create the template. In <code>SourceEntity</code>, you specify the type of object you're using as source: <code>SourceTemplate</code> for a template or <code>SourceAnalysis</code> for an analysis. Both of these require an Amazon Resource Name (ARN). For <code>SourceTemplate</code>, specify the ARN of the source template. For <code>SourceAnalysis</code>, specify the ARN of the source analysis. The <code>SourceTemplate</code> ARN can contain any Amazon Web Services account and any Quick Sight-supported Amazon Web Services Region. </p> <p>Use the <code>DataSetReferences</code> entity within <code>SourceTemplate</code> or <code>SourceAnalysis</code> to list the replacement datasets for the placeholders listed in the original. The schema in each dataset must match its placeholder. Use the <code>TopicReferences</code> entity to list the replacement topics for the topic placeholders listed in the original. The schema in each topic must match its placeholder.</p> <p>Either a <code>SourceEntity</code> or a <code>Definition</code> must be provided in order for the request to be valid.</p>"
         },
         "Tags":{
           "shape":"TagList",
@@ -14325,7 +14537,7 @@
           "documentation":"<p>The Dataset arn for the <code>CreateTopicReviewedAnswer</code>.</p>"
         },
         "Question":{
-          "shape":"LimitedString",
+          "shape":"LimitedSensitiveString",
           "documentation":"<p>The Question to be created.</p>"
         },
         "Mir":{
@@ -14348,6 +14560,61 @@
       "member":{"shape":"CreateTopicReviewedAnswer"},
       "max":100,
       "min":0
+    },
+    "CreateTopicV2Request":{
+      "type":"structure",
+      "required":[
+        "AwsAccountId",
+        "TopicId",
+        "Topic"
+      ],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that you want to create a topic in.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "TopicId":{
+          "shape":"TopicId",
+          "documentation":"<p>The ID for the topic that you want to create. This ID is unique per Amazon Web Services Region for each Amazon Web Services account.</p>"
+        },
+        "Topic":{
+          "shape":"TopicV2Details",
+          "documentation":"<p>The definition of a topic to create.</p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>Contains a map of the key-value pairs for the resource tag or tags that are assigned to the topic.</p>"
+        },
+        "FolderArns":{
+          "shape":"FolderArnList",
+          "documentation":"<p>The Amazon Resource Names (ARNs) of the folders that you want the topic to reside in.</p>"
+        },
+        "CustomInstructions":{"shape":"CustomInstructions"}
+      }
+    },
+    "CreateTopicV2Response":{
+      "type":"structure",
+      "members":{
+        "Arn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the topic.</p>"
+        },
+        "TopicId":{
+          "shape":"TopicId",
+          "documentation":"<p>The ID for the topic that you want to create. This ID is unique per Amazon Web Services Region for each Amazon Web Services account.</p>"
+        },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        },
+        "Status":{
+          "shape":"StatusCode",
+          "documentation":"<p>The HTTP status of the request.</p>",
+          "location":"statusCode"
+        }
+      }
     },
     "CreateVPCConnectionRequest":{
       "type":"structure",
@@ -14641,10 +14908,7 @@
     },
     "CustomContentVisual":{
       "type":"structure",
-      "required":[
-        "VisualId",
-        "DataSetIdentifier"
-      ],
+      "required":["VisualId"],
       "members":{
         "VisualId":{
           "shape":"ShortRestrictiveResourceId",
@@ -14668,7 +14932,11 @@
         },
         "DataSetIdentifier":{
           "shape":"DataSetIdentifier",
-          "documentation":"<p>The dataset that is used to create the custom content visual. You can't create a visual without a dataset.</p>"
+          "documentation":"<p>The dataset that is used to create the custom content visual. You can't create a visual without a dataset or a topic.</p>"
+        },
+        "TopicIdentifier":{
+          "shape":"TopicIdentifier",
+          "documentation":"<p>The topic that is used in the custom content visual. You can't create a visual without a dataset or a topic.</p>"
         },
         "VisualContentAltText":{
           "shape":"LongPlainText",
@@ -15246,6 +15514,10 @@
           "shape":"DataSetReferenceList",
           "documentation":"<p>Dataset references.</p>"
         },
+        "TopicReferences":{
+          "shape":"TopicReferenceList",
+          "documentation":"<p>The topic references for the source template of a dashboard.</p>"
+        },
         "Arn":{
           "shape":"Arn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the resource.</p>"
@@ -15328,7 +15600,11 @@
         },
         "DataSetArns":{
           "shape":"DataSetArnsList",
-          "documentation":"<p>The Amazon Resource Numbers (ARNs) for the datasets that are associated with this version of the dashboard.</p>"
+          "documentation":"<p>The Amazon Resource Names (ARNs) for the datasets that are associated with this version of the dashboard.</p>"
+        },
+        "TopicArns":{
+          "shape":"TopicArnsList",
+          "documentation":"<p>The Amazon Resource Names (ARNs) for the topics that are associated with this version of the dashboard.</p>"
         },
         "Description":{
           "shape":"VersionDescription",
@@ -15352,6 +15628,10 @@
         "DataSetIdentifierDeclarations":{
           "shape":"DataSetIdentifierDeclarationList",
           "documentation":"<p>An array of dataset identifier declarations. With this mapping,you can use dataset identifiers instead of dataset Amazon Resource Names (ARNs) throughout the dashboard's sub-structures.</p>"
+        },
+        "TopicIdentifierDeclarations":{
+          "shape":"TopicIdentifierDeclarationList",
+          "documentation":"<p>An array of topic identifier declarations. With this mapping, you can use topic identifiers instead of topic Amazon Resource Names (ARNs) throughout the dashboard's sub-structures.</p>"
         },
         "Sheets":{
           "shape":"SheetDefinitionList",
@@ -16217,7 +16497,7 @@
     "DataSetIdentifier":{
       "type":"string",
       "max":2048,
-      "min":1
+      "min":0
     },
     "DataSetIdentifierDeclaration":{
       "type":"structure",
@@ -16241,7 +16521,7 @@
       "type":"list",
       "member":{"shape":"DataSetIdentifierDeclaration"},
       "max":50,
-      "min":1
+      "min":0
     },
     "DataSetImportMode":{
       "type":"string",
@@ -16355,7 +16635,7 @@
     "DataSetReferenceList":{
       "type":"list",
       "member":{"shape":"DataSetReference"},
-      "min":1
+      "min":0
     },
     "DataSetRefreshProperties":{
       "type":"structure",
@@ -19440,6 +19720,49 @@
         }
       }
     },
+    "DeleteTopicV2Request":{
+      "type":"structure",
+      "required":[
+        "AwsAccountId",
+        "TopicId"
+      ],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that contains the topic that you want to delete.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "TopicId":{
+          "shape":"TopicId",
+          "documentation":"<p>The ID of the topic that you want to delete. This ID is unique per Amazon Web Services Region for each Amazon Web Services account.</p>",
+          "location":"uri",
+          "locationName":"TopicId"
+        }
+      }
+    },
+    "DeleteTopicV2Response":{
+      "type":"structure",
+      "members":{
+        "Arn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the topic.</p>"
+        },
+        "TopicId":{
+          "shape":"TopicId",
+          "documentation":"<p>The ID of the topic that you want to delete. This ID is unique per Amazon Web Services Region for each Amazon Web Services account.</p>"
+        },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        },
+        "Status":{
+          "shape":"StatusCode",
+          "documentation":"<p>The HTTP status of the request.</p>",
+          "location":"statusCode"
+        }
+      }
+    },
     "DeleteUserByPrincipalIdRequest":{
       "type":"structure",
       "required":[
@@ -22477,6 +22800,53 @@
         }
       }
     },
+    "DescribeTopicPermissionsV2Request":{
+      "type":"structure",
+      "required":[
+        "AwsAccountId",
+        "TopicId"
+      ],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that contains the topic that you want described.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "TopicId":{
+          "shape":"TopicId",
+          "documentation":"<p>The ID of the topic that you want to describe. This ID is unique per Amazon Web Services Region for each Amazon Web Services account.</p>",
+          "location":"uri",
+          "locationName":"TopicId"
+        }
+      }
+    },
+    "DescribeTopicPermissionsV2Response":{
+      "type":"structure",
+      "members":{
+        "TopicId":{
+          "shape":"TopicId",
+          "documentation":"<p>The ID of the topic that you want to describe. This ID is unique per Amazon Web Services Region for each Amazon Web Services account.</p>"
+        },
+        "TopicArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the topic.</p>"
+        },
+        "Permissions":{
+          "shape":"ResourcePermissionList",
+          "documentation":"<p>A list of resource permissions that are configured to the topic.</p>"
+        },
+        "Status":{
+          "shape":"StatusCode",
+          "documentation":"<p>The HTTP status of the request.</p>",
+          "location":"statusCode"
+        },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        }
+      }
+    },
     "DescribeTopicRefreshRequest":{
       "type":"structure",
       "required":[
@@ -22632,6 +23002,54 @@
         }
       }
     },
+    "DescribeTopicV2Request":{
+      "type":"structure",
+      "required":[
+        "AwsAccountId",
+        "TopicId"
+      ],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that contains the topic that you want to describe.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "TopicId":{
+          "shape":"TopicId",
+          "documentation":"<p>The ID of the topic that you want to describe. This ID is unique per Amazon Web Services Region for each Amazon Web Services account.</p>",
+          "location":"uri",
+          "locationName":"TopicId"
+        }
+      }
+    },
+    "DescribeTopicV2Response":{
+      "type":"structure",
+      "members":{
+        "Arn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the topic.</p>"
+        },
+        "TopicId":{
+          "shape":"TopicId",
+          "documentation":"<p>The ID of the topic that you want to describe. This ID is unique per Amazon Web Services Region for each Amazon Web Services account.</p>"
+        },
+        "Topic":{
+          "shape":"TopicV2Details",
+          "documentation":"<p>The definition of a topic.</p>"
+        },
+        "CustomInstructions":{"shape":"CustomInstructions"},
+        "Status":{
+          "shape":"StatusCode",
+          "documentation":"<p>The HTTP status of the request.</p>",
+          "location":"statusCode"
+        },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        }
+      }
+    },
     "DescribeUserRequest":{
       "type":"structure",
       "required":[
@@ -22721,6 +23139,12 @@
       "max":2048,
       "min":1,
       "pattern":"[ -ÿ]+"
+    },
+    "DescriptionSensitiveString":{
+      "type":"string",
+      "max":500,
+      "min":0,
+      "sensitive":true
     },
     "DestinationParameterValueConfiguration":{
       "type":"structure",
@@ -23020,10 +23444,7 @@
     },
     "EmptyVisual":{
       "type":"structure",
-      "required":[
-        "VisualId",
-        "DataSetIdentifier"
-      ],
+      "required":["VisualId"],
       "members":{
         "VisualId":{
           "shape":"ShortRestrictiveResourceId",
@@ -23031,7 +23452,11 @@
         },
         "DataSetIdentifier":{
           "shape":"DataSetIdentifier",
-          "documentation":"<p>The data set that is used in the empty visual. Every visual requires a dataset to render.</p>"
+          "documentation":"<p>The data set that is used in the empty visual. Every visual requires a dataset or a topic to render.</p>"
+        },
+        "TopicIdentifier":{
+          "shape":"TopicIdentifier",
+          "documentation":"<p>The topic that is used in the empty visual. Every visual requires a dataset or a topic to render.</p>"
         },
         "Actions":{
           "shape":"VisualCustomActionList",
@@ -23794,7 +24219,8 @@
       "enum":[
         "ENFORCED_VALUE_FILTER",
         "CONDITIONAL_VALUE_FILTER",
-        "NAMED_VALUE_FILTER"
+        "NAMED_VALUE_FILTER",
+        "DASHBOARD_DEFAULT_FILTER"
       ]
     },
     "FilterControl":{
@@ -28148,10 +28574,7 @@
     },
     "InsightVisual":{
       "type":"structure",
-      "required":[
-        "VisualId",
-        "DataSetIdentifier"
-      ],
+      "required":["VisualId"],
       "members":{
         "VisualId":{
           "shape":"ShortRestrictiveResourceId",
@@ -28176,6 +28599,10 @@
         "DataSetIdentifier":{
           "shape":"DataSetIdentifier",
           "documentation":"<p>The dataset that is used in the insight visual.</p>"
+        },
+        "TopicIdentifier":{
+          "shape":"TopicIdentifier",
+          "documentation":"<p>The topic that is used in the insight visual.</p>"
         },
         "VisualContentAltText":{
           "shape":"LongPlainText",
@@ -29328,10 +29755,7 @@
     },
     "LayerMapVisual":{
       "type":"structure",
-      "required":[
-        "VisualId",
-        "DataSetIdentifier"
-      ],
+      "required":["VisualId"],
       "members":{
         "VisualId":{
           "shape":"ShortRestrictiveResourceId",
@@ -29345,7 +29769,11 @@
         },
         "DataSetIdentifier":{
           "shape":"DataSetIdentifier",
-          "documentation":"<p>The dataset that is used to create the layer map visual. You can't create a visual without a dataset.</p>"
+          "documentation":"<p>The dataset that is used to create the layer map visual. You can't create a visual without a dataset or a topic.</p>"
+        },
+        "TopicIdentifier":{
+          "shape":"TopicIdentifier",
+          "documentation":"<p>The topic that is used in the layer map visual. You can't create a visual without a dataset or a topic.</p>"
         },
         "VisualContentAltText":{
           "shape":"LongPlainText",
@@ -29455,6 +29883,11 @@
       "documentation":"<p>A limit is exceeded.</p>",
       "error":{"httpStatusCode":409},
       "exception":true
+    },
+    "LimitedSensitiveString":{
+      "type":"string",
+      "max":256,
+      "sensitive":true
     },
     "LimitedString":{
       "type":"string",
@@ -31817,6 +32250,53 @@
         }
       }
     },
+    "ListTopicsV2Request":{
+      "type":"structure",
+      "required":["AwsAccountId"],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that contains the topics that you want to list.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token for the next set of results, or null if there are no more results.</p>",
+          "location":"querystring",
+          "locationName":"next-token"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to be returned per request.</p>",
+          "box":true,
+          "location":"querystring",
+          "locationName":"max-results"
+        }
+      }
+    },
+    "ListTopicsV2Response":{
+      "type":"structure",
+      "members":{
+        "TopicSummaryList":{
+          "shape":"TopicV2Summaries",
+          "documentation":"<p>A list of topic summaries.</p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token for the next set of results, or null if there are no more results.</p>"
+        },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        },
+        "Status":{
+          "shape":"StatusCode",
+          "documentation":"<p>The HTTP status of the request.</p>",
+          "location":"statusCode"
+        }
+      }
+    },
     "ListUserGroupsRequest":{
       "type":"structure",
       "required":[
@@ -32609,6 +33089,18 @@
         "Metric":{
           "shape":"NamedEntityDefinitionMetric",
           "documentation":"<p>The definition of a metric.</p>"
+        },
+        "RankOrder":{
+          "shape":"NullableInteger",
+          "documentation":"<p>The rank order of the named entity definition.</p>"
+        },
+        "PresentationOrder":{
+          "shape":"NullableInteger",
+          "documentation":"<p>The presentation order of the named entity definition.</p>"
+        },
+        "IsHidden":{
+          "shape":"NullableBoolean",
+          "documentation":"<p>A Boolean value that indicates whether the named entity definition is hidden.</p>"
         }
       },
       "documentation":"<p>A structure that represents a named entity.</p>"
@@ -32640,6 +33132,29 @@
         }
       },
       "documentation":"<p>The definition for a <code>NamedEntityRef</code>.</p>"
+    },
+    "NamedEntitySort":{
+      "type":"structure",
+      "required":[
+        "FieldName",
+        "Direction"
+      ],
+      "members":{
+        "FieldName":{
+          "shape":"LimitedString",
+          "documentation":"<p>The name of the field that is used for the sort.</p>"
+        },
+        "Direction":{
+          "shape":"TopicSortDirection",
+          "documentation":"<p>The direction of the sort. Valid values are <code>ASCENDING</code> and <code>DESCENDING</code>.</p>"
+        }
+      },
+      "documentation":"<p>A structure that represents a sort for a named entity.</p>"
+    },
+    "NamedEntitySortList":{
+      "type":"list",
+      "member":{"shape":"NamedEntitySort"},
+      "max":1
     },
     "NamedFilterAggType":{
       "type":"string",
@@ -32956,6 +33471,7 @@
       "documentation":"<p>The options that determine the null value format configuration.</p>"
     },
     "NullableBoolean":{"type":"boolean"},
+    "NullableInteger":{"type":"integer"},
     "NumberDisplayFormatConfiguration":{
       "type":"structure",
       "members":{
@@ -35919,11 +36435,11 @@
       "type":"structure",
       "members":{
         "Minimum":{
-          "shape":"LimitedString",
+          "shape":"LimitedSensitiveString",
           "documentation":"<p>The minimum value for a range constant.</p>"
         },
         "Maximum":{
-          "shape":"LimitedString",
+          "shape":"LimitedSensitiveString",
           "documentation":"<p>The maximum value for a range constant.</p>"
         }
       },
@@ -38493,6 +39009,56 @@
       "members":{
         "TopicSummaryList":{
           "shape":"TopicSummaries",
+          "documentation":"<p>A list of topic summaries that is returned by the search topic request.</p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token for the next set of results, or null if there are no more results.</p>"
+        },
+        "Status":{
+          "shape":"StatusCode",
+          "documentation":"<p>The HTTP status of the request.</p>",
+          "location":"statusCode"
+        },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        }
+      }
+    },
+    "SearchTopicsV2Request":{
+      "type":"structure",
+      "required":[
+        "AwsAccountId",
+        "Filters"
+      ],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that contains the topic that you want to search.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "Filters":{
+          "shape":"TopicSearchFilterList",
+          "documentation":"<p>The filters that you want to use to search for the topic.</p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token for the next set of results, or null if there are no more results.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to be returned per request.</p>",
+          "box":true
+        }
+      }
+    },
+    "SearchTopicsV2Response":{
+      "type":"structure",
+      "members":{
+        "TopicSummaryList":{
+          "shape":"TopicV2Summaries",
           "documentation":"<p>A list of topic summaries that is returned by the search topic request.</p>"
         },
         "NextToken":{
@@ -41383,9 +41949,15 @@
       "min":1,
       "sensitive":true
     },
+    "SynonymString":{
+      "type":"string",
+      "max":256,
+      "min":0,
+      "sensitive":true
+    },
     "Synonyms":{
       "type":"list",
-      "member":{"shape":"LimitedString"}
+      "member":{"shape":"SynonymString"}
     },
     "TableAggregatedFieldWells":{
       "type":"structure",
@@ -42194,6 +42766,10 @@
         "DataSetReferences":{
           "shape":"DataSetReferenceList",
           "documentation":"<p>A structure containing information about the dataset references used as placeholders in the template.</p>"
+        },
+        "TopicReferences":{
+          "shape":"TopicReferenceList",
+          "documentation":"<p>A structure containing information about the topic references used as placeholders in the template.</p>"
         }
       },
       "documentation":"<p>The source analysis of the template.</p>"
@@ -42281,6 +42857,10 @@
           "shape":"DataSetConfigurationList",
           "documentation":"<p>Schema of the dataset identified by the placeholder. Any dashboard created from this template should be bound to new datasets matching the same schema described through this API operation.</p>"
         },
+        "TopicConfigurations":{
+          "shape":"TopicConfigurationList",
+          "documentation":"<p>Schema of the topic identified by the placeholder. Any dashboard created from this template should be bound to new topics matching the same schema described through this API operation.</p>"
+        },
         "Description":{
           "shape":"VersionDescription",
           "documentation":"<p>The description of the template.</p>"
@@ -42307,6 +42887,10 @@
         "DataSetConfigurations":{
           "shape":"DataSetConfigurationList",
           "documentation":"<p>An array of dataset configurations. These configurations define the required columns for each dataset used within a template.</p>"
+        },
+        "TopicConfigurations":{
+          "shape":"TopicConfigurationList",
+          "documentation":"<p>An array of topic configurations. These configurations define the required columns for each topic used within a template.</p>"
         },
         "Sheets":{
           "shape":"SheetDefinitionList",
@@ -43245,6 +43829,11 @@
         "ABSOLUTE_DIFFERENCE"
       ]
     },
+    "TopicArnsList":{
+      "type":"list",
+      "member":{"shape":"Arn"},
+      "max":100
+    },
     "TopicCalculatedField":{
       "type":"structure",
       "required":[
@@ -43253,11 +43842,11 @@
       ],
       "members":{
         "CalculatedFieldName":{
-          "shape":"LimitedString",
+          "shape":"LimitedSensitiveString",
           "documentation":"<p>The calculated field name.</p>"
         },
         "CalculatedFieldDescription":{
-          "shape":"LimitedString",
+          "shape":"DescriptionSensitiveString",
           "documentation":"<p>The calculated field description.</p>"
         },
         "Expression":{
@@ -43345,6 +43934,10 @@
         "Inverse":{
           "shape":"Boolean",
           "documentation":"<p>A Boolean value that indicates if the filter is inverse.</p>"
+        },
+        "NullFilter":{
+          "shape":"NullFilterType",
+          "documentation":"<p>The <code>null</code> filter that is applied to the category filter.</p>"
         }
       },
       "documentation":"<p>A structure that represents a category filter.</p>"
@@ -43357,7 +43950,7 @@
           "documentation":"<p>The type of category filter constant. This element is used to specify whether a constant is a singular or collective. Valid values are <code>SINGULAR</code> and <code>COLLECTIVE</code>.</p>"
         },
         "SingularConstant":{
-          "shape":"LimitedString",
+          "shape":"LimitedSensitiveString",
           "documentation":"<p>A singular constant used in a category filter. This element is used to specify a single value for the constant.</p>"
         },
         "CollectiveConstant":{
@@ -43377,11 +43970,11 @@
           "documentation":"<p>The name of the column.</p>"
         },
         "ColumnFriendlyName":{
-          "shape":"LimitedString",
+          "shape":"LimitedSensitiveString",
           "documentation":"<p>A user-friendly name for the column.</p>"
         },
         "ColumnDescription":{
-          "shape":"LimitedString",
+          "shape":"DescriptionSensitiveString",
           "documentation":"<p>A description of the column and its contents.</p>"
         },
         "ColumnSynonyms":{
@@ -43457,6 +44050,29 @@
       },
       "documentation":"<p>Configuration options for a <code>Topic</code>.</p>"
     },
+    "TopicConfiguration":{
+      "type":"structure",
+      "members":{
+        "Placeholder":{
+          "shape":"String",
+          "documentation":"<p>The placeholder for the topic configuration.</p>"
+        },
+        "DataSetSchema":{
+          "shape":"DataSetSchema",
+          "documentation":"<p>Topic schema.</p>"
+        },
+        "ColumnGroupSchemaList":{
+          "shape":"ColumnGroupSchemaList",
+          "documentation":"<p>The list of column group schemas in the topic configuration.</p>"
+        }
+      },
+      "documentation":"<p>The configuration of a topic.</p>"
+    },
+    "TopicConfigurationList":{
+      "type":"list",
+      "member":{"shape":"TopicConfiguration"},
+      "max":30
+    },
     "TopicConstantValue":{
       "type":"structure",
       "members":{
@@ -43493,6 +44109,10 @@
         "Constant":{
           "shape":"TopicRangeFilterConstant",
           "documentation":"<p>The constant used in a date range filter.</p>"
+        },
+        "NullFilter":{
+          "shape":"NullFilterType",
+          "documentation":"<p>The <code>null</code> filter that is applied to the date range filter.</p>"
         }
       },
       "documentation":"<p>A filter used to restrict data based on a range of dates or times.</p>"
@@ -43531,7 +44151,7 @@
       ],
       "members":{
         "FilterDescription":{
-          "shape":"LimitedString",
+          "shape":"DescriptionSensitiveString",
           "documentation":"<p>A description of the filter used to select items for a topic.</p>"
         },
         "FilterClass":{
@@ -43872,6 +44492,34 @@
       "max":256,
       "pattern":"^[A-Za-z0-9-_.\\\\+]*$"
     },
+    "TopicIdentifier":{
+      "type":"string",
+      "max":2048,
+      "min":1
+    },
+    "TopicIdentifierDeclaration":{
+      "type":"structure",
+      "required":[
+        "Identifier",
+        "TopicArn"
+      ],
+      "members":{
+        "Identifier":{
+          "shape":"TopicIdentifier",
+          "documentation":"<p>The identifier of the topic, typically the topic's name.</p>"
+        },
+        "TopicArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the topic.</p>"
+        }
+      },
+      "documentation":"<p>A topic.</p>"
+    },
+    "TopicIdentifierDeclarationList":{
+      "type":"list",
+      "member":{"shape":"TopicIdentifierDeclaration"},
+      "max":50
+    },
     "TopicNamedEntities":{
       "type":"list",
       "member":{"shape":"TopicNamedEntity"}
@@ -43885,7 +44533,7 @@
           "documentation":"<p>The name of the named entity.</p>"
         },
         "EntityDescription":{
-          "shape":"LimitedString",
+          "shape":"DescriptionSensitiveString",
           "documentation":"<p>The description of the named entity.</p>"
         },
         "EntitySynonyms":{
@@ -43899,6 +44547,18 @@
         "Definition":{
           "shape":"NamedEntityDefinitions",
           "documentation":"<p>The definition of a named entity.</p>"
+        },
+        "Sort":{
+          "shape":"NamedEntitySortList",
+          "documentation":"<p>The sort configuration of the named entity.</p>"
+        },
+        "RankOrder":{
+          "shape":"NullableInteger",
+          "documentation":"<p>The rank order of the named entity.</p>"
+        },
+        "PresentationOrder":{
+          "shape":"NullableInteger",
+          "documentation":"<p>The presentation order of the named entity.</p>"
         }
       },
       "documentation":"<p>A structure that represents a named entity.</p>"
@@ -43928,6 +44588,14 @@
         "Aggregation":{
           "shape":"NamedFilterAggType",
           "documentation":"<p>An aggregation function that specifies how to calculate the value of a numeric field for a topic. Valid values for this structure are <code>NO_AGGREGATION</code>, <code>SUM</code>, <code>AVERAGE</code>, <code>COUNT</code>, <code>DISTINCT_COUNT</code>, <code>MAX</code>, <code>MEDIAN</code>, <code>MIN</code>, <code>STDEV</code>, <code>STDEVP</code>, <code>VAR</code>, and <code>VARP</code>.</p>"
+        },
+        "Inverse":{
+          "shape":"Boolean",
+          "documentation":"<p>A Boolean value that indicates if the filter is inverse.</p>"
+        },
+        "NullFilter":{
+          "shape":"NullFilterType",
+          "documentation":"<p>The <code>null</code> filter that is applied to the numeric equality filter.</p>"
         }
       },
       "documentation":"<p>A filter that filters topics based on the value of a numeric field. The filter includes only topics whose numeric field value matches the specified value.</p>"
@@ -43946,6 +44614,14 @@
         "Aggregation":{
           "shape":"NamedFilterAggType",
           "documentation":"<p>An aggregation function that specifies how to calculate the value of a numeric field for a topic, Valid values for this structure are <code>NO_AGGREGATION</code>, <code>SUM</code>, <code>AVERAGE</code>, <code>COUNT</code>, <code>DISTINCT_COUNT</code>, <code>MAX</code>, <code>MEDIAN</code>, <code>MIN</code>, <code>STDEV</code>, <code>STDEVP</code>, <code>VAR</code>, and <code>VARP</code>.</p>"
+        },
+        "Inverse":{
+          "shape":"Boolean",
+          "documentation":"<p>A Boolean value that indicates if the filter is inverse.</p>"
+        },
+        "NullFilter":{
+          "shape":"NullFilterType",
+          "documentation":"<p>The <code>null</code> filter that is applied to the numeric range filter.</p>"
         }
       },
       "documentation":"<p>A filter that filters topics based on the value of a numeric field. The filter includes only topics whose numeric field value falls within the specified range.</p>"
@@ -43971,6 +44647,29 @@
       },
       "documentation":"<p>A constant value that is used in a range filter to specify the endpoints of the range.</p>",
       "sensitive":true
+    },
+    "TopicReference":{
+      "type":"structure",
+      "required":[
+        "TopicPlaceholder",
+        "TopicArn"
+      ],
+      "members":{
+        "TopicPlaceholder":{
+          "shape":"TopicIdentifier",
+          "documentation":"<p>Topic placeholder.</p>"
+        },
+        "TopicArn":{
+          "shape":"Arn",
+          "documentation":"<p>Topic Amazon Resource Name (ARN).</p>"
+        }
+      },
+      "documentation":"<p>Topic reference.</p>"
+    },
+    "TopicReferenceList":{
+      "type":"list",
+      "member":{"shape":"TopicReference"},
+      "min":1
     },
     "TopicRefreshDetails":{
       "type":"structure",
@@ -44074,6 +44773,10 @@
         "Constant":{
           "shape":"TopicSingularFilterConstant",
           "documentation":"<p>The constant used in a relative date filter.</p>"
+        },
+        "NullFilter":{
+          "shape":"NullFilterType",
+          "documentation":"<p>The <code>null</code> filter that is applied to the relative date filter.</p>"
         }
       },
       "documentation":"<p>A structure that represents a relative date filter.</p>"
@@ -44109,7 +44812,7 @@
           "documentation":"<p>The Dataset ARN for the <code>TopicReviewedAnswer</code>.</p>"
         },
         "Question":{
-          "shape":"LimitedString",
+          "shape":"LimitedSensitiveString",
           "documentation":"<p>The question for the <code>TopicReviewedAnswer</code>.</p>"
         },
         "Mir":{
@@ -44157,7 +44860,7 @@
           "documentation":"<p>The name of the topic search filter.</p>"
         },
         "Value":{
-          "shape":"String",
+          "shape":"SensitiveString",
           "documentation":"<p>The value of the topic search filter.</p>"
         }
       },
@@ -44177,7 +44880,7 @@
           "documentation":"<p>The type of the singular filter constant. Valid values for this structure are <code>SINGULAR</code>.</p>"
         },
         "SingularConstant":{
-          "shape":"LimitedString",
+          "shape":"LimitedSensitiveString",
           "documentation":"<p>The value of the singular filter constant.</p>"
         }
       },
@@ -44264,6 +44967,126 @@
         "LEGACY",
         "NEW_READER_EXPERIENCE"
       ]
+    },
+    "TopicV2DataSetReference":{
+      "type":"structure",
+      "required":["DataSetArn"],
+      "members":{
+        "DataSetArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the data set.</p>"
+        },
+        "DataSetName":{
+          "shape":"LimitedString",
+          "documentation":"<p>The name of the data set.</p>"
+        }
+      },
+      "documentation":"<p>A structure that represents a data set reference of a topic.</p>"
+    },
+    "TopicV2DataSetReferences":{
+      "type":"list",
+      "member":{"shape":"TopicV2DataSetReference"},
+      "max":100,
+      "min":1
+    },
+    "TopicV2DataSetRelation":{
+      "type":"structure",
+      "required":[
+        "Left",
+        "Right"
+      ],
+      "members":{
+        "Left":{
+          "shape":"TopicV2DataSetRelationEndpoint",
+          "documentation":"<p>The left endpoint of the data set relation.</p>"
+        },
+        "Right":{
+          "shape":"TopicV2DataSetRelationEndpoint",
+          "documentation":"<p>The right endpoint of the data set relation.</p>"
+        }
+      },
+      "documentation":"<p>A structure that represents a relation between two data sets of a topic.</p>"
+    },
+    "TopicV2DataSetRelationColumnNames":{
+      "type":"list",
+      "member":{"shape":"String"},
+      "max":5,
+      "min":1
+    },
+    "TopicV2DataSetRelationEndpoint":{
+      "type":"structure",
+      "required":[
+        "DataSetArn",
+        "ColumnNames"
+      ],
+      "members":{
+        "DataSetArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the data set at this endpoint of the relation.</p>"
+        },
+        "ColumnNames":{
+          "shape":"TopicV2DataSetRelationColumnNames",
+          "documentation":"<p>The names of the columns that are used in the data set relation.</p>"
+        }
+      },
+      "documentation":"<p>A structure that represents an endpoint of a data set relation of a topic.</p>"
+    },
+    "TopicV2DataSetRelationList":{
+      "type":"list",
+      "member":{"shape":"TopicV2DataSetRelation"},
+      "max":100
+    },
+    "TopicV2Details":{
+      "type":"structure",
+      "required":["Name"],
+      "members":{
+        "Name":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the topic.</p>"
+        },
+        "Description":{
+          "shape":"LimitedString",
+          "documentation":"<p>The description of the topic.</p>"
+        },
+        "DataSets":{
+          "shape":"TopicV2DataSetReferences",
+          "documentation":"<p>The data sets that the topic is associated with.</p>"
+        },
+        "DataSetRelations":{
+          "shape":"TopicV2DataSetRelationList",
+          "documentation":"<p>The relations between the data sets that the topic is associated with.</p>"
+        }
+      },
+      "documentation":"<p>The definition of a topic.</p>"
+    },
+    "TopicV2PublishOption":{
+      "type":"string",
+      "enum":[
+        "DRAFT",
+        "PUBLISH"
+      ]
+    },
+    "TopicV2Summaries":{
+      "type":"list",
+      "member":{"shape":"TopicV2Summary"}
+    },
+    "TopicV2Summary":{
+      "type":"structure",
+      "members":{
+        "Arn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the topic.</p>"
+        },
+        "TopicId":{
+          "shape":"TopicId",
+          "documentation":"<p>The ID of the topic. This ID is unique per Amazon Web Services Region for each Amazon Web Services account.</p>"
+        },
+        "Name":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the topic.</p>"
+        }
+      },
+      "documentation":"<p>A summary of the topic.</p>"
     },
     "TopicVisual":{
       "type":"structure",
@@ -45556,7 +46379,7 @@
         },
         "SourceEntity":{
           "shape":"AnalysisSourceEntity",
-          "documentation":"<p>A source entity to use for the analysis that you're updating. This metadata structure contains details that describe a source template and one or more datasets.</p>"
+          "documentation":"<p>A source entity to use for the analysis that you're updating. This metadata structure contains details that describe a source template and one or more datasets or topics.</p>"
         },
         "ThemeArn":{
           "shape":"Arn",
@@ -45983,7 +46806,7 @@
         },
         "SourceEntity":{
           "shape":"DashboardSourceEntity",
-          "documentation":"<p>The entity that you are using as a source when you update the dashboard. In <code>SourceEntity</code>, you specify the type of object you're using as source. You can only update a dashboard from a template, so you use a <code>SourceTemplate</code> entity. If you need to update a dashboard from an analysis, first convert the analysis to a template by using the <code> <a href=\"https://docs.aws.amazon.com/quicksight/latest/APIReference/API_CreateTemplate.html\">CreateTemplate</a> </code> API operation. For <code>SourceTemplate</code>, specify the Amazon Resource Name (ARN) of the source template. The <code>SourceTemplate</code> ARN can contain any Amazon Web Services account and any Amazon Quick Sight-supported Amazon Web Services Region. </p> <p>Use the <code>DataSetReferences</code> entity within <code>SourceTemplate</code> to list the replacement datasets for the placeholders listed in the original. The schema in each dataset must match its placeholder. </p>"
+          "documentation":"<p>The entity that you are using as a source when you update the dashboard. In <code>SourceEntity</code>, you specify the type of object you're using as source. You can only update a dashboard from a template, so you use a <code>SourceTemplate</code> entity. If you need to update a dashboard from an analysis, first convert the analysis to a template by using the <code> <a href=\"https://docs.aws.amazon.com/quicksight/latest/APIReference/API_CreateTemplate.html\">CreateTemplate</a> </code> API operation. For <code>SourceTemplate</code>, specify the Amazon Resource Name (ARN) of the source template. The <code>SourceTemplate</code> ARN can contain any Amazon Web Services account and any Amazon Quick Sight-supported Amazon Web Services Region. </p> <p>Use the <code>DataSetReferences</code> entity within <code>SourceTemplate</code> to list the replacement datasets for the placeholders listed in the original. The schema in each dataset must match its placeholder. Use the <code>TopicReferences</code> entity to list the replacement topics for the topic placeholders listed in the original. The schema in each topic must match its placeholder.</p>"
         },
         "Parameters":{
           "shape":"Parameters",
@@ -47701,7 +48524,7 @@
         },
         "SourceEntity":{
           "shape":"TemplateSourceEntity",
-          "documentation":"<p>The entity that you are using as a source when you update the template. In <code>SourceEntity</code>, you specify the type of object you're using as source: <code>SourceTemplate</code> for a template or <code>SourceAnalysis</code> for an analysis. Both of these require an Amazon Resource Name (ARN). For <code>SourceTemplate</code>, specify the ARN of the source template. For <code>SourceAnalysis</code>, specify the ARN of the source analysis. The <code>SourceTemplate</code> ARN can contain any Amazon Web Services account and any Quick Sight-supported Amazon Web Services Region;. </p> <p>Use the <code>DataSetReferences</code> entity within <code>SourceTemplate</code> or <code>SourceAnalysis</code> to list the replacement datasets for the placeholders listed in the original. The schema in each dataset must match its placeholder. </p>"
+          "documentation":"<p>The entity that you are using as a source when you update the template. In <code>SourceEntity</code>, you specify the type of object you're using as source: <code>SourceTemplate</code> for a template or <code>SourceAnalysis</code> for an analysis. Both of these require an Amazon Resource Name (ARN). For <code>SourceTemplate</code>, specify the ARN of the source template. For <code>SourceAnalysis</code>, specify the ARN of the source analysis. The <code>SourceTemplate</code> ARN can contain any Amazon Web Services account and any Quick Sight-supported Amazon Web Services Region;. </p> <p>Use the <code>DataSetReferences</code> entity within <code>SourceTemplate</code> or <code>SourceAnalysis</code> to list the replacement datasets for the placeholders listed in the original. The schema in each dataset must match its placeholder. Use the <code>TopicReferences</code> entity to list the replacement topics for the topic placeholders listed in the original. The schema in each topic must match its placeholder.</p>"
         },
         "VersionDescription":{
           "shape":"VersionDescription",
@@ -47980,6 +48803,61 @@
         }
       }
     },
+    "UpdateTopicPermissionsV2Request":{
+      "type":"structure",
+      "required":[
+        "AwsAccountId",
+        "TopicId"
+      ],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that contains the topic that you want to update the permissions for.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "TopicId":{
+          "shape":"TopicId",
+          "documentation":"<p>The ID of the topic that you want to modify. This ID is unique per Amazon Web Services Region for each Amazon Web Services account.</p>",
+          "location":"uri",
+          "locationName":"TopicId"
+        },
+        "GrantPermissions":{
+          "shape":"UpdateResourcePermissionList",
+          "documentation":"<p>The resource permissions that you want to grant to the topic.</p>"
+        },
+        "RevokePermissions":{
+          "shape":"UpdateResourcePermissionList",
+          "documentation":"<p>The resource permissions that you want to revoke from the topic.</p>"
+        }
+      }
+    },
+    "UpdateTopicPermissionsV2Response":{
+      "type":"structure",
+      "members":{
+        "TopicId":{
+          "shape":"TopicId",
+          "documentation":"<p>The ID of the topic that you want to modify. This ID is unique per Amazon Web Services Region for each Amazon Web Services account.</p>"
+        },
+        "TopicArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the topic.</p>"
+        },
+        "Permissions":{
+          "shape":"ResourcePermissionList",
+          "documentation":"<p>A list of resource permissions on the topic.</p>"
+        },
+        "Status":{
+          "shape":"StatusCode",
+          "documentation":"<p>The HTTP status of the request.</p>",
+          "location":"statusCode"
+        },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        }
+      }
+    },
     "UpdateTopicRefreshScheduleRequest":{
       "type":"structure",
       "required":[
@@ -48083,6 +48961,59 @@
         "RefreshArn":{
           "shape":"Arn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the topic refresh.</p>"
+        },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        },
+        "Status":{
+          "shape":"StatusCode",
+          "documentation":"<p>The HTTP status of the request.</p>",
+          "location":"statusCode"
+        }
+      }
+    },
+    "UpdateTopicV2Request":{
+      "type":"structure",
+      "required":[
+        "AwsAccountId",
+        "TopicId",
+        "Topic"
+      ],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that contains the topic that you want to update.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "TopicId":{
+          "shape":"TopicId",
+          "documentation":"<p>The ID of the topic that you want to modify. This ID is unique per Amazon Web Services Region for each Amazon Web Services account.</p>",
+          "location":"uri",
+          "locationName":"TopicId"
+        },
+        "Topic":{
+          "shape":"TopicV2Details",
+          "documentation":"<p>The definition of the topic that you want to update.</p>"
+        },
+        "CustomInstructions":{"shape":"CustomInstructions"},
+        "PublishOption":{
+          "shape":"TopicV2PublishOption",
+          "documentation":"<p>The publish option for the topic that you want to update.</p>"
+        }
+      }
+    },
+    "UpdateTopicV2Response":{
+      "type":"structure",
+      "members":{
+        "Arn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the topic.</p>"
+        },
+        "TopicId":{
+          "shape":"TopicId",
+          "documentation":"<p>The ID of the topic that you want to modify. This ID is unique per Amazon Web Services Region for each Amazon Web Services account.</p>"
         },
         "RequestId":{
           "shape":"String",
@@ -49043,6 +49974,64 @@
         }
       },
       "documentation":"<p>The menu options for a visual.</p>"
+    },
+    "VisualMessageConfiguration":{
+      "type":"structure",
+      "members":{
+        "Enabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether the custom message is displayed on the visual. When set to <code>true</code>, the custom message appears in place of the default message. When set to <code>false</code> or omitted, the default message is displayed.</p>"
+        },
+        "Title":{
+          "shape":"VisualMessageText",
+          "documentation":"<p>The title text of the message that is displayed on the visual.</p>"
+        },
+        "TitleVisibility":{
+          "shape":"Visibility",
+          "documentation":"<p>Specifies whether the title of the message is displayed.</p>"
+        },
+        "Description":{
+          "shape":"VisualMessageText",
+          "documentation":"<p>The description text of the message that is displayed on the visual.</p>"
+        },
+        "DescriptionVisibility":{
+          "shape":"Visibility",
+          "documentation":"<p>Specifies whether the description of the message is displayed.</p>"
+        },
+        "LinkText":{
+          "shape":"VisualMessageText",
+          "documentation":"<p>The display text of the hyperlink that is shown in the message.</p>"
+        },
+        "LinkUrl":{
+          "shape":"VisualMessageLinkUrl",
+          "documentation":"<p>The destination URL of the hyperlink that is shown in the message. Only valid <code>http</code>, <code>https</code>, and <code>mailto</code> URLs are supported.</p>"
+        },
+        "LinkVisibility":{
+          "shape":"Visibility",
+          "documentation":"<p>Specifies whether the hyperlink in the message is displayed.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for a customizable message displayed on a visual. Supports parameter substitution in text fields.</p>"
+    },
+    "VisualMessageLinkUrl":{
+      "type":"string",
+      "max":120,
+      "pattern":"(?i)\\A(?:(?:https?://|mailto:)\\S*<<\\$.+?>>\\S*|https?://[a-z\\d.-]+\\.[a-z]{2,63}(?::\\d+)?(?:[/?#][^\\s]*)?|mailto:[^\\s@]+@[a-z\\d.-]+\\.[a-z]{2,63})\\z"
+    },
+    "VisualMessageText":{
+      "type":"string",
+      "max":120,
+      "pattern":"\\A[\\p{L}\\p{M}\\p{N}\\s.,/\\\\:_()\\[\\]<>$!?'\"#@%+&|^\\-]*\\z"
+    },
+    "VisualMessages":{
+      "type":"structure",
+      "members":{
+        "NoDataMessage":{
+          "shape":"VisualMessageConfiguration",
+          "documentation":"<p>The message that is displayed on a visual when there is no data to display.</p>"
+        }
+      },
+      "documentation":"<p>The messages that are displayed on a visual under specific conditions, such as when the visual returns no data.</p>"
     },
     "VisualOptions":{
       "type":"structure",

@@ -6069,6 +6069,10 @@
         "vpcProperties":{
           "shape":"VpcPropertiesInput",
           "documentation":"<p>The VPC properties of a connection.</p>"
+        },
+        "gitProperties":{
+          "shape":"GitPropertiesInput",
+          "documentation":"<p>The Git properties of a connection.</p>"
         }
       },
       "documentation":"<p>The properties of a connection.</p>",
@@ -6136,6 +6140,10 @@
         "vpcProperties":{
           "shape":"VpcPropertiesOutput",
           "documentation":"<p>The VPC properties of a connection.</p>"
+        },
+        "gitProperties":{
+          "shape":"GitPropertiesOutput",
+          "documentation":"<p>The Git properties of a connection.</p>"
         }
       },
       "documentation":"<p>The properties of a connection.</p>",
@@ -6187,6 +6195,10 @@
         "vpcProperties":{
           "shape":"VpcPropertiesPatch",
           "documentation":"<p>The VPC properties of a connection properties patch.</p>"
+        },
+        "gitProperties":{
+          "shape":"GitPropertiesPatch",
+          "documentation":"<p>The Git properties of a connection properties patch.</p>"
         }
       },
       "documentation":"<p>The connection properties patch.</p>",
@@ -6304,7 +6316,8 @@
         "WORKFLOWS_MWAA",
         "AMAZON_Q",
         "MLFLOW",
-        "VPC"
+        "VPC",
+        "GIT"
       ]
     },
     "ConnectivityProperties":{
@@ -15951,6 +15964,122 @@
         }
       },
       "documentation":"<p>The Git metadata for a notebook sync operation in Amazon SageMaker Unified Studio. Contains information about the Git repository, branch, and commit associated with the notebook.</p>"
+    },
+    "GitPropertiesInput":{
+      "type":"structure",
+      "required":[
+        "codeConnectionArn",
+        "repositoryId",
+        "defaultBranch"
+      ],
+      "members":{
+        "codeConnectionArn":{
+          "shape":"GitPropertiesInputCodeConnectionArnString",
+          "documentation":"<p>The ARN of the CodeConnections connection used to connect to the Git repository.</p>"
+        },
+        "repositoryId":{
+          "shape":"GitPropertiesInputRepositoryIdString",
+          "documentation":"<p>The ID of the Git repository. This is the owner and repository name, for example, owner/repo-name.</p>"
+        },
+        "defaultBranch":{
+          "shape":"GitPropertiesInputDefaultBranchString",
+          "documentation":"<p>The default branch of the Git repository.</p>"
+        }
+      },
+      "documentation":"<p>Contains the Git connection properties that you specify when creating a Git connection.</p>"
+    },
+    "GitPropertiesInputCodeConnectionArnString":{
+      "type":"string",
+      "max":256,
+      "min":0,
+      "pattern":"arn:aws[^:]*:(codeconnections|codestar-connections):[a-z0-9\\-]+:\\d{12}:connection/[a-f0-9\\-]+"
+    },
+    "GitPropertiesInputDefaultBranchString":{
+      "type":"string",
+      "max":256,
+      "min":0,
+      "pattern":"[a-zA-Z0-9._\\-/]+"
+    },
+    "GitPropertiesInputRepositoryIdString":{
+      "type":"string",
+      "max":256,
+      "min":0,
+      "pattern":"[a-zA-Z0-9._\\-]+(/[a-zA-Z0-9._\\-]+)+"
+    },
+    "GitPropertiesOutput":{
+      "type":"structure",
+      "required":[
+        "codeConnectionArn",
+        "repositoryId",
+        "defaultBranch"
+      ],
+      "members":{
+        "codeConnectionArn":{
+          "shape":"GitPropertiesOutputCodeConnectionArnString",
+          "documentation":"<p>The ARN of the CodeConnections connection used to connect to the Git repository.</p>"
+        },
+        "repositoryId":{
+          "shape":"GitPropertiesOutputRepositoryIdString",
+          "documentation":"<p>The ID of the Git repository. This is the owner and repository name, for example, owner/repo-name.</p>"
+        },
+        "defaultBranch":{
+          "shape":"GitPropertiesOutputDefaultBranchString",
+          "documentation":"<p>The default branch of the Git repository.</p>"
+        },
+        "status":{
+          "shape":"ConnectionStatus",
+          "documentation":"<p>The status of the Git connection.</p>"
+        },
+        "errorMessage":{
+          "shape":"String",
+          "documentation":"<p>The error message that describes why the Git connection failed. This member is populated when the connection status is CREATE_FAILED or UPDATE_FAILED.</p>"
+        }
+      },
+      "documentation":"<p>The properties of a Git connection returned by get and list operations, including connection status and any error details.</p>"
+    },
+    "GitPropertiesOutputCodeConnectionArnString":{
+      "type":"string",
+      "max":256,
+      "min":0,
+      "pattern":"arn:aws[^:]*:(codeconnections|codestar-connections):[a-z0-9\\-]+:\\d{12}:connection/[a-f0-9\\-]+"
+    },
+    "GitPropertiesOutputDefaultBranchString":{
+      "type":"string",
+      "max":256,
+      "min":0,
+      "pattern":"[a-zA-Z0-9._\\-/]+"
+    },
+    "GitPropertiesOutputRepositoryIdString":{
+      "type":"string",
+      "max":256,
+      "min":0,
+      "pattern":"[a-zA-Z0-9._\\-]+(/[a-zA-Z0-9._\\-]+)+"
+    },
+    "GitPropertiesPatch":{
+      "type":"structure",
+      "members":{
+        "codeConnectionArn":{
+          "shape":"GitPropertiesPatchCodeConnectionArnString",
+          "documentation":"<p>The ARN of the CodeConnections connection used to connect to the Git repository.</p>"
+        },
+        "defaultBranch":{
+          "shape":"GitPropertiesPatchDefaultBranchString",
+          "documentation":"<p>The default branch of the Git repository.</p>"
+        }
+      },
+      "documentation":"<p>The properties used to update an existing Git connection, such as the CodeConnections ARN or the default branch.</p>"
+    },
+    "GitPropertiesPatchCodeConnectionArnString":{
+      "type":"string",
+      "max":256,
+      "min":0,
+      "pattern":"arn:aws[^:]*:(codeconnections|codestar-connections):[a-z0-9\\-]+:\\d{12}:connection/[a-f0-9\\-]+"
+    },
+    "GitPropertiesPatchDefaultBranchString":{
+      "type":"string",
+      "max":256,
+      "min":0,
+      "pattern":"[a-zA-Z0-9._\\-/]+"
     },
     "GitRepository":{
       "type":"string",

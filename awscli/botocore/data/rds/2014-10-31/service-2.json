@@ -3328,6 +3328,14 @@
           "shape":"String",
           "documentation":"<p>The status of the additional storage volume.</p> <p>Valid Values: <code>ACTIVE | CREATING | DELETING | MODIFYING | NOT-IN-USE | STORAGE-OPTIMIZATION | VOLUME-FULL</code> </p>"
         },
+        "StorageOperationStatus":{
+          "shape":"String",
+          "documentation":"<p>The status of an in-progress storage operation on the additional storage volume. This field appears only while a storage operation is in progress. It isn't present when no storage operation is active. Possible values:</p> <ul> <li> <p> <code>Initializing</code> - The volume is initializing from a snapshot, such as during a snapshot restore, point-in-time restore, read replica creation, or blue/green deployment. Performance can be lower than provisioned until initialization completes.</p> </li> <li> <p> <code>Optimizing</code> - The volume is optimizing following a storage scaling or modification operation.</p> </li> </ul>"
+        },
+        "StorageOperationPercentProgress":{
+          "shape":"IntegerOptional",
+          "documentation":"<p>The percentage of the in-progress storage operation on the additional storage volume that has completed, from <code>0</code> to <code>100</code>. This field appears only while a storage operation is in progress. It isn't present when no storage operation is active.</p>"
+        },
         "AllocatedStorage":{
           "shape":"Integer",
           "documentation":"<p>The amount of storage allocated for the additional storage volume, in gibibytes (GiB). The minimum is 20 GiB. The maximum is 65,536 GiB (64 TiB).</p>"
@@ -7474,6 +7482,14 @@
         "StorageVolumeStatus":{
           "shape":"String",
           "documentation":"<p>The detailed status information for storage volumes associated with the DB instance. This information helps identify which specific volume is causing the instance to be in a storage-full state.</p>"
+        },
+        "StorageOperationStatus":{
+          "shape":"String",
+          "documentation":"<p>The status of an in-progress storage operation on the DB instance. This field appears only while a storage operation is in progress. It isn't present when no storage operation is active. Possible values:</p> <ul> <li> <p> <code>Initializing</code> - The volume is initializing from a snapshot, such as during a snapshot restore, point-in-time restore, read replica creation, or blue/green deployment. Performance can be lower than provisioned until initialization completes.</p> </li> <li> <p> <code>Optimizing</code> - The volume is optimizing following a storage scaling or modification operation.</p> </li> </ul>"
+        },
+        "StorageOperationPercentProgress":{
+          "shape":"IntegerOptional",
+          "documentation":"<p>The percentage of the in-progress storage operation on the DB instance that has completed, from <code>0</code> to <code>100</code>. This field appears only while a storage operation is in progress. It isn't present when no storage operation is active.</p>"
         }
       },
       "documentation":"<p>Contains the details of an Amazon RDS DB instance.</p> <p>This data type is used as a response element in the operations <code>CreateDBInstance</code>, <code>CreateDBInstanceReadReplica</code>, <code>DeleteDBInstance</code>, <code>DescribeDBInstances</code>, <code>ModifyDBInstance</code>, <code>PromoteReadReplica</code>, <code>RebootDBInstance</code>, <code>RestoreDBInstanceFromDBSnapshot</code>, <code>RestoreDBInstanceFromS3</code>, <code>RestoreDBInstanceToPointInTime</code>, <code>StartDBInstance</code>, and <code>StopDBInstance</code>.</p>",

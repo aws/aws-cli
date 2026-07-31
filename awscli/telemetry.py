@@ -36,7 +36,7 @@ _CACHE_DIR = Path.home() / '.aws' / 'cli' / 'cache'
 _DATABASE_FILENAME = 'session.db'
 _SESSION_LENGTH_SECONDS = 60 * 30
 _SESSION_ID_LENGTH = 12
-# How stale the stored timestamp must be before we write it. Refreshing on every
+# How stale the stored timestamp must be before it is written. Refreshing on every
 # invocation takes a write lock each time, which can cause lock contention.
 _TIMESTAMP_REFRESH_SECONDS = 60
 # How long to wait for a database lock before giving up. Session data is not

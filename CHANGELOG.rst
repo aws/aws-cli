@@ -2,6 +2,26 @@
 CHANGELOG
 =========
 
+1.45.62
+=======
+
+* api-change:``amp``: Amazon Managed Service for Prometheus adds support for an Amazon OpenSearch Service exporter for managed collectors.
+* api-change:``bedrock-runtime``: Added support for mid-conversation tool changes in the Amazon Bedrock Converse and ConverseStream APIs
+* api-change:``billing``: Adds GetEnterpriseSupportChargeSummary, GetEnterpriseSupportContractDetails, and ListEnterpriseSupportLinkedAccountCharges. These APIs provide first-time programmatic access to billing data for Enterprise Support usage previously only available upon request through AWS Concierge or Support.
+* api-change:``cloudformation``: Adding enum for sensitive property to DriftIgnoredReason
+* api-change:``connectcampaignsv2``: Launching feature for abandonment rate pacing control for outbound campaigns.
+* api-change:``datazone``: Adding support for enhanced Git experience in Sagemaker Unified Studio.
+* api-change:``elementalinference``: AWS Elemental Inference now supports graphic composition on cropped video outputs, enabling branded graphics and other visual elements to be overlaid as part of the inference workflow.
+* api-change:``endpoint-rules``: Update endpoint-rules command to latest version
+* api-change:``logs``: Amazon CloudWatch Logs now lets you create and update lookup tables directly from CloudWatch Logs query results by passing a queryId, and configure a lookup table as a scheduled query destination so it refreshes automatically with the latest query results on each run.
+* api-change:``marketplace-catalog``: This release enhances the ListEntities API to support TargetAgreementId, TargetAgreementIntent, and CreatedBySource filters for the Offer entity type.
+* api-change:``network-firewall``: Doc Updates for Container Attributes
+* api-change:``outposts``: Adds the "EKS" value to the AWSServiceName enum and marks the Address field as sensitive.
+* api-change:``quicksight``: Adding TopicV2 management APIs, adding possibility to use Topics in Analysis
+* api-change:``rds``: Adds StorageOperationStatus and StorageOperationPercentProgress to DescribeDBInstances, letting you monitor RDS storage initialization and optimization progress.
+* api-change:``resiliencehubv2``: Adding support for new testing capability in AWS Resilience Hub.
+
+
 1.45.61
 =======
 

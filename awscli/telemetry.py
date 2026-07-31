@@ -11,6 +11,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import io
+import logging
 import os
 import sqlite3
 import sys
@@ -24,14 +25,27 @@ from pathlib import Path
 from botocore.compat import get_md5
 from botocore.exceptions import MD5UnavailableError
 from botocore.useragent import UserAgentComponent
+from botocore.utils import ensure_boolean
 
 from awscli.compat import is_windows
 from awscli.utils import add_component_to_user_agent_extra
+
+LOG = logging.getLogger(__name__)
 
 _CACHE_DIR = Path.home() / '.aws' / 'cli' / 'cache'
 _DATABASE_FILENAME = 'session.db'
 _SESSION_LENGTH_SECONDS = 60 * 30
 _SESSION_ID_LENGTH = 12
+# How stale the stored timestamp must be before we write it. Refreshing on every
+# invocation takes a write lock each time, which can cause lock contention.
+_TIMESTAMP_REFRESH_SECONDS = 60
+# How long to wait for a database lock before giving up. Session data is not
+# critical, so it's better to skip it than to make the user wait
+_BUSY_TIMEOUT_SECONDS = 0.1
+# Set to "true" to skip collecting session ids entirely. Opting out avoids
+# opening the session database, whose file locking can be expensive when the
+# database lives on a network filesystem.
+_TELEMETRY_DISABLED_ENV_VAR = 'AWS_CLI_TELEMETRY_DISABLED'
 
 
 def _get_checksum():
@@ -83,6 +97,7 @@ class CLISessionDatabaseConnection:
             self._cache_dir / _DATABASE_FILENAME,
             check_same_thread=False,
             isolation_level=None,
+            timeout=_BUSY_TIMEOUT_SECONDS,
         )
         self._ensure_database_setup()
 
@@ -93,6 +108,11 @@ class CLISessionDatabaseConnection:
             # Process timed out waiting for database lock.
             # Return any empty `Cursor` object instead of
             # raising an exception.
+            LOG.debug(
+                'Failed to execute session database query: %s',
+                query,
+                exc_info=True,
+            )
             return sqlite3.Cursor(self._connection)
 
     def _ensure_cache_dir(self):
@@ -130,7 +150,9 @@ class CLISessionDatabaseConnection:
         except sqlite3.Error:
             # This is just a performance enhancement so it is optional. Not all
             # systems will have a sqlite compiled with the WAL enabled.
-            pass
+            LOG.debug(
+                'Failed to enable WAL for session database', exc_info=True
+            )
 
 
 class CLISessionDatabaseWriter:
@@ -182,6 +204,12 @@ class CLISessionDatabaseReader:
 
 
 class CLISessionDatabaseSweeper:
+    _CHECK_EXPIRED = """
+        SELECT 1
+        FROM session
+        WHERE timestamp < ?
+        LIMIT 1
+    """
     _DELETE_RECORDS = """
         DELETE FROM session
         WHERE timestamp < ?
@@ -192,10 +220,22 @@ class CLISessionDatabaseSweeper:
 
     def sweep(self, timestamp):
         try:
+            # A DELETE takes a write lock even when it matches no rows, which
+            # is the common case since expired records are rare. Reads don't
+            # take a write lock, so check for expired records first and only
+            # issue the DELETE when there's something to remove. This matters
+            # on network filesystems (e.g. NFS/EFS) where each lock is a
+            # network round trip.
+            has_expired = self._connection.execute(
+                self._CHECK_EXPIRED, (timestamp,)
+            ).fetchone()
+            if has_expired is None:
+                return
             self._connection.execute(self._DELETE_RECORDS, (timestamp,))
         except Exception:
             # This is just a background cleanup task. No need to
             # handle it or direct to stderr.
+            LOG.debug('Failed to sweep session database', exc_info=True)
             return
 
 
@@ -239,14 +279,23 @@ class CLISessionOrchestrator:
     def session_id(self):
         if (cached_data := self._reader.read(self.cache_key)) is not None:
             # Cache hit, but session id is expired. Generate new id and update.
-            if (
+            is_expired = (
                 cached_data.timestamp + _SESSION_LENGTH_SECONDS
                 < self._timestamp
-            ):
+            )
+            if is_expired:
                 cached_data.session_id = self._session_id
-            # Always update the timestamp to last used.
-            cached_data.timestamp = self._timestamp
-            self._writer.write(cached_data)
+            # Update the timestamp to last used, but only if the stored value
+            # is older than _TIMESTAMP_REFRESH_SECONDS. A session can expire
+            # up to this many seconds earlier than its last actual use, but
+            # avoids a write on every invocation if close together.
+            if (
+                is_expired
+                or self._timestamp - cached_data.timestamp
+                > _TIMESTAMP_REFRESH_SECONDS
+            ):
+                cached_data.timestamp = self._timestamp
+                self._writer.write(cached_data)
             return cached_data.session_id
         # Cache miss, generate and write new record.
         session_id = self._session_id
@@ -296,7 +345,18 @@ def _get_cli_session_orchestrator():
     )
 
 
+def is_telemetry_disabled(env=None):
+    if env is None:
+        env = os.environ
+    return ensure_boolean(env.get(_TELEMETRY_DISABLED_ENV_VAR, 'false'))
+
+
 def register_session_id_event(session, orchestrator_factory=None):
+    if is_telemetry_disabled():
+        # Skip registering the event entirely so we never open the session
+        # database. This lets users avoid the database's file locking, which
+        # can be expensive on network filesystems.
+        return
     if orchestrator_factory is None:
         orchestrator_factory = _get_cli_session_orchestrator
     event_emitter = session.get_component('event_emitter')
@@ -321,7 +381,7 @@ def register_session_id_event(session, orchestrator_factory=None):
             # Ideally, the AWS CLI should never throw if the session id
             # can't be generated since it's not critical for users. Issues
             # with session data should instead be caught server-side.
-            pass
+            LOG.debug('Failed to generate session id', exc_info=True)
         event_emitter.unregister('before-create-client', _inject_session_id)
 
     event_emitter.register('before-create-client', _inject_session_id)

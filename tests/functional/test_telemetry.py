@@ -10,6 +10,7 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import os
 import sqlite3
 from unittest.mock import MagicMock, patch
 
@@ -19,6 +20,7 @@ from botocore.session import Session
 
 from awscli.clidriver import create_clidriver
 from awscli.telemetry import (
+    _TIMESTAMP_REFRESH_SECONDS,
     CLISessionData,
     CLISessionDatabaseConnection,
     CLISessionDatabaseReader,
@@ -26,6 +28,7 @@ from awscli.telemetry import (
     CLISessionDatabaseWriter,
     CLISessionGenerator,
     CLISessionOrchestrator,
+    is_telemetry_disabled,
     register_session_id_event,
 )
 from tests.markers import skip_if_windows
@@ -195,6 +198,26 @@ class TestCLISessionDatabaseSweeper:
         # but the `sweep` method catches bare exceptions.
         session_sweeper.sweep({'bad': 'input'})
 
+    def test_sweep_does_not_delete_when_nothing_expired(
+        self, expired_data, session_conn, session_sweeper
+    ):
+        with patch.object(
+            session_conn, 'execute', wraps=session_conn.execute
+        ) as spy:
+            session_sweeper.sweep(1000000000)
+        queries = [call.args[0] for call in spy.call_args_list]
+        assert not any('DELETE' in query for query in queries)
+
+    def test_sweep_deletes_when_expired(
+        self, expired_data, session_conn, session_sweeper
+    ):
+        with patch.object(
+            session_conn, 'execute', wraps=session_conn.execute
+        ) as spy:
+            session_sweeper.sweep(1000000001)
+        queries = [call.args[0] for call in spy.call_args_list]
+        assert any('DELETE' in query for query in queries)
+
 
 class TestCLISessionGenerator:
     def test_generate_session_id(self, session_generator):
@@ -305,8 +328,8 @@ class TestCLISessionOrchestrator:
         session_data_1 = session_reader.read(orchestrator_1.cache_key)
         assert session_data_1.session_id == session_id_1
 
-        # Update the timestamp.
-        patched_time.return_value = 5555555556
+        # Advance past the refresh window so the timestamp is rewritten.
+        patched_time.return_value = 5555555555 + _TIMESTAMP_REFRESH_SECONDS + 1
         orchestrator_2 = CLISessionOrchestrator(
             session_generator, session_writer, session_reader, session_sweeper
         )
@@ -319,8 +342,46 @@ class TestCLISessionOrchestrator:
         assert session_data_2.session_id == session_id_2
         assert session_data_2.session_id == session_data_1.session_id
         # Only timestamp should be updated.
-        assert session_data_2.timestamp == 5555555556
+        assert (
+            session_data_2.timestamp
+            == 5555555555 + _TIMESTAMP_REFRESH_SECONDS + 1
+        )
         assert session_data_2.timestamp != session_data_1.timestamp
+
+    def test_cached_timestamp_not_rewritten_within_refresh_window(
+        self,
+        patched_tty_name,
+        patched_time,
+        patched_stdin,
+        session_sweeper,
+        session_generator,
+        session_reader,
+        session_writer,
+    ):
+        # Rewriting the timestamp takes a write lock, so an invocation within
+        # the refresh window should leave the stored record untouched.
+        patched_stdin.fileno.return_value = None
+
+        orchestrator_1 = CLISessionOrchestrator(
+            session_generator, session_writer, session_reader, session_sweeper
+        )
+        session_id_1 = orchestrator_1.session_id
+        session_data_1 = session_reader.read(orchestrator_1.cache_key)
+
+        # Advance time, but stay inside the refresh window.
+        patched_time.return_value = 5555555555 + _TIMESTAMP_REFRESH_SECONDS - 1
+        orchestrator_2 = CLISessionOrchestrator(
+            session_generator, session_writer, session_reader, session_sweeper
+        )
+        session_id_2 = orchestrator_2.session_id
+        session_data_2 = session_reader.read(orchestrator_2.cache_key)
+
+        # The same session id is still returned to the caller.
+        assert session_id_2 == session_id_1
+        assert session_data_2.session_id == session_data_1.session_id
+        # But the stored timestamp was not rewritten.
+        assert session_data_2.timestamp == session_data_1.timestamp
+        assert session_data_2.timestamp == 5555555555
 
 
 def test_register_session_id_event_injects_sid_on_before_create_client():
@@ -343,6 +404,42 @@ def test_register_session_id_event_injects_sid_on_before_create_client():
     event_emitter.unregister.assert_called_once_with(
         'before-create-client', handler
     )
+
+
+def test_is_telemetry_disabled():
+    assert is_telemetry_disabled({'AWS_CLI_TELEMETRY_DISABLED': 'true'})
+    assert not is_telemetry_disabled({'AWS_CLI_TELEMETRY_DISABLED': 'false'})
+    assert not is_telemetry_disabled({})
+
+
+def test_register_session_id_event_skipped_when_telemetry_disabled():
+    session = MagicMock(Session)
+    event_emitter = MagicMock()
+    session.get_component.return_value = event_emitter
+    orchestrator_factory = MagicMock()
+
+    with patch.dict(os.environ, {'AWS_CLI_TELEMETRY_DISABLED': 'true'}):
+        register_session_id_event(
+            session, orchestrator_factory=orchestrator_factory
+        )
+
+    # No handler is registered, so the session database is never opened.
+    event_emitter.register.assert_not_called()
+    orchestrator_factory.assert_not_called()
+
+
+def test_disabled_telemetry_does_not_create_database(tmp_path):
+    # The whole point of opting out is to avoid the database's file locking,
+    # so ensure no database file is created at all.
+    cache_dir = tmp_path / '.aws' / 'cli' / 'cache'
+    with (
+        patch.dict(os.environ, {'AWS_CLI_TELEMETRY_DISABLED': 'true'}),
+        patch('awscli.telemetry._CACHE_DIR', cache_dir),
+    ):
+        driver = create_clidriver()
+        driver.session.create_client('sts', region_name='us-east-1')
+
+    assert not cache_dir.exists()
 
 
 def test_register_session_id_event_catches_bare_exceptions():

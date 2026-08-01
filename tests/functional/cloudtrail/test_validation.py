@@ -446,6 +446,16 @@ class TestCloudTrailCommand(BaseCloudTrailCommandTest):
         )
         self.assertIn('start-time must occur before end-time', stderr)
 
+    def test_ensures_concurrent_requests_is_positive(self):
+        stdout, stderr, rc = self.run_cmd(
+            f"cloudtrail validate-logs --trail-arn {TEST_TRAIL_ARN} "
+            f"--start-time {START_TIME_ARG} --concurrent-requests 0",
+            255,
+        )
+        self.assertIn(
+            'concurrent-requests: must be a positive integer', stderr
+        )
+
     def test_fails_when_digest_not_from_same_location_as_json_contents(self):
         key_provider, digest_provider, validator = create_scenario(['gap'], [])
 

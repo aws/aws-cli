@@ -16,7 +16,9 @@ import gzip
 import hashlib
 import json
 from argparse import Namespace
+from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timedelta
+from threading import Event
 
 import rsa
 from botocore.exceptions import ClientError
@@ -1564,15 +1566,82 @@ class TestCloudTrailCommand(BaseAWSCommandParamsTest):
             s3_prefix='prefix',
             end_time=None,
             account_id=None,
+            concurrent_requests=4,
         )
         command.handle_args(args)
         self.assertEqual('abc', command.trail_arn)
         self.assertEqual(True, command.is_verbose)
         self.assertEqual('bucket', command.s3_bucket)
         self.assertEqual('prefix', command.s3_prefix)
+        self.assertEqual(4, command.concurrent_requests)
         self.assertEqual(start_date, command.start_time.strftime(DATE_FORMAT))
         self.assertIsNotNone(command.end_time)
         self.assertGreater(command.end_time, command.start_time)
+
+    def test_rejects_non_positive_concurrent_requests(self):
+        command = CloudTrailValidateLogs(mock.Mock())
+        args = Namespace(
+            trail_arn='abc',
+            verbose=False,
+            start_time=START_DATE.strftime(DATE_FORMAT),
+            s3_bucket='bucket',
+            s3_prefix=None,
+            end_time=None,
+            account_id=None,
+            concurrent_requests=0,
+        )
+        with self.assertRaisesRegex(ValueError, 'must be a positive integer'):
+            command.handle_args(args)
+
+    def test_downloads_logs_concurrently_and_records_in_input_order(self):
+        command = CloudTrailValidateLogs(mock.Mock())
+        command.concurrent_requests = 2
+        command.is_verbose = True
+        command.s3_client_provider = mock.Mock()
+        client = command.s3_client_provider.get_client.return_value
+        second_completed = Event()
+        logs = [
+            {
+                's3Bucket': 'bucket',
+                's3Object': 'first',
+                'hashValue': hashlib.sha256(b'{}').hexdigest(),
+            },
+            {
+                's3Bucket': 'bucket',
+                's3Object': 'second',
+                'hashValue': 'invalid-hash',
+            },
+        ]
+
+        def get_object(Bucket, Key):
+            if Key == 'first':
+                if not second_completed.wait(timeout=2):
+                    raise AssertionError('log downloads did not overlap')
+            else:
+                second_completed.set()
+            return {'Body': BytesIO(gzip.compress(b'{}'))}
+
+        client.get_object.side_effect = get_object
+        command._write_status = mock.Mock()
+        with ThreadPoolExecutor(max_workers=2) as executor:
+            command._download_logs(logs, executor)
+
+        self.assertEqual(
+            command.s3_client_provider.get_client.call_args_list,
+            [mock.call('bucket'), mock.call('bucket')],
+        )
+        self.assertEqual(1, command._valid_logs)
+        self.assertEqual(1, command._invalid_logs)
+        self.assertEqual(
+            command._write_status.call_args_list,
+            [
+                mock.call('Log file\ts3://bucket/first\tvalid'),
+                mock.call(
+                    "Log file\ts3://bucket/second\tINVALID: hash value doesn't match",
+                    True,
+                ),
+            ],
+        )
 
 
 class TestS3ClientProvider(BaseAWSCommandParamsTest):

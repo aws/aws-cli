@@ -18,7 +18,9 @@ import logging
 import re
 import sys
 import zlib
+from concurrent.futures import ThreadPoolExecutor
 from datetime import timedelta
+from threading import Lock
 from zlib import error as ZLibError
 
 import rsa
@@ -38,6 +40,13 @@ from awscli.utils import create_nested_client
 LOG = logging.getLogger(__name__)
 DATE_FORMAT = '%Y%m%dT%H%M%SZ'
 DISPLAY_DATE_FORMAT = '%Y-%m-%dT%H:%M:%SZ'
+DEFAULT_CONCURRENT_REQUESTS = 10
+
+_LOG_VALID = 'valid'
+_LOG_INVALID_FORMAT = 'invalid-format'
+_LOG_INVALID_HASH = 'invalid-hash'
+_LOG_MISSING = 'missing'
+_LOG_TRAILING_DATA = 'trailing-data'
 
 
 def format_date(date):
@@ -201,11 +210,13 @@ class S3ClientProvider:
         self._get_bucket_location_region = get_bucket_location_region
         self._client_cache = {}
         self._region_cache = {}
+        self._lock = Lock()
 
     def get_client(self, bucket_name):
         """Creates an S3 client that can work with the given bucket name"""
-        region_name = self._get_bucket_region(bucket_name)
-        return self._create_client(region_name)
+        with self._lock:
+            region_name = self._get_bucket_region(bucket_name)
+            return self._create_client(region_name)
 
     def _get_bucket_region(self, bucket_name):
         """Returns the region of a bucket"""
@@ -975,6 +986,16 @@ class CloudTrailValidateLogs(BasicCommand):
             'action': 'store_true',
             'help_text': 'Display verbose log validation information',
         },
+        {
+            'name': 'concurrent-requests',
+            'cli_type_name': 'integer',
+            'default': DEFAULT_CONCURRENT_REQUESTS,
+            'help_text': (
+                'Maximum number of concurrent log file downloads. The '
+                f'default is {DEFAULT_CONCURRENT_REQUESTS}. Set this value '
+                'to 1 to download log files sequentially.'
+            ),
+        },
     ]
 
     def __init__(self, session):
@@ -988,6 +1009,7 @@ class CloudTrailValidateLogs(BasicCommand):
         self.s3_client_provider = None
         self.cloudtrail_client = None
         self.account_id = None
+        self.concurrent_requests = DEFAULT_CONCURRENT_REQUESTS
         self._source_region = None
         self._valid_digests = 0
         self._invalid_digests = 0
@@ -1016,6 +1038,12 @@ class CloudTrailValidateLogs(BasicCommand):
         self.s3_bucket = args.s3_bucket
         self.s3_prefix = args.s3_prefix
         self.account_id = args.account_id
+        self.concurrent_requests = args.concurrent_requests
+        if self.concurrent_requests < 1:
+            raise ValueError(
+                'Invalid value for concurrent-requests: must be a positive '
+                'integer'
+            )
         self.start_time = normalize_date(parse_date(args.start_time))
         if args.end_time:
             self.end_time = normalize_date(parse_date(args.end_time))
@@ -1063,43 +1091,44 @@ class CloudTrailValidateLogs(BasicCommand):
         )
         self._write_startup_text()
 
-        digests = traverser.traverse_digests(
-            self.start_time, self.end_time, is_backfill=False
-        )
-        for digest in digests:
-            # Only valid digests are yielded and only valid digests can adjust
-            # the found times that are reported in the CLI output summary.
-            self._track_found_times(digest)
-
-            self._valid_digests += 1
-
-            self._write_status(
-                f'Digest file\ts3://{digest["digestS3Bucket"]}/{digest["digestS3Object"]}\tvalid'
+        with ThreadPoolExecutor(
+            max_workers=self.concurrent_requests
+        ) as executor:
+            digests = traverser.traverse_digests(
+                self.start_time, self.end_time, is_backfill=False
             )
+            for digest in digests:
+                # Only valid digests are yielded and only valid digests can
+                # adjust the found times that are reported in the CLI output
+                # summary.
+                self._track_found_times(digest)
 
-            if not digest['logFiles']:
-                continue
-            for log in digest['logFiles']:
-                self._download_log(log)
+                self._valid_digests += 1
 
-        backfill_digests = traverser.traverse_digests(
-            self.start_time, self.end_time, is_backfill=True
-        )
-        for digest in backfill_digests:
-            # Only valid digests are yielded and only valid digests can adjust
-            # the found times that are reported in the CLI output summary.
-            self._track_found_times(digest)
+                self._write_status(
+                    f'Digest file\ts3://{digest["digestS3Bucket"]}/{digest["digestS3Object"]}\tvalid'
+                )
 
-            self._valid_backfill_digests += 1
+                if digest['logFiles']:
+                    self._download_logs(digest['logFiles'], executor)
 
-            self._write_status(
-                f'(backfill) Digest file\ts3://{digest["digestS3Bucket"]}/{digest["digestS3Object"]}\tvalid'
+            backfill_digests = traverser.traverse_digests(
+                self.start_time, self.end_time, is_backfill=True
             )
+            for digest in backfill_digests:
+                # Only valid digests are yielded and only valid digests can
+                # adjust the found times that are reported in the CLI output
+                # summary.
+                self._track_found_times(digest)
 
-            if not digest['logFiles']:
-                continue
-            for log in digest['logFiles']:
-                self._download_log(log)
+                self._valid_backfill_digests += 1
+
+                self._write_status(
+                    f'(backfill) Digest file\ts3://{digest["digestS3Bucket"]}/{digest["digestS3Object"]}\tvalid'
+                )
+
+                if digest['logFiles']:
+                    self._download_logs(digest['logFiles'], executor)
 
         self._write_summary_text()
 
@@ -1120,8 +1149,22 @@ class CloudTrailValidateLogs(BasicCommand):
         if not self._found_end_time or latest_end_time > self._found_end_time:
             self._found_end_time = latest_end_time
 
+    def _download_logs(self, logs, executor):
+        if self.concurrent_requests == 1 or len(logs) == 1:
+            results = [self._download_log(log) for log in logs]
+        else:
+            futures = [
+                executor.submit(self._download_log, log) for log in logs
+            ]
+            # Resolve futures in input order so status output remains
+            # deterministic even when downloads complete out of order.
+            results = [future.result() for future in futures]
+
+        for log, result in zip(logs, results):
+            self._record_log_result(log, result)
+
     def _download_log(self, log):
-        """Download a log, decompress, and compare SHA256 checksums"""
+        """Download and validate one log without mutating command state."""
         try:
             # Create a client that can work with this bucket.
             client = self.s3_client_provider.get_client(log['s3Bucket'])
@@ -1137,21 +1180,31 @@ class CloudTrailValidateLogs(BasicCommand):
             if remaining_data:
                 rolling_hash.update(remaining_data)
             if gzip_inflater.unused_data:
-                self._on_log_trailing_data(log)
-                return
+                return _LOG_TRAILING_DATA
             computed_hash = rolling_hash.hexdigest()
             if computed_hash != log['hashValue']:
-                self._on_log_invalid(log)
-            else:
-                self._valid_logs += 1
-                self._write_status(
-                    f'Log file\ts3://{log["s3Bucket"]}/{log["s3Object"]}\tvalid'
-                )
+                return _LOG_INVALID_HASH
+            return _LOG_VALID
         except ClientError as e:
             if e.response['Error']['Code'] != 'NoSuchKey':
                 raise
-            self._on_missing_log(log)
+            return _LOG_MISSING
         except Exception:
+            return _LOG_INVALID_FORMAT
+
+    def _record_log_result(self, log, result):
+        if result == _LOG_VALID:
+            self._valid_logs += 1
+            self._write_status(
+                f'Log file\ts3://{log["s3Bucket"]}/{log["s3Object"]}\tvalid'
+            )
+        elif result == _LOG_INVALID_HASH:
+            self._on_log_invalid(log)
+        elif result == _LOG_MISSING:
+            self._on_missing_log(log)
+        elif result == _LOG_TRAILING_DATA:
+            self._on_log_trailing_data(log)
+        else:
             self._on_invalid_log_format(log)
 
     def _write_status(self, message, is_error=False):

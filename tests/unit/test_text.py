@@ -219,6 +219,22 @@ class TestSection(unittest.TestCase):
             'FOO\th\n'
         )
 
+    def test_dicts_mixed_with_scalars(self):
+        # A --query multi-select list such as '[InstanceId, State]'
+        # produces a list holding both a scalar and a dict.
+        self.assert_text_renders_to(
+            ['i-123', dict(Code=16, Name='running')],
+            'i-123\n'
+            '16\trunning\n'
+        )
+
+    def test_dicts_mixed_with_lists(self):
+        self.assert_text_renders_to(
+            [['a', 'b'], dict(Code=16, Name='running')],
+            'a\tb\n'
+            '16\trunning\n'
+        )
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -362,6 +362,41 @@ JMESPATH_FILTERED_RESPONSE_DICT_TABLE = """\
 """
 
 
+# A --query multi-select list such as '[InstanceId, State]' returns a list
+# holding both a scalar and an object.
+MIXED_SCALAR_FIRST = ["i-123", {"Code": 16, "Name": "running"}]
+
+MIXED_SCALAR_FIRST_TABLE = """\
+---------------------
+|   OperationName   |
++-------------------+
+|  i-123            |
++-------------------+
+|   OperationName   |
++-------+-----------+
+| Code  |   Name    |
++-------+-----------+
+|  16   |  running  |
++-------+-----------+
+"""
+
+MIXED_DICT_FIRST = [{"Code": 16, "Name": "running"}, "i-123"]
+
+MIXED_DICT_FIRST_TABLE = """\
+---------------------
+|   OperationName   |
++-------+-----------+
+| Code  |   Name    |
++-------+-----------+
+|  16   |  running  |
++-------+-----------+
+|   OperationName   |
++-------------------+
+|  i-123            |
++-------------------+
+"""
+
+
 class Object(object):
     def __init__(self, **kwargs):
         self.__dict__.update(kwargs)
@@ -425,3 +460,11 @@ class TestTableFormatter(unittest.TestCase):
     def test_jmespath_filtered_dict_response(self):
         self.assert_data_renders_to(data=JMESPATH_FILTERED_RESPONSE_DICT,
                                     table=JMESPATH_FILTERED_RESPONSE_DICT_TABLE)
+
+    def test_mixed_list_with_leading_scalar(self):
+        self.assert_data_renders_to(data=MIXED_SCALAR_FIRST,
+                                    table=MIXED_SCALAR_FIRST_TABLE)
+
+    def test_mixed_list_with_leading_dict(self):
+        self.assert_data_renders_to(data=MIXED_DICT_FIRST,
+                                    table=MIXED_DICT_FIRST_TABLE)

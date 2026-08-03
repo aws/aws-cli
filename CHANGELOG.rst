@@ -2,6 +2,18 @@
 CHANGELOG
 =========
 
+1.45.63
+=======
+
+* api-change:``directconnect``: Added route visibility support for AWS Direct Connect, allowing customers to call ListVirtualInterfaceRoutes to view the BGP routes including AS path and BGP communities advertised over their virtual interfaces.
+* api-change:``eks-auth``: Added eksNodeName, instanceId, and zone optional parameters to the AssumeRoleForPodIdentity API.
+* api-change:``mediaconvert``: Updates Kantar server URL validation to accept Fifty5Blue domain. Adds support for output to S3 Glacier Instant Retrieval.
+* api-change:``network-firewall``: This launch allows customers to use Network Firewall as an explicit Proxy and protect their workloads against threat of data exfiltration.
+* api-change:``observabilityadmin``: Launch CMK support for Telemetry Enablement Organization and Account Rules.
+* api-change:``timestream-influxdb``: This release adds support for customer-managed backup restore, and encryption of new DbInstances and DbClusters using customer-managed KMS keys.
+* api-change:``wafv2``: Updated descriptions for number of PreParseTextTransformations allowed per rule statement
+
+
 1.45.62
 =======
 

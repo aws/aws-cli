@@ -1,0 +1,66 @@
+{
+    "version": "1",
+    "testCases": [
+        {
+            "documentation": "Resolves the us-east-1 endpoint and signs for us-east-1.",
+            "params": {
+                "Region": "us-east-1"
+            },
+            "expect": {
+                "endpoint": {
+                    "url": "https://pricingplanmanager.us-east-1.api.aws",
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "name": "sigv4",
+                                "signingName": "pricingplanmanager",
+                                "signingRegion": "us-east-1"
+                            }
+                        ]
+                    }
+                }
+            }
+        },
+        {
+            "documentation": "Routes any other region to the us-east-1 endpoint and still signs for us-east-1.",
+            "params": {
+                "Region": "us-west-2"
+            },
+            "expect": {
+                "endpoint": {
+                    "url": "https://pricingplanmanager.us-east-1.api.aws",
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "name": "sigv4",
+                                "signingName": "pricingplanmanager",
+                                "signingRegion": "us-east-1"
+                            }
+                        ]
+                    }
+                }
+            }
+        },
+        {
+            "documentation": "A custom endpoint override wins over region resolution and signs for us-east-1.",
+            "params": {
+                "Region": "us-west-2",
+                "Endpoint": "https://pricingplanmanager.us-east-1.api.aws"
+            },
+            "expect": {
+                "endpoint": {
+                    "url": "https://pricingplanmanager.us-east-1.api.aws",
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "name": "sigv4",
+                                "signingName": "pricingplanmanager",
+                                "signingRegion": "us-east-1"
+                            }
+                        ]
+                    }
+                }
+            }
+        }
+    ]
+}

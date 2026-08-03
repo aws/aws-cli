@@ -15,7 +15,7 @@ from unittest import mock
 
 import pytest
 
-from tests import requires_crt, skip_if_crt, skip_if_windows
+from tests.utils.botocore import requires_crt, skip_if_crt, skip_if_windows
 
 
 class TestSkipIfWindows:
@@ -27,7 +27,7 @@ class TestSkipIfWindows:
                 pass
 
     def test_skip_if_windows_skips_on_windows(self):
-        with mock.patch('tests.platform') as mock_platform:
+        with mock.patch('tests.utils.botocore.platform') as mock_platform:
             mock_platform.system.return_value = 'Windows'
 
             @skip_if_windows('Not supported on Windows')
@@ -37,7 +37,7 @@ class TestSkipIfWindows:
             assert getattr(my_test, '__unittest_skip__', False) is True
 
     def test_skip_if_windows_runs_on_non_windows(self):
-        with mock.patch('tests.platform') as mock_platform:
+        with mock.patch('tests.utils.botocore.platform') as mock_platform:
             mock_platform.system.return_value = 'Linux'
 
             @skip_if_windows('Not supported on Windows')
@@ -56,7 +56,7 @@ class TestRequiresCrt:
                 pass
 
     def test_requires_crt_skips_when_no_crt(self):
-        with mock.patch('tests.HAS_CRT', False):
+        with mock.patch('tests.utils.botocore.HAS_CRT', False):
 
             @requires_crt()
             def my_test():
@@ -65,7 +65,7 @@ class TestRequiresCrt:
             assert getattr(my_test, '__unittest_skip__', False) is True
 
     def test_requires_crt_runs_when_crt_available(self):
-        with mock.patch('tests.HAS_CRT', True):
+        with mock.patch('tests.utils.botocore.HAS_CRT', True):
 
             @requires_crt()
             def my_test():
@@ -83,7 +83,7 @@ class TestSkipIfCrt:
                 pass
 
     def test_skip_if_crt_skips_when_crt_available(self):
-        with mock.patch('tests.HAS_CRT', True):
+        with mock.patch('tests.utils.botocore.HAS_CRT', True):
 
             @skip_if_crt()
             def my_test():
@@ -92,7 +92,7 @@ class TestSkipIfCrt:
             assert getattr(my_test, '__unittest_skip__', False) is True
 
     def test_skip_if_crt_runs_when_no_crt(self):
-        with mock.patch('tests.HAS_CRT', False):
+        with mock.patch('tests.utils.botocore.HAS_CRT', False):
 
             @skip_if_crt()
             def my_test():

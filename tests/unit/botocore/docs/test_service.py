@@ -15,7 +15,7 @@ import os
 from botocore.docs.service import ServiceDocumenter
 from botocore.session import get_session
 from tests import mock
-from tests.unit.docs import BaseDocsTest
+from tests.unit.botocore.docs import BaseDocsTest
 
 
 class TestServiceDocumenter(BaseDocsTest):

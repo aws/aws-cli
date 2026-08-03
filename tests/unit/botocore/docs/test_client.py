@@ -15,7 +15,7 @@ from botocore.docs.client import (
     ClientDocumenter,
     ClientExceptionsDocumenter,
 )
-from tests.unit.docs import BaseDocsTest
+from tests.unit.botocore.docs import BaseDocsTest
 
 
 class TestClientDocumenter(BaseDocsTest):

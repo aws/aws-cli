@@ -13,7 +13,7 @@
 from botocore import xform_name
 from botocore.docs.client import ClientContextParamsDocumenter
 from botocore.docs.service import ServiceDocumenter
-from tests.functional.docs import BaseDocsFunctionalTest
+from tests.functional.botocore.docs import BaseDocsFunctionalTest
 
 
 class TestS3Docs(BaseDocsFunctionalTest):

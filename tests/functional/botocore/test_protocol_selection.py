@@ -16,7 +16,7 @@ from botocore.parsers import RestJSONParser
 from botocore.session import Session
 from botocore.utils import PRIORITY_ORDERED_SUPPORTED_PROTOCOLS
 from tests import ClientHTTPStubber
-from tests.functional import TEST_MODELS_DIR
+from tests.functional.botocore import TEST_MODELS_DIR
 
 
 def test_correct_protocol_selection():

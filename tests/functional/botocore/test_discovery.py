@@ -18,7 +18,7 @@ from botocore.exceptions import (
     InvalidEndpointDiscoveryConfigurationError,
 )
 from tests import ClientHTTPStubber, temporary_file
-from tests.functional import FunctionalSessionTest
+from tests.functional.botocore import FunctionalSessionTest
 
 
 class TestEndpointDiscovery(FunctionalSessionTest):

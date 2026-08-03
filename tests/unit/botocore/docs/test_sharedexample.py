@@ -15,7 +15,7 @@ from botocore.docs.sharedexample import (
     SharedExampleDocumenter,
     document_shared_examples,
 )
-from tests.unit.docs import BaseDocsTest
+from tests.unit.botocore.docs import BaseDocsTest
 
 
 class TestDocumentSharedExamples(BaseDocsTest):

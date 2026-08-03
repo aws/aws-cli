@@ -12,7 +12,7 @@
 # language governing permissions and limitations under the License.
 from botocore.docs.paginator import PaginatorDocumenter
 from botocore.paginate import PaginatorModel
-from tests.unit.docs import BaseDocsTest
+from tests.unit.botocore.docs import BaseDocsTest
 
 
 class TestPaginatorDocumenter(BaseDocsTest):

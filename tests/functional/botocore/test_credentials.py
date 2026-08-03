@@ -68,7 +68,7 @@ from tests import (
     temporary_file,
     unittest,
 )
-from tests.functional.test_useragent import (
+from tests.functional.botocore.test_useragent import (
     get_captured_ua_strings,
     parse_registered_feature_ids,
 )

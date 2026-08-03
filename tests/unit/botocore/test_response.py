@@ -26,7 +26,7 @@ from botocore.exceptions import (
     ResponseStreamingError,
 )
 from tests import unittest
-from tests.unit import BaseResponseTest
+from tests.unit.botocore import BaseResponseTest
 
 XMLBODY1 = (
     b'<?xml version="1.0" encoding="UTF-8"?><Error>'

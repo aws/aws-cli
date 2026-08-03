@@ -17,7 +17,7 @@ from botocore.docs.params import (
 from botocore.docs.utils import DocumentedShape
 from botocore.hooks import HierarchicalEmitter
 from tests import mock
-from tests.unit.docs import BaseDocsTest
+from tests.unit.botocore.docs import BaseDocsTest
 
 
 class BaseParamsDocumenterTest(BaseDocsTest):

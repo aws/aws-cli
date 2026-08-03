@@ -20,7 +20,7 @@ from botocore.docs.method import (
 from botocore.docs.utils import DocumentedShape
 from botocore.hooks import HierarchicalEmitter
 from tests import unittest
-from tests.unit.docs import BaseDocsTest
+from tests.unit.botocore.docs import BaseDocsTest
 
 
 class TestGetInstanceMethods(unittest.TestCase):

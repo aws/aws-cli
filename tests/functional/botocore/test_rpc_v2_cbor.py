@@ -12,7 +12,7 @@
 # language governing permissions and limitations under the License.
 
 from tests import ClientHTTPStubber, patch_load_service_model
-from tests.functional.test_useragent import (
+from tests.functional.botocore.test_useragent import (
     get_captured_ua_strings,
     parse_registered_feature_ids,
 )

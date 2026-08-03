@@ -1,0 +1,882 @@
+{
+  "version":"2.0",
+  "metadata":{
+    "apiVersion":"2025-08-05",
+    "auth":["aws.auth#sigv4"],
+    "endpointPrefix":"pricingplanmanager",
+    "protocol":"rest-json",
+    "protocols":["rest-json"],
+    "serviceFullName":"PricingPlanManager",
+    "serviceId":"Pricing Plan Manager",
+    "signatureVersion":"v4",
+    "signingName":"pricingplanmanager",
+    "uid":"pricing-plan-manager-2025-08-05"
+  },
+  "operations":{
+    "ApprovePaidSubscription":{
+      "name":"ApprovePaidSubscription",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v1/ApprovePaidSubscription",
+        "responseCode":200
+      },
+      "input":{"shape":"ApprovePaidSubscriptionInput"},
+      "output":{"shape":"ApprovePaidSubscriptionOutput"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Approves a subscription that is in <code>PENDING_APPROVAL</code> status, activating it and starting billing.</p> <note> <p>This operation requires the current <code>ETag</code> value for concurrency control. Retrieve it from a previous <code>GetSubscription</code> or <code>ListSubscriptions</code> response.</p> </note>"
+    },
+    "AssociateResourcesToSubscription":{
+      "name":"AssociateResourcesToSubscription",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v1/AssociateResourcesToSubscription",
+        "responseCode":200
+      },
+      "input":{"shape":"AssociateResourcesToSubscriptionInput"},
+      "output":{"shape":"AssociateResourcesToSubscriptionOutput"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Adds one or more resources to an existing subscription. The subscription must be in an active state that is not pending other changes.</p> <note> <p>For subscriptions in the CloudFront plan family, the associated resources must include exactly one Amazon CloudFront distribution and one AWS WAF web ACL. You can also include other supported resources, such as Amazon Route 53 hosted zones, and CloudFront KeyValueStores.</p> </note>"
+    },
+    "CancelSubscription":{
+      "name":"CancelSubscription",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v1/CancelSubscription",
+        "responseCode":200
+      },
+      "input":{"shape":"CancelSubscriptionInput"},
+      "output":{"shape":"CancelSubscriptionOutput"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Cancels a flat-rate pricing subscription.</p> <note> <p>For active subscriptions, the cancellation is scheduled to take effect at the end of the current billing period. The subscription remains active until that date. To revert a pending cancellation, use <code>CancelSubscriptionChange</code>.</p> <p>For subscriptions in <code>PENDING_APPROVAL</code> status, the subscription is deleted immediately without scheduling.</p> </note>"
+    },
+    "CancelSubscriptionChange":{
+      "name":"CancelSubscriptionChange",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v1/CancelSubscriptionChange",
+        "responseCode":200
+      },
+      "input":{"shape":"CancelSubscriptionChangeInput"},
+      "output":{"shape":"CancelSubscriptionChangeOutput"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Cancels a pending scheduled change on a subscription, such as a pending downgrade or cancellation. The subscription returns to its state before the change was scheduled.</p> <note> <p>You cannot cancel a scheduled change close to its effective date. If the change is within the processing window, this operation returns an error.</p> </note>"
+    },
+    "CreateSubscription":{
+      "name":"CreateSubscription",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v1/CreateSubscription",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateSubscriptionInput"},
+      "output":{"shape":"CreateSubscriptionOutput"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Creates a flat-rate pricing subscription for the specified resources.</p> <note> <p>When <code>approvalMode</code> is set to <code>MANUAL</code>, paid-tier subscriptions are created in <code>PENDING_APPROVAL</code> status and require a separate <code>ApprovePaidSubscription</code> call before billing starts. Free-tier subscriptions are always activated immediately regardless of approval mode.</p> <p>When <code>approvalMode</code> is set to <code>IMMEDIATE</code> or is not specified, the subscription is activated immediately.</p> </note>"
+    },
+    "DisassociateResourcesFromSubscription":{
+      "name":"DisassociateResourcesFromSubscription",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v1/DisassociateResourcesFromSubscription",
+        "responseCode":200
+      },
+      "input":{"shape":"DisassociateResourcesFromSubscriptionInput"},
+      "output":{"shape":"DisassociateResourcesFromSubscriptionOutput"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Removes one or more resources from an existing subscription.</p> <note> <p>For subscriptions in the CloudFront plan family, the associated resources must always include exactly one Amazon CloudFront distribution and exactly one AWS WAF web ACL. You cannot remove these required resources.</p> </note>"
+    },
+    "GetSubscription":{
+      "name":"GetSubscription",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v1/GetSubscription",
+        "responseCode":200
+      },
+      "input":{"shape":"GetSubscriptionInput"},
+      "output":{"shape":"GetSubscriptionOutput"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Returns the details of a flat-rate pricing subscription, including its current status, associated resources, and any pending scheduled changes.</p>",
+      "readonly":true
+    },
+    "ListSubscriptions":{
+      "name":"ListSubscriptions",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v1/ListSubscriptions",
+        "responseCode":200
+      },
+      "input":{"shape":"ListSubscriptionsInput"},
+      "output":{"shape":"ListSubscriptionsOutput"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Returns a summary of all flat-rate pricing subscriptions in the calling account.</p>",
+      "readonly":true
+    },
+    "UpdateSubscription":{
+      "name":"UpdateSubscription",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v1/UpdateSubscription",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateSubscriptionInput"},
+      "output":{"shape":"UpdateSubscriptionOutput"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Changes the plan tier of an existing subscription.</p> <note> <p>Upgrades take effect immediately. Downgrades are scheduled and the current tier remains unchanged until the end of the billing cycle (calendar month). You cannot update a subscription while a scheduled change is pending. To make a new change, first cancel the pending change using <code>CancelSubscriptionChange</code>.</p> <p>This operation replaces the plan tier value. If you omit the optional <code>usageLevel</code> field, it is reset to the default.</p> </note>"
+    }
+  },
+  "shapes":{
+    "AccessDeniedException":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{"shape":"String"}
+      },
+      "documentation":"<p>You do not have the required permissions to perform this operation. Verify that your IAM policy grants access to this action.</p>",
+      "error":{
+        "httpStatusCode":403,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "ApprovalMode":{
+      "type":"string",
+      "documentation":"<p>Determines whether a subscription requires explicit approval before billing starts.</p>",
+      "enum":[
+        "MANUAL",
+        "IMMEDIATE"
+      ]
+    },
+    "ApprovePaidSubscriptionInput":{
+      "type":"structure",
+      "required":[
+        "arn",
+        "ifMatch"
+      ],
+      "members":{
+        "arn":{
+          "shape":"SubscriptionArn",
+          "documentation":"<p>The ARN of the subscription to approve.</p>"
+        },
+        "ifMatch":{
+          "shape":"String",
+          "documentation":"<p>The <code>ETag</code> value from a previous <code>GetSubscription</code> or <code>ListSubscriptions</code> response. This ensures you are approving the expected version of the subscription.</p>",
+          "location":"header",
+          "locationName":"If-Match"
+        },
+        "clientToken":{
+          "shape":"IdempotencyToken",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the request is handled only once.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "ApprovePaidSubscriptionOutput":{
+      "type":"structure",
+      "required":[
+        "subscription",
+        "eTag"
+      ],
+      "members":{
+        "subscription":{
+          "shape":"Subscription",
+          "documentation":"<p>The details of the approved subscription.</p>"
+        },
+        "eTag":{
+          "shape":"String",
+          "documentation":"<p>The updated entity tag for concurrency control.</p>",
+          "location":"header",
+          "locationName":"ETag"
+        }
+      },
+      "payload":"subscription"
+    },
+    "AssociateResourcesToSubscriptionInput":{
+      "type":"structure",
+      "required":[
+        "arn",
+        "resourceArns",
+        "ifMatch"
+      ],
+      "members":{
+        "arn":{
+          "shape":"SubscriptionArn",
+          "documentation":"<p>The ARN of the subscription to add resources to.</p>"
+        },
+        "resourceArns":{
+          "shape":"ResourceArns",
+          "documentation":"<p>The ARNs of the resources to add to the subscription.</p>"
+        },
+        "ifMatch":{
+          "shape":"String",
+          "documentation":"<p>The <code>ETag</code> value from a previous <code>GetSubscription</code> or <code>ListSubscriptions</code> response.</p>",
+          "location":"header",
+          "locationName":"If-Match"
+        },
+        "clientToken":{
+          "shape":"IdempotencyToken",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the request is handled only once.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "AssociateResourcesToSubscriptionOutput":{
+      "type":"structure",
+      "required":[
+        "subscription",
+        "eTag"
+      ],
+      "members":{
+        "subscription":{
+          "shape":"Subscription",
+          "documentation":"<p>The details of the subscription with the newly added resources.</p>"
+        },
+        "eTag":{
+          "shape":"String",
+          "documentation":"<p>The updated entity tag for concurrency control.</p>",
+          "location":"header",
+          "locationName":"ETag"
+        }
+      },
+      "payload":"subscription"
+    },
+    "CancelSubscriptionChangeInput":{
+      "type":"structure",
+      "required":[
+        "arn",
+        "ifMatch"
+      ],
+      "members":{
+        "arn":{
+          "shape":"SubscriptionArn",
+          "documentation":"<p>The ARN of the subscription whose pending change you want to cancel.</p>"
+        },
+        "ifMatch":{
+          "shape":"String",
+          "documentation":"<p>The <code>ETag</code> value from a previous <code>GetSubscription</code> or <code>ListSubscriptions</code> response.</p>",
+          "location":"header",
+          "locationName":"If-Match"
+        },
+        "clientToken":{
+          "shape":"IdempotencyToken",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the request is handled only once.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "CancelSubscriptionChangeOutput":{
+      "type":"structure",
+      "required":[
+        "subscription",
+        "eTag"
+      ],
+      "members":{
+        "subscription":{
+          "shape":"Subscription",
+          "documentation":"<p>The details of the subscription with the pending change removed.</p>"
+        },
+        "eTag":{
+          "shape":"String",
+          "documentation":"<p>The updated entity tag for concurrency control.</p>",
+          "location":"header",
+          "locationName":"ETag"
+        }
+      },
+      "payload":"subscription"
+    },
+    "CancelSubscriptionInput":{
+      "type":"structure",
+      "required":[
+        "arn",
+        "ifMatch"
+      ],
+      "members":{
+        "arn":{
+          "shape":"SubscriptionArn",
+          "documentation":"<p>The ARN of the subscription to cancel.</p>"
+        },
+        "ifMatch":{
+          "shape":"String",
+          "documentation":"<p>The <code>ETag</code> value from a previous <code>GetSubscription</code> or <code>ListSubscriptions</code> response.</p>",
+          "location":"header",
+          "locationName":"If-Match"
+        },
+        "clientToken":{
+          "shape":"IdempotencyToken",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the request is handled only once.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "CancelSubscriptionOutput":{
+      "type":"structure",
+      "required":[
+        "subscription",
+        "eTag"
+      ],
+      "members":{
+        "subscription":{
+          "shape":"Subscription",
+          "documentation":"<p>The details of the subscription with the pending cancellation. For active subscriptions, a <code>scheduledChange</code> of type <code>CANCELLATION</code> is included.</p>"
+        },
+        "eTag":{
+          "shape":"String",
+          "documentation":"<p>The updated entity tag for concurrency control.</p>",
+          "location":"header",
+          "locationName":"ETag"
+        }
+      },
+      "payload":"subscription"
+    },
+    "ConflictException":{
+      "type":"structure",
+      "required":[
+        "message",
+        "resourceId"
+      ],
+      "members":{
+        "message":{"shape":"String"},
+        "resourceId":{
+          "shape":"String",
+          "documentation":"<p>The identifier of the resource that has a conflicting state.</p>"
+        }
+      },
+      "documentation":"<p>The request conflicts with the current state of the resource. This typically occurs when the <code>ETag</code> value in the <code>If-Match</code> header does not match the current version of the subscription. Retrieve the latest version and retry.</p>",
+      "error":{
+        "httpStatusCode":409,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "CreateSubscriptionInput":{
+      "type":"structure",
+      "required":[
+        "planFamily",
+        "planTier",
+        "resourceArns"
+      ],
+      "members":{
+        "planFamily":{
+          "shape":"String",
+          "documentation":"<p>The pricing plan family to subscribe to, such as <code>CloudFront</code>.</p>"
+        },
+        "planTier":{
+          "shape":"String",
+          "documentation":"<p>The tier level for the subscription, such as <code>FREE</code>, <code>PRO</code>, <code>BUSINESS</code>, or <code>PREMIUM</code>.</p>"
+        },
+        "usageLevel":{
+          "shape":"String",
+          "documentation":"<p>The usage level within the plan tier. Specify <code>DEFAULT</code> for the base configuration, or a higher level if your plan tier supports it.</p>"
+        },
+        "resourceArns":{
+          "shape":"ResourceArns",
+          "documentation":"<p>The ARNs of the AWS resources to include in the subscription. Specify one or more supported resources.</p> <note> <p>For subscriptions in the CloudFront plan family, the resources must include exactly one Amazon CloudFront distribution and exactly one AWS WAF web ACL. You can also include other supported resources, such as Amazon Route 53 hosted zones and CloudFront KeyValueStores.</p> </note>"
+        },
+        "approvalMode":{
+          "shape":"ApprovalMode",
+          "documentation":"<p>Determines whether the subscription requires explicit approval before billing starts. Set to <code>MANUAL</code> to require a separate <code>ApprovePaidSubscription</code> call, or <code>IMMEDIATE</code> to activate the subscription right away. Defaults to <code>IMMEDIATE</code> if not specified.</p>"
+        },
+        "clientToken":{
+          "shape":"IdempotencyToken",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure that the request is handled only once. If you send the same request with the same client token, the API returns the original response without creating a duplicate subscription.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "CreateSubscriptionOutput":{
+      "type":"structure",
+      "required":[
+        "subscription",
+        "eTag"
+      ],
+      "members":{
+        "subscription":{
+          "shape":"Subscription",
+          "documentation":"<p>The details of the newly created subscription.</p>"
+        },
+        "eTag":{
+          "shape":"String",
+          "documentation":"<p>The entity tag for concurrency control. Use this value in the <code>If-Match</code> header for subsequent operations on this subscription.</p>",
+          "location":"header",
+          "locationName":"ETag"
+        }
+      },
+      "payload":"subscription"
+    },
+    "DisassociateResourcesFromSubscriptionInput":{
+      "type":"structure",
+      "required":[
+        "arn",
+        "resourceArns",
+        "ifMatch"
+      ],
+      "members":{
+        "arn":{
+          "shape":"SubscriptionArn",
+          "documentation":"<p>The ARN of the subscription to remove resources from.</p>"
+        },
+        "resourceArns":{
+          "shape":"ResourceArns",
+          "documentation":"<p>The ARNs of the resources to remove from the subscription. For subscriptions in the CloudFront plan family, you cannot remove the required CloudFront distribution or WAF web ACL.</p>"
+        },
+        "ifMatch":{
+          "shape":"String",
+          "documentation":"<p>The <code>ETag</code> value from a previous <code>GetSubscription</code> or <code>ListSubscriptions</code> response.</p>",
+          "location":"header",
+          "locationName":"If-Match"
+        },
+        "clientToken":{
+          "shape":"IdempotencyToken",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the request is handled only once.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "DisassociateResourcesFromSubscriptionOutput":{
+      "type":"structure",
+      "required":[
+        "subscription",
+        "eTag"
+      ],
+      "members":{
+        "subscription":{
+          "shape":"Subscription",
+          "documentation":"<p>The details of the subscription with the specified resources removed.</p>"
+        },
+        "eTag":{
+          "shape":"String",
+          "documentation":"<p>The updated entity tag for concurrency control.</p>",
+          "location":"header",
+          "locationName":"ETag"
+        }
+      },
+      "payload":"subscription"
+    },
+    "GetSubscriptionInput":{
+      "type":"structure",
+      "required":["arn"],
+      "members":{
+        "arn":{
+          "shape":"SubscriptionArn",
+          "documentation":"<p>The ARN of the subscription to retrieve.</p>"
+        }
+      }
+    },
+    "GetSubscriptionOutput":{
+      "type":"structure",
+      "required":[
+        "subscription",
+        "eTag"
+      ],
+      "members":{
+        "subscription":{
+          "shape":"Subscription",
+          "documentation":"<p>The details of the requested subscription.</p>"
+        },
+        "eTag":{
+          "shape":"String",
+          "documentation":"<p>The entity tag for concurrency control. Use this value in the <code>If-Match</code> header for subsequent operations on this subscription.</p>",
+          "location":"header",
+          "locationName":"ETag"
+        }
+      },
+      "payload":"subscription"
+    },
+    "IdempotencyToken":{
+      "type":"string",
+      "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure a request is handled only once.</p>",
+      "max":64,
+      "min":1
+    },
+    "InternalServerException":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{"shape":"String"}
+      },
+      "documentation":"<p>An unexpected error occurred on the server. Retry the request.</p>",
+      "error":{"httpStatusCode":500},
+      "exception":true,
+      "fault":true
+    },
+    "ListSubscriptionsInput":{
+      "type":"structure",
+      "members":{
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>A token from a previous <code>ListSubscriptions</code> response. If the response included a <code>nextToken</code>, there are more results available. Pass this value to retrieve the next page of results.</p>"
+        }
+      }
+    },
+    "ListSubscriptionsOutput":{
+      "type":"structure",
+      "required":["subscriptionSummaries"],
+      "members":{
+        "subscriptionSummaries":{
+          "shape":"SubscriptionSummaryList",
+          "documentation":"<p>The list of subscription summaries for the calling account.</p>"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>A token that indicates there are more results available. Pass this value in a subsequent <code>ListSubscriptions</code> request to retrieve the next page of results.</p>"
+        }
+      }
+    },
+    "ResourceArns":{
+      "type":"list",
+      "member":{"shape":"String"},
+      "documentation":"<p>A list of 1 to 10 AWS resource ARNs to include in the subscription.</p>",
+      "max":10,
+      "min":1
+    },
+    "ResourceNotFoundException":{
+      "type":"structure",
+      "required":[
+        "message",
+        "resourceId"
+      ],
+      "members":{
+        "message":{"shape":"String"},
+        "resourceId":{
+          "shape":"String",
+          "documentation":"<p>The identifier of the resource that was not found.</p>"
+        }
+      },
+      "documentation":"<p>The specified subscription was not found. Verify that the ARN is correct and that the subscription belongs to your account.</p>",
+      "error":{
+        "httpStatusCode":404,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "ScheduledChange":{
+      "type":"structure",
+      "required":["changeType"],
+      "members":{
+        "changeType":{
+          "shape":"ScheduledChangeType",
+          "documentation":"<p>The type of pending change. Possible values are <code>DOWNGRADE</code> (a tier change to a lower level) and <code>CANCELLATION</code> (subscription termination).</p>"
+        },
+        "effectiveDate":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time when the change takes effect, in ISO 8601 format. This value is populated after the change is confirmed by the billing system.</p>"
+        },
+        "planTier":{
+          "shape":"String",
+          "documentation":"<p>For downgrades, the tier level that the subscription will change to. Not present for cancellations.</p>"
+        },
+        "usageLevel":{
+          "shape":"String",
+          "documentation":"<p>For downgrades, the target usage level after the change takes effect.</p>"
+        }
+      },
+      "documentation":"<p>A pending change on a subscription that takes effect at the end of the current billing period, such as a tier downgrade or cancellation.</p>"
+    },
+    "ScheduledChangeType":{
+      "type":"string",
+      "documentation":"<p>The type of pending change on a subscription.</p> <p>Possible values:</p> <ul> <li> <p> <code>DOWNGRADE</code> — The subscription tier is being lowered at the end of the billing period.</p> </li> <li> <p> <code>CANCELLATION</code> — The subscription is being terminated at the end of the billing period.</p> </li> </ul>",
+      "enum":[
+        "DOWNGRADE",
+        "CANCELLATION"
+      ]
+    },
+    "ServiceQuotaExceededException":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{"shape":"String"}
+      },
+      "documentation":"<p>The request would exceed a service limit. You have reached the maximum number of subscriptions allowed for your account.</p>",
+      "error":{
+        "httpStatusCode":402,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "Status":{
+      "type":"string",
+      "documentation":"<p>The status of a flat-rate pricing subscription.</p> <p>Possible values:</p> <ul> <li> <p> <code>PENDING_APPROVAL</code> — The subscription was created with manual approval and is waiting for an <code>ApprovePaidSubscription</code> call.</p> </li> <li> <p> <code>ACTIVE</code> — The subscription is active and resources are covered by flat-rate pricing.</p> </li> <li> <p> <code>SYNC_IN_PROGRESS</code> — A change is being applied to the subscription. Wait for the operation to complete before making additional changes.</p> </li> <li> <p> <code>FAILED</code> — The subscription encountered an error. Check the <code>statusReason</code> field for details.</p> </li> </ul>",
+      "enum":[
+        "PENDING_APPROVAL",
+        "ACTIVE",
+        "SYNC_IN_PROGRESS",
+        "FAILED"
+      ]
+    },
+    "String":{"type":"string"},
+    "Subscription":{
+      "type":"structure",
+      "required":[
+        "arn",
+        "planFamily",
+        "planTier",
+        "status",
+        "resourceArns",
+        "createdAt",
+        "updatedAt"
+      ],
+      "members":{
+        "arn":{
+          "shape":"SubscriptionArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) that uniquely identifies this subscription.</p>"
+        },
+        "planFamily":{
+          "shape":"String",
+          "documentation":"<p>The pricing plan family for the subscription, such as <code>CloudFront</code>.</p>"
+        },
+        "planTier":{
+          "shape":"String",
+          "documentation":"<p>The current tier level of the pricing plan, such as <code>FREE</code>, <code>PRO</code>, <code>BUSINESS</code>, or <code>PREMIUM</code>.</p>"
+        },
+        "usageLevel":{
+          "shape":"String",
+          "documentation":"<p>The usage level within the plan tier. When present, indicates a specific capacity configuration beyond the base tier.</p>"
+        },
+        "scheduledChange":{
+          "shape":"ScheduledChange",
+          "documentation":"<p>A pending change that will take effect at the end of the current billing period. This field is present only when a downgrade or cancellation is scheduled.</p>"
+        },
+        "status":{
+          "shape":"Status",
+          "documentation":"<p>The current status of the subscription. For the list of possible values, see the <code>Status</code> type.</p>"
+        },
+        "statusReason":{
+          "shape":"String",
+          "documentation":"<p>A human-readable explanation of the current status, present when additional context is available.</p>"
+        },
+        "resourceArns":{
+          "shape":"ResourceArns",
+          "documentation":"<p>The ARNs of the AWS resources covered by this subscription.</p>"
+        },
+        "createdAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time when the subscription was created, in ISO 8601 format.</p>"
+        },
+        "updatedAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time when the subscription was last modified, in ISO 8601 format.</p>"
+        }
+      },
+      "documentation":"<p>The full details of a flat-rate pricing subscription, including its current configuration, status, and associated resources.</p>"
+    },
+    "SubscriptionArn":{
+      "type":"string",
+      "documentation":"<p>The Amazon Resource Name (ARN) of a flat-rate pricing subscription.</p>",
+      "max":2048,
+      "min":1
+    },
+    "SubscriptionSummary":{
+      "type":"structure",
+      "required":[
+        "arn",
+        "planFamily",
+        "planTier",
+        "status",
+        "resourceArns",
+        "createdAt",
+        "updatedAt",
+        "eTag"
+      ],
+      "members":{
+        "arn":{
+          "shape":"SubscriptionArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) that uniquely identifies this subscription.</p>"
+        },
+        "planFamily":{
+          "shape":"String",
+          "documentation":"<p>The pricing plan family for the subscription, such as <code>CloudFront</code>.</p>"
+        },
+        "planTier":{
+          "shape":"String",
+          "documentation":"<p>The current tier level of the pricing plan.</p>"
+        },
+        "usageLevel":{
+          "shape":"String",
+          "documentation":"<p>The usage level within the plan tier.</p>"
+        },
+        "scheduledChange":{
+          "shape":"ScheduledChange",
+          "documentation":"<p>A pending change that will take effect at the end of the current billing period, if any.</p>"
+        },
+        "status":{
+          "shape":"Status",
+          "documentation":"<p>The current status of the subscription.</p>"
+        },
+        "statusReason":{
+          "shape":"String",
+          "documentation":"<p>A human-readable explanation of the current status, present when additional context is available.</p>"
+        },
+        "resourceArns":{
+          "shape":"ResourceArns",
+          "documentation":"<p>The ARNs of the AWS resources covered by this subscription.</p>"
+        },
+        "createdAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time when the subscription was created, in ISO 8601 format.</p>"
+        },
+        "updatedAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time when the subscription was last modified, in ISO 8601 format.</p>"
+        },
+        "eTag":{
+          "shape":"String",
+          "documentation":"<p>The entity tag for concurrency control. Pass this value in the <code>If-Match</code> header when making changes to this subscription.</p>"
+        }
+      },
+      "documentation":"<p>Summary information for a flat-rate pricing subscription, as returned by list operations.</p>"
+    },
+    "SubscriptionSummaryList":{
+      "type":"list",
+      "member":{"shape":"SubscriptionSummary"}
+    },
+    "SyntheticTimestamp_date_time":{
+      "type":"timestamp",
+      "timestampFormat":"iso8601"
+    },
+    "ThrottlingException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"String"}
+      },
+      "documentation":"<p>The request rate exceeds the allowed limit. Wait briefly and retry the request.</p>",
+      "error":{
+        "httpStatusCode":429,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "UpdateSubscriptionInput":{
+      "type":"structure",
+      "required":[
+        "arn",
+        "planTier",
+        "ifMatch"
+      ],
+      "members":{
+        "arn":{
+          "shape":"SubscriptionArn",
+          "documentation":"<p>The ARN of the subscription to update.</p>"
+        },
+        "planTier":{
+          "shape":"String",
+          "documentation":"<p>The new tier level for the subscription.</p>"
+        },
+        "usageLevel":{
+          "shape":"String",
+          "documentation":"<p>The usage level within the plan tier. Specify <code>DEFAULT</code> for the base configuration. If omitted, the usage level is reset to the default.</p>"
+        },
+        "ifMatch":{
+          "shape":"String",
+          "documentation":"<p>The <code>ETag</code> value from a previous <code>GetSubscription</code> or <code>ListSubscriptions</code> response. This ensures you are updating the expected version of the subscription.</p>",
+          "location":"header",
+          "locationName":"If-Match"
+        },
+        "clientToken":{
+          "shape":"IdempotencyToken",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the request is handled only once.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "UpdateSubscriptionOutput":{
+      "type":"structure",
+      "required":[
+        "subscription",
+        "eTag"
+      ],
+      "members":{
+        "subscription":{
+          "shape":"Subscription",
+          "documentation":"<p>The details of the updated subscription. For downgrades, the current tier remains unchanged and a <code>scheduledChange</code> indicates the pending change.</p>"
+        },
+        "eTag":{
+          "shape":"String",
+          "documentation":"<p>The updated entity tag for concurrency control.</p>",
+          "location":"header",
+          "locationName":"ETag"
+        }
+      },
+      "payload":"subscription"
+    },
+    "ValidationException":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{"shape":"String"},
+        "resourceId":{
+          "shape":"String",
+          "documentation":"<p>The identifier of the resource that failed validation.</p>"
+        }
+      },
+      "documentation":"<p>The request failed a business rule validation. For example, the specified resource might already be associated with another subscription, or the subscription might not be in the required state for this operation.</p>",
+      "error":{
+        "httpStatusCode":400,
+        "senderFault":true
+      },
+      "exception":true
+    }
+  },
+  "documentation":"<p>Manages flat-rate pricing subscriptions for supported AWS services. Use this API to create, approve, update, and cancel subscriptions; associate and disassociate resources; and retrieve subscription details. With a flat-rate pricing subscription, you pay a fixed recurring fee for eligible resources instead of usage-based pricing.</p>"
+}

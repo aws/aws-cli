@@ -1,0 +1,114 @@
+{
+  "version" : 2,
+  "waiters" : {
+    "DataTransformationJobCompleted" : {
+      "delay" : 30,
+      "maxAttempts" : 5,
+      "operation" : "DescribeDataTransformationJob",
+      "acceptors" : [ {
+        "matcher" : "path",
+        "argument" : "TransformationJobProperties.JobStatus",
+        "state" : "success",
+        "expected" : "COMPLETED"
+      }, {
+        "matcher" : "path",
+        "argument" : "TransformationJobProperties.JobStatus",
+        "state" : "success",
+        "expected" : "COMPLETED_WITH_ERRORS"
+      }, {
+        "matcher" : "path",
+        "argument" : "TransformationJobProperties.JobStatus",
+        "state" : "failure",
+        "expected" : "FAILED"
+      }, {
+        "matcher" : "error",
+        "state" : "failure",
+        "expected" : "ResourceNotFoundException"
+      } ]
+    },
+    "FHIRDatastoreActive" : {
+      "delay" : 60,
+      "maxAttempts" : 5,
+      "operation" : "DescribeFHIRDatastore",
+      "acceptors" : [ {
+        "matcher" : "path",
+        "argument" : "DatastoreProperties.DatastoreStatus",
+        "state" : "success",
+        "expected" : "ACTIVE"
+      }, {
+        "matcher" : "path",
+        "argument" : "DatastoreProperties.DatastoreStatus",
+        "state" : "failure",
+        "expected" : "CREATE_FAILED"
+      }, {
+        "matcher" : "path",
+        "argument" : "DatastoreProperties.DatastoreStatus",
+        "state" : "failure",
+        "expected" : "DELETED"
+      } ]
+    },
+    "FHIRDatastoreDeleted" : {
+      "delay" : 120,
+      "maxAttempts" : 5,
+      "operation" : "DescribeFHIRDatastore",
+      "acceptors" : [ {
+        "matcher" : "path",
+        "argument" : "DatastoreProperties.DatastoreStatus",
+        "state" : "success",
+        "expected" : "DELETED"
+      } ]
+    },
+    "FHIRExportJobCompleted" : {
+      "delay" : 120,
+      "maxAttempts" : 5,
+      "operation" : "DescribeFHIRExportJob",
+      "acceptors" : [ {
+        "matcher" : "path",
+        "argument" : "ExportJobProperties.JobStatus",
+        "state" : "success",
+        "expected" : "COMPLETED"
+      }, {
+        "matcher" : "path",
+        "argument" : "ExportJobProperties.JobStatus",
+        "state" : "success",
+        "expected" : "COMPLETED_WITH_ERRORS"
+      }, {
+        "matcher" : "path",
+        "argument" : "ExportJobProperties.JobStatus",
+        "state" : "failure",
+        "expected" : "CANCEL_COMPLETED"
+      }, {
+        "matcher" : "path",
+        "argument" : "ExportJobProperties.JobStatus",
+        "state" : "failure",
+        "expected" : "FAILED"
+      }, {
+        "matcher" : "path",
+        "argument" : "ExportJobProperties.JobStatus",
+        "state" : "failure",
+        "expected" : "CANCEL_FAILED"
+      } ]
+    },
+    "FHIRImportJobCompleted" : {
+      "delay" : 120,
+      "maxAttempts" : 5,
+      "operation" : "DescribeFHIRImportJob",
+      "acceptors" : [ {
+        "matcher" : "path",
+        "argument" : "ImportJobProperties.JobStatus",
+        "state" : "success",
+        "expected" : "COMPLETED"
+      }, {
+        "matcher" : "path",
+        "argument" : "ImportJobProperties.JobStatus",
+        "state" : "success",
+        "expected" : "COMPLETED_WITH_ERRORS"
+      }, {
+        "matcher" : "path",
+        "argument" : "ImportJobProperties.JobStatus",
+        "state" : "failure",
+        "expected" : "FAILED"
+      } ]
+    }
+  }
+}

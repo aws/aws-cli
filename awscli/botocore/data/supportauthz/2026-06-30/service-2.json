@@ -1,0 +1,1195 @@
+{
+  "version":"2.0",
+  "metadata":{
+    "apiVersion":"2026-06-30",
+    "auth":["aws.auth#sigv4"],
+    "endpointPrefix":"supportauthz",
+    "protocol":"rest-json",
+    "protocols":["rest-json"],
+    "serviceFullName":"SupportAuthZ",
+    "serviceId":"SupportAuthZ",
+    "signatureVersion":"v4",
+    "signingName":"supportauthz",
+    "uid":"supportauthz-2026-06-30"
+  },
+  "operations":{
+    "CreateSupportPermit":{
+      "name":"CreateSupportPermit",
+      "http":{
+        "method":"POST",
+        "requestUri":"/support-permits",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateSupportPermitInput"},
+      "output":{"shape":"CreateSupportPermitOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Creates a support permit that authorizes an AWS support operator to perform specified actions on specified resources. The permit is cryptographically signed using a customer-managed AWS KMS key (ECC_NIST_P384, SIGN_VERIFY) to ensure non-repudiation.</p>"
+    },
+    "DeleteSupportPermit":{
+      "name":"DeleteSupportPermit",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/support-permits/{supportPermitIdentifier}",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteSupportPermitInput"},
+      "output":{"shape":"DeleteSupportPermitOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Deletes a support permit, revoking the authorization previously granted to the AWS support operator.</p>",
+      "idempotent":true
+    },
+    "GetAction":{
+      "name":"GetAction",
+      "http":{
+        "method":"GET",
+        "requestUri":"/actions/{action}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetActionInput"},
+      "output":{"shape":"GetActionOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Retrieves the description of a specific support action.</p>",
+      "readonly":true
+    },
+    "GetSupportPermit":{
+      "name":"GetSupportPermit",
+      "http":{
+        "method":"GET",
+        "requestUri":"/support-permits/{supportPermitIdentifier}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetSupportPermitInput"},
+      "output":{"shape":"GetSupportPermitOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Retrieves the details of a support permit by its ARN or name.</p>",
+      "readonly":true
+    },
+    "ListActions":{
+      "name":"ListActions",
+      "http":{
+        "method":"GET",
+        "requestUri":"/actions",
+        "responseCode":200
+      },
+      "input":{"shape":"ListActionsInput"},
+      "output":{"shape":"ListActionsOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Lists available support actions for a specified AWS service. Use pagination to ensure that the operation returns quickly and successfully.</p>",
+      "readonly":true
+    },
+    "ListSupportPermitRequests":{
+      "name":"ListSupportPermitRequests",
+      "http":{
+        "method":"GET",
+        "requestUri":"/support-permit-requests",
+        "responseCode":200
+      },
+      "input":{"shape":"ListSupportPermitRequestsInput"},
+      "output":{"shape":"ListSupportPermitRequestsOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Lists permit requests from AWS support operators. Use pagination to ensure that the operation returns quickly and successfully.</p>",
+      "readonly":true
+    },
+    "ListSupportPermits":{
+      "name":"ListSupportPermits",
+      "http":{
+        "method":"GET",
+        "requestUri":"/support-permits",
+        "responseCode":200
+      },
+      "input":{"shape":"ListSupportPermitsInput"},
+      "output":{"shape":"ListSupportPermitsOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Lists all support permits in the caller's account. Use pagination to ensure that the operation returns quickly and successfully.</p>",
+      "readonly":true
+    },
+    "ListTagsForResource":{
+      "name":"ListTagsForResource",
+      "http":{
+        "method":"GET",
+        "requestUri":"/tags/{resourceArn}",
+        "responseCode":200
+      },
+      "input":{"shape":"ListTagsForResourceInput"},
+      "output":{"shape":"ListTagsForResourceOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Lists the tags associated with a support permit resource.</p>",
+      "readonly":true
+    },
+    "RejectSupportPermitRequest":{
+      "name":"RejectSupportPermitRequest",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/support-permit-requests/{requestArn}/reject",
+        "responseCode":200
+      },
+      "input":{"shape":"RejectSupportPermitRequestInput"},
+      "output":{"shape":"RejectSupportPermitRequestOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Rejects a permit request from an AWS support operator. The operator cannot proceed with the requested action.</p>",
+      "idempotent":true
+    },
+    "TagResource":{
+      "name":"TagResource",
+      "http":{
+        "method":"POST",
+        "requestUri":"/tags/{resourceArn}",
+        "responseCode":204
+      },
+      "input":{"shape":"TagResourceInput"},
+      "output":{"shape":"TagResourceOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Adds or overwrites one or more tags for a support permit resource.</p>"
+    },
+    "UntagResource":{
+      "name":"UntagResource",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/tags/{resourceArn}",
+        "responseCode":204
+      },
+      "input":{"shape":"UntagResourceInput"},
+      "output":{"shape":"UntagResourceOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Removes one or more tags from a support permit resource.</p>",
+      "idempotent":true
+    }
+  },
+  "shapes":{
+    "AccessDeniedException":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{"shape":"String"}
+      },
+      "documentation":"<p>You don't have sufficient permissions to perform this operation.</p>",
+      "error":{
+        "httpStatusCode":403,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "Action":{
+      "type":"string",
+      "max":255,
+      "min":3,
+      "pattern":"[a-z][a-z0-9-]*:[A-Za-z0-9_.-]+"
+    },
+    "ActionDescription":{
+      "type":"string",
+      "max":10240,
+      "min":1
+    },
+    "ActionSet":{
+      "type":"structure",
+      "members":{
+        "allActions":{
+          "shape":"Unit",
+          "documentation":"<p>Authorizes all available support actions.</p>"
+        },
+        "actions":{
+          "shape":"Actions",
+          "documentation":"<p>A list of specific support actions to authorize. Maximum of 10 actions.</p>"
+        }
+      },
+      "documentation":"<p>The set of actions authorized by a permit. Specify either all actions or a list of specific actions.</p>",
+      "union":true
+    },
+    "ActionSummaries":{
+      "type":"list",
+      "member":{"shape":"ActionSummary"},
+      "max":100,
+      "min":0
+    },
+    "ActionSummary":{
+      "type":"structure",
+      "required":[
+        "action",
+        "service",
+        "description"
+      ],
+      "members":{
+        "action":{
+          "shape":"Action",
+          "documentation":"<p>The name of the support action.</p>"
+        },
+        "service":{
+          "shape":"Service",
+          "documentation":"<p>The AWS service associated with the support action.</p>"
+        },
+        "description":{
+          "shape":"ActionDescription",
+          "documentation":"<p>A description of what the support action does.</p>"
+        }
+      },
+      "documentation":"<p>A summary of a support action.</p>"
+    },
+    "Actions":{
+      "type":"list",
+      "member":{"shape":"Action"},
+      "max":10,
+      "min":1
+    },
+    "Arn":{
+      "type":"string",
+      "max":512,
+      "min":1,
+      "pattern":"arn:[a-z0-9-]+:[a-z0-9-]+:[a-z0-9-]*:[0-9]{12}:.+"
+    },
+    "ClientToken":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"[!-~]+"
+    },
+    "Condition":{
+      "type":"structure",
+      "members":{
+        "allowAfter":{
+          "shape":"Timestamp",
+          "documentation":"<p>The earliest time at which the permit becomes valid.</p>"
+        },
+        "allowBefore":{
+          "shape":"Timestamp",
+          "documentation":"<p>The latest time at which the permit remains valid.</p>"
+        }
+      },
+      "documentation":"<p>A time-window condition that constrains when a support permit is valid.</p>",
+      "union":true
+    },
+    "Conditions":{
+      "type":"list",
+      "member":{"shape":"Condition"},
+      "max":2,
+      "min":0
+    },
+    "ConflictException":{
+      "type":"structure",
+      "required":[
+        "message",
+        "resourceId",
+        "resourceType"
+      ],
+      "members":{
+        "message":{"shape":"String"},
+        "resourceId":{
+          "shape":"String",
+          "documentation":"<p>The identifier of the resource that caused the conflict.</p>"
+        },
+        "resourceType":{
+          "shape":"String",
+          "documentation":"<p>The type of the resource that caused the conflict.</p>"
+        }
+      },
+      "documentation":"<p>The request conflicts with the current state of the resource.</p>",
+      "error":{
+        "httpStatusCode":409,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "CreateSupportPermitInput":{
+      "type":"structure",
+      "required":[
+        "permit",
+        "name",
+        "signingKeyInfo"
+      ],
+      "members":{
+        "permit":{
+          "shape":"Permit",
+          "documentation":"<p>The permit definition specifying the actions, resources, and time-window conditions that the support operator is authorized to use.</p>"
+        },
+        "name":{
+          "shape":"Name",
+          "documentation":"<p>A customer-chosen name for the support permit. Must be between 1 and 256 alphanumeric characters.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>A human-readable description of why this permit is being created. Maximum length of 1024 characters.</p>"
+        },
+        "signingKeyInfo":{
+          "shape":"SigningKeyInfo",
+          "documentation":"<p>The signing key information used to sign the permit. Must reference an AWS KMS key with key usage SIGN_VERIFY and key spec ECC_NIST_P384.</p>"
+        },
+        "supportCaseDisplayId":{
+          "shape":"SupportCaseDisplayId",
+          "documentation":"<p>The display identifier of the AWS Support case associated with this permit.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier to ensure that the operation completes no more than one time. If this token matches a previous request, the service returns the existing permit without creating a duplicate.</p>",
+          "idempotencyToken":true
+        },
+        "tags":{
+          "shape":"Tags",
+          "documentation":"<p>The tags to associate with the support permit on creation.</p>"
+        }
+      }
+    },
+    "CreateSupportPermitOutput":{
+      "type":"structure",
+      "required":[
+        "name",
+        "arn",
+        "permit",
+        "status",
+        "signingKeyInfo",
+        "createdAt"
+      ],
+      "members":{
+        "name":{
+          "shape":"Name",
+          "documentation":"<p>The name of the support permit.</p>"
+        },
+        "arn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the support permit.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>The description of the support permit.</p>"
+        },
+        "permit":{
+          "shape":"Permit",
+          "documentation":"<p>The permit definition.</p>"
+        },
+        "status":{
+          "shape":"SupportPermitStatus",
+          "documentation":"<p>The current status of the support permit.</p>"
+        },
+        "signingKeyInfo":{
+          "shape":"SigningKeyInfo",
+          "documentation":"<p>The signing key information for the permit.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the permit was created.</p>"
+        },
+        "supportCaseDisplayId":{
+          "shape":"SupportCaseDisplayId",
+          "documentation":"<p>The display identifier of the support case associated with the permit.</p>"
+        },
+        "tags":{
+          "shape":"Tags",
+          "documentation":"<p>The tags associated with the support permit.</p>"
+        }
+      }
+    },
+    "DeleteSupportPermitInput":{
+      "type":"structure",
+      "required":["supportPermitIdentifier"],
+      "members":{
+        "supportPermitIdentifier":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) or name of the support permit to delete.</p>",
+          "location":"uri",
+          "locationName":"supportPermitIdentifier"
+        }
+      }
+    },
+    "DeleteSupportPermitOutput":{
+      "type":"structure",
+      "required":[
+        "name",
+        "arn",
+        "permit",
+        "status",
+        "signingKeyInfo",
+        "createdAt"
+      ],
+      "members":{
+        "name":{
+          "shape":"Name",
+          "documentation":"<p>The name of the deleted support permit.</p>"
+        },
+        "arn":{
+          "shape":"Arn",
+          "documentation":"<p>The ARN of the deleted support permit.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>The description of the deleted support permit.</p>"
+        },
+        "permit":{
+          "shape":"Permit",
+          "documentation":"<p>The permit definition of the deleted permit.</p>"
+        },
+        "status":{
+          "shape":"SupportPermitStatus",
+          "documentation":"<p>The status of the support permit. Returns DELETING.</p>"
+        },
+        "signingKeyInfo":{
+          "shape":"SigningKeyInfo",
+          "documentation":"<p>The signing key information for the deleted permit.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the permit was originally created.</p>"
+        },
+        "supportCaseDisplayId":{
+          "shape":"SupportCaseDisplayId",
+          "documentation":"<p>The display identifier of the support case associated with the deleted permit.</p>"
+        }
+      }
+    },
+    "Description":{
+      "type":"string",
+      "max":1024,
+      "min":1
+    },
+    "GetActionInput":{
+      "type":"structure",
+      "required":["action"],
+      "members":{
+        "action":{
+          "shape":"Action",
+          "documentation":"<p>The name of the support action to retrieve.</p>",
+          "location":"uri",
+          "locationName":"action"
+        }
+      }
+    },
+    "GetActionOutput":{
+      "type":"structure",
+      "required":[
+        "action",
+        "service",
+        "description"
+      ],
+      "members":{
+        "action":{
+          "shape":"Action",
+          "documentation":"<p>The name of the support action.</p>"
+        },
+        "service":{
+          "shape":"Service",
+          "documentation":"<p>The AWS service associated with the support action.</p>"
+        },
+        "description":{
+          "shape":"ActionDescription",
+          "documentation":"<p>A description of what the support action does.</p>"
+        }
+      }
+    },
+    "GetSupportPermitInput":{
+      "type":"structure",
+      "required":["supportPermitIdentifier"],
+      "members":{
+        "supportPermitIdentifier":{
+          "shape":"SupportPermitIdentifier",
+          "documentation":"<p>The ARN or name of the support permit to retrieve.</p>",
+          "location":"uri",
+          "locationName":"supportPermitIdentifier"
+        }
+      }
+    },
+    "GetSupportPermitOutput":{
+      "type":"structure",
+      "required":[
+        "name",
+        "arn",
+        "permit",
+        "status",
+        "signingKeyInfo",
+        "createdAt"
+      ],
+      "members":{
+        "name":{
+          "shape":"Name",
+          "documentation":"<p>The name of the support permit.</p>"
+        },
+        "arn":{
+          "shape":"Arn",
+          "documentation":"<p>The ARN of the support permit.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>The description of the support permit.</p>"
+        },
+        "permit":{
+          "shape":"Permit",
+          "documentation":"<p>The permit definition.</p>"
+        },
+        "status":{
+          "shape":"SupportPermitStatus",
+          "documentation":"<p>The current status of the support permit.</p>"
+        },
+        "signingKeyInfo":{
+          "shape":"SigningKeyInfo",
+          "documentation":"<p>The signing key information for the permit.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the permit was created.</p>"
+        },
+        "supportCaseDisplayId":{
+          "shape":"SupportCaseDisplayId",
+          "documentation":"<p>The display identifier of the support case associated with the permit.</p>"
+        },
+        "tags":{
+          "shape":"Tags",
+          "documentation":"<p>The tags associated with the support permit.</p>"
+        }
+      }
+    },
+    "Integer":{
+      "type":"integer",
+      "box":true
+    },
+    "InternalServerException":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{"shape":"String"},
+        "retryAfterSeconds":{
+          "shape":"Integer",
+          "documentation":"<p>The number of seconds to wait before retrying the request.</p>",
+          "location":"header",
+          "locationName":"Retry-After"
+        }
+      },
+      "documentation":"<p>An internal service error occurred. Try again later.</p>",
+      "error":{"httpStatusCode":500},
+      "exception":true,
+      "fault":true,
+      "retryable":{"throttling":false}
+    },
+    "KmsKeyArn":{
+      "type":"string",
+      "max":512,
+      "min":1,
+      "pattern":"[a-zA-Z0-9/:_-]{1,512}"
+    },
+    "ListActionsInput":{
+      "type":"structure",
+      "required":["service"],
+      "members":{
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next page of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return in a single call. Valid range is 1 to 100.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "service":{
+          "shape":"Service",
+          "documentation":"<p>The name of the AWS service for which to list available support actions.</p>",
+          "location":"querystring",
+          "locationName":"service"
+        }
+      }
+    },
+    "ListActionsOutput":{
+      "type":"structure",
+      "required":["actionSummaries"],
+      "members":{
+        "actionSummaries":{
+          "shape":"ActionSummaries",
+          "documentation":"<p>The list of support actions.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next page of results, or null if there are no more results.</p>"
+        }
+      }
+    },
+    "ListSupportPermitRequestsInput":{
+      "type":"structure",
+      "members":{
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next page of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return in a single call. Valid range is 1 to 100.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "supportCaseDisplayId":{
+          "shape":"SupportCaseDisplayId",
+          "documentation":"<p>Filters the results by support case display identifier.</p>",
+          "location":"querystring",
+          "locationName":"supportCaseDisplayId"
+        }
+      }
+    },
+    "ListSupportPermitRequestsOutput":{
+      "type":"structure",
+      "required":["supportPermitRequests"],
+      "members":{
+        "supportPermitRequests":{
+          "shape":"SupportPermitRequests",
+          "documentation":"<p>The list of permit requests.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next page of results, or null if there are no more results.</p>"
+        }
+      }
+    },
+    "ListSupportPermitsInput":{
+      "type":"structure",
+      "members":{
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next page of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return in a single call. Valid range is 1 to 100.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "supportPermitStatuses":{
+          "shape":"SupportPermitStatuses",
+          "documentation":"<p>Filters the results by support permit status. Valid values: ACTIVE, INACTIVE, DELETING.</p>",
+          "location":"querystring",
+          "locationName":"supportPermitStatuses"
+        }
+      }
+    },
+    "ListSupportPermitsOutput":{
+      "type":"structure",
+      "required":["supportPermits"],
+      "members":{
+        "supportPermits":{
+          "shape":"SupportPermitSummaries",
+          "documentation":"<p>The list of support permits.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next page of results, or null if there are no more results.</p>"
+        }
+      }
+    },
+    "ListTagsForResourceInput":{
+      "type":"structure",
+      "required":["resourceArn"],
+      "members":{
+        "resourceArn":{
+          "shape":"Arn",
+          "documentation":"<p>The ARN of the resource to list tags for.</p>",
+          "location":"uri",
+          "locationName":"resourceArn"
+        }
+      }
+    },
+    "ListTagsForResourceOutput":{
+      "type":"structure",
+      "members":{
+        "tags":{
+          "shape":"Tags",
+          "documentation":"<p>The tags associated with the resource.</p>"
+        }
+      }
+    },
+    "MaxResults":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "Name":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"[a-zA-Z0-9]{1,256}"
+    },
+    "NextToken":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "pattern":"[a-zA-Z0-9/+=%_-]+"
+    },
+    "Permit":{
+      "type":"structure",
+      "required":[
+        "actions",
+        "resources"
+      ],
+      "members":{
+        "actions":{
+          "shape":"ActionSet",
+          "documentation":"<p>The set of actions that the support operator is authorized to perform.</p>"
+        },
+        "resources":{
+          "shape":"ResourceSet",
+          "documentation":"<p>The set of resources that the support operator is authorized to act upon.</p>"
+        },
+        "conditions":{
+          "shape":"Conditions",
+          "documentation":"<p>The time-window conditions that constrain when the permit is valid. Maximum of 2 conditions.</p>"
+        }
+      },
+      "documentation":"<p>The permit definition specifying the authorized actions, resources, and time-window conditions for a support operator.</p>"
+    },
+    "RejectSupportPermitRequestInput":{
+      "type":"structure",
+      "required":["requestArn"],
+      "members":{
+        "requestArn":{
+          "shape":"RequestArn",
+          "documentation":"<p>The ARN of the permit request to reject.</p>",
+          "location":"uri",
+          "locationName":"requestArn"
+        }
+      }
+    },
+    "RejectSupportPermitRequestOutput":{
+      "type":"structure",
+      "required":["requestArn"],
+      "members":{
+        "requestArn":{
+          "shape":"RequestArn",
+          "documentation":"<p>The ARN of the rejected permit request.</p>"
+        }
+      }
+    },
+    "RequestArn":{
+      "type":"string",
+      "max":512,
+      "min":1,
+      "pattern":"[a-zA-Z0-9:/-]{1,512}"
+    },
+    "Resource":{
+      "type":"string",
+      "max":512,
+      "min":1,
+      "pattern":"[a-zA-Z0-9:/_.-]+"
+    },
+    "ResourceNotFoundException":{
+      "type":"structure",
+      "required":[
+        "message",
+        "resourceId",
+        "resourceType"
+      ],
+      "members":{
+        "message":{"shape":"String"},
+        "resourceId":{
+          "shape":"String",
+          "documentation":"<p>The identifier of the resource that was not found.</p>"
+        },
+        "resourceType":{
+          "shape":"String",
+          "documentation":"<p>The type of the resource that was not found.</p>"
+        }
+      },
+      "documentation":"<p>The specified resource does not exist.</p>",
+      "error":{
+        "httpStatusCode":404,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "ResourceSet":{
+      "type":"structure",
+      "members":{
+        "allResourcesInRegion":{
+          "shape":"Unit",
+          "documentation":"<p>Authorizes the support operator to act on all resources in the Region.</p>"
+        },
+        "resources":{
+          "shape":"Resources",
+          "documentation":"<p>A list of specific resource identifiers that the support operator is authorized to act upon. Maximum of 5 resources.</p>"
+        }
+      },
+      "documentation":"<p>The set of resources authorized by a permit. Specify either all resources in the Region or a list of specific resources.</p>",
+      "union":true
+    },
+    "Resources":{
+      "type":"list",
+      "member":{"shape":"Resource"},
+      "max":5,
+      "min":1
+    },
+    "Service":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"[a-zA-Z0-9-]+"
+    },
+    "ServiceQuotaExceededException":{
+      "type":"structure",
+      "required":[
+        "message",
+        "resourceId",
+        "resourceType",
+        "serviceCode",
+        "quotaCode"
+      ],
+      "members":{
+        "message":{"shape":"String"},
+        "resourceId":{
+          "shape":"String",
+          "documentation":"<p>The identifier of the resource that exceeded the quota.</p>"
+        },
+        "resourceType":{
+          "shape":"String",
+          "documentation":"<p>The type of the resource that exceeded the quota.</p>"
+        },
+        "serviceCode":{
+          "shape":"String",
+          "documentation":"<p>The service code of the originating service.</p>"
+        },
+        "quotaCode":{
+          "shape":"String",
+          "documentation":"<p>The quota code of the exceeded quota.</p>"
+        }
+      },
+      "documentation":"<p>The request exceeds a service quota for your account.</p>",
+      "error":{
+        "httpStatusCode":402,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "SigningKeyInfo":{
+      "type":"structure",
+      "members":{
+        "kmsKey":{
+          "shape":"KmsKeyArn",
+          "documentation":"<p>The ARN of the AWS KMS key used to sign the permit. The key must have key spec ECC_NIST_P384 and key usage SIGN_VERIFY.</p>"
+        }
+      },
+      "documentation":"<p>The signing key used to cryptographically sign a support permit.</p>",
+      "union":true
+    },
+    "String":{"type":"string"},
+    "SupportCaseDisplayId":{
+      "type":"string",
+      "max":512,
+      "min":1,
+      "pattern":"[a-zA-Z0-9:/-]{1,512}"
+    },
+    "SupportPermitIdentifier":{
+      "type":"string",
+      "max":512,
+      "min":1,
+      "pattern":"[a-zA-Z0-9:/-]{1,512}"
+    },
+    "SupportPermitRequest":{
+      "type":"structure",
+      "required":[
+        "requestArn",
+        "permit",
+        "supportCaseDisplayId",
+        "status",
+        "createdAt",
+        "updatedAt"
+      ],
+      "members":{
+        "requestArn":{
+          "shape":"RequestArn",
+          "documentation":"<p>The ARN of the permit request.</p>"
+        },
+        "permit":{
+          "shape":"Permit",
+          "documentation":"<p>The permit definition requested by the operator.</p>"
+        },
+        "supportCaseDisplayId":{
+          "shape":"SupportCaseDisplayId",
+          "documentation":"<p>The display identifier of the support case associated with the request.</p>"
+        },
+        "status":{
+          "shape":"SupportPermitRequestStatus",
+          "documentation":"<p>The current status of the permit request.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the request was created.</p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the request was last updated.</p>"
+        }
+      },
+      "documentation":"<p>A permit request from an AWS support operator.</p>"
+    },
+    "SupportPermitRequestStatus":{
+      "type":"string",
+      "documentation":"<p>The status of a support permit request.</p>",
+      "enum":[
+        "PENDING",
+        "ACCEPTED",
+        "REJECTED",
+        "CANCELLED"
+      ]
+    },
+    "SupportPermitRequests":{
+      "type":"list",
+      "member":{"shape":"SupportPermitRequest"},
+      "max":100,
+      "min":0
+    },
+    "SupportPermitStatus":{
+      "type":"string",
+      "documentation":"<p>The status of a support permit.</p>",
+      "enum":[
+        "ACTIVE",
+        "INACTIVE",
+        "DELETING"
+      ]
+    },
+    "SupportPermitStatuses":{
+      "type":"list",
+      "member":{"shape":"SupportPermitStatus"},
+      "max":5,
+      "min":1
+    },
+    "SupportPermitSummaries":{
+      "type":"list",
+      "member":{"shape":"SupportPermitSummary"},
+      "max":100,
+      "min":0
+    },
+    "SupportPermitSummary":{
+      "type":"structure",
+      "required":[
+        "name",
+        "arn",
+        "permit",
+        "status",
+        "signingKeyInfo",
+        "createdAt"
+      ],
+      "members":{
+        "name":{
+          "shape":"Name",
+          "documentation":"<p>The name of the support permit.</p>"
+        },
+        "arn":{
+          "shape":"Arn",
+          "documentation":"<p>The ARN of the support permit.</p>"
+        },
+        "permit":{
+          "shape":"Permit",
+          "documentation":"<p>The permit definition.</p>"
+        },
+        "status":{
+          "shape":"SupportPermitStatus",
+          "documentation":"<p>The current status of the support permit.</p>"
+        },
+        "signingKeyInfo":{
+          "shape":"SigningKeyInfo",
+          "documentation":"<p>The signing key information for the permit.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the permit was created.</p>"
+        },
+        "supportCaseDisplayId":{
+          "shape":"SupportCaseDisplayId",
+          "documentation":"<p>The display identifier of the support case associated with the permit.</p>"
+        }
+      },
+      "documentation":"<p>A summary of a support permit.</p>"
+    },
+    "TagKey":{
+      "type":"string",
+      "max":128,
+      "min":1
+    },
+    "TagKeyList":{
+      "type":"list",
+      "member":{"shape":"TagKey"}
+    },
+    "TagResourceInput":{
+      "type":"structure",
+      "required":[
+        "resourceArn",
+        "tags"
+      ],
+      "members":{
+        "resourceArn":{
+          "shape":"Arn",
+          "documentation":"<p>The ARN of the resource to tag.</p>",
+          "location":"uri",
+          "locationName":"resourceArn"
+        },
+        "tags":{
+          "shape":"Tags",
+          "documentation":"<p>The tags to add to the resource. Maximum of 50 tags.</p>"
+        }
+      }
+    },
+    "TagResourceOutput":{
+      "type":"structure",
+      "members":{}
+    },
+    "TagValue":{
+      "type":"string",
+      "max":256,
+      "min":0
+    },
+    "Tags":{
+      "type":"map",
+      "key":{"shape":"TagKey"},
+      "value":{"shape":"TagValue"},
+      "max":50,
+      "min":0
+    },
+    "ThrottlingException":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{"shape":"String"},
+        "retryAfterSeconds":{
+          "shape":"Integer",
+          "documentation":"<p>The number of seconds to wait before retrying the request.</p>",
+          "location":"header",
+          "locationName":"Retry-After"
+        }
+      },
+      "documentation":"<p>The request rate exceeded the allowed limit. Try again later.</p>",
+      "error":{
+        "httpStatusCode":429,
+        "senderFault":true
+      },
+      "exception":true,
+      "retryable":{"throttling":true}
+    },
+    "Timestamp":{"type":"timestamp"},
+    "Unit":{
+      "type":"structure",
+      "members":{}
+    },
+    "UntagResourceInput":{
+      "type":"structure",
+      "required":[
+        "resourceArn",
+        "tagKeys"
+      ],
+      "members":{
+        "resourceArn":{
+          "shape":"Arn",
+          "documentation":"<p>The ARN of the resource to untag.</p>",
+          "location":"uri",
+          "locationName":"resourceArn"
+        },
+        "tagKeys":{
+          "shape":"TagKeyList",
+          "documentation":"<p>The tag keys to remove from the resource.</p>",
+          "location":"querystring",
+          "locationName":"tagKeys"
+        }
+      }
+    },
+    "UntagResourceOutput":{
+      "type":"structure",
+      "members":{}
+    },
+    "ValidationException":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{"shape":"String"},
+        "fieldList":{
+          "shape":"ValidationExceptionFieldList",
+          "documentation":"<p>A list of fields that fail validation. Each entry identifies the field and the reason for the constraint violation.</p>"
+        }
+      },
+      "documentation":"<p>The input fails to satisfy the constraints specified by the service.</p>",
+      "exception":true
+    },
+    "ValidationExceptionField":{
+      "type":"structure",
+      "required":[
+        "path",
+        "message"
+      ],
+      "members":{
+        "path":{
+          "shape":"String",
+          "documentation":"<p>A JSONPointer expression to the structure member whose value failed to satisfy the modeled constraints.</p>"
+        },
+        "message":{
+          "shape":"String",
+          "documentation":"<p>A detailed description of the validation failure.</p>"
+        }
+      },
+      "documentation":"<p>Describes one specific validation failure for an input member.</p>"
+    },
+    "ValidationExceptionFieldList":{
+      "type":"list",
+      "member":{"shape":"ValidationExceptionField"}
+    }
+  },
+  "documentation":"<p><fullname>AWS Support Authorization</fullname> <p>AWS SupportAuthZ enables you to control and authorize the actions that AWS support operators can perform on your resources. You create cryptographically signed support permits specifying which actions operators can perform, on which resources, and under what time-window conditions. Permits are signed using a customer-managed AWS KMS key (ECC_NIST_P384, SIGN_VERIFY) to ensure non-repudiation.</p></p>"
+}

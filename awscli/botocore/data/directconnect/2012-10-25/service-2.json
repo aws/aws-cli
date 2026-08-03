@@ -119,9 +119,9 @@
       "input":{"shape":"AssociateConnectionWithLagRequest"},
       "output":{"shape":"Connection"},
       "errors":[
+        {"shape":"LimitExceededException"},
         {"shape":"DirectConnectServerException"},
-        {"shape":"DirectConnectClientException"},
-        {"shape":"LimitExceededException"}
+        {"shape":"DirectConnectClientException"}
       ],
       "documentation":"<p>Associates an existing connection with a link aggregation group (LAG). The connection is interrupted and re-established as a member of the LAG (connectivity to Amazon Web Services is interrupted). The connection must be hosted on the same Direct Connect endpoint as the LAG, and its bandwidth must match the bandwidth for the LAG. You can re-associate a connection that's currently associated with a different LAG; however, if removing the connection would cause the original LAG to fall below its setting for minimum number of operational connections, the request fails.</p> <p>Any virtual interfaces that are directly associated with the connection are automatically re-associated with the LAG. If the connection was originally associated with a different LAG, the virtual interfaces remain associated with the original LAG.</p> <p>For interconnects, any hosted connections are automatically re-associated with the LAG. If the interconnect was originally associated with a different LAG, the hosted connections remain associated with the original LAG.</p>"
     },
@@ -784,6 +784,20 @@
       ],
       "documentation":"<p>Removes the association between a MAC Security (MACsec) security key and a Direct Connect connection.</p>"
     },
+    "ListVirtualInterfaceRoutes":{
+      "name":"ListVirtualInterfaceRoutes",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListVirtualInterfaceRoutesRequest"},
+      "output":{"shape":"ListVirtualInterfaceRoutesResponse"},
+      "errors":[
+        {"shape":"DirectConnectServerException"},
+        {"shape":"DirectConnectClientException"}
+      ],
+      "documentation":"<p>Lists the routes for the specified virtual interface.</p> <p>Use the <code>routeDirection</code> filter to control which routes are returned:</p> <ul> <li> <p> <code>accepted</code>: routes received from the customer network over the virtual interface.</p> </li> <li> <p> <code>advertised</code>: routes advertised to the customer network over the virtual interface.</p> </li> </ul>"
+    },
     "ListVirtualInterfaceTestHistory":{
       "name":"ListVirtualInterfaceTestHistory",
       "http":{
@@ -1123,6 +1137,35 @@
       }
     },
     "AmazonAddress":{"type":"string"},
+    "AsPathList":{
+      "type":"list",
+      "member":{"shape":"LongAsn"}
+    },
+    "AsPathSegment":{
+      "type":"structure",
+      "members":{
+        "pathType":{
+          "shape":"AsPathType",
+          "documentation":"<p>The type of the AS path segment.</p> <p>The valid values are <code>seq</code> (an ordered <code>AS_SEQUENCE</code>) and <code>set</code> (an unordered <code>AS_SET</code>).</p>"
+        },
+        "path":{
+          "shape":"AsPathList",
+          "documentation":"<p>The autonomous system (AS) numbers in the segment.</p>"
+        }
+      },
+      "documentation":"<p>A segment of an autonomous system (AS) path.</p>"
+    },
+    "AsPathSegmentList":{
+      "type":"list",
+      "member":{"shape":"AsPathSegment"}
+    },
+    "AsPathType":{
+      "type":"string",
+      "enum":[
+        "seq",
+        "set"
+      ]
+    },
     "AssociateConnectionWithLagRequest":{
       "type":"structure",
       "required":[
@@ -1347,6 +1390,11 @@
     "CIDR":{"type":"string"},
     "Cak":{"type":"string"},
     "Ckn":{"type":"string"},
+    "CommunityEntry":{"type":"string"},
+    "CommunityList":{
+      "type":"list",
+      "member":{"shape":"CommunityEntry"}
+    },
     "ConfirmConnectionRequest":{
       "type":"structure",
       "required":["connectionId"],
@@ -3012,6 +3060,44 @@
       "documentation":"<p>The rate limiter limit has been exceeded for the connection. You cannot add more rate limiters to virtual interfaces on this connection.</p>",
       "exception":true
     },
+    "ListVirtualInterfaceRoutesRequest":{
+      "type":"structure",
+      "members":{
+        "virtualInterfaceId":{
+          "shape":"VirtualInterfaceId",
+          "documentation":"<p>The ID of the virtual interface.</p>"
+        },
+        "filters":{
+          "shape":"RouteFilters",
+          "documentation":"<p>The filters to apply to the routes returned.</p>"
+        },
+        "maxResults":{
+          "shape":"MaxResultSetSize",
+          "documentation":"<p>The maximum number of results to return with a single call. To retrieve the remaining results, make another call with the returned <code>nextToken</code> value.</p> <p>If <code>MaxResults</code> is given a value larger than 100, only 100 results are returned.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The token for the next page of results.</p>"
+        }
+      }
+    },
+    "ListVirtualInterfaceRoutesResponse":{
+      "type":"structure",
+      "members":{
+        "virtualInterfaceId":{
+          "shape":"VirtualInterfaceId",
+          "documentation":"<p>The ID of the virtual interface.</p>"
+        },
+        "routes":{
+          "shape":"RouteList",
+          "documentation":"<p>The routes for the virtual interface.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The token to use to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.</p>"
+        }
+      }
+    },
     "ListVirtualInterfaceTestHistoryRequest":{
       "type":"structure",
       "members":{
@@ -3586,6 +3672,55 @@
       "type":"list",
       "member":{"shape":"ResourceTag"}
     },
+    "Route":{
+      "type":"structure",
+      "members":{
+        "cidr":{
+          "shape":"RouteCidr",
+          "documentation":"<p>The CIDR (prefix) of the route.</p>"
+        },
+        "routeDirection":{
+          "shape":"RouteDirection",
+          "documentation":"<p>The direction of the route.</p> <p>The valid values are <code>accepted</code> (received from the customer network) and <code>advertised</code> (advertised to the customer network).</p>"
+        },
+        "addressFamily":{
+          "shape":"AddressFamily",
+          "documentation":"<p>The address family of the route.</p> <p>The valid values are <code>ipv4</code> and <code>ipv6</code>.</p>"
+        },
+        "asPath":{
+          "shape":"AsPathSegmentList",
+          "documentation":"<p>The autonomous system (AS) path of the route.</p>"
+        },
+        "communities":{
+          "shape":"CommunityList",
+          "documentation":"<p>The BGP communities associated with the route.</p>"
+        },
+        "awsLogicalDeviceId":{
+          "shape":"AwsLogicalDeviceId",
+          "documentation":"<p>The Direct Connect endpoint that terminates the logical connection. This device might be different than the device that terminates the physical connection.</p>"
+        },
+        "routeInstalledAt":{
+          "shape":"RouteInstalledAt",
+          "documentation":"<p>The time when the route was installed. The value is displayed in UTC format.</p>"
+        }
+      },
+      "documentation":"<p>Information about a route for a virtual interface.</p>"
+    },
+    "RouteCidr":{"type":"string"},
+    "RouteDirection":{
+      "type":"string",
+      "enum":[
+        "accepted",
+        "advertised"
+      ]
+    },
+    "RouteFilterCidrString":{"type":"string"},
+    "RouteFilterCidrStringList":{
+      "type":"list",
+      "member":{"shape":"RouteFilterCidrString"},
+      "max":10,
+      "min":1
+    },
     "RouteFilterPrefix":{
       "type":"structure",
       "members":{
@@ -3599,6 +3734,37 @@
     "RouteFilterPrefixList":{
       "type":"list",
       "member":{"shape":"RouteFilterPrefix"}
+    },
+    "RouteFilters":{
+      "type":"structure",
+      "members":{
+        "routeDirection":{
+          "shape":"RouteDirection",
+          "documentation":"<p>The direction of the routes to return.</p> <p>The valid values are <code>accepted</code> (routes received from the customer network) and <code>advertised</code> (routes advertised to the customer network).</p>"
+        },
+        "addressFamily":{
+          "shape":"AddressFamily",
+          "documentation":"<p>The address family of the routes to return.</p> <p>The valid values are <code>ipv4</code> and <code>ipv6</code>.</p>"
+        },
+        "cidrs":{
+          "shape":"RouteFilterCidrStringList",
+          "documentation":"<p>The CIDRs (prefixes) used to filter the routes. You can specify up to 10 CIDRs.</p>"
+        },
+        "asPath":{
+          "shape":"AsPathList",
+          "documentation":"<p>The autonomous system (AS) numbers used to filter the routes by their AS path.</p>"
+        },
+        "communities":{
+          "shape":"CommunityList",
+          "documentation":"<p>The BGP communities used to filter the routes.</p>"
+        }
+      },
+      "documentation":"<p>The filters used to limit the routes returned by <a>ListVirtualInterfaceRoutes</a>.</p>"
+    },
+    "RouteInstalledAt":{"type":"timestamp"},
+    "RouteList":{
+      "type":"list",
+      "member":{"shape":"Route"}
     },
     "RouterConfig":{"type":"string"},
     "RouterType":{

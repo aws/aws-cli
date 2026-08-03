@@ -1355,6 +1355,25 @@
       ],
       "documentation":"<p>Updates proxy rule priorities within a proxy rule group.</p>"
     },
+    "UpdateProxySettings":{
+      "name":"UpdateProxySettings",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateProxySettingsRequest"},
+      "output":{"shape":"UpdateProxySettingsResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InternalServerError"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ResourceOwnerCheckException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidTokenException"},
+        {"shape":"InvalidOperationException"}
+      ],
+      "documentation":"<p>Modifies the proxy listener configuration of a proxy mode firewall. Proxy mode firewalls are created with <code>NoSourcePreservation</code> set to <code>TRUE</code>. Use this operation to change the ports and protocols on which the firewall's proxy listens for traffic. </p>"
+    },
     "UpdateRuleGroup":{
       "name":"UpdateRuleGroup",
       "http":{
@@ -1770,6 +1789,10 @@
         "StatusMessage":{
           "shape":"StatusMessage",
           "documentation":"<p>If Network Firewall fails to create or delete the firewall endpoint in the subnet, it populates this with the reason for the error or failure and how to resolve it. A <code>FAILED</code> status indicates a non-recoverable state, and a <code>ERROR</code> status indicates an issue that you can fix. Depending on the error, it can take as many as 15 minutes to populate this field. For more information about the causes for failiure or errors and solutions available for this field, see <a href=\"https://docs.aws.amazon.com/network-firewall/latest/developerguide/firewall-troubleshooting-endpoint-failures.html\">Troubleshooting firewall endpoint failures</a> in the <i>Network Firewall Developer Guide</i>.</p>"
+        },
+        "DnsName":{
+          "shape":"DnsName",
+          "documentation":"<p>The DNS name that resolves to the firewall endpoint in the subnet. This is populated for proxy mode firewalls, where clients direct traffic to the firewall's proxy using this name. </p>"
         }
       },
       "documentation":"<p>The definition and status of the firewall endpoint for a single subnet. In each configured subnet, Network Firewall instantiates a firewall endpoint to handle network traffic. </p> <p>This data type is used for any firewall endpoint type: </p> <ul> <li> <p>For <code>Firewall.SubnetMappings</code>, this <code>Attachment</code> is part of the <code>FirewallStatus</code> sync states information. You define firewall subnets using <code>CreateFirewall</code> and <code>AssociateSubnets</code>. </p> </li> <li> <p>For <code>VpcEndpointAssociation</code>, this <code>Attachment</code> is part of the <code>VpcEndpointAssociationStatus</code> sync states information. You define these subnets using <code>CreateVpcEndpointAssociation</code>. </p> </li> </ul>"
@@ -2160,6 +2183,22 @@
         "AvailabilityZoneChangeProtection":{
           "shape":"Boolean",
           "documentation":"<p>Optional. A setting indicating whether the firewall is protected against changes to its Availability Zone configuration. When set to <code>TRUE</code>, you cannot add or remove Availability Zones without first disabling this protection using <a>UpdateAvailabilityZoneChangeProtection</a>.</p> <p>Default value: <code>FALSE</code> </p>"
+        },
+        "NatGatewayMappings":{
+          "shape":"NatGatewayMappingsList",
+          "documentation":"<p>The NAT gateways that the firewall uses to proxy traffic when <code>NoSourcePreservation</code> is <code>TRUE</code>. Network Firewall attaches the firewall to each NAT gateway that you specify, so that egress traffic is proxied through the NAT gateway. </p>"
+        },
+        "ProxySettings":{
+          "shape":"ProxySettings",
+          "documentation":"<p>The listener configuration for a proxy mode firewall, used when <code>NoSourcePreservation</code> is <code>TRUE</code>. This specifies the ports and protocols on which the firewall's proxy listens for traffic. </p>"
+        },
+        "NoSourcePreservation":{
+          "shape":"Boolean",
+          "documentation":"<p>Optional. Indicates whether the firewall operates in proxy mode, in which the source IP address of the traffic is not preserved. When set to <code>TRUE</code>, the firewall proxies traffic through a NAT gateway and the traffic reaching the destination uses the NAT gateway's IP address as the source. </p> <p>When you set this to <code>TRUE</code>, you must specify <code>NatGatewayMappings</code> and <code>VpcEndpoint</code> instead of a top-level <code>VpcId</code> and <code>SubnetMappings</code>. </p> <p>You can't change this setting after you create the firewall. </p> <p>Default value: <code>FALSE</code> </p>"
+        },
+        "VpcEndpoint":{
+          "shape":"VpcEndpoint",
+          "documentation":"<p>The VPC and subnets for the firewall endpoint, used when <code>NoSourcePreservation</code> is <code>TRUE</code>. Network Firewall creates the firewall endpoint in the subnets that you specify here. </p> <p>For proxy mode firewalls, provide the firewall's VPC and endpoint subnets through this parameter instead of the top-level <code>VpcId</code> and <code>SubnetMappings</code>. </p>"
         }
       }
     },
@@ -3692,6 +3731,7 @@
         }
       }
     },
+    "DnsName":{"type":"string"},
     "Domain":{"type":"string"},
     "EnableMonitoringDashboard":{"type":"boolean"},
     "EnableTLSSessionHolding":{"type":"boolean"},
@@ -3813,6 +3853,22 @@
         "AvailabilityZoneChangeProtection":{
           "shape":"Boolean",
           "documentation":"<p>A setting indicating whether the firewall is protected against changes to its Availability Zone configuration. When set to <code>TRUE</code>, you must first disable this protection before adding or removing Availability Zones.</p>"
+        },
+        "NatGatewayMappings":{
+          "shape":"NatGatewayMappingsList",
+          "documentation":"<p>The NAT gateways that the firewall uses to proxy traffic. This is set for proxy mode firewalls, where <code>NoSourcePreservation</code> is <code>TRUE</code>. </p>"
+        },
+        "ProxySettings":{
+          "shape":"ProxySettings",
+          "documentation":"<p>The listener configuration for the firewall's proxy. This is set for proxy mode firewalls, where <code>NoSourcePreservation</code> is <code>TRUE</code>. </p>"
+        },
+        "NoSourcePreservation":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether the firewall operates in proxy mode, in which the source IP address of the traffic is not preserved. When this value is <code>TRUE</code>, the firewall proxies traffic through a NAT gateway and uses the NAT gateway's IP address as the source for traffic reaching the destination. </p>"
+        },
+        "VpcEndpoint":{
+          "shape":"VpcEndpoint",
+          "documentation":"<p>The VPC and subnets for the firewall endpoint. This is set for proxy mode firewalls, where <code>NoSourcePreservation</code> is <code>TRUE</code>. </p>"
         }
       },
       "documentation":"<p>A firewall defines the behavior of a firewall, the main VPC where the firewall is used, the Availability Zones where the firewall can be used, and one subnet to use for a firewall endpoint within each of the Availability Zones. The Availability Zones are defined implicitly in the subnet specifications.</p> <p>In addition to the firewall endpoints that you define in this <code>Firewall</code> specification, you can create firewall endpoints in <code>VpcEndpointAssociation</code> resources for any VPC, in any Availability Zone where the firewall is already in use. </p> <p>The status of the firewall, for example whether it's ready to filter network traffic, is provided in the corresponding <a>FirewallStatus</a>. You can retrieve both the firewall and firewall status by calling <a>DescribeFirewall</a>.</p>"
@@ -5013,9 +5069,64 @@
       },
       "documentation":"<p>Criteria for Network Firewall to use to inspect an individual packet in stateless rule inspection. Each match attributes set can include one or more items such as IP address, CIDR range, port number, protocol, and TCP flags. </p>"
     },
+    "NatGatewayAttachment":{
+      "type":"structure",
+      "required":[
+        "NatGatewayId",
+        "Status"
+      ],
+      "members":{
+        "NatGatewayId":{
+          "shape":"NatGatewayId",
+          "documentation":"<p>A unique identifier for the NAT gateway to use with proxy resources.</p>"
+        },
+        "Status":{
+          "shape":"NatGatewayAttachmentStatus",
+          "documentation":"<p>The current status of the NAT gateway attachment. </p> <p>When this value is <code>READY</code>, the attachment is available to proxy traffic. Otherwise, this value reflects its state, for example <code>CREATING</code> or <code>DELETING</code>.</p>"
+        },
+        "StatusMessage":{
+          "shape":"StatusReason",
+          "documentation":"<p>If Network Firewall encounters an issue with the NAT gateway attachment, it populates this with an explanation of the problem. </p>"
+        },
+        "DnsName":{
+          "shape":"DnsName",
+          "documentation":"<p>The DNS name that resolves to the firewall's proxy for traffic sent through this NAT gateway attachment. </p>"
+        }
+      },
+      "documentation":"<p>The definition and status of the attachment between a proxy mode firewall and a NAT gateway that proxies its traffic. </p>"
+    },
+    "NatGatewayAttachmentStatus":{
+      "type":"string",
+      "enum":[
+        "CREATING",
+        "READY",
+        "UPDATING",
+        "FAILED",
+        "DELETING"
+      ]
+    },
+    "NatGatewayAttachmentsList":{
+      "type":"list",
+      "member":{"shape":"NatGatewayAttachment"}
+    },
     "NatGatewayId":{
       "type":"string",
       "min":1
+    },
+    "NatGatewayMapping":{
+      "type":"structure",
+      "required":["NatGatewayId"],
+      "members":{
+        "NatGatewayId":{
+          "shape":"NatGatewayId",
+          "documentation":"<p>A unique identifier for the NAT gateway to use with proxy resources.</p>"
+        }
+      },
+      "documentation":"<p>A NAT gateway that a proxy mode firewall uses to proxy traffic. This is used in <a>CreateFirewall</a> when <code>NoSourcePreservation</code> is <code>TRUE</code>. </p>"
+    },
+    "NatGatewayMappingsList":{
+      "type":"list",
+      "member":{"shape":"NatGatewayMapping"}
     },
     "NatGatewayPort":{"type":"integer"},
     "NumberOfAssociations":{"type":"integer"},
@@ -5546,6 +5657,17 @@
         }
       },
       "documentation":"<p>Evaluation points in the traffic flow where rules are applied. There are three phases in a traffic where the rule match is applied. </p>"
+    },
+    "ProxySettings":{
+      "type":"structure",
+      "required":["ListenerProperties"],
+      "members":{
+        "ListenerProperties":{
+          "shape":"ListenerProperties",
+          "documentation":"<p>Listener properties for HTTP and HTTPS traffic. </p>"
+        }
+      },
+      "documentation":"<p>The listener configuration for a proxy mode firewall. This specifies the ports and protocols on which the firewall's proxy listens for traffic. </p>"
     },
     "ProxyState":{
       "type":"string",
@@ -6503,6 +6625,10 @@
         "Config":{
           "shape":"SyncStateConfig",
           "documentation":"<p>The configuration status of the firewall endpoint in a single VPC subnet. Network Firewall provides each endpoint with the rules that are configured in the firewall policy. Each time you add a subnet or modify the associated firewall policy, Network Firewall synchronizes the rules in the endpoint, so it can properly filter network traffic. </p>"
+        },
+        "NatGatewayAttachments":{
+          "shape":"NatGatewayAttachmentsList",
+          "documentation":"<p>The status of the NAT gateway attachments for a proxy mode firewall in the Availability Zone. This reflects the attachment of the firewall to each NAT gateway that proxies its traffic. </p>"
         }
       },
       "documentation":"<p>The status of the firewall endpoint and firewall policy configuration for a single VPC subnet. This is part of the <a>FirewallStatus</a>. </p> <p>For each VPC subnet that you associate with a firewall, Network Firewall does the following: </p> <ul> <li> <p>Instantiates a firewall endpoint in the subnet, ready to take traffic.</p> </li> <li> <p>Configures the endpoint with the current firewall policy settings, to provide the filtering behavior for the endpoint.</p> </li> </ul> <p>When you update a firewall, for example to add a subnet association or change a rule group in the firewall policy, the affected sync states reflect out-of-sync or not ready status until the changes are complete. </p>"
@@ -7514,6 +7640,48 @@
         }
       }
     },
+    "UpdateProxySettingsRequest":{
+      "type":"structure",
+      "members":{
+        "FirewallArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the firewall.</p> <p>You must specify the ARN or the name, and you can specify both. </p>"
+        },
+        "FirewallName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The descriptive name of the firewall. You can't change the name of a firewall after you create it.</p> <p>You must specify the ARN or the name, and you can specify both. </p>"
+        },
+        "UpdateToken":{
+          "shape":"UpdateToken",
+          "documentation":"<p>An optional token that you can use for optimistic locking. Network Firewall returns a token to your requests that access the firewall. The token marks the state of the firewall resource at the time of the request. </p> <p>To make an unconditional change to the firewall, omit the token in your update request. Without the token, Network Firewall performs your updates regardless of whether the firewall has changed since you last retrieved it.</p> <p>To make a conditional change to the firewall, provide the token in your update request. Network Firewall uses the token to ensure that the firewall hasn't changed since you last retrieved it. If it has changed, the operation fails with an <code>InvalidTokenException</code>. If this happens, retrieve the firewall again to get a current copy of it with a new token. Reapply your changes as needed, then try the operation again using the new token. </p>"
+        },
+        "ProxySettings":{
+          "shape":"ProxySettings",
+          "documentation":"<p>The proxy listener configuration to set on the firewall. This specifies the ports and protocols on which the firewall's proxy listens for traffic. </p>"
+        }
+      }
+    },
+    "UpdateProxySettingsResponse":{
+      "type":"structure",
+      "members":{
+        "FirewallArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the firewall.</p>"
+        },
+        "FirewallName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The descriptive name of the firewall. You can't change the name of a firewall after you create it.</p>"
+        },
+        "UpdateToken":{
+          "shape":"UpdateToken",
+          "documentation":"<p>An optional token that you can use for optimistic locking. Network Firewall returns a token to your requests that access the firewall. The token marks the state of the firewall resource at the time of the request. </p> <p>To make an unconditional change to the firewall, omit the token in your update request. Without the token, Network Firewall performs your updates regardless of whether the firewall has changed since you last retrieved it.</p> <p>To make a conditional change to the firewall, provide the token in your update request. Network Firewall uses the token to ensure that the firewall hasn't changed since you last retrieved it. If it has changed, the operation fails with an <code>InvalidTokenException</code>. If this happens, retrieve the firewall again to get a current copy of it with a new token. Reapply your changes as needed, then try the operation again using the new token. </p>"
+        },
+        "ProxySettings":{
+          "shape":"ProxySettings",
+          "documentation":"<p>The updated proxy listener configuration on the firewall. </p>"
+        }
+      }
+    },
     "UpdateRuleGroupRequest":{
       "type":"structure",
       "required":["UpdateToken"],
@@ -7695,6 +7863,24 @@
       "member":{"shape":"VariableDefinition"}
     },
     "VendorName":{"type":"string"},
+    "VpcEndpoint":{
+      "type":"structure",
+      "required":[
+        "VpcId",
+        "SubnetMappings"
+      ],
+      "members":{
+        "VpcId":{
+          "shape":"VpcId",
+          "documentation":"<p>The unique identifier of the VPC where Network Firewall creates the proxy mode firewall endpoint. </p>"
+        },
+        "SubnetMappings":{
+          "shape":"SubnetMappings",
+          "documentation":"<p>The subnets in which Network Firewall creates the firewall endpoint for a proxy mode firewall. Each subnet must belong to a different Availability Zone in the VPC. </p>"
+        }
+      },
+      "documentation":"<p>The VPC and subnets for a proxy mode firewall endpoint. This is used in <a>CreateFirewall</a> when <code>NoSourcePreservation</code> is <code>TRUE</code>, to specify where Network Firewall creates the firewall endpoint. </p> <p>This differs from <a>VpcEndpointAssociation</a>, which defines additional secondary endpoints for a firewall in other VPCs. </p>"
+    },
     "VpcEndpointAssociation":{
       "type":"structure",
       "required":[

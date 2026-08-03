@@ -15,6 +15,26 @@
     "uid":"timestream-influxdb-2023-01-27"
   },
   "operations":{
+    "CreateDbBackup":{
+      "name":"CreateDbBackup",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateDbBackupInput"},
+      "output":{"shape":"CreateDbBackupOutput"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Creates a new on-demand backup of a Timestream for InfluxDB resource.</p>",
+      "idempotent":true
+    },
     "CreateDbCluster":{
       "name":"CreateDbCluster",
       "http":{
@@ -75,6 +95,25 @@
       "documentation":"<p>Creates a new Timestream for InfluxDB DB parameter group to associate with DB instances.</p>",
       "idempotent":true
     },
+    "DeleteDbBackup":{
+      "name":"DeleteDbBackup",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteDbBackupInput"},
+      "output":{"shape":"DeleteDbBackupOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Deletes a Timestream for InfluxDB backup.</p>",
+      "idempotent":true
+    },
     "DeleteDbCluster":{
       "name":"DeleteDbCluster",
       "http":{
@@ -112,6 +151,23 @@
       ],
       "documentation":"<p>Deletes a Timestream for InfluxDB DB instance.</p>",
       "idempotent":true
+    },
+    "GetDbBackup":{
+      "name":"GetDbBackup",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetDbBackupInput"},
+      "output":{"shape":"GetDbBackupOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Returns information about a specific Timestream for InfluxDB backup.</p>"
     },
     "GetDbCluster":{
       "name":"GetDbCluster",
@@ -163,6 +219,23 @@
         {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Returns a Timestream for InfluxDB DB parameter group.</p>"
+    },
+    "ListDbBackups":{
+      "name":"ListDbBackups",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListDbBackupsInput"},
+      "output":{"shape":"ListDbBackupsOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Returns a list of Timestream for InfluxDB backups.</p>"
     },
     "ListDbClusters":{
       "name":"ListDbClusters",
@@ -283,6 +356,26 @@
       "documentation":"<p>Reboots a Timestream for InfluxDB instance.</p>",
       "idempotent":true
     },
+    "RestoreFromDbBackup":{
+      "name":"RestoreFromDbBackup",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"RestoreFromDbBackupInput"},
+      "output":{"shape":"RestoreFromDbBackupOutput"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Restores a Timestream for InfluxDB resource from a backup. By default, a new resource is created. You can optionally restore to the same resource using the REPLACE_EXISTING restore mode.</p>",
+      "idempotent":true
+    },
     "TagResource":{
       "name":"TagResource",
       "http":{
@@ -369,7 +462,30 @@
       "type":"string",
       "max":1011,
       "min":1,
-      "pattern":"arn:aws[a-z\\-]*:timestream\\-influxdb:[a-z0-9\\-]+:[0-9]{12}:(db\\-instance|db\\-cluster|db\\-parameter\\-group)/[a-zA-Z0-9]{3,64}"
+      "pattern":"arn:aws[a-z\\-]*:timestream\\-influxdb:[a-z0-9\\-]+:[0-9]{12}:(db\\-instance|db\\-cluster|db\\-parameter\\-group|db\\-backup)/[a-zA-Z0-9]{3,64}"
+    },
+    "AutomatedBackupRetentionDays":{
+      "type":"integer",
+      "box":true,
+      "max":365,
+      "min":1
+    },
+    "AutomatedDbBackupType":{
+      "type":"string",
+      "enum":[
+        "HOURLY",
+        "DAILY",
+        "WEEKLY",
+        "MONTHLY",
+        "CUSTOM_SCHEDULE",
+        "CONTINUOUS"
+      ]
+    },
+    "AwsCronSchedule":{
+      "type":"string",
+      "max":256,
+      "min":9,
+      "pattern":"cron\\(\\S+ \\S+ \\S+ \\S+ \\S+ \\S+\\)"
     },
     "Boolean":{
       "type":"boolean",
@@ -416,7 +532,9 @@
         "UPDATING_INSTANCE_TYPE",
         "REBOOTING",
         "REBOOT_FAILED",
-        "PARTIALLY_AVAILABLE"
+        "PARTIALLY_AVAILABLE",
+        "RESTORING",
+        "RESTORE_FAILED"
       ]
     },
     "ConflictException":{
@@ -439,6 +557,140 @@
       },
       "documentation":"<p>The request conflicts with an existing resource in Timestream for InfluxDB.</p>",
       "exception":true
+    },
+    "CreateDbBackupInput":{
+      "type":"structure",
+      "required":[
+        "name",
+        "dbResourceId"
+      ],
+      "members":{
+        "name":{
+          "shape":"DbBackupName",
+          "documentation":"<p>The name of the backup. Must be unique within the account and region.</p>"
+        },
+        "dbResourceId":{
+          "shape":"DbResourceId",
+          "documentation":"<p>The id of the DB instance or DB cluster to back up.</p>"
+        },
+        "retentionDays":{
+          "shape":"RetentionDays",
+          "documentation":"<p>The number of days to retain the backup. Valid values are 1 to 3650.</p>"
+        },
+        "tags":{
+          "shape":"RequestTagMap",
+          "documentation":"<p>A list of key-value pairs to associate with the backup.</p>"
+        }
+      }
+    },
+    "CreateDbBackupOutput":{
+      "type":"structure",
+      "required":[
+        "id",
+        "arn"
+      ],
+      "members":{
+        "id":{
+          "shape":"DbBackupId",
+          "documentation":"<p>Service-generated unique identifier of the backup.</p>"
+        },
+        "name":{
+          "shape":"DbBackupName",
+          "documentation":"<p>The customer-provided name of the backup.</p>"
+        },
+        "arn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the backup.</p>"
+        },
+        "status":{
+          "shape":"DbBackupStatus",
+          "documentation":"<p>The current status of the backup.</p>"
+        },
+        "createdAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The time when the backup was created.</p>"
+        },
+        "expiresAfter":{
+          "shape":"Date",
+          "documentation":"<p>The date after which the backup will be automatically deleted.</p>"
+        },
+        "dbResourceId":{
+          "shape":"DbResourceId",
+          "documentation":"<p>The identifier of the DB resource that the backup was created from.</p>"
+        },
+        "type":{
+          "shape":"DbBackupType",
+          "documentation":"<p>The type of backup.</p>"
+        },
+        "engineType":{
+          "shape":"EngineType",
+          "documentation":"<p>The engine type of the resource that the backup was created from.</p>"
+        },
+        "deploymentType":{
+          "shape":"ResourceDeploymentType",
+          "documentation":"<p>The deployment type of the resource that the backup was created from.</p>"
+        },
+        "kmsKeyId":{
+          "shape":"KmsKeyId",
+          "documentation":"<p>The Amazon Web Services KMS key ARN used for encryption of the resource at the time of backup.</p>"
+        },
+        "clusterConfiguration":{
+          "shape":"ClusterConfiguration",
+          "documentation":"<p>The cluster configuration of the resource at the time of backup.</p>"
+        },
+        "dbParameterGroupId":{
+          "shape":"DbParameterGroupId",
+          "documentation":"<p>The identifier of the DB parameter group associated with the backup.</p>"
+        },
+        "dbInstanceType":{
+          "shape":"DbInstanceType",
+          "documentation":"<p>The DB instance type of the resource at the time of backup.</p>"
+        },
+        "logDeliveryConfiguration":{
+          "shape":"LogDeliveryConfiguration",
+          "documentation":"<p>The log delivery configuration of the resource at the time of backup.</p>"
+        },
+        "failoverMode":{
+          "shape":"FailoverMode",
+          "documentation":"<p>The failover mode of the resource at the time of backup.</p>"
+        },
+        "dbStorageType":{
+          "shape":"DbStorageType",
+          "documentation":"<p>The storage type of the resource at the time of backup.</p>"
+        },
+        "allocatedStorage":{
+          "shape":"AllocatedStorage",
+          "documentation":"<p>The allocated storage of the resource at the time of backup, in GiB.</p>"
+        },
+        "vpcSubnetIds":{
+          "shape":"VpcSubnetIdList",
+          "documentation":"<p>The VPC subnet IDs associated with the resource at the time of backup.</p>"
+        },
+        "vpcSecurityGroupIds":{
+          "shape":"VpcSecurityGroupIdList",
+          "documentation":"<p>The VPC security group IDs associated with the resource at the time of backup.</p>"
+        },
+        "publiclyAccessible":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether the resource was publicly accessible at the time of backup.</p>"
+        },
+        "port":{
+          "shape":"Integer",
+          "documentation":"<p>The port number of the resource at the time of backup.</p>"
+        },
+        "networkType":{
+          "shape":"NetworkType",
+          "documentation":"<p>The network type of the resource at the time of backup.</p>"
+        },
+        "influxAuthParametersSecretArn":{
+          "shape":"String",
+          "documentation":"<p>The ARN of the Secrets Manager secret containing the InfluxDB auth parameters.</p>"
+        },
+        "maintenanceSchedule":{
+          "shape":"MaintenanceSchedule",
+          "documentation":"<p>The maintenance schedule of the resource at the time of backup.</p>"
+        }
+      }
     },
     "CreateDbClusterInput":{
       "type":"structure",
@@ -520,6 +772,14 @@
         "maintenanceSchedule":{
           "shape":"MaintenanceSchedule",
           "documentation":"<p>Specifies the maintenance schedule for the DB cluster, including the preferred maintenance window and timezone.</p>"
+        },
+        "dbBackupConfigurations":{
+          "shape":"DbBackupConfigurationInputList",
+          "documentation":"<p>A list of backup configurations to enable automated backups for the DB cluster.</p>"
+        },
+        "kmsKeyId":{
+          "shape":"KmsKeyId",
+          "documentation":"<p>The Amazon Web Services KMS key identifier to use for encryption of the DB cluster. Can be a key ID, key ARN, alias name, or alias ARN.</p>"
         },
         "tags":{
           "shape":"RequestTagMap",
@@ -622,6 +882,14 @@
         "networkType":{
           "shape":"NetworkType",
           "documentation":"<p>Specifies whether the networkType of the Timestream for InfluxDB instance is IPV4, which can communicate over IPv4 protocol only, or DUAL, which can communicate over both IPv4 and IPv6 protocols.</p>"
+        },
+        "dbBackupConfigurations":{
+          "shape":"DbBackupConfigurationInputList",
+          "documentation":"<p>A list of backup configurations to enable automated backups for the DB instance.</p>"
+        },
+        "kmsKeyId":{
+          "shape":"KmsKeyId",
+          "documentation":"<p>The Amazon Web Services KMS key identifier to use for encryption of the DB instance. Can be a key ID, key ARN, alias name, or alias ARN.</p>"
         }
       }
     },
@@ -733,6 +1001,14 @@
         "nextMaintenanceTime":{
           "shape":"SyntheticTimestamp_date_time",
           "documentation":"<p>The timestamp of the next scheduled maintenance operation on the DB instance.</p>"
+        },
+        "dbBackupConfigurations":{
+          "shape":"DbBackupConfigurationOutputList",
+          "documentation":"<p>The backup configurations for the DB instance.</p>"
+        },
+        "kmsKeyId":{
+          "shape":"KmsKeyId",
+          "documentation":"<p>The Amazon Web Services KMS key ARN used for encryption of the DB instance.</p>"
         }
       }
     },
@@ -798,6 +1074,171 @@
       "enum":[
         "multi-thread",
         "multi-thread-alt"
+      ]
+    },
+    "Date":{
+      "type":"string",
+      "documentation":"<p>A calendar date in YYYY-MM-DD format.</p>",
+      "pattern":"\\d{4}-\\d{2}-\\d{2}"
+    },
+    "DbBackupConfiguration":{
+      "type":"structure",
+      "required":[
+        "type",
+        "retentionDays",
+        "enabled"
+      ],
+      "members":{
+        "type":{
+          "shape":"AutomatedDbBackupType",
+          "documentation":"<p>The type of automated backup schedule. Valid values are HOURLY, DAILY, WEEKLY, MONTHLY, CUSTOM_SCHEDULE, and CONTINUOUS.</p>"
+        },
+        "retentionDays":{
+          "shape":"AutomatedBackupRetentionDays",
+          "documentation":"<p>The number of days to retain automated backups. Valid values are 1 to 365.</p>"
+        },
+        "enabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether this backup configuration is enabled.</p>"
+        },
+        "customSchedule":{
+          "shape":"AwsCronSchedule",
+          "documentation":"<p>A custom cron schedule expression for the backup. Required when type is CUSTOM_SCHEDULE.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the configuration for an automated backup schedule.</p>"
+    },
+    "DbBackupConfigurationInputList":{
+      "type":"list",
+      "member":{"shape":"DbBackupConfiguration"},
+      "max":4,
+      "min":1
+    },
+    "DbBackupConfigurationOutput":{
+      "type":"structure",
+      "required":[
+        "type",
+        "retentionDays",
+        "enabled"
+      ],
+      "members":{
+        "type":{
+          "shape":"AutomatedDbBackupType",
+          "documentation":"<p>The type of automated backup schedule.</p>"
+        },
+        "retentionDays":{
+          "shape":"AutomatedBackupRetentionDays",
+          "documentation":"<p>The number of days automated backups are retained.</p>"
+        },
+        "enabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether this backup configuration is enabled.</p>"
+        },
+        "customSchedule":{
+          "shape":"AwsCronSchedule",
+          "documentation":"<p>The custom cron schedule expression for the backup, if applicable.</p>"
+        },
+        "nextAutomatedBackupTime":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The next scheduled time for an automated backup to be taken.</p>"
+        }
+      },
+      "documentation":"<p>Contains the configuration and status for an automated backup schedule.</p>"
+    },
+    "DbBackupConfigurationOutputList":{
+      "type":"list",
+      "member":{"shape":"DbBackupConfigurationOutput"}
+    },
+    "DbBackupId":{
+      "type":"string",
+      "max":64,
+      "min":3,
+      "pattern":"[a-zA-Z0-9]+"
+    },
+    "DbBackupName":{
+      "type":"string",
+      "max":40,
+      "min":3,
+      "pattern":"[a-zA-Z][a-zA-Z0-9]*(-[a-zA-Z0-9]+)*"
+    },
+    "DbBackupStatus":{
+      "type":"string",
+      "enum":[
+        "IN_PROGRESS",
+        "COMPLETED",
+        "FAILED",
+        "DELETING",
+        "DELETED"
+      ]
+    },
+    "DbBackupSummary":{
+      "type":"structure",
+      "required":[
+        "id",
+        "arn"
+      ],
+      "members":{
+        "id":{
+          "shape":"DbBackupId",
+          "documentation":"<p>Service-generated unique identifier of the backup.</p>"
+        },
+        "name":{
+          "shape":"DbBackupName",
+          "documentation":"<p>The customer-provided name of the backup.</p>"
+        },
+        "arn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the backup.</p>"
+        },
+        "status":{
+          "shape":"DbBackupStatus",
+          "documentation":"<p>The status of the backup. Valid values are IN_PROGRESS, COMPLETED, FAILED, DELETING, and DELETED.</p>"
+        },
+        "createdAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The time when the backup was created.</p>"
+        },
+        "expiresAfter":{
+          "shape":"Date",
+          "documentation":"<p>The date after which the backup will be automatically deleted.</p>"
+        },
+        "dbResourceId":{
+          "shape":"DbResourceId",
+          "documentation":"<p>The identifier of the DB resource that the backup was created from.</p>"
+        },
+        "type":{
+          "shape":"DbBackupType",
+          "documentation":"<p>The type of backup. Valid values are HOURLY, DAILY, WEEKLY, MONTHLY, CUSTOM_SCHEDULE, ON_DEMAND, and CONTINUOUS.</p>"
+        },
+        "engineType":{
+          "shape":"EngineType",
+          "documentation":"<p>The engine type of the resource that the backup was created from.</p>"
+        },
+        "deploymentType":{
+          "shape":"ResourceDeploymentType",
+          "documentation":"<p>The deployment type of the resource that the backup was created from.</p>"
+        },
+        "kmsKeyId":{
+          "shape":"KmsKeyId",
+          "documentation":"<p>The Amazon Web Services KMS key ARN used for encryption of the resource at the time of backup.</p>"
+        }
+      },
+      "documentation":"<p>Contains a summary of a Timestream for InfluxDB backup.</p>"
+    },
+    "DbBackupSummaryList":{
+      "type":"list",
+      "member":{"shape":"DbBackupSummary"}
+    },
+    "DbBackupType":{
+      "type":"string",
+      "enum":[
+        "HOURLY",
+        "DAILY",
+        "WEEKLY",
+        "MONTHLY",
+        "CUSTOM_SCHEDULE",
+        "ON_DEMAND",
+        "CONTINUOUS"
       ]
     },
     "DbClusterId":{
@@ -1086,6 +1527,18 @@
       "type":"list",
       "member":{"shape":"DbParameterGroupSummary"}
     },
+    "DbResourceId":{
+      "type":"string",
+      "max":64,
+      "min":3,
+      "pattern":"[a-zA-Z0-9]+"
+    },
+    "DbResourceName":{
+      "type":"string",
+      "max":40,
+      "min":3,
+      "pattern":"[a-zA-Z][a-zA-Z0-9]*(-[a-zA-Z0-9]+)*"
+    },
     "DbStorageType":{
       "type":"string",
       "enum":[
@@ -1094,6 +1547,125 @@
         "InfluxIOIncludedT3"
       ]
     },
+    "DeleteDbBackupInput":{
+      "type":"structure",
+      "required":["identifier"],
+      "members":{
+        "identifier":{
+          "shape":"DbBackupId",
+          "documentation":"<p>The identifier of the backup to delete.</p>"
+        }
+      }
+    },
+    "DeleteDbBackupOutput":{
+      "type":"structure",
+      "required":[
+        "id",
+        "arn"
+      ],
+      "members":{
+        "id":{
+          "shape":"DbBackupId",
+          "documentation":"<p>Service-generated unique identifier of the deleted backup.</p>"
+        },
+        "name":{
+          "shape":"DbBackupName",
+          "documentation":"<p>The customer-provided name of the deleted backup.</p>"
+        },
+        "arn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the deleted backup.</p>"
+        },
+        "status":{
+          "shape":"DbBackupStatus",
+          "documentation":"<p>The current status of the backup.</p>"
+        },
+        "createdAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The time when the backup was created.</p>"
+        },
+        "expiresAfter":{
+          "shape":"Date",
+          "documentation":"<p>The date after which the backup was set to be automatically deleted.</p>"
+        },
+        "dbResourceId":{
+          "shape":"DbResourceId",
+          "documentation":"<p>The identifier of the DB resource that the backup was created from.</p>"
+        },
+        "type":{
+          "shape":"DbBackupType",
+          "documentation":"<p>The type of backup.</p>"
+        },
+        "engineType":{
+          "shape":"EngineType",
+          "documentation":"<p>The engine type of the resource that the backup was created from.</p>"
+        },
+        "deploymentType":{
+          "shape":"ResourceDeploymentType",
+          "documentation":"<p>The deployment type of the resource that the backup was created from.</p>"
+        },
+        "kmsKeyId":{
+          "shape":"KmsKeyId",
+          "documentation":"<p>The Amazon Web Services KMS key ARN used for encryption of the resource at the time of backup.</p>"
+        },
+        "clusterConfiguration":{
+          "shape":"ClusterConfiguration",
+          "documentation":"<p>The cluster configuration of the resource at the time of backup.</p>"
+        },
+        "dbParameterGroupId":{
+          "shape":"DbParameterGroupId",
+          "documentation":"<p>The identifier of the DB parameter group associated with the backup.</p>"
+        },
+        "dbInstanceType":{
+          "shape":"DbInstanceType",
+          "documentation":"<p>The DB instance type of the resource at the time of backup.</p>"
+        },
+        "logDeliveryConfiguration":{
+          "shape":"LogDeliveryConfiguration",
+          "documentation":"<p>The log delivery configuration of the resource at the time of backup.</p>"
+        },
+        "failoverMode":{
+          "shape":"FailoverMode",
+          "documentation":"<p>The failover mode of the resource at the time of backup.</p>"
+        },
+        "dbStorageType":{
+          "shape":"DbStorageType",
+          "documentation":"<p>The storage type of the resource at the time of backup.</p>"
+        },
+        "allocatedStorage":{
+          "shape":"AllocatedStorage",
+          "documentation":"<p>The allocated storage of the resource at the time of backup, in GiB.</p>"
+        },
+        "vpcSubnetIds":{
+          "shape":"VpcSubnetIdList",
+          "documentation":"<p>The VPC subnet IDs associated with the resource at the time of backup.</p>"
+        },
+        "vpcSecurityGroupIds":{
+          "shape":"VpcSecurityGroupIdList",
+          "documentation":"<p>The VPC security group IDs associated with the resource at the time of backup.</p>"
+        },
+        "publiclyAccessible":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether the resource was publicly accessible at the time of backup.</p>"
+        },
+        "port":{
+          "shape":"Integer",
+          "documentation":"<p>The port number of the resource at the time of backup.</p>"
+        },
+        "networkType":{
+          "shape":"NetworkType",
+          "documentation":"<p>The network type of the resource at the time of backup.</p>"
+        },
+        "influxAuthParametersSecretArn":{
+          "shape":"String",
+          "documentation":"<p>The ARN of the Secrets Manager secret containing the InfluxDB auth parameters.</p>"
+        },
+        "maintenanceSchedule":{
+          "shape":"MaintenanceSchedule",
+          "documentation":"<p>The maintenance schedule of the resource at the time of backup.</p>"
+        }
+      }
+    },
     "DeleteDbClusterInput":{
       "type":"structure",
       "required":["dbClusterId"],
@@ -1101,6 +1673,10 @@
         "dbClusterId":{
           "shape":"DbClusterId",
           "documentation":"<p>Service-generated unique identifier of the DB cluster.</p>"
+        },
+        "retainAutomatedBackups":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether to retain automated backups after the DB cluster is deleted. If set to true, automated backups are not deleted and can be restored later.</p>"
         }
       }
     },
@@ -1120,6 +1696,10 @@
         "identifier":{
           "shape":"DbInstanceIdentifier",
           "documentation":"<p>The id of the DB instance.</p>"
+        },
+        "retainAutomatedBackups":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether to retain automated backups after the DB instance is deleted. If set to true, automated backups are not deleted and can be restored later.</p>"
         }
       }
     },
@@ -1231,6 +1811,14 @@
         "nextMaintenanceTime":{
           "shape":"SyntheticTimestamp_date_time",
           "documentation":"<p>The timestamp of the next scheduled maintenance operation on the DB instance.</p>"
+        },
+        "dbBackupConfigurations":{
+          "shape":"DbBackupConfigurationOutputList",
+          "documentation":"<p>The backup configurations that were associated with the deleted DB instance.</p>"
+        },
+        "kmsKeyId":{
+          "shape":"KmsKeyId",
+          "documentation":"<p>The Amazon Web Services KMS key ARN that was used for encryption of the deleted DB instance.</p>"
         }
       }
     },
@@ -1288,6 +1876,125 @@
         "AUTOMATIC",
         "NO_FAILOVER"
       ]
+    },
+    "GetDbBackupInput":{
+      "type":"structure",
+      "required":["identifier"],
+      "members":{
+        "identifier":{
+          "shape":"DbBackupId",
+          "documentation":"<p>The identifier of the backup to retrieve information for.</p>"
+        }
+      }
+    },
+    "GetDbBackupOutput":{
+      "type":"structure",
+      "required":[
+        "id",
+        "arn"
+      ],
+      "members":{
+        "id":{
+          "shape":"DbBackupId",
+          "documentation":"<p>Service-generated unique identifier of the backup.</p>"
+        },
+        "name":{
+          "shape":"DbBackupName",
+          "documentation":"<p>The customer-provided name of the backup.</p>"
+        },
+        "arn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the backup.</p>"
+        },
+        "status":{
+          "shape":"DbBackupStatus",
+          "documentation":"<p>The current status of the backup.</p>"
+        },
+        "createdAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The time when the backup was created.</p>"
+        },
+        "expiresAfter":{
+          "shape":"Date",
+          "documentation":"<p>The date after which the backup will be automatically deleted.</p>"
+        },
+        "dbResourceId":{
+          "shape":"DbResourceId",
+          "documentation":"<p>The identifier of the DB resource that the backup was created from.</p>"
+        },
+        "type":{
+          "shape":"DbBackupType",
+          "documentation":"<p>The type of backup.</p>"
+        },
+        "engineType":{
+          "shape":"EngineType",
+          "documentation":"<p>The engine type of the resource that the backup was created from.</p>"
+        },
+        "deploymentType":{
+          "shape":"ResourceDeploymentType",
+          "documentation":"<p>The deployment type of the resource that the backup was created from.</p>"
+        },
+        "kmsKeyId":{
+          "shape":"KmsKeyId",
+          "documentation":"<p>The Amazon Web Services KMS key ARN used for encryption of the resource at the time of backup.</p>"
+        },
+        "clusterConfiguration":{
+          "shape":"ClusterConfiguration",
+          "documentation":"<p>The cluster configuration of the resource at the time of backup.</p>"
+        },
+        "dbParameterGroupId":{
+          "shape":"DbParameterGroupId",
+          "documentation":"<p>The identifier of the DB parameter group associated with the backup.</p>"
+        },
+        "dbInstanceType":{
+          "shape":"DbInstanceType",
+          "documentation":"<p>The DB instance type of the resource at the time of backup.</p>"
+        },
+        "logDeliveryConfiguration":{
+          "shape":"LogDeliveryConfiguration",
+          "documentation":"<p>The log delivery configuration of the resource at the time of backup.</p>"
+        },
+        "failoverMode":{
+          "shape":"FailoverMode",
+          "documentation":"<p>The failover mode of the resource at the time of backup.</p>"
+        },
+        "dbStorageType":{
+          "shape":"DbStorageType",
+          "documentation":"<p>The storage type of the resource at the time of backup.</p>"
+        },
+        "allocatedStorage":{
+          "shape":"AllocatedStorage",
+          "documentation":"<p>The allocated storage of the resource at the time of backup, in GiB.</p>"
+        },
+        "vpcSubnetIds":{
+          "shape":"VpcSubnetIdList",
+          "documentation":"<p>The VPC subnet IDs associated with the resource at the time of backup.</p>"
+        },
+        "vpcSecurityGroupIds":{
+          "shape":"VpcSecurityGroupIdList",
+          "documentation":"<p>The VPC security group IDs associated with the resource at the time of backup.</p>"
+        },
+        "publiclyAccessible":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether the resource was publicly accessible at the time of backup.</p>"
+        },
+        "port":{
+          "shape":"Integer",
+          "documentation":"<p>The port number of the resource at the time of backup.</p>"
+        },
+        "networkType":{
+          "shape":"NetworkType",
+          "documentation":"<p>The network type of the resource at the time of backup.</p>"
+        },
+        "influxAuthParametersSecretArn":{
+          "shape":"String",
+          "documentation":"<p>The ARN of the Secrets Manager secret containing the InfluxDB auth parameters.</p>"
+        },
+        "maintenanceSchedule":{
+          "shape":"MaintenanceSchedule",
+          "documentation":"<p>The maintenance schedule of the resource at the time of backup.</p>"
+        }
+      }
     },
     "GetDbClusterInput":{
       "type":"structure",
@@ -1402,6 +2109,14 @@
         "clusterConfiguration":{
           "shape":"ClusterConfiguration",
           "documentation":"<p>Configuration for node modes in the DbCluster.</p>"
+        },
+        "dbBackupConfigurations":{
+          "shape":"DbBackupConfigurationOutputList",
+          "documentation":"<p>The backup configurations for the DB cluster.</p>"
+        },
+        "kmsKeyId":{
+          "shape":"KmsKeyId",
+          "documentation":"<p>The Amazon Web Services KMS key ARN used for encryption of the DB cluster.</p>"
         }
       }
     },
@@ -1523,6 +2238,14 @@
         "nextMaintenanceTime":{
           "shape":"SyntheticTimestamp_date_time",
           "documentation":"<p>The timestamp of the next scheduled maintenance operation on the DB instance.</p>"
+        },
+        "dbBackupConfigurations":{
+          "shape":"DbBackupConfigurationOutputList",
+          "documentation":"<p>The backup configurations for the DB instance.</p>"
+        },
+        "kmsKeyId":{
+          "shape":"KmsKeyId",
+          "documentation":"<p>The Amazon Web Services KMS key ARN used for encryption of the DB instance.</p>"
         }
       }
     },
@@ -1642,7 +2365,7 @@
         },
         "queryMaxMemoryBytes":{
           "shape":"InfluxDBv2ParametersQueryMaxMemoryBytesLong",
-          "documentation":"<p>Maximum number of queries allowed in execution queue. When queue limit is reached, new queries are rejected. Setting to 0 allows an unlimited number of queries in the queue.</p> <p>Default: 0</p>"
+          "documentation":"<p>Maximum total bytes of memory allowed for all running queries. When this limit is reached, new queries are rejected. Setting to 0 allows unlimited memory usage.</p> <p>Default: 0</p>"
         },
         "queryMemoryBytes":{
           "shape":"InfluxDBv2ParametersQueryMemoryBytesLong",
@@ -2497,6 +3220,43 @@
       "fault":true,
       "retryable":{"throttling":false}
     },
+    "KmsKeyId":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "pattern":"[a-zA-Z0-9:/_\\-]+"
+    },
+    "ListDbBackupsInput":{
+      "type":"structure",
+      "members":{
+        "dbResourceId":{
+          "shape":"DbResourceId",
+          "documentation":"<p>The identifier of the DB instance or DB cluster to list backups for. If not specified, returns all backups in the account and region.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The pagination token. To resume pagination, provide the nextToken value as an argument of a subsequent API invocation.</p>"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of items to return in the output. If the total number of items available is more than the value specified, a nextToken is provided in the output. To resume pagination, provide the nextToken value as an argument of a subsequent API invocation.</p>"
+        }
+      }
+    },
+    "ListDbBackupsOutput":{
+      "type":"structure",
+      "required":["items"],
+      "members":{
+        "items":{
+          "shape":"DbBackupSummaryList",
+          "documentation":"<p>A list of Timestream for InfluxDB backup summaries.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>Token from a previous call of the operation. When this value is provided, the service returns results from where the previous response left off.</p>"
+        }
+      }
+    },
     "ListDbClustersInput":{
       "type":"structure",
       "members":{
@@ -2911,6 +3671,14 @@
         "nextMaintenanceTime":{
           "shape":"SyntheticTimestamp_date_time",
           "documentation":"<p>The timestamp of the next scheduled maintenance operation on the DB instance.</p>"
+        },
+        "dbBackupConfigurations":{
+          "shape":"DbBackupConfigurationOutputList",
+          "documentation":"<p>The backup configurations for the DB instance.</p>"
+        },
+        "kmsKeyId":{
+          "shape":"KmsKeyId",
+          "documentation":"<p>The Amazon Web Services KMS key ARN used for encryption of the DB instance.</p>"
         }
       }
     },
@@ -2920,6 +3688,14 @@
       "value":{"shape":"TagValue"},
       "max":200,
       "min":1
+    },
+    "ResourceDeploymentType":{
+      "type":"string",
+      "enum":[
+        "SINGLE_AZ",
+        "WITH_MULTIAZ_STANDBY",
+        "MULTI_NODE_READ_REPLICAS"
+      ]
     },
     "ResourceNotFoundException":{
       "type":"structure",
@@ -2942,12 +3718,130 @@
       "documentation":"<p>The requested resource was not found or does not exist.</p>",
       "exception":true
     },
+    "ResourceType":{
+      "type":"string",
+      "enum":[
+        "DB_INSTANCE",
+        "DB_CLUSTER"
+      ]
+    },
     "ResponseTagMap":{
       "type":"map",
       "key":{"shape":"TagKey"},
       "value":{"shape":"TagValue"},
       "max":200,
       "min":0
+    },
+    "RestoreFromDbBackupInput":{
+      "type":"structure",
+      "required":[
+        "name",
+        "dbBackupId"
+      ],
+      "members":{
+        "name":{
+          "shape":"DbResourceName",
+          "documentation":"<p>The name of the new resource to create from the restore. If restoring to an existing resource, the name must match the existing resource name.</p>"
+        },
+        "dbBackupId":{
+          "shape":"DbBackupId",
+          "documentation":"<p>The identifier of the backup to restore from.</p>"
+        },
+        "restoreToTime":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The point in time to restore to, for continuous backups. Must be within the backup's retention window.</p>"
+        },
+        "restoreMode":{
+          "shape":"RestoreMode",
+          "documentation":"<p>Specifies whether to restore to a new resource or replace the existing resource. Valid values are NEW_RESOURCE (default) and REPLACE_EXISTING.</p>"
+        },
+        "vpcSubnetIds":{
+          "shape":"VpcSubnetIdList",
+          "documentation":"<p>A list of VPC subnet IDs for the restored resource. If not specified, the restored resource uses the same subnets as the backup.</p>"
+        },
+        "vpcSecurityGroupIds":{
+          "shape":"VpcSecurityGroupIdList",
+          "documentation":"<p>A list of VPC security group IDs for the restored resource. If not specified, the restored resource uses the same security groups as the backup.</p>"
+        },
+        "publiclyAccessible":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether the restored resource is publicly accessible.</p>"
+        },
+        "logDeliveryConfiguration":{
+          "shape":"LogDeliveryConfiguration",
+          "documentation":"<p>Configuration for sending InfluxDB engine logs to the specified S3 bucket for the restored resource.</p>"
+        },
+        "maintenanceSchedule":{
+          "shape":"MaintenanceSchedule",
+          "documentation":"<p>The maintenance schedule for the restored resource.</p>"
+        },
+        "tags":{
+          "shape":"RequestTagMap",
+          "documentation":"<p>A list of key-value pairs to associate with the restored resource.</p>"
+        },
+        "port":{
+          "shape":"Port",
+          "documentation":"<p>The port number on which the restored InfluxDB resource accepts connections.</p>"
+        },
+        "networkType":{
+          "shape":"NetworkType",
+          "documentation":"<p>Specifies the network type of the restored resource. Valid values are IPV4 and DUAL.</p>"
+        },
+        "deploymentType":{
+          "shape":"ResourceDeploymentType",
+          "documentation":"<p>Specifies the deployment type of the restored resource. Valid values are SINGLE_AZ, WITH_MULTIAZ_STANDBY, and MULTI_NODE_READ_REPLICAS.</p>"
+        },
+        "dbBackupConfigurations":{
+          "shape":"DbBackupConfigurationInputList",
+          "documentation":"<p>A list of backup configurations to apply to the restored resource.</p>"
+        },
+        "kmsKeyId":{
+          "shape":"KmsKeyId",
+          "documentation":"<p>The Amazon Web Services KMS key identifier to use for encryption of the restored resource. Can be a key ID, key ARN, alias name, or alias ARN.</p>"
+        }
+      }
+    },
+    "RestoreFromDbBackupOutput":{
+      "type":"structure",
+      "members":{
+        "restoredDbResourceId":{
+          "shape":"DbResourceId",
+          "documentation":"<p>The identifier of the restored DB resource.</p>"
+        },
+        "restoreStatus":{
+          "shape":"RestoreStatus",
+          "documentation":"<p>The status of the restore operation.</p>"
+        },
+        "resourceType":{
+          "shape":"ResourceType",
+          "documentation":"<p>The type of the restored resource. Valid values are DB_INSTANCE and DB_CLUSTER.</p>"
+        },
+        "engineType":{
+          "shape":"EngineType",
+          "documentation":"<p>The engine type of the restored resource.</p>"
+        },
+        "deploymentType":{
+          "shape":"ResourceDeploymentType",
+          "documentation":"<p>The deployment type of the restored resource.</p>"
+        }
+      }
+    },
+    "RestoreMode":{
+      "type":"string",
+      "enum":[
+        "NEW_RESOURCE",
+        "REPLACE_EXISTING"
+      ]
+    },
+    "RestoreStatus":{
+      "type":"string",
+      "enum":["RESTORING"]
+    },
+    "RetentionDays":{
+      "type":"integer",
+      "box":true,
+      "max":3650,
+      "min":1
     },
     "S3Configuration":{
       "type":"structure",
@@ -2996,7 +3890,9 @@
         "UPDATING_INSTANCE_TYPE",
         "MAINTENANCE",
         "REBOOTING",
-        "REBOOT_FAILED"
+        "REBOOT_FAILED",
+        "RESTORING",
+        "RESTORE_FAILED"
       ]
     },
     "String":{"type":"string"},
@@ -3107,6 +4003,10 @@
         "maintenanceSchedule":{
           "shape":"MaintenanceSchedule",
           "documentation":"<p>Specifies the maintenance schedule for the DB cluster, including the preferred maintenance window and timezone.</p>"
+        },
+        "dbBackupConfigurations":{
+          "shape":"DbBackupConfigurationInputList",
+          "documentation":"<p>A list of backup configurations to update for the DB cluster.</p>"
         }
       }
     },
@@ -3158,6 +4058,10 @@
         "maintenanceSchedule":{
           "shape":"MaintenanceSchedule",
           "documentation":"<p>Specifies the maintenance schedule for the DB instance, including the preferred maintenance window and timezone.</p>"
+        },
+        "dbBackupConfigurations":{
+          "shape":"DbBackupConfigurationInputList",
+          "documentation":"<p>A list of backup configurations to update for the DB instance.</p>"
         }
       }
     },
@@ -3269,6 +4173,14 @@
         "nextMaintenanceTime":{
           "shape":"SyntheticTimestamp_date_time",
           "documentation":"<p>The timestamp of the next scheduled maintenance operation on the DB instance.</p>"
+        },
+        "dbBackupConfigurations":{
+          "shape":"DbBackupConfigurationOutputList",
+          "documentation":"<p>The backup configurations for the DB instance.</p>"
+        },
+        "kmsKeyId":{
+          "shape":"KmsKeyId",
+          "documentation":"<p>The Amazon Web Services KMS key ARN used for encryption of the DB instance.</p>"
         }
       }
     },

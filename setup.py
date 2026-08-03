@@ -47,7 +47,7 @@ setup_options = dict(
     packages=find_packages(exclude=['tests*']),
     include_package_data=True,
     install_requires=install_requires,
-    extras_require={},
+    extras_require={'crt': ['awscrt==0.36.0']},
     license="Apache License 2.0",
     python_requires=">= 3.10",
     classifiers=[

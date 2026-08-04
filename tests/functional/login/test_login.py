@@ -302,9 +302,9 @@ def test_abort_if_profile_has_existing_credentials(
 @mock.patch(
     'awscli.customizations.login.utils.SameDeviceLoginTokenFetcher.fetch_token'
 )
-@mock.patch('awscli.customizations.login.login.maybe_prompt_agent_toolkit')
-def test_prompts_agent_toolkit_for_new_profile(
-    mock_prompt,
+@mock.patch('awscli.customizations.login.login.maybe_print_agent_toolkit_hint')
+def test_hints_agent_toolkit_for_new_profile(
+    mock_hint,
     mock_token_fetcher,
     mock_base_sign_in_uri,
     mock_login_command,
@@ -324,16 +324,16 @@ def test_prompts_agent_toolkit_for_new_profile(
     mock_session.full_config = {'profiles': {}}
 
     mock_login_command._run_main(DEFAULT_ARGS, DEFAULT_GLOBAL_ARGS)
-    mock_prompt.assert_called_once()
+    mock_hint.assert_called_once()
 
 
 @mock.patch('awscli.customizations.login.utils.get_base_sign_in_uri')
 @mock.patch(
     'awscli.customizations.login.utils.SameDeviceLoginTokenFetcher.fetch_token'
 )
-@mock.patch('awscli.customizations.login.login.maybe_prompt_agent_toolkit')
-def test_no_agent_toolkit_prompt_for_existing_profile(
-    mock_prompt,
+@mock.patch('awscli.customizations.login.login.maybe_print_agent_toolkit_hint')
+def test_no_agent_toolkit_hint_for_existing_profile(
+    mock_hint,
     mock_token_fetcher,
     mock_base_sign_in_uri,
     mock_login_command,
@@ -353,4 +353,4 @@ def test_no_agent_toolkit_prompt_for_existing_profile(
     mock_session.full_config = {'profiles': {'profile-name': {}}}
 
     mock_login_command._run_main(DEFAULT_ARGS, DEFAULT_GLOBAL_ARGS)
-    mock_prompt.assert_not_called()
+    mock_hint.assert_not_called()

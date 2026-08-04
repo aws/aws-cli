@@ -15,7 +15,7 @@ from awscli.clidriver import (
     get_distribution_source,
 )
 from awscli.compat import is_windows
-from awscli.customizations.agenttoolkit.hint import hint_disabled
+from awscli.customizations.agenttoolkit.hint import HINT_TEXT, hint_disabled
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.utils import uni_print
 
@@ -97,10 +97,7 @@ class BaseUpdateCommand(BasicCommand):
         self._no_color = parsed_globals.color == 'off'
         self._do_update()
         if not hint_disabled():
-            uni_print(
-                "\nTip: run 'aws configure agent-toolkit' to set up AWS "
-                "skills and the AWS MCP server for your AI coding agent.\n"
-            )
+            uni_print(HINT_TEXT)
         return 0
 
     def _do_update(self):

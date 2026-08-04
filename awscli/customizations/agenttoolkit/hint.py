@@ -10,16 +10,15 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-"""End-of-``aws configure`` hint suggesting the Agent Toolkit wizard.
+"""End-of-command hint pointing at the Agent Toolkit wizard.
 
-After a successful ``aws configure`` that writes profile values, offer to run
-``aws configure agent-toolkit`` when a supported AI coding agent is present and
-the toolkit is not already installed. In the supported region the offer is an
-interactive prompt; elsewhere it is a non-interactive tip. Either way it only
-shows on a TTY and can be suppressed permanently.
+After a successful ``aws configure``, ``aws configure sso``, or first-time
+``aws login``, print a one-line tip suggesting ``aws configure agent-toolkit``
+when a supported AI coding agent is present and no AWS skills are installed
+yet. The tip only shows on a TTY and can be suppressed with an environment
+variable.
 """
 
-import json
 import logging
 import os
 
@@ -28,83 +27,34 @@ from botocore.utils import ensure_boolean
 from awscli.customizations.agenttoolkit.agents import (
     get_detected_real_agents,
 )
-from awscli.customizations.agenttoolkit.configure import (
-    ConfigureAgentToolkitCommand,
-)
-from awscli.customizations.prompts import yes_no_never_choice
 from awscli.customizations.utils import uni_print
-from awscli.utils import is_stdin_a_tty
+from awscli.utils import is_a_tty
 
 LOG = logging.getLogger(__name__)
 
-STATE_PATH = '~/.aws/cli/agent-toolkit/state.json'
-
 HINT_DISABLED_ENV_VAR = 'AWS_CLI_AGENT_TOOLKIT_HINT_DISABLED'
 
-# The Agent Toolkit skill APIs are only available in this region today. When
-# the caller's region differs, running the wizard inline would fail, so we
-# show a non-interactive hint pointing at the working invocation instead.
-SUPPORTED_REGION = 'us-east-1'
-
-PROMPT_TEXT = (
-    '\nConfigure AWS skills and the AWS MCP server for your AI coding '
-    'agent(s)? [y/n/never]: '
-)
-
+# The Agent Toolkit skill APIs are only available in us-east-1 today, so the
+# tip pins the region explicitly rather than routing the caller's configured
+# region through a hidden cross-region call.
 HINT_TEXT = (
     "\nTip: run 'aws configure agent-toolkit --region us-east-1' to set up "
     'AWS skills and the AWS MCP server for your AI coding agent(s).\n'
 )
 
 
-def _state_file():
-    return os.path.expanduser(STATE_PATH)
-
-
-def _load_state():
-    try:
-        with open(_state_file()) as f:
-            return json.load(f)
-    except FileNotFoundError:
-        return {}
-    except (OSError, json.JSONDecodeError) as e:
-        LOG.debug('Could not read agent toolkit hint state: %s', e)
-        return {}
-
-
-def _save_state(state):
-    path = _state_file()
-    try:
-        os.makedirs(os.path.dirname(path), exist_ok=True)
-        tmp_path = f'{path}.tmp'
-        with open(tmp_path, 'w') as f:
-            json.dump(state, f)
-            f.write('\n')
-        os.replace(tmp_path, path)
-    except OSError as e:
-        LOG.debug('Could not write agent toolkit hint state: %s', e)
-
-
-def _dismiss_forever():
-    state = _load_state()
-    state['hint_dismissed'] = True
-    _save_state(state)
+def hint_disabled():
+    return ensure_boolean(os.environ.get(HINT_DISABLED_ENV_VAR, ''))
 
 
 def _has_installed_skills(detected_agents):
     return any(agent.get_installed_skills() for agent in detected_agents)
 
 
-def hint_disabled():
-    return ensure_boolean(os.environ.get(HINT_DISABLED_ENV_VAR, ''))
-
-
 def _is_eligible():
-    if not is_stdin_a_tty():
+    if not is_a_tty():
         return False
     if hint_disabled():
-        return False
-    if _load_state().get('hint_dismissed'):
         return False
     detected_agents = get_detected_real_agents()
     if not detected_agents:
@@ -114,35 +64,9 @@ def _is_eligible():
     return True
 
 
-def _resolve_region(session, parsed_globals):
-    region = getattr(parsed_globals, 'region', None)
-    if region:
-        return region
+def maybe_print_agent_toolkit_hint():
     try:
-        return session.get_config_variable('region')
-    except Exception:
-        return None
-
-
-def maybe_prompt_agent_toolkit(session, parsed_globals):
-    try:
-        if not _is_eligible():
-            return
-        # The wizard can only install skills from SUPPORTED_REGION. If the
-        # caller is elsewhere, offering an inline "yes" would run the wizard
-        # and fail, so we print a hint pointing at the working command
-        # instead of prompting.
-        if _resolve_region(session, parsed_globals) != SUPPORTED_REGION:
+        if _is_eligible():
             uni_print(HINT_TEXT)
-            return
-        choice = yes_no_never_choice(PROMPT_TEXT)
-        if choice == 'never':
-            _dismiss_forever()
-        run_wizard = choice == 'yes'
     except Exception as e:
         LOG.debug('Agent toolkit hint failed: %s', e, exc_info=True)
-        return
-
-    if run_wizard:
-        command = ConfigureAgentToolkitCommand(session)
-        command([], parsed_globals)

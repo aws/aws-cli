@@ -28,8 +28,6 @@ COMMANDS = [
     'autoscaling describe-adjustment-types',
     'cloudformation describe-stacks',
     'cloudformation list-stacks',
-    'cloudsearch describe-domains',
-    'cloudsearch list-domain-names',
     'cloudtrail describe-trails',
     'cloudwatch list-metrics',
     'cognito-identity list-identity-pools --max-results 1',
@@ -80,7 +78,6 @@ COMMANDS = [
 ERROR_COMMANDS = [
     'autoscaling attach-instances --auto-scaling-group-name %s',
     'cloudformation cancel-update-stack --stack-name %s',
-    'cloudsearch describe-suggesters --domain-name %s',
     'cloudtrail get-trail-status --name %s',
     'cognito-identity delete-identity-pool --identity-pool-id %s',
     'datapipeline delete-pipeline --pipeline-id %s',

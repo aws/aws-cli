@@ -1,0 +1,36 @@
+{
+  "parameters": {
+    "Region": {
+      "type": "string",
+      "builtIn": "AWS::Region",
+      "required": true
+    }
+  },
+  "rules": [
+    {
+      "documentation": "override rule for the local pseduo region",
+      "conditions": [
+        {
+          "fn": "stringEquals",
+          "argv": [
+            "local",
+            "{Region}"
+          ]
+        }
+      ],
+      "endpoint": {
+        "url": "http://localhost:8080"
+      },
+      "type": "endpoint"
+    },
+    {
+      "documentation": "base rule",
+      "conditions": [],
+      "endpoint": {
+        "url": "https://{Region}.someservice.amazonaws.com"
+      },
+      "type": "endpoint"
+    }
+  ],
+  "version": "1.3"
+}

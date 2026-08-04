@@ -21,7 +21,7 @@ if os.environ.get('TESTS_REMOVE_REPO_ROOT_FROM_PATH'):
 import awscli
 from awscli.clidriver import create_clidriver
 from awscli.compat import collections_abc
-from awscli.testutils import mock, capture_output
+from awscli.testutils import mock, capture_output, skip_if_windows
 
 import botocore.awsrequest
 import botocore.loaders
@@ -338,3 +338,50 @@ def requires_crt(reason=None):
         return unittest.skipIf(not HAS_CRT, reason)(func)
 
     return decorator
+
+# Botocore testing utilities that we want to preserve import statements for
+# in botocore specific tests.
+from tests.utils.botocore import (
+    ALL_SERVICES,
+    BaseClientDriverTest,
+    BaseEnvVar,
+    BaseSessionTest,
+    ClientHTTPStubber,
+    ConsistencyWaiter,
+    ConsistencyWaiterException,
+    FreezeTime,
+    IntegerRefresher,
+    RawResponse,
+    SessionHTTPStubber,
+    StubbedSession,
+    assert_url_equal,
+    create_session,
+    get_botocore_default_config_mapping,
+    get_checksum_cls,
+    patch_load_service_model,
+    random_chars,
+    skip_if_crt,
+    skip_if_windows,
+    temporary_file,
+)
+
+# s3transfer testing utilities
+from tests.utils.s3transfer import (
+    BaseGeneralInterfaceTest,
+    BaseSubmissionTaskTest,
+    BaseTaskTest,
+    ETagProvider,
+    FileCreator,
+    FileSizeProvider,
+    NonSeekableReader,
+    NonSeekableWriter,
+    RecordingExecutor,
+    RecordingOSUtils,
+    RecordingSubscriber,
+    StreamWithError,
+    StubbedClientTest,
+    TransferCoordinatorWithInterrupt,
+    assert_files_equal,
+    random_bucket_name,
+    skip_if_using_serial_implementation,
+)

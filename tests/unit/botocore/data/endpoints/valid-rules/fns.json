@@ -1,0 +1,128 @@
+{
+  "documentation": "functions in more places",
+  "parameters": {
+    "Uri": {
+      "type": "string",
+      "documentation": "A URI to use"
+    },
+    "Arn": {
+      "type": "string",
+      "documentation": "an ARN to extract fields from"
+    },
+    "CustomError": {
+      "type": "string",
+      "documentation": "when set, a custom error message"
+    }
+  },
+  "rules": [
+    {
+      "documentation": "when URI is set, use it directly",
+      "conditions": [
+        {
+          "fn": "isSet",
+          "argv": [
+            {
+              "ref": "Uri"
+            }
+          ]
+        },
+        {
+          "fn": "isSet",
+          "argv": [
+            {
+              "ref": "Arn"
+            }
+          ]
+        },
+        {
+          "fn": "aws.parseArn",
+          "argv": [
+            {
+              "ref": "Arn"
+            }
+          ],
+          "assign": "parsedArn"
+        }
+      ],
+      "endpoint": {
+        "url": {
+          "ref": "Uri"
+        },
+        "headers": {
+          "x-uri": [
+            {
+              "ref": "Uri"
+            }
+          ],
+          "x-arn-region": [
+            {
+              "fn": "getAttr",
+              "argv": [
+                {
+                  "ref": "parsedArn"
+                },
+                "region"
+              ]
+            }
+          ]
+        }
+      },
+      "type": "endpoint"
+    },
+    {
+      "documentation": "A custom error",
+      "conditions": [
+        {
+          "fn": "isSet",
+          "argv": [
+            {
+              "ref": "CustomError"
+            }
+          ]
+        }
+      ],
+      "type": "error",
+      "error": {
+        "ref": "CustomError"
+      }
+    },
+    {
+      "type": "error",
+      "conditions": [
+        {
+          "fn": "isSet",
+          "argv": [
+            {
+              "ref": "Arn"
+            }
+          ]
+        },
+        {
+          "fn": "aws.parseArn",
+          "argv": [
+            {
+              "ref": "Arn"
+            }
+          ],
+          "assign": "parsedArn"
+        }
+      ],
+      "error": {
+        "fn": "getAttr",
+        "argv": [
+          {
+            "ref": "parsedArn"
+          },
+          "partition"
+        ]
+      }
+    },
+    {
+      "documentation": "fallback when nothing is set",
+      "conditions": [],
+      "error": "No fields were set",
+      "type": "error"
+    }
+  ],
+  "version": "1.3"
+}

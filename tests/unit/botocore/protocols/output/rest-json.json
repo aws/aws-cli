@@ -1,0 +1,4323 @@
+[
+    {
+        "description": "Test cases for DatetimeOffsets operation",
+        "metadata": {
+            "protocol": "rest-json",
+            "protocols": [
+                "rest-json"
+            ],
+            "apiVersion": "2019-12-16"
+        },
+        "shapes": {
+            "DatetimeOffsetsOutput": {
+                "type": "structure",
+                "members": {
+                    "datetime": {
+                        "shape": "DateTime"
+                    }
+                }
+            },
+            "DateTime": {
+                "type": "timestamp",
+                "timestampFormat": "iso8601"
+            }
+        },
+        "cases": [
+            {
+                "id": "RestJsonDateTimeWithNegativeOffset",
+                "given": {
+                    "name": "DatetimeOffsets",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/DatetimeOffsets",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "DatetimeOffsetsOutput"
+                    }
+                },
+                "description": "Ensures that clients can correctly parse datetime (timestamps) with offsets",
+                "result": {
+                    "datetime": 1576540098
+                },
+                "response": {
+                    "status_code": 200,
+                    "body": "      {\n          \"datetime\": \"2019-12-16T22:48:18-01:00\"\n      }\n"
+                }
+            },
+            {
+                "id": "RestJsonDateTimeWithPositiveOffset",
+                "given": {
+                    "name": "DatetimeOffsets",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/DatetimeOffsets",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "DatetimeOffsetsOutput"
+                    }
+                },
+                "description": "Ensures that clients can correctly parse datetime (timestamps) with offsets",
+                "result": {
+                    "datetime": 1576540098
+                },
+                "response": {
+                    "status_code": 200,
+                    "body": "      {\n          \"datetime\": \"2019-12-17T00:48:18+01:00\"\n      }\n"
+                }
+            }
+        ]
+    },
+    {
+        "description": "Test cases for DocumentType operation",
+        "metadata": {
+            "protocol": "rest-json",
+            "protocols": [
+                "rest-json"
+            ],
+            "apiVersion": "2019-12-16"
+        },
+        "shapes": {
+            "DocumentTypeInputOutput": {
+                "type": "structure",
+                "members": {
+                    "stringValue": {
+                        "shape": "String"
+                    },
+                    "documentValue": {
+                        "shape": "Document"
+                    }
+                }
+            },
+            "String": {
+                "type": "string"
+            },
+            "Document": {
+                "type": "structure",
+                "members": {},
+                "document": true
+            }
+        },
+        "cases": [
+            {
+                "id": "DocumentOutput",
+                "given": {
+                    "name": "DocumentType",
+                    "http": {
+                        "method": "PUT",
+                        "requestUri": "/DocumentType",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "DocumentTypeInputOutput"
+                    },
+                    "documentation": "<p>This example serializes a document as part of the payload.</p>",
+                    "idempotent": true
+                },
+                "description": "Serializes documents as part of the JSON response payload with no escaping.",
+                "result": {
+                    "stringValue": "string",
+                    "documentValue": {
+                        "foo": "bar"
+                    }
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "body": "{\n    \"stringValue\": \"string\",\n    \"documentValue\": {\n        \"foo\": \"bar\"\n    }\n}"
+                }
+            },
+            {
+                "id": "DocumentOutputString",
+                "given": {
+                    "name": "DocumentType",
+                    "http": {
+                        "method": "PUT",
+                        "requestUri": "/DocumentType",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "DocumentTypeInputOutput"
+                    },
+                    "documentation": "<p>This example serializes a document as part of the payload.</p>",
+                    "idempotent": true
+                },
+                "description": "Document types can be JSON scalars too.",
+                "result": {
+                    "stringValue": "string",
+                    "documentValue": "hello"
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "body": "{\n    \"stringValue\": \"string\",\n    \"documentValue\": \"hello\"\n}"
+                }
+            },
+            {
+                "id": "DocumentOutputNumber",
+                "given": {
+                    "name": "DocumentType",
+                    "http": {
+                        "method": "PUT",
+                        "requestUri": "/DocumentType",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "DocumentTypeInputOutput"
+                    },
+                    "documentation": "<p>This example serializes a document as part of the payload.</p>",
+                    "idempotent": true
+                },
+                "description": "Document types can be JSON scalars too.",
+                "result": {
+                    "stringValue": "string",
+                    "documentValue": 10
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "body": "{\n    \"stringValue\": \"string\",\n    \"documentValue\": 10\n}"
+                }
+            },
+            {
+                "id": "DocumentOutputBoolean",
+                "given": {
+                    "name": "DocumentType",
+                    "http": {
+                        "method": "PUT",
+                        "requestUri": "/DocumentType",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "DocumentTypeInputOutput"
+                    },
+                    "documentation": "<p>This example serializes a document as part of the payload.</p>",
+                    "idempotent": true
+                },
+                "description": "Document types can be JSON scalars too.",
+                "result": {
+                    "stringValue": "string",
+                    "documentValue": false
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "body": "{\n    \"stringValue\": \"string\",\n    \"documentValue\": false\n}"
+                }
+            },
+            {
+                "id": "DocumentOutputArray",
+                "given": {
+                    "name": "DocumentType",
+                    "http": {
+                        "method": "PUT",
+                        "requestUri": "/DocumentType",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "DocumentTypeInputOutput"
+                    },
+                    "documentation": "<p>This example serializes a document as part of the payload.</p>",
+                    "idempotent": true
+                },
+                "description": "Document types can be JSON arrays.",
+                "result": {
+                    "stringValue": "string",
+                    "documentValue": [
+                        true,
+                        false
+                    ]
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "body": "{\n    \"stringValue\": \"string\",\n    \"documentValue\": [\n        true,\n        false\n    ]\n}"
+                }
+            }
+        ]
+    },
+    {
+        "description": "Test cases for DocumentTypeAsMapValue operation",
+        "metadata": {
+            "protocol": "rest-json",
+            "protocols": [
+                "rest-json"
+            ],
+            "apiVersion": "2019-12-16"
+        },
+        "shapes": {
+            "DocumentTypeAsMapValueInputOutput": {
+                "type": "structure",
+                "members": {
+                    "docValuedMap": {
+                        "shape": "DocumentValuedMap"
+                    }
+                }
+            },
+            "DocumentValuedMap": {
+                "type": "map",
+                "key": {
+                    "shape": "String"
+                },
+                "value": {
+                    "shape": "Document"
+                }
+            },
+            "Document": {
+                "type": "structure",
+                "members": {},
+                "document": true
+            },
+            "String": {
+                "type": "string"
+            }
+        },
+        "cases": [
+            {
+                "id": "DocumentTypeAsMapValueOutput",
+                "given": {
+                    "name": "DocumentTypeAsMapValue",
+                    "http": {
+                        "method": "PUT",
+                        "requestUri": "/DocumentTypeAsMapValue",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "DocumentTypeAsMapValueInputOutput"
+                    },
+                    "documentation": "<p>This example serializes documents as the value of maps.</p>",
+                    "idempotent": true
+                },
+                "description": "Serializes a map that uses documents as the value.",
+                "result": {
+                    "docValuedMap": {
+                        "foo": {
+                            "f": 1,
+                            "o": 2
+                        },
+                        "bar": [
+                            "b",
+                            "a",
+                            "r"
+                        ],
+                        "baz": "BAZ"
+                    }
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "body": "{\n    \"docValuedMap\": {\n        \"foo\": { \"f\": 1, \"o\": 2 },\n        \"bar\": [ \"b\", \"a\", \"r\" ],\n        \"baz\": \"BAZ\"\n    }\n}"
+                }
+            }
+        ]
+    },
+    {
+        "description": "Test cases for DocumentTypeAsPayload operation",
+        "metadata": {
+            "protocol": "rest-json",
+            "protocols": [
+                "rest-json"
+            ],
+            "apiVersion": "2019-12-16"
+        },
+        "shapes": {
+            "DocumentTypeAsPayloadInputOutput": {
+                "type": "structure",
+                "members": {
+                    "documentValue": {
+                        "shape": "Document"
+                    }
+                },
+                "payload": "documentValue"
+            },
+            "Document": {
+                "type": "structure",
+                "members": {},
+                "document": true
+            }
+        },
+        "cases": [
+            {
+                "id": "DocumentTypeAsPayloadOutput",
+                "given": {
+                    "name": "DocumentTypeAsPayload",
+                    "http": {
+                        "method": "PUT",
+                        "requestUri": "/DocumentTypeAsPayload",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "DocumentTypeAsPayloadInputOutput"
+                    },
+                    "documentation": "<p>This example serializes a document as the entire HTTP payload.</p>",
+                    "idempotent": true
+                },
+                "description": "Serializes a document as the target of the httpPayload trait.",
+                "result": {
+                    "documentValue": {
+                        "foo": "bar"
+                    }
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "body": "{\n    \"foo\": \"bar\"\n}"
+                }
+            },
+            {
+                "id": "DocumentTypeAsPayloadOutputString",
+                "given": {
+                    "name": "DocumentTypeAsPayload",
+                    "http": {
+                        "method": "PUT",
+                        "requestUri": "/DocumentTypeAsPayload",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "DocumentTypeAsPayloadInputOutput"
+                    },
+                    "documentation": "<p>This example serializes a document as the entire HTTP payload.</p>",
+                    "idempotent": true
+                },
+                "description": "Serializes a document as a payload string.",
+                "result": {
+                    "documentValue": "hello"
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "body": "\"hello\""
+                }
+            }
+        ]
+    },
+    {
+        "description": "Test cases for EmptyInputAndEmptyOutput operation",
+        "metadata": {
+            "protocol": "rest-json",
+            "protocols": [
+                "rest-json"
+            ],
+            "apiVersion": "2019-12-16"
+        },
+        "shapes": {
+            "EmptyInputAndEmptyOutputOutput": {
+                "type": "structure",
+                "members": {}
+            }
+        },
+        "cases": [
+            {
+                "id": "RestJsonEmptyInputAndEmptyOutput",
+                "given": {
+                    "name": "EmptyInputAndEmptyOutput",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/EmptyInputAndEmptyOutput",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "EmptyInputAndEmptyOutputOutput"
+                    },
+                    "documentation": "<p>The example tests how requests and responses are serialized when there's no request or response payload because the operation has an empty input and empty output structure that reuses the same shape. While this should be rare, code generators must support this.</p>"
+                },
+                "description": "As of January 2021, server implementations are expected to\nrespond with a JSON object regardless of if the output\nparameters are empty.",
+                "result": {},
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "body": "{}"
+                }
+            },
+            {
+                "id": "RestJsonEmptyInputAndEmptyOutputJsonObjectOutput",
+                "given": {
+                    "name": "EmptyInputAndEmptyOutput",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/EmptyInputAndEmptyOutput",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "EmptyInputAndEmptyOutputOutput"
+                    },
+                    "documentation": "<p>The example tests how requests and responses are serialized when there's no request or response payload because the operation has an empty input and empty output structure that reuses the same shape. While this should be rare, code generators must support this.</p>"
+                },
+                "description": "This test ensures that clients can gracefully handle\nsituations where a service omits a JSON payload entirely.",
+                "result": {},
+                "response": {
+                    "status_code": 200,
+                    "body": ""
+                }
+            }
+        ]
+    },
+    {
+        "description": "Test cases for FractionalSeconds operation",
+        "metadata": {
+            "protocol": "rest-json",
+            "protocols": [
+                "rest-json"
+            ],
+            "apiVersion": "2019-12-16"
+        },
+        "shapes": {
+            "FractionalSecondsOutput": {
+                "type": "structure",
+                "members": {
+                    "datetime": {
+                        "shape": "DateTime"
+                    }
+                }
+            },
+            "DateTime": {
+                "type": "timestamp",
+                "timestampFormat": "iso8601"
+            }
+        },
+        "cases": [
+            {
+                "id": "RestJsonDateTimeWithFractionalSeconds",
+                "given": {
+                    "name": "FractionalSeconds",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/FractionalSeconds",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "FractionalSecondsOutput"
+                    }
+                },
+                "description": "Ensures that clients can correctly parse datetime timestamps with fractional seconds",
+                "result": {
+                    "datetime": 9.46845296123E8
+                },
+                "response": {
+                    "status_code": 200,
+                    "body": "      {\n          \"datetime\": \"2000-01-02T20:34:56.123Z\"\n      }\n"
+                }
+            }
+        ]
+    },
+    {
+        "description": "Test cases for GreetingWithErrors operation",
+        "metadata": {
+            "protocol": "rest-json",
+            "protocols": [
+                "rest-json"
+            ],
+            "apiVersion": "2019-12-16"
+        },
+        "shapes": {
+            "GreetingWithErrorsOutput": {
+                "type": "structure",
+                "members": {
+                    "greeting": {
+                        "shape": "String",
+                        "location": "header",
+                        "locationName": "X-Greeting"
+                    }
+                }
+            },
+            "String": {
+                "type": "string"
+            }
+        },
+        "cases": [
+            {
+                "id": "RestJsonGreetingWithErrors",
+                "given": {
+                    "name": "GreetingWithErrors",
+                    "http": {
+                        "method": "PUT",
+                        "requestUri": "/GreetingWithErrors",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "GreetingWithErrorsOutput"
+                    },
+                    "documentation": "<p>This operation has four possible return values:</p> <ol> <li>A successful response in the form of GreetingWithErrorsOutput</li> <li>An InvalidGreeting error.</li> <li>A BadRequest error.</li> <li>A FooError.</li> </ol> <p>Implementations must be able to successfully take a response and properly (de)serialize successful and error responses based on the the presence of the</p>",
+                    "idempotent": true
+                },
+                "description": "Ensures that operations with errors successfully know how\nto deserialize a successful response. As of January 2021,\nserver implementations are expected to respond with a\nJSON object regardless of if the output parameters are\nempty.",
+                "result": {
+                    "greeting": "Hello"
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "X-Greeting": "Hello"
+                    },
+                    "body": "{}"
+                }
+            },
+            {
+                "id": "RestJsonGreetingWithErrorsNoPayload",
+                "given": {
+                    "name": "GreetingWithErrors",
+                    "http": {
+                        "method": "PUT",
+                        "requestUri": "/GreetingWithErrors",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "GreetingWithErrorsOutput"
+                    },
+                    "documentation": "<p>This operation has four possible return values:</p> <ol> <li>A successful response in the form of GreetingWithErrorsOutput</li> <li>An InvalidGreeting error.</li> <li>A BadRequest error.</li> <li>A FooError.</li> </ol> <p>Implementations must be able to successfully take a response and properly (de)serialize successful and error responses based on the the presence of the</p>",
+                    "idempotent": true
+                },
+                "description": "This test is similar to RestJsonGreetingWithErrors, but it\nensures that clients can gracefully deal with a server\nomitting a response payload.",
+                "result": {
+                    "greeting": "Hello"
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "X-Greeting": "Hello"
+                    },
+                    "body": ""
+                }
+            }
+        ]
+    },
+    {
+        "description": "Test cases for GreetingWithErrors operation",
+        "metadata": {
+            "protocol": "rest-json",
+            "protocols": [
+                "rest-json"
+            ],
+            "apiVersion": "2019-12-16"
+        },
+        "shapes": {
+            "FooError": {
+                "type": "structure",
+                "members": {},
+                "documentation": "<p>This error has test cases that test some of the dark corners of Amazon service framework history. It should only be implemented by clients.</p>",
+                "error": {
+                    "httpStatusCode": 500
+                },
+                "exception": true,
+                "fault": true
+            }
+        },
+        "cases": [
+            {
+                "id": "RestJsonFooErrorUsingXAmznErrorType",
+                "given": {
+                    "name": "GreetingWithErrors",
+                    "http": {
+                        "method": "PUT",
+                        "requestUri": "/GreetingWithErrors",
+                        "responseCode": 200
+                    },
+                    "documentation": "<p>This operation has four possible return values:</p> <ol> <li>A successful response in the form of GreetingWithErrorsOutput</li> <li>An InvalidGreeting error.</li> <li>A BadRequest error.</li> <li>A FooError.</li> </ol> <p>Implementations must be able to successfully take a response and properly (de)serialize successful and error responses based on the the presence of the</p>",
+                    "idempotent": true,
+                    "errors": [
+                        {
+                            "shape": "FooError"
+                        }
+                    ]
+                },
+                "description": "Serializes the X-Amzn-ErrorType header. For an example service, see Amazon EKS.",
+                "errorCode": "FooError",
+                "error": {},
+                "response": {
+                    "status_code": 500,
+                    "headers": {
+                        "X-Amzn-Errortype": "FooError"
+                    }
+                }
+            },
+            {
+                "id": "RestJsonFooErrorUsingXAmznErrorTypeWithUri",
+                "given": {
+                    "name": "GreetingWithErrors",
+                    "http": {
+                        "method": "PUT",
+                        "requestUri": "/GreetingWithErrors",
+                        "responseCode": 200
+                    },
+                    "documentation": "<p>This operation has four possible return values:</p> <ol> <li>A successful response in the form of GreetingWithErrorsOutput</li> <li>An InvalidGreeting error.</li> <li>A BadRequest error.</li> <li>A FooError.</li> </ol> <p>Implementations must be able to successfully take a response and properly (de)serialize successful and error responses based on the the presence of the</p>",
+                    "idempotent": true,
+                    "errors": [
+                        {
+                            "shape": "FooError"
+                        }
+                    ]
+                },
+                "description": "Some X-Amzn-Errortype headers contain URLs. Clients need to split the URL on ':' and take only the first half of the string. For example, 'ValidationException:http://internal.amazon.com/coral/com.amazon.coral.validate/'\nis to be interpreted as 'ValidationException'.\n\nFor an example service see Amazon Polly.",
+                "errorCode": "FooError",
+                "error": {},
+                "response": {
+                    "status_code": 500,
+                    "headers": {
+                        "X-Amzn-Errortype": "FooError:http://internal.amazon.com/coral/com.amazon.coral.validate/"
+                    }
+                }
+            },
+            {
+                "id": "RestJsonFooErrorUsingXAmznErrorTypeWithUriAndNamespace",
+                "given": {
+                    "name": "GreetingWithErrors",
+                    "http": {
+                        "method": "PUT",
+                        "requestUri": "/GreetingWithErrors",
+                        "responseCode": 200
+                    },
+                    "documentation": "<p>This operation has four possible return values:</p> <ol> <li>A successful response in the form of GreetingWithErrorsOutput</li> <li>An InvalidGreeting error.</li> <li>A BadRequest error.</li> <li>A FooError.</li> </ol> <p>Implementations must be able to successfully take a response and properly (de)serialize successful and error responses based on the the presence of the</p>",
+                    "idempotent": true,
+                    "errors": [
+                        {
+                            "shape": "FooError"
+                        }
+                    ]
+                },
+                "description": "X-Amzn-Errortype might contain a URL and a namespace. Client should extract only the shape name. This is a pathalogical case that might not actually happen in any deployed AWS service.",
+                "errorCode": "FooError",
+                "error": {},
+                "response": {
+                    "status_code": 500,
+                    "headers": {
+                        "X-Amzn-Errortype": "aws.protocoltests.restjson#FooError:http://internal.amazon.com/coral/com.amazon.coral.validate/"
+                    }
+                }
+            },
+            {
+                "id": "RestJsonFooErrorUsingCode",
+                "given": {
+                    "name": "GreetingWithErrors",
+                    "http": {
+                        "method": "PUT",
+                        "requestUri": "/GreetingWithErrors",
+                        "responseCode": 200
+                    },
+                    "documentation": "<p>This operation has four possible return values:</p> <ol> <li>A successful response in the form of GreetingWithErrorsOutput</li> <li>An InvalidGreeting error.</li> <li>A BadRequest error.</li> <li>A FooError.</li> </ol> <p>Implementations must be able to successfully take a response and properly (de)serialize successful and error responses based on the the presence of the</p>",
+                    "idempotent": true,
+                    "errors": [
+                        {
+                            "shape": "FooError"
+                        }
+                    ]
+                },
+                "description": "This example uses the 'code' property in the output rather than X-Amzn-Errortype. Some services do this though it's preferable to send the X-Amzn-Errortype. Client implementations must first check for the X-Amzn-Errortype and then check for a top-level 'code' property.\n\nFor example service see Amazon S3 Glacier.",
+                "errorCode": "FooError",
+                "error": {},
+                "response": {
+                    "status_code": 500,
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "body": "{\n    \"code\": \"FooError\"\n}"
+                }
+            },
+            {
+                "id": "RestJsonFooErrorUsingCodeAndNamespace",
+                "given": {
+                    "name": "GreetingWithErrors",
+                    "http": {
+                        "method": "PUT",
+                        "requestUri": "/GreetingWithErrors",
+                        "responseCode": 200
+                    },
+                    "documentation": "<p>This operation has four possible return values:</p> <ol> <li>A successful response in the form of GreetingWithErrorsOutput</li> <li>An InvalidGreeting error.</li> <li>A BadRequest error.</li> <li>A FooError.</li> </ol> <p>Implementations must be able to successfully take a response and properly (de)serialize successful and error responses based on the the presence of the</p>",
+                    "idempotent": true,
+                    "errors": [
+                        {
+                            "shape": "FooError"
+                        }
+                    ]
+                },
+                "description": "Some services serialize errors using code, and it might contain a namespace. Clients should just take the last part of the string after '#'.",
+                "errorCode": "FooError",
+                "error": {},
+                "response": {
+                    "status_code": 500,
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "body": "{\n    \"code\": \"aws.protocoltests.restjson#FooError\"\n}"
+                }
+            },
+            {
+                "id": "RestJsonFooErrorUsingCodeUriAndNamespace",
+                "given": {
+                    "name": "GreetingWithErrors",
+                    "http": {
+                        "method": "PUT",
+                        "requestUri": "/GreetingWithErrors",
+                        "responseCode": 200
+                    },
+                    "documentation": "<p>This operation has four possible return values:</p> <ol> <li>A successful response in the form of GreetingWithErrorsOutput</li> <li>An InvalidGreeting error.</li> <li>A BadRequest error.</li> <li>A FooError.</li> </ol> <p>Implementations must be able to successfully take a response and properly (de)serialize successful and error responses based on the the presence of the</p>",
+                    "idempotent": true,
+                    "errors": [
+                        {
+                            "shape": "FooError"
+                        }
+                    ]
+                },
+                "description": "Some services serialize errors using code, and it might contain a namespace. It also might contain a URI. Clients should just take the last part of the string after '#' and before \":\". This is a pathalogical case that might not occur in any deployed AWS service.",
+                "errorCode": "FooError",
+                "error": {},
+                "response": {
+                    "status_code": 500,
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "body": "{\n    \"code\": \"aws.protocoltests.restjson#FooError:http://internal.amazon.com/coral/com.amazon.coral.validate/\"\n}"
+                }
+            },
+            {
+                "id": "RestJsonFooErrorWithDunderType",
+                "given": {
+                    "name": "GreetingWithErrors",
+                    "http": {
+                        "method": "PUT",
+                        "requestUri": "/GreetingWithErrors",
+                        "responseCode": 200
+                    },
+                    "documentation": "<p>This operation has four possible return values:</p> <ol> <li>A successful response in the form of GreetingWithErrorsOutput</li> <li>An InvalidGreeting error.</li> <li>A BadRequest error.</li> <li>A FooError.</li> </ol> <p>Implementations must be able to successfully take a response and properly (de)serialize successful and error responses based on the the presence of the</p>",
+                    "idempotent": true,
+                    "errors": [
+                        {
+                            "shape": "FooError"
+                        }
+                    ]
+                },
+                "description": "Some services serialize errors using __type.",
+                "errorCode": "FooError",
+                "error": {},
+                "response": {
+                    "status_code": 500,
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "body": "{\n    \"__type\": \"FooError\"\n}"
+                }
+            },
+            {
+                "id": "RestJsonFooErrorWithDunderTypeAndNamespace",
+                "given": {
+                    "name": "GreetingWithErrors",
+                    "http": {
+                        "method": "PUT",
+                        "requestUri": "/GreetingWithErrors",
+                        "responseCode": 200
+                    },
+                    "documentation": "<p>This operation has four possible return values:</p> <ol> <li>A successful response in the form of GreetingWithErrorsOutput</li> <li>An InvalidGreeting error.</li> <li>A BadRequest error.</li> <li>A FooError.</li> </ol> <p>Implementations must be able to successfully take a response and properly (de)serialize successful and error responses based on the the presence of the</p>",
+                    "idempotent": true,
+                    "errors": [
+                        {
+                            "shape": "FooError"
+                        }
+                    ]
+                },
+                "description": "Some services serialize errors using __type, and it might contain a namespace. Clients should just take the last part of the string after '#'.",
+                "errorCode": "FooError",
+                "error": {},
+                "response": {
+                    "status_code": 500,
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "body": "{\n    \"__type\": \"aws.protocoltests.restjson#FooError\"\n}"
+                }
+            },
+            {
+                "id": "RestJsonFooErrorWithDunderTypeUriAndNamespace",
+                "given": {
+                    "name": "GreetingWithErrors",
+                    "http": {
+                        "method": "PUT",
+                        "requestUri": "/GreetingWithErrors",
+                        "responseCode": 200
+                    },
+                    "documentation": "<p>This operation has four possible return values:</p> <ol> <li>A successful response in the form of GreetingWithErrorsOutput</li> <li>An InvalidGreeting error.</li> <li>A BadRequest error.</li> <li>A FooError.</li> </ol> <p>Implementations must be able to successfully take a response and properly (de)serialize successful and error responses based on the the presence of the</p>",
+                    "idempotent": true,
+                    "errors": [
+                        {
+                            "shape": "FooError"
+                        }
+                    ]
+                },
+                "description": "Some services serialize errors using __type, and it might contain a namespace. It also might contain a URI. Clients should just take the last part of the string after '#' and before \":\". This is a pathalogical case that might not occur in any deployed AWS service.",
+                "errorCode": "FooError",
+                "error": {},
+                "response": {
+                    "status_code": 500,
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "body": "{\n    \"__type\": \"aws.protocoltests.restjson#FooError:http://internal.amazon.com/coral/com.amazon.coral.validate/\"\n}"
+                }
+            }
+        ]
+    },
+    {
+        "description": "Test cases for GreetingWithErrors operation",
+        "metadata": {
+            "protocol": "rest-json",
+            "protocols": [
+                "rest-json"
+            ],
+            "apiVersion": "2019-12-16"
+        },
+        "shapes": {
+            "ComplexError": {
+                "type": "structure",
+                "members": {
+                    "Header": {
+                        "shape": "String",
+                        "location": "header",
+                        "locationName": "X-Header"
+                    },
+                    "TopLevel": {
+                        "shape": "String"
+                    },
+                    "Nested": {
+                        "shape": "ComplexNestedErrorData"
+                    }
+                },
+                "documentation": "<p>This error is thrown when a request is invalid.</p>",
+                "error": {
+                    "httpStatusCode": 403,
+                    "senderFault": true
+                },
+                "exception": true
+            },
+            "String": {
+                "type": "string"
+            },
+            "ComplexNestedErrorData": {
+                "type": "structure",
+                "members": {
+                    "Foo": {
+                        "shape": "String",
+                        "locationName": "Fooooo"
+                    }
+                }
+            }
+        },
+        "cases": [
+            {
+                "id": "RestJsonComplexErrorWithNoMessage",
+                "given": {
+                    "name": "GreetingWithErrors",
+                    "http": {
+                        "method": "PUT",
+                        "requestUri": "/GreetingWithErrors",
+                        "responseCode": 200
+                    },
+                    "documentation": "<p>This operation has four possible return values:</p> <ol> <li>A successful response in the form of GreetingWithErrorsOutput</li> <li>An InvalidGreeting error.</li> <li>A BadRequest error.</li> <li>A FooError.</li> </ol> <p>Implementations must be able to successfully take a response and properly (de)serialize successful and error responses based on the the presence of the</p>",
+                    "idempotent": true,
+                    "errors": [
+                        {
+                            "shape": "ComplexError"
+                        }
+                    ]
+                },
+                "description": "Serializes a complex error with no message member",
+                "errorCode": "ComplexError",
+                "error": {
+                    "Header": "Header",
+                    "TopLevel": "Top level",
+                    "Nested": {
+                        "Foo": "bar"
+                    }
+                },
+                "response": {
+                    "status_code": 403,
+                    "headers": {
+                        "Content-Type": "application/json",
+                        "X-Amzn-Errortype": "ComplexError",
+                        "X-Header": "Header"
+                    },
+                    "body": "{\n    \"TopLevel\": \"Top level\",\n    \"Nested\": {\n        \"Fooooo\": \"bar\"\n    }\n}"
+                }
+            },
+            {
+                "id": "RestJsonEmptyComplexErrorWithNoMessage",
+                "given": {
+                    "name": "GreetingWithErrors",
+                    "http": {
+                        "method": "PUT",
+                        "requestUri": "/GreetingWithErrors",
+                        "responseCode": 200
+                    },
+                    "documentation": "<p>This operation has four possible return values:</p> <ol> <li>A successful response in the form of GreetingWithErrorsOutput</li> <li>An InvalidGreeting error.</li> <li>A BadRequest error.</li> <li>A FooError.</li> </ol> <p>Implementations must be able to successfully take a response and properly (de)serialize successful and error responses based on the the presence of the</p>",
+                    "idempotent": true,
+                    "errors": [
+                        {
+                            "shape": "ComplexError"
+                        }
+                    ]
+                },
+                "errorCode": "ComplexError",
+                "error": {},
+                "response": {
+                    "status_code": 403,
+                    "headers": {
+                        "Content-Type": "application/json",
+                        "X-Amzn-Errortype": "ComplexError"
+                    },
+                    "body": "{}"
+                }
+            }
+        ]
+    },
+    {
+        "description": "Test cases for GreetingWithErrors operation",
+        "metadata": {
+            "protocol": "rest-json",
+            "protocols": [
+                "rest-json"
+            ],
+            "apiVersion": "2019-12-16"
+        },
+        "shapes": {
+            "InvalidGreeting": {
+                "type": "structure",
+                "members": {
+                    "Message": {
+                        "shape": "String"
+                    }
+                },
+                "documentation": "<p>This error is thrown when an invalid greeting value is provided.</p>",
+                "error": {
+                    "httpStatusCode": 400,
+                    "senderFault": true
+                },
+                "exception": true
+            },
+            "String": {
+                "type": "string"
+            }
+        },
+        "cases": [
+            {
+                "id": "RestJsonInvalidGreetingError",
+                "given": {
+                    "name": "GreetingWithErrors",
+                    "http": {
+                        "method": "PUT",
+                        "requestUri": "/GreetingWithErrors",
+                        "responseCode": 200
+                    },
+                    "documentation": "<p>This operation has four possible return values:</p> <ol> <li>A successful response in the form of GreetingWithErrorsOutput</li> <li>An InvalidGreeting error.</li> <li>A BadRequest error.</li> <li>A FooError.</li> </ol> <p>Implementations must be able to successfully take a response and properly (de)serialize successful and error responses based on the the presence of the</p>",
+                    "idempotent": true,
+                    "errors": [
+                        {
+                            "shape": "InvalidGreeting"
+                        }
+                    ]
+                },
+                "description": "Parses simple JSON errors",
+                "errorCode": "InvalidGreeting",
+                "errorMessage": "Hi",
+                "error": {
+                    "Message": "Hi"
+                },
+                "response": {
+                    "status_code": 400,
+                    "headers": {
+                        "Content-Type": "application/json",
+                        "X-Amzn-Errortype": "InvalidGreeting"
+                    },
+                    "body": "{\n    \"Message\": \"Hi\"\n}"
+                }
+            }
+        ]
+    },
+    {
+        "description": "Test cases for HttpEnumPayload operation",
+        "metadata": {
+            "protocol": "rest-json",
+            "protocols": [
+                "rest-json"
+            ],
+            "apiVersion": "2019-12-16"
+        },
+        "shapes": {
+            "EnumPayloadInput": {
+                "type": "structure",
+                "members": {
+                    "payload": {
+                        "shape": "StringEnum"
+                    }
+                },
+                "payload": "payload"
+            },
+            "StringEnum": {
+                "type": "string",
+                "enum": [
+                    "enumvalue"
+                ]
+            }
+        },
+        "cases": [
+            {
+                "id": "RestJsonEnumPayloadResponse",
+                "given": {
+                    "name": "HttpEnumPayload",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/EnumPayload",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "EnumPayloadInput"
+                    }
+                },
+                "result": {
+                    "payload": "enumvalue"
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "Content-Type": "text/plain"
+                    },
+                    "body": "enumvalue"
+                }
+            }
+        ]
+    },
+    {
+        "description": "Test cases for HttpPayloadTraits operation",
+        "metadata": {
+            "protocol": "rest-json",
+            "protocols": [
+                "rest-json"
+            ],
+            "apiVersion": "2019-12-16"
+        },
+        "shapes": {
+            "HttpPayloadTraitsInputOutput": {
+                "type": "structure",
+                "members": {
+                    "foo": {
+                        "shape": "String",
+                        "location": "header",
+                        "locationName": "X-Foo"
+                    },
+                    "blob": {
+                        "shape": "Blob"
+                    }
+                },
+                "payload": "blob"
+            },
+            "String": {
+                "type": "string"
+            },
+            "Blob": {
+                "type": "blob"
+            }
+        },
+        "cases": [
+            {
+                "id": "RestJsonHttpPayloadTraitsWithBlob",
+                "given": {
+                    "name": "HttpPayloadTraits",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/HttpPayloadTraits",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "HttpPayloadTraitsInputOutput"
+                    },
+                    "documentation": "<p>This example serializes a blob shape in the payload.</p> <p>In this example, no JSON document is synthesized because the payload is not a structure or a union type.</p>"
+                },
+                "description": "Serializes a blob in the HTTP payload",
+                "result": {
+                    "foo": "Foo",
+                    "blob": "blobby blob blob"
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "X-Foo": "Foo"
+                    },
+                    "body": "blobby blob blob"
+                }
+            },
+            {
+                "id": "RestJsonHttpPayloadTraitsWithNoBlobBody",
+                "given": {
+                    "name": "HttpPayloadTraits",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/HttpPayloadTraits",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "HttpPayloadTraitsInputOutput"
+                    },
+                    "documentation": "<p>This example serializes a blob shape in the payload.</p> <p>In this example, no JSON document is synthesized because the payload is not a structure or a union type.</p>"
+                },
+                "description": "Serializes an empty blob in the HTTP payload",
+                "result": {
+                    "foo": "Foo"
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "X-Foo": "Foo"
+                    },
+                    "body": ""
+                }
+            }
+        ]
+    },
+    {
+        "description": "Test cases for HttpPayloadWithStructure operation",
+        "metadata": {
+            "protocol": "rest-json",
+            "protocols": [
+                "rest-json"
+            ],
+            "apiVersion": "2019-12-16"
+        },
+        "shapes": {
+            "HttpPayloadWithStructureInputOutput": {
+                "type": "structure",
+                "members": {
+                    "nested": {
+                        "shape": "NestedPayload"
+                    }
+                },
+                "payload": "nested"
+            },
+            "NestedPayload": {
+                "type": "structure",
+                "members": {
+                    "greeting": {
+                        "shape": "String"
+                    },
+                    "name": {
+                        "shape": "String"
+                    }
+                }
+            },
+            "String": {
+                "type": "string"
+            }
+        },
+        "cases": [
+            {
+                "id": "RestJsonHttpPayloadWithStructure",
+                "given": {
+                    "name": "HttpPayloadWithStructure",
+                    "http": {
+                        "method": "PUT",
+                        "requestUri": "/HttpPayloadWithStructure",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "HttpPayloadWithStructureInputOutput"
+                    },
+                    "documentation": "<p>This example serializes a structure in the payload.</p> <p>Note that serializing a structure changes the wrapper element name to match the targeted structure.</p>",
+                    "idempotent": true
+                },
+                "description": "Serializes a structure in the payload",
+                "result": {
+                    "nested": {
+                        "greeting": "hello",
+                        "name": "Phreddy"
+                    }
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "body": "{\n    \"greeting\": \"hello\",\n    \"name\": \"Phreddy\"\n}"
+                }
+            }
+        ]
+    },
+    {
+        "description": "Test cases for HttpPayloadWithUnion operation",
+        "metadata": {
+            "protocol": "rest-json",
+            "protocols": [
+                "rest-json"
+            ],
+            "apiVersion": "2019-12-16"
+        },
+        "shapes": {
+            "HttpPayloadWithUnionInputOutput": {
+                "type": "structure",
+                "members": {
+                    "nested": {
+                        "shape": "UnionPayload"
+                    }
+                },
+                "payload": "nested"
+            },
+            "UnionPayload": {
+                "type": "structure",
+                "members": {
+                    "greeting": {
+                        "shape": "String"
+                    }
+                },
+                "union": true
+            },
+            "String": {
+                "type": "string"
+            }
+        },
+        "cases": [
+            {
+                "id": "RestJsonHttpPayloadWithUnion",
+                "given": {
+                    "name": "HttpPayloadWithUnion",
+                    "http": {
+                        "method": "PUT",
+                        "requestUri": "/HttpPayloadWithUnion",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "HttpPayloadWithUnionInputOutput"
+                    },
+                    "documentation": "<p>This example serializes a union in the payload.</p>",
+                    "idempotent": true
+                },
+                "description": "Serializes a union in the payload.",
+                "result": {
+                    "nested": {
+                        "greeting": "hello"
+                    }
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "body": "{\n    \"greeting\": \"hello\"\n}"
+                }
+            },
+            {
+                "id": "RestJsonHttpPayloadWithUnsetUnion",
+                "given": {
+                    "name": "HttpPayloadWithUnion",
+                    "http": {
+                        "method": "PUT",
+                        "requestUri": "/HttpPayloadWithUnion",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "HttpPayloadWithUnionInputOutput"
+                    },
+                    "documentation": "<p>This example serializes a union in the payload.</p>",
+                    "idempotent": true
+                },
+                "description": "No payload is sent if the union has no value.",
+                "result": {},
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "Content-Length": "0"
+                    },
+                    "body": ""
+                }
+            }
+        ]
+    },
+    {
+        "description": "Test cases for HttpPrefixHeaders operation",
+        "metadata": {
+            "protocol": "rest-json",
+            "protocols": [
+                "rest-json"
+            ],
+            "apiVersion": "2019-12-16"
+        },
+        "shapes": {
+            "HttpPrefixHeadersOutput": {
+                "type": "structure",
+                "members": {
+                    "foo": {
+                        "shape": "String",
+                        "location": "header",
+                        "locationName": "x-foo"
+                    },
+                    "fooMap": {
+                        "shape": "StringMap",
+                        "location": "headers",
+                        "locationName": "x-foo-"
+                    }
+                }
+            },
+            "String": {
+                "type": "string"
+            },
+            "StringMap": {
+                "type": "map",
+                "key": {
+                    "shape": "String"
+                },
+                "value": {
+                    "shape": "String"
+                }
+            }
+        },
+        "cases": [
+            {
+                "id": "RestJsonHttpPrefixHeadersArePresent",
+                "given": {
+                    "name": "HttpPrefixHeaders",
+                    "http": {
+                        "method": "GET",
+                        "requestUri": "/HttpPrefixHeaders",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "HttpPrefixHeadersOutput"
+                    },
+                    "documentation": "<p>This examples adds headers to the input of a request and response by prefix.</p>"
+                },
+                "description": "Adds headers by prefix",
+                "result": {
+                    "foo": "Foo",
+                    "fooMap": {
+                        "abc": "Abc value",
+                        "def": "Def value"
+                    }
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "x-foo": "Foo",
+                        "x-foo-abc": "Abc value",
+                        "x-foo-def": "Def value"
+                    }
+                }
+            }
+        ]
+    },
+    {
+        "description": "Test cases for HttpPrefixHeadersInResponse operation",
+        "metadata": {
+            "protocol": "rest-json",
+            "protocols": [
+                "rest-json"
+            ],
+            "apiVersion": "2019-12-16"
+        },
+        "shapes": {
+            "HttpPrefixHeadersInResponseOutput": {
+                "type": "structure",
+                "members": {
+                    "prefixHeaders": {
+                        "shape": "StringMap",
+                        "location": "headers",
+                        "locationName": ""
+                    }
+                }
+            },
+            "StringMap": {
+                "type": "map",
+                "key": {
+                    "shape": "String"
+                },
+                "value": {
+                    "shape": "String"
+                }
+            },
+            "String": {
+                "type": "string"
+            }
+        },
+        "cases": [
+            {
+                "id": "HttpPrefixHeadersResponse",
+                "given": {
+                    "name": "HttpPrefixHeadersInResponse",
+                    "http": {
+                        "method": "GET",
+                        "requestUri": "/HttpPrefixHeadersResponse",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "HttpPrefixHeadersInResponseOutput"
+                    },
+                    "documentation": "<p>Clients that perform this test extract all headers from the response.</p>"
+                },
+                "description": "(de)serializes all response headers",
+                "result": {
+                    "prefixHeaders": {
+                        "x-foo": "Foo",
+                        "hello": "Hello"
+                    }
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "hello": "Hello",
+                        "x-foo": "Foo"
+                    }
+                }
+            }
+        ]
+    },
+    {
+        "description": "Test cases for HttpResponseCode operation",
+        "metadata": {
+            "protocol": "rest-json",
+            "protocols": [
+                "rest-json"
+            ],
+            "apiVersion": "2019-12-16"
+        },
+        "shapes": {
+            "HttpResponseCodeOutput": {
+                "type": "structure",
+                "members": {
+                    "Status": {
+                        "shape": "Integer",
+                        "location": "statusCode"
+                    }
+                }
+            },
+            "Integer": {
+                "type": "integer",
+                "box": true
+            }
+        },
+        "cases": [
+            {
+                "id": "RestJsonHttpResponseCode",
+                "given": {
+                    "name": "HttpResponseCode",
+                    "http": {
+                        "method": "PUT",
+                        "requestUri": "/HttpResponseCode",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "HttpResponseCodeOutput"
+                    },
+                    "idempotent": true
+                },
+                "description": "Binds the http response code to an output structure. Note that\neven though all members are bound outside of the payload, an\nempty JSON object is serialized in the response. However,\nclients should be able to handle an empty JSON object or an\nempty payload without failing to deserialize a response.",
+                "result": {
+                    "Status": 201
+                },
+                "response": {
+                    "status_code": 201,
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "body": "{}"
+                }
+            },
+            {
+                "id": "RestJsonHttpResponseCodeWithNoPayload",
+                "given": {
+                    "name": "HttpResponseCode",
+                    "http": {
+                        "method": "PUT",
+                        "requestUri": "/HttpResponseCode",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "HttpResponseCodeOutput"
+                    },
+                    "idempotent": true
+                },
+                "description": "This test ensures that clients gracefully handle cases where\nthe service responds with no payload rather than an empty JSON\nobject.",
+                "result": {
+                    "Status": 201
+                },
+                "response": {
+                    "status_code": 201,
+                    "body": ""
+                }
+            }
+        ]
+    },
+    {
+        "description": "Test cases for HttpStringPayload operation",
+        "metadata": {
+            "protocol": "rest-json",
+            "protocols": [
+                "rest-json"
+            ],
+            "apiVersion": "2019-12-16"
+        },
+        "shapes": {
+            "StringPayloadInput": {
+                "type": "structure",
+                "members": {
+                    "payload": {
+                        "shape": "String"
+                    }
+                },
+                "payload": "payload"
+            },
+            "String": {
+                "type": "string"
+            }
+        },
+        "cases": [
+            {
+                "id": "RestJsonStringPayloadResponse",
+                "given": {
+                    "name": "HttpStringPayload",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/StringPayload",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "StringPayloadInput"
+                    }
+                },
+                "result": {
+                    "payload": "rawstring"
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "Content-Type": "text/plain"
+                    },
+                    "body": "rawstring"
+                }
+            }
+        ]
+    },
+    {
+        "description": "Test cases for IgnoreQueryParamsInResponse operation",
+        "metadata": {
+            "protocol": "rest-json",
+            "protocols": [
+                "rest-json"
+            ],
+            "apiVersion": "2019-12-16"
+        },
+        "shapes": {
+            "IgnoreQueryParamsInResponseOutput": {
+                "type": "structure",
+                "members": {
+                    "baz": {
+                        "shape": "String",
+                        "location": "uri",
+                        "locationName": "baz"
+                    }
+                }
+            },
+            "String": {
+                "type": "string"
+            }
+        },
+        "cases": [
+            {
+                "id": "RestJsonIgnoreQueryParamsInResponse",
+                "given": {
+                    "name": "IgnoreQueryParamsInResponse",
+                    "http": {
+                        "method": "GET",
+                        "requestUri": "/IgnoreQueryParamsInResponse",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "IgnoreQueryParamsInResponseOutput"
+                    },
+                    "documentation": "<p>This example ensures that query string bound request parameters are serialized in the body of responses if the structure is used in both the request and response.</p>"
+                },
+                "description": "Query parameters must be ignored when serializing the output\nof an operation. As of January 2021, server implementations\nare expected to respond with a JSON object regardless of\nif the output parameters are empty.",
+                "result": {},
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "body": "{}"
+                }
+            },
+            {
+                "id": "RestJsonIgnoreQueryParamsInResponseNoPayload",
+                "given": {
+                    "name": "IgnoreQueryParamsInResponse",
+                    "http": {
+                        "method": "GET",
+                        "requestUri": "/IgnoreQueryParamsInResponse",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "IgnoreQueryParamsInResponseOutput"
+                    },
+                    "documentation": "<p>This example ensures that query string bound request parameters are serialized in the body of responses if the structure is used in both the request and response.</p>"
+                },
+                "description": "This test is similar to RestJsonIgnoreQueryParamsInResponse,\nbut it ensures that clients gracefully handle responses from\nthe server that do not serialize an empty JSON object.",
+                "result": {},
+                "response": {
+                    "status_code": 200,
+                    "body": ""
+                }
+            }
+        ]
+    },
+    {
+        "description": "Test cases for InputAndOutputWithHeaders operation",
+        "metadata": {
+            "protocol": "rest-json",
+            "protocols": [
+                "rest-json"
+            ],
+            "apiVersion": "2019-12-16"
+        },
+        "shapes": {
+            "InputAndOutputWithHeadersIO": {
+                "type": "structure",
+                "members": {
+                    "headerString": {
+                        "shape": "String",
+                        "location": "header",
+                        "locationName": "X-String"
+                    },
+                    "headerByte": {
+                        "shape": "Integer",
+                        "location": "header",
+                        "locationName": "X-Byte"
+                    },
+                    "headerShort": {
+                        "shape": "Integer",
+                        "location": "header",
+                        "locationName": "X-Short"
+                    },
+                    "headerInteger": {
+                        "shape": "Integer",
+                        "location": "header",
+                        "locationName": "X-Integer"
+                    },
+                    "headerLong": {
+                        "shape": "Long",
+                        "location": "header",
+                        "locationName": "X-Long"
+                    },
+                    "headerFloat": {
+                        "shape": "Float",
+                        "location": "header",
+                        "locationName": "X-Float"
+                    },
+                    "headerDouble": {
+                        "shape": "Double",
+                        "location": "header",
+                        "locationName": "X-Double"
+                    },
+                    "headerTrueBool": {
+                        "shape": "Boolean",
+                        "location": "header",
+                        "locationName": "X-Boolean1"
+                    },
+                    "headerFalseBool": {
+                        "shape": "Boolean",
+                        "location": "header",
+                        "locationName": "X-Boolean2"
+                    },
+                    "headerStringList": {
+                        "shape": "StringList",
+                        "location": "header",
+                        "locationName": "X-StringList"
+                    },
+                    "headerStringSet": {
+                        "shape": "StringSet",
+                        "location": "header",
+                        "locationName": "X-StringSet"
+                    },
+                    "headerIntegerList": {
+                        "shape": "IntegerList",
+                        "location": "header",
+                        "locationName": "X-IntegerList"
+                    },
+                    "headerBooleanList": {
+                        "shape": "BooleanList",
+                        "location": "header",
+                        "locationName": "X-BooleanList"
+                    },
+                    "headerTimestampList": {
+                        "shape": "TimestampList",
+                        "location": "header",
+                        "locationName": "X-TimestampList"
+                    },
+                    "headerEnum": {
+                        "shape": "FooEnum",
+                        "location": "header",
+                        "locationName": "X-Enum"
+                    },
+                    "headerEnumList": {
+                        "shape": "FooEnumList",
+                        "location": "header",
+                        "locationName": "X-EnumList"
+                    },
+                    "headerIntegerEnum": {
+                        "shape": "IntegerEnum",
+                        "location": "header",
+                        "locationName": "X-IntegerEnum"
+                    },
+                    "headerIntegerEnumList": {
+                        "shape": "IntegerEnumList",
+                        "location": "header",
+                        "locationName": "X-IntegerEnumList"
+                    }
+                }
+            },
+            "String": {
+                "type": "string"
+            },
+            "Integer": {
+                "type": "integer",
+                "box": true
+            },
+            "Long": {
+                "type": "long",
+                "box": true
+            },
+            "Float": {
+                "type": "float",
+                "box": true
+            },
+            "Double": {
+                "type": "double",
+                "box": true
+            },
+            "Boolean": {
+                "type": "boolean",
+                "box": true
+            },
+            "StringList": {
+                "type": "list",
+                "member": {
+                    "shape": "String"
+                }
+            },
+            "StringSet": {
+                "type": "list",
+                "member": {
+                    "shape": "String"
+                }
+            },
+            "IntegerList": {
+                "type": "list",
+                "member": {
+                    "shape": "Integer"
+                }
+            },
+            "BooleanList": {
+                "type": "list",
+                "member": {
+                    "shape": "Boolean"
+                }
+            },
+            "TimestampList": {
+                "type": "list",
+                "member": {
+                    "shape": "Timestamp"
+                }
+            },
+            "FooEnum": {
+                "type": "string",
+                "enum": [
+                    "Foo",
+                    "Baz",
+                    "Bar",
+                    "1",
+                    "0"
+                ]
+            },
+            "FooEnumList": {
+                "type": "list",
+                "member": {
+                    "shape": "FooEnum"
+                }
+            },
+            "IntegerEnum": {
+                "type": "integer",
+                "box": true
+            },
+            "IntegerEnumList": {
+                "type": "list",
+                "member": {
+                    "shape": "IntegerEnum"
+                }
+            },
+            "Timestamp": {
+                "type": "timestamp"
+            }
+        },
+        "cases": [
+            {
+                "id": "RestJsonInputAndOutputWithStringHeaders",
+                "given": {
+                    "name": "InputAndOutputWithHeaders",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/InputAndOutputWithHeaders",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "InputAndOutputWithHeadersIO"
+                    },
+                    "documentation": "<p>The example tests how requests and responses are serialized when there is no input or output payload but there are HTTP header bindings.</p>"
+                },
+                "description": "Tests responses with string header bindings",
+                "result": {
+                    "headerString": "Hello",
+                    "headerStringList": [
+                        "a",
+                        "b",
+                        "c"
+                    ],
+                    "headerStringSet": [
+                        "a",
+                        "b",
+                        "c"
+                    ]
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "X-String": "Hello",
+                        "X-StringList": "a, b, c",
+                        "X-StringSet": "a, b, c"
+                    }
+                }
+            },
+            {
+                "id": "RestJsonInputAndOutputWithQuotedStringHeaders",
+                "given": {
+                    "name": "InputAndOutputWithHeaders",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/InputAndOutputWithHeaders",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "InputAndOutputWithHeadersIO"
+                    },
+                    "documentation": "<p>The example tests how requests and responses are serialized when there is no input or output payload but there are HTTP header bindings.</p>"
+                },
+                "description": "Tests responses with string list header bindings that require quoting",
+                "result": {
+                    "headerStringList": [
+                        "b,c",
+                        "\"def\"",
+                        "a"
+                    ]
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "X-StringList": "\"b,c\", \"\\\"def\\\"\", a"
+                    }
+                }
+            },
+            {
+                "id": "RestJsonInputAndOutputWithNumericHeaders",
+                "given": {
+                    "name": "InputAndOutputWithHeaders",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/InputAndOutputWithHeaders",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "InputAndOutputWithHeadersIO"
+                    },
+                    "documentation": "<p>The example tests how requests and responses are serialized when there is no input or output payload but there are HTTP header bindings.</p>"
+                },
+                "description": "Tests responses with numeric header bindings",
+                "result": {
+                    "headerByte": 1,
+                    "headerShort": 123,
+                    "headerInteger": 123,
+                    "headerLong": 123,
+                    "headerFloat": 1.1,
+                    "headerDouble": 1.1,
+                    "headerIntegerList": [
+                        1,
+                        2,
+                        3
+                    ]
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "X-Byte": "1",
+                        "X-Double": "1.1",
+                        "X-Float": "1.1",
+                        "X-Integer": "123",
+                        "X-IntegerList": "1, 2, 3",
+                        "X-Long": "123",
+                        "X-Short": "123"
+                    }
+                }
+            },
+            {
+                "id": "RestJsonInputAndOutputWithBooleanHeaders",
+                "given": {
+                    "name": "InputAndOutputWithHeaders",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/InputAndOutputWithHeaders",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "InputAndOutputWithHeadersIO"
+                    },
+                    "documentation": "<p>The example tests how requests and responses are serialized when there is no input or output payload but there are HTTP header bindings.</p>"
+                },
+                "description": "Tests responses with boolean header bindings",
+                "result": {
+                    "headerTrueBool": true,
+                    "headerFalseBool": false,
+                    "headerBooleanList": [
+                        true,
+                        false,
+                        true
+                    ]
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "X-Boolean1": "true",
+                        "X-Boolean2": "false",
+                        "X-BooleanList": "true, false, true"
+                    }
+                }
+            },
+            {
+                "id": "RestJsonInputAndOutputWithTimestampHeaders",
+                "given": {
+                    "name": "InputAndOutputWithHeaders",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/InputAndOutputWithHeaders",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "InputAndOutputWithHeadersIO"
+                    },
+                    "documentation": "<p>The example tests how requests and responses are serialized when there is no input or output payload but there are HTTP header bindings.</p>"
+                },
+                "description": "Tests responses with timestamp header bindings",
+                "result": {
+                    "headerTimestampList": [
+                        1576540098,
+                        1576540098
+                    ]
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "X-TimestampList": "Mon, 16 Dec 2019 23:48:18 GMT, Mon, 16 Dec 2019 23:48:18 GMT"
+                    }
+                }
+            },
+            {
+                "id": "RestJsonInputAndOutputWithEnumHeaders",
+                "given": {
+                    "name": "InputAndOutputWithHeaders",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/InputAndOutputWithHeaders",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "InputAndOutputWithHeadersIO"
+                    },
+                    "documentation": "<p>The example tests how requests and responses are serialized when there is no input or output payload but there are HTTP header bindings.</p>"
+                },
+                "description": "Tests responses with enum header bindings",
+                "result": {
+                    "headerEnum": "Foo",
+                    "headerEnumList": [
+                        "Foo",
+                        "Bar",
+                        "Baz"
+                    ]
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "X-Enum": "Foo",
+                        "X-EnumList": "Foo, Bar, Baz"
+                    }
+                }
+            },
+            {
+                "id": "RestJsonInputAndOutputWithIntEnumHeaders",
+                "given": {
+                    "name": "InputAndOutputWithHeaders",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/InputAndOutputWithHeaders",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "InputAndOutputWithHeadersIO"
+                    },
+                    "documentation": "<p>The example tests how requests and responses are serialized when there is no input or output payload but there are HTTP header bindings.</p>"
+                },
+                "description": "Tests responses with intEnum header bindings",
+                "result": {
+                    "headerIntegerEnum": 1,
+                    "headerIntegerEnumList": [
+                        1,
+                        2,
+                        3
+                    ]
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "X-IntegerEnum": "1",
+                        "X-IntegerEnumList": "1, 2, 3"
+                    }
+                }
+            },
+            {
+                "id": "RestJsonSupportsNaNFloatHeaderOutputs",
+                "given": {
+                    "name": "InputAndOutputWithHeaders",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/InputAndOutputWithHeaders",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "InputAndOutputWithHeadersIO"
+                    },
+                    "documentation": "<p>The example tests how requests and responses are serialized when there is no input or output payload but there are HTTP header bindings.</p>"
+                },
+                "description": "Supports handling NaN float header values.",
+                "result": {
+                    "headerFloat": "NaN",
+                    "headerDouble": "NaN"
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "X-Double": "NaN",
+                        "X-Float": "NaN"
+                    }
+                }
+            },
+            {
+                "id": "RestJsonSupportsInfinityFloatHeaderOutputs",
+                "given": {
+                    "name": "InputAndOutputWithHeaders",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/InputAndOutputWithHeaders",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "InputAndOutputWithHeadersIO"
+                    },
+                    "documentation": "<p>The example tests how requests and responses are serialized when there is no input or output payload but there are HTTP header bindings.</p>"
+                },
+                "description": "Supports handling Infinity float header values.",
+                "result": {
+                    "headerFloat": "Infinity",
+                    "headerDouble": "Infinity"
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "X-Double": "Infinity",
+                        "X-Float": "Infinity"
+                    }
+                }
+            },
+            {
+                "id": "RestJsonSupportsNegativeInfinityFloatHeaderOutputs",
+                "given": {
+                    "name": "InputAndOutputWithHeaders",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/InputAndOutputWithHeaders",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "InputAndOutputWithHeadersIO"
+                    },
+                    "documentation": "<p>The example tests how requests and responses are serialized when there is no input or output payload but there are HTTP header bindings.</p>"
+                },
+                "description": "Supports handling -Infinity float header values.",
+                "result": {
+                    "headerFloat": "-Infinity",
+                    "headerDouble": "-Infinity"
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "X-Double": "-Infinity",
+                        "X-Float": "-Infinity"
+                    }
+                }
+            }
+        ]
+    },
+    {
+        "description": "Test cases for JsonBlobs operation",
+        "metadata": {
+            "protocol": "rest-json",
+            "protocols": [
+                "rest-json"
+            ],
+            "apiVersion": "2019-12-16"
+        },
+        "shapes": {
+            "JsonBlobsInputOutput": {
+                "type": "structure",
+                "members": {
+                    "data": {
+                        "shape": "Blob"
+                    }
+                }
+            },
+            "Blob": {
+                "type": "blob"
+            }
+        },
+        "cases": [
+            {
+                "id": "RestJsonJsonBlobs",
+                "given": {
+                    "name": "JsonBlobs",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/JsonBlobs",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "JsonBlobsInputOutput"
+                    },
+                    "documentation": "<p>Blobs are base64 encoded</p>"
+                },
+                "description": "Blobs are base64 encoded",
+                "result": {
+                    "data": "value"
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "body": "{\n    \"data\": \"dmFsdWU=\"\n}"
+                }
+            }
+        ]
+    },
+    {
+        "description": "Test cases for JsonEnums operation",
+        "metadata": {
+            "protocol": "rest-json",
+            "protocols": [
+                "rest-json"
+            ],
+            "apiVersion": "2019-12-16"
+        },
+        "shapes": {
+            "JsonEnumsInputOutput": {
+                "type": "structure",
+                "members": {
+                    "fooEnum1": {
+                        "shape": "FooEnum"
+                    },
+                    "fooEnum2": {
+                        "shape": "FooEnum"
+                    },
+                    "fooEnum3": {
+                        "shape": "FooEnum"
+                    },
+                    "fooEnumList": {
+                        "shape": "FooEnumList"
+                    },
+                    "fooEnumSet": {
+                        "shape": "FooEnumSet"
+                    },
+                    "fooEnumMap": {
+                        "shape": "FooEnumMap"
+                    }
+                }
+            },
+            "FooEnum": {
+                "type": "string",
+                "enum": [
+                    "Foo",
+                    "Baz",
+                    "Bar",
+                    "1",
+                    "0"
+                ]
+            },
+            "FooEnumList": {
+                "type": "list",
+                "member": {
+                    "shape": "FooEnum"
+                }
+            },
+            "FooEnumSet": {
+                "type": "list",
+                "member": {
+                    "shape": "FooEnum"
+                }
+            },
+            "FooEnumMap": {
+                "type": "map",
+                "key": {
+                    "shape": "String"
+                },
+                "value": {
+                    "shape": "FooEnum"
+                }
+            },
+            "String": {
+                "type": "string"
+            }
+        },
+        "cases": [
+            {
+                "id": "RestJsonJsonEnums",
+                "given": {
+                    "name": "JsonEnums",
+                    "http": {
+                        "method": "PUT",
+                        "requestUri": "/JsonEnums",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "JsonEnumsInputOutput"
+                    },
+                    "documentation": "<p>This example serializes enums as top level properties, in lists, sets, and maps.</p>",
+                    "idempotent": true
+                },
+                "description": "Serializes simple scalar properties",
+                "result": {
+                    "fooEnum1": "Foo",
+                    "fooEnum2": "0",
+                    "fooEnum3": "1",
+                    "fooEnumList": [
+                        "Foo",
+                        "0"
+                    ],
+                    "fooEnumSet": [
+                        "Foo",
+                        "0"
+                    ],
+                    "fooEnumMap": {
+                        "hi": "Foo",
+                        "zero": "0"
+                    }
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "body": "{\n    \"fooEnum1\": \"Foo\",\n    \"fooEnum2\": \"0\",\n    \"fooEnum3\": \"1\",\n    \"fooEnumList\": [\n        \"Foo\",\n        \"0\"\n    ],\n    \"fooEnumSet\": [\n        \"Foo\",\n        \"0\"\n    ],\n    \"fooEnumMap\": {\n        \"hi\": \"Foo\",\n        \"zero\": \"0\"\n    }\n}"
+                }
+            }
+        ]
+    },
+    {
+        "description": "Test cases for JsonIntEnums operation",
+        "metadata": {
+            "protocol": "rest-json",
+            "protocols": [
+                "rest-json"
+            ],
+            "apiVersion": "2019-12-16"
+        },
+        "shapes": {
+            "JsonIntEnumsInputOutput": {
+                "type": "structure",
+                "members": {
+                    "integerEnum1": {
+                        "shape": "IntegerEnum"
+                    },
+                    "integerEnum2": {
+                        "shape": "IntegerEnum"
+                    },
+                    "integerEnum3": {
+                        "shape": "IntegerEnum"
+                    },
+                    "integerEnumList": {
+                        "shape": "IntegerEnumList"
+                    },
+                    "integerEnumSet": {
+                        "shape": "IntegerEnumSet"
+                    },
+                    "integerEnumMap": {
+                        "shape": "IntegerEnumMap"
+                    }
+                }
+            },
+            "IntegerEnum": {
+                "type": "integer",
+                "box": true
+            },
+            "IntegerEnumList": {
+                "type": "list",
+                "member": {
+                    "shape": "IntegerEnum"
+                }
+            },
+            "IntegerEnumSet": {
+                "type": "list",
+                "member": {
+                    "shape": "IntegerEnum"
+                }
+            },
+            "IntegerEnumMap": {
+                "type": "map",
+                "key": {
+                    "shape": "String"
+                },
+                "value": {
+                    "shape": "IntegerEnum"
+                }
+            },
+            "String": {
+                "type": "string"
+            }
+        },
+        "cases": [
+            {
+                "id": "RestJsonJsonIntEnums",
+                "given": {
+                    "name": "JsonIntEnums",
+                    "http": {
+                        "method": "PUT",
+                        "requestUri": "/JsonIntEnums",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "JsonIntEnumsInputOutput"
+                    },
+                    "documentation": "<p>This example serializes intEnums as top level properties, in lists, sets, and maps.</p>",
+                    "idempotent": true
+                },
+                "description": "Serializes intEnums as integers",
+                "result": {
+                    "integerEnum1": 1,
+                    "integerEnum2": 2,
+                    "integerEnum3": 3,
+                    "integerEnumList": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "integerEnumSet": [
+                        1,
+                        2
+                    ],
+                    "integerEnumMap": {
+                        "abc": 1,
+                        "def": 2
+                    }
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "body": "{\n    \"integerEnum1\": 1,\n    \"integerEnum2\": 2,\n    \"integerEnum3\": 3,\n    \"integerEnumList\": [\n        1,\n        2,\n        3\n    ],\n    \"integerEnumSet\": [\n        1,\n        2\n    ],\n    \"integerEnumMap\": {\n        \"abc\": 1,\n        \"def\": 2\n    }\n}"
+                }
+            }
+        ]
+    },
+    {
+        "description": "Test cases for JsonLists operation",
+        "metadata": {
+            "protocol": "rest-json",
+            "protocols": [
+                "rest-json"
+            ],
+            "apiVersion": "2019-12-16"
+        },
+        "shapes": {
+            "JsonListsInputOutput": {
+                "type": "structure",
+                "members": {
+                    "stringList": {
+                        "shape": "StringList"
+                    },
+                    "stringSet": {
+                        "shape": "StringSet"
+                    },
+                    "integerList": {
+                        "shape": "IntegerList"
+                    },
+                    "booleanList": {
+                        "shape": "BooleanList"
+                    },
+                    "timestampList": {
+                        "shape": "TimestampList"
+                    },
+                    "enumList": {
+                        "shape": "FooEnumList"
+                    },
+                    "intEnumList": {
+                        "shape": "IntegerEnumList"
+                    },
+                    "nestedStringList": {
+                        "shape": "NestedStringList"
+                    },
+                    "structureList": {
+                        "shape": "StructureList",
+                        "locationName": "myStructureList"
+                    }
+                }
+            },
+            "StringList": {
+                "type": "list",
+                "member": {
+                    "shape": "String"
+                }
+            },
+            "StringSet": {
+                "type": "list",
+                "member": {
+                    "shape": "String"
+                }
+            },
+            "IntegerList": {
+                "type": "list",
+                "member": {
+                    "shape": "Integer"
+                }
+            },
+            "BooleanList": {
+                "type": "list",
+                "member": {
+                    "shape": "Boolean"
+                }
+            },
+            "TimestampList": {
+                "type": "list",
+                "member": {
+                    "shape": "Timestamp"
+                }
+            },
+            "FooEnumList": {
+                "type": "list",
+                "member": {
+                    "shape": "FooEnum"
+                }
+            },
+            "IntegerEnumList": {
+                "type": "list",
+                "member": {
+                    "shape": "IntegerEnum"
+                }
+            },
+            "NestedStringList": {
+                "type": "list",
+                "member": {
+                    "shape": "StringList"
+                },
+                "documentation": "<p>A list of lists of strings.</p>"
+            },
+            "StructureList": {
+                "type": "list",
+                "member": {
+                    "shape": "StructureListMember"
+                }
+            },
+            "StructureListMember": {
+                "type": "structure",
+                "members": {
+                    "a": {
+                        "shape": "String",
+                        "locationName": "value"
+                    },
+                    "b": {
+                        "shape": "String",
+                        "locationName": "other"
+                    }
+                }
+            },
+            "String": {
+                "type": "string"
+            },
+            "IntegerEnum": {
+                "type": "integer",
+                "box": true
+            },
+            "FooEnum": {
+                "type": "string",
+                "enum": [
+                    "Foo",
+                    "Baz",
+                    "Bar",
+                    "1",
+                    "0"
+                ]
+            },
+            "Timestamp": {
+                "type": "timestamp"
+            },
+            "Boolean": {
+                "type": "boolean",
+                "box": true
+            },
+            "Integer": {
+                "type": "integer",
+                "box": true
+            }
+        },
+        "cases": [
+            {
+                "id": "RestJsonLists",
+                "given": {
+                    "name": "JsonLists",
+                    "http": {
+                        "method": "PUT",
+                        "requestUri": "/JsonLists",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "JsonListsInputOutput"
+                    },
+                    "documentation": "<p>This test case serializes JSON lists for the following cases for both input and output:</p> <ol> <li>Normal JSON lists.</li> <li>Normal JSON sets.</li> <li>JSON lists of lists.</li> <li>Lists of structures.</li> </ol>",
+                    "idempotent": true
+                },
+                "description": "Serializes JSON lists",
+                "result": {
+                    "stringList": [
+                        "foo",
+                        "bar"
+                    ],
+                    "stringSet": [
+                        "foo",
+                        "bar"
+                    ],
+                    "integerList": [
+                        1,
+                        2
+                    ],
+                    "booleanList": [
+                        true,
+                        false
+                    ],
+                    "timestampList": [
+                        1398796238,
+                        1398796238
+                    ],
+                    "enumList": [
+                        "Foo",
+                        "0"
+                    ],
+                    "intEnumList": [
+                        1,
+                        2
+                    ],
+                    "nestedStringList": [
+                        [
+                            "foo",
+                            "bar"
+                        ],
+                        [
+                            "baz",
+                            "qux"
+                        ]
+                    ],
+                    "structureList": [
+                        {
+                            "a": "1",
+                            "b": "2"
+                        },
+                        {
+                            "a": "3",
+                            "b": "4"
+                        }
+                    ]
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "body": "{\n    \"stringList\": [\n        \"foo\",\n        \"bar\"\n    ],\n    \"stringSet\": [\n        \"foo\",\n        \"bar\"\n    ],\n    \"integerList\": [\n        1,\n        2\n    ],\n    \"booleanList\": [\n        true,\n        false\n    ],\n    \"timestampList\": [\n        1398796238,\n        1398796238\n    ],\n    \"enumList\": [\n        \"Foo\",\n        \"0\"\n    ],\n    \"intEnumList\": [\n        1,\n        2\n    ],\n    \"nestedStringList\": [\n        [\n            \"foo\",\n            \"bar\"\n        ],\n        [\n            \"baz\",\n            \"qux\"\n        ]\n    ],\n    \"myStructureList\": [\n        {\n            \"value\": \"1\",\n            \"other\": \"2\"\n        },\n        {\n            \"value\": \"3\",\n            \"other\": \"4\"\n        }\n    ]\n}"
+                }
+            },
+            {
+                "id": "RestJsonListsEmpty",
+                "given": {
+                    "name": "JsonLists",
+                    "http": {
+                        "method": "PUT",
+                        "requestUri": "/JsonLists",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "JsonListsInputOutput"
+                    },
+                    "documentation": "<p>This test case serializes JSON lists for the following cases for both input and output:</p> <ol> <li>Normal JSON lists.</li> <li>Normal JSON sets.</li> <li>JSON lists of lists.</li> <li>Lists of structures.</li> </ol>",
+                    "idempotent": true
+                },
+                "description": "Serializes empty JSON lists",
+                "result": {
+                    "stringList": []
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "body": "{\n    \"stringList\": []\n}"
+                }
+            }
+        ]
+    },
+    {
+        "description": "Test cases for JsonMaps operation",
+        "metadata": {
+            "protocol": "rest-json",
+            "protocols": [
+                "rest-json"
+            ],
+            "apiVersion": "2019-12-16"
+        },
+        "shapes": {
+            "JsonMapsInputOutput": {
+                "type": "structure",
+                "members": {
+                    "denseStructMap": {
+                        "shape": "DenseStructMap"
+                    },
+                    "denseNumberMap": {
+                        "shape": "DenseNumberMap"
+                    },
+                    "denseBooleanMap": {
+                        "shape": "DenseBooleanMap"
+                    },
+                    "denseStringMap": {
+                        "shape": "DenseStringMap"
+                    },
+                    "denseSetMap": {
+                        "shape": "DenseSetMap"
+                    }
+                }
+            },
+            "DenseStructMap": {
+                "type": "map",
+                "key": {
+                    "shape": "String"
+                },
+                "value": {
+                    "shape": "GreetingStruct"
+                }
+            },
+            "DenseNumberMap": {
+                "type": "map",
+                "key": {
+                    "shape": "String"
+                },
+                "value": {
+                    "shape": "Integer"
+                }
+            },
+            "DenseBooleanMap": {
+                "type": "map",
+                "key": {
+                    "shape": "String"
+                },
+                "value": {
+                    "shape": "Boolean"
+                }
+            },
+            "DenseStringMap": {
+                "type": "map",
+                "key": {
+                    "shape": "String"
+                },
+                "value": {
+                    "shape": "String"
+                }
+            },
+            "DenseSetMap": {
+                "type": "map",
+                "key": {
+                    "shape": "String"
+                },
+                "value": {
+                    "shape": "StringSet"
+                }
+            },
+            "StringSet": {
+                "type": "list",
+                "member": {
+                    "shape": "String"
+                }
+            },
+            "String": {
+                "type": "string"
+            },
+            "Boolean": {
+                "type": "boolean",
+                "box": true
+            },
+            "Integer": {
+                "type": "integer",
+                "box": true
+            },
+            "GreetingStruct": {
+                "type": "structure",
+                "members": {
+                    "hi": {
+                        "shape": "String"
+                    }
+                }
+            }
+        },
+        "cases": [
+            {
+                "id": "RestJsonJsonMaps",
+                "given": {
+                    "name": "JsonMaps",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/JsonMaps",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "JsonMapsInputOutput"
+                    },
+                    "documentation": "<p>The example tests basic map serialization.</p>"
+                },
+                "description": "Deserializes JSON maps",
+                "result": {
+                    "denseStructMap": {
+                        "foo": {
+                            "hi": "there"
+                        },
+                        "baz": {
+                            "hi": "bye"
+                        }
+                    }
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "body": "{\n    \"denseStructMap\": {\n        \"foo\": {\n            \"hi\": \"there\"\n        },\n        \"baz\": {\n            \"hi\": \"bye\"\n        }\n    }\n}"
+                }
+            },
+            {
+                "id": "RestJsonDeserializesZeroValuesInMaps",
+                "given": {
+                    "name": "JsonMaps",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/JsonMaps",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "JsonMapsInputOutput"
+                    },
+                    "documentation": "<p>The example tests basic map serialization.</p>"
+                },
+                "description": "Ensure that 0 and false are sent over the wire in all maps and lists",
+                "result": {
+                    "denseNumberMap": {
+                        "x": 0
+                    },
+                    "denseBooleanMap": {
+                        "x": false
+                    }
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "body": "{\n    \"denseNumberMap\": {\n        \"x\": 0\n    },\n    \"denseBooleanMap\": {\n        \"x\": false\n    }\n}"
+                }
+            },
+            {
+                "id": "RestJsonDeserializesDenseSetMap",
+                "given": {
+                    "name": "JsonMaps",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/JsonMaps",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "JsonMapsInputOutput"
+                    },
+                    "documentation": "<p>The example tests basic map serialization.</p>"
+                },
+                "description": "A response that contains a dense map of sets.",
+                "result": {
+                    "denseSetMap": {
+                        "x": [],
+                        "y": [
+                            "a",
+                            "b"
+                        ]
+                    }
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "body": "{\n    \"denseSetMap\": {\n        \"x\": [],\n        \"y\": [\"a\", \"b\"]\n    }\n}"
+                }
+            },
+            {
+                "id": "RestJsonDeserializesDenseSetMapAndSkipsNull",
+                "given": {
+                    "name": "JsonMaps",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/JsonMaps",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "JsonMapsInputOutput"
+                    },
+                    "documentation": "<p>The example tests basic map serialization.</p>"
+                },
+                "description": "Clients SHOULD tolerate seeing a null value in a dense map, and they SHOULD\ndrop the null key-value pair.",
+                "result": {
+                    "denseSetMap": {
+                        "x": [],
+                        "y": [
+                            "a",
+                            "b"
+                        ]
+                    }
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "body": "{\n    \"denseSetMap\": {\n        \"x\": [],\n        \"y\": [\"a\", \"b\"],\n        \"z\": null\n    }\n}"
+                }
+            }
+        ]
+    },
+    {
+        "description": "Test cases for JsonTimestamps operation",
+        "metadata": {
+            "protocol": "rest-json",
+            "protocols": [
+                "rest-json"
+            ],
+            "apiVersion": "2019-12-16"
+        },
+        "shapes": {
+            "JsonTimestampsInputOutput": {
+                "type": "structure",
+                "members": {
+                    "normal": {
+                        "shape": "Timestamp"
+                    },
+                    "dateTime": {
+                        "shape": "SyntheticTimestamp_date_time"
+                    },
+                    "dateTimeOnTarget": {
+                        "shape": "DateTime"
+                    },
+                    "epochSeconds": {
+                        "shape": "SyntheticTimestamp_epoch_seconds"
+                    },
+                    "epochSecondsOnTarget": {
+                        "shape": "EpochSeconds"
+                    },
+                    "httpDate": {
+                        "shape": "SyntheticTimestamp_http_date"
+                    },
+                    "httpDateOnTarget": {
+                        "shape": "HttpDate"
+                    }
+                }
+            },
+            "Timestamp": {
+                "type": "timestamp"
+            },
+            "SyntheticTimestamp_date_time": {
+                "type": "timestamp",
+                "timestampFormat": "iso8601"
+            },
+            "DateTime": {
+                "type": "timestamp",
+                "timestampFormat": "iso8601"
+            },
+            "SyntheticTimestamp_epoch_seconds": {
+                "type": "timestamp",
+                "timestampFormat": "unixTimestamp"
+            },
+            "EpochSeconds": {
+                "type": "timestamp",
+                "timestampFormat": "unixTimestamp"
+            },
+            "SyntheticTimestamp_http_date": {
+                "type": "timestamp",
+                "timestampFormat": "rfc822"
+            },
+            "HttpDate": {
+                "type": "timestamp",
+                "timestampFormat": "rfc822"
+            }
+        },
+        "cases": [
+            {
+                "id": "RestJsonJsonTimestamps",
+                "given": {
+                    "name": "JsonTimestamps",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/JsonTimestamps",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "JsonTimestampsInputOutput"
+                    },
+                    "documentation": "<p>This tests how timestamps are serialized, including using the default format of date-time and various @timestampFormat trait values.</p>"
+                },
+                "description": "Tests how normal timestamps are serialized",
+                "result": {
+                    "normal": 1398796238
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "body": "{\n    \"normal\": 1398796238\n}"
+                }
+            },
+            {
+                "id": "RestJsonJsonTimestampsWithDateTimeFormat",
+                "given": {
+                    "name": "JsonTimestamps",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/JsonTimestamps",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "JsonTimestampsInputOutput"
+                    },
+                    "documentation": "<p>This tests how timestamps are serialized, including using the default format of date-time and various @timestampFormat trait values.</p>"
+                },
+                "description": "Ensures that the timestampFormat of date-time works like normal timestamps",
+                "result": {
+                    "dateTime": 1398796238
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "body": "{\n    \"dateTime\": \"2014-04-29T18:30:38Z\"\n}"
+                }
+            },
+            {
+                "id": "RestJsonJsonTimestampsWithDateTimeOnTargetFormat",
+                "given": {
+                    "name": "JsonTimestamps",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/JsonTimestamps",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "JsonTimestampsInputOutput"
+                    },
+                    "documentation": "<p>This tests how timestamps are serialized, including using the default format of date-time and various @timestampFormat trait values.</p>"
+                },
+                "description": "Ensures that the timestampFormat of date-time on the target shape works like normal timestamps",
+                "result": {
+                    "dateTimeOnTarget": 1398796238
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "body": "{\n    \"dateTimeOnTarget\": \"2014-04-29T18:30:38Z\"\n}"
+                }
+            },
+            {
+                "id": "RestJsonJsonTimestampsWithEpochSecondsFormat",
+                "given": {
+                    "name": "JsonTimestamps",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/JsonTimestamps",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "JsonTimestampsInputOutput"
+                    },
+                    "documentation": "<p>This tests how timestamps are serialized, including using the default format of date-time and various @timestampFormat trait values.</p>"
+                },
+                "description": "Ensures that the timestampFormat of epoch-seconds works",
+                "result": {
+                    "epochSeconds": 1398796238
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "body": "{\n    \"epochSeconds\": 1398796238\n}"
+                }
+            },
+            {
+                "id": "RestJsonJsonTimestampsWithEpochSecondsOnTargetFormat",
+                "given": {
+                    "name": "JsonTimestamps",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/JsonTimestamps",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "JsonTimestampsInputOutput"
+                    },
+                    "documentation": "<p>This tests how timestamps are serialized, including using the default format of date-time and various @timestampFormat trait values.</p>"
+                },
+                "description": "Ensures that the timestampFormat of epoch-seconds on the target shape works",
+                "result": {
+                    "epochSecondsOnTarget": 1398796238
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "body": "{\n    \"epochSecondsOnTarget\": 1398796238\n}"
+                }
+            },
+            {
+                "id": "RestJsonJsonTimestampsWithHttpDateFormat",
+                "given": {
+                    "name": "JsonTimestamps",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/JsonTimestamps",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "JsonTimestampsInputOutput"
+                    },
+                    "documentation": "<p>This tests how timestamps are serialized, including using the default format of date-time and various @timestampFormat trait values.</p>"
+                },
+                "description": "Ensures that the timestampFormat of http-date works",
+                "result": {
+                    "httpDate": 1398796238
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "body": "{\n    \"httpDate\": \"Tue, 29 Apr 2014 18:30:38 GMT\"\n}"
+                }
+            },
+            {
+                "id": "RestJsonJsonTimestampsWithHttpDateOnTargetFormat",
+                "given": {
+                    "name": "JsonTimestamps",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/JsonTimestamps",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "JsonTimestampsInputOutput"
+                    },
+                    "documentation": "<p>This tests how timestamps are serialized, including using the default format of date-time and various @timestampFormat trait values.</p>"
+                },
+                "description": "Ensures that the timestampFormat of http-date on the target shape works",
+                "result": {
+                    "httpDateOnTarget": 1398796238
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "body": "{\n    \"httpDateOnTarget\": \"Tue, 29 Apr 2014 18:30:38 GMT\"\n}"
+                }
+            }
+        ]
+    },
+    {
+        "description": "Test cases for JsonUnions operation",
+        "metadata": {
+            "protocol": "rest-json",
+            "protocols": [
+                "rest-json"
+            ],
+            "apiVersion": "2019-12-16"
+        },
+        "shapes": {
+            "UnionInputOutput": {
+                "type": "structure",
+                "members": {
+                    "contents": {
+                        "shape": "MyUnion"
+                    }
+                },
+                "documentation": "<p>A shared structure that contains a single union member.</p>"
+            },
+            "MyUnion": {
+                "type": "structure",
+                "members": {
+                    "stringValue": {
+                        "shape": "String"
+                    },
+                    "booleanValue": {
+                        "shape": "Boolean"
+                    },
+                    "numberValue": {
+                        "shape": "Integer"
+                    },
+                    "blobValue": {
+                        "shape": "Blob"
+                    },
+                    "timestampValue": {
+                        "shape": "Timestamp"
+                    },
+                    "enumValue": {
+                        "shape": "FooEnum"
+                    },
+                    "listValue": {
+                        "shape": "StringList"
+                    },
+                    "mapValue": {
+                        "shape": "StringMap"
+                    },
+                    "structureValue": {
+                        "shape": "GreetingStruct"
+                    },
+                    "renamedStructureValue": {
+                        "shape": "RenamedGreeting"
+                    }
+                },
+                "documentation": "<p>A union with a representative set of types for members.</p>",
+                "union": true
+            },
+            "String": {
+                "type": "string"
+            },
+            "Boolean": {
+                "type": "boolean",
+                "box": true
+            },
+            "Integer": {
+                "type": "integer",
+                "box": true
+            },
+            "Blob": {
+                "type": "blob"
+            },
+            "Timestamp": {
+                "type": "timestamp"
+            },
+            "FooEnum": {
+                "type": "string",
+                "enum": [
+                    "Foo",
+                    "Baz",
+                    "Bar",
+                    "1",
+                    "0"
+                ]
+            },
+            "StringList": {
+                "type": "list",
+                "member": {
+                    "shape": "String"
+                }
+            },
+            "StringMap": {
+                "type": "map",
+                "key": {
+                    "shape": "String"
+                },
+                "value": {
+                    "shape": "String"
+                }
+            },
+            "GreetingStruct": {
+                "type": "structure",
+                "members": {
+                    "hi": {
+                        "shape": "String"
+                    }
+                }
+            },
+            "RenamedGreeting": {
+                "type": "structure",
+                "members": {
+                    "salutation": {
+                        "shape": "String"
+                    }
+                }
+            }
+        },
+        "cases": [
+            {
+                "id": "RestJsonDeserializeStringUnionValue",
+                "given": {
+                    "name": "JsonUnions",
+                    "http": {
+                        "method": "PUT",
+                        "requestUri": "/JsonUnions",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "UnionInputOutput"
+                    },
+                    "documentation": "<p>This operation uses unions for inputs and outputs.</p>",
+                    "idempotent": true
+                },
+                "description": "Deserializes a string union value",
+                "result": {
+                    "contents": {
+                        "stringValue": "foo"
+                    }
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "body": "{\n    \"contents\": {\n        \"stringValue\": \"foo\"\n    }\n}"
+                }
+            },
+            {
+                "id": "RestJsonDeserializeBooleanUnionValue",
+                "given": {
+                    "name": "JsonUnions",
+                    "http": {
+                        "method": "PUT",
+                        "requestUri": "/JsonUnions",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "UnionInputOutput"
+                    },
+                    "documentation": "<p>This operation uses unions for inputs and outputs.</p>",
+                    "idempotent": true
+                },
+                "description": "Deserializes a boolean union value",
+                "result": {
+                    "contents": {
+                        "booleanValue": true
+                    }
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "body": "{\n    \"contents\": {\n        \"booleanValue\": true\n    }\n}"
+                }
+            },
+            {
+                "id": "RestJsonDeserializeNumberUnionValue",
+                "given": {
+                    "name": "JsonUnions",
+                    "http": {
+                        "method": "PUT",
+                        "requestUri": "/JsonUnions",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "UnionInputOutput"
+                    },
+                    "documentation": "<p>This operation uses unions for inputs and outputs.</p>",
+                    "idempotent": true
+                },
+                "description": "Deserializes a number union value",
+                "result": {
+                    "contents": {
+                        "numberValue": 1
+                    }
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "body": "{\n    \"contents\": {\n        \"numberValue\": 1\n    }\n}"
+                }
+            },
+            {
+                "id": "RestJsonDeserializeBlobUnionValue",
+                "given": {
+                    "name": "JsonUnions",
+                    "http": {
+                        "method": "PUT",
+                        "requestUri": "/JsonUnions",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "UnionInputOutput"
+                    },
+                    "documentation": "<p>This operation uses unions for inputs and outputs.</p>",
+                    "idempotent": true
+                },
+                "description": "Deserializes a blob union value",
+                "result": {
+                    "contents": {
+                        "blobValue": "foo"
+                    }
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "body": "{\n    \"contents\": {\n        \"blobValue\": \"Zm9v\"\n    }\n}"
+                }
+            },
+            {
+                "id": "RestJsonDeserializeTimestampUnionValue",
+                "given": {
+                    "name": "JsonUnions",
+                    "http": {
+                        "method": "PUT",
+                        "requestUri": "/JsonUnions",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "UnionInputOutput"
+                    },
+                    "documentation": "<p>This operation uses unions for inputs and outputs.</p>",
+                    "idempotent": true
+                },
+                "description": "Deserializes a timestamp union value",
+                "result": {
+                    "contents": {
+                        "timestampValue": 1398796238
+                    }
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "body": "{\n    \"contents\": {\n        \"timestampValue\": 1398796238\n    }\n}"
+                }
+            },
+            {
+                "id": "RestJsonDeserializeEnumUnionValue",
+                "given": {
+                    "name": "JsonUnions",
+                    "http": {
+                        "method": "PUT",
+                        "requestUri": "/JsonUnions",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "UnionInputOutput"
+                    },
+                    "documentation": "<p>This operation uses unions for inputs and outputs.</p>",
+                    "idempotent": true
+                },
+                "description": "Deserializes an enum union value",
+                "result": {
+                    "contents": {
+                        "enumValue": "Foo"
+                    }
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "body": "{\n    \"contents\": {\n        \"enumValue\": \"Foo\"\n    }\n}"
+                }
+            },
+            {
+                "id": "RestJsonDeserializeListUnionValue",
+                "given": {
+                    "name": "JsonUnions",
+                    "http": {
+                        "method": "PUT",
+                        "requestUri": "/JsonUnions",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "UnionInputOutput"
+                    },
+                    "documentation": "<p>This operation uses unions for inputs and outputs.</p>",
+                    "idempotent": true
+                },
+                "description": "Deserializes a list union value",
+                "result": {
+                    "contents": {
+                        "listValue": [
+                            "foo",
+                            "bar"
+                        ]
+                    }
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "body": "{\n    \"contents\": {\n        \"listValue\": [\"foo\", \"bar\"]\n    }\n}"
+                }
+            },
+            {
+                "id": "RestJsonDeserializeMapUnionValue",
+                "given": {
+                    "name": "JsonUnions",
+                    "http": {
+                        "method": "PUT",
+                        "requestUri": "/JsonUnions",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "UnionInputOutput"
+                    },
+                    "documentation": "<p>This operation uses unions for inputs and outputs.</p>",
+                    "idempotent": true
+                },
+                "description": "Deserializes a map union value",
+                "result": {
+                    "contents": {
+                        "mapValue": {
+                            "foo": "bar",
+                            "spam": "eggs"
+                        }
+                    }
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "body": "{\n    \"contents\": {\n        \"mapValue\": {\n            \"foo\": \"bar\",\n            \"spam\": \"eggs\"\n        }\n    }\n}"
+                }
+            },
+            {
+                "id": "RestJsonDeserializeStructureUnionValue",
+                "given": {
+                    "name": "JsonUnions",
+                    "http": {
+                        "method": "PUT",
+                        "requestUri": "/JsonUnions",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "UnionInputOutput"
+                    },
+                    "documentation": "<p>This operation uses unions for inputs and outputs.</p>",
+                    "idempotent": true
+                },
+                "description": "Deserializes a structure union value",
+                "result": {
+                    "contents": {
+                        "structureValue": {
+                            "hi": "hello"
+                        }
+                    }
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "body": "{\n    \"contents\": {\n        \"structureValue\": {\n            \"hi\": \"hello\"\n        }\n    }\n}"
+                }
+            },
+            {
+                "id": "RestJsonDeserializeIgnoreType",
+                "given": {
+                    "name": "JsonUnions",
+                    "http": {
+                        "method": "PUT",
+                        "requestUri": "/JsonUnions",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "UnionInputOutput"
+                    },
+                    "documentation": "<p>This operation uses unions for inputs and outputs.</p>",
+                    "idempotent": true
+                },
+                "description": "Ignores an unrecognized __type property",
+                "result": {
+                    "contents": {
+                        "structureValue": {
+                            "hi": "hello"
+                        }
+                    }
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "body": "{\n    \"contents\": {\n        \"__type\": \"aws.protocoltests.json10#MyUnion\",\n        \"structureValue\": {\n            \"hi\": \"hello\"\n        }\n    }\n}"
+                }
+            }
+        ]
+    },
+    {
+        "description": "Test cases for MediaTypeHeader operation",
+        "metadata": {
+            "protocol": "rest-json",
+            "protocols": [
+                "rest-json"
+            ],
+            "apiVersion": "2019-12-16"
+        },
+        "shapes": {
+            "MediaTypeHeaderOutput": {
+                "type": "structure",
+                "members": {
+                    "json": {
+                        "shape": "JsonValue",
+                        "jsonvalue": true,
+                        "location": "header",
+                        "locationName": "X-Json"
+                    }
+                }
+            },
+            "JsonValue": {
+                "type": "string"
+            }
+        },
+        "cases": [
+            {
+                "id": "MediaTypeHeaderOutputBase64",
+                "given": {
+                    "name": "MediaTypeHeader",
+                    "http": {
+                        "method": "GET",
+                        "requestUri": "/MediaTypeHeader",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "MediaTypeHeaderOutput"
+                    },
+                    "documentation": "<p>This example ensures that mediaType strings are base64 encoded in headers.</p>"
+                },
+                "description": "Headers that target strings with a mediaType are base64 encoded",
+                "result": {
+                    "json": "true"
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "X-Json": "dHJ1ZQ=="
+                    }
+                }
+            }
+        ]
+    },
+    {
+        "description": "Test cases for NoInputAndNoOutput operation",
+        "metadata": {
+            "protocol": "rest-json",
+            "protocols": [
+                "rest-json"
+            ],
+            "apiVersion": "2019-12-16"
+        },
+        "shapes": {},
+        "cases": [
+            {
+                "id": "RestJsonNoInputAndNoOutput",
+                "given": {
+                    "name": "NoInputAndNoOutput",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/NoInputAndNoOutput",
+                        "responseCode": 200
+                    },
+                    "documentation": "<p>The example tests how requests and responses are serialized when there's no request or response payload because the operation has no input or output. While this should be rare, code generators must support this.</p>"
+                },
+                "description": "When an operation does not define output, the service will respond\nwith an empty payload, and may optionally include the content-type\nheader.",
+                "result": {},
+                "response": {
+                    "status_code": 200,
+                    "body": ""
+                }
+            }
+        ]
+    },
+    {
+        "description": "Test cases for NoInputAndOutput operation",
+        "metadata": {
+            "protocol": "rest-json",
+            "protocols": [
+                "rest-json"
+            ],
+            "apiVersion": "2019-12-16"
+        },
+        "shapes": {
+            "NoInputAndOutputOutput": {
+                "type": "structure",
+                "members": {}
+            }
+        },
+        "cases": [
+            {
+                "id": "RestJsonNoInputAndOutputWithJson",
+                "given": {
+                    "name": "NoInputAndOutput",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/NoInputAndOutputOutput",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "NoInputAndOutputOutput"
+                    },
+                    "documentation": "<p>The example tests how requests and responses are serialized when there's no request or response payload because the operation has no input and the output is empty. While this should be rare, code generators must support this.</p>"
+                },
+                "description": "Operations that define output and do not bind anything to\nthe payload return a JSON object in the response.",
+                "result": {},
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "body": "{}"
+                }
+            },
+            {
+                "id": "RestJsonNoInputAndOutputNoPayload",
+                "given": {
+                    "name": "NoInputAndOutput",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/NoInputAndOutputOutput",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "NoInputAndOutputOutput"
+                    },
+                    "documentation": "<p>The example tests how requests and responses are serialized when there's no request or response payload because the operation has no input and the output is empty. While this should be rare, code generators must support this.</p>"
+                },
+                "description": "This test is similar to RestJsonNoInputAndOutputWithJson, but\nit ensures that clients can gracefully handle responses that\nomit a JSON payload.",
+                "result": {},
+                "response": {
+                    "status_code": 200,
+                    "body": ""
+                }
+            }
+        ]
+    },
+    {
+        "description": "Test cases for PostUnionWithJsonName operation",
+        "metadata": {
+            "protocol": "rest-json",
+            "protocols": [
+                "rest-json"
+            ],
+            "apiVersion": "2019-12-16"
+        },
+        "shapes": {
+            "PostUnionWithJsonNameOutput": {
+                "type": "structure",
+                "required": [
+                    "value"
+                ],
+                "members": {
+                    "value": {
+                        "shape": "UnionWithJsonName"
+                    }
+                }
+            },
+            "UnionWithJsonName": {
+                "type": "structure",
+                "members": {
+                    "foo": {
+                        "shape": "String",
+                        "locationName": "FOO"
+                    },
+                    "bar": {
+                        "shape": "String"
+                    },
+                    "baz": {
+                        "shape": "String",
+                        "locationName": "_baz"
+                    }
+                },
+                "union": true
+            },
+            "String": {
+                "type": "string"
+            }
+        },
+        "cases": [
+            {
+                "id": "PostUnionWithJsonNameResponse1",
+                "given": {
+                    "name": "PostUnionWithJsonName",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/PostUnionWithJsonName",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "PostUnionWithJsonNameOutput"
+                    },
+                    "documentation": "<p>This operation defines a union that uses jsonName on some members.</p>"
+                },
+                "description": "Tests that jsonName works with union members.",
+                "result": {
+                    "value": {
+                        "foo": "hi"
+                    }
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "body": "{\n    \"value\": {\n        \"FOO\": \"hi\"\n    }\n}"
+                }
+            },
+            {
+                "id": "PostUnionWithJsonNameResponse2",
+                "given": {
+                    "name": "PostUnionWithJsonName",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/PostUnionWithJsonName",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "PostUnionWithJsonNameOutput"
+                    },
+                    "documentation": "<p>This operation defines a union that uses jsonName on some members.</p>"
+                },
+                "description": "Tests that jsonName works with union members.",
+                "result": {
+                    "value": {
+                        "baz": "hi"
+                    }
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "body": "{\n    \"value\": {\n        \"_baz\": \"hi\"\n    }\n}"
+                }
+            },
+            {
+                "id": "PostUnionWithJsonNameResponse3",
+                "given": {
+                    "name": "PostUnionWithJsonName",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/PostUnionWithJsonName",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "PostUnionWithJsonNameOutput"
+                    },
+                    "documentation": "<p>This operation defines a union that uses jsonName on some members.</p>"
+                },
+                "description": "Tests that jsonName works with union members.",
+                "result": {
+                    "value": {
+                        "bar": "hi"
+                    }
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "body": "{\n    \"value\": {\n        \"bar\": \"hi\"\n    }\n}"
+                }
+            }
+        ]
+    },
+    {
+        "description": "Test cases for RecursiveShapes operation",
+        "metadata": {
+            "protocol": "rest-json",
+            "protocols": [
+                "rest-json"
+            ],
+            "apiVersion": "2019-12-16"
+        },
+        "shapes": {
+            "RecursiveShapesInputOutput": {
+                "type": "structure",
+                "members": {
+                    "nested": {
+                        "shape": "RecursiveShapesInputOutputNested1"
+                    }
+                }
+            },
+            "RecursiveShapesInputOutputNested1": {
+                "type": "structure",
+                "members": {
+                    "foo": {
+                        "shape": "String"
+                    },
+                    "nested": {
+                        "shape": "RecursiveShapesInputOutputNested2"
+                    }
+                }
+            },
+            "String": {
+                "type": "string"
+            },
+            "RecursiveShapesInputOutputNested2": {
+                "type": "structure",
+                "members": {
+                    "bar": {
+                        "shape": "String"
+                    },
+                    "recursiveMember": {
+                        "shape": "RecursiveShapesInputOutputNested1"
+                    }
+                }
+            }
+        },
+        "cases": [
+            {
+                "id": "RestJsonRecursiveShapes",
+                "given": {
+                    "name": "RecursiveShapes",
+                    "http": {
+                        "method": "PUT",
+                        "requestUri": "/RecursiveShapes",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "RecursiveShapesInputOutput"
+                    },
+                    "documentation": "<p>Recursive shapes</p>",
+                    "idempotent": true
+                },
+                "description": "Serializes recursive structures",
+                "result": {
+                    "nested": {
+                        "foo": "Foo1",
+                        "nested": {
+                            "bar": "Bar1",
+                            "recursiveMember": {
+                                "foo": "Foo2",
+                                "nested": {
+                                    "bar": "Bar2"
+                                }
+                            }
+                        }
+                    }
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "body": "{\n    \"nested\": {\n        \"foo\": \"Foo1\",\n        \"nested\": {\n            \"bar\": \"Bar1\",\n            \"recursiveMember\": {\n                \"foo\": \"Foo2\",\n                \"nested\": {\n                    \"bar\": \"Bar2\"\n                }\n            }\n        }\n    }\n}"
+                }
+            }
+        ]
+    },
+    {
+        "description": "Test cases for SimpleScalarProperties operation",
+        "metadata": {
+            "protocol": "rest-json",
+            "protocols": [
+                "rest-json"
+            ],
+            "apiVersion": "2019-12-16"
+        },
+        "shapes": {
+            "SimpleScalarPropertiesInputOutput": {
+                "type": "structure",
+                "members": {
+                    "foo": {
+                        "shape": "String",
+                        "location": "header",
+                        "locationName": "X-Foo"
+                    },
+                    "stringValue": {
+                        "shape": "String"
+                    },
+                    "trueBooleanValue": {
+                        "shape": "Boolean"
+                    },
+                    "falseBooleanValue": {
+                        "shape": "Boolean"
+                    },
+                    "byteValue": {
+                        "shape": "Integer"
+                    },
+                    "shortValue": {
+                        "shape": "Integer"
+                    },
+                    "integerValue": {
+                        "shape": "Integer"
+                    },
+                    "longValue": {
+                        "shape": "Long"
+                    },
+                    "floatValue": {
+                        "shape": "Float"
+                    },
+                    "doubleValue": {
+                        "shape": "Double",
+                        "locationName": "DoubleDribble"
+                    }
+                }
+            },
+            "String": {
+                "type": "string"
+            },
+            "Boolean": {
+                "type": "boolean",
+                "box": true
+            },
+            "Integer": {
+                "type": "integer",
+                "box": true
+            },
+            "Long": {
+                "type": "long",
+                "box": true
+            },
+            "Float": {
+                "type": "float",
+                "box": true
+            },
+            "Double": {
+                "type": "double",
+                "box": true
+            }
+        },
+        "cases": [
+            {
+                "id": "RestJsonSimpleScalarProperties",
+                "given": {
+                    "name": "SimpleScalarProperties",
+                    "http": {
+                        "method": "PUT",
+                        "requestUri": "/SimpleScalarProperties",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "SimpleScalarPropertiesInputOutput"
+                    },
+                    "idempotent": true
+                },
+                "description": "Serializes simple scalar properties",
+                "result": {
+                    "foo": "Foo",
+                    "stringValue": "string",
+                    "trueBooleanValue": true,
+                    "falseBooleanValue": false,
+                    "byteValue": 1,
+                    "shortValue": 2,
+                    "integerValue": 3,
+                    "longValue": 4,
+                    "floatValue": 5.5,
+                    "doubleValue": 6.5
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "Content-Type": "application/json",
+                        "X-Foo": "Foo"
+                    },
+                    "body": "{\n    \"stringValue\": \"string\",\n    \"trueBooleanValue\": true,\n    \"falseBooleanValue\": false,\n    \"byteValue\": 1,\n    \"shortValue\": 2,\n    \"integerValue\": 3,\n    \"longValue\": 4,\n    \"floatValue\": 5.5,\n    \"DoubleDribble\": 6.5\n}"
+                }
+            },
+            {
+                "id": "RestJsonDoesntDeserializeNullStructureValues",
+                "given": {
+                    "name": "SimpleScalarProperties",
+                    "http": {
+                        "method": "PUT",
+                        "requestUri": "/SimpleScalarProperties",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "SimpleScalarPropertiesInputOutput"
+                    },
+                    "idempotent": true
+                },
+                "description": "Rest Json should not deserialize null structure values",
+                "result": {},
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "body": "{\n    \"stringValue\": null\n}"
+                }
+            },
+            {
+                "id": "RestJsonSupportsNaNFloatInputs",
+                "given": {
+                    "name": "SimpleScalarProperties",
+                    "http": {
+                        "method": "PUT",
+                        "requestUri": "/SimpleScalarProperties",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "SimpleScalarPropertiesInputOutput"
+                    },
+                    "idempotent": true
+                },
+                "description": "Supports handling NaN float values.",
+                "result": {
+                    "floatValue": "NaN",
+                    "doubleValue": "NaN"
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "body": "{\n    \"floatValue\": \"NaN\",\n    \"DoubleDribble\": \"NaN\"\n}"
+                }
+            },
+            {
+                "id": "RestJsonSupportsInfinityFloatInputs",
+                "given": {
+                    "name": "SimpleScalarProperties",
+                    "http": {
+                        "method": "PUT",
+                        "requestUri": "/SimpleScalarProperties",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "SimpleScalarPropertiesInputOutput"
+                    },
+                    "idempotent": true
+                },
+                "description": "Supports handling Infinity float values.",
+                "result": {
+                    "floatValue": "Infinity",
+                    "doubleValue": "Infinity"
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "body": "{\n    \"floatValue\": \"Infinity\",\n    \"DoubleDribble\": \"Infinity\"\n}"
+                }
+            },
+            {
+                "id": "RestJsonSupportsNegativeInfinityFloatInputs",
+                "given": {
+                    "name": "SimpleScalarProperties",
+                    "http": {
+                        "method": "PUT",
+                        "requestUri": "/SimpleScalarProperties",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "SimpleScalarPropertiesInputOutput"
+                    },
+                    "idempotent": true
+                },
+                "description": "Supports handling -Infinity float values.",
+                "result": {
+                    "floatValue": "-Infinity",
+                    "doubleValue": "-Infinity"
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "body": "{\n    \"floatValue\": \"-Infinity\",\n    \"DoubleDribble\": \"-Infinity\"\n}"
+                }
+            }
+        ]
+    },
+    {
+        "description": "Test cases for TimestampFormatHeaders operation",
+        "metadata": {
+            "protocol": "rest-json",
+            "protocols": [
+                "rest-json"
+            ],
+            "apiVersion": "2019-12-16"
+        },
+        "shapes": {
+            "TimestampFormatHeadersIO": {
+                "type": "structure",
+                "members": {
+                    "memberEpochSeconds": {
+                        "shape": "SyntheticTimestamp_epoch_seconds",
+                        "location": "header",
+                        "locationName": "X-memberEpochSeconds"
+                    },
+                    "memberHttpDate": {
+                        "shape": "SyntheticTimestamp_http_date",
+                        "location": "header",
+                        "locationName": "X-memberHttpDate"
+                    },
+                    "memberDateTime": {
+                        "shape": "SyntheticTimestamp_date_time",
+                        "location": "header",
+                        "locationName": "X-memberDateTime"
+                    },
+                    "defaultFormat": {
+                        "shape": "Timestamp",
+                        "location": "header",
+                        "locationName": "X-defaultFormat"
+                    },
+                    "targetEpochSeconds": {
+                        "shape": "EpochSeconds",
+                        "location": "header",
+                        "locationName": "X-targetEpochSeconds"
+                    },
+                    "targetHttpDate": {
+                        "shape": "HttpDate",
+                        "location": "header",
+                        "locationName": "X-targetHttpDate"
+                    },
+                    "targetDateTime": {
+                        "shape": "DateTime",
+                        "location": "header",
+                        "locationName": "X-targetDateTime"
+                    }
+                }
+            },
+            "SyntheticTimestamp_epoch_seconds": {
+                "type": "timestamp",
+                "timestampFormat": "unixTimestamp"
+            },
+            "SyntheticTimestamp_http_date": {
+                "type": "timestamp",
+                "timestampFormat": "rfc822"
+            },
+            "SyntheticTimestamp_date_time": {
+                "type": "timestamp",
+                "timestampFormat": "iso8601"
+            },
+            "Timestamp": {
+                "type": "timestamp"
+            },
+            "EpochSeconds": {
+                "type": "timestamp",
+                "timestampFormat": "unixTimestamp"
+            },
+            "HttpDate": {
+                "type": "timestamp",
+                "timestampFormat": "rfc822"
+            },
+            "DateTime": {
+                "type": "timestamp",
+                "timestampFormat": "iso8601"
+            }
+        },
+        "cases": [
+            {
+                "id": "RestJsonTimestampFormatHeaders",
+                "given": {
+                    "name": "TimestampFormatHeaders",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/TimestampFormatHeaders",
+                        "responseCode": 200
+                    },
+                    "output": {
+                        "shape": "TimestampFormatHeadersIO"
+                    },
+                    "documentation": "<p>This example tests how timestamp request and response headers are serialized.</p>"
+                },
+                "description": "Tests how timestamp response headers are serialized",
+                "result": {
+                    "memberEpochSeconds": 1576540098,
+                    "memberHttpDate": 1576540098,
+                    "memberDateTime": 1576540098,
+                    "defaultFormat": 1576540098,
+                    "targetEpochSeconds": 1576540098,
+                    "targetHttpDate": 1576540098,
+                    "targetDateTime": 1576540098
+                },
+                "response": {
+                    "status_code": 200,
+                    "headers": {
+                        "X-defaultFormat": "Mon, 16 Dec 2019 23:48:18 GMT",
+                        "X-memberDateTime": "2019-12-16T23:48:18Z",
+                        "X-memberEpochSeconds": "1576540098",
+                        "X-memberHttpDate": "Mon, 16 Dec 2019 23:48:18 GMT",
+                        "X-targetDateTime": "2019-12-16T23:48:18Z",
+                        "X-targetEpochSeconds": "1576540098",
+                        "X-targetHttpDate": "Mon, 16 Dec 2019 23:48:18 GMT"
+                    }
+                }
+            }
+        ]
+    },
+    {
+        "description": "Test cases for UnitInputAndOutput operation",
+        "metadata": {
+            "protocol": "rest-json",
+            "protocols": [
+                "rest-json"
+            ],
+            "apiVersion": "2019-12-16"
+        },
+        "shapes": {},
+        "cases": [
+            {
+                "id": "RestJsonUnitInputAndOutputNoOutput",
+                "given": {
+                    "name": "UnitInputAndOutput",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/UnitInputAndOutput",
+                        "responseCode": 200
+                    },
+                    "documentation": "<p>This test is similar to NoInputAndNoOutput, but uses explicit Unit types.</p>"
+                },
+                "description": "When an operation defines Unit output, the service will respond\nwith an empty payload, and may optionally include the content-type\nheader.",
+                "result": {},
+                "response": {
+                    "status_code": 200,
+                    "body": ""
+                }
+            }
+        ]
+    }
+]

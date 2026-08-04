@@ -194,6 +194,16 @@
       "output":{"shape":"AssociateAddressResult"},
       "documentation":"<p>Associates an Elastic IP address, or carrier IP address (for instances that are in subnets in Wavelength Zones) with an instance or a network interface. Before you can use an Elastic IP address, you must allocate it to your account.</p> <p>If the Elastic IP address is already associated with a different instance, it is disassociated from that instance and associated with the specified instance. If you associate an Elastic IP address with an instance that has an existing Elastic IP address, the existing address is disassociated from the instance, but remains allocated to your account.</p> <p>[Subnets in Wavelength Zones] You can associate an IP address from the telecommunication carrier to the instance or network interface. </p> <p>You cannot associate an Elastic IP address with an interface in a different network border group.</p> <important> <p>This is an idempotent operation. If you perform the operation more than once, Amazon EC2 doesn't return an error, and you may be charged for each time the Elastic IP address is remapped to the same instance. For more information, see the <i>Elastic IP Addresses</i> section of <a href=\"http://aws.amazon.com/ec2/pricing/\">Amazon EC2 Pricing</a>.</p> </important>"
     },
+    "AssociateApplicationStatusCheck":{
+      "name":"AssociateApplicationStatusCheck",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"AssociateApplicationStatusCheckRequest"},
+      "output":{"shape":"AssociateApplicationStatusCheckResult"},
+      "documentation":"<p>Associates an application status check with instances or <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Using_Tags.html\">tags</a>. Once you create an association, health monitoring automatically begins for the specified instances or for instances that match the specified tags. The following rules apply:</p> <ul> <li> <p>You must specify either <code>TargetTagAssociations</code> or <code>InstanceIds</code>, but not both. Specifying both results in an <code>InvalidParameterCombination</code> error.</p> </li> <li> <p>The application status check must already exist and belong to your account.</p> </li> <li> <p>Tag keys must not be blank.</p> </li> <li> <p>Maximum 50 tag associations per application status check.</p> </li> <li> <p>Use <code>DisassociateApplicationStatusCheck</code> to remove associations.</p> </li> <li> <p>When you associate <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Using_Tags.html\">tags</a>, the application status check automatically monitors all current and future instances that have the specified tags.</p> </li> </ul>"
+    },
     "AssociateCapacityReservationBillingOwner":{
       "name":"AssociateCapacityReservationBillingOwner",
       "http":{
@@ -480,7 +490,7 @@
       },
       "input":{"shape":"BundleInstanceRequest"},
       "output":{"shape":"BundleInstanceResult"},
-      "documentation":"<p>Bundles an Amazon instance store-backed Windows instance.</p> <p>During bundling, only the root device volume (C:\\) is bundled. Data on other instance store volumes is not preserved.</p> <note> <p>This action is no longer supported. To create an AMI, use <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_CreateImage.html\">CreateImage</a>. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/creating-an-ami-ebs.html\"> Create an Amazon EBS-backed AMI</a> in the <i>Amazon EC2 User Guide</i>.</p> </note>"
+      "documentation":"<p>Bundles an Amazon instance store-backed Windows instance.</p> <p>During bundling, only the root device volume (C:\\) is bundled. Data on other instance store volumes is not preserved.</p> <note> <p>BundleInstance is no longer supported. To create an AMI, use <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_CreateImage.html\">CreateImage</a> instead. For more information about creating an Amazon EBS-backed AMI, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/creating-an-ami-ebs.html\"> Create an Amazon EBS-backed AMI</a> in the <i>Amazon EC2 User Guide</i>.</p> </note>"
     },
     "CancelBundleTask":{
       "name":"CancelBundleTask",
@@ -490,7 +500,7 @@
       },
       "input":{"shape":"CancelBundleTaskRequest"},
       "output":{"shape":"CancelBundleTaskResult"},
-      "documentation":"<p>Cancels a bundling operation for an instance store-backed Windows instance.</p>"
+      "documentation":"<p>Cancels a bundling operation for an instance store-backed Windows instance.</p> <note> <p>CancelBundleTask is no longer supported because <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_BundleInstance.html\">BundleInstance</a>, the operation it cancels, is no longer supported.</p> </note>"
     },
     "CancelCapacityReservation":{
       "name":"CancelCapacityReservation",
@@ -639,6 +649,16 @@
       "input":{"shape":"CopyVolumesRequest"},
       "output":{"shape":"CopyVolumesResult"},
       "documentation":"<p>Creates a crash-consistent, point-in-time copy of an existing Amazon EBS volume within the same Availability Zone. The volume copy can be attached to an Amazon EC2 instance once it reaches the <code>available</code> state. For more information, see <a href=\"https://docs.aws.amazon.com/ebs/latest/userguide/ebs-copying-volume.html\">Copy an Amazon EBS volume</a>.</p>"
+    },
+    "CreateApplicationStatusCheck":{
+      "name":"CreateApplicationStatusCheck",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateApplicationStatusCheckRequest"},
+      "output":{"shape":"CreateApplicationStatusCheckResult"},
+      "documentation":"<p>Creates an application status check for monitoring the health of applications running on your instances. You can configure the protocol, port, path, and thresholds for the health check. The following rules apply:</p> <ul> <li> <p>You can create a maximum of 50 application status checks per account.</p> </li> <li> <p>Health checks do not start until you associate the check with instances or tags using <code>AssociateApplicationStatusCheck</code>.</p> </li> <li> <p>The <code>Timeout</code> value must be less than the <code>Interval</code> value.</p> </li> <li> <p>The <code>Path</code> must start with a forward slash (<code>/</code>). Default: <code>/</code>.</p> </li> <li> <p>If you do not specify <code>Aggregation</code>, it defaults to <code>included</code>, which means the check contributes to the instance-level application status.</p> </li> <li> <p>Default values: <code>Interval</code> is 60 seconds, <code>Timeout</code> is 6 seconds, <code>FailureThreshold</code> is 2, <code>SuccessThreshold</code> is 5, <code>StatusCodeMatcher</code> is <code>200</code>, <code>InitializationGracePeriodSeconds</code> is 300 seconds.</p> </li> <li> <p>You can tag the application status check during creation. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Using_Tags.html\">Tag your Amazon EC2 resources</a>.</p> </li> </ul>"
     },
     "CreateCapacityManagerDataExport":{
       "name":"CreateCapacityManagerDataExport",
@@ -1696,6 +1716,16 @@
       "input":{"shape":"CreateVpnGatewayRequest"},
       "output":{"shape":"CreateVpnGatewayResult"},
       "documentation":"<p>Creates a virtual private gateway. A virtual private gateway is the endpoint on the VPC side of your VPN connection. You can create a virtual private gateway before creating the VPC itself.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/vpn/latest/s2svpn/VPC_VPN.html\">Amazon Web Services Site-to-Site VPN</a> in the <i>Amazon Web Services Site-to-Site VPN User Guide</i>.</p>"
+    },
+    "DeleteApplicationStatusCheck":{
+      "name":"DeleteApplicationStatusCheck",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteApplicationStatusCheckRequest"},
+      "output":{"shape":"DeleteApplicationStatusCheckResult"},
+      "documentation":"<p>Deletes an application status check. The following rules apply:</p> <ul> <li> <p>Deleting a check automatically removes all of its associations.</p> </li> <li> <p>Use <code>DescribeApplicationStatusChecks</code> to view existing checks before deleting.</p> </li> </ul>"
     },
     "DeleteCapacityManagerDataExport":{
       "name":"DeleteCapacityManagerDataExport",
@@ -2759,6 +2789,36 @@
       "output":{"shape":"DescribeAggregateIdFormatResult"},
       "documentation":"<p>Describes the longer ID format settings for all resource types in a specific Region. This request is useful for performing a quick audit to determine whether a specific Region is fully opted in for longer IDs (17-character IDs).</p> <p>This request only returns information about resource types that support longer IDs.</p> <p>The following resource types support longer IDs: <code>bundle</code> | <code>conversion-task</code> | <code>customer-gateway</code> | <code>dhcp-options</code> | <code>elastic-ip-allocation</code> | <code>elastic-ip-association</code> | <code>export-task</code> | <code>flow-log</code> | <code>image</code> | <code>import-task</code> | <code>instance</code> | <code>internet-gateway</code> | <code>network-acl</code> | <code>network-acl-association</code> | <code>network-interface</code> | <code>network-interface-attachment</code> | <code>prefix-list</code> | <code>reservation</code> | <code>route-table</code> | <code>route-table-association</code> | <code>security-group</code> | <code>snapshot</code> | <code>subnet</code> | <code>subnet-cidr-block-association</code> | <code>volume</code> | <code>vpc</code> | <code>vpc-cidr-block-association</code> | <code>vpc-endpoint</code> | <code>vpc-peering-connection</code> | <code>vpn-connection</code> | <code>vpn-gateway</code>.</p>"
     },
+    "DescribeApplicationStatus":{
+      "name":"DescribeApplicationStatus",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeApplicationStatusRequest"},
+      "output":{"shape":"DescribeApplicationStatusResult"},
+      "documentation":"<p>Describes the application status for the specified instances. Returns the aggregated application health status for each instance. The following rules apply:</p> <ul> <li> <p>The instance-level status is derived from all application status checks with the aggregation setting set to <code>included</code>.</p> </li> <li> <p>Use <code>DescribeApplicationStatusChecks</code> to view the configuration of individual checks.</p> </li> <li> <p>Use <code>EnableApplicationStatusCheckSuppression</code> to temporarily suppress health check results from affecting the instance-level status.</p> </li> </ul>"
+    },
+    "DescribeApplicationStatusCheckAssociations":{
+      "name":"DescribeApplicationStatusCheckAssociations",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeApplicationStatusCheckAssociationsRequest"},
+      "output":{"shape":"DescribeApplicationStatusCheckAssociationsResult"},
+      "documentation":"<p>Describes the associations for one or more application status checks. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/monitoring-application-status-checks.html\">Application status checks</a>. To avoid timeouts and retrieve complete results, use the pagination parameters.</p> <note> <p>The order of the elements in the response, including those within nested structures, might vary.</p> </note>"
+    },
+    "DescribeApplicationStatusChecks":{
+      "name":"DescribeApplicationStatusChecks",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeApplicationStatusChecksRequest"},
+      "output":{"shape":"DescribeApplicationStatusChecksResult"},
+      "documentation":"<p>Describes one or more application status checks. Returns configuration details for your application status checks, including protocol, port, path, thresholds, and associations. The following rules apply:</p> <ul> <li> <p>If you do not specify any application status check IDs, all checks in your account are returned.</p> </li> <li> <p>Use <code>DescribeApplicationStatus</code> to see the actual health status of instances.</p> </li> </ul>"
+    },
     "DescribeAvailabilityZones":{
       "name":"DescribeAvailabilityZones",
       "http":{
@@ -3367,7 +3427,7 @@
       },
       "input":{"shape":"DescribeInstanceStatusRequest"},
       "output":{"shape":"DescribeInstanceStatusResult"},
-      "documentation":"<p>Describes the status of the specified instances or all of your instances. By default, only running instances are described, unless you specifically indicate to return the status of all instances.</p> <p>Instance status includes the following components:</p> <ul> <li> <p> <b>Status checks</b> - Amazon EC2 performs status checks on running EC2 instances to identify hardware and software issues. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/monitoring-system-instance-status-check.html\">Status checks for your instances</a> and <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/TroubleshootingInstances.html\">Troubleshoot instances with failed status checks</a> in the <i>Amazon EC2 User Guide</i>.</p> </li> <li> <p> <b>Scheduled events</b> - Amazon EC2 can schedule events (such as reboot, stop, or terminate) for your instances related to hardware issues, software updates, or system maintenance. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/monitoring-instances-status-check_sched.html\">Scheduled events for your instances</a> in the <i>Amazon EC2 User Guide</i>.</p> </li> <li> <p> <b>Instance state</b> - You can manage your instances from the moment you launch them through their termination. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-lifecycle.html\">Instance lifecycle</a> in the <i>Amazon EC2 User Guide</i>.</p> </li> </ul> <p>The Amazon EC2 API follows an eventual consistency model. This means that the result of an API command you run that creates or modifies resources might not be immediately available to all subsequent commands you run. For guidance on how to manage eventual consistency, see <a href=\"https://docs.aws.amazon.com/ec2/latest/devguide/eventual-consistency.html\">Eventual consistency in the Amazon EC2 API</a> in the <i>Amazon EC2 Developer Guide</i>.</p> <note> <p>The order of the elements in the response, including those within nested structures, might vary. Applications should not assume the elements appear in a particular order.</p> </note>"
+      "documentation":"<p>Describes the status of the specified instances or all of your instances. By default, only running instances are described, unless you specifically indicate to return the status of all instances.</p> <p>Instance status includes the following components:</p> <ul> <li> <p> <b>Status checks</b> - Amazon EC2 performs status checks on running EC2 instances to identify hardware and software issues. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/monitoring-system-instance-status-check.html\">Status checks for your instances</a> and <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/TroubleshootingInstances.html\">Troubleshoot instances with failed status checks</a> in the <i>Amazon EC2 User Guide</i>.</p> </li> <li> <p> <b>Application status checks</b> - Amazon EC2 reports application-level health status for instances, indicating whether applications running on the instance are functioning properly.</p> </li> <li> <p> <b>Scheduled events</b> - Amazon EC2 can schedule events (such as reboot, stop, or terminate) for your instances related to hardware issues, software updates, or system maintenance. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/monitoring-instances-status-check_sched.html\">Scheduled events for your instances</a> in the <i>Amazon EC2 User Guide</i>.</p> </li> <li> <p> <b>Instance state</b> - You can manage your instances from the moment you launch them through their termination. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-lifecycle.html\">Instance lifecycle</a> in the <i>Amazon EC2 User Guide</i>.</p> </li> </ul> <p>The Amazon EC2 API follows an eventual consistency model. This means that the result of an API command you run that creates or modifies resources might not be immediately available to all subsequent commands you run. For guidance on how to manage eventual consistency, see <a href=\"https://docs.aws.amazon.com/ec2/latest/devguide/eventual-consistency.html\">Eventual consistency in the Amazon EC2 API</a> in the <i>Amazon EC2 Developer Guide</i>.</p> <note> <p>The order of the elements in the response, including those within nested structures, might vary. Applications should not assume the elements appear in a particular order.</p> </note>"
     },
     "DescribeInstanceTopology":{
       "name":"DescribeInstanceTopology",
@@ -4666,6 +4726,16 @@
       "output":{"shape":"DisableAllowedImagesSettingsResult"},
       "documentation":"<p>Disables Allowed AMIs for your account in the specified Amazon Web Services Region. When set to <code>disabled</code>, the image criteria in your Allowed AMIs settings do not apply, and no restrictions are placed on AMI discoverability or usage. Users in your account can launch instances using any public AMI or AMI shared with your account.</p> <note> <p>The Allowed AMIs feature does not restrict the AMIs owned by your account. Regardless of the criteria you set, the AMIs created by your account will always be discoverable and usable by users in your account.</p> </note> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-allowed-amis.html\">Control the discovery and use of AMIs in Amazon EC2 with Allowed AMIs</a> in <i>Amazon EC2 User Guide</i>.</p>"
     },
+    "DisableApplicationStatusCheckSuppression":{
+      "name":"DisableApplicationStatusCheckSuppression",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DisableApplicationStatusCheckSuppressionRequest"},
+      "output":{"shape":"DisableApplicationStatusCheckSuppressionResult"},
+      "documentation":"<p>Disables suppression of application status checks for the specified instances. After suppression is disabled, health check results resume affecting the instance-level application status. You can specify a maximum of 100 instance IDs per request.</p>"
+    },
     "DisableAwsNetworkPerformanceMetricSubscription":{
       "name":"DisableAwsNetworkPerformanceMetricSubscription",
       "http":{
@@ -4864,6 +4934,16 @@
       "input":{"shape":"DisassociateAddressRequest"},
       "documentation":"<p>Disassociates an Elastic IP address from the instance or network interface it's associated with.</p> <p>This is an idempotent operation. If you perform the operation more than once, Amazon EC2 doesn't return an error.</p> <p>An address cannot be disassociated if the all of the following conditions are met:</p> <ul> <li> <p>Network interface has a <code>publicDualStackDnsName</code> publicDnsName</p> </li> <li> <p>Public IPv4 address is the primary public IPv4 address</p> </li> <li> <p>Network interface only has one remaining public IPv4 address</p> </li> </ul>"
     },
+    "DisassociateApplicationStatusCheck":{
+      "name":"DisassociateApplicationStatusCheck",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DisassociateApplicationStatusCheckRequest"},
+      "output":{"shape":"DisassociateApplicationStatusCheckResult"},
+      "documentation":"<p>Disassociates an application status check from instances or <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Using_Tags.html\">tags</a>. After disassociation, health monitoring stops for the affected instances. The following rules apply:</p> <ul> <li> <p>You must specify either <code>TargetTagAssociations</code> or <code>InstanceIds</code>, but not both. Specifying both results in an <code>InvalidParameterCombination</code> error.</p> </li> <li> <p>The application status check must already exist and belong to your account.</p> </li> <li> <p>Tag keys must not be blank.</p> </li> </ul>"
+    },
     "DisassociateCapacityReservationBillingOwner":{
       "name":"DisassociateCapacityReservationBillingOwner",
       "http":{
@@ -5052,6 +5132,16 @@
       "input":{"shape":"EnableAllowedImagesSettingsRequest"},
       "output":{"shape":"EnableAllowedImagesSettingsResult"},
       "documentation":"<p>Enables Allowed AMIs for your account in the specified Amazon Web Services Region. Two values are accepted:</p> <ul> <li> <p> <code>enabled</code>: The image criteria in your Allowed AMIs settings are applied. As a result, only AMIs matching these criteria are discoverable and can be used by your account to launch instances.</p> </li> <li> <p> <code>audit-mode</code>: The image criteria in your Allowed AMIs settings are not applied. No restrictions are placed on AMI discoverability or usage. Users in your account can launch instances using any public AMI or AMI shared with your account.</p> <p>The purpose of <code>audit-mode</code> is to indicate which AMIs will be affected when Allowed AMIs is <code>enabled</code>. In <code>audit-mode</code>, each AMI displays either <code>\"ImageAllowed\": true</code> or <code>\"ImageAllowed\": false</code> to indicate whether the AMI will be discoverable and available to users in the account when Allowed AMIs is enabled.</p> </li> </ul> <note> <p>The Allowed AMIs feature does not restrict the AMIs owned by your account. Regardless of the criteria you set, the AMIs created by your account will always be discoverable and usable by users in your account.</p> </note> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-allowed-amis.html\">Control the discovery and use of AMIs in Amazon EC2 with Allowed AMIs</a> in <i>Amazon EC2 User Guide</i>.</p>"
+    },
+    "EnableApplicationStatusCheckSuppression":{
+      "name":"EnableApplicationStatusCheckSuppression",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"EnableApplicationStatusCheckSuppressionRequest"},
+      "output":{"shape":"EnableApplicationStatusCheckSuppressionResult"},
+      "documentation":"<p>Suppresses application status checks for the specified instances. While suppressed, health checks continue to run but do not affect the instance-level application status. The following rules apply:</p> <ul> <li> <p>Maximum 100 instance IDs per request.</p> </li> <li> <p>Use <code>DisableApplicationStatusCheckSuppression</code> to resume normal health check reporting.</p> </li> <li> <p>If you do not specify <code>DurationSeconds</code>, suppression continues indefinitely until you call <code>DisableApplicationStatusCheckSuppression</code>.</p> </li> </ul>"
     },
     "EnableAwsNetworkPerformanceMetricSubscription":{
       "name":"EnableAwsNetworkPerformanceMetricSubscription",
@@ -6131,6 +6221,16 @@
       "output":{"shape":"ModifyAddressAttributeResult"},
       "documentation":"<p>Modifies an attribute of the specified Elastic IP address. For requirements, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/elastic-ip-addresses-eip.html#Using_Elastic_Addressing_Reverse_DNS\">Using reverse DNS for email applications</a>.</p>"
     },
+    "ModifyApplicationStatusCheck":{
+      "name":"ModifyApplicationStatusCheck",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ModifyApplicationStatusCheckRequest"},
+      "output":{"shape":"ModifyApplicationStatusCheckResult"},
+      "documentation":"<p>Modifies an existing application status check. You can update the protocol, port, path, thresholds, and other configuration settings. The following rules apply:</p> <ul> <li> <p>The application status check must exist and belong to your account.</p> </li> <li> <p>Changes take effect on the next health check interval.</p> </li> </ul>"
+    },
     "ModifyAvailabilityZoneGroup":{
       "name":"ModifyAvailabilityZoneGroup",
       "http":{
@@ -6970,7 +7070,7 @@
       },
       "input":{"shape":"ProvisionByoipCidrRequest"},
       "output":{"shape":"ProvisionByoipCidrResult"},
-      "documentation":"<p>Provisions an IPv4 or IPv6 address range for use with your Amazon Web Services resources through bring your own IP addresses (BYOIP) and creates a corresponding address pool. After the address range is provisioned, it is ready to be advertised.</p> <p>Amazon Web Services verifies that you own the address range and are authorized to advertise it. You must ensure that the address range is registered to you and that you created an RPKI ROA to authorize Amazon ASNs 16509 and 14618 to advertise the address range. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-byoip.html\">Bring your own IP addresses (BYOIP)</a> in the <i>Amazon EC2 User Guide</i>.</p> <p>Provisioning an address range is an asynchronous operation, so the call returns immediately, but the address range is not ready to use until its status changes from <code>pending-provision</code> to <code>provisioned</code>. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/byoip-onboard.html\">Onboard your address range</a>.</p>"
+      "documentation":"<p>Provisions an IPv4 or IPv6 address range for use with your Amazon Web Services resources through bring your own IP addresses (BYOIP) and creates a corresponding address pool. After the address range is provisioned, it is ready to be advertised.</p> <p>Amazon Web Services verifies that you own the address range and are authorized to advertise it. You must ensure that the address range is registered to you and that you created an RPKI ROA to authorize Amazon ASNs 16509 and 14618 to advertise the address range. For the Amazon Web Services GovCloud (US) Regions, authorize only ASN 8987. For the Amazon Web Services European Sovereign Cloud, authorize ASNs 16509 and 214101. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-byoip.html\">Bring your own IP addresses (BYOIP)</a> in the <i>Amazon EC2 User Guide</i>.</p> <p>Provisioning an address range is an asynchronous operation, so the call returns immediately, but the address range is not ready to use until its status changes from <code>pending-provision</code> to <code>provisioned</code>. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/byoip-onboard.html\">Onboard your address range</a>.</p>"
     },
     "ProvisionIpamByoasn":{
       "name":"ProvisionIpamByoasn",
@@ -8791,6 +8891,13 @@
         "host"
       ]
     },
+    "AggregationStatusEnum":{
+      "type":"string",
+      "enum":[
+        "included",
+        "excluded"
+      ]
+    },
     "AllocateAddressRequest":{
       "type":"structure",
       "members":{
@@ -9432,6 +9539,313 @@
         "disable"
       ]
     },
+    "ApplicationStatus":{
+      "type":"structure",
+      "members":{
+        "Status":{
+          "shape":"ApplicationStatusEnum",
+          "documentation":"<p>The current instance-level application status. This status is derived from application status checks with <code>Aggregation</code> set to <code>included</code>. Possible values:</p> <ul> <li> <p> <code>ok</code> – All included checks passed.</p> </li> <li> <p> <code>impaired</code> – At least one included check failed.</p> </li> <li> <p> <code>initializing</code> – At least one included check is initializing, and no included check is impaired.</p> </li> <li> <p> <code>insufficient-data</code> – At least one included check has insufficient data, and no included check is impaired or initializing.</p> </li> <li> <p> <code>not-applicable</code> – No checks with <code>Aggregation</code> set to <code>included</code> apply to the instance.</p> </li> <li> <p> <code>suppressed</code> – Application status reporting is suppressed for the instance.</p> </li> </ul> <p>Checks with <code>Aggregation</code> set to <code>excluded</code> do not affect this value.</p>",
+          "locationName":"status"
+        },
+        "StatusTimeStamp":{
+          "shape":"MillisecondDateTime",
+          "documentation":"<p>The date and time of the last status update.</p>",
+          "locationName":"statusTimeStamp"
+        },
+        "StatusSince":{
+          "shape":"MillisecondDateTime",
+          "documentation":"<p>The date and time when the current status started.</p>",
+          "locationName":"statusSince"
+        },
+        "ResumeAt":{
+          "shape":"MillisecondDateTime",
+          "documentation":"<p>The date and time when application status reporting resumes after suppression.</p>",
+          "locationName":"resumeAt"
+        },
+        "Details":{
+          "shape":"ApplicationStatusDetailSet",
+          "documentation":"<p>Details about the application status checks for the instance.</p>",
+          "locationName":"detailSet"
+        }
+      },
+      "documentation":"<p>Describes the application-level health status for an instance.</p>"
+    },
+    "ApplicationStatusCheckAssociationObject":{
+      "type":"structure",
+      "members":{
+        "ApplicationStatusCheckId":{
+          "shape":"ApplicationStatusCheckId",
+          "documentation":"<p>The ID of the application status check.</p>",
+          "locationName":"applicationStatusCheckId"
+        },
+        "AssociationType":{
+          "shape":"AssociationTypeEnum",
+          "documentation":"<p>The type of target that the application status check is associated with. Possible values:</p> <ul> <li> <p> <code>tag</code> – The check applies to current and future instances with a matching tag key-value pair.</p> </li> <li> <p> <code>instance-id</code> – The check applies to a specific instance.</p> </li> </ul>",
+          "locationName":"associationType"
+        },
+        "Key":{
+          "shape":"String",
+          "documentation":"<p>The key for the association. This value is present only for tag-based associations, where it contains the tag key. For instance-based associations, this value is absent.</p>",
+          "locationName":"key"
+        },
+        "Value":{
+          "shape":"String",
+          "documentation":"<p>The value for the association target. For tag-based associations, this is the tag value. For instance-based associations, this is the instance ID (for example, <code>i-0123456789abcdef0</code>).</p>",
+          "locationName":"value"
+        }
+      },
+      "documentation":"<p>Information about an application status check association. Each item in the <code>associationSet</code> of a <code>DescribeApplicationStatusCheckAssociations</code> response is of this type.</p>"
+    },
+    "ApplicationStatusCheckAssociationSet":{
+      "type":"list",
+      "member":{
+        "shape":"ApplicationStatusCheckAssociationObject",
+        "locationName":"item"
+      }
+    },
+    "ApplicationStatusCheckEnum":{
+      "type":"string",
+      "enum":[
+        "passed",
+        "failed",
+        "initializing",
+        "insufficient-data",
+        "not-applicable"
+      ]
+    },
+    "ApplicationStatusCheckId":{"type":"string"},
+    "ApplicationStatusCheckIdList":{
+      "type":"list",
+      "member":{
+        "shape":"ApplicationStatusCheckId",
+        "locationName":"item"
+      }
+    },
+    "ApplicationStatusCheckResponseObject":{
+      "type":"structure",
+      "members":{
+        "ApplicationStatusCheckId":{
+          "shape":"ApplicationStatusCheckId",
+          "documentation":"<p>The ID of the application status check.</p>",
+          "locationName":"applicationStatusCheckId"
+        },
+        "Aggregation":{
+          "shape":"AggregationStatusEnum",
+          "documentation":"<p>The aggregation setting for the application status check. When set to <code>included</code>, the result of this check contributes to the instance-level application status. When set to <code>excluded</code>, the check runs independently and does not affect the instance-level status.</p>",
+          "locationName":"aggregation"
+        },
+        "HealthCheckPaths":{
+          "shape":"HealthCheckPathResponseList",
+          "documentation":"<p>The health check paths for the application status check.</p>",
+          "locationName":"healthCheckPathSet"
+        },
+        "Protocol":{
+          "shape":"NetworkProtocolEnum",
+          "documentation":"<p>The protocol used for the health check.</p>",
+          "locationName":"protocol"
+        },
+        "Port":{
+          "shape":"Integer",
+          "documentation":"<p>The port used for the health check.</p>",
+          "locationName":"port"
+        },
+        "Path":{
+          "shape":"String",
+          "documentation":"<p>The URL path used for the health check HTTP request.</p>",
+          "locationName":"path"
+        },
+        "DeviceIndex":{
+          "shape":"Integer",
+          "documentation":"<p>The index of the network device used for the health check. The value is greater than or equal to 0.</p>",
+          "locationName":"deviceIndex"
+        },
+        "IpVersion":{
+          "shape":"IpVersionEnum",
+          "documentation":"<p>The IP version used for the health check.</p>",
+          "locationName":"ipVersion"
+        },
+        "IpScope":{
+          "shape":"IpScopeEnum",
+          "documentation":"<p>The IP scope used for the health check.</p>",
+          "locationName":"ipScope"
+        },
+        "Interval":{
+          "shape":"Integer",
+          "documentation":"<p>The interval, in seconds, between health checks. Valid value: 60.</p>",
+          "locationName":"interval"
+        },
+        "Timeout":{
+          "shape":"Integer",
+          "documentation":"<p>The amount of time, in seconds, to wait for a health check response. Valid values: 1 to 30.</p>",
+          "locationName":"timeout"
+        },
+        "FailureThreshold":{
+          "shape":"Integer",
+          "documentation":"<p>The number of consecutive failed health checks before the application status is considered impaired. The value must be greater than 0.</p>",
+          "locationName":"failureThreshold"
+        },
+        "SuccessThreshold":{
+          "shape":"Integer",
+          "documentation":"<p>The number of consecutive successful health checks before the application status is considered healthy. The value must be greater than 0.</p>",
+          "locationName":"successThreshold"
+        },
+        "StatusCodeMatcher":{
+          "shape":"String",
+          "documentation":"<p>The comma-separated list of individual HTTP status codes or ranges that indicate a successful health check response.</p>",
+          "locationName":"statusCodeMatcher"
+        },
+        "InitializationGracePeriodSeconds":{
+          "shape":"InitializationGracePeriodSeconds",
+          "documentation":"<p>The number of seconds to wait before starting health checks after an instance is launched. Valid values: 1 to 600.</p>",
+          "locationName":"initializationGracePeriodSeconds"
+        },
+        "LastUpdatedAt":{
+          "shape":"MillisecondDateTime",
+          "documentation":"<p>The date and time when the application status check was last updated.</p>",
+          "locationName":"lastUpdatedAt"
+        },
+        "TargetTagAssociations":{
+          "shape":"CustomKeyValuePairResponseSet",
+          "documentation":"<p>The <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Using_Tags.html\">tags</a> associated with the application status check. Instances with these tags are automatically monitored by this check.</p>",
+          "locationName":"targetTagAssociationSet"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>The tags assigned to the application status check.</p>",
+          "locationName":"tagSet"
+        },
+        "CreationTime":{
+          "shape":"MillisecondDateTime",
+          "documentation":"<p>The date and time when the application status check was created.</p>",
+          "locationName":"creationTime"
+        },
+        "ModifyTime":{
+          "shape":"MillisecondDateTime",
+          "documentation":"<p>The date and time when the application status check was last modified.</p>",
+          "locationName":"modifyTime"
+        },
+        "DeletionTime":{
+          "shape":"MillisecondDateTime",
+          "documentation":"<p>The date and time when the application status check was deleted.</p>",
+          "locationName":"deletionTime"
+        }
+      },
+      "documentation":"<p>Describes an application status check.</p>"
+    },
+    "ApplicationStatusCheckResponseSet":{
+      "type":"list",
+      "member":{
+        "shape":"ApplicationStatusCheckResponseObject",
+        "locationName":"item"
+      }
+    },
+    "ApplicationStatusDetail":{
+      "type":"structure",
+      "members":{
+        "ApplicationStatusCheckId":{
+          "shape":"ApplicationStatusCheckId",
+          "documentation":"<p>The ID of the application status check.</p>",
+          "locationName":"applicationStatusCheckId"
+        },
+        "CheckUpdateTime":{
+          "shape":"MillisecondDateTime",
+          "documentation":"<p>The date and time when the check was last updated.</p>",
+          "locationName":"checkUpdateTime"
+        },
+        "Aggregation":{
+          "shape":"AggregationStatusEnum",
+          "documentation":"<p>The aggregation setting for the application status check. When set to <code>included</code>, the result of this check contributes to the instance-level application status. When set to <code>excluded</code>, the check runs independently and does not affect the instance-level status.</p>",
+          "locationName":"aggregation"
+        },
+        "Status":{
+          "shape":"ApplicationStatusCheckEnum",
+          "documentation":"<p>The status of the individual application status check. Possible values:</p> <ul> <li> <p> <code>passed</code> – The check reached its success threshold.</p> </li> <li> <p> <code>failed</code> – The check reached its failure threshold.</p> </li> <li> <p> <code>initializing</code> – The check is initializing or has not reached a success or failure threshold.</p> </li> <li> <p> <code>insufficient-data</code> – The check does not have enough data to determine a result.</p> </li> <li> <p> <code>not-applicable</code> – The check does not apply to the instance.</p> </li> </ul> <p>This value reflects the check result and is not affected by aggregation or suppression.</p>",
+          "locationName":"status"
+        },
+        "StatusTimeStamp":{
+          "shape":"MillisecondDateTime",
+          "documentation":"<p>The date and time of the last status update for this check.</p>",
+          "locationName":"statusTimeStamp"
+        },
+        "StatusSince":{
+          "shape":"MillisecondDateTime",
+          "documentation":"<p>The date and time when the current status started for this check.</p>",
+          "locationName":"statusSince"
+        },
+        "Reason":{
+          "shape":"ApplicationStatusReason",
+          "documentation":"<p>The reason for the current status.</p>",
+          "locationName":"reason"
+        }
+      },
+      "documentation":"<p>Describes the details of an application status check for an instance.</p>"
+    },
+    "ApplicationStatusDetailSet":{
+      "type":"list",
+      "member":{
+        "shape":"ApplicationStatusDetail",
+        "locationName":"item"
+      }
+    },
+    "ApplicationStatusEnum":{
+      "type":"string",
+      "enum":[
+        "ok",
+        "impaired",
+        "initializing",
+        "insufficient-data",
+        "not-applicable",
+        "suppressed"
+      ]
+    },
+    "ApplicationStatusReason":{
+      "type":"structure",
+      "members":{
+        "Code":{
+          "shape":"String",
+          "documentation":"<p>The reason code for the application status check result. Possible values:</p> <ul> <li> <p> <code>ResponseCodeMatched</code> – The HTTP status code returned by the health check matched the configured <code>StatusCodeMatcher</code>.</p> </li> <li> <p> <code>ResponseCodeMismatch</code> – The HTTP status code returned by the health check did not match the configured <code>StatusCodeMatcher</code>.</p> </li> <li> <p> <code>ConnectionTimeout</code> – The connection to the target timed out.</p> </li> <li> <p> <code>ResponseTimeout</code> – The health check timed out while waiting for a response from the target.</p> </li> <li> <p> <code>ConnectionRefused</code> – The target refused the health check connection.</p> </li> <li> <p> <code>ConnectionReset</code> – The target reset the health check connection before returning a response.</p> </li> </ul> <p>Current health check results use the values in the preceding list. Legacy results that do not contain structured reason metadata can instead contain a producer error type, such as <code>Http Status Code</code> or <code>HttpConnectTimeoutException</code>.</p> <p>For <code>ResponseCodeMatched</code> and <code>ResponseCodeMismatch</code>, the <code>statusCode</code> field contains the returned HTTP status code. The <code>protocol</code> field contains the protocol used for the health check.</p>",
+          "locationName":"code"
+        },
+        "StatusCode":{
+          "shape":"Integer",
+          "documentation":"<p>The HTTP status code returned by the health check.</p>",
+          "locationName":"statusCode"
+        },
+        "Protocol":{
+          "shape":"String",
+          "documentation":"<p>The protocol used for the health check. Possible values: <code>HTTP</code> and <code>HTTPS</code>.</p>",
+          "locationName":"protocol"
+        }
+      },
+      "documentation":"<p>Describes the reason for an application status check result.</p>"
+    },
+    "ApplicationStatusSummary":{
+      "type":"structure",
+      "members":{
+        "Status":{
+          "shape":"SummaryStatus",
+          "documentation":"<p>The current status.</p>",
+          "locationName":"status"
+        },
+        "ImpairedSince":{
+          "shape":"MillisecondDateTime",
+          "documentation":"<p>The date and time when the application status became impaired.</p>",
+          "locationName":"impairedSince"
+        }
+      },
+      "documentation":"<p>Provides a summary of the application-level health status for an instance.</p>"
+    },
+    "ApplicationStatusesResponseType":{
+      "type":"structure",
+      "members":{
+        "Instances":{
+          "shape":"InstanceApplicationStatusSet",
+          "documentation":"<p>The application status information for the instances.</p>",
+          "locationName":"instanceSet"
+        }
+      },
+      "documentation":"<p>Describes the application statuses for instances.</p>"
+    },
     "ApplyCancellationCharges":{
       "type":"string",
       "enum":["commitment-wind-down"]
@@ -9807,6 +10221,50 @@
           "shape":"String",
           "documentation":"<p>The ID that represents the association of the Elastic IP address with an instance.</p>",
           "locationName":"associationId"
+        }
+      }
+    },
+    "AssociateApplicationStatusCheckRequest":{
+      "type":"structure",
+      "required":["ApplicationStatusCheckId"],
+      "members":{
+        "ApplicationStatusCheckId":{
+          "shape":"ApplicationStatusCheckId",
+          "documentation":"<p>The ID of the application status check to associate.</p>"
+        },
+        "TargetTagAssociations":{
+          "shape":"CustomKeyValuePairRequestSet",
+          "documentation":"<p>The <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Using_Tags.html\">tags</a> to associate the application status check with. Each tag is a key-value pair. When you associate tags, the application status check automatically monitors all instances that have the specified tags.</p>",
+          "locationName":"TargetTagAssociation"
+        },
+        "InstanceIds":{
+          "shape":"InstanceIdList",
+          "documentation":"<p>The IDs of the instances to associate with the application status check.</p>",
+          "locationName":"InstanceId"
+        },
+        "ClientToken":{
+          "shape":"String",
+          "documentation":"<p>Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html\">Ensuring idempotency</a>.</p>",
+          "idempotencyToken":true
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the operation, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "AssociateApplicationStatusCheckResult":{
+      "type":"structure",
+      "members":{
+        "SuccessfulResults":{
+          "shape":"SuccessfulAssociationResponseSet",
+          "documentation":"<p>The associations that were successfully created.</p>",
+          "locationName":"successfulResultSet"
+        },
+        "UnsuccessfulResults":{
+          "shape":"UnsuccessfulAssociationResponseSet",
+          "documentation":"<p>The associations that failed to be created.</p>",
+          "locationName":"unsuccessfulResultSet"
         }
       }
     },
@@ -10588,6 +11046,13 @@
         "association-failed",
         "disassociating",
         "disassociated"
+      ]
+    },
+    "AssociationTypeEnum":{
+      "type":"string",
+      "enum":[
+        "tag",
+        "instance-id"
       ]
     },
     "AthenaIntegration":{
@@ -15604,6 +16069,96 @@
       },
       "documentation":"<p>The CPU performance to consider, using an instance family as the baseline reference.</p>"
     },
+    "CreateApplicationStatusCheckRequest":{
+      "type":"structure",
+      "required":[
+        "Protocol",
+        "Port"
+      ],
+      "members":{
+        "HealthCheckPaths":{
+          "shape":"HealthCheckPathRequestList",
+          "documentation":"<p>The health check paths to use for the application status check. Health check paths define the network path from a source subnet to one or more destination subnets for cross-Availability Zone or Availability Zone to Local Zone health checking. If omitted, health checks are performed in the same subnet as the instance.</p>",
+          "locationName":"HealthCheckPath"
+        },
+        "Aggregation":{
+          "shape":"AggregationStatusEnum",
+          "documentation":"<p>The aggregation setting for the application status check. When set to <code>included</code>, the result of this check contributes to the instance-level application status reported by <code>DescribeApplicationStatus</code>. When set to <code>excluded</code>, the check runs independently and does not affect the instance-level status. Valid values: <code>included</code> | <code>excluded</code>.</p>"
+        },
+        "Protocol":{
+          "shape":"NetworkProtocolEnum",
+          "documentation":"<p>The protocol to use for the health check. Valid values: <code>http</code> | <code>https</code>.</p>"
+        },
+        "Port":{
+          "shape":"PortNumber",
+          "documentation":"<p>The port to use for the health check. Valid values: 1 to 65535.</p>"
+        },
+        "Path":{
+          "shape":"String",
+          "documentation":"<p>The URL path to use for the health check HTTP request (for example, <code>/health</code> or <code>/status</code>).</p>"
+        },
+        "DeviceIndex":{
+          "shape":"Integer",
+          "documentation":"<p>The index of the network device to use for the health check. The value must be greater than or equal to 0.</p>"
+        },
+        "IpVersion":{
+          "shape":"IpVersionEnum",
+          "documentation":"<p>The IP version to use for the health check. Valid values: <code>ipv4</code> and <code>ipv6</code>.</p>"
+        },
+        "IpScope":{
+          "shape":"IpScopeEnum",
+          "documentation":"<p>The IP scope to use for the health check. Valid value: <code>private</code>.</p>"
+        },
+        "Interval":{
+          "shape":"Integer",
+          "documentation":"<p>The interval, in seconds, between health checks. Valid value: 60.</p>"
+        },
+        "Timeout":{
+          "shape":"Integer",
+          "documentation":"<p>The amount of time, in seconds, to wait for a health check response before considering it failed. Valid values: 1 to 30. The value must be less than <code>Interval</code>.</p>"
+        },
+        "FailureThreshold":{
+          "shape":"Integer",
+          "documentation":"<p>The number of consecutive failed health checks before the application status is considered impaired. The value must be greater than 0.</p>"
+        },
+        "SuccessThreshold":{
+          "shape":"Integer",
+          "documentation":"<p>The number of consecutive successful health checks before the application status is considered healthy. The value must be greater than 0.</p>"
+        },
+        "StatusCodeMatcher":{
+          "shape":"String",
+          "documentation":"<p>The HTTP status codes that indicate a successful health check response. Specify a comma-separated list of individual status codes or ranges, for example, <code>200,202,300-399</code>. For a range, the first value must be less than the second value. Maximum length: 64 characters. Default: <code>200</code>.</p>"
+        },
+        "InitializationGracePeriodSeconds":{
+          "shape":"InitializationGracePeriodSeconds",
+          "documentation":"<p>The number of seconds to wait before starting health checks after an instance is launched. Valid values: 1 to 600.</p>"
+        },
+        "TagSpecifications":{
+          "shape":"TagSpecificationList",
+          "documentation":"<p>The tags to apply to the application status check.</p>",
+          "locationName":"TagSpecification"
+        },
+        "ClientToken":{
+          "shape":"String",
+          "documentation":"<p>Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html\">Ensuring idempotency</a>.</p>",
+          "idempotencyToken":true
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the operation, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "CreateApplicationStatusCheckResult":{
+      "type":"structure",
+      "members":{
+        "ApplicationStatusCheck":{
+          "shape":"ApplicationStatusCheckResponseObject",
+          "documentation":"<p>Information about the application status check.</p>",
+          "locationName":"applicationStatusCheck"
+        }
+      }
+    },
     "CreateCapacityManagerDataExportRequest":{
       "type":"structure",
       "required":[
@@ -16626,7 +17181,7 @@
         },
         "ResourceIds":{
           "shape":"FlowLogResourceIds",
-          "documentation":"<p>The IDs of the resources to monitor. For example, if the resource type is <code>VPC</code>, specify the IDs of the VPCs.</p> <p>Constraints: Maximum of 25 for transit gateway resource types. Maximum of 1000 for the other resource types.</p>",
+          "documentation":"<p>The IDs of the resources to monitor. For example, if the resource type is <code>VPC</code>, specify the IDs of the VPCs.</p> <p>Constraints: Maximum of 25 for transit gateway resource types. Maximum of 300 for the other resource types.</p>",
           "locationName":"ResourceId"
         },
         "ResourceType":{
@@ -18861,10 +19416,7 @@
     },
     "CreateSecondaryNetworkRequest":{
       "type":"structure",
-      "required":[
-        "Ipv4CidrBlock",
-        "NetworkType"
-      ],
+      "required":["NetworkType"],
       "members":{
         "ClientToken":{
           "shape":"String",
@@ -21318,6 +21870,50 @@
       "enum":["USD"]
     },
     "CurrentGenerationFlag":{"type":"boolean"},
+    "CustomKeyValuePairRequestSet":{
+      "type":"list",
+      "member":{
+        "shape":"CustomTagKeyValueRequestPair",
+        "locationName":"item"
+      }
+    },
+    "CustomKeyValuePairResponseSet":{
+      "type":"list",
+      "member":{
+        "shape":"CustomTagKeyValueResponsePair",
+        "locationName":"item"
+      }
+    },
+    "CustomTagKeyValueRequestPair":{
+      "type":"structure",
+      "members":{
+        "Key":{
+          "shape":"String",
+          "documentation":"<p>The key of the tag.</p>"
+        },
+        "Value":{
+          "shape":"String",
+          "documentation":"<p>The value of the tag.</p>"
+        }
+      },
+      "documentation":"<p>Describes a tag key-value pair for an application status check association request.</p>"
+    },
+    "CustomTagKeyValueResponsePair":{
+      "type":"structure",
+      "members":{
+        "Key":{
+          "shape":"String",
+          "documentation":"<p>The key of the tag.</p>",
+          "locationName":"key"
+        },
+        "Value":{
+          "shape":"String",
+          "documentation":"<p>The value of the tag.</p>",
+          "locationName":"value"
+        }
+      },
+      "documentation":"<p>Describes a tag key-value pair for an application status check association.</p>"
+    },
     "CustomerGateway":{
       "type":"structure",
       "members":{
@@ -21626,6 +22222,35 @@
     "DefaultUdpStreamTimeout":{"type":"integer"},
     "DefaultUdpTimeout":{"type":"integer"},
     "DefaultingDhcpOptionsId":{"type":"string"},
+    "DeleteApplicationStatusCheckRequest":{
+      "type":"structure",
+      "required":["ApplicationStatusCheckId"],
+      "members":{
+        "ApplicationStatusCheckId":{
+          "shape":"ApplicationStatusCheckId",
+          "documentation":"<p>The ID of the application status check to delete.</p>"
+        },
+        "ClientToken":{
+          "shape":"String",
+          "documentation":"<p>Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html\">Ensuring idempotency</a>.</p>",
+          "idempotencyToken":true
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the operation, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "DeleteApplicationStatusCheckResult":{
+      "type":"structure",
+      "members":{
+        "ApplicationStatusCheck":{
+          "shape":"ApplicationStatusCheckResponseObject",
+          "documentation":"<p>Information about the deleted application status check.</p>",
+          "locationName":"applicationStatusCheck"
+        }
+      }
+    },
     "DeleteCapacityManagerDataExportRequest":{
       "type":"structure",
       "required":["CapacityManagerDataExportId"],
@@ -24601,6 +25226,156 @@
         }
       }
     },
+    "DescribeApplicationStatusCheckAssociationsMaxResults":{
+      "type":"integer",
+      "max":1000,
+      "min":5
+    },
+    "DescribeApplicationStatusCheckAssociationsRequest":{
+      "type":"structure",
+      "members":{
+        "ApplicationStatusCheckIds":{
+          "shape":"ApplicationStatusCheckIdList",
+          "documentation":"<p>The IDs of the application status checks for which to describe associations.</p>",
+          "locationName":"ApplicationStatusCheckId"
+        },
+        "Filters":{
+          "shape":"FilterList",
+          "documentation":"<p>The filters to use to limit the results.</p> <ul> <li> <p> <code>association-type</code> – The type of association. Valid values: <code>tag</code> and <code>instance-id</code>.</p> </li> </ul>",
+          "locationName":"Filter"
+        },
+        "MaxResults":{
+          "shape":"DescribeApplicationStatusCheckAssociationsMaxResults",
+          "documentation":"<p>The maximum number of items to return for this request. To get the next page of items, make another request with the token returned in the output. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Query-Requests.html#api-pagination\">Pagination</a>.</p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token returned from a previous paginated request. Pagination continues from the end of the items returned by the previous request.</p>"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the operation, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "DescribeApplicationStatusCheckAssociationsResult":{
+      "type":"structure",
+      "members":{
+        "Associations":{
+          "shape":"ApplicationStatusCheckAssociationSet",
+          "documentation":"<p>The associations for the specified application status checks.</p>",
+          "locationName":"associationSet"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token to include in another request to get the next page of items. This value is &lt;code&gt;null&lt;/code&gt; when there are no more items to return.</p>",
+          "locationName":"nextToken"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>The tags associated with the application status checks.</p>",
+          "locationName":"tagSet"
+        }
+      }
+    },
+    "DescribeApplicationStatusChecksMaxResults":{
+      "type":"integer",
+      "max":100,
+      "min":5
+    },
+    "DescribeApplicationStatusChecksRequest":{
+      "type":"structure",
+      "members":{
+        "ApplicationStatusCheckIds":{
+          "shape":"ApplicationStatusCheckIdList",
+          "documentation":"<p>The IDs of the application status checks to describe.</p>",
+          "locationName":"ApplicationStatusCheckId"
+        },
+        "Filters":{
+          "shape":"FilterList",
+          "documentation":"<p>The filters.</p> <ul> <li> <p> <code>aggregation</code> – The aggregation setting. Valid values: <code>included</code> and <code>excluded</code>.</p> </li> </ul>",
+          "locationName":"Filter"
+        },
+        "MaxResults":{
+          "shape":"DescribeApplicationStatusChecksMaxResults",
+          "documentation":"<p>The maximum number of items to return for this request. To get the next page of items, make another request with the token returned in the output. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Query-Requests.html#api-pagination\">Pagination</a>.</p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token returned from a previous paginated request. Pagination continues from the end of the items returned by the previous request.</p>"
+        },
+        "IncludeAll":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether to include recently deleted application status checks that remain available during the deletion grace period. If you omit this parameter or set it to <code>false</code>, the response includes only active checks.</p>"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the operation, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "DescribeApplicationStatusChecksResult":{
+      "type":"structure",
+      "members":{
+        "ApplicationStatusChecks":{
+          "shape":"ApplicationStatusCheckResponseSet",
+          "documentation":"<p>Information about the application status checks.</p>",
+          "locationName":"applicationStatusCheckSet"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token to include in another request to get the next page of items. This value is &lt;code&gt;null&lt;/code&gt; when there are no more items to return.</p>",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "DescribeApplicationStatusMaxResults":{
+      "type":"integer",
+      "max":100,
+      "min":1
+    },
+    "DescribeApplicationStatusRequest":{
+      "type":"structure",
+      "members":{
+        "InstanceIds":{
+          "shape":"InstanceIdList",
+          "documentation":"<p>The IDs of the instances for which to describe application status.</p>",
+          "locationName":"InstanceId"
+        },
+        "Filters":{
+          "shape":"FilterList",
+          "documentation":"<p>The filters.</p> <ul> <li> <p> <code>availability-zone-id</code> – The ID of the Availability Zone.</p> </li> <li> <p> <code>status</code> – The instance-level application status. For valid values and their meanings, see <code>ApplicationStatus</code>.</p> </li> </ul>",
+          "locationName":"Filter"
+        },
+        "MaxResults":{
+          "shape":"DescribeApplicationStatusMaxResults",
+          "documentation":"<p>The maximum number of items to return for this request. To get the next page of items, make another request with the token returned in the output. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Query-Requests.html#api-pagination\">Pagination</a>.</p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token returned from a previous paginated request. Pagination continues from the end of the items returned by the previous request.</p>"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the operation, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "DescribeApplicationStatusResult":{
+      "type":"structure",
+      "members":{
+        "ApplicationStatuses":{
+          "shape":"ApplicationStatusesResponseType",
+          "documentation":"<p>The application statuses for the specified instances.</p>",
+          "locationName":"applicationStatusesResponseType"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token to include in another request to get the next page of items. This value is &lt;code&gt;null&lt;/code&gt; when there are no more items to return.</p>",
+          "locationName":"nextToken"
+        }
+      }
+    },
     "DescribeAvailabilityZonesRequest":{
       "type":"structure",
       "members":{
@@ -25215,7 +25990,7 @@
         },
         "CapacityReservationIds":{
           "shape":"CapacityReservationIdSet",
-          "documentation":"<p>The Capacity Reservation IDs.</p> <p>Default: Describes all your Capacity Reservations.</p> <p>Constraints: Maximum 100 explicitly specified Capacity Reservation IDs.</p>",
+          "documentation":"<p>The Capacity Reservation IDs.</p> <p>Default: Describes all your Capacity Reservations.</p> <p>Constraints: Maximum 10 explicitly specified Capacity Reservation IDs.</p>",
           "locationName":"CapacityReservationId"
         },
         "Filters":{
@@ -27442,7 +28217,7 @@
         },
         "Filters":{
           "shape":"FilterList",
-          "documentation":"<p>The filters.</p> <ul> <li> <p> <code>availability-zone</code> - The Availability Zone of the instance.</p> </li> <li> <p> <code>availability-zone-id</code> - The ID of the Availability Zone of the instance.</p> </li> <li> <p> <code>event.code</code> - The code for the scheduled event (<code>instance-reboot</code> | <code>system-reboot</code> | <code>system-maintenance</code> | <code>instance-retirement</code> | <code>instance-stop</code>).</p> </li> <li> <p> <code>event.description</code> - A description of the event.</p> </li> <li> <p> <code>event.instance-event-id</code> - The ID of the event whose date and time you are modifying.</p> </li> <li> <p> <code>event.not-after</code> - The latest end time for the scheduled event (for example, <code>2014-09-15T17:15:20.000Z</code>).</p> </li> <li> <p> <code>event.not-before</code> - The earliest start time for the scheduled event (for example, <code>2014-09-15T17:15:20.000Z</code>).</p> </li> <li> <p> <code>event.not-before-deadline</code> - The deadline for starting the event (for example, <code>2014-09-15T17:15:20.000Z</code>).</p> </li> <li> <p> <code>instance-state-code</code> - The code for the instance state, as a 16-bit unsigned integer. The high byte is used for internal purposes and should be ignored. The low byte is set based on the state represented. The valid values are 0 (pending), 16 (running), 32 (shutting-down), 48 (terminated), 64 (stopping), and 80 (stopped).</p> </li> <li> <p> <code>instance-state-name</code> - The state of the instance (<code>pending</code> | <code>running</code> | <code>shutting-down</code> | <code>terminated</code> | <code>stopping</code> | <code>stopped</code>).</p> </li> <li> <p> <code>instance-status.reachability</code> - Filters on instance status where the name is <code>reachability</code> (<code>passed</code> | <code>failed</code> | <code>initializing</code> | <code>insufficient-data</code>).</p> </li> <li> <p> <code>instance-status.status</code> - The status of the instance (<code>ok</code> | <code>impaired</code> | <code>initializing</code> | <code>insufficient-data</code> | <code>not-applicable</code>).</p> </li> <li> <p> <code>operator.managed</code> - A Boolean that indicates whether this is a managed instance.</p> </li> <li> <p> <code>operator.principal</code> - The principal that manages the instance. Only valid for managed instances, where <code>managed</code> is <code>true</code>.</p> </li> <li> <p> <code>system-status.reachability</code> - Filters on system status where the name is <code>reachability</code> (<code>passed</code> | <code>failed</code> | <code>initializing</code> | <code>insufficient-data</code>).</p> </li> <li> <p> <code>system-status.status</code> - The system status of the instance (<code>ok</code> | <code>impaired</code> | <code>initializing</code> | <code>insufficient-data</code> | <code>not-applicable</code>).</p> </li> <li> <p> <code>attached-ebs-status.status</code> - The status of the attached EBS volume for the instance (<code>ok</code> | <code>impaired</code> | <code>initializing</code> | <code>insufficient-data</code> | <code>not-applicable</code>).</p> </li> </ul>",
+          "documentation":"<p>The filters.</p> <ul> <li> <p> <code>availability-zone</code> - The Availability Zone of the instance.</p> </li> <li> <p> <code>availability-zone-id</code> - The ID of the Availability Zone of the instance.</p> </li> <li> <p> <code>event.code</code> - The code for the scheduled event (<code>instance-reboot</code> | <code>system-reboot</code> | <code>system-maintenance</code> | <code>instance-retirement</code> | <code>instance-stop</code>).</p> </li> <li> <p> <code>event.description</code> - A description of the event.</p> </li> <li> <p> <code>event.instance-event-id</code> - The ID of the event whose date and time you are modifying.</p> </li> <li> <p> <code>event.not-after</code> - The latest end time for the scheduled event (for example, <code>2014-09-15T17:15:20.000Z</code>).</p> </li> <li> <p> <code>event.not-before</code> - The earliest start time for the scheduled event (for example, <code>2014-09-15T17:15:20.000Z</code>).</p> </li> <li> <p> <code>event.not-before-deadline</code> - The deadline for starting the event (for example, <code>2014-09-15T17:15:20.000Z</code>).</p> </li> <li> <p> <code>instance-state-code</code> - The code for the instance state, as a 16-bit unsigned integer. The high byte is used for internal purposes and should be ignored. The low byte is set based on the state represented. The valid values are 0 (pending), 16 (running), 32 (shutting-down), 48 (terminated), 64 (stopping), and 80 (stopped).</p> </li> <li> <p> <code>instance-state-name</code> - The state of the instance (<code>pending</code> | <code>running</code> | <code>shutting-down</code> | <code>terminated</code> | <code>stopping</code> | <code>stopped</code>).</p> </li> <li> <p> <code>instance-status.reachability</code> - Filters on instance status where the name is <code>reachability</code> (<code>passed</code> | <code>failed</code> | <code>initializing</code> | <code>insufficient-data</code>).</p> </li> <li> <p> <code>instance-status.status</code> - The status of the instance (<code>ok</code> | <code>impaired</code> | <code>initializing</code> | <code>insufficient-data</code> | <code>not-applicable</code>).</p> </li> <li> <p> <code>operator.managed</code> - A Boolean that indicates whether this is a managed instance.</p> </li> <li> <p> <code>operator.principal</code> - The principal that manages the instance. Only valid for managed instances, where <code>managed</code> is <code>true</code>.</p> </li> <li> <p> <code>system-status.reachability</code> - Filters on system status where the name is <code>reachability</code> (<code>passed</code> | <code>failed</code> | <code>initializing</code> | <code>insufficient-data</code>).</p> </li> <li> <p> <code>system-status.status</code> - The system status of the instance (<code>ok</code> | <code>impaired</code> | <code>initializing</code> | <code>insufficient-data</code> | <code>not-applicable</code>).</p> </li> <li> <p> <code>attached-ebs-status.status</code> - The status of the attached EBS volume for the instance (<code>ok</code> | <code>impaired</code> | <code>initializing</code> | <code>insufficient-data</code> | <code>not-applicable</code>).</p> </li> <li> <p> <code>application-status.status</code> - The application status of the instance (<code>ok</code> | <code>impaired</code> | <code>initializing</code> | <code>insufficient-data</code> | <code>not-applicable</code>).</p> </li> </ul>",
           "locationName":"Filter"
         },
         "IncludeAllInstances":{
@@ -33326,6 +34101,40 @@
         }
       }
     },
+    "DisableApplicationStatusCheckSuppressionRequest":{
+      "type":"structure",
+      "members":{
+        "InstanceIds":{
+          "shape":"InstanceIdList",
+          "documentation":"<p>The IDs of the instances for which to disable application status check suppression.</p>",
+          "locationName":"InstanceId"
+        },
+        "ClientToken":{
+          "shape":"String",
+          "documentation":"<p>Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html\">Ensuring idempotency</a>.</p>",
+          "idempotencyToken":true
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the operation, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "DisableApplicationStatusCheckSuppressionResult":{
+      "type":"structure",
+      "members":{
+        "SuccessfulResults":{
+          "shape":"SuccessfulSuppressionResponseSet",
+          "documentation":"<p>The instances for which suppression was successfully disabled.</p>",
+          "locationName":"successfulResultSet"
+        },
+        "UnsuccessfulResults":{
+          "shape":"UnsuccessfulSuppressionResponseSet",
+          "documentation":"<p>The instances for which suppression failed to be disabled.</p>",
+          "locationName":"unsuccessfulResultSet"
+        }
+      }
+    },
     "DisableAwsNetworkPerformanceMetricSubscriptionRequest":{
       "type":"structure",
       "members":{
@@ -34008,6 +34817,50 @@
           "shape":"Boolean",
           "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>",
           "locationName":"dryRun"
+        }
+      }
+    },
+    "DisassociateApplicationStatusCheckRequest":{
+      "type":"structure",
+      "required":["ApplicationStatusCheckId"],
+      "members":{
+        "ApplicationStatusCheckId":{
+          "shape":"ApplicationStatusCheckId",
+          "documentation":"<p>The ID of the application status check to disassociate.</p>"
+        },
+        "TargetTagAssociations":{
+          "shape":"CustomKeyValuePairRequestSet",
+          "documentation":"<p>The <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Using_Tags.html\">tags</a> to disassociate from the application status check. Specify the same key-value pairs that were used during association.</p>",
+          "locationName":"TargetTagAssociation"
+        },
+        "InstanceIds":{
+          "shape":"InstanceIdList",
+          "documentation":"<p>The IDs of the instances to disassociate from the application status check.</p>",
+          "locationName":"InstanceId"
+        },
+        "ClientToken":{
+          "shape":"String",
+          "documentation":"<p>Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html\">Ensuring idempotency</a>.</p>",
+          "idempotencyToken":true
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the operation, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "DisassociateApplicationStatusCheckResult":{
+      "type":"structure",
+      "members":{
+        "SuccessfulResults":{
+          "shape":"SuccessfulAssociationResponseSet",
+          "documentation":"<p>The associations that were successfully removed.</p>",
+          "locationName":"successfulResultSet"
+        },
+        "UnsuccessfulResults":{
+          "shape":"UnsuccessfulAssociationResponseSet",
+          "documentation":"<p>The associations that failed to be removed.</p>",
+          "locationName":"unsuccessfulResultSet"
         }
       }
     },
@@ -35675,6 +36528,44 @@
           "shape":"AllowedImagesSettingsEnabledState",
           "documentation":"<p>Returns <code>enabled</code> or <code>audit-mode</code> if the request succeeds; otherwise, it returns an error.</p>",
           "locationName":"allowedImagesSettingsState"
+        }
+      }
+    },
+    "EnableApplicationStatusCheckSuppressionRequest":{
+      "type":"structure",
+      "members":{
+        "InstanceIds":{
+          "shape":"InstanceIdList",
+          "documentation":"<p>The IDs of the instances for which to suppress application status checks.</p>",
+          "locationName":"InstanceId"
+        },
+        "DurationSeconds":{
+          "shape":"BoxedInteger",
+          "documentation":"<p>The duration, in seconds, for which to suppress application status checks. If omitted, the application status check is suppressed indefinitely until you call <code>DisableApplicationStatusCheckSuppression</code>.</p>"
+        },
+        "ClientToken":{
+          "shape":"String",
+          "documentation":"<p>Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html\">Ensuring idempotency</a>.</p>",
+          "idempotencyToken":true
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the operation, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "EnableApplicationStatusCheckSuppressionResult":{
+      "type":"structure",
+      "members":{
+        "SuccessfulResults":{
+          "shape":"SuccessfulSuppressionResponseSet",
+          "documentation":"<p>The instances for which suppression was successfully enabled.</p>",
+          "locationName":"successfulResultSet"
+        },
+        "UnsuccessfulResults":{
+          "shape":"UnsuccessfulSuppressionResponseSet",
+          "documentation":"<p>The instances for which suppression failed to be enabled.</p>",
+          "locationName":"unsuccessfulResultSet"
         }
       }
     },
@@ -39764,7 +40655,7 @@
           "locationName":"instanceId"
         },
         "UefiData":{
-          "shape":"String",
+          "shape":"SensitiveString",
           "documentation":"<p>Base64 representation of the non-volatile UEFI variable store.</p>",
           "locationName":"uefiData"
         }
@@ -41750,6 +42641,125 @@
         "standby",
         "invalid"
       ]
+    },
+    "HealthCheckPathDestinationRequestObject":{
+      "type":"structure",
+      "members":{
+        "SubnetId":{
+          "shape":"SubnetId",
+          "documentation":"<p>The ID of the subnet for the destination.</p>"
+        },
+        "SecurityGroupId":{
+          "shape":"SecurityGroupId",
+          "documentation":"<p>The ID of the security group for the destination.</p>"
+        }
+      },
+      "documentation":"<p>Describes a destination for a health check path in a request. Destinations can be in a different Availability Zone than the source (cross-AZ) or in a Local Zone (AZ to Local Zone), enabling remote health validation of your application.</p>"
+    },
+    "HealthCheckPathDestinationRequestSet":{
+      "type":"list",
+      "member":{
+        "shape":"HealthCheckPathDestinationRequestObject",
+        "locationName":"item"
+      }
+    },
+    "HealthCheckPathDestinationResponseList":{
+      "type":"list",
+      "member":{
+        "shape":"HealthCheckPathDestinationResponseObject",
+        "locationName":"item"
+      }
+    },
+    "HealthCheckPathDestinationResponseObject":{
+      "type":"structure",
+      "members":{
+        "SubnetId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the subnet for the destination.</p>",
+          "locationName":"subnetId"
+        },
+        "SecurityGroupId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the security group for the destination.</p>",
+          "locationName":"securityGroupId"
+        }
+      },
+      "documentation":"<p>Describes a destination for a health check path.</p>"
+    },
+    "HealthCheckPathRequestList":{
+      "type":"list",
+      "member":{
+        "shape":"HealthCheckPathRequestObject",
+        "locationName":"item"
+      }
+    },
+    "HealthCheckPathRequestObject":{
+      "type":"structure",
+      "members":{
+        "Source":{
+          "shape":"HealthCheckPathSourceRequestObject",
+          "documentation":"<p>The source for the health check path.</p>"
+        },
+        "Destinations":{
+          "shape":"HealthCheckPathDestinationRequestSet",
+          "documentation":"<p>The destinations for the health check path.</p>",
+          "locationName":"Destination"
+        }
+      },
+      "documentation":"<p>Describes a health check path for an application status check request.</p>"
+    },
+    "HealthCheckPathResponseList":{
+      "type":"list",
+      "member":{
+        "shape":"HealthCheckPathResponseObject",
+        "locationName":"item"
+      }
+    },
+    "HealthCheckPathResponseObject":{
+      "type":"structure",
+      "members":{
+        "Source":{
+          "shape":"HealthCheckPathSourceResponseObject",
+          "documentation":"<p>The source for the health check path.</p>",
+          "locationName":"source"
+        },
+        "Destinations":{
+          "shape":"HealthCheckPathDestinationResponseList",
+          "documentation":"<p>The destinations for the health check path.</p>",
+          "locationName":"destinationSet"
+        }
+      },
+      "documentation":"<p>Describes a health check path for an application status check.</p>"
+    },
+    "HealthCheckPathSourceRequestObject":{
+      "type":"structure",
+      "members":{
+        "SubnetId":{
+          "shape":"SubnetId",
+          "documentation":"<p>The ID of the subnet for the source.</p>"
+        },
+        "SecurityGroupId":{
+          "shape":"SecurityGroupId",
+          "documentation":"<p>The ID of the security group for the source.</p>"
+        }
+      },
+      "documentation":"<p>Describes the source for a health check path in a request. The source defines the subnet and security group where a health check elastic network interface (ENI) is created to originate health check traffic.</p>"
+    },
+    "HealthCheckPathSourceResponseObject":{
+      "type":"structure",
+      "members":{
+        "SubnetId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the subnet for the source.</p>",
+          "locationName":"subnetId"
+        },
+        "SecurityGroupId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the security group for the source.</p>",
+          "locationName":"securityGroupId"
+        }
+      },
+      "documentation":"<p>Describes the source for a health check path.</p>"
     },
     "HibernationFlag":{"type":"boolean"},
     "HibernationOptions":{
@@ -44234,6 +45244,11 @@
         "ingestion-failed"
       ]
     },
+    "InitializationGracePeriodSeconds":{
+      "type":"integer",
+      "max":600,
+      "min":-1
+    },
     "InitializationStatusDetails":{
       "type":"structure",
       "members":{
@@ -44580,6 +45595,44 @@
         }
       },
       "documentation":"<p>Describes an instance.</p>"
+    },
+    "InstanceApplicationStatus":{
+      "type":"structure",
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The ID of the instance.</p>",
+          "locationName":"instanceId"
+        },
+        "AvailabilityZone":{
+          "shape":"String",
+          "documentation":"<p>The Availability Zone of the instance.</p>",
+          "locationName":"availabilityZone"
+        },
+        "AvailabilityZoneId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the Availability Zone of the instance.</p>",
+          "locationName":"availabilityZoneId"
+        },
+        "ApplicationStatus":{
+          "shape":"ApplicationStatus",
+          "documentation":"<p>The application status for the instance.</p>",
+          "locationName":"applicationStatus"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>The tags assigned to the instance.</p>",
+          "locationName":"tagSet"
+        }
+      },
+      "documentation":"<p>Describes the application status for an instance.</p>"
+    },
+    "InstanceApplicationStatusSet":{
+      "type":"list",
+      "member":{
+        "shape":"InstanceApplicationStatus",
+        "locationName":"item"
+      }
     },
     "InstanceAttachmentEnaSrdSpecification":{
       "type":"structure",
@@ -46563,9 +47616,14 @@
           "shape":"EbsStatusSummary",
           "documentation":"<p>Reports impaired functionality that stems from an attached Amazon EBS volume that is unreachable and unable to complete I/O operations.</p>",
           "locationName":"attachedEbsStatus"
+        },
+        "ApplicationStatus":{
+          "shape":"ApplicationStatusSummary",
+          "documentation":"<p>Reports impaired functionality that stems from issues with applications running on the instance.</p>",
+          "locationName":"applicationStatus"
         }
       },
-      "documentation":"<p>Describes the status of an instance.</p>"
+      "documentation":"<p>Describes the status of an instance, including system status, instance status, attached EBS status, and application status.</p>"
     },
     "InstanceStatusDetails":{
       "type":"structure",
@@ -48719,12 +49777,23 @@
         "locationName":"item"
       }
     },
+    "IpScopeEnum":{
+      "type":"string",
+      "enum":["private"]
+    },
     "IpSource":{
       "type":"string",
       "enum":[
         "amazon",
         "byoip",
         "none"
+      ]
+    },
+    "IpVersionEnum":{
+      "type":"string",
+      "enum":[
+        "ipv4",
+        "ipv6"
       ]
     },
     "Ipam":{
@@ -54499,6 +55568,92 @@
         }
       }
     },
+    "ModifyApplicationStatusCheckRequest":{
+      "type":"structure",
+      "required":["ApplicationStatusCheckId"],
+      "members":{
+        "ApplicationStatusCheckId":{
+          "shape":"ApplicationStatusCheckId",
+          "documentation":"<p>The ID of the application status check to modify.</p>"
+        },
+        "Aggregation":{
+          "shape":"AggregationStatusEnum",
+          "documentation":"<p>The aggregation setting for the application status check. When set to <code>included</code>, the result of this check contributes to the instance-level application status reported by <code>DescribeApplicationStatus</code>. When set to <code>excluded</code>, the check runs independently and does not affect the instance-level status. Valid values: <code>included</code> | <code>excluded</code>.</p>"
+        },
+        "HealthCheckPaths":{
+          "shape":"HealthCheckPathRequestList",
+          "documentation":"<p>The health check paths to use for the application status check.</p>",
+          "locationName":"HealthCheckPath"
+        },
+        "Protocol":{
+          "shape":"NetworkProtocolEnum",
+          "documentation":"<p>The protocol to use for the health check. Valid values: <code>http</code> | <code>https</code>.</p>"
+        },
+        "Port":{
+          "shape":"PortNumber",
+          "documentation":"<p>The port to use for the health check. Valid values: 1 to 65535.</p>"
+        },
+        "Path":{
+          "shape":"String",
+          "documentation":"<p>The URL path to use for the health check HTTP request (for example, <code>/health</code> or <code>/status</code>).</p>"
+        },
+        "DeviceIndex":{
+          "shape":"Integer",
+          "documentation":"<p>The index of the network device to use for the health check. The value must be greater than or equal to 0.</p>"
+        },
+        "IpVersion":{
+          "shape":"IpVersionEnum",
+          "documentation":"<p>The IP version to use for the health check. Valid values: <code>ipv4</code> and <code>ipv6</code>.</p>"
+        },
+        "IpScope":{
+          "shape":"IpScopeEnum",
+          "documentation":"<p>The IP scope to use for the health check. Valid value: <code>private</code>.</p>"
+        },
+        "Interval":{
+          "shape":"Integer",
+          "documentation":"<p>The interval, in seconds, between health checks. Valid value: 60.</p>"
+        },
+        "Timeout":{
+          "shape":"Integer",
+          "documentation":"<p>The amount of time, in seconds, to wait for a health check response before considering it failed. Valid values: 1 to 30. The value must be less than <code>Interval</code>.</p>"
+        },
+        "FailureThreshold":{
+          "shape":"Integer",
+          "documentation":"<p>The number of consecutive failed health checks before the application status is considered impaired. The value must be greater than 0.</p>"
+        },
+        "SuccessThreshold":{
+          "shape":"Integer",
+          "documentation":"<p>The number of consecutive successful health checks before the application status is considered healthy. The value must be greater than 0.</p>"
+        },
+        "StatusCodeMatcher":{
+          "shape":"String",
+          "documentation":"<p>The HTTP status codes that indicate a successful health check response. Specify a comma-separated list of individual status codes or ranges, for example, <code>200,202,300-399</code>. For a range, the first value must be less than the second value. Maximum length: 64 characters.</p>"
+        },
+        "InitializationGracePeriodSeconds":{
+          "shape":"InitializationGracePeriodSeconds",
+          "documentation":"<p>The number of seconds to wait before starting health checks after an instance is launched. Valid values: 1 to 600.</p>"
+        },
+        "ClientToken":{
+          "shape":"String",
+          "documentation":"<p>Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html\">Ensuring idempotency</a>.</p>",
+          "idempotencyToken":true
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the operation, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "ModifyApplicationStatusCheckResult":{
+      "type":"structure",
+      "members":{
+        "ApplicationStatusCheck":{
+          "shape":"ApplicationStatusCheckResponseObject",
+          "documentation":"<p>Information about the modified application status check.</p>",
+          "locationName":"applicationStatusCheck"
+        }
+      }
+    },
     "ModifyAvailabilityZoneGroupRequest":{
       "type":"structure",
       "required":[
@@ -59942,6 +61097,13 @@
       }
     },
     "NetworkPerformance":{"type":"string"},
+    "NetworkProtocolEnum":{
+      "type":"string",
+      "enum":[
+        "http",
+        "https"
+      ]
+    },
     "NeuronDeviceCoreCount":{"type":"integer"},
     "NeuronDeviceCoreInfo":{
       "type":"structure",
@@ -61293,6 +62455,11 @@
       "type":"integer",
       "max":65535,
       "min":0
+    },
+    "PortNumber":{
+      "type":"integer",
+      "max":65535,
+      "min":1
     },
     "PortRange":{
       "type":"structure",
@@ -65193,7 +66360,8 @@
         "capacity-manager-data-export",
         "vpn-concentrator",
         "ipam-pool-allocation",
-        "capacity-reservation-cancellation-quote"
+        "capacity-reservation-cancellation-quote",
+        "application-status-check"
       ]
     },
     "ResourceTypeOption":{
@@ -68695,6 +69863,7 @@
       "type":"string",
       "sensitive":true
     },
+    "SensitiveString":{"type":"string"},
     "SensitiveUrl":{
       "type":"string",
       "sensitive":true
@@ -71254,6 +72423,34 @@
         "locationName":"item"
       }
     },
+    "SuccessfulAssociationResponseObject":{
+      "type":"structure",
+      "members":{
+        "ApplicationStatusCheckId":{
+          "shape":"ApplicationStatusCheckId",
+          "documentation":"<p>The ID of the application status check.</p>",
+          "locationName":"applicationStatusCheckId"
+        },
+        "AssociationType":{
+          "shape":"String",
+          "documentation":"<p>The type of association. Valid values: <code>EC2TAG</code> and <code>INSTANCE_ID</code>.</p>",
+          "locationName":"associationType"
+        },
+        "AssociationValue":{
+          "shape":"String",
+          "documentation":"<p>The association value. For <code>EC2TAG</code>, the value is formatted as <code>key=value</code>. For <code>INSTANCE_ID</code>, the value is the instance ID.</p>",
+          "locationName":"associationValue"
+        }
+      },
+      "documentation":"<p>Describes a successful application status check association.</p>"
+    },
+    "SuccessfulAssociationResponseSet":{
+      "type":"list",
+      "member":{
+        "shape":"SuccessfulAssociationResponseObject",
+        "locationName":"item"
+      }
+    },
     "SuccessfulInstanceCreditSpecificationItem":{
       "type":"structure",
       "members":{
@@ -71287,6 +72484,34 @@
       "type":"list",
       "member":{
         "shape":"SuccessfulQueuedPurchaseDeletion",
+        "locationName":"item"
+      }
+    },
+    "SuccessfulSuppressionResponseObject":{
+      "type":"structure",
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The ID of the instance.</p>",
+          "locationName":"instanceId"
+        },
+        "SuppressAt":{
+          "shape":"MillisecondDateTime",
+          "documentation":"<p>The date and time when suppression started.</p>",
+          "locationName":"suppressAt"
+        },
+        "ResumeAt":{
+          "shape":"MillisecondDateTime",
+          "documentation":"<p>The date and time when suppression ends and health checks resume.</p>",
+          "locationName":"resumeAt"
+        }
+      },
+      "documentation":"<p>Describes a successful application status check suppression.</p>"
+    },
+    "SuccessfulSuppressionResponseSet":{
+      "type":"list",
+      "member":{
+        "shape":"SuccessfulSuppressionResponseObject",
         "locationName":"item"
       }
     },
@@ -74716,6 +75941,39 @@
         }
       }
     },
+    "UnsuccessfulAssociationResponseObject":{
+      "type":"structure",
+      "members":{
+        "ApplicationStatusCheckId":{
+          "shape":"ApplicationStatusCheckId",
+          "documentation":"<p>The ID of the application status check.</p>",
+          "locationName":"applicationStatusCheckId"
+        },
+        "AssociationType":{
+          "shape":"String",
+          "documentation":"<p>The type of association. Valid values: <code>EC2TAG</code> and <code>INSTANCE_ID</code>.</p>",
+          "locationName":"associationType"
+        },
+        "AssociationValue":{
+          "shape":"String",
+          "documentation":"<p>The association value. For <code>EC2TAG</code>, the value is formatted as <code>key=value</code>. For <code>INSTANCE_ID</code>, the value is the instance ID.</p>",
+          "locationName":"associationValue"
+        },
+        "Reason":{
+          "shape":"String",
+          "documentation":"<p>The reason the association failed.</p>",
+          "locationName":"reason"
+        }
+      },
+      "documentation":"<p>Describes an unsuccessful application status check association.</p>"
+    },
+    "UnsuccessfulAssociationResponseSet":{
+      "type":"list",
+      "member":{
+        "shape":"UnsuccessfulAssociationResponseObject",
+        "locationName":"item"
+      }
+    },
     "UnsuccessfulInstanceCreditSpecificationErrorCode":{
       "type":"string",
       "enum":[
@@ -74807,6 +76065,39 @@
       "type":"list",
       "member":{
         "shape":"UnsuccessfulItem",
+        "locationName":"item"
+      }
+    },
+    "UnsuccessfulSuppressionResponseObject":{
+      "type":"structure",
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The ID of the instance.</p>",
+          "locationName":"instanceId"
+        },
+        "SuppressAt":{
+          "shape":"MillisecondDateTime",
+          "documentation":"<p>The date and time when suppression was attempted.</p>",
+          "locationName":"suppressAt"
+        },
+        "ResumeAt":{
+          "shape":"MillisecondDateTime",
+          "documentation":"<p>The date and time when health checks would have resumed.</p>",
+          "locationName":"resumeAt"
+        },
+        "Reason":{
+          "shape":"String",
+          "documentation":"<p>The reason the suppression failed.</p>",
+          "locationName":"reason"
+        }
+      },
+      "documentation":"<p>Describes an unsuccessful application status check suppression.</p>"
+    },
+    "UnsuccessfulSuppressionResponseSet":{
+      "type":"list",
+      "member":{
+        "shape":"UnsuccessfulSuppressionResponseObject",
         "locationName":"item"
       }
     },

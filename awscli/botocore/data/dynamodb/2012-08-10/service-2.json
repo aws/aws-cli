@@ -68,7 +68,7 @@
         {"shape":"ReplicatedWriteConflictException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>The <code>BatchWriteItem</code> operation puts or deletes multiple items in one or more tables. A single call to <code>BatchWriteItem</code> can transmit up to 16MB of data over the network, consisting of up to 25 item put or delete operations. While individual items can be up to 400 KB once stored, it's important to note that an item's representation might be greater than 400KB while being sent in DynamoDB's JSON format for the API call. For more details on this distinction, see <a href=\"https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/HowItWorks.NamingRulesDataTypes.html\">Naming Rules and Data Types</a>.</p> <note> <p> <code>BatchWriteItem</code> cannot update items. If you perform a <code>BatchWriteItem</code> operation on an existing item, that item's values will be overwritten by the operation and it will appear like it was updated. To update items, we recommend you use the <code>UpdateItem</code> action.</p> </note> <p>The individual <code>PutItem</code> and <code>DeleteItem</code> operations specified in <code>BatchWriteItem</code> are atomic; however <code>BatchWriteItem</code> as a whole is not. If any requested operations fail because the table's provisioned throughput is exceeded or an internal processing failure occurs, the failed operations are returned in the <code>UnprocessedItems</code> response parameter. You can investigate and optionally resend the requests. Typically, you would call <code>BatchWriteItem</code> in a loop. Each iteration would check for unprocessed items and submit a new <code>BatchWriteItem</code> request with those unprocessed items until all items have been processed.</p> <p>For tables and indexes with provisioned capacity, if none of the items can be processed due to insufficient provisioned throughput on all of the tables in the request, then <code>BatchWriteItem</code> returns a <code>ProvisionedThroughputExceededException</code>. For all tables and indexes, if none of the items can be processed due to other throttling scenarios (such as exceeding partition level limits), then <code>BatchWriteItem</code> returns a <code>ThrottlingException</code>.</p> <important> <p>If DynamoDB returns any unprocessed items, you should retry the batch operation on those items. However, <i>we strongly recommend that you use an exponential backoff algorithm</i>. If you retry the batch operation immediately, the underlying read or write requests can still fail due to throttling on the individual tables. If you delay the batch operation using exponential backoff, the individual requests in the batch are much more likely to succeed.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/ErrorHandling.html#Programming.Errors.BatchOperations\">Batch Operations and Error Handling</a> in the <i>Amazon DynamoDB Developer Guide</i>.</p> </important> <p>With <code>BatchWriteItem</code>, you can efficiently write or delete large amounts of data, such as from Amazon EMR, or copy data from another database into DynamoDB. In order to improve performance with these large-scale operations, <code>BatchWriteItem</code> does not behave in the same way as individual <code>PutItem</code> and <code>DeleteItem</code> calls would. For example, you cannot specify conditions on individual put and delete requests, and <code>BatchWriteItem</code> does not return deleted items in the response.</p> <p>If you use a programming language that supports concurrency, you can use threads to write items in parallel. Your application must include the necessary logic to manage the threads. With languages that don't support threading, you must update or delete the specified items one at a time. In both situations, <code>BatchWriteItem</code> performs the specified put and delete operations in parallel, giving you the power of the thread pool approach without having to introduce complexity into your application.</p> <p>Parallel processing reduces latency, but each specified put and delete request consumes the same number of write capacity units whether it is processed in parallel or not. Delete operations on nonexistent items consume one write capacity unit.</p> <p>If one or more of the following is true, DynamoDB rejects the entire batch write operation:</p> <ul> <li> <p>One or more tables specified in the <code>BatchWriteItem</code> request does not exist.</p> </li> <li> <p>Primary key attributes specified on an item in the request do not match those in the corresponding table's primary key schema.</p> </li> <li> <p>You try to perform multiple operations on the same item in the same <code>BatchWriteItem</code> request. For example, you cannot put and delete the same item in the same <code>BatchWriteItem</code> request. </p> </li> <li> <p> Your request contains at least two items with identical hash and range keys (which essentially is two put operations). </p> </li> <li> <p>There are more than 25 requests in the batch.</p> </li> <li> <p>Any individual item in a batch exceeds 400 KB.</p> </li> <li> <p>The total request size exceeds 16 MB.</p> </li> <li> <p>Any individual items with keys exceeding the key length limits. For a partition key, the limit is 2048 bytes and for a sort key, the limit is 1024 bytes.</p> </li> </ul>",
+      "documentation":"<p>The <code>BatchWriteItem</code> operation puts or deletes multiple items in one or more tables. A single call to <code>BatchWriteItem</code> can transmit up to 16MB of data over the network, consisting of up to 25 item put or delete operations. While individual items can be up to 400 KB once stored, it's important to note that an item's representation might be greater than 400KB while being sent in DynamoDB's JSON format for the API call. For more details on this distinction, see <a href=\"https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/HowItWorks.NamingRulesDataTypes.html\">Naming Rules and Data Types</a>.</p> <note> <p> <code>BatchWriteItem</code> cannot update items. If you perform a <code>BatchWriteItem</code> operation on an existing item, that item's values will be overwritten by the operation and it will appear like it was updated. To update items, we recommend you use the <code>UpdateItem</code> action.</p> </note> <p>The individual <code>PutItem</code> and <code>DeleteItem</code> operations specified in <code>BatchWriteItem</code> are atomic; however <code>BatchWriteItem</code> as a whole is not. If any requested operations fail because the table's provisioned throughput is exceeded or an internal processing failure occurs, the failed operations are returned in the <code>UnprocessedItems</code> response parameter. You can investigate and optionally resend the requests. Typically, you would call <code>BatchWriteItem</code> in a loop. Each iteration would check for unprocessed items and submit a new <code>BatchWriteItem</code> request with those unprocessed items until all items have been processed.</p> <p>If <code>BatchWriteItem</code> cannot process any items due to throttling (for example, insufficient provisioned throughput on the tables in the request, or partition-level or account-level limits), it returns a <code>ProvisionedThroughputExceededException</code> or a <code>ThrottlingException</code>. Both indicate that the request was throttled; check the <code>ThrottlingReason</code> field in the returned exception for details.</p> <important> <p>If DynamoDB returns any unprocessed items, you should retry the batch operation on those items. However, <i>we strongly recommend that you use an exponential backoff algorithm</i>. If you retry the batch operation immediately, the underlying read or write requests can still fail due to throttling on the individual tables. If you delay the batch operation using exponential backoff, the individual requests in the batch are much more likely to succeed.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/ErrorHandling.html#Programming.Errors.BatchOperations\">Batch Operations and Error Handling</a> in the <i>Amazon DynamoDB Developer Guide</i>.</p> </important> <p>With <code>BatchWriteItem</code>, you can efficiently write or delete large amounts of data, such as from Amazon EMR, or copy data from another database into DynamoDB. In order to improve performance with these large-scale operations, <code>BatchWriteItem</code> does not behave in the same way as individual <code>PutItem</code> and <code>DeleteItem</code> calls would. For example, you cannot specify conditions on individual put and delete requests, and <code>BatchWriteItem</code> does not return deleted items in the response.</p> <p>If you use a programming language that supports concurrency, you can use threads to write items in parallel. Your application must include the necessary logic to manage the threads. With languages that don't support threading, you must update or delete the specified items one at a time. In both situations, <code>BatchWriteItem</code> performs the specified put and delete operations in parallel, giving you the power of the thread pool approach without having to introduce complexity into your application.</p> <p>Parallel processing reduces latency, but each specified put and delete request consumes the same number of write capacity units whether it is processed in parallel or not. Delete operations on nonexistent items consume one write capacity unit.</p> <p>If one or more of the following is true, DynamoDB rejects the entire batch write operation:</p> <ul> <li> <p>One or more tables specified in the <code>BatchWriteItem</code> request does not exist.</p> </li> <li> <p>Primary key attributes specified on an item in the request do not match those in the corresponding table's primary key schema.</p> </li> <li> <p>You try to perform multiple operations on the same item in the same <code>BatchWriteItem</code> request. For example, you cannot put and delete the same item in the same <code>BatchWriteItem</code> request. </p> </li> <li> <p> Your request contains at least two items with identical hash and range keys (which essentially is two put operations). </p> </li> <li> <p>There are more than 25 requests in the batch.</p> </li> <li> <p>Any individual item in a batch exceeds 400 KB.</p> </li> <li> <p>The total request size exceeds 16 MB.</p> </li> <li> <p>Any individual items with keys exceeding the key length limits. For a partition key, the limit is 2048 bytes and for a sort key, the limit is 1024 bytes.</p> </li> </ul>",
       "endpointdiscovery":{},
       "operationContextParams":{
         "ResourceArnList":{"path":"keys(RequestItems)"}
@@ -743,6 +743,25 @@
       ],
       "documentation":"<p>The <code>Scan</code> operation returns one or more items and item attributes by accessing every item in a table or a secondary index. To have DynamoDB return fewer items, you can provide a <code>FilterExpression</code> operation.</p> <p>If the total size of scanned items exceeds the maximum dataset size limit of 1 MB, the scan completes and results are returned to the user. The <code>LastEvaluatedKey</code> value is also returned and the requestor can use the <code>LastEvaluatedKey</code> to continue the scan in a subsequent operation. Each scan response also includes number of items that were scanned (ScannedCount) as part of the request. If using a <code>FilterExpression</code>, a scan result can result in no items meeting the criteria and the <code>Count</code> will result in zero. If you did not use a <code>FilterExpression</code> in the scan request, then <code>Count</code> is the same as <code>ScannedCount</code>.</p> <note> <p> <code>Count</code> and <code>ScannedCount</code> only return the count of items specific to a single scan request and, unless the table is less than 1MB, do not represent the total number of items in the table. </p> </note> <p>A single <code>Scan</code> operation first reads up to the maximum number of items set (if using the <code>Limit</code> parameter) or a maximum of 1 MB of data and then applies any filtering to the results if a <code>FilterExpression</code> is provided. If <code>LastEvaluatedKey</code> is present in the response, pagination is required to complete the full table scan. For more information, see <a href=\"https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Scan.html#Scan.Pagination\">Paginating the Results</a> in the <i>Amazon DynamoDB Developer Guide</i>.</p> <p> <code>Scan</code> operations proceed sequentially; however, for faster performance on a large table or secondary index, applications can request a parallel <code>Scan</code> operation by providing the <code>Segment</code> and <code>TotalSegments</code> parameters. For more information, see <a href=\"https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Scan.html#Scan.ParallelScan\">Parallel Scan</a> in the <i>Amazon DynamoDB Developer Guide</i>.</p> <p>By default, a <code>Scan</code> uses eventually consistent reads when accessing the items in a table. Therefore, the results from an eventually consistent <code>Scan</code> may not include the latest item changes at the time the scan iterates through each item in the table. If you require a strongly consistent read of each item as the scan iterates through the items in the table, you can set the <code>ConsistentRead</code> parameter to true. Strong consistency only relates to the consistency of the read at the item level.</p> <note> <p> DynamoDB does not provide snapshot isolation for a scan operation when the <code>ConsistentRead</code> parameter is set to true. Thus, a DynamoDB scan operation does not guarantee that all reads in a scan see a consistent snapshot of the table when the scan operation was requested. </p> </note>",
       "endpointdiscovery":{}
+    },
+    "SearchVectors":{
+      "name":"SearchVectors",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"SearchVectorsInput"},
+      "output":{"shape":"SearchVectorsOutput"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"RequestLimitExceeded"},
+        {"shape":"InternalServerError"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Performs a vector similarity search on a vector index associated with an Amazon DynamoDB table, and returns the most similar items sorted by similarity score based on the distance function configured for the index.</p> <p>Score interpretation depends on the distance function:</p> <ul> <li> <p> <code>COSINE</code> - Returns the items with the <i>k smallest</i> scores. Scores range from 0 (identical) to 2 (opposite). Lower scores indicate higher similarity.</p> </li> <li> <p> <code>EUCLIDEAN</code> - Returns the items with the <i>k smallest</i> scores. Scores represent the Euclidean distance between vectors. Lower scores indicate higher similarity.</p> </li> <li> <p> <code>DOT_PRODUCT</code> - Returns the items with the <i>k highest</i> scores. Higher scores indicate higher similarity.</p> </li> </ul>",
+      "staticContextParams":{
+        "IsSearchOperation":{"value":true}
+      }
     },
     "TagResource":{
       "name":"TagResource",
@@ -1605,7 +1624,7 @@
         },
         "ConsumedCapacity":{
           "shape":"ConsumedCapacityMultiple",
-          "documentation":"<p>The capacity units consumed by the entire <code>BatchWriteItem</code> operation.</p> <p>Each element consists of:</p> <ul> <li> <p> <code>TableName</code> - The table that consumed the provisioned throughput.</p> </li> <li> <p> <code>CapacityUnits</code> - The total number of capacity units consumed.</p> </li> </ul>"
+          "documentation":"<p>The capacity units consumed by the entire <code>BatchWriteItem</code> operation.</p> <p>Each element consists of:</p> <ul> <li> <p> <code>TableName</code> - The table that consumed the provisioned throughput.</p> </li> <li> <p> <code>CapacityUnits</code> - The total number of capacity units consumed.</p> </li> </ul> <p>If the table has vector indexes, each element also includes a <code>VectorIndexes</code> field with <code>VectorWriteRequestBytes</code> consumed for each affected vector index.</p>"
         }
       },
       "documentation":"<p>Represents the output of a <code>BatchWriteItem</code> operation.</p>"
@@ -1829,6 +1848,10 @@
         "GlobalSecondaryIndexes":{
           "shape":"SecondaryIndexesCapacityMap",
           "documentation":"<p>The amount of throughput consumed on each global index affected by the operation.</p>"
+        },
+        "VectorIndexes":{
+          "shape":"VectorIndexesCapacityMap",
+          "documentation":"<p>The amount of throughput consumed on each vector index affected by the operation. Each entry contains <code>VectorWriteRequestBytes</code> (for write operations) or <code>VectorSearchRequestBytes</code> (for search operations).</p>"
         }
       },
       "documentation":"<p>The capacity units consumed by an operation. The data returned includes the total provisioned throughput consumed, along with statistics for the table and any indexes involved in the operation. <code>ConsumedCapacity</code> is only returned if the request asked for it. For more information, see <a href=\"https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/provisioned-capacity-mode.html\">Provisioned capacity mode</a> in the <i>Amazon DynamoDB Developer Guide</i>.</p>"
@@ -2140,6 +2163,10 @@
         "GlobalTableSettingsReplicationMode":{
           "shape":"GlobalTableSettingsReplicationMode",
           "documentation":"<p>Controls the settings synchronization mode for the global table. For multi-account global tables, this parameter is required and the only supported value is ENABLED. For same-account global tables, this parameter is set to ENABLED_WITH_OVERRIDES. </p>"
+        },
+        "VectorIndexes":{
+          "shape":"VectorIndexList",
+          "documentation":"<p>One or more vector indexes to be created on the table. Each vector index enables similarity search on a vector attribute. Each element in the list consists of:</p> <ul> <li> <p> <code>IndexName</code> - The name of the vector index. Must be unique within the table.</p> </li> <li> <p> <code>VectorAttribute</code> - The attribute that contains vector embeddings. If multiple vector indexes reference the same attribute, they must all use the same number of dimensions.</p> </li> <li> <p> <code>Dimensions</code> - The number of dimensions in each vector.</p> </li> <li> <p> <code>DistanceFunction</code> - The distance function used to calculate similarity. Valid values: <code>COSINE</code>, <code>EUCLIDEAN</code>, <code>DOT_PRODUCT</code>.</p> </li> <li> <p> <code>Projection</code> - Specifies attributes that are copied (projected) from the table into the vector index. The total number of projected non-key attributes is shared across the vector attribute (counts as 1) and <code>INLINE_FILTER</code> search schema elements (each counts as 1). <code>HASH</code> search schema elements do not count toward this limit.</p> </li> <li> <p> <code>SearchSchema</code> - (Optional) Defines the partition key (<code>HASH</code>) and inline filter (<code>INLINE_FILTER</code>) attributes for the vector index.</p> </li> </ul>"
         }
       },
       "documentation":"<p>Represents the input of a <code>CreateTable</code> operation.</p>"
@@ -2153,6 +2180,43 @@
         }
       },
       "documentation":"<p>Represents the output of a <code>CreateTable</code> operation.</p>"
+    },
+    "CreateVectorIndexAction":{
+      "type":"structure",
+      "required":[
+        "IndexName",
+        "VectorAttribute",
+        "Projection",
+        "Dimensions",
+        "DistanceFunction"
+      ],
+      "members":{
+        "IndexName":{
+          "shape":"IndexName",
+          "documentation":"<p>The name of the vector index. Must be unique within the table.</p>"
+        },
+        "VectorAttribute":{
+          "shape":"VectorAttributeDefinition",
+          "documentation":"<p>The attribute that contains vector embeddings. If multiple vector indexes reference the same attribute, they must all use the same number of dimensions.</p>"
+        },
+        "SearchSchema":{
+          "shape":"SearchSchema",
+          "documentation":"<p>The partition key and inline filter attribute definitions for the vector index.</p>"
+        },
+        "Projection":{
+          "shape":"Projection",
+          "documentation":"<p>Specifies attributes that are copied (projected) from the table into the vector index.</p>"
+        },
+        "Dimensions":{
+          "shape":"PositiveLongObject",
+          "documentation":"<p>The number of dimensions in each vector.</p>"
+        },
+        "DistanceFunction":{
+          "shape":"VectorDistanceFunction",
+          "documentation":"<p>The distance function used to calculate similarity. Valid values: <code>COSINE</code>, <code>EUCLIDEAN</code>, <code>DOT_PRODUCT</code>.</p>"
+        }
+      },
+      "documentation":"<p>A new vector index to be added to a table.</p>"
     },
     "CsvDelimiter":{
       "type":"string",
@@ -2324,7 +2388,7 @@
         },
         "ConsumedCapacity":{
           "shape":"ConsumedCapacity",
-          "documentation":"<p>The capacity units consumed by the <code>DeleteItem</code> operation. The data returned includes the total provisioned throughput consumed, along with statistics for the table and any indexes involved in the operation. <code>ConsumedCapacity</code> is only returned if the <code>ReturnConsumedCapacity</code> parameter was specified. For more information, see <a href=\"https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/provisioned-capacity-mode.html\">Provisioned capacity mode</a> in the <i>Amazon DynamoDB Developer Guide</i>.</p>"
+          "documentation":"<p>The capacity units consumed by the <code>DeleteItem</code> operation. The data returned includes the total provisioned throughput consumed, along with statistics for the table and any indexes involved in the operation. <code>ConsumedCapacity</code> is only returned if the <code>ReturnConsumedCapacity</code> parameter was specified. For more information, see <a href=\"https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/provisioned-capacity-mode.html\">Provisioned capacity mode</a> in the <i>Amazon DynamoDB Developer Guide</i>.</p> <p>If the table has vector indexes, the response includes a <code>VectorIndexes</code> field with <code>VectorWriteRequestBytes</code> consumed for each affected vector index.</p>"
         },
         "ItemCollectionMetrics":{
           "shape":"ItemCollectionMetrics",
@@ -2411,6 +2475,17 @@
         }
       },
       "documentation":"<p>Represents the output of a <code>DeleteTable</code> operation.</p>"
+    },
+    "DeleteVectorIndexAction":{
+      "type":"structure",
+      "required":["IndexName"],
+      "members":{
+        "IndexName":{
+          "shape":"IndexName",
+          "documentation":"<p>The name of the vector index to delete.</p>"
+        }
+      },
+      "documentation":"<p>A vector index to be removed from a table.</p>"
     },
     "DeletionProtectionEnabled":{"type":"boolean"},
     "DescribeBackupInput":{
@@ -3643,7 +3718,7 @@
         },
         "EndTime":{
           "shape":"ImportEndTime",
-          "documentation":"<p> The time at which this import task ended. (Does this include the successful complete creation of the table it was imported to?) </p>"
+          "documentation":"<p> The time at which this import task ended. </p>"
         }
       },
       "documentation":"<p> Summary information about the source file for the import. </p>"
@@ -3796,7 +3871,7 @@
         },
         "ExportViewType":{
           "shape":"ExportViewType",
-          "documentation":"<p>The view type that was chosen for the export. Valid values are <code>NEW_AND_OLD_IMAGES</code> and <code>NEW_IMAGES</code>. The default value is <code>NEW_AND_OLD_IMAGES</code>.</p>"
+          "documentation":"<p>The view type that was chosen for the export. Valid values are <code>NEW_AND_OLD_IMAGES</code> and <code>NEW_IMAGES</code>. The default value is <code>NEW_AND_OLD_IMAGES</code>.</p> <p> <code>NEW_AND_OLD_IMAGES</code> exports both the new and old images of each changed item, while <code>NEW_IMAGES</code> exports only the new (latest) image. The view type you choose determines the structure of each item in the output for <code>insert</code>, <code>update</code>, and <code>delete</code> operations. For details and examples of how each view type shapes the export output, see <a href=\"https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/S3DataExport.Output.html\">DynamoDB table export output format</a> in the <i>Amazon DynamoDB Developer Guide</i>.</p>"
         }
       },
       "documentation":"<p>Optional object containing the parameters specific to an incremental export.</p>"
@@ -4683,11 +4758,11 @@
         },
         "ReadCapacityUnits":{
           "shape":"NonNegativeLongObject",
-          "documentation":"<p>The maximum number of strongly consistent reads consumed per second before DynamoDB returns a <code>ThrottlingException</code>. Eventually consistent reads require less effort than strongly consistent reads, so a setting of 50 <code>ReadCapacityUnits</code> per second provides 100 eventually consistent <code>ReadCapacityUnits</code> per second.</p>"
+          "documentation":"<p>The maximum number of strongly consistent reads consumed per second before DynamoDB returns a <code>ThrottlingException</code>. Eventually consistent reads require less effort than strongly consistent reads, so a setting of 50 <code>ReadCapacityUnits</code> per second provides 100 eventually consistent <code>ReadCapacityUnits</code> per second.</p> <p>For a table or global secondary index that uses on-demand capacity mode (<code>PAY_PER_REQUEST</code>), this value is <code>0</code>, because on-demand mode does not use provisioned throughput.</p>"
         },
         "WriteCapacityUnits":{
           "shape":"NonNegativeLongObject",
-          "documentation":"<p>The maximum number of writes consumed per second before DynamoDB returns a <code>ThrottlingException</code>.</p>"
+          "documentation":"<p>The maximum number of writes consumed per second before DynamoDB returns a <code>ThrottlingException</code>.</p> <p>For a table or global secondary index that uses on-demand capacity mode (<code>PAY_PER_REQUEST</code>), this value is <code>0</code>, because on-demand mode does not use provisioned throughput.</p>"
         }
       },
       "documentation":"<p>Represents the provisioned throughput settings for the table, consisting of read and write capacity units, along with data about increases and decreases.</p>"
@@ -4765,7 +4840,7 @@
         },
         "Item":{
           "shape":"PutItemInputAttributeMap",
-          "documentation":"<p>A map of attribute name/value pairs, one for each attribute. Only the primary key attributes are required; you can optionally provide other attribute name-value pairs for the item.</p> <p>You must provide all of the attributes for the primary key. For example, with a simple primary key, you only need to provide a value for the partition key. For a composite primary key, you must provide both values for both the partition key and the sort key.</p> <p>If you specify any attributes that are part of an index key, then the data types for those attributes must match those of the schema in the table's attribute definition.</p> <p>Empty String and Binary attribute values are allowed. Attribute values of type String and Binary must have a length greater than zero if the attribute is used as a key attribute for a table or index.</p> <p>For more information about primary keys, see <a href=\"https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/HowItWorks.CoreComponents.html#HowItWorks.CoreComponents.PrimaryKey\">Primary Key</a> in the <i>Amazon DynamoDB Developer Guide</i>.</p> <p>Each element in the <code>Item</code> map is an <code>AttributeValue</code> object.</p>"
+          "documentation":"<p>A map of attribute name/value pairs, one for each attribute. Only the primary key attributes are required; you can optionally provide other attribute name-value pairs for the item.</p> <p>You must provide all of the attributes for the primary key. For example, with a simple primary key, you only need to provide a value for the partition key. For a composite primary key, you must provide both values for both the partition key and the sort key.</p> <p>If you specify any attributes that are part of an index key, then the data types for those attributes must match those of the schema in the table's attribute definition.</p> <p>If the table has vector indexes, the following validations apply to write operations. A violation of any of these constraints results in a <code>ValidationException</code>:</p> <ul> <li> <p>The vector attribute must be a list of numbers with dimensions matching the index configuration.</p> </li> <li> <p>Vector values must fit in 32-bit IEEE-754 floating point format (f32).</p> </li> <li> <p>Partition key and inline filter attributes defined in the search schema must have data types matching the index schema definition.</p> </li> </ul> <p>Empty String and Binary attribute values are allowed. Attribute values of type String and Binary must have a length greater than zero if the attribute is used as a key attribute for a table or index.</p> <p>For more information about primary keys, see <a href=\"https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/HowItWorks.CoreComponents.html#HowItWorks.CoreComponents.PrimaryKey\">Primary Key</a> in the <i>Amazon DynamoDB Developer Guide</i>.</p> <p>Each element in the <code>Item</code> map is an <code>AttributeValue</code> object.</p>"
         },
         "Expected":{
           "shape":"ExpectedAttributeMap",
@@ -4817,7 +4892,7 @@
         },
         "ConsumedCapacity":{
           "shape":"ConsumedCapacity",
-          "documentation":"<p>The capacity units consumed by the <code>PutItem</code> operation. The data returned includes the total provisioned throughput consumed, along with statistics for the table and any indexes involved in the operation. <code>ConsumedCapacity</code> is only returned if the <code>ReturnConsumedCapacity</code> parameter was specified. For more information, see <a href=\"https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/read-write-operations.html#write-operation-consumption\">Capacity unity consumption for write operations</a> in the <i>Amazon DynamoDB Developer Guide</i>.</p>"
+          "documentation":"<p>The capacity units consumed by the <code>PutItem</code> operation. The data returned includes the total provisioned throughput consumed, along with statistics for the table and any indexes involved in the operation. <code>ConsumedCapacity</code> is only returned if the <code>ReturnConsumedCapacity</code> parameter was specified. For more information, see <a href=\"https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/read-write-operations.html#write-operation-consumption\">Capacity unity consumption for write operations</a> in the <i>Amazon DynamoDB Developer Guide</i>.</p> <p>If the table has vector indexes, the response includes a <code>VectorIndexes</code> field with <code>VectorWriteRequestBytes</code> consumed for each affected vector index.</p>"
         },
         "ItemCollectionMetrics":{
           "shape":"ItemCollectionMetrics",
@@ -5505,6 +5580,10 @@
         "SSESpecificationOverride":{
           "shape":"SSESpecification",
           "documentation":"<p>The new server-side encryption settings for the restored table.</p>"
+        },
+        "VectorIndexOverride":{
+          "shape":"VectorIndexList",
+          "documentation":"<p>The vector indexes for the restored table. If not specified, all vector indexes from the backup are restored. The indexes provided must match existing vector indexes from the backup. You can choose to exclude some or all of the vector indexes at the time of restore.</p>"
         }
       }
     },
@@ -5548,7 +5627,7 @@
         },
         "GlobalSecondaryIndexOverride":{
           "shape":"GlobalSecondaryIndexList",
-          "documentation":"<p>List of global secondary indexes for the restored table. The indexes provided should match existing secondary indexes. You can choose to exclude some or all of the indexes at the time of restore.</p>"
+          "documentation":"<p>List of global secondary indexes for the restored table. The indexes provided should match existing secondary indexes. You can choose to exclude some or all of the indexes at the time of restore.</p> <p>The <code>WarmThroughput</code> setting is not supported on global secondary indexes when you use <code>RestoreTableToPointInTime</code>. Although <code>WarmThroughput</code> appears in the shared index definition, including it in a <code>GlobalSecondaryIndexOverride</code> entry causes the request to fail with a validation error.</p>"
         },
         "LocalSecondaryIndexOverride":{
           "shape":"LocalSecondaryIndexList",
@@ -5562,6 +5641,10 @@
         "SSESpecificationOverride":{
           "shape":"SSESpecification",
           "documentation":"<p>The new server-side encryption settings for the restored table.</p>"
+        },
+        "VectorIndexOverride":{
+          "shape":"VectorIndexList",
+          "documentation":"<p>The vector indexes for the restored table. If not specified, all vector indexes from the source table are restored. The indexes provided must match existing vector indexes from the source table. You can choose to exclude some or all of the vector indexes at the time of restore.</p>"
         }
       }
     },
@@ -5822,6 +5905,119 @@
       "max":1000000,
       "min":1
     },
+    "ScoreNumber":{"type":"double"},
+    "SearchResultItem":{
+      "type":"structure",
+      "members":{
+        "Item":{
+          "shape":"AttributeMap",
+          "documentation":"<p>A map of attribute names to <code>AttributeValue</code> objects, representing the projected attributes of the item returned by the vector search.</p>"
+        },
+        "Score":{
+          "shape":"ScoreNumber",
+          "documentation":"<p>The similarity score for this item relative to the search vector. The interpretation depends on the distance function configured for the vector index.</p>"
+        }
+      },
+      "documentation":"<p>A single result from a <code>SearchVectors</code> operation.</p>"
+    },
+    "SearchResultList":{
+      "type":"list",
+      "member":{"shape":"SearchResultItem"}
+    },
+    "SearchSchema":{
+      "type":"list",
+      "member":{"shape":"SearchSchemaElement"},
+      "min":1
+    },
+    "SearchSchemaElement":{
+      "type":"structure",
+      "required":[
+        "AttributeName",
+        "SearchSchemaElementType"
+      ],
+      "members":{
+        "AttributeName":{
+          "shape":"AttributeName",
+          "documentation":"<p>The name of the attribute.</p>"
+        },
+        "SearchSchemaElementType":{
+          "shape":"SearchSchemaElementType",
+          "documentation":"<p>The role of the attribute in the search schema. Valid values:</p> <ul> <li> <p> <code>HASH</code> - A partition key that partitions the vector index for independent scaling. When specified, you must provide this attribute's value in the <code>SearchConditionExpression</code>.</p> </li> <li> <p> <code>INLINE_FILTER</code> - An attribute projected into the vector index for filtering at the storage layer during search. Inline filters are optional in the <code>SearchConditionExpression</code>.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>An element in the search schema of a vector index.</p>"
+    },
+    "SearchSchemaElementType":{
+      "type":"string",
+      "enum":[
+        "HASH",
+        "INLINE_FILTER"
+      ]
+    },
+    "SearchVectorList":{
+      "type":"list",
+      "member":{"shape":"AttributeValue"},
+      "max":4096,
+      "min":1
+    },
+    "SearchVectorsInput":{
+      "type":"structure",
+      "required":[
+        "TableName",
+        "IndexName",
+        "SearchVector",
+        "TopK"
+      ],
+      "members":{
+        "TableName":{
+          "shape":"TableArn",
+          "documentation":"<p>The name or Amazon Resource Name (ARN) of the table containing the vector index.</p>",
+          "contextParam":{"name":"ResourceArn"}
+        },
+        "IndexName":{
+          "shape":"IndexName",
+          "documentation":"<p>The name of the vector index to search. The index must be in the <code>ACTIVE</code> state.</p>"
+        },
+        "ReturnConsumedCapacity":{"shape":"ReturnConsumedCapacity"},
+        "ExpressionAttributeNames":{
+          "shape":"ExpressionAttributeNameMap",
+          "documentation":"<p>One or more substitution tokens for attribute names in an expression. Use the <code>#</code> character in an expression to dereference an attribute name.</p>"
+        },
+        "ExpressionAttributeValues":{
+          "shape":"ExpressionAttributeValueMap",
+          "documentation":"<p>One or more values that can be substituted in an expression. Use the <code>:</code> character in an expression to dereference an attribute value.</p>"
+        },
+        "ProjectionExpression":{
+          "shape":"ProjectionExpression",
+          "documentation":"<p>A string that identifies one or more attributes to retrieve from the index. Separate attribute names with commas. If not specified, the operation returns all attributes projected into the vector index.</p> <p>Only attributes projected into the vector index can be retrieved.</p>"
+        },
+        "SearchVector":{
+          "shape":"SearchVectorList",
+          "documentation":"<p>The search vector to compare against the indexed vectors. Each element is a 32-bit IEEE-754 floating point number, provided in DynamoDB list format.</p> <p>The number of dimensions must match the number of dimensions configured for the vector index.</p>"
+        },
+        "SearchConditionExpression":{
+          "shape":"String",
+          "documentation":"<p>A condition expression used to filter the vector search results. The expression can reference attributes defined in the vector index search schema, including <code>HASH</code> and <code>INLINE_FILTER</code> key elements.</p> <p>Only the equality operator (<code>=</code>) is supported for <code>HASH</code> attributes. Comparison and range operators are supported for <code>INLINE_FILTER</code> attributes. Only top-level attributes from the search schema can be referenced.</p>"
+        },
+        "TopK":{
+          "shape":"TopKInteger",
+          "documentation":"<p>The number of most similar results to return.</p>"
+        }
+      }
+    },
+    "SearchVectorsOutput":{
+      "type":"structure",
+      "members":{
+        "ConsumedCapacity":{
+          "shape":"VectorCapacity",
+          "documentation":"<p>The capacity units consumed by the <code>SearchVectors</code> operation. Contains <code>VectorSearchRequestBytes</code>, which represents the vector search capacity consumed.</p>"
+        },
+        "SearchResults":{
+          "shape":"SearchResultList",
+          "documentation":"<p>A list of items returned by the vector similarity search, sorted by similarity with the most similar item first. Each item contains the projected attributes and a similarity score.</p>"
+        }
+      }
+    },
     "SecondaryIndexesCapacityMap":{
       "type":"map",
       "key":{"shape":"IndexName"},
@@ -5908,6 +6104,10 @@
         "SSEDescription":{
           "shape":"SSEDescription",
           "documentation":"<p>The description of the server-side encryption status on the table when the backup was created.</p>"
+        },
+        "VectorIndexes":{
+          "shape":"VectorIndexes",
+          "documentation":"<p>The vector index properties for the table at the time the backup was created, including the index name, vector attribute, dimensions, distance function, search schema, and projection.</p>"
         }
       },
       "documentation":"<p>Contains the details of the features enabled on the table when the backup was created. For example, LSIs, GSIs, streams, TTL. </p>"
@@ -6031,6 +6231,10 @@
         "GlobalSecondaryIndexes":{
           "shape":"GlobalSecondaryIndexList",
           "documentation":"<p> The Global Secondary Indexes (GSI) of the table to be created as part of the import operation. </p>"
+        },
+        "VectorIndexes":{
+          "shape":"VectorIndexList",
+          "documentation":"<p>The vector indexes of the table to be created as part of the import operation.</p>"
         }
       },
       "documentation":"<p> The parameters for the table created as part of the import operation. </p>"
@@ -6076,7 +6280,7 @@
         },
         "TableId":{
           "shape":"TableId",
-          "documentation":"<p>Unique identifier for the table for which the backup was created. </p>"
+          "documentation":"<p>A unique identifier for the table, in UUID format, generated by DynamoDB when the table is created.</p>"
         },
         "BillingModeSummary":{
           "shape":"BillingModeSummary",
@@ -6149,6 +6353,10 @@
         "MultiRegionConsistency":{
           "shape":"MultiRegionConsistency",
           "documentation":"<p>Indicates one of the following consistency modes for a global table:</p> <ul> <li> <p> <code>EVENTUAL</code>: Indicates that the global table is configured for multi-Region eventual consistency (MREC).</p> </li> <li> <p> <code>STRONG</code>: Indicates that the global table is configured for multi-Region strong consistency (MRSC).</p> </li> </ul> <p>If you don't specify this field, the global table consistency mode defaults to <code>EVENTUAL</code>. For more information about global tables consistency modes, see <a href=\"https://docs.aws.amazon.com/V2globaltables_HowItWorks.html#V2globaltables_HowItWorks.consistency-modes\"> Consistency modes</a> in DynamoDB developer guide. </p>"
+        },
+        "VectorIndexes":{
+          "shape":"VectorIndexDescriptionList",
+          "documentation":"<p>The vector indexes, if any, on the table. Each element is composed of:</p> <ul> <li> <p> <code>IndexName</code> - The name of the vector index.</p> </li> <li> <p> <code>IndexStatus</code> - The current status of the vector index: <code>CREATING</code>, <code>ACTIVE</code>, or <code>DELETING</code>.</p> </li> <li> <p> <code>Backfilling</code> - Specifies whether the index is currently backfilling. During backfill, <code>SearchVectors</code> operations might return incomplete results.</p> </li> <li> <p> <code>VectorAttribute</code> - The attribute that contains vector embeddings.</p> </li> <li> <p> <code>Dimensions</code> - The number of dimensions in each vector.</p> </li> <li> <p> <code>DistanceFunction</code> - The distance function used to calculate similarity (<code>COSINE</code>, <code>EUCLIDEAN</code>, or <code>DOT_PRODUCT</code>).</p> </li> <li> <p> <code>SearchSchema</code> - The partition key and inline filter attributes for the vector index.</p> </li> <li> <p> <code>Projection</code> - Specifies attributes that are copied (projected) from the table into the vector index.</p> </li> <li> <p> <code>IndexArn</code> - The Amazon Resource Name (ARN) that uniquely identifies the index.</p> </li> <li> <p> <code>IndexSizeBytes</code> - The total size of the vector index, in bytes. Amazon DynamoDB updates this value approximately every six hours. Recent changes might not be reflected in this value.</p> </li> <li> <p> <code>ItemCount</code> - The number of items indexed in the vector index. Amazon DynamoDB updates this value approximately every six hours. Recent changes might not be reflected in this value.</p> </li> </ul>"
         }
       },
       "documentation":"<p>Represents the properties of a table.</p>"
@@ -6348,6 +6556,11 @@
         "DISABLED"
       ]
     },
+    "TopKInteger":{
+      "type":"integer",
+      "box":true,
+      "min":1
+    },
     "TransactGetItem":{
       "type":"structure",
       "required":["Get"],
@@ -6445,7 +6658,7 @@
       "members":{
         "ConsumedCapacity":{
           "shape":"ConsumedCapacityMultiple",
-          "documentation":"<p>The capacity units consumed by the entire <code>TransactWriteItems</code> operation. The values of the list are ordered according to the ordering of the <code>TransactItems</code> request parameter. </p>"
+          "documentation":"<p>The capacity units consumed by the entire <code>TransactWriteItems</code> operation. The values of the list are ordered according to the ordering of the <code>TransactItems</code> request parameter. </p> <p>If the table has vector indexes, each element also includes a <code>VectorIndexes</code> field with <code>VectorWriteRequestBytes</code> consumed for each affected vector index.</p>"
         },
         "ItemCollectionMetrics":{
           "shape":"ItemCollectionMetricsPerTable",
@@ -6462,7 +6675,7 @@
           "documentation":"<p>A list of cancellation reasons.</p>"
         }
       },
-      "documentation":"<p>The entire transaction request was canceled.</p> <p>DynamoDB cancels a <code>TransactWriteItems</code> request under the following circumstances:</p> <ul> <li> <p>A condition in one of the condition expressions is not met.</p> </li> <li> <p>A table in the <code>TransactWriteItems</code> request is in a different account or region.</p> </li> <li> <p>More than one action in the <code>TransactWriteItems</code> operation targets the same item.</p> </li> <li> <p>There is insufficient provisioned capacity for the transaction to be completed.</p> </li> <li> <p>An item size becomes too large (larger than 400 KB), or a local secondary index (LSI) becomes too large, or a similar validation error occurs because of changes made by the transaction.</p> </li> <li> <p>There is a user error, such as an invalid data format.</p> </li> <li> <p> There is an ongoing <code>TransactWriteItems</code> operation that conflicts with a concurrent <code>TransactWriteItems</code> request. In this case the <code>TransactWriteItems</code> operation fails with a <code>TransactionCanceledException</code>. </p> </li> </ul> <p>DynamoDB cancels a <code>TransactGetItems</code> request under the following circumstances:</p> <ul> <li> <p>There is an ongoing <code>TransactGetItems</code> operation that conflicts with a concurrent <code>PutItem</code>, <code>UpdateItem</code>, <code>DeleteItem</code> or <code>TransactWriteItems</code> request. In this case the <code>TransactGetItems</code> operation fails with a <code>TransactionCanceledException</code>.</p> </li> <li> <p>A table in the <code>TransactGetItems</code> request is in a different account or region.</p> </li> <li> <p>There is insufficient provisioned capacity for the transaction to be completed.</p> </li> <li> <p>There is a user error, such as an invalid data format.</p> </li> </ul> <note> <p>DynamoDB lists the cancellation reasons on the <code>CancellationReasons</code> property. Transaction cancellation reasons are ordered in the order of requested items, if an item has no error it will have <code>None</code> code and <code>Null</code> message.</p> </note> <p>Cancellation reason codes and possible error messages:</p> <ul> <li> <p>No Errors:</p> <ul> <li> <p>Code: <code>None</code> </p> </li> <li> <p>Message: <code>null</code> </p> </li> </ul> </li> <li> <p>Conditional Check Failed:</p> <ul> <li> <p>Code: <code>ConditionalCheckFailed</code> </p> </li> <li> <p>Message: The conditional request failed. </p> </li> </ul> </li> <li> <p>Item Collection Size Limit Exceeded:</p> <ul> <li> <p>Code: <code>ItemCollectionSizeLimitExceeded</code> </p> </li> <li> <p>Message: Collection size exceeded.</p> </li> </ul> </li> <li> <p>Transaction Conflict:</p> <ul> <li> <p>Code: <code>TransactionConflict</code> </p> </li> <li> <p>Message: Transaction is ongoing for the item.</p> </li> </ul> </li> <li> <p>Provisioned Throughput Exceeded:</p> <ul> <li> <p>Code: <code>ProvisionedThroughputExceeded</code> </p> </li> <li> <p>Messages:</p> <ul> <li> <p>The level of configured provisioned throughput for the table was exceeded. Consider increasing your provisioning level with the UpdateTable API.</p> <note> <p>This Message is received when provisioned throughput is exceeded is on a provisioned DynamoDB table.</p> </note> </li> <li> <p>The level of configured provisioned throughput for one or more global secondary indexes of the table was exceeded. Consider increasing your provisioning level for the under-provisioned global secondary indexes with the UpdateTable API.</p> <note> <p>This message is returned when provisioned throughput is exceeded is on a provisioned GSI.</p> </note> </li> </ul> </li> </ul> </li> <li> <p>Throttling Error:</p> <ul> <li> <p>Code: <code>ThrottlingError</code> </p> </li> <li> <p>Messages: </p> <ul> <li> <p>Throughput exceeds the current capacity of your table or index. DynamoDB is automatically scaling your table or index so please try again shortly. If exceptions persist, check if you have a hot key: https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/bp-partition-key-design.html.</p> <note> <p>This message is returned when writes get throttled on an On-Demand table as DynamoDB is automatically scaling the table.</p> </note> </li> <li> <p>Throughput exceeds the current capacity for one or more global secondary indexes. DynamoDB is automatically scaling your index so please try again shortly.</p> <note> <p>This message is returned when writes get throttled on an On-Demand GSI as DynamoDB is automatically scaling the GSI.</p> </note> </li> </ul> </li> </ul> </li> <li> <p>Validation Error:</p> <ul> <li> <p>Code: <code>ValidationError</code> </p> </li> <li> <p>Messages: </p> <ul> <li> <p>One or more parameter values were invalid.</p> </li> <li> <p>The update expression attempted to update the secondary index key beyond allowed size limits.</p> </li> <li> <p>The update expression attempted to update the secondary index key to unsupported type.</p> </li> <li> <p>An operand in the update expression has an incorrect data type.</p> </li> <li> <p>Item size to update has exceeded the maximum allowed size.</p> </li> <li> <p>Number overflow. Attempting to store a number with magnitude larger than supported range.</p> </li> <li> <p>Type mismatch for attribute to update.</p> </li> <li> <p>Nesting Levels have exceeded supported limits.</p> </li> <li> <p>The document path provided in the update expression is invalid for update.</p> </li> <li> <p>The provided expression refers to an attribute that does not exist in the item.</p> </li> </ul> </li> </ul> </li> </ul>",
+      "documentation":"<p>The entire transaction request was canceled.</p> <p>DynamoDB cancels a <code>TransactWriteItems</code> request under the following circumstances:</p> <ul> <li> <p>A condition in one of the condition expressions is not met.</p> </li> <li> <p>A table in the <code>TransactWriteItems</code> request is in a different account or region.</p> </li> <li> <p>More than one action in the <code>TransactWriteItems</code> operation targets the same item.</p> </li> <li> <p>There is insufficient provisioned capacity for the transaction to be completed.</p> </li> <li> <p>An item size becomes too large (larger than 400 KB), or a local secondary index (LSI) becomes too large, or a similar validation error occurs because of changes made by the transaction.</p> </li> <li> <p>There is a user error, such as an invalid data format.</p> </li> <li> <p> There is an ongoing <code>TransactWriteItems</code> operation that conflicts with a concurrent <code>TransactWriteItems</code> request. In this case the <code>TransactWriteItems</code> operation fails with a <code>TransactionCanceledException</code>. </p> </li> </ul> <p>DynamoDB cancels a <code>TransactGetItems</code> request under the following circumstances:</p> <ul> <li> <p>There is an ongoing <code>TransactGetItems</code> operation that conflicts with a concurrent <code>PutItem</code>, <code>UpdateItem</code>, <code>DeleteItem</code> or <code>TransactWriteItems</code> request. In this case the <code>TransactGetItems</code> operation fails with a <code>TransactionCanceledException</code>.</p> </li> <li> <p>A table in the <code>TransactGetItems</code> request is in a different account or region.</p> </li> <li> <p>There is insufficient provisioned capacity for the transaction to be completed.</p> </li> <li> <p>There is a user error, such as an invalid data format.</p> </li> </ul> <note> <p>DynamoDB lists the cancellation reasons on the <code>CancellationReasons</code> property. Transaction cancellation reasons are ordered in the order of requested items, if an item has no error it will have <code>None</code> code and <code>Null</code> message. The <code>None</code> code is returned as the literal string <code>\"None\"</code>, not a null or absent value; the message field is omitted entirely for an item that has no error. This is important to note when using an SDK that surfaces the code as an optional or nullable type.</p> </note> <p>Cancellation reason codes and possible error messages:</p> <ul> <li> <p>No Errors:</p> <ul> <li> <p>Code: <code>None</code> </p> </li> <li> <p>Message: <code>null</code> </p> </li> </ul> </li> <li> <p>Conditional Check Failed:</p> <ul> <li> <p>Code: <code>ConditionalCheckFailed</code> </p> </li> <li> <p>Message: The conditional request failed. </p> </li> </ul> </li> <li> <p>Item Collection Size Limit Exceeded:</p> <ul> <li> <p>Code: <code>ItemCollectionSizeLimitExceeded</code> </p> </li> <li> <p>Message: Collection size exceeded.</p> </li> </ul> </li> <li> <p>Transaction Conflict:</p> <ul> <li> <p>Code: <code>TransactionConflict</code> </p> </li> <li> <p>Message: Transaction is ongoing for the item.</p> </li> </ul> </li> <li> <p>Provisioned Throughput Exceeded:</p> <ul> <li> <p>Code: <code>ProvisionedThroughputExceeded</code> </p> </li> <li> <p>Messages:</p> <ul> <li> <p>The level of configured provisioned throughput for the table was exceeded. Consider increasing your provisioning level with the UpdateTable API.</p> <note> <p>This Message is received when provisioned throughput is exceeded is on a provisioned DynamoDB table.</p> </note> </li> <li> <p>The level of configured provisioned throughput for one or more global secondary indexes of the table was exceeded. Consider increasing your provisioning level for the under-provisioned global secondary indexes with the UpdateTable API.</p> <note> <p>This message is returned when provisioned throughput is exceeded is on a provisioned GSI.</p> </note> </li> </ul> </li> </ul> </li> <li> <p>Throttling Error:</p> <ul> <li> <p>Code: <code>ThrottlingError</code> </p> </li> <li> <p>Messages: </p> <ul> <li> <p>Throughput exceeds the current capacity of your table or index. DynamoDB is automatically scaling your table or index so please try again shortly. If exceptions persist, check if you have a hot key: https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/bp-partition-key-design.html.</p> <note> <p>This message is returned when writes get throttled on an On-Demand table as DynamoDB is automatically scaling the table.</p> </note> </li> <li> <p>Throughput exceeds the current capacity for one or more global secondary indexes. DynamoDB is automatically scaling your index so please try again shortly.</p> <note> <p>This message is returned when writes get throttled on an On-Demand GSI as DynamoDB is automatically scaling the GSI.</p> </note> </li> </ul> </li> </ul> </li> <li> <p>Validation Error:</p> <ul> <li> <p>Code: <code>ValidationError</code> </p> </li> <li> <p>Messages: </p> <ul> <li> <p>One or more parameter values were invalid.</p> </li> <li> <p>The update expression attempted to update the secondary index key beyond allowed size limits.</p> </li> <li> <p>The update expression attempted to update the secondary index key to unsupported type.</p> </li> <li> <p>An operand in the update expression has an incorrect data type.</p> </li> <li> <p>Item size to update has exceeded the maximum allowed size.</p> </li> <li> <p>Number overflow. Attempting to store a number with magnitude larger than supported range.</p> </li> <li> <p>Type mismatch for attribute to update.</p> </li> <li> <p>Nesting Levels have exceeded supported limits.</p> </li> <li> <p>The document path provided in the update expression is invalid for update.</p> </li> <li> <p>The provided expression refers to an attribute that does not exist in the item.</p> </li> </ul> </li> </ul> </li> </ul>",
       "exception":true
     },
     "TransactionConflictException":{
@@ -6776,7 +6989,7 @@
         },
         "ConsumedCapacity":{
           "shape":"ConsumedCapacity",
-          "documentation":"<p>The capacity units consumed by the <code>UpdateItem</code> operation. The data returned includes the total provisioned throughput consumed, along with statistics for the table and any indexes involved in the operation. <code>ConsumedCapacity</code> is only returned if the <code>ReturnConsumedCapacity</code> parameter was specified. For more information, see <a href=\"https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/read-write-operations.html#write-operation-consumption\">Capacity unity consumption for write operations</a> in the <i>Amazon DynamoDB Developer Guide</i>.</p>"
+          "documentation":"<p>The capacity units consumed by the <code>UpdateItem</code> operation. The data returned includes the total provisioned throughput consumed, along with statistics for the table and any indexes involved in the operation. <code>ConsumedCapacity</code> is only returned if the <code>ReturnConsumedCapacity</code> parameter was specified. For more information, see <a href=\"https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/read-write-operations.html#write-operation-consumption\">Capacity unity consumption for write operations</a> in the <i>Amazon DynamoDB Developer Guide</i>.</p> <p>If the table has vector indexes, the response includes a <code>VectorIndexes</code> field with <code>VectorWriteRequestBytes</code> consumed for each affected vector index.</p>"
         },
         "ItemCollectionMetrics":{
           "shape":"ItemCollectionMetrics",
@@ -6933,6 +7146,10 @@
         "GlobalTableSettingsReplicationMode":{
           "shape":"GlobalTableSettingsReplicationMode",
           "documentation":"<p>Controls the settings replication mode for a global table replica. This attribute can be defined using UpdateTable operation only on a regional table with values:</p> <ul> <li> <p> <code>ENABLED</code>: Defines settings replication on a regional table to be used as a source table for creating Multi-Account Global Table.</p> </li> <li> <p> <code>DISABLED</code>: Remove settings replication on a regional table. Settings replication needs to be defined to ENABLED again in order to create a Multi-Account Global Table using this table. </p> </li> </ul>"
+        },
+        "VectorIndexUpdates":{
+          "shape":"VectorIndexUpdateList",
+          "documentation":"<p>A list of vector indexes to be added to or removed from the table. You can add or remove one vector index for each <code>UpdateTable</code> operation.</p> <p>To add a vector index, specify <code>IndexName</code>, <code>VectorAttribute</code>, <code>Dimensions</code>, <code>DistanceFunction</code>, and <code>Projection</code>. To remove a vector index, specify only the <code>IndexName</code>.</p>"
         }
       },
       "documentation":"<p>Represents the input of an <code>UpdateTable</code> operation.</p>"
@@ -7003,6 +7220,196 @@
           "documentation":"<p>Represents the output of an <code>UpdateTimeToLive</code> operation.</p>"
         }
       }
+    },
+    "VectorAttributeDefinition":{
+      "type":"structure",
+      "required":["AttributeName"],
+      "members":{
+        "AttributeName":{
+          "shape":"VectorAttributeName",
+          "documentation":"<p>The name of the vector attribute.</p>"
+        }
+      },
+      "documentation":"<p>The definition of a vector attribute for a vector index.</p>"
+    },
+    "VectorAttributeName":{
+      "type":"string",
+      "max":255,
+      "min":1
+    },
+    "VectorCapacity":{
+      "type":"structure",
+      "members":{
+        "VectorSearchRequestBytes":{
+          "shape":"ConsumedCapacityUnits",
+          "documentation":"<p>The number of vector search request bytes consumed by a <code>SearchVectors</code> operation.</p>"
+        },
+        "VectorWriteRequestBytes":{
+          "shape":"ConsumedCapacityUnits",
+          "documentation":"<p>The number of vector write request bytes consumed when writing to a vector index. Reported for write operations that modify attributes indexed by a vector index.</p>"
+        }
+      },
+      "documentation":"<p>The consumed capacity for vector index operations, including vector search request bytes and vector write request bytes.</p>"
+    },
+    "VectorDistanceFunction":{
+      "type":"string",
+      "enum":[
+        "COSINE",
+        "DOT_PRODUCT",
+        "EUCLIDEAN"
+      ]
+    },
+    "VectorIndex":{
+      "type":"structure",
+      "required":[
+        "IndexName",
+        "VectorAttribute",
+        "Projection",
+        "Dimensions",
+        "DistanceFunction"
+      ],
+      "members":{
+        "IndexName":{
+          "shape":"IndexName",
+          "documentation":"<p>The name of the vector index.</p>"
+        },
+        "VectorAttribute":{
+          "shape":"VectorAttributeDefinition",
+          "documentation":"<p>The vector attribute configuration for the index.</p>"
+        },
+        "SearchSchema":{
+          "shape":"SearchSchema",
+          "documentation":"<p>The search schema that defines partition key and inline filter attributes for the vector index.</p>"
+        },
+        "Projection":{
+          "shape":"Projection",
+          "documentation":"<p>Specifies attributes that are copied (projected) from the table into the vector index.</p>"
+        },
+        "Dimensions":{
+          "shape":"PositiveLongObject",
+          "documentation":"<p>The number of dimensions in each vector.</p>"
+        },
+        "DistanceFunction":{
+          "shape":"VectorDistanceFunction",
+          "documentation":"<p>The distance function used to calculate similarity between vectors. Valid values: <code>COSINE</code>, <code>EUCLIDEAN</code>, <code>DOT_PRODUCT</code>.</p>"
+        }
+      },
+      "documentation":"<p>Contains the configuration settings for a vector index, including the index name, vector attribute, dimensions, distance function, search schema, and projection.</p>"
+    },
+    "VectorIndexDescription":{
+      "type":"structure",
+      "members":{
+        "IndexName":{
+          "shape":"IndexName",
+          "documentation":"<p>The name of the vector index.</p>"
+        },
+        "SearchSchema":{
+          "shape":"SearchSchema",
+          "documentation":"<p>The search schema that defines partition key and inline filter attributes for the vector index.</p>"
+        },
+        "Projection":{
+          "shape":"Projection",
+          "documentation":"<p>Specifies attributes that are copied (projected) from the table into the vector index.</p>"
+        },
+        "VectorAttribute":{
+          "shape":"VectorAttributeDefinition",
+          "documentation":"<p>The vector attribute configuration for the index.</p>"
+        },
+        "Dimensions":{
+          "shape":"PositiveLongObject",
+          "documentation":"<p>The number of dimensions in each vector.</p>"
+        },
+        "DistanceFunction":{
+          "shape":"VectorDistanceFunction",
+          "documentation":"<p>The distance function used to calculate similarity between vectors.</p>"
+        },
+        "IndexStatus":{
+          "shape":"IndexStatus",
+          "documentation":"<p>The current state of the vector index:</p> <ul> <li> <p> <code>CREATING</code> - The index is being created.</p> </li> <li> <p> <code>ACTIVE</code> - The index is ready for use.</p> </li> <li> <p> <code>DELETING</code> - The index is being deleted.</p> </li> </ul>"
+        },
+        "Backfilling":{
+          "shape":"Backfilling",
+          "documentation":"<p>Specifies whether the index is currently backfilling. During backfill, <code>SearchVectors</code> operations might return incomplete results.</p>"
+        },
+        "IndexSizeBytes":{
+          "shape":"LongObject",
+          "documentation":"<p>The total size of the vector index, in bytes. Amazon DynamoDB updates this value approximately every six hours. Recent changes might not be reflected in this value.</p>"
+        },
+        "ItemCount":{
+          "shape":"LongObject",
+          "documentation":"<p>The number of items indexed in the vector index. Amazon DynamoDB updates this value approximately every six hours. Recent changes might not be reflected in this value.</p>"
+        },
+        "IndexArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) that uniquely identifies the vector index.</p>"
+        }
+      },
+      "documentation":"<p>Contains the current state and configuration of a vector index, including its status, size, item count, and the settings specified when the index was created.</p>"
+    },
+    "VectorIndexDescriptionList":{
+      "type":"list",
+      "member":{"shape":"VectorIndexDescription"}
+    },
+    "VectorIndexInfo":{
+      "type":"structure",
+      "members":{
+        "IndexName":{
+          "shape":"IndexName",
+          "documentation":"<p>The name of the vector index.</p>"
+        },
+        "VectorAttribute":{
+          "shape":"VectorAttributeDefinition",
+          "documentation":"<p>The vector attribute configuration for the index.</p>"
+        },
+        "SearchSchema":{
+          "shape":"SearchSchema",
+          "documentation":"<p>The search schema that defines partition key and inline filter attributes for the vector index.</p>"
+        },
+        "Projection":{
+          "shape":"Projection",
+          "documentation":"<p>Specifies attributes that are copied (projected) from the table into the vector index.</p>"
+        },
+        "Dimensions":{
+          "shape":"PositiveLongObject",
+          "documentation":"<p>The number of dimensions in each vector.</p>"
+        },
+        "DistanceFunction":{
+          "shape":"VectorDistanceFunction",
+          "documentation":"<p>The distance function used to calculate similarity between vectors.</p>"
+        }
+      },
+      "documentation":"<p>Contains the configuration of a vector index as it existed at the time a backup was created.</p>"
+    },
+    "VectorIndexList":{
+      "type":"list",
+      "member":{"shape":"VectorIndex"}
+    },
+    "VectorIndexUpdate":{
+      "type":"structure",
+      "members":{
+        "Create":{
+          "shape":"CreateVectorIndexAction",
+          "documentation":"<p>The configuration for creating a new vector index on the table.</p>"
+        },
+        "Delete":{
+          "shape":"DeleteVectorIndexAction",
+          "documentation":"<p>The configuration for deleting an existing vector index from the table.</p>"
+        }
+      },
+      "documentation":"<p>A vector index to be added to or removed from a table.</p>"
+    },
+    "VectorIndexUpdateList":{
+      "type":"list",
+      "member":{"shape":"VectorIndexUpdate"}
+    },
+    "VectorIndexes":{
+      "type":"list",
+      "member":{"shape":"VectorIndexInfo"}
+    },
+    "VectorIndexesCapacityMap":{
+      "type":"map",
+      "key":{"shape":"IndexName"},
+      "value":{"shape":"VectorCapacity"}
     },
     "WarmThroughput":{
       "type":"structure",

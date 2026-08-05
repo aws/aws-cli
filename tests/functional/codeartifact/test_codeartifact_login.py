@@ -60,12 +60,22 @@ class TestCodeArtifactLogin(unittest.TestCase):
         self.subprocess_check_out_mock = (
             self.subprocess_check_output_patch.start()
         )
+
+        self.test_npmrc_path = self.file_creator.full_path('.npmrc')
+        self.get_npmrc_path_patch = mock.patch(
+            'awscli.customizations.codeartifact.login.NpmLogin'
+            '.get_npmrc_path'
+        )
+        self.get_npmrc_path_mock = self.get_npmrc_path_patch.start()
+        self.get_npmrc_path_mock.return_value = self.test_npmrc_path
+
         self.cli_runner = CLIRunner()
 
     def tearDown(self):
         self.pypi_rc_path_patch.stop()
         self.subprocess_check_output_patch.stop()
         self.get_netrc_path_patch.stop()
+        self.get_npmrc_path_patch.stop()
         self.subprocess_patch.stop()
         self.file_creator.remove_all()
 
@@ -208,7 +218,6 @@ class TestCodeArtifactLogin(unittest.TestCase):
 
         repo_uri = urlsplit(self.endpoint)
         always_auth_config = f'//{repo_uri.netloc}{repo_uri.path}:always-auth'
-        auth_token_config = f'//{repo_uri.netloc}{repo_uri.path}:_authToken'
 
         scope = kwargs.get('scope')
         registry = f'{scope}:registry' if scope else 'registry'
@@ -216,9 +225,6 @@ class TestCodeArtifactLogin(unittest.TestCase):
         commands = []
         commands.append([npm_cmd, 'config', 'set', registry, self.endpoint])
         commands.append([npm_cmd, 'config', 'set', always_auth_config, 'true'])
-        commands.append(
-            [npm_cmd, 'config', 'set', auth_token_config, self.auth_token]
-        )
 
         return commands
 

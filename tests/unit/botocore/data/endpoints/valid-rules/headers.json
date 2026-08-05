@@ -1,0 +1,44 @@
+{
+  "parameters": {
+    "Region": {
+      "type": "string",
+      "builtIn": "AWS::Region",
+      "documentation": "The region to dispatch this request, eg. `us-east-1`."
+    }
+  },
+  "rules": [
+    {
+      "documentation": "Template the region into the URI when region is set",
+      "conditions": [
+        {
+          "fn": "isSet",
+          "argv": [
+            {
+              "ref": "Region"
+            }
+          ]
+        }
+      ],
+      "endpoint": {
+        "url": "https://{Region}.amazonaws.com",
+        "headers": {
+          "x-amz-region": [
+            "{Region}"
+          ],
+          "x-amz-multi": [
+            "*",
+            "{Region}"
+          ]
+        }
+      },
+      "type": "endpoint"
+    },
+    {
+      "documentation": "fallback when region is unset",
+      "conditions": [],
+      "error": "Region must be set to resolve a valid endpoint",
+      "type": "error"
+    }
+  ],
+  "version": "1.3"
+}

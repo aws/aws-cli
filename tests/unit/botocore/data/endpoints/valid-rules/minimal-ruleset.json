@@ -1,0 +1,29 @@
+{
+  "parameters": {
+    "Region": {
+      "type": "string",
+      "builtIn": "AWS::Region",
+      "required": true
+    }
+  },
+  "rules": [
+    {
+      "documentation": "base rule",
+      "conditions": [],
+      "endpoint": {
+        "url": "https://{Region}.amazonaws.com",
+        "properties": {
+          "authSchemes": [
+            {
+              "name": "sigv4",
+              "signingName": "serviceName",
+              "signingRegion": "{Region}"
+            }
+          ]
+        }
+      },
+      "type": "endpoint"
+    }
+  ],
+  "version": "1.3"
+}

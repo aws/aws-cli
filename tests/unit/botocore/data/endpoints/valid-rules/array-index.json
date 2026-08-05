@@ -1,0 +1,47 @@
+{
+  "version": "1.3",
+  "parameters": {
+    "ResourceList": {
+      "required": true,
+      "default": ["default1", "default2"],
+      "type": "stringArray"
+    }
+  },
+  "rules": [
+    {
+      "documentation": "Array is set, retrieve index 0",
+      "conditions": [
+        {
+          "fn": "isSet",
+          "argv": [
+            {
+              "ref": "ResourceList"
+            }
+          ]
+        },
+        {
+          "fn": "getAttr",
+          "argv": [
+            {
+              "ref": "ResourceList"
+            },
+            "[0]"
+          ],
+          "assign": "resourceid"
+        }
+      ],
+      "endpoint": {
+        "url": "https://www.{resourceid}.example.com"
+      },
+      "type": "endpoint"
+    },
+    {
+      "documentation": "Fallback when array is unset",
+      "conditions": [],
+      "endpoint": {
+        "url": "https://www.example.com"
+      },
+      "type": "endpoint"
+    }
+  ]
+}

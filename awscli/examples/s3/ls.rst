@@ -1,6 +1,6 @@
 **Example 1: Listing all user owned buckets**
 
-The following ``ls`` command lists all of the bucket owned by the user.  In this example, the user owns the buckets ``amzn-s3-demo-bucket`` and ``amzn-s3-demo-bucket2``.  The timestamp is the date the bucket was created, shown in your machine's time zone.  This date can change when making changes to your bucket, such as editing its bucket policy.  Note if  ``s3://`` is used for the path argument ``<S3Uri>``, it will list all of the buckets as well. ::
+The following ``ls`` command lists all of the buckets owned by the user.  In this example, the user owns the buckets ``amzn-s3-demo-bucket`` and ``amzn-s3-demo-bucket2``.  The timestamp is the date the bucket was created, shown in your machine's time zone.  This date can change when making changes to your bucket, such as editing its bucket policy.  Note if  ``s3://`` is used for the path argument ``<S3Uri>``, it will list all of the buckets as well. ::
 
     aws s3 ls
 
@@ -77,7 +77,7 @@ Output::
 
 **Example 6: Listing from an S3 access point**
 
-The following ``ls`` command list objects from access point (``myaccesspoint``)::
+The following ``ls`` command lists objects from access point (``myaccesspoint``)::
 
     aws s3 ls s3://arn:aws:s3:us-west-2:123456789012:accesspoint/myaccesspoint/
 

@@ -332,11 +332,14 @@ class EKSClient(object):
         region = self.cluster_description.get("arn").split(":")[3]
         outpost_config = self.cluster_description.get("outpostConfig")
 
-        if outpost_config is None:
+        if (
+            outpost_config is None
+            or outpost_config.get("etcdInstanceType") is not None
+        ):
             cluster_identification_parameter = "--cluster-name"
             cluster_identification_value = self._cluster_name
         else:
-            # If cluster contains outpostConfig, use id for identification
+            # If cluster contains outpostConfig and does not have etcdInstanceType, use id for identification
             cluster_identification_parameter = "--cluster-id"
             cluster_identification_value = self.cluster_description.get("id")
 

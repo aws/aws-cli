@@ -1136,6 +1136,9 @@ class CloudTrailValidateLogs(BasicCommand):
             remaining_data = gzip_inflater.flush()
             if remaining_data:
                 rolling_hash.update(remaining_data)
+            if gzip_inflater.unused_data:
+                self._on_log_trailing_data(log)
+                return
             computed_hash = rolling_hash.hexdigest()
             if computed_hash != log['hashValue']:
                 self._on_log_invalid(log)
@@ -1240,6 +1243,14 @@ class CloudTrailValidateLogs(BasicCommand):
         self._invalid_logs += 1
         self._write_status(
             f'Log file\ts3://{log_data["s3Bucket"]}/{log_data["s3Object"]}\tINVALID: invalid format',
+            True,
+        )
+
+    def _on_log_trailing_data(self, log_data):
+        self._invalid_logs += 1
+        self._write_status(
+            f'Log file\ts3://{log_data["s3Bucket"]}/{log_data["s3Object"]}\t'
+            f'INVALID: unexpected data after end of compressed stream',
             True,
         )
 

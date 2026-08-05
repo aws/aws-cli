@@ -3,6 +3,7 @@
 The following ``put-routing-rule`` example updates the priority of a routing rule. ::
 
     aws apigatewayv2 put-routing-rule \
+        --routing-rule-id 'aaa111' \
         --domain-name 'regional.example.com' \
         --priority 150 \
         --conditions '[ \

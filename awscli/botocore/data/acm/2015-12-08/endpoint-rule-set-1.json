@@ -1,0 +1,273 @@
+{
+    "version": "1.0",
+    "parameters": {
+        "Region": {
+            "type": "string",
+            "builtIn": "AWS::Region",
+            "required": true,
+            "documentation": "The AWS region to send requests to."
+        },
+        "Endpoint": {
+            "type": "string",
+            "builtIn": "SDK::Endpoint",
+            "documentation": "Override the endpoint used to send requests."
+        },
+        "UseFIPS": {
+            "type": "boolean",
+            "builtIn": "AWS::UseFIPS",
+            "documentation": "Use FIPS endpoints.",
+            "default": false,
+            "required": true
+        },
+        "UseDualStack": {
+            "type": "boolean",
+            "builtIn": "AWS::UseDualStack",
+            "documentation": "Use dual-stack endpoints.",
+            "default": false,
+            "required": true
+        },
+        "ServiceType": {
+            "type": "string",
+            "required": true,
+            "documentation": "The service type: ACM or ACM-ACME. Injected via @staticContextParams."
+        }
+    },
+    "rules": [
+        {
+            "documentation": "Use custom endpoint if provided",
+            "type": "endpoint",
+            "conditions": [
+                {
+                    "fn": "isSet",
+                    "argv": [
+                        {
+                            "ref": "Endpoint"
+                        }
+                    ]
+                }
+            ],
+            "endpoint": {
+                "url": "{Endpoint}"
+            }
+        },
+        {
+            "documentation": "Resolve partition for region",
+            "type": "tree",
+            "conditions": [
+                {
+                    "fn": "aws.partition",
+                    "argv": [
+                        {
+                            "ref": "Region"
+                        }
+                    ],
+                    "assign": "PartitionResult"
+                }
+            ],
+            "rules": [
+                {
+                    "documentation": "ACME operations",
+                    "type": "tree",
+                    "conditions": [
+                        {
+                            "fn": "stringEquals",
+                            "argv": [
+                                {
+                                    "ref": "ServiceType"
+                                },
+                                "ACM-ACME"
+                            ]
+                        }
+                    ],
+                    "rules": [
+                        {
+                            "documentation": "ACME with custom endpoint",
+                            "conditions": [
+                                {
+                                    "fn": "isSet",
+                                    "argv": [
+                                        {
+                                            "ref": "Endpoint"
+                                        }
+                                    ]
+                                }
+                            ],
+                            "endpoint": {
+                                "url": "{Endpoint}"
+                            },
+                            "type": "endpoint"
+                        },
+                        {
+                            "documentation": "ACME operations are only available in commercial AWS partitions",
+                            "conditions": [
+                                {
+                                    "fn": "stringEquals",
+                                    "argv": [
+                                        {
+                                            "fn": "getAttr",
+                                            "argv": [
+                                                {
+                                                    "ref": "PartitionResult"
+                                                },
+                                                "name"
+                                            ]
+                                        },
+                                        "aws"
+                                    ]
+                                }
+                            ],
+                            "rules": [
+                                {
+                                    "documentation": "FIPS endpoints are not available for ACME operations",
+                                    "conditions": [
+                                        {
+                                            "fn": "booleanEquals",
+                                            "argv": [
+                                                {
+                                                    "ref": "UseFIPS"
+                                                },
+                                                true
+                                            ]
+                                        }
+                                    ],
+                                    "error": "FIPS endpoints are not available for ACME operations",
+                                    "type": "error"
+                                },
+                                {
+                                    "documentation": "ACME standard",
+                                    "conditions": [],
+                                    "endpoint": {
+                                        "url": "https://acm-acme.{Region}.{PartitionResult#dualStackDnsSuffix}"
+                                    },
+                                    "type": "endpoint"
+                                }
+                            ],
+                            "type": "tree"
+                        },
+                        {
+                            "documentation": "ACME operations are only available in commercial AWS partitions",
+                            "conditions": [],
+                            "error": "ACME operations are only available in commercial AWS partitions",
+                            "type": "error"
+                        }
+                    ]
+                },
+                {
+                    "documentation": "ACM operations",
+                    "type": "tree",
+                    "conditions": [],
+                    "rules": [
+                        {
+                            "documentation": "ACM FIPS + DualStack",
+                            "type": "endpoint",
+                            "conditions": [
+                                {
+                                    "fn": "booleanEquals",
+                                    "argv": [
+                                        {
+                                            "ref": "UseFIPS"
+                                        },
+                                        true
+                                    ]
+                                },
+                                {
+                                    "fn": "booleanEquals",
+                                    "argv": [
+                                        {
+                                            "ref": "UseDualStack"
+                                        },
+                                        true
+                                    ]
+                                }
+                            ],
+                            "endpoint": {
+                                "url": "https://acm-fips.{Region}.{PartitionResult#dualStackDnsSuffix}"
+                            }
+                        },
+                        {
+                            "documentation": "ACM FIPS only",
+                            "type": "tree",
+                            "conditions": [
+                                {
+                                    "fn": "booleanEquals",
+                                    "argv": [
+                                        {
+                                            "ref": "UseFIPS"
+                                        },
+                                        true
+                                    ]
+                                }
+                            ],
+                            "rules": [
+                                {
+                                    "documentation": "ACM FIPS GovCloud",
+                                    "type": "endpoint",
+                                    "conditions": [
+                                        {
+                                            "fn": "stringEquals",
+                                            "argv": [
+                                                {
+                                                    "fn": "getAttr",
+                                                    "argv": [
+                                                        {
+                                                            "ref": "PartitionResult"
+                                                        },
+                                                        "name"
+                                                    ]
+                                                },
+                                                "aws-us-gov"
+                                            ]
+                                        }
+                                    ],
+                                    "endpoint": {
+                                        "url": "https://acm.{Region}.amazonaws.com"
+                                    }
+                                },
+                                {
+                                    "documentation": "ACM FIPS standard",
+                                    "type": "endpoint",
+                                    "conditions": [],
+                                    "endpoint": {
+                                        "url": "https://acm-fips.{Region}.{PartitionResult#dnsSuffix}"
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "documentation": "ACM DualStack only",
+                            "type": "endpoint",
+                            "conditions": [
+                                {
+                                    "fn": "booleanEquals",
+                                    "argv": [
+                                        {
+                                            "ref": "UseDualStack"
+                                        },
+                                        true
+                                    ]
+                                }
+                            ],
+                            "endpoint": {
+                                "url": "https://acm.{Region}.{PartitionResult#dualStackDnsSuffix}"
+                            }
+                        },
+                        {
+                            "documentation": "ACM standard",
+                            "type": "endpoint",
+                            "conditions": [],
+                            "endpoint": {
+                                "url": "https://acm.{Region}.{PartitionResult#dnsSuffix}"
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "documentation": "Fallback error if region is not set",
+            "type": "error",
+            "conditions": [],
+            "error": "Region must be set to resolve an endpoint."
+        }
+    ]
+}

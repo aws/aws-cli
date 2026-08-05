@@ -3,8 +3,8 @@
 The following ``disconnect-user`` example disconnects all connections for the specified user from the specified room. On success it returns HTTP 200 with an empty response body. ::
 
     aws ivschat disconnect-user \
-        --roomIdentifier "arn:aws:ivschat:us-west-2:12345689012:room/g1H2I3j4k5L6" \
-        --userId "ABC123def456" \
+        --room-identifier "arn:aws:ivschat:us-west-2:12345689012:room/g1H2I3j4k5L6" \
+        --user-id "ABC123def456" \
         --reason "Violated terms of service"
 
 This command produces no output.

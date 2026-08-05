@@ -24,12 +24,13 @@ def find_version(*file_paths):
 
 
 install_requires = [
-    'botocore==1.43.9',
     'docutils>=0.18.1,<=0.19',
-    's3transfer>=0.17.0,<0.18.0',
     'PyYAML>=3.10,<6.1',
     'colorama>=0.2.5,<0.4.7',
     'rsa>=3.1.2,<4.8',
+    'jmespath>=0.7.1,<2.0.0',
+    'python-dateutil>=2.1,<3.0.0',
+    'urllib3>=1.25.4,!=2.2.0,<3',
 ]
 
 
@@ -46,7 +47,7 @@ setup_options = dict(
     packages=find_packages(exclude=['tests*']),
     include_package_data=True,
     install_requires=install_requires,
-    extras_require={},
+    extras_require={'crt': ['awscrt==0.36.0']},
     license="Apache License 2.0",
     python_requires=">= 3.10",
     classifiers=[

@@ -21,19 +21,18 @@ at the man output, we look one step before at the generated rst output
 (it's easier to verify).
 
 """
+
 import os
 import re
 import shlex
+
 import docutils.nodes
 import docutils.parsers.rst
 import docutils.utils
-
 import pytest
 
-from awscli.argparser import MainArgParser
-from awscli.argparser import ServiceArgParser
+from awscli.argparser import ArgTableArgParser, MainArgParser, ServiceArgParser
 from awscli.testutils import BaseAWSHelpOutputTest, create_clidriver
-
 
 # Mapping of command names to subcommands that have examples in their help
 # output.  This isn't mean to be an exhaustive list, but should help catch
@@ -45,12 +44,19 @@ COMMAND_EXAMPLES = {
     'ec2': ['run-instances', 'start-instances', 'stop-instances'],
     'swf': ['deprecate-domain', 'describe-domain'],
     'sqs': ['create-queue', 'get-queue-attributes'],
-    'emr': ['add-steps', 'create-default-roles', 'describe-cluster', 'schedule-hbase-backup'],
+    'emr': [
+        'add-steps',
+        'create-default-roles',
+        'describe-cluster',
+        'schedule-hbase-backup',
+    ],
 }
 _dname = os.path.dirname
 EXAMPLES_DIR = os.path.join(
     _dname(_dname(_dname(_dname(os.path.abspath(__file__))))),
-    'awscli', 'examples')
+    'awscli',
+    'examples',
+)
 
 ALLOWED_FILENAME_CHAR_REGEX = re.compile(r'([a-z0-9_\-\.]*$)')
 HTTP_LINK_REGEX = re.compile(r'`.+?<http://')
@@ -58,7 +64,7 @@ HTTP_LINK_REGEX = re.compile(r'`.+?<http://')
 
 # Used so that docutils doesn't write errors to stdout/stderr.
 # We're collecting and reporting these via AssertionErrors messages.
-class NoopWriter(object):
+class NoopWriter:
     def write(self, *args, **kwargs):
         pass
 
@@ -86,7 +92,7 @@ def _get_all_doc_examples():
             if filename.startswith('.'):
                 # Ignore hidden files as it starts with "."
                 continue
-            if not filename.endswith('.rst'):                
+            if not filename.endswith('.rst'):
                 other_doc_examples.append(full_path)
                 continue
             rst_doc_examples.append(full_path)
@@ -115,10 +121,7 @@ def command_validator():
     return CommandValidator(driver)
 
 
-@pytest.mark.parametrize(
-    "command, subcommand",
-    EXAMPLE_COMMAND_TESTS
-)
+@pytest.mark.parametrize("command, subcommand", EXAMPLE_COMMAND_TESTS)
 def test_examples(command, subcommand):
     t = _ExampleTests(methodName='noop_test')
     t.setUp()
@@ -129,10 +132,7 @@ def test_examples(command, subcommand):
         t.tearDown()
 
 
-@pytest.mark.parametrize(
-    "example_file",
-    RST_DOC_EXAMPLES
-)
+@pytest.mark.parametrize("example_file", RST_DOC_EXAMPLES)
 def test_rst_doc_examples(command_validator, example_file):
     verify_has_only_ascii_chars(example_file)
     verify_is_valid_rst(example_file)
@@ -147,7 +147,8 @@ def verify_no_http_links(filename):
     if match:
         error_line_number = line_num(contents, match.span()[0])
         error_line = extract_error_line(
-            contents, match.span()[0], match.span()[1])
+            contents, match.span()[0], match.span()[1]
+        )
         marker_idx = error_line.find('http://') - 1
         marker_line = (" " * marker_idx) + '^'
         raise AssertionError(
@@ -166,13 +167,14 @@ def verify_has_only_ascii_chars(filename):
             # message.
             offset = e.start
             spread = 20
-            bad_text = bytes_content[offset-spread:e.start+spread]
+            bad_text = bytes_content[offset - spread : e.start + spread]
             underlined = ' ' * spread + '^'
             error_text = '\n'.join([bad_text, underlined])
             line_number = bytes_content[:offset].count(b'\n') + 1
             raise AssertionError(
                 "Non ascii characters found in the examples file %s, line %s:"
-                "\n\n%s\n" % (filename, line_number, error_text))
+                "\n\n%s\n" % (filename, line_number, error_text)
+            )
 
 
 def verify_is_valid_rst(filename):
@@ -187,7 +189,8 @@ def parse_rst(filename):
     parser = docutils.parsers.rst.Parser()
     components = (docutils.parsers.rst.Parser,)
     settings = docutils.frontend.OptionParser(
-        components=components).get_default_values()
+        components=components
+    ).get_default_values()
     document = docutils.utils.new_document('<cli-example>', settings=settings)
     errors = []
 
@@ -207,7 +210,7 @@ def parse_rst(filename):
 def _make_error_msg(filename, errors):
     with open(filename) as f:
         lines = f.readlines()
-    relative_name = filename[len(EXAMPLES_DIR) + 1:]
+    relative_name = filename[len(EXAMPLES_DIR) + 1 :]
     failure_message = [
         'The file "%s" contains invalid RST: ' % relative_name,
         '',
@@ -242,62 +245,109 @@ def find_all_cli_commands(filename):
     return visitor.cli_commands
 
 
-class CommandValidator(object):
+class CommandValidator:
     def __init__(self, driver):
         self.driver = driver
         help_command = self.driver.create_help_command()
         self._service_command_table = help_command.command_table
         self._global_arg_table = help_command.arg_table
         self._main_parser = MainArgParser(
-            self._service_command_table, driver.session.user_agent(),
+            self._service_command_table,
+            driver.session.user_agent(),
             'Some description',
             self._global_arg_table,
-            prog="aws"
+            prog="aws",
         )
 
     def validate_cli_command(self, command, filename):
-        # The plan is to expand this to use the proper CLI parser and
-        # parse arguments and verify them with the service model, but
-        # as a first pass, we're going to verify that the service name
-        # and operation match what we expect.  We can do this without
-        # having to use a parser.
-        self._parse_service_operation(command, filename)
-
-    def _parse_service_operation(self, command, filename):
+        """
+        Validates the syntax of a CLI command by actually parsing it, which catches:
+        - Invalid service names
+        - Invalid operation names
+        - Missing required arguments
+        - Invalid argument names
+        - Malformed argument syntax
+        """
         try:
             command_parts = shlex.split(command)[1:]
+            # Strip newlines from arguments that may have been included due to
+            # backslash line continuations in the RST examples
+            command_parts = [part.lstrip('\n') for part in command_parts]
         except Exception as e:
             raise AssertionError(
                 "Failed to parse this example as shell command: %s\n\n"
                 "Error:\n%s\n" % (command, e)
             )
-        # Strip off the 'aws ' part and break it out into a list.
-        parsed_args, remaining = self._parse_next_command(
-            filename, command, command_parts, self._main_parser)
-        # We know the service is good.  Parse the operation.
-        cmd = self._service_command_table[parsed_args.command]
-        cmd_table = cmd.create_help_command().command_table
-        service_parser = ServiceArgParser(operations_table=cmd_table,
-                                          service_name=parsed_args.command)
-        self._parse_next_command(filename, command, remaining, service_parser)
 
-    def _parse_next_command(self, filename, original_cmd, args_list, parser):
-        # Strip off the 'aws ' part and break it out into a list.
-        errors = []
-        parser._print_message = lambda message, file: errors.append(
-            message)
+        # TODO - for now skip validation if command uses
+        # --cli-input-json, --cli-input-yaml, or --generate-cli-skeleton
+        if any(
+            arg.startswith('--cli-input-json')
+            or arg.startswith('--cli-input-yaml')
+            or arg == '--generate-cli-skeleton'
+            for arg in command_parts
+        ):
+            return
+
         try:
-            parsed_args, remaining = parser.parse_known_args(args_list)
-            return parsed_args, remaining
-        except SystemExit:
-            # Yes...we have to catch SystemExit. argparse raises this
-            # when you have an invalid command.
-            error_msg = [
-                'Invalid CLI command: %s\n\n' % original_cmd,
-            ]
-            if errors:
-                error_msg.extend(errors)
-            raise AssertionError(''.join(error_msg))
+            # Parse global args
+            parsed_args, remaining = self._main_parser.parse_known_args(
+                command_parts
+            )
+            service_name = parsed_args.command
+
+            # Get the service command
+            service_cmd = self._service_command_table[service_name]
+
+            # Create the service parser
+            cmd_table = service_cmd.create_help_command().command_table
+            if not cmd_table:
+                # Top-level commands without sub-operations (e.g. login)
+                return
+            service_parser = ServiceArgParser(
+                operations_table=cmd_table, service_name=service_name
+            )
+
+            # Parse the operation
+            parsed_operation, remaining_args = service_parser.parse_known_args(
+                remaining
+            )
+
+            if not hasattr(parsed_operation, 'operation'):
+                # Not a standard operation (might be help, wait, etc.)
+                return
+
+            operation_name = parsed_operation.operation
+            operation_cmd = cmd_table[operation_name]
+
+            # Validate all arguments using the operation's argument parser
+            arg_table = operation_cmd.arg_table
+            operation_parser = ArgTableArgParser(arg_table)
+
+            errors = []
+            operation_parser._print_message = (
+                lambda message, file: errors.append(message)
+            )
+
+            try:
+                operation_parser.parse_known_args(remaining_args)
+            except (SystemExit, Exception) as e:
+                error_msg = [
+                    f'Invalid CLI command: {command}\n\n',
+                    f'File: {filename}\n\n',
+                ]
+                if errors:
+                    error_msg.extend(errors)
+                else:
+                    error_msg.append(f'Error: {e}\n')
+                raise AssertionError(''.join(error_msg))
+
+        except Exception as e:
+            raise AssertionError(
+                f"Failed to validate command: {command}\n"
+                f"File: {filename}\n"
+                f"Error: {e}"
+            )
 
 
 class CollectCLICommands(docutils.nodes.GenericNodeVisitor):
@@ -314,10 +364,7 @@ class CollectCLICommands(docutils.nodes.GenericNodeVisitor):
         pass
 
 
-@pytest.mark.parametrize(
-    "example_file",
-    RST_DOC_EXAMPLES + OTHER_DOC_EXAMPLES
-)
+@pytest.mark.parametrize("example_file", RST_DOC_EXAMPLES + OTHER_DOC_EXAMPLES)
 def test_example_file_name(example_file):
     filename = example_file.split(os.sep)[-1]
     _assert_file_is_rst_or_txt(example_file)

@@ -4,6 +4,6 @@ The following ``untag-resource`` example removes a tag with the key ``stack`` fr
 
     aws pipes untag-resource \
         --resource-arn arn:aws:pipes:us-east-1:123456789012:pipe/Demo_Pipe \
-        --tags stack
+        --tag-keys stack
 
 For more information, see `Amazon EventBridge Pipes concepts <https://docs.aws.amazon.com/eventbridge/latest/userguide/pipes-concepts.html>`__ in the *Amazon EventBridge User Guide*.

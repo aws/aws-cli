@@ -3,7 +3,7 @@
 The following ``accept-share`` example accepts a share of HealthOmics analytics store data. ::
 
     aws omics accept-share \
-        ----share-id "495c21bedc889d07d0ab69d710a6841e-dd75ab7a1a9c384fa848b5bd8e5a7e0a"
+        --share-id "495c21bedc889d07d0ab69d710a6841e-dd75ab7a1a9c384fa848b5bd8e5a7e0a"
 
 Output::
 

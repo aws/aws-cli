@@ -1,0 +1,505 @@
+{
+  "description": [
+    "These are test descriptions that describe how specific data should be loaded from a profile file based on a ",
+    "profile name."
+  ],
+
+  "testSuites": [
+    {
+      "profiles": {
+        "default": {
+          "aws_access_key_id": "123",
+          "aws_secret_access_key": "456",
+          "region": "fake-region-10"
+        },
+        "service_localhost_global_only": {
+          "aws_access_key_id": "123",
+          "aws_secret_access_key": "456",
+          "region": "fake-region-10",
+          "endpoint_url": "http://localhost:1234"
+        },
+        "service_global_only": {
+          "aws_access_key_id": "123",
+          "aws_secret_access_key": "456",
+          "region": "fake-region-10",
+          "endpoint_url": "https://global.endpoint.aws"
+        },
+        "service_specific_s3": {
+          "aws_access_key_id": "123",
+          "aws_secret_access_key": "456",
+          "services": "service_specific_s3",
+          "region": "fake-region-10"
+        },
+        "global_and_service_specific_s3": {
+          "aws_access_key_id": "123",
+          "aws_secret_access_key": "456",
+          "endpoint_url": "https://global.endpoint.aws",
+          "services": "service_specific_s3",
+          "region": "fake-region-10"
+        },
+        "ignore_global_and_service_specific_s3": {
+          "aws_access_key_id": "123",
+          "aws_secret_access_key": "456",
+          "endpoint_url": "https://global.endpoint.aws",
+          "services": "service_specific_s3",
+          "region": "fake-region-10",
+          "ignore_configured_endpoint_urls": "true"
+        },
+        "service_specific_dynamodb_and_s3": {
+          "aws_access_key_id": "123",
+          "aws_secret_access_key": "456",
+          "services": "service_specific_dynamodb_and_s3",
+          "region": "fake-region-10"
+        }
+      },
+
+      "services": {
+        "service_specific_s3": {
+          "s3": {
+            "endpoint_url": "https://s3.endpoint.aws"
+          }
+        },
+        "service_specific_dynamodb_and_s3": {
+          "dynamodb": {
+            "endpoint_url": "https://dynamodb.endpoint.aws"
+          },
+          "s3": {
+            "endpoint_url": "https://s3.endpoint.aws"
+          }
+        }
+      },
+
+      "client_configs": {
+        "default": {},
+        "endpoint_url_provided":{
+          "endpoint_url": "https://client-config.endpoint.aws"
+        },
+        "ignore_configured_endpoint_urls": {
+          "ignore_configured_endpoint_urls": true
+        },
+        "provide_and_ignore_configured_endpoint_urls": {
+          "ignore_configured_endpoint_urls": true,
+          "endpoint_url": "https://client-config.endpoint.aws"
+        }
+      },
+
+      "environments": {
+        "default": {},
+        "global_only": {
+          "AWS_ENDPOINT_URL": "https://global-from-envvar.endpoint.aws"
+        },
+        "service_specific_s3": {
+          "AWS_ENDPOINT_URL_S3": "https://s3-from-envvar.endpoint.aws"
+        },
+        "global_and_service_specific_s3": {
+          "AWS_ENDPOINT_URL": "https://global-from-envvar.endpoint.aws",
+          "AWS_ENDPOINT_URL_S3": "https://s3-from-envvar.endpoint.aws"
+
+        },
+        "ignore_global_and_service_specific_s3": {
+          "AWS_ENDPOINT_URL": "https://global-from-envvar.endpoint.aws",
+          "AWS_ENDPOINT_URL_S3": "https://s3-from-envvar.endpoint.aws",
+          "AWS_IGNORE_CONFIGURED_ENDPOINT_URLS": "true"
+        },
+        "service_specific_dynamodb_and_s3": {
+          "AWS_ENDPOINT_URL_DYNAMODB": "https://dynamodb-from-envvar.endpoint.aws",
+          "AWS_ENDPOINT_URL_S3": "https://s3-from-envvar.endpoint.aws"
+        }
+      },
+
+    "endpointUrlTests": [
+      {
+        "name": "Global endpoint url is read from services section and used for an S3 client.",
+        "profile": "service_global_only",
+        "client_config": "default",
+        "environment": "default",
+        "service": "s3",
+        "output": {
+          "endpointUrl": "https://global.endpoint.aws"
+        }
+      },
+      {
+        "name": "Service specific endpoint url is read from services section and used for an S3 client.",
+        "profile": "service_specific_s3",
+        "client_config": "default",
+        "environment": "default",
+        "service": "s3",
+        "output": {
+          "endpointUrl": "https://s3.endpoint.aws"
+        }
+      },
+      {
+        "name": "S3 Service-specific endpoint URL from configuration file takes precedence over global endpoint URL from configuration file.",
+        "profile": "global_and_service_specific_s3",
+        "client_config": "default",
+        "environment": "default",
+        "service": "s3",
+        "output": {
+          "endpointUrl": "https://s3.endpoint.aws"
+        }
+      },
+      {
+        "name": "Global endpoint url environment variable takes precedence over the value resolved by the SDK.",
+        "profile": "default",
+        "client_config": "default",
+        "environment": "global_only",
+        "service": "s3",
+        "output": {
+          "endpointUrl": "https://global-from-envvar.endpoint.aws"
+        }
+      },
+      {
+        "name": "Global endpoint url environment variable takes precendence over global endpoint configuration option.",
+        "profile": "service_global_only",
+        "client_config": "default",
+        "environment": "global_only",
+        "service": "s3",
+        "output": {
+          "endpointUrl": "https://global-from-envvar.endpoint.aws"
+        }
+      },
+      {
+        "name": "Global endpoint url environment variable takes precendence over service-specific endpoint configuration option.",
+        "profile": "service_specific_s3",
+        "client_config": "default",
+        "environment": "global_only",
+        "service": "s3",
+        "output": {
+          "endpointUrl": "https://global-from-envvar.endpoint.aws"
+        }
+      },
+      {
+        "name": "Global endpoint url environment variable takes precendence over global endpoint configuration option and service-specific endpoint configuration option.",
+        "profile": "global_and_service_specific_s3",
+        "client_config": "default",
+        "environment": "global_only",
+        "service": "s3",
+        "output": {
+          "endpointUrl": "https://global-from-envvar.endpoint.aws"
+        }
+      },
+      {
+        "name": "Service-specific endpoint url environment variable takes precedence over the value resolved by the SDK.",
+        "profile": "default",
+        "client_config": "default",
+        "environment": "service_specific_s3",
+        "service": "s3",
+        "output": {
+          "endpointUrl": "https://s3-from-envvar.endpoint.aws"
+        }
+      },
+      {
+        "name": "Service-specific endpoint url environment variable takes precedence over the global endpoint url configuration option.",
+        "profile": "service_global_only",
+        "client_config": "default",
+        "environment": "service_specific_s3",
+        "service": "s3",
+        "output": {
+          "endpointUrl": "https://s3-from-envvar.endpoint.aws"
+        }
+      },
+      {
+        "name": "Service-specific endpoint url environment variable takes precedence over the service-specific endpoint url configuration option.",
+        "profile": "service_specific_s3",
+        "client_config": "default",
+        "environment": "service_specific_s3",
+        "service": "s3",
+        "output": {
+          "endpointUrl": "https://s3-from-envvar.endpoint.aws"
+        }
+      },
+      {
+        "name": "Service-specific endpoint url environment variable takes precedence over the services-specific endpoint url configuration option and the global endpoint url configuration option.",
+        "profile": "global_and_service_specific_s3",
+        "client_config": "default",
+        "environment": "service_specific_s3",
+        "service": "s3",
+        "output": {
+          "endpointUrl": "https://s3-from-envvar.endpoint.aws"
+        }
+      },
+      {
+        "name": "Service-specific endpoint url environment variable takes precedence over the global endpoint url environment variable.",
+        "profile": "default",
+        "client_config": "default",
+        "environment": "global_and_service_specific_s3",
+        "service": "s3",
+        "output": {
+          "endpointUrl": "https://s3-from-envvar.endpoint.aws"
+        }
+      },
+      {
+        "name": "Service-specific endpoint url environment variable takes precedence over the global endpoint url environment variable and the global endpoint url configuration option.",
+        "profile": "service_global_only",
+        "client_config": "default",
+        "environment": "global_and_service_specific_s3",
+        "service": "s3",
+        "output": {
+          "endpointUrl": "https://s3-from-envvar.endpoint.aws"
+        }
+      },
+      {
+        "name": "Service-specific endpoint url environment variable takes precedence over the global endpoint url environment variable and the the service-specific endpoint url configuration option.",
+        "profile": "service_specific_s3",
+        "client_config": "default",
+        "environment": "global_and_service_specific_s3",
+        "service": "s3",
+        "output": {
+          "endpointUrl": "https://s3-from-envvar.endpoint.aws"
+        }
+      },
+      {
+        "name": "Service-specific endpoint url environment variable takes precedence over the global endpoint url environment variable, the service-specific endpoint URL configuration option, and the global endpoint URL configuration option.",
+        "profile": "global_and_service_specific_s3",
+        "client_config": "default",
+        "environment": "global_and_service_specific_s3",
+        "service": "s3",
+        "output": {
+          "endpointUrl": "https://s3-from-envvar.endpoint.aws"
+        }
+      },
+      {
+        "name": "Client configuration takes precedence over value provided by the SDK.",
+        "profile": "default",
+        "client_config": "endpoint_url_provided",
+        "environment": "default",
+        "service": "s3",
+        "output": {
+          "endpointUrl": "https://client-config.endpoint.aws"
+        }
+      },
+      {
+        "name": "Client configuration takes precedence over global endpoint url from services section and used for an S3 client.",
+        "profile": "service_global_only",
+        "client_config": "endpoint_url_provided",
+        "environment": "default",
+        "service": "s3",
+        "output": {
+          "endpointUrl": "https://client-config.endpoint.aws"
+        }
+      },
+      {
+        "name": "Client configuration takes precedence over service specific endpoint url from services section and used for an S3 client.",
+        "profile": "service_specific_s3",
+        "client_config": "endpoint_url_provided",
+        "environment": "default",
+        "service": "s3",
+        "output": {
+          "endpointUrl": "https://client-config.endpoint.aws"
+        }
+      },
+      {
+        "name": "Client configuration takes precedence over S3 Service-specific endpoint URL from configuration file and global endpoint URL from configuration file.",
+        "profile": "global_and_service_specific_s3",
+        "client_config": "endpoint_url_provided",
+        "environment": "default",
+        "service": "s3",
+        "output": {
+          "endpointUrl": "https://client-config.endpoint.aws"
+        }
+      },
+      {
+        "name": "Client configuration takes precedence over global endpoint url environment variable.",
+        "profile": "default",
+        "client_config": "endpoint_url_provided",
+        "environment": "global_only",
+        "service": "s3",
+        "output": {
+          "endpointUrl": "https://client-config.endpoint.aws"
+        }
+      },
+      {
+        "name": "Client configuration takes precedence over global endpoint url environment variable and global endpoint configuration option.",
+        "profile": "service_global_only",
+        "client_config": "endpoint_url_provided",
+        "environment": "global_only",
+        "service": "s3",
+        "output": {
+          "endpointUrl": "https://client-config.endpoint.aws"
+        }
+      },
+      {
+        "name": "Client configuration takes precedence over global endpoint url environment variable and service-specific endpoint configuration option.",
+        "profile": "service_specific_s3",
+        "client_config": "endpoint_url_provided",
+        "environment": "global_only",
+        "service": "s3",
+        "output": {
+          "endpointUrl": "https://client-config.endpoint.aws"
+        }
+      },
+      {
+        "name": "Client configuration takes precedence over global endpoint url environment variable, global endpoint configuration option, and service-specific endpoint configuration option.",
+        "profile": "global_and_service_specific_s3",
+        "client_config": "endpoint_url_provided",
+        "environment": "global_only",
+        "service": "s3",
+        "output": {
+          "endpointUrl": "https://client-config.endpoint.aws"
+        }
+      },
+      {
+        "name": "Client configuration takes precedence over service-specific endpoint url environment variable.",
+        "profile": "default",
+        "client_config": "endpoint_url_provided",
+        "environment": "service_specific_s3",
+        "service": "s3",
+        "output": {
+          "endpointUrl": "https://client-config.endpoint.aws"
+        }
+      },
+      {
+        "name": "Client configuration takes precedence over service-specific endpoint url environment variable and the global endpoint url configuration option.",
+        "profile": "service_global_only",
+        "client_config": "endpoint_url_provided",
+        "environment": "service_specific_s3",
+        "service": "s3",
+        "output": {
+          "endpointUrl": "https://client-config.endpoint.aws"
+        }
+      },
+      {
+        "name": "Client configuration takes precedence over service-specific endpoint url environment variable and the service-specific endpoint url configuration option.",
+        "profile": "service_specific_s3",
+        "client_config": "endpoint_url_provided",
+        "environment": "service_specific_s3",
+        "service": "s3",
+        "output": {
+          "endpointUrl": "https://client-config.endpoint.aws"
+        }
+      },
+      {
+        "name": "Client configuration takes precedence over service-specific endpoint url environment variable, the services-specific endpoint url configuration option, and the global endpoint url configuration option.",
+        "profile": "global_and_service_specific_s3",
+        "client_config": "endpoint_url_provided",
+        "environment": "service_specific_s3",
+        "service": "s3",
+        "output": {
+          "endpointUrl": "https://client-config.endpoint.aws"
+        }
+      },
+      {
+        "name": "Client configuration takes precedence over service-specific endpoint url environment variable and the global endpoint url environment variable.",
+        "profile": "default",
+        "client_config": "endpoint_url_provided",
+        "environment": "global_and_service_specific_s3",
+        "service": "s3",
+        "output": {
+          "endpointUrl": "https://client-config.endpoint.aws"
+        }
+      },
+      {
+        "name": "Client configuration takes precedence over service-specific endpoint url environment variable, the global endpoint url environment variable, and the global endpoint url configuration option.",
+        "profile": "service_global_only",
+        "client_config": "endpoint_url_provided",
+        "environment": "global_and_service_specific_s3",
+        "service": "s3",
+        "output": {
+          "endpointUrl": "https://client-config.endpoint.aws"
+        }
+      },
+      {
+        "name": "Client configuration takes precedence over service-specific endpoint url environment variable, the global endpoint url environment variable, and the service-specific endpoint url configuration option.",
+        "profile": "service_specific_s3",
+        "client_config": "endpoint_url_provided",
+        "environment": "global_and_service_specific_s3",
+        "service": "s3",
+        "output": {
+          "endpointUrl": "https://client-config.endpoint.aws"
+        }
+      },
+      {
+        "name": "Client configuration takes precedence over service-specific endpoint url environment variable, the global endpoint url environment variable, the service-specific endpoint URL configuration option, and the global endpoint URL configuration option.",
+        "profile": "global_and_service_specific_s3",
+        "client_config": "endpoint_url_provided",
+        "environment": "global_and_service_specific_s3",
+        "service": "s3",
+        "output": {
+          "endpointUrl": "https://client-config.endpoint.aws"
+        }
+      },
+      {
+        "name": "All configured endpoints ignored due to environment variable.",
+        "profile": "global_and_service_specific_s3",
+        "client_config": "default",
+        "environment": "ignore_global_and_service_specific_s3",
+        "service": "s3",
+        "output": {
+          "endpointUrl": "https://s3.fake-region-10.amazonaws.com"
+        }
+      },
+      {
+        "name": "All configured endpoints ignored due to shared config variable.",
+        "profile": "ignore_global_and_service_specific_s3",
+        "client_config": "default",
+        "environment": "global_and_service_specific_s3",
+        "service": "s3",
+        "output": {
+          "endpointUrl": "https://s3.fake-region-10.amazonaws.com"
+        }
+      },
+      {
+        "name": "All configured endpoints ignored due to ignore client config parameter.",
+        "profile": "global_and_service_specific_s3",
+        "client_config": "ignore_configured_endpoint_urls",
+        "environment": "global_and_service_specific_s3",
+        "service": "s3",
+        "output": {
+          "endpointUrl": "https://s3.fake-region-10.amazonaws.com"
+        }
+      },
+      {
+        "name": "Environment variable and shared config file configured endpoints ignored due to ignore shared config variable and client configured endpoint is used.",
+        "profile": "ignore_global_and_service_specific_s3",
+        "client_config": "endpoint_url_provided",
+        "environment": "global_and_service_specific_s3",
+        "service": "s3",
+        "output": {
+          "endpointUrl": "https://client-config.endpoint.aws"
+        }
+      },
+      {
+        "name": "Environment variable and shared config file configured endpoints ignored due to ignore environment variable and client configured endpoint is used.",
+        "profile": "global_and_service_specific_s3",
+        "client_config": "endpoint_url_provided",
+        "environment": "ignore_global_and_service_specific_s3",
+        "service": "s3",
+        "output": {
+          "endpointUrl": "https://client-config.endpoint.aws"
+        }
+      },
+      {
+        "name": "Environment variable and shared config file configured endpoints ignored due to ignore client config variable and client configured endpoint is used.",
+        "profile": "global_and_service_specific_s3",
+        "client_config": "provide_and_ignore_configured_endpoint_urls",
+        "environment": "global_and_service_specific_s3",
+        "service": "s3",
+        "output": {
+          "endpointUrl": "https://client-config.endpoint.aws"
+        }
+      },
+      {
+        "name": "DynamoDB service-specific endpoint url shared config variable is used when service-specific S3 shared config variable is also present.",
+        "profile": "service_specific_dynamodb_and_s3",
+        "client_config": "default",
+        "environment": "default",
+        "service": "dynamodb",
+        "output": {
+          "endpointUrl": "https://dynamodb.endpoint.aws"
+        }
+      },
+      {
+        "name": "DynamoDB service-specific endpoint url environment variable is used when service-specific S3 environment variable is also present.",
+        "profile": "default",
+        "client_config": "default",
+        "environment": "service_specific_dynamodb_and_s3",
+        "service": "dynamodb",
+        "output": {
+          "endpointUrl": "https://dynamodb-from-envvar.endpoint.aws"
+        }
+      }
+
+    ]
+  }
+  ]
+}

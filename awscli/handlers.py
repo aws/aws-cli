@@ -114,6 +114,7 @@ from awscli.customizations.servicecatalog import (
 )
 from awscli.customizations.sessendemail import register_ses_send_email
 from awscli.customizations.sessionmanager import register_ssm_session
+from awscli.customizations.signin import register_alias_signin_command
 from awscli.customizations.sms_voice import register_sms_voice_hide
 from awscli.customizations.socialmessaging import register_alias_socialmessaging_command
 from awscli.customizations.streamingoutputarg import add_streaming_output_arg
@@ -208,6 +209,7 @@ def awscli_initialize(event_handlers):
     cloudformation_init(event_handlers)
     register_alias_mturk_command(event_handlers)
     register_alias_sagemaker_runtime_command(event_handlers)
+    register_alias_signin_command(event_handlers)
     register_alias_socialmessaging_command(event_handlers)
     register_rename_otel_commands(event_handlers)
     register_servicecatalog_commands(event_handlers)

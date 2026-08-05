@@ -138,4 +138,6 @@ class ConfigureCommand(BasicCommand):
                 self._session.get_config_variable('credentials_file'))
             self._config_writer.update_config(
                 credential_file_values,
-                shared_credentials_filename)
+                shared_credentials_filename,
+                check_permissions=True,
+            )

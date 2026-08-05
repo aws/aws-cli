@@ -48,7 +48,6 @@ from awscli.customizations.s3.utils import WarningResult
 from awscli.customizations.s3.utils import ProvideSizeSubscriber
 from awscli.customizations.s3.utils import ProvideETagSubscriber
 from awscli.customizations.s3.utils import ProvideUploadContentTypeSubscriber
-from awscli.customizations.s3.utils import ProvideCopyContentTypeSubscriber
 from awscli.customizations.s3.utils import ProvideLastModifiedTimeSubscriber
 from awscli.customizations.s3.utils import DirectoryCreatorSubscriber
 from awscli.customizations.s3.utils import DeleteSourceFileSubscriber
@@ -561,6 +560,27 @@ class TestDownloadRequestSubmitter(BaseTransferRequestSubmitterTest):
         future = self.transfer_request_submitter.submit(fileinfo)
         self.assertIsInstance(self.result_queue.get(), DryRunResult)
 
+    def test_warn_and_ignore_on_leading_slash_parent_reference(self):
+        fileinfo = self.create_file_info('/../foo.txt')
+        future = self.transfer_request_submitter.submit(fileinfo)
+        warning_result = self.result_queue.get()
+        self.assertIsInstance(warning_result, WarningResult)
+        self.assert_no_downloads_happened()
+
+    def test_warn_and_ignore_on_leading_slash_stacked_parent_reference(self):
+        fileinfo = self.create_file_info('/../../../foo/bar.txt')
+        future = self.transfer_request_submitter.submit(fileinfo)
+        warning_result = self.result_queue.get()
+        self.assertIsInstance(warning_result, WarningResult)
+        self.assert_no_downloads_happened()
+
+    def test_warn_and_ignore_on_double_leading_slash_parent_reference(self):
+        fileinfo = self.create_file_info('//../foo')
+        future = self.transfer_request_submitter.submit(fileinfo)
+        warning_result = self.result_queue.get()
+        self.assertIsInstance(warning_result, WarningResult)
+        self.assert_no_downloads_happened()
+
     def test_dry_run(self):
         self.cli_params['dryrun'] = True
         self.transfer_request_submitter = DownloadRequestSubmitter(
@@ -631,7 +651,6 @@ class TestCopyRequestSubmitter(BaseTransferRequestSubmitterTest):
         ref_subscribers = [
             ProvideSizeSubscriber,
             ProvideETagSubscriber,
-            ProvideCopyContentTypeSubscriber,
             CopyResultSubscriber
         ]
         actual_subscribers = copy_call_kwargs['subscribers']
@@ -801,7 +820,6 @@ class TestCopyRequestSubmitter(BaseTransferRequestSubmitterTest):
         ref_subscribers = [
             ProvideSizeSubscriber,
             ProvideETagSubscriber,
-            ProvideCopyContentTypeSubscriber,
             DeleteSourceObjectSubscriber,
             CopyResultSubscriber,
         ]

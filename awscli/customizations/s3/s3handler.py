@@ -41,7 +41,6 @@ from awscli.customizations.s3.utils import StdoutBytesWriter
 from awscli.customizations.s3.utils import ProvideSizeSubscriber
 from awscli.customizations.s3.utils import ProvideETagSubscriber
 from awscli.customizations.s3.utils import ProvideUploadContentTypeSubscriber
-from awscli.customizations.s3.utils import ProvideCopyContentTypeSubscriber
 from awscli.customizations.s3.utils import ProvideLastModifiedTimeSubscriber
 from awscli.customizations.s3.utils import DirectoryCreatorSubscriber
 from awscli.customizations.s3.utils import DeleteSourceFileSubscriber
@@ -322,8 +321,10 @@ class BaseTransferRequestSubmitter(object):
         # normpath() will use the OS path separator so we
         # need to take that into account when checking for a parent prefix.
         parent_prefix = '..' + os.path.sep
-        escapes_cwd = os.path.normpath(fileinfo.compare_key).startswith(
-            parent_prefix)
+        # Anchor compare_key against '.' (the destination directory root)
+        # to avoid false negatives on paths like '/../foo'
+        normalized = os.path.normpath('.' + os.path.sep + fileinfo.compare_key)
+        escapes_cwd = normalized.startswith(parent_prefix)
         if escapes_cwd:
             warning = create_warning(
                 fileinfo.compare_key, "File references a parent directory.")
@@ -442,8 +443,6 @@ class CopyRequestSubmitter(BaseTransferRequestSubmitter):
     def _add_additional_subscribers(self, subscribers, fileinfo):
         subscribers.append(ProvideSizeSubscriber(fileinfo.size))
         subscribers.append(ProvideETagSubscriber(fileinfo.etag))
-        if self._should_inject_content_type():
-            subscribers.append(ProvideCopyContentTypeSubscriber())
         if self._cli_params.get('is_move', False):
             subscribers.append(DeleteCopySourceObjectSubscriber(
                 fileinfo.source_client))

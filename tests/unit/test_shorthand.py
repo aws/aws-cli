@@ -175,6 +175,38 @@ def test_error_parsing(expr):
 
 
 @pytest.mark.parametrize(
+    "expr, expected_message", (
+        # The error message must include the original input with a
+        # caret pointing at the location of the syntax error.
+        (
+            'a=b,c==d',
+            "Expected: ',', received: '=' for input:\n"
+            "a=b,c==d\n"
+            "      ^",
+        ),
+        (
+            'a={b',
+            "Expected: '=', received: 'EOF' for input:\n"
+            "a={b\n"
+            "    ^",
+        ),
+        (
+            'foo=bar,foo=baz',
+            'Second instance of key "foo" encountered for input:\n'
+            'foo=bar,foo=baz\n'
+            '        ^\n'
+            'This is often because there is a preceding "," instead '
+            'of a space.',
+        ),
+    )
+)
+def test_error_message_includes_error_location(expr, expected_message):
+    with pytest.raises(shorthand.ShorthandParseError) as excinfo:
+        shorthand.ShorthandParser().parse(expr)
+    assert str(excinfo.value) == expected_message
+
+
+@pytest.mark.parametrize(
     "expr", (
         # starting with " but unclosed, then repeated \
         f'foo="' + '\\' * 100,

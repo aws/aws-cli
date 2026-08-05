@@ -10,7 +10,7 @@ Output::
 
 **Example 2: Move an object to the specified bucket and key**
 
-The following ``mv`` command moves a single s3 object to a specified bucket and key. ::
+The following ``mv`` command moves a single S3 object to a specified bucket and key. ::
 
     aws s3 mv s3://amzn-s3-demo-bucket/test.txt s3://amzn-s3-demo-bucket/test2.txt
 
@@ -28,7 +28,7 @@ Output::
 
     move: s3://amzn-s3-demo-bucket/test.txt to test2.txt
 
-**Example 4: Move an object with it's original name to the specified bucket**
+**Example 4: Move an object with its original name to the specified bucket**
 
 The following ``mv`` command moves a single object to a specified bucket while retaining its original name::
 

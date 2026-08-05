@@ -2,7 +2,7 @@
 
 The following ``delete-policy-template`` example deletes the policy template that has the specified Id. ::
 
-    aws verifiedpermissions delete-policy \
+    aws verifiedpermissions delete-policy-template \
         --policy-template-id PTEXAMPLEabcdefg111111 \
         --policy-store-id PSEXAMPLEabcdefg111111
 

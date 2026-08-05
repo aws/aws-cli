@@ -55,7 +55,8 @@ def register_removals(event_handler):
                                           'invoke-model-with-bidirectional-stream',
                                           'converse-stream'])
     cmd_remover.remove(on_event='building-command-table.bedrock-agent-runtime',
-                         remove_commands=['invoke-agent',
+                         remove_commands=['agentic-retrieve-stream',
+                                          'invoke-agent',
                                           'invoke-flow',
                                           'invoke-inline-agent',
                                           'optimize-prompt',

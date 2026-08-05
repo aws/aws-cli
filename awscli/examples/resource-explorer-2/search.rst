@@ -1,6 +1,6 @@
 **Example 1: To search using the default view**
 
-The following ``search`` example displays all resources in the specified  that are associated with the  service. The search uses the default view for the Region. The example response includes a ``NextToken`` value, which indicates that there is more output available to retrieve with additional calls. ::
+The following ``search`` example displays all resources in the specified Region that are associated with the IAM service. The search uses the default view for the Region. The example response includes a ``NextToken`` value, which indicates that there is more output available to retrieve with additional calls. ::
 
     aws resource-explorer-2 search \
         --query-string "service:iam"
@@ -40,8 +40,8 @@ Output::
 The following ``search`` example search displays all resources ("*") in the specified AWS Region that are visible through the specified view. The results include only resources associated with Amazon EC2 because of the filters attached to the view. ::
 
     aws resource-explorer-2 search \
-        -- query-string "*" \
-        -- view-arn arn:aws:resource-explorer-2:us-east-1:123456789012:view/My-EC2-view/EXAMPLE8-90ab-cdef-fedc-EXAMPLE22222
+        --query-string "*" \
+        --view-arn arn:aws:resource-explorer-2:us-east-1:123456789012:view/My-EC2-view/EXAMPLE8-90ab-cdef-fedc-EXAMPLE22222
 
 Output::
 

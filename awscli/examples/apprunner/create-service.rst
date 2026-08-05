@@ -37,7 +37,7 @@ Contents of ``input.json``::
             }
         },
         "InstanceConfiguration": {
-            "CPU": "1 vCPU",
+            "Cpu": "1 vCPU",
             "Memory": "3 GB"
         }
     }
@@ -82,7 +82,7 @@ Output::
             },
             "Status": "OPERATION_IN_PROGRESS",
             "InstanceConfiguration": {
-                "CPU": "1 vCPU",
+                "Cpu": "1 vCPU",
                 "Memory": "3 GB"
             }
         }
@@ -127,7 +127,7 @@ Contents of ``input.json``::
             }
         },
         "InstanceConfiguration": {
-            "CPU": "1 vCPU",
+            "Cpu": "1 vCPU",
             "Memory": "3 GB"
         }
     }
@@ -172,7 +172,7 @@ Output::
             },
             "Status": "OPERATION_IN_PROGRESS",
             "InstanceConfiguration": {
-                "CPU": "1 vCPU",
+                "Cpu": "1 vCPU",
                 "Memory": "3 GB"
             }
         }
@@ -208,7 +208,7 @@ Contents of ``input.json``::
             }
         },
         "InstanceConfiguration": {
-            "CPU": "1 vCPU",
+            "Cpu": "1 vCPU",
             "Memory": "3 GB"
         }
     }
@@ -244,7 +244,7 @@ Output::
             },
             "Status": "OPERATION_IN_PROGRESS",
             "InstanceConfiguration": {
-                "CPU": "1 vCPU",
+                "Cpu": "1 vCPU",
                 "Memory": "3 GB"
             }
         }

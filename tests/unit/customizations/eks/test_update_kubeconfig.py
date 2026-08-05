@@ -30,9 +30,14 @@ from awscli.customizations.eks.update_kubeconfig import (API_VERSION,
 from awscli.customizations.utils import uni_print
 from awscli.testutils import mock, unittest
 from tests.functional.eks.test_util import (
-    describe_cluster_creating_response, describe_cluster_deleting_response,
-    describe_cluster_no_status_response, describe_cluster_response,
-    describe_cluster_response_outpost_cluster, get_testdata)
+    describe_cluster_creating_response,
+    describe_cluster_deleting_response,
+    describe_cluster_no_status_response,
+    describe_cluster_response,
+    describe_cluster_response_outpost_cluster,
+    describe_cluster_response_outpost_cluster_with_etcd,
+    get_testdata,
+)
 
 
 def generate_env_variable(files):
@@ -284,6 +289,19 @@ class TestEKSClient(unittest.TestCase):
             name="ExampleCluster"
         )
         self._session.create_client.assert_called_once_with("eks") 
+
+    def test_get_user_entry_outpost_cluster_with_etcd(self):
+        self._mock_client.describe_cluster.return_value = (
+            describe_cluster_response_outpost_cluster_with_etcd()
+        )
+        self.assertEqual(
+            self._client.get_user_entry(),
+            self._correct_user_entry,
+        )
+        self._mock_client.describe_cluster.assert_called_once_with(
+            name="ExampleCluster"
+        )
+        self._session.create_client.assert_called_once_with("eks")
 
     def test_get_both(self):
         self.assertEqual(self._client.get_cluster_entry(),

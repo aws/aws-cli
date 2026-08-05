@@ -578,6 +578,13 @@ UNHEALTHY_NODE_REPLACEMENT = (
 
 EXTENDED_SUPPORT = '<p>Reserved.</p> '
 
+SESSION_ENABLED = (
+    '<p>Indicates whether Spark Connect sessions are enabled on the cluster. '
+    'When set, you can start Spark Connect sessions on this cluster using the '
+    '<code>start-session</code> command. This setting is immutable after '
+    'cluster creation. Requires EMR release emr-spark-8.0.0 or later.</p>'
+)
+
 MONITORING_CONFIGURATION = (
     '<p>Monitoring configuration for an Amazon EMR cluster. '
     'The configuration specifies CloudWatch logging settings and S3 logging settings for the cluster. '

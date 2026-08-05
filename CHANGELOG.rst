@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.46.0
+======
+
+* feature:dependencies: Vendor botocore and s3transfer
+
+
 1.45.64
 =======
 

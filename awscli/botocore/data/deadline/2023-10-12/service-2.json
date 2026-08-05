@@ -9166,7 +9166,7 @@
           "documentation":"<p>The job ID.</p>"
         },
         "jobAttachmentSettings":{
-          "shape":"JobAttachmentSettings",
+          "shape":"JobDetailsJobAttachmentSettings",
           "documentation":"<p>The job attachment settings.</p>"
         },
         "jobRunAsUser":{
@@ -9229,6 +9229,24 @@
         }
       },
       "documentation":"<p>The identifiers for a job.</p>"
+    },
+    "JobDetailsJobAttachmentSettings":{
+      "type":"structure",
+      "required":[
+        "s3BucketName",
+        "rootPrefix"
+      ],
+      "members":{
+        "s3BucketName":{
+          "shape":"S3BucketName",
+          "documentation":"<p>The Amazon S3 bucket name.</p>"
+        },
+        "rootPrefix":{
+          "shape":"S3Prefix",
+          "documentation":"<p>The root prefix.</p>"
+        }
+      },
+      "documentation":"<p>The job attachment settings returned to workers for a job. These are the Amazon S3 bucket name and the Amazon S3 prefix.</p>"
     },
     "JobEntity":{
       "type":"structure",
@@ -15278,7 +15296,8 @@
       "type":"string",
       "enum":[
         "COMPUTE",
-        "LICENSE"
+        "LICENSE",
+        "PERSISTENT_VOLUME"
       ]
     },
     "UserId":{"type":"string"},

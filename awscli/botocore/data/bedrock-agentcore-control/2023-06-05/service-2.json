@@ -4660,6 +4660,13 @@
       "max":256,
       "min":1
     },
+    "ConnectorParameterName":{
+      "type":"string",
+      "documentation":"<p>The name of a connector parameter (for example, <code>memoryId</code>). The name must start with a letter and contain only letters, digits, underscores, and hyphens.</p>",
+      "max":128,
+      "min":1,
+      "pattern":"[a-zA-Z][a-zA-Z0-9_-]*"
+    },
     "ConnectorParameterOverride":{
       "type":"structure",
       "required":["path"],
@@ -4682,6 +4689,12 @@
     "ConnectorParameterOverrides":{
       "type":"list",
       "member":{"shape":"ConnectorParameterOverride"}
+    },
+    "ConnectorParameterValue":{
+      "type":"string",
+      "documentation":"<p>The value of a connector parameter.</p>",
+      "max":1024,
+      "min":1
     },
     "ConnectorSource":{
       "type":"structure",
@@ -12921,6 +12934,40 @@
       },
       "documentation":"<p>The API schema configuration for an HTTP target. This schema defines the API structure that the target exposes.</p>"
     },
+    "HttpConnectorParameters":{
+      "type":"map",
+      "key":{"shape":"ConnectorParameterName"},
+      "value":{"shape":"ConnectorParameterValue"},
+      "documentation":"<p>A map of resource parameters for an HTTP connector target. Each entry maps a parameter name to its value.</p>",
+      "max":10,
+      "min":0
+    },
+    "HttpConnectorSource":{
+      "type":"structure",
+      "required":["connectorId"],
+      "members":{
+        "connectorId":{
+          "shape":"ConnectorId",
+          "documentation":"<p>The identifier for the HTTP connector integration.</p>"
+        }
+      },
+      "documentation":"<p>The source identifying the HTTP connector integration.</p>"
+    },
+    "HttpConnectorTargetConfiguration":{
+      "type":"structure",
+      "required":["source"],
+      "members":{
+        "source":{
+          "shape":"HttpConnectorSource",
+          "documentation":"<p>The source configuration identifying which HTTP connector to use.</p>"
+        },
+        "parameters":{
+          "shape":"HttpConnectorParameters",
+          "documentation":"<p>The resource parameters for this connector (for example, <code>memoryId</code>). The service validates these parameters against the request path at runtime.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for an HTTP connector target. Use this configuration when you want to route HTTP requests through a managed connector.</p>"
+    },
     "HttpHeaderKey":{
       "type":"string",
       "documentation":"<p>The key of an HTTP header.</p>",
@@ -12960,6 +13007,10 @@
         "passthrough":{
           "shape":"PassthroughTargetConfiguration",
           "documentation":"<p>The passthrough configuration for the HTTP target. A passthrough target forwards requests directly to an external HTTP endpoint.</p>"
+        },
+        "connector":{
+          "shape":"HttpConnectorTargetConfiguration",
+          "documentation":"<p>The connector-based configuration for the HTTP target. Use this configuration when you want to route HTTP requests through a managed connector.</p>"
         }
       },
       "documentation":"<p>The HTTP target configuration for a gateway target. Contains the configuration for HTTP-based target endpoints.</p>",
@@ -19515,7 +19566,8 @@
         "CONNECTOR",
         "AGENTCORE_RUNTIME",
         "PASSTHROUGH",
-        "PROVIDER"
+        "PROVIDER",
+        "HTTP_CONNECTOR"
       ]
     },
     "Temperature":{

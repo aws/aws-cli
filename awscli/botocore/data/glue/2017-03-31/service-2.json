@@ -2154,6 +2154,23 @@
       ],
       "documentation":"<p>Retrieves the security configuration for a specified catalog.</p>"
     },
+    "GetDataCatalogExportConfiguration":{
+      "name":"GetDataCatalogExportConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetDataCatalogExportConfigurationInput"},
+      "output":{"shape":"GetDataCatalogExportConfigurationOutput"},
+      "errors":[
+        {"shape":"InvalidInputException"},
+        {"shape":"EntityNotFoundException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Retrieves the current export configuration for the Glue Data Catalog. The export configuration controls whether catalog metadata is exported to S3 Tables.</p>",
+      "readonly":true
+    },
     "GetDataQualityModel":{
       "name":"GetDataQualityModel",
       "http":{
@@ -3827,6 +3844,23 @@
         {"shape":"OperationTimeoutException"}
       ],
       "documentation":"<p>Sets the security configuration for a specified catalog. After the configuration has been set, the specified encryption is applied to every catalog write thereafter.</p>"
+    },
+    "PutDataCatalogExportConfiguration":{
+      "name":"PutDataCatalogExportConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"PutDataCatalogExportConfigurationInput"},
+      "output":{"shape":"PutDataCatalogExportConfigurationOutput"},
+      "errors":[
+        {"shape":"InvalidInputException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Creates or updates the export configuration for the Glue Data Catalog. Use this operation to enable or disable the export of catalog metadata to S3 Tables.</p>"
     },
     "PutDataQualityProfileAnnotation":{
       "name":"PutDataQualityProfileAnnotation",
@@ -14987,6 +15021,20 @@
         "NONE"
       ]
     },
+    "ExportEncryptionConfiguration":{
+      "type":"structure",
+      "members":{
+        "SseAlgorithm":{
+          "shape":"SseAlgorithm",
+          "documentation":"<p>The server-side encryption algorithm used for the exported data. Valid values are <code>AES256</code> and <code>aws:kms</code>.</p>"
+        },
+        "KmsKeyArn":{
+          "shape":"KmsKeyArnString",
+          "documentation":"<p>The ARN of the KMS key used to encrypt the exported data.</p>"
+        }
+      },
+      "documentation":"<p>The encryption configuration for exported data catalog metadata.</p>"
+    },
     "ExportLabelsTaskRunProperties":{
       "type":"structure",
       "members":{
@@ -14996,6 +15044,25 @@
         }
       },
       "documentation":"<p>Specifies configuration properties for an exporting labels task run.</p>"
+    },
+    "ExportSetting":{
+      "type":"string",
+      "documentation":"<p>The export setting for the data catalog.</p>",
+      "enum":[
+        "ENABLED",
+        "DISABLED"
+      ]
+    },
+    "ExportStatus":{
+      "type":"string",
+      "documentation":"<p>The current status of the data catalog export.</p>",
+      "enum":[
+        "ENABLING",
+        "ENABLED",
+        "DISABLING",
+        "DISABLED",
+        "FAILED"
+      ]
     },
     "ExtendedString":{
       "type":"string",
@@ -16403,6 +16470,39 @@
         "DataCatalogEncryptionSettings":{
           "shape":"DataCatalogEncryptionSettings",
           "documentation":"<p>The requested security configuration.</p>"
+        }
+      }
+    },
+    "GetDataCatalogExportConfigurationInput":{
+      "type":"structure",
+      "members":{}
+    },
+    "GetDataCatalogExportConfigurationOutput":{
+      "type":"structure",
+      "members":{
+        "ExportSetting":{
+          "shape":"ExportSetting",
+          "documentation":"<p>The export setting for the data catalog. Valid values are <code>ENABLED</code> and <code>DISABLED</code>.</p>"
+        },
+        "Status":{
+          "shape":"ExportStatus",
+          "documentation":"<p>The current status of the export. Valid values are <code>ENABLING</code>, <code>ENABLED</code>, <code>DISABLING</code>, <code>DISABLED</code>, and <code>FAILED</code>.</p>"
+        },
+        "EncryptionConfiguration":{
+          "shape":"ExportEncryptionConfiguration",
+          "documentation":"<p>The encryption configuration for the exported data.</p>"
+        },
+        "S3TableBucketArn":{
+          "shape":"S3TableBucketArn",
+          "documentation":"<p>The ARN of the S3 Tables bucket where catalog metadata is exported.</p>"
+        },
+        "CreatedAt":{
+          "shape":"CreatedAt",
+          "documentation":"<p>The timestamp at which the export configuration was created.</p>"
+        },
+        "UpdatedAt":{
+          "shape":"UpdatedAt",
+          "documentation":"<p>The timestamp at which the export configuration was last updated.</p>"
         }
       }
     },
@@ -21556,6 +21656,10 @@
       "type":"string",
       "pattern":"^$|arn:aws[a-z0-9-]*:kms:.*"
     },
+    "KmsKeyArnString":{
+      "type":"string",
+      "pattern":"arn:aws[-a-z0-9]*:kms:[-a-z0-9]*:[0-9]{12}:key/.+"
+    },
     "LabelCount":{"type":"integer"},
     "LabelingSetGenerationTaskRunProperties":{
       "type":"structure",
@@ -24975,6 +25079,38 @@
       "type":"structure",
       "members":{}
     },
+    "PutDataCatalogExportConfigurationInput":{
+      "type":"structure",
+      "required":["ExportSetting"],
+      "members":{
+        "ExportSetting":{
+          "shape":"ExportSetting",
+          "documentation":"<p>The export setting for the data catalog. Specify <code>ENABLED</code> to start exporting catalog metadata to S3 Tables, or <code>DISABLED</code> to stop exporting. This field is required.</p>"
+        },
+        "EncryptionConfiguration":{
+          "shape":"ExportEncryptionConfiguration",
+          "documentation":"<p>The encryption configuration for the exported data. If not specified, the default encryption settings are used.</p>"
+        },
+        "ClientToken":{
+          "shape":"HashString",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "PutDataCatalogExportConfigurationOutput":{
+      "type":"structure",
+      "members":{
+        "ExportSetting":{
+          "shape":"ExportSetting",
+          "documentation":"<p>The export setting for the data catalog.</p>"
+        },
+        "EncryptionConfiguration":{
+          "shape":"ExportEncryptionConfiguration",
+          "documentation":"<p>The encryption configuration for the exported data.</p>"
+        }
+      }
+    },
     "PutDataQualityProfileAnnotationRequest":{
       "type":"structure",
       "required":[
@@ -27051,6 +27187,7 @@
       },
       "documentation":"<p>Specifies additional connection options for the Amazon S3 data store.</p>"
     },
+    "S3TableBucketArn":{"type":"string"},
     "S3Target":{
       "type":"structure",
       "members":{
@@ -28474,6 +28611,7 @@
       "type":"string",
       "pattern":"([\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\s])*"
     },
+    "SseAlgorithm":{"type":"string"},
     "StartBlueprintRunRequest":{
       "type":"structure",
       "required":[

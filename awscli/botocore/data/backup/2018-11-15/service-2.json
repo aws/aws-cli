@@ -49,6 +49,28 @@
       "documentation":"<p>Removes the specified legal hold on a recovery point. This action can only be performed by a user with sufficient permissions.</p>",
       "idempotent":true
     },
+    "CreateBackupAccessPoint":{
+      "name":"CreateBackupAccessPoint",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/backup-access-point/create",
+        "responseCode":201
+      },
+      "input":{"shape":"CreateBackupAccessPointRequest"},
+      "output":{"shape":"CreateBackupAccessPointResponse"},
+      "errors":[
+        {"shape":"AlreadyExistsException"},
+        {"shape":"ConflictException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"MissingParameterValueException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p>Creates a backup access point for an Amazon S3 recovery point. A backup access point provides on-demand, read-only access to the backup data in a recovery point through an Amazon S3 access point, without initiating a restore.</p> <p>While a backup access point is active for a recovery point, Backup pauses lifecycle transitions and blocks deletion of that recovery point.</p>",
+      "idempotent":true
+    },
     "CreateBackupPlan":{
       "name":"CreateBackupPlan",
       "http":{
@@ -254,6 +276,24 @@
       "documentation":"<p>Creates a tiering configuration.</p> <p>A tiering configuration enables automatic movement of backup data to a lower-cost storage tier based on the age of backed-up objects in the backup vault.</p> <p>Each vault can only have one vault-specific tiering configuration, in addition to any global configuration that applies to all vaults.</p>",
       "idempotent":true
     },
+    "DeleteBackupAccessPoint":{
+      "name":"DeleteBackupAccessPoint",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/backup-access-point/delete/{AccessPointArn}",
+        "responseCode":204
+      },
+      "input":{"shape":"DeleteBackupAccessPointInput"},
+      "errors":[
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"MissingParameterValueException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p>Deletes a backup access point. This deletes the underlying Amazon S3 access point and, if no other backup access points remain for the recovery point, resumes lifecycle transitions for that recovery point.</p> <p>Always delete backup access points using this operation rather than deleting the underlying Amazon S3 access point directly.</p>",
+      "idempotent":true
+    },
     "DeleteBackupPlan":{
       "name":"DeleteBackupPlan",
       "http":{
@@ -449,6 +489,25 @@
       ],
       "documentation":"<p>Deletes the tiering configuration specified by a tiering configuration name.</p>",
       "idempotent":true
+    },
+    "DescribeBackupAccessPoint":{
+      "name":"DescribeBackupAccessPoint",
+      "http":{
+        "method":"GET",
+        "requestUri":"/backup-access-point/{AccessPointArn}",
+        "responseCode":200
+      },
+      "input":{"shape":"DescribeBackupAccessPointInput"},
+      "output":{"shape":"DescribeBackupAccessPointResponse"},
+      "errors":[
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"MissingParameterValueException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p>Returns metadata about a backup access point, including its status and the details of the underlying Amazon S3 access point.</p> <p>After a backup access point reaches the <code>AVAILABLE</code> status, use this operation to retrieve the Amazon S3 access point ARN and alias that you need to read the backup data.</p>",
+      "readonly":true
     },
     "DescribeBackupJob":{
       "name":"DescribeBackupJob",
@@ -975,6 +1034,54 @@
       "documentation":"<p>Returns <code>TieringConfiguration</code> details for the specified <code>TieringConfigurationName</code>. The details are the body of a tiering configuration in JSON format, in addition to configuration metadata.</p>",
       "idempotent":true
     },
+    "ListBackupAccessPoints":{
+      "name":"ListBackupAccessPoints",
+      "http":{
+        "method":"GET",
+        "requestUri":"/backup-access-point",
+        "responseCode":200
+      },
+      "input":{"shape":"ListBackupAccessPointsRequest"},
+      "output":{"shape":"ListBackupAccessPointsResponse"},
+      "errors":[
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p>Returns a list of the backup access points in your account and Region.</p>",
+      "readonly":true
+    },
+    "ListBackupAccessPointsByRecoveryPoint":{
+      "name":"ListBackupAccessPointsByRecoveryPoint",
+      "http":{
+        "method":"POST",
+        "requestUri":"/backup-access-point/recovery-point/{RecoveryPointArn}",
+        "responseCode":200
+      },
+      "input":{"shape":"ListBackupAccessPointsByRecoveryPointRequest"},
+      "output":{"shape":"ListBackupAccessPointsByRecoveryPointResponse"},
+      "errors":[
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p>Returns the backup access points associated with the specified recovery point.</p> <p>If you own the recovery point and have shared it with other accounts, the response includes backup access points created by those accounts.</p>",
+      "readonly":true
+    },
+    "ListBackupAccessPointsByResource":{
+      "name":"ListBackupAccessPointsByResource",
+      "http":{
+        "method":"POST",
+        "requestUri":"/backup-access-point/resource/{ResourceArn}",
+        "responseCode":200
+      },
+      "input":{"shape":"ListBackupAccessPointsByResourceRequest"},
+      "output":{"shape":"ListBackupAccessPointsByResourceResponse"},
+      "errors":[
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p>Returns the backup access points associated with the specified resource, such as an Amazon S3 bucket.</p>",
+      "readonly":true
+    },
     "ListBackupJobSummaries":{
       "name":"ListBackupJobSummaries",
       "http":{
@@ -1173,7 +1280,7 @@
         {"shape":"InvalidParameterValueException"},
         {"shape":"ServiceUnavailableException"}
       ],
-      "documentation":"<p>Returns an array of resources successfully backed up by Backup, including the time the resource was saved, an Amazon Resource Name (ARN) of the resource, and a resource type.</p>",
+      "documentation":"<p>Returns an array of resources with recovery points created by Backup (regardless of the recovery point's <a href=\"https://docs.aws.amazon.com/aws-backup/latest/devguide/API_DescribeRecoveryPoint.html#Backup-DescribeRecoveryPoint-response-Status\">status</a>), including the time the resource was saved, an Amazon Resource Name (ARN) of the resource, and a resource type.</p>",
       "idempotent":true
     },
     "ListProtectedResourcesByBackupVault":{
@@ -1832,6 +1939,47 @@
   },
   "shapes":{
     "ARN":{"type":"string"},
+    "AccessPointArn":{
+      "type":"string",
+      "pattern":"(arn:aws[a-z-]*:backup:[a-z-\\d]+:\\d{12}:accesspoint/)[\\da-z]{1}[\\da-z-]{1,48}[\\da-z]{1}(?<!-s3alias)(?<!-ext-s3alias)"
+    },
+    "AccessPointMetadataMap":{
+      "type":"map",
+      "key":{"shape":"AccessPointMetadataMapKeyString"},
+      "value":{"shape":"AccessPointMetadataMapValueString"},
+      "sensitive":true
+    },
+    "AccessPointMetadataMapKeyString":{
+      "type":"string",
+      "min":1
+    },
+    "AccessPointMetadataMapValueString":{
+      "type":"string",
+      "min":1
+    },
+    "AccessPointName":{
+      "type":"string",
+      "max":50,
+      "min":3,
+      "pattern":"[\\da-z]{1}[\\da-z-]{1,48}[\\da-z]{1}(?<!-s3alias)(?<!-ext-s3alias)"
+    },
+    "AccessPointPolicy":{
+      "type":"string",
+      "max":200000,
+      "min":1
+    },
+    "AccessPointStatus":{
+      "type":"string",
+      "enum":[
+        "AVAILABLE",
+        "CREATING",
+        "DELETING",
+        "DISASSOCIATED",
+        "DISASSOCIATING",
+        "EXPIRED",
+        "FAILED"
+      ]
+    },
     "AccountId":{
       "type":"string",
       "pattern":"^[0-9]{12}$"
@@ -1927,6 +2075,10 @@
           "documentation":"<p>A comment provided by the requester explaining the association request.</p>"
         }
       }
+    },
+    "BackupAccessPoints":{
+      "type":"list",
+      "member":{"shape":"ListAccessPointsMember"}
     },
     "BackupJob":{
       "type":"structure",
@@ -2478,6 +2630,7 @@
       },
       "documentation":"<p>Contains metadata about a <code>BackupSelection</code> object.</p>"
     },
+    "BackupVaultArn":{"type":"string"},
     "BackupVaultEvent":{
       "type":"string",
       "enum":[
@@ -2504,7 +2657,13 @@
         "RECOVERY_POINT_INDEXING_FAILED",
         "EKS_RESTORE_OBJECT_FAILED",
         "EKS_RESTORE_OBJECT_SKIPPED",
-        "EKS_BACKUP_OBJECT_FAILED"
+        "EKS_BACKUP_OBJECT_FAILED",
+        "ACCESS_POINT_AVAILABLE",
+        "ACCESS_POINT_CREATION_FAILED",
+        "ACCESS_POINT_DELETED",
+        "ACCESS_POINT_DELETION_FAILED",
+        "ACCESS_POINT_EXPIRED",
+        "ACCESS_POINT_DISASSOCIATED"
       ]
     },
     "BackupVaultEvents":{
@@ -2548,7 +2707,7 @@
         },
         "NumberOfRecoveryPoints":{
           "shape":"long",
-          "documentation":"<p>The number of recovery points that are stored in a backup vault.</p>"
+          "documentation":"<p>The number of recovery points that are stored in a backup vault. Recovery point count value displayed in the console can be an approximation.</p>"
         },
         "Locked":{
           "shape":"Boolean",
@@ -2956,6 +3115,52 @@
     "CopyJobsList":{
       "type":"list",
       "member":{"shape":"CopyJob"}
+    },
+    "CreateBackupAccessPointRequest":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "RecoveryPointArn"
+      ],
+      "members":{
+        "AccessPointMetadata":{
+          "shape":"AccessPointMetadataMap",
+          "documentation":"<p>Metadata for the backup access point. For continuous (point-in-time) recovery points, you must include an <code>AccessPointInTime</code> timestamp (in format <code>2021-11-27T03:30:27Z</code>). The access point provides access to the content present in the backup at that specific time. You can specify any time within the continuous backup's retention period, up to the latest restorable time. For snapshot recovery points, do not include <code>AccessPointInTime</code>.</p>"
+        },
+        "AccessPointPolicy":{
+          "shape":"AccessPointPolicy",
+          "documentation":"<p>An optional resource-based policy, in JSON format, to apply to the underlying Amazon S3 access point. The policy controls how backup data can be accessed through the access point. If you do not specify a policy, access is governed by the caller's IAM permissions. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/access-points-policies.html\">Configuring IAM policies for using access points</a> in the <i>Amazon S3 User Guide</i>.</p>"
+        },
+        "Name":{
+          "shape":"AccessPointName",
+          "documentation":"<p>The name of the backup access point. This name is shared with the Amazon S3 access point namespace. It must be unique within your account and Region and cannot conflict with an existing Amazon S3 access point. For more information about access point naming, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/access-points-restrictions-limitations-naming-rules.html\">Access points naming rules, restrictions, and limitations</a> in the <i>Amazon S3 User Guide</i>.</p>"
+        },
+        "RecoveryPointArn":{
+          "shape":"RecoveryPointArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the recovery point for which to create the backup access point. The recovery point must be an Amazon S3 recovery point in the <code>AVAILABLE</code>, <code>STOPPED</code>, or <code>COMPLETED</code> state.</p>"
+        },
+        "Tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags to assign to the backup access point.</p>"
+        }
+      }
+    },
+    "CreateBackupAccessPointResponse":{
+      "type":"structure",
+      "required":[
+        "AccessPointArn",
+        "Status"
+      ],
+      "members":{
+        "AccessPointArn":{
+          "shape":"AccessPointArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) that uniquely identifies the created backup access point.</p>"
+        },
+        "Status":{
+          "shape":"AccessPointStatus",
+          "documentation":"<p>The current status of the backup access point. A newly created backup access point begins in the <code>CREATING</code> state and becomes usable when it reaches <code>AVAILABLE</code>.</p>"
+        }
+      }
     },
     "CreateBackupPlanInput":{
       "type":"structure",
@@ -3494,6 +3699,18 @@
       },
       "documentation":"<p>This is a resource filter containing FromDate: DateTime and ToDate: DateTime. Both values are required. Future DateTime values are not permitted.</p> <p>The date and time are in Unix format and Coordinated Universal Time (UTC), and it is accurate to milliseconds ((milliseconds are optional). For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.</p>"
     },
+    "DeleteBackupAccessPointInput":{
+      "type":"structure",
+      "required":["AccessPointArn"],
+      "members":{
+        "AccessPointArn":{
+          "shape":"AccessPointArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the backup access point to delete.</p>",
+          "location":"uri",
+          "locationName":"AccessPointArn"
+        }
+      }
+    },
     "DeleteBackupPlanInput":{
       "type":"structure",
       "required":["BackupPlanId"],
@@ -3707,6 +3924,77 @@
       "documentation":"<p>A dependent Amazon Web Services service or resource returned an error to the Backup service, and the action cannot be completed.</p>",
       "exception":true,
       "fault":true
+    },
+    "DescribeBackupAccessPointInput":{
+      "type":"structure",
+      "required":["AccessPointArn"],
+      "members":{
+        "AccessPointArn":{
+          "shape":"AccessPointArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the backup access point to describe.</p>",
+          "location":"uri",
+          "locationName":"AccessPointArn"
+        }
+      }
+    },
+    "DescribeBackupAccessPointResponse":{
+      "type":"structure",
+      "required":[
+        "AccessPointArn",
+        "BackupVaultName",
+        "CreationTime",
+        "Name",
+        "RecoveryPointArn",
+        "ResourceArn",
+        "ResourceType",
+        "Status"
+      ],
+      "members":{
+        "AccessPointArn":{
+          "shape":"AccessPointArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) that uniquely identifies the backup access point.</p>"
+        },
+        "AccessPointMetadata":{
+          "shape":"AccessPointMetadataMap",
+          "documentation":"<p>Metadata for the backup access point. After the backup access point reaches the <code>AVAILABLE</code> status, this map contains <code>S3AccessPointArn</code> and <code>S3AccessPointAlias</code>, which you use with standard Amazon S3 read APIs to access the backup data. For continuous recovery points, this map also contains <code>AccessPointInTime</code> (in format <code>2021-11-27T03:30:27Z</code>). The access point provides access to the content present in the backup at that specific time.</p>"
+        },
+        "BackupVaultArn":{
+          "shape":"BackupVaultArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the backup vault that contains the recovery point.</p>"
+        },
+        "BackupVaultName":{
+          "shape":"BackupVaultName",
+          "documentation":"<p>The name of the backup vault that contains the recovery point.</p>"
+        },
+        "CreationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time that the backup access point was created, in Unix format and Coordinated Universal Time (UTC). The value of <code>CreationTime</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.</p>"
+        },
+        "Name":{
+          "shape":"AccessPointName",
+          "documentation":"<p>The name of the backup access point.</p>"
+        },
+        "RecoveryPointArn":{
+          "shape":"RecoveryPointArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the recovery point that the backup access point provides access to.</p>"
+        },
+        "ResourceArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource that was backed up, such as an Amazon S3 bucket.</p>"
+        },
+        "ResourceType":{
+          "shape":"String",
+          "documentation":"<p>The type of Amazon Web Services resource associated with the recovery point. For example, <code>S3</code> for Amazon Simple Storage Service.</p>"
+        },
+        "Status":{
+          "shape":"AccessPointStatus",
+          "documentation":"<p>The current status of the backup access point.</p>"
+        },
+        "StatusMessage":{
+          "shape":"String",
+          "documentation":"<p>A message that provides additional detail about the status of the backup access point, such as the reason a creation or deletion attempt failed.</p>"
+        }
+      }
     },
     "DescribeBackupJobInput":{
       "type":"structure",
@@ -5569,6 +5857,192 @@
       "documentation":"<p>A limit in the request has been exceeded; for example, a maximum number of items allowed in a request.</p>",
       "exception":true
     },
+    "ListAccessPointsMember":{
+      "type":"structure",
+      "required":[
+        "AccessPointArn",
+        "AccessPointMetadata",
+        "BackupVaultName",
+        "CreationTime",
+        "Name",
+        "RecoveryPointArn",
+        "ResourceArn",
+        "ResourceType",
+        "Status"
+      ],
+      "members":{
+        "AccessPointArn":{
+          "shape":"AccessPointArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) that uniquely identifies the backup access point.</p>"
+        },
+        "AccessPointMetadata":{
+          "shape":"AccessPointMetadataMap",
+          "documentation":"<p>Metadata for the backup access point. After the backup access point reaches the <code>AVAILABLE</code> status, this map contains <code>S3AccessPointArn</code> and <code>S3AccessPointAlias</code>, which you use with standard Amazon S3 read APIs to access the backup data. For continuous recovery points, this map also contains <code>AccessPointInTime</code> (in format <code>2021-11-27T03:30:27Z</code>). The access point provides access to the content present in the backup at that specific time.</p>"
+        },
+        "BackupVaultArn":{
+          "shape":"BackupVaultArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the backup vault that contains the recovery point.</p>"
+        },
+        "BackupVaultName":{
+          "shape":"BackupVaultName",
+          "documentation":"<p>The name of the backup vault that contains the recovery point.</p>"
+        },
+        "CreationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time that the backup access point was created, in Unix format and Coordinated Universal Time (UTC). The value of <code>CreationTime</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.</p>"
+        },
+        "Name":{
+          "shape":"AccessPointName",
+          "documentation":"<p>The name of the backup access point.</p>"
+        },
+        "RecoveryPointArn":{
+          "shape":"RecoveryPointArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the recovery point that the backup access point provides access to.</p>"
+        },
+        "ResourceArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource that was backed up, such as an Amazon S3 bucket.</p>"
+        },
+        "ResourceType":{
+          "shape":"String",
+          "documentation":"<p>The type of Amazon Web Services resource associated with the recovery point. For example, <code>S3</code> for Amazon Simple Storage Service.</p>"
+        },
+        "Status":{
+          "shape":"AccessPointStatus",
+          "documentation":"<p>The current status of the backup access point.</p>"
+        },
+        "StatusMessage":{
+          "shape":"String",
+          "documentation":"<p>A message that provides additional detail about the status of the backup access point, such as the reason a creation or deletion attempt failed.</p>"
+        }
+      },
+      "documentation":"<p>Contains metadata about a backup access point.</p>"
+    },
+    "ListBackupAccessPointsByRecoveryPointRequest":{
+      "type":"structure",
+      "required":["RecoveryPointArn"],
+      "members":{
+        "MaxResults":{
+          "shape":"ListBackupAccessPointsByRecoveryPointRequestMaxResultsInteger",
+          "documentation":"<p>The maximum number of items to be returned.</p>",
+          "location":"querystring",
+          "locationName":"MaxResults"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The next item following a partial list of returned items. For example, if a request is made to return <code>MaxResults</code> number of items, <code>NextToken</code> allows you to return more items in your list starting at the location pointed to by the next token.</p>",
+          "location":"querystring",
+          "locationName":"NextToken"
+        },
+        "RecoveryPointArn":{
+          "shape":"RecoveryPointArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the recovery point whose backup access points you want to list.</p>",
+          "location":"uri",
+          "locationName":"RecoveryPointArn"
+        }
+      }
+    },
+    "ListBackupAccessPointsByRecoveryPointRequestMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "ListBackupAccessPointsByRecoveryPointResponse":{
+      "type":"structure",
+      "required":["BackupAccessPoints"],
+      "members":{
+        "BackupAccessPoints":{
+          "shape":"BackupAccessPoints",
+          "documentation":"<p>A list of backup access points, each containing metadata such as its name, ARN, status, and associated recovery point.</p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The next item following a partial list of returned items. For example, if a request is made to return <code>MaxResults</code> number of items, <code>NextToken</code> allows you to return more items in your list starting at the location pointed to by the next token.</p>"
+        }
+      }
+    },
+    "ListBackupAccessPointsByResourceRequest":{
+      "type":"structure",
+      "required":["ResourceArn"],
+      "members":{
+        "MaxResults":{
+          "shape":"ListBackupAccessPointsByResourceRequestMaxResultsInteger",
+          "documentation":"<p>The maximum number of items to be returned.</p>",
+          "location":"querystring",
+          "locationName":"MaxResults"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The next item following a partial list of returned items. For example, if a request is made to return <code>MaxResults</code> number of items, <code>NextToken</code> allows you to return more items in your list starting at the location pointed to by the next token.</p>",
+          "location":"querystring",
+          "locationName":"NextToken"
+        },
+        "ResourceArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource whose backup access points you want to list.</p>",
+          "location":"uri",
+          "locationName":"ResourceArn"
+        }
+      }
+    },
+    "ListBackupAccessPointsByResourceRequestMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "ListBackupAccessPointsByResourceResponse":{
+      "type":"structure",
+      "required":["BackupAccessPoints"],
+      "members":{
+        "BackupAccessPoints":{
+          "shape":"BackupAccessPoints",
+          "documentation":"<p>A list of backup access points, each containing metadata such as its name, ARN, status, and associated recovery point.</p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The next item following a partial list of returned items. For example, if a request is made to return <code>MaxResults</code> number of items, <code>NextToken</code> allows you to return more items in your list starting at the location pointed to by the next token.</p>"
+        }
+      }
+    },
+    "ListBackupAccessPointsRequest":{
+      "type":"structure",
+      "members":{
+        "MaxResults":{
+          "shape":"ListBackupAccessPointsRequestMaxResultsInteger",
+          "documentation":"<p>The maximum number of items to be returned.</p>",
+          "location":"querystring",
+          "locationName":"MaxResults"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The next item following a partial list of returned items. For example, if a request is made to return <code>MaxResults</code> number of items, <code>NextToken</code> allows you to return more items in your list starting at the location pointed to by the next token.</p>",
+          "location":"querystring",
+          "locationName":"NextToken"
+        }
+      }
+    },
+    "ListBackupAccessPointsRequestMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "ListBackupAccessPointsResponse":{
+      "type":"structure",
+      "required":["BackupAccessPoints"],
+      "members":{
+        "BackupAccessPoints":{
+          "shape":"BackupAccessPoints",
+          "documentation":"<p>A list of backup access points, each containing metadata such as its name, ARN, status, and associated recovery point.</p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The next item following a partial list of returned items. For example, if a request is made to return <code>MaxResults</code> number of items, <code>NextToken</code> allows you to return more items in your list starting at the location pointed to by the next token.</p>"
+        }
+      }
+    },
     "ListBackupJobSummariesInput":{
       "type":"structure",
       "members":{
@@ -6414,7 +6888,7 @@
         },
         "ManagedByAWSBackupOnly":{
           "shape":"boolean",
-          "documentation":"<p>This attribute filters recovery points based on ownership.</p> <p>If this is set to <code>TRUE</code>, the response will contain recovery points associated with the selected resources that are managed by Backup.</p> <p>If this is set to <code>FALSE</code>, the response will contain all recovery points associated with the selected resource.</p> <p>Type: Boolean</p>",
+          "documentation":"<p>This attribute filters recovery points based on ownership.</p> <p>If this is set to <code>TRUE</code>, the response will contain recovery points associated with the selected resources that are managed by Backup.</p> <p>If this is set to <code>FALSE</code>, the response will contain all recovery points associated with the selected resource, except for EBS snapshots copied within the same Region and account.</p> <p>Type: Boolean</p>",
           "location":"querystring",
           "locationName":"managedByAWSBackupOnly"
         }
@@ -7264,6 +7738,10 @@
         }
       }
     },
+    "RecoveryPointArn":{
+      "type":"string",
+      "pattern":"(arn:aws[a-z-]*:[a-z-\\d]+:[a-z-\\d]+:).+"
+    },
     "RecoveryPointByBackupVault":{
       "type":"structure",
       "members":{
@@ -7716,6 +8194,10 @@
     "RequesterComment":{
       "type":"string",
       "sensitive":true
+    },
+    "ResourceArn":{
+      "type":"string",
+      "pattern":"(arn:aws[a-z-]*:[a-z-\\d]+:).+"
     },
     "ResourceArns":{
       "type":"list",
@@ -9068,6 +9550,24 @@
       "type":"list",
       "member":{"shape":"string"},
       "sensitive":true
+    },
+    "TagMap":{
+      "type":"map",
+      "key":{"shape":"TagMapKeyString"},
+      "value":{"shape":"TagMapValueString"},
+      "max":200,
+      "min":0,
+      "sensitive":true
+    },
+    "TagMapKeyString":{
+      "type":"string",
+      "max":128,
+      "min":1
+    },
+    "TagMapValueString":{
+      "type":"string",
+      "max":256,
+      "min":0
     },
     "TagResourceInput":{
       "type":"structure",

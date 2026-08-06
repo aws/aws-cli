@@ -1567,6 +1567,10 @@
         "InstanceLifecyclePolicy":{
           "shape":"InstanceLifecyclePolicy",
           "documentation":"<p>The instance lifecycle policy for the Auto Scaling group.</p>"
+        },
+        "Operator":{
+          "shape":"Operator",
+          "documentation":"<p>The entity that manages the Auto Scaling group, if applicable. When set, only the designated operator can make changes to the group configuration.</p>"
         }
       },
       "documentation":"<p>Describes an Auto Scaling group.</p>"
@@ -1715,7 +1719,7 @@
       "members":{
         "CapacityDistributionStrategy":{
           "shape":"CapacityDistributionStrategy",
-          "documentation":"<p> If launches fail in an Availability Zone, the following strategies are available. The default is <code>balanced-best-effort</code>. </p> <ul> <li> <p> <code>balanced-only</code> - If launches fail in an Availability Zone, Auto Scaling will continue to attempt to launch in the unhealthy zone to preserve a balanced distribution.</p> </li> <li> <p> <code>balanced-best-effort</code> - If launches fail in an Availability Zone, Auto Scaling will attempt to launch in another healthy Availability Zone instead.</p> </li> <li> <p> <code>reservations-then-balanced</code> - Auto Scaling will first attempt to launch into your Capacity Reservations, and then balance any remaining capacity across the healthy Availability Zones.</p> </li> </ul>"
+          "documentation":"<p> If launches fail in an Availability Zone, the following strategies are available. The default is <code>balanced-best-effort</code>. </p> <ul> <li> <p> <code>balanced-only</code> - If launches fail in an Availability Zone, Auto Scaling will continue to attempt to launch in the unhealthy zone to preserve a balanced distribution.</p> </li> <li> <p> <code>balanced-best-effort</code> - If launches fail in an Availability Zone, Auto Scaling will attempt to launch in another healthy Availability Zone instead.</p> </li> <li> <p> <code>reservations-then-balanced</code> - Auto Scaling will first attempt to launch into your Capacity Reservations, and then balance any remaining capacity across healthy Availability Zones.</p> </li> </ul>"
         }
       },
       "documentation":"<p> Describes an Availability Zone distribution. </p>"
@@ -2220,6 +2224,10 @@
         "InstanceLifecyclePolicy":{
           "shape":"InstanceLifecyclePolicy",
           "documentation":"<p> The instance lifecycle policy for the Auto Scaling group. This policy controls instance behavior when an instance transitions through its lifecycle states. Configure retention triggers to specify when instances should move to a <code>Retained</code> state instead of automatic termination. </p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/autoscaling/ec2/userguide/instance-lifecycle-policy.html\"> Control instance retention with instance lifecycle policies</a> in the <i>Amazon EC2 Auto Scaling User Guide</i>. </p> <note> <p>Instances in a Retained state will continue to incur standard EC2 charges until terminated.</p> </note>"
+        },
+        "Operator":{
+          "shape":"Operator",
+          "documentation":"<p>The entity that manages the Auto Scaling group. If you specify this parameter, Amazon EC2 Auto Scaling passes the operator identity to EC2 for instance launches and only allows the designated operator to make changes to the Auto Scaling group. All mutating API calls from non-operator callers are rejected with an <code>AccessDenied</code> exception.</p>"
         }
       }
     },
@@ -4348,6 +4356,11 @@
       "type":"list",
       "member":{"shape":"LocalStorageType"}
     },
+    "ManagerIdentifier":{
+      "type":"string",
+      "max":128,
+      "min":1
+    },
     "MaxGroupPreparedCapacity":{
       "type":"integer",
       "min":-1
@@ -4643,6 +4656,17 @@
     "NumberOfLaunchConfigurations":{"type":"integer"},
     "OnDemandBaseCapacity":{"type":"integer"},
     "OnDemandPercentageAboveBaseCapacity":{"type":"integer"},
+    "Operator":{
+      "type":"structure",
+      "required":["Principal"],
+      "members":{
+        "Principal":{
+          "shape":"ManagerIdentifier",
+          "documentation":"<p>The service principal that is authorized to manage the Auto Scaling group. When an operator is specified, only the designated operator service principal can make mutating changes to the Auto Scaling group.</p>"
+        }
+      },
+      "documentation":"<p>Describes the entity that manages an Auto Scaling group.</p>"
+    },
     "Overrides":{
       "type":"list",
       "member":{"shape":"LaunchTemplateOverrides"}

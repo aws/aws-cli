@@ -1142,11 +1142,11 @@
       "required":[
         "offerId",
         "catalog",
-        "agreementProposalId",
         "sellerOfRecord",
+        "associatedEntities",
+        "agreementProposalId",
         "pricingModel",
-        "badges",
-        "associatedEntities"
+        "badges"
       ],
       "members":{
         "offerId":{
@@ -1161,10 +1161,6 @@
           "shape":"NullableString",
           "documentation":"<p>The display name of the offer. This is free-form text provided by the seller.</p>"
         },
-        "agreementProposalId":{
-          "shape":"AgreementResourceId",
-          "documentation":"<p>An encoded string to be passed by the acceptor of the terms when creating an agreement.</p>"
-        },
         "expirationTime":{
           "shape":"Timestamp",
           "documentation":"<p>The date and time until when the offer can be procured. This value is null for offers that never expire.</p>"
@@ -1177,6 +1173,14 @@
           "shape":"SellerInformation",
           "documentation":"<p>The entity responsible for selling the product under this offer.</p>"
         },
+        "associatedEntities":{
+          "shape":"OfferAssociatedEntityList",
+          "documentation":"<p>The products and offer sets associated with this offer.</p>"
+        },
+        "agreementProposalId":{
+          "shape":"AgreementResourceId",
+          "documentation":"<p>An encoded string to be passed by the acceptor of the terms when creating an agreement.</p>"
+        },
         "replacementAgreementId":{
           "shape":"AgreementResourceId",
           "documentation":"<p>The identifier of the existing agreement that this offer would replace. Enables agreement-based offer functionality.</p>"
@@ -1188,10 +1192,6 @@
         "badges":{
           "shape":"PurchaseOptionBadgeList",
           "documentation":"<p>Badges indicating special attributes of the offer, such as private pricing, future dated, or replacement offer.</p>"
-        },
-        "associatedEntities":{
-          "shape":"OfferAssociatedEntityList",
-          "documentation":"<p>The products and offer sets associated with this offer.</p>"
         }
       }
     },
@@ -1307,10 +1307,10 @@
         "productId",
         "catalog",
         "productName",
+        "manufacturer",
         "deployedOnAws",
         "shortDescription",
         "longDescription",
-        "manufacturer",
         "logoThumbnailUrl",
         "fulfillmentOptionSummaries",
         "categories",
@@ -1332,6 +1332,10 @@
           "shape":"NonEmptyString",
           "documentation":"<p>The human-readable display name of the product.</p>"
         },
+        "manufacturer":{
+          "shape":"SellerInformation",
+          "documentation":"<p>The entity who manufactured the product.</p>"
+        },
         "deployedOnAws":{
           "shape":"DeployedOnAwsStatus",
           "documentation":"<p>Indicates whether the product is deployed on AWS infrastructure.</p>"
@@ -1343,10 +1347,6 @@
         "longDescription":{
           "shape":"GetProductOutputLongDescriptionString",
           "documentation":"<p>A detailed description of what the product does, in paragraph format.</p>"
-        },
-        "manufacturer":{
-          "shape":"SellerInformation",
-          "documentation":"<p>The entity who manufactured the product.</p>"
         },
         "logoThumbnailUrl":{
           "shape":"URL",
@@ -1719,11 +1719,11 @@
         "listingId",
         "listingName",
         "publisher",
+        "fulfillmentOptionSummaries",
         "catalog",
         "shortDescription",
         "logoThumbnailUrl",
         "categories",
-        "fulfillmentOptionSummaries",
         "badges",
         "reviewSummary",
         "pricingModels",
@@ -1743,6 +1743,10 @@
           "shape":"SellerInformation",
           "documentation":"<p>The entity who created and published the listing.</p>"
         },
+        "fulfillmentOptionSummaries":{
+          "shape":"FulfillmentOptionSummaryList",
+          "documentation":"<p>A summary of fulfillment options available for the listing.</p>"
+        },
         "catalog":{
           "shape":"Catalog",
           "documentation":"<p>The name of the catalog that the listing belongs to.</p>"
@@ -1758,10 +1762,6 @@
         "categories":{
           "shape":"CategoryList",
           "documentation":"<p>The categories used to classify this listing into logical groups.</p>"
-        },
-        "fulfillmentOptionSummaries":{
-          "shape":"FulfillmentOptionSummaryList",
-          "documentation":"<p>A summary of fulfillment options available for the listing.</p>"
         },
         "badges":{
           "shape":"ListingBadgeList",
@@ -1811,6 +1811,29 @@
       "box":true,
       "max":100,
       "min":1
+    },
+    "NetPaymentTerm":{
+      "type":"structure",
+      "required":[
+        "id",
+        "type",
+        "paymentDuePeriod"
+      ],
+      "members":{
+        "id":{
+          "shape":"TermId",
+          "documentation":"<p>The unique identifier of the term.</p>"
+        },
+        "type":{
+          "shape":"TermType",
+          "documentation":"<p>The category of the term.</p>"
+        },
+        "paymentDuePeriod":{
+          "shape":"BoundedString",
+          "documentation":"<p>The duration after invoice date by which payment is due.</p>"
+        }
+      },
+      "documentation":"<p>Defines a net payment term that sets how many days after the invoice date the payment is due.</p>"
     },
     "NextToken":{
       "type":"string",
@@ -1945,7 +1968,11 @@
         "supportTerm":{"shape":"SupportTerm"},
         "usageBasedPricingTerm":{"shape":"UsageBasedPricingTerm"},
         "validityTerm":{"shape":"ValidityTerm"},
-        "variablePaymentTerm":{"shape":"VariablePaymentTerm"}
+        "variablePaymentTerm":{"shape":"VariablePaymentTerm"},
+        "netPaymentTerm":{
+          "shape":"NetPaymentTerm",
+          "documentation":"<p>A net payment term.</p>"
+        }
       },
       "documentation":"<p>A term attached to an offer. Each element contains exactly one term type, such as a pricing term, legal term, or payment schedule term.</p>",
       "union":true
@@ -3025,7 +3052,8 @@
         "RenewalTerm",
         "SupportTerm",
         "ValidityTerm",
-        "VariablePaymentTerm"
+        "VariablePaymentTerm",
+        "NetPaymentTerm"
       ]
     },
     "ThrottlingException":{

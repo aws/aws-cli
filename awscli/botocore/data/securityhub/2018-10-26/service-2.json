@@ -1608,6 +1608,23 @@
       ],
       "documentation":"<p>If cross-Region aggregation is enabled, then <code>ListFindingAggregators</code> returns the Amazon Resource Name (ARN) of the finding aggregator. You can run this operation from any Amazon Web Services Region.</p>"
     },
+    "ListFreeTrialStatusesV2":{
+      "name":"ListFreeTrialStatusesV2",
+      "http":{
+        "method":"POST",
+        "requestUri":"/freetrial/statusv2/list"
+      },
+      "input":{"shape":"ListFreeTrialStatusesV2Request"},
+      "output":{"shape":"ListFreeTrialStatusesV2Response"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Lists the free trial status of Security Hub features. A delegated Security Hub administrator can list the status for accounts in its organization. Any other account can list the status only for itself. Free trial status remains available after a feature is disabled.</p>"
+    },
     "ListInvitations":{
       "name":"ListInvitations",
       "http":{
@@ -2147,6 +2164,34 @@
       "member":{"shape":"AccountDetails"},
       "max":50,
       "min":1
+    },
+    "AccountFreeTrialStatus":{
+      "type":"structure",
+      "required":[
+        "AccountId",
+        "EvaluatedAt",
+        "FreeTrialStatuses"
+      ],
+      "members":{
+        "AccountId":{
+          "shape":"FreeTrialAccountId",
+          "documentation":"<p>The Amazon Web Services account identifier that the free trial statuses apply to.</p>"
+        },
+        "EvaluatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time at which Security Hub evaluated the free trial statuses for this account. Every status in <code>FreeTrialStatuses</code> reflects this point in time.</p>"
+        },
+        "FreeTrialStatuses":{
+          "shape":"FreeTrialStatusList",
+          "documentation":"<p>An array of free trial statuses, one for each feature that has a free trial period for the account. The array is empty if the account has no free trial to report.</p>"
+        }
+      },
+      "documentation":"<p>The free trial status of each Security Hub feature for an account.</p>"
+    },
+    "AccountFreeTrialStatusList":{
+      "type":"list",
+      "member":{"shape":"AccountFreeTrialStatus"},
+      "max":100
     },
     "AccountId":{"type":"string"},
     "AccountIdList":{
@@ -19309,6 +19354,69 @@
       "type":"list",
       "member":{"shape":"FirewallPolicyStatelessRuleGroupReferencesDetails"}
     },
+    "FreeTrialAccountId":{
+      "type":"string",
+      "pattern":"^[0-9]{12}$"
+    },
+    "FreeTrialAccountIdList":{
+      "type":"list",
+      "member":{"shape":"FreeTrialAccountId"},
+      "max":50,
+      "min":1
+    },
+    "FreeTrialStatus":{
+      "type":"structure",
+      "required":[
+        "FeatureType",
+        "Status",
+        "StartedAt",
+        "ExpiresAt"
+      ],
+      "members":{
+        "FeatureType":{
+          "shape":"FreeTrialType",
+          "documentation":"<p>The feature that the free trial period applies to. Valid values:</p> <ul> <li> <p> <code>SECURITY_HUB_V2</code> specifies Security Hub.</p> </li> <li> <p> <code>SECURITY_HUB_V2_MULTI_CLOUD_AZURE</code> specifies Security Hub coverage for Microsoft Azure resources.</p> </li> </ul>"
+        },
+        "Status":{
+          "shape":"FreeTrialStatusValue",
+          "documentation":"<p>Whether the free trial period is currently active. Valid values:</p> <ul> <li> <p> <code>ACTIVE</code> specifies that the free trial period is ongoing.</p> </li> <li> <p> <code>INACTIVE</code> specifies that the free trial period has ended, or that it never started.</p> </li> </ul> <p>To determine whether a trial has expired, compare <code>ExpiresAt</code> to the current time.</p>"
+        },
+        "StartedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time at which the free trial period began.</p>"
+        },
+        "ExpiresAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time at which the free trial period ends.</p>"
+        }
+      },
+      "documentation":"<p>The free trial period for a Security Hub feature, and whether the trial is currently active.</p>"
+    },
+    "FreeTrialStatusList":{
+      "type":"list",
+      "member":{"shape":"FreeTrialStatus"},
+      "max":50
+    },
+    "FreeTrialStatusValue":{
+      "type":"string",
+      "enum":[
+        "ACTIVE",
+        "INACTIVE"
+      ]
+    },
+    "FreeTrialStatusValueList":{
+      "type":"list",
+      "member":{"shape":"FreeTrialStatusValue"},
+      "max":10,
+      "min":1
+    },
+    "FreeTrialType":{
+      "type":"string",
+      "enum":[
+        "SECURITY_HUB_V2",
+        "SECURITY_HUB_V2_MULTI_CLOUD_AZURE"
+      ]
+    },
     "GenerateRecommendedPolicyV2Request":{
       "type":"structure",
       "required":["MetadataUid"],
@@ -21126,6 +21234,41 @@
         "NextToken":{
           "shape":"NextToken",
           "documentation":"<p>If there are more results, this is the token to provide in the next call to <code>ListFindingAggregators</code>.</p> <p>This operation currently only returns a single result. </p>"
+        }
+      }
+    },
+    "ListFreeTrialStatusesV2Request":{
+      "type":"structure",
+      "members":{
+        "AccountIds":{
+          "shape":"FreeTrialAccountIdList",
+          "documentation":"<p>The Amazon Web Services account identifiers to list free trial status for. You can specify accounts other than your own only if you are a delegated Security Hub administrator.</p>"
+        },
+        "Statuses":{
+          "shape":"FreeTrialStatusValueList",
+          "documentation":"<p>The free trial statuses to filter the results by. Valid values:</p> <ul> <li> <p> <code>ACTIVE</code> returns only features with an ongoing free trial period.</p> </li> <li> <p> <code>INACTIVE</code> returns only features whose free trial period has ended, or that never started.</p> </li> </ul>"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return. If you don't specify a value, Security Hub returns up to 100 results.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The pagination token to request the next page of results.</p>"
+        }
+      }
+    },
+    "ListFreeTrialStatusesV2Response":{
+      "type":"structure",
+      "required":["AccountFreeTrialStatuses"],
+      "members":{
+        "AccountFreeTrialStatuses":{
+          "shape":"AccountFreeTrialStatusList",
+          "documentation":"<p>An array of free trial statuses, one for each account in scope.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The pagination token to use to request the next page of results. If there are no additional results, this value is null.</p>"
         }
       }
     },

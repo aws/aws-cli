@@ -33,6 +33,27 @@
       ],
       "documentation":"<p> Adds examples to the dataset's DRAFT. All examples are validated against the dataset's schema type before any writes occur. If any example fails validation, the entire batch is rejected (all-or-nothing semantics). </p>"
     },
+    "BatchPutGatewayRateLimits":{
+      "name":"BatchPutGatewayRateLimits",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/gateways/{gatewayIdentifier}/rate-limits/batch",
+        "responseCode":200
+      },
+      "input":{"shape":"BatchPutGatewayRateLimitsRequest"},
+      "output":{"shape":"BatchPutGatewayRateLimitsResponse"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Atomically creates or updates multiple rate limits for a gateway. The operation updates existing limits with matching keys and creates new limits for new keys. If the operation fails, the service applies no changes. Retry the request after resolving the issue.</p>",
+      "idempotent":true
+    },
     "CreateAgentRuntime":{
       "name":"CreateAgentRuntime",
       "http":{
@@ -137,6 +158,28 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Creates a browser profile in Amazon Bedrock AgentCore. A browser profile stores persistent browser data such as cookies, local storage, session storage, and browsing history that can be saved from browser sessions and reused in subsequent sessions.</p>",
+      "idempotent":true
+    },
+    "CreateCapacityProvider":{
+      "name":"CreateCapacityProvider",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/capacity-providers",
+        "responseCode":202
+      },
+      "input":{"shape":"CreateCapacityProviderInput"},
+      "output":{"shape":"CreateCapacityProviderOutput"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"RetryableConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Creates a capacity provider. A capacity provider defines the Amazon EC2 infrastructure for AgentCore Runtime, including the operating system, allowed instance types, networking, and storage. It also specifies the IAM permissions that AgentCore uses to manage those instances.</p> <p>The capacity provider name must be unique within your account. After you create the capacity provider, it enters a <code>CREATING</code> state and transitions to <code>READY</code> when it is available for use.</p>",
       "idempotent":true
     },
     "CreateCodeInterpreter":{
@@ -254,6 +297,27 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Creates a gateway for Amazon Bedrock Agent. A gateway serves as an integration point between your agent and external services.</p> <p>If you specify <code>CUSTOM_JWT</code> as the <code>authorizerType</code>, you must provide an <code>authorizerConfiguration</code>.</p>",
+      "idempotent":true
+    },
+    "CreateGatewayRateLimit":{
+      "name":"CreateGatewayRateLimit",
+      "http":{
+        "method":"POST",
+        "requestUri":"/gateways/{gatewayIdentifier}/rate-limits",
+        "responseCode":201
+      },
+      "input":{"shape":"CreateGatewayRateLimitRequest"},
+      "output":{"shape":"CreateGatewayRateLimitResponse"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Creates a rate limit for a gateway. Rate limits define throttling rules for each dimension that control request rates, token consumption rates, and concurrent connections through the gateway.</p>",
       "idempotent":true
     },
     "CreateGatewayRule":{
@@ -586,7 +650,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Deletes an Amazon Bedrock AgentCore Runtime.</p>",
+      "documentation":"<p>Deletes an Amazon Bedrock AgentCore Runtime, or a single version of an AgentCore Runtime when you provide the version qualifier.</p>",
       "idempotent":true
     },
     "DeleteAgentRuntimeEndpoint":{
@@ -605,7 +669,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Deletes an AAgentCore Runtime endpoint.</p>",
+      "documentation":"<p>Deletes an AgentCore Runtime endpoint.</p>",
       "idempotent":true
     },
     "DeleteApiKeyCredentialProvider":{
@@ -667,6 +731,27 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Deletes a browser profile.</p>",
+      "idempotent":true
+    },
+    "DeleteCapacityProvider":{
+      "name":"DeleteCapacityProvider",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/capacity-providers/{capacityProviderId}",
+        "responseCode":202
+      },
+      "input":{"shape":"DeleteCapacityProviderInput"},
+      "output":{"shape":"DeleteCapacityProviderOutput"},
+      "errors":[
+        {"shape":"RetryableConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Deletes a capacity provider. Before you delete a capacity provider, disassociate all agent runtimes and runtime versions that reference it. If any references remain, the operation fails.</p>",
       "idempotent":true
     },
     "DeleteCodeInterpreter":{
@@ -787,6 +872,26 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Deletes a gateway.</p>",
+      "idempotent":true
+    },
+    "DeleteGatewayRateLimit":{
+      "name":"DeleteGatewayRateLimit",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/gateways/{gatewayIdentifier}/rate-limits/{rateLimitId}",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteGatewayRateLimitRequest"},
+      "output":{"shape":"DeleteGatewayRateLimitResponse"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Deletes a gateway rate limit.</p>",
       "idempotent":true
     },
     "DeleteGatewayRule":{
@@ -1204,6 +1309,25 @@
       "documentation":"<p>Gets information about a browser profile.</p>",
       "readonly":true
     },
+    "GetCapacityProvider":{
+      "name":"GetCapacityProvider",
+      "http":{
+        "method":"GET",
+        "requestUri":"/capacity-providers/{capacityProviderId}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetCapacityProviderInput"},
+      "output":{"shape":"GetCapacityProviderOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Retrieves information about a capacity provider, including its status, permissions configuration, and compute configuration.</p>",
+      "readonly":true
+    },
     "GetCodeInterpreter":{
       "name":"GetCodeInterpreter",
       "http":{
@@ -1317,6 +1441,25 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Retrieves information about a specific Gateway.</p>",
+      "readonly":true
+    },
+    "GetGatewayRateLimit":{
+      "name":"GetGatewayRateLimit",
+      "http":{
+        "method":"GET",
+        "requestUri":"/gateways/{gatewayIdentifier}/rate-limits/{rateLimitId}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetGatewayRateLimitRequest"},
+      "output":{"shape":"GetGatewayRateLimitResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Retrieves information about a gateway rate limit.</p>",
       "readonly":true
     },
     "GetGatewayRule":{
@@ -1762,6 +1905,24 @@
       "documentation":"<p>Lists all versions of a specific Amazon Secure Agent.</p>",
       "readonly":true
     },
+    "ListAgentRuntimeVersionsByCapacityProvider":{
+      "name":"ListAgentRuntimeVersionsByCapacityProvider",
+      "http":{
+        "method":"POST",
+        "requestUri":"/capacity-providers/{capacityProviderId}/runtime-versions",
+        "responseCode":200
+      },
+      "input":{"shape":"ListAgentRuntimeVersionsByCapacityProviderInput"},
+      "output":{"shape":"ListAgentRuntimeVersionsByCapacityProviderOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Lists the agent runtime versions that are associated with a capacity provider. Use this operation to identify the runtimes you must disassociate before you can delete the capacity provider. Results are paginated; use the <code>nextToken</code> parameter to retrieve additional results.</p>",
+      "readonly":true
+    },
     "ListAgentRuntimes":{
       "name":"ListAgentRuntimes",
       "http":{
@@ -1834,6 +1995,24 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Lists all custom browsers in your account.</p>",
+      "readonly":true
+    },
+    "ListCapacityProviders":{
+      "name":"ListCapacityProviders",
+      "http":{
+        "method":"POST",
+        "requestUri":"/capacity-providers",
+        "responseCode":200
+      },
+      "input":{"shape":"ListCapacityProvidersInput"},
+      "output":{"shape":"ListCapacityProvidersOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Lists the capacity providers in your account and returns summary information for each one. To retrieve the full configuration for a specific capacity provider, use <code>GetCapacityProvider</code>. Results are paginated; use the <code>nextToken</code> parameter to retrieve additional results.</p>",
       "readonly":true
     },
     "ListCodeInterpreters":{
@@ -1964,6 +2143,25 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p> Lists all available evaluators, including both builtin evaluators provided by the service and custom evaluators created by the user. </p>",
+      "readonly":true
+    },
+    "ListGatewayRateLimits":{
+      "name":"ListGatewayRateLimits",
+      "http":{
+        "method":"GET",
+        "requestUri":"/gateways/{gatewayIdentifier}/rate-limits",
+        "responseCode":200
+      },
+      "input":{"shape":"ListGatewayRateLimitsRequest"},
+      "output":{"shape":"ListGatewayRateLimitsResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Lists all rate limits for a gateway. Results are paginated. Use the <code>nextToken</code> parameter to retrieve additional results.</p>",
       "readonly":true
     },
     "ListGatewayRules":{
@@ -2602,6 +2800,27 @@
       "documentation":"<p>Updates an existing API key credential provider.</p>",
       "idempotent":true
     },
+    "UpdateCapacityProvider":{
+      "name":"UpdateCapacityProvider",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/capacity-providers/{capacityProviderId}",
+        "responseCode":202
+      },
+      "input":{"shape":"UpdateCapacityProviderInput"},
+      "output":{"shape":"UpdateCapacityProviderOutput"},
+      "errors":[
+        {"shape":"RetryableConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Updates a capacity provider. Only the description can be changed. To change other configuration, such as instance types, networking, or storage, create a new capacity provider.</p>",
+      "idempotent":true
+    },
     "UpdateConfigurationBundle":{
       "name":"UpdateConfigurationBundle",
       "http":{
@@ -2702,6 +2921,25 @@
       ],
       "documentation":"<p>Updates an existing gateway.</p>",
       "idempotent":true
+    },
+    "UpdateGatewayRateLimit":{
+      "name":"UpdateGatewayRateLimit",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/gateways/{gatewayIdentifier}/rate-limits/{rateLimitId}",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateGatewayRateLimitRequest"},
+      "output":{"shape":"UpdateGatewayRateLimitResponse"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Updates the entries of a gateway rate limit. The dimension keys are immutable after creation.</p>"
     },
     "UpdateGatewayRule":{
       "name":"UpdateGatewayRule",
@@ -3375,6 +3613,33 @@
       "min":1,
       "pattern":"([1-9][0-9]{0,4})"
     },
+    "AgentRuntimeVersionSummary":{
+      "type":"structure",
+      "required":[
+        "agentRuntimeArn",
+        "agentRuntimeVersion",
+        "status"
+      ],
+      "members":{
+        "agentRuntimeArn":{
+          "shape":"AgentRuntimeArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the agent runtime.</p>"
+        },
+        "agentRuntimeVersion":{
+          "shape":"AgentRuntimeVersion",
+          "documentation":"<p>The version of the agent runtime.</p>"
+        },
+        "status":{
+          "shape":"AgentRuntimeStatus",
+          "documentation":"<p>The current status of the agent runtime version.</p>"
+        }
+      },
+      "documentation":"<p>Summary information about an agent runtime version associated with a capacity provider. This is returned by <code>ListAgentRuntimeVersionsByCapacityProvider</code>.</p>"
+    },
+    "AgentRuntimeVersionSummaryList":{
+      "type":"list",
+      "member":{"shape":"AgentRuntimeVersionSummary"}
+    },
     "AgentRuntimes":{
       "type":"list",
       "member":{"shape":"AgentRuntime"}
@@ -3762,6 +4027,66 @@
       "type":"string",
       "pattern":"[0-9]{12}"
     },
+    "BatchPutGatewayRateLimitsRequest":{
+      "type":"structure",
+      "required":[
+        "gatewayIdentifier",
+        "rateLimits"
+      ],
+      "members":{
+        "gatewayIdentifier":{
+          "shape":"GatewayIdentifier",
+          "documentation":"<p>The unique identifier of the gateway.</p>",
+          "location":"uri",
+          "locationName":"gatewayIdentifier"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier to ensure that the API request completes no more than one time. If you don't specify this field, a value is randomly generated for you. If this token matches a previous request, the service ignores the request, but doesn't return an error. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html\">Ensuring idempotency</a>.</p>",
+          "idempotencyToken":true
+        },
+        "rateLimits":{
+          "shape":"BatchPutLimitEntries",
+          "documentation":"<p>Complete set of rate limits for this gateway. Replaces all existing limits atomically.</p>"
+        }
+      }
+    },
+    "BatchPutGatewayRateLimitsResponse":{
+      "type":"structure",
+      "required":["rateLimits"],
+      "members":{
+        "rateLimits":{
+          "shape":"GatewayRateLimits",
+          "documentation":"<p>The resulting set of rate limits after the batch operation.</p>"
+        }
+      }
+    },
+    "BatchPutLimitEntries":{
+      "type":"list",
+      "member":{"shape":"BatchPutLimitEntry"},
+      "max":50,
+      "min":1
+    },
+    "BatchPutLimitEntry":{
+      "type":"structure",
+      "required":[
+        "dimensionKeys",
+        "entries"
+      ],
+      "members":{
+        "rateLimitId":{
+          "shape":"GatewayRateLimitId",
+          "documentation":"<p>Optional — if provided, used for upsert matching against existing limits.</p>"
+        },
+        "description":{
+          "shape":"GatewayRateLimitDescription",
+          "documentation":"<p>Optional human-readable description for this limit.</p>"
+        },
+        "dimensionKeys":{"shape":"DimensionKeys"},
+        "entries":{"shape":"LimitEntries"}
+      },
+      "documentation":"<p>A limit definition within a BatchPut request (rateLimitId used for upsert matching)</p>"
+    },
     "BedrockAgentcoreResourceArn":{
       "type":"string",
       "max":1011,
@@ -4014,6 +4339,165 @@
         }
       },
       "documentation":"<p>Contains summary information about a browser. A browser enables Amazon Bedrock AgentCore Agent to interact with web content.</p>"
+    },
+    "CapacityProviderArn":{
+      "type":"string",
+      "pattern":"arn:aws(-[^:]+)?:bedrock-agentcore:[a-z0-9-]+:[0-9]{12}:capacity-provider/[a-zA-Z][a-zA-Z0-9_]{0,47}-[a-zA-Z0-9]{10}"
+    },
+    "CapacityProviderConfiguration":{
+      "type":"structure",
+      "members":{
+        "capacityProviderArn":{
+          "shape":"CapacityProviderArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the capacity provider to use for the AgentCore Runtime.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for customer-managed compute capacity for the AgentCore Runtime. A capacity provider runs the AgentCore Runtime on the Instances compute type, using Amazon Web Services managed compute in your account.</p>"
+    },
+    "CapacityProviderId":{
+      "type":"string",
+      "max":59,
+      "min":12,
+      "pattern":"[a-zA-Z][a-zA-Z0-9_]{0,47}-[a-zA-Z0-9]{10}"
+    },
+    "CapacityProviderList":{
+      "type":"list",
+      "member":{"shape":"CapacityProviderSummary"}
+    },
+    "CapacityProviderName":{
+      "type":"string",
+      "max":48,
+      "min":1,
+      "pattern":"[a-zA-Z][a-zA-Z0-9_]{0,47}"
+    },
+    "CapacityProviderStatus":{
+      "type":"string",
+      "documentation":"<p>The status of a capacity provider. Possible values:</p> <ul> <li> <p> <code>CREATING</code> – The service is creating the capacity provider and validating its configuration.</p> </li> <li> <p> <code>CREATE_FAILED</code> – The service could not create the capacity provider. For details, see <code>statusCode</code> and <code>statusReason</code>.</p> </li> <li> <p> <code>UPDATING</code> – The service is updating the capacity provider.</p> </li> <li> <p> <code>UPDATE_FAILED</code> – The service could not update the capacity provider. For details, see <code>statusCode</code> and <code>statusReason</code>.</p> </li> <li> <p> <code>READY</code> – The capacity provider is available for use.</p> </li> <li> <p> <code>DELETING</code> – The service is deleting the capacity provider.</p> </li> <li> <p> <code>DELETE_FAILED</code> – The service could not delete the capacity provider. You can retry the deletion.</p> </li> </ul>",
+      "enum":[
+        "CREATING",
+        "CREATE_FAILED",
+        "UPDATING",
+        "UPDATE_FAILED",
+        "READY",
+        "DELETING",
+        "DELETE_FAILED"
+      ]
+    },
+    "CapacityProviderStatusCode":{
+      "type":"string",
+      "documentation":"<p>A reason code for a capacity provider that is not in the <code>READY</code> state. Possible values:</p> <ul> <li> <p> <code>VALIDATION_ERROR</code> – A configuration error prevented the operation. For example, missing permissions, invalid parameters, or a naming conflict.</p> </li> <li> <p> <code>QUOTA_EXCEEDED</code> – An Amazon EC2 resource quota was exceeded. Request a limit increase or remove unused resources.</p> </li> <li> <p> <code>THROTTLED</code> – The request was throttled. Retry after a short delay.</p> </li> <li> <p> <code>INTERNAL_SERVER_EXCEPTION</code> – An internal error occurred.</p> </li> </ul>",
+      "enum":[
+        "VALIDATION_ERROR",
+        "QUOTA_EXCEEDED",
+        "THROTTLED",
+        "INTERNAL_SERVER_EXCEPTION"
+      ]
+    },
+    "CapacityProviderSummary":{
+      "type":"structure",
+      "required":[
+        "capacityProviderId",
+        "capacityProviderArn",
+        "name",
+        "status",
+        "lastUpdatedAt"
+      ],
+      "members":{
+        "capacityProviderId":{
+          "shape":"CapacityProviderId",
+          "documentation":"<p>The unique identifier of the capacity provider.</p>"
+        },
+        "capacityProviderArn":{
+          "shape":"CapacityProviderArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the capacity provider.</p>"
+        },
+        "name":{
+          "shape":"CapacityProviderName",
+          "documentation":"<p>The name of the capacity provider.</p>"
+        },
+        "status":{
+          "shape":"CapacityProviderStatus",
+          "documentation":"<p>The current status of the capacity provider. For possible values, see <code>CapacityProviderStatus</code>.</p>"
+        },
+        "lastUpdatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the capacity provider was last updated.</p>"
+        }
+      },
+      "documentation":"<p>A summary of a capacity provider, as returned by <code>ListCapacityProviders</code>. Each summary includes the capacity provider identifier, Amazon Resource Name (ARN), name, status, and last-updated timestamp.</p>"
+    },
+    "CapacityProviderVolumeConfiguration":{
+      "type":"structure",
+      "required":[
+        "volumeName",
+        "mountPath"
+      ],
+      "members":{
+        "volumeName":{
+          "shape":"CapacityProviderVolumeName",
+          "documentation":"<p>The logical name of the capacity provider volume to mount. This name must match a volume that is defined in the capacity provider's list of volumes.</p>"
+        },
+        "mountPath":{
+          "shape":"MountPath",
+          "documentation":"<p>The mount path for the capacity provider volume inside the AgentCore Runtime. The path must be under <code>/mnt</code> with exactly one subdirectory level (for example, <code>/mnt/data</code>).</p>"
+        }
+      },
+      "documentation":"<p>Configuration for a capacity provider volume mounted into the AgentCore Runtime. This references a persistent volume by its logical name, as defined in the capacity provider's list of volumes.</p>"
+    },
+    "CapacityProviderVolumeName":{
+      "type":"string",
+      "documentation":"<p>The logical name of a capacity provider volume. This name must match a volume that is defined in the capacity provider's list of volumes.</p>",
+      "max":48,
+      "min":1,
+      "pattern":"[a-zA-Z][a-zA-Z0-9_-]{0,47}"
+    },
+    "CapacityReservationId":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"cr-[0-9a-z]+"
+    },
+    "CapacityReservationPreference":{
+      "type":"string",
+      "enum":[
+        "capacity-reservations-only",
+        "open",
+        "none"
+      ]
+    },
+    "CapacityReservationResourceGroupArn":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "pattern":"arn:aws(-[^:]+)?:resource-groups:[a-z0-9-]+:[0-9]{12}:group/[a-zA-Z0-9_-]+"
+    },
+    "CapacityReservationSpecification":{
+      "type":"structure",
+      "members":{
+        "capacityReservationPreference":{
+          "shape":"CapacityReservationPreference",
+          "documentation":"<p>The Capacity Reservation preference for the instances.</p>"
+        },
+        "capacityReservationTarget":{
+          "shape":"CapacityReservationTarget",
+          "documentation":"<p>The target Capacity Reservation or Capacity Reservation group for the instances.</p>"
+        }
+      },
+      "documentation":"<p>The Capacity Reservation targeting option for the instances.</p>"
+    },
+    "CapacityReservationTarget":{
+      "type":"structure",
+      "members":{
+        "capacityReservationId":{
+          "shape":"CapacityReservationId",
+          "documentation":"<p>The ID of the Capacity Reservation in which to run the instances.</p>"
+        },
+        "capacityReservationResourceGroupArn":{
+          "shape":"CapacityReservationResourceGroupArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Capacity Reservation resource group in which to run the instances.</p>"
+        }
+      },
+      "documentation":"<p>Information about the target Capacity Reservation or Capacity Reservation group for the instances.</p>"
     },
     "CategoricalScaleDefinition":{
       "type":"structure",
@@ -4424,6 +4908,17 @@
       "min":1,
       "pattern":"[a-zA-Z][a-zA-Z0-9_:/.\\-]{0,2047}"
     },
+    "ComputeConfiguration":{
+      "type":"structure",
+      "members":{
+        "ec2Configuration":{
+          "shape":"Ec2Configuration",
+          "documentation":"<p>The Amazon EC2 compute configuration for the capacity provider.</p>"
+        }
+      },
+      "documentation":"<p>The compute configuration for a capacity provider. This structure defines the type and settings of the compute resources used to launch instances.</p>",
+      "union":true
+    },
     "ConcurrentModificationException":{
       "type":"structure",
       "required":["message"],
@@ -4692,7 +5187,7 @@
     },
     "ConnectorParameterValue":{
       "type":"string",
-      "documentation":"<p>The value of a connector parameter.</p>",
+      "documentation":"<p>The value of a connector parameter. Length: 1–1,024 characters.</p>",
       "max":1024,
       "min":1
     },
@@ -4876,8 +5371,7 @@
       "required":[
         "agentRuntimeName",
         "agentRuntimeArtifact",
-        "roleArn",
-        "networkConfiguration"
+        "roleArn"
       ],
       "members":{
         "agentRuntimeName":{
@@ -4925,6 +5419,10 @@
         "filesystemConfigurations":{
           "shape":"FilesystemConfigurations",
           "documentation":"<p>The filesystem configurations to mount into the AgentCore Runtime. Use filesystem configurations to provide persistent storage to your AgentCore Runtime sessions.</p>"
+        },
+        "capacityProviderConfiguration":{
+          "shape":"CapacityProviderConfiguration",
+          "documentation":"<p>The capacity provider configuration for the AgentCore Runtime. Use a capacity provider to run the AgentCore Runtime on the Instances compute type, which provisions Amazon Web Services managed compute in your account.</p>"
         },
         "tags":{
           "shape":"TagsMap",
@@ -5152,6 +5650,68 @@
         "status":{
           "shape":"BrowserStatus",
           "documentation":"<p>The current status of the browser.</p>"
+        }
+      }
+    },
+    "CreateCapacityProviderInput":{
+      "type":"structure",
+      "required":[
+        "name",
+        "permissionsConfiguration",
+        "computeConfiguration"
+      ],
+      "members":{
+        "name":{
+          "shape":"CapacityProviderName",
+          "documentation":"<p>The name of the capacity provider. The name must be unique within your account.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>An optional description of the capacity provider. If you don't specify a description, the service creates the capacity provider without one.</p>"
+        },
+        "permissionsConfiguration":{
+          "shape":"PermissionsConfiguration",
+          "documentation":"<p>The permissions configuration for the capacity provider. This specifies the IAM role that AgentCore uses to manage the Amazon EC2 instances on your behalf.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier to ensure that the API request completes no more than one time. If you don't specify this field, a value is randomly generated for you. If this token matches a previous request, the service ignores the request, but doesn't return an error. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html\">Ensuring idempotency</a>.</p>",
+          "idempotencyToken":true
+        },
+        "tags":{
+          "shape":"TagsMap",
+          "documentation":"<p>A map of tag keys and values to associate with the capacity provider. If you don't specify tags, the capacity provider is created with no tags.</p>"
+        },
+        "computeConfiguration":{
+          "shape":"ComputeConfiguration",
+          "documentation":"<p>The compute configuration for the capacity provider. This defines the Amazon EC2 compute resources used to launch instances: the operating system, allowed instance types, networking, and storage.</p>"
+        }
+      }
+    },
+    "CreateCapacityProviderOutput":{
+      "type":"structure",
+      "required":[
+        "capacityProviderId",
+        "capacityProviderArn",
+        "name",
+        "status"
+      ],
+      "members":{
+        "capacityProviderId":{
+          "shape":"CapacityProviderId",
+          "documentation":"<p>The unique identifier of the created capacity provider.</p>"
+        },
+        "capacityProviderArn":{
+          "shape":"CapacityProviderArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the capacity provider.</p>"
+        },
+        "name":{
+          "shape":"CapacityProviderName",
+          "documentation":"<p>The name of the capacity provider.</p>"
+        },
+        "status":{
+          "shape":"CapacityProviderStatus",
+          "documentation":"<p>The current status of the capacity provider. For possible values, see <code>CapacityProviderStatus</code>.</p>"
         }
       }
     },
@@ -5487,6 +6047,78 @@
           "documentation":"<p> The status of the evaluator creation operation. </p>"
         }
       }
+    },
+    "CreateGatewayRateLimitRequest":{
+      "type":"structure",
+      "required":[
+        "gatewayIdentifier",
+        "dimensionKeys",
+        "entries"
+      ],
+      "members":{
+        "gatewayIdentifier":{
+          "shape":"GatewayIdentifier",
+          "documentation":"<p>The unique identifier of the gateway to create the rate limit for.</p>",
+          "location":"uri",
+          "locationName":"gatewayIdentifier"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier to ensure that the API request completes no more than one time. If you don't specify this field, a value is randomly generated for you. If this token matches a previous request, the service ignores the request, but doesn't return an error. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html\">Ensuring idempotency</a>.</p>",
+          "idempotencyToken":true
+        },
+        "rateLimitId":{
+          "shape":"GatewayRateLimitId",
+          "documentation":"<p>Optional customer-defined limit ID. If not provided, system generates one.</p>"
+        },
+        "description":{
+          "shape":"GatewayRateLimitDescription",
+          "documentation":"<p>Optional human-readable description for this limit.</p>"
+        },
+        "dimensionKeys":{
+          "shape":"DimensionKeys",
+          "documentation":"<p>Ordered list of dimension names defining the scope of this limit. Unique per gateway — no two limits can share the same dimensionKeys.</p>"
+        },
+        "entries":{
+          "shape":"LimitEntries",
+          "documentation":"<p>Rule entries mapping dimension values to rate configurations.</p>"
+        }
+      }
+    },
+    "CreateGatewayRateLimitResponse":{
+      "type":"structure",
+      "required":[
+        "rateLimitId",
+        "gatewayIdentifier",
+        "dimensionKeys",
+        "entries",
+        "status",
+        "createdAt",
+        "updatedAt"
+      ],
+      "members":{
+        "rateLimitId":{"shape":"GatewayRateLimitId"},
+        "gatewayIdentifier":{
+          "shape":"GatewayIdentifier",
+          "documentation":"<p>The unique identifier of the gateway.</p>"
+        },
+        "description":{
+          "shape":"GatewayRateLimitDescription",
+          "documentation":"<p>Optional human-readable description for this limit.</p>"
+        },
+        "dimensionKeys":{"shape":"DimensionKeys"},
+        "entries":{"shape":"LimitEntries"},
+        "status":{"shape":"GatewayRateLimitStatus"},
+        "createdAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The timestamp when the rate limit was created.</p>"
+        },
+        "updatedAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The timestamp when the rate limit was last updated.</p>"
+        }
+      },
+      "documentation":"<p>Shared fields for GatewayRateLimit responses</p>"
     },
     "CreateGatewayRequest":{
       "type":"structure",
@@ -7511,6 +8143,12 @@
           "location":"uri",
           "locationName":"agentRuntimeId"
         },
+        "agentRuntimeVersion":{
+          "shape":"AgentRuntimeVersion",
+          "documentation":"<p>The version of the AgentCore Runtime to delete. When you provide this value, only that version is deleted. When you omit it, the entire AgentCore Runtime and all of its versions are deleted.</p>",
+          "location":"querystring",
+          "locationName":"version"
+        },
         "clientToken":{
           "shape":"ClientToken",
           "documentation":"<p>A unique, case-sensitive identifier to ensure that the operation completes no more than one time. If this token matches a previous request, the service ignores the request but does not return an error.</p>",
@@ -7531,6 +8169,10 @@
         "agentRuntimeId":{
           "shape":"AgentRuntimeId",
           "documentation":"<p>The unique identifier of the AgentCore Runtime.</p>"
+        },
+        "agentRuntimeVersion":{
+          "shape":"AgentRuntimeVersion",
+          "documentation":"<p>The version of the AgentCore Runtime that was deleted. This value is present only when you delete a single version.</p>"
         }
       }
     },
@@ -7636,6 +8278,42 @@
         "lastUpdatedAt":{
           "shape":"DateTimestamp",
           "documentation":"<p>The timestamp when the browser was last updated.</p>"
+        }
+      }
+    },
+    "DeleteCapacityProviderInput":{
+      "type":"structure",
+      "required":["capacityProviderId"],
+      "members":{
+        "capacityProviderId":{
+          "shape":"CapacityProviderId",
+          "documentation":"<p>The unique identifier of the capacity provider to delete.</p>",
+          "location":"uri",
+          "locationName":"capacityProviderId"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier to ensure that the API request completes no more than one time. If you don't specify this field, a value is randomly generated for you. If this token matches a previous request, the service ignores the request, but doesn't return an error. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html\">Ensuring idempotency</a>.</p>",
+          "idempotencyToken":true,
+          "location":"querystring",
+          "locationName":"clientToken"
+        }
+      }
+    },
+    "DeleteCapacityProviderOutput":{
+      "type":"structure",
+      "required":[
+        "capacityProviderId",
+        "status"
+      ],
+      "members":{
+        "capacityProviderId":{
+          "shape":"CapacityProviderId",
+          "documentation":"<p>The unique identifier of the deleted capacity provider.</p>"
+        },
+        "status":{
+          "shape":"CapacityProviderStatus",
+          "documentation":"<p>The current status of the capacity provider. For possible values, see <code>CapacityProviderStatus</code>.</p>"
         }
       }
     },
@@ -7853,6 +8531,38 @@
           "shape":"EvaluatorStatus",
           "documentation":"<p> The status of the evaluator deletion operation. </p>"
         }
+      }
+    },
+    "DeleteGatewayRateLimitRequest":{
+      "type":"structure",
+      "required":[
+        "gatewayIdentifier",
+        "rateLimitId"
+      ],
+      "members":{
+        "gatewayIdentifier":{
+          "shape":"GatewayIdentifier",
+          "documentation":"<p>The unique identifier of the gateway.</p>",
+          "location":"uri",
+          "locationName":"gatewayIdentifier"
+        },
+        "rateLimitId":{
+          "shape":"GatewayRateLimitId",
+          "documentation":"<p>The unique identifier of the rate limit to delete.</p>",
+          "location":"uri",
+          "locationName":"rateLimitId"
+        }
+      }
+    },
+    "DeleteGatewayRateLimitResponse":{
+      "type":"structure",
+      "required":[
+        "rateLimitId",
+        "status"
+      ],
+      "members":{
+        "rateLimitId":{"shape":"GatewayRateLimitId"},
+        "status":{"shape":"GatewayRateLimitStatus"}
       }
     },
     "DeleteGatewayRequest":{
@@ -8489,6 +9199,32 @@
       },
       "documentation":"<p>Contains descriptor-type-specific configurations for a registry record. Only the descriptor matching the record's <code>descriptorType</code> should be populated.</p>"
     },
+    "DeviceName":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"[a-zA-Z0-9/._-]+"
+    },
+    "DimensionKey":{
+      "type":"string",
+      "documentation":"<p>A dimension key specifying the scope dimension for rate limiting. Allowed values: &quot;targetName&quot;, &quot;toolName&quot;, &quot;qualifiedModelId&quot;, or context-path expressions: &quot;$.context.iam.principal&quot;, &quot;$.context.iam.sourceIdentity&quot;, &quot;$.context.jwt.<claim>&quot; where <claim> is a JWT claim name (e.g., &quot;$.context.jwt.sub&quot;). Validated server-side to enforce allowed prefixes and patterns.</p>",
+      "max":80,
+      "min":1,
+      "pattern":"(targetName|toolName|qualifiedModelId|\\$\\.context\\.iam\\.principal|\\$\\.context\\.iam\\.sourceIdentity|\\$\\.context\\.jwt\\.[a-zA-Z_][a-zA-Z0-9_\\-\\.]{0,61}[a-zA-Z0-9_])"
+    },
+    "DimensionKeys":{
+      "type":"list",
+      "member":{"shape":"DimensionKey"},
+      "documentation":"<p>Ordered list of dimension key names defining the scope of a limit</p>",
+      "max":10,
+      "min":1
+    },
+    "DimensionValue":{
+      "type":"string",
+      "documentation":"<p>A dimension value in a rule entry (exact value or &quot;*&quot; wildcard)</p>",
+      "max":256,
+      "min":1
+    },
     "DiscoveryUrl":{
       "type":"string",
       "pattern":".+/\\.well-known/openid-configuration"
@@ -8518,6 +9254,113 @@
         "MODIFIED",
         "UNMODIFIED"
       ]
+    },
+    "EC2InstanceType":{
+      "type":"string",
+      "max":255,
+      "min":1
+    },
+    "EbsCardIndex":{
+      "type":"integer",
+      "box":true,
+      "min":0
+    },
+    "EbsSnapshotId":{
+      "type":"string",
+      "max":64,
+      "min":13,
+      "pattern":"snap-[a-f0-9]{8,17}"
+    },
+    "EbsVolumeConfiguration":{
+      "type":"structure",
+      "required":[
+        "name",
+        "sizeGiB"
+      ],
+      "members":{
+        "name":{
+          "shape":"VolumeName",
+          "documentation":"<p>The logical name of the volume. Use this name to reference the volume when you mount it into an agent runtime.</p>"
+        },
+        "sizeGiB":{
+          "shape":"VolumeSizeGiB",
+          "documentation":"<p>The size of the volume, in GiB.</p>"
+        },
+        "volumeType":{
+          "shape":"EbsVolumeType",
+          "documentation":"<p>The Amazon EBS volume type. If you do not specify a type, the default is <code>gp3</code>.</p>"
+        },
+        "iops":{
+          "shape":"VolumeIops",
+          "documentation":"<p>The number of IOPS to provision. Valid only for <code>gp3</code>, <code>io1</code>, and <code>io2</code> volumes.</p>"
+        },
+        "throughput":{
+          "shape":"VolumeThroughput",
+          "documentation":"<p>The throughput, in MiB/s. Valid only for <code>gp3</code> volumes.</p>"
+        },
+        "encrypted":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether to encrypt the volume. If <code>true</code>, the service encrypts the volume with the KMS key that you specify in <code>kmsKeyId</code>, or the default KMS key for Amazon EBS if you do not specify one. The default is <code>true</code>.</p>"
+        },
+        "kmsKeyId":{
+          "shape":"KmsKeyId",
+          "documentation":"<p>The identifier of the KMS key to use for encryption.</p>"
+        },
+        "snapshotId":{
+          "shape":"EbsSnapshotId",
+          "documentation":"<p>An optional Amazon EBS snapshot ID. If provided, the volume is initialized from this snapshot the first time it is created. On subsequent restarts, the existing volume is used and the snapshot is ignored.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for an Amazon EBS-backed persistent volume. The service creates persistent volumes when a session first launches, and the volumes survive instance termination. The volumes persist until you delete the session.</p>"
+    },
+    "EbsVolumeInitializationRate":{
+      "type":"integer",
+      "box":true,
+      "max":300,
+      "min":100
+    },
+    "EbsVolumeType":{
+      "type":"string",
+      "documentation":"<p>The type of Amazon EBS volume.</p>",
+      "enum":[
+        "standard",
+        "io1",
+        "io2",
+        "gp2",
+        "sc1",
+        "st1",
+        "gp3"
+      ]
+    },
+    "Ec2Configuration":{
+      "type":"structure",
+      "required":[
+        "launchTemplateSource",
+        "vpcConfiguration"
+      ],
+      "members":{
+        "launchTemplateSource":{
+          "shape":"LaunchTemplateSource",
+          "documentation":"<p>The source of the launch template configuration that defines how instances are launched.</p>"
+        },
+        "vpcConfiguration":{
+          "shape":"VpcConfiguration",
+          "documentation":"<p>The VPC configuration for launching instances, including subnets and security groups.</p>"
+        },
+        "volumes":{
+          "shape":"VolumeConfigurationList",
+          "documentation":"<p>The named persistent Amazon EBS volumes for the capacity provider. A capacity provider can define up to five volumes.</p>"
+        },
+        "lifecycleConfiguration":{
+          "shape":"InstanceLifecycleConfiguration",
+          "documentation":"<p>The lifecycle configuration for instances in the capacity provider.</p>"
+        },
+        "rootVolume":{
+          "shape":"RootVolumeConfiguration",
+          "documentation":"<p>The configuration for the instance root volume. Specify the amount of free space to guarantee and, optionally, the Amazon EBS performance and encryption settings. The device name and delete-on-termination behavior are not configurable.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for Amazon EC2-based compute, including the launch template source, networking, storage volumes, and instance lifecycle settings.</p>"
     },
     "EfsAccessPointArn":{
       "type":"string",
@@ -8629,6 +9472,75 @@
       "max":50,
       "min":0,
       "sensitive":true
+    },
+    "EphemeralBlockDeviceMapping":{
+      "type":"structure",
+      "members":{
+        "deviceName":{
+          "shape":"DeviceName",
+          "documentation":"<p>The device name, for example <code>/dev/sdh</code> or <code>xvdh</code>.</p>"
+        },
+        "virtualName":{
+          "shape":"VirtualDeviceName",
+          "documentation":"<p>The virtual device name (<code>ephemeralN</code>). Instance store volumes are numbered starting from 0. The number of available instance store volumes depends on the instance type. After you connect to the instance, you must mount the volume.</p>"
+        },
+        "ebs":{"shape":"EphemeralEBSVolumeConfiguration"}
+      },
+      "documentation":"<p>A block device mapping for an instance store (ephemeral) volume.</p>"
+    },
+    "EphemeralEBSVolumeConfiguration":{
+      "type":"structure",
+      "members":{
+        "volumeType":{
+          "shape":"EbsVolumeType",
+          "documentation":"<p>The Amazon EBS volume type. If you do not specify a type, the default is <code>gp3</code>.</p>"
+        },
+        "iops":{
+          "shape":"VolumeIops",
+          "documentation":"<p>The number of IOPS to provision. For <code>gp3</code>, <code>io1</code>, and <code>io2</code> volumes, this is the number of IOPS provisioned for the volume. For <code>gp2</code> volumes, this sets the baseline IOPS performance. It also controls the rate at which the volume accumulates I/O credits for bursting. Supported values: <code>gp3</code>, 3,000–80,000; <code>io1</code>, 100–64,000; <code>io2</code>, 100–256,000.</p>"
+        },
+        "throughput":{
+          "shape":"EphemeralEBSVolumeConfigurationThroughputInteger",
+          "documentation":"<p>The throughput to provision, in MiB/s. Valid only for <code>gp3</code> volumes. Valid range: 125–2,000 MiB/s.</p>"
+        },
+        "encrypted":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether to encrypt the volume. Encrypted volumes can be attached only to instances that support Amazon EBS encryption. If you create a volume from a snapshot, you cannot specify an encryption value.</p>"
+        },
+        "kmsKeyId":{
+          "shape":"KmsKeyId",
+          "documentation":"<p>The identifier (key ID, key alias, key ARN, or alias ARN) of the customer managed KMS key to use for Amazon EBS encryption.</p>"
+        },
+        "snapshotId":{
+          "shape":"EbsSnapshotId",
+          "documentation":"<p>The ID of the snapshot.</p>"
+        },
+        "volumeSize":{
+          "shape":"EphemeralEBSVolumeConfigurationVolumeSizeInteger",
+          "documentation":"<p>The size of the volume, in GiB. You must specify either a snapshot ID or a volume size. Supported sizes: <code>gp2</code>, 1–16,384; <code>gp3</code>, 1–65,536; <code>io1</code>, 4–16,384; <code>io2</code>, 4–65,536.</p>"
+        },
+        "volumeInitializationRate":{
+          "shape":"EbsVolumeInitializationRate",
+          "documentation":"<p>The rate at which the volume is initialized after creation, in MiB/s. Supported only for volumes created from snapshots. Valid range: 100–300 MiB/s.</p>"
+        },
+        "ebsCardIndex":{
+          "shape":"EbsCardIndex",
+          "documentation":"<p>The index of the Amazon EBS card. Applies to instances with multiple Amazon EBS cards.</p>"
+        }
+      },
+      "documentation":"<p>The shared Amazon EBS performance and encryption properties for a volume. These properties are common across the different volume configurations for a capacity provider.</p>"
+    },
+    "EphemeralEBSVolumeConfigurationThroughputInteger":{
+      "type":"integer",
+      "box":true,
+      "max":2000,
+      "min":125
+    },
+    "EphemeralEBSVolumeConfigurationVolumeSizeInteger":{
+      "type":"integer",
+      "box":true,
+      "max":65536,
+      "min":1
     },
     "EpisodicConsolidationOverride":{
       "type":"structure",
@@ -9090,6 +10002,10 @@
         "efsAccessPoint":{
           "shape":"EfsAccessPointConfiguration",
           "documentation":"<p>Configuration for an Amazon EFS access point to mount into the AgentCore Runtime.</p>"
+        },
+        "capacityProviderVolume":{
+          "shape":"CapacityProviderVolumeConfiguration",
+          "documentation":"<p>Configuration for a capacity provider volume to mount into the AgentCore Runtime. This mounts a persistent volume that is defined on the capacity provider, referenced by its logical name.</p>"
         }
       },
       "documentation":"<p>Configuration for a filesystem that can be mounted into the AgentCore Runtime.</p>",
@@ -9346,6 +10262,80 @@
     "GatewayProtocolType":{
       "type":"string",
       "enum":["MCP"]
+    },
+    "GatewayRateLimitDescription":{
+      "type":"string",
+      "documentation":"<p>Optional human-readable description for a gateway limit.</p>",
+      "max":512,
+      "min":0
+    },
+    "GatewayRateLimitDetail":{
+      "type":"structure",
+      "required":[
+        "rateLimitId",
+        "gatewayIdentifier",
+        "dimensionKeys",
+        "entries",
+        "status",
+        "createdAt",
+        "updatedAt"
+      ],
+      "members":{
+        "rateLimitId":{"shape":"GatewayRateLimitId"},
+        "gatewayIdentifier":{
+          "shape":"GatewayIdentifier",
+          "documentation":"<p>The unique identifier of the gateway.</p>"
+        },
+        "description":{
+          "shape":"GatewayRateLimitDescription",
+          "documentation":"<p>Optional human-readable description for this limit.</p>"
+        },
+        "dimensionKeys":{"shape":"DimensionKeys"},
+        "entries":{"shape":"LimitEntries"},
+        "status":{"shape":"GatewayRateLimitStatus"},
+        "createdAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The timestamp when the rate limit was created.</p>"
+        },
+        "updatedAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The timestamp when the rate limit was last updated.</p>"
+        }
+      },
+      "documentation":"<p>Shared fields for GatewayRateLimit responses</p>"
+    },
+    "GatewayRateLimitId":{
+      "type":"string",
+      "documentation":"<p>Limit identifier. Optional on Create (system-generates if not provided by customer). Always present in responses.</p>",
+      "max":64,
+      "min":2,
+      "pattern":"[a-zA-Z0-9][a-zA-Z0-9\\-_\\.]{0,62}[a-zA-Z0-9]"
+    },
+    "GatewayRateLimitMaxResults":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "GatewayRateLimitNextToken":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "pattern":"\\S*"
+    },
+    "GatewayRateLimitStatus":{
+      "type":"string",
+      "documentation":"<p>Status of a gateway limit</p>",
+      "enum":[
+        "CREATING",
+        "ACTIVE",
+        "UPDATING",
+        "DELETING"
+      ]
+    },
+    "GatewayRateLimits":{
+      "type":"list",
+      "member":{"shape":"GatewayRateLimitDetail"}
     },
     "GatewayRuleDescription":{
       "type":"string",
@@ -9775,6 +10765,10 @@
         "filesystemConfigurations":{
           "shape":"FilesystemConfigurations",
           "documentation":"<p>The filesystem configurations mounted into the AgentCore Runtime.</p>"
+        },
+        "capacityProviderConfiguration":{
+          "shape":"CapacityProviderConfiguration",
+          "documentation":"<p>The capacity provider configuration for the AgentCore Runtime.</p>"
         }
       }
     },
@@ -9970,6 +10964,77 @@
         "lastUpdatedAt":{
           "shape":"DateTimestamp",
           "documentation":"<p>The timestamp when the browser was last updated.</p>"
+        }
+      }
+    },
+    "GetCapacityProviderInput":{
+      "type":"structure",
+      "required":["capacityProviderId"],
+      "members":{
+        "capacityProviderId":{
+          "shape":"CapacityProviderId",
+          "documentation":"<p>The unique identifier of the capacity provider.</p>",
+          "location":"uri",
+          "locationName":"capacityProviderId"
+        }
+      }
+    },
+    "GetCapacityProviderOutput":{
+      "type":"structure",
+      "required":[
+        "capacityProviderId",
+        "capacityProviderArn",
+        "name",
+        "status",
+        "permissionsConfiguration",
+        "computeConfiguration",
+        "createdAt",
+        "lastUpdatedAt"
+      ],
+      "members":{
+        "capacityProviderId":{
+          "shape":"CapacityProviderId",
+          "documentation":"<p>The unique identifier of the capacity provider.</p>"
+        },
+        "capacityProviderArn":{
+          "shape":"CapacityProviderArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the capacity provider.</p>"
+        },
+        "name":{
+          "shape":"CapacityProviderName",
+          "documentation":"<p>The name of the capacity provider.</p>"
+        },
+        "status":{
+          "shape":"CapacityProviderStatus",
+          "documentation":"<p>The current status of the capacity provider. For possible values, see <code>CapacityProviderStatus</code>.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>The description of the capacity provider, if one was provided.</p>"
+        },
+        "statusCode":{
+          "shape":"CapacityProviderStatusCode",
+          "documentation":"<p>A reason code for a capacity provider that is not in the <code>READY</code> state. Use this code for programmatic error handling.</p>"
+        },
+        "statusReason":{
+          "shape":"String",
+          "documentation":"<p>A human-readable message that describes why the capacity provider is not in the <code>READY</code> state. Because these messages can change, use <code>statusCode</code> for programmatic error handling.</p>"
+        },
+        "permissionsConfiguration":{
+          "shape":"PermissionsConfiguration",
+          "documentation":"<p>The permissions configuration for the capacity provider.</p>"
+        },
+        "computeConfiguration":{
+          "shape":"ComputeConfiguration",
+          "documentation":"<p>The compute configuration for the capacity provider.</p>"
+        },
+        "createdAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The timestamp when the capacity provider was created.</p>"
+        },
+        "lastUpdatedAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The timestamp when the capacity provider was last updated.</p>"
         }
       }
     },
@@ -10365,6 +11430,62 @@
           "documentation":"<p> The Amazon Resource Name (ARN) of the customer managed KMS key used to encrypt the evaluator's sensitive data. This field is only present for evaluators encrypted with a customer managed key. </p>"
         }
       }
+    },
+    "GetGatewayRateLimitRequest":{
+      "type":"structure",
+      "required":[
+        "gatewayIdentifier",
+        "rateLimitId"
+      ],
+      "members":{
+        "gatewayIdentifier":{
+          "shape":"GatewayIdentifier",
+          "documentation":"<p>The unique identifier of the gateway.</p>",
+          "location":"uri",
+          "locationName":"gatewayIdentifier"
+        },
+        "rateLimitId":{
+          "shape":"GatewayRateLimitId",
+          "documentation":"<p>The unique identifier of the rate limit to retrieve.</p>",
+          "location":"uri",
+          "locationName":"rateLimitId"
+        }
+      }
+    },
+    "GetGatewayRateLimitResponse":{
+      "type":"structure",
+      "required":[
+        "rateLimitId",
+        "gatewayIdentifier",
+        "dimensionKeys",
+        "entries",
+        "status",
+        "createdAt",
+        "updatedAt"
+      ],
+      "members":{
+        "rateLimitId":{"shape":"GatewayRateLimitId"},
+        "gatewayIdentifier":{
+          "shape":"GatewayIdentifier",
+          "documentation":"<p>The unique identifier of the gateway.</p>"
+        },
+        "description":{
+          "shape":"GatewayRateLimitDescription",
+          "documentation":"<p>Optional human-readable description for this limit.</p>"
+        },
+        "dimensionKeys":{"shape":"DimensionKeys"},
+        "entries":{"shape":"LimitEntries"},
+        "status":{"shape":"GatewayRateLimitStatus"},
+        "createdAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The timestamp when the rate limit was created.</p>"
+        },
+        "updatedAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The timestamp when the rate limit was last updated.</p>"
+        }
+      },
+      "documentation":"<p>Shared fields for GatewayRateLimit responses</p>"
     },
     "GetGatewayRequest":{
       "type":"structure",
@@ -13359,6 +14480,55 @@
       "max":10,
       "min":0
     },
+    "InstanceLifecycleConfiguration":{
+      "type":"structure",
+      "members":{
+        "idleInstanceTimeout":{
+          "shape":"InstanceLifecycleConfigurationIdleInstanceTimeoutInteger",
+          "documentation":"<p>The number of seconds an instance can remain idle before it is stopped. An instance is considered idle when all of its agents are idle. The default is 900 seconds (15 minutes).</p>"
+        },
+        "maxLifetime":{
+          "shape":"InstanceLifecycleConfigurationMaxLifetimeInteger",
+          "documentation":"<p>The maximum lifetime of an instance, in seconds. When an instance reaches this limit, the service terminates it regardless of activity. The default is 28800 seconds (8 hours). The maximum is 1209600 seconds (14 days).</p>"
+        }
+      },
+      "documentation":"<p>The configuration that manages the lifecycle of instances in a capacity provider, including idle timeout and maximum lifetime.</p>"
+    },
+    "InstanceLifecycleConfigurationIdleInstanceTimeoutInteger":{
+      "type":"integer",
+      "box":true,
+      "max":1209600,
+      "min":60
+    },
+    "InstanceLifecycleConfigurationMaxLifetimeInteger":{
+      "type":"integer",
+      "box":true,
+      "max":1209600,
+      "min":60
+    },
+    "InstanceProfileArn":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "pattern":"arn:aws(-[^:]+)?:iam::[0-9]{12}:instance-profile/([!-~]{1,510}/)?([\\w+=,.@-]{1,128})"
+    },
+    "InstanceRequirements":{
+      "type":"structure",
+      "required":["allowedInstanceTypes"],
+      "members":{
+        "allowedInstanceTypes":{
+          "shape":"InstanceRequirementsAllowedInstanceTypesList",
+          "documentation":"<p>The list of allowed instance types. You can specify up to 30 instance types.</p>"
+        }
+      },
+      "documentation":"<p>The requirements for Amazon EC2 instance types in a capacity provider.</p>"
+    },
+    "InstanceRequirementsAllowedInstanceTypesList":{
+      "type":"list",
+      "member":{"shape":"EC2InstanceType"},
+      "max":30,
+      "min":1
+    },
     "Integer":{
       "type":"integer",
       "box":true
@@ -13524,6 +14694,12 @@
       "min":1,
       "pattern":"arn:aws(|-cn|-us-gov):kms:[a-zA-Z0-9-]*:[0-9]{12}:key/[a-zA-Z0-9-]{36}"
     },
+    "KmsKeyId":{
+      "type":"string",
+      "max":2048,
+      "min":20,
+      "pattern":"arn:aws(-[^:]+)?:kms:[a-z0-9-]+:[0-9]{12}:key/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}"
+    },
     "KmsKeySourceType":{
       "type":"structure",
       "required":["kmsKeyArn"],
@@ -13587,6 +14763,92 @@
       },
       "documentation":"<p>The Lambda configuration for custom transformations. This structure defines the Lambda function that the gateway invokes to transform data.</p>"
     },
+    "LaunchParameters":{
+      "type":"structure",
+      "required":[
+        "operatingSystem",
+        "instanceRequirements"
+      ],
+      "members":{
+        "operatingSystem":{
+          "shape":"OperatingSystem",
+          "documentation":"<p>The operating system and CPU architecture for the instances.</p>"
+        },
+        "instanceRequirements":{
+          "shape":"InstanceRequirements",
+          "documentation":"<p>The requirements that determine which instance types can be launched.</p>"
+        },
+        "ephemeralVolumes":{
+          "shape":"LaunchParametersEphemeralVolumesList",
+          "documentation":"<p>The block device mappings for instance store (ephemeral) volumes. You can specify up to five mappings.</p>"
+        },
+        "monitoring":{
+          "shape":"Monitoring",
+          "documentation":"<p>The monitoring level for the instances.</p>"
+        },
+        "licenseSpecifications":{
+          "shape":"LaunchParametersLicenseSpecificationsList",
+          "documentation":"<p>The license configurations to associate with the instances. You can specify up to five configurations.</p>"
+        },
+        "capacityReservationSpecification":{
+          "shape":"CapacityReservationSpecification",
+          "documentation":"<p>The Capacity Reservation targeting option for the instances.</p>"
+        },
+        "sshKeyName":{
+          "shape":"SSHKeyName",
+          "documentation":"<p>The name of the SSH key pair to configure on the instances for SSH connectivity.</p>"
+        },
+        "instanceProfileArn":{
+          "shape":"InstanceProfileArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM instance profile to associate with launched instances. If provided, this overrides the default instance profile.</p>"
+        },
+        "propagatedTags":{
+          "shape":"TagsMap",
+          "documentation":"<p>The tags to propagate to all Amazon EC2 resources (instances, volumes, and network interfaces) that the capacity provider creates.</p>"
+        }
+      },
+      "documentation":"<p>The parameters for launching Amazon EC2 instances in a capacity provider.</p>"
+    },
+    "LaunchParametersEphemeralVolumesList":{
+      "type":"list",
+      "member":{"shape":"EphemeralBlockDeviceMapping"},
+      "max":5,
+      "min":0
+    },
+    "LaunchParametersLicenseSpecificationsList":{
+      "type":"list",
+      "member":{"shape":"LicenseSpecification"},
+      "max":5,
+      "min":0
+    },
+    "LaunchTemplateSource":{
+      "type":"structure",
+      "members":{
+        "launchParameters":{
+          "shape":"LaunchParameters",
+          "documentation":"<p>The parameters that AgentCore uses to create the launch template.</p>"
+        }
+      },
+      "documentation":"<p>The source of the launch template configuration for a capacity provider. The <code>launchParameters</code> member specifies the operating system, instance requirements, and other settings used to launch instances.</p>",
+      "union":true
+    },
+    "LicenseConfigurationArn":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "pattern":"arn:aws(-[^:]+)?:license-manager:[a-z0-9-]+:[0-9]{12}:license-configuration:[a-zA-Z0-9_-]+"
+    },
+    "LicenseSpecification":{
+      "type":"structure",
+      "required":["licenseConfigurationArn"],
+      "members":{
+        "licenseConfigurationArn":{
+          "shape":"LicenseConfigurationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the license configuration.</p>"
+        }
+      },
+      "documentation":"<p>A license configuration to associate with the instances.</p>"
+    },
     "LifecycleConfiguration":{
       "type":"structure",
       "members":{
@@ -13604,14 +14866,52 @@
     "LifecycleConfigurationIdleRuntimeSessionTimeoutInteger":{
       "type":"integer",
       "box":true,
-      "max":28800,
+      "max":1209600,
       "min":60
     },
     "LifecycleConfigurationMaxLifetimeInteger":{
       "type":"integer",
       "box":true,
-      "max":28800,
+      "max":1209600,
       "min":60
+    },
+    "LimitEntries":{
+      "type":"list",
+      "member":{"shape":"LimitEntry"},
+      "documentation":"<p>List of rule entries within a limit</p>",
+      "max":1000,
+      "min":1
+    },
+    "LimitEntry":{
+      "type":"structure",
+      "required":["dimensions"],
+      "members":{
+        "dimensions":{
+          "shape":"LimitEntryDimensionsMap",
+          "documentation":"<p>Map of dimension name to dimension value, matching the parent limit's dimensionKeys. Keys must exactly match the dimensionKeys. Values may be &quot;<em>&quot; as a wildcard. &quot;</em>&quot; may only appear at trailing positions (based on dimensionKeys ordering).</p>"
+        },
+        "requests":{
+          "shape":"RateConfigs",
+          "documentation":"<p>Request rate limits (RPS or RPM). Limited to 1 entry for now.</p>"
+        },
+        "tokens":{
+          "shape":"RateConfigs",
+          "documentation":"<p>Token rate limits (TPM). Limited to 1 entry for now. — P1</p>"
+        },
+        "connections":{
+          "shape":"RateConfigs",
+          "documentation":"<p>Connection rate limits (per second only). Limited to 1 entry for now. — P2</p>"
+        }
+      },
+      "documentation":"<p>A single rule entry within a limit, mapping dimension values to rate configurations</p>"
+    },
+    "LimitEntryDimensionsMap":{
+      "type":"map",
+      "key":{"shape":"DimensionKey"},
+      "value":{"shape":"DimensionValue"},
+      "documentation":"<p>Map of dimension name to dimension value for a rule entry</p>",
+      "max":10,
+      "min":1
     },
     "LinkedinOauth2ProviderConfigInput":{
       "type":"structure",
@@ -13683,6 +14983,44 @@
         "nextToken":{
           "shape":"NextToken",
           "documentation":"<p>A token to retrieve the next page of results.</p>"
+        }
+      }
+    },
+    "ListAgentRuntimeVersionsByCapacityProviderInput":{
+      "type":"structure",
+      "required":["capacityProviderId"],
+      "members":{
+        "capacityProviderId":{
+          "shape":"CapacityProviderId",
+          "documentation":"<p>The unique identifier of the capacity provider.</p>",
+          "location":"uri",
+          "locationName":"capacityProviderId"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return in the response. If the total number of results is greater than this value, use the token returned in the response in the <code>nextToken</code> field when making another request to return the next batch of results.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If the total number of results is greater than the <code>maxResults</code> value provided in the request, enter the token returned in the <code>nextToken</code> field in the response in this field to return the next batch of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListAgentRuntimeVersionsByCapacityProviderOutput":{
+      "type":"structure",
+      "required":["agentRuntimes"],
+      "members":{
+        "agentRuntimes":{
+          "shape":"AgentRuntimeVersionSummaryList",
+          "documentation":"<p>The list of agent runtime versions that are associated with the capacity provider.</p>"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>If the total number of results is greater than the <code>maxResults</code> value provided in the request, use this token when making another request in the <code>nextToken</code> field to return the next batch of results.</p>"
         }
       }
     },
@@ -13851,6 +15189,37 @@
         "nextToken":{
           "shape":"NextToken",
           "documentation":"<p>A token to retrieve the next page of results.</p>"
+        }
+      }
+    },
+    "ListCapacityProvidersInput":{
+      "type":"structure",
+      "members":{
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return in the response. If the total number of results is greater than this value, use the token returned in the response in the <code>nextToken</code> field when making another request to return the next batch of results.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If the total number of results is greater than the <code>maxResults</code> value provided in the request, enter the token returned in the <code>nextToken</code> field in the response in this field to return the next batch of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListCapacityProvidersOutput":{
+      "type":"structure",
+      "required":["capacityProviders"],
+      "members":{
+        "capacityProviders":{
+          "shape":"CapacityProviderList",
+          "documentation":"<p>The list of capacity provider summaries.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If the total number of results is greater than the <code>maxResults</code> value provided in the request, use this token when making another request in the <code>nextToken</code> field to return the next batch of results.</p>"
         }
       }
     },
@@ -14168,6 +15537,44 @@
         "nextToken":{
           "shape":"String",
           "documentation":"<p> The pagination token to use in a subsequent request to retrieve the next page of results. </p>"
+        }
+      }
+    },
+    "ListGatewayRateLimitsRequest":{
+      "type":"structure",
+      "required":["gatewayIdentifier"],
+      "members":{
+        "gatewayIdentifier":{
+          "shape":"GatewayIdentifier",
+          "documentation":"<p>The unique identifier of the gateway.</p>",
+          "location":"uri",
+          "locationName":"gatewayIdentifier"
+        },
+        "maxResults":{
+          "shape":"GatewayRateLimitMaxResults",
+          "documentation":"<p>The maximum number of results to return in the response. If the total number of results is greater than this value, use the token returned in the response in the <code>nextToken</code> field when making another request to return the next batch of results.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"GatewayRateLimitNextToken",
+          "documentation":"<p>The token to use to retrieve the next page of results. Use the value returned in a previous <code>ListGatewayRateLimits</code> response.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListGatewayRateLimitsResponse":{
+      "type":"structure",
+      "required":["rateLimits"],
+      "members":{
+        "rateLimits":{
+          "shape":"GatewayRateLimits",
+          "documentation":"<p>The list of rate limits for the gateway.</p>"
+        },
+        "nextToken":{
+          "shape":"GatewayRateLimitNextToken",
+          "documentation":"<p>The token for the next page of results. If this value is absent, there are no more results to retrieve.</p>"
         }
       }
     },
@@ -15946,6 +17353,13 @@
       },
       "documentation":"<p>Contains information for modifying a strategy configuration.</p>"
     },
+    "Monitoring":{
+      "type":"string",
+      "enum":[
+        "BASIC",
+        "DETAILED"
+      ]
+    },
     "MountPath":{
       "type":"string",
       "max":200,
@@ -16486,6 +17900,14 @@
       "max":1,
       "min":0
     },
+    "OperatingSystem":{
+      "type":"string",
+      "documentation":"<p>The operating system and CPU architecture for capacity provider instances.</p>",
+      "enum":[
+        "LINUX_X86_64",
+        "LINUX_ARM64"
+      ]
+    },
     "OutputConfig":{
       "type":"structure",
       "required":["cloudWatchConfig"],
@@ -16809,6 +18231,25 @@
       "max":4096,
       "min":1,
       "pattern":"[a-zA-Z0-9\\s]+"
+    },
+    "Period":{
+      "type":"string",
+      "documentation":"<p>Time period for rate limiting</p>",
+      "enum":[
+        "second",
+        "minute"
+      ]
+    },
+    "PermissionsConfiguration":{
+      "type":"structure",
+      "required":["capacityProviderOperatorRoleArn"],
+      "members":{
+        "capacityProviderOperatorRoleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role that AgentCore assumes to manage the capacity provider, including launching, tagging, and terminating instances and their network interfaces. We recommend scoping this role to the minimum permissions that your workloads require.</p>"
+        }
+      },
+      "documentation":"<p>The permissions configuration for a capacity provider. This specifies the IAM role that AgentCore uses to manage the Amazon EC2 instances for the capacity provider on your behalf.</p>"
     },
     "Policies":{
       "type":"list",
@@ -17466,6 +18907,34 @@
         }
       }
     },
+    "RateConfig":{
+      "type":"structure",
+      "required":[
+        "rate",
+        "period"
+      ],
+      "members":{
+        "rate":{
+          "shape":"RateConfigRateDouble",
+          "documentation":"<p>The rate value for the limit. For request limits, this is the number of requests allowed per period. For token limits, this is the number of tokens allowed per period. For connection limits, this is the number of concurrent connections allowed.</p>"
+        },
+        "period":{"shape":"Period"}
+      },
+      "documentation":"<p>Rate configuration for a metric (requests or tokens)</p>"
+    },
+    "RateConfigRateDouble":{
+      "type":"double",
+      "box":true,
+      "max":10000000,
+      "min":0
+    },
+    "RateConfigs":{
+      "type":"list",
+      "member":{"shape":"RateConfig"},
+      "documentation":"<p>List of rate configs (limited to 1 for now, array for future multi-period support)</p>",
+      "max":1,
+      "min":1
+    },
     "RatingScale":{
       "type":"structure",
       "members":{
@@ -17944,11 +19413,67 @@
       "type":"list",
       "member":{"shape":"RestApiMethod"}
     },
+    "RetryableConflictException":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{"shape":"String"}
+      },
+      "documentation":"<p>The operation failed because of a conflicting request. Retry the request.</p>",
+      "error":{
+        "httpStatusCode":409,
+        "senderFault":true
+      },
+      "exception":true,
+      "retryable":{"throttling":false}
+    },
     "RoleArn":{
       "type":"string",
       "max":2048,
       "min":1,
       "pattern":"arn:aws(-[^:]+)?:iam::([0-9]{12})?:role/.+"
+    },
+    "RootVolumeConfiguration":{
+      "type":"structure",
+      "members":{
+        "volumeType":{
+          "shape":"EbsVolumeType",
+          "documentation":"<p>The Amazon EBS volume type. If you do not specify a type, the default is <code>gp3</code>.</p>"
+        },
+        "iops":{
+          "shape":"VolumeIops",
+          "documentation":"<p>The number of IOPS to provision. For <code>gp3</code>, <code>io1</code>, and <code>io2</code> volumes, this is the number of IOPS provisioned for the volume. For <code>gp2</code> volumes, this sets the baseline IOPS performance. It also controls the rate at which the volume accumulates I/O credits for bursting. Supported values: <code>gp3</code>, 3,000–80,000; <code>io1</code>, 100–64,000; <code>io2</code>, 100–256,000.</p>"
+        },
+        "throughput":{
+          "shape":"RootVolumeConfigurationThroughputInteger",
+          "documentation":"<p>The throughput to provision, in MiB/s. Valid only for <code>gp3</code> volumes. Valid range: 125–2,000 MiB/s.</p>"
+        },
+        "encrypted":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether to encrypt the volume. Encrypted volumes can be attached only to instances that support Amazon EBS encryption. If you create a volume from a snapshot, you cannot specify an encryption value.</p>"
+        },
+        "kmsKeyId":{
+          "shape":"KmsKeyId",
+          "documentation":"<p>The identifier (key ID, key alias, key ARN, or alias ARN) of the customer managed KMS key to use for Amazon EBS encryption.</p>"
+        },
+        "freeSpaceGiB":{
+          "shape":"RootVolumeConfigurationFreeSpaceGiBInteger",
+          "documentation":"<p>The free space guaranteed on the root volume, in GiB. AgentCore adds the operating system overhead on top of this value. The default is 8 GiB.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for the root volume of a capacity provider instance. Specify the amount of free space to guarantee on the root volume. The device name and delete-on-termination settings are fixed and cannot be changed.</p>"
+    },
+    "RootVolumeConfigurationFreeSpaceGiBInteger":{
+      "type":"integer",
+      "box":true,
+      "max":65000,
+      "min":2
+    },
+    "RootVolumeConfigurationThroughputInteger":{
+      "type":"integer",
+      "box":true,
+      "max":2000,
+      "min":125
     },
     "RouteToTargetAction":{
       "type":"structure",
@@ -18156,6 +19681,12 @@
       "type":"string",
       "documentation":"<p> Amazon S3 URI string in the format <code>s3://bucket/key</code>. </p>",
       "pattern":"s3://[a-z0-9][a-z0-9.\\-]{1,61}[a-z0-9]/.{1,1024}"
+    },
+    "SSHKeyName":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"[!-~][ -~]*[!-~]$|^[!-~]"
     },
     "SalesforceOauth2ProviderConfigInput":{
       "type":"structure",
@@ -20029,8 +21560,7 @@
       "required":[
         "agentRuntimeId",
         "agentRuntimeArtifact",
-        "roleArn",
-        "networkConfiguration"
+        "roleArn"
       ],
       "members":{
         "agentRuntimeId":{
@@ -20079,6 +21609,10 @@
         "filesystemConfigurations":{
           "shape":"FilesystemConfigurations",
           "documentation":"<p>The updated filesystem configurations to mount into the AgentCore Runtime.</p>"
+        },
+        "capacityProviderConfiguration":{
+          "shape":"CapacityProviderConfiguration",
+          "documentation":"<p>The updated capacity provider configuration for the AgentCore Runtime.</p>"
         },
         "clientToken":{
           "shape":"ClientToken",
@@ -20187,6 +21721,64 @@
         "lastUpdatedTime":{
           "shape":"Timestamp",
           "documentation":"<p>The timestamp when the API key credential provider was last updated.</p>"
+        }
+      }
+    },
+    "UpdateCapacityProviderInput":{
+      "type":"structure",
+      "required":["capacityProviderId"],
+      "members":{
+        "capacityProviderId":{
+          "shape":"CapacityProviderId",
+          "documentation":"<p>The unique identifier of the capacity provider to update.</p>",
+          "location":"uri",
+          "locationName":"capacityProviderId"
+        },
+        "description":{
+          "shape":"UpdatedDescription",
+          "documentation":"<p>The updated description of the capacity provider.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier to ensure that the API request completes no more than one time. If you don't specify this field, a value is randomly generated for you. If this token matches a previous request, the service ignores the request, but doesn't return an error. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html\">Ensuring idempotency</a>.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "UpdateCapacityProviderOutput":{
+      "type":"structure",
+      "required":[
+        "capacityProviderId",
+        "capacityProviderArn",
+        "name",
+        "status",
+        "createdAt",
+        "lastUpdatedAt"
+      ],
+      "members":{
+        "capacityProviderId":{
+          "shape":"CapacityProviderId",
+          "documentation":"<p>The unique identifier of the capacity provider.</p>"
+        },
+        "capacityProviderArn":{
+          "shape":"CapacityProviderArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the capacity provider.</p>"
+        },
+        "name":{
+          "shape":"CapacityProviderName",
+          "documentation":"<p>The name of the capacity provider.</p>"
+        },
+        "status":{
+          "shape":"CapacityProviderStatus",
+          "documentation":"<p>The current status of the capacity provider. For possible values, see <code>CapacityProviderStatus</code>.</p>"
+        },
+        "createdAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The timestamp when the capacity provider was created.</p>"
+        },
+        "lastUpdatedAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The timestamp when the capacity provider was last updated.</p>"
         }
       }
     },
@@ -20441,6 +22033,71 @@
           "documentation":"<p> The status of the evaluator update operation. </p>"
         }
       }
+    },
+    "UpdateGatewayRateLimitRequest":{
+      "type":"structure",
+      "required":[
+        "gatewayIdentifier",
+        "rateLimitId",
+        "entries"
+      ],
+      "members":{
+        "gatewayIdentifier":{
+          "shape":"GatewayIdentifier",
+          "documentation":"<p>The unique identifier of the gateway.</p>",
+          "location":"uri",
+          "locationName":"gatewayIdentifier"
+        },
+        "rateLimitId":{
+          "shape":"GatewayRateLimitId",
+          "documentation":"<p>The unique identifier of the rate limit to update.</p>",
+          "location":"uri",
+          "locationName":"rateLimitId"
+        },
+        "description":{
+          "shape":"GatewayRateLimitDescription",
+          "documentation":"<p>Optional human-readable description for this limit.</p>"
+        },
+        "entries":{
+          "shape":"LimitEntries",
+          "documentation":"<p>Updated rule entries. key and dimensionKeys are immutable and cannot be changed.</p>"
+        }
+      }
+    },
+    "UpdateGatewayRateLimitResponse":{
+      "type":"structure",
+      "required":[
+        "rateLimitId",
+        "gatewayIdentifier",
+        "dimensionKeys",
+        "entries",
+        "status",
+        "createdAt",
+        "updatedAt"
+      ],
+      "members":{
+        "rateLimitId":{"shape":"GatewayRateLimitId"},
+        "gatewayIdentifier":{
+          "shape":"GatewayIdentifier",
+          "documentation":"<p>The unique identifier of the gateway.</p>"
+        },
+        "description":{
+          "shape":"GatewayRateLimitDescription",
+          "documentation":"<p>Optional human-readable description for this limit.</p>"
+        },
+        "dimensionKeys":{"shape":"DimensionKeys"},
+        "entries":{"shape":"LimitEntries"},
+        "status":{"shape":"GatewayRateLimitStatus"},
+        "createdAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The timestamp when the rate limit was created.</p>"
+        },
+        "updatedAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The timestamp when the rate limit was last updated.</p>"
+        }
+      },
+      "documentation":"<p>Shared fields for GatewayRateLimit responses</p>"
     },
     "UpdateGatewayRequest":{
       "type":"structure",
@@ -22323,6 +23980,53 @@
       "max":500,
       "min":1
     },
+    "VirtualDeviceName":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"ephemeral[0-9]+"
+    },
+    "VolumeConfiguration":{
+      "type":"structure",
+      "members":{
+        "ebsConfiguration":{
+          "shape":"EbsVolumeConfiguration",
+          "documentation":"<p>The configuration for an Amazon EBS-backed persistent volume.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for a persistent volume attached to a capacity provider. This structure defines the storage backing for the persistent volumes used by agents that run on capacity provider instances.</p>",
+      "union":true
+    },
+    "VolumeConfigurationList":{
+      "type":"list",
+      "member":{"shape":"VolumeConfiguration"},
+      "max":5,
+      "min":0
+    },
+    "VolumeIops":{
+      "type":"integer",
+      "box":true,
+      "max":256000,
+      "min":100
+    },
+    "VolumeName":{
+      "type":"string",
+      "max":48,
+      "min":1,
+      "pattern":"[a-zA-Z][a-zA-Z0-9_-]{0,47}"
+    },
+    "VolumeSizeGiB":{
+      "type":"integer",
+      "box":true,
+      "max":65536,
+      "min":1
+    },
+    "VolumeThroughput":{
+      "type":"integer",
+      "box":true,
+      "max":2000,
+      "min":125
+    },
     "VpcConfig":{
       "type":"structure",
       "required":[
@@ -22344,6 +24048,36 @@
         }
       },
       "documentation":"<p>VpcConfig for the Agent.</p>"
+    },
+    "VpcConfiguration":{
+      "type":"structure",
+      "required":[
+        "subnets",
+        "securityGroups"
+      ],
+      "members":{
+        "subnets":{
+          "shape":"VpcConfigurationSubnetsList",
+          "documentation":"<p>The IDs of the subnets in which to launch instances. You must specify at least one subnet.</p>"
+        },
+        "securityGroups":{
+          "shape":"VpcConfigurationSecurityGroupsList",
+          "documentation":"<p>The IDs of the security groups to associate with the instances. You must specify at least one security group.</p>"
+        }
+      },
+      "documentation":"<p>The VPC configuration for launching Amazon EC2 instances.</p>"
+    },
+    "VpcConfigurationSecurityGroupsList":{
+      "type":"list",
+      "member":{"shape":"SecurityGroupId"},
+      "max":16,
+      "min":1
+    },
+    "VpcConfigurationSubnetsList":{
+      "type":"list",
+      "member":{"shape":"SubnetId"},
+      "max":16,
+      "min":1
     },
     "VpcIdentifier":{
       "type":"string",

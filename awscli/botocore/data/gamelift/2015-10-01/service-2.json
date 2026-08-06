@@ -165,7 +165,7 @@
         {"shape":"ConflictException"},
         {"shape":"LimitExceededException"}
       ],
-      "documentation":"<p> <b>This API works with the following fleet types:</b> EC2, Container</p> <p>Adds remote locations to an EC2 and begins populating the new locations with instances. The new instances conform to the fleet's instance type, auto-scaling, and other configuration settings.</p> <note> <p>You can't add remote locations to a fleet that resides in an Amazon Web Services Region that doesn't support multiple locations. Fleets created prior to March 2021 can't support multiple locations.</p> </note> <p>To add fleet locations, specify the fleet to be updated and provide a list of one or more locations. </p> <p>If successful, this operation returns the list of added locations with their status set to <code>NEW</code>. Amazon GameLift Servers initiates the process of starting an instance in each added location. You can track the status of each new location by monitoring location creation events using <a href=\"https://docs.aws.amazon.com/gamelift/latest/apireference/API_DescribeFleetEvents.html\">DescribeFleetEvents</a>.</p> <p> <b>Learn more</b> </p> <p> <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/fleets-intro.html\">Setting up fleets</a> </p> <p> <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/fleets-editing.html#fleets-update-locations\">Update fleet locations</a> </p> <p> <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/gamelift-regions.html\"> Amazon GameLift Servers service locations</a> for managed hosting.</p>"
+      "documentation":"<p> <b>This API works with the following fleet types:</b> EC2, Anywhere, Container</p> <p>Adds remote locations to an EC2 and begins populating the new locations with instances. The new instances conform to the fleet's instance type, auto-scaling, and other configuration settings.</p> <note> <p>You can't add remote locations to a fleet that resides in an Amazon Web Services Region that doesn't support multiple locations. Fleets created prior to March 2021 can't support multiple locations.</p> </note> <p>To add fleet locations, specify the fleet to be updated and provide a list of one or more locations. </p> <p>If successful, this operation returns the list of added locations with their status set to <code>NEW</code>. Amazon GameLift Servers initiates the process of starting an instance in each added location. You can track the status of each new location by monitoring location creation events using <a href=\"https://docs.aws.amazon.com/gamelift/latest/apireference/API_DescribeFleetEvents.html\">DescribeFleetEvents</a>.</p> <p> <b>Learn more</b> </p> <p> <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/fleets-intro.html\">Setting up fleets</a> </p> <p> <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/fleets-editing.html#fleets-update-locations\">Update fleet locations</a> </p> <p> <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/gamelift-regions.html\"> Amazon GameLift Servers service locations</a> for managed hosting.</p>"
     },
     "CreateGameServerGroup":{
       "name":"CreateGameServerGroup",
@@ -449,7 +449,7 @@
         {"shape":"InvalidRequestException"},
         {"shape":"TaggingFailedException"}
       ],
-      "documentation":"<p> <b>This API works with the following fleet types:</b> EC2, Anywhere, Container</p> <p>Deletes all resources and information related to a fleet and shuts down any currently running fleet instances, including those in remote locations.</p> <note> <p>If the fleet being deleted has a VPC peering connection, you first need to get a valid authorization (good for 24 hours) by calling <a href=\"https://docs.aws.amazon.com/gamelift/latest/apireference/API_CreateVpcPeeringAuthorization.html\">CreateVpcPeeringAuthorization</a>. You don't need to explicitly delete the VPC peering connection.</p> </note> <p>To delete a fleet, specify the fleet ID to be terminated. During the deletion process, the fleet status is changed to <code>DELETING</code>. When completed, the status switches to <code>TERMINATED</code> and the fleet event <code>FLEET_DELETED</code> is emitted.</p> <p> <b>Learn more</b> </p> <p> <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/fleets-intro.html\">Setting up Amazon GameLift Servers Fleets</a> </p>"
+      "documentation":"<p> <b>This API works with the following fleet types:</b> EC2, Anywhere</p> <p>Deletes all resources and information related to a fleet and shuts down any currently running fleet instances, including those in remote locations.</p> <note> <p>If the fleet being deleted has a VPC peering connection, you first need to get a valid authorization (good for 24 hours) by calling <a href=\"https://docs.aws.amazon.com/gamelift/latest/apireference/API_CreateVpcPeeringAuthorization.html\">CreateVpcPeeringAuthorization</a>. You don't need to explicitly delete the VPC peering connection.</p> </note> <p>To delete a fleet, specify the fleet ID to be terminated. During the deletion process, the fleet status is changed to <code>DELETING</code>. When completed, the status switches to <code>TERMINATED</code> and the fleet event <code>FLEET_DELETED</code> is emitted.</p> <p> <b>Learn more</b> </p> <p> <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/fleets-intro.html\">Setting up Amazon GameLift Servers Fleets</a> </p>"
     },
     "DeleteFleetLocations":{
       "name":"DeleteFleetLocations",
@@ -466,7 +466,7 @@
         {"shape":"NotFoundException"},
         {"shape":"UnsupportedRegionException"}
       ],
-      "documentation":"<p> <b>This API works with the following fleet types:</b> EC2, Container</p> <p>Removes locations from a multi-location fleet. When deleting a location, all game server process and all instances that are still active in the location are shut down. </p> <p>To delete fleet locations, identify the fleet ID and provide a list of the locations to be deleted. </p> <p>If successful, GameLift sets the location status to <code>DELETING</code>, and begins to shut down existing server processes and terminate instances in each location being deleted. When completed, the location status changes to <code>TERMINATED</code>.</p> <p> <b>Learn more</b> </p> <p> <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/fleets-intro.html\">Setting up Amazon GameLift Servers fleets</a> </p>"
+      "documentation":"<p> <b>This API works with the following fleet types:</b> EC2, Anywhere, Container</p> <p>Removes locations from a multi-location fleet. When deleting a location, all game server process and all instances that are still active in the location are shut down. </p> <p>To delete fleet locations, identify the fleet ID and provide a list of the locations to be deleted. </p> <p>If successful, GameLift sets the location status to <code>DELETING</code>, and begins to shut down existing server processes and terminate instances in each location being deleted. When completed, the location status changes to <code>TERMINATED</code>.</p> <p> <b>Learn more</b> </p> <p> <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/fleets-intro.html\">Setting up Amazon GameLift Servers fleets</a> </p>"
     },
     "DeleteGameServerGroup":{
       "name":"DeleteGameServerGroup",
@@ -566,7 +566,7 @@
         {"shape":"NotFoundException"},
         {"shape":"UnsupportedRegionException"}
       ],
-      "documentation":"<p> <b>This API works with the following fleet types:</b> EC2</p> <p>Deletes a fleet scaling policy. Once deleted, the policy is no longer in force and Amazon GameLift Servers removes all record of it. To delete a scaling policy, specify both the scaling policy name and the fleet ID it is associated with.</p> <p>To temporarily suspend scaling policies, use <a href=\"https://docs.aws.amazon.com/gamelift/latest/apireference/API_StopFleetActions.html\">StopFleetActions</a>. This operation suspends all policies for the fleet.</p>"
+      "documentation":"<p> <b>This API works with the following fleet types:</b> EC2, Container</p> <p>Deletes a fleet scaling policy. Once deleted, the policy is no longer in force and Amazon GameLift Servers removes all record of it. To delete a scaling policy, specify both the scaling policy name and the fleet ID it is associated with.</p> <p>To temporarily suspend scaling policies, use <a href=\"https://docs.aws.amazon.com/gamelift/latest/apireference/API_StopFleetActions.html\">StopFleetActions</a>. This operation suspends all policies for the fleet.</p>"
     },
     "DeleteScript":{
       "name":"DeleteScript",
@@ -847,7 +847,7 @@
         {"shape":"NotFoundException"},
         {"shape":"UnsupportedRegionException"}
       ],
-      "documentation":"<p> <b>This API works with the following fleet types:</b> EC2, Container</p> <p>Retrieves information on a fleet's remote locations, including life-cycle status and any suspended fleet activity. </p> <p>This operation can be used in the following ways: </p> <ul> <li> <p>To get data for specific locations, provide a fleet identifier and a list of locations. Location data is returned in the order that it is requested. </p> </li> <li> <p>To get data for all locations, provide a fleet identifier only. Location data is returned in no particular order. </p> </li> </ul> <p>When requesting attributes for multiple locations, use the pagination parameters to retrieve results as a set of sequential pages. </p> <p>If successful, a <code>LocationAttributes</code> object is returned for each requested location. If the fleet does not have a requested location, no information is returned. </p> <p> <b>Learn more</b> </p> <p> <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/fleets-intro.html\">Setting up Amazon GameLift Servers fleets</a> </p> <p> <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/gamelift-regions.html\"> Amazon GameLift Servers service locations</a> for managed hosting</p>"
+      "documentation":"<p> <b>This API works with the following fleet types:</b> EC2, Anywhere, Container</p> <p>Retrieves information on a fleet's remote locations, including life-cycle status and any suspended fleet activity. </p> <p>This operation can be used in the following ways: </p> <ul> <li> <p>To get data for specific locations, provide a fleet identifier and a list of locations. Location data is returned in the order that it is requested. </p> </li> <li> <p>To get data for all locations, provide a fleet identifier only. Location data is returned in no particular order. </p> </li> </ul> <p>When requesting attributes for multiple locations, use the pagination parameters to retrieve results as a set of sequential pages. </p> <p>If successful, a <code>LocationAttributes</code> object is returned for each requested location. If the fleet does not have a requested location, no information is returned. </p> <p> <b>Learn more</b> </p> <p> <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/fleets-intro.html\">Setting up Amazon GameLift Servers fleets</a> </p> <p> <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/gamelift-regions.html\"> Amazon GameLift Servers service locations</a> for managed hosting</p>"
     },
     "DescribeFleetLocationCapacity":{
       "name":"DescribeFleetLocationCapacity",
@@ -864,7 +864,7 @@
         {"shape":"NotFoundException"},
         {"shape":"UnsupportedRegionException"}
       ],
-      "documentation":"<p> <b>This API works with the following fleet types:</b> EC2, Container</p> <p>Retrieves the resource capacity settings for a fleet location. The data returned includes the current capacity (number of EC2 instances) and some scaling settings for the requested fleet location. For a managed container fleet, this operation also returns counts for game server container groups.</p> <p>Use this operation to retrieve capacity information for a fleet's remote location or home Region (you can also retrieve home Region capacity by calling <code>DescribeFleetCapacity</code>).</p> <p>To retrieve capacity data, identify a fleet and location. </p> <p>If successful, a <code>FleetCapacity</code> object is returned for the requested fleet location. </p> <p> <b>Learn more</b> </p> <p> <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/fleets-intro.html\">Setting up Amazon GameLift Servers fleets</a> </p> <p> <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/gamelift-regions.html\"> Amazon GameLift Servers service locations</a> for managed hosting</p> <p> <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/monitoring-cloudwatch.html#gamelift-metrics-fleet\">GameLift metrics for fleets</a> </p>"
+      "documentation":"<p> <b>This API works with the following fleet types:</b> EC2, Anywhere, Container</p> <p>Retrieves the resource capacity settings for a fleet location. The data returned includes the current capacity (number of EC2 instances) and some scaling settings for the requested fleet location. For a managed container fleet, this operation also returns counts for game server container groups.</p> <p>Use this operation to retrieve capacity information for a fleet's remote location or home Region (you can also retrieve home Region capacity by calling <code>DescribeFleetCapacity</code>).</p> <p>To retrieve capacity data, identify a fleet and location. </p> <p>If successful, a <code>FleetCapacity</code> object is returned for the requested fleet location. </p> <p> <b>Learn more</b> </p> <p> <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/fleets-intro.html\">Setting up Amazon GameLift Servers fleets</a> </p> <p> <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/gamelift-regions.html\"> Amazon GameLift Servers service locations</a> for managed hosting</p> <p> <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/monitoring-cloudwatch.html#gamelift-metrics-fleet\">GameLift metrics for fleets</a> </p>"
     },
     "DescribeFleetLocationUtilization":{
       "name":"DescribeFleetLocationUtilization",
@@ -881,7 +881,7 @@
         {"shape":"NotFoundException"},
         {"shape":"UnsupportedRegionException"}
       ],
-      "documentation":"<p> <b>This API works with the following fleet types:</b> EC2, Anywhere, Container</p> <p>Retrieves current usage data for a fleet location. Utilization data provides a snapshot of current game hosting activity at the requested location. Use this operation to retrieve utilization information for a fleet's remote location or home Region (you can also retrieve home Region utilization by calling <code>DescribeFleetUtilization</code>).</p> <p>To retrieve utilization data, identify a fleet and location. </p> <p>If successful, a <code>FleetUtilization</code> object is returned for the requested fleet location. </p> <p> <b>Learn more</b> </p> <p> <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/fleets-intro.html\">Setting up Amazon GameLift Servers fleets</a> </p> <p> <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/gamelift-regions.html\"> Amazon GameLift Servers service locations</a> for managed hosting</p> <p> <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/monitoring-cloudwatch.html#gamelift-metrics-fleet\">GameLift metrics for fleets</a> </p>"
+      "documentation":"<p> <b>This API works with the following fleet types:</b> EC2, Anywhere</p> <p>Retrieves current usage data for a fleet location. Utilization data provides a snapshot of current game hosting activity at the requested location. Use this operation to retrieve utilization information for a fleet's remote location or home Region (you can also retrieve home Region utilization by calling <code>DescribeFleetUtilization</code>).</p> <p>To retrieve utilization data, identify a fleet and location. </p> <p>If successful, a <code>FleetUtilization</code> object is returned for the requested fleet location. </p> <p> <b>Learn more</b> </p> <p> <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/fleets-intro.html\">Setting up Amazon GameLift Servers fleets</a> </p> <p> <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/gamelift-regions.html\"> Amazon GameLift Servers service locations</a> for managed hosting</p> <p> <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/monitoring-cloudwatch.html#gamelift-metrics-fleet\">GameLift metrics for fleets</a> </p>"
     },
     "DescribeFleetPortSettings":{
       "name":"DescribeFleetPortSettings",
@@ -898,7 +898,7 @@
         {"shape":"UnauthorizedException"},
         {"shape":"UnsupportedRegionException"}
       ],
-      "documentation":"<p> <b>This API works with the following fleet types:</b> EC2, Container</p> <p>Retrieves a fleet's inbound connection permissions. Connection permissions specify IP addresses and port settings that incoming traffic can use to access server processes in the fleet. Game server processes that are running in the fleet must use a port that falls within this range. </p> <p>Use this operation in the following ways: </p> <ul> <li> <p>To retrieve the port settings for a fleet, identify the fleet's unique identifier. </p> </li> <li> <p>To check the status of recent updates to a fleet remote location, specify the fleet ID and a location. Port setting updates can take time to propagate across all locations. </p> </li> </ul> <p>If successful, a set of <code>IpPermission</code> objects is returned for the requested fleet ID. When specifying a location, this operation returns a pending status. If the requested fleet has been deleted, the result set is empty.</p> <p> <b>Learn more</b> </p> <p> <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/fleets-intro.html\">Setting up Amazon GameLift Servers fleets</a> </p>"
+      "documentation":"<p> <b>This API works with the following fleet types:</b> EC2</p> <p>Retrieves a fleet's inbound connection permissions. Connection permissions specify IP addresses and port settings that incoming traffic can use to access server processes in the fleet. Game server processes that are running in the fleet must use a port that falls within this range. </p> <p>Use this operation in the following ways: </p> <ul> <li> <p>To retrieve the port settings for a fleet, identify the fleet's unique identifier. </p> </li> <li> <p>To check the status of recent updates to a fleet remote location, specify the fleet ID and a location. Port setting updates can take time to propagate across all locations. </p> </li> </ul> <p>If successful, a set of <code>IpPermission</code> objects is returned for the requested fleet ID. When specifying a location, this operation returns a pending status. If the requested fleet has been deleted, the result set is empty.</p> <p> <b>Learn more</b> </p> <p> <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/fleets-intro.html\">Setting up Amazon GameLift Servers fleets</a> </p>"
     },
     "DescribeFleetUtilization":{
       "name":"DescribeFleetUtilization",
@@ -914,7 +914,7 @@
         {"shape":"InvalidRequestException"},
         {"shape":"UnauthorizedException"}
       ],
-      "documentation":"<p> <b>This API works with the following fleet types:</b> EC2, Container</p> <p>Retrieves utilization statistics for one or more fleets. Utilization data provides a snapshot of how the fleet's hosting resources are currently being used. For fleets with remote locations, this operation retrieves data for the fleet's home Region only. See <a href=\"https://docs.aws.amazon.com/gamelift/latest/apireference/API_DescribeFleetLocationUtilization.html\">DescribeFleetLocationUtilization</a> to get utilization statistics for a fleet's remote locations.</p> <p>This operation can be used in the following ways: </p> <ul> <li> <p>To get utilization data for one or more specific fleets, provide a list of fleet IDs or fleet ARNs. </p> </li> <li> <p>To get utilization data for all fleets, do not provide a fleet identifier. </p> </li> </ul> <p>When requesting multiple fleets, use the pagination parameters to retrieve results as a set of sequential pages. </p> <p>If successful, a <a href=\"https://docs.aws.amazon.com/gamelift/latest/apireference/API_FleetUtilization.html\">FleetUtilization</a> object is returned for each requested fleet ID, unless the fleet identifier is not found. Each fleet utilization object includes a <code>Location</code> property, which is set to the fleet's home Region. </p> <note> <p>Some API operations may limit the number of fleet IDs allowed in one request. If a request exceeds this limit, the request fails and the error message includes the maximum allowed.</p> </note> <p> <b>Learn more</b> </p> <p> <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/fleets-intro.html\">Setting up Amazon GameLift Servers Fleets</a> </p> <p> <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/monitoring-cloudwatch.html#gamelift-metrics-fleet\">GameLift Metrics for Fleets</a> </p>"
+      "documentation":"<p> <b>This API works with the following fleet types:</b> EC2</p> <p>Retrieves utilization statistics for one or more fleets. Utilization data provides a snapshot of how the fleet's hosting resources are currently being used. For fleets with remote locations, this operation retrieves data for the fleet's home Region only. See <a href=\"https://docs.aws.amazon.com/gamelift/latest/apireference/API_DescribeFleetLocationUtilization.html\">DescribeFleetLocationUtilization</a> to get utilization statistics for a fleet's remote locations.</p> <p>This operation can be used in the following ways: </p> <ul> <li> <p>To get utilization data for one or more specific fleets, provide a list of fleet IDs or fleet ARNs. </p> </li> <li> <p>To get utilization data for all fleets, do not provide a fleet identifier. </p> </li> </ul> <p>When requesting multiple fleets, use the pagination parameters to retrieve results as a set of sequential pages. </p> <p>If successful, a <a href=\"https://docs.aws.amazon.com/gamelift/latest/apireference/API_FleetUtilization.html\">FleetUtilization</a> object is returned for each requested fleet ID, unless the fleet identifier is not found. Each fleet utilization object includes a <code>Location</code> property, which is set to the fleet's home Region. </p> <note> <p>Some API operations may limit the number of fleet IDs allowed in one request. If a request exceeds this limit, the request fails and the error message includes the maximum allowed.</p> </note> <p> <b>Learn more</b> </p> <p> <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/fleets-intro.html\">Setting up Amazon GameLift Servers Fleets</a> </p> <p> <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/monitoring-cloudwatch.html#gamelift-metrics-fleet\">GameLift Metrics for Fleets</a> </p>"
     },
     "DescribeGameServer":{
       "name":"DescribeGameServer",
@@ -1142,7 +1142,7 @@
         {"shape":"NotFoundException"},
         {"shape":"UnsupportedRegionException"}
       ],
-      "documentation":"<p> <b>This API works with the following fleet types:</b> EC2</p> <p>Retrieves all scaling policies applied to a fleet.</p> <p>To get a fleet's scaling policies, specify the fleet ID. You can filter this request by policy status, such as to retrieve only active scaling policies. Use the pagination parameters to retrieve results as a set of sequential pages. If successful, set of <code>ScalingPolicy</code> objects is returned for the fleet.</p> <p>A fleet may have all of its scaling policies suspended. This operation does not affect the status of the scaling policies, which remains ACTIVE.</p>"
+      "documentation":"<p> <b>This API works with the following fleet types:</b> EC2, Container</p> <p>Retrieves all scaling policies applied to a fleet.</p> <p>To get a fleet's scaling policies, specify the fleet ID. You can filter this request by policy status, such as to retrieve only active scaling policies. Use the pagination parameters to retrieve results as a set of sequential pages. If successful, set of <code>ScalingPolicy</code> objects is returned for the fleet.</p> <p>A fleet may have all of its scaling policies suspended. This operation does not affect the status of the scaling policies, which remains ACTIVE.</p>"
     },
     "DescribeScript":{
       "name":"DescribeScript",
@@ -1496,7 +1496,7 @@
         {"shape":"NotFoundException"},
         {"shape":"UnsupportedRegionException"}
       ],
-      "documentation":"<p> <b>This API works with the following fleet types:</b> EC2</p> <p>Creates or updates a scaling policy for a fleet. Scaling policies are used to automatically scale a fleet's hosting capacity to meet player demand. An active scaling policy instructs Amazon GameLift Servers to track a fleet metric and automatically change the fleet's capacity when a certain threshold is reached. There are two types of scaling policies: target-based and rule-based. Use a target-based policy to quickly and efficiently manage fleet scaling; this option is the most commonly used. Use rule-based policies when you need to exert fine-grained control over auto-scaling. </p> <p>Fleets can have multiple scaling policies of each type in force at the same time; you can have one target-based policy, one or multiple rule-based scaling policies, or both. We recommend caution, however, because multiple auto-scaling policies can have unintended consequences.</p> <p>Learn more about how to work with auto-scaling in <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/fleets-autoscaling.html\">Set Up Fleet Automatic Scaling</a>.</p> <p> <b>Target-based policy</b> </p> <p>A target-based policy tracks a single metric: PercentAvailableGameSessions. This metric tells us how much of a fleet's hosting capacity is ready to host game sessions but is not currently in use. This is the fleet's buffer; it measures the additional player demand that the fleet could handle at current capacity. With a target-based policy, you set your ideal buffer size and leave it to Amazon GameLift Servers to take whatever action is needed to maintain that target. </p> <p>For example, you might choose to maintain a 10% buffer for a fleet that has the capacity to host 100 simultaneous game sessions. This policy tells Amazon GameLift Servers to take action whenever the fleet's available capacity falls below or rises above 10 game sessions. Amazon GameLift Servers will start new instances or stop unused instances in order to return to the 10% buffer. </p> <p>To create or update a target-based policy, specify a fleet ID and name, and set the policy type to \"TargetBased\". Specify the metric to track (PercentAvailableGameSessions) and reference a <code>TargetConfiguration</code> object with your desired buffer value. Exclude all other parameters. On a successful request, the policy name is returned. The scaling policy is automatically in force as soon as it's successfully created. If the fleet's auto-scaling actions are temporarily suspended, the new policy will be in force once the fleet actions are restarted.</p> <p> <b>Rule-based policy</b> </p> <p>A rule-based policy tracks specified fleet metric, sets a threshold value, and specifies the type of action to initiate when triggered. With a rule-based policy, you can select from several available fleet metrics. Each policy specifies whether to scale up or scale down (and by how much), so you need one policy for each type of action. </p> <p>For example, a policy may make the following statement: \"If the percentage of idle instances is greater than 20% for more than 15 minutes, then reduce the fleet capacity by 10%.\"</p> <p>A policy's rule statement has the following structure:</p> <p>If <code>[MetricName]</code> is <code>[ComparisonOperator]</code> <code>[Threshold]</code> for <code>[EvaluationPeriods]</code> minutes, then <code>[ScalingAdjustmentType]</code> to/by <code>[ScalingAdjustment]</code>.</p> <p>To implement the example, the rule statement would look like this:</p> <p>If <code>[PercentIdleInstances]</code> is <code>[GreaterThanThreshold]</code> <code>[20]</code> for <code>[15]</code> minutes, then <code>[PercentChangeInCapacity]</code> to/by <code>[10]</code>.</p> <p>To create or update a scaling policy, specify a unique combination of name and fleet ID, and set the policy type to \"RuleBased\". Specify the parameter values for a policy rule statement. On a successful request, the policy name is returned. Scaling policies are automatically in force as soon as they're successfully created. If the fleet's auto-scaling actions are temporarily suspended, the new policy will be in force once the fleet actions are restarted.</p>"
+      "documentation":"<p> <b>This API works with the following fleet types:</b> EC2, Container</p> <p>Creates or updates a scaling policy for a fleet. Scaling policies are used to automatically scale a fleet's hosting capacity to meet player demand. An active scaling policy instructs Amazon GameLift Servers to track a fleet metric and automatically change the fleet's capacity when a certain threshold is reached. There are two types of scaling policies: target-based and rule-based. Use a target-based policy to quickly and efficiently manage fleet scaling; this option is the most commonly used. Use rule-based policies when you need to exert fine-grained control over auto-scaling. </p> <p>Fleets can have multiple scaling policies of each type in force at the same time; you can have one target-based policy, one or multiple rule-based scaling policies, or both. We recommend caution, however, because multiple auto-scaling policies can have unintended consequences.</p> <p>Learn more about how to work with auto-scaling in <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/fleets-autoscaling.html\">Set Up Fleet Automatic Scaling</a>.</p> <p> <b>Target-based policy</b> </p> <p>A target-based policy tracks a single metric: PercentAvailableGameSessions. This metric tells us how much of a fleet's hosting capacity is ready to host game sessions but is not currently in use. This is the fleet's buffer; it measures the additional player demand that the fleet could handle at current capacity. With a target-based policy, you set your ideal buffer size and leave it to Amazon GameLift Servers to take whatever action is needed to maintain that target. </p> <p>For example, you might choose to maintain a 10% buffer for a fleet that has the capacity to host 100 simultaneous game sessions. This policy tells Amazon GameLift Servers to take action whenever the fleet's available capacity falls below or rises above 10 game sessions. Amazon GameLift Servers will start new instances or stop unused instances in order to return to the 10% buffer. </p> <p>To create or update a target-based policy, specify a fleet ID and name, and set the policy type to \"TargetBased\". Specify the metric to track (PercentAvailableGameSessions) and reference a <code>TargetConfiguration</code> object with your desired buffer value. Exclude all other parameters. On a successful request, the policy name is returned. The scaling policy is automatically in force as soon as it's successfully created. If the fleet's auto-scaling actions are temporarily suspended, the new policy will be in force once the fleet actions are restarted.</p> <p> <b>Rule-based policy</b> </p> <p>A rule-based policy tracks specified fleet metric, sets a threshold value, and specifies the type of action to initiate when triggered. With a rule-based policy, you can select from several available fleet metrics. Each policy specifies whether to scale up or scale down (and by how much), so you need one policy for each type of action. </p> <p>For example, a policy may make the following statement: \"If the percentage of idle instances is greater than 20% for more than 15 minutes, then reduce the fleet capacity by 10%.\"</p> <p>A policy's rule statement has the following structure:</p> <p>If <code>[MetricName]</code> is <code>[ComparisonOperator]</code> <code>[Threshold]</code> for <code>[EvaluationPeriods]</code> minutes, then <code>[ScalingAdjustmentType]</code> to/by <code>[ScalingAdjustment]</code>.</p> <p>To implement the example, the rule statement would look like this:</p> <p>If <code>[PercentIdleInstances]</code> is <code>[GreaterThanThreshold]</code> <code>[20]</code> for <code>[15]</code> minutes, then <code>[PercentChangeInCapacity]</code> to/by <code>[10]</code>.</p> <p>To create or update a scaling policy, specify a unique combination of name and fleet ID, and set the policy type to \"RuleBased\". Specify the parameter values for a policy rule statement. On a successful request, the policy name is returned. Scaling policies are automatically in force as soon as they're successfully created. If the fleet's auto-scaling actions are temporarily suspended, the new policy will be in force once the fleet actions are restarted.</p>"
     },
     "RegisterCompute":{
       "name":"RegisterCompute",
@@ -1515,7 +1515,7 @@
         {"shape":"LimitExceededException"},
         {"shape":"UnsupportedRegionException"}
       ],
-      "documentation":"<p> <b>This API works with the following fleet types:</b> Anywhere, Container</p> <p>Registers a compute resource in an Amazon GameLift Servers Anywhere fleet. </p> <p>For an Anywhere fleet that's running the Amazon GameLift Servers Agent, the Agent handles all compute registry tasks for you. For an Anywhere fleet that doesn't use the Agent, call this operation to register fleet computes.</p> <p>To register a compute, give the compute a name (must be unique within the fleet) and specify the compute resource's DNS name or IP address. Provide a fleet ID and a fleet location to associate with the compute being registered. You can optionally include the path to a TLS certificate on the compute resource.</p> <p>If successful, this operation returns compute details, including an Amazon GameLift Servers SDK endpoint or Agent endpoint. Game server processes running on the compute can use this endpoint to communicate with the Amazon GameLift Servers service. Each server process includes the SDK endpoint in its call to the Amazon GameLift Servers server SDK action <code>InitSDK()</code>. </p> <p>To view compute details, call <a href=\"https://docs.aws.amazon.com/gamelift/latest/apireference/API_DescribeCompute.html\">DescribeCompute</a> with the compute name. </p> <p> <b>Learn more</b> </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/fleets-creating-anywhere.html\">Create an Anywhere fleet</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/integration-testing.html\">Test your integration</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/reference-serversdk.html\">Server SDK reference guides</a> (for version 5.x)</p> </li> </ul>"
+      "documentation":"<p> <b>This API works with the following fleet types:</b> Anywhere</p> <p>Registers a compute resource in an Amazon GameLift Servers Anywhere fleet. </p> <p>For an Anywhere fleet that's running the Amazon GameLift Servers Agent, the Agent handles all compute registry tasks for you. For an Anywhere fleet that doesn't use the Agent, call this operation to register fleet computes.</p> <p>To register a compute, give the compute a name (must be unique within the fleet) and specify the compute resource's DNS name or IP address. Provide a fleet ID and a fleet location to associate with the compute being registered. You can optionally include the path to a TLS certificate on the compute resource.</p> <p>If successful, this operation returns compute details, including an Amazon GameLift Servers SDK endpoint or Agent endpoint. Game server processes running on the compute can use this endpoint to communicate with the Amazon GameLift Servers service. Each server process includes the SDK endpoint in its call to the Amazon GameLift Servers server SDK action <code>InitSDK()</code>. </p> <p>To view compute details, call <a href=\"https://docs.aws.amazon.com/gamelift/latest/apireference/API_DescribeCompute.html\">DescribeCompute</a> with the compute name. </p> <p> <b>Learn more</b> </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/fleets-creating-anywhere.html\">Create an Anywhere fleet</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/integration-testing.html\">Test your integration</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/reference-serversdk.html\">Server SDK reference guides</a> (for version 5.x)</p> </li> </ul>"
     },
     "RegisterGameServer":{
       "name":"RegisterGameServer",
@@ -1870,7 +1870,7 @@
         {"shape":"InvalidRequestException"},
         {"shape":"UnauthorizedException"}
       ],
-      "documentation":"<p> <b>This API works with the following fleet types:</b> EC2, Anywhere, Container</p> <p>Updates a fleet's mutable attributes, such as game session protection and resource creation limits.</p> <p>To update fleet attributes, specify the fleet ID and the property values that you want to change. If successful, Amazon GameLift Servers returns the identifiers for the updated fleet.</p> <note> <p>A managed fleet's runtime environment, which depends on the fleet's Amazon Machine Image {AMI} version, can't be updated. You must create a new fleet. As a best practice, we recommend replacing your managed fleets every 30 days to maintain a secure and up-to-date runtime environment for your hosted game servers. For guidance, see <a href=\"https://docs.aws.amazon.com/gameliftservers/latest/developerguide/security-best-practices.html\"> Security best practices for Amazon GameLift Servers</a>.</p> </note> <p> <b>Learn more</b> </p> <p> <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/fleets-intro.html\">Setting up Amazon GameLift Servers fleets</a> </p>"
+      "documentation":"<p> <b>This API works with the following fleet types:</b> EC2, Anywhere</p> <p>Updates a fleet's mutable attributes, such as game session protection and resource creation limits.</p> <p>To update fleet attributes, specify the fleet ID and the property values that you want to change. If successful, Amazon GameLift Servers returns the identifiers for the updated fleet.</p> <note> <p>A managed fleet's runtime environment, which depends on the fleet's Amazon Machine Image {AMI} version, can't be updated. You must create a new fleet. As a best practice, we recommend replacing your managed fleets every 30 days to maintain a secure and up-to-date runtime environment for your hosted game servers. For guidance, see <a href=\"https://docs.aws.amazon.com/gameliftservers/latest/developerguide/security-best-practices.html\"> Security best practices for Amazon GameLift Servers</a>.</p> </note> <p> <b>Learn more</b> </p> <p> <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/fleets-intro.html\">Setting up Amazon GameLift Servers fleets</a> </p>"
     },
     "UpdateFleetCapacity":{
       "name":"UpdateFleetCapacity",
@@ -1909,7 +1909,7 @@
         {"shape":"InvalidRequestException"},
         {"shape":"UnauthorizedException"}
       ],
-      "documentation":"<p> <b>This API works with the following fleet types:</b> EC2, Container</p> <p>Updates permissions that allow inbound traffic to connect to game sessions in the fleet. </p> <p>To update settings, specify the fleet ID to be updated and specify the changes to be made. List the permissions you want to add in <code>InboundPermissionAuthorizations</code>, and permissions you want to remove in <code>InboundPermissionRevocations</code>. Permissions to be removed must match existing fleet permissions. </p> <p>If successful, the fleet identifiers for the updated fleet are returned. For fleets with remote locations, port setting updates can take time to propagate across all locations. You can check the status of updates in each location by calling <code>DescribeFleetPortSettings</code> with a location name.</p> <p> <b>Learn more</b> </p> <p> <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/fleets-intro.html\">Setting up Amazon GameLift Servers fleets</a> </p>"
+      "documentation":"<p> <b>This API works with the following fleet types:</b> EC2</p> <p>Updates permissions that allow inbound traffic to connect to game sessions in the fleet. </p> <p>To update settings, specify the fleet ID to be updated and specify the changes to be made. List the permissions you want to add in <code>InboundPermissionAuthorizations</code>, and permissions you want to remove in <code>InboundPermissionRevocations</code>. Permissions to be removed must match existing fleet permissions. </p> <p>If successful, the fleet identifiers for the updated fleet are returned. For fleets with remote locations, port setting updates can take time to propagate across all locations. You can check the status of updates in each location by calling <code>DescribeFleetPortSettings</code> with a location name.</p> <p> <b>Learn more</b> </p> <p> <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/fleets-intro.html\">Setting up Amazon GameLift Servers fleets</a> </p>"
     },
     "UpdateGameServer":{
       "name":"UpdateGameServer",
@@ -2114,17 +2114,17 @@
     },
     "AliasArn":{
       "type":"string",
-      "pattern":"^arn:.*:alias\\/alias-\\S+"
+      "pattern":"^arn:.*:alias\\/alias-\\S+$"
     },
     "AliasId":{
       "type":"string",
-      "pattern":"^alias-\\S+"
+      "pattern":"^alias-\\S+$"
     },
     "AliasIdOrArn":{
       "type":"string",
       "max":512,
       "min":1,
-      "pattern":"^alias-\\S+|^arn:.*:alias\\/alias-\\S+"
+      "pattern":"^(alias-\\S+|arn:.*:alias\\/alias-\\S+)$"
     },
     "AliasList":{
       "type":"list",
@@ -2150,7 +2150,7 @@
       "type":"string",
       "max":512,
       "min":1,
-      "pattern":"[a-zA-Z0-9:/-]+"
+      "pattern":"^[a-zA-Z0-9:/-]+$"
     },
     "AttributeValue":{
       "type":"structure",
@@ -2178,7 +2178,7 @@
       "type":"string",
       "max":256,
       "min":0,
-      "pattern":"[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*"
+      "pattern":"^[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*$"
     },
     "AwsCredentials":{
       "type":"structure",
@@ -2259,17 +2259,17 @@
     },
     "BuildArn":{
       "type":"string",
-      "pattern":"^arn:.*:build\\/build-\\S+"
+      "pattern":"^arn:.*:build\\/build-\\S+$"
     },
     "BuildId":{
       "type":"string",
-      "pattern":"^build-\\S+"
+      "pattern":"^build-\\S+$"
     },
     "BuildIdOrArn":{
       "type":"string",
       "max":512,
       "min":1,
-      "pattern":"^build-\\S+|^arn:.*:build\\/build-\\S+"
+      "pattern":"^(build-\\S+|arn:.*:build\\/build-\\S+)$"
     },
     "BuildList":{
       "type":"list",
@@ -2424,13 +2424,13 @@
     "ComputeArn":{
       "type":"string",
       "max":1024,
-      "pattern":"^arn:.*:compute\\/[a-zA-Z0-9\\-]+(\\/[a-zA-Z0-9\\-]+)?"
+      "pattern":"^arn:.*:compute\\/[a-zA-Z0-9\\-]+(\\/[a-zA-Z0-9\\-]+)?$"
     },
     "ComputeAuthToken":{
       "type":"string",
       "max":64,
       "min":1,
-      "pattern":"^[a-zA-Z0-9\\-]+"
+      "pattern":"^[a-zA-Z0-9\\-]+$"
     },
     "ComputeList":{
       "type":"list",
@@ -2440,12 +2440,12 @@
       "type":"string",
       "max":128,
       "min":1,
-      "pattern":"^[a-zA-Z0-9\\-]+(\\/[a-zA-Z0-9\\-]+)?"
+      "pattern":"^[a-zA-Z0-9\\-]+(\\/[a-zA-Z0-9\\-]+)?$"
     },
     "ComputeNameOrArn":{
       "type":"string",
       "max":1024,
-      "pattern":"^[a-zA-Z0-9\\-]+(\\/[a-zA-Z0-9\\-]+)?$|^arn:.*:compute\\/[a-zA-Z0-9\\-]+(\\/[a-zA-Z0-9\\-]+)?"
+      "pattern":"^([a-zA-Z0-9\\-]+(\\/[a-zA-Z0-9\\-]+)?|arn:.*:compute\\/[a-zA-Z0-9\\-]+(\\/[a-zA-Z0-9\\-]+)?)$"
     },
     "ComputeStatus":{
       "type":"string",
@@ -3879,19 +3879,20 @@
     "CustomEventData":{
       "type":"string",
       "max":256,
-      "min":0
+      "min":0,
+      "sensitive":true
     },
     "CustomInputLocationStringModel":{
       "type":"string",
       "max":64,
       "min":8,
-      "pattern":"^custom-[A-Za-z0-9\\-]+"
+      "pattern":"^custom-[A-Za-z0-9\\-]+$"
     },
     "CustomLocationNameOrArnModel":{
       "type":"string",
       "max":128,
       "min":1,
-      "pattern":"^custom-[A-Za-z0-9\\-]+|^arn:.*:location\\/custom-\\S+"
+      "pattern":"^(custom-[A-Za-z0-9\\-]+|arn:.*:location\\/custom-\\S+)$"
     },
     "DeleteAliasInput":{
       "type":"structure",
@@ -5240,7 +5241,7 @@
       "type":"string",
       "max":256,
       "min":1,
-      "pattern":"^[0-9a-zA-Z_\\-\\.]+"
+      "pattern":"^[0-9a-zA-Z_\\-\\.]+$"
     },
     "Double":{"type":"double"},
     "DoubleObject":{"type":"double"},
@@ -5811,7 +5812,28 @@
         "m7i.48xlarge",
         "r7a.24xlarge",
         "r7a.32xlarge",
-        "r7a.48xlarge"
+        "r7a.48xlarge",
+        "c8a.medium",
+        "c8a.large",
+        "c8a.xlarge",
+        "c8a.2xlarge",
+        "c8i.large",
+        "c8i.xlarge",
+        "c8i.2xlarge",
+        "c9g.medium",
+        "c9g.large",
+        "c9g.xlarge",
+        "c9g.2xlarge",
+        "m8a.medium",
+        "m8a.large",
+        "m8a.xlarge",
+        "m8a.2xlarge",
+        "m8i.large",
+        "m8i.xlarge",
+        "m8i.2xlarge",
+        "m9g.large",
+        "m9g.xlarge",
+        "m9g.2xlarge"
       ]
     },
     "Event":{
@@ -6080,7 +6102,7 @@
       "type":"string",
       "max":256,
       "min":1,
-      "pattern":"[a-zA-Z0-9:/-]+"
+      "pattern":"^[a-zA-Z0-9:/-]+$"
     },
     "FleetCapacity":{
       "type":"structure",
@@ -6178,7 +6200,7 @@
       "type":"string",
       "max":128,
       "min":1,
-      "pattern":"^[a-z]*fleet-[a-zA-Z0-9\\-]+"
+      "pattern":"^[a-z]*fleet-[a-zA-Z0-9\\-]+$"
     },
     "FleetIdList":{
       "type":"list",
@@ -6305,7 +6327,8 @@
     },
     "GamePropertyValue":{
       "type":"string",
-      "max":96
+      "max":96,
+      "sensitive":true
     },
     "GameServer":{
       "type":"structure",
@@ -6365,7 +6388,7 @@
       "type":"string",
       "max":512,
       "min":1,
-      "pattern":".*\\S.*"
+      "pattern":"^.*\\S.*$"
     },
     "GameServerContainerDefinition":{
       "type":"structure",
@@ -6484,7 +6507,8 @@
       "type":"string",
       "max":1024,
       "min":1,
-      "pattern":".*\\S.*"
+      "pattern":"^.*\\S.*$",
+      "sensitive":true
     },
     "GameServerGroup":{
       "type":"structure",
@@ -6554,7 +6578,7 @@
       "type":"string",
       "max":256,
       "min":1,
-      "pattern":"^arn:.*:gameservergroup\\/[a-zA-Z0-9-\\.]*"
+      "pattern":"^arn:.*:gameservergroup\\/[a-zA-Z0-9-\\.]*$"
     },
     "GameServerGroupAutoScalingPolicy":{
       "type":"structure",
@@ -6676,13 +6700,13 @@
       "type":"string",
       "max":128,
       "min":1,
-      "pattern":"[a-zA-Z0-9-\\.]+"
+      "pattern":"^[a-zA-Z0-9-\\.]+$"
     },
     "GameServerGroupNameOrArn":{
       "type":"string",
       "max":256,
       "min":1,
-      "pattern":"[a-zA-Z0-9-\\.]+|^arn:.*:gameservergroup\\/[a-zA-Z0-9-\\.]+"
+      "pattern":"^([a-zA-Z0-9-\\.]+|arn:.*:gameservergroup\\/[a-zA-Z0-9-\\.]+)$"
     },
     "GameServerGroupStatus":{
       "type":"string",
@@ -6708,7 +6732,7 @@
       "type":"string",
       "max":128,
       "min":3,
-      "pattern":"[a-zA-Z0-9-\\.]+"
+      "pattern":"^[a-zA-Z0-9-\\.]+$"
     },
     "GameServerInstance":{
       "type":"structure",
@@ -6923,7 +6947,8 @@
     "GameSessionData":{
       "type":"string",
       "max":4096,
-      "min":1
+      "min":1,
+      "sensitive":true
     },
     "GameSessionDetail":{
       "type":"structure",
@@ -7097,7 +7122,7 @@
       "type":"string",
       "max":256,
       "min":1,
-      "pattern":"^arn:.*:gamesessionqueue\\/[a-zA-Z0-9-]+"
+      "pattern":"^arn:.*:gamesessionqueue\\/[a-zA-Z0-9-]+$"
     },
     "GameSessionQueueDestination":{
       "type":"structure",
@@ -7121,13 +7146,13 @@
       "type":"string",
       "max":128,
       "min":1,
-      "pattern":"[a-zA-Z0-9-]+"
+      "pattern":"^[a-zA-Z0-9-]+$"
     },
     "GameSessionQueueNameOrArn":{
       "type":"string",
       "max":256,
       "min":1,
-      "pattern":"[a-zA-Z0-9-]+|^arn:.*:gamesessionqueue\\/[a-zA-Z0-9-]+"
+      "pattern":"^([a-zA-Z0-9-]+|arn:.*:gamesessionqueue\\/[a-zA-Z0-9-]+)$"
     },
     "GameSessionQueueNameOrArnList":{
       "type":"list",
@@ -7333,7 +7358,7 @@
       "type":"string",
       "max":48,
       "min":1,
-      "pattern":"[a-zA-Z0-9-]+"
+      "pattern":"^[a-zA-Z0-9-]+$"
     },
     "IdempotentParameterMismatchException":{
       "type":"structure",
@@ -7461,7 +7486,7 @@
       "type":"string",
       "max":256,
       "min":1,
-      "pattern":"[a-zA-Z0-9\\.-]+"
+      "pattern":"^[a-zA-Z0-9\\.-]+$"
     },
     "InstanceList":{
       "type":"list",
@@ -7523,7 +7548,7 @@
       "type":"string",
       "max":128,
       "min":1,
-      "pattern":"^[0-9A-Fa-f\\:\\.]+",
+      "pattern":"^[0-9A-Fa-f\\:\\.]+$",
       "sensitive":true
     },
     "IpPermission":{
@@ -7568,13 +7593,14 @@
     },
     "IpRange":{
       "type":"string",
-      "pattern":"[^\\s]+",
+      "pattern":"^[^\\s]+$",
       "sensitive":true
     },
     "LargeGameSessionData":{
       "type":"string",
       "max":262144,
-      "min":1
+      "min":1,
+      "sensitive":true
     },
     "LatencyMap":{
       "type":"map",
@@ -7585,25 +7611,25 @@
       "type":"string",
       "max":1024,
       "min":1,
-      "pattern":"[A-Za-z0-9_:.+\\/\\\\\\- =@;{},?'\\[\\]\"]+"
+      "pattern":"^[A-Za-z0-9_:.+\\/\\\\\\- =@;{},?'\\[\\]\"]+$"
     },
     "LaunchPathStringModel":{
       "type":"string",
       "max":1024,
       "min":1,
-      "pattern":"[A-Za-z0-9_:.+\\/\\\\\\- ]+"
+      "pattern":"^[A-Za-z0-9_:.+\\/\\\\\\- ]+$"
     },
     "LaunchTemplateId":{
       "type":"string",
       "max":255,
       "min":1,
-      "pattern":"[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]+"
+      "pattern":"^[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]+$"
     },
     "LaunchTemplateName":{
       "type":"string",
       "max":128,
       "min":3,
-      "pattern":"[a-zA-Z0-9\\(\\)\\.\\-/_]+"
+      "pattern":"^[a-zA-Z0-9\\(\\)\\.\\-/_]+$"
     },
     "LaunchTemplateSpecification":{
       "type":"structure",
@@ -7627,7 +7653,7 @@
       "type":"string",
       "max":128,
       "min":1,
-      "pattern":"[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]+"
+      "pattern":"^[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]+$"
     },
     "LimitExceededException":{
       "type":"structure",
@@ -8119,7 +8145,7 @@
       "type":"string",
       "max":128,
       "min":1,
-      "pattern":"^arn:.*:location\\/custom-\\S+"
+      "pattern":"^arn:.*:location\\/custom-\\S+$"
     },
     "LocationAttributes":{
       "type":"structure",
@@ -8233,7 +8259,7 @@
       "type":"string",
       "max":64,
       "min":1,
-      "pattern":"^[A-Za-z0-9\\-]+"
+      "pattern":"^[A-Za-z0-9\\-]+$"
     },
     "LocationUpdateStatus":{
       "type":"string",
@@ -8284,7 +8310,7 @@
       "type":"string",
       "max":512,
       "min":1,
-      "pattern":"[a-zA-Z0-9:/\\-\\*]+"
+      "pattern":"^[a-zA-Z0-9:/\\-\\*]+$"
     },
     "ManagedCapacityConfiguration":{
       "type":"structure",
@@ -8321,7 +8347,8 @@
     "MatchmakerData":{
       "type":"string",
       "max":390000,
-      "min":1
+      "min":1,
+      "sensitive":true
     },
     "MatchmakingAcceptanceTimeoutInteger":{
       "type":"integer",
@@ -8405,7 +8432,7 @@
     "MatchmakingConfigurationArn":{
       "type":"string",
       "documentation":"Data type used for Matchmaking Configuration ARN.",
-      "pattern":"^arn:.*:matchmakingconfiguration\\/[a-zA-Z0-9-\\.]*"
+      "pattern":"^arn:.*:matchmakingconfiguration\\/[a-zA-Z0-9-\\.]*$"
     },
     "MatchmakingConfigurationList":{
       "type":"list",
@@ -8415,7 +8442,7 @@
       "type":"string",
       "max":256,
       "min":1,
-      "pattern":"[a-zA-Z0-9-\\.]*|^arn:.*:matchmakingconfiguration\\/[a-zA-Z0-9-\\.]*"
+      "pattern":"^([a-zA-Z0-9-\\.]*|arn:.*:matchmakingconfiguration\\/[a-zA-Z0-9-\\.]*)$"
     },
     "MatchmakingConfigurationNameList":{
       "type":"list",
@@ -8441,7 +8468,7 @@
     "MatchmakingIdStringModel":{
       "type":"string",
       "max":128,
-      "pattern":"[a-zA-Z0-9-\\.]*"
+      "pattern":"^[a-zA-Z0-9-\\.]*$"
     },
     "MatchmakingRequestTimeoutInteger":{
       "type":"integer",
@@ -8474,7 +8501,7 @@
     "MatchmakingRuleSetArn":{
       "type":"string",
       "documentation":"Data type used for Matchmaking RuleSet ARN.",
-      "pattern":"^arn:.*:matchmakingruleset\\/[a-zA-Z0-9-\\.]*"
+      "pattern":"^arn:.*:matchmakingruleset\\/[a-zA-Z0-9-\\.]*$"
     },
     "MatchmakingRuleSetList":{
       "type":"list",
@@ -8484,7 +8511,7 @@
       "type":"string",
       "max":256,
       "min":1,
-      "pattern":"[a-zA-Z0-9-\\.]*|^arn:.*:matchmakingruleset\\/[a-zA-Z0-9-\\.]*"
+      "pattern":"^([a-zA-Z0-9-\\.]*|arn:.*:matchmakingruleset\\/[a-zA-Z0-9-\\.]*)$"
     },
     "MatchmakingRuleSetNameList":{
       "type":"list",
@@ -8602,7 +8629,7 @@
       "type":"string",
       "max":1024,
       "min":1,
-      "pattern":".*\\S.*"
+      "pattern":"^.*\\S.*$"
     },
     "NonEmptyString":{
       "type":"string",
@@ -8793,7 +8820,8 @@
     "PlayerData":{
       "type":"string",
       "max":2048,
-      "min":1
+      "min":1,
+      "sensitive":true
     },
     "PlayerDataMap":{
       "type":"map",
@@ -8952,7 +8980,7 @@
       "type":"string",
       "max":128,
       "min":1,
-      "pattern":"^psess-\\S+"
+      "pattern":"^psess-\\S+$"
     },
     "PlayerSessionList":{
       "type":"list",
@@ -9102,13 +9130,14 @@
       "type":"string",
       "max":256,
       "min":0,
-      "pattern":"[\\s\\S]*"
+      "pattern":"^[\\s\\S]*$",
+      "sensitive":true
     },
     "QueueSnsArnStringModel":{
       "type":"string",
       "max":300,
       "min":0,
-      "pattern":"[a-zA-Z0-9:_-]*(\\.fifo)?"
+      "pattern":"^[a-zA-Z0-9:_-]*(\\.fifo)?$"
     },
     "RegisterComputeInput":{
       "type":"structure",
@@ -9483,17 +9512,17 @@
     },
     "ScriptArn":{
       "type":"string",
-      "pattern":"^arn:.*:script\\/script-\\S+"
+      "pattern":"^arn:.*:script\\/script-\\S+$"
     },
     "ScriptId":{
       "type":"string",
-      "pattern":"^script-\\S+"
+      "pattern":"^script-\\S+$"
     },
     "ScriptIdOrArn":{
       "type":"string",
       "max":512,
       "min":1,
-      "pattern":"^script-\\S+|^arn:.*:script\\/script-\\S+"
+      "pattern":"^(script-\\S+|arn:.*:script\\/script-\\S+)$"
     },
     "ScriptList":{
       "type":"list",
@@ -9592,7 +9621,7 @@
       "type":"string",
       "max":300,
       "min":0,
-      "pattern":"[a-zA-Z0-9:_/-]*(.fifo)?"
+      "pattern":"^[a-zA-Z0-9:_/-]*(\\.fifo)?$"
     },
     "SortOrder":{
       "type":"string",

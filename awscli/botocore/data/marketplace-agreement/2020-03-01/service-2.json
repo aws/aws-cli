@@ -644,6 +644,10 @@
         "variablePaymentTerm":{
           "shape":"VariablePaymentTerm",
           "documentation":"<p>Defines a payment model where sellers can submit variable payment requests up to a maximum charge amount, with configurable approval strategies and expiration timelines.</p>"
+        },
+        "netPaymentTerm":{
+          "shape":"NetPaymentTerm",
+          "documentation":"<p>Defines the net payment due period for the agreement, specifying when payment is due after an invoice is issued.</p>"
         }
       },
       "documentation":"<p>A subset of terms proposed by the proposer, which have been accepted by the acceptor as part of agreement creation.</p>",
@@ -2563,6 +2567,24 @@
       "box":true,
       "max":50,
       "min":1
+    },
+    "NetPaymentTerm":{
+      "type":"structure",
+      "members":{
+        "type":{
+          "shape":"UnversionedTermType",
+          "documentation":"<p>Type of the term being updated.</p>"
+        },
+        "id":{
+          "shape":"TermId",
+          "documentation":"<p>The unique identifier for the term.</p>"
+        },
+        "paymentDuePeriod":{
+          "shape":"BoundedString",
+          "documentation":"<p>The duration after an invoice is issued within which the payment is due. The duration is represented in the ISO 8601 format (for example, <code>P30D</code> for 30 days or <code>P60D</code> for 60 days).</p>"
+        }
+      },
+      "documentation":"<p>Defines the net payment due period for the agreement, specifying when payment is due after an invoice is issued.</p>"
     },
     "NextToken":{
       "type":"string",

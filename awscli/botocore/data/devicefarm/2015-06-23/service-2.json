@@ -2917,6 +2917,17 @@
       "type":"list",
       "member":{"shape":"IncompatibilityMessage"}
     },
+    "InsightsType":{
+      "type":"string",
+      "documentation":"<p>The type of insights to generate.</p>",
+      "enum":["TEST_REPORT"]
+    },
+    "InsightsTypes":{
+      "type":"list",
+      "member":{"shape":"InsightsType"},
+      "max":5,
+      "min":1
+    },
     "InstallToRemoteAccessSessionRequest":{
       "type":"structure",
       "required":[
@@ -3086,9 +3097,91 @@
         "videoCapture":{
           "shape":"VideoCapture",
           "documentation":"<p>This value is set to true if video capture is enabled. Otherwise, it is set to false.</p>"
+        },
+        "insights":{
+          "shape":"JobInsights",
+          "documentation":"<p>The insights for the job, including the report status and test-level metrics. This field contains data only if you specified <code>insightsTypes</code> when you scheduled the run.</p>"
         }
       },
       "documentation":"<p>Represents a device.</p>"
+    },
+    "JobInsights":{
+      "type":"structure",
+      "members":{
+        "status":{
+          "shape":"ReportStatus",
+          "documentation":"<p>The status of the insights report for the job.</p>"
+        },
+        "testReport":{
+          "shape":"TestReport",
+          "documentation":"<p>The test-level aggregated report for the job.</p>"
+        }
+      },
+      "documentation":"<p>Contains insights for a job, including report status, and test-level aggregated metrics such as per test execution time and median test execution time.</p>"
+    },
+    "JobReport":{
+      "type":"structure",
+      "members":{
+        "message":{
+          "shape":"ReportMessage",
+          "documentation":"<p>A message associated with the job report.</p>"
+        },
+        "metrics":{
+          "shape":"JobReportMetrics",
+          "documentation":"<p>The aggregated job-level metrics for the run.</p>"
+        },
+        "jobDetailsUrl":{
+          "shape":"SensitiveURL",
+          "documentation":"<p>A URL to the detailed job results.</p>"
+        }
+      },
+      "documentation":"<p>Contains aggregated job-level metrics for a run.</p>"
+    },
+    "JobReportMetrics":{
+      "type":"structure",
+      "members":{
+        "jobsTotal":{
+          "shape":"Integer",
+          "documentation":"<p>The total number of jobs in the run.</p>"
+        },
+        "jobsPassed":{
+          "shape":"Integer",
+          "documentation":"<p>The number of jobs that passed.</p>"
+        },
+        "jobsFailed":{
+          "shape":"Integer",
+          "documentation":"<p>The number of jobs that failed.</p>"
+        },
+        "jobsSkipped":{
+          "shape":"Integer",
+          "documentation":"<p>The number of jobs that were skipped.</p>"
+        },
+        "jobsErrored":{
+          "shape":"Integer",
+          "documentation":"<p>The number of jobs that errored.</p>"
+        },
+        "jobsStopped":{
+          "shape":"Integer",
+          "documentation":"<p>The number of jobs that were stopped.</p>"
+        },
+        "jobsPassedPercentage":{
+          "shape":"Double",
+          "documentation":"<p>The percentage of jobs that passed.</p>"
+        },
+        "totalJobExecutionDurationSeconds":{
+          "shape":"Double",
+          "documentation":"<p>The total execution duration of all jobs in the run, in seconds.</p>"
+        },
+        "averageJobExecutionDurationSeconds":{
+          "shape":"Double",
+          "documentation":"<p>The average execution duration of jobs in the run, in seconds.</p>"
+        },
+        "medianJobExecutionDurationSeconds":{
+          "shape":"Double",
+          "documentation":"<p>The median execution duration of jobs in the run, in seconds.</p>"
+        }
+      },
+      "documentation":"<p>Contains aggregated metrics across all jobs in a run.</p>"
     },
     "JobTimeoutMinutes":{"type":"integer"},
     "Jobs":{
@@ -4408,6 +4501,22 @@
       },
       "documentation":"<p>The result of a renewal offering.</p>"
     },
+    "ReportMessage":{
+      "type":"string",
+      "max":4096,
+      "min":0
+    },
+    "ReportStatus":{
+      "type":"string",
+      "documentation":"<p>The status of an insights report. Possible values are:</p> <ul> <li> <p>PENDING: The service has queued the report and generation has not started.</p> </li> <li> <p>RUNNING: The service is generating the report.</p> </li> <li> <p>COMPLETED: The service successfully generated the report.</p> </li> <li> <p>SKIPPED: The service did not generate the report because the necessary conditions were not met. For more information about why the service could not generate the report, view the <code>message</code> field in <code>TestReport</code> or <code>JobReport</code>.</p> </li> <li> <p>ERRORED: An error occurred while generating the report. For more information about why the service could not generate the report, view the <code>message</code> field in <code>TestReport</code> or <code>JobReport</code>.</p> </li> </ul>",
+      "enum":[
+        "PENDING",
+        "RUNNING",
+        "COMPLETED",
+        "SKIPPED",
+        "ERRORED"
+      ]
+    },
     "Resolution":{
       "type":"structure",
       "members":{
@@ -4617,9 +4726,31 @@
         "environmentVariables":{
           "shape":"EnvironmentVariables",
           "documentation":"<p>Environment variables associated with the run.</p>"
+        },
+        "insightsTypes":{
+          "shape":"InsightsTypes",
+          "documentation":"<p>The types of insights requested for the run.</p>"
+        },
+        "insights":{
+          "shape":"RunInsights",
+          "documentation":"<p>The insights for the run, including the report status and job-level metrics. This field contains data only if you specified <code>insightsTypes</code> when you scheduled the run.</p>"
         }
       },
       "documentation":"<p>Represents a test run on a set of devices with a given app package, test parameters, and so on.</p>"
+    },
+    "RunInsights":{
+      "type":"structure",
+      "members":{
+        "status":{
+          "shape":"ReportStatus",
+          "documentation":"<p>The status of the insights report for the run.</p>"
+        },
+        "jobReport":{
+          "shape":"JobReport",
+          "documentation":"<p>The job-level aggregated report for the run.</p>"
+        }
+      },
+      "documentation":"<p>Contains insights for a run, including report status, and job-level aggregated metrics such as per job execution time and median job execution time.</p>"
     },
     "Runs":{
       "type":"list",
@@ -4719,6 +4850,10 @@
         "executionRoleArn":{
           "shape":"AmazonRoleResourceName",
           "documentation":"<p>An IAM role to be assumed by the test host for the run.</p>"
+        },
+        "insightsTypes":{
+          "shape":"InsightsTypes",
+          "documentation":"<p>The types of insights to generate for a run. Specify one or more values to opt in to insights generation when scheduling a run.</p> <p>Insights are currently supported for custom mode runs with Instrumentation, Appium Java TestNG, and XCTest UI test types.</p>"
         }
       },
       "documentation":"<p>Represents the settings for a run. Includes things like location, radio states, auxiliary apps, and network profiles.</p>"
@@ -5267,6 +5402,66 @@
       "type":"map",
       "key":{"shape":"String"},
       "value":{"shape":"String"}
+    },
+    "TestReport":{
+      "type":"structure",
+      "members":{
+        "message":{
+          "shape":"ReportMessage",
+          "documentation":"<p>A message associated with the test report.</p>"
+        },
+        "metrics":{
+          "shape":"TestReportMetrics",
+          "documentation":"<p>The aggregated test-level metrics for the job.</p>"
+        },
+        "testDetailsUrl":{
+          "shape":"SensitiveURL",
+          "documentation":"<p>A URL to the detailed test results.</p>"
+        }
+      },
+      "documentation":"<p>Contains aggregated test-level metrics for a job.</p>"
+    },
+    "TestReportMetrics":{
+      "type":"structure",
+      "members":{
+        "testsTotal":{
+          "shape":"Integer",
+          "documentation":"<p>The total number of tests in the job.</p>"
+        },
+        "testsPassed":{
+          "shape":"Integer",
+          "documentation":"<p>The number of tests that passed.</p>"
+        },
+        "testsFailed":{
+          "shape":"Integer",
+          "documentation":"<p>The number of tests that failed.</p>"
+        },
+        "testsSkipped":{
+          "shape":"Integer",
+          "documentation":"<p>The number of tests that were skipped.</p>"
+        },
+        "testsErrored":{
+          "shape":"Integer",
+          "documentation":"<p>The number of tests that errored.</p>"
+        },
+        "testsOther":{
+          "shape":"Integer",
+          "documentation":"<p>The number of tests with other result types.</p>"
+        },
+        "testsPassedPercentage":{
+          "shape":"Double",
+          "documentation":"<p>The percentage of tests that passed.</p>"
+        },
+        "totalTestExecutionDurationSeconds":{
+          "shape":"Double",
+          "documentation":"<p>The total execution duration of all tests in the job, in seconds.</p>"
+        },
+        "medianTestExecutionDurationSeconds":{
+          "shape":"Double",
+          "documentation":"<p>The median execution duration of tests in the job, in seconds.</p>"
+        }
+      },
+      "documentation":"<p>Contains aggregated metrics across all tests in a job.</p>"
     },
     "TestType":{
       "type":"string",

@@ -214,6 +214,25 @@
       "documentation":"<p>Deletes a batch evaluation and its associated results.</p>",
       "idempotent":true
     },
+    "DeleteCapacityProviderSession":{
+      "name":"DeleteCapacityProviderSession",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/capacity-providers/{capacityProviderId}/sessions/{sessionId}",
+        "responseCode":202
+      },
+      "input":{"shape":"DeleteCapacityProviderSessionRequest"},
+      "output":{"shape":"DeleteCapacityProviderSessionResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Deletes a session associated with a capacity provider in Amazon Bedrock AgentCore and makes the session unavailable for further use. To delete a capacity provider session, specify both the capacity provider identifier and the session ID. After you delete a session, you cannot restart it.</p>",
+      "idempotent":true
+    },
     "DeleteEvent":{
       "name":"DeleteEvent",
       "http":{
@@ -2185,6 +2204,28 @@
       "max":512,
       "min":10
     },
+    "CapacityProviderArn":{
+      "type":"string",
+      "pattern":"arn:aws(-[^:]+)?:bedrock-agentcore:[a-z0-9-]+:[0-9]{12}:capacity-provider/[a-zA-Z][a-zA-Z0-9_]{0,47}-[a-zA-Z0-9]{10}"
+    },
+    "CapacityProviderId":{
+      "type":"string",
+      "documentation":"<p>Capacity provider identifier. Pattern matches MiskiModel definition.</p>",
+      "max":59,
+      "min":12,
+      "pattern":"[a-zA-Z][a-zA-Z0-9_]{0,47}-[a-zA-Z0-9]{10}"
+    },
+    "CapacityProviderSessionStatus":{
+      "type":"string",
+      "enum":[
+        "Provisioning",
+        "Deprovisioning",
+        "Active",
+        "Deleting",
+        "Deleted",
+        "Stopped"
+      ]
+    },
     "Certificate":{
       "type":"structure",
       "required":["location"],
@@ -3227,6 +3268,49 @@
         "status":{
           "shape":"BatchEvaluationStatus",
           "documentation":"<p>The status of the batch evaluation deletion operation.</p>"
+        }
+      }
+    },
+    "DeleteCapacityProviderSessionRequest":{
+      "type":"structure",
+      "required":[
+        "capacityProviderId",
+        "sessionId"
+      ],
+      "members":{
+        "capacityProviderId":{
+          "shape":"CapacityProviderId",
+          "documentation":"<p>The unique identifier of the capacity provider associated with the session.</p>",
+          "location":"uri",
+          "locationName":"capacityProviderId"
+        },
+        "sessionId":{
+          "shape":"SessionId",
+          "documentation":"<p>The unique identifier of the capacity provider session to delete.</p>",
+          "location":"uri",
+          "locationName":"sessionId"
+        }
+      }
+    },
+    "DeleteCapacityProviderSessionResponse":{
+      "type":"structure",
+      "required":[
+        "capacityProviderArn",
+        "sessionId",
+        "status"
+      ],
+      "members":{
+        "capacityProviderArn":{
+          "shape":"CapacityProviderArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the capacity provider associated with the deleted session.</p>"
+        },
+        "sessionId":{
+          "shape":"SessionId",
+          "documentation":"<p>The unique identifier of the deleted capacity provider session.</p>"
+        },
+        "status":{
+          "shape":"CapacityProviderSessionStatus",
+          "documentation":"<p>The current status of the capacity provider session. When the status is <code>Deleting</code>, the session is being deleted and is not available. When the status is <code>Deleted</code>, the session is no longer available.</p>"
         }
       }
     },

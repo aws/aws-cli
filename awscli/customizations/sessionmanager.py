@@ -33,7 +33,8 @@ ERROR_MESSAGE = (
 
 OUTDATED_PLUGIN_VERSION_MESSAGE = (
     '\n'
-    'WARNING: An outdated SessionManagerPlugin version detected. Please upgrade it to the latest version. \n'
+    'WARNING: An outdated SessionManagerPlugin version detected. '
+    'Please upgrade it to the latest version. \n'
     'For more information, refer:\n'
     '  https://docs.aws.amazon.com/systems-manager/latest/userguide/'
     'session-manager-working-with-install-plugin.html\n'
@@ -64,25 +65,17 @@ class VersionRequirement:
     def __init__(self, min_version):
         self.min_version = min_version
 
-    def meets_requirement(self, version):
+    def meets_requirement(self, version, inclusive=False):
         ssm_plugin_version = self._sanitize_plugin_version(version)
         if self._is_valid_version(ssm_plugin_version):
             norm_version, norm_min_version = self._normalize(
                 ssm_plugin_version, self.min_version
             )
+            if inclusive:
+                return norm_version >= norm_min_version
             return norm_version > norm_min_version
         else:
             return False
-
-    def meets_or_exceeds(self, version):
-        """Check a version against ``min_version`` inclusively."""
-        ssm_plugin_version = self._sanitize_plugin_version(version)
-        if not self._is_valid_version(ssm_plugin_version):
-            return False
-        norm_version, norm_min_version = self._normalize(
-            ssm_plugin_version, self.min_version
-        )
-        return norm_version >= norm_min_version
 
     def is_valid_plugin_version(self, version):
         """Check whether the reported version string is parseable."""
@@ -134,7 +127,9 @@ class StartSessionCaller(CLIOperationCaller):
                 'outdated version warning', plugin_version
             )
             return
-        if version_requirement.meets_or_exceeds(plugin_version):
+        if version_requirement.meets_requirement(
+            plugin_version, inclusive=True
+        ):
             return
         uni_print(OUTDATED_PLUGIN_VERSION_MESSAGE, sys.stderr)
 

@@ -458,9 +458,11 @@ class TestRecommendedMinimumVersionRequirement:
             ("", False),
         ],
     )
-    def test_meets_or_exceeds(self, version, expected_result):
+    def test_meets_requirement_inclusive(self, version, expected_result):
         assert expected_result == \
-            self.version_requirement.meets_or_exceeds(version)
+            self.version_requirement.meets_requirement(
+                version, inclusive=True
+            )
 
     @pytest.mark.parametrize(
         "version, expected_result",

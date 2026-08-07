@@ -11,8 +11,11 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import errno
+
 from dateutil import parser, tz
 
+from awscli.testutils import mock
 from tests.functional.s3 import BaseS3TransferCommandTest
 
 
@@ -417,3 +420,38 @@ class TestLSCommand(BaseS3TransferCommandTest):
         )
         call_args = self.operations_called[0][1]
         self.assertNotIn('BucketRegion', call_args)
+
+
+class TestLSCommandBrokenPipe(BaseS3TransferCommandTest):
+    """Regression tests for aws/aws-cli#5899.
+
+    Piping ``s3 ls`` into a reader that exits early, such as
+    ``aws s3 ls s3://bucket/ | head -1``, closes the pipe while the listing
+    is still being written.  That must end quietly rather than reporting an
+    unhandled error.
+    """
+
+    def setUp(self):
+        super().setUp()
+        self.parsed_responses = [
+            {
+                "CommonPrefixes": [],
+                "Contents": [
+                    {
+                        "Key": "foo/bar.txt",
+                        "Size": 100,
+                        "LastModified": "2014-01-09T20:45:49.000Z",
+                    }
+                ],
+            }
+        ]
+
+    def test_closed_pipe_exits_with_sigpipe_rc_and_no_error(self):
+        with mock.patch(
+            'awscli.customizations.s3.subcommands.uni_print',
+            side_effect=BrokenPipeError(errno.EPIPE, 'Broken pipe'),
+        ):
+            _, stderr, _ = self.run_cmd(
+                's3 ls s3://bucket/', expected_rc=128 + 13
+            )
+        self.assertEqual(stderr, '')

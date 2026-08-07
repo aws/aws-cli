@@ -482,6 +482,16 @@
       "output":{"shape":"AuthorizeSecurityGroupIngressResult"},
       "documentation":"<p>Adds the specified inbound (ingress) rules to a security group.</p> <p>An inbound rule permits instances to receive traffic from the specified IPv4 or IPv6 address range, the IP address ranges that are specified by a prefix list, or the instances that are associated with a destination security group. For more information, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/security-group-rules.html\">Security group rules</a>.</p> <p>You must specify exactly one of the following sources: an IPv4 or IPv6 address range, a prefix list, or a security group. You must specify a protocol for each rule (for example, TCP). If the protocol is TCP or UDP, you must also specify a port or port range. If the protocol is ICMP or ICMPv6, you must also specify the ICMP/ICMPv6 type and code.</p> <p>Rule changes are propagated to instances associated with the security group as quickly as possible. However, a small delay might occur.</p> <p>For examples of rules that you can add to security groups for specific access scenarios, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/security-group-rules-reference.html\">Security group rules for different use cases</a> in the <i>Amazon EC2 User Guide</i>.</p> <p>For more information about security group quotas, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/amazon-vpc-limits.html\">Amazon VPC quotas</a> in the <i>Amazon VPC User Guide</i>.</p>"
     },
+    "BatchModifyIpamRoutingPolicyRegistrations":{
+      "name":"BatchModifyIpamRoutingPolicyRegistrations",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"BatchModifyIpamRoutingPolicyRegistrationsRequest"},
+      "output":{"shape":"BatchModifyIpamRoutingPolicyRegistrationsResult"},
+      "documentation":"<p>Modifies multiple routing policy registrations in a single operation. You can create, update, or delete Route Origin Authorizations (ROAs) in batch.</p>"
+    },
     "BundleInstance":{
       "name":"BundleInstance",
       "http":{
@@ -658,7 +668,7 @@
       },
       "input":{"shape":"CreateApplicationStatusCheckRequest"},
       "output":{"shape":"CreateApplicationStatusCheckResult"},
-      "documentation":"<p>Creates an application status check for monitoring the health of applications running on your instances. You can configure the protocol, port, path, and thresholds for the health check. The following rules apply:</p> <ul> <li> <p>You can create a maximum of 50 application status checks per account.</p> </li> <li> <p>Health checks do not start until you associate the check with instances or tags using <code>AssociateApplicationStatusCheck</code>.</p> </li> <li> <p>The <code>Timeout</code> value must be less than the <code>Interval</code> value.</p> </li> <li> <p>The <code>Path</code> must start with a forward slash (<code>/</code>). Default: <code>/</code>.</p> </li> <li> <p>If you do not specify <code>Aggregation</code>, it defaults to <code>included</code>, which means the check contributes to the instance-level application status.</p> </li> <li> <p>Default values: <code>Interval</code> is 60 seconds, <code>Timeout</code> is 6 seconds, <code>FailureThreshold</code> is 2, <code>SuccessThreshold</code> is 5, <code>StatusCodeMatcher</code> is <code>200</code>, <code>InitializationGracePeriodSeconds</code> is 300 seconds.</p> </li> <li> <p>You can tag the application status check during creation. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Using_Tags.html\">Tag your Amazon EC2 resources</a>.</p> </li> </ul>"
+      "documentation":"<p>Creates an application status check for monitoring the health of applications running on your instances. You can configure the protocol, port, path, and thresholds for the health check. The following rules apply:</p> <ul> <li> <p>You can create a maximum of 50 application status checks per account.</p> </li> <li> <p>Health checks do not start until you associate the check with instances or tags using <code>AssociateApplicationStatusCheck</code>.</p> </li> <li> <p>The <code>Timeout</code> value must be less than the <code>Interval</code> value.</p> </li> <li> <p>The <code>Path</code> must start with a forward slash (<code>/</code>). Default: <code>/</code>.</p> </li> <li> <p>If you do not specify <code>Aggregation</code>, it defaults to <code>included</code>, which means the check contributes to the instance-level application status.</p> </li> <li> <p>Default values: <code>Interval</code> is 60 seconds, <code>Timeout</code> is 6 seconds, <code>FailureThreshold</code> is 2, <code>SuccessThreshold</code> is 2, <code>StatusCodeMatcher</code> is <code>200</code>, <code>InitializationGracePeriodSeconds</code> is 300 seconds.</p> </li> <li> <p>You can tag the application status check during creation. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Using_Tags.html\">Tag your Amazon EC2 resources</a>.</p> </li> </ul>"
     },
     "CreateCapacityManagerDataExport":{
       "name":"CreateCapacityManagerDataExport",
@@ -940,6 +950,16 @@
       "output":{"shape":"CreateIpamExternalResourceVerificationTokenResult"},
       "documentation":"<p>Create a verification token.</p> <p>A verification token is an Amazon Web Services-generated random value that you can use to prove ownership of an external resource. For example, you can use a verification token to validate that you control a public IP address range when you bring an IP address range to Amazon Web Services (BYOIP). </p>"
     },
+    "CreateIpamInternetRegistryAssociation":{
+      "name":"CreateIpamInternetRegistryAssociation",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateIpamInternetRegistryAssociationRequest"},
+      "output":{"shape":"CreateIpamInternetRegistryAssociationResult"},
+      "documentation":"<p>Creates an association between an IPAM and a Regional Internet Registry (RIR) for Resource Public Key Infrastructure (RPKI) management. You can use this association to create Route Origin Authorizations (ROAs) for IP address prefixes registered with the internet registry. Your IPAM must be in the Advanced tier to use this feature.</p>"
+    },
     "CreateIpamPolicy":{
       "name":"CreateIpamPolicy",
       "http":{
@@ -989,6 +1009,16 @@
       "input":{"shape":"CreateIpamResourceDiscoveryRequest"},
       "output":{"shape":"CreateIpamResourceDiscoveryResult"},
       "documentation":"<p>Creates an IPAM resource discovery. A resource discovery is an IPAM component that enables IPAM to manage and monitor resources that belong to the owning account.</p>"
+    },
+    "CreateIpamRoutingPolicyRegistration":{
+      "name":"CreateIpamRoutingPolicyRegistration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateIpamRoutingPolicyRegistrationRequest"},
+      "output":{"shape":"CreateIpamRoutingPolicyRegistrationResult"},
+      "documentation":"<p>Creates a routing policy registration and publishes Route Origin Authorizations (ROAs) to the RPKI for the specified CIDR prefix and ASNs.</p>"
     },
     "CreateIpamScope":{
       "name":"CreateIpamScope",
@@ -1904,6 +1934,16 @@
       "output":{"shape":"DeleteIpamExternalResourceVerificationTokenResult"},
       "documentation":"<p>Delete a verification token.</p> <p>A verification token is an Amazon Web Services-generated random value that you can use to prove ownership of an external resource. For example, you can use a verification token to validate that you control a public IP address range when you bring an IP address range to Amazon Web Services (BYOIP). </p>"
     },
+    "DeleteIpamInternetRegistryAssociation":{
+      "name":"DeleteIpamInternetRegistryAssociation",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteIpamInternetRegistryAssociationRequest"},
+      "output":{"shape":"DeleteIpamInternetRegistryAssociationResult"},
+      "documentation":"<p>Deletes an IPAM internet registry association. Before deleting, you must remove all routing policy registrations associated with the internet registry.</p>"
+    },
     "DeleteIpamPolicy":{
       "name":"DeleteIpamPolicy",
       "http":{
@@ -1953,6 +1993,16 @@
       "input":{"shape":"DeleteIpamResourceDiscoveryRequest"},
       "output":{"shape":"DeleteIpamResourceDiscoveryResult"},
       "documentation":"<p>Deletes an IPAM resource discovery. A resource discovery is an IPAM component that enables IPAM to manage and monitor resources that belong to the owning account.</p>"
+    },
+    "DeleteIpamRoutingPolicyRegistration":{
+      "name":"DeleteIpamRoutingPolicyRegistration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteIpamRoutingPolicyRegistrationRequest"},
+      "output":{"shape":"DeleteIpamRoutingPolicyRegistrationResult"},
+      "documentation":"<p>Deletes a routing policy registration for a specified CIDR prefix.</p>"
     },
     "DeleteIpamScope":{
       "name":"DeleteIpamScope",
@@ -3498,6 +3548,16 @@
       "input":{"shape":"DescribeIpamExternalResourceVerificationTokensRequest"},
       "output":{"shape":"DescribeIpamExternalResourceVerificationTokensResult"},
       "documentation":"<p>Describe verification tokens.</p> <p>A verification token is an Amazon Web Services-generated random value that you can use to prove ownership of an external resource. For example, you can use a verification token to validate that you control a public IP address range when you bring an IP address range to Amazon Web Services (BYOIP). </p>"
+    },
+    "DescribeIpamInternetRegistryAssociations":{
+      "name":"DescribeIpamInternetRegistryAssociations",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeIpamInternetRegistryAssociationsRequest"},
+      "output":{"shape":"DescribeIpamInternetRegistryAssociationsResult"},
+      "documentation":"<p>Describes one or more IPAM internet registry associations. We recommend using pagination to ensure that the operation returns quickly and successfully.</p>"
     },
     "DescribeIpamPolicies":{
       "name":"DescribeIpamPolicies",
@@ -5243,6 +5303,16 @@
       "output":{"shape":"EnableInstanceSqlHaStandbyDetectionsResult"},
       "documentation":"<p>Enable Amazon EC2 instances running in an SQL Server High Availability cluster for SQL Server High Availability instance standby detection monitoring. Once enabled, Amazon Web Services monitors the metadata for the instances to determine whether they are active or standby nodes in the SQL Server High Availability cluster. If the instances are determined to be standby failover nodes, Amazon Web Services automatically applies SQL Server licensing fee waiver for those instances.</p> <p>To register an instance, it must be running a Windows SQL Server license-included AMI and have the Amazon Web Services Systems Manager agent installed and running. Only Windows Server 2019 and later and SQL Server (Standard and Enterprise editions) 2017 and later are supported. For more information, see <a href=\"https://docs.aws.amazon.com/sql-server-ec2/latest/userguide/prerequisites-and-requirements.html\"> Prerequisites for using SQL Server High Availability instance standby detection</a>.</p>"
     },
+    "EnableIpamInternetRegistryAssociation":{
+      "name":"EnableIpamInternetRegistryAssociation",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"EnableIpamInternetRegistryAssociationRequest"},
+      "output":{"shape":"EnableIpamInternetRegistryAssociationResult"},
+      "documentation":"<p>Enables Resource Public Key Infrastructure (RPKI) on an existing IPAM internet registry association by providing BGP Public Key Infrastructure (BPKI) certificate details. After enabling, you can create Route Origin Authorizations (ROAs) for prefixes registered with the internet registry.</p>"
+    },
     "EnableIpamOrganizationAdminAccount":{
       "name":"EnableIpamOrganizationAdminAccount",
       "http":{
@@ -5711,6 +5781,36 @@
       "output":{"shape":"GetIpamDiscoveredResourceCidrsResult"},
       "documentation":"<p>Returns the resource CIDRs that are monitored as part of a resource discovery. A discovered resource is a resource CIDR monitored under a resource discovery. The following resources can be discovered: VPCs, Public IPv4 pools, VPC subnets, and Elastic IP addresses. </p>"
     },
+    "GetIpamDiscoveredRoutes":{
+      "name":"GetIpamDiscoveredRoutes",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetIpamDiscoveredRoutesRequest"},
+      "output":{"shape":"GetIpamDiscoveredRoutesResult"},
+      "documentation":"<p>Retrieves Border Gateway Protocol (BGP) routes discovered by IPAM resource discovery for a specified Region. Use this operation to view the Bring Your Own IP (BYOIP) address ranges that are currently advertised through BGP. We recommend using pagination to ensure that the operation returns quickly and successfully.</p>"
+    },
+    "GetIpamInternetRegistryAssociationAsns":{
+      "name":"GetIpamInternetRegistryAssociationAsns",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetIpamInternetRegistryAssociationAsnsRequest"},
+      "output":{"shape":"GetIpamInternetRegistryAssociationAsnsResult"},
+      "documentation":"<p>Retrieves Autonomous System Numbers (ASNs) registered with an internet registry for an IPAM internet registry association. We recommend using pagination to ensure that the operation returns quickly and successfully.</p>"
+    },
+    "GetIpamInternetRegistryAssociationCidrs":{
+      "name":"GetIpamInternetRegistryAssociationCidrs",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetIpamInternetRegistryAssociationCidrsRequest"},
+      "output":{"shape":"GetIpamInternetRegistryAssociationCidrsResult"},
+      "documentation":"<p>Retrieves IP address CIDRs registered with an internet registry for an IPAM internet registry association. We recommend using pagination to ensure that the operation returns quickly and successfully.</p>"
+    },
     "GetIpamPolicyAllocationRules":{
       "name":"GetIpamPolicyAllocationRules",
       "http":{
@@ -5790,6 +5890,46 @@
       "input":{"shape":"GetIpamResourceCidrsRequest"},
       "output":{"shape":"GetIpamResourceCidrsResult"},
       "documentation":"<p>Returns resource CIDRs managed by IPAM in a given scope. If an IPAM is associated with more than one resource discovery, the resource CIDRs across all of the resource discoveries is returned. A resource discovery is an IPAM component that enables IPAM to manage and monitor resources that belong to the owning account.</p>"
+    },
+    "GetIpamRouteOriginAuthorizations":{
+      "name":"GetIpamRouteOriginAuthorizations",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetIpamRouteOriginAuthorizationsRequest"},
+      "output":{"shape":"GetIpamRouteOriginAuthorizationsResult"},
+      "documentation":"<p>Retrieves the current Route Origin Authorizations (ROAs) published to the RPKI for an IPAM internet registry association. We recommend using pagination to ensure that the operation returns quickly and successfully.</p>"
+    },
+    "GetIpamRouteProtectionFindings":{
+      "name":"GetIpamRouteProtectionFindings",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetIpamRouteProtectionFindingsRequest"},
+      "output":{"shape":"GetIpamRouteProtectionFindingsResult"},
+      "documentation":"<p>Retrieves route protection findings for an IPAM. Route protection findings show the Resource Public Key Infrastructure (RPKI) validation status of your Bring Your Own IP (BYOIP) routes. Findings identify routes that have valid, invalid, or unknown validation states. We recommend using pagination to ensure that the operation returns quickly and successfully.</p>"
+    },
+    "GetIpamRoutingPolicyRegistrationDeltas":{
+      "name":"GetIpamRoutingPolicyRegistrationDeltas",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetIpamRoutingPolicyRegistrationDeltasRequest"},
+      "output":{"shape":"GetIpamRoutingPolicyRegistrationDeltasResult"},
+      "documentation":"<p>Retrieves the history of routing policy registration changes for an IPAM internet registry association. We recommend using pagination to ensure that the operation returns quickly and successfully.</p>"
+    },
+    "GetIpamRoutingPolicyRegistrations":{
+      "name":"GetIpamRoutingPolicyRegistrations",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetIpamRoutingPolicyRegistrationsRequest"},
+      "output":{"shape":"GetIpamRoutingPolicyRegistrationsResult"},
+      "documentation":"<p>Retrieves routing policy registrations for an IPAM internet registry association. Each registration represents a Route Origin Authorization (ROA) that has been created or is pending publication to the RPKI. We recommend using pagination to ensure that the operation returns quickly and successfully.</p>"
     },
     "GetLaunchTemplateData":{
       "name":"GetLaunchTemplateData",
@@ -6546,6 +6686,16 @@
       "input":{"shape":"ModifyIpamResourceDiscoveryRequest"},
       "output":{"shape":"ModifyIpamResourceDiscoveryResult"},
       "documentation":"<p>Modifies a resource discovery. A resource discovery is an IPAM component that enables IPAM to manage and monitor resources that belong to the owning account.</p>"
+    },
+    "ModifyIpamRoutingPolicyRegistration":{
+      "name":"ModifyIpamRoutingPolicyRegistration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ModifyIpamRoutingPolicyRegistrationRequest"},
+      "output":{"shape":"ModifyIpamRoutingPolicyRegistrationResult"},
+      "documentation":"<p>Modifies an existing routing policy registration. You can update the authorized ASNs, maximum prefix length, and other properties of a Route Origin Authorization (ROA).</p>"
     },
     "ModifyIpamScope":{
       "name":"ModifyIpamScope",
@@ -9999,6 +10149,13 @@
       },
       "documentation":"<p>Provides authorization for Amazon to bring an Autonomous System Number (ASN) to a specific Amazon Web Services account using bring your own ASN (BYOASN). For details on the format of the message and signature, see <a href=\"https://docs.aws.amazon.com/vpc/latest/ipam/tutorials-byoasn.html\">Tutorial: Bring your ASN to IPAM</a> in the <i>Amazon VPC IPAM guide</i>.</p>"
     },
+    "AsnList":{
+      "type":"list",
+      "member":{
+        "shape":"String",
+        "locationName":"item"
+      }
+    },
     "AsnState":{
       "type":"string",
       "enum":[
@@ -12023,6 +12180,46 @@
       "documentation":"<p>The baseline performance to consider, using an instance family as a baseline reference. The instance family establishes the lowest acceptable level of performance. Amazon EC2 uses this baseline to guide instance type selection, but there is no guarantee that the selected instance types will always exceed the baseline for every application.</p> <p>Currently, this parameter only supports CPU performance as a baseline performance factor. For example, specifying <code>c6i</code> would use the CPU performance of the <code>c6i</code> family as the baseline reference.</p>"
     },
     "BaselineThroughputInMBps":{"type":"double"},
+    "BatchModifyIpamRoutingPolicyRegistrationsRequest":{
+      "type":"structure",
+      "required":[
+        "IpamInternetRegistryAssociationId",
+        "DeltaJson"
+      ],
+      "members":{
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the operation, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        },
+        "IpamInternetRegistryAssociationId":{
+          "shape":"IpamInternetRegistryAssociationId",
+          "documentation":"<p>The ID of the IPAM internet registry association.</p>"
+        },
+        "DeltaJson":{
+          "shape":"String",
+          "documentation":"<p>The batch modifications to apply, in JSON format.</p>"
+        },
+        "Force":{
+          "shape":"BoxedBoolean",
+          "documentation":"<p>Forces the batch modification even if individual changes conflict with announced routes. Default: <code>false</code>.</p>"
+        },
+        "ClientToken":{
+          "shape":"String",
+          "documentation":"<p>A unique, case-sensitive identifier to ensure that the operation completes no more than one time. If this token matches a previous request, the operation ignores the request, but does not return an error.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "BatchModifyIpamRoutingPolicyRegistrationsResult":{
+      "type":"structure",
+      "members":{
+        "IpamRoutingPolicyRegistrationDelta":{
+          "shape":"IpamRoutingPolicyRegistrationDelta",
+          "documentation":"<p>Information about the routing policy registration delta created by this batch operation.</p>",
+          "locationName":"ipamRoutingPolicyRegistrationDelta"
+        }
+      }
+    },
     "BatchState":{
       "type":"string",
       "enum":[
@@ -12380,6 +12577,16 @@
           "shape":"String",
           "documentation":"<p>Specifies the advertisement method for the BYOIP CIDR. Valid values are:</p> <ul> <li> <p> <code>unicast</code>: IP is advertised from a single location (regional services like EC2)</p> </li> <li> <p> <code>anycast</code>: IP is advertised from multiple global locations simultaneously (global services like CloudFront)</p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/vpc/latest/ipam/tutorials-byoip-cloudfront.html\">Bring your own IP to CloudFront using IPAM</a> in the <i>Amazon VPC IPAM User Guide</i>.</p>",
           "locationName":"advertisementType"
+        },
+        "PoolId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the address pool associated with the CIDR.</p>",
+          "locationName":"poolId"
+        },
+        "IpamPoolId":{
+          "shape":"IpamPoolId",
+          "documentation":"<p>The ID of the IPAM pool associated with the CIDR.</p>",
+          "locationName":"ipamPoolId"
         }
       },
       "documentation":"<p>Information about an address range that is provisioned for use with your Amazon Web Services resources through bring your own IP addresses (BYOIP).</p>"
@@ -14433,6 +14640,14 @@
       "documentation":"<p>Information about the client certificate to be used for authentication.</p>"
     },
     "CertificateId":{"type":"string"},
+    "ChronologicalOrder":{
+      "type":"string",
+      "documentation":"<p>The chronological order for returning results.</p>",
+      "enum":[
+        "forward",
+        "reverse"
+      ]
+    },
     "CidrAuthorizationContext":{
       "type":"structure",
       "required":[
@@ -17653,6 +17868,56 @@
         }
       }
     },
+    "CreateIpamInternetRegistryAssociationRequest":{
+      "type":"structure",
+      "required":[
+        "IpamId",
+        "Rir",
+        "OrganizationHandle"
+      ],
+      "members":{
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the operation, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        },
+        "IpamId":{
+          "shape":"IpamId",
+          "documentation":"<p>The ID of the IPAM to associate with the internet registry.</p>"
+        },
+        "Rir":{
+          "shape":"Rir",
+          "documentation":"<p>The Regional Internet Registry to associate with. Possible values:</p> <ul> <li> <p> <code>ripe</code> - RIPE NCC (Europe, the Middle East, and Central Asia).</p> </li> <li> <p> <code>apnic</code> - APNIC (Asia Pacific).</p> </li> <li> <p> <code>arin</code> - ARIN (North America).</p> </li> <li> <p> <code>lacnic</code> - LACNIC (Latin America and the Caribbean).</p> </li> </ul>"
+        },
+        "OrganizationHandle":{
+          "shape":"String",
+          "documentation":"<p>The organization handle at the internet registry (for example, a RIPE NCC organization ID or ARIN Org ID).</p>"
+        },
+        "Description":{
+          "shape":"String",
+          "documentation":"<p>A description for the internet registry association.</p>"
+        },
+        "TagSpecifications":{
+          "shape":"TagSpecificationList",
+          "documentation":"<p>The tags to assign to the internet registry association.</p>",
+          "locationName":"TagSpecification"
+        },
+        "ClientToken":{
+          "shape":"String",
+          "documentation":"<p>A unique, case-sensitive identifier to ensure that the operation completes no more than one time. If this token matches a previous request, the operation ignores the request, but does not return an error.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "CreateIpamInternetRegistryAssociationResult":{
+      "type":"structure",
+      "members":{
+        "IpamInternetRegistryAssociation":{
+          "shape":"IpamInternetRegistryAssociation",
+          "documentation":"<p>Information about the internet registry association.</p>",
+          "locationName":"ipamInternetRegistryAssociation"
+        }
+      }
+    },
     "CreateIpamPolicyRequest":{
       "type":"structure",
       "required":["IpamId"],
@@ -17967,6 +18232,64 @@
           "shape":"Ipam",
           "documentation":"<p>Information about the IPAM created.</p>",
           "locationName":"ipam"
+        }
+      }
+    },
+    "CreateIpamRoutingPolicyRegistrationRequest":{
+      "type":"structure",
+      "required":[
+        "IpamInternetRegistryAssociationId",
+        "Cidr",
+        "Asns"
+      ],
+      "members":{
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the operation, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        },
+        "IpamInternetRegistryAssociationId":{
+          "shape":"IpamInternetRegistryAssociationId",
+          "documentation":"<p>The ID of the IPAM internet registry association.</p>"
+        },
+        "Cidr":{
+          "shape":"String",
+          "documentation":"<p>The IP address prefix in CIDR notation to authorize in the ROA.</p>"
+        },
+        "Asns":{
+          "shape":"AsnList",
+          "documentation":"<p>The Autonomous System Numbers (ASNs) authorized to originate the prefix.</p>",
+          "locationName":"Asn"
+        },
+        "PermitMoreSpecificAnnouncements":{
+          "shape":"BoxedBoolean",
+          "documentation":"<p>Specifies whether to permit more specific route announcements than the CIDR prefix. When enabled, ASNs can announce sub-prefixes of the authorized CIDR up to the specified maximum length. Default: <code>false</code>.</p>"
+        },
+        "MaxLength":{
+          "shape":"IpamRoutingPolicyRegistrationMaxLength",
+          "documentation":"<p>The maximum prefix length that the ASNs are authorized to announce. Must be greater than or equal to the prefix length of the CIDR. If not specified, defaults to the prefix length of the CIDR (exact match only).</p>"
+        },
+        "Description":{
+          "shape":"String",
+          "documentation":"<p>A description for the routing policy registration.</p>"
+        },
+        "Force":{
+          "shape":"BoxedBoolean",
+          "documentation":"<p>Forces the creation of the routing policy registration even if it conflicts with an announced route. Default: <code>false</code>.</p>"
+        },
+        "ClientToken":{
+          "shape":"String",
+          "documentation":"<p>A unique, case-sensitive identifier to ensure that the operation completes no more than one time. If this token matches a previous request, the operation ignores the request, but does not return an error.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "CreateIpamRoutingPolicyRegistrationResult":{
+      "type":"structure",
+      "members":{
+        "IpamRoutingPolicyRegistrationDelta":{
+          "shape":"IpamRoutingPolicyRegistrationDelta",
+          "documentation":"<p>Information about the routing policy registration delta created by this operation.</p>",
+          "locationName":"ipamRoutingPolicyRegistrationDelta"
         }
       }
     },
@@ -22749,6 +23072,30 @@
         }
       }
     },
+    "DeleteIpamInternetRegistryAssociationRequest":{
+      "type":"structure",
+      "required":["IpamInternetRegistryAssociationId"],
+      "members":{
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the operation, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        },
+        "IpamInternetRegistryAssociationId":{
+          "shape":"IpamInternetRegistryAssociationId",
+          "documentation":"<p>The ID of the IPAM internet registry association to delete.</p>"
+        }
+      }
+    },
+    "DeleteIpamInternetRegistryAssociationResult":{
+      "type":"structure",
+      "members":{
+        "IpamInternetRegistryAssociation":{
+          "shape":"IpamInternetRegistryAssociation",
+          "documentation":"<p>Information about the deleted internet registry association.</p>",
+          "locationName":"ipamInternetRegistryAssociation"
+        }
+      }
+    },
     "DeleteIpamPolicyRequest":{
       "type":"structure",
       "required":["IpamPolicyId"],
@@ -22898,6 +23245,46 @@
           "shape":"Ipam",
           "documentation":"<p>Information about the results of the deletion.</p>",
           "locationName":"ipam"
+        }
+      }
+    },
+    "DeleteIpamRoutingPolicyRegistrationRequest":{
+      "type":"structure",
+      "required":[
+        "IpamInternetRegistryAssociationId",
+        "Cidr"
+      ],
+      "members":{
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the operation, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        },
+        "IpamInternetRegistryAssociationId":{
+          "shape":"IpamInternetRegistryAssociationId",
+          "documentation":"<p>The ID of the IPAM internet registry association.</p>"
+        },
+        "Cidr":{
+          "shape":"String",
+          "documentation":"<p>The IP address prefix in CIDR notation identifying the routing policy registration to delete.</p>"
+        },
+        "Force":{
+          "shape":"BoxedBoolean",
+          "documentation":"<p>Forces the deletion even if it conflicts with an announced route. Default: <code>false</code>.</p>"
+        },
+        "ClientToken":{
+          "shape":"String",
+          "documentation":"<p>A unique, case-sensitive identifier to ensure that the operation completes no more than one time. If this token matches a previous request, the operation ignores the request, but does not return an error.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "DeleteIpamRoutingPolicyRegistrationResult":{
+      "type":"structure",
+      "members":{
+        "IpamRoutingPolicyRegistrationDelta":{
+          "shape":"IpamRoutingPolicyRegistrationDelta",
+          "documentation":"<p>Information about the routing policy registration delta created by this deletion.</p>",
+          "locationName":"ipamRoutingPolicyRegistrationDelta"
         }
       }
     },
@@ -28565,6 +28952,48 @@
           "shape":"IpamExternalResourceVerificationTokenSet",
           "documentation":"<p>Verification tokens.</p>",
           "locationName":"ipamExternalResourceVerificationTokenSet"
+        }
+      }
+    },
+    "DescribeIpamInternetRegistryAssociationsRequest":{
+      "type":"structure",
+      "members":{
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the operation, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        },
+        "IpamInternetRegistryAssociationIds":{
+          "shape":"ValueStringList",
+          "documentation":"<p>The IDs of the internet registry associations to describe.</p>",
+          "locationName":"IpamInternetRegistryAssociationId"
+        },
+        "MaxResults":{
+          "shape":"IpamMaxResults",
+          "documentation":"<p>The maximum number of results to return in a single call. If not specified, all available results are returned. To retrieve the remaining results, make another call with the returned <code>nextToken</code> value.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next page of results.</p>"
+        },
+        "Filters":{
+          "shape":"FilterList",
+          "documentation":"<p>One or more filters to apply to the results.</p>",
+          "locationName":"Filter"
+        }
+      }
+    },
+    "DescribeIpamInternetRegistryAssociationsResult":{
+      "type":"structure",
+      "members":{
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to use to retrieve the next page of results.</p>",
+          "locationName":"nextToken"
+        },
+        "IpamInternetRegistryAssociations":{
+          "shape":"IpamInternetRegistryAssociationSet",
+          "documentation":"<p>The internet registry associations.</p>",
+          "locationName":"ipamInternetRegistryAssociationSet"
         }
       }
     },
@@ -37055,6 +37484,62 @@
         }
       }
     },
+    "EnableIpamInternetRegistryAssociationRequest":{
+      "type":"structure",
+      "required":[
+        "IpamInternetRegistryAssociationId",
+        "RpkiVersion",
+        "ServiceUri",
+        "ChildHandle",
+        "ParentHandle",
+        "ParentBpkiTa"
+      ],
+      "members":{
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the operation, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        },
+        "IpamInternetRegistryAssociationId":{
+          "shape":"IpamInternetRegistryAssociationId",
+          "documentation":"<p>The ID of the IPAM internet registry association to enable.</p>"
+        },
+        "RpkiVersion":{
+          "shape":"String",
+          "documentation":"<p>The RPKI version to use from the Parent Response XML.</p>"
+        },
+        "ServiceUri":{
+          "shape":"String",
+          "documentation":"<p>The RPKI service URI for the publication point from the Parent Response XML.</p>"
+        },
+        "ChildHandle":{
+          "shape":"String",
+          "documentation":"<p>The child handle for the BPKI certificate hierarchy from the Parent Response XML.</p>"
+        },
+        "ParentHandle":{
+          "shape":"String",
+          "documentation":"<p>The parent handle for the BPKI certificate hierarchy from the Parent Response XML.</p>"
+        },
+        "ParentBpkiTa":{
+          "shape":"String",
+          "documentation":"<p>The parent BPKI Trust Anchor certificate in PEM format from the Parent Response XML.</p>"
+        },
+        "ClientToken":{
+          "shape":"String",
+          "documentation":"<p>A unique, case-sensitive identifier to ensure that the operation completes no more than one time. If this token matches a previous request, the operation ignores the request, but does not return an error.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "EnableIpamInternetRegistryAssociationResult":{
+      "type":"structure",
+      "members":{
+        "IpamInternetRegistryAssociation":{
+          "shape":"IpamInternetRegistryAssociation",
+          "documentation":"<p>Information about the enabled internet registry association.</p>",
+          "locationName":"ipamInternetRegistryAssociation"
+        }
+      }
+    },
     "EnableIpamOrganizationAdminAccountRequest":{
       "type":"structure",
       "required":["DelegatedAdminAccountId"],
@@ -40872,6 +41357,139 @@
         }
       }
     },
+    "GetIpamDiscoveredRoutesRequest":{
+      "type":"structure",
+      "required":[
+        "IpamResourceDiscoveryId",
+        "ResourceRegion"
+      ],
+      "members":{
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the operation, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        },
+        "IpamResourceDiscoveryId":{
+          "shape":"IpamResourceDiscoveryId",
+          "documentation":"<p>The ID of the IPAM resource discovery.</p>"
+        },
+        "ResourceRegion":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services Region to retrieve discovered routes for.</p>"
+        },
+        "Filters":{
+          "shape":"FilterList",
+          "documentation":"<p>One or more filters to apply to the results.</p>",
+          "locationName":"Filter"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next page of results.</p>"
+        },
+        "MaxResults":{
+          "shape":"IpamMaxResults",
+          "documentation":"<p>The maximum number of results to return in a single call. If not specified, all available results are returned. To retrieve the remaining results, make another call with the returned <code>nextToken</code> value.</p>"
+        }
+      }
+    },
+    "GetIpamDiscoveredRoutesResult":{
+      "type":"structure",
+      "members":{
+        "IpamDiscoveredRoutes":{
+          "shape":"IpamDiscoveredRouteSet",
+          "documentation":"<p>The discovered BGP routes.</p>",
+          "locationName":"ipamDiscoveredRouteSet"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to use to retrieve the next page of results.</p>",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "GetIpamInternetRegistryAssociationAsnsRequest":{
+      "type":"structure",
+      "required":["IpamInternetRegistryAssociationId"],
+      "members":{
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the operation, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        },
+        "IpamInternetRegistryAssociationId":{
+          "shape":"IpamInternetRegistryAssociationId",
+          "documentation":"<p>The ID of the IPAM internet registry association.</p>"
+        },
+        "MaxResults":{
+          "shape":"IpamMaxResults",
+          "documentation":"<p>The maximum number of results to return in a single call. If not specified, all available results are returned. To retrieve the remaining results, make another call with the returned <code>nextToken</code> value.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next page of results.</p>"
+        },
+        "Filters":{
+          "shape":"FilterList",
+          "documentation":"<p>One or more filters to apply to the results.</p>",
+          "locationName":"Filter"
+        }
+      }
+    },
+    "GetIpamInternetRegistryAssociationAsnsResult":{
+      "type":"structure",
+      "members":{
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to use to retrieve the next page of results.</p>",
+          "locationName":"nextToken"
+        },
+        "IpamInternetRegistryAssociationAsns":{
+          "shape":"IpamInternetRegistryAssociationAsnSet",
+          "documentation":"<p>The ASNs registered with the internet registry.</p>",
+          "locationName":"ipamInternetRegistryAssociationAsnSet"
+        }
+      }
+    },
+    "GetIpamInternetRegistryAssociationCidrsRequest":{
+      "type":"structure",
+      "required":["IpamInternetRegistryAssociationId"],
+      "members":{
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the operation, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        },
+        "IpamInternetRegistryAssociationId":{
+          "shape":"IpamInternetRegistryAssociationId",
+          "documentation":"<p>The ID of the IPAM internet registry association.</p>"
+        },
+        "MaxResults":{
+          "shape":"IpamMaxResults",
+          "documentation":"<p>The maximum number of results to return in a single call. If not specified, all available results are returned. To retrieve the remaining results, make another call with the returned <code>nextToken</code> value.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next page of results.</p>"
+        },
+        "Filters":{
+          "shape":"FilterList",
+          "documentation":"<p>One or more filters to apply to the results.</p>",
+          "locationName":"Filter"
+        }
+      }
+    },
+    "GetIpamInternetRegistryAssociationCidrsResult":{
+      "type":"structure",
+      "members":{
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to use to retrieve the next page of results.</p>",
+          "locationName":"nextToken"
+        },
+        "IpamInternetRegistryAssociationCidrs":{
+          "shape":"IpamInternetRegistryAssociationCidrSet",
+          "documentation":"<p>The CIDRs registered with the internet registry.</p>",
+          "locationName":"ipamInternetRegistryAssociationCidrSet"
+        }
+      }
+    },
     "GetIpamPolicyAllocationRulesRequest":{
       "type":"structure",
       "required":["IpamPolicyId"],
@@ -41249,6 +41867,188 @@
           "shape":"IpamResourceCidrSet",
           "documentation":"<p>The resource CIDRs.</p>",
           "locationName":"ipamResourceCidrSet"
+        }
+      }
+    },
+    "GetIpamRouteOriginAuthorizationsRequest":{
+      "type":"structure",
+      "required":["IpamInternetRegistryAssociationId"],
+      "members":{
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the operation, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        },
+        "IpamInternetRegistryAssociationId":{
+          "shape":"IpamInternetRegistryAssociationId",
+          "documentation":"<p>The ID of the IPAM internet registry association.</p>"
+        },
+        "Cidr":{
+          "shape":"String",
+          "documentation":"<p>Filter results to a specific CIDR prefix.</p>"
+        },
+        "MaxResults":{
+          "shape":"IpamMaxResults",
+          "documentation":"<p>The maximum number of results to return in a single call. If not specified, all available results are returned. To retrieve the remaining results, make another call with the returned <code>nextToken</code> value.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next page of results.</p>"
+        }
+      }
+    },
+    "GetIpamRouteOriginAuthorizationsResult":{
+      "type":"structure",
+      "members":{
+        "IpamRouteOriginAuthorizations":{
+          "shape":"IpamRouteOriginAuthorizationInfoSet",
+          "documentation":"<p>The Route Origin Authorizations published to the RPKI.</p>",
+          "locationName":"ipamRouteOriginAuthorizationSet"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to use to retrieve the next page of results.</p>",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "GetIpamRouteProtectionFindingsRequest":{
+      "type":"structure",
+      "required":["IpamId"],
+      "members":{
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the operation, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        },
+        "IpamId":{
+          "shape":"IpamId",
+          "documentation":"<p>The ID of the IPAM to retrieve route protection findings for.</p>"
+        },
+        "Filters":{
+          "shape":"FilterList",
+          "documentation":"<p>One or more filters to apply to the results.</p>",
+          "locationName":"Filter"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next page of results.</p>"
+        },
+        "MaxResults":{
+          "shape":"IpamMaxResults",
+          "documentation":"<p>The maximum number of results to return in a single call. If not specified, all available results are returned. To retrieve the remaining results, make another call with the returned <code>nextToken</code> value.</p>"
+        }
+      }
+    },
+    "GetIpamRouteProtectionFindingsResult":{
+      "type":"structure",
+      "members":{
+        "IpamId":{
+          "shape":"IpamId",
+          "documentation":"<p>The ID of the IPAM.</p>",
+          "locationName":"ipamId"
+        },
+        "RouteProtectionFindings":{
+          "shape":"IpamRouteProtectionFindingSet",
+          "documentation":"<p>The route protection findings.</p>",
+          "locationName":"routeProtectionFindingSet"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to use to retrieve the next page of results.</p>",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "GetIpamRoutingPolicyRegistrationDeltasRequest":{
+      "type":"structure",
+      "required":["IpamInternetRegistryAssociationId"],
+      "members":{
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the operation, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        },
+        "IpamInternetRegistryAssociationId":{
+          "shape":"IpamInternetRegistryAssociationId",
+          "documentation":"<p>The ID of the IPAM internet registry association.</p>"
+        },
+        "DeltaId":{
+          "shape":"String",
+          "documentation":"<p>Filter results to a specific delta ID.</p>"
+        },
+        "StartTime":{
+          "shape":"MillisecondDateTime",
+          "documentation":"<p>The start of the time range to filter deltas by.</p>"
+        },
+        "EndTime":{
+          "shape":"MillisecondDateTime",
+          "documentation":"<p>The end of the time range to filter deltas by.</p>"
+        },
+        "ChronologicalOrder":{
+          "shape":"ChronologicalOrder",
+          "documentation":"<p>The chronological order to return results in. Valid values: <code>forward</code> | <code>reverse</code>.</p>"
+        },
+        "MaxResults":{
+          "shape":"IpamMaxResults",
+          "documentation":"<p>The maximum number of results to return in a single call. If not specified, all available results are returned. To retrieve the remaining results, make another call with the returned <code>nextToken</code> value.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next page of results.</p>"
+        }
+      }
+    },
+    "GetIpamRoutingPolicyRegistrationDeltasResult":{
+      "type":"structure",
+      "members":{
+        "IpamRoutingPolicyRegistrationDeltas":{
+          "shape":"IpamRoutingPolicyRegistrationDeltaSet",
+          "documentation":"<p>The routing policy registration deltas.</p>",
+          "locationName":"ipamRoutingPolicyRegistrationDeltaSet"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to use to retrieve the next page of results.</p>",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "GetIpamRoutingPolicyRegistrationsRequest":{
+      "type":"structure",
+      "required":["IpamInternetRegistryAssociationId"],
+      "members":{
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the operation, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        },
+        "IpamInternetRegistryAssociationId":{
+          "shape":"IpamInternetRegistryAssociationId",
+          "documentation":"<p>The ID of the IPAM internet registry association.</p>"
+        },
+        "Cidr":{
+          "shape":"String",
+          "documentation":"<p>Filter results to a specific CIDR prefix.</p>"
+        },
+        "MaxResults":{
+          "shape":"IpamMaxResults",
+          "documentation":"<p>The maximum number of results to return in a single call. If not specified, all available results are returned. To retrieve the remaining results, make another call with the returned <code>nextToken</code> value.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next page of results.</p>"
+        }
+      }
+    },
+    "GetIpamRoutingPolicyRegistrationsResult":{
+      "type":"structure",
+      "members":{
+        "IpamRoutingPolicyRegistrations":{
+          "shape":"IpamRoutingPolicyRegistrationSet",
+          "documentation":"<p>The routing policy registrations.</p>",
+          "locationName":"ipamRoutingPolicyRegistrationSet"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to use to retrieve the next page of results.</p>",
+          "locationName":"nextToken"
         }
       }
     },
@@ -49989,6 +50789,30 @@
         "not-found"
       ]
     },
+    "IpamByoipAdvertisementType":{
+      "type":"string",
+      "documentation":"<p>The advertisement type of a BYOIP route.</p>",
+      "enum":[
+        "regional",
+        "global"
+      ]
+    },
+    "IpamByoipCidrState":{
+      "type":"string",
+      "documentation":"<p>The state of a BYOIP CIDR.</p>",
+      "enum":[
+        "advertised",
+        "deprovisioned",
+        "failed-deprovision",
+        "failed-provision",
+        "pending-advertising",
+        "pending-deprovision",
+        "pending-provision",
+        "pending-withdrawal",
+        "provisioned",
+        "provisioned-not-publicly-advertisable"
+      ]
+    },
     "IpamCidrAuthorizationContext":{
       "type":"structure",
       "members":{
@@ -50246,6 +51070,74 @@
         "locationName":"item"
       }
     },
+    "IpamDiscoveredRoute":{
+      "type":"structure",
+      "members":{
+        "IpamResourceDiscoveryId":{
+          "shape":"IpamResourceDiscoveryId",
+          "documentation":"<p>The ID of the IPAM resource discovery that discovered the route.</p>",
+          "locationName":"ipamResourceDiscoveryId"
+        },
+        "ResourceRegion":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services Region where the route was discovered.</p>",
+          "locationName":"resourceRegion"
+        },
+        "ResourceOwnerId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the resource owner.</p>",
+          "locationName":"resourceOwnerId"
+        },
+        "Cidr":{
+          "shape":"String",
+          "documentation":"<p>The IP address prefix of the discovered route in CIDR notation.</p>",
+          "locationName":"cidr"
+        },
+        "Asn":{
+          "shape":"String",
+          "documentation":"<p>The Autonomous System Number (ASN) that originates the route.</p>",
+          "locationName":"asn"
+        },
+        "State":{
+          "shape":"IpamByoipCidrState",
+          "documentation":"<p>The state of the BYOIP CIDR. Possible values:</p> <ul> <li> <p> <code>advertised</code> - The CIDR is being advertised.</p> </li> <li> <p> <code>deprovisioned</code> - The CIDR has been deprovisioned.</p> </li> <li> <p> <code>failed-deprovision</code> - Deprovisioning failed.</p> </li> <li> <p> <code>failed-provision</code> - Provisioning failed.</p> </li> <li> <p> <code>pending-deprovision</code> - Deprovisioning is in progress.</p> </li> <li> <p> <code>pending-provision</code> - Provisioning is in progress.</p> </li> <li> <p> <code>provisioned</code> - The CIDR is provisioned.</p> </li> <li> <p> <code>provisioned-not-publicly-advertisable</code> - The CIDR is provisioned but not publicly advertisable.</p> </li> </ul>",
+          "locationName":"state"
+        },
+        "AdvertisementType":{
+          "shape":"IpamByoipAdvertisementType",
+          "documentation":"<p>The advertisement type of the route. Possible values:</p> <ul> <li> <p> <code>regional</code> - The IP address is advertised from a single location (regional services such as Amazon EC2).</p> </li> <li> <p> <code>global</code> - The IP address is advertised from multiple global locations simultaneously (global services such as Amazon CloudFront).</p> </li> </ul>",
+          "locationName":"advertisementType"
+        },
+        "NetworkBorderGroup":{
+          "shape":"String",
+          "documentation":"<p>The network border group for the route.</p>",
+          "locationName":"networkBorderGroup"
+        },
+        "PoolId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the BYOIP pool associated with the route.</p>",
+          "locationName":"poolId"
+        },
+        "IpamPoolId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the IPAM pool associated with the route.</p>",
+          "locationName":"ipamPoolId"
+        },
+        "SampleTime":{
+          "shape":"MillisecondDateTime",
+          "documentation":"<p>The time when the route was last sampled.</p>",
+          "locationName":"sampleTime"
+        }
+      },
+      "documentation":"<p>Contains information about a BGP route discovered by IPAM resource discovery.</p>"
+    },
+    "IpamDiscoveredRouteSet":{
+      "type":"list",
+      "member":{
+        "shape":"IpamDiscoveredRoute",
+        "locationName":"item"
+      }
+    },
     "IpamDiscoveryFailureCode":{
       "type":"string",
       "enum":[
@@ -50351,6 +51243,136 @@
       ]
     },
     "IpamId":{"type":"string"},
+    "IpamInternetRegistryAssociation":{
+      "type":"structure",
+      "members":{
+        "OwnerId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the Amazon Web Services account that owns the internet registry association.</p>",
+          "locationName":"ownerId"
+        },
+        "IpamInternetRegistryAssociationId":{
+          "shape":"IpamInternetRegistryAssociationId",
+          "documentation":"<p>The ID of the internet registry association.</p>",
+          "locationName":"ipamInternetRegistryAssociationId"
+        },
+        "IpamInternetRegistryAssociationArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the internet registry association.</p>",
+          "locationName":"ipamInternetRegistryAssociationArn"
+        },
+        "IpamId":{
+          "shape":"IpamId",
+          "documentation":"<p>The ID of the associated IPAM.</p>",
+          "locationName":"ipamId"
+        },
+        "IpamRegion":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services Region of the IPAM.</p>",
+          "locationName":"ipamRegion"
+        },
+        "Rir":{
+          "shape":"Rir",
+          "documentation":"<p>The Regional Internet Registry. Possible values:</p> <ul> <li> <p> <code>ripe</code> - RIPE NCC (Europe, the Middle East, and Central Asia).</p> </li> <li> <p> <code>apnic</code> - APNIC (Asia Pacific).</p> </li> <li> <p> <code>arin</code> - ARIN (North America).</p> </li> <li> <p> <code>lacnic</code> - LACNIC (Latin America and the Caribbean).</p> </li> </ul>",
+          "locationName":"rir"
+        },
+        "OrganizationHandle":{
+          "shape":"String",
+          "documentation":"<p>The organization handle at the internet registry.</p>",
+          "locationName":"organizationHandle"
+        },
+        "Description":{
+          "shape":"String",
+          "documentation":"<p>The description of the internet registry association.</p>",
+          "locationName":"description"
+        },
+        "State":{
+          "shape":"IpamInternetRegistryAssociationState",
+          "documentation":"<p>The state of the internet registry association. Valid values: <code>pending-activation</code> | <code>pending-enable</code> | <code>create-in-progress</code> | <code>create-failed</code> | <code>enable-in-progress</code> | <code>enable-complete</code> | <code>enable-failed</code> | <code>delete-in-progress</code> | <code>delete-complete</code> | <code>delete-failed</code>.</p>",
+          "locationName":"state"
+        },
+        "ChildRequestXml":{
+          "shape":"String",
+          "documentation":"<p>The XML content for the child request to be submitted to the internet registry to complete the BPKI setup.</p>",
+          "locationName":"childRequestXml"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>The tags assigned to the internet registry association.</p>",
+          "locationName":"tagSet"
+        }
+      },
+      "documentation":"<p>Contains information about an association between an IPAM and a Regional Internet Registry (RIR) for delegated RPKI management.</p>"
+    },
+    "IpamInternetRegistryAssociationAsn":{
+      "type":"structure",
+      "members":{
+        "Asn":{
+          "shape":"String",
+          "documentation":"<p>The Autonomous System Number.</p>",
+          "locationName":"asn"
+        },
+        "LastObservedAt":{
+          "shape":"MillisecondDateTime",
+          "documentation":"<p>The time when the ASN was last observed at the internet registry.</p>",
+          "locationName":"lastObservedAt"
+        }
+      },
+      "documentation":"<p>Contains information about an Autonomous System Number (ASN) registered at an internet registry and associated with an IPAM.</p>"
+    },
+    "IpamInternetRegistryAssociationAsnSet":{
+      "type":"list",
+      "member":{
+        "shape":"IpamInternetRegistryAssociationAsn",
+        "locationName":"item"
+      }
+    },
+    "IpamInternetRegistryAssociationCidr":{
+      "type":"structure",
+      "members":{
+        "Cidr":{
+          "shape":"String",
+          "documentation":"<p>The IP address prefix in CIDR notation.</p>",
+          "locationName":"cidr"
+        },
+        "LastObservedAt":{
+          "shape":"MillisecondDateTime",
+          "documentation":"<p>The time when the CIDR was last observed at the internet registry.</p>",
+          "locationName":"lastObservedAt"
+        }
+      },
+      "documentation":"<p>Contains information about an IP address CIDR registered at an internet registry and associated with an IPAM.</p>"
+    },
+    "IpamInternetRegistryAssociationCidrSet":{
+      "type":"list",
+      "member":{
+        "shape":"IpamInternetRegistryAssociationCidr",
+        "locationName":"item"
+      }
+    },
+    "IpamInternetRegistryAssociationId":{"type":"string"},
+    "IpamInternetRegistryAssociationSet":{
+      "type":"list",
+      "member":{
+        "shape":"IpamInternetRegistryAssociation",
+        "locationName":"item"
+      }
+    },
+    "IpamInternetRegistryAssociationState":{
+      "type":"string",
+      "documentation":"<p>The state of an IPAM internet registry association.</p>",
+      "enum":[
+        "pending-enable",
+        "create-in-progress",
+        "create-failed",
+        "enable-in-progress",
+        "enable-complete",
+        "enable-failed",
+        "delete-in-progress",
+        "delete-complete",
+        "delete-failed"
+      ]
+    },
     "IpamManagementState":{
       "type":"string",
       "enum":[
@@ -51771,6 +52793,316 @@
         "ipv6-pool",
         "eni",
         "anycast-ip-list"
+      ]
+    },
+    "IpamRouteOriginAuthorization":{
+      "type":"structure",
+      "members":{
+        "Asn":{
+          "shape":"String",
+          "documentation":"<p>The Autonomous System Number (ASN) authorized by the ROA.</p>",
+          "locationName":"asn"
+        },
+        "Prefix":{
+          "shape":"String",
+          "documentation":"<p>The IP address prefix authorized by the ROA in CIDR notation.</p>",
+          "locationName":"prefix"
+        },
+        "MaxLength":{
+          "shape":"Integer",
+          "documentation":"<p>The maximum prefix length that the ASN is authorized to announce.</p>",
+          "locationName":"maxLength"
+        },
+        "Match":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether the ROA matches the route announcement.</p>",
+          "locationName":"match"
+        },
+        "Expiration":{
+          "shape":"MillisecondDateTime",
+          "documentation":"<p>The expiration date of the ROA.</p>",
+          "locationName":"expiration"
+        }
+      },
+      "documentation":"<p>Contains information about a Route Origin Authorization (ROA) published in the RPKI. A ROA cryptographically attests that a specific ASN is authorized to originate a specific IP address prefix.</p>"
+    },
+    "IpamRouteOriginAuthorizationInfo":{
+      "type":"structure",
+      "members":{
+        "Cidr":{
+          "shape":"String",
+          "documentation":"<p>The IP address prefix in CIDR notation authorized by the ROA.</p>",
+          "locationName":"cidr"
+        },
+        "Asn":{
+          "shape":"String",
+          "documentation":"<p>The Autonomous System Number (ASN) authorized to originate the prefix.</p>",
+          "locationName":"asn"
+        },
+        "MaxLength":{
+          "shape":"Integer",
+          "documentation":"<p>The maximum prefix length that the ASN is authorized to announce.</p>",
+          "locationName":"maxLength"
+        }
+      },
+      "documentation":"<p>Contains information about a Route Origin Authorization (ROA) currently published in the RPKI.</p>"
+    },
+    "IpamRouteOriginAuthorizationInfoSet":{
+      "type":"list",
+      "member":{
+        "shape":"IpamRouteOriginAuthorizationInfo",
+        "locationName":"item"
+      }
+    },
+    "IpamRouteOriginAuthorizationSet":{
+      "type":"list",
+      "member":{
+        "shape":"IpamRouteOriginAuthorization",
+        "locationName":"item"
+      }
+    },
+    "IpamRouteOverlap":{
+      "type":"structure",
+      "members":{
+        "Prefix":{
+          "shape":"String",
+          "documentation":"<p>The overlapping IP address prefix in CIDR notation.</p>",
+          "locationName":"prefix"
+        },
+        "Asn":{
+          "shape":"String",
+          "documentation":"<p>The ASN originating the overlapping route.</p>",
+          "locationName":"asn"
+        },
+        "DetectedAt":{
+          "shape":"MillisecondDateTime",
+          "documentation":"<p>The time when the overlap was detected.</p>",
+          "locationName":"detectedAt"
+        }
+      },
+      "documentation":"<p>Contains information about an overlapping route detected for a BYOIP prefix.</p>"
+    },
+    "IpamRouteOverlapSet":{
+      "type":"list",
+      "member":{
+        "shape":"IpamRouteOverlap",
+        "locationName":"item"
+      },
+      "max":100,
+      "min":0
+    },
+    "IpamRouteProtectionFinding":{
+      "type":"structure",
+      "members":{
+        "ResourceOwnerId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the resource owner.</p>",
+          "locationName":"resourceOwnerId"
+        },
+        "ResourceRegion":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services Region of the resource.</p>",
+          "locationName":"resourceRegion"
+        },
+        "IpamPoolId":{
+          "shape":"IpamPoolId",
+          "documentation":"<p>The ID of the IPAM pool associated with the finding.</p>",
+          "locationName":"ipamPoolId"
+        },
+        "Cidr":{
+          "shape":"String",
+          "documentation":"<p>The IP address prefix in CIDR notation.</p>",
+          "locationName":"cidr"
+        },
+        "State":{
+          "shape":"IpamByoipCidrState",
+          "documentation":"<p>The state of the BYOIP CIDR. Possible values:</p> <ul> <li> <p> <code>advertised</code> - The CIDR is being advertised.</p> </li> <li> <p> <code>deprovisioned</code> - The CIDR has been deprovisioned.</p> </li> <li> <p> <code>failed-deprovision</code> - Deprovisioning failed.</p> </li> <li> <p> <code>failed-provision</code> - Provisioning failed.</p> </li> <li> <p> <code>pending-deprovision</code> - Deprovisioning is in progress.</p> </li> <li> <p> <code>pending-provision</code> - Provisioning is in progress.</p> </li> <li> <p> <code>provisioned</code> - The CIDR is provisioned.</p> </li> <li> <p> <code>provisioned-not-publicly-advertisable</code> - The CIDR is provisioned but not publicly advertisable.</p> </li> </ul>",
+          "locationName":"state"
+        },
+        "AdvertisementType":{
+          "shape":"IpamByoipAdvertisementType",
+          "documentation":"<p>The advertisement type. Possible values:</p> <ul> <li> <p> <code>regional</code> - The IP address is advertised from a single location (regional services such as Amazon EC2).</p> </li> <li> <p> <code>global</code> - The IP address is advertised from multiple global locations simultaneously (global services such as Amazon CloudFront).</p> </li> </ul>",
+          "locationName":"advertisementType"
+        },
+        "NetworkBorderGroup":{
+          "shape":"String",
+          "documentation":"<p>The network border group.</p>",
+          "locationName":"networkBorderGroup"
+        },
+        "PoolId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the BYOIP pool.</p>",
+          "locationName":"poolId"
+        },
+        "Asn":{
+          "shape":"String",
+          "documentation":"<p>The Autonomous System Number (ASN) that originates the route.</p>",
+          "locationName":"asn"
+        },
+        "RpkiStatus":{
+          "shape":"IpamRpkiStatus",
+          "documentation":"<p>The RPKI validation status of the route. Possible values:</p> <ul> <li> <p> <code>valid</code> - The route has a matching ROA that covers the prefix and origin ASN.</p> </li> <li> <p> <code>invalid</code> - The route has a ROA for the prefix, but the origin ASN or prefix length does not match.</p> </li> <li> <p> <code>unknown</code> - No ROA exists for the prefix, so RPKI validation cannot be performed.</p> </li> </ul>",
+          "locationName":"rpkiStatus"
+        },
+        "RpkiStrength":{
+          "shape":"IpamRpkiStrength",
+          "documentation":"<p>The RPKI enforcement strength for the route. Possible values:</p> <ul> <li> <p> <code>strict</code> - Invalid routes are rejected.</p> </li> <li> <p> <code>permissive</code> - Invalid routes are accepted but flagged.</p> </li> </ul>",
+          "locationName":"rpkiStrength"
+        },
+        "Roas":{
+          "shape":"IpamRouteOriginAuthorizationSet",
+          "documentation":"<p>The Route Origin Authorizations (ROAs) that cover the prefix.</p>",
+          "locationName":"roaSet"
+        },
+        "RouteOverlaps":{
+          "shape":"IpamRouteOverlapSet",
+          "documentation":"<p>The overlapping routes detected for this prefix.</p>",
+          "locationName":"routeOverlapSet"
+        },
+        "SampleTime":{
+          "shape":"MillisecondDateTime",
+          "documentation":"<p>The time when the route was last sampled.</p>",
+          "locationName":"sampleTime"
+        },
+        "RoaSampleTime":{
+          "shape":"MillisecondDateTime",
+          "documentation":"<p>The time when the ROA data was last sampled.</p>",
+          "locationName":"roaSampleTime"
+        }
+      },
+      "documentation":"<p>Contains information about a route protection finding, including the RPKI validation status of a BYOIP route announcement.</p>"
+    },
+    "IpamRouteProtectionFindingSet":{
+      "type":"list",
+      "member":{
+        "shape":"IpamRouteProtectionFinding",
+        "locationName":"item"
+      }
+    },
+    "IpamRoutingPolicyRegistration":{
+      "type":"structure",
+      "members":{
+        "Cidr":{
+          "shape":"String",
+          "documentation":"<p>The IP address prefix in CIDR notation authorized by the ROA.</p>",
+          "locationName":"cidr"
+        },
+        "Asns":{
+          "shape":"AsnList",
+          "documentation":"<p>The Autonomous System Numbers (ASNs) authorized to originate the prefix.</p>",
+          "locationName":"asnSet"
+        },
+        "PermitMoreSpecificAnnouncements":{
+          "shape":"BoxedBoolean",
+          "documentation":"<p>Specifies whether to permit more specific route announcements than the CIDR prefix. When enabled, ASNs can announce sub-prefixes of the authorized CIDR up to the specified maximum length. Default: <code>false</code>.</p>",
+          "locationName":"permitMoreSpecificAnnouncements"
+        },
+        "MaxLength":{
+          "shape":"IpamRoutingPolicyRegistrationMaxLength",
+          "documentation":"<p>The maximum prefix length that the ASNs are authorized to announce.</p>",
+          "locationName":"maxLength"
+        },
+        "Description":{
+          "shape":"String",
+          "documentation":"<p>The description of the routing policy registration.</p>",
+          "locationName":"description"
+        },
+        "LatestDeltaId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the most recent delta that modified this registration.</p>",
+          "locationName":"latestDeltaId"
+        },
+        "State":{
+          "shape":"IpamRoutingPolicyRegistrationState",
+          "documentation":"<p>The state of the routing policy registration. Valid values: <code>pending-activate</code> | <code>activate-failed</code> | <code>create-in-progress</code> | <code>create-complete</code> | <code>update-in-progress</code> | <code>update-complete</code> | <code>delete-in-progress</code> | <code>delete-complete</code>.</p>",
+          "locationName":"state"
+        }
+      },
+      "documentation":"<p>Contains information about a routing policy registration that represents a Route Origin Authorization (ROA) managed through IPAM.</p>"
+    },
+    "IpamRoutingPolicyRegistrationDelta":{
+      "type":"structure",
+      "members":{
+        "DeltaId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the delta.</p>",
+          "locationName":"deltaId"
+        },
+        "DeltaJson":{
+          "shape":"String",
+          "documentation":"<p>The JSON specification describing the changes applied in this delta.</p>",
+          "locationName":"deltaJson"
+        },
+        "State":{
+          "shape":"IpamRoutingPolicyRegistrationDeltaState",
+          "documentation":"<p>The state of the delta. Valid values: <code>pending</code> | <code>published</code> | <code>failed</code>.</p>",
+          "locationName":"state"
+        },
+        "StateMessage":{
+          "shape":"String",
+          "documentation":"<p>A message describing the current state, including error information if the delta failed.</p>",
+          "locationName":"stateMessage"
+        }
+      },
+      "documentation":"<p>Contains information about a routing policy registration change, including the changes applied and their publication state.</p>"
+    },
+    "IpamRoutingPolicyRegistrationDeltaSet":{
+      "type":"list",
+      "member":{
+        "shape":"IpamRoutingPolicyRegistrationDelta",
+        "locationName":"item"
+      }
+    },
+    "IpamRoutingPolicyRegistrationDeltaState":{
+      "type":"string",
+      "documentation":"<p>The state of a routing policy registration delta.</p>",
+      "enum":[
+        "pending",
+        "published",
+        "failed"
+      ]
+    },
+    "IpamRoutingPolicyRegistrationMaxLength":{
+      "type":"integer",
+      "max":48,
+      "min":0
+    },
+    "IpamRoutingPolicyRegistrationSet":{
+      "type":"list",
+      "member":{
+        "shape":"IpamRoutingPolicyRegistration",
+        "locationName":"item"
+      }
+    },
+    "IpamRoutingPolicyRegistrationState":{
+      "type":"string",
+      "documentation":"<p>The state of a routing policy registration.</p>",
+      "enum":[
+        "pending-activate",
+        "activate-failed",
+        "create-in-progress",
+        "create-complete",
+        "update-in-progress",
+        "update-complete",
+        "delete-in-progress",
+        "delete-complete"
+      ]
+    },
+    "IpamRpkiStatus":{
+      "type":"string",
+      "documentation":"<p>The RPKI validation status of a BGP route.</p>",
+      "enum":[
+        "valid",
+        "invalid",
+        "unknown"
+      ]
+    },
+    "IpamRpkiStrength":{
+      "type":"string",
+      "documentation":"<p>The RPKI enforcement strength for route protection.</p>",
+      "enum":[
+        "strict",
+        "permissive"
       ]
     },
     "IpamScope":{
@@ -57070,6 +58402,64 @@
           "shape":"Ipam",
           "documentation":"<p>The results of the modification.</p>",
           "locationName":"ipam"
+        }
+      }
+    },
+    "ModifyIpamRoutingPolicyRegistrationRequest":{
+      "type":"structure",
+      "required":[
+        "IpamInternetRegistryAssociationId",
+        "Cidr",
+        "Asns"
+      ],
+      "members":{
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the operation, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        },
+        "IpamInternetRegistryAssociationId":{
+          "shape":"IpamInternetRegistryAssociationId",
+          "documentation":"<p>The ID of the IPAM internet registry association.</p>"
+        },
+        "Cidr":{
+          "shape":"String",
+          "documentation":"<p>The IP address prefix in CIDR notation identifying the routing policy registration to modify.</p>"
+        },
+        "Asns":{
+          "shape":"AsnList",
+          "documentation":"<p>The updated list of Autonomous System Numbers (ASNs) authorized to originate the prefix.</p>",
+          "locationName":"Asn"
+        },
+        "PermitMoreSpecificAnnouncements":{
+          "shape":"BoxedBoolean",
+          "documentation":"<p>Specifies whether to permit more specific route announcements than the CIDR prefix. Default: <code>false</code>.</p>"
+        },
+        "MaxLength":{
+          "shape":"IpamRoutingPolicyRegistrationMaxLength",
+          "documentation":"<p>The new maximum prefix length that the ASNs are authorized to announce. Must be greater than or equal to the prefix length of the CIDR.</p>"
+        },
+        "Description":{
+          "shape":"String",
+          "documentation":"<p>A new description for the routing policy registration.</p>"
+        },
+        "Force":{
+          "shape":"BoxedBoolean",
+          "documentation":"<p>Forces the modification even if it conflicts with an announced route. Default: <code>false</code>.</p>"
+        },
+        "ClientToken":{
+          "shape":"String",
+          "documentation":"<p>A unique, case-sensitive identifier to ensure that the operation completes no more than one time. If this token matches a previous request, the operation ignores the request, but does not return an error.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "ModifyIpamRoutingPolicyRegistrationResult":{
+      "type":"structure",
+      "members":{
+        "IpamRoutingPolicyRegistrationDelta":{
+          "shape":"IpamRoutingPolicyRegistrationDelta",
+          "documentation":"<p>Information about the routing policy registration delta created by this modification.</p>",
+          "locationName":"ipamRoutingPolicyRegistrationDelta"
         }
       }
     },
@@ -66361,6 +67751,7 @@
         "ipam-prefix-list-resolver",
         "ipam-policy",
         "ipam-prefix-list-resolver-target",
+        "ipam-internet-registry-association",
         "secondary-interface",
         "secondary-network",
         "secondary-subnet",
@@ -67125,6 +68516,16 @@
         "shape":"RevokedSecurityGroupRule",
         "locationName":"item"
       }
+    },
+    "Rir":{
+      "type":"string",
+      "documentation":"<p>The Regional Internet Registry (RIR).</p>",
+      "enum":[
+        "ripe",
+        "apnic",
+        "arin",
+        "lacnic"
+      ]
     },
     "RoleId":{"type":"string"},
     "RootDeviceType":{

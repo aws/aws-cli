@@ -1395,7 +1395,7 @@
         {"shape":"InternalServiceException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Deletes the specified fields containing personally identifiable information (PII) from a contact in the specified Connect Customer instance. This operation redacts PII (such as customer endpoints, additional email recipients, and the email subject) from the contact and its associated contact trace record (CTR). The contact must be in a terminated state.</p> <important> <p>This operation performs a hard deletion of the specified PII and cannot be undone. There is no retention period; after the data is deleted, it cannot be recovered. Only fields that Connect Customer identifies and stores as PII are removed. Any PII that you place in fields outside the scope of this operation remains your responsibility to remove.</p> </important>"
+      "documentation":"<p>Deletes the specified fields containing personally identifiable information (PII) from a contact in the specified Connect Customer instance. We redact PII (such as customer endpoints, additional email recipients, and the email subject) from the contact and its associated contact trace record (CTR). The contact must be in a terminated state.</p> <important> <p> <b>This deletion is permanent and cannot be undone.</b> Performing this operation permanently deletes the specified PII. There is no retention period; you cannot recover the data after deletion. We remove only the fields that Connect Customer identifies and stores as PII. Any PII that you place in fields outside the scope of this operation remains your responsibility to remove.</p> </important>"
     },
     "DeleteContactEvaluation":{
       "name":"DeleteContactEvaluation",
@@ -5080,7 +5080,7 @@
         {"shape":"ResourceConflictException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
-      "documentation":"<p>Provides a pre-signed Amazon S3 URL in response for uploading your content.</p> <important> <p>You may only use this API to upload attachments to an <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_connect-cases_CreateCase.html\">Connect Customer Case</a> or <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/setup-email-channel.html\">Connect Customer Email</a>. </p> </important>"
+      "documentation":"<p>Provides a pre-signed Amazon S3 URL in response for uploading your content.</p> <important> <p>You may only use this API to upload attachments to a <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_connect-cases_CreateCase.html\">Connect Customer Case</a>, <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/setup-email-channel.html\">Connect Customer Email</a>, or <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/concepts-getting-started-tasks.html\">Connect Customer Task</a>. </p> </important>"
     },
     "StartChatContact":{
       "name":"StartChatContact",
@@ -5815,6 +5815,25 @@
         {"shape":"InternalServiceException"}
       ],
       "documentation":"<p>Updates the scheduled time of a task contact that is already scheduled.</p>"
+    },
+    "UpdateContactTaskTemplate":{
+      "name":"UpdateContactTaskTemplate",
+      "http":{
+        "method":"POST",
+        "requestUri":"/contact/task-template"
+      },
+      "input":{"shape":"UpdateContactTaskTemplateRequest"},
+      "output":{"shape":"UpdateContactTaskTemplateResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"PropertyValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"LimitExceededException"}
+      ],
+      "documentation":"<p>Updates the task template association on an existing task contact. You can update the task template on a contact before assignment to support tasks that are created without a template (for example <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/connect-rules.html\">Rules</a> or <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/set-disconnect-flow.html\">disconnect flows</a>) or change the agent interaction form to represent the latest task data (for example an initial request that was submitted as a refund gets updated to an account cancellation and requires a new template).</p> <p>This operation can only be used with task contacts that are in progress and not connected to an agent. A task template can be updated a maximum of 5 times per contact.</p> <p>The task's references must be compatible with the fields of the target task template. If the target template has a required field, the task must have a corresponding reference with a matching name and compatible type. The following task template field types map to reference types:</p> <ul> <li> <p> <code>TEXT</code>, <code>TEXT_AREA</code>, <code>BOOLEAN</code>, and <code>SINGLE_SELECT</code> map to references of type <code>STRING</code>.</p> </li> <li> <p> <code>NUMBER</code> maps to references of type <code>NUMBER</code>.</p> </li> <li> <p> <code>DATE_TIME</code> maps to references of type <code>DATE</code>.</p> </li> <li> <p> <code>URL</code> maps to references of type <code>URL</code>.</p> </li> <li> <p> <code>EMAIL</code> maps to references of type <code>EMAIL</code>.</p> </li> </ul> <p>References corresponding to <code>TEXT</code> fields must be fewer than 512 characters. <code>TEXT_AREA</code> fields must be fewer than 4,096 characters. <code>BOOLEAN</code> fields must have a value of <code>true</code> or <code>false</code>.</p> <p>An <code>InvalidRequestException</code> occurs when <code>UpdateContactTaskTemplate</code> is called on a connected or terminated task, when it is called on non-task contacts, and when the task contact already uses the provided task template. A <code>PropertyValidationException</code> occurs when the task's references conflict with the task template's fields, for example if the task is missing a reference that matches a required field, or if the task has a reference that matches a required field's name but not its datatype.</p>"
     },
     "UpdateDataTableAttribute":{
       "name":"UpdateDataTableAttribute",
@@ -8313,7 +8332,7 @@
         },
         "AssociatedResourceArn":{
           "shape":"ARN",
-          "documentation":"<p>The resource to which the attached file is (being) uploaded to. <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_connect-cases_CreateCase.html\">Cases</a> are the only current supported resource.</p> <note> <p>This value must be a valid ARN.</p> </note>"
+          "documentation":"<p>The resource to which the attached file is (being) uploaded to. The supported resources are <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/cases.html\">Cases</a>, <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/setup-email-channel.html\">Email</a>, and <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/concepts-getting-started-tasks.html\">Task</a>.</p> <note> <p>This value must be a valid ARN.</p> </note>"
         },
         "Tags":{
           "shape":"TagMap",
@@ -9266,7 +9285,7 @@
         },
         "AssociatedResourceArn":{
           "shape":"ARN",
-          "documentation":"<p>The resource to which the attached file is (being) uploaded to. The supported resources are <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/cases.html\">Cases</a> and <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/setup-email-channel.html\">Email</a>.</p> <note> <p>This value must be a valid ARN.</p> </note>",
+          "documentation":"<p>The resource to which the attached file is (being) uploaded to. The supported resources are <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/cases.html\">Cases</a>, <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/setup-email-channel.html\">Email</a>, and <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/concepts-getting-started-tasks.html\">Task</a>.</p> <note> <p>This value must be a valid ARN.</p> </note>",
           "location":"querystring",
           "locationName":"associatedResourceArn"
         }
@@ -9885,7 +9904,7 @@
         },
         "AssociatedResourceArn":{
           "shape":"ARN",
-          "documentation":"<p>The resource to which the attached file is (being) uploaded to. The supported resources are <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/cases.html\">Cases</a> and <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/setup-email-channel.html\">Email</a>.</p> <note> <p>This value must be a valid ARN.</p> </note>",
+          "documentation":"<p>The resource to which the attached file is (being) uploaded to. The supported resources are <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/cases.html\">Cases</a>, <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/setup-email-channel.html\">Email</a>, and <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/concepts-getting-started-tasks.html\">Task</a>.</p> <note> <p>This value must be a valid ARN.</p> </note>",
           "location":"querystring",
           "locationName":"associatedResourceArn"
         }
@@ -11021,7 +11040,7 @@
       "members":{
         "Message":{"shape":"Message"}
       },
-      "documentation":"<p>The contact has not been disconnected and is not in a terminated state. PII can be deleted only from a contact that has been disconnected. This error is returned with an HTTP 409 status code.</p>",
+      "documentation":"<p>The contact has not been disconnected and is not in a terminated state. To delete PII, disconnect the contact first. Wait for it to reach the terminated state, then retry the request.</p>",
       "error":{"httpStatusCode":409},
       "exception":true
     },
@@ -14393,7 +14412,7 @@
         },
         "AssociatedResourceArn":{
           "shape":"ARN",
-          "documentation":"<p>The resource to which the attached file is (being) uploaded to. <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_connect-cases_CreateCase.html\">Cases</a> are the only current supported resource.</p> <note> <p>This value must be a valid ARN.</p> </note>",
+          "documentation":"<p>The resource to which the attached file is (being) uploaded to. The supported resources are <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/cases.html\">Cases</a>, <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/setup-email-channel.html\">Email</a>, and <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/concepts-getting-started-tasks.html\">Task</a>.</p> <note> <p>This value must be a valid ARN.</p> </note>",
           "location":"querystring",
           "locationName":"associatedResourceArn"
         }
@@ -14421,13 +14440,13 @@
         },
         "ContactId":{
           "shape":"ContactId",
-          "documentation":"<p>The identifier of the contact. PII can be deleted only from a contact that has been disconnected (is in a terminated state).</p>",
+          "documentation":"<p>The identifier of the contact. You can delete PII only from a contact that has been disconnected (is in a terminated state).</p>",
           "location":"uri",
           "locationName":"ContactId"
         },
         "ContactFields":{
           "shape":"ContactFields",
-          "documentation":"<p>The categories of PII to redact from the contact. Valid values are <code>CUSTOMER_ENDPOINT</code>, <code>ADDITIONAL_EMAIL_RECIPIENTS</code>, and <code>EMAIL_SUBJECT</code>. <code>ADDITIONAL_EMAIL_RECIPIENTS</code> and <code>EMAIL_SUBJECT</code> are supported only for contacts in the email channel.</p>"
+          "documentation":"<p>The categories of PII to redact from the contact. Specify one or more of the following values:</p> <ul> <li> <p> <code>CUSTOMER_ENDPOINT</code> – The customer's contact endpoint.</p> </li> <li> <p> <code>ADDITIONAL_EMAIL_RECIPIENTS</code> – Additional recipients on an email contact (email channel only).</p> </li> <li> <p> <code>EMAIL_SUBJECT</code> – The subject line of an email contact (email channel only).</p> </li> </ul>"
         }
       }
     },
@@ -20308,7 +20327,7 @@
         },
         "AssociatedResourceArn":{
           "shape":"ARN",
-          "documentation":"<p>The resource to which the attached file is (being) uploaded to. The supported resources are <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/cases.html\">Cases</a> and <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/setup-email-channel.html\">Email</a>.</p> <note> <p>This value must be a valid ARN.</p> </note>",
+          "documentation":"<p>The resource to which the attached file is (being) uploaded to. The supported resources are <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/cases.html\">Cases</a>, <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/setup-email-channel.html\">Email</a>, and <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/concepts-getting-started-tasks.html\">Task</a>.</p> <note> <p>This value must be a valid ARN.</p> </note>",
           "location":"querystring",
           "locationName":"associatedResourceArn"
         }
@@ -20346,7 +20365,7 @@
         },
         "AssociatedResourceArn":{
           "shape":"ARN",
-          "documentation":"<p>The resource to which the attached file is (being) uploaded to. <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_connect-cases_CreateCase.html\">Cases</a> are the only current supported resource.</p>"
+          "documentation":"<p>The resource to which the attached file is (being) uploaded to. The supported resources are <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/cases.html\">Cases</a>, <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/setup-email-channel.html\">Email</a>, and <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/concepts-getting-started-tasks.html\">Task</a>.</p>"
         },
         "FileUseCaseType":{
           "shape":"FileUseCaseType",
@@ -28299,7 +28318,8 @@
         "REFERENCED_RESOURCE_NOT_FOUND",
         "RESOURCE_NAME_ALREADY_EXISTS",
         "REQUIRED_PROPERTY_MISSING",
-        "NOT_SUPPORTED"
+        "NOT_SUPPORTED",
+        "TYPE_MISMATCH"
       ]
     },
     "PutUserStatusRequest":{
@@ -32923,7 +32943,7 @@
         },
         "AssociatedResourceArn":{
           "shape":"ARN",
-          "documentation":"<p>The resource to which the attached file is (being) uploaded to. The supported resources are <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/cases.html\">Cases</a> and <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/setup-email-channel.html\">Email</a>.</p> <note> <p>This value must be a valid ARN.</p> </note>",
+          "documentation":"<p>The resource to which the attached file is (being) uploaded to. The supported resources are <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/cases.html\">Cases</a>, <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/setup-email-channel.html\">Email</a>, and <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/concepts-getting-started-tasks.html\">Task</a>.</p> <note> <p>This value must be a valid ARN.</p> </note>",
           "location":"querystring",
           "locationName":"associatedResourceArn"
         },
@@ -35851,6 +35871,32 @@
       }
     },
     "UpdateContactScheduleResponse":{
+      "type":"structure",
+      "members":{}
+    },
+    "UpdateContactTaskTemplateRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "TaskTemplateId",
+        "ContactId"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Connect Customer instance. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.</p>"
+        },
+        "TaskTemplateId":{
+          "shape":"TaskTemplateId",
+          "documentation":"<p>A unique identifier for the task template. For more information about task templates, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/task-templates.html\">Task templates</a> in the <i>Connect Customer Administrator Guide</i>.</p>"
+        },
+        "ContactId":{
+          "shape":"ContactId",
+          "documentation":"<p>The identifier of the contact in this instance of Connect Customer. </p>"
+        }
+      }
+    },
+    "UpdateContactTaskTemplateResponse":{
       "type":"structure",
       "members":{}
     },

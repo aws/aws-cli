@@ -687,6 +687,10 @@
         "HttpRequest":{
           "shape":"HttpRequest",
           "documentation":"<p>The HTTP request configuration parameters for the ad decision server.</p>"
+        },
+        "VastResponse":{
+          "shape":"VastResponse",
+          "documentation":"<p>The settings that control how MediaTailor processes VAST responses from the ad decision server.</p>"
         }
       },
       "documentation":"<p>Configuration parameters for customizing HTTP requests sent to the ad decision server (ADS). This allows you to specify the HTTP method, headers, request body, and compression settings for ADS requests.</p>"
@@ -706,6 +710,15 @@
       "enum":[
         "DATERANGE",
         "SCTE35_ENHANCED"
+      ]
+    },
+    "AdSequencingMode":{
+      "type":"string",
+      "enum":[
+        "FOLLOW_AD_SEQUENCE",
+        "IGNORE_AD_SEQUENCE",
+        "FOLLOW_AD_SEQUENCE_ONLY_LIVE",
+        "FOLLOW_AD_SEQUENCE_ONLY_VOD"
       ]
     },
     "AdsInteractionExcludeEventType":{
@@ -3195,6 +3208,10 @@
         "MaxDurationSeconds":{
           "shape":"__integer",
           "documentation":"<p>The maximum allowed duration for the pre-roll ad avail. AWS Elemental MediaTailor won't play pre-roll ads to exceed this duration, regardless of the total duration of ads that the ADS returns.</p>"
+        },
+        "AdDecisionServerConfiguration":{
+          "shape":"PreRollAdDecisionServerConfiguration",
+          "documentation":"<p>The configuration for the ad decision server (ADS) for live pre-roll ads. The configuration contains settings that control how MediaTailor processes VAST responses for pre-roll ad breaks.</p>"
         }
       },
       "documentation":"<p>The configuration for pre-roll ad insertion.</p>"
@@ -3529,6 +3546,33 @@
         "LOOP",
         "LINEAR"
       ]
+    },
+    "PreRollAdDecisionServerConfiguration":{
+      "type":"structure",
+      "members":{
+        "VastResponse":{
+          "shape":"PreRollVastResponse",
+          "documentation":"<p>The settings that control how MediaTailor processes VAST responses for live pre-roll ad breaks.</p>"
+        }
+      },
+      "documentation":"<p>The ad decision server configuration for live pre-roll ads. It contains settings that control how MediaTailor processes VAST responses for pre-roll ad breaks.</p>"
+    },
+    "PreRollAdSequencingMode":{
+      "type":"string",
+      "enum":[
+        "FOLLOW_AD_SEQUENCE",
+        "IGNORE_AD_SEQUENCE"
+      ]
+    },
+    "PreRollVastResponse":{
+      "type":"structure",
+      "members":{
+        "AdSequencingMode":{
+          "shape":"PreRollAdSequencingMode",
+          "documentation":"<p>The ad sequencing mode for live pre-roll ads. <code>FOLLOW_AD_SEQUENCE</code> inserts sequenced ads in increasing order and uses standalone ads only as replacements when a sequenced ad fails. <code>IGNORE_AD_SEQUENCE</code> inserts ads in the order they appear in the VAST response, regardless of sequence attributes. The default behavior is <code>IGNORE_AD_SEQUENCE</code>.</p>"
+        }
+      },
+      "documentation":"<p>The settings that control how MediaTailor processes VAST responses from the ad decision server for live pre-roll ad breaks.</p>"
     },
     "PrefetchConsumption":{
       "type":"structure",
@@ -4964,6 +5008,16 @@
           "documentation":"<p>The name of the VOD source.</p>"
         }
       }
+    },
+    "VastResponse":{
+      "type":"structure",
+      "members":{
+        "AdSequencingMode":{
+          "shape":"AdSequencingMode",
+          "documentation":"<p>The ad sequencing mode that controls how MediaTailor handles sequenced and standalone ads in VAST responses. <code>FOLLOW_AD_SEQUENCE</code> inserts sequenced ads in increasing order for both live and VOD workflows, using standalone ads only as replacements when a sequenced ad fails. <code>FOLLOW_AD_SEQUENCE_ONLY_LIVE</code> enables ad sequencing for live workflows only. <code>FOLLOW_AD_SEQUENCE_ONLY_VOD</code> enables ad sequencing for VOD workflows only. <code>IGNORE_AD_SEQUENCE</code> inserts ads in the order they appear in the VAST response, regardless of sequence attributes. The default behavior is <code>IGNORE_AD_SEQUENCE</code>.</p>"
+        }
+      },
+      "documentation":"<p>The settings that control how MediaTailor processes VAST responses from the ad decision server.</p>"
     },
     "VodSource":{
       "type":"structure",

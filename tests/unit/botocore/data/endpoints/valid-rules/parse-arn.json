@@ -1,0 +1,251 @@
+{
+  "version": "1.3",
+  "parameters": {
+    "Region": {
+      "type": "string",
+      "builtIn": "AWS::Region"
+    },
+    "Bucket": {
+      "type": "string"
+    },
+    "TestCaseId": {
+      "type": "string"
+    }
+  },
+  "rules": [
+    {
+      "documentation": "tests of invalid arns",
+      "conditions": [
+        {
+          "fn": "isSet",
+          "argv": [
+            {
+              "ref": "TestCaseId"
+            }
+          ]
+        },
+        {
+          "fn": "isSet",
+          "argv": [
+            {
+              "ref": "Bucket"
+            }
+          ]
+        },
+        {
+          "fn": "stringEquals",
+          "argv": [
+            "{TestCaseId}",
+            "invalid-arn"
+          ]
+        }
+      ],
+      "type": "tree",
+      "rules": [
+        {
+          "conditions": [
+            {
+              "fn": "aws.parseArn",
+              "argv": ["{Bucket}"]
+            }
+          ],
+          "type": "error",
+          "error": "A valid ARN was parsed but `{Bucket}` is not a valid ARN"
+        },
+        {
+          "conditions": [],
+          "type": "error",
+          "error": "Test case passed: `{Bucket}` is not a valid ARN."
+        }
+      ]
+    },
+    {
+      "documentation": "tests of valid arns",
+      "conditions": [
+        {
+          "fn": "isSet",
+          "argv": [
+            {
+              "ref": "TestCaseId"
+            }
+          ]
+        },
+        {
+          "fn": "isSet",
+          "argv": [
+            {
+              "ref": "Bucket"
+            }
+          ]
+        },
+        {
+          "fn": "stringEquals",
+          "argv": [
+            "{TestCaseId}",
+            "valid-arn"
+          ]
+        }
+      ],
+      "type": "tree",
+      "rules": [
+        {
+          "conditions": [
+            {
+              "fn": "aws.parseArn",
+              "argv": ["{Bucket}"],
+              "assign": "arn"
+            },
+            {
+              "fn": "getAttr",
+              "argv": [{"ref": "arn"}, "resourceId[0]"],
+              "assign": "resource"
+            }
+          ],
+          "type": "error",
+          "error": "Test case passed: A valid ARN was parsed: service: `{arn#service}`, partition: `{arn#partition}, region: `{arn#region}`, accountId: `{arn#accountId}`, resource: `{resource}`"
+        },
+        {
+          "conditions": [],
+          "type": "error",
+          "error": "Test case failed: `{Bucket}` is a valid ARN but parseArn failed to parse it."
+        }
+      ]
+    },
+    {
+      "documentation": "region is set",
+      "conditions": [
+        {
+          "fn": "isSet",
+          "argv": [
+            {
+              "ref": "Region"
+            }
+          ]
+        },
+        {
+          "fn": "aws.partition",
+          "argv": [
+            "{Region}"
+          ],
+          "assign": "partitionResult"
+        }
+      ],
+      "rules": [
+        {
+          "documentation": "bucket is set, handle bucket specific endpoints",
+          "conditions": [
+            {
+              "fn": "isSet",
+              "argv": [
+                {
+                  "ref": "Bucket"
+                }
+              ]
+            }
+          ],
+          "rules": [
+            {
+              "documentation": "bucket is set and is an arn",
+              "conditions": [
+                {
+                  "fn": "aws.parseArn",
+                  "argv": [
+                    {
+                      "ref": "Bucket"
+                    }
+                  ],
+                  "assign": "bucketArn"
+                }
+              ],
+              "rules": [
+                {
+                  "conditions": [
+                    {
+                      "fn": "getAttr",
+                      "argv": [
+                        {
+                          "ref": "bucketArn"
+                        },
+                        "resourceId[1]"
+                      ],
+                      "assign": "outpostId"
+                    }
+                  ],
+                  "rules": [
+                    {
+                      "conditions": [
+                        {
+                          "fn": "stringEquals",
+                          "argv": [
+                            "{outpostId}",
+                            ""
+                          ]
+                        }
+                      ],
+                      "error": "OutpostId was empty",
+                      "type": "error"
+                    },
+                    {
+                      "conditions": [],
+                      "endpoint": {
+                        "url": "https://{outpostId}-{bucketArn#accountId}.{bucketArn#region}.{partitionResult#dnsSuffix}"
+                      },
+                      "type": "endpoint"
+                    }
+                  ],
+                  "type": "tree"
+                },
+                {
+                  "conditions": [],
+                  "error": "Invalid ARN: outpostId was not set",
+                  "type": "error"
+                }
+              ],
+              "type": "tree"
+            },
+            {
+              "documentation": "bucket can be used as a host label",
+              "conditions": [
+                {
+                  "fn": "isValidHostLabel",
+                  "argv": [
+                    "{Bucket}",
+                    false
+                  ]
+                }
+              ],
+              "endpoint": {
+                "url": "https://{Bucket}.{Region}.amazonaws.com"
+              },
+              "type": "endpoint"
+            },
+            {
+              "conditions": [],
+              "documentation": "fallback: use bucket in the path",
+              "endpoint": {
+                "url": "https://{Region}.amazonaws.com/{Bucket}"
+              },
+              "type": "endpoint"
+            }
+          ],
+          "type": "tree"
+        },
+        {
+          "documentation": "region is set, bucket is not",
+          "conditions": [],
+          "endpoint": {
+            "url": "https://{Region}.{partitionResult#dnsSuffix}"
+          },
+          "type": "endpoint"
+        }
+      ],
+      "type": "tree"
+    },
+    {
+      "documentation": "fallback when region is unset",
+      "conditions": [],
+      "error": "Region must be set to resolve a valid endpoint",
+      "type": "error"
+    }
+  ]
+}

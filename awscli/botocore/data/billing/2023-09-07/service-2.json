@@ -1,0 +1,2433 @@
+{
+  "version":"2.0",
+  "metadata":{
+    "apiVersion":"2023-09-07",
+    "auth":["aws.auth#sigv4"],
+    "endpointPrefix":"billing",
+    "jsonVersion":"1.0",
+    "protocol":"json",
+    "protocols":["json"],
+    "serviceFullName":"AWS Billing",
+    "serviceId":"Billing",
+    "signatureVersion":"v4",
+    "signingName":"billing",
+    "targetPrefix":"AWSBilling",
+    "uid":"billing-2023-09-07"
+  },
+  "operations":{
+    "AssociateSourceViews":{
+      "name":"AssociateSourceViews",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"AssociateSourceViewsRequest"},
+      "output":{"shape":"AssociateSourceViewsResponse"},
+      "errors":[
+        {"shape":"BillingViewHealthStatusException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p> Associates one or more source billing views with an existing billing view. This allows creating aggregate billing views that combine data from multiple sources. </p>",
+      "idempotent":true
+    },
+    "CreateBillingView":{
+      "name":"CreateBillingView",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateBillingViewRequest"},
+      "output":{"shape":"CreateBillingViewResponse"},
+      "errors":[
+        {"shape":"BillingViewHealthStatusException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p> Creates a billing view with the specified billing view attributes. </p>",
+      "idempotent":true
+    },
+    "DeleteBillingView":{
+      "name":"DeleteBillingView",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteBillingViewRequest"},
+      "output":{"shape":"DeleteBillingViewResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Deletes the specified billing view.</p>",
+      "idempotent":true
+    },
+    "DisassociateSourceViews":{
+      "name":"DisassociateSourceViews",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DisassociateSourceViewsRequest"},
+      "output":{"shape":"DisassociateSourceViewsResponse"},
+      "errors":[
+        {"shape":"BillingViewHealthStatusException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p> Removes the association between one or more source billing views and an existing billing view. This allows modifying the composition of aggregate billing views. </p>",
+      "idempotent":true
+    },
+    "GetBillingPreferences":{
+      "name":"GetBillingPreferences",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetBillingPreferencesRequest"},
+      "output":{"shape":"GetBillingPreferencesResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Retrieves billing preferences for the specified feature. Each feature controls a distinct billing capability: which accounts can share Reserved Instances or credits, whether billing alerts are enabled, the historical record of sharing changes, and per-credit options.</p>"
+    },
+    "GetBillingView":{
+      "name":"GetBillingView",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetBillingViewRequest"},
+      "output":{"shape":"GetBillingViewResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Returns the metadata associated to the specified billing view ARN. </p>",
+      "readonly":true
+    },
+    "GetCreditAllocationHistory":{
+      "name":"GetCreditAllocationHistory",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetCreditAllocationHistoryRequest"},
+      "output":{"shape":"GetCreditAllocationHistoryResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Returns the per-billing-month allocation history for credits applied to an Amazon Web Services account's bills. Traverses the consolidated billing family to capture cross-account credit applications. Supports pagination and optional filtering to a single credit.</p>"
+    },
+    "GetCredits":{
+      "name":"GetCredits",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetCreditsRequest"},
+      "output":{"shape":"GetCreditsResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Returns the list of Amazon Web Services account credits for the specified account. Each credit includes its identifier, type, monetary amounts, applicable products, expiration, sharing configuration, and current enabled status.</p> <p>When the caller is the management account of a consolidated billing family and <code>payerAccountFlag</code> is <code>true</code>, the response aggregates credits across the entire family. Otherwise, the response includes only credits owned by the account specified in <code>accountId</code>.</p>"
+    },
+    "GetEnterpriseSupportChargeSummary":{
+      "name":"GetEnterpriseSupportChargeSummary",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetEnterpriseSupportChargeSummaryRequest"},
+      "output":{"shape":"GetEnterpriseSupportChargeSummaryResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Returns a summary of Enterprise Support data aggregated across all accounts in the Enterprise Support profile.</p>",
+      "readonly":true
+    },
+    "GetEnterpriseSupportContractDetails":{
+      "name":"GetEnterpriseSupportContractDetails",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetEnterpriseSupportContractDetailsRequest"},
+      "output":{"shape":"GetEnterpriseSupportContractDetailsResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Returns Enterprise Support contract details.</p>",
+      "readonly":true
+    },
+    "GetResourcePolicy":{
+      "name":"GetResourcePolicy",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetResourcePolicyRequest"},
+      "output":{"shape":"GetResourcePolicyResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Returns the resource-based policy document attached to the resource in <code>JSON</code> format. </p>",
+      "readonly":true
+    },
+    "ListBillingViews":{
+      "name":"ListBillingViews",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListBillingViewsRequest"},
+      "output":{"shape":"ListBillingViewsResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Lists the billing views available for a given time period. </p> <p>Every Amazon Web Services account has a unique <code>PRIMARY</code> billing view that represents the billing data available by default. Accounts that use Billing Conductor also have <code>BILLING_GROUP</code> billing views representing pro forma costs associated with each created billing group.</p>",
+      "readonly":true
+    },
+    "ListEnterpriseSupportLinkedAccountCharges":{
+      "name":"ListEnterpriseSupportLinkedAccountCharges",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListEnterpriseSupportLinkedAccountChargesRequest"},
+      "output":{"shape":"ListEnterpriseSupportLinkedAccountChargesResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Returns Support-eligible spend broken down at linked account level.</p>",
+      "readonly":true
+    },
+    "ListSourceViewsForBillingView":{
+      "name":"ListSourceViewsForBillingView",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListSourceViewsForBillingViewRequest"},
+      "output":{"shape":"ListSourceViewsForBillingViewResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Lists the source views (managed Amazon Web Services billing views) associated with the billing view. </p>",
+      "readonly":true
+    },
+    "ListTagsForResource":{
+      "name":"ListTagsForResource",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListTagsForResourceRequest"},
+      "output":{"shape":"ListTagsForResourceResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Lists tags associated with the billing view resource. </p>",
+      "readonly":true
+    },
+    "RedeemCredits":{
+      "name":"RedeemCredits",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"RedeemCreditsRequest"},
+      "output":{"shape":"RedeemCreditsResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Redeems an Amazon Web Services promotional credit code on behalf of the calling account. On success, a new credit is added to the account's credit ledger with the amount, validity period, and applicable products defined by the promotion. The credit is then automatically applied to subsequent bills according to the standard credit application order.</p>"
+    },
+    "TagResource":{
+      "name":"TagResource",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"TagResourceRequest"},
+      "output":{"shape":"TagResourceResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p> An API operation for adding one or more tags (key-value pairs) to a resource. </p>"
+    },
+    "UntagResource":{
+      "name":"UntagResource",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UntagResourceRequest"},
+      "output":{"shape":"UntagResourceResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p> Removes one or more tags from a resource. Specify only tag keys in your request. Don't specify the value. </p>"
+    },
+    "UpdateBillingPreferences":{
+      "name":"UpdateBillingPreferences",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateBillingPreferencesRequest"},
+      "output":{"shape":"UpdateBillingPreferencesResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Updates billing preferences for the specified feature. Each feature targets a distinct billing capability and has its own set of supported keys. The action sets the value for each provided key; keys not present in the request are unchanged.</p> <p>Sharing keys (<code>RI_SHARING</code>, <code>CREDIT_SHARING</code>, <code>CREDIT_LEVEL_SHARING</code>, and sharing keys under <code>CREDIT_PREFERENCE_OPTIONS</code>) may only be set by the management account of a consolidated billing family. The <code>credit/{creditId}/status</code> key may be set by member accounts for credits they own, or by the management account for any credit in the family.</p>"
+    },
+    "UpdateBillingView":{
+      "name":"UpdateBillingView",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateBillingViewRequest"},
+      "output":{"shape":"UpdateBillingViewResponse"},
+      "errors":[
+        {"shape":"BillingViewHealthStatusException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>An API to update the attributes of the billing view. </p>",
+      "idempotent":true
+    }
+  },
+  "shapes":{
+    "AccessDeniedException":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{"shape":"ErrorMessage"}
+      },
+      "documentation":"<p>You don't have sufficient access to perform this action.</p>",
+      "exception":true
+    },
+    "AccountId":{
+      "type":"string",
+      "pattern":"[0-9]{12}"
+    },
+    "AccountName":{
+      "type":"string",
+      "max":50,
+      "min":1
+    },
+    "ActiveTimeRange":{
+      "type":"structure",
+      "required":[
+        "activeAfterInclusive",
+        "activeBeforeInclusive"
+      ],
+      "members":{
+        "activeAfterInclusive":{
+          "shape":"Timestamp",
+          "documentation":"<p>The inclusive time range start date.</p>"
+        },
+        "activeBeforeInclusive":{
+          "shape":"Timestamp",
+          "documentation":"<p> The inclusive time range end date. </p>"
+        }
+      },
+      "documentation":"<p>A time range with a start and end time.</p>"
+    },
+    "AdditionalCharge":{
+      "type":"structure",
+      "required":["description"],
+      "members":{
+        "description":{
+          "shape":"String",
+          "documentation":"<p>A description of the additional charge.</p>"
+        },
+        "amount":{
+          "shape":"String",
+          "documentation":"<p>The charge amount.</p>"
+        },
+        "chargeType":{
+          "shape":"String",
+          "documentation":"<p>The type of additional charge.</p>"
+        }
+      },
+      "documentation":"<p>An additional charge applied to an Enterprise Support contract.</p>"
+    },
+    "AdditionalChargeList":{
+      "type":"list",
+      "member":{"shape":"AdditionalCharge"},
+      "documentation":"<p>A list of additional charges.</p>",
+      "max":50,
+      "min":0
+    },
+    "Amount":{
+      "type":"structure",
+      "required":[
+        "currencyCode",
+        "currencyAmount"
+      ],
+      "members":{
+        "currencyCode":{
+          "shape":"CurrencyCode",
+          "documentation":"<p>The ISO 4217 currency code for the amount (for example, <code>USD</code>).</p>"
+        },
+        "currencyAmount":{
+          "shape":"CurrencyAmount",
+          "documentation":"<p>The amount as a decimal string (for example, <code>\"743.21\"</code>). Negative values represent credits that reduce a bill.</p>"
+        }
+      },
+      "documentation":"<p>A monetary amount with a currency code. Used throughout the Billing API to represent credit balances, allocations, and adjustments.</p>"
+    },
+    "ApplicationType":{
+      "type":"string",
+      "enum":[
+        "BEFORE_CROSS_SERVICE_DISCOUNTS",
+        "AFTER_DISCOUNTS"
+      ]
+    },
+    "AssociateSourceViewsRequest":{
+      "type":"structure",
+      "required":[
+        "arn",
+        "sourceViews"
+      ],
+      "members":{
+        "arn":{
+          "shape":"BillingViewArn",
+          "documentation":"<p> The Amazon Resource Name (ARN) of the billing view to associate source views with. </p>"
+        },
+        "sourceViews":{
+          "shape":"BillingViewSourceViewsList",
+          "documentation":"<p> A list of ARNs of the source billing views to associate. </p>"
+        }
+      }
+    },
+    "AssociateSourceViewsResponse":{
+      "type":"structure",
+      "required":["arn"],
+      "members":{
+        "arn":{
+          "shape":"BillingViewArn",
+          "documentation":"<p> The ARN of the billing view that the source views were associated with. </p>"
+        }
+      }
+    },
+    "BillingFeature":{
+      "type":"string",
+      "enum":[
+        "RI_SHARING",
+        "RI_SHARING_HISTORY",
+        "CREDIT_SHARING",
+        "CREDIT_SHARING_HISTORY",
+        "CREDIT_LEVEL_SHARING",
+        "BILLING_ALERTS",
+        "CREDIT_PREFERENCE_OPTIONS"
+      ]
+    },
+    "BillingFeatureFilter":{
+      "type":"structure",
+      "members":{
+        "name":{
+          "shape":"BillingFeatureFilterName",
+          "documentation":"<p>The filter name. Currently the only supported value is <code>PREFERENCE_KEY</code>.</p>"
+        },
+        "value":{
+          "shape":"BillingFeatureFilterValues",
+          "documentation":"<p>The filter values to match. For <code>PREFERENCE_KEY</code>, supply 1 to 10 preference key values to match.</p>"
+        }
+      },
+      "documentation":"<p>A filter that narrows the set of preferences returned by <code>GetBillingPreferences</code>.</p>"
+    },
+    "BillingFeatureFilterName":{
+      "type":"string",
+      "enum":["PREFERENCE_KEY"]
+    },
+    "BillingFeatureFilterValue":{
+      "type":"string",
+      "max":100,
+      "min":1,
+      "pattern":"[a-zA-Z0-9-/]+"
+    },
+    "BillingFeatureFilterValues":{
+      "type":"list",
+      "member":{"shape":"BillingFeatureFilterValue"},
+      "max":10,
+      "min":1
+    },
+    "BillingMonth":{
+      "type":"string",
+      "max":7,
+      "min":1
+    },
+    "BillingPeriod":{
+      "type":"structure",
+      "required":[
+        "year",
+        "month"
+      ],
+      "members":{
+        "year":{
+          "shape":"BillingYear",
+          "documentation":"<p>The four-digit year of the billing period.</p>"
+        },
+        "month":{
+          "shape":"Month",
+          "documentation":"<p>The month of the billing period as an integer between 1 and 12.</p>"
+        }
+      },
+      "documentation":"<p>A specific billing period identified by year and month.</p>"
+    },
+    "BillingPreferenceForKey":{
+      "type":"structure",
+      "required":[
+        "key",
+        "value"
+      ],
+      "members":{
+        "key":{
+          "shape":"PreferenceKey",
+          "documentation":"<p>The preference key. Format depends on the feature being updated.</p>"
+        },
+        "value":{
+          "shape":"PreferenceValue",
+          "documentation":"<p>The preference value. Valid values: <code>ENABLED</code> or <code>DISABLED</code>.</p>"
+        }
+      },
+      "documentation":"<p>A single key/value entry used to update a billing preference.</p>"
+    },
+    "BillingPreferenceSummary":{
+      "type":"structure",
+      "required":[
+        "feature",
+        "key",
+        "value"
+      ],
+      "members":{
+        "feature":{
+          "shape":"BillingFeature",
+          "documentation":"<p>The feature this preference belongs to.</p>"
+        },
+        "key":{
+          "shape":"PreferenceKey",
+          "documentation":"<p>The preference key. Format depends on the feature.</p>"
+        },
+        "value":{
+          "shape":"PreferenceValue",
+          "documentation":"<p>The preference value. Valid values: <code>ENABLED</code> or <code>DISABLED</code>.</p>"
+        },
+        "accountName":{
+          "shape":"AccountName",
+          "documentation":"<p>The display name of the account. Populated together with <code>accountId</code>; <code>null</code> otherwise.</p>"
+        },
+        "accountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The associated Amazon Web Services account ID. Populated for account-list keys; <code>null</code> otherwise.</p>"
+        },
+        "billingPeriod":{
+          "shape":"BillingPeriod",
+          "documentation":"<p>The billing period associated with the preference change. Populated only for the history features <code>RI_SHARING_HISTORY</code> and <code>CREDIT_SHARING_HISTORY</code>.</p>"
+        }
+      },
+      "documentation":"<p>A single billing preference entry returned by <code>GetBillingPreferences</code>.</p>"
+    },
+    "BillingPreferences":{
+      "type":"list",
+      "member":{"shape":"BillingPreferenceSummary"}
+    },
+    "BillingPreferencesPerKey":{
+      "type":"list",
+      "member":{"shape":"BillingPreferenceForKey"},
+      "min":1
+    },
+    "BillingViewArn":{
+      "type":"string",
+      "pattern":"arn:aws[a-z-]*:(billing)::[0-9]{12}:billingview/[a-zA-Z0-9/:_\\+=\\.\\-@]{0,75}[a-zA-Z0-9]"
+    },
+    "BillingViewArnList":{
+      "type":"list",
+      "member":{"shape":"BillingViewArn"},
+      "max":10,
+      "min":0
+    },
+    "BillingViewDescription":{
+      "type":"string",
+      "max":1024,
+      "min":0,
+      "pattern":"([ a-zA-Z0-9_\\+=\\.\\-@]+)?",
+      "sensitive":true
+    },
+    "BillingViewElement":{
+      "type":"structure",
+      "members":{
+        "arn":{
+          "shape":"BillingViewArn",
+          "documentation":"<p> The Amazon Resource Name (ARN) that can be used to uniquely identify the billing view. </p>"
+        },
+        "name":{
+          "shape":"BillingViewName",
+          "documentation":"<p> The account name of the billing view. </p>"
+        },
+        "description":{
+          "shape":"BillingViewDescription",
+          "documentation":"<p> The description of the billing view. </p>"
+        },
+        "billingViewType":{
+          "shape":"BillingViewType",
+          "documentation":"<p>The type of billing group. </p>"
+        },
+        "ownerAccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The account owner of the billing view. </p>"
+        },
+        "sourceAccountId":{
+          "shape":"AccountId",
+          "documentation":"<p> The Amazon Web Services account ID that owns the source billing view, if this is a derived billing view. </p>"
+        },
+        "dataFilterExpression":{
+          "shape":"Expression",
+          "documentation":"<p> See <a href=\"https://docs.aws.amazon.com/aws-cost-management/latest/APIReference/API_billing_Expression.html\">Expression</a>. Billing view only supports <code>LINKED_ACCOUNT</code>, <code>Tags</code>, and <code>CostCategories</code>. </p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the billing view was created. </p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the billing view was last updated. </p>"
+        },
+        "derivedViewCount":{
+          "shape":"Integer",
+          "documentation":"<p> The number of billing views that use this billing view as a source. </p>"
+        },
+        "sourceViewCount":{
+          "shape":"Integer",
+          "documentation":"<p> The number of source views associated with this billing view. </p>"
+        },
+        "viewDefinitionLastUpdatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p> The timestamp of when the billing view definition was last updated. </p>"
+        },
+        "healthStatus":{
+          "shape":"BillingViewHealthStatus",
+          "documentation":"<p> The current health status of the billing view. </p>"
+        }
+      },
+      "documentation":"<p>The metadata associated to the billing view. </p>"
+    },
+    "BillingViewHealthStatus":{
+      "type":"structure",
+      "members":{
+        "statusCode":{
+          "shape":"BillingViewStatus",
+          "documentation":"<p>The current health status code of the billing view.</p>"
+        },
+        "statusReasons":{
+          "shape":"BillingViewStatusReasons",
+          "documentation":"<p>A list of reasons explaining the current health status, if applicable.</p>"
+        }
+      },
+      "documentation":"<p> Represents the health status of a billing view, including a status code and optional reasons for the status. </p>"
+    },
+    "BillingViewHealthStatusException":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{"shape":"ErrorMessage"}
+      },
+      "documentation":"<p> Exception thrown when a billing view's health status prevents an operation from being performed. This may occur if the billing view is in a state other than <code>HEALTHY</code>.</p>",
+      "exception":true
+    },
+    "BillingViewList":{
+      "type":"list",
+      "member":{"shape":"BillingViewListElement"}
+    },
+    "BillingViewListElement":{
+      "type":"structure",
+      "members":{
+        "arn":{
+          "shape":"BillingViewArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) that can be used to uniquely identify the billing view. </p>"
+        },
+        "name":{
+          "shape":"BillingViewName",
+          "documentation":"<p> A list of names of the Billing view. </p>"
+        },
+        "description":{
+          "shape":"BillingViewDescription",
+          "documentation":"<p> The description of the billing view. </p>"
+        },
+        "ownerAccountId":{
+          "shape":"AccountId",
+          "documentation":"<p> The list of owners of the Billing view. </p>"
+        },
+        "sourceAccountId":{
+          "shape":"AccountId",
+          "documentation":"<p> The Amazon Web Services account ID that owns the source billing view, if this is a derived billing view. </p>"
+        },
+        "billingViewType":{
+          "shape":"BillingViewType",
+          "documentation":"<p>The type of billing view.</p>"
+        },
+        "healthStatus":{
+          "shape":"BillingViewHealthStatus",
+          "documentation":"<p> The current health status of the billing view. </p>"
+        }
+      },
+      "documentation":"<p>A representation of a billing view.</p>"
+    },
+    "BillingViewName":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"[ a-zA-Z0-9_\\+=\\.\\-@]+",
+      "sensitive":true
+    },
+    "BillingViewSourceViewsList":{
+      "type":"list",
+      "member":{"shape":"BillingViewArn"},
+      "max":10,
+      "min":1
+    },
+    "BillingViewStatus":{
+      "type":"string",
+      "enum":[
+        "HEALTHY",
+        "UNHEALTHY",
+        "CREATING",
+        "UPDATING"
+      ]
+    },
+    "BillingViewStatusReason":{
+      "type":"string",
+      "enum":[
+        "SOURCE_VIEW_UNHEALTHY",
+        "SOURCE_VIEW_UPDATING",
+        "SOURCE_VIEW_ACCESS_DENIED",
+        "SOURCE_VIEW_NOT_FOUND",
+        "CYCLIC_DEPENDENCY",
+        "SOURCE_VIEW_DEPTH_EXCEEDED",
+        "AGGREGATE_SOURCE",
+        "VIEW_OWNER_NOT_MANAGEMENT_ACCOUNT"
+      ]
+    },
+    "BillingViewStatusReasons":{
+      "type":"list",
+      "member":{"shape":"BillingViewStatusReason"}
+    },
+    "BillingViewType":{
+      "type":"string",
+      "enum":[
+        "PRIMARY",
+        "BILLING_GROUP",
+        "CUSTOM",
+        "BILLING_TRANSFER",
+        "BILLING_TRANSFER_SHOWBACK"
+      ]
+    },
+    "BillingViewTypeList":{
+      "type":"list",
+      "member":{"shape":"BillingViewType"}
+    },
+    "BillingViewsMaxResults":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "BillingYear":{
+      "type":"integer",
+      "box":true,
+      "max":2120,
+      "min":2005
+    },
+    "Boolean":{
+      "type":"boolean",
+      "box":true
+    },
+    "ChargeAccount":{
+      "type":"structure",
+      "required":[
+        "accountId",
+        "chargePercentage"
+      ],
+      "members":{
+        "accountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The account ID.</p>"
+        },
+        "chargePercentage":{
+          "shape":"String",
+          "documentation":"<p>The percentage of the total Support charge allocated to this account. This is 0.0 when supportAllocationMethod = Proportional.</p>"
+        }
+      },
+      "documentation":"<p>An account that is charged all or a portion of the total Support charge and the percentage of the charge allocated to it.</p>"
+    },
+    "ChargeAccountList":{
+      "type":"list",
+      "member":{"shape":"ChargeAccount"},
+      "documentation":"<p>A list of charge accounts.</p>",
+      "max":1000,
+      "min":0
+    },
+    "ClientToken":{
+      "type":"string",
+      "pattern":"[a-zA-Z0-9-]+"
+    },
+    "ConflictException":{
+      "type":"structure",
+      "required":[
+        "message",
+        "resourceId",
+        "resourceType"
+      ],
+      "members":{
+        "message":{"shape":"ErrorMessage"},
+        "resourceId":{
+          "shape":"ResourceId",
+          "documentation":"<p> The identifier for the service resource associated with the request. </p>"
+        },
+        "resourceType":{
+          "shape":"ResourceType",
+          "documentation":"<p> The type of resource associated with the request. </p>"
+        }
+      },
+      "documentation":"<p> The requested operation would cause a conflict with the current state of a service resource associated with the request. Resolve the conflict before retrying this request. </p>",
+      "exception":true
+    },
+    "ContractAccount":{
+      "type":"structure",
+      "required":[
+        "accountId",
+        "isGdn"
+      ],
+      "members":{
+        "accountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The account ID.</p>"
+        },
+        "isGdn":{
+          "shape":"Boolean",
+          "documentation":"<p>When true, Support charges are calculated on charges before private discounts. When false, they are calculated after private discounts.</p>"
+        }
+      },
+      "documentation":"<p>An account that is covered by the Enterprise Support contract.</p>"
+    },
+    "ContractAccountList":{
+      "type":"list",
+      "member":{"shape":"ContractAccount"},
+      "documentation":"<p>A list of accounts that appear in the Enterprise Support Contract.</p>",
+      "max":2000,
+      "min":0
+    },
+    "CostCategoryName":{
+      "type":"string",
+      "max":50,
+      "min":1,
+      "pattern":"(?! )[\\p{L}\\p{N}\\p{Z}-_]*(?<! )"
+    },
+    "CostCategoryValues":{
+      "type":"structure",
+      "required":[
+        "key",
+        "values"
+      ],
+      "members":{
+        "key":{
+          "shape":"CostCategoryName",
+          "documentation":"<p> The unique name of the Cost Category. </p>"
+        },
+        "values":{
+          "shape":"Values",
+          "documentation":"<p> The specific value of the Cost Category. </p>"
+        }
+      },
+      "documentation":"<p> The Cost Categories values used for filtering the costs. </p>"
+    },
+    "CreateBillingViewRequest":{
+      "type":"structure",
+      "required":[
+        "name",
+        "sourceViews"
+      ],
+      "members":{
+        "name":{
+          "shape":"BillingViewName",
+          "documentation":"<p> The name of the billing view. </p>"
+        },
+        "description":{
+          "shape":"BillingViewDescription",
+          "documentation":"<p> The description of the billing view. </p>"
+        },
+        "sourceViews":{
+          "shape":"BillingViewSourceViewsList",
+          "documentation":"<p>A list of billing views used as the data source for the custom billing view.</p>"
+        },
+        "dataFilterExpression":{
+          "shape":"Expression",
+          "documentation":"<p> See <a href=\"https://docs.aws.amazon.com/aws-cost-management/latest/APIReference/API_billing_Expression.html\">Expression</a>. Billing view only supports <code>LINKED_ACCOUNT</code>, <code>Tags</code>, and <code>CostCategories</code>. </p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier you specify to ensure idempotency of the request. Idempotency ensures that an API request completes no more than one time. If the original request completes successfully, any subsequent retries complete successfully without performing any further actions with an idempotent request. </p>",
+          "idempotencyToken":true
+        },
+        "resourceTags":{
+          "shape":"ResourceTagList",
+          "documentation":"<p>A list of key value map specifying tags associated to the billing view being created. </p>"
+        }
+      }
+    },
+    "CreateBillingViewResponse":{
+      "type":"structure",
+      "required":["arn"],
+      "members":{
+        "arn":{
+          "shape":"BillingViewArn",
+          "documentation":"<p> The Amazon Resource Name (ARN) that can be used to uniquely identify the billing view. </p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p> The time when the billing view was created. </p>"
+        }
+      }
+    },
+    "CreditAllocationHistoryEntry":{
+      "type":"structure",
+      "required":[
+        "creditId",
+        "creditAmount",
+        "accountId",
+        "appliedServiceName",
+        "billingMonth",
+        "isEstimatedBill"
+      ],
+      "members":{
+        "creditId":{
+          "shape":"CreditId",
+          "documentation":"<p>The identifier of the credit that was applied.</p>"
+        },
+        "creditAmount":{
+          "shape":"Amount",
+          "documentation":"<p>The amount of credit applied. Negative values represent credits that reduced the bill.</p>"
+        },
+        "description":{
+          "shape":"String",
+          "documentation":"<p>A human-readable description of the credit allocation.</p>"
+        },
+        "accountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The Amazon Web Services account the credit was applied to.</p>"
+        },
+        "appliedServiceName":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services service the credit was applied to.</p>"
+        },
+        "billingMonth":{
+          "shape":"BillingMonth",
+          "documentation":"<p>The billing month of the application in <code>YYYY-MM</code> format.</p>"
+        },
+        "isEstimatedBill":{
+          "shape":"Boolean",
+          "documentation":"<p> <code>true</code> when the entry was applied to an in-flight bill that has not yet been finalized.</p>"
+        }
+      },
+      "documentation":"<p>A single entry in the credit allocation history, representing how a credit was applied to a specific service during a billing month.</p>"
+    },
+    "CreditAllocationHistoryList":{
+      "type":"list",
+      "member":{"shape":"CreditAllocationHistoryEntry"}
+    },
+    "CreditData":{
+      "type":"structure",
+      "required":[
+        "creditId",
+        "accountId",
+        "creditType",
+        "initialAmount",
+        "remainingAmount",
+        "description",
+        "startDate"
+      ],
+      "members":{
+        "creditId":{
+          "shape":"CreditId",
+          "documentation":"<p>The unique identifier for the credit.</p>"
+        },
+        "accountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The Amazon Web Services account ID that owns the credit.</p>"
+        },
+        "creditType":{
+          "shape":"String",
+          "documentation":"<p>The type of credit. Examples: <code>Promotion</code>, <code>Refund</code>, <code>TrueUp</code>.</p>"
+        },
+        "initialAmount":{
+          "shape":"Amount",
+          "documentation":"<p>The initial amount of the credit when it was issued.</p>"
+        },
+        "remainingAmount":{
+          "shape":"Amount",
+          "documentation":"<p>The unused balance of the credit.</p>"
+        },
+        "estimatedAmount":{
+          "shape":"Amount",
+          "documentation":"<p>The estimated remaining balance, including in-flight (open) bills that have not yet been finalized.</p>"
+        },
+        "applicableProductNames":{
+          "shape":"ProductNames",
+          "documentation":"<p>The names of Amazon Web Services services this credit applies to.</p>"
+        },
+        "description":{
+          "shape":"String",
+          "documentation":"<p>A human-readable description of the credit.</p>"
+        },
+        "startDate":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date the credit becomes valid, as Unix epoch seconds.</p>"
+        },
+        "endDate":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date the credit expires, as Unix epoch seconds.</p>"
+        },
+        "exhaustDate":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date the credit balance reached zero, as Unix epoch seconds.</p>"
+        },
+        "applicationType":{
+          "shape":"ApplicationType",
+          "documentation":"<p>When the credit is applied during bill computation. Valid values: <code>BEFORE_CROSS_SERVICE_DISCOUNTS</code>, <code>AFTER_DISCOUNTS</code>.</p>"
+        },
+        "shareableAccounts":{
+          "shape":"ShareableAccountIds",
+          "documentation":"<p>The Amazon Web Services account IDs entitled to apply this credit.</p>"
+        },
+        "accountHasCreditSharingEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether the owning account has account-level credit sharing turned on.</p>"
+        },
+        "creditConsoleVisibility":{
+          "shape":"String",
+          "documentation":"<p>The display configuration for the credit in the Amazon Web Services Billing console.</p>"
+        },
+        "creditSharingType":{
+          "shape":"CreditSharingType",
+          "documentation":"<p>The sharing configuration for the credit. Valid values: <code>DEFAULT</code>, <code>DISABLED</code>, <code>CUSTOM</code>, <code>COST_CATEGORY_RULE</code>.</p>"
+        },
+        "costCategoryArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Cost Category controlling the credit's sharing scope. Present only when <code>creditSharingType</code> is <code>COST_CATEGORY_RULE</code>.</p>"
+        },
+        "ruleName":{
+          "shape":"String",
+          "documentation":"<p>The rule name within the Cost Category. Present only when <code>creditSharingType</code> is <code>COST_CATEGORY_RULE</code>.</p>"
+        },
+        "creditStatus":{
+          "shape":"CreditStatus",
+          "documentation":"<p>Whether the credit participates in billing runs. Valid values: <code>ENABLED</code>, <code>DISABLED</code>.</p>"
+        },
+        "purchaseTypeApplications":{
+          "shape":"PurchaseTypeApplications",
+          "documentation":"<p>Restricts which purchase types this credit applies to. When <code>null</code> or omitted, the credit applies to all purchase types.</p>"
+        }
+      },
+      "documentation":"<p>Detailed information about an Amazon Web Services credit, including its identifier, type, monetary amounts, applicable products, sharing configuration, and current enabled status.</p>"
+    },
+    "CreditDataList":{
+      "type":"list",
+      "member":{"shape":"CreditData"}
+    },
+    "CreditId":{
+      "type":"string",
+      "max":32,
+      "min":1,
+      "pattern":"[0-9]+"
+    },
+    "CreditSharingType":{
+      "type":"string",
+      "enum":[
+        "DEFAULT",
+        "DISABLED",
+        "CUSTOM",
+        "COST_CATEGORY_RULE"
+      ]
+    },
+    "CreditStatus":{
+      "type":"string",
+      "enum":[
+        "ENABLED",
+        "DISABLED"
+      ]
+    },
+    "CurrencyAmount":{
+      "type":"string",
+      "pattern":"[0-9]+(.[0-9]+)"
+    },
+    "CurrencyCode":{
+      "type":"string",
+      "pattern":"[A-Z]{3}"
+    },
+    "DeleteBillingViewRequest":{
+      "type":"structure",
+      "required":["arn"],
+      "members":{
+        "arn":{
+          "shape":"BillingViewArn",
+          "documentation":"<p> The Amazon Resource Name (ARN) that can be used to uniquely identify the billing view. </p>"
+        },
+        "force":{
+          "shape":"Boolean",
+          "documentation":"<p> If set to true, forces deletion of the billing view even if it has derived resources (e.g. other billing views or budgets). Use with caution as this may break dependent resources. </p>"
+        }
+      }
+    },
+    "DeleteBillingViewResponse":{
+      "type":"structure",
+      "required":["arn"],
+      "members":{
+        "arn":{
+          "shape":"BillingViewArn",
+          "documentation":"<p> The Amazon Resource Name (ARN) that can be used to uniquely identify the billing view. </p>"
+        }
+      }
+    },
+    "Dimension":{
+      "type":"string",
+      "enum":["LINKED_ACCOUNT"]
+    },
+    "DimensionValues":{
+      "type":"structure",
+      "required":[
+        "key",
+        "values"
+      ],
+      "members":{
+        "key":{
+          "shape":"Dimension",
+          "documentation":"<p> The names of the metadata types that you can use to filter and group your results. </p>"
+        },
+        "values":{
+          "shape":"Values",
+          "documentation":"<p> The metadata values that you can use to filter and group your results. </p>"
+        }
+      },
+      "documentation":"<p> The metadata that you can use to filter and group your results. </p>"
+    },
+    "DisassociateSourceViewsRequest":{
+      "type":"structure",
+      "required":[
+        "arn",
+        "sourceViews"
+      ],
+      "members":{
+        "arn":{
+          "shape":"BillingViewArn",
+          "documentation":"<p> The Amazon Resource Name (ARN) of the billing view to disassociate source views from. </p>"
+        },
+        "sourceViews":{
+          "shape":"BillingViewSourceViewsList",
+          "documentation":"<p> A list of ARNs of the source billing views to disassociate. </p>"
+        }
+      }
+    },
+    "DisassociateSourceViewsResponse":{
+      "type":"structure",
+      "required":["arn"],
+      "members":{
+        "arn":{
+          "shape":"BillingViewArn",
+          "documentation":"<p> The ARN of the billing view that the source views were disassociated from. </p>"
+        }
+      }
+    },
+    "EnterpriseSupportBillingMonth":{
+      "type":"string",
+      "documentation":"<p>The billing month in YYYY-MM format. This must be a month in the past.</p>",
+      "pattern":"\\d{4}-(0[1-9]|1[0-2])"
+    },
+    "EnterpriseSupportTimePeriod":{
+      "type":"structure",
+      "required":["beginDate"],
+      "members":{
+        "beginDate":{
+          "shape":"Timestamp",
+          "documentation":"<p>The begin date of the time period.</p>"
+        },
+        "endDate":{
+          "shape":"Timestamp",
+          "documentation":"<p>The end date of the time period.</p>"
+        }
+      },
+      "documentation":"<p>A time period for Enterprise Support billing.</p>"
+    },
+    "ErrorMessage":{
+      "type":"string",
+      "max":1024,
+      "min":0
+    },
+    "Expression":{
+      "type":"structure",
+      "members":{
+        "dimensions":{
+          "shape":"DimensionValues",
+          "documentation":"<p> The specific <code>Dimension</code> to use for <code>Expression</code>. </p>"
+        },
+        "tags":{
+          "shape":"TagValues",
+          "documentation":"<p> The specific <code>Tag</code> to use for <code>Expression</code>. </p>"
+        },
+        "costCategories":{
+          "shape":"CostCategoryValues",
+          "documentation":"<p> The filter that's based on <code>CostCategory</code> values. </p>"
+        },
+        "timeRange":{
+          "shape":"TimeRange",
+          "documentation":"<p> Specifies a time range filter for the billing view data. </p>"
+        }
+      },
+      "documentation":"<p> See <a href=\"https://docs.aws.amazon.com/aws-cost-management/latest/APIReference/API_billing_Expression.html\">Expression</a>. Billing view only supports <code>LINKED_ACCOUNT</code>, <code>Tags</code>, and <code>CostCategories</code>. </p>"
+    },
+    "FailedMonthsList":{
+      "type":"list",
+      "member":{"shape":"BillingMonth"}
+    },
+    "FieldName":{
+      "type":"string",
+      "max":100,
+      "min":0
+    },
+    "GetBillingPreferencesRequest":{
+      "type":"structure",
+      "required":["features"],
+      "members":{
+        "nextToken":{
+          "shape":"PageToken",
+          "documentation":"<p>Pagination token from a previous response. Pass the value returned in <code>nextToken</code> to retrieve the next page of results.</p>"
+        },
+        "maxResults":{
+          "shape":"GetBillingPreferencesRequestMaxResultsInteger",
+          "documentation":"<p>The maximum number of records to return per page. Range: 1 to 50. Default: 50.</p>"
+        },
+        "features":{
+          "shape":"GetBillingPreferencesRequestFeaturesList",
+          "documentation":"<p>The feature to retrieve. Specify exactly one value. Valid values: <code>BILLING_ALERTS</code>, <code>RI_SHARING</code>, <code>RI_SHARING_HISTORY</code>, <code>CREDIT_SHARING</code>, <code>CREDIT_SHARING_HISTORY</code>, <code>CREDIT_LEVEL_SHARING</code>, <code>CREDIT_PREFERENCE_OPTIONS</code>.</p>"
+        },
+        "filters":{
+          "shape":"GetBillingPreferencesRequestFiltersList",
+          "documentation":"<p>Filters to narrow results. Specify exactly one filter when supplied. The supported filter name is <code>PREFERENCE_KEY</code>, which accepts 1 to 10 values to match preference keys.</p>"
+        }
+      }
+    },
+    "GetBillingPreferencesRequestFeaturesList":{
+      "type":"list",
+      "member":{"shape":"BillingFeature"},
+      "max":1,
+      "min":1
+    },
+    "GetBillingPreferencesRequestFiltersList":{
+      "type":"list",
+      "member":{"shape":"BillingFeatureFilter"},
+      "max":1,
+      "min":1
+    },
+    "GetBillingPreferencesRequestMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":50,
+      "min":1
+    },
+    "GetBillingPreferencesResponse":{
+      "type":"structure",
+      "required":["billingPreferences"],
+      "members":{
+        "billingPreferences":{
+          "shape":"BillingPreferences",
+          "documentation":"<p>The list of preference entries matching the request.</p>"
+        },
+        "nextToken":{
+          "shape":"PageToken",
+          "documentation":"<p>Pagination token. Present when more pages are available; <code>null</code> when there are no more results.</p>"
+        }
+      }
+    },
+    "GetBillingViewRequest":{
+      "type":"structure",
+      "required":["arn"],
+      "members":{
+        "arn":{
+          "shape":"BillingViewArn",
+          "documentation":"<p> The Amazon Resource Name (ARN) that can be used to uniquely identify the billing view. </p>"
+        }
+      }
+    },
+    "GetBillingViewResponse":{
+      "type":"structure",
+      "required":["billingView"],
+      "members":{
+        "billingView":{
+          "shape":"BillingViewElement",
+          "documentation":"<p>The billing view element associated with the specified ARN. </p>"
+        }
+      }
+    },
+    "GetCreditAllocationHistoryRequest":{
+      "type":"structure",
+      "required":[
+        "accountId",
+        "startDate",
+        "endDate"
+      ],
+      "members":{
+        "accountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The Amazon Web Services account ID whose allocation history to retrieve. Must be a 12-digit numeric string.</p>"
+        },
+        "creditId":{
+          "shape":"Long",
+          "documentation":"<p>Filters the result to a single credit. When omitted, returns allocation entries for all credits.</p>"
+        },
+        "startDate":{
+          "shape":"Timestamp",
+          "documentation":"<p>Inclusive start date as Unix epoch seconds. Must be on or before <code>endDate</code>. The range from <code>startDate</code> to <code>endDate</code> cannot exceed 24 billing months.</p>"
+        },
+        "endDate":{
+          "shape":"Timestamp",
+          "documentation":"<p>Inclusive end date as Unix epoch seconds.</p>"
+        },
+        "nextToken":{
+          "shape":"PageToken",
+          "documentation":"<p>Pagination token from a previous response. Pass the value returned in <code>nextToken</code> to retrieve the next page of results.</p>"
+        },
+        "maxResults":{
+          "shape":"GetCreditAllocationHistoryRequestMaxResultsInteger",
+          "documentation":"<p>The maximum number of records to return per page. Range: 1 to 1000. Default: 100.</p>"
+        }
+      }
+    },
+    "GetCreditAllocationHistoryRequestMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":1000,
+      "min":1
+    },
+    "GetCreditAllocationHistoryResponse":{
+      "type":"structure",
+      "required":["partialResults"],
+      "members":{
+        "creditAllocationHistoryList":{
+          "shape":"CreditAllocationHistoryList",
+          "documentation":"<p>Allocation entries sorted by <code>billingMonth</code> in descending order.</p>"
+        },
+        "partialResults":{
+          "shape":"Boolean",
+          "documentation":"<p> <code>true</code> when data could not be retrieved for one or more billing months. The <code>failedMonths</code> field lists which months are missing.</p>"
+        },
+        "failedMonths":{
+          "shape":"FailedMonthsList",
+          "documentation":"<p>Billing months in <code>YYYY-MM</code> format that failed to return data. Non-empty only when <code>partialResults</code> is <code>true</code>.</p>"
+        },
+        "nextToken":{
+          "shape":"PageToken",
+          "documentation":"<p>Pagination token. Present when more pages are available; <code>null</code> when there are no more results.</p>"
+        }
+      }
+    },
+    "GetCreditsRequest":{
+      "type":"structure",
+      "required":[
+        "accountId",
+        "startDate"
+      ],
+      "members":{
+        "accountId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services account ID. Must be a 12-digit numeric string.</p>"
+        },
+        "startDate":{
+          "shape":"Timestamp",
+          "documentation":"<p>The start date for the credit period as Unix epoch seconds. Must be a past date that is not more than one year before the current date.</p>"
+        },
+        "endDate":{
+          "shape":"Timestamp",
+          "documentation":"<p>The end date for the credit period as Unix epoch seconds. Must not be a future date and must be on or after <code>startDate</code>. Defaults to the current date when omitted.</p>"
+        },
+        "payerAccountFlag":{
+          "shape":"Boolean",
+          "documentation":"<p>When <code>true</code> and the caller is the management account, the response aggregates credits across the entire consolidated billing family. When <code>false</code> or omitted, returns only credits for the specified <code>accountId</code>.</p>"
+        }
+      }
+    },
+    "GetCreditsResponse":{
+      "type":"structure",
+      "members":{
+        "credits":{
+          "shape":"CreditDataList",
+          "documentation":"<p>The list of credits matching the request. Returns an empty list when no credits exist.</p>"
+        }
+      }
+    },
+    "GetEnterpriseSupportChargeSummaryRequest":{
+      "type":"structure",
+      "required":["billingMonth"],
+      "members":{
+        "billingMonth":{
+          "shape":"EnterpriseSupportBillingMonth",
+          "documentation":"<p>The billing month in YYYY-MM format. This must be a month in the past.</p>"
+        }
+      },
+      "documentation":"<p>The request structure for GetEnterpriseSupportChargeSummary.</p>"
+    },
+    "GetEnterpriseSupportChargeSummaryResponse":{
+      "type":"structure",
+      "required":[
+        "payerAccountId",
+        "billingMonth",
+        "billingPeriodStartDate",
+        "billingPeriodEndDate",
+        "isEstimated",
+        "billDate",
+        "supportCharge",
+        "totalSupportCharge",
+        "supportDiscount",
+        "totalSupportEligibleSpend",
+        "totalSupportEligibleUsageSpend",
+        "totalSupportEligibleReservedInstanceSpend",
+        "totalSupportEligibleSavingsPlanSpend",
+        "supportChargePercentage",
+        "supportEffectivePricingPlan"
+      ],
+      "members":{
+        "payerAccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The payer account ID that is authorized to view Enterprise Support data for all accounts in its Support profile.</p>"
+        },
+        "billingMonth":{
+          "shape":"EnterpriseSupportBillingMonth",
+          "documentation":"<p>The billing month in YYYY-MM format. This must be a month in the past.</p>"
+        },
+        "billingPeriodStartDate":{
+          "shape":"Timestamp",
+          "documentation":"<p>The start date of the billing period.</p>"
+        },
+        "billingPeriodEndDate":{
+          "shape":"Timestamp",
+          "documentation":"<p>The end date of the billing period.</p>"
+        },
+        "isEstimated":{
+          "shape":"Boolean",
+          "documentation":"<p>When true, the Support charge amount is estimated. When false, the Support charge amount is finalized.</p>"
+        },
+        "billDate":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date the bill was generated.</p>"
+        },
+        "supportCharge":{
+          "shape":"String",
+          "documentation":"<p>The Support charge amount for the account.</p>"
+        },
+        "totalSupportCharge":{
+          "shape":"String",
+          "documentation":"<p>The total Support charge amount for all accounts in the Support profile.</p>"
+        },
+        "supportDiscount":{
+          "shape":"String",
+          "documentation":"<p>The support discount amount.</p>"
+        },
+        "totalSupportEligibleSpend":{
+          "shape":"String",
+          "documentation":"<p>The total Support-eligible Spend from all accounts in the Support profile. This includes eligible spend from usage of Amazon Web Services, Reserved Instances, and Savings Plans.</p>"
+        },
+        "totalSupportEligibleUsageSpend":{
+          "shape":"String",
+          "documentation":"<p>The total Support-eligible spend from usage of Amazon Web Services from all accounts in the Support profile.</p>"
+        },
+        "totalSupportEligibleReservedInstanceSpend":{
+          "shape":"String",
+          "documentation":"<p>The total Support-eligible Reserved Instance spend from all accounts in the Support profile.</p>"
+        },
+        "totalSupportEligibleSavingsPlanSpend":{
+          "shape":"String",
+          "documentation":"<p>The total Support-eligible Savings Plan spend from all accounts in the Support profile.</p>"
+        },
+        "supportChargePercentage":{
+          "shape":"String",
+          "documentation":"<p>The percentage applied to the total Support-eligible spend to calculate the total Support charge across all accounts in the Support profile.</p>"
+        },
+        "supportEffectivePricingPlan":{
+          "shape":"PricingPlan",
+          "documentation":"<p>The effective pricing plan used for the support charge calculation.</p>"
+        }
+      },
+      "documentation":"<p>The response structure for GetEnterpriseSupportChargeSummary.</p>"
+    },
+    "GetEnterpriseSupportContractDetailsRequest":{
+      "type":"structure",
+      "required":["billingMonth"],
+      "members":{
+        "billingMonth":{
+          "shape":"EnterpriseSupportBillingMonth",
+          "documentation":"<p>The billing month in YYYY-MM format. This must be a month in the past.</p>"
+        }
+      },
+      "documentation":"<p>The request structure for GetEnterpriseSupportContractDetails.</p>"
+    },
+    "GetEnterpriseSupportContractDetailsResponse":{
+      "type":"structure",
+      "required":[
+        "supportAllocationMethod",
+        "contractPayerAccountIds",
+        "chargedPayerAccountIds",
+        "pricingPlans"
+      ],
+      "members":{
+        "isContractActive":{
+          "shape":"Boolean",
+          "documentation":"<p>When true, the Enterprise Support contract is active. When false, the Enterprise Support Contract is inactive.</p>"
+        },
+        "supportAllocationMethod":{
+          "shape":"String",
+          "documentation":"<p>The method used to distribute the total Support charge amount across each account in the Support profile. Valid values: Proportional, Fixed_Percentage. Proportional means support charges are distributed to each account in proportion to its eligible Spend. Fixed_Percentage means support charges are distributed across accounts according to pre-configured percentages from the contract.</p>"
+        },
+        "supportReservedInstanceAmortizationStartDate":{
+          "shape":"Timestamp",
+          "documentation":"<p>When supportReservedInstanceTreatmentMethod = AmortizedCustom, only amortized fees for Reserved Instances purchased on or after this date are included in the calculation. This field is Null for all other treatment methods.</p>"
+        },
+        "supportReservedInstanceTreatmentMethod":{
+          "shape":"String",
+          "documentation":"<p>The method used to include Reserved Instance (RI) fees in the Enterprise Support charge calculation. Valid values: None (RI fees excluded from Support-eligible spend), Upfront (full upfront RI fees included in month of purchase), Amortized (RI fees spread over commitment term for RIs purchased on or after Support subscription start date), AmortizedCustom (same as Amortized but only for RIs purchased on or after a specified custom start date), AmortizedAll (RI fees amortized for all active RIs including those purchased before Support subscription started).</p>"
+        },
+        "supportSavingsPlansAmortizationStartDate":{
+          "shape":"Timestamp",
+          "documentation":"<p>This is applicable when supportSavingsPlansTreatmentMethod = Amortized and is Null for all other methods. It shows the start date from which Savings Plan fees are included in Support Eligible Spend.</p>"
+        },
+        "supportSavingsPlansTreatmentMethod":{
+          "shape":"String",
+          "documentation":"<p>The method used to include Savings Plans fees in Enterprise Support charge calculations. Valid values: None (Savings Plan fees excluded from Support-eligible spend), Upfront (full upfront Savings Plan fees included in month of purchase), Amortized (Savings Plan fees spread over commitment term for Savings Plans purchased on or after Support subscription start date), AmortizedCustom (same as Amortized but only for Savings Plans purchased on or after a specified custom start date), AmortizedAll (Savings Plan fees amortized for all active Savings Plans including those purchased before Support subscription started).</p>"
+        },
+        "supportProrateStartDate":{
+          "shape":"Timestamp",
+          "documentation":"<p>The start date for accounts subscribed or unsubscribed to Support billing during the billing month.</p>"
+        },
+        "contractPayerAccountIds":{
+          "shape":"ContractAccountList",
+          "documentation":"<p>The list of accounts covered by the Enterprise Support contract.</p>"
+        },
+        "chargedPayerAccountIds":{
+          "shape":"ChargeAccountList",
+          "documentation":"<p>The list of payer accounts and their charge allocation percentages.</p>"
+        },
+        "additionalSupportCharge":{
+          "shape":"AdditionalChargeList",
+          "documentation":"<p>Any Additional support charges applied to the contract.</p>"
+        },
+        "additionalSupportEligibleUsageSpend":{
+          "shape":"AdditionalChargeList",
+          "documentation":"<p>Any Additional support-eligible usage spend charges.</p>"
+        },
+        "pricingPlans":{
+          "shape":"PricingPlanList",
+          "documentation":"<p>The pricing plans associated with this Enterprise Support contract.</p>"
+        }
+      },
+      "documentation":"<p>The response structure for GetEnterpriseSupportContractDetails.</p>"
+    },
+    "GetResourcePolicyRequest":{
+      "type":"structure",
+      "required":["resourceArn"],
+      "members":{
+        "resourceArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the billing view resource to which the policy is attached to. </p>"
+        }
+      }
+    },
+    "GetResourcePolicyResponse":{
+      "type":"structure",
+      "required":["resourceArn"],
+      "members":{
+        "resourceArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the billing view resource to which the policy is attached to. </p>"
+        },
+        "policy":{
+          "shape":"PolicyDocument",
+          "documentation":"<p>The resource-based policy document attached to the resource in <code>JSON</code> format. </p>"
+        }
+      }
+    },
+    "Integer":{
+      "type":"integer",
+      "box":true
+    },
+    "InternalServerException":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{"shape":"ErrorMessage"}
+      },
+      "documentation":"<p>The request processing failed because of an unknown error, exception, or failure. </p>",
+      "exception":true,
+      "fault":true
+    },
+    "LinkedAccountCharge":{
+      "type":"structure",
+      "required":[
+        "accountId",
+        "payerAccountId",
+        "billableSeconds",
+        "totalSeconds",
+        "totalSupportEligibleSpend",
+        "proratedTotalSupportEligibleSpend"
+      ],
+      "members":{
+        "accountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The linked account ID.</p>"
+        },
+        "payerAccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The payer account ID that is authorized to view Enterprise Support data for all accounts in its Support profile.</p>"
+        },
+        "accountType":{
+          "shape":"String",
+          "documentation":"<p>The type of account.</p>"
+        },
+        "billableSeconds":{
+          "shape":"Long",
+          "documentation":"<p>The number of billable seconds in the billing period based on when the account was subscribed to Enterprise Support.</p>"
+        },
+        "totalSeconds":{
+          "shape":"Long",
+          "documentation":"<p>The total number of seconds in the billing period.</p>"
+        },
+        "totalSupportEligibleSpend":{
+          "shape":"String",
+          "documentation":"<p>The total support-eligible spend for this account.</p>"
+        },
+        "proratedTotalSupportEligibleSpend":{
+          "shape":"String",
+          "documentation":"<p>The prorated total support-eligible spend based on when the account was subscribed to Enterprise Support.</p>"
+        },
+        "linkedTimePeriods":{
+          "shape":"TimePeriodList",
+          "documentation":"<p>The time periods during which this account was linked.</p>"
+        },
+        "subscriptionTimePeriods":{
+          "shape":"TimePeriodList",
+          "documentation":"<p>The subscription time periods for this account.</p>"
+        },
+        "totalSupportEligibleReservedInstanceSpend":{
+          "shape":"String",
+          "documentation":"<p>The total support-eligible Reserved Instance spend for this account.</p>"
+        },
+        "totalSupportEligibleSavingsPlanSpend":{
+          "shape":"String",
+          "documentation":"<p>The total support-eligible Savings Plan spend for this account.</p>"
+        },
+        "supportEligibleSpendByService":{
+          "shape":"ServiceLevelAccountUsageList",
+          "documentation":"<p>The support-eligible spend broken down by service.</p>"
+        }
+      },
+      "documentation":"<p>Enterprise Support charges for a linked account.</p>"
+    },
+    "LinkedAccountChargeList":{
+      "type":"list",
+      "member":{"shape":"LinkedAccountCharge"},
+      "documentation":"<p>A list of linked account charges.</p>",
+      "max":100,
+      "min":0
+    },
+    "ListBillingViewsRequest":{
+      "type":"structure",
+      "members":{
+        "activeTimeRange":{
+          "shape":"ActiveTimeRange",
+          "documentation":"<p> The time range for the billing views listed. <code>PRIMARY</code> billing view is always listed. <code>BILLING_GROUP</code> billing views are listed for time ranges when the associated billing group resource in Billing Conductor is active. The time range must be within one calendar month. </p>"
+        },
+        "arns":{
+          "shape":"BillingViewArnList",
+          "documentation":"<p>The Amazon Resource Name (ARN) that can be used to uniquely identify the billing view. </p>"
+        },
+        "billingViewTypes":{
+          "shape":"BillingViewTypeList",
+          "documentation":"<p>The type of billing view.</p>"
+        },
+        "names":{
+          "shape":"StringSearches",
+          "documentation":"<p> Filters the list of billing views by name. You can specify search criteria to match billing view names based on the search option provided. </p>"
+        },
+        "ownerAccountId":{
+          "shape":"AccountId",
+          "documentation":"<p> The list of owners of the billing view. </p>"
+        },
+        "sourceAccountId":{
+          "shape":"AccountId",
+          "documentation":"<p> Filters the results to include only billing views that use the specified account as a source. </p>"
+        },
+        "maxResults":{
+          "shape":"BillingViewsMaxResults",
+          "documentation":"<p>The maximum number of billing views to retrieve. Default is 100. </p>"
+        },
+        "nextToken":{
+          "shape":"PageToken",
+          "documentation":"<p>The pagination token that is used on subsequent calls to list billing views.</p>"
+        }
+      }
+    },
+    "ListBillingViewsResponse":{
+      "type":"structure",
+      "required":["billingViews"],
+      "members":{
+        "billingViews":{
+          "shape":"BillingViewList",
+          "documentation":"<p>A list of <code>BillingViewListElement</code> retrieved.</p>"
+        },
+        "nextToken":{
+          "shape":"PageToken",
+          "documentation":"<p>The pagination token to use on subsequent calls to list billing views. </p>"
+        }
+      }
+    },
+    "ListEnterpriseSupportLinkedAccountChargesRequest":{
+      "type":"structure",
+      "required":["billingMonth"],
+      "members":{
+        "billingMonth":{
+          "shape":"EnterpriseSupportBillingMonth",
+          "documentation":"<p>The billing month in YYYY-MM format. This must be a month in the past.</p>"
+        },
+        "accountId":{
+          "shape":"AccountId",
+          "documentation":"<p>An optional linked account ID to filter results to a specific account.</p>"
+        },
+        "maxResults":{
+          "shape":"ListEnterpriseSupportLinkedAccountChargesRequestMaxResultsInteger",
+          "documentation":"<p>The maximum number of results to return per page.</p>"
+        },
+        "nextToken":{
+          "shape":"PageToken",
+          "documentation":"<p>The pagination token for the next page of results.</p>"
+        }
+      },
+      "documentation":"<p>The request structure for ListEnterpriseSupportLinkedAccountCharges.</p>"
+    },
+    "ListEnterpriseSupportLinkedAccountChargesRequestMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "ListEnterpriseSupportLinkedAccountChargesResponse":{
+      "type":"structure",
+      "required":["linkedAccount"],
+      "members":{
+        "linkedAccount":{
+          "shape":"LinkedAccountChargeList",
+          "documentation":"<p>The list of Enterprise Support charges per linked account.</p>"
+        },
+        "nextToken":{
+          "shape":"PageToken",
+          "documentation":"<p>The pagination token for the next page of results.</p>"
+        }
+      },
+      "documentation":"<p>The response structure for ListEnterpriseSupportLinkedAccountCharges.</p>"
+    },
+    "ListSourceViewsForBillingViewRequest":{
+      "type":"structure",
+      "required":["arn"],
+      "members":{
+        "arn":{
+          "shape":"BillingViewArn",
+          "documentation":"<p> The Amazon Resource Name (ARN) that can be used to uniquely identify the billing view. </p>"
+        },
+        "maxResults":{
+          "shape":"BillingViewsMaxResults",
+          "documentation":"<p> The number of entries a paginated response contains. </p>"
+        },
+        "nextToken":{
+          "shape":"PageToken",
+          "documentation":"<p> The pagination token that is used on subsequent calls to list billing views. </p>"
+        }
+      }
+    },
+    "ListSourceViewsForBillingViewResponse":{
+      "type":"structure",
+      "required":["sourceViews"],
+      "members":{
+        "sourceViews":{
+          "shape":"BillingViewSourceViewsList",
+          "documentation":"<p>A list of billing views used as the data source for the custom billing view. </p>"
+        },
+        "nextToken":{
+          "shape":"PageToken",
+          "documentation":"<p> The pagination token that is used on subsequent calls to list billing views. </p>"
+        }
+      }
+    },
+    "ListTagsForResourceRequest":{
+      "type":"structure",
+      "required":["resourceArn"],
+      "members":{
+        "resourceArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p> The Amazon Resource Name (ARN) of the resource. </p>"
+        }
+      }
+    },
+    "ListTagsForResourceResponse":{
+      "type":"structure",
+      "members":{
+        "resourceTags":{
+          "shape":"ResourceTagList",
+          "documentation":"<p> A list of tag key value pairs that are associated with the resource. </p>"
+        }
+      }
+    },
+    "Long":{
+      "type":"long",
+      "box":true
+    },
+    "Month":{
+      "type":"integer",
+      "box":true,
+      "max":12,
+      "min":1
+    },
+    "PageToken":{
+      "type":"string",
+      "max":4095,
+      "min":1,
+      "pattern":"[-a-zA-Z0-9+=/_]+"
+    },
+    "PolicyDocument":{"type":"string"},
+    "PreferenceKey":{
+      "type":"string",
+      "max":2148,
+      "min":1,
+      "pattern":"[a-zA-Z0-9-\\/\\*: ]+"
+    },
+    "PreferenceValue":{
+      "type":"string",
+      "enum":[
+        "ENABLED",
+        "DISABLED"
+      ]
+    },
+    "PricingPlan":{
+      "type":"structure",
+      "required":["tiers"],
+      "members":{
+        "pricingPlanId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier for the pricing plan.</p>"
+        },
+        "name":{
+          "shape":"String",
+          "documentation":"<p>The name of the pricing plan.</p>"
+        },
+        "description":{
+          "shape":"String",
+          "documentation":"<p>A description of the pricing plan.</p>"
+        },
+        "startDate":{
+          "shape":"Timestamp",
+          "documentation":"<p>The start date of the pricing plan.</p>"
+        },
+        "endDate":{
+          "shape":"Timestamp",
+          "documentation":"<p>The end date of the pricing plan.</p>"
+        },
+        "planDiscountPercent":{
+          "shape":"String",
+          "documentation":"<p>The discount percentage applied by this pricing plan.</p>"
+        },
+        "discountAppliesToMinimumCharge":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether the discount applies to the minimum Support charge.</p>"
+        },
+        "minimumCharge":{
+          "shape":"String",
+          "documentation":"<p>The minimum Support charge amount for this pricing plan.</p>"
+        },
+        "tiered":{
+          "shape":"String",
+          "documentation":"<p>Whether the pricing plan uses tiered pricing.</p>"
+        },
+        "tiers":{
+          "shape":"PricingPlanTierList",
+          "documentation":"<p>The pricing tiers within this plan.</p>"
+        }
+      },
+      "documentation":"<p>A pricing plan for Enterprise Support billing.</p>"
+    },
+    "PricingPlanList":{
+      "type":"list",
+      "member":{"shape":"PricingPlan"},
+      "documentation":"<p>A list of pricing plans.</p>",
+      "max":10,
+      "min":0
+    },
+    "PricingPlanTier":{
+      "type":"structure",
+      "required":[
+        "tierMinimum",
+        "baseCharge",
+        "additionalPercentageOfAggregateCharges",
+        "aggregateChargesAdjustment",
+        "incremental"
+      ],
+      "members":{
+        "tierMinimum":{
+          "shape":"String",
+          "documentation":"<p>The minimum spend threshold for this tier.</p>"
+        },
+        "tierMaximum":{
+          "shape":"String",
+          "documentation":"<p>The maximum spend threshold for this tier.</p>"
+        },
+        "baseCharge":{
+          "shape":"String",
+          "documentation":"<p>The base charge for this tier.</p>"
+        },
+        "additionalPercentageOfAggregateCharges":{
+          "shape":"String",
+          "documentation":"<p>The additional percentage applied to aggregate charges in this tier.</p>"
+        },
+        "aggregateChargesAdjustment":{
+          "shape":"String",
+          "documentation":"<p>The adjustment applied to aggregate charges.</p>"
+        },
+        "incremental":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether the tier charges are calculated incrementally.</p>"
+        },
+        "increment":{
+          "shape":"String",
+          "documentation":"<p>The increment amount for incremental tier calculations.</p>"
+        },
+        "incrementCharge":{
+          "shape":"String",
+          "documentation":"<p>The charge per increment.</p>"
+        }
+      },
+      "documentation":"<p>A tier within an Enterprise Support pricing plan.</p>"
+    },
+    "PricingPlanTierList":{
+      "type":"list",
+      "member":{"shape":"PricingPlanTier"},
+      "documentation":"<p>A list of pricing plan tiers.</p>",
+      "max":20,
+      "min":0
+    },
+    "ProductName":{
+      "type":"string",
+      "max":128,
+      "min":1
+    },
+    "ProductNames":{
+      "type":"list",
+      "member":{"shape":"ProductName"},
+      "max":1000,
+      "min":0
+    },
+    "PromoCode":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":".*[^<>\"&\\%|'  ]*.*"
+    },
+    "PurchaseType":{
+      "type":"string",
+      "max":64,
+      "min":1
+    },
+    "PurchaseTypeApplications":{
+      "type":"list",
+      "member":{"shape":"PurchaseType"},
+      "max":50,
+      "min":0
+    },
+    "QuotaCode":{
+      "type":"string",
+      "max":1024,
+      "min":1
+    },
+    "RedeemCreditsRequest":{
+      "type":"structure",
+      "required":["promoCode"],
+      "members":{
+        "promoCode":{
+          "shape":"PromoCode",
+          "documentation":"<p>The promotional credit code to redeem.</p>"
+        }
+      }
+    },
+    "RedeemCreditsResponse":{
+      "type":"structure",
+      "members":{}
+    },
+    "ResourceArn":{
+      "type":"string",
+      "pattern":"arn:aws[a-z-]*:(billing)::[0-9]{12}:[a-zA-Z0-9/:_\\+=\\.\\@-]{0,70}[a-zA-Z0-9]"
+    },
+    "ResourceId":{
+      "type":"string",
+      "max":1024,
+      "min":1
+    },
+    "ResourceNotFoundException":{
+      "type":"structure",
+      "required":[
+        "message",
+        "resourceId",
+        "resourceType"
+      ],
+      "members":{
+        "message":{"shape":"ErrorMessage"},
+        "resourceId":{
+          "shape":"ResourceId",
+          "documentation":"<p> Value is a list of resource IDs that were not found. </p>"
+        },
+        "resourceType":{
+          "shape":"ResourceType",
+          "documentation":"<p> Value is the type of resource that was not found. </p>"
+        }
+      },
+      "documentation":"<p> The specified ARN in the request doesn't exist. </p>",
+      "exception":true
+    },
+    "ResourceTag":{
+      "type":"structure",
+      "required":["key"],
+      "members":{
+        "key":{
+          "shape":"ResourceTagKey",
+          "documentation":"<p> The key that's associated with the tag. </p>"
+        },
+        "value":{
+          "shape":"ResourceTagValue",
+          "documentation":"<p> The value that's associated with the tag. </p>"
+        }
+      },
+      "documentation":"<p> The tag structure that contains a tag key and value. </p>"
+    },
+    "ResourceTagKey":{
+      "type":"string",
+      "max":128,
+      "min":1
+    },
+    "ResourceTagKeyList":{
+      "type":"list",
+      "member":{"shape":"ResourceTagKey"},
+      "max":200,
+      "min":0
+    },
+    "ResourceTagList":{
+      "type":"list",
+      "member":{"shape":"ResourceTag"},
+      "max":200,
+      "min":0
+    },
+    "ResourceTagValue":{
+      "type":"string",
+      "max":256,
+      "min":0
+    },
+    "ResourceType":{
+      "type":"string",
+      "max":1024,
+      "min":1
+    },
+    "SearchOption":{
+      "type":"string",
+      "enum":["STARTS_WITH"]
+    },
+    "SearchValue":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"[a-zA-Z0-9_\\+=\\.\\-@ ]+"
+    },
+    "ServiceCode":{
+      "type":"string",
+      "max":1024,
+      "min":1
+    },
+    "ServiceLevelAccountUsage":{
+      "type":"structure",
+      "members":{
+        "serviceCode":{
+          "shape":"String",
+          "documentation":"<p>The service code for which to return Support-eligible spend data.</p>"
+        },
+        "totalSupportEligibleSpend":{
+          "shape":"String",
+          "documentation":"<p>The total support-eligible spend for the service.</p>"
+        }
+      },
+      "documentation":"<p>Service-level usage details by account.</p>"
+    },
+    "ServiceLevelAccountUsageList":{
+      "type":"list",
+      "member":{"shape":"ServiceLevelAccountUsage"},
+      "documentation":"<p>A list of service-level account usages.</p>",
+      "max":50,
+      "min":0
+    },
+    "ServiceQuotaExceededException":{
+      "type":"structure",
+      "required":[
+        "message",
+        "resourceId",
+        "resourceType",
+        "serviceCode",
+        "quotaCode"
+      ],
+      "members":{
+        "message":{"shape":"ErrorMessage"},
+        "resourceId":{
+          "shape":"ResourceId",
+          "documentation":"<p> The ID of the resource. </p>"
+        },
+        "resourceType":{
+          "shape":"ResourceType",
+          "documentation":"<p> The type of Amazon Web Services resource. </p>"
+        },
+        "serviceCode":{
+          "shape":"ServiceCode",
+          "documentation":"<p> The container for the <code>serviceCode</code>. </p>"
+        },
+        "quotaCode":{
+          "shape":"QuotaCode",
+          "documentation":"<p> The container for the <code>quotaCode</code>. </p>"
+        }
+      },
+      "documentation":"<p> You've reached the limit of resources you can create, or exceeded the size of an individual resource. </p>",
+      "exception":true
+    },
+    "ShareableAccountIds":{
+      "type":"list",
+      "member":{"shape":"AccountId"}
+    },
+    "String":{"type":"string"},
+    "StringSearch":{
+      "type":"structure",
+      "required":[
+        "searchOption",
+        "searchValue"
+      ],
+      "members":{
+        "searchOption":{
+          "shape":"SearchOption",
+          "documentation":"<p> The type of search operation to perform on the string value. Determines how the search value is matched against the target field. </p>"
+        },
+        "searchValue":{
+          "shape":"SearchValue",
+          "documentation":"<p> The string value to use in the search operation. This value is compared against the target field using the specified search option. </p>"
+        }
+      },
+      "documentation":"<p> A structure that defines how to search for string values. You can specify a search option and the value to search for. </p>"
+    },
+    "StringSearches":{
+      "type":"list",
+      "member":{"shape":"StringSearch"},
+      "max":1,
+      "min":1
+    },
+    "TagKey":{
+      "type":"string",
+      "max":1024,
+      "min":0,
+      "pattern":"[\\S\\s]*"
+    },
+    "TagResourceRequest":{
+      "type":"structure",
+      "required":[
+        "resourceArn",
+        "resourceTags"
+      ],
+      "members":{
+        "resourceArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p> The Amazon Resource Name (ARN) of the resource. </p>"
+        },
+        "resourceTags":{
+          "shape":"ResourceTagList",
+          "documentation":"<p> A list of tag key value pairs that are associated with the resource. </p>"
+        }
+      }
+    },
+    "TagResourceResponse":{
+      "type":"structure",
+      "members":{}
+    },
+    "TagValues":{
+      "type":"structure",
+      "required":[
+        "key",
+        "values"
+      ],
+      "members":{
+        "key":{
+          "shape":"TagKey",
+          "documentation":"<p> The key for the tag. </p>"
+        },
+        "values":{
+          "shape":"Values",
+          "documentation":"<p> The specific value of the tag. </p>"
+        }
+      },
+      "documentation":"<p> The values that are available for a tag. </p>"
+    },
+    "ThrottlingException":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{"shape":"ErrorMessage"}
+      },
+      "documentation":"<p>The request was denied due to request throttling. </p>",
+      "exception":true
+    },
+    "TimePeriodList":{
+      "type":"list",
+      "member":{"shape":"EnterpriseSupportTimePeriod"},
+      "documentation":"<p>A list of time periods.</p>",
+      "max":500,
+      "min":0
+    },
+    "TimeRange":{
+      "type":"structure",
+      "members":{
+        "beginDateInclusive":{
+          "shape":"Timestamp",
+          "documentation":"<p> The inclusive start date of the time range. </p>"
+        },
+        "endDateInclusive":{
+          "shape":"Timestamp",
+          "documentation":"<p> The inclusive end date of the time range. </p>"
+        }
+      },
+      "documentation":"<p> Specifies a time range with inclusive begin and end dates. </p>"
+    },
+    "Timestamp":{"type":"timestamp"},
+    "UntagResourceRequest":{
+      "type":"structure",
+      "required":[
+        "resourceArn",
+        "resourceTagKeys"
+      ],
+      "members":{
+        "resourceArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p> The Amazon Resource Name (ARN) of the resource. </p>"
+        },
+        "resourceTagKeys":{
+          "shape":"ResourceTagKeyList",
+          "documentation":"<p> A list of tag key value pairs that are associated with the resource. </p>"
+        }
+      }
+    },
+    "UntagResourceResponse":{
+      "type":"structure",
+      "members":{}
+    },
+    "UpdateBillingPreferencesRequest":{
+      "type":"structure",
+      "required":[
+        "feature",
+        "billingPreferencesPerKey"
+      ],
+      "members":{
+        "feature":{
+          "shape":"BillingFeature",
+          "documentation":"<p>The feature to update. Valid values: <code>BILLING_ALERTS</code>, <code>RI_SHARING</code>, <code>CREDIT_SHARING</code>, <code>CREDIT_LEVEL_SHARING</code>, <code>CREDIT_PREFERENCE_OPTIONS</code>. The history features (<code>RI_SHARING_HISTORY</code> and <code>CREDIT_SHARING_HISTORY</code>) are read-only and cannot be updated.</p>"
+        },
+        "billingPreferencesPerKey":{
+          "shape":"BillingPreferencesPerKey",
+          "documentation":"<p>Key/value pairs to apply. All keys in a single request must be valid for the specified <code>feature</code> and must not be duplicated. For <code>CREDIT_PREFERENCE_OPTIONS</code>, all keys must reference the same <code>creditId</code>.</p>"
+        }
+      }
+    },
+    "UpdateBillingPreferencesResponse":{
+      "type":"structure",
+      "members":{}
+    },
+    "UpdateBillingViewRequest":{
+      "type":"structure",
+      "required":["arn"],
+      "members":{
+        "arn":{
+          "shape":"BillingViewArn",
+          "documentation":"<p> The Amazon Resource Name (ARN) that can be used to uniquely identify the billing view. </p>"
+        },
+        "name":{
+          "shape":"BillingViewName",
+          "documentation":"<p> The name of the billing view. </p>"
+        },
+        "description":{
+          "shape":"BillingViewDescription",
+          "documentation":"<p> The description of the billing view. </p>"
+        },
+        "dataFilterExpression":{
+          "shape":"Expression",
+          "documentation":"<p>See <a href=\"https://docs.aws.amazon.com/aws-cost-management/latest/APIReference/API_billing_Expression.html\">Expression</a>. Billing view only supports <code>LINKED_ACCOUNT</code>, <code>Tags</code>, and <code>CostCategories</code>. </p>"
+        }
+      }
+    },
+    "UpdateBillingViewResponse":{
+      "type":"structure",
+      "required":["arn"],
+      "members":{
+        "arn":{
+          "shape":"BillingViewArn",
+          "documentation":"<p> The Amazon Resource Name (ARN) that can be used to uniquely identify the billing view. </p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p> The time when the billing view was last updated. </p>"
+        }
+      }
+    },
+    "ValidationException":{
+      "type":"structure",
+      "required":[
+        "message",
+        "reason"
+      ],
+      "members":{
+        "message":{"shape":"ErrorMessage"},
+        "reason":{
+          "shape":"ValidationExceptionReason",
+          "documentation":"<p>The input fails to satisfy the constraints specified by an Amazon Web Services service.</p>"
+        },
+        "fieldList":{
+          "shape":"ValidationExceptionFieldList",
+          "documentation":"<p>The input fails to satisfy the constraints specified by an Amazon Web Services service.</p>"
+        }
+      },
+      "documentation":"<p>The input fails to satisfy the constraints specified by an Amazon Web Services service. </p>",
+      "exception":true
+    },
+    "ValidationExceptionField":{
+      "type":"structure",
+      "required":[
+        "name",
+        "message"
+      ],
+      "members":{
+        "name":{
+          "shape":"FieldName",
+          "documentation":"<p>The name of the field.</p>"
+        },
+        "message":{
+          "shape":"ErrorMessage",
+          "documentation":"<p>The message describing why the field failed validation.</p>"
+        }
+      },
+      "documentation":"<p>The field's information of a request that resulted in an exception. </p>"
+    },
+    "ValidationExceptionFieldList":{
+      "type":"list",
+      "member":{"shape":"ValidationExceptionField"}
+    },
+    "ValidationExceptionReason":{
+      "type":"string",
+      "enum":[
+        "unknownOperation",
+        "cannotParse",
+        "fieldValidationFailed",
+        "other"
+      ]
+    },
+    "Value":{
+      "type":"string",
+      "max":1024,
+      "min":0,
+      "pattern":"[\\S\\s]*"
+    },
+    "Values":{
+      "type":"list",
+      "member":{"shape":"Value"},
+      "max":200,
+      "min":1
+    }
+  },
+  "documentation":"<p> You can use the Billing API to programatically list the billing views available to you for a given time period. A billing view represents a set of billing data. </p> <p>The Billing API provides the following endpoint:</p> <p> <code>https://billing.us-east-1.api.aws</code> </p>"
+}

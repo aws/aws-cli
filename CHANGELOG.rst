@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+2.36.20
+=======
+
+* api-change:``sagemaker``: Added PREFIX AWARE routing strategy and PrefixAwareRoutingConfig to CreateEndpointConfig. Configure PrefixLength and ConcurrencyThreshold to route requests that share the same prompt prefix to the same instance.
+* api-change:``elementalinference``: Added support for the SearchFixtures API and DataSourceConfiguration, enabling customers to map fixture event data onto clipping outputs for improved feature accuracy.
+* api-change:``sagemaker-runtime``: Added the PrefixAwareId header to InvokeEndpoint and InvokeEndpointWithResponseStream. This optional parameter serves as a routing hint for endpoints configured with prefix-aware routing, differentiating routing decisions for requests that share the same prompt prefix.
+* api-change:``connect``: Added Malay language option to use AI to automatically fill evaluation forms in Malay
+* api-change:``medialive``: Added VirtualSourceAddress to multicast output destinations for MediaLive Anywhere channels. Specifies the source IP address for outbound multicast packets when downstream networks enforce source-IP filtering.
+
+
 2.36.19
 =======
 

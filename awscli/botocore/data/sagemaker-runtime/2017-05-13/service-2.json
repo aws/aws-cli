@@ -329,6 +329,12 @@
           "documentation":"<p>Creates a stateful session or identifies an existing one. You can do one of the following:</p> <ul> <li> <p>Create a stateful session by specifying the value <code>NEW_SESSION</code>.</p> </li> <li> <p>Send your request to an existing stateful session by specifying the ID of that session.</p> </li> </ul> <p>With a stateful session, you can send multiple requests to a stateful model. When you create a session with a stateful model, the model must create the session ID and set the expiration time. The model must also provide that information in the response to your request. You can get the ID and timestamp from the <code>NewSessionId</code> response parameter. For any subsequent request where you specify that session ID, SageMaker AI routes the request to the same instance that supports the session.</p>",
           "location":"header",
           "locationName":"X-Amzn-SageMaker-Session-Id"
+        },
+        "PrefixAwareId":{
+          "shape":"PrefixAwareIdHeader",
+          "documentation":"<p>An optional, stable identifier that serves as a routing hint for prefix-aware routing. The service routes requests with the same prefix and the same identifier to the same instance. If requests from different applications might have the same prompt prefix, set a different identifier for each application to differentiate their routing decisions.</p> <p>Applies only to endpoints configured with a <code>RoutingStrategy</code> of <code>PREFIX_AWARE</code>.</p>",
+          "location":"header",
+          "locationName":"X-Amzn-SageMaker-Prefix-Aware-Id"
         }
       },
       "payload":"Body"
@@ -438,6 +444,12 @@
           "documentation":"<p>The ID of a stateful session to handle your request.</p> <p>You can't create a stateful session by using the <code>InvokeEndpointWithResponseStream</code> action. Instead, you can create one by using the <code> <a>InvokeEndpoint</a> </code> action. In your request, you specify <code>NEW_SESSION</code> for the <code>SessionId</code> request parameter. The response to that request provides the session ID for the <code>NewSessionId</code> response parameter.</p>",
           "location":"header",
           "locationName":"X-Amzn-SageMaker-Session-Id"
+        },
+        "PrefixAwareId":{
+          "shape":"PrefixAwareIdHeader",
+          "documentation":"<p>An optional, stable identifier that serves as a routing hint for prefix-aware routing. The service routes requests with the same prefix and the same identifier to the same instance. If requests from different applications might have the same prompt prefix, set a different identifier for each application to differentiate their routing decisions.</p> <p>Applies only to endpoints configured with a <code>RoutingStrategy</code> of <code>PREFIX_AWARE</code>.</p>",
+          "location":"header",
+          "locationName":"X-Amzn-SageMaker-Prefix-Aware-Id"
         }
       },
       "payload":"Body"
@@ -537,6 +549,12 @@
       },
       "documentation":"<p>A wrapper for pieces of the payload that's returned in response to a streaming inference request. A streaming inference response consists of one or more payload parts. </p>",
       "event":true
+    },
+    "PrefixAwareIdHeader":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"\\A\\S[\\p{Print}]*\\z"
     },
     "RequestTTLSecondsHeader":{
       "type":"integer",

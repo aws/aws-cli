@@ -246,6 +246,26 @@
       "documentation":"<p>List all tags that are on an Elemental Inference resource in the current region.</p>",
       "readonly":true
     },
+    "SearchFixtures":{
+      "name":"SearchFixtures",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v1/fixtures",
+        "responseCode":200
+      },
+      "input":{"shape":"SearchFixturesRequest"},
+      "output":{"shape":"SearchFixturesResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerErrorException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"TooManyRequestException"},
+        {"shape":"GatewayTimedOutException"}
+      ],
+      "documentation":"<p>Searches for the fixtures (sports events, such as a specific basketball game) that are available for a sport in a date window. Each fixture in the response includes a fixtureId that you specify in the clipping output of a feed, so that Elemental Inference maps the event data for that fixture onto the clipping metadata. This operation is paginated: if there are more fixtures than fit in one page, the response includes a nextToken that you pass in a subsequent request. </p>",
+      "readonly":true
+    },
     "TagResource":{
       "name":"TagResource",
       "http":{
@@ -419,9 +439,33 @@
         "callbackMetadata":{
           "shape":"ResourceDescription",
           "documentation":"<p>A string that you want Elemental Inference to always include in the event clipping metadata for this output. The string might identify the sports event in the source media, for example. </p>"
+        },
+        "dataSourceConfiguration":{
+          "shape":"DataSourceConfiguration",
+          "documentation":"<p>The data source to map onto this clipping output. This parameter is optional. When you include this parameter, Elemental Inference reads the event data for the fixture that you specify, and includes that data in the event clipping metadata for this output. </p> <p>If you omit this parameter, Elemental Inference doesn't map a data source onto this output. </p>"
         }
       },
       "documentation":"<p>A type of OutputConfig, used when the output in a feed is for the clip feature.</p>"
+    },
+    "Competitor":{
+      "type":"structure",
+      "members":{
+        "name":{
+          "shape":"String",
+          "documentation":"<p>The name of the competitor, as provided by the data source.</p>"
+        },
+        "isHome":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether this competitor is the home side in the fixture. If true, this competitor is the home side. If false, this competitor is the away side. </p>"
+        }
+      },
+      "documentation":"<p>Contains information about one competitor in a fixture. It is used in the FixtureSummary that is in the SearchFixtures response. </p>"
+    },
+    "CompetitorList":{
+      "type":"list",
+      "member":{"shape":"Competitor"},
+      "max":30,
+      "min":0
     },
     "ConflictException":{
       "type":"structure",
@@ -612,6 +656,24 @@
         }
       },
       "documentation":"<p>A type of OutputConfig, used when the output in a feed is for the crop feature.</p>"
+    },
+    "DataSourceConfiguration":{
+      "type":"structure",
+      "required":["fixtureId"],
+      "members":{
+        "fixtureId":{
+          "shape":"FixtureId",
+          "documentation":"<p>The ID of the fixture whose event data you want Elemental Inference to map onto this clipping output. The fixture should be the sports event in the source media that the feed is processing. </p> <p>To obtain this ID, use the SearchFixtures operation to find the fixture, then use the fixtureId from the matching FixtureSummary. </p>"
+        }
+      },
+      "documentation":"<p>Contains the data source configuration for a clipping output. It identifies the fixture whose event data Elemental Inference maps onto the clipping metadata. It is used in the dataSourceConfiguration property of a ClippingConfig. </p>"
+    },
+    "DataSourceSport":{
+      "type":"string",
+      "enum":[
+        "basketball",
+        "american-football"
+      ]
     },
     "DeleteDictionaryRequest":{
       "type":"structure",
@@ -880,6 +942,82 @@
     "FeedSummaryList":{
       "type":"list",
       "member":{"shape":"FeedSummary"}
+    },
+    "FilterName":{
+      "type":"string",
+      "enum":["COMPETITOR"]
+    },
+    "FilterValue":{
+      "type":"string",
+      "max":256,
+      "min":1
+    },
+    "FilterValueList":{
+      "type":"list",
+      "member":{"shape":"FilterValue"},
+      "max":10,
+      "min":0
+    },
+    "FixtureDate":{
+      "type":"string",
+      "pattern":"\\d{4}-\\d{2}-\\d{2}"
+    },
+    "FixtureId":{
+      "type":"string",
+      "max":128,
+      "min":1
+    },
+    "FixtureSummary":{
+      "type":"structure",
+      "required":[
+        "fixtureId",
+        "name",
+        "status",
+        "competitors"
+      ],
+      "members":{
+        "fixtureId":{
+          "shape":"FixtureId",
+          "documentation":"<p>The ID of the fixture. Specify this ID in the clipping output of a feed, to identify the fixture whose event data you want Elemental Inference to map onto the clipping metadata. </p>"
+        },
+        "name":{
+          "shape":"String",
+          "documentation":"<p>The name of the fixture, as provided by the data source. For example, the names of the two competing teams. </p>"
+        },
+        "fixtureGroup":{
+          "shape":"String",
+          "documentation":"<p>The group that the fixture belongs to, such as the competition, league, or tournament. The data source doesn't provide this information for every fixture. </p>"
+        },
+        "scheduledStart":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The scheduled start time of the fixture, as provided by the data source. The actual start time might differ. </p>"
+        },
+        "status":{
+          "shape":"String",
+          "documentation":"<p>The status of the fixture in its lifecycle, as provided by the data source. For example, Scheduled or Completed. </p>"
+        },
+        "competitors":{
+          "shape":"CompetitorList",
+          "documentation":"<p>An array of the competitors (the teams or individuals) in the fixture.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about one fixture. It is used in the SearchFixtures response.</p> <p>Elemental Inference relays the information in this structure from the data source, so that you can identify the fixture that matches your source media. </p>"
+    },
+    "FixtureSummaryList":{
+      "type":"list",
+      "member":{"shape":"FixtureSummary"}
+    },
+    "GatewayTimedOutException":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{"shape":"String"}
+      },
+      "documentation":"<p>The request timed out before the service returned a response. This is a temporary condition. Retry the request. If the problem persists, contact AWS Support. </p>",
+      "error":{"httpStatusCode":504},
+      "exception":true,
+      "fault":true,
+      "retryable":{"throttling":false}
     },
     "GetDictionaryRequest":{
       "type":"structure",
@@ -1209,6 +1347,83 @@
       "min":10,
       "pattern":"s3://[a-z0-9][a-z0-9.-]{1,61}[a-z0-9]/.+"
     },
+    "SearchFilter":{
+      "type":"structure",
+      "required":[
+        "name",
+        "values"
+      ],
+      "members":{
+        "name":{
+          "shape":"FilterName",
+          "documentation":"<p>The dimension of the fixture to filter on. Valid values: COMPETITOR.</p>"
+        },
+        "values":{
+          "shape":"FilterValueList",
+          "documentation":"<p>An array of values to match in the dimension that you specified in name. You can specify up to 10 values. A fixture appears in the results if it matches at least one of these values. </p>"
+        }
+      },
+      "documentation":"<p>A filter for a fixture search. It is used in the filters array of a SearchFixtures request. </p>"
+    },
+    "SearchFilterList":{
+      "type":"list",
+      "member":{"shape":"SearchFilter"},
+      "max":10,
+      "min":0
+    },
+    "SearchFixturesRequest":{
+      "type":"structure",
+      "required":[
+        "sport",
+        "startDate"
+      ],
+      "members":{
+        "sport":{
+          "shape":"DataSourceSport",
+          "documentation":"<p>The sport to search for fixtures. Valid values: basketball (search for basketball fixtures), american-football (search for american-football fixtures). </p>"
+        },
+        "startDate":{
+          "shape":"FixtureDate",
+          "documentation":"<p>The first day of the search window, in UTC. The search includes fixtures that are scheduled on this day. </p> <p>Specify the date in ISO 8601 format, as <code>YYYY-MM-DD</code>. For example, 2026-03-14. </p>"
+        },
+        "endDate":{
+          "shape":"FixtureDate",
+          "documentation":"<p>The last day of the search window, in UTC. The search includes fixtures that are scheduled on this day. Specify the date in ISO 8601 format, as <code>YYYY-MM-DD</code>. </p> <p>If you omit this parameter, Elemental Inference searches only the day that you specified in startDate. The window from startDate through endDate must not exceed seven days. </p>"
+        },
+        "filters":{
+          "shape":"SearchFilterList",
+          "documentation":"<p>An array of filters that narrow the results. Each filter applies to one dimension of a fixture, such as the competitor. You can specify up to 10 filters. </p> <p>A fixture must satisfy every filter in the array in order to appear in the results. Within one filter, a fixture must match at least one of the values. </p>"
+        },
+        "maxResults":{
+          "shape":"SearchFixturesRequestMaxResultsInteger",
+          "documentation":"<p>The maximum number of fixtures to return for each API request.</p> <p>The service might return fewer fixtures than the maxResults value. When more fixtures match the search, the response also includes a nextToken value that you can use to fetch the next batch of results. </p>"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>The token that identifies the batch of results that you want to see.</p> <p>For example, you submit a SearchFixtures request with maxResults set at 5. The service returns the first batch of results (up to 5) and a nextToken value. To see the next batch of results, you submit the SearchFixtures request a second time, with the same search criteria, and specify the nextToken value. </p>"
+        }
+      }
+    },
+    "SearchFixturesRequestMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "SearchFixturesResponse":{
+      "type":"structure",
+      "required":["fixtures"],
+      "members":{
+        "fixtures":{
+          "shape":"FixtureSummaryList",
+          "documentation":"<p>An array of FixtureSummary objects, one for each fixture that matches the search. The array is empty if no fixtures match. </p>"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>The token that identifies the next batch of results. To see the next batch, submit the SearchFixtures request again, with the same search criteria, and specify this value in nextToken. </p> <p>This parameter is absent when there are no more results to return.</p>"
+        }
+      }
+    },
     "ServiceQuotaExceededException":{
       "type":"structure",
       "required":["message"],
@@ -1221,6 +1436,18 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "ServiceUnavailableException":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{"shape":"String"}
+      },
+      "documentation":"<p>The service is temporarily unable to handle the request. Retry the request. If the problem persists, contact AWS Support. </p>",
+      "error":{"httpStatusCode":503},
+      "exception":true,
+      "fault":true,
+      "retryable":{"throttling":false}
     },
     "String":{"type":"string"},
     "StringList":{
@@ -1249,6 +1476,10 @@
         }
       },
       "documentation":"<p>A type of OutputConfig, used when the output in a feed is for the smart subtitling feature. smart subtitling uses automatic speech recognition (ASR) to generate live TTML subtitles from the audio in your source media. </p>"
+    },
+    "SyntheticTimestamp_date_time":{
+      "type":"timestamp",
+      "timestampFormat":"iso8601"
     },
     "TagKey":{
       "type":"string",

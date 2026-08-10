@@ -40624,6 +40624,32 @@
         "LowerPriority"
       ]
     },
+    "PrefixAwareRoutingConcurrencyThreshold":{
+      "type":"integer",
+      "box":true,
+      "max":1024,
+      "min":1
+    },
+    "PrefixAwareRoutingConfig":{
+      "type":"structure",
+      "members":{
+        "PrefixLength":{
+          "shape":"PrefixAwareRoutingPrefixLength",
+          "documentation":"<p>The maximum length of the prefix used for routing decisions. Required when <code>RoutingStrategy</code> is <code>PREFIX_AWARE</code>.</p> <ul> <li> <p>For the SageMaker Runtime <code>InvokeEndpoint</code> and <code>InvokeEndpointWithResponseStream</code> APIs, this value specifies the number of bytes from the beginning of the request body.</p> </li> <li> <p>For OpenAI-compatible API, this value specifies the number of characters from the text content of the messages array.</p> </li> </ul> <p>The endpoint routes requests that share the same prefix to the same instance. Set this value to cover shared content (such as system prompts) plus enough unique content to distribute workloads across instances.</p>"
+        },
+        "ConcurrencyThreshold":{
+          "shape":"PrefixAwareRoutingConcurrencyThreshold",
+          "documentation":"<p>The maximum number of in-flight requests on the target instance before the endpoint routes to another instance. Required when <code>RoutingStrategy</code> is <code>PREFIX_AWARE</code>. When in-flight requests on the prefix-selected instance reach this threshold, the endpoint routes the request to an instance with more available capacity.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for prefix-aware routing on a SageMaker real-time inference endpoint. Specify <code>PrefixLength</code> and <code>ConcurrencyThreshold</code> to control routing behavior.</p>"
+    },
+    "PrefixAwareRoutingPrefixLength":{
+      "type":"integer",
+      "box":true,
+      "max":65536,
+      "min":1024
+    },
     "PresignedDomainUrl":{"type":"string"},
     "PresignedUrlAccessConfig":{
       "type":"structure",
@@ -41768,7 +41794,11 @@
       "members":{
         "RoutingStrategy":{
           "shape":"RoutingStrategy",
-          "documentation":"<p>Sets how the endpoint routes incoming traffic:</p> <ul> <li> <p> <code>LEAST_OUTSTANDING_REQUESTS</code>: The endpoint routes requests to the specific instances that have more capacity to process them.</p> </li> <li> <p> <code>RANDOM</code>: The endpoint routes each request to a randomly chosen instance.</p> </li> </ul>"
+          "documentation":"<p>Sets how the endpoint routes incoming traffic:</p> <ul> <li> <p> <code>LEAST_OUTSTANDING_REQUESTS</code>: The endpoint routes requests to the specific instances that have more capacity to process them.</p> </li> <li> <p> <code>RANDOM</code>: The endpoint routes each request to a randomly chosen instance.</p> </li> <li> <p> <code>PREFIX_AWARE</code>: The endpoint routes requests that share the same prompt prefix to the same instance. When the number of in-flight requests on the selected instance reaches the configured threshold, the endpoint routes the request to an instance with more available capacity.</p> </li> </ul>"
+        },
+        "PrefixAwareRoutingConfig":{
+          "shape":"PrefixAwareRoutingConfig",
+          "documentation":"<p>The configuration for prefix-aware routing. Specify this parameter only when you set <code>RoutingStrategy</code> to <code>PREFIX_AWARE</code>.</p>"
         }
       },
       "documentation":"<p>Settings that control how the endpoint routes incoming traffic to the instances that the endpoint hosts.</p>"
@@ -43869,7 +43899,8 @@
       "type":"string",
       "enum":[
         "LEAST_OUTSTANDING_REQUESTS",
-        "RANDOM"
+        "RANDOM",
+        "PREFIX_AWARE"
       ]
     },
     "RuleConfigurationName":{

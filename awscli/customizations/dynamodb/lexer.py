@@ -145,24 +145,22 @@ class Lexer:
 
     def _consume_quoted_identifier(self):
         start = self._position
-        lexeme = self._consume_until("'").replace("\\'", "'")
-        token_len = self._position - start
+        lexeme = self._consume_until("'")
         return {
             'type': 'identifier',
             'value': lexeme,
             'start': start,
-            'end': token_len,
+            'end': self._offset(),
         }
 
     def _consume_string_literal(self):
         start = self._position
-        lexeme = self._consume_until('"').replace('\\"', '"')
-        token_len = self._position - start
+        lexeme = self._consume_until('"')
         return {
             'type': 'literal',
             'value': lexeme,
             'start': start,
-            'end': token_len,
+            'end': self._offset(),
         }
 
     def _consume_base64_string(self):
@@ -170,8 +168,11 @@ class Lexer:
         raw_string = self._consume_string_literal()
 
         # Python will simply ignore invalid characters, so we have to
-        # validate manually.
-        if raw_string['value'] and not VALID_BASE64.match(raw_string['value']):
+        # validate manually.  This has to match the *entire* string,
+        # otherwise trailing invalid characters are silently dropped.
+        if raw_string['value'] and not VALID_BASE64.fullmatch(
+            raw_string['value']
+        ):
             message = 'Invalid base64 string b"%s"'
             raise LexerError(
                 message=message % raw_string['value'],
@@ -297,15 +298,25 @@ class Lexer:
             self._current = self._chars[self._position]
         return self._current
 
+    def _offset(self):
+        # ``_next`` leaves ``_position`` on the final character once the
+        # end of the expression is reached, so consuming the last
+        # character of an expression would otherwise report an offset
+        # one short of the true end.
+        if self._current is None:
+            return self._length
+        return self._position
+
     def _consume_until(self, delimiter):
-        # Consume until the delimiter is reached,
-        # allowing for the delimiter to be escaped with "\".
+        # Consume until the delimiter is reached, allowing for the
+        # delimiter and the escape character itself to be escaped
+        # with "\".
         start = self._position
         buff = ''
         self._next()
         while self._current != delimiter:
-            if self._current == '\\':
-                buff += '\\'
+            escaped = self._current == '\\'
+            if escaped:
                 self._next()
             if self._current is None:
                 # We're at the EOF.
@@ -314,6 +325,11 @@ class Lexer:
                     position=start,
                     expression=self._expression,
                 )
+            if escaped and self._current not in (delimiter, '\\'):
+                # Not a recognized escape sequence, so the backslash is
+                # preserved verbatim.  An escaped delimiter or an
+                # escaped backslash resolves to just that character.
+                buff += '\\'
             buff += self._current
             self._next()
         # Skip the closing delimiter.

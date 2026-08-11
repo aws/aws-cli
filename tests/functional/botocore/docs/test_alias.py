@@ -10,13 +10,22 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import pytest
+
 from tests.functional.botocore.docs import BaseDocsFunctionalTest
 from tests.functional.botocore.test_alias import ALIAS_CASES
 
 
+@pytest.mark.validates_models
 class TestAliasesDocumented(BaseDocsFunctionalTest):
+    @pytest.fixture(autouse=True)
+    def _capture_record_property(self, record_property):
+        self._record_property = record_property
+
     def test_all_aliases_are_documented_correctly(self):
         for case in ALIAS_CASES:
+            self._record_property('aws_service', case['service'])
+            self._record_property('aws_operation', case['operation'])
             content = self.get_docstring_for_method(
                 case['service'], case['operation']
             ).decode('utf-8')

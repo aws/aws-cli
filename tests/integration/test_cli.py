@@ -18,6 +18,7 @@ import tempfile
 import time
 
 import botocore.session
+import pytest
 
 from awscli.clidriver import create_clidriver
 from awscli.testutils import (
@@ -36,6 +37,10 @@ class TestBasicCommandFunctionality(unittest.TestCase):
     the CLI.  They don't test anything exhaustively and they're meant as a smoke
     test to verify basic CLI functionality isn't entirely broken.
     """
+
+    @pytest.fixture(autouse=True)
+    def _capture_record_property(self, record_property):
+        self._record_property = record_property
 
     def put_object(
         self,
@@ -70,7 +75,9 @@ class TestBasicCommandFunctionality(unittest.TestCase):
         self.assertIn('AWS', p.stdout)
         self.assertRegex(p.stdout, r'The\s+AWS\s+Command\s+Line\s+Interface')
 
+    @pytest.mark.validates_models
     def test_service_help_output(self):
+        self._record_property('aws_service', 'ec2')
         p = aws('ec2 help')
         self.assertEqual(p.rc, 0)
         self.assertRegex(p.stdout, r'Amazon\s+EC2')

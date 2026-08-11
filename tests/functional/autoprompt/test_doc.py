@@ -10,6 +10,8 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import pytest
+
 from awscli.autocomplete import parser
 from awscli.autoprompt.doc import DocsGetter
 from awscli.clidriver import create_clidriver
@@ -18,6 +20,10 @@ from tests.unit.autocomplete import InMemoryIndex
 
 
 class TestDocsGetter(unittest.TestCase):
+    @pytest.fixture(autouse=True)
+    def _capture_record_property(self, record_property):
+        self._record_property = record_property
+
     def setUp(self):
         self.driver = create_clidriver()
         self.docs_getter = DocsGetter(self.driver)
@@ -52,19 +58,26 @@ class TestDocsGetter(unittest.TestCase):
         )
         self.parser = parser.CLIParser(self.index)
 
+    @pytest.mark.validates_models
     def test_get_service_command_docs(self):
+        self._record_property('aws_service', 'ec2')
         parsed_args = self.parser.parse('aws ec2')
         actual_docs = self.docs_getter.get_docs(parsed_args)
         expected_docs = 'Amazon EC2'
         self.assertIn(expected_docs, actual_docs)
 
+    @pytest.mark.validates_models
     def test_get_service_operation_docs(self):
+        self._record_property('aws_service', 'ec2')
+        self._record_property('aws_operation', 'DescribeInstances')
         parsed_args = self.parser.parse('aws ec2 describe-instances')
         actual_docs = self.docs_getter.get_docs(parsed_args)
         expected_docs = 'Describes the specified instances'
         self.assertIn(expected_docs, actual_docs)
 
+    @pytest.mark.validates_models
     def test_get_service_command_docs_with_invalid_service_operation(self):
+        self._record_property('aws_service', 'ec2')
         parsed_args = self.parser.parse('aws ec2 fake')
         actual_docs = self.docs_getter.get_docs(parsed_args)
         expected_docs = 'Amazon EC2'
@@ -82,7 +95,10 @@ class TestDocsGetter(unittest.TestCase):
         expected_docs = 'The AWS Command Line Interface'
         self.assertIn(expected_docs, actual_docs)
 
+    @pytest.mark.validates_models
     def test_get_service_operation_docs_if_input_is_vanild(self):
+        self._record_property('aws_service', 'ec2')
+        self._record_property('aws_operation', 'DescribeInstances')
         parsed_args = self.parser.parse('aws ec2 describe-instances fake')
         actual_docs = self.docs_getter.get_docs(parsed_args)
         expected_docs = 'Describes the specified instances'

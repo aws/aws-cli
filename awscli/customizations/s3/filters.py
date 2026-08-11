@@ -13,6 +13,7 @@
 import fnmatch
 import logging
 import os
+import re
 
 from awscli.customizations.s3.utils import split_s3_bucket_key
 
@@ -94,6 +95,7 @@ class Filter:
         self._original_patterns = patterns
         self.patterns = self._full_path_patterns(patterns, rootdir)
         self.dst_patterns = self._full_path_patterns(patterns, dst_rootdir)
+        self._compiled_cache = {}
 
     def _full_path_patterns(self, original_patterns, rootdir):
         # We need to transform the patterns into patterns that have
@@ -119,14 +121,24 @@ class Filter:
         before it.
         """
         for file_info in file_infos:
+            patterns, dst_patterns = self._compiled_patterns(
+                file_info.src_type
+            )
             file_path = file_info.src
+            # ``fnmatch.fnmatch`` normcases both of its arguments on every
+            # call.  The pattern side is already normcased when it is
+            # compiled, so only the path has to be normcased here, and only
+            # once for all of the patterns.
+            norm_file_path = os.path.normcase(file_path)
             file_status = (file_info, True)
-            for pattern, dst_pattern in zip(self.patterns, self.dst_patterns):
-                current_file_status = self._match_pattern(pattern, file_info)
+            for pattern, dst_pattern in zip(patterns, dst_patterns):
+                current_file_status = self._match_pattern(
+                    pattern, file_info, norm_file_path
+                )
                 if current_file_status is not None:
                     file_status = current_file_status
                 dst_current_file_status = self._match_pattern(
-                    dst_pattern, file_info
+                    dst_pattern, file_info, norm_file_path
                 )
                 if dst_current_file_status is not None:
                     file_status = dst_current_file_status
@@ -138,15 +150,37 @@ class Filter:
             if file_status[1]:
                 yield file_info
 
-    def _match_pattern(self, pattern, file_info):
+    def _compiled_patterns(self, src_type):
+        # The patterns are fixed for the duration of a transfer, so the
+        # separator normalization and the fnmatch -> regex translation are
+        # done once per source type rather than once per file.
+        compiled = self._compiled_cache.get(src_type)
+        if compiled is None:
+            compiled = (
+                self._compile_patterns(self.patterns, src_type),
+                self._compile_patterns(self.dst_patterns, src_type),
+            )
+            self._compiled_cache[src_type] = compiled
+        return compiled
+
+    def _compile_patterns(self, patterns, src_type):
+        compiled = []
+        for pattern_type, pattern in patterns:
+            if src_type == 'local':
+                path_pattern = pattern.replace('/', os.sep)
+            else:
+                path_pattern = pattern.replace(os.sep, '/')
+            regex = re.compile(
+                fnmatch.translate(os.path.normcase(path_pattern))
+            )
+            compiled.append((pattern_type, path_pattern, regex))
+        return compiled
+
+    def _match_pattern(self, pattern, file_info, norm_file_path):
         file_status = None
         file_path = file_info.src
-        pattern_type = pattern[0]
-        if file_info.src_type == 'local':
-            path_pattern = pattern[1].replace('/', os.sep)
-        else:
-            path_pattern = pattern[1].replace(os.sep, '/')
-        is_match = fnmatch.fnmatch(file_path, path_pattern)
+        pattern_type, path_pattern, regex = pattern
+        is_match = regex.match(norm_file_path) is not None
         if is_match and pattern_type == 'include':
             file_status = (file_info, True)
             LOG.debug("%s matched include filter: %s", file_path, path_pattern)

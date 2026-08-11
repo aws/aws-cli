@@ -211,6 +211,10 @@ class WindowsUpdateCommand(BaseUpdateCommand):
             f.write('set AWS_CLI_DISTRIBUTION_SOURCE_OVERRIDE=update-exe\n')
             if self._no_color:
                 f.write('set NO_COLOR=1\n')
+            # Clear the inherited PSModulePath so the launched PowerShell
+            # rebuilds its own default.
+            # https://github.com/aws/aws-cli/issues/10532
+            f.write('set PSModulePath=\n')
             f.write('ping -n 3 127.0.0.1 >nul 2>&1\n')
             f.write(f'"{ps_exe}" {ps_args}\n')
 
@@ -228,10 +232,13 @@ class WindowsUpdateCommand(BaseUpdateCommand):
         )
 
     def _find_powershell(self):
-        path = shutil.which('powershell')
-        if not path:
-            raise UpdateError('powershell.exe not found on PATH.')
-        return path
+        for name in ('powershell', 'pwsh'):
+            path = shutil.which(name)
+            if path:
+                return path
+        raise UpdateError(
+            'Neither powershell.exe nor pwsh.exe was found on PATH.'
+        )
 
     def _is_system_install(self, install_metadata):
         if 'script_install' in install_metadata:

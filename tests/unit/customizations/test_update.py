@@ -222,7 +222,14 @@ class TestUnixUpdateCommand:
 
 
 class TestWindowsUpdateCommand:
-    def _command(self, install, elevated=True, runner=None, downloader=None):
+    def _command(
+        self,
+        install,
+        elevated=True,
+        runner=None,
+        downloader=None,
+        powershell_path='powershell.exe',
+    ):
         return WindowsUpdateCommand(
             mock_session(),
             source='exe',
@@ -230,7 +237,7 @@ class TestWindowsUpdateCommand:
             downloader=downloader or mock.Mock(),
             is_elevated=elevated,
             runner=runner or mock.Mock(),
-            powershell_path='powershell.exe',
+            powershell_path=powershell_path,
         )
 
     def _run(self, install, color='auto', **kwargs):
@@ -274,6 +281,46 @@ class TestWindowsUpdateCommand:
         _, wrapper = self._run(USER_INSTALL, color='off')
 
         assert 'set NO_COLOR=1' in wrapper
+
+    def test_wrapper_clears_psmodulepath(self):
+        _, wrapper = self._run(USER_INSTALL)
+
+        assert 'set PSModulePath=\n' in wrapper
+
+    def test_prefers_windows_powershell_when_available(self, monkeypatch):
+        def which(name):
+            return {
+                'powershell': 'C:\\powershell.exe',
+                'pwsh': 'C:\\pwsh.exe',
+            }.get(name)
+
+        monkeypatch.setattr(update_module.shutil, 'which', which)
+
+        _, wrapper = self._run(USER_INSTALL, powershell_path=None)
+
+        assert '"C:\\powershell.exe" -NoProfile' in wrapper
+
+    def test_falls_back_to_pwsh_when_windows_powershell_missing(
+        self, monkeypatch
+    ):
+        def which(name):
+            return 'C:\\pwsh.exe' if name == 'pwsh' else None
+
+        monkeypatch.setattr(update_module.shutil, 'which', which)
+
+        _, wrapper = self._run(USER_INSTALL, powershell_path=None)
+
+        assert '"C:\\pwsh.exe" -NoProfile' in wrapper
+
+    def test_raises_when_no_powershell_found(self, monkeypatch):
+        def which(name):
+            return None
+
+        monkeypatch.setattr(update_module.shutil, 'which', which)
+        command = self._command(USER_INSTALL, powershell_path=None)
+
+        with pytest.raises(UpdateError, match='Neither powershell'):
+            command([], global_args())
 
     def test_system_install_requires_elevation(self):
         runner = mock.Mock()

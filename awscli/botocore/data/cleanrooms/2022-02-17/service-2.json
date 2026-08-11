@@ -288,7 +288,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Creates an intermediate table in a membership. An intermediate table stores a query definition that you can execute later using <code>PopulateIntermediateTable</code> to materialize cached results. The intermediate table is owned by the member with the CAN_QUERY ability. This operation does not execute the stored query.</p>"
+      "documentation":"<p>Creates an intermediate table in a membership. The intermediate table is owned by the member with the CAN_QUERY ability. To populate the table with results, use <code>PopulateIntermediateTable</code>.</p>"
     },
     "CreateIntermediateTableAnalysisRule":{
       "name":"CreateIntermediateTableAnalysisRule",
@@ -308,7 +308,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Creates an analysis rule for an intermediate table. Only the CUSTOM analysis rule type is supported. The service automatically determines whether the rule is first-party or multi-party restricted based on the intermediate table's inherited constraints. Only the intermediate table owner can call this operation.</p>",
+      "documentation":"<p>Creates an analysis rule for an intermediate table. Only the CUSTOM analysis rule type is supported. Only the intermediate table owner can call this operation.</p>",
       "idempotent":true
     },
     "CreateMembership":{
@@ -542,7 +542,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Deletes an intermediate table. When you delete the table, the service marks it as DELETED, removes its analysis rule and schema, and triggers storage cleanup. This operation is idempotent. Only the intermediate table owner can call this operation.</p>",
+      "documentation":"<p>Deletes an intermediate table. The delete is idempotent. Only the intermediate table owner can call this operation.</p>",
       "idempotent":true
     },
     "DeleteIntermediateTableAnalysisRule":{
@@ -641,8 +641,27 @@
         {"shape":"ThrottlingException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Invalidates a specific intermediate table that references the caller's base table. The data provider (base table owner) calls this operation, not the intermediate table owner. By default, invalidation cascades to descendant intermediate tables.</p>",
+      "documentation":"<p>Marks an intermediate table as invalid when it references the caller's base table. The data provider (base table owner) calls this operation, not the intermediate table owner. By default, the operation also marks all descendant intermediate tables as invalid.</p>",
       "idempotent":true
+    },
+    "GetAnalysisLogExport":{
+      "name":"GetAnalysisLogExport",
+      "http":{
+        "method":"GET",
+        "requestUri":"/memberships/{membershipIdentifier}/analysislogexports/{analysisLogExportIdentifier}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetAnalysisLogExportInput"},
+      "output":{"shape":"GetAnalysisLogExportOutput"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Returns information about an analysis log export, including its current status and, if the export failed, the reason for the failure.</p> <p>Poll this operation until the <code>status</code> is <code>SUCCESS</code> or <code>FAILED</code>. An export can't be canceled after it starts.</p>",
+      "readonly":true
     },
     "GetAnalysisTemplate":{
       "name":"GetAnalysisTemplate",
@@ -1059,6 +1078,25 @@
         {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Retrieves a schema analysis rule.</p>",
+      "readonly":true
+    },
+    "ListAnalysisLogExports":{
+      "name":"ListAnalysisLogExports",
+      "http":{
+        "method":"GET",
+        "requestUri":"/memberships/{membershipIdentifier}/analysislogexports",
+        "responseCode":200
+      },
+      "input":{"shape":"ListAnalysisLogExportsInput"},
+      "output":{"shape":"ListAnalysisLogExportsOutput"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Lists analysis log exports, sorted by the most recent export. Results are paginated. Use the <code>nextToken</code> parameter to retrieve additional results.</p>",
       "readonly":true
     },
     "ListAnalysisTemplates":{
@@ -1530,7 +1568,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Executes the stored query of an intermediate table to materialize data into managed storage. With this operation, you can perform initial population and subsequent refreshes. Each call creates a new version. The returned analysis ID can be tracked using <code>GetProtectedQuery</code>. Only the intermediate table owner can call this operation.</p>"
+      "documentation":"<p>Runs the stored query of an intermediate table and makes the results available for querying. Each call creates a new version. Use <code>GetProtectedQuery</code> with the returned analysis ID to track progress. Only the intermediate table owner can call this operation.</p>"
     },
     "PreviewPrivacyImpact":{
       "name":"PreviewPrivacyImpact",
@@ -1549,6 +1587,25 @@
         {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>An estimate of the number of aggregation functions that the member who can query can run given epsilon and noise parameters.</p>"
+    },
+    "StartAnalysisLogExport":{
+      "name":"StartAnalysisLogExport",
+      "http":{
+        "method":"POST",
+        "requestUri":"/memberships/{membershipIdentifier}/analysislogexports",
+        "responseCode":200
+      },
+      "input":{"shape":"StartAnalysisLogExportInput"},
+      "output":{"shape":"StartAnalysisLogExportOutput"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Starts an export of the Apache Spark logs for a protected query to an Amazon S3 bucket that you own. Use the exported logs to diagnose a query that failed or that ran more slowly than you expected.</p> <p>Clean Rooms exports a redacted copy of the Spark logs instead of the raw logs. Analyze the exported logs with the tooling of your choice, such as Spark History Server. For details about what the exported logs contain, see <a href=\"https://docs.aws.amazon.com/clean-rooms/latest/userguide/export-analysis-logs-contents.html\">https://docs.aws.amazon.com/clean-rooms/latest/userguide/export-analysis-logs-contents.html</a>.</p> <p>The export runs asynchronously and returns with a <code>status</code> of <code>IN_PROGRESS</code>. Call <code>GetAnalysisLogExport</code> to poll for the final status.</p> <important> <p>To use this operation, you must have the <code>CAN_EXPORT_QUERY_ANALYSIS_LOG</code> ability for your membership. You must also be the query runner or the query payer. Having the ability alone is not sufficient.</p> <p>The query must have reached a terminal state, and it must have reached the execution stage. A query that failed validation or that was canceled before it started produces no Spark logs.</p> <p>Log export isn't supported for queries that use differential privacy, and isn't supported for PySpark jobs.</p> <p>The destination bucket must be in the same Amazon Web Services Region as the collaboration. Cross-Region export isn't supported.</p> </important> <p>For more information, see <a href=\"https://docs.aws.amazon.com/clean-rooms/latest/userguide/export-analysis-logs.html\">https://docs.aws.amazon.com/clean-rooms/latest/userguide/export-analysis-logs.html</a>.</p>"
     },
     "StartProtectedJob":{
       "name":"StartProtectedJob",
@@ -1721,6 +1778,7 @@
       "output":{"shape":"UpdateConfiguredTableAnalysisRuleOutput"},
       "errors":[
         {"shape":"ConflictException"},
+        {"shape":"ServiceQuotaExceededException"},
         {"shape":"ResourceNotFoundException"},
         {"shape":"InternalServerException"},
         {"shape":"ValidationException"},
@@ -2195,6 +2253,170 @@
       "max":36,
       "min":36,
       "pattern":"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+    },
+    "AnalysisLogExport":{
+      "type":"structure",
+      "required":[
+        "analysisLogExportId",
+        "analysisId",
+        "analysisType",
+        "membershipId",
+        "status",
+        "resultConfiguration",
+        "createTime",
+        "updateTime"
+      ],
+      "members":{
+        "analysisLogExportId":{
+          "shape":"AnalysisLogExportIdentifier",
+          "documentation":"<p>The unique identifier of the analysis log export.</p>"
+        },
+        "analysisId":{
+          "shape":"UUID",
+          "documentation":"<p>The unique identifier of the protected query that the analysis logs were exported for.</p>"
+        },
+        "analysisType":{
+          "shape":"LogExportAnalysisType",
+          "documentation":"<p>The type of analysis that the logs were exported for. Currently, only <code>PROTECTED_QUERY</code> is supported.</p>"
+        },
+        "membershipId":{
+          "shape":"UUID",
+          "documentation":"<p>The unique identifier of the membership that the analysis log export belongs to.</p>"
+        },
+        "status":{
+          "shape":"AnalysisLogExportStatus",
+          "documentation":"<p>The status of the analysis log export. Possible values are:</p> <ul> <li> <p> <code>IN_PROGRESS</code> – The export is currently running.</p> </li> <li> <p> <code>SUCCESS</code> – The export completed successfully.</p> </li> <li> <p> <code>FAILED</code> – The export failed. See the <code>error</code> field for details.</p> </li> </ul>"
+        },
+        "resultConfiguration":{
+          "shape":"AnalysisLogExportResultConfiguration",
+          "documentation":"<p>Contains the details needed to write the exported analysis logs.</p>"
+        },
+        "createTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time the analysis log export was created.</p>"
+        },
+        "updateTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time the analysis log export was last updated.</p>"
+        },
+        "error":{
+          "shape":"AnalysisLogExportError",
+          "documentation":"<p>The analysis log export error. This is present only when the export <code>status</code> is <code>FAILED</code>.</p>"
+        }
+      },
+      "documentation":"<p>An export of the redacted Apache Spark logs for a protected query.</p>"
+    },
+    "AnalysisLogExportError":{
+      "type":"structure",
+      "required":[
+        "code",
+        "message"
+      ],
+      "members":{
+        "code":{
+          "shape":"String",
+          "documentation":"<p>The error code for the analysis log export.</p>"
+        },
+        "message":{
+          "shape":"String",
+          "documentation":"<p>The message for the analysis log export error.</p>"
+        }
+      },
+      "documentation":"<p>The analysis log export error.</p>"
+    },
+    "AnalysisLogExportIdentifier":{
+      "type":"string",
+      "max":36,
+      "min":36,
+      "pattern":"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+    },
+    "AnalysisLogExportOutputConfiguration":{
+      "type":"structure",
+      "required":["s3"],
+      "members":{
+        "s3":{
+          "shape":"AnalysisLogExportS3OutputConfiguration",
+          "documentation":"<p>Required configuration for an analysis log export with an <code>s3</code> output type.</p>"
+        }
+      },
+      "documentation":"<p>Contains configuration details for analysis log export output.</p>"
+    },
+    "AnalysisLogExportResultConfiguration":{
+      "type":"structure",
+      "required":["outputConfiguration"],
+      "members":{
+        "outputConfiguration":{
+          "shape":"AnalysisLogExportOutputConfiguration",
+          "documentation":"<p>The configuration for analysis log export results.</p>"
+        }
+      },
+      "documentation":"<p>Contains configurations for analysis log export results.</p>"
+    },
+    "AnalysisLogExportS3OutputConfiguration":{
+      "type":"structure",
+      "required":["bucket"],
+      "members":{
+        "bucket":{
+          "shape":"AnalysisLogExportS3OutputConfigurationBucketString",
+          "documentation":"<p>The S3 bucket that the exported analysis logs are written to. The bucket must be in the same Amazon Web Services Region as the collaboration.</p>"
+        },
+        "keyPrefix":{
+          "shape":"KeyPrefix",
+          "documentation":"<p>The S3 key prefix under which the exported analysis logs are written.</p> <p>Only one export can be in progress at a time for a given query and destination. To export the same query twice at once, use a different key prefix for the second export.</p>"
+        }
+      },
+      "documentation":"<p>Contains output information for an analysis log export with an S3 output type.</p> <p>The exported logs are written under the bucket and key prefix that you specify. The path includes the collaboration ID, the protected query ID, and the analysis log export ID. Because the path includes the export ID, exporting the same query more than once doesn't overwrite the logs from an earlier export.</p> <note> <p>The exported logs are encrypted using the default encryption configuration of the destination bucket. Clean Rooms doesn't accept a KMS key for log export. To encrypt the exported logs with a customer managed key, configure the bucket's default encryption to use that key before you export.</p> </note>"
+    },
+    "AnalysisLogExportS3OutputConfigurationBucketString":{
+      "type":"string",
+      "max":63,
+      "min":3,
+      "pattern":".*(?!^(\\d+\\.)+\\d+$)(^(([a-z0-9]|[a-z0-9][a-z0-9\\-]*[a-z0-9])\\.)*([a-z0-9]|[a-z0-9][a-z0-9\\-]*[a-z0-9])$).*"
+    },
+    "AnalysisLogExportStatus":{
+      "type":"string",
+      "enum":[
+        "IN_PROGRESS",
+        "SUCCESS",
+        "FAILED"
+      ]
+    },
+    "AnalysisLogExportSummary":{
+      "type":"structure",
+      "required":[
+        "analysisLogExportId",
+        "analysisId",
+        "analysisType",
+        "status",
+        "createTime"
+      ],
+      "members":{
+        "analysisLogExportId":{
+          "shape":"AnalysisLogExportIdentifier",
+          "documentation":"<p>The unique identifier of the analysis log export.</p>"
+        },
+        "analysisId":{
+          "shape":"UUID",
+          "documentation":"<p>The unique identifier of the protected query that the analysis logs were exported for.</p>"
+        },
+        "analysisType":{
+          "shape":"LogExportAnalysisType",
+          "documentation":"<p>The type of analysis that the logs were exported for. Currently, only <code>PROTECTED_QUERY</code> is supported.</p>"
+        },
+        "status":{
+          "shape":"AnalysisLogExportStatus",
+          "documentation":"<p>The status of the analysis log export. Possible values are:</p> <ul> <li> <p> <code>IN_PROGRESS</code> – The export is currently running.</p> </li> <li> <p> <code>SUCCESS</code> – The export completed successfully.</p> </li> <li> <p> <code>FAILED</code> – The export failed.</p> </li> </ul>"
+        },
+        "createTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time the analysis log export was created.</p>"
+        }
+      },
+      "documentation":"<p>A summary of an analysis log export, including its identifier, status, analysis type, and creation time. Returned by <code>ListAnalysisLogExports</code>.</p>"
+    },
+    "AnalysisLogExportSummaryList":{
+      "type":"list",
+      "member":{"shape":"AnalysisLogExportSummary"}
     },
     "AnalysisMethod":{
       "type":"string",
@@ -2931,7 +3153,9 @@
       "enum":[
         "ADD_MEMBER",
         "GRANT_RECEIVE_RESULTS_ABILITY",
-        "REVOKE_RECEIVE_RESULTS_ABILITY"
+        "REVOKE_RECEIVE_RESULTS_ABILITY",
+        "GRANT_EXPORT_QUERY_ANALYSIS_LOG_ABILITY",
+        "REVOKE_EXPORT_QUERY_ANALYSIS_LOG_ABILITY"
       ]
     },
     "AutoApprovedChangeTypeList":{
@@ -3332,7 +3556,9 @@
         "GRANT_CAN_RECEIVE_MODEL_OUTPUT",
         "GRANT_CAN_RECEIVE_INFERENCE_OUTPUT",
         "REVOKE_CAN_RECEIVE_MODEL_OUTPUT",
-        "REVOKE_CAN_RECEIVE_INFERENCE_OUTPUT"
+        "REVOKE_CAN_RECEIVE_INFERENCE_OUTPUT",
+        "GRANT_EXPORT_QUERY_ANALYSIS_LOG_ABILITY",
+        "REVOKE_EXPORT_QUERY_ANALYSIS_LOG_ABILITY"
       ]
     },
     "ChangeTypeList":{
@@ -5790,7 +6016,7 @@
         },
         "populationAnalysisConfiguration":{
           "shape":"PopulationAnalysisConfiguration",
-          "documentation":"<p>The configuration that defines the analysis used to populate the intermediate table. This configuration contains the SQL query or analysis template reference.</p>"
+          "documentation":"<p>The configuration that defines the analysis used to populate the intermediate table.</p>"
         },
         "kmsKeyArn":{
           "shape":"KMSKeyArn",
@@ -5798,7 +6024,7 @@
         },
         "retentionInDays":{
           "shape":"CreateIntermediateTableInputRetentionInDaysInteger",
-          "documentation":"<p>The number of days to retain populated data versions. Minimum value of 1, maximum value of 365.</p>"
+          "documentation":"<p>The number of days to retain populated data versions.</p>"
         },
         "tags":{
           "shape":"TagMap",
@@ -6640,6 +6866,37 @@
       "max":100,
       "min":1,
       "pattern":"(?!\\s*$)[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDBFF-\\uDC00\\uDFFF\\t]*"
+    },
+    "GetAnalysisLogExportInput":{
+      "type":"structure",
+      "required":[
+        "membershipIdentifier",
+        "analysisLogExportIdentifier"
+      ],
+      "members":{
+        "membershipIdentifier":{
+          "shape":"MembershipIdentifier",
+          "documentation":"<p>A unique identifier for the membership that the analysis log export belongs to. Currently accepts the membership ID.</p>",
+          "location":"uri",
+          "locationName":"membershipIdentifier"
+        },
+        "analysisLogExportIdentifier":{
+          "shape":"AnalysisLogExportIdentifier",
+          "documentation":"<p>The unique identifier of the analysis log export to retrieve.</p>",
+          "location":"uri",
+          "locationName":"analysisLogExportIdentifier"
+        }
+      }
+    },
+    "GetAnalysisLogExportOutput":{
+      "type":"structure",
+      "required":["analysisLogExport"],
+      "members":{
+        "analysisLogExport":{
+          "shape":"AnalysisLogExport",
+          "documentation":"<p>The analysis log export processing metadata.</p>"
+        }
+      }
     },
     "GetAnalysisTemplateInput":{
       "type":"structure",
@@ -8279,7 +8536,7 @@
       "members":{
         "queryComputeConfiguration":{"shape":"WorkerComputeConfiguration"}
       },
-      "documentation":"<p>The compute configuration for an intermediate table population operation.</p>",
+      "documentation":"<p>Contains the compute configuration for an intermediate table population operation.</p>",
       "union":true
     },
     "IntermediateTableDependency":{
@@ -8306,7 +8563,7 @@
         },
         "parentType":{
           "shape":"BaseTableParentType",
-          "documentation":"<p>Whether the dependency is direct or indirect. A direct dependency is a table explicitly referenced in the stored query, while an indirect dependency is referenced through another intermediate table.</p>"
+          "documentation":"<p>The type of dependency, either direct or indirect. A direct dependency is a table explicitly referenced in the stored query. An indirect dependency is a table referenced through another intermediate table.</p>"
         },
         "creatorAccountId":{
           "shape":"AccountId",
@@ -8607,6 +8864,56 @@
       "max":512,
       "min":0,
       "pattern":"[\\w!.=*/-]*"
+    },
+    "ListAnalysisLogExportsInput":{
+      "type":"structure",
+      "required":["membershipIdentifier"],
+      "members":{
+        "membershipIdentifier":{
+          "shape":"MembershipIdentifier",
+          "documentation":"<p>A unique identifier for the membership to list analysis log exports for. Currently accepts the membership ID.</p>",
+          "location":"uri",
+          "locationName":"membershipIdentifier"
+        },
+        "analysisIdentifier":{
+          "shape":"UUID",
+          "documentation":"<p>A filter on the unique identifier of the protected query that the analysis logs were exported for.</p>",
+          "location":"querystring",
+          "locationName":"analysisIdentifier"
+        },
+        "status":{
+          "shape":"AnalysisLogExportStatus",
+          "documentation":"<p>A filter on the status of the analysis log export.</p>",
+          "location":"querystring",
+          "locationName":"status"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The pagination token that's used to fetch the next set of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results that are returned for an API request call. The service chooses a default number if you don't set one. The service might return a <code>nextToken</code> even if the <code>maxResults</code> value has not been met.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        }
+      }
+    },
+    "ListAnalysisLogExportsOutput":{
+      "type":"structure",
+      "required":["analysisLogExports"],
+      "members":{
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The pagination token that's used to fetch the next set of results.</p>"
+        },
+        "analysisLogExports":{
+          "shape":"AnalysisLogExportSummaryList",
+          "documentation":"<p>A list of analysis log exports.</p>"
+        }
+      }
     },
     "ListAnalysisTemplatesInput":{
       "type":"structure",
@@ -9520,6 +9827,10 @@
         }
       }
     },
+    "LogExportAnalysisType":{
+      "type":"string",
+      "enum":["PROTECTED_QUERY"]
+    },
     "Long":{
       "type":"long",
       "box":true
@@ -9603,7 +9914,8 @@
       "enum":[
         "CAN_QUERY",
         "CAN_RECEIVE_RESULTS",
-        "CAN_RUN_JOB"
+        "CAN_RUN_JOB",
+        "CAN_EXPORT_QUERY_ANALYSIS_LOG"
       ]
     },
     "MemberChangeSpecification":{
@@ -9619,7 +9931,7 @@
         },
         "memberAbilities":{
           "shape":"MemberAbilities",
-          "documentation":"<p>The abilities granted to the collaboration member. These determine what actions the member can perform within the collaboration.</p> <note> <p>The following values are currently not supported: <code>CAN_QUERY</code> and <code>CAN_RUN_JOB</code>. </p> <p>Set the value of <code>memberAbilities</code> to <code>[]</code> to allow a member to contribute data.</p> <p>Set the value of <code>memberAbilities</code> to <code>[CAN_RECEIVE_RESULTS]</code> to allow a member to contribute data and receive results.</p> </note>"
+          "documentation":"<p>The abilities granted to the collaboration member. These determine what actions the member can perform within the collaboration.</p> <note> <p>The following values are currently not supported: <code>CAN_QUERY</code> and <code>CAN_RUN_JOB</code>. </p> <p>Set the value of <code>memberAbilities</code> to <code>[]</code> to allow a member to contribute data.</p> <p>Set the value of <code>memberAbilities</code> to <code>[CAN_RECEIVE_RESULTS]</code> to allow a member to contribute data and receive results.</p> <p>Set the value of <code>memberAbilities</code> to <code>[CAN_EXPORT_QUERY_ANALYSIS_LOG]</code> so that the member can export the analysis logs for a protected query. Having this ability isn't sufficient on its own: You can export logs only for queries that you ran or paid for.</p> </note>"
         },
         "mlMemberAbilities":{"shape":"MLMemberAbilities"},
         "paymentConfiguration":{"shape":"PaymentConfiguration"},
@@ -10259,7 +10571,7 @@
       "members":{
         "analysisId":{
           "shape":"AnalysisIdentifier",
-          "documentation":"<p>The identifier for the protected query execution. Use this value with <code>GetProtectedQuery</code> to track the population progress.</p>"
+          "documentation":"<p>The identifier for the protected query execution that populated the intermediate table.</p>"
         },
         "analysisType":{
           "shape":"PopulateIntermediateTableAnalysisType",
@@ -10287,7 +10599,7 @@
       "members":{
         "queryString":{
           "shape":"PopulationAnalysisSqlParametersQueryStringString",
-          "documentation":"<p>The SQL query string used to populate the intermediate table. Maximum length of 500,000 characters.</p>"
+          "documentation":"<p>The SQL query string used to populate the intermediate table.</p>"
         },
         "analysisTemplateArn":{
           "shape":"AnalysisTemplateArn",
@@ -12091,6 +12403,45 @@
       "type":"string",
       "max":500,
       "min":0
+    },
+    "StartAnalysisLogExportInput":{
+      "type":"structure",
+      "required":[
+        "membershipIdentifier",
+        "analysisId",
+        "analysisType",
+        "resultConfiguration"
+      ],
+      "members":{
+        "membershipIdentifier":{
+          "shape":"MembershipIdentifier",
+          "documentation":"<p>A unique identifier for the membership to export the analysis logs for. Currently accepts a membership ID.</p>",
+          "location":"uri",
+          "locationName":"membershipIdentifier"
+        },
+        "analysisId":{
+          "shape":"UUID",
+          "documentation":"<p>The unique identifier of the protected query that you want to export the analysis logs for.</p>"
+        },
+        "analysisType":{
+          "shape":"LogExportAnalysisType",
+          "documentation":"<p>The type of analysis that the logs are exported for. Currently, only <code>PROTECTED_QUERY</code> is supported.</p>"
+        },
+        "resultConfiguration":{
+          "shape":"AnalysisLogExportResultConfiguration",
+          "documentation":"<p>The details needed to write the exported analysis logs.</p> <p>You don't need to create an IAM role for log export. Clean Rooms writes the exported logs using your own identity, so Clean Rooms writes the exported logs only where your existing permissions allow.</p>"
+        }
+      }
+    },
+    "StartAnalysisLogExportOutput":{
+      "type":"structure",
+      "required":["analysisLogExport"],
+      "members":{
+        "analysisLogExport":{
+          "shape":"AnalysisLogExport",
+          "documentation":"<p>The analysis log export that was started. The <code>status</code> is <code>IN_PROGRESS</code>.</p>"
+        }
+      }
     },
     "StartProtectedJobInput":{
       "type":"structure",

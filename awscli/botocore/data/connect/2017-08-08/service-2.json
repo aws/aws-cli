@@ -920,6 +920,27 @@
       ],
       "documentation":"<p>Creates an Amazon Web Services resource association with an Connect Customer instance.</p>"
     },
+    "CreateMetric":{
+      "name":"CreateMetric",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/metrics/definitions/{InstanceId}"
+      },
+      "input":{"shape":"CreateMetricRequest"},
+      "output":{"shape":"CreateMetricResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"DuplicateResourceException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceException"}
+      ],
+      "documentation":"<p>Creates a new metric definition for the specified Connect Customer instance. You can create custom metrics that use formulas referencing existing Amazon Web Services-managed metrics, optionally with filters applied.</p>",
+      "idempotent":true
+    },
     "CreateNotification":{
       "name":"CreateNotification",
       "http":{
@@ -1639,6 +1660,25 @@
       ],
       "documentation":"<p>Deletes an Amazon Web Services resource association from an Connect Customer instance. The association must not have any use cases associated with it.</p>"
     },
+    "DeleteMetric":{
+      "name":"DeleteMetric",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/metrics/definitions/{InstanceId}/{MetricId}"
+      },
+      "input":{"shape":"DeleteMetricRequest"},
+      "output":{"shape":"DeleteMetricResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ResourceInUseException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceException"}
+      ],
+      "documentation":"<p>Deletes an existing metric from the specified Connect Customer instance. This operation fails with <code>ResourceConflictException</code> if the metric is currently in use in a dashboard.</p>"
+    },
     "DeleteNotification":{
       "name":"DeleteNotification",
       "http":{
@@ -2310,6 +2350,25 @@
         {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>This API is in preview release for Connect Customer and is subject to change.</p> <p>Retrieves the current storage configurations for the specified resource type, association ID, and instance ID.</p>"
+    },
+    "DescribeMetric":{
+      "name":"DescribeMetric",
+      "http":{
+        "method":"GET",
+        "requestUri":"/metrics/definitions/{InstanceId}/{MetricId}"
+      },
+      "input":{"shape":"DescribeMetricRequest"},
+      "output":{"shape":"DescribeMetricResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceException"}
+      ],
+      "documentation":"<p>Retrieves the full definition of an existing metric from the specified Connect Customer instance.</p>",
+      "readonly":true
     },
     "DescribeNotification":{
       "name":"DescribeNotification",
@@ -3794,6 +3853,25 @@
       ],
       "documentation":"<p>This API is in preview release for Connect Customer and is subject to change.</p> <p>Returns a paginated list of all the Amazon Lex V1 bots currently associated with the instance. To return both Amazon Lex V1 and V2 bots, use the <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_ListBots.html\">ListBots</a> API. </p>"
     },
+    "ListMetrics":{
+      "name":"ListMetrics",
+      "http":{
+        "method":"GET",
+        "requestUri":"/metrics/definitions/{InstanceId}"
+      },
+      "input":{"shape":"ListMetricsRequest"},
+      "output":{"shape":"ListMetricsResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceException"}
+      ],
+      "documentation":"<p>Retrieves a paginated list of metric summaries for the specified Connect Customer instance. Use pagination to ensure that the operation returns quickly and successfully.</p>",
+      "readonly":true
+    },
     "ListNotifications":{
       "name":"ListNotifications",
       "http":{
@@ -4733,6 +4811,24 @@
       ],
       "documentation":"<p>Searches the hours of operation in an Connect Customer instance, with optional filtering.</p>"
     },
+    "SearchMetrics":{
+      "name":"SearchMetrics",
+      "http":{
+        "method":"POST",
+        "requestUri":"/search-metrics"
+      },
+      "input":{"shape":"SearchMetricsRequest"},
+      "output":{"shape":"SearchMetricsResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Searches for metrics in the specified Connect Customer instance using search criteria and optional tag-based filters. Use pagination to ensure that the operation returns quickly and successfully.</p>"
+    },
     "SearchNotifications":{
       "name":"SearchNotifications",
       "http":{
@@ -5507,7 +5603,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Adds the specified tags to the specified resource.</p> <p>Some of the supported resource types are agents, routing profiles, queues, quick connects, flows, agent statuses, hours of operation, phone numbers, security profiles, and task templates. For a complete list, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/tagging.html\">Tagging resources in Connect Customer</a>.</p> <p>For sample policies that use tags, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/security_iam_id-based-policy-examples.html\">Connect Customer Identity-Based Policy Examples</a> in the <i>Connect Customer Administrator Guide</i>.</p>"
+      "documentation":"<p>Adds the specified tags to the specified resource.</p> <p>Some of the supported resource types are agents, routing profiles, queues, quick connects, flows, agent statuses, hours of operation, phone numbers, security profiles, task templates, and custom metrics. For a complete list, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/tagging.html\">Tagging resources in Connect Customer</a>.</p> <p>For sample policies that use tags, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/security_iam_id-based-policy-examples.html\">Connect Customer Identity-Based Policy Examples</a> in the <i>Connect Customer Administrator Guide</i>.</p>"
     },
     "TransferContact":{
       "name":"TransferContact",
@@ -5999,6 +6095,45 @@
         {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>This API is in preview release for Connect Customer and is subject to change.</p> <p>Updates an existing configuration for a resource type. This API is idempotent.</p>"
+    },
+    "UpdateMetricContent":{
+      "name":"UpdateMetricContent",
+      "http":{
+        "method":"POST",
+        "requestUri":"/metrics/definitions/{InstanceId}/{MetricId}/content"
+      },
+      "input":{"shape":"UpdateMetricContentRequest"},
+      "output":{"shape":"UpdateMetricContentResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceException"}
+      ],
+      "documentation":"<p>Updates the calculation, unit, and/or trend indicator of an existing metric in the specified Connect Customer instance.</p>",
+      "idempotent":true
+    },
+    "UpdateMetricMetadata":{
+      "name":"UpdateMetricMetadata",
+      "http":{
+        "method":"POST",
+        "requestUri":"/metrics/definitions/{InstanceId}/{MetricId}/metadata"
+      },
+      "input":{"shape":"UpdateMetricMetadataRequest"},
+      "output":{"shape":"UpdateMetricMetadataResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"DuplicateResourceException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceException"}
+      ],
+      "documentation":"<p>Updates the name and/or description of an existing metric in the specified Connect Customer instance.</p>",
+      "idempotent":true
     },
     "UpdateNotificationContent":{
       "name":"UpdateNotificationContent",
@@ -8847,6 +8982,32 @@
       },
       "documentation":"<p>Information about automatic fail configuration for an evaluation form.</p>"
     },
+    "AvailableFilter":{
+      "type":"structure",
+      "members":{
+        "Id":{
+          "shape":"FilterId",
+          "documentation":"<p>The identifier of the filter.</p>"
+        },
+        "Type":{
+          "shape":"AvailableFilterType",
+          "documentation":"<p>The type of the filter. Valid values: <code>METRIC_LEVEL</code> | <code>RESOURCE_LEVEL</code>.</p>"
+        }
+      },
+      "documentation":"<p>A filter that is available for use with the metric. Part of an AvailableFilterList that describes the filters that are available for use with the metric.</p>"
+    },
+    "AvailableFilterList":{
+      "type":"list",
+      "member":{"shape":"AvailableFilter"}
+    },
+    "AvailableFilterType":{
+      "type":"string",
+      "documentation":"<p>The type of an available metric filter. Valid values: <code>METRIC_LEVEL</code> | <code>RESOURCE_LEVEL</code>.</p>",
+      "enum":[
+        "METRIC_LEVEL",
+        "RESOURCE_LEVEL"
+      ]
+    },
     "AvailableNumberSummary":{
       "type":"structure",
       "members":{
@@ -9522,6 +9683,40 @@
       "max":128,
       "min":1
     },
+    "CalculationComponent":{
+      "type":"structure",
+      "required":["Alias"],
+      "members":{
+        "Alias":{
+          "shape":"ComponentAlias",
+          "documentation":"<p>The alias used to reference this component in the calculation expression.</p>"
+        },
+        "MetricName":{
+          "shape":"MetricName",
+          "documentation":"<p>The name of an AWS-managed metric used in this calculation component (for example, <code>CONTACTS_HANDLED</code>). Mutually exclusive with <code>MetricId</code>.</p>"
+        },
+        "MetricId":{
+          "shape":"MetricId",
+          "documentation":"<p>The ARN of an AWS-managed metric used in this calculation component. Mutually exclusive with <code>MetricName</code>.</p>"
+        },
+        "MetricFilters":{
+          "shape":"MetricFilterList",
+          "documentation":"<p>The filters applied to the calculation component.</p>"
+        }
+      },
+      "documentation":"<p>Represents a component metric referenced in a custom metric calculation formula.</p>"
+    },
+    "CalculationComponentList":{
+      "type":"list",
+      "member":{"shape":"CalculationComponent"},
+      "max":5,
+      "min":1
+    },
+    "CalculationExpression":{
+      "type":"string",
+      "max":1024,
+      "min":1
+    },
     "Campaign":{
       "type":"structure",
       "members":{
@@ -9915,6 +10110,11 @@
       "type":"structure",
       "members":{},
       "documentation":"Response from CompleteAttachedFileUpload API"
+    },
+    "ComponentAlias":{
+      "type":"string",
+      "max":128,
+      "min":1
     },
     "Concurrency":{
       "type":"integer",
@@ -12319,6 +12519,73 @@
         }
       }
     },
+    "CreateMetricRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "Name",
+        "MetricCalculation",
+        "Unit"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Connect Customer instance. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "Name":{
+          "shape":"MetricName",
+          "documentation":"<p>The name of the metric.</p>"
+        },
+        "MetricCalculation":{
+          "shape":"MetricCalculation",
+          "documentation":"<p>The calculation definition for the metric, including the formula expression and the component metrics it references.</p>"
+        },
+        "Unit":{
+          "shape":"MetricUnit",
+          "documentation":"<p>The display unit for the metric's data.</p>"
+        },
+        "Status":{
+          "shape":"MetricStatus",
+          "documentation":"<p>The publish status of the metric. Set to <code>PUBLISHED</code> to make the metric available for use in dashboards and reports, or <code>SAVED</code> to keep it in draft state.</p>"
+        },
+        "ClientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the Amazon Web Services SDK populates this field. For more information about idempotency, see <a href=\"https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/\">Making retries safe with idempotent APIs</a>.</p>",
+          "idempotencyToken":true
+        },
+        "Description":{
+          "shape":"MetricDescription",
+          "documentation":"<p>The description of the metric.</p>"
+        },
+        "PositiveTrendIndicator":{
+          "shape":"TrendIndicator",
+          "documentation":"<p>How an increase in the metric value should be interpreted. Valid values: <code>POSITIVE</code>, <code>NEUTRAL</code>, <code>NEGATIVE</code>.</p>"
+        },
+        "Tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags used to organize, track, or control access for this resource. For example, { \"Tags\": {\"key1\":\"value1\", \"key2\":\"value2\"} }.</p>"
+        }
+      }
+    },
+    "CreateMetricResponse":{
+      "type":"structure",
+      "required":[
+        "MetricArn",
+        "MetricId"
+      ],
+      "members":{
+        "MetricArn":{
+          "shape":"ARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the metric.</p>"
+        },
+        "MetricId":{
+          "shape":"MetricId",
+          "documentation":"<p>The identifier of the metric.</p>"
+        }
+      }
+    },
     "CreateNotificationRequest":{
       "type":"structure",
       "required":[
@@ -14353,6 +14620,11 @@
       },
       "documentation":"<p>A decimal search condition for Search APIs.</p>"
     },
+    "DefaultStat":{
+      "type":"string",
+      "max":50,
+      "min":1
+    },
     "DefaultVocabulary":{
       "type":"structure",
       "required":[
@@ -14825,6 +15097,31 @@
           "locationName":"IntegrationAssociationId"
         }
       }
+    },
+    "DeleteMetricRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "MetricId"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Connect Customer instance. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "MetricId":{
+          "shape":"MetricId",
+          "documentation":"<p>The identifier of the metric to delete.</p>",
+          "location":"uri",
+          "locationName":"MetricId"
+        }
+      }
+    },
+    "DeleteMetricResponse":{
+      "type":"structure",
+      "members":{}
     },
     "DeleteNotificationRequest":{
       "type":"structure",
@@ -15963,6 +16260,37 @@
         "StorageConfig":{
           "shape":"InstanceStorageConfig",
           "documentation":"<p>A valid storage type.</p>"
+        }
+      }
+    },
+    "DescribeMetricRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "MetricId"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Connect Customer instance. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "MetricId":{
+          "shape":"MetricId",
+          "documentation":"<p>The identifier of the metric to describe. Adding the <code>$SAVED</code> qualifier will describe the saved version of the metric. Adding <code>$LATEST</code> or omitting a qualifier will describe the published version.</p>",
+          "location":"uri",
+          "locationName":"MetricId"
+        }
+      }
+    },
+    "DescribeMetricResponse":{
+      "type":"structure",
+      "required":["Metric"],
+      "members":{
+        "Metric":{
+          "shape":"MetricDefinition",
+          "documentation":"<p>The metric definition.</p>"
         }
       }
     },
@@ -20118,6 +20446,11 @@
         "VOICE_RECORDING"
       ]
     },
+    "FilterId":{
+      "type":"string",
+      "max":100,
+      "min":1
+    },
     "FilterV2":{
       "type":"structure",
       "members":{
@@ -24129,6 +24462,50 @@
         }
       }
     },
+    "ListMetricsRequest":{
+      "type":"structure",
+      "required":["InstanceId"],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Connect Customer instance. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "Type":{
+          "shape":"MetricType",
+          "documentation":"<p>The type of metrics to list. Valid values: <code>AWS_MANAGED</code> | <code>CUSTOMER_MANAGED</code>.</p>",
+          "location":"querystring",
+          "locationName":"type"
+        },
+        "MaxResults":{
+          "shape":"MaxResult100",
+          "documentation":"<p>The maximum number of results to return per page.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListMetricsResponse":{
+      "type":"structure",
+      "required":["MetricSummaryList"],
+      "members":{
+        "MetricSummaryList":{
+          "shape":"MetricSummaryList",
+          "documentation":"<p>The list of metric summaries.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If there are additional results, this is the token for the next set of results.</p>"
+        }
+      }
+    },
     "ListNotificationsRequest":{
       "type":"structure",
       "required":["InstanceId"],
@@ -26088,6 +26465,37 @@
       "max":2000,
       "min":1
     },
+    "MetricCalculation":{
+      "type":"structure",
+      "required":[
+        "CalculationComponents",
+        "Calculation"
+      ],
+      "members":{
+        "CalculationComponents":{
+          "shape":"CalculationComponentList",
+          "documentation":"<p>The list of component metrics referenced in the calculation formula. Each component has an alias used in the formula expression.</p>"
+        },
+        "Calculation":{
+          "shape":"CalculationExpression",
+          "documentation":"<p>The formula expression that defines how the metric is calculated. Uses component aliases (for example, <code>100 * SUM(M1) / SUM(M2)</code>).</p>"
+        }
+      },
+      "documentation":"<p>Contains the formula and component metrics that define a custom metric calculation.</p>"
+    },
+    "MetricCategory":{
+      "type":"string",
+      "max":100,
+      "min":1
+    },
+    "MetricCreationMethod":{
+      "type":"string",
+      "documentation":"<p>The method used to create a custom metric. Valid values: <code>SERVICE_LEVEL_BUILDER</code> | <code>METRIC_BUILDER</code>.</p>",
+      "enum":[
+        "SERVICE_LEVEL_BUILDER",
+        "METRIC_BUILDER"
+      ]
+    },
     "MetricDataCollectionsV2":{
       "type":"list",
       "member":{"shape":"MetricDataV2"}
@@ -26106,6 +26514,248 @@
         }
       },
       "documentation":"<p>Contains the name, thresholds, and metric filters.</p>"
+    },
+    "MetricDefinition":{
+      "type":"structure",
+      "required":[
+        "Arn",
+        "Id",
+        "Name",
+        "Type",
+        "Unit",
+        "Groupings",
+        "Filters",
+        "Category",
+        "SupportsPreaggregateCalculation",
+        "SupportsCustomCalculation"
+      ],
+      "members":{
+        "Arn":{
+          "shape":"ARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the metric. May be qualified with <code>$SAVED</code> or <code>$LATEST</code>.</p>"
+        },
+        "Id":{
+          "shape":"MetricId",
+          "documentation":"<p>The identifier of the metric.</p>"
+        },
+        "Name":{
+          "shape":"MetricName",
+          "documentation":"<p>The name of the metric.</p>"
+        },
+        "Description":{
+          "shape":"MetricDescription",
+          "documentation":"<p>The description of the metric.</p>"
+        },
+        "MetricCalculation":{
+          "shape":"MetricCalculation",
+          "documentation":"<p>The calculation definition for the metric.</p>"
+        },
+        "CreationMethod":{
+          "shape":"MetricCreationMethod",
+          "documentation":"<p>The method used to create the metric. Valid values: <code>SERVICE_LEVEL_BUILDER</code> (created with the guided service-level experience) | <code>METRIC_BUILDER</code> (created with the free-form metric builder).</p>"
+        },
+        "Status":{
+          "shape":"MetricStatus",
+          "documentation":"<p>The publish status of the metric. Valid values: <code>PUBLISHED</code> | <code>SAVED</code>.</p>"
+        },
+        "Type":{
+          "shape":"MetricType",
+          "documentation":"<p>The type of the metric. Valid values: <code>AWS_MANAGED</code> | <code>CUSTOMER_MANAGED</code>.</p>"
+        },
+        "Unit":{
+          "shape":"MetricUnit",
+          "documentation":"<p>The display unit for the metric's data.</p>"
+        },
+        "PositiveTrendIndicator":{
+          "shape":"TrendIndicator",
+          "documentation":"<p>How an increase in the metric value should be interpreted. Valid values: <code>POSITIVE</code>, <code>NEUTRAL</code>, <code>NEGATIVE</code>.</p>"
+        },
+        "Groupings":{
+          "shape":"MetricGroupingList",
+          "documentation":"<p>The groupings available for this metric.</p>"
+        },
+        "Filters":{
+          "shape":"AvailableFilterList",
+          "documentation":"<p>The filters applied to the metric.</p>"
+        },
+        "EffectiveTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The earliest time that can be queried for this metric.</p>"
+        },
+        "RefreshRate":{
+          "shape":"RefreshRate",
+          "documentation":"<p>The minimum interval, in seconds, between data refreshes for this metric.</p>"
+        },
+        "Category":{
+          "shape":"MetricCategory",
+          "documentation":"<p>The category of the metric.</p>"
+        },
+        "SupportedStats":{
+          "shape":"SupportedStatsList",
+          "documentation":"<p>The stat aggregations available for this metric.</p>"
+        },
+        "DefaultStat":{
+          "shape":"DefaultStat",
+          "documentation":"<p>The default stat aggregation for the metric.</p>"
+        },
+        "SupportsPreaggregateCalculation":{
+          "shape":"SupportsPreaggregateCalculation",
+          "documentation":"<p>Specifies whether the metric can be used inside aggregating statistical functions (SUM, AVG, etc.) in custom metric calculations.</p>"
+        },
+        "SupportsCustomCalculation":{
+          "shape":"SupportsCustomCalculation",
+          "documentation":"<p>Specifies whether the metric can be used as a component of custom metrics.</p>"
+        },
+        "PrimaryEventSource":{
+          "shape":"PrimaryEventSource",
+          "documentation":"<p>The primary event source for the metric data.</p>"
+        },
+        "PrimaryEventSourceEffectiveTimestampType":{
+          "shape":"PrimaryEventSourceEffectiveTimestampType",
+          "documentation":"<p>The timestamp type that determines where the metric appears on a time series.</p>"
+        },
+        "CreatedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp of when the metric was created.</p>"
+        },
+        "CreatedUser":{
+          "shape":"CreatedByInfo",
+          "documentation":"<p>The user that created the metric. The creator for metrics created through the CreateMetric API will be <code>Amazon Connect API</code>.</p>"
+        },
+        "LastModifiedRegion":{
+          "shape":"RegionName",
+          "documentation":"<p>The region where the metric was last modified.</p>"
+        },
+        "LastModifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp of when the metric was last modified.</p>"
+        },
+        "LastModifiedUser":{
+          "shape":"CreatedByInfo",
+          "documentation":"<p>The user that last modified the metric. For modifications made through the API, this will be <code>Amazon Connect API</code>.</p>"
+        },
+        "Tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags used to organize, track, or control access for this resource. For example, { \"Tags\": {\"key1\":\"value1\", \"key2\":\"value2\"} }.</p>"
+        }
+      },
+      "documentation":"<p>Contains the full definition of a metric, including its calculation, unit, status, and trend indicator.</p>"
+    },
+    "MetricDescription":{
+      "type":"string",
+      "max":500,
+      "min":0
+    },
+    "MetricFilter":{
+      "type":"structure",
+      "required":["MetricFilterKey"],
+      "members":{
+        "MetricFilterKey":{
+          "shape":"MetricFilterKey",
+          "documentation":"<p>The key identifying the field to filter on.</p>"
+        },
+        "Negate":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether the filter condition is negated. When set to <code>true</code>, the filter excludes matching data instead of including it.</p>"
+        },
+        "NumberCondition":{
+          "shape":"MetricFilterNumberCondition",
+          "documentation":"<p>A numeric comparison condition.</p>"
+        },
+        "StringCondition":{
+          "shape":"MetricFilterStringCondition",
+          "documentation":"<p>A string comparison condition.</p>"
+        },
+        "BooleanCondition":{
+          "shape":"MetricFilterBooleanCondition",
+          "documentation":"<p>A boolean comparison condition.</p>"
+        }
+      },
+      "documentation":"<p>A filter condition applied to a metric component in a calculation. Filters restrict the data included in the metric computation.</p>"
+    },
+    "MetricFilterBooleanCondition":{
+      "type":"structure",
+      "required":["Comparison"],
+      "members":{
+        "Comparison":{
+          "shape":"MetricFilterBooleanConditionComparison",
+          "documentation":"<p>The comparison operator. Valid values: <code>IS_TRUE</code> (matches when the field is true) | <code>IS_FALSE</code> (matches when the field is false).</p>"
+        }
+      },
+      "documentation":"<p>A boolean comparison condition for metric filters.</p>"
+    },
+    "MetricFilterBooleanConditionComparison":{
+      "type":"string",
+      "documentation":"<p>The boolean comparison operator for metric filters. Valid values: <code>IS_TRUE</code> | <code>IS_FALSE</code>.</p>",
+      "enum":[
+        "IS_TRUE",
+        "IS_FALSE"
+      ]
+    },
+    "MetricFilterKey":{
+      "type":"string",
+      "max":100,
+      "min":1
+    },
+    "MetricFilterList":{
+      "type":"list",
+      "member":{"shape":"MetricFilter"},
+      "max":5,
+      "min":0
+    },
+    "MetricFilterNumberCondition":{
+      "type":"structure",
+      "required":[
+        "Comparison",
+        "Values"
+      ],
+      "members":{
+        "Comparison":{
+          "shape":"MetricFilterNumberConditionComparison",
+          "documentation":"<p>The comparison operator. Valid values: <code>LESSER</code> (less than) | <code>LESSER_OR_EQUAL</code> (less than or equal to) | <code>GREATER</code> (greater than) | <code>GREATER_OR_EQUAL</code> (greater than or equal to).</p>"
+        },
+        "Values":{
+          "shape":"NumberValueList",
+          "documentation":"<p>The numeric values to compare against.</p>"
+        }
+      },
+      "documentation":"<p>A numeric comparison condition for metric filters.</p>"
+    },
+    "MetricFilterNumberConditionComparison":{
+      "type":"string",
+      "documentation":"<p>The numeric comparison operator for metric filters. Valid values: <code>LESSER</code> | <code>LESSER_OR_EQUAL</code> | <code>GREATER</code> | <code>GREATER_OR_EQUAL</code>.</p>",
+      "enum":[
+        "LESSER",
+        "LESSER_OR_EQUAL",
+        "GREATER",
+        "GREATER_OR_EQUAL"
+      ]
+    },
+    "MetricFilterStringCondition":{
+      "type":"structure",
+      "required":[
+        "Comparison",
+        "Values"
+      ],
+      "members":{
+        "Comparison":{
+          "shape":"MetricFilterStringConditionComparison",
+          "documentation":"<p>The comparison operator. Valid values: <code>MATCHES_ANY</code> (matches any of the specified values) | <code>MATCHES_NONE</code> (matches none of the specified values).</p>"
+        },
+        "Values":{
+          "shape":"StringValueList",
+          "documentation":"<p>The string values to compare against.</p>"
+        }
+      },
+      "documentation":"<p>A string comparison condition for metric filters.</p>"
+    },
+    "MetricFilterStringConditionComparison":{
+      "type":"string",
+      "documentation":"<p>The string comparison operator for metric filters. Valid values: <code>MATCHES_ANY</code> | <code>MATCHES_NONE</code>.</p>",
+      "enum":[
+        "MATCHES_ANY",
+        "MATCHES_NONE"
+      ]
     },
     "MetricFilterV2":{
       "type":"structure",
@@ -26136,6 +26786,10 @@
       "member":{"shape":"MetricFilterV2"},
       "max":2
     },
+    "MetricGroupingList":{
+      "type":"list",
+      "member":{"shape":"String"}
+    },
     "MetricId":{
       "type":"string",
       "max":150,
@@ -26159,6 +26813,11 @@
       },
       "documentation":"<p>The interval period with the start and end time for the metrics.</p>"
     },
+    "MetricName":{
+      "type":"string",
+      "max":128,
+      "min":1
+    },
     "MetricNameV2":{"type":"string"},
     "MetricResultV2":{
       "type":"structure",
@@ -26181,6 +26840,111 @@
     "MetricResultsV2":{
       "type":"list",
       "member":{"shape":"MetricResultV2"}
+    },
+    "MetricSearchConditionList":{
+      "type":"list",
+      "member":{"shape":"MetricSearchCriteria"}
+    },
+    "MetricSearchCriteria":{
+      "type":"structure",
+      "members":{
+        "OrConditions":{
+          "shape":"MetricSearchConditionList",
+          "documentation":"<p>A list of conditions to be met, where at least one condition must be satisfied.</p>"
+        },
+        "AndConditions":{
+          "shape":"MetricSearchConditionList",
+          "documentation":"<p>A list of conditions that must all be satisfied.</p>"
+        },
+        "StringCondition":{"shape":"StringCondition"},
+        "BooleanCondition":{"shape":"BooleanCondition"}
+      },
+      "documentation":"<p>Defines the search criteria for filtering metrics.</p>"
+    },
+    "MetricSearchFilter":{
+      "type":"structure",
+      "members":{
+        "TagFilter":{
+          "shape":"ControlPlaneTagFilter",
+          "documentation":"<p>An object that can be used to specify tag conditions inside the <code>SearchFilter</code>. This accepts an OR of AND (List of List) input where:</p> <ul> <li> <p>The top level list specifies conditions that need to be applied with OR operator.</p> </li> <li> <p>The inner list specifies conditions that need to be applied with AND operator.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>Filters to apply when searching for metrics.</p>"
+    },
+    "MetricSearchSummaryList":{
+      "type":"list",
+      "member":{"shape":"MetricDefinition"}
+    },
+    "MetricStatus":{
+      "type":"string",
+      "documentation":"<p>The publish status of a metric. Valid values: <code>PUBLISHED</code> | <code>SAVED</code>.</p>",
+      "enum":[
+        "PUBLISHED",
+        "SAVED"
+      ]
+    },
+    "MetricSummary":{
+      "type":"structure",
+      "required":[
+        "Arn",
+        "Id",
+        "Name",
+        "Status",
+        "Type"
+      ],
+      "members":{
+        "Arn":{
+          "shape":"ARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the metric.</p>"
+        },
+        "Id":{
+          "shape":"MetricId",
+          "documentation":"<p>The identifier of the metric.</p>"
+        },
+        "Name":{
+          "shape":"MetricName",
+          "documentation":"<p>The name of the metric.</p>"
+        },
+        "Status":{
+          "shape":"MetricStatus",
+          "documentation":"<p>The publish status of the metric.</p>"
+        },
+        "Type":{
+          "shape":"MetricType",
+          "documentation":"<p>The type of the metric.</p>"
+        },
+        "LastModifiedRegion":{
+          "shape":"RegionName",
+          "documentation":"<p>The region where the metric was last modified.</p>"
+        },
+        "LastModifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp of when the metric was last modified.</p>"
+        }
+      },
+      "documentation":"<p>Contains summary information about a metric.</p>"
+    },
+    "MetricSummaryList":{
+      "type":"list",
+      "member":{"shape":"MetricSummary"}
+    },
+    "MetricType":{
+      "type":"string",
+      "documentation":"<p>The type of the metric. Valid values: <code>AWS_MANAGED</code> | <code>CUSTOMER_MANAGED</code>.</p>",
+      "enum":[
+        "AWS_MANAGED",
+        "CUSTOMER_MANAGED"
+      ]
+    },
+    "MetricUnit":{
+      "type":"string",
+      "documentation":"<p>The display unit for metric data. Valid values: <code>INTEGER</code> | <code>DOUBLE</code> | <code>PERCENT</code> | <code>SECONDS</code>.</p>",
+      "enum":[
+        "INTEGER",
+        "DOUBLE",
+        "PERCENT",
+        "SECONDS"
+      ]
     },
     "MetricV2":{
       "type":"structure",
@@ -26674,6 +27438,12 @@
         }
       },
       "documentation":"<p>Information about a reference when the <code>referenceType</code> is <code>NUMBER</code>. Otherwise, null.</p>"
+    },
+    "NumberValueList":{
+      "type":"list",
+      "member":{"shape":"Double"},
+      "max":10,
+      "min":1
     },
     "NumericQuestionPropertyAutomationLabel":{
       "type":"string",
@@ -28065,6 +28835,16 @@
       "type":"list",
       "member":{"shape":"PrimaryAttributeValue"},
       "max":5
+    },
+    "PrimaryEventSource":{
+      "type":"string",
+      "max":100,
+      "min":1
+    },
+    "PrimaryEventSourceEffectiveTimestampType":{
+      "type":"string",
+      "max":100,
+      "min":1
     },
     "PrimaryValue":{
       "type":"structure",
@@ -29655,6 +30435,7 @@
       "max":4096,
       "min":0
     },
+    "RefreshRate":{"type":"long"},
     "RefreshTokenDuration":{
       "type":"integer",
       "box":true,
@@ -31376,6 +32157,50 @@
         }
       }
     },
+    "SearchMetricsRequest":{
+      "type":"structure",
+      "required":["InstanceId"],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Connect Customer instance. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResult100",
+          "documentation":"<p>The maximum number of results to return per page.</p>",
+          "box":true
+        },
+        "SearchFilter":{
+          "shape":"MetricSearchFilter",
+          "documentation":"<p>Filters to be applied to search results.</p>"
+        },
+        "SearchCriteria":{
+          "shape":"MetricSearchCriteria",
+          "documentation":"<p>The search criteria to filter the metrics.</p>"
+        }
+      }
+    },
+    "SearchMetricsResponse":{
+      "type":"structure",
+      "members":{
+        "Metrics":{
+          "shape":"MetricSearchSummaryList",
+          "documentation":"<p>The metrics that matched the search criteria.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If there are additional results, this is the token for the next set of results.</p>"
+        },
+        "ApproximateTotalCount":{
+          "shape":"ApproximateTotalCount",
+          "documentation":"<p>The approximate total number of metrics that matched your search criteria.</p>"
+        }
+      }
+    },
     "SearchNotificationsRequest":{
       "type":"structure",
       "required":["InstanceId"],
@@ -31602,7 +32427,7 @@
         },
         "ResourceTypes":{
           "shape":"ResourceTypeList",
-          "documentation":"<p>The list of resource types to be used to search tags from. If not provided or if any empty list is provided, this API will search from all supported resource types. Note that lowercase and - are required.</p> <p class=\"title\"> <b>Supported resource types</b> </p> <ul> <li> <p>agent</p> </li> <li> <p>agent-state</p> </li> <li> <p>routing-profile</p> </li> <li> <p>standard-queue</p> </li> <li> <p>security-profile</p> </li> <li> <p>operating-hours</p> </li> <li> <p>prompt</p> </li> <li> <p>contact-flow</p> </li> <li> <p>flow- module</p> </li> <li> <p>transfer-destination (also known as quick connect)</p> </li> </ul>"
+          "documentation":"<p>The list of resource types to be used to search tags from. If not provided or if any empty list is provided, this API will search from all supported resource types. Note that lowercase and - are required.</p> <p class=\"title\"> <b>Supported resource types</b> </p> <ul> <li> <p>agent</p> </li> <li> <p>agent-state</p> </li> <li> <p>routing-profile</p> </li> <li> <p>standard-queue</p> </li> <li> <p>security-profile</p> </li> <li> <p>operating-hours</p> </li> <li> <p>prompt</p> </li> <li> <p>contact-flow</p> </li> <li> <p>flow- module</p> </li> <li> <p>transfer-destination (also known as quick connect)</p> </li> <li> <p>metric</p> </li> </ul>"
         },
         "NextToken":{
           "shape":"NextToken2500",
@@ -34045,6 +34870,12 @@
       },
       "documentation":"<p>Information about a reference when the <code>referenceType</code> is <code>STRING</code>. Otherwise, null.</p>"
     },
+    "StringValueList":{
+      "type":"list",
+      "member":{"shape":"String"},
+      "max":10,
+      "min":1
+    },
     "Subject":{
       "type":"string",
       "max":200,
@@ -34187,6 +35018,12 @@
       "type":"list",
       "member":{"shape":"SupportedMessagingContentType"}
     },
+    "SupportedStatsList":{
+      "type":"list",
+      "member":{"shape":"String"}
+    },
+    "SupportsCustomCalculation":{"type":"boolean"},
+    "SupportsPreaggregateCalculation":{"type":"boolean"},
     "SuspendContactRecordingRequest":{
       "type":"structure",
       "required":[
@@ -35217,6 +36054,15 @@
           "documentation":"<p>The Amazon Resource Name (ARN) of the contact.</p>"
         }
       }
+    },
+    "TrendIndicator":{
+      "type":"string",
+      "documentation":"<p>Specifies how to interpret a positive trend in metric data. Valid values: <code>POSITIVE</code> | <code>NEGATIVE</code> | <code>NEUTRAL</code>.</p>",
+      "enum":[
+        "POSITIVE",
+        "NEGATIVE",
+        "NEUTRAL"
+      ]
     },
     "URI":{
       "type":"string",
@@ -36369,6 +37215,76 @@
           "idempotencyToken":true
         }
       }
+    },
+    "UpdateMetricContentRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "MetricId"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Connect Customer instance. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "MetricId":{
+          "shape":"MetricId",
+          "documentation":"<p>The identifier of the metric to update. Adding the <code>$SAVED</code> qualifier will update the saved version of the metric. Adding <code>$LATEST</code> or omitting a qualifier will update the published version.</p>",
+          "location":"uri",
+          "locationName":"MetricId"
+        },
+        "MetricCalculation":{
+          "shape":"MetricCalculation",
+          "documentation":"<p>The updated calculation definition for the metric.</p>"
+        },
+        "Unit":{
+          "shape":"MetricUnit",
+          "documentation":"<p>The updated display unit for the metric.</p>"
+        },
+        "PositiveTrendIndicator":{
+          "shape":"TrendIndicator",
+          "documentation":"<p>How an increase in the metric value should be interpreted. Valid values: <code>POSITIVE</code>, <code>NEUTRAL</code>, <code>NEGATIVE</code>.</p>"
+        }
+      }
+    },
+    "UpdateMetricContentResponse":{
+      "type":"structure",
+      "members":{}
+    },
+    "UpdateMetricMetadataRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "MetricId"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Connect Customer instance. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "MetricId":{
+          "shape":"MetricId",
+          "documentation":"<p>The identifier of the metric to update. Adding the <code>$SAVED</code> qualifier will update the saved version of the metric. Adding <code>$LATEST</code> or omitting a qualifier will update the published version.</p>",
+          "location":"uri",
+          "locationName":"MetricId"
+        },
+        "Name":{
+          "shape":"MetricName",
+          "documentation":"<p>The updated name of the metric.</p>"
+        },
+        "Description":{
+          "shape":"MetricDescription",
+          "documentation":"<p>The updated description of the metric.</p>"
+        }
+      }
+    },
+    "UpdateMetricMetadataResponse":{
+      "type":"structure",
+      "members":{}
     },
     "UpdateNotificationContentRequest":{
       "type":"structure",

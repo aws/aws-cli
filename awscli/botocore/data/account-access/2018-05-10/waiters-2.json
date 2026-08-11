@@ -1,0 +1,26 @@
+{
+  "version" : 2,
+  "waiters" : {
+    "ApplicationActive" : {
+      "delay" : 5,
+      "maxAttempts" : 24,
+      "operation" : "GetApplication",
+      "acceptors" : [ {
+        "matcher" : "path",
+        "argument" : "status",
+        "state" : "success",
+        "expected" : "ACTIVE"
+      }, {
+        "matcher" : "path",
+        "argument" : "status",
+        "state" : "failure",
+        "expected" : "CREATE_FAILED"
+      }, {
+        "matcher" : "path",
+        "argument" : "status",
+        "state" : "failure",
+        "expected" : "DELETE_FAILED"
+      } ]
+    }
+  }
+}

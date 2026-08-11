@@ -1593,6 +1593,10 @@
         "batchEvaluation":{
           "shape":"BatchEvaluationTraceConfig",
           "documentation":"<p>Use a completed batch evaluation as the source of agent traces.</p>"
+        },
+        "onlineEvaluation":{
+          "shape":"OnlineEvaluationTraceConfig",
+          "documentation":"<p>Agent traces from an online evaluation configuration over a specified time range.</p>"
         }
       },
       "documentation":"<p>The configuration specifying where to read agent traces from for recommendation analysis.</p>",
@@ -8890,6 +8894,29 @@
         }
       },
       "documentation":"<p>A reference to an existing online evaluation configuration to use as the data source for batch evaluation.</p>"
+    },
+    "OnlineEvaluationTraceConfig":{
+      "type":"structure",
+      "required":[
+        "onlineEvaluationConfigArn",
+        "startTime",
+        "endTime"
+      ],
+      "members":{
+        "onlineEvaluationConfigArn":{
+          "shape":"OnlineEvaluationConfigArn",
+          "documentation":"<p>The ARN of the online evaluation configuration to reuse sessions from.</p>"
+        },
+        "startTime":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The start time of the time range. Only sessions evaluated at or after this timestamp are included.</p>"
+        },
+        "endTime":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The end time of the time range. Only sessions evaluated before this timestamp are included.</p>"
+        }
+      },
+      "documentation":"<p>Contains the configuration for reusing agent traces from an online evaluation configuration for recommendation analysis. Because online evaluation is a continuous stream, a time range specifies which evaluated sessions the recommendation includes.</p>"
     },
     "OperatorType":{
       "type":"string",

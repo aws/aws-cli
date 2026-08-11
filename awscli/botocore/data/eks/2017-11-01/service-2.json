@@ -1523,6 +1523,22 @@
       "type":"list",
       "member":{"shape":"AddonInfo"}
     },
+    "AllowedValuesConstraint":{
+      "type":"structure",
+      "members":{
+        "allowedValues":{
+          "shape":"AllowedValuesList",
+          "documentation":"<p>The list of allowed values.</p>"
+        }
+      },
+      "documentation":"<p>A constraint specifying the allowed values for a parameter.</p>"
+    },
+    "AllowedValuesList":{
+      "type":"list",
+      "member":{"shape":"String"},
+      "documentation":"<p>A list of allowed string values for a parameter constraint.</p>",
+      "max":20
+    },
     "ArgoCdAwsIdcConfigRequest":{
       "type":"structure",
       "required":["idcInstanceArn"],
@@ -2278,6 +2294,18 @@
         "controlPlaneScalingConfig":{
           "shape":"ControlPlaneScalingConfig",
           "documentation":"<p>The control plane scaling tier configuration. For more information, see EKS Provisioned Control Plane in the Amazon EKS User Guide.</p>"
+        },
+        "kubeApiServerConfig":{
+          "shape":"KubeApiServerConfigResponse",
+          "documentation":"<p>The Kubernetes API server configuration for the cluster.</p>"
+        },
+        "kubeSchedulerConfig":{
+          "shape":"KubeSchedulerConfigResponse",
+          "documentation":"<p>The Kubernetes scheduler configuration for the cluster.</p>"
+        },
+        "kubeControllerManagerConfig":{
+          "shape":"KubeControllerManagerConfigResponse",
+          "documentation":"<p>The Kubernetes controller manager configuration for the cluster.</p>"
         }
       },
       "documentation":"<p>An object representing an Amazon EKS cluster.</p>"
@@ -2397,6 +2425,14 @@
         "kubernetesPatchVersion":{
           "shape":"String",
           "documentation":"<p>The patch version of Kubernetes for this cluster version.</p>"
+        },
+        "controlPlaneScalingTiers":{
+          "shape":"ControlPlaneScalingTierList",
+          "documentation":"<p>The available provisioned control plane scaling tiers and their capabilities for this Kubernetes version.</p>"
+        },
+        "controlPlaneComponentConfig":{
+          "shape":"ControlPlaneConfigInfo",
+          "documentation":"<p>The default control plane component configuration and constraints for this Kubernetes version.</p>"
         }
       },
       "documentation":"<p>Contains details about a specific EKS cluster version.</p>"
@@ -2529,6 +2565,24 @@
       },
       "documentation":"<p>The full description of your connected cluster.</p>"
     },
+    "ControlPlaneConfigInfo":{
+      "type":"structure",
+      "members":{
+        "kubeApiServerConfig":{
+          "shape":"KubeApiServerVersionConfig",
+          "documentation":"<p>The Kubernetes API server configuration defaults and constraints.</p>"
+        },
+        "kubeSchedulerConfig":{
+          "shape":"KubeSchedulerVersionConfig",
+          "documentation":"<p>The Kubernetes scheduler configuration defaults and constraints.</p>"
+        },
+        "kubeControllerManagerConfig":{
+          "shape":"KubeControllerManagerVersionConfig",
+          "documentation":"<p>The Kubernetes controller manager configuration defaults and constraints.</p>"
+        }
+      },
+      "documentation":"<p>The control plane component configuration defaults and constraints.</p>"
+    },
     "ControlPlaneEgressModeType":{
       "type":"string",
       "enum":[
@@ -2574,6 +2628,38 @@
         }
       },
       "documentation":"<p>The control plane scaling tier configuration. For more information, see EKS Provisioned Control Plane in the Amazon EKS User Guide.</p>"
+    },
+    "ControlPlaneScalingTierInfo":{
+      "type":"structure",
+      "members":{
+        "tierName":{
+          "shape":"String",
+          "documentation":"<p>The name of the scaling tier.</p>"
+        },
+        "apiRequestConcurrency":{
+          "shape":"BoxedInteger",
+          "documentation":"<p>The maximum API request concurrency supported by this tier.</p>"
+        },
+        "podSchedulingRatePerSecond":{
+          "shape":"BoxedInteger",
+          "documentation":"<p>The maximum pod scheduling rate per second supported by this tier.</p>"
+        },
+        "clusterDatabaseSizeGb":{
+          "shape":"BoxedInteger",
+          "documentation":"<p>The maximum cluster database size in GB supported by this tier.</p>"
+        },
+        "controlPlaneComponentConfigOverrides":{
+          "shape":"ControlPlaneConfigInfo",
+          "documentation":"<p>The control plane component configuration overrides specific to this scaling tier.</p>"
+        }
+      },
+      "documentation":"<p>Information about a provisioned control plane scaling tier.</p>"
+    },
+    "ControlPlaneScalingTierList":{
+      "type":"list",
+      "member":{"shape":"ControlPlaneScalingTierInfo"},
+      "documentation":"<p>A list of available provisioned control plane scaling tiers.</p>",
+      "max":10
     },
     "CreateAccessConfigRequest":{
       "type":"structure",
@@ -2830,6 +2916,18 @@
         "controlPlaneScalingConfig":{
           "shape":"ControlPlaneScalingConfig",
           "documentation":"<p>The control plane scaling tier configuration. For more information, see EKS Provisioned Control Plane in the Amazon EKS User Guide.</p>"
+        },
+        "kubeApiServerConfig":{
+          "shape":"KubeApiServerConfigRequest",
+          "documentation":"<p>The Kubernetes API server configuration for the new cluster.</p>"
+        },
+        "kubeSchedulerConfig":{
+          "shape":"KubeSchedulerConfigRequest",
+          "documentation":"<p>The Kubernetes scheduler configuration for the new cluster.</p>"
+        },
+        "kubeControllerManagerConfig":{
+          "shape":"KubeControllerManagerConfigRequest",
+          "documentation":"<p>The Kubernetes controller manager configuration for the new cluster.</p>"
         }
       }
     },
@@ -3973,6 +4071,34 @@
         "update":{"shape":"Update"}
       }
     },
+    "DurationConstraints":{
+      "type":"structure",
+      "members":{
+        "min":{
+          "shape":"String",
+          "documentation":"<p>The minimum allowed duration value.</p>"
+        },
+        "max":{
+          "shape":"String",
+          "documentation":"<p>The maximum allowed duration value.</p>"
+        }
+      },
+      "documentation":"<p>Constraints for a duration parameter.</p>"
+    },
+    "DurationParameterConfig":{
+      "type":"structure",
+      "members":{
+        "defaultValue":{
+          "shape":"String",
+          "documentation":"<p>The default value for the duration parameter.</p>"
+        },
+        "constraints":{
+          "shape":"DurationConstraints",
+          "documentation":"<p>The constraints for the duration parameter.</p>"
+        }
+      },
+      "documentation":"<p>A duration parameter configuration with default value and constraints.</p>"
+    },
     "EksAnywhereSubscription":{
       "type":"structure",
       "members":{
@@ -4297,6 +4423,36 @@
       "max":100,
       "min":1
     },
+    "HorizontalPodAutoscalerControllerConfigRequest":{
+      "type":"structure",
+      "members":{
+        "horizontalPodAutoscalerSyncPeriod":{
+          "shape":"String",
+          "documentation":"<p>The interval between each sync of the horizontal pod autoscaler. Valid values are single-unit durations such as <code>15s</code> or <code>1m</code>.</p>"
+        }
+      },
+      "documentation":"<p>The horizontal pod autoscaler controller configuration for the Kubernetes controller manager.</p>"
+    },
+    "HorizontalPodAutoscalerControllerConfigResponse":{
+      "type":"structure",
+      "members":{
+        "horizontalPodAutoscalerSyncPeriod":{
+          "shape":"String",
+          "documentation":"<p>The interval between each sync of the horizontal pod autoscaler.</p>"
+        }
+      },
+      "documentation":"<p>The horizontal pod autoscaler controller configuration for the Kubernetes controller manager.</p>"
+    },
+    "HorizontalPodAutoscalerControllerVersionConfig":{
+      "type":"structure",
+      "members":{
+        "horizontalPodAutoscalerSyncPeriod":{
+          "shape":"DurationParameterConfig",
+          "documentation":"<p>The HPA sync period configuration with default value and constraints.</p>"
+        }
+      },
+      "documentation":"<p>The horizontal pod autoscaler controller version configuration.</p>"
+    },
     "Identity":{
       "type":"structure",
       "members":{
@@ -4529,6 +4685,20 @@
       ]
     },
     "Integer":{"type":"integer"},
+    "IntegerRangeConstraint":{
+      "type":"structure",
+      "members":{
+        "min":{
+          "shape":"BoxedInteger",
+          "documentation":"<p>The minimum allowed value.</p>"
+        },
+        "max":{
+          "shape":"BoxedInteger",
+          "documentation":"<p>The maximum allowed value.</p>"
+        }
+      },
+      "documentation":"<p>An integer range constraint specifying minimum and maximum allowed values.</p>"
+    },
     "InvalidParameterException":{
       "type":"structure",
       "members":{
@@ -4630,6 +4800,108 @@
     "IssueList":{
       "type":"list",
       "member":{"shape":"Issue"}
+    },
+    "KubeApiServerConfigRequest":{
+      "type":"structure",
+      "members":{
+        "eventTtl":{
+          "shape":"String",
+          "documentation":"<p>The duration that Kubernetes events are retained. Valid values are single-unit durations such as <code>30m</code> or <code>1h</code>.</p>"
+        },
+        "serviceNodePortRange":{
+          "shape":"ServiceNodePortRange",
+          "documentation":"<p>The port range for NodePort services.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for the Kubernetes API server on an Amazon EKS cluster.</p>"
+    },
+    "KubeApiServerConfigResponse":{
+      "type":"structure",
+      "members":{
+        "eventTtl":{
+          "shape":"String",
+          "documentation":"<p>The duration that Kubernetes events are retained.</p>"
+        },
+        "serviceNodePortRange":{
+          "shape":"ServiceNodePortRange",
+          "documentation":"<p>The port range for NodePort services.</p>"
+        }
+      },
+      "documentation":"<p>The Kubernetes API server configuration for an Amazon EKS cluster.</p>"
+    },
+    "KubeApiServerVersionConfig":{
+      "type":"structure",
+      "members":{
+        "eventTtl":{
+          "shape":"DurationParameterConfig",
+          "documentation":"<p>The event TTL configuration with default value and constraints.</p>"
+        },
+        "serviceNodePortRange":{
+          "shape":"PortRangeParameterConfig",
+          "documentation":"<p>The service node port range configuration with default value and constraints.</p>"
+        }
+      },
+      "documentation":"<p>The Kubernetes API server version-specific configuration defaults and constraints.</p>"
+    },
+    "KubeControllerManagerConfigRequest":{
+      "type":"structure",
+      "members":{
+        "horizontalPodAutoscalerControllerConfig":{
+          "shape":"HorizontalPodAutoscalerControllerConfigRequest",
+          "documentation":"<p>The horizontal pod autoscaler controller configuration.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for the Kubernetes controller manager on an Amazon EKS cluster.</p>"
+    },
+    "KubeControllerManagerConfigResponse":{
+      "type":"structure",
+      "members":{
+        "horizontalPodAutoscalerControllerConfig":{
+          "shape":"HorizontalPodAutoscalerControllerConfigResponse",
+          "documentation":"<p>The horizontal pod autoscaler controller configuration.</p>"
+        }
+      },
+      "documentation":"<p>The Kubernetes controller manager configuration for an Amazon EKS cluster.</p>"
+    },
+    "KubeControllerManagerVersionConfig":{
+      "type":"structure",
+      "members":{
+        "horizontalPodAutoscalerControllerConfig":{
+          "shape":"HorizontalPodAutoscalerControllerVersionConfig",
+          "documentation":"<p>The horizontal pod autoscaler controller configuration with default value and constraints.</p>"
+        }
+      },
+      "documentation":"<p>The Kubernetes controller manager version-specific configuration defaults and constraints.</p>"
+    },
+    "KubeSchedulerConfigRequest":{
+      "type":"structure",
+      "members":{
+        "nodeResourcesFit":{
+          "shape":"NodeResourcesFitConfig",
+          "documentation":"<p>The node resource fit scoring configuration for the scheduler.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for the Kubernetes scheduler on an Amazon EKS cluster.</p>"
+    },
+    "KubeSchedulerConfigResponse":{
+      "type":"structure",
+      "members":{
+        "nodeResourcesFit":{
+          "shape":"NodeResourcesFitConfig",
+          "documentation":"<p>The node resource fit scoring configuration for the scheduler.</p>"
+        }
+      },
+      "documentation":"<p>The Kubernetes scheduler configuration for an Amazon EKS cluster.</p>"
+    },
+    "KubeSchedulerVersionConfig":{
+      "type":"structure",
+      "members":{
+        "nodeResourcesFit":{
+          "shape":"NodeResourcesFitVersionConfig",
+          "documentation":"<p>The NodeResourcesFit configuration with default value and constraints.</p>"
+        }
+      },
+      "documentation":"<p>The Kubernetes scheduler version-specific configuration defaults and constraints.</p>"
     },
     "KubernetesNetworkConfigRequest":{
       "type":"structure",
@@ -5437,6 +5709,26 @@
       "type":"list",
       "member":{"shape":"NodeRepairConfigOverrides"}
     },
+    "NodeResourcesFitConfig":{
+      "type":"structure",
+      "members":{
+        "scoringStrategy":{
+          "shape":"ScoringStrategy",
+          "documentation":"<p>The scoring strategy used to rank nodes during scheduling.</p>"
+        }
+      },
+      "documentation":"<p>The NodeResourcesFit plugin configuration for the Kubernetes scheduler.</p>"
+    },
+    "NodeResourcesFitVersionConfig":{
+      "type":"structure",
+      "members":{
+        "scoringStrategy":{
+          "shape":"ScoringStrategyConfig",
+          "documentation":"<p>The scoring strategy configuration with default value and constraints.</p>"
+        }
+      },
+      "documentation":"<p>The NodeResourcesFit version configuration with default value and constraints.</p>"
+    },
     "Nodegroup":{
       "type":"structure",
       "members":{
@@ -5949,6 +6241,34 @@
       },
       "documentation":"<p>The summarized description of the association.</p> <p>Each summary is simplified by removing these fields compared to the full <a href=\"https://docs.aws.amazon.com/eks/latest/APIReference/API_PodIdentityAssociation.html\"> <code>PodIdentityAssociation</code> </a>:</p> <ul> <li> <p>The IAM role: <code>roleArn</code> </p> </li> <li> <p>The timestamp that the association was created at: <code>createdAt</code> </p> </li> <li> <p>The most recent timestamp that the association was modified at:. <code>modifiedAt</code> </p> </li> <li> <p>The tags on the association: <code>tags</code> </p> </li> </ul>"
     },
+    "PortRangeConstraints":{
+      "type":"structure",
+      "members":{
+        "minPort":{
+          "shape":"IntegerRangeConstraint",
+          "documentation":"<p>The constraints for the minimum port value.</p>"
+        },
+        "maxPort":{
+          "shape":"IntegerRangeConstraint",
+          "documentation":"<p>The constraints for the maximum port value.</p>"
+        }
+      },
+      "documentation":"<p>Constraints for a port range parameter.</p>"
+    },
+    "PortRangeParameterConfig":{
+      "type":"structure",
+      "members":{
+        "defaultValue":{
+          "shape":"ServiceNodePortRange",
+          "documentation":"<p>The default port range value.</p>"
+        },
+        "constraints":{
+          "shape":"PortRangeConstraints",
+          "documentation":"<p>The constraints for the port range parameter.</p>"
+        }
+      },
+      "documentation":"<p>A port range parameter configuration with default value and constraints.</p>"
+    },
     "Provider":{
       "type":"structure",
       "members":{
@@ -6089,6 +6409,20 @@
         "PRESERVE"
       ]
     },
+    "ResourceConstraints":{
+      "type":"structure",
+      "members":{
+        "name":{
+          "shape":"AllowedValuesConstraint",
+          "documentation":"<p>The allowed values for resource names.</p>"
+        },
+        "weight":{
+          "shape":"IntegerRangeConstraint",
+          "documentation":"<p>The allowed range for resource weight values.</p>"
+        }
+      },
+      "documentation":"<p>Constraints for resource weight entries.</p>"
+    },
     "ResourceInUseException":{
       "type":"structure",
       "members":{
@@ -6181,6 +6515,39 @@
       "error":{"httpStatusCode":428},
       "exception":true
     },
+    "ResourceWeight":{
+      "type":"structure",
+      "members":{
+        "name":{
+          "shape":"ResourceWeightName",
+          "documentation":"<p>The name of the resource (for example, <code>cpu</code> or <code>memory</code>).</p>"
+        },
+        "weight":{
+          "shape":"ResourceWeightValue",
+          "documentation":"<p>The weight assigned to the resource for scoring. Must be between 1 and 100.</p>"
+        }
+      },
+      "documentation":"<p>A resource weight entry for the scheduler scoring strategy.</p>"
+    },
+    "ResourceWeightList":{
+      "type":"list",
+      "member":{"shape":"ResourceWeight"},
+      "documentation":"<p>A list of resource weights for the scoring strategy.</p>",
+      "max":100
+    },
+    "ResourceWeightName":{
+      "type":"string",
+      "documentation":"<p>The name of a resource used in the scheduler scoring strategy.</p>",
+      "max":253,
+      "min":1
+    },
+    "ResourceWeightValue":{
+      "type":"integer",
+      "documentation":"<p>The weight value for a resource in the scheduler scoring strategy. Must be between 1 and 100.</p>",
+      "box":true,
+      "max":100,
+      "min":1
+    },
     "RoleArn":{
       "type":"string",
       "max":255,
@@ -6195,6 +6562,56 @@
         }
       },
       "documentation":"<p>The rollback configuration for the cluster version rollback.</p>"
+    },
+    "ScoringStrategy":{
+      "type":"structure",
+      "members":{
+        "type":{
+          "shape":"ScoringStrategyType",
+          "documentation":"<p>The scoring strategy type. Valid values are <code>LeastAllocated</code> or <code>MostAllocated</code>.</p>"
+        },
+        "resources":{
+          "shape":"ResourceWeightList",
+          "documentation":"<p>The resource weights used for scoring nodes.</p>"
+        }
+      },
+      "documentation":"<p>The scoring strategy configuration for the NodeResourcesFit scheduler plugin.</p>"
+    },
+    "ScoringStrategyConfig":{
+      "type":"structure",
+      "members":{
+        "defaultValue":{
+          "shape":"ScoringStrategy",
+          "documentation":"<p>The default scoring strategy.</p>"
+        },
+        "constraints":{
+          "shape":"ScoringStrategyConstraints",
+          "documentation":"<p>The constraints for the scoring strategy.</p>"
+        }
+      },
+      "documentation":"<p>The scoring strategy configuration with default value and constraints.</p>"
+    },
+    "ScoringStrategyConstraints":{
+      "type":"structure",
+      "members":{
+        "scoringStrategy":{
+          "shape":"AllowedValuesConstraint",
+          "documentation":"<p>The allowed values for the scoring strategy type.</p>"
+        },
+        "resources":{
+          "shape":"ResourceConstraints",
+          "documentation":"<p>The constraints for resource weights.</p>"
+        }
+      },
+      "documentation":"<p>Constraints for the scoring strategy configuration.</p>"
+    },
+    "ScoringStrategyType":{
+      "type":"string",
+      "documentation":"<p>The scoring strategy type for the NodeResourcesFit scheduler plugin.</p>",
+      "enum":[
+        "LeastAllocated",
+        "MostAllocated"
+      ]
     },
     "ServerException":{
       "type":"structure",
@@ -6224,6 +6641,20 @@
       "error":{"httpStatusCode":500},
       "exception":true,
       "fault":true
+    },
+    "ServiceNodePortRange":{
+      "type":"structure",
+      "members":{
+        "minPort":{
+          "shape":"Integer",
+          "documentation":"<p>The minimum port number in the range.</p>"
+        },
+        "maxPort":{
+          "shape":"Integer",
+          "documentation":"<p>The maximum port number in the range.</p>"
+        }
+      },
+      "documentation":"<p>The port range for Kubernetes NodePort services.</p>"
     },
     "ServiceUnavailableException":{
       "type":"structure",
@@ -6727,6 +7158,18 @@
         "controlPlaneScalingConfig":{
           "shape":"ControlPlaneScalingConfig",
           "documentation":"<p>The control plane scaling tier configuration. For more information, see EKS Provisioned Control Plane in the Amazon EKS User Guide.</p>"
+        },
+        "kubeApiServerConfig":{
+          "shape":"KubeApiServerConfigRequest",
+          "documentation":"<p>The Kubernetes API server configuration for the updated cluster.</p>"
+        },
+        "kubeSchedulerConfig":{
+          "shape":"KubeSchedulerConfigRequest",
+          "documentation":"<p>The Kubernetes scheduler configuration for the updated cluster.</p>"
+        },
+        "kubeControllerManagerConfig":{
+          "shape":"KubeControllerManagerConfigRequest",
+          "documentation":"<p>The Kubernetes controller manager configuration for the updated cluster.</p>"
         }
       }
     },
@@ -6995,7 +7438,10 @@
         "WarmPoolMinSize",
         "WarmPoolState",
         "WarmPoolReuseOnScaleIn",
-        "ControlPlaneEgressMode"
+        "ControlPlaneEgressMode",
+        "KubeApiServerConfig",
+        "KubeSchedulerConfig",
+        "KubeControllerManagerConfig"
       ]
     },
     "UpdateParams":{
@@ -7112,7 +7558,8 @@
         "ControlPlaneScalingConfigUpdate",
         "VendedLogsUpdate",
         "ControlPlaneEgressUpdate",
-        "VersionRollback"
+        "VersionRollback",
+        "ControlPlaneComponentConfigUpdate"
       ]
     },
     "UpgradePolicyRequest":{

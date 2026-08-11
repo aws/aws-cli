@@ -1,0 +1,1036 @@
+{
+  "version":"2.0",
+  "metadata":{
+    "apiVersion":"2018-05-10",
+    "auth":["aws.auth#sigv4"],
+    "endpointPrefix":"account-access",
+    "protocol":"rest-json",
+    "protocols":["rest-json"],
+    "serviceFullName":"Account Access",
+    "serviceId":"Account Access",
+    "signatureVersion":"v4",
+    "signingName":"account-access",
+    "uid":"account-access-2018-05-10"
+  },
+  "operations":{
+    "CreateApplication":{
+      "name":"CreateApplication",
+      "http":{
+        "method":"POST",
+        "requestUri":"/applications",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateApplicationRequest"},
+      "output":{"shape":"CreateApplicationResponse"},
+      "errors":[
+        {"shape":"AlreadyCreatedException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Creates an account access manager instance and its Amazon Web Services account access application in the associated IAM Identity Center instance. This operation is idempotent; calling it multiple times with the same parameters returns the existing application.</p>",
+      "idempotent":true
+    },
+    "CreateEntitlement":{
+      "name":"CreateEntitlement",
+      "http":{
+        "method":"POST",
+        "requestUri":"/entitlements",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateEntitlementRequest"},
+      "output":{"shape":"CreateEntitlementResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Creates an entitlement (assignment) in account access manager. An entitlement (assignment) grants a principal (IAM Identity Center user or group) permission to assume a specified IAM role in an Amazon Web Services account. This operation is idempotent.</p>",
+      "idempotent":true
+    },
+    "DeleteApplication":{
+      "name":"DeleteApplication",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/applications/{applicationArn}",
+        "responseCode":204
+      },
+      "input":{"shape":"DeleteApplicationRequest"},
+      "output":{"shape":"DeleteApplicationResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Deletes an account access manager application. This operation is idempotent; deleting an application that has already been deleted does not return an error.</p>",
+      "idempotent":true
+    },
+    "DeleteEntitlement":{
+      "name":"DeleteEntitlement",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/entitlements/{entitlementId}",
+        "responseCode":204
+      },
+      "input":{"shape":"DeleteEntitlementRequest"},
+      "output":{"shape":"DeleteEntitlementResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Deletes an entitlement from an account access manager application. This operation is idempotent; deleting an entitlement that has already been deleted does not return an error.</p>",
+      "idempotent":true
+    },
+    "GetApplication":{
+      "name":"GetApplication",
+      "http":{
+        "method":"GET",
+        "requestUri":"/applications/{applicationArn}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetApplicationRequest"},
+      "output":{"shape":"GetApplicationResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Retrieves details about an account access manager application, including its status, identity source, and tags.</p>",
+      "readonly":true
+    },
+    "GetEntitlement":{
+      "name":"GetEntitlement",
+      "http":{
+        "method":"GET",
+        "requestUri":"/entitlements/{entitlementId}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetEntitlementRequest"},
+      "output":{"shape":"GetEntitlementResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Retrieves details about a specific entitlement for an account access manager application, including the principal, IAM role, and target account.</p>",
+      "readonly":true
+    },
+    "ListApplications":{
+      "name":"ListApplications",
+      "http":{
+        "method":"POST",
+        "requestUri":"/applications-list",
+        "responseCode":200
+      },
+      "input":{"shape":"ListApplicationsRequest"},
+      "output":{"shape":"ListApplicationsResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Lists the account access manager applications in your account. Use pagination to ensure that the operation returns quickly and successfully.</p>",
+      "readonly":true
+    },
+    "ListEntitlements":{
+      "name":"ListEntitlements",
+      "http":{
+        "method":"POST",
+        "requestUri":"/entitlements-list",
+        "responseCode":200
+      },
+      "input":{"shape":"ListEntitlementsRequest"},
+      "output":{"shape":"ListEntitlementsResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Lists the entitlements for a specified account access manager application. You can filter results by principal, IAM role, or account. Use pagination to ensure that the operation returns quickly and successfully.</p>",
+      "readonly":true
+    },
+    "ListTagsForResource":{
+      "name":"ListTagsForResource",
+      "http":{
+        "method":"GET",
+        "requestUri":"/tags/{resourceArn}",
+        "responseCode":200
+      },
+      "input":{"shape":"ListTagsForResourceRequest"},
+      "output":{"shape":"ListTagsForResourceResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Lists the tags associated with an account access manager resource.</p>",
+      "readonly":true
+    },
+    "TagResource":{
+      "name":"TagResource",
+      "http":{
+        "method":"POST",
+        "requestUri":"/tags/{resourceArn}",
+        "responseCode":200
+      },
+      "input":{"shape":"TagResourceRequest"},
+      "output":{"shape":"TagResourceResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Adds tags to an account access manager resource.</p>"
+    },
+    "UntagResource":{
+      "name":"UntagResource",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/tags/{resourceArn}",
+        "responseCode":200
+      },
+      "input":{"shape":"UntagResourceRequest"},
+      "output":{"shape":"UntagResourceResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Removes tags from an account access manager resource.</p>",
+      "idempotent":true
+    }
+  },
+  "shapes":{
+    "AccessDeniedException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"String"}
+      },
+      "documentation":"<p>You do not have sufficient access to perform this operation.</p>",
+      "error":{
+        "httpStatusCode":403,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "Account":{
+      "type":"string",
+      "max":12,
+      "min":12,
+      "pattern":"[0-9]{12}"
+    },
+    "AlreadyCreatedException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"String"}
+      },
+      "documentation":"<p>The resource you are trying to create already exists. To retrieve the existing resource, use the corresponding Get operation.</p>",
+      "exception":true
+    },
+    "ApplicationArn":{
+      "type":"string",
+      "max":2048,
+      "min":49,
+      "pattern":"arn:[a-z0-9-]+:account-access:[a-z0-9]+(-[a-z0-9]+)*:[0-9]{12}:application/[a-zA-Z0-9-]+"
+    },
+    "ApplicationList":{
+      "type":"list",
+      "member":{"shape":"ApplicationSummary"}
+    },
+    "ApplicationSummary":{
+      "type":"structure",
+      "required":[
+        "applicationArn",
+        "createdAt",
+        "updatedAt"
+      ],
+      "members":{
+        "applicationArn":{
+          "shape":"ApplicationArn",
+          "documentation":"<p>The ARN of the application.</p>"
+        },
+        "tenantId":{
+          "shape":"String",
+          "documentation":"<p>The tenant identifier associated with the application.</p>"
+        },
+        "createdAt":{
+          "shape":"DateTime",
+          "documentation":"<p>The date and time when the application was created.</p>"
+        },
+        "updatedAt":{
+          "shape":"DateTime",
+          "documentation":"<p>The date and time when the application was last updated.</p>"
+        }
+      },
+      "documentation":"<p>Contains summary information about an account access manager application.</p>"
+    },
+    "ConflictException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"String"}
+      },
+      "documentation":"<p>The request conflicts with the current state of the resource.</p>",
+      "error":{
+        "httpStatusCode":409,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "CreateApplicationRequest":{
+      "type":"structure",
+      "required":["identitySource"],
+      "members":{
+        "identitySource":{
+          "shape":"IdentitySource",
+          "documentation":"<p>Specifies the identity source for the application. The identity source defines the IAM Identity Center instance that provides principals for entitlements.</p>"
+        },
+        "tags":{
+          "shape":"TagsMap",
+          "documentation":"<p>Specifies the tags to assign to the application.</p>"
+        }
+      }
+    },
+    "CreateApplicationResponse":{
+      "type":"structure",
+      "required":["applicationArn"],
+      "members":{
+        "applicationArn":{
+          "shape":"ApplicationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the created application.</p>"
+        }
+      }
+    },
+    "CreateEntitlementRequest":{
+      "type":"structure",
+      "required":[
+        "applicationArn",
+        "entitlement"
+      ],
+      "members":{
+        "applicationArn":{
+          "shape":"ApplicationArn",
+          "documentation":"<p>Specifies the ARN of the application to create the entitlement for.</p>"
+        },
+        "entitlement":{
+          "shape":"Entitlement",
+          "documentation":"<p>Specifies the entitlement configuration, including the principal and the IAM role to grant access to.</p>"
+        }
+      }
+    },
+    "CreateEntitlementResponse":{
+      "type":"structure",
+      "required":["entitlementId"],
+      "members":{
+        "entitlementId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the created entitlement.</p>"
+        }
+      }
+    },
+    "DateTime":{
+      "type":"timestamp",
+      "timestampFormat":"iso8601"
+    },
+    "DeleteApplicationRequest":{
+      "type":"structure",
+      "required":["applicationArn"],
+      "members":{
+        "applicationArn":{
+          "shape":"ApplicationArn",
+          "documentation":"<p>Specifies the ARN of the application to delete.</p>",
+          "location":"uri",
+          "locationName":"applicationArn"
+        }
+      }
+    },
+    "DeleteApplicationResponse":{
+      "type":"structure",
+      "members":{}
+    },
+    "DeleteEntitlementRequest":{
+      "type":"structure",
+      "required":[
+        "applicationArn",
+        "entitlementId"
+      ],
+      "members":{
+        "applicationArn":{
+          "shape":"ApplicationArn",
+          "documentation":"<p>Specifies the ARN of the application that the entitlement belongs to.</p>",
+          "location":"querystring",
+          "locationName":"applicationArn"
+        },
+        "entitlementId":{
+          "shape":"String",
+          "documentation":"<p>Specifies the unique identifier of the entitlement to delete.</p>",
+          "location":"uri",
+          "locationName":"entitlementId"
+        }
+      }
+    },
+    "DeleteEntitlementResponse":{
+      "type":"structure",
+      "members":{}
+    },
+    "Entitlement":{
+      "type":"structure",
+      "members":{
+        "principalRole":{
+          "shape":"PrincipalRoleEntitlement",
+          "documentation":"<p>The principal-to-role mapping for the entitlement.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the entitlement configuration for an account access manager application, defining which principal can assume which IAM role.</p>",
+      "union":true
+    },
+    "EntitlementDetails":{
+      "type":"structure",
+      "members":{
+        "principalRole":{
+          "shape":"PrincipalRoleEntitlementDetails",
+          "documentation":"<p>The principal-to-role mapping details for the entitlement, including the target account.</p>"
+        }
+      },
+      "documentation":"<p>Contains detailed information about an entitlement, including the principal, IAM role, and target account.</p>",
+      "union":true
+    },
+    "EntitlementFilter":{
+      "type":"structure",
+      "members":{
+        "principalRole":{
+          "shape":"PrincipalRoleEntitlementFilter",
+          "documentation":"<p>The principal-to-role filter criteria for narrowing entitlement results.</p>"
+        }
+      },
+      "documentation":"<p>Specifies filter criteria for listing entitlements.</p>"
+    },
+    "EntitlementSummary":{
+      "type":"structure",
+      "members":{
+        "principalRole":{
+          "shape":"PrincipalRoleEntitlementSummary",
+          "documentation":"<p>The principal-to-role mapping summary for the entitlement.</p>"
+        }
+      },
+      "documentation":"<p>Contains summary information about an entitlement.</p>",
+      "union":true
+    },
+    "EntitlementsList":{
+      "type":"list",
+      "member":{"shape":"EntitlementsListMember"}
+    },
+    "EntitlementsListMember":{
+      "type":"structure",
+      "required":[
+        "entitlementId",
+        "entitlement",
+        "createdAt"
+      ],
+      "members":{
+        "entitlementId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the entitlement.</p>"
+        },
+        "entitlement":{
+          "shape":"EntitlementSummary",
+          "documentation":"<p>The summary information for the entitlement.</p>"
+        },
+        "createdAt":{
+          "shape":"DateTime",
+          "documentation":"<p>The date and time when the entitlement was created.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about an entitlement in a list result.</p>"
+    },
+    "ErrorCode":{
+      "type":"string",
+      "enum":[
+        "AUTHORIZATION_ERROR",
+        "RESOURCE_NOT_FOUND_ERROR",
+        "SERVICE_QUOTA_EXCEEDED_ERROR",
+        "INTERNAL_SERVICE_ERROR"
+      ]
+    },
+    "ErrorDetails":{
+      "type":"structure",
+      "required":[
+        "code",
+        "message"
+      ],
+      "members":{
+        "code":{
+          "shape":"ErrorCode",
+          "documentation":"<p>The error code that identifies the type of error.</p>"
+        },
+        "message":{
+          "shape":"String",
+          "documentation":"<p>A human-readable message that describes the error.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about an error that occurred during application processing.</p>"
+    },
+    "GetApplicationRequest":{
+      "type":"structure",
+      "required":["applicationArn"],
+      "members":{
+        "applicationArn":{
+          "shape":"ApplicationArn",
+          "documentation":"<p>Specifies the ARN of the application to retrieve.</p>",
+          "location":"uri",
+          "locationName":"applicationArn"
+        }
+      }
+    },
+    "GetApplicationResponse":{
+      "type":"structure",
+      "required":[
+        "identitySource",
+        "status",
+        "createdAt",
+        "updatedAt"
+      ],
+      "members":{
+        "identitySource":{
+          "shape":"IdentitySourceDetails",
+          "documentation":"<p>The identity source details for the application, including the IAM Identity Center instance configuration.</p>"
+        },
+        "status":{
+          "shape":"Status",
+          "documentation":"<p>The current status of the application.</p>"
+        },
+        "tenantId":{
+          "shape":"String",
+          "documentation":"<p>The tenant identifier associated with the application.</p>"
+        },
+        "createdAt":{
+          "shape":"DateTime",
+          "documentation":"<p>The date and time when the application was created.</p>"
+        },
+        "updatedAt":{
+          "shape":"DateTime",
+          "documentation":"<p>The date and time when the application was last updated.</p>"
+        },
+        "tags":{
+          "shape":"TagsMap",
+          "documentation":"<p>The tags associated with the application.</p>"
+        },
+        "error":{
+          "shape":"ErrorDetails",
+          "documentation":"<p>The error details if the application is in a failed state.</p>"
+        }
+      }
+    },
+    "GetEntitlementRequest":{
+      "type":"structure",
+      "required":[
+        "applicationArn",
+        "entitlementId"
+      ],
+      "members":{
+        "applicationArn":{
+          "shape":"ApplicationArn",
+          "documentation":"<p>Specifies the ARN of the application that the entitlement belongs to.</p>",
+          "location":"querystring",
+          "locationName":"applicationArn"
+        },
+        "entitlementId":{
+          "shape":"String",
+          "documentation":"<p>Specifies the unique identifier of the entitlement to retrieve.</p>",
+          "location":"uri",
+          "locationName":"entitlementId"
+        }
+      }
+    },
+    "GetEntitlementResponse":{
+      "type":"structure",
+      "required":[
+        "applicationArn",
+        "entitlementId",
+        "entitlement",
+        "createdAt"
+      ],
+      "members":{
+        "applicationArn":{
+          "shape":"ApplicationArn",
+          "documentation":"<p>The ARN of the application that the entitlement belongs to.</p>"
+        },
+        "entitlementId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the entitlement.</p>"
+        },
+        "entitlement":{
+          "shape":"EntitlementDetails",
+          "documentation":"<p>The entitlement details, including the principal, IAM role, and target account.</p>"
+        },
+        "createdAt":{
+          "shape":"DateTime",
+          "documentation":"<p>The date and time when the entitlement was created.</p>"
+        }
+      }
+    },
+    "GroupId":{
+      "type":"string",
+      "max":47,
+      "min":1,
+      "pattern":"([0-9a-f]{10}-|)[A-Fa-f0-9]{8}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{12}"
+    },
+    "IdentityCenter":{
+      "type":"structure",
+      "required":["instanceArn"],
+      "members":{
+        "instanceArn":{
+          "shape":"IdentityCenterInstanceArn",
+          "documentation":"<p>The ARN of the IAM Identity Center instance.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the IAM Identity Center instance to use as the identity source for an application.</p>"
+    },
+    "IdentityCenterApplicationArn":{
+      "type":"string",
+      "max":1224,
+      "min":10,
+      "pattern":"arn:[a-z0-9-]+:sso::[0-9]{12}:application/(sso)?ins-[a-zA-Z0-9-.]{16}/apl-[a-zA-Z0-9]{16}"
+    },
+    "IdentityCenterDetails":{
+      "type":"structure",
+      "required":["instanceArn"],
+      "members":{
+        "instanceArn":{
+          "shape":"IdentityCenterInstanceArn",
+          "documentation":"<p>The ARN of the IAM Identity Center instance.</p>"
+        },
+        "applicationArn":{
+          "shape":"IdentityCenterApplicationArn",
+          "documentation":"<p>The ARN of the IAM Identity Center application created for this account access manager application.</p>"
+        }
+      },
+      "documentation":"<p>Contains detailed information about the IAM Identity Center configuration for an application.</p>"
+    },
+    "IdentityCenterInstanceArn":{
+      "type":"string",
+      "max":1224,
+      "min":10,
+      "pattern":"arn:[a-z0-9-]+:sso:::instance/(sso)?ins-[a-zA-Z0-9-.]{16}"
+    },
+    "IdentityCenterPrincipal":{
+      "type":"structure",
+      "members":{
+        "userId":{
+          "shape":"UserId",
+          "documentation":"<p>The unique identifier of a user in IAM Identity Center.</p>"
+        },
+        "groupId":{
+          "shape":"GroupId",
+          "documentation":"<p>The unique identifier of a group in IAM Identity Center.</p>"
+        }
+      },
+      "documentation":"<p>Identifies a user or group from IAM Identity Center.</p>",
+      "union":true
+    },
+    "IdentityCenterPrincipalFilter":{
+      "type":"structure",
+      "members":{
+        "userId":{
+          "shape":"UserId",
+          "documentation":"<p>The unique identifier of a user in IAM Identity Center to filter by.</p>"
+        },
+        "groupId":{
+          "shape":"GroupId",
+          "documentation":"<p>The unique identifier of a group in IAM Identity Center to filter by.</p>"
+        }
+      },
+      "documentation":"<p>Specifies filter criteria for an IAM Identity Center principal.</p>",
+      "union":true
+    },
+    "IdentitySource":{
+      "type":"structure",
+      "members":{
+        "identityCenter":{
+          "shape":"IdentityCenter",
+          "documentation":"<p>The IAM Identity Center instance to use as the identity source.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the identity source for an account access manager application.</p>",
+      "union":true
+    },
+    "IdentitySourceDetails":{
+      "type":"structure",
+      "members":{
+        "identityCenter":{
+          "shape":"IdentityCenterDetails",
+          "documentation":"<p>The IAM Identity Center configuration details for the identity source.</p>"
+        }
+      },
+      "documentation":"<p>Contains detailed information about the identity source for an application.</p>",
+      "union":true
+    },
+    "InternalServerException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"String"}
+      },
+      "documentation":"<p>An internal service error occurred. Try your request again later.</p>",
+      "error":{"httpStatusCode":500},
+      "exception":true,
+      "fault":true
+    },
+    "ListApplicationsRequest":{
+      "type":"structure",
+      "members":{
+        "maxResults":{
+          "shape":"ListApplicationsRequestMaxResultsInteger",
+          "documentation":"<p>Specifies the maximum number of results to return in a single call.</p>"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>Specifies the pagination token from a previous call to retrieve the next set of results.</p>"
+        }
+      }
+    },
+    "ListApplicationsRequestMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "ListApplicationsResponse":{
+      "type":"structure",
+      "required":["applications"],
+      "members":{
+        "applications":{
+          "shape":"ApplicationList",
+          "documentation":"<p>The list of applications.</p>"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>The pagination token to use in a subsequent request to retrieve the next set of results. This value is null when there are no more results to return.</p>"
+        }
+      }
+    },
+    "ListEntitlementsRequest":{
+      "type":"structure",
+      "required":[
+        "applicationArn",
+        "filter"
+      ],
+      "members":{
+        "applicationArn":{
+          "shape":"ApplicationArn",
+          "documentation":"<p>Specifies the ARN of the application to list entitlements for.</p>"
+        },
+        "filter":{
+          "shape":"EntitlementFilter",
+          "documentation":"<p>Specifies filter criteria to narrow the entitlements returned. You can filter by principal, IAM role, or account.</p>"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>Specifies the pagination token from a previous call to retrieve the next set of results.</p>"
+        },
+        "maxResults":{
+          "shape":"ListEntitlementsRequestMaxResultsInteger",
+          "documentation":"<p>Specifies the maximum number of results to return in a single call.</p>"
+        }
+      }
+    },
+    "ListEntitlementsRequestMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "ListEntitlementsResponse":{
+      "type":"structure",
+      "required":["entitlements"],
+      "members":{
+        "entitlements":{
+          "shape":"EntitlementsList",
+          "documentation":"<p>The list of entitlements for the specified application.</p>"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>The pagination token to use in a subsequent request to retrieve the next set of results. This value is null when there are no more results to return.</p>"
+        }
+      }
+    },
+    "ListTagsForResourceRequest":{
+      "type":"structure",
+      "required":["resourceArn"],
+      "members":{
+        "resourceArn":{
+          "shape":"ApplicationArn",
+          "documentation":"<p>Specifies the ARN of the resource to list tags for.</p>",
+          "location":"uri",
+          "locationName":"resourceArn"
+        }
+      }
+    },
+    "ListTagsForResourceResponse":{
+      "type":"structure",
+      "members":{
+        "tags":{
+          "shape":"TagsMap",
+          "documentation":"<p>The tags associated with the resource.</p>"
+        }
+      }
+    },
+    "Principal":{
+      "type":"structure",
+      "members":{
+        "identityCenter":{
+          "shape":"IdentityCenterPrincipal",
+          "documentation":"<p>The IAM Identity Center principal (user or group).</p>"
+        }
+      },
+      "documentation":"<p>Identifies a principal (user or group) that can be granted entitlements.</p>",
+      "union":true
+    },
+    "PrincipalFilter":{
+      "type":"structure",
+      "members":{
+        "identityCenter":{
+          "shape":"IdentityCenterPrincipalFilter",
+          "documentation":"<p>The IAM Identity Center principal filter criteria.</p>"
+        }
+      },
+      "documentation":"<p>Specifies filter criteria for a principal.</p>",
+      "union":true
+    },
+    "PrincipalRoleEntitlement":{
+      "type":"structure",
+      "required":[
+        "principal",
+        "roleArn"
+      ],
+      "members":{
+        "principal":{
+          "shape":"Principal",
+          "documentation":"<p>The principal (user or group) that is granted access to assume the IAM role.</p>"
+        },
+        "roleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>The ARN of the IAM role that the principal can assume.</p>"
+        }
+      },
+      "documentation":"<p>Specifies a principal-to-role entitlement that grants an IAM Identity Center principal permission to assume an IAM role.</p>"
+    },
+    "PrincipalRoleEntitlementDetails":{
+      "type":"structure",
+      "required":[
+        "principal",
+        "roleArn",
+        "account"
+      ],
+      "members":{
+        "principal":{
+          "shape":"Principal",
+          "documentation":"<p>The principal (user or group) that is granted access to assume the IAM role.</p>"
+        },
+        "roleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>The ARN of the IAM role that the principal can assume.</p>"
+        },
+        "account":{
+          "shape":"Account",
+          "documentation":"<p>The 12-digit Amazon Web Services account ID where the IAM role resides.</p>"
+        },
+        "accountName":{
+          "shape":"String",
+          "documentation":"<p>The friendly name of the Amazon Web Services account where the IAM role resides.</p>"
+        }
+      },
+      "documentation":"<p>Contains detailed information about a principal-to-role entitlement, including the target account.</p>"
+    },
+    "PrincipalRoleEntitlementFilter":{
+      "type":"structure",
+      "members":{
+        "principal":{
+          "shape":"PrincipalFilter",
+          "documentation":"<p>The principal to filter entitlements by.</p>"
+        },
+        "roleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>The IAM role ARN to filter entitlements by.</p>"
+        },
+        "account":{
+          "shape":"Account",
+          "documentation":"<p>The 12-digit Amazon Web Services account ID to filter entitlements by.</p>"
+        }
+      },
+      "documentation":"<p>Specifies filter criteria for principal-to-role entitlements. All specified criteria must match for an entitlement to be returned.</p>"
+    },
+    "PrincipalRoleEntitlementSummary":{
+      "type":"structure",
+      "required":[
+        "principal",
+        "roleArn",
+        "account"
+      ],
+      "members":{
+        "principal":{
+          "shape":"Principal",
+          "documentation":"<p>The principal (user or group) that is granted access to assume the IAM role.</p>"
+        },
+        "roleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>The ARN of the IAM role that the principal can assume.</p>"
+        },
+        "account":{
+          "shape":"Account",
+          "documentation":"<p>The 12-digit Amazon Web Services account ID where the IAM role resides.</p>"
+        },
+        "accountName":{
+          "shape":"String",
+          "documentation":"<p>The friendly name of the Amazon Web Services account where the IAM role resides.</p>"
+        }
+      },
+      "documentation":"<p>Contains summary information about a principal-to-role entitlement.</p>"
+    },
+    "ResourceNotFoundException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"String"}
+      },
+      "documentation":"<p>The specified resource does not exist. Verify that the resource identifier is correct and that the resource exists in the current Region.</p>",
+      "error":{
+        "httpStatusCode":404,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "RoleArn":{
+      "type":"string",
+      "pattern":"arn:[a-z0-9-]+:iam::[0-9]{12}:role/([a-zA-Z0-9+=,.@_-]+/)*[a-zA-Z0-9+=,.@_-]+"
+    },
+    "ServiceQuotaExceededException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"String"}
+      },
+      "documentation":"<p>The request exceeds a service quota for your account.</p>",
+      "error":{
+        "httpStatusCode":402,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "Status":{
+      "type":"string",
+      "enum":[
+        "CREATE_IN_PROGRESS",
+        "ACTIVE",
+        "DELETE_IN_PROGRESS",
+        "CREATE_FAILED",
+        "DELETE_FAILED"
+      ]
+    },
+    "String":{"type":"string"},
+    "TagKeys":{
+      "type":"list",
+      "member":{"shape":"String"}
+    },
+    "TagResourceRequest":{
+      "type":"structure",
+      "required":[
+        "resourceArn",
+        "tags"
+      ],
+      "members":{
+        "resourceArn":{
+          "shape":"ApplicationArn",
+          "documentation":"<p>Specifies the ARN of the resource to add tags to.</p>",
+          "location":"uri",
+          "locationName":"resourceArn"
+        },
+        "tags":{
+          "shape":"TagsMap",
+          "documentation":"<p>Specifies the tags to add to the resource.</p>"
+        }
+      }
+    },
+    "TagResourceResponse":{
+      "type":"structure",
+      "members":{}
+    },
+    "TagsMap":{
+      "type":"map",
+      "key":{"shape":"String"},
+      "value":{"shape":"String"}
+    },
+    "ThrottlingException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"String"}
+      },
+      "documentation":"<p>The request was denied due to request throttling. Try your request again later.</p>",
+      "error":{
+        "httpStatusCode":429,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "UntagResourceRequest":{
+      "type":"structure",
+      "required":[
+        "resourceArn",
+        "tagKeys"
+      ],
+      "members":{
+        "resourceArn":{
+          "shape":"ApplicationArn",
+          "documentation":"<p>Specifies the ARN of the resource to remove tags from.</p>",
+          "location":"uri",
+          "locationName":"resourceArn"
+        },
+        "tagKeys":{
+          "shape":"TagKeys",
+          "documentation":"<p>Specifies the tag keys to remove from the resource.</p>",
+          "location":"querystring",
+          "locationName":"tagKeys"
+        }
+      }
+    },
+    "UntagResourceResponse":{
+      "type":"structure",
+      "members":{}
+    },
+    "UserId":{
+      "type":"string",
+      "max":47,
+      "min":1,
+      "pattern":"([0-9a-f]{10}-|)[A-Fa-f0-9]{8}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{12}"
+    },
+    "ValidationException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"String"}
+      },
+      "documentation":"<p>The input does not satisfy the constraints specified by the service. Check your request parameters and retry the request.</p>",
+      "error":{
+        "httpStatusCode":400,
+        "senderFault":true
+      },
+      "exception":true
+    }
+  },
+  "documentation":"<p>Account access manager enables you to manage applications and entitlements that grant IAM Identity Center principals access to IAM roles across accounts.</p>"
+}

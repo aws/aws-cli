@@ -18,7 +18,8 @@ from botocore import xform_name
 from botocore.model import StringShape
 from botocore.utils import is_json_value_header
 
-from awscli import SCALAR_TYPES, __version__ as AWS_CLI_VERSION
+from awscli import SCALAR_TYPES
+from awscli import __version__ as AWS_CLI_VERSION
 from awscli.argprocess import ParamShorthandDocGen
 from awscli.bcdoc.docevents import DOC_EVENTS
 from awscli.topictags import TopicTagDB
@@ -132,6 +133,17 @@ class CLIDocumentEventHandler:
         doc.style.h2('Description')
         doc.include_doc_string(help_command.description)
         doc.style.new_paragraph()
+
+    def _add_agent_toolkit_note(self, help_command):
+        namespace = help_command.event_class.split('.', 1)[0]
+        if namespace == 'agent-toolkit':
+            return
+        doc = help_command.doc
+        doc.style.new_paragraph()
+        doc.writeln(
+            'See also: Official AWS skills may be available, '
+            '"aws agent-toolkit help".'
+        )
 
     def doc_synopsis_start(self, help_command, **kwargs):
         self._documented_arg_groups = []
@@ -461,6 +473,7 @@ class ServiceDocumentEventHandler(CLIDocumentEventHandler):
         doc.style.h2('Description')
         # TODO: need a documentation attribute.
         doc.include_doc_string(service_model.documentation)
+        self._add_agent_toolkit_note(help_command)
 
     def doc_subitems_start(self, help_command, **kwargs):
         doc = help_command.doc
@@ -484,7 +497,9 @@ class ServiceDocumentEventHandler(CLIDocumentEventHandler):
         doc = help_command.doc
         reference = help_command.event_class.replace('.', ' ')
         doc.writeln(".. meta::")
-        doc.writeln(f"   :description: Learn about the AWS CLI {AWS_CLI_VERSION} {reference} commands.")
+        doc.writeln(
+            f"   :description: Learn about the AWS CLI {AWS_CLI_VERSION} {reference} commands."
+        )
         doc.writeln("")
 
 
@@ -498,6 +513,7 @@ class OperationDocumentEventHandler(CLIDocumentEventHandler):
         doc.include_doc_string(operation_model.documentation)
         self._add_webapi_crosslink(help_command)
         self._add_note_for_document_types_if_used(help_command)
+        self._add_agent_toolkit_note(help_command)
 
     def _add_webapi_crosslink(self, help_command):
         doc = help_command.doc
@@ -698,8 +714,11 @@ class OperationDocumentEventHandler(CLIDocumentEventHandler):
         doc = help_command.doc
         reference = help_command.event_class.replace('.', ' ')
         doc.writeln(".. meta::")
-        doc.writeln(f"   :description: Use the AWS CLI {AWS_CLI_VERSION} to run the {reference} command.")
+        doc.writeln(
+            f"   :description: Use the AWS CLI {AWS_CLI_VERSION} to run the {reference} command."
+        )
         doc.writeln("")
+
 
 class TopicListerDocumentEventHandler(CLIDocumentEventHandler):
     DESCRIPTION = (

@@ -1035,7 +1035,7 @@ class TestConfigureSSOCommand:
             ],
         )
 
-    def test_hints_agent_toolkit_after_configuring_profile(
+    def test_prompts_agent_toolkit_after_configuring_profile(
         self,
         sso_cmd,
         ptk_stubber,
@@ -1054,10 +1054,10 @@ class TestConfigureSSOCommand:
 
         with mock.patch(
             'awscli.customizations.configure.sso_commands.'
-            'maybe_print_agent_toolkit_hint'
-        ) as hint:
+            'maybe_prompt_agent_toolkit'
+        ) as prompt:
             sso_cmd(args, parsed_globals)
-        hint.assert_called_once()
+        prompt.assert_called_once()
 
     def test_no_accounts_flow_raises_error(
         self,

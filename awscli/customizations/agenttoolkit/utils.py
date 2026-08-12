@@ -65,11 +65,22 @@ AGENT_ARG = {
 }
 
 
+# The Agent Toolkit API is served from a single region today,
+# Default there unless the caller passes an explicit ``--region``,
+# otherwise a user whose configured region is elsewhere would hit
+# an endpoint that does not exist.
+AGENT_TOOLKIT_REGION = 'us-east-1'
+
+
 def create_client(session, parsed_globals):
+    overrides = {}
+    if not getattr(parsed_globals, 'region', None):
+        overrides['region_name'] = AGENT_TOOLKIT_REGION
     return create_client_from_parsed_globals(
         session,
         'agenttoolkit',
         parsed_globals,
+        overrides=overrides,
     )
 
 

@@ -21,7 +21,7 @@ from awscli.customizations.agenttoolkit.configure import (
     ConfigureAgentToolkitCommand,
 )
 from awscli.customizations.agenttoolkit.hint import (
-    maybe_print_agent_toolkit_hint,
+    maybe_prompt_agent_toolkit,
 )
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.configure.addmodel import AddModelCommand
@@ -196,7 +196,7 @@ class ConfigureCommand(BasicCommand):
                 section = profile_to_section(profile)
                 new_values['__section__'] = section
             self._config_writer.update_config(new_values, config_filename)
-            maybe_print_agent_toolkit_hint()
+            maybe_prompt_agent_toolkit(self._session, parsed_globals)
         return 0
 
     def _write_out_creds_file_values(self, new_values, profile_name):

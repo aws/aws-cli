@@ -36,7 +36,7 @@ from botocore.exceptions import ProfileNotFound
 from botocore.useragent import register_feature_id
 
 from awscli.customizations.agenttoolkit.hint import (
-    maybe_print_agent_toolkit_hint,
+    maybe_prompt_agent_toolkit,
 )
 from awscli.customizations.configure import (
     get_section_header,
@@ -355,7 +355,7 @@ class ConfigureSSOCommand(BaseSSOConfigurationCommand):
 
         self._write_new_config(profile_name)
         self._print_conclusion(configured_for_aws_credentials, profile_name)
-        maybe_print_agent_toolkit_hint()
+        maybe_prompt_agent_toolkit(self._session, parsed_globals)
         return 0
 
     def _prompt_for_sso_registration_args(self, verify=None):

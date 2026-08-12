@@ -15,7 +15,7 @@ from botocore.utils import (
 
 from awscli.compat import compat_input
 from awscli.customizations.agenttoolkit.hint import (
-    maybe_print_agent_toolkit_hint,
+    maybe_prompt_agent_toolkit,
 )
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.configure.writer import ConfigFileWriter
@@ -160,7 +160,7 @@ class LoginCommand(BasicCommand):
         # Only nudge on first-time setup (a newly created profile), not on
         # routine re-auth of an existing profile.
         if is_new_profile:
-            maybe_print_agent_toolkit_hint()
+            maybe_prompt_agent_toolkit(self._session, parsed_globals)
 
     def accept_change_to_existing_profile_if_needed(
         self, profile_name, new_session_id

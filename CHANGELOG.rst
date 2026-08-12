@@ -2,6 +2,19 @@
 CHANGELOG
 =========
 
+2.36.22
+=======
+
+* api-change:``iam``: Introduced role manager, an IAM capability that automatically sets up the IAM roles your AWS services need. When you set up a supported service in the console, role manager creates a role for you or reuses an existing one from an AWS-managed template.
+* api-change:``wellarchitected``: This change releases the Well-Architected Agent, a generative AI service that analyzes a customer's AWS environment and delivers personalized, prioritized recommendations across cost, security, performance, and resilience.
+* api-change:``quicksight``: Added APIs for DLP with Microsoft Purview (manage configs with label enforcement across Spaces, Chat, Knowledge Bases), Approval Workflows (CRUD for policies on asset sharing for Agents, Knowledge Bases, Spaces), and Limits Management (limit profiles for index storage and agent hours per user).
+* api-change:``dsql``: Improved validation of Kinesis stream ARN format to ensure only valid ARN characters are accepted
+* api-change:``glue``: Documentation updates for materialized views APIs.
+* api-change:``mediaconnect``: AWS MediaConnect now supports tuning the internal recovery latency between Router Inputs and Outputs to prioritize stream quality versus end-to-end latency.
+* api-change:``odb``: Adds support for Oracle Exadata on Exascale Infrastructure (ExaDB-XS) resources including storage vaults and VM clusters.
+* enhancement:awscrt: Update awscrt to version 0.36.2
+
+
 2.36.21
 =======
 

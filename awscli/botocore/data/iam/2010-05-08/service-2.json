@@ -29,6 +29,31 @@
       ],
       "documentation":"<p>Accepts a delegation request, granting the requested temporary access.</p> <p>Once the delegation request is accepted, it is eligible to send the exchange token to the partner. The <a href=\"https://docs.aws.amazon.com/IAM/latest/APIReference/API_SendDelegationToken.html\">SendDelegationToken</a> API has to be explicitly called to send the delegation token. </p> <p>At the time of acceptance, IAM records the details and the state of the identity that called this API. This is the identity that gets mapped to the delegated credential. </p> <p>An accepted request may be rejected before the exchange token is sent to the partner.</p>"
     },
+    "AcquireRole":{
+      "name":"AcquireRole",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"AcquireRoleRequest"},
+      "output":{
+        "shape":"AcquireRoleResponse",
+        "resultWrapper":"AcquireRoleResult"
+      },
+      "errors":[
+        {"shape":"LimitExceededException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"EntityAlreadyExistsException"},
+        {"shape":"RoleModifiedException"},
+        {"shape":"NameConflictException"},
+        {"shape":"MalformedPolicyDocumentException"},
+        {"shape":"ConcurrentModificationException"},
+        {"shape":"ServiceFailureException"},
+        {"shape":"NoSuchEntityException"},
+        {"shape":"RoleTemplateDisabledException"}
+      ],
+      "documentation":"<p>Creates an IAM role from the specified role template. The new role takes its configuration—including its name, path, trust policy, inline and managed policies, permissions boundary, tags, and maximum session duration—from the role template version that you specify. For more information about roles, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles.html\">IAM roles</a> in the <i>IAM User Guide</i>.</p> <p>If the template version defines parameters, use the <code>ReplacementValues</code> parameter to supply the values that the service substitutes into the role during creation.</p>"
+    },
     "AddClientIDToOpenIDConnectProvider":{
       "name":"AddClientIDToOpenIDConnectProvider",
       "http":{
@@ -1066,6 +1091,23 @@
       ],
       "documentation":"<p>Retrieves the password policy for the Amazon Web Services account. This tells you the complexity requirements and mandatory rotation periods for the IAM user passwords in your account. For more information about using a password policy, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_ManagingPasswordPolicies.html\">Managing an IAM password policy</a>.</p>"
     },
+    "GetAccountProperties":{
+      "name":"GetAccountProperties",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetAccountPropertiesRequest"},
+      "output":{
+        "shape":"GetAccountPropertiesResponse",
+        "resultWrapper":"GetAccountPropertiesResult"
+      },
+      "errors":[
+        {"shape":"InvalidInputException"},
+        {"shape":"ServiceFailureException"}
+      ],
+      "documentation":"<p>Retrieves the account-level properties for the caller's Amazon Web Services account. Account properties are configuration settings that control account-wide IAM features such as Role Manager.</p> <p>The service returns properties as key-value pairs in <code>Namespace/PropertyName</code> format. Each namespace groups related configuration settings. Use <a href=\"https://docs.aws.amazon.com/IAM/latest/APIReference/API_PutAccountProperties.html\">PutAccountProperties</a> to modify these properties.</p>"
+    },
     "GetAccountSummary":{
       "name":"GetAccountSummary",
       "http":{
@@ -1370,6 +1412,24 @@
         {"shape":"ServiceFailureException"}
       ],
       "documentation":"<p>Retrieves the specified inline policy document that is embedded with the specified IAM role.</p> <note> <p>Policies returned by this operation are URL-encoded compliant with <a href=\"https://tools.ietf.org/html/rfc3986\">RFC 3986</a>. You can use a URL decoding method to convert the policy back to plain JSON text. For example, if you use Java, you can use the <code>decode</code> method of the <code>java.net.URLDecoder</code> utility class in the Java SDK. Other languages and SDKs provide similar functionality, and some SDKs do this decoding automatically.</p> </note> <p>An IAM role can also have managed policies attached to it. To retrieve a managed policy document that is attached to a role, use <a href=\"https://docs.aws.amazon.com/IAM/latest/APIReference/API_GetPolicy.html\">GetPolicy</a> to determine the policy's default version, then use <a href=\"https://docs.aws.amazon.com/IAM/latest/APIReference/API_GetPolicyVersion.html\">GetPolicyVersion</a> to retrieve the policy document.</p> <p>For more information about policies, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/policies-managed-vs-inline.html\">Managed policies and inline policies</a> in the <i>IAM User Guide</i>.</p> <p> For more information about roles, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles.html\">IAM roles</a> in the <i>IAM User Guide</i>.</p>"
+    },
+    "GetRoleTemplateVersion":{
+      "name":"GetRoleTemplateVersion",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetRoleTemplateVersionRequest"},
+      "output":{
+        "shape":"GetRoleTemplateVersionResponse",
+        "resultWrapper":"GetRoleTemplateVersionResult"
+      },
+      "errors":[
+        {"shape":"NoSuchEntityException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"ServiceFailureException"}
+      ],
+      "documentation":"<p>Retrieves information about a version of the specified role template. Role templates define a reusable configuration—including role name and path patterns, trust policy, inline and managed policies, permissions boundary, tags, and maximum session duration—that you use to create IAM roles with <a href=\"https://docs.aws.amazon.com/IAM/latest/APIReference/API_AcquireRole.html\">AcquireRole</a>.</p> <p>If you do not specify a minor version, the service returns the template's default minor version.</p>"
     },
     "GetSAMLProvider":{
       "name":"GetSAMLProvider",
@@ -2118,6 +2178,24 @@
         "resultWrapper":"ListVirtualMFADevicesResult"
       },
       "documentation":"<p>Lists the virtual MFA devices defined in the Amazon Web Services account by assignment status. If you do not specify an assignment status, the operation returns a list of all virtual MFA devices. Assignment status can be <code>Assigned</code>, <code>Unassigned</code>, or <code>Any</code>.</p> <note> <p>IAM resource-listing operations return a subset of the available attributes for the resource. For example, this operation does not return tags, even though they are an attribute of the returned object. To view tag information for a virtual MFA device, see <a href=\"https://docs.aws.amazon.com/IAM/latest/APIReference/API_ListMFADeviceTags.html\">ListMFADeviceTags</a>.</p> </note> <p>You can paginate the results using the <code>MaxItems</code> and <code>Marker</code> parameters.</p>"
+    },
+    "PutAccountProperties":{
+      "name":"PutAccountProperties",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"PutAccountPropertiesRequest"},
+      "output":{
+        "shape":"PutAccountPropertiesResponse",
+        "resultWrapper":"PutAccountPropertiesResult"
+      },
+      "errors":[
+        {"shape":"InvalidInputException"},
+        {"shape":"ConcurrentModificationException"},
+        {"shape":"ServiceFailureException"}
+      ],
+      "documentation":"<p>Sets account-level properties for the caller's Amazon Web Services account. Account properties are configuration settings that control account-wide IAM features such as Role Manager.</p> <p>Specify properties as key-value pairs in <code>Namespace/PropertyName</code> format. All properties in a single request must belong to the same namespace. Use <a href=\"https://docs.aws.amazon.com/IAM/latest/APIReference/API_GetAccountProperties.html\">GetAccountProperties</a> to view the current properties.</p>"
     },
     "PutGroupPolicy":{
       "name":"PutGroupPolicy",
@@ -3048,6 +3126,34 @@
       "members":{},
       "documentation":"<p>The request was rejected because the account making the request is not the management account or delegated administrator account for <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/id_root-user.html#id_root-user-access-management\">centralized root access</a>.</p>",
       "exception":true
+    },
+    "AcquireRoleRequest":{
+      "type":"structure",
+      "required":["TemplateArn"],
+      "members":{
+        "TemplateArn":{
+          "shape":"arnType",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the role template to create the role from.</p> <p>For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Names (ARNs)</a> in the <i>Amazon Web Services General Reference</i>.</p>"
+        },
+        "TemplateMinorVersion":{
+          "shape":"integerType",
+          "documentation":"<p>The minor version of the role template to use. If you do not specify a minor version, the service uses the template's default minor version.</p>"
+        },
+        "ReplacementValues":{
+          "shape":"mapStringReplacementValueEntry",
+          "documentation":"<p>A map of values to substitute for the parameters that are defined in the role template version. Each key is a parameter name from the template, and each value is a structure that contains the replacement values for that parameter.</p>"
+        }
+      }
+    },
+    "AcquireRoleResponse":{
+      "type":"structure",
+      "required":["Role"],
+      "members":{
+        "Role":{
+          "shape":"Role",
+          "documentation":"<p>A structure that contains details about the IAM role that was created.</p>"
+        }
+      }
     },
     "ActionNameListType":{
       "type":"list",
@@ -4797,6 +4903,19 @@
       },
       "documentation":"<p>Contains the response to a successful <a href=\"https://docs.aws.amazon.com/IAM/latest/APIReference/API_GetAccountPasswordPolicy.html\">GetAccountPasswordPolicy</a> request. </p>"
     },
+    "GetAccountPropertiesRequest":{
+      "type":"structure",
+      "members":{}
+    },
+    "GetAccountPropertiesResponse":{
+      "type":"structure",
+      "members":{
+        "Properties":{
+          "shape":"accountPropertiesMapType",
+          "documentation":"<p>A map of account property key-value pairs. Keys are in the format <code>Namespace/PropertyName</code>.</p>"
+        }
+      }
+    },
     "GetAccountSummaryResponse":{
       "type":"structure",
       "members":{
@@ -5303,6 +5422,30 @@
       },
       "documentation":"<p>Contains the response to a successful <a href=\"https://docs.aws.amazon.com/IAM/latest/APIReference/API_GetRole.html\">GetRole</a> request. </p>"
     },
+    "GetRoleTemplateVersionRequest":{
+      "type":"structure",
+      "required":["TemplateArn"],
+      "members":{
+        "TemplateArn":{
+          "shape":"arnType",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the role template whose version you want to retrieve.</p> <p>For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Names (ARNs)</a> in the <i>Amazon Web Services General Reference</i>.</p>"
+        },
+        "MinorVersion":{
+          "shape":"minorVersionType",
+          "documentation":"<p>The minor version of the role template to retrieve. If you do not specify a minor version, the service returns the template's default minor version.</p>"
+        }
+      }
+    },
+    "GetRoleTemplateVersionResponse":{
+      "type":"structure",
+      "required":["RoleTemplateVersion"],
+      "members":{
+        "RoleTemplateVersion":{
+          "shape":"RoleTemplateVersion",
+          "documentation":"<p>A structure that contains details about the requested role template version.</p>"
+        }
+      }
+    },
     "GetSAMLProviderRequest":{
       "type":"structure",
       "required":["SAMLProviderArn"],
@@ -5672,6 +5815,24 @@
         }
       },
       "documentation":"<p>Contains information about an IAM group, including all of the group's policies.</p> <p>This data type is used as a response element in the <a href=\"https://docs.aws.amazon.com/IAM/latest/APIReference/API_GetAccountAuthorizationDetails.html\">GetAccountAuthorizationDetails</a> operation.</p>"
+    },
+    "InlinePolicy":{
+      "type":"structure",
+      "required":[
+        "PolicyName",
+        "PolicyDocument"
+      ],
+      "members":{
+        "PolicyName":{
+          "shape":"policyNameType",
+          "documentation":"<p>The name of the inline policy.</p>"
+        },
+        "PolicyDocument":{
+          "shape":"policyDocumentType",
+          "documentation":"<p>The inline policy document.</p>"
+        }
+      },
+      "documentation":"<p>Contains an inline policy template that the service embeds in roles that you create from a role template.</p>"
     },
     "InlinePolicyIdentifierType":{
       "type":"structure",
@@ -7253,6 +7414,19 @@
       "type":"list",
       "member":{"shape":"ManagedPolicyDetail"}
     },
+    "NameConflictException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"nameConflictMessage"}
+      },
+      "documentation":"<p>The request was rejected because the resulting role name conflicts with an existing role in the account.</p>",
+      "error":{
+        "code":"NameConflict",
+        "httpStatusCode":409,
+        "senderFault":true
+      },
+      "exception":true
+    },
     "NoSuchEntityException":{
       "type":"structure",
       "members":{
@@ -7338,6 +7512,44 @@
         }
       },
       "documentation":"<p>Contains information about the effect that Organizations has on a policy simulation.</p>"
+    },
+    "ParameterDefinition":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Type"
+      ],
+      "members":{
+        "Name":{
+          "shape":"parameterNameType",
+          "documentation":"<p>The name of the parameter.</p>"
+        },
+        "Type":{
+          "shape":"parameterTypeType",
+          "documentation":"<p>The data type of the parameter. Valid values are <code>String</code>, <code>StringList</code>, <code>Number</code>, <code>NumberList</code>, <code>Arn</code>, and <code>ArnList</code>.</p>"
+        },
+        "SubType":{
+          "shape":"parameterSubTypeType",
+          "documentation":"<p>An optional subtype that further constrains the values that are allowed for the parameter.</p>"
+        },
+        "Description":{
+          "shape":"parameterDescriptionType",
+          "documentation":"<p>A description of the parameter.</p>"
+        },
+        "IsRequired":{
+          "shape":"booleanType",
+          "documentation":"<p>Specifies whether you must supply a value for the parameter when you create a role from the template.</p>"
+        },
+        "DefaultValue":{
+          "shape":"parameterDefaultValueType",
+          "documentation":"<p>The value that the service uses for the parameter when you do not supply one.</p>"
+        },
+        "Immutable":{
+          "shape":"booleanType",
+          "documentation":"<p>Specifies whether you can change the parameter value after you create the role.</p>"
+        }
+      },
+      "documentation":"<p>Defines a parameter that a role template accepts. You supply values for these parameters when you create a role with <a href=\"https://docs.aws.amazon.com/IAM/latest/APIReference/API_AcquireRole.html\">AcquireRole</a>.</p>"
     },
     "PasswordPolicy":{
       "type":"structure",
@@ -7708,6 +7920,20 @@
       },
       "documentation":"<p>Contains the row and column of a location of a <code>Statement</code> element in a policy document.</p> <p>This data type is used as a member of the <code> <a href=\"https://docs.aws.amazon.com/IAM/latest/APIReference/API_Statement.html\">Statement</a> </code> type.</p>"
     },
+    "PutAccountPropertiesRequest":{
+      "type":"structure",
+      "required":["Properties"],
+      "members":{
+        "Properties":{
+          "shape":"accountPropertiesMapType",
+          "documentation":"<p>A map of property key-value pairs to set. All keys must belong to the same namespace.</p> <p>Each key uses the format <code>Namespace/PropertyName</code>. The key must contain exactly one <code>/</code> separating the namespace from the property name, and cannot start or end with <code>/</code>.</p> <p>The service validates each value based on the property key's expected type. For example, boolean properties expect <code>true</code> or <code>false</code>.</p>"
+        }
+      }
+    },
+    "PutAccountPropertiesResponse":{
+      "type":"structure",
+      "members":{}
+    },
     "PutGroupPolicyRequest":{
       "type":"structure",
       "required":[
@@ -7881,6 +8107,17 @@
           "documentation":"<p>The name of the user to remove.</p> <p>This parameter allows (through its <a href=\"http://wikipedia.org/wiki/regex\">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>"
         }
       }
+    },
+    "ReplacementValueEntry":{
+      "type":"structure",
+      "required":["Values"],
+      "members":{
+        "Values":{
+          "shape":"replacementValueListType",
+          "documentation":"<p>The list of replacement values for the template parameter.</p>"
+        }
+      },
+      "documentation":"<p>Contains the list of replacement values for a single template parameter used when creating a role from a role template.</p>"
     },
     "ReportContentType":{"type":"blob"},
     "ReportFormatType":{
@@ -8064,6 +8301,10 @@
         "RoleLastUsed":{
           "shape":"RoleLastUsed",
           "documentation":"<p>Contains information about the last time that an IAM role was used. This includes the date and time and the Region in which the role was last used. Activity is only reported for the trailing 400 days. This period can be shorter if your Region began supporting these features within the last year. The role might have been used more than 400 days ago. For more information, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_access-advisor.html#access-advisor_tracking-period\">Regions where data is tracked</a> in the <i>IAM user Guide</i>.</p>"
+        },
+        "SourceRoleTemplate":{
+          "shape":"SourceRoleTemplate",
+          "documentation":"<p>Contains information about the role template that this role was created from. This member is present only for roles created with <a href=\"https://docs.aws.amazon.com/IAM/latest/APIReference/API_AcquireRole.html\">AcquireRole</a>.</p>"
         }
       },
       "documentation":"<p>Contains information about an IAM role. This structure is returned as a response element in several API operations that interact with roles.</p>"
@@ -8132,6 +8373,130 @@
         }
       },
       "documentation":"<p>Contains information about the last time that an IAM role was used. This includes the date and time and the Region in which the role was last used. Activity is only reported for the trailing 400 days. This period can be shorter if your Region began supporting these features within the last year. The role might have been used more than 400 days ago. For more information, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_access-advisor.html#access-advisor_tracking-period\">Regions where data is tracked</a> in the <i>IAM user Guide</i>.</p> <p>This data type is returned as a response element in the <a href=\"https://docs.aws.amazon.com/IAM/latest/APIReference/API_GetRole.html\">GetRole</a> and <a href=\"https://docs.aws.amazon.com/IAM/latest/APIReference/API_GetAccountAuthorizationDetails.html\">GetAccountAuthorizationDetails</a> operations.</p>"
+    },
+    "RoleModifiedException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"roleModifiedMessage"}
+      },
+      "documentation":"<p>The request was rejected because someone modified the role template while the service was creating the role. Wait a few minutes and try the request again.</p>",
+      "error":{
+        "code":"RoleModified",
+        "httpStatusCode":409,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "RoleTemplateDisabledException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"roleTemplateDisabledMessage"}
+      },
+      "documentation":"<p>The request was rejected because the specified role template is disabled. A disabled role template cannot be used to create new roles. Contact your administrator to enable the role template, or use a different role template.</p>",
+      "error":{
+        "code":"RoleTemplateDisabled",
+        "httpStatusCode":400,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "RoleTemplateVersion":{
+      "type":"structure",
+      "members":{
+        "TemplateArn":{
+          "shape":"arnType",
+          "documentation":"<p>The Amazon Resource Name (ARN) that identifies the role template.</p> <p>For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Names (ARNs)</a> in the <i>Amazon Web Services General Reference</i>.</p>"
+        },
+        "TemplateName":{
+          "shape":"roleTemplateNameType",
+          "documentation":"<p>The friendly name that identifies the role template.</p>"
+        },
+        "TemplateVersionId":{
+          "shape":"idType",
+          "documentation":"<p>The identifier of the role template version.</p>"
+        },
+        "Description":{
+          "shape":"roleTemplateDescriptionType",
+          "documentation":"<p>The description of the role template.</p>"
+        },
+        "MajorVersion":{
+          "shape":"integerType",
+          "documentation":"<p>The major version number of the role template.</p>"
+        },
+        "DefaultMinorVersion":{
+          "shape":"minorVersionType",
+          "documentation":"<p>The minor version that the service uses by default when you create a role from this template without specifying a minor version.</p>"
+        },
+        "ManagedByType":{
+          "shape":"managedByTypeType",
+          "documentation":"<p>Indicates that the role template is managed by an Amazon Web Services service.</p>"
+        },
+        "ManagedByValue":{
+          "shape":"managedByValueType",
+          "documentation":"<p>The identifier of the Amazon Web Services service that manages the role template.</p>"
+        },
+        "Enabled":{
+          "shape":"booleanType",
+          "documentation":"<p>Specifies whether the role template is enabled. When a template is disabled, you cannot create roles from it.</p>"
+        },
+        "MinorVersion":{
+          "shape":"minorVersionType",
+          "documentation":"<p>The minor version number of this role template version.</p>"
+        },
+        "RoleNamePattern":{
+          "shape":"roleNamePatternType",
+          "documentation":"<p>The pattern that is used to generate the name of a role that is created from this template. The pattern can include <code>@{parameter}</code> placeholders that are replaced with the values you supply in the <code>ReplacementValues</code> parameter of <a href=\"https://docs.aws.amazon.com/IAM/latest/APIReference/API_AcquireRole.html\">AcquireRole</a>.</p>"
+        },
+        "RolePathPattern":{
+          "shape":"rolePathPatternType",
+          "documentation":"<p>The pattern that is used to generate the path of a role that is created from this template.</p>"
+        },
+        "RoleDescriptionPattern":{
+          "shape":"roleDescriptionPatternType",
+          "documentation":"<p>The pattern that is used to generate the description of a role that is created from this template.</p>"
+        },
+        "AssumeRolePolicyDocumentTemplate":{
+          "shape":"policyDocumentType",
+          "documentation":"<p>The trust policy template that grants an entity permission to assume roles that you create from this template.</p>"
+        },
+        "InlinePolicyTemplates":{
+          "shape":"inlinePolicyTemplateListType",
+          "documentation":"<p>A list of inline policy templates that the service embeds in roles that you create from this template.</p>"
+        },
+        "ManagedPolicyArns":{
+          "shape":"managedPolicyArnListType",
+          "documentation":"<p>A list of the ARNs of the managed policies that the service attaches to roles that you create from this template.</p>"
+        },
+        "PermissionBoundaryArn":{
+          "shape":"arnType",
+          "documentation":"<p>The ARN of the policy that sets the permissions boundary for roles that you create from this template.</p> <p>For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Names (ARNs)</a> in the <i>Amazon Web Services General Reference</i>.</p>"
+        },
+        "ParametersDefinition":{
+          "shape":"parametersDefinitionListType",
+          "documentation":"<p>A list of the parameters that are defined for this role template version. You supply values for these parameters when you create a role with <a href=\"https://docs.aws.amazon.com/IAM/latest/APIReference/API_AcquireRole.html\">AcquireRole</a>.</p>"
+        },
+        "RoleTagsTemplate":{
+          "shape":"tagTemplateListType",
+          "documentation":"<p>A list of tag templates that are applied to roles that are created from this template.</p>"
+        },
+        "MaxSessionDuration":{
+          "shape":"roleMaxSessionDurationType",
+          "documentation":"<p>The maximum session duration (in seconds) for roles that are created from this template.</p>"
+        },
+        "VersionEnabled":{
+          "shape":"booleanType",
+          "documentation":"<p>Specifies whether this specific minor version of the role template is enabled.</p>"
+        },
+        "CreateTimestamp":{
+          "shape":"dateType",
+          "documentation":"<p>The date and time, in <a href=\"http://www.iso.org/iso/iso8601\">ISO 8601 date-time format</a>, when the role template version was created.</p>"
+        },
+        "UpdateTimestamp":{
+          "shape":"dateType",
+          "documentation":"<p>The date and time, in <a href=\"http://www.iso.org/iso/iso8601\">ISO 8601 date-time format</a>, when the role template version was last updated.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about a version of an IAM role template, including the configuration that is used to create roles with <a href=\"https://docs.aws.amazon.com/IAM/latest/APIReference/API_AcquireRole.html\">AcquireRole</a>. This structure is returned as a response element by the <a href=\"https://docs.aws.amazon.com/IAM/latest/APIReference/API_GetRoleTemplateVersion.html\">GetRoleTemplateVersion</a> operation.</p>"
     },
     "RoleUsageListType":{
       "type":"list",
@@ -8713,6 +9078,24 @@
       "type":"list",
       "member":{"shape":"policyDocumentType"}
     },
+    "SourceRoleTemplate":{
+      "type":"structure",
+      "required":[
+        "TemplateArn",
+        "TemplateMinorVersion"
+      ],
+      "members":{
+        "TemplateArn":{
+          "shape":"arnType",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the role template that the role was created from.</p>"
+        },
+        "TemplateMinorVersion":{
+          "shape":"integerType",
+          "documentation":"<p>The minor version of the role template that was used to create the role.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about the role template that a role was created from.</p>"
+    },
     "Statement":{
       "type":"structure",
       "members":{
@@ -8875,6 +9258,24 @@
           "documentation":"<p>The list of tags that you want to attach to the IAM server certificate. Each tag consists of a key name and an associated value.</p>"
         }
       }
+    },
+    "TagTemplate":{
+      "type":"structure",
+      "required":[
+        "Key",
+        "Value"
+      ],
+      "members":{
+        "Key":{
+          "shape":"tagTemplateKeyType",
+          "documentation":"<p>The key name of the tag.</p>"
+        },
+        "Value":{
+          "shape":"tagTemplateValueType",
+          "documentation":"<p>The value associated with the tag key.</p>"
+        }
+      },
+      "documentation":"<p>Represents a tag that is applied to roles that are created from a role template. The key and value can include <code>@{parameter}</code> placeholders that are replaced with template parameter values when the role is created.</p>"
     },
     "TagUserRequest":{
       "type":"structure",
@@ -9656,6 +10057,23 @@
       "type":"string",
       "pattern":"\\d{12}"
     },
+    "accountPropertiesMapType":{
+      "type":"map",
+      "key":{"shape":"accountPropertyKeyType"},
+      "value":{"shape":"accountPropertyValueType"}
+    },
+    "accountPropertyKeyType":{
+      "type":"string",
+      "max":50,
+      "min":1,
+      "pattern":"^[A-Za-z][A-Za-z0-9/_-]*$"
+    },
+    "accountPropertyValueType":{
+      "type":"string",
+      "documentation":"String representation of the property value. The service will validate and coerce the value based on the property key's expected type. For example, integer properties expect numeric strings, and boolean properties expect \"true\" or \"false\".",
+      "max":1024,
+      "min":1
+    },
     "allUsers":{
       "type":"boolean",
       "box":true
@@ -9828,6 +10246,10 @@
       "min":16,
       "pattern":"[\\w]+"
     },
+    "inlinePolicyTemplateListType":{
+      "type":"list",
+      "member":{"shape":"InlinePolicy"}
+    },
     "instanceProfileListType":{
       "type":"list",
       "member":{"shape":"InstanceProfile"},
@@ -9871,6 +10293,25 @@
     },
     "malformedCertificateMessage":{"type":"string"},
     "malformedPolicyDocumentMessage":{"type":"string"},
+    "managedByTypeType":{
+      "type":"string",
+      "enum":["Service"]
+    },
+    "managedByValueType":{
+      "type":"string",
+      "max":128,
+      "min":1
+    },
+    "managedPolicyArnListType":{
+      "type":"list",
+      "member":{"shape":"arnType"}
+    },
+    "mapStringReplacementValueEntry":{
+      "type":"map",
+      "key":{"shape":"stringType"},
+      "value":{"shape":"ReplacementValueEntry"},
+      "max":30
+    },
     "markerType":{
       "type":"string",
       "max":320,
@@ -9898,6 +10339,8 @@
       "max":128,
       "min":6
     },
+    "minorVersionType":{"type":"integer"},
+    "nameConflictMessage":{"type":"string"},
     "noSuchEntityMessage":{"type":"string"},
     "notesType":{
       "type":"string",
@@ -9926,6 +10369,38 @@
       "max":2048,
       "min":20,
       "pattern":"^[a-zA-Z0-9:/+=,.@_-]+$"
+    },
+    "parameterDefaultValueType":{
+      "type":"string",
+      "max":1024
+    },
+    "parameterDescriptionType":{
+      "type":"string",
+      "max":1000
+    },
+    "parameterNameType":{
+      "type":"string",
+      "max":128,
+      "min":1
+    },
+    "parameterSubTypeType":{
+      "type":"string",
+      "max":256
+    },
+    "parameterTypeType":{
+      "type":"string",
+      "enum":[
+        "String",
+        "StringList",
+        "Number",
+        "NumberList",
+        "Arn",
+        "ArnList"
+      ]
+    },
+    "parametersDefinitionListType":{
+      "type":"list",
+      "member":{"shape":"ParameterDefinition"}
     },
     "passwordPolicyViolationMessage":{"type":"string"},
     "passwordReusePreventionType":{
@@ -10103,6 +10578,12 @@
       "min":1,
       "pattern":"^http(s?)://[a-zA-Z0-9._/-]*(\\?[a-zA-Z0-9._=&-]*)?(#[a-zA-Z0-9._/-]*)?$"
     },
+    "replacementValueListType":{
+      "type":"list",
+      "member":{"shape":"stringType"},
+      "max":20,
+      "min":1
+    },
     "reportGenerationLimitExceededMessage":{"type":"string"},
     "requestMessageType":{
       "type":"string",
@@ -10121,6 +10602,11 @@
       "pattern":"[\\u0009\\u000A\\u000D\\u0020-\\u007E\\u00A1-\\u00FF]+"
     },
     "responseMarkerType":{"type":"string"},
+    "roleDescriptionPatternType":{
+      "type":"string",
+      "max":512,
+      "min":1
+    },
     "roleDescriptionType":{
       "type":"string",
       "max":1000,
@@ -10140,15 +10626,39 @@
       "max":43200,
       "min":3600
     },
+    "roleModifiedMessage":{"type":"string"},
+    "roleNamePatternType":{
+      "type":"string",
+      "max":256,
+      "min":1
+    },
     "roleNameType":{
       "type":"string",
       "max":64,
       "min":1,
       "pattern":"[\\w+=,.@-]+"
     },
+    "rolePathPatternType":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"/[\\u0009\\u000A\\u000D\\u0020-\\u007E\\u00A1-\\u00FF]*/"
+    },
     "rolePermissionRestrictionArnListType":{
       "type":"list",
       "member":{"shape":"arnType"}
+    },
+    "roleTemplateDescriptionType":{
+      "type":"string",
+      "max":512,
+      "pattern":"[\\u0009\\u000A\\u000D\\u0020-\\u007E\\u00A1-\\u00FF]*"
+    },
+    "roleTemplateDisabledMessage":{"type":"string"},
+    "roleTemplateNameType":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"[\\w+=,.\\-]+"
     },
     "serialNumberType":{
       "type":"string",
@@ -10317,6 +10827,23 @@
       "type":"list",
       "member":{"shape":"Tag"},
       "max":50
+    },
+    "tagTemplateKeyType":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"[\\p{L}\\p{Z}\\p{N}_.:/=+\\-@{}]+"
+    },
+    "tagTemplateListType":{
+      "type":"list",
+      "member":{"shape":"TagTemplate"},
+      "max":50
+    },
+    "tagTemplateValueType":{
+      "type":"string",
+      "max":256,
+      "min":0,
+      "pattern":"[\\p{L}\\p{Z}\\p{N}_.:/=+\\-@{}]*"
     },
     "tagValueType":{
       "type":"string",

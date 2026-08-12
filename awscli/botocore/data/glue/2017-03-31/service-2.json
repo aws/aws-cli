@@ -4321,7 +4321,7 @@
         {"shape":"ResourceNumberLimitExceededException"},
         {"shape":"InvalidInputException"}
       ],
-      "documentation":"<p>Starts a materialized view refresh task run, for a specified table and columns.</p>"
+      "documentation":"<p>Starts a materialized view refresh task run for a specified materialized view.</p>"
     },
     "StartTrigger":{
       "name":"StartTrigger",
@@ -4437,7 +4437,7 @@
         {"shape":"InvalidInputException"},
         {"shape":"OperationTimeoutException"}
       ],
-      "documentation":"<p>Stops a materialized view refresh task run, for a specified table and columns.</p>"
+      "documentation":"<p>Stops a materialized view refresh task run for a specified materialized view.</p>"
     },
     "StopSession":{
       "name":"StopSession",
@@ -15825,7 +15825,8 @@
           "shape":"IterableFormMap",
           "documentation":"<p>The iterable forms available on the asset, keyed by form name (for example, <code>columns</code>). Use the form name with <code>ListIterableForms</code> or <code>BatchGetIterableForms</code> to retrieve the form's items.</p>"
         }
-      }
+      },
+      "documentation":"<p>The asset metadata returned by the <code>GetAsset</code> operation.</p>"
     },
     "GetAssetTypeRequest":{
       "type":"structure",
@@ -16504,7 +16505,8 @@
           "shape":"UpdatedAt",
           "documentation":"<p>The timestamp at which the export configuration was last updated.</p>"
         }
-      }
+      },
+      "documentation":"<p>The export configuration returned by the <code>GetDataCatalogExportConfiguration</code> operation.</p>"
     },
     "GetDataQualityModelRequest":{
       "type":"structure",
@@ -22504,7 +22506,7 @@
         },
         "TableName":{
           "shape":"NameString",
-          "documentation":"<p>The name of the table for which statistics is generated.</p>"
+          "documentation":"<p>The name of the materialized view.</p>"
         },
         "MaxResults":{
           "shape":"PageSize",
@@ -23148,7 +23150,10 @@
     "MaterializedViewRefreshTaskNotRunningException":{
       "type":"structure",
       "members":{
-        "Message":{"shape":"MessageString"}
+        "Message":{
+          "shape":"MessageString",
+          "documentation":"<p>A message describing the problem.</p>"
+        }
       },
       "documentation":"<p>Exception thrown when stopping a task that is not in running state.</p>",
       "exception":true
@@ -23170,7 +23175,7 @@
         },
         "TableName":{
           "shape":"TableName",
-          "documentation":"<p>The name of the table for which statistics is generated.</p>"
+          "documentation":"<p>The name of the materialized view.</p>"
         },
         "CatalogId":{
           "shape":"CatalogIdString",
@@ -23178,7 +23183,7 @@
         },
         "Role":{
           "shape":"Role",
-          "documentation":"<p>The IAM role that the service assumes to generate statistics.</p>"
+          "documentation":"<p>The IAM role that the service assumes to run the materialized view refresh task.</p>"
         },
         "Status":{
           "shape":"MaterializedViewRefreshState",
@@ -23222,7 +23227,10 @@
     "MaterializedViewRefreshTaskRunningException":{
       "type":"structure",
       "members":{
-        "Message":{"shape":"MessageString"}
+        "Message":{
+          "shape":"MessageString",
+          "documentation":"<p>A message describing the problem.</p>"
+        }
       },
       "documentation":"<p>Exception thrown when a task is already in running state.</p>",
       "exception":true
@@ -23234,7 +23242,10 @@
     "MaterializedViewRefreshTaskStoppingException":{
       "type":"structure",
       "members":{
-        "Message":{"shape":"MessageString"}
+        "Message":{
+          "shape":"MessageString",
+          "documentation":"<p>A message describing the problem.</p>"
+        }
       },
       "documentation":"<p>Exception thrown when a task is already in stopping state.</p>",
       "exception":true
@@ -25109,7 +25120,8 @@
           "shape":"ExportEncryptionConfiguration",
           "documentation":"<p>The encryption configuration for the exported data.</p>"
         }
-      }
+      },
+      "documentation":"<p>The export configuration returned by the <code>PutDataCatalogExportConfiguration</code> operation.</p>"
     },
     "PutDataQualityProfileAnnotationRequest":{
       "type":"structure",
@@ -27552,7 +27564,8 @@
           "shape":"SearchNextToken",
           "documentation":"<p>A continuation token, present if the current segment is not the last.</p>"
         }
-      }
+      },
+      "documentation":"<p>The search results returned by the <code>SearchAssets</code> operation.</p>"
     },
     "SearchAttribute":{
       "type":"string",
@@ -29028,7 +29041,7 @@
         },
         "TableName":{
           "shape":"NameString",
-          "documentation":"<p>The name of the table to generate run the materialized view refresh task.</p>"
+          "documentation":"<p>The name of the materialized view to run the refresh task for.</p>"
         },
         "FullRefresh":{
           "shape":"NullableBoolean",
@@ -29436,7 +29449,7 @@
         },
         "TableName":{
           "shape":"NameString",
-          "documentation":"<p>The name of the table to generate statistics.</p>"
+          "documentation":"<p>The name of the materialized view.</p>"
         }
       }
     },

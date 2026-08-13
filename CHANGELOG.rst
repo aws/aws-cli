@@ -2,6 +2,18 @@
 CHANGELOG
 =========
 
+2.36.23
+=======
+
+* api-change:``codecommit``: Added the GetBlobDifferences API operation, which returns line-level diffs between two blob versions without requiring a local clone. Returns structured hunks with context, additions, and deletions. Supports pagination for large diffs.
+* api-change:``autoscaling``: Amazon EC2 Auto Scaling now supports terminating multiple instances in a single TerminateInstanceInAutoScalingGroup call via the new InstanceIds parameter, returning an Activities list. LaunchInstances now returns IdempotentCallInProgressFault for duplicate client tokens.
+* api-change:``securityagent``: Add support for setting a maximum task-hour budget cap on penetration tests and code reviews, and for revalidating previously reported findings via a new REVALIDATION job type.
+* api-change:``acm``: This change allows customers to update their existing email-validated certificates to use the DNS validation method.
+* api-change:``cleanrooms``: This release adds support for minimum aggregation thresholds and comparison controls to the Custom analysis rule type.
+* enhancement:SSM SessionManager: Add warning message for outdated SessionManagerPlugin version
+* api-change:``connect``: Adds the StartAssistantContact API to start chat contacts handled by an AI agent. Adds SegmentAttributes to StartWebRTCContact, and corrects its error response to now receive AccessDeniedException (previously returned as an internal server error due to a missing error declaration).
+
+
 2.36.22
 =======
 

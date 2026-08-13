@@ -15,7 +15,7 @@ Jump to:
 -  `More Resources <#more-resources>`__
 
 
-Entering Maintenance Mode on July 15, 2026
+AWS CLI v1 is in Maintenance Mode
 ------------------------------------------
 
 We `announced <https://aws.amazon.com/blogs/developer/cli-v1-maintenance-mode-announcement/>`__
@@ -23,7 +23,7 @@ the upcoming **end-of-support for the AWS CLI v1**. We recommend
 that you migrate to
 `AWS CLI v2 <https://docs.aws.amazon.com/cli/latest/userguide/cliv2-migration.html>`__.
 For dates, additional details, and information on how to migrate,
-please refer to the linked announcement.
+please refer to the linked blog post, our `update regarding dependency versions <https://aws.amazon.com/blogs/developer/aws-cli-v1-maintenance-mode-announcing-changes-to-dependency-updates/>`__, and our recent `GitHub announcement <https://github.com/aws/aws-cli/issues/10536>`__.
 
 Getting Started
 ---------------

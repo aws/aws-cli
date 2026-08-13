@@ -15,10 +15,12 @@ import json
 import errno
 import os
 import re
+import sys
 
 from subprocess import check_call, check_output
 from awscli.compat import ignore_user_entered_signals
 from awscli.clidriver import ServiceOperation, CLIOperationCaller
+from awscli.customizations.utils import uni_print
 
 logger = logging.getLogger(__name__)
 
@@ -27,6 +29,16 @@ ERROR_MESSAGE = (
     'Please refer to SessionManager Documentation here: ',
     'http://docs.aws.amazon.com/console/systems-manager/',
     'session-manager-plugin-not-found'
+)
+
+OUTDATED_PLUGIN_VERSION_MESSAGE = (
+    '\n'
+    'WARNING: An outdated SessionManagerPlugin version detected. '
+    'Please upgrade it to the latest version. \n'
+    'For more information, refer:\n'
+    '  https://docs.aws.amazon.com/systems-manager/latest/userguide/'
+    'session-manager-working-with-install-plugin.html\n'
+    '\n'
 )
 
 
@@ -53,15 +65,23 @@ class VersionRequirement:
     def __init__(self, min_version):
         self.min_version = min_version
 
-    def meets_requirement(self, version):
+    def meets_requirement(self, version, inclusive=False):
         ssm_plugin_version = self._sanitize_plugin_version(version)
         if self._is_valid_version(ssm_plugin_version):
             norm_version, norm_min_version = self._normalize(
                 ssm_plugin_version, self.min_version
             )
+            if inclusive:
+                return norm_version >= norm_min_version
             return norm_version > norm_min_version
         else:
             return False
+
+    def is_valid_plugin_version(self, version):
+        """Check whether the reported version string is parseable."""
+        return self._is_valid_version(
+            self._sanitize_plugin_version(version)
+        )
 
     def _sanitize_plugin_version(self, plugin_version):
         return re.sub(self.WHITESPACE_REGEX, "", plugin_version)
@@ -93,7 +113,25 @@ class StartSessionCommand(ServiceOperation):
 
 class StartSessionCaller(CLIOperationCaller):
     LAST_PLUGIN_VERSION_WITHOUT_ENV_VAR = "1.2.497.0"
+    RECOMMENDED_MINIMUM_PLUGIN_VERSION = "1.2.764.0"
     DEFAULT_SSM_ENV_NAME = "AWS_SSM_START_SESSION_RESPONSE"
+
+    def _warn_if_plugin_version_is_outdated(self, plugin_version):
+        """Warn when the plugin is older than the recommended minimum."""
+        version_requirement = VersionRequirement(
+            min_version=self.RECOMMENDED_MINIMUM_PLUGIN_VERSION
+        )
+        if not version_requirement.is_valid_plugin_version(plugin_version):
+            logger.debug(
+                'Unable to parse SessionManagerPlugin version %r, skipping '
+                'outdated version warning', plugin_version
+            )
+            return
+        if version_requirement.meets_requirement(
+            plugin_version, inclusive=True
+        ):
+            return
+        uni_print(OUTDATED_PLUGIN_VERSION_MESSAGE, sys.stderr)
 
     def invoke(self, service_name, operation_name, parameters,
                parsed_globals):
@@ -125,6 +163,10 @@ class StartSessionCaller(CLIOperationCaller):
                 ["session-manager-plugin", "--version"], text=True
             )
             env = os.environ.copy()
+
+            # Warn, but do not fail, when the plugin is older than the
+            # recommended minimum version.
+            self._warn_if_plugin_version_is_outdated(plugin_version)
 
             # Check if this plugin supports passing the start session response
             # as an environment variable name. If it does, it will set the

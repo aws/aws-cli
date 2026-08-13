@@ -2210,6 +2210,60 @@
       "member":{"shape":"AggregationConstraint"},
       "min":1
     },
+    "AggregationThreshold":{
+      "type":"structure",
+      "required":[
+        "identityColumns",
+        "minimumIdentityCount",
+        "type",
+        "allowedAggregateExpressionType"
+      ],
+      "members":{
+        "identityColumns":{
+          "shape":"AggregationThresholdIdentityColumnsList",
+          "documentation":"<p>The identity column, such as <code>user_id</code>, whose distinct values Clean Rooms counts to enforce minimum aggregation thresholds. Currently, you can specify only one column, and its data type must be string, varchar, or char.</p>"
+        },
+        "minimumIdentityCount":{
+          "shape":"AggregationThresholdMinimumIdentityCountInteger",
+          "documentation":"<p>The minimum number of distinct identities that each query output group must represent. This threshold applies to all output columns in the table. To override this threshold for a specific column, use <code>outputColumnThresholds</code>.</p>"
+        },
+        "type":{
+          "shape":"AggregationThresholdType",
+          "documentation":"<p>The type of aggregation that the threshold enforces. Currently, the only supported value is <code>COUNT_DISTINCT</code>, which counts the distinct values in the identity column.</p>"
+        },
+        "outputColumnThresholds":{
+          "shape":"OutputColumnThresholdList",
+          "documentation":"<p>The per-column overrides of <code>minimumIdentityCount</code>. An output column without an override uses <code>minimumIdentityCount</code>.</p>"
+        },
+        "allowedAggregateExpressionType":{
+          "shape":"AllowedAggregateExpressionType",
+          "documentation":"<p>Specifies whether a query can aggregate a transformed column. This applies to the arguments of both aggregate and window functions. Valid values are:</p> <p> <code>COLUMNS_ONLY</code> – A query can aggregate only a direct column reference, such as <code>SUM(amount)</code>, or a constant. Clean Rooms rejects a query that transforms a column and then aggregates it, such as <code>SUM(amount * 2)</code> or <code>SUM(ROUND(amount))</code>.</p> <p> <code>ANY_EXPRESSION</code> – A query can aggregate any expression. This includes arithmetic, such as <code>SUM(price * quantity)</code>; a cast, such as <code>SUM(CAST(amount AS DECIMAL))</code>; a nested function call, such as <code>SUM(COALESCE(amount, 0))</code>; and a conditional, such as <code>SUM(CASE WHEN region = 'EU' THEN amount ELSE 0 END)</code>.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the minimum number of distinct identities that each query output group must represent.</p>"
+    },
+    "AggregationThresholdIdentityColumnsList":{
+      "type":"list",
+      "member":{"shape":"AnalysisRuleColumnName"},
+      "max":1,
+      "min":1
+    },
+    "AggregationThresholdList":{
+      "type":"list",
+      "member":{"shape":"AggregationThreshold"},
+      "max":1,
+      "min":1
+    },
+    "AggregationThresholdMinimumIdentityCountInteger":{
+      "type":"integer",
+      "box":true,
+      "max":100000,
+      "min":2
+    },
+    "AggregationThresholdType":{
+      "type":"string",
+      "enum":["COUNT_DISTINCT"]
+    },
     "AggregationType":{
       "type":"string",
       "enum":["COUNT_DISTINCT"]
@@ -2219,6 +2273,13 @@
       "member":{"shape":"AdditionalAnalysesResourceArn"},
       "max":25,
       "min":0
+    },
+    "AllowedAggregateExpressionType":{
+      "type":"string",
+      "enum":[
+        "COLUMNS_ONLY",
+        "ANY_EXPRESSION"
+      ]
     },
     "AllowedAnalysesList":{
       "type":"list",
@@ -2586,6 +2647,14 @@
           "shape":"DifferentialPrivacyConfiguration",
           "documentation":"<p>The differential privacy configuration.</p>"
         },
+        "aggregationThresholds":{
+          "shape":"AggregationThresholdList",
+          "documentation":"<p>The aggregation thresholds that each query output group must satisfy. Clean Rooms filters out any group that represents fewer than the specified number of distinct identities. You can specify at most one threshold. You can't use aggregation thresholds with differential privacy, or when <code>allowedAnalyses</code> allows only jobs.</p>"
+        },
+        "comparisonControls":{
+          "shape":"ComparisonControls",
+          "documentation":"<p>The controls that restrict how a query can compare the columns in the configured table. You can't use comparison controls with differential privacy, or when <code>allowedAnalyses</code> allows only jobs.</p>"
+        },
         "allowedResultReceivers":{
           "shape":"AllowedResultReceivers",
           "documentation":"<p>The list of Amazon Web Services account IDs that are allowed to receive results from queries run on the configured table.</p>"
@@ -2595,7 +2664,7 @@
           "documentation":"<p>The list of allowed additional analyses for the custom analysis rule.</p>"
         }
       },
-      "documentation":"<p>A type of analysis rule that enables the table owner to approve custom SQL queries on their configured tables. It supports differential privacy.</p>"
+      "documentation":"<p>A type of analysis rule that enables the table owner to approve custom SQL queries on their configured tables. It supports differential privacy, minimum aggregation thresholds, and comparison controls.</p>"
     },
     "AnalysisRuleCustomAllowedAnalysesList":{
       "type":"list",
@@ -4613,6 +4682,24 @@
         "ap-east-2"
       ]
     },
+    "ComparisonControls":{
+      "type":"structure",
+      "required":[
+        "allowedLiteralComparisonColumns",
+        "allowedColumnComparisonColumns"
+      ],
+      "members":{
+        "allowedLiteralComparisonColumns":{
+          "shape":"AnalysisRuleColumnList",
+          "documentation":"<p>The columns that a query can compare to literal values, for example, in a WHERE clause. Clean Rooms rejects a query that compares any other column to a literal value. Specify an empty list to block literal comparison on every column. You can't specify a column that you also use as an identity column in an aggregation threshold.</p>"
+        },
+        "allowedColumnComparisonColumns":{
+          "shape":"AnalysisRuleColumnList",
+          "documentation":"<p>The columns that a query can compare to another column, for example, in a join, a WHERE clause, a GROUP BY clause, or a window function. Clean Rooms rejects a query that uses any other column in a column-to-column comparison. Specify an empty list to block column-to-column comparison on every column.</p>"
+        }
+      },
+      "documentation":"<p>Specifies how a query can compare the columns in a table, including literal comparisons and column-to-column comparisons.</p>"
+    },
     "ComputeConfiguration":{
       "type":"structure",
       "members":{
@@ -5394,6 +5481,14 @@
           "documentation":"<p> Disallowed output columns</p>"
         },
         "differentialPrivacy":{"shape":"DifferentialPrivacyConfiguration"},
+        "aggregationThresholds":{
+          "shape":"AggregationThresholdList",
+          "documentation":"<p> The aggregation thresholds for the consolidated policy.</p>"
+        },
+        "comparisonControls":{
+          "shape":"ComparisonControls",
+          "documentation":"<p> The comparison controls for the consolidated policy.</p>"
+        },
         "allowedResultReceivers":{
           "shape":"AllowedResultReceivers",
           "documentation":"<p> The allowed result receivers.</p>"
@@ -8463,6 +8558,14 @@
         "disallowedOutputColumns":{
           "shape":"AnalysisRuleColumnList",
           "documentation":"<p>The list of columns that are not allowed in the query output.</p>"
+        },
+        "aggregationThresholds":{
+          "shape":"AggregationThresholdList",
+          "documentation":"<p>The aggregation thresholds that each query output group must satisfy. Clean Rooms filters out any group that represents fewer than the specified number of distinct identities. You can specify at most one threshold. You can't use aggregation thresholds with differential privacy, or when <code>allowedAnalyses</code> allows only jobs.</p>"
+        },
+        "comparisonControls":{
+          "shape":"ComparisonControls",
+          "documentation":"<p>The controls that restrict how a query can compare the columns in the intermediate table. You can't use comparison controls with differential privacy, or when <code>allowedAnalyses</code> allows only jobs.</p>"
         }
       },
       "documentation":"<p>Contains the custom analysis rule configuration for an intermediate table.</p>"
@@ -10414,6 +10517,34 @@
         }
       },
       "documentation":"<p>An object representing the collaboration member's model training payment responsibilities set by the collaboration creator.</p>"
+    },
+    "OutputColumnThreshold":{
+      "type":"structure",
+      "required":[
+        "outputColumnName",
+        "minimumIdentityCount"
+      ],
+      "members":{
+        "outputColumnName":{
+          "shape":"AnalysisRuleColumnName",
+          "documentation":"<p>The name of the output column that the override applies to. You can specify each column only once.</p>"
+        },
+        "minimumIdentityCount":{
+          "shape":"OutputColumnThresholdMinimumIdentityCountInteger",
+          "documentation":"<p>The minimum number of distinct identities that each query output group must represent for this column. Specify 0 to exempt the column from the threshold, or a value of 2 or greater to enforce a threshold.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the minimum number of distinct identities for an individual output column. This value overrides the table-wide <code>minimumIdentityCount</code> that you set in <code>AggregationThreshold</code>.</p>"
+    },
+    "OutputColumnThresholdList":{
+      "type":"list",
+      "member":{"shape":"OutputColumnThreshold"}
+    },
+    "OutputColumnThresholdMinimumIdentityCountInteger":{
+      "type":"integer",
+      "box":true,
+      "max":100000,
+      "min":0
     },
     "PaginationToken":{
       "type":"string",

@@ -5160,6 +5160,24 @@
       ],
       "documentation":"<p>Sends an outbound web notification to a customer's web browser for outbound campaigns. For more information about outbound campaigns, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/enable-outbound-campaigns.html\">Set up Connect Customer outbound campaigns</a>.</p> <note> <p>Only the Connect Customer outbound campaigns service principal is allowed to assume a role in your account and call this API.</p> </note>"
     },
+    "StartAssistantContact":{
+      "name":"StartAssistantContact",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/contact/assistant"
+      },
+      "input":{"shape":"StartAssistantContactRequest"},
+      "output":{"shape":"StartAssistantContactResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"LimitExceededException"}
+      ],
+      "documentation":"<p>Starts a chat contact with an AI agent.</p> <p>Use the returned <code>ParticipantToken</code> to call the <a href=\"https://docs.aws.amazon.com/connect-participant/latest/APIReference/API_CreateParticipantConnection.html\">CreateParticipantConnection</a> API.</p> <p>For more information about chat, see the following topics in the <i>Connect Customer Administrator Guide</i>: </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/web-and-mobile-chat.html\">Concepts: Web and mobile messaging capabilities in Connect Customer</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/security-best-practices.html#bp-security-chat\">Connect Customer Chat security best practices</a> </p> </li> </ul>"
+    },
     "StartAttachedFileUpload":{
       "name":"StartAttachedFileUpload",
       "http":{
@@ -5447,7 +5465,8 @@
         {"shape":"InvalidRequestException"},
         {"shape":"InvalidParameterException"},
         {"shape":"LimitExceededException"},
-        {"shape":"ResourceNotFoundException"}
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Places an inbound in-app, web, or video call to a contact, and then initiates the flow. It performs the actions in the flow that are specified (in ContactFlowId) and present in the Connect Customer instance (specified as InstanceId).</p>"
     },
@@ -7439,6 +7458,17 @@
         }
       },
       "documentation":"<p> Information of the AI agent involved in the contact.</p>"
+    },
+    "AiAgentInput":{
+      "type":"structure",
+      "required":["AiAgentId"],
+      "members":{
+        "AiAgentId":{
+          "shape":"AiAgentId",
+          "documentation":"<p>The identifier of the AI agent that participates in the contact.</p>"
+        }
+      },
+      "documentation":"<p>The AI agent that participates in the contact, including its identifier.</p>"
     },
     "AiAgentSearchCriteria":{
       "type":"structure",
@@ -27911,7 +27941,7 @@
           "documentation":"<p>Display name of the participant.</p>"
         }
       },
-      "documentation":"<p>The customer's details.</p>"
+      "documentation":"<p>The details of the participant, including their display name.</p>"
     },
     "ParticipantDetailsToAdd":{
       "type":"structure",
@@ -33729,6 +33759,70 @@
         "CASES"
       ]
     },
+    "StartAssistantContactRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "AiAgent",
+        "ParticipantDetails"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Connect Customer instance. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.</p>"
+        },
+        "AiAgent":{
+          "shape":"AiAgentInput",
+          "documentation":"<p>The AI agent that participates in the contact.</p>"
+        },
+        "ParticipantDetails":{
+          "shape":"ParticipantDetails",
+          "documentation":"<p>The display name and other details that identify the chat participant.</p>"
+        },
+        "InitialMessage":{
+          "shape":"ChatMessage",
+          "documentation":"<p>The initial message to send to the newly created chat.</p>"
+        },
+        "Attributes":{
+          "shape":"Attributes",
+          "documentation":"<p>A map of key-value pairs to associate with the contact. Amazon Connect makes these attributes available to flows as standard contact attributes.</p> <p>You can provide up to 32,768 UTF-8 bytes across all key-value pairs per contact. Attribute keys can contain only alphanumeric characters, dashes, and underscores.</p>"
+        },
+        "ClientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the Amazon Web Services SDK populates this field. For more information about idempotency, see <a href=\"https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/\">Making retries safe with idempotent APIs</a>.</p>",
+          "idempotencyToken":true
+        },
+        "PersistentChat":{
+          "shape":"PersistentChat",
+          "documentation":"<p>The configuration that enables persistent chat. For more information about persistent chat and its use cases, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/chat-persistence.html\">Enable persistent chat</a>.</p>"
+        },
+        "RelatedContactId":{
+          "shape":"ContactId",
+          "documentation":"<p>The identifier of an Connect Customer contact related to the new assistant contact.</p> <note> <p>You cannot provide both <code>RelatedContactId</code> and <code>PersistentChat</code>.</p> </note>"
+        }
+      }
+    },
+    "StartAssistantContactResponse":{
+      "type":"structure",
+      "members":{
+        "ContactId":{
+          "shape":"ContactId",
+          "documentation":"<p>The identifier of the contact within the Connect Customer instance.</p>"
+        },
+        "ParticipantId":{
+          "shape":"ParticipantId",
+          "documentation":"<p>The identifier of the chat participant. The participant identifier remains the same throughout the chat lifecycle.</p>"
+        },
+        "ParticipantToken":{
+          "shape":"ParticipantToken",
+          "documentation":"<p>The token that the chat participant uses to call the <a href=\"https://docs.aws.amazon.com/connect-participant/latest/APIReference/API_CreateParticipantConnection.html\">CreateParticipantConnection</a> API. The token remains valid for the lifetime of the chat participant.</p>"
+        },
+        "ContinuedFromContactId":{
+          "shape":"ContactId",
+          "documentation":"<p>For a persistent chat, the identifier of the contact from which the chat continues. Amazon Connect returns this field only for persistent chats.</p>"
+        }
+      }
+    },
     "StartAttachedFileUploadRequest":{
       "type":"structure",
       "required":[
@@ -34596,6 +34690,10 @@
         "Description":{
           "shape":"Description",
           "documentation":"<p>A description of the task that is shown to an agent in the Contact Control Panel (CCP).</p>"
+        },
+        "SegmentAttributes":{
+          "shape":"SegmentAttributes",
+          "documentation":"<p>Use this map to specify system-defined attributes for the WebRTC contact segment. Use the <code>connect:Subtype</code> attribute to specify the channel subtype, such as <code>connect:WebRTC</code>.</p> <p>Attribute keys can contain only alphanumeric characters, hyphens, and underscores.</p>"
         }
       }
     },

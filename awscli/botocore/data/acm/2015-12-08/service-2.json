@@ -470,6 +470,26 @@
         "ServiceType":{"value":"ACM-ACME"}
       }
     },
+    "ListCertificateDomainValidations":{
+      "name":"ListCertificateDomainValidations",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListCertificateDomainValidationsRequest"},
+      "output":{"shape":"ListCertificateDomainValidationsResponse"},
+      "errors":[
+        {"shape":"InvalidArgsException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Returns per-domain validation summaries for an ACM certificate. Each summary includes the domain name, the active validation configuration, and the requested validation configuration when a validation method migration is in progress. You can use the results to monitor the progress of an email-to-DNS validation migration and to retrieve the CNAME records required for DNS validation.</p>",
+      "readonly":true,
+      "staticContextParams":{
+        "ServiceType":{"value":"ACM"}
+      }
+    },
     "ListCertificates":{
       "name":"ListCertificates",
       "http":{
@@ -787,12 +807,13 @@
       "input":{"shape":"UpdateCertificateOptionsRequest"},
       "errors":[
         {"shape":"InvalidArnException"},
+        {"shape":"ConflictException"},
         {"shape":"LimitExceededException"},
         {"shape":"ValidationException"},
         {"shape":"InvalidStateException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Updates a certificate. You can use this function to specify whether to export your certificate. Certificate transparency logging opt-out is no longer available. For more information, see <a href=\"https://docs.aws.amazon.com/acm/latest/userguide/acm-concepts.html#concept-transparency\">Certificate Transparency Logging</a> and <a href=\"https://docs.aws.amazon.com/acm/latest/userguide/acm-exportable-certificates.html\">Certificate Manager Exportable Managed Certificates</a>.</p>",
+      "documentation":"<p>Updates certificate options. You can use this operation to change the domain validation method or specify whether to export your certificate. For more information, see <a href=\"https://docs.aws.amazon.com/acm/latest/userguide/email-to-dns-migration.html\">Migrate from email to DNS validation</a> and <a href=\"https://docs.aws.amazon.com/acm/latest/userguide/acm-exportable-certificates.html\">Certificate Manager Exportable Managed Certificates</a>.</p>",
       "staticContextParams":{
         "ServiceType":{"value":"ACM"}
       }
@@ -1354,6 +1375,12 @@
       "pattern":"arn:[\\w+=/,.@-]+:acm:[\\w+=/,.@-]*:[0-9]+:[\\w+=,.@-]+(/[\\w+=,.@-]+)*"
     },
     "AvailabilityErrorMessage":{"type":"string"},
+    "CertificateArn":{
+      "type":"string",
+      "max":2048,
+      "min":20,
+      "pattern":"arn:[\\w+=/,.@-]+:acm:[\\w+=/,.@-]*:[0-9]+:certificate/[\\w+=,.@-]+.*"
+    },
     "CertificateAuthority":{
       "type":"structure",
       "members":{
@@ -1498,6 +1525,10 @@
           "shape":"CertificateOptions",
           "documentation":"<p>Contains the certificate options. Certificate transparency logging opt-out is no longer available. All public certificates are recorded in a certificate transparency log.</p>"
         },
+        "UpdateSummary":{
+          "shape":"UpdateSummary",
+          "documentation":"<p>Contains information about the most recent update to the certificate. This field exists only when the certificate type is <code>AMAZON_ISSUED</code> and a certificate update has been requested.</p>"
+        },
         "CertificateKeyPairOrigin":{
           "shape":"CertificateKeyPairOrigin",
           "documentation":"<p>The origin of the certificate's key pair.</p>"
@@ -1613,9 +1644,13 @@
         "Export":{
           "shape":"CertificateExport",
           "documentation":"<p>You can opt in to allow the export of your certificates by specifying <code>ENABLED</code>. You cannot update the value of <code>Export</code> after the the certificate is created.</p>"
+        },
+        "ValidationMethod":{
+          "shape":"ValidationMethod",
+          "documentation":"<p>The domain validation method for the certificate. To migrate from email to DNS validation, specify <code>DNS</code>.</p>"
         }
       },
-      "documentation":"<p>Structure that contains options for your certificate. You can use this structure to specify whether to export your certificate.</p> <p>Certificate transparency logging opt-out is no longer available. All public certificates are recorded in a certificate transparency log. For general information, see <a href=\"https://docs.aws.amazon.com/acm/latest/userguide/acm-concepts.html#concept-transparency\">Certificate Transparency Logging</a>.</p> <p>You can export public ACM certificates to use with Amazon Web Services services as well as outside Amazon Web Services Cloud. For more information, see <a href=\"https://docs.aws.amazon.com/acm/latest/userguide/acm-exportable-certificates.html\">Certificate Manager exportable public certificate</a>.</p>"
+      "documentation":"<p>Structure that contains options for your certificate. You can use this structure to change the domain validation method or specify whether to export your certificate.</p> <p>All public certificates are recorded in a certificate transparency log. For general information, see <a href=\"https://docs.aws.amazon.com/acm/latest/userguide/acm-concepts.html#concept-transparency\">Certificate Transparency Logging</a>.</p> <p>You can export public ACM certificates to use with Amazon Web Services services as well as outside Amazon Web Services Cloud. For more information, see <a href=\"https://docs.aws.amazon.com/acm/latest/userguide/acm-exportable-certificates.html\">Certificate Manager exportable public certificate</a>.</p>"
     },
     "CertificateSearchResult":{
       "type":"structure",
@@ -2213,6 +2248,16 @@
       },
       "documentation":"<p>DNS prevalidation options for domain validation.</p>"
     },
+    "DnsValidationChallenge":{
+      "type":"structure",
+      "members":{
+        "ResourceRecord":{
+          "shape":"ResourceRecord",
+          "documentation":"<p>The CNAME record that ACM creates for DNS validation. Add this record to your DNS configuration to prove that you own or control the domain.</p>"
+        }
+      },
+      "documentation":"<p>Contains the CNAME record that you must add to your DNS configuration to validate domain ownership using DNS validation.</p>"
+    },
     "DomainComponentList":{
       "type":"list",
       "member":{"shape":"String"},
@@ -2310,6 +2355,20 @@
       "max":1000,
       "min":1
     },
+    "DomainValidationMethodUpdateSummary":{
+      "type":"structure",
+      "members":{
+        "From":{
+          "shape":"ValidationMethod",
+          "documentation":"<p>The validation method that the certificate was using before the update.</p>"
+        },
+        "To":{
+          "shape":"ValidationMethod",
+          "documentation":"<p>The target validation method for the update.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about a domain validation method migration, including the previous validation method and the target validation method.</p>"
+    },
     "DomainValidationOption":{
       "type":"structure",
       "required":[
@@ -2333,6 +2392,43 @@
       "member":{"shape":"DomainValidationOption"},
       "max":100,
       "min":1
+    },
+    "DomainValidationSummary":{
+      "type":"structure",
+      "required":["DomainName"],
+      "members":{
+        "DomainName":{
+          "shape":"DomainNameString",
+          "documentation":"<p>The fully qualified domain name (FQDN) in the certificate for which this validation summary applies.</p>"
+        },
+        "ActiveValidationConfiguration":{
+          "shape":"ValidationConfiguration",
+          "documentation":"<p>The validation configuration currently in effect for this domain. This reflects the validation method that ACM is currently using to validate domain ownership (for example, email or DNS).</p>"
+        },
+        "RequestedValidationConfiguration":{
+          "shape":"ValidationConfiguration",
+          "documentation":"<p>The validation configuration for a pending validation method migration. This field is present only when a migration is in progress (for example, from email to DNS validation). It contains the target validation method, the current validation status, and the validation challenge details (such as the CNAME record to add to your DNS configuration).</p>"
+        }
+      },
+      "documentation":"<p>Contains per-domain validation information for a certificate. This structure is returned as a member of the <a>ListCertificateDomainValidations</a> response.</p>"
+    },
+    "DomainValidationSummaryList":{
+      "type":"list",
+      "member":{"shape":"DomainValidationSummary"}
+    },
+    "EmailValidationChallenge":{
+      "type":"structure",
+      "members":{
+        "ValidationEmails":{
+          "shape":"ValidationEmailList",
+          "documentation":"<p>A list of email addresses that ACM uses to send domain validation emails.</p>"
+        },
+        "ValidationDomain":{
+          "shape":"DomainNameString",
+          "documentation":"<p>The domain name that ACM uses to send validation emails.</p>"
+        }
+      },
+      "documentation":"<p>Contains the email addresses used for email-based domain validation.</p>"
     },
     "Expiration":{
       "type":"structure",
@@ -2934,6 +3030,37 @@
         "NextToken":{
           "shape":"String",
           "documentation":"<p>A token for pagination.</p>"
+        }
+      }
+    },
+    "ListCertificateDomainValidationsRequest":{
+      "type":"structure",
+      "required":["CertificateArn"],
+      "members":{
+        "CertificateArn":{
+          "shape":"CertificateArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the certificate for which to list domain validation summaries.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token returned by a previous call to <code>ListCertificateDomainValidations</code>. If the number of results exceeds <code>MaxItems</code>, use this token to retrieve the next page of results.</p>"
+        },
+        "MaxItems":{
+          "shape":"MaxItems",
+          "documentation":"<p>The maximum number of domain validation summaries to return. If you don't specify a value, the default is 1000.</p>"
+        }
+      }
+    },
+    "ListCertificateDomainValidationsResponse":{
+      "type":"structure",
+      "members":{
+        "DomainValidationSummaryList":{
+          "shape":"DomainValidationSummaryList",
+          "documentation":"<p>A list of <a>DomainValidationSummary</a> objects, one for each domain on the certificate. Each object contains the domain name and its active and requested validation configurations.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If the number of results exceeds <code>MaxItems</code>, this token is included in the response. Use this token in a subsequent <code>ListCertificateDomainValidations</code> request to retrieve the next page of results.</p>"
         }
       }
     },
@@ -3740,9 +3867,76 @@
         },
         "Options":{
           "shape":"CertificateOptions",
-          "documentation":"<p>Use to update the options for your certificate. Currently, you can specify whether to export your certificate. Certificate transparency logging opt-out is no longer available. All public certificates are recorded in a certificate transparency log. For more information, see <a href=\"https://docs.aws.amazon.com/acm/latest/userguide/acm-concepts.html#concept-transparency\">Certificate Transparency Logging</a>.</p>"
+          "documentation":"<p>Use to update the options for your certificate. Currently, you can change the domain validation method or specify whether to export your certificate. For more information about migrating from email to DNS validation, see <a href=\"https://docs.aws.amazon.com/acm/latest/userguide/email-to-dns-migration.html\">Migrate from email to DNS validation</a>.</p>"
         }
       }
+    },
+    "UpdateStatus":{
+      "type":"string",
+      "documentation":"<p>The status of a certificate update. Possible values:</p> <ul> <li> <p> <code>PENDING_DOMAIN_VALIDATION</code> – The update is waiting for domain validation to complete.</p> </li> <li> <p> <code>SUCCESS</code> – The update completed successfully.</p> </li> <li> <p> <code>FAILED</code> – The update failed.</p> </li> </ul>",
+      "enum":[
+        "PENDING_DOMAIN_VALIDATION",
+        "SUCCESS",
+        "FAILED"
+      ]
+    },
+    "UpdateSummary":{
+      "type":"structure",
+      "members":{
+        "Status":{
+          "shape":"UpdateStatus",
+          "documentation":"<p>The status of the certificate update. The following are valid values:</p> <ul> <li> <p> <code>PENDING_DOMAIN_VALIDATION</code> – The certificate update is waiting for domain ownership validation to complete.</p> </li> <li> <p> <code>SUCCESS</code> – The certificate was updated successfully.</p> </li> <li> <p> <code>FAILED</code> – The certificate update failed.</p> </li> </ul>"
+        },
+        "Type":{
+          "shape":"UpdateType",
+          "documentation":"<p>The type of update that was requested for the certificate. The following are valid values:</p> <ul> <li> <p> <code>DOMAIN_VALIDATION_METHOD</code> – The update changes the domain validation method for the certificate.</p> </li> </ul>"
+        },
+        "DomainValidationMethodUpdateSummary":{
+          "shape":"DomainValidationMethodUpdateSummary",
+          "documentation":"<p>Contains information about a domain validation method migration, including the previous and target validation methods.</p>"
+        },
+        "RequestedAt":{
+          "shape":"TStamp",
+          "documentation":"<p>The time at which the certificate update was requested.</p>"
+        },
+        "UpdatedAt":{
+          "shape":"TStamp",
+          "documentation":"<p>The time at which the certificate update status was last changed.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about the most recent certificate update, such as a domain validation method migration. This structure is returned as part of the <a>CertificateDetail</a> response from <a>DescribeCertificate</a>.</p>"
+    },
+    "UpdateType":{
+      "type":"string",
+      "documentation":"<p>The type of certificate update. Valid values:</p> <ul> <li> <p> <code>DOMAIN_VALIDATION_METHOD</code> – A change to the domain validation method for the certificate.</p> </li> </ul>",
+      "enum":["DOMAIN_VALIDATION_METHOD"]
+    },
+    "ValidationChallenge":{
+      "type":"structure",
+      "members":{
+        "EmailValidationChallenge":{"shape":"EmailValidationChallenge"},
+        "DnsValidationChallenge":{"shape":"DnsValidationChallenge"}
+      },
+      "documentation":"<p>Contains the challenge details that you use to prove domain ownership. Only one member is set, depending on the validation method.</p>",
+      "union":true
+    },
+    "ValidationConfiguration":{
+      "type":"structure",
+      "members":{
+        "ValidationMethod":{
+          "shape":"ValidationMethod",
+          "documentation":"<p>The validation method for this configuration. Valid values:</p> <ul> <li> <p> <code>DNS</code> – Validation using a CNAME record added to your DNS configuration.</p> </li> <li> <p> <code>EMAIL</code> – Validation using an approval email sent to domain contacts.</p> </li> <li> <p> <code>HTTP</code> – Validation using an HTTP resource placed on your web server.</p> </li> </ul>"
+        },
+        "ValidationChallenge":{
+          "shape":"ValidationChallenge",
+          "documentation":"<p>The validation challenge details for this configuration. The structure varies by validation method: for DNS validation, contains a <code>DnsValidationChallenge</code> with the CNAME record to add; for email validation, contains an <code>EmailValidationChallenge</code> with the validation email addresses.</p>"
+        },
+        "ValidationStatus":{
+          "shape":"DomainStatus",
+          "documentation":"<p>The validation status for this domain. Valid values:</p> <ul> <li> <p> <code>PENDING_VALIDATION</code> – The domain is waiting for validation to complete.</p> </li> <li> <p> <code>SUCCESS</code> – Validation completed successfully.</p> </li> <li> <p> <code>FAILED</code> – Validation failed.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>Contains the validation method, validation status, and validation challenge details for a domain. This structure appears in <a>DomainValidationSummary</a> as both the active and requested validation configuration.</p>"
     },
     "ValidationEmailList":{
       "type":"list",

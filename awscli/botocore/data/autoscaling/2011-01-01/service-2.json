@@ -810,7 +810,8 @@
       },
       "errors":[
         {"shape":"ResourceContentionFault"},
-        {"shape":"IdempotentParameterMismatchError"}
+        {"shape":"IdempotentParameterMismatchError"},
+        {"shape":"IdempotentCallInProgressFault"}
       ],
       "documentation":"<p> Launches a specified number of instances in an Auto Scaling group. Returns instance IDs and other details if launch is successful or error details if launch is unsuccessful. </p>"
     },
@@ -1031,7 +1032,7 @@
         {"shape":"ScalingActivityInProgressFault"},
         {"shape":"ResourceContentionFault"}
       ],
-      "documentation":"<p>Terminates the specified instance and optionally adjusts the desired group size. This operation cannot be called on instances in a warm pool.</p> <p>This call simply makes a termination request. The instance is not terminated immediately. When an instance is terminated, the instance status changes to <code>terminated</code>. You can't connect to or start an instance after you've terminated it.</p> <p>If you do not specify the option to decrement the desired capacity, Amazon EC2 Auto Scaling launches instances to replace the ones that are terminated. </p> <p>By default, Amazon EC2 Auto Scaling balances instances across all Availability Zones. If you decrement the desired capacity, your Auto Scaling group can become unbalanced between Availability Zones. Amazon EC2 Auto Scaling tries to rebalance the group, and rebalancing might terminate instances in other zones. For more information, see <a href=\"https://docs.aws.amazon.com/autoscaling/ec2/userguide/ec2-auto-scaling-scaling-manually.html\">Manual scaling</a> in the <i>Amazon EC2 Auto Scaling User Guide</i>.</p>"
+      "documentation":"<p>Terminates the specified instance and optionally adjusts the desired group size. This operation cannot be called on instances in a warm pool.</p> <p>This call simply makes a termination request. The instances are not terminated immediately. When an instance is terminated, the instance status changes to <code>terminated</code>. You can't connect to or start an instance after you've terminated it.</p> <p>If you do not specify the option to decrement the desired capacity, Amazon EC2 Auto Scaling launches instances to replace the ones that are terminated. </p> <p>To terminate multiple instances in a single call, use the <code>InstanceIds</code> and <code>AutoScalingGroupName</code> parameters instead of <code>InstanceId</code>. When terminating multiple instances, the response populates <code>Activities</code> instead of <code>Activity</code>.</p> <p>By default, Amazon EC2 Auto Scaling balances instances across all Availability Zones. If you decrement the desired capacity, your Auto Scaling group can become unbalanced between Availability Zones. Amazon EC2 Auto Scaling tries to rebalance the group, and rebalancing might terminate instances in other zones. For more information, see <a href=\"https://docs.aws.amazon.com/autoscaling/ec2/userguide/ec2-auto-scaling-scaling-manually.html\">Manual scaling</a> in the <i>Amazon EC2 Auto Scaling User Guide</i>.</p>"
     },
     "UpdateAutoScalingGroup":{
       "name":"UpdateAutoScalingGroup",
@@ -1220,6 +1221,10 @@
         "Activity":{
           "shape":"Activity",
           "documentation":"<p>A scaling activity.</p>"
+        },
+        "Activities":{
+          "shape":"Activities",
+          "documentation":"<p>The scaling activities related to terminating the instances from the Auto Scaling group.</p>"
         }
       }
     },
@@ -3267,6 +3272,19 @@
     "HealthCheckGracePeriod":{"type":"integer"},
     "HeartbeatTimeout":{"type":"integer"},
     "HonorCooldown":{"type":"boolean"},
+    "IdempotentCallInProgressFault":{
+      "type":"structure",
+      "members":{
+        "Message":{"shape":"XmlStringMaxLen255"}
+      },
+      "documentation":"<p> The service is currently processing another request with the same client token. Retry the request with the same client token—the in-flight operation will complete and return its result. </p>",
+      "error":{
+        "code":"IdempotentCallInProgress",
+        "httpStatusCode":500,
+        "senderFault":true
+      },
+      "exception":true
+    },
     "IdempotentParameterMismatchError":{
       "type":"structure",
       "members":{
@@ -5257,7 +5275,7 @@
         },
         "MaxHealthyPercentage":{
           "shape":"IntPercent100To200",
-          "documentation":"<p>Specifies the maximum percentage of the group that can be in service and healthy, or pending, to support your workload when replacing instances. The value is expressed as a percentage of the desired capacity of the Auto Scaling group. Value range is 100 to 200.</p> <p>If you specify <code>MaxHealthyPercentage</code>, you must also specify <code>MinHealthyPercentage</code>, and the difference between them cannot be greater than 100. A larger range increases the number of instances that can be replaced at the same time.</p> <p>If you do not specify this property, the default is 100 percent, or the percentage set in the instance maintenance policy for the Auto Scaling group, if defined.</p>"
+          "documentation":"<p>Specifies the maximum percentage of the group that can be in service and healthy, or pending, to support your workload when replacing instances. The value is expressed as a percentage of the desired capacity of the Auto Scaling group. Value range is 100 to 200.</p> <p>If you specify <code>MaxHealthyPercentage</code>, you must also specify <code>MinHealthyPercentage</code>, and the difference between them cannot be greater than 100. A larger range increases the number of instances that can be replaced at the same time.</p> <p>If you do not specify this property, the default is 100 percent, or the percentage set in the instance maintenance policy for the Auto Scaling group, if defined.</p> <important> <p>Explicitly setting <code>MaxHealthyPercentage</code> to 100 is not equivalent to omitting it. When <code>MaxHealthyPercentage</code> is explicitly set and it is mathematically impossible to replace instances while honoring both <code>MinHealthyPercentage</code> and <code>MaxHealthyPercentage</code> bounds simultaneously, Auto Scaling launches a new instance before terminating an old one (temporarily exceeding the desired capacity). When <code>MaxHealthyPercentage</code> is omitted, Auto Scaling terminates an instance and launches its replacement simultaneously. This behavioral difference can affect workflows that depend on instance replacement ordering.</p> </important>"
         },
         "BakeTime":{
           "shape":"BakeTime",
@@ -5991,20 +6009,31 @@
     },
     "TerminateInstanceInAutoScalingGroupType":{
       "type":"structure",
-      "required":[
-        "InstanceId",
-        "ShouldDecrementDesiredCapacity"
-      ],
+      "required":["ShouldDecrementDesiredCapacity"],
       "members":{
         "InstanceId":{
           "shape":"XmlStringMaxLen19",
           "documentation":"<p>The ID of the instance.</p>"
+        },
+        "InstanceIds":{
+          "shape":"TerminationInstanceIds",
+          "documentation":"<p>The IDs of the instances. You can specify up to 100 instances.</p> <p>This parameter requires that you also specify <code>AutoScalingGroupName</code>.</p>"
+        },
+        "AutoScalingGroupName":{
+          "shape":"XmlStringMaxLen255",
+          "documentation":"<p>The name of the Auto Scaling group. Required when using <code>InstanceIds</code>.</p>"
         },
         "ShouldDecrementDesiredCapacity":{
           "shape":"ShouldDecrementDesiredCapacity",
           "documentation":"<p>Indicates whether terminating the instance also decrements the size of the Auto Scaling group.</p>"
         }
       }
+    },
+    "TerminationInstanceIds":{
+      "type":"list",
+      "member":{"shape":"XmlStringMaxLen19"},
+      "max":100,
+      "min":1
     },
     "TerminationPolicies":{
       "type":"list",

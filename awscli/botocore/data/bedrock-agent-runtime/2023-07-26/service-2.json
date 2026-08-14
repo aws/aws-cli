@@ -36,6 +36,24 @@
       ],
       "documentation":"<p>Retrieves information from one or more knowledge bases using an agentic approach. Agentic retrieval uses a foundation model to intelligently decompose complex queries into sub-queries and iteratively retrieve relevant information from your knowledge bases. This approach improves retrieval accuracy for complex, multi-step questions that a single retrieval pass might not fully address.</p> <p>The operation returns results through a stream that includes retrieval results, trace events for visibility into the process, and a generated response synthesized from the results by default, which can be turned off.</p>"
     },
+    "CheckIngestedDocumentAcl":{
+      "name":"CheckIngestedDocumentAcl",
+      "http":{
+        "method":"POST",
+        "requestUri":"/knowledgebases/{knowledgeBaseId}/datasources/{dataSourceId}/check-ingested-document-acl",
+        "responseCode":200
+      },
+      "input":{"shape":"CheckIngestedDocumentAclRequest"},
+      "output":{"shape":"CheckIngestedDocumentAclResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Checks whether a user has access to a specific document by verifying against the ingested access control list (ACL) in a knowledge base. Use this operation to validate that document-level access control is working as expected after ingestion. To use this operation, you must have the <code>bedrock:CheckIngestedDocumentAcl</code> permission.</p>"
+    },
     "CreateInvocation":{
       "name":"CreateInvocation",
       "http":{
@@ -238,6 +256,24 @@
       ],
       "documentation":"<p>Retrieves details about a specific flow execution, including its status, start and end times, and any errors that occurred during execution.</p>"
     },
+    "GetIngestedDocumentAcl":{
+      "name":"GetIngestedDocumentAcl",
+      "http":{
+        "method":"POST",
+        "requestUri":"/knowledgebases/{knowledgeBaseId}/datasources/{dataSourceId}/get-ingested-document-acl",
+        "responseCode":200
+      },
+      "input":{"shape":"GetIngestedDocumentAclRequest"},
+      "output":{"shape":"GetIngestedDocumentAclResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Retrieves the ingested access control list (ACL) for a specific document in a knowledge base. Use this operation to inspect the allow and deny lists that were ingested for a document to troubleshoot access control issues. To use this operation, you must have the <code>bedrock:GetIngestedDocumentAcl</code> permission.</p>"
+    },
     "GetInvocationStep":{
       "name":"GetInvocationStep",
       "http":{
@@ -295,7 +331,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
-      "documentation":"<p><note> </note> <p>Sends a prompt for the agent to process and respond to. Note the following fields for the request:</p> <ul> <li> <p>To continue the same conversation with an agent, use the same <code>sessionId</code> value in the request.</p> </li> <li> <p>To activate trace enablement, turn <code>enableTrace</code> to <code>true</code>. Trace enablement helps you follow the agent's reasoning process that led it to the information it processed, the actions it took, and the final result it yielded. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/agents-test.html#trace-events\">Trace enablement</a>.</p> </li> <li> <p>End a conversation by setting <code>endSession</code> to <code>true</code>.</p> </li> <li> <p>In the <code>sessionState</code> object, you can include attributes for the session or prompt or, if you configured an action group to return control, results from invocation of the action group.</p> </li> </ul> <p>The response contains both <b>chunk</b> and <b>trace</b> attributes.</p> <p>The final response is returned in the <code>bytes</code> field of the <code>chunk</code> object. The <code>InvokeAgent</code> returns one chunk for the entire interaction.</p> <ul> <li> <p>The <code>attribution</code> object contains citations for parts of the response.</p> </li> <li> <p>If you set <code>enableTrace</code> to <code>true</code> in the request, you can trace the agent's steps and reasoning process that led it to the response.</p> </li> <li> <p>If the action predicted was configured to return control, the response returns parameters for the action, elicited from the user, in the <code>returnControl</code> field.</p> </li> <li> <p>Errors are also surfaced in the response.</p> </li> </ul></p>"
+      "documentation":"<p><note> <p>Amazon Bedrock Agents (now Amazon Bedrock Agents Classic) is no longer open to new customers. For capabilities similar to Bedrock Agents Classic, explore Amazon Bedrock AgentCore. Existing customers can continue to use the service as normal. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/agents-classic-maintenance-mode.html\">Amazon Bedrock Agents Classic availability change</a>.</p> </note> <note> </note> <p>Sends a prompt for the agent to process and respond to. Note the following fields for the request:</p> <ul> <li> <p>To continue the same conversation with an agent, use the same <code>sessionId</code> value in the request.</p> </li> <li> <p>To activate trace enablement, turn <code>enableTrace</code> to <code>true</code>. Trace enablement helps you follow the agent's reasoning process that led it to the information it processed, the actions it took, and the final result it yielded. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/agents-test.html#trace-events\">Trace enablement</a>.</p> </li> <li> <p>End a conversation by setting <code>endSession</code> to <code>true</code>.</p> </li> <li> <p>In the <code>sessionState</code> object, you can include attributes for the session or prompt or, if you configured an action group to return control, results from invocation of the action group.</p> </li> </ul> <p>The response contains both <b>chunk</b> and <b>trace</b> attributes.</p> <p>The final response is returned in the <code>bytes</code> field of the <code>chunk</code> object. The <code>InvokeAgent</code> returns one chunk for the entire interaction.</p> <ul> <li> <p>The <code>attribution</code> object contains citations for parts of the response.</p> </li> <li> <p>If you set <code>enableTrace</code> to <code>true</code> in the request, you can trace the agent's steps and reasoning process that led it to the response.</p> </li> <li> <p>If the action predicted was configured to return control, the response returns parameters for the action, elicited from the user, in the <code>returnControl</code> field.</p> </li> <li> <p>Errors are also surfaced in the response.</p> </li> </ul></p>"
     },
     "InvokeFlow":{
       "name":"InvokeFlow",
@@ -2068,6 +2104,47 @@
       "type":"list",
       "member":{"shape":"Caller"}
     },
+    "CheckIngestedDocumentAclRequest":{
+      "type":"structure",
+      "required":[
+        "dataSourceId",
+        "documentId",
+        "knowledgeBaseId",
+        "userContext"
+      ],
+      "members":{
+        "dataSourceId":{
+          "shape":"DataSourceId",
+          "documentation":"<p>The unique identifier of the data source that contains the document.</p>",
+          "location":"uri",
+          "locationName":"dataSourceId"
+        },
+        "documentId":{
+          "shape":"DocumentId",
+          "documentation":"<p>The unique identifier of the document to check access for.</p>"
+        },
+        "knowledgeBaseId":{
+          "shape":"KnowledgeBaseIdentifier",
+          "documentation":"<p>The unique identifier of the knowledge base that contains the document.</p>",
+          "location":"uri",
+          "locationName":"knowledgeBaseId"
+        },
+        "userContext":{
+          "shape":"UserContext",
+          "documentation":"<p>The context object containing identity information for access control filtering, including user ID and optional group memberships used to evaluate the document access control list (ACL).</p>"
+        }
+      }
+    },
+    "CheckIngestedDocumentAclResponse":{
+      "type":"structure",
+      "required":["hasAccess"],
+      "members":{
+        "hasAccess":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether the user has access to the document based on the ingested access control list (ACL). Returns <code>true</code> if the user is allowed access, and <code>false</code> otherwise.</p>"
+        }
+      }
+    },
     "Citation":{
       "type":"structure",
       "members":{
@@ -2557,6 +2634,135 @@
       "type":"structure",
       "members":{},
       "document":true
+    },
+    "DocumentAcl":{
+      "type":"structure",
+      "members":{
+        "allowList":{
+          "shape":"DocumentAclMembership",
+          "documentation":"<p>The list of principals allowed access to the document.</p>"
+        },
+        "denyList":{
+          "shape":"DocumentAclMembership",
+          "documentation":"<p>The list of principals denied access to the document.</p>"
+        }
+      },
+      "documentation":"<p>The access control list for a document, containing allow and deny membership lists. Each list specifies conditions that determine which users and groups are granted or denied access.</p>",
+      "sensitive":true
+    },
+    "DocumentAclCondition":{
+      "type":"structure",
+      "members":{
+        "conditionOperator":{
+          "shape":"DocumentAclMemberRelation",
+          "documentation":"<p>The logical operator for combining users and groups within this condition. Valid values: <code>AND</code> – Both a user match and a group match are required. <code>OR</code> – Either a user match or a group match is sufficient.</p>"
+        },
+        "groups":{
+          "shape":"DocumentAclConditionGroupsList",
+          "documentation":"<p>The list of group entries in this condition.</p>"
+        },
+        "users":{
+          "shape":"DocumentAclConditionUsersList",
+          "documentation":"<p>The list of user entries in this condition.</p>"
+        }
+      },
+      "documentation":"<p>A condition within a document access control list (ACL) membership, specifying users and groups that are evaluated together.</p>"
+    },
+    "DocumentAclConditionGroupsList":{
+      "type":"list",
+      "member":{"shape":"DocumentAclGroup"},
+      "max":3000,
+      "min":0
+    },
+    "DocumentAclConditionUsersList":{
+      "type":"list",
+      "member":{"shape":"DocumentAclUser"},
+      "max":3000,
+      "min":0
+    },
+    "DocumentAclGroup":{
+      "type":"structure",
+      "required":[
+        "id",
+        "type"
+      ],
+      "members":{
+        "id":{
+          "shape":"DocumentAclGroupIdString",
+          "documentation":"<p>The identifier of the group.</p>"
+        },
+        "type":{
+          "shape":"DocumentAclMembershipType",
+          "documentation":"<p>The membership type indicating the scope of the group entry.</p>"
+        }
+      },
+      "documentation":"<p>A group entry within a document access control list (ACL) condition.</p>"
+    },
+    "DocumentAclGroupIdString":{
+      "type":"string",
+      "max":1024,
+      "min":1,
+      "pattern":"^\\P{C}*$"
+    },
+    "DocumentAclMemberRelation":{
+      "type":"string",
+      "documentation":"<p>The logical relation for combining access control list (ACL) membership conditions.</p>",
+      "enum":[
+        "AND",
+        "OR"
+      ]
+    },
+    "DocumentAclMembership":{
+      "type":"structure",
+      "members":{
+        "conditions":{
+          "shape":"DocumentAclMembershipConditionsList",
+          "documentation":"<p>The list of conditions that determine membership.</p>"
+        },
+        "memberRelation":{
+          "shape":"DocumentAclMemberRelation",
+          "documentation":"<p>The logical relation between conditions. Valid values: <code>AND</code> – All conditions must match. <code>OR</code> – At least one condition must match.</p>"
+        }
+      },
+      "documentation":"<p>The membership entry for a document access control list (ACL), containing conditions and their logical relation.</p>"
+    },
+    "DocumentAclMembershipConditionsList":{
+      "type":"list",
+      "member":{"shape":"DocumentAclCondition"},
+      "max":100,
+      "min":0
+    },
+    "DocumentAclMembershipType":{
+      "type":"string",
+      "documentation":"<p>The scope type for a document access control list (ACL) membership condition. Valid values: <code>KNOWLEDGE_BASE</code> – The entry applies at the knowledge base level. <code>DATA_SOURCE</code> – The entry applies at the data source level.</p>",
+      "enum":[
+        "KNOWLEDGE_BASE",
+        "DATA_SOURCE"
+      ]
+    },
+    "DocumentAclUser":{
+      "type":"structure",
+      "required":[
+        "id",
+        "type"
+      ],
+      "members":{
+        "id":{
+          "shape":"DocumentAclUserIdString",
+          "documentation":"<p>The identifier of the user.</p>"
+        },
+        "type":{
+          "shape":"DocumentAclMembershipType",
+          "documentation":"<p>The membership type indicating the scope of the user entry.</p>"
+        }
+      },
+      "documentation":"<p>A user entry within a document access control list (ACL) condition.</p>"
+    },
+    "DocumentAclUserIdString":{
+      "type":"string",
+      "max":1024,
+      "min":1,
+      "pattern":"^\\P{C}*$"
     },
     "DocumentId":{
       "type":"string",
@@ -4105,7 +4311,10 @@
           "shape":"DocumentOutputFormat",
           "documentation":"<p>The output format for the document content. <code>RAW</code> returns the original file. <code>EXTRACTED</code> returns parsed text as JSON. Defaults to <code>RAW</code>.</p>"
         },
-        "userContext":{"shape":"UserContext"}
+        "userContext":{
+          "shape":"UserContext",
+          "documentation":"<p>Contains information about the user making the request. This is used for access control filtering to ensure that results only include documents the user is authorized to access.</p>"
+        }
       }
     },
     "GetDocumentContentResponse":{
@@ -4263,6 +4472,42 @@
         "status":{
           "shape":"FlowExecutionStatus",
           "documentation":"<p>The current status of the flow execution.</p> <p>Flow executions time out after 24 hours.</p>"
+        }
+      }
+    },
+    "GetIngestedDocumentAclRequest":{
+      "type":"structure",
+      "required":[
+        "dataSourceId",
+        "documentId",
+        "knowledgeBaseId"
+      ],
+      "members":{
+        "dataSourceId":{
+          "shape":"DataSourceId",
+          "documentation":"<p>The unique identifier of the data source that contains the document.</p>",
+          "location":"uri",
+          "locationName":"dataSourceId"
+        },
+        "documentId":{
+          "shape":"DocumentId",
+          "documentation":"<p>The unique identifier of the document to retrieve the ingested access control list (ACL) for.</p>"
+        },
+        "knowledgeBaseId":{
+          "shape":"KnowledgeBaseIdentifier",
+          "documentation":"<p>The unique identifier of the knowledge base that contains the document.</p>",
+          "location":"uri",
+          "locationName":"knowledgeBaseId"
+        }
+      }
+    },
+    "GetIngestedDocumentAclResponse":{
+      "type":"structure",
+      "required":["documentAcl"],
+      "members":{
+        "documentAcl":{
+          "shape":"DocumentAcl",
+          "documentation":"<p>The ingested document access control list (ACL) containing allow and deny membership information.</p>"
         }
       }
     },
@@ -6219,7 +6464,10 @@
     "ManagedSearchConfiguration":{
       "type":"structure",
       "members":{
-        "filter":{"shape":"RetrievalFilter"},
+        "filter":{
+          "shape":"RetrievalFilter",
+          "documentation":"<p>Filters the metadata of the retrieved results so that Amazon Bedrock returns only results that match the filter.</p>"
+        },
         "numberOfResults":{
           "shape":"ManagedSearchConfigurationNumberOfResultsInteger",
           "documentation":"<p>The number of results to retrieve.</p>"
@@ -8458,7 +8706,10 @@
           "shape":"SessionId",
           "documentation":"<p>The unique identifier of the session. When you first make a <code>RetrieveAndGenerate</code> request, Amazon Bedrock automatically generates this value. You must reuse this value for all subsequent requests in the same conversational session. This value allows Amazon Bedrock to maintain context and knowledge from previous interactions. You can't explicitly set the <code>sessionId</code> yourself.</p>"
         },
-        "userContext":{"shape":"UserContext"}
+        "userContext":{
+          "shape":"UserContext",
+          "documentation":"<p>Contains information about the user making the request. This is used for access control filtering to ensure that retrieval results only include documents the user is authorized to access.</p>"
+        }
       }
     },
     "RetrieveAndGenerateResponse":{
@@ -8517,7 +8768,10 @@
           "shape":"SessionId",
           "documentation":"<p>The unique identifier of the session. When you first make a <code>RetrieveAndGenerate</code> request, Amazon Bedrock automatically generates this value. You must reuse this value for all subsequent requests in the same conversational session. This value allows Amazon Bedrock to maintain context and knowledge from previous interactions. You can't explicitly set the <code>sessionId</code> yourself.</p>"
         },
-        "userContext":{"shape":"UserContext"}
+        "userContext":{
+          "shape":"UserContext",
+          "documentation":"<p>Contains information about the user making the request. This is used for access control filtering to ensure that retrieval results only include documents the user is authorized to access.</p>"
+        }
       }
     },
     "RetrieveAndGenerateStreamResponse":{
@@ -8631,7 +8885,10 @@
           "shape":"KnowledgeBaseQuery",
           "documentation":"<p>Contains the query to send the knowledge base.</p>"
         },
-        "userContext":{"shape":"UserContext"}
+        "userContext":{
+          "shape":"UserContext",
+          "documentation":"<p>Contains information about the user making the request. This is used for access control filtering to ensure that retrieval results only include documents the user is authorized to access.</p>"
+        }
       }
     },
     "RetrieveResponse":{
@@ -9647,5 +9904,5 @@
       "min":1
     }
   },
-  "documentation":"<p>Contains APIs related to model invocation and querying of knowledge bases.</p>"
+  "documentation":"<p><note> <p>Amazon Bedrock Agents (now Amazon Bedrock Agents Classic) is no longer open to new customers. For capabilities similar to Bedrock Agents Classic, explore Amazon Bedrock AgentCore. Existing customers can continue to use the service as normal. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/agents-classic-maintenance-mode.html\">Amazon Bedrock Agents Classic availability change</a>.</p> </note> <p>Contains APIs related to model invocation and querying of knowledge bases.</p></p>"
 }

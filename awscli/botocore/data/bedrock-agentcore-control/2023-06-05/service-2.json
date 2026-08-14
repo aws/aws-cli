@@ -479,6 +479,7 @@
       "output":{"shape":"CreatePaymentConnectorResponse"},
       "errors":[
         {"shape":"ServiceQuotaExceededException"},
+        {"shape":"SubscriptionRequiredException"},
         {"shape":"AccessDeniedException"},
         {"shape":"ConflictException"},
         {"shape":"ValidationException"},
@@ -3099,6 +3100,7 @@
       "output":{"shape":"UpdatePaymentConnectorResponse"},
       "errors":[
         {"shape":"ServiceQuotaExceededException"},
+        {"shape":"SubscriptionRequiredException"},
         {"shape":"AccessDeniedException"},
         {"shape":"ConflictException"},
         {"shape":"ValidationException"},
@@ -4346,6 +4348,7 @@
     },
     "CapacityProviderConfiguration":{
       "type":"structure",
+      "required":["capacityProviderArn"],
       "members":{
         "capacityProviderArn":{
           "shape":"CapacityProviderArn",
@@ -6889,6 +6892,10 @@
           "shape":"CredentialsProviderConfigurations",
           "documentation":"<p>The credential provider configurations for the payment connector. These configurations specify how the connector authenticates with the payment provider.</p>"
         },
+        "provisionMode":{
+          "shape":"PaymentConnectorProvisionMode",
+          "documentation":"<p>The provision mode for creating the payment connector. If you don't specify a value, the default is <code>MANUAL</code>.</p> <ul> <li> <p> <code>MANUAL</code> - You provide the credential provider configurations directly.</p> </li> <li> <p> <code>QUICK_CREATE</code> - The service orchestrates OAuth consent and provisions the credential provider for you.</p> </li> </ul>"
+        },
         "clientToken":{
           "shape":"ClientToken",
           "documentation":"<p>A unique, case-sensitive identifier to ensure that the API request completes no more than one time. If you don't specify this field, a value is randomly generated for you. If this token matches a previous request, the service ignores the request, but doesn't return an error. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html\">Ensuring idempotency</a>.</p>",
@@ -6935,6 +6942,10 @@
         "status":{
           "shape":"PaymentConnectorStatus",
           "documentation":"<p>The current status of the payment connector. Possible values include <code>CREATING</code>, <code>READY</code>, <code>UPDATING</code>, <code>DELETING</code>, <code>CREATE_FAILED</code>, <code>UPDATE_FAILED</code>, and <code>DELETE_FAILED</code>.</p>"
+        },
+        "authorizationUrl":{
+          "shape":"PaymentConnectorAuthorizationUrl",
+          "documentation":"<p>The URL that the user must open to complete OAuth consent. This field is only present when the payment connector status is <code>PENDING_AUTHENTICATION</code>.</p>"
         }
       }
     },
@@ -7027,6 +7038,10 @@
         "tags":{
           "shape":"TagsMap",
           "documentation":"<p>A map of tag keys and values to assign to the payment manager.</p>"
+        },
+        "kmsKeyArn":{
+          "shape":"KmsKeyArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the customer managed KMS key to use for encrypting sensitive payment manager data at rest. If you don't specify a key, the data is encrypted with an Amazon Web Services owned key.</p>"
         }
       }
     },
@@ -7075,6 +7090,10 @@
         "tags":{
           "shape":"TagsMap",
           "documentation":"<p>The tags associated with the created payment manager.</p>"
+        },
+        "kmsKeyArn":{
+          "shape":"KmsKeyArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the KMS key used to encrypt sensitive payment manager data at rest, if configured.</p>"
         }
       }
     },
@@ -7517,7 +7536,7 @@
       "type":"list",
       "member":{"shape":"CredentialsProviderConfiguration"},
       "max":1,
-      "min":1
+      "min":0
     },
     "CustomClaimValidationType":{
       "type":"structure",
@@ -10684,7 +10703,6 @@
         "createdAt",
         "lastUpdatedAt",
         "roleArn",
-        "networkConfiguration",
         "status",
         "lifecycleConfiguration"
       ],
@@ -12085,6 +12103,10 @@
         "status":{
           "shape":"PaymentConnectorStatus",
           "documentation":"<p>The current status of the payment connector. Possible values include <code>CREATING</code>, <code>READY</code>, <code>UPDATING</code>, <code>DELETING</code>, <code>CREATE_FAILED</code>, <code>UPDATE_FAILED</code>, and <code>DELETE_FAILED</code>.</p>"
+        },
+        "authorizationUrl":{
+          "shape":"PaymentConnectorAuthorizationUrl",
+          "documentation":"<p>The URL that the user must open to complete OAuth consent. This field is only present when the payment connector status is <code>PENDING_AUTHENTICATION</code>.</p>"
         }
       }
     },
@@ -12205,6 +12227,10 @@
         "tags":{
           "shape":"TagsMap",
           "documentation":"<p>The tags associated with the payment manager.</p>"
+        },
+        "kmsKeyArn":{
+          "shape":"KmsKeyArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the KMS key used to encrypt sensitive payment manager data at rest, if configured.</p>"
         }
       }
     },
@@ -17970,17 +17996,30 @@
       },
       "documentation":"<p>The configuration for an HTTP passthrough target. A passthrough target forwards requests directly to an external HTTP endpoint.</p>"
     },
+    "PaymentConnectorAuthorizationUrl":{
+      "type":"string",
+      "max":4096,
+      "min":1,
+      "pattern":"https://[^\\p{C}]*"
+    },
     "PaymentConnectorId":{
       "type":"string",
       "max":211,
       "min":12,
-      "pattern":"([0-9a-z][-]?){1,100}-[0-9a-z]{10}"
+      "pattern":"([0-9a-z_][-]?){1,100}-[0-9a-z]{10}"
     },
     "PaymentConnectorName":{
       "type":"string",
       "max":48,
       "min":1,
       "pattern":"[a-zA-Z][a-zA-Z0-9_]{0,47}"
+    },
+    "PaymentConnectorProvisionMode":{
+      "type":"string",
+      "enum":[
+        "MANUAL",
+        "QUICK_CREATE"
+      ]
     },
     "PaymentConnectorStatus":{
       "type":"string",
@@ -17991,7 +18030,12 @@
         "READY",
         "CREATE_FAILED",
         "UPDATE_FAILED",
-        "DELETE_FAILED"
+        "DELETE_FAILED",
+        "AWS_MARKETPLACE_SUBSCRIPTION_REQUIRED",
+        "PENDING_AUTHENTICATION",
+        "PROVISIONING",
+        "AUTHENTICATION_EXPIRED",
+        "AUTHENTICATION_FAILED"
       ]
     },
     "PaymentConnectorSummaries":{
@@ -18185,6 +18229,10 @@
         "lastUpdatedAt":{
           "shape":"DateTimestamp",
           "documentation":"<p>The timestamp when the payment manager was last updated.</p>"
+        },
+        "kmsKeyArn":{
+          "shape":"KmsKeyArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the KMS key used to encrypt sensitive payment manager data at rest, if configured.</p>"
         }
       },
       "documentation":"<p>Contains summary information about a payment manager.</p>"
@@ -18230,7 +18278,7 @@
       "type":"string",
       "max":4096,
       "min":1,
-      "pattern":"[a-zA-Z0-9\\s]+"
+      "pattern":"[^\\p{C}]*"
     },
     "Period":{
       "type":"string",
@@ -20710,6 +20758,27 @@
       "max":16,
       "min":1
     },
+    "SubscriptionRequiredException":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{"shape":"String"},
+        "subscriptionUrl":{
+          "shape":"String",
+          "documentation":"<p>URL to the Marketplace listing for subscription</p>"
+        },
+        "productName":{
+          "shape":"String",
+          "documentation":"<p>The product requiring subscription</p>"
+        }
+      },
+      "documentation":"<p>The request failed because it requires an active Amazon Web Services Marketplace subscription that is not present. Subscribe to the required product in Amazon Web Services Marketplace and try again.</p>",
+      "error":{
+        "httpStatusCode":403,
+        "senderFault":true
+      },
+      "exception":true
+    },
     "SummaryConsolidationOverride":{
       "type":"structure",
       "required":[
@@ -22905,6 +22974,10 @@
         "status":{
           "shape":"PaymentConnectorStatus",
           "documentation":"<p>The current status of the updated payment connector. Possible values include <code>CREATING</code>, <code>READY</code>, <code>UPDATING</code>, <code>DELETING</code>, <code>CREATE_FAILED</code>, <code>UPDATE_FAILED</code>, and <code>DELETE_FAILED</code>.</p>"
+        },
+        "authorizationUrl":{
+          "shape":"PaymentConnectorAuthorizationUrl",
+          "documentation":"<p>The URL that the user must open to complete OAuth consent. This field is only present when the payment connector status is <code>PENDING_AUTHENTICATION</code>.</p>"
         }
       }
     },
@@ -22997,6 +23070,10 @@
           "shape":"ClientToken",
           "documentation":"<p>A unique, case-sensitive identifier to ensure that the API request completes no more than one time. If you don't specify this field, a value is randomly generated for you. If this token matches a previous request, the service ignores the request, but doesn't return an error. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html\">Ensuring idempotency</a>.</p>",
           "idempotencyToken":true
+        },
+        "kmsKeyArn":{
+          "shape":"KmsKeyArn",
+          "documentation":"<p>The updated Amazon Resource Name (ARN) of the customer managed KMS key used to encrypt sensitive payment manager data at rest.</p>"
         }
       }
     },
@@ -23040,6 +23117,10 @@
         "status":{
           "shape":"PaymentManagerStatus",
           "documentation":"<p>The current status of the updated payment manager. Possible values include <code>CREATING</code>, <code>READY</code>, <code>UPDATING</code>, <code>DELETING</code>, <code>CREATE_FAILED</code>, <code>UPDATE_FAILED</code>, and <code>DELETE_FAILED</code>.</p>"
+        },
+        "kmsKeyArn":{
+          "shape":"KmsKeyArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the KMS key used to encrypt sensitive payment manager data at rest, if configured.</p>"
         }
       }
     },

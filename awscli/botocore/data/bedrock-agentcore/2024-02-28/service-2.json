@@ -147,7 +147,9 @@
         {"shape":"ConflictException"},
         {"shape":"ValidationException"},
         {"shape":"ThrottlingException"},
-        {"shape":"InternalServerException"}
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"SubscriptionRequiredException"}
       ],
       "documentation":"<p>Create a new payment instrument for a connector.</p>",
       "idempotent":true
@@ -167,7 +169,8 @@
         {"shape":"ConflictException"},
         {"shape":"ValidationException"},
         {"shape":"ThrottlingException"},
-        {"shape":"InternalServerException"}
+        {"shape":"InternalServerException"},
+        {"shape":"SubscriptionRequiredException"}
       ],
       "documentation":"<p>Create a new payment session.</p>",
       "idempotent":true
@@ -1035,8 +1038,10 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ConflictException"},
         {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"},
-        {"shape":"InternalServerException"}
+        {"shape":"InternalServerException"},
+        {"shape":"SubscriptionRequiredException"}
       ],
       "documentation":"<p>Processes a payment using a payment instrument within a payment session.</p>",
       "idempotent":true
@@ -3134,6 +3139,10 @@
         "payload":{
           "shape":"PaymentDocument",
           "documentation":"<p>The X402 payment payload.</p>"
+        },
+        "permit2AllowanceLimit":{
+          "shape":"Permit2AllowanceLimit",
+          "documentation":"<p>The maximum on-chain Permit2 allowance to grant before signing the payment authorization, in the asset's smallest denomination. This field is valid only for the <code>upto</code> (metered) scheme; supplying it for the <code>exact</code> scheme returns a validation error.</p> <p>When set, the service approves an ERC-20 allowance for this amount before processing the payment. The approval sets, rather than adds to, the wallet's allowance. Set this field only when the wallet needs approving, for example on its first <code>upto</code> payment, to avoid a redundant on-chain transaction. Omit the field to skip allowance handling. This is the default, and the only behavior for the <code>exact</code> scheme.</p>"
         }
       },
       "documentation":"<p>The input for a crypto X402 payment.</p>"
@@ -8725,6 +8734,63 @@
       },
       "documentation":"<p>The result of a mouse scroll action.</p>"
     },
+    "MppPaymentCredential":{
+      "type":"string",
+      "documentation":"<p>Ready-to-send <code>Authorization: Payment &lt;base64url-token&gt;</code> value. This is a bearer-like payment credential and must not appear in logs, traces, or error messages.</p>",
+      "max":32768,
+      "min":1,
+      "sensitive":true
+    },
+    "MppPaymentInput":{
+      "type":"structure",
+      "required":[
+        "version",
+        "wwwAuthenticateHeaders"
+      ],
+      "members":{
+        "version":{
+          "shape":"Version",
+          "documentation":"<p>The MPP protocol version, for example \"1\" or \"2\".</p>"
+        },
+        "wwwAuthenticateHeaders":{
+          "shape":"WwwAuthenticateHeaderList",
+          "documentation":"<p>The raw <code>WWW-Authenticate: Payment</code> header value from the 402 response, passed verbatim. Provide exactly one entry. The service uses this value to generate the payment credential.</p>"
+        },
+        "buyerPaysGasFees":{
+          "shape":"Boolean",
+          "documentation":"<p>Authorizes the service to sign a payment whose blockchain network (gas) fees are charged to your wallet, on top of the payment amount.</p> <p>The challenge indicates who sponsors the network fees. When the challenge does not sponsor them, the service signs the payment only if this field is <code>true</code>. Otherwise it returns a validation error, so you can decide whether to pay the fees or obtain a challenge that sponsors them.</p> <p>Optional. When omitted or <code>false</code>, you decline to pay network fees. This field has no effect on challenges that already sponsor the fees.</p>"
+        }
+      },
+      "documentation":"<p>Contains the payment challenge from a 402 Payment Required response. Forward the raw <code>WWW-Authenticate: Payment</code> header value verbatim. In response, you receive a payment credential that satisfies the challenge. Provide exactly one challenge per request.</p>"
+    },
+    "MppPaymentOutput":{
+      "type":"structure",
+      "required":[
+        "version",
+        "selectedPaymentId",
+        "paymentCredential"
+      ],
+      "members":{
+        "version":{
+          "shape":"Version",
+          "documentation":"<p>The MPP protocol version, for example \"1\" or \"2\".</p>"
+        },
+        "selectedPaymentId":{
+          "shape":"MppPaymentOutputSelectedPaymentIdString",
+          "documentation":"<p>The id of the challenge that was paid, echoed from the input challenge so you can correlate the result without decoding the credential.</p>"
+        },
+        "paymentCredential":{
+          "shape":"MppPaymentCredential",
+          "documentation":"<p>Ready-to-send value for the <code>Authorization</code> header, in the form \"Payment &lt;base64url-token&gt;\". Attach this header and retry the original request. To inspect the full credential, base64url-decode the token.</p>"
+        }
+      },
+      "documentation":"<p>Contains the payment credential, ready to retry the request.</p>"
+    },
+    "MppPaymentOutputSelectedPaymentIdString":{
+      "type":"string",
+      "max":512,
+      "min":1
+    },
     "Name":{
       "type":"string",
       "max":100,
@@ -8999,7 +9065,8 @@
         "cryptoX402":{
           "shape":"CryptoX402PaymentInput",
           "documentation":"<p>Input for a crypto X402 payment.</p>"
-        }
+        },
+        "mpp":{"shape":"MppPaymentInput"}
       },
       "documentation":"<p>The payment input details, which vary by payment type.</p>",
       "union":true
@@ -9081,7 +9148,8 @@
         "INITIATED",
         "ACTIVE",
         "FAILED",
-        "DELETED"
+        "DELETED",
+        "BLOCKED"
       ]
     },
     "PaymentInstrumentSummary":{
@@ -9153,7 +9221,8 @@
         "cryptoX402":{
           "shape":"CryptoX402PaymentOutput",
           "documentation":"<p>Output from a crypto X402 payment.</p>"
-        }
+        },
+        "mpp":{"shape":"MppPaymentOutput"}
       },
       "documentation":"<p>The payment output details, which vary by payment type.</p>",
       "union":true
@@ -9311,7 +9380,10 @@
     "PaymentType":{
       "type":"string",
       "documentation":"<p>Payment type enum.</p>",
-      "enum":["CRYPTO_X402"]
+      "enum":[
+        "CRYPTO_X402",
+        "MPP"
+      ]
     },
     "PerVariantOnlineEvaluationConfig":{
       "type":"structure",
@@ -9336,6 +9408,13 @@
       "member":{"shape":"PerVariantOnlineEvaluationConfig"},
       "max":2,
       "min":2
+    },
+    "Permit2AllowanceLimit":{
+      "type":"string",
+      "documentation":"<p>The maximum on-chain Permit2 allowance to grant, in the asset's smallest denomination. Pass the value as a numeric string. For example, \"1000000\" is 1 USDC at 6 decimals. To grant an unlimited allowance, pass the uint256 maximum, which is a 78-digit number.</p>",
+      "max":78,
+      "min":1,
+      "pattern":"[0-9]+"
     },
     "PhoneNumber":{
       "type":"string",
@@ -11384,6 +11463,37 @@
       },
       "documentation":"<p>Stripe Privy token response containing appId, basicAuthToken, and optionally authorizationSignature.</p>"
     },
+    "SubscriptionRequiredException":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{"shape":"String"},
+        "subscriptionUrl":{
+          "shape":"SubscriptionRequiredExceptionSubscriptionUrlString",
+          "documentation":"<p>The URL to the Marketplace listing where you can subscribe.</p>"
+        },
+        "productName":{
+          "shape":"SubscriptionRequiredExceptionProductNameString",
+          "documentation":"<p>The name of the product that requires a Marketplace subscription.</p>"
+        }
+      },
+      "documentation":"<p>Returned when you attempt a wallet operation against a Coinbase Marketplace connector whose account does not hold an active Marketplace subscription and is not within the legacy exception period. Subscribe to the Marketplace listing before you retry the operation.</p>",
+      "error":{
+        "httpStatusCode":403,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "SubscriptionRequiredExceptionProductNameString":{
+      "type":"string",
+      "max":256,
+      "min":1
+    },
+    "SubscriptionRequiredExceptionSubscriptionUrlString":{
+      "type":"string",
+      "max":2048,
+      "min":1
+    },
     "SyntheticTimestamp_date_time":{
       "type":"timestamp",
       "timestampFormat":"iso8601"
@@ -12323,6 +12433,13 @@
       "max":100,
       "min":1
     },
+    "Version":{
+      "type":"string",
+      "documentation":"<p>A protocol version identifier, as a bare numeric string. For example, \"1\" or \"2\".</p>",
+      "max":10,
+      "min":1,
+      "pattern":"[0-9]+"
+    },
     "ViewPort":{
       "type":"structure",
       "required":[
@@ -12364,6 +12481,19 @@
       "max":131072,
       "min":1,
       "sensitive":true
+    },
+    "WwwAuthenticateHeader":{
+      "type":"string",
+      "documentation":"<p>A raw <code>WWW-Authenticate: Payment</code> header value from a 402 response, containing RFC 9110 auth-params such as <code>id</code>, <code>realm</code>, <code>method</code>, <code>intent</code>, and <code>request</code>. Pass this value in the request body, not as an HTTP header.</p>",
+      "max":16384,
+      "min":1
+    },
+    "WwwAuthenticateHeaderList":{
+      "type":"list",
+      "member":{"shape":"WwwAuthenticateHeader"},
+      "documentation":"<p>The raw WWW-Authenticate header value to fulfill. Provide exactly one entry.</p>",
+      "max":1,
+      "min":1
     }
   },
   "documentation":"<p>Welcome to the Amazon Bedrock AgentCore Data Plane API reference. Data Plane actions process and handle data or workloads within Amazon Web Services services. </p>"

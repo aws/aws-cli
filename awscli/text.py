@@ -88,7 +88,7 @@ def _all_scalar_keys(list_of_dicts):
         for key, value in item_dict.items():
             if not isinstance(value, (dict, list)):
                 keys_seen.add(key)
-    return list(sorted(keys_seen))
+    return sorted(keys_seen)
 
 
 def _partition_dict(item_dict, scalar_keys):

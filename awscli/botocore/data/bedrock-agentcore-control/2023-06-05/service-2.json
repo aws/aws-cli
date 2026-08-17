@@ -553,7 +553,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Creates a policy within the AgentCore Policy system. Policies provide real-time, deterministic control over agentic interactions with AgentCore Gateway. Using the Cedar policy language, you can define fine-grained policies that specify which interactions with Gateway tools are permitted based on input parameters and OAuth claims, ensuring agents operate within defined boundaries and business rules. The policy is validated during creation against the Cedar schema generated from the Gateway's tools' input schemas, which defines the available tools, their parameters, and expected data types. This is an asynchronous operation. Use the <a href=\"https://docs.aws.amazon.com/bedrock-agentcore-control/latest/APIReference/API_GetPolicy.html\">GetPolicy</a> operation to poll the <code>status</code> field to track completion.</p>"
+      "documentation":"<p>Creates a policy within the AgentCore Policy system. Policies provide real-time, deterministic control over agentic interactions with AgentCore Gateway. Using the Cedar policy language, you can define fine-grained policies that specify which interactions with Gateway tools are permitted based on input parameters and OAuth claims, ensuring agents operate within defined boundaries and business rules. The policy is validated during creation against the Cedar schema generated from the Gateway's tools' input schemas, which defines the available tools, their parameters, and expected data types. This is an asynchronous operation. Use the <a href=\"https://docs.aws.amazon.com/bedrock-agentcore-control/latest/APIReference/API_GetPolicy.html\">GetPolicy</a> operation to poll the <code>status</code> field to track completion.</p> <p>If the new policy is a temporal policy, creating it invalidates the policy engine's active temporal sessions. For more information about temporal policy sessions, see <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/policy-session-based-temporal.html\">session-based temporal policies</a>. The policy engine returns an HTTP 409 <code>ConflictException</code> to in-flight sessions. To resume, you must start a new session with a new session ID.</p>"
     },
     "CreatePolicyEngine":{
       "name":"CreatePolicyEngine",
@@ -3173,7 +3173,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Updates an existing policy within the AgentCore Policy system. This operation allows modification of the policy description and definition while maintaining the policy's identity. The updated policy is validated against the Cedar schema before being applied. This is an asynchronous operation. Use the <code>GetPolicy</code> operation to poll the <code>status</code> field to track completion.</p>",
+      "documentation":"<p>Updates an existing policy within the AgentCore Policy system. This operation allows modification of the policy description and definition while maintaining the policy's identity. The updated policy is validated against the Cedar schema before being applied. This is an asynchronous operation. Use the <code>GetPolicy</code> operation to poll the <code>status</code> field to track completion.</p> <p>If the updated policy is a temporal policy, the policy engine invalidates all active temporal sessions. If the update adds or removes temporal operators, the policy engine also invalidates active temporal sessions. For more information about temporal policy sessions, see <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/policy-session-based-temporal.html\">session-based temporal policies</a>. The policy engine returns an HTTP 409 <code>ConflictException</code> to in-flight sessions. To resume, you must start a new session with a new session ID.</p>",
       "idempotent":true
     },
     "UpdatePolicyEngine":{
@@ -7930,7 +7930,8 @@
       "documentation":"<p> Versioned schema type for dataset examples. Each value identifies both the source format and the version of that format's schema. </p>",
       "enum":[
         "AGENTCORE_EVALUATION_PREDEFINED_V1",
-        "AGENTCORE_EVALUATION_SIMULATED_V1"
+        "AGENTCORE_EVALUATION_SIMULATED_V1",
+        "GENERIC_EVALUATION_PREDEFINED_V1"
       ]
     },
     "DatasetStatus":{
@@ -9181,6 +9182,24 @@
       "type":"structure",
       "members":{}
     },
+    "DerivedEvaluatorConfig":{
+      "type":"structure",
+      "required":[
+        "baseEvaluatorId",
+        "modelConfig"
+      ],
+      "members":{
+        "baseEvaluatorId":{
+          "shape":"EvaluatorId",
+          "documentation":"<p> The identifier of the base evaluator whose logic to run (a <code>Builtin.*</code> or <code>ThirdParty.*</code> evaluator). </p>"
+        },
+        "modelConfig":{
+          "shape":"EvaluatorModelConfig",
+          "documentation":"<p> The configuration of the evaluator model that you supply. </p>"
+        }
+      },
+      "documentation":"<p> The configuration for a derived evaluator. It reuses an existing evaluator's logic on your own model. </p>"
+    },
     "Description":{
       "type":"string",
       "max":4096,
@@ -9806,7 +9825,7 @@
     },
     "EvaluatorArn":{
       "type":"string",
-      "pattern":"arn:aws[a-zA-Z-]*:bedrock-agentcore:[a-z0-9-]+:[0-9]{12}:evaluator\\/[a-zA-Z][a-zA-Z0-9-_]{0,99}-[a-zA-Z0-9]{10}$|^arn:aws[a-zA-Z-]*:bedrock-agentcore:::evaluator/Builtin.[a-zA-Z0-9_-]+"
+      "pattern":"arn:aws[a-zA-Z-]*:bedrock-agentcore:[a-z0-9-]+:[0-9]{12}:evaluator\\/[a-zA-Z][a-zA-Z0-9-_]{0,99}-[a-zA-Z0-9]{10}$|^arn:aws[a-zA-Z-]*:bedrock-agentcore:::evaluator/(Builtin|ThirdParty)\\.[a-zA-Z0-9._-]+"
     },
     "EvaluatorConfig":{
       "type":"structure",
@@ -9818,6 +9837,10 @@
         "codeBased":{
           "shape":"CodeBasedEvaluatorConfig",
           "documentation":"<p> Configuration for a code-based evaluator that uses a customer-managed Lambda function to programmatically assess agent performance. </p>"
+        },
+        "derived":{
+          "shape":"DerivedEvaluatorConfig",
+          "documentation":"<p> The configuration for an evaluator derived from an existing base evaluator (a built-in or third-party evaluator), run on your own model. The base evaluator supplies the prompt and scoring. </p>"
         }
       },
       "documentation":"<p> The configuration that defines how an evaluator assesses agent performance, including the evaluation method and parameters. </p>",
@@ -9831,7 +9854,9 @@
     },
     "EvaluatorId":{
       "type":"string",
-      "pattern":"(Builtin.[a-zA-Z0-9_-]+|[a-zA-Z][a-zA-Z0-9-_]{0,99}-[a-zA-Z0-9]{10})"
+      "max":111,
+      "min":1,
+      "pattern":"(Builtin\\.[a-zA-Z0-9._-]+|ThirdParty\\.[a-zA-Z0-9_-]+\\.[a-zA-Z0-9_-]+|[a-zA-Z][a-zA-Z0-9-_]{0,99}-[a-zA-Z0-9]{10})"
     },
     "EvaluatorInstructions":{
       "type":"string",
@@ -9868,7 +9893,9 @@
     },
     "EvaluatorName":{
       "type":"string",
-      "pattern":"(Builtin.[a-zA-Z0-9_-]+|[a-zA-Z][a-zA-Z0-9_]{0,47})"
+      "max":48,
+      "min":1,
+      "pattern":"(Builtin\\.[a-zA-Z0-9._-]+|ThirdParty\\.[a-zA-Z0-9_-]+\\.[a-zA-Z0-9_-]+|[a-zA-Z][a-zA-Z0-9_]{0,47})"
     },
     "EvaluatorReference":{
       "type":"structure",
@@ -9924,6 +9951,10 @@
           "shape":"EvaluatorType",
           "documentation":"<p> The type of evaluator, indicating whether it is a built-in evaluator provided by the service or a custom evaluator created by the user. </p>"
         },
+        "provider":{
+          "shape":"Provider",
+          "documentation":"<p> The source of the evaluator's logic: Amazon Web Services, a third-party library, or you. </p>"
+        },
         "level":{
           "shape":"EvaluatorLevel",
           "documentation":"<p> The evaluation level (<code>TOOL_CALL</code>, <code>TRACE</code>, or <code>SESSION</code>) that determines the scope of evaluation. </p>"
@@ -9959,8 +9990,10 @@
       "type":"string",
       "enum":[
         "Builtin",
+        "ThirdParty",
         "Custom",
-        "CustomCode"
+        "CustomCode",
+        "CustomDerived"
       ]
     },
     "ExampleId":{
@@ -11422,6 +11455,14 @@
         "evaluatorConfig":{
           "shape":"EvaluatorConfig",
           "documentation":"<p> The configuration of the evaluator, including LLM-as-a-Judge or code-based settings. </p>"
+        },
+        "evaluatorType":{
+          "shape":"EvaluatorType",
+          "documentation":"<p> The kind of evaluator resource. Valid values: </p> <ul> <li> <p> <code>Builtin</code> – An Amazon Web Services-managed global evaluator.</p> </li> <li> <p> <code>ThirdParty</code> – An Amazon Web Services-managed global evaluator from a third-party provider.</p> </li> <li> <p> <code>Custom</code> – A customer-created evaluator.</p> </li> <li> <p> <code>CustomCode</code> – A customer-created code-based evaluator.</p> </li> <li> <p> <code>CustomDerived</code> – A customer-created evaluator derived from an existing base evaluator.</p> </li> </ul>"
+        },
+        "provider":{
+          "shape":"Provider",
+          "documentation":"<p> The source of the evaluator's logic: Amazon Web Services, a third-party library, or you. </p>"
         },
         "level":{
           "shape":"EvaluatorLevel",
@@ -18906,6 +18947,15 @@
         }
       },
       "documentation":"<p>The protocol configuration for an agent runtime. This structure defines how the agent runtime communicates with clients.</p>"
+    },
+    "Provider":{
+      "type":"string",
+      "enum":[
+        "AWS",
+        "DeepEval",
+        "AutoEval",
+        "Custom"
+      ]
     },
     "ProviderPrefix":{
       "type":"structure",

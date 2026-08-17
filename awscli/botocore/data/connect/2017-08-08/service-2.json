@@ -847,6 +847,25 @@
       "documentation":"<p>Creates an evaluation form in the specified Connect Customer instance. The form can be used to define questions related to agent performance, and create sections to organize such questions. Question and section identifiers cannot be duplicated within the same evaluation form.</p>",
       "idempotent":true
     },
+    "CreateExtractionDefinition":{
+      "name":"CreateExtractionDefinition",
+      "http":{
+        "method":"POST",
+        "requestUri":"/extraction-definitions/{InstanceId}"
+      },
+      "input":{"shape":"CreateExtractionDefinitionRequest"},
+      "output":{"shape":"CreateExtractionDefinitionResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceConflictException"},
+        {"shape":"ServiceQuotaExceededException"}
+      ],
+      "documentation":"<p>Creates an extraction definition in the specified Connect Customer instance. An extraction definition specifies how structured data is extracted from customer interactions using generative AI, including the prompt hint that guides extraction and the behavior when a value cannot be found.</p>"
+    },
     "CreateHoursOfOperation":{
       "name":"CreateHoursOfOperation",
       "http":{
@@ -1599,6 +1618,23 @@
       "documentation":"<p>Deletes an evaluation form in the specified Connect Customer instance. </p> <ul> <li> <p>If the version property is provided, only the specified version of the evaluation form is deleted.</p> </li> <li> <p>If no version is provided, then the full form (all versions) is deleted.</p> </li> </ul>",
       "idempotent":true
     },
+    "DeleteExtractionDefinition":{
+      "name":"DeleteExtractionDefinition",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/extraction-definitions/{InstanceId}/{ExtractionDefinitionId}"
+      },
+      "input":{"shape":"DeleteExtractionDefinitionRequest"},
+      "output":{"shape":"DeleteExtractionDefinitionResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Deletes an extraction definition from the specified Connect Customer instance.</p>"
+    },
     "DeleteHoursOfOperation":{
       "name":"DeleteHoursOfOperation",
       "http":{
@@ -2267,6 +2303,23 @@
         {"shape":"InternalServiceException"}
       ],
       "documentation":"<p>Describes an evaluation form in the specified Connect Customer instance. If the version property is not provided, the latest version of the evaluation form is described.</p>"
+    },
+    "DescribeExtractionDefinition":{
+      "name":"DescribeExtractionDefinition",
+      "http":{
+        "method":"GET",
+        "requestUri":"/extraction-definitions/{InstanceId}/{ExtractionDefinitionId}"
+      },
+      "input":{"shape":"DescribeExtractionDefinitionRequest"},
+      "output":{"shape":"DescribeExtractionDefinitionResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Describes an extraction definition in the specified Connect Customer instance.</p>"
     },
     "DescribeHoursOfOperation":{
       "name":"DescribeHoursOfOperation",
@@ -3702,6 +3755,23 @@
         {"shape":"InternalServiceException"}
       ],
       "documentation":"<p>Lists evaluation forms in the specified Connect Customer instance.</p>"
+    },
+    "ListExtractionDefinitions":{
+      "name":"ListExtractionDefinitions",
+      "http":{
+        "method":"GET",
+        "requestUri":"/extraction-definitions/{InstanceId}"
+      },
+      "input":{"shape":"ListExtractionDefinitionsRequest"},
+      "output":{"shape":"ListExtractionDefinitionsResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Lists extraction definitions in the specified Connect Customer instance.</p>"
     },
     "ListFlowAssociations":{
       "name":"ListFlowAssociations",
@@ -5173,10 +5243,11 @@
         {"shape":"InvalidParameterException"},
         {"shape":"ResourceNotFoundException"},
         {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
         {"shape":"InternalServiceException"},
         {"shape":"LimitExceededException"}
       ],
-      "documentation":"<p>Starts a chat contact with an AI agent.</p> <p>Use the returned <code>ParticipantToken</code> to call the <a href=\"https://docs.aws.amazon.com/connect-participant/latest/APIReference/API_CreateParticipantConnection.html\">CreateParticipantConnection</a> API.</p> <p>For more information about chat, see the following topics in the <i>Connect Customer Administrator Guide</i>: </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/web-and-mobile-chat.html\">Concepts: Web and mobile messaging capabilities in Connect Customer</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/security-best-practices.html#bp-security-chat\">Connect Customer Chat security best practices</a> </p> </li> </ul>"
+      "documentation":"<p>Starts a chat contact with an AI agent.</p> <p>Use the returned <code>ParticipantToken</code> with the <a href=\"https://docs.aws.amazon.com/connect-participant/latest/APIReference/API_CreateParticipantConnection.html\">CreateParticipantConnection</a> operation.</p> <p>For more information about chat, see the following topics in the <i>Connect Customer Administrator Guide</i>: </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/web-and-mobile-chat.html\">Concepts: Web and mobile messaging capabilities in Connect Customer</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/security-best-practices.html#bp-security-chat\">Connect Customer Chat security best practices</a> </p> </li> </ul>"
     },
     "StartAttachedFileUpload":{
       "name":"StartAttachedFileUpload",
@@ -6048,6 +6119,24 @@
       "documentation":"<p>Updates details about a specific evaluation form version in the specified Connect Customer instance. Question and section identifiers cannot be duplicated within the same evaluation form.</p> <p>This operation does not support partial updates. Instead it does a full update of evaluation form content.</p>",
       "idempotent":true
     },
+    "UpdateExtractionDefinition":{
+      "name":"UpdateExtractionDefinition",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/extraction-definitions/{InstanceId}/{ExtractionDefinitionId}"
+      },
+      "input":{"shape":"UpdateExtractionDefinitionRequest"},
+      "output":{"shape":"UpdateExtractionDefinitionResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceConflictException"}
+      ],
+      "documentation":"<p>Updates an extraction definition in the specified Connect Customer instance.</p>"
+    },
     "UpdateHoursOfOperation":{
       "name":"UpdateHoursOfOperation",
       "http":{
@@ -6908,7 +6997,8 @@
         "UPDATE_CASE",
         "ASSIGN_SLA",
         "END_ASSOCIATED_TASKS",
-        "SUBMIT_AUTO_EVALUATION"
+        "SUBMIT_AUTO_EVALUATION",
+        "EXTRACT_INFORMATION"
       ]
     },
     "ActivateEvaluationFormRequest":{
@@ -7439,7 +7529,8 @@
     "AiAgentId":{
       "type":"string",
       "max":128,
-      "min":0
+      "min":0,
+      "pattern":"[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}(:[A-Z0-9_$]+){0,1}$|^arn:[a-z-]*?:wisdom:[a-z0-9-]*?:[0-9]{12}:[a-z-]*?/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}(?:/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}){0,2}(:[A-Z0-9_$]+){0,1}"
     },
     "AiAgentInfo":{
       "type":"structure",
@@ -12328,6 +12419,60 @@
         }
       }
     },
+    "CreateExtractionDefinitionRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "Name",
+        "ExtractionConfiguration"
+      ],
+      "members":{
+        "ClientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the Amazon Web Services SDK populates this field.</p>",
+          "idempotencyToken":true
+        },
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Connect Customer instance. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "Name":{
+          "shape":"ExtractionDefinitionName",
+          "documentation":"<p>A unique name of the extraction definition.</p>"
+        },
+        "ExtractionConfiguration":{
+          "shape":"ExtractionConfiguration",
+          "documentation":"<p>The configuration that defines how data is extracted, including the prompt hint and not-found behavior.</p>"
+        },
+        "Display":{
+          "shape":"ExtractionDefinitionDisplay",
+          "documentation":"<p>The display settings for the extraction definition, including the label shown in the agent workspace.</p>"
+        },
+        "Tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags used to organize, track, or control access for this resource.</p>"
+        }
+      }
+    },
+    "CreateExtractionDefinitionResponse":{
+      "type":"structure",
+      "required":[
+        "ExtractionDefinitionArn",
+        "ExtractionDefinitionId"
+      ],
+      "members":{
+        "ExtractionDefinitionArn":{
+          "shape":"ARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the extraction definition.</p>"
+        },
+        "ExtractionDefinitionId":{
+          "shape":"ExtractionDefinitionId",
+          "documentation":"<p>The identifier of the extraction definition.</p>"
+        }
+      }
+    },
     "CreateHoursOfOperationOverrideRequest":{
       "type":"structure",
       "required":[
@@ -15039,6 +15184,31 @@
         }
       }
     },
+    "DeleteExtractionDefinitionRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "ExtractionDefinitionId"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Connect Customer instance. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "ExtractionDefinitionId":{
+          "shape":"ExtractionDefinitionId",
+          "documentation":"<p>The identifier of the extraction definition to delete.</p>",
+          "location":"uri",
+          "locationName":"ExtractionDefinitionId"
+        }
+      }
+    },
+    "DeleteExtractionDefinitionResponse":{
+      "type":"structure",
+      "members":{}
+    },
     "DeleteHoursOfOperationOverrideRequest":{
       "type":"structure",
       "required":[
@@ -16131,6 +16301,37 @@
         "EvaluationForm":{
           "shape":"EvaluationForm",
           "documentation":"<p>Information about the evaluation form.</p>"
+        }
+      }
+    },
+    "DescribeExtractionDefinitionRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "ExtractionDefinitionId"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Connect Customer instance. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "ExtractionDefinitionId":{
+          "shape":"ExtractionDefinitionId",
+          "documentation":"<p>The identifier of the extraction definition to describe.</p>",
+          "location":"uri",
+          "locationName":"ExtractionDefinitionId"
+        }
+      }
+    },
+    "DescribeExtractionDefinitionResponse":{
+      "type":"structure",
+      "required":["ExtractionDefinition"],
+      "members":{
+        "ExtractionDefinition":{
+          "shape":"ExtractionDefinition",
+          "documentation":"<p>The extraction definition.</p>"
         }
       }
     },
@@ -20196,6 +20397,8 @@
         "OnRealTimeCallAnalysisAvailable",
         "OnRealTimeChatAnalysisAvailable",
         "OnPostChatAnalysisAvailable",
+        "OnAfterCallWorkAvailable",
+        "OnAfterChatWorkAvailable",
         "OnEmailAnalysisAvailable",
         "OnZendeskTicketCreate",
         "OnZendeskTicketStatusUpdate",
@@ -20306,6 +20509,169 @@
         }
       },
       "documentation":"<p>The external invocation configuration for the flow module</p>"
+    },
+    "ExtractInformationActionDefinition":{
+      "type":"structure",
+      "required":["RulesExtractionDefinitions"],
+      "members":{
+        "RulesExtractionDefinitions":{
+          "shape":"RulesExtractionDefinitionIdentifierList",
+          "documentation":"<p>The list of extraction definition identifiers that specify what data to extract.</p>"
+        }
+      },
+      "documentation":"<p>Information about the extract information action, which references extraction definitions to use when extracting structured data from customer interactions.</p>"
+    },
+    "ExtractionConfiguration":{
+      "type":"structure",
+      "required":["PromptHint"],
+      "members":{
+        "PromptHint":{
+          "shape":"ExtractionDefinitionPromptHint",
+          "documentation":"<p>The prompt hint that guides the extraction. This text tells the generative AI model what data to look for in the customer interaction.</p>"
+        },
+        "NotFoundBehavior":{
+          "shape":"ExtractionDefinitionNotFoundBehavior",
+          "documentation":"<p>The behavior when the extraction cannot find the specified data in the interaction.</p>"
+        }
+      },
+      "documentation":"<p>The extraction configuration that defines how data is extracted from customer interactions.</p>"
+    },
+    "ExtractionDefinition":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "ExtractionDefinitionId",
+        "ExtractionDefinitionArn",
+        "ExtractionConfiguration",
+        "CreatedTime",
+        "LastUpdatedTime",
+        "LastUpdatedBy"
+      ],
+      "members":{
+        "Name":{
+          "shape":"ExtractionDefinitionName",
+          "documentation":"<p>The name of the extraction definition.</p>"
+        },
+        "ExtractionDefinitionId":{
+          "shape":"ExtractionDefinitionId",
+          "documentation":"<p>The identifier of the extraction definition.</p>"
+        },
+        "ExtractionDefinitionArn":{
+          "shape":"ARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the extraction definition.</p>"
+        },
+        "ExtractionConfiguration":{
+          "shape":"ExtractionConfiguration",
+          "documentation":"<p>The configuration that defines how data is extracted.</p>"
+        },
+        "Display":{
+          "shape":"ExtractionDefinitionDisplay",
+          "documentation":"<p>The display settings for the extraction definition.</p>"
+        },
+        "CreatedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the extraction definition was created.</p>"
+        },
+        "LastUpdatedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the extraction definition was last updated.</p>"
+        },
+        "LastUpdatedBy":{
+          "shape":"ARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the user who last updated the extraction definition.</p>"
+        },
+        "Tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags used to organize, track, or control access for this resource.</p>"
+        }
+      },
+      "documentation":"<p>Information about an extraction definition.</p>"
+    },
+    "ExtractionDefinitionDisplay":{
+      "type":"structure",
+      "members":{
+        "Label":{
+          "shape":"ExtractionDefinitionDisplayLabel",
+          "documentation":"<p>The label displayed in the agent workspace for this extraction definition.</p>"
+        }
+      },
+      "documentation":"<p>The display configuration for an extraction definition.</p>"
+    },
+    "ExtractionDefinitionDisplayLabel":{
+      "type":"string",
+      "max":25
+    },
+    "ExtractionDefinitionId":{
+      "type":"string",
+      "max":256,
+      "min":1
+    },
+    "ExtractionDefinitionName":{
+      "type":"string",
+      "max":200,
+      "min":1
+    },
+    "ExtractionDefinitionNotFoundBehavior":{
+      "type":"structure",
+      "required":["Behavior"],
+      "members":{
+        "Behavior":{
+          "shape":"NotFoundBehaviorType",
+          "documentation":"<p>The behavior type. <code>USE_DEFAULT_VALUE</code> returns the specified default value. <code>OMIT</code> excludes the field from the output.</p>"
+        },
+        "DefaultValue":{
+          "shape":"NotFoundDefaultValue",
+          "documentation":"<p>The default value to use when the behavior is <code>USE_DEFAULT_VALUE</code>.</p>"
+        }
+      },
+      "documentation":"<p>The behavior configuration when an extraction definition cannot find the target value.</p>"
+    },
+    "ExtractionDefinitionPromptHint":{
+      "type":"string",
+      "max":1024,
+      "min":1
+    },
+    "ExtractionDefinitionSummary":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "ExtractionDefinitionId",
+        "ExtractionDefinitionArn",
+        "CreatedTime",
+        "LastUpdatedTime",
+        "LastUpdatedBy"
+      ],
+      "members":{
+        "Name":{
+          "shape":"ExtractionDefinitionName",
+          "documentation":"<p>The name of the extraction definition.</p>"
+        },
+        "ExtractionDefinitionId":{
+          "shape":"ExtractionDefinitionId",
+          "documentation":"<p>The identifier of the extraction definition.</p>"
+        },
+        "ExtractionDefinitionArn":{
+          "shape":"ARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the extraction definition.</p>"
+        },
+        "CreatedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the extraction definition was created.</p>"
+        },
+        "LastUpdatedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the extraction definition was last updated.</p>"
+        },
+        "LastUpdatedBy":{
+          "shape":"ARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the user who last updated the extraction definition.</p>"
+        }
+      },
+      "documentation":"<p>Summary information about an extraction definition.</p>"
+    },
+    "ExtractionDefinitionSummaryList":{
+      "type":"list",
+      "member":{"shape":"ExtractionDefinitionSummary"}
     },
     "FailedBatchAssociationSummary":{
       "type":"structure",
@@ -24104,6 +24470,45 @@
         }
       }
     },
+    "ListExtractionDefinitionsRequest":{
+      "type":"structure",
+      "required":["InstanceId"],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Connect Customer instance. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "MaxResults":{
+          "shape":"MaxResult100",
+          "documentation":"<p>The maximum number of results to return per page. The default MaxResult size is 100.</p>",
+          "box":true,
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListExtractionDefinitionsResponse":{
+      "type":"structure",
+      "required":["ExtractionDefinitionSummaryList"],
+      "members":{
+        "ExtractionDefinitionSummaryList":{
+          "shape":"ExtractionDefinitionSummaryList",
+          "documentation":"<p>Information about the extraction definitions.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If there are additional results, this is the token for the next set of results.</p>"
+        }
+      }
+    },
     "ListFlowAssociationResourceType":{
       "type":"string",
       "enum":[
@@ -27204,6 +27609,17 @@
       "type":"string",
       "max":2500,
       "min":1
+    },
+    "NotFoundBehaviorType":{
+      "type":"string",
+      "enum":[
+        "USE_DEFAULT_VALUE",
+        "OMIT"
+      ]
+    },
+    "NotFoundDefaultValue":{
+      "type":"string",
+      "max":1024
     },
     "Notification":{
       "type":"structure",
@@ -31262,6 +31678,10 @@
         "SubmitAutoEvaluationAction":{
           "shape":"SubmitAutoEvaluationActionDefinition",
           "documentation":"<p>Information about the submit automated evaluation action.</p>"
+        },
+        "ExtractInformationAction":{
+          "shape":"ExtractInformationActionDefinition",
+          "documentation":"<p>Information about the extract information action.</p>"
         }
       },
       "documentation":"<p>Information about the action to be performed when a rule is triggered.</p>"
@@ -31471,6 +31891,26 @@
         }
       },
       "documentation":"<p>The rules configuration for conversational analytics. Controls whether Contact Lens rules are evaluated against the analytics output.</p>"
+    },
+    "RulesExtractionDefinitionId":{
+      "type":"string",
+      "max":256,
+      "min":1
+    },
+    "RulesExtractionDefinitionIdentifier":{
+      "type":"structure",
+      "required":["Identifier"],
+      "members":{
+        "Identifier":{
+          "shape":"RulesExtractionDefinitionId",
+          "documentation":"<p>The identifier of the extraction definition.</p>"
+        }
+      },
+      "documentation":"<p>An identifier that references an extraction definition resource.</p>"
+    },
+    "RulesExtractionDefinitionIdentifierList":{
+      "type":"list",
+      "member":{"shape":"RulesExtractionDefinitionIdentifier"}
     },
     "RulesSearchConditionList":{
       "type":"list",
@@ -33773,7 +34213,7 @@
         },
         "AiAgent":{
           "shape":"AiAgentInput",
-          "documentation":"<p>The AI agent that participates in the contact.</p>"
+          "documentation":"<p>The AI agent configuration for this contact.</p>"
         },
         "ParticipantDetails":{
           "shape":"ParticipantDetails",
@@ -33785,7 +34225,7 @@
         },
         "Attributes":{
           "shape":"Attributes",
-          "documentation":"<p>A map of key-value pairs to associate with the contact. Amazon Connect makes these attributes available to flows as standard contact attributes.</p> <p>You can provide up to 32,768 UTF-8 bytes across all key-value pairs per contact. Attribute keys can contain only alphanumeric characters, dashes, and underscores.</p>"
+          "documentation":"<p>A map of key-value pairs to associate with the contact. We make these attributes available to flows as standard contact attributes.</p> <p>You can provide up to 32,768 UTF-8 bytes across all key-value pairs for each contact.</p>"
         },
         "ClientToken":{
           "shape":"ClientToken",
@@ -33815,11 +34255,11 @@
         },
         "ParticipantToken":{
           "shape":"ParticipantToken",
-          "documentation":"<p>The token that the chat participant uses to call the <a href=\"https://docs.aws.amazon.com/connect-participant/latest/APIReference/API_CreateParticipantConnection.html\">CreateParticipantConnection</a> API. The token remains valid for the lifetime of the chat participant.</p>"
+          "documentation":"<p>The token that the chat participant uses with the <a href=\"https://docs.aws.amazon.com/connect-participant/latest/APIReference/API_CreateParticipantConnection.html\">CreateParticipantConnection</a> operation. The token remains valid for the lifetime of the chat participant.</p>"
         },
         "ContinuedFromContactId":{
           "shape":"ContactId",
-          "documentation":"<p>For a persistent chat, the identifier of the contact from which the chat continues. Amazon Connect returns this field only for persistent chats.</p>"
+          "documentation":"<p>The identifier of the contact from which the chat continues, returned only for persistent chats.</p>"
         }
       }
     },
@@ -34693,7 +35133,7 @@
         },
         "SegmentAttributes":{
           "shape":"SegmentAttributes",
-          "documentation":"<p>Use this map to specify system-defined attributes for the WebRTC contact segment. Use the <code>connect:Subtype</code> attribute to specify the channel subtype, such as <code>connect:WebRTC</code>.</p> <p>Attribute keys can contain only alphanumeric characters, hyphens, and underscores.</p>"
+          "documentation":"<p>A map of system-defined attributes for the WebRTC contact segment. Use the <code>connect:Subtype</code> attribute to specify the channel subtype, such as <code>connect:WebRTC</code>.</p>"
         }
       }
     },
@@ -37149,6 +37589,50 @@
           "documentation":"<p>The version of the updated evaluation form resource.</p>"
         }
       }
+    },
+    "UpdateExtractionDefinitionRequest":{
+      "type":"structure",
+      "required":[
+        "ExtractionDefinitionId",
+        "InstanceId",
+        "Name",
+        "ExtractionConfiguration"
+      ],
+      "members":{
+        "ClientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the Amazon Web Services SDK populates this field.</p>",
+          "idempotencyToken":true
+        },
+        "ExtractionDefinitionId":{
+          "shape":"ExtractionDefinitionId",
+          "documentation":"<p>The identifier of the extraction definition to update.</p>",
+          "location":"uri",
+          "locationName":"ExtractionDefinitionId"
+        },
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Connect Customer instance. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "Name":{
+          "shape":"ExtractionDefinitionName",
+          "documentation":"<p>The name of the extraction definition.</p>"
+        },
+        "ExtractionConfiguration":{
+          "shape":"ExtractionConfiguration",
+          "documentation":"<p>The configuration that defines how data is extracted, including the prompt hint and not-found behavior.</p>"
+        },
+        "Display":{
+          "shape":"ExtractionDefinitionDisplay",
+          "documentation":"<p>The display settings for the extraction definition.</p>"
+        }
+      }
+    },
+    "UpdateExtractionDefinitionResponse":{
+      "type":"structure",
+      "members":{}
     },
     "UpdateHoursOfOperationDescription":{
       "type":"string",

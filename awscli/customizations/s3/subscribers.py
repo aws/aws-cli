@@ -372,6 +372,19 @@ class SetMetadataDirectivePropsSubscriber(BaseSubscriber):
         if should_inject_metadata:
             head_object_response = self._get_head_object_response(future)
             self._inject_metadata_props(future, head_object_response)
+            self._provide_copy_source_attributes(future, head_object_response)
+
+    def _provide_copy_source_attributes(self, future, head_object_response):
+        # Provide size and etag from the HeadObject response so that
+        # s3transfer does not need to perform its own HeadObject call.
+        if future.meta.size is None and 'ContentLength' in head_object_response:
+            future.meta.provide_transfer_size(
+                int(head_object_response['ContentLength'])
+            )
+        if future.meta.etag is None and 'ETag' in head_object_response:
+            future.meta.provide_object_etag(
+                head_object_response['ETag']
+            )
 
     def _has_explict_metadata_request_params(self, future):
         for param in future.meta.call_args.extra_args:

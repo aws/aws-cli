@@ -139,11 +139,12 @@
       "errors":[
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
         {"shape":"AccessDeniedException"},
         {"shape":"ConflictException"},
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p>Deletes the <code>IdMappingWorkflow</code> with a given name. This operation will succeed even if a workflow with the given name does not exist.</p>",
+      "documentation":"<p>Deletes the <code>IdMappingWorkflow</code> with a given name. This operation returns a <code>ResourceNotFoundException</code> if a workflow with the given name does not exist.</p>",
       "idempotent":true
     },
     "DeleteIdNamespace":{
@@ -158,10 +159,11 @@
       "errors":[
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
         {"shape":"AccessDeniedException"},
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p>Deletes the <code>IdNamespace</code> with a given name.</p>",
+      "documentation":"<p>Deletes the <code>IdNamespace</code> with a given name. This operation returns a <code>ResourceNotFoundException</code> if an ID namespace with the given name does not exist.</p>",
       "idempotent":true
     },
     "DeleteMatchingWorkflow":{
@@ -176,11 +178,12 @@
       "errors":[
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
         {"shape":"AccessDeniedException"},
         {"shape":"ConflictException"},
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p>Deletes the <code>MatchingWorkflow</code> with a given name. This operation will succeed even if a workflow with the given name does not exist.</p>",
+      "documentation":"<p>Deletes the <code>MatchingWorkflow</code> with a given name. This operation returns a <code>ResourceNotFoundException</code> if a workflow with the given name does not exist.</p>",
       "idempotent":true
     },
     "DeletePolicyStatement":{
@@ -215,11 +218,12 @@
       "errors":[
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
         {"shape":"AccessDeniedException"},
         {"shape":"ConflictException"},
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p>Deletes the <code>SchemaMapping</code> with a given name. This operation will succeed even if a schema with the given name does not exist. This operation will fail if there is a <code>MatchingWorkflow</code> object that references the <code>SchemaMapping</code> in the workflow's <code>InputSourceConfig</code>.</p>",
+      "documentation":"<p>Deletes the <code>SchemaMapping</code> with a given name. This operation returns a <code>ResourceNotFoundException</code> if a schema with the given name does not exist. This operation will fail if there is a <code>MatchingWorkflow</code> object that references the <code>SchemaMapping</code> in the workflow's <code>InputSourceConfig</code>.</p>",
       "idempotent":true
     },
     "GenerateMatchId":{
@@ -3718,7 +3722,7 @@
     "SchemaInputAttributes":{
       "type":"list",
       "member":{"shape":"SchemaInputAttribute"},
-      "max":35,
+      "max":60,
       "min":2
     },
     "SchemaList":{
@@ -3870,7 +3874,7 @@
       "type":"string",
       "max":64,
       "min":12,
-      "pattern":"(\\d{12})|([a-z0-9\\.]+)"
+      "pattern":"((\\d{12})|([a-z0-9\\.]+))"
     },
     "StatementPrincipalList":{
       "type":"list",

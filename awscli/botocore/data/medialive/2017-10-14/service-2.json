@@ -14752,7 +14752,8 @@
       "documentation": "M2ts Scte35 Control",
       "enum": [
         "NONE",
-        "PASSTHROUGH"
+        "PASSTHROUGH",
+        "SCTE_35_WITHOUT_IDR"
       ]
     },
     "M2tsSegmentationMarkers": {
@@ -14971,7 +14972,7 @@
         "Scte35Control": {
           "shape": "M2tsScte35Control",
           "locationName": "scte35Control",
-          "documentation": "Optionally pass SCTE-35 signals from the input source to this output."
+          "documentation": "SCTE-35 control. Option \"none\" indicates that a SCTE-35 marker will not be inserted, nor will an IDR be inserted at the SCTE-35 cue point, nor will the segment be segmented. Option \"scte35WithoutIdr\" indicates that a SCTE-35 marker will be inserted to indicate the cue point, but MediaLive will not insert an IDR on that frame nor will it introduce a new segment boundary there if it wasn't already going to be one (this option is required for use with downstream multiview bitstream stitching workflows). Option \"passthrough\" indicates that a SCTE-35 marker will be inserted to indicate the cue point, and an IDR will be inserted on that frame, and MediaLive itself will introduce a new segment boundary there."
         },
         "Scte35Pid": {
           "shape": "__string",
@@ -16345,6 +16346,11 @@
           "shape": "NielsenNaesIiNw",
           "locationName": "nielsenNaesIiNwSettings",
           "documentation": "Complete these fields only if you want to insert watermarks of type Nielsen NAES II (N2) and Nielsen NAES VI (NW)."
+        },
+        "NielsenNwOnlySettings": {
+          "shape": "NielsenNwOnly",
+          "locationName": "nielsenNwOnlySettings",
+          "documentation": "Complete these fields only if you want to insert watermarks of type Nielsen NAES VI (NW) only,\nwithout inserting NAES II (N2) watermarks."
         }
       },
       "documentation": "Nielsen Watermarks Settings"
@@ -21359,7 +21365,7 @@
         "Scte35Type": {
           "shape": "Scte35Type",
           "locationName": "scte35Type",
-          "documentation": "Type of scte35 track to add. none or scte35WithoutSegmentation"
+          "documentation": "SCTE-35 insertion type. Option \"none\" indicates that a SCTE-35 marker will not be inserted, nor will an IDR be inserted at the SCTE-35 cue point, nor will the segment be segmented. Option \"scte35WithoutIdr\" indicates that a SCTE-35 marker will be inserted to indicate the cue point, but MediaLive will not insert an IDR on that frame nor will it introduce a new segment boundary there if it wasn't already going to be one (this option is required for use with downstream multiview bitstream stitching workflows). Option \"scte35WithoutSegmentation\" indicates that a SCTE-35 marker will be inserted to indicate the cue point, and an IDR will be inserted on that frame so that a downstream re-packager might split the segment there, but MediaLive itself will not introduce a new segment boundary there."
         },
         "SegmentLength": {
           "shape": "__integerMin1",
@@ -21530,7 +21536,8 @@
       "documentation": "Scte35 Type",
       "enum": [
         "NONE",
-        "SCTE_35_WITHOUT_SEGMENTATION"
+        "SCTE_35_WITHOUT_SEGMENTATION",
+        "SCTE_35_WITHOUT_IDR"
       ]
     },
     "BadRequestExceptionResponseContent": {
@@ -29040,7 +29047,7 @@
         "Scte35Control": {
           "shape": "M2tsScte35Control",
           "locationName": "scte35Control",
-          "documentation": "Optionally pass SCTE-35 signals from the input source to this output."
+          "documentation": "SCTE-35 control. Option \"none\" indicates that a SCTE-35 marker will not be inserted, nor will an IDR be inserted at the SCTE-35 cue point, nor will the segment be segmented. Option \"scte35WithoutIdr\" indicates that a SCTE-35 marker will be inserted to indicate the cue point, but MediaLive will not insert an IDR on that frame nor will it introduce a new segment boundary there if it wasn't already going to be one (this option is required for use with downstream multiview bitstream stitching workflows). Option \"passthrough\" indicates that a SCTE-35 marker will be inserted to indicate the cue point, and an IDR will be inserted on that frame, and MediaLive itself will introduce a new segment boundary there."
         },
         "Scte35PrerollPullupMilliseconds": {
           "shape": "__doubleMin0Max5000",
@@ -29746,7 +29753,7 @@
         "Scte35Type": {
           "shape": "Scte35Type",
           "locationName": "scte35Type",
-          "documentation": "Type of scte35 track to add. none or scte35WithoutSegmentation"
+          "documentation": "SCTE-35 insertion type. Option \"none\" indicates that a SCTE-35 marker will not be inserted, nor will an IDR be inserted at the SCTE-35 cue point, nor will the segment be segmented. Option \"scte35WithoutIdr\" indicates that a SCTE-35 marker will be inserted to indicate the cue point, but MediaLive will not insert an IDR on that frame nor will it introduce a new segment boundary there if it wasn't already going to be one (this option is required for use with downstream multiview bitstream stitching workflows). Option \"scte35WithoutSegmentation\" indicates that a SCTE-35 marker will be inserted to indicate the cue point, and an IDR will be inserted on that frame so that a downstream re-packager might split the segment there, but MediaLive itself will not introduce a new segment boundary there."
         },
         "SegmentLength": {
           "shape": "__integerMin1",
@@ -30823,6 +30830,31 @@
         "shape": "AudioPid"
       },
       "documentation": "Placeholder documentation for __listOfAudioPid"
+    },
+    "NielsenNwOnly": {
+      "type": "structure",
+      "members": {
+        "CheckDigitString": {
+          "shape": "__stringMin2Max2",
+          "locationName": "checkDigitString",
+          "documentation": "Enter the check digit string for the watermark"
+        },
+        "Sid": {
+          "shape": "__doubleMin1Max65535",
+          "locationName": "sid",
+          "documentation": "Enter the Nielsen Source ID (SID) to include in the watermark"
+        },
+        "Timezone": {
+          "shape": "NielsenWatermarkTimezones",
+          "locationName": "timezone",
+          "documentation": "Choose the timezone for the time stamps in the watermark. If not provided,\nthe timestamps will be in Coordinated Universal Time (UTC)"
+        }
+      },
+      "documentation": "Nielsen Nw Only",
+      "required": [
+        "CheckDigitString",
+        "Sid"
+      ]
     }
   },
   "documentation": "API for AWS Elemental MediaLive"

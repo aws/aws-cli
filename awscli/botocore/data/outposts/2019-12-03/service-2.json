@@ -85,6 +85,23 @@
       ],
       "documentation":"<p>Creates an Outpost.</p> <p>You can specify either an Availability one or an AZ ID.</p>"
     },
+    "CreatePrivateConnectivityConfig":{
+      "name":"CreatePrivateConnectivityConfig",
+      "http":{
+        "method":"POST",
+        "requestUri":"/outposts/{OutpostId}/privateConnectivity"
+      },
+      "input":{"shape":"CreatePrivateConnectivityConfigInput"},
+      "output":{"shape":"CreatePrivateConnectivityConfigOutput"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"NotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Creates the private connectivity configuration for the specified Outpost. Private connectivity establishes a service link VPN connection between the Outpost and its home Amazon Web Services Region using a VPC and subnet that you specify, which allows the service link traffic to flow through your VPC and minimizes public internet exposure.</p>"
+    },
     "CreateQuote":{
       "name":"CreateQuote",
       "http":{
@@ -309,6 +326,22 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Gets the instance types that an Outpost can support in <code>InstanceTypeCapacity</code>. This will generally include instance types that are not currently configured and therefore cannot be launched with the current Outpost capacity configuration.</p>"
+    },
+    "GetPrivateConnectivityConfig":{
+      "name":"GetPrivateConnectivityConfig",
+      "http":{
+        "method":"GET",
+        "requestUri":"/outposts/{OutpostId}/privateConnectivity"
+      },
+      "input":{"shape":"GetPrivateConnectivityConfigInput"},
+      "output":{"shape":"GetPrivateConnectivityConfigOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"NotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Gets the private connectivity configuration for the specified Outpost.</p>"
     },
     "GetQuote":{
       "name":"GetQuote",
@@ -1459,6 +1492,38 @@
         "Outpost":{"shape":"Outpost"}
       }
     },
+    "CreatePrivateConnectivityConfigInput":{
+      "type":"structure",
+      "required":[
+        "OutpostId",
+        "VpcInformationList"
+      ],
+      "members":{
+        "OutpostId":{
+          "shape":"OutpostId",
+          "documentation":"<p>The ID or ARN of the Outpost.</p>",
+          "location":"uri",
+          "locationName":"OutpostId"
+        },
+        "VpcInformationList":{
+          "shape":"VpcInformationList",
+          "documentation":"<p>Information about the VPC used for private connectivity, including the VPC, its subnets, and an associated VPC endpoint. You can specify at most one entry.</p>"
+        }
+      }
+    },
+    "CreatePrivateConnectivityConfigOutput":{
+      "type":"structure",
+      "members":{
+        "PrivateConnectivityConfig":{
+          "shape":"PrivateConnectivityConfig",
+          "documentation":"<p>The private connectivity configuration for the Outpost.</p>"
+        },
+        "OutpostId":{
+          "shape":"OutpostId",
+          "documentation":"<p>The ID of the Outpost.</p>"
+        }
+      }
+    },
     "CreateQuoteInput":{
       "type":"structure",
       "required":[
@@ -2045,6 +2110,27 @@
       "members":{
         "InstanceTypes":{"shape":"InstanceTypeListDefinition"},
         "NextToken":{"shape":"Token"}
+      }
+    },
+    "GetPrivateConnectivityConfigInput":{
+      "type":"structure",
+      "required":["OutpostId"],
+      "members":{
+        "OutpostId":{
+          "shape":"OutpostId",
+          "documentation":"<p>The ID or ARN of the Outpost.</p>",
+          "location":"uri",
+          "locationName":"OutpostId"
+        }
+      }
+    },
+    "GetPrivateConnectivityConfigOutput":{
+      "type":"structure",
+      "members":{
+        "PrivateConnectivityConfig":{
+          "shape":"PrivateConnectivityConfig",
+          "documentation":"<p>The private connectivity configuration for the Outpost.</p>"
+        }
       }
     },
     "GetQuoteInput":{
@@ -3238,6 +3324,35 @@
         "UNABLE_TO_PRICE"
       ]
     },
+    "PrivateConnectivityConfig":{
+      "type":"structure",
+      "members":{
+        "RoleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the service-linked role that Amazon Web Services Outposts creates and uses to provision and attach the network interfaces for private connectivity in your VPC. The role's permissions are scoped to the specific Outpost and VPC.</p>"
+        },
+        "PrivateConnectivityStatus":{
+          "shape":"PrivateConnectivityStatus",
+          "documentation":"<p>The status of private connectivity for the Outpost. Valid values are <code>ENABLED</code> and <code>DISABLED</code>.</p>"
+        },
+        "VpcInformationList":{
+          "shape":"VpcInformationList",
+          "documentation":"<p>Information about the VPC used for private connectivity.</p>"
+        },
+        "ProvisioningRoleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the provisioning role in your account that Amazon Web Services Outposts uses to establish the service link connection during Outpost installation. This field is present only when VPC endpoint-based provisioning is configured.</p>"
+        }
+      },
+      "documentation":"<p>Information about the private connectivity configuration for an Outpost.</p>"
+    },
+    "PrivateConnectivityStatus":{
+      "type":"string",
+      "enum":[
+        "ENABLED",
+        "DISABLED"
+      ]
+    },
     "Quantity":{"type":"string"},
     "Quote":{
       "type":"structure",
@@ -3664,6 +3779,12 @@
         "ORDER"
       ]
     },
+    "RoleArn":{
+      "type":"string",
+      "max":150,
+      "min":1,
+      "pattern":"^arn:aws([a-z-]+)?:iam::\\d{12}:role\\/[a-zA-Z_0-9+=,.@\\-_\\/]+"
+    },
     "ServerEndpoint":{
       "type":"string",
       "max":21,
@@ -4003,6 +4124,18 @@
       "max":1000,
       "min":1,
       "pattern":"^[\\S \\n]+$"
+    },
+    "SubnetId":{
+      "type":"string",
+      "max":25,
+      "min":1,
+      "pattern":"[a-z0-9-]+"
+    },
+    "SubnetIds":{
+      "type":"list",
+      "member":{"shape":"SubnetId"},
+      "max":10,
+      "min":1
     },
     "Subscription":{
       "type":"structure",
@@ -4440,6 +4573,42 @@
       "error":{"httpStatusCode":400},
       "exception":true
     },
+    "VpcEndpointId":{
+      "type":"string",
+      "max":25,
+      "min":1,
+      "pattern":"^vpce-[a-f0-9]+$"
+    },
+    "VpcId":{
+      "type":"string",
+      "max":25,
+      "min":1,
+      "pattern":"[a-z0-9-]+"
+    },
+    "VpcInformation":{
+      "type":"structure",
+      "members":{
+        "VpcId":{
+          "shape":"VpcId",
+          "documentation":"<p>The ID of the VPC used for private connectivity.</p>"
+        },
+        "SubnetIds":{
+          "shape":"SubnetIds",
+          "documentation":"<p>The IDs of the subnets associated with the VPC endpoint. Currently, only one subnet is supported.</p>"
+        },
+        "VpcEndpointId":{
+          "shape":"VpcEndpointId",
+          "documentation":"<p>The ID of the interface VPC endpoint for the Amazon Web Services Outposts service. When specified, the endpoint must be in the <code>available</code> state and the specified subnets must be associated with it.</p>"
+        }
+      },
+      "documentation":"<p>Information about a VPC used for private connectivity, including its subnets and an associated VPC endpoint.</p>"
+    },
+    "VpcInformationList":{
+      "type":"list",
+      "member":{"shape":"VpcInformation"},
+      "max":1,
+      "min":1
+    },
     "WireGuardPublicKey":{
       "type":"string",
       "max":44,
@@ -4457,5 +4626,5 @@
       "documentation":"<p>Information about the sites.</p>"
     }
   },
-  "documentation":"<p>Amazon Web Services Outposts is a fully managed service that extends Amazon Web Services infrastructure, APIs, and tools to customer premises. By providing local access to Amazon Web Services managed infrastructure, Amazon Web Services Outposts enables customers to build and run applications on premises using the same programming interfaces as in Amazon Web Services Regions, while using local compute and storage resources for lower latency and local data processing needs.</p>"
+  "documentation":"<p>Amazon Web Services Outposts is a fully managed service that extends Amazon Web Services infrastructure, APIs, and tools to customer premises. By providing local access to Amazon Web Services managed infrastructure, Amazon Web Services Outposts enables customers to build and run applications on premises using the same programming interfaces as in Amazon Web Services Regions, while using local compute and storage resources for lower latency and local data processing needs.</p> <p>You can use certain Amazon EC2 API actions for Amazon Web Services Outposts. For more information on these API actions, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/operation-list-outposts.html\">Amazon Web Services Outposts actions</a> in the <i>Amazon EC2 API Reference</i>.</p>"
 }

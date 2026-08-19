@@ -15,6 +15,22 @@
     "auth":["aws.auth#sigv4"]
   },
   "operations":{
+    "ActivateCertificateAuthority":{
+      "name":"ActivateCertificateAuthority",
+      "http":{
+        "method":"POST",
+        "requestUri":"/clusters/{name}/certificate-authorities/{certificateAuthorityId}/activate"
+      },
+      "input":{"shape":"ActivateCertificateAuthorityRequest"},
+      "output":{"shape":"ActivateCertificateAuthorityResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ServerException"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p>Activates a successor certificate authority (CA) as the signing certificate authority for your cluster, completing a CA rotation.</p> <p>When you activate a successor CA, Amazon EKS promotes it to be the cluster's signer (its <code>signingStatus</code> becomes <code>IN_USE</code>) and the outgoing CA is retired (<code>NOT_USED</code>). The outgoing CA remains in the cluster's trust bundle but no longer signs certificates. The successor CA you activate must already be present on the cluster and fully distributed (its <code>distributionStatus</code> must be <code>COMPLETE</code>). This is an asynchronous operation that returns an <code>update</code> object you can track with <a href=\"https://docs.aws.amazon.com/eks/latest/APIReference/API_DescribeUpdate.html\"> <code>DescribeUpdate</code> </a>.</p> <p>Before you activate the successor CA, make sure the worker nodes you manage and your external clients have been updated to trust it, so they maintain connectivity to the API server after activation. For a limited period after activation, CA rollback is available to revert to the outgoing CA if needed. If you don't activate the successor CA yourself, Amazon EKS activates it automatically as the expiration deadline approaches. For more information, see <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/certificate-authority-rotation.html\">Rotate the Amazon EKS cluster certificate authority</a> in the <i>Amazon EKS User Guide</i>.</p>"
+    },
     "AssociateAccessPolicy":{
       "name":"AssociateAccessPolicy",
       "http":{
@@ -143,6 +159,24 @@
         {"shape":"ServerException"}
       ],
       "documentation":"<p>Creates a managed capability resource for an Amazon EKS cluster.</p> <p>Capabilities provide fully managed capabilities to build and scale with Kubernetes. When you create a capability, Amazon EKSprovisions and manages the infrastructure required to run the capability outside of your cluster. This approach reduces operational overhead and preserves cluster resources.</p> <p>You can only create one Capability of each type on a given Amazon EKS cluster. Valid types are Argo CD for declarative GitOps deployment, Amazon Web Services Controllers for Kubernetes (ACK) for resource management, and Kube Resource Orchestrator (KRO) for Kubernetes custom resource orchestration.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/capabilities.html\">EKS Capabilities</a> in the <i>Amazon EKS User Guide</i>.</p>"
+    },
+    "CreateCertificateAuthority":{
+      "name":"CreateCertificateAuthority",
+      "http":{
+        "method":"POST",
+        "requestUri":"/clusters/{name}/certificate-authorities"
+      },
+      "input":{"shape":"CreateCertificateAuthorityRequest"},
+      "output":{"shape":"CreateCertificateAuthorityResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ResourceLimitExceededException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceInUseException"},
+        {"shape":"ServerException"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p>Appends a successor certificate authority (CA) to your cluster, beginning the CA rotation process.</p> <p>A cluster certificate authority is the root of trust for your cluster's control plane. It signs the certificates that secure communication between the Kubernetes API server and its clients, and its public certificate is distributed to your cluster's trust bundle so that worker nodes and clients can verify the API server's identity. Each cluster can have at most two certificate authorities at a time: the outgoing CA that's currently signing (its <code>signingStatus</code> is <code>IN_USE</code>) and one successor CA (<code>signingStatus</code> of <code>NOT_USED</code>) that you can later activate to complete the rotation.</p> <p>Appending a successor CA adds its public certificate to the cluster's trust bundle so that the cluster trusts both CAs simultaneously (the dual trust period), but it doesn't begin signing certificates. Amazon EKS then distributes the successor CA to the Amazon Web Services managed components in your cluster; you can track this through the CA's <code>distributionStatus</code>. The successor CA can't be activated until its <code>distributionStatus</code> is <code>COMPLETE</code>. To activate it as the cluster's signer, use <a href=\"https://docs.aws.amazon.com/eks/latest/APIReference/API_ActivateCertificateAuthority.html\"> <code>ActivateCertificateAuthority</code> </a>. This is an asynchronous operation that returns an <code>update</code> object. If you don't append a successor CA yourself, Amazon EKS appends one automatically before the outgoing CA approaches expiration.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/certificate-authority-rotation.html\">Rotate the Amazon EKS cluster certificate authority</a> in the <i>Amazon EKS User Guide</i>.</p>"
     },
     "CreateCluster":{
       "name":"CreateCluster",
@@ -283,6 +317,23 @@
         {"shape":"ServerException"}
       ],
       "documentation":"<p>Deletes a managed capability from your Amazon EKS cluster. When you delete a capability, Amazon EKS removes the capability infrastructure but retains all resources that were managed by the capability.</p> <p>Before deleting a capability, you should delete all Kubernetes resources that were created by the capability. After the capability is deleted, these resources become difficult to manage because the controller that managed them is no longer available. To delete resources before removing the capability, use <code>kubectl delete</code> or remove them through your GitOps workflow.</p>"
+    },
+    "DeleteCertificateAuthority":{
+      "name":"DeleteCertificateAuthority",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/clusters/{name}/certificate-authorities/{certificateAuthorityId}"
+      },
+      "input":{"shape":"DeleteCertificateAuthorityRequest"},
+      "output":{"shape":"DeleteCertificateAuthorityResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceInUseException"},
+        {"shape":"ServerException"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p>Deletes a certificate authority (CA) from your cluster.</p> <p>Deleting a certificate authority removes its public certificate from the cluster's trust bundle. You can't delete the certificate authority that's currently signing certificates for the cluster (its <code>signingStatus</code> is <code>IN_USE</code>) — to remove the outgoing CA, first activate the successor CA with <a href=\"https://docs.aws.amazon.com/eks/latest/APIReference/API_ActivateCertificateAuthority.html\"> <code>ActivateCertificateAuthority</code> </a>. Amazon EKS also protects a successor CA from deletion in certain cases to keep a valid rotation path — for example, a successor that Amazon EKS appended can't be deleted while it's the only successor on the cluster. This is an asynchronous operation that returns an <code>update</code> object.</p>"
     },
     "DeleteCluster":{
       "name":"DeleteCluster",
@@ -463,6 +514,21 @@
         {"shape":"ServerException"}
       ],
       "documentation":"<p>Returns detailed information about a specific managed capability in your Amazon EKS cluster, including its current status, configuration, health information, and any issues that may be affecting its operation.</p>"
+    },
+    "DescribeCertificateAuthority":{
+      "name":"DescribeCertificateAuthority",
+      "http":{
+        "method":"GET",
+        "requestUri":"/clusters/{name}/certificate-authorities/{certificateAuthorityId}"
+      },
+      "input":{"shape":"DescribeCertificateAuthorityRequest"},
+      "output":{"shape":"DescribeCertificateAuthorityResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ServerException"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p>Returns detailed information about a certificate authority (CA) in your cluster, including its validity period, signing and distribution status, provenance, scheduled auto-activation events, and public certificate data.</p>"
     },
     "DescribeCluster":{
       "name":"DescribeCluster",
@@ -733,6 +799,22 @@
         {"shape":"ServerException"}
       ],
       "documentation":"<p>Lists all managed capabilities in your Amazon EKS cluster. You can use this operation to get an overview of all capabilities and their current status.</p>"
+    },
+    "ListCertificateAuthorities":{
+      "name":"ListCertificateAuthorities",
+      "http":{
+        "method":"GET",
+        "requestUri":"/clusters/{name}/certificate-authorities"
+      },
+      "input":{"shape":"ListCertificateAuthoritiesRequest"},
+      "output":{"shape":"ListCertificateAuthoritiesResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ServerException"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p>Lists the certificate authorities (CAs) for your cluster. A cluster has at most two certificate authorities: the outgoing CA that's currently signing and, during a rotation, one successor CA.</p>"
     },
     "ListClusters":{
       "name":"ListClusters",
@@ -1237,6 +1319,59 @@
         "cluster",
         "namespace"
       ]
+    },
+    "ActivateCertificateAuthorityRequest":{
+      "type":"structure",
+      "required":[
+        "clusterName",
+        "certificateAuthorityId"
+      ],
+      "members":{
+        "clusterName":{
+          "shape":"String",
+          "documentation":"<p>The name of your cluster.</p>",
+          "location":"uri",
+          "locationName":"name"
+        },
+        "certificateAuthorityId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the certificate authority to activate as the cluster's signing certificate authority. This certificate authority must already exist on the cluster and have a <code>distributionStatus</code> of <code>COMPLETE</code>.</p>",
+          "location":"uri",
+          "locationName":"certificateAuthorityId"
+        },
+        "clientRequestToken":{
+          "shape":"String",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "ActivateCertificateAuthorityResponse":{
+      "type":"structure",
+      "members":{
+        "update":{
+          "shape":"Update",
+          "documentation":"<p>An object representing the asynchronous update that promotes the certificate authority to be the cluster's signer.</p>"
+        },
+        "certificateAuthority":{
+          "shape":"CertificateAuthoritySummary",
+          "documentation":"<p>Summary information about the certificate authority that is being activated.</p>"
+        }
+      }
+    },
+    "ActiveCertificateAuthority":{
+      "type":"structure",
+      "members":{
+        "id":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the certificate authority that is currently signing certificates for the cluster.</p>"
+        },
+        "activatedBy":{
+          "shape":"CertificateAuthorityActivatedBy",
+          "documentation":"<p>The entity that activated the current signing certificate authority, either <code>CUSTOMER</code> or <code>EKS</code>.</p>"
+        }
+      },
+      "documentation":"<p>Identifies the certificate authority that is currently signing certificates for the cluster.</p>"
     },
     "AdditionalInfoMap":{
       "type":"map",
@@ -2126,9 +2261,166 @@
         "data":{
           "shape":"String",
           "documentation":"<p>The Base64-encoded certificate data required to communicate with your cluster. Add this to the <code>certificate-authority-data</code> section of the <code>kubeconfig</code> file for your cluster.</p>"
+        },
+        "active":{
+          "shape":"ActiveCertificateAuthority",
+          "documentation":"<p>An object identifying the certificate authority that is currently signing certificates for the cluster.</p>"
         }
       },
       "documentation":"<p>An object representing the <code>certificate-authority-data</code> for your cluster.</p>"
+    },
+    "CertificateAuthority":{
+      "type":"structure",
+      "members":{
+        "id":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the certificate authority.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The Unix epoch timestamp in seconds for when the certificate authority was created.</p>"
+        },
+        "createdBy":{
+          "shape":"CertificateAuthorityCreatedBy",
+          "documentation":"<p>The entity that created the certificate authority. Certificate authorities that you create are <code>CUSTOMER</code>; those that Amazon EKS provisions on your behalf, such as a cluster's initial certificate authority, are <code>EKS</code>.</p>"
+        },
+        "activatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The Unix epoch timestamp in seconds for when the certificate authority was last activated as the cluster's signer. This value is absent if the certificate authority has never been activated.</p>"
+        },
+        "activatedBy":{
+          "shape":"CertificateAuthorityActivatedBy",
+          "documentation":"<p>The entity that most recently activated the certificate authority. A value of <code>EKS</code> indicates that Amazon EKS activated it automatically; <code>CUSTOMER</code> indicates that you activated it.</p>"
+        },
+        "signingStatus":{
+          "shape":"CertificateAuthoritySigningStatus",
+          "documentation":"<p>The signing status of the certificate authority. <code>IN_USE</code> means the certificate authority is currently signing certificates for the cluster, <code>ACTIVATING</code> means it's being promoted to the signer, and <code>NOT_USED</code> means it's trusted by the cluster (for example, a successor CA during a rotation, or a retired outgoing CA) but isn't the signer.</p>"
+        },
+        "distributionStatus":{
+          "shape":"CertificateAuthorityDistributionStatus",
+          "documentation":"<p>The distribution status of the certificate authority, which tracks whether Amazon EKS has distributed its trust to the Amazon Web Services managed components in your cluster (the control plane, Amazon EKS Auto Mode instances, and Amazon Web Services Fargate nodes). Valid values are <code>IN_PROGRESS</code>, <code>COMPLETE</code>, <code>FAILED</code>, and <code>DELETING</code>. A successor CA can only be activated after its distribution status is <code>COMPLETE</code>.</p>"
+        },
+        "validity":{
+          "shape":"CertificateAuthorityValidity",
+          "documentation":"<p>The validity period of the certificate authority's certificate.</p>"
+        },
+        "scheduledEvents":{
+          "shape":"CertificateAuthorityScheduledEvents",
+          "documentation":"<p>The scheduled auto-activation events for the certificate authority, computed from its validity period.</p>"
+        },
+        "rollbackAvailable":{
+          "shape":"BoxedBoolean",
+          "documentation":"<p>Indicates whether CA rollback is still available for this certificate authority. After you activate a successor CA, rollback lets you revert to the outgoing CA for a limited period while you finish updating any worker nodes or clients that were missed.</p>"
+        },
+        "data":{
+          "shape":"String",
+          "documentation":"<p>The Base64-encoded public certificate of the certificate authority.</p>"
+        }
+      },
+      "documentation":"<p>An object representing a certificate authority (CA) for an Amazon EKS cluster.</p>"
+    },
+    "CertificateAuthorityActivatedBy":{
+      "type":"string",
+      "enum":[
+        "EKS",
+        "CUSTOMER"
+      ]
+    },
+    "CertificateAuthorityCreatedBy":{
+      "type":"string",
+      "enum":[
+        "EKS",
+        "CUSTOMER"
+      ]
+    },
+    "CertificateAuthorityDistributionStatus":{
+      "type":"string",
+      "enum":[
+        "IN_PROGRESS",
+        "COMPLETE",
+        "FAILED",
+        "DELETING"
+      ]
+    },
+    "CertificateAuthorityMaxResults":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "CertificateAuthorityScheduledEvents":{
+      "type":"structure",
+      "members":{
+        "firstAutoActivation":{
+          "shape":"Timestamp",
+          "documentation":"<p>The earliest Unix epoch timestamp in seconds at which Amazon EKS may automatically activate this certificate authority.</p>"
+        },
+        "finalAutoActivation":{
+          "shape":"Timestamp",
+          "documentation":"<p>The Unix epoch timestamp in seconds by which Amazon EKS will automatically activate this certificate authority if you haven't already activated it.</p>"
+        }
+      },
+      "documentation":"<p>The scheduled events during which Amazon EKS may automatically activate a certificate authority, computed from its validity period. These events help ensure that a cluster's signing certificate authority is rotated before its certificate expires.</p>"
+    },
+    "CertificateAuthoritySigningStatus":{
+      "type":"string",
+      "enum":[
+        "NOT_USED",
+        "ACTIVATING",
+        "IN_USE"
+      ]
+    },
+    "CertificateAuthoritySummary":{
+      "type":"structure",
+      "members":{
+        "id":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the certificate authority.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The Unix epoch timestamp in seconds for when the certificate authority was created.</p>"
+        },
+        "createdBy":{
+          "shape":"CertificateAuthorityCreatedBy",
+          "documentation":"<p>The entity that created the certificate authority, either <code>CUSTOMER</code> or <code>EKS</code>.</p>"
+        },
+        "activatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The Unix epoch timestamp in seconds for when the certificate authority was last activated. This value is absent if the certificate authority has never been activated.</p>"
+        },
+        "activatedBy":{
+          "shape":"CertificateAuthorityActivatedBy",
+          "documentation":"<p>The entity that most recently activated the certificate authority, either <code>CUSTOMER</code> or <code>EKS</code>.</p>"
+        },
+        "signingStatus":{
+          "shape":"CertificateAuthoritySigningStatus",
+          "documentation":"<p>The signing status of the certificate authority: <code>IN_USE</code>, <code>ACTIVATING</code>, or <code>NOT_USED</code>.</p>"
+        },
+        "distributionStatus":{
+          "shape":"CertificateAuthorityDistributionStatus",
+          "documentation":"<p>The distribution status of the certificate authority: <code>IN_PROGRESS</code>, <code>COMPLETE</code>, <code>FAILED</code>, or <code>DELETING</code>.</p>"
+        }
+      },
+      "documentation":"<p>Summary information about a certificate authority (CA) for an Amazon EKS cluster, returned by <a href=\"https://docs.aws.amazon.com/eks/latest/APIReference/API_ListCertificateAuthorities.html\"> <code>ListCertificateAuthorities</code> </a> and the certificate-authority write operations.</p>"
+    },
+    "CertificateAuthoritySummaryList":{
+      "type":"list",
+      "member":{"shape":"CertificateAuthoritySummary"}
+    },
+    "CertificateAuthorityValidity":{
+      "type":"structure",
+      "members":{
+        "notBefore":{
+          "shape":"Timestamp",
+          "documentation":"<p>The Unix epoch timestamp in seconds for the start of the certificate authority's validity period.</p>"
+        },
+        "notAfter":{
+          "shape":"Timestamp",
+          "documentation":"<p>The Unix epoch timestamp in seconds for the end of the certificate authority's validity period.</p>"
+        }
+      },
+      "documentation":"<p>The validity period of a certificate authority's certificate.</p>"
     },
     "ClientException":{
       "type":"structure",
@@ -2832,6 +3124,36 @@
         }
       }
     },
+    "CreateCertificateAuthorityRequest":{
+      "type":"structure",
+      "required":["clusterName"],
+      "members":{
+        "clusterName":{
+          "shape":"String",
+          "documentation":"<p>The name of your cluster.</p>",
+          "location":"uri",
+          "locationName":"name"
+        },
+        "clientRequestToken":{
+          "shape":"String",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "CreateCertificateAuthorityResponse":{
+      "type":"structure",
+      "members":{
+        "update":{
+          "shape":"Update",
+          "documentation":"<p>An object representing the asynchronous update that adds the certificate authority to the cluster's trust bundle.</p>"
+        },
+        "certificateAuthority":{
+          "shape":"CertificateAuthoritySummary",
+          "documentation":"<p>Summary information about the certificate authority that was created, including its ID and initial signing and distribution status.</p>"
+        }
+      }
+    },
     "CreateClusterRequest":{
       "type":"structure",
       "required":[
@@ -3287,6 +3609,47 @@
         }
       }
     },
+    "DeleteCertificateAuthorityRequest":{
+      "type":"structure",
+      "required":[
+        "clusterName",
+        "certificateAuthorityId"
+      ],
+      "members":{
+        "clusterName":{
+          "shape":"String",
+          "documentation":"<p>The name of your cluster.</p>",
+          "location":"uri",
+          "locationName":"name"
+        },
+        "certificateAuthorityId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the certificate authority to delete. You can't delete the certificate authority that's currently signing certificates for the cluster.</p>",
+          "location":"uri",
+          "locationName":"certificateAuthorityId"
+        },
+        "clientRequestToken":{
+          "shape":"String",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request.</p>",
+          "idempotencyToken":true,
+          "location":"querystring",
+          "locationName":"clientRequestToken"
+        }
+      }
+    },
+    "DeleteCertificateAuthorityResponse":{
+      "type":"structure",
+      "members":{
+        "update":{
+          "shape":"Update",
+          "documentation":"<p>An object representing the asynchronous update that removes the certificate authority from the cluster's trust bundle.</p>"
+        },
+        "certificateAuthority":{
+          "shape":"CertificateAuthoritySummary",
+          "documentation":"<p>Summary information about the certificate authority that is being deleted.</p>"
+        }
+      }
+    },
     "DeleteClusterRequest":{
       "type":"structure",
       "required":["name"],
@@ -3659,6 +4022,36 @@
         "capability":{
           "shape":"Capability",
           "documentation":"<p>An object containing detailed information about the capability, including its name, ARN, type, status, version, configuration, health status, and timestamps for when it was created and last modified.</p>"
+        }
+      }
+    },
+    "DescribeCertificateAuthorityRequest":{
+      "type":"structure",
+      "required":[
+        "clusterName",
+        "certificateAuthorityId"
+      ],
+      "members":{
+        "clusterName":{
+          "shape":"String",
+          "documentation":"<p>The name of your cluster.</p>",
+          "location":"uri",
+          "locationName":"name"
+        },
+        "certificateAuthorityId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the certificate authority to describe.</p>",
+          "location":"uri",
+          "locationName":"certificateAuthorityId"
+        }
+      }
+    },
+    "DescribeCertificateAuthorityResponse":{
+      "type":"structure",
+      "members":{
+        "certificateAuthority":{
+          "shape":"CertificateAuthority",
+          "documentation":"<p>An object containing detailed information about the certificate authority.</p>"
         }
       }
     },
@@ -5207,6 +5600,43 @@
         "nextToken":{
           "shape":"String",
           "documentation":"<p>The <code>nextToken</code> value to include in a future <code>ListCapabilities</code> request. When the results of a <code>ListCapabilities</code> request exceed <code>maxResults</code>, you can use this value to retrieve the next page of results. This value is null when there are no more results to return.</p>"
+        }
+      }
+    },
+    "ListCertificateAuthoritiesRequest":{
+      "type":"structure",
+      "required":["clusterName"],
+      "members":{
+        "clusterName":{
+          "shape":"String",
+          "documentation":"<p>The name of your cluster.</p>",
+          "location":"uri",
+          "locationName":"name"
+        },
+        "maxResults":{
+          "shape":"CertificateAuthorityMaxResults",
+          "documentation":"<p>The maximum number of results to return in a single call. To retrieve the remaining results, make another call with the returned <code>nextToken</code> value. If you don't specify a value, the default is 100 results.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>The <code>nextToken</code> value returned from a previous paginated request, where <code>maxResults</code> was used and the results exceeded the value of that parameter. Pagination continues from the end of the previous results that returned the <code>nextToken</code> value. This value is null when there are no more results to return.</p> <note> <p>This token should be treated as an opaque identifier that is used only to retrieve the next items in a list and not for other programmatic purposes.</p> </note>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListCertificateAuthoritiesResponse":{
+      "type":"structure",
+      "members":{
+        "certificateAuthorities":{
+          "shape":"CertificateAuthoritySummaryList",
+          "documentation":"<p>A list of certificate authority summary objects, each containing basic information about a certificate authority, including its ID, signing status, and distribution status.</p>"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>The <code>nextToken</code> value to include in a future <code>ListCertificateAuthorities</code> request. When the results of a <code>ListCertificateAuthorities</code> request exceed <code>maxResults</code>, you can use this value to retrieve the next page of results. This value is null when there are no more results to return.</p> <note> <p>This token should be treated as an opaque identifier that is used only to retrieve the next items in a list and not for other programmatic purposes.</p> </note>"
         }
       }
     },
@@ -7441,7 +7871,11 @@
         "ControlPlaneEgressMode",
         "KubeApiServerConfig",
         "KubeSchedulerConfig",
-        "KubeControllerManagerConfig"
+        "KubeControllerManagerConfig",
+        "ActiveCertificateAuthority",
+        "TrustedCertificateAuthorities",
+        "CertificateAuthorityId",
+        "SigningStatus"
       ]
     },
     "UpdateParams":{
@@ -7559,7 +7993,8 @@
         "VendedLogsUpdate",
         "ControlPlaneEgressUpdate",
         "VersionRollback",
-        "ControlPlaneComponentConfigUpdate"
+        "ControlPlaneComponentConfigUpdate",
+        "CertificateAuthorityUpdate"
       ]
     },
     "UpgradePolicyRequest":{

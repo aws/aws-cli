@@ -1006,7 +1006,7 @@
         {"shape":"ValidationException"},
         {"shape":"ConflictException"}
       ],
-      "documentation":"<p>Updates a namespace with the specified settings. Unless required, you can't update multiple parameters in one request. For example, you must specify both <code>adminUsername</code> and <code>adminUserPassword</code> to update either field, but you can't update both <code>kmsKeyId</code> and <code>logExports</code> in a single request.</p>"
+      "documentation":"<p>Updates a namespace with the specified settings. Unless required, you can't update multiple parameters in one request. For example, you must specify both <code>adminUsername</code> and <code>adminUserPassword</code> to update either field, but you can't update both <code>kmsKeyId</code> and <code>logExports</code> in a single request.</p> <p>Similarly, an S3 Tables log-publishing update (a request where <code>logDestinationType</code> is <code>s3table</code>) cannot be combined with any other namespace configuration change and must be submitted as its own request.</p>"
     },
     "UpdateScheduledAction":{
       "name":"UpdateScheduledAction",
@@ -2922,6 +2922,14 @@
         }
       }
     },
+    "LogDestinationType":{
+      "type":"string",
+      "documentation":"<p>Destination type for log publishing.</p>",
+      "enum":[
+        "s3table",
+        "cloudwatch"
+      ]
+    },
     "LogExport":{
       "type":"string",
       "enum":[
@@ -3044,6 +3052,10 @@
         "namespaceName":{
           "shape":"NamespaceName",
           "documentation":"<p>The name of the namespace. Must be between 3-64 alphanumeric characters in lowercase, and it cannot be a reserved word. A list of reserved words can be found in <a href=\"https://docs.aws.amazon.com/redshift/latest/dg/r_pg_keywords.html\">Reserved Words</a> in the Amazon Redshift Database Developer Guide.</p>"
+        },
+        "s3TablePublishStatus":{
+          "shape":"S3TablePublishStatus",
+          "documentation":"<p>The current Amazon S3 Tables log-publishing status for the namespace. Not returned when S3 Tables publishing has never been configured for the namespace.</p>"
         },
         "status":{
           "shape":"NamespaceStatus",
@@ -3544,6 +3556,68 @@
           "documentation":"<p>The TableRestoreStatus object that contains the status of the restore operation.</p>"
         }
       }
+    },
+    "S3TableAction":{
+      "type":"string",
+      "documentation":"<p>Action to perform for S3 Table log publishing.</p>",
+      "enum":[
+        "Enable",
+        "Disable"
+      ]
+    },
+    "S3TableGranularity":{
+      "type":"string",
+      "documentation":"<p>Granularity for S3 Table scoping in serverless.</p>",
+      "enum":[
+        "namespace",
+        "account"
+      ]
+    },
+    "S3TableLastIngestionTimeMap":{
+      "type":"map",
+      "key":{"shape":"String"},
+      "value":{"shape":"String"},
+      "documentation":"<p>Map of system table name to the last ingestion time (ISO-8601) for that table.</p>"
+    },
+    "S3TableName":{
+      "type":"string",
+      "documentation":"<p>A system-table view name to publish to S3 Tables (e.g. &quot;sys_query_history&quot;), or the keyword &quot;all&quot; to publish every current and future system table.</p>",
+      "max":128,
+      "min":1,
+      "pattern":"^(all|sys_[a-z0-9_]+)$"
+    },
+    "S3TableNameList":{
+      "type":"list",
+      "member":{"shape":"S3TableName"},
+      "documentation":"<p>List of system table names (or &quot;all&quot;) to publish to S3 Tables. Sized to hold the full SYS_* universe (28+ today, grows as new views are onboarded) plus headroom.</p>",
+      "max":256,
+      "min":0
+    },
+    "S3TablePublishStatus":{
+      "type":"structure",
+      "members":{
+        "enabledAll":{
+          "shape":"Boolean",
+          "documentation":"<p> <code>true</code> when the namespace is enrolled in every current and future system table rather than an explicit list of tables.</p>"
+        },
+        "lastIngestionTimes":{
+          "shape":"S3TableLastIngestionTimeMap",
+          "documentation":"<p>A map of system table name to the time that table last received data, as an ISO-8601 timestamp. A table that has not yet been ingested is absent from the map. Use it to judge data freshness.</p>"
+        },
+        "s3TableGranularity":{
+          "shape":"S3TableGranularity",
+          "documentation":"<p>The scope currently in effect. Values are <code>namespace</code> or <code>account</code>.</p>"
+        },
+        "s3TableNamespace":{
+          "shape":"String",
+          "documentation":"<p>The identifier of the namespace in the S3 table bucket that holds the published tables.</p>"
+        },
+        "s3Tables":{
+          "shape":"S3TableNameList",
+          "documentation":"<p>The system tables currently being published.</p>"
+        }
+      },
+      "documentation":"<p>Describes the state of Amazon S3 Tables system-table log publishing for a namespace.</p>"
     },
     "Schedule":{
       "type":"structure",
@@ -4181,6 +4255,10 @@
           "shape":"String",
           "documentation":"<p>The ID of the Amazon Web Services Key Management Service key used to encrypt your data.</p>"
         },
+        "logDestinationType":{
+          "shape":"LogDestinationType",
+          "documentation":"<p>The destination for the log data. Valid values are <code>s3table</code> and <code>cloudwatch</code>.</p> <p>Set this to <code>s3table</code> to manage Amazon S3 Tables system-table publishing for the namespace.</p>"
+        },
         "logExports":{
           "shape":"LogExportList",
           "documentation":"<p>The types of logs the namespace can export. The export types are <code>userlog</code>, <code>connectionlog</code>, and <code>useractivitylog</code>.</p>"
@@ -4192,6 +4270,22 @@
         "namespaceName":{
           "shape":"NamespaceName",
           "documentation":"<p>The name of the namespace to update. You can't update the name of a namespace once it is created.</p>"
+        },
+        "s3TableAction":{
+          "shape":"S3TableAction",
+          "documentation":"<p>Whether to enable or disable Amazon S3 Tables publishing. Valid values are <code>Enable</code> and <code>Disable</code>, matched case-insensitively.</p> <p>When omitted, defaults to <code>Enable</code>. Valid only when <code>logDestinationType</code> is <code>s3table</code>.</p>"
+        },
+        "s3TableGranularity":{
+          "shape":"S3TableGranularity",
+          "documentation":"<p>The scope of the Amazon S3 Tables destination. Valid values are <code>namespace</code> and <code>account</code>, matched case-insensitively. <code>namespace</code> scopes the published tables to this namespace; <code>account</code> scopes them to the Amazon Web Services account.</p> <p>Required when enabling. Omitting this parameter or passing a blank value fails with <code>ValidationException</code>. Valid only when <code>logDestinationType</code> is <code>s3table</code>.</p>"
+        },
+        "s3TableKmsKeyId":{
+          "shape":"KmsKeyId",
+          "documentation":"<p>The identifier of the Key Management Service key used to encrypt the published Amazon S3 Tables data. When omitted, the data is encrypted with SSE-S3 (Amazon S3 managed keys).</p> <p>Valid only when <code>logDestinationType</code> is <code>s3table</code>.</p>"
+        },
+        "s3TableNames":{
+          "shape":"S3TableNameList",
+          "documentation":"<p>The system tables to publish (on enable) or to stop publishing (on disable). Each value is either a system table view name that begins with <code>sys_</code> or the keyword <code>all</code>.</p> <p>Omitting this parameter, passing an empty list, or including <code>all</code> each select every current and future system table. Each name must be 1-128 characters, and the list can contain up to 256 names.</p> <p>Valid only when <code>logDestinationType</code> is <code>s3table</code>.</p>"
         }
       }
     },

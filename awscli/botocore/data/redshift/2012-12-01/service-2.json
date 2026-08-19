@@ -3553,6 +3553,10 @@
         "ExtraComputeForAutomaticOptimization":{
           "shape":"String",
           "documentation":"<p>A boolean value that, if <code>true</code>, indicates that the cluster allocates additional compute resources to run automatic optimization operations.</p> <p>Default: false</p>"
+        },
+        "LoggingPublishStatus":{
+          "shape":"LoggingPublishStatus",
+          "documentation":"<p>The status of system table publishing for the cluster. This field is present only when system table publishing is configured.</p>"
         }
       },
       "documentation":"<p>Describes a cluster.</p>",
@@ -6803,6 +6807,14 @@
         "ClusterIdentifier":{
           "shape":"String",
           "documentation":"<p>The identifier of the cluster on which logging is to be stopped.</p> <p>Example: <code>examplecluster</code> </p>"
+        },
+        "LogDestinationType":{
+          "shape":"LogDestinationType",
+          "documentation":"<p>The log destination type. An enum with possible values of <code>s3</code>, <code>cloudwatch</code>, and <code>s3table</code>. When set to <code>s3table</code>, stops system table publishing. When omitted, the operation disables audit logging.</p>"
+        },
+        "LogExports":{
+          "shape":"LogTypeList",
+          "documentation":"<p>The collection of log types to stop exporting. When <code>LogDestinationType</code> is <code>s3table</code>, the values are the names of the system tables to stop publishing. Omitting this parameter or passing <code>all</code> stops publishing all system tables.</p>"
         }
       },
       "documentation":"<p/>"
@@ -6916,11 +6928,19 @@
         },
         "LogDestinationType":{
           "shape":"LogDestinationType",
-          "documentation":"<p>The log destination type. An enum with possible values of <code>s3</code> and <code>cloudwatch</code>.</p>"
+          "documentation":"<p>The log destination type. An enum with possible values of <code>s3</code>, <code>cloudwatch</code>, and <code>s3table</code>.</p>"
         },
         "LogExports":{
           "shape":"LogTypeList",
-          "documentation":"<p>The collection of exported log types. Possible values are <code>connectionlog</code>, <code>useractivitylog</code>, and <code>userlog</code>.</p>"
+          "documentation":"<p>The collection of exported log types. When <code>LogDestinationType</code> is <code>s3</code> or <code>cloudwatch</code>, possible values are <code>connectionlog</code>, <code>useractivitylog</code>, and <code>userlog</code>. When <code>LogDestinationType</code> is <code>s3table</code>, the values are the names of the system tables to publish. Omitting this parameter, passing an empty list, or including the value <code>all</code> publishes all current and future system tables.</p>"
+        },
+        "S3TableKmsKeyId":{
+          "shape":"String",
+          "documentation":"<p>The identifier of a customer managed KMS key used to encrypt the S3 tables. This parameter is valid only when <code>LogDestinationType</code> is <code>s3table</code>.</p>"
+        },
+        "S3TableGranularity":{
+          "shape":"String",
+          "documentation":"<p>The scope of system table publishing. Valid values are <code>cluster</code> and <code>account</code>. A value of <code>cluster</code> scopes publishing to the individual cluster. A value of <code>account</code> scopes publishing to the Amazon Web Services account. This parameter is valid only when <code>LogDestinationType</code> is <code>s3table</code>.</p>"
         }
       },
       "documentation":"<p/>"
@@ -8561,12 +8581,23 @@
       "type":"string",
       "enum":[
         "s3",
-        "cloudwatch"
+        "cloudwatch",
+        "s3table"
       ]
     },
     "LogTypeList":{
       "type":"list",
       "member":{"shape":"String"}
+    },
+    "LoggingPublishStatus":{
+      "type":"structure",
+      "members":{
+        "S3Tables":{
+          "shape":"S3TablePublishStatus",
+          "documentation":"<p>The status of system table publishing to S3 Tables.</p>"
+        }
+      },
+      "documentation":"<p>Describes the system table publishing status for a cluster.</p>"
     },
     "LoggingStatus":{
       "type":"structure",
@@ -8597,11 +8628,15 @@
         },
         "LogDestinationType":{
           "shape":"LogDestinationType",
-          "documentation":"<p>The log destination type. An enum with possible values of <code>s3</code> and <code>cloudwatch</code>.</p>"
+          "documentation":"<p>The log destination type. An enum with possible values of <code>s3</code>, <code>cloudwatch</code>, and <code>s3table</code>.</p>"
         },
         "LogExports":{
           "shape":"LogTypeList",
-          "documentation":"<p>The collection of exported log types. Possible values are <code>connectionlog</code>, <code>useractivitylog</code>, and <code>userlog</code>.</p>"
+          "documentation":"<p>The collection of exported log types. When <code>LogDestinationType</code> is <code>s3</code> or <code>cloudwatch</code>, possible values are <code>connectionlog</code>, <code>useractivitylog</code>, and <code>userlog</code>. When <code>LogDestinationType</code> is <code>s3table</code>, the values are the names of the system tables being published.</p>"
+        },
+        "S3Tables":{
+          "shape":"S3TablePublishStatus",
+          "documentation":"<p>The status of system table publishing to S3 Tables. This field is populated only when system table publishing is active.</p>"
         }
       },
       "documentation":"<p>Describes the status of logging for a cluster.</p>"
@@ -8804,7 +8839,7 @@
         },
         "MasterUserPassword":{
           "shape":"SensitiveString",
-          "documentation":"<p>The new password for the cluster admin user. This change is asynchronously applied as soon as possible. Between the time of the request and the completion of the request, the <code>MasterUserPassword</code> element exists in the <code>PendingModifiedValues</code> element of the operation response. </p> <p>You can't use <code>MasterUserPassword</code> if <code>ManageMasterPassword</code> is <code>true</code>.</p> <p>If your admin user account is locked, this operation also unlocks your account and resets the failed-login counter. This option is available only when account lockout security is enabled for the cluster.</p> <note> <p>Operations never return the password, so this operation provides a way to regain access to the admin user account for a cluster if the password is lost.</p> </note> <p>Default: Uses existing setting.</p> <p>Constraints:</p> <ul> <li> <p>Must be between 8 and 64 characters in length.</p> </li> <li> <p>Must contain at least one uppercase letter.</p> </li> <li> <p>Must contain at least one lowercase letter.</p> </li> <li> <p>Must contain one number.</p> </li> <li> <p>Can be any printable ASCII character (ASCII code 33-126) except <code>'</code> (single quote), <code>\"</code> (double quote), <code>\\</code>, <code>/</code>, or <code>@</code>.</p> </li> </ul>"
+          "documentation":"<p>The new password for the cluster admin user. This change is asynchronously applied as soon as possible. Between the time of the request and the completion of the request, the <code>MasterUserPassword</code> element exists in the <code>PendingModifiedValues</code> element of the operation response. </p> <p>You can't use <code>MasterUserPassword</code> if <code>ManageMasterPassword</code> is <code>true</code>.</p> <note> <p>Operations never return the password, so this operation provides a way to regain access to the admin user account for a cluster if the password is lost.</p> </note> <p>Default: Uses existing setting.</p> <p>Constraints:</p> <ul> <li> <p>Must be between 8 and 64 characters in length.</p> </li> <li> <p>Must contain at least one uppercase letter.</p> </li> <li> <p>Must contain at least one lowercase letter.</p> </li> <li> <p>Must contain one number.</p> </li> <li> <p>Can be any printable ASCII character (ASCII code 33-126) except <code>'</code> (single quote), <code>\"</code> (double quote), <code>\\</code>, <code>/</code>, or <code>@</code>.</p> </li> </ul>"
         },
         "ClusterParameterGroupName":{
           "shape":"String",
@@ -11125,6 +11160,37 @@
       "type":"string",
       "max":256,
       "pattern":"[\\p{L}\\p{Z}\\p{N}_.:/=+\\-@]*"
+    },
+    "S3TableLastIngestionTimeMap":{
+      "type":"map",
+      "key":{"shape":"String"},
+      "value":{"shape":"String"}
+    },
+    "S3TablePublishStatus":{
+      "type":"structure",
+      "members":{
+        "S3Tables":{
+          "shape":"LogTypeList",
+          "documentation":"<p>The system tables currently being published.</p>"
+        },
+        "S3TableNamespace":{
+          "shape":"String",
+          "documentation":"<p>The namespace in the S3 table bucket that holds the published tables.</p>"
+        },
+        "S3TableGranularity":{
+          "shape":"String",
+          "documentation":"<p>The scope of system table publishing in effect. Possible values are <code>cluster</code> and <code>account</code>.</p>"
+        },
+        "EnabledAll":{
+          "shape":"BooleanOptional",
+          "documentation":"<p> <code>true</code> if the cluster is enrolled in all current and future system tables rather than an explicit subset.</p>"
+        },
+        "LastIngestionTimes":{
+          "shape":"S3TableLastIngestionTimeMap",
+          "documentation":"<p>A map whose keys are the names of the published system tables and whose values are the time each table last received data. Use this to judge data freshness.</p>"
+        }
+      },
+      "documentation":"<p>Describes the status of system table publishing to S3 Tables for a cluster.</p>"
     },
     "SNSInvalidTopicFault":{
       "type":"structure",

@@ -172,6 +172,31 @@
           "state": "success"
         }
       ]
+    },
+    "CertificateAuthorityUpdateComplete": {
+      "delay": 30,
+      "operation": "DescribeUpdate",
+      "maxAttempts": 40,
+      "acceptors": [
+        {
+          "expected": "Failed",
+          "matcher": "path",
+          "state": "failure",
+          "argument": "update.status"
+        },
+        {
+          "expected": "Cancelled",
+          "matcher": "path",
+          "state": "failure",
+          "argument": "update.status"
+        },
+        {
+          "expected": "Successful",
+          "matcher": "path",
+          "state": "success",
+          "argument": "update.status"
+        }
+      ]
     }
   }
 }

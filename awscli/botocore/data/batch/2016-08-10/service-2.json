@@ -1003,6 +1003,10 @@
         "context":{
           "shape":"String",
           "documentation":"<p>Reserved.</p>"
+        },
+        "ecsSettings":{
+          "shape":"EcsSettings",
+          "documentation":"<p>The Amazon ECS settings for the compute environment. These settings control CloudWatch Container Insights collection.</p>"
         }
       },
       "documentation":"<p>An object that represents an Batch compute environment.</p>"
@@ -1393,6 +1397,15 @@
       },
       "documentation":"<p>An object that represents the details of a container that's part of a job.</p>"
     },
+    "ContainerInsights":{
+      "type":"string",
+      "documentation":"<p>Specifies the CloudWatch Container Insights mode for the compute environment.</p>",
+      "enum":[
+        "ENABLED",
+        "ENHANCED",
+        "DISABLED"
+      ]
+    },
     "ContainerOverrides":{
       "type":"structure",
       "members":{
@@ -1589,6 +1602,10 @@
         "context":{
           "shape":"String",
           "documentation":"<p>Reserved.</p>"
+        },
+        "ecsSettings":{
+          "shape":"EcsSettings",
+          "documentation":"<p>The Amazon ECS settings for the compute environment. These settings control CloudWatch Container Insights collection for the compute environment.</p>"
         }
       },
       "documentation":"<p>Contains the parameters for <code>CreateComputeEnvironment</code>.</p>"
@@ -2489,6 +2506,16 @@
         }
       },
       "documentation":"<p>An object that contains overrides for the Amazon ECS task definition of a job.</p>"
+    },
+    "EcsSettings":{
+      "type":"structure",
+      "members":{
+        "containerInsights":{
+          "shape":"ContainerInsights",
+          "documentation":"<p>Specifies the CloudWatch Container Insights mode for the compute environment. Valid values are:</p> <dl> <dt>ENABLED</dt> <dd> <p>Turns on standard Container Insights, which collects CPU, memory, disk, and network utilization metrics for the compute environment.</p> </dd> <dt>ENHANCED</dt> <dd> <p>Turns on enhanced Container Insights, which collects the standard metrics along with additional per-task observability metrics.</p> </dd> <dt>DISABLED</dt> <dd> <p>Turns off Container Insights for the compute environment.</p> </dd> </dl> <p>If you don't specify a value, the default is <code>DISABLED</code>. For more information, see <a href=\"https://docs.aws.amazon.com/batch/latest/userguide/cloudwatch-container-insights.html\">Container Insights</a> in the <i>Batch User Guide</i>.</p>"
+        }
+      },
+      "documentation":"<p>The Amazon ECS settings for a compute environment, including the CloudWatch Container Insights mode. Use this structure with <code>CreateComputeEnvironment</code> and <code>UpdateComputeEnvironment</code>.</p>"
     },
     "EcsTaskDetails":{
       "type":"structure",
@@ -6181,6 +6208,10 @@
         "context":{
           "shape":"String",
           "documentation":"<p>Reserved.</p>"
+        },
+        "ecsSettings":{
+          "shape":"EcsSettings",
+          "documentation":"<p>The Amazon ECS settings for the compute environment. These settings control CloudWatch Container Insights collection for the compute environment.</p>"
         }
       },
       "documentation":"<p>Contains the parameters for <code>UpdateComputeEnvironment</code>.</p>"

@@ -20115,6 +20115,16 @@
           "shape": "__integer",
           "locationName": "width",
           "documentation": "Output video width, in pixels. Must be an even number. For most codecs, you can leave this field and height blank in order to use the height and width (resolution) from the source. Note, however, that leaving blank is not recommended. For the Frame Capture codec, height and width are required."
+        },
+        "CropRectangle": {
+          "shape": "VideoPositionRectangle",
+          "locationName": "cropRectangle",
+          "documentation": "Region of the input video to crop before scaling. If not specified, the entire input\nframe is used.\n\nNote: Unlike {@link outputPositionRectangle}, the bounds of cropRectangle are validated\nat ingest time by the encoder/scaler rather than at the API level, because the input\nresolution is not known until the source is probed. Field-level constraints on (x, y,\nwidth, height) defined on {@link VideoPositionRectangle} still apply."
+        },
+        "OutputPositionRectangle": {
+          "shape": "VideoPositionRectangle",
+          "locationName": "outputPositionRectangle",
+          "documentation": "Position of the encoded video within the output frame. The area outside the rectangle\nis filled with black. If not specified, the video fills the entire output frame.\nWhen used, both {@link width} and {@link height} of the VideoDescription must be\nexplicitly specified so that the rectangle can be validated against the output frame."
         }
       },
       "documentation": "Video settings for this stream.",
@@ -30855,6 +30865,46 @@
         "CheckDigitString",
         "Sid"
       ]
+    },
+    "VideoPositionRectangle": {
+      "type": "structure",
+      "members": {
+        "Height": {
+          "shape": "__integerMin2Max8192",
+          "locationName": "height",
+          "documentation": "Height in pixels. Must be an even number."
+        },
+        "Width": {
+          "shape": "__integerMin2Max8192",
+          "locationName": "width",
+          "documentation": "Width in pixels. Must be an even number."
+        },
+        "X": {
+          "shape": "__integerMin0Max8190",
+          "locationName": "x",
+          "documentation": "Left offset in pixels. Must be an even number."
+        },
+        "Y": {
+          "shape": "__integerMin0Max8190",
+          "locationName": "y",
+          "documentation": "Top offset in pixels. Must be an even number."
+        }
+      },
+      "documentation": "A rectangle defined by position (x, y) and dimensions (width, height) in pixels.\nUsed for output positioning and input cropping.",
+      "required": [
+        "X",
+        "Y",
+        "Height",
+        "Width"
+      ]
+    },
+    "__integerMin0Max8190": {
+      "type": "integer",
+      "documentation": "Placeholder documentation for __integerMin0Max8190"
+    },
+    "__integerMin2Max8192": {
+      "type": "integer",
+      "documentation": "Placeholder documentation for __integerMin2Max8192"
     }
   },
   "documentation": "API for AWS Elemental MediaLive"

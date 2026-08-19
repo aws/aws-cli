@@ -2968,7 +2968,7 @@
         },
         "payload":{
           "shape":"PayloadTypeList",
-          "documentation":"<p>The content payload of the event. This can include conversational data or binary content.</p>"
+          "documentation":"<p>The content payload of the event. This can include conversational data, JSON data, or binary content.</p>"
         },
         "branch":{
           "shape":"Branch",
@@ -2986,6 +2986,10 @@
         "extractionMode":{
           "shape":"ExtractionMode",
           "documentation":"<p>Controls long-term memory extraction for this event. When set to <code>SKIP</code>, the event is stored in short-term memory but is excluded from long-term memory extraction. If not specified, the event is processed for extraction as usual.</p>"
+        },
+        "extractionConfig":{
+          "shape":"ExtractionConfig",
+          "documentation":"<p>The extraction configuration for long-term memory records. Use this parameter to specify namespace variable keys and their values for namespace substitution during extraction.</p>"
         }
       }
     },
@@ -3390,6 +3394,12 @@
           "documentation":"<p>The identifier of the memory record to delete.</p>",
           "location":"uri",
           "locationName":"memoryRecordId"
+        },
+        "namespace":{
+          "shape":"Namespace",
+          "documentation":"<p>The namespace of the memory record to delete. This value is used for IAM condition key authorization.</p>",
+          "location":"querystring",
+          "locationName":"namespace"
         }
       }
     },
@@ -4205,6 +4215,16 @@
       "max":65535,
       "min":1
     },
+    "ExtractionConfig":{
+      "type":"structure",
+      "members":{
+        "namespaceVariables":{
+          "shape":"NamespaceVariablesMap",
+          "documentation":"<p>A map of <code>namespaceKeys</code> to their values. The service substitutes these values into <code>namespaceTemplates</code> during long-term memory extraction to control namespace hierarchy.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for extraction behavior. Use this structure to specify namespace variable keys and their values for namespace substitution during long-term memory extraction.</p>"
+    },
     "ExtractionJob":{
       "type":"structure",
       "required":["jobId"],
@@ -4928,6 +4948,12 @@
           "documentation":"<p>The identifier of the memory record to retrieve.</p>",
           "location":"uri",
           "locationName":"memoryRecordId"
+        },
+        "namespace":{
+          "shape":"Namespace",
+          "documentation":"<p>The namespace of the memory record to retrieve. This value is used for IAM condition key authorization.</p>",
+          "location":"querystring",
+          "locationName":"namespace"
         }
       }
     },
@@ -8146,6 +8172,24 @@
       "min":12,
       "pattern":"(arn:(aws|aws-cn|aws-us-gov):bedrock-agentcore:[a-z0-9-]+:[0-9]{12}:memory/)?[a-zA-Z][a-zA-Z0-9-_]{0,99}-[a-zA-Z0-9]{10}"
     },
+    "MemoryJsonData":{
+      "type":"structure",
+      "required":["content"],
+      "members":{
+        "content":{
+          "shape":"MemoryJsonDataContent",
+          "documentation":"<p>The JSON content of the payload. Accepts any JSON value, including objects, arrays, strings, numbers, booleans, and null. The maximum size is 100 KB.</p>"
+        }
+      },
+      "documentation":"<p>Contains non-conversational, JSON-formatted content for an event payload. JSON payloads are extracted into long-term memory.</p>",
+      "sensitive":true
+    },
+    "MemoryJsonDataContent":{
+      "type":"structure",
+      "members":{},
+      "document":true,
+      "sensitive":true
+    },
     "MemoryMetadataFilterExpression":{
       "type":"structure",
       "required":[
@@ -8254,6 +8298,10 @@
         "memoryRecordId":{
           "shape":"MemoryRecordId",
           "documentation":"<p>The unique ID of the memory record to be deleted.</p>"
+        },
+        "namespace":{
+          "shape":"Namespace",
+          "documentation":"<p>The namespace of the memory record being deleted. This value is used for IAM condition key authorization.</p>"
         }
       },
       "documentation":"<p>Input structure to delete an existing memory record.</p>"
@@ -8435,6 +8483,10 @@
         "namespaces":{
           "shape":"NamespacesList",
           "documentation":"<p>The updated list of namespace identifiers for categorizing the memory record.</p>"
+        },
+        "sourceNamespaces":{
+          "shape":"NamespacesList",
+          "documentation":"<p>The namespaces of the source memory record being updated. This value is used for IAM condition key authorization.</p>"
         },
         "memoryStrategyId":{
           "shape":"MemoryStrategyId",
@@ -8802,6 +8854,28 @@
       "min":1,
       "pattern":"[a-zA-Z0-9/*][a-zA-Z0-9-_/*]*(?::[a-zA-Z0-9-_/*]+)*[a-zA-Z0-9-_/*]*"
     },
+    "NamespaceVariableName":{
+      "type":"string",
+      "documentation":"<p>The name of the namespace variable key. The name cannot be a built-in variable name (<code>actorId</code>, <code>sessionId</code>, or <code>memoryStrategyId</code>).</p>",
+      "max":32,
+      "min":1,
+      "pattern":"(?!memoryStrategyId$|actorId$|sessionId$)[a-z][a-z0-9]*"
+    },
+    "NamespaceVariableValue":{
+      "type":"string",
+      "documentation":"<p>The value of a namespace variable key.</p>",
+      "max":64,
+      "min":1,
+      "pattern":"[a-z0-9][a-z0-9-_]*"
+    },
+    "NamespaceVariablesMap":{
+      "type":"map",
+      "key":{"shape":"NamespaceVariableName"},
+      "value":{"shape":"NamespaceVariableValue"},
+      "documentation":"<p>A map of <code>namespaceKeys</code> to their values for namespace substitution.</p>",
+      "max":5,
+      "min":1
+    },
     "NamespacesList":{
       "type":"list",
       "member":{"shape":"Namespace"},
@@ -9019,6 +9093,10 @@
         "blob":{
           "shape":"MemoryDocument",
           "documentation":"<p>The binary content of the payload.</p>"
+        },
+        "json":{
+          "shape":"MemoryJsonData",
+          "documentation":"<p>The JSON content of the payload. Use this type to store non-conversational, JSON-formatted data, such as behavioral events, activity logs, or system events.</p>"
         }
       },
       "documentation":"<p>Contains the payload content for an event.</p>",

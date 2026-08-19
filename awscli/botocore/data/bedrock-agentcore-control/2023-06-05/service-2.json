@@ -4049,7 +4049,7 @@
         },
         "rateLimits":{
           "shape":"BatchPutLimitEntries",
-          "documentation":"<p>Complete set of rate limits for this gateway. Replaces all existing limits atomically.</p>"
+          "documentation":"<p>The complete set of rate limits for this gateway. This operation replaces all existing rate limits in a single request. If the operation fails, no rate limits are changed.</p>"
         }
       }
     },
@@ -4078,16 +4078,22 @@
       "members":{
         "rateLimitId":{
           "shape":"GatewayRateLimitId",
-          "documentation":"<p>Optional — if provided, used for upsert matching against existing limits.</p>"
+          "documentation":"<p>The unique identifier of the rate limit. If provided, the service uses it for upsert matching against existing rate limits.</p>"
         },
         "description":{
           "shape":"GatewayRateLimitDescription",
-          "documentation":"<p>Optional human-readable description for this limit.</p>"
+          "documentation":"<p>An optional human-readable description for this rate limit. If not provided, the rate limit is created without a description.</p>"
         },
-        "dimensionKeys":{"shape":"DimensionKeys"},
-        "entries":{"shape":"LimitEntries"}
+        "dimensionKeys":{
+          "shape":"DimensionKeys",
+          "documentation":"<p>The ordered list of dimension key names that define the scope of this rate limit.</p>"
+        },
+        "entries":{
+          "shape":"LimitEntries",
+          "documentation":"<p>The list of rule entries that map dimension values to rate configurations.</p>"
+        }
       },
-      "documentation":"<p>A limit definition within a BatchPut request (rateLimitId used for upsert matching)</p>"
+      "documentation":"<p>A rate limit definition within a batch put request. If you provide a <code>rateLimitId</code>, the service uses it for upsert matching against existing rate limits.</p>"
     },
     "BedrockAgentcoreResourceArn":{
       "type":"string",
@@ -6072,19 +6078,19 @@
         },
         "rateLimitId":{
           "shape":"GatewayRateLimitId",
-          "documentation":"<p>Optional customer-defined limit ID. If not provided, system generates one.</p>"
+          "documentation":"<p>An optional customer-defined identifier for the rate limit. If not provided, the system generates one.</p>"
         },
         "description":{
           "shape":"GatewayRateLimitDescription",
-          "documentation":"<p>Optional human-readable description for this limit.</p>"
+          "documentation":"<p>An optional human-readable description for this rate limit. If not provided, the rate limit is created without a description.</p>"
         },
         "dimensionKeys":{
           "shape":"DimensionKeys",
-          "documentation":"<p>Ordered list of dimension names defining the scope of this limit. Unique per gateway — no two limits can share the same dimensionKeys.</p>"
+          "documentation":"<p>The ordered list of dimension key names that define the scope of this rate limit. Must be unique per gateway—no two rate limits can share the same dimension keys.</p>"
         },
         "entries":{
           "shape":"LimitEntries",
-          "documentation":"<p>Rule entries mapping dimension values to rate configurations.</p>"
+          "documentation":"<p>The rule entries that map dimension values to rate configurations.</p>"
         }
       }
     },
@@ -6100,18 +6106,30 @@
         "updatedAt"
       ],
       "members":{
-        "rateLimitId":{"shape":"GatewayRateLimitId"},
+        "rateLimitId":{
+          "shape":"GatewayRateLimitId",
+          "documentation":"<p>The unique identifier of the created rate limit.</p>"
+        },
         "gatewayIdentifier":{
           "shape":"GatewayIdentifier",
           "documentation":"<p>The unique identifier of the gateway.</p>"
         },
         "description":{
           "shape":"GatewayRateLimitDescription",
-          "documentation":"<p>Optional human-readable description for this limit.</p>"
+          "documentation":"<p>The human-readable description of the rate limit.</p>"
         },
-        "dimensionKeys":{"shape":"DimensionKeys"},
-        "entries":{"shape":"LimitEntries"},
-        "status":{"shape":"GatewayRateLimitStatus"},
+        "dimensionKeys":{
+          "shape":"DimensionKeys",
+          "documentation":"<p>The ordered list of dimension key names that define the scope of this rate limit.</p>"
+        },
+        "entries":{
+          "shape":"LimitEntries",
+          "documentation":"<p>The list of rule entries that map dimension values to rate configurations.</p>"
+        },
+        "status":{
+          "shape":"GatewayRateLimitStatus",
+          "documentation":"<p>The current status of the rate limit.</p>"
+        },
         "createdAt":{
           "shape":"DateTimestamp",
           "documentation":"<p>The timestamp when the rate limit was created.</p>"
@@ -6121,7 +6139,7 @@
           "documentation":"<p>The timestamp when the rate limit was last updated.</p>"
         }
       },
-      "documentation":"<p>Shared fields for GatewayRateLimit responses</p>"
+      "documentation":"<p>Shared fields for <code>GatewayRateLimit</code> responses.</p>"
     },
     "CreateGatewayRequest":{
       "type":"structure",
@@ -6671,6 +6689,10 @@
         "indexedKeys":{
           "shape":"IndexedKeysList",
           "documentation":"<p>Metadata keys to index for filtering. Once declared, indexed keys cannot be removed.</p>"
+        },
+        "namespaceKeys":{
+          "shape":"NamespaceKeysList",
+          "documentation":"<p>The namespace variable key definitions with optional validation rules. Use these <code>namespaceKeys</code> in <code>namespaceTemplates</code> to control namespace hierarchy.</p>"
         },
         "streamDeliveryResources":{
           "shape":"StreamDeliveryResources",
@@ -7801,7 +7823,10 @@
           "shape":"ClientAuthenticationMethodType",
           "documentation":"<p>The client authentication method to use when authenticating with the token endpoint.</p>"
         },
-        "privateKeyJwtConfig":{"shape":"PrivateKeyJwtConfig"},
+        "privateKeyJwtConfig":{
+          "shape":"PrivateKeyJwtConfig",
+          "documentation":"<p>The private_key_jwt client authentication configuration for this credential provider. When specified, the credential provider uses JWT client assertions to authenticate with the token endpoint.</p>"
+        },
         "privateEndpoint":{
           "shape":"PrivateEndpoint",
           "documentation":"<p>The default private endpoint for the custom OAuth2 provider, enabling secure connectivity through a VPC Lattice resource configuration.</p>"
@@ -7841,7 +7866,10 @@
           "shape":"PrivateEndpointOverrides",
           "documentation":"<p>The private endpoint overrides for the custom OAuth2 provider configuration.</p>"
         },
-        "privateKeyJwtConfig":{"shape":"PrivateKeyJwtConfig"}
+        "privateKeyJwtConfig":{
+          "shape":"PrivateKeyJwtConfig",
+          "documentation":"<p>The configuration for private_key_jwt client authentication used by this OAuth2 credential provider.</p>"
+        }
       },
       "documentation":"<p>Output configuration for a custom OAuth2 provider.</p>"
     },
@@ -8581,8 +8609,14 @@
         "status"
       ],
       "members":{
-        "rateLimitId":{"shape":"GatewayRateLimitId"},
-        "status":{"shape":"GatewayRateLimitStatus"}
+        "rateLimitId":{
+          "shape":"GatewayRateLimitId",
+          "documentation":"<p>The unique identifier of the deleted rate limit.</p>"
+        },
+        "status":{
+          "shape":"GatewayRateLimitStatus",
+          "documentation":"<p>The current status of the rate limit deletion.</p>"
+        }
       }
     },
     "DeleteGatewayRequest":{
@@ -9245,7 +9279,7 @@
     },
     "DimensionKey":{
       "type":"string",
-      "documentation":"<p>A dimension key specifying the scope dimension for rate limiting. Allowed values: &quot;targetName&quot;, &quot;toolName&quot;, &quot;qualifiedModelId&quot;, or context-path expressions: &quot;$.context.iam.principal&quot;, &quot;$.context.iam.sourceIdentity&quot;, &quot;$.context.jwt.<claim>&quot; where <claim> is a JWT claim name (e.g., &quot;$.context.jwt.sub&quot;). Validated server-side to enforce allowed prefixes and patterns.</p>",
+      "documentation":"<p>A dimension key specifying the scope dimension for rate limiting.</p> <p>Allowed values: <code>targetName</code>, <code>toolName</code>, <code>qualifiedModelId</code>, or context-path expressions: <code>$.context.iam.principal</code>, <code>$.context.iam.sourceIdentity</code>, <code>$.context.jwt.&lt;claim&gt;</code> where <code>&lt;claim&gt;</code> is a JWT claim name (for example, <code>$.context.jwt.sub</code>). Validated server-side to enforce allowed prefixes and patterns.</p>",
       "max":80,
       "min":1,
       "pattern":"(targetName|toolName|qualifiedModelId|\\$\\.context\\.iam\\.principal|\\$\\.context\\.iam\\.sourceIdentity|\\$\\.context\\.jwt\\.[a-zA-Z_][a-zA-Z0-9_\\-\\.]{0,61}[a-zA-Z0-9_])"
@@ -9253,13 +9287,13 @@
     "DimensionKeys":{
       "type":"list",
       "member":{"shape":"DimensionKey"},
-      "documentation":"<p>Ordered list of dimension key names defining the scope of a limit</p>",
+      "documentation":"<p>An ordered list of dimension key names defining the scope of a limit.</p>",
       "max":10,
       "min":1
     },
     "DimensionValue":{
       "type":"string",
-      "documentation":"<p>A dimension value in a rule entry (exact value or &quot;*&quot; wildcard)</p>",
+      "documentation":"<p>A dimension value in a rule entry (exact value or <code>*</code> wildcard).</p>",
       "max":256,
       "min":1
     },
@@ -10317,7 +10351,7 @@
     },
     "GatewayRateLimitDescription":{
       "type":"string",
-      "documentation":"<p>Optional human-readable description for a gateway limit.</p>",
+      "documentation":"<p>An optional human-readable description for a gateway limit.</p>",
       "max":512,
       "min":0
     },
@@ -10333,18 +10367,30 @@
         "updatedAt"
       ],
       "members":{
-        "rateLimitId":{"shape":"GatewayRateLimitId"},
+        "rateLimitId":{
+          "shape":"GatewayRateLimitId",
+          "documentation":"<p>The unique identifier of the rate limit.</p>"
+        },
         "gatewayIdentifier":{
           "shape":"GatewayIdentifier",
           "documentation":"<p>The unique identifier of the gateway.</p>"
         },
         "description":{
           "shape":"GatewayRateLimitDescription",
-          "documentation":"<p>Optional human-readable description for this limit.</p>"
+          "documentation":"<p>The human-readable description of the rate limit.</p>"
         },
-        "dimensionKeys":{"shape":"DimensionKeys"},
-        "entries":{"shape":"LimitEntries"},
-        "status":{"shape":"GatewayRateLimitStatus"},
+        "dimensionKeys":{
+          "shape":"DimensionKeys",
+          "documentation":"<p>The ordered list of dimension key names that define the scope of this rate limit.</p>"
+        },
+        "entries":{
+          "shape":"LimitEntries",
+          "documentation":"<p>The list of rule entries that map dimension values to rate configurations.</p>"
+        },
+        "status":{
+          "shape":"GatewayRateLimitStatus",
+          "documentation":"<p>The current status of the rate limit.</p>"
+        },
         "createdAt":{
           "shape":"DateTimestamp",
           "documentation":"<p>The timestamp when the rate limit was created.</p>"
@@ -10354,11 +10400,11 @@
           "documentation":"<p>The timestamp when the rate limit was last updated.</p>"
         }
       },
-      "documentation":"<p>Shared fields for GatewayRateLimit responses</p>"
+      "documentation":"<p>Contains detailed information about a gateway rate limit, including its configuration and current status.</p>"
     },
     "GatewayRateLimitId":{
       "type":"string",
-      "documentation":"<p>Limit identifier. Optional on Create (system-generates if not provided by customer). Always present in responses.</p>",
+      "documentation":"<p>The limit identifier. Optional on create (the system generates it if not provided by the customer). Always present in responses.</p>",
       "max":64,
       "min":2,
       "pattern":"[a-zA-Z0-9][a-zA-Z0-9\\-_\\.]{0,62}[a-zA-Z0-9]"
@@ -10377,7 +10423,7 @@
     },
     "GatewayRateLimitStatus":{
       "type":"string",
-      "documentation":"<p>Status of a gateway limit</p>",
+      "documentation":"<p>The status of a gateway limit.</p>",
       "enum":[
         "CREATING",
         "ACTIVE",
@@ -11523,18 +11569,30 @@
         "updatedAt"
       ],
       "members":{
-        "rateLimitId":{"shape":"GatewayRateLimitId"},
+        "rateLimitId":{
+          "shape":"GatewayRateLimitId",
+          "documentation":"<p>The unique identifier of the rate limit.</p>"
+        },
         "gatewayIdentifier":{
           "shape":"GatewayIdentifier",
           "documentation":"<p>The unique identifier of the gateway.</p>"
         },
         "description":{
           "shape":"GatewayRateLimitDescription",
-          "documentation":"<p>Optional human-readable description for this limit.</p>"
+          "documentation":"<p>The human-readable description of the rate limit.</p>"
         },
-        "dimensionKeys":{"shape":"DimensionKeys"},
-        "entries":{"shape":"LimitEntries"},
-        "status":{"shape":"GatewayRateLimitStatus"},
+        "dimensionKeys":{
+          "shape":"DimensionKeys",
+          "documentation":"<p>The ordered list of dimension key names that define the scope of this rate limit.</p>"
+        },
+        "entries":{
+          "shape":"LimitEntries",
+          "documentation":"<p>The list of rule entries that map dimension values to rate configurations.</p>"
+        },
+        "status":{
+          "shape":"GatewayRateLimitStatus",
+          "documentation":"<p>The current status of the rate limit.</p>"
+        },
         "createdAt":{
           "shape":"DateTimestamp",
           "documentation":"<p>The timestamp when the rate limit was created.</p>"
@@ -11544,7 +11602,7 @@
           "documentation":"<p>The timestamp when the rate limit was last updated.</p>"
         }
       },
-      "documentation":"<p>Shared fields for GatewayRateLimit responses</p>"
+      "documentation":"<p>Shared fields for <code>GatewayRateLimit</code> responses.</p>"
     },
     "GetGatewayRequest":{
       "type":"structure",
@@ -14945,7 +15003,7 @@
     "LimitEntries":{
       "type":"list",
       "member":{"shape":"LimitEntry"},
-      "documentation":"<p>List of rule entries within a limit</p>",
+      "documentation":"<p>A list of rule entries within a limit.</p>",
       "max":1000,
       "min":1
     },
@@ -14955,28 +15013,28 @@
       "members":{
         "dimensions":{
           "shape":"LimitEntryDimensionsMap",
-          "documentation":"<p>Map of dimension name to dimension value, matching the parent limit's dimensionKeys. Keys must exactly match the dimensionKeys. Values may be &quot;<em>&quot; as a wildcard. &quot;</em>&quot; may only appear at trailing positions (based on dimensionKeys ordering).</p>"
+          "documentation":"<p>A map of dimension names to dimension values for this rule entry. Keys must match the parent rate limit's dimension keys. Values may use <code>*</code> as a wildcard, but only in trailing positions based on the dimension keys ordering.</p>"
         },
         "requests":{
           "shape":"RateConfigs",
-          "documentation":"<p>Request rate limits (RPS or RPM). Limited to 1 entry for now.</p>"
+          "documentation":"<p>The request rate limit configuration. Specifies the maximum number of requests allowed per time period.</p>"
         },
         "tokens":{
           "shape":"RateConfigs",
-          "documentation":"<p>Token rate limits (TPM). Limited to 1 entry for now. — P1</p>"
+          "documentation":"<p>The token rate limit configuration. Specifies the maximum number of tokens allowed per time period.</p>"
         },
         "connections":{
           "shape":"RateConfigs",
-          "documentation":"<p>Connection rate limits (per second only). Limited to 1 entry for now. — P2</p>"
+          "documentation":"<p>The connection rate limit configuration. Specifies the maximum number of concurrent connections allowed.</p>"
         }
       },
-      "documentation":"<p>A single rule entry within a limit, mapping dimension values to rate configurations</p>"
+      "documentation":"<p>A single rule entry within a rate limit that maps dimension values to rate configurations. Each entry defines the rate limits for a specific combination of dimension values.</p>"
     },
     "LimitEntryDimensionsMap":{
       "type":"map",
       "key":{"shape":"DimensionKey"},
       "value":{"shape":"DimensionValue"},
-      "documentation":"<p>Map of dimension name to dimension value for a rule entry</p>",
+      "documentation":"<p>A map of dimension name to dimension value for a rule entry.</p>",
       "max":10,
       "min":1
     },
@@ -16890,6 +16948,10 @@
           "shape":"IndexedKeysList",
           "documentation":"<p>The indexed metadata keys for this memory. Only indexed keys can be used in metadata filters.</p>"
         },
+        "namespaceKeys":{
+          "shape":"NamespaceKeysList",
+          "documentation":"<p>The namespace variable key definitions for this memory. Namespace keys define custom variables used in <code>namespaceTemplates</code> with optional validation rules.</p>"
+        },
         "streamDeliveryResources":{
           "shape":"StreamDeliveryResources",
           "documentation":"<p>Configuration for streaming memory record data to external resources.</p>"
@@ -17441,7 +17503,65 @@
       "type":"string",
       "max":512,
       "min":1,
-      "pattern":"[a-zA-Z0-9\\-_\\/]*(\\{(actorId|sessionId|memoryStrategyId)\\}[a-zA-Z0-9\\-_\\/]*)*"
+      "pattern":"[a-zA-Z0-9\\-_\\/]*(\\{[a-zA-Z][a-zA-Z0-9]*\\}[a-zA-Z0-9\\-_\\/]*)*"
+    },
+    "NamespaceAllowedValue":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"[a-z0-9][a-z0-9-_]*"
+    },
+    "NamespaceAllowedValuesList":{
+      "type":"list",
+      "member":{"shape":"NamespaceAllowedValue"},
+      "max":10,
+      "min":1
+    },
+    "NamespaceKeyEntry":{
+      "type":"structure",
+      "required":["key"],
+      "members":{
+        "key":{
+          "shape":"NamespaceVariableKey",
+          "documentation":"<p>The namespace variable key name.</p>"
+        },
+        "validation":{
+          "shape":"NamespaceKeyValidation",
+          "documentation":"<p>The validation rules that constrain values for this namespace variable at runtime (<code>CreateEvent</code> API).</p>"
+        }
+      },
+      "documentation":"<p>A namespace variable key definition with optional <code>NamespaceKeyValidation</code> rules.</p>"
+    },
+    "NamespaceKeyValidation":{
+      "type":"structure",
+      "members":{
+        "allowedValues":{
+          "shape":"NamespaceAllowedValuesList",
+          "documentation":"<p>The allowed values for this namespace variable key.</p>"
+        },
+        "regexPattern":{
+          "shape":"NamespaceRegexPattern",
+          "documentation":"<p>A regex pattern that the namespace variable key-value must match.</p>"
+        }
+      },
+      "documentation":"<p>The validation rules for namespace variable values. When you specify multiple rules, the service enforces a logical <code>AND</code> across all provided key-value pairs.</p>"
+    },
+    "NamespaceKeysList":{
+      "type":"list",
+      "member":{"shape":"NamespaceKeyEntry"},
+      "max":5,
+      "min":1
+    },
+    "NamespaceRegexPattern":{
+      "type":"string",
+      "max":64,
+      "min":1
+    },
+    "NamespaceVariableKey":{
+      "type":"string",
+      "max":32,
+      "min":1,
+      "pattern":"(?!memoryStrategyId$|actorId$|sessionId$)[a-z][a-z0-9]*"
     },
     "NamespacesList":{
       "type":"list",
@@ -18323,7 +18443,7 @@
     },
     "Period":{
       "type":"string",
-      "documentation":"<p>Time period for rate limiting</p>",
+      "documentation":"<p>The time period for rate limiting.</p>",
       "enum":[
         "second",
         "minute"
@@ -18918,7 +19038,7 @@
           "documentation":"<p>A map of additional claims to include in the JWT client assertion payload. Payload claims generated by the service, such as <code>iss</code>, <code>sub</code>, <code>jti</code>, and <code>exp</code>, cannot be added.</p>"
         }
       },
-      "documentation":"<p>Configuration for private_key_jwt client authentication (RFC 7523). On Create: privateKeySource and signingAlgorithm are required (enforced server-side). On Update: all fields are optional — only provided fields are updated.</p>"
+      "documentation":"<p>The private key configuration for private_key_jwt client authentication.</p>"
     },
     "PrivateKeySource":{
       "type":"structure",
@@ -19016,9 +19136,12 @@
           "shape":"RateConfigRateDouble",
           "documentation":"<p>The rate value for the limit. For request limits, this is the number of requests allowed per period. For token limits, this is the number of tokens allowed per period. For connection limits, this is the number of concurrent connections allowed.</p>"
         },
-        "period":{"shape":"Period"}
+        "period":{
+          "shape":"Period",
+          "documentation":"<p>The time period for the rate limit. Valid values:</p> <ul> <li> <p> <code>second</code>—Measures the rate limit over a one-second window.</p> </li> <li> <p> <code>minute</code>—Measures the rate limit over a one-minute window.</p> </li> </ul>"
+        }
       },
-      "documentation":"<p>Rate configuration for a metric (requests or tokens)</p>"
+      "documentation":"<p>Contains the rate configuration for a rate limit metric, specifying the allowed rate and time period.</p>"
     },
     "RateConfigRateDouble":{
       "type":"double",
@@ -19029,7 +19152,7 @@
     "RateConfigs":{
       "type":"list",
       "member":{"shape":"RateConfig"},
-      "documentation":"<p>List of rate configs (limited to 1 for now, array for future multi-period support)</p>",
+      "documentation":"<p>A list of rate configurations for the limit. Currently supports one entry per limit.</p>",
       "max":1,
       "min":1
     },
@@ -22175,11 +22298,11 @@
         },
         "description":{
           "shape":"GatewayRateLimitDescription",
-          "documentation":"<p>Optional human-readable description for this limit.</p>"
+          "documentation":"<p>The updated human-readable description for this rate limit.</p>"
         },
         "entries":{
           "shape":"LimitEntries",
-          "documentation":"<p>Updated rule entries. key and dimensionKeys are immutable and cannot be changed.</p>"
+          "documentation":"<p>The updated rule entries. The dimension keys are immutable after creation and cannot be changed.</p>"
         }
       }
     },
@@ -22195,18 +22318,30 @@
         "updatedAt"
       ],
       "members":{
-        "rateLimitId":{"shape":"GatewayRateLimitId"},
+        "rateLimitId":{
+          "shape":"GatewayRateLimitId",
+          "documentation":"<p>The unique identifier of the rate limit.</p>"
+        },
         "gatewayIdentifier":{
           "shape":"GatewayIdentifier",
           "documentation":"<p>The unique identifier of the gateway.</p>"
         },
         "description":{
           "shape":"GatewayRateLimitDescription",
-          "documentation":"<p>Optional human-readable description for this limit.</p>"
+          "documentation":"<p>The human-readable description of the rate limit.</p>"
         },
-        "dimensionKeys":{"shape":"DimensionKeys"},
-        "entries":{"shape":"LimitEntries"},
-        "status":{"shape":"GatewayRateLimitStatus"},
+        "dimensionKeys":{
+          "shape":"DimensionKeys",
+          "documentation":"<p>The ordered list of dimension key names that define the scope of this rate limit.</p>"
+        },
+        "entries":{
+          "shape":"LimitEntries",
+          "documentation":"<p>The list of rule entries that map dimension values to rate configurations.</p>"
+        },
+        "status":{
+          "shape":"GatewayRateLimitStatus",
+          "documentation":"<p>The current status of the rate limit.</p>"
+        },
         "createdAt":{
           "shape":"DateTimestamp",
           "documentation":"<p>The timestamp when the rate limit was created.</p>"
@@ -22216,7 +22351,7 @@
           "documentation":"<p>The timestamp when the rate limit was last updated.</p>"
         }
       },
-      "documentation":"<p>Shared fields for GatewayRateLimit responses</p>"
+      "documentation":"<p>Shared fields for <code>GatewayRateLimit</code> responses.</p>"
     },
     "UpdateGatewayRequest":{
       "type":"structure",
@@ -22755,6 +22890,10 @@
         "addIndexedKeys":{
           "shape":"IndexedKeysList",
           "documentation":"<p>Additional metadata keys to index. Previously indexed keys cannot be removed.</p>"
+        },
+        "namespaceKeys":{
+          "shape":"NamespaceKeysList",
+          "documentation":"<p>The namespace variable key definitions with validation rules for this memory. Use this parameter to update existing <code>namespaceKey</code> validation rules or add new keys when namespace templates change.</p>"
         },
         "streamDeliveryResources":{
           "shape":"StreamDeliveryResources",

@@ -83,6 +83,21 @@ class TestBaseLogin(unittest.TestCase):
         ):
             self.test_subject._run_commands('tool', ['cmd'])
 
+    def test_run_commands_command_failed_redact_auth_token_in_stderr(self):
+        error_to_be_caught = subprocess.CalledProcessError(
+            returncode=1,
+            cmd=['cmd'],
+            output=None,
+            stderr=b'Command error message containing auth-token here.'
+        )
+        self.subprocess_utils.run.side_effect = error_to_be_caught
+        with self.assertRaisesRegex(
+            CommandFailedError,
+            rf"(?=.*cmd)(?!.*auth-token)"
+            rf"(?=.*Stderr from command:\nCommand error message containing \*\*\*\*\*\* here.)"
+        ):
+            self.test_subject._run_commands('tool', ['cmd'])
+
     def test_run_commands_nonexistent_command(self):
         self.subprocess_utils.run.side_effect = OSError(
             errno.ENOENT, 'not found error'

@@ -866,7 +866,8 @@
         "EC2",
         "SPOT",
         "FARGATE",
-        "FARGATE_SPOT"
+        "FARGATE_SPOT",
+        "ECS_MANAGED_INSTANCES"
       ]
     },
     "CRUpdateAllocationStrategy":{
@@ -918,6 +919,20 @@
     "CapacityLimits":{
       "type":"list",
       "member":{"shape":"CapacityLimit"}
+    },
+    "CapacityReservationRequest":{
+      "type":"structure",
+      "members":{
+        "reservationGroupArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the capacity reservation group to target.</p>"
+        },
+        "reservationPreference":{
+          "shape":"String",
+          "documentation":"<p>The capacity reservation preference. Valid values:</p> <ul> <li> <p> <code>RESERVATIONS_ONLY</code> — Use only capacity reservations.</p> </li> <li> <p> <code>RESERVATIONS_FIRST</code> — Prefer capacity reservations but fall back to On-Demand if unavailable.</p> </li> <li> <p> <code>RESERVATIONS_EXCLUDED</code> — Do not use capacity reservations.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>The capacity reservation configuration for Amazon ECS Managed Instances. Use this to target On-Demand Capacity Reservations or Reserved Instances.</p>"
     },
     "ClientException":{
       "type":"structure",
@@ -1046,7 +1061,7 @@
       "members":{
         "type":{
           "shape":"CRType",
-          "documentation":"<p>The type of compute environment: <code>EC2</code>, <code>SPOT</code>, <code>FARGATE</code>, or <code>FARGATE_SPOT</code>. For more information, see <a href=\"https://docs.aws.amazon.com/batch/latest/userguide/compute_environments.html\">Compute environments</a> in the <i>Batch User Guide</i>.</p> <p> If you choose <code>SPOT</code>, you must also specify an Amazon EC2 Spot Fleet role with the <code>spotIamFleetRole</code> parameter. For more information, see <a href=\"https://docs.aws.amazon.com/batch/latest/userguide/spot_fleet_IAM_role.html\">Amazon EC2 spot fleet role</a> in the <i>Batch User Guide</i>.</p> <note> <p>Multi-node parallel jobs aren't supported on Spot Instances.</p> </note>"
+          "documentation":"<p>The type of compute environment: <code>EC2</code>, <code>SPOT</code>, <code>FARGATE</code>, <code>FARGATE_SPOT</code>, or <code>ECS_MANAGED_INSTANCES</code>. For more information, see <a href=\"https://docs.aws.amazon.com/batch/latest/userguide/compute_environments.html\">Compute environments</a> in the <i>Batch User Guide</i>.</p> <p> If you choose <code>SPOT</code>, you must also specify an Amazon EC2 Spot Fleet role with the <code>spotIamFleetRole</code> parameter. For more information, see <a href=\"https://docs.aws.amazon.com/batch/latest/userguide/spot_fleet_IAM_role.html\">Amazon EC2 spot fleet role</a> in the <i>Batch User Guide</i>.</p> <p>If you choose <code>ECS_MANAGED_INSTANCES</code>, you must also specify a <code>managedInstancesProvider</code> configuration. To use Spot capacity, set <code>capacityOptionType</code> to <code>SPOT</code> in the <code>managedInstancesProvider.instanceLaunchTemplate</code> configuration. For more information, see <a href=\"https://docs.aws.amazon.com/batch/latest/userguide/ecs_managed_instances.html\">Amazon ECS Managed Instances compute environments</a> in the <i>Batch User Guide</i>.</p> <note> <p>Multi-node parallel jobs aren't supported on Spot Instances or Amazon ECS Managed Instances.</p> </note>"
         },
         "allocationStrategy":{
           "shape":"CRAllocationStrategy",
@@ -1117,6 +1132,14 @@
         "scalingPolicy":{
           "shape":"ComputeScalingPolicy",
           "documentation":"<p>The scaling policy configuration for the compute environment.</p> <note> <p>This parameter isn't applicable to jobs that are running on Fargate resources. Don't specify it.</p> </note>"
+        },
+        "managedInstancesProvider":{
+          "shape":"ManagedInstancesProvider",
+          "documentation":"<p>The configuration for the Amazon ECS Managed Instances capacity provider. This parameter is required when <code>computeResources.type</code> is <code>ECS_MANAGED_INSTANCES</code> and must not be specified for other compute environment types.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/batch/latest/userguide/ecs_managed_instances.html\">Amazon ECS Managed Instances compute environments</a> in the <i>Batch User Guide</i>.</p>"
+        },
+        "capacityTags":{
+          "shape":"TagrisTagsMap",
+          "documentation":"<p>The tags to apply to the Amazon ECS capacity provider and Amazon EC2 instances launched by the compute environment. These tags are separate from the compute environment resource tags (the top-level <code>tags</code> parameter). Use <code>capacityTags</code> for cost allocation and organization of the underlying infrastructure resources.</p> <p>This parameter is only valid for <code>ECS_MANAGED_INSTANCES</code> compute environments. You must have the <code>batch:SetCapacityTags</code> permission on the compute environment resource to use this parameter.</p>"
         }
       },
       "documentation":"<p>An object that represents an Batch compute resource. For more information, see <a href=\"https://docs.aws.amazon.com/batch/latest/userguide/compute_environments.html\">Compute environments</a> in the <i>Batch User Guide</i>.</p>"
@@ -1186,7 +1209,7 @@
         },
         "type":{
           "shape":"CRType",
-          "documentation":"<p>The type of compute environment: <code>EC2</code>, <code>SPOT</code>, <code>FARGATE</code>, or <code>FARGATE_SPOT</code>. For more information, see <a href=\"https://docs.aws.amazon.com/batch/latest/userguide/compute_environments.html\">Compute environments</a> in the <i>Batch User Guide</i>.</p> <p> If you choose <code>SPOT</code>, you must also specify an Amazon EC2 Spot Fleet role with the <code>spotIamFleetRole</code> parameter. For more information, see <a href=\"https://docs.aws.amazon.com/batch/latest/userguide/spot_fleet_IAM_role.html\">Amazon EC2 spot fleet role</a> in the <i>Batch User Guide</i>.</p> <p>When updating a compute environment, changing the type of a compute environment requires an infrastructure update of the compute environment. For more information, see <a href=\"https://docs.aws.amazon.com/batch/latest/userguide/updating-compute-environments.html\">Updating compute environments</a> in the <i>Batch User Guide</i>.</p>"
+          "documentation":"<p>The type of compute environment: <code>EC2</code>, <code>SPOT</code>, <code>FARGATE</code>, <code>FARGATE_SPOT</code>, or <code>ECS_MANAGED_INSTANCES</code>. For more information, see <a href=\"https://docs.aws.amazon.com/batch/latest/userguide/compute_environments.html\">Compute environments</a> in the <i>Batch User Guide</i>.</p> <p> If you choose <code>SPOT</code>, you must also specify an Amazon EC2 Spot Fleet role with the <code>spotIamFleetRole</code> parameter. For more information, see <a href=\"https://docs.aws.amazon.com/batch/latest/userguide/spot_fleet_IAM_role.html\">Amazon EC2 spot fleet role</a> in the <i>Batch User Guide</i>.</p> <p>When updating a compute environment, changing the type of a compute environment requires an infrastructure update of the compute environment. For more information, see <a href=\"https://docs.aws.amazon.com/batch/latest/userguide/updating-compute-environments.html\">Updating compute environments</a> in the <i>Batch User Guide</i>.</p> <p>You cannot change the type to or from <code>ECS_MANAGED_INSTANCES</code>.</p>"
         },
         "imageId":{
           "shape":"String",
@@ -1195,6 +1218,14 @@
         "scalingPolicy":{
           "shape":"ComputeScalingPolicy",
           "documentation":"<p>The scaling policy configuration for the compute environment.</p> <note> <p>This parameter isn't applicable to jobs that are running on Fargate resources. Don't specify it.</p> </note>"
+        },
+        "managedInstancesProvider":{
+          "shape":"UpdateManagedInstancesProviderConfiguration",
+          "documentation":"<p>The updated configuration for the Amazon ECS Managed Instances capacity provider. This parameter is only valid when the compute environment type is <code>ECS_MANAGED_INSTANCES</code>. You cannot change <code>capacityOptionType</code> or <code>fipsEnabled</code> on update.</p>"
+        },
+        "capacityTags":{
+          "shape":"TagrisTagsMap",
+          "documentation":"<p>The updated tags to apply to the Amazon ECS capacity provider and Amazon EC2 instances. This parameter is only valid for <code>ECS_MANAGED_INSTANCES</code> compute environments. You must have the <code>batch:SetCapacityTags</code> permission on the compute environment resource to use this parameter.</p>"
         }
       },
       "documentation":"<p>An object that represents the attributes of a compute environment that can be updated. For more information, see <a href=\"https://docs.aws.amazon.com/batch/latest/userguide/updating-compute-environments.html\">Updating compute environments</a> in the <i>Batch User Guide</i>.</p>"
@@ -2562,7 +2593,7 @@
         },
         "runtimePlatform":{
           "shape":"RuntimePlatform",
-          "documentation":"<p>An object that represents the compute environment architecture for Batch jobs on Fargate.</p>"
+          "documentation":"<p>An object that represents the compute environment architecture for Batch jobs on Fargate or Amazon ECS Managed Instances. Contains the operating system family and CPU architecture of the task.</p>"
         },
         "volumes":{
           "shape":"Volumes",
@@ -2571,6 +2602,10 @@
         "enableExecuteCommand":{
           "shape":"Boolean",
           "documentation":"<p>Determines whether execute command functionality is turned on for this task. If <code>true</code>, execute command functionality is turned on all the containers in the task.</p>"
+        },
+        "networkMode":{
+          "shape":"String",
+          "documentation":"<p>The network mode configured for the task. This field is populated for jobs running on Amazon ECS Managed Instances (<code>MANAGED_INSTANCES</code> platform capability) and always returns <code>host</code>.</p>"
         }
       },
       "documentation":"<p>The details of a task definition that describes the container and volume definitions of an Amazon ECS task.</p>"
@@ -2609,11 +2644,11 @@
         },
         "networkConfiguration":{
           "shape":"NetworkConfiguration",
-          "documentation":"<p>The network configuration for jobs that are running on Fargate resources. Jobs that are running on Amazon EC2 resources must not specify this parameter.</p>"
+          "documentation":"<p>The network configuration for jobs that are running on Fargate resources. Jobs that are running on Amazon EC2 resources or Amazon ECS Managed Instances must not specify this parameter.</p>"
         },
         "runtimePlatform":{
           "shape":"RuntimePlatform",
-          "documentation":"<p>An object that represents the compute environment architecture for Batch jobs on Fargate.</p>"
+          "documentation":"<p>An object that represents the compute environment architecture for Batch jobs on Fargate or Amazon ECS Managed Instances. Use this to specify the operating system family (<code>operatingSystemFamily</code>) and CPU architecture (<code>cpuArchitecture</code>).</p> <p>For Amazon ECS Managed Instances, the valid value for <code>operatingSystemFamily</code> is <code>LINUX</code> (default). The valid values for <code>cpuArchitecture</code> are <code>X86_64</code> and <code>ARM64</code>.</p>"
         },
         "volumes":{
           "shape":"Volumes",
@@ -2622,6 +2657,10 @@
         "enableExecuteCommand":{
           "shape":"Boolean",
           "documentation":"<p>Determines whether execute command functionality is turned on for this task. If <code>true</code>, execute command functionality is turned on all the containers in the task.</p>"
+        },
+        "networkMode":{
+          "shape":"String",
+          "documentation":"<p>The network mode to use for the task. Valid values: <code>host</code>. When not specified, the default is <code>host</code>.</p> <p>With <code>host</code> mode, the container shares the host instance's network stack directly. When running tasks that use the <code>host</code> network mode, do not run containers using the root user (UID 0). Running as root grants unrestricted access to host resources and increases the attack surface.</p> <p>This parameter only applies to jobs running on Amazon ECS Managed Instances (<code>MANAGED_INSTANCES</code> platform capability). It cannot be specified for Fargate or Amazon EC2 platform job definitions.</p>"
         }
       },
       "documentation":"<p>The properties for a task definition that describes the container and volume definitions of an Amazon ECS task. You can specify which Docker images to use, the required resources, and other configurations related to launching the task definition through an Amazon ECS service or task.</p>"
@@ -3482,6 +3521,114 @@
       "max":256,
       "min":1
     },
+    "InfrastructureOptimization":{
+      "type":"structure",
+      "members":{
+        "scaleInAfter":{
+          "shape":"Integer",
+          "documentation":"<p>The number of seconds an instance can remain idle before it is terminated. Valid values are <code>-1</code> or <code>0</code> to <code>3600</code>. Use <code>-1</code> as a special value to disable scale-in (instances are never terminated for being idle). If not specified, a default value applies.</p>"
+        }
+      },
+      "documentation":"<p>The infrastructure optimization configuration for an Amazon ECS Managed Instances capacity provider. Specifies the idle-instance scale-in behavior.</p>"
+    },
+    "InstanceLaunchTemplate":{
+      "type":"structure",
+      "required":[
+        "ec2InstanceProfileArn",
+        "networkConfiguration"
+      ],
+      "members":{
+        "ec2InstanceProfileArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon EC2 instance profile for the managed instances. The instance profile must use the <code>AmazonECSInstanceRolePolicyForManagedInstances</code> managed policy with a trust policy for <code>ec2.amazonaws.com</code>.</p>"
+        },
+        "networkConfiguration":{
+          "shape":"ManagedInstancesNetworkConfiguration",
+          "documentation":"<p>The network configuration for the managed instances. Specifies the VPC subnets and security groups where instances are launched.</p>"
+        },
+        "instanceRequirements":{
+          "shape":"InstanceRequirementsRequest",
+          "documentation":"<p>The instance type requirements for the capacity provider. Use this to constrain which Amazon EC2 instance types Amazon ECS can launch. If not specified, all available instance types are eligible.</p>"
+        },
+        "capacityOptionType":{
+          "shape":"String",
+          "documentation":"<p>The capacity pricing model for the managed instances. Valid values:</p> <ul> <li> <p> <code>ON_DEMAND</code> (default) — On-Demand pricing.</p> </li> <li> <p> <code>SPOT</code> — Spot Instances, which can provide significant cost savings for fault-tolerant workloads.</p> </li> </ul>"
+        },
+        "storageConfiguration":{
+          "shape":"ManagedInstancesStorageConfiguration",
+          "documentation":"<p>The storage configuration for the managed instances. Configures the root EBS volume size. If not specified, the service uses the default EBS volume size for the instance type.</p>"
+        },
+        "monitoring":{
+          "shape":"String",
+          "documentation":"<p>The level of CloudWatch monitoring for the managed instances. Valid values are <code>BASIC</code> and <code>DETAILED</code>.</p>"
+        },
+        "fipsEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether FIPS 140-2 validated cryptographic modules are enabled on the managed instances. Not available in all Regions.</p>"
+        },
+        "capacityReservations":{
+          "shape":"CapacityReservationRequest",
+          "documentation":"<p>The capacity reservation configuration for the managed instances. Use this to target On-Demand Capacity Reservations or Reserved Instances for predictable capacity and cost optimization.</p>"
+        },
+        "instanceMetadataTagsPropagation":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether instance tags are accessible from the instance metadata service (IMDS). If not specified, instance tags are not accessible from IMDS.</p>"
+        },
+        "localStorageConfiguration":{
+          "shape":"ManagedInstancesLocalStorageConfiguration",
+          "documentation":"<p>The local storage configuration for the managed instances. If not specified, instance store volumes are not available to containers.</p>"
+        }
+      },
+      "documentation":"<p>The instance launch configuration for an Amazon ECS Managed Instances capacity provider. Specifies the instance profile, networking, instance selection constraints, capacity pricing model, storage, and monitoring settings.</p>"
+    },
+    "InstanceLaunchTemplateUpdate":{
+      "type":"structure",
+      "members":{
+        "ec2InstanceProfileArn":{
+          "shape":"String",
+          "documentation":"<p>The updated Amazon Resource Name (ARN) of the Amazon EC2 instance profile for the managed instances.</p>"
+        },
+        "networkConfiguration":{
+          "shape":"ManagedInstancesNetworkConfiguration",
+          "documentation":"<p>The updated network configuration for the managed instances.</p>"
+        },
+        "instanceRequirements":{
+          "shape":"InstanceRequirementsRequest",
+          "documentation":"<p>The updated instance type requirements for the capacity provider.</p>"
+        },
+        "storageConfiguration":{
+          "shape":"ManagedInstancesStorageConfiguration",
+          "documentation":"<p>The updated storage configuration for the managed instances.</p>"
+        },
+        "monitoring":{
+          "shape":"String",
+          "documentation":"<p>The updated monitoring level. Valid values are <code>BASIC</code> and <code>DETAILED</code>.</p>"
+        },
+        "capacityReservations":{
+          "shape":"CapacityReservationRequest",
+          "documentation":"<p>The updated capacity reservation configuration.</p>"
+        },
+        "instanceMetadataTagsPropagation":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether instance tags are accessible from the instance metadata service (IMDS).</p>"
+        },
+        "localStorageConfiguration":{
+          "shape":"ManagedInstancesLocalStorageConfiguration",
+          "documentation":"<p>The updated local storage configuration.</p>"
+        }
+      },
+      "documentation":"<p>The instance launch configuration for updating an Amazon ECS Managed Instances capacity provider. You cannot change <code>capacityOptionType</code> or <code>fipsEnabled</code> after the compute environment is created.</p>"
+    },
+    "InstanceRequirementsRequest":{
+      "type":"structure",
+      "members":{
+        "allowedInstanceTypes":{
+          "shape":"StringList",
+          "documentation":"<p>A list of specific instance types or instance families that Amazon ECS can launch (for example, <code>m5.large</code> or <code>g5</code>). When specified, only these instance types are used.</p>"
+        }
+      },
+      "documentation":"<p>The instance type requirements for the Amazon ECS Managed Instances capacity provider. Use this to specify which Amazon EC2 instance types or instance families Amazon ECS can launch.</p>"
+    },
     "Integer":{"type":"integer"},
     "JQState":{
       "type":"string",
@@ -3582,7 +3729,7 @@
         },
         "platformCapabilities":{
           "shape":"PlatformCapabilityList",
-          "documentation":"<p>The platform capabilities required by the job definition. If no value is specified, it defaults to <code>EC2</code>. Jobs run on Fargate resources specify <code>FARGATE</code>.</p>"
+          "documentation":"<p>The platform capabilities required by the job definition. If no value is specified, it defaults to <code>EC2</code>. Jobs run on Fargate resources specify <code>FARGATE</code>. Jobs run on Amazon ECS Managed Instances specify <code>MANAGED_INSTANCES</code>.</p>"
         },
         "ecsProperties":{
           "shape":"EcsProperties",
@@ -3737,7 +3884,7 @@
         },
         "platformCapabilities":{
           "shape":"PlatformCapabilityList",
-          "documentation":"<p>The platform capabilities required by the job definition. If no value is specified, it defaults to <code>EC2</code>. Jobs run on Fargate resources specify <code>FARGATE</code>.</p>"
+          "documentation":"<p>The platform capabilities required by the job definition. If no value is specified, it defaults to <code>EC2</code>. Jobs run on Fargate resources specify <code>FARGATE</code>. Jobs run on Amazon ECS Managed Instances specify <code>MANAGED_INSTANCES</code>.</p>"
         },
         "eksProperties":{
           "shape":"EksPropertiesDetail",
@@ -3846,7 +3993,8 @@
         "EKS",
         "ECS",
         "ECS_FARGATE",
-        "SAGEMAKER_TRAINING"
+        "SAGEMAKER_TRAINING",
+        "ECS_MANAGED_INSTANCES"
       ]
     },
     "JobStateTimeLimitAction":{
@@ -4496,6 +4644,70 @@
       ]
     },
     "Long":{"type":"long"},
+    "ManagedInstancesLocalStorageConfiguration":{
+      "type":"structure",
+      "members":{
+        "useLocalStorage":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether instance store volumes (local NVMe SSDs) are available to containers. When enabled, containers can use the instance store for high-performance temporary storage.</p>"
+        }
+      },
+      "documentation":"<p>The local storage configuration for Amazon ECS Managed Instances.</p>"
+    },
+    "ManagedInstancesNetworkConfiguration":{
+      "type":"structure",
+      "required":[
+        "subnets",
+        "securityGroups"
+      ],
+      "members":{
+        "subnets":{
+          "shape":"StringList",
+          "documentation":"<p>The VPC subnets where managed instances are launched. If your subnets don't provide public IP addresses, they must have a NAT gateway for outbound internet access.</p>"
+        },
+        "securityGroups":{
+          "shape":"StringList",
+          "documentation":"<p>The VPC security groups to associate with the managed instances.</p>"
+        }
+      },
+      "documentation":"<p>The network configuration for Amazon ECS Managed Instances. Specifies the VPC subnets and security groups where instances are launched.</p>"
+    },
+    "ManagedInstancesProvider":{
+      "type":"structure",
+      "required":[
+        "infrastructureRoleArn",
+        "instanceLaunchTemplate"
+      ],
+      "members":{
+        "propagateTags":{
+          "shape":"String",
+          "documentation":"<p>Specifies whether tags on the capacity provider are propagated to the Amazon EC2 instances it launches. Valid values:</p> <ul> <li> <p> <code>CAPACITY_PROVIDER</code> — Propagates tags to instances.</p> </li> <li> <p> <code>NONE</code> (default) — Does not propagate tags to instances.</p> </li> </ul>"
+        },
+        "infrastructureRoleArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role that Amazon ECS assumes to manage Amazon EC2 instances on your behalf. This role must have a trust policy for <code>ecs.amazonaws.com</code>. You must have the <code>iam:PassRole</code> permission for this role with the condition <code>iam:PassedToService: ecs.amazonaws.com</code>.</p>"
+        },
+        "instanceLaunchTemplate":{
+          "shape":"InstanceLaunchTemplate",
+          "documentation":"<p>The instance launch configuration for the Amazon ECS Managed Instances capacity provider. Contains networking, instance profile, instance requirements, capacity type, storage, and monitoring configuration.</p>"
+        },
+        "infrastructureOptimization":{
+          "shape":"InfrastructureOptimization",
+          "documentation":"<p>The infrastructure optimization configuration for the capacity provider. Specifies the idle-instance scale-in behavior.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for an Amazon ECS Managed Instances capacity provider. This object is required when creating a compute environment with <code>computeResources.type</code> set to <code>ECS_MANAGED_INSTANCES</code>.</p>"
+    },
+    "ManagedInstancesStorageConfiguration":{
+      "type":"structure",
+      "members":{
+        "storageSizeGiB":{
+          "shape":"Integer",
+          "documentation":"<p>The size of the root EBS volume in GiB for the managed instances.</p>"
+        }
+      },
+      "documentation":"<p>The storage configuration for Amazon ECS Managed Instances.</p>"
+    },
     "MountPoint":{
       "type":"structure",
       "members":{
@@ -4705,7 +4917,8 @@
       "type":"string",
       "enum":[
         "EC2",
-        "FARGATE"
+        "FARGATE",
+        "MANAGED_INSTANCES"
       ]
     },
     "PlatformCapabilityList":{
@@ -4989,7 +5202,7 @@
         },
         "platformCapabilities":{
           "shape":"PlatformCapabilityList",
-          "documentation":"<p>The platform capabilities required by the job definition. If no value is specified, it defaults to <code>EC2</code>. To run the job on Fargate resources, specify <code>FARGATE</code>.</p> <note> <p>If the job runs on Amazon EKS resources, then you must not specify <code>platformCapabilities</code>.</p> </note>"
+          "documentation":"<p>The platform capabilities required by the job definition. If no value is specified, it defaults to <code>EC2</code>. To run the job on Fargate resources, specify <code>FARGATE</code>. To run the job on Amazon ECS Managed Instances, specify <code>MANAGED_INSTANCES</code>.</p> <p>Jobs with the <code>MANAGED_INSTANCES</code> platform capability must use <code>ecsProperties</code> (not <code>containerProperties</code>) and do not support multi-node parallel jobs.</p> <note> <p>If the job runs on Amazon EKS resources, then you must not specify <code>platformCapabilities</code>.</p> </note>"
         },
         "eksProperties":{
           "shape":"EksProperties",
@@ -6320,6 +6533,28 @@
           "documentation":"<p>The Amazon Resource Name (ARN) of the job queue.</p>"
         }
       }
+    },
+    "UpdateManagedInstancesProviderConfiguration":{
+      "type":"structure",
+      "members":{
+        "propagateTags":{
+          "shape":"String",
+          "documentation":"<p>Specifies whether tags on the capacity provider are propagated to the Amazon EC2 instances it launches. Valid values:</p> <ul> <li> <p> <code>CAPACITY_PROVIDER</code> — Propagates tags to instances.</p> </li> <li> <p> <code>NONE</code> — Does not propagate tags to instances.</p> </li> </ul>"
+        },
+        "infrastructureRoleArn":{
+          "shape":"String",
+          "documentation":"<p>The updated Amazon Resource Name (ARN) of the IAM role that Amazon ECS assumes to manage Amazon EC2 instances on your behalf.</p>"
+        },
+        "instanceLaunchTemplate":{
+          "shape":"InstanceLaunchTemplateUpdate",
+          "documentation":"<p>The updated instance launch configuration for the Amazon ECS Managed Instances capacity provider.</p>"
+        },
+        "infrastructureOptimization":{
+          "shape":"InfrastructureOptimization",
+          "documentation":"<p>The updated infrastructure optimization configuration.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for updating an Amazon ECS Managed Instances capacity provider. Used in <code>UpdateComputeEnvironment</code> requests. The <code>capacityOptionType</code> and <code>fipsEnabled</code> fields cannot be changed on update.</p>"
     },
     "UpdatePolicy":{
       "type":"structure",

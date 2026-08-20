@@ -49,7 +49,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Adds one or more resources to an existing subscription. The subscription must be in an active state that is not pending other changes.</p> <note> <p>For subscriptions in the CloudFront plan family, the associated resources must include exactly one Amazon CloudFront distribution and one AWS WAF web ACL. You can also include other supported resources, such as Amazon Route 53 hosted zones, and CloudFront KeyValueStores.</p> </note>"
+      "documentation":"<p>Adds one or more resources to an existing subscription. The subscription must be in an active state that is not pending other changes.</p> <note> <p>For subscriptions in the CloudFront plan family, the associated resources must include exactly one Amazon CloudFront distribution and one WAF web ACL. You can also include other supported resources, such as Amazon Route 53 hosted zones, and CloudFront KeyValueStores.</p> </note>"
     },
     "CancelSubscription":{
       "name":"CancelSubscription",
@@ -126,7 +126,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Removes one or more resources from an existing subscription.</p> <note> <p>For subscriptions in the CloudFront plan family, the associated resources must always include exactly one Amazon CloudFront distribution and exactly one AWS WAF web ACL. You cannot remove these required resources.</p> </note>"
+      "documentation":"<p>Removes one or more resources from an existing subscription.</p> <note> <p>For subscriptions in the CloudFront plan family, the associated resources must always include exactly one Amazon CloudFront distribution and exactly one WAF web ACL. You cannot remove these required resources.</p> </note>"
     },
     "GetSubscription":{
       "name":"GetSubscription",
@@ -432,11 +432,11 @@
         },
         "resourceArns":{
           "shape":"ResourceArns",
-          "documentation":"<p>The ARNs of the AWS resources to include in the subscription. Specify one or more supported resources.</p> <note> <p>For subscriptions in the CloudFront plan family, the resources must include exactly one Amazon CloudFront distribution and exactly one AWS WAF web ACL. You can also include other supported resources, such as Amazon Route 53 hosted zones and CloudFront KeyValueStores.</p> </note>"
+          "documentation":"<p>The ARNs of the resources to include in the subscription. Specify one or more supported resources.</p> <note> <p>For subscriptions in the CloudFront plan family, the resources must include exactly one Amazon CloudFront distribution and exactly one WAF web ACL. You can also include other supported resources, such as Amazon Route 53 hosted zones and CloudFront KeyValueStores.</p> </note>"
         },
         "approvalMode":{
           "shape":"ApprovalMode",
-          "documentation":"<p>Determines whether the subscription requires explicit approval before billing starts. Set to <code>MANUAL</code> to require a separate <code>ApprovePaidSubscription</code> call, or <code>IMMEDIATE</code> to activate the subscription right away. Defaults to <code>IMMEDIATE</code> if not specified.</p>"
+          "documentation":"<p>Determines whether the subscription requires explicit approval before billing starts. Set to <code>MANUAL</code> to require a separate <code>ApprovePaidSubscription</code> call, or <code>IMMEDIATE</code> to activate the subscription right away. For paid tier plans, this defaults to <code>MANUAL</code> if not specified. For the <code>FREE</code> plan tier, only <code>IMMEDIATE</code> is supported, and it is the default.</p>"
         },
         "clientToken":{
           "shape":"IdempotencyToken",
@@ -587,7 +587,7 @@
     "ResourceArns":{
       "type":"list",
       "member":{"shape":"String"},
-      "documentation":"<p>A list of 1 to 10 AWS resource ARNs to include in the subscription.</p>",
+      "documentation":"<p>A list of 1 to 10 resource ARNs to include in the subscription.</p>",
       "max":10,
       "min":1
     },
@@ -708,7 +708,7 @@
         },
         "resourceArns":{
           "shape":"ResourceArns",
-          "documentation":"<p>The ARNs of the AWS resources covered by this subscription.</p>"
+          "documentation":"<p>The ARNs of the resources covered by this subscription.</p>"
         },
         "createdAt":{
           "shape":"SyntheticTimestamp_date_time",
@@ -770,7 +770,7 @@
         },
         "resourceArns":{
           "shape":"ResourceArns",
-          "documentation":"<p>The ARNs of the AWS resources covered by this subscription.</p>"
+          "documentation":"<p>The ARNs of the resources covered by this subscription.</p>"
         },
         "createdAt":{
           "shape":"SyntheticTimestamp_date_time",
@@ -878,5 +878,5 @@
       "exception":true
     }
   },
-  "documentation":"<p>Manages flat-rate pricing subscriptions for supported AWS services. Use this API to create, approve, update, and cancel subscriptions; associate and disassociate resources; and retrieve subscription details. With a flat-rate pricing subscription, you pay a fixed recurring fee for eligible resources instead of usage-based pricing.</p>"
+  "documentation":"<p>Manages flat-rate pricing subscriptions for supported services. Use this API to create, approve, update, and cancel subscriptions; associate and disassociate resources; and retrieve subscription details. With a flat-rate pricing subscription, you pay a fixed recurring fee for eligible resources instead of usage-based pricing.</p>"
 }

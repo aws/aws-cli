@@ -1358,6 +1358,10 @@
         "neptuneGlobalDatabaseConfig":{
           "shape":"NeptuneGlobalDatabaseConfiguration",
           "documentation":"<p>A Neptune global database execution block.</p>"
+        },
+        "rdsSwitchoverReadReplicaConfig":{
+          "shape":"RdsSwitchoverReadReplicaConfiguration",
+          "documentation":"<p>An Amazon RDS switchover read replica execution block.</p>"
         }
       },
       "documentation":"<p>Execution block configurations for a workflow in a Region switch plan. An execution block represents a specific type of action to perform during a Region switch.</p>",
@@ -1382,7 +1386,8 @@
         "LambdaEventSourceMapping",
         "AuroraServerlessScaling",
         "AuroraProvisionedScaling",
-        "NeptuneGlobalDatabase"
+        "NeptuneGlobalDatabase",
+        "RdsSwitchoverReadReplica"
       ]
     },
     "ExecutionComment":{
@@ -2519,6 +2524,53 @@
       "type":"integer",
       "box":true,
       "min":1
+    },
+    "RdsSwitchoverReadReplicaConfiguration":{
+      "type":"structure",
+      "required":["dbInstanceArnMap"],
+      "members":{
+        "timeoutMinutes":{
+          "shape":"RdsSwitchoverReadReplicaConfigurationTimeoutMinutesInteger",
+          "documentation":"<p>The timeout value specified for the configuration.</p>"
+        },
+        "crossAccountRole":{
+          "shape":"IamRoleArn",
+          "documentation":"<p>The cross-account role for the configuration.</p>"
+        },
+        "externalId":{
+          "shape":"String",
+          "documentation":"<p>The external ID (secret key) for the configuration.</p>"
+        },
+        "dbInstanceArnMap":{
+          "shape":"RdsDbInstanceArnMap",
+          "documentation":"<p>A map of database instance ARNs for each Region in the plan.</p>"
+        },
+        "ungraceful":{
+          "shape":"RdsUngraceful",
+          "documentation":"<p>The ungraceful execution settings for the configuration.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for switching over an Amazon RDS read replica to become the new primary database instance during a Region switch.</p>"
+    },
+    "RdsSwitchoverReadReplicaConfigurationTimeoutMinutesInteger":{
+      "type":"integer",
+      "box":true,
+      "min":1
+    },
+    "RdsUngraceful":{
+      "type":"structure",
+      "members":{
+        "ungraceful":{
+          "shape":"RdsUngracefulBehavior",
+          "documentation":"<p>The ungraceful behavior to perform if switching to ungraceful execution.</p>"
+        }
+      },
+      "documentation":"<p>The ungraceful execution settings for an Amazon RDS switchover read replica execution block.</p>"
+    },
+    "RdsUngracefulBehavior":{
+      "type":"string",
+      "documentation":"<p>The ungraceful behavior for an Amazon RDS switchover read replica, that is, promote the read replica to a standalone primary.</p>",
+      "enum":["promoteReadReplica"]
     },
     "RecoveryApproach":{
       "type":"string",

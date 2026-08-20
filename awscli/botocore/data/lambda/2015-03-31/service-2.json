@@ -387,6 +387,25 @@
       "documentation":"<p>Deletes the provisioned concurrency configuration for a function.</p>",
       "idempotent":true
     },
+    "DeleteResourcePolicy":{
+      "name":"DeleteResourcePolicy",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/2026-07-09/resource-policy/{ResourceArn}",
+        "responseCode":204
+      },
+      "input":{"shape":"DeleteResourcePolicyRequest"},
+      "errors":[
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ResourceConflictException"},
+        {"shape":"ServiceException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"PreconditionFailedException"}
+      ],
+      "documentation":"<p>Deletes a <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/access-control-resource-based.html\">resource-based policy</a> from a Lambda resource.</p>",
+      "idempotent":true
+    },
     "GetAccountSettings":{
       "name":"GetAccountSettings",
       "http":{
@@ -773,6 +792,24 @@
         {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Retrieves the provisioned concurrency configuration for a function's alias or version.</p>",
+      "readonly":true
+    },
+    "GetResourcePolicy":{
+      "name":"GetResourcePolicy",
+      "http":{
+        "method":"GET",
+        "requestUri":"/2026-07-09/resource-policy/{ResourceArn}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetResourcePolicyRequest"},
+      "output":{"shape":"GetResourcePolicyResponse"},
+      "errors":[
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ServiceException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Retrieves the <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/access-control-resource-based.html\">resource-based policy</a> attached to a Lambda resource.</p>",
       "readonly":true
     },
     "GetRuntimeManagementConfig":{
@@ -1353,6 +1390,28 @@
         {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Adds a provisioned concurrency configuration to a function's alias or version.</p>",
+      "idempotent":true
+    },
+    "PutResourcePolicy":{
+      "name":"PutResourcePolicy",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/2026-07-09/resource-policy/{ResourceArn}",
+        "responseCode":200
+      },
+      "input":{"shape":"PutResourcePolicyRequest"},
+      "output":{"shape":"PutResourcePolicyResponse"},
+      "errors":[
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ResourceConflictException"},
+        {"shape":"PublicPolicyException"},
+        {"shape":"ServiceException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"PolicyLengthExceededException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"PreconditionFailedException"}
+      ],
+      "documentation":"<p>Adds a <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/access-control-resource-based.html\">resource-based policy</a> to a Lambda resource. Resource-based policies grant access to other <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/permissions-function-cross-account.html\">Amazon Web Services accounts</a>, <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/permissions-function-organization.html\">organizations</a>, or <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/permissions-function-services.html\">services</a>. Resource-based policies apply to a single Lambda resource (for example, a function, function version, or function alias).</p> <important> <p>This operation replaces any existing policy on the Lambda resource. If you previously added permissions using the <a>AddPermission</a> operation, the new policy overwrites those permissions.</p> </important>",
       "idempotent":true
     },
     "PutRuntimeManagementConfig":{
@@ -3458,6 +3517,24 @@
         }
       }
     },
+    "DeleteResourcePolicyRequest":{
+      "type":"structure",
+      "required":["ResourceArn"],
+      "members":{
+        "ResourceArn":{
+          "shape":"PolicyResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Lambda resource you want to delete the policy from. You can use a qualified or an unqualified ARN. The value must be a complete ARN, and the operation does not accept wildcard characters.</p>",
+          "location":"uri",
+          "locationName":"ResourceArn"
+        },
+        "RevisionId":{
+          "shape":"RevisionId",
+          "documentation":"<p>The revision ID that the existing policy must match for the deletion to proceed. If the revision ID doesn't match, the operation fails with a <code>PreconditionFailedException</code> error. To retrieve the current revision ID, use the <a>GetResourcePolicy</a> operation.</p>",
+          "location":"querystring",
+          "locationName":"RevisionId"
+        }
+      }
+    },
     "Description":{
       "type":"string",
       "max":256,
@@ -3764,7 +3841,7 @@
     "EphemeralStorageSize":{
       "type":"integer",
       "box":true,
-      "max":10240,
+      "max":32768,
       "min":512
     },
     "ErrorData":{
@@ -5581,6 +5658,31 @@
         "LastModified":{
           "shape":"Timestamp",
           "documentation":"<p>The date and time that a user last updated the configuration, in <a href=\"https://www.iso.org/iso-8601-date-and-time-format.html\">ISO 8601 format</a>.</p>"
+        }
+      }
+    },
+    "GetResourcePolicyRequest":{
+      "type":"structure",
+      "required":["ResourceArn"],
+      "members":{
+        "ResourceArn":{
+          "shape":"PolicyResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Lambda resource you want to retrieve the policy for. You can use a qualified or an unqualified ARN. The value must be a complete ARN, and the operation does not accept wildcard characters.</p>",
+          "location":"uri",
+          "locationName":"ResourceArn"
+        }
+      }
+    },
+    "GetResourcePolicyResponse":{
+      "type":"structure",
+      "members":{
+        "Policy":{
+          "shape":"ResourcePolicy",
+          "documentation":"<p>The resource-based policy attached to the Lambda resource you specified.</p>"
+        },
+        "RevisionId":{
+          "shape":"RevisionId",
+          "documentation":"<p>The revision ID of the policy. Pass this value as the <code>RevisionId</code> in a <a>PutResourcePolicy</a> or <a>DeleteResourcePolicy</a> request. Doing so ensures the operation acts on the expected version of the policy.</p>"
         }
       }
     },
@@ -7597,6 +7699,12 @@
       },
       "exception":true
     },
+    "PolicyResourceArn":{
+      "type":"string",
+      "max":256,
+      "min":0,
+      "pattern":"arn:(aws[a-zA-Z-]*)?:lambda:(eusc-)?[a-z]{2}((-gov)|(-iso([a-z]?)))?-[a-z]+-\\d{1}:\\d{12}:function:[a-zA-Z0-9-_]+(:(\\$LATEST(\\.PUBLISHED)?|[a-zA-Z0-9-_])+)?"
+    },
     "PositiveInteger":{
       "type":"integer",
       "box":true,
@@ -7729,7 +7837,7 @@
         },
         "MaximumPollers":{
           "shape":"MaximumNumberOfPollers",
-          "documentation":"<p>The maximum number of event pollers this event source can scale up to. For Amazon SQS events source mappings, default is 200, and minimum value allowed is 2. For Amazon MSK and self-managed Apache Kafka event source mappings, default is 200, and minimum value allowed is 1.</p>"
+          "documentation":"<p>The maximum number of event pollers this event source can scale up to. For Amazon SQS event source mappings, the accepted range is between 2 and 10,000, with a default of 200. For Amazon MSK and self-managed Apache Kafka event source mappings, the accepted range is between 1 and 2,000, with a default of 200.</p>"
         },
         "PollerGroupName":{
           "shape":"ProvisionedPollerGroupName",
@@ -7756,7 +7864,7 @@
           "documentation":"<p>The exception message.</p>"
         }
       },
-      "documentation":"<p>The resource-based policy you tried to add to the Lambda function would grant public access to it, and your account's <code>BlockPublicAccess</code> setting prevents public access. For more information about blocking public access to Lambda functions, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/access-control-resource-based.html#access-control-block-public-access\">Block public access to Lambda resources</a>.</p>",
+      "documentation":"<p>The resource-based policy you tried to add to the Lambda resource would grant public access to it, which isn't allowed.</p>",
       "error":{
         "httpStatusCode":400,
         "senderFault":true
@@ -8075,6 +8183,42 @@
         }
       }
     },
+    "PutResourcePolicyRequest":{
+      "type":"structure",
+      "required":[
+        "ResourceArn",
+        "Policy"
+      ],
+      "members":{
+        "ResourceArn":{
+          "shape":"PolicyResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Lambda resource you want to add the policy to. You can use a qualified or an unqualified ARN. The value must be a complete ARN, and the operation does not accept wildcard characters.</p>",
+          "location":"uri",
+          "locationName":"ResourceArn"
+        },
+        "Policy":{
+          "shape":"ResourcePolicy",
+          "documentation":"<p>The policy document you want to add to your Lambda resource. This is formatted as a JSON string.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/access-control-resource-based.html\">Working with resource-based policies in Lambda</a> in the <i>Lambda Developer Guide</i>.</p>"
+        },
+        "RevisionId":{
+          "shape":"RevisionId",
+          "documentation":"<p>The revision ID that the existing policy must match for the replacement to proceed. If the revision ID doesn't match, the operation fails with a <code>PreconditionFailedException</code> error. To retrieve the current revision ID, use the <a>GetResourcePolicy</a> operation.</p>"
+        }
+      }
+    },
+    "PutResourcePolicyResponse":{
+      "type":"structure",
+      "members":{
+        "Policy":{
+          "shape":"ResourcePolicy",
+          "documentation":"<p>The resource-based policy that Lambda adds to the resource.</p>"
+        },
+        "RevisionId":{
+          "shape":"RevisionId",
+          "documentation":"<p>The revision ID of the policy that Lambda adds to your Lambda resource.</p>"
+        }
+      }
+    },
     "PutRuntimeManagementConfigRequest":{
       "type":"structure",
       "required":[
@@ -8344,6 +8488,12 @@
       "exception":true,
       "fault":true
     },
+    "ResourcePolicy":{
+      "type":"string",
+      "max":20480,
+      "min":1,
+      "pattern":"[\\s\\S]+"
+    },
     "ResponseStreamingInvocationType":{
       "type":"string",
       "enum":[
@@ -8374,6 +8524,12 @@
     "ReverseOrder":{
       "type":"boolean",
       "box":true
+    },
+    "RevisionId":{
+      "type":"string",
+      "max":36,
+      "min":36,
+      "pattern":"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
     },
     "RoleArn":{
       "type":"string",

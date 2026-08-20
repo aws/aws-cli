@@ -696,3 +696,97 @@ def assert_list_buckets(request, **params):
     )
     _check_params(request, params, _LIST_BUCKETS_PARAMS, "ListBuckets")
 
+
+# ListObjectAnnotations: GET /{Bucket}/{Key+}?annotation
+_LIST_OBJECT_ANNOTATIONS_PARAMS = {
+    "VersionId": ("querystring", "versionId"),
+    "MaxAnnotationResults": ("querystring", "max-annotation-results"),
+    "AnnotationPrefix": ("querystring", "annotation-prefix"),
+    "ContinuationToken": ("querystring", "continuation-token"),
+    "RequestPayer": ("header", "x-amz-request-payer"),
+    "ExpectedBucketOwner": ("header", "x-amz-expected-bucket-owner"),
+}
+
+
+def assert_list_object_annotations(request, Bucket: str, Key: str, addressing_style: str = "virtual", **params):
+    """Assert request is a ListObjectAnnotations (GET /{Bucket}/{Key+}?annotation)."""
+    assert request.method == "GET", (
+        f"ListObjectAnnotations: expected GET, got {request.method}"
+    )
+    assert "annotation" in urlparse(request.path).query, (
+        f"ListObjectAnnotations: expected ?annotation in {request.path}"
+    )
+    _check_bucket(request, Bucket, addressing_style, "ListObjectAnnotations")
+    _check_key(request, Key, addressing_style, "ListObjectAnnotations")
+    _check_params(request, params, _LIST_OBJECT_ANNOTATIONS_PARAMS, "ListObjectAnnotations")
+
+
+# GetObjectAnnotation: GET /{Bucket}/{Key+}?annotation
+_GET_OBJECT_ANNOTATION_PARAMS = {
+    "AnnotationName": ("querystring", "annotationName"),
+    "VersionId": ("querystring", "versionId"),
+    "RequestPayer": ("header", "x-amz-request-payer"),
+    "ExpectedBucketOwner": ("header", "x-amz-expected-bucket-owner"),
+    "ChecksumMode": ("header", "x-amz-checksum-mode"),
+}
+
+
+def assert_get_object_annotation(request, Bucket: str, Key: str, addressing_style: str = "virtual", **params):
+    """Assert request is a GetObjectAnnotation (GET /{Bucket}/{Key+}?annotation&annotationName=...)."""
+    assert request.method == "GET", (
+        f"GetObjectAnnotation: expected GET, got {request.method}"
+    )
+    _qs = parse_qs(urlparse(request.path).query)
+    assert "annotationName" in _qs, (
+        f"GetObjectAnnotation: required query param annotationName is missing"
+    )
+    _check_bucket(request, Bucket, addressing_style, "GetObjectAnnotation")
+    _check_key(request, Key, addressing_style, "GetObjectAnnotation")
+    _check_params(request, params, _GET_OBJECT_ANNOTATION_PARAMS, "GetObjectAnnotation")
+
+
+# PutObjectAnnotation: PUT /{Bucket}/{Key+}?annotation
+_PUT_OBJECT_ANNOTATION_PARAMS = {
+    "AnnotationName": ("querystring", "annotationName"),
+    "VersionId": ("querystring", "versionId"),
+    "ObjectIfMatch": ("header", "x-amz-object-if-match"),
+    "ChecksumAlgorithm": ("header", "x-amz-sdk-checksum-algorithm"),
+    "RequestPayer": ("header", "x-amz-request-payer"),
+    "ExpectedBucketOwner": ("header", "x-amz-expected-bucket-owner"),
+}
+
+
+def assert_put_object_annotation(request, Bucket: str, Key: str, addressing_style: str = "virtual", **params):
+    """Assert request is a PutObjectAnnotation (PUT /{Bucket}/{Key+}?annotation)."""
+    assert request.method == "PUT", (
+        f"PutObjectAnnotation: expected PUT, got {request.method}"
+    )
+    _qs = parse_qs(urlparse(request.path).query)
+    assert "annotationName" in _qs, (
+        f"PutObjectAnnotation: required query param annotationName is missing"
+    )
+    _check_bucket(request, Bucket, addressing_style, "PutObjectAnnotation")
+    _check_key(request, Key, addressing_style, "PutObjectAnnotation")
+    _check_params(request, params, _PUT_OBJECT_ANNOTATION_PARAMS, "PutObjectAnnotation")
+
+
+# ---------------------------------------------------------------------------
+# Non-S3 service helpers (used by mv --validate-same-s3-paths tests)
+# ---------------------------------------------------------------------------
+
+
+def assert_get_access_point(request):
+    """Assert request is an S3 Control GetAccessPoint (GET /v20180820/accesspoint/{name})."""
+    assert request.method == "GET", (
+        f"GetAccessPoint: expected GET, got {request.method}"
+    )
+    assert "/v20180820/accesspoint/" in request.path, (
+        f"GetAccessPoint: expected /v20180820/accesspoint/ in {request.path}"
+    )
+
+
+def assert_get_caller_identity(request):
+    """Assert request is an STS GetCallerIdentity (POST /)."""
+    assert request.method == "POST", (
+        f"GetCallerIdentity: expected POST, got {request.method}"
+    )

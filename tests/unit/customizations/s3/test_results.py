@@ -653,6 +653,49 @@ class ResultRecorderTest(unittest.TestCase):
         self.assertEqual(
             self.result_recorder.bytes_transferred, bytes_transferred)
 
+    def test_concurrent_transfers_with_same_key_do_not_clobber_each_other(self):
+        # Two distinct, concurrently in-flight transfers can share the same
+        # (transfer_type, src, dest), e.g. the same file uploaded to the
+        # same destination more than once within a single invocation. Their
+        # accounting must stay independent (via transfer_id) instead of
+        # colliding in the ongoing-transfer dicts.
+        self.result_recorder(
+            QueuedResult(
+                transfer_type=self.transfer_type, src=self.src,
+                dest=self.dest, total_transfer_size=1000, transfer_id=1
+            )
+        )
+        self.result_recorder(
+            QueuedResult(
+                transfer_type=self.transfer_type, src=self.src,
+                dest=self.dest, total_transfer_size=2000, transfer_id=2
+            )
+        )
+        self.assertEqual(
+            self.result_recorder.expected_bytes_transferred, 3000)
+
+        # transfer_id=1 completes successfully.
+        self.result_recorder(
+            SuccessResult(
+                transfer_type=self.transfer_type, src=self.src,
+                dest=self.dest, transfer_id=1
+            )
+        )
+        self.assertEqual(self.result_recorder.files_transferred, 1)
+
+        # transfer_id=2 (still fully outstanding) then fails. Its
+        # bookkeeping must not have been wiped out by transfer_id=1's
+        # completion.
+        self.result_recorder(
+            FailureResult(
+                transfer_type=self.transfer_type, src=self.src,
+                dest=self.dest, exception=self.exception, transfer_id=2
+            )
+        )
+        self.assertEqual(self.result_recorder.files_failed, 1)
+        self.assertEqual(
+            self.result_recorder.bytes_failed_to_transfer, 2000)
+
     def test_failure_result_still_did_not_know_transfer_size(self):
         self.result_recorder(
             QueuedResult(

@@ -4,8 +4,12 @@ from __future__ import annotations
 
 import pytest
 
+from tests.blackbox.s3_assertions import (
+    assert_delete_object,
+    assert_list_objects_v2,
+)
+
 from tests.blackbox.utils import (
-    assert_s3_operation,
     cli_env,
     delete_response,
     format_requests,
@@ -39,8 +43,8 @@ async def test_operations_used(aws_cli: str) -> None:
         rc == 0
     ), f"stdout={stdout!r} stderr={stderr!r}\n{format_requests(server)}"
     assert len(server.requests) == 1
-    assert_s3_operation(
-        server.requests[0], "DeleteObject", Bucket="bucket", Key="key.txt"
+    assert_delete_object(
+        server.requests[0], Bucket="bucket", Key="key.txt"
     )
 
 
@@ -80,9 +84,8 @@ async def test_delete_with_request_payer(aws_cli: str) -> None:
         rc == 0
     ), f"stdout={stdout!r} stderr={stderr!r}\n{format_requests(server)}"
     assert len(server.requests) == 1
-    assert_s3_operation(
+    assert_delete_object(
         server.requests[0],
-        "DeleteObject",
         Bucket="mybucket",
         Key="mykey",
         RequestPayer="requester",
@@ -115,17 +118,15 @@ async def test_recursive_delete_with_request_payer(aws_cli: str) -> None:
     assert len(server.requests) == 2
 
     # First request: ListObjectsV2
-    assert_s3_operation(
+    assert_list_objects_v2(
         server.requests[0],
-        "ListObjectsV2",
         Bucket="mybucket",
         RequestPayer="requester",
     )
 
     # Second request: DeleteObject
-    assert_s3_operation(
+    assert_delete_object(
         server.requests[1],
-        "DeleteObject",
         Bucket="mybucket",
         Key="mykey",
         RequestPayer="requester",

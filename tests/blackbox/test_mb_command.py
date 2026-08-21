@@ -6,8 +6,11 @@ import xml.etree.ElementTree as ET
 
 import pytest
 
+from tests.blackbox.s3_assertions import (
+    assert_create_bucket,
+)
+
 from tests.blackbox.utils import (
-    assert_s3_operation,
     cli_env,
     create_bucket_response,
     format_requests,
@@ -36,8 +39,8 @@ class TestMBCommand:
             )
             assert rc == 0, stderr.decode()
             assert len(server.requests) == 1, format_requests(server)
-            assert_s3_operation(
-                server.requests[0], "CreateBucket", Bucket="bucket"
+            assert_create_bucket(
+                server.requests[0], Bucket="bucket"
             )
 
     async def test_adds_location_constraint(self, aws_cli):
@@ -53,9 +56,8 @@ class TestMBCommand:
             )
             assert rc == 0, stderr.decode()
             assert len(server.requests) == 1, format_requests(server)
-            assert_s3_operation(
+            assert_create_bucket(
                 server.requests[0],
-                "CreateBucket",
                 Bucket="bucket",
                 CreateBucketConfiguration={"LocationConstraint": "us-west-2"},
             )
@@ -120,9 +122,8 @@ class TestMBCommand:
             )
             assert rc == 0, stderr.decode()
             assert len(server.requests) == 1, format_requests(server)
-            assert_s3_operation(
+            assert_create_bucket(
                 server.requests[0],
-                "CreateBucket",
                 Bucket="bucket",
                 CreateBucketConfiguration={
                     "LocationConstraint": "us-west-2",
@@ -150,9 +151,8 @@ class TestMBCommand:
             )
             assert rc == 0, stderr.decode()
             assert len(server.requests) == 1, format_requests(server)
-            assert_s3_operation(
+            assert_create_bucket(
                 server.requests[0],
-                "CreateBucket",
                 Bucket="bucket",
                 CreateBucketConfiguration={
                     "Tags": [{"Key": "Key1", "Value": "Value1"}],
@@ -189,9 +189,8 @@ class TestMBCommand:
             )
             assert rc == 0, stderr.decode()
             assert len(server.requests) == 1, format_requests(server)
-            assert_s3_operation(
+            assert_create_bucket(
                 server.requests[0],
-                "CreateBucket",
                 Bucket="bucket",
                 CreateBucketConfiguration={
                     "LocationConstraint": "us-west-2",
@@ -213,9 +212,8 @@ class TestMBCommand:
             )
             assert rc == 0, stderr.decode()
             assert len(server.requests) == 1, format_requests(server)
-            assert_s3_operation(
+            assert_create_bucket(
                 server.requests[0],
-                "CreateBucket",
                 Bucket=bucket,
                 CreateBucketConfiguration={"LocationConstraint": "us-west-2"},
                 BucketNamespace="account-regional",
@@ -233,9 +231,8 @@ class TestMBCommand:
             )
             assert rc == 0, stderr.decode()
             assert len(server.requests) == 1, format_requests(server)
-            assert_s3_operation(
+            assert_create_bucket(
                 server.requests[0],
-                "CreateBucket",
                 Bucket=bucket,
                 BucketNamespace="account-regional",
             )
@@ -251,9 +248,8 @@ class TestMBCommand:
             )
             assert rc == 0, stderr.decode()
             assert len(server.requests) == 1, format_requests(server)
-            assert_s3_operation(
+            assert_create_bucket(
                 server.requests[0],
-                "CreateBucket",
                 Bucket=bucket,
                 BucketNamespace="account-regional",
             )
@@ -274,8 +270,8 @@ class TestMBCommand:
             )
             assert rc == 0, stderr.decode()
             assert len(server.requests) == 1, format_requests(server)
-            assert_s3_operation(
-                server.requests[0], "CreateBucket", Bucket="my-regular-bucket"
+            assert_create_bucket(
+                server.requests[0], Bucket="my-regular-bucket"
             )
             # Should NOT have x-amz-bucket-namespace header
             assert (

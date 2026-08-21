@@ -4,8 +4,13 @@ from __future__ import annotations
 
 import pytest
 
+from tests.blackbox.s3_assertions import (
+    assert_delete_bucket,
+    assert_delete_object,
+    assert_list_objects_v2,
+)
+
 from tests.blackbox.utils import (
-    assert_s3_operation,
     cli_env,
     delete_bucket_response,
     delete_response,
@@ -42,8 +47,8 @@ class TestRBCommand:
             )
             assert rc == 0, stderr.decode()
             assert len(server.requests) == 1, format_requests(server)
-            assert_s3_operation(
-                server.requests[0], "DeleteBucket", Bucket="bucket"
+            assert_delete_bucket(
+                server.requests[0], Bucket="bucket"
             )
 
     async def test_rb_force_empty_bucket(self, aws_cli):
@@ -62,12 +67,12 @@ class TestRBCommand:
             assert rc == 0, stderr.decode()
             assert len(server.requests) == 2, format_requests(server)
             # First: ListObjectsV2
-            assert_s3_operation(
-                server.requests[0], "ListObjectsV2", Bucket="bucket"
+            assert_list_objects_v2(
+                server.requests[0], Bucket="bucket"
             )
             # Second: DeleteBucket
-            assert_s3_operation(
-                server.requests[1], "DeleteBucket", Bucket="bucket"
+            assert_delete_bucket(
+                server.requests[1], Bucket="bucket"
             )
 
     async def test_rb_force_non_empty_bucket(self, aws_cli):
@@ -87,16 +92,16 @@ class TestRBCommand:
             assert rc == 0, stderr.decode()
             assert len(server.requests) == 3, format_requests(server)
             # ListObjectsV2
-            assert_s3_operation(
-                server.requests[0], "ListObjectsV2", Bucket="bucket"
+            assert_list_objects_v2(
+                server.requests[0], Bucket="bucket"
             )
             # DeleteObject
-            assert_s3_operation(
-                server.requests[1], "DeleteObject", Bucket="bucket", Key="foo"
+            assert_delete_object(
+                server.requests[1], Bucket="bucket", Key="foo"
             )
             # DeleteBucket
-            assert_s3_operation(
-                server.requests[2], "DeleteBucket", Bucket="bucket"
+            assert_delete_bucket(
+                server.requests[2], Bucket="bucket"
             )
 
     async def test_rb_failed_rc(self, aws_cli):
@@ -120,8 +125,8 @@ class TestRBCommand:
             assert b"remove_bucket failed:" in stderr
             # Should have attempted ListObjectsV2 only (failed there)
             assert len(server.requests) == 1, format_requests(server)
-            assert_s3_operation(
-                server.requests[0], "ListObjectsV2", Bucket="bucket"
+            assert_list_objects_v2(
+                server.requests[0], Bucket="bucket"
             )
 
     async def test_nonzero_exit_if_uri_scheme_not_provided(self, aws_cli):

@@ -553,7 +553,7 @@
         {"shape":"ArgumentException"},
         {"shape":"InternalServiceException"}
       ],
-      "documentation":"<p>A session is an instance of a browser created through a <code>RemoteWebDriver</code> with the URL from <a>CreateTestGridUrlResult$url</a>. You can use the following to look up sessions:</p> <ul> <li> <p>The session ARN (<a>GetTestGridSessionRequest$sessionArn</a>).</p> </li> <li> <p>The project ARN and a session ID (<a>GetTestGridSessionRequest$projectArn</a> and <a>GetTestGridSessionRequest$sessionId</a>).</p> </li> </ul> <p/>"
+      "documentation":"<p>A session is an instance of a browser created through a <code>RemoteWebDriver</code> with the URL from <code> CreateTestGridUrlResult</code>. You can use the following to look up sessions:</p> <ul> <li> <p>The session ARN.</p> </li> <li> <p>The project ARN and a session ID.</p> </li> </ul> <p/>"
     },
     "GetUpload":{
       "name":"GetUpload",
@@ -827,7 +827,7 @@
         {"shape":"LimitExceededException"},
         {"shape":"ServiceAccountException"}
       ],
-      "documentation":"<p>Gets information about samples, given an AWS Device Farm job ARN.</p>"
+      "documentation":"<p>Gets information about samples, given an AWS Device Farm job ARN.</p> <important> <p>Device Farm does not support performance data samples during test executions.</p> </important>"
     },
     "ListSuites":{
       "name":"ListSuites",
@@ -1665,6 +1665,10 @@
         "deviceProxy":{
           "shape":"DeviceProxy",
           "documentation":"<p>The device proxy to be configured on the device for the remote access session.</p>"
+        },
+        "parameters":{
+          "shape":"RemoteAccessParameters",
+          "documentation":"<p>The name-value string pairs that specify additional settings for the remote access session.</p> <ul> <li> <p> <code>appium:version</code>: The major version of the Appium server to use for the session (for example, 2 or 3). The service may reject the selected version if it is not available for the selected device.</p> </li> </ul>"
         }
       },
       "documentation":"<p>Configuration settings for a remote access session, including billing method.</p>"
@@ -1773,11 +1777,11 @@
       "members":{
         "url":{
           "shape":"SensitiveString",
-          "documentation":"<p>A signed URL, expiring in <a>CreateTestGridUrlRequest$expiresInSeconds</a> seconds, to be passed to a <code>RemoteWebDriver</code>. </p>"
+          "documentation":"<p>A signed URL, expiring in the time specified by the <code>CreateTestGridUrlRequest</code>, to be passed to a <code>RemoteWebDriver</code>. </p>"
         },
         "expires":{
           "shape":"DateTime",
-          "documentation":"<p>The number of seconds the URL from <a>CreateTestGridUrlResult$url</a> stays active.</p>"
+          "documentation":"<p>The number of seconds the URL stays active from creation.</p>"
         }
       }
     },
@@ -4380,6 +4384,25 @@
       },
       "documentation":"<p>Represents the remote endpoints for viewing and controlling a device during a remote access session.</p>"
     },
+    "RemoteAccessParameterKey":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"[a-zA-Z0-9:_]+"
+    },
+    "RemoteAccessParameterValue":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"[a-zA-Z0-9_.]+"
+    },
+    "RemoteAccessParameters":{
+      "type":"map",
+      "key":{"shape":"RemoteAccessParameterKey"},
+      "value":{"shape":"RemoteAccessParameterValue"},
+      "max":3,
+      "min":1
+    },
     "RemoteAccessSession":{
       "type":"structure",
       "members":{
@@ -4772,7 +4795,7 @@
           "documentation":"<p>The presigned Amazon S3 URL that can be used with a GET request to download the sample's file.</p>"
         }
       },
-      "documentation":"<p>Represents a sample of performance data.</p>"
+      "documentation":"<p>Represents a sample of performance data.</p> <important> <p>Device Farm does not support performance data samples during test executions.</p> </important>"
     },
     "SampleType":{
       "type":"string",
@@ -4932,7 +4955,7 @@
         },
         "parameters":{
           "shape":"TestParameters",
-          "documentation":"<p>The test's parameters, such as test framework parameters and fixture settings. Parameters are represented by name-value pairs of strings.</p> <p>For all tests:</p> <ul> <li> <p> <code>app_performance_monitoring</code>: Performance monitoring is enabled by default. Set this parameter to false to disable it.</p> </li> </ul> <p>For Appium tests (all types):</p> <ul> <li> <p>appium_version: The Appium version. Currently supported values are 1.6.5 (and later), latest, and default.</p> <ul> <li> <p>latest runs the latest Appium version supported by Device Farm (1.9.1).</p> </li> <li> <p>For default, Device Farm selects a compatible version of Appium for the device. The current behavior is to run 1.7.2 on Android devices and iOS 9 and earlier and 1.7.2 for iOS 10 and later.</p> </li> <li> <p>This behavior is subject to change.</p> </li> </ul> </li> </ul> <p>For fuzz tests (Android only):</p> <ul> <li> <p>event_count: The number of events, between 1 and 10000, that the UI fuzz test should perform.</p> </li> <li> <p>throttle: The time, in ms, between 0 and 1000, that the UI fuzz test should wait between events.</p> </li> <li> <p>seed: A seed to use for randomizing the UI fuzz test. Using the same seed value between tests ensures identical event sequences.</p> </li> </ul> <p>For Instrumentation:</p> <ul> <li> <p>filter: A test filter string. Examples:</p> <ul> <li> <p>Running a single test case: <code>com.android.abc.Test1</code> </p> </li> <li> <p>Running a single test: <code>com.android.abc.Test1#smoke</code> </p> </li> <li> <p>Running multiple tests: <code>com.android.abc.Test1,com.android.abc.Test2</code> </p> </li> </ul> </li> </ul> <p>For XCTest and XCTestUI:</p> <ul> <li> <p>filter: A test filter string. Examples:</p> <ul> <li> <p>Running a single test class: <code>LoginTests</code> </p> </li> <li> <p>Running a multiple test classes: <code>LoginTests,SmokeTests</code> </p> </li> <li> <p>Running a single test: <code>LoginTests/testValid</code> </p> </li> <li> <p>Running multiple tests: <code>LoginTests/testValid,LoginTests/testInvalid</code> </p> </li> </ul> </li> </ul>"
+          "documentation":"<p>The test's parameters, such as test framework parameters and fixture settings. Parameters are represented by name-value pairs of strings.</p> <p>For fuzz tests (Android only):</p> <ul> <li> <p>event_count: The number of events, between 1 and 10000, that the UI fuzz test should perform.</p> </li> <li> <p>throttle: The time, in ms, between 0 and 1000, that the UI fuzz test should wait between events.</p> </li> <li> <p>seed: A seed to use for randomizing the UI fuzz test. Using the same seed value between tests ensures identical event sequences.</p> </li> </ul> <p>For Instrumentation:</p> <ul> <li> <p>filter: A test filter string. Examples:</p> <ul> <li> <p>Running a single test case: <code>com.android.abc.Test1</code> </p> </li> <li> <p>Running a single test: <code>com.android.abc.Test1#smoke</code> </p> </li> <li> <p>Running multiple tests: <code>com.android.abc.Test1,com.android.abc.Test2</code> </p> </li> </ul> </li> </ul> <p>For XCTest and XCTestUI:</p> <ul> <li> <p>filter: A test filter string. Examples:</p> <ul> <li> <p>Running a single test class: <code>LoginTests</code> </p> </li> <li> <p>Running a multiple test classes: <code>LoginTests,SmokeTests</code> </p> </li> <li> <p>Running a single test: <code>LoginTests/testValid</code> </p> </li> <li> <p>Running multiple tests: <code>LoginTests/testValid,LoginTests/testInvalid</code> </p> </li> </ul> </li> </ul>"
         }
       },
       "documentation":"<p>Represents test settings. This data structure is passed in as the test parameter to ScheduleRun. For an example of the JSON request syntax, see <a>ScheduleRun</a>.</p>"

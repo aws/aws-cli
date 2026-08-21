@@ -992,7 +992,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottledException"}
       ],
-      "documentation":"<p>Deletes an Amazon Bedrock AgentCore Memory resource.</p>",
+      "documentation":"<p>Deletes an Amazon Bedrock AgentCore Memory resource. When you delete a memory resource, it is permanently removed.</p>",
       "idempotent":true
     },
     "DeleteOauth2CredentialProvider":{
@@ -4917,6 +4917,17 @@
       "min":1,
       "pattern":"[a-zA-Z][a-zA-Z0-9_:/.\\-]{0,2047}"
     },
+    "CompositeIdentifierEntry":{
+      "type":"string",
+      "max":256,
+      "min":1
+    },
+    "CompositeIdentifierList":{
+      "type":"list",
+      "member":{"shape":"CompositeIdentifierEntry"},
+      "max":5,
+      "min":1
+    },
     "ComputeConfiguration":{
       "type":"structure",
       "members":{
@@ -7959,7 +7970,7 @@
       "enum":[
         "AGENTCORE_EVALUATION_PREDEFINED_V1",
         "AGENTCORE_EVALUATION_SIMULATED_V1",
-        "GENERIC_EVALUATION_PREDEFINED_V1"
+        "THIRD_PARTY_EVALUATION_V1"
       ]
     },
     "DatasetStatus":{
@@ -18153,6 +18164,14 @@
         "stickinessConfiguration":{
           "shape":"StickinessConfiguration",
           "documentation":"<p>The session stickiness configuration for the passthrough target. This configuration routes requests within the same session to the same target.</p>"
+        },
+        "staticQueryParameters":{
+          "shape":"StaticQueryParameters",
+          "documentation":"<p>A map of static query parameters that the gateway always appends to the outbound URL when forwarding requests to the target. The total outbound URL length, which includes the endpoint and the percent-encoded query parameters, is enforced by the service.</p>"
+        },
+        "staticQueryParameterConflictResolution":{
+          "shape":"StaticQueryParameterConflictResolution",
+          "documentation":"<p>Controls precedence when a client request supplies a query parameter whose name matches a configured static query parameter. If not set, defaults to <code>CLIENT_OVERRIDE</code>:</p> <ul> <li> <p> <code>CLIENT_OVERRIDE</code> - The client-supplied value overrides the configured static value for that parameter name.</p> </li> <li> <p> <code>STATIC_OVERRIDE</code> - The configured static value is retained, overriding the client-supplied value for that parameter name.</p> </li> </ul>"
         }
       },
       "documentation":"<p>The configuration for an HTTP passthrough target. A passthrough target forwards requests directly to an external HTTP endpoint.</p>"
@@ -20616,6 +20635,33 @@
       "type":"string",
       "pattern":"[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}"
     },
+    "StaticQueryParameterConflictResolution":{
+      "type":"string",
+      "documentation":"<p>The precedence used when a client-supplied query parameter has the same name as a configured static query parameter:</p> <ul> <li> <p> <code>CLIENT_OVERRIDE</code> - The client-supplied value overrides the configured static value for that parameter name. This is the default.</p> </li> <li> <p> <code>STATIC_OVERRIDE</code> - The configured static value is retained, overriding the client-supplied value for that parameter name.</p> </li> </ul>",
+      "enum":[
+        "CLIENT_OVERRIDE",
+        "STATIC_OVERRIDE"
+      ]
+    },
+    "StaticQueryParameterName":{
+      "type":"string",
+      "documentation":"<p>The name of a static query parameter. Allowed characters are letters, digits, <code>_</code>, <code>.</code>, and <code>-</code>.</p>",
+      "max":128,
+      "min":1,
+      "pattern":"[a-zA-Z0-9_.-]+"
+    },
+    "StaticQueryParameterValue":{
+      "type":"string",
+      "documentation":"<p>The value of a static query parameter. Control characters (ASCII <code>0x00</code>-<code>0x1F</code> and <code>0x7F</code>) are not permitted. URI-reserved characters are allowed and are percent-encoded by the gateway. Empty values are allowed.</p>",
+      "pattern":"[^\\x00-\\x1F\\x7F]*",
+      "sensitive":true
+    },
+    "StaticQueryParameters":{
+      "type":"map",
+      "key":{"shape":"StaticQueryParameterName"},
+      "value":{"shape":"StaticQueryParameterValue"},
+      "documentation":"<p>A map of static query parameter names to values that the gateway always appends to the outbound URL. The total outbound URL length, which includes the endpoint and the percent-encoded query parameters, is enforced by the service.</p>"
+    },
     "StaticRoute":{
       "type":"structure",
       "required":["targetName"],
@@ -20661,6 +20707,10 @@
         "timeout":{
           "shape":"StickinessTimeout",
           "documentation":"<p>The session stickiness timeout, in seconds. After this duration of inactivity, the session affinity expires. Valid values range from 1 to 86400.</p>"
+        },
+        "compositeIdentifier":{
+          "shape":"CompositeIdentifierList",
+          "documentation":"<p>Additional headers to include in session affinity routing. When set, requests are only considered part of the same session if both the <code>identifier</code> and all composite identifier values match.</p>"
         }
       },
       "documentation":"<p>The configuration for session-sticky routing to a target. Session stickiness routes requests that share a session identifier to the same target.</p>"
@@ -22893,7 +22943,7 @@
         },
         "namespaceKeys":{
           "shape":"NamespaceKeysList",
-          "documentation":"<p>The namespace variable key definitions with validation rules for this memory. Use this parameter to update existing <code>namespaceKey</code> validation rules or add new keys when namespace templates change.</p>"
+          "documentation":"<p>The namespace variable key definitions with validation rules for this memory. This value fully replaces the existing set — any key you omit is removed. Any referenced <code>namespaceKey</code> omission will throw ValidationException.</p>"
         },
         "streamDeliveryResources":{
           "shape":"StreamDeliveryResources",

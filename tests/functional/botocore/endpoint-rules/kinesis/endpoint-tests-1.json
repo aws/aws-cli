@@ -2679,6 +2679,1012 @@
                 "StreamId": "af4lwng4k01746835071-yz",
                 "ResourceARN": "arn:aws:kinesis:us-east-1:123:stream/test-stream"
             }
+        },
+        {
+            "documentation": "AccountId test: Account Id present",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "metricValues": [
+                            "O"
+                        ]
+                    },
+                    "url": "https://012345678901.data-kinesis.us-west-2.amazonaws.com"
+                }
+            },
+            "operationInputs": [
+                {
+                    "builtInParams": {
+                        "AWS::Region": "us-west-2",
+                        "AWS::Auth::AccountId": "012345678901",
+                        "AWS::Auth::AccountIdEndpointMode": "preferred"
+                    },
+                    "operationName": "GetShardIterator",
+                    "operationParams": {
+                        "ShardId": "shardId-000000000001",
+                        "ShardIteratorType": "LATEST",
+                        "StreamName": "test-stream"
+                    }
+                }
+            ],
+            "params": {
+                "Region": "us-west-2",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "OperationType": "data",
+                "AccountId": "012345678901",
+                "AccountIdEndpointMode": "preferred"
+            }
+        },
+        {
+            "documentation": "AccountId test: Account Id present with fips",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "metricValues": [
+                            "O"
+                        ]
+                    },
+                    "url": "https://123.control-kinesis-fips.us-west-2.amazonaws.com"
+                }
+            },
+            "operationInputs": [
+                {
+                    "builtInParams": {
+                        "AWS::Region": "us-west-2",
+                        "AWS::Auth::AccountId": "123",
+                        "AWS::Auth::AccountIdEndpointMode": "required",
+                        "AWS::UseFIPS": true
+                    },
+                    "operationName": "ListShards",
+                    "operationParams": {
+                        "StreamName": "testStream"
+                    }
+                }
+            ],
+            "params": {
+                "Region": "us-west-2",
+                "UseFIPS": true,
+                "UseDualStack": false,
+                "OperationType": "control",
+                "AccountId": "123",
+                "AccountIdEndpointMode": "required"
+            }
+        },
+        {
+            "documentation": "AccountId test: Account Id present with dual stack",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "metricValues": [
+                            "O"
+                        ]
+                    },
+                    "url": "https://123.control-kinesis.us-west-2.api.aws"
+                }
+            },
+            "params": {
+                "Region": "us-west-2",
+                "UseFIPS": false,
+                "UseDualStack": true,
+                "OperationType": "control",
+                "AccountId": "123",
+                "AccountIdEndpointMode": "preferred"
+            }
+        },
+        {
+            "documentation": "AccountId test: Account Id present with fips and dual stack",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "metricValues": [
+                            "O"
+                        ]
+                    },
+                    "url": "https://123.control-kinesis-fips.us-west-2.api.aws"
+                }
+            },
+            "params": {
+                "Region": "us-west-2",
+                "UseFIPS": true,
+                "UseDualStack": true,
+                "OperationType": "control",
+                "AccountId": "123",
+                "AccountIdEndpointMode": "preferred"
+            }
+        },
+        {
+            "documentation": "Account Id present with streamId",
+            "expect": {
+                "endpoint": {
+                    "url": "https://af4lwng4k01746835071.xyz.control-kinesis.us-west-2.amazonaws.com"
+                }
+            },
+            "params": {
+                "Region": "us-west-2",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "OperationType": "control",
+                "StreamId": "af4lwng4k01746835071-xyz",
+                "AccountId": "123",
+                "AccountIdEndpointMode": "preferred"
+            }
+        },
+        {
+            "documentation": "Account Id present with stream ARN",
+            "expect": {
+                "endpoint": {
+                    "url": "https://123.control-kinesis.us-west-2.amazonaws.com"
+                }
+            },
+            "params": {
+                "Region": "us-west-2",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "OperationType": "control",
+                "StreamARN": "arn:aws:kinesis:us-east-1:123:stream/test-stream",
+                "AccountId": "123",
+                "AccountIdEndpointMode": "preferred"
+            }
+        },
+        {
+            "documentation": "Account Id present with consumer ARN",
+            "expect": {
+                "endpoint": {
+                    "url": "https://123.control-kinesis.us-west-2.amazonaws.com"
+                }
+            },
+            "params": {
+                "Region": "us-west-2",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "OperationType": "control",
+                "ConsumerARN": "arn:aws:kinesis:us-west-2:123:stream/testStream/consumer/test-consumer:1525898737",
+                "AccountId": "123",
+                "AccountIdEndpointMode": "preferred"
+            }
+        },
+        {
+            "documentation": "Account Id present with resource ARN",
+            "expect": {
+                "endpoint": {
+                    "url": "https://123.control-kinesis.us-west-2.amazonaws.com"
+                }
+            },
+            "params": {
+                "Region": "us-west-2",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "OperationType": "control",
+                "ResourceARN": "arn:aws:kinesis:us-west-2:123:stream/testStream/consumer/test-consumer:1525898737",
+                "AccountId": "123",
+                "AccountIdEndpointMode": "preferred"
+            }
+        },
+        {
+            "documentation": "Account Id present and stream ARN with different accountId",
+            "expect": {
+                "endpoint": {
+                    "url": "https://456.control-kinesis.us-west-2.amazonaws.com"
+                }
+            },
+            "params": {
+                "Region": "us-west-2",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "OperationType": "control",
+                "ResourceARN": "arn:aws:kinesis:us-west-2:456:stream/testStream",
+                "AccountId": "123",
+                "AccountIdEndpointMode": "preferred"
+            }
+        },
+        {
+            "documentation": "Account Id present and consumer ARN with different accountId",
+            "expect": {
+                "endpoint": {
+                    "url": "https://456.control-kinesis.us-west-2.amazonaws.com"
+                }
+            },
+            "params": {
+                "Region": "us-west-2",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "OperationType": "control",
+                "ResourceARN": "arn:aws:kinesis:us-west-2:456:stream/testStream/consumer/test-consumer:1525898737",
+                "AccountId": "123",
+                "AccountIdEndpointMode": "preferred"
+            }
+        },
+        {
+            "documentation": "Account Id, streamId and resource ARN with different accountId",
+            "expect": {
+                "endpoint": {
+                    "url": "https://af4lwng4k01746835071.xyz.control-kinesis.us-west-2.amazonaws.com"
+                }
+            },
+            "params": {
+                "Region": "us-west-2",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "OperationType": "control",
+                "StreamId": "af4lwng4k01746835071-xyz",
+                "ResourceARN": "arn:aws:kinesis:us-west-2:456:stream/testStream/consumer/test-consumer:1525898737",
+                "AccountId": "123",
+                "AccountIdEndpointMode": "preferred"
+            }
+        },
+        {
+            "documentation": "Account Id with account id endpoint mode disabled",
+            "expect": {
+                "endpoint": {
+                    "url": "https://kinesis.us-west-2.amazonaws.com"
+                }
+            },
+            "operationInputs": [
+                {
+                    "builtInParams": {
+                        "AWS::Region": "us-west-2",
+                        "AWS::Auth::AccountId": "123",
+                        "AWS::Auth::AccountIdEndpointMode": "disabled"
+                    },
+                    "operationName": "ListShards",
+                    "operationParams": {
+                        "StreamName": "testStream"
+                    }
+                }
+            ],
+            "params": {
+                "Region": "us-west-2",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "OperationType": "control",
+                "AccountId": "123",
+                "AccountIdEndpointMode": "disabled"
+            }
+        },
+        {
+            "documentation": "Account Id and StreamArn with account id endpoint mode disabled",
+            "expect": {
+                "endpoint": {
+                    "url": "https://456.control-kinesis.us-west-2.amazonaws.com"
+                }
+            },
+            "params": {
+                "Region": "us-west-2",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "OperationType": "control",
+                "StreamARN": "arn:aws:kinesis:us-west-2:456:stream/testStream",
+                "AccountId": "123",
+                "AccountIdEndpointMode": "disabled"
+            }
+        },
+        {
+            "documentation": "Account Id missing with account id endpoint mode required",
+            "expect": {
+                "error": "AccountIdEndpointMode is required but no AccountID was provided or able to be loaded"
+            },
+            "operationInputs": [
+                {
+                    "builtInParams": {
+                        "AWS::Region": "us-west-2",
+                        "AWS::Auth::AccountIdEndpointMode": "required"
+                    },
+                    "operationName": "ListShards",
+                    "operationParams": {
+                        "StreamName": "testStream"
+                    }
+                }
+            ],
+            "params": {
+                "Region": "us-west-2",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "OperationType": "control",
+                "AccountIdEndpointMode": "required"
+            }
+        },
+        {
+            "documentation": "Account Id missing with account id endpoint mode required, fips and dual stack enabled",
+            "expect": {
+                "error": "AccountIdEndpointMode is required but no AccountID was provided or able to be loaded"
+            },
+            "params": {
+                "Region": "us-west-2",
+                "UseFIPS": true,
+                "UseDualStack": true,
+                "OperationType": "control",
+                "AccountIdEndpointMode": "required"
+            }
+        },
+        {
+            "documentation": "Account Id missing with account id endpoint mode required in ADC region",
+            "expect": {
+                "error": "Invalid Configuration: AccountIdEndpointMode is required but account endpoints are not supported in this partition"
+            },
+            "params": {
+                "Region": "us-iso-east-1",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "OperationType": "control",
+                "AccountIdEndpointMode": "required"
+            }
+        },
+        {
+            "documentation": "Account Id present with account id endpoint mode required in ADC region",
+            "expect": {
+                "error": "Invalid Configuration: AccountIdEndpointMode is required but account endpoints are not supported in this partition"
+            },
+            "params": {
+                "Region": "us-iso-east-1",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "OperationType": "control",
+                "AccountId": "123456789012",
+                "AccountIdEndpointMode": "required"
+            }
+        },
+        {
+            "documentation": "Account Id present with account id endpoint mode preferred in ADC region",
+            "expect": {
+                "endpoint": {
+                    "url": "https://kinesis.us-iso-east-1.c2s.ic.gov"
+                }
+            },
+            "params": {
+                "Region": "us-iso-east-1",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "OperationType": "control",
+                "AccountId": "123456789012",
+                "AccountIdEndpointMode": "preferred"
+            }
+        },
+        {
+            "documentation": "Account Id missing with account id endpoint mode required and endpoint override",
+            "expect": {
+                "endpoint": {
+                    "url": "https://kinesis-pod1.us-west-2.amazonaws.com"
+                }
+            },
+            "params": {
+                "Region": "us-west-2",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "OperationType": "control",
+                "Endpoint": "https://kinesis-pod1.us-west-2.amazonaws.com",
+                "AccountIdEndpointMode": "required"
+            }
+        },
+        {
+            "documentation": "Account Id missing with StreamArn and account id endpoint mode required",
+            "expect": {
+                "endpoint": {
+                    "url": "https://456.control-kinesis.us-west-2.amazonaws.com"
+                }
+            },
+            "params": {
+                "Region": "us-west-2",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "OperationType": "control",
+                "StreamARN": "arn:aws:kinesis:us-west-2:456:stream/testStream",
+                "AccountIdEndpointMode": "required"
+            }
+        },
+        {
+            "documentation": "Account Id missing with StreamId and account id endpoint mode required",
+            "expect": {
+                "endpoint": {
+                    "url": "https://af4lwng4k01746835071.xyz.control-kinesis.us-west-2.amazonaws.com"
+                }
+            },
+            "params": {
+                "Region": "us-west-2",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "OperationType": "control",
+                "StreamId": "af4lwng4k01746835071-xyz",
+                "AccountIdEndpointMode": "required"
+            }
+        },
+        {
+            "documentation": "Account Id missing with account id endpoint mode preferred",
+            "expect": {
+                "endpoint": {
+                    "url": "https://kinesis.us-west-2.amazonaws.com"
+                }
+            },
+            "params": {
+                "Region": "us-west-2",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "OperationType": "control",
+                "AccountIdEndpointMode": "preferred"
+            }
+        },
+        {
+            "documentation": "Account Id missing with account id endpoint mode disabled",
+            "expect": {
+                "endpoint": {
+                    "url": "https://kinesis.us-west-2.amazonaws.com"
+                }
+            },
+            "params": {
+                "Region": "us-west-2",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "OperationType": "control",
+                "AccountIdEndpointMode": "disabled"
+            }
+        },
+        {
+            "documentation": "CreateStream: control operation type with AccountId",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "metricValues": [
+                            "O"
+                        ]
+                    },
+                    "url": "https://123456789012.control-kinesis.us-east-1.amazonaws.com"
+                }
+            },
+            "operationInputs": [
+                {
+                    "builtInParams": {
+                        "AWS::Region": "us-east-1",
+                        "AWS::Auth::AccountId": "123456789012",
+                        "AWS::Auth::AccountIdEndpointMode": "preferred"
+                    },
+                    "operationName": "CreateStream",
+                    "operationParams": {
+                        "StreamName": "test-stream",
+                        "ShardCount": 1
+                    }
+                }
+            ],
+            "params": {
+                "Region": "us-east-1",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "OperationType": "control",
+                "AccountId": "123456789012",
+                "AccountIdEndpointMode": "preferred"
+            }
+        },
+        {
+            "documentation": "CreateStream: control operation type with FIPS and AccountId",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "metricValues": [
+                            "O"
+                        ]
+                    },
+                    "url": "https://123456789012.control-kinesis-fips.us-east-1.amazonaws.com"
+                }
+            },
+            "operationInputs": [
+                {
+                    "builtInParams": {
+                        "AWS::Region": "us-east-1",
+                        "AWS::Auth::AccountId": "123456789012",
+                        "AWS::Auth::AccountIdEndpointMode": "preferred",
+                        "AWS::UseFIPS": true
+                    },
+                    "operationName": "CreateStream",
+                    "operationParams": {
+                        "StreamName": "test-stream",
+                        "ShardCount": 1
+                    }
+                }
+            ],
+            "params": {
+                "Region": "us-east-1",
+                "UseFIPS": true,
+                "UseDualStack": false,
+                "OperationType": "control",
+                "AccountId": "123456789012",
+                "AccountIdEndpointMode": "preferred"
+            }
+        },
+        {
+            "documentation": "ListStreams: control operation type with AccountId",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "metricValues": [
+                            "O"
+                        ]
+                    },
+                    "url": "https://123456789012.control-kinesis.us-west-2.amazonaws.com"
+                }
+            },
+            "operationInputs": [
+                {
+                    "builtInParams": {
+                        "AWS::Region": "us-west-2",
+                        "AWS::Auth::AccountId": "123456789012",
+                        "AWS::Auth::AccountIdEndpointMode": "preferred"
+                    },
+                    "operationName": "ListStreams"
+                }
+            ],
+            "params": {
+                "Region": "us-west-2",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "OperationType": "control",
+                "AccountId": "123456789012",
+                "AccountIdEndpointMode": "preferred"
+            }
+        },
+        {
+            "documentation": "ListStreams: control operation type with FIPS and DualStack",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "metricValues": [
+                            "O"
+                        ]
+                    },
+                    "url": "https://123456789012.control-kinesis-fips.us-west-2.api.aws"
+                }
+            },
+            "operationInputs": [
+                {
+                    "builtInParams": {
+                        "AWS::Region": "us-west-2",
+                        "AWS::Auth::AccountId": "123456789012",
+                        "AWS::Auth::AccountIdEndpointMode": "preferred",
+                        "AWS::UseFIPS": true,
+                        "AWS::UseDualStack": true
+                    },
+                    "operationName": "ListStreams"
+                }
+            ],
+            "params": {
+                "Region": "us-west-2",
+                "UseFIPS": true,
+                "UseDualStack": true,
+                "OperationType": "control",
+                "AccountId": "123456789012",
+                "AccountIdEndpointMode": "preferred"
+            }
+        },
+        {
+            "documentation": "DescribeLimits: control operation type with AccountId",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "metricValues": [
+                            "O"
+                        ]
+                    },
+                    "url": "https://123456789012.control-kinesis.us-east-1.amazonaws.com"
+                }
+            },
+            "operationInputs": [
+                {
+                    "builtInParams": {
+                        "AWS::Region": "us-east-1",
+                        "AWS::Auth::AccountId": "123456789012",
+                        "AWS::Auth::AccountIdEndpointMode": "preferred"
+                    },
+                    "operationName": "DescribeLimits"
+                }
+            ],
+            "params": {
+                "Region": "us-east-1",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "OperationType": "control",
+                "AccountId": "123456789012",
+                "AccountIdEndpointMode": "preferred"
+            }
+        },
+        {
+            "documentation": "DescribeLimits: control operation type with FIPS",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "metricValues": [
+                            "O"
+                        ]
+                    },
+                    "url": "https://123456789012.control-kinesis-fips.us-east-1.amazonaws.com"
+                }
+            },
+            "operationInputs": [
+                {
+                    "builtInParams": {
+                        "AWS::Region": "us-east-1",
+                        "AWS::Auth::AccountId": "123456789012",
+                        "AWS::Auth::AccountIdEndpointMode": "preferred",
+                        "AWS::UseFIPS": true
+                    },
+                    "operationName": "DescribeLimits"
+                }
+            ],
+            "params": {
+                "Region": "us-east-1",
+                "UseFIPS": true,
+                "UseDualStack": false,
+                "OperationType": "control",
+                "AccountId": "123456789012",
+                "AccountIdEndpointMode": "preferred"
+            }
+        },
+        {
+            "documentation": "DescribeAccountSettings: control operation type with AccountId",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "metricValues": [
+                            "O"
+                        ]
+                    },
+                    "url": "https://123456789012.control-kinesis.us-west-2.amazonaws.com"
+                }
+            },
+            "operationInputs": [
+                {
+                    "builtInParams": {
+                        "AWS::Region": "us-west-2",
+                        "AWS::Auth::AccountId": "123456789012",
+                        "AWS::Auth::AccountIdEndpointMode": "preferred"
+                    },
+                    "operationName": "DescribeAccountSettings"
+                }
+            ],
+            "params": {
+                "Region": "us-west-2",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "OperationType": "control",
+                "AccountId": "123456789012",
+                "AccountIdEndpointMode": "preferred"
+            }
+        },
+        {
+            "documentation": "DescribeAccountSettings: control operation type with FIPS and DualStack",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "metricValues": [
+                            "O"
+                        ]
+                    },
+                    "url": "https://123456789012.control-kinesis-fips.us-west-2.api.aws"
+                }
+            },
+            "operationInputs": [
+                {
+                    "builtInParams": {
+                        "AWS::Region": "us-west-2",
+                        "AWS::Auth::AccountId": "123456789012",
+                        "AWS::Auth::AccountIdEndpointMode": "preferred",
+                        "AWS::UseFIPS": true,
+                        "AWS::UseDualStack": true
+                    },
+                    "operationName": "DescribeAccountSettings"
+                }
+            ],
+            "params": {
+                "Region": "us-west-2",
+                "UseFIPS": true,
+                "UseDualStack": true,
+                "OperationType": "control",
+                "AccountId": "123456789012",
+                "AccountIdEndpointMode": "preferred"
+            }
+        },
+        {
+            "documentation": "UpdateAccountSettings: control operation type with AccountId",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "metricValues": [
+                            "O"
+                        ]
+                    },
+                    "url": "https://123456789012.control-kinesis.us-east-1.amazonaws.com"
+                }
+            },
+            "operationInputs": [
+                {
+                    "builtInParams": {
+                        "AWS::Region": "us-east-1",
+                        "AWS::Auth::AccountId": "123456789012",
+                        "AWS::Auth::AccountIdEndpointMode": "preferred"
+                    },
+                    "operationName": "UpdateAccountSettings",
+                    "operationParams": {
+                        "MinimumThroughputBillingCommitment": {
+                            "Status": "ENABLED"
+                        }
+                    }
+                }
+            ],
+            "params": {
+                "Region": "us-east-1",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "OperationType": "control",
+                "AccountId": "123456789012",
+                "AccountIdEndpointMode": "preferred"
+            }
+        },
+        {
+            "documentation": "UpdateAccountSettings: control operation type with FIPS",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "metricValues": [
+                            "O"
+                        ]
+                    },
+                    "url": "https://123456789012.control-kinesis-fips.us-east-1.amazonaws.com"
+                }
+            },
+            "operationInputs": [
+                {
+                    "builtInParams": {
+                        "AWS::Region": "us-east-1",
+                        "AWS::Auth::AccountId": "123456789012",
+                        "AWS::Auth::AccountIdEndpointMode": "preferred",
+                        "AWS::UseFIPS": true
+                    },
+                    "operationName": "UpdateAccountSettings",
+                    "operationParams": {
+                        "MinimumThroughputBillingCommitment": {
+                            "Status": "ENABLED"
+                        }
+                    }
+                }
+            ],
+            "params": {
+                "Region": "us-east-1",
+                "UseFIPS": true,
+                "UseDualStack": false,
+                "OperationType": "control",
+                "AccountId": "123456789012",
+                "AccountIdEndpointMode": "preferred"
+            }
+        },
+        {
+            "documentation": "CreateStream: account id endpoint mode disabled falls back to regional endpoint",
+            "expect": {
+                "endpoint": {
+                    "url": "https://kinesis.us-east-1.amazonaws.com"
+                }
+            },
+            "operationInputs": [
+                {
+                    "builtInParams": {
+                        "AWS::Region": "us-east-1",
+                        "AWS::Auth::AccountId": "123456789012",
+                        "AWS::Auth::AccountIdEndpointMode": "disabled"
+                    },
+                    "operationName": "CreateStream",
+                    "operationParams": {
+                        "StreamName": "test-stream",
+                        "ShardCount": 1
+                    }
+                }
+            ],
+            "params": {
+                "Region": "us-east-1",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "OperationType": "control",
+                "AccountId": "123456789012",
+                "AccountIdEndpointMode": "disabled"
+            }
+        },
+        {
+            "documentation": "ListStreams: account id endpoint mode disabled falls back to regional endpoint",
+            "expect": {
+                "endpoint": {
+                    "url": "https://kinesis.us-west-2.amazonaws.com"
+                }
+            },
+            "operationInputs": [
+                {
+                    "builtInParams": {
+                        "AWS::Region": "us-west-2",
+                        "AWS::Auth::AccountId": "123456789012",
+                        "AWS::Auth::AccountIdEndpointMode": "disabled"
+                    },
+                    "operationName": "ListStreams"
+                }
+            ],
+            "params": {
+                "Region": "us-west-2",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "OperationType": "control",
+                "AccountId": "123456789012",
+                "AccountIdEndpointMode": "disabled"
+            }
+        },
+        {
+            "documentation": "DescribeLimits: account id endpoint mode disabled falls back to regional endpoint",
+            "expect": {
+                "endpoint": {
+                    "url": "https://kinesis.us-east-1.amazonaws.com"
+                }
+            },
+            "operationInputs": [
+                {
+                    "builtInParams": {
+                        "AWS::Region": "us-east-1",
+                        "AWS::Auth::AccountId": "123456789012",
+                        "AWS::Auth::AccountIdEndpointMode": "disabled"
+                    },
+                    "operationName": "DescribeLimits"
+                }
+            ],
+            "params": {
+                "Region": "us-east-1",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "OperationType": "control",
+                "AccountId": "123456789012",
+                "AccountIdEndpointMode": "disabled"
+            }
+        },
+        {
+            "documentation": "DescribeAccountSettings: account id endpoint mode disabled falls back to regional endpoint",
+            "expect": {
+                "endpoint": {
+                    "url": "https://kinesis.us-west-2.amazonaws.com"
+                }
+            },
+            "operationInputs": [
+                {
+                    "builtInParams": {
+                        "AWS::Region": "us-west-2",
+                        "AWS::Auth::AccountId": "123456789012",
+                        "AWS::Auth::AccountIdEndpointMode": "disabled"
+                    },
+                    "operationName": "DescribeAccountSettings"
+                }
+            ],
+            "params": {
+                "Region": "us-west-2",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "OperationType": "control",
+                "AccountId": "123456789012",
+                "AccountIdEndpointMode": "disabled"
+            }
+        },
+        {
+            "documentation": "UpdateAccountSettings: account id endpoint mode disabled falls back to regional endpoint",
+            "expect": {
+                "endpoint": {
+                    "url": "https://kinesis.us-east-1.amazonaws.com"
+                }
+            },
+            "operationInputs": [
+                {
+                    "builtInParams": {
+                        "AWS::Region": "us-east-1",
+                        "AWS::Auth::AccountId": "123456789012",
+                        "AWS::Auth::AccountIdEndpointMode": "disabled"
+                    },
+                    "operationName": "UpdateAccountSettings",
+                    "operationParams": {
+                        "MinimumThroughputBillingCommitment": {
+                            "Status": "ENABLED"
+                        }
+                    }
+                }
+            ],
+            "params": {
+                "Region": "us-east-1",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "OperationType": "control",
+                "AccountId": "123456789012",
+                "AccountIdEndpointMode": "disabled"
+            }
+        },
+        {
+            "documentation": "CreateStream: account id endpoint mode disabled with FIPS falls back to regional FIPS endpoint",
+            "expect": {
+                "endpoint": {
+                    "url": "https://kinesis-fips.us-east-1.amazonaws.com"
+                }
+            },
+            "operationInputs": [
+                {
+                    "builtInParams": {
+                        "AWS::Region": "us-east-1",
+                        "AWS::Auth::AccountId": "123456789012",
+                        "AWS::Auth::AccountIdEndpointMode": "disabled",
+                        "AWS::UseFIPS": true
+                    },
+                    "operationName": "CreateStream",
+                    "operationParams": {
+                        "StreamName": "test-stream",
+                        "ShardCount": 1
+                    }
+                }
+            ],
+            "params": {
+                "Region": "us-east-1",
+                "UseFIPS": true,
+                "UseDualStack": false,
+                "OperationType": "control",
+                "AccountId": "123456789012",
+                "AccountIdEndpointMode": "disabled"
+            }
+        },
+        {
+            "documentation": "CreateStream: account id endpoint mode disabled with DualStack falls back to regional DualStack endpoint",
+            "expect": {
+                "endpoint": {
+                    "url": "https://kinesis.us-east-1.api.aws"
+                }
+            },
+            "operationInputs": [
+                {
+                    "builtInParams": {
+                        "AWS::Region": "us-east-1",
+                        "AWS::Auth::AccountId": "123456789012",
+                        "AWS::Auth::AccountIdEndpointMode": "disabled",
+                        "AWS::UseDualStack": true
+                    },
+                    "operationName": "CreateStream",
+                    "operationParams": {
+                        "StreamName": "test-stream",
+                        "ShardCount": 1
+                    }
+                }
+            ],
+            "params": {
+                "Region": "us-east-1",
+                "UseFIPS": false,
+                "UseDualStack": true,
+                "OperationType": "control",
+                "AccountId": "123456789012",
+                "AccountIdEndpointMode": "disabled"
+            }
+        },
+        {
+            "documentation": "CreateStream: account id endpoint mode disabled with FIPS and DualStack falls back to regional FIPS DualStack endpoint",
+            "expect": {
+                "endpoint": {
+                    "url": "https://kinesis-fips.us-east-1.api.aws"
+                }
+            },
+            "operationInputs": [
+                {
+                    "builtInParams": {
+                        "AWS::Region": "us-east-1",
+                        "AWS::Auth::AccountId": "123456789012",
+                        "AWS::Auth::AccountIdEndpointMode": "disabled",
+                        "AWS::UseFIPS": true,
+                        "AWS::UseDualStack": true
+                    },
+                    "operationName": "CreateStream",
+                    "operationParams": {
+                        "StreamName": "test-stream",
+                        "ShardCount": 1
+                    }
+                }
+            ],
+            "params": {
+                "Region": "us-east-1",
+                "UseFIPS": true,
+                "UseDualStack": true,
+                "OperationType": "control",
+                "AccountId": "123456789012",
+                "AccountIdEndpointMode": "disabled"
+            }
         }
     ],
     "version": "1.0"

@@ -1094,7 +1094,7 @@
         {"shape":"InvalidParameterValueException"},
         {"shape":"ServiceUnavailableException"}
       ],
-      "documentation":"<p>This is a request for a summary of backup jobs created or running within the most recent 30 days. You can include parameters AccountID, State, ResourceType, MessageCategory, AggregationPeriod, MaxResults, or NextToken to filter results.</p> <p>This request returns a summary that contains Region, Account, State, ResourceType, MessageCategory, StartTime, EndTime, and Count of included jobs.</p>"
+      "documentation":"<p>This is a request for a summary of backup jobs created or running within the most recent 14 days. You can include parameters AccountID, State, ResourceType, MessageCategory, AggregationPeriod, MaxResults, or NextToken to filter results.</p> <p>This request returns a summary that contains Region, Account, State, ResourceType, MessageCategory, StartTime, EndTime, and Count of included jobs.</p>"
     },
     "ListBackupJobs":{
       "name":"ListBackupJobs",
@@ -1207,7 +1207,7 @@
         {"shape":"InvalidParameterValueException"},
         {"shape":"ServiceUnavailableException"}
       ],
-      "documentation":"<p>This request obtains a list of copy jobs created or running within the the most recent 30 days. You can include parameters AccountID, State, ResourceType, MessageCategory, AggregationPeriod, MaxResults, or NextToken to filter results.</p> <p>This request returns a summary that contains Region, Account, State, RestourceType, MessageCategory, StartTime, EndTime, and Count of included jobs.</p>"
+      "documentation":"<p>This request obtains a list of copy jobs created or running within the the most recent 14 days. You can include parameters AccountID, State, ResourceType, MessageCategory, AggregationPeriod, MaxResults, or NextToken to filter results.</p> <p>This request returns a summary that contains Region, Account, State, RestourceType, MessageCategory, StartTime, EndTime, and Count of included jobs.</p>"
     },
     "ListCopyJobs":{
       "name":"ListCopyJobs",
@@ -1405,7 +1405,7 @@
         {"shape":"InvalidParameterValueException"},
         {"shape":"ServiceUnavailableException"}
       ],
-      "documentation":"<p>This request obtains a summary of restore jobs created or running within the the most recent 30 days. You can include parameters AccountID, State, ResourceType, AggregationPeriod, MaxResults, or NextToken to filter results.</p> <p>This request returns a summary that contains Region, Account, State, RestourceType, MessageCategory, StartTime, EndTime, and Count of included jobs.</p>"
+      "documentation":"<p>This request obtains a summary of restore jobs created or running within the the most recent 14 days. You can include parameters AccountID, State, ResourceType, AggregationPeriod, MaxResults, or NextToken to filter results.</p> <p>This request returns a summary that contains Region, Account, State, RestourceType, MessageCategory, StartTime, EndTime, and Count of included jobs.</p>"
     },
     "ListRestoreJobs":{
       "name":"ListRestoreJobs",
@@ -1483,7 +1483,7 @@
         {"shape":"InvalidParameterValueException"},
         {"shape":"ServiceUnavailableException"}
       ],
-      "documentation":"<p>This is a request for a summary of scan jobs created or running within the most recent 30 days.</p>"
+      "documentation":"<p>This is a request for a summary of scan jobs created or running within the most recent 14 days.</p>"
     },
     "ListScanJobs":{
       "name":"ListScanJobs",
@@ -2274,7 +2274,7 @@
           "documentation":"<p>The value of time in number format of a job end time.</p> <p>This value is the time in Unix format, Coordinated Universal Time (UTC), and accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.</p>"
         }
       },
-      "documentation":"<p>This is a summary of jobs created or running within the most recent 30 days.</p> <p>The returned summary may contain the following: Region, Account, State, RestourceType, MessageCategory, StartTime, EndTime, and Count of included jobs.</p>"
+      "documentation":"<p>This is a summary of jobs created or running within the most recent 14 days.</p> <p>The returned summary may contain the following: Region, Account, State, RestourceType, MessageCategory, StartTime, EndTime, and Count of included jobs.</p>"
     },
     "BackupJobSummaryList":{
       "type":"list",
@@ -3106,7 +3106,7 @@
           "documentation":"<p>The value of time in number format of a job end time.</p> <p>This value is the time in Unix format, Coordinated Universal Time (UTC), and accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.</p>"
         }
       },
-      "documentation":"<p>This is a summary of copy jobs created or running within the most recent 30 days.</p> <p>The returned summary may contain the following: Region, Account, State, RestourceType, MessageCategory, StartTime, EndTime, and Count of included jobs.</p>"
+      "documentation":"<p>This is a summary of copy jobs created or running within the most recent 14 days.</p> <p>The returned summary may contain the following: Region, Account, State, RestourceType, MessageCategory, StartTime, EndTime, and Count of included jobs.</p>"
     },
     "CopyJobSummaryList":{
       "type":"list",
@@ -8377,7 +8377,7 @@
           "documentation":"<p>The value of time in number format of a job end time.</p> <p>This value is the time in Unix format, Coordinated Universal Time (UTC), and accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.</p>"
         }
       },
-      "documentation":"<p>This is a summary of restore jobs created or running within the most recent 30 days.</p> <p>The returned summary may contain the following: Region, Account, State, ResourceType, MessageCategory, StartTime, EndTime, and Count of included jobs.</p>"
+      "documentation":"<p>This is a summary of restore jobs created or running within the most recent 14 days.</p> <p>The returned summary may contain the following: Region, Account, State, ResourceType, MessageCategory, StartTime, EndTime, and Count of included jobs.</p>"
     },
     "RestoreJobSummaryList":{
       "type":"list",
@@ -8660,7 +8660,7 @@
         },
         "SelectionWindowDays":{
           "shape":"integer",
-          "documentation":"<p>Accepted values are integers from 1 to 365.</p>"
+          "documentation":"<p>Accepted values are integers from 1 to 365. If not included, the value defaults to 30. The selection window is calculated from the actual job execution time, not the plan's scheduled start time.</p>"
         }
       },
       "documentation":"<p> <code>RecoveryPointSelection</code> has five parameters (three required and two optional). The values you specify determine which recovery point is included in the restore test. You must indicate with <code>Algorithm</code> if you want the latest recovery point within your <code>SelectionWindowDays</code> or if you want a random recovery point, and you must indicate through <code>IncludeVaults</code> from which vaults the recovery points can be chosen.</p> <p> <code>Algorithm</code> (<i>required</i>) Valid values: \"<code>LATEST_WITHIN_WINDOW</code>\" or \"<code>RANDOM_WITHIN_WINDOW</code>\".</p> <p> <code>Recovery point types</code> (<i>required</i>) Valid values: \"<code>SNAPSHOT</code>\" and/or \"<code>CONTINUOUS</code>\". Include <code>SNAPSHOT</code> to restore only snapshot recovery points; include <code>CONTINUOUS</code> to restore continuous recovery points (point in time restore / PITR); use both to restore either a snapshot or a continuous recovery point. The recovery point will be determined by the value for <code>Algorithm</code>.</p> <p> <code>IncludeVaults</code> (<i>required</i>). You must include one or more backup vaults. Use the wildcard [\"*\"] or specific ARNs.</p> <p> <code>SelectionWindowDays</code> (<i>optional</i>) Value must be an integer (in days) from 1 to 365. If not included, the value defaults to <code>30</code>.</p> <p> <code>ExcludeVaults</code> (<i>optional</i>). You can choose to input one or more specific backup vault ARNs to exclude those vaults' contents from restore eligibility. Or, you can include a list of selectors. If this parameter and its value are not included, it defaults to empty list.</p>"

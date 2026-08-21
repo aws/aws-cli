@@ -23,13 +23,19 @@ def cli_env(proxy: AsyncTLSInterceptProxy) -> dict[str, str]:
         "AWS_CONFIG_FILE": "",
         "AWS_SHARED_CREDENTIALS_FILE": "",
         "HTTPS_PROXY": proxy.endpoint_url,
+        "HTTP_PROXY": proxy.endpoint_url,
         "AWS_CA_BUNDLE": str(proxy.ca.ca_pem_path()),
     }
 
 
 @asynccontextmanager
 async def mock_server(on_headers_received=None):
-    """Async context manager that yields (server, proxy) for blackbox tests."""
+    """Async context manager that yields (server, proxy) for blackbox tests.
+
+    All CLI traffic must go through this proxy. If the binary under test
+    does not respect HTTPS_PROXY, requests will fail to connect (the env
+    has no real credentials and NO_PROXY is empty).
+    """
     async with (
         AsyncHTTPTestServer(on_headers_received=on_headers_received) as server,
         AsyncTLSInterceptProxy(server=server) as proxy,

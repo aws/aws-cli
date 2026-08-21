@@ -8,8 +8,12 @@ import pytest
 from dateutil import parser, tz
 from dateutil import parser as dateutil_parser
 
+from tests.blackbox.s3_assertions import (
+    assert_list_buckets,
+    assert_list_objects_v2,
+)
+
 from tests.blackbox.utils import (
-    assert_s3_operation,
     cli_env,
     format_requests,
     get_query_params,
@@ -68,7 +72,7 @@ async def test_operations_used_in_recursive_list(aws_cli: str) -> None:
     # Should have made exactly one request (ListObjectsV2)
     assert len(server.requests) == 1
     req = server.requests[0]
-    assert_s3_operation(req, "ListObjectsV2", Bucket="bucket")
+    assert_list_objects_v2(req, Bucket="bucket")
 
     params = get_query_params(req)
     # Recursive listing should not include a delimiter
@@ -96,7 +100,7 @@ async def test_list_buckets_use_page_size(aws_cli: str) -> None:
     assert rc == 0, f"stdout={stdout!r} stderr={stderr!r}"
     assert len(server.requests) == 1
     req = server.requests[0]
-    assert_s3_operation(req, "ListBuckets", MaxBuckets="8")
+    assert_list_buckets(req, MaxBuckets="8")
 
 
 @pytest.mark.asyncio
@@ -120,7 +124,7 @@ async def test_operations_use_page_size(aws_cli: str) -> None:
     assert rc == 0, f"stdout={stdout!r} stderr={stderr!r}"
     assert len(server.requests) == 1
     req = server.requests[0]
-    assert_s3_operation(req, "ListObjectsV2", Bucket="bucket", MaxKeys="8")
+    assert_list_objects_v2(req, Bucket="bucket", MaxKeys="8")
 
 
 @pytest.mark.asyncio
@@ -144,7 +148,7 @@ async def test_operations_use_page_size_recursive(aws_cli: str) -> None:
     assert rc == 0, f"stdout={stdout!r} stderr={stderr!r}"
     assert len(server.requests) == 1
     req = server.requests[0]
-    assert_s3_operation(req, "ListObjectsV2", Bucket="bucket", MaxKeys="8")
+    assert_list_objects_v2(req, Bucket="bucket", MaxKeys="8")
     params = get_query_params(req)
     assert "delimiter" not in params
 
@@ -504,7 +508,7 @@ async def test_list_buckets_uses_bucket_name_prefix(aws_cli: str) -> None:
     assert rc == 0, f"stdout={stdout!r} stderr={stderr!r}"
     assert len(server.requests) == 1
     req = server.requests[0]
-    assert_s3_operation(req, "ListBuckets", Prefix="myprefix")
+    assert_list_buckets(req, Prefix="myprefix")
 
 
 @pytest.mark.asyncio
@@ -523,7 +527,7 @@ async def test_list_buckets_uses_bucket_region(aws_cli: str) -> None:
     assert rc == 0, f"stdout={stdout!r} stderr={stderr!r}"
     assert len(server.requests) == 1
     req = server.requests[0]
-    assert_s3_operation(req, "ListBuckets", BucketRegion="us-west-1")
+    assert_list_buckets(req, BucketRegion="us-west-1")
 
 
 @pytest.mark.asyncio

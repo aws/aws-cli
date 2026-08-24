@@ -770,11 +770,6 @@ def assert_put_object_annotation(request, Bucket: str, Key: str, addressing_styl
     _check_params(request, params, _PUT_OBJECT_ANNOTATION_PARAMS, "PutObjectAnnotation")
 
 
-# ---------------------------------------------------------------------------
-# Non-S3 service helpers (used by mv --validate-same-s3-paths tests)
-# ---------------------------------------------------------------------------
-
-
 def assert_get_access_point(request):
     """Assert request is an S3 Control GetAccessPoint (GET /v20180820/accesspoint/{name})."""
     assert request.method == "GET", (

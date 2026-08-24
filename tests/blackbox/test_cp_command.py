@@ -2189,9 +2189,7 @@ class TestCPCommand:
             Bucket="bucket",
             Key="key1.txt",
             UploadId="foo",
-            MultipartUpload={
-                "Parts": [{"PartNumber": "1"}, {"PartNumber": "2"}]
-            },
+            MultipartUpload=[{"PartNumber": "1"}, {"PartNumber": "2"}],
             IfNoneMatch="*",
         )
 
@@ -2239,9 +2237,7 @@ class TestCPCommand:
             Bucket="bucket",
             Key="key.txt",
             UploadId="foo",
-            MultipartUpload={
-                "Parts": [{"PartNumber": "1"}, {"PartNumber": "2"}]
-            },
+            MultipartUpload=[{"PartNumber": "1"}, {"PartNumber": "2"}],
             IfNoneMatch="*",
         )
         # AbortMultipartUpload should have been called
@@ -3104,9 +3100,7 @@ class TestCpCommandWithRequesterPayer:
             Bucket="mybucket",
             Key="mykey",
             UploadId="id",
-            MultipartUpload={
-                "Parts": [{"PartNumber": "1"}, {"PartNumber": "2"}]
-            },
+            MultipartUpload=[{"PartNumber": "1"}, {"PartNumber": "2"}],
             RequestPayer="requester",
         )
 

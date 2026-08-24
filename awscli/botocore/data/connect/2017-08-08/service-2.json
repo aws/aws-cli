@@ -30164,6 +30164,43 @@
       "max":128,
       "min":1
     },
+    "RealTimeContactAnalysisExtractedInformationContent":{
+      "type":"string",
+      "max":1024,
+      "min":1
+    },
+    "RealTimeContactAnalysisExtractedInformationFailureCode":{
+      "type":"string",
+      "enum":[
+        "QUOTA_EXCEEDED",
+        "INSUFFICIENT_CONVERSATION_CONTENT",
+        "FAILED_SAFETY_GUIDELINES",
+        "INTERNAL_ERROR",
+        "MAX_PACKAGE_FEATURE_ONLY"
+      ]
+    },
+    "RealTimeContactAnalysisExtractedInformationValue":{
+      "type":"structure",
+      "required":[
+        "Content",
+        "PointsOfInterest"
+      ],
+      "members":{
+        "Content":{
+          "shape":"RealTimeContactAnalysisExtractedInformationContent",
+          "documentation":"<p>The text content of the extracted value.</p>"
+        },
+        "PointsOfInterest":{
+          "shape":"RealTimeContactAnalysisTranscriptItemsWithCharacterOffsets",
+          "documentation":"<p>The sections in the conversation that indicate where the extracted value was found.</p>"
+        }
+      },
+      "documentation":"<p>An individual value extracted from the conversation, including its content and the locations where it was found.</p>"
+    },
+    "RealTimeContactAnalysisExtractedInformationValues":{
+      "type":"list",
+      "member":{"shape":"RealTimeContactAnalysisExtractedInformationValue"}
+    },
     "RealTimeContactAnalysisId256":{
       "type":"string",
       "max":256,
@@ -30323,6 +30360,36 @@
       },
       "documentation":"<p>Segment type describing a contact event.</p>"
     },
+    "RealTimeContactAnalysisSegmentExtractedInformation":{
+      "type":"structure",
+      "required":[
+        "ExtractionDefinitionId",
+        "ExtractionDefinitionName"
+      ],
+      "members":{
+        "ExtractionDefinitionId":{
+          "shape":"ExtractionDefinitionId",
+          "documentation":"<p>The identifier of the extraction definition that produced this result.</p>"
+        },
+        "ExtractionDefinitionName":{
+          "shape":"ExtractionDefinitionName",
+          "documentation":"<p>The name of the extraction definition that produced this result.</p>"
+        },
+        "ExtractionDefinitionDisplayLabel":{
+          "shape":"ExtractionDefinitionDisplayLabel",
+          "documentation":"<p>The display label of the extraction definition that produced this result.</p>"
+        },
+        "ExtractedValues":{
+          "shape":"RealTimeContactAnalysisExtractedInformationValues",
+          "documentation":"<p>The list of values extracted from the conversation for this extraction definition. This field is empty when a <code>FailureCode</code> is present.</p>"
+        },
+        "FailureCode":{
+          "shape":"RealTimeContactAnalysisExtractedInformationFailureCode",
+          "documentation":"<p>If the information failed to be extracted, one of the following failure codes occurs:</p> <ul> <li> <p> <code>QUOTA_EXCEEDED</code>: The number of concurrent analytics jobs reached your service quota.</p> </li> <li> <p> <code>INSUFFICIENT_CONVERSATION_CONTENT</code>: Information extraction requires a conversation with at least one turn from each participant.</p> </li> <li> <p> <code>FAILED_SAFETY_GUIDELINES</code>: The extracted information cannot be provided because it failed to meet system safety guidelines.</p> </li> <li> <p> <code>INTERNAL_ERROR</code>: Internal system error.</p> </li> <li> <p> <code>MAX_PACKAGE_FEATURE_ONLY</code>: Information extraction is only available in Amazon Connect Customer instances.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>Segment containing information extracted from the conversation. Each segment represents the results for a single extraction definition.</p>"
+    },
     "RealTimeContactAnalysisSegmentIssues":{
       "type":"structure",
       "required":["IssuesDetected"],
@@ -30410,13 +30477,14 @@
         "Issues",
         "Event",
         "Attachments",
-        "PostContactSummary"
+        "PostContactSummary",
+        "ExtractedInformation"
       ]
     },
     "RealTimeContactAnalysisSegmentTypes":{
       "type":"list",
       "member":{"shape":"RealTimeContactAnalysisSegmentType"},
-      "max":6
+      "max":7
     },
     "RealTimeContactAnalysisSentimentLabel":{
       "type":"string",
@@ -30526,6 +30594,10 @@
         "PostContactSummary":{
           "shape":"RealTimeContactAnalysisSegmentPostContactSummary",
           "documentation":"<p>Information about the post-contact summary.</p>"
+        },
+        "ExtractedInformation":{
+          "shape":"RealTimeContactAnalysisSegmentExtractedInformation",
+          "documentation":"<p>The extracted information from the conversation.</p>"
         }
       },
       "documentation":"<p>An analyzed segment for a real-time analysis session.</p>",

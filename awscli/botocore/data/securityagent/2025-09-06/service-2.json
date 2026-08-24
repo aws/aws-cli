@@ -1651,6 +1651,10 @@
         "integratedRepositories":{
           "shape":"IntegratedRepositoryList",
           "documentation":"<p>The list of integrated repositories associated with the pentest.</p>"
+        },
+        "trustedCaCertificates":{
+          "shape":"TrustedCaCertificateList",
+          "documentation":"<p>The trust anchors used to validate target endpoint TLS certificates. Provide these for endpoints served by a private or internal certificate authority (CA), an intermediate CA, or a self-signed certificate.</p>"
         }
       },
       "documentation":"<p>The collection of assets used in a pentest configuration, including endpoints, actors, documents, source code repositories, and integrated repositories.</p>"
@@ -2563,6 +2567,32 @@
     "Boolean":{
       "type":"boolean",
       "box":true
+    },
+    "CaCertificatePem":{
+      "type":"string",
+      "documentation":"<p>A PEM-encoded X.509 certificate.</p>",
+      "max":8192,
+      "min":1,
+      "sensitive":true
+    },
+    "CaCertificateSource":{
+      "type":"structure",
+      "members":{
+        "inlinePem":{
+          "shape":"CaCertificatePem",
+          "documentation":"<p>A PEM-encoded X.509 certificate supplied inline.</p>"
+        },
+        "artifactId":{
+          "shape":"String",
+          "documentation":"<p>The artifact ID of an uploaded certificate file.</p>"
+        },
+        "s3Location":{
+          "shape":"String",
+          "documentation":"<p>The Amazon S3 location URI of a customer-staged certificate.</p>"
+        }
+      },
+      "documentation":"<p>The source of a trusted CA certificate. Exactly one member must be set.</p>",
+      "union":true
     },
     "Category":{
       "type":"structure",
@@ -6737,6 +6767,10 @@
           "shape":"IntegratedRepositoryList",
           "documentation":"<p>The list of integrated repositories associated with the pentest job.</p>"
         },
+        "trustedCaCertificates":{
+          "shape":"TrustedCaCertificateList",
+          "documentation":"<p>The trust anchors used to validate target endpoint TLS certificates during the pentest job.</p>"
+        },
         "codeRemediationStrategy":{
           "shape":"CodeRemediationStrategy",
           "documentation":"<p>The code remediation strategy for the pentest job.</p>"
@@ -8650,6 +8684,22 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "TrustedCaCertificate":{
+      "type":"structure",
+      "required":["source"],
+      "members":{
+        "source":{
+          "shape":"CaCertificateSource",
+          "documentation":"<p>The source that AWS Security Agent reads the certificate from.</p>"
+        }
+      },
+      "documentation":"<p>A trust anchor used when validating a target endpoint's TLS certificate.</p>",
+      "sensitive":true
+    },
+    "TrustedCaCertificateList":{
+      "type":"list",
+      "member":{"shape":"TrustedCaCertificate"}
     },
     "UntagResourceInput":{
       "type":"structure",

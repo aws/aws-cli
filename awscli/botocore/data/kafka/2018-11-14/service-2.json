@@ -6201,9 +6201,123 @@
           "shape": "KafkaClusterMTLSAuthentication",
           "locationName": "mTLS",
           "documentation": "<p>Details for mTLS client authentication.</p>"
+        },
+        "SaslOAuthBearer": {
+          "shape": "KafkaClusterSaslOAuthBearerAuthentication",
+          "locationName": "saslOAuthBearer",
+          "documentation": "<p>Details for SASL/OAUTHBEARER client authentication.</p>"
         }
       },
       "documentation": "<p>Details of the client authentication used by the Apache Kafka cluster.</p>"
+    },
+    "KafkaClusterSaslOAuthBearerAuthentication": {
+      "type": "structure",
+      "members": {
+        "TokenEndpointUrl": {
+          "shape": "__string",
+          "locationName": "tokenEndpointUrl",
+          "documentation": "<p>The HTTPS URL of the OAuth token endpoint that vends OAuth Bearer tokens per RFC 6749.</p>"
+        },
+        "ClientCredentials": {
+          "shape": "KafkaClusterOAuthClientCredentials",
+          "locationName": "clientCredentials",
+          "documentation": "<p>Details for SASL/OAUTHBEARER using standard client_credentials grant.</p>"
+        },
+        "IamJwtBearer": {
+          "shape": "KafkaClusterOAuthIamJwtBearer",
+          "locationName": "iamJwtBearer",
+          "documentation": "<p>Details for SASL/OAUTHBEARER using JWT Bearer assertion grant (RFC 7523).</p>"
+        },
+        "ClientCredentialsAssertion": {
+          "shape": "KafkaClusterOAuthClientCredentialsAssertion",
+          "locationName": "clientCredentialsAssertion",
+          "documentation": "<p>Details for SASL/OAUTHBEARER using client credentials grant with JWT client assertion.</p>"
+        },
+        "TokenEndpointAuthenticationMethod": {
+          "shape": "TokenEndpointAuthenticationMethod",
+          "locationName": "tokenEndpointAuthenticationMethod",
+          "documentation": "<p>How client credentials are sent to the identity provider. Valid values are POST, BASIC, or NONE.</p>"
+        },
+        "Scope": {
+          "shape": "__string",
+          "locationName": "scope",
+          "documentation": "<p>OAuth scope to request.</p>"
+        },
+        "TokenEndpointTlsCertificateArn": {
+          "shape": "__string",
+          "locationName": "tokenEndpointTlsCertificateArn",
+          "documentation": "<p>Secrets Manager ARN containing a custom CA certificate for the identity provider.</p>"
+        }
+      },
+      "documentation": "<p>Details for SASL/OAUTHBEARER client authentication.</p>",
+      "required": [
+        "TokenEndpointUrl",
+        "TokenEndpointAuthenticationMethod"
+      ]
+    },
+    "KafkaClusterOAuthClientCredentials": {
+      "type": "structure",
+      "members": {
+        "TokenRequestSecretArn": {
+          "shape": "__string",
+          "locationName": "tokenRequestSecretArn",
+          "documentation": "<p>The Amazon Resource Name (ARN) of the Secrets Manager secret containing the OAuth client credentials.</p>"
+        }
+      },
+      "documentation": "<p>Details for SASL/OAUTHBEARER using standard client_credentials grant.</p>",
+      "required": [
+        "TokenRequestSecretArn"
+      ]
+    },
+    "KafkaClusterOAuthIamJwtBearer": {
+      "type": "structure",
+      "members": {
+        "Audience": {
+          "shape": "__string",
+          "locationName": "audience",
+          "documentation": "<p>The audience for the JWT Bearer assertion.</p>"
+        },
+        "SigningAlgorithm": {
+          "shape": "JwtSigningAlgorithm",
+          "locationName": "signingAlgorithm",
+          "documentation": "<p>The signing algorithm for the JWT Bearer assertion.</p>"
+        },
+        "TokenRequestSecretArn": {
+          "shape": "__string",
+          "locationName": "tokenRequestSecretArn",
+          "documentation": "<p>The Amazon Resource Name (ARN) of the Secrets Manager secret containing the signing key.</p>"
+        }
+      },
+      "documentation": "<p>Details for SASL/OAUTHBEARER using JWT Bearer assertion grant.</p>",
+      "required": [
+        "Audience",
+        "SigningAlgorithm"
+      ]
+    },
+    "KafkaClusterOAuthClientCredentialsAssertion": {
+      "type": "structure",
+      "members": {
+        "Audience": {
+          "shape": "__string",
+          "locationName": "audience",
+          "documentation": "<p>The audience for the JWT client assertion.</p>"
+        },
+        "SigningAlgorithm": {
+          "shape": "JwtSigningAlgorithm",
+          "locationName": "signingAlgorithm",
+          "documentation": "<p>The signing algorithm for the JWT client assertion.</p>"
+        },
+        "TokenRequestSecretArn": {
+          "shape": "__string",
+          "locationName": "tokenRequestSecretArn",
+          "documentation": "<p>The Amazon Resource Name (ARN) of the Secrets Manager secret containing the signing key.</p>"
+        }
+      },
+      "documentation": "<p>Details for SASL/OAUTHBEARER using client credentials grant with JWT client assertion.</p>",
+      "required": [
+        "Audience",
+        "SigningAlgorithm"
+      ]
     },
     "KafkaClusterSaslScramAuthentication": {
       "type": "structure",
@@ -6237,6 +6351,23 @@
       "documentation": "<p>Details for mTLS client authentication.</p>",
       "required": [
         "SecretArn"
+      ]
+    },
+    "TokenEndpointAuthenticationMethod": {
+      "type": "string",
+      "documentation": "<p>How client credentials are sent to the identity provider's token endpoint.</p>",
+      "enum": [
+        "POST",
+        "BASIC",
+        "NONE"
+      ]
+    },
+    "JwtSigningAlgorithm": {
+      "type": "string",
+      "documentation": "<p>The algorithm used to sign the STS JWT assertion.</p>",
+      "enum": [
+        "RS256",
+        "ES384"
       ]
     },
     "KafkaClusterSaslScramMechanism": {

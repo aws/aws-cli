@@ -190,6 +190,27 @@
       "documentation":"<p>Retrieves information about the specified feed.</p>",
       "readonly":true
     },
+    "GetFixture":{
+      "name":"GetFixture",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v1/fixtures/{fixtureId}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetFixtureRequest"},
+      "output":{"shape":"GetFixtureResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerErrorException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"TooManyRequestException"},
+        {"shape":"GatewayTimedOutException"}
+      ],
+      "documentation":"<p>Retrieves information about the specified fixture (a sports event, such as a specific basketball game). You obtain a fixtureId from SearchFixtures, or from the clipping output of a feed. </p>",
+      "readonly":true
+    },
     "ListDictionaries":{
       "name":"ListDictionaries",
       "http":{
@@ -601,6 +622,10 @@
         "outputs":{
           "shape":"GetOutputList",
           "documentation":"<p>Repeats the outputs that you specified in the request.</p>"
+        },
+        "accessRoleArn":{
+          "shape":"IamRoleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS Identity and Access Management (IAM) role that you specified in the request. This property is absent if you didn't specify an IAM role. </p>"
         },
         "status":{
           "shape":"FeedStatus",
@@ -1114,6 +1139,10 @@
           "shape":"GetOutputList",
           "documentation":"<p>An array of the outputs in the feed.</p>"
         },
+        "accessRoleArn":{
+          "shape":"IamRoleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of an AWS Identity and Access Management (IAM) role that Elemental Inference assumes. Elemental Inference uses this role to access resources in your account on your behalf. This property is absent if the feed doesn't have an IAM role. </p>"
+        },
         "status":{
           "shape":"FeedStatus",
           "documentation":"<p>The status of the feed.</p>"
@@ -1125,6 +1154,53 @@
         "tags":{
           "shape":"TagMap",
           "documentation":"<p>A list of the tags, if any, for the feed.</p>"
+        }
+      }
+    },
+    "GetFixtureRequest":{
+      "type":"structure",
+      "required":["fixtureId"],
+      "members":{
+        "fixtureId":{
+          "shape":"FixtureId",
+          "documentation":"<p>The ID of the fixture to retrieve, as returned by SearchFixtures.</p>",
+          "location":"uri",
+          "locationName":"fixtureId"
+        }
+      }
+    },
+    "GetFixtureResponse":{
+      "type":"structure",
+      "required":[
+        "fixtureId",
+        "name",
+        "status",
+        "competitors"
+      ],
+      "members":{
+        "fixtureId":{
+          "shape":"FixtureId",
+          "documentation":"<p>The ID that you specified in the request.</p>"
+        },
+        "name":{
+          "shape":"String",
+          "documentation":"<p>The name of the fixture, as provided by the data source. For example, the names of the two competing teams. </p>"
+        },
+        "fixtureGroup":{
+          "shape":"String",
+          "documentation":"<p>The group that the fixture belongs to, such as the competition, league, or tournament. The data source doesn't provide this information for every fixture. </p>"
+        },
+        "scheduledStart":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The scheduled start time of the fixture, as provided by the data source. The actual start time might differ. </p>"
+        },
+        "status":{
+          "shape":"String",
+          "documentation":"<p>The status of the fixture in its lifecycle, as provided by the data source. For example, Scheduled or Completed. </p>"
+        },
+        "competitors":{
+          "shape":"CompetitorList",
+          "documentation":"<p>An array of the competitors (the teams or individuals) in the fixture.</p>"
         }
       }
     },
@@ -1720,6 +1796,10 @@
         "outputs":{
           "shape":"GetOutputList",
           "documentation":"<p>The array of outputs in the feed. You might have left this array unchanged, or you might have changed it. </p>"
+        },
+        "accessRoleArn":{
+          "shape":"IamRoleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS Identity and Access Management (IAM) role for the feed, after the update. This property is absent if the feed doesn't have an IAM role. </p>"
         },
         "status":{
           "shape":"FeedStatus",

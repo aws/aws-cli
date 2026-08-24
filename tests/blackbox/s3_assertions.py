@@ -778,10 +778,17 @@ def assert_get_access_point(request):
     assert "/v20180820/accesspoint/" in request.path, (
         f"GetAccessPoint: expected /v20180820/accesspoint/ in {request.path}"
     )
+    assert (
+        request.headers.get("x-amz-account-id") is not None
+    ), "GetAccessPoint: required header x-amz-account-id is missing"
 
 
 def assert_get_caller_identity(request):
     """Assert request is an STS GetCallerIdentity (POST /)."""
     assert request.method == "POST", (
         f"GetCallerIdentity: expected POST, got {request.method}"
+    )
+    assert "Action=GetCallerIdentity" in request.body, (
+        f"GetCallerIdentity: expected Action=GetCallerIdentity in body, "
+        f"got {request.body!r}"
     )

@@ -64,6 +64,7 @@ class AwsCliVenv:
 
     def _copy_parent_packages(self):
         for site_package in site.getsitepackages():
+            self._remove_packages_being_replaced(site_package)
             self._utils.copy_directory_contents_into(
                 site_package, self._site_packages()
             )
@@ -74,6 +75,38 @@ class AwsCliVenv:
                 self._utils.copy_file(
                     source, os.path.join(self.bin_dir, script)
                 )
+
+    def _remove_packages_being_replaced(self, source_site_packages):
+        # Remove packages in the new venv that we're about to replace.
+        # The venv already contains the user's pip from when it was created,
+        # matching their interpreter's version. We then copy packages in to
+        # the venv during 'bootstrap' above when download_deps=False. The pip
+        # we copy in is our pinned pip if the parent environment has our
+        # bootstrap requirements installed, and otherwise the user's own.
+        # copy_directory_contents_into doesn't delete existing content first,
+        # which can lead to a non-functional mix of files from different pip
+        # versions.
+        destination = self._site_packages()
+        replaced = {
+            self._distribution_key(name)
+            for name in self._utils.listdir(source_site_packages)
+        }
+        for name in self._utils.listdir(destination):
+            if self._distribution_key(name) not in replaced:
+                continue
+            path = os.path.join(destination, name)
+            if self._utils.isdir(path) and not self._utils.islink(path):
+                self._utils.rmtree(path)
+            else:
+                self._utils.remove(path)
+
+    def _distribution_key(self, name):
+        # Metadata directory names include the version, so they need to be
+        # matched on the distribution name alone in order to remove metadata
+        # belonging to a different version of the same distribution.
+        if name.endswith((".dist-info", ".egg-info")):
+            return name.split("-")[0]
+        return name
 
     def _install_requirements(self, requirements_file, cwd=None):
         self._pip_install(

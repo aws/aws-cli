@@ -173,6 +173,29 @@ class TestSyncCommand(BaseS3TransferCommandTest):
 
         self.assertFalse(os.path.exists(full_path))
 
+    def test_sync_with_absolute_include_converges(self):
+        # An ``--include`` spelled as an absolute path has to apply to
+        # the remote listing as well.  If it does not, the remote copy
+        # of an already synced file is filtered out of the listing and
+        # sync uploads the file again on every run.
+        full_path = self.files.create_file('foo.txt', 'mycontent')
+        cmdline = '%s %s s3://bucket/ --exclude * --include %s' % (
+            self.prefix, self.files.rootdir, full_path)
+        self.parsed_responses = [
+            {"CommonPrefixes": [], "Contents": [
+                {"Key": "foo.txt", "Size": len('mycontent'),
+                 "LastModified": "2099-01-09T20:45:49.000Z",
+                 "ETag": '"c8afdb36c52cf4727836669019e69222"'}]},
+            {'ETag': '"c8afdb36c52cf4727836669019e69222"'}
+        ]
+        self.run_cmd(cmdline, expected_rc=0)
+
+        # The remote object is identical to the local file, so a second
+        # sync must only list the bucket and upload nothing.
+        self.assertEqual(len(self.operations_called), 1,
+                         self.operations_called)
+        self.assertEqual(self.operations_called[0][0].name, 'ListObjectsV2')
+
     # When a file has been deleted after listing,
     # awscli.customizations.s3.utils.get_file_stat may raise either some kind
     # of OSError, or a ValueError, depending on the environment. In both cases,

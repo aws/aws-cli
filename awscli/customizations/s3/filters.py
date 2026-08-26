@@ -90,8 +90,43 @@ class Filter(object):
 
         """
         self._original_patterns = patterns
+        patterns = [
+            (pattern[0],
+             self._relative_pattern(pattern[1], (rootdir, dst_rootdir)))
+            for pattern in patterns
+        ]
         self.patterns = self._full_path_patterns(patterns, rootdir)
         self.dst_patterns = self._full_path_patterns(patterns, dst_rootdir)
+
+    def _relative_pattern(self, pattern, rootdirs):
+        # ``_full_path_patterns`` rebases each pattern onto the source
+        # and destination roots with ``os.path.join``.  When the pattern
+        # is an absolute path, ``os.path.join`` returns the pattern
+        # unchanged and silently discards the root, so the destination
+        # side copy of the pattern keeps referring to the local path and
+        # can never match a destination path such as ``bucket/key``.
+        # When an absolute pattern lies under a local root, reduce it to
+        # the equivalent relative pattern so it rebases correctly onto
+        # both roots.
+        local_pattern = pattern.replace('/', os.sep)
+        if not os.path.isabs(local_pattern):
+            return pattern
+        for rootdir in rootdirs:
+            if rootdir is None or not os.path.isabs(rootdir):
+                # Only local roots are absolute paths; an S3 root is of
+                # the form ``bucket/prefix``.
+                continue
+            root_prefix = rootdir.rstrip(os.sep) + os.sep
+            # The prefix check is textual rather than path aware so that
+            # wildcard characters in the pattern are preserved as typed.
+            # ``normcase`` handles case insensitive filesystems and
+            # drive letter casing on Windows.
+            if os.path.normcase(local_pattern).startswith(
+                    os.path.normcase(root_prefix)):
+                return local_pattern[len(root_prefix):]
+        # The pattern lies under neither root; leave it untouched so it
+        # keeps its current behavior on the side where it can match.
+        return pattern
 
     def _full_path_patterns(self, original_patterns, rootdir):
         # We need to transform the patterns into patterns that have

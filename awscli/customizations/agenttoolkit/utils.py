@@ -30,6 +30,7 @@ from awscli.customizations.utils import create_client_from_parsed_globals
 
 LOG = logging.getLogger(__name__)
 MAX_UNCOMPRESSED_SIZE = 10 * 1024 * 1024  # 10 MB
+AGENT_TOOLKIT_REGION = 'us-east-1'
 
 NONPROD_ACCESS_TOKEN_HEADER = 'x-nonprod-access-token'
 NONPROD_ACCESS_TOKEN_ENV_VAR = 'NONPROD_ACCESS_TOKEN_HEADER'
@@ -70,6 +71,7 @@ def create_client(session, parsed_globals):
         session,
         'agenttoolkit',
         parsed_globals,
+        overrides={'region_name': AGENT_TOOLKIT_REGION},
     )
 
 

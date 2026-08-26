@@ -2297,6 +2297,10 @@
         "enabled":{
           "shape":"Boolean",
           "documentation":"<p>Whether the capability is enabled.</p>"
+        },
+        "triggerFilterGroups":{
+          "shape":"TriggerFilterGroups",
+          "documentation":"<p>Optional trigger filter groups. Evaluated only when enabled=true; retained while the capability is disabled, so re-enabling restores the prior trigger behavior.</p>"
         }
       },
       "documentation":"<p>Capability configuration for the AWS DevOps Agent.</p>"
@@ -2344,7 +2348,9 @@
     "ChatExecutionId":{
       "type":"string",
       "documentation":"<p>Chat execution identifier — must be a valid UUID</p>",
-      "pattern":"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+      "max":50,
+      "min":32,
+      "pattern":"[A-Za-z0-9_-]+"
     },
     "ChatExecutionList":{
       "type":"list",
@@ -6020,6 +6026,17 @@
       "member":{"shape":"String"},
       "documentation":"<p>List of pager duty services available for the association.</p>"
     },
+    "PatternFilter":{
+      "type":"structure",
+      "required":["patterns"],
+      "members":{
+        "patterns":{
+          "shape":"TriggerRegexPatternList",
+          "documentation":"<p>Anchored full-match regex patterns. The condition passes when the value matches at least one pattern.</p>"
+        }
+      },
+      "documentation":"<p>A regex-based match condition. Passes when the value matches any pattern.</p>"
+    },
     "PendingMessage":{
       "type":"structure",
       "required":[
@@ -8312,10 +8329,60 @@
       "documentation":"<p>Defines the firing condition for a Trigger</p>",
       "union":true
     },
+    "TriggerEvent":{
+      "type":"string",
+      "documentation":"<p>Webhook events that can auto-trigger a capability. PULL_REQUEST_* events apply to RELEASE_READINESS_REVIEW; WORKFLOW_* events apply to RELEASE_SHEPHERDING.</p>",
+      "enum":[
+        "PULL_REQUEST_READY_FOR_REVIEW",
+        "PULL_REQUEST_DRAFT"
+      ]
+    },
+    "TriggerEventList":{
+      "type":"list",
+      "member":{"shape":"TriggerEvent"},
+      "documentation":"<p>Webhook events that activate a trigger filter group.</p>",
+      "max":10,
+      "min":1
+    },
+    "TriggerFilterGroup":{
+      "type":"structure",
+      "members":{
+        "events":{
+          "shape":"TriggerEventList",
+          "documentation":"<p>Passes when the webhook event is one of the listed events.</p>"
+        },
+        "targetBranches":{
+          "shape":"PatternFilter",
+          "documentation":"<p>Passes when the change request target branch matches. Applicable to RELEASE_READINESS_REVIEW only.</p>"
+        }
+      },
+      "documentation":"<p>A group of trigger conditions. The group matches when ALL present conditions pass. A group cannot be empty: at least one condition must be present.</p>"
+    },
+    "TriggerFilterGroups":{
+      "type":"list",
+      "member":{"shape":"TriggerFilterGroup"},
+      "documentation":"<p>Filter groups controlling when a capability auto-triggers. The capability triggers when ANY group matches. Absent = default trigger behavior (all applicable events trigger).</p>",
+      "max":5,
+      "min":1
+    },
     "TriggerList":{
       "type":"list",
       "member":{"shape":"Trigger"},
       "documentation":"<p>List of Triggers</p>"
+    },
+    "TriggerRegexPattern":{
+      "type":"string",
+      "documentation":"<p>A regex pattern matched against the entire value. Example: 'main' or 'release/.*'.</p>",
+      "max":256,
+      "min":1,
+      "pattern":"[^\\x00-\\x1F\\x7F-\\x9F]+"
+    },
+    "TriggerRegexPatternList":{
+      "type":"list",
+      "member":{"shape":"TriggerRegexPattern"},
+      "documentation":"<p>A list of anchored full-match regex patterns.</p>",
+      "max":20,
+      "min":1
     },
     "TriggerStatus":{
       "type":"string",

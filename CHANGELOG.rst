@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+2.36.32
+=======
+
+* api-change:``ec2``: Adds deleting state to possible VPC States.
+* api-change:``network-firewall``: Adding new status enum for Firewalls.
+* api-change:``devops-agent``: AWS DevOps Agent now supports trigger filter groups for Release Readiness Review, letting you control when the capability auto-triggers based on webhook events and target branches.
+* api-change:``license-manager-user-subscriptions``: Released support for License Expiry field in ListProductSubscriptions API
+* api-change:``sagemaker``: Amazon SageMaker AI now supports ml.g7 instances for model optimization. You can now run model optimization jobs on ml.g7 instances, in supported AWS Regions.
+
+
 2.36.31
 =======
 

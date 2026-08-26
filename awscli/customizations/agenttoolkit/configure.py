@@ -35,7 +35,8 @@ from awscli.customizations.utils import uni_print
 class ConfigureAgentToolkitCommand(BasicCommand):
     NAME = 'agent-toolkit'
     DESCRIPTION = (
-        'Set up AI coding agents with AWS skills and the AWS MCP Server.\n\n'
+        'Set up AI coding agents with AWS skills and the AWS Knowledge MCP '
+        'server.\n\n'
         'Supported agents are determined by the presence of configuration '
         'directories, such as ``~/.kiro``. Skills are installed globally in '
         'those configuration directories, not per project.'
@@ -47,7 +48,7 @@ class ConfigureAgentToolkitCommand(BasicCommand):
             'help_text': (
                 'Skip all interactive prompts and accept defaults: '
                 'select all detected agents, install default skills, '
-                'and configure the AWS MCP server.'
+                'and configure the AWS Knowledge MCP server.'
             ),
             'default': False,
             'action': 'store_true',
@@ -196,11 +197,11 @@ class ConfigureAgentToolkitCommand(BasicCommand):
 
     def _configure_mcp(self, agents, yes=False):
         if not yes and not yes_no_choice(
-            '\nConfigure AWS MCP server connection? [Y/n]: '
+            '\nConfigure AWS Knowledge MCP server connection? [Y/n]: '
         ):
             return
 
-        uni_print('\nAWS MCP server configured for:\n', self._stream)
+        uni_print('\nAWS Knowledge MCP server configured for:\n', self._stream)
         skipped = []
         for agent in agents:
             action, detail = agent.configure_mcp_server()

@@ -16,17 +16,20 @@ from awscli.customizations.utils import uni_print
 from awscli.utils import is_stdin_a_tty
 
 
-def yes_no_choice(prompt):
+def yes_no_choice(prompt, default=None):
     """
     Prompts the user to answer a yes/no question.
     Continually re-prompts for invalid selections.
 
     :param prompt: Prompt text.
+    :param default: Optional boolean returned when the response is empty.
     :returns: True for yes, False for no.
     """
     while True:
         response = compat_input(prompt)
 
+        if response == '' and default is not None:
+            return default
         if response.lower() in ('y', 'yes'):
             return True
         elif response.lower() in ('n', 'no'):

@@ -15,15 +15,19 @@ Jump to:
 -  `More Resources <#more-resources>`__
 
 
-Entering Maintenance Mode on July 15, 2026
-------------------------------------------
+AWS CLI v1 is in Maintenance Mode
+---------------------------------
 
-We `announced <https://aws.amazon.com/blogs/developer/cli-v1-maintenance-mode-announcement/>`__
-the upcoming **end-of-support for the AWS CLI v1**. We recommend
-that you migrate to
+The AWS CLI v1 entered maintenance mode on August 5, 2026 and will reach
+end-of-support on July 15, 2027. During maintenance mode, AWS limits releases
+to critical bug fixes and security issues only. The AWS CLI v1 will not receive
+API updates for new or existing services, or be updated to support new regions.
+
+We recommend that you migrate to
 `AWS CLI v2 <https://docs.aws.amazon.com/cli/latest/userguide/cliv2-migration.html>`__.
-For dates, additional details, and information on how to migrate,
-please refer to the linked announcement.
+For more information, see the
+`maintenance mode announcement <https://aws.amazon.com/blogs/developer/cli-v1-maintenance-mode-announcement/>`__,
+and the `update regarding dependency versions <https://aws.amazon.com/blogs/developer/aws-cli-v1-maintenance-mode-announcing-changes-to-dependency-updates/>`__.
 
 Getting Started
 ---------------
@@ -61,7 +65,8 @@ any important security bulletins related to aws-cli.*
 Maintenance and Support for CLI Major Versions
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The AWS CLI version 1 was made generally available on 09/02/2013 and is currently in the full support phase of the availability life cycle.
+The AWS CLI version 1 entered maintenance mode on August 5, 2026 and will reach
+end-of-support on July 15, 2027.
 
 For information about maintenance and support for SDK major versions and their underlying dependencies, see the `Maintenance Policy <https://docs.aws.amazon.com/credref/latest/refdocs/maint-policy.html>`__ section in the *AWS SDKs and Tools Shared Configuration and Credentials Reference Guide*.
 

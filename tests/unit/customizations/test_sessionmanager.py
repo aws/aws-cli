@@ -15,6 +15,7 @@ import errno
 import json
 import pytest
 import subprocess
+import sys
 
 from awscli.customizations import sessionmanager
 from awscli.testutils import mock, unittest
@@ -427,3 +428,159 @@ class TestVersionRequirement:
     def test_is_valid_version(self, version, expected_result):
         assert expected_result == \
             self.version_requirement._is_valid_version(version)
+
+
+class TestRecommendedMinimumVersionRequirement:
+    version_requirement = sessionmanager.VersionRequirement(
+        min_version="1.2.764.0"
+    )
+
+    @pytest.mark.parametrize(
+        "version, expected_result",
+        [
+            # The first version with the capability must satisfy the check.
+            ("1.2.764.0", True),
+            ("1.2.764", True),
+            ("1.2.764.1", True),
+            ("1.2.765.0", True),
+            ("1.3", True),
+            ("2.0.0.0", True),
+            ("\r\n1.2. 764.0", True),
+            # Anything below the threshold does not.
+            ("1.2.763.9", False),
+            ("1.2.763", False),
+            ("1.2.497.0", False),
+            ("1.2", False),
+            ("1", False),
+            ("0.9.999.9", False),
+            # Unparseable versions never satisfy the check.
+            ("invalid_version", False),
+            ("", False),
+        ],
+    )
+    def test_meets_requirement_inclusive(self, version, expected_result):
+        assert expected_result == \
+            self.version_requirement.meets_requirement(
+                version, inclusive=True
+            )
+
+    @pytest.mark.parametrize(
+        "version, expected_result",
+        [
+            ("1.2.764.0", True),
+            ("\r\n1.2.764.0\n", True),
+            ("1.2.764", True),
+            ("invalid_version", False),
+            ("", False),
+            ("1.1.1.1.1", False),
+        ],
+    )
+    def test_is_valid_plugin_version(self, version, expected_result):
+        assert expected_result == \
+            self.version_requirement.is_valid_plugin_version(version)
+
+
+class TestOutdatedPluginVersionWarning(unittest.TestCase):
+
+    def setUp(self):
+        self.session = mock.Mock(botocore.session.Session)
+        self.client = mock.Mock()
+        self.region = 'us-west-2'
+        self.endpoint_url = 'testUrl'
+        self.client.meta.region_name = self.region
+        self.client.meta.endpoint_url = self.endpoint_url
+        self.session.create_client.return_value = self.client
+        self.caller = sessionmanager.StartSessionCaller(self.session)
+
+        self.parsed_globals = mock.Mock()
+        self.parsed_globals.profile = 'user_profile'
+
+        self.start_session_params = {"Target": "i-123456789"}
+        self.client.start_session.return_value = {
+            "SessionId": "session-id",
+            "TokenValue": "token-value",
+            "StreamUrl": "stream-url",
+        }
+
+    def _invoke_with_plugin_version(self, plugin_version):
+        with mock.patch(
+            'awscli.customizations.sessionmanager.check_output'
+        ) as mock_check_output, mock.patch(
+            'awscli.customizations.sessionmanager.check_call'
+        ) as mock_check_call, mock.patch(
+            'awscli.customizations.sessionmanager.uni_print'
+        ) as mock_uni_print:
+            mock_check_output.return_value = plugin_version
+            mock_check_call.return_value = 0
+            rc = self.caller.invoke(
+                'ssm', 'StartSession', self.start_session_params,
+                self.parsed_globals
+            )
+        return rc, mock_uni_print
+
+    def _warning_messages(self, mock_uni_print):
+        return [
+            call_args[0][0] for call_args in mock_uni_print.call_args_list
+            if call_args[0]
+            and call_args[0][0] ==
+            sessionmanager.OUTDATED_PLUGIN_VERSION_MESSAGE
+        ]
+
+    def test_warns_when_plugin_version_is_below_threshold(self):
+        rc, mock_uni_print = self._invoke_with_plugin_version("1.2.763.0\n")
+        # The warning is advisory only and must not fail the request.
+        self.assertEqual(rc, 0)
+        self.assertEqual(len(self._warning_messages(mock_uni_print)), 1)
+        mock_uni_print.assert_called_with(
+            sessionmanager.OUTDATED_PLUGIN_VERSION_MESSAGE, sys.stderr
+        )
+
+    def test_warns_when_plugin_version_predates_env_var_support(self):
+        rc, mock_uni_print = self._invoke_with_plugin_version("1.2.0.0\n")
+        self.assertEqual(rc, 0)
+        self.assertEqual(len(self._warning_messages(mock_uni_print)), 1)
+
+    def test_no_warning_at_exact_threshold_version(self):
+        rc, mock_uni_print = self._invoke_with_plugin_version("1.2.764.0\n")
+        self.assertEqual(rc, 0)
+        self.assertEqual(self._warning_messages(mock_uni_print), [])
+
+    def test_no_warning_when_plugin_version_is_newer(self):
+        rc, mock_uni_print = self._invoke_with_plugin_version("1.2.765.0\n")
+        self.assertEqual(rc, 0)
+        self.assertEqual(self._warning_messages(mock_uni_print), [])
+
+    def test_no_warning_when_plugin_version_is_unparseable(self):
+        rc, mock_uni_print = self._invoke_with_plugin_version(
+            "not_a_version\n"
+        )
+        self.assertEqual(rc, 0)
+        self.assertEqual(self._warning_messages(mock_uni_print), [])
+
+    def test_outdated_plugin_still_receives_start_session_response(self):
+        # An outdated plugin must keep the existing fallback behavior of
+        # receiving the response directly rather than via an env var.
+        with mock.patch(
+            'awscli.customizations.sessionmanager.check_output'
+        ) as mock_check_output, mock.patch(
+            'awscli.customizations.sessionmanager.check_call'
+        ) as mock_check_call, mock.patch(
+            'awscli.customizations.sessionmanager.uni_print'
+        ):
+            mock_check_output.return_value = "1.2.0.0\n"
+            mock_check_call.return_value = 0
+            rc = self.caller.invoke(
+                'ssm', 'StartSession', self.start_session_params,
+                self.parsed_globals
+            )
+
+        self.assertEqual(rc, 0)
+        check_call_args = mock_check_call.call_args[0][0]
+        self.assertEqual(
+            json.loads(check_call_args[1]),
+            {
+                "SessionId": "session-id",
+                "TokenValue": "token-value",
+                "StreamUrl": "stream-url",
+            },
+        )

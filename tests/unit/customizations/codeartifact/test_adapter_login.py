@@ -937,9 +937,7 @@ class TestNpmLogin(unittest.TestCase):
         self.commands.append(
             [self.NPM_CMD, 'config', 'set', always_auth_config, 'true']
         )
-        self.commands.append(
-            [self.NPM_CMD, 'config', 'set', auth_token_config, self.auth_token]
-        )
+        self.auth_token_key = auth_token_config
 
         self.subprocess_utils = mock.Mock()
 
@@ -948,7 +946,8 @@ class TestNpmLogin(unittest.TestCase):
             self.domain, self.repository, self.subprocess_utils
         )
 
-    def test_login(self):
+    @mock.patch('awscli.customizations.codeartifact.login.NpmLogin._write_npmrc_value')
+    def test_login(self, mock_write_npmrc):
         self.test_subject.login()
         expected_calls = [
             mock.call(
@@ -960,8 +959,12 @@ class TestNpmLogin(unittest.TestCase):
         self.subprocess_utils.run.assert_has_calls(
             expected_calls, any_order=True
         )
+        mock_write_npmrc.assert_called_once_with(
+            self.auth_token_key, self.auth_token, mock.ANY
+        )
 
-    def test_login_always_auth_error_ignored(self):
+    @mock.patch('awscli.customizations.codeartifact.login.NpmLogin._write_npmrc_value')
+    def test_login_always_auth_error_ignored(self, mock_write_npmrc):
         """Test login ignores error for always-auth.
 
         This test is for NPM version >= 9 where the support of 'always-auth'
@@ -980,20 +983,20 @@ class TestNpmLogin(unittest.TestCase):
             return mock.DEFAULT
 
         self.subprocess_utils.run.side_effect = side_effect
-        expected_calls = []
-
-        for command in self.commands:
-            expected_calls.append(mock.call(
-                    command,
-                    capture_output=True,
-                    check=True
-                )
-            )
         self.test_subject.login()
-
+        expected_calls = [
+            mock.call(
+                command,
+                capture_output=True,
+                check=True
+            ) for command in self.commands
+        ]
         self.subprocess_utils.run.assert_has_calls(
-                expected_calls, any_order=True
-            )
+            expected_calls, any_order=True
+        )
+        mock_write_npmrc.assert_called_once_with(
+            self.auth_token_key, self.auth_token, mock.ANY
+        )
 
     def test_get_scope(self):
         expected_value = '@{}'.format(self.namespace)
@@ -1019,17 +1022,238 @@ class TestNpmLogin(unittest.TestCase):
             self.endpoint, self.auth_token
         )
         self.assertCountEqual(commands, self.commands)
+        for cmd in commands:
+            self.assertNotIn(self.auth_token, cmd)
 
     def test_get_commands_with_scope(self):
         commands = self.test_subject.get_commands(
             self.endpoint, self.auth_token, scope=self.namespace
         )
-        self.commands[0][3] = '{}:registry'.format(self.namespace)
-        self.assertCountEqual(commands, self.commands)
+        expected = list(self.commands)
+        expected[0][3] = '{}:registry'.format(self.namespace)
+        self.assertCountEqual(commands, expected)
 
     def test_login_dry_run(self):
         self.test_subject.login(dry_run=True)
         self.subprocess_utils.check_call.assert_not_called()
+
+
+
+class TestNpmWriteNpmrcValue(unittest.TestCase):
+
+    def setUp(self):
+        self.domain = 'domain'
+        self.domain_owner = 'domain-owner'
+        self.package_format = 'npm'
+        self.repository = 'repository'
+        self.auth_token = 'auth-token'
+        self.expiration = (datetime.now(tzlocal()) + relativedelta(hours=10)
+                           + relativedelta(minutes=9)).replace(microsecond=0)
+        self.endpoint = 'https://{domain}-{domainOwner}.codeartifact.aws.' \
+            'a2z.com/{format}/{repository}/'.format(
+                domain=self.domain,
+                domainOwner=self.domain_owner,
+                format=self.package_format,
+                repository=self.repository
+            )
+
+        repo_uri = urlparse.urlsplit(self.endpoint)
+        self.auth_token_key = '//{}{}:_authToken'.format(
+            repo_uri.netloc, repo_uri.path
+        )
+
+        self.file_creator = FileCreator()
+        self.test_npmrc_path = self.file_creator.full_path('.npmrc')
+
+        self.subprocess_utils = mock.Mock()
+
+        self.test_subject = NpmLogin(
+            self.auth_token, self.expiration, self.endpoint,
+            self.domain, self.repository, self.subprocess_utils
+        )
+
+    def tearDown(self):
+        self.file_creator.remove_all()
+
+    def test_creates_new_file_when_not_exists(self):
+        npmrc_path = os.path.join(self.file_creator.rootdir, 'subdir', '.npmrc')
+        self.test_subject._write_npmrc_value(
+            self.auth_token_key, self.auth_token, npmrc_path)
+        self.assertTrue(os.path.isfile(npmrc_path))
+        with open(npmrc_path, 'r') as f:
+            contents = f.read()
+        self.assertEqual(
+            contents, '{}={}\n'.format(self.auth_token_key, self.auth_token))
+
+    @skip_if_windows("Unix file permissions are not supported on Windows.")
+    @mock.patch.object(NpmLogin, 'get_npmrc_path')
+    def test_login_sets_secure_permissions_on_new_file(self, mock_path):
+        npmrc_path = os.path.join(self.file_creator.rootdir, 'newdir', '.npmrc')
+        mock_path.return_value = npmrc_path
+        self.test_subject.login()
+        file_mode = os.stat(npmrc_path).st_mode
+        self.assertEqual(stat.S_IMODE(file_mode), 0o600)
+
+    def test_appends_to_existing_file_without_key(self):
+        self.file_creator.create_file(
+            '.npmrc', 'registry=https://example.com/\n')
+        self.test_subject._write_npmrc_value(self.auth_token_key, self.auth_token, self.test_npmrc_path)
+        with open(self.test_npmrc_path, 'r') as f:
+            contents = f.read()
+        self.assertIn('registry=https://example.com/', contents)
+        self.assertIn('{}={}'.format(self.auth_token_key, self.auth_token),
+                      contents)
+
+    def test_replaces_existing_key(self):
+        self.file_creator.create_file(
+            '.npmrc',
+            'registry=https://example.com/\n'
+            '{}=old-token\n'.format(self.auth_token_key) +
+            '//host/path/:always-auth=true\n'
+        )
+        self.test_subject._write_npmrc_value(self.auth_token_key, 'new-token', self.test_npmrc_path)
+        with open(self.test_npmrc_path, 'r') as f:
+            contents = f.read()
+        self.assertIn('{}=new-token'.format(self.auth_token_key), contents)
+        self.assertNotIn('old-token', contents)
+        self.assertIn('registry=https://example.com/', contents)
+        self.assertIn('//host/path/:always-auth=true', contents)
+
+    def test_preserves_other_entries(self):
+        self.file_creator.create_file(
+            '.npmrc',
+            '//other-host/path/:_authToken=other-token\n'
+            '{}=old-token\n'.format(self.auth_token_key)
+        )
+        self.test_subject._write_npmrc_value(self.auth_token_key, 'new-token', self.test_npmrc_path)
+        with open(self.test_npmrc_path, 'r') as f:
+            contents = f.read()
+        self.assertIn('//other-host/path/:_authToken=other-token', contents)
+        self.assertIn('{}=new-token'.format(self.auth_token_key), contents)
+        self.assertNotIn('old-token', contents)
+
+    @skip_if_windows("Unix file permissions are not supported on Windows.")
+    @mock.patch.object(NpmLogin, 'get_npmrc_path')
+    def test_login_adjusts_permissions_on_preexisting_file(self, mock_path):
+        mock_path.return_value = self.test_npmrc_path
+        self.file_creator.create_file('.npmrc', 'registry=https://example.com/\n')
+        os.chmod(self.test_npmrc_path, 0o644)
+        self.test_subject.login()
+        file_mode = os.stat(self.test_npmrc_path).st_mode
+        self.assertEqual(stat.S_IMODE(file_mode), 0o600)
+
+    def test_handles_file_without_trailing_newline(self):
+        self.file_creator.create_file('.npmrc', 'registry=https://example.com/')
+        self.test_subject._write_npmrc_value(self.auth_token_key, self.auth_token, self.test_npmrc_path)
+        with open(self.test_npmrc_path, 'r') as f:
+            contents = f.read()
+        lines = contents.strip().split('\n')
+        self.assertEqual(len(lines), 2)
+        self.assertEqual(lines[0], 'registry=https://example.com/')
+        self.assertEqual(
+            lines[1], '{}={}'.format(self.auth_token_key, self.auth_token))
+
+    @mock.patch.object(NpmLogin, 'get_npmrc_path')
+    def test_token_not_passed_to_subprocess(self, mock_path):
+        mock_path.return_value = self.test_npmrc_path
+        self.file_creator.create_file('.npmrc', '')
+        self.test_subject.login()
+        for call in self.subprocess_utils.run.call_args_list:
+            command = call[0][0] if call[0] else call[1].get('command', [])
+            self.assertNotIn(self.auth_token, ' '.join(command))
+
+    @mock.patch.object(NpmLogin, 'get_npmrc_path')
+    def test_dry_run_does_not_write_file(self, mock_path):
+        npmrc_path = os.path.join(self.file_creator.rootdir, 'noexist', '.npmrc')
+        mock_path.return_value = npmrc_path
+        self.test_subject.login(dry_run=True)
+        self.assertFalse(os.path.exists(npmrc_path))
+
+    def test_special_chars_in_key_escaped(self):
+        npmrc_path = os.path.join(self.file_creator.rootdir, 'esctest', '.npmrc')
+        self.test_subject._write_npmrc_value(
+            self.auth_token_key, self.auth_token, npmrc_path)
+        with open(npmrc_path, 'r') as f:
+            contents = f.read()
+        self.assertEqual(
+            contents, '{}={}\n'.format(self.auth_token_key, self.auth_token))
+
+    def test_get_npmrc_path_respects_env_var(self):
+        custom_path = '/tmp/custom/.npmrc'
+        with mock.patch.dict(os.environ, {'NPM_CONFIG_USERCONFIG': custom_path}):
+            result = NpmLogin.get_npmrc_path()
+        self.assertEqual(result, custom_path)
+
+    def test_get_npmrc_path_default(self):
+        with mock.patch.dict(os.environ, {}, clear=False):
+            os.environ.pop('NPM_CONFIG_USERCONFIG', None)
+            result = NpmLogin.get_npmrc_path()
+        expected = os.path.join(os.path.expanduser('~'), '.npmrc')
+        self.assertEqual(result, expected)
+
+    def test_atomic_write_preserves_original_on_replace_failure(self):
+        self.file_creator.create_file(
+            '.npmrc', 'registry=https://example.com/\n')
+        original_content = 'registry=https://example.com/\n'
+        with mock.patch('os.replace', side_effect=OSError('replace failed')):
+            with self.assertRaises(OSError):
+                self.test_subject._write_npmrc_value(
+                    self.auth_token_key, self.auth_token, self.test_npmrc_path)
+        with open(self.test_npmrc_path, 'r') as f:
+            contents = f.read()
+        self.assertEqual(contents, original_content)
+
+    @mock.patch('os.unlink')
+    def test_atomic_write_cleans_up_tmp_on_replace_failure(self, mock_unlink):
+        self.file_creator.create_file(
+            '.npmrc', 'registry=https://example.com/\n')
+        with mock.patch('os.replace', side_effect=OSError('replace failed')):
+            with self.assertRaises(OSError):
+                self.test_subject._write_npmrc_value(
+                    self.auth_token_key, self.auth_token, self.test_npmrc_path)
+        mock_unlink.assert_called_once()
+        unlinked_path = mock_unlink.call_args[0][0]
+        self.assertIn('.npmrc.tmp.', unlinked_path)
+
+    def test_atomic_write_no_tmp_file_left_after_success(self):
+        self.file_creator.create_file(
+            '.npmrc', 'registry=https://example.com/\n')
+        dirname = os.path.dirname(self.test_npmrc_path)
+        self.test_subject._write_npmrc_value(
+            self.auth_token_key, self.auth_token, self.test_npmrc_path)
+        tmp_files = [f for f in os.listdir(dirname)
+                     if '.npmrc.tmp.' in f]
+        self.assertEqual(tmp_files, [])
+
+    @skip_if_windows("Unix file permissions are not supported on Windows.")
+    def test_create_tmp_file_returns_fd_and_path(self):
+        dirname = self.file_creator.rootdir
+        fd, tmp_path = self.test_subject._create_tmp_file(dirname)
+        try:
+            self.assertTrue(tmp_path.startswith(dirname))
+            self.assertIn('.npmrc.tmp.', tmp_path)
+            file_mode = os.stat(tmp_path).st_mode
+            self.assertEqual(stat.S_IMODE(file_mode), 0o600)
+        finally:
+            os.close(fd)
+            os.unlink(tmp_path)
+
+    def test_create_tmp_file_retries_on_collision(self):
+        dirname = self.file_creator.rootdir
+        fd1, path1 = self.test_subject._create_tmp_file(dirname)
+        fd2, path2 = self.test_subject._create_tmp_file(dirname)
+        try:
+            self.assertNotEqual(path1, path2)
+        finally:
+            os.close(fd1)
+            os.close(fd2)
+            os.unlink(path1)
+            os.unlink(path2)
+
+    def test_create_tmp_file_raises_after_max_retries(self):
+        with mock.patch('os.open', side_effect=FileExistsError('exists')):
+            with self.assertRaises(RuntimeError):
+                self.test_subject._create_tmp_file(self.file_creator.rootdir)
 
 
 class TestPipLogin(unittest.TestCase):

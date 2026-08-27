@@ -10547,9 +10547,15 @@
         },
         "skipDeletionCheck":{
           "shape":"Boolean",
-          "documentation":"<p>Specifies the optional flag to delete all child entities within the domain.</p>",
+          "documentation":"<p>Specifies whether to skip the check that prevents deletion of a domain that still contains resources. When you use this parameter, Amazon DataZone deletes the domain but might not remove its associated resources, which can leave orphaned resources behind. To delete a domain and fully clean up its associated resources, use <code>cascadeDelete</code> instead. You can't use this parameter together with <code>cascadeDelete</code>.</p>",
           "location":"querystring",
           "locationName":"skipDeletionCheck"
+        },
+        "cascadeDelete":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether to delete the domain along with all of its associated resources. When you use this parameter, Amazon DataZone deletes the domain and cleanly removes its associated resources without leaving orphaned resources behind. Amazon DataZone reports deletion progress in the <code>deleteProgress</code> field. Amazon DataZone reports any resources that it can't delete in the <code>failureReasons</code> field of the <code>GetDomain</code> response. You can't use this parameter together with <code>skipDeletionCheck</code>. If you don't specify a value, the default is <code>false</code>.</p>",
+          "location":"querystring",
+          "locationName":"cascadeDelete"
         }
       }
     },
@@ -10866,6 +10872,16 @@
     "DeleteNotebookOutput":{
       "type":"structure",
       "members":{}
+    },
+    "DeleteProgress":{
+      "type":"structure",
+      "members":{
+        "successfullyDeletedProjectCount":{
+          "shape":"Integer",
+          "documentation":"<p>The number of projects that Amazon DataZone successfully deleted during the domain deletion.</p>"
+        }
+      },
+      "documentation":"<p>The progress of a domain deletion, including the number of projects that Amazon DataZone successfully deleted. Amazon DataZone returns this structure in the response to a <code>GetDomain</code> request while a cascade deletion is in progress.</p>"
     },
     "DeleteProjectInput":{
       "type":"structure",
@@ -12292,9 +12308,28 @@
       },
       "documentation":"<p>Specifies the error message that is returned if the operation cannot be successfully completed.</p>"
     },
+    "FailureReason":{
+      "type":"structure",
+      "members":{
+        "id":{
+          "shape":"String",
+          "documentation":"<p>The identifier of the resource that failed to delete.</p>"
+        },
+        "message":{
+          "shape":"String",
+          "documentation":"<p>The error message associated with the resource that failed to delete.</p>"
+        }
+      },
+      "documentation":"<p>The details of a resource deletion failure during a cascade deletion of the domain.</p>"
+    },
     "FailureReasons":{
       "type":"list",
       "member":{"shape":"ProjectDeletionError"}
+    },
+    "FailureReasonsList":{
+      "type":"list",
+      "member":{"shape":"FailureReason"},
+      "documentation":"<p>A list of <code>FailureReason</code> objects that describe the resources that Amazon DataZone could not delete during a cascade deletion. Amazon DataZone returns this list in the <code>failureReasons</code> field of the <code>GetDomain</code> response.</p>"
     },
     "FileFormat":{
       "type":"string",
@@ -13549,6 +13584,14 @@
         "serviceRole":{
           "shape":"RoleArn",
           "documentation":"<p>The service role of the domain.</p>"
+        },
+        "failureReasons":{
+          "shape":"FailureReasonsList",
+          "documentation":"<p>The list of failure reasons for resources that Amazon DataZone could not delete during a cascade deletion of the domain.</p>"
+        },
+        "deleteProgress":{
+          "shape":"DeleteProgress",
+          "documentation":"<p>The progress of the current domain deletion, including the number of projects that Amazon DataZone successfully deleted.</p>"
         }
       }
     },

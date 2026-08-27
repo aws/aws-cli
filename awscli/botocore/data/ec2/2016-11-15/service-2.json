@@ -7470,6 +7470,16 @@
       "output":{"shape":"ReplaceImageCriteriaInAllowedImagesSettingsResult"},
       "documentation":"<p>Sets or replaces the criteria for Allowed AMIs.</p> <p>The <code>ImageCriteria</code> can include up to:</p> <ul> <li> <p>10 <code>ImageCriterion</code> </p> </li> </ul> <note> <p>The Allowed AMIs feature does not restrict the AMIs owned by your account. Regardless of the criteria you set, the AMIs created by your account will always be discoverable and usable by users in your account.</p> </note> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-allowed-amis.html\">Control the discovery and use of AMIs in Amazon EC2 with Allowed AMIs</a> in <i>Amazon EC2 User Guide</i>.</p>"
     },
+    "ReplaceImageInstanceTypeSpecification":{
+      "name":"ReplaceImageInstanceTypeSpecification",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ReplaceImageInstanceTypeSpecificationRequest"},
+      "output":{"shape":"ReplaceImageInstanceTypeSpecificationResult"},
+      "documentation":"<p>Replaces or removes the instance type specification for an AMI. The instance type specification defines which instance types are compatible with the AMI.</p> <p>When you launch an instance using <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_RunInstances.html\">RunInstances</a>, Amazon EC2 validates the requested instance type against the AMI's instance type specification. If the instance type is not compatible, the request fails with an <code>InvalidParameterCombination</code> error.</p> <p>You can specify supported instance types, unsupported instance types, or both. The evaluation logic is as follows:</p> <ul> <li> <p>No specification set – all instance types are allowed.</p> </li> <li> <p>Only <code>UnsupportedInstanceTypes</code> set – All instance types are allowed except those that match the unsupported list.</p> </li> <li> <p> <code>SupportedInstanceTypes</code> set – The instance type must match the supported list and must not match the unsupported list.</p> </li> </ul> <p>Instance type entries support wildcard patterns using <code>*</code> (for example, <code>t3.*</code> matches all t3 sizes).</p> <p>To remove an existing instance type specification, omit the <code>InstanceTypeSpecification</code> parameter or set it to <code>null</code>.</p> <p>To set the instance type specification, you must be the AMI owner. You cannot set an instance type specification on an AMI that is listed in Amazon Web Services Marketplace, and you cannot list an AMI in Amazon Web Services Marketplace if it has an instance type specification set.</p>"
+    },
     "ReplaceNetworkAclAssociation":{
       "name":"ReplaceNetworkAclAssociation",
       "http":{
@@ -28168,7 +28178,7 @@
         },
         "Filters":{
           "shape":"FilterList",
-          "documentation":"<p>The filters.</p> <ul> <li> <p> <code>architecture</code> - The image architecture (<code>i386</code> | <code>x86_64</code> | <code>arm64</code> | <code>x86_64_mac</code> | <code>arm64_mac</code>).</p> </li> <li> <p> <code>block-device-mapping.delete-on-termination</code> - A Boolean value that indicates whether the Amazon EBS volume is deleted on instance termination.</p> </li> <li> <p> <code>block-device-mapping.device-name</code> - The device name specified in the block device mapping (for example, <code>/dev/sdh</code> or <code>xvdh</code>).</p> </li> <li> <p> <code>block-device-mapping.snapshot-id</code> - The ID of the snapshot used for the Amazon EBS volume.</p> </li> <li> <p> <code>block-device-mapping.volume-size</code> - The volume size of the Amazon EBS volume, in GiB.</p> </li> <li> <p> <code>block-device-mapping.volume-type</code> - The volume type of the Amazon EBS volume (<code>io1</code> | <code>io2</code> | <code>gp2</code> | <code>gp3</code> | <code>sc1 </code>| <code>st1</code> | <code>standard</code>).</p> </li> <li> <p> <code>block-device-mapping.encrypted</code> - A Boolean that indicates whether the Amazon EBS volume is encrypted.</p> </li> <li> <p> <code>creation-date</code> - The time when the image was created, in the ISO 8601 format in the UTC time zone (YYYY-MM-DDThh:mm:ss.sssZ), for example, <code>2021-09-29T11:04:43.305Z</code>. You can use a wildcard (<code>*</code>), for example, <code>2021-09-29T*</code>, which matches an entire day.</p> </li> <li> <p> <code>description</code> - The description of the image (provided during image creation).</p> </li> <li> <p> <code>ena-support</code> - A Boolean that indicates whether enhanced networking with ENA is enabled.</p> </li> <li> <p> <code>free-tier-eligible</code> - A Boolean that indicates whether this image can be used under the Amazon Web Services Free Tier (<code>true</code> | <code>false</code>).</p> </li> <li> <p> <code>hypervisor</code> - The hypervisor type (<code>ovm</code> | <code>xen</code>).</p> </li> <li> <p> <code>image-allowed</code> - A Boolean that indicates whether the image meets the criteria specified for Allowed AMIs.</p> </li> <li> <p> <code>image-id</code> - The ID of the image.</p> </li> <li> <p> <code>image-watermark.source-image-creation-time</code> - The creation date of the source AMI, in the ISO 8601 format in the UTC time zone (<code> <i>YYYY</i>-<i>MM</i>-<i>DD</i>T<i>HH</i>:<i>MM</i>:<i>SS</i>.<i>ssssss</i>+<i>HH</i>:<i>MM</i> </code>). You can use a wildcard (<code>*</code>), for example, <code>2021-09-29T*</code>, which matches an entire day.</p> </li> <li> <p> <code>image-watermark.source-image-id</code> - The ID of the AMI to which the watermark was originally attached.</p> </li> <li> <p> <code>image-watermark.source-image-region</code> - The Region where the watermark was originally attached.</p> </li> <li> <p> <code>image-watermark.watermark-creation-time</code> - The date and time the watermark was attached to the AMI, in the ISO 8601 format in the UTC time zone (<code> <i>YYYY</i>-<i>MM</i>-<i>DD</i>T<i>HH</i>:<i>MM</i>:<i>SS</i>.<i>ssssss</i>+<i>HH</i>:<i>MM</i> </code>). You can use a wildcard (<code>*</code>), for example, <code>2021-09-29T*</code>, which matches an entire day.</p> </li> <li> <p> <code>image-watermark.watermark-key</code> - The watermark identifier, in <code>accountId:watermarkName</code> format (for example, <code>123456789012:approvedAmi</code>).</p> </li> <li> <p> <code>image-type</code> - The image type (<code>machine</code> | <code>kernel</code> | <code>ramdisk</code>).</p> </li> <li> <p> <code>is-public</code> - A Boolean that indicates whether the image is public.</p> </li> <li> <p> <code>kernel-id</code> - The kernel ID.</p> </li> <li> <p> <code>manifest-location</code> - The location of the image manifest.</p> </li> <li> <p> <code>name</code> - The name of the AMI (provided during image creation).</p> </li> <li> <p> <code>owner-alias</code> - The owner alias (<code>amazon</code> | <code>aws-backup-vault</code> | <code>aws-marketplace</code>). The valid aliases are defined in an Amazon-maintained list. This is not the Amazon Web Services account alias that can be set using the IAM console. We recommend that you use the <b>Owner</b> request parameter instead of this filter.</p> </li> <li> <p> <code>owner-id</code> - The Amazon Web Services account ID of the owner. We recommend that you use the <b>Owner</b> request parameter instead of this filter.</p> </li> <li> <p> <code>platform</code> - The platform. The only supported value is <code>windows</code>.</p> </li> <li> <p> <code>product-code</code> - The product code.</p> </li> <li> <p> <code>product-code.type</code> - The type of the product code (<code>marketplace</code>).</p> </li> <li> <p> <code>public-ssm-parameter-name</code> - The name of a public Systems Manager parameter associated with the AMI. The parameter must be in a trusted Amazon Web Services namespace under <code>aws/service/</code>. Returns all AMIs that have ever been associated with the parameter, including previous versions.</p> </li> <li> <p> <code>ramdisk-id</code> - The RAM disk ID.</p> </li> <li> <p> <code>root-device-name</code> - The device name of the root device volume (for example, <code>/dev/sda1</code>).</p> </li> <li> <p> <code>root-device-type</code> - The type of the root device volume (<code>ebs</code> | <code>instance-store</code>).</p> </li> <li> <p> <code>source-image-id</code> - The ID of the source AMI from which the AMI was created.</p> </li> <li> <p> <code>source-image-region</code> - The Region of the source AMI.</p> </li> <li> <p> <code>source-instance-id</code> - The ID of the instance that the AMI was created from if the AMI was created using CreateImage. This filter is applicable only if the AMI was created using <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_CreateImage.html\">CreateImage</a>.</p> </li> <li> <p> <code>state</code> - The state of the image (<code>available</code> | <code>pending</code> | <code>failed</code>).</p> </li> <li> <p> <code>state-reason-code</code> - The reason code for the state change.</p> </li> <li> <p> <code>state-reason-message</code> - The message for the state change.</p> </li> <li> <p> <code>sriov-net-support</code> - A value of <code>simple</code> indicates that enhanced networking with the Intel 82599 VF interface is enabled.</p> </li> <li> <p> <code>tag:&lt;key&gt;</code> - The key/value combination of a tag assigned to the resource. Use the tag key in the filter name and the tag value as the filter value. For example, to find all resources that have a tag with the key <code>Owner</code> and the value <code>TeamA</code>, specify <code>tag:Owner</code> for the filter name and <code>TeamA</code> for the filter value.</p> </li> <li> <p> <code>tag-key</code> - The key of a tag assigned to the resource. Use this filter to find all resources assigned a tag with a specific key, regardless of the tag value.</p> </li> <li> <p> <code>virtualization-type</code> - The virtualization type (<code>paravirtual</code> | <code>hvm</code>).</p> </li> </ul>",
+          "documentation":"<p>The filters.</p> <ul> <li> <p> <code>architecture</code> - The image architecture (<code>i386</code> | <code>x86_64</code> | <code>arm64</code> | <code>x86_64_mac</code> | <code>arm64_mac</code>).</p> </li> <li> <p> <code>block-device-mapping.delete-on-termination</code> - A Boolean value that indicates whether the Amazon EBS volume is deleted on instance termination.</p> </li> <li> <p> <code>block-device-mapping.device-name</code> - The device name specified in the block device mapping (for example, <code>/dev/sdh</code> or <code>xvdh</code>).</p> </li> <li> <p> <code>block-device-mapping.snapshot-id</code> - The ID of the snapshot used for the Amazon EBS volume.</p> </li> <li> <p> <code>block-device-mapping.volume-size</code> - The volume size of the Amazon EBS volume, in GiB.</p> </li> <li> <p> <code>block-device-mapping.volume-type</code> - The volume type of the Amazon EBS volume (<code>io1</code> | <code>io2</code> | <code>gp2</code> | <code>gp3</code> | <code>sc1 </code>| <code>st1</code> | <code>standard</code>).</p> </li> <li> <p> <code>block-device-mapping.encrypted</code> - A Boolean that indicates whether the Amazon EBS volume is encrypted.</p> </li> <li> <p> <code>boot-mode</code> – The boot mode of the image (<code>legacy-bios</code> | <code>uefi</code> | <code>uefi-preferred</code>).</p> </li> <li> <p> <code>creation-date</code> - The time when the image was created, in the ISO 8601 format in the UTC time zone (YYYY-MM-DDThh:mm:ss.sssZ), for example, <code>2021-09-29T11:04:43.305Z</code>. You can use a wildcard (<code>*</code>), for example, <code>2021-09-29T*</code>, which matches an entire day.</p> </li> <li> <p> <code>description</code> - The description of the image (provided during image creation).</p> </li> <li> <p> <code>ena-support</code> - A Boolean that indicates whether enhanced networking with ENA is enabled.</p> </li> <li> <p> <code>free-tier-eligible</code> - A Boolean that indicates whether this image can be used under the Amazon Web Services Free Tier (<code>true</code> | <code>false</code>).</p> </li> <li> <p> <code>hypervisor</code> - The hypervisor type (<code>ovm</code> | <code>xen</code>).</p> </li> <li> <p> <code>image-allowed</code> - A Boolean that indicates whether the image meets the criteria specified for Allowed AMIs.</p> </li> <li> <p> <code>image-id</code> - The ID of the image.</p> </li> <li> <p> <code>image-watermark.source-image-creation-time</code> - The creation date of the source AMI, in the ISO 8601 format in the UTC time zone (<code> <i>YYYY</i>-<i>MM</i>-<i>DD</i>T<i>HH</i>:<i>MM</i>:<i>SS</i>.<i>ssssss</i>+<i>HH</i>:<i>MM</i> </code>). You can use a wildcard (<code>*</code>), for example, <code>2021-09-29T*</code>, which matches an entire day.</p> </li> <li> <p> <code>image-watermark.source-image-id</code> - The ID of the AMI to which the watermark was originally attached.</p> </li> <li> <p> <code>image-watermark.source-image-region</code> - The Region where the watermark was originally attached.</p> </li> <li> <p> <code>image-watermark.watermark-creation-time</code> - The date and time the watermark was attached to the AMI, in the ISO 8601 format in the UTC time zone (<code> <i>YYYY</i>-<i>MM</i>-<i>DD</i>T<i>HH</i>:<i>MM</i>:<i>SS</i>.<i>ssssss</i>+<i>HH</i>:<i>MM</i> </code>). You can use a wildcard (<code>*</code>), for example, <code>2021-09-29T*</code>, which matches an entire day.</p> </li> <li> <p> <code>image-watermark.watermark-key</code> - The watermark identifier, in <code>accountId:watermarkName</code> format (for example, <code>123456789012:approvedAmi</code>).</p> </li> <li> <p> <code>image-type</code> - The image type (<code>machine</code> | <code>kernel</code> | <code>ramdisk</code>).</p> </li> <li> <p> <code>instance-type-specification.supported-instance-type</code> – The instance types that are compatible with the AMI, as specified by the AMI owner. Values can be individual instance types (for example, <code>t3.micro</code>) or wildcard patterns that match multiple instance types (for example, <code>t3.*</code>).</p> </li> <li> <p> <code>instance-type-specification.unsupported-instance-type</code> – The instance types that are not compatible with the AMI, as specified by the AMI owner. Values can be individual instance types (for example, <code>t3.micro</code>) or wildcard patterns that match multiple instance types (for example, <code>t3.*</code>).</p> </li> <li> <p> <code>is-public</code> - A Boolean that indicates whether the image is public.</p> </li> <li> <p> <code>kernel-id</code> - The kernel ID.</p> </li> <li> <p> <code>manifest-location</code> - The location of the image manifest.</p> </li> <li> <p> <code>name</code> - The name of the AMI (provided during image creation).</p> </li> <li> <p> <code>owner-alias</code> - The owner alias (<code>amazon</code> | <code>aws-backup-vault</code> | <code>aws-marketplace</code>). The valid aliases are defined in an Amazon-maintained list. This is not the Amazon Web Services account alias that can be set using the IAM console. We recommend that you use the <b>Owner</b> request parameter instead of this filter.</p> </li> <li> <p> <code>owner-id</code> - The Amazon Web Services account ID of the owner. We recommend that you use the <b>Owner</b> request parameter instead of this filter.</p> </li> <li> <p> <code>platform</code> - The platform. The only supported value is <code>windows</code>.</p> </li> <li> <p> <code>product-code</code> - The product code.</p> </li> <li> <p> <code>product-code.type</code> - The type of the product code (<code>marketplace</code>).</p> </li> <li> <p> <code>public-ssm-parameter-name</code> - The name of a public Systems Manager parameter associated with the AMI. The parameter must be in a trusted Amazon Web Services namespace under <code>aws/service/</code>. Returns all AMIs that have ever been associated with the parameter, including previous versions.</p> </li> <li> <p> <code>ramdisk-id</code> - The RAM disk ID.</p> </li> <li> <p> <code>root-device-name</code> - The device name of the root device volume (for example, <code>/dev/sda1</code>).</p> </li> <li> <p> <code>root-device-type</code> - The type of the root device volume (<code>ebs</code> | <code>instance-store</code>).</p> </li> <li> <p> <code>source-image-id</code> - The ID of the source AMI from which the AMI was created.</p> </li> <li> <p> <code>source-image-region</code> - The Region of the source AMI.</p> </li> <li> <p> <code>source-instance-id</code> - The ID of the instance that the AMI was created from if the AMI was created using CreateImage. This filter is applicable only if the AMI was created using <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_CreateImage.html\">CreateImage</a>.</p> </li> <li> <p> <code>state</code> - The state of the image (<code>available</code> | <code>pending</code> | <code>failed</code>).</p> </li> <li> <p> <code>state-reason-code</code> - The reason code for the state change.</p> </li> <li> <p> <code>state-reason-message</code> - The message for the state change.</p> </li> <li> <p> <code>sriov-net-support</code> - A value of <code>simple</code> indicates that enhanced networking with the Intel 82599 VF interface is enabled.</p> </li> <li> <p> <code>tag:&lt;key&gt;</code> - The key/value combination of a tag assigned to the resource. Use the tag key in the filter name and the tag value as the filter value. For example, to find all resources that have a tag with the key <code>Owner</code> and the value <code>TeamA</code>, specify <code>tag:Owner</code> for the filter name and <code>TeamA</code> for the filter value.</p> </li> <li> <p> <code>tag-key</code> - The key of a tag assigned to the resource. Use this filter to find all resources assigned a tag with a specific key, regardless of the tag value.</p> </li> <li> <p> <code>virtualization-type</code> - The virtualization type (<code>paravirtual</code> | <code>hvm</code>).</p> </li> </ul>",
           "locationName":"Filter"
         }
       }
@@ -44371,6 +44381,11 @@
           "documentation":"<p>The watermarks attached to the AMI.</p>",
           "locationName":"imageWatermarkSet"
         },
+        "InstanceTypeSpecification":{
+          "shape":"InstanceTypeSpecification",
+          "documentation":"<p>The instance type specification for the AMI, which defines which instance types are compatible with this image.</p>",
+          "locationName":"instanceTypeSpecification"
+        },
         "ImageId":{
           "shape":"String",
           "documentation":"<p>The ID of the AMI.</p>",
@@ -50263,6 +50278,22 @@
         "locationName":"item"
       }
     },
+    "InstanceTypeItem":{
+      "type":"structure",
+      "members":{
+        "InstanceType":{
+          "shape":"String",
+          "documentation":"<p>The instance type or wildcard pattern (for example, <code>t3.*</code> or <code>m5.large</code>).</p>",
+          "locationName":"instanceType"
+        }
+      },
+      "documentation":"<p>An instance type name or wildcard pattern in an instance type specification.</p>"
+    },
+    "InstanceTypeItemRequest":{
+      "type":"string",
+      "max":24,
+      "min":0
+    },
     "InstanceTypeList":{
       "type":"list",
       "member":{"shape":"InstanceType"}
@@ -50294,6 +50325,38 @@
         "shape":"InstanceTypeOffering",
         "locationName":"item"
       }
+    },
+    "InstanceTypeSpecification":{
+      "type":"structure",
+      "members":{
+        "SupportedInstanceTypes":{
+          "shape":"SupportedInstanceTypeSet",
+          "documentation":"<p>The instance types that the AMI supports.</p>",
+          "locationName":"supportedInstanceTypeSet"
+        },
+        "UnsupportedInstanceTypes":{
+          "shape":"UnsupportedInstanceTypeSet",
+          "documentation":"<p>The instance types that the AMI does not support.</p>",
+          "locationName":"unsupportedInstanceTypeSet"
+        }
+      },
+      "documentation":"<p>Describes the instance type compatibility rules for an AMI, including lists of supported and unsupported instance type patterns.</p>"
+    },
+    "InstanceTypeSpecificationRequest":{
+      "type":"structure",
+      "members":{
+        "SupportedInstanceTypes":{
+          "shape":"SupportedInstanceTypeRequestSet",
+          "documentation":"<p>The instance types that the AMI supports. You can specify instance type names or use wildcard patterns (for example, <code>t3.*</code>).</p> <p>Constraints: Maximum 100 entries. Each entry must be 1-24 characters and match the pattern <code>^[A-Za-z0-9_.*-]+$</code>. Consecutive wildcard characters (<code>**</code>) are not allowed. Entries must be unique within each list and across both lists; duplicate entries cause the request to fail.</p>",
+          "locationName":"SupportedInstanceType"
+        },
+        "UnsupportedInstanceTypes":{
+          "shape":"UnsupportedInstanceTypeRequestSet",
+          "documentation":"<p>The instance types that the AMI does not support. You can specify instance type names or use wildcard patterns (for example, <code>t3.*</code>).</p> <p>Constraints: Maximum 100 entries. Each entry must be 1-24 characters and match the pattern <code>^[A-Za-z0-9_.*-]+$</code>. Consecutive wildcard characters (<code>**</code>) are not allowed. Entries must be unique within each list and across both lists; duplicate entries cause the request to fail.</p>",
+          "locationName":"UnsupportedInstanceType"
+        }
+      },
+      "documentation":"<p>The instance type specification for an AMI, which contains lists of supported and unsupported instance types that define which instance types are compatible with the AMI.</p>"
     },
     "InstanceTypes":{
       "type":"list",
@@ -65922,6 +65985,34 @@
         }
       }
     },
+    "ReplaceImageInstanceTypeSpecificationRequest":{
+      "type":"structure",
+      "required":["ImageId"],
+      "members":{
+        "ImageId":{
+          "shape":"ImageId",
+          "documentation":"<p>The ID of the AMI.</p>"
+        },
+        "InstanceTypeSpecification":{
+          "shape":"InstanceTypeSpecificationRequest",
+          "documentation":"<p>The instance type specification to set on the AMI. Omit this parameter to remove the existing instance type specification.</p>"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "ReplaceImageInstanceTypeSpecificationResult":{
+      "type":"structure",
+      "members":{
+        "ReturnValue":{
+          "shape":"Boolean",
+          "documentation":"<p>Returns <code>true</code> if the request succeeds; otherwise, it returns an error.</p>",
+          "locationName":"returnValue"
+        }
+      }
+    },
     "ReplaceNetworkAclAssociationRequest":{
       "type":"structure",
       "required":[
@@ -74044,6 +74135,22 @@
       }
     },
     "SupportedInRegion":{"type":"boolean"},
+    "SupportedInstanceTypeRequestSet":{
+      "type":"list",
+      "member":{
+        "shape":"InstanceTypeItemRequest",
+        "locationName":"Item"
+      },
+      "max":100,
+      "min":0
+    },
+    "SupportedInstanceTypeSet":{
+      "type":"list",
+      "member":{
+        "shape":"InstanceTypeItem",
+        "locationName":"item"
+      }
+    },
     "SupportedIpAddressTypes":{
       "type":"list",
       "member":{
@@ -77602,6 +77709,22 @@
       "type":"list",
       "member":{
         "shape":"UnsuccessfulSuppressionResponseObject",
+        "locationName":"item"
+      }
+    },
+    "UnsupportedInstanceTypeRequestSet":{
+      "type":"list",
+      "member":{
+        "shape":"InstanceTypeItemRequest",
+        "locationName":"Item"
+      },
+      "max":100,
+      "min":0
+    },
+    "UnsupportedInstanceTypeSet":{
+      "type":"list",
+      "member":{
+        "shape":"InstanceTypeItem",
         "locationName":"item"
       }
     },

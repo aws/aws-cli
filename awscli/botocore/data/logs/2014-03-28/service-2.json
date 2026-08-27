@@ -8270,6 +8270,10 @@
         "logGroupsScanned":{
           "shape":"StatsValue",
           "documentation":"<p>The number of log groups that were scanned by this query.</p>"
+        },
+        "resultCount":{
+          "shape":"StatsValue",
+          "documentation":"<p>The number of rows in the final query result set. This value represents the total number of output rows across all pages. For queries that include post-aggregation filters (such as <code>stats count(*) by field | filter count &gt; threshold</code>), this value might be less than <code>recordsMatched</code>. It reflects only the rows that survived all operations in the query.</p>"
         }
       },
       "documentation":"<p>Contains the number of log events scanned by the query, the number of log events that matched the query criteria, and the total number of bytes in the log events that were scanned.</p> <p>If the query involved log groups that have field index policies, the estimated number of skipped log events and the total bytes of those skipped log events are included. Using field indexes to skip log events in queries reduces scan volume and improves performance. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/CloudWatchLogs-Field-Indexing.html\">Create field indexes to improve query performance and reduce scan volume</a>.</p>"

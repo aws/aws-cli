@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.46.1
+======
+
+* enhancement:CodeArtifact: Updated npm login to write configuration directly to .npmrc, consistent with how other package manager integrations handle their config files.
+* enhancement:SSM SessionManager: Add warning message for outdated SessionManagerPlugin version
+
+
 1.46.0
 ======
 

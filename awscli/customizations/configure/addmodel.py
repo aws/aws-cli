@@ -21,11 +21,10 @@ from awscli.customizations.commands import BasicCommand
 def _get_endpoint_prefix_to_name_mappings(session):
     # Get the mappings of endpoint prefixes to service names from the
     # available service models.
-    prefixes_to_services = {}
-    for service_name in session.get_available_services():
-        service_model = session.get_service_model(service_name)
-        prefixes_to_services[service_model.endpoint_prefix] = service_name
-    return prefixes_to_services
+    return {
+        session.get_service_model(service_name).endpoint_prefix: service_name
+        for service_name in session.get_available_services()
+    }
 
 
 def _get_service_name(session, endpoint_prefix):

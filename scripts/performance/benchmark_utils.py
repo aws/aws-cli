@@ -23,8 +23,8 @@ def summarize(script, result_dir, summary_dir):
     with open(os.path.join(summary_dir, 'summary.txt'), 'wb') as f:
         subprocess.check_call(summarize_args, stdout=f)
     with open(os.path.join(summary_dir, 'summary.json'), 'wb') as f:
-        summarize_args.extend(['--output-format', 'json'])
-        subprocess.check_call(summarize_args, stdout=f)
+        json_args = summarize_args + ['--output-format', 'json']
+        subprocess.check_call(json_args, stdout=f)
 
 
 def _get_s3transfer_performance_script(script_name):

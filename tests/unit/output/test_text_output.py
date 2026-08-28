@@ -74,6 +74,65 @@ class TestListUsers(BaseAWSCommandParamsTest):
             'ENGINEDEFAULTS\tNone\n')
 
 
+class TestTextPaginationResumeToken(BaseAWSCommandParamsTest):
+    """Regression tests for the resume-token hint in ``--output text``.
+
+    When a paginated response is truncated (e.g. via ``--max-items``) the
+    text formatter prints a ``NEXTTOKEN`` hint so users know how to resume.
+    This hint is pagination metadata and must not be run through ``--query``;
+    doing so used to emit a stray ``None`` (the result of searching the hint
+    with the user's data expression) into the output.
+    """
+
+    def setUp(self):
+        super(TestTextPaginationResumeToken, self).setUp()
+        # Two pages of results so that ``--max-items 1`` truncates and a
+        # resume token is generated.
+        self.parsed_responses = [
+            {
+                'Users': [{
+                    'UserName': 'alice',
+                    'Path': '/',
+                    'CreateDate': '2024-01-01T00:00:00Z',
+                    'UserId': 'A1',
+                    'Arn': 'arn:aws:iam::12345:user/alice',
+                }],
+                'IsTruncated': True,
+                'Marker': 'PAGE2',
+            },
+            {
+                'Users': [{
+                    'UserName': 'bob',
+                    'Path': '/',
+                    'CreateDate': '2024-01-02T00:00:00Z',
+                    'UserId': 'B1',
+                    'Arn': 'arn:aws:iam::12345:user/bob',
+                }],
+                'IsTruncated': False,
+            },
+        ]
+
+    def test_resume_token_hint_emitted_without_query(self):
+        output = self.run_cmd(
+            'iam list-users --max-items 1 --output text', expected_rc=0)[0]
+        lines = output.splitlines()
+        self.assertEqual(lines[0].split('\t')[0], 'USERS')
+        # The last line is the resume-token hint.
+        self.assertEqual(lines[-1].split('\t')[0], 'NEXTTOKEN')
+
+    def test_resume_token_hint_not_run_through_query(self):
+        output = self.run_cmd(
+            'iam list-users --max-items 1 --output text '
+            '--query Users[].UserName', expected_rc=0)[0]
+        lines = output.splitlines()
+        # The queried data is still rendered ...
+        self.assertEqual(lines[0], 'alice')
+        # ... and the resume-token hint survives untouched instead of being
+        # replaced by a stray ``None`` from applying the query to the hint.
+        self.assertEqual(lines[-1].split('\t')[0], 'NEXTTOKEN')
+        self.assertNotIn('None', lines)
+
+
 class TestDescribeChangesets(BaseAWSCommandParamsTest):
 
     def setUp(self):

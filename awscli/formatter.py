@@ -247,8 +247,13 @@ class TextFormatter(Formatter):
                     self._format_response(current, stream)
                 if response.resume_token:
                     # Tell the user about the next token so they can continue
-                    # if they want.
-                    self._format_response(
+                    # if they want.  This is pagination metadata rather than
+                    # part of the queried result set, so we render it directly
+                    # instead of going through ``_format_response``.  Passing it
+                    # through ``--query`` would run the user's data expression
+                    # against the ``NextToken`` hint and emit a stray ``None``
+                    # (or other unrelated value) into the output.
+                    text.format_text(
                         {'NextToken': {'NextToken': response.resume_token}},
                         stream,
                     )

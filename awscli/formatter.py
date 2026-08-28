@@ -206,8 +206,8 @@ class TableFormatter(FullyBufferedFormatter):
             current_headers, current_more = self._group_scalar_keys(item)
             headers.update(current_headers)
             more.update(current_more)
-        headers = list(sorted(headers))
-        more = list(sorted(more))
+        headers = sorted(headers)
+        more = sorted(more)
         return headers, more
 
     def _group_scalar_keys(self, current):

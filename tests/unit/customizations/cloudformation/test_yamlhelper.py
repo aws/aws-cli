@@ -182,3 +182,92 @@ class TestYaml(unittest.TestCase):
         )
         actual = yaml_dump(template)
         self.assertEqual(actual, expected)
+
+    def test_scientific_notation_strings_are_quoted(self):
+        """
+        Test fix for issue #3991: strings that look like scientific notation
+        should be quoted to prevent them from being interpreted as numbers.
+        """
+        template = {
+            "Parameters": {
+                "Value1": {"Default": "1e10"},
+                "Value2": {"Default": "1E-5"},
+                "Value3": {"Default": "2.5e+3"},
+            }
+        }
+        dumped = yaml_dump(template)
+        
+        # Scientific notation strings should be quoted
+        self.assertIn("'1e10'", dumped)
+        self.assertIn("'1E-5'", dumped)
+        self.assertIn("'2.5e+3'", dumped)
+        
+        # Verify round-trip preserves string type
+        reparsed = yaml_parse(dumped)
+        self.assertEqual(reparsed["Parameters"]["Value1"]["Default"], "1e10")
+        self.assertEqual(reparsed["Parameters"]["Value2"]["Default"], "1E-5")
+        self.assertEqual(reparsed["Parameters"]["Value3"]["Default"], "2.5e+3")
+
+    def test_octal_hex_binary_strings_are_quoted(self):
+        """
+        Test that octal, hex, and binary notation strings are quoted.
+        """
+        template = {
+            "Values": {
+                "Octal": "0755",
+                "OctalNew": "0o755",
+                "Hex": "0x1A2B",
+                "Binary": "0b1010",
+            }
+        }
+        dumped = yaml_dump(template)
+        
+        # These should be quoted
+        self.assertIn("'0755'", dumped)
+        self.assertIn("'0o755'", dumped)
+        self.assertIn("'0x1A2B'", dumped)
+        self.assertIn("'0b1010'", dumped)
+        
+        # Verify round-trip
+        reparsed = yaml_parse(dumped)
+        self.assertEqual(reparsed["Values"]["Octal"], "0755")
+        self.assertEqual(reparsed["Values"]["Hex"], "0x1A2B")
+
+    def test_sexagesimal_strings_are_quoted(self):
+        """
+        Test that sexagesimal (base 60) notation strings are quoted.
+        """
+        template = {
+            "Values": {
+                "Time1": "1:30:00",
+                "Time2": "12:30",
+            }
+        }
+        dumped = yaml_dump(template)
+        
+        # Should be quoted
+        self.assertIn("'1:30:00'", dumped)
+        self.assertIn("'12:30'", dumped)
+        
+        # Verify round-trip
+        reparsed = yaml_parse(dumped)
+        self.assertEqual(reparsed["Values"]["Time1"], "1:30:00")
+        self.assertEqual(reparsed["Values"]["Time2"], "12:30")
+
+    def test_normal_strings_not_excessively_quoted(self):
+        """
+        Test that normal strings are not unnecessarily quoted.
+        """
+        template = {
+            "Values": {
+                "Normal1": "hello",
+                "Normal2": "world-123",
+                "Arn": "arn:aws:s3:::bucket",
+            }
+        }
+        dumped = yaml_dump(template)
+        
+        # Normal strings should not be quoted (except ARN which has colons)
+        self.assertIn("Normal1: hello", dumped)
+        self.assertIn("Normal2: world-123", dumped)
+

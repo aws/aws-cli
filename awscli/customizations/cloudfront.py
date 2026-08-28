@@ -11,8 +11,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import sys
-import time
-import random
+import uuid
 
 import rsa
 from botocore.utils import parse_to_aware_datetime
@@ -63,7 +62,7 @@ def register(event_handler):
 
 
 def unique_string(prefix='cli'):
-    return '%s-%s-%s' % (prefix, int(time.time()), random.randint(1, 1000000))
+    return '%s-%s' % (prefix, uuid.uuid4())
 
 
 def _add_paths(argument_table, **kwargs):

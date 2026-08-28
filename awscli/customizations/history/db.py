@@ -24,6 +24,106 @@ from awscli.compat import binary_type, collections_abc, sqlite3
 
 LOG = logging.getLogger(__name__)
 
+REDACTED_VALUE = '***REDACTED***'
+
+# Exact key names (case-insensitive) whose values are credential/secret
+# material and must never be persisted to the CLI history database. This is
+# intentionally an exact-match set, not a substring match: a substring match
+# on something like "token" would also catch harmless, non-secret fields
+# that are extremely common across AWS APIs (NextToken, ContinuationToken,
+# PaginationToken, ClientToken, JobToken, ...), silently degrading the
+# usefulness of `aws history show` for routine debugging while adding no
+# real protection.
+#
+# This list is deliberately broader than what service models mark
+# `"sensitive": true` in botocore's shape metadata: for example STS's
+# AssumeRole response marks `Credentials.SecretAccessKey` as sensitive but
+# NOT `Credentials.SessionToken`, even though a session token is just as
+# usable as a live credential as the secret key it's paired with. Rather
+# than depend on every service team's model annotations being complete
+# (and rather than requiring shape/operation-model context, which callers
+# of this module do not have -- CLI history records are already-serialized
+# dicts by the time they reach here), we redact by field name directly, as
+# a deliberately conservative backstop.
+_SENSITIVE_KEY_NAMES = frozenset(
+    name.lower()
+    for name in (
+        'SecretAccessKey',
+        'SessionToken',
+        'SecretString',
+        'SecretKey',
+        'Password',
+        'MasterUserPassword',
+        'PrivateKey',
+        'ClientSecret',
+        'RefreshToken',
+        'AccessToken',
+        'IdToken',
+        'ApiKey',
+        'Authorization',
+        'X-Amz-Security-Token',
+    )
+)
+
+
+def _redact_sensitive_values(obj):
+    """Recursively replace values of well-known credential/secret-bearing
+    keys with a redaction marker, leaving everything else untouched.
+
+    Dict keys are matched case-insensitively by exact name (see
+    _SENSITIVE_KEY_NAMES). HTTP header dicts and parsed API request/response
+    payloads both flow through this same function, since both can carry
+    the fields listed above (headers carry Authorization/X-Amz-Security-
+    Token; payloads carry the rest).
+    """
+    if isinstance(obj, collections_abc.Mapping):
+        redacted = {}
+        for key, value in obj.items():
+            if isinstance(key, str) and key.lower() in _SENSITIVE_KEY_NAMES:
+                redacted[key] = REDACTED_VALUE
+            else:
+                redacted[key] = _redact_sensitive_values(value)
+        return redacted
+    elif isinstance(obj, (list, tuple)):
+        return [_redact_sensitive_values(item) for item in obj]
+    else:
+        return obj
+
+
+# Event types whose payload is a structured dict that may directly or
+# transitively contain credential material: API_CALL params (what the user
+# is sending, e.g. a new IAM password or secret value being set) and
+# PARSED_RESPONSE (what the service returned, e.g. STS temporary
+# credentials or a decrypted secret).
+_STRUCTURED_PAYLOAD_EVENTS = frozenset(('API_CALL', 'PARSED_RESPONSE'))
+
+
+def _redact_payload(event_type, payload):
+    if event_type in _STRUCTURED_PAYLOAD_EVENTS:
+        return _redact_sensitive_values(payload)
+    if event_type == 'HTTP_REQUEST' and isinstance(
+        payload, collections_abc.Mapping
+    ):
+        payload = dict(payload)
+        if 'headers' in payload:
+            payload['headers'] = _redact_sensitive_values(payload['headers'])
+        return payload
+    if event_type == 'HTTP_RESPONSE' and isinstance(
+        payload, collections_abc.Mapping
+    ):
+        # The raw response body at this point is still an unparsed byte/XML/
+        # JSON blob (PARSED_RESPONSE, handled above, is the structured
+        # equivalent of the same data). We can't safely redact specific
+        # fields inside an arbitrary, not-yet-parsed wire format without
+        # risking either missing a secret embedded in it (an incomplete
+        # regex over arbitrary XML/JSON) or corrupting it, so the safe
+        # default is to not persist the raw body at all for this event type.
+        payload = dict(payload)
+        if 'body' in payload:
+            payload['body'] = REDACTED_VALUE
+        return payload
+    return payload
+
 
 class DatabaseConnection:
     _CREATE_TABLE = """
@@ -269,7 +369,7 @@ class RecordBuilder:
         record = {
             'command_id': uid,
             'event_type': event_type,
-            'payload': payload,
+            'payload': _redact_payload(event_type, payload),
             'source': source,
             'timestamp': int(time.time() * 1000),
         }

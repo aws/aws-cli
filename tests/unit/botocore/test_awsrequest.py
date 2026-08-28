@@ -598,6 +598,52 @@ class TestAWSHTTPConnection(unittest.TestCase):
             # current response.,
             self.assertEqual(response.status, 200)
 
+    def test_early_final_response_does_not_corrupt_next_response(self):
+        # Request A is a 0-byte upload with Expect: 100-continue. Because the
+        # body is empty, the server skips "100 Continue" and returns the final
+        # 200 immediately. _handle_expect_response caches that status via
+        # response_class -> the connection is now poisoned.
+        #
+        # Request B reuses the SAME connection WITHOUT close().
+        # request() should reset response_class
+
+        with mock.patch('urllib3.util.wait_for_read') as wait_mock:
+            wait_mock.return_value = True
+            conn = AWSHTTPConnection('s3.amazonaws.com', 443)
+
+            # Request A: 0-byte upload -> early final 200 (no 100 Continue).
+            # Content-Length: 0 keeps the connection open (not auto-closed), so
+            # the poisoned response_class persists for the next request.
+            conn.sock = FakeSocket(
+                b'HTTP/1.1 200 OK\r\nContent-Length: 0\r\n\r\n'
+            )
+            conn.request(
+                'PUT', '/empty-object', b'', {'Expect': b'100-continue'}
+            )
+            response_a = conn.getresponse()
+            self.assertEqual(response_a.status, 200)
+            response_a.read()  # drain so the connection can be reused
+
+            # Request B: a normal non-empty upload reusing the connection
+            # (no close()). The server does the normal 100 -> 200 with an ETag.
+            conn.sock = FakeSocket(
+                b'HTTP/1.1 100 (Continue)\r\n\r\n'
+                b'HTTP/1.1 200 OK\r\n'
+                b'ETag: "test-etag"\r\n'
+                b'Content-Length: 0\r\n'
+                b'\r\n'
+            )
+            conn.request(
+                'PUT', '/real-object', b'body', {'Expect': b'100-continue'}
+            )
+            response_b = conn.getresponse()
+
+            # Status is 200 either way (the leaked cached status is also 200),
+            # so this is only a sanity check. It should have a proper parsed
+            # Etag
+            self.assertEqual(response_b.status, 200)
+            self.assertEqual(response_b.headers.get('ETag'), '"test-etag"')
+
 
 class TestAWSHTTPConnectionPool(unittest.TestCase):
     def test_global_urllib3_pool_is_unchanged(self):

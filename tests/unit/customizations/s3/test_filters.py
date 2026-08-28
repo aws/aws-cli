@@ -10,8 +10,9 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import ntpath
 import os
-from awscli.testutils import unittest
+from awscli.testutils import mock, unittest
 import platform
 
 from awscli.customizations.s3.filegenerator import FileStat
@@ -222,6 +223,134 @@ class FiltersTest(unittest.TestCase):
         self.assertEqual(len(filtered), 2)
         for filtered_file in filtered:
             self.assertFalse('.txt' in filtered_file.src)
+
+    # An absolute pattern that lies under a local root must behave
+    # exactly like the equivalent relative pattern: it has to be rebased
+    # onto both the source root and the destination root.  Historically
+    # ``os.path.join`` silently discarded the root for absolute patterns,
+    # so the destination side copy of the pattern kept referring to the
+    # local path and could never match a destination path like
+    # ``bucket/key``.
+
+    def test_absolute_include_local_to_s3(self):
+        p = platform_path
+        parameters = {
+            'filters': [['--exclude', '*'],
+                        ['--include', p('/abs/src/photos/*')]],
+            'dir_op': True,
+            'src': p('/abs/src'),
+            'dest': 's3://bucket/',
+        }
+        abs_filter = self.create_filter(parameters=parameters)
+        # The include pattern is rebased onto both roots, exactly as the
+        # relative pattern ``photos/*`` would be.
+        self.assertEqual(
+            abs_filter.patterns[1],
+            ('include', p('/abs/src/photos/*')))
+        self.assertEqual(
+            abs_filter.dst_patterns[1],
+            ('include', 'bucket/' + os.path.join('photos', '*')))
+        # Local side: the file generator listing re-includes the file.
+        local_file = self.file_stat(p('/abs/src/photos/cat.jpg'))
+        self.assertEqual(list(abs_filter.call([local_file])), [local_file])
+        # Destination side: the remote listing must also re-include the
+        # object, otherwise the Comparator never sees it and sync
+        # uploads it again on every run.
+        remote_file = self.file_stat('bucket/photos/cat.jpg', src_type='s3')
+        self.assertEqual(list(abs_filter.call([remote_file])), [remote_file])
+
+    def test_absolute_exclude_protects_destination_with_delete(self):
+        p = platform_path
+        parameters = {
+            'filters': [['--exclude', p('/abs/src/keep/*')]],
+            'dir_op': True,
+            'src': p('/abs/src'),
+            'dest': 's3://bucket/',
+        }
+        abs_filter = self.create_filter(parameters=parameters)
+        local_file = self.file_stat(p('/abs/src/keep/important.txt'))
+        self.assertEqual(list(abs_filter.call([local_file])), [])
+        # The excluded object must also be dropped from the destination
+        # listing; if it stays there ``sync --delete`` deletes the very
+        # object the exclude was written to protect.
+        remote_file = self.file_stat(
+            'bucket/keep/important.txt', src_type='s3')
+        self.assertEqual(list(abs_filter.call([remote_file])), [])
+
+    def test_absolute_pattern_under_destination_root(self):
+        # Downloads have the local directory as the destination root, so
+        # an absolute pattern under the destination root has to be
+        # rebased onto the s3 source root as well.
+        p = platform_path
+        parameters = {
+            'filters': [['--exclude', '*'],
+                        ['--include', p('/abs/dest/docs/*')]],
+            'dir_op': True,
+            'src': 's3://bucket/',
+            'dest': p('/abs/dest'),
+        }
+        abs_filter = self.create_filter(parameters=parameters)
+        self.assertEqual(
+            abs_filter.patterns[1],
+            ('include', 'bucket/' + os.path.join('docs', '*')))
+        self.assertEqual(
+            abs_filter.dst_patterns[1],
+            ('include', p('/abs/dest/docs/*')))
+        remote_file = self.file_stat('bucket/docs/a.txt', src_type='s3')
+        self.assertEqual(list(abs_filter.call([remote_file])), [remote_file])
+        local_file = self.file_stat(p('/abs/dest/docs/a.txt'))
+        self.assertEqual(list(abs_filter.call([local_file])), [local_file])
+
+    def test_absolute_pattern_outside_any_root(self):
+        p = platform_path
+        parameters = {
+            'filters': [['--exclude', p('/elsewhere/keep/*')]],
+            'dir_op': True,
+            'src': p('/abs/src'),
+            'dest': 's3://bucket/',
+        }
+        abs_filter = self.create_filter(parameters=parameters)
+        # The pattern lies under neither root, so it is left untouched on
+        # both sides, preserving the existing behavior.
+        self.assertEqual(
+            abs_filter.patterns[0], ('exclude', p('/elsewhere/keep/*')))
+        self.assertEqual(
+            abs_filter.dst_patterns[0], ('exclude', p('/elsewhere/keep/*')))
+        local_file = self.file_stat(p('/abs/src/file.txt'))
+        self.assertEqual(list(abs_filter.call([local_file])), [local_file])
+
+    def test_absolute_pattern_with_trailing_separator_root(self):
+        p = platform_path
+        # The local root can arrive with a trailing separator; the
+        # prefix strip has to treat '/abs/src/' and '/abs/src' the same.
+        abs_filter = self.create_filter(
+            [['include', p('/abs/src/photos/*')]],
+            root=p('/abs/src/'), dst_root='bucket')
+        self.assertEqual(
+            abs_filter.patterns[0],
+            ('include', p('/abs/src/photos/*')))
+        self.assertEqual(
+            abs_filter.dst_patterns[0],
+            ('include', os.path.join('bucket', 'photos', '*')))
+
+    def test_absolute_pattern_windows_drive_and_case(self):
+        # Emulate Windows path semantics so the drive letter handling is
+        # exercised on every platform: the drive letter casing may differ
+        # between the pattern and the root, and the pattern may be
+        # spelled with forward slashes.
+        fake_os = mock.Mock(sep=ntpath.sep, path=ntpath)
+        with mock.patch(
+                'awscli.customizations.s3.filters.os', fake_os):
+            win_filter = Filter(
+                [['include', 'c:/Users/om/photos/*']],
+                'C:\\Users\\om', 'bucket')
+        self.assertEqual(
+            win_filter.patterns[0],
+            ('include', 'C:\\Users\\om\\photos\\*'))
+        self.assertEqual(
+            win_filter.dst_patterns[0],
+            ('include', 'bucket\\photos\\*'))
+
 
 if __name__ == "__main__":
     unittest.main()

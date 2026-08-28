@@ -12,7 +12,7 @@
 # language governing permissions and limitations under the License.
 
 import sys
-import time
+import uuid
 import logging
 import botocore
 import collections
@@ -26,6 +26,10 @@ LOG = logging.getLogger(__name__)
 
 ChangeSetResult = collections.namedtuple(
                 "ChangeSetResult", ["changeset_id", "changeset_type"])
+
+
+def _make_changeset_name(prefix):
+    return prefix + str(uuid.uuid4())
 
 
 class Deployer(object):
@@ -88,8 +92,7 @@ class Deployer(object):
         now = get_current_datetime().isoformat()
         description = "Created by AWS CLI at {0} UTC".format(now)
 
-        # Each changeset will get a unique name based on time
-        changeset_name = self.changeset_prefix + str(int(time.time()))
+        changeset_name = _make_changeset_name(self.changeset_prefix)
 
         if not self.has_stack(stack_name):
             changeset_type = "CREATE"

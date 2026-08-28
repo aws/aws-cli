@@ -120,14 +120,9 @@ class TestConfigureGetCommand(unittest.TestCase):
         session.config = {'s3': {'signature_version': 's3v4'}}
         stream, error_stream, config_get = self.create_command(session)
         rc = config_get(args=['s3'], parsed_globals=None)
-        self.assertEqual(rc, 1)
-
-        error_message = error_stream.getvalue()
-        expected_message = (
-            'varname (s3) must reference a value, not a section or '
-            'sub-section.')
-        self.assertEqual(error_message, expected_message)
-        self.assertEqual(stream.getvalue(), '')
+        self.assertEqual(rc, 0)
+        self.assertEqual(stream.getvalue(), 'signature_version = s3v4\n')
+        self.assertEqual(error_stream.getvalue(), '')
 
     def test_get_non_string_returns_error(self):
         # This should never happen, but we handle this case so we should

@@ -277,7 +277,7 @@ class HTTPRequest(object):
         return not self.__eq__(other)
 
 
-# CaseInsensitiveDict from requests that must be serializble.
+# CaseInsensitiveDict from requests that must be serializable.
 class CaseInsensitiveDict(collections_abc.MutableMapping):
     def __init__(self, data=None, **kwargs):
         self._store = dict()
@@ -320,7 +320,7 @@ class CaseInsensitiveDict(collections_abc.MutableMapping):
 
     # Copy is required
     def copy(self):
-        return CaseInsensitiveDict(self._store.values())
+        return CaseInsensitiveDict(dict(self._store.values()))
 
     def __repr__(self):
         return str(dict(self.items()))

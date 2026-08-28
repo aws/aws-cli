@@ -5,9 +5,7 @@ The following ``create-run-group`` example creates a run group named ``cram-conv
     aws omics create-run-group \
         --name cram-converter \
         --max-cpus 20 \
-        --max-gpus 10 \
-        --max-duration 600 \
-        --max-runs 5 
+        --max-duration 600
 
 Output::
 

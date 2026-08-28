@@ -19,7 +19,7 @@ from awscli.customizations.s3.s3 import S3
 from awscli.customizations.s3.subcommands import CommandParameters, \
     CommandArchitecture, CpCommand, SyncCommand, ListCommand, \
     RbCommand, get_client
-from awscli.customizations.s3.transferconfig import RuntimeConfig
+from awscli.customizations.s3.transferconfig import RuntimeConfig, InvalidConfigError
 from awscli.customizations.s3.syncstrategy.base import \
     SizeAndLastModifiedSync, NeverSync, MissingFileSync
 from awscli.testutils import mock, unittest, BaseAWSHelpOutputTest, \
@@ -78,6 +78,20 @@ class TestRbCommand(unittest.TestCase):
             self.parsed_args.path = 's3://mybucket/mykey'
             self.rb_command._run_main(self.parsed_args,
                                       parsed_globals=self.parsed_globals)
+
+
+class TestS3ConfigValidation(unittest.TestCase):
+    def setUp(self):
+        self.session = mock.Mock()
+        self.parsed_args = mock.Mock()
+        self.parsed_globals = mock.Mock()
+
+    def test_plain_string_s3_config_raises_invalid_config_error(self):
+        self.session.get_scoped_config.return_value = {'s3': ''}
+        cp_command = CpCommand(self.session)
+        with self.assertRaises(InvalidConfigError) as ctx:
+            cp_command._run_main(self.parsed_args, self.parsed_globals)
+        self.assertIn('nested section', str(ctx.exception))
 
 
 class TestLSCommand(unittest.TestCase):
@@ -752,6 +766,14 @@ class CommandParametersTest(unittest.TestCase):
         with self.assertRaises(ValueError) as cm:
             cmd_params.add_paths(paths)
             self.assertIn('Expected checksum-algorithm parameter to be used with one of following path formats', cm.msg)
+
+    def test_validate_checksum_algorithm_md5_upload(self):
+        paths = [self.file_creator.rootdir, 's3://bucket/key']
+        parameters = {'checksum_algorithm': 'MD5'}
+        cmd_params = CommandParameters('cp', parameters, '')
+        cmd_params.add_paths(paths)
+        self.assertEqual(cmd_params.parameters['checksum_algorithm'], 'MD5')
+
 
     def test_validate_checksum_algorithm_sync_download_error(self):
         paths = ['s3://bucket/key', self.file_creator.rootdir]

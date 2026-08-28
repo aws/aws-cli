@@ -16,35 +16,35 @@ from botocore.compat import OrderedDict
 
 
 class SafeOrderedLoader(yaml.SafeLoader):
-    """ Safely load a yaml file into an OrderedDict."""
+    """Safely load a yaml file into an OrderedDict."""
 
 
 class SafeOrderedDumper(yaml.SafeDumper):
-    """ Safely dump an OrderedDict as yaml."""
+    """Safely dump an OrderedDict as yaml."""
 
 
 def _ordered_constructor(loader, node):
-        loader.flatten_mapping(node)
-        return OrderedDict(loader.construct_pairs(node))
+    loader.flatten_mapping(node)
+    return OrderedDict(loader.construct_pairs(node))
 
 
 SafeOrderedLoader.add_constructor(
-                    yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG,
-                    _ordered_constructor)
+    yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG, _ordered_constructor
+)
 
 
 def _ordered_representer(dumper, data):
-        return dumper.represent_mapping(
-            yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG,
-            data.items())
+    return dumper.represent_mapping(
+        yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG, data.items()
+    )
 
 
 SafeOrderedDumper.add_representer(OrderedDict, _ordered_representer)
 
 
 def ordered_yaml_load(stream):
-    """ Load an OrderedDict object from a yaml stream."""
-    return yaml.load(stream, SafeOrderedLoader)
+    """Load an OrderedDict object from a yaml stream."""
+    return yaml.safe_load(stream, SafeOrderedLoader)
 
 
 def ordered_yaml_dump(to_dump, stream=None):
@@ -58,5 +58,4 @@ def ordered_yaml_dump(to_dump, stream=None):
     If not given or if None, only return the value
     :type stream: file
     """
-    return yaml.dump(to_dump, stream,
-                     SafeOrderedDumper, default_flow_style=False)
+    return yaml.dump(to_dump, stream, SafeOrderedDumper, default_flow_style=False)

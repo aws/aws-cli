@@ -208,20 +208,16 @@ class CreateDefaultRoles(Command):
     def _construct_result(self, ec2_response, ec2_policy,
                           emr_response, emr_policy,
                           emr_autoscaling_response, emr_autoscaling_policy):
-        result = []
-        self._construct_role_and_role_policy_structure(
-            result, ec2_response, ec2_policy)
-        self._construct_role_and_role_policy_structure(
-            result, emr_response, emr_policy)
-        self._construct_role_and_role_policy_structure(
-            result, emr_autoscaling_response, emr_autoscaling_policy)
-        return result
-
-    def _construct_role_and_role_policy_structure(
-            self, list, response, policy):
-        if response is not None and response['Role'] is not None:
-            list.append({'Role': response['Role'], 'RolePolicy': policy})
-            return list
+        responses_and_policies = (
+            (ec2_response, ec2_policy),
+            (emr_response, emr_policy),
+            (emr_autoscaling_response, emr_autoscaling_policy),
+        )
+        return [
+            {'Role': response['Role'], 'RolePolicy': policy}
+            for response, policy in responses_and_policies
+            if response is not None and response['Role'] is not None
+        ]
 
     def check_if_role_exists(self, role_name, parsed_globals):
         parameters = {'RoleName': role_name}

@@ -2,6 +2,19 @@
 CHANGELOG
 =========
 
+2.36.34
+=======
+
+* api-change:``healthlake``: New HealthLake API, RestoreFHIRDatastore, providing the capability to restore active datastores to a point in time within the last 30 days or recover a deleted datastore from the delete snapshot.
+* api-change:``cognito-idp``: Adds two new operations - GetClientToken which allows M2M auth through the SDK, and DescribeTermsByClient to find which Terms are associated with a user-pool client without knowing the Terms resource id.
+* api-change:``partnercentral-selling``: Releasing PARC, new APN Program that lets sellers add solftware revenue details to aws opportunity summary
+* api-change:``bedrock-agent``: Adds an optional syncSchedule field to CreateDataSource and UpdateDataSource for Managed Knowledge Bases data source connectors, so a data source can sync automatically on a daily, weekly, or monthly schedule.
+* api-change:``ecs``: Amazon Elastic Container Service - This release adds support for early success criteria on ECS rolling deployments, letting deployment complete once a configurable percentage of tasks are healthy, with configurable BLOCKING (required) or DEFERRED (asynchronous) cleanup of previous service revisions.
+* api-change:``bedrock-agentcore``: AgentCore Memory now supports direct ingestion into long-term memory via IngestData API
+* bugfix:HTTP: Fixed an issue where reused connections could return a cached response status, dropping response headers.
+* enhancement:``ec2``: Updated AWS CLI v2 API reference for EC2 create-volume command so that the examples include ``AvailabilityZoneId`` in the output.
+
+
 2.36.33
 =======
 

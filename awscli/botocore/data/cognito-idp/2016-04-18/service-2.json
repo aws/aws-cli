@@ -1374,6 +1374,24 @@
       ],
       "documentation":"<p>Returns details for the requested terms documents ID. For more information, see <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pools-managed-login.html#managed-login-terms-documents\">Terms documents</a>.</p> <note> <p>Amazon Cognito evaluates Identity and Access Management (IAM) policies in requests for this API operation. For this operation, you must use IAM credentials to authorize requests, and you must grant yourself the corresponding IAM permission in a policy.</p> <p class=\"title\"> <b>Learn more</b> </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_aws-signing.html\">Signing Amazon Web Services API Requests</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/user-pools-API-operations.html\">Using the Amazon Cognito user pools API and user pool endpoints</a> </p> </li> </ul> </note>"
     },
+    "DescribeTermsByClient":{
+      "name":"DescribeTermsByClient",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeTermsByClientRequest"},
+      "output":{"shape":"DescribeTermsByClientResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"NotAuthorizedException"},
+        {"shape":"OperationNotEnabledException"},
+        {"shape":"InternalErrorException"}
+      ],
+      "documentation":"<p>Returns details for the terms documents that are associated with an app client, identified by the app client ID, user pool ID, and terms name. For more information, see <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pools-managed-login.html#managed-login-terms-documents\">Terms documents</a>.</p> <p>To call <code>DescribeTermsByClient</code>, you must have the <code>cognito-idp:DescribeTermsByClient</code> Identity and Access Management (IAM) permission. This operation additionally validates your permission for <code>cognito-idp:DescribeTerms</code>, the action for . As a result, an IAM policy that denies <code>cognito-idp:DescribeTerms</code> also denies requests to <code>DescribeTermsByClient</code>.</p> <note> <p>Amazon Cognito evaluates Identity and Access Management (IAM) policies in requests for this API operation. For this operation, you must use IAM credentials to authorize requests, and you must grant yourself the corresponding IAM permission in a policy.</p> <p class=\"title\"> <b>Learn more</b> </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_aws-signing.html\">Signing Amazon Web Services API Requests</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/user-pools-API-operations.html\">Using the Amazon Cognito user pools API and user pool endpoints</a> </p> </li> </ul> </note>"
+    },
     "DescribeUserImportJob":{
       "name":"DescribeUserImportJob",
       "http":{
@@ -1517,6 +1535,25 @@
         {"shape":"InternalErrorException"}
       ],
       "documentation":"<p>Given a user pool ID, generates a comma-separated value (CSV) list populated with available user attributes in the user pool. This list is the header for the CSV file that determines the users in a user import job. Save the content of <code>CSVHeader</code> in the response as a <code>.csv</code> file and populate it with the usernames and attributes of users that you want to import. For more information about CSV user import, see <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pools-using-import-tool.html\">Importing users from a CSV file</a>.</p> <note> <p>Amazon Cognito evaluates Identity and Access Management (IAM) policies in requests for this API operation. For this operation, you must use IAM credentials to authorize requests, and you must grant yourself the corresponding IAM permission in a policy.</p> <p class=\"title\"> <b>Learn more</b> </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_aws-signing.html\">Signing Amazon Web Services API Requests</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/user-pools-API-operations.html\">Using the Amazon Cognito user pools API and user pool endpoints</a> </p> </li> </ul> </note>"
+    },
+    "GetClientToken":{
+      "name":"GetClientToken",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetClientTokenRequest"},
+      "output":{"shape":"GetClientTokenResponse"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"NotAuthorizedException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"InternalErrorException"},
+        {"shape":"OperationNotEnabledException"},
+        {"shape":"ForbiddenException"}
+      ],
+      "documentation":"<p>Issues an access token for machine-to-machine (M2M) authorization. Your app client provides its client ID and secret, and receives an access token that authorizes requests to your resource servers. <code>GetClientToken</code> provides the same functionality as the OAuth2 client-credentials grant; both authorize an application rather than a user.</p> <p>To use this operation, you must configure the app client with a client secret and enable the <code>ALLOW_CLIENT_TOKEN_AUTH</code> authentication flow. The <code>ALLOW_CLIENT_TOKEN_AUTH</code> flow is mutually exclusive with user authentication flows. It must be the only authentication flow that you configure for the app client. For more information, see <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pools-define-resource-servers.html\">Scopes, M2M, and resource servers</a>.</p> <note> <p>Amazon Cognito doesn't evaluate Identity and Access Management (IAM) policies in requests for this API operation. For this operation, you can't use IAM credentials to authorize requests, and you can't grant IAM permissions in policies. For more information about authorization models in Amazon Cognito, see <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/user-pools-API-operations.html\">Using the Amazon Cognito user pools API and user pool endpoints</a>.</p> </note>"
     },
     "GetDevice":{
       "name":"GetDevice",
@@ -4335,6 +4372,24 @@
       "members":{},
       "documentation":"<p>The response from the server to the change password request.</p>"
     },
+    "ClientAuthenticationResultType":{
+      "type":"structure",
+      "members":{
+        "AccessToken":{
+          "shape":"TokenModelType",
+          "documentation":"<p>The access token for the requested app client. Present this token to a resource server to authorize a request, using the scopes granted in the token.</p>"
+        },
+        "ExpiresIn":{
+          "shape":"IntegerType",
+          "documentation":"<p>The number of seconds until the access token expires.</p>"
+        },
+        "TokenType":{
+          "shape":"StringType",
+          "documentation":"<p>The type of the token. For example, <code>Bearer</code>.</p>"
+        }
+      },
+      "documentation":"<p>The access token and its metadata from a machine-to-machine (M2M) client credentials grant.</p>"
+    },
     "ClientIdType":{
       "type":"string",
       "max":128,
@@ -5747,6 +5802,37 @@
         }
       }
     },
+    "DescribeTermsByClientRequest":{
+      "type":"structure",
+      "required":[
+        "ClientId",
+        "UserPoolId",
+        "TermsName"
+      ],
+      "members":{
+        "ClientId":{
+          "shape":"ClientIdType",
+          "documentation":"<p>The ID of the app client that the terms documents are associated with.</p>"
+        },
+        "UserPoolId":{
+          "shape":"UserPoolIdType",
+          "documentation":"<p>The ID of the user pool that contains the terms documents that you want to describe.</p>"
+        },
+        "TermsName":{
+          "shape":"TermsNameType",
+          "documentation":"<p>The name of the terms documents that you want to describe.</p>"
+        }
+      }
+    },
+    "DescribeTermsByClientResponse":{
+      "type":"structure",
+      "members":{
+        "Terms":{
+          "shape":"TermsType",
+          "documentation":"<p>A summary of the requested terms documents. Includes a unique identifier for later changes to the terms documents.</p>"
+        }
+      }
+    },
     "DescribeTermsRequest":{
       "type":"structure",
       "required":[
@@ -6494,6 +6580,40 @@
         }
       },
       "documentation":"<p>Represents the response from the server to the request to get the header information of the CSV file for the user import job.</p>"
+    },
+    "GetClientTokenRequest":{
+      "type":"structure",
+      "required":[
+        "ClientId",
+        "Secret"
+      ],
+      "members":{
+        "ClientId":{
+          "shape":"ClientIdType",
+          "documentation":"<p>The ID of the app client that requests the access token. The app client must have a client secret and the <code>ALLOW_CLIENT_TOKEN_AUTH</code> authentication flow.</p>"
+        },
+        "Secret":{
+          "shape":"ClientSecretType",
+          "documentation":"<p>An active secret for the app client.</p>"
+        },
+        "Scopes":{
+          "shape":"ScopeListType",
+          "documentation":"<p>The custom scopes to authorize in the access token, in the format <code>resource-server-identifier/scope-name</code>. Each scope must belong to a resource server in your user pool. If you don't specify any scopes, Amazon Cognito authorizes the scopes that are configured for the app client.</p>"
+        },
+        "ClientMetadata":{
+          "shape":"ClientMetadataType",
+          "documentation":"<p>A map of custom key-value pairs that you can provide as input for any custom workflows that this action triggers. You create custom workflows by assigning Lambda functions to user pool triggers.</p> <p>When Amazon Cognito invokes any of these functions, it passes a JSON payload, which the function receives as input. This payload contains a <code>clientMetadata</code> attribute that provides the data that you assigned to the ClientMetadata parameter in your request. In your function code, you can process the <code>clientMetadata</code> value to enhance your workflow for your specific needs.</p> <p>To review the Lambda trigger types that Amazon Cognito invokes at runtime with API requests, see <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pools-working-with-lambda-triggers.html#lambda-triggers-by-event\"> Connecting API actions to Lambda triggers</a> in the <i>Amazon Cognito Developer Guide</i>.</p> <note> <p>When you use the <code>ClientMetadata</code> parameter, note that Amazon Cognito won't do the following:</p> <ul> <li> <p>Store the <code>ClientMetadata</code> value. This data is available only to Lambda triggers that are assigned to a user pool to support custom workflows. If your user pool configuration doesn't include triggers, the <code>ClientMetadata</code> parameter serves no purpose.</p> </li> <li> <p>Validate the <code>ClientMetadata</code> value.</p> </li> <li> <p>Encrypt the <code>ClientMetadata</code> value. Don't send sensitive information in this parameter.</p> </li> </ul> </note>"
+        }
+      }
+    },
+    "GetClientTokenResponse":{
+      "type":"structure",
+      "members":{
+        "ClientAuthenticationResult":{
+          "shape":"ClientAuthenticationResultType",
+          "documentation":"<p>The access token that Amazon Cognito issues for the app client, and its metadata.</p>"
+        }
+      }
     },
     "GetDeviceRequest":{
       "type":"structure",

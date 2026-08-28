@@ -1284,7 +1284,8 @@
         "WWPSPDM",
         "PDM",
         "PSM",
-        "ISVSM"
+        "ISVSM",
+        "Signatory"
       ]
     },
     "AwsOpportunityCustomer":{
@@ -1460,6 +1461,10 @@
         "CosellMotion":{
           "shape":"String",
           "documentation":"<p>Engagement classification for this opportunity. Read-only. Null before scoring. Known values: <code>AWS Field-engaged</code>, <code>Agent-engaged</code>, <code>Partner-led</code>.</p>"
+        },
+        "SoftwareRevenue":{
+          "shape":"AwsSoftwareRevenue",
+          "documentation":"<p>Seller-provided PARC deal terms: commitment value, discount, and contract dates.</p>"
         }
       },
       "documentation":"<p>Provides a comprehensive view of AwsOpportunitySummaryFullView template.</p>"
@@ -1608,6 +1613,25 @@
       },
       "documentation":"<p>Source-separated spend insights that provide independent analysis for AWS recommendations and partner estimates.</p>"
     },
+    "AwsSoftwareRevenue":{
+      "type":"structure",
+      "members":{
+        "Value":{"shape":"MonetaryValue"},
+        "Discount":{
+          "shape":"String",
+          "documentation":"<p>Discount percentage offered on the software revenue. Percent convention: 15.00 means 15%.</p>"
+        },
+        "EffectiveDate":{
+          "shape":"String",
+          "documentation":"<p>Contract effective (start) date in YYYY-MM-DD format.</p>"
+        },
+        "ExpirationDate":{
+          "shape":"String",
+          "documentation":"<p>Contract expiration (end) date in YYYY-MM-DD format.</p>"
+        }
+      },
+      "documentation":"<p>Seller-provided PARC deal terms for the opportunity, including commitment value, discount percentage, and contract dates.</p>"
+    },
     "AwsSubmission":{
       "type":"structure",
       "required":["InvolvementType"],
@@ -1657,6 +1681,7 @@
     },
     "CatalogIdentifier":{
       "type":"string",
+      "documentation":"<p>Value space is validated at runtime against an allowlist, so the model keeps only a coarse character-class pattern.</p>",
       "pattern":"[a-zA-Z]+"
     },
     "Channel":{
@@ -3309,6 +3334,10 @@
           "shape":"String",
           "documentation":"<p>Engagement classification for this opportunity. Read-only. Null before scoring. Known values: <code>AWS Field-engaged</code>, <code>Agent-engaged</code>, <code>Partner-led</code>.</p>"
         },
+        "SoftwareRevenue":{
+          "shape":"AwsSoftwareRevenue",
+          "documentation":"<p>Seller-provided PARC deal terms: commitment value, discount, and contract dates.</p>"
+        },
         "Catalog":{
           "shape":"CatalogIdentifier",
           "documentation":"<p>Specifies the catalog in which the AWS Opportunity exists. This is the environment (e.g., <code>AWS</code> or <code>Sandbox</code>) where the opportunity is being managed.</p>"
@@ -4218,7 +4247,7 @@
     "LeadJobTitle":{
       "type":"string",
       "max":255,
-      "min":0,
+      "min":1,
       "sensitive":true
     },
     "LeadMarketSegment":{

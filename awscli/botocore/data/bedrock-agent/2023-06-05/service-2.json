@@ -3864,6 +3864,11 @@
       },
       "documentation":"<p>Details about a cyclic connection detected in the flow.</p>"
     },
+    "DailySchedule":{
+      "type":"structure",
+      "members":{},
+      "documentation":"<p>A daily sync. The run time is system-chosen (off-peak) and not configurable.</p>"
+    },
     "Data":{
       "type":"string",
       "max":5242880,
@@ -4043,6 +4048,41 @@
     "DateTimestamp":{
       "type":"timestamp",
       "timestampFormat":"iso8601"
+    },
+    "DayOfMonth":{
+      "type":"structure",
+      "members":{
+        "dayNumber":{
+          "shape":"DayOfMonthNumber",
+          "documentation":"<p>A specific day of the month, from 1 to 28. Values are capped at 28, so a monthly sync runs in every month, including February.</p>"
+        },
+        "lastDayOfMonth":{
+          "shape":"LastDayOfMonth",
+          "documentation":"<p>Set this option to run the monthly sync on the last calendar day of each month.</p>"
+        }
+      },
+      "documentation":"<p>The day of the month on which a monthly sync runs. Specify exactly one of <code>dayNumber</code> or <code>lastDayOfMonth</code>.</p>",
+      "union":true
+    },
+    "DayOfMonthNumber":{
+      "type":"integer",
+      "documentation":"<p>A specific day of the month, from 1 to 28.</p>",
+      "box":true,
+      "max":28,
+      "min":1
+    },
+    "DayOfWeek":{
+      "type":"string",
+      "documentation":"<p>The day of the week on which a weekly sync runs. Valid values are the standard English day names, for example, MONDAY or TUESDAY.</p>",
+      "enum":[
+        "SUNDAY",
+        "MONDAY",
+        "TUESDAY",
+        "WEDNESDAY",
+        "THURSDAY",
+        "FRIDAY",
+        "SATURDAY"
+      ]
     },
     "DeleteAgentActionGroupRequest":{
       "type":"structure",
@@ -7392,6 +7432,11 @@
       },
       "documentation":"<p>Contains configurations for a Lambda function node in the flow. You specify the Lambda function to invoke and the inputs into the function. The output is the response that is defined in the Lambda function. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/flows-nodes.html\">Node types in a flow</a> in the Amazon Bedrock User Guide.</p>"
     },
+    "LastDayOfMonth":{
+      "type":"structure",
+      "members":{},
+      "documentation":"<p>The option to run the monthly sync on the last calendar day of each month.</p>"
+    },
     "LexFlowNodeConfiguration":{
       "type":"structure",
       "required":[
@@ -8087,6 +8132,10 @@
         "connectorParameters":{
           "shape":"Document",
           "documentation":"<p>Connector-specific parameters. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/kb-managed-connect-ds.html\">Connect a data source</a>.</p>"
+        },
+        "syncSchedule":{
+          "shape":"SyncSchedule",
+          "documentation":"<p>The recurring schedule on which the connector automatically syncs this data source. If not specified, the data source is not synced automatically and you start each sync yourself. Not supported for the Custom connector.</p>"
         }
       },
       "documentation":"<p>Configuration for managed knowledge base connector data sources.</p>"
@@ -8509,6 +8558,17 @@
       "max":2048,
       "min":0,
       "pattern":".*"
+    },
+    "MonthlySchedule":{
+      "type":"structure",
+      "required":["dayOfMonth"],
+      "members":{
+        "dayOfMonth":{
+          "shape":"DayOfMonth",
+          "documentation":"<p>The day of the month on which the monthly sync runs.</p>"
+        }
+      },
+      "documentation":"<p>A monthly sync on a specified day of the month.</p>"
     },
     "MultipleLoopControllerNodesFlowValidationDetails":{
       "type":"structure",
@@ -10650,6 +10710,25 @@
       "type":"string",
       "enum":["Python_3"]
     },
+    "SyncSchedule":{
+      "type":"structure",
+      "members":{
+        "daily":{
+          "shape":"DailySchedule",
+          "documentation":"<p>A daily sync that runs once a day at a system-chosen off-peak time. The run time is not configurable.</p>"
+        },
+        "weekly":{
+          "shape":"WeeklySchedule",
+          "documentation":"<p>A weekly sync that runs once a week on the specified day of the week.</p>"
+        },
+        "monthly":{
+          "shape":"MonthlySchedule",
+          "documentation":"<p>A monthly sync that runs once a month on the specified day of the month.</p>"
+        }
+      },
+      "documentation":"<p>The recurring schedule on which a managed knowledge base connector automatically syncs its data source. Specify exactly one of <code>daily</code>, <code>weekly</code>, or <code>monthly</code>.</p>",
+      "union":true
+    },
     "SystemContentBlock":{
       "type":"structure",
       "members":{
@@ -12110,6 +12189,17 @@
         }
       },
       "documentation":"<p>The configuration of the URL/URLs for the web content that you want to crawl. You should be authorized to crawl the URLs.</p>"
+    },
+    "WeeklySchedule":{
+      "type":"structure",
+      "required":["dayOfWeek"],
+      "members":{
+        "dayOfWeek":{
+          "shape":"DayOfWeek",
+          "documentation":"<p>The day of the week on which the weekly sync runs.</p>"
+        }
+      },
+      "documentation":"<p>A weekly sync on a specified day of the week.</p>"
     },
     "WorkgroupArn":{
       "type":"string",

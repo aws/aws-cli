@@ -690,6 +690,26 @@
       ],
       "documentation":"<p>Obtains a workload access token for agentic workloads acting on behalf of a user, using the user's ID.</p>"
     },
+    "IngestData":{
+      "name":"IngestData",
+      "http":{
+        "method":"POST",
+        "requestUri":"/memories/{memoryId}/ingest",
+        "responseCode":202
+      },
+      "input":{"shape":"IngestDataInput"},
+      "output":{"shape":"IngestDataOutput"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ThrottledException"},
+        {"shape":"ServiceException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Submits content directly for ingestion to generate long-term memory records in a AgentCore Memory resource.</p> <p>To use this operation, you must have the <code>bedrock-agentcore:IngestData</code> permission.</p>",
+      "idempotent":true
+    },
     "InvokeAgentRuntime":{
       "name":"InvokeAgentRuntime",
       "http":{
@@ -2768,6 +2788,17 @@
         }
       },
       "documentation":"<p>An event that contains incremental output from a command execution. This event streams standard output and standard error content as it becomes available during command execution.</p>"
+    },
+    "ContentSource":{
+      "type":"structure",
+      "members":{
+        "inline":{
+          "shape":"InlineMemoryContent",
+          "documentation":"<p>The content included directly in the request.</p>"
+        }
+      },
+      "documentation":"<p>The source of the content to ingest. Only inline content is supported.</p>",
+      "union":true
     },
     "ContentStartEvent":{
       "type":"structure",
@@ -6492,6 +6523,83 @@
       "max":100,
       "min":0
     },
+    "IngestDataInput":{
+      "type":"structure",
+      "required":[
+        "memoryId",
+        "source",
+        "contentTimestamp",
+        "actorId"
+      ],
+      "members":{
+        "memoryId":{
+          "shape":"MemoryId",
+          "documentation":"<p>The identifier of the AgentCore Memory resource to ingest content into.</p>",
+          "location":"uri",
+          "locationName":"memoryId"
+        },
+        "source":{
+          "shape":"ContentSource",
+          "documentation":"<p>The content to ingest. Only inline content is supported.</p>"
+        },
+        "contentTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp of when the content occurred.</p>"
+        },
+        "actorId":{
+          "shape":"ActorId",
+          "documentation":"<p>The identifier of the actor associated with this content. An actor represents an entity that participates in sessions and generates content.</p>"
+        },
+        "sessionId":{
+          "shape":"SessionId",
+          "documentation":"<p>The identifier of the session that the content belongs to. If not provided, a session identifier is generated and returned in the response.</p>"
+        },
+        "extractionConfig":{
+          "shape":"ExtractionConfig",
+          "documentation":"<p>The extraction configuration for long-term memory records. Use this parameter to specify namespace variable keys and their values for namespace substitution during extraction.</p>"
+        },
+        "metadata":{
+          "shape":"MetadataMap",
+          "documentation":"<p>The key-value metadata to attach to the content.</p>"
+        },
+        "clientToken":{
+          "shape":"String",
+          "documentation":"<p>A unique, case-sensitive identifier to ensure that the operation completes no more than one time. If this token matches a previous request, AgentCore ignores the request, but does not return an error.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "IngestDataOutput":{
+      "type":"structure",
+      "required":["sessionId"],
+      "members":{
+        "sessionId":{
+          "shape":"SessionId",
+          "documentation":"<p>The identifier of the session that the service ingested the content into. This value echoes the session identifier from the request, or the identifier that the service generated when you did not provide one.</p>"
+        }
+      }
+    },
+    "IngestPayloadList":{
+      "type":"list",
+      "member":{"shape":"IngestPayloadType"},
+      "max":100,
+      "min":1
+    },
+    "IngestPayloadType":{
+      "type":"structure",
+      "members":{
+        "conversational":{
+          "shape":"Conversational",
+          "documentation":"<p>The conversational content for this payload item.</p>"
+        },
+        "json":{
+          "shape":"MemoryJsonData",
+          "documentation":"<p>The JSON content for this payload item.</p>"
+        }
+      },
+      "documentation":"<p>A single content payload item to ingest. A payload item contains either conversational or JSON content.</p>",
+      "union":true
+    },
     "InlineContent":{
       "type":"string",
       "max":409600,
@@ -6519,6 +6627,17 @@
       "type":"list",
       "member":{"shape":"GroundTruthTurn"},
       "min":1
+    },
+    "InlineMemoryContent":{
+      "type":"structure",
+      "required":["payload"],
+      "members":{
+        "payload":{
+          "shape":"IngestPayloadList",
+          "documentation":"<p>The list of content payload items to ingest.</p>"
+        }
+      },
+      "documentation":"<p>The content included directly in the request as one or more payload items.</p>"
     },
     "InputContentBlock":{
       "type":"structure",

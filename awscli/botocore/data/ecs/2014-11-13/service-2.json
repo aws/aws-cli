@@ -4502,6 +4502,10 @@
         "canaryConfiguration":{
           "shape":"CanaryConfiguration",
           "documentation":"<p>Configuration for canary deployment strategy. Only valid when the deployment strategy is <code>CANARY</code>. This configuration enables shifting a fixed percentage of traffic for testing, followed by shifting the remaining traffic after a bake period.</p>"
+        },
+        "earlySuccessCriteria":{
+          "shape":"DeploymentEarlySuccessCriteria",
+          "documentation":"<p>The early success criteria configuration for a rolling deployment. With early success criteria, you can configure an Amazon ECS deployment to complete faster. Amazon ECS declares a deployment successful once a target percentage of tasks are healthy, instead of waiting for the service to fully stabilize.</p>"
         }
       },
       "documentation":"<p>Optional deployment parameters that control how many tasks run during a deployment and the ordering of stopping and starting tasks.</p>"
@@ -4524,6 +4528,25 @@
         "CODE_DEPLOY",
         "EXTERNAL"
       ]
+    },
+    "DeploymentEarlySuccessCriteria":{
+      "type":"structure",
+      "required":["enable"],
+      "members":{
+        "enable":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether to use the early success criteria for the service deployment. When set to <code>false</code>, the deployment uses the default behavior, where Amazon ECS considers the deployment successful when the target service revision fully stabilizes and the previous tasks are removed. The default value is <code>false</code>.</p> <p>When set to <code>true</code>, Amazon ECS monitors the deployment to meet early success criteria. You must also specify <code>healthyPercent</code> and <code>sourceServiceRevisionCleanup</code>.</p>"
+        },
+        "healthyPercent":{
+          "shape":"HealthyPercentInteger",
+          "documentation":"<p>The percentage of healthy tasks that the target service revision must reach before Amazon ECS considers the deployment successful. This percentage is relative to the service's <code>desiredCount</code> and must be an integer between <code>0</code> and <code>100</code>. This value must be greater than or equal to the <code>minimumHealthyPercent</code> value.</p> <p>After this percentage of tasks is healthy and the bake time elapses, Amazon ECS completes the deployment. Amazon ECS continues to scale the target service revision to 100 percent in the background.</p>"
+        },
+        "sourceServiceRevisionCleanup":{
+          "shape":"ServiceRevisionCleanup",
+          "documentation":"<p>The time when Amazon ECS removes the source revisions' tasks relative to deployment completion. The valid values are:</p> <ul> <li> <p> <code>BLOCKING</code>—Amazon ECS removes the previous tasks before it marks the deployment as successful.</p> </li> <li> <p> <code>DEFERRED</code>—Amazon ECS marks the deployment successful, and then removes the previous tasks in the background.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p><note> <p>You can use early success criteria only with rolling deployment strategy.</p> </note> <p>The configuration that determines when a rolling update deployment is considered successful. Early success criteria defines the percentage of tasks that must be healthy before a deployment completes. It also controls whether Amazon ECS must remove the previous tasks before a deployment completes.</p></p>"
     },
     "DeploymentEphemeralStorage":{
       "type":"structure",
@@ -5910,6 +5933,12 @@
         "UNHEALTHY",
         "UNKNOWN"
       ]
+    },
+    "HealthyPercentInteger":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":0
     },
     "HookDetails":{
       "type":"structure",
@@ -8040,7 +8069,7 @@
         },
         "protocol":{
           "shape":"TransportProtocol",
-          "documentation":"<p>The protocol used for the port mapping. Valid values are <code>tcp</code> and <code>udp</code>. The default is <code>tcp</code>. <code>protocol</code> is immutable in a Service Connect service. Updating this field requires a service deletion and redeployment. </p>"
+          "documentation":"<p>The protocol that's used for the port mapping. Valid values are <code>tcp</code> and <code>udp</code> (case-sensitive). The default is <code>tcp</code>. Amazon ECS treats any other specified value as <code>tcp</code>. <code>protocol</code> is immutable in a Service Connect service. To update this field, you must delete and redeploy the service. </p>"
         },
         "name":{
           "shape":"String",
@@ -9604,6 +9633,14 @@
         }
       },
       "documentation":"<p>Information about the service revision.</p> <p>A service revision contains a record of the workload configuration Amazon ECS is attempting to deploy. Whenever you create or deploy a service, Amazon ECS automatically creates and captures the configuration that you're trying to deploy in the service revision. For information about service revisions, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/service-revision.html\">Amazon ECS service revisions</a> in the <i> <i>Amazon Elastic Container Service Developer Guide</i> </i>.</p>"
+    },
+    "ServiceRevisionCleanup":{
+      "type":"string",
+      "documentation":"<p>The time when Amazon ECS removes the source revisions' tasks relative to deployment completion. When set to <code>BLOCKING</code>, Amazon ECS removes the previous tasks before completing the deployment. When set to <code>DEFERRED</code>, Amazon ECS completes the deployment first and removes the previous tasks in the background.</p>",
+      "enum":[
+        "BLOCKING",
+        "DEFERRED"
+      ]
     },
     "ServiceRevisionLoadBalancer":{
       "type":"structure",

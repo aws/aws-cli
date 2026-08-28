@@ -88,7 +88,9 @@ def check_ssh_key_format(key_file):
         pass
 
 
-def check_command_key_format(key_file, accepted_file_format=[]):
+def check_command_key_format(key_file, accepted_file_format=None):
+    if accepted_file_format is None:
+        accepted_file_format = []
     if any(key_file.endswith(i) for i in accepted_file_format):
         return True
     else:

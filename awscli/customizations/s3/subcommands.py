@@ -43,22 +43,23 @@ LOGGER = logging.getLogger(__name__)
 
 
 RECURSIVE = {'name': 'recursive', 'action': 'store_true', 'dest': 'dir_op',
+             'aliases': ['r'],
              'help_text': (
                  "Command is performed on all files or objects "
                  "under the specified directory or prefix.")}
 
 
-HUMAN_READABLE = {'name': 'human-readable', 'action': 'store_true',
+HUMAN_READABLE = {'name': 'human-readable', 'action': 'store_true', 'aliases': ['H'],
                   'help_text': "Displays file sizes in human readable format."}
 
 
-SUMMARIZE = {'name': 'summarize', 'action': 'store_true',
+SUMMARIZE = {'name': 'summarize', 'action': 'store_true', 'aliases': ['s'],
              'help_text': (
                  "Displays summary information "
                  "(number of objects, total size).")}
 
 
-DRYRUN = {'name': 'dryrun', 'action': 'store_true',
+DRYRUN = {'name': 'dryrun', 'action': 'store_true', 'aliases': ['n'],
           'help_text': (
               "Displays the operations that would be performed using the "
               "specified command without actually running them.")}

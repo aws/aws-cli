@@ -97,6 +97,7 @@ class TestHelpOutput(BaseAWSHelpOutputTest):
         self.assert_contains('.. _cli:aws s3 ls:')
         self.assert_contains('List S3 objects')
         self.assert_contains('--summarize')
+        self.assert_contains('-H')
         self.assert_contains('--debug')
 
     def test_topic_list_help_output(self):

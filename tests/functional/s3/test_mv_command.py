@@ -69,6 +69,66 @@ class TestMvCommand(BaseS3TransferCommandTest):
         self.assertEqual(self.operations_called[1][1]['MetadataDirective'],
                          'REPLACE')
 
+    def test_recursive(self):
+        self._test_recursive(arg='--recursive')
+
+    def test_recursive_short_option(self):
+        self._test_recursive(arg='-r')
+
+    def _test_recursive(self, arg):
+        self.parsed_responses = [
+            self.list_objects_response(
+                ['foo/a/1.txt', 'foo/a/2.txt', 'foo/b/3.txt'],
+            ),
+            self.copy_object_response(),
+            self.copy_object_response(),
+            self.copy_object_response(),
+            self.delete_object_response(),
+            self.delete_object_response(),
+            self.delete_object_response(),
+        ]
+        cmdline = (
+            f'{self.prefix} s3://bucket/foo/ s3://bucket/bar/ {arg}'
+        )
+        self.run_cmd(cmdline, expected_rc=0)
+
+        self.assertEqual(len(self.operations_called), 7,
+                         self.operations_called)
+
+        self.assertEqual(self.operations_called[0][0].name, 'ListObjectsV2')
+        self.assertEqual(self.operations_called[0][1]['Prefix'], 'foo/')
+
+        copy_indexes = [
+            i
+            for i, o in enumerate(self.operations_called)
+            if o[0].name == 'CopyObject'
+        ]
+        delete_indexes = [
+            i
+            for i, o in enumerate(self.operations_called)
+            if o[0].name == 'DeleteObject'
+        ]
+
+        self.assertEqual(len(copy_indexes), 3)
+        self.assertEqual(len(delete_indexes), 3)
+        self.assertEqual({*copy_indexes, *delete_indexes}, {1, 2, 3, 4, 5, 6})
+
+        self.assertEqual(
+            {
+                (
+                    self.operations_called[idx][1]['CopySource']['Key'],
+                    self.operations_called[idx][1]['Key'],
+                    self.operations_called[delete_indexes[i]][1]['Key'],
+                )
+                for i, idx in enumerate(copy_indexes)
+            },
+            {
+                ('foo/a/1.txt', 'bar/a/1.txt', 'foo/a/1.txt'),
+                ('foo/a/2.txt', 'bar/a/2.txt', 'foo/a/2.txt'),
+                ('foo/b/3.txt', 'bar/b/3.txt', 'foo/b/3.txt'),
+            },
+        )  # set-equal doesn't care about order
+
     def test_no_metadata_directive_for_non_copy(self):
         full_path = self.files.create_file('foo.txt', 'mycontent')
         cmdline = '%s %s s3://bucket --metadata-directive REPLACE' % \

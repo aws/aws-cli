@@ -54,8 +54,8 @@ def enhance_error_msg(parsed, **kwargs):
 
 
 def _is_sigv4_error_message(parsed):
-    return ('Please use AWS4-HMAC-SHA256' in
-            parsed.get('Error', {}).get('Message', ''))
+    message = parsed.get('Error', {}).get('Message', '') or ''
+    return ('Please use AWS4-HMAC-SHA256' in message)
 
 
 def _is_permanent_redirect_message(parsed):
@@ -63,5 +63,5 @@ def _is_permanent_redirect_message(parsed):
 
 
 def _is_kms_sigv4_error_message(parsed):
-    return ('AWS KMS managed keys require AWS Signature Version 4' in
-            parsed.get('Error', {}).get('Message', ''))
+    message = parsed.get('Error', {}).get('Message', '') or ''
+    return ('AWS KMS managed keys require AWS Signature Version 4' in message)

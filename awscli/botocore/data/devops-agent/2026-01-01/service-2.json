@@ -7871,6 +7871,21 @@
       "min":1,
       "pattern":"(\\*|[a-z]{2,4}(-[a-z]+)+-\\d+)"
     },
+    "SlackBidirectionalConfiguration":{
+      "type":"structure",
+      "required":["roleArn"],
+      "members":{
+        "roleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>IAM role ARN that AWS DevOps Agent assumes to exchange messages with your Slack workspace on behalf of this association.</p>"
+        },
+        "enabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether bidirectional communication is enabled for this association. When you set this value to true, you can mention the agent in a configured Slack channel and it responds in that channel. When you omit this value or set it to false, the agent ignores mentions and only sends notifications.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for bidirectional Slack communication.</p>"
+    },
     "SlackChannel":{
       "type":"structure",
       "required":["channelId"],
@@ -7911,6 +7926,10 @@
         "transmissionTarget":{
           "shape":"SlackTransmissionTarget",
           "documentation":"<p>Transmission targets for agent notifications</p>"
+        },
+        "bidirectional":{
+          "shape":"SlackBidirectionalConfiguration",
+          "documentation":"<p>Optional bidirectional communication configuration. Supply this configuration and set enabled to true so you can interact with the agent directly from Slack.</p>"
         }
       },
       "documentation":"<p>Configuration for Slack workspace integration.</p>"

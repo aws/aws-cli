@@ -3103,6 +3103,23 @@
       ],
       "documentation":"<p>Retrieves contact metric data for a specified contact.</p> <p> <b>Use cases</b> </p> <p>Following are common use cases for position in queue and estimated wait time:</p> <ul> <li> <p>Customer-Facing Wait Time Announcements - Display or announce the estimated wait time and position in queue to customers before or during their queue experience. </p> </li> <li> <p>Callback Offerings - Offer customers a callback option when the estimated wait time or position in queue exceeds a defined threshold. </p> </li> <li> <p>Queue Routing Decisions - Route incoming contacts to less congested queues by comparing estimated wait time and position in queue across multiple queues. </p> </li> <li> <p>Self-Service Deflection - Redirect customers to self-service options like chatbots or FAQs when estimated wait time is high or position in queue is unfavorable. </p> </li> </ul> <p> <b>Important things to know</b> </p> <ul> <li> <p>Metrics are only available while the contact is actively in queue.</p> </li> <li> <p>For more information, see the <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html\">Position in queue</a> metric in the <i>Connect Customer Administrator Guide</i>. </p> </li> </ul> <p> <b>Endpoints</b>: See <a href=\"https://docs.aws.amazon.com/general/latest/gr/connect_region.html\">Connect Customer endpoints and quotas</a>.</p>"
     },
+    "GetCrossRegionRouting":{
+      "name":"GetCrossRegionRouting",
+      "http":{
+        "method":"GET",
+        "requestUri":"/cross-region-routing/{InstanceId}"
+      },
+      "input":{"shape":"GetCrossRegionRoutingRequest"},
+      "output":{"shape":"GetCrossRegionRoutingResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Retrieves the current cross-region routing configuration for an Amazon Connect Global Resiliency instance enabled for global routing. This operation returns whether cross-region routing is currently enabled or disabled (isolated) for the instance.</p> <note> <p>This operation is available only for Amazon Connect Global Resiliency instances enabled for global routing.</p> </note>"
+    },
     "GetCurrentMetricData":{
       "name":"GetCurrentMetricData",
       "http":{
@@ -6021,6 +6038,24 @@
       ],
       "documentation":"<p>Updates the task template association on an existing task contact. You can update the task template on a contact before assignment to support tasks that are created without a template (for example <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/connect-rules.html\">Rules</a> or <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/set-disconnect-flow.html\">disconnect flows</a>) or change the agent interaction form to represent the latest task data (for example an initial request that was submitted as a refund gets updated to an account cancellation and requires a new template).</p> <p>This operation can only be used with task contacts that are in progress and not connected to an agent. A task template can be updated a maximum of 5 times per contact.</p> <p>The task's references must be compatible with the fields of the target task template. If the target template has a required field, the task must have a corresponding reference with a matching name and compatible type. The following task template field types map to reference types:</p> <ul> <li> <p> <code>TEXT</code>, <code>TEXT_AREA</code>, <code>BOOLEAN</code>, and <code>SINGLE_SELECT</code> map to references of type <code>STRING</code>.</p> </li> <li> <p> <code>NUMBER</code> maps to references of type <code>NUMBER</code>.</p> </li> <li> <p> <code>DATE_TIME</code> maps to references of type <code>DATE</code>.</p> </li> <li> <p> <code>URL</code> maps to references of type <code>URL</code>.</p> </li> <li> <p> <code>EMAIL</code> maps to references of type <code>EMAIL</code>.</p> </li> </ul> <p>References corresponding to <code>TEXT</code> fields must be fewer than 512 characters. <code>TEXT_AREA</code> fields must be fewer than 4,096 characters. <code>BOOLEAN</code> fields must have a value of <code>true</code> or <code>false</code>.</p> <p>An <code>InvalidRequestException</code> occurs when <code>UpdateContactTaskTemplate</code> is called on a connected or terminated task, when it is called on non-task contacts, and when the task contact already uses the provided task template. A <code>PropertyValidationException</code> occurs when the task's references conflict with the task template's fields, for example if the task is missing a reference that matches a required field, or if the task has a reference that matches a required field's name but not its datatype.</p>"
     },
+    "UpdateCrossRegionRouting":{
+      "name":"UpdateCrossRegionRouting",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/cross-region-routing/{InstanceId}"
+      },
+      "input":{"shape":"UpdateCrossRegionRoutingRequest"},
+      "output":{"shape":"UpdateCrossRegionRoutingResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ResourceConflictException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceException"}
+      ],
+      "documentation":"<p>Updates the cross-region routing configuration for an Amazon Connect Global Resiliency instance enabled for global routing. When invoked with <code>IsolatedAll</code> set to <code>true</code>, this operation disables cross-region routing, meaning contacts originating in one Region will no longer be routed to agents in another Region.</p> <note> <p>This operation is available only for Amazon Connect Global Resiliency instances enabled for global routing. Reporting and contact search continue to operate globally after you use this operation.</p> </note>"
+    },
     "UpdateDataTableAttribute":{
       "name":"UpdateDataTableAttribute",
       "http":{
@@ -6950,6 +6985,24 @@
     }
   },
   "shapes":{
+    "ACGRInstanceArn":{
+      "type":"string",
+      "pattern":"^arn:([a-zA-Z0-9-]+):connect:[a-z]+-[a-z-]+-[0-9]+:[0-9]+:instance/[a-zA-Z0-9_-]+$"
+    },
+    "ACGRInstanceIdOrArn":{
+      "type":"string",
+      "max":250,
+      "min":1,
+      "pattern":"^(arn:([a-zA-Z0-9-]+):connect:[a-z]+-[a-z-]+-[0-9]+:[0-9]+:instance/)?[a-zA-Z0-9_-]+$"
+    },
+    "ACGRTrafficDistributionGroupArn":{
+      "type":"string",
+      "pattern":"^arn:([a-zA-Z0-9-]+):connect:[a-z]+-[a-z-]+-[0-9]+:[0-9]+:traffic-distribution-group/[a-zA-Z0-9_-]+$"
+    },
+    "ACGRTrafficDistributionGroupId":{
+      "type":"string",
+      "pattern":"^[a-zA-Z0-9_-]+$"
+    },
     "ARN":{"type":"string"},
     "AWSAccountId":{"type":"string"},
     "AccessDeniedException":{
@@ -7282,6 +7335,10 @@
         "VoiceEnhancementMode":{
           "shape":"VoiceEnhancementMode",
           "documentation":"<p>The voice enhancement mode used by the agent as the call is ending. Valid values: VOICE_ISOLATION | NOISE_SUPPRESSION | NONE. A value of null indicates this mode has not yet been set for this user.</p>"
+        },
+        "ActiveRegion":{
+          "shape":"ActiveRegion",
+          "documentation":"<p>The Region where the agent was active when they handled the contact. For Amazon Connect Global Resiliency instances enabled for global routing, this indicates the Region in which the agent's session was established at the time of the contact.</p>"
         }
       },
       "documentation":"<p>Information about the agent who accepted the contact.</p>"
@@ -13508,7 +13565,7 @@
           "documentation":"<p>A description for the traffic distribution group.</p>"
         },
         "InstanceId":{
-          "shape":"InstanceIdOrArn",
+          "shape":"ACGRInstanceIdOrArn",
           "documentation":"<p>The identifier of the Connect Customer instance that has been replicated. You can find the <code>instanceId</code> in the ARN of the instance.</p>"
         },
         "ClientToken":{
@@ -13526,11 +13583,11 @@
       "type":"structure",
       "members":{
         "Id":{
-          "shape":"TrafficDistributionGroupId",
+          "shape":"ACGRTrafficDistributionGroupId",
           "documentation":"<p>The identifier of the traffic distribution group. This can be the ID or the ARN of the traffic distribution group.</p>"
         },
         "Arn":{
-          "shape":"TrafficDistributionGroupArn",
+          "shape":"ACGRTrafficDistributionGroupArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the traffic distribution group.</p>"
         }
       }
@@ -21185,6 +21242,27 @@
         }
       }
     },
+    "GetCrossRegionRoutingRequest":{
+      "type":"structure",
+      "required":["InstanceId"],
+      "members":{
+        "InstanceId":{
+          "shape":"ACGRInstanceIdOrArn",
+          "documentation":"<p>The identifier of the Connect Customer instance. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        }
+      }
+    },
+    "GetCrossRegionRoutingResponse":{
+      "type":"structure",
+      "members":{
+        "IsolatedRegions":{
+          "shape":"IsolatedRegionsList",
+          "documentation":"<p>The list of Regions for which cross-region routing is currently disabled (isolated). When a Region appears in this list, contacts originating in that Region will not be routed to agents in other Regions, and agents in that Region will not receive contacts from other Regions.</p>"
+        }
+      }
+    },
     "GetCurrentMetricDataRequest":{
       "type":"structure",
       "required":[
@@ -21807,11 +21885,11 @@
           "documentation":"<p>The distribution of traffic between the instance and its replicas.</p>"
         },
         "Id":{
-          "shape":"TrafficDistributionGroupId",
+          "shape":"ACGRTrafficDistributionGroupId",
           "documentation":"<p>The identifier of the traffic distribution group. This can be the ID or the ARN if the API is being called in the Region where the traffic distribution group was created. The ARN must be provided if the call is from the replicated Region.</p>"
         },
         "Arn":{
-          "shape":"TrafficDistributionGroupArn",
+          "shape":"ACGRTrafficDistributionGroupArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the traffic distribution group.</p>"
         },
         "SignInConfig":{
@@ -22840,10 +22918,6 @@
       },
       "documentation":"<p>The Connect Customer instance.</p>"
     },
-    "InstanceArn":{
-      "type":"string",
-      "pattern":"arn:(aws|aws-us-gov):connect:[a-z]{2}-[a-z]+-[0-9-]{1}:[0-9]{1,20}:instance/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}"
-    },
     "InstanceAttributeType":{
       "type":"string",
       "enum":[
@@ -23228,6 +23302,10 @@
       "member":{"shape":"IpCidr"}
     },
     "IsReadOnly":{"type":"boolean"},
+    "IsolatedRegionsList":{
+      "type":"list",
+      "member":{"shape":"AwsRegion"}
+    },
     "IvrRecordingTrack":{
       "type":"string",
       "enum":["ALL"]
@@ -26146,7 +26224,7 @@
           "locationName":"TrafficDistributionGroupId"
         },
         "MaxResults":{
-          "shape":"MaxResult10",
+          "shape":"MaxResult1000",
           "documentation":"<p>The maximum number of results to return per page.</p>",
           "box":true,
           "location":"querystring",
@@ -26189,7 +26267,7 @@
           "locationName":"nextToken"
         },
         "InstanceId":{
-          "shape":"InstanceIdOrArn",
+          "shape":"ACGRInstanceIdOrArn",
           "documentation":"<p>The identifier of the Connect Customer instance. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.</p>",
           "location":"querystring",
           "locationName":"instanceId"
@@ -31004,7 +31082,7 @@
       ],
       "members":{
         "InstanceId":{
-          "shape":"InstanceIdOrArn",
+          "shape":"ACGRInstanceIdOrArn",
           "documentation":"<p>The identifier of the Connect Customer instance. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance. You can provide the <code>InstanceId</code>, or the entire ARN.</p>",
           "location":"uri",
           "locationName":"InstanceId"
@@ -36457,11 +36535,11 @@
       "type":"structure",
       "members":{
         "Id":{
-          "shape":"TrafficDistributionGroupId",
+          "shape":"ACGRTrafficDistributionGroupId",
           "documentation":"<p>The identifier of the traffic distribution group. This can be the ID or the ARN if the API is being called in the Region where the traffic distribution group was created. The ARN must be provided if the call is from the replicated Region.</p>"
         },
         "Arn":{
-          "shape":"TrafficDistributionGroupArn",
+          "shape":"ACGRTrafficDistributionGroupArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the traffic distribution group.</p>"
         },
         "Name":{
@@ -36473,7 +36551,7 @@
           "documentation":"<p>The description of the traffic distribution group.</p>"
         },
         "InstanceArn":{
-          "shape":"InstanceArn",
+          "shape":"ACGRInstanceArn",
           "documentation":"<p>The Amazon Resource Name (ARN).</p>"
         },
         "Status":{
@@ -36490,10 +36568,6 @@
         }
       },
       "documentation":"<p>Information about a traffic distribution group.</p>"
-    },
-    "TrafficDistributionGroupArn":{
-      "type":"string",
-      "pattern":"^arn:(aws|aws-us-gov):connect:[a-z]{2}-[a-z]+-[0-9]{1}:[0-9]{1,20}:traffic-distribution-group/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$"
     },
     "TrafficDistributionGroupId":{
       "type":"string",
@@ -36518,11 +36592,11 @@
       "type":"structure",
       "members":{
         "Id":{
-          "shape":"TrafficDistributionGroupId",
+          "shape":"ACGRTrafficDistributionGroupId",
           "documentation":"<p>The identifier of the traffic distribution group. This can be the ID or the ARN if the API is being called in the Region where the traffic distribution group was created. The ARN must be provided if the call is from the replicated Region.</p>"
         },
         "Arn":{
-          "shape":"TrafficDistributionGroupArn",
+          "shape":"ACGRTrafficDistributionGroupArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the traffic distribution group.</p>"
         },
         "Name":{
@@ -36530,8 +36604,8 @@
           "documentation":"<p>The name of the traffic distribution group.</p>"
         },
         "InstanceArn":{
-          "shape":"InstanceArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the traffic distribution group.</p>"
+          "shape":"ACGRInstanceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the instance.</p>"
         },
         "Status":{
           "shape":"TrafficDistributionGroupStatus",
@@ -37354,6 +37428,29 @@
       }
     },
     "UpdateContactTaskTemplateResponse":{
+      "type":"structure",
+      "members":{}
+    },
+    "UpdateCrossRegionRoutingRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "IsolatedAll"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"ACGRInstanceIdOrArn",
+          "documentation":"<p>The identifier of the Connect Customer instance. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "IsolatedAll":{
+          "shape":"Boolean",
+          "documentation":"<p>Set to <code>true</code> to disable cross-region routing for all Regions associated with this instance. Set to <code>false</code> to re-enable cross-region routing.</p>"
+        }
+      }
+    },
+    "UpdateCrossRegionRoutingResponse":{
       "type":"structure",
       "members":{}
     },

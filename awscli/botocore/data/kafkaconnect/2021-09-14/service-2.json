@@ -329,6 +329,26 @@
       "documentation":"<p>Returns a list of all of the worker configurations in this account and Region.</p>",
       "readonly":true
     },
+    "RestartConnector":{
+      "name":"RestartConnector",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v1/connectors/{connectorArn}/restart",
+        "responseCode":200
+      },
+      "input":{"shape":"RestartConnectorRequest"},
+      "output":{"shape":"RestartConnectorResponse"},
+      "errors":[
+        {"shape":"NotFoundException"},
+        {"shape":"BadRequestException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"UnauthorizedException"},
+        {"shape":"InternalServerErrorException"}
+      ],
+      "documentation":"<p>Restarts the specified connector. By default, this operation restarts the connector and all of its tasks. This operation is asynchronous and returns a connector operation ARN that you can pass to <code>DescribeConnectorOperation</code> to track the state of the restart.</p>"
+    },
     "TagResource":{
       "name":"TagResource",
       "http":{
@@ -645,7 +665,10 @@
         "UPDATE_FAILED",
         "ROLLBACK_IN_PROGRESS",
         "ROLLBACK_FAILED",
-        "ROLLBACK_COMPLETE"
+        "ROLLBACK_COMPLETE",
+        "RESTART_IN_PROGRESS",
+        "RESTART_COMPLETE",
+        "RESTART_FAILED"
       ]
     },
     "ConnectorOperationStep":{
@@ -714,7 +737,8 @@
         "UPDATE_WORKER_SETTING",
         "UPDATE_CONNECTOR_CONFIGURATION",
         "ISOLATE_CONNECTOR",
-        "RESTORE_CONNECTOR"
+        "RESTORE_CONNECTOR",
+        "RESTART_CONNECTOR"
       ]
     },
     "ConnectorState":{
@@ -724,7 +748,8 @@
         "CREATING",
         "UPDATING",
         "DELETING",
-        "FAILED"
+        "FAILED",
+        "RESTARTING"
       ]
     },
     "ConnectorSummary":{
@@ -1861,6 +1886,37 @@
         }
       },
       "documentation":"<p>An update to a connector's fixed capacity.</p>"
+    },
+    "RestartConnectorRequest":{
+      "type":"structure",
+      "required":["connectorArn"],
+      "members":{
+        "connectorArn":{
+          "shape":"__string",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the connector that you want to restart.</p>",
+          "location":"uri",
+          "locationName":"connectorArn"
+        },
+        "onlyFailedTasks":{
+          "shape":"__boolean",
+          "documentation":"<p>Specifies whether to restart only the connector's failed tasks. If <code>true</code>, the operation restarts only the tasks that are currently in a failed state, and healthy tasks continue running. If <code>false</code> or not specified, the operation restarts the connector and all of its tasks.</p>",
+          "location":"querystring",
+          "locationName":"onlyFailedTasks"
+        }
+      }
+    },
+    "RestartConnectorResponse":{
+      "type":"structure",
+      "members":{
+        "connectorArn":{
+          "shape":"__string",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the connector.</p>"
+        },
+        "connectorOperationArn":{
+          "shape":"__string",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the connector operation created to perform the restart.</p>"
+        }
+      }
     },
     "S3Location":{
       "type":"structure",

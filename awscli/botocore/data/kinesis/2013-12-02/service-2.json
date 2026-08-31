@@ -35,6 +35,33 @@
         "OperationType":{"value":"control"}
       }
     },
+    "CreateChannel":{
+      "name":"CreateChannel",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateChannelInput"},
+      "output":{"shape":"CreateChannelOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ResourceInUseException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"InvalidArgumentException"},
+        {"shape":"KMSDisabledException"},
+        {"shape":"KMSInvalidStateException"},
+        {"shape":"KMSAccessDeniedException"},
+        {"shape":"KMSNotFoundException"},
+        {"shape":"KMSOptInRequired"},
+        {"shape":"KMSThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Creates a channel that delivers records from a Kinesis data stream to a destination. A channel reads records from the specified stream and writes them to streaming tables on Apache Iceberg (Amazon S3 Tables) or to a general purpose Amazon S3 bucket.</p> <p>You must specify either <code>S3DestinationConfiguration</code> or <code>S3TablesDestinationConfiguration</code>, but not both.</p> <p>Creating a channel is an asynchronous operation. Upon receiving the request, Amazon Kinesis Data Streams returns immediately with the channel in the <code>CREATING</code> state. After provisioning is complete, Amazon Kinesis Data Streams sets the state to <code>ACTIVE</code>. You can use <a>DescribeChannel</a> to check the current state.</p> <p>This operation is only supported for data streams with the on-demand capacity mode.</p> <p>This API has a call limit of 5 transactions per second (TPS) for each Amazon Web Services account. Exceeding 5 TPS results in a <code>LimitExceededException</code>.</p>",
+      "staticContextParams":{
+        "OperationType":{"value":"control"}
+      }
+    },
     "CreateStream":{
       "name":"CreateStream",
       "http":{
@@ -68,6 +95,25 @@
         {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Decreases the Kinesis data stream's retention period, which is the length of time data records are accessible after they are added to the stream. The minimum value of a stream's retention period is 24 hours.</p> <note> <p>When invoking this API, you must use either the <code>StreamARN</code> or the <code>StreamName</code> parameter, or both. It is recommended that you use the <code>StreamARN</code> input parameter when you invoke this API.</p> </note> <p>This operation may result in lost data. For example, if the stream's retention period is 48 hours and is decreased to 24 hours, any data already in the stream that is older than 24 hours is inaccessible.</p>",
+      "staticContextParams":{
+        "OperationType":{"value":"control"}
+      }
+    },
+    "DeleteChannel":{
+      "name":"DeleteChannel",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteChannelInput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"InvalidArgumentException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Deletes the specified channel. Deleting a channel stops delivery from the source stream to the destination. Data already delivered to the destination is not deleted.</p> <p>A stream cannot be deleted while it has active channels. To delete the stream, first delete all channels attached to it. To find them, use <a>ListChannels</a> with a stream filter.</p> <p>This API has a call limit of 5 transactions per second (TPS) for each Amazon Web Services account. Exceeding 5 TPS results in a <code>LimitExceededException</code>.</p>",
       "staticContextParams":{
         "OperationType":{"value":"control"}
       }
@@ -139,6 +185,27 @@
         {"shape":"LimitExceededException"}
       ],
       "documentation":"<p>Describes the account-level settings for Amazon Kinesis Data Streams. This operation returns information about the minimum throughput billing commitments and other account-level configurations.</p> <p>This API has a call limit of 5 transactions per second (TPS) for each Amazon Web Services account. TPS over 5 will initiate the <code>LimitExceededException</code>.</p>",
+      "staticContextParams":{
+        "OperationType":{"value":"control"}
+      }
+    },
+    "DescribeChannel":{
+      "name":"DescribeChannel",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeChannelInput"},
+      "output":{"shape":"DescribeChannelOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"InvalidArgumentException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Describes the specified channel, including its configuration and current status.</p> <p>Use this operation to verify that a channel reached the <code>ACTIVE</code> state after creation, or to diagnose a channel in the <code>FAILED</code> state by reading the <code>ChannelStatusReason</code>.</p> <p>This API has a call limit of 5 transactions per second (TPS) for each Amazon Web Services account. Exceeding 5 TPS results in a <code>LimitExceededException</code>.</p>",
+      "readonly":true,
       "staticContextParams":{
         "OperationType":{"value":"control"}
       }
@@ -337,6 +404,27 @@
         {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Increases the Kinesis data stream's retention period, which is the length of time data records are accessible after they are added to the stream. The maximum value of a stream's retention period is 8760 hours (365 days).</p> <note> <p>When invoking this API, you must use either the <code>StreamARN</code> or the <code>StreamName</code> parameter, or both. It is recommended that you use the <code>StreamARN</code> input parameter when you invoke this API.</p> </note> <p>If you choose a longer stream retention period, this operation increases the time period during which records that have not yet expired are accessible. However, it does not make previous, expired data (older than the stream's previous retention period) accessible after the operation has been called. For example, if a stream's retention period is set to 24 hours and is increased to 168 hours, any data that is older than 24 hours remains inaccessible to consumer applications.</p>",
+      "staticContextParams":{
+        "OperationType":{"value":"control"}
+      }
+    },
+    "ListChannels":{
+      "name":"ListChannels",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListChannelsInput"},
+      "output":{"shape":"ListChannelsOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ExpiredNextTokenException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"InvalidArgumentException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Lists the channels in your account. You can filter the results by source stream. The results are paginated. Use the <code>NextToken</code> value returned in the response to retrieve additional results.</p> <p>Use this operation to find channels before deleting a stream, or to audit the channels configured in an Amazon Web Services Region.</p> <p>This API has a call limit of 5 transactions per second (TPS) for each Amazon Web Services account. Exceeding 5 TPS results in a <code>LimitExceededException</code>.</p>",
+      "readonly":true,
       "staticContextParams":{
         "OperationType":{"value":"control"}
       }
@@ -708,6 +796,27 @@
         "OperationType":{"value":"control"}
       }
     },
+    "UpdateChannel":{
+      "name":"UpdateChannel",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateChannelInput"},
+      "output":{"shape":"UpdateChannelOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ResourceInUseException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"InvalidArgumentException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Updates the data freshness interval or the Amazon CloudWatch Logs configuration of an existing channel. You cannot change the destination, source stream, record format, schema, encryption configuration, or service execution role of an existing channel. To change any other setting, delete the channel and create a new one.</p> <p>Updating a channel is an asynchronous operation. Upon receiving the request, Amazon Kinesis Data Streams sets the channel to the <code>UPDATING</code> state and returns immediately. After the change is applied, Amazon Kinesis Data Streams sets the channel back to the <code>ACTIVE</code> state.</p> <p>This API has a call limit of 5 transactions per second (TPS) for each Amazon Web Services account. Exceeding 5 TPS results in a <code>LimitExceededException</code>.</p>",
+      "staticContextParams":{
+        "OperationType":{"value":"control"}
+      }
+    },
     "UpdateMaxRecordSize":{
       "name":"UpdateMaxRecordSize",
       "http":{
@@ -825,6 +934,292 @@
       "documentation":"<p>Represents the input for <code>AddTagsToStream</code>.</p>"
     },
     "BooleanObject":{"type":"boolean"},
+    "BucketARN":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "pattern":"arn:aws[-a-z0-9]*:s3:::[a-z0-9._-]{3,63}"
+    },
+    "ChannelARN":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "pattern":"arn:aws.*:kinesis:.*:\\d{12}:channel/\\S+"
+    },
+    "ChannelCountObject":{
+      "type":"integer",
+      "max":1000000,
+      "min":0
+    },
+    "ChannelDescription":{
+      "type":"structure",
+      "required":[
+        "ChannelName",
+        "ChannelARN",
+        "ChannelId",
+        "ChannelStatus",
+        "ChannelCreationTimestamp",
+        "ServiceExecutionRoleARN",
+        "StreamConfigurationList",
+        "LoggingConfiguration"
+      ],
+      "members":{
+        "ChannelName":{
+          "shape":"ChannelName",
+          "documentation":"<p>The name of the channel.</p>"
+        },
+        "ChannelARN":{
+          "shape":"ChannelARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the channel.</p>"
+        },
+        "ChannelId":{
+          "shape":"ChannelId",
+          "documentation":"<p>The unique identifier of the channel.</p>"
+        },
+        "ChannelStatus":{
+          "shape":"ChannelStatus",
+          "documentation":"<p>The current status of the channel. Valid values:</p> <ul> <li> <p> <code>CREATING</code> </p> </li> <li> <p> <code>ACTIVE</code> </p> </li> <li> <p> <code>UPDATING</code> </p> </li> <li> <p> <code>DELETING</code> </p> </li> <li> <p> <code>FAILED</code> - See <code>ChannelStatusReason</code> for the failure cause.</p> </li> </ul>"
+        },
+        "ChannelStatusReason":{
+          "shape":"ChannelStatusReason",
+          "documentation":"<p>A message describing the reason for a <code>FAILED</code> status.</p>"
+        },
+        "ChannelCreationTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time at which the channel was created.</p>"
+        },
+        "ServiceExecutionRoleARN":{
+          "shape":"RoleARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role that Amazon Kinesis Data Streams assumes to write records to the destination.</p>"
+        },
+        "StreamConfigurationList":{
+          "shape":"ChannelStreamDescriptionList",
+          "documentation":"<p>The source stream configuration for the channel.</p>"
+        },
+        "S3DestinationConfiguration":{
+          "shape":"S3DestinationDescription",
+          "documentation":"<p>The configuration for delivery to a general purpose Amazon S3 bucket. Present only when the channel destination is a general purpose Amazon S3 bucket.</p>"
+        },
+        "S3TablesDestinationConfiguration":{
+          "shape":"S3TablesDestinationDescription",
+          "documentation":"<p>The configuration for delivery to streaming tables on Apache Iceberg in Amazon S3 Tables. Present only when the channel destination is a streaming table.</p>"
+        },
+        "EncryptionConfiguration":{
+          "shape":"ChannelEncryptionConfiguration",
+          "documentation":"<p>The server-side encryption configuration for the channel.</p>"
+        },
+        "LoggingConfiguration":{
+          "shape":"ChannelLoggingConfiguration",
+          "documentation":"<p>The Amazon CloudWatch Logs configuration for the channel.</p>"
+        }
+      },
+      "documentation":"<p>Describes the configuration and current status of a channel.</p>"
+    },
+    "ChannelDestinationType":{
+      "type":"string",
+      "enum":[
+        "S3",
+        "S3_TABLES"
+      ]
+    },
+    "ChannelEncryptionConfiguration":{
+      "type":"structure",
+      "required":[
+        "EncryptionType",
+        "KeyId"
+      ],
+      "members":{
+        "EncryptionType":{
+          "shape":"ChannelEncryptionType",
+          "documentation":"<p>The encryption type. The only valid value is <code>KMS</code>.</p>"
+        },
+        "KeyId":{
+          "shape":"KeyId",
+          "documentation":"<p>The identifier of the customer managed Amazon Web Services KMS key. You cannot use the Amazon Kinesis Data Streams service key (<code>aws/kinesis</code>).</p>"
+        }
+      },
+      "documentation":"<p>The server-side encryption configuration for a channel.</p>"
+    },
+    "ChannelEncryptionType":{
+      "type":"string",
+      "enum":["KMS"]
+    },
+    "ChannelId":{
+      "type":"string",
+      "max":64,
+      "min":1
+    },
+    "ChannelLoggingConfiguration":{
+      "type":"structure",
+      "required":["CloudWatchLogs"],
+      "members":{
+        "CloudWatchLogs":{
+          "shape":"CloudWatchLogs",
+          "documentation":"<p>The Amazon CloudWatch Logs settings for the channel.</p>"
+        }
+      },
+      "documentation":"<p>The Amazon CloudWatch Logs configuration for a channel.</p>"
+    },
+    "ChannelLoggingUpdateInput":{
+      "type":"structure",
+      "required":["CloudWatchLogs"],
+      "members":{
+        "CloudWatchLogs":{
+          "shape":"CloudWatchLogsUpdateInput",
+          "documentation":"<p>The updated Amazon CloudWatch Logs settings for the channel.</p>"
+        }
+      },
+      "documentation":"<p>The updated Amazon CloudWatch Logs configuration for a channel. Used in <a>UpdateChannel</a>.</p>"
+    },
+    "ChannelName":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"[a-zA-Z0-9_.-]+"
+    },
+    "ChannelStatus":{
+      "type":"string",
+      "enum":[
+        "CREATING",
+        "ACTIVE",
+        "UPDATING",
+        "DELETING",
+        "FAILED"
+      ]
+    },
+    "ChannelStatusReason":{
+      "type":"string",
+      "max":2048,
+      "min":1
+    },
+    "ChannelStreamConfiguration":{
+      "type":"structure",
+      "required":[
+        "StreamARN",
+        "RecordConfiguration"
+      ],
+      "members":{
+        "StreamARN":{
+          "shape":"StreamARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the source Kinesis data stream.</p>"
+        },
+        "RecordConfiguration":{
+          "shape":"RecordConfiguration",
+          "documentation":"<p>The record format configuration for the source stream.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the source stream and record configuration when creating a channel.</p>"
+    },
+    "ChannelStreamConfigurationList":{
+      "type":"list",
+      "member":{"shape":"ChannelStreamConfiguration"},
+      "max":10000,
+      "min":1
+    },
+    "ChannelStreamDescription":{
+      "type":"structure",
+      "required":[
+        "StreamARN",
+        "StreamCreationTimestamp",
+        "RecordConfiguration"
+      ],
+      "members":{
+        "StreamARN":{
+          "shape":"StreamARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the source Kinesis data stream.</p>"
+        },
+        "StreamCreationTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time at which the source stream was created.</p>"
+        },
+        "RecordConfiguration":{
+          "shape":"RecordConfiguration",
+          "documentation":"<p>The record format configuration for the source stream.</p>"
+        }
+      },
+      "documentation":"<p>Describes the source stream of a channel.</p>"
+    },
+    "ChannelStreamDescriptionList":{
+      "type":"list",
+      "member":{"shape":"ChannelStreamDescription"},
+      "max":10000,
+      "min":1
+    },
+    "ChannelStreamIdentifier":{
+      "type":"structure",
+      "required":[
+        "StreamARN",
+        "StreamCreationTimestamp"
+      ],
+      "members":{
+        "StreamARN":{
+          "shape":"StreamARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the source Kinesis data stream.</p>"
+        },
+        "StreamCreationTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time at which the source stream was created.</p>"
+        }
+      },
+      "documentation":"<p>Identifies a source stream associated with a channel.</p>"
+    },
+    "ChannelStreamIdentifierList":{
+      "type":"list",
+      "member":{"shape":"ChannelStreamIdentifier"},
+      "max":10000,
+      "min":1
+    },
+    "ChannelSummary":{
+      "type":"structure",
+      "required":[
+        "ChannelName",
+        "ChannelARN",
+        "ChannelId",
+        "ChannelStatus",
+        "ChannelCreationTimestamp",
+        "ChannelDestinationType",
+        "Streams"
+      ],
+      "members":{
+        "ChannelName":{
+          "shape":"ChannelName",
+          "documentation":"<p>The name of the channel.</p>"
+        },
+        "ChannelARN":{
+          "shape":"ChannelARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the channel.</p>"
+        },
+        "ChannelId":{
+          "shape":"ChannelId",
+          "documentation":"<p>The unique identifier of the channel.</p>"
+        },
+        "ChannelStatus":{
+          "shape":"ChannelStatus",
+          "documentation":"<p>The current status of the channel. Valid values:</p> <ul> <li> <p> <code>CREATING</code> </p> </li> <li> <p> <code>ACTIVE</code> </p> </li> <li> <p> <code>UPDATING</code> </p> </li> <li> <p> <code>DELETING</code> </p> </li> <li> <p> <code>FAILED</code> - See <code>ChannelStatusReason</code> for the failure cause.</p> </li> </ul>"
+        },
+        "ChannelStatusReason":{
+          "shape":"ChannelStatusReason",
+          "documentation":"<p>A message describing the reason for a <code>FAILED</code> status.</p>"
+        },
+        "ChannelCreationTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time at which the channel was created.</p>"
+        },
+        "ChannelDestinationType":{
+          "shape":"ChannelDestinationType",
+          "documentation":"<p>The destination type of the channel. Valid values:</p> <ul> <li> <p> <code>S3</code> - Delivery to a general purpose Amazon S3 bucket.</p> </li> <li> <p> <code>S3_TABLES</code> - Delivery to streaming tables on Apache Iceberg.</p> </li> </ul>"
+        },
+        "Streams":{
+          "shape":"ChannelStreamIdentifierList",
+          "documentation":"<p>The source streams associated with the channel.</p>"
+        }
+      },
+      "documentation":"<p>A summary of a channel, returned by <a>ListChannels</a>.</p>"
+    },
+    "ChannelSummaryList":{
+      "type":"list",
+      "member":{"shape":"ChannelSummary"}
+    },
     "ChildShard":{
       "type":"structure",
       "required":[
@@ -848,6 +1243,56 @@
     "ChildShardList":{
       "type":"list",
       "member":{"shape":"ChildShard"}
+    },
+    "CloudWatchLogGroupName":{
+      "type":"string",
+      "max":512,
+      "min":1,
+      "pattern":"[\\.\\-_/#A-Za-z0-9]+"
+    },
+    "CloudWatchLogStreamName":{
+      "type":"string",
+      "max":512,
+      "min":1,
+      "pattern":"[^:*]*"
+    },
+    "CloudWatchLogs":{
+      "type":"structure",
+      "required":["Enabled"],
+      "members":{
+        "Enabled":{
+          "shape":"BooleanObject",
+          "documentation":"<p>Specifies whether logging to Amazon CloudWatch Logs is enabled.</p>"
+        },
+        "LogGroupName":{
+          "shape":"CloudWatchLogGroupName",
+          "documentation":"<p>The name of the Amazon CloudWatch Logs log group. Defaults to <code>/aws/kinesis/{channelName}/{channelId}</code>.</p>"
+        },
+        "LogStreamName":{
+          "shape":"CloudWatchLogStreamName",
+          "documentation":"<p>The name of the Amazon CloudWatch Logs log stream. Defaults to <code>DestinationDelivery</code>.</p>"
+        }
+      },
+      "documentation":"<p>The Amazon CloudWatch Logs settings for channel logging.</p>"
+    },
+    "CloudWatchLogsUpdateInput":{
+      "type":"structure",
+      "required":["Enabled"],
+      "members":{
+        "Enabled":{
+          "shape":"BooleanObject",
+          "documentation":"<p>Specifies whether logging to Amazon CloudWatch Logs is enabled.</p>"
+        },
+        "LogGroupName":{
+          "shape":"CloudWatchLogGroupName",
+          "documentation":"<p>The name of the Amazon CloudWatch Logs log group.</p>"
+        },
+        "LogStreamName":{
+          "shape":"CloudWatchLogStreamName",
+          "documentation":"<p>The name of the Amazon CloudWatch Logs log stream.</p>"
+        }
+      },
+      "documentation":"<p>The updated Amazon CloudWatch Logs settings for a channel.</p>"
     },
     "Consumer":{
       "type":"structure",
@@ -939,6 +1384,58 @@
         "ACTIVE"
       ]
     },
+    "CreateChannelInput":{
+      "type":"structure",
+      "required":[
+        "ChannelName",
+        "ServiceExecutionRoleARN",
+        "StreamConfigurationList"
+      ],
+      "members":{
+        "ChannelName":{
+          "shape":"ChannelName",
+          "documentation":"<p>The name of the channel. The name is unique within your Amazon Web Services account and Amazon Web Services Region.</p>"
+        },
+        "ServiceExecutionRoleARN":{
+          "shape":"RoleARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role that Amazon Kinesis Data Streams assumes to write records to the destination.</p>"
+        },
+        "StreamConfigurationList":{
+          "shape":"ChannelStreamConfigurationList",
+          "documentation":"<p>The source stream configuration for the channel. Currently, one stream is supported per channel.</p>"
+        },
+        "S3DestinationConfiguration":{
+          "shape":"S3DestinationConfiguration",
+          "documentation":"<p>The configuration for delivery to a general purpose Amazon S3 bucket. You must specify either <code>S3DestinationConfiguration</code> or <code>S3TablesDestinationConfiguration</code>, but not both.</p>"
+        },
+        "S3TablesDestinationConfiguration":{
+          "shape":"S3TablesDestinationConfiguration",
+          "documentation":"<p>The configuration for delivery to streaming tables on Apache Iceberg in Amazon S3 Tables. You must specify either <code>S3DestinationConfiguration</code> or <code>S3TablesDestinationConfiguration</code>, but not both.</p>"
+        },
+        "EncryptionConfiguration":{
+          "shape":"ChannelEncryptionConfiguration",
+          "documentation":"<p>The server-side encryption configuration that uses an Amazon Web Services KMS key to encrypt data delivered to the destination.</p>"
+        },
+        "Tags":{
+          "shape":"TagMap",
+          "documentation":"<p>A set of key-value pairs to assign to the channel. A tag consists of a required key and an optional value.</p>"
+        },
+        "LoggingConfiguration":{
+          "shape":"ChannelLoggingConfiguration",
+          "documentation":"<p>The Amazon CloudWatch Logs configuration for the channel.</p>"
+        }
+      }
+    },
+    "CreateChannelOutput":{
+      "type":"structure",
+      "required":["ChannelDescription"],
+      "members":{
+        "ChannelDescription":{
+          "shape":"ChannelDescription",
+          "documentation":"<p>The configuration and current status of the channel.</p>"
+        }
+      }
+    },
     "CreateStreamInput":{
       "type":"structure",
       "required":["StreamName"],
@@ -975,6 +1472,29 @@
       "max":10485760,
       "min":0
     },
+    "DataFreshnessInSeconds":{"type":"integer"},
+    "DeadLetterQueueS3Configuration":{
+      "type":"structure",
+      "required":[
+        "BucketARN",
+        "ExpectedBucketOwner"
+      ],
+      "members":{
+        "BucketARN":{
+          "shape":"BucketARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the dead-letter queue Amazon S3 bucket.</p>"
+        },
+        "ExpectedBucketOwner":{
+          "shape":"ExpectedBucketOwner",
+          "documentation":"<p>The Amazon Web Services account ID of the expected owner of the dead-letter queue bucket.</p>"
+        },
+        "ErrorOutputPrefix":{
+          "shape":"S3ErrorOutputPrefix",
+          "documentation":"<p>The Amazon S3 key prefix for error records.</p>"
+        }
+      },
+      "documentation":"<p>The Amazon S3 dead-letter queue configuration for records that cannot be delivered.</p>"
+    },
     "DecreaseStreamRetentionPeriodInput":{
       "type":"structure",
       "required":["RetentionPeriodHours"],
@@ -999,6 +1519,17 @@
         }
       },
       "documentation":"<p>Represents the input for <a>DecreaseStreamRetentionPeriod</a>.</p>"
+    },
+    "DeleteChannelInput":{
+      "type":"structure",
+      "required":["ChannelARN"],
+      "members":{
+        "ChannelARN":{
+          "shape":"ChannelARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the channel to delete.</p>",
+          "contextParam":{"name":"ChannelARN"}
+        }
+      }
     },
     "DeleteResourcePolicyInput":{
       "type":"structure",
@@ -1077,6 +1608,27 @@
         }
       }
     },
+    "DescribeChannelInput":{
+      "type":"structure",
+      "required":["ChannelARN"],
+      "members":{
+        "ChannelARN":{
+          "shape":"ChannelARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the channel to describe.</p>",
+          "contextParam":{"name":"ChannelARN"}
+        }
+      }
+    },
+    "DescribeChannelOutput":{
+      "type":"structure",
+      "required":["ChannelDescription"],
+      "members":{
+        "ChannelDescription":{
+          "shape":"ChannelDescription",
+          "documentation":"<p>The configuration and current status of the channel.</p>"
+        }
+      }
+    },
     "DescribeLimitsInput":{
       "type":"structure",
       "members":{}
@@ -1105,6 +1657,14 @@
         "OnDemandStreamCountLimit":{
           "shape":"OnDemandStreamCountLimitObject",
           "documentation":"<p> The maximum number of data streams with the on-demand capacity mode. </p>"
+        },
+        "ChannelCount":{
+          "shape":"ChannelCountObject",
+          "documentation":"<p>The number of channels in the account.</p>"
+        },
+        "ChannelCountLimit":{
+          "shape":"ChannelCountObject",
+          "documentation":"<p>The maximum number of channels allowed in the account.</p>"
         }
       }
     },
@@ -1310,6 +1870,12 @@
     },
     "ErrorCode":{"type":"string"},
     "ErrorMessage":{"type":"string"},
+    "ExpectedBucketOwner":{
+      "type":"string",
+      "max":12,
+      "min":12,
+      "pattern":"\\d{12}"
+    },
     "ExpiredIteratorException":{
       "type":"structure",
       "members":{
@@ -1328,6 +1894,12 @@
       },
       "documentation":"<p>The pagination token passed to the operation is expired.</p>",
       "exception":true
+    },
+    "GSRSchemaARN":{
+      "type":"string",
+      "max":512,
+      "min":1,
+      "pattern":"arn:aws[-a-z0-9]*:glue:[-a-z0-9]+:\\d{12}:schema/[-a-zA-Z0-9_$#.]+/[-a-zA-Z0-9_$#.]+"
     },
     "GetRecordsInput":{
       "type":"structure",
@@ -1460,7 +2032,7 @@
     },
     "HashKey":{
       "type":"string",
-      "pattern":"0|([1-9]\\d{0,38})"
+      "pattern":"^(0|([1-9]\\d{0,38}))$"
     },
     "HashKeyRange":{
       "type":"structure",
@@ -1606,6 +2178,42 @@
       },
       "documentation":"<p>The requested resource exceeds the maximum number allowed, or the number of concurrent stream requests exceeds the maximum number allowed. </p>",
       "exception":true
+    },
+    "ListChannelsInput":{
+      "type":"structure",
+      "members":{
+        "StreamFilter":{
+          "shape":"StreamFilterList",
+          "documentation":"<p>Filters the results to channels associated with the specified streams.</p>"
+        },
+        "MaxResults":{
+          "shape":"ListChannelsInputLimit",
+          "documentation":"<p>The maximum number of channels to return in a single call. The default value is 100. If you specify a value greater than 100, at most 100 results are returned.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The pagination token returned by a previous call. Specify this token to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.</p>"
+        }
+      }
+    },
+    "ListChannelsInputLimit":{
+      "type":"integer",
+      "max":10000,
+      "min":1
+    },
+    "ListChannelsOutput":{
+      "type":"structure",
+      "required":["ChannelSummaries"],
+      "members":{
+        "ChannelSummaries":{
+          "shape":"ChannelSummaryList",
+          "documentation":"<p>A list of channel summaries.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The pagination token to use in a subsequent call to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.</p>"
+        }
+      }
     },
     "ListShardsInput":{
       "type":"structure",
@@ -1963,10 +2571,55 @@
       "max":1000000,
       "min":0
     },
+    "PartitionField":{
+      "type":"structure",
+      "required":[
+        "Transform",
+        "SourceName"
+      ],
+      "members":{
+        "Transform":{
+          "shape":"PartitionTransform",
+          "documentation":"<p>The partition transform to apply. The only valid value is <code>TIME_HOUR</code>.</p>"
+        },
+        "SourceName":{
+          "shape":"PartitionSourceName",
+          "documentation":"<p>The name of the source column used for partitioning. This column must be of the <code>timestamptz</code> type.</p>"
+        }
+      },
+      "documentation":"<p>Specifies a single partition field.</p>"
+    },
+    "PartitionFieldList":{
+      "type":"list",
+      "member":{"shape":"PartitionField"},
+      "max":10,
+      "min":1
+    },
     "PartitionKey":{
       "type":"string",
       "max":256,
       "min":1
+    },
+    "PartitionSourceName":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"[a-zA-Z0-9\\.\\_]+"
+    },
+    "PartitionSpec":{
+      "type":"structure",
+      "required":["PartitionFields"],
+      "members":{
+        "PartitionFields":{
+          "shape":"PartitionFieldList",
+          "documentation":"<p>The list of partition fields.</p>"
+        }
+      },
+      "documentation":"<p>Specifies how the destination table is partitioned.</p>"
+    },
+    "PartitionTransform":{
+      "type":"string",
+      "enum":["TIME_HOUR"]
     },
     "Policy":{"type":"string"},
     "PositiveIntegerObject":{
@@ -2200,6 +2853,30 @@
       },
       "documentation":"<p>The unit of data of the Kinesis data stream, which is composed of a sequence number, a partition key, and a data blob.</p>"
     },
+    "RecordConfiguration":{
+      "type":"structure",
+      "required":["RecordFormatType"],
+      "members":{
+        "RecordFormatType":{
+          "shape":"RecordFormatType",
+          "documentation":"<p>The format of records on the source stream. Valid values:</p> <ul> <li> <p> <code>GSR_JSON</code> - Supported only for streaming table (Amazon S3 Tables) destinations.</p> </li> <li> <p> <code>JSON</code> - Supported for both general purpose Amazon S3 and streaming table destinations.</p> </li> <li> <p> <code>STRING</code> - Supported only for general purpose Amazon S3 destinations.</p> </li> <li> <p> <code>BYTE_ARRAY</code> - Supported only for general purpose Amazon S3 destinations.</p> </li> </ul>"
+        },
+        "GSRSchemaARN":{
+          "shape":"GSRSchemaARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon Web Services Glue Schema Registry schema used to validate records. Required when the channel destination is a streaming table (Amazon S3 Tables), for both the <code>JSON</code> and <code>GSR_JSON</code> record formats.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the format of records read from the source stream.</p>"
+    },
+    "RecordFormatType":{
+      "type":"string",
+      "enum":[
+        "GSR_JSON",
+        "JSON",
+        "STRING",
+        "BYTE_ARRAY"
+      ]
+    },
     "RecordList":{
       "type":"list",
       "member":{"shape":"Record"}
@@ -2270,7 +2947,7 @@
       "type":"string",
       "max":2048,
       "min":1,
-      "pattern":"arn:aws.*:kinesis:.*:\\d{12}:.*stream/\\S+"
+      "pattern":"arn:aws.*:kinesis:.*:\\d{12}:.*(stream|channel)/\\S+"
     },
     "ResourceInUseException":{
       "type":"structure",
@@ -2295,13 +2972,245 @@
       "exception":true
     },
     "RetentionPeriodHours":{"type":"integer"},
+    "RoleARN":{
+      "type":"string",
+      "max":512,
+      "min":1,
+      "pattern":"arn:aws[-a-z0-9]*:iam::\\d{12}:role/[a-zA-Z_0-9+=,.@\\-_/]+"
+    },
+    "S3CompressionType":{
+      "type":"string",
+      "enum":[
+        "NONE",
+        "GZIP",
+        "ZSTD"
+      ]
+    },
+    "S3DestinationConfiguration":{
+      "type":"structure",
+      "required":["StorageConfiguration"],
+      "members":{
+        "DataFreshnessInSeconds":{
+          "shape":"DataFreshnessInSeconds",
+          "documentation":"<p>The maximum age, in seconds, of undelivered data. Valid range is 300 to 900 seconds (5 to 15 minutes). The default value is 300 seconds.</p>"
+        },
+        "DeadLetterQueueS3Configuration":{
+          "shape":"DeadLetterQueueS3Configuration",
+          "documentation":"<p>The dead-letter queue configuration for records that cannot be delivered. Optional for general purpose Amazon S3 destinations. If not specified, it defaults to the destination bucket with an error prefix.</p>"
+        },
+        "StorageConfiguration":{
+          "shape":"S3StorageConfiguration",
+          "documentation":"<p>The Amazon S3 storage configuration for the channel.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for delivery to a general purpose Amazon S3 bucket. Used in <a>CreateChannel</a>.</p>"
+    },
+    "S3DestinationDescription":{
+      "type":"structure",
+      "required":[
+        "DataFreshnessInSeconds",
+        "DeadLetterQueueS3Configuration",
+        "StorageConfiguration"
+      ],
+      "members":{
+        "DataFreshnessInSeconds":{
+          "shape":"DataFreshnessInSeconds",
+          "documentation":"<p>The maximum age, in seconds, of undelivered data.</p>"
+        },
+        "DeadLetterQueueS3Configuration":{
+          "shape":"DeadLetterQueueS3Configuration",
+          "documentation":"<p>The dead-letter queue configuration for records that cannot be delivered.</p>"
+        },
+        "StorageConfiguration":{
+          "shape":"S3StorageConfiguration",
+          "documentation":"<p>The Amazon S3 storage configuration for the channel.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for delivery to a general purpose Amazon S3 bucket. Returned in <a>ChannelDescription</a>.</p>"
+    },
+    "S3DestinationUpdateInput":{
+      "type":"structure",
+      "required":["DataFreshnessInSeconds"],
+      "members":{
+        "DataFreshnessInSeconds":{
+          "shape":"DataFreshnessInSeconds",
+          "documentation":"<p>The maximum age, in seconds, of undelivered data. Valid range is 300 to 900 seconds (5 to 15 minutes).</p>"
+        }
+      },
+      "documentation":"<p>The updated configuration for a general purpose Amazon S3 destination. Used in <a>UpdateChannel</a>. Only <code>DataFreshnessInSeconds</code> can be updated.</p>"
+    },
+    "S3ErrorOutputPrefix":{
+      "type":"string",
+      "max":512,
+      "min":1,
+      "pattern":"[0-9A-Za-z!\\-_'.*()\\/]+"
+    },
+    "S3OutputKeyTemplate":{
+      "type":"string",
+      "max":1024,
+      "min":1,
+      "pattern":"[0-9A-Za-z!\\-_'.*()\\/=:{}]+"
+    },
+    "S3StorageClass":{
+      "type":"string",
+      "enum":[
+        "STANDARD",
+        "INTELLIGENT_TIERING",
+        "GLACIER_IR"
+      ]
+    },
+    "S3StorageConfiguration":{
+      "type":"structure",
+      "required":[
+        "BucketARN",
+        "ExpectedBucketOwner",
+        "CompressionType"
+      ],
+      "members":{
+        "BucketARN":{
+          "shape":"BucketARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the destination Amazon S3 bucket.</p>"
+        },
+        "ExpectedBucketOwner":{
+          "shape":"ExpectedBucketOwner",
+          "documentation":"<p>The Amazon Web Services account ID of the expected owner of the destination bucket. This value helps prevent delivery to an unintended bucket if ownership changes.</p>"
+        },
+        "OutputKeyTemplate":{
+          "shape":"S3OutputKeyTemplate",
+          "documentation":"<p>The template used to construct the Amazon S3 object key for delivered objects. If not specified, a default template is used.</p>"
+        },
+        "StorageClass":{
+          "shape":"S3StorageClass",
+          "documentation":"<p>The Amazon S3 storage class for delivered objects. Valid values:</p> <ul> <li> <p> <code>STANDARD</code> (default)</p> </li> <li> <p> <code>INTELLIGENT_TIERING</code> </p> </li> <li> <p> <code>GLACIER_IR</code> </p> </li> </ul>"
+        },
+        "CompressionType":{
+          "shape":"S3CompressionType",
+          "documentation":"<p>The compression applied to delivered objects. Valid values:</p> <ul> <li> <p> <code>NONE</code> - No compression.</p> </li> <li> <p> <code>GZIP</code> - gzip compression.</p> </li> <li> <p> <code>ZSTD</code> - Zstandard compression.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>The Amazon S3 storage settings for a general purpose Amazon S3 destination.</p>"
+    },
+    "S3TablesCompressionType":{
+      "type":"string",
+      "enum":[
+        "NONE",
+        "ZSTD",
+        "SNAPPY"
+      ]
+    },
+    "S3TablesConfiguration":{
+      "type":"structure",
+      "required":[
+        "TableBucketARN",
+        "Namespace",
+        "TableName",
+        "CompressionType"
+      ],
+      "members":{
+        "TableBucketARN":{
+          "shape":"TableBucketARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon S3 table bucket.</p>"
+        },
+        "Namespace":{
+          "shape":"S3TablesNamespace",
+          "documentation":"<p>The namespace (database) of the destination table.</p>"
+        },
+        "TableName":{
+          "shape":"S3TablesTableName",
+          "documentation":"<p>The name of the destination table. Amazon Kinesis Data Streams creates this table in the specified table bucket.</p>"
+        },
+        "CompressionType":{
+          "shape":"S3TablesCompressionType",
+          "documentation":"<p>The compression applied to Parquet data files. Valid values:</p> <ul> <li> <p> <code>NONE</code> - No compression.</p> </li> <li> <p> <code>ZSTD</code> - Zstandard compression.</p> </li> <li> <p> <code>SNAPPY</code> - Snappy compression.</p> </li> </ul>"
+        },
+        "PartitionSpec":{
+          "shape":"PartitionSpec",
+          "documentation":"<p>The partitioning specification for the destination table.</p>"
+        }
+      },
+      "documentation":"<p>Specifies a destination streaming table on Apache Iceberg.</p>"
+    },
+    "S3TablesConfigurationList":{
+      "type":"list",
+      "member":{"shape":"S3TablesConfiguration"},
+      "max":10000,
+      "min":1
+    },
+    "S3TablesDestinationConfiguration":{
+      "type":"structure",
+      "required":[
+        "DeadLetterQueueS3Configuration",
+        "S3TablesConfigurationList"
+      ],
+      "members":{
+        "DataFreshnessInSeconds":{
+          "shape":"DataFreshnessInSeconds",
+          "documentation":"<p>The maximum age, in seconds, of undelivered data. Valid range is 300 to 900 seconds (5 to 15 minutes). The default value is 300 seconds.</p>"
+        },
+        "DeadLetterQueueS3Configuration":{
+          "shape":"DeadLetterQueueS3Configuration",
+          "documentation":"<p>The dead-letter queue configuration for records that cannot be delivered. Required for streaming table destinations.</p>"
+        },
+        "S3TablesConfigurationList":{
+          "shape":"S3TablesConfigurationList",
+          "documentation":"<p>The list of streaming table configurations. Currently, one table is supported per channel.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for delivery to streaming tables on Apache Iceberg. Used in <a>CreateChannel</a>.</p>"
+    },
+    "S3TablesDestinationDescription":{
+      "type":"structure",
+      "required":[
+        "DataFreshnessInSeconds",
+        "DeadLetterQueueS3Configuration",
+        "S3TablesConfigurationList"
+      ],
+      "members":{
+        "DataFreshnessInSeconds":{
+          "shape":"DataFreshnessInSeconds",
+          "documentation":"<p>The maximum age, in seconds, of undelivered data.</p>"
+        },
+        "DeadLetterQueueS3Configuration":{
+          "shape":"DeadLetterQueueS3Configuration",
+          "documentation":"<p>The dead-letter queue configuration for records that cannot be delivered.</p>"
+        },
+        "S3TablesConfigurationList":{
+          "shape":"S3TablesConfigurationList",
+          "documentation":"<p>The list of streaming table configurations.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for delivery to streaming tables on Apache Iceberg. Returned in <a>ChannelDescription</a>.</p>"
+    },
+    "S3TablesDestinationUpdateInput":{
+      "type":"structure",
+      "required":["DataFreshnessInSeconds"],
+      "members":{
+        "DataFreshnessInSeconds":{
+          "shape":"DataFreshnessInSeconds",
+          "documentation":"<p>The maximum age, in seconds, of undelivered data. Valid range is 300 to 900 seconds (5 to 15 minutes).</p>"
+        }
+      },
+      "documentation":"<p>The updated configuration for a streaming table destination. Used in <a>UpdateChannel</a>. Only <code>DataFreshnessInSeconds</code> can be updated.</p>"
+    },
+    "S3TablesNamespace":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"[0-9a-z_]+"
+    },
+    "S3TablesTableName":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"[0-9a-z_]+"
+    },
     "ScalingType":{
       "type":"string",
       "enum":["UNIFORM_SCALING"]
     },
     "SequenceNumber":{
       "type":"string",
-      "pattern":"0|([1-9]\\d{0,128})"
+      "pattern":"^(0|([1-9]\\d{0,128}))$"
     },
     "SequenceNumberRange":{
       "type":"structure",
@@ -2659,9 +3568,34 @@
         "MaxRecordSizeInKiB":{
           "shape":"MaxRecordSizeInKiB",
           "documentation":"<p>The maximum record size of a single record in kibibyte (KiB) that you can write to, and read from a stream.</p>"
+        },
+        "ChannelCount":{
+          "shape":"ChannelCountObject",
+          "documentation":"<p>The number of channels associated with the stream.</p>"
         }
       },
       "documentation":"<p>Represents the output for <a>DescribeStreamSummary</a> </p>"
+    },
+    "StreamFilter":{
+      "type":"structure",
+      "required":["StreamARN"],
+      "members":{
+        "StreamARN":{
+          "shape":"StreamARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the source stream to filter by.</p>"
+        },
+        "StreamCreationTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The creation timestamp of the source stream.</p>"
+        }
+      },
+      "documentation":"<p>Filters <a>ListChannels</a> results by source stream.</p>"
+    },
+    "StreamFilterList":{
+      "type":"list",
+      "member":{"shape":"StreamFilter"},
+      "max":10000,
+      "min":1
     },
     "StreamId":{
       "type":"string",
@@ -2828,6 +3762,12 @@
         }
       }
     },
+    "TableBucketARN":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "pattern":"arn:aws[-a-z0-9]*:s3tables:[-a-z0-9]+:\\d{12}:bucket/[a-z0-9_-]{3,63}"
+    },
     "Tag":{
       "type":"structure",
       "required":["Key"],
@@ -2935,6 +3875,39 @@
         "MinimumThroughputBillingCommitment":{
           "shape":"MinimumThroughputBillingCommitmentOutput",
           "documentation":"<p>The updated configuration of the minimum throughput billing commitment for your account.</p>"
+        }
+      }
+    },
+    "UpdateChannelInput":{
+      "type":"structure",
+      "required":["ChannelARN"],
+      "members":{
+        "ChannelARN":{
+          "shape":"ChannelARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the channel to update.</p>",
+          "contextParam":{"name":"ChannelARN"}
+        },
+        "S3DestinationConfiguration":{
+          "shape":"S3DestinationUpdateInput",
+          "documentation":"<p>The updated configuration for a general purpose Amazon S3 destination. Only <code>DataFreshnessInSeconds</code> can be updated.</p>"
+        },
+        "S3TablesDestinationConfiguration":{
+          "shape":"S3TablesDestinationUpdateInput",
+          "documentation":"<p>The updated configuration for a streaming table destination. Only <code>DataFreshnessInSeconds</code> can be updated.</p>"
+        },
+        "LoggingConfiguration":{
+          "shape":"ChannelLoggingUpdateInput",
+          "documentation":"<p>The updated Amazon CloudWatch Logs configuration for the channel.</p>"
+        }
+      }
+    },
+    "UpdateChannelOutput":{
+      "type":"structure",
+      "required":["ChannelDescription"],
+      "members":{
+        "ChannelDescription":{
+          "shape":"ChannelDescription",
+          "documentation":"<p>The configuration and current status of the updated channel.</p>"
         }
       }
     },

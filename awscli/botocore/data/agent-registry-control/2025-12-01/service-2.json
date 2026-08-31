@@ -187,7 +187,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p>List the tags on a resource</p>",
+      "documentation":"<p>Lists the tags associated with the specified Amazon Web Services Agent Registry resource. Returns the current tag key-value pairs on the resource.</p>",
       "readonly":true
     },
     "SubmitRegistryRecordForApproval":{
@@ -226,7 +226,7 @@
         {"shape":"ValidationException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
-      "documentation":"<p>Tag a resource with key-value pairs</p>",
+      "documentation":"<p>Adds or overwrites one or more tags for the specified Amazon Web Services Agent Registry resource. Tags are key-value pairs that you can use to categorize and manage Amazon Web Services resources. If a tag with the same key already exists on the resource, the service replaces its value with the value you specify.</p>",
       "idempotent":true
     },
     "UntagResource":{
@@ -245,7 +245,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p>Remove tags from a resource by key</p>",
+      "documentation":"<p>Removes one or more tags from the specified Amazon Web Services Agent Registry resource. The operation removes only the tags whose keys you supply; other tags on the resource remain unchanged.</p>",
       "idempotent":true
     },
     "UpdateRegistry":{
@@ -337,6 +337,57 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "AgUiDescriptor":{
+      "type":"structure",
+      "members":{
+        "source":{"shape":"DescriptorSource"}
+      },
+      "documentation":"<p>A registry record descriptor for the AG-UI (Agent-User Interaction) protocol.</p>"
+    },
+    "AgentCoreGatewayProtocolType":{
+      "type":"string",
+      "documentation":"<p>The protocol type of an AgentCore Gateway.</p>",
+      "enum":["MCP"]
+    },
+    "AgentCoreGatewaySourceDetails":{
+      "type":"structure",
+      "members":{
+        "protocolType":{"shape":"AgentCoreGatewayProtocolType"},
+        "authorizerType":{
+          "shape":"String",
+          "documentation":"<p>The type of authorizer configured on the AgentCore Gateway resource that the registry record was detected from.</p>"
+        },
+        "authorizerConfiguration":{"shape":"AuthorizerConfiguration"},
+        "workloadIdentityDetails":{"shape":"WorkloadIdentityDetails"}
+      },
+      "documentation":"<p>Source details for a record auto-detected from an AgentCore Gateway resource.</p>"
+    },
+    "AgentCoreRuntimeProtocolConfiguration":{
+      "type":"structure",
+      "members":{
+        "serverProtocol":{"shape":"AgentCoreRuntimeServerProtocol"}
+      },
+      "documentation":"<p>Protocol configuration for an AgentCore Runtime.</p>"
+    },
+    "AgentCoreRuntimeServerProtocol":{
+      "type":"string",
+      "documentation":"<p>The server protocol used by an AgentCore Runtime.</p>",
+      "enum":[
+        "HTTP",
+        "A2A",
+        "MCP",
+        "AGUI"
+      ]
+    },
+    "AgentCoreRuntimeSourceDetails":{
+      "type":"structure",
+      "members":{
+        "protocolConfiguration":{"shape":"AgentCoreRuntimeProtocolConfiguration"},
+        "authorizerConfiguration":{"shape":"AuthorizerConfiguration"},
+        "workloadIdentityDetails":{"shape":"WorkloadIdentityDetails"}
+      },
+      "documentation":"<p>Source details for a record auto-detected from an AgentCore Runtime resource.</p>"
     },
     "AgentSkillsAdditionalData":{
       "type":"structure",
@@ -470,6 +521,57 @@
       "max":10,
       "min":0
     },
+    "AutoDetection":{
+      "type":"structure",
+      "required":[
+        "configuration",
+        "status"
+      ],
+      "members":{
+        "configuration":{
+          "shape":"AutoDetectionConfiguration",
+          "documentation":"<p>The auto-detection settings that control how resources are discovered for the registry.</p>"
+        },
+        "status":{
+          "shape":"AutoDetectionStatus",
+          "documentation":"<p>The current auto-detection status. <code>ACTIVE</code> indicates that the registry is actively being populated with detected resources. <code>INACTIVE</code> indicates that the preconditions required at the configured scope are not currently met.</p>"
+        },
+        "statusReason":{
+          "shape":"String",
+          "documentation":"<p>A human-readable explanation of the current auto-detection status. Typically populated when the status requires additional context.</p>"
+        }
+      },
+      "documentation":"<p>The auto-detection properties for a registry, including the requested configuration and the current detection status. When auto-detection is enabled and the scope preconditions are met, the registry is automatically populated with discovered resources.</p>"
+    },
+    "AutoDetectionConfiguration":{
+      "type":"structure",
+      "required":[
+        "scope",
+        "enabled"
+      ],
+      "members":{
+        "scope":{
+          "shape":"AutoDetectionScope",
+          "documentation":"<p>The source from which resources are detected. For example, <code>ORGANIZATION</code> sources resources from all member accounts of an Amazon Web Services organization.</p>"
+        },
+        "enabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether auto-detection is requested for the registry. Setting this to <code>true</code> is necessary but not sufficient for auto-detection to become active; the preconditions of the configured scope must also be met.</p>"
+        }
+      },
+      "documentation":"<p>The customer-defined auto-detection settings for a registry.</p>"
+    },
+    "AutoDetectionScope":{
+      "type":"string",
+      "enum":["ORGANIZATION"]
+    },
+    "AutoDetectionStatus":{
+      "type":"string",
+      "enum":[
+        "ACTIVE",
+        "INACTIVE"
+      ]
+    },
     "Boolean":{
       "type":"boolean",
       "box":true
@@ -561,6 +663,7 @@
           "documentation":"<p>Client token for idempotency</p>",
           "idempotencyToken":true
         },
+        "provenance":{"shape":"ProvenanceList"},
         "tags":{
           "shape":"TagsMap",
           "documentation":"<p>Tags to associate with the registry record</p>"
@@ -597,13 +700,17 @@
           "shape":"Description",
           "documentation":"<p>The description of the registry</p>"
         },
+        "encryptionConfiguration":{
+          "shape":"EncryptionConfiguration",
+          "documentation":"<p>The optional server-side encryption configuration for the registry. When you provide this field, the specified customer-managed Amazon Web Services KMS key encrypts the registry's content. Omit this field to use an Amazon Web Services-owned encryption key. You cannot change the encryption configuration after registry creation.</p>"
+        },
         "discoveryConfiguration":{
           "shape":"DiscoveryConfiguration",
           "documentation":"<p>Discovery configuration for the registry</p>"
         },
         "clientToken":{
           "shape":"ClientToken",
-          "documentation":"<p>Client token for idempotency</p>",
+          "documentation":"<p>A unique, case-sensitive identifier to ensure that the operation completes no more than one time. If this token matches a previous request, the service ignores the request, but does not return an error.</p>",
           "idempotencyToken":true
         },
         "tags":{
@@ -613,6 +720,10 @@
         "approvalConfiguration":{
           "shape":"ApprovalConfiguration",
           "documentation":"<p>Approval configuration for registry records</p>"
+        },
+        "autoDetectionConfiguration":{
+          "shape":"AutoDetectionConfiguration",
+          "documentation":"<p>The optional auto-detection configuration for the registry. When provided, the registry is automatically populated with resources discovered according to the configuration. Omit this field for registries whose records are managed exclusively through the Agent Registry Control API.</p>"
         }
       },
       "documentation":"<p>Request structure for creating a registry</p>"
@@ -627,6 +738,12 @@
         }
       },
       "documentation":"<p>Response structure for creating a registry</p>"
+    },
+    "CreatorAccountId":{
+      "type":"string",
+      "max":12,
+      "min":12,
+      "pattern":"[0-9]{12}"
     },
     "CredentialProviderArn":{
       "type":"string",
@@ -666,7 +783,10 @@
     "CustomDescriptor":{
       "type":"structure",
       "members":{
-        "data":{"shape":"DescriptorData"}
+        "data":{
+          "shape":"DescriptorData",
+          "documentation":"<p>The custom descriptor content, serialized as descriptor payload data.</p>"
+        }
       },
       "documentation":"<p>Custom descriptor for user-defined content</p>"
     },
@@ -835,6 +955,14 @@
         "custom":{
           "shape":"CustomDescriptor",
           "documentation":"<p>The custom descriptor, populated when the record type is CUSTOM.</p>"
+        },
+        "http":{
+          "shape":"HttpDescriptor",
+          "documentation":"<p>The HTTP descriptor, populated for records detected from an HTTP protocol source.</p>"
+        },
+        "agui":{
+          "shape":"AgUiDescriptor",
+          "documentation":"<p>The AG-UI descriptor, populated for records detected from an AG-UI protocol source.</p>"
         }
       },
       "documentation":"<p>The typed set of descriptors for a registry record. Exactly one descriptor field is populated based on the record type.</p>"
@@ -859,6 +987,17 @@
       "max":2048,
       "min":1,
       "pattern":".+/\\.well-known/openid-configuration"
+    },
+    "EncryptionConfiguration":{
+      "type":"structure",
+      "required":["kmsKeyArn"],
+      "members":{
+        "kmsKeyArn":{
+          "shape":"KmsKeyArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the customer-managed Amazon Web Services KMS key used to encrypt the registry's content. The key must be a symmetric encryption key in the same Amazon Web Services account and Region as the registry.</p>"
+        }
+      },
+      "documentation":"<p>The server-side encryption configuration for a registry. Specifies a customer-managed Amazon Web Services KMS key used to encrypt the registry's content.</p>"
     },
     "EndpointIpAddressType":{
       "type":"string",
@@ -917,11 +1056,11 @@
       "members":{
         "registryArn":{
           "shape":"RegistryArn",
-          "documentation":"<p>The &amp;ARN; of the parent registry that owns the record.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the parent registry that owns the record.</p>"
         },
         "recordArn":{
           "shape":"RegistryRecordArn",
-          "documentation":"<p>The &amp;ARN; of the registry record.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the registry record.</p>"
         },
         "recordId":{
           "shape":"RegistryRecordId",
@@ -966,6 +1105,15 @@
         "statusReason":{
           "shape":"String",
           "documentation":"<p>The reason for the current status. Typically populated when the status indicates a failure state.</p>"
+        },
+        "provenance":{"shape":"ProvenanceList"},
+        "createdByAutoDetection":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether the registry record was created by auto-detection. <code>true</code> indicates the record was automatically created by the service based on the registry's auto-detection configuration; <code>false</code> indicates the record was created through a control-plane API call.</p>"
+        },
+        "createdBy":{
+          "shape":"CreatorAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that created the registry record.</p>"
         }
       },
       "documentation":"<p>Response structure for retrieving a registry record</p>"
@@ -1014,6 +1162,10 @@
           "shape":"DiscoveryConfiguration",
           "documentation":"<p>Discovery configuration for the registry</p>"
         },
+        "encryptionConfiguration":{
+          "shape":"EncryptionConfiguration",
+          "documentation":"<p>The server-side encryption configuration for the registry. Appears only when a customer-managed Amazon Web Services KMS key encrypts the registry.</p>"
+        },
         "approvalConfiguration":{
           "shape":"ApprovalConfiguration",
           "documentation":"<p>Approval configuration for registry records</p>"
@@ -1026,6 +1178,10 @@
           "shape":"String",
           "documentation":"<p>The reason for the current status. Typically populated when the status indicates a failure state.</p>"
         },
+        "autoDetection":{
+          "shape":"AutoDetection",
+          "documentation":"<p>The registry's auto-detection properties, including the requested configuration and the current detection status. Present only when auto-detection was configured for the registry.</p>"
+        },
         "createdAt":{
           "shape":"DateTimestamp",
           "documentation":"<p>The timestamp when the registry was created</p>"
@@ -1036,6 +1192,13 @@
         }
       },
       "documentation":"<p>Response structure for getting a registry</p>"
+    },
+    "HttpDescriptor":{
+      "type":"structure",
+      "members":{
+        "source":{"shape":"DescriptorSource"}
+      },
+      "documentation":"<p>A registry record descriptor for the HTTP protocol. This descriptor is source-only: its content is synchronized from the configured source URL rather than supplied inline.</p>"
     },
     "IamRoleArn":{
       "type":"string",
@@ -1079,6 +1242,13 @@
       "error":{"httpStatusCode":500},
       "exception":true,
       "fault":true
+    },
+    "KmsKeyArn":{
+      "type":"string",
+      "documentation":"<p>A KMS key ARN</p>",
+      "max":2048,
+      "min":1,
+      "pattern":"arn:aws(|-cn|-us-gov):kms:[a-zA-Z0-9-]*:[0-9]{12}:key/[a-zA-Z0-9-]{36}"
     },
     "ListRegistriesRequest":{
       "type":"structure",
@@ -1158,6 +1328,7 @@
       "members":{
         "resourceArn":{
           "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource to list tags for. Supported resources include registries and registry records.</p>",
           "location":"uri",
           "locationName":"resourceArn"
         }
@@ -1166,7 +1337,10 @@
     "ListTagsForResourceResponse":{
       "type":"structure",
       "members":{
-        "tags":{"shape":"ResourceTagsMap"}
+        "tags":{
+          "shape":"ResourceTagsMap",
+          "documentation":"<p>The tags currently associated with the resource, as a map of tag keys to tag values.</p>"
+        }
       }
     },
     "ManagedVpcResource":{
@@ -1193,7 +1367,10 @@
           "shape":"SecurityGroupIds",
           "documentation":"<p>The identifiers of the security groups associated with the private endpoint network interfaces.</p>"
         },
-        "tags":{"shape":"TagsMap"},
+        "tags":{
+          "shape":"TagsMap",
+          "documentation":"<p>The tags applied to the service-managed VPC resource.</p>"
+        },
         "routingDomain":{
           "shape":"RoutingDomain",
           "documentation":"<p>The routing domain used to resolve traffic through the private endpoint.</p>"
@@ -1224,7 +1401,10 @@
     "McpServerAdditionalData":{
       "type":"structure",
       "members":{
-        "tools":{"shape":"McpToolsDescriptor"}
+        "tools":{
+          "shape":"McpToolsDescriptor",
+          "documentation":"<p>The MCP tools descriptor that defines the tools exposed by the MCP server.</p>"
+        }
       },
       "documentation":"<p>Additional data for an MCP server descriptor</p>"
     },
@@ -1253,8 +1433,14 @@
     "McpToolsDescriptor":{
       "type":"structure",
       "members":{
-        "data":{"shape":"DescriptorData"},
-        "dataSchemaVersion":{"shape":"DataSchemaVersion"}
+        "data":{
+          "shape":"DescriptorData",
+          "documentation":"<p>The MCP tools descriptor content, serialized as descriptor payload data.</p>"
+        },
+        "dataSchemaVersion":{
+          "shape":"DataSchemaVersion",
+          "documentation":"<p>The schema version of the descriptor payload.</p>"
+        }
       },
       "documentation":"<p>MCP tools descriptor containing tool definitions</p>"
     },
@@ -1317,6 +1503,67 @@
       "max":5,
       "min":0
     },
+    "Provenance":{
+      "type":"structure",
+      "required":[
+        "relation",
+        "sourceId"
+      ],
+      "members":{
+        "relation":{"shape":"ProvenanceRelation"},
+        "sourceId":{
+          "shape":"SourceId",
+          "documentation":"<p>The identifier of the upstream source that the registry record was detected from.</p>"
+        },
+        "sourceType":{
+          "shape":"SourceType",
+          "documentation":"<p>The type of the upstream source that the registry record was detected from.</p>"
+        },
+        "sourceDetails":{
+          "shape":"SourceDetails",
+          "documentation":"<p>Additional details about the upstream source that the registry record was detected from, such as the AgentCore Gateway or Runtime configuration. The populated member corresponds to the source type.</p>"
+        }
+      },
+      "documentation":"<p>One provenance entry describing the lineage of a registry record.</p>"
+    },
+    "ProvenanceList":{
+      "type":"list",
+      "member":{"shape":"Provenance"},
+      "documentation":"<p>List of provenance entries on a registry record. Capped at one entry today: a record carries a single DETECTED_FROM lineage. Modeled as a list so additional relations can be unlocked post-GA by raising this bound without a breaking shape change.</p>",
+      "max":1,
+      "min":0
+    },
+    "ProvenanceRelation":{
+      "type":"string",
+      "documentation":"<p>The relationship between the registry record and its provenance source.</p>",
+      "enum":["DETECTED_FROM"]
+    },
+    "ProvenanceSummary":{
+      "type":"structure",
+      "required":[
+        "relation",
+        "sourceId"
+      ],
+      "members":{
+        "relation":{"shape":"ProvenanceRelation"},
+        "sourceId":{
+          "shape":"SourceId",
+          "documentation":"<p>The identifier of the upstream source that the registry record was detected from.</p>"
+        },
+        "sourceType":{
+          "shape":"SourceType",
+          "documentation":"<p>The type of the upstream source that the registry record was detected from.</p>"
+        }
+      },
+      "documentation":"<p>Condensed provenance entry for list results — the key triple only (no sourceDetails union). Enough to display and client-side-filter lineage without the full-read config payload.</p>"
+    },
+    "ProvenanceSummaryList":{
+      "type":"list",
+      "member":{"shape":"ProvenanceSummary"},
+      "documentation":"<p>List of condensed provenance entries surfaced on RegistryRecordSummary. Mirrors ProvenanceList's cardinality (one entry today); modeled as a list for forward-compatibility.</p>",
+      "max":1,
+      "min":0
+    },
     "RecordIdentifier":{
       "type":"string",
       "documentation":"<p>Record identifier that accepts either ARN or ID format</p>",
@@ -1331,7 +1578,8 @@
         "MCP",
         "AGENT",
         "CUSTOM",
-        "SKILL"
+        "SKILL",
+        "GATEWAY"
       ]
     },
     "RegistryArn":{
@@ -1496,7 +1744,7 @@
       "members":{
         "roleArn":{
           "shape":"IamRoleArn",
-          "documentation":"<p>The &amp;ARN; of the IAM role to assume for request signing.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role to assume for request signing.</p>"
         },
         "service":{
           "shape":"IamSigningServiceName",
@@ -1504,10 +1752,10 @@
         },
         "region":{
           "shape":"IamSigningRegion",
-          "documentation":"<p>The AWS Region to use for request signing. If not specified, the Region is derived from the source URL hostname, falling back to the Region of the registry.</p>"
+          "documentation":"<p>The Amazon Web Services Region to use for request signing. If not specified, the Region is derived from the source URL hostname, falling back to the Region of the registry.</p>"
         }
       },
-      "documentation":"<p>The configuration for an IAM role credential provider that signs requests to a registry record's source with AWS Signature Version 4 (SigV4).</p>"
+      "documentation":"<p>The configuration for an IAM role credential provider that signs requests to a registry record's source with Amazon Web Services Signature Version 4 (SigV4).</p>"
     },
     "RegistryRecordId":{
       "type":"string",
@@ -1529,7 +1777,7 @@
       "members":{
         "providerArn":{
           "shape":"CredentialProviderArn",
-          "documentation":"<p>The &amp;ARN; of the OAuth 2.0 credential provider resource in Amazon Bedrock AgentCore Identity.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the OAuth 2.0 credential provider resource in Amazon Bedrock AgentCore Identity.</p>"
         },
         "grantType":{
           "shape":"RegistryRecordOAuthGrantType",
@@ -1581,11 +1829,11 @@
       "members":{
         "registryArn":{
           "shape":"RegistryArn",
-          "documentation":"<p>The &amp;ARN; of the parent registry that owns the record.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the parent registry that owns the record.</p>"
         },
         "recordArn":{
           "shape":"RegistryRecordArn",
-          "documentation":"<p>The &amp;ARN; of the registry record.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the registry record.</p>"
         },
         "recordId":{
           "shape":"RegistryRecordId",
@@ -1622,7 +1870,16 @@
         "updatedAt":{
           "shape":"DateTimestamp",
           "documentation":"<p>The timestamp when the registry record was last updated.</p>"
-        }
+        },
+        "createdByAutoDetection":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether the registry record was created by auto-detection. <code>true</code> indicates the record was automatically created by the service based on the registry's auto-detection configuration; <code>false</code> indicates the record was created through a control-plane API call.</p>"
+        },
+        "createdBy":{
+          "shape":"CreatorAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that created the registry record.</p>"
+        },
+        "provenanceSummaryList":{"shape":"ProvenanceSummaryList"}
       },
       "documentation":"<p>A summary of a registry record returned by list operations. Contains identifying and lifecycle fields but omits descriptor content.</p>"
     },
@@ -1687,6 +1944,10 @@
         "statusReason":{
           "shape":"String",
           "documentation":"<p>The reason for the current status. Typically populated when the status indicates a failure state.</p>"
+        },
+        "autoDetection":{
+          "shape":"AutoDetection",
+          "documentation":"<p>The registry's auto-detection properties, including the requested configuration and the current detection status. Present only when auto-detection was configured for the registry.</p>"
         },
         "createdAt":{
           "shape":"DateTimestamp",
@@ -1783,6 +2044,28 @@
       },
       "exception":true
     },
+    "SourceDetails":{
+      "type":"structure",
+      "members":{
+        "agentcoreRuntime":{"shape":"AgentCoreRuntimeSourceDetails"},
+        "agentcoreGateway":{"shape":"AgentCoreGatewaySourceDetails"}
+      },
+      "documentation":"<p>The details about the upstream source from which a registry record was detected. Exactly one member is populated, corresponding to the source type.</p>",
+      "union":true
+    },
+    "SourceId":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "pattern":"arn:aws(-[^:]+)?:[a-zA-Z0-9-]+:[a-z0-9-]*:[0-9]{12}:.+"
+    },
+    "SourceType":{
+      "type":"string",
+      "enum":[
+        "AWS::BedrockAgentCore::Runtime",
+        "AWS::BedrockAgentCore::Gateway"
+      ]
+    },
     "String":{"type":"string"},
     "SubmitRegistryRecordForApprovalRequest":{
       "type":"structure",
@@ -1873,10 +2156,14 @@
       "members":{
         "resourceArn":{
           "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource to tag. Supported resources include registries and registry records.</p>",
           "location":"uri",
           "locationName":"resourceArn"
         },
-        "tags":{"shape":"TagsMap"}
+        "tags":{
+          "shape":"TagsMap",
+          "documentation":"<p>The tags to apply to the resource, as a map of tag keys to tag values. Tag keys must be unique within the request.</p>"
+        }
       }
     },
     "TagResourceResponse":{
@@ -1919,11 +2206,13 @@
       "members":{
         "resourceArn":{
           "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource to remove tags from. Supported resources include registries and registry records.</p>",
           "location":"uri",
           "locationName":"resourceArn"
         },
         "tagKeys":{
           "shape":"TagKeyList",
+          "documentation":"<p>The keys of the tags to remove from the resource. Tags with keys not included in this list remain on the resource.</p>",
           "location":"querystring",
           "locationName":"tagKeys"
         }
@@ -1979,7 +2268,8 @@
         "triggerSynchronization":{
           "shape":"Boolean",
           "documentation":"<p>Whether to trigger synchronization of the record's descriptor content from its source</p>"
-        }
+        },
+        "provenance":{"shape":"ProvenanceList"}
       }
     },
     "UpdateRegistryRecordResponse":{
@@ -1997,11 +2287,11 @@
       "members":{
         "registryArn":{
           "shape":"RegistryArn",
-          "documentation":"<p>The &amp;ARN; of the parent registry that owns the record.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the parent registry that owns the record.</p>"
         },
         "recordArn":{
           "shape":"RegistryRecordArn",
-          "documentation":"<p>The &amp;ARN; of the registry record.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the registry record.</p>"
         },
         "recordId":{
           "shape":"RegistryRecordId",
@@ -2046,6 +2336,15 @@
         "statusReason":{
           "shape":"String",
           "documentation":"<p>The reason for the current status. Typically populated when the status indicates a failure state.</p>"
+        },
+        "provenance":{"shape":"ProvenanceList"},
+        "createdByAutoDetection":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether the registry record was created by auto-detection. <code>true</code> indicates the record was automatically created by the service based on the registry's auto-detection configuration; <code>false</code> indicates the record was created through a control-plane API call.</p>"
+        },
+        "createdBy":{
+          "shape":"CreatorAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that created the registry record.</p>"
         }
       },
       "documentation":"<p>Response structure for updating a registry record</p>"
@@ -2149,6 +2448,10 @@
         "approvalConfiguration":{
           "shape":"UpdatedApprovalConfiguration",
           "documentation":"<p>The updated approval configuration. The change applies only to records that move to PENDING_APPROVAL after the update; records already in PENDING_APPROVAL are unaffected.</p>"
+        },
+        "autoDetectionConfiguration":{
+          "shape":"UpdatedAutoDetectionConfiguration",
+          "documentation":"<p>The updated auto-detection configuration for the registry, with PATCH semantics. Omit this field to leave the current configuration unchanged. Supply an empty wrapper to unset it. Supply <code>optionalValue</code> to replace it.</p>"
         }
       },
       "documentation":"<p>Request structure for updating a registry</p>"
@@ -2184,6 +2487,10 @@
           "shape":"DiscoveryConfiguration",
           "documentation":"<p>Discovery configuration for the registry</p>"
         },
+        "encryptionConfiguration":{
+          "shape":"EncryptionConfiguration",
+          "documentation":"<p>The server-side encryption configuration for the registry. Appears only when a customer-managed Amazon Web Services KMS key encrypts the registry.</p>"
+        },
         "approvalConfiguration":{
           "shape":"ApprovalConfiguration",
           "documentation":"<p>Approval configuration for registry records</p>"
@@ -2195,6 +2502,10 @@
         "statusReason":{
           "shape":"String",
           "documentation":"<p>The reason for the current status. Typically populated when the status indicates a failure state.</p>"
+        },
+        "autoDetection":{
+          "shape":"AutoDetection",
+          "documentation":"<p>The registry's auto-detection properties, including the requested configuration and the current detection status. Present only when auto-detection was configured for the registry.</p>"
         },
         "createdAt":{
           "shape":"DateTimestamp",
@@ -2234,6 +2545,26 @@
         }
       },
       "documentation":"<p>The set of A2A agent card descriptor fields that can be individually updated.</p>"
+    },
+    "UpdatedAgUiDescriptor":{
+      "type":"structure",
+      "members":{
+        "optionalValue":{
+          "shape":"UpdatedAgUiDescriptorFields",
+          "documentation":"<p>The value to set for this field. Omit the wrapper to leave the field unchanged.</p>"
+        }
+      },
+      "documentation":"<p>The AG-UI descriptor patch wrapper. Omit to leave the descriptor unchanged; supply an empty object to remove it; supply optionalValue to patch its fields.</p>"
+    },
+    "UpdatedAgUiDescriptorFields":{
+      "type":"structure",
+      "members":{
+        "source":{
+          "shape":"UpdatedDescriptorSource",
+          "documentation":"<p>The patch for the descriptor's source field.</p>"
+        }
+      },
+      "documentation":"<p>The set of AG-UI descriptor fields that can be individually updated.</p>"
     },
     "UpdatedAgentSkillsAdditionalData":{
       "type":"structure",
@@ -2331,6 +2662,16 @@
       },
       "documentation":"<p>Wrapper for updating an optional authorizer configuration with PATCH semantics.</p>"
     },
+    "UpdatedAutoDetectionConfiguration":{
+      "type":"structure",
+      "members":{
+        "optionalValue":{
+          "shape":"AutoDetectionConfiguration",
+          "documentation":"<p>The value to set for this field. Omit the wrapper to leave the field unchanged.</p>"
+        }
+      },
+      "documentation":"<p>A wrapper for updating the auto-detection configuration of a registry with PATCH semantics. Include this wrapper to replace the auto-detection configuration with the specified value. Omit it to leave the auto-detection configuration unchanged. To clear the configuration, include the wrapper with a null <code>optionalValue</code>.</p>"
+    },
     "UpdatedCustomDescriptor":{
       "type":"structure",
       "members":{
@@ -2364,7 +2705,10 @@
     "UpdatedDescription":{
       "type":"structure",
       "members":{
-        "optionalValue":{"shape":"Description"}
+        "optionalValue":{
+          "shape":"Description",
+          "documentation":"<p>The value to set for this field. Omit the wrapper to leave the field unchanged.</p>"
+        }
       },
       "documentation":"<p>Wrapper for updating an optional Description field with PATCH semantics</p>"
     },
@@ -2416,6 +2760,14 @@
         "custom":{
           "shape":"UpdatedCustomDescriptor",
           "documentation":"<p>The patch for the custom descriptor.</p>"
+        },
+        "http":{
+          "shape":"UpdatedHttpDescriptor",
+          "documentation":"<p>The patch for the HTTP descriptor.</p>"
+        },
+        "agui":{
+          "shape":"UpdatedAgUiDescriptor",
+          "documentation":"<p>The patch for the AG-UI descriptor.</p>"
         }
       },
       "documentation":"<p>The patchable descriptor fields applied during an UpdateRegistryRecord call. Each field is independently patchable.</p>"
@@ -2439,6 +2791,26 @@
         }
       },
       "documentation":"<p>Leaf patch wrapper for a registry record's display name. Omit to leave unchanged; supply an empty object to unset; supply optionalValue to set.</p>"
+    },
+    "UpdatedHttpDescriptor":{
+      "type":"structure",
+      "members":{
+        "optionalValue":{
+          "shape":"UpdatedHttpDescriptorFields",
+          "documentation":"<p>The value to set for this field. Omit the wrapper to leave the field unchanged.</p>"
+        }
+      },
+      "documentation":"<p>The HTTP descriptor patch wrapper. Omit to leave the descriptor unchanged; supply an empty object to remove it; supply optionalValue to patch its fields.</p>"
+    },
+    "UpdatedHttpDescriptorFields":{
+      "type":"structure",
+      "members":{
+        "source":{
+          "shape":"UpdatedDescriptorSource",
+          "documentation":"<p>The patch for the descriptor's source field.</p>"
+        }
+      },
+      "documentation":"<p>The set of HTTP descriptor fields that can be individually updated.</p>"
     },
     "UpdatedMcpServerAdditionalData":{
       "type":"structure",
@@ -2578,7 +2950,23 @@
       "max":48,
       "min":10,
       "pattern":"vpc-(([0-9a-z]{8})|([0-9a-z]{17}))"
+    },
+    "WorkloadIdentityDetails":{
+      "type":"structure",
+      "required":["workloadIdentityArn"],
+      "members":{
+        "workloadIdentityArn":{
+          "shape":"WorkloadIdentityDetailsWorkloadIdentityArnString",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the workload identity associated with the source resource.</p>"
+        }
+      },
+      "documentation":"<p>Workload identity details associated with a source resource.</p>"
+    },
+    "WorkloadIdentityDetailsWorkloadIdentityArnString":{
+      "type":"string",
+      "max":1024,
+      "min":1
     }
   },
-  "documentation":"<p>AWS Agent Registry is a managed catalog for publishing and discovering resources such as MCP servers, agents, and agent skills. Agent Registry Control is its control-plane API: use it to create and manage registries and the records they contain, configure discovery and authorization, govern record approval and curation workflows, and manage automatic detection of resources. Data-plane search and MCP invocation operations are provided by the companion Agent Registry API.</p>"
+  "documentation":"<p>Amazon Web Services Agent Registry is a managed catalog for publishing and discovering resources such as MCP servers, agents, and agent skills. Agent Registry Control is its control-plane API: use it to create and manage registries and the records they contain, configure discovery and authorization, govern record approval and curation workflows, and manage automatic detection of resources. Data-plane search and MCP invocation operations are provided by the companion Agent Registry API.</p>"
 }

@@ -76,14 +76,20 @@
     "A2aAgentCardDescriptor":{
       "type":"structure",
       "members":{
-        "data":{"shape":"DescriptorData"},
-        "dataSchemaVersion":{"shape":"DataSchemaVersion"},
+        "data":{
+          "shape":"DescriptorData",
+          "documentation":"<p> The A2A agent card content, serialized as descriptor payload data.</p>"
+        },
+        "dataSchemaVersion":{
+          "shape":"DataSchemaVersion",
+          "documentation":"<p> The schema version of the descriptor payload.</p>"
+        },
         "source":{
           "shape":"DescriptorSource",
           "documentation":"<p> The source location from which the A2A (Agent-to-Agent) agent card descriptor content was retrieved.</p>"
         }
       },
-      "documentation":"<p>Base mixin for A2A agent card descriptor content</p>"
+      "documentation":"<p> Descriptor that defines the content of an A2A (Agent-to-Agent) agent card registry record. The content is validated against the A2A protocol schema.</p>"
     },
     "AccessDeniedException":{
       "type":"structure",
@@ -100,33 +106,48 @@
     "AgentSkillsAdditionalData":{
       "type":"structure",
       "members":{
-        "skillMd":{"shape":"AgentSkillsMdDescriptor"}
+        "skillMd":{
+          "shape":"AgentSkillsMdDescriptor",
+          "documentation":"<p> The agent skills markdown descriptor associated with the agent skills definition.</p>"
+        }
       },
       "documentation":"<p> Additional data for an agent skills definition descriptor.</p>"
     },
     "AgentSkillsDefinitionDescriptor":{
       "type":"structure",
       "members":{
-        "data":{"shape":"DescriptorData"},
-        "dataSchemaVersion":{"shape":"DataSchemaVersion"},
+        "data":{
+          "shape":"DescriptorData",
+          "documentation":"<p> The agent skills definition content, serialized as descriptor payload data.</p>"
+        },
+        "dataSchemaVersion":{
+          "shape":"DataSchemaVersion",
+          "documentation":"<p> The schema version of the descriptor payload.</p>"
+        },
         "additionalData":{
           "shape":"AgentSkillsAdditionalData",
           "documentation":"<p> Additional data for the agent skills definition, such as the skills markdown descriptor.</p>"
         }
       },
-      "documentation":"<p>Base mixin for agent skills definition descriptor content</p>"
+      "documentation":"<p> Descriptor that defines an agent skills registry record and its associated content.</p>"
     },
     "AgentSkillsMdDescriptor":{
       "type":"structure",
       "members":{
-        "data":{"shape":"DescriptorData"},
-        "dataSchemaVersion":{"shape":"DataSchemaVersion"},
+        "data":{
+          "shape":"DescriptorData",
+          "documentation":"<p> The agent skills markdown content, serialized as descriptor payload data.</p>"
+        },
+        "dataSchemaVersion":{
+          "shape":"DataSchemaVersion",
+          "documentation":"<p> The schema version of the descriptor payload.</p>"
+        },
         "source":{
           "shape":"DescriptorSource",
           "documentation":"<p> The source location from which the agent skills markdown content was retrieved.</p>"
         }
       },
-      "documentation":"<p>Base mixin for agent skills markdown descriptor content</p>"
+      "documentation":"<p> Markdown-format descriptor containing an agent skills document.</p>"
     },
     "BatchGetDiscoverableRegistryRecordError":{
       "type":"structure",
@@ -136,8 +157,14 @@
         "errorCode"
       ],
       "members":{
-        "registryId":{"shape":"RegistryIdentifier"},
-        "recordId":{"shape":"RecordIdentifier"},
+        "registryId":{
+          "shape":"RegistryIdentifier",
+          "documentation":"<p> The identifier of the registry the record was requested from, echoed from the request.</p>"
+        },
+        "recordId":{
+          "shape":"RecordIdentifier",
+          "documentation":"<p> The identifier of the record that could not be retrieved, echoed from the request in the same format that you supplied (ARN or record ID).</p>"
+        },
         "errorCode":{
           "shape":"BatchGetDiscoverableRegistryRecordErrorCode",
           "documentation":"<p> The machine-readable reason that the record could not be retrieved.</p>"
@@ -197,7 +224,10 @@
     "CustomDescriptor":{
       "type":"structure",
       "members":{
-        "data":{"shape":"DescriptorData"}
+        "data":{
+          "shape":"DescriptorData",
+          "documentation":"<p>The custom descriptor content, serialized as descriptor payload data.</p>"
+        }
       },
       "documentation":"<p>Custom descriptor for user-defined content</p>"
     },
@@ -229,7 +259,10 @@
     "DescriptorSource":{
       "type":"structure",
       "members":{
-        "fromUrl":{"shape":"DescriptorSourceFromUrl"}
+        "fromUrl":{
+          "shape":"DescriptorSourceFromUrl",
+          "documentation":"<p> The URL-based descriptor source, populated when descriptor content is synchronized from a URL.</p>"
+        }
       },
       "documentation":"<p> The source location from which a descriptor's content was retrieved.</p>"
     },
@@ -237,9 +270,12 @@
       "type":"structure",
       "required":["url"],
       "members":{
-        "url":{"shape":"DescriptorSourceUrl"}
+        "url":{
+          "shape":"DescriptorSourceUrl",
+          "documentation":"<p> The URL from which the descriptor content is retrieved.</p>"
+        }
       },
-      "documentation":"<p>Base mixin for descriptor source from URL</p>"
+      "documentation":"<p> A URL-based descriptor source that identifies where descriptor content is retrieved from.</p>"
     },
     "DescriptorSourceUrl":{
       "type":"string",
@@ -248,13 +284,31 @@
       "min":1,
       "pattern":"https://.*"
     },
+    "DescriptorTypeList":{
+      "type":"list",
+      "member":{"shape":"String"},
+      "max":10,
+      "min":0
+    },
     "Descriptors":{
       "type":"structure",
       "members":{
-        "mcpServer":{"shape":"McpServerDescriptor"},
-        "a2aAgentCard":{"shape":"A2aAgentCardDescriptor"},
-        "agentSkillsDefinition":{"shape":"AgentSkillsDefinitionDescriptor"},
-        "custom":{"shape":"CustomDescriptor"}
+        "mcpServer":{
+          "shape":"McpServerDescriptor",
+          "documentation":"<p> The MCP server descriptor, populated when the record type is MCP.</p>"
+        },
+        "a2aAgentCard":{
+          "shape":"A2aAgentCardDescriptor",
+          "documentation":"<p> The A2A agent card descriptor, populated when the record type is AGENT.</p>"
+        },
+        "agentSkillsDefinition":{
+          "shape":"AgentSkillsDefinitionDescriptor",
+          "documentation":"<p> The agent skills definition descriptor, populated when the record type is SKILL.</p>"
+        },
+        "custom":{
+          "shape":"CustomDescriptor",
+          "documentation":"<p> The custom descriptor, populated when the record type is CUSTOM.</p>"
+        }
       },
       "documentation":"<p> The protocol-specific descriptors that describe how to connect to and use the registry record.</p>"
     },
@@ -278,17 +332,54 @@
         "updatedAt"
       ],
       "members":{
-        "registryArn":{"shape":"RegistryArn"},
-        "recordArn":{"shape":"RegistryRecordArn"},
-        "recordId":{"shape":"RegistryRecordId"},
-        "name":{"shape":"RegistryRecordName"},
-        "description":{"shape":"Description"},
-        "displayName":{"shape":"RegistryRecordDisplayName"},
-        "recordType":{"shape":"RecordType"},
-        "recordVersion":{"shape":"RegistryRecordVersion"},
-        "status":{"shape":"RegistryRecordStatus"},
-        "createdAt":{"shape":"DateTimestamp"},
-        "updatedAt":{"shape":"DateTimestamp"}
+        "registryArn":{
+          "shape":"RegistryArn",
+          "documentation":"<p> The Amazon Resource Name (ARN) of the parent registry that owns the record.</p>"
+        },
+        "recordArn":{
+          "shape":"RegistryRecordArn",
+          "documentation":"<p> The Amazon Resource Name (ARN) of the registry record.</p>"
+        },
+        "recordId":{
+          "shape":"RegistryRecordId",
+          "documentation":"<p> The unique identifier of the registry record.</p>"
+        },
+        "name":{
+          "shape":"RegistryRecordName",
+          "documentation":"<p> The name of the registry record. Names are unique within a registry.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p> A human-readable description of the registry record. Use this field to explain the record's purpose or content to consumers discovering it in the registry.</p>"
+        },
+        "displayName":{
+          "shape":"RegistryRecordDisplayName",
+          "documentation":"<p> The human-readable display name of the registry record.</p>"
+        },
+        "recordType":{
+          "shape":"RecordType",
+          "documentation":"<p> The type of the registry record. <code>MCP</code> is a Model Context Protocol server record, <code>AGENT</code> is an Agent-to-Agent (A2A) agent card record, <code>SKILL</code> is an agent skills definition record, and <code>CUSTOM</code> is a record with a custom descriptor.</p>"
+        },
+        "recordVersion":{
+          "shape":"RegistryRecordVersion",
+          "documentation":"<p> The version identifier of the registry record.</p>"
+        },
+        "status":{
+          "shape":"RegistryRecordStatus",
+          "documentation":"<p> The lifecycle status of the registry record. A record is <code>DRAFT</code> before it is submitted, <code>PENDING_APPROVAL</code> while awaiting curator review, and <code>APPROVED</code> once it is approved and discoverable. <code>REJECTED</code> and <code>DEPRECATED</code> records are not discoverable. The <code>CREATING</code>, <code>UPDATING</code>, <code>CREATE_FAILED</code>, and <code>UPDATE_FAILED</code> values reflect the state of an in-progress or failed asynchronous change.</p>"
+        },
+        "createdAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p> The timestamp when the registry record was created.</p>"
+        },
+        "updatedAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p> The timestamp when the registry record was last updated.</p>"
+        },
+        "descriptorTypes":{
+          "shape":"DescriptorTypeList",
+          "documentation":"<p> The descriptor types that are present on this registry record. Each value corresponds to a descriptor entry key on the approved record.</p>"
+        }
       },
       "documentation":"<p> Summary information about a discoverable registry record returned by <code> ListDiscoverableRegistryRecords</code>. This summary does not include descriptors.</p>"
     },
@@ -318,6 +409,7 @@
       "members":{
         "registryId":{
           "shape":"RegistryIdentifier",
+          "documentation":"<p> The identifier of the registry whose discoverable records are listed. You can provide either the full Amazon Resource Name (ARN) or the registry ID.</p>",
           "location":"uri",
           "locationName":"registryId"
         },
@@ -363,28 +455,46 @@
     "McpServerAdditionalData":{
       "type":"structure",
       "members":{
-        "tools":{"shape":"McpToolsDescriptor"}
+        "tools":{
+          "shape":"McpToolsDescriptor",
+          "documentation":"<p>The MCP tools descriptor that defines the tools exposed by the MCP server.</p>"
+        }
       },
       "documentation":"<p>Additional data for an MCP server descriptor</p>"
     },
     "McpServerDescriptor":{
       "type":"structure",
       "members":{
-        "data":{"shape":"DescriptorData"},
-        "dataSchemaVersion":{"shape":"DataSchemaVersion"},
-        "additionalData":{"shape":"McpServerAdditionalData"},
+        "data":{
+          "shape":"DescriptorData",
+          "documentation":"<p> The MCP server descriptor content, serialized as descriptor payload data.</p>"
+        },
+        "dataSchemaVersion":{
+          "shape":"DataSchemaVersion",
+          "documentation":"<p> The schema version of the descriptor payload.</p>"
+        },
+        "additionalData":{
+          "shape":"McpServerAdditionalData",
+          "documentation":"<p> Additional data associated with the MCP server descriptor, such as tool definitions.</p>"
+        },
         "source":{
           "shape":"DescriptorSource",
           "documentation":"<p> The source location from which the MCP (Model Context Protocol) server descriptor content was retrieved.</p>"
         }
       },
-      "documentation":"<p>Base mixin for MCP server descriptor content</p>"
+      "documentation":"<p> Descriptor that defines the content of an MCP (Model Context Protocol) server registry record, including the server definition and its tool definitions. The content is validated against the MCP protocol schema.</p>"
     },
     "McpToolsDescriptor":{
       "type":"structure",
       "members":{
-        "data":{"shape":"DescriptorData"},
-        "dataSchemaVersion":{"shape":"DataSchemaVersion"}
+        "data":{
+          "shape":"DescriptorData",
+          "documentation":"<p>The MCP tools descriptor content, serialized as descriptor payload data.</p>"
+        },
+        "dataSchemaVersion":{
+          "shape":"DataSchemaVersion",
+          "documentation":"<p>The schema version of the descriptor payload.</p>"
+        }
       },
       "documentation":"<p>MCP tools descriptor containing tool definitions</p>"
     },
@@ -414,7 +524,8 @@
         "MCP",
         "AGENT",
         "CUSTOM",
-        "SKILL"
+        "SKILL",
+        "GATEWAY"
       ]
     },
     "RegistryArn":{
@@ -521,21 +632,54 @@
         "updatedAt"
       ],
       "members":{
-        "registryArn":{"shape":"RegistryArn"},
-        "recordArn":{"shape":"RegistryRecordArn"},
-        "recordId":{"shape":"RegistryRecordId"},
-        "name":{"shape":"RegistryRecordName"},
-        "description":{"shape":"Description"},
-        "displayName":{"shape":"RegistryRecordDisplayName"},
-        "recordType":{"shape":"RecordType"},
+        "registryArn":{
+          "shape":"RegistryArn",
+          "documentation":"<p> The Amazon Resource Name (ARN) of the parent registry that owns the record.</p>"
+        },
+        "recordArn":{
+          "shape":"RegistryRecordArn",
+          "documentation":"<p> The Amazon Resource Name (ARN) of the registry record.</p>"
+        },
+        "recordId":{
+          "shape":"RegistryRecordId",
+          "documentation":"<p> The unique identifier of the registry record.</p>"
+        },
+        "name":{
+          "shape":"RegistryRecordName",
+          "documentation":"<p> The name of the registry record. Names are unique within a registry.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p> A human-readable description of the registry record. Use this field to explain the record's purpose or content to consumers discovering it in the registry.</p>"
+        },
+        "displayName":{
+          "shape":"RegistryRecordDisplayName",
+          "documentation":"<p> The human-readable display name of the registry record.</p>"
+        },
+        "recordType":{
+          "shape":"RecordType",
+          "documentation":"<p> The type of the registry record. <code>MCP</code> is a Model Context Protocol server record, <code>AGENT</code> is an Agent-to-Agent (A2A) agent card record, <code>SKILL</code> is an agent skills definition record, and <code>CUSTOM</code> is a record with a custom descriptor.</p>"
+        },
         "descriptors":{
           "shape":"Descriptors",
           "documentation":"<p> The protocol-specific descriptors that describe how to connect to and use the record.</p>"
         },
-        "recordVersion":{"shape":"RegistryRecordVersion"},
-        "status":{"shape":"RegistryRecordStatus"},
-        "createdAt":{"shape":"DateTimestamp"},
-        "updatedAt":{"shape":"DateTimestamp"}
+        "recordVersion":{
+          "shape":"RegistryRecordVersion",
+          "documentation":"<p> The version identifier of the registry record.</p>"
+        },
+        "status":{
+          "shape":"RegistryRecordStatus",
+          "documentation":"<p> The lifecycle status of the registry record. A record is <code>DRAFT</code> before it is submitted, <code>PENDING_APPROVAL</code> while awaiting curator review, and <code>APPROVED</code> once it is approved and discoverable. <code>REJECTED</code> and <code>DEPRECATED</code> records are not discoverable. The <code>CREATING</code>, <code>UPDATING</code>, <code>CREATE_FAILED</code>, and <code>UPDATE_FAILED</code> values reflect the state of an in-progress or failed asynchronous change.</p>"
+        },
+        "createdAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p> The timestamp when the registry record was created.</p>"
+        },
+        "updatedAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p> The timestamp when the registry record was last updated.</p>"
+        }
       },
       "documentation":"<p> Summary information about a registry record, including its descriptors.</p>"
     },
@@ -557,7 +701,10 @@
         "recordIds"
       ],
       "members":{
-        "registryId":{"shape":"RegistryIdentifier"},
+        "registryId":{
+          "shape":"RegistryIdentifier",
+          "documentation":"<p> The identifier of the registry to retrieve the records from. You can provide either the full Amazon Resource Name (ARN) or the registry ID.</p>"
+        },
         "recordIds":{
           "shape":"RegistryRecordsEntryRecordIdsList",
           "documentation":"<p> The record IDs to retrieve from the registry. You can specify 1 through 100 record IDs.</p>"

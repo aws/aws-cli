@@ -60,6 +60,46 @@ class CommandAction(argparse.Action):
         pass
 
 
+
+class _HelpFlagResolver(argparse.ArgumentParser):
+    """Minimal parser that resolves --help (and abbreviations) to 'help'.
+
+    This is used as a first pass before the real parse so that argparse
+    handles abbreviation matching (e.g. --hel, --he) consistently with
+    all other flags.
+    """
+
+    def __init__(self):
+        super().__init__(add_help=False)
+        self.add_argument(
+            '--help', action='store_true', default=False, dest='help_flag'
+        )
+
+    def error(self, message):
+        # Suppress errors from this resolver; the real parser will
+        # report them.
+        raise ArgParseException(message)
+
+
+_HELP_RESOLVER = _HelpFlagResolver()
+
+
+def _rewrite_help_flag(args):
+    """Rewrite --help (and abbreviations) to the help positional.
+
+    Uses a minimal argparse parser so that standard abbreviation
+    matching is applied (e.g. --hel, --he all resolve to --help).
+    """
+    try:
+        parsed, remaining = _HELP_RESOLVER.parse_known_args(args)
+    except ArgParseException:
+        return args
+    if parsed.help_flag:
+        remaining.append('help')
+        return remaining
+    return args
+
+
 class CLIArgParser(argparse.ArgumentParser):
     Formatter = argparse.RawTextHelpFormatter
 
@@ -81,6 +121,7 @@ class CLIArgParser(argparse.ArgumentParser):
             raise argparse.ArgumentError(action, '\n'.join(msg))
 
     def parse_known_args(self, args, namespace=None):
+        args = _rewrite_help_flag(args)
         parsed, remaining = super().parse_known_args(args, namespace)
         terminal_encoding = getattr(sys.stdin, 'encoding', 'utf-8')
         if terminal_encoding is None:
@@ -156,6 +197,7 @@ class MainArgParser(CLIArgParser):
         self.add_argument(
             'command', action=CommandAction, command_table=command_table
         )
+
 
 
 class ServiceArgParser(CLIArgParser):

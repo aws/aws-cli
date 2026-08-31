@@ -267,6 +267,39 @@ class TestHelpOutput(BaseAWSHelpOutputTest):
         self.assert_not_contains('put-bucket-notification\n')
 
 
+class TestHelpFlagOutput(BaseAWSHelpOutputTest):
+    """Test that --help flag produces the same output as the help subcommand."""
+
+    def test_top_level_help_flag(self):
+        self.driver.main(['--help'])
+        self.assert_contains('***\naws\n***')
+        self.assert_contains(
+            'The AWS Command Line Interface is a unified tool '
+            'to manage your AWS services.'
+        )
+
+    def test_service_help_flag(self):
+        self.driver.main(['ec2', '--help'])
+        self.assert_contains('***\nec2\n***')
+        self.assert_contains('===========\nDescription\n===========')
+        self.assert_contains('* describe-instances')
+
+    def test_operation_help_flag(self):
+        self.driver.main(['ec2', 'run-instances', '--help'])
+        self.assert_contains('*************\nrun-instances\n*************')
+        self.assert_contains('Launches the specified number of instances')
+
+    def test_custom_service_help_flag(self):
+        self.driver.main(['s3', '--help'])
+        self.assert_contains('high-level S3 commands')
+        self.assert_contains('* cp')
+
+    def test_custom_operation_help_flag(self):
+        self.driver.main(['s3', 'ls', '--help'])
+        self.assert_contains('List S3 objects')
+
+
+
 class TestRemoveDeprecatedCommands(BaseAWSHelpOutputTest):
     def assert_command_does_not_exist(self, service, command):
         # Basically try to get the help output for the removed

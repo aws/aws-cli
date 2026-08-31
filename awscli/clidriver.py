@@ -94,7 +94,7 @@ LOG_FORMAT = (
 HISTORY_RECORDER = get_global_history_recorder()
 METADATA_FILENAME = 'metadata.json'
 INSTALL_FILENAME = 'install.json'
-_NO_AUTO_PROMPT_ARGS = ['help', '--version']
+_NO_AUTO_PROMPT_ARGS = ['help', '--help', '--version']
 _CLI_AUTO_PROMPT_OPTION = '--cli-auto-prompt'
 _NO_CLI_AUTO_PROMPT_OPTION = '--no-cli-auto-prompt'
 # Don't remove this line.  The idna encoding

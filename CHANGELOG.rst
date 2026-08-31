@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+2.36.36
+=======
+
+* api-change:``agent-registry``: Release HTTP and AGUI descriptors to the dataplane model
+
+
 2.36.35
 =======
 

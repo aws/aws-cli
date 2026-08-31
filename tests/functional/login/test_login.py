@@ -324,7 +324,9 @@ def test_prompts_agent_toolkit_for_new_profile(
     mock_session.full_config = {'profiles': {}}
 
     mock_login_command._run_main(DEFAULT_ARGS, DEFAULT_GLOBAL_ARGS)
-    mock_prompt.assert_called_once()
+    mock_prompt.assert_called_once_with(
+        mock_session, DEFAULT_GLOBAL_ARGS, region='us-east-1'
+    )
 
 
 @mock.patch('awscli.customizations.login.utils.get_base_sign_in_uri')

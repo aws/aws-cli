@@ -10,7 +10,9 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import argparse
 import json
+import logging
 from unittest.mock import MagicMock, patch
 
 import pytest
@@ -37,17 +39,43 @@ def wizard_cls():
         yield cls
 
 
-def _run(choice='yes', agents=None, tty=True, region='us-east-1'):
+_UNSET = object()
+
+
+def _parsed_globals(region='us-east-1'):
+    return argparse.Namespace(
+        region=region, endpoint_url=None, verify_ssl=None
+    )
+
+
+def _run(
+    choice='yes',
+    agents=None,
+    tty=True,
+    region='us-east-1',
+    globals_region=_UNSET,
+):
+    """Run the hint.
+
+    :param region: The region the calling command resolved.
+    :param globals_region: ``--region`` as passed to the calling command.
+        Defaults to matching ``region``; pass ``None`` to model a command that
+        resolved a region without an explicit ``--region``.
+    """
     if agents is None:
         agents = [_agent()]
-    parsed_globals = MagicMock()
-    parsed_globals.region = region
+    if globals_region is _UNSET:
+        globals_region = region
+    parsed_globals = _parsed_globals(globals_region)
     with (
         patch.object(hint, 'is_stdin_a_tty', return_value=tty),
         patch.object(hint, 'get_detected_real_agents', return_value=agents),
         patch.object(hint, 'yes_no_never_choice', return_value=choice),
     ):
-        hint.maybe_prompt_agent_toolkit(MagicMock(), parsed_globals)
+        hint.maybe_prompt_agent_toolkit(
+            MagicMock(), parsed_globals, region=region
+        )
+    return parsed_globals
 
 
 def test_launches_wizard_on_yes(state_file, wizard_cls):
@@ -113,11 +141,35 @@ def test_skipped_when_skills_already_installed(state_file, wizard_cls):
     assert not wizard_cls.called
 
 
-def test_prompts_when_region_in_commercial_partition(state_file, wizard_cls):
-    # A non-us-east-1 commercial region still prompts: the wizard defaults to
-    # the control-plane region on its own, so "yes" works.
-    _run(choice='yes', region='us-west-2')
-    assert wizard_cls.called
+@pytest.mark.parametrize('region', ['us-east-1', 'us-west-2', None])
+def test_wizard_is_pinned_to_agent_toolkit_region(
+    state_file, wizard_cls, region
+):
+    # Any commercial region prompts, and the wizard always runs against the
+    # one region the Agent Toolkit is available in. A region of None means
+    # nothing was configured anywhere, which is also safe to prompt on.
+    _run(choice='yes', region=region)
+    wizard_cls.return_value.assert_called_once()
+    wizard_globals = wizard_cls.return_value.call_args[0][1]
+    assert wizard_globals.region == 'us-east-1'
+
+
+def test_swapping_the_region_is_logged(state_file, wizard_cls, caplog):
+    # The resolved region drives the message, not ``--region``: a plain
+    # "aws configure" that sets us-west-2 passes no --region at all.
+    with caplog.at_level(logging.DEBUG, logger=hint.LOG.name):
+        _run(choice='yes', region='us-west-2', globals_region=None)
+    assert (
+        'Running "aws configure agent-toolkit" in us-east-1 instead of '
+        'us-west-2, the only region the Agent Toolkit for AWS is available in.'
+    ) in caplog.text
+
+
+def test_pinning_the_region_does_not_mutate_parsed_globals(
+    state_file, wizard_cls
+):
+    parsed_globals = _run(choice='yes', region='us-west-2')
+    assert parsed_globals.region == 'us-west-2'
 
 
 @pytest.mark.parametrize('region', ['us-gov-west-1', 'cn-north-1'])
@@ -131,38 +183,21 @@ def test_non_commercial_partition_prints_tip_and_does_not_prompt(
         ),
         patch.object(hint, 'yes_no_never_choice') as prompt,
     ):
-        parsed_globals = MagicMock()
-        parsed_globals.region = region
-        hint.maybe_prompt_agent_toolkit(MagicMock(), parsed_globals)
+        hint.maybe_prompt_agent_toolkit(
+            MagicMock(), _parsed_globals(region), region=region
+        )
 
     assert not prompt.called
     assert not wizard_cls.called
-    assert 'aws configure agent-toolkit' in capsys.readouterr().out
+    assert capsys.readouterr().out == (
+        "\nTip: run 'aws configure agent-toolkit' to set up AWS skills and "
+        'the AWS MCP server for your AI coding agent(s).\n'
+    )
 
 
-def test_prompts_when_no_region_configured(state_file, wizard_cls):
-    # No region anywhere: the wizard defaults to the control-plane region, so
-    # prompting is safe.
+def test_region_comes_from_the_caller_not_the_session(state_file, wizard_cls):
     session = MagicMock()
-    session.get_config_variable.return_value = None
-    parsed_globals = MagicMock()
-    parsed_globals.region = None
-    with (
-        patch.object(hint, 'is_stdin_a_tty', return_value=True),
-        patch.object(
-            hint, 'get_detected_real_agents', return_value=[_agent()]
-        ),
-        patch.object(hint, 'yes_no_never_choice', return_value='yes'),
-    ):
-        hint.maybe_prompt_agent_toolkit(session, parsed_globals)
-    assert wizard_cls.called
-
-
-def test_region_falls_back_to_session_config(state_file, wizard_cls):
-    session = MagicMock()
-    session.get_config_variable.return_value = 'cn-north-1'
-    parsed_globals = MagicMock()
-    parsed_globals.region = None
+    session.get_config_variable.return_value = 'us-east-1'
     with (
         patch.object(hint, 'is_stdin_a_tty', return_value=True),
         patch.object(
@@ -170,8 +205,9 @@ def test_region_falls_back_to_session_config(state_file, wizard_cls):
         ),
         patch.object(hint, 'yes_no_never_choice') as prompt,
     ):
-        hint.maybe_prompt_agent_toolkit(session, parsed_globals)
-    # Configured region is in the China partition, so we tip, not prompt.
+        hint.maybe_prompt_agent_toolkit(
+            session, _parsed_globals(None), region='us-gov-east-1'
+        )
     assert not prompt.called
     assert not wizard_cls.called
 
@@ -190,7 +226,9 @@ def test_detection_failure_does_not_raise(state_file, wizard_cls):
             hint, 'get_detected_real_agents', side_effect=OSError('boom')
         ),
     ):
-        hint.maybe_prompt_agent_toolkit(MagicMock(), MagicMock())
+        hint.maybe_prompt_agent_toolkit(
+            MagicMock(), _parsed_globals(), region='us-east-1'
+        )
     assert not wizard_cls.called
 
 

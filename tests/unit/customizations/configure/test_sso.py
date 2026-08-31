@@ -1057,7 +1057,9 @@ class TestConfigureSSOCommand:
             'maybe_prompt_agent_toolkit'
         ) as prompt:
             sso_cmd(args, parsed_globals)
-        prompt.assert_called_once()
+        prompt.assert_called_once_with(
+            mock.ANY, parsed_globals, region=inputs.region_prompt.answer
+        )
 
     def test_no_accounts_flow_raises_error(
         self,

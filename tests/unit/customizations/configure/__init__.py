@@ -45,6 +45,9 @@ class FakeSession:
         self._credentials = credentials
         self.profile = profile
         self.user_agent_extra = ''
+        self._profile_map = {
+            name: {} for name in available_profiles if name is not None
+        }
 
     @property
     def available_profiles(self):

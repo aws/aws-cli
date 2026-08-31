@@ -14,14 +14,15 @@
 
 After a successful ``aws configure`` that writes profile values, offer to run
 ``aws configure agent-toolkit`` when a supported AI coding agent is present
-and no AWS skills are installed yet. The wizard defaults to the Agent Toolkit
-region (us-east-1), so in the commercial partition the offer is
-an interactive prompt that can run the wizard directly. In other partitions
-that region is unreachable, so we fall back to a non-interactive tip instead
-of routing the user into a cross-partition call. Either way the hint only
-shows on a TTY and can be suppressed.
+and no AWS skills are installed yet. The Agent Toolkit API only exists in
+one commercial region, so callers whose region resolves to the commercial
+partition get an interactive prompt and the wizard is pinned to that region.
+In other partitions we fall back to a non-interactive tip rather than
+silently taking the user across a partition boundary. Either way the hint
+only shows on a TTY and can be suppressed.
 """
 
+import copy
 import json
 import logging
 import os
@@ -36,6 +37,7 @@ from awscli.customizations.agenttoolkit.agents import (
 from awscli.customizations.agenttoolkit.configure import (
     ConfigureAgentToolkitCommand,
 )
+from awscli.customizations.agenttoolkit.utils import AGENT_TOOLKIT_REGION
 from awscli.customizations.prompts import yes_no_never_choice
 from awscli.customizations.utils import uni_print
 from awscli.utils import is_stdin_a_tty
@@ -46,9 +48,9 @@ STATE_PATH = '~/.aws/cli/agent-toolkit/state.json'
 
 HINT_DISABLED_ENV_VAR = 'AWS_CLI_AGENT_TOOLKIT_HINT_DISABLED'
 
-# The wizard runs against the Agent Toolkit region, which only
-# exists in the commercial partition. Elsewhere we cannot run it inline, so we
-# only offer the interactive prompt to callers in this partition.
+# AGENT_TOOLKIT_REGION only exists in the commercial partition. Elsewhere we
+# cannot run the wizard inline, so we only offer the interactive prompt to
+# callers in this partition.
 COMMERCIAL_PARTITION = 'aws'
 
 PROMPT_TEXT = (
@@ -119,16 +121,6 @@ def _is_eligible():
     return True
 
 
-def _resolve_region(session, parsed_globals):
-    region = getattr(parsed_globals, 'region', None)
-    if region:
-        return region
-    try:
-        return session.get_config_variable('region')
-    except Exception:
-        return None
-
-
 def _region_partition(region):
     for partition in Loader().load_data('partitions')['partitions']:
         if region in partition.get('regions', {}):
@@ -139,21 +131,40 @@ def _region_partition(region):
     return None
 
 
-def _can_run_wizard(session, parsed_globals):
-    region = _resolve_region(session, parsed_globals)
+def _can_run_wizard(region):
     if not region:
+        # With no region resolved anywhere the wizard falls back to
+        # AGENT_TOOLKIT_REGION
         return True
     return _region_partition(region) == COMMERCIAL_PARTITION
 
 
-def maybe_prompt_agent_toolkit(session, parsed_globals):
+def _wizard_globals(parsed_globals, region):
+    if region and region != AGENT_TOOLKIT_REGION:
+        LOG.debug(
+            'Running "aws configure agent-toolkit" in %s instead of %s, the '
+            'only region the Agent Toolkit for AWS is available in.',
+            AGENT_TOOLKIT_REGION,
+            region,
+        )
+    wizard_globals = copy.copy(parsed_globals)
+    wizard_globals.region = AGENT_TOOLKIT_REGION
+    return wizard_globals
+
+
+def maybe_prompt_agent_toolkit(session, parsed_globals, region):
+    """Offer to run the Agent Toolkit wizard.
+
+    :param region: The region the calling command just resolved for the
+        profile, or ``None`` if it did not resolve one.
+    """
     try:
         if not _is_eligible():
             return
-        # Outside the commercial partition the wizard's region is unreachable,
-        # so print a tip instead of prompting and routing the user into a
-        # cross-partition call that would fail.
-        if not _can_run_wizard(session, parsed_globals):
+        # Outside the commercial partition, running the wizard would mean
+        # calling AGENT_TOOLKIT_REGION across a partition boundary on the
+        # user's behalf. Print a tip and let them decide instead.
+        if not _can_run_wizard(region):
             uni_print(HINT_TEXT)
             return
         choice = yes_no_never_choice(PROMPT_TEXT)
@@ -166,4 +177,4 @@ def maybe_prompt_agent_toolkit(session, parsed_globals):
 
     if run_wizard:
         command = ConfigureAgentToolkitCommand(session)
-        command([], parsed_globals)
+        command([], _wizard_globals(parsed_globals, region))

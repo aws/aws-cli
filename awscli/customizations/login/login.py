@@ -160,7 +160,9 @@ class LoginCommand(BasicCommand):
         # Only nudge on first-time setup (a newly created profile), not on
         # routine re-auth of an existing profile.
         if is_new_profile:
-            maybe_prompt_agent_toolkit(self._session, parsed_globals)
+            maybe_prompt_agent_toolkit(
+                self._session, parsed_globals, region=region
+            )
 
     def accept_change_to_existing_profile_if_needed(
         self, profile_name, new_session_id

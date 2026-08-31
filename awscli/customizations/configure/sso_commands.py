@@ -348,14 +348,20 @@ class ConfigureSSOCommand(BaseSSOConfigurationCommand):
         )
         configured_for_aws_credentials = all((sso_account_id, sso_role_name))
 
-        self._prompt_for_cli_default_region()
+        region = self._prompt_for_cli_default_region()
         self._prompt_for_cli_output_format()
 
         profile_name = self._prompt_for_profile(sso_account_id, sso_role_name)
 
         self._write_new_config(profile_name)
         self._print_conclusion(configured_for_aws_credentials, profile_name)
-        maybe_prompt_agent_toolkit(self._session, parsed_globals)
+        maybe_prompt_agent_toolkit(
+            self._session,
+            parsed_globals,
+            # A region just entered at the prompt postdates what the session
+            # resolved, so it wins.
+            region=region or self._profile_config.get('region'),
+        )
         return 0
 
     def _prompt_for_sso_registration_args(self, verify=None):

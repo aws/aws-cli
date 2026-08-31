@@ -43,9 +43,7 @@ class TestConfigureCommand(unittest.TestCase):
         expected_creds_file = os.path.expanduser('~/fake_credentials_filename')
         self.assertEqual(
             credentials_file_call,
-            mock.call(
-                new_values, expected_creds_file, check_permissions=True
-            ),
+            mock.call(new_values, expected_creds_file, check_permissions=True),
         )
 
     def test_configure_command_sends_values_to_writer(self):
@@ -482,6 +480,22 @@ def test_agent_toolkit_hint_gets_configured_region(
     )
     agent_toolkit_hint.assert_called_once_with(
         session, global_args, region=expected_region
+    )
+
+
+def test_agent_toolkit_hint_region_falls_back_to_the_session(
+    agent_toolkit_hint,
+):
+    # AWS_REGION/AWS_DEFAULT_REGION never reach the config file, so pressing
+    # enter at the region prompt must still resolve the env var's region --
+    # otherwise a GovCloud user looks region-less and gets the prompt.
+    session = FakeSession(
+        {'config_file': 'myconfigfile', 'region': 'us-gov-west-1'}
+    )
+    session.config = {}
+    global_args = _run_configure(session, {'Default output format': 'json'})
+    agent_toolkit_hint.assert_called_once_with(
+        session, global_args, region='us-gov-west-1'
     )
 
 

@@ -42,9 +42,9 @@ def wizard_cls():
 _UNSET = object()
 
 
-def _parsed_globals(region='us-east-1'):
+def _parsed_globals(region='us-east-1', endpoint_url=None):
     return argparse.Namespace(
-        region=region, endpoint_url=None, verify_ssl=None
+        region=region, endpoint_url=endpoint_url, verify_ssl=None
     )
 
 
@@ -54,6 +54,7 @@ def _run(
     tty=True,
     region='us-east-1',
     globals_region=_UNSET,
+    endpoint_url=None,
 ):
     """Run the hint.
 
@@ -66,7 +67,7 @@ def _run(
         agents = [_agent()]
     if globals_region is _UNSET:
         globals_region = region
-    parsed_globals = _parsed_globals(globals_region)
+    parsed_globals = _parsed_globals(globals_region, endpoint_url)
     with (
         patch.object(hint, 'is_stdin_a_tty', return_value=tty),
         patch.object(hint, 'get_detected_real_agents', return_value=agents),
@@ -165,11 +166,24 @@ def test_swapping_the_region_is_logged(state_file, wizard_cls, caplog):
     ) in caplog.text
 
 
+def test_endpoint_url_is_not_passed_to_the_wizard(state_file, wizard_cls):
+    # An --endpoint-url aimed at the calling command must not be reused for
+    # the Agent Toolkit client.
+    _run(choice='yes', endpoint_url='https://signin.example.com')
+    wizard_globals = wizard_cls.return_value.call_args[0][1]
+    assert wizard_globals.endpoint_url is None
+
+
 def test_pinning_the_region_does_not_mutate_parsed_globals(
     state_file, wizard_cls
 ):
-    parsed_globals = _run(choice='yes', region='us-west-2')
+    parsed_globals = _run(
+        choice='yes',
+        region='us-west-2',
+        endpoint_url='https://signin.example.com',
+    )
     assert parsed_globals.region == 'us-west-2'
+    assert parsed_globals.endpoint_url == 'https://signin.example.com'
 
 
 @pytest.mark.parametrize('region', ['us-gov-west-1', 'cn-north-1'])

@@ -187,6 +187,10 @@ class ConfigureSSOCommand(BaseSSOConfigurationCommand):
             self._profile_config = self._session.get_scoped_config()
         except ProfileNotFound:
             self._profile_config = {}
+        try:
+            self._resolved_region = self._session.get_config_variable('region')
+        except ProfileNotFound:
+            self._resolved_region = None
 
     def _init_prompt_toolkit(self):
         super()._init_prompt_toolkit()
@@ -360,7 +364,7 @@ class ConfigureSSOCommand(BaseSSOConfigurationCommand):
             parsed_globals,
             # A region just entered at the prompt postdates what the session
             # resolved, so it wins.
-            region=region or self._profile_config.get('region'),
+            region=region or self._resolved_region,
         )
         return 0
 

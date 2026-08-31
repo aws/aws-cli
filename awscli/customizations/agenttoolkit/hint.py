@@ -149,6 +149,10 @@ def _wizard_globals(parsed_globals, region):
         )
     wizard_globals = copy.copy(parsed_globals)
     wizard_globals.region = AGENT_TOOLKIT_REGION
+    # --endpoint-url is aimed at the calling command (the signin endpoint for
+    # ``aws login``), so it must not follow us into the Agent Toolkit client.
+    # verify_ssl does still apply and is left alone.
+    wizard_globals.endpoint_url = None
     return wizard_globals
 
 

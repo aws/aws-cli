@@ -192,9 +192,7 @@ class ConfigureCommand(BasicCommand):
             self._session.get_config_variable('config_file')
         )
         if new_values:
-            # A region just entered at the prompt postdates what the session
-            # resolved, so it wins.
-            region = new_values.get('region') or config.get('region')
+            region = self._resolve_configured_region(new_values)
             profile = self._session.profile
             self._write_out_creds_file_values(new_values, profile)
             if profile is not None:
@@ -208,6 +206,13 @@ class ConfigureCommand(BasicCommand):
             )
         return 0
 
+    def _resolve_configured_region(self, new_values):
+        if new_values.get('region'):
+            return new_values['region']
+        try:
+            return self._session.get_config_variable('region')
+        except ProfileNotFound:
+            return None
 
     def _write_out_creds_file_values(self, new_values, profile_name):
         # The access_key/secret_key are now *always* written to the shared

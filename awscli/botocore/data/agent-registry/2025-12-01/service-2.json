@@ -103,6 +103,16 @@
       },
       "exception":true
     },
+    "AgUiDescriptor":{
+      "type":"structure",
+      "members":{
+        "source":{
+          "shape":"DescriptorSource",
+          "documentation":"<p> The source location of the AG-UI protocol endpoint.</p>"
+        }
+      },
+      "documentation":"<p> A descriptor for a registry record that exposes an AG-UI protocol endpoint. This descriptor is source-only: it identifies where the endpoint is located and carries no descriptor payload data or schema version.</p>"
+    },
     "AgentSkillsAdditionalData":{
       "type":"structure",
       "members":{
@@ -308,6 +318,14 @@
         "custom":{
           "shape":"CustomDescriptor",
           "documentation":"<p> The custom descriptor, populated when the record type is CUSTOM.</p>"
+        },
+        "http":{
+          "shape":"HttpDescriptor",
+          "documentation":"<p> The HTTP descriptor, populated when the record exposes an HTTP endpoint.</p>"
+        },
+        "agui":{
+          "shape":"AgUiDescriptor",
+          "documentation":"<p> The AG-UI descriptor, populated when the record exposes an AG-UI protocol endpoint.</p>"
         }
       },
       "documentation":"<p> The protocol-specific descriptors that describe how to connect to and use the registry record.</p>"
@@ -392,6 +410,16 @@
       "documentation":"<p>A single filter value. Constrained by length only; the accepted set of values is filter-specific and validated server-side so enum-style values such as READY or AWS_IAM are accepted.</p>",
       "max":255,
       "min":1
+    },
+    "HttpDescriptor":{
+      "type":"structure",
+      "members":{
+        "source":{
+          "shape":"DescriptorSource",
+          "documentation":"<p> The source location of the HTTP endpoint.</p>"
+        }
+      },
+      "documentation":"<p> A descriptor for a registry record that exposes an HTTP endpoint. This descriptor is source-only: it identifies where the endpoint is located and carries no descriptor payload data or schema version.</p>"
     },
     "InternalServerException":{
       "type":"structure",

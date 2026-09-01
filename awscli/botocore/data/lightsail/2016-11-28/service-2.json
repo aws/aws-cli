@@ -2133,6 +2133,23 @@
       ],
       "documentation":"<p>Gets operations for a specific resource (an instance or a static IP).</p>"
     },
+    "GetProfile":{
+      "name":"GetProfile",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetProfileRequest"},
+      "output":{"shape":"GetProfileResult"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"AccountSetupInProgressException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"ServiceException"},
+        {"shape":"UnauthenticatedException"}
+      ],
+      "documentation":"<p>Returns information about the profile of the Amazon Lightsail account that makes the request. The response includes the profile type and, for accounts enrolled in the Lightsail partner program, the partner membership details.</p>"
+    },
     "GetRegions":{
       "name":"GetRegions",
       "http":{
@@ -8411,6 +8428,24 @@
         }
       }
     },
+    "GetProfileRequest":{
+      "type":"structure",
+      "members":{}
+    },
+    "GetProfileResult":{
+      "type":"structure",
+      "required":["profileType"],
+      "members":{
+        "profileType":{
+          "shape":"ProfileType",
+          "documentation":"<p>The type of the profile.</p> <p>The following profile types are possible:</p> <ul> <li> <p> <code>Lightsailor</code> – The account is not enrolled in the Lightsail partner program.</p> </li> <li> <p> <code>LightsailPartner</code> – The account is enrolled in the Lightsail partner program.</p> </li> </ul>"
+        },
+        "partner":{
+          "shape":"PartnerInfo",
+          "documentation":"<p>An object that describes the partner membership of the account, such as the tier of the membership, its status, and when the account was enrolled.</p> <p>This parameter is returned only for accounts that have a <code>profileType</code> of <code>LightsailPartner</code>.</p>"
+        }
+      }
+    },
     "GetRegionsRequest":{
       "type":"structure",
       "members":{
@@ -10227,6 +10262,8 @@
         "FreeStorageSpace",
         "NetworkReceiveThroughput",
         "NetworkTransmitThroughput",
+        "FreeableMemory",
+        "SwapUsage",
         "BurstCapacityTime",
         "BurstCapacityPercentage"
       ]
@@ -10552,7 +10589,8 @@
         "UpdateInstanceMetadataOptions",
         "StartGUISession",
         "StopGUISession",
-        "SetupInstanceHttps"
+        "SetupInstanceHttps",
+        "GetProfile"
       ]
     },
     "Origin":{
@@ -10604,6 +10642,35 @@
       "type":"list",
       "member":{"shape":"NonEmptyString"},
       "max":10
+    },
+    "PartnerInfo":{
+      "type":"structure",
+      "required":[
+        "enrolledAt",
+        "status"
+      ],
+      "members":{
+        "enrolledAt":{
+          "shape":"IsoDate",
+          "documentation":"<p>The timestamp when the account was enrolled in the Lightsail partner program.</p>"
+        },
+        "tierName":{
+          "shape":"TierName",
+          "documentation":"<p>The tier of the partner membership.</p>"
+        },
+        "status":{
+          "shape":"PartnerStatus",
+          "documentation":"<p>The status of the partner membership.</p> <p>The following statuses are possible:</p> <ul> <li> <p> <code>Active</code> – The membership is active, and the benefits of the current tier are available to the account.</p> </li> <li> <p> <code>Suspended</code> – The membership is suspended, and the benefits of the tier are not available to the account.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>An object that contains information about the Lightsail partner program membership of an Amazon Lightsail account.</p>"
+    },
+    "PartnerStatus":{
+      "type":"string",
+      "enum":[
+        "Active",
+        "Suspended"
+      ]
     },
     "PasswordData":{
       "type":"structure",
@@ -10772,6 +10839,13 @@
         }
       },
       "documentation":"<p>Describes a request to configure an Amazon Lightsail container service to access private container image repositories, such as Amazon Elastic Container Registry (Amazon ECR) private repositories.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-container-service-ecr-private-repo-access\">Configuring access to an Amazon ECR private repository for an Amazon Lightsail container service</a> in the <i>Amazon Lightsail Developer Guide</i>.</p>"
+    },
+    "ProfileType":{
+      "type":"string",
+      "enum":[
+        "Lightsailor",
+        "LightsailPartner"
+      ]
     },
     "PutAlarmRequest":{
       "type":"structure",
@@ -11337,7 +11411,9 @@
         "DiskQueueDepth",
         "FreeStorageSpace",
         "NetworkReceiveThroughput",
-        "NetworkTransmitThroughput"
+        "NetworkTransmitThroughput",
+        "FreeableMemory",
+        "SwapUsage"
       ]
     },
     "RelationalDatabaseParameter":{
@@ -12251,6 +12327,15 @@
           "documentation":"<p>An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.</p>"
         }
       }
+    },
+    "TierName":{
+      "type":"string",
+      "enum":[
+        "Essential",
+        "Growth",
+        "Accelerate",
+        "Premier"
+      ]
     },
     "TimeOfDay":{
       "type":"string",

@@ -60,6 +60,42 @@
       ],
       "documentation":"<p>Archives GuardDuty findings that are specified by the list of finding IDs.</p> <note> <p>Only the administrator account can archive findings. Member accounts don't have permission to archive findings from their accounts.</p> </note>"
     },
+    "CreateCustomDetectionRuleAssociation":{
+      "name":"CreateCustomDetectionRuleAssociation",
+      "http":{
+        "method":"POST",
+        "requestUri":"/custom-detection-rule/association",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateCustomDetectionRuleAssociationRequest"},
+      "output":{"shape":"CreateCustomDetectionRuleAssociationResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"InternalServerErrorException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Enables a custom detection rule for your account by creating an association. You specify the rule and the mode in which it operates.</p>"
+    },
+    "CreateCustomDetectionRuleOrgConfiguration":{
+      "name":"CreateCustomDetectionRuleOrgConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/custom-detection-rule/org-configuration",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateCustomDetectionRuleOrgConfigurationRequest"},
+      "output":{"shape":"CreateCustomDetectionRuleOrgConfigurationResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"InternalServerErrorException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Creates an organization-level configuration that enables a custom detection rule across your organization. This operation is available only to the delegated administrator account.</p>"
+    },
     "CreateDetector":{
       "name":"CreateDetector",
       "http":{
@@ -244,6 +280,43 @@
         {"shape":"InternalServerErrorException"}
       ],
       "documentation":"<p>Declines invitations sent to the current member account by Amazon Web Services accounts specified by their account IDs.</p>"
+    },
+    "DeleteCustomDetectionRuleAssociation":{
+      "name":"DeleteCustomDetectionRuleAssociation",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/custom-detection-rule/rule/{RuleId}/association/{AssociationId}",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteCustomDetectionRuleAssociationRequest"},
+      "output":{"shape":"DeleteCustomDetectionRuleAssociationResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"InternalServerErrorException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Disables a custom detection rule by deleting its association. This operation is idempotent.</p>",
+      "idempotent":true
+    },
+    "DeleteCustomDetectionRuleOrgConfiguration":{
+      "name":"DeleteCustomDetectionRuleOrgConfiguration",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/custom-detection-rule/org-configuration/{RuleId}",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteCustomDetectionRuleOrgConfigurationRequest"},
+      "output":{"shape":"DeleteCustomDetectionRuleOrgConfigurationResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"InternalServerErrorException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Deletes the organization-level configuration for a custom detection rule. This operation is available only to the delegated administrator account.</p>",
+      "idempotent":true
     },
     "DeleteDetector":{
       "name":"DeleteDetector",
@@ -547,6 +620,60 @@
         {"shape":"InternalServerErrorException"}
       ],
       "documentation":"<p>Retrieves aggregated statistics for your account. If you are a GuardDuty administrator, you can retrieve the statistics for all the resources associated with the active member accounts in your organization who have enabled Runtime Monitoring and have the GuardDuty security agent running on their resources.</p>"
+    },
+    "GetCustomDetectionRule":{
+      "name":"GetCustomDetectionRule",
+      "http":{
+        "method":"GET",
+        "requestUri":"/custom-detection-rule/rule/{RuleId}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetCustomDetectionRuleRequest"},
+      "output":{"shape":"GetCustomDetectionRuleResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"InternalServerErrorException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Returns details for a custom detection rule in GuardDuty, including its detection logic.</p>",
+      "readonly":true
+    },
+    "GetCustomDetectionRuleAssociation":{
+      "name":"GetCustomDetectionRuleAssociation",
+      "http":{
+        "method":"GET",
+        "requestUri":"/custom-detection-rule/rule/{RuleId}/association/{AssociationId}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetCustomDetectionRuleAssociationRequest"},
+      "output":{"shape":"GetCustomDetectionRuleAssociationResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"InternalServerErrorException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Returns details for a custom detection rule association.</p>",
+      "readonly":true
+    },
+    "GetCustomDetectionRuleOrgConfiguration":{
+      "name":"GetCustomDetectionRuleOrgConfiguration",
+      "http":{
+        "method":"GET",
+        "requestUri":"/custom-detection-rule/org-configuration/{RuleId}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetCustomDetectionRuleOrgConfigurationRequest"},
+      "output":{"shape":"GetCustomDetectionRuleOrgConfigurationResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"InternalServerErrorException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Returns the organization-level configuration for a custom detection rule.</p>",
+      "readonly":true
     },
     "GetDetector":{
       "name":"GetDetector",
@@ -868,6 +995,57 @@
         {"shape":"InternalServerErrorException"}
       ],
       "documentation":"<p>Lists coverage details for your GuardDuty account. If you're a GuardDuty administrator, you can retrieve all resources associated with the active member accounts in your organization.</p> <p>Make sure the accounts have Runtime Monitoring enabled and GuardDuty agent running on their resources.</p>"
+    },
+    "ListCustomDetectionRuleAssociations":{
+      "name":"ListCustomDetectionRuleAssociations",
+      "http":{
+        "method":"GET",
+        "requestUri":"/custom-detection-rule/association",
+        "responseCode":200
+      },
+      "input":{"shape":"ListCustomDetectionRuleAssociationsRequest"},
+      "output":{"shape":"ListCustomDetectionRuleAssociationsResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"InternalServerErrorException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Returns all custom detection rule associations for your account. You can filter by rule ID and mode.</p>",
+      "readonly":true
+    },
+    "ListCustomDetectionRuleOrgConfigurations":{
+      "name":"ListCustomDetectionRuleOrgConfigurations",
+      "http":{
+        "method":"GET",
+        "requestUri":"/custom-detection-rule/org-configuration",
+        "responseCode":200
+      },
+      "input":{"shape":"ListCustomDetectionRuleOrgConfigurationsRequest"},
+      "output":{"shape":"ListCustomDetectionRuleOrgConfigurationsResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"InternalServerErrorException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Returns all organization-level configurations for custom detection rules. You can filter the results by status.</p>",
+      "readonly":true
+    },
+    "ListCustomDetectionRules":{
+      "name":"ListCustomDetectionRules",
+      "http":{
+        "method":"POST",
+        "requestUri":"/custom-detection-rule/rule",
+        "responseCode":200
+      },
+      "input":{"shape":"ListCustomDetectionRulesRequest"},
+      "output":{"shape":"ListCustomDetectionRulesResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"InternalServerErrorException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Returns all available custom detection rules in GuardDuty. You can filter the results by data source, severity, tactic, technique, and service.</p>",
+      "readonly":true
     },
     "ListDetectors":{
       "name":"ListDetectors",
@@ -1205,6 +1383,44 @@
         {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Removes tags from a resource.</p>"
+    },
+    "UpdateCustomDetectionRuleAssociation":{
+      "name":"UpdateCustomDetectionRuleAssociation",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/custom-detection-rule/rule/{RuleId}/association/{AssociationId}",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateCustomDetectionRuleAssociationRequest"},
+      "output":{"shape":"UpdateCustomDetectionRuleAssociationResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"InternalServerErrorException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Updates the mode of an existing custom detection rule association.</p>",
+      "idempotent":true
+    },
+    "UpdateCustomDetectionRuleOrgConfiguration":{
+      "name":"UpdateCustomDetectionRuleOrgConfiguration",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/custom-detection-rule/org-configuration/{RuleId}",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateCustomDetectionRuleOrgConfigurationRequest"},
+      "output":{"shape":"UpdateCustomDetectionRuleOrgConfigurationResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"InternalServerErrorException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Updates the organization-level configuration for a custom detection rule, including the mode and include/exclude account lists.</p>",
+      "idempotent":true
     },
     "UpdateDetector":{
       "name":"UpdateDetector",
@@ -1971,6 +2187,127 @@
     "ArchiveFindingsResponse":{
       "type":"structure",
       "members":{}
+    },
+    "AssociationDetail":{
+      "type":"structure",
+      "required":[
+        "AssociationId",
+        "Arn",
+        "RuleId",
+        "AccountId",
+        "Mode",
+        "CreatedAt",
+        "UpdatedAt"
+      ],
+      "members":{
+        "AssociationId":{
+          "shape":"AssociationId",
+          "documentation":"<p>The unique identifier for the association.</p>",
+          "locationName":"associationId"
+        },
+        "Arn":{
+          "shape":"DetectionRuleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the association.</p>",
+          "locationName":"arn"
+        },
+        "RuleId":{
+          "shape":"RuleId",
+          "documentation":"<p>The unique identifier for the custom detection rule.</p>",
+          "locationName":"ruleId"
+        },
+        "AccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The Amazon Web Services account ID associated with this rule association.</p>",
+          "locationName":"accountId"
+        },
+        "Mode":{
+          "shape":"AssociationMode",
+          "documentation":"<p>The rule execution mode. Valid values: <code>LIVE</code> | <code>DRY_RUN</code>.</p>",
+          "locationName":"mode"
+        },
+        "CreatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the association was created.</p>",
+          "locationName":"createdAt"
+        },
+        "UpdatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the association was last updated.</p>",
+          "locationName":"updatedAt"
+        },
+        "ExpiresAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the association expires.</p>",
+          "locationName":"expiresAt"
+        }
+      },
+      "documentation":"<p>Contains the full details of a custom detection rule association.</p>"
+    },
+    "AssociationId":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"[a-zA-Z0-9_-]{1,64}"
+    },
+    "AssociationMode":{
+      "type":"string",
+      "enum":[
+        "LIVE",
+        "DRY_RUN"
+      ]
+    },
+    "AssociationSummary":{
+      "type":"structure",
+      "required":[
+        "AssociationId",
+        "Arn",
+        "RuleId",
+        "Mode",
+        "CreatedAt",
+        "UpdatedAt"
+      ],
+      "members":{
+        "AssociationId":{
+          "shape":"AssociationId",
+          "documentation":"<p>The unique identifier for the association.</p>",
+          "locationName":"associationId"
+        },
+        "Arn":{
+          "shape":"DetectionRuleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the association.</p>",
+          "locationName":"arn"
+        },
+        "RuleId":{
+          "shape":"RuleId",
+          "documentation":"<p>The unique identifier for the custom detection rule.</p>",
+          "locationName":"ruleId"
+        },
+        "Mode":{
+          "shape":"AssociationMode",
+          "documentation":"<p>The rule execution mode. Valid values: <code>LIVE</code> | <code>DRY_RUN</code>.</p>",
+          "locationName":"mode"
+        },
+        "CreatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the association was created.</p>",
+          "locationName":"createdAt"
+        },
+        "UpdatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the association was last updated.</p>",
+          "locationName":"updatedAt"
+        },
+        "ExpiresAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the association expires.</p>",
+          "locationName":"expiresAt"
+        }
+      },
+      "documentation":"<p>Contains summary information about a custom detection rule association.</p>"
+    },
+    "AssociationSummaryList":{
+      "type":"list",
+      "member":{"shape":"AssociationSummary"}
     },
     "AutoEnableMembers":{
       "type":"string",
@@ -2917,6 +3254,86 @@
         "UNHEALTHY"
       ]
     },
+    "CreateCustomDetectionRuleAssociationRequest":{
+      "type":"structure",
+      "required":[
+        "RuleId",
+        "Mode"
+      ],
+      "members":{
+        "RuleId":{
+          "shape":"RuleId",
+          "documentation":"<p>The unique identifier for the custom detection rule.</p>",
+          "locationName":"ruleId"
+        },
+        "Mode":{
+          "shape":"AssociationMode",
+          "documentation":"<p>The rule execution mode. Valid values: <code>LIVE</code> | <code>DRY_RUN</code>.</p>",
+          "locationName":"mode"
+        },
+        "ClientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier to ensure that the operation completes no more than one time. Maximum 64 characters.</p>",
+          "idempotencyToken":true,
+          "locationName":"clientToken"
+        },
+        "Tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags to be added to the new custom detection rule association resource.</p>",
+          "locationName":"tags"
+        }
+      }
+    },
+    "CreateCustomDetectionRuleAssociationResponse":{
+      "type":"structure",
+      "required":["RuleAssociation"],
+      "members":{
+        "RuleAssociation":{
+          "shape":"AssociationDetail",
+          "documentation":"<p>The details of the newly created custom detection rule association.</p>",
+          "locationName":"ruleAssociation"
+        }
+      }
+    },
+    "CreateCustomDetectionRuleOrgConfigurationRequest":{
+      "type":"structure",
+      "required":[
+        "RuleId",
+        "Mode"
+      ],
+      "members":{
+        "RuleId":{
+          "shape":"RuleId",
+          "documentation":"<p>The unique identifier for the custom detection rule.</p>",
+          "locationName":"ruleId"
+        },
+        "Mode":{
+          "shape":"AssociationMode",
+          "documentation":"<p>The execution mode of the organization configuration. Valid values: <code>LIVE</code> | <code>DRY_RUN</code>.</p>",
+          "locationName":"mode"
+        },
+        "IncludeAccountIds":{
+          "shape":"DetectionRuleAccountIds",
+          "documentation":"<p>The account IDs to include in the organization configuration. Mutually exclusive with <code>ExcludeAccountIds</code>.</p>",
+          "locationName":"includeAccountIds"
+        },
+        "ExcludeAccountIds":{
+          "shape":"DetectionRuleAccountIds",
+          "documentation":"<p>The account IDs to exclude from the organization configuration. Mutually exclusive with <code>IncludeAccountIds</code>.</p>",
+          "locationName":"excludeAccountIds"
+        },
+        "ClientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier to ensure that the operation completes no more than one time.</p>",
+          "idempotencyToken":true,
+          "locationName":"clientToken"
+        }
+      }
+    },
+    "CreateCustomDetectionRuleOrgConfigurationResponse":{
+      "type":"structure",
+      "members":{}
+    },
     "CreateDetectorRequest":{
       "type":"structure",
       "required":["Enable"],
@@ -3730,6 +4147,56 @@
       },
       "documentation":"<p>Contains information on the server side encryption method used in the S3 bucket. See <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/dev/serv-side-encryption.html\">S3 Server-Side Encryption</a> for more information.</p>"
     },
+    "DeleteCustomDetectionRuleAssociationRequest":{
+      "type":"structure",
+      "required":[
+        "RuleId",
+        "AssociationId"
+      ],
+      "members":{
+        "RuleId":{
+          "shape":"RuleId",
+          "documentation":"<p>The unique identifier for the custom detection rule.</p>",
+          "location":"uri",
+          "locationName":"RuleId"
+        },
+        "AssociationId":{
+          "shape":"AssociationId",
+          "documentation":"<p>The unique identifier for the association to delete.</p>",
+          "location":"uri",
+          "locationName":"AssociationId"
+        }
+      }
+    },
+    "DeleteCustomDetectionRuleAssociationResponse":{
+      "type":"structure",
+      "members":{}
+    },
+    "DeleteCustomDetectionRuleOrgConfigurationRequest":{
+      "type":"structure",
+      "required":[
+        "RuleId",
+        "Mode"
+      ],
+      "members":{
+        "RuleId":{
+          "shape":"RuleId",
+          "documentation":"<p>The unique identifier for the custom detection rule.</p>",
+          "location":"uri",
+          "locationName":"RuleId"
+        },
+        "Mode":{
+          "shape":"AssociationMode",
+          "documentation":"<p>The execution mode of the organization configuration to delete. Valid values: <code>LIVE</code> | <code>DRY_RUN</code>.</p>",
+          "location":"querystring",
+          "locationName":"mode"
+        }
+      }
+    },
+    "DeleteCustomDetectionRuleOrgConfigurationResponse":{
+      "type":"structure",
+      "members":{}
+    },
     "DeleteDetectorRequest":{
       "type":"structure",
       "required":["DetectorId"],
@@ -4203,6 +4670,217 @@
         }
       },
       "documentation":"<p>Contains information about the detected behavior.</p>"
+    },
+    "DetectionRuleAccountIds":{
+      "type":"list",
+      "member":{"shape":"AccountId"},
+      "max":50000,
+      "min":0
+    },
+    "DetectionRuleArn":{
+      "type":"string",
+      "max":1024,
+      "min":1,
+      "pattern":"arn:[a-zA-Z0-9\\-]+:[a-zA-Z0-9\\-]+:[a-zA-Z0-9\\-]*:([0-9]*|aws):.+"
+    },
+    "DetectionRuleConfigurationStatus":{
+      "type":"string",
+      "enum":[
+        "ACTIVE",
+        "PROCESSING",
+        "FAILED"
+      ]
+    },
+    "DetectionRuleDataSource":{
+      "type":"string",
+      "enum":["CloudTrailManagementEvent"]
+    },
+    "DetectionRuleDescription":{
+      "type":"string",
+      "max":1024,
+      "min":1
+    },
+    "DetectionRuleFilter":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Values"
+      ],
+      "members":{
+        "Name":{
+          "shape":"FilterFieldName",
+          "documentation":"<p>The name of the field to filter by.</p>",
+          "locationName":"name"
+        },
+        "Values":{
+          "shape":"DetectionRuleFilterValues",
+          "documentation":"<p>The values to match against the specified filter name.</p>",
+          "locationName":"values"
+        },
+        "Condition":{
+          "shape":"DetectionRuleFilterCondition",
+          "documentation":"<p>The condition to apply to the filter. For example, <code>EQUALS</code> or <code>CONTAINS</code>.</p>",
+          "locationName":"condition"
+        }
+      },
+      "documentation":"<p>Contains filter criteria for listing custom detection rules or associations.</p>"
+    },
+    "DetectionRuleFilterCondition":{
+      "type":"string",
+      "enum":[
+        "EQUALS",
+        "CONTAINS"
+      ]
+    },
+    "DetectionRuleFilterList":{
+      "type":"list",
+      "member":{"shape":"DetectionRuleFilter"},
+      "max":100,
+      "min":0
+    },
+    "DetectionRuleFilterValue":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"[a-zA-Z0-9 _.\\-:/]+"
+    },
+    "DetectionRuleFilterValues":{
+      "type":"list",
+      "member":{"shape":"DetectionRuleFilterValue"},
+      "max":50,
+      "min":1
+    },
+    "DetectionRuleMaxResults":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "DetectionRuleOrgConfiguration":{
+      "type":"structure",
+      "required":[
+        "RuleId",
+        "Mode",
+        "Status",
+        "IncludeAccountIds",
+        "ExcludeAccountIds",
+        "CreatedAt",
+        "UpdatedAt"
+      ],
+      "members":{
+        "RuleId":{
+          "shape":"RuleId",
+          "documentation":"<p>The unique identifier for the custom detection rule.</p>",
+          "locationName":"ruleId"
+        },
+        "Mode":{
+          "shape":"AssociationMode",
+          "documentation":"<p>The execution mode of the organization configuration. Valid values: <code>LIVE</code> | <code>DRY_RUN</code>.</p>",
+          "locationName":"mode"
+        },
+        "Status":{
+          "shape":"DetectionRuleConfigurationStatus",
+          "documentation":"<p>The configuration status. Valid values: <code>ACTIVE</code> | <code>PROCESSING</code> | <code>FAILED</code>.</p>",
+          "locationName":"status"
+        },
+        "StatusReason":{
+          "shape":"String",
+          "documentation":"<p>The reason for the current configuration status.</p>",
+          "locationName":"statusReason"
+        },
+        "IncludeAccountIds":{
+          "shape":"DetectionRuleAccountIds",
+          "documentation":"<p>A list of member account IDs included in the organization configuration. Mutually exclusive with <code>ExcludeAccountIds</code>.</p>",
+          "locationName":"includeAccountIds"
+        },
+        "ExcludeAccountIds":{
+          "shape":"DetectionRuleAccountIds",
+          "documentation":"<p>A list of member account IDs excluded from the organization configuration. Mutually exclusive with <code>IncludeAccountIds</code>.</p>",
+          "locationName":"excludeAccountIds"
+        },
+        "CreatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the organization configuration was created.</p>",
+          "locationName":"createdAt"
+        },
+        "UpdatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the organization configuration was last updated.</p>",
+          "locationName":"updatedAt"
+        },
+        "ExpiresAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the organization configuration expires.</p>",
+          "locationName":"expiresAt"
+        }
+      },
+      "documentation":"<p>Contains the organization-level configuration for a custom detection rule.</p>"
+    },
+    "DetectionRuleOrgConfigurationSummary":{
+      "type":"structure",
+      "required":[
+        "RuleId",
+        "Mode",
+        "Status",
+        "CreatedAt",
+        "UpdatedAt"
+      ],
+      "members":{
+        "RuleId":{
+          "shape":"RuleId",
+          "documentation":"<p>The unique identifier for the custom detection rule.</p>",
+          "locationName":"ruleId"
+        },
+        "Mode":{
+          "shape":"AssociationMode",
+          "documentation":"<p>The rule execution mode.</p>",
+          "locationName":"mode"
+        },
+        "Status":{
+          "shape":"DetectionRuleConfigurationStatus",
+          "documentation":"<p>The configuration status.</p>",
+          "locationName":"status"
+        },
+        "StatusReason":{
+          "shape":"String",
+          "documentation":"<p>The reason for the current configuration status.</p>",
+          "locationName":"statusReason"
+        },
+        "CreatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the organization configuration was created.</p>",
+          "locationName":"createdAt"
+        },
+        "UpdatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the organization configuration was last updated.</p>",
+          "locationName":"updatedAt"
+        },
+        "ExpiresAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the organization configuration expires.</p>",
+          "locationName":"expiresAt"
+        }
+      },
+      "documentation":"<p>Contains summary information about an organization-level configuration for a custom detection rule.</p>"
+    },
+    "DetectionRuleOrgConfigurationSummaryList":{
+      "type":"list",
+      "member":{"shape":"DetectionRuleOrgConfigurationSummary"}
+    },
+    "DetectionRuleServiceName":{
+      "type":"string",
+      "max":128,
+      "min":1
+    },
+    "DetectionRuleSeverity":{
+      "type":"string",
+      "enum":[
+        "CRITICAL",
+        "HIGH",
+        "MEDIUM",
+        "LOW"
+      ]
     },
     "DetectionSource":{
       "type":"string",
@@ -5134,6 +5812,18 @@
       "max":512,
       "min":0
     },
+    "FilterFieldName":{
+      "type":"string",
+      "enum":[
+        "name",
+        "description",
+        "dataSource",
+        "severity",
+        "tactic",
+        "technique",
+        "service"
+      ]
+    },
     "FilterName":{
       "type":"string",
       "max":64,
@@ -5513,6 +6203,98 @@
           "shape":"CoverageStatistics",
           "documentation":"<p>Represents the count aggregated by the <code>statusCode</code> and <code>resourceType</code>.</p>",
           "locationName":"coverageStatistics"
+        }
+      }
+    },
+    "GetCustomDetectionRuleAssociationRequest":{
+      "type":"structure",
+      "required":[
+        "RuleId",
+        "AssociationId"
+      ],
+      "members":{
+        "RuleId":{
+          "shape":"RuleId",
+          "documentation":"<p>The unique identifier for the custom detection rule.</p>",
+          "location":"uri",
+          "locationName":"RuleId"
+        },
+        "AssociationId":{
+          "shape":"AssociationId",
+          "documentation":"<p>The unique identifier for the association.</p>",
+          "location":"uri",
+          "locationName":"AssociationId"
+        }
+      }
+    },
+    "GetCustomDetectionRuleAssociationResponse":{
+      "type":"structure",
+      "required":["RuleAssociation"],
+      "members":{
+        "RuleAssociation":{
+          "shape":"AssociationDetail",
+          "documentation":"<p>The details of the custom detection rule association.</p>",
+          "locationName":"ruleAssociation"
+        },
+        "Tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags associated with the custom detection rule association resource.</p>",
+          "locationName":"tags"
+        }
+      }
+    },
+    "GetCustomDetectionRuleOrgConfigurationRequest":{
+      "type":"structure",
+      "required":[
+        "RuleId",
+        "Mode"
+      ],
+      "members":{
+        "RuleId":{
+          "shape":"RuleId",
+          "documentation":"<p>The unique identifier for the custom detection rule.</p>",
+          "location":"uri",
+          "locationName":"RuleId"
+        },
+        "Mode":{
+          "shape":"AssociationMode",
+          "documentation":"<p>The execution mode of the organization configuration to retrieve. Valid values: <code>LIVE</code> | <code>DRY_RUN</code>.</p>",
+          "location":"querystring",
+          "locationName":"mode"
+        }
+      }
+    },
+    "GetCustomDetectionRuleOrgConfigurationResponse":{
+      "type":"structure",
+      "required":["Configuration"],
+      "members":{
+        "Configuration":{
+          "shape":"DetectionRuleOrgConfiguration",
+          "documentation":"<p>The details of the organization configuration.</p>",
+          "locationName":"configuration"
+        }
+      }
+    },
+    "GetCustomDetectionRuleRequest":{
+      "type":"structure",
+      "required":["RuleId"],
+      "members":{
+        "RuleId":{
+          "shape":"RuleId",
+          "documentation":"<p>The unique identifier for the custom detection rule.</p>",
+          "location":"uri",
+          "locationName":"RuleId"
+        }
+      }
+    },
+    "GetCustomDetectionRuleResponse":{
+      "type":"structure",
+      "required":["Rule"],
+      "members":{
+        "Rule":{
+          "shape":"RuleDetail",
+          "documentation":"<p>The details of the custom detection rule.</p>",
+          "locationName":"rule"
         }
       }
     },
@@ -7687,6 +8469,126 @@
         }
       }
     },
+    "ListCustomDetectionRuleAssociationsRequest":{
+      "type":"structure",
+      "members":{
+        "MaxResults":{
+          "shape":"DetectionRuleMaxResults",
+          "documentation":"<p>The maximum number of results to return in a single page. Minimum value of 1, maximum value of 100.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>A pagination token from a previous response. Use this token to retrieve the next page of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "RuleId":{
+          "shape":"RuleId",
+          "documentation":"<p>The unique identifier for the custom detection rule to filter associations by.</p>",
+          "location":"querystring",
+          "locationName":"ruleId"
+        },
+        "Mode":{
+          "shape":"AssociationMode",
+          "documentation":"<p>The rule execution mode to filter associations by.</p>",
+          "location":"querystring",
+          "locationName":"mode"
+        }
+      }
+    },
+    "ListCustomDetectionRuleAssociationsResponse":{
+      "type":"structure",
+      "required":["RuleAssociations"],
+      "members":{
+        "RuleAssociations":{
+          "shape":"AssociationSummaryList",
+          "documentation":"<p>A list of custom detection rule association summaries.</p>",
+          "locationName":"ruleAssociations"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>A pagination token to retrieve the next page of results. If this field is empty, there are no additional results.</p>",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListCustomDetectionRuleOrgConfigurationsRequest":{
+      "type":"structure",
+      "members":{
+        "MaxResults":{
+          "shape":"DetectionRuleMaxResults",
+          "documentation":"<p>The maximum number of results to return in a single page. Minimum value of 1, maximum value of 100.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>A pagination token from a previous response. Use this token to retrieve the next page of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "Status":{
+          "shape":"DetectionRuleConfigurationStatus",
+          "documentation":"<p>The configuration status to filter by.</p>",
+          "location":"querystring",
+          "locationName":"status"
+        }
+      }
+    },
+    "ListCustomDetectionRuleOrgConfigurationsResponse":{
+      "type":"structure",
+      "required":["Configurations"],
+      "members":{
+        "Configurations":{
+          "shape":"DetectionRuleOrgConfigurationSummaryList",
+          "documentation":"<p>A list of organization configurations for custom detection rules.</p>",
+          "locationName":"configurations"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>A pagination token to retrieve the next page of results. If this field is empty, there are no additional results.</p>",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListCustomDetectionRulesRequest":{
+      "type":"structure",
+      "members":{
+        "MaxResults":{
+          "shape":"DetectionRuleMaxResults",
+          "documentation":"<p>The maximum number of results to return in a single page. Minimum value of 1, maximum value of 100.</p>",
+          "locationName":"maxResults"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>A pagination token from a previous response. Use this token to retrieve the next page of results.</p>",
+          "locationName":"nextToken"
+        },
+        "Filters":{
+          "shape":"DetectionRuleFilterList",
+          "documentation":"<p>A list of filter criteria to apply when listing custom detection rules.</p>",
+          "locationName":"filters"
+        }
+      }
+    },
+    "ListCustomDetectionRulesResponse":{
+      "type":"structure",
+      "required":["Rules"],
+      "members":{
+        "Rules":{
+          "shape":"RuleSummaryList",
+          "documentation":"<p>A list of custom detection rule summaries.</p>",
+          "locationName":"rules"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>A pagination token to retrieve the next page of results. If this field is empty, there are no additional results.</p>",
+          "locationName":"nextToken"
+        }
+      }
+    },
     "ListDetectorsRequest":{
       "type":"structure",
       "members":{
@@ -8886,6 +9788,16 @@
         "ENABLED",
         "DISABLED"
       ]
+    },
+    "MitreTactic":{
+      "type":"string",
+      "max":255,
+      "min":1
+    },
+    "MitreTechnique":{
+      "type":"string",
+      "max":255,
+      "min":1
     },
     "ModelDetail":{
       "type":"structure",
@@ -10490,6 +11402,218 @@
       ],
       "max":300,
       "min":1
+    },
+    "RuleDefinition":{
+      "type":"structure",
+      "required":["Expression"],
+      "members":{
+        "Expression":{
+          "shape":"RuleExpression",
+          "documentation":"<p>The detection logic expression for the rule.</p>",
+          "locationName":"expression"
+        }
+      },
+      "documentation":"<p>Contains the detection logic for a custom detection rule.</p>"
+    },
+    "RuleDetail":{
+      "type":"structure",
+      "required":[
+        "RuleId",
+        "Arn",
+        "Name",
+        "Description",
+        "Severity",
+        "DataSource",
+        "Tactic",
+        "Technique",
+        "Service",
+        "Definition",
+        "CreatedAt"
+      ],
+      "members":{
+        "RuleId":{
+          "shape":"RuleId",
+          "documentation":"<p>The unique identifier for the rule.</p>",
+          "locationName":"ruleId"
+        },
+        "Arn":{
+          "shape":"DetectionRuleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the rule.</p>",
+          "locationName":"arn"
+        },
+        "Name":{
+          "shape":"RuleName",
+          "documentation":"<p>The display name of the rule.</p>",
+          "locationName":"name"
+        },
+        "Description":{
+          "shape":"DetectionRuleDescription",
+          "documentation":"<p>A description of what the rule detects.</p>",
+          "locationName":"description"
+        },
+        "Severity":{
+          "shape":"DetectionRuleSeverity",
+          "documentation":"<p>The severity level assigned to findings generated by this rule.</p>",
+          "locationName":"severity"
+        },
+        "DataSource":{
+          "shape":"DetectionRuleDataSource",
+          "documentation":"<p>The data source that the rule analyzes.</p>",
+          "locationName":"dataSource"
+        },
+        "Tactic":{
+          "shape":"MitreTactic",
+          "documentation":"<p>The MITRE ATT&amp;CK tactic associated with the rule.</p>",
+          "locationName":"tactic"
+        },
+        "Technique":{
+          "shape":"MitreTechnique",
+          "documentation":"<p>The MITRE ATT&amp;CK technique associated with the rule.</p>",
+          "locationName":"technique"
+        },
+        "Service":{
+          "shape":"DetectionRuleServiceName",
+          "documentation":"<p>The Amazon Web Services service associated with the rule.</p>",
+          "locationName":"service"
+        },
+        "Definition":{
+          "shape":"RuleDefinition",
+          "documentation":"<p>The detection logic definition for the rule.</p>",
+          "locationName":"definition"
+        },
+        "Language":{
+          "shape":"RuleLanguage",
+          "documentation":"<p>The language used for the detection logic expression.</p>",
+          "locationName":"language"
+        },
+        "Schema":{
+          "shape":"RuleSchema",
+          "documentation":"<p>The schema version used by the rule definition.</p>",
+          "locationName":"schema"
+        },
+        "CreatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the rule was created.</p>",
+          "locationName":"createdAt"
+        },
+        "UpdatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the rule was last updated.</p>",
+          "locationName":"updatedAt"
+        }
+      },
+      "documentation":"<p>Contains the full details of a custom detection rule, including its detection logic.</p>"
+    },
+    "RuleExpression":{
+      "type":"string",
+      "max":4096,
+      "min":1
+    },
+    "RuleId":{
+      "type":"string",
+      "max":100,
+      "min":1,
+      "pattern":"[a-z0-9]+(-[a-z0-9]+)*"
+    },
+    "RuleLanguage":{
+      "type":"string",
+      "enum":["SQL"]
+    },
+    "RuleName":{
+      "type":"string",
+      "max":255,
+      "min":1
+    },
+    "RuleSchema":{
+      "type":"string",
+      "enum":["CloudTrail"]
+    },
+    "RuleSummary":{
+      "type":"structure",
+      "required":[
+        "RuleId",
+        "Arn",
+        "Name",
+        "Description",
+        "Severity",
+        "DataSource",
+        "Tactic",
+        "Technique",
+        "Service",
+        "CreatedAt"
+      ],
+      "members":{
+        "RuleId":{
+          "shape":"RuleId",
+          "documentation":"<p>The unique identifier for the rule.</p>",
+          "locationName":"ruleId"
+        },
+        "Arn":{
+          "shape":"DetectionRuleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the rule.</p>",
+          "locationName":"arn"
+        },
+        "Name":{
+          "shape":"RuleName",
+          "documentation":"<p>The display name of the rule.</p>",
+          "locationName":"name"
+        },
+        "Description":{
+          "shape":"DetectionRuleDescription",
+          "documentation":"<p>A description of what the rule detects.</p>",
+          "locationName":"description"
+        },
+        "Severity":{
+          "shape":"DetectionRuleSeverity",
+          "documentation":"<p>The severity level assigned to findings generated by this rule.</p>",
+          "locationName":"severity"
+        },
+        "DataSource":{
+          "shape":"DetectionRuleDataSource",
+          "documentation":"<p>The data source that the rule analyzes.</p>",
+          "locationName":"dataSource"
+        },
+        "Tactic":{
+          "shape":"MitreTactic",
+          "documentation":"<p>The MITRE ATT&amp;CK tactic associated with the rule.</p>",
+          "locationName":"tactic"
+        },
+        "Technique":{
+          "shape":"MitreTechnique",
+          "documentation":"<p>The MITRE ATT&amp;CK technique associated with the rule.</p>",
+          "locationName":"technique"
+        },
+        "Service":{
+          "shape":"DetectionRuleServiceName",
+          "documentation":"<p>The Amazon Web Services service associated with the rule.</p>",
+          "locationName":"service"
+        },
+        "Language":{
+          "shape":"RuleLanguage",
+          "documentation":"<p>The language used for the detection logic expression.</p>",
+          "locationName":"language"
+        },
+        "Schema":{
+          "shape":"RuleSchema",
+          "documentation":"<p>The schema version used by the rule definition.</p>",
+          "locationName":"schema"
+        },
+        "CreatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the rule was created.</p>",
+          "locationName":"createdAt"
+        },
+        "UpdatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the rule was last updated.</p>",
+          "locationName":"updatedAt"
+        }
+      },
+      "documentation":"<p>Contains summary information about a custom detection rule.</p>"
+    },
+    "RuleSummaryList":{
+      "type":"list",
+      "member":{"shape":"RuleSummary"}
     },
     "RuntimeContext":{
       "type":"structure",
@@ -12277,6 +13401,71 @@
       }
     },
     "UntagResourceResponse":{
+      "type":"structure",
+      "members":{}
+    },
+    "UpdateCustomDetectionRuleAssociationRequest":{
+      "type":"structure",
+      "required":[
+        "RuleId",
+        "AssociationId",
+        "Mode"
+      ],
+      "members":{
+        "RuleId":{
+          "shape":"RuleId",
+          "documentation":"<p>The unique identifier for the custom detection rule.</p>",
+          "location":"uri",
+          "locationName":"RuleId"
+        },
+        "AssociationId":{
+          "shape":"AssociationId",
+          "documentation":"<p>The unique identifier for the association to update.</p>",
+          "location":"uri",
+          "locationName":"AssociationId"
+        },
+        "Mode":{
+          "shape":"AssociationMode",
+          "documentation":"<p>The rule execution mode. Valid values: <code>LIVE</code> | <code>DRY_RUN</code>.</p>",
+          "locationName":"mode"
+        }
+      }
+    },
+    "UpdateCustomDetectionRuleAssociationResponse":{
+      "type":"structure",
+      "members":{}
+    },
+    "UpdateCustomDetectionRuleOrgConfigurationRequest":{
+      "type":"structure",
+      "required":[
+        "RuleId",
+        "Mode"
+      ],
+      "members":{
+        "RuleId":{
+          "shape":"RuleId",
+          "documentation":"<p>The unique identifier for the custom detection rule.</p>",
+          "location":"uri",
+          "locationName":"RuleId"
+        },
+        "Mode":{
+          "shape":"AssociationMode",
+          "documentation":"<p>The execution mode of the organization configuration. Valid values: <code>LIVE</code> | <code>DRY_RUN</code>.</p>",
+          "locationName":"mode"
+        },
+        "IncludeAccountIds":{
+          "shape":"DetectionRuleAccountIds",
+          "documentation":"<p>The account IDs to include in the organization configuration. Mutually exclusive with <code>ExcludeAccountIds</code>.</p>",
+          "locationName":"includeAccountIds"
+        },
+        "ExcludeAccountIds":{
+          "shape":"DetectionRuleAccountIds",
+          "documentation":"<p>The account IDs to exclude from the organization configuration. Mutually exclusive with <code>IncludeAccountIds</code>.</p>",
+          "locationName":"excludeAccountIds"
+        }
+      }
+    },
+    "UpdateCustomDetectionRuleOrgConfigurationResponse":{
       "type":"structure",
       "members":{}
     },

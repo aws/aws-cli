@@ -1588,6 +1588,14 @@
         "ANCHOR"
       ]
     },
+    "AacPassthroughControl": {
+      "type": "string",
+      "documentation": "When set to WHEN_POSSIBLE, input AAC audio will be passed through if it is present on the input. This detection is dynamic over the life of the transcode. Inputs that alternate between AAC and non-AAC content will have a consistent AAC output as the system alternates between passthrough and encoding.",
+      "enum": [
+        "WHEN_POSSIBLE",
+        "NO_PASSTHROUGH"
+      ]
+    },
     "AacRateControlMode": {
       "type": "string",
       "documentation": "Specify the AAC rate control mode. For a constant bitrate: Choose CBR. Your AAC output bitrate will be equal to the value that you choose for Bitrate. For a variable bitrate: Choose VBR. Your AAC output bitrate will vary according to your audio content and the value that you choose for Bitrate quality.",
@@ -1631,6 +1639,11 @@
           "shape": "AacLoudnessMeasurementMode",
           "locationName": "loudnessMeasurementMode",
           "documentation": "Choose the loudness measurement mode for your audio content. For music or advertisements: We recommend that you keep the default value, Program. For speech or other content: We recommend that you choose Anchor. When you do, MediaConvert optimizes the loudness of your output for clarify by applying speech gates."
+        },
+        "PassthroughControl": {
+          "shape": "AacPassthroughControl",
+          "locationName": "passthroughControl",
+          "documentation": "When set to WHEN_POSSIBLE, input AAC audio will be passed through if it is present on the input. This detection is dynamic over the life of the transcode. Inputs that alternate between AAC and non-AAC content will have a consistent AAC output as the system alternates between passthrough and encoding."
         },
         "RapInterval": {
           "shape": "__integerMin2000Max30000",
@@ -2105,6 +2118,22 @@
         "ENABLED"
       ]
     },
+    "AspectRatio": {
+      "type": "structure",
+      "members": {
+        "Denominator": {
+          "shape": "__integer",
+          "locationName": "denominator",
+          "documentation": "The denominator, or bottom number, in the fractional aspect ratio. For example, for a display aspect ratio of 16 / 9, the denominator would be 9."
+        },
+        "Numerator": {
+          "shape": "__integer",
+          "locationName": "numerator",
+          "documentation": "The numerator, or top number, in the fractional aspect ratio. For example, for a display aspect ratio of 16 / 9, the numerator would be 16."
+        }
+      },
+      "documentation": "An aspect ratio expressed as a fraction with numerator and denominator values, reduced to lowest terms. Used for the sample (pixel) aspect ratio and the display aspect ratio of a video track. For example, a 720x576 anamorphic track has a sample aspect ratio of 64 / 45 and a display aspect ratio of 16 / 9."
+    },
     "AssociateCertificateRequest": {
       "type": "structure",
       "members": {
@@ -2174,7 +2203,7 @@
     },
     "AudioCodec": {
       "type": "string",
-      "documentation": "Choose the audio codec for this output. Note that the option Dolby Digital passthrough applies only to Dolby Digital and Dolby Digital Plus audio inputs. Make sure that you choose a codec that's supported with your output container: https://docs.aws.amazon.com/mediaconvert/latest/ug/reference-codecs-containers.html#reference-codecs-containers-output-audio For audio-only outputs, make sure that both your input audio codec and your output audio codec are supported for audio-only workflows. For more information, see: https://docs.aws.amazon.com/mediaconvert/latest/ug/reference-codecs-containers-input.html#reference-codecs-containers-input-audio-only and https://docs.aws.amazon.com/mediaconvert/latest/ug/reference-codecs-containers.html#audio-only-output",
+      "documentation": "Choose the audio codec for this output. Note that the option passthrough applies only to Dolby Digital, Dolby Digital Plus, AAC LC, AAC HEV1, and AAC HEV2 audio inputs. Make sure that you choose a codec that's supported with your output container: https://docs.aws.amazon.com/mediaconvert/latest/ug/reference-codecs-containers.html#reference-codecs-containers-output-audio For audio-only outputs, make sure that both your input audio codec and your output audio codec are supported for audio-only workflows. For more information, see: https://docs.aws.amazon.com/mediaconvert/latest/ug/reference-codecs-containers-input.html#reference-codecs-containers-input-audio-only and https://docs.aws.amazon.com/mediaconvert/latest/ug/reference-codecs-containers.html#audio-only-output",
       "enum": [
         "AAC",
         "MP2",
@@ -2217,7 +2246,7 @@
         "Codec": {
           "shape": "AudioCodec",
           "locationName": "codec",
-          "documentation": "Choose the audio codec for this output. Note that the option Dolby Digital passthrough applies only to Dolby Digital and Dolby Digital Plus audio inputs. Make sure that you choose a codec that's supported with your output container: https://docs.aws.amazon.com/mediaconvert/latest/ug/reference-codecs-containers.html#reference-codecs-containers-output-audio For audio-only outputs, make sure that both your input audio codec and your output audio codec are supported for audio-only workflows. For more information, see: https://docs.aws.amazon.com/mediaconvert/latest/ug/reference-codecs-containers-input.html#reference-codecs-containers-input-audio-only and https://docs.aws.amazon.com/mediaconvert/latest/ug/reference-codecs-containers.html#audio-only-output"
+          "documentation": "Choose the audio codec for this output. Note that the option passthrough applies only to Dolby Digital, Dolby Digital Plus, AAC LC, AAC HEV1, and AAC HEV2 audio inputs. Make sure that you choose a codec that's supported with your output container: https://docs.aws.amazon.com/mediaconvert/latest/ug/reference-codecs-containers.html#reference-codecs-containers-output-audio For audio-only outputs, make sure that both your input audio codec and your output audio codec are supported for audio-only workflows. For more information, see: https://docs.aws.amazon.com/mediaconvert/latest/ug/reference-codecs-containers-input.html#reference-codecs-containers-input-audio-only and https://docs.aws.amazon.com/mediaconvert/latest/ug/reference-codecs-containers.html#audio-only-output"
         },
         "Eac3AtmosSettings": {
           "shape": "Eac3AtmosSettings",
@@ -2453,6 +2482,11 @@
           "shape": "__long",
           "locationName": "bitRate",
           "documentation": "The bit rate of the audio track, in bits per second."
+        },
+        "ChannelLayout": {
+          "shape": "__string",
+          "locationName": "channelLayout",
+          "documentation": "The audio channel layout of the track, such as \"mono\", \"stereo\", \"5.1\", or \"7.1\". Object-based or immersive audio is reported as \"5.1.4\" or \"7.1.4\"."
         },
         "Channels": {
           "shape": "__integer",
@@ -4094,10 +4128,11 @@
     },
     "CmfcScte35Source": {
       "type": "string",
-      "documentation": "Ignore this setting unless you have SCTE-35 markers in your input video file. Choose Passthrough if you want SCTE-35 markers that appear in your input to also appear in this output. Choose None if you don't want those SCTE-35 markers in this output.",
+      "documentation": "Ignore this setting unless you have SCTE-35 markers in your input video file. Choose Passthrough if you want SCTE-35 markers that appear in your input to also appear in this output. Choose None if you don't want those SCTE-35 markers in this output. When your input is an HLS manifest, choose Manifest cues to pass through CUE markers in your HLS manifest as segment boundaries and SCTE-35 markers in this output at each EXT-X-CUE-OUT splice point in the input manifest.",
       "enum": [
         "PASSTHROUGH",
-        "NONE"
+        "NONE",
+        "MANIFEST_CUES"
       ]
     },
     "CmfcSettings": {
@@ -4161,7 +4196,7 @@
         "Scte35Source": {
           "shape": "CmfcScte35Source",
           "locationName": "scte35Source",
-          "documentation": "Ignore this setting unless you have SCTE-35 markers in your input video file. Choose Passthrough if you want SCTE-35 markers that appear in your input to also appear in this output. Choose None if you don't want those SCTE-35 markers in this output."
+          "documentation": "Ignore this setting unless you have SCTE-35 markers in your input video file. Choose Passthrough if you want SCTE-35 markers that appear in your input to also appear in this output. Choose None if you don't want those SCTE-35 markers in this output. When your input is an HLS manifest, choose Manifest cues to pass through CUE markers in your HLS manifest as segment boundaries and SCTE-35 markers in this output at each EXT-X-CUE-OUT splice point in the input manifest."
         },
         "SigningKmsKey": {
           "shape": "__stringMin1PatternArnAwsUsGovCnKmsAZ26EastWestCentralNorthSouthEastWest1912D12KeyAFAF098AFAF094AFAF094AFAF094AFAF0912MrkAFAF0932",
@@ -4213,6 +4248,7 @@
         "UNKNOWN",
         "AAC",
         "AC3",
+        "AMR",
         "EAC3",
         "FLAC",
         "MP2",
@@ -4220,8 +4256,13 @@
         "OPUS",
         "PCM",
         "VORBIS",
+        "WMA",
+        "WMA2",
+        "WMAPRO",
         "AV1",
         "AVC",
+        "DV",
+        "H263",
         "HEVC",
         "JPEG2000",
         "MJPEG",
@@ -4232,6 +4273,8 @@
         "QTRLE",
         "THEORA",
         "UNCOMPRESSED",
+        "VC1",
+        "VC3",
         "VFW",
         "VP8",
         "VP9",
@@ -4272,6 +4315,11 @@
           "shape": "__string",
           "locationName": "fieldOrder",
           "documentation": "The field order of interlaced video, which indicates whether the top or bottom field is displayed first. Use this to select the correct deinterlacing behavior. One of \"TopFieldFirst\" or \"BottomFieldFirst\". This field is present only for interlaced video; it is omitted for progressive video and when the field order is not indicated by the source."
+        },
+        "Hdr10PlusPresence": {
+          "shape": "Hdr10PlusPresence",
+          "locationName": "hdr10PlusPresence",
+          "documentation": "Indicates that HDR10+ (SMPTE ST 2094-40) dynamic metadata was detected in the HEVC bitstream. Present only when detected."
         },
         "Height": {
           "shape": "__integer",
@@ -4511,7 +4559,7 @@
         "Format": {
           "shape": "Format",
           "locationName": "format",
-          "documentation": "The format of your media file. For example: MP4, QuickTime (MOV), Matroska (MKV), WebM, MXF, Wave, AVI, MPEG-TS, MPEG-PS, or MP3. Note that this will be blank if your media file has a format that the MediaConvert Probe operation does not recognize."
+          "documentation": "The format of your media file. For example: MP4, QuickTime (MOV), Matroska (MKV), WebM, MXF, Wave, AVI, MPEG-TS, MPEG-PS, MP3, FLAC, ASF (Windows Media / WMA), OGG. Note that this will be blank if your media file has a format that the MediaConvert Probe operation does not recognize."
         },
         "StartTimecode": {
           "shape": "__string",
@@ -4927,7 +4975,7 @@
         "PlaybackDeviceCompatibility": {
           "shape": "DashIsoPlaybackDeviceCompatibility",
           "locationName": "playbackDeviceCompatibility",
-          "documentation": "This setting can improve the compatibility of your output with video players on obsolete devices. It applies only to DASH H.264 outputs with DRM encryption. Choose Unencrypted SEI only to correct problems with playback on older devices. Otherwise, keep the default setting CENC v1. If you choose Unencrypted SEI, for that output, the service will exclude the access unit delimiter and will leave the SEI NAL units unencrypted."
+          "documentation": "This setting can improve the compatibility of your output with video players on obsolete devices. It applies only to DASH outputs with DRM encryption. Choose Unencrypted SEI only to correct problems with playback on older H.264 devices. Choose CENC v1 unencrypted headers to leave NAL unit headers and slice headers unencrypted for H.265 outputs, improving compatibility with strict HEVC decoders. Otherwise, keep the default setting CENC v1."
         },
         "SpekeKeyProvider": {
           "shape": "SpekeKeyProvider",
@@ -5184,10 +5232,11 @@
     },
     "DashIsoPlaybackDeviceCompatibility": {
       "type": "string",
-      "documentation": "This setting can improve the compatibility of your output with video players on obsolete devices. It applies only to DASH H.264 outputs with DRM encryption. Choose Unencrypted SEI only to correct problems with playback on older devices. Otherwise, keep the default setting CENC v1. If you choose Unencrypted SEI, for that output, the service will exclude the access unit delimiter and will leave the SEI NAL units unencrypted.",
+      "documentation": "This setting can improve the compatibility of your output with video players on obsolete devices. It applies only to DASH outputs with DRM encryption. Choose Unencrypted SEI only to correct problems with playback on older H.264 devices. Choose CENC v1 unencrypted headers to leave NAL unit headers and slice headers unencrypted for H.265 outputs, improving compatibility with strict HEVC decoders. Otherwise, keep the default setting CENC v1.",
       "enum": [
         "CENC_V1",
-        "UNENCRYPTED_SEI"
+        "UNENCRYPTED_SEI",
+        "CENC_V1_UNENCRYPTED_HEADERS"
       ]
     },
     "DashIsoPtsOffsetHandlingForBFrames": {
@@ -6743,7 +6792,10 @@
         "avi",
         "mpegts",
         "mpegps",
-        "mp3"
+        "mp3",
+        "flac",
+        "asf",
+        "ogg"
       ]
     },
     "FrameCaptureSettings": {
@@ -8169,6 +8221,13 @@
         }
       },
       "documentation": "Setting for HDR10+ metadata insertion"
+    },
+    "Hdr10PlusPresence": {
+      "type": "string",
+      "documentation": "Indicates that HDR10+ (SMPTE ST 2094-40) dynamic metadata was detected in the HEVC bitstream. Present only when detected.",
+      "enum": [
+        "PRESENT"
+      ]
     },
     "HdrMetadata": {
       "type": "structure",
@@ -9661,7 +9720,7 @@
         "FollowSource": {
           "shape": "__integerMin1Max150",
           "locationName": "followSource",
-          "documentation": "Specify the input that MediaConvert references for your default output settings. MediaConvert uses this input's Resolution, Frame rate, and Pixel aspect ratio for all outputs that you don't manually specify different output settings for. Enabling this setting will disable \"Follow source\" for all other inputs.  If MediaConvert cannot follow your source, for example if you specify an audio-only input,  MediaConvert uses the first followable input instead. In your JSON job specification, enter an integer from 1 to 150 corresponding  to the order of your inputs."
+          "documentation": "Specify the input that MediaConvert references for your default output settings.  MediaConvert uses this input's Resolution, Frame rate, and Pixel aspect ratio for all  outputs that you don't manually specify different output settings for. Enabling this setting will disable \"Follow source\" for all other inputs.  If MediaConvert cannot follow your source, for example if you specify an audio-only input,  MediaConvert uses the first followable input instead. In your JSON job specification, enter an integer from 1 to 150 corresponding  to the order of your inputs."
         },
         "Inputs": {
           "shape": "__listOfInput",
@@ -9832,7 +9891,7 @@
         "FollowSource": {
           "shape": "__integerMin1Max150",
           "locationName": "followSource",
-          "documentation": "Specify the input that MediaConvert references for your default output settings. MediaConvert uses this input's Resolution, Frame rate, and Pixel aspect ratio for all outputs that you don't manually specify different output settings for. Enabling this setting will disable \"Follow source\" for all other inputs.  If MediaConvert cannot follow your source, for example if you specify an audio-only input,  MediaConvert uses the first followable input instead. In your JSON job specification, enter an integer from 1 to 150 corresponding  to the order of your inputs."
+          "documentation": "Specify the input that MediaConvert references for your default output settings.  MediaConvert uses this input's Resolution, Frame rate, and Pixel aspect ratio for all  outputs that you don't manually specify different output settings for. Enabling this setting will disable \"Follow source\" for all other inputs.  If MediaConvert cannot follow your source, for example if you specify an audio-only input,  MediaConvert uses the first followable input instead. In your JSON job specification, enter an integer from 1 to 150 corresponding  to the order of your inputs."
         },
         "Inputs": {
           "shape": "__listOfInputTemplate",
@@ -9883,7 +9942,7 @@
         "Key": {
           "shape": "JobsQueryFilterKey",
           "locationName": "key",
-          "documentation": "Specify job details to filter for while performing a jobs query. You specify these filters as part of a key-value pair within the JobsQueryFilter array. The following list describes which keys are available and their possible values: * queue - Your Queue's name or ARN. * status - Your job's status. (SUBMITTED | PROGRESSING | COMPLETE | CANCELED | ERROR) * fileInput - Your input file URL, or partial input file name. * jobEngineVersionRequested - The Job engine version that you requested for your job. Valid versions are in a YYYY-MM-DD format. * jobEngineVersionUsed - The Job engine version that your job used. This may differ from the version that you requested. Valid versions are in a YYYY-MM-DD format. * audioCodec - Your output's audio codec. (AAC | MP2 | MP3 | WAV | AIFF | AC3| EAC3 | EAC3_ATMOS | VORBIS | OPUS | PASSTHROUGH | FLAC) * videoCodec - Your output's video codec. (AV1 | AVC_INTRA | FRAME_CAPTURE | H_264 | H_265 | MPEG2 | PASSTHROUGH | PRORES | UNCOMPRESSED | VC3 | VP8 | VP9 | XAVC)"
+          "documentation": "Specify job details to filter for while performing a jobs query. You specify these filters as part of a key-value pair within the JobsQueryFilter array. The following list describes which keys are available and their possible values: * queue - Your Queue's name or ARN. * status - Your job's status. (SUBMITTED | PROGRESSING | COMPLETE | CANCELED | ERROR) * fileInput - Your input file URL, or partial input file name. * jobEngineVersionRequested - The Job engine version that you requested for your job. Valid versions are in a YYYY-MM-DD format. * jobEngineVersionUsed - The Job engine version that your job used. This may differ from the version that you requested. Valid versions are in a YYYY-MM-DD format. * audioCodec - Your output's audio codec. (AAC | MP2 | MP3 | WAV | AIFF | AC3| EAC3 | EAC3_ATMOS | VORBIS | OPUS | PASSTHROUGH | FLAC) * videoCodec - Your output's video codec. (AV1 | AVC_INTRA | FRAME_CAPTURE | H_264 | H_265 | MPEG2 | PASSTHROUGH | PRORES | UNCOMPRESSED | VC3 | VP8 | VP9 | XAVC) * errorCode - The error code that your job failed with. For example, 1010. For more information, see https://docs.aws.amazon.com/mediaconvert/latest/ug/mediaconvert_error_codes.html"
         },
         "Values": {
           "shape": "__listOf__stringMax100",
@@ -9895,7 +9954,7 @@
     },
     "JobsQueryFilterKey": {
       "type": "string",
-      "documentation": "Specify job details to filter for while performing a jobs query. You specify these filters as part of a key-value pair within the JobsQueryFilter array. The following list describes which keys are available and their possible values: * queue - Your Queue's name or ARN. * status - Your job's status. (SUBMITTED | PROGRESSING | COMPLETE | CANCELED | ERROR) * fileInput - Your input file URL, or partial input file name. * jobEngineVersionRequested - The Job engine version that you requested for your job. Valid versions are in a YYYY-MM-DD format. * jobEngineVersionUsed - The Job engine version that your job used. This may differ from the version that you requested. Valid versions are in a YYYY-MM-DD format. * audioCodec - Your output's audio codec. (AAC | MP2 | MP3 | WAV | AIFF | AC3| EAC3 | EAC3_ATMOS | VORBIS | OPUS | PASSTHROUGH | FLAC) * videoCodec - Your output's video codec. (AV1 | AVC_INTRA | FRAME_CAPTURE | H_264 | H_265 | MPEG2 | PASSTHROUGH | PRORES | UNCOMPRESSED | VC3 | VP8 | VP9 | XAVC)",
+      "documentation": "Specify job details to filter for while performing a jobs query. You specify these filters as part of a key-value pair within the JobsQueryFilter array. The following list describes which keys are available and their possible values: * queue - Your Queue's name or ARN. * status - Your job's status. (SUBMITTED | PROGRESSING | COMPLETE | CANCELED | ERROR) * fileInput - Your input file URL, or partial input file name. * jobEngineVersionRequested - The Job engine version that you requested for your job. Valid versions are in a YYYY-MM-DD format. * jobEngineVersionUsed - The Job engine version that your job used. This may differ from the version that you requested. Valid versions are in a YYYY-MM-DD format. * audioCodec - Your output's audio codec. (AAC | MP2 | MP3 | WAV | AIFF | AC3| EAC3 | EAC3_ATMOS | VORBIS | OPUS | PASSTHROUGH | FLAC) * videoCodec - Your output's video codec. (AV1 | AVC_INTRA | FRAME_CAPTURE | H_264 | H_265 | MPEG2 | PASSTHROUGH | PRORES | UNCOMPRESSED | VC3 | VP8 | VP9 | XAVC) * errorCode - The error code that your job failed with. For example, 1010. For more information, see https://docs.aws.amazon.com/mediaconvert/latest/ug/mediaconvert_error_codes.html",
       "enum": [
         "queue",
         "status",
@@ -9903,7 +9962,8 @@
         "jobEngineVersionRequested",
         "jobEngineVersionUsed",
         "audioCodec",
-        "videoCodec"
+        "videoCodec",
+        "errorCode"
       ]
     },
     "JobsQueryStatus": {
@@ -10562,10 +10622,11 @@
     },
     "M2tsScte35Source": {
       "type": "string",
-      "documentation": "For SCTE-35 markers from your input-- Choose Passthrough if you want SCTE-35 markers that appear in your input to also appear in this output. Choose None if you don't want SCTE-35 markers in this output. For SCTE-35 markers from an ESAM XML document-- Choose None. Also provide the ESAM XML as a string in the setting Signal processing notification XML. Also enable ESAM SCTE-35 (include the property scte35Esam).",
+      "documentation": "For SCTE-35 markers from your input-- Choose Passthrough if you want SCTE-35 markers that appear in your input to also appear in this output. Choose None if you don't want SCTE-35 markers in this output. When your input is an HLS manifest, choose Manifest cues to pass through CUE markers in your HLS manifest as segment boundaries and SCTE-35 markers in this output at each EXT-X-CUE-OUT splice point in the input manifest. For SCTE-35 markers from an ESAM XML document-- Choose None. Also provide the ESAM XML as a string in the setting Signal processing notification XML. Also enable ESAM SCTE-35 (include the property scte35Esam).",
       "enum": [
         "PASSTHROUGH",
-        "NONE"
+        "NONE",
+        "MANIFEST_CUES"
       ]
     },
     "M2tsSegmentationMarkers": {
@@ -10774,7 +10835,7 @@
         "Scte35Source": {
           "shape": "M2tsScte35Source",
           "locationName": "scte35Source",
-          "documentation": "For SCTE-35 markers from your input-- Choose Passthrough if you want SCTE-35 markers that appear in your input to also appear in this output. Choose None if you don't want SCTE-35 markers in this output. For SCTE-35 markers from an ESAM XML document-- Choose None. Also provide the ESAM XML as a string in the setting Signal processing notification XML. Also enable ESAM SCTE-35 (include the property scte35Esam)."
+          "documentation": "For SCTE-35 markers from your input-- Choose Passthrough if you want SCTE-35 markers that appear in your input to also appear in this output. Choose None if you don't want SCTE-35 markers in this output. When your input is an HLS manifest, choose Manifest cues to pass through CUE markers in your HLS manifest as segment boundaries and SCTE-35 markers in this output at each EXT-X-CUE-OUT splice point in the input manifest. For SCTE-35 markers from an ESAM XML document-- Choose None. Also provide the ESAM XML as a string in the setting Signal processing notification XML. Also enable ESAM SCTE-35 (include the property scte35Esam)."
         },
         "SegmentationMarkers": {
           "shape": "M2tsSegmentationMarkers",
@@ -10843,10 +10904,11 @@
     },
     "M3u8Scte35Source": {
       "type": "string",
-      "documentation": "For SCTE-35 markers from your input-- Choose Passthrough if you want SCTE-35 markers that appear in your input to also appear in this output. Choose None if you don't want SCTE-35 markers in this output. For SCTE-35 markers from an ESAM XML document-- Choose None if you don't want manifest conditioning. Choose Passthrough and choose Ad markers if you do want manifest conditioning. In both cases, also provide the ESAM XML as a string in the setting Signal processing notification XML.",
+      "documentation": "For SCTE-35 markers from your input-- Choose Passthrough if you want SCTE-35 markers that appear in your input to also appear in this output. Choose None if you don't want SCTE-35 markers in this output. For SCTE-35 markers from an ESAM XML document-- Choose None if you don't want manifest conditioning. Choose Passthrough and choose Ad markers if you do want manifest conditioning. In both cases, also provide the ESAM XML as a string in the setting Signal processing notification XML. For SCTE-35 markers from your input HLS manifest-- Choose Manifest cues to pass through CUE markers in your HLS manifest as segment boundaries and SCTE-35 markers in this output at each EXT-X-CUE-OUT splice point in the input manifest.",
       "enum": [
         "PASSTHROUGH",
-        "NONE"
+        "NONE",
+        "MANIFEST_CUES"
       ]
     },
     "M3u8Settings": {
@@ -10940,7 +11002,7 @@
         "Scte35Source": {
           "shape": "M3u8Scte35Source",
           "locationName": "scte35Source",
-          "documentation": "For SCTE-35 markers from your input-- Choose Passthrough if you want SCTE-35 markers that appear in your input to also appear in this output. Choose None if you don't want SCTE-35 markers in this output. For SCTE-35 markers from an ESAM XML document-- Choose None if you don't want manifest conditioning. Choose Passthrough and choose Ad markers if you do want manifest conditioning. In both cases, also provide the ESAM XML as a string in the setting Signal processing notification XML."
+          "documentation": "For SCTE-35 markers from your input-- Choose Passthrough if you want SCTE-35 markers that appear in your input to also appear in this output. Choose None if you don't want SCTE-35 markers in this output. For SCTE-35 markers from an ESAM XML document-- Choose None if you don't want manifest conditioning. Choose Passthrough and choose Ad markers if you do want manifest conditioning. In both cases, also provide the ESAM XML as a string in the setting Signal processing notification XML. For SCTE-35 markers from your input HLS manifest-- Choose Manifest cues to pass through CUE markers in your HLS manifest as segment boundaries and SCTE-35 markers in this output at each EXT-X-CUE-OUT splice point in the input manifest."
         },
         "TimedMetadata": {
           "shape": "TimedMetadata",
@@ -11477,10 +11539,11 @@
     },
     "MpdScte35Source": {
       "type": "string",
-      "documentation": "Ignore this setting unless you have SCTE-35 markers in your input video file. Choose Passthrough if you want SCTE-35 markers that appear in your input to also appear in this output. Choose None if you don't want those SCTE-35 markers in this output.",
+      "documentation": "Ignore this setting unless you have SCTE-35 markers in your input video file. Choose Passthrough if you want SCTE-35 markers that appear in your input to also appear in this output. Choose None if you don't want those SCTE-35 markers in this output. When your input is an HLS manifest, choose Manifest cues to pass through CUE markers in your HLS manifest as segment boundaries and SCTE-35 markers in this output at each EXT-X-CUE-OUT splice point in the input manifest.",
       "enum": [
         "PASSTHROUGH",
-        "NONE"
+        "NONE",
+        "MANIFEST_CUES"
       ]
     },
     "MpdSettings": {
@@ -11529,7 +11592,7 @@
         "Scte35Source": {
           "shape": "MpdScte35Source",
           "locationName": "scte35Source",
-          "documentation": "Ignore this setting unless you have SCTE-35 markers in your input video file. Choose Passthrough if you want SCTE-35 markers that appear in your input to also appear in this output. Choose None if you don't want those SCTE-35 markers in this output."
+          "documentation": "Ignore this setting unless you have SCTE-35 markers in your input video file. Choose Passthrough if you want SCTE-35 markers that appear in your input to also appear in this output. Choose None if you don't want those SCTE-35 markers in this output. When your input is an HLS manifest, choose Manifest cues to pass through CUE markers in your HLS manifest as segment boundaries and SCTE-35 markers in this output at each EXT-X-CUE-OUT splice point in the input manifest."
         },
         "SigningKmsKey": {
           "shape": "__stringMin1PatternArnAwsUsGovCnKmsAZ26EastWestCentralNorthSouthEastWest1912D12KeyAFAF098AFAF094AFAF094AFAF094AFAF0912MrkAFAF0932",
@@ -14047,16 +14110,95 @@
         "MILLISECONDS"
       ]
     },
+    "TtmlBackgroundColor": {
+      "type": "string",
+      "documentation": "Specify the background color for TTML captions output.",
+      "enum": [
+        "NONE",
+        "BLACK",
+        "WHITE",
+        "AUTO"
+      ]
+    },
     "TtmlDestinationSettings": {
       "type": "structure",
       "members": {
+        "BackgroundColor": {
+          "shape": "TtmlBackgroundColor",
+          "locationName": "backgroundColor",
+          "documentation": "Specify the color of the rectangle behind the captions. If Style passthrough is set to enabled, leave blank or set to Auto to pass through the background color from your input captions. If Style passthrough is set to disabled, leave blank or set to Auto to use the default black."
+        },
+        "BackgroundOpacity": {
+          "shape": "__integerMin0Max255",
+          "locationName": "backgroundOpacity",
+          "documentation": "Specify the opacity of the background rectangle. Enter a value from 0 to 255, where 0 is transparent and 255 is opaque. If Style passthrough is set to enabled, leave blank to pass through the background style information in your input captions to your output captions. If Style passthrough is set to disabled and backgroundColor is set, leave blank to use a value of 255 (opaque)."
+        },
+        "FontColor": {
+          "shape": "TtmlFontColor",
+          "locationName": "fontColor",
+          "documentation": "Specify the color of the captions text. If Style passthrough is set to enabled, leave blank or set to Auto to pass through the font color from your input captions. If Style passthrough is set to disabled, leave blank or set to Auto to use the default white."
+        },
+        "FontOpacity": {
+          "shape": "__integerMin0Max255",
+          "locationName": "fontOpacity",
+          "documentation": "Specify the opacity of the captions. Enter a value from 0 to 255, where 0 is transparent and 255 is opaque. If Style passthrough is set to enabled, leave blank to pass through the font opacity information in your input captions to your output captions. If Style passthrough is set to disabled and fontColor is set, leave blank to use a value of 255 (opaque)."
+        },
+        "FontSize": {
+          "shape": "__integerMin0Max96",
+          "locationName": "fontSize",
+          "documentation": "Specify the Font size in pixels. Must be a positive integer. Set to 0, or leave blank, for automatic font size."
+        },
+        "FontStyle": {
+          "shape": "TtmlFontStyle",
+          "locationName": "fontStyle",
+          "documentation": "Specify the font style of the caption text. If Style passthrough is set to enabled, leave blank to pass through the font style from your input captions. If Style passthrough is set to disabled, leave blank to use the default normal style."
+        },
+        "FontWeight": {
+          "shape": "TtmlFontWeight",
+          "locationName": "fontWeight",
+          "documentation": "Specify the font weight of the caption text. If Style passthrough is set to enabled, leave blank to pass through the font weight from your input captions. If Style passthrough is set to disabled, leave blank to use the default normal weight."
+        },
         "StylePassthrough": {
           "shape": "TtmlStylePassthrough",
           "locationName": "stylePassthrough",
           "documentation": "Pass through style and position information from a TTML-like input source (TTML, IMSC, SMPTE-TT) to the TTML output."
+        },
+        "TextDecoration": {
+          "shape": "TtmlTextDecoration",
+          "locationName": "textDecoration",
+          "documentation": "Specify the text decoration of the caption text. If Style passthrough is set to enabled, leave blank to pass through the text decoration from your input captions. If Style passthrough is set to disabled, leave blank to use the default of none."
         }
       },
       "documentation": "Settings related to TTML captions. TTML is a sidecar format that holds captions in a file that is separate from the video container. Set up sidecar captions in the same output group, but different output from your video. For more information, see https://docs.aws.amazon.com/mediaconvert/latest/ug/ttml-and-webvtt-output-captions.html."
+    },
+    "TtmlFontColor": {
+      "type": "string",
+      "documentation": "Specify the font color for TTML captions output.",
+      "enum": [
+        "WHITE",
+        "BLACK",
+        "YELLOW",
+        "RED",
+        "GREEN",
+        "BLUE",
+        "AUTO"
+      ]
+    },
+    "TtmlFontStyle": {
+      "type": "string",
+      "documentation": "Specify the font style for TTML captions output.",
+      "enum": [
+        "NORMAL",
+        "ITALIC"
+      ]
+    },
+    "TtmlFontWeight": {
+      "type": "string",
+      "documentation": "Specify the font weight for TTML captions output.",
+      "enum": [
+        "NORMAL",
+        "BOLD"
+      ]
     },
     "TtmlStylePassthrough": {
       "type": "string",
@@ -14064,6 +14206,14 @@
       "enum": [
         "ENABLED",
         "DISABLED"
+      ]
+    },
+    "TtmlTextDecoration": {
+      "type": "string",
+      "documentation": "Specify the text decoration for TTML captions output.",
+      "enum": [
+        "NONE",
+        "UNDERLINE"
       ]
     },
     "Type": {
@@ -14950,6 +15100,11 @@
           "locationName": "colorPrimaries",
           "documentation": "The color space primaries of the video track, defining the red, green, and blue color coordinates used for the video. This information helps ensure accurate color reproduction during playback and transcoding."
         },
+        "DisplayAspectRatio": {
+          "shape": "AspectRatio",
+          "locationName": "displayAspectRatio",
+          "documentation": "An aspect ratio expressed as a fraction with numerator and denominator values, reduced to lowest terms. Used for the sample (pixel) aspect ratio and the display aspect ratio of a video track. For example, a 720x576 anamorphic track has a sample aspect ratio of 64 / 45 and a display aspect ratio of 16 / 9."
+        },
         "FrameRate": {
           "shape": "FrameRate",
           "locationName": "frameRate",
@@ -14974,6 +15129,11 @@
           "shape": "__integer",
           "locationName": "rotation",
           "documentation": "The clockwise rotation angle of the video track, in degrees, as derived from container-level metadata (e.g. the MP4 tkhd transformation matrix or the Matroska ProjectionPoseRoll element). Common values are 90, 180, and 270. This field is null when no rotation metadata is present or when the rotation is 0 degrees. For MP4, non-standard transformation matrices also yield null."
+        },
+        "SampleAspectRatio": {
+          "shape": "AspectRatio",
+          "locationName": "sampleAspectRatio",
+          "documentation": "An aspect ratio expressed as a fraction with numerator and denominator values, reduced to lowest terms. Used for the sample (pixel) aspect ratio and the display aspect ratio of a video track. For example, a 720x576 anamorphic track has a sample aspect ratio of 64 / 45 and a display aspect ratio of 16 / 9."
         },
         "TransferCharacteristics": {
           "shape": "TransferCharacteristics",
@@ -15629,6 +15789,11 @@
     "XavcHdIntraCbgProfileSettings": {
       "type": "structure",
       "members": {
+        "InterlaceMode": {
+          "shape": "XavcInterlaceMode",
+          "locationName": "interlaceMode",
+          "documentation": "Choose the scan line type for the output. Keep the default value, Progressive to create a progressive output, regardless of the scan type of your input. Use Top field first or Bottom field first to create an output that's interlaced with the same field polarity throughout. Use Follow, default top or Follow, default bottom to produce outputs with the same field polarity as the source. For jobs that have multiple inputs, the output field polarity might change over the course of the output. Follow behavior depends on the input scan type. If the source is interlaced, the output will be interlaced with the same polarity as the source. If the source is progressive, the output will be interlaced with top field bottom field first, depending on which of the Follow options you choose."
+        },
         "XavcClass": {
           "shape": "XavcHdIntraCbgProfileClass",
           "locationName": "xavcClass",

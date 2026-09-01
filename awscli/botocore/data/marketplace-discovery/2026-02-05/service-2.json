@@ -842,6 +842,17 @@
       "max":30,
       "min":0
     },
+    "FixedPercentage":{
+      "type":"structure",
+      "required":["percentageValue"],
+      "members":{
+        "percentageValue":{
+          "shape":"BoundedString",
+          "documentation":"<p>The percentage value applied at each renewal cycle.</p>"
+        }
+      },
+      "documentation":"<p>A single fixed price increase percentage applied at each renewal cycle.</p>"
+    },
     "FixedUpfrontPricingTerm":{
       "type":"structure",
       "required":[
@@ -1981,6 +1992,40 @@
       "type":"list",
       "member":{"shape":"OfferTerm"}
     },
+    "PaymentScheduleEntry":{
+      "type":"structure",
+      "required":[
+        "chargeDateOffset",
+        "chargePercentage"
+      ],
+      "members":{
+        "chargeDateOffset":{
+          "shape":"BoundedString",
+          "documentation":"<p>The relative offset from the renewal agreement start date when this installment is due, in ISO 8601 duration format. The offset uses months only or days only (for example, P1M or P30D); mixed units are not supported, and every offset in a schedule uses the same unit.</p>"
+        },
+        "chargePercentage":{
+          "shape":"BoundedString",
+          "documentation":"<p>The percentage of the increased TCV to charge in this installment. All entries in a schedule sum to 100.00.</p>"
+        },
+        "dayOfMonth":{
+          "shape":"PaymentScheduleEntryDayOfMonthInteger",
+          "documentation":"<p>The optional calendar day of month on which the charge occurs. When absent, the charge day is derived from <code>chargeDateOffset</code>, and this field does not apply when <code>chargeDateOffset</code> is expressed in days. For months with fewer days than the specified day, the charge occurs on the last day of the month. For example, if <code>dayOfMonth</code> is 31, the charge in April occurs on April 30.</p>"
+        }
+      },
+      "documentation":"<p>A single installment entry in the renewal payment schedule.</p>"
+    },
+    "PaymentScheduleEntryDayOfMonthInteger":{
+      "type":"integer",
+      "box":true,
+      "max":31,
+      "min":1
+    },
+    "PaymentScheduleEntryList":{
+      "type":"list",
+      "member":{"shape":"PaymentScheduleEntry"},
+      "max":200,
+      "min":1
+    },
     "PaymentScheduleTerm":{
       "type":"structure",
       "required":[
@@ -2008,6 +2053,55 @@
         }
       },
       "documentation":"<p>Defines a payment schedule term with installment payments at specified dates.</p>"
+    },
+    "PaymentScheduleTermTemplate":{
+      "type":"structure",
+      "required":["schedule"],
+      "members":{
+        "schedule":{
+          "shape":"PaymentScheduleEntryList",
+          "documentation":"<p>An ordered list of installment entries for the renewal payment schedule.</p>"
+        }
+      },
+      "documentation":"<p>A template for the payment schedule term on the renewal offer.</p>"
+    },
+    "PercentageRange":{
+      "type":"structure",
+      "required":[
+        "minimumValue",
+        "maximumValue",
+        "defaultValue"
+      ],
+      "members":{
+        "minimumValue":{
+          "shape":"BoundedString",
+          "documentation":"<p>The minimum percentage by which the price can increase at each renewal cycle.</p>"
+        },
+        "maximumValue":{
+          "shape":"BoundedString",
+          "documentation":"<p>The maximum percentage by which the price can increase at each renewal cycle.</p>"
+        },
+        "defaultValue":{
+          "shape":"BoundedString",
+          "documentation":"<p>The percentage increase applied by default when no other value is finalized before the adjustment deadline. Falls between <code>minimumValue</code> and <code>maximumValue</code>.</p>"
+        }
+      },
+      "documentation":"<p>A price increase percentage range with minimum, maximum, and default values.</p>"
+    },
+    "PriceIncrease":{
+      "type":"structure",
+      "members":{
+        "fixedPercentage":{
+          "shape":"FixedPercentage",
+          "documentation":"<p>A single fixed percentage applied uniformly at every renewal cycle.</p>"
+        },
+        "percentageRange":{
+          "shape":"PercentageRange",
+          "documentation":"<p>A percentage band with minimum, maximum, and default values that bound the price increase at each renewal cycle.</p>"
+        }
+      },
+      "documentation":"<p>The pricing adjustment that applies at each renewal cycle, expressed as either a fixed percentage or a percentage range. Exactly one variant is present.</p>",
+      "union":true
     },
     "PricingModel":{
       "type":"structure",
@@ -2256,7 +2350,8 @@
       "enum":[
         "PRIVATE_PRICING",
         "FUTURE_DATED",
-        "REPLACEMENT_OFFER"
+        "REPLACEMENT_OFFER",
+        "AUTO_RENEW"
       ]
     },
     "PurchaseOptionFilter":{
@@ -2461,9 +2556,34 @@
         "type":{
           "shape":"TermType",
           "documentation":"<p>The category of the term.</p>"
+        },
+        "maxRenewals":{
+          "shape":"RenewalTermMaxRenewalsInteger",
+          "documentation":"<p>The maximum number of renewals allowed on this offer. Absent means unlimited renewals.</p>"
+        },
+        "lockoutPeriod":{
+          "shape":"BoundedString",
+          "documentation":"<p>The duration before the agreement end date when the lockout window begins, in ISO 8601 format (for example, P30D). Absent means no lockout.</p>"
+        },
+        "adjustmentDeadline":{
+          "shape":"BoundedString",
+          "documentation":"<p>The duration before the agreement end date by which the renewal price is finalized, represented in ISO 8601 format (for example, P30D). Only applicable with <code>PercentageRange</code>.</p>"
+        },
+        "priceIncrease":{
+          "shape":"PriceIncrease",
+          "documentation":"<p>The price increase applied at each renewal cycle. Absent means identical pricing on renewal.</p>"
+        },
+        "termTemplates":{
+          "shape":"TermTemplateList",
+          "documentation":"<p>Structural templates defining how specific terms are reshaped on each renewal cycle. Absent for upfront-only offers.</p>"
         }
       },
       "documentation":"<p>Defines a renewal term that enables automatic agreement renewal.</p>"
+    },
+    "RenewalTermMaxRenewalsInteger":{
+      "type":"integer",
+      "box":true,
+      "min":1
     },
     "Resource":{
       "type":"structure",
@@ -3037,6 +3157,23 @@
       "max":256,
       "min":1,
       "pattern":"[A-Za-z0-9+=;,.@\\-_]+"
+    },
+    "TermTemplate":{
+      "type":"structure",
+      "members":{
+        "paymentScheduleTermTemplate":{
+          "shape":"PaymentScheduleTermTemplate",
+          "documentation":"<p>The installment schedule used to structure payments on the renewal offer.</p>"
+        }
+      },
+      "documentation":"<p>A structural template defining how a specific term type is reshaped on each renewal cycle. Exactly one variant is present.</p>",
+      "union":true
+    },
+    "TermTemplateList":{
+      "type":"list",
+      "member":{"shape":"TermTemplate"},
+      "max":10,
+      "min":0
     },
     "TermType":{
       "type":"string",

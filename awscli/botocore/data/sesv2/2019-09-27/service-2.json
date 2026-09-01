@@ -15,6 +15,22 @@
     "auth":["aws.auth#sigv4"]
   },
   "operations":{
+    "AssociateEmailIdentityCertificate":{
+      "name":"AssociateEmailIdentityCertificate",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v2/email/identity/certificates"
+      },
+      "input":{"shape":"AssociateEmailIdentityCertificateRequest"},
+      "output":{"shape":"AssociateEmailIdentityCertificateResponse"},
+      "errors":[
+        {"shape":"NotFoundException"},
+        {"shape":"AlreadyExistsException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"BadRequestException"}
+      ],
+      "documentation":"<p>Associates an S/MIME certificate with an email identity. After the certificate is active, Amazon SES API v2 can add an S/MIME signature to messages that you send from the associated address when signing is enabled on the configuration set used to send the message.</p> <p>The certificate is an X.509 certificate that you manage in Certificate Manager (ACM). You identify it by its Amazon Resource Name (ARN).</p> <ul> <li> <p>If the email identity is a domain, you must specify a <code>FromAddress</code> that belongs to that domain or one of its subdomains. The certificate applies to messages sent from that address.</p> </li> <li> <p>If the email identity is an email address, <code>FromAddress</code> is optional. If you specify it, it must exactly match the email identity.</p> </li> </ul> <p>When the association is created, the certificate begins provisioning and its status is <code>PROVISIONING</code>. The status changes to <code>ACTIVE</code> when the certificate is ready to use for signing. Each email address can have only one certificate association. If an association already exists for the address, this operation returns an error, unless the existing association is in the <code>DEPROVISIONING</code> state.</p>"
+    },
     "BatchGetMetricData":{
       "name":"BatchGetMetricData",
       "http":{
@@ -497,6 +513,21 @@
         {"shape":"BadRequestException"}
       ],
       "documentation":"<p>Delete an association between a tenant and a resource.</p> <p>When you delete a tenant-resource association, the resource itself is not deleted, only its association with the specific tenant is removed. After removal, the resource will no longer be available for use with that tenant's email sending operations.</p>"
+    },
+    "DisassociateEmailIdentityCertificate":{
+      "name":"DisassociateEmailIdentityCertificate",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v2/email/identity/certificates/delete"
+      },
+      "input":{"shape":"DisassociateEmailIdentityCertificateRequest"},
+      "output":{"shape":"DisassociateEmailIdentityCertificateResponse"},
+      "errors":[
+        {"shape":"NotFoundException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"BadRequestException"}
+      ],
+      "documentation":"<p>Removes the association between an S/MIME certificate and an email identity. After the association is removed, Amazon SES API v2 stops adding an S/MIME signature to messages sent from that address.</p> <p>If the email identity is a domain, specify the <code>FromAddress</code> whose certificate association you want to remove.</p> <p>This operation is idempotent. If the specified email identity exists but there's no matching certificate association, the operation succeeds without making any changes. Amazon SES API v2 returns a <code>NotFoundException</code> only when the specified email identity doesn't exist.</p>"
     },
     "GetAccount":{
       "name":"GetAccount",
@@ -985,6 +1016,21 @@
         {"shape":"BadRequestException"}
       ],
       "documentation":"<p>Returns a list of all of the email identities that are associated with your Amazon Web Services account. An identity can be either an email address or a domain. This operation returns identities that are verified as well as those that aren't. This operation returns identities that are associated with Amazon SES and Amazon Pinpoint.</p>"
+    },
+    "ListEmailIdentityCertificates":{
+      "name":"ListEmailIdentityCertificates",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v2/email/identity/certificates/list"
+      },
+      "input":{"shape":"ListEmailIdentityCertificatesRequest"},
+      "output":{"shape":"ListEmailIdentityCertificatesResponse"},
+      "errors":[
+        {"shape":"NotFoundException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"BadRequestException"}
+      ],
+      "documentation":"<p>Lists the S/MIME certificates that are associated with the specified email identity. The results include certificates in all states, such as <code>PROVISIONING</code>, <code>ACTIVE</code>, <code>INACTIVE</code>, <code>DEPROVISIONING</code>, and <code>FAILED</code>.</p> <p>If a certificate has passed its expiration time, it's returned with a status of <code>FAILED</code>.</p> <p>We recommend using pagination to ensure that the operation returns quickly and successfully. When there are more results than fit in a single response, the response includes a <code>NextToken</code> value that you use in a subsequent call to retrieve the next set of results.</p>"
     },
     "ListEmailTemplates":{
       "name":"ListEmailTemplates",
@@ -1613,6 +1659,21 @@
       ],
       "documentation":"<p>Remove one or more tags (keys and values) from a specified resource.</p>"
     },
+    "UpdateConfigurationSet":{
+      "name":"UpdateConfigurationSet",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v2/email/update-configuration-sets"
+      },
+      "input":{"shape":"UpdateConfigurationSetRequest"},
+      "output":{"shape":"UpdateConfigurationSetResponse"},
+      "errors":[
+        {"shape":"NotFoundException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"BadRequestException"}
+      ],
+      "documentation":"<p>Updates an existing configuration set.</p> <p>This operation performs a partial update. Only the attributes that you include in the request are updated; any omitted attribute is left unchanged.</p>"
+    },
     "UpdateConfigurationSetEventDestination":{
       "name":"UpdateConfigurationSetEventDestination",
       "http":{
@@ -1815,6 +1876,33 @@
         }
       },
       "documentation":"<p>Used to associate a configuration set with a MailManager archive.</p>"
+    },
+    "AssociateEmailIdentityCertificateRequest":{
+      "type":"structure",
+      "required":[
+        "EmailIdentity",
+        "CertificateArn"
+      ],
+      "members":{
+        "EmailIdentity":{
+          "shape":"Identity",
+          "documentation":"<p>The email identity, either an email address or a domain, to associate the certificate with.</p>"
+        },
+        "FromAddress":{
+          "shape":"EmailAddress",
+          "documentation":"<p>The email address that the certificate applies to. This value is required when the email identity is a domain, and the address must belong to that domain or one of its subdomains. When the email identity is an email address, this value is optional. If you specify it, it must exactly match the email identity.</p>"
+        },
+        "CertificateArn":{
+          "shape":"CertificateArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Certificate Manager (ACM) certificate to associate with the email identity.</p>"
+        }
+      },
+      "documentation":"<p>A request to associate an S/MIME certificate with an email identity.</p>"
+    },
+    "AssociateEmailIdentityCertificateResponse":{
+      "type":"structure",
+      "members":{},
+      "documentation":"<p>An HTTP 200 response if the request succeeds, or an error message if the request fails.</p>"
     },
     "Attachment":{
       "type":"structure",
@@ -2154,6 +2242,12 @@
       "documentation":"<p>An HTTP 200 response if the request succeeds, or an error message if the request fails.</p>"
     },
     "CaseId":{"type":"string"},
+    "CertificateArn":{
+      "type":"string",
+      "max":2048,
+      "min":20,
+      "pattern":"arn:[\\w+=/,.@-]+:[\\w+=/,.@-]+:[\\w+=/,.@-]*:[0-9]+:certificate/[\\w+=,.@-]+"
+    },
     "Charset":{"type":"string"},
     "CloudWatchDestination":{
       "type":"structure",
@@ -2400,6 +2494,10 @@
         "ArchivingOptions":{
           "shape":"ArchivingOptions",
           "documentation":"<p>An object that defines the MailManager archiving options for emails that you send using the configuration set.</p>"
+        },
+        "MessageSecurityOptions":{
+          "shape":"MessageSecurityOptions",
+          "documentation":"<p>The message security options to apply to the configuration set, such as the signing scheme used for messages that you send with the configuration set.</p>"
         }
       },
       "documentation":"<p>A request to create a configuration set.</p>"
@@ -2989,6 +3087,11 @@
       "type":"string",
       "documentation":"<p>The default value of the dimension that is published to Amazon CloudWatch if you don't provide the value of the dimension when you send an email. This value has to meet the following criteria:</p> <ul> <li> <p>It can only contain ASCII letters (a–z, A–Z), numbers (0–9), underscores (_), or dashes (-).</p> </li> <li> <p>It can contain no more than 255 characters.</p> </li> </ul>"
     },
+    "DefaultSigningScheme":{
+      "type":"structure",
+      "members":{},
+      "documentation":"<p>Specifies the default signing scheme, in which Amazon SES API v2 doesn't apply S/MIME signing to messages sent with the configuration set.</p>"
+    },
     "DeleteConfigurationSetEventDestinationRequest":{
       "type":"structure",
       "required":[
@@ -3395,6 +3498,26 @@
       "value":{"shape":"MetricDimensionValue"},
       "max":3,
       "min":1
+    },
+    "DisassociateEmailIdentityCertificateRequest":{
+      "type":"structure",
+      "required":["EmailIdentity"],
+      "members":{
+        "EmailIdentity":{
+          "shape":"Identity",
+          "documentation":"<p>The email identity whose certificate association you want to remove.</p>"
+        },
+        "FromAddress":{
+          "shape":"EmailAddress",
+          "documentation":"<p>The email address whose certificate association you want to remove. This value is required when the email identity is a domain. When the email identity is an email address, this value is optional.</p>"
+        }
+      },
+      "documentation":"<p>A request to remove the association between an S/MIME certificate and an email identity.</p>"
+    },
+    "DisassociateEmailIdentityCertificateResponse":{
+      "type":"structure",
+      "members":{},
+      "documentation":"<p>An HTTP 200 response if the request succeeds, or an error message if the request fails.</p>"
     },
     "DisplayName":{"type":"string"},
     "DkimAttributes":{
@@ -4240,6 +4363,10 @@
         "ArchivingOptions":{
           "shape":"ArchivingOptions",
           "documentation":"<p>An object that defines the MailManager archive where sent emails are archived that you send using the configuration set.</p>"
+        },
+        "MessageSecurityOptions":{
+          "shape":"MessageSecurityOptions",
+          "documentation":"<p>The message security options that are applied to the configuration set, such as the signing scheme used for messages that you send with the configuration set.</p>"
         }
       },
       "documentation":"<p>Information about a configuration set.</p>"
@@ -5068,6 +5195,43 @@
       "type":"string",
       "min":1
     },
+    "IdentityCertificate":{
+      "type":"structure",
+      "members":{
+        "FromAddress":{
+          "shape":"EmailAddress",
+          "documentation":"<p>The email address that the certificate applies to.</p>"
+        },
+        "Status":{
+          "shape":"IdentityCertificateStatus",
+          "documentation":"<p>The status of the certificate association. A status of <code>ACTIVE</code> indicates that the certificate is ready to use for signing.</p>"
+        },
+        "CertificateArn":{
+          "shape":"CertificateArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Certificate Manager (ACM) certificate that's associated with the email identity.</p>"
+        },
+        "CertificateExpiryTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp after which the certificate is no longer valid.</p>"
+        }
+      },
+      "documentation":"<p>An object that contains information about an S/MIME certificate that's associated with an email identity.</p>"
+    },
+    "IdentityCertificateList":{
+      "type":"list",
+      "member":{"shape":"IdentityCertificate"}
+    },
+    "IdentityCertificateStatus":{
+      "type":"string",
+      "documentation":"<p>The status of an S/MIME certificate that's associated with an email identity. The status can be one of the following values:</p> <ul> <li> <p> <code>PROVISIONING</code> – The certificate association was created and the certificate is being prepared for use.</p> </li> <li> <p> <code>ACTIVE</code> – The certificate is ready to use for signing.</p> </li> <li> <p> <code>INACTIVE</code> – The certificate is no longer used for signing.</p> </li> <li> <p> <code>DEPROVISIONING</code> – The certificate association is being cleaned up.</p> </li> <li> <p> <code>FAILED</code> – The certificate couldn't be prepared for use, or the certificate has expired.</p> </li> </ul>",
+      "enum":[
+        "PROVISIONING",
+        "INACTIVE",
+        "DEPROVISIONING",
+        "ACTIVE",
+        "FAILED"
+      ]
+    },
     "IdentityInfo":{
       "type":"structure",
       "members":{
@@ -5618,6 +5782,39 @@
         }
       },
       "documentation":"<p>A list of all of the identities that you've attempted to verify, regardless of whether or not those identities were successfully verified.</p>"
+    },
+    "ListEmailIdentityCertificatesRequest":{
+      "type":"structure",
+      "required":["EmailIdentity"],
+      "members":{
+        "EmailIdentity":{
+          "shape":"Identity",
+          "documentation":"<p>The email identity whose certificate associations you want to list.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token returned from a previous call to <code>ListEmailIdentityCertificates</code> to indicate the position in the list of certificates.</p>"
+        },
+        "PageSize":{
+          "shape":"MaxItems",
+          "documentation":"<p>The number of results to show in a single call to <code>ListEmailIdentityCertificates</code>. If the number of results is larger than the number you specified in this parameter, then the response includes a <code>NextToken</code> element, which you can use to obtain additional results.</p>"
+        }
+      },
+      "documentation":"<p>A request to list the S/MIME certificates that are associated with an email identity.</p>"
+    },
+    "ListEmailIdentityCertificatesResponse":{
+      "type":"structure",
+      "members":{
+        "Certificates":{
+          "shape":"IdentityCertificateList",
+          "documentation":"<p>An array that contains the certificate associations for the email identity. Each entry includes the from address, the certificate's status, its Amazon Resource Name (ARN), and its expiry time.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token that indicates that there are additional certificates to list. To view additional certificates, issue another request to <code>ListEmailIdentityCertificates</code>, and pass this token in the <code>NextToken</code> parameter.</p>"
+        }
+      },
+      "documentation":"<p>Information about the S/MIME certificates that are associated with an email identity.</p>"
     },
     "ListEmailTemplatesRequest":{
       "type":"structure",
@@ -6227,7 +6424,7 @@
         },
         "MaxResults":{
           "shape":"MessageInsightsExportMaxResults",
-          "documentation":"<p>The maximum number of results.</p>"
+          "documentation":"<p>The maximum number of results.</p> <note> <p>If you don't specify <code>MaxResults</code>, the export returns a maximum of 1,000 results.</p> </note>"
         }
       },
       "documentation":"<p>An object that contains filters applied when performing the Message Insights export.</p>"
@@ -6273,6 +6470,16 @@
       "documentation":"<p>The message can't be sent because it contains invalid content.</p>",
       "error":{"httpStatusCode":400},
       "exception":true
+    },
+    "MessageSecurityOptions":{
+      "type":"structure",
+      "members":{
+        "SigningScheme":{
+          "shape":"SigningScheme",
+          "documentation":"<p>The signing scheme that Amazon SES API v2 applies to messages sent with the configuration set.</p>"
+        }
+      },
+      "documentation":"<p>An object that defines the message-level security options that apply to messages that you send using the configuration set. Currently, these options determine whether Amazon SES API v2 adds an S/MIME signature to your messages and, if so, the format of that signature.</p>"
     },
     "MessageTag":{
       "type":"structure",
@@ -7737,6 +7944,36 @@
     },
     "SentLast24Hours":{"type":"double"},
     "SerialNumber":{"type":"long"},
+    "SignatureFormat":{
+      "type":"string",
+      "documentation":"<p>The format of the S/MIME signature that's applied to a message. The following value is supported:</p> <ul> <li> <p> <code>DETACHED</code> – The signature is carried in a separate MIME part alongside the signed content.</p> </li> </ul>",
+      "enum":["DETACHED"]
+    },
+    "SigningScheme":{
+      "type":"structure",
+      "members":{
+        "DefaultScheme":{
+          "shape":"DefaultSigningScheme",
+          "documentation":"<p>Use the default signing behavior. When you select this option, Amazon SES API v2 doesn't add an S/MIME signature to messages sent with the configuration set.</p>"
+        },
+        "SmimeScheme":{
+          "shape":"SmimeSigningScheme",
+          "documentation":"<p>Sign messages sent with the configuration set using S/MIME. For signing to apply, the email identity used to send a message must have an active S/MIME certificate association.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the signing scheme to apply to messages sent with a configuration set. This is a union type, so you specify exactly one of its members.</p>",
+      "union":true
+    },
+    "SmimeSigningScheme":{
+      "type":"structure",
+      "members":{
+        "SignatureFormat":{
+          "shape":"SignatureFormat",
+          "documentation":"<p>The format of the S/MIME signature that Amazon SES API v2 applies to messages.</p>"
+        }
+      },
+      "documentation":"<p>Specifies that Amazon SES API v2 signs messages sent with the configuration set using S/MIME.</p>"
+    },
     "SnsDestination":{
       "type":"structure",
       "required":["TopicArn"],
@@ -8373,6 +8610,26 @@
       "documentation":"<p>A request to change the settings for an event destination for a configuration set.</p>"
     },
     "UpdateConfigurationSetEventDestinationResponse":{
+      "type":"structure",
+      "members":{},
+      "documentation":"<p>An HTTP 200 response if the request succeeds, or an error message if the request fails.</p>"
+    },
+    "UpdateConfigurationSetRequest":{
+      "type":"structure",
+      "required":["ConfigurationSetName"],
+      "members":{
+        "ConfigurationSetName":{
+          "shape":"ConfigurationSetName",
+          "documentation":"<p>The name of the configuration set to update.</p>"
+        },
+        "MessageSecurityOptions":{
+          "shape":"MessageSecurityOptions",
+          "documentation":"<p>The security options that apply to the MIME message itself for messages sent with the configuration set.</p>"
+        }
+      },
+      "documentation":"<p>A request to update the configuration of an existing configuration set.</p>"
+    },
+    "UpdateConfigurationSetResponse":{
       "type":"structure",
       "members":{},
       "documentation":"<p>An HTTP 200 response if the request succeeds, or an error message if the request fails.</p>"

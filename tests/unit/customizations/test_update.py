@@ -74,6 +74,13 @@ class TestUnixUpdateCommand:
         command([], global_args())
         assert 'aws configure agent-toolkit' in capsys.readouterr().out
 
+    def test_install_script_tip_is_suppressed(self):
+        # The install script prints the same tip, so we silence its copy and
+        # print our own, otherwise the user sees it twice.
+        _, env = self._run(USER_INSTALL)
+
+        assert env['AWS_CLI_AGENT_TOOLKIT_HINT_DISABLED'] == 'true'
+
     def test_no_agent_toolkit_tip_when_hint_disabled(
         self, capsys, monkeypatch
     ):

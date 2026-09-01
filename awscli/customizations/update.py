@@ -15,7 +15,11 @@ from awscli.clidriver import (
     get_distribution_source,
 )
 from awscli.compat import is_windows
-from awscli.customizations.agenttoolkit.hint import HINT_TEXT, hint_disabled
+from awscli.customizations.agenttoolkit.hint import (
+    HINT_DISABLED_ENV_VAR,
+    HINT_TEXT,
+    hint_disabled,
+)
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.utils import uni_print
 
@@ -130,6 +134,9 @@ class UnixUpdateCommand(BaseUpdateCommand):
             self._download(self.SCRIPT_URL, script_path)
             env = os.environ.copy()
             env['AWS_CLI_DISTRIBUTION_SOURCE_OVERRIDE'] = 'update-exe'
+            # The install script prints the Agent Toolkit tip too. Silence its
+            # copy so we own the decision and print at most one.
+            env[HINT_DISABLED_ENV_VAR] = 'true'
             if self._no_color:
                 env['NO_COLOR'] = '1'
             cmd = ['bash', script_path]

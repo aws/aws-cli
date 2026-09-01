@@ -163,7 +163,11 @@ main() {
   create_bin_symlinks
   write_install_json
   echo "You can now run: $BIN_AWS_EXE --version"
-  echo "Tip: run 'aws configure agent-toolkit' to set up AWS skills and the AWS MCP server for your AI coding agent(s)."
+  # "aws update" sets this so it can print the tip itself rather than have us
+  # print a second copy.
+  if [ "$AWS_CLI_AGENT_TOOLKIT_HINT_DISABLED" != "true" ]; then
+    echo "Tip: run 'aws configure agent-toolkit' to set up AWS skills and the AWS MCP server for your AI coding agent(s)."
+  fi
   exit 0
 }
 

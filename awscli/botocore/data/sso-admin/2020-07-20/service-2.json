@@ -1357,7 +1357,7 @@
         {"shape":"ValidationException"},
         {"shape":"ConflictException"}
       ],
-      "documentation":"<p>Update the details for the instance of IAM Identity Center that is owned by the Amazon Web Services account.</p>"
+      "documentation":"<p>Update the details for the instance of IAM Identity Center that is owned by the Amazon Web Services account.</p> <p>In a single <code>UpdateInstance</code> request, you can perform only one of the following operations:</p> <ul> <li> <p>Update the encryption configuration of the instance by specifying <code>EncryptionConfiguration</code>.</p> </li> <li> <p>Enable permission sets for the instance by specifying <code>PermissionSetsEnabled</code>.</p> </li> </ul> <p>A request that specifies both <code>EncryptionConfiguration</code> and <code>PermissionSetsEnabled</code> returns a <code>ValidationException</code>. To perform both operations, call <code>UpdateInstance</code> separately for each. The two calls can be made in parallel.</p>"
     },
     "UpdateInstanceAccessControlAttributeConfiguration":{
       "name":"UpdateInstanceAccessControlAttributeConfiguration",
@@ -1948,6 +1948,10 @@
       "member":{"shape":"AuthorizedTokenIssuer"},
       "max":10,
       "min":1
+    },
+    "Boolean":{
+      "type":"boolean",
+      "box":true
     },
     "ClaimAttributePath":{
       "type":"string",
@@ -2752,6 +2756,10 @@
         "EncryptionConfigurationDetails":{
           "shape":"EncryptionConfigurationDetails",
           "documentation":"<p>Contains the encryption configuration for your IAM Identity Center instance, including the encryption status, KMS key type, and KMS key ARN.</p>"
+        },
+        "PermissionSetsEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether permission sets are enabled for this Identity Center instance.</p>"
         }
       }
     },
@@ -5115,6 +5123,10 @@
         "EncryptionConfiguration":{
           "shape":"EncryptionConfiguration",
           "documentation":"<p>Specifies the encryption configuration for your IAM Identity Center instance. You can use this to configure customer managed KMS keys or Amazon Web Services owned KMS keys for encrypting your instance data.</p>"
+        },
+        "PermissionSetsEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Enables permission sets for this Identity Center instance. The only accepted value is <code>true </code>. After permission sets are enabled, they cannot be disabled.</p> <note> <p>You can't set <code>EncryptionConfiguration</code> and <code>PermissionSetsEnabled</code> in the same request. To configure both, make two separate <code>UpdateInstance</code> calls. These calls can be made in parallel.</p> </note>"
         }
       }
     },

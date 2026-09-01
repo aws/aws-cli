@@ -2,9 +2,10 @@
   "version":"2.0",
   "metadata":{
     "apiVersion":"2023-11-26",
+    "auth":["aws.auth#sigv4"],
     "endpointPrefix":"eks-auth",
-    "jsonVersion":"1.1",
     "protocol":"rest-json",
+    "protocols":["rest-json"],
     "serviceFullName":"Amazon EKS Auth",
     "serviceId":"EKS Auth",
     "signatureVersion":"v4",
@@ -64,6 +65,18 @@
         "token":{
           "shape":"JwtToken",
           "documentation":"<p>The token of the Kubernetes service account for the pod.</p>"
+        },
+        "eksNodeName":{
+          "shape":"String",
+          "documentation":"<p>The Kubernetes node name of the worker node where the pod is running.</p>"
+        },
+        "instanceId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon EC2 instance ID of the worker node where the pod is running.</p>"
+        },
+        "zone":{
+          "shape":"String",
+          "documentation":"<p>The Availability Zone ID of the worker node where the pod is running.</p>"
         }
       }
     },

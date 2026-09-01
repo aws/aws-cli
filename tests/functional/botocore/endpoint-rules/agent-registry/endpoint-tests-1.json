@@ -1,0 +1,39 @@
+{
+    "version": "1.0",
+    "testCases": [
+        {
+            "documentation": "Region us-west-2 -> region-based prod host.",
+            "params": {
+                "Region": "us-west-2"
+            },
+            "expect": {
+                "endpoint": {
+                    "url": "https://agent-registry.us-west-2.api.aws"
+                }
+            }
+        },
+        {
+            "documentation": "Region us-east-1 -> region-based prod host.",
+            "params": {
+                "Region": "us-east-1"
+            },
+            "expect": {
+                "endpoint": {
+                    "url": "https://agent-registry.us-east-1.api.aws"
+                }
+            }
+        },
+        {
+            "documentation": "Endpoint override wins over region.",
+            "params": {
+                "Region": "us-west-2",
+                "Endpoint": "https://custom.example.aws.dev"
+            },
+            "expect": {
+                "endpoint": {
+                    "url": "https://custom.example.aws.dev"
+                }
+            }
+        }
+    ]
+}

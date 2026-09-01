@@ -122,6 +122,26 @@
       ],
       "documentation":"<p>Creates a new user in the specified user pool.</p> <p>If <code>MessageAction</code> isn't set, the default is to send a welcome message via email or phone (SMS).</p> <p>This message is based on a template that you configured in your call to create or update a user pool. This template includes your custom sign-up instructions and placeholders for user name and temporary password.</p> <p>Alternatively, you can call <code>AdminCreateUser</code> with <code>SUPPRESS</code> for the <code>MessageAction</code> parameter, and Amazon Cognito won't send any email. </p> <p>In either case, if the user has a password, they will be in the <code>FORCE_CHANGE_PASSWORD</code> state until they sign in and set their password. Your invitation message template must have the <code>{####}</code> password placeholder if your users have passwords. If your template doesn't have this placeholder, Amazon Cognito doesn't deliver the invitation message. In this case, you must update your message template and resend the password with a new <code>AdminCreateUser</code> request with a <code>MessageAction</code> value of <code>RESEND</code>.</p> <note> <p>This action might generate an SMS text message. Starting June 1, 2021, US telecom carriers require you to register an origination phone number before you can send SMS messages to US phone numbers. If you use SMS text messages in Amazon Cognito, you must register a phone number with <a href=\"https://console.aws.amazon.com/pinpoint/home/\">Amazon Pinpoint</a>. Amazon Cognito uses the registered number automatically. Otherwise, Amazon Cognito users who must receive SMS messages might not be able to sign up, activate their accounts, or sign in.</p> <p>If you have never used SMS text messages with Amazon Cognito or any other Amazon Web Services service, Amazon Simple Notification Service might place your account in the SMS sandbox. In <i> <a href=\"https://docs.aws.amazon.com/sns/latest/dg/sns-sms-sandbox.html\">sandbox mode</a> </i>, you can send messages only to verified phone numbers. After you test your app while in the sandbox environment, you can move out of the sandbox and into production. For more information, see <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-sms-settings.html\"> SMS message settings for Amazon Cognito user pools</a> in the <i>Amazon Cognito Developer Guide</i>.</p> </note> <note> <p>Amazon Cognito evaluates Identity and Access Management (IAM) policies in requests for this API operation. For this operation, you must use IAM credentials to authorize requests, and you must grant yourself the corresponding IAM permission in a policy.</p> <p class=\"title\"> <b>Learn more</b> </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_aws-signing.html\">Signing Amazon Web Services API Requests</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/user-pools-API-operations.html\">Using the Amazon Cognito user pools API and user pool endpoints</a> </p> </li> </ul> </note>"
     },
+    "AdminDeleteSoftwareToken":{
+      "name":"AdminDeleteSoftwareToken",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"AdminDeleteSoftwareTokenRequest"},
+      "output":{"shape":"AdminDeleteSoftwareTokenResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"NotAuthorizedException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"UserNotFoundException"},
+        {"shape":"UserNotConfirmedException"},
+        {"shape":"OperationNotEnabledException"},
+        {"shape":"InternalErrorException"}
+      ],
+      "documentation":"<p>Deletes a user's registered time-based one-time password (TOTP) multi-factor authentication (MFA) factor, also known as a software token. After this operation, the user can no longer sign in with TOTP MFA, and can register a new TOTP factor with <code>AssociateSoftwareToken</code>. Use this operation when a user loses access to their TOTP-generating device, for example, a lost or reset phone, and needs to register a new one.</p> <note> <p>Amazon Cognito evaluates Identity and Access Management (IAM) policies in requests for this API operation. For this operation, you must use IAM credentials to authorize requests, and you must grant yourself the corresponding IAM permission in a policy.</p> <p class=\"title\"> <b>Learn more</b> </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_aws-signing.html\">Signing Amazon Web Services API Requests</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/user-pools-API-operations.html\">Using the Amazon Cognito user pools API and user pool endpoints</a> </p> </li> </ul> </note>"
+    },
     "AdminDeleteUser":{
       "name":"AdminDeleteUser",
       "http":{
@@ -273,6 +293,25 @@
         {"shape":"InternalErrorException"}
       ],
       "documentation":"<p>Given a username, returns details about a user profile in a user pool. You can specify alias attributes in the <code>Username</code> request parameter.</p> <p>This operation contributes to your monthly active user (MAU) count for the purpose of billing.</p> <note> <p>Amazon Cognito evaluates Identity and Access Management (IAM) policies in requests for this API operation. For this operation, you must use IAM credentials to authorize requests, and you must grant yourself the corresponding IAM permission in a policy.</p> <p class=\"title\"> <b>Learn more</b> </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_aws-signing.html\">Signing Amazon Web Services API Requests</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/user-pools-API-operations.html\">Using the Amazon Cognito user pools API and user pool endpoints</a> </p> </li> </ul> </note>"
+    },
+    "AdminGetUserAuthFactors":{
+      "name":"AdminGetUserAuthFactors",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"AdminGetUserAuthFactorsRequest"},
+      "output":{"shape":"AdminGetUserAuthFactorsResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"NotAuthorizedException"},
+        {"shape":"OperationNotEnabledException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"UserNotFoundException"},
+        {"shape":"InternalErrorException"}
+      ],
+      "documentation":"<p>Lists the authentication options for a user in a user pool. Returns the following:</p> <ol> <li> <p>The user's multi-factor authentication (MFA) preferences.</p> </li> <li> <p>The user's options for choice-based authentication with the <code>USER_AUTH</code> flow.</p> </li> </ol> <note> <p>Amazon Cognito evaluates Identity and Access Management (IAM) policies in requests for this API operation. For this operation, you must use IAM credentials to authorize requests, and you must grant yourself the corresponding IAM permission in a policy.</p> <p class=\"title\"> <b>Learn more</b> </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_aws-signing.html\">Signing Amazon Web Services API Requests</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/user-pools-API-operations.html\">Using the Amazon Cognito user pools API and user pool endpoints</a> </p> </li> </ul> </note>"
     },
     "AdminInitiateAuth":{
       "name":"AdminInitiateAuth",
@@ -1335,6 +1374,24 @@
       ],
       "documentation":"<p>Returns details for the requested terms documents ID. For more information, see <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pools-managed-login.html#managed-login-terms-documents\">Terms documents</a>.</p> <note> <p>Amazon Cognito evaluates Identity and Access Management (IAM) policies in requests for this API operation. For this operation, you must use IAM credentials to authorize requests, and you must grant yourself the corresponding IAM permission in a policy.</p> <p class=\"title\"> <b>Learn more</b> </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_aws-signing.html\">Signing Amazon Web Services API Requests</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/user-pools-API-operations.html\">Using the Amazon Cognito user pools API and user pool endpoints</a> </p> </li> </ul> </note>"
     },
+    "DescribeTermsByClient":{
+      "name":"DescribeTermsByClient",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeTermsByClientRequest"},
+      "output":{"shape":"DescribeTermsByClientResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"NotAuthorizedException"},
+        {"shape":"OperationNotEnabledException"},
+        {"shape":"InternalErrorException"}
+      ],
+      "documentation":"<p>Returns details for the terms documents that are associated with an app client, identified by the app client ID, user pool ID, and terms name. For more information, see <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pools-managed-login.html#managed-login-terms-documents\">Terms documents</a>.</p> <p>To call <code>DescribeTermsByClient</code>, you must have the <code>cognito-idp:DescribeTermsByClient</code> Identity and Access Management (IAM) permission. This operation additionally validates your permission for <code>cognito-idp:DescribeTerms</code>, the action for . As a result, an IAM policy that denies <code>cognito-idp:DescribeTerms</code> also denies requests to <code>DescribeTermsByClient</code>.</p> <note> <p>Amazon Cognito evaluates Identity and Access Management (IAM) policies in requests for this API operation. For this operation, you must use IAM credentials to authorize requests, and you must grant yourself the corresponding IAM permission in a policy.</p> <p class=\"title\"> <b>Learn more</b> </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_aws-signing.html\">Signing Amazon Web Services API Requests</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/user-pools-API-operations.html\">Using the Amazon Cognito user pools API and user pool endpoints</a> </p> </li> </ul> </note>"
+    },
     "DescribeUserImportJob":{
       "name":"DescribeUserImportJob",
       "http":{
@@ -1405,7 +1462,7 @@
         {"shape":"OperationNotEnabledException"},
         {"shape":"InternalErrorException"}
       ],
-      "documentation":"<p>Given a user pool domain name, returns information about the domain configuration.</p> <note> <p>Amazon Cognito evaluates Identity and Access Management (IAM) policies in requests for this API operation. For this operation, you must use IAM credentials to authorize requests, and you must grant yourself the corresponding IAM permission in a policy.</p> <p class=\"title\"> <b>Learn more</b> </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_aws-signing.html\">Signing Amazon Web Services API Requests</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/user-pools-API-operations.html\">Using the Amazon Cognito user pools API and user pool endpoints</a> </p> </li> </ul> </note>"
+      "documentation":"<p>Given a user pool domain name, returns information about the domain configuration.</p> <note> <p>This operation doesn't return results when you query a prefix domain in a secondary Region. Prefix domains are Region-specific and can only be described in the Region where they were created. To describe a prefix domain for a replica user pool, make the request to the primary Region's endpoint.</p> </note> <note> <p>Amazon Cognito evaluates Identity and Access Management (IAM) policies in requests for this API operation. For this operation, you must use IAM credentials to authorize requests, and you must grant yourself the corresponding IAM permission in a policy.</p> <p class=\"title\"> <b>Learn more</b> </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_aws-signing.html\">Signing Amazon Web Services API Requests</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/user-pools-API-operations.html\">Using the Amazon Cognito user pools API and user pool endpoints</a> </p> </li> </ul> </note>"
     },
     "ForgetDevice":{
       "name":"ForgetDevice",
@@ -1478,6 +1535,25 @@
         {"shape":"InternalErrorException"}
       ],
       "documentation":"<p>Given a user pool ID, generates a comma-separated value (CSV) list populated with available user attributes in the user pool. This list is the header for the CSV file that determines the users in a user import job. Save the content of <code>CSVHeader</code> in the response as a <code>.csv</code> file and populate it with the usernames and attributes of users that you want to import. For more information about CSV user import, see <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pools-using-import-tool.html\">Importing users from a CSV file</a>.</p> <note> <p>Amazon Cognito evaluates Identity and Access Management (IAM) policies in requests for this API operation. For this operation, you must use IAM credentials to authorize requests, and you must grant yourself the corresponding IAM permission in a policy.</p> <p class=\"title\"> <b>Learn more</b> </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_aws-signing.html\">Signing Amazon Web Services API Requests</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/user-pools-API-operations.html\">Using the Amazon Cognito user pools API and user pool endpoints</a> </p> </li> </ul> </note>"
+    },
+    "GetClientToken":{
+      "name":"GetClientToken",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetClientTokenRequest"},
+      "output":{"shape":"GetClientTokenResponse"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"NotAuthorizedException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"InternalErrorException"},
+        {"shape":"OperationNotEnabledException"},
+        {"shape":"ForbiddenException"}
+      ],
+      "documentation":"<p>Issues an access token for machine-to-machine (M2M) authorization. Your app client provides its client ID and secret, and receives an access token that authorizes requests to your resource servers. <code>GetClientToken</code> provides the same functionality as the OAuth2 client-credentials grant; both authorize an application rather than a user.</p> <p>To use this operation, you must configure the app client with a client secret and enable the <code>ALLOW_CLIENT_TOKEN_AUTH</code> authentication flow. The <code>ALLOW_CLIENT_TOKEN_AUTH</code> flow is mutually exclusive with user authentication flows. It must be the only authentication flow that you configure for the app client. For more information, see <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pools-define-resource-servers.html\">Scopes, M2M, and resource servers</a>.</p> <note> <p>Amazon Cognito doesn't evaluate Identity and Access Management (IAM) policies in requests for this API operation. For this operation, you can't use IAM credentials to authorize requests, and you can't grant IAM permissions in policies. For more information about authorization models in Amazon Cognito, see <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/user-pools-API-operations.html\">Using the Amazon Cognito user pools API and user pool endpoints</a>.</p> </note>"
     },
     "GetDevice":{
       "name":"GetDevice",
@@ -2998,6 +3074,27 @@
       "max":365,
       "min":0
     },
+    "AdminDeleteSoftwareTokenRequest":{
+      "type":"structure",
+      "required":[
+        "UserPoolId",
+        "Username"
+      ],
+      "members":{
+        "UserPoolId":{
+          "shape":"UserPoolIdType",
+          "documentation":"<p>The ID of the user pool where you want to delete the user's software token.</p>"
+        },
+        "Username":{
+          "shape":"UsernameType",
+          "documentation":"<p>The name of the user that you want to query or modify. The value of this parameter is typically your user's username, but it can be any of their alias attributes. If <code>username</code> isn't an alias attribute in your user pool, this value must be the <code>sub</code> of a local user or the username of a user from a third-party IdP.</p>"
+        }
+      }
+    },
+    "AdminDeleteSoftwareTokenResponse":{
+      "type":"structure",
+      "members":{}
+    },
     "AdminDeleteUserAttributesRequest":{
       "type":"structure",
       "required":[
@@ -3168,6 +3265,45 @@
       },
       "documentation":"<p>Gets the device response, as an administrator.</p>"
     },
+    "AdminGetUserAuthFactorsRequest":{
+      "type":"structure",
+      "required":[
+        "UserPoolId",
+        "Username"
+      ],
+      "members":{
+        "UserPoolId":{
+          "shape":"UserPoolIdType",
+          "documentation":"<p>The ID of the user pool where you want to get information about the user's authentication factors.</p>"
+        },
+        "Username":{
+          "shape":"UsernameType",
+          "documentation":"<p>The name of the user that you want to query or modify. The value of this parameter is typically your user's username, but it can be any of their alias attributes. If <code>username</code> isn't an alias attribute in your user pool, this value must be the <code>sub</code> of a local user or the username of a user from a third-party IdP.</p>"
+        }
+      }
+    },
+    "AdminGetUserAuthFactorsResponse":{
+      "type":"structure",
+      "required":["Username"],
+      "members":{
+        "Username":{
+          "shape":"UsernameType",
+          "documentation":"<p>The name of the user who is eligible for the authentication factors in the response.</p>"
+        },
+        "PreferredMfaSetting":{
+          "shape":"StringType",
+          "documentation":"<p>The challenge method that Amazon Cognito returns to the user in response to sign-in requests. Users can prefer SMS message, email message, or TOTP MFA.</p>"
+        },
+        "UserMFASettingList":{
+          "shape":"UserMFASettingListType",
+          "documentation":"<p>The MFA options that are activated for the user. The possible values in this list are <code>SMS_MFA</code>, <code>EMAIL_OTP</code>, and <code>SOFTWARE_TOKEN_MFA</code>.</p>"
+        },
+        "ConfiguredUserAuthFactors":{
+          "shape":"ConfiguredUserAuthFactorsListType",
+          "documentation":"<p>The authentication types that are available to the user with <code>USER_AUTH</code> sign-in, for example <code>[\"PASSWORD\", \"WEB_AUTHN\"]</code>.</p> <p> <code>PASSWORD</code> can only be used as a first authentication factor. <code>SOFTWARE_TOKEN</code> can only be used as an MFA factor. <code>EMAIL_OTP</code>, <code>SMS_OTP</code>, and <code>WEB_AUTHN</code> can be used as either a first authentication factor or an MFA factor. <code>WEB_AUTHN</code> is available as an MFA factor only when passkey MFA is enabled at the user pool level.</p>"
+        }
+      }
+    },
     "AdminGetUserRequest":{
       "type":"structure",
       "required":[
@@ -3312,7 +3448,7 @@
         },
         "DestinationUser":{
           "shape":"ProviderUserIdentifierType",
-          "documentation":"<p>The existing user in the user pool that you want to assign to the external IdP user account. This user can be a local (Username + Password) Amazon Cognito user pools user or a federated user (for example, a SAML or Facebook user). If the user doesn't exist, Amazon Cognito generates an exception. Amazon Cognito returns this user when the new user (with the linked IdP attribute) signs in.</p> <p>For a native username + password user, the <code>ProviderAttributeValue</code> for the <code>DestinationUser</code> should be the username in the user pool. For a federated user, it should be the provider-specific <code>user_id</code>.</p> <p>The <code>ProviderAttributeName</code> of the <code>DestinationUser</code> is ignored.</p> <p>The <code>ProviderName</code> should be set to <code>Cognito</code> for users in Cognito user pools.</p> <important> <p>All attributes in the DestinationUser profile must be mutable. If you have assigned the user any immutable custom attributes, the operation won't succeed.</p> </important>"
+          "documentation":"<p>The existing user in the user pool that you want to assign to the external IdP user account. This user can be a local (Username + Password) Amazon Cognito user pools user or a federated user (for example, a SAML or Facebook user). If the user doesn't exist, Amazon Cognito generates an exception. Amazon Cognito returns this user when the new user (with the linked IdP attribute) signs in.</p> <p>For a native username + password user, the <code>ProviderAttributeValue</code> for the <code>DestinationUser</code> should be the username in the user pool. For a federated user, it should be the provider-specific <code>user_id</code>.</p> <p>The <code>ProviderAttributeName</code> of the <code>DestinationUser</code> is ignored.</p> <p>The <code>ProviderName</code> should be set to <code>Cognito</code> for users in Cognito user pools.</p>"
         },
         "SourceUser":{
           "shape":"ProviderUserIdentifierType",
@@ -3818,7 +3954,7 @@
     "AllowedFirstAuthFactorsListType":{
       "type":"list",
       "member":{"shape":"AuthFactorType"},
-      "max":4,
+      "max":5,
       "min":1
     },
     "AnalyticsConfigurationType":{
@@ -4065,7 +4201,8 @@
         "PASSWORD",
         "EMAIL_OTP",
         "SMS_OTP",
-        "WEB_AUTHN"
+        "WEB_AUTHN",
+        "SOFTWARE_TOKEN"
       ]
     },
     "AuthFlowType":{
@@ -4234,6 +4371,24 @@
       "type":"structure",
       "members":{},
       "documentation":"<p>The response from the server to the change password request.</p>"
+    },
+    "ClientAuthenticationResultType":{
+      "type":"structure",
+      "members":{
+        "AccessToken":{
+          "shape":"TokenModelType",
+          "documentation":"<p>The access token for the requested app client. Present this token to a resource server to authorize a request, using the scopes granted in the token.</p>"
+        },
+        "ExpiresIn":{
+          "shape":"IntegerType",
+          "documentation":"<p>The number of seconds until the access token expires.</p>"
+        },
+        "TokenType":{
+          "shape":"StringType",
+          "documentation":"<p>The type of the token. For example, <code>Bearer</code>.</p>"
+        }
+      },
+      "documentation":"<p>The access token and its metadata from a machine-to-machine (M2M) client credentials grant.</p>"
     },
     "ClientIdType":{
       "type":"string",
@@ -4988,7 +5143,7 @@
         },
         "ManagedLoginVersion":{
           "shape":"WrappedIntegerType",
-          "documentation":"<p>The version of managed login branding that you want to apply to your domain. A value of <code>1</code> indicates hosted UI (classic) and a version of <code>2</code> indicates managed login.</p> <p>Managed login requires that your user pool be configured for any <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-sign-in-feature-plans.html\">feature plan</a> other than <code>Lite</code>.</p>"
+          "documentation":"<p>The version of managed login branding that you want to apply to your domain. A value of <code>1</code> indicates hosted UI (classic) and a version of <code>2</code> indicates managed login.</p> <p>Managed login requires that your user pool be configured for any <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-sign-in-feature-plans.html\">feature plan</a> other than <code>Lite</code>.</p> <p>A <code>ManagedLoginVersion</code> value of <code>2</code> does not activate managed login pages for your app client. When you create an app client programmatically, your app client has no branding style. To use managed login, create a branding style using the <a href=\"https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_CreateManagedLoginBranding.html\">CreateManagedLoginBranding</a> operation. When you use the console, Amazon Cognito assigns a default branding style automatically. When you use the API or an SDK, you must create a branding style yourself.</p>"
         },
         "CustomDomainConfig":{
           "shape":"CustomDomainConfigType",
@@ -5101,7 +5256,7 @@
         },
         "MfaConfiguration":{
           "shape":"UserPoolMfaType",
-          "documentation":"<p>Sets multi-factor authentication (MFA) to be on, off, or optional. When <code>ON</code>, all users must set up MFA before they can sign in. When <code>OPTIONAL</code>, your application must make a client-side determination of whether a user wants to register an MFA device. For user pools with adaptive authentication with threat protection, choose <code>OPTIONAL</code>.</p> <p>When <code>MfaConfiguration</code> is <code>OPTIONAL</code>, managed login doesn't automatically prompt users to set up MFA. Amazon Cognito generates MFA prompts in API responses and in managed login for users who have chosen and configured a preferred MFA factor.</p>"
+          "documentation":"<p>Sets multi-factor authentication (MFA) to be on, off, or optional. When <code>ON</code>, all users must set up MFA before they can sign in. When <code>OPTIONAL</code>, your application must make a client-side determination of whether a user wants to register an MFA device. For user pools with adaptive authentication with threat protection, choose <code>OPTIONAL</code>.</p> <p>When <code>MfaConfiguration</code> is <code>OPTIONAL</code>, managed login doesn't automatically prompt users to set up MFA. Amazon Cognito generates MFA prompts in API responses and in managed login for users who have chosen and configured a preferred MFA factor.</p> <p>The <code>CreateUserPool</code> operation supports only SMS MFA configuration. If you set <code>MfaConfiguration</code> to either of these values, include an <code>SmsConfiguration</code> in the same request:</p> <ul> <li> <p> <code>ON</code> – Requires MFA for all users</p> </li> <li> <p> <code>OPTIONAL</code> – Makes MFA optional for each user</p> </li> </ul> <p>If you omit <code>SmsConfiguration</code>, the operation returns an <code>InvalidParameterException</code>. To configure TOTP or email MFA, use the <a href=\"https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_SetUserPoolMfaConfig.html\">SetUserPoolMfaConfig</a> operation. You can also use <code>SetUserPoolMfaConfig</code> to add MFA factors later.</p>"
         },
         "UserAttributeUpdateSettings":{
           "shape":"UserAttributeUpdateSettingsType",
@@ -5644,6 +5799,37 @@
         "RiskConfiguration":{
           "shape":"RiskConfigurationType",
           "documentation":"<p>The details of the requested risk configuration.</p>"
+        }
+      }
+    },
+    "DescribeTermsByClientRequest":{
+      "type":"structure",
+      "required":[
+        "ClientId",
+        "UserPoolId",
+        "TermsName"
+      ],
+      "members":{
+        "ClientId":{
+          "shape":"ClientIdType",
+          "documentation":"<p>The ID of the app client that the terms documents are associated with.</p>"
+        },
+        "UserPoolId":{
+          "shape":"UserPoolIdType",
+          "documentation":"<p>The ID of the user pool that contains the terms documents that you want to describe.</p>"
+        },
+        "TermsName":{
+          "shape":"TermsNameType",
+          "documentation":"<p>The name of the terms documents that you want to describe.</p>"
+        }
+      }
+    },
+    "DescribeTermsByClientResponse":{
+      "type":"structure",
+      "members":{
+        "Terms":{
+          "shape":"TermsType",
+          "documentation":"<p>A summary of the requested terms documents. Includes a unique identifier for later changes to the terms documents.</p>"
         }
       }
     },
@@ -6395,6 +6581,40 @@
       },
       "documentation":"<p>Represents the response from the server to the request to get the header information of the CSV file for the user import job.</p>"
     },
+    "GetClientTokenRequest":{
+      "type":"structure",
+      "required":[
+        "ClientId",
+        "Secret"
+      ],
+      "members":{
+        "ClientId":{
+          "shape":"ClientIdType",
+          "documentation":"<p>The ID of the app client that requests the access token. The app client must have a client secret and the <code>ALLOW_CLIENT_TOKEN_AUTH</code> authentication flow.</p>"
+        },
+        "Secret":{
+          "shape":"ClientSecretType",
+          "documentation":"<p>An active secret for the app client.</p>"
+        },
+        "Scopes":{
+          "shape":"ScopeListType",
+          "documentation":"<p>The custom scopes to authorize in the access token, in the format <code>resource-server-identifier/scope-name</code>. Each scope must belong to a resource server in your user pool. If you don't specify any scopes, Amazon Cognito authorizes the scopes that are configured for the app client.</p>"
+        },
+        "ClientMetadata":{
+          "shape":"ClientMetadataType",
+          "documentation":"<p>A map of custom key-value pairs that you can provide as input for any custom workflows that this action triggers. You create custom workflows by assigning Lambda functions to user pool triggers.</p> <p>When Amazon Cognito invokes any of these functions, it passes a JSON payload, which the function receives as input. This payload contains a <code>clientMetadata</code> attribute that provides the data that you assigned to the ClientMetadata parameter in your request. In your function code, you can process the <code>clientMetadata</code> value to enhance your workflow for your specific needs.</p> <p>To review the Lambda trigger types that Amazon Cognito invokes at runtime with API requests, see <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pools-working-with-lambda-triggers.html#lambda-triggers-by-event\"> Connecting API actions to Lambda triggers</a> in the <i>Amazon Cognito Developer Guide</i>.</p> <note> <p>When you use the <code>ClientMetadata</code> parameter, note that Amazon Cognito won't do the following:</p> <ul> <li> <p>Store the <code>ClientMetadata</code> value. This data is available only to Lambda triggers that are assigned to a user pool to support custom workflows. If your user pool configuration doesn't include triggers, the <code>ClientMetadata</code> parameter serves no purpose.</p> </li> <li> <p>Validate the <code>ClientMetadata</code> value.</p> </li> <li> <p>Encrypt the <code>ClientMetadata</code> value. Don't send sensitive information in this parameter.</p> </li> </ul> </note>"
+        }
+      }
+    },
+    "GetClientTokenResponse":{
+      "type":"structure",
+      "members":{
+        "ClientAuthenticationResult":{
+          "shape":"ClientAuthenticationResultType",
+          "documentation":"<p>The access token that Amazon Cognito issues for the app client, and its metadata.</p>"
+        }
+      }
+    },
     "GetDeviceRequest":{
       "type":"structure",
       "required":["DeviceKey"],
@@ -6653,7 +6873,7 @@
         },
         "ConfiguredUserAuthFactors":{
           "shape":"ConfiguredUserAuthFactorsListType",
-          "documentation":"<p>The authentication types that are available to the user with <code>USER_AUTH</code> sign-in, for example <code>[\"PASSWORD\", \"WEB_AUTHN\"]</code>.</p>"
+          "documentation":"<p>The authentication types that are available to the user with <code>USER_AUTH</code> sign-in, for example <code>[\"PASSWORD\", \"WEB_AUTHN\"]</code>.</p> <p> <code>PASSWORD</code> can only be used as a first authentication factor. <code>SOFTWARE_TOKEN</code> can only be used as an MFA factor. <code>EMAIL_OTP</code>, <code>SMS_OTP</code>, and <code>WEB_AUTHN</code> can be used as either a first authentication factor or an MFA factor. <code>WEB_AUTHN</code> is available as an MFA factor only when passkey MFA is enabled at the user pool level.</p>"
         }
       }
     },
@@ -8997,7 +9217,7 @@
       "members":{
         "AllowedFirstAuthFactors":{
           "shape":"AllowedFirstAuthFactorsListType",
-          "documentation":"<p>The sign-in methods that a user pool supports as the first factor. You can permit users to start authentication with a standard username and password, or with other one-time password and hardware factors.</p>"
+          "documentation":"<p>The sign-in methods that a user pool supports as the first factor. You can permit users to start authentication with a standard username and password, or with other one-time password and hardware factors.</p> <note> <p> <code>SOFTWARE_TOKEN</code> is not currently supported as a first auth factor. Do not include this value in <code>AllowedFirstAuthFactors</code>.</p> </note>"
         }
       },
       "documentation":"<p>The policy for allowed types of authentication in a user pool. To activate this setting, your user pool must be in the <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/feature-plans-features-essentials.html\"> Essentials tier</a> or higher.</p>"

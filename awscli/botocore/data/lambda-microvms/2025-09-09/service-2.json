@@ -27,6 +27,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
         {"shape":"ValidationException"}
       ],
       "documentation":"<p>Creates an authentication token for accessing a running MicroVM. The token grants access to the specified ports on the MicroVM endpoint.</p>"
@@ -65,6 +66,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
         {"shape":"ValidationException"}
       ],
       "documentation":"<p>Creates a shell authentication token for interactive shell access to a running MicroVM. The MicroVM must have been run with the SHELL_INGRESS network connector attached.</p>"
@@ -308,8 +310,12 @@
       "output":{"shape":"ListTagsResponse"},
       "errors":[
         {"shape":"TooManyRequestsException"},
+        {"shape":"InternalServerException"},
+        {"shape":"AccessDeniedException"},
         {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
         {"shape":"ServiceException"},
+        {"shape":"ValidationException"},
         {"shape":"InvalidParameterValueException"}
       ],
       "documentation":"<p>Lists the tags associated with a Lambda MicroVM resource.</p>",
@@ -347,6 +353,7 @@
       "errors":[
         {"shape":"InternalServerException"},
         {"shape":"AccessDeniedException"},
+        {"shape":"InsufficientCapacityException"},
         {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"},
         {"shape":"ConflictException"},
@@ -385,8 +392,12 @@
       "input":{"shape":"TagResourceRequest"},
       "errors":[
         {"shape":"TooManyRequestsException"},
+        {"shape":"InternalServerException"},
+        {"shape":"AccessDeniedException"},
         {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
         {"shape":"ServiceException"},
+        {"shape":"ValidationException"},
         {"shape":"InvalidParameterValueException"},
         {"shape":"ResourceConflictException"}
       ],
@@ -423,8 +434,12 @@
       "input":{"shape":"UntagResourceRequest"},
       "errors":[
         {"shape":"TooManyRequestsException"},
+        {"shape":"InternalServerException"},
+        {"shape":"AccessDeniedException"},
         {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
         {"shape":"ServiceException"},
+        {"shape":"ValidationException"},
         {"shape":"InvalidParameterValueException"},
         {"shape":"ResourceConflictException"}
       ],
@@ -559,7 +574,7 @@
       "members":{
         "uri":{
           "shape":"NonBlankString",
-          "documentation":"<p>The URI of the code artifact, such as an Amazon S3 path or Amazon ECR image URI.</p>"
+          "documentation":"<p>The URI of the code artifact in Amazon S3.</p>"
         }
       },
       "documentation":"<p>Contains the location of the code artifact for a MicroVM image.</p>",
@@ -934,7 +949,8 @@
     "EnvironmentVariableValue":{
       "type":"string",
       "max":4096,
-      "min":0
+      "min":0,
+      "sensitive":true
     },
     "GetMicrovmImageBuildInput":{
       "type":"structure",
@@ -1347,6 +1363,17 @@
       "max":64,
       "min":1,
       "pattern":"[a-zA-Z0-9-_]+"
+    },
+    "InsufficientCapacityException":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{"shape":"String"}
+      },
+      "documentation":"<p>There is insufficient capacity to fulfill the request. Retry the request later.</p>",
+      "error":{"httpStatusCode":500},
+      "exception":true,
+      "fault":true
     },
     "Integer":{
       "type":"integer",
@@ -1766,6 +1793,10 @@
           "shape":"NonBlankString",
           "documentation":"<p>The version of the managed MicroVM image.</p>"
         },
+        "status":{
+          "shape":"ManagedMicrovmImageVersionStatus",
+          "documentation":"<p>The lifecycle status of the managed MicroVM image version. Valid values: AVAILABLE (the version is available for use) or DEPRECATED (the version is deprecated; do not use it for new MicroVM images).</p>"
+        },
         "createdAt":{
           "shape":"Timestamp",
           "documentation":"<p>The timestamp when the version was created.</p>"
@@ -1780,6 +1811,14 @@
     "ManagedMicrovmImageVersionList":{
       "type":"list",
       "member":{"shape":"ManagedMicrovmImageVersion"}
+    },
+    "ManagedMicrovmImageVersionStatus":{
+      "type":"string",
+      "documentation":"<p>The lifecycle status of a managed MicroVM image version.</p>",
+      "enum":[
+        "AVAILABLE",
+        "DEPRECATED"
+      ]
     },
     "MicrovmHooks":{
       "type":"structure",
@@ -1853,7 +1892,8 @@
       "type":"string",
       "documentation":"<p>MicroVm Image Arn</p>",
       "max":2048,
-      "min":20
+      "min":20,
+      "pattern":"arn:[a-z0-9-]+:lambda:[a-z0-9-]*:[a-z0-9]*:microvm-image:.+"
     },
     "MicrovmImageBuildSummaries":{
       "type":"list",
@@ -2323,6 +2363,12 @@
       "min":20,
       "pattern":"arn:aws[a-z\\-]*:iam::[0-9]{12}:role/?[a-zA-Z_0-9+=,.@\\-_/]+"
     },
+    "RunHookPayload":{
+      "type":"string",
+      "max":4096,
+      "min":0,
+      "sensitive":true
+    },
     "RunMicrovmRequest":{
       "type":"structure",
       "required":["imageIdentifier"],
@@ -2356,7 +2402,7 @@
           "documentation":"<p>The logging configuration for this MicroVM instance. Specify {\"cloudWatch\": {\"logGroup\": \"...\"}} to stream application logs to a custom CloudWatch log group, or {\"disabled\": {}} to turn off logging.</p>"
         },
         "runHookPayload":{
-          "shape":"RunMicrovmRequestRunHookPayloadString",
+          "shape":"RunHookPayload",
           "documentation":"<p>Per-MicroVM initialization data delivered as the request body of the /run lifecycle hook. Use to pass tenant-specific configuration such as session IDs or secret references. Maximum: 16,384 bytes.</p>"
         },
         "maximumDurationInSeconds":{
@@ -2380,11 +2426,6 @@
       "box":true,
       "max":28800,
       "min":1
-    },
-    "RunMicrovmRequestRunHookPayloadString":{
-      "type":"string",
-      "max":4096,
-      "min":0
     },
     "RunMicrovmResponse":{
       "type":"structure",

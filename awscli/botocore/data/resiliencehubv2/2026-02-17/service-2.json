@@ -164,6 +164,24 @@
       ],
       "documentation":"<p>Creates a system that represents a logical grouping of services.</p>"
     },
+    "CreateTest":{
+      "name":"CreateTest",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v2/create-test",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateTestRequest"},
+      "output":{"shape":"CreateTestResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Creates a test for a service by configuring a test template. Each service has one test per template.</p>"
+    },
     "CreateUserJourney":{
       "name":"CreateUserJourney",
       "http":{
@@ -307,6 +325,42 @@
       ],
       "documentation":"<p>Deletes a system.</p>"
     },
+    "DeleteTest":{
+      "name":"DeleteTest",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v2/delete-test",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteTestRequest"},
+      "output":{"shape":"DeleteTestResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Deletes a test.</p>"
+    },
+    "DeleteTestSources":{
+      "name":"DeleteTestSources",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v2/delete-test-sources",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteTestSourcesRequest"},
+      "output":{"shape":"DeleteTestSourcesResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Removes monitoring sources from a test. The operation is transactional and idempotent — removing a source that is not attached is a no-op.</p>"
+    },
     "DeleteUserJourney":{
       "name":"DeleteUserJourney",
       "http":{
@@ -395,6 +449,60 @@
         {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Retrieves a system by ARN.</p>",
+      "readonly":true
+    },
+    "GetTest":{
+      "name":"GetTest",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v2/get-test",
+        "responseCode":200
+      },
+      "input":{"shape":"GetTestRequest"},
+      "output":{"shape":"GetTestResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Retrieves a test by ID.</p>",
+      "readonly":true
+    },
+    "GetTestRun":{
+      "name":"GetTestRun",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v2/get-test-run",
+        "responseCode":200
+      },
+      "input":{"shape":"GetTestRunRequest"},
+      "output":{"shape":"GetTestRunResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Retrieves a test run by ID, including its status, results, and the configuration snapshotted when the run started.</p>",
+      "readonly":true
+    },
+    "GetTestTemplate":{
+      "name":"GetTestTemplate",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v2/get-test-template",
+        "responseCode":200
+      },
+      "input":{"shape":"GetTestTemplateRequest"},
+      "output":{"shape":"GetTestTemplateResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Retrieves a resilience test template by ARN, including the parameters it accepts and the fault actions it runs.</p>",
       "readonly":true
     },
     "GetUserJourney":{
@@ -577,6 +685,24 @@
       "documentation":"<p>List reports for a service, or all reports owned by the account if serviceArn is not provided.</p>",
       "readonly":true
     },
+    "ListResolvedTestRunTargetResources":{
+      "name":"ListResolvedTestRunTargetResources",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v2/test-runs/{testRunId}/resolved-target-resources",
+        "responseCode":200
+      },
+      "input":{"shape":"ListResolvedTestRunTargetResourcesRequest"},
+      "output":{"shape":"ListResolvedTestRunTargetResourcesResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Lists the AWS resources that AWS Fault Injection Service (AWS FIS) resolved as targets for a test run.</p>",
+      "readonly":true
+    },
     "ListResources":{
       "name":"ListResources",
       "http":{
@@ -719,6 +845,113 @@
       "documentation":"<p>Lists the tags for a resource.</p>",
       "readonly":true
     },
+    "ListTestRunEvents":{
+      "name":"ListTestRunEvents",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v2/test-runs/{testRunId}/events",
+        "responseCode":200
+      },
+      "input":{"shape":"ListTestRunEventsRequest"},
+      "output":{"shape":"ListTestRunEventsResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Lists the events in a test run's timeline.</p>",
+      "readonly":true
+    },
+    "ListTestRunSources":{
+      "name":"ListTestRunSources",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v2/test-runs/{testRunId}/sources",
+        "responseCode":200
+      },
+      "input":{"shape":"ListTestRunSourcesRequest"},
+      "output":{"shape":"ListTestRunSourcesResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Lists the monitoring source snapshots captured for a test run, optionally filtered by type.</p>",
+      "readonly":true
+    },
+    "ListTestRuns":{
+      "name":"ListTestRuns",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v2/list-test-runs",
+        "responseCode":200
+      },
+      "input":{"shape":"ListTestRunsRequest"},
+      "output":{"shape":"ListTestRunsResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Lists the runs of a test, or all test runs for a service.</p>",
+      "readonly":true
+    },
+    "ListTestSources":{
+      "name":"ListTestSources",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v2/tests/{testId}/sources",
+        "responseCode":200
+      },
+      "input":{"shape":"ListTestSourcesRequest"},
+      "output":{"shape":"ListTestSourcesResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Lists the monitoring sources attached to a test, optionally filtered by type.</p>",
+      "readonly":true
+    },
+    "ListTestTemplates":{
+      "name":"ListTestTemplates",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v2/list-test-templates",
+        "responseCode":200
+      },
+      "input":{"shape":"ListTestTemplatesRequest"},
+      "output":{"shape":"ListTestTemplatesResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Lists the available resilience test templates. A test template is a pre-configured, AWS recommended test that defines which resilience capability to validate.</p>",
+      "readonly":true
+    },
+    "ListTests":{
+      "name":"ListTests",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v2/list-tests",
+        "responseCode":200
+      },
+      "input":{"shape":"ListTestsRequest"},
+      "output":{"shape":"ListTestsResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Lists the tests configured for a service.</p>",
+      "readonly":true
+    },
     "ListUserJourneys":{
       "name":"ListUserJourneys",
       "http":{
@@ -736,6 +969,25 @@
       ],
       "documentation":"<p>Lists user journeys for a system.</p>",
       "readonly":true
+    },
+    "PutTestSources":{
+      "name":"PutTestSources",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v2/put-test-sources",
+        "responseCode":200
+      },
+      "input":{"shape":"PutTestSourcesRequest"},
+      "output":{"shape":"PutTestSourcesResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Adds or updates the monitoring sources on a test. The operation is transactional — either every source is written or the call fails and nothing is written.</p>"
     },
     "StartFailureModeAssessment":{
       "name":"StartFailureModeAssessment",
@@ -755,6 +1007,42 @@
         {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Starts a failure mode assessment.</p>"
+    },
+    "StartTestRun":{
+      "name":"StartTestRun",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v2/start-test-run",
+        "responseCode":200
+      },
+      "input":{"shape":"StartTestRunRequest"},
+      "output":{"shape":"StartTestRunResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Starts a run of a test. Each run scopes to the current resources in the service and produces a pass or fail outcome.</p>"
+    },
+    "StopTestRun":{
+      "name":"StopTestRun",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v2/stop-test-run",
+        "responseCode":200
+      },
+      "input":{"shape":"StopTestRunRequest"},
+      "output":{"shape":"StopTestRunResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Stops an in-progress test run.</p>"
     },
     "TagResource":{
       "name":"TagResource",
@@ -920,6 +1208,24 @@
       ],
       "documentation":"<p>Updates an existing system.</p>"
     },
+    "UpdateTest":{
+      "name":"UpdateTest",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v2/update-test",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateTestRequest"},
+      "output":{"shape":"UpdateTestResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Updates the configuration of an existing test.</p>"
+    },
     "UpdateUserJourney":{
       "name":"UpdateUserJourney",
       "http":{
@@ -958,6 +1264,14 @@
       "max":12,
       "min":12,
       "pattern":"[0-9]{12}"
+    },
+    "AccountTargeting":{
+      "type":"string",
+      "documentation":"<p>Whether a test run targets resources in a single AWS account or across multiple accounts.</p>",
+      "enum":[
+        "SINGLE_ACCOUNT",
+        "MULTI_ACCOUNT"
+      ]
     },
     "Achievability":{
       "type":"structure",
@@ -1271,6 +1585,13 @@
       "min":1,
       "pattern":"[A-Za-z0-9_.-]{0,63}"
     },
+    "CloudWatchAlarmArn":{
+      "type":"string",
+      "documentation":"<p>The ARN of a CloudWatch alarm.</p>",
+      "max":1024,
+      "min":31,
+      "pattern":"arn:aws[a-zA-Z-]*:cloudwatch:[a-z]{2}(-[a-z]+)+-\\d{1}:\\d{12}:alarm:.+"
+    },
     "ConflictException":{
       "type":"structure",
       "required":["message"],
@@ -1494,7 +1815,7 @@
         "policyArn":{"shape":"Arn"},
         "regions":{
           "shape":"RegionList",
-          "documentation":"<p>The AWS Regions where the service operates.</p>"
+          "documentation":"<p>The Regions where the service operates.</p>"
         },
         "permissionModel":{
           "shape":"PermissionModel",
@@ -1545,6 +1866,49 @@
         "system":{
           "shape":"System",
           "documentation":"<p>The created system.</p>"
+        }
+      }
+    },
+    "CreateTestRequest":{
+      "type":"structure",
+      "required":[
+        "serviceArn",
+        "testTemplateArn"
+      ],
+      "members":{
+        "serviceArn":{
+          "shape":"Arn",
+          "documentation":"<p>The ARN of the service to create the test for.</p>"
+        },
+        "testTemplateArn":{
+          "shape":"ServiceOwnedArn",
+          "documentation":"<p>The ARN of the test template to configure.</p>"
+        },
+        "loggingConfiguration":{
+          "shape":"LoggingConfiguration",
+          "documentation":"<p>The logging configuration for the test.</p>"
+        },
+        "stopConditions":{
+          "shape":"StopConditionList",
+          "documentation":"<p>The stop conditions for the test.</p>"
+        },
+        "roleName":{
+          "shape":"EntityName",
+          "documentation":"<p>The name of the IAM execution role to use when running the test.</p>"
+        },
+        "parameters":{
+          "shape":"TestParameters",
+          "documentation":"<p>The parameter values for the test.</p>"
+        }
+      }
+    },
+    "CreateTestResponse":{
+      "type":"structure",
+      "required":["test"],
+      "members":{
+        "test":{
+          "shape":"Test",
+          "documentation":"<p>The created test.</p>"
         }
       }
     },
@@ -1761,6 +2125,59 @@
       "members":{
         "systemArn":{"shape":"Arn"}
       }
+    },
+    "DeleteTestRequest":{
+      "type":"structure",
+      "required":[
+        "testId",
+        "serviceArn"
+      ],
+      "members":{
+        "testId":{
+          "shape":"TestId",
+          "documentation":"<p>The identifier of the test to delete.</p>"
+        },
+        "serviceArn":{
+          "shape":"Arn",
+          "documentation":"<p>The ARN of the service the test belongs to.</p>"
+        }
+      }
+    },
+    "DeleteTestResponse":{
+      "type":"structure",
+      "required":["testId"],
+      "members":{
+        "testId":{
+          "shape":"TestId",
+          "documentation":"<p>The identifier of the deleted test.</p>"
+        }
+      }
+    },
+    "DeleteTestSourcesRequest":{
+      "type":"structure",
+      "required":[
+        "testId",
+        "serviceArn",
+        "testSources"
+      ],
+      "members":{
+        "testId":{
+          "shape":"TestId",
+          "documentation":"<p>The identifier of the test to remove sources from.</p>"
+        },
+        "serviceArn":{
+          "shape":"Arn",
+          "documentation":"<p>The ARN of the service the test belongs to.</p>"
+        },
+        "testSources":{
+          "shape":"TestSourceInputList",
+          "documentation":"<p>The monitoring sources to remove.</p>"
+        }
+      }
+    },
+    "DeleteTestSourcesResponse":{
+      "type":"structure",
+      "members":{}
     },
     "DeleteUserJourneyRequest":{
       "type":"structure",
@@ -2062,6 +2479,29 @@
       },
       "documentation":"<p>Identifies the actor that triggered an event.</p>"
     },
+    "ExperimentArnList":{
+      "type":"list",
+      "member":{"shape":"Arn"}
+    },
+    "ExperimentDetails":{
+      "type":"structure",
+      "required":["experimentArn"],
+      "members":{
+        "experimentArn":{
+          "shape":"Arn",
+          "documentation":"<p>The ARN of the AWS FIS experiment.</p>"
+        },
+        "details":{
+          "shape":"String",
+          "documentation":"<p>Additional details about the experiment.</p>"
+        }
+      },
+      "documentation":"<p>Details about an AWS Fault Injection Service (AWS FIS) experiment run as part of a test run.</p>"
+    },
+    "ExperimentDetailsList":{
+      "type":"list",
+      "member":{"shape":"ExperimentDetails"}
+    },
     "FailedReportOutput":{
       "type":"structure",
       "required":["errorCode"],
@@ -2305,6 +2745,90 @@
         }
       }
     },
+    "GetTestRequest":{
+      "type":"structure",
+      "required":[
+        "testId",
+        "serviceArn"
+      ],
+      "members":{
+        "testId":{
+          "shape":"TestId",
+          "documentation":"<p>The identifier of the test to retrieve.</p>",
+          "location":"querystring",
+          "locationName":"testId"
+        },
+        "serviceArn":{
+          "shape":"Arn",
+          "documentation":"<p>The ARN of the service the test belongs to.</p>",
+          "location":"querystring",
+          "locationName":"serviceArn"
+        }
+      }
+    },
+    "GetTestResponse":{
+      "type":"structure",
+      "required":["test"],
+      "members":{
+        "test":{
+          "shape":"Test",
+          "documentation":"<p>The requested test.</p>"
+        }
+      }
+    },
+    "GetTestRunRequest":{
+      "type":"structure",
+      "required":[
+        "testRunId",
+        "serviceArn"
+      ],
+      "members":{
+        "testRunId":{
+          "shape":"TestRunId",
+          "documentation":"<p>The identifier of the test run to retrieve.</p>",
+          "location":"querystring",
+          "locationName":"testRunId"
+        },
+        "serviceArn":{
+          "shape":"Arn",
+          "documentation":"<p>The ARN of the service the test run belongs to.</p>",
+          "location":"querystring",
+          "locationName":"serviceArn"
+        }
+      }
+    },
+    "GetTestRunResponse":{
+      "type":"structure",
+      "required":["testRun"],
+      "members":{
+        "testRun":{
+          "shape":"TestRun",
+          "documentation":"<p>The requested test run.</p>"
+        }
+      }
+    },
+    "GetTestTemplateRequest":{
+      "type":"structure",
+      "required":["testTemplateArn"],
+      "members":{
+        "testTemplateArn":{
+          "shape":"ServiceOwnedArn",
+          "documentation":"<p>The ARN of the test template to retrieve.</p>",
+          "location":"querystring",
+          "locationName":"testTemplateArn"
+        }
+      }
+    },
+    "GetTestTemplateResponse":{
+      "type":"structure",
+      "required":["testTemplate"],
+      "members":{
+        "testTemplate":{
+          "shape":"TestTemplate",
+          "documentation":"<p>The requested test template.</p>"
+        }
+      }
+    },
     "GetUserJourneyRequest":{
       "type":"structure",
       "required":[
@@ -2344,9 +2868,9 @@
     "IamRoleName":{
       "type":"string",
       "documentation":"<p>IAM role name (supports up to 64 characters per IAM limits).</p>",
-      "max":64,
+      "max":576,
       "min":1,
-      "pattern":"[A-Za-z0-9_+=,.@\\-]{1,64}"
+      "pattern":"([A-Za-z0-9_+=,.@\\-]+/)*[A-Za-z0-9_+=,.@\\-]+"
     },
     "ImportAppRequest":{
       "type":"structure",
@@ -2799,6 +3323,11 @@
           "location":"querystring",
           "locationName":"reportType"
         },
+        "testRunId":{
+          "shape":"TestRunId",
+          "location":"querystring",
+          "locationName":"testRunId"
+        },
         "maxResults":{
           "shape":"MaxResults",
           "location":"querystring",
@@ -2818,6 +3347,48 @@
         "reportGenerationResults":{
           "shape":"ReportGenerationResultList",
           "documentation":"<p>The list of report generation results.</p>"
+        },
+        "nextToken":{"shape":"NextToken"}
+      }
+    },
+    "ListResolvedTestRunTargetResourcesRequest":{
+      "type":"structure",
+      "required":[
+        "testRunId",
+        "serviceArn"
+      ],
+      "members":{
+        "testRunId":{
+          "shape":"TestRunId",
+          "documentation":"<p>The identifier of the test run to list resolved target resources for.</p>",
+          "location":"uri",
+          "locationName":"testRunId"
+        },
+        "serviceArn":{
+          "shape":"Arn",
+          "documentation":"<p>The ARN of the service the test run belongs to.</p>",
+          "location":"querystring",
+          "locationName":"serviceArn"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListResolvedTestRunTargetResourcesResponse":{
+      "type":"structure",
+      "required":["resolvedTargetResources"],
+      "members":{
+        "resolvedTargetResources":{
+          "shape":"ResolvedTargetResourceList",
+          "documentation":"<p>The list of resolved target resources.</p>"
         },
         "nextToken":{"shape":"NextToken"}
       }
@@ -3153,6 +3724,242 @@
         "tags":{"shape":"TagMap"}
       }
     },
+    "ListTestRunEventsRequest":{
+      "type":"structure",
+      "required":[
+        "testRunId",
+        "serviceArn"
+      ],
+      "members":{
+        "testRunId":{
+          "shape":"TestRunId",
+          "documentation":"<p>The identifier of the test run to list events for.</p>",
+          "location":"uri",
+          "locationName":"testRunId"
+        },
+        "serviceArn":{
+          "shape":"Arn",
+          "documentation":"<p>The ARN of the service the test run belongs to.</p>",
+          "location":"querystring",
+          "locationName":"serviceArn"
+        },
+        "startedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>Return events at or after this timestamp.</p>",
+          "location":"querystring",
+          "locationName":"startedAt"
+        },
+        "endedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>Return events at or before this timestamp.</p>",
+          "location":"querystring",
+          "locationName":"endedAt"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListTestRunEventsResponse":{
+      "type":"structure",
+      "required":["events"],
+      "members":{
+        "events":{
+          "shape":"TestRunEventList",
+          "documentation":"<p>The list of test run events.</p>"
+        },
+        "nextToken":{"shape":"NextToken"}
+      }
+    },
+    "ListTestRunSourcesRequest":{
+      "type":"structure",
+      "required":[
+        "testRunId",
+        "serviceArn"
+      ],
+      "members":{
+        "testRunId":{
+          "shape":"TestRunId",
+          "documentation":"<p>The identifier of the test run to list sources for.</p>",
+          "location":"uri",
+          "locationName":"testRunId"
+        },
+        "serviceArn":{
+          "shape":"Arn",
+          "documentation":"<p>The ARN of the service the test run belongs to.</p>",
+          "location":"querystring",
+          "locationName":"serviceArn"
+        },
+        "type":{
+          "shape":"TestRunSourceType",
+          "documentation":"<p>Filter sources by type.</p>",
+          "location":"querystring",
+          "locationName":"type"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListTestRunSourcesResponse":{
+      "type":"structure",
+      "required":["testRunSources"],
+      "members":{
+        "testRunSources":{
+          "shape":"TestRunSourceSummaryList",
+          "documentation":"<p>The list of monitoring source snapshots.</p>"
+        },
+        "nextToken":{"shape":"NextToken"}
+      }
+    },
+    "ListTestRunsRequest":{
+      "type":"structure",
+      "required":["serviceArn"],
+      "members":{
+        "serviceArn":{
+          "shape":"Arn",
+          "documentation":"<p>The ARN of the service to list test runs for.</p>",
+          "location":"querystring",
+          "locationName":"serviceArn"
+        },
+        "testId":{
+          "shape":"TestId",
+          "documentation":"<p>Filter test runs by test identifier.</p>",
+          "location":"querystring",
+          "locationName":"testId"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListTestRunsResponse":{
+      "type":"structure",
+      "required":["testRuns"],
+      "members":{
+        "testRuns":{
+          "shape":"TestRunSummaryList",
+          "documentation":"<p>The list of test run summaries.</p>"
+        },
+        "nextToken":{"shape":"NextToken"}
+      }
+    },
+    "ListTestSourcesRequest":{
+      "type":"structure",
+      "required":[
+        "testId",
+        "serviceArn"
+      ],
+      "members":{
+        "testId":{
+          "shape":"TestId",
+          "documentation":"<p>The identifier of the test to list sources for.</p>",
+          "location":"uri",
+          "locationName":"testId"
+        },
+        "serviceArn":{
+          "shape":"Arn",
+          "documentation":"<p>The ARN of the service the test belongs to.</p>",
+          "location":"querystring",
+          "locationName":"serviceArn"
+        },
+        "type":{
+          "shape":"TestSourceType",
+          "documentation":"<p>Filter sources by type.</p>",
+          "location":"querystring",
+          "locationName":"type"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListTestSourcesResponse":{
+      "type":"structure",
+      "required":["testSources"],
+      "members":{
+        "testSources":{
+          "shape":"TestSourceSummaryList",
+          "documentation":"<p>The list of configured monitoring sources.</p>"
+        },
+        "nextToken":{"shape":"NextToken"}
+      }
+    },
+    "ListTestTemplatesRequest":{
+      "type":"structure",
+      "members":{}
+    },
+    "ListTestTemplatesResponse":{
+      "type":"structure",
+      "required":["testTemplates"],
+      "members":{
+        "testTemplates":{
+          "shape":"TestTemplateSummaryList",
+          "documentation":"<p>The list of test template summaries.</p>"
+        }
+      }
+    },
+    "ListTestsRequest":{
+      "type":"structure",
+      "required":["serviceArn"],
+      "members":{
+        "serviceArn":{
+          "shape":"Arn",
+          "documentation":"<p>The ARN of the service to list tests for.</p>",
+          "location":"querystring",
+          "locationName":"serviceArn"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListTestsResponse":{
+      "type":"structure",
+      "required":["tests"],
+      "members":{
+        "tests":{
+          "shape":"TestSummaryList",
+          "documentation":"<p>The list of test summaries.</p>"
+        },
+        "nextToken":{"shape":"NextToken"}
+      }
+    },
     "ListUserJourneysRequest":{
       "type":"structure",
       "required":["systemArn"],
@@ -3184,6 +3991,24 @@
         },
         "nextToken":{"shape":"NextToken"}
       }
+    },
+    "LoggingConfiguration":{
+      "type":"structure",
+      "members":{
+        "s3BucketName":{
+          "shape":"String",
+          "documentation":"<p>The name of the S3 bucket for log delivery.</p>"
+        },
+        "cloudWatchLogGroupArn":{
+          "shape":"Arn",
+          "documentation":"<p>The ARN of the CloudWatch Logs log group for log delivery.</p>"
+        },
+        "logSchemaVersion":{
+          "shape":"String",
+          "documentation":"<p>The version of the log schema.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for test execution logging destinations.</p>"
     },
     "Long":{
       "type":"long",
@@ -3285,6 +4110,49 @@
       "min":1,
       "pattern":"\\S{1,2000}"
     },
+    "ObservabilityAlarmInput":{
+      "type":"structure",
+      "required":["alarmArn"],
+      "members":{
+        "alarmArn":{
+          "shape":"CloudWatchAlarmArn",
+          "documentation":"<p>The ARN of the CloudWatch alarm.</p>"
+        }
+      },
+      "documentation":"<p>Identifies an observability alarm by its ARN.</p>"
+    },
+    "ObservabilityAlarmSummary":{
+      "type":"structure",
+      "required":[
+        "alarmArn",
+        "alarmName",
+        "region",
+        "accountId"
+      ],
+      "members":{
+        "alarmArn":{
+          "shape":"CloudWatchAlarmArn",
+          "documentation":"<p>The ARN of the CloudWatch alarm.</p>"
+        },
+        "alarmName":{
+          "shape":"String",
+          "documentation":"<p>The name of the CloudWatch alarm.</p>"
+        },
+        "region":{
+          "shape":"String",
+          "documentation":"<p>The Region of the CloudWatch alarm.</p>"
+        },
+        "accountId":{
+          "shape":"String",
+          "documentation":"<p>The account ID that owns the CloudWatch alarm.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the source was configured.</p>"
+        }
+      },
+      "documentation":"<p>Summary information about a configured observability alarm.</p>"
+    },
     "ObservabilityRecommendation":{
       "type":"structure",
       "members":{
@@ -3312,6 +4180,28 @@
       "max":68,
       "min":16,
       "pattern":"ou-[a-z0-9]{4,32}-[a-z0-9]{8,32}"
+    },
+    "ParameterKey":{
+      "type":"string",
+      "documentation":"<p>The key of a test parameter.</p>",
+      "max":256,
+      "min":1,
+      "pattern":"[\\w.-]+"
+    },
+    "ParameterType":{
+      "type":"string",
+      "documentation":"<p>The data type of a test template parameter.</p>",
+      "enum":[
+        "STRING",
+        "STRING_LIST",
+        "INTEGER"
+      ]
+    },
+    "ParameterValue":{
+      "type":"string",
+      "documentation":"<p>A value of a test parameter.</p>",
+      "max":1024,
+      "min":0
     },
     "PermissionModel":{
       "type":"structure",
@@ -3428,6 +4318,32 @@
         "CROSS_ACCOUNT"
       ]
     },
+    "PutTestSourcesRequest":{
+      "type":"structure",
+      "required":[
+        "testId",
+        "serviceArn",
+        "testSources"
+      ],
+      "members":{
+        "testId":{
+          "shape":"TestId",
+          "documentation":"<p>The identifier of the test to add sources to.</p>"
+        },
+        "serviceArn":{
+          "shape":"Arn",
+          "documentation":"<p>The ARN of the service the test belongs to.</p>"
+        },
+        "testSources":{
+          "shape":"TestSourceInputList",
+          "documentation":"<p>The monitoring sources to add or update.</p>"
+        }
+      }
+    },
+    "PutTestSourcesResponse":{
+      "type":"structure",
+      "members":{}
+    },
     "QueryDataPoint":{
       "type":"structure",
       "required":[
@@ -3493,6 +4409,13 @@
       "max":5,
       "min":1
     },
+    "RegionSwitchExecutionId":{
+      "type":"string",
+      "documentation":"<p>The identifier of an ARC Region switch plan execution detected during a test run.</p>",
+      "max":64,
+      "min":1,
+      "pattern":"[a-z]{2}(-[a-z]+)+-[0-9]+/[0-9a-fA-F]{16}"
+    },
     "ReportGenerationErrorCode":{
       "type":"string",
       "documentation":"<p>Error codes for failed report generation.</p>",
@@ -3525,6 +4448,8 @@
           "shape":"Uuid",
           "documentation":"<p>Present for FAILURE_MODE reports.</p>"
         },
+        "testRunId":{"shape":"TestRunId"},
+        "testTemplateArn":{"shape":"ServiceOwnedArn"},
         "createdAt":{
           "shape":"Timestamp",
           "documentation":"<p>The timestamp when the report was created.</p>"
@@ -3581,7 +4506,68 @@
     },
     "ReportType":{
       "type":"string",
-      "enum":["FAILURE_MODE"]
+      "enum":[
+        "FAILURE_MODE",
+        "TESTING"
+      ]
+    },
+    "ResolvedTargetInformation":{
+      "type":"map",
+      "key":{"shape":"ResolvedTargetInformationKey"},
+      "value":{"shape":"ResolvedTargetInformationValue"},
+      "max":50,
+      "min":0
+    },
+    "ResolvedTargetInformationKey":{
+      "type":"string",
+      "documentation":"<p>The key of a resolved target information entry.</p>",
+      "max":128,
+      "min":1
+    },
+    "ResolvedTargetInformationValue":{
+      "type":"string",
+      "documentation":"<p>The value of a resolved target information entry.</p>",
+      "max":2048,
+      "min":0
+    },
+    "ResolvedTargetResource":{
+      "type":"structure",
+      "required":[
+        "resourceType",
+        "targetName",
+        "targetInformation"
+      ],
+      "members":{
+        "resourceType":{
+          "shape":"ResolvedTargetResourceResourceTypeString",
+          "documentation":"<p>The AWS FIS resource type the target belongs to, such as aws:ec2:instance, aws:ecs:task, or aws:eks:pod.</p>"
+        },
+        "targetName":{
+          "shape":"ResolvedTargetResourceTargetNameString",
+          "documentation":"<p>The name of the target in the AWS FIS experiment template.</p>"
+        },
+        "targetInformation":{
+          "shape":"ResolvedTargetInformation",
+          "documentation":"<p>The raw target information map as returned by AWS FIS.</p>"
+        }
+      },
+      "documentation":"<p>A single AWS resource that AWS Fault Injection Service (AWS FIS) resolved as a target during a test run.</p>"
+    },
+    "ResolvedTargetResourceList":{
+      "type":"list",
+      "member":{"shape":"ResolvedTargetResource"},
+      "max":100,
+      "min":0
+    },
+    "ResolvedTargetResourceResourceTypeString":{
+      "type":"string",
+      "max":256,
+      "min":1
+    },
+    "ResolvedTargetResourceTargetNameString":{
+      "type":"string",
+      "max":256,
+      "min":1
     },
     "Resource":{
       "type":"structure",
@@ -3797,7 +4783,7 @@
         "policyArn":{"shape":"Arn"},
         "regions":{
           "shape":"RegionList",
-          "documentation":"<p>The AWS Regions where the service operates.</p>"
+          "documentation":"<p>The Regions where the service operates.</p>"
         },
         "permissionModel":{
           "shape":"PermissionModel",
@@ -4214,6 +5200,12 @@
       "members":{},
       "documentation":"<p>Metadata for a service input sources updated event.</p>"
     },
+    "ServiceOwnedArn":{
+      "type":"string",
+      "documentation":"<p>An ARN owned by the service. Accepts either a standard 12-digit account ID or the literal \"aws\" for AWS-managed resources, such as AWS-managed test templates.</p>",
+      "min":31,
+      "pattern":"arn:(aws|aws-cn|aws-iso|aws-iso-[a-z]{1}|aws-us-gov):[A-Za-z0-9][A-Za-z0-9_/.-]{0,62}:([a-z]{2}-((iso[a-z]{0,1}-)|(gov-)){0,1}[a-z]+-[0-9]):([0-9]{12}|aws):[A-Za-z0-9/][A-Za-z0-9:_/+.-]{0,1023}"
+    },
     "ServicePolicyAssociatedMetadata":{
       "type":"structure",
       "members":{
@@ -4361,7 +5353,7 @@
         },
         "regions":{
           "shape":"RegionList",
-          "documentation":"<p>The AWS Regions where the service operates.</p>"
+          "documentation":"<p>The Regions where the service operates.</p>"
         },
         "policyArn":{"shape":"Arn"},
         "assessmentStatus":{
@@ -4545,6 +5537,109 @@
         }
       }
     },
+    "StartTestRunRequest":{
+      "type":"structure",
+      "required":[
+        "testId",
+        "serviceArn"
+      ],
+      "members":{
+        "testId":{
+          "shape":"TestId",
+          "documentation":"<p>The identifier of the test to run.</p>"
+        },
+        "serviceArn":{
+          "shape":"Arn",
+          "documentation":"<p>The ARN of the service the test belongs to.</p>"
+        }
+      }
+    },
+    "StartTestRunResponse":{
+      "type":"structure",
+      "required":[
+        "testRunId",
+        "status",
+        "experimentArns"
+      ],
+      "members":{
+        "testRunId":{
+          "shape":"TestRunId",
+          "documentation":"<p>The identifier of the started test run.</p>"
+        },
+        "status":{
+          "shape":"TestRunStatus",
+          "documentation":"<p>The status of the started test run.</p>"
+        },
+        "experimentArns":{
+          "shape":"ExperimentArnList",
+          "documentation":"<p>The ARNs of the AWS Fault Injection Service (AWS FIS) experiments started for the run.</p>"
+        }
+      }
+    },
+    "StopCondition":{
+      "type":"structure",
+      "required":[
+        "source",
+        "value"
+      ],
+      "members":{
+        "source":{
+          "shape":"StopConditionSource",
+          "documentation":"<p>The source of the stop condition.</p>"
+        },
+        "value":{
+          "shape":"String",
+          "documentation":"<p>The value of the stop condition, such as the ARN of the CloudWatch alarm.</p>"
+        }
+      },
+      "documentation":"<p>A CloudWatch alarm that automatically stops a test run if it breaches its threshold.</p>"
+    },
+    "StopConditionList":{
+      "type":"list",
+      "member":{"shape":"StopCondition"}
+    },
+    "StopConditionSource":{
+      "type":"string",
+      "documentation":"<p>The source of a test stop condition, matching AWS Fault Injection Service (AWS FIS) stop condition sources.</p>",
+      "enum":[
+        "aws:cloudwatch:alarm",
+        "none"
+      ]
+    },
+    "StopTestRunRequest":{
+      "type":"structure",
+      "required":[
+        "testRunId",
+        "serviceArn"
+      ],
+      "members":{
+        "testRunId":{
+          "shape":"TestRunId",
+          "documentation":"<p>The identifier of the test run to stop.</p>"
+        },
+        "serviceArn":{
+          "shape":"Arn",
+          "documentation":"<p>The ARN of the service the test run belongs to.</p>"
+        }
+      }
+    },
+    "StopTestRunResponse":{
+      "type":"structure",
+      "required":[
+        "testRunId",
+        "status"
+      ],
+      "members":{
+        "testRunId":{
+          "shape":"TestRunId",
+          "documentation":"<p>The identifier of the stopped test run.</p>"
+        },
+        "status":{
+          "shape":"TestRunStatus",
+          "documentation":"<p>The status of the test run.</p>"
+        }
+      }
+    },
     "String":{"type":"string"},
     "StringChange":{
       "type":"structure",
@@ -4559,6 +5654,55 @@
         }
       },
       "documentation":"<p>Describes a change from one string value to another.</p>"
+    },
+    "StringList":{
+      "type":"list",
+      "member":{"shape":"ParameterValue"},
+      "max":10,
+      "min":0
+    },
+    "SuccessCriteriaAlarmInput":{
+      "type":"structure",
+      "required":["alarmArn"],
+      "members":{
+        "alarmArn":{
+          "shape":"CloudWatchAlarmArn",
+          "documentation":"<p>The ARN of the CloudWatch alarm.</p>"
+        }
+      },
+      "documentation":"<p>Identifies a success criteria alarm by its ARN.</p>"
+    },
+    "SuccessCriteriaAlarmSummary":{
+      "type":"structure",
+      "required":[
+        "alarmArn",
+        "alarmName",
+        "region",
+        "accountId"
+      ],
+      "members":{
+        "alarmArn":{
+          "shape":"CloudWatchAlarmArn",
+          "documentation":"<p>The ARN of the CloudWatch alarm.</p>"
+        },
+        "alarmName":{
+          "shape":"String",
+          "documentation":"<p>The name of the CloudWatch alarm.</p>"
+        },
+        "region":{
+          "shape":"String",
+          "documentation":"<p>The Region of the CloudWatch alarm.</p>"
+        },
+        "accountId":{
+          "shape":"String",
+          "documentation":"<p>The account ID that owns the CloudWatch alarm.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the source was configured.</p>"
+        }
+      },
+      "documentation":"<p>Summary information about a configured success criteria alarm.</p>"
     },
     "SuggestedChangesList":{
       "type":"list",
@@ -4942,6 +6086,675 @@
       },
       "documentation":"<p>Contains an effective RTO or RPO value and its source.</p>"
     },
+    "Test":{
+      "type":"structure",
+      "required":[
+        "testId",
+        "testTemplateArn",
+        "serviceArn",
+        "name",
+        "totalTestRuns",
+        "successfulTestRuns",
+        "creationTime"
+      ],
+      "members":{
+        "testId":{
+          "shape":"TestId",
+          "documentation":"<p>The unique identifier of the test.</p>"
+        },
+        "testTemplateArn":{
+          "shape":"ServiceOwnedArn",
+          "documentation":"<p>The ARN of the test template the test was created from.</p>"
+        },
+        "serviceArn":{
+          "shape":"Arn",
+          "documentation":"<p>The ARN of the service the test belongs to.</p>"
+        },
+        "name":{
+          "shape":"String",
+          "documentation":"<p>The name of the test.</p>"
+        },
+        "actions":{
+          "shape":"TestActionList",
+          "documentation":"<p>The fault actions the test runs.</p>"
+        },
+        "loggingConfiguration":{
+          "shape":"LoggingConfiguration",
+          "documentation":"<p>The logging configuration for the test.</p>"
+        },
+        "stopConditions":{
+          "shape":"StopConditionList",
+          "documentation":"<p>The stop conditions for the test.</p>"
+        },
+        "roleName":{
+          "shape":"EntityName",
+          "documentation":"<p>The name of the IAM execution role used to run the test.</p>"
+        },
+        "parameters":{
+          "shape":"TestParameters",
+          "documentation":"<p>The parameter values configured for the test.</p>"
+        },
+        "totalTestRuns":{
+          "shape":"Integer",
+          "documentation":"<p>The total number of runs of the test.</p>"
+        },
+        "successfulTestRuns":{
+          "shape":"Integer",
+          "documentation":"<p>The number of successful runs of the test.</p>"
+        },
+        "creationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the test was created.</p>"
+        }
+      },
+      "documentation":"<p>Represents a test created for a service by configuring a test template.</p>"
+    },
+    "TestAction":{
+      "type":"structure",
+      "required":[
+        "actionId",
+        "resourceType"
+      ],
+      "members":{
+        "actionId":{
+          "shape":"String",
+          "documentation":"<p>The identifier of the fault action.</p>"
+        },
+        "description":{
+          "shape":"String",
+          "documentation":"<p>A description of the fault action.</p>"
+        },
+        "resourceType":{
+          "shape":"String",
+          "documentation":"<p>The resource type that the action targets.</p>"
+        }
+      },
+      "documentation":"<p>Represents a fault action that a test runs, along with the resource type it targets.</p>"
+    },
+    "TestActionList":{
+      "type":"list",
+      "member":{"shape":"TestAction"}
+    },
+    "TestId":{
+      "type":"string",
+      "documentation":"<p>The unique identifier of a test.</p>"
+    },
+    "TestParameters":{
+      "type":"map",
+      "key":{"shape":"ParameterKey"},
+      "value":{"shape":"StringList"},
+      "max":20,
+      "min":0
+    },
+    "TestRun":{
+      "type":"structure",
+      "required":[
+        "testRunId",
+        "testId",
+        "status",
+        "startedAt",
+        "testTemplateArn"
+      ],
+      "members":{
+        "testRunId":{
+          "shape":"TestRunId",
+          "documentation":"<p>The unique identifier of the test run.</p>"
+        },
+        "testId":{
+          "shape":"TestId",
+          "documentation":"<p>The identifier of the test that was run.</p>"
+        },
+        "status":{
+          "shape":"TestRunStatus",
+          "documentation":"<p>The current status of the test run.</p>"
+        },
+        "serviceArn":{
+          "shape":"Arn",
+          "documentation":"<p>The ARN of the service the test run belongs to.</p>"
+        },
+        "startedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the test run started.</p>"
+        },
+        "endedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the test run ended.</p>"
+        },
+        "experiments":{
+          "shape":"ExperimentDetailsList",
+          "documentation":"<p>The AWS Fault Injection Service (AWS FIS) experiments run as part of the test run.</p>"
+        },
+        "eventCount":{
+          "shape":"Integer",
+          "documentation":"<p>The number of events recorded for the test run. Use ListTestRunEvents to retrieve the details.</p>"
+        },
+        "parameters":{
+          "shape":"TestParameters",
+          "documentation":"<p>The parameter values used for the test run.</p>"
+        },
+        "errorMessage":{
+          "shape":"String",
+          "documentation":"<p>A human-readable reason for test run failure. Only present when the status is FAILED or ERROR.</p>"
+        },
+        "stopConditions":{
+          "shape":"StopConditionList",
+          "documentation":"<p>The stop conditions snapshotted from the test when the run was started.</p>"
+        },
+        "loggingConfiguration":{
+          "shape":"LoggingConfiguration",
+          "documentation":"<p>The logging configuration snapshotted from the test when the run was started.</p>"
+        },
+        "roleName":{
+          "shape":"EntityName",
+          "documentation":"<p>The IAM execution role name snapshotted from the test when the run was started.</p>"
+        },
+        "testTemplateArn":{
+          "shape":"ServiceOwnedArn",
+          "documentation":"<p>The ARN of the test template snapshotted from the test when the run was started.</p>"
+        },
+        "reportConfiguration":{
+          "shape":"TestRunReportConfiguration",
+          "documentation":"<p>The report configuration snapshotted from the service when the run was started.</p>"
+        },
+        "policy":{
+          "shape":"TestRunPolicySnapshot",
+          "documentation":"<p>The resilience policy snapshotted from the service when the run was started.</p>"
+        },
+        "reportOutput":{
+          "shape":"ReportGenerationResult",
+          "documentation":"<p>The report generation result for the test run. Present after report generation completes or fails.</p>"
+        },
+        "regionSwitchPlanArn":{
+          "shape":"Arn",
+          "documentation":"<p>The ARN of the ARC Region switch plan associated with the test run.</p>"
+        },
+        "regionSwitchExecutionId":{
+          "shape":"RegionSwitchExecutionId",
+          "documentation":"<p>The identifier of the ARC Region switch execution detected during the test run.</p>"
+        },
+        "permissionModel":{
+          "shape":"PermissionModel",
+          "documentation":"<p>The permission model snapshotted from the service when the run was started.</p>"
+        },
+        "regions":{
+          "shape":"RegionList",
+          "documentation":"<p>The Regions snapshotted from the service when the run was started.</p>"
+        },
+        "accountTargeting":{
+          "shape":"AccountTargeting",
+          "documentation":"<p>Indicates whether this test run targets a single account or multiple accounts.</p>"
+        }
+      },
+      "documentation":"<p>Represents a single run of a test. Configuration is snapshotted from the test and service at the time the run is started.</p>"
+    },
+    "TestRunEvent":{
+      "type":"structure",
+      "required":[
+        "eventId",
+        "eventType",
+        "message",
+        "timestamp"
+      ],
+      "members":{
+        "eventId":{
+          "shape":"TestRunEventEventIdString",
+          "documentation":"<p>The unique identifier of the event.</p>"
+        },
+        "eventType":{
+          "shape":"TestRunEventEventTypeString",
+          "documentation":"<p>The type of the event, such as action_started, action_completed, or rto_recovery_detected.</p>"
+        },
+        "message":{
+          "shape":"TestRunEventMessageString",
+          "documentation":"<p>A human-readable description of what happened.</p>"
+        },
+        "timestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the event occurred.</p>"
+        },
+        "attributes":{
+          "shape":"TestRunEventAttributes",
+          "documentation":"<p>Machine-parseable key-value attributes for the event.</p>"
+        }
+      },
+      "documentation":"<p>A single event in a test run's timeline.</p>"
+    },
+    "TestRunEventAttributeKey":{
+      "type":"string",
+      "documentation":"<p>The key of a test run event attribute.</p>",
+      "max":128,
+      "min":1
+    },
+    "TestRunEventAttributeValue":{
+      "type":"string",
+      "documentation":"<p>The value of a test run event attribute.</p>",
+      "max":1024,
+      "min":0
+    },
+    "TestRunEventAttributes":{
+      "type":"map",
+      "key":{"shape":"TestRunEventAttributeKey"},
+      "value":{"shape":"TestRunEventAttributeValue"},
+      "max":50,
+      "min":0
+    },
+    "TestRunEventEventIdString":{
+      "type":"string",
+      "max":64,
+      "min":1
+    },
+    "TestRunEventEventTypeString":{
+      "type":"string",
+      "max":256,
+      "min":1
+    },
+    "TestRunEventList":{
+      "type":"list",
+      "member":{"shape":"TestRunEvent"},
+      "max":100,
+      "min":0
+    },
+    "TestRunEventMessageString":{
+      "type":"string",
+      "max":2048,
+      "min":1
+    },
+    "TestRunId":{
+      "type":"string",
+      "documentation":"<p>The unique identifier of a test run.</p>"
+    },
+    "TestRunObservabilityAlarmSummary":{
+      "type":"structure",
+      "required":[
+        "alarmArn",
+        "alarmName",
+        "region",
+        "accountId"
+      ],
+      "members":{
+        "alarmArn":{
+          "shape":"CloudWatchAlarmArn",
+          "documentation":"<p>The ARN of the CloudWatch alarm.</p>"
+        },
+        "alarmName":{
+          "shape":"String",
+          "documentation":"<p>The name of the CloudWatch alarm.</p>"
+        },
+        "region":{
+          "shape":"String",
+          "documentation":"<p>The Region of the CloudWatch alarm.</p>"
+        },
+        "accountId":{
+          "shape":"String",
+          "documentation":"<p>The account ID that owns the CloudWatch alarm.</p>"
+        }
+      },
+      "documentation":"<p>Summary information about an observability alarm snapshot captured for a test run.</p>"
+    },
+    "TestRunPolicySnapshot":{
+      "type":"structure",
+      "members":{
+        "policyArn":{
+          "shape":"Arn",
+          "documentation":"<p>The ARN of the policy.</p>"
+        },
+        "name":{
+          "shape":"EntityName",
+          "documentation":"<p>The name of the policy.</p>"
+        },
+        "availabilitySlo":{
+          "shape":"AvailabilitySlo",
+          "documentation":"<p>The availability SLO targets.</p>"
+        },
+        "multiAz":{
+          "shape":"MultiAzTargets",
+          "documentation":"<p>The multi-AZ resilience targets.</p>"
+        },
+        "multiRegion":{
+          "shape":"MultiRegionTargets",
+          "documentation":"<p>The multi-Region resilience targets.</p>"
+        },
+        "dataRecovery":{
+          "shape":"DataRecoveryTargets",
+          "documentation":"<p>The data recovery targets.</p>"
+        }
+      },
+      "documentation":"<p>A snapshot of the resilience policy captured onto a test run from the service when the run was started.</p>"
+    },
+    "TestRunReportConfiguration":{
+      "type":"structure",
+      "required":["reportOutput"],
+      "members":{
+        "reportOutput":{
+          "shape":"ReportOutputConfigurationList",
+          "documentation":"<p>The output destinations for generated reports.</p>"
+        }
+      },
+      "documentation":"<p>A snapshot of the report configuration captured onto a test run from the service when the run was started.</p>"
+    },
+    "TestRunSourceSummary":{
+      "type":"structure",
+      "members":{
+        "successCriteriaAlarm":{
+          "shape":"TestRunSuccessCriteriaAlarmSummary",
+          "documentation":"<p>A success criteria alarm snapshot captured for the test run.</p>"
+        },
+        "observabilityAlarm":{
+          "shape":"TestRunObservabilityAlarmSummary",
+          "documentation":"<p>An observability alarm snapshot captured for the test run.</p>"
+        }
+      },
+      "documentation":"<p>A monitoring-source snapshot captured for a test run. Exactly one member is set.</p>",
+      "union":true
+    },
+    "TestRunSourceSummaryList":{
+      "type":"list",
+      "member":{"shape":"TestRunSourceSummary"},
+      "max":25,
+      "min":0
+    },
+    "TestRunSourceType":{
+      "type":"string",
+      "documentation":"<p>The type of a test run monitoring-source snapshot.</p>",
+      "enum":[
+        "SUCCESS_CRITERIA",
+        "OBSERVABILITY"
+      ]
+    },
+    "TestRunStatus":{
+      "type":"string",
+      "documentation":"<p>The status of a test run through its lifecycle.</p>",
+      "enum":[
+        "INITIALIZING",
+        "RUNNING",
+        "STOPPING",
+        "PASSED",
+        "FAILED",
+        "STOPPED",
+        "ERROR"
+      ]
+    },
+    "TestRunSuccessCriteriaAlarmSummary":{
+      "type":"structure",
+      "required":[
+        "alarmArn",
+        "alarmName",
+        "region",
+        "accountId"
+      ],
+      "members":{
+        "alarmArn":{
+          "shape":"CloudWatchAlarmArn",
+          "documentation":"<p>The ARN of the CloudWatch alarm.</p>"
+        },
+        "alarmName":{
+          "shape":"String",
+          "documentation":"<p>The name of the CloudWatch alarm.</p>"
+        },
+        "region":{
+          "shape":"String",
+          "documentation":"<p>The Region of the CloudWatch alarm.</p>"
+        },
+        "accountId":{
+          "shape":"String",
+          "documentation":"<p>The account ID that owns the CloudWatch alarm.</p>"
+        },
+        "outcome":{
+          "shape":"TestSourceOutcome",
+          "documentation":"<p>The evaluation outcome of the source. Absent while the source has not yet been evaluated; set to the terminal outcome afterwards.</p>"
+        },
+        "outcomeReason":{
+          "shape":"String",
+          "documentation":"<p>A human-readable reason for the outcome.</p>"
+        }
+      },
+      "documentation":"<p>Summary information about a success criteria alarm snapshot captured for a test run.</p>"
+    },
+    "TestRunSummary":{
+      "type":"structure",
+      "required":[
+        "testRunId",
+        "status",
+        "startedAt",
+        "testTemplateArn"
+      ],
+      "members":{
+        "testRunId":{
+          "shape":"TestRunId",
+          "documentation":"<p>The unique identifier of the test run.</p>"
+        },
+        "status":{
+          "shape":"TestRunStatus",
+          "documentation":"<p>The current status of the test run.</p>"
+        },
+        "startedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the test run started.</p>"
+        },
+        "endedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the test run ended.</p>"
+        },
+        "testTemplateArn":{
+          "shape":"ServiceOwnedArn",
+          "documentation":"<p>The ARN of the test template the test run was based on.</p>"
+        },
+        "serviceArn":{
+          "shape":"Arn",
+          "documentation":"<p>The ARN of the service the test run belongs to.</p>"
+        },
+        "errorMessage":{
+          "shape":"String",
+          "documentation":"<p>A human-readable reason for test run failure. Only present when the status is FAILED or ERROR.</p>"
+        },
+        "accountTargeting":{
+          "shape":"AccountTargeting",
+          "documentation":"<p>Indicates whether this test run targets a single account or multiple accounts.</p>"
+        }
+      },
+      "documentation":"<p>Contains summary information about a test run.</p>"
+    },
+    "TestRunSummaryList":{
+      "type":"list",
+      "member":{"shape":"TestRunSummary"}
+    },
+    "TestSourceInput":{
+      "type":"structure",
+      "members":{
+        "successCriteriaAlarm":{
+          "shape":"SuccessCriteriaAlarmInput",
+          "documentation":"<p>A success criteria alarm that determines whether the test passes or fails.</p>"
+        },
+        "observabilityAlarm":{
+          "shape":"ObservabilityAlarmInput",
+          "documentation":"<p>An observability alarm included for visibility only.</p>"
+        }
+      },
+      "documentation":"<p>Identifies a monitoring source to add to or remove from a test. Exactly one member is set.</p>",
+      "union":true
+    },
+    "TestSourceInputList":{
+      "type":"list",
+      "member":{"shape":"TestSourceInput"},
+      "max":5,
+      "min":1
+    },
+    "TestSourceOutcome":{
+      "type":"string",
+      "documentation":"<p>The evaluation outcome of a test run success criteria source.</p>",
+      "enum":[
+        "PASSED",
+        "FAILED",
+        "ERROR"
+      ]
+    },
+    "TestSourceSummary":{
+      "type":"structure",
+      "members":{
+        "successCriteriaAlarm":{
+          "shape":"SuccessCriteriaAlarmSummary",
+          "documentation":"<p>A configured success criteria alarm.</p>"
+        },
+        "observabilityAlarm":{
+          "shape":"ObservabilityAlarmSummary",
+          "documentation":"<p>A configured observability alarm.</p>"
+        }
+      },
+      "documentation":"<p>A configured monitoring source returned by ListTestSources. Exactly one member is set.</p>",
+      "union":true
+    },
+    "TestSourceSummaryList":{
+      "type":"list",
+      "member":{"shape":"TestSourceSummary"},
+      "max":25,
+      "min":0
+    },
+    "TestSourceType":{
+      "type":"string",
+      "documentation":"<p>The purpose of a test monitoring source.</p>",
+      "enum":[
+        "SUCCESS_CRITERIA",
+        "OBSERVABILITY"
+      ]
+    },
+    "TestSummary":{
+      "type":"structure",
+      "required":[
+        "testId",
+        "testTemplateArn",
+        "serviceArn",
+        "totalTestRuns",
+        "successfulTestRuns",
+        "creationTime"
+      ],
+      "members":{
+        "testId":{
+          "shape":"TestId",
+          "documentation":"<p>The unique identifier of the test.</p>"
+        },
+        "testTemplateArn":{
+          "shape":"ServiceOwnedArn",
+          "documentation":"<p>The ARN of the test template the test was created from.</p>"
+        },
+        "serviceArn":{
+          "shape":"Arn",
+          "documentation":"<p>The ARN of the service the test belongs to.</p>"
+        },
+        "totalTestRuns":{
+          "shape":"Integer",
+          "documentation":"<p>The total number of runs of the test.</p>"
+        },
+        "successfulTestRuns":{
+          "shape":"Integer",
+          "documentation":"<p>The number of successful runs of the test.</p>"
+        },
+        "creationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the test was created.</p>"
+        }
+      },
+      "documentation":"<p>Contains summary information about a test.</p>"
+    },
+    "TestSummaryList":{
+      "type":"list",
+      "member":{"shape":"TestSummary"}
+    },
+    "TestTemplate":{
+      "type":"structure",
+      "required":[
+        "testTemplateArn",
+        "name"
+      ],
+      "members":{
+        "testTemplateArn":{
+          "shape":"ServiceOwnedArn",
+          "documentation":"<p>The ARN of the test template.</p>"
+        },
+        "name":{
+          "shape":"String",
+          "documentation":"<p>The name of the test template.</p>"
+        },
+        "description":{
+          "shape":"String",
+          "documentation":"<p>A description of the test template.</p>"
+        },
+        "parameters":{
+          "shape":"TestTemplateParameterList",
+          "documentation":"<p>The parameters the test template accepts.</p>"
+        },
+        "actions":{
+          "shape":"TestActionList",
+          "documentation":"<p>The fault actions the test template runs.</p>"
+        }
+      },
+      "documentation":"<p>A pre-configured, AWS recommended test that defines which resilience capability to validate, the fault actions it runs, and the parameters it accepts.</p>"
+    },
+    "TestTemplateParameter":{
+      "type":"structure",
+      "required":[
+        "name",
+        "type",
+        "required"
+      ],
+      "members":{
+        "name":{
+          "shape":"String",
+          "documentation":"<p>The name of the parameter.</p>"
+        },
+        "description":{
+          "shape":"String",
+          "documentation":"<p>A description of the parameter.</p>"
+        },
+        "type":{
+          "shape":"ParameterType",
+          "documentation":"<p>The data type of the parameter.</p>"
+        },
+        "required":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether the parameter is required.</p>"
+        },
+        "defaultValue":{
+          "shape":"String",
+          "documentation":"<p>The default value of the parameter.</p>"
+        },
+        "maxValues":{
+          "shape":"Integer",
+          "documentation":"<p>The maximum number of values the parameter accepts.</p>"
+        }
+      },
+      "documentation":"<p>Describes a parameter accepted by a test template.</p>"
+    },
+    "TestTemplateParameterList":{
+      "type":"list",
+      "member":{"shape":"TestTemplateParameter"}
+    },
+    "TestTemplateSummary":{
+      "type":"structure",
+      "required":[
+        "testTemplateArn",
+        "name",
+        "description"
+      ],
+      "members":{
+        "testTemplateArn":{
+          "shape":"ServiceOwnedArn",
+          "documentation":"<p>The ARN of the test template.</p>"
+        },
+        "name":{
+          "shape":"String",
+          "documentation":"<p>The name of the test template.</p>"
+        },
+        "description":{
+          "shape":"String",
+          "documentation":"<p>A description of the test template.</p>"
+        }
+      },
+      "documentation":"<p>Contains summary information about a test template.</p>"
+    },
+    "TestTemplateSummaryList":{
+      "type":"list",
+      "member":{"shape":"TestTemplateSummary"}
+    },
     "TestingRecommendation":{
       "type":"structure",
       "members":{
@@ -5252,6 +7065,49 @@
         "system":{
           "shape":"System",
           "documentation":"<p>The updated system.</p>"
+        }
+      }
+    },
+    "UpdateTestRequest":{
+      "type":"structure",
+      "required":[
+        "testId",
+        "serviceArn"
+      ],
+      "members":{
+        "testId":{
+          "shape":"TestId",
+          "documentation":"<p>The identifier of the test to update.</p>"
+        },
+        "serviceArn":{
+          "shape":"Arn",
+          "documentation":"<p>The ARN of the service the test belongs to.</p>"
+        },
+        "loggingConfiguration":{
+          "shape":"LoggingConfiguration",
+          "documentation":"<p>The updated logging configuration for the test.</p>"
+        },
+        "stopConditions":{
+          "shape":"StopConditionList",
+          "documentation":"<p>The updated stop conditions for the test.</p>"
+        },
+        "roleName":{
+          "shape":"EntityName",
+          "documentation":"<p>The updated IAM execution role name.</p>"
+        },
+        "parameters":{
+          "shape":"TestParameters",
+          "documentation":"<p>The updated parameter values for the test.</p>"
+        }
+      }
+    },
+    "UpdateTestResponse":{
+      "type":"structure",
+      "required":["test"],
+      "members":{
+        "test":{
+          "shape":"Test",
+          "documentation":"<p>The updated test.</p>"
         }
       }
     },

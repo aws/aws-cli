@@ -1342,6 +1342,14 @@
         "description":{
           "shape":"String",
           "documentation":"<p>A description of the actor.</p>"
+        },
+        "enableEmailMfa":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether email-based MFA is enabled for this actor.</p>"
+        },
+        "mfaForwardingAddress":{
+          "shape":"SensitiveEmailAddress",
+          "documentation":"<p>Server-generated email forwarding address for receiving MFA codes.</p>"
         }
       },
       "documentation":"<p>Represents an actor used during penetration testing. An actor defines a user or entity that interacts with the target application, including authentication credentials and target URIs.</p>"
@@ -1643,6 +1651,10 @@
         "integratedRepositories":{
           "shape":"IntegratedRepositoryList",
           "documentation":"<p>The list of integrated repositories associated with the pentest.</p>"
+        },
+        "trustedCaCertificates":{
+          "shape":"TrustedCaCertificateList",
+          "documentation":"<p>The trust anchors used to validate target endpoint TLS certificates. Provide these for endpoints served by a private or internal certificate authority (CA), an intermediate CA, or a self-signed certificate.</p>"
         }
       },
       "documentation":"<p>The collection of assets used in a pentest configuration, including endpoints, actors, documents, source code repositories, and integrated repositories.</p>"
@@ -2556,6 +2568,32 @@
       "type":"boolean",
       "box":true
     },
+    "CaCertificatePem":{
+      "type":"string",
+      "documentation":"<p>A PEM-encoded X.509 certificate.</p>",
+      "max":8192,
+      "min":1,
+      "sensitive":true
+    },
+    "CaCertificateSource":{
+      "type":"structure",
+      "members":{
+        "inlinePem":{
+          "shape":"CaCertificatePem",
+          "documentation":"<p>A PEM-encoded X.509 certificate supplied inline.</p>"
+        },
+        "artifactId":{
+          "shape":"String",
+          "documentation":"<p>The artifact ID of an uploaded certificate file.</p>"
+        },
+        "s3Location":{
+          "shape":"String",
+          "documentation":"<p>The Amazon S3 location URI of a customer-staged certificate.</p>"
+        }
+      },
+      "documentation":"<p>The source of a trusted CA certificate. Exactly one member must be set.</p>",
+      "union":true
+    },
     "Category":{
       "type":"structure",
       "members":{
@@ -2728,6 +2766,10 @@
           "shape":"ValidationMode",
           "documentation":"<p>The validation mode for the code review. Valid values are SIMULATED and DISABLED.</p>"
         },
+        "maxTaskHours":{
+          "shape":"Double",
+          "documentation":"<p>The maximum number of billable task hours allowed for jobs started from this code review. If a job reaches the configured limit, it is gracefully stopped. If not set, jobs run to completion with no budget cap.</p>"
+        },
         "createdAt":{
           "shape":"SyntheticTimestamp_date_time",
           "documentation":"<p>The date and time the code review was created, in UTC format.</p>"
@@ -2802,6 +2844,10 @@
         "codeRemediationStrategy":{
           "shape":"CodeRemediationStrategy",
           "documentation":"<p>The code remediation strategy for the code review job.</p>"
+        },
+        "maxTaskHours":{
+          "shape":"Double",
+          "documentation":"<p>The maximum number of billable task hours allowed for this code review job. If the cumulative task hours reach this limit, the job is gracefully stopped.</p>"
         },
         "createdAt":{
           "shape":"SyntheticTimestamp_date_time",
@@ -3326,6 +3372,10 @@
         "validationMode":{
           "shape":"ValidationMode",
           "documentation":"<p>The validation mode for the code review. Valid values are SIMULATED and DISABLED.</p>"
+        },
+        "maxTaskHours":{
+          "shape":"Double",
+          "documentation":"<p>The maximum number of billable task hours allowed for jobs started from this code review. Must be a positive number. If not set, jobs run to completion with no budget cap.</p>"
         }
       },
       "documentation":"<p>Input for creating a new code review.</p>"
@@ -3373,6 +3423,10 @@
         "validationMode":{
           "shape":"ValidationMode",
           "documentation":"<p>The validation mode for the code review.</p>"
+        },
+        "maxTaskHours":{
+          "shape":"Double",
+          "documentation":"<p>The maximum number of billable task hours configured for jobs started from this code review. Null if no budget cap is set.</p>"
         }
       },
       "documentation":"<p>Output for the CreateCodeReview operation.</p>"
@@ -3504,6 +3558,10 @@
         "disableManagedSkills":{
           "shape":"SkillTypeList",
           "documentation":"<p>A list of managed skills to disable for this pentest. Valid values include FINDING_PERSONALIZATION and LOGIN_OPTIMIZATION.</p>"
+        },
+        "maxTaskHours":{
+          "shape":"Double",
+          "documentation":"<p>The maximum number of billable task hours allowed for jobs started from this pentest. Must be a positive number. If not set, jobs run to completion with no budget cap.</p>"
         }
       },
       "documentation":"<p>Input for creating a new pentest.</p>"
@@ -4481,6 +4539,10 @@
         "PRIVATE_VPC"
       ]
     },
+    "Double":{
+      "type":"double",
+      "box":true
+    },
     "Endpoint":{
       "type":"structure",
       "members":{
@@ -4638,6 +4700,14 @@
         "alignmentRationale":{
           "shape":"String",
           "documentation":"<p>The rationale provided by the alignment agent explaining how the finding was adjusted based on customer preferences.</p>"
+        },
+        "revalidationJobIds":{
+          "shape":"StringList",
+          "documentation":"<p>The list of pentest job identifiers for revalidation jobs that retested this finding.</p>"
+        },
+        "originalFindingId":{
+          "shape":"String",
+          "documentation":"<p>The identifier of the original finding that this revalidation finding was produced from.</p>"
         },
         "createdAt":{
           "shape":"SyntheticTimestamp_date_time",
@@ -5278,6 +5348,10 @@
         "providerResourceId":{
           "shape":"String",
           "documentation":"<p>The provider-specific resource identifier for the repository.</p>"
+        },
+        "branch":{
+          "shape":"String",
+          "documentation":"<p>An optional override for the repository branch.</p>"
         }
       },
       "documentation":"<p>Represents a code repository that is integrated with the service through a third-party provider.</p>"
@@ -5458,6 +5532,14 @@
         "STOPPED",
         "FAILED",
         "COMPLETED"
+      ]
+    },
+    "JobType":{
+      "type":"string",
+      "documentation":"<p>The type of pentest job execution.</p>",
+      "enum":[
+        "FULL",
+        "REVALIDATION"
       ]
     },
     "KmsKeyId":{
@@ -6583,6 +6665,10 @@
           "shape":"SkillTypeList",
           "documentation":"<p>A list of managed skills to disable for this pentest. Valid values include FINDING_PERSONALIZATION and LOGIN_OPTIMIZATION.</p>"
         },
+        "maxTaskHours":{
+          "shape":"Double",
+          "documentation":"<p>The maximum number of billable task hours allowed for jobs started from this pentest. If a job reaches the configured limit, it is gracefully stopped. If not set, jobs run to completion with no budget cap.</p>"
+        },
         "createdAt":{
           "shape":"SyntheticTimestamp_date_time",
           "documentation":"<p>The date and time the pentest was created, in UTC format.</p>"
@@ -6681,6 +6767,10 @@
           "shape":"IntegratedRepositoryList",
           "documentation":"<p>The list of integrated repositories associated with the pentest job.</p>"
         },
+        "trustedCaCertificates":{
+          "shape":"TrustedCaCertificateList",
+          "documentation":"<p>The trust anchors used to validate target endpoint TLS certificates during the pentest job.</p>"
+        },
         "codeRemediationStrategy":{
           "shape":"CodeRemediationStrategy",
           "documentation":"<p>The code remediation strategy for the pentest job.</p>"
@@ -6692,6 +6782,18 @@
         "disableManagedSkills":{
           "shape":"SkillTypeList",
           "documentation":"<p>A list of managed skills disabled for this pentest job. Valid values include FINDING_PERSONALIZATION and LOGIN_OPTIMIZATION.</p>"
+        },
+        "maxTaskHours":{
+          "shape":"Double",
+          "documentation":"<p>The maximum number of billable task hours allowed for this pentest job. If the cumulative task hours reach this limit, the job is gracefully stopped.</p>"
+        },
+        "jobType":{
+          "shape":"JobType",
+          "documentation":"<p>The type of the pentest job. Valid values are FULL and REVALIDATION.</p>"
+        },
+        "selectedFindingIds":{
+          "shape":"StringList",
+          "documentation":"<p>The list of finding identifiers selected for revalidation. Present only when jobType is REVALIDATION.</p>"
         },
         "createdAt":{
           "shape":"SyntheticTimestamp_date_time",
@@ -7305,6 +7407,10 @@
       "type":"string",
       "documentation":"<p>Sensitive email address.</p>"
     },
+    "SensitiveEmailAddress":{
+      "type":"string",
+      "sensitive":true
+    },
     "ServiceManagedInput":{
       "type":"structure",
       "required":[
@@ -7501,6 +7607,14 @@
         "pentestId":{
           "shape":"String",
           "documentation":"<p>The unique identifier of the pentest to start a job for.</p>"
+        },
+        "jobType":{
+          "shape":"JobType",
+          "documentation":"<p>The type of pentest job to start. Valid values are FULL and REVALIDATION. When set to REVALIDATION, the selectedFindingIds parameter is required.</p>"
+        },
+        "selectedFindingIds":{
+          "shape":"StringList",
+          "documentation":"<p>The list of finding identifiers to revalidate. Required when jobType is REVALIDATION. Each finding must belong to the same agent space and pentest.</p>"
         }
       },
       "documentation":"<p>Input for starting the execution of a pentest.</p>"
@@ -7929,6 +8043,10 @@
           "shape":"LogLocation",
           "documentation":"<p>The location of the task execution logs.</p>"
         },
+        "taskHours":{
+          "shape":"Double",
+          "documentation":"<p>The number of active work hours consumed by the task during execution.</p>"
+        },
         "createdAt":{
           "shape":"SyntheticTimestamp_date_time",
           "documentation":"<p>The date and time the task was created, in UTC format.</p>"
@@ -7990,6 +8108,10 @@
         "executionStatus":{
           "shape":"TaskExecutionStatus",
           "documentation":"<p>The current execution status of the task.</p>"
+        },
+        "taskHours":{
+          "shape":"Double",
+          "documentation":"<p>The number of active work hours consumed by the task during execution.</p>"
         },
         "createdAt":{
           "shape":"SyntheticTimestamp_date_time",
@@ -8563,6 +8685,22 @@
       },
       "exception":true
     },
+    "TrustedCaCertificate":{
+      "type":"structure",
+      "required":["source"],
+      "members":{
+        "source":{
+          "shape":"CaCertificateSource",
+          "documentation":"<p>The source that AWS Security Agent reads the certificate from.</p>"
+        }
+      },
+      "documentation":"<p>A trust anchor used when validating a target endpoint's TLS certificate.</p>",
+      "sensitive":true
+    },
+    "TrustedCaCertificateList":{
+      "type":"list",
+      "member":{"shape":"TrustedCaCertificate"}
+    },
     "UntagResourceInput":{
       "type":"structure",
       "required":[
@@ -8729,6 +8867,10 @@
         "validationMode":{
           "shape":"ValidationMode",
           "documentation":"<p>The updated validation mode for the code review. Valid values are SIMULATED and DISABLED.</p>"
+        },
+        "maxTaskHours":{
+          "shape":"Double",
+          "documentation":"<p>The updated maximum number of billable task hours allowed for jobs started from this code review.</p>"
         }
       },
       "documentation":"<p>Input for updating an existing code review.</p>"
@@ -8776,6 +8918,10 @@
         "validationMode":{
           "shape":"ValidationMode",
           "documentation":"<p>The validation mode for the code review.</p>"
+        },
+        "maxTaskHours":{
+          "shape":"Double",
+          "documentation":"<p>The maximum number of billable task hours configured for jobs started from this code review. Null if no budget cap is set.</p>"
         }
       },
       "documentation":"<p>Output for the UpdateCodeReview operation.</p>"
@@ -8915,6 +9061,10 @@
         "disableManagedSkills":{
           "shape":"SkillTypeList",
           "documentation":"<p>The updated list of managed skills to disable for this pentest. Valid values include FINDING_PERSONALIZATION and LOGIN_OPTIMIZATION.</p>"
+        },
+        "maxTaskHours":{
+          "shape":"Double",
+          "documentation":"<p>The updated maximum number of billable task hours allowed for jobs started from this pentest.</p>"
         }
       },
       "documentation":"<p>Input for updating an existing pentest.</p>"

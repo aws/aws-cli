@@ -30,7 +30,7 @@
         {"shape":"InternalServiceException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Provides a list of analysis segments for a real-time analysis session.</p>"
+      "documentation":"<p>Provides a list of analysis segments for a real-time analysis session for voice.</p> <note> <p>Voice data is retained for 24 hours. You must invoke this API during that time.</p> </note>"
     }
   },
   "shapes":{
@@ -104,6 +104,90 @@
     "ContactId":{
       "type":"string",
       "max":256,
+      "min":1,
+      "pattern":".*\\S.*"
+    },
+    "ExtractedInformation":{
+      "type":"structure",
+      "required":[
+        "ExtractionDefinitionId",
+        "ExtractionDefinitionName"
+      ],
+      "members":{
+        "ExtractionDefinitionId":{
+          "shape":"ExtractionDefinitionId",
+          "documentation":"<p>The identifier of the extraction definition that produced this result.</p>"
+        },
+        "ExtractionDefinitionName":{
+          "shape":"ExtractionDefinitionName",
+          "documentation":"<p>The name of the extraction definition that produced this result.</p>"
+        },
+        "ExtractionDefinitionDisplayLabel":{
+          "shape":"ExtractionDefinitionDisplayLabel",
+          "documentation":"<p>The display label of the extraction definition that produced this result.</p>"
+        },
+        "ExtractedValues":{
+          "shape":"ExtractedInformationValues",
+          "documentation":"<p>The list of values extracted from the conversation for this extraction definition. This field is empty when a <code>FailureCode</code> is present.</p>"
+        },
+        "FailureCode":{
+          "shape":"ExtractedInformationFailureCode",
+          "documentation":"<p>If the information failed to be extracted, one of the following failure codes occurs:</p> <ul> <li> <p> <code>QUOTA_EXCEEDED</code>: The number of concurrent analytics jobs reached your service quota.</p> </li> <li> <p> <code>INSUFFICIENT_CONVERSATION_CONTENT</code>: Information extraction requires a conversation with at least one turn from each participant.</p> </li> <li> <p> <code>FAILED_SAFETY_GUIDELINES</code>: The extracted information cannot be provided because it failed to meet system safety guidelines.</p> </li> <li> <p> <code>INTERNAL_ERROR</code>: Internal system error.</p> </li> <li> <p> <code>MAX_PACKAGE_FEATURE_ONLY</code>: Information extraction is only available in Amazon Connect Customer instances.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>Segment containing information extracted from the conversation. Each segment represents the results for a single extraction definition.</p>"
+    },
+    "ExtractedInformationContent":{
+      "type":"string",
+      "max":1024,
+      "min":1
+    },
+    "ExtractedInformationFailureCode":{
+      "type":"string",
+      "enum":[
+        "QUOTA_EXCEEDED",
+        "INSUFFICIENT_CONVERSATION_CONTENT",
+        "FAILED_SAFETY_GUIDELINES",
+        "INTERNAL_ERROR",
+        "MAX_PACKAGE_FEATURE_ONLY"
+      ]
+    },
+    "ExtractedInformationValue":{
+      "type":"structure",
+      "required":[
+        "Content",
+        "PointsOfInterest"
+      ],
+      "members":{
+        "Content":{
+          "shape":"ExtractedInformationContent",
+          "documentation":"<p>The text content of the extracted value.</p>"
+        },
+        "PointsOfInterest":{
+          "shape":"PointsOfInterest",
+          "documentation":"<p>The sections in the conversation that indicate where the extracted value was found.</p>"
+        }
+      },
+      "documentation":"<p>An individual value extracted from the conversation, including its content and the locations where it was found.</p>"
+    },
+    "ExtractedInformationValues":{
+      "type":"list",
+      "member":{"shape":"ExtractedInformationValue"}
+    },
+    "ExtractionDefinitionDisplayLabel":{
+      "type":"string",
+      "max":25,
+      "min":0
+    },
+    "ExtractionDefinitionId":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":".*\\S.*"
+    },
+    "ExtractionDefinitionName":{
+      "type":"string",
+      "max":200,
       "min":1,
       "pattern":".*\\S.*"
     },
@@ -238,14 +322,14 @@
       "members":{
         "BeginOffsetMillis":{
           "shape":"OffsetMillis",
-          "documentation":"<p>The beginning offset in milliseconds where the category rule was detected.</p>"
+          "documentation":"<p>The beginning offset (in milliseconds) where the match was detected.</p>"
         },
         "EndOffsetMillis":{
           "shape":"OffsetMillis",
-          "documentation":"<p>The ending offset in milliseconds where the category rule was detected.</p>"
+          "documentation":"<p>The ending offset (in milliseconds) where the match was detected.</p>"
         }
       },
-      "documentation":"<p>The section of the contact audio where that category rule was detected.</p>"
+      "documentation":"<p>The section of the contact audio where a match was detected.</p>"
     },
     "PointsOfInterest":{
       "type":"list",
@@ -308,6 +392,10 @@
         "PostContactSummary":{
           "shape":"PostContactSummary",
           "documentation":"<p>Information about the post-contact summary.</p>"
+        },
+        "ExtractedInformation":{
+          "shape":"ExtractedInformation",
+          "documentation":"<p>The extracted information from the conversation.</p>"
         }
       },
       "documentation":"<p>An analyzed segment for a real-time analysis session.</p>"

@@ -147,7 +147,9 @@
         {"shape":"ConflictException"},
         {"shape":"ValidationException"},
         {"shape":"ThrottlingException"},
-        {"shape":"InternalServerException"}
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"SubscriptionRequiredException"}
       ],
       "documentation":"<p>Create a new payment instrument for a connector.</p>",
       "idempotent":true
@@ -167,7 +169,8 @@
         {"shape":"ConflictException"},
         {"shape":"ValidationException"},
         {"shape":"ThrottlingException"},
-        {"shape":"InternalServerException"}
+        {"shape":"InternalServerException"},
+        {"shape":"SubscriptionRequiredException"}
       ],
       "documentation":"<p>Create a new payment session.</p>",
       "idempotent":true
@@ -212,6 +215,25 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Deletes a batch evaluation and its associated results.</p>",
+      "idempotent":true
+    },
+    "DeleteCapacityProviderSession":{
+      "name":"DeleteCapacityProviderSession",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/capacity-providers/{capacityProviderId}/sessions/{sessionId}",
+        "responseCode":202
+      },
+      "input":{"shape":"DeleteCapacityProviderSessionRequest"},
+      "output":{"shape":"DeleteCapacityProviderSessionResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Deletes a session associated with a capacity provider in Amazon Bedrock AgentCore and makes the session unavailable for further use. To delete a capacity provider session, specify both the capacity provider identifier and the session ID. After you delete a session, you cannot restart it.</p>",
       "idempotent":true
     },
     "DeleteEvent":{
@@ -668,6 +690,26 @@
       ],
       "documentation":"<p>Obtains a workload access token for agentic workloads acting on behalf of a user, using the user's ID.</p>"
     },
+    "IngestData":{
+      "name":"IngestData",
+      "http":{
+        "method":"POST",
+        "requestUri":"/memories/{memoryId}/ingest",
+        "responseCode":202
+      },
+      "input":{"shape":"IngestDataInput"},
+      "output":{"shape":"IngestDataOutput"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ThrottledException"},
+        {"shape":"ServiceException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Submits content directly for ingestion to generate long-term memory records in a AgentCore Memory resource.</p> <p>To use this operation, you must have the <code>bedrock-agentcore:IngestData</code> permission.</p>",
+      "idempotent":true
+    },
     "InvokeAgentRuntime":{
       "name":"InvokeAgentRuntime",
       "http":{
@@ -1016,8 +1058,10 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ConflictException"},
         {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"},
-        {"shape":"InternalServerException"}
+        {"shape":"InternalServerException"},
+        {"shape":"SubscriptionRequiredException"}
       ],
       "documentation":"<p>Processes a payment using a payment instrument within a payment session.</p>",
       "idempotent":true
@@ -1574,6 +1618,10 @@
         "batchEvaluation":{
           "shape":"BatchEvaluationTraceConfig",
           "documentation":"<p>Use a completed batch evaluation as the source of agent traces.</p>"
+        },
+        "onlineEvaluation":{
+          "shape":"OnlineEvaluationTraceConfig",
+          "documentation":"<p>Agent traces from an online evaluation configuration over a specified time range.</p>"
         }
       },
       "documentation":"<p>The configuration specifying where to read agent traces from for recommendation analysis.</p>",
@@ -2185,6 +2233,28 @@
       "max":512,
       "min":10
     },
+    "CapacityProviderArn":{
+      "type":"string",
+      "pattern":"arn:aws(-[^:]+)?:bedrock-agentcore:[a-z0-9-]+:[0-9]{12}:capacity-provider/[a-zA-Z][a-zA-Z0-9_]{0,47}-[a-zA-Z0-9]{10}"
+    },
+    "CapacityProviderId":{
+      "type":"string",
+      "documentation":"<p>Capacity provider identifier. Pattern matches MiskiModel definition.</p>",
+      "max":59,
+      "min":12,
+      "pattern":"[a-zA-Z][a-zA-Z0-9_]{0,47}-[a-zA-Z0-9]{10}"
+    },
+    "CapacityProviderSessionStatus":{
+      "type":"string",
+      "enum":[
+        "Provisioning",
+        "Deprovisioning",
+        "Active",
+        "Deleting",
+        "Deleted",
+        "Stopped"
+      ]
+    },
     "Certificate":{
       "type":"structure",
       "required":["location"],
@@ -2719,6 +2789,17 @@
       },
       "documentation":"<p>An event that contains incremental output from a command execution. This event streams standard output and standard error content as it becomes available during command execution.</p>"
     },
+    "ContentSource":{
+      "type":"structure",
+      "members":{
+        "inline":{
+          "shape":"InlineMemoryContent",
+          "documentation":"<p>The content included directly in the request.</p>"
+        }
+      },
+      "documentation":"<p>The source of the content to ingest. Only inline content is supported.</p>",
+      "union":true
+    },
     "ContentStartEvent":{
       "type":"structure",
       "members":{},
@@ -2918,7 +2999,7 @@
         },
         "payload":{
           "shape":"PayloadTypeList",
-          "documentation":"<p>The content payload of the event. This can include conversational data or binary content.</p>"
+          "documentation":"<p>The content payload of the event. This can include conversational data, JSON data, or binary content.</p>"
         },
         "branch":{
           "shape":"Branch",
@@ -2936,6 +3017,10 @@
         "extractionMode":{
           "shape":"ExtractionMode",
           "documentation":"<p>Controls long-term memory extraction for this event. When set to <code>SKIP</code>, the event is stored in short-term memory but is excluded from long-term memory extraction. If not specified, the event is processed for extraction as usual.</p>"
+        },
+        "extractionConfig":{
+          "shape":"ExtractionConfig",
+          "documentation":"<p>The extraction configuration for long-term memory records. Use this parameter to specify namespace variable keys and their values for namespace substitution during extraction.</p>"
         }
       }
     },
@@ -3089,6 +3174,10 @@
         "payload":{
           "shape":"PaymentDocument",
           "documentation":"<p>The X402 payment payload.</p>"
+        },
+        "permit2AllowanceLimit":{
+          "shape":"Permit2AllowanceLimit",
+          "documentation":"<p>The maximum on-chain Permit2 allowance to grant before signing the payment authorization, in the asset's smallest denomination. This field is valid only for the <code>upto</code> (metered) scheme; supplying it for the <code>exact</code> scheme returns a validation error.</p> <p>When set, the service approves an ERC-20 allowance for this amount before processing the payment. The approval sets, rather than adds to, the wallet's allowance. Set this field only when the wallet needs approving, for example on its first <code>upto</code> payment, to avoid a redundant on-chain transaction. Omit the field to skip allowance handling. This is the default, and the only behavior for the <code>exact</code> scheme.</p>"
         }
       },
       "documentation":"<p>The input for a crypto X402 payment.</p>"
@@ -3230,6 +3319,49 @@
         }
       }
     },
+    "DeleteCapacityProviderSessionRequest":{
+      "type":"structure",
+      "required":[
+        "capacityProviderId",
+        "sessionId"
+      ],
+      "members":{
+        "capacityProviderId":{
+          "shape":"CapacityProviderId",
+          "documentation":"<p>The unique identifier of the capacity provider associated with the session.</p>",
+          "location":"uri",
+          "locationName":"capacityProviderId"
+        },
+        "sessionId":{
+          "shape":"SessionId",
+          "documentation":"<p>The unique identifier of the capacity provider session to delete.</p>",
+          "location":"uri",
+          "locationName":"sessionId"
+        }
+      }
+    },
+    "DeleteCapacityProviderSessionResponse":{
+      "type":"structure",
+      "required":[
+        "capacityProviderArn",
+        "sessionId",
+        "status"
+      ],
+      "members":{
+        "capacityProviderArn":{
+          "shape":"CapacityProviderArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the capacity provider associated with the deleted session.</p>"
+        },
+        "sessionId":{
+          "shape":"SessionId",
+          "documentation":"<p>The unique identifier of the deleted capacity provider session.</p>"
+        },
+        "status":{
+          "shape":"CapacityProviderSessionStatus",
+          "documentation":"<p>The current status of the capacity provider session. When the status is <code>Deleting</code>, the session is being deleted and is not available. When the status is <code>Deleted</code>, the session is no longer available.</p>"
+        }
+      }
+    },
     "DeleteEventInput":{
       "type":"structure",
       "required":[
@@ -3293,6 +3425,12 @@
           "documentation":"<p>The identifier of the memory record to delete.</p>",
           "location":"uri",
           "locationName":"memoryRecordId"
+        },
+        "namespace":{
+          "shape":"Namespace",
+          "documentation":"<p>The namespace of the memory record to delete. This value is used for IAM condition key authorization.</p>",
+          "location":"querystring",
+          "locationName":"namespace"
         }
       }
     },
@@ -3480,6 +3618,42 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "EfsAccessPointArn":{
+      "type":"string",
+      "max":128,
+      "min":0,
+      "pattern":"arn:aws[-a-z]*:elasticfilesystem:[0-9a-z-:]+:access-point/fsap-[0-9a-f]{8,40}"
+    },
+    "EfsConfiguration":{
+      "type":"structure",
+      "required":[
+        "accessPointArn",
+        "mountPath",
+        "fileSystemArn"
+      ],
+      "members":{
+        "accessPointArn":{
+          "shape":"EfsAccessPointArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon Elastic File System (Amazon EFS) access point to mount.</p>"
+        },
+        "mountPath":{
+          "shape":"MountPath",
+          "documentation":"<p>The absolute path within the session at which the access point is mounted, for example <code>/mnt/efs</code>. Each mount path must be unique across all file system configurations in the session.</p>"
+        },
+        "fileSystemArn":{
+          "shape":"EfsFileSystemArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon Elastic File System (Amazon EFS) file system that owns the access point.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for mounting an Amazon Elastic File System (Amazon EFS) access point that you own into a session.</p>"
+    },
+    "EfsFileSystemArn":{
+      "type":"string",
+      "documentation":"<p>The Amazon Resource Name (ARN) of an Amazon Elastic File System (Amazon EFS) file system. The access points you specify must belong to this file system.</p>",
+      "max":256,
+      "min":0,
+      "pattern":"arn:aws[-a-z]*:elasticfilesystem:[a-z0-9-]+:[0-9]{12}:file-system/fs-[0-9a-f]{8,40}"
     },
     "Email":{
       "type":"string",
@@ -3799,11 +3973,13 @@
     },
     "EvaluatorArn":{
       "type":"string",
-      "pattern":"arn:aws[a-zA-Z-]*:bedrock-agentcore:[a-z0-9-]+:[0-9]{12}:evaluator\\/[a-zA-Z][a-zA-Z0-9-_]{0,99}-[a-zA-Z0-9]{10}$|^arn:aws[a-zA-Z-]*:bedrock-agentcore:::evaluator/Builtin.[a-zA-Z0-9_-]+"
+      "pattern":"arn:aws[a-zA-Z-]*:bedrock-agentcore:[a-z0-9-]+:[0-9]{12}:evaluator\\/[a-zA-Z][a-zA-Z0-9-_]{0,99}-[a-zA-Z0-9]{10}$|^arn:aws[a-zA-Z-]*:bedrock-agentcore:::evaluator/(Builtin|ThirdParty)\\.[a-zA-Z0-9._-]+"
     },
     "EvaluatorId":{
       "type":"string",
-      "pattern":"(Builtin.[a-zA-Z0-9_-]+|[a-zA-Z][a-zA-Z0-9-_]{0,99}-[a-zA-Z0-9]{10})"
+      "max":111,
+      "min":1,
+      "pattern":"(Builtin\\.[a-zA-Z0-9._-]+|ThirdParty\\.[a-zA-Z0-9_-]+\\.[a-zA-Z0-9_-]+|[a-zA-Z][a-zA-Z0-9-_]{0,99}-[a-zA-Z0-9]{10})"
     },
     "EvaluatorList":{
       "type":"list",
@@ -3838,7 +4014,9 @@
     },
     "EvaluatorName":{
       "type":"string",
-      "pattern":"(Builtin.[a-zA-Z0-9_-]+|[a-zA-Z][a-zA-Z0-9_]{0,47})"
+      "max":48,
+      "min":1,
+      "pattern":"(Builtin\\.[a-zA-Z0-9._-]+|ThirdParty\\.[a-zA-Z0-9_-]+\\.[a-zA-Z0-9_-]+|[a-zA-Z][a-zA-Z0-9_]{0,47})"
     },
     "EvaluatorStatistics":{
       "type":"structure",
@@ -4071,6 +4249,16 @@
       "box":true,
       "max":65535,
       "min":1
+    },
+    "ExtractionConfig":{
+      "type":"structure",
+      "members":{
+        "namespaceVariables":{
+          "shape":"NamespaceVariablesMap",
+          "documentation":"<p>A map of <code>namespaceKeys</code> to their values. The service substitutes these values into <code>namespaceTemplates</code> during long-term memory extraction to control namespace hierarchy.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for extraction behavior. Use this structure to specify namespace variable keys and their values for namespace substitution during long-term memory extraction.</p>"
     },
     "ExtractionJob":{
       "type":"structure",
@@ -4655,6 +4843,10 @@
           "shape":"Certificates",
           "documentation":"<p>The list of certificates installed in the browser session.</p>"
         },
+        "filesystemConfigurations":{
+          "shape":"ToolsFileSystemConfigurations",
+          "documentation":"<p>The file system configurations for the browser session. Each entry describes an access point and its mount path.</p>"
+        },
         "sessionReplayArtifact":{
           "shape":"String",
           "documentation":"<p>The artifact containing the session replay information.</p>"
@@ -4721,6 +4913,10 @@
         "certificates":{
           "shape":"Certificates",
           "documentation":"<p>The list of certificates installed in the code interpreter session.</p>"
+        },
+        "filesystemConfigurations":{
+          "shape":"ToolsFileSystemConfigurations",
+          "documentation":"<p>The file system configurations for the code interpreter session. Each entry describes an access point and its mount path.</p>"
         }
       }
     },
@@ -4787,6 +4983,12 @@
           "documentation":"<p>The identifier of the memory record to retrieve.</p>",
           "location":"uri",
           "locationName":"memoryRecordId"
+        },
+        "namespace":{
+          "shape":"Namespace",
+          "documentation":"<p>The namespace of the memory record to retrieve. This value is used for IAM condition key authorization.</p>",
+          "location":"querystring",
+          "locationName":"namespace"
         }
       }
     },
@@ -6321,6 +6523,83 @@
       "max":100,
       "min":0
     },
+    "IngestDataInput":{
+      "type":"structure",
+      "required":[
+        "memoryId",
+        "source",
+        "contentTimestamp",
+        "actorId"
+      ],
+      "members":{
+        "memoryId":{
+          "shape":"MemoryId",
+          "documentation":"<p>The identifier of the AgentCore Memory resource to ingest content into.</p>",
+          "location":"uri",
+          "locationName":"memoryId"
+        },
+        "source":{
+          "shape":"ContentSource",
+          "documentation":"<p>The content to ingest. Only inline content is supported.</p>"
+        },
+        "contentTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp of when the content occurred.</p>"
+        },
+        "actorId":{
+          "shape":"ActorId",
+          "documentation":"<p>The identifier of the actor associated with this content. An actor represents an entity that participates in sessions and generates content.</p>"
+        },
+        "sessionId":{
+          "shape":"SessionId",
+          "documentation":"<p>The identifier of the session that the content belongs to. If not provided, a session identifier is generated and returned in the response.</p>"
+        },
+        "extractionConfig":{
+          "shape":"ExtractionConfig",
+          "documentation":"<p>The extraction configuration for long-term memory records. Use this parameter to specify namespace variable keys and their values for namespace substitution during extraction.</p>"
+        },
+        "metadata":{
+          "shape":"MetadataMap",
+          "documentation":"<p>The key-value metadata to attach to the content.</p>"
+        },
+        "clientToken":{
+          "shape":"String",
+          "documentation":"<p>A unique, case-sensitive identifier to ensure that the operation completes no more than one time. If this token matches a previous request, AgentCore ignores the request, but does not return an error.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "IngestDataOutput":{
+      "type":"structure",
+      "required":["sessionId"],
+      "members":{
+        "sessionId":{
+          "shape":"SessionId",
+          "documentation":"<p>The identifier of the session that the service ingested the content into. This value echoes the session identifier from the request, or the identifier that the service generated when you did not provide one.</p>"
+        }
+      }
+    },
+    "IngestPayloadList":{
+      "type":"list",
+      "member":{"shape":"IngestPayloadType"},
+      "max":100,
+      "min":1
+    },
+    "IngestPayloadType":{
+      "type":"structure",
+      "members":{
+        "conversational":{
+          "shape":"Conversational",
+          "documentation":"<p>The conversational content for this payload item.</p>"
+        },
+        "json":{
+          "shape":"MemoryJsonData",
+          "documentation":"<p>The JSON content for this payload item.</p>"
+        }
+      },
+      "documentation":"<p>A single content payload item to ingest. A payload item contains either conversational or JSON content.</p>",
+      "union":true
+    },
     "InlineContent":{
       "type":"string",
       "max":409600,
@@ -6348,6 +6627,17 @@
       "type":"list",
       "member":{"shape":"GroundTruthTurn"},
       "min":1
+    },
+    "InlineMemoryContent":{
+      "type":"structure",
+      "required":["payload"],
+      "members":{
+        "payload":{
+          "shape":"IngestPayloadList",
+          "documentation":"<p>The list of content payload items to ingest.</p>"
+        }
+      },
+      "documentation":"<p>The content included directly in the request as one or more payload items.</p>"
     },
     "InputContentBlock":{
       "type":"structure",
@@ -8005,6 +8295,24 @@
       "min":12,
       "pattern":"(arn:(aws|aws-cn|aws-us-gov):bedrock-agentcore:[a-z0-9-]+:[0-9]{12}:memory/)?[a-zA-Z][a-zA-Z0-9-_]{0,99}-[a-zA-Z0-9]{10}"
     },
+    "MemoryJsonData":{
+      "type":"structure",
+      "required":["content"],
+      "members":{
+        "content":{
+          "shape":"MemoryJsonDataContent",
+          "documentation":"<p>The JSON content of the payload. Accepts any JSON value, including objects, arrays, strings, numbers, booleans, and null. The maximum size is 100 KB.</p>"
+        }
+      },
+      "documentation":"<p>Contains non-conversational, JSON-formatted content for an event payload. JSON payloads are extracted into long-term memory.</p>",
+      "sensitive":true
+    },
+    "MemoryJsonDataContent":{
+      "type":"structure",
+      "members":{},
+      "document":true,
+      "sensitive":true
+    },
     "MemoryMetadataFilterExpression":{
       "type":"structure",
       "required":[
@@ -8113,6 +8421,10 @@
         "memoryRecordId":{
           "shape":"MemoryRecordId",
           "documentation":"<p>The unique ID of the memory record to be deleted.</p>"
+        },
+        "namespace":{
+          "shape":"Namespace",
+          "documentation":"<p>The namespace of the memory record being deleted. This value is used for IAM condition key authorization.</p>"
         }
       },
       "documentation":"<p>Input structure to delete an existing memory record.</p>"
@@ -8295,6 +8607,10 @@
           "shape":"NamespacesList",
           "documentation":"<p>The updated list of namespace identifiers for categorizing the memory record.</p>"
         },
+        "sourceNamespaces":{
+          "shape":"NamespacesList",
+          "documentation":"<p>The namespaces of the source memory record being updated. This value is used for IAM condition key authorization.</p>"
+        },
         "memoryStrategyId":{
           "shape":"MemoryStrategyId",
           "documentation":"<p>The updated ID of the memory strategy that defines how this memory record is grouped.</p>"
@@ -8398,6 +8714,12 @@
       "min":1
     },
     "ModelId":{"type":"string"},
+    "MountPath":{
+      "type":"string",
+      "max":200,
+      "min":6,
+      "pattern":"/mnt/[a-zA-Z0-9._-]+/?"
+    },
     "MouseButton":{
       "type":"string",
       "documentation":"<p>The mouse button to use for a browser mouse action.</p>",
@@ -8587,6 +8909,63 @@
       },
       "documentation":"<p>The result of a mouse scroll action.</p>"
     },
+    "MppPaymentCredential":{
+      "type":"string",
+      "documentation":"<p>Ready-to-send <code>Authorization: Payment &lt;base64url-token&gt;</code> value. This is a bearer-like payment credential and must not appear in logs, traces, or error messages.</p>",
+      "max":32768,
+      "min":1,
+      "sensitive":true
+    },
+    "MppPaymentInput":{
+      "type":"structure",
+      "required":[
+        "version",
+        "wwwAuthenticateHeaders"
+      ],
+      "members":{
+        "version":{
+          "shape":"Version",
+          "documentation":"<p>The MPP protocol version, for example \"1\" or \"2\".</p>"
+        },
+        "wwwAuthenticateHeaders":{
+          "shape":"WwwAuthenticateHeaderList",
+          "documentation":"<p>The raw <code>WWW-Authenticate: Payment</code> header value from the 402 response, passed verbatim. Provide exactly one entry. The service uses this value to generate the payment credential.</p>"
+        },
+        "buyerPaysGasFees":{
+          "shape":"Boolean",
+          "documentation":"<p>Authorizes the service to sign a payment whose blockchain network (gas) fees are charged to your wallet, on top of the payment amount.</p> <p>The challenge indicates who sponsors the network fees. When the challenge does not sponsor them, the service signs the payment only if this field is <code>true</code>. Otherwise it returns a validation error, so you can decide whether to pay the fees or obtain a challenge that sponsors them.</p> <p>Optional. When omitted or <code>false</code>, you decline to pay network fees. This field has no effect on challenges that already sponsor the fees.</p>"
+        }
+      },
+      "documentation":"<p>Contains the payment challenge from a 402 Payment Required response. Forward the raw <code>WWW-Authenticate: Payment</code> header value verbatim. In response, you receive a payment credential that satisfies the challenge. Provide exactly one challenge per request.</p>"
+    },
+    "MppPaymentOutput":{
+      "type":"structure",
+      "required":[
+        "version",
+        "selectedPaymentId",
+        "paymentCredential"
+      ],
+      "members":{
+        "version":{
+          "shape":"Version",
+          "documentation":"<p>The MPP protocol version, for example \"1\" or \"2\".</p>"
+        },
+        "selectedPaymentId":{
+          "shape":"MppPaymentOutputSelectedPaymentIdString",
+          "documentation":"<p>The id of the challenge that was paid, echoed from the input challenge so you can correlate the result without decoding the credential.</p>"
+        },
+        "paymentCredential":{
+          "shape":"MppPaymentCredential",
+          "documentation":"<p>Ready-to-send value for the <code>Authorization</code> header, in the form \"Payment &lt;base64url-token&gt;\". Attach this header and retry the original request. To inspect the full credential, base64url-decode the token.</p>"
+        }
+      },
+      "documentation":"<p>Contains the payment credential, ready to retry the request.</p>"
+    },
+    "MppPaymentOutputSelectedPaymentIdString":{
+      "type":"string",
+      "max":512,
+      "min":1
+    },
     "Name":{
       "type":"string",
       "max":100,
@@ -8597,6 +8976,28 @@
       "max":1024,
       "min":1,
       "pattern":"[a-zA-Z0-9/*][a-zA-Z0-9-_/*]*(?::[a-zA-Z0-9-_/*]+)*[a-zA-Z0-9-_/*]*"
+    },
+    "NamespaceVariableName":{
+      "type":"string",
+      "documentation":"<p>The name of the namespace variable key. The name cannot be a built-in variable name (<code>actorId</code>, <code>sessionId</code>, or <code>memoryStrategyId</code>).</p>",
+      "max":32,
+      "min":1,
+      "pattern":"(?!memoryStrategyId$|actorId$|sessionId$)[a-z][a-z0-9]*"
+    },
+    "NamespaceVariableValue":{
+      "type":"string",
+      "documentation":"<p>The value of a namespace variable key.</p>",
+      "max":64,
+      "min":1,
+      "pattern":"[a-z0-9][a-z0-9-_]*"
+    },
+    "NamespaceVariablesMap":{
+      "type":"map",
+      "key":{"shape":"NamespaceVariableName"},
+      "value":{"shape":"NamespaceVariableValue"},
+      "documentation":"<p>A map of <code>namespaceKeys</code> to their values for namespace substitution.</p>",
+      "max":5,
+      "min":1
     },
     "NamespacesList":{
       "type":"list",
@@ -8757,6 +9158,29 @@
       },
       "documentation":"<p>A reference to an existing online evaluation configuration to use as the data source for batch evaluation.</p>"
     },
+    "OnlineEvaluationTraceConfig":{
+      "type":"structure",
+      "required":[
+        "onlineEvaluationConfigArn",
+        "startTime",
+        "endTime"
+      ],
+      "members":{
+        "onlineEvaluationConfigArn":{
+          "shape":"OnlineEvaluationConfigArn",
+          "documentation":"<p>The ARN of the online evaluation configuration to reuse sessions from.</p>"
+        },
+        "startTime":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The start time of the time range. Only sessions evaluated at or after this timestamp are included.</p>"
+        },
+        "endTime":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The end time of the time range. Only sessions evaluated before this timestamp are included.</p>"
+        }
+      },
+      "documentation":"<p>Contains the configuration for reusing agent traces from an online evaluation configuration for recommendation analysis. Because online evaluation is a continuous stream, a time range specifies which evaluated sessions the recommendation includes.</p>"
+    },
     "OperatorType":{
       "type":"string",
       "enum":[
@@ -8792,6 +9216,10 @@
         "blob":{
           "shape":"MemoryDocument",
           "documentation":"<p>The binary content of the payload.</p>"
+        },
+        "json":{
+          "shape":"MemoryJsonData",
+          "documentation":"<p>The JSON content of the payload. Use this type to store non-conversational, JSON-formatted data, such as behavioral events, activity logs, or system events.</p>"
         }
       },
       "documentation":"<p>Contains the payload content for an event.</p>",
@@ -8838,7 +9266,8 @@
         "cryptoX402":{
           "shape":"CryptoX402PaymentInput",
           "documentation":"<p>Input for a crypto X402 payment.</p>"
-        }
+        },
+        "mpp":{"shape":"MppPaymentInput"}
       },
       "documentation":"<p>The payment input details, which vary by payment type.</p>",
       "union":true
@@ -8920,7 +9349,8 @@
         "INITIATED",
         "ACTIVE",
         "FAILED",
-        "DELETED"
+        "DELETED",
+        "BLOCKED"
       ]
     },
     "PaymentInstrumentSummary":{
@@ -8992,7 +9422,8 @@
         "cryptoX402":{
           "shape":"CryptoX402PaymentOutput",
           "documentation":"<p>Output from a crypto X402 payment.</p>"
-        }
+        },
+        "mpp":{"shape":"MppPaymentOutput"}
       },
       "documentation":"<p>The payment output details, which vary by payment type.</p>",
       "union":true
@@ -9150,7 +9581,10 @@
     "PaymentType":{
       "type":"string",
       "documentation":"<p>Payment type enum.</p>",
-      "enum":["CRYPTO_X402"]
+      "enum":[
+        "CRYPTO_X402",
+        "MPP"
+      ]
     },
     "PerVariantOnlineEvaluationConfig":{
       "type":"structure",
@@ -9175,6 +9609,13 @@
       "member":{"shape":"PerVariantOnlineEvaluationConfig"},
       "max":2,
       "min":2
+    },
+    "Permit2AllowanceLimit":{
+      "type":"string",
+      "documentation":"<p>The maximum on-chain Permit2 allowance to grant, in the asset's smallest denomination. Pass the value as a numeric string. For example, \"1000000\" is 1 USDC at 6 decimals. To grant an unlimited allowance, pass the uint256 maximum, which is a 78-digit number.</p>",
+      "max":78,
+      "min":1,
+      "pattern":"[0-9]+"
     },
     "PhoneNumber":{
       "type":"string",
@@ -9905,6 +10346,42 @@
       },
       "exception":true
     },
+    "S3FilesAccessPointArn":{
+      "type":"string",
+      "max":256,
+      "min":0,
+      "pattern":"arn:aws[-a-z]*:s3files:[0-9a-z-:]+:file-system/fs-[0-9a-f]{17,40}/access-point/fsap-[0-9a-f]{17,40}"
+    },
+    "S3FilesConfiguration":{
+      "type":"structure",
+      "required":[
+        "accessPointArn",
+        "mountPath",
+        "fileSystemArn"
+      ],
+      "members":{
+        "accessPointArn":{
+          "shape":"S3FilesAccessPointArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon Simple Storage Service (Amazon S3) Files access point to mount.</p>"
+        },
+        "mountPath":{
+          "shape":"MountPath",
+          "documentation":"<p>The absolute path within the session at which the access point is mounted, for example <code>/mnt/s3data</code>. Each mount path must be unique across all file system configurations in the session.</p>"
+        },
+        "fileSystemArn":{
+          "shape":"S3FilesFileSystemArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon Simple Storage Service (Amazon S3) Files file system that owns the access point.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for mounting an Amazon Simple Storage Service (Amazon S3) Files access point that you own into a session.</p>"
+    },
+    "S3FilesFileSystemArn":{
+      "type":"string",
+      "documentation":"<p>The Amazon Resource Name (ARN) of an Amazon Simple Storage Service (Amazon S3) Files file system. The access points you specify must belong to this file system.</p>",
+      "max":256,
+      "min":0,
+      "pattern":"arn:aws[-a-z]*:s3files:[a-z0-9-]+:[0-9]{12}:file-system/fs-[0-9a-f]{17,40}"
+    },
     "S3Location":{
       "type":"structure",
       "required":[
@@ -10402,7 +10879,7 @@
     "Spans":{
       "type":"list",
       "member":{"shape":"Span"},
-      "max":1000,
+      "max":20000,
       "min":1,
       "sensitive":true
     },
@@ -10574,6 +11051,10 @@
           "shape":"Certificates",
           "documentation":"<p>A list of certificates to install in the browser session.</p>"
         },
+        "filesystemConfigurations":{
+          "shape":"ToolsFileSystemConfigurations",
+          "documentation":"<p>The file system configurations to mount into the browser session. Use these configurations to mount your own Amazon Simple Storage Service (Amazon S3) Files or Amazon Elastic File System (Amazon EFS) access points. Your session can then read and write your data. If you don't specify this field, no additional file systems are mounted.</p>"
+        },
         "clientToken":{
           "shape":"ClientToken",
           "documentation":"<p>A unique, case-sensitive identifier to ensure that the API request completes no more than one time. If this token matches a previous request, Amazon Bedrock AgentCore ignores the request, but does not return an error. This parameter helps prevent the creation of duplicate sessions if there are temporary network issues.</p>",
@@ -10650,6 +11131,10 @@
         "certificates":{
           "shape":"Certificates",
           "documentation":"<p>A list of certificates to install in the code interpreter session.</p>"
+        },
+        "filesystemConfigurations":{
+          "shape":"ToolsFileSystemConfigurations",
+          "documentation":"<p>The file system configurations to mount into the code interpreter session. Use these configurations to mount your own Amazon Simple Storage Service (Amazon S3) Files or Amazon Elastic File System (Amazon EFS) access points. Your session can then read and write your data. If you don't specify this field, no additional file systems are mounted.</p>"
         },
         "clientToken":{
           "shape":"ClientToken",
@@ -11179,6 +11664,37 @@
       },
       "documentation":"<p>Stripe Privy token response containing appId, basicAuthToken, and optionally authorizationSignature.</p>"
     },
+    "SubscriptionRequiredException":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{"shape":"String"},
+        "subscriptionUrl":{
+          "shape":"SubscriptionRequiredExceptionSubscriptionUrlString",
+          "documentation":"<p>The URL to the Marketplace listing where you can subscribe.</p>"
+        },
+        "productName":{
+          "shape":"SubscriptionRequiredExceptionProductNameString",
+          "documentation":"<p>The name of the product that requires a Marketplace subscription.</p>"
+        }
+      },
+      "documentation":"<p>Returned when you attempt a wallet operation against a Coinbase Marketplace connector whose account does not hold an active Marketplace subscription and is not within the legacy exception period. Subscribe to the Marketplace listing before you retry the operation.</p>",
+      "error":{
+        "httpStatusCode":403,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "SubscriptionRequiredExceptionProductNameString":{
+      "type":"string",
+      "max":256,
+      "min":1
+    },
+    "SubscriptionRequiredExceptionSubscriptionUrlString":{
+      "type":"string",
+      "max":2048,
+      "min":1
+    },
     "SyntheticTimestamp_date_time":{
       "type":"timestamp",
       "timestampFormat":"iso8601"
@@ -11664,6 +12180,28 @@
       },
       "documentation":"<p> The MCP tools definition with a protocol version and inline content. The <code>protocolVersion</code> identifies the MCP protocol version that the tools conform to. This differs from <code>schemaVersion</code> in the server definition, which identifies the server configuration schema format.</p>"
     },
+    "ToolsFileSystemConfiguration":{
+      "type":"structure",
+      "members":{
+        "s3FilesConfiguration":{
+          "shape":"S3FilesConfiguration",
+          "documentation":"<p>The configuration for mounting your own Amazon Simple Storage Service (Amazon S3) Files access point into the session.</p>"
+        },
+        "efsConfiguration":{
+          "shape":"EfsConfiguration",
+          "documentation":"<p>The configuration for mounting your own Amazon Elastic File System (Amazon EFS) access point into the session.</p>"
+        }
+      },
+      "documentation":"<p>Specifies a file system to mount into the session by providing exactly one of the following:</p> <ul> <li> <p> <code>s3FilesConfiguration</code> - Mounts an Amazon Simple Storage Service (Amazon S3) Files access point.</p> </li> <li> <p> <code>efsConfiguration</code> - Mounts an Amazon Elastic File System (Amazon EFS) access point.</p> </li> </ul>",
+      "union":true
+    },
+    "ToolsFileSystemConfigurations":{
+      "type":"list",
+      "member":{"shape":"ToolsFileSystemConfiguration"},
+      "documentation":"<p>The file system configurations to mount into the session. Each configuration maps an access point to a path inside the session. You can specify up to 4 configurations. The maximum is 2 Amazon Simple Storage Service (Amazon S3) Files access points and 2 Amazon Elastic File System (Amazon EFS) access points.</p>",
+      "max":10,
+      "min":0
+    },
     "TopK":{
       "type":"integer",
       "box":true,
@@ -12096,6 +12634,13 @@
       "max":100,
       "min":1
     },
+    "Version":{
+      "type":"string",
+      "documentation":"<p>A protocol version identifier, as a bare numeric string. For example, \"1\" or \"2\".</p>",
+      "max":10,
+      "min":1,
+      "pattern":"[0-9]+"
+    },
     "ViewPort":{
       "type":"structure",
       "required":[
@@ -12137,6 +12682,19 @@
       "max":131072,
       "min":1,
       "sensitive":true
+    },
+    "WwwAuthenticateHeader":{
+      "type":"string",
+      "documentation":"<p>A raw <code>WWW-Authenticate: Payment</code> header value from a 402 response, containing RFC 9110 auth-params such as <code>id</code>, <code>realm</code>, <code>method</code>, <code>intent</code>, and <code>request</code>. Pass this value in the request body, not as an HTTP header.</p>",
+      "max":16384,
+      "min":1
+    },
+    "WwwAuthenticateHeaderList":{
+      "type":"list",
+      "member":{"shape":"WwwAuthenticateHeader"},
+      "documentation":"<p>The raw WWW-Authenticate header value to fulfill. Provide exactly one entry.</p>",
+      "max":1,
+      "min":1
     }
   },
   "documentation":"<p>Welcome to the Amazon Bedrock AgentCore Data Plane API reference. Data Plane actions process and handle data or workloads within Amazon Web Services services. </p>"

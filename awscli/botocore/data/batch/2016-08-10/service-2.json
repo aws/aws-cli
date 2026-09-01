@@ -866,7 +866,8 @@
         "EC2",
         "SPOT",
         "FARGATE",
-        "FARGATE_SPOT"
+        "FARGATE_SPOT",
+        "ECS_MANAGED_INSTANCES"
       ]
     },
     "CRUpdateAllocationStrategy":{
@@ -918,6 +919,20 @@
     "CapacityLimits":{
       "type":"list",
       "member":{"shape":"CapacityLimit"}
+    },
+    "CapacityReservationRequest":{
+      "type":"structure",
+      "members":{
+        "reservationGroupArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the capacity reservation group to target.</p>"
+        },
+        "reservationPreference":{
+          "shape":"String",
+          "documentation":"<p>The capacity reservation preference. Valid values:</p> <ul> <li> <p> <code>RESERVATIONS_ONLY</code> — Use only capacity reservations.</p> </li> <li> <p> <code>RESERVATIONS_FIRST</code> — Prefer capacity reservations but fall back to On-Demand if unavailable.</p> </li> <li> <p> <code>RESERVATIONS_EXCLUDED</code> — Do not use capacity reservations.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>The capacity reservation configuration for Amazon ECS Managed Instances. Use this to target On-Demand Capacity Reservations or Reserved Instances.</p>"
     },
     "ClientException":{
       "type":"structure",
@@ -1003,6 +1018,10 @@
         "context":{
           "shape":"String",
           "documentation":"<p>Reserved.</p>"
+        },
+        "ecsSettings":{
+          "shape":"EcsSettings",
+          "documentation":"<p>The Amazon ECS settings for the compute environment. These settings control CloudWatch Container Insights collection.</p>"
         }
       },
       "documentation":"<p>An object that represents an Batch compute environment.</p>"
@@ -1042,7 +1061,7 @@
       "members":{
         "type":{
           "shape":"CRType",
-          "documentation":"<p>The type of compute environment: <code>EC2</code>, <code>SPOT</code>, <code>FARGATE</code>, or <code>FARGATE_SPOT</code>. For more information, see <a href=\"https://docs.aws.amazon.com/batch/latest/userguide/compute_environments.html\">Compute environments</a> in the <i>Batch User Guide</i>.</p> <p> If you choose <code>SPOT</code>, you must also specify an Amazon EC2 Spot Fleet role with the <code>spotIamFleetRole</code> parameter. For more information, see <a href=\"https://docs.aws.amazon.com/batch/latest/userguide/spot_fleet_IAM_role.html\">Amazon EC2 spot fleet role</a> in the <i>Batch User Guide</i>.</p> <note> <p>Multi-node parallel jobs aren't supported on Spot Instances.</p> </note>"
+          "documentation":"<p>The type of compute environment: <code>EC2</code>, <code>SPOT</code>, <code>FARGATE</code>, <code>FARGATE_SPOT</code>, or <code>ECS_MANAGED_INSTANCES</code>. For more information, see <a href=\"https://docs.aws.amazon.com/batch/latest/userguide/compute_environments.html\">Compute environments</a> in the <i>Batch User Guide</i>.</p> <p> If you choose <code>SPOT</code>, you must also specify an Amazon EC2 Spot Fleet role with the <code>spotIamFleetRole</code> parameter. For more information, see <a href=\"https://docs.aws.amazon.com/batch/latest/userguide/spot_fleet_IAM_role.html\">Amazon EC2 spot fleet role</a> in the <i>Batch User Guide</i>.</p> <p>If you choose <code>ECS_MANAGED_INSTANCES</code>, you must also specify a <code>managedInstancesProvider</code> configuration. To use Spot capacity, set <code>capacityOptionType</code> to <code>SPOT</code> in the <code>managedInstancesProvider.instanceLaunchTemplate</code> configuration. For more information, see <a href=\"https://docs.aws.amazon.com/batch/latest/userguide/ecs_managed_instances.html\">Amazon ECS Managed Instances compute environments</a> in the <i>Batch User Guide</i>.</p> <note> <p>Multi-node parallel jobs aren't supported on Spot Instances or Amazon ECS Managed Instances.</p> </note>"
         },
         "allocationStrategy":{
           "shape":"CRAllocationStrategy",
@@ -1113,6 +1132,14 @@
         "scalingPolicy":{
           "shape":"ComputeScalingPolicy",
           "documentation":"<p>The scaling policy configuration for the compute environment.</p> <note> <p>This parameter isn't applicable to jobs that are running on Fargate resources. Don't specify it.</p> </note>"
+        },
+        "managedInstancesProvider":{
+          "shape":"ManagedInstancesProvider",
+          "documentation":"<p>The configuration for the Amazon ECS Managed Instances capacity provider. This parameter is required when <code>computeResources.type</code> is <code>ECS_MANAGED_INSTANCES</code> and must not be specified for other compute environment types.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/batch/latest/userguide/ecs_managed_instances.html\">Amazon ECS Managed Instances compute environments</a> in the <i>Batch User Guide</i>.</p>"
+        },
+        "capacityTags":{
+          "shape":"TagrisTagsMap",
+          "documentation":"<p>The tags to apply to the Amazon ECS capacity provider and Amazon EC2 instances launched by the compute environment. These tags are separate from the compute environment resource tags (the top-level <code>tags</code> parameter). Use <code>capacityTags</code> for cost allocation and organization of the underlying infrastructure resources.</p> <p>This parameter is only valid for <code>ECS_MANAGED_INSTANCES</code> compute environments. You must have the <code>batch:SetCapacityTags</code> permission on the compute environment resource to use this parameter.</p>"
         }
       },
       "documentation":"<p>An object that represents an Batch compute resource. For more information, see <a href=\"https://docs.aws.amazon.com/batch/latest/userguide/compute_environments.html\">Compute environments</a> in the <i>Batch User Guide</i>.</p>"
@@ -1182,7 +1209,7 @@
         },
         "type":{
           "shape":"CRType",
-          "documentation":"<p>The type of compute environment: <code>EC2</code>, <code>SPOT</code>, <code>FARGATE</code>, or <code>FARGATE_SPOT</code>. For more information, see <a href=\"https://docs.aws.amazon.com/batch/latest/userguide/compute_environments.html\">Compute environments</a> in the <i>Batch User Guide</i>.</p> <p> If you choose <code>SPOT</code>, you must also specify an Amazon EC2 Spot Fleet role with the <code>spotIamFleetRole</code> parameter. For more information, see <a href=\"https://docs.aws.amazon.com/batch/latest/userguide/spot_fleet_IAM_role.html\">Amazon EC2 spot fleet role</a> in the <i>Batch User Guide</i>.</p> <p>When updating a compute environment, changing the type of a compute environment requires an infrastructure update of the compute environment. For more information, see <a href=\"https://docs.aws.amazon.com/batch/latest/userguide/updating-compute-environments.html\">Updating compute environments</a> in the <i>Batch User Guide</i>.</p>"
+          "documentation":"<p>The type of compute environment: <code>EC2</code>, <code>SPOT</code>, <code>FARGATE</code>, <code>FARGATE_SPOT</code>, or <code>ECS_MANAGED_INSTANCES</code>. For more information, see <a href=\"https://docs.aws.amazon.com/batch/latest/userguide/compute_environments.html\">Compute environments</a> in the <i>Batch User Guide</i>.</p> <p> If you choose <code>SPOT</code>, you must also specify an Amazon EC2 Spot Fleet role with the <code>spotIamFleetRole</code> parameter. For more information, see <a href=\"https://docs.aws.amazon.com/batch/latest/userguide/spot_fleet_IAM_role.html\">Amazon EC2 spot fleet role</a> in the <i>Batch User Guide</i>.</p> <p>When updating a compute environment, changing the type of a compute environment requires an infrastructure update of the compute environment. For more information, see <a href=\"https://docs.aws.amazon.com/batch/latest/userguide/updating-compute-environments.html\">Updating compute environments</a> in the <i>Batch User Guide</i>.</p> <p>You cannot change the type to or from <code>ECS_MANAGED_INSTANCES</code>.</p>"
         },
         "imageId":{
           "shape":"String",
@@ -1191,6 +1218,14 @@
         "scalingPolicy":{
           "shape":"ComputeScalingPolicy",
           "documentation":"<p>The scaling policy configuration for the compute environment.</p> <note> <p>This parameter isn't applicable to jobs that are running on Fargate resources. Don't specify it.</p> </note>"
+        },
+        "managedInstancesProvider":{
+          "shape":"UpdateManagedInstancesProviderConfiguration",
+          "documentation":"<p>The updated configuration for the Amazon ECS Managed Instances capacity provider. This parameter is only valid when the compute environment type is <code>ECS_MANAGED_INSTANCES</code>. You cannot change <code>capacityOptionType</code> or <code>fipsEnabled</code> on update.</p>"
+        },
+        "capacityTags":{
+          "shape":"TagrisTagsMap",
+          "documentation":"<p>The updated tags to apply to the Amazon ECS capacity provider and Amazon EC2 instances. This parameter is only valid for <code>ECS_MANAGED_INSTANCES</code> compute environments. You must have the <code>batch:SetCapacityTags</code> permission on the compute environment resource to use this parameter.</p>"
         }
       },
       "documentation":"<p>An object that represents the attributes of a compute environment that can be updated. For more information, see <a href=\"https://docs.aws.amazon.com/batch/latest/userguide/updating-compute-environments.html\">Updating compute environments</a> in the <i>Batch User Guide</i>.</p>"
@@ -1276,7 +1311,7 @@
         },
         "vcpus":{
           "shape":"Integer",
-          "documentation":"<p>The number of vCPUs reserved for the container. For jobs that run on Amazon EC2 resources, you can specify the vCPU requirement for the job using <code>resourceRequirements</code>, but you can't specify the vCPU requirements in both the <code>vcpus</code> and <code>resourceRequirements</code> object. This parameter maps to <code>CpuShares</code> in the <a href=\"https://docs.docker.com/engine/api/v1.23/#create-a-container\">Create a container</a> section of the <a href=\"https://docs.docker.com/engine/api/v1.23/\">Docker Remote API</a> and the <code>--cpu-shares</code> option to <a href=\"https://docs.docker.com/engine/reference/run/\">docker run</a>. Each vCPU is equivalent to 1,024 CPU shares. You must specify at least one vCPU. This is required but can be specified in several places. It must be specified for each node at least once.</p> <note> <p>This parameter isn't applicable to jobs that run on Fargate resources. For jobs that run on Fargate resources, you must specify the vCPU requirement for the job using <code>resourceRequirements</code>.</p> </note>"
+          "documentation":"<p>The number of vCPUs reserved for the container. For jobs that run on Amazon EC2 resources, you can specify the vCPU requirement for the job using <code>resourceRequirements</code>, but you can't specify the vCPU requirements in both the <code>vcpus</code> and <code>resourceRequirements</code> object. This parameter maps to <code>CpuShares</code> in the <a href=\"https://docs.docker.com/engine/api/latest/#tag/Container/operation/ContainerCreate\">Create a container</a> section of the <a href=\"https://docs.docker.com/engine/api/latest/\">Docker Remote API</a> and the <code>--cpu-shares</code> option to <a href=\"https://docs.docker.com/engine/reference/run/\">docker run</a>. Each vCPU is equivalent to 1,024 CPU shares. You must specify at least one vCPU. This is required but can be specified in several places. It must be specified for each node at least once.</p> <note> <p>This parameter isn't applicable to jobs that run on Fargate resources. For jobs that run on Fargate resources, you must specify the vCPU requirement for the job using <code>resourceRequirements</code>.</p> </note>"
         },
         "memory":{
           "shape":"Integer",
@@ -1308,11 +1343,11 @@
         },
         "readonlyRootFilesystem":{
           "shape":"Boolean",
-          "documentation":"<p>When this parameter is true, the container is given read-only access to its root file system. This parameter maps to <code>ReadonlyRootfs</code> in the <a href=\"https://docs.docker.com/engine/api/v1.23/#create-a-container\">Create a container</a> section of the <a href=\"https://docs.docker.com/engine/api/v1.23/\">Docker Remote API</a> and the <code>--read-only</code> option to <a href=\"https://docs.docker.com/engine/reference/commandline/run/\"> <code>docker run</code> </a>.</p>"
+          "documentation":"<p>When this parameter is true, the container is given read-only access to its root file system. This parameter maps to <code>ReadonlyRootfs</code> in the <a href=\"https://docs.docker.com/engine/api/latest/#tag/Container/operation/ContainerCreate\">Create a container</a> section of the <a href=\"https://docs.docker.com/engine/api/latest/\">Docker Remote API</a> and the <code>--read-only</code> option to <a href=\"https://docs.docker.com/engine/reference/commandline/run/\"> <code>docker run</code> </a>.</p>"
         },
         "ulimits":{
           "shape":"Ulimits",
-          "documentation":"<p>A list of <code>ulimit</code> values to set in the container. This parameter maps to <code>Ulimits</code> in the <a href=\"https://docs.docker.com/engine/api/v1.23/#create-a-container\">Create a container</a> section of the <a href=\"https://docs.docker.com/engine/api/v1.23/\">Docker Remote API</a> and the <code>--ulimit</code> option to <a href=\"https://docs.docker.com/engine/reference/run/\">docker run</a>.</p> <note> <p>This parameter isn't applicable to jobs that are running on Fargate resources.</p> </note>"
+          "documentation":"<p>A list of <code>ulimit</code> values to set in the container. This parameter maps to <code>Ulimits</code> in the <a href=\"https://docs.docker.com/engine/api/latest/#tag/Container/operation/ContainerCreate\">Create a container</a> section of the <a href=\"https://docs.docker.com/engine/api/latest/\">Docker Remote API</a> and the <code>--ulimit</code> option to <a href=\"https://docs.docker.com/engine/reference/run/\">docker run</a>.</p> <note> <p>This parameter isn't applicable to jobs that are running on Fargate resources.</p> </note>"
         },
         "privileged":{
           "shape":"Boolean",
@@ -1320,7 +1355,7 @@
         },
         "user":{
           "shape":"String",
-          "documentation":"<p>The user name to use inside the container. This parameter maps to <code>User</code> in the <a href=\"https://docs.docker.com/engine/api/v1.23/#create-a-container\">Create a container</a> section of the <a href=\"https://docs.docker.com/engine/api/v1.23/\">Docker Remote API</a> and the <code>--user</code> option to <a href=\"https://docs.docker.com/engine/reference/run/\">docker run</a>.</p>"
+          "documentation":"<p>The user name to use inside the container. This parameter maps to <code>User</code> in the <a href=\"https://docs.docker.com/engine/api/latest/#tag/Container/operation/ContainerCreate\">Create a container</a> section of the <a href=\"https://docs.docker.com/engine/api/latest/\">Docker Remote API</a> and the <code>--user</code> option to <a href=\"https://docs.docker.com/engine/reference/run/\">docker run</a>.</p>"
         },
         "exitCode":{
           "shape":"Integer",
@@ -1360,7 +1395,7 @@
         },
         "logConfiguration":{
           "shape":"LogConfiguration",
-          "documentation":"<p>The log configuration specification for the container.</p> <p>This parameter maps to <code>LogConfig</code> in the <a href=\"https://docs.docker.com/engine/api/v1.23/#create-a-container\">Create a container</a> section of the <a href=\"https://docs.docker.com/engine/api/v1.23/\">Docker Remote API</a> and the <code>--log-driver</code> option to <a href=\"https://docs.docker.com/engine/reference/run/\">docker run</a>. By default, containers use the same logging driver that the Docker daemon uses. However, the container might use a different logging driver than the Docker daemon by specifying a log driver with this parameter in the container definition. To use a different logging driver for a container, the log system must be configured properly on the container instance. Or, alternatively, it must be configured on a different log server for remote logging options. For more information on the options for different supported log drivers, see <a href=\"https://docs.docker.com/engine/admin/logging/overview/\">Configure logging drivers</a> in the Docker documentation.</p> <note> <p>Batch currently supports a subset of the logging drivers available to the Docker daemon (shown in the <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-batch-jobdefinition-containerproperties-logconfiguration.html\">LogConfiguration</a> data type). Additional log drivers might be available in future releases of the Amazon ECS container agent.</p> </note> <p>This parameter requires version 1.18 of the Docker Remote API or greater on your container instance. To check the Docker Remote API version on your container instance, log in to your container instance and run the following command: <code>sudo docker version | grep \"Server API version\"</code> </p> <note> <p>The Amazon ECS container agent running on a container instance must register the logging drivers available on that instance with the <code>ECS_AVAILABLE_LOGGING_DRIVERS</code> environment variable before containers placed on that instance can use these log configuration options. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-agent-config.html\">Amazon ECS container agent configuration</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p> </note>"
+          "documentation":"<p>The log configuration specification for the container.</p> <p>This parameter maps to <code>LogConfig</code> in the <a href=\"https://docs.docker.com/engine/api/latest/#tag/Container/operation/ContainerCreate\">Create a container</a> section of the <a href=\"https://docs.docker.com/engine/api/latest/\">Docker Remote API</a> and the <code>--log-driver</code> option to <a href=\"https://docs.docker.com/engine/reference/run/\">docker run</a>. By default, containers use the same logging driver that the Docker daemon uses. However, the container might use a different logging driver than the Docker daemon by specifying a log driver with this parameter in the container definition. To use a different logging driver for a container, the log system must be configured properly on the container instance. Or, alternatively, it must be configured on a different log server for remote logging options. For more information on the options for different supported log drivers, see <a href=\"https://docs.docker.com/engine/admin/logging/overview/\">Configure logging drivers</a> in the Docker documentation.</p> <note> <p>Batch currently supports a subset of the logging drivers available to the Docker daemon (shown in the <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-batch-jobdefinition-containerproperties-logconfiguration.html\">LogConfiguration</a> data type). Additional log drivers might be available in future releases of the Amazon ECS container agent.</p> </note> <p>This parameter requires version 1.18 of the Docker Remote API or greater on your container instance. To check the Docker Remote API version on your container instance, log in to your container instance and run the following command: <code>sudo docker version | grep \"Server API version\"</code> </p> <note> <p>The Amazon ECS container agent running on a container instance must register the logging drivers available on that instance with the <code>ECS_AVAILABLE_LOGGING_DRIVERS</code> environment variable before containers placed on that instance can use these log configuration options. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-agent-config.html\">Amazon ECS container agent configuration</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p> </note>"
         },
         "secrets":{
           "shape":"SecretList",
@@ -1392,6 +1427,15 @@
         }
       },
       "documentation":"<p>An object that represents the details of a container that's part of a job.</p>"
+    },
+    "ContainerInsights":{
+      "type":"string",
+      "documentation":"<p>Specifies the CloudWatch Container Insights mode for the compute environment.</p>",
+      "enum":[
+        "ENABLED",
+        "ENHANCED",
+        "DISABLED"
+      ]
     },
     "ContainerOverrides":{
       "type":"structure",
@@ -1432,11 +1476,11 @@
       "members":{
         "image":{
           "shape":"String",
-          "documentation":"<p>Required. The image used to start a container. This string is passed directly to the Docker daemon. Images in the Docker Hub registry are available by default. Other repositories are specified with <code> <i>repository-url</i>/<i>image</i>:<i>tag</i> </code>. It can be 255 characters long. It can contain uppercase and lowercase letters, numbers, hyphens (-), underscores (_), colons (:), periods (.), forward slashes (/), and number signs (#). This parameter maps to <code>Image</code> in the <a href=\"https://docs.docker.com/engine/api/v1.23/#create-a-container\">Create a container</a> section of the <a href=\"https://docs.docker.com/engine/api/v1.23/\">Docker Remote API</a> and the <code>IMAGE</code> parameter of <a href=\"https://docs.docker.com/engine/reference/run/\">docker run</a>.</p> <note> <p>Docker image architecture must match the processor architecture of the compute resources that they're scheduled on. For example, ARM-based Docker images can only run on ARM-based compute resources.</p> </note> <ul> <li> <p>Images in Amazon ECR Public repositories use the full <code>registry/repository[:tag]</code> or <code>registry/repository[@digest]</code> naming conventions. For example, <code>public.ecr.aws/<i>registry_alias</i>/<i>my-web-app</i>:<i>latest</i> </code>.</p> </li> <li> <p>Images in Amazon ECR repositories use the full registry and repository URI (for example, <code>123456789012.dkr.ecr.&lt;region-name&gt;.amazonaws.com/&lt;repository-name&gt;</code>).</p> </li> <li> <p>Images in official repositories on Docker Hub use a single name (for example, <code>ubuntu</code> or <code>mongo</code>).</p> </li> <li> <p>Images in other repositories on Docker Hub are qualified with an organization name (for example, <code>amazon/amazon-ecs-agent</code>).</p> </li> <li> <p>Images in other online repositories are qualified further by a domain name (for example, <code>quay.io/assemblyline/ubuntu</code>).</p> </li> </ul>"
+          "documentation":"<p>Required. The image used to start a container. This string is passed directly to the Docker daemon. Images in the Docker Hub registry are available by default. Other repositories are specified with <code> <i>repository-url</i>/<i>image</i>:<i>tag</i> </code>. It can be 255 characters long. It can contain uppercase and lowercase letters, numbers, hyphens (-), underscores (_), colons (:), periods (.), forward slashes (/), and number signs (#). This parameter maps to <code>Image</code> in the <a href=\"https://docs.docker.com/engine/api/latest/#tag/Container/operation/ContainerCreate\">Create a container</a> section of the <a href=\"https://docs.docker.com/engine/api/latest/\">Docker Remote API</a> and the <code>IMAGE</code> parameter of <a href=\"https://docs.docker.com/engine/reference/run/\">docker run</a>.</p> <note> <p>Docker image architecture must match the processor architecture of the compute resources that they're scheduled on. For example, ARM-based Docker images can only run on ARM-based compute resources.</p> </note> <ul> <li> <p>Images in Amazon ECR Public repositories use the full <code>registry/repository[:tag]</code> or <code>registry/repository[@digest]</code> naming conventions. For example, <code>public.ecr.aws/<i>registry_alias</i>/<i>my-web-app</i>:<i>latest</i> </code>.</p> </li> <li> <p>Images in Amazon ECR repositories use the full registry and repository URI (for example, <code>123456789012.dkr.ecr.&lt;region-name&gt;.amazonaws.com/&lt;repository-name&gt;</code>).</p> </li> <li> <p>Images in official repositories on Docker Hub use a single name (for example, <code>ubuntu</code> or <code>mongo</code>).</p> </li> <li> <p>Images in other repositories on Docker Hub are qualified with an organization name (for example, <code>amazon/amazon-ecs-agent</code>).</p> </li> <li> <p>Images in other online repositories are qualified further by a domain name (for example, <code>quay.io/assemblyline/ubuntu</code>).</p> </li> </ul>"
         },
         "vcpus":{
           "shape":"Integer",
-          "documentation":"<p>This parameter is deprecated, use <code>resourceRequirements</code> to specify the vCPU requirements for the job definition. It's not supported for jobs running on Fargate resources. For jobs running on Amazon EC2 resources, it specifies the number of vCPUs reserved for the job.</p> <p>Each vCPU is equivalent to 1,024 CPU shares. This parameter maps to <code>CpuShares</code> in the <a href=\"https://docs.docker.com/engine/api/v1.23/#create-a-container\">Create a container</a> section of the <a href=\"https://docs.docker.com/engine/api/v1.23/\">Docker Remote API</a> and the <code>--cpu-shares</code> option to <a href=\"https://docs.docker.com/engine/reference/run/\">docker run</a>. The number of vCPUs must be specified but can be specified in several places. You must specify it at least once for each node.</p>",
+          "documentation":"<p>This parameter is deprecated, use <code>resourceRequirements</code> to specify the vCPU requirements for the job definition. It's not supported for jobs running on Fargate resources. For jobs running on Amazon EC2 resources, it specifies the number of vCPUs reserved for the job.</p> <p>Each vCPU is equivalent to 1,024 CPU shares. This parameter maps to <code>CpuShares</code> in the <a href=\"https://docs.docker.com/engine/api/latest/#tag/Container/operation/ContainerCreate\">Create a container</a> section of the <a href=\"https://docs.docker.com/engine/api/latest/\">Docker Remote API</a> and the <code>--cpu-shares</code> option to <a href=\"https://docs.docker.com/engine/reference/run/\">docker run</a>. The number of vCPUs must be specified but can be specified in several places. You must specify it at least once for each node.</p>",
           "deprecated":true,
           "deprecatedMessage":"This field is deprecated, use resourceRequirements instead."
         },
@@ -1448,7 +1492,7 @@
         },
         "command":{
           "shape":"StringList",
-          "documentation":"<p>The command that's passed to the container. This parameter maps to <code>Cmd</code> in the <a href=\"https://docs.docker.com/engine/api/v1.23/#create-a-container\">Create a container</a> section of the <a href=\"https://docs.docker.com/engine/api/v1.23/\">Docker Remote API</a> and the <code>COMMAND</code> parameter to <a href=\"https://docs.docker.com/engine/reference/run/\">docker run</a>. For more information, see <a href=\"https://docs.docker.com/engine/reference/builder/#cmd\">https://docs.docker.com/engine/reference/builder/#cmd</a>.</p>"
+          "documentation":"<p>The command that's passed to the container. This parameter maps to <code>Cmd</code> in the <a href=\"https://docs.docker.com/engine/api/latest/#tag/Container/operation/ContainerCreate\">Create a container</a> section of the <a href=\"https://docs.docker.com/engine/api/latest/\">Docker Remote API</a> and the <code>COMMAND</code> parameter to <a href=\"https://docs.docker.com/engine/reference/run/\">docker run</a>. For more information, see <a href=\"https://docs.docker.com/engine/reference/builder/#cmd\">https://docs.docker.com/engine/reference/builder/#cmd</a>.</p>"
         },
         "jobRoleArn":{
           "shape":"String",
@@ -1464,27 +1508,27 @@
         },
         "environment":{
           "shape":"EnvironmentVariables",
-          "documentation":"<p>The environment variables to pass to a container. This parameter maps to <code>Env</code> in the <a href=\"https://docs.docker.com/engine/api/v1.23/#create-a-container\">Create a container</a> section of the <a href=\"https://docs.docker.com/engine/api/v1.23/\">Docker Remote API</a> and the <code>--env</code> option to <a href=\"https://docs.docker.com/engine/reference/run/\">docker run</a>.</p> <important> <p>We don't recommend using plaintext environment variables for sensitive information, such as credential data.</p> </important> <note> <p>Environment variables cannot start with \"<code>AWS_BATCH</code>\". This naming convention is reserved for variables that Batch sets.</p> </note>"
+          "documentation":"<p>The environment variables to pass to a container. This parameter maps to <code>Env</code> in the <a href=\"https://docs.docker.com/engine/api/latest/#tag/Container/operation/ContainerCreate\">Create a container</a> section of the <a href=\"https://docs.docker.com/engine/api/latest/\">Docker Remote API</a> and the <code>--env</code> option to <a href=\"https://docs.docker.com/engine/reference/run/\">docker run</a>.</p> <important> <p>We don't recommend using plaintext environment variables for sensitive information, such as credential data.</p> </important> <note> <p>Environment variables cannot start with \"<code>AWS_BATCH</code>\". This naming convention is reserved for variables that Batch sets.</p> </note>"
         },
         "mountPoints":{
           "shape":"MountPoints",
-          "documentation":"<p>The mount points for data volumes in your container. This parameter maps to <code>Volumes</code> in the <a href=\"https://docs.docker.com/engine/api/v1.23/#create-a-container\">Create a container</a> section of the <a href=\"https://docs.docker.com/engine/api/v1.23/\">Docker Remote API</a> and the <code>--volume</code> option to <a href=\"https://docs.docker.com/engine/reference/run/\">docker run</a>.</p>"
+          "documentation":"<p>The mount points for data volumes in your container. This parameter maps to <code>Volumes</code> in the <a href=\"https://docs.docker.com/engine/api/latest/#tag/Container/operation/ContainerCreate\">Create a container</a> section of the <a href=\"https://docs.docker.com/engine/api/latest/\">Docker Remote API</a> and the <code>--volume</code> option to <a href=\"https://docs.docker.com/engine/reference/run/\">docker run</a>.</p>"
         },
         "readonlyRootFilesystem":{
           "shape":"Boolean",
-          "documentation":"<p>When this parameter is true, the container is given read-only access to its root file system. This parameter maps to <code>ReadonlyRootfs</code> in the <a href=\"https://docs.docker.com/engine/api/v1.23/#create-a-container\">Create a container</a> section of the <a href=\"https://docs.docker.com/engine/api/v1.23/\">Docker Remote API</a> and the <code>--read-only</code> option to <code>docker run</code>.</p>"
+          "documentation":"<p>When this parameter is true, the container is given read-only access to its root file system. This parameter maps to <code>ReadonlyRootfs</code> in the <a href=\"https://docs.docker.com/engine/api/latest/#tag/Container/operation/ContainerCreate\">Create a container</a> section of the <a href=\"https://docs.docker.com/engine/api/latest/\">Docker Remote API</a> and the <code>--read-only</code> option to <code>docker run</code>.</p>"
         },
         "privileged":{
           "shape":"Boolean",
-          "documentation":"<p>When this parameter is true, the container is given elevated permissions on the host container instance (similar to the <code>root</code> user). This parameter maps to <code>Privileged</code> in the <a href=\"https://docs.docker.com/engine/api/v1.23/#create-a-container\">Create a container</a> section of the <a href=\"https://docs.docker.com/engine/api/v1.23/\">Docker Remote API</a> and the <code>--privileged</code> option to <a href=\"https://docs.docker.com/engine/reference/run/\">docker run</a>. The default value is false.</p> <note> <p>This parameter isn't applicable to jobs that are running on Fargate resources and shouldn't be provided, or specified as false.</p> </note>"
+          "documentation":"<p>When this parameter is true, the container is given elevated permissions on the host container instance (similar to the <code>root</code> user). This parameter maps to <code>Privileged</code> in the <a href=\"https://docs.docker.com/engine/api/latest/#tag/Container/operation/ContainerCreate\">Create a container</a> section of the <a href=\"https://docs.docker.com/engine/api/latest/\">Docker Remote API</a> and the <code>--privileged</code> option to <a href=\"https://docs.docker.com/engine/reference/run/\">docker run</a>. The default value is false.</p> <note> <p>This parameter isn't applicable to jobs that are running on Fargate resources and shouldn't be provided, or specified as false.</p> </note>"
         },
         "ulimits":{
           "shape":"Ulimits",
-          "documentation":"<p>A list of <code>ulimits</code> to set in the container. This parameter maps to <code>Ulimits</code> in the <a href=\"https://docs.docker.com/engine/api/v1.23/#create-a-container\">Create a container</a> section of the <a href=\"https://docs.docker.com/engine/api/v1.23/\">Docker Remote API</a> and the <code>--ulimit</code> option to <a href=\"https://docs.docker.com/engine/reference/run/\">docker run</a>.</p> <note> <p>This parameter isn't applicable to jobs that are running on Fargate resources and shouldn't be provided.</p> </note>"
+          "documentation":"<p>A list of <code>ulimits</code> to set in the container. This parameter maps to <code>Ulimits</code> in the <a href=\"https://docs.docker.com/engine/api/latest/#tag/Container/operation/ContainerCreate\">Create a container</a> section of the <a href=\"https://docs.docker.com/engine/api/latest/\">Docker Remote API</a> and the <code>--ulimit</code> option to <a href=\"https://docs.docker.com/engine/reference/run/\">docker run</a>.</p> <note> <p>This parameter isn't applicable to jobs that are running on Fargate resources and shouldn't be provided.</p> </note>"
         },
         "user":{
           "shape":"String",
-          "documentation":"<p>The user name to use inside the container. This parameter maps to <code>User</code> in the <a href=\"https://docs.docker.com/engine/api/v1.23/#create-a-container\">Create a container</a> section of the <a href=\"https://docs.docker.com/engine/api/v1.23/\">Docker Remote API</a> and the <code>--user</code> option to <a href=\"https://docs.docker.com/engine/reference/run/\">docker run</a>.</p>"
+          "documentation":"<p>The user name to use inside the container. This parameter maps to <code>User</code> in the <a href=\"https://docs.docker.com/engine/api/latest/#tag/Container/operation/ContainerCreate\">Create a container</a> section of the <a href=\"https://docs.docker.com/engine/api/latest/\">Docker Remote API</a> and the <code>--user</code> option to <a href=\"https://docs.docker.com/engine/reference/run/\">docker run</a>.</p>"
         },
         "instanceType":{
           "shape":"String",
@@ -1500,7 +1544,7 @@
         },
         "logConfiguration":{
           "shape":"LogConfiguration",
-          "documentation":"<p>The log configuration specification for the container.</p> <p>This parameter maps to <code>LogConfig</code> in the <a href=\"https://docs.docker.com/engine/api/v1.23/#create-a-container\">Create a container</a> section of the <a href=\"https://docs.docker.com/engine/api/v1.23/\">Docker Remote API</a> and the <code>--log-driver</code> option to <a href=\"https://docs.docker.com/engine/reference/run/\">docker run</a>. By default, containers use the same logging driver that the Docker daemon uses. However the container might use a different logging driver than the Docker daemon by specifying a log driver with this parameter in the container definition. To use a different logging driver for a container, the log system must be configured properly on the container instance (or on a different log server for remote logging options). For more information on the options for different supported log drivers, see <a href=\"https://docs.docker.com/engine/admin/logging/overview/\">Configure logging drivers</a> in the Docker documentation.</p> <note> <p>Batch currently supports a subset of the logging drivers available to the Docker daemon (shown in the <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-batch-jobdefinition-containerproperties-logconfiguration.html\">LogConfiguration</a> data type).</p> </note> <p>This parameter requires version 1.18 of the Docker Remote API or greater on your container instance. To check the Docker Remote API version on your container instance, log in to your container instance and run the following command: <code>sudo docker version | grep \"Server API version\"</code> </p> <note> <p>The Amazon ECS container agent running on a container instance must register the logging drivers available on that instance with the <code>ECS_AVAILABLE_LOGGING_DRIVERS</code> environment variable before containers placed on that instance can use these log configuration options. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-agent-config.html\">Amazon ECS container agent configuration</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p> </note>"
+          "documentation":"<p>The log configuration specification for the container.</p> <p>This parameter maps to <code>LogConfig</code> in the <a href=\"https://docs.docker.com/engine/api/latest/#tag/Container/operation/ContainerCreate\">Create a container</a> section of the <a href=\"https://docs.docker.com/engine/api/latest/\">Docker Remote API</a> and the <code>--log-driver</code> option to <a href=\"https://docs.docker.com/engine/reference/run/\">docker run</a>. By default, containers use the same logging driver that the Docker daemon uses. However the container might use a different logging driver than the Docker daemon by specifying a log driver with this parameter in the container definition. To use a different logging driver for a container, the log system must be configured properly on the container instance (or on a different log server for remote logging options). For more information on the options for different supported log drivers, see <a href=\"https://docs.docker.com/engine/admin/logging/overview/\">Configure logging drivers</a> in the Docker documentation.</p> <note> <p>Batch currently supports a subset of the logging drivers available to the Docker daemon (shown in the <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-batch-jobdefinition-containerproperties-logconfiguration.html\">LogConfiguration</a> data type).</p> </note> <p>This parameter requires version 1.18 of the Docker Remote API or greater on your container instance. To check the Docker Remote API version on your container instance, log in to your container instance and run the following command: <code>sudo docker version | grep \"Server API version\"</code> </p> <note> <p>The Amazon ECS container agent running on a container instance must register the logging drivers available on that instance with the <code>ECS_AVAILABLE_LOGGING_DRIVERS</code> environment variable before containers placed on that instance can use these log configuration options. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-agent-config.html\">Amazon ECS container agent configuration</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p> </note>"
         },
         "secrets":{
           "shape":"SecretList",
@@ -1589,6 +1633,10 @@
         "context":{
           "shape":"String",
           "documentation":"<p>Reserved.</p>"
+        },
+        "ecsSettings":{
+          "shape":"EcsSettings",
+          "documentation":"<p>The Amazon ECS settings for the compute environment. These settings control CloudWatch Container Insights collection for the compute environment.</p>"
         }
       },
       "documentation":"<p>Contains the parameters for <code>CreateComputeEnvironment</code>.</p>"
@@ -2490,6 +2538,16 @@
       },
       "documentation":"<p>An object that contains overrides for the Amazon ECS task definition of a job.</p>"
     },
+    "EcsSettings":{
+      "type":"structure",
+      "members":{
+        "containerInsights":{
+          "shape":"ContainerInsights",
+          "documentation":"<p>Specifies the CloudWatch Container Insights mode for the compute environment. Valid values are:</p> <dl> <dt>ENABLED</dt> <dd> <p>Turns on standard Container Insights, which collects CPU, memory, disk, and network utilization metrics for the compute environment.</p> </dd> <dt>ENHANCED</dt> <dd> <p>Turns on enhanced Container Insights, which collects the standard metrics along with additional per-task observability metrics.</p> </dd> <dt>DISABLED</dt> <dd> <p>Turns off Container Insights for the compute environment.</p> </dd> </dl> <p>If you don't specify a value, the default is <code>DISABLED</code>. For more information, see <a href=\"https://docs.aws.amazon.com/batch/latest/userguide/cloudwatch-container-insights.html\">Container Insights</a> in the <i>Batch User Guide</i>.</p>"
+        }
+      },
+      "documentation":"<p>The Amazon ECS settings for a compute environment, including the CloudWatch Container Insights mode. Use this structure with <code>CreateComputeEnvironment</code> and <code>UpdateComputeEnvironment</code>.</p>"
+    },
     "EcsTaskDetails":{
       "type":"structure",
       "members":{
@@ -2535,7 +2593,7 @@
         },
         "runtimePlatform":{
           "shape":"RuntimePlatform",
-          "documentation":"<p>An object that represents the compute environment architecture for Batch jobs on Fargate.</p>"
+          "documentation":"<p>An object that represents the compute environment architecture for Batch jobs on Fargate or Amazon ECS Managed Instances. Contains the operating system family and CPU architecture of the task.</p>"
         },
         "volumes":{
           "shape":"Volumes",
@@ -2544,6 +2602,10 @@
         "enableExecuteCommand":{
           "shape":"Boolean",
           "documentation":"<p>Determines whether execute command functionality is turned on for this task. If <code>true</code>, execute command functionality is turned on all the containers in the task.</p>"
+        },
+        "networkMode":{
+          "shape":"String",
+          "documentation":"<p>The network mode configured for the task. This field is populated for jobs running on Amazon ECS Managed Instances (<code>MANAGED_INSTANCES</code> platform capability) and always returns <code>host</code>.</p>"
         }
       },
       "documentation":"<p>The details of a task definition that describes the container and volume definitions of an Amazon ECS task.</p>"
@@ -2570,7 +2632,7 @@
         },
         "ipcMode":{
           "shape":"String",
-          "documentation":"<p>The IPC resource namespace to use for the containers in the task. The valid values are <code>host</code>, <code>task</code>, or <code>none</code>.</p> <p>If <code>host</code> is specified, all containers within the tasks that specified the <code>host</code> IPC mode on the same container instance share the same IPC resources with the host Amazon EC2 instance.</p> <p>If <code>task</code> is specified, all containers within the specified <code>task</code> share the same IPC resources.</p> <p>If <code>none</code> is specified, the IPC resources within the containers of a task are private, and are not shared with other containers in a task or on the container instance. </p> <p>If no value is specified, then the IPC resource namespace sharing depends on the Docker daemon setting on the container instance. For more information, see <a href=\"https://docs.docker.com/engine/reference/run/#ipc-settings---ipc\">IPC settings</a> in the Docker run reference.</p>"
+          "documentation":"<p>The IPC resource namespace to use for the containers in the task. The valid values are <code>host</code>, <code>task</code>, or <code>none</code>.</p> <p>If <code>host</code> is specified, all containers within the tasks that specified the <code>host</code> IPC mode on the same container instance share the same IPC resources with the host Amazon EC2 instance.</p> <p>If <code>task</code> is specified, all containers within the specified <code>task</code> share the same IPC resources.</p> <p>If <code>none</code> is specified, the IPC resources within the containers of a task are private, and are not shared with other containers in a task or on the container instance. </p> <p>If no value is specified, then the IPC resource namespace sharing depends on the Docker daemon setting on the container instance. For more information, see <a href=\"https://docs.docker.com/engine/reference/run/#ipc-settings---ipc\">IPC settings</a> in the Docker run reference.</p> <note> <p>This parameter is not supported for jobs that run on Fargate resources.</p> </note>"
         },
         "taskRoleArn":{
           "shape":"String",
@@ -2582,11 +2644,11 @@
         },
         "networkConfiguration":{
           "shape":"NetworkConfiguration",
-          "documentation":"<p>The network configuration for jobs that are running on Fargate resources. Jobs that are running on Amazon EC2 resources must not specify this parameter.</p>"
+          "documentation":"<p>The network configuration for jobs that are running on Fargate resources. Jobs that are running on Amazon EC2 resources or Amazon ECS Managed Instances must not specify this parameter.</p>"
         },
         "runtimePlatform":{
           "shape":"RuntimePlatform",
-          "documentation":"<p>An object that represents the compute environment architecture for Batch jobs on Fargate.</p>"
+          "documentation":"<p>An object that represents the compute environment architecture for Batch jobs on Fargate or Amazon ECS Managed Instances. Use this to specify the operating system family (<code>operatingSystemFamily</code>) and CPU architecture (<code>cpuArchitecture</code>).</p> <p>For Amazon ECS Managed Instances, the valid value for <code>operatingSystemFamily</code> is <code>LINUX</code> (default). The valid values for <code>cpuArchitecture</code> are <code>X86_64</code> and <code>ARM64</code>.</p>"
         },
         "volumes":{
           "shape":"Volumes",
@@ -2595,6 +2657,10 @@
         "enableExecuteCommand":{
           "shape":"Boolean",
           "documentation":"<p>Determines whether execute command functionality is turned on for this task. If <code>true</code>, execute command functionality is turned on all the containers in the task.</p>"
+        },
+        "networkMode":{
+          "shape":"String",
+          "documentation":"<p>The network mode to use for the task. Valid values: <code>host</code>. When not specified, the default is <code>host</code>.</p> <p>With <code>host</code> mode, the container shares the host instance's network stack directly. When running tasks that use the <code>host</code> network mode, do not run containers using the root user (UID 0). Running as root grants unrestricted access to host resources and increases the attack surface.</p> <p>This parameter only applies to jobs running on Amazon ECS Managed Instances (<code>MANAGED_INSTANCES</code> platform capability). It cannot be specified for Fargate or Amazon EC2 platform job definitions.</p>"
         }
       },
       "documentation":"<p>The properties for a task definition that describes the container and volume definitions of an Amazon ECS task. You can specify which Docker images to use, the required resources, and other configurations related to launching the task definition through an Amazon ECS service or task.</p>"
@@ -3455,6 +3521,114 @@
       "max":256,
       "min":1
     },
+    "InfrastructureOptimization":{
+      "type":"structure",
+      "members":{
+        "scaleInAfter":{
+          "shape":"Integer",
+          "documentation":"<p>The number of seconds an instance can remain idle before it is terminated. Valid values are <code>-1</code> or <code>0</code> to <code>3600</code>. Use <code>-1</code> as a special value to disable scale-in (instances are never terminated for being idle). If not specified, a default value applies.</p>"
+        }
+      },
+      "documentation":"<p>The infrastructure optimization configuration for an Amazon ECS Managed Instances capacity provider. Specifies the idle-instance scale-in behavior.</p>"
+    },
+    "InstanceLaunchTemplate":{
+      "type":"structure",
+      "required":[
+        "ec2InstanceProfileArn",
+        "networkConfiguration"
+      ],
+      "members":{
+        "ec2InstanceProfileArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon EC2 instance profile for the managed instances. The instance profile must use the <code>AmazonECSInstanceRolePolicyForManagedInstances</code> managed policy with a trust policy for <code>ec2.amazonaws.com</code>.</p>"
+        },
+        "networkConfiguration":{
+          "shape":"ManagedInstancesNetworkConfiguration",
+          "documentation":"<p>The network configuration for the managed instances. Specifies the VPC subnets and security groups where instances are launched.</p>"
+        },
+        "instanceRequirements":{
+          "shape":"InstanceRequirementsRequest",
+          "documentation":"<p>The instance type requirements for the capacity provider. Use this to constrain which Amazon EC2 instance types Amazon ECS can launch. If not specified, all available instance types are eligible.</p>"
+        },
+        "capacityOptionType":{
+          "shape":"String",
+          "documentation":"<p>The capacity pricing model for the managed instances. Valid values:</p> <ul> <li> <p> <code>ON_DEMAND</code> (default) — On-Demand pricing.</p> </li> <li> <p> <code>SPOT</code> — Spot Instances, which can provide significant cost savings for fault-tolerant workloads.</p> </li> </ul>"
+        },
+        "storageConfiguration":{
+          "shape":"ManagedInstancesStorageConfiguration",
+          "documentation":"<p>The storage configuration for the managed instances. Configures the root EBS volume size. If not specified, the service uses the default EBS volume size for the instance type.</p>"
+        },
+        "monitoring":{
+          "shape":"String",
+          "documentation":"<p>The level of CloudWatch monitoring for the managed instances. Valid values are <code>BASIC</code> and <code>DETAILED</code>.</p>"
+        },
+        "fipsEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether FIPS 140-2 validated cryptographic modules are enabled on the managed instances. Not available in all Regions.</p>"
+        },
+        "capacityReservations":{
+          "shape":"CapacityReservationRequest",
+          "documentation":"<p>The capacity reservation configuration for the managed instances. Use this to target On-Demand Capacity Reservations or Reserved Instances for predictable capacity and cost optimization.</p>"
+        },
+        "instanceMetadataTagsPropagation":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether instance tags are accessible from the instance metadata service (IMDS). If not specified, instance tags are not accessible from IMDS.</p>"
+        },
+        "localStorageConfiguration":{
+          "shape":"ManagedInstancesLocalStorageConfiguration",
+          "documentation":"<p>The local storage configuration for the managed instances. If not specified, instance store volumes are not available to containers.</p>"
+        }
+      },
+      "documentation":"<p>The instance launch configuration for an Amazon ECS Managed Instances capacity provider. Specifies the instance profile, networking, instance selection constraints, capacity pricing model, storage, and monitoring settings.</p>"
+    },
+    "InstanceLaunchTemplateUpdate":{
+      "type":"structure",
+      "members":{
+        "ec2InstanceProfileArn":{
+          "shape":"String",
+          "documentation":"<p>The updated Amazon Resource Name (ARN) of the Amazon EC2 instance profile for the managed instances.</p>"
+        },
+        "networkConfiguration":{
+          "shape":"ManagedInstancesNetworkConfiguration",
+          "documentation":"<p>The updated network configuration for the managed instances.</p>"
+        },
+        "instanceRequirements":{
+          "shape":"InstanceRequirementsRequest",
+          "documentation":"<p>The updated instance type requirements for the capacity provider.</p>"
+        },
+        "storageConfiguration":{
+          "shape":"ManagedInstancesStorageConfiguration",
+          "documentation":"<p>The updated storage configuration for the managed instances.</p>"
+        },
+        "monitoring":{
+          "shape":"String",
+          "documentation":"<p>The updated monitoring level. Valid values are <code>BASIC</code> and <code>DETAILED</code>.</p>"
+        },
+        "capacityReservations":{
+          "shape":"CapacityReservationRequest",
+          "documentation":"<p>The updated capacity reservation configuration.</p>"
+        },
+        "instanceMetadataTagsPropagation":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether instance tags are accessible from the instance metadata service (IMDS).</p>"
+        },
+        "localStorageConfiguration":{
+          "shape":"ManagedInstancesLocalStorageConfiguration",
+          "documentation":"<p>The updated local storage configuration.</p>"
+        }
+      },
+      "documentation":"<p>The instance launch configuration for updating an Amazon ECS Managed Instances capacity provider. You cannot change <code>capacityOptionType</code> or <code>fipsEnabled</code> after the compute environment is created.</p>"
+    },
+    "InstanceRequirementsRequest":{
+      "type":"structure",
+      "members":{
+        "allowedInstanceTypes":{
+          "shape":"StringList",
+          "documentation":"<p>A list of specific instance types or instance families that Amazon ECS can launch (for example, <code>m5.large</code> or <code>g5</code>). When specified, only these instance types are used.</p>"
+        }
+      },
+      "documentation":"<p>The instance type requirements for the Amazon ECS Managed Instances capacity provider. Use this to specify which Amazon EC2 instance types or instance families Amazon ECS can launch.</p>"
+    },
     "Integer":{"type":"integer"},
     "JQState":{
       "type":"string",
@@ -3555,7 +3729,7 @@
         },
         "platformCapabilities":{
           "shape":"PlatformCapabilityList",
-          "documentation":"<p>The platform capabilities required by the job definition. If no value is specified, it defaults to <code>EC2</code>. Jobs run on Fargate resources specify <code>FARGATE</code>.</p>"
+          "documentation":"<p>The platform capabilities required by the job definition. If no value is specified, it defaults to <code>EC2</code>. Jobs run on Fargate resources specify <code>FARGATE</code>. Jobs run on Amazon ECS Managed Instances specify <code>MANAGED_INSTANCES</code>.</p>"
         },
         "ecsProperties":{
           "shape":"EcsProperties",
@@ -3710,7 +3884,7 @@
         },
         "platformCapabilities":{
           "shape":"PlatformCapabilityList",
-          "documentation":"<p>The platform capabilities required by the job definition. If no value is specified, it defaults to <code>EC2</code>. Jobs run on Fargate resources specify <code>FARGATE</code>.</p>"
+          "documentation":"<p>The platform capabilities required by the job definition. If no value is specified, it defaults to <code>EC2</code>. Jobs run on Fargate resources specify <code>FARGATE</code>. Jobs run on Amazon ECS Managed Instances specify <code>MANAGED_INSTANCES</code>.</p>"
         },
         "eksProperties":{
           "shape":"EksPropertiesDetail",
@@ -3819,7 +3993,8 @@
         "EKS",
         "ECS",
         "ECS_FARGATE",
-        "SAGEMAKER_TRAINING"
+        "SAGEMAKER_TRAINING",
+        "ECS_MANAGED_INSTANCES"
       ]
     },
     "JobStateTimeLimitAction":{
@@ -4065,7 +4240,7 @@
       "members":{
         "devices":{
           "shape":"DevicesList",
-          "documentation":"<p>Any of the host devices to expose to the container. This parameter maps to <code>Devices</code> in the <a href=\"https://docs.docker.com/engine/api/v1.23/#create-a-container\">Create a container</a> section of the <a href=\"https://docs.docker.com/engine/api/v1.23/\">Docker Remote API</a> and the <code>--device</code> option to <a href=\"https://docs.docker.com/engine/reference/run/\">docker run</a>.</p> <note> <p>This parameter isn't applicable to jobs that are running on Fargate resources. Don't provide it for these jobs.</p> </note>"
+          "documentation":"<p>Any of the host devices to expose to the container. This parameter maps to <code>Devices</code> in the <a href=\"https://docs.docker.com/engine/api/latest/#tag/Container/operation/ContainerCreate\">Create a container</a> section of the <a href=\"https://docs.docker.com/engine/api/latest/\">Docker Remote API</a> and the <code>--device</code> option to <a href=\"https://docs.docker.com/engine/reference/run/\">docker run</a>.</p> <note> <p>This parameter isn't applicable to jobs that are running on Fargate resources. Don't provide it for these jobs.</p> </note>"
         },
         "initProcessEnabled":{
           "shape":"Boolean",
@@ -4469,6 +4644,70 @@
       ]
     },
     "Long":{"type":"long"},
+    "ManagedInstancesLocalStorageConfiguration":{
+      "type":"structure",
+      "members":{
+        "useLocalStorage":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether instance store volumes (local NVMe SSDs) are available to containers. When enabled, containers can use the instance store for high-performance temporary storage.</p>"
+        }
+      },
+      "documentation":"<p>The local storage configuration for Amazon ECS Managed Instances.</p>"
+    },
+    "ManagedInstancesNetworkConfiguration":{
+      "type":"structure",
+      "required":[
+        "subnets",
+        "securityGroups"
+      ],
+      "members":{
+        "subnets":{
+          "shape":"StringList",
+          "documentation":"<p>The VPC subnets where managed instances are launched. If your subnets don't provide public IP addresses, they must have a NAT gateway for outbound internet access.</p>"
+        },
+        "securityGroups":{
+          "shape":"StringList",
+          "documentation":"<p>The VPC security groups to associate with the managed instances.</p>"
+        }
+      },
+      "documentation":"<p>The network configuration for Amazon ECS Managed Instances. Specifies the VPC subnets and security groups where instances are launched.</p>"
+    },
+    "ManagedInstancesProvider":{
+      "type":"structure",
+      "required":[
+        "infrastructureRoleArn",
+        "instanceLaunchTemplate"
+      ],
+      "members":{
+        "propagateTags":{
+          "shape":"String",
+          "documentation":"<p>Specifies whether tags on the capacity provider are propagated to the Amazon EC2 instances it launches. Valid values:</p> <ul> <li> <p> <code>CAPACITY_PROVIDER</code> — Propagates tags to instances.</p> </li> <li> <p> <code>NONE</code> (default) — Does not propagate tags to instances.</p> </li> </ul>"
+        },
+        "infrastructureRoleArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role that Amazon ECS assumes to manage Amazon EC2 instances on your behalf. This role must have a trust policy for <code>ecs.amazonaws.com</code>. You must have the <code>iam:PassRole</code> permission for this role with the condition <code>iam:PassedToService: ecs.amazonaws.com</code>.</p>"
+        },
+        "instanceLaunchTemplate":{
+          "shape":"InstanceLaunchTemplate",
+          "documentation":"<p>The instance launch configuration for the Amazon ECS Managed Instances capacity provider. Contains networking, instance profile, instance requirements, capacity type, storage, and monitoring configuration.</p>"
+        },
+        "infrastructureOptimization":{
+          "shape":"InfrastructureOptimization",
+          "documentation":"<p>The infrastructure optimization configuration for the capacity provider. Specifies the idle-instance scale-in behavior.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for an Amazon ECS Managed Instances capacity provider. This object is required when creating a compute environment with <code>computeResources.type</code> set to <code>ECS_MANAGED_INSTANCES</code>.</p>"
+    },
+    "ManagedInstancesStorageConfiguration":{
+      "type":"structure",
+      "members":{
+        "storageSizeGiB":{
+          "shape":"Integer",
+          "documentation":"<p>The size of the root EBS volume in GiB for the managed instances.</p>"
+        }
+      },
+      "documentation":"<p>The storage configuration for Amazon ECS Managed Instances.</p>"
+    },
     "MountPoint":{
       "type":"structure",
       "members":{
@@ -4485,7 +4724,7 @@
           "documentation":"<p>The name of the volume to mount.</p>"
         }
       },
-      "documentation":"<p>Details for a Docker volume mount point that's used in a job's container properties. This parameter maps to <code>Volumes</code> in the <a href=\"https://docs.docker.com/engine/api/v1.43/#tag/Container/operation/ContainerCreate\">Create a container</a> section of the <i>Docker Remote API</i> and the <code>--volume</code> option to docker run.</p>"
+      "documentation":"<p>Details for a Docker volume mount point that's used in a job's container properties. This parameter maps to <code>Volumes</code> in the <a href=\"https://docs.docker.com/engine/api/latest/#tag/Container/operation/ContainerCreate\">Create a container</a> section of the <i>Docker Remote API</i> and the <code>--volume</code> option to docker run.</p>"
     },
     "MountPoints":{
       "type":"list",
@@ -4678,7 +4917,8 @@
       "type":"string",
       "enum":[
         "EC2",
-        "FARGATE"
+        "FARGATE",
+        "MANAGED_INSTANCES"
       ]
     },
     "PlatformCapabilityList":{
@@ -4962,7 +5202,7 @@
         },
         "platformCapabilities":{
           "shape":"PlatformCapabilityList",
-          "documentation":"<p>The platform capabilities required by the job definition. If no value is specified, it defaults to <code>EC2</code>. To run the job on Fargate resources, specify <code>FARGATE</code>.</p> <note> <p>If the job runs on Amazon EKS resources, then you must not specify <code>platformCapabilities</code>.</p> </note>"
+          "documentation":"<p>The platform capabilities required by the job definition. If no value is specified, it defaults to <code>EC2</code>. To run the job on Fargate resources, specify <code>FARGATE</code>. To run the job on Amazon ECS Managed Instances, specify <code>MANAGED_INSTANCES</code>.</p> <p>Jobs with the <code>MANAGED_INSTANCES</code> platform capability must use <code>ecsProperties</code> (not <code>containerProperties</code>) and do not support multi-node parallel jobs.</p> <note> <p>If the job runs on Amazon EKS resources, then you must not specify <code>platformCapabilities</code>.</p> </note>"
         },
         "eksProperties":{
           "shape":"EksProperties",
@@ -5021,7 +5261,7 @@
       "members":{
         "value":{
           "shape":"String",
-          "documentation":"<p>The quantity of the specified resource to reserve for the container. The values vary based on the <code>type</code> specified.</p> <dl> <dt>type=\"GPU\"</dt> <dd> <p>The number of physical GPUs to reserve for the container. Make sure that the number of GPUs reserved for all containers in a job doesn't exceed the number of available GPUs on the compute resource that the job is launched on.</p> <note> <p>GPUs aren't available for jobs that are running on Fargate resources.</p> </note> </dd> <dt>type=\"MEMORY\"</dt> <dd> <p>The memory hard limit (in MiB) present to the container. This parameter is supported for jobs that are running on Amazon EC2 resources. If your container attempts to exceed the memory specified, the container is terminated. This parameter maps to <code>Memory</code> in the <a href=\"https://docs.docker.com/engine/api/v1.23/#create-a-container\">Create a container</a> section of the <a href=\"https://docs.docker.com/engine/api/v1.23/\">Docker Remote API</a> and the <code>--memory</code> option to <a href=\"https://docs.docker.com/engine/reference/run/\">docker run</a>. You must specify at least 4 MiB of memory for a job. This is required but can be specified in several places for multi-node parallel (MNP) jobs. It must be specified for each node at least once. This parameter maps to <code>Memory</code> in the <a href=\"https://docs.docker.com/engine/api/v1.23/#create-a-container\">Create a container</a> section of the <a href=\"https://docs.docker.com/engine/api/v1.23/\">Docker Remote API</a> and the <code>--memory</code> option to <a href=\"https://docs.docker.com/engine/reference/run/\">docker run</a>.</p> <note> <p>If you're trying to maximize your resource utilization by providing your jobs as much memory as possible for a particular instance type, see <a href=\"https://docs.aws.amazon.com/batch/latest/userguide/memory-management.html\">Memory management</a> in the <i>Batch User Guide</i>.</p> </note> <p>For jobs that are running on Fargate resources, then <code>value</code> is the hard limit (in MiB), and must match one of the supported values and the <code>VCPU</code> values must be one of the values supported for that memory value.</p> <dl> <dt>value = 512</dt> <dd> <p> <code>VCPU</code> = 0.25</p> </dd> <dt>value = 1024</dt> <dd> <p> <code>VCPU</code> = 0.25 or 0.5</p> </dd> <dt>value = 2048</dt> <dd> <p> <code>VCPU</code> = 0.25, 0.5, or 1</p> </dd> <dt>value = 3072</dt> <dd> <p> <code>VCPU</code> = 0.5, or 1</p> </dd> <dt>value = 4096</dt> <dd> <p> <code>VCPU</code> = 0.5, 1, or 2</p> </dd> <dt>value = 5120, 6144, or 7168</dt> <dd> <p> <code>VCPU</code> = 1 or 2</p> </dd> <dt>value = 8192</dt> <dd> <p> <code>VCPU</code> = 1, 2, or 4</p> </dd> <dt>value = 9216, 10240, 11264, 12288, 13312, 14336, or 15360</dt> <dd> <p> <code>VCPU</code> = 2 or 4</p> </dd> <dt>value = 16384</dt> <dd> <p> <code>VCPU</code> = 2, 4, or 8</p> </dd> <dt>value = 17408, 18432, 19456, 21504, 22528, 23552, 25600, 26624, 27648, 29696, or 30720</dt> <dd> <p> <code>VCPU</code> = 4</p> </dd> <dt>value = 20480, 24576, or 28672</dt> <dd> <p> <code>VCPU</code> = 4 or 8</p> </dd> <dt>value = 36864, 45056, 53248, or 61440</dt> <dd> <p> <code>VCPU</code> = 8</p> </dd> <dt>value = 32768, 40960, 49152, or 57344</dt> <dd> <p> <code>VCPU</code> = 8 or 16</p> </dd> <dt>value = 65536, 73728, 81920, 90112, 98304, 106496, 114688, or 122880</dt> <dd> <p> <code>VCPU</code> = 16</p> </dd> </dl> </dd> <dt>type=\"VCPU\"</dt> <dd> <p>The number of vCPUs reserved for the container. This parameter maps to <code>CpuShares</code> in the <a href=\"https://docs.docker.com/engine/api/v1.23/#create-a-container\">Create a container</a> section of the <a href=\"https://docs.docker.com/engine/api/v1.23/\">Docker Remote API</a> and the <code>--cpu-shares</code> option to <a href=\"https://docs.docker.com/engine/reference/run/\">docker run</a>. Each vCPU is equivalent to 1,024 CPU shares. For Amazon EC2 resources, you must specify at least one vCPU. This is required but can be specified in several places; it must be specified for each node at least once.</p> <p>The default for the Fargate On-Demand vCPU resource count quota is 6 vCPUs. For more information about Fargate quotas, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/ecs-service.html#service-quotas-fargate\">Fargate quotas</a> in the <i>Amazon Web Services General Reference</i>.</p> <p>For jobs that are running on Fargate resources, then <code>value</code> must match one of the supported values and the <code>MEMORY</code> values must be one of the values supported for that <code>VCPU</code> value. The supported values are 0.25, 0.5, 1, 2, 4, 8, and 16</p> <dl> <dt>value = 0.25</dt> <dd> <p> <code>MEMORY</code> = 512, 1024, or 2048</p> </dd> <dt>value = 0.5</dt> <dd> <p> <code>MEMORY</code> = 1024, 2048, 3072, or 4096</p> </dd> <dt>value = 1</dt> <dd> <p> <code>MEMORY</code> = 2048, 3072, 4096, 5120, 6144, 7168, or 8192</p> </dd> <dt>value = 2</dt> <dd> <p> <code>MEMORY</code> = 4096, 5120, 6144, 7168, 8192, 9216, 10240, 11264, 12288, 13312, 14336, 15360, or 16384</p> </dd> <dt>value = 4</dt> <dd> <p> <code>MEMORY</code> = 8192, 9216, 10240, 11264, 12288, 13312, 14336, 15360, 16384, 17408, 18432, 19456, 20480, 21504, 22528, 23552, 24576, 25600, 26624, 27648, 28672, 29696, or 30720</p> </dd> <dt>value = 8</dt> <dd> <p> <code>MEMORY</code> = 16384, 20480, 24576, 28672, 32768, 36864, 40960, 45056, 49152, 53248, 57344, or 61440 </p> </dd> <dt>value = 16</dt> <dd> <p> <code>MEMORY</code> = 32768, 40960, 49152, 57344, 65536, 73728, 81920, 90112, 98304, 106496, 114688, or 122880 </p> </dd> </dl> </dd> </dl>"
+          "documentation":"<p>The quantity of the specified resource to reserve for the container. The values vary based on the <code>type</code> specified.</p> <dl> <dt>type=\"GPU\"</dt> <dd> <p>The number of physical GPUs to reserve for the container. Make sure that the number of GPUs reserved for all containers in a job doesn't exceed the number of available GPUs on the compute resource that the job is launched on.</p> <note> <p>GPUs aren't available for jobs that are running on Fargate resources.</p> </note> </dd> <dt>type=\"MEMORY\"</dt> <dd> <p>The memory hard limit (in MiB) present to the container. This parameter is supported for jobs that are running on Amazon EC2 resources. If your container attempts to exceed the memory specified, the container is terminated. This parameter maps to <code>Memory</code> in the <a href=\"https://docs.docker.com/engine/api/latest/#tag/Container/operation/ContainerCreate\">Create a container</a> section of the <a href=\"https://docs.docker.com/engine/api/latest/\">Docker Remote API</a> and the <code>--memory</code> option to <a href=\"https://docs.docker.com/engine/reference/run/\">docker run</a>. You must specify at least 4 MiB of memory for a job. This is required but can be specified in several places for multi-node parallel (MNP) jobs. It must be specified for each node at least once. This parameter maps to <code>Memory</code> in the <a href=\"https://docs.docker.com/engine/api/latest/#tag/Container/operation/ContainerCreate\">Create a container</a> section of the <a href=\"https://docs.docker.com/engine/api/latest/\">Docker Remote API</a> and the <code>--memory</code> option to <a href=\"https://docs.docker.com/engine/reference/run/\">docker run</a>.</p> <note> <p>If you're trying to maximize your resource utilization by providing your jobs as much memory as possible for a particular instance type, see <a href=\"https://docs.aws.amazon.com/batch/latest/userguide/memory-management.html\">Memory management</a> in the <i>Batch User Guide</i>.</p> </note> <p>For jobs that are running on Fargate resources, then <code>value</code> is the hard limit (in MiB), and must match one of the supported values and the <code>VCPU</code> values must be one of the values supported for that memory value.</p> <dl> <dt>value = 512</dt> <dd> <p> <code>VCPU</code> = 0.25</p> </dd> <dt>value = 1024</dt> <dd> <p> <code>VCPU</code> = 0.25 or 0.5</p> </dd> <dt>value = 2048</dt> <dd> <p> <code>VCPU</code> = 0.25, 0.5, or 1</p> </dd> <dt>value = 3072</dt> <dd> <p> <code>VCPU</code> = 0.5, or 1</p> </dd> <dt>value = 4096</dt> <dd> <p> <code>VCPU</code> = 0.5, 1, or 2</p> </dd> <dt>value = 5120, 6144, or 7168</dt> <dd> <p> <code>VCPU</code> = 1 or 2</p> </dd> <dt>value = 8192</dt> <dd> <p> <code>VCPU</code> = 1, 2, or 4</p> </dd> <dt>value = 9216, 10240, 11264, 12288, 13312, 14336, or 15360</dt> <dd> <p> <code>VCPU</code> = 2 or 4</p> </dd> <dt>value = 16384</dt> <dd> <p> <code>VCPU</code> = 2, 4, or 8</p> </dd> <dt>value = 17408, 18432, 19456, 21504, 22528, 23552, 25600, 26624, 27648, 29696, or 30720</dt> <dd> <p> <code>VCPU</code> = 4</p> </dd> <dt>value = 20480, 24576, or 28672</dt> <dd> <p> <code>VCPU</code> = 4 or 8</p> </dd> <dt>value = 36864, 45056, or 53248</dt> <dd> <p> <code>VCPU</code> = 8</p> </dd> <dt>value = 61440</dt> <dd> <p> <code>VCPU</code> = 8 or 32</p> </dd> <dt>value = 32768, 40960, 49152, or 57344</dt> <dd> <p> <code>VCPU</code> = 8 or 16</p> </dd> <dt>value = 65536, 73728, 81920, 90112, 98304, 106496, or 114688</dt> <dd> <p> <code>VCPU</code> = 16</p> </dd> <dt>value = 122880</dt> <dd> <p> <code>VCPU</code> = 16 or 32</p> </dd> <dt>value = 249856</dt> <dd> <p> <code>VCPU</code> = 32</p> </dd> </dl> </dd> <dt>type=\"VCPU\"</dt> <dd> <p>The number of vCPUs reserved for the container. This parameter maps to <code>CpuShares</code> in the <a href=\"https://docs.docker.com/engine/api/latest/#tag/Container/operation/ContainerCreate\">Create a container</a> section of the <a href=\"https://docs.docker.com/engine/api/latest/\">Docker Remote API</a> and the <code>--cpu-shares</code> option to <a href=\"https://docs.docker.com/engine/reference/run/\">docker run</a>. Each vCPU is equivalent to 1,024 CPU shares. For Amazon EC2 resources, you must specify at least one vCPU. This is required but can be specified in several places; it must be specified for each node at least once.</p> <p>The default for the Fargate On-Demand vCPU resource count quota is 6 vCPUs. For more information about Fargate quotas, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/ecs-service.html#service-quotas-fargate\">Fargate quotas</a> in the <i>Amazon Web Services General Reference</i>.</p> <p>For jobs that are running on Fargate resources, then <code>value</code> must match one of the supported values and the <code>MEMORY</code> values must be one of the values supported for that <code>VCPU</code> value. The supported values are 0.25, 0.5, 1, 2, 4, 8, 16, and 32.</p> <dl> <dt>value = 0.25</dt> <dd> <p> <code>MEMORY</code> = 512, 1024, or 2048</p> </dd> <dt>value = 0.5</dt> <dd> <p> <code>MEMORY</code> = 1024, 2048, 3072, or 4096</p> </dd> <dt>value = 1</dt> <dd> <p> <code>MEMORY</code> = 2048, 3072, 4096, 5120, 6144, 7168, or 8192</p> </dd> <dt>value = 2</dt> <dd> <p> <code>MEMORY</code> = 4096, 5120, 6144, 7168, 8192, 9216, 10240, 11264, 12288, 13312, 14336, 15360, or 16384</p> </dd> <dt>value = 4</dt> <dd> <p> <code>MEMORY</code> = 8192, 9216, 10240, 11264, 12288, 13312, 14336, 15360, 16384, 17408, 18432, 19456, 20480, 21504, 22528, 23552, 24576, 25600, 26624, 27648, 28672, 29696, or 30720</p> </dd> <dt>value = 8</dt> <dd> <p> <code>MEMORY</code> = 16384, 20480, 24576, 28672, 32768, 36864, 40960, 45056, 49152, 53248, 57344, or 61440 </p> </dd> <dt>value = 16</dt> <dd> <p> <code>MEMORY</code> = 32768, 40960, 49152, 57344, 65536, 73728, 81920, 90112, 98304, 106496, 114688, or 122880 </p> </dd> <dt>value = 32</dt> <dd> <p> <code>MEMORY</code> = 61440, 122880, or 249856</p> </dd> </dl> </dd> </dl>"
         },
         "type":{
           "shape":"ResourceType",
@@ -5820,7 +6060,7 @@
       "members":{
         "command":{
           "shape":"StringList",
-          "documentation":"<p>The command that's passed to the container. This parameter maps to <code>Cmd</code> in the <a href=\"https://docs.docker.com/engine/api/v1.23/#create-a-container\">Create a container</a> section of the <a href=\"https://docs.docker.com/engine/api/v1.23/\">Docker Remote API</a> and the <code>COMMAND</code> parameter to <a href=\"https://docs.docker.com/engine/reference/run/\">docker run</a>. For more information, see <a href=\"https://docs.docker.com/engine/reference/builder/#cmd\">https://docs.docker.com/engine/reference/builder/#cmd</a>.</p>"
+          "documentation":"<p>The command that's passed to the container. This parameter maps to <code>Cmd</code> in the <a href=\"https://docs.docker.com/engine/api/latest/#tag/Container/operation/ContainerCreate\">Create a container</a> section of the <a href=\"https://docs.docker.com/engine/api/latest/\">Docker Remote API</a> and the <code>COMMAND</code> parameter to <a href=\"https://docs.docker.com/engine/reference/run/\">docker run</a>. For more information, see <a href=\"https://docs.docker.com/engine/reference/builder/#cmd\">https://docs.docker.com/engine/reference/builder/#cmd</a>.</p>"
         },
         "dependsOn":{
           "shape":"TaskContainerDependencyList",
@@ -5828,7 +6068,7 @@
         },
         "environment":{
           "shape":"EnvironmentVariables",
-          "documentation":"<p>The environment variables to pass to a container. This parameter maps to <code>Env</code> in the <a href=\"https://docs.docker.com/engine/api/v1.23/#create-a-container\">Create a container</a> section of the <a href=\"https://docs.docker.com/engine/api/v1.23/\">Docker Remote API</a> and the <code>--env</code> option to <a href=\"https://docs.docker.com/engine/reference/run/\">docker run</a>.</p> <important> <p>We don't recommend using plaintext environment variables for sensitive information, such as credential data.</p> </important>"
+          "documentation":"<p>The environment variables to pass to a container. This parameter maps to <code>Env</code> in the <a href=\"https://docs.docker.com/engine/api/latest/#tag/Container/operation/ContainerCreate\">Create a container</a> section of the <a href=\"https://docs.docker.com/engine/api/latest/\">Docker Remote API</a> and the <code>--env</code> option to <a href=\"https://docs.docker.com/engine/reference/run/\">docker run</a>.</p> <important> <p>We don't recommend using plaintext environment variables for sensitive information, such as credential data.</p> </important>"
         },
         "essential":{
           "shape":"Boolean",
@@ -5840,7 +6080,7 @@
         },
         "image":{
           "shape":"String",
-          "documentation":"<p>The image used to start a container. This string is passed directly to the Docker daemon. By default, images in the Docker Hub registry are available. Other repositories are specified with either <code>repository-url/image:tag</code> or <code>repository-url/image@digest</code>. Up to 255 letters (uppercase and lowercase), numbers, hyphens, underscores, colons, periods, forward slashes, and number signs are allowed. This parameter maps to <code>Image</code> in the <a href=\"https://docs.docker.com/engine/api/v1.35/#operation/ContainerCreate\">Create a container</a> section of the <a href=\"https://docs.docker.com/engine/api/v1.35/\">Docker Remote API</a> and the <code>IMAGE</code> parameter of the <a href=\"https://docs.docker.com/engine/reference/run/#security-configuration\"> <i>docker run</i> </a>.</p>"
+          "documentation":"<p>The image used to start a container. This string is passed directly to the Docker daemon. By default, images in the Docker Hub registry are available. Other repositories are specified with either <code>repository-url/image:tag</code> or <code>repository-url/image@digest</code>. Up to 255 letters (uppercase and lowercase), numbers, hyphens, underscores, colons, periods, forward slashes, and number signs are allowed. This parameter maps to <code>Image</code> in the <a href=\"https://docs.docker.com/engine/api/latest/#tag/Container/operation/ContainerCreate\">Create a container</a> section of the <a href=\"https://docs.docker.com/engine/api/latest/\">Docker Remote API</a> and the <code>IMAGE</code> parameter of the <a href=\"https://docs.docker.com/engine/reference/run/#security-configuration\"> <i>docker run</i> </a>.</p>"
         },
         "linuxParameters":{
           "shape":"LinuxParameters",
@@ -5848,11 +6088,11 @@
         },
         "logConfiguration":{
           "shape":"LogConfiguration",
-          "documentation":"<p>The log configuration specification for the container.</p> <p>This parameter maps to <code>LogConfig</code> in the <a href=\"https://docs.docker.com/engine/api/v1.35/#operation/ContainerCreate\">Create a container</a> section of the <a href=\"https://docs.docker.com/engine/api/v1.35/\">Docker Remote API</a> and the <code>--log-driver</code> option to <a href=\"https://docs.docker.com/engine/reference/run/#security-configuration\">docker run</a>.</p> <p>By default, containers use the same logging driver that the Docker daemon uses. However the container can use a different logging driver than the Docker daemon by specifying a log driver with this parameter in the container definition. To use a different logging driver for a container, the log system must be configured properly on the container instance (or on a different log server for remote logging options). For more information about the options for different supported log drivers, see <a href=\"https://docs.docker.com/engine/admin/logging/overview/\">Configure logging drivers </a> in the <i>Docker documentation</i>.</p> <note> <p>Amazon ECS currently supports a subset of the logging drivers available to the Docker daemon (shown in the <code>LogConfiguration</code> data type). Additional log drivers may be available in future releases of the Amazon ECS container agent.</p> </note> <p>This parameter requires version 1.18 of the Docker Remote API or greater on your container instance. To check the Docker Remote API version on your container instance, log in to your container instance and run the following command: sudo docker version <code>--format '{{.Server.APIVersion}}'</code> </p> <note> <p>The Amazon ECS container agent running on a container instance must register the logging drivers available on that instance with the <code>ECS_AVAILABLE_LOGGING_DRIVERS</code> environment variable before containers placed on that instance can use these log configuration options. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-agent-config.html\">Amazon ECS container agent configuration</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p> </note>"
+          "documentation":"<p>The log configuration specification for the container.</p> <p>This parameter maps to <code>LogConfig</code> in the <a href=\"https://docs.docker.com/engine/api/latest/#tag/Container/operation/ContainerCreate\">Create a container</a> section of the <a href=\"https://docs.docker.com/engine/api/latest/\">Docker Remote API</a> and the <code>--log-driver</code> option to <a href=\"https://docs.docker.com/engine/reference/run/#security-configuration\">docker run</a>.</p> <p>By default, containers use the same logging driver that the Docker daemon uses. However the container can use a different logging driver than the Docker daemon by specifying a log driver with this parameter in the container definition. To use a different logging driver for a container, the log system must be configured properly on the container instance (or on a different log server for remote logging options). For more information about the options for different supported log drivers, see <a href=\"https://docs.docker.com/engine/admin/logging/overview/\">Configure logging drivers </a> in the <i>Docker documentation</i>.</p> <note> <p>Amazon ECS currently supports a subset of the logging drivers available to the Docker daemon (shown in the <code>LogConfiguration</code> data type). Additional log drivers may be available in future releases of the Amazon ECS container agent.</p> </note> <p>This parameter requires version 1.18 of the Docker Remote API or greater on your container instance. To check the Docker Remote API version on your container instance, log in to your container instance and run the following command: sudo docker version <code>--format '{{.Server.APIVersion}}'</code> </p> <note> <p>The Amazon ECS container agent running on a container instance must register the logging drivers available on that instance with the <code>ECS_AVAILABLE_LOGGING_DRIVERS</code> environment variable before containers placed on that instance can use these log configuration options. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-agent-config.html\">Amazon ECS container agent configuration</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p> </note>"
         },
         "mountPoints":{
           "shape":"MountPoints",
-          "documentation":"<p>The mount points for data volumes in your container.</p> <p>This parameter maps to <code>Volumes</code> in the <a href=\"https://docs.docker.com/engine/api/v1.35/#operation/ContainerCreate\">Create a container</a> section of the <a href=\"https://docs.docker.com/engine/api/v1.35/\">Docker Remote API</a> and the <a href=\"\">--volume</a> option to <a href=\"https://docs.docker.com/engine/reference/run/#security-configuration\">docker run</a>.</p> <p>Windows containers can mount whole directories on the same drive as <code>$env:ProgramData</code>. Windows containers can't mount directories on a different drive, and mount point can't be across drives.</p>"
+          "documentation":"<p>The mount points for data volumes in your container.</p> <p>This parameter maps to <code>Volumes</code> in the <a href=\"https://docs.docker.com/engine/api/latest/#tag/Container/operation/ContainerCreate\">Create a container</a> section of the <a href=\"https://docs.docker.com/engine/api/latest/\">Docker Remote API</a> and the <a href=\"\">--volume</a> option to <a href=\"https://docs.docker.com/engine/reference/run/#security-configuration\">docker run</a>.</p> <p>Windows containers can mount whole directories on the same drive as <code>$env:ProgramData</code>. Windows containers can't mount directories on a different drive, and mount point can't be across drives.</p>"
         },
         "name":{
           "shape":"String",
@@ -5860,11 +6100,11 @@
         },
         "privileged":{
           "shape":"Boolean",
-          "documentation":"<p>When this parameter is <code>true</code>, the container is given elevated privileges on the host container instance (similar to the <code>root</code> user). This parameter maps to <code>Privileged</code> in the <a href=\"https://docs.docker.com/engine/api/v1.35/#operation/ContainerCreate\">Create a container</a> section of the <a href=\"https://docs.docker.com/engine/api/v1.35/\">Docker Remote API</a> and the <code>--privileged</code> option to <a href=\"https://docs.docker.com/engine/reference/run/#security-configuration\">docker run</a>.</p> <note> <p>This parameter is not supported for Windows containers or tasks run on Fargate.</p> </note>"
+          "documentation":"<p>When this parameter is <code>true</code>, the container is given elevated privileges on the host container instance (similar to the <code>root</code> user). This parameter maps to <code>Privileged</code> in the <a href=\"https://docs.docker.com/engine/api/latest/#tag/Container/operation/ContainerCreate\">Create a container</a> section of the <a href=\"https://docs.docker.com/engine/api/latest/\">Docker Remote API</a> and the <code>--privileged</code> option to <a href=\"https://docs.docker.com/engine/reference/run/#security-configuration\">docker run</a>.</p> <note> <p>This parameter is not supported for Windows containers or tasks run on Fargate.</p> </note>"
         },
         "readonlyRootFilesystem":{
           "shape":"Boolean",
-          "documentation":"<p>When this parameter is true, the container is given read-only access to its root file system. This parameter maps to <code>ReadonlyRootfs</code> in the <a href=\"https://docs.docker.com/engine/api/v1.35/#operation/ContainerCreate\">Create a container</a> section of the <a href=\"https://docs.docker.com/engine/api/v1.35/\">Docker Remote API</a> and the <code>--read-only</code> option to <a href=\"https://docs.docker.com/engine/reference/run/#security-configuration\">docker run</a>.</p> <note> <p>This parameter is not supported for Windows containers.</p> </note>"
+          "documentation":"<p>When this parameter is true, the container is given read-only access to its root file system. This parameter maps to <code>ReadonlyRootfs</code> in the <a href=\"https://docs.docker.com/engine/api/latest/#tag/Container/operation/ContainerCreate\">Create a container</a> section of the <a href=\"https://docs.docker.com/engine/api/latest/\">Docker Remote API</a> and the <code>--read-only</code> option to <a href=\"https://docs.docker.com/engine/reference/run/#security-configuration\">docker run</a>.</p> <note> <p>This parameter is not supported for Windows containers.</p> </note>"
         },
         "repositoryCredentials":{
           "shape":"RepositoryCredentials",
@@ -5880,7 +6120,7 @@
         },
         "ulimits":{
           "shape":"Ulimits",
-          "documentation":"<p>A list of <code>ulimits</code> to set in the container. If a <code>ulimit</code> value is specified in a task definition, it overrides the default values set by Docker. This parameter maps to <code>Ulimits</code> in the <a href=\"https://docs.docker.com/engine/api/v1.35/#operation/ContainerCreate\">Create a container</a> section of the <a href=\"https://docs.docker.com/engine/api/v1.35/\">Docker Remote API</a> and the <code>--ulimit</code> option to <a href=\"https://docs.docker.com/engine/reference/run/#security-configuration\">docker run</a>.</p> <p>Amazon ECS tasks hosted on Fargate use the default resource limit values set by the operating system with the exception of the nofile resource limit parameter which Fargate overrides. The <code>nofile</code> resource limit sets a restriction on the number of open files that a container can use. The default <code>nofile</code> soft limit is <code>1024</code> and the default hard limit is <code>65535</code>.</p> <p>This parameter requires version 1.18 of the Docker Remote API or greater on your container instance. To check the Docker Remote API version on your container instance, log in to your container instance and run the following command: sudo docker version <code>--format '{{.Server.APIVersion}}'</code> </p> <note> <p>This parameter is not supported for Windows containers.</p> </note>"
+          "documentation":"<p>A list of <code>ulimits</code> to set in the container. If a <code>ulimit</code> value is specified in a task definition, it overrides the default values set by Docker. This parameter maps to <code>Ulimits</code> in the <a href=\"https://docs.docker.com/engine/api/latest/#tag/Container/operation/ContainerCreate\">Create a container</a> section of the <a href=\"https://docs.docker.com/engine/api/latest/\">Docker Remote API</a> and the <code>--ulimit</code> option to <a href=\"https://docs.docker.com/engine/reference/run/#security-configuration\">docker run</a>.</p> <p>Amazon ECS tasks hosted on Fargate use the default resource limit values set by the operating system with the exception of the nofile resource limit parameter which Fargate overrides. The <code>nofile</code> resource limit sets a restriction on the number of open files that a container can use. The default <code>nofile</code> soft limit is <code>1024</code> and the default hard limit is <code>65535</code>.</p> <p>This parameter requires version 1.18 of the Docker Remote API or greater on your container instance. To check the Docker Remote API version on your container instance, log in to your container instance and run the following command: sudo docker version <code>--format '{{.Server.APIVersion}}'</code> </p> <note> <p>This parameter is not supported for Windows containers.</p> </note>"
         },
         "user":{
           "shape":"String",
@@ -5941,7 +6181,7 @@
       "members":{
         "command":{
           "shape":"StringList",
-          "documentation":"<p>The command that's passed to the container. This parameter maps to <code>Cmd</code> in the <a href=\"https://docs.docker.com/engine/api/v1.23/#create-a-container\">Create a container</a> section of the <a href=\"https://docs.docker.com/engine/api/v1.23/\">Docker Remote API</a> and the <code>COMMAND</code> parameter to <a href=\"https://docs.docker.com/engine/reference/run/\">docker run</a>. For more information, see <a href=\"https://docs.docker.com/engine/reference/builder/#cmd\">Dockerfile reference: CMD</a>.</p>"
+          "documentation":"<p>The command that's passed to the container. This parameter maps to <code>Cmd</code> in the <a href=\"https://docs.docker.com/engine/api/latest/#tag/Container/operation/ContainerCreate\">Create a container</a> section of the <a href=\"https://docs.docker.com/engine/api/latest/\">Docker Remote API</a> and the <code>COMMAND</code> parameter to <a href=\"https://docs.docker.com/engine/reference/run/\">docker run</a>. For more information, see <a href=\"https://docs.docker.com/engine/reference/builder/#cmd\">Dockerfile reference: CMD</a>.</p>"
         },
         "dependsOn":{
           "shape":"TaskContainerDependencyList",
@@ -5949,7 +6189,7 @@
         },
         "environment":{
           "shape":"EnvironmentVariables",
-          "documentation":"<p>The environment variables to pass to a container. This parameter maps to Env in the <a href=\"https://docs.docker.com/engine/api/v1.23/#create-a-container\">Create a container</a> section of the <a href=\"https://docs.docker.com/engine/api/v1.23/\">Docker Remote API</a> and the <code>--env</code> parameter to <a href=\"https://docs.docker.com/engine/reference/run/\">docker run</a>. </p> <important> <p>We don't recommend using plaintext environment variables for sensitive information, such as credential data.</p> </important> <note> <p>Environment variables cannot start with <code>AWS_BATCH</code>. This naming convention is reserved for variables that Batch sets.</p> </note>"
+          "documentation":"<p>The environment variables to pass to a container. This parameter maps to Env in the <a href=\"https://docs.docker.com/engine/api/latest/#tag/Container/operation/ContainerCreate\">Create a container</a> section of the <a href=\"https://docs.docker.com/engine/api/latest/\">Docker Remote API</a> and the <code>--env</code> parameter to <a href=\"https://docs.docker.com/engine/reference/run/\">docker run</a>. </p> <important> <p>We don't recommend using plaintext environment variables for sensitive information, such as credential data.</p> </important> <note> <p>Environment variables cannot start with <code>AWS_BATCH</code>. This naming convention is reserved for variables that Batch sets.</p> </note>"
         },
         "essential":{
           "shape":"Boolean",
@@ -5961,7 +6201,7 @@
         },
         "image":{
           "shape":"String",
-          "documentation":"<p>The image used to start a container. This string is passed directly to the Docker daemon. By default, images in the Docker Hub registry are available. Other repositories are specified with either <code>repository-url/image:tag</code> or <code>repository-url/image@digest</code>. Up to 255 letters (uppercase and lowercase), numbers, hyphens, underscores, colons, periods, forward slashes, and number signs are allowed. This parameter maps to <code>Image</code> in the <a href=\"https://docs.docker.com/engine/api/v1.35/#operation/ContainerCreate\">Create a container</a> section of the <a href=\"https://docs.docker.com/engine/api/v1.35/\">Docker Remote API</a> and the <code>IMAGE</code> parameter of the <a href=\"https://docs.docker.com/engine/reference/run/#security-configuration\"> <i>docker run</i> </a>.</p>"
+          "documentation":"<p>The image used to start a container. This string is passed directly to the Docker daemon. By default, images in the Docker Hub registry are available. Other repositories are specified with either <code>repository-url/image:tag</code> or <code>repository-url/image@digest</code>. Up to 255 letters (uppercase and lowercase), numbers, hyphens, underscores, colons, periods, forward slashes, and number signs are allowed. This parameter maps to <code>Image</code> in the <a href=\"https://docs.docker.com/engine/api/latest/#tag/Container/operation/ContainerCreate\">Create a container</a> section of the <a href=\"https://docs.docker.com/engine/api/latest/\">Docker Remote API</a> and the <code>IMAGE</code> parameter of the <a href=\"https://docs.docker.com/engine/reference/run/#security-configuration\"> <i>docker run</i> </a>.</p>"
         },
         "linuxParameters":{
           "shape":"LinuxParameters",
@@ -5969,11 +6209,11 @@
         },
         "logConfiguration":{
           "shape":"LogConfiguration",
-          "documentation":"<p>The log configuration specification for the container.</p> <p>This parameter maps to <code>LogConfig</code> in the <a href=\"https://docs.docker.com/engine/api/v1.35/#operation/ContainerCreate\">Create a container</a> section of the <a href=\"https://docs.docker.com/engine/api/v1.35/\">Docker Remote API</a> and the <code>--log-driver</code> option to <a href=\"https://docs.docker.com/engine/reference/run/#security-configuration\">docker run</a>.</p> <p>By default, containers use the same logging driver that the Docker daemon uses. However the container can use a different logging driver than the Docker daemon by specifying a log driver with this parameter in the container definition. To use a different logging driver for a container, the log system must be configured properly on the container instance (or on a different log server for remote logging options). For more information about the options for different supported log drivers, see <a href=\"https://docs.docker.com/engine/admin/logging/overview/\">Configure logging drivers </a> in the <i>Docker documentation</i>.</p> <note> <p>Amazon ECS currently supports a subset of the logging drivers available to the Docker daemon (shown in the <code>LogConfiguration</code> data type). Additional log drivers may be available in future releases of the Amazon ECS container agent.</p> </note> <p>This parameter requires version 1.18 of the Docker Remote API or greater on your container instance. To check the Docker Remote API version on your container instance, log in to your container instance and run the following command: sudo docker version <code>--format '{{.Server.APIVersion}}'</code> </p> <note> <p>The Amazon ECS container agent running on a container instance must register the logging drivers available on that instance with the <code>ECS_AVAILABLE_LOGGING_DRIVERS</code> environment variable before containers placed on that instance can use these log configuration options. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-agent-config.html\">Amazon ECS container agent configuration</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p> </note>"
+          "documentation":"<p>The log configuration specification for the container.</p> <p>This parameter maps to <code>LogConfig</code> in the <a href=\"https://docs.docker.com/engine/api/latest/#tag/Container/operation/ContainerCreate\">Create a container</a> section of the <a href=\"https://docs.docker.com/engine/api/latest/\">Docker Remote API</a> and the <code>--log-driver</code> option to <a href=\"https://docs.docker.com/engine/reference/run/#security-configuration\">docker run</a>.</p> <p>By default, containers use the same logging driver that the Docker daemon uses. However the container can use a different logging driver than the Docker daemon by specifying a log driver with this parameter in the container definition. To use a different logging driver for a container, the log system must be configured properly on the container instance (or on a different log server for remote logging options). For more information about the options for different supported log drivers, see <a href=\"https://docs.docker.com/engine/admin/logging/overview/\">Configure logging drivers </a> in the <i>Docker documentation</i>.</p> <note> <p>Amazon ECS currently supports a subset of the logging drivers available to the Docker daemon (shown in the <code>LogConfiguration</code> data type). Additional log drivers may be available in future releases of the Amazon ECS container agent.</p> </note> <p>This parameter requires version 1.18 of the Docker Remote API or greater on your container instance. To check the Docker Remote API version on your container instance, log in to your container instance and run the following command: sudo docker version <code>--format '{{.Server.APIVersion}}'</code> </p> <note> <p>The Amazon ECS container agent running on a container instance must register the logging drivers available on that instance with the <code>ECS_AVAILABLE_LOGGING_DRIVERS</code> environment variable before containers placed on that instance can use these log configuration options. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-agent-config.html\">Amazon ECS container agent configuration</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p> </note>"
         },
         "mountPoints":{
           "shape":"MountPoints",
-          "documentation":"<p>The mount points for data volumes in your container.</p> <p>This parameter maps to <code>Volumes</code> in the <a href=\"https://docs.docker.com/engine/api/v1.35/#operation/ContainerCreate\">Create a container</a> section of the <a href=\"https://docs.docker.com/engine/api/v1.35/\">Docker Remote API</a> and the <a href=\"\">--volume</a> option to <a href=\"https://docs.docker.com/engine/reference/run/#security-configuration\">docker run</a>.</p> <p>Windows containers can mount whole directories on the same drive as <code>$env:ProgramData</code>. Windows containers can't mount directories on a different drive, and mount point can't be across drives.</p>"
+          "documentation":"<p>The mount points for data volumes in your container.</p> <p>This parameter maps to <code>Volumes</code> in the <a href=\"https://docs.docker.com/engine/api/latest/#tag/Container/operation/ContainerCreate\">Create a container</a> section of the <a href=\"https://docs.docker.com/engine/api/latest/\">Docker Remote API</a> and the <a href=\"\">--volume</a> option to <a href=\"https://docs.docker.com/engine/reference/run/#security-configuration\">docker run</a>.</p> <p>Windows containers can mount whole directories on the same drive as <code>$env:ProgramData</code>. Windows containers can't mount directories on a different drive, and mount point can't be across drives.</p>"
         },
         "name":{
           "shape":"String",
@@ -5981,11 +6221,11 @@
         },
         "privileged":{
           "shape":"Boolean",
-          "documentation":"<p>When this parameter is <code>true</code>, the container is given elevated privileges on the host container instance (similar to the <code>root</code> user). This parameter maps to <code>Privileged</code> in the <a href=\"https://docs.docker.com/engine/api/v1.35/#operation/ContainerCreate\">Create a container</a> section of the <a href=\"https://docs.docker.com/engine/api/v1.35/\">Docker Remote API</a> and the <code>--privileged</code> option to <a href=\"https://docs.docker.com/engine/reference/run/#security-configuration\">docker run</a>.</p> <note> <p>This parameter is not supported for Windows containers or tasks run on Fargate.</p> </note>"
+          "documentation":"<p>When this parameter is <code>true</code>, the container is given elevated privileges on the host container instance (similar to the <code>root</code> user). This parameter maps to <code>Privileged</code> in the <a href=\"https://docs.docker.com/engine/api/latest/#tag/Container/operation/ContainerCreate\">Create a container</a> section of the <a href=\"https://docs.docker.com/engine/api/latest/\">Docker Remote API</a> and the <code>--privileged</code> option to <a href=\"https://docs.docker.com/engine/reference/run/#security-configuration\">docker run</a>.</p> <note> <p>This parameter is not supported for Windows containers or tasks run on Fargate.</p> </note>"
         },
         "readonlyRootFilesystem":{
           "shape":"Boolean",
-          "documentation":"<p>When this parameter is true, the container is given read-only access to its root file system. This parameter maps to <code>ReadonlyRootfs</code> in the <a href=\"https://docs.docker.com/engine/api/v1.35/#operation/ContainerCreate\">Create a container</a> section of the <a href=\"https://docs.docker.com/engine/api/v1.35/\">Docker Remote API</a> and the <code>--read-only</code> option to <a href=\"https://docs.docker.com/engine/reference/run/#security-configuration\">docker run</a>.</p> <note> <p>This parameter is not supported for Windows containers.</p> </note>"
+          "documentation":"<p>When this parameter is true, the container is given read-only access to its root file system. This parameter maps to <code>ReadonlyRootfs</code> in the <a href=\"https://docs.docker.com/engine/api/latest/#tag/Container/operation/ContainerCreate\">Create a container</a> section of the <a href=\"https://docs.docker.com/engine/api/latest/\">Docker Remote API</a> and the <code>--read-only</code> option to <a href=\"https://docs.docker.com/engine/reference/run/#security-configuration\">docker run</a>.</p> <note> <p>This parameter is not supported for Windows containers.</p> </note>"
         },
         "repositoryCredentials":{
           "shape":"RepositoryCredentials",
@@ -6001,7 +6241,7 @@
         },
         "ulimits":{
           "shape":"Ulimits",
-          "documentation":"<p>A list of <code>ulimits</code> to set in the container. If a <code>ulimit</code> value is specified in a task definition, it overrides the default values set by Docker. This parameter maps to <code>Ulimits</code> in the <a href=\"https://docs.docker.com/engine/api/v1.35/#operation/ContainerCreate\">Create a container</a> section of the <a href=\"https://docs.docker.com/engine/api/v1.35/\">Docker Remote API</a> and the <code>--ulimit</code> option to <a href=\"https://docs.docker.com/engine/reference/run/#security-configuration\">docker run</a>.</p> <p>Amazon ECS tasks hosted on Fargate use the default resource limit values set by the operating system with the exception of the nofile resource limit parameter which Fargate overrides. The <code>nofile</code> resource limit sets a restriction on the number of open files that a container can use. The default <code>nofile</code> soft limit is <code>1024</code> and the default hard limit is <code>65535</code>.</p> <p>This parameter requires version 1.18 of the Docker Remote API or greater on your container instance. To check the Docker Remote API version on your container instance, log in to your container instance and run the following command: sudo docker version <code>--format '{{.Server.APIVersion}}'</code> </p> <note> <p>This parameter is not supported for Windows containers.</p> </note>"
+          "documentation":"<p>A list of <code>ulimits</code> to set in the container. If a <code>ulimit</code> value is specified in a task definition, it overrides the default values set by Docker. This parameter maps to <code>Ulimits</code> in the <a href=\"https://docs.docker.com/engine/api/latest/#tag/Container/operation/ContainerCreate\">Create a container</a> section of the <a href=\"https://docs.docker.com/engine/api/latest/\">Docker Remote API</a> and the <code>--ulimit</code> option to <a href=\"https://docs.docker.com/engine/reference/run/#security-configuration\">docker run</a>.</p> <p>Amazon ECS tasks hosted on Fargate use the default resource limit values set by the operating system with the exception of the nofile resource limit parameter which Fargate overrides. The <code>nofile</code> resource limit sets a restriction on the number of open files that a container can use. The default <code>nofile</code> soft limit is <code>1024</code> and the default hard limit is <code>65535</code>.</p> <p>This parameter requires version 1.18 of the Docker Remote API or greater on your container instance. To check the Docker Remote API version on your container instance, log in to your container instance and run the following command: sudo docker version <code>--format '{{.Server.APIVersion}}'</code> </p> <note> <p>This parameter is not supported for Windows containers.</p> </note>"
         },
         "user":{
           "shape":"String",
@@ -6181,6 +6421,10 @@
         "context":{
           "shape":"String",
           "documentation":"<p>Reserved.</p>"
+        },
+        "ecsSettings":{
+          "shape":"EcsSettings",
+          "documentation":"<p>The Amazon ECS settings for the compute environment. These settings control CloudWatch Container Insights collection for the compute environment.</p>"
         }
       },
       "documentation":"<p>Contains the parameters for <code>UpdateComputeEnvironment</code>.</p>"
@@ -6290,6 +6534,28 @@
         }
       }
     },
+    "UpdateManagedInstancesProviderConfiguration":{
+      "type":"structure",
+      "members":{
+        "propagateTags":{
+          "shape":"String",
+          "documentation":"<p>Specifies whether tags on the capacity provider are propagated to the Amazon EC2 instances it launches. Valid values:</p> <ul> <li> <p> <code>CAPACITY_PROVIDER</code> — Propagates tags to instances.</p> </li> <li> <p> <code>NONE</code> — Does not propagate tags to instances.</p> </li> </ul>"
+        },
+        "infrastructureRoleArn":{
+          "shape":"String",
+          "documentation":"<p>The updated Amazon Resource Name (ARN) of the IAM role that Amazon ECS assumes to manage Amazon EC2 instances on your behalf.</p>"
+        },
+        "instanceLaunchTemplate":{
+          "shape":"InstanceLaunchTemplateUpdate",
+          "documentation":"<p>The updated instance launch configuration for the Amazon ECS Managed Instances capacity provider.</p>"
+        },
+        "infrastructureOptimization":{
+          "shape":"InfrastructureOptimization",
+          "documentation":"<p>The updated infrastructure optimization configuration.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for updating an Amazon ECS Managed Instances capacity provider. Used in <code>UpdateComputeEnvironment</code> requests. The <code>capacityOptionType</code> and <code>fipsEnabled</code> fields cannot be changed on update.</p>"
+    },
     "UpdatePolicy":{
       "type":"structure",
       "members":{
@@ -6302,7 +6568,7 @@
           "documentation":"<p>Specifies the job timeout (in minutes) when the compute environment infrastructure is updated. The default value is 30. The maximum value is 7200.</p> <note> <p>Increasing <code>jobExecutionTimeoutMinutes</code> during infrastructure updates delays the replacement of instances with new instances that include updates such as security patches, but provides more time for jobs to execute. Consider the security implications of this tradeoff when setting timeout values.</p> </note>"
         }
       },
-      "documentation":"<p>Specifies the infrastructure update policy for the Amazon EC2 compute environment. For more information about infrastructure updates, see <a href=\"https://docs.aws.amazon.com/batch/latest/userguide/updating-compute-environments.html\">Updating compute environments</a> in the <i>Batch User Guide</i>.</p>"
+      "documentation":"<p>Specifies the infrastructure update policy for the Amazon EC2 compute environment. For more information about infrastructure updates, see <a href=\"https://docs.aws.amazon.com/batch/latest/userguide/updating-compute-environments.html\">Updating compute environments</a> in the <i>Batch User Guide</i>.</p> <important> <p>The <code>updatePolicy</code> property applies only to Amazon EC2 managed compute environments. Batch doesn't support <code>updatePolicy</code> for Fargate compute environments. If you specify it for a Fargate compute environment, Batch ignores it.</p> </important>"
     },
     "UpdateQuotaShareRequest":{
       "type":"structure",

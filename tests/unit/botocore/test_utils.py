@@ -303,6 +303,10 @@ class TestTransformName(unittest.TestCase):
             'associate-whatsapp-business-account',
         )
         self.assertEqual(
+            xform_name('CreateWhatsAppDataset', '-'),
+            'create-whatsapp-dataset',
+        )
+        self.assertEqual(
             xform_name('CreateWhatsAppFlow', '-'),
             'create-whatsapp-flow',
         )
@@ -393,6 +397,10 @@ class TestTransformName(unittest.TestCase):
         self.assertEqual(
             xform_name('PutWhatsAppBusinessAccountEventDestinations', '-'),
             'put-whatsapp-business-account-event-destinations',
+        )
+        self.assertEqual(
+            xform_name('SendWhatsAppConversionEvent', '-'),
+            'send-whatsapp-conversion-event',
         )
         self.assertEqual(
             xform_name('SendWhatsAppMessage', '-'), 'send-whatsapp-message'

@@ -705,6 +705,36 @@
     }
   },
   "shapes":{
+    "AbandonmentRatePacingConfig":{
+      "type":"structure",
+      "required":[
+        "targetRate",
+        "connectionStartPoint",
+        "connectionThresholdSeconds",
+        "evaluationWindow"
+      ],
+      "members":{
+        "targetRate":{"shape":"TargetRate"},
+        "connectionStartPoint":{
+          "shape":"ConnectionStartPoint",
+          "documentation":"<p>Event from which connectionThresholdSeconds is measured.</p>"
+        },
+        "connectionThresholdSeconds":{
+          "shape":"AbandonmentRatePacingConfigConnectionThresholdSecondsInteger",
+          "documentation":"<p>Seconds after connectionStartPoint before a contact counts as abandoned.</p>"
+        },
+        "evaluationWindow":{
+          "shape":"EvaluationWindow",
+          "documentation":"<p>Rolling window over which abandonmentRate is computed.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for abandonment-rate-based dialer throttling.</p>"
+    },
+    "AbandonmentRatePacingConfigConnectionThresholdSecondsInteger":{
+      "type":"integer",
+      "box":true,
+      "min":1
+    },
     "AccessDeniedException":{
       "type":"structure",
       "required":["message"],
@@ -785,7 +815,7 @@
       "type":"double",
       "documentation":"<p>The bandwidth allocation of a queue resource.</p>",
       "box":true,
-      "max":1,
+      "max":2,
       "min":0
     },
     "Boolean":{
@@ -1056,6 +1086,15 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "ConnectionStartPoint":{
+      "type":"string",
+      "documentation":"<p>Reference point against which the connection threshold is measured.</p>",
+      "enum":[
+        "CONNECTED_TO_SYSTEM",
+        "GREETING_START",
+        "GREETING_END"
+      ]
     },
     "ContactFlowId":{
       "type":"string",
@@ -1417,6 +1456,13 @@
       "type":"integer",
       "box":true,
       "min":0
+    },
+    "EvaluationWindow":{
+      "type":"string",
+      "documentation":"<p>Rolling window over which abandonmentRate is computed. Range PT1H to PT24H.</p>",
+      "max":5,
+      "min":0,
+      "pattern":"PT([1-9]|1[0-9]|2[0-4])H"
     },
     "EventTrigger":{
       "type":"structure",
@@ -1994,6 +2040,21 @@
       "max":25,
       "min":1
     },
+    "PacingStrategy":{
+      "type":"structure",
+      "members":{
+        "abandonmentRate":{"shape":"AbandonmentRatePacingConfig"}
+      },
+      "documentation":"<p>Pacing constraint the dialer may enforce.</p>",
+      "union":true
+    },
+    "PacingStrategyList":{
+      "type":"list",
+      "member":{"shape":"PacingStrategy"},
+      "documentation":"<p>List of pacing strategies the dialer enforces simultaneously.</p>",
+      "max":1,
+      "min":1
+    },
     "PauseCampaignRequest":{
       "type":"structure",
       "required":["id"],
@@ -2010,7 +2071,11 @@
       "type":"structure",
       "required":["bandwidthAllocation"],
       "members":{
-        "bandwidthAllocation":{"shape":"BandwidthAllocation"}
+        "bandwidthAllocation":{"shape":"BandwidthAllocation"},
+        "pacingStrategies":{
+          "shape":"PacingStrategyList",
+          "documentation":"<p>Pacing strategies the dialer enforces simultaneously.</p>"
+        }
       },
       "documentation":"<p>Predictive config</p>"
     },
@@ -2502,6 +2567,13 @@
       "documentation":"<p>The value of tag.</p>",
       "max":256,
       "min":0
+    },
+    "TargetRate":{
+      "type":"double",
+      "documentation":"<p>Target abandonment rate.</p>",
+      "box":true,
+      "max":1.0,
+      "min":0.0
     },
     "TelephonyChannelSubtypeConfig":{
       "type":"structure",

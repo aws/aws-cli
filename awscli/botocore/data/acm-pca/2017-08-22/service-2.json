@@ -241,8 +241,8 @@
       "errors":[
         {"shape":"LimitExceededException"},
         {"shape":"ResourceNotFoundException"},
-        {"shape":"InvalidArgsException"},
         {"shape":"InvalidArnException"},
+        {"shape":"InvalidArgsException"},
         {"shape":"InvalidStateException"},
         {"shape":"MalformedCSRException"}
       ],
@@ -668,7 +668,7 @@
         },
         "SigningAlgorithm":{
           "shape":"SigningAlgorithm",
-          "documentation":"<p>Name of the algorithm your private CA uses to sign certificate requests.</p> <p>This parameter should not be confused with the <code>SigningAlgorithm</code> parameter used to sign certificates when they are issued.</p>"
+          "documentation":"<p>Name of the algorithm your private CA uses to sign certificate requests.</p> <p>This parameter should not be confused with the <code>SigningAlgorithm</code> parameter of the <code>IssueCertificate</code> API action, which is used to sign certificates when they are issued.</p>"
         },
         "Subject":{
           "shape":"ASN1Subject",
@@ -879,11 +879,11 @@
         },
         "S3BucketName":{
           "shape":"S3BucketName3To255",
-          "documentation":"<p>Name of the S3 bucket that contains the CRL. If you do not provide a value for the <b>CustomCname</b> argument, the name of your S3 bucket is placed into the <b>CRL Distribution Points</b> extension of the issued certificate. You can change the name of your bucket by calling the <a href=\"https://docs.aws.amazon.com/privateca/latest/APIReference/API_UpdateCertificateAuthority.html\">UpdateCertificateAuthority</a> operation. You must specify a <a href=\"https://docs.aws.amazon.com/privateca/latest/userguide/PcaCreateCa.html#s3-policies\">bucket policy</a> that allows Amazon Web Services Private CA to write the CRL to your bucket.</p> <note> <p>The <code>S3BucketName</code> parameter must conform to the <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/bucketnamingrules.html\">S3 bucket naming rules</a>.</p> </note>"
+          "documentation":"<p>Name of the S3 bucket that contains the CRL. If you do not provide a value for the <b>CustomCname</b> argument, the name of your S3 bucket is placed into the <b>CRL Distribution Points</b> extension of the issued certificate. You can change the name of your bucket by calling the <a href=\"https://docs.aws.amazon.com/privateca/latest/APIReference/API_UpdateCertificateAuthority.html\">UpdateCertificateAuthority</a> operation. You must specify a <a href=\"https://docs.aws.amazon.com/privateca/latest/userguide/crl-planning.html#s3-policies\">bucket policy</a> that allows Amazon Web Services Private CA to write the CRL to your bucket.</p> <note> <p>The <code>S3BucketName</code> parameter must conform to the <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/bucketnamingrules.html\">S3 bucket naming rules</a>.</p> </note>"
         },
         "S3ObjectAcl":{
           "shape":"S3ObjectAcl",
-          "documentation":"<p>Determines whether the CRL will be publicly readable or privately held in the CRL Amazon S3 bucket. If you choose PUBLIC_READ, the CRL will be accessible over the public internet. If you choose BUCKET_OWNER_FULL_CONTROL, only the owner of the CRL S3 bucket can access the CRL, and your PKI clients may need an alternative method of access. </p> <p>If no value is specified, the default is <code>PUBLIC_READ</code>.</p> <p> <i>Note:</i> This default can cause CA creation to fail in some circumstances. If you have have enabled the Block Public Access (BPA) feature in your S3 account, then you must specify the value of this parameter as <code>BUCKET_OWNER_FULL_CONTROL</code>, and not doing so results in an error. If you have disabled BPA in S3, then you can specify either <code>BUCKET_OWNER_FULL_CONTROL</code> or <code>PUBLIC_READ</code> as the value.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/privateca/latest/userguide/PcaCreateCa.html#s3-bpa\">Blocking public access to the S3 bucket</a>.</p>"
+          "documentation":"<p>Determines whether the CRL will be publicly readable or privately held in the CRL Amazon S3 bucket. If you choose PUBLIC_READ, the CRL will be accessible over the public internet. If you choose BUCKET_OWNER_FULL_CONTROL, only the owner of the CRL S3 bucket can access the CRL, and your PKI clients may need an alternative method of access. </p> <p>If no value is specified, the default is <code>PUBLIC_READ</code>.</p> <p> <i>Note:</i> This default can cause CA creation to fail in some circumstances. If you have have enabled the Block Public Access (BPA) feature in your S3 account, then you must specify the value of this parameter as <code>BUCKET_OWNER_FULL_CONTROL</code>, and not doing so results in an error. If you have disabled BPA in S3, then you can specify either <code>BUCKET_OWNER_FULL_CONTROL</code> or <code>PUBLIC_READ</code> as the value.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/privateca/latest/userguide/crl-planning.html#s3-bpa\">Blocking public access to the S3 bucket</a>.</p>"
         },
         "CrlDistributionPointExtensionConfiguration":{
           "shape":"CrlDistributionPointExtensionConfiguration",
@@ -891,7 +891,7 @@
         },
         "CrlType":{
           "shape":"CrlType",
-          "documentation":"<p>Specifies whether to create a complete or partitioned CRL. This setting determines the maximum number of certificates that the certificate authority can issue and revoke. For more information, see <a href=\"privateca/latest/userguide/pca.html#limits_pca\">Amazon Web Services Private CA quotas</a>.</p> <ul> <li> <p> <code>COMPLETE</code> - The default setting. Amazon Web Services Private CA maintains a single CRL ﬁle for all unexpired certiﬁcates issued by a CA that have been revoked for any reason. Each certiﬁcate that Amazon Web Services Private CA issues is bound to a speciﬁc CRL through its CRL distribution point (CDP) extension, deﬁned in <a href=\"https://datatracker.ietf.org/doc/html/rfc5280#section-4.2.1.9\"> RFC 5280</a>.</p> </li> <li> <p> <code>PARTITIONED</code> - Compared to complete CRLs, partitioned CRLs dramatically increase the number of certiﬁcates your private CA can issue. </p> <important> <p> When using partitioned CRLs, you must validate that the CRL's associated issuing distribution point (IDP) URI matches the certiﬁcate's CDP URI to ensure the right CRL has been fetched. Amazon Web Services Private CA marks the IDP extension as critical, which your client must be able to process. </p> </important> </li> </ul>"
+          "documentation":"<p>Specifies whether to create a complete or partitioned CRL. This setting determines the maximum number of certificates that the certificate authority can issue and revoke. For more information, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/pca.html#limits_pca\">Amazon Web Services Private CA quotas</a>.</p> <ul> <li> <p> <code>COMPLETE</code> - The default setting. Amazon Web Services Private CA maintains a single CRL ﬁle for all unexpired certiﬁcates issued by a CA that have been revoked for any reason. Each certiﬁcate that Amazon Web Services Private CA issues is bound to a speciﬁc CRL through its CRL distribution point (CDP) extension, deﬁned in <a href=\"https://datatracker.ietf.org/doc/html/rfc5280#section-4.2.1.9\"> RFC 5280</a>.</p> </li> <li> <p> <code>PARTITIONED</code> - Compared to complete CRLs, partitioned CRLs dramatically increase the number of certiﬁcates your private CA can issue. </p> <important> <p> When using partitioned CRLs, you must validate that the CRL's associated issuing distribution point (IDP) URI matches the certiﬁcate's CDP URI to ensure the right CRL has been fetched. Amazon Web Services Private CA marks the IDP extension as critical, which your client must be able to process. </p> </important> </li> </ul>"
         },
         "CustomPath":{
           "shape":"CrlPathString",
@@ -906,7 +906,7 @@
       "members":{
         "OmitExtension":{
           "shape":"Boolean",
-          "documentation":"<p>Configures whether the CRL Distribution Point extension should be populated with the default URL to the CRL. If set to <code>true</code>, then the CDP extension will not be present in any certificates issued by that CA unless otherwise specified through CSR or API passthrough.</p> <note> <p>Only set this if you have another way to distribute the CRL Distribution Points ffor certificates issued by your CA, such as the Matter Distributed Compliance Ledger</p> <p>This configuration cannot be enabled with a custom CNAME set.</p> </note>",
+          "documentation":"<p>Configures whether the CRL Distribution Point extension should be populated with the default URL to the CRL. If set to <code>true</code>, then the CDP extension will not be present in any certificates issued by that CA unless otherwise specified through CSR or API passthrough.</p> <note> <p>Only set this if you have another way to distribute the CRL Distribution Points for certificates issued by your CA, such as the Matter Distributed Compliance Ledger</p> <p>This configuration cannot be enabled with a custom CNAME set.</p> </note>",
           "box":true
         }
       },
@@ -916,7 +916,7 @@
       "type":"string",
       "max":253,
       "min":0,
-      "pattern":"[-a-zA-Z0-9;?:@&=+$,%_.!~*()']+(/[-a-zA-Z0-9;?:@&=+$,%_.!~*()']+)*"
+      "pattern":"(/|[-a-zA-Z0-9;?:@&=+$,%_.!~*()']+(/[-a-zA-Z0-9;?:@&=+$,%_.!~*()']+)*)"
     },
     "CrlType":{
       "type":"string",
@@ -1954,6 +1954,9 @@
         "SHA256WITHRSA",
         "SHA384WITHRSA",
         "SHA512WITHRSA",
+        "SHA256WITHRSA_PSS",
+        "SHA384WITHRSA_PSS",
+        "SHA512WITHRSA_PSS",
         "SM3WITHSM2",
         "ML_DSA_44",
         "ML_DSA_65",

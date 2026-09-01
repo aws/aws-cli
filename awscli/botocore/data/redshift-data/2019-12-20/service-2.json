@@ -61,6 +61,7 @@
       "errors":[
         {"shape":"ValidationException"},
         {"shape":"ResourceNotFoundException"},
+        {"shape":"ActiveWaitingRequestsExceededException"},
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Describes the details about a specific instance when a query was run by the Amazon Redshift Data API. The information includes when the query started, when it finished, the query status, the number of rows returned, and the SQL statement. </p> <p>For more information about the Amazon Redshift Data API and CLI usage examples, see <a href=\"https://docs.aws.amazon.com/redshift/latest/mgmt/data-api.html\">Using the Amazon Redshift Data API</a> in the <i>Amazon Redshift Management Guide</i>. </p>",
@@ -113,6 +114,7 @@
       "errors":[
         {"shape":"ValidationException"},
         {"shape":"ResourceNotFoundException"},
+        {"shape":"ActiveWaitingRequestsExceededException"},
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Fetches the temporarily cached result of an SQL statement in JSON format. The <code>ExecuteStatement</code> or <code>BatchExecuteStatement</code> operation that ran the SQL statement must have specified <code>ResultFormat</code> as <code>JSON</code> , or let the format default to JSON. A token is returned to page through the statement results.</p> <p>For more information about the Amazon Redshift Data API and CLI usage examples, see <a href=\"https://docs.aws.amazon.com/redshift/latest/mgmt/data-api.html\">Using the Amazon Redshift Data API</a> in the <i>Amazon Redshift Management Guide</i>. </p>",
@@ -129,6 +131,7 @@
       "errors":[
         {"shape":"ValidationException"},
         {"shape":"ResourceNotFoundException"},
+        {"shape":"ActiveWaitingRequestsExceededException"},
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Fetches the temporarily cached result of an SQL statement in CSV format. The <code>ExecuteStatement</code> or <code>BatchExecuteStatement</code> operation that ran the SQL statement must have specified <code>ResultFormat</code> as <code>CSV</code>. A token is returned to page through the statement results.</p> <p>For more information about the Amazon Redshift Data API and CLI usage examples, see <a href=\"https://docs.aws.amazon.com/redshift/latest/mgmt/data-api.html\">Using the Amazon Redshift Data API</a> in the <i>Amazon Redshift Management Guide</i>. </p>",
@@ -168,6 +171,22 @@
         {"shape":"DatabaseConnectionException"}
       ],
       "documentation":"<p>Lists the schemas in a database. A token is returned to page through the schema list. Depending on the authorization method, use one of the following combinations of request parameters: </p> <ul> <li> <p>Secrets Manager - when connecting to a cluster, provide the <code>secret-arn</code> of a secret stored in Secrets Manager which has <code>username</code> and <code>password</code>. The specified secret contains credentials to connect to the <code>database</code> you specify. When you are connecting to a cluster, you also supply the database name, If you provide a cluster identifier (<code>dbClusterIdentifier</code>), it must match the cluster identifier stored in the secret. When you are connecting to a serverless workgroup, you also supply the database name.</p> </li> <li> <p>Temporary credentials - when connecting to your data warehouse, choose one of the following options:</p> <ul> <li> <p>When connecting to a serverless workgroup, specify the workgroup name and database name. The database user name is derived from the IAM identity. For example, <code>arn:iam::123456789012:user:foo</code> has the database user name <code>IAM:foo</code>. Also, permission to call the <code>redshift-serverless:GetCredentials</code> operation is required.</p> </li> <li> <p>When connecting to a cluster as an IAM identity, specify the cluster identifier and the database name. The database user name is derived from the IAM identity. For example, <code>arn:iam::123456789012:user:foo</code> has the database user name <code>IAM:foo</code>. Also, permission to call the <code>redshift:GetClusterCredentialsWithIAM</code> operation is required.</p> </li> <li> <p>When connecting to a cluster as a database user, specify the cluster identifier, the database name, and the database user name. Also, permission to call the <code>redshift:GetClusterCredentials</code> operation is required.</p> </li> </ul> </li> </ul> <p>For more information about the Amazon Redshift Data API and CLI usage examples, see <a href=\"https://docs.aws.amazon.com/redshift/latest/mgmt/data-api.html\">Using the Amazon Redshift Data API</a> in the <i>Amazon Redshift Management Guide</i>. </p>",
+      "readonly":true
+    },
+    "ListSessions":{
+      "name":"ListSessions",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListSessionsRequest"},
+      "output":{"shape":"ListSessionsResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Lists the sessions that the caller created in the last 24 hours. By default, only sessions with a status of <code>AVAILABLE</code> or <code>BUSY</code> are returned. You can filter the results by session status, compute target (cluster or serverless workgroup), or database. To retrieve the metadata for a single session, provide the <code>SessionId</code> parameter. Use <code>NextToken</code> to page through the session list.</p> <p>Returns only the sessions that the caller created. When identity-enhanced role sessions are used, you must provide either the <code>ClusterIdentifier</code> or <code>WorkgroupName</code> parameter to ensure that the AWS IAM Identity Center user can only access the Amazon Redshift IAM Identity Center applications they are assigned. For more information, see <a href=\"https://docs.aws.amazon.com/singlesignon/latest/userguide/trustedidentitypropagation-overview.html\"> Trusted identity propagation overview</a>.</p>",
       "readonly":true
     },
     "ListStatements":{
@@ -222,6 +241,14 @@
       "documentation":"<p>The number of active statements exceeds the limit.</p>",
       "exception":true
     },
+    "ActiveWaitingRequestsExceededException":{
+      "type":"structure",
+      "members":{
+        "Message":{"shape":"String"}
+      },
+      "documentation":"<p>The number of active requests with <code>WaitTimeSeconds</code> for the same SQL statement exceeds the limit.</p>",
+      "exception":true
+    },
     "BatchExecuteStatementException":{
       "type":"structure",
       "required":[
@@ -245,7 +272,7 @@
       "members":{
         "Sqls":{
           "shape":"SqlList",
-          "documentation":"<p>One or more SQL statements to run. The SQL statements are run as a single transaction. They run serially in the order of the array. Subsequent SQL statements don't start until the previous statement in the array completes. If any SQL statement fails, then because they are run as one transaction, all work is rolled back.</p>"
+          "documentation":"<p>One or more SQL statements to run. The SQL statements run serially in the order of the array. Subsequent SQL statements don't start until the previous statement in the array completes. By default, the SQL statements are run as a single transaction. If any SQL statement fails, all work is rolled back. To change this behavior, see the <code>ExecutionMode</code> parameter.</p>"
         },
         "ClusterIdentifier":{
           "shape":"ClusterIdentifierString",
@@ -273,7 +300,7 @@
         },
         "Parameters":{
           "shape":"SqlParametersList",
-          "documentation":"<p>The parameters for the SQL statements. The parameters are shared across all SQL statements in the batch.</p>"
+          "documentation":"<p>The parameters for the SQL statements. The parameters are available to all SQL statements in the batch. Each statement can reference any subset of the provided parameters. Each provided parameter must be referenced by at least one SQL statement in the batch.</p>"
         },
         "WorkgroupName":{
           "shape":"WorkgroupNameString",
@@ -295,6 +322,14 @@
         "SessionId":{
           "shape":"UUID",
           "documentation":"<p>The session identifier of the query.</p>"
+        },
+        "ExecutionMode":{
+          "shape":"ExecutionMode",
+          "documentation":"<p>Determines how the SQL statements in the batch are run. If set to <code>TRANSACTION</code> (the default), all SQL statements are run as a single transaction and they are committed or rolled back together. If set to <code>AUTO_COMMIT</code>, each SQL statement is committed individually, and a failure of one statement does not affect the others.</p>"
+        },
+        "WaitTimeSeconds":{
+          "shape":"WaitTimeSeconds",
+          "documentation":"<p>The number of seconds to wait for all SQL statements in the batch to complete execution before returning the response. If the SQL statements do not complete within the specified time, the response returns the current status. The maximum value is 30 seconds.</p>"
         }
       }
     },
@@ -336,6 +371,18 @@
         "SessionId":{
           "shape":"UUID",
           "documentation":"<p>The session identifier of the query.</p>"
+        },
+        "Status":{
+          "shape":"StatementStatusString",
+          "documentation":"<p>The status of the SQL statement. Status values are defined as follows: </p> <ul> <li> <p>ABORTED - The query run was stopped by the user. </p> </li> <li> <p>FAILED - The query run failed. </p> </li> <li> <p>FINISHED - The query has finished running. </p> </li> <li> <p>PICKED - The query has been chosen to be run. </p> </li> <li> <p>STARTED - The query run has started. </p> </li> <li> <p>SUBMITTED - The query was submitted, but not yet processed. </p> </li> </ul>"
+        },
+        "RedshiftPid":{
+          "shape":"BoxedLong",
+          "documentation":"<p>The process identifier from Amazon Redshift. </p>"
+        },
+        "HasResultSet":{
+          "shape":"BoxedBoolean",
+          "documentation":"<p>A value that indicates whether the statement has a result set. The result set can be empty. The value is true for an empty result set. The value is true if any substatement returns a result set.</p>"
         }
       }
     },
@@ -477,6 +524,10 @@
         "Id":{
           "shape":"UUID",
           "documentation":"<p>The identifier of the SQL statement to describe. This value is a universally unique identifier (UUID) generated by Amazon Redshift Data API. A suffix indicates the number of the SQL statement. For example, <code>d9b6c0c9-0747-4bf4-b142-e8883122f766:2</code> has a suffix of <code>:2</code> that indicates the second SQL statement of a batch query. This identifier is returned by <code>BatchExecuteStatment</code>, <code>ExecuteStatement</code>, and <code>ListStatements</code>. </p>"
+        },
+        "WaitTimeSeconds":{
+          "shape":"WaitTimeSeconds",
+          "documentation":"<p>The number of seconds to wait for the SQL statement to complete execution before returning the description. The maximum value is 30 seconds.</p>"
         }
       }
     },
@@ -567,6 +618,10 @@
         "SessionId":{
           "shape":"String",
           "documentation":"<p>The session identifier of the query.</p>"
+        },
+        "ExecutionMode":{
+          "shape":"ExecutionMode",
+          "documentation":"<p>The execution mode of the batch request. <code>TRANSACTION</code> indicates all SQL statements are run as a single transaction. <code>AUTO_COMMIT</code> indicates each SQL statement is committed individually.</p>"
         }
       }
     },
@@ -709,6 +764,10 @@
         "SessionId":{
           "shape":"UUID",
           "documentation":"<p>The session identifier of the query.</p>"
+        },
+        "WaitTimeSeconds":{
+          "shape":"WaitTimeSeconds",
+          "documentation":"<p>The number of seconds to wait for the SQL statement to complete execution before returning the response. If the SQL statement does not complete within the specified time, the response returns the current status. The maximum value is 30 seconds.</p>"
         }
       }
     },
@@ -750,8 +809,27 @@
         "SessionId":{
           "shape":"UUID",
           "documentation":"<p>The session identifier of the query.</p>"
+        },
+        "Status":{
+          "shape":"StatementStatusString",
+          "documentation":"<p>The status of the SQL statement. Status values are defined as follows: </p> <ul> <li> <p>ABORTED - The query run was stopped by the user. </p> </li> <li> <p>FAILED - The query run failed. </p> </li> <li> <p>FINISHED - The query has finished running. </p> </li> <li> <p>PICKED - The query has been chosen to be run. </p> </li> <li> <p>STARTED - The query run has started. </p> </li> <li> <p>SUBMITTED - The query was submitted, but not yet processed. </p> </li> </ul>"
+        },
+        "RedshiftPid":{
+          "shape":"BoxedLong",
+          "documentation":"<p>The process identifier from Amazon Redshift. </p>"
+        },
+        "HasResultSet":{
+          "shape":"BoxedBoolean",
+          "documentation":"<p>A value that indicates whether the statement has a result set. The result set can be empty. The value is true for an empty result set.</p>"
         }
       }
+    },
+    "ExecutionMode":{
+      "type":"string",
+      "enum":[
+        "TRANSACTION",
+        "AUTO_COMMIT"
+      ]
     },
     "Field":{
       "type":"structure",
@@ -803,6 +881,10 @@
         "NextToken":{
           "shape":"String",
           "documentation":"<p>A value that indicates the starting point for the next set of response records in a subsequent request. If a value is returned in a response, you can retrieve the next set of records by providing this returned NextToken value in the next NextToken parameter and retrying the command. If the NextToken field is empty, all response records have been retrieved for the request. </p>"
+        },
+        "WaitTimeSeconds":{
+          "shape":"WaitTimeSeconds",
+          "documentation":"<p>The number of seconds to wait for the SQL statement to complete execution before returning the result. The maximum value is 30 seconds.</p>"
         }
       }
     },
@@ -839,6 +921,10 @@
         "NextToken":{
           "shape":"String",
           "documentation":"<p>A value that indicates the starting point for the next set of response records in a subsequent request. If a value is returned in a response, you can retrieve the next set of records by providing this returned NextToken value in the next NextToken parameter and retrying the command. If the NextToken field is empty, all response records have been retrieved for the request.</p>"
+        },
+        "WaitTimeSeconds":{
+          "shape":"WaitTimeSeconds",
+          "documentation":"<p>The number of seconds to wait for the SQL statement to complete execution before returning the result. The maximum value is 30 seconds.</p>"
         }
       }
     },
@@ -981,6 +1067,57 @@
         "NextToken":{
           "shape":"String",
           "documentation":"<p>A value that indicates the starting point for the next set of response records in a subsequent request. If a value is returned in a response, you can retrieve the next set of records by providing this returned NextToken value in the next NextToken parameter and retrying the command. If the NextToken field is empty, all response records have been retrieved for the request. </p>"
+        }
+      }
+    },
+    "ListSessionsRequest":{
+      "type":"structure",
+      "members":{
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>A value that indicates the starting point for the next set of response records in a subsequent request. If a value is returned in a response, you can retrieve the next set of records by providing this returned NextToken value in the next NextToken parameter and retrying the command. If the NextToken field is empty, all response records have been retrieved for the request.</p>"
+        },
+        "MaxResults":{
+          "shape":"ListStatementsLimit",
+          "documentation":"<p>The maximum number of sessions to return in the response. If more sessions exist than fit in one response, the operation returns <code>NextToken</code> to paginate the results.</p>"
+        },
+        "SessionId":{
+          "shape":"UUID",
+          "documentation":"<p>The identifier of a specific session to return metadata for. This value is a universally unique identifier (UUID) generated by Amazon Redshift Data API. When you provide <code>SessionId</code>, you can't specify <code>Status</code>, <code>ClusterIdentifier</code>, <code>WorkgroupName</code>, or <code>Database</code>.</p>"
+        },
+        "Status":{
+          "shape":"SessionStatusString",
+          "documentation":"<p>The status of the sessions to list. If no status is specified, sessions with a status of <code>AVAILABLE</code> or <code>BUSY</code> are returned. Status values are defined as follows:</p> <ul> <li> <p>AVAILABLE – The session is open and ready to run a SQL statement.</p> </li> <li> <p>BUSY – The session is currently running a SQL statement.</p> </li> <li> <p>CLOSED – The session is closed and can no longer run SQL statements.</p> </li> </ul>"
+        },
+        "RoleLevel":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether to return all sessions created by the caller's IAM role, including sessions from previous IAM sessions. If false, only sessions created in the current IAM session are returned. The default is true.</p>"
+        },
+        "ClusterIdentifier":{
+          "shape":"ClusterIdentifierString",
+          "documentation":"<p>The cluster identifier. Only sessions on this cluster are returned. When providing <code>ClusterIdentifier</code>, then <code>WorkgroupName</code> can't be specified.</p>"
+        },
+        "WorkgroupName":{
+          "shape":"WorkgroupNameString",
+          "documentation":"<p>The serverless workgroup name or Amazon Resource Name (ARN). Only sessions on this workgroup are returned. When providing <code>WorkgroupName</code>, then <code>ClusterIdentifier</code> can't be specified.</p>"
+        },
+        "Database":{
+          "shape":"String",
+          "documentation":"<p>The name of the database. Only sessions connected to this database are returned.</p>"
+        }
+      }
+    },
+    "ListSessionsResponse":{
+      "type":"structure",
+      "required":["Sessions"],
+      "members":{
+        "Sessions":{
+          "shape":"SessionList",
+          "documentation":"<p>The sessions that match the request.</p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>A value that indicates the starting point for the next set of response records in a subsequent request. If a value is returned in a response, you can retrieve the next set of records by providing this returned NextToken value in the next NextToken parameter and retrying the command. If the NextToken field is empty, all response records have been retrieved for the request.</p>"
         }
       }
     },
@@ -1168,6 +1305,73 @@
       "box":true,
       "max":86400,
       "min":0
+    },
+    "SessionData":{
+      "type":"structure",
+      "required":[
+        "SessionId",
+        "Status",
+        "CreatedAt"
+      ],
+      "members":{
+        "SessionId":{
+          "shape":"UUID",
+          "documentation":"<p>The session identifier. This value is a universally unique identifier (UUID) generated by Amazon Redshift Data API.</p>"
+        },
+        "Status":{
+          "shape":"SessionStatusString",
+          "documentation":"<p>The status of the session. Status values are defined as follows:</p> <ul> <li> <p>AVAILABLE – The session is open and ready to run a SQL statement.</p> </li> <li> <p>BUSY – The session is currently running a SQL statement.</p> </li> <li> <p>CLOSED – The session is closed and can no longer run SQL statements.</p> </li> </ul>"
+        },
+        "CreatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time (UTC) when the session was created.</p>"
+        },
+        "UpdatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time (UTC) that the session metadata was last updated. An example is the time the status last changed.</p>"
+        },
+        "Database":{
+          "shape":"String",
+          "documentation":"<p>The name of the database that the session is connected to.</p>"
+        },
+        "DbUser":{
+          "shape":"String",
+          "documentation":"<p>The database user name.</p>"
+        },
+        "ClusterIdentifier":{
+          "shape":"String",
+          "documentation":"<p>The cluster identifier. This element is not returned when connecting to a serverless workgroup.</p>"
+        },
+        "WorkgroupName":{
+          "shape":"WorkgroupNameString",
+          "documentation":"<p>The serverless workgroup name or Amazon Resource Name (ARN). This element is not returned when connecting to a provisioned cluster.</p>"
+        },
+        "SessionAliveSeconds":{
+          "shape":"SessionAliveSeconds",
+          "documentation":"<p>The number of seconds that the session is kept alive after a query finishes.</p>"
+        },
+        "SessionTtl":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time (UTC) when the session is set to expire and be closed.</p>"
+        },
+        "CurrentStatementId":{
+          "shape":"UUID",
+          "documentation":"<p>The identifier of the SQL statement currently running in the session. This value is a universally unique identifier (UUID) generated by Amazon Redshift Data API. This element is returned only when the session status is <code>BUSY</code>.</p>"
+        }
+      },
+      "documentation":"<p>Contains the metadata for a session returned by <code>ListSessions</code>, including its status, compute target, database connection, and lifecycle timestamps.</p>"
+    },
+    "SessionList":{
+      "type":"list",
+      "member":{"shape":"SessionData"}
+    },
+    "SessionStatusString":{
+      "type":"string",
+      "enum":[
+        "AVAILABLE",
+        "BUSY",
+        "CLOSED"
+      ]
     },
     "SqlList":{
       "type":"list",
@@ -1388,11 +1592,17 @@
       "documentation":"<p>The Amazon Redshift Data API operation failed due to invalid input. </p>",
       "exception":true
     },
+    "WaitTimeSeconds":{
+      "type":"integer",
+      "box":true,
+      "max":30,
+      "min":1
+    },
     "WorkgroupNameString":{
       "type":"string",
       "max":128,
       "min":3,
-      "pattern":".*((^[a-z0-9-]{3,63}$)|^(arn:(aws(-[a-z]+)*):redshift-serverless:[a-z]{2}(-gov|(-iso[a-z]?))?-[a-z]+-\\d{1}:\\d{12}:workgroup/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}))"
+      "pattern":"([a-z0-9-]{3,63}|arn:(aws(-[a-z]+)*):redshift-serverless:([a-z]{2}(-gov|(-iso[a-z]?))?|eusc-[a-z]+)-[a-z]+-\\d{1}:\\d{12}:workgroup/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})"
     },
     "bool":{"type":"boolean"}
   },

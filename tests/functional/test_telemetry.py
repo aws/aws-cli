@@ -10,6 +10,7 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import os
 import sqlite3
 from unittest.mock import MagicMock, patch
 
@@ -26,6 +27,7 @@ from awscli.telemetry import (
     CLISessionDatabaseWriter,
     CLISessionGenerator,
     CLISessionOrchestrator,
+    is_telemetry_disabled,
     register_session_id_event,
 )
 from tests.markers import skip_if_windows
@@ -343,6 +345,41 @@ def test_register_session_id_event_injects_sid_on_before_create_client():
     event_emitter.unregister.assert_called_once_with(
         'before-create-client', handler
     )
+
+def test_is_telemetry_disabled():
+    assert is_telemetry_disabled({'AWS_CLI_SESSION_ID_DISABLED': 'true'})
+    assert not is_telemetry_disabled({'AWS_CLI_SESSION_ID_DISABLED': 'false'})
+    assert not is_telemetry_disabled({})
+
+
+def test_register_session_id_event_skipped_when_telemetry_disabled():
+    session = MagicMock(Session)
+    event_emitter = MagicMock()
+    session.get_component.return_value = event_emitter
+    orchestrator_factory = MagicMock()
+
+    with patch.dict(os.environ, {'AWS_CLI_SESSION_ID_DISABLED': 'true'}):
+        register_session_id_event(
+            session, orchestrator_factory=orchestrator_factory
+        )
+
+    # No handler is registered, so the session database is never opened.
+    event_emitter.register.assert_not_called()
+    orchestrator_factory.assert_not_called()
+
+
+def test_disabled_telemetry_does_not_create_database(tmp_path):
+    # The whole point of opting out is to avoid the database's file locking,
+    # so ensure no database file is created at all.
+    cache_dir = tmp_path / '.aws' / 'cli' / 'cache'
+    with (
+        patch.dict(os.environ, {'AWS_CLI_SESSION_ID_DISABLED': 'true'}),
+        patch('awscli.telemetry._CACHE_DIR', cache_dir),
+    ):
+        driver = create_clidriver()
+        driver.session.create_client('sts', region_name='us-east-1')
+
+    assert not cache_dir.exists()
 
 
 def test_register_session_id_event_catches_bare_exceptions():

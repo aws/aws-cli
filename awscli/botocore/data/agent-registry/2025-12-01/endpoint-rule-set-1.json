@@ -1,0 +1,58 @@
+{
+    "version": "1.0",
+    "parameters": {
+        "Region": {
+            "type": "String",
+            "required": false,
+            "builtIn": "AWS::Region",
+            "documentation": "The AWS region of the service."
+        },
+        "Endpoint": {
+            "type": "String",
+            "required": false,
+            "builtIn": "SDK::Endpoint",
+            "documentation": "Override the endpoint used to send requests."
+        }
+    },
+    "rules": [
+        {
+            "type": "endpoint",
+            "conditions": [
+                {
+                    "fn": "isSet",
+                    "argv": [
+                        {
+                            "ref": "Endpoint"
+                        }
+                    ]
+                }
+            ],
+            "endpoint": {
+                "url": {
+                    "ref": "Endpoint"
+                }
+            }
+        },
+        {
+            "type": "endpoint",
+            "conditions": [
+                {
+                    "fn": "isSet",
+                    "argv": [
+                        {
+                            "ref": "Region"
+                        }
+                    ]
+                }
+            ],
+            "endpoint": {
+                "url": "https://agent-registry.{Region}.api.aws"
+            }
+        },
+        {
+            "type": "error",
+            "conditions": [],
+            "error": "Unable to resolve an Agent Registry endpoint: Region was not set and no explicit Endpoint override was provided."
+        }
+    ]
+}

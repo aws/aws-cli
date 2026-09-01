@@ -251,6 +251,24 @@
       "documentation":"<p> <i> <b>This feature API is subject to changing at any time. For more information, see the <a href=\"https://aws.amazon.com/service-terms/\">Amazon Web Services Service Terms</a> (Betas and Previews).</b> </i> </p> <p>Updates an existing procurement portal preference configuration. This operation can modify settings for e-invoice delivery and purchase order retrieval.</p>",
       "idempotent":true
     },
+    "SendProcurementPortalValidation":{
+      "name":"SendProcurementPortalValidation",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"SendProcurementPortalValidationRequest"},
+      "output":{"shape":"SendProcurementPortalValidationResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p> <i> <b>This feature API is subject to changing at any time. For more information, see the <a href=\"https://aws.amazon.com/service-terms/\">Amazon Web Services Service Terms</a> (Betas and Previews).</b> </i> </p> <p>Sends a validation request for a procurement portal preference. This operation initiates the validation process by issuing a validation code that confirms ownership and connectivity of the configured procurement portal endpoint. Use <code>VerifyProcurementPortalValidation</code> to submit the received code and complete validation.</p>",
+      "idempotent":true
+    },
     "TagResource":{
       "name":"TagResource",
       "http":{
@@ -322,6 +340,24 @@
         {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p> <i> <b>This feature API is subject to changing at any time. For more information, see the <a href=\"https://aws.amazon.com/service-terms/\">Amazon Web Services Service Terms</a> (Betas and Previews).</b> </i> </p> <p>Updates the status of a procurement portal preference, including the activation state of e-invoice delivery and purchase order retrieval features.</p>",
+      "idempotent":true
+    },
+    "VerifyProcurementPortalValidation":{
+      "name":"VerifyProcurementPortalValidation",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"VerifyProcurementPortalValidationRequest"},
+      "output":{"shape":"VerifyProcurementPortalValidationResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p> <i> <b>This feature API is subject to changing at any time. For more information, see the <a href=\"https://aws.amazon.com/service-terms/\">Amazon Web Services Service Terms</a> (Betas and Previews).</b> </i> </p> <p>Submits a validation code to complete the validation of a procurement portal preference. Use this operation after calling <code>SendProcurementPortalValidation</code> to confirm ownership and connectivity of the configured procurement portal endpoint.</p>",
       "idempotent":true
     }
   },
@@ -1598,6 +1634,7 @@
       "type":"string",
       "enum":[
         "PENDING_VERIFICATION",
+        "VALIDATED",
         "TEST_INITIALIZED",
         "TEST_INITIALIZATION_FAILED",
         "TEST_FAILED",
@@ -1900,6 +1937,31 @@
       "member":{"shape":"BasicStringWithoutSpace"},
       "max":100,
       "min":0
+    },
+    "SendProcurementPortalValidationRequest":{
+      "type":"structure",
+      "required":["ProcurementPortalPreferenceArn"],
+      "members":{
+        "ProcurementPortalPreferenceArn":{
+          "shape":"ProcurementPortalPreferenceArnString",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the procurement portal preference to validate.</p>"
+        },
+        "ClientToken":{
+          "shape":"BasicStringWithoutSpace",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure idempotency of the request.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "SendProcurementPortalValidationResponse":{
+      "type":"structure",
+      "required":["ProcurementPortalPreferenceArn"],
+      "members":{
+        "ProcurementPortalPreferenceArn":{
+          "shape":"ProcurementPortalPreferenceArnString",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the procurement portal preference for which the validation request was sent.</p>"
+        }
+      }
     },
     "SensitiveBasicStringWithoutSpace":{
       "type":"string",
@@ -2277,6 +2339,38 @@
         "unknownOperation",
         "other"
       ]
+    },
+    "VerifyProcurementPortalValidationRequest":{
+      "type":"structure",
+      "required":[
+        "ProcurementPortalPreferenceArn",
+        "Code"
+      ],
+      "members":{
+        "ProcurementPortalPreferenceArn":{
+          "shape":"ProcurementPortalPreferenceArnString",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the procurement portal preference to validate.</p>"
+        },
+        "Code":{
+          "shape":"BasicStringWithoutSpace",
+          "documentation":"<p>The validation code received from the procurement portal in response to a previous <code>SendProcurementPortalValidation</code> request.</p>"
+        },
+        "ClientToken":{
+          "shape":"BasicStringWithoutSpace",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure idempotency of the request.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "VerifyProcurementPortalValidationResponse":{
+      "type":"structure",
+      "required":["ProcurementPortalPreferenceArn"],
+      "members":{
+        "ProcurementPortalPreferenceArn":{
+          "shape":"ProcurementPortalPreferenceArnString",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the procurement portal preference for which validation was completed.</p>"
+        }
+      }
     },
     "Year":{
       "type":"integer",

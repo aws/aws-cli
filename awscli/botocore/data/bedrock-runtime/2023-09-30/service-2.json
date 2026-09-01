@@ -850,7 +850,9 @@
         "searchResult":{
           "shape":"SearchResultBlock",
           "documentation":"<p>Search result to include in the message.</p>"
-        }
+        },
+        "toolAddition":{"shape":"ToolAdditionBlock"},
+        "toolRemoval":{"shape":"ToolRemovalBlock"}
       },
       "documentation":"<p>A block of content for a message that you pass to, or receive from, a model with the <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_Converse.html\">Converse</a> or <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_ConverseStream.html\">ConverseStream</a> API operations.</p>",
       "union":true
@@ -4072,9 +4074,18 @@
         "textFormat":{
           "shape":"OutputFormat",
           "documentation":"<p>Structured output parameters to control the model's text response. </p>"
+        },
+        "effort":{
+          "shape":"OutputConfigEffortString",
+          "documentation":"<p>The effort level for the model to use when generating a response. Higher effort levels allow the model to spend more time reasoning before responding. Supported values are <code>low</code>, <code>medium</code>, <code>high</code>, <code>xhigh</code>, and <code>max</code>.</p> <note> <p>When extended thinking is disabled, the effort level is capped at <code>high</code>. Use effort <code>high</code> or below, or enable thinking to use higher effort levels.</p> </note>"
         }
       },
       "documentation":"<p>Output configuration for a model response in a call to <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_Converse.html\">Converse</a> or <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_ConverseStream.html\">ConverseStream</a>.</p>"
+    },
+    "OutputConfigEffortString":{
+      "type":"string",
+      "max":16,
+      "min":0
     },
     "OutputFormat":{
       "type":"structure",
@@ -4699,6 +4710,17 @@
       "documentation":"<p>Information about a tool that you can use with the Converse API. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/tool-use.html\">Call a tool with the Converse API</a> in the Amazon Bedrock User Guide.</p>",
       "union":true
     },
+    "ToolAdditionBlock":{
+      "type":"structure",
+      "required":["tool"],
+      "members":{
+        "tool":{
+          "shape":"ToolReference",
+          "documentation":"<p>A reference to the tool to add to the available tool set.</p>"
+        }
+      },
+      "documentation":"<p>A content block for adding a tool to the available tool set mid-conversation. Each block references a single tool via its <code>tool</code> field. Use within a <code>system</code> role message to make a tool available without re-sending the full tool configuration.</p>"
+    },
     "ToolChoice":{
       "type":"structure",
       "members":{
@@ -4754,6 +4776,50 @@
       "max":64,
       "min":1,
       "pattern":"[a-zA-Z0-9_-]+"
+    },
+    "ToolReference":{
+      "type":"structure",
+      "members":{
+        "type":{
+          "shape":"ToolReferenceTypeString",
+          "documentation":"<p>The type of tool reference.</p>"
+        },
+        "name":{
+          "shape":"ToolReferenceNameString",
+          "documentation":"<p>The name of the tool. Must match the name of a tool declared in the top-level tool configuration.</p>"
+        },
+        "serverName":{
+          "shape":"ToolReferenceServerNameString",
+          "documentation":"<p>The name of the MCP server that provides the tool. Required when referencing an MCP tool.</p>"
+        }
+      },
+      "documentation":"<p>A reference to a tool in the tool configuration. Used with <code>ToolAdditionBlock</code> and <code>ToolRemovalBlock</code> to identify which tool to add or remove mid-conversation.</p>"
+    },
+    "ToolReferenceNameString":{
+      "type":"string",
+      "max":128,
+      "min":1
+    },
+    "ToolReferenceServerNameString":{
+      "type":"string",
+      "max":128,
+      "min":1
+    },
+    "ToolReferenceTypeString":{
+      "type":"string",
+      "max":64,
+      "min":1
+    },
+    "ToolRemovalBlock":{
+      "type":"structure",
+      "required":["tool"],
+      "members":{
+        "tool":{
+          "shape":"ToolReference",
+          "documentation":"<p>A reference to the tool to remove from the available tool set.</p>"
+        }
+      },
+      "documentation":"<p>A content block for removing a tool from the available tool set mid-conversation. Each block references a single tool via its <code>tool</code> field. Use within a <code>system</code> role message to remove a tool without re-sending the full tool configuration.</p>"
     },
     "ToolResultBlock":{
       "type":"structure",

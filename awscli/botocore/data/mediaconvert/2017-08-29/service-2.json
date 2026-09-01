@@ -4268,6 +4268,11 @@
           "locationName": "contentLightLevel",
           "documentation": "Content light level information (CTA-861.3). Describes the light level characteristics of the content."
         },
+        "FieldOrder": {
+          "shape": "__string",
+          "locationName": "fieldOrder",
+          "documentation": "The field order of interlaced video, which indicates whether the top or bottom field is displayed first. Use this to select the correct deinterlacing behavior. One of \"TopFieldFirst\" or \"BottomFieldFirst\". This field is present only for interlaced video; it is omitted for progressive video and when the field order is not indicated by the source."
+        },
         "Height": {
           "shape": "__integer",
           "locationName": "height",
@@ -4493,6 +4498,11 @@
     "Container": {
       "type": "structure",
       "members": {
+        "BitRate": {
+          "shape": "__long",
+          "locationName": "bitRate",
+          "documentation": "The overall bit rate of your media file, in bits per second. This is derived from the file size and duration as (file size in bytes * 8) / duration in seconds."
+        },
         "Duration": {
           "shape": "__double",
           "locationName": "duration",
@@ -9935,7 +9945,7 @@
           "documentation": "Provide your Kantar license ID number. You should get this number from Kantar."
         },
         "KantarServerUrl": {
-          "shape": "__stringPatternHttpsKantarmedia",
+          "shape": "__stringPatternHttpsKantarmedia55Prod",
           "locationName": "kantarServerUrl",
           "documentation": "Provide the HTTPS endpoint to the Kantar server. You should get this endpoint from Kantar."
         },
@@ -11220,6 +11230,11 @@
     "MovSettings": {
       "type": "structure",
       "members": {
+        "AudioDuration": {
+          "shape": "CmfcAudioDuration",
+          "locationName": "audioDuration",
+          "documentation": "Specify this setting only when your output will be consumed by a downstream repackaging workflow that is sensitive to very small duration differences between video and audio. For this situation, choose Match video duration. In all other cases, keep the default value, Default codec duration. When you choose Match video duration, MediaConvert pads the output audio streams with silence or trims them to ensure that the total duration of each audio stream is at least as long as the total duration of the video stream. After padding or trimming, the audio stream duration is no more than one frame longer than the video stream. MediaConvert applies audio padding or trimming only to the end of the last segment of the output. For unsegmented outputs, MediaConvert adds padding only to the end of the file. When you keep the default value, any minor discrepancies between audio and video duration will depend on your output audio codec."
+        },
         "ClapAtom": {
           "shape": "MovClapAtom",
           "locationName": "clapAtom",
@@ -13374,7 +13389,8 @@
         "ONEZONE_IA",
         "INTELLIGENT_TIERING",
         "GLACIER",
-        "DEEP_ARCHIVE"
+        "DEEP_ARCHIVE",
+        "GLACIER_IR"
       ]
     },
     "SampleRangeConversion": {
@@ -17068,9 +17084,9 @@
       "type": "string",
       "pattern": "^https:\\/\\/[^:@\\/]*(:\\d*)?(\\/.*)?$"
     },
-    "__stringPatternHttpsKantarmedia": {
+    "__stringPatternHttpsKantarmedia55Prod": {
       "type": "string",
-      "pattern": "^https:\\/\\/.*.kantarmedia.*$"
+      "pattern": "^https:\\/\\/.*.(kantarmedia|55-prod).*$"
     },
     "__stringPatternIdentityAZaZ26AZaZ09163": {
       "type": "string",

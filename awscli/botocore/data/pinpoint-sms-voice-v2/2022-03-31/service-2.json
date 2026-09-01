@@ -252,7 +252,7 @@
         {"shape":"ConflictException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Create a new registration attachment to use for uploading a file or a URL to a file. The maximum file size is 500KB and valid file extensions are PDF, JPEG and PNG. For example, many sender ID registrations require a signed “letter of authorization” (LOA) to be submitted.</p> <p>Use either <code>AttachmentUrl</code> or <code>AttachmentBody</code> to upload your attachment. If both are specified then an exception is returned.</p>"
+      "documentation":"<p>Create a new registration attachment to use for uploading a file or a URL to a file. The maximum file size is 5MB and valid file extensions are PDF, JPEG and PNG. For example, many sender ID registrations require a signed “letter of authorization” (LOA) to be submitted.</p> <p>Use either <code>AttachmentUrl</code> or <code>AttachmentBody</code> to upload your attachment. If both are specified then an exception is returned.</p>"
     },
     "CreateRegistrationVersion":{
       "name":"CreateRegistrationVersion",
@@ -2112,7 +2112,7 @@
     },
     "AttachmentBody":{
       "type":"blob",
-      "max":1572864,
+      "max":6990508,
       "min":1
     },
     "AttachmentStatus":{
@@ -2249,6 +2249,114 @@
         }
       },
       "documentation":"<p>Contains the destination configuration to use when publishing message sending events. </p>"
+    },
+    "ConditionOperator":{
+      "type":"string",
+      "documentation":"<p>The operator used to compare a dependency field's value in a <b>FieldCondition</b>. Valid values are <b>EQUALS</b>, <b>NOT_EQUALS</b>, <b>IN</b>, <b>NOT_IN</b>, <b>HAS_VALUE</b>, and <b>NO_VALUE</b>. Unknown operators evaluate to false, which causes the containing rule to be skipped.</p>",
+      "max":64,
+      "min":1,
+      "pattern":"[A-Za-z0-9_]+"
+    },
+    "ConditionValue":{
+      "type":"string",
+      "max":256,
+      "min":1
+    },
+    "ConditionValueList":{
+      "type":"list",
+      "member":{"shape":"ConditionValue"},
+      "max":20,
+      "min":0
+    },
+    "ConditionalBehavior":{
+      "type":"structure",
+      "required":[
+        "Rules",
+        "DefaultBehavior"
+      ],
+      "members":{
+        "Rules":{
+          "shape":"ConditionalRuleList",
+          "documentation":"<p>An ordered list of conditional rules. Rules are evaluated top-to-bottom and the first rule whose conditions all evaluate to true determines the field's behavior. Rules whose conditions do not all match are skipped and evaluation continues to the next rule.</p>"
+        },
+        "DefaultBehavior":{
+          "shape":"ConditionalFieldBehavior",
+          "documentation":"<p>The field behavior that applies when no conditional rule in <b>Rules</b> matches. Valid values are <b>REQUIRED</b>, <b>OPTIONAL</b>, and <b>DISALLOWED</b>.</p>"
+        }
+      },
+      "documentation":"<p>The set of conditional rules that determine a field's resolved requirement based on the values of other fields in the same registration form. Attached to fields whose <b>FieldRequirement</b> is <b>CONDITIONAL</b>.</p> <p>Evaluation proceeds top-to-bottom through <b>Rules</b>. The first rule whose conditions all evaluate to true wins and its behavior is returned. If no rule matches, the <b>DefaultBehavior</b> is returned.</p>"
+    },
+    "ConditionalFieldBehavior":{
+      "type":"string",
+      "documentation":"<p>The resolved requirement for a field when a conditional rule matches. Valid values are:</p> <p> <b>REQUIRED</b> — the field must be present; absence causes a validation error at submission time.</p> <p> <b>OPTIONAL</b> — the field may be present.</p> <p> <b>DISALLOWED</b> — the field must not be present; a submitted value is rejected with a validation error.</p>",
+      "max":64,
+      "min":1,
+      "pattern":"[A-Za-z0-9_]+"
+    },
+    "ConditionalRule":{
+      "type":"structure",
+      "required":[
+        "Conditions",
+        "RuleBehavior"
+      ],
+      "members":{
+        "Conditions":{
+          "shape":"FieldConditionList",
+          "documentation":"<p>The conditions that must all evaluate to true for this rule to match. Conditions are combined with logical AND. Use multiple rules with the same <b>RuleBehavior</b> to express logical OR.</p>"
+        },
+        "RuleBehavior":{
+          "shape":"ConditionalFieldBehavior",
+          "documentation":"<p>The field behavior that applies when all conditions in this rule match. Valid values are <b>REQUIRED</b>, <b>OPTIONAL</b>, and <b>DISALLOWED</b>.</p>"
+        },
+        "ConditionalValidation":{
+          "shape":"ConditionalValidation",
+          "documentation":"<p>Optional per-rule validation constraints (minimum length, maximum length, regex pattern, allowed select values) that override the field's default validation when this rule matches.</p>"
+        }
+      },
+      "documentation":"<p>A single conditional rule that resolves to a field behavior when all of its conditions evaluate to true. Conditions within a rule are combined with logical AND: all conditions must match for the rule to fire.</p>"
+    },
+    "ConditionalRuleList":{
+      "type":"list",
+      "member":{"shape":"ConditionalRule"},
+      "max":20,
+      "min":1
+    },
+    "ConditionalValidation":{
+      "type":"structure",
+      "members":{
+        "MinLength":{
+          "shape":"ConditionalValidationMinLengthInteger",
+          "documentation":"<p>The minimum length for the field value when this rule applies.</p>"
+        },
+        "MaxLength":{
+          "shape":"ConditionalValidationMaxLengthInteger",
+          "documentation":"<p>The maximum length for the field value when this rule applies.</p>"
+        },
+        "Pattern":{
+          "shape":"ConditionalValidationPatternString",
+          "documentation":"<p>A regular expression that the field value must match when this rule applies.</p>"
+        },
+        "AllowedValues":{
+          "shape":"SelectChoiceList",
+          "documentation":"<p>The allowed values for a select field when this rule applies. A subset of the field's full option list.</p>"
+        }
+      },
+      "documentation":"<p>Per-rule validation constraints that override the field's default validation when the containing rule matches. All fields are optional; only the constraints that need to differ from the field's default validation are provided.</p>"
+    },
+    "ConditionalValidationMaxLengthInteger":{
+      "type":"integer",
+      "box":true,
+      "min":0
+    },
+    "ConditionalValidationMinLengthInteger":{
+      "type":"integer",
+      "box":true,
+      "min":0
+    },
+    "ConditionalValidationPatternString":{
+      "type":"string",
+      "max":2048,
+      "min":1
     },
     "ConfigurationSetFilter":{
       "type":"structure",
@@ -3080,7 +3188,7 @@
       "members":{
         "AttachmentBody":{
           "shape":"AttachmentBody",
-          "documentation":"<p>The registration file to upload. The maximum file size is 500KB and valid file extensions are PDF, JPEG and PNG.</p>"
+          "documentation":"<p>The registration file to upload. The maximum file size is 5MB and valid file extensions are PDF, JPEG and PNG.</p>"
         },
         "AttachmentUrl":{
           "shape":"AttachmentUrl",
@@ -5333,6 +5441,34 @@
       "type":"list",
       "member":{"shape":"EventType"},
       "max":52,
+      "min":1
+    },
+    "FieldCondition":{
+      "type":"structure",
+      "required":[
+        "DependsOnFieldPath",
+        "Operator"
+      ],
+      "members":{
+        "DependsOnFieldPath":{
+          "shape":"FieldPath",
+          "documentation":"<p>The path of the field whose value determines this condition, for example <b>companyInfo.businessType</b>.</p>"
+        },
+        "Operator":{
+          "shape":"ConditionOperator",
+          "documentation":"<p>The comparison operator to apply between the dependency field's value and <b>Values</b>. Valid values are <b>EQUALS</b>, <b>NOT_EQUALS</b>, <b>IN</b>, <b>NOT_IN</b>, <b>HAS_VALUE</b>, and <b>NO_VALUE</b>. Operators not in this list are treated as evaluating to false, which causes the containing rule to be skipped. This allows forward-compatible additions of new operators without breaking older SDK clients.</p>"
+        },
+        "Values":{
+          "shape":"ConditionValueList",
+          "documentation":"<p>The values to compare the dependency field's value against. Required for the <b>EQUALS</b>, <b>NOT_EQUALS</b>, <b>IN</b>, and <b>NOT_IN</b> operators. Omitted for <b>HAS_VALUE</b> and <b>NO_VALUE</b>, which test only presence.</p>"
+        }
+      },
+      "documentation":"<p>A single condition on a dependency field's value. Conditions are combined into a <b>ConditionalRule</b> and evaluated together with logical AND.</p>"
+    },
+    "FieldConditionList":{
+      "type":"list",
+      "member":{"shape":"FieldCondition"},
+      "max":5,
       "min":1
     },
     "FieldPath":{
@@ -8262,6 +8398,10 @@
         "DisplayHints":{
           "shape":"RegistrationFieldDisplayHints",
           "documentation":"<p>An array of RegistrationFieldDisplayHints objects for the field.</p>"
+        },
+        "ConditionalBehavior":{
+          "shape":"ConditionalBehavior",
+          "documentation":"<p>The conditional behavior rules for this field. Only present when <b>FieldRequirement</b> is <b>CONDITIONAL</b>. Rules are evaluated in order and the first matching rule determines the field's resolved requirement. If no rule matches, the <b>DefaultBehavior</b> applies.</p>"
         }
       },
       "documentation":"<p>Provides a description of the specified field.</p>"

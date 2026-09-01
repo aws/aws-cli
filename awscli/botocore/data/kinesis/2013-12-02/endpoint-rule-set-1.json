@@ -27,6 +27,11 @@
             "documentation": "Override the endpoint used to send this request",
             "type": "string"
         },
+        "OperationType": {
+            "required": false,
+            "documentation": "Internal parameter to distinguish between Control/Data plane API and accordingly generate control/data plane endpoint",
+            "type": "string"
+        },
         "StreamId": {
             "required": false,
             "documentation": "The unique identifier of the Kinesis stream",
@@ -37,11 +42,6 @@
             "documentation": "The ARN of the Kinesis stream",
             "type": "string"
         },
-        "OperationType": {
-            "required": false,
-            "documentation": "Internal parameter to distinguish between Control/Data plane API and accordingly generate control/data plane endpoint",
-            "type": "string"
-        },
         "ConsumerARN": {
             "required": false,
             "documentation": "The ARN of the Kinesis consumer",
@@ -50,6 +50,23 @@
         "ResourceARN": {
             "required": false,
             "documentation": "The ARN of the Kinesis resource",
+            "type": "string"
+        },
+        "ChannelARN": {
+            "required": false,
+            "documentation": "The ARN of the Kinesis data channel",
+            "type": "string"
+        },
+        "AccountId": {
+            "builtIn": "AWS::Auth::AccountId",
+            "required": false,
+            "documentation": "The AWS AccountId used for the request.",
+            "type": "string"
+        },
+        "AccountIdEndpointMode": {
+            "builtIn": "AWS::Auth::AccountIdEndpointMode",
+            "required": false,
+            "documentation": "The AccountId Endpoint Mode.",
             "type": "string"
         }
     },
@@ -2120,12 +2137,52 @@
                                                         {
                                                             "conditions": [
                                                                 {
+                                                                    "fn": "not",
+                                                                    "argv": [
+                                                                        {
+                                                                            "fn": "stringEquals",
+                                                                            "argv": [
+                                                                                {
+                                                                                    "ref": "arnType"
+                                                                                },
+                                                                                "stream"
+                                                                            ]
+                                                                        }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "fn": "not",
+                                                                    "argv": [
+                                                                        {
+                                                                            "fn": "stringEquals",
+                                                                            "argv": [
+                                                                                {
+                                                                                    "ref": "arnType"
+                                                                                },
+                                                                                "channel"
+                                                                            ]
+                                                                        }
+                                                                    ]
+                                                                }
+                                                            ],
+                                                            "error": "Invalid ARN: Unsupported resource type `{arnType}`. Expected: stream or channel",
+                                                            "type": "error"
+                                                        },
+                                                        {
+                                                            "conditions": [
+                                                                {
                                                                     "fn": "stringEquals",
                                                                     "argv": [
                                                                         {
-                                                                            "ref": "arnType"
+                                                                            "fn": "getAttr",
+                                                                            "argv": [
+                                                                                {
+                                                                                    "ref": "PartitionResult"
+                                                                                },
+                                                                                "name"
+                                                                            ]
                                                                         },
-                                                                        "stream"
+                                                                        "{arn#partition}"
                                                                     ]
                                                                 }
                                                             ],
@@ -2133,18 +2190,11 @@
                                                                 {
                                                                     "conditions": [
                                                                         {
-                                                                            "fn": "stringEquals",
+                                                                            "fn": "isSet",
                                                                             "argv": [
                                                                                 {
-                                                                                    "fn": "getAttr",
-                                                                                    "argv": [
-                                                                                        {
-                                                                                            "ref": "PartitionResult"
-                                                                                        },
-                                                                                        "name"
-                                                                                    ]
-                                                                                },
-                                                                                "{arn#partition}"
+                                                                                    "ref": "OperationType"
+                                                                                }
                                                                             ]
                                                                         }
                                                                     ],
@@ -2152,11 +2202,12 @@
                                                                         {
                                                                             "conditions": [
                                                                                 {
-                                                                                    "fn": "isSet",
+                                                                                    "fn": "stringEquals",
                                                                                     "argv": [
                                                                                         {
-                                                                                            "ref": "OperationType"
-                                                                                        }
+                                                                                            "ref": "arnType"
+                                                                                        },
+                                                                                        "stream"
                                                                                     ]
                                                                                 }
                                                                             ],
@@ -2366,16 +2417,271 @@
                                                                             "type": "tree"
                                                                         },
                                                                         {
-                                                                            "conditions": [],
-                                                                            "error": "Operation Type is not set. Please contact service team for resolution.",
-                                                                            "type": "error"
+                                                                            "conditions": [
+                                                                                {
+                                                                                    "fn": "stringEquals",
+                                                                                    "argv": [
+                                                                                        {
+                                                                                            "ref": "arnType"
+                                                                                        },
+                                                                                        "channel"
+                                                                                    ]
+                                                                                }
+                                                                            ],
+                                                                            "rules": [
+                                                                                {
+                                                                                    "conditions": [
+                                                                                        {
+                                                                                            "fn": "getAttr",
+                                                                                            "argv": [
+                                                                                                {
+                                                                                                    "ref": "arn"
+                                                                                                },
+                                                                                                "resourceId[1]"
+                                                                                            ],
+                                                                                            "assign": "resourceId"
+                                                                                        }
+                                                                                    ],
+                                                                                    "rules": [
+                                                                                        {
+                                                                                            "conditions": [
+                                                                                                {
+                                                                                                    "fn": "isValidHostLabel",
+                                                                                                    "argv": [
+                                                                                                        {
+                                                                                                            "ref": "resourceId"
+                                                                                                        },
+                                                                                                        false
+                                                                                                    ]
+                                                                                                }
+                                                                                            ],
+                                                                                            "rules": [
+                                                                                                {
+                                                                                                    "conditions": [
+                                                                                                        {
+                                                                                                            "fn": "booleanEquals",
+                                                                                                            "argv": [
+                                                                                                                {
+                                                                                                                    "ref": "UseFIPS"
+                                                                                                                },
+                                                                                                                true
+                                                                                                            ]
+                                                                                                        },
+                                                                                                        {
+                                                                                                            "fn": "booleanEquals",
+                                                                                                            "argv": [
+                                                                                                                {
+                                                                                                                    "ref": "UseDualStack"
+                                                                                                                },
+                                                                                                                true
+                                                                                                            ]
+                                                                                                        }
+                                                                                                    ],
+                                                                                                    "rules": [
+                                                                                                        {
+                                                                                                            "conditions": [
+                                                                                                                {
+                                                                                                                    "fn": "booleanEquals",
+                                                                                                                    "argv": [
+                                                                                                                        {
+                                                                                                                            "fn": "getAttr",
+                                                                                                                            "argv": [
+                                                                                                                                {
+                                                                                                                                    "ref": "PartitionResult"
+                                                                                                                                },
+                                                                                                                                "supportsFIPS"
+                                                                                                                            ]
+                                                                                                                        },
+                                                                                                                        true
+                                                                                                                    ]
+                                                                                                                }
+                                                                                                            ],
+                                                                                                            "rules": [
+                                                                                                                {
+                                                                                                                    "conditions": [
+                                                                                                                        {
+                                                                                                                            "fn": "booleanEquals",
+                                                                                                                            "argv": [
+                                                                                                                                {
+                                                                                                                                    "fn": "getAttr",
+                                                                                                                                    "argv": [
+                                                                                                                                        {
+                                                                                                                                            "ref": "PartitionResult"
+                                                                                                                                        },
+                                                                                                                                        "supportsDualStack"
+                                                                                                                                    ]
+                                                                                                                                },
+                                                                                                                                true
+                                                                                                                            ]
+                                                                                                                        }
+                                                                                                                    ],
+                                                                                                                    "rules": [
+                                                                                                                        {
+                                                                                                                            "conditions": [],
+                                                                                                                            "endpoint": {
+                                                                                                                                "url": "https://{resourceId}.{OperationType}-kinesis-fips.{Region}.{PartitionResult#dualStackDnsSuffix}",
+                                                                                                                                "properties": {},
+                                                                                                                                "headers": {}
+                                                                                                                            },
+                                                                                                                            "type": "endpoint"
+                                                                                                                        }
+                                                                                                                    ],
+                                                                                                                    "type": "tree"
+                                                                                                                },
+                                                                                                                {
+                                                                                                                    "conditions": [],
+                                                                                                                    "error": "DualStack is enabled, but this partition does not support DualStack.",
+                                                                                                                    "type": "error"
+                                                                                                                }
+                                                                                                            ],
+                                                                                                            "type": "tree"
+                                                                                                        },
+                                                                                                        {
+                                                                                                            "conditions": [],
+                                                                                                            "error": "FIPS is enabled, but this partition does not support FIPS.",
+                                                                                                            "type": "error"
+                                                                                                        }
+                                                                                                    ],
+                                                                                                    "type": "tree"
+                                                                                                },
+                                                                                                {
+                                                                                                    "conditions": [
+                                                                                                        {
+                                                                                                            "fn": "booleanEquals",
+                                                                                                            "argv": [
+                                                                                                                {
+                                                                                                                    "ref": "UseFIPS"
+                                                                                                                },
+                                                                                                                true
+                                                                                                            ]
+                                                                                                        }
+                                                                                                    ],
+                                                                                                    "rules": [
+                                                                                                        {
+                                                                                                            "conditions": [
+                                                                                                                {
+                                                                                                                    "fn": "booleanEquals",
+                                                                                                                    "argv": [
+                                                                                                                        {
+                                                                                                                            "fn": "getAttr",
+                                                                                                                            "argv": [
+                                                                                                                                {
+                                                                                                                                    "ref": "PartitionResult"
+                                                                                                                                },
+                                                                                                                                "supportsFIPS"
+                                                                                                                            ]
+                                                                                                                        },
+                                                                                                                        true
+                                                                                                                    ]
+                                                                                                                }
+                                                                                                            ],
+                                                                                                            "rules": [
+                                                                                                                {
+                                                                                                                    "conditions": [],
+                                                                                                                    "endpoint": {
+                                                                                                                        "url": "https://{resourceId}.{OperationType}-kinesis-fips.{Region}.{PartitionResult#dnsSuffix}",
+                                                                                                                        "properties": {},
+                                                                                                                        "headers": {}
+                                                                                                                    },
+                                                                                                                    "type": "endpoint"
+                                                                                                                }
+                                                                                                            ],
+                                                                                                            "type": "tree"
+                                                                                                        },
+                                                                                                        {
+                                                                                                            "conditions": [],
+                                                                                                            "error": "FIPS is enabled but this partition does not support FIPS",
+                                                                                                            "type": "error"
+                                                                                                        }
+                                                                                                    ],
+                                                                                                    "type": "tree"
+                                                                                                },
+                                                                                                {
+                                                                                                    "conditions": [
+                                                                                                        {
+                                                                                                            "fn": "booleanEquals",
+                                                                                                            "argv": [
+                                                                                                                {
+                                                                                                                    "ref": "UseDualStack"
+                                                                                                                },
+                                                                                                                true
+                                                                                                            ]
+                                                                                                        }
+                                                                                                    ],
+                                                                                                    "rules": [
+                                                                                                        {
+                                                                                                            "conditions": [
+                                                                                                                {
+                                                                                                                    "fn": "booleanEquals",
+                                                                                                                    "argv": [
+                                                                                                                        {
+                                                                                                                            "fn": "getAttr",
+                                                                                                                            "argv": [
+                                                                                                                                {
+                                                                                                                                    "ref": "PartitionResult"
+                                                                                                                                },
+                                                                                                                                "supportsDualStack"
+                                                                                                                            ]
+                                                                                                                        },
+                                                                                                                        true
+                                                                                                                    ]
+                                                                                                                }
+                                                                                                            ],
+                                                                                                            "rules": [
+                                                                                                                {
+                                                                                                                    "conditions": [],
+                                                                                                                    "endpoint": {
+                                                                                                                        "url": "https://{resourceId}.{OperationType}-kinesis.{Region}.{PartitionResult#dualStackDnsSuffix}",
+                                                                                                                        "properties": {},
+                                                                                                                        "headers": {}
+                                                                                                                    },
+                                                                                                                    "type": "endpoint"
+                                                                                                                }
+                                                                                                            ],
+                                                                                                            "type": "tree"
+                                                                                                        },
+                                                                                                        {
+                                                                                                            "conditions": [],
+                                                                                                            "error": "DualStack is enabled but this partition does not support DualStack",
+                                                                                                            "type": "error"
+                                                                                                        }
+                                                                                                    ],
+                                                                                                    "type": "tree"
+                                                                                                },
+                                                                                                {
+                                                                                                    "conditions": [],
+                                                                                                    "endpoint": {
+                                                                                                        "url": "https://{resourceId}.{OperationType}-kinesis.{Region}.{PartitionResult#dnsSuffix}",
+                                                                                                        "properties": {},
+                                                                                                        "headers": {}
+                                                                                                    },
+                                                                                                    "type": "endpoint"
+                                                                                                }
+                                                                                            ],
+                                                                                            "type": "tree"
+                                                                                        },
+                                                                                        {
+                                                                                            "conditions": [],
+                                                                                            "error": "Invalid ARN: Invalid channel id.",
+                                                                                            "type": "error"
+                                                                                        }
+                                                                                    ],
+                                                                                    "type": "tree"
+                                                                                },
+                                                                                {
+                                                                                    "conditions": [],
+                                                                                    "error": "Invalid ARN: Missing channel id.",
+                                                                                    "type": "error"
+                                                                                }
+                                                                            ],
+                                                                            "type": "tree"
                                                                         }
                                                                     ],
                                                                     "type": "tree"
                                                                 },
                                                                 {
                                                                     "conditions": [],
-                                                                    "error": "Partition: {arn#partition} from ARN doesn't match with partition name: {PartitionResult#name}.",
+                                                                    "error": "Operation Type is not set. Please contact service team for resolution.",
                                                                     "type": "error"
                                                                 }
                                                             ],
@@ -2383,7 +2689,7 @@
                                                         },
                                                         {
                                                             "conditions": [],
-                                                            "error": "Invalid ARN: Kinesis ARNs don't support `{arnType}` arn types.",
+                                                            "error": "Partition: {arn#partition} from ARN doesn't match with partition name: {PartitionResult#name}.",
                                                             "type": "error"
                                                         }
                                                     ],
@@ -2424,6 +2730,1043 @@
                 {
                     "conditions": [],
                     "error": "Invalid ARN: Failed to parse ARN.",
+                    "type": "error"
+                }
+            ],
+            "type": "tree"
+        },
+        {
+            "conditions": [
+                {
+                    "fn": "isSet",
+                    "argv": [
+                        {
+                            "ref": "ChannelARN"
+                        }
+                    ]
+                },
+                {
+                    "fn": "not",
+                    "argv": [
+                        {
+                            "fn": "isSet",
+                            "argv": [
+                                {
+                                    "ref": "Endpoint"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "fn": "isSet",
+                    "argv": [
+                        {
+                            "ref": "Region"
+                        }
+                    ]
+                },
+                {
+                    "fn": "aws.partition",
+                    "argv": [
+                        {
+                            "ref": "Region"
+                        }
+                    ],
+                    "assign": "PartitionResult"
+                },
+                {
+                    "fn": "not",
+                    "argv": [
+                        {
+                            "fn": "stringEquals",
+                            "argv": [
+                                {
+                                    "fn": "getAttr",
+                                    "argv": [
+                                        {
+                                            "ref": "PartitionResult"
+                                        },
+                                        "name"
+                                    ]
+                                },
+                                "aws-iso"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "fn": "not",
+                    "argv": [
+                        {
+                            "fn": "stringEquals",
+                            "argv": [
+                                {
+                                    "fn": "getAttr",
+                                    "argv": [
+                                        {
+                                            "ref": "PartitionResult"
+                                        },
+                                        "name"
+                                    ]
+                                },
+                                "aws-iso-b"
+                            ]
+                        }
+                    ]
+                }
+            ],
+            "rules": [
+                {
+                    "conditions": [
+                        {
+                            "fn": "aws.parseArn",
+                            "argv": [
+                                {
+                                    "ref": "ChannelARN"
+                                }
+                            ],
+                            "assign": "arn"
+                        }
+                    ],
+                    "rules": [
+                        {
+                            "conditions": [
+                                {
+                                    "fn": "isValidHostLabel",
+                                    "argv": [
+                                        {
+                                            "fn": "getAttr",
+                                            "argv": [
+                                                {
+                                                    "ref": "arn"
+                                                },
+                                                "accountId"
+                                            ]
+                                        },
+                                        false
+                                    ]
+                                }
+                            ],
+                            "rules": [
+                                {
+                                    "conditions": [
+                                        {
+                                            "fn": "isValidHostLabel",
+                                            "argv": [
+                                                {
+                                                    "fn": "getAttr",
+                                                    "argv": [
+                                                        {
+                                                            "ref": "arn"
+                                                        },
+                                                        "region"
+                                                    ]
+                                                },
+                                                false
+                                            ]
+                                        }
+                                    ],
+                                    "rules": [
+                                        {
+                                            "conditions": [
+                                                {
+                                                    "fn": "stringEquals",
+                                                    "argv": [
+                                                        {
+                                                            "fn": "getAttr",
+                                                            "argv": [
+                                                                {
+                                                                    "ref": "arn"
+                                                                },
+                                                                "service"
+                                                            ]
+                                                        },
+                                                        "kinesis"
+                                                    ]
+                                                }
+                                            ],
+                                            "rules": [
+                                                {
+                                                    "conditions": [
+                                                        {
+                                                            "fn": "getAttr",
+                                                            "argv": [
+                                                                {
+                                                                    "ref": "arn"
+                                                                },
+                                                                "resourceId[0]"
+                                                            ],
+                                                            "assign": "arnType"
+                                                        },
+                                                        {
+                                                            "fn": "not",
+                                                            "argv": [
+                                                                {
+                                                                    "fn": "stringEquals",
+                                                                    "argv": [
+                                                                        {
+                                                                            "ref": "arnType"
+                                                                        },
+                                                                        ""
+                                                                    ]
+                                                                }
+                                                            ]
+                                                        }
+                                                    ],
+                                                    "rules": [
+                                                        {
+                                                            "conditions": [
+                                                                {
+                                                                    "fn": "stringEquals",
+                                                                    "argv": [
+                                                                        {
+                                                                            "ref": "arnType"
+                                                                        },
+                                                                        "channel"
+                                                                    ]
+                                                                }
+                                                            ],
+                                                            "rules": [
+                                                                {
+                                                                    "conditions": [
+                                                                        {
+                                                                            "fn": "stringEquals",
+                                                                            "argv": [
+                                                                                {
+                                                                                    "fn": "getAttr",
+                                                                                    "argv": [
+                                                                                        {
+                                                                                            "ref": "PartitionResult"
+                                                                                        },
+                                                                                        "name"
+                                                                                    ]
+                                                                                },
+                                                                                "{arn#partition}"
+                                                                            ]
+                                                                        }
+                                                                    ],
+                                                                    "rules": [
+                                                                        {
+                                                                            "conditions": [
+                                                                                {
+                                                                                    "fn": "isSet",
+                                                                                    "argv": [
+                                                                                        {
+                                                                                            "ref": "OperationType"
+                                                                                        }
+                                                                                    ]
+                                                                                }
+                                                                            ],
+                                                                            "rules": [
+                                                                                {
+                                                                                    "conditions": [
+                                                                                        {
+                                                                                            "fn": "getAttr",
+                                                                                            "argv": [
+                                                                                                {
+                                                                                                    "ref": "arn"
+                                                                                                },
+                                                                                                "resourceId[1]"
+                                                                                            ],
+                                                                                            "assign": "channelId"
+                                                                                        }
+                                                                                    ],
+                                                                                    "rules": [
+                                                                                        {
+                                                                                            "conditions": [
+                                                                                                {
+                                                                                                    "fn": "isValidHostLabel",
+                                                                                                    "argv": [
+                                                                                                        {
+                                                                                                            "ref": "channelId"
+                                                                                                        },
+                                                                                                        false
+                                                                                                    ]
+                                                                                                }
+                                                                                            ],
+                                                                                            "rules": [
+                                                                                                {
+                                                                                                    "conditions": [
+                                                                                                        {
+                                                                                                            "fn": "not",
+                                                                                                            "argv": [
+                                                                                                                {
+                                                                                                                    "fn": "stringEquals",
+                                                                                                                    "argv": [
+                                                                                                                        {
+                                                                                                                            "ref": "OperationType"
+                                                                                                                        },
+                                                                                                                        "data"
+                                                                                                                    ]
+                                                                                                                }
+                                                                                                            ]
+                                                                                                        }
+                                                                                                    ],
+                                                                                                    "rules": [
+                                                                                                        {
+                                                                                                            "conditions": [
+                                                                                                                {
+                                                                                                                    "fn": "booleanEquals",
+                                                                                                                    "argv": [
+                                                                                                                        {
+                                                                                                                            "ref": "UseFIPS"
+                                                                                                                        },
+                                                                                                                        true
+                                                                                                                    ]
+                                                                                                                },
+                                                                                                                {
+                                                                                                                    "fn": "booleanEquals",
+                                                                                                                    "argv": [
+                                                                                                                        {
+                                                                                                                            "ref": "UseDualStack"
+                                                                                                                        },
+                                                                                                                        true
+                                                                                                                    ]
+                                                                                                                }
+                                                                                                            ],
+                                                                                                            "rules": [
+                                                                                                                {
+                                                                                                                    "conditions": [
+                                                                                                                        {
+                                                                                                                            "fn": "booleanEquals",
+                                                                                                                            "argv": [
+                                                                                                                                {
+                                                                                                                                    "fn": "getAttr",
+                                                                                                                                    "argv": [
+                                                                                                                                        {
+                                                                                                                                            "ref": "PartitionResult"
+                                                                                                                                        },
+                                                                                                                                        "supportsFIPS"
+                                                                                                                                    ]
+                                                                                                                                },
+                                                                                                                                true
+                                                                                                                            ]
+                                                                                                                        }
+                                                                                                                    ],
+                                                                                                                    "rules": [
+                                                                                                                        {
+                                                                                                                            "conditions": [
+                                                                                                                                {
+                                                                                                                                    "fn": "booleanEquals",
+                                                                                                                                    "argv": [
+                                                                                                                                        {
+                                                                                                                                            "fn": "getAttr",
+                                                                                                                                            "argv": [
+                                                                                                                                                {
+                                                                                                                                                    "ref": "PartitionResult"
+                                                                                                                                                },
+                                                                                                                                                "supportsDualStack"
+                                                                                                                                            ]
+                                                                                                                                        },
+                                                                                                                                        true
+                                                                                                                                    ]
+                                                                                                                                }
+                                                                                                                            ],
+                                                                                                                            "rules": [
+                                                                                                                                {
+                                                                                                                                    "conditions": [],
+                                                                                                                                    "endpoint": {
+                                                                                                                                        "url": "https://{channelId}.{OperationType}-kinesis-fips.{Region}.{PartitionResult#dualStackDnsSuffix}",
+                                                                                                                                        "properties": {},
+                                                                                                                                        "headers": {}
+                                                                                                                                    },
+                                                                                                                                    "type": "endpoint"
+                                                                                                                                }
+                                                                                                                            ],
+                                                                                                                            "type": "tree"
+                                                                                                                        },
+                                                                                                                        {
+                                                                                                                            "conditions": [],
+                                                                                                                            "error": "DualStack is enabled, but this partition does not support DualStack.",
+                                                                                                                            "type": "error"
+                                                                                                                        }
+                                                                                                                    ],
+                                                                                                                    "type": "tree"
+                                                                                                                },
+                                                                                                                {
+                                                                                                                    "conditions": [],
+                                                                                                                    "error": "FIPS is enabled, but this partition does not support FIPS.",
+                                                                                                                    "type": "error"
+                                                                                                                }
+                                                                                                            ],
+                                                                                                            "type": "tree"
+                                                                                                        },
+                                                                                                        {
+                                                                                                            "conditions": [
+                                                                                                                {
+                                                                                                                    "fn": "booleanEquals",
+                                                                                                                    "argv": [
+                                                                                                                        {
+                                                                                                                            "ref": "UseFIPS"
+                                                                                                                        },
+                                                                                                                        true
+                                                                                                                    ]
+                                                                                                                }
+                                                                                                            ],
+                                                                                                            "rules": [
+                                                                                                                {
+                                                                                                                    "conditions": [
+                                                                                                                        {
+                                                                                                                            "fn": "booleanEquals",
+                                                                                                                            "argv": [
+                                                                                                                                {
+                                                                                                                                    "fn": "getAttr",
+                                                                                                                                    "argv": [
+                                                                                                                                        {
+                                                                                                                                            "ref": "PartitionResult"
+                                                                                                                                        },
+                                                                                                                                        "supportsFIPS"
+                                                                                                                                    ]
+                                                                                                                                },
+                                                                                                                                true
+                                                                                                                            ]
+                                                                                                                        }
+                                                                                                                    ],
+                                                                                                                    "rules": [
+                                                                                                                        {
+                                                                                                                            "conditions": [],
+                                                                                                                            "endpoint": {
+                                                                                                                                "url": "https://{channelId}.{OperationType}-kinesis-fips.{Region}.{PartitionResult#dnsSuffix}",
+                                                                                                                                "properties": {},
+                                                                                                                                "headers": {}
+                                                                                                                            },
+                                                                                                                            "type": "endpoint"
+                                                                                                                        }
+                                                                                                                    ],
+                                                                                                                    "type": "tree"
+                                                                                                                },
+                                                                                                                {
+                                                                                                                    "conditions": [],
+                                                                                                                    "error": "FIPS is enabled but this partition does not support FIPS",
+                                                                                                                    "type": "error"
+                                                                                                                }
+                                                                                                            ],
+                                                                                                            "type": "tree"
+                                                                                                        },
+                                                                                                        {
+                                                                                                            "conditions": [
+                                                                                                                {
+                                                                                                                    "fn": "booleanEquals",
+                                                                                                                    "argv": [
+                                                                                                                        {
+                                                                                                                            "ref": "UseDualStack"
+                                                                                                                        },
+                                                                                                                        true
+                                                                                                                    ]
+                                                                                                                }
+                                                                                                            ],
+                                                                                                            "rules": [
+                                                                                                                {
+                                                                                                                    "conditions": [
+                                                                                                                        {
+                                                                                                                            "fn": "booleanEquals",
+                                                                                                                            "argv": [
+                                                                                                                                {
+                                                                                                                                    "fn": "getAttr",
+                                                                                                                                    "argv": [
+                                                                                                                                        {
+                                                                                                                                            "ref": "PartitionResult"
+                                                                                                                                        },
+                                                                                                                                        "supportsDualStack"
+                                                                                                                                    ]
+                                                                                                                                },
+                                                                                                                                true
+                                                                                                                            ]
+                                                                                                                        }
+                                                                                                                    ],
+                                                                                                                    "rules": [
+                                                                                                                        {
+                                                                                                                            "conditions": [],
+                                                                                                                            "endpoint": {
+                                                                                                                                "url": "https://{channelId}.{OperationType}-kinesis.{Region}.{PartitionResult#dualStackDnsSuffix}",
+                                                                                                                                "properties": {},
+                                                                                                                                "headers": {}
+                                                                                                                            },
+                                                                                                                            "type": "endpoint"
+                                                                                                                        }
+                                                                                                                    ],
+                                                                                                                    "type": "tree"
+                                                                                                                },
+                                                                                                                {
+                                                                                                                    "conditions": [],
+                                                                                                                    "error": "DualStack is enabled but this partition does not support DualStack",
+                                                                                                                    "type": "error"
+                                                                                                                }
+                                                                                                            ],
+                                                                                                            "type": "tree"
+                                                                                                        },
+                                                                                                        {
+                                                                                                            "conditions": [],
+                                                                                                            "endpoint": {
+                                                                                                                "url": "https://{channelId}.{OperationType}-kinesis.{Region}.{PartitionResult#dnsSuffix}",
+                                                                                                                "properties": {},
+                                                                                                                "headers": {}
+                                                                                                            },
+                                                                                                            "type": "endpoint"
+                                                                                                        }
+                                                                                                    ],
+                                                                                                    "type": "tree"
+                                                                                                },
+                                                                                                {
+                                                                                                    "conditions": [],
+                                                                                                    "error": "ChannelARN does not support the `data` operation type.",
+                                                                                                    "type": "error"
+                                                                                                }
+                                                                                            ],
+                                                                                            "type": "tree"
+                                                                                        },
+                                                                                        {
+                                                                                            "conditions": [],
+                                                                                            "error": "Invalid ARN: Invalid channel id.",
+                                                                                            "type": "error"
+                                                                                        }
+                                                                                    ],
+                                                                                    "type": "tree"
+                                                                                },
+                                                                                {
+                                                                                    "conditions": [],
+                                                                                    "error": "Invalid ARN: Missing channel id.",
+                                                                                    "type": "error"
+                                                                                }
+                                                                            ],
+                                                                            "type": "tree"
+                                                                        },
+                                                                        {
+                                                                            "conditions": [],
+                                                                            "error": "Operation Type is not set. Please contact service team for resolution.",
+                                                                            "type": "error"
+                                                                        }
+                                                                    ],
+                                                                    "type": "tree"
+                                                                },
+                                                                {
+                                                                    "conditions": [],
+                                                                    "error": "Partition: {arn#partition} from ARN doesn't match with partition name: {PartitionResult#name}.",
+                                                                    "type": "error"
+                                                                }
+                                                            ],
+                                                            "type": "tree"
+                                                        },
+                                                        {
+                                                            "conditions": [],
+                                                            "error": "Invalid ARN: ChannelARN only supports `channel` arn types, found: `{arnType}`.",
+                                                            "type": "error"
+                                                        }
+                                                    ],
+                                                    "type": "tree"
+                                                },
+                                                {
+                                                    "conditions": [],
+                                                    "error": "Invalid ARN: No ARN type specified",
+                                                    "type": "error"
+                                                }
+                                            ],
+                                            "type": "tree"
+                                        },
+                                        {
+                                            "conditions": [],
+                                            "error": "Invalid ARN: The ARN was not for the Kinesis service, found: {arn#service}.",
+                                            "type": "error"
+                                        }
+                                    ],
+                                    "type": "tree"
+                                },
+                                {
+                                    "conditions": [],
+                                    "error": "Invalid ARN: Invalid region.",
+                                    "type": "error"
+                                }
+                            ],
+                            "type": "tree"
+                        },
+                        {
+                            "conditions": [],
+                            "error": "Invalid ARN: Invalid account id.",
+                            "type": "error"
+                        }
+                    ],
+                    "type": "tree"
+                },
+                {
+                    "conditions": [],
+                    "error": "Invalid ARN: Failed to parse ARN.",
+                    "type": "error"
+                }
+            ],
+            "type": "tree"
+        },
+        {
+            "conditions": [
+                {
+                    "fn": "not",
+                    "argv": [
+                        {
+                            "fn": "isSet",
+                            "argv": [
+                                {
+                                    "ref": "Endpoint"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "fn": "isSet",
+                    "argv": [
+                        {
+                            "ref": "AccountIdEndpointMode"
+                        }
+                    ]
+                },
+                {
+                    "fn": "not",
+                    "argv": [
+                        {
+                            "fn": "stringEquals",
+                            "argv": [
+                                {
+                                    "ref": "AccountIdEndpointMode"
+                                },
+                                "disabled"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "fn": "isSet",
+                    "argv": [
+                        {
+                            "ref": "AccountId"
+                        }
+                    ]
+                },
+                {
+                    "fn": "isSet",
+                    "argv": [
+                        {
+                            "ref": "Region"
+                        }
+                    ]
+                },
+                {
+                    "fn": "aws.partition",
+                    "argv": [
+                        {
+                            "ref": "Region"
+                        }
+                    ],
+                    "assign": "PartitionResult"
+                },
+                {
+                    "fn": "not",
+                    "argv": [
+                        {
+                            "fn": "stringEquals",
+                            "argv": [
+                                {
+                                    "fn": "getAttr",
+                                    "argv": [
+                                        {
+                                            "ref": "PartitionResult"
+                                        },
+                                        "name"
+                                    ]
+                                },
+                                "aws-iso"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "fn": "not",
+                    "argv": [
+                        {
+                            "fn": "stringEquals",
+                            "argv": [
+                                {
+                                    "fn": "getAttr",
+                                    "argv": [
+                                        {
+                                            "ref": "PartitionResult"
+                                        },
+                                        "name"
+                                    ]
+                                },
+                                "aws-iso-b"
+                            ]
+                        }
+                    ]
+                }
+            ],
+            "rules": [
+                {
+                    "conditions": [
+                        {
+                            "fn": "isValidHostLabel",
+                            "argv": [
+                                {
+                                    "ref": "AccountId"
+                                },
+                                false
+                            ]
+                        }
+                    ],
+                    "rules": [
+                        {
+                            "conditions": [
+                                {
+                                    "fn": "isSet",
+                                    "argv": [
+                                        {
+                                            "ref": "OperationType"
+                                        }
+                                    ]
+                                }
+                            ],
+                            "rules": [
+                                {
+                                    "conditions": [
+                                        {
+                                            "fn": "booleanEquals",
+                                            "argv": [
+                                                {
+                                                    "ref": "UseFIPS"
+                                                },
+                                                true
+                                            ]
+                                        },
+                                        {
+                                            "fn": "booleanEquals",
+                                            "argv": [
+                                                {
+                                                    "ref": "UseDualStack"
+                                                },
+                                                true
+                                            ]
+                                        }
+                                    ],
+                                    "rules": [
+                                        {
+                                            "conditions": [
+                                                {
+                                                    "fn": "booleanEquals",
+                                                    "argv": [
+                                                        {
+                                                            "fn": "getAttr",
+                                                            "argv": [
+                                                                {
+                                                                    "ref": "PartitionResult"
+                                                                },
+                                                                "supportsFIPS"
+                                                            ]
+                                                        },
+                                                        true
+                                                    ]
+                                                }
+                                            ],
+                                            "rules": [
+                                                {
+                                                    "conditions": [
+                                                        {
+                                                            "fn": "booleanEquals",
+                                                            "argv": [
+                                                                {
+                                                                    "fn": "getAttr",
+                                                                    "argv": [
+                                                                        {
+                                                                            "ref": "PartitionResult"
+                                                                        },
+                                                                        "supportsDualStack"
+                                                                    ]
+                                                                },
+                                                                true
+                                                            ]
+                                                        }
+                                                    ],
+                                                    "rules": [
+                                                        {
+                                                            "conditions": [],
+                                                            "endpoint": {
+                                                                "url": "https://{AccountId}.{OperationType}-kinesis-fips.{Region}.{PartitionResult#dualStackDnsSuffix}",
+                                                                "properties": {
+                                                                    "metricValues": [
+                                                                        "O"
+                                                                    ]
+                                                                },
+                                                                "headers": {}
+                                                            },
+                                                            "type": "endpoint"
+                                                        }
+                                                    ],
+                                                    "type": "tree"
+                                                },
+                                                {
+                                                    "conditions": [],
+                                                    "error": "DualStack is enabled, but this partition does not support DualStack.",
+                                                    "type": "error"
+                                                }
+                                            ],
+                                            "type": "tree"
+                                        },
+                                        {
+                                            "conditions": [],
+                                            "error": "FIPS is enabled, but this partition does not support FIPS.",
+                                            "type": "error"
+                                        }
+                                    ],
+                                    "type": "tree"
+                                },
+                                {
+                                    "conditions": [
+                                        {
+                                            "fn": "booleanEquals",
+                                            "argv": [
+                                                {
+                                                    "ref": "UseFIPS"
+                                                },
+                                                true
+                                            ]
+                                        }
+                                    ],
+                                    "rules": [
+                                        {
+                                            "conditions": [
+                                                {
+                                                    "fn": "booleanEquals",
+                                                    "argv": [
+                                                        {
+                                                            "fn": "getAttr",
+                                                            "argv": [
+                                                                {
+                                                                    "ref": "PartitionResult"
+                                                                },
+                                                                "supportsFIPS"
+                                                            ]
+                                                        },
+                                                        true
+                                                    ]
+                                                }
+                                            ],
+                                            "rules": [
+                                                {
+                                                    "conditions": [],
+                                                    "endpoint": {
+                                                        "url": "https://{AccountId}.{OperationType}-kinesis-fips.{Region}.{PartitionResult#dnsSuffix}",
+                                                        "properties": {
+                                                            "metricValues": [
+                                                                "O"
+                                                            ]
+                                                        },
+                                                        "headers": {}
+                                                    },
+                                                    "type": "endpoint"
+                                                }
+                                            ],
+                                            "type": "tree"
+                                        },
+                                        {
+                                            "conditions": [],
+                                            "error": "FIPS is enabled but this partition does not support FIPS",
+                                            "type": "error"
+                                        }
+                                    ],
+                                    "type": "tree"
+                                },
+                                {
+                                    "conditions": [
+                                        {
+                                            "fn": "booleanEquals",
+                                            "argv": [
+                                                {
+                                                    "ref": "UseDualStack"
+                                                },
+                                                true
+                                            ]
+                                        }
+                                    ],
+                                    "rules": [
+                                        {
+                                            "conditions": [
+                                                {
+                                                    "fn": "booleanEquals",
+                                                    "argv": [
+                                                        {
+                                                            "fn": "getAttr",
+                                                            "argv": [
+                                                                {
+                                                                    "ref": "PartitionResult"
+                                                                },
+                                                                "supportsDualStack"
+                                                            ]
+                                                        },
+                                                        true
+                                                    ]
+                                                }
+                                            ],
+                                            "rules": [
+                                                {
+                                                    "conditions": [],
+                                                    "endpoint": {
+                                                        "url": "https://{AccountId}.{OperationType}-kinesis.{Region}.{PartitionResult#dualStackDnsSuffix}",
+                                                        "properties": {
+                                                            "metricValues": [
+                                                                "O"
+                                                            ]
+                                                        },
+                                                        "headers": {}
+                                                    },
+                                                    "type": "endpoint"
+                                                }
+                                            ],
+                                            "type": "tree"
+                                        },
+                                        {
+                                            "conditions": [],
+                                            "error": "DualStack is enabled but this partition does not support DualStack",
+                                            "type": "error"
+                                        }
+                                    ],
+                                    "type": "tree"
+                                },
+                                {
+                                    "conditions": [],
+                                    "endpoint": {
+                                        "url": "https://{AccountId}.{OperationType}-kinesis.{Region}.{PartitionResult#dnsSuffix}",
+                                        "properties": {
+                                            "metricValues": [
+                                                "O"
+                                            ]
+                                        },
+                                        "headers": {}
+                                    },
+                                    "type": "endpoint"
+                                }
+                            ],
+                            "type": "tree"
+                        },
+                        {
+                            "conditions": [],
+                            "error": "Operation Type is not set. Please contact service team for resolution.",
+                            "type": "error"
+                        }
+                    ],
+                    "type": "tree"
+                },
+                {
+                    "conditions": [],
+                    "error": "Invalid account id.",
+                    "type": "error"
+                }
+            ],
+            "type": "tree"
+        },
+        {
+            "conditions": [
+                {
+                    "fn": "not",
+                    "argv": [
+                        {
+                            "fn": "isSet",
+                            "argv": [
+                                {
+                                    "ref": "Endpoint"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "fn": "isSet",
+                    "argv": [
+                        {
+                            "ref": "AccountIdEndpointMode"
+                        }
+                    ]
+                },
+                {
+                    "fn": "stringEquals",
+                    "argv": [
+                        {
+                            "ref": "AccountIdEndpointMode"
+                        },
+                        "required"
+                    ]
+                },
+                {
+                    "fn": "isSet",
+                    "argv": [
+                        {
+                            "ref": "Region"
+                        }
+                    ]
+                },
+                {
+                    "fn": "aws.partition",
+                    "argv": [
+                        {
+                            "ref": "Region"
+                        }
+                    ],
+                    "assign": "PartitionResult"
+                }
+            ],
+            "rules": [
+                {
+                    "conditions": [
+                        {
+                            "fn": "not",
+                            "argv": [
+                                {
+                                    "fn": "stringEquals",
+                                    "argv": [
+                                        {
+                                            "fn": "getAttr",
+                                            "argv": [
+                                                {
+                                                    "ref": "PartitionResult"
+                                                },
+                                                "name"
+                                            ]
+                                        },
+                                        "aws-iso"
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "fn": "not",
+                            "argv": [
+                                {
+                                    "fn": "stringEquals",
+                                    "argv": [
+                                        {
+                                            "fn": "getAttr",
+                                            "argv": [
+                                                {
+                                                    "ref": "PartitionResult"
+                                                },
+                                                "name"
+                                            ]
+                                        },
+                                        "aws-iso-b"
+                                    ]
+                                }
+                            ]
+                        }
+                    ],
+                    "rules": [
+                        {
+                            "conditions": [],
+                            "error": "AccountIdEndpointMode is required but no AccountID was provided or able to be loaded",
+                            "type": "error"
+                        }
+                    ],
+                    "type": "tree"
+                },
+                {
+                    "conditions": [],
+                    "error": "Invalid Configuration: AccountIdEndpointMode is required but account endpoints are not supported in this partition",
                     "type": "error"
                 }
             ],

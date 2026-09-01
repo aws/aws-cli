@@ -810,7 +810,8 @@
       },
       "errors":[
         {"shape":"ResourceContentionFault"},
-        {"shape":"IdempotentParameterMismatchError"}
+        {"shape":"IdempotentParameterMismatchError"},
+        {"shape":"IdempotentCallInProgressFault"}
       ],
       "documentation":"<p> Launches a specified number of instances in an Auto Scaling group. Returns instance IDs and other details if launch is successful or error details if launch is unsuccessful. </p>"
     },
@@ -1031,7 +1032,7 @@
         {"shape":"ScalingActivityInProgressFault"},
         {"shape":"ResourceContentionFault"}
       ],
-      "documentation":"<p>Terminates the specified instance and optionally adjusts the desired group size. This operation cannot be called on instances in a warm pool.</p> <p>This call simply makes a termination request. The instance is not terminated immediately. When an instance is terminated, the instance status changes to <code>terminated</code>. You can't connect to or start an instance after you've terminated it.</p> <p>If you do not specify the option to decrement the desired capacity, Amazon EC2 Auto Scaling launches instances to replace the ones that are terminated. </p> <p>By default, Amazon EC2 Auto Scaling balances instances across all Availability Zones. If you decrement the desired capacity, your Auto Scaling group can become unbalanced between Availability Zones. Amazon EC2 Auto Scaling tries to rebalance the group, and rebalancing might terminate instances in other zones. For more information, see <a href=\"https://docs.aws.amazon.com/autoscaling/ec2/userguide/ec2-auto-scaling-scaling-manually.html\">Manual scaling</a> in the <i>Amazon EC2 Auto Scaling User Guide</i>.</p>"
+      "documentation":"<p>Terminates the specified instance and optionally adjusts the desired group size. This operation cannot be called on instances in a warm pool.</p> <p>This call simply makes a termination request. The instances are not terminated immediately. When an instance is terminated, the instance status changes to <code>terminated</code>. You can't connect to or start an instance after you've terminated it.</p> <p>If you do not specify the option to decrement the desired capacity, Amazon EC2 Auto Scaling launches instances to replace the ones that are terminated. </p> <p>To terminate multiple instances in a single call, use the <code>InstanceIds</code> and <code>AutoScalingGroupName</code> parameters instead of <code>InstanceId</code>. When terminating multiple instances, the response populates <code>Activities</code> instead of <code>Activity</code>.</p> <p>By default, Amazon EC2 Auto Scaling balances instances across all Availability Zones. If you decrement the desired capacity, your Auto Scaling group can become unbalanced between Availability Zones. Amazon EC2 Auto Scaling tries to rebalance the group, and rebalancing might terminate instances in other zones. For more information, see <a href=\"https://docs.aws.amazon.com/autoscaling/ec2/userguide/ec2-auto-scaling-scaling-manually.html\">Manual scaling</a> in the <i>Amazon EC2 Auto Scaling User Guide</i>.</p>"
     },
     "UpdateAutoScalingGroup":{
       "name":"UpdateAutoScalingGroup",
@@ -1220,6 +1221,10 @@
         "Activity":{
           "shape":"Activity",
           "documentation":"<p>A scaling activity.</p>"
+        },
+        "Activities":{
+          "shape":"Activities",
+          "documentation":"<p>The scaling activities related to terminating the instances from the Auto Scaling group.</p>"
         }
       }
     },
@@ -1567,6 +1572,10 @@
         "InstanceLifecyclePolicy":{
           "shape":"InstanceLifecyclePolicy",
           "documentation":"<p>The instance lifecycle policy for the Auto Scaling group.</p>"
+        },
+        "Operator":{
+          "shape":"Operator",
+          "documentation":"<p>The entity that manages the Auto Scaling group, if applicable. When set, only the designated operator can make changes to the group configuration.</p>"
         }
       },
       "documentation":"<p>Describes an Auto Scaling group.</p>"
@@ -1715,7 +1724,7 @@
       "members":{
         "CapacityDistributionStrategy":{
           "shape":"CapacityDistributionStrategy",
-          "documentation":"<p> If launches fail in an Availability Zone, the following strategies are available. The default is <code>balanced-best-effort</code>. </p> <ul> <li> <p> <code>balanced-only</code> - If launches fail in an Availability Zone, Auto Scaling will continue to attempt to launch in the unhealthy zone to preserve a balanced distribution.</p> </li> <li> <p> <code>balanced-best-effort</code> - If launches fail in an Availability Zone, Auto Scaling will attempt to launch in another healthy Availability Zone instead.</p> </li> <li> <p> <code>reservations-then-balanced</code> - Auto Scaling will first attempt to launch into your Capacity Reservations, and then balance any remaining capacity across the healthy Availability Zones.</p> </li> </ul>"
+          "documentation":"<p> If launches fail in an Availability Zone, the following strategies are available. The default is <code>balanced-best-effort</code>. </p> <ul> <li> <p> <code>balanced-only</code> - If launches fail in an Availability Zone, Auto Scaling will continue to attempt to launch in the unhealthy zone to preserve a balanced distribution.</p> </li> <li> <p> <code>balanced-best-effort</code> - If launches fail in an Availability Zone, Auto Scaling will attempt to launch in another healthy Availability Zone instead.</p> </li> <li> <p> <code>reservations-then-balanced</code> - Auto Scaling will first attempt to launch into your Capacity Reservations, and then balance any remaining capacity across healthy Availability Zones.</p> </li> </ul>"
         }
       },
       "documentation":"<p> Describes an Availability Zone distribution. </p>"
@@ -2095,7 +2104,7 @@
         },
         "MixedInstancesPolicy":{
           "shape":"MixedInstancesPolicy",
-          "documentation":"<p>The mixed instances policy. For more information, see <a href=\"https://docs.aws.amazon.com/autoscaling/ec2/userguide/ec2-auto-scaling-mixed-instances-groups.html\">Auto Scaling groups with multiple instance types and purchase options</a> in the <i>Amazon EC2 Auto Scaling User Guide</i>.</p>"
+          "documentation":"<p>The mixed instances policy. For more information, see <a href=\"https://docs.aws.amazon.com/autoscaling/ec2/userguide/ec2-auto-scaling-mixed-instances-groups.html\">Auto Scaling groups with multiple instance types and purchase options</a> in the <i>Amazon EC2 Auto Scaling User Guide</i>. To learn how to prioritize multiple capacity types, see <a href=\"https://docs.aws.amazon.com/autoscaling/ec2/userguide/use-distribution-segments.html\">Use Distribution Segments to target multiple capacity types</a> in the <i>Amazon EC2 Auto Scaling User Guide</i>.</p>"
         },
         "InstanceId":{
           "shape":"XmlStringMaxLen19",
@@ -2220,6 +2229,10 @@
         "InstanceLifecyclePolicy":{
           "shape":"InstanceLifecyclePolicy",
           "documentation":"<p> The instance lifecycle policy for the Auto Scaling group. This policy controls instance behavior when an instance transitions through its lifecycle states. Configure retention triggers to specify when instances should move to a <code>Retained</code> state instead of automatic termination. </p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/autoscaling/ec2/userguide/instance-lifecycle-policy.html\"> Control instance retention with instance lifecycle policies</a> in the <i>Amazon EC2 Auto Scaling User Guide</i>. </p> <note> <p>Instances in a Retained state will continue to incur standard EC2 charges until terminated.</p> </note>"
+        },
+        "Operator":{
+          "shape":"Operator",
+          "documentation":"<p>The entity that manages the Auto Scaling group. If you specify this parameter, Amazon EC2 Auto Scaling passes the operator identity to EC2 for instance launches and only allows the designated operator to make changes to the Auto Scaling group. All mutating API calls from non-operator callers are rejected with an <code>AccessDenied</code> exception.</p>"
         }
       }
     },
@@ -2886,7 +2899,7 @@
         },
         "MixedInstancesPolicy":{
           "shape":"MixedInstancesPolicy",
-          "documentation":"<p>Use this structure to launch multiple instance types and On-Demand Instances and Spot Instances within a single Auto Scaling group.</p> <p>A mixed instances policy contains information that Amazon EC2 Auto Scaling can use to launch instances and help optimize your costs. For more information, see <a href=\"https://docs.aws.amazon.com/autoscaling/ec2/userguide/ec2-auto-scaling-mixed-instances-groups.html\">Auto Scaling groups with multiple instance types and purchase options</a> in the <i>Amazon EC2 Auto Scaling User Guide</i>.</p>"
+          "documentation":"<p>Use this structure to launch multiple instance types and configure how capacity is distributed across On-Demand, Spot, and supported Capacity Reservation types within a single Auto Scaling group.</p> <p>A mixed instances policy contains information that Amazon EC2 Auto Scaling can use to launch instances, prioritize capacity types, and help optimize your costs. For more information, see <a href=\"https://docs.aws.amazon.com/autoscaling/ec2/userguide/ec2-auto-scaling-mixed-instances-groups.html\">Auto Scaling groups with multiple instance types and purchase options</a> in the <i>Amazon EC2 Auto Scaling User Guide</i>.</p>"
         }
       },
       "documentation":"<p>Describes the desired configuration for an instance refresh. </p> <p>If you specify a desired configuration, you must specify either a <code>LaunchTemplate</code> or a <code>MixedInstancesPolicy</code>. </p>"
@@ -2999,6 +3012,20 @@
       }
     },
     "DisableScaleIn":{"type":"boolean"},
+    "DistributionSegment":{
+      "type":"structure",
+      "members":{
+        "TargetCapacityTypes":{
+          "shape":"TargetCapacityTypes",
+          "documentation":"<p>The capacity types to prioritize, in order. Amazon EC2 Auto Scaling attempts to launch instances in the priority order of the capacity types, and within each capacity type, in the order of instance types listed in your launch template <code>Overrides</code>.</p> <p>The following lists the valid values:</p> <dl> <dt>on-demand-capacity-reservation</dt> <dd> <p>On-Demand Capacity Reservations.</p> </dd> <dt>capacity-block</dt> <dd> <p>Capacity Blocks.</p> </dd> <dt>interruptible-capacity-reservation</dt> <dd> <p>Interruptible Capacity Reservations.</p> </dd> <dt>on-demand</dt> <dd> <p>On-Demand capacity. Include this value to allow the group to fall back to On-Demand capacity when the preceding capacity types are unavailable.</p> </dd> </dl>"
+        }
+      },
+      "documentation":"<p>Use this structure to specify the capacity types that Amazon EC2 Auto Scaling prioritizes when it launches instances.</p>"
+    },
+    "DistributionSegments":{
+      "type":"list",
+      "member":{"shape":"DistributionSegment"}
+    },
     "Ebs":{
       "type":"structure",
       "members":{
@@ -3259,6 +3286,19 @@
     "HealthCheckGracePeriod":{"type":"integer"},
     "HeartbeatTimeout":{"type":"integer"},
     "HonorCooldown":{"type":"boolean"},
+    "IdempotentCallInProgressFault":{
+      "type":"structure",
+      "members":{
+        "Message":{"shape":"XmlStringMaxLen255"}
+      },
+      "documentation":"<p> The service is currently processing another request with the same client token. Retry the request with the same client token—the in-flight operation will complete and return its result. </p>",
+      "error":{
+        "code":"IdempotentCallInProgress",
+        "httpStatusCode":500,
+        "senderFault":true
+      },
+      "exception":true
+    },
     "IdempotentParameterMismatchError":{
       "type":"structure",
       "members":{
@@ -3751,9 +3791,13 @@
         "SpotMaxPrice":{
           "shape":"MixedInstanceSpotPrice",
           "documentation":"<p>The maximum price per unit hour that you are willing to pay for a Spot Instance. If your maximum price is lower than the Spot price for the instance types that you selected, your Spot Instances are not launched. We do not recommend specifying a maximum price because it can lead to increased interruptions. When Spot Instances launch, you pay the current Spot price. To remove a maximum price that you previously set, include the property but specify an empty string (\"\") for the value.</p> <important> <p>If you specify a maximum price, your instances will be interrupted more frequently than if you do not specify one.</p> </important> <p>Valid Range: Minimum value of 0.001</p>"
+        },
+        "DistributionSegments":{
+          "shape":"DistributionSegments",
+          "documentation":"<p>The Distribution Segments configuration. Each segment contains an ordered list of capacity types to prioritize.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/autoscaling/ec2/userguide/use-distribution-segments.html\">Use Distribution Segments to target multiple capacity types</a> in the <i>Amazon EC2 Auto Scaling User Guide</i>.</p>"
         }
       },
-      "documentation":"<p>Use this structure to specify the distribution of On-Demand Instances and Spot Instances and the allocation strategies used to fulfill On-Demand and Spot capacities for a mixed instances policy.</p>"
+      "documentation":"<p>Use this structure to specify how a mixed instances policy distributes capacity across On-Demand, Spot, and supported Capacity Reservation types, and to specify the allocation strategies that are used to fulfill the capacity.</p>"
     },
     "InstancesToUpdate":{
       "type":"integer",
@@ -4348,6 +4392,11 @@
       "type":"list",
       "member":{"shape":"LocalStorageType"}
     },
+    "ManagerIdentifier":{
+      "type":"string",
+      "max":128,
+      "min":1
+    },
     "MaxGroupPreparedCapacity":{
       "type":"integer",
       "min":-1
@@ -4558,14 +4607,14 @@
       "members":{
         "LaunchTemplate":{
           "shape":"LaunchTemplate",
-          "documentation":"<p>One or more launch templates and the instance types (overrides) that are used to launch EC2 instances to fulfill On-Demand and Spot capacities.</p>"
+          "documentation":"<p>One or more launch templates and the instance types (overrides) that are used to launch EC2 instances to fulfill the configured capacities.</p>"
         },
         "InstancesDistribution":{
           "shape":"InstancesDistribution",
           "documentation":"<p>The instances distribution.</p>"
         }
       },
-      "documentation":"<p>Use this structure to launch multiple instance types and On-Demand Instances and Spot Instances within a single Auto Scaling group.</p> <p>A mixed instances policy contains information that Amazon EC2 Auto Scaling can use to launch instances and help optimize your costs. For more information, see <a href=\"https://docs.aws.amazon.com/autoscaling/ec2/userguide/ec2-auto-scaling-mixed-instances-groups.html\">Auto Scaling groups with multiple instance types and purchase options</a> in the <i>Amazon EC2 Auto Scaling User Guide</i>.</p>"
+      "documentation":"<p>Use this structure to launch multiple instance types and configure how capacity is distributed across On-Demand, Spot, and supported Capacity Reservation types within a single Auto Scaling group.</p> <p>A mixed instances policy contains information that Amazon EC2 Auto Scaling can use to launch instances, prioritize capacity types, and help optimize your costs. For more information, see <a href=\"https://docs.aws.amazon.com/autoscaling/ec2/userguide/ec2-auto-scaling-mixed-instances-groups.html\">Auto Scaling groups with multiple instance types and purchase options</a> in the <i>Amazon EC2 Auto Scaling User Guide</i>. To learn how to prioritize multiple capacity types, see <a href=\"https://docs.aws.amazon.com/autoscaling/ec2/userguide/use-distribution-segments.html\">Use Distribution Segments to target multiple capacity types</a> in the <i>Amazon EC2 Auto Scaling User Guide</i>.</p>"
     },
     "MonitoringEnabled":{"type":"boolean"},
     "NetworkBandwidthGbpsRequest":{
@@ -4643,6 +4692,17 @@
     "NumberOfLaunchConfigurations":{"type":"integer"},
     "OnDemandBaseCapacity":{"type":"integer"},
     "OnDemandPercentageAboveBaseCapacity":{"type":"integer"},
+    "Operator":{
+      "type":"structure",
+      "required":["Principal"],
+      "members":{
+        "Principal":{
+          "shape":"ManagerIdentifier",
+          "documentation":"<p>The service principal that is authorized to manage the Auto Scaling group. When an operator is specified, only the designated operator service principal can make mutating changes to the Auto Scaling group.</p>"
+        }
+      },
+      "documentation":"<p>Describes the entity that manages an Auto Scaling group.</p>"
+    },
     "Overrides":{
       "type":"list",
       "member":{"shape":"LaunchTemplateOverrides"}
@@ -5233,7 +5293,7 @@
         },
         "MaxHealthyPercentage":{
           "shape":"IntPercent100To200",
-          "documentation":"<p>Specifies the maximum percentage of the group that can be in service and healthy, or pending, to support your workload when replacing instances. The value is expressed as a percentage of the desired capacity of the Auto Scaling group. Value range is 100 to 200.</p> <p>If you specify <code>MaxHealthyPercentage</code>, you must also specify <code>MinHealthyPercentage</code>, and the difference between them cannot be greater than 100. A larger range increases the number of instances that can be replaced at the same time.</p> <p>If you do not specify this property, the default is 100 percent, or the percentage set in the instance maintenance policy for the Auto Scaling group, if defined.</p>"
+          "documentation":"<p>Specifies the maximum percentage of the group that can be in service and healthy, or pending, to support your workload when replacing instances. The value is expressed as a percentage of the desired capacity of the Auto Scaling group. Value range is 100 to 200.</p> <p>If you specify <code>MaxHealthyPercentage</code>, you must also specify <code>MinHealthyPercentage</code>, and the difference between them cannot be greater than 100. A larger range increases the number of instances that can be replaced at the same time.</p> <p>If you do not specify this property, the default is 100 percent, or the percentage set in the instance maintenance policy for the Auto Scaling group, if defined.</p> <important> <p>Explicitly setting <code>MaxHealthyPercentage</code> to 100 is not equivalent to omitting it. When <code>MaxHealthyPercentage</code> is explicitly set and it is mathematically impossible to replace instances while honoring both <code>MinHealthyPercentage</code> and <code>MaxHealthyPercentage</code> bounds simultaneously, Auto Scaling launches a new instance before terminating an old one (temporarily exceeding the desired capacity). When <code>MaxHealthyPercentage</code> is omitted, Auto Scaling terminates an instance and launches its replacement simultaneously. This behavioral difference can affect workflows that depend on instance replacement ordering.</p> </important>"
         },
         "BakeTime":{
           "shape":"BakeTime",
@@ -5877,6 +5937,19 @@
         }
       }
     },
+    "TargetCapacityType":{
+      "type":"string",
+      "enum":[
+        "on-demand-capacity-reservation",
+        "capacity-block",
+        "interruptible-capacity-reservation",
+        "on-demand"
+      ]
+    },
+    "TargetCapacityTypes":{
+      "type":"list",
+      "member":{"shape":"TargetCapacityType"}
+    },
     "TargetGroupARNs":{
       "type":"list",
       "member":{"shape":"XmlStringMaxLen511"}
@@ -5967,20 +6040,31 @@
     },
     "TerminateInstanceInAutoScalingGroupType":{
       "type":"structure",
-      "required":[
-        "InstanceId",
-        "ShouldDecrementDesiredCapacity"
-      ],
+      "required":["ShouldDecrementDesiredCapacity"],
       "members":{
         "InstanceId":{
           "shape":"XmlStringMaxLen19",
           "documentation":"<p>The ID of the instance.</p>"
+        },
+        "InstanceIds":{
+          "shape":"TerminationInstanceIds",
+          "documentation":"<p>The IDs of the instances. You can specify up to 100 instances.</p> <p>This parameter requires that you also specify <code>AutoScalingGroupName</code>.</p>"
+        },
+        "AutoScalingGroupName":{
+          "shape":"XmlStringMaxLen255",
+          "documentation":"<p>The name of the Auto Scaling group. Required when using <code>InstanceIds</code>.</p>"
         },
         "ShouldDecrementDesiredCapacity":{
           "shape":"ShouldDecrementDesiredCapacity",
           "documentation":"<p>Indicates whether terminating the instance also decrements the size of the Auto Scaling group.</p>"
         }
       }
+    },
+    "TerminationInstanceIds":{
+      "type":"list",
+      "member":{"shape":"XmlStringMaxLen19"},
+      "max":100,
+      "min":1
     },
     "TerminationPolicies":{
       "type":"list",
@@ -6066,7 +6150,7 @@
         },
         "MixedInstancesPolicy":{
           "shape":"MixedInstancesPolicy",
-          "documentation":"<p>The mixed instances policy. For more information, see <a href=\"https://docs.aws.amazon.com/autoscaling/ec2/userguide/ec2-auto-scaling-mixed-instances-groups.html\">Auto Scaling groups with multiple instance types and purchase options</a> in the <i>Amazon EC2 Auto Scaling User Guide</i>.</p>"
+          "documentation":"<p>The mixed instances policy. For more information, see <a href=\"https://docs.aws.amazon.com/autoscaling/ec2/userguide/ec2-auto-scaling-mixed-instances-groups.html\">Auto Scaling groups with multiple instance types and purchase options</a> in the <i>Amazon EC2 Auto Scaling User Guide</i>.</p> <p>You can remove the Distribution Segments configuration by specifying <code>OnDemandBaseCapacity</code> or <code>OnDemandPercentageAboveBaseCapacity</code>. You can also remove it explicitly by specifying an empty list for <code>DistributionSegments</code>.</p>"
         },
         "MinSize":{
           "shape":"AutoScalingGroupMinSize",

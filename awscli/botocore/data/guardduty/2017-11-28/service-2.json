@@ -5151,6 +5151,11 @@
       "max":100,
       "min":1
     },
+    "FilterVersion":{
+      "type":"long",
+      "box":true,
+      "min":1
+    },
     "Finding":{
       "type":"structure",
       "required":[
@@ -5632,6 +5637,21 @@
           "shape":"TagMap",
           "documentation":"<p>The tags of the filter resource.</p>",
           "locationName":"tags"
+        },
+        "CreatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the filter was created. This field is not available for filters that were created before the lifecycle metadata feature was enabled (legacy filters).</p>",
+          "locationName":"createdAt"
+        },
+        "UpdatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the filter was last updated. For legacy filters, this field is present only after the filter has been updated at least once since the lifecycle metadata feature was enabled.</p>",
+          "locationName":"updatedAt"
+        },
+        "Version":{
+          "shape":"FilterVersion",
+          "documentation":"<p>The version of the filter. Every time the filter is updated, the version increments by 1. This field is not available for legacy filters that were created before the lifecycle metadata feature was enabled.</p>",
+          "locationName":"version"
         }
       }
     },

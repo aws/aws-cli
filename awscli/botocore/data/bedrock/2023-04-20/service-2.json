@@ -2331,6 +2331,12 @@
       },
       "documentation":"<p>Contains a summary of an advanced prompt optimization job.</p>"
     },
+    "AdvancedPromptOptimizationModelIdentifier":{
+      "type":"string",
+      "max":2048,
+      "min":0,
+      "pattern":"(([a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}([a-z0-9-]{1,63}[.]){0,2}[a-z0-9-]{1,63}([:][a-z0-9-]{1,63}){0,2}(/[a-z0-9]{12}|))|(arn:aws(|-us-gov|-cn|-iso|-iso-b|-iso-f):bedrock:[a-z0-9-]{1,20}:[0-9]{12}:application-inference-profile/[a-zA-Z0-9-:.]+)|(arn:aws(|-us-gov|-cn|-iso|-iso-b|-iso-f):bedrock:[a-z0-9-]{1,20}:([0-9]{12})?:inference-profile/[a-zA-Z0-9-:.]+)|(arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}::foundation-model/[a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}([.:]?[a-z0-9-]{1,63})))"
+    },
     "AdvancedPromptOptimizationOutputConfig":{
       "type":"structure",
       "required":["s3Uri"],
@@ -12169,8 +12175,8 @@
       "required":["modelId"],
       "members":{
         "modelId":{
-          "shape":"BedrockModelId",
-          "documentation":"<p>The ID of the model to use for optimization.</p>"
+          "shape":"AdvancedPromptOptimizationModelIdentifier",
+          "documentation":"<p>The model to use for optimization. The value depends on the resource that you use:</p> <ul> <li> <p>If you use a base model, specify the model ID or its ARN. For a list of model IDs, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/model-cards.html\">Models at a glance</a> in the Amazon Bedrock User Guide.</p> </li> <li> <p>If you use a cross-Region (system-defined) inference profile, specify the inference profile ID or its ARN. For a list of inference profile IDs, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/cross-region-inference-support.html\">Supported Regions and models for inference profiles</a> in the Amazon Bedrock User Guide.</p> </li> <li> <p>If you use an application inference profile, specify its full ARN, including the account ID and Region.</p> </li> </ul>"
         },
         "inferenceConfig":{
           "shape":"InferenceConfiguration",
@@ -13560,7 +13566,7 @@
         },
         "listContains":{
           "shape":"FilterAttribute",
-          "documentation":"<p>Knowledge base data sources are returned if they contain a metadata attribute whose name matches the key and whose value is a list that contains the value as one of its members.</p> <p>The following example would return data sources with an animals attribute that is a list containing a cat member (for example, <code>[\"dog\", \"cat\"]</code>): <code>\"listContains\": { \"key\": \"animals\", \"value\": \"cat\" }</code> </p>"
+          "documentation":"<p>Knowledge base data sources are returned if they contain a metadata attribute whose name matches the key and whose value is a list that contains the value as one of its members.</p> <p>The following example would return data sources with an animals attribute that is a list containing a cat member (for example, <code>[\"dog\", \"cat\"] </code>): <code>\"listContains\": { \"key\": \"animals\", \"value\": \"cat\" }</code> </p>"
         },
         "stringContains":{
           "shape":"FilterAttribute",

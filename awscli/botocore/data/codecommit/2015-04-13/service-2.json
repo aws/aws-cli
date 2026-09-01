@@ -667,6 +667,33 @@
       ],
       "documentation":"<p>Returns the base-64 encoded content of an individual blob in a repository.</p>"
     },
+    "GetBlobDifferences":{
+      "name":"GetBlobDifferences",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetBlobDifferencesInput"},
+      "output":{"shape":"GetBlobDifferencesOutput"},
+      "errors":[
+        {"shape":"RepositoryNameRequiredException"},
+        {"shape":"InvalidRepositoryNameException"},
+        {"shape":"RepositoryDoesNotExistException"},
+        {"shape":"BlobIdRequiredException"},
+        {"shape":"InvalidBlobIdException"},
+        {"shape":"BlobIdDoesNotExistException"},
+        {"shape":"FileTooLargeException"},
+        {"shape":"ValidationException"},
+        {"shape":"InvalidContinuationTokenException"},
+        {"shape":"InvalidMaxResultsException"},
+        {"shape":"EncryptionIntegrityChecksFailedException"},
+        {"shape":"EncryptionKeyAccessDeniedException"},
+        {"shape":"EncryptionKeyDisabledException"},
+        {"shape":"EncryptionKeyNotFoundException"},
+        {"shape":"EncryptionKeyUnavailableException"}
+      ],
+      "documentation":"<p>Returns a structured, line-level diff between two blob versions in a repository. The diff is returned as an ordered list of hunks, where each hunk represents a contiguous run of changed lines together with any surrounding unchanged context lines.</p> <p>Results are paginated. Use <code>MaxResults</code> and <code>NextToken</code> to retrieve additional pages.</p> <p>For the typical usage workflow, see <a>GetDifferences</a>.</p>"
+    },
     "GetBranch":{
       "name":"GetBranch",
       "http":{
@@ -833,7 +860,7 @@
         {"shape":"EncryptionKeyNotFoundException"},
         {"shape":"EncryptionKeyUnavailableException"}
       ],
-      "documentation":"<p>Returns information about the differences in a valid commit specifier (such as a branch, tag, HEAD, commit ID, or other fully qualified reference). Results can be limited to a specified path.</p>"
+      "documentation":"<p>Returns information about the differences in a valid commit specifier (such as a branch, tag, HEAD, commit ID, or other fully qualified reference). Results can be limited to a specified path.</p> <p>For line-level diff details, pass the <code>beforeBlob.blobId</code> and <code>afterBlob.blobId</code> values from a <code>Difference</code> object to <a>GetBlobDifferences</a>.</p>"
     },
     "GetFile":{
       "name":"GetFile",
@@ -3794,6 +3821,73 @@
       "type":"string",
       "max":10240
     },
+    "DiffChange":{
+      "type":"structure",
+      "members":{
+        "type":{
+          "shape":"DiffChangeType",
+          "documentation":"<p>The type of change for this line. Possible values:</p> <ul> <li> <p> <code>CONTEXT</code> – Unchanged line included for surrounding context.</p> </li> <li> <p> <code>ADD</code> – Line added in the after blob.</p> </li> <li> <p> <code>DELETE</code> – Line removed from the before blob.</p> </li> </ul>"
+        },
+        "beforeLineNumber":{
+          "shape":"LineNumber",
+          "documentation":"<p>The 1-based line number in the before blob. This field is omitted for <code>ADD</code> lines.</p>"
+        },
+        "afterLineNumber":{
+          "shape":"LineNumber",
+          "documentation":"<p>The 1-based line number in the after blob. This field is omitted for <code>DELETE</code> lines.</p>"
+        },
+        "content":{
+          "shape":"LineContent",
+          "documentation":"<p>The text content of the line, without the trailing newline.</p>"
+        }
+      },
+      "documentation":"<p>A single line-level entry in a diff hunk. Each <code>DiffChange</code> describes one line and its change type: unchanged context, an addition in the after blob, or a deletion from the before blob.</p>"
+    },
+    "DiffChangeList":{
+      "type":"list",
+      "member":{"shape":"DiffChange"},
+      "max":25000
+    },
+    "DiffChangeType":{
+      "type":"string",
+      "enum":[
+        "CONTEXT",
+        "ADD",
+        "DELETE"
+      ]
+    },
+    "DiffContext":{"type":"integer"},
+    "DiffHunk":{
+      "type":"structure",
+      "members":{
+        "beforeStartLine":{
+          "shape":"LineNumber",
+          "documentation":"<p>The 1-based line number in the before blob where this hunk begins. When the hunk consists entirely of additions, <code>beforeLineCount</code> is <code>0</code>.</p>"
+        },
+        "beforeLineCount":{
+          "shape":"Count",
+          "documentation":"<p>The number of lines from the before blob covered by this hunk, including any context lines.</p>"
+        },
+        "afterStartLine":{
+          "shape":"LineNumber",
+          "documentation":"<p>The 1-based line number in the after blob where this hunk begins. When the hunk consists entirely of deletions, <code>afterLineCount</code> is <code>0</code>.</p>"
+        },
+        "afterLineCount":{
+          "shape":"Count",
+          "documentation":"<p>The number of lines from the after blob covered by this hunk, including any context lines.</p>"
+        },
+        "changes":{
+          "shape":"DiffChangeList",
+          "documentation":"<p>An ordered list of line-level changes that make up this hunk. Each entry indicates whether the line is unchanged context, an addition, or a deletion.</p>"
+        }
+      },
+      "documentation":"<p>A contiguous run of changed lines from a blob diff, together with any surrounding unchanged context lines. Hunks are returned in order from the start of the file to the end. Adjacent or overlapping hunks are merged into a single hunk in the response.</p>"
+    },
+    "DiffHunkList":{
+      "type":"list",
+      "member":{"shape":"DiffHunk"},
+      "max":1000
+    },
     "Difference":{
       "type":"structure",
       "members":{
@@ -4167,6 +4261,73 @@
         "approvalRuleTemplate":{
           "shape":"ApprovalRuleTemplate",
           "documentation":"<p>The content and structure of the approval rule template.</p>"
+        }
+      }
+    },
+    "GetBlobDifferencesInput":{
+      "type":"structure",
+      "required":[
+        "repositoryName",
+        "afterBlobId"
+      ],
+      "members":{
+        "repositoryName":{
+          "shape":"RepositoryName",
+          "documentation":"<p>The name of the repository that contains the blobs to compare.</p>"
+        },
+        "afterBlobId":{
+          "shape":"ObjectId",
+          "documentation":"<p>The ID of the \"after\" (destination) blob in the diff. Typically the value of <code>afterBlob.blobId</code> from a <code>Difference</code> object returned by <a>GetDifferences</a>.</p>"
+        },
+        "beforeBlobId":{
+          "shape":"ObjectId",
+          "documentation":"<p>The ID of the \"before\" (source) blob in the diff. Typically the value of <code>beforeBlob.blobId</code> from a <code>Difference</code> object returned by <a>GetDifferences</a>.</p> <p>If you do not specify a value, the operation returns a diff against an empty before-state. This is equivalent to treating the file as newly added.</p>"
+        },
+        "contextLines":{
+          "shape":"DiffContext",
+          "documentation":"<p>The number of unchanged lines of context to include before and after each block of changes in a hunk. Valid values are 0 through 20. Defaults to <code>3</code>.</p>"
+        },
+        "ignoreWhitespace":{
+          "shape":"IgnoreWhiteSpaces",
+          "documentation":"<p>Specifies whether to ignore whitespace-only changes when computing the diff. When <code>true</code>, the operation treats lines that differ only in whitespace as unchanged. Defaults to <code>false</code>.</p>"
+        },
+        "MaxResults":{
+          "shape":"Limit",
+          "documentation":"<p>The maximum number of <code>DiffHunk</code> entries to return in a single response page. Defaults to <code>100</code>.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>An enumeration token that returns the next batch of results when present in a request.</p>"
+        }
+      }
+    },
+    "GetBlobDifferencesOutput":{
+      "type":"structure",
+      "required":[
+        "hunks",
+        "isBinary",
+        "afterBlobSize"
+      ],
+      "members":{
+        "hunks":{
+          "shape":"DiffHunkList",
+          "documentation":"<p>An ordered list of diff hunks. Each hunk represents a contiguous run of changed and adjacent context lines. The list is empty when the blobs are identical or when the content is binary. The list is also empty when a paginated request has already returned all hunks in earlier pages, in which case <code>NextToken</code> is also <code>null</code>.</p>"
+        },
+        "isBinary":{
+          "shape":"CapitalBoolean",
+          "documentation":"<p>Specifies whether the operation treated the diff content as binary. When <code>true</code>, the operation does not compute a line-level diff and <code>hunks</code> is empty.</p>"
+        },
+        "beforeBlobSize":{
+          "shape":"ObjectSize",
+          "documentation":"<p>The size, in bytes, of the blob identified by <code>beforeBlobId</code>. Returns <code>0</code> when you do not specify <code>beforeBlobId</code>.</p>"
+        },
+        "afterBlobSize":{
+          "shape":"ObjectSize",
+          "documentation":"<p>The size, in bytes, of the blob identified by <code>afterBlobId</code>.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>An enumeration token that can be used in a request to return the next batch of <code>DiffHunk</code> entries. <code>null</code> when the response contains the final page of the diff.</p>"
         }
       }
     },
@@ -4873,6 +5034,7 @@
       "documentation":"<p>The client request token is not valid. Either the token is not in a valid format, or the token has been used in a previous request and cannot be reused.</p>",
       "exception":true
     },
+    "IgnoreWhiteSpaces":{"type":"boolean"},
     "InvalidActorArnException":{
       "type":"structure",
       "members":{},
@@ -5287,6 +5449,7 @@
       "type":"integer",
       "box":true
     },
+    "LineContent":{"type":"string"},
     "LineNumber":{"type":"integer"},
     "ListApprovalRuleTemplatesInput":{
       "type":"structure",
@@ -7861,7 +8024,13 @@
       },
       "documentation":"<p>Information about the user who made a specified commit.</p>"
     },
+    "ValidationException":{
+      "type":"structure",
+      "members":{},
+      "documentation":"<p>The specified input is either not valid, or it could not be validated.</p>",
+      "exception":true
+    },
     "blob":{"type":"blob"}
   },
-  "documentation":"<fullname>CodeCommit</fullname> <p>This is the <i>CodeCommit API Reference</i>. This reference provides descriptions of the operations and data types for CodeCommit API along with usage examples.</p> <p>You can use the CodeCommit API to work with the following objects:</p> <p>Repositories, by calling the following:</p> <ul> <li> <p> <a>BatchGetRepositories</a>, which returns information about one or more repositories associated with your Amazon Web Services account.</p> </li> <li> <p> <a>CreateRepository</a>, which creates an CodeCommit repository.</p> </li> <li> <p> <a>DeleteRepository</a>, which deletes an CodeCommit repository.</p> </li> <li> <p> <a>GetRepository</a>, which returns information about a specified repository.</p> </li> <li> <p> <a>ListRepositories</a>, which lists all CodeCommit repositories associated with your Amazon Web Services account.</p> </li> <li> <p> <a>UpdateRepositoryDescription</a>, which sets or updates the description of the repository.</p> </li> <li> <p> <a>UpdateRepositoryEncryptionKey</a>, which updates the Key Management Service encryption key used to encrypt and decrypt a repository.</p> </li> <li> <p> <a>UpdateRepositoryName</a>, which changes the name of the repository. If you change the name of a repository, no other users of that repository can access it until you send them the new HTTPS or SSH URL to use.</p> </li> </ul> <p>Branches, by calling the following:</p> <ul> <li> <p> <a>CreateBranch</a>, which creates a branch in a specified repository.</p> </li> <li> <p> <a>DeleteBranch</a>, which deletes the specified branch in a repository unless it is the default branch.</p> </li> <li> <p> <a>GetBranch</a>, which returns information about a specified branch.</p> </li> <li> <p> <a>ListBranches</a>, which lists all branches for a specified repository.</p> </li> <li> <p> <a>UpdateDefaultBranch</a>, which changes the default branch for a repository.</p> </li> </ul> <p>Files, by calling the following:</p> <ul> <li> <p> <a>DeleteFile</a>, which deletes the content of a specified file from a specified branch.</p> </li> <li> <p> <a>GetBlob</a>, which returns the base-64 encoded content of an individual Git blob object in a repository.</p> </li> <li> <p> <a>GetFile</a>, which returns the base-64 encoded content of a specified file.</p> </li> <li> <p> <a>GetFolder</a>, which returns the contents of a specified folder or directory.</p> </li> <li> <p> <a>ListFileCommitHistory</a>, which retrieves a list of commits and changes to a specified file. </p> </li> <li> <p> <a>PutFile</a>, which adds or modifies a single file in a specified repository and branch.</p> </li> </ul> <p>Commits, by calling the following:</p> <ul> <li> <p> <a>BatchGetCommits</a>, which returns information about one or more commits in a repository.</p> </li> <li> <p> <a>CreateCommit</a>, which creates a commit for changes to a repository.</p> </li> <li> <p> <a>GetCommit</a>, which returns information about a commit, including commit messages and author and committer information.</p> </li> <li> <p> <a>GetDifferences</a>, which returns information about the differences in a valid commit specifier (such as a branch, tag, HEAD, commit ID, or other fully qualified reference).</p> </li> </ul> <p>Merges, by calling the following:</p> <ul> <li> <p> <a>BatchDescribeMergeConflicts</a>, which returns information about conflicts in a merge between commits in a repository.</p> </li> <li> <p> <a>CreateUnreferencedMergeCommit</a>, which creates an unreferenced commit between two branches or commits for the purpose of comparing them and identifying any potential conflicts.</p> </li> <li> <p> <a>DescribeMergeConflicts</a>, which returns information about merge conflicts between the base, source, and destination versions of a file in a potential merge.</p> </li> <li> <p> <a>GetMergeCommit</a>, which returns information about the merge between a source and destination commit. </p> </li> <li> <p> <a>GetMergeConflicts</a>, which returns information about merge conflicts between the source and destination branch in a pull request.</p> </li> <li> <p> <a>GetMergeOptions</a>, which returns information about the available merge options between two branches or commit specifiers.</p> </li> <li> <p> <a>MergeBranchesByFastForward</a>, which merges two branches using the fast-forward merge option.</p> </li> <li> <p> <a>MergeBranchesBySquash</a>, which merges two branches using the squash merge option.</p> </li> <li> <p> <a>MergeBranchesByThreeWay</a>, which merges two branches using the three-way merge option.</p> </li> </ul> <p>Pull requests, by calling the following:</p> <ul> <li> <p> <a>CreatePullRequest</a>, which creates a pull request in a specified repository.</p> </li> <li> <p> <a>CreatePullRequestApprovalRule</a>, which creates an approval rule for a specified pull request.</p> </li> <li> <p> <a>DeletePullRequestApprovalRule</a>, which deletes an approval rule for a specified pull request.</p> </li> <li> <p> <a>DescribePullRequestEvents</a>, which returns information about one or more pull request events.</p> </li> <li> <p> <a>EvaluatePullRequestApprovalRules</a>, which evaluates whether a pull request has met all the conditions specified in its associated approval rules.</p> </li> <li> <p> <a>GetCommentsForPullRequest</a>, which returns information about comments on a specified pull request.</p> </li> <li> <p> <a>GetPullRequest</a>, which returns information about a specified pull request.</p> </li> <li> <p> <a>GetPullRequestApprovalStates</a>, which returns information about the approval states for a specified pull request.</p> </li> <li> <p> <a>GetPullRequestOverrideState</a>, which returns information about whether approval rules have been set aside (overriden) for a pull request, and if so, the Amazon Resource Name (ARN) of the user or identity that overrode the rules and their requirements for the pull request.</p> </li> <li> <p> <a>ListPullRequests</a>, which lists all pull requests for a repository.</p> </li> <li> <p> <a>MergePullRequestByFastForward</a>, which merges the source destination branch of a pull request into the specified destination branch for that pull request using the fast-forward merge option.</p> </li> <li> <p> <a>MergePullRequestBySquash</a>, which merges the source destination branch of a pull request into the specified destination branch for that pull request using the squash merge option.</p> </li> <li> <p> <a>MergePullRequestByThreeWay</a>, which merges the source destination branch of a pull request into the specified destination branch for that pull request using the three-way merge option.</p> </li> <li> <p> <a>OverridePullRequestApprovalRules</a>, which sets aside all approval rule requirements for a pull request.</p> </li> <li> <p> <a>PostCommentForPullRequest</a>, which posts a comment to a pull request at the specified line, file, or request.</p> </li> <li> <p> <a>UpdatePullRequestApprovalRuleContent</a>, which updates the structure of an approval rule for a pull request.</p> </li> <li> <p> <a>UpdatePullRequestApprovalState</a>, which updates the state of an approval on a pull request.</p> </li> <li> <p> <a>UpdatePullRequestDescription</a>, which updates the description of a pull request.</p> </li> <li> <p> <a>UpdatePullRequestStatus</a>, which updates the status of a pull request.</p> </li> <li> <p> <a>UpdatePullRequestTitle</a>, which updates the title of a pull request.</p> </li> </ul> <p>Approval rule templates, by calling the following:</p> <ul> <li> <p> <a>AssociateApprovalRuleTemplateWithRepository</a>, which associates a template with a specified repository. After the template is associated with a repository, CodeCommit creates approval rules that match the template conditions on every pull request created in the specified repository.</p> </li> <li> <p> <a>BatchAssociateApprovalRuleTemplateWithRepositories</a>, which associates a template with one or more specified repositories. After the template is associated with a repository, CodeCommit creates approval rules that match the template conditions on every pull request created in the specified repositories.</p> </li> <li> <p> <a>BatchDisassociateApprovalRuleTemplateFromRepositories</a>, which removes the association between a template and specified repositories so that approval rules based on the template are not automatically created when pull requests are created in those repositories.</p> </li> <li> <p> <a>CreateApprovalRuleTemplate</a>, which creates a template for approval rules that can then be associated with one or more repositories in your Amazon Web Services account.</p> </li> <li> <p> <a>DeleteApprovalRuleTemplate</a>, which deletes the specified template. It does not remove approval rules on pull requests already created with the template.</p> </li> <li> <p> <a>DisassociateApprovalRuleTemplateFromRepository</a>, which removes the association between a template and a repository so that approval rules based on the template are not automatically created when pull requests are created in the specified repository.</p> </li> <li> <p> <a>GetApprovalRuleTemplate</a>, which returns information about an approval rule template.</p> </li> <li> <p> <a>ListApprovalRuleTemplates</a>, which lists all approval rule templates in the Amazon Web Services Region in your Amazon Web Services account.</p> </li> <li> <p> <a>ListAssociatedApprovalRuleTemplatesForRepository</a>, which lists all approval rule templates that are associated with a specified repository.</p> </li> <li> <p> <a>ListRepositoriesForApprovalRuleTemplate</a>, which lists all repositories associated with the specified approval rule template.</p> </li> <li> <p> <a>UpdateApprovalRuleTemplateDescription</a>, which updates the description of an approval rule template.</p> </li> <li> <p> <a>UpdateApprovalRuleTemplateName</a>, which updates the name of an approval rule template.</p> </li> <li> <p> <a>UpdateApprovalRuleTemplateContent</a>, which updates the content of an approval rule template.</p> </li> </ul> <p>Comments in a repository, by calling the following:</p> <ul> <li> <p> <a>DeleteCommentContent</a>, which deletes the content of a comment on a commit in a repository.</p> </li> <li> <p> <a>GetComment</a>, which returns information about a comment on a commit.</p> </li> <li> <p> <a>GetCommentReactions</a>, which returns information about emoji reactions to comments.</p> </li> <li> <p> <a>GetCommentsForComparedCommit</a>, which returns information about comments on the comparison between two commit specifiers in a repository.</p> </li> <li> <p> <a>PostCommentForComparedCommit</a>, which creates a comment on the comparison between two commit specifiers in a repository.</p> </li> <li> <p> <a>PostCommentReply</a>, which creates a reply to a comment.</p> </li> <li> <p> <a>PutCommentReaction</a>, which creates or updates an emoji reaction to a comment.</p> </li> <li> <p> <a>UpdateComment</a>, which updates the content of a comment on a commit in a repository.</p> </li> </ul> <p>Tags used to tag resources in CodeCommit (not Git tags), by calling the following:</p> <ul> <li> <p> <a>ListTagsForResource</a>, which gets information about Amazon Web Servicestags for a specified Amazon Resource Name (ARN) in CodeCommit.</p> </li> <li> <p> <a>TagResource</a>, which adds or updates tags for a resource in CodeCommit.</p> </li> <li> <p> <a>UntagResource</a>, which removes tags for a resource in CodeCommit.</p> </li> </ul> <p>Triggers, by calling the following:</p> <ul> <li> <p> <a>GetRepositoryTriggers</a>, which returns information about triggers configured for a repository.</p> </li> <li> <p> <a>PutRepositoryTriggers</a>, which replaces all triggers for a repository and can be used to create or delete triggers.</p> </li> <li> <p> <a>TestRepositoryTriggers</a>, which tests the functionality of a repository trigger by sending data to the trigger target.</p> </li> </ul> <p>For information about how to use CodeCommit, see the <a href=\"https://docs.aws.amazon.com/codecommit/latest/userguide/welcome.html\">CodeCommit User Guide</a>.</p>"
+  "documentation":"<fullname>CodeCommit</fullname> <p>This is the <i>CodeCommit API Reference</i>. This reference provides descriptions of the operations and data types for CodeCommit API along with usage examples.</p> <p>You can use the CodeCommit API to work with the following objects:</p> <p>Repositories, by calling the following:</p> <ul> <li> <p> <a>BatchGetRepositories</a>, which returns information about one or more repositories associated with your Amazon Web Services account.</p> </li> <li> <p> <a>CreateRepository</a>, which creates an CodeCommit repository.</p> </li> <li> <p> <a>DeleteRepository</a>, which deletes an CodeCommit repository.</p> </li> <li> <p> <a>GetRepository</a>, which returns information about a specified repository.</p> </li> <li> <p> <a>ListRepositories</a>, which lists all CodeCommit repositories associated with your Amazon Web Services account.</p> </li> <li> <p> <a>UpdateRepositoryDescription</a>, which sets or updates the description of the repository.</p> </li> <li> <p> <a>UpdateRepositoryEncryptionKey</a>, which updates the Key Management Service encryption key used to encrypt and decrypt a repository.</p> </li> <li> <p> <a>UpdateRepositoryName</a>, which changes the name of the repository. If you change the name of a repository, no other users of that repository can access it until you send them the new HTTPS or SSH URL to use.</p> </li> </ul> <p>Branches, by calling the following:</p> <ul> <li> <p> <a>CreateBranch</a>, which creates a branch in a specified repository.</p> </li> <li> <p> <a>DeleteBranch</a>, which deletes the specified branch in a repository unless it is the default branch.</p> </li> <li> <p> <a>GetBranch</a>, which returns information about a specified branch.</p> </li> <li> <p> <a>ListBranches</a>, which lists all branches for a specified repository.</p> </li> <li> <p> <a>UpdateDefaultBranch</a>, which changes the default branch for a repository.</p> </li> </ul> <p>Files, by calling the following:</p> <ul> <li> <p> <a>DeleteFile</a>, which deletes the content of a specified file from a specified branch.</p> </li> <li> <p> <a>GetBlob</a>, which returns the base-64 encoded content of an individual Git blob object in a repository.</p> </li> <li> <p> <a>GetBlobDifferences</a>, which returns a structured, line-level diff between two blob versions in a repository, with optional surrounding context lines.</p> </li> <li> <p> <a>GetFile</a>, which returns the base-64 encoded content of a specified file.</p> </li> <li> <p> <a>GetFolder</a>, which returns the contents of a specified folder or directory.</p> </li> <li> <p> <a>ListFileCommitHistory</a>, which retrieves a list of commits and changes to a specified file. </p> </li> <li> <p> <a>PutFile</a>, which adds or modifies a single file in a specified repository and branch.</p> </li> </ul> <p>Commits, by calling the following:</p> <ul> <li> <p> <a>BatchGetCommits</a>, which returns information about one or more commits in a repository.</p> </li> <li> <p> <a>CreateCommit</a>, which creates a commit for changes to a repository.</p> </li> <li> <p> <a>GetCommit</a>, which returns information about a commit, including commit messages and author and committer information.</p> </li> <li> <p> <a>GetDifferences</a>, which returns information about the differences in a valid commit specifier (such as a branch, tag, HEAD, commit ID, or other fully qualified reference).</p> </li> </ul> <p>Merges, by calling the following:</p> <ul> <li> <p> <a>BatchDescribeMergeConflicts</a>, which returns information about conflicts in a merge between commits in a repository.</p> </li> <li> <p> <a>CreateUnreferencedMergeCommit</a>, which creates an unreferenced commit between two branches or commits for the purpose of comparing them and identifying any potential conflicts.</p> </li> <li> <p> <a>DescribeMergeConflicts</a>, which returns information about merge conflicts between the base, source, and destination versions of a file in a potential merge.</p> </li> <li> <p> <a>GetMergeCommit</a>, which returns information about the merge between a source and destination commit. </p> </li> <li> <p> <a>GetMergeConflicts</a>, which returns information about merge conflicts between the source and destination branch in a pull request.</p> </li> <li> <p> <a>GetMergeOptions</a>, which returns information about the available merge options between two branches or commit specifiers.</p> </li> <li> <p> <a>MergeBranchesByFastForward</a>, which merges two branches using the fast-forward merge option.</p> </li> <li> <p> <a>MergeBranchesBySquash</a>, which merges two branches using the squash merge option.</p> </li> <li> <p> <a>MergeBranchesByThreeWay</a>, which merges two branches using the three-way merge option.</p> </li> </ul> <p>Pull requests, by calling the following:</p> <ul> <li> <p> <a>CreatePullRequest</a>, which creates a pull request in a specified repository.</p> </li> <li> <p> <a>CreatePullRequestApprovalRule</a>, which creates an approval rule for a specified pull request.</p> </li> <li> <p> <a>DeletePullRequestApprovalRule</a>, which deletes an approval rule for a specified pull request.</p> </li> <li> <p> <a>DescribePullRequestEvents</a>, which returns information about one or more pull request events.</p> </li> <li> <p> <a>EvaluatePullRequestApprovalRules</a>, which evaluates whether a pull request has met all the conditions specified in its associated approval rules.</p> </li> <li> <p> <a>GetCommentsForPullRequest</a>, which returns information about comments on a specified pull request.</p> </li> <li> <p> <a>GetPullRequest</a>, which returns information about a specified pull request.</p> </li> <li> <p> <a>GetPullRequestApprovalStates</a>, which returns information about the approval states for a specified pull request.</p> </li> <li> <p> <a>GetPullRequestOverrideState</a>, which returns information about whether approval rules have been set aside (overriden) for a pull request, and if so, the Amazon Resource Name (ARN) of the user or identity that overrode the rules and their requirements for the pull request.</p> </li> <li> <p> <a>ListPullRequests</a>, which lists all pull requests for a repository.</p> </li> <li> <p> <a>MergePullRequestByFastForward</a>, which merges the source destination branch of a pull request into the specified destination branch for that pull request using the fast-forward merge option.</p> </li> <li> <p> <a>MergePullRequestBySquash</a>, which merges the source destination branch of a pull request into the specified destination branch for that pull request using the squash merge option.</p> </li> <li> <p> <a>MergePullRequestByThreeWay</a>, which merges the source destination branch of a pull request into the specified destination branch for that pull request using the three-way merge option.</p> </li> <li> <p> <a>OverridePullRequestApprovalRules</a>, which sets aside all approval rule requirements for a pull request.</p> </li> <li> <p> <a>PostCommentForPullRequest</a>, which posts a comment to a pull request at the specified line, file, or request.</p> </li> <li> <p> <a>UpdatePullRequestApprovalRuleContent</a>, which updates the structure of an approval rule for a pull request.</p> </li> <li> <p> <a>UpdatePullRequestApprovalState</a>, which updates the state of an approval on a pull request.</p> </li> <li> <p> <a>UpdatePullRequestDescription</a>, which updates the description of a pull request.</p> </li> <li> <p> <a>UpdatePullRequestStatus</a>, which updates the status of a pull request.</p> </li> <li> <p> <a>UpdatePullRequestTitle</a>, which updates the title of a pull request.</p> </li> </ul> <p>Approval rule templates, by calling the following:</p> <ul> <li> <p> <a>AssociateApprovalRuleTemplateWithRepository</a>, which associates a template with a specified repository. After the template is associated with a repository, CodeCommit creates approval rules that match the template conditions on every pull request created in the specified repository.</p> </li> <li> <p> <a>BatchAssociateApprovalRuleTemplateWithRepositories</a>, which associates a template with one or more specified repositories. After the template is associated with a repository, CodeCommit creates approval rules that match the template conditions on every pull request created in the specified repositories.</p> </li> <li> <p> <a>BatchDisassociateApprovalRuleTemplateFromRepositories</a>, which removes the association between a template and specified repositories so that approval rules based on the template are not automatically created when pull requests are created in those repositories.</p> </li> <li> <p> <a>CreateApprovalRuleTemplate</a>, which creates a template for approval rules that can then be associated with one or more repositories in your Amazon Web Services account.</p> </li> <li> <p> <a>DeleteApprovalRuleTemplate</a>, which deletes the specified template. It does not remove approval rules on pull requests already created with the template.</p> </li> <li> <p> <a>DisassociateApprovalRuleTemplateFromRepository</a>, which removes the association between a template and a repository so that approval rules based on the template are not automatically created when pull requests are created in the specified repository.</p> </li> <li> <p> <a>GetApprovalRuleTemplate</a>, which returns information about an approval rule template.</p> </li> <li> <p> <a>ListApprovalRuleTemplates</a>, which lists all approval rule templates in the Amazon Web Services Region in your Amazon Web Services account.</p> </li> <li> <p> <a>ListAssociatedApprovalRuleTemplatesForRepository</a>, which lists all approval rule templates that are associated with a specified repository.</p> </li> <li> <p> <a>ListRepositoriesForApprovalRuleTemplate</a>, which lists all repositories associated with the specified approval rule template.</p> </li> <li> <p> <a>UpdateApprovalRuleTemplateDescription</a>, which updates the description of an approval rule template.</p> </li> <li> <p> <a>UpdateApprovalRuleTemplateName</a>, which updates the name of an approval rule template.</p> </li> <li> <p> <a>UpdateApprovalRuleTemplateContent</a>, which updates the content of an approval rule template.</p> </li> </ul> <p>Comments in a repository, by calling the following:</p> <ul> <li> <p> <a>DeleteCommentContent</a>, which deletes the content of a comment on a commit in a repository.</p> </li> <li> <p> <a>GetComment</a>, which returns information about a comment on a commit.</p> </li> <li> <p> <a>GetCommentReactions</a>, which returns information about emoji reactions to comments.</p> </li> <li> <p> <a>GetCommentsForComparedCommit</a>, which returns information about comments on the comparison between two commit specifiers in a repository.</p> </li> <li> <p> <a>PostCommentForComparedCommit</a>, which creates a comment on the comparison between two commit specifiers in a repository.</p> </li> <li> <p> <a>PostCommentReply</a>, which creates a reply to a comment.</p> </li> <li> <p> <a>PutCommentReaction</a>, which creates or updates an emoji reaction to a comment.</p> </li> <li> <p> <a>UpdateComment</a>, which updates the content of a comment on a commit in a repository.</p> </li> </ul> <p>Tags used to tag resources in CodeCommit (not Git tags), by calling the following:</p> <ul> <li> <p> <a>ListTagsForResource</a>, which gets information about Amazon Web Servicestags for a specified Amazon Resource Name (ARN) in CodeCommit.</p> </li> <li> <p> <a>TagResource</a>, which adds or updates tags for a resource in CodeCommit.</p> </li> <li> <p> <a>UntagResource</a>, which removes tags for a resource in CodeCommit.</p> </li> </ul> <p>Triggers, by calling the following:</p> <ul> <li> <p> <a>GetRepositoryTriggers</a>, which returns information about triggers configured for a repository.</p> </li> <li> <p> <a>PutRepositoryTriggers</a>, which replaces all triggers for a repository and can be used to create or delete triggers.</p> </li> <li> <p> <a>TestRepositoryTriggers</a>, which tests the functionality of a repository trigger by sending data to the trigger target.</p> </li> </ul> <p>For information about how to use CodeCommit, see the <a href=\"https://docs.aws.amazon.com/codecommit/latest/userguide/welcome.html\">CodeCommit User Guide</a>.</p>"
 }

@@ -169,8 +169,8 @@
         {"shape":"ConflictException"},
         {"shape":"InternalServerException"},
         {"shape":"AccessDeniedException"},
-        {"shape":"ThrottlingException"},
         {"shape":"InvalidParameterException"},
+        {"shape":"ThrottlingException"},
         {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Creates a Private Connection to a target resource.</p>",
@@ -1245,6 +1245,29 @@
       "documentation":"<p>Updates the information of an existing AgentSpace.</p>",
       "endpoint":{"hostPrefix":"cp."}
     },
+    "UpdateApprovalAction":{
+      "name":"UpdateApprovalAction",
+      "http":{
+        "method":"POST",
+        "requestUri":"/agents/agent-space/{agentSpaceId}/approvals/{approvalId}/update-action",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateApprovalActionRequest"},
+      "output":{"shape":"UpdateApprovalActionResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ContentSizeExceededException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidParameterException"}
+      ],
+      "documentation":"<p>Updates an approval request with the terminal decision (APPROVED or REJECTED). A single operation handles both verbs via the action enum.</p>",
+      "endpoint":{"hostPrefix":"dp."}
+    },
     "UpdateAsset":{
       "name":"UpdateAsset",
       "http":{
@@ -1499,6 +1522,14 @@
         "accountType":{
           "shape":"MonitorAccountType",
           "documentation":"<p>Account Type 'monitor' for AIDevOps monitoring.</p>"
+        },
+        "agentElevatedRoleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>Optional IAM role ARN to be assumed by AIDevOps for elevated directed actions on behalf of the customer. Used for mutating operations gated by elevatedActionsEnabled on the AgentSpace. When not provided, only non-elevated directed actions are available for this AWS account.</p>"
+        },
+        "agentElevatedRoleArnStatus":{
+          "shape":"ValidationStatus",
+          "documentation":"<p>Validation status of the agentElevatedRoleArn. Updated asynchronously after the customer registers an elevated role. Possible values: PENDING_CONFIRMATION (validation in progress), VALID (role validated), INVALID (validation failed).</p>"
         }
       },
       "documentation":"<p>Configuration for AWS monitor account integration, allowing AIDevOps to monitor AWS resources.</p>"
@@ -1637,6 +1668,10 @@
         "agentSpaceId":{
           "shape":"AgentSpaceId",
           "documentation":"<p>The unique identifier of the AgentSpace</p>"
+        },
+        "preferences":{
+          "shape":"AgentSpacePreferences",
+          "documentation":"<p>The preferences configured on the agent space. Preferences that are not set take their default values.</p>"
         }
       },
       "documentation":"<p>Represents a complete AgentSpace with all its properties, timestamps, encryption settings, and unique identifier.</p>"
@@ -1645,6 +1680,11 @@
       "type":"string",
       "documentation":"<p>Unique identifier for an agent space (allows alphanumeric characters and hyphens; 1-64 characters)</p>",
       "pattern":"[a-zA-Z0-9-]{1,64}"
+    },
+    "AgentSpaceIdentifier":{
+      "type":"string",
+      "max":2048,
+      "min":1
     },
     "AgentSpaceList":{
       "type":"list",
@@ -1658,11 +1698,118 @@
       "min":1,
       "pattern":"[\\p{L}\\p{N}\\p{P}\\p{S}\\p{Z}]+"
     },
+    "AgentSpacePreferenceKey":{
+      "type":"string",
+      "documentation":"<p>The key of a preference that can be configured on an agent space. The `elevatedActionsEnabled` key controls whether elevated directed actions are permitted in the agent space. Elevated directed actions are mutating operations that also require per-action operator approval, and default to `false` when not set.</p>",
+      "enum":["elevatedActionsEnabled"]
+    },
+    "AgentSpacePreferences":{
+      "type":"map",
+      "key":{"shape":"AgentSpacePreferenceKey"},
+      "value":{"shape":"Boolean"},
+      "documentation":"<p>The preferences configured on an agent space, keyed by preference key. Each key must be a recognized preference key; unrecognized keys are rejected.</p>",
+      "max":25,
+      "min":0
+    },
     "ApiKeyValue":{
       "type":"string",
       "documentation":"<p>API Key Value for service.</p>",
       "min":1,
       "sensitive":true
+    },
+    "ApprovalAction":{
+      "type":"structure",
+      "members":{
+        "toolUseId":{
+          "shape":"ToolUseId",
+          "documentation":"<p>Identifier of the specific paused tool invocation that requested approval. Correlates the approval decision back to the paused invocation.</p>"
+        },
+        "interruptId":{
+          "shape":"InterruptId",
+          "documentation":"<p>An opaque resume identifier issued by the service when an agent execution pauses for approval. Provide it when resuming so the service can resume the correct paused execution.</p>"
+        },
+        "approvalId":{
+          "shape":"ApprovalId",
+          "documentation":"<p>Identifier of the approval request being resolved.</p>"
+        },
+        "buttonText":{
+          "shape":"ButtonText",
+          "documentation":"<p>Optional display text of the UI control the user chose (for example, \"Approve Exact\", \"Approve Broader\", or \"Reject\"), provided as auxiliary decision context.</p>"
+        },
+        "action":{
+          "shape":"ApprovalActionType",
+          "documentation":"<p>The action taken on the approval request — APPROVED or REJECTED.</p>"
+        }
+      },
+      "documentation":"<p>An approval decision supplied when resuming a paused agent execution. When an agent execution pauses to request approval for an elevated action, SendMessage streams an approval request carrying interrupt identifiers. This structure carries the decision back to the service — which paused tool invocation is being resumed, the opaque interrupt identifier that resumes it, the identifier of the approval request being resolved, optional display text of the control the user chose, and the action taken (APPROVED or REJECTED) — so the service can resume the paused execution. All members are optional on the wire; service-side validation is applied against the populated subset.</p>"
+    },
+    "ApprovalActionType":{
+      "type":"string",
+      "documentation":"<p>The action to take on an approval request — APPROVED or REJECTED.</p>",
+      "enum":[
+        "APPROVED",
+        "REJECTED"
+      ]
+    },
+    "ApprovalArgumentPins":{
+      "type":"map",
+      "key":{"shape":"ApprovalPinKey"},
+      "value":{"shape":"ApprovalPinValue"},
+      "documentation":"<p>Map of argument pin keys to pinned values used to narrow an ApprovalPattern.</p>",
+      "max":20,
+      "min":0
+    },
+    "ApprovalId":{
+      "type":"string",
+      "documentation":"<p>The service-generated unique identifier of the approval request, formatted as a version 7 UUID (RFC 9562) in the canonical 8-4-4-4-12 hexadecimal representation.</p>",
+      "pattern":"[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-7[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}"
+    },
+    "ApprovalPattern":{
+      "type":"structure",
+      "required":[
+        "tool",
+        "argumentPins"
+      ],
+      "members":{
+        "tool":{
+          "shape":"ToolIdentifier",
+          "documentation":"<p>Identifier of the tool the pattern applies to (e.g. `use_aws` for AWS actions, or a third-party tool name).</p>"
+        },
+        "argumentPins":{
+          "shape":"ApprovalArgumentPins",
+          "documentation":"<p>Argument constraints that narrow which tool invocations the pattern matches. For AWS tools, the map must include `operation` (the IAM action, e.g. `ec2:AuthorizeSecurityGroupIngress`) and `resource_arn` (the resource ARN or ARN glob); additional narrowing arguments go in further pin keys. The same `{tool, argumentPins}` shape is used uniformly for AWS and third-party tools, with tool-specific keys for third-party tools. Requests whose argument pins are collectively too large are rejected with a ValidationException.</p>"
+        }
+      },
+      "documentation":"<p>Tool-invocation pattern primitive used to express both an agent-requested approval and a finalized approval. The primitive is uniform across AWS and third-party tools: a tool identifier plus a map of argument pins that narrow which invocations the pattern matches.</p>"
+    },
+    "ApprovalPinKey":{
+      "type":"string",
+      "documentation":"<p>Argument pin key in an ApprovalPattern (e.g. `operation`, `resource_arn`).</p>",
+      "max":128,
+      "min":1
+    },
+    "ApprovalPinValue":{
+      "type":"string",
+      "documentation":"<p>Argument pin value in an ApprovalPattern.</p>",
+      "max":131072,
+      "min":1
+    },
+    "ApprovalReason":{
+      "type":"string",
+      "documentation":"<p>Free-text rationale for an approval rejection.</p>",
+      "max":1024,
+      "min":0
+    },
+    "ApprovalStatus":{
+      "type":"string",
+      "documentation":"<p>Lifecycle status of an approval request, distinct from the action verb. State machine: PENDING (awaiting a decision) -&gt; APPROVED (the action was APPROVED; redeemable until revoked or fully redeemed) or REJECTED (the action was REJECTED; terminal). APPROVED -&gt; REDEEMED (consumed by a credential mint at least once; non-single-use approvals stay re-redeemable until expiry) or REVOKED (administratively invalidated; terminal).</p>",
+      "enum":[
+        "PENDING",
+        "APPROVED",
+        "REJECTED",
+        "REVOKED",
+        "REDEEMED"
+      ]
     },
     "Asset":{
       "type":"structure",
@@ -1848,7 +1995,7 @@
     "AssetFileText":{
       "type":"string",
       "documentation":"<p>Text file content</p>",
-      "max":1572864,
+      "max":6291456,
       "min":0
     },
     "AssetIdList":{
@@ -1868,7 +2015,7 @@
       "members":{
         "url":{
           "shape":"AssetContentUrl",
-          "documentation":"<p>The source URL to import asset content from</p>"
+          "documentation":"<p>The source URL to import asset content from.</p>"
         }
       },
       "documentation":"<p>Content for an asset sourced from an external URL.</p>"
@@ -2138,12 +2285,22 @@
       "type":"boolean",
       "box":true
     },
+    "ButtonText":{
+      "type":"string",
+      "documentation":"<p>Optional display text of the UI control the user chose (for example, \"Approve Exact\", \"Approve Broader\", or \"Reject\"), provided as auxiliary decision context.</p>",
+      "max":256,
+      "min":1
+    },
     "CapabilityConfiguration":{
       "type":"structure",
       "members":{
         "enabled":{
           "shape":"Boolean",
           "documentation":"<p>Whether the capability is enabled.</p>"
+        },
+        "triggerFilterGroups":{
+          "shape":"TriggerFilterGroups",
+          "documentation":"<p>Optional trigger filter groups. Evaluated only when enabled=true; retained while the capability is disabled, so re-enabling restores the prior trigger behavior.</p>"
         }
       },
       "documentation":"<p>Capability configuration for the AWS DevOps Agent.</p>"
@@ -2191,7 +2348,9 @@
     "ChatExecutionId":{
       "type":"string",
       "documentation":"<p>Chat execution identifier — must be a valid UUID</p>",
-      "pattern":"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+      "max":50,
+      "min":32,
+      "pattern":"[A-Za-z0-9_-]+"
     },
     "ChatExecutionList":{
       "type":"list",
@@ -2270,6 +2429,10 @@
         "tags":{
           "shape":"Tags",
           "documentation":"<p>Tags to add to the AgentSpace at creation time.</p>"
+        },
+        "preferences":{
+          "shape":"AgentSpacePreferences",
+          "documentation":"<p>The preferences to configure on the agent space. Preferences not provided take their default values.</p>"
         }
       },
       "documentation":"<p>Input for creating a new AgentSpace.</p>"
@@ -2302,7 +2465,7 @@
       ],
       "members":{
         "agentSpaceId":{
-          "shape":"AgentSpaceId",
+          "shape":"AgentSpaceIdentifier",
           "documentation":"<p>The unique identifier for the agent space containing the asset</p>",
           "location":"uri",
           "locationName":"agentSpaceId"
@@ -2360,7 +2523,7 @@
       ],
       "members":{
         "agentSpaceId":{
-          "shape":"AgentSpaceId",
+          "shape":"AgentSpaceIdentifier",
           "documentation":"<p>The unique identifier for the agent space where the asset will be created</p>",
           "location":"uri",
           "locationName":"agentSpaceId"
@@ -2411,7 +2574,7 @@
       ],
       "members":{
         "agentSpaceId":{
-          "shape":"AgentSpaceId",
+          "shape":"AgentSpaceIdentifier",
           "documentation":"<p>The unique identifier for the agent space where the task will be created</p>",
           "location":"uri",
           "locationName":"agentSpaceId"
@@ -2437,12 +2600,18 @@
           "documentation":"<p>The priority level of the task</p>"
         },
         "clientToken":{
-          "shape":"String",
+          "shape":"CreateBacklogTaskRequestClientTokenString",
           "documentation":"<p>Client-provided token for idempotent operations</p>",
           "idempotencyToken":true
         }
       },
       "documentation":"<p>Request structure for creating a new backlog task</p>"
+    },
+    "CreateBacklogTaskRequestClientTokenString":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"[\\x21-\\x7E]+"
     },
     "CreateBacklogTaskResponse":{
       "type":"structure",
@@ -2460,7 +2629,8 @@
       "required":["agentSpaceId"],
       "members":{
         "agentSpaceId":{
-          "shape":"AgentSpaceId",
+          "shape":"AgentSpaceIdentifier",
+          "documentation":"<p>The unique identifier for the agent space where the chat will be created.</p>",
           "location":"uri",
           "locationName":"agentSpaceId"
         },
@@ -2587,7 +2757,7 @@
       ],
       "members":{
         "agentSpaceId":{
-          "shape":"AgentSpaceId",
+          "shape":"AgentSpaceIdentifier",
           "documentation":"<p>The unique identifier for the agent space where the Trigger will be created</p>",
           "location":"uri",
           "locationName":"agentSpaceId"
@@ -2618,8 +2788,9 @@
     },
     "CreateTriggerRequestClientTokenString":{
       "type":"string",
-      "max":128,
-      "min":1
+      "max":64,
+      "min":1,
+      "pattern":"[\\x21-\\x7E]+"
     },
     "CreateTriggerResponse":{
       "type":"structure",
@@ -2732,7 +2903,7 @@
       ],
       "members":{
         "agentSpaceId":{
-          "shape":"AgentSpaceId",
+          "shape":"AgentSpaceIdentifier",
           "documentation":"<p>The unique identifier for the agent space containing the asset</p>",
           "location":"uri",
           "locationName":"agentSpaceId"
@@ -2765,7 +2936,7 @@
       ],
       "members":{
         "agentSpaceId":{
-          "shape":"AgentSpaceId",
+          "shape":"AgentSpaceIdentifier",
           "documentation":"<p>The unique identifier for the agent space containing the asset</p>",
           "location":"uri",
           "locationName":"agentSpaceId"
@@ -2823,7 +2994,7 @@
       ],
       "members":{
         "agentSpaceId":{
-          "shape":"AgentSpaceId",
+          "shape":"AgentSpaceIdentifier",
           "documentation":"<p>The unique identifier for the agent space containing the Trigger</p>",
           "location":"uri",
           "locationName":"agentSpaceId"
@@ -3244,7 +3415,8 @@
         "RUNNING",
         "STOPPED",
         "CANCELED",
-        "TIMED_OUT"
+        "TIMED_OUT",
+        "WAITING"
       ]
     },
     "FailureMessage":{
@@ -3349,7 +3521,7 @@
       ],
       "members":{
         "agentSpaceId":{
-          "shape":"AgentSpaceId",
+          "shape":"AgentSpaceIdentifier",
           "documentation":"<p>The unique identifier for the agent space containing the asset</p>",
           "location":"uri",
           "locationName":"agentSpaceId"
@@ -3401,7 +3573,7 @@
       ],
       "members":{
         "agentSpaceId":{
-          "shape":"AgentSpaceId",
+          "shape":"AgentSpaceIdentifier",
           "documentation":"<p>The unique identifier for the agent space containing the asset</p>",
           "location":"uri",
           "locationName":"agentSpaceId"
@@ -3451,7 +3623,7 @@
       ],
       "members":{
         "agentSpaceId":{
-          "shape":"AgentSpaceId",
+          "shape":"AgentSpaceIdentifier",
           "documentation":"<p>The unique identifier for the agent space containing the asset</p>",
           "location":"uri",
           "locationName":"agentSpaceId"
@@ -3525,7 +3697,7 @@
       ],
       "members":{
         "agentSpaceId":{
-          "shape":"AgentSpaceId",
+          "shape":"AgentSpaceIdentifier",
           "documentation":"<p>The unique identifier for the agent space containing the task</p>",
           "location":"uri",
           "locationName":"agentSpaceId"
@@ -3584,7 +3756,7 @@
       ],
       "members":{
         "agentSpaceId":{
-          "shape":"AgentSpaceId",
+          "shape":"AgentSpaceIdentifier",
           "documentation":"<p>The unique identifier for the agent space containing the recommendation</p>",
           "location":"uri",
           "locationName":"agentSpaceId"
@@ -3648,7 +3820,7 @@
       ],
       "members":{
         "agentSpaceId":{
-          "shape":"AgentSpaceId",
+          "shape":"AgentSpaceIdentifier",
           "documentation":"<p>The unique identifier for the agent space containing the Trigger</p>",
           "location":"uri",
           "locationName":"agentSpaceId"
@@ -3701,7 +3873,10 @@
         },
         "runtimeRoleArn":{
           "shape":"RoleArn",
-          "documentation":"<p>Optional role ARN that AIDevOps assumes at runtime for automatic verification testing and VPC connectivity on this association.</p>"
+          "documentation":"<p>Optional role ARN that AIDevOps assumes at runtime for automatic verification testing and VPC connectivity on this association.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"Superseded by the ReleaseManagement association. Configure the runtime role on the ReleaseManagement association and reference it via releaseManagementAssociationId.",
+          "deprecatedSince":"2026-08-04"
         }
       },
       "documentation":"<p>Configuration for GitHub repository integration.</p>"
@@ -3727,7 +3902,10 @@
         },
         "runtimeRoleArn":{
           "shape":"RoleArn",
-          "documentation":"<p>Optional role ARN that AIDevOps assumes at runtime for automatic verification testing and VPC connectivity on this association.</p>"
+          "documentation":"<p>Optional role ARN that AIDevOps assumes at runtime for automatic verification testing and VPC connectivity on this association.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"Superseded by the ReleaseManagement association. Configure the runtime role on the ReleaseManagement association and reference it via releaseManagementAssociationId.",
+          "deprecatedSince":"2026-08-04"
         }
       },
       "documentation":"<p>Configuration for GitLab project integration.</p>"
@@ -3749,7 +3927,7 @@
           "documentation":"<p>Type of GitLab access token</p>"
         },
         "tokenValue":{
-          "shape":"GitLabDetailsTokenValueString",
+          "shape":"GitLabTokenValue",
           "documentation":"<p>GitLab access token value</p>"
         },
         "groupId":{
@@ -3763,12 +3941,6 @@
       "type":"string",
       "pattern":"https://[a-zA-Z0-9]([a-zA-Z0-9.-]*[a-zA-Z0-9])?(?::[0-9]{1,5})?/?"
     },
-    "GitLabDetailsTokenValueString":{
-      "type":"string",
-      "documentation":"<p>Token value for authentication.</p>",
-      "pattern":"[a-zA-Z0-9._-]+",
-      "sensitive":true
-    },
     "GitLabTokenType":{
       "type":"string",
       "documentation":"<p>Type of GitLab access token.</p>",
@@ -3776,6 +3948,11 @@
         "personal",
         "group"
       ]
+    },
+    "GitLabTokenValue":{
+      "type":"string",
+      "pattern":"[a-zA-Z0-9._-]+",
+      "sensitive":true
     },
     "GithubRepoOwnerType":{
       "type":"string",
@@ -4101,6 +4278,12 @@
       "fault":true,
       "retryable":{"throttling":false}
     },
+    "InterruptId":{
+      "type":"string",
+      "documentation":"<p>An opaque resume identifier issued by the service when an agent execution pauses for approval. The service emits this identifier in the streamed approval request; provide the same value on the resuming SendMessage so the service can resume the paused execution. The format is opaque — bounded for safe transit but intentionally not pattern-validated.</p>",
+      "max":256,
+      "min":1
+    },
     "InvalidParameterException":{
       "type":"structure",
       "required":["message"],
@@ -4237,7 +4420,7 @@
       ],
       "members":{
         "agentSpaceId":{
-          "shape":"AgentSpaceId",
+          "shape":"AgentSpaceIdentifier",
           "documentation":"<p>The unique identifier for the agent space containing the asset</p>",
           "location":"uri",
           "locationName":"agentSpaceId"
@@ -4342,7 +4525,7 @@
       ],
       "members":{
         "agentSpaceId":{
-          "shape":"AgentSpaceId",
+          "shape":"AgentSpaceIdentifier",
           "documentation":"<p>The unique identifier for the agent space containing the asset</p>",
           "location":"uri",
           "locationName":"agentSpaceId"
@@ -4394,7 +4577,7 @@
       "required":["agentSpaceId"],
       "members":{
         "agentSpaceId":{
-          "shape":"AgentSpaceId",
+          "shape":"AgentSpaceIdentifier",
           "documentation":"<p>The unique identifier for the agent space to list assets from</p>",
           "location":"uri",
           "locationName":"agentSpaceId"
@@ -4514,7 +4697,7 @@
       "required":["agentSpaceId"],
       "members":{
         "agentSpaceId":{
-          "shape":"AgentSpaceId",
+          "shape":"AgentSpaceIdentifier",
           "documentation":"<p>The unique identifier for the agent space containing the tasks</p>",
           "location":"uri",
           "locationName":"agentSpaceId"
@@ -4568,7 +4751,8 @@
       "required":["agentSpaceId"],
       "members":{
         "agentSpaceId":{
-          "shape":"AgentSpaceId",
+          "shape":"AgentSpaceIdentifier",
+          "documentation":"<p>The unique identifier for the agent space to list chats from.</p>",
           "location":"uri",
           "locationName":"agentSpaceId"
         },
@@ -4625,7 +4809,7 @@
       ],
       "members":{
         "agentSpaceId":{
-          "shape":"AgentSpaceId",
+          "shape":"AgentSpaceIdentifier",
           "documentation":"<p>The unique identifier for the agent space</p>",
           "location":"uri",
           "locationName":"agentSpaceId"
@@ -4665,7 +4849,7 @@
       "required":["agentSpaceId"],
       "members":{
         "agentSpaceId":{
-          "shape":"AgentSpaceId",
+          "shape":"AgentSpaceIdentifier",
           "documentation":"<p>The unique identifier for the agent space</p>",
           "location":"uri",
           "locationName":"agentSpaceId"
@@ -4718,7 +4902,7 @@
       ],
       "members":{
         "agentSpaceId":{
-          "shape":"AgentSpaceId",
+          "shape":"AgentSpaceIdentifier",
           "documentation":"<p>The unique identifier for the agent space containing the execution</p>",
           "location":"uri",
           "locationName":"agentSpaceId"
@@ -4844,7 +5028,7 @@
       "required":["agentSpaceId"],
       "members":{
         "agentSpaceId":{
-          "shape":"AgentSpaceId",
+          "shape":"AgentSpaceIdentifier",
           "documentation":"<p>The unique identifier for the agent space containing the recommendations</p>",
           "location":"uri",
           "locationName":"agentSpaceId"
@@ -4953,7 +5137,7 @@
     },
     "ListTagsForResourceRequestResourceArnString":{
       "type":"string",
-      "pattern":"arn:aws:aidevops:[a-z0-9-]+:\\d{12}:(agentspace|service)/[a-zA-Z0-9-]+"
+      "pattern":"arn:aws:aidevops:[a-z0-9-]+:\\d{12}:(agentspace|service|private-connection)/[a-zA-Z0-9_-]+"
     },
     "ListTagsForResourceResponse":{
       "type":"structure",
@@ -4970,7 +5154,7 @@
       "required":["agentSpaceId"],
       "members":{
         "agentSpaceId":{
-          "shape":"AgentSpaceId",
+          "shape":"AgentSpaceIdentifier",
           "documentation":"<p>The unique identifier for the agent space whose Triggers should be listed</p>",
           "location":"uri",
           "locationName":"agentSpaceId"
@@ -5194,13 +5378,22 @@
         "tools":{
           "shape":"MCPToolsList",
           "documentation":"<p>List of MCP tools can be used with the association.</p>"
+        },
+        "toolDetails":{
+          "shape":"MCPToolDetailsList",
+          "documentation":"<p>List of MCP tools with their access categorization. When provided, the tool names must match those in the tools member.</p>"
         }
       },
       "documentation":"<p>Configuration for Model Context Protocol (MCP) server integration.</p>"
     },
     "MCPServerDatadogConfiguration":{
       "type":"structure",
-      "members":{},
+      "members":{
+        "enabledElevatedTools":{
+          "shape":"MCPToolDetailsList",
+          "documentation":"<p>The subset of elevated-access tools enabled for this integration.</p>"
+        }
+      },
       "documentation":"<p>Mixin for webhook update support.</p>"
     },
     "MCPServerDetails":{
@@ -5260,6 +5453,10 @@
         "tools":{
           "shape":"MCPToolsList",
           "documentation":"<p>List of MCP tools that can be used.</p>"
+        },
+        "enabledElevatedTools":{
+          "shape":"MCPToolDetailsList",
+          "documentation":"<p>The subset of elevated-access tools enabled for this integration.</p>"
         }
       },
       "documentation":"<p>Configuration for Grafana MCP server integration, used with an AWS-hosted MCP server.</p>"
@@ -5476,6 +5673,10 @@
         "tools":{
           "shape":"MCPToolsList",
           "documentation":"<p>List of MCP tools available for the association.</p>"
+        },
+        "toolDetails":{
+          "shape":"MCPToolDetailsList",
+          "documentation":"<p>List of MCP tools with their access categorization. When provided, the tool names must match those in the tools member.</p>"
         }
       },
       "documentation":"<p>Configuration for SigV4-authenticated MCP server integration.</p>"
@@ -5519,6 +5720,33 @@
       "type":"structure",
       "members":{},
       "documentation":"<p>Mixin for webhook update support.</p>"
+    },
+    "MCPToolDetail":{
+      "type":"structure",
+      "required":["name"],
+      "members":{
+        "name":{
+          "shape":"MCPToolDetailNameString",
+          "documentation":"<p>The name of the MCP tool.</p>"
+        },
+        "toolClassification":{
+          "shape":"ToolClassification",
+          "documentation":"<p>The access categorization of the MCP tool.</p>"
+        }
+      },
+      "documentation":"<p>An MCP tool together with its access categorization.</p>"
+    },
+    "MCPToolDetailNameString":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"[a-zA-Z0-9_-]+"
+    },
+    "MCPToolDetailsList":{
+      "type":"list",
+      "member":{"shape":"MCPToolDetail"},
+      "max":500,
+      "min":0
     },
     "MCPToolsList":{
       "type":"list",
@@ -5571,6 +5799,11 @@
       "type":"string",
       "pattern":"[0-9]+"
     },
+    "NewRelicApiKey":{
+      "type":"string",
+      "pattern":"NRAK-[A-Z0-9]+",
+      "sensitive":true
+    },
     "NewRelicApiKeyConfig":{
       "type":"structure",
       "required":[
@@ -5580,7 +5813,7 @@
       ],
       "members":{
         "apiKey":{
-          "shape":"NewRelicApiKeyConfigApiKeyString",
+          "shape":"NewRelicApiKey",
           "documentation":"<p>New Relic User API Key</p>"
         },
         "accountId":{
@@ -5612,13 +5845,6 @@
       "min":3,
       "pattern":"[0-9]+"
     },
-    "NewRelicApiKeyConfigApiKeyString":{
-      "type":"string",
-      "documentation":"<p>API Key Value for service.</p>",
-      "min":1,
-      "pattern":"NRAK-[A-Z0-9]+",
-      "sensitive":true
-    },
     "NewRelicApplicationIds":{
       "type":"list",
       "member":{"shape":"NewRelicApplicationIdsMemberString"},
@@ -5642,7 +5868,8 @@
       "documentation":"<p>The NewRelic region (determines API endpoint).</p>",
       "enum":[
         "US",
-        "EU"
+        "EU",
+        "JP"
       ]
     },
     "NewRelicServiceAuthorizationConfig":{
@@ -5798,6 +6025,17 @@
       "type":"list",
       "member":{"shape":"String"},
       "documentation":"<p>List of pager duty services available for the association.</p>"
+    },
+    "PatternFilter":{
+      "type":"structure",
+      "required":["patterns"],
+      "members":{
+        "patterns":{
+          "shape":"TriggerRegexPatternList",
+          "documentation":"<p>Anchored full-match regex patterns. The condition passes when the value matches at least one pattern.</p>"
+        }
+      },
+      "documentation":"<p>A regex-based match condition. Passes when the value matches any pattern.</p>"
     },
     "PendingMessage":{
       "type":"structure",
@@ -6528,7 +6766,9 @@
       "type":"structure",
       "required":[
         "serviceId",
-        "serviceType"
+        "serviceType",
+        "createdAt",
+        "updatedAt"
       ],
       "members":{
         "serviceId":{
@@ -6558,6 +6798,14 @@
         "privateConnectionName":{
           "shape":"PrivateConnectionName",
           "documentation":"<p>The name of the private connection used for VPC connectivity.</p>"
+        },
+        "createdAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The timestamp when the service was registered.</p>"
+        },
+        "updatedAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The timestamp when the service was last updated.</p>"
         }
       },
       "documentation":"<p>Represents a registered service with its configuration and accessible resources.</p>"
@@ -7046,7 +7294,11 @@
         },
         "userActionResponse":{
           "shape":"String",
-          "documentation":"<p>Response to a UI prompt (not a text conversation message). Operator App SDK clients set this to the control-string sentinel `\"APPROVAL_ACTION\"` when the request is resuming a paused tool call after an operator approval decision; in that case the structured decision context lives on the sibling `approvalAction` member and the chat agent reads from there. Preserved as a String for back-compat: pre-typed-approval clients still encode arbitrary UI-prompt responses as JSON in this field, and the chat agent parses them out during the transition.</p>"
+          "documentation":"<p>Response to a UI prompt (not a text conversation message). Set this to the sentinel value `\"APPROVAL_ACTION\"` when the request is resuming a paused execution after an approval decision; in that case the structured decision is provided on the sibling `approvalAction` member. Preserved as a String for backward compatibility: clients that predate the typed approval field may still encode UI-prompt responses as JSON in this field.</p>"
+        },
+        "approvalAction":{
+          "shape":"ApprovalAction",
+          "documentation":"<p>An approval decision supplied when resuming a paused agent execution. When an agent execution pauses to request approval for an elevated action, SendMessage streams an approval request carrying interrupt identifiers. To resume the paused execution, call SendMessage again with `userActionResponse` set to `\"APPROVAL_ACTION\"` and this member populated with those identifiers and the decision (APPROVED or REJECTED). Optional; omit it for messages that are not resuming an approval.</p>"
         }
       },
       "documentation":"<p>Context object for additional message metadata</p>"
@@ -7119,7 +7371,7 @@
       ],
       "members":{
         "agentSpaceId":{
-          "shape":"AgentSpaceId",
+          "shape":"AgentSpaceIdentifier",
           "documentation":"<p>The agent space identifier</p>",
           "location":"uri",
           "locationName":"agentSpaceId"
@@ -7146,6 +7398,10 @@
         "assetIds":{
           "shape":"AssetIdList",
           "documentation":"<p>Optional list of asset identifiers to attach to the message</p>"
+        },
+        "modelTier":{
+          "shape":"String",
+          "documentation":"<p>Optional model tier selection. Valid values: smart, balanced, fast. Absent or unrecognized values default to balanced.</p>"
         }
       },
       "documentation":"<p>Request structure for sending a chat message</p>"
@@ -7615,6 +7871,21 @@
       "min":1,
       "pattern":"(\\*|[a-z]{2,4}(-[a-z]+)+-\\d+)"
     },
+    "SlackBidirectionalConfiguration":{
+      "type":"structure",
+      "required":["roleArn"],
+      "members":{
+        "roleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>IAM role ARN that AWS DevOps Agent assumes to exchange messages with your Slack workspace on behalf of this association.</p>"
+        },
+        "enabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether bidirectional communication is enabled for this association. When you set this value to true, you can mention the agent in a configured Slack channel and it responds in that channel. When you omit this value or set it to false, the agent ignores mentions and only sends notifications.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for bidirectional Slack communication.</p>"
+    },
     "SlackChannel":{
       "type":"structure",
       "required":["channelId"],
@@ -7655,6 +7926,10 @@
         "transmissionTarget":{
           "shape":"SlackTransmissionTarget",
           "documentation":"<p>Transmission targets for agent notifications</p>"
+        },
+        "bidirectional":{
+          "shape":"SlackBidirectionalConfiguration",
+          "documentation":"<p>Optional bidirectional communication configuration. Supply this configuration and set enabled to true so you can interact with the agent directly from Slack.</p>"
         }
       },
       "documentation":"<p>Configuration for Slack workspace integration.</p>"
@@ -7701,14 +7976,22 @@
         },
         "assumableRoleArn":{
           "shape":"RoleArn",
-          "documentation":"<p>Role ARN to be assumed by AIDevOps to operate on behalf of customer.</p>"
+          "documentation":"<p>Role ARN to be assumed by AIDevOps to operate on behalf of customer. To set this role ARN on AssociateService or UpdateAssociation, the caller must have at least the iam:PassRole permission on arn:aws:iam::&lt;account-id&gt;:role/* in the caller's own account, with the condition iam:PassedToService set to aidevops.amazonaws.com. A broader iam:PassRole grant also satisfies this requirement.</p>"
         },
         "externalId":{
           "shape":"String",
           "documentation":"<p>External ID for additional security when assuming the role. Used to prevent the confused deputy problem.</p>"
+        },
+        "agentElevatedRoleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>Optional IAM role ARN to be assumed by AIDevOps for elevated directed actions on behalf of the customer. Used for mutating operations gated by elevatedActionsEnabled on the AgentSpace. When not provided, only non-elevated directed actions are available for this AWS account. Setting this role is subject to the same minimum iam:PassRole requirement described on assumableRoleArn.</p>"
+        },
+        "agentElevatedRoleArnStatus":{
+          "shape":"ValidationStatus",
+          "documentation":"<p>Validation status of the agentElevatedRoleArn. Updated asynchronously after the customer registers an elevated role. Possible values: PENDING_CONFIRMATION (validation in progress), VALID (role validated), INVALID (validation failed).</p>"
         }
       },
-      "documentation":"<p>Configuration for AWS source account integration. Note: passRole check on 'assumableRoleArn' is not supported.</p>"
+      "documentation":"<p>Configuration for AWS source account integration. Setting the role ARNs on this configuration requires the caller to have at least the iam:PassRole permission (see assumableRoleArn).</p>"
     },
     "SourceAwsConfigurationAccountIdString":{
       "type":"string",
@@ -7759,7 +8042,7 @@
     },
     "TagResourceRequestResourceArnString":{
       "type":"string",
-      "pattern":"arn:aws:aidevops:[a-z0-9-]+:\\d{12}:(agentspace|service)/[a-zA-Z0-9-]+"
+      "pattern":"arn:aws:aidevops:[a-z0-9-]+:\\d{12}:(agentspace|service|private-connection)/[a-zA-Z0-9_-]+"
     },
     "TagResourceResponse":{
       "type":"structure",
@@ -7948,7 +8231,8 @@
         "FAILED",
         "TIMED_OUT",
         "CANCELED",
-        "SKIPPED"
+        "SKIPPED",
+        "WAITING"
       ]
     },
     "TaskType":{
@@ -7979,6 +8263,26 @@
       "retryable":{"throttling":false}
     },
     "Timestamp":{"type":"timestamp"},
+    "ToolClassification":{
+      "type":"string",
+      "enum":[
+        "READ_ONLY",
+        "MUTATIVE",
+        "DESTRUCTIVE"
+      ]
+    },
+    "ToolIdentifier":{
+      "type":"string",
+      "documentation":"<p>Identifier of an approval-target tool — for example `use_aws` for AWS actions, or a third-party tool name.</p>",
+      "max":256,
+      "min":1
+    },
+    "ToolUseId":{
+      "type":"string",
+      "documentation":"<p>Identifier of the specific paused tool invocation that requested approval. Correlates the approval decision back to the paused invocation.</p>",
+      "max":256,
+      "min":1
+    },
     "Trigger":{
       "type":"structure",
       "required":[
@@ -8044,10 +8348,60 @@
       "documentation":"<p>Defines the firing condition for a Trigger</p>",
       "union":true
     },
+    "TriggerEvent":{
+      "type":"string",
+      "documentation":"<p>Webhook events that can auto-trigger a capability. PULL_REQUEST_* events apply to RELEASE_READINESS_REVIEW; WORKFLOW_* events apply to RELEASE_SHEPHERDING.</p>",
+      "enum":[
+        "PULL_REQUEST_READY_FOR_REVIEW",
+        "PULL_REQUEST_DRAFT"
+      ]
+    },
+    "TriggerEventList":{
+      "type":"list",
+      "member":{"shape":"TriggerEvent"},
+      "documentation":"<p>Webhook events that activate a trigger filter group.</p>",
+      "max":10,
+      "min":1
+    },
+    "TriggerFilterGroup":{
+      "type":"structure",
+      "members":{
+        "events":{
+          "shape":"TriggerEventList",
+          "documentation":"<p>Passes when the webhook event is one of the listed events.</p>"
+        },
+        "targetBranches":{
+          "shape":"PatternFilter",
+          "documentation":"<p>Passes when the change request target branch matches. Applicable to RELEASE_READINESS_REVIEW only.</p>"
+        }
+      },
+      "documentation":"<p>A group of trigger conditions. The group matches when ALL present conditions pass. A group cannot be empty: at least one condition must be present.</p>"
+    },
+    "TriggerFilterGroups":{
+      "type":"list",
+      "member":{"shape":"TriggerFilterGroup"},
+      "documentation":"<p>Filter groups controlling when a capability auto-triggers. The capability triggers when ANY group matches. Absent = default trigger behavior (all applicable events trigger).</p>",
+      "max":5,
+      "min":1
+    },
     "TriggerList":{
       "type":"list",
       "member":{"shape":"Trigger"},
       "documentation":"<p>List of Triggers</p>"
+    },
+    "TriggerRegexPattern":{
+      "type":"string",
+      "documentation":"<p>A regex pattern matched against the entire value. Example: 'main' or 'release/.*'.</p>",
+      "max":256,
+      "min":1,
+      "pattern":"[^\\x00-\\x1F\\x7F-\\x9F]+"
+    },
+    "TriggerRegexPatternList":{
+      "type":"list",
+      "member":{"shape":"TriggerRegexPattern"},
+      "documentation":"<p>A list of anchored full-match regex patterns.</p>",
+      "max":20,
+      "min":1
     },
     "TriggerStatus":{
       "type":"string",
@@ -8084,7 +8438,7 @@
     },
     "UntagResourceRequestResourceArnString":{
       "type":"string",
-      "pattern":"arn:aws:aidevops:[a-z0-9-]+:\\d{12}:(agentspace|service)/[a-zA-Z0-9-]+"
+      "pattern":"arn:aws:aidevops:[a-z0-9-]+:\\d{12}:(agentspace|service|private-connection)/[a-zA-Z0-9_-]+"
     },
     "UntagResourceResponse":{
       "type":"structure",
@@ -8111,6 +8465,10 @@
         "locale":{
           "shape":"Locale",
           "documentation":"<p>The updated locale for the AgentSpace, which determines the language used in agent responses.</p>"
+        },
+        "preferences":{
+          "shape":"AgentSpacePreferences",
+          "documentation":"<p>The preferences to configure on the agent space. When provided, this replaces the full set of configured preferences; preferences not included revert to their default values. When omitted, the current preferences are left unchanged.</p>"
         }
       },
       "documentation":"<p>Input for updating an existing AgentSpace's properties. All fields except agentSpaceId are optional for partial updates.</p>"
@@ -8123,6 +8481,77 @@
       },
       "documentation":"<p>Output containing the updated AgentSpace.</p>"
     },
+    "UpdateApprovalActionRequest":{
+      "type":"structure",
+      "required":[
+        "agentSpaceId",
+        "approvalId",
+        "action"
+      ],
+      "members":{
+        "agentSpaceId":{
+          "shape":"AgentSpaceIdentifier",
+          "documentation":"<p>The agent space identifier — multi-tenant workspace scope. Bound from the request URI.</p>",
+          "location":"uri",
+          "locationName":"agentSpaceId"
+        },
+        "approvalId":{
+          "shape":"ApprovalId",
+          "documentation":"<p>Identifier of the approval request being resolved. A UUID. Bound from the request URI.</p>",
+          "location":"uri",
+          "locationName":"approvalId"
+        },
+        "action":{
+          "shape":"ApprovalActionType",
+          "documentation":"<p>The action to take on the approval request — APPROVED or REJECTED.</p>"
+        },
+        "finalPattern":{
+          "shape":"ApprovalPattern",
+          "documentation":"<p>The finalized pattern (tool + argumentPins) that scopes the approval. Required when `action` is APPROVED; must be absent when `action` is REJECTED. The pattern narrows, and must not widen, the invocation originally requested by the agent. This cross-field invariant is enforced by service-side validation.</p>"
+        },
+        "reason":{
+          "shape":"ApprovalReason",
+          "documentation":"<p>Optional free-text rationale for the decision. Permitted when `action` is REJECTED; ignored when `action` is APPROVED.</p>"
+        },
+        "ttlSeconds":{
+          "shape":"UpdateApprovalActionRequestTtlSecondsInteger",
+          "documentation":"<p>Approval lifetime in seconds, starting from when the decision is submitted. Required when `action` is APPROVED AND `singleUse` is false; must be absent when `action` is REJECTED or when `singleUse` is true (a single-use approval backs one executed action and the redemption window collapses). Cross-field invariants are enforced by service-side validation; the @range bound here is the operation-boundary check that always applies (a maximum of 4 hours).</p>"
+        },
+        "singleUse":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether the approved action backs a single executed tool call (true) or is reusable within ttlSeconds (false). Required when `action` is APPROVED; must be absent when `action` is REJECTED. When true, ttlSeconds must be absent (the redemption window collapses to the single use). When false, ttlSeconds is required and bounds the reuse window. Cross-field invariants are enforced by service-side validation.</p>"
+        }
+      },
+      "documentation":"<p>Request structure for UpdateApprovalAction. Submits the terminal decision (APPROVED or REJECTED) against an approval request, optionally carrying the finalized pattern and time-to-live when the action is APPROVED, or a free-text rationale when the action is REJECTED. Cross-field invariants between `action` and the approve-only / reject-only members are enforced by service-side validation.</p>"
+    },
+    "UpdateApprovalActionRequestTtlSecondsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":14400,
+      "min":1
+    },
+    "UpdateApprovalActionResponse":{
+      "type":"structure",
+      "required":[
+        "approvalId",
+        "status"
+      ],
+      "members":{
+        "approvalId":{
+          "shape":"ApprovalId",
+          "documentation":"<p>Identifier of the approval request that was resolved. Echoed back so the client can correlate the response with the request.</p>"
+        },
+        "status":{
+          "shape":"ApprovalStatus",
+          "documentation":"<p>Lifecycle status of the approval request immediately after submission. Expected post-submission states are APPROVED (when the action is APPROVED) or REJECTED (when the action is REJECTED); PENDING is not returned from this operation, and REVOKED and REDEEMED are reachable only via subsequent reads.</p>"
+        },
+        "expiresAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>Absolute timestamp at which the approval expires. Set when status is APPROVED (computed as the submission time plus ttlSeconds); absent when status is REJECTED.</p>"
+        }
+      },
+      "documentation":"<p>Response structure for UpdateApprovalAction. Reports the post-submission lifecycle status of the approval request and, when applicable, the absolute expiry timestamp. The status is a lifecycle state distinct from the action verb — an APPROVED submission transitions the request to APPROVED status (live, redeemable); a REJECTED submission transitions it to REJECTED status (terminal).</p>"
+    },
     "UpdateAssetFileRequest":{
       "type":"structure",
       "required":[
@@ -8132,7 +8561,7 @@
       ],
       "members":{
         "agentSpaceId":{
-          "shape":"AgentSpaceId",
+          "shape":"AgentSpaceIdentifier",
           "documentation":"<p>The unique identifier for the agent space containing the asset</p>",
           "location":"uri",
           "locationName":"agentSpaceId"
@@ -8189,7 +8618,7 @@
       ],
       "members":{
         "agentSpaceId":{
-          "shape":"AgentSpaceId",
+          "shape":"AgentSpaceIdentifier",
           "documentation":"<p>The unique identifier for the agent space containing the asset</p>",
           "location":"uri",
           "locationName":"agentSpaceId"
@@ -8283,7 +8712,7 @@
       ],
       "members":{
         "agentSpaceId":{
-          "shape":"AgentSpaceId",
+          "shape":"AgentSpaceIdentifier",
           "documentation":"<p>The unique identifier for the agent space containing the task</p>",
           "location":"uri",
           "locationName":"agentSpaceId"
@@ -8299,12 +8728,18 @@
           "documentation":"<p>Updated task status</p>"
         },
         "clientToken":{
-          "shape":"String",
+          "shape":"UpdateBacklogTaskRequestClientTokenString",
           "documentation":"<p>Client-provided token for idempotent operations</p>",
           "idempotencyToken":true
         }
       },
       "documentation":"<p>Request structure for updating a task</p>"
+    },
+    "UpdateBacklogTaskRequestClientTokenString":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"[\\x21-\\x7E]+"
     },
     "UpdateBacklogTaskResponse":{
       "type":"structure",
@@ -8325,7 +8760,7 @@
       ],
       "members":{
         "agentSpaceId":{
-          "shape":"AgentSpaceId",
+          "shape":"AgentSpaceIdentifier",
           "documentation":"<p>The unique identifier for the agent space containing the goal</p>",
           "location":"uri",
           "locationName":"agentSpaceId"
@@ -8341,12 +8776,18 @@
           "documentation":"<p>Update goal schedule state</p>"
         },
         "clientToken":{
-          "shape":"String",
+          "shape":"UpdateGoalRequestClientTokenString",
           "documentation":"<p>Client-provided token for idempotent operations</p>",
           "idempotencyToken":true
         }
       },
       "documentation":"<p>Request structure for updating a goal</p>"
+    },
+    "UpdateGoalRequestClientTokenString":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"[\\x21-\\x7E]+"
     },
     "UpdateGoalResponse":{
       "type":"structure",
@@ -8470,7 +8911,7 @@
       ],
       "members":{
         "agentSpaceId":{
-          "shape":"AgentSpaceId",
+          "shape":"AgentSpaceIdentifier",
           "documentation":"<p>The unique identifier for the agent space containing the recommendation</p>",
           "location":"uri",
           "locationName":"agentSpaceId"
@@ -8490,12 +8931,18 @@
           "documentation":"<p>Additional context for recommendation</p>"
         },
         "clientToken":{
-          "shape":"String",
+          "shape":"UpdateRecommendationRequestClientTokenString",
           "documentation":"<p>A unique token that ensures idempotency of the request</p>",
           "idempotencyToken":true
         }
       },
       "documentation":"<p>Request structure for updating an existing recommendation</p>"
+    },
+    "UpdateRecommendationRequestClientTokenString":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"[\\x21-\\x7E]+"
     },
     "UpdateRecommendationResponse":{
       "type":"structure",
@@ -8516,7 +8963,7 @@
       ],
       "members":{
         "agentSpaceId":{
-          "shape":"AgentSpaceId",
+          "shape":"AgentSpaceIdentifier",
           "documentation":"<p>The unique identifier for the agent space containing the Trigger</p>",
           "location":"uri",
           "locationName":"agentSpaceId"
@@ -8541,8 +8988,9 @@
     },
     "UpdateTriggerRequestClientTokenString":{
       "type":"string",
-      "max":128,
-      "min":1
+      "max":64,
+      "min":1,
+      "pattern":"[\\x21-\\x7E]+"
     },
     "UpdateTriggerResponse":{
       "type":"structure",

@@ -1,0 +1,62 @@
+{
+    "version": "1.0",
+    "parameters": {
+        "Endpoint": {
+            "type": "String",
+            "builtIn": "SDK::Endpoint",
+            "required": false,
+            "documentation": "Override the endpoint URL"
+        },
+        "Region": {
+            "type": "String",
+            "builtIn": "AWS::Region",
+            "required": true,
+            "documentation": "The AWS region"
+        }
+    },
+    "rules": [
+        {
+            "documentation": "Use the custom endpoint if one is provided, signing for us-east-1.",
+            "type": "endpoint",
+            "conditions": [
+                {
+                    "fn": "isSet",
+                    "argv": [
+                        {
+                            "ref": "Endpoint"
+                        }
+                    ]
+                }
+            ],
+            "endpoint": {
+                "url": "{Endpoint}",
+                "properties": {
+                    "authSchemes": [
+                        {
+                            "name": "sigv4",
+                            "signingName": "pricingplanmanager",
+                            "signingRegion": "us-east-1"
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "documentation": "Route every region to the single us-east-1 endpoint, signing for us-east-1.",
+            "type": "endpoint",
+            "conditions": [],
+            "endpoint": {
+                "url": "https://pricingplanmanager.us-east-1.api.aws",
+                "properties": {
+                    "authSchemes": [
+                        {
+                            "name": "sigv4",
+                            "signingName": "pricingplanmanager",
+                            "signingRegion": "us-east-1"
+                        }
+                    ]
+                }
+            }
+        }
+    ]
+}

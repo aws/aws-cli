@@ -2268,7 +2268,7 @@
           "idempotencyToken":true
         },
         "serviceNetworkIdentifier":{
-          "shape":"ServiceNetworkIdentifier",
+          "shape":"ServiceNetworkIdentifierWithoutRegex",
           "documentation":"<p>The ID or ARN of the service network. You must use an ARN if the resources are in different accounts.</p>"
         },
         "vpcIdentifier":{
@@ -6948,10 +6948,7 @@
     },
     "UpdateServiceNetworkVpcAssociationRequest":{
       "type":"structure",
-      "required":[
-        "serviceNetworkVpcAssociationIdentifier",
-        "securityGroupIds"
-      ],
+      "required":["serviceNetworkVpcAssociationIdentifier"],
       "members":{
         "serviceNetworkVpcAssociationIdentifier":{
           "shape":"ServiceNetworkVpcAssociationIdentifier",
@@ -6962,6 +6959,14 @@
         "securityGroupIds":{
           "shape":"UpdateServiceNetworkVpcAssociationRequestSecurityGroupIdsList",
           "documentation":"<p>The IDs of the security groups.</p>"
+        },
+        "privateDnsEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p> Indicates if private DNS is enabled for the VPC association. </p>"
+        },
+        "dnsOptions":{
+          "shape":"DnsOptions",
+          "documentation":"<p> DNS options for the service network VPC association. </p>"
         }
       }
     },
@@ -6993,6 +6998,14 @@
         "securityGroupIds":{
           "shape":"SecurityGroupList",
           "documentation":"<p>The IDs of the security groups.</p>"
+        },
+        "privateDnsEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p> Indicates if private DNS is enabled for the VPC association. </p>"
+        },
+        "dnsOptions":{
+          "shape":"DnsOptions",
+          "documentation":"<p> DNS options for the service network VPC association. </p>"
         }
       }
     },

@@ -4,8 +4,11 @@
     "apiVersion":"2018-11-25",
     "endpointPrefix":"applicationinsights",
     "jsonVersion":"1.1",
-    "protocol":"json",
-    "protocols":["json"],
+    "protocol":"smithy-rpc-v2-cbor",
+    "protocols":[
+      "smithy-rpc-v2-cbor",
+      "json"
+    ],
     "serviceAbbreviation":"Application Insights",
     "serviceFullName":"Amazon CloudWatch Application Insights",
     "serviceId":"Application Insights",
@@ -527,6 +530,7 @@
         "Message":{"shape":"ErrorMsg"}
       },
       "documentation":"<p> User does not have permissions to perform this action. </p>",
+      "error":{"httpStatusCode":403},
       "exception":true
     },
     "AccountId":{
@@ -2197,6 +2201,7 @@
         "Message":{"shape":"ExceptionMessage"}
       },
       "documentation":"<p>Tags are already registered for the specified application ARN.</p>",
+      "error":{"httpStatusCode":400},
       "exception":true
     },
     "Tier":{
@@ -2240,6 +2245,7 @@
         }
       },
       "documentation":"<p>The number of the provided tags is beyond the limit, or the number of total tags you are trying to attach to the specified resource exceeds the limit.</p>",
+      "error":{"httpStatusCode":400},
       "exception":true
     },
     "Unit":{"type":"string"},

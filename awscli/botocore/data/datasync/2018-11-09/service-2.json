@@ -1227,7 +1227,7 @@
         },
         "NameNodes":{
           "shape":"HdfsNameNodeList",
-          "documentation":"<p>The NameNode that manages the HDFS namespace. The NameNode performs operations such as opening, closing, and renaming files and directories. The NameNode contains the information to map blocks of data to the DataNodes. You can use only one NameNode.</p>"
+          "documentation":"<p>The NameNode that manages the HDFS namespace. The NameNode performs operations such as opening, closing, and renaming files and directories. The NameNode contains the information to map blocks of data to the DataNodes.</p> <p>The number of NameNodes you can specify depends on the task mode:</p> <ul> <li> <p> <b>Enhanced mode</b> – You can specify multiple NameNodes for HDFS High Availability (HA) configurations.</p> </li> <li> <p> <b>Basic mode</b> – You can specify only one NameNode.</p> </li> </ul>"
         },
         "BlockSize":{
           "shape":"HdfsBlockSize",
@@ -3283,11 +3283,11 @@
         },
         "Atime":{
           "shape":"Atime",
-          "documentation":"<p>Specifies whether to preserve metadata indicating the last time a file was read or written to.</p> <note> <p>The behavior of <code>Atime</code> isn't fully standard across platforms, so DataSync can only do this on a best-effort basis.</p> </note> <ul> <li> <p> <code>BEST_EFFORT</code> (default) - DataSync attempts to preserve the original <code>Atime</code> attribute on all source files (that is, the version before the <code>PREPARING</code> steps of the task execution). This option is recommended.</p> </li> <li> <p> <code>NONE</code> - Ignores <code>Atime</code>.</p> </li> </ul> <note> <p>If <code>Atime</code> is set to <code>BEST_EFFORT</code>, <code>Mtime</code> must be set to <code>PRESERVE</code>. </p> <p>If <code>Atime</code> is set to <code>NONE</code>, <code>Mtime</code> must also be <code>NONE</code>. </p> </note>"
+          "documentation":"<p>Specifies whether to preserve metadata indicating the last time a file was read or written to.</p> <note> <p>The behavior of <code>Atime</code> isn't fully standard across platforms, so DataSync can only do this on a best-effort basis.</p> </note> <ul> <li> <p> <code>BEST_EFFORT</code> (default) - DataSync attempts to preserve the original <code>Atime</code> attribute on all source files (that is, the version before the <code>PREPARING</code> steps of the task execution). This option is recommended.</p> </li> <li> <p> <code>NONE</code> - Ignores <code>Atime</code>.</p> </li> </ul> <note> <p>The following applies only to Basic mode tasks:</p> <p>If <code>Atime</code> is set to <code>BEST_EFFORT</code>, <code>Mtime</code> must be set to <code>PRESERVE</code>. </p> <p>If <code>Atime</code> is set to <code>NONE</code>, <code>Mtime</code> must also be <code>NONE</code>. </p> <p>Enhanced mode tasks support configuring <code>Atime</code> independently of <code>Mtime</code>.</p> </note>"
         },
         "Mtime":{
           "shape":"Mtime",
-          "documentation":"<p>Specifies whether to preserve metadata indicating the last time that a file was written to before the <code>PREPARING</code> step of your task execution. This option is required when you need to run the a task more than once.</p> <ul> <li> <p> <code>PRESERVE</code> (default) - Preserves original <code>Mtime</code>, which is recommended.</p> </li> <li> <p> <code>NONE</code> - Ignores <code>Mtime</code>.</p> </li> </ul> <note> <p>If <code>Mtime</code> is set to <code>PRESERVE</code>, <code>Atime</code> must be set to <code>BEST_EFFORT</code>.</p> <p>If <code>Mtime</code> is set to <code>NONE</code>, <code>Atime</code> must also be set to <code>NONE</code>. </p> </note>"
+          "documentation":"<p>Specifies whether to preserve metadata indicating the last time that a file was written to before the <code>PREPARING</code> step of your task execution. This option is required when you need to run the a task more than once.</p> <ul> <li> <p> <code>PRESERVE</code> (default) - Preserves original <code>Mtime</code>, which is recommended.</p> </li> <li> <p> <code>NONE</code> - Ignores <code>Mtime</code>.</p> </li> </ul> <note> <p>The following applies only to Basic mode tasks:</p> <p>If <code>Mtime</code> is set to <code>PRESERVE</code>, <code>Atime</code> must be set to <code>BEST_EFFORT</code>.</p> <p>If <code>Mtime</code> is set to <code>NONE</code>, <code>Atime</code> must also be set to <code>NONE</code>. </p> <p>Enhanced mode tasks don't support <code>Mtime</code> set to <code>NONE</code>.</p> </note>"
         },
         "Uid":{
           "shape":"Uid",
@@ -4368,7 +4368,7 @@
         },
         "NameNodes":{
           "shape":"HdfsNameNodeList",
-          "documentation":"<p>The NameNode that manages the HDFS namespace. The NameNode performs operations such as opening, closing, and renaming files and directories. The NameNode contains the information to map blocks of data to the DataNodes. You can use only one NameNode.</p>"
+          "documentation":"<p>The NameNode that manages the HDFS namespace. The NameNode performs operations such as opening, closing, and renaming files and directories. The NameNode contains the information to map blocks of data to the DataNodes.</p> <p>The number of NameNodes you can specify depends on the task mode:</p> <ul> <li> <p>Enhanced mode – You can specify multiple NameNodes for HDFS High Availability (HA) configurations.</p> </li> <li> <p>Basic mode – You can specify only one NameNode.</p> </li> </ul>"
         },
         "BlockSize":{
           "shape":"HdfsBlockSize",
@@ -4684,5 +4684,5 @@
     "long":{"type":"long"},
     "string":{"type":"string"}
   },
-  "documentation":"<fullname>DataSync</fullname> <p>DataSync is an online data movement service that simplifies data migration and helps you quickly, easily, and securely transfer your file or object data to, from, and between Amazon Web Services storage services.</p> <p>This API interface reference includes documentation for using DataSync programmatically. For complete information, see the <i> <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/what-is-datasync.html\">DataSync User Guide</a> </i>.</p>"
+  "documentation":"<fullname>DataSync</fullname> <p>In addition to the Amazon Web Services Management Console and Amazon Web Services Command Line Interface, you can use the DataSync API to configure and manage DataSync with the <a href=\"http://aws.amazon.com/developer/tools/\">Amazon Web Services SDKs</a>.</p> <p>DataSync is an online data movement service that simplifies data migration and helps you quickly, easily, and securely transfer your file or object data to, from, and between Amazon Web Services storage services.</p> <p>This API interface reference includes documentation for using DataSync programmatically. For complete information, see the <i> <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/what-is-datasync.html\">DataSync User Guide</a> </i>.</p>"
 }

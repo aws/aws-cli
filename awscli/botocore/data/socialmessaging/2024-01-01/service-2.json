@@ -32,6 +32,28 @@
       ],
       "documentation":"<p>This is only used through the Amazon Web Services console during sign-up to associate your WhatsApp Business Account to your Amazon Web Services account.</p>"
     },
+    "CreateWhatsAppDataset":{
+      "name":"CreateWhatsAppDataset",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v1/whatsapp/waba/dataset",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateWhatsAppDatasetInput"},
+      "output":{"shape":"CreateWhatsAppDatasetOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidParametersException"},
+        {"shape":"AccessDeniedByMetaException"},
+        {"shape":"ThrottledRequestException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"DependencyException"}
+      ],
+      "documentation":"<p>Creates a Meta Conversions API dataset for a WhatsApp Business Account.</p>",
+      "idempotent":true
+    },
     "CreateWhatsAppFlow":{
       "name":"CreateWhatsAppFlow",
       "http":{
@@ -540,6 +562,27 @@
       "documentation":"<p>Add an event destination to log event data from WhatsApp for a WhatsApp Business Account (WABA). A WABA can only have one event destination at a time. All resources associated with the WABA use the same event destination.</p>",
       "idempotent":true
     },
+    "SendWhatsAppConversionEvent":{
+      "name":"SendWhatsAppConversionEvent",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v1/whatsapp/waba/dataset/events",
+        "responseCode":200
+      },
+      "input":{"shape":"SendWhatsAppConversionEventInput"},
+      "output":{"shape":"SendWhatsAppConversionEventOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidParametersException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottledRequestException"},
+        {"shape":"AccessDeniedByMetaException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"DependencyException"}
+      ],
+      "documentation":"<p>Sends a conversion event to Meta's Conversions API for the specified WhatsApp Business Account dataset.</p>"
+    },
     "SendWhatsAppMessage":{
       "name":"SendWhatsAppMessage",
       "http":{
@@ -755,6 +798,26 @@
     "CodeExpirationMinutes":{
       "type":"integer",
       "box":true
+    },
+    "CreateWhatsAppDatasetInput":{
+      "type":"structure",
+      "required":["id"],
+      "members":{
+        "id":{
+          "shape":"LinkedWhatsAppBusinessAccountId",
+          "documentation":"<p>The ID of the WhatsApp Business Account to create a dataset for, formatted as <code>waba-01234567890123456789012345678901</code>.</p>"
+        }
+      }
+    },
+    "CreateWhatsAppDatasetOutput":{
+      "type":"structure",
+      "required":["datasetId"],
+      "members":{
+        "datasetId":{
+          "shape":"WhatsAppDatasetId",
+          "documentation":"<p>The Meta-generated dataset ID, a numeric string of 10 to 20 digits.</p>"
+        }
+      }
     },
     "CreateWhatsAppFlowInput":{
       "type":"structure",
@@ -1494,6 +1557,10 @@
           "shape":"WhatsAppBusinessAccountMarketingMessagesOnboardingStatus",
           "documentation":"<p>The onboarding status for the Marketing Messages API. This value is fetched from Meta and indicates whether the WhatsApp Business Account is onboarded for Meta's Marketing Messages API.</p>"
         },
+        "datasetId":{
+          "shape":"WhatsAppDatasetId",
+          "documentation":"<p>The Meta Conversions API dataset ID associated with this WhatsApp Business Account. This value is a numeric string of 10 to 20 digits. This field is not present when no dataset has been created for this account.</p>"
+        },
         "phoneNumbers":{
           "shape":"WhatsAppPhoneNumberSummaryList",
           "documentation":"<p>The phone numbers associated with the Linked WhatsApp Business Account.</p>"
@@ -1578,6 +1645,10 @@
         "marketingMessagesOnboardingStatus":{
           "shape":"WhatsAppBusinessAccountMarketingMessagesOnboardingStatus",
           "documentation":"<p>The onboarding status for the Marketing Messages API. This value is fetched from Meta and indicates whether the WhatsApp Business Account is onboarded for Meta's Marketing Messages API.</p>"
+        },
+        "datasetId":{
+          "shape":"WhatsAppDatasetId",
+          "documentation":"<p>The Meta Conversions API dataset ID associated with this WhatsApp Business Account. This value is a numeric string of 10 to 20 digits. This field is not present when no dataset has been created for this account.</p>"
         }
       },
       "documentation":"<p>The details of a linked WhatsApp Business Account.</p>"
@@ -2494,6 +2565,38 @@
       "min":1,
       "pattern":"https://(.*)s3(.*).amazonaws.com/(.*)"
     },
+    "SendWhatsAppConversionEventInput":{
+      "type":"structure",
+      "required":[
+        "id",
+        "datasetId",
+        "eventData"
+      ],
+      "members":{
+        "id":{
+          "shape":"LinkedWhatsAppBusinessAccountId",
+          "documentation":"<p>The ID of the WhatsApp Business Account associated with the dataset, formatted as <code>waba-01234567890123456789012345678901</code>.</p>"
+        },
+        "datasetId":{
+          "shape":"WhatsAppDatasetId",
+          "documentation":"<p>The Meta-generated dataset ID to send the event to.</p>"
+        },
+        "eventData":{
+          "shape":"WhatsAppConversionEventBlob",
+          "documentation":"<p>The raw Meta Conversions API event payload as a JSON blob. See <a href=\"https://developers.facebook.com/docs/marketing-api/conversions-api/parameters/server-event\">Meta's server event parameters</a> for the supported format.</p>"
+        }
+      }
+    },
+    "SendWhatsAppConversionEventOutput":{
+      "type":"structure",
+      "required":["requestId"],
+      "members":{
+        "requestId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier for the conversion event request.</p>"
+        }
+      }
+    },
     "SendWhatsAppMessageInput":{
       "type":"structure",
       "required":[
@@ -2887,6 +2990,18 @@
       "type":"string",
       "max":200,
       "min":0
+    },
+    "WhatsAppConversionEventBlob":{
+      "type":"blob",
+      "max":1024000,
+      "min":1,
+      "sensitive":true
+    },
+    "WhatsAppDatasetId":{
+      "type":"string",
+      "max":20,
+      "min":10,
+      "pattern":"[0-9]+"
     },
     "WhatsAppDisplayPhoneNumber":{
       "type":"string",

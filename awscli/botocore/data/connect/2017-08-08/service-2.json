@@ -101,7 +101,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServiceException"}
       ],
-      "documentation":"<p>Associates a queued contact with an agent.</p> <p> <b>Use cases</b> </p> <p>Following are common uses cases for this API:</p> <ul> <li> <p>Programmatically assign queued contacts to available users.</p> </li> <li> <p>Leverage the IAM context key <code>connect:PreferredUserArn</code> to restrict contact association to specific preferred user.</p> </li> </ul> <p> <b>Important things to know</b> </p> <ul> <li> <p>Use this API with chat, email, and task contacts. It does not support voice contacts.</p> </li> <li> <p>Use it to associate contacts with users regardless of their current state, including custom states. Ensure your application logic accounts for user availability before making associations.</p> </li> <li> <p>It honors the IAM context key <code>connect:PreferredUserArn</code> to prevent unauthorized contact associations.</p> </li> <li> <p>It respects the IAM context key <code>connect:PreferredUserArn</code> to enforce authorization controls and prevent unauthorized contact associations. Verify that your IAM policies are properly configured to support your intended use cases.</p> </li> <li> <p>The service quota <i>Queues per routing profile per instance</i> applies to manually assigned queues, too. For more information about this quota, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/amazon-connect-service-limits.html#connect-quotas\">Connect Customer quotas</a> in the <i>Connect Customer Administrator Guide</i>.</p> </li> </ul> <p> <b>Endpoints</b>: See <a href=\"https://docs.aws.amazon.com/general/latest/gr/connect_region.html\">Connect Customer endpoints and quotas</a>.</p>"
+      "documentation":"<p>Associates a queued contact with an agent.</p> <p> <b>Use cases</b> </p> <p>Following are common uses cases for this API:</p> <ul> <li> <p>Programmatically assign queued contacts to available users.</p> </li> <li> <p>Leverage the IAM context key <code>connect:PreferredUserArn</code> to restrict contact association to specific preferred user.</p> </li> </ul> <p> <b>Important things to know</b> </p> <ul> <li> <p>Use this API with chat, email, task, and voice contacts. For voice callbacks, this API does not support customer-first mode.</p> </li> <li> <p>This API can be used to offer a contact to an agent even if the agent is currently at maximum concurrency for the channel.</p> </li> <li> <p>Use it to associate contacts with users regardless of their current state, including custom states. Ensure your application logic accounts for user availability before making associations.</p> </li> <li> <p>It honors the IAM context key <code>connect:PreferredUserArn</code> to prevent unauthorized contact associations.</p> </li> <li> <p>It respects the IAM context key <code>connect:PreferredUserArn</code> to enforce authorization controls and prevent unauthorized contact associations. Verify that your IAM policies are properly configured to support your intended use cases.</p> </li> <li> <p>The service quota <i>Queues per routing profile per instance</i> applies to manually assigned queues, too. For more information about this quota, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/amazon-connect-service-limits.html#connect-quotas\">Connect Customer quotas</a> in the <i>Connect Customer Administrator Guide</i>.</p> </li> </ul> <p> <b>Endpoints</b>: See <a href=\"https://docs.aws.amazon.com/general/latest/gr/connect_region.html\">Connect Customer endpoints and quotas</a>.</p>"
     },
     "AssociateDefaultVocabulary":{
       "name":"AssociateDefaultVocabulary",
@@ -847,6 +847,25 @@
       "documentation":"<p>Creates an evaluation form in the specified Connect Customer instance. The form can be used to define questions related to agent performance, and create sections to organize such questions. Question and section identifiers cannot be duplicated within the same evaluation form.</p>",
       "idempotent":true
     },
+    "CreateExtractionDefinition":{
+      "name":"CreateExtractionDefinition",
+      "http":{
+        "method":"POST",
+        "requestUri":"/extraction-definitions/{InstanceId}"
+      },
+      "input":{"shape":"CreateExtractionDefinitionRequest"},
+      "output":{"shape":"CreateExtractionDefinitionResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceConflictException"},
+        {"shape":"ServiceQuotaExceededException"}
+      ],
+      "documentation":"<p>Creates an extraction definition in the specified Connect Customer instance. An extraction definition specifies how structured data is extracted from customer interactions using generative AI, including the prompt hint that guides extraction and the behavior when a value cannot be found.</p>"
+    },
     "CreateHoursOfOperation":{
       "name":"CreateHoursOfOperation",
       "http":{
@@ -919,6 +938,27 @@
         {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Creates an Amazon Web Services resource association with an Connect Customer instance.</p>"
+    },
+    "CreateMetric":{
+      "name":"CreateMetric",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/metrics/definitions/{InstanceId}"
+      },
+      "input":{"shape":"CreateMetricRequest"},
+      "output":{"shape":"CreateMetricResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"DuplicateResourceException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceException"}
+      ],
+      "documentation":"<p>Creates a new metric definition for the specified Connect Customer instance. You can create custom metrics that use formulas referencing existing Amazon Web Services-managed metrics, optionally with filters applied.</p>",
+      "idempotent":true
     },
     "CreateNotification":{
       "name":"CreateNotification",
@@ -1395,7 +1435,7 @@
         {"shape":"InternalServiceException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Deletes the specified fields containing personally identifiable information (PII) from a contact in the specified Connect Customer instance. This operation redacts PII (such as customer endpoints, additional email recipients, and the email subject) from the contact and its associated contact trace record (CTR). The contact must be in a terminated state.</p> <important> <p>This operation performs a hard deletion of the specified PII and cannot be undone. There is no retention period; after the data is deleted, it cannot be recovered. Only fields that Connect Customer identifies and stores as PII are removed. Any PII that you place in fields outside the scope of this operation remains your responsibility to remove.</p> </important>"
+      "documentation":"<p>Deletes the specified fields containing personally identifiable information (PII) from a contact in the specified Connect Customer instance. We redact PII (such as customer endpoints, additional email recipients, and the email subject) from the contact and its associated contact trace record (CTR). The contact must be in a terminated state.</p> <important> <p> <b>This deletion is permanent and cannot be undone.</b> Performing this operation permanently deletes the specified PII. There is no retention period; you cannot recover the data after deletion. We remove only the fields that Connect Customer identifies and stores as PII. Any PII that you place in fields outside the scope of this operation remains your responsibility to remove.</p> </important>"
     },
     "DeleteContactEvaluation":{
       "name":"DeleteContactEvaluation",
@@ -1578,6 +1618,23 @@
       "documentation":"<p>Deletes an evaluation form in the specified Connect Customer instance. </p> <ul> <li> <p>If the version property is provided, only the specified version of the evaluation form is deleted.</p> </li> <li> <p>If no version is provided, then the full form (all versions) is deleted.</p> </li> </ul>",
       "idempotent":true
     },
+    "DeleteExtractionDefinition":{
+      "name":"DeleteExtractionDefinition",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/extraction-definitions/{InstanceId}/{ExtractionDefinitionId}"
+      },
+      "input":{"shape":"DeleteExtractionDefinitionRequest"},
+      "output":{"shape":"DeleteExtractionDefinitionResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Deletes an extraction definition from the specified Connect Customer instance.</p>"
+    },
     "DeleteHoursOfOperation":{
       "name":"DeleteHoursOfOperation",
       "http":{
@@ -1638,6 +1695,25 @@
         {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Deletes an Amazon Web Services resource association from an Connect Customer instance. The association must not have any use cases associated with it.</p>"
+    },
+    "DeleteMetric":{
+      "name":"DeleteMetric",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/metrics/definitions/{InstanceId}/{MetricId}"
+      },
+      "input":{"shape":"DeleteMetricRequest"},
+      "output":{"shape":"DeleteMetricResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ResourceInUseException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceException"}
+      ],
+      "documentation":"<p>Deletes an existing metric from the specified Connect Customer instance. This operation fails with <code>ResourceConflictException</code> if the metric is currently in use in a dashboard.</p>"
     },
     "DeleteNotification":{
       "name":"DeleteNotification",
@@ -2228,6 +2304,23 @@
       ],
       "documentation":"<p>Describes an evaluation form in the specified Connect Customer instance. If the version property is not provided, the latest version of the evaluation form is described.</p>"
     },
+    "DescribeExtractionDefinition":{
+      "name":"DescribeExtractionDefinition",
+      "http":{
+        "method":"GET",
+        "requestUri":"/extraction-definitions/{InstanceId}/{ExtractionDefinitionId}"
+      },
+      "input":{"shape":"DescribeExtractionDefinitionRequest"},
+      "output":{"shape":"DescribeExtractionDefinitionResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Describes an extraction definition in the specified Connect Customer instance.</p>"
+    },
     "DescribeHoursOfOperation":{
       "name":"DescribeHoursOfOperation",
       "http":{
@@ -2310,6 +2403,25 @@
         {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>This API is in preview release for Connect Customer and is subject to change.</p> <p>Retrieves the current storage configurations for the specified resource type, association ID, and instance ID.</p>"
+    },
+    "DescribeMetric":{
+      "name":"DescribeMetric",
+      "http":{
+        "method":"GET",
+        "requestUri":"/metrics/definitions/{InstanceId}/{MetricId}"
+      },
+      "input":{"shape":"DescribeMetricRequest"},
+      "output":{"shape":"DescribeMetricResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceException"}
+      ],
+      "documentation":"<p>Retrieves the full definition of an existing metric from the specified Connect Customer instance.</p>",
+      "readonly":true
     },
     "DescribeNotification":{
       "name":"DescribeNotification",
@@ -2991,6 +3103,23 @@
       ],
       "documentation":"<p>Retrieves contact metric data for a specified contact.</p> <p> <b>Use cases</b> </p> <p>Following are common use cases for position in queue and estimated wait time:</p> <ul> <li> <p>Customer-Facing Wait Time Announcements - Display or announce the estimated wait time and position in queue to customers before or during their queue experience. </p> </li> <li> <p>Callback Offerings - Offer customers a callback option when the estimated wait time or position in queue exceeds a defined threshold. </p> </li> <li> <p>Queue Routing Decisions - Route incoming contacts to less congested queues by comparing estimated wait time and position in queue across multiple queues. </p> </li> <li> <p>Self-Service Deflection - Redirect customers to self-service options like chatbots or FAQs when estimated wait time is high or position in queue is unfavorable. </p> </li> </ul> <p> <b>Important things to know</b> </p> <ul> <li> <p>Metrics are only available while the contact is actively in queue.</p> </li> <li> <p>For more information, see the <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html\">Position in queue</a> metric in the <i>Connect Customer Administrator Guide</i>. </p> </li> </ul> <p> <b>Endpoints</b>: See <a href=\"https://docs.aws.amazon.com/general/latest/gr/connect_region.html\">Connect Customer endpoints and quotas</a>.</p>"
     },
+    "GetCrossRegionRouting":{
+      "name":"GetCrossRegionRouting",
+      "http":{
+        "method":"GET",
+        "requestUri":"/cross-region-routing/{InstanceId}"
+      },
+      "input":{"shape":"GetCrossRegionRoutingRequest"},
+      "output":{"shape":"GetCrossRegionRoutingResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Retrieves the current cross-region routing configuration for an Amazon Connect Global Resiliency instance enabled for global routing. This operation returns whether cross-region routing is currently enabled or disabled (isolated) for the instance.</p> <note> <p>This operation is available only for Amazon Connect Global Resiliency instances enabled for global routing.</p> </note>"
+    },
     "GetCurrentMetricData":{
       "name":"GetCurrentMetricData",
       "http":{
@@ -3644,6 +3773,23 @@
       ],
       "documentation":"<p>Lists evaluation forms in the specified Connect Customer instance.</p>"
     },
+    "ListExtractionDefinitions":{
+      "name":"ListExtractionDefinitions",
+      "http":{
+        "method":"GET",
+        "requestUri":"/extraction-definitions/{InstanceId}"
+      },
+      "input":{"shape":"ListExtractionDefinitionsRequest"},
+      "output":{"shape":"ListExtractionDefinitionsResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Lists extraction definitions in the specified Connect Customer instance.</p>"
+    },
     "ListFlowAssociations":{
       "name":"ListFlowAssociations",
       "http":{
@@ -3793,6 +3939,25 @@
         {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>This API is in preview release for Connect Customer and is subject to change.</p> <p>Returns a paginated list of all the Amazon Lex V1 bots currently associated with the instance. To return both Amazon Lex V1 and V2 bots, use the <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_ListBots.html\">ListBots</a> API. </p>"
+    },
+    "ListMetrics":{
+      "name":"ListMetrics",
+      "http":{
+        "method":"GET",
+        "requestUri":"/metrics/definitions/{InstanceId}"
+      },
+      "input":{"shape":"ListMetricsRequest"},
+      "output":{"shape":"ListMetricsResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceException"}
+      ],
+      "documentation":"<p>Retrieves a paginated list of metric summaries for the specified Connect Customer instance. Use pagination to ensure that the operation returns quickly and successfully.</p>",
+      "readonly":true
     },
     "ListNotifications":{
       "name":"ListNotifications",
@@ -4733,6 +4898,24 @@
       ],
       "documentation":"<p>Searches the hours of operation in an Connect Customer instance, with optional filtering.</p>"
     },
+    "SearchMetrics":{
+      "name":"SearchMetrics",
+      "http":{
+        "method":"POST",
+        "requestUri":"/search-metrics"
+      },
+      "input":{"shape":"SearchMetricsRequest"},
+      "output":{"shape":"SearchMetricsResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Searches for metrics in the specified Connect Customer instance using search criteria and optional tag-based filters. Use pagination to ensure that the operation returns quickly and successfully.</p>"
+    },
     "SearchNotifications":{
       "name":"SearchNotifications",
       "http":{
@@ -5064,6 +5247,25 @@
       ],
       "documentation":"<p>Sends an outbound web notification to a customer's web browser for outbound campaigns. For more information about outbound campaigns, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/enable-outbound-campaigns.html\">Set up Connect Customer outbound campaigns</a>.</p> <note> <p>Only the Connect Customer outbound campaigns service principal is allowed to assume a role in your account and call this API.</p> </note>"
     },
+    "StartAssistantContact":{
+      "name":"StartAssistantContact",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/contact/assistant"
+      },
+      "input":{"shape":"StartAssistantContactRequest"},
+      "output":{"shape":"StartAssistantContactResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"LimitExceededException"}
+      ],
+      "documentation":"<p>Starts a chat contact with an AI agent.</p> <p>Use the returned <code>ParticipantToken</code> with the <a href=\"https://docs.aws.amazon.com/connect-participant/latest/APIReference/API_CreateParticipantConnection.html\">CreateParticipantConnection</a> operation.</p> <p>For more information about chat, see the following topics in the <i>Connect Customer Administrator Guide</i>: </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/web-and-mobile-chat.html\">Concepts: Web and mobile messaging capabilities in Connect Customer</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/security-best-practices.html#bp-security-chat\">Connect Customer Chat security best practices</a> </p> </li> </ul>"
+    },
     "StartAttachedFileUpload":{
       "name":"StartAttachedFileUpload",
       "http":{
@@ -5080,7 +5282,7 @@
         {"shape":"ResourceConflictException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
-      "documentation":"<p>Provides a pre-signed Amazon S3 URL in response for uploading your content.</p> <important> <p>You may only use this API to upload attachments to an <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_connect-cases_CreateCase.html\">Connect Customer Case</a> or <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/setup-email-channel.html\">Connect Customer Email</a>. </p> </important>"
+      "documentation":"<p>Provides a pre-signed Amazon S3 URL in response for uploading your content.</p> <important> <p>You may only use this API to upload attachments to a <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_connect-cases_CreateCase.html\">Connect Customer Case</a>, <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/setup-email-channel.html\">Connect Customer Email</a>, or <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/concepts-getting-started-tasks.html\">Connect Customer Task</a>. </p> </important>"
     },
     "StartChatContact":{
       "name":"StartChatContact",
@@ -5351,7 +5553,8 @@
         {"shape":"InvalidRequestException"},
         {"shape":"InvalidParameterException"},
         {"shape":"LimitExceededException"},
-        {"shape":"ResourceNotFoundException"}
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Places an inbound in-app, web, or video call to a contact, and then initiates the flow. It performs the actions in the flow that are specified (in ContactFlowId) and present in the Connect Customer instance (specified as InstanceId).</p>"
     },
@@ -5507,7 +5710,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Adds the specified tags to the specified resource.</p> <p>Some of the supported resource types are agents, routing profiles, queues, quick connects, flows, agent statuses, hours of operation, phone numbers, security profiles, and task templates. For a complete list, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/tagging.html\">Tagging resources in Connect Customer</a>.</p> <p>For sample policies that use tags, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/security_iam_id-based-policy-examples.html\">Connect Customer Identity-Based Policy Examples</a> in the <i>Connect Customer Administrator Guide</i>.</p>"
+      "documentation":"<p>Adds the specified tags to the specified resource.</p> <p>Some of the supported resource types are agents, routing profiles, queues, quick connects, flows, agent statuses, hours of operation, phone numbers, security profiles, task templates, and custom metrics. For a complete list, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/tagging.html\">Tagging resources in Connect Customer</a>.</p> <p>For sample policies that use tags, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/security_iam_id-based-policy-examples.html\">Connect Customer Identity-Based Policy Examples</a> in the <i>Connect Customer Administrator Guide</i>.</p>"
     },
     "TransferContact":{
       "name":"TransferContact",
@@ -5816,6 +6019,43 @@
       ],
       "documentation":"<p>Updates the scheduled time of a task contact that is already scheduled.</p>"
     },
+    "UpdateContactTaskTemplate":{
+      "name":"UpdateContactTaskTemplate",
+      "http":{
+        "method":"POST",
+        "requestUri":"/contact/task-template"
+      },
+      "input":{"shape":"UpdateContactTaskTemplateRequest"},
+      "output":{"shape":"UpdateContactTaskTemplateResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"PropertyValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"LimitExceededException"}
+      ],
+      "documentation":"<p>Updates the task template association on an existing task contact. You can update the task template on a contact before assignment to support tasks that are created without a template (for example <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/connect-rules.html\">Rules</a> or <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/set-disconnect-flow.html\">disconnect flows</a>) or change the agent interaction form to represent the latest task data (for example an initial request that was submitted as a refund gets updated to an account cancellation and requires a new template).</p> <p>This operation can only be used with task contacts that are in progress and not connected to an agent. A task template can be updated a maximum of 5 times per contact.</p> <p>The task's references must be compatible with the fields of the target task template. If the target template has a required field, the task must have a corresponding reference with a matching name and compatible type. The following task template field types map to reference types:</p> <ul> <li> <p> <code>TEXT</code>, <code>TEXT_AREA</code>, <code>BOOLEAN</code>, and <code>SINGLE_SELECT</code> map to references of type <code>STRING</code>.</p> </li> <li> <p> <code>NUMBER</code> maps to references of type <code>NUMBER</code>.</p> </li> <li> <p> <code>DATE_TIME</code> maps to references of type <code>DATE</code>.</p> </li> <li> <p> <code>URL</code> maps to references of type <code>URL</code>.</p> </li> <li> <p> <code>EMAIL</code> maps to references of type <code>EMAIL</code>.</p> </li> </ul> <p>References corresponding to <code>TEXT</code> fields must be fewer than 512 characters. <code>TEXT_AREA</code> fields must be fewer than 4,096 characters. <code>BOOLEAN</code> fields must have a value of <code>true</code> or <code>false</code>.</p> <p>An <code>InvalidRequestException</code> occurs when <code>UpdateContactTaskTemplate</code> is called on a connected or terminated task, when it is called on non-task contacts, and when the task contact already uses the provided task template. A <code>PropertyValidationException</code> occurs when the task's references conflict with the task template's fields, for example if the task is missing a reference that matches a required field, or if the task has a reference that matches a required field's name but not its datatype.</p>"
+    },
+    "UpdateCrossRegionRouting":{
+      "name":"UpdateCrossRegionRouting",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/cross-region-routing/{InstanceId}"
+      },
+      "input":{"shape":"UpdateCrossRegionRoutingRequest"},
+      "output":{"shape":"UpdateCrossRegionRoutingResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ResourceConflictException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceException"}
+      ],
+      "documentation":"<p>Updates the cross-region routing configuration for an Amazon Connect Global Resiliency instance enabled for global routing. When invoked with <code>IsolatedAll</code> set to <code>true</code>, this operation disables cross-region routing, meaning contacts originating in one Region will no longer be routed to agents in another Region.</p> <note> <p>This operation is available only for Amazon Connect Global Resiliency instances enabled for global routing. Reporting and contact search continue to operate globally after you use this operation.</p> </note>"
+    },
     "UpdateDataTableAttribute":{
       "name":"UpdateDataTableAttribute",
       "http":{
@@ -5914,6 +6154,24 @@
       "documentation":"<p>Updates details about a specific evaluation form version in the specified Connect Customer instance. Question and section identifiers cannot be duplicated within the same evaluation form.</p> <p>This operation does not support partial updates. Instead it does a full update of evaluation form content.</p>",
       "idempotent":true
     },
+    "UpdateExtractionDefinition":{
+      "name":"UpdateExtractionDefinition",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/extraction-definitions/{InstanceId}/{ExtractionDefinitionId}"
+      },
+      "input":{"shape":"UpdateExtractionDefinitionRequest"},
+      "output":{"shape":"UpdateExtractionDefinitionResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceConflictException"}
+      ],
+      "documentation":"<p>Updates an extraction definition in the specified Connect Customer instance.</p>"
+    },
     "UpdateHoursOfOperation":{
       "name":"UpdateHoursOfOperation",
       "http":{
@@ -5980,6 +6238,45 @@
         {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>This API is in preview release for Connect Customer and is subject to change.</p> <p>Updates an existing configuration for a resource type. This API is idempotent.</p>"
+    },
+    "UpdateMetricContent":{
+      "name":"UpdateMetricContent",
+      "http":{
+        "method":"POST",
+        "requestUri":"/metrics/definitions/{InstanceId}/{MetricId}/content"
+      },
+      "input":{"shape":"UpdateMetricContentRequest"},
+      "output":{"shape":"UpdateMetricContentResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceException"}
+      ],
+      "documentation":"<p>Updates the calculation, unit, and/or trend indicator of an existing metric in the specified Connect Customer instance.</p>",
+      "idempotent":true
+    },
+    "UpdateMetricMetadata":{
+      "name":"UpdateMetricMetadata",
+      "http":{
+        "method":"POST",
+        "requestUri":"/metrics/definitions/{InstanceId}/{MetricId}/metadata"
+      },
+      "input":{"shape":"UpdateMetricMetadataRequest"},
+      "output":{"shape":"UpdateMetricMetadataResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"DuplicateResourceException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceException"}
+      ],
+      "documentation":"<p>Updates the name and/or description of an existing metric in the specified Connect Customer instance.</p>",
+      "idempotent":true
     },
     "UpdateNotificationContent":{
       "name":"UpdateNotificationContent",
@@ -6688,6 +6985,24 @@
     }
   },
   "shapes":{
+    "ACGRInstanceArn":{
+      "type":"string",
+      "pattern":"^arn:([a-zA-Z0-9-]+):connect:[a-z]+-[a-z-]+-[0-9]+:[0-9]+:instance/[a-zA-Z0-9_-]+$"
+    },
+    "ACGRInstanceIdOrArn":{
+      "type":"string",
+      "max":250,
+      "min":1,
+      "pattern":"^(arn:([a-zA-Z0-9-]+):connect:[a-z]+-[a-z-]+-[0-9]+:[0-9]+:instance/)?[a-zA-Z0-9_-]+$"
+    },
+    "ACGRTrafficDistributionGroupArn":{
+      "type":"string",
+      "pattern":"^arn:([a-zA-Z0-9-]+):connect:[a-z]+-[a-z-]+-[0-9]+:[0-9]+:traffic-distribution-group/[a-zA-Z0-9_-]+$"
+    },
+    "ACGRTrafficDistributionGroupId":{
+      "type":"string",
+      "pattern":"^[a-zA-Z0-9_-]+$"
+    },
     "ARN":{"type":"string"},
     "AWSAccountId":{"type":"string"},
     "AccessDeniedException":{
@@ -6735,7 +7050,8 @@
         "UPDATE_CASE",
         "ASSIGN_SLA",
         "END_ASSOCIATED_TASKS",
-        "SUBMIT_AUTO_EVALUATION"
+        "SUBMIT_AUTO_EVALUATION",
+        "EXTRACT_INFORMATION"
       ]
     },
     "ActivateEvaluationFormRequest":{
@@ -7019,6 +7335,10 @@
         "VoiceEnhancementMode":{
           "shape":"VoiceEnhancementMode",
           "documentation":"<p>The voice enhancement mode used by the agent as the call is ending. Valid values: VOICE_ISOLATION | NOISE_SUPPRESSION | NONE. A value of null indicates this mode has not yet been set for this user.</p>"
+        },
+        "ActiveRegion":{
+          "shape":"ActiveRegion",
+          "documentation":"<p>The Region where the agent was active when they handled the contact. For Amazon Connect Global Resiliency instances enabled for global routing, this indicates the Region in which the agent's session was established at the time of the contact.</p>"
         }
       },
       "documentation":"<p>Information about the agent who accepted the contact.</p>"
@@ -7266,7 +7586,8 @@
     "AiAgentId":{
       "type":"string",
       "max":128,
-      "min":0
+      "min":0,
+      "pattern":"[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}(:[A-Z0-9_$]+){0,1}$|^arn:[a-z-]*?:wisdom:[a-z0-9-]*?:[0-9]{12}:[a-z-]*?/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}(?:/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}){0,2}(:[A-Z0-9_$]+){0,1}"
     },
     "AiAgentInfo":{
       "type":"structure",
@@ -7285,6 +7606,17 @@
         }
       },
       "documentation":"<p> Information of the AI agent involved in the contact.</p>"
+    },
+    "AiAgentInput":{
+      "type":"structure",
+      "required":["AiAgentId"],
+      "members":{
+        "AiAgentId":{
+          "shape":"AiAgentId",
+          "documentation":"<p>The identifier of the AI agent that participates in the contact.</p>"
+        }
+      },
+      "documentation":"<p>The AI agent that participates in the contact, including its identifier.</p>"
     },
     "AiAgentSearchCriteria":{
       "type":"structure",
@@ -8053,7 +8385,7 @@
         },
         "ManualAssignmentQueueConfigs":{
           "shape":"RoutingProfileManualAssignmentQueueConfigList",
-          "documentation":"<p>The manual assignment queues to associate with this routing profile.</p> <p>Note: Use this config for chat, email, and task contacts. It does not support voice contacts.</p>"
+          "documentation":"<p>The manual assignment queues to associate with this routing profile.</p> <note> <p>For voice contacts, manual assignment supports only agent-first callback contacts. Chat, email, and task contacts are fully supported.</p> </note>"
         }
       }
     },
@@ -8313,7 +8645,7 @@
         },
         "AssociatedResourceArn":{
           "shape":"ARN",
-          "documentation":"<p>The resource to which the attached file is (being) uploaded to. <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_connect-cases_CreateCase.html\">Cases</a> are the only current supported resource.</p> <note> <p>This value must be a valid ARN.</p> </note>"
+          "documentation":"<p>The resource to which the attached file is (being) uploaded to. The supported resources are <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/cases.html\">Cases</a>, <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/setup-email-channel.html\">Email</a>, and <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/concepts-getting-started-tasks.html\">Task</a>.</p> <note> <p>This value must be a valid ARN.</p> </note>"
         },
         "Tags":{
           "shape":"TagMap",
@@ -8828,6 +9160,32 @@
       },
       "documentation":"<p>Information about automatic fail configuration for an evaluation form.</p>"
     },
+    "AvailableFilter":{
+      "type":"structure",
+      "members":{
+        "Id":{
+          "shape":"FilterId",
+          "documentation":"<p>The identifier of the filter.</p>"
+        },
+        "Type":{
+          "shape":"AvailableFilterType",
+          "documentation":"<p>The type of the filter. Valid values: <code>METRIC_LEVEL</code> | <code>RESOURCE_LEVEL</code>.</p>"
+        }
+      },
+      "documentation":"<p>A filter that is available for use with the metric. Part of an AvailableFilterList that describes the filters that are available for use with the metric.</p>"
+    },
+    "AvailableFilterList":{
+      "type":"list",
+      "member":{"shape":"AvailableFilter"}
+    },
+    "AvailableFilterType":{
+      "type":"string",
+      "documentation":"<p>The type of an available metric filter. Valid values: <code>METRIC_LEVEL</code> | <code>RESOURCE_LEVEL</code>.</p>",
+      "enum":[
+        "METRIC_LEVEL",
+        "RESOURCE_LEVEL"
+      ]
+    },
     "AvailableNumberSummary":{
       "type":"structure",
       "members":{
@@ -9266,7 +9624,7 @@
         },
         "AssociatedResourceArn":{
           "shape":"ARN",
-          "documentation":"<p>The resource to which the attached file is (being) uploaded to. The supported resources are <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/cases.html\">Cases</a> and <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/setup-email-channel.html\">Email</a>.</p> <note> <p>This value must be a valid ARN.</p> </note>",
+          "documentation":"<p>The resource to which the attached file is (being) uploaded to. The supported resources are <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/cases.html\">Cases</a>, <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/setup-email-channel.html\">Email</a>, and <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/concepts-getting-started-tasks.html\">Task</a>.</p> <note> <p>This value must be a valid ARN.</p> </note>",
           "location":"querystring",
           "locationName":"associatedResourceArn"
         }
@@ -9501,6 +9859,40 @@
     "BucketName":{
       "type":"string",
       "max":128,
+      "min":1
+    },
+    "CalculationComponent":{
+      "type":"structure",
+      "required":["Alias"],
+      "members":{
+        "Alias":{
+          "shape":"ComponentAlias",
+          "documentation":"<p>The alias used to reference this component in the calculation expression.</p>"
+        },
+        "MetricName":{
+          "shape":"MetricName",
+          "documentation":"<p>The name of an AWS-managed metric used in this calculation component (for example, <code>CONTACTS_HANDLED</code>). Mutually exclusive with <code>MetricId</code>.</p>"
+        },
+        "MetricId":{
+          "shape":"MetricId",
+          "documentation":"<p>The ARN of an AWS-managed metric used in this calculation component. Mutually exclusive with <code>MetricName</code>.</p>"
+        },
+        "MetricFilters":{
+          "shape":"MetricFilterList",
+          "documentation":"<p>The filters applied to the calculation component.</p>"
+        }
+      },
+      "documentation":"<p>Represents a component metric referenced in a custom metric calculation formula.</p>"
+    },
+    "CalculationComponentList":{
+      "type":"list",
+      "member":{"shape":"CalculationComponent"},
+      "max":5,
+      "min":1
+    },
+    "CalculationExpression":{
+      "type":"string",
+      "max":1024,
       "min":1
     },
     "Campaign":{
@@ -9885,7 +10277,7 @@
         },
         "AssociatedResourceArn":{
           "shape":"ARN",
-          "documentation":"<p>The resource to which the attached file is (being) uploaded to. The supported resources are <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/cases.html\">Cases</a> and <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/setup-email-channel.html\">Email</a>.</p> <note> <p>This value must be a valid ARN.</p> </note>",
+          "documentation":"<p>The resource to which the attached file is (being) uploaded to. The supported resources are <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/cases.html\">Cases</a>, <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/setup-email-channel.html\">Email</a>, and <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/concepts-getting-started-tasks.html\">Task</a>.</p> <note> <p>This value must be a valid ARN.</p> </note>",
           "location":"querystring",
           "locationName":"associatedResourceArn"
         }
@@ -9896,6 +10288,11 @@
       "type":"structure",
       "members":{},
       "documentation":"Response from CompleteAttachedFileUpload API"
+    },
+    "ComponentAlias":{
+      "type":"string",
+      "max":128,
+      "min":1
     },
     "Concurrency":{
       "type":"integer",
@@ -11021,7 +11418,7 @@
       "members":{
         "Message":{"shape":"Message"}
       },
-      "documentation":"<p>The contact has not been disconnected and is not in a terminated state. PII can be deleted only from a contact that has been disconnected. This error is returned with an HTTP 409 status code.</p>",
+      "documentation":"<p>The contact has not been disconnected and is not in a terminated state. To delete PII, disconnect the contact first. Wait for it to reach the terminated state, then retry the request.</p>",
       "error":{"httpStatusCode":409},
       "exception":true
     },
@@ -12079,6 +12476,60 @@
         }
       }
     },
+    "CreateExtractionDefinitionRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "Name",
+        "ExtractionConfiguration"
+      ],
+      "members":{
+        "ClientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the Amazon Web Services SDK populates this field.</p>",
+          "idempotencyToken":true
+        },
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Connect Customer instance. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "Name":{
+          "shape":"ExtractionDefinitionName",
+          "documentation":"<p>A unique name of the extraction definition.</p>"
+        },
+        "ExtractionConfiguration":{
+          "shape":"ExtractionConfiguration",
+          "documentation":"<p>The configuration that defines how data is extracted, including the prompt hint and not-found behavior.</p>"
+        },
+        "Display":{
+          "shape":"ExtractionDefinitionDisplay",
+          "documentation":"<p>The display settings for the extraction definition, including the label shown in the agent workspace.</p>"
+        },
+        "Tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags used to organize, track, or control access for this resource.</p>"
+        }
+      }
+    },
+    "CreateExtractionDefinitionResponse":{
+      "type":"structure",
+      "required":[
+        "ExtractionDefinitionArn",
+        "ExtractionDefinitionId"
+      ],
+      "members":{
+        "ExtractionDefinitionArn":{
+          "shape":"ARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the extraction definition.</p>"
+        },
+        "ExtractionDefinitionId":{
+          "shape":"ExtractionDefinitionId",
+          "documentation":"<p>The identifier of the extraction definition.</p>"
+        }
+      }
+    },
     "CreateHoursOfOperationOverrideRequest":{
       "type":"structure",
       "required":[
@@ -12297,6 +12748,73 @@
         "IntegrationAssociationArn":{
           "shape":"ARN",
           "documentation":"<p>The Amazon Resource Name (ARN) for the association.</p>"
+        }
+      }
+    },
+    "CreateMetricRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "Name",
+        "MetricCalculation",
+        "Unit"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Connect Customer instance. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "Name":{
+          "shape":"MetricName",
+          "documentation":"<p>The name of the metric.</p>"
+        },
+        "MetricCalculation":{
+          "shape":"MetricCalculation",
+          "documentation":"<p>The calculation definition for the metric, including the formula expression and the component metrics it references.</p>"
+        },
+        "Unit":{
+          "shape":"MetricUnit",
+          "documentation":"<p>The display unit for the metric's data.</p>"
+        },
+        "Status":{
+          "shape":"MetricStatus",
+          "documentation":"<p>The publish status of the metric. Set to <code>PUBLISHED</code> to make the metric available for use in dashboards and reports, or <code>SAVED</code> to keep it in draft state.</p>"
+        },
+        "ClientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the Amazon Web Services SDK populates this field. For more information about idempotency, see <a href=\"https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/\">Making retries safe with idempotent APIs</a>.</p>",
+          "idempotencyToken":true
+        },
+        "Description":{
+          "shape":"MetricDescription",
+          "documentation":"<p>The description of the metric.</p>"
+        },
+        "PositiveTrendIndicator":{
+          "shape":"TrendIndicator",
+          "documentation":"<p>How an increase in the metric value should be interpreted. Valid values: <code>POSITIVE</code>, <code>NEUTRAL</code>, <code>NEGATIVE</code>.</p>"
+        },
+        "Tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags used to organize, track, or control access for this resource. For example, { \"Tags\": {\"key1\":\"value1\", \"key2\":\"value2\"} }.</p>"
+        }
+      }
+    },
+    "CreateMetricResponse":{
+      "type":"structure",
+      "required":[
+        "MetricArn",
+        "MetricId"
+      ],
+      "members":{
+        "MetricArn":{
+          "shape":"ARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the metric.</p>"
+        },
+        "MetricId":{
+          "shape":"MetricId",
+          "documentation":"<p>The identifier of the metric.</p>"
         }
       }
     },
@@ -12718,7 +13236,7 @@
         },
         "ManualAssignmentQueueConfigs":{
           "shape":"RoutingProfileManualAssignmentQueueConfigList",
-          "documentation":"<p>The manual assignment queues associated with the routing profile. If no queue is added, agents and supervisors can't pick or assign any contacts from this routing profile. The limit of 10 array members applies to the maximum number of RoutingProfileManualAssignmentQueueConfig objects that can be passed during a CreateRoutingProfile API request. It is different from the quota of 50 queues per routing profile per instance that is listed in Connect Customer service quotas.</p> <p>Note: Use this config for chat, email, and task contacts. It does not support voice contacts.</p>"
+          "documentation":"<p>The manual assignment queues associated with the routing profile. If no queue is added, agents and supervisors can't pick or assign any contacts from this routing profile. The limit of 10 array members applies to the maximum number of RoutingProfileManualAssignmentQueueConfig objects that can be passed during a CreateRoutingProfile API request. It is different from the quota of 50 queues per routing profile per instance that is listed in Connect Customer service quotas.</p> <note> <p>For voice contacts, manual assignment supports only agent-first callback contacts. Chat, email, and task contacts are fully supported.</p> </note>"
         },
         "MediaConcurrencies":{
           "shape":"MediaConcurrencies",
@@ -12910,7 +13428,7 @@
         },
         "ContactFlowId":{
           "shape":"ContactFlowId",
-          "documentation":"<p>The identifier of the flow that runs by default when a task is created by referencing this template.</p>"
+          "documentation":"<p>The identifier of the flow that runs by default when a task is created by referencing this template.</p> <p>Although this parameter is marked as optional, the request must contain either a <code>ContactFlowId</code> or a field of type <code>QUICK_CONNECT</code>.</p>"
         },
         "SelfAssignFlowId":{
           "shape":"ContactFlowId",
@@ -12918,7 +13436,7 @@
         },
         "Constraints":{
           "shape":"TaskTemplateConstraints",
-          "documentation":"<p>Constraints that are applicable to the fields listed.</p>"
+          "documentation":"<p>Constraints that are applicable to the fields listed. Although this parameter is marked as optional in the API model, the service requires it when calling <code>CreateTaskTemplate</code> or <code>UpdateTaskTemplate</code>. The <code>RequiredFields</code> array must contain at least one element, and the field of type <code>NAME</code> must be included in <code>RequiredFields</code>.</p>"
         },
         "Defaults":{
           "shape":"TaskTemplateDefaults",
@@ -12930,7 +13448,7 @@
         },
         "Fields":{
           "shape":"TaskTemplateFields",
-          "documentation":"<p>Fields that are part of the template.</p>"
+          "documentation":"<p>Fields that are part of the template.</p> <p>The request must contain exactly one field of type <code>NAME</code>. This field must also be listed in the <code>RequiredFields</code> array within the <code>Constraints</code> parameter.</p>"
         },
         "ClientToken":{
           "shape":"ClientToken",
@@ -13047,7 +13565,7 @@
           "documentation":"<p>A description for the traffic distribution group.</p>"
         },
         "InstanceId":{
-          "shape":"InstanceIdOrArn",
+          "shape":"ACGRInstanceIdOrArn",
           "documentation":"<p>The identifier of the Connect Customer instance that has been replicated. You can find the <code>instanceId</code> in the ARN of the instance.</p>"
         },
         "ClientToken":{
@@ -13065,11 +13583,11 @@
       "type":"structure",
       "members":{
         "Id":{
-          "shape":"TrafficDistributionGroupId",
+          "shape":"ACGRTrafficDistributionGroupId",
           "documentation":"<p>The identifier of the traffic distribution group. This can be the ID or the ARN of the traffic distribution group.</p>"
         },
         "Arn":{
-          "shape":"TrafficDistributionGroupArn",
+          "shape":"ACGRTrafficDistributionGroupArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the traffic distribution group.</p>"
         }
       }
@@ -14334,6 +14852,11 @@
       },
       "documentation":"<p>A decimal search condition for Search APIs.</p>"
     },
+    "DefaultStat":{
+      "type":"string",
+      "max":50,
+      "min":1
+    },
     "DefaultVocabulary":{
       "type":"structure",
       "required":[
@@ -14393,7 +14916,7 @@
         },
         "AssociatedResourceArn":{
           "shape":"ARN",
-          "documentation":"<p>The resource to which the attached file is (being) uploaded to. <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_connect-cases_CreateCase.html\">Cases</a> are the only current supported resource.</p> <note> <p>This value must be a valid ARN.</p> </note>",
+          "documentation":"<p>The resource to which the attached file is (being) uploaded to. The supported resources are <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/cases.html\">Cases</a>, <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/setup-email-channel.html\">Email</a>, and <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/concepts-getting-started-tasks.html\">Task</a>.</p> <note> <p>This value must be a valid ARN.</p> </note>",
           "location":"querystring",
           "locationName":"associatedResourceArn"
         }
@@ -14421,13 +14944,13 @@
         },
         "ContactId":{
           "shape":"ContactId",
-          "documentation":"<p>The identifier of the contact. PII can be deleted only from a contact that has been disconnected (is in a terminated state).</p>",
+          "documentation":"<p>The identifier of the contact. You can delete PII only from a contact that has been disconnected (is in a terminated state).</p>",
           "location":"uri",
           "locationName":"ContactId"
         },
         "ContactFields":{
           "shape":"ContactFields",
-          "documentation":"<p>The categories of PII to redact from the contact. Valid values are <code>CUSTOMER_ENDPOINT</code>, <code>ADDITIONAL_EMAIL_RECIPIENTS</code>, and <code>EMAIL_SUBJECT</code>. <code>ADDITIONAL_EMAIL_RECIPIENTS</code> and <code>EMAIL_SUBJECT</code> are supported only for contacts in the email channel.</p>"
+          "documentation":"<p>The categories of PII to redact from the contact. Specify one or more of the following values:</p> <ul> <li> <p> <code>CUSTOMER_ENDPOINT</code> – The customer's contact endpoint.</p> </li> <li> <p> <code>ADDITIONAL_EMAIL_RECIPIENTS</code> – Additional recipients on an email contact (email channel only).</p> </li> <li> <p> <code>EMAIL_SUBJECT</code> – The subject line of an email contact (email channel only).</p> </li> </ul>"
         }
       }
     },
@@ -14718,6 +15241,31 @@
         }
       }
     },
+    "DeleteExtractionDefinitionRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "ExtractionDefinitionId"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Connect Customer instance. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "ExtractionDefinitionId":{
+          "shape":"ExtractionDefinitionId",
+          "documentation":"<p>The identifier of the extraction definition to delete.</p>",
+          "location":"uri",
+          "locationName":"ExtractionDefinitionId"
+        }
+      }
+    },
+    "DeleteExtractionDefinitionResponse":{
+      "type":"structure",
+      "members":{}
+    },
     "DeleteHoursOfOperationOverrideRequest":{
       "type":"structure",
       "required":[
@@ -14806,6 +15354,31 @@
           "locationName":"IntegrationAssociationId"
         }
       }
+    },
+    "DeleteMetricRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "MetricId"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Connect Customer instance. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "MetricId":{
+          "shape":"MetricId",
+          "documentation":"<p>The identifier of the metric to delete.</p>",
+          "location":"uri",
+          "locationName":"MetricId"
+        }
+      }
+    },
+    "DeleteMetricResponse":{
+      "type":"structure",
+      "members":{}
     },
     "DeleteNotificationRequest":{
       "type":"structure",
@@ -15788,6 +16361,37 @@
         }
       }
     },
+    "DescribeExtractionDefinitionRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "ExtractionDefinitionId"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Connect Customer instance. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "ExtractionDefinitionId":{
+          "shape":"ExtractionDefinitionId",
+          "documentation":"<p>The identifier of the extraction definition to describe.</p>",
+          "location":"uri",
+          "locationName":"ExtractionDefinitionId"
+        }
+      }
+    },
+    "DescribeExtractionDefinitionResponse":{
+      "type":"structure",
+      "required":["ExtractionDefinition"],
+      "members":{
+        "ExtractionDefinition":{
+          "shape":"ExtractionDefinition",
+          "documentation":"<p>The extraction definition.</p>"
+        }
+      }
+    },
     "DescribeHoursOfOperationOverrideRequest":{
       "type":"structure",
       "required":[
@@ -15944,6 +16548,37 @@
         "StorageConfig":{
           "shape":"InstanceStorageConfig",
           "documentation":"<p>A valid storage type.</p>"
+        }
+      }
+    },
+    "DescribeMetricRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "MetricId"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Connect Customer instance. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "MetricId":{
+          "shape":"MetricId",
+          "documentation":"<p>The identifier of the metric to describe. Adding the <code>$SAVED</code> qualifier will describe the saved version of the metric. Adding <code>$LATEST</code> or omitting a qualifier will describe the published version.</p>",
+          "location":"uri",
+          "locationName":"MetricId"
+        }
+      }
+    },
+    "DescribeMetricResponse":{
+      "type":"structure",
+      "required":["Metric"],
+      "members":{
+        "Metric":{
+          "shape":"MetricDefinition",
+          "documentation":"<p>The metric definition.</p>"
         }
       }
     },
@@ -17416,7 +18051,7 @@
     "EmailAttachments":{
       "type":"list",
       "member":{"shape":"EmailAttachment"},
-      "max":10,
+      "max":50,
       "min":1,
       "sensitive":true
     },
@@ -18263,7 +18898,8 @@
         "pt-BR",
         "ja-JP",
         "ko-KR",
-        "zh-CN"
+        "zh-CN",
+        "ms-MY"
       ]
     },
     "EvaluationFormLanguageConfiguration":{
@@ -19818,6 +20454,8 @@
         "OnRealTimeCallAnalysisAvailable",
         "OnRealTimeChatAnalysisAvailable",
         "OnPostChatAnalysisAvailable",
+        "OnAfterCallWorkAvailable",
+        "OnAfterChatWorkAvailable",
         "OnEmailAnalysisAvailable",
         "OnZendeskTicketCreate",
         "OnZendeskTicketStatusUpdate",
@@ -19928,6 +20566,169 @@
         }
       },
       "documentation":"<p>The external invocation configuration for the flow module</p>"
+    },
+    "ExtractInformationActionDefinition":{
+      "type":"structure",
+      "required":["RulesExtractionDefinitions"],
+      "members":{
+        "RulesExtractionDefinitions":{
+          "shape":"RulesExtractionDefinitionIdentifierList",
+          "documentation":"<p>The list of extraction definition identifiers that specify what data to extract.</p>"
+        }
+      },
+      "documentation":"<p>Information about the extract information action, which references extraction definitions to use when extracting structured data from customer interactions.</p>"
+    },
+    "ExtractionConfiguration":{
+      "type":"structure",
+      "required":["PromptHint"],
+      "members":{
+        "PromptHint":{
+          "shape":"ExtractionDefinitionPromptHint",
+          "documentation":"<p>The prompt hint that guides the extraction. This text tells the generative AI model what data to look for in the customer interaction.</p>"
+        },
+        "NotFoundBehavior":{
+          "shape":"ExtractionDefinitionNotFoundBehavior",
+          "documentation":"<p>The behavior when the extraction cannot find the specified data in the interaction.</p>"
+        }
+      },
+      "documentation":"<p>The extraction configuration that defines how data is extracted from customer interactions.</p>"
+    },
+    "ExtractionDefinition":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "ExtractionDefinitionId",
+        "ExtractionDefinitionArn",
+        "ExtractionConfiguration",
+        "CreatedTime",
+        "LastUpdatedTime",
+        "LastUpdatedBy"
+      ],
+      "members":{
+        "Name":{
+          "shape":"ExtractionDefinitionName",
+          "documentation":"<p>The name of the extraction definition.</p>"
+        },
+        "ExtractionDefinitionId":{
+          "shape":"ExtractionDefinitionId",
+          "documentation":"<p>The identifier of the extraction definition.</p>"
+        },
+        "ExtractionDefinitionArn":{
+          "shape":"ARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the extraction definition.</p>"
+        },
+        "ExtractionConfiguration":{
+          "shape":"ExtractionConfiguration",
+          "documentation":"<p>The configuration that defines how data is extracted.</p>"
+        },
+        "Display":{
+          "shape":"ExtractionDefinitionDisplay",
+          "documentation":"<p>The display settings for the extraction definition.</p>"
+        },
+        "CreatedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the extraction definition was created.</p>"
+        },
+        "LastUpdatedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the extraction definition was last updated.</p>"
+        },
+        "LastUpdatedBy":{
+          "shape":"ARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the user who last updated the extraction definition.</p>"
+        },
+        "Tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags used to organize, track, or control access for this resource.</p>"
+        }
+      },
+      "documentation":"<p>Information about an extraction definition.</p>"
+    },
+    "ExtractionDefinitionDisplay":{
+      "type":"structure",
+      "members":{
+        "Label":{
+          "shape":"ExtractionDefinitionDisplayLabel",
+          "documentation":"<p>The label displayed in the agent workspace for this extraction definition.</p>"
+        }
+      },
+      "documentation":"<p>The display configuration for an extraction definition.</p>"
+    },
+    "ExtractionDefinitionDisplayLabel":{
+      "type":"string",
+      "max":25
+    },
+    "ExtractionDefinitionId":{
+      "type":"string",
+      "max":256,
+      "min":1
+    },
+    "ExtractionDefinitionName":{
+      "type":"string",
+      "max":200,
+      "min":1
+    },
+    "ExtractionDefinitionNotFoundBehavior":{
+      "type":"structure",
+      "required":["Behavior"],
+      "members":{
+        "Behavior":{
+          "shape":"NotFoundBehaviorType",
+          "documentation":"<p>The behavior type. <code>USE_DEFAULT_VALUE</code> returns the specified default value. <code>OMIT</code> excludes the field from the output.</p>"
+        },
+        "DefaultValue":{
+          "shape":"NotFoundDefaultValue",
+          "documentation":"<p>The default value to use when the behavior is <code>USE_DEFAULT_VALUE</code>.</p>"
+        }
+      },
+      "documentation":"<p>The behavior configuration when an extraction definition cannot find the target value.</p>"
+    },
+    "ExtractionDefinitionPromptHint":{
+      "type":"string",
+      "max":1024,
+      "min":1
+    },
+    "ExtractionDefinitionSummary":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "ExtractionDefinitionId",
+        "ExtractionDefinitionArn",
+        "CreatedTime",
+        "LastUpdatedTime",
+        "LastUpdatedBy"
+      ],
+      "members":{
+        "Name":{
+          "shape":"ExtractionDefinitionName",
+          "documentation":"<p>The name of the extraction definition.</p>"
+        },
+        "ExtractionDefinitionId":{
+          "shape":"ExtractionDefinitionId",
+          "documentation":"<p>The identifier of the extraction definition.</p>"
+        },
+        "ExtractionDefinitionArn":{
+          "shape":"ARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the extraction definition.</p>"
+        },
+        "CreatedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the extraction definition was created.</p>"
+        },
+        "LastUpdatedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the extraction definition was last updated.</p>"
+        },
+        "LastUpdatedBy":{
+          "shape":"ARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the user who last updated the extraction definition.</p>"
+        }
+      },
+      "documentation":"<p>Summary information about an extraction definition.</p>"
+    },
+    "ExtractionDefinitionSummaryList":{
+      "type":"list",
+      "member":{"shape":"ExtractionDefinitionSummary"}
     },
     "FailedBatchAssociationSummary":{
       "type":"structure",
@@ -20097,6 +20898,11 @@
         "ATTACHMENT",
         "VOICE_RECORDING"
       ]
+    },
+    "FilterId":{
+      "type":"string",
+      "max":100,
+      "min":1
     },
     "FilterV2":{
       "type":"structure",
@@ -20308,7 +21114,7 @@
         },
         "AssociatedResourceArn":{
           "shape":"ARN",
-          "documentation":"<p>The resource to which the attached file is (being) uploaded to. The supported resources are <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/cases.html\">Cases</a> and <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/setup-email-channel.html\">Email</a>.</p> <note> <p>This value must be a valid ARN.</p> </note>",
+          "documentation":"<p>The resource to which the attached file is (being) uploaded to. The supported resources are <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/cases.html\">Cases</a>, <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/setup-email-channel.html\">Email</a>, and <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/concepts-getting-started-tasks.html\">Task</a>.</p> <note> <p>This value must be a valid ARN.</p> </note>",
           "location":"querystring",
           "locationName":"associatedResourceArn"
         }
@@ -20346,7 +21152,7 @@
         },
         "AssociatedResourceArn":{
           "shape":"ARN",
-          "documentation":"<p>The resource to which the attached file is (being) uploaded to. <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_connect-cases_CreateCase.html\">Cases</a> are the only current supported resource.</p>"
+          "documentation":"<p>The resource to which the attached file is (being) uploaded to. The supported resources are <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/cases.html\">Cases</a>, <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/setup-email-channel.html\">Email</a>, and <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/concepts-getting-started-tasks.html\">Task</a>.</p>"
         },
         "FileUseCaseType":{
           "shape":"FileUseCaseType",
@@ -20433,6 +21239,27 @@
         "Arn":{
           "shape":"ARN",
           "documentation":"<p>The ARN of the contact for which metrics were retrieved.</p>"
+        }
+      }
+    },
+    "GetCrossRegionRoutingRequest":{
+      "type":"structure",
+      "required":["InstanceId"],
+      "members":{
+        "InstanceId":{
+          "shape":"ACGRInstanceIdOrArn",
+          "documentation":"<p>The identifier of the Connect Customer instance. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        }
+      }
+    },
+    "GetCrossRegionRoutingResponse":{
+      "type":"structure",
+      "members":{
+        "IsolatedRegions":{
+          "shape":"IsolatedRegionsList",
+          "documentation":"<p>The list of Regions for which cross-region routing is currently disabled (isolated). When a Region appears in this list, contacts originating in that Region will not be routed to agents in other Regions, and agents in that Region will not receive contacts from other Regions.</p>"
         }
       }
     },
@@ -20961,7 +21788,7 @@
         },
         "Constraints":{
           "shape":"TaskTemplateConstraints",
-          "documentation":"<p>Constraints that are applicable to the fields listed.</p>"
+          "documentation":"<p>Constraints that are applicable to the fields listed. Although this parameter is marked as optional in the API model, the service requires it when calling <code>CreateTaskTemplate</code> or <code>UpdateTaskTemplate</code>. The <code>RequiredFields</code> array must contain at least one element, and the field of type <code>NAME</code> must be included in <code>RequiredFields</code>.</p>"
         },
         "Defaults":{
           "shape":"TaskTemplateDefaults",
@@ -21058,11 +21885,11 @@
           "documentation":"<p>The distribution of traffic between the instance and its replicas.</p>"
         },
         "Id":{
-          "shape":"TrafficDistributionGroupId",
+          "shape":"ACGRTrafficDistributionGroupId",
           "documentation":"<p>The identifier of the traffic distribution group. This can be the ID or the ARN if the API is being called in the Region where the traffic distribution group was created. The ARN must be provided if the call is from the replicated Region.</p>"
         },
         "Arn":{
-          "shape":"TrafficDistributionGroupArn",
+          "shape":"ACGRTrafficDistributionGroupArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the traffic distribution group.</p>"
         },
         "SignInConfig":{
@@ -22091,10 +22918,6 @@
       },
       "documentation":"<p>The Connect Customer instance.</p>"
     },
-    "InstanceArn":{
-      "type":"string",
-      "pattern":"arn:(aws|aws-us-gov):connect:[a-z]{2}-[a-z]+-[0-9-]{1}:[0-9]{1,20}:instance/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}"
-    },
     "InstanceAttributeType":{
       "type":"string",
       "enum":[
@@ -22479,6 +23302,10 @@
       "member":{"shape":"IpCidr"}
     },
     "IsReadOnly":{"type":"boolean"},
+    "IsolatedRegionsList":{
+      "type":"list",
+      "member":{"shape":"AwsRegion"}
+    },
     "IvrRecordingTrack":{
       "type":"string",
       "enum":["ALL"]
@@ -23721,6 +24548,45 @@
         }
       }
     },
+    "ListExtractionDefinitionsRequest":{
+      "type":"structure",
+      "required":["InstanceId"],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Connect Customer instance. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "MaxResults":{
+          "shape":"MaxResult100",
+          "documentation":"<p>The maximum number of results to return per page. The default MaxResult size is 100.</p>",
+          "box":true,
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListExtractionDefinitionsResponse":{
+      "type":"structure",
+      "required":["ExtractionDefinitionSummaryList"],
+      "members":{
+        "ExtractionDefinitionSummaryList":{
+          "shape":"ExtractionDefinitionSummaryList",
+          "documentation":"<p>Information about the extraction definitions.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If there are additional results, this is the token for the next set of results.</p>"
+        }
+      }
+    },
     "ListFlowAssociationResourceType":{
       "type":"string",
       "enum":[
@@ -24102,6 +24968,50 @@
         "LexBots":{
           "shape":"LexBotsList",
           "documentation":"<p>The names and Amazon Web Services Regions of the Amazon Lex bots associated with the specified instance.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If there are additional results, this is the token for the next set of results.</p>"
+        }
+      }
+    },
+    "ListMetricsRequest":{
+      "type":"structure",
+      "required":["InstanceId"],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Connect Customer instance. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "Type":{
+          "shape":"MetricType",
+          "documentation":"<p>The type of metrics to list. Valid values: <code>AWS_MANAGED</code> | <code>CUSTOMER_MANAGED</code>.</p>",
+          "location":"querystring",
+          "locationName":"type"
+        },
+        "MaxResults":{
+          "shape":"MaxResult100",
+          "documentation":"<p>The maximum number of results to return per page.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListMetricsResponse":{
+      "type":"structure",
+      "required":["MetricSummaryList"],
+      "members":{
+        "MetricSummaryList":{
+          "shape":"MetricSummaryList",
+          "documentation":"<p>The list of metric summaries.</p>"
         },
         "NextToken":{
           "shape":"NextToken",
@@ -25314,7 +26224,7 @@
           "locationName":"TrafficDistributionGroupId"
         },
         "MaxResults":{
-          "shape":"MaxResult10",
+          "shape":"MaxResult1000",
           "documentation":"<p>The maximum number of results to return per page.</p>",
           "box":true,
           "location":"querystring",
@@ -25357,7 +26267,7 @@
           "locationName":"nextToken"
         },
         "InstanceId":{
-          "shape":"InstanceIdOrArn",
+          "shape":"ACGRInstanceIdOrArn",
           "documentation":"<p>The identifier of the Connect Customer instance. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.</p>",
           "location":"querystring",
           "locationName":"instanceId"
@@ -26068,6 +26978,37 @@
       "max":2000,
       "min":1
     },
+    "MetricCalculation":{
+      "type":"structure",
+      "required":[
+        "CalculationComponents",
+        "Calculation"
+      ],
+      "members":{
+        "CalculationComponents":{
+          "shape":"CalculationComponentList",
+          "documentation":"<p>The list of component metrics referenced in the calculation formula. Each component has an alias used in the formula expression.</p>"
+        },
+        "Calculation":{
+          "shape":"CalculationExpression",
+          "documentation":"<p>The formula expression that defines how the metric is calculated. Uses component aliases (for example, <code>100 * SUM(M1) / SUM(M2)</code>).</p>"
+        }
+      },
+      "documentation":"<p>Contains the formula and component metrics that define a custom metric calculation.</p>"
+    },
+    "MetricCategory":{
+      "type":"string",
+      "max":100,
+      "min":1
+    },
+    "MetricCreationMethod":{
+      "type":"string",
+      "documentation":"<p>The method used to create a custom metric. Valid values: <code>SERVICE_LEVEL_BUILDER</code> | <code>METRIC_BUILDER</code>.</p>",
+      "enum":[
+        "SERVICE_LEVEL_BUILDER",
+        "METRIC_BUILDER"
+      ]
+    },
     "MetricDataCollectionsV2":{
       "type":"list",
       "member":{"shape":"MetricDataV2"}
@@ -26086,6 +27027,248 @@
         }
       },
       "documentation":"<p>Contains the name, thresholds, and metric filters.</p>"
+    },
+    "MetricDefinition":{
+      "type":"structure",
+      "required":[
+        "Arn",
+        "Id",
+        "Name",
+        "Type",
+        "Unit",
+        "Groupings",
+        "Filters",
+        "Category",
+        "SupportsPreaggregateCalculation",
+        "SupportsCustomCalculation"
+      ],
+      "members":{
+        "Arn":{
+          "shape":"ARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the metric. May be qualified with <code>$SAVED</code> or <code>$LATEST</code>.</p>"
+        },
+        "Id":{
+          "shape":"MetricId",
+          "documentation":"<p>The identifier of the metric.</p>"
+        },
+        "Name":{
+          "shape":"MetricName",
+          "documentation":"<p>The name of the metric.</p>"
+        },
+        "Description":{
+          "shape":"MetricDescription",
+          "documentation":"<p>The description of the metric.</p>"
+        },
+        "MetricCalculation":{
+          "shape":"MetricCalculation",
+          "documentation":"<p>The calculation definition for the metric.</p>"
+        },
+        "CreationMethod":{
+          "shape":"MetricCreationMethod",
+          "documentation":"<p>The method used to create the metric. Valid values: <code>SERVICE_LEVEL_BUILDER</code> (created with the guided service-level experience) | <code>METRIC_BUILDER</code> (created with the free-form metric builder).</p>"
+        },
+        "Status":{
+          "shape":"MetricStatus",
+          "documentation":"<p>The publish status of the metric. Valid values: <code>PUBLISHED</code> | <code>SAVED</code>.</p>"
+        },
+        "Type":{
+          "shape":"MetricType",
+          "documentation":"<p>The type of the metric. Valid values: <code>AWS_MANAGED</code> | <code>CUSTOMER_MANAGED</code>.</p>"
+        },
+        "Unit":{
+          "shape":"MetricUnit",
+          "documentation":"<p>The display unit for the metric's data.</p>"
+        },
+        "PositiveTrendIndicator":{
+          "shape":"TrendIndicator",
+          "documentation":"<p>How an increase in the metric value should be interpreted. Valid values: <code>POSITIVE</code>, <code>NEUTRAL</code>, <code>NEGATIVE</code>.</p>"
+        },
+        "Groupings":{
+          "shape":"MetricGroupingList",
+          "documentation":"<p>The groupings available for this metric.</p>"
+        },
+        "Filters":{
+          "shape":"AvailableFilterList",
+          "documentation":"<p>The filters applied to the metric.</p>"
+        },
+        "EffectiveTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The earliest time that can be queried for this metric.</p>"
+        },
+        "RefreshRate":{
+          "shape":"RefreshRate",
+          "documentation":"<p>The minimum interval, in seconds, between data refreshes for this metric.</p>"
+        },
+        "Category":{
+          "shape":"MetricCategory",
+          "documentation":"<p>The category of the metric.</p>"
+        },
+        "SupportedStats":{
+          "shape":"SupportedStatsList",
+          "documentation":"<p>The stat aggregations available for this metric.</p>"
+        },
+        "DefaultStat":{
+          "shape":"DefaultStat",
+          "documentation":"<p>The default stat aggregation for the metric.</p>"
+        },
+        "SupportsPreaggregateCalculation":{
+          "shape":"SupportsPreaggregateCalculation",
+          "documentation":"<p>Specifies whether the metric can be used inside aggregating statistical functions (SUM, AVG, etc.) in custom metric calculations.</p>"
+        },
+        "SupportsCustomCalculation":{
+          "shape":"SupportsCustomCalculation",
+          "documentation":"<p>Specifies whether the metric can be used as a component of custom metrics.</p>"
+        },
+        "PrimaryEventSource":{
+          "shape":"PrimaryEventSource",
+          "documentation":"<p>The primary event source for the metric data.</p>"
+        },
+        "PrimaryEventSourceEffectiveTimestampType":{
+          "shape":"PrimaryEventSourceEffectiveTimestampType",
+          "documentation":"<p>The timestamp type that determines where the metric appears on a time series.</p>"
+        },
+        "CreatedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp of when the metric was created.</p>"
+        },
+        "CreatedUser":{
+          "shape":"CreatedByInfo",
+          "documentation":"<p>The user that created the metric. The creator for metrics created through the CreateMetric API will be <code>Amazon Connect API</code>.</p>"
+        },
+        "LastModifiedRegion":{
+          "shape":"RegionName",
+          "documentation":"<p>The region where the metric was last modified.</p>"
+        },
+        "LastModifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp of when the metric was last modified.</p>"
+        },
+        "LastModifiedUser":{
+          "shape":"CreatedByInfo",
+          "documentation":"<p>The user that last modified the metric. For modifications made through the API, this will be <code>Amazon Connect API</code>.</p>"
+        },
+        "Tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags used to organize, track, or control access for this resource. For example, { \"Tags\": {\"key1\":\"value1\", \"key2\":\"value2\"} }.</p>"
+        }
+      },
+      "documentation":"<p>Contains the full definition of a metric, including its calculation, unit, status, and trend indicator.</p>"
+    },
+    "MetricDescription":{
+      "type":"string",
+      "max":500,
+      "min":0
+    },
+    "MetricFilter":{
+      "type":"structure",
+      "required":["MetricFilterKey"],
+      "members":{
+        "MetricFilterKey":{
+          "shape":"MetricFilterKey",
+          "documentation":"<p>The key identifying the field to filter on.</p>"
+        },
+        "Negate":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether the filter condition is negated. When set to <code>true</code>, the filter excludes matching data instead of including it.</p>"
+        },
+        "NumberCondition":{
+          "shape":"MetricFilterNumberCondition",
+          "documentation":"<p>A numeric comparison condition.</p>"
+        },
+        "StringCondition":{
+          "shape":"MetricFilterStringCondition",
+          "documentation":"<p>A string comparison condition.</p>"
+        },
+        "BooleanCondition":{
+          "shape":"MetricFilterBooleanCondition",
+          "documentation":"<p>A boolean comparison condition.</p>"
+        }
+      },
+      "documentation":"<p>A filter condition applied to a metric component in a calculation. Filters restrict the data included in the metric computation.</p>"
+    },
+    "MetricFilterBooleanCondition":{
+      "type":"structure",
+      "required":["Comparison"],
+      "members":{
+        "Comparison":{
+          "shape":"MetricFilterBooleanConditionComparison",
+          "documentation":"<p>The comparison operator. Valid values: <code>IS_TRUE</code> (matches when the field is true) | <code>IS_FALSE</code> (matches when the field is false).</p>"
+        }
+      },
+      "documentation":"<p>A boolean comparison condition for metric filters.</p>"
+    },
+    "MetricFilterBooleanConditionComparison":{
+      "type":"string",
+      "documentation":"<p>The boolean comparison operator for metric filters. Valid values: <code>IS_TRUE</code> | <code>IS_FALSE</code>.</p>",
+      "enum":[
+        "IS_TRUE",
+        "IS_FALSE"
+      ]
+    },
+    "MetricFilterKey":{
+      "type":"string",
+      "max":100,
+      "min":1
+    },
+    "MetricFilterList":{
+      "type":"list",
+      "member":{"shape":"MetricFilter"},
+      "max":5,
+      "min":0
+    },
+    "MetricFilterNumberCondition":{
+      "type":"structure",
+      "required":[
+        "Comparison",
+        "Values"
+      ],
+      "members":{
+        "Comparison":{
+          "shape":"MetricFilterNumberConditionComparison",
+          "documentation":"<p>The comparison operator. Valid values: <code>LESSER</code> (less than) | <code>LESSER_OR_EQUAL</code> (less than or equal to) | <code>GREATER</code> (greater than) | <code>GREATER_OR_EQUAL</code> (greater than or equal to).</p>"
+        },
+        "Values":{
+          "shape":"NumberValueList",
+          "documentation":"<p>The numeric values to compare against.</p>"
+        }
+      },
+      "documentation":"<p>A numeric comparison condition for metric filters.</p>"
+    },
+    "MetricFilterNumberConditionComparison":{
+      "type":"string",
+      "documentation":"<p>The numeric comparison operator for metric filters. Valid values: <code>LESSER</code> | <code>LESSER_OR_EQUAL</code> | <code>GREATER</code> | <code>GREATER_OR_EQUAL</code>.</p>",
+      "enum":[
+        "LESSER",
+        "LESSER_OR_EQUAL",
+        "GREATER",
+        "GREATER_OR_EQUAL"
+      ]
+    },
+    "MetricFilterStringCondition":{
+      "type":"structure",
+      "required":[
+        "Comparison",
+        "Values"
+      ],
+      "members":{
+        "Comparison":{
+          "shape":"MetricFilterStringConditionComparison",
+          "documentation":"<p>The comparison operator. Valid values: <code>MATCHES_ANY</code> (matches any of the specified values) | <code>MATCHES_NONE</code> (matches none of the specified values).</p>"
+        },
+        "Values":{
+          "shape":"StringValueList",
+          "documentation":"<p>The string values to compare against.</p>"
+        }
+      },
+      "documentation":"<p>A string comparison condition for metric filters.</p>"
+    },
+    "MetricFilterStringConditionComparison":{
+      "type":"string",
+      "documentation":"<p>The string comparison operator for metric filters. Valid values: <code>MATCHES_ANY</code> | <code>MATCHES_NONE</code>.</p>",
+      "enum":[
+        "MATCHES_ANY",
+        "MATCHES_NONE"
+      ]
     },
     "MetricFilterV2":{
       "type":"structure",
@@ -26116,6 +27299,10 @@
       "member":{"shape":"MetricFilterV2"},
       "max":2
     },
+    "MetricGroupingList":{
+      "type":"list",
+      "member":{"shape":"String"}
+    },
     "MetricId":{
       "type":"string",
       "max":150,
@@ -26139,6 +27326,11 @@
       },
       "documentation":"<p>The interval period with the start and end time for the metrics.</p>"
     },
+    "MetricName":{
+      "type":"string",
+      "max":128,
+      "min":1
+    },
     "MetricNameV2":{"type":"string"},
     "MetricResultV2":{
       "type":"structure",
@@ -26161,6 +27353,111 @@
     "MetricResultsV2":{
       "type":"list",
       "member":{"shape":"MetricResultV2"}
+    },
+    "MetricSearchConditionList":{
+      "type":"list",
+      "member":{"shape":"MetricSearchCriteria"}
+    },
+    "MetricSearchCriteria":{
+      "type":"structure",
+      "members":{
+        "OrConditions":{
+          "shape":"MetricSearchConditionList",
+          "documentation":"<p>A list of conditions to be met, where at least one condition must be satisfied.</p>"
+        },
+        "AndConditions":{
+          "shape":"MetricSearchConditionList",
+          "documentation":"<p>A list of conditions that must all be satisfied.</p>"
+        },
+        "StringCondition":{"shape":"StringCondition"},
+        "BooleanCondition":{"shape":"BooleanCondition"}
+      },
+      "documentation":"<p>Defines the search criteria for filtering metrics.</p>"
+    },
+    "MetricSearchFilter":{
+      "type":"structure",
+      "members":{
+        "TagFilter":{
+          "shape":"ControlPlaneTagFilter",
+          "documentation":"<p>An object that can be used to specify tag conditions inside the <code>SearchFilter</code>. This accepts an OR of AND (List of List) input where:</p> <ul> <li> <p>The top level list specifies conditions that need to be applied with OR operator.</p> </li> <li> <p>The inner list specifies conditions that need to be applied with AND operator.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>Filters to apply when searching for metrics.</p>"
+    },
+    "MetricSearchSummaryList":{
+      "type":"list",
+      "member":{"shape":"MetricDefinition"}
+    },
+    "MetricStatus":{
+      "type":"string",
+      "documentation":"<p>The publish status of a metric. Valid values: <code>PUBLISHED</code> | <code>SAVED</code>.</p>",
+      "enum":[
+        "PUBLISHED",
+        "SAVED"
+      ]
+    },
+    "MetricSummary":{
+      "type":"structure",
+      "required":[
+        "Arn",
+        "Id",
+        "Name",
+        "Status",
+        "Type"
+      ],
+      "members":{
+        "Arn":{
+          "shape":"ARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the metric.</p>"
+        },
+        "Id":{
+          "shape":"MetricId",
+          "documentation":"<p>The identifier of the metric.</p>"
+        },
+        "Name":{
+          "shape":"MetricName",
+          "documentation":"<p>The name of the metric.</p>"
+        },
+        "Status":{
+          "shape":"MetricStatus",
+          "documentation":"<p>The publish status of the metric.</p>"
+        },
+        "Type":{
+          "shape":"MetricType",
+          "documentation":"<p>The type of the metric.</p>"
+        },
+        "LastModifiedRegion":{
+          "shape":"RegionName",
+          "documentation":"<p>The region where the metric was last modified.</p>"
+        },
+        "LastModifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp of when the metric was last modified.</p>"
+        }
+      },
+      "documentation":"<p>Contains summary information about a metric.</p>"
+    },
+    "MetricSummaryList":{
+      "type":"list",
+      "member":{"shape":"MetricSummary"}
+    },
+    "MetricType":{
+      "type":"string",
+      "documentation":"<p>The type of the metric. Valid values: <code>AWS_MANAGED</code> | <code>CUSTOMER_MANAGED</code>.</p>",
+      "enum":[
+        "AWS_MANAGED",
+        "CUSTOMER_MANAGED"
+      ]
+    },
+    "MetricUnit":{
+      "type":"string",
+      "documentation":"<p>The display unit for metric data. Valid values: <code>INTEGER</code> | <code>DOUBLE</code> | <code>PERCENT</code> | <code>SECONDS</code>.</p>",
+      "enum":[
+        "INTEGER",
+        "DOUBLE",
+        "PERCENT",
+        "SECONDS"
+      ]
     },
     "MetricV2":{
       "type":"structure",
@@ -26390,6 +27687,17 @@
       "type":"string",
       "max":2500,
       "min":1
+    },
+    "NotFoundBehaviorType":{
+      "type":"string",
+      "enum":[
+        "USE_DEFAULT_VALUE",
+        "OMIT"
+      ]
+    },
+    "NotFoundDefaultValue":{
+      "type":"string",
+      "max":1024
     },
     "Notification":{
       "type":"structure",
@@ -26654,6 +27962,12 @@
         }
       },
       "documentation":"<p>Information about a reference when the <code>referenceType</code> is <code>NUMBER</code>. Otherwise, null.</p>"
+    },
+    "NumberValueList":{
+      "type":"list",
+      "member":{"shape":"Double"},
+      "max":10,
+      "min":1
     },
     "NumericQuestionPropertyAutomationLabel":{
       "type":"string",
@@ -27121,7 +28435,7 @@
           "documentation":"<p>Display name of the participant.</p>"
         }
       },
-      "documentation":"<p>The customer's details.</p>"
+      "documentation":"<p>The details of the participant, including their display name.</p>"
     },
     "ParticipantDetailsToAdd":{
       "type":"structure",
@@ -28046,6 +29360,16 @@
       "member":{"shape":"PrimaryAttributeValue"},
       "max":5
     },
+    "PrimaryEventSource":{
+      "type":"string",
+      "max":100,
+      "min":1
+    },
+    "PrimaryEventSourceEffectiveTimestampType":{
+      "type":"string",
+      "max":100,
+      "min":1
+    },
     "PrimaryValue":{
       "type":"structure",
       "required":[
@@ -28299,7 +29623,8 @@
         "REFERENCED_RESOURCE_NOT_FOUND",
         "RESOURCE_NAME_ALREADY_EXISTS",
         "REQUIRED_PROPERTY_MISSING",
-        "NOT_SUPPORTED"
+        "NOT_SUPPORTED",
+        "TYPE_MISMATCH"
       ]
     },
     "PutUserStatusRequest":{
@@ -28917,6 +30242,43 @@
       "max":128,
       "min":1
     },
+    "RealTimeContactAnalysisExtractedInformationContent":{
+      "type":"string",
+      "max":1024,
+      "min":1
+    },
+    "RealTimeContactAnalysisExtractedInformationFailureCode":{
+      "type":"string",
+      "enum":[
+        "QUOTA_EXCEEDED",
+        "INSUFFICIENT_CONVERSATION_CONTENT",
+        "FAILED_SAFETY_GUIDELINES",
+        "INTERNAL_ERROR",
+        "MAX_PACKAGE_FEATURE_ONLY"
+      ]
+    },
+    "RealTimeContactAnalysisExtractedInformationValue":{
+      "type":"structure",
+      "required":[
+        "Content",
+        "PointsOfInterest"
+      ],
+      "members":{
+        "Content":{
+          "shape":"RealTimeContactAnalysisExtractedInformationContent",
+          "documentation":"<p>The text content of the extracted value.</p>"
+        },
+        "PointsOfInterest":{
+          "shape":"RealTimeContactAnalysisTranscriptItemsWithCharacterOffsets",
+          "documentation":"<p>The sections in the conversation that indicate where the extracted value was found.</p>"
+        }
+      },
+      "documentation":"<p>An individual value extracted from the conversation, including its content and the locations where it was found.</p>"
+    },
+    "RealTimeContactAnalysisExtractedInformationValues":{
+      "type":"list",
+      "member":{"shape":"RealTimeContactAnalysisExtractedInformationValue"}
+    },
     "RealTimeContactAnalysisId256":{
       "type":"string",
       "max":256,
@@ -29076,6 +30438,36 @@
       },
       "documentation":"<p>Segment type describing a contact event.</p>"
     },
+    "RealTimeContactAnalysisSegmentExtractedInformation":{
+      "type":"structure",
+      "required":[
+        "ExtractionDefinitionId",
+        "ExtractionDefinitionName"
+      ],
+      "members":{
+        "ExtractionDefinitionId":{
+          "shape":"ExtractionDefinitionId",
+          "documentation":"<p>The identifier of the extraction definition that produced this result.</p>"
+        },
+        "ExtractionDefinitionName":{
+          "shape":"ExtractionDefinitionName",
+          "documentation":"<p>The name of the extraction definition that produced this result.</p>"
+        },
+        "ExtractionDefinitionDisplayLabel":{
+          "shape":"ExtractionDefinitionDisplayLabel",
+          "documentation":"<p>The display label of the extraction definition that produced this result.</p>"
+        },
+        "ExtractedValues":{
+          "shape":"RealTimeContactAnalysisExtractedInformationValues",
+          "documentation":"<p>The list of values extracted from the conversation for this extraction definition. This field is empty when a <code>FailureCode</code> is present.</p>"
+        },
+        "FailureCode":{
+          "shape":"RealTimeContactAnalysisExtractedInformationFailureCode",
+          "documentation":"<p>If the information failed to be extracted, one of the following failure codes occurs:</p> <ul> <li> <p> <code>QUOTA_EXCEEDED</code>: The number of concurrent analytics jobs reached your service quota.</p> </li> <li> <p> <code>INSUFFICIENT_CONVERSATION_CONTENT</code>: Information extraction requires a conversation with at least one turn from each participant.</p> </li> <li> <p> <code>FAILED_SAFETY_GUIDELINES</code>: The extracted information cannot be provided because it failed to meet system safety guidelines.</p> </li> <li> <p> <code>INTERNAL_ERROR</code>: Internal system error.</p> </li> <li> <p> <code>MAX_PACKAGE_FEATURE_ONLY</code>: Information extraction is only available in Amazon Connect Customer instances.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>Segment containing information extracted from the conversation. Each segment represents the results for a single extraction definition.</p>"
+    },
     "RealTimeContactAnalysisSegmentIssues":{
       "type":"structure",
       "required":["IssuesDetected"],
@@ -29163,13 +30555,14 @@
         "Issues",
         "Event",
         "Attachments",
-        "PostContactSummary"
+        "PostContactSummary",
+        "ExtractedInformation"
       ]
     },
     "RealTimeContactAnalysisSegmentTypes":{
       "type":"list",
       "member":{"shape":"RealTimeContactAnalysisSegmentType"},
-      "max":6
+      "max":7
     },
     "RealTimeContactAnalysisSentimentLabel":{
       "type":"string",
@@ -29279,6 +30672,10 @@
         "PostContactSummary":{
           "shape":"RealTimeContactAnalysisSegmentPostContactSummary",
           "documentation":"<p>Information about the post-contact summary.</p>"
+        },
+        "ExtractedInformation":{
+          "shape":"RealTimeContactAnalysisSegmentExtractedInformation",
+          "documentation":"<p>The extracted information from the conversation.</p>"
         }
       },
       "documentation":"<p>An analyzed segment for a real-time analysis session.</p>",
@@ -29634,6 +31031,7 @@
       "max":4096,
       "min":0
     },
+    "RefreshRate":{"type":"long"},
     "RefreshTokenDuration":{
       "type":"integer",
       "box":true,
@@ -29684,7 +31082,7 @@
       ],
       "members":{
         "InstanceId":{
-          "shape":"InstanceIdOrArn",
+          "shape":"ACGRInstanceIdOrArn",
           "documentation":"<p>The identifier of the Connect Customer instance. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance. You can provide the <code>InstanceId</code>, or the entire ARN.</p>",
           "location":"uri",
           "locationName":"InstanceId"
@@ -30430,6 +31828,10 @@
         "SubmitAutoEvaluationAction":{
           "shape":"SubmitAutoEvaluationActionDefinition",
           "documentation":"<p>Information about the submit automated evaluation action.</p>"
+        },
+        "ExtractInformationAction":{
+          "shape":"ExtractInformationActionDefinition",
+          "documentation":"<p>Information about the extract information action.</p>"
         }
       },
       "documentation":"<p>Information about the action to be performed when a rule is triggered.</p>"
@@ -30639,6 +32041,26 @@
         }
       },
       "documentation":"<p>The rules configuration for conversational analytics. Controls whether Contact Lens rules are evaluated against the analytics output.</p>"
+    },
+    "RulesExtractionDefinitionId":{
+      "type":"string",
+      "max":256,
+      "min":1
+    },
+    "RulesExtractionDefinitionIdentifier":{
+      "type":"structure",
+      "required":["Identifier"],
+      "members":{
+        "Identifier":{
+          "shape":"RulesExtractionDefinitionId",
+          "documentation":"<p>The identifier of the extraction definition.</p>"
+        }
+      },
+      "documentation":"<p>An identifier that references an extraction definition resource.</p>"
+    },
+    "RulesExtractionDefinitionIdentifierList":{
+      "type":"list",
+      "member":{"shape":"RulesExtractionDefinitionIdentifier"}
     },
     "RulesSearchConditionList":{
       "type":"list",
@@ -31355,6 +32777,50 @@
         }
       }
     },
+    "SearchMetricsRequest":{
+      "type":"structure",
+      "required":["InstanceId"],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Connect Customer instance. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResult100",
+          "documentation":"<p>The maximum number of results to return per page.</p>",
+          "box":true
+        },
+        "SearchFilter":{
+          "shape":"MetricSearchFilter",
+          "documentation":"<p>Filters to be applied to search results.</p>"
+        },
+        "SearchCriteria":{
+          "shape":"MetricSearchCriteria",
+          "documentation":"<p>The search criteria to filter the metrics.</p>"
+        }
+      }
+    },
+    "SearchMetricsResponse":{
+      "type":"structure",
+      "members":{
+        "Metrics":{
+          "shape":"MetricSearchSummaryList",
+          "documentation":"<p>The metrics that matched the search criteria.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If there are additional results, this is the token for the next set of results.</p>"
+        },
+        "ApproximateTotalCount":{
+          "shape":"ApproximateTotalCount",
+          "documentation":"<p>The approximate total number of metrics that matched your search criteria.</p>"
+        }
+      }
+    },
     "SearchNotificationsRequest":{
       "type":"structure",
       "required":["InstanceId"],
@@ -31581,7 +33047,7 @@
         },
         "ResourceTypes":{
           "shape":"ResourceTypeList",
-          "documentation":"<p>The list of resource types to be used to search tags from. If not provided or if any empty list is provided, this API will search from all supported resource types. Note that lowercase and - are required.</p> <p class=\"title\"> <b>Supported resource types</b> </p> <ul> <li> <p>agent</p> </li> <li> <p>agent-state</p> </li> <li> <p>routing-profile</p> </li> <li> <p>standard-queue</p> </li> <li> <p>security-profile</p> </li> <li> <p>operating-hours</p> </li> <li> <p>prompt</p> </li> <li> <p>contact-flow</p> </li> <li> <p>flow- module</p> </li> <li> <p>transfer-destination (also known as quick connect)</p> </li> </ul>"
+          "documentation":"<p>The list of resource types to be used to search tags from. If not provided or if any empty list is provided, this API will search from all supported resource types. Note that lowercase and - are required.</p> <p class=\"title\"> <b>Supported resource types</b> </p> <ul> <li> <p>agent</p> </li> <li> <p>agent-state</p> </li> <li> <p>routing-profile</p> </li> <li> <p>standard-queue</p> </li> <li> <p>security-profile</p> </li> <li> <p>operating-hours</p> </li> <li> <p>prompt</p> </li> <li> <p>contact-flow</p> </li> <li> <p>flow- module</p> </li> <li> <p>transfer-destination (also known as quick connect)</p> </li> <li> <p>metric</p> </li> </ul>"
         },
         "NextToken":{
           "shape":"NextToken2500",
@@ -32883,6 +34349,70 @@
         "CASES"
       ]
     },
+    "StartAssistantContactRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "AiAgent",
+        "ParticipantDetails"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Connect Customer instance. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.</p>"
+        },
+        "AiAgent":{
+          "shape":"AiAgentInput",
+          "documentation":"<p>The AI agent configuration for this contact.</p>"
+        },
+        "ParticipantDetails":{
+          "shape":"ParticipantDetails",
+          "documentation":"<p>The display name and other details that identify the chat participant.</p>"
+        },
+        "InitialMessage":{
+          "shape":"ChatMessage",
+          "documentation":"<p>The initial message to send to the newly created chat.</p>"
+        },
+        "Attributes":{
+          "shape":"Attributes",
+          "documentation":"<p>A map of key-value pairs to associate with the contact. We make these attributes available to flows as standard contact attributes.</p> <p>You can provide up to 32,768 UTF-8 bytes across all key-value pairs for each contact.</p>"
+        },
+        "ClientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the Amazon Web Services SDK populates this field. For more information about idempotency, see <a href=\"https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/\">Making retries safe with idempotent APIs</a>.</p>",
+          "idempotencyToken":true
+        },
+        "PersistentChat":{
+          "shape":"PersistentChat",
+          "documentation":"<p>The configuration that enables persistent chat. For more information about persistent chat and its use cases, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/chat-persistence.html\">Enable persistent chat</a>.</p>"
+        },
+        "RelatedContactId":{
+          "shape":"ContactId",
+          "documentation":"<p>The identifier of an Connect Customer contact related to the new assistant contact.</p> <note> <p>You cannot provide both <code>RelatedContactId</code> and <code>PersistentChat</code>.</p> </note>"
+        }
+      }
+    },
+    "StartAssistantContactResponse":{
+      "type":"structure",
+      "members":{
+        "ContactId":{
+          "shape":"ContactId",
+          "documentation":"<p>The identifier of the contact within the Connect Customer instance.</p>"
+        },
+        "ParticipantId":{
+          "shape":"ParticipantId",
+          "documentation":"<p>The identifier of the chat participant. The participant identifier remains the same throughout the chat lifecycle.</p>"
+        },
+        "ParticipantToken":{
+          "shape":"ParticipantToken",
+          "documentation":"<p>The token that the chat participant uses with the <a href=\"https://docs.aws.amazon.com/connect-participant/latest/APIReference/API_CreateParticipantConnection.html\">CreateParticipantConnection</a> operation. The token remains valid for the lifetime of the chat participant.</p>"
+        },
+        "ContinuedFromContactId":{
+          "shape":"ContactId",
+          "documentation":"<p>The identifier of the contact from which the chat continues, returned only for persistent chats.</p>"
+        }
+      }
+    },
     "StartAttachedFileUploadRequest":{
       "type":"structure",
       "required":[
@@ -32923,7 +34453,7 @@
         },
         "AssociatedResourceArn":{
           "shape":"ARN",
-          "documentation":"<p>The resource to which the attached file is (being) uploaded to. The supported resources are <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/cases.html\">Cases</a> and <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/setup-email-channel.html\">Email</a>.</p> <note> <p>This value must be a valid ARN.</p> </note>",
+          "documentation":"<p>The resource to which the attached file is (being) uploaded to. The supported resources are <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/cases.html\">Cases</a>, <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/setup-email-channel.html\">Email</a>, and <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/concepts-getting-started-tasks.html\">Task</a>.</p> <note> <p>This value must be a valid ARN.</p> </note>",
           "location":"querystring",
           "locationName":"associatedResourceArn"
         },
@@ -33750,6 +35280,10 @@
         "Description":{
           "shape":"Description",
           "documentation":"<p>A description of the task that is shown to an agent in the Contact Control Panel (CCP).</p>"
+        },
+        "SegmentAttributes":{
+          "shape":"SegmentAttributes",
+          "documentation":"<p>A map of system-defined attributes for the WebRTC contact segment. Use the <code>connect:Subtype</code> attribute to specify the channel subtype, such as <code>connect:WebRTC</code>.</p>"
         }
       }
     },
@@ -34024,6 +35558,12 @@
       },
       "documentation":"<p>Information about a reference when the <code>referenceType</code> is <code>STRING</code>. Otherwise, null.</p>"
     },
+    "StringValueList":{
+      "type":"list",
+      "member":{"shape":"String"},
+      "max":10,
+      "min":1
+    },
     "Subject":{
       "type":"string",
       "max":200,
@@ -34166,6 +35706,12 @@
       "type":"list",
       "member":{"shape":"SupportedMessagingContentType"}
     },
+    "SupportedStatsList":{
+      "type":"list",
+      "member":{"shape":"String"}
+    },
+    "SupportsCustomCalculation":{"type":"boolean"},
+    "SupportsPreaggregateCalculation":{"type":"boolean"},
     "SuspendContactRecordingRequest":{
       "type":"structure",
       "required":[
@@ -34989,11 +36535,11 @@
       "type":"structure",
       "members":{
         "Id":{
-          "shape":"TrafficDistributionGroupId",
+          "shape":"ACGRTrafficDistributionGroupId",
           "documentation":"<p>The identifier of the traffic distribution group. This can be the ID or the ARN if the API is being called in the Region where the traffic distribution group was created. The ARN must be provided if the call is from the replicated Region.</p>"
         },
         "Arn":{
-          "shape":"TrafficDistributionGroupArn",
+          "shape":"ACGRTrafficDistributionGroupArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the traffic distribution group.</p>"
         },
         "Name":{
@@ -35005,7 +36551,7 @@
           "documentation":"<p>The description of the traffic distribution group.</p>"
         },
         "InstanceArn":{
-          "shape":"InstanceArn",
+          "shape":"ACGRInstanceArn",
           "documentation":"<p>The Amazon Resource Name (ARN).</p>"
         },
         "Status":{
@@ -35022,10 +36568,6 @@
         }
       },
       "documentation":"<p>Information about a traffic distribution group.</p>"
-    },
-    "TrafficDistributionGroupArn":{
-      "type":"string",
-      "pattern":"^arn:(aws|aws-us-gov):connect:[a-z]{2}-[a-z]+-[0-9]{1}:[0-9]{1,20}:traffic-distribution-group/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$"
     },
     "TrafficDistributionGroupId":{
       "type":"string",
@@ -35050,11 +36592,11 @@
       "type":"structure",
       "members":{
         "Id":{
-          "shape":"TrafficDistributionGroupId",
+          "shape":"ACGRTrafficDistributionGroupId",
           "documentation":"<p>The identifier of the traffic distribution group. This can be the ID or the ARN if the API is being called in the Region where the traffic distribution group was created. The ARN must be provided if the call is from the replicated Region.</p>"
         },
         "Arn":{
-          "shape":"TrafficDistributionGroupArn",
+          "shape":"ACGRTrafficDistributionGroupArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the traffic distribution group.</p>"
         },
         "Name":{
@@ -35062,8 +36604,8 @@
           "documentation":"<p>The name of the traffic distribution group.</p>"
         },
         "InstanceArn":{
-          "shape":"InstanceArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the traffic distribution group.</p>"
+          "shape":"ACGRInstanceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the instance.</p>"
         },
         "Status":{
           "shape":"TrafficDistributionGroupStatus",
@@ -35196,6 +36738,15 @@
           "documentation":"<p>The Amazon Resource Name (ARN) of the contact.</p>"
         }
       }
+    },
+    "TrendIndicator":{
+      "type":"string",
+      "documentation":"<p>Specifies how to interpret a positive trend in metric data. Valid values: <code>POSITIVE</code> | <code>NEGATIVE</code> | <code>NEUTRAL</code>.</p>",
+      "enum":[
+        "POSITIVE",
+        "NEGATIVE",
+        "NEUTRAL"
+      ]
     },
     "URI":{
       "type":"string",
@@ -35854,6 +37405,55 @@
       "type":"structure",
       "members":{}
     },
+    "UpdateContactTaskTemplateRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "TaskTemplateId",
+        "ContactId"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Connect Customer instance. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.</p>"
+        },
+        "TaskTemplateId":{
+          "shape":"TaskTemplateId",
+          "documentation":"<p>A unique identifier for the task template. For more information about task templates, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/task-templates.html\">Task templates</a> in the <i>Connect Customer Administrator Guide</i>.</p>"
+        },
+        "ContactId":{
+          "shape":"ContactId",
+          "documentation":"<p>The identifier of the contact in this instance of Connect Customer. </p>"
+        }
+      }
+    },
+    "UpdateContactTaskTemplateResponse":{
+      "type":"structure",
+      "members":{}
+    },
+    "UpdateCrossRegionRoutingRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "IsolatedAll"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"ACGRInstanceIdOrArn",
+          "documentation":"<p>The identifier of the Connect Customer instance. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "IsolatedAll":{
+          "shape":"Boolean",
+          "documentation":"<p>Set to <code>true</code> to disable cross-region routing for all Regions associated with this instance. Set to <code>false</code> to re-enable cross-region routing.</p>"
+        }
+      }
+    },
+    "UpdateCrossRegionRoutingResponse":{
+      "type":"structure",
+      "members":{}
+    },
     "UpdateDataTableAttributeRequest":{
       "type":"structure",
       "required":[
@@ -36159,6 +37759,50 @@
         }
       }
     },
+    "UpdateExtractionDefinitionRequest":{
+      "type":"structure",
+      "required":[
+        "ExtractionDefinitionId",
+        "InstanceId",
+        "Name",
+        "ExtractionConfiguration"
+      ],
+      "members":{
+        "ClientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the Amazon Web Services SDK populates this field.</p>",
+          "idempotencyToken":true
+        },
+        "ExtractionDefinitionId":{
+          "shape":"ExtractionDefinitionId",
+          "documentation":"<p>The identifier of the extraction definition to update.</p>",
+          "location":"uri",
+          "locationName":"ExtractionDefinitionId"
+        },
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Connect Customer instance. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "Name":{
+          "shape":"ExtractionDefinitionName",
+          "documentation":"<p>The name of the extraction definition.</p>"
+        },
+        "ExtractionConfiguration":{
+          "shape":"ExtractionConfiguration",
+          "documentation":"<p>The configuration that defines how data is extracted, including the prompt hint and not-found behavior.</p>"
+        },
+        "Display":{
+          "shape":"ExtractionDefinitionDisplay",
+          "documentation":"<p>The display settings for the extraction definition.</p>"
+        }
+      }
+    },
+    "UpdateExtractionDefinitionResponse":{
+      "type":"structure",
+      "members":{}
+    },
     "UpdateHoursOfOperationDescription":{
       "type":"string",
       "max":250,
@@ -36322,6 +37966,76 @@
           "idempotencyToken":true
         }
       }
+    },
+    "UpdateMetricContentRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "MetricId"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Connect Customer instance. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "MetricId":{
+          "shape":"MetricId",
+          "documentation":"<p>The identifier of the metric to update. Adding the <code>$SAVED</code> qualifier will update the saved version of the metric. Adding <code>$LATEST</code> or omitting a qualifier will update the published version.</p>",
+          "location":"uri",
+          "locationName":"MetricId"
+        },
+        "MetricCalculation":{
+          "shape":"MetricCalculation",
+          "documentation":"<p>The updated calculation definition for the metric.</p>"
+        },
+        "Unit":{
+          "shape":"MetricUnit",
+          "documentation":"<p>The updated display unit for the metric.</p>"
+        },
+        "PositiveTrendIndicator":{
+          "shape":"TrendIndicator",
+          "documentation":"<p>How an increase in the metric value should be interpreted. Valid values: <code>POSITIVE</code>, <code>NEUTRAL</code>, <code>NEGATIVE</code>.</p>"
+        }
+      }
+    },
+    "UpdateMetricContentResponse":{
+      "type":"structure",
+      "members":{}
+    },
+    "UpdateMetricMetadataRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "MetricId"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Connect Customer instance. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "MetricId":{
+          "shape":"MetricId",
+          "documentation":"<p>The identifier of the metric to update. Adding the <code>$SAVED</code> qualifier will update the saved version of the metric. Adding <code>$LATEST</code> or omitting a qualifier will update the published version.</p>",
+          "location":"uri",
+          "locationName":"MetricId"
+        },
+        "Name":{
+          "shape":"MetricName",
+          "documentation":"<p>The updated name of the metric.</p>"
+        },
+        "Description":{
+          "shape":"MetricDescription",
+          "documentation":"<p>The updated description of the metric.</p>"
+        }
+      }
+    },
+    "UpdateMetricMetadataResponse":{
+      "type":"structure",
+      "members":{}
     },
     "UpdateNotificationContentRequest":{
       "type":"structure",
@@ -37045,7 +38759,7 @@
         },
         "ContactFlowId":{
           "shape":"ContactFlowId",
-          "documentation":"<p>The identifier of the flow that runs by default when a task is created by referencing this template.</p>"
+          "documentation":"<p>The identifier of the flow that runs by default when a task is created by referencing this template.</p> <p>Although this parameter is marked as optional, the request must contain either a <code>ContactFlowId</code> or a field of type <code>QUICK_CONNECT</code>.</p>"
         },
         "SelfAssignFlowId":{
           "shape":"ContactFlowId",
@@ -37053,7 +38767,7 @@
         },
         "Constraints":{
           "shape":"TaskTemplateConstraints",
-          "documentation":"<p>Constraints that are applicable to the fields listed.</p>"
+          "documentation":"<p>Constraints that are applicable to the fields listed. Although this parameter is marked as optional in the API model, the service requires it when calling <code>CreateTaskTemplate</code> or <code>UpdateTaskTemplate</code>. The <code>RequiredFields</code> array must contain at least one element, and the field of type <code>NAME</code> must be included in <code>RequiredFields</code>.</p>"
         },
         "Defaults":{
           "shape":"TaskTemplateDefaults",
@@ -37061,11 +38775,11 @@
         },
         "Status":{
           "shape":"TaskTemplateStatus",
-          "documentation":"<p>Marks a template as <code>ACTIVE</code> or <code>INACTIVE</code> for a task to refer to it. Tasks can only be created from <code>ACTIVE</code> templates. If a template is marked as <code>INACTIVE</code>, then a task that refers to this template cannot be created.</p>"
+          "documentation":"<p>Marks a template as <code>ACTIVE</code> or <code>INACTIVE</code> for a task to refer to it. Tasks can only be created from <code>ACTIVE</code> templates. If a template is marked as <code>INACTIVE</code>, then a task that refers to this template cannot be created.</p> <p>Although this parameter is marked as optional, the service requires it when calling <code>UpdateTaskTemplate</code>.</p>"
         },
         "Fields":{
           "shape":"TaskTemplateFields",
-          "documentation":"<p>Fields that are part of the template.</p>"
+          "documentation":"<p>Fields that are part of the template.</p> <p>The request must contain exactly one field of type <code>NAME</code>. This field must also be listed in the <code>RequiredFields</code> array within the <code>Constraints</code> parameter.</p>"
         }
       }
     },
@@ -37102,7 +38816,7 @@
         },
         "Constraints":{
           "shape":"TaskTemplateConstraints",
-          "documentation":"<p>Constraints that are applicable to the fields listed.</p>"
+          "documentation":"<p>Constraints that are applicable to the fields listed. Although this parameter is marked as optional in the API model, the service requires it when calling <code>CreateTaskTemplate</code> or <code>UpdateTaskTemplate</code>. The <code>RequiredFields</code> array must contain at least one element, and the field of type <code>NAME</code> must be included in <code>RequiredFields</code>.</p>"
         },
         "Defaults":{
           "shape":"TaskTemplateDefaults",

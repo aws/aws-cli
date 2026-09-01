@@ -11,6 +11,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import io
+import logging
 import os
 import sqlite3
 import sys
@@ -24,15 +25,21 @@ from pathlib import Path
 from botocore.compat import get_md5
 from botocore.exceptions import MD5UnavailableError
 from botocore.useragent import UserAgentComponent
+from botocore.utils import ensure_boolean
 
 from awscli.compat import is_windows
 from awscli.utils import add_component_to_user_agent_extra
+
+LOG = logging.getLogger(__name__)
 
 _CACHE_DIR = Path.home() / '.aws' / 'cli' / 'cache'
 _DATABASE_FILENAME = 'session.db'
 _SESSION_LENGTH_SECONDS = 60 * 30
 _SESSION_ID_LENGTH = 12
-
+# Set to "true" to skip collecting session ids entirely. Opting out avoids
+# opening the session database, whose file locking can be expensive when the
+# database lives on a network filesystem.
+_SESSION_ID_DISABLED_ENV_VAR = 'AWS_CLI_SESSION_ID_DISABLED'
 
 def _get_checksum():
     hashlib_params = {"usedforsecurity": False}
@@ -93,6 +100,11 @@ class CLISessionDatabaseConnection:
             # Process timed out waiting for database lock.
             # Return any empty `Cursor` object instead of
             # raising an exception.
+            LOG.debug(
+                'Failed to execute session database query: %s',
+                query,
+                exc_info=True,
+            )
             return sqlite3.Cursor(self._connection)
 
     def _ensure_cache_dir(self):
@@ -130,7 +142,9 @@ class CLISessionDatabaseConnection:
         except sqlite3.Error:
             # This is just a performance enhancement so it is optional. Not all
             # systems will have a sqlite compiled with the WAL enabled.
-            pass
+            LOG.debug(
+                'Failed to enable WAL for session database', exc_info=True
+            )
 
 
 class CLISessionDatabaseWriter:
@@ -196,6 +210,7 @@ class CLISessionDatabaseSweeper:
         except Exception:
             # This is just a background cleanup task. No need to
             # handle it or direct to stderr.
+            LOG.debug('Failed to sweep session database', exc_info=True)
             return
 
 
@@ -296,7 +311,18 @@ def _get_cli_session_orchestrator():
     )
 
 
+def is_telemetry_disabled(env=None):
+    if env is None:
+        env = os.environ
+    return ensure_boolean(env.get(_SESSION_ID_DISABLED_ENV_VAR, 'false'))
+
+
 def register_session_id_event(session, orchestrator_factory=None):
+    if is_telemetry_disabled():
+        # Skip registering the event entirely so we never open the session
+        # database. This lets users avoid the database's file locking, which
+        # can be expensive on network filesystems.
+        return
     if orchestrator_factory is None:
         orchestrator_factory = _get_cli_session_orchestrator
     event_emitter = session.get_component('event_emitter')
@@ -321,7 +347,7 @@ def register_session_id_event(session, orchestrator_factory=None):
             # Ideally, the AWS CLI should never throw if the session id
             # can't be generated since it's not critical for users. Issues
             # with session data should instead be caught server-side.
-            pass
+            LOG.debug('Failed to generate session id', exc_info=True)
         event_emitter.unregister('before-create-client', _inject_session_id)
 
     event_emitter.register('before-create-client', _inject_session_id)

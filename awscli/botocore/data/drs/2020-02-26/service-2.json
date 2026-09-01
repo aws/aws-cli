@@ -34,6 +34,26 @@
       ],
       "documentation":"<p>Associate a Source Network to an existing CloudFormation Stack and modify launch templates to use this network. Can be used for reverting to previously deployed CloudFormation stacks.</p>"
     },
+    "CancelRecoveryPlanExecution":{
+      "name":"CancelRecoveryPlanExecution",
+      "http":{
+        "method":"POST",
+        "requestUri":"/CancelRecoveryPlanExecution",
+        "responseCode":200
+      },
+      "input":{"shape":"CancelRecoveryPlanExecutionRequest"},
+      "output":{"shape":"CancelRecoveryPlanExecutionResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ConflictException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"UninitializedAccountException"}
+      ],
+      "documentation":"<p>Cancels an in-progress Recovery Plan execution. Remaining steps are skipped.</p>"
+    },
     "CreateExtendedSourceServer":{
       "name":"CreateExtendedSourceServer",
       "http":{
@@ -72,6 +92,47 @@
         {"shape":"UninitializedAccountException"}
       ],
       "documentation":"<p>Creates a new Launch Configuration Template.</p>"
+    },
+    "CreateRecoveryPlan":{
+      "name":"CreateRecoveryPlan",
+      "http":{
+        "method":"POST",
+        "requestUri":"/CreateRecoveryPlan",
+        "responseCode":201
+      },
+      "input":{"shape":"CreateRecoveryPlanRequest"},
+      "output":{"shape":"CreateRecoveryPlanResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ConflictException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"UninitializedAccountException"}
+      ],
+      "documentation":"<p>Creates a Recovery Plan to orchestrate multi-server disaster recovery.</p>"
+    },
+    "CreateRecoveryPlanStep":{
+      "name":"CreateRecoveryPlanStep",
+      "http":{
+        "method":"POST",
+        "requestUri":"/CreateRecoveryPlanStep",
+        "responseCode":201
+      },
+      "input":{"shape":"CreateRecoveryPlanStepRequest"},
+      "output":{"shape":"CreateRecoveryPlanStepResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ConflictException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"UninitializedAccountException"}
+      ],
+      "documentation":"<p>Creates a step in a Recovery Plan. A step is either <code>SERVER</code> type (servers to recover in parallel) or <code>WAIT</code> type (timed pause between steps).</p>"
     },
     "CreateReplicationConfigurationTemplate":{
       "name":"CreateReplicationConfigurationTemplate",
@@ -184,6 +245,66 @@
         {"shape":"UninitializedAccountException"}
       ],
       "documentation":"<p>Deletes a single Recovery Instance by ID. This deletes the Recovery Instance resource from Elastic Disaster Recovery. The Recovery Instance must be disconnected first in order to delete it.</p>"
+    },
+    "DeleteRecoveryPlan":{
+      "name":"DeleteRecoveryPlan",
+      "http":{
+        "method":"POST",
+        "requestUri":"/DeleteRecoveryPlan",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteRecoveryPlanRequest"},
+      "output":{"shape":"DeleteRecoveryPlanResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ConflictException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"UninitializedAccountException"}
+      ],
+      "documentation":"<p>Deletes a Recovery Plan. Cannot delete a plan that has an execution in a non-terminal status (<code>CREATED</code>, <code>IN_PROGRESS</code>).</p>"
+    },
+    "DeleteRecoveryPlanExecution":{
+      "name":"DeleteRecoveryPlanExecution",
+      "http":{
+        "method":"POST",
+        "requestUri":"/DeleteRecoveryPlanExecution",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteRecoveryPlanExecutionRequest"},
+      "output":{"shape":"DeleteRecoveryPlanExecutionResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ConflictException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"UninitializedAccountException"}
+      ],
+      "documentation":"<p>Deletes a Recovery Plan execution record. Must be in a terminal status.</p>"
+    },
+    "DeleteRecoveryPlanStep":{
+      "name":"DeleteRecoveryPlanStep",
+      "http":{
+        "method":"POST",
+        "requestUri":"/DeleteRecoveryPlanStep",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteRecoveryPlanStepRequest"},
+      "output":{"shape":"DeleteRecoveryPlanStepResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ConflictException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"UninitializedAccountException"}
+      ],
+      "documentation":"<p>Deletes a step from a Recovery Plan.</p>"
     },
     "DeleteReplicationConfigurationTemplate":{
       "name":"DeleteReplicationConfigurationTemplate",
@@ -480,6 +601,86 @@
       "documentation":"<p>Gets a LaunchConfiguration, filtered by Source Server IDs.</p>",
       "readonly":true
     },
+    "GetRecoveryPlan":{
+      "name":"GetRecoveryPlan",
+      "http":{
+        "method":"POST",
+        "requestUri":"/GetRecoveryPlan",
+        "responseCode":200
+      },
+      "input":{"shape":"GetRecoveryPlanRequest"},
+      "output":{"shape":"GetRecoveryPlanResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"UninitializedAccountException"}
+      ],
+      "documentation":"<p>Gets a Recovery Plan by ARN.</p>",
+      "readonly":true
+    },
+    "GetRecoveryPlanExecution":{
+      "name":"GetRecoveryPlanExecution",
+      "http":{
+        "method":"POST",
+        "requestUri":"/GetRecoveryPlanExecution",
+        "responseCode":200
+      },
+      "input":{"shape":"GetRecoveryPlanExecutionRequest"},
+      "output":{"shape":"GetRecoveryPlanExecutionResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"UninitializedAccountException"}
+      ],
+      "documentation":"<p>Gets the details of a Recovery Plan execution.</p>",
+      "readonly":true
+    },
+    "GetRecoveryPlanExecutionStep":{
+      "name":"GetRecoveryPlanExecutionStep",
+      "http":{
+        "method":"POST",
+        "requestUri":"/GetRecoveryPlanExecutionStep",
+        "responseCode":200
+      },
+      "input":{"shape":"GetRecoveryPlanExecutionStepRequest"},
+      "output":{"shape":"GetRecoveryPlanExecutionStepResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"UninitializedAccountException"}
+      ],
+      "documentation":"<p>Gets the details of a step within a Recovery Plan execution.</p>",
+      "readonly":true
+    },
+    "GetRecoveryPlanStep":{
+      "name":"GetRecoveryPlanStep",
+      "http":{
+        "method":"POST",
+        "requestUri":"/GetRecoveryPlanStep",
+        "responseCode":200
+      },
+      "input":{"shape":"GetRecoveryPlanStepRequest"},
+      "output":{"shape":"GetRecoveryPlanStepResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"UninitializedAccountException"}
+      ],
+      "documentation":"<p>Gets a Recovery Plan step by ARN.</p>",
+      "readonly":true
+    },
     "GetReplicationConfiguration":{
       "name":"GetReplicationConfiguration",
       "http":{
@@ -554,6 +755,84 @@
       "documentation":"<p>Lists resource launch actions.</p>",
       "readonly":true
     },
+    "ListRecoveryPlanExecutionSteps":{
+      "name":"ListRecoveryPlanExecutionSteps",
+      "http":{
+        "method":"POST",
+        "requestUri":"/ListRecoveryPlanExecutionSteps",
+        "responseCode":200
+      },
+      "input":{"shape":"ListRecoveryPlanExecutionStepsRequest"},
+      "output":{"shape":"ListRecoveryPlanExecutionStepsResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"UninitializedAccountException"}
+      ],
+      "documentation":"<p>Lists all steps within a Recovery Plan execution.</p>",
+      "readonly":true
+    },
+    "ListRecoveryPlanExecutions":{
+      "name":"ListRecoveryPlanExecutions",
+      "http":{
+        "method":"POST",
+        "requestUri":"/ListRecoveryPlanExecutions",
+        "responseCode":200
+      },
+      "input":{"shape":"ListRecoveryPlanExecutionsRequest"},
+      "output":{"shape":"ListRecoveryPlanExecutionsResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"UninitializedAccountException"}
+      ],
+      "documentation":"<p>Lists executions of Recovery Plans, optionally filtered by plan or status.</p>",
+      "readonly":true
+    },
+    "ListRecoveryPlanSteps":{
+      "name":"ListRecoveryPlanSteps",
+      "http":{
+        "method":"POST",
+        "requestUri":"/ListRecoveryPlanSteps",
+        "responseCode":200
+      },
+      "input":{"shape":"ListRecoveryPlanStepsRequest"},
+      "output":{"shape":"ListRecoveryPlanStepsResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"UninitializedAccountException"}
+      ],
+      "documentation":"<p>Lists all steps in a Recovery Plan.</p>",
+      "readonly":true
+    },
+    "ListRecoveryPlans":{
+      "name":"ListRecoveryPlans",
+      "http":{
+        "method":"POST",
+        "requestUri":"/ListRecoveryPlans",
+        "responseCode":200
+      },
+      "input":{"shape":"ListRecoveryPlansRequest"},
+      "output":{"shape":"ListRecoveryPlansResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"UninitializedAccountException"}
+      ],
+      "documentation":"<p>Lists all Recovery Plans in the account.</p>",
+      "readonly":true
+    },
     "ListStagingAccounts":{
       "name":"ListStagingAccounts",
       "http":{
@@ -611,6 +890,26 @@
       ],
       "documentation":"<p>Puts a resource launch action.</p>"
     },
+    "ReorderRecoveryPlanSteps":{
+      "name":"ReorderRecoveryPlanSteps",
+      "http":{
+        "method":"POST",
+        "requestUri":"/ReorderRecoveryPlanSteps",
+        "responseCode":200
+      },
+      "input":{"shape":"ReorderRecoveryPlanStepsRequest"},
+      "output":{"shape":"ReorderRecoveryPlanStepsResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ConflictException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"UninitializedAccountException"}
+      ],
+      "documentation":"<p>Reorders steps in a Recovery Plan. Accepts a complete ordered list of step ARNs.</p>"
+    },
     "RetryDataReplication":{
       "name":"RetryDataReplication",
       "http":{
@@ -630,6 +929,26 @@
       "documentation":"<p>WARNING: RetryDataReplication is deprecated. Causes the data replication initiation sequence to begin immediately upon next Handshake for the specified Source Server ID, regardless of when the previous initiation started. This command will work only if the Source Server is stalled or is in a DISCONNECTED or STOPPED state. </p>",
       "deprecated":true,
       "deprecatedMessage":"WARNING: RetryDataReplication is deprecated"
+    },
+    "RetryRecoveryPlanExecutionStep":{
+      "name":"RetryRecoveryPlanExecutionStep",
+      "http":{
+        "method":"POST",
+        "requestUri":"/RetryRecoveryPlanExecutionStep",
+        "responseCode":200
+      },
+      "input":{"shape":"RetryRecoveryPlanExecutionStepRequest"},
+      "output":{"shape":"RetryRecoveryPlanExecutionStepResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ConflictException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"UninitializedAccountException"}
+      ],
+      "documentation":"<p>Retries a failed <code>SERVER</code> type execution step.</p>"
     },
     "ReverseReplication":{
       "name":"ReverseReplication",
@@ -687,6 +1006,27 @@
         {"shape":"UninitializedAccountException"}
       ],
       "documentation":"<p>Launches Recovery Instances for the specified Source Servers. For each Source Server you may choose a point in time snapshot to launch from, or use an on demand snapshot.</p>"
+    },
+    "StartRecoveryPlanExecution":{
+      "name":"StartRecoveryPlanExecution",
+      "http":{
+        "method":"POST",
+        "requestUri":"/StartRecoveryPlanExecution",
+        "responseCode":201
+      },
+      "input":{"shape":"StartRecoveryPlanExecutionRequest"},
+      "output":{"shape":"StartRecoveryPlanExecutionResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ConflictException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"UninitializedAccountException"}
+      ],
+      "documentation":"<p>Starts executing a Recovery Plan in <code>DRILL</code> or <code>RECOVERY</code> mode. A plan cannot have more than one execution in a non-terminal status at a time.</p>"
     },
     "StartReplication":{
       "name":"StartReplication",
@@ -906,6 +1246,66 @@
       ],
       "documentation":"<p>Updates an existing Launch Configuration Template by ID.</p>"
     },
+    "UpdateRecoveryPlan":{
+      "name":"UpdateRecoveryPlan",
+      "http":{
+        "method":"POST",
+        "requestUri":"/UpdateRecoveryPlan",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateRecoveryPlanRequest"},
+      "output":{"shape":"UpdateRecoveryPlanResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ConflictException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"UninitializedAccountException"}
+      ],
+      "documentation":"<p>Updates a Recovery Plan's name or description.</p>"
+    },
+    "UpdateRecoveryPlanExecutionStep":{
+      "name":"UpdateRecoveryPlanExecutionStep",
+      "http":{
+        "method":"POST",
+        "requestUri":"/UpdateRecoveryPlanExecutionStep",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateRecoveryPlanExecutionStepRequest"},
+      "output":{"shape":"UpdateRecoveryPlanExecutionStepResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ConflictException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"UninitializedAccountException"}
+      ],
+      "documentation":"<p>Updates an execution step. Supports two actions: (1) skip a step that is in <code>NOT_STARTED</code> or <code>FAILED</code> status; (2) update the wait duration of a <code>WAIT</code> type step that is in <code>NOT_STARTED</code> status.</p>"
+    },
+    "UpdateRecoveryPlanStep":{
+      "name":"UpdateRecoveryPlanStep",
+      "http":{
+        "method":"POST",
+        "requestUri":"/UpdateRecoveryPlanStep",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateRecoveryPlanStepRequest"},
+      "output":{"shape":"UpdateRecoveryPlanStepResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ConflictException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"UninitializedAccountException"}
+      ],
+      "documentation":"<p>Updates a Recovery Plan step's name or configuration. Step type is immutable.</p>"
+    },
     "UpdateReplicationConfiguration":{
       "name":"UpdateReplicationConfiguration",
       "http":{
@@ -1060,12 +1460,37 @@
       },
       "documentation":"<p>Information about a server's CPU.</p>"
     },
+    "CancelRecoveryPlanExecutionRequest":{
+      "type":"structure",
+      "required":["recoveryPlanExecutionArn"],
+      "members":{
+        "recoveryPlanExecutionArn":{
+          "shape":"StrictDRSARN",
+          "documentation":"<p>The ARN of the Recovery Plan execution to cancel.</p>"
+        }
+      }
+    },
+    "CancelRecoveryPlanExecutionResponse":{
+      "type":"structure",
+      "required":["recoveryPlanExecution"],
+      "members":{
+        "recoveryPlanExecution":{
+          "shape":"RecoveryPlanExecution",
+          "documentation":"<p>The cancelled Recovery Plan execution.</p>"
+        }
+      }
+    },
     "CfnStackName":{
       "type":"string",
       "max":128,
       "min":1,
       "pattern":"[a-zA-Z][-a-zA-Z0-9]*",
       "sensitive":true
+    },
+    "ClientIdempotencyToken":{
+      "type":"string",
+      "max":64,
+      "min":0
     },
     "ConflictException":{
       "type":"structure",
@@ -1204,6 +1629,59 @@
           "shape":"LaunchConfigurationTemplate",
           "documentation":"<p>Created Launch Configuration Template.</p>"
         }
+      }
+    },
+    "CreateRecoveryPlanRequest":{
+      "type":"structure",
+      "required":["name"],
+      "members":{
+        "name":{"shape":"RecoveryPlanName"},
+        "description":{"shape":"RecoveryPlanDescription"},
+        "clientToken":{
+          "shape":"ClientIdempotencyToken",
+          "documentation":"<p>A unique string provided to ensure request idempotency.</p>",
+          "idempotencyToken":true
+        },
+        "tags":{
+          "shape":"TagsMap",
+          "documentation":"<p>The tags to apply to the Recovery Plan.</p>"
+        }
+      }
+    },
+    "CreateRecoveryPlanResponse":{
+      "type":"structure",
+      "required":["recoveryPlan"],
+      "members":{
+        "recoveryPlan":{"shape":"RecoveryPlan"}
+      }
+    },
+    "CreateRecoveryPlanStepRequest":{
+      "type":"structure",
+      "required":[
+        "recoveryPlanArn",
+        "stepName",
+        "configuration"
+      ],
+      "members":{
+        "recoveryPlanArn":{
+          "shape":"StrictDRSARN",
+          "documentation":"<p>The ARN of the Recovery Plan to add the step to.</p>"
+        },
+        "stepName":{"shape":"RecoveryPlanStepName"},
+        "stepOrder":{"shape":"RecoveryPlanStepOrder"},
+        "configuration":{"shape":"RecoveryPlanStepConfiguration"},
+        "clientToken":{
+          "shape":"ClientIdempotencyToken",
+          "documentation":"<p>A unique string provided to ensure request idempotency.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "CreateRecoveryPlanStepResponse":{
+      "type":"structure",
+      "required":["recoveryPlanStep"],
+      "members":{
+        "recoveryPlanStep":{"shape":"RecoveryPlanStep"}
       }
     },
     "CreateReplicationConfigurationTemplateRequest":{
@@ -1552,6 +2030,66 @@
         "recoveryInstanceID":{
           "shape":"RecoveryInstanceID",
           "documentation":"<p>The ID of the Recovery Instance to be deleted.</p>"
+        }
+      }
+    },
+    "DeleteRecoveryPlanExecutionRequest":{
+      "type":"structure",
+      "required":["recoveryPlanExecutionArn"],
+      "members":{
+        "recoveryPlanExecutionArn":{
+          "shape":"StrictDRSARN",
+          "documentation":"<p>The ARN of the Recovery Plan execution to delete.</p>"
+        }
+      }
+    },
+    "DeleteRecoveryPlanExecutionResponse":{
+      "type":"structure",
+      "required":["recoveryPlanExecutionArn"],
+      "members":{
+        "recoveryPlanExecutionArn":{
+          "shape":"StrictDRSARN",
+          "documentation":"<p>The ARN of the deleted Recovery Plan execution.</p>"
+        }
+      }
+    },
+    "DeleteRecoveryPlanRequest":{
+      "type":"structure",
+      "required":["recoveryPlanArn"],
+      "members":{
+        "recoveryPlanArn":{
+          "shape":"StrictDRSARN",
+          "documentation":"<p>The ARN of the Recovery Plan to delete.</p>"
+        }
+      }
+    },
+    "DeleteRecoveryPlanResponse":{
+      "type":"structure",
+      "required":["recoveryPlanArn"],
+      "members":{
+        "recoveryPlanArn":{
+          "shape":"StrictDRSARN",
+          "documentation":"<p>The ARN of the deleted Recovery Plan.</p>"
+        }
+      }
+    },
+    "DeleteRecoveryPlanStepRequest":{
+      "type":"structure",
+      "required":["recoveryPlanStepArn"],
+      "members":{
+        "recoveryPlanStepArn":{
+          "shape":"StrictDRSARN",
+          "documentation":"<p>The ARN of the Recovery Plan step to delete.</p>"
+        }
+      }
+    },
+    "DeleteRecoveryPlanStepResponse":{
+      "type":"structure",
+      "required":["recoveryPlanStepArn"],
+      "members":{
+        "recoveryPlanStepArn":{
+          "shape":"StrictDRSARN",
+          "documentation":"<p>The ARN of the deleted Recovery Plan step.</p>"
         }
       }
     },
@@ -2028,6 +2566,24 @@
       "min":10,
       "pattern":"vol-([0-9a-fA-F]{8}|[0-9a-fA-F]{17})"
     },
+    "ErrorDetail":{
+      "type":"structure",
+      "required":[
+        "message",
+        "code"
+      ],
+      "members":{
+        "message":{
+          "shape":"String",
+          "documentation":"<p>The error message.</p>"
+        },
+        "code":{
+          "shape":"String",
+          "documentation":"<p>The error code.</p>"
+        }
+      },
+      "documentation":"<p>Error details for a failed operation.</p>"
+    },
     "EventResourceData":{
       "type":"structure",
       "members":{
@@ -2038,6 +2594,17 @@
       },
       "documentation":"<p>Properties of resource related to a job event.</p>",
       "union":true
+    },
+    "ExecutionServerStepConfiguration":{
+      "type":"structure",
+      "required":["servers"],
+      "members":{
+        "servers":{
+          "shape":"RecoveryPlanExecutionServers",
+          "documentation":"<p>The list of servers in this execution step.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for a <code>SERVER</code> type execution step.</p>"
     },
     "ExportSourceNetworkCfnTemplateRequest":{
       "type":"structure",
@@ -2161,6 +2728,77 @@
           "shape":"SourceServerID",
           "documentation":"<p>The ID of the Source Server that we want to retrieve a Launch Configuration for.</p>"
         }
+      }
+    },
+    "GetRecoveryPlanExecutionRequest":{
+      "type":"structure",
+      "required":["recoveryPlanExecutionArn"],
+      "members":{
+        "recoveryPlanExecutionArn":{
+          "shape":"StrictDRSARN",
+          "documentation":"<p>The ARN of the Recovery Plan execution.</p>"
+        }
+      }
+    },
+    "GetRecoveryPlanExecutionResponse":{
+      "type":"structure",
+      "required":["recoveryPlanExecution"],
+      "members":{
+        "recoveryPlanExecution":{
+          "shape":"RecoveryPlanExecution",
+          "documentation":"<p>The Recovery Plan execution details.</p>"
+        }
+      }
+    },
+    "GetRecoveryPlanExecutionStepRequest":{
+      "type":"structure",
+      "required":["recoveryPlanExecutionStepArn"],
+      "members":{
+        "recoveryPlanExecutionStepArn":{
+          "shape":"StrictDRSARN",
+          "documentation":"<p>The ARN of the execution step.</p>"
+        }
+      }
+    },
+    "GetRecoveryPlanExecutionStepResponse":{
+      "type":"structure",
+      "required":["recoveryPlanExecutionStep"],
+      "members":{
+        "recoveryPlanExecutionStep":{"shape":"RecoveryPlanExecutionStep"}
+      }
+    },
+    "GetRecoveryPlanRequest":{
+      "type":"structure",
+      "required":["recoveryPlanArn"],
+      "members":{
+        "recoveryPlanArn":{
+          "shape":"StrictDRSARN",
+          "documentation":"<p>The ARN of the Recovery Plan to retrieve.</p>"
+        }
+      }
+    },
+    "GetRecoveryPlanResponse":{
+      "type":"structure",
+      "required":["recoveryPlan"],
+      "members":{
+        "recoveryPlan":{"shape":"RecoveryPlan"}
+      }
+    },
+    "GetRecoveryPlanStepRequest":{
+      "type":"structure",
+      "required":["recoveryPlanStepArn"],
+      "members":{
+        "recoveryPlanStepArn":{
+          "shape":"StrictDRSARN",
+          "documentation":"<p>The ARN of the Recovery Plan step to retrieve.</p>"
+        }
+      }
+    },
+    "GetRecoveryPlanStepResponse":{
+      "type":"structure",
+      "required":["recoveryPlanStep"],
+      "members":{
+        "recoveryPlanStep":{"shape":"RecoveryPlanStep"}
       }
     },
     "GetReplicationConfigurationRequest":{
@@ -2930,6 +3568,146 @@
         }
       }
     },
+    "ListRecoveryPlanExecutionStepsFilter":{
+      "type":"structure",
+      "members":{
+        "status":{
+          "shape":"RecoveryPlanExecutionStepStatus",
+          "documentation":"<p>Filter by execution step status.</p>"
+        }
+      },
+      "documentation":"<p>Filters for listing Recovery Plan execution steps.</p>"
+    },
+    "ListRecoveryPlanExecutionStepsRequest":{
+      "type":"structure",
+      "required":["recoveryPlanExecutionArn"],
+      "members":{
+        "recoveryPlanExecutionArn":{
+          "shape":"StrictDRSARN",
+          "documentation":"<p>The ARN of the Recovery Plan execution.</p>"
+        },
+        "filter":{
+          "shape":"ListRecoveryPlanExecutionStepsFilter",
+          "documentation":"<p>Filters for listing execution steps.</p>"
+        },
+        "maxResults":{
+          "shape":"MaxResultsType",
+          "documentation":"<p>Maximum number of results to return.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The token for the next page of results.</p>"
+        }
+      }
+    },
+    "ListRecoveryPlanExecutionStepsResponse":{
+      "type":"structure",
+      "required":["recoveryPlanExecutionSteps"],
+      "members":{
+        "recoveryPlanExecutionSteps":{
+          "shape":"RecoveryPlanExecutionStepSummaryList",
+          "documentation":"<p>The list of execution steps.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The token for the next page of results.</p>"
+        }
+      }
+    },
+    "ListRecoveryPlanExecutionsRequest":{
+      "type":"structure",
+      "members":{
+        "recoveryPlanArn":{
+          "shape":"StrictDRSARN",
+          "documentation":"<p>Filter executions by Recovery Plan ARN.</p>"
+        },
+        "status":{
+          "shape":"RecoveryPlanExecutionStatus",
+          "documentation":"<p>Filter executions by status.</p>"
+        },
+        "maxResults":{
+          "shape":"MaxResultsType",
+          "documentation":"<p>Maximum number of results to return.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The token for the next page of results.</p>"
+        }
+      }
+    },
+    "ListRecoveryPlanExecutionsResponse":{
+      "type":"structure",
+      "required":["recoveryPlanExecutions"],
+      "members":{
+        "recoveryPlanExecutions":{
+          "shape":"RecoveryPlanExecutionSummaryList",
+          "documentation":"<p>The list of Recovery Plan executions.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The token for the next page of results.</p>"
+        }
+      }
+    },
+    "ListRecoveryPlanStepsRequest":{
+      "type":"structure",
+      "required":["recoveryPlanArn"],
+      "members":{
+        "recoveryPlanArn":{
+          "shape":"StrictDRSARN",
+          "documentation":"<p>The ARN of the Recovery Plan.</p>"
+        },
+        "maxResults":{
+          "shape":"MaxResultsType",
+          "documentation":"<p>Maximum number of results to return.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The token for the next page of results.</p>"
+        }
+      }
+    },
+    "ListRecoveryPlanStepsResponse":{
+      "type":"structure",
+      "required":["recoveryPlanSteps"],
+      "members":{
+        "recoveryPlanSteps":{
+          "shape":"RecoveryPlanStepList",
+          "documentation":"<p>The list of Recovery Plan steps.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The token for the next page of results.</p>"
+        }
+      }
+    },
+    "ListRecoveryPlansRequest":{
+      "type":"structure",
+      "members":{
+        "maxResults":{
+          "shape":"MaxResultsType",
+          "documentation":"<p>Maximum number of results to return.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The token for the next page of results.</p>"
+        }
+      }
+    },
+    "ListRecoveryPlansResponse":{
+      "type":"structure",
+      "required":["recoveryPlans"],
+      "members":{
+        "recoveryPlans":{
+          "shape":"RecoveryPlanSummaryList",
+          "documentation":"<p>The list of Recovery Plans.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The token for the next page of results.</p>"
+        }
+      }
+    },
     "ListStagingAccountsRequest":{
       "type":"structure",
       "members":{
@@ -3636,6 +4414,451 @@
         "OPTIMAL"
       ]
     },
+    "RecoveryPlan":{
+      "type":"structure",
+      "required":[
+        "recoveryPlanArn",
+        "name",
+        "status",
+        "createdAt",
+        "updatedAt"
+      ],
+      "members":{
+        "recoveryPlanArn":{
+          "shape":"StrictDRSARN",
+          "documentation":"<p>The ARN of the Recovery Plan.</p>"
+        },
+        "name":{"shape":"RecoveryPlanName"},
+        "description":{"shape":"RecoveryPlanDescription"},
+        "status":{
+          "shape":"RecoveryPlanStatus",
+          "documentation":"<p>The status of the Recovery Plan.</p>"
+        },
+        "createdAt":{
+          "shape":"ISO8601DatetimeString",
+          "documentation":"<p>The timestamp when the Recovery Plan was created.</p>"
+        },
+        "updatedAt":{
+          "shape":"ISO8601DatetimeString",
+          "documentation":"<p>The timestamp when the Recovery Plan was last updated.</p>"
+        },
+        "tags":{
+          "shape":"TagsMap",
+          "documentation":"<p>The tags associated with the Recovery Plan.</p>"
+        }
+      },
+      "documentation":"<p>A Recovery Plan resource.</p>"
+    },
+    "RecoveryPlanDescription":{
+      "type":"string",
+      "documentation":"<p>The description of a Recovery Plan.</p>",
+      "max":1024,
+      "min":0
+    },
+    "RecoveryPlanExecution":{
+      "type":"structure",
+      "required":[
+        "recoveryPlanExecutionArn",
+        "recoveryPlanArn",
+        "mode",
+        "status",
+        "startedAt"
+      ],
+      "members":{
+        "recoveryPlanExecutionArn":{
+          "shape":"StrictDRSARN",
+          "documentation":"<p>The ARN of the Recovery Plan execution.</p>"
+        },
+        "recoveryPlanArn":{
+          "shape":"StrictDRSARN",
+          "documentation":"<p>The ARN of the Recovery Plan being executed.</p>"
+        },
+        "mode":{
+          "shape":"RecoveryPlanExecutionMode",
+          "documentation":"<p>The execution mode.</p>"
+        },
+        "status":{
+          "shape":"RecoveryPlanExecutionStatus",
+          "documentation":"<p>The execution status.</p>"
+        },
+        "startedAt":{
+          "shape":"ISO8601DatetimeString",
+          "documentation":"<p>The timestamp when the execution started.</p>"
+        },
+        "completedAt":{
+          "shape":"ISO8601DatetimeString",
+          "documentation":"<p>The timestamp when the execution completed.</p>"
+        },
+        "errorDetail":{
+          "shape":"ErrorDetail",
+          "documentation":"<p>Error details if the execution failed.</p>"
+        },
+        "tags":{
+          "shape":"TagsMap",
+          "documentation":"<p>The tags associated with the Recovery Plan execution.</p>"
+        }
+      },
+      "documentation":"<p>A Recovery Plan execution.</p>"
+    },
+    "RecoveryPlanExecutionMode":{
+      "type":"string",
+      "documentation":"<p>Execution mode. <code>DRILL</code> for testing, <code>RECOVERY</code> for actual disaster recovery.</p>",
+      "enum":[
+        "DRILL",
+        "RECOVERY"
+      ]
+    },
+    "RecoveryPlanExecutionServer":{
+      "type":"structure",
+      "required":["serverArn"],
+      "members":{
+        "serverArn":{
+          "shape":"SourceServerARN",
+          "documentation":"<p>The ARN of the source server.</p>"
+        },
+        "impactLevel":{
+          "shape":"RecoveryPlanServerImpactLevel",
+          "documentation":"<p>Defaults to CRITICAL if not specified.</p>"
+        },
+        "jobID":{
+          "shape":"JobID",
+          "documentation":"<p>The DRS recovery job ID. Populated when recovery is initiated for this server.</p>"
+        }
+      },
+      "documentation":"<p>A server within a recovery plan execution step, enriched with execution state.</p>"
+    },
+    "RecoveryPlanExecutionServers":{
+      "type":"list",
+      "member":{"shape":"RecoveryPlanExecutionServer"},
+      "max":100,
+      "min":1
+    },
+    "RecoveryPlanExecutionSourceServer":{
+      "type":"structure",
+      "required":[
+        "sourceServerID",
+        "recoverySnapshotID"
+      ],
+      "members":{
+        "sourceServerID":{
+          "shape":"SourceServerID",
+          "documentation":"<p>The ID of the source server.</p>"
+        },
+        "recoverySnapshotID":{
+          "shape":"RecoverySnapshotID",
+          "documentation":"<p>The ID of the recovery snapshot to use.</p>"
+        }
+      },
+      "documentation":"<p>A source server with a specific recovery snapshot for plan execution.</p>"
+    },
+    "RecoveryPlanExecutionSourceServerList":{
+      "type":"list",
+      "member":{"shape":"RecoveryPlanExecutionSourceServer"},
+      "max":200,
+      "min":0
+    },
+    "RecoveryPlanExecutionStatus":{
+      "type":"string",
+      "documentation":"<p>The status of a Recovery Plan execution.</p>",
+      "enum":[
+        "CREATED",
+        "IN_PROGRESS",
+        "COMPLETED",
+        "FAILED",
+        "CANCELLING",
+        "CANCELLED"
+      ]
+    },
+    "RecoveryPlanExecutionStep":{
+      "type":"structure",
+      "required":[
+        "recoveryPlanExecutionStepArn",
+        "stepIndex",
+        "status",
+        "stepName",
+        "configuration",
+        "attempt",
+        "createdAt",
+        "updatedAt"
+      ],
+      "members":{
+        "recoveryPlanExecutionStepArn":{
+          "shape":"StrictDRSARN",
+          "documentation":"<p>The ARN of the execution step.</p>"
+        },
+        "stepIndex":{"shape":"RecoveryPlanStepOrder"},
+        "status":{
+          "shape":"RecoveryPlanExecutionStepStatus",
+          "documentation":"<p>The status of the execution step.</p>"
+        },
+        "stepName":{"shape":"RecoveryPlanStepName"},
+        "configuration":{"shape":"RecoveryPlanExecutionStepConfiguration"},
+        "errorDetail":{
+          "shape":"ErrorDetail",
+          "documentation":"<p>Error details if the step failed.</p>"
+        },
+        "attempt":{
+          "shape":"StrictlyPositiveInteger",
+          "documentation":"<p>The number of times this step has been attempted.</p>"
+        },
+        "createdAt":{
+          "shape":"ISO8601DatetimeString",
+          "documentation":"<p>The timestamp when the execution step was created.</p>"
+        },
+        "updatedAt":{
+          "shape":"ISO8601DatetimeString",
+          "documentation":"<p>The timestamp when the execution step was last updated.</p>"
+        }
+      },
+      "documentation":"<p>A Recovery Plan Execution Step resource.</p>"
+    },
+    "RecoveryPlanExecutionStepConfiguration":{
+      "type":"structure",
+      "members":{
+        "executionServerStepConfiguration":{
+          "shape":"ExecutionServerStepConfiguration",
+          "documentation":"<p>Configuration for a SERVER type step (with execution state like jobID).</p>"
+        },
+        "waitStepConfiguration":{
+          "shape":"WaitStepConfiguration",
+          "documentation":"<p>Configuration for a WAIT type step.</p>"
+        }
+      },
+      "documentation":"<p>Type-specific configuration for an execution step response. Mirrors RecoveryPlanStepConfiguration but uses execution-enriched server shapes.</p>",
+      "union":true
+    },
+    "RecoveryPlanExecutionStepStatus":{
+      "type":"string",
+      "documentation":"<p>The status of a step within a Recovery Plan execution.</p>",
+      "enum":[
+        "NOT_STARTED",
+        "EXECUTING",
+        "WAITING",
+        "COMPLETED",
+        "FAILED",
+        "TIMED_OUT",
+        "SKIPPED"
+      ]
+    },
+    "RecoveryPlanExecutionStepSummary":{
+      "type":"structure",
+      "required":[
+        "recoveryPlanExecutionStepArn",
+        "stepName",
+        "stepIndex",
+        "status",
+        "configuration"
+      ],
+      "members":{
+        "recoveryPlanExecutionStepArn":{
+          "shape":"StrictDRSARN",
+          "documentation":"<p>The ARN of the execution step.</p>"
+        },
+        "stepName":{"shape":"RecoveryPlanStepName"},
+        "stepIndex":{"shape":"RecoveryPlanStepOrder"},
+        "status":{
+          "shape":"RecoveryPlanExecutionStepStatus",
+          "documentation":"<p>The status of the execution step.</p>"
+        },
+        "configuration":{"shape":"RecoveryPlanExecutionStepConfiguration"},
+        "errorDetail":{
+          "shape":"ErrorDetail",
+          "documentation":"<p>Error details if the step failed.</p>"
+        }
+      },
+      "documentation":"<p>Summary information about a Recovery Plan execution step.</p>"
+    },
+    "RecoveryPlanExecutionStepSummaryList":{
+      "type":"list",
+      "member":{"shape":"RecoveryPlanExecutionStepSummary"}
+    },
+    "RecoveryPlanExecutionSummary":{
+      "type":"structure",
+      "required":[
+        "recoveryPlanExecutionArn",
+        "recoveryPlanArn",
+        "mode",
+        "status",
+        "startedAt"
+      ],
+      "members":{
+        "recoveryPlanExecutionArn":{
+          "shape":"StrictDRSARN",
+          "documentation":"<p>The ARN of the Recovery Plan execution.</p>"
+        },
+        "recoveryPlanArn":{
+          "shape":"StrictDRSARN",
+          "documentation":"<p>The ARN of the Recovery Plan.</p>"
+        },
+        "mode":{
+          "shape":"RecoveryPlanExecutionMode",
+          "documentation":"<p>The execution mode.</p>"
+        },
+        "status":{
+          "shape":"RecoveryPlanExecutionStatus",
+          "documentation":"<p>The execution status.</p>"
+        },
+        "startedAt":{
+          "shape":"ISO8601DatetimeString",
+          "documentation":"<p>The timestamp when the execution started.</p>"
+        },
+        "errorDetail":{
+          "shape":"ErrorDetail",
+          "documentation":"<p>Error details if the execution failed.</p>"
+        }
+      },
+      "documentation":"<p>Summary information about a Recovery Plan execution.</p>"
+    },
+    "RecoveryPlanExecutionSummaryList":{
+      "type":"list",
+      "member":{"shape":"RecoveryPlanExecutionSummary"}
+    },
+    "RecoveryPlanName":{
+      "type":"string",
+      "documentation":"<p>The name of a Recovery Plan.</p>",
+      "max":256,
+      "min":1,
+      "pattern":"[a-zA-Z0-9][a-zA-Z0-9 _-]*"
+    },
+    "RecoveryPlanServer":{
+      "type":"structure",
+      "required":["serverArn"],
+      "members":{
+        "serverArn":{
+          "shape":"SourceServerARN",
+          "documentation":"<p>The ARN of the source server.</p>"
+        },
+        "impactLevel":{
+          "shape":"RecoveryPlanServerImpactLevel",
+          "documentation":"<p>Defaults to CRITICAL if not specified.</p>"
+        }
+      },
+      "documentation":"<p>A server associated with a Recovery Plan Step.</p>"
+    },
+    "RecoveryPlanServerImpactLevel":{
+      "type":"string",
+      "documentation":"<p>The impact level of a server within a Recovery Plan step. <code>CRITICAL</code> means the step fails if this server fails. <code>OPTIONAL</code> means the step continues even if this server fails.</p>",
+      "enum":[
+        "CRITICAL",
+        "OPTIONAL"
+      ]
+    },
+    "RecoveryPlanServers":{
+      "type":"list",
+      "member":{"shape":"RecoveryPlanServer"},
+      "max":100,
+      "min":1
+    },
+    "RecoveryPlanStatus":{
+      "type":"string",
+      "documentation":"<p>Recovery Plan status. <code>ACTIVE</code> means executable. <code>INVALID</code> means the plan has no <code>SERVER</code> type steps and cannot be executed.</p>",
+      "enum":[
+        "ACTIVE",
+        "INVALID"
+      ]
+    },
+    "RecoveryPlanStep":{
+      "type":"structure",
+      "required":[
+        "recoveryPlanStepArn",
+        "stepOrder",
+        "stepName",
+        "configuration",
+        "createdAt",
+        "updatedAt"
+      ],
+      "members":{
+        "recoveryPlanStepArn":{
+          "shape":"StrictDRSARN",
+          "documentation":"<p>The ARN of the Recovery Plan step.</p>"
+        },
+        "stepOrder":{"shape":"RecoveryPlanStepOrder"},
+        "stepName":{"shape":"RecoveryPlanStepName"},
+        "configuration":{"shape":"RecoveryPlanStepConfiguration"},
+        "createdAt":{
+          "shape":"ISO8601DatetimeString",
+          "documentation":"<p>The timestamp when the step was created.</p>"
+        },
+        "updatedAt":{
+          "shape":"ISO8601DatetimeString",
+          "documentation":"<p>The timestamp when the step was last updated.</p>"
+        }
+      },
+      "documentation":"<p>A Recovery Plan Step resource.</p>"
+    },
+    "RecoveryPlanStepArnList":{
+      "type":"list",
+      "member":{"shape":"StrictDRSARN"},
+      "max":20,
+      "min":1
+    },
+    "RecoveryPlanStepConfiguration":{
+      "type":"structure",
+      "members":{
+        "serverStepConfiguration":{
+          "shape":"ServerStepConfiguration",
+          "documentation":"<p>Configuration for a SERVER type step.</p>"
+        },
+        "waitStepConfiguration":{
+          "shape":"WaitStepConfiguration",
+          "documentation":"<p>Configuration for a WAIT type step.</p>"
+        }
+      },
+      "documentation":"<p>Type-specific configuration for a recovery plan step. Exactly one member must be set.</p>",
+      "union":true
+    },
+    "RecoveryPlanStepList":{
+      "type":"list",
+      "member":{"shape":"RecoveryPlanStep"}
+    },
+    "RecoveryPlanStepName":{
+      "type":"string",
+      "documentation":"<p>The name of a Recovery Plan Step.</p>",
+      "max":256,
+      "min":1,
+      "pattern":"[a-zA-Z0-9][a-zA-Z0-9 _-]*"
+    },
+    "RecoveryPlanStepOrder":{
+      "type":"integer",
+      "documentation":"<p>The order of a step within a Recovery Plan (1-based).</p>",
+      "box":true,
+      "max":20,
+      "min":1
+    },
+    "RecoveryPlanSummary":{
+      "type":"structure",
+      "required":[
+        "recoveryPlanArn",
+        "name",
+        "status",
+        "createdAt",
+        "updatedAt"
+      ],
+      "members":{
+        "recoveryPlanArn":{
+          "shape":"StrictDRSARN",
+          "documentation":"<p>The ARN of the Recovery Plan.</p>"
+        },
+        "name":{"shape":"RecoveryPlanName"},
+        "status":{
+          "shape":"RecoveryPlanStatus",
+          "documentation":"<p>The status of the Recovery Plan.</p>"
+        },
+        "createdAt":{
+          "shape":"ISO8601DatetimeString",
+          "documentation":"<p>The timestamp when the Recovery Plan was created.</p>"
+        },
+        "updatedAt":{
+          "shape":"ISO8601DatetimeString",
+          "documentation":"<p>The timestamp when the Recovery Plan was last updated.</p>"
+        }
+      },
+      "documentation":"<p>Summary information about a Recovery Plan.</p>"
+    },
+    "RecoveryPlanSummaryList":{
+      "type":"list",
+      "member":{"shape":"RecoveryPlanSummary"}
+    },
     "RecoveryResult":{
       "type":"string",
       "enum":[
@@ -3695,6 +4918,33 @@
         "ASC",
         "DESC"
       ]
+    },
+    "ReorderRecoveryPlanStepsRequest":{
+      "type":"structure",
+      "required":[
+        "recoveryPlanArn",
+        "orderedStepArns"
+      ],
+      "members":{
+        "recoveryPlanArn":{
+          "shape":"StrictDRSARN",
+          "documentation":"<p>The ARN of the Recovery Plan.</p>"
+        },
+        "orderedStepArns":{
+          "shape":"RecoveryPlanStepArnList",
+          "documentation":"<p>Ordered list of all step ARNs representing the desired sequence.</p>"
+        }
+      }
+    },
+    "ReorderRecoveryPlanStepsResponse":{
+      "type":"structure",
+      "required":["recoveryPlanSteps"],
+      "members":{
+        "recoveryPlanSteps":{
+          "shape":"RecoveryPlanStepList",
+          "documentation":"<p>The steps with updated order.</p>"
+        }
+      }
     },
     "ReplicationConfiguration":{
       "type":"structure",
@@ -3995,6 +5245,23 @@
       "deprecated":true,
       "deprecatedMessage":"WARNING: RetryDataReplication is deprecated"
     },
+    "RetryRecoveryPlanExecutionStepRequest":{
+      "type":"structure",
+      "required":["recoveryPlanExecutionStepArn"],
+      "members":{
+        "recoveryPlanExecutionStepArn":{
+          "shape":"StrictDRSARN",
+          "documentation":"<p>The ARN of the execution step to retry.</p>"
+        }
+      }
+    },
+    "RetryRecoveryPlanExecutionStepResponse":{
+      "type":"structure",
+      "required":["recoveryPlanExecutionStep"],
+      "members":{
+        "recoveryPlanExecutionStep":{"shape":"RecoveryPlanExecutionStep"}
+      }
+    },
     "ReverseReplicationRequest":{
       "type":"structure",
       "required":["recoveryInstanceID"],
@@ -4025,6 +5292,17 @@
       "max":256,
       "min":0,
       "sensitive":true
+    },
+    "ServerStepConfiguration":{
+      "type":"structure",
+      "required":["servers"],
+      "members":{
+        "servers":{
+          "shape":"RecoveryPlanServers",
+          "documentation":"<p>The list of servers to recover in this step.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for a <code>SERVER</code> type step.</p>"
     },
     "ServiceQuotaExceededException":{
       "type":"structure",
@@ -4366,6 +5644,46 @@
       "max":200,
       "min":1
     },
+    "StartRecoveryPlanExecutionRequest":{
+      "type":"structure",
+      "required":[
+        "recoveryPlanArn",
+        "mode"
+      ],
+      "members":{
+        "recoveryPlanArn":{
+          "shape":"StrictDRSARN",
+          "documentation":"<p>The ARN of the Recovery Plan to execute.</p>"
+        },
+        "mode":{
+          "shape":"RecoveryPlanExecutionMode",
+          "documentation":"<p>The execution mode (<code>DRILL</code> or <code>RECOVERY</code>).</p>"
+        },
+        "clientToken":{
+          "shape":"ClientIdempotencyToken",
+          "documentation":"<p>A unique string provided to ensure request idempotency.</p>",
+          "idempotencyToken":true
+        },
+        "sourceServers":{
+          "shape":"RecoveryPlanExecutionSourceServerList",
+          "documentation":"<p>Optional list of source servers with specific recovery snapshots. If not provided, the latest snapshot is used for each server.</p>"
+        },
+        "tags":{
+          "shape":"TagsMap",
+          "documentation":"<p>The tags to apply to the Recovery Plan execution.</p>"
+        }
+      }
+    },
+    "StartRecoveryPlanExecutionResponse":{
+      "type":"structure",
+      "required":["recoveryPlanExecution"],
+      "members":{
+        "recoveryPlanExecution":{
+          "shape":"RecoveryPlanExecution",
+          "documentation":"<p>The started Recovery Plan execution.</p>"
+        }
+      }
+    },
     "StartRecoveryRequest":{
       "type":"structure",
       "required":["sourceServers"],
@@ -4548,11 +5866,19 @@
         }
       }
     },
+    "StrictDRSARN":{
+      "type":"string",
+      "documentation":"<p>Strict ARN type for Recovery Plan resources. Only allows safe characters in the resource portion — rejects HTML/script injection characters (&lt;, &gt;, &quot;, ', etc.) per AWS API input validation standards. Resource portion allows: [A-Za-z0-9_/.-] which covers all DRS recovery plan resource identifiers (plan-xxx, st-xxx, exec-xxx, step-xxx).</p>",
+      "max":2048,
+      "min":20,
+      "pattern":"arn:aws(-[a-z0-9]+)*:drs:[a-z0-9-]+:[0-9]{12}:[a-zA-Z0-9_/.-]+"
+    },
     "StrictlyPositiveInteger":{
       "type":"integer",
       "box":true,
       "min":1
     },
+    "String":{"type":"string"},
     "SubnetID":{
       "type":"string",
       "max":255,
@@ -4818,6 +6144,73 @@
         }
       }
     },
+    "UpdateRecoveryPlanExecutionStepRequest":{
+      "type":"structure",
+      "required":["recoveryPlanExecutionStepArn"],
+      "members":{
+        "recoveryPlanExecutionStepArn":{
+          "shape":"StrictDRSARN",
+          "documentation":"<p>The ARN of the execution step to update.</p>"
+        },
+        "status":{
+          "shape":"RecoveryPlanExecutionStepStatus",
+          "documentation":"<p>Only SKIPPED is accepted. Step must be in NOT_STARTED or FAILED status.</p>"
+        },
+        "servers":{
+          "shape":"RecoveryPlanServers",
+          "documentation":"<p>Full replacement of the server list. Only allowed when the step is in NOT_STARTED status (Server type steps only).</p>"
+        },
+        "waitDurationMinutes":{
+          "shape":"WaitDurationMinutes",
+          "documentation":"<p>Updated wait duration. Only allowed when the step is in NOT_STARTED status (Wait type steps only).</p>"
+        }
+      }
+    },
+    "UpdateRecoveryPlanExecutionStepResponse":{
+      "type":"structure",
+      "required":["recoveryPlanExecutionStep"],
+      "members":{
+        "recoveryPlanExecutionStep":{"shape":"RecoveryPlanExecutionStep"}
+      }
+    },
+    "UpdateRecoveryPlanRequest":{
+      "type":"structure",
+      "required":["recoveryPlanArn"],
+      "members":{
+        "recoveryPlanArn":{
+          "shape":"StrictDRSARN",
+          "documentation":"<p>The ARN of the Recovery Plan to update.</p>"
+        },
+        "name":{"shape":"RecoveryPlanName"},
+        "description":{"shape":"RecoveryPlanDescription"}
+      }
+    },
+    "UpdateRecoveryPlanResponse":{
+      "type":"structure",
+      "required":["recoveryPlan"],
+      "members":{
+        "recoveryPlan":{"shape":"RecoveryPlan"}
+      }
+    },
+    "UpdateRecoveryPlanStepRequest":{
+      "type":"structure",
+      "required":["recoveryPlanStepArn"],
+      "members":{
+        "recoveryPlanStepArn":{
+          "shape":"StrictDRSARN",
+          "documentation":"<p>The ARN of the Recovery Plan step to update.</p>"
+        },
+        "stepName":{"shape":"RecoveryPlanStepName"},
+        "configuration":{"shape":"RecoveryPlanStepConfiguration"}
+      }
+    },
+    "UpdateRecoveryPlanStepResponse":{
+      "type":"structure",
+      "required":["recoveryPlanStep"],
+      "members":{
+        "recoveryPlanStep":{"shape":"RecoveryPlanStep"}
+      }
+    },
     "UpdateReplicationConfigurationRequest":{
       "type":"structure",
       "required":["sourceServerID"],
@@ -5048,6 +6441,21 @@
       "max":21,
       "min":12,
       "pattern":"vpc-[0-9a-fA-F]{8,}"
+    },
+    "WaitDurationMinutes":{
+      "type":"integer",
+      "documentation":"<p>The wait duration in minutes for a Wait type step.</p>",
+      "box":true,
+      "max":120,
+      "min":1
+    },
+    "WaitStepConfiguration":{
+      "type":"structure",
+      "required":["waitDurationMinutes"],
+      "members":{
+        "waitDurationMinutes":{"shape":"WaitDurationMinutes"}
+      },
+      "documentation":"<p>Configuration for a <code>WAIT</code> type step.</p>"
     }
   },
   "documentation":"<p>AWS Elastic Disaster Recovery Service.</p>"

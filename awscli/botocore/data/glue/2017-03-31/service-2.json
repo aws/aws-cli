@@ -174,6 +174,21 @@
       ],
       "documentation":"<p>Retrieves a list of data quality results for the specified result IDs.</p>"
     },
+    "BatchGetDataQualityRulesetEvaluationRun":{
+      "name":"BatchGetDataQualityRulesetEvaluationRun",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"BatchGetDataQualityRulesetEvaluationRunRequest"},
+      "output":{"shape":"BatchGetDataQualityRulesetEvaluationRunResponse"},
+      "errors":[
+        {"shape":"InvalidInputException"},
+        {"shape":"OperationTimeoutException"},
+        {"shape":"InternalServiceException"}
+      ],
+      "documentation":"<p>Retrieves the details of multiple evaluation runs in a single request.</p>"
+    },
     "BatchGetDevEndpoints":{
       "name":"BatchGetDevEndpoints",
       "http":{
@@ -2139,6 +2154,23 @@
       ],
       "documentation":"<p>Retrieves the security configuration for a specified catalog.</p>"
     },
+    "GetDataCatalogExportConfiguration":{
+      "name":"GetDataCatalogExportConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetDataCatalogExportConfigurationInput"},
+      "output":{"shape":"GetDataCatalogExportConfigurationOutput"},
+      "errors":[
+        {"shape":"InvalidInputException"},
+        {"shape":"EntityNotFoundException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Retrieves the current export configuration for the Glue Data Catalog. The export configuration controls whether catalog metadata is exported to S3 Tables.</p>",
+      "readonly":true
+    },
     "GetDataQualityModel":{
       "name":"GetDataQualityModel",
       "http":{
@@ -3775,6 +3807,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"InternalServiceException"},
         {"shape":"InvalidInputException"},
+        {"shape":"EntityNotFoundException"},
         {"shape":"ConcurrentModificationException"},
         {"shape":"ThrottlingException"}
       ],
@@ -3812,6 +3845,23 @@
         {"shape":"OperationTimeoutException"}
       ],
       "documentation":"<p>Sets the security configuration for a specified catalog. After the configuration has been set, the specified encryption is applied to every catalog write thereafter.</p>"
+    },
+    "PutDataCatalogExportConfiguration":{
+      "name":"PutDataCatalogExportConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"PutDataCatalogExportConfigurationInput"},
+      "output":{"shape":"PutDataCatalogExportConfigurationOutput"},
+      "errors":[
+        {"shape":"InvalidInputException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Creates or updates the export configuration for the Glue Data Catalog. Use this operation to enable or disable the export of catalog metadata to S3 Tables.</p>"
     },
     "PutDataQualityProfileAnnotation":{
       "name":"PutDataQualityProfileAnnotation",
@@ -4272,7 +4322,7 @@
         {"shape":"ResourceNumberLimitExceededException"},
         {"shape":"InvalidInputException"}
       ],
-      "documentation":"<p>Starts a materialized view refresh task run, for a specified table and columns.</p>"
+      "documentation":"<p>Starts a materialized view refresh task run for a specified materialized view.</p>"
     },
     "StartTrigger":{
       "name":"StartTrigger",
@@ -4388,7 +4438,7 @@
         {"shape":"InvalidInputException"},
         {"shape":"OperationTimeoutException"}
       ],
-      "documentation":"<p>Stops a materialized view refresh task run, for a specified table and columns.</p>"
+      "documentation":"<p>Stops a materialized view refresh task run for a specified materialized view.</p>"
     },
     "StopSession":{
       "name":"StopSession",
@@ -5580,6 +5630,14 @@
           "shape":"AssetId",
           "documentation":"<p>The unique identifier of the asset to associate glossary terms with.</p>"
         },
+        "IterableFormName":{
+          "shape":"IterableFormName",
+          "documentation":"<p>The name of the iterable form. When specified along with <code>itemIdentifier</code>, the glossary terms are associated with an item within the iterable form rather than the asset itself.</p>"
+        },
+        "ItemIdentifier":{
+          "shape":"ItemIdentifier",
+          "documentation":"<p>The identifier of the item within the iterable form. Required when <code>iterableFormName</code> is specified.</p>"
+        },
         "GlossaryTermIdentifiers":{
           "shape":"GlossaryTermIdList",
           "documentation":"<p>The list of glossary term identifiers to associate with the asset.</p>"
@@ -5597,6 +5655,14 @@
         "AssetIdentifier":{
           "shape":"AssetId",
           "documentation":"<p>The unique identifier of the asset.</p>"
+        },
+        "IterableFormName":{
+          "shape":"IterableFormName",
+          "documentation":"<p>The name of the iterable form, if the association targets an item.</p>"
+        },
+        "ItemIdentifier":{
+          "shape":"ItemIdentifier",
+          "documentation":"<p>The identifier of the item within the iterable form, if applicable.</p>"
         },
         "GlossaryTerms":{
           "shape":"GlossaryTermIdList",
@@ -6195,6 +6261,29 @@
         }
       }
     },
+    "BatchGetDataQualityRulesetEvaluationRunRequest":{
+      "type":"structure",
+      "required":["RunIds"],
+      "members":{
+        "RunIds":{
+          "shape":"DataQualityRulesetEvaluationRunIdList",
+          "documentation":"<p>A list of unique run identifiers for the evaluation runs to retrieve.</p>"
+        }
+      }
+    },
+    "BatchGetDataQualityRulesetEvaluationRunResponse":{
+      "type":"structure",
+      "members":{
+        "Runs":{
+          "shape":"DataQualityRulesetEvaluationRunsList",
+          "documentation":"<p>A list of evaluation run details for the requested run IDs.</p>"
+        },
+        "RunsNotFound":{
+          "shape":"DataQualityRulesetEvaluationRunIdList",
+          "documentation":"<p>A list of run IDs that were not found.</p>"
+        }
+      }
+    },
     "BatchGetDevEndpointsRequest":{
       "type":"structure",
       "required":["DevEndpointNames"],
@@ -6664,6 +6753,28 @@
       "box":true,
       "max":900,
       "min":1
+    },
+    "BetweenConfiguration":{
+      "type":"structure",
+      "members":{
+        "LowBoundKey":{
+          "shape":"String",
+          "documentation":"<p>The parameter name used for the lower bound value in a BETWEEN filter operation.</p>"
+        },
+        "HighBoundKey":{
+          "shape":"String",
+          "documentation":"<p>The parameter name used for the upper bound value in a BETWEEN filter operation.</p>"
+        },
+        "Template":{
+          "shape":"String",
+          "documentation":"<p>A template string for constructing the BETWEEN filter expression.</p>"
+        }
+      },
+      "documentation":"<p>Configuration that defines how BETWEEN range filter operations are translated into REST API request parameters.</p>"
+    },
+    "BinEdges":{
+      "type":"list",
+      "member":{"shape":"GenericString"}
     },
     "BinaryColumnStatisticsData":{
       "type":"structure",
@@ -7439,6 +7550,28 @@
         }
       },
       "documentation":"<p>Specifies a data store in the Glue Data Catalog.</p>"
+    },
+    "CatalogTableConfigOptions":{
+      "type":"structure",
+      "members":{
+        "DatabaseName":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the database in the Glue Data Catalog.</p>"
+        },
+        "TableName":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the table in the Glue Data Catalog.</p>"
+        },
+        "S3Location":{
+          "shape":"UriString",
+          "documentation":"<p>The Amazon S3 location for storing the results.</p>"
+        },
+        "CatalogId":{
+          "shape":"NameString",
+          "documentation":"<p>A unique identifier for the Glue Data Catalog.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for a Glue Data Catalog table used to store data quality results.</p>"
     },
     "CatalogTablesList":{
       "type":"list",
@@ -8982,6 +9115,11 @@
       "member":{"shape":"ConnectionString"},
       "max":1000
     },
+    "ConnectionStringToStringMap":{
+      "type":"map",
+      "key":{"shape":"String"},
+      "value":{"shape":"String"}
+    },
     "ConnectionType":{
       "type":"string",
       "enum":[
@@ -9346,6 +9484,10 @@
         "PropertyType":{
           "shape":"PropertyType",
           "documentation":"<p>The data type of this property</p>"
+        },
+        "Format":{
+          "shape":"String",
+          "documentation":"<p>A format template for the property value that defines how the value should be formatted before sending it in API requests. Use <code>{value}</code> as a placeholder for the actual property value (for example, <code>SSWS {value}</code>).</p>"
         }
       },
       "documentation":"<p>Defines a property configuration for connection types, default values, and where the property should be used in requests.</p>"
@@ -9384,6 +9526,10 @@
       "min":1
     },
     "ContinuousSync":{"type":"boolean"},
+    "Count":{
+      "type":"list",
+      "member":{"shape":"NullableInteger"}
+    },
     "Crawl":{
       "type":"structure",
       "members":{
@@ -11945,6 +12091,10 @@
         "EvaluatedMetrics":{
           "shape":"EvaluatedMetricsMap",
           "documentation":"<p>A map of metrics associated with the evaluation of the analyzer.</p>"
+        },
+        "EvaluatedDistributions":{
+          "shape":"EvaluatedDistributionsMap",
+          "documentation":"<p>A map of distribution metrics associated with the evaluation of the analyzer.</p>"
         }
       },
       "documentation":"<p>Describes the result of the evaluation of a data quality analyzer.</p>"
@@ -11994,6 +12144,30 @@
         "CustomLogGroupPrefix":{
           "shape":"GenericString",
           "documentation":"<p>A custom prefix for the CloudWatch log group names. When specified, evaluation run logs are written to <code>&lt;CustomLogGroupPrefix&gt;/error</code> and <code>&lt;CustomLogGroupPrefix&gt;/output</code> instead of the default <code>/aws-glue/data-quality/error</code> and <code>/aws-glue/data-quality/output</code> log groups.</p>"
+        },
+        "RowLevelResults":{
+          "shape":"RowLevelResultsOptions",
+          "documentation":"<p>The configuration for writing row-level evaluation results to a Glue Data Catalog table.</p>"
+        },
+        "ProfilingResults":{
+          "shape":"ProfilingResultsOptions",
+          "documentation":"<p>The configuration for writing profiling results to a Glue Data Catalog table.</p>"
+        },
+        "ObservationScope":{
+          "shape":"ObservationConfiguration",
+          "documentation":"<p>The scope of the observation for the evaluation run. Specifies whether anomaly detection is enabled or disabled.</p>"
+        },
+        "ObservationMode":{
+          "shape":"ObservationMode",
+          "documentation":"<p>The observation mode for the evaluation run. Specifies how anomaly detection bounds are calculated.</p>"
+        },
+        "DataQualityRuleResults":{
+          "shape":"DataQualityRuleResultsOptions",
+          "documentation":"<p>The configuration for writing rule results to a Glue Data Catalog table.</p>"
+        },
+        "ObservationResults":{
+          "shape":"ObservationResultsOptions",
+          "documentation":"<p>The configuration for writing observation results to a Glue Data Catalog table.</p>"
         }
       },
       "documentation":"<p>Additional run options you can specify for an evaluation run.</p>"
@@ -12227,6 +12401,16 @@
       "type":"list",
       "member":{"shape":"DataQualityResult"}
     },
+    "DataQualityRuleRecommendationRunAdditionalRunOptions":{
+      "type":"structure",
+      "members":{
+        "CustomLogGroupPrefix":{
+          "shape":"GenericString",
+          "documentation":"<p>A custom prefix for the CloudWatch log group names. When specified, recommendation run logs are written to <code>&lt;CustomLogGroupPrefix&gt;/error</code> and <code>&lt;CustomLogGroupPrefix&gt;/output</code> instead of the default <code>/aws-glue/data-quality/error</code> and <code>/aws-glue/data-quality/output</code> log groups.</p>"
+        }
+      },
+      "documentation":"<p>Additional run options you can specify for a recommendation run.</p>"
+    },
     "DataQualityRuleRecommendationRunDescription":{
       "type":"structure",
       "members":{
@@ -12245,6 +12429,10 @@
         "DataSource":{
           "shape":"DataSource",
           "documentation":"<p>The data source (Glue table) associated with the recommendation run.</p>"
+        },
+        "CreatedRulesetName":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the ruleset that was created by the recommendation run.</p>"
         }
       },
       "documentation":"<p>Describes the result of a data quality rule recommendation run.</p>"
@@ -12331,6 +12519,80 @@
       "max":2000,
       "min":0
     },
+    "DataQualityRuleResultsOptions":{
+      "type":"structure",
+      "members":{
+        "WriteDataQualityRuleResultsEnabled":{
+          "shape":"NullableBoolean",
+          "documentation":"<p>Set to true to write data quality rule results.</p>"
+        },
+        "CatalogTableConfig":{
+          "shape":"CatalogTableConfigOptions",
+          "documentation":"<p>The Glue Data Catalog table configuration for storing the rule results.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for writing data quality rule results.</p>"
+    },
+    "DataQualityRulesetEvaluationRun":{
+      "type":"structure",
+      "members":{
+        "RunId":{
+          "shape":"HashString",
+          "documentation":"<p>The unique run identifier associated with this run.</p>"
+        },
+        "DataSource":{"shape":"DataSource"},
+        "Role":{
+          "shape":"RoleString",
+          "documentation":"<p>An IAM role supplied to encrypt the results of the run.</p>"
+        },
+        "NumberOfWorkers":{
+          "shape":"NullableInteger",
+          "documentation":"<p>The number of <code>G.1X</code> workers to be used in the run. The default is 5.</p>"
+        },
+        "Timeout":{
+          "shape":"Timeout",
+          "documentation":"<p>The timeout for a run in minutes. This is the maximum time that a run can consume resources before it is terminated and enters <code>TIMEOUT</code> status. The default is 2,880 minutes (48 hours).</p>"
+        },
+        "AdditionalRunOptions":{"shape":"DataQualityEvaluationRunAdditionalRunOptions"},
+        "Status":{
+          "shape":"TaskStatusType",
+          "documentation":"<p>The status for this run.</p>"
+        },
+        "ErrorString":{
+          "shape":"GenericString",
+          "documentation":"<p>The error strings that are associated with the run.</p>"
+        },
+        "StartedOn":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time when this run started.</p>"
+        },
+        "LastModifiedOn":{
+          "shape":"Timestamp",
+          "documentation":"<p>A timestamp. The last point in time when this run was modified.</p>"
+        },
+        "CompletedOn":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time when this run was completed.</p>"
+        },
+        "ExecutionTime":{
+          "shape":"ExecutionTime",
+          "documentation":"<p>The amount of time (in seconds) that the run consumed resources.</p>"
+        },
+        "RulesetNames":{
+          "shape":"RulesetNames",
+          "documentation":"<p>A list of ruleset names for the run.</p>"
+        },
+        "ResultIds":{
+          "shape":"DataQualityResultIdList",
+          "documentation":"<p>A list of result IDs for the data quality results for the run.</p>"
+        },
+        "AdditionalDataSources":{
+          "shape":"DataSourceMap",
+          "documentation":"<p>A map of reference strings to additional data sources you can specify for an evaluation run.</p>"
+        }
+      },
+      "documentation":"<p>The details of a data quality ruleset evaluation run.</p>"
+    },
     "DataQualityRulesetEvaluationRunDescription":{
       "type":"structure",
       "members":{
@@ -12376,9 +12638,19 @@
       },
       "documentation":"<p>The filter criteria.</p>"
     },
+    "DataQualityRulesetEvaluationRunIdList":{
+      "type":"list",
+      "member":{"shape":"HashString"},
+      "max":100,
+      "min":1
+    },
     "DataQualityRulesetEvaluationRunList":{
       "type":"list",
       "member":{"shape":"DataQualityRulesetEvaluationRunDescription"}
+    },
+    "DataQualityRulesetEvaluationRunsList":{
+      "type":"list",
+      "member":{"shape":"DataQualityRulesetEvaluationRun"}
     },
     "DataQualityRulesetFilterCriteria":{
       "type":"structure",
@@ -12798,6 +13070,14 @@
         "AssetIdentifier":{
           "shape":"AssetId",
           "documentation":"<p>The unique identifier of the asset.</p>"
+        },
+        "IterableFormName":{
+          "shape":"IterableFormName",
+          "documentation":"<p>The name of the iterable form, if the deletion targets an item.</p>"
+        },
+        "ItemIdentifier":{
+          "shape":"ItemIdentifier",
+          "documentation":"<p>The identifier of the item within the iterable form, if applicable.</p>"
         }
       }
     },
@@ -14105,6 +14385,14 @@
           "shape":"AssetId",
           "documentation":"<p>The unique identifier of the asset to disassociate glossary terms from.</p>"
         },
+        "IterableFormName":{
+          "shape":"IterableFormName",
+          "documentation":"<p>The name of the iterable form. When specified along with <code>itemIdentifier</code>, the glossary terms are disassociated from an item within the iterable form rather than the asset itself.</p>"
+        },
+        "ItemIdentifier":{
+          "shape":"ItemIdentifier",
+          "documentation":"<p>The identifier of the item within the iterable form. Required when <code>iterableFormName</code> is specified.</p>"
+        },
         "GlossaryTermIdentifiers":{
           "shape":"GlossaryTermIdList",
           "documentation":"<p>The list of glossary term identifiers to disassociate from the asset.</p>"
@@ -14123,6 +14411,14 @@
           "shape":"AssetId",
           "documentation":"<p>The unique identifier of the asset.</p>"
         },
+        "IterableFormName":{
+          "shape":"IterableFormName",
+          "documentation":"<p>The name of the iterable form, if the disassociation targets an item.</p>"
+        },
+        "ItemIdentifier":{
+          "shape":"ItemIdentifier",
+          "documentation":"<p>The identifier of the item within the iterable form, if applicable.</p>"
+        },
         "GlossaryTerms":{
           "shape":"GlossaryTermIdList",
           "documentation":"<p>The remaining glossary terms associated with the asset.</p>"
@@ -14133,6 +14429,38 @@
       "type":"string",
       "max":128,
       "min":1
+    },
+    "DistributionData":{
+      "type":"structure",
+      "members":{
+        "BinEdges":{
+          "shape":"BinEdges",
+          "documentation":"<p>The bin edge values for the distribution.</p>"
+        },
+        "Count":{
+          "shape":"Count",
+          "documentation":"<p>The frequency count for each bin in the distribution.</p>"
+        },
+        "DataType":{
+          "shape":"NameString",
+          "documentation":"<p>The data type of the column for the distribution.</p>"
+        }
+      },
+      "documentation":"<p>The distribution data for a statistic.</p>"
+    },
+    "DistributionResultsOptions":{
+      "type":"structure",
+      "members":{
+        "WriteDistributionResultsEnabled":{
+          "shape":"NullableBoolean",
+          "documentation":"<p>Set to true to write distribution results.</p>"
+        },
+        "CatalogTableConfig":{
+          "shape":"CatalogTableConfigOptions",
+          "documentation":"<p>The Glue Data Catalog table configuration for storing the distribution results.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for writing distribution results.</p>"
     },
     "Double":{"type":"double"},
     "DoubleColumnStatisticsData":{
@@ -14635,6 +14963,12 @@
       },
       "documentation":"<p>Specifies your data quality evaluation criteria.</p>"
     },
+    "EvaluatedDistributionsMap":{
+      "type":"map",
+      "key":{"shape":"NameString"},
+      "value":{"shape":"DistributionData"},
+      "sensitive":true
+    },
     "EvaluatedMetricsMap":{
       "type":"map",
       "key":{"shape":"NameString"},
@@ -14728,6 +15062,20 @@
         "NONE"
       ]
     },
+    "ExportEncryptionConfiguration":{
+      "type":"structure",
+      "members":{
+        "SseAlgorithm":{
+          "shape":"SseAlgorithm",
+          "documentation":"<p>The server-side encryption algorithm used for the exported data. Valid values are <code>AES256</code> and <code>aws:kms</code>.</p>"
+        },
+        "KmsKeyArn":{
+          "shape":"KmsKeyArnString",
+          "documentation":"<p>The ARN of the KMS key used to encrypt the exported data.</p>"
+        }
+      },
+      "documentation":"<p>The encryption configuration for exported data catalog metadata.</p>"
+    },
     "ExportLabelsTaskRunProperties":{
       "type":"structure",
       "members":{
@@ -14737,6 +15085,25 @@
         }
       },
       "documentation":"<p>Specifies configuration properties for an exporting labels task run.</p>"
+    },
+    "ExportSetting":{
+      "type":"string",
+      "documentation":"<p>The export setting for the data catalog.</p>",
+      "enum":[
+        "ENABLED",
+        "DISABLED"
+      ]
+    },
+    "ExportStatus":{
+      "type":"string",
+      "documentation":"<p>The current status of the data catalog export.</p>",
+      "enum":[
+        "ENABLING",
+        "ENABLED",
+        "DISABLING",
+        "DISABLED",
+        "FAILED"
+      ]
     },
     "ExtendedString":{
       "type":"string",
@@ -14999,6 +15366,30 @@
         "FieldDataType":{
           "shape":"FieldDataType",
           "documentation":"<p>The data type of the field.</p>"
+        },
+        "ResponseDateFormat":{
+          "shape":"String",
+          "documentation":"<p>The format pattern for parsing date values from API responses. Required when the API uses a non-ISO-8601 format. Accepts Java <code>DateTimeFormatter</code> patterns (for example, <code>EEE, d MMM yyyy HH:mm:ss Z</code>), <code>EPOCH_SECONDS</code> for Unix epoch seconds, or <code>EPOCH_MILLIS</code> for Unix epoch milliseconds.</p>"
+        },
+        "IsPartitionable":{
+          "shape":"Bool",
+          "documentation":"<p>Indicates whether this field can be used for partitioning queries to the data source.</p>"
+        },
+        "IsNullable":{
+          "shape":"Bool",
+          "documentation":"<p>Indicates whether this field can contain null values.</p>"
+        },
+        "IsQueryable":{
+          "shape":"Bool",
+          "documentation":"<p>Indicates whether this field can be used in filter predicates when querying data.</p>"
+        },
+        "IsOrderable":{
+          "shape":"Bool",
+          "documentation":"<p>Indicates whether this field can be used for ordering results.</p>"
+        },
+        "FilterOverrides":{
+          "shape":"FilterOverrides",
+          "documentation":"<p>Per-field overrides for filter behavior, allowing customization of how filters are applied to this specific field.</p>"
         }
       },
       "documentation":"<p>Defines a field in an entity schema for REST connector data sources, specifying the field name and data type.</p>"
@@ -15103,6 +15494,37 @@
       },
       "documentation":"<p>Specifies a transform that splits a dataset into two, based on a filter condition.</p>"
     },
+    "FilterConfiguration":{
+      "type":"structure",
+      "required":["FilterMode"],
+      "members":{
+        "FilterMode":{
+          "shape":"FilterMode",
+          "documentation":"<p>The strategy for applying filters to requests. Use <code>QUERY_PARAMS</code> to pass filters as individual query parameters, or <code>FILTER_STRING</code> to construct a single filter expression string.</p>"
+        },
+        "OperatorMappings":{
+          "shape":"ConnectionStringToStringMap",
+          "documentation":"<p>A map of logical filter operators to their API-specific string representations. Supported operator keys are: <code>EQUAL_TO</code>, <code>NOT_EQUAL_TO</code>, <code>LESS_THAN</code>, <code>GREATER_THAN</code>, <code>LESS_THAN_OR_EQUAL_TO</code>, <code>GREATER_THAN_OR_EQUAL_TO</code>, <code>CONTAINS</code>, <code>BETWEEN</code>, <code>AND</code>, and <code>OR</code>.</p>"
+        },
+        "DateTimeFormat":{
+          "shape":"String",
+          "documentation":"<p>The global date and time format for filter expressions. Accepts Java <code>DateTimeFormatter</code> patterns (for example, <code>EEE, d MMM yyyy HH:mm:ss Z</code>), <code>EPOCH_SECONDS</code> for Unix epoch seconds, or <code>EPOCH_MILLIS</code> for Unix epoch milliseconds. If not specified, values are passed as-is in ISO-8601 format.</p>"
+        },
+        "StripQuotes":{
+          "shape":"Bool",
+          "documentation":"<p>Indicates whether surrounding double quotes should be stripped from filter values before processing.</p>"
+        },
+        "BetweenConfiguration":{
+          "shape":"BetweenConfiguration",
+          "documentation":"<p>Configuration for handling BETWEEN range filter operations.</p>"
+        },
+        "FilterStringConfiguration":{
+          "shape":"FilterStringConfiguration",
+          "documentation":"<p>Configuration for constructing filter expressions when <code>FilterMode</code> is set to <code>FILTER_STRING</code>.</p>"
+        }
+      },
+      "documentation":"<p>Configuration that defines how filter predicates are applied to REST API requests, supporting both query parameter and filter string strategies.</p>"
+    },
     "FilterExpression":{
       "type":"structure",
       "required":[
@@ -15136,6 +15558,14 @@
         "OR"
       ]
     },
+    "FilterMode":{
+      "type":"string",
+      "documentation":"<p>The strategy used to apply filter predicates to REST API requests.</p>",
+      "enum":[
+        "QUERY_PARAMS",
+        "FILTER_STRING"
+      ]
+    },
     "FilterOperation":{
       "type":"string",
       "enum":[
@@ -15159,6 +15589,28 @@
         "NE"
       ]
     },
+    "FilterOverrides":{
+      "type":"structure",
+      "members":{
+        "FieldName":{
+          "shape":"String",
+          "documentation":"<p>An override for the field name to use in filter expressions, if different from the schema field name.</p>"
+        },
+        "OperatorMappings":{
+          "shape":"ConnectionStringToStringMap",
+          "documentation":"<p>A map of logical filter operators to their field-specific API representations, overriding the global operator mappings. Supported operator keys are: <code>EQUAL_TO</code>, <code>NOT_EQUAL_TO</code>, <code>LESS_THAN</code>, <code>GREATER_THAN</code>, <code>LESS_THAN_OR_EQUAL_TO</code>, <code>GREATER_THAN_OR_EQUAL_TO</code>, <code>CONTAINS</code>, <code>BETWEEN</code>, <code>AND</code>, and <code>OR</code>.</p>"
+        },
+        "BetweenConfiguration":{
+          "shape":"BetweenConfiguration",
+          "documentation":"<p>Field-specific configuration for handling BETWEEN range filter operations.</p>"
+        },
+        "DateTimeFormat":{
+          "shape":"String",
+          "documentation":"<p>The date and time format for filter expressions on this field, overriding the global <code>DateTimeFormat</code>. Accepts Java <code>DateTimeFormatter</code> patterns (for example, <code>EEE, d MMM yyyy HH:mm:ss Z</code>), <code>EPOCH_SECONDS</code> for Unix epoch seconds, or <code>EPOCH_MILLIS</code> for Unix epoch milliseconds.</p>"
+        }
+      },
+      "documentation":"<p>Configuration that defines per-field overrides for filter behavior, allowing individual fields to customize how filter operations are applied.</p>"
+    },
     "FilterPredicate":{
       "type":"string",
       "max":100000,
@@ -15169,6 +15621,25 @@
       "max":2048,
       "min":0,
       "pattern":"[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\t]*"
+    },
+    "FilterStringConfiguration":{
+      "type":"structure",
+      "required":["QueryParameterName"],
+      "members":{
+        "QueryParameterName":{
+          "shape":"String",
+          "documentation":"<p>The query parameter name used to send the constructed filter expression string in API requests.</p>"
+        },
+        "QuoteStringValues":{
+          "shape":"Bool",
+          "documentation":"<p>Indicates whether string and date values should be wrapped with a quote character in the filter expression.</p>"
+        },
+        "QuoteCharacter":{
+          "shape":"String",
+          "documentation":"<p>The character used to quote values when <code>QuoteStringValues</code> is true. Defaults to double quotes if not specified.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for constructing filter expression strings when using the <code>FILTER_STRING</code> filter mode.</p>"
     },
     "FilterValue":{
       "type":"structure",
@@ -15395,7 +15866,8 @@
           "shape":"IterableFormMap",
           "documentation":"<p>The iterable forms available on the asset, keyed by form name (for example, <code>columns</code>). Use the form name with <code>ListIterableForms</code> or <code>BatchGetIterableForms</code> to retrieve the form's items.</p>"
         }
-      }
+      },
+      "documentation":"<p>The asset metadata returned by the <code>GetAsset</code> operation.</p>"
     },
     "GetAssetTypeRequest":{
       "type":"structure",
@@ -16043,6 +16515,40 @@
         }
       }
     },
+    "GetDataCatalogExportConfigurationInput":{
+      "type":"structure",
+      "members":{}
+    },
+    "GetDataCatalogExportConfigurationOutput":{
+      "type":"structure",
+      "members":{
+        "ExportSetting":{
+          "shape":"ExportSetting",
+          "documentation":"<p>The export setting for the data catalog. Valid values are <code>ENABLED</code> and <code>DISABLED</code>.</p>"
+        },
+        "Status":{
+          "shape":"ExportStatus",
+          "documentation":"<p>The current status of the export. Valid values are <code>ENABLING</code>, <code>ENABLED</code>, <code>DISABLING</code>, <code>DISABLED</code>, and <code>FAILED</code>.</p>"
+        },
+        "EncryptionConfiguration":{
+          "shape":"ExportEncryptionConfiguration",
+          "documentation":"<p>The encryption configuration for the exported data.</p>"
+        },
+        "S3TableBucketArn":{
+          "shape":"S3TableBucketArn",
+          "documentation":"<p>The ARN of the S3 Tables bucket where catalog metadata is exported.</p>"
+        },
+        "CreatedAt":{
+          "shape":"CreatedAt",
+          "documentation":"<p>The timestamp at which the export configuration was created.</p>"
+        },
+        "UpdatedAt":{
+          "shape":"UpdatedAt",
+          "documentation":"<p>The timestamp at which the export configuration was last updated.</p>"
+        }
+      },
+      "documentation":"<p>The export configuration returned by the <code>GetDataCatalogExportConfiguration</code> operation.</p>"
+    },
     "GetDataQualityModelRequest":{
       "type":"structure",
       "required":["ProfileId"],
@@ -16252,6 +16758,10 @@
         "DataQualitySecurityConfiguration":{
           "shape":"NameString",
           "documentation":"<p>The name of the security configuration created with the data quality encryption option.</p>"
+        },
+        "AdditionalRunOptions":{
+          "shape":"DataQualityRuleRecommendationRunAdditionalRunOptions",
+          "documentation":"<p>Additional run options you can specify for a recommendation run.</p>"
         }
       },
       "documentation":"<p>The response for the Data Quality rule recommendation run.</p>"
@@ -21189,6 +21699,10 @@
       "type":"string",
       "pattern":"^$|arn:aws[a-z0-9-]*:kms:.*"
     },
+    "KmsKeyArnString":{
+      "type":"string",
+      "pattern":"arn:aws[-a-z0-9]*:kms:[-a-z0-9]*:[0-9]{12}:key/.+"
+    },
     "LabelCount":{"type":"integer"},
     "LabelingSetGenerationTaskRunProperties":{
       "type":"structure",
@@ -21570,6 +22084,10 @@
         "MaxResults":{
           "shape":"PageSize",
           "documentation":"<p>The maximum number of results to return.</p>"
+        },
+        "Tags":{
+          "shape":"TagsMap",
+          "documentation":"<p>A list of key-value pair tags to filter recommendation runs.</p>"
         }
       }
     },
@@ -22029,7 +22547,7 @@
         },
         "TableName":{
           "shape":"NameString",
-          "documentation":"<p>The name of the table for which statistics is generated.</p>"
+          "documentation":"<p>The name of the materialized view.</p>"
         },
         "MaxResults":{
           "shape":"PageSize",
@@ -22673,7 +23191,10 @@
     "MaterializedViewRefreshTaskNotRunningException":{
       "type":"structure",
       "members":{
-        "Message":{"shape":"MessageString"}
+        "Message":{
+          "shape":"MessageString",
+          "documentation":"<p>A message describing the problem.</p>"
+        }
       },
       "documentation":"<p>Exception thrown when stopping a task that is not in running state.</p>",
       "exception":true
@@ -22695,7 +23216,7 @@
         },
         "TableName":{
           "shape":"TableName",
-          "documentation":"<p>The name of the table for which statistics is generated.</p>"
+          "documentation":"<p>The name of the materialized view.</p>"
         },
         "CatalogId":{
           "shape":"CatalogIdString",
@@ -22703,7 +23224,7 @@
         },
         "Role":{
           "shape":"Role",
-          "documentation":"<p>The IAM role that the service assumes to generate statistics.</p>"
+          "documentation":"<p>The IAM role that the service assumes to run the materialized view refresh task.</p>"
         },
         "Status":{
           "shape":"MaterializedViewRefreshState",
@@ -22747,7 +23268,10 @@
     "MaterializedViewRefreshTaskRunningException":{
       "type":"structure",
       "members":{
-        "Message":{"shape":"MessageString"}
+        "Message":{
+          "shape":"MessageString",
+          "documentation":"<p>A message describing the problem.</p>"
+        }
       },
       "documentation":"<p>Exception thrown when a task is already in running state.</p>",
       "exception":true
@@ -22759,7 +23283,10 @@
     "MaterializedViewRefreshTaskStoppingException":{
       "type":"structure",
       "members":{
-        "Message":{"shape":"MessageString"}
+        "Message":{
+          "shape":"MessageString",
+          "documentation":"<p>A message describing the problem.</p>"
+        }
       },
       "documentation":"<p>Exception thrown when a task is already in stopping state.</p>",
       "exception":true
@@ -23391,6 +23918,34 @@
         }
       },
       "documentation":"<p>A structure containing properties for OAuth2 in the CreateConnection request.</p>"
+    },
+    "ObservationConfiguration":{
+      "type":"string",
+      "enum":[
+        "ALL",
+        "NONE"
+      ]
+    },
+    "ObservationMode":{
+      "type":"string",
+      "enum":[
+        "SCHEDULED",
+        "FIXED"
+      ]
+    },
+    "ObservationResultsOptions":{
+      "type":"structure",
+      "members":{
+        "WriteObservationResultsEnabled":{
+          "shape":"NullableBoolean",
+          "documentation":"<p>Set to true to write observation results.</p>"
+        },
+        "CatalogTableConfig":{
+          "shape":"CatalogTableConfigOptions",
+          "documentation":"<p>The Glue Data Catalog table configuration for storing the observation results.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for writing observation results.</p>"
     },
     "OffsetConfiguration":{
       "type":"structure",
@@ -24242,6 +24797,24 @@
       },
       "documentation":"<p>Specifies the job and session values that an admin configures in an Glue usage profile.</p>"
     },
+    "ProfilingResultsOptions":{
+      "type":"structure",
+      "members":{
+        "WriteProfilingResultsEnabled":{
+          "shape":"NullableBoolean",
+          "documentation":"<p>Set to true to write profiling results.</p>"
+        },
+        "CatalogTableConfig":{
+          "shape":"CatalogTableConfigOptions",
+          "documentation":"<p>The Glue Data Catalog table configuration for storing the profiling results.</p>"
+        },
+        "DistributionResults":{
+          "shape":"DistributionResultsOptions",
+          "documentation":"<p>The configuration for writing distribution results.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for writing profiling results.</p>"
+    },
     "PropertiesMap":{
       "type":"map",
       "key":{"shape":"PropertyName"},
@@ -24557,6 +25130,39 @@
     "PutDataCatalogEncryptionSettingsResponse":{
       "type":"structure",
       "members":{}
+    },
+    "PutDataCatalogExportConfigurationInput":{
+      "type":"structure",
+      "required":["ExportSetting"],
+      "members":{
+        "ExportSetting":{
+          "shape":"ExportSetting",
+          "documentation":"<p>The export setting for the data catalog. Specify <code>ENABLED</code> to start exporting catalog metadata to S3 Tables, or <code>DISABLED</code> to stop exporting. This field is required.</p>"
+        },
+        "EncryptionConfiguration":{
+          "shape":"ExportEncryptionConfiguration",
+          "documentation":"<p>The encryption configuration for the exported data. If not specified, the default encryption settings are used.</p>"
+        },
+        "ClientToken":{
+          "shape":"HashString",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "PutDataCatalogExportConfigurationOutput":{
+      "type":"structure",
+      "members":{
+        "ExportSetting":{
+          "shape":"ExportSetting",
+          "documentation":"<p>The export setting for the data catalog.</p>"
+        },
+        "EncryptionConfiguration":{
+          "shape":"ExportEncryptionConfiguration",
+          "documentation":"<p>The encryption configuration for the exported data.</p>"
+        }
+      },
+      "documentation":"<p>The export configuration returned by the <code>PutDataCatalogExportConfiguration</code> operation.</p>"
     },
     "PutDataQualityProfileAnnotationRequest":{
       "type":"structure",
@@ -25443,6 +26049,14 @@
       },
       "documentation":"<p>Configuration that defines HTTP request and response handling, validation endpoints, and entity configurations for REST API interactions.</p>"
     },
+    "ResultTypeEnum":{
+      "type":"string",
+      "enum":[
+        "ALL",
+        "PASSED_ONLY",
+        "FAILED_ONLY"
+      ]
+    },
     "ResumeWorkflowRunRequest":{
       "type":"structure",
       "required":[
@@ -25526,6 +26140,24 @@
         }
       },
       "documentation":"<p>Specifies a route node that directs data to different output paths based on defined filtering conditions.</p>"
+    },
+    "RowLevelResultsOptions":{
+      "type":"structure",
+      "members":{
+        "MaxRowsToWrite":{
+          "shape":"NullableInteger",
+          "documentation":"<p>The maximum number of rows to write in the results.</p>"
+        },
+        "ResultType":{
+          "shape":"ResultTypeEnum",
+          "documentation":"<p>The result type to include in the row-level results output.</p>"
+        },
+        "CatalogTableConfig":{
+          "shape":"CatalogTableConfigOptions",
+          "documentation":"<p>The Glue Data Catalog table configuration for storing the results.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for writing row-level evaluation results.</p>"
     },
     "RowTag":{"type":"string"},
     "RuleMetricsMap":{
@@ -26608,6 +27240,7 @@
       },
       "documentation":"<p>Specifies additional connection options for the Amazon S3 data store.</p>"
     },
+    "S3TableBucketArn":{"type":"string"},
     "S3Target":{
       "type":"structure",
       "members":{
@@ -26972,7 +27605,8 @@
           "shape":"SearchNextToken",
           "documentation":"<p>A continuation token, present if the current segment is not the last.</p>"
         }
-      }
+      },
+      "documentation":"<p>The search results returned by the <code>SearchAssets</code> operation.</p>"
     },
     "SearchAttribute":{
       "type":"string",
@@ -27739,6 +28373,10 @@
         "PaginationConfiguration":{
           "shape":"PaginationConfiguration",
           "documentation":"<p>Configuration for handling paginated responses from the REST API, supporting both cursor-based and offset-based pagination strategies.</p>"
+        },
+        "FilterConfiguration":{
+          "shape":"FilterConfiguration",
+          "documentation":"<p>Configuration for applying filter pushdown to REST API requests, defining how filter predicates are translated into query parameters or filter strings.</p>"
         }
       },
       "documentation":"<p>Configuration that defines how to make requests to endpoints, including request methods, paths, parameters, and response handling.</p>"
@@ -28027,6 +28665,7 @@
       "type":"string",
       "pattern":"([\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\s])*"
     },
+    "SseAlgorithm":{"type":"string"},
     "StartBlueprintRunRequest":{
       "type":"structure",
       "required":[
@@ -28187,6 +28826,10 @@
         "ClientToken":{
           "shape":"HashString",
           "documentation":"<p>Used for idempotency and is recommended to be set to a random ID (such as a UUID) to avoid creating or starting multiple instances of the same resource.</p>"
+        },
+        "AdditionalRunOptions":{
+          "shape":"DataQualityRuleRecommendationRunAdditionalRunOptions",
+          "documentation":"<p>Additional run options you can specify for a recommendation run.</p>"
         }
       },
       "documentation":"<p>The request of the Data Quality rule recommendation request.</p>"
@@ -28439,7 +29082,7 @@
         },
         "TableName":{
           "shape":"NameString",
-          "documentation":"<p>The name of the table to generate run the materialized view refresh task.</p>"
+          "documentation":"<p>The name of the materialized view to run the refresh task for.</p>"
         },
         "FullRefresh":{
           "shape":"NullableBoolean",
@@ -28709,6 +29352,10 @@
           "shape":"double",
           "documentation":"<p>The value of the statistic.</p>"
         },
+        "DistributionValue":{
+          "shape":"DistributionData",
+          "documentation":"<p>The distribution value for the statistic.</p>"
+        },
         "EvaluationLevel":{
           "shape":"StatisticEvaluationLevel",
           "documentation":"<p>The evaluation level of the statistic. Possible values: <code>Dataset</code>, <code>Column</code>, <code>Multicolumn</code>.</p>"
@@ -28843,7 +29490,7 @@
         },
         "TableName":{
           "shape":"NameString",
-          "documentation":"<p>The name of the table to generate statistics.</p>"
+          "documentation":"<p>The name of the materialized view.</p>"
         }
       }
     },

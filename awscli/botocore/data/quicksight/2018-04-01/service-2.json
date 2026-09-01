@@ -68,6 +68,23 @@
       ],
       "documentation":"<p>Deletes reviewed answers for Q Topic.</p>"
     },
+    "BatchDescribeUserLimits":{
+      "name":"BatchDescribeUserLimits",
+      "http":{
+        "method":"POST",
+        "requestUri":"/governance/limits/accounts/{accountId}/user-limits",
+        "responseCode":200
+      },
+      "input":{"shape":"BatchDescribeUserLimitsRequest"},
+      "output":{"shape":"BatchDescribeUserLimitsResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Describes the effective resource limits for one or more Amazon Quick Sight users, including the limits that apply to each user based on their profile assignments.</p>"
+    },
     "CancelIngestion":{
       "name":"CancelIngestion",
       "http":{
@@ -188,6 +205,26 @@
       ],
       "documentation":"<p>Creates an analysis in Amazon Quick Sight. Analyses can be created either from a template or from an <code>AnalysisDefinition</code>.</p>"
     },
+    "CreateApprovalPolicy":{
+      "name":"CreateApprovalPolicy",
+      "http":{
+        "method":"POST",
+        "requestUri":"/governance/approvalworkflows/policies",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateApprovalPolicyRequest"},
+      "output":{"shape":"CreateApprovalPolicyResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"ConflictException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Creates an approval policy in Quick Sight.</p>"
+    },
     "CreateBrand":{
       "name":"CreateBrand",
       "http":{
@@ -269,7 +306,7 @@
         {"shape":"InvalidDataSetParameterValueException"},
         {"shape":"InternalFailureException"}
       ],
-      "documentation":"<p>Creates a dataset. This operation doesn't support datasets that include uploaded files as a source.</p>"
+      "documentation":"<p>Creates a dataset.</p>"
     },
     "CreateDataSource":{
       "name":"CreateDataSource",
@@ -291,6 +328,26 @@
         {"shape":"InternalFailureException"}
       ],
       "documentation":"<p>Creates a data source.</p>"
+    },
+    "CreateDlpSetting":{
+      "name":"CreateDlpSetting",
+      "http":{
+        "method":"POST",
+        "requestUri":"/accounts/{AwsAccountId}/data-loss-prevention/settings/{DlpSettingId}",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateDlpSettingRequest"},
+      "output":{"shape":"CreateDlpSettingResponse"},
+      "errors":[
+        {"shape":"ResourceExistsException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Creates a data loss prevention (DLP) setting configuration for an Amazon Web Services account. A DLP setting defines the DLP provider, the enforcement behavior, and the Quick capabilities that the setting applies to.</p>"
     },
     "CreateFlow":{
       "name":"CreateFlow",
@@ -453,6 +510,25 @@
         {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Creates a knowledge base from a specified data source. Supported data source connector types include:</p> <ul> <li> <p> <code>S3_KNOWLEDGE_BASE</code> – Uses an Amazon S3 bucket as the data source.</p> </li> <li> <p> <code>WEB_CRAWLER</code> – Uses web pages indexed by the built-in web crawler as the data source.</p> </li> <li> <p> <code>GOOGLE_DRIVE</code> – Uses Google Drive as the data source. Supports service account authentication only.</p> </li> <li> <p> <code>SHAREPOINT</code> – Uses SharePoint as the data source. Supports two-legged OAuth only.</p> </li> <li> <p> <code>ONE_DRIVE</code> – Uses OneDrive as the data source. Supports two-legged OAuth only.</p> </li> </ul>"
+    },
+    "CreateLimitsProfile":{
+      "name":"CreateLimitsProfile",
+      "http":{
+        "method":"POST",
+        "requestUri":"/governance/limits/accounts/{accountId}/profiles",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateLimitsProfileRequest"},
+      "output":{"shape":"CreateLimitsProfileResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Creates a limits profile that defines resource usage limits for Amazon Quick Sight users.</p>"
     },
     "CreateNamespace":{
       "name":"CreateNamespace",
@@ -677,6 +753,26 @@
       ],
       "documentation":"<p>Creates a topic refresh schedule.</p>"
     },
+    "CreateTopicV2":{
+      "name":"CreateTopicV2",
+      "http":{
+        "method":"POST",
+        "requestUri":"/accounts/{AwsAccountId}/topicsV2"
+      },
+      "input":{"shape":"CreateTopicV2Request"},
+      "output":{"shape":"CreateTopicV2Response"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ResourceExistsException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalFailureException"}
+      ],
+      "documentation":"<p>Creates a new Q topic.</p>"
+    },
     "CreateVPCConnection":{
       "name":"CreateVPCConnection",
       "http":{
@@ -809,6 +905,44 @@
         {"shape":"InternalFailureException"}
       ],
       "documentation":"<p>Deletes an analysis from Amazon Quick Sight. You can optionally include a recovery window during which you can restore the analysis. If you don't specify a recovery window value, the operation defaults to 30 days. Amazon Quick Sight attaches a <code>DeletionTime</code> stamp to the response that specifies the end of the recovery window. At the end of the recovery window, Amazon Quick Sight deletes the analysis permanently.</p> <p>At any time before recovery window ends, you can use the <code>RestoreAnalysis</code> API operation to remove the <code>DeletionTime</code> stamp and cancel the deletion of the analysis. The analysis remains visible in the API until it's deleted, so you can describe it but you can't make a template from it.</p> <p>An analysis that's scheduled for deletion isn't accessible in the Amazon Quick Sight console. To access it in the console, restore it. Deleting an analysis doesn't delete the dashboards that you publish from it.</p>"
+    },
+    "DeleteApp":{
+      "name":"DeleteApp",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/accounts/{AwsAccountId}/apps/{AppId}",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteAppRequest"},
+      "output":{"shape":"DeleteAppResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Deletes an app.</p>",
+      "idempotent":true
+    },
+    "DeleteApprovalPolicy":{
+      "name":"DeleteApprovalPolicy",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/governance/approvalworkflows/policies/{PolicyId}",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteApprovalPolicyRequest"},
+      "output":{"shape":"DeleteApprovalPolicyResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Deletes an approval policy in Quick Sight.</p>",
+      "idempotent":true
     },
     "DeleteBrand":{
       "name":"DeleteBrand",
@@ -958,6 +1092,25 @@
         {"shape":"InternalFailureException"}
       ],
       "documentation":"<p>Deletes a linked Amazon Q Business application from an Quick Sight account</p>"
+    },
+    "DeleteDlpSetting":{
+      "name":"DeleteDlpSetting",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/accounts/{AwsAccountId}/data-loss-prevention/settings/{DlpSettingId}",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteDlpSettingRequest"},
+      "output":{"shape":"DeleteDlpSettingResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Deletes a DLP setting configuration from an Amazon Web Services account.</p>",
+      "idempotent":true
     },
     "DeleteFlow":{
       "name":"DeleteFlow",
@@ -1112,6 +1265,26 @@
         {"shape":"ConflictException"}
       ],
       "documentation":"<p>Deletes a knowledge base.</p>"
+    },
+    "DeleteLimitsProfile":{
+      "name":"DeleteLimitsProfile",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/governance/limits/accounts/{accountId}/profiles/{profileId}",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteLimitsProfileRequest"},
+      "output":{"shape":"DeleteLimitsProfileResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Deletes a limits profile.</p>",
+      "idempotent":true
     },
     "DeleteNamespace":{
       "name":"DeleteNamespace",
@@ -1335,6 +1508,24 @@
         {"shape":"InternalFailureException"}
       ],
       "documentation":"<p>Deletes a topic refresh schedule.</p>"
+    },
+    "DeleteTopicV2":{
+      "name":"DeleteTopicV2",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/accounts/{AwsAccountId}/topicsV2/{TopicId}"
+      },
+      "input":{"shape":"DeleteTopicV2Request"},
+      "output":{"shape":"DeleteTopicV2Response"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalFailureException"}
+      ],
+      "documentation":"<p>Deletes a Q topic.</p>"
     },
     "DeleteUser":{
       "name":"DeleteUser",
@@ -1617,6 +1808,63 @@
       ],
       "documentation":"<p>Provides the read and write permissions for an analysis.</p>"
     },
+    "DescribeApp":{
+      "name":"DescribeApp",
+      "http":{
+        "method":"GET",
+        "requestUri":"/accounts/{AwsAccountId}/apps/{AppId}",
+        "responseCode":200
+      },
+      "input":{"shape":"DescribeAppRequest"},
+      "output":{"shape":"DescribeAppResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Describes an app.</p>",
+      "readonly":true
+    },
+    "DescribeAppPermissions":{
+      "name":"DescribeAppPermissions",
+      "http":{
+        "method":"GET",
+        "requestUri":"/accounts/{AwsAccountId}/apps/{AppId}/permissions",
+        "responseCode":200
+      },
+      "input":{"shape":"DescribeAppPermissionsRequest"},
+      "output":{"shape":"DescribeAppPermissionsResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Describes the resource permissions for an app.</p>",
+      "readonly":true
+    },
+    "DescribeApprovalPolicy":{
+      "name":"DescribeApprovalPolicy",
+      "http":{
+        "method":"GET",
+        "requestUri":"/governance/approvalworkflows/policies/{PolicyId}",
+        "responseCode":200
+      },
+      "input":{"shape":"DescribeApprovalPolicyRequest"},
+      "output":{"shape":"DescribeApprovalPolicyResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Describes an approval policy in Quick Sight.</p>",
+      "readonly":true
+    },
     "DescribeAssetBundleExportJob":{
       "name":"DescribeAssetBundleExportJob",
       "http":{
@@ -1869,7 +2117,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"InternalFailureException"}
       ],
-      "documentation":"<p>Describes a dataset. This operation doesn't support datasets that include uploaded files as a source.</p>"
+      "documentation":"<p>Describes a dataset.</p>"
     },
     "DescribeDataSetPermissions":{
       "name":"DescribeDataSetPermissions",
@@ -1957,6 +2205,25 @@
         {"shape":"InternalFailureException"}
       ],
       "documentation":"<p>Describes a Amazon Q Business application that is linked to an Quick Sight account.</p>"
+    },
+    "DescribeDlpSetting":{
+      "name":"DescribeDlpSetting",
+      "http":{
+        "method":"GET",
+        "requestUri":"/accounts/{AwsAccountId}/data-loss-prevention/settings/{DlpSettingId}",
+        "responseCode":200
+      },
+      "input":{"shape":"DescribeDlpSettingRequest"},
+      "output":{"shape":"DescribeDlpSettingResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Describes the full configuration of a DLP setting in an Amazon Web Services account.</p>",
+      "readonly":true
     },
     "DescribeFlow":{
       "name":"DescribeFlow",
@@ -2182,6 +2449,25 @@
         {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Describes the resource permissions for a knowledge base.</p>",
+      "readonly":true
+    },
+    "DescribeLimitsProfile":{
+      "name":"DescribeLimitsProfile",
+      "http":{
+        "method":"GET",
+        "requestUri":"/governance/limits/accounts/{accountId}/profiles/{profileId}",
+        "responseCode":200
+      },
+      "input":{"shape":"DescribeLimitsProfileRequest"},
+      "output":{"shape":"DescribeLimitsProfileResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Describes the properties of an existing limits profile.</p>",
       "readonly":true
     },
     "DescribeNamespace":{
@@ -2513,6 +2799,23 @@
       ],
       "documentation":"<p>Describes the permissions of a topic.</p>"
     },
+    "DescribeTopicPermissionsV2":{
+      "name":"DescribeTopicPermissionsV2",
+      "http":{
+        "method":"GET",
+        "requestUri":"/accounts/{AwsAccountId}/topicsV2/{TopicId}/permissions"
+      },
+      "input":{"shape":"DescribeTopicPermissionsV2Request"},
+      "output":{"shape":"DescribeTopicPermissionsV2Response"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalFailureException"}
+      ],
+      "documentation":"<p>Describes the permissions of a topic.</p>"
+    },
     "DescribeTopicRefresh":{
       "name":"DescribeTopicRefresh",
       "http":{
@@ -2549,6 +2852,24 @@
         {"shape":"InternalFailureException"}
       ],
       "documentation":"<p>Deletes a topic refresh schedule.</p>"
+    },
+    "DescribeTopicV2":{
+      "name":"DescribeTopicV2",
+      "http":{
+        "method":"GET",
+        "requestUri":"/accounts/{AwsAccountId}/topicsV2/{TopicId}"
+      },
+      "input":{"shape":"DescribeTopicV2Request"},
+      "output":{"shape":"DescribeTopicV2Response"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalFailureException"}
+      ],
+      "documentation":"<p>Describes a Q topic.</p>",
+      "readonly":true
     },
     "DescribeUser":{
       "name":"DescribeUser",
@@ -2805,6 +3126,43 @@
       ],
       "documentation":"<p>Lists Amazon Quick Sight analyses that exist in the specified Amazon Web Services account.</p>"
     },
+    "ListApprovalPolicies":{
+      "name":"ListApprovalPolicies",
+      "http":{
+        "method":"GET",
+        "requestUri":"/governance/approvalworkflows/policies",
+        "responseCode":200
+      },
+      "input":{"shape":"ListApprovalPoliciesRequest"},
+      "output":{"shape":"ListApprovalPoliciesResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Lists all approval policies in the specified Quick Sight account. The results are paginated. If the response includes a <code>NextToken</code> value, pass it in a subsequent call to retrieve the next set of results.</p>",
+      "readonly":true
+    },
+    "ListApps":{
+      "name":"ListApps",
+      "http":{
+        "method":"GET",
+        "requestUri":"/accounts/{AwsAccountId}/apps",
+        "responseCode":200
+      },
+      "input":{"shape":"ListAppsRequest"},
+      "output":{"shape":"ListAppsResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Lists the apps in an Amazon Web Services account. Results are paginated; use the <code>NextToken</code> parameter to retrieve additional results.</p>",
+      "readonly":true
+    },
     "ListAssetBundleExportJobs":{
       "name":"ListAssetBundleExportJobs",
       "http":{
@@ -2943,6 +3301,24 @@
         {"shape":"InternalFailureException"}
       ],
       "documentation":"<p>Lists data sources in current Amazon Web Services Region that belong to this Amazon Web Services account.</p>"
+    },
+    "ListDlpSettings":{
+      "name":"ListDlpSettings",
+      "http":{
+        "method":"GET",
+        "requestUri":"/accounts/{AwsAccountId}/data-loss-prevention/settings",
+        "responseCode":200
+      },
+      "input":{"shape":"ListDlpSettingsRequest"},
+      "output":{"shape":"ListDlpSettingsResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Lists all DLP settings in an Amazon Web Services account.</p>",
+      "readonly":true
     },
     "ListFlows":{
       "name":"ListFlows",
@@ -3150,6 +3526,24 @@
         {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Lists all knowledge bases in an Amazon QuickSight account.</p>",
+      "readonly":true
+    },
+    "ListLimitsProfiles":{
+      "name":"ListLimitsProfiles",
+      "http":{
+        "method":"GET",
+        "requestUri":"/governance/limits/accounts/{accountId}/profiles",
+        "responseCode":200
+      },
+      "input":{"shape":"ListLimitsProfilesRequest"},
+      "output":{"shape":"ListLimitsProfilesResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Lists all limits profiles in an Amazon Quick Sight account. Results are paginated. Use the <code>maxResults</code> parameter to limit the number of results returned in a single call, and use the <code>nextToken</code> parameter to retrieve the next page of results.</p>",
       "readonly":true
     },
     "ListNamespaces":{
@@ -3469,6 +3863,23 @@
       ],
       "documentation":"<p>Lists all of the topics within an account.</p>"
     },
+    "ListTopicsV2":{
+      "name":"ListTopicsV2",
+      "http":{
+        "method":"GET",
+        "requestUri":"/accounts/{AwsAccountId}/topicsV2"
+      },
+      "input":{"shape":"ListTopicsV2Request"},
+      "output":{"shape":"ListTopicsV2Response"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidNextTokenException"},
+        {"shape":"InternalFailureException"}
+      ],
+      "documentation":"<p>Lists all of the Q topics in the specified Amazon Web Services account in an Amazon Web Services Region.</p>"
+    },
     "ListUserGroups":{
       "name":"ListUserGroups",
       "http":{
@@ -3678,6 +4089,23 @@
       ],
       "documentation":"<p>Searches for analyses that belong to the user specified in the filter.</p> <note> <p>This operation is eventually consistent. The results are best effort and may not reflect very recent updates and changes.</p> </note>"
     },
+    "SearchApps":{
+      "name":"SearchApps",
+      "http":{
+        "method":"POST",
+        "requestUri":"/accounts/{AwsAccountId}/search/apps",
+        "responseCode":200
+      },
+      "input":{"shape":"SearchAppsRequest"},
+      "output":{"shape":"SearchAppsResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Searches for apps in an Amazon Web Services account using the specified filters. This operation is eventually consistent; the results might not reflect very recent updates. Results are paginated; use the <code>NextToken</code> parameter to retrieve additional results.</p>"
+    },
     "SearchDashboards":{
       "name":"SearchDashboards",
       "http":{
@@ -3844,9 +4272,28 @@
         {"shape":"InvalidParameterValueException"},
         {"shape":"UnsupportedUserEditionException"},
         {"shape":"InvalidNextTokenException"},
+        {"shape":"AccessDeniedException"},
         {"shape":"InternalFailureException"}
       ],
       "documentation":"<p>Searches for any Q topic that exists in an Quick account.</p>"
+    },
+    "SearchTopicsV2":{
+      "name":"SearchTopicsV2",
+      "http":{
+        "method":"POST",
+        "requestUri":"/accounts/{AwsAccountId}/search/topicsV2"
+      },
+      "input":{"shape":"SearchTopicsV2Request"},
+      "output":{"shape":"SearchTopicsV2Response"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidNextTokenException"},
+        {"shape":"InternalFailureException"}
+      ],
+      "documentation":"<p>Searches for any Q topic that exists in an Amazon Web Services account.</p>"
     },
     "StartAssetBundleExportJob":{
       "name":"StartAssetBundleExportJob",
@@ -4157,6 +4604,26 @@
       ],
       "documentation":"<p>Updates the read and write permissions for an analysis.</p>"
     },
+    "UpdateAppPermissions":{
+      "name":"UpdateAppPermissions",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/accounts/{AwsAccountId}/apps/{AppId}/permissions",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateAppPermissionsRequest"},
+      "output":{"shape":"UpdateAppPermissionsResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Updates the resource permissions for an app. You can grant or revoke permissions and, optionally, change the app's visibility.</p>",
+      "idempotent":true
+    },
     "UpdateApplicationWithTokenExchangeGrant":{
       "name":"UpdateApplicationWithTokenExchangeGrant",
       "http":{
@@ -4175,6 +4642,25 @@
         {"shape":"InternalFailureException"}
       ],
       "documentation":"<p>Updates an Quick application with a token exchange grant. This operation only supports Quick applications that are registered with IAM Identity Center.</p>"
+    },
+    "UpdateApprovalPolicy":{
+      "name":"UpdateApprovalPolicy",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/governance/approvalworkflows/policies/{PolicyId}",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateApprovalPolicyRequest"},
+      "output":{"shape":"UpdateApprovalPolicyResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Updates an approval policy in Quick Sight.</p>"
     },
     "UpdateBrand":{
       "name":"UpdateBrand",
@@ -4368,7 +4854,7 @@
         {"shape":"InvalidDataSetParameterValueException"},
         {"shape":"InternalFailureException"}
       ],
-      "documentation":"<p>Updates a dataset. This operation doesn't support datasets that include uploaded files as a source. Partial updates are not supported by this operation.</p>"
+      "documentation":"<p>Updates a dataset. Partial updates are not supported by this operation.</p>"
     },
     "UpdateDataSetPermissions":{
       "name":"UpdateDataSetPermissions",
@@ -4442,6 +4928,26 @@
         {"shape":"InternalFailureException"}
       ],
       "documentation":"<p>Updates a Amazon Q Business application that is linked to a Quick Sight account.</p>"
+    },
+    "UpdateDlpSetting":{
+      "name":"UpdateDlpSetting",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/accounts/{AwsAccountId}/data-loss-prevention/settings/{DlpSettingId}",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateDlpSettingRequest"},
+      "output":{"shape":"UpdateDlpSettingResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Updates an existing DLP setting configuration in an Amazon Web Services account. Fields that are omitted from the request retain their current values.</p>",
+      "idempotent":true
     },
     "UpdateFlow":{
       "name":"UpdateFlow",
@@ -4655,6 +5161,25 @@
       ],
       "documentation":"<p>Updates the resource permissions for a knowledge base.</p>",
       "idempotent":true
+    },
+    "UpdateLimitsProfile":{
+      "name":"UpdateLimitsProfile",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/governance/limits/accounts/{accountId}/profiles/{profileId}",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateLimitsProfileRequest"},
+      "output":{"shape":"UpdateLimitsProfileResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Updates the properties of an existing limits profile.</p>"
     },
     "UpdateOAuthClientApplication":{
       "name":"UpdateOAuthClientApplication",
@@ -5044,6 +5569,26 @@
       ],
       "documentation":"<p>Updates the permissions of a topic.</p>"
     },
+    "UpdateTopicPermissionsV2":{
+      "name":"UpdateTopicPermissionsV2",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/accounts/{AwsAccountId}/topicsV2/{TopicId}/permissions"
+      },
+      "input":{"shape":"UpdateTopicPermissionsV2Request"},
+      "output":{"shape":"UpdateTopicPermissionsV2Response"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"UnsupportedUserEditionException"},
+        {"shape":"ConflictException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"InternalFailureException"}
+      ],
+      "documentation":"<p>Updates the permissions of a topic.</p>"
+    },
     "UpdateTopicRefreshSchedule":{
       "name":"UpdateTopicRefreshSchedule",
       "http":{
@@ -5063,6 +5608,27 @@
         {"shape":"InternalFailureException"}
       ],
       "documentation":"<p>Updates a topic refresh schedule.</p>"
+    },
+    "UpdateTopicV2":{
+      "name":"UpdateTopicV2",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/accounts/{AwsAccountId}/topicsV2/{TopicId}"
+      },
+      "input":{"shape":"UpdateTopicV2Request"},
+      "output":{"shape":"UpdateTopicV2Response"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ResourceExistsException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalFailureException"}
+      ],
+      "documentation":"<p>Updates the definition of a Q topic.</p>",
+      "idempotent":true
     },
     "UpdateUser":{
       "name":"UpdateUser",
@@ -5156,7 +5722,7 @@
       "members":{
         "isACLEnabled":{
           "shape":"Boolean",
-          "documentation":"<p>Specifies whether ACLs are enabled for the knowledge base.</p>",
+          "documentation":"<p>Specifies whether ACLs are enabled for the knowledge base.</p> <p>This setting works together with the data source connector's ACL crawling. To enforce document-level access control end to end, set <code>isACLEnabled</code> to <code>true</code> and enable ACL crawling on the connector. For example, for an Amazon S3 data source, set <code>accessControlConfiguration.crawlAcl</code> to <code>true</code> in the connector template. For more information, see <code>KbTemplateConfiguration</code>. Enabling only one of the two settings does not produce a fully ACL-enforced knowledge base.</p>",
           "box":true
         }
       },
@@ -6068,6 +6634,10 @@
           "shape":"DataSetArnsList",
           "documentation":"<p>The ARNs of the datasets of the analysis.</p>"
         },
+        "TopicArns":{
+          "shape":"TopicArnsList",
+          "documentation":"<p>The ARNs of the topics associated with the analysis.</p>"
+        },
         "ThemeArn":{
           "shape":"Arn",
           "documentation":"<p>The ARN of the theme of the analysis.</p>"
@@ -6105,6 +6675,10 @@
         "DataSetIdentifierDeclarations":{
           "shape":"DataSetIdentifierDeclarationList",
           "documentation":"<p>An array of dataset identifier declarations. This mapping allows the usage of dataset identifiers instead of dataset ARNs throughout analysis sub-structures.</p>"
+        },
+        "TopicIdentifierDeclarations":{
+          "shape":"TopicIdentifierDeclarationList",
+          "documentation":"<p>An array of topic identifier declarations. This mapping allows the usage of topic identifiers instead of topic ARNs throughout analysis sub-structures.</p>"
         },
         "Sheets":{
           "shape":"SheetDefinitionList",
@@ -6242,6 +6816,10 @@
         "DataSetReferences":{
           "shape":"DataSetReferenceList",
           "documentation":"<p>The dataset references of the source template of an analysis.</p>"
+        },
+        "TopicReferences":{
+          "shape":"TopicReferenceList",
+          "documentation":"<p>The topic references of the source template of an analysis.</p>"
         },
         "Arn":{
           "shape":"Arn",
@@ -6452,6 +7030,58 @@
       "type":"list",
       "member":{"shape":"AnswerId"}
     },
+    "AppId":{
+      "type":"string",
+      "pattern":"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+    },
+    "AppName":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"[\\S\\s]+"
+    },
+    "AppSummary":{
+      "type":"structure",
+      "members":{
+        "AppId":{
+          "shape":"AppId",
+          "documentation":"<p>The ID of the app.</p>"
+        },
+        "Arn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the app.</p>"
+        },
+        "Name":{
+          "shape":"AppName",
+          "documentation":"<p>The display name of the app.</p>"
+        },
+        "CreatedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time that the app was created.</p>"
+        },
+        "LastUpdatedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time that the app was last updated.</p>"
+        },
+        "Visibility":{
+          "shape":"AppVisibility",
+          "documentation":"<p>The sharing status of the app: <code>PUBLIC</code> if the app is shared publicly, or <code>PRIVATE</code> if it is private.</p>"
+        }
+      },
+      "documentation":"<p>A summary of an app, including its identifier, name, and metadata.</p>"
+    },
+    "AppSummaryList":{
+      "type":"list",
+      "member":{"shape":"AppSummary"}
+    },
+    "AppVisibility":{
+      "type":"string",
+      "documentation":"<p>The visibility of an app. Valid values are:</p> <ul> <li> <p> <code>PRIVATE</code> – The app is reachable only by authorized Amazon QuickSight principals.</p> </li> <li> <p> <code>PUBLIC</code> – The published app is reachable by anyone on the internet without signing in.</p> </li> </ul>",
+      "enum":[
+        "PRIVATE",
+        "PUBLIC"
+      ]
+    },
     "AppendOperation":{
       "type":"structure",
       "required":[
@@ -6502,6 +7132,25 @@
       "max":2048,
       "min":0
     },
+    "ApplicableTo":{
+      "type":"structure",
+      "required":["Type"],
+      "members":{
+        "Type":{
+          "shape":"ApplicableToType",
+          "documentation":"<p>The type of scoping that determines which principals the approval policy applies to. Valid values are defined as follows:</p> <ul> <li> <p> <code>GROUP</code>: The policy applies only to principals in the groups specified by <code>GroupArns</code>. When you use <code>GROUP</code>, you must also provide a value for <code>GroupArns</code>.</p> </li> </ul>"
+        },
+        "GroupArns":{
+          "shape":"GroupArnList",
+          "documentation":"<p>The list of group ARNs that the policy applies to. Required when type is GROUP.</p>"
+        }
+      },
+      "documentation":"<p>The scoping configuration that determines which principals an approval policy applies to.</p>"
+    },
+    "ApplicableToType":{
+      "type":"string",
+      "enum":["GROUP"]
+    },
     "ApplicationArn":{
       "type":"string",
       "max":1284,
@@ -6525,6 +7174,72 @@
         }
       },
       "documentation":"<p>The application theme.</p>"
+    },
+    "ApprovalGroupList":{
+      "type":"list",
+      "member":{"shape":"Arn"},
+      "min":1
+    },
+    "ApprovalPolicy":{
+      "type":"structure",
+      "required":[
+        "PolicyId",
+        "PolicyArn",
+        "Name",
+        "Actions",
+        "AssetTypes",
+        "ApplicableTo",
+        "ApprovalGroups",
+        "CreatedAt",
+        "UpdatedAt"
+      ],
+      "members":{
+        "PolicyId":{
+          "shape":"PolicyId",
+          "documentation":"<p>The unique identifier of the approval policy.</p>"
+        },
+        "PolicyArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the approval policy.</p>"
+        },
+        "Name":{
+          "shape":"PolicyName",
+          "documentation":"<p>The name of the approval policy.</p>"
+        },
+        "Description":{
+          "shape":"PolicyDescription",
+          "documentation":"<p>A description of the approval policy.</p>"
+        },
+        "Actions":{
+          "shape":"GovernedActionList",
+          "documentation":"<p>The list of governed actions that trigger the approval workflow.</p>"
+        },
+        "AssetTypes":{
+          "shape":"AssetTypeList",
+          "documentation":"<p>The list of asset types that the approval policy applies to.</p>"
+        },
+        "ApplicableTo":{
+          "shape":"ApplicableTo",
+          "documentation":"<p>The scoping configuration that determines who the approval policy applies to.</p>"
+        },
+        "ApprovalGroups":{
+          "shape":"ApprovalGroupList",
+          "documentation":"<p>The list of group ARNs whose members can approve requests.</p>"
+        },
+        "CreatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time that the approval policy was created.</p>"
+        },
+        "UpdatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time that the approval policy was last updated.</p>"
+        }
+      },
+      "documentation":"<p>A governance approval policy that specifies which principals and governed actions require approval, and which assets the policy applies to.</p>"
+    },
+    "ApprovalPolicyList":{
+      "type":"list",
+      "member":{"shape":"ApprovalPolicy"}
     },
     "ArcAxisConfiguration":{
       "type":"structure",
@@ -6641,6 +7356,10 @@
         "Folders":{
           "shape":"AssetBundleExportJobFolderOverridePropertiesList",
           "documentation":"<p>An optional list of structures that controls how <code>Folder</code> resources are parameterized in the returned CloudFormation template.</p>"
+        },
+        "TopicsV2":{
+          "shape":"AssetBundleExportJobTopicV2OverridePropertiesList",
+          "documentation":"<p>An optional list of structures that controls how <code>Topic</code> resources are parameterized in the returned CloudFormation template.</p>"
         }
       },
       "documentation":"<p>An optional collection of CloudFormation property configurations that control how the export job is generated.</p>"
@@ -6995,6 +7714,43 @@
     "AssetBundleExportJobThemePropertyToOverrideList":{
       "type":"list",
       "member":{"shape":"AssetBundleExportJobThemePropertyToOverride"},
+      "max":10,
+      "min":1
+    },
+    "AssetBundleExportJobTopicV2OverrideProperties":{
+      "type":"structure",
+      "required":[
+        "Arn",
+        "Properties"
+      ],
+      "members":{
+        "Arn":{
+          "shape":"Arn",
+          "documentation":"<p>The ARN of the specific <code>Topic</code> resource whose override properties are configured in this structure.</p>"
+        },
+        "Properties":{
+          "shape":"AssetBundleExportJobTopicV2PropertyToOverrideList",
+          "documentation":"<p>A list of <code>Topic</code> resource properties to generate variables for in the returned CloudFormation template.</p>"
+        }
+      },
+      "documentation":"<p>Controls how a specific <code>Topic</code> resource is parameterized in the returned CloudFormation template.</p>"
+    },
+    "AssetBundleExportJobTopicV2OverridePropertiesList":{
+      "type":"list",
+      "member":{"shape":"AssetBundleExportJobTopicV2OverrideProperties"},
+      "max":50,
+      "min":1
+    },
+    "AssetBundleExportJobTopicV2PropertyToOverride":{
+      "type":"string",
+      "enum":[
+        "Name",
+        "Description"
+      ]
+    },
+    "AssetBundleExportJobTopicV2PropertyToOverrideList":{
+      "type":"list",
+      "member":{"shape":"AssetBundleExportJobTopicV2PropertyToOverride"},
       "max":10,
       "min":1
     },
@@ -7522,6 +8278,10 @@
         "Folders":{
           "shape":"AssetBundleImportJobFolderOverrideParametersList",
           "documentation":"<p>A list of overrides for any <code>Folder</code> resources that are present in the asset bundle that is imported.</p>"
+        },
+        "TopicsV2":{
+          "shape":"AssetBundleImportJobTopicV2OverrideParametersList",
+          "documentation":"<p>A list of overrides for any <code>Topic</code> resources that are present in the asset bundle that is imported.</p>"
         }
       },
       "documentation":"<p>A list of overrides that modify the asset bundle resource configuration before the resource is imported.</p>"
@@ -7552,6 +8312,10 @@
         "Folders":{
           "shape":"AssetBundleImportJobFolderOverridePermissionsList",
           "documentation":"<p>A list of permissions for the folders that you want to apply overrides to.</p>"
+        },
+        "TopicsV2":{
+          "shape":"AssetBundleImportJobTopicV2OverridePermissionsList",
+          "documentation":"<p>A list of permissions for the topics that you want to apply overrides to.</p>"
         }
       },
       "documentation":"<p>A structure that contains the override permission configurations that modify the permissions for specified resources before the resource is imported.</p>"
@@ -7586,6 +8350,10 @@
         "Folders":{
           "shape":"AssetBundleImportJobFolderOverrideTagsList",
           "documentation":"<p>A list of tag overrides for any <code>Folder</code> resources that are present in the asset bundle that is imported.</p>"
+        },
+        "TopicsV2":{
+          "shape":"AssetBundleImportJobTopicV2OverrideTagsList",
+          "documentation":"<p>A list of tag overrides for any <code>Topic</code> resources that are present in the asset bundle that is imported.</p>"
         }
       },
       "documentation":"<p>A structure that contains the override tag configuration that modify the tags that are assigned to specified resources before the resource is imported.</p>"
@@ -7746,6 +8514,79 @@
     "AssetBundleImportJobThemeOverrideTagsList":{
       "type":"list",
       "member":{"shape":"AssetBundleImportJobThemeOverrideTags"},
+      "max":5,
+      "min":1
+    },
+    "AssetBundleImportJobTopicV2OverrideParameters":{
+      "type":"structure",
+      "required":["TopicId"],
+      "members":{
+        "TopicId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The ID of the topic that you want to apply overrides to.</p>"
+        },
+        "Name":{
+          "shape":"ResourceName",
+          "documentation":"<p>A new name for the topic.</p>"
+        },
+        "Description":{
+          "shape":"TopicDescription",
+          "documentation":"<p>A new description for the topic.</p>"
+        }
+      },
+      "documentation":"<p>The override parameters for a single topic that is being imported.</p>"
+    },
+    "AssetBundleImportJobTopicV2OverrideParametersList":{
+      "type":"list",
+      "member":{"shape":"AssetBundleImportJobTopicV2OverrideParameters"},
+      "max":50,
+      "min":1
+    },
+    "AssetBundleImportJobTopicV2OverridePermissions":{
+      "type":"structure",
+      "required":[
+        "TopicIds",
+        "Permissions"
+      ],
+      "members":{
+        "TopicIds":{
+          "shape":"AssetBundleRestrictiveResourceIdList",
+          "documentation":"<p>A list of topic IDs that you want to apply overrides to. You can use <code>*</code> to override all topics in this asset bundle.</p>"
+        },
+        "Permissions":{
+          "shape":"AssetBundleResourcePermissions",
+          "documentation":"<p>A list of permissions for the topics that you want to apply overrides to.</p>"
+        }
+      },
+      "documentation":"<p>An object that contains a list of permissions to be applied to a list of topic IDs.</p>"
+    },
+    "AssetBundleImportJobTopicV2OverridePermissionsList":{
+      "type":"list",
+      "member":{"shape":"AssetBundleImportJobTopicV2OverridePermissions"},
+      "max":2,
+      "min":1
+    },
+    "AssetBundleImportJobTopicV2OverrideTags":{
+      "type":"structure",
+      "required":[
+        "TopicIds",
+        "Tags"
+      ],
+      "members":{
+        "TopicIds":{
+          "shape":"AssetBundleRestrictiveResourceIdList",
+          "documentation":"<p>A list of topic IDs that you want to apply overrides to. You can use <code>*</code> to override all topics in this asset bundle.</p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>A list of tags for the topics that you want to apply overrides to.</p>"
+        }
+      },
+      "documentation":"<p>An object that contains a list of tags to be assigned to a list of topic IDs.</p>"
+    },
+    "AssetBundleImportJobTopicV2OverrideTagsList":{
+      "type":"list",
+      "member":{"shape":"AssetBundleImportJobTopicV2OverrideTags"},
       "max":5,
       "min":1
     },
@@ -7928,9 +8769,26 @@
         "CustomActionDefaults":{
           "shape":"VisualCustomActionDefaults",
           "documentation":"<p>A list of visual custom actions for the analysis.</p>"
+        },
+        "VisualMessages":{
+          "shape":"VisualMessages",
+          "documentation":"<p>The configuration options for the messages that are displayed on visuals in the analysis.</p>"
         }
       },
       "documentation":"<p>An array of analysis level configurations.</p>"
+    },
+    "AssetType":{
+      "type":"string",
+      "enum":[
+        "AGENT",
+        "SPACE",
+        "KNOWLEDGE_BASE"
+      ]
+    },
+    "AssetTypeList":{
+      "type":"list",
+      "member":{"shape":"AssetType"},
+      "min":1
     },
     "AssignmentStatus":{
       "type":"string",
@@ -8930,6 +9788,83 @@
         }
       }
     },
+    "BatchDescribeUserLimitsError":{
+      "type":"structure",
+      "required":[
+        "errorCode",
+        "message"
+      ],
+      "members":{
+        "userName":{
+          "shape":"String",
+          "documentation":"<p>The name of the user that failed.</p>"
+        },
+        "namespace":{
+          "shape":"String",
+          "documentation":"<p>The namespace of the user that failed.</p>"
+        },
+        "userArn":{
+          "shape":"String",
+          "documentation":"<p>The ARN of the user that failed.</p>"
+        },
+        "errorCode":{
+          "shape":"String",
+          "documentation":"<p>The error code for the failure.</p>"
+        },
+        "message":{
+          "shape":"String",
+          "documentation":"<p>The error message for the failure.</p>"
+        }
+      },
+      "documentation":"<p>Information about a user whose limits could not be described in a batch operation.</p>"
+    },
+    "BatchDescribeUserLimitsErrorList":{
+      "type":"list",
+      "member":{"shape":"BatchDescribeUserLimitsError"}
+    },
+    "BatchDescribeUserLimitsRequest":{
+      "type":"structure",
+      "required":["accountId"],
+      "members":{
+        "accountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that contains the users.</p>",
+          "location":"uri",
+          "locationName":"accountId"
+        },
+        "users":{
+          "shape":"BatchDescribeUserLimitsRequestUsersList",
+          "documentation":"<p>A list of users to describe limits for. Each entry contains a user name and namespace.</p>"
+        },
+        "resourceTypes":{
+          "shape":"ResourceTypeList",
+          "documentation":"<p>An optional filter that limits the results to specific resource types. If you don't specify a value, the operation returns limits for all resource types.</p>"
+        }
+      }
+    },
+    "BatchDescribeUserLimitsRequestUsersList":{
+      "type":"list",
+      "member":{"shape":"UserLimitsEntry"},
+      "max":100,
+      "min":1
+    },
+    "BatchDescribeUserLimitsResponse":{
+      "type":"structure",
+      "required":[
+        "userLimits",
+        "errors"
+      ],
+      "members":{
+        "userLimits":{
+          "shape":"UserLimitsList",
+          "documentation":"<p>A list of user limits results. Each entry contains the effective limits for a user.</p>"
+        },
+        "errors":{
+          "shape":"BatchDescribeUserLimitsErrorList",
+          "documentation":"<p>A list of errors for users whose limits could not be described.</p>"
+        }
+      }
+    },
     "BigQueryParameters":{
       "type":"structure",
       "required":["ProjectId"],
@@ -9554,7 +10489,6 @@
     "CalculatedField":{
       "type":"structure",
       "required":[
-        "DataSetIdentifier",
         "Name",
         "Expression"
       ],
@@ -9562,6 +10496,10 @@
         "DataSetIdentifier":{
           "shape":"DataSetIdentifier",
           "documentation":"<p>The data set that is used in this calculated field.</p>"
+        },
+        "TopicIdentifier":{
+          "shape":"TopicIdentifier",
+          "documentation":"<p>The topic that is used in this calculated field.</p>"
         },
         "Name":{
           "shape":"ColumnName",
@@ -9813,6 +10751,48 @@
           "shape":"CapabilityState",
           "documentation":"<p>The ability to use knowledge bases to specify content from external applications.</p>"
         },
+        "CreateAndUpdateKnowledgeBases":{"shape":"CapabilityState"},
+        "ShareKnowledgeBases":{"shape":"CapabilityState"},
+        "SharePointKnowledgeBase":{"shape":"CapabilityState"},
+        "CreateAndUpdateSharePointKnowledgeBase":{"shape":"CapabilityState"},
+        "ShareSharePointKnowledgeBase":{"shape":"CapabilityState"},
+        "UseSharePointKnowledgeBase":{"shape":"CapabilityState"},
+        "GoogleDriveKnowledgeBase":{"shape":"CapabilityState"},
+        "CreateAndUpdateGoogleDriveKnowledgeBase":{"shape":"CapabilityState"},
+        "ShareGoogleDriveKnowledgeBase":{"shape":"CapabilityState"},
+        "UseGoogleDriveKnowledgeBase":{"shape":"CapabilityState"},
+        "WebCrawlerKnowledgeBase":{"shape":"CapabilityState"},
+        "CreateAndUpdateWebCrawlerKnowledgeBase":{"shape":"CapabilityState"},
+        "ShareWebCrawlerKnowledgeBase":{"shape":"CapabilityState"},
+        "UseWebCrawlerKnowledgeBase":{"shape":"CapabilityState"},
+        "S3KnowledgeBase":{"shape":"CapabilityState"},
+        "CreateAndUpdateS3KnowledgeBase":{"shape":"CapabilityState"},
+        "ShareS3KnowledgeBase":{"shape":"CapabilityState"},
+        "UseS3KnowledgeBase":{"shape":"CapabilityState"},
+        "ConfluenceKnowledgeBase":{"shape":"CapabilityState"},
+        "CreateAndUpdateConfluenceKnowledgeBase":{"shape":"CapabilityState"},
+        "ShareConfluenceKnowledgeBase":{"shape":"CapabilityState"},
+        "UseConfluenceKnowledgeBase":{"shape":"CapabilityState"},
+        "OneDriveKnowledgeBase":{"shape":"CapabilityState"},
+        "CreateAndUpdateOneDriveKnowledgeBase":{"shape":"CapabilityState"},
+        "ShareOneDriveKnowledgeBase":{"shape":"CapabilityState"},
+        "UseOneDriveKnowledgeBase":{"shape":"CapabilityState"},
+        "QBusinessKnowledgeBase":{"shape":"CapabilityState"},
+        "CreateAndUpdateQBusinessKnowledgeBase":{"shape":"CapabilityState"},
+        "ShareQBusinessKnowledgeBase":{"shape":"CapabilityState"},
+        "UseQBusinessKnowledgeBase":{"shape":"CapabilityState"},
+        "BedrockManagedKnowledgeBase":{"shape":"CapabilityState"},
+        "CreateAndUpdateBedrockManagedKnowledgeBase":{"shape":"CapabilityState"},
+        "ShareBedrockManagedKnowledgeBase":{"shape":"CapabilityState"},
+        "UseBedrockManagedKnowledgeBase":{"shape":"CapabilityState"},
+        "BoxKnowledgeBase":{"shape":"CapabilityState"},
+        "CreateAndUpdateBoxKnowledgeBase":{"shape":"CapabilityState"},
+        "ShareBoxKnowledgeBase":{"shape":"CapabilityState"},
+        "UseBoxKnowledgeBase":{"shape":"CapabilityState"},
+        "IDCKnowledgeBase":{"shape":"CapabilityState"},
+        "CreateAndUpdateIDCKnowledgeBase":{"shape":"CapabilityState"},
+        "ShareIDCKnowledgeBase":{"shape":"CapabilityState"},
+        "UseIDCKnowledgeBase":{"shape":"CapabilityState"},
         "Action":{
           "shape":"CapabilityState",
           "documentation":"<p>The ability to perform actions in external services through Action connectors. Actions allow users to interact with third-party systems.</p>"
@@ -10557,6 +11537,26 @@
           "shape":"CapabilityState",
           "documentation":"<p>The ability to perform Extension-related actions.</p>"
         },
+        "UseBrowserExtension":{
+          "shape":"CapabilityState",
+          "documentation":"<p>The ability to use Amazon Quick through the browser extension for Chrome, Firefox, and Edge.</p>"
+        },
+        "UseWordAddInExtension":{
+          "shape":"CapabilityState",
+          "documentation":"<p>The ability to use Amazon Quick through the Microsoft Word add-in.</p>"
+        },
+        "UseOutlookAddInExtension":{
+          "shape":"CapabilityState",
+          "documentation":"<p>The ability to use Amazon Quick through the Microsoft Outlook add-in.</p>"
+        },
+        "UseExcelAddInExtension":{
+          "shape":"CapabilityState",
+          "documentation":"<p>The ability to use Amazon Quick through the Microsoft Excel add-in.</p>"
+        },
+        "UsePowerpointAddInExtension":{
+          "shape":"CapabilityState",
+          "documentation":"<p>The ability to use Amazon Quick through the Microsoft PowerPoint add-in.</p>"
+        },
         "ManageSharedFolders":{
           "shape":"CapabilityState",
           "documentation":"<p>The ability to create, update, delete and view shared folders (both restricted and unrestricted), ability to add any asset to shared folders, and ability to share the folders.</p> <p> <b>Note:</b> This does <i>not</i> prevent inheriting access to assets that others share with them through folder membership.</p>"
@@ -10594,7 +11594,11 @@
     },
     "CapabilityState":{
       "type":"string",
-      "enum":["DENY"]
+      "documentation":"<p>The permission state of a capability in a custom permissions profile. Valid values:</p> <ul> <li> <p> <code>DENY</code> – Amazon Quick denies this capability for users assigned to the profile.</p> </li> <li> <p> <code>ALLOW</code> – Amazon Quick grants this capability to users assigned to the profile. This value is only relevant when governance is enabled for the capability's category. Without governance, the default effect is always <code>ALLOW</code>. In a governed category, this value overrides the category-level deny-by-default behavior for that capability only.</p> </li> </ul>",
+      "enum":[
+        "DENY",
+        "ALLOW"
+      ]
     },
     "CapacityBytesRangeFilter":{
       "type":"structure",
@@ -10891,11 +11895,11 @@
       "type":"structure",
       "members":{
         "CellValue":{
-          "shape":"LimitedString",
+          "shape":"SynonymString",
           "documentation":"<p>The cell value.</p>"
         },
         "Synonyms":{
-          "shape":"StringList",
+          "shape":"SensitiveStringList",
           "documentation":"<p>Other names or aliases for the cell value.</p>"
         }
       },
@@ -11255,14 +12259,15 @@
     },
     "ColumnIdentifier":{
       "type":"structure",
-      "required":[
-        "DataSetIdentifier",
-        "ColumnName"
-      ],
+      "required":["ColumnName"],
       "members":{
         "DataSetIdentifier":{
           "shape":"DataSetIdentifier",
           "documentation":"<p>The data set that the column belongs to.</p>"
+        },
+        "TopicIdentifier":{
+          "shape":"TopicIdentifier",
+          "documentation":"<p>The topic that the column belongs to.</p>"
         },
         "ColumnName":{
           "shape":"ColumnName",
@@ -12625,7 +13630,7 @@
         },
         "SourceEntity":{
           "shape":"AnalysisSourceEntity",
-          "documentation":"<p>A source entity to use for the analysis that you're creating. This metadata structure contains details that describe a source template and one or more datasets.</p> <p>Either a <code>SourceEntity</code> or a <code>Definition</code> must be provided in order for the request to be valid.</p>"
+          "documentation":"<p>A source entity to use for the analysis that you're creating. This metadata structure contains details that describe a source template and one or more datasets or topics.</p> <p>Either a <code>SourceEntity</code> or a <code>Definition</code> must be provided in order for the request to be valid.</p>"
         },
         "ThemeArn":{
           "shape":"Arn",
@@ -12672,6 +13677,57 @@
         "RequestId":{
           "shape":"String",
           "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        }
+      }
+    },
+    "CreateApprovalPolicyRequest":{
+      "type":"structure",
+      "required":[
+        "PolicyId",
+        "Name",
+        "Actions",
+        "AssetTypes",
+        "ApplicableTo",
+        "ApprovalGroups"
+      ],
+      "members":{
+        "PolicyId":{
+          "shape":"PolicyId",
+          "documentation":"<p>The unique identifier to assign to the approval policy. You cannot change this value after you create the policy.</p>"
+        },
+        "Name":{
+          "shape":"PolicyName",
+          "documentation":"<p>The name of the approval policy.</p>"
+        },
+        "Description":{
+          "shape":"PolicyDescription",
+          "documentation":"<p>A description of the approval policy.</p>"
+        },
+        "Actions":{
+          "shape":"GovernedActionList",
+          "documentation":"<p>The list of governed actions that trigger the approval workflow.</p>"
+        },
+        "AssetTypes":{
+          "shape":"AssetTypeList",
+          "documentation":"<p>The list of asset types that the approval policy applies to.</p>"
+        },
+        "ApplicableTo":{
+          "shape":"ApplicableTo",
+          "documentation":"<p>The scoping configuration that determines who the approval policy applies to.</p>"
+        },
+        "ApprovalGroups":{
+          "shape":"ApprovalGroupList",
+          "documentation":"<p>The list of group ARNs whose members can approve requests.</p>"
+        }
+      }
+    },
+    "CreateApprovalPolicyResponse":{
+      "type":"structure",
+      "required":["Policy"],
+      "members":{
+        "Policy":{
+          "shape":"ApprovalPolicy",
+          "documentation":"<p>The approval policy that was created.</p>"
         }
       }
     },
@@ -12761,6 +13817,10 @@
           "shape":"Capabilities",
           "documentation":"<p>A set of actions to include in the custom permissions profile.</p>"
         },
+        "Governance":{
+          "shape":"Governance",
+          "documentation":"<p>The governance configuration for the custom permissions profile. When governance controls are defined for a category, any capabilities in that category not explicitly set to <code>ALLOW</code> in <code>Capabilities</code> are denied. Even newly added capabilities in the category are implicitly disabled when Amazon Quick releases them.</p>"
+        },
         "Tags":{
           "shape":"TagList",
           "documentation":"<p>The tags to associate with the custom permissions profile.</p>"
@@ -12818,7 +13878,7 @@
         },
         "SourceEntity":{
           "shape":"DashboardSourceEntity",
-          "documentation":"<p>The entity that you are using as a source when you create the dashboard. In <code>SourceEntity</code>, you specify the type of object you're using as source. You can only create a dashboard from a template, so you use a <code>SourceTemplate</code> entity. If you need to create a dashboard from an analysis, first convert the analysis to a template by using the <code> <a href=\"https://docs.aws.amazon.com/quicksight/latest/APIReference/API_CreateTemplate.html\">CreateTemplate</a> </code> API operation. For <code>SourceTemplate</code>, specify the Amazon Resource Name (ARN) of the source template. The <code>SourceTemplate</code>ARN can contain any Amazon Web Services account and any Amazon Quick Sight-supported Amazon Web Services Region. </p> <p>Use the <code>DataSetReferences</code> entity within <code>SourceTemplate</code> to list the replacement datasets for the placeholders listed in the original. The schema in each dataset must match its placeholder. </p> <p>Either a <code>SourceEntity</code> or a <code>Definition</code> must be provided in order for the request to be valid.</p>"
+          "documentation":"<p>The entity that you are using as a source when you create the dashboard. In <code>SourceEntity</code>, you specify the type of object you're using as source. You can only create a dashboard from a template, so you use a <code>SourceTemplate</code> entity. If you need to create a dashboard from an analysis, first convert the analysis to a template by using the <code> <a href=\"https://docs.aws.amazon.com/quicksight/latest/APIReference/API_CreateTemplate.html\">CreateTemplate</a> </code> API operation. For <code>SourceTemplate</code>, specify the Amazon Resource Name (ARN) of the source template. The <code>SourceTemplate</code>ARN can contain any Amazon Web Services account and any Amazon Quick Sight-supported Amazon Web Services Region. </p> <p>Use the <code>DataSetReferences</code> entity within <code>SourceTemplate</code> to list the replacement datasets for the placeholders listed in the original. The schema in each dataset must match its placeholder. Use the <code>TopicReferences</code> entity to list the replacement topics for the topic placeholders listed in the original. The schema in each topic must match its placeholder.</p> <p>Either a <code>SourceEntity</code> or a <code>Definition</code> must be provided in order for the request to be valid.</p>"
         },
         "Tags":{
           "shape":"TagList",
@@ -13098,6 +14158,77 @@
           "shape":"StatusCode",
           "documentation":"<p>The HTTP status of the request.</p>",
           "location":"statusCode"
+        }
+      }
+    },
+    "CreateDlpSettingRequest":{
+      "type":"structure",
+      "required":[
+        "AwsAccountId",
+        "DlpSettingId",
+        "Name",
+        "ProviderType",
+        "ProviderConfig",
+        "ProviderOutageAction",
+        "Enabled"
+      ],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account in which to create the DLP setting.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "DlpSettingId":{
+          "shape":"DlpSettingId",
+          "documentation":"<p>A unique identifier for the DLP setting.</p>",
+          "location":"uri",
+          "locationName":"DlpSettingId"
+        },
+        "Name":{
+          "shape":"DlpSettingName",
+          "documentation":"<p>A human-readable display name for the DLP setting.</p>"
+        },
+        "ProviderType":{
+          "shape":"DlpProviderType",
+          "documentation":"<p>The type of external DLP provider to use for sensitivity label classification. Currently, the only supported value is <code>MICROSOFT_PURVIEW</code>.</p>"
+        },
+        "ProviderConfig":{
+          "shape":"ProviderConfig",
+          "documentation":"<p>The provider-specific configuration for the DLP integration. This is a union type structure. For this structure to be valid, only one of the attributes can be defined.</p>"
+        },
+        "ProviderOutageAction":{
+          "shape":"DlpAction",
+          "documentation":"<p>The behavior to apply when the DLP provider is unreachable. Valid values are <code>ALLOW</code>, <code>WARN</code>, and <code>BLOCK</code>.</p>"
+        },
+        "Enabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether DLP enforcement is active for this setting. Set to <code>true</code> to enable enforcement, or <code>false</code> to disable it at time of setting creation.</p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>A list of resource tags to apply to the DLP setting. You can use tags to manage access to your Amazon Web Services resources.</p>"
+        }
+      }
+    },
+    "CreateDlpSettingResponse":{
+      "type":"structure",
+      "required":[
+        "Arn",
+        "DlpSettingId"
+      ],
+      "members":{
+        "Arn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the created DLP setting.</p>"
+        },
+        "DlpSettingId":{
+          "shape":"DlpSettingId",
+          "documentation":"<p>The ID of the created DLP setting.</p>"
+        },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
         }
       }
     },
@@ -13566,7 +14697,7 @@
         },
         "PrimaryOwnerArn":{
           "shape":"String",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the primary owner for the knowledge base. The specified user is always granted owner access, regardless of what is specified in the <code>Permissions</code> field. If you don't specify a primary owner, the knowledge base is created without one.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon QuickSight user or group to set as the primary owner of the knowledge base. The specified principal is always granted owner access, regardless of what is specified in the <code>Permissions</code> field.</p> <p>This must be an Amazon QuickSight principal ARN, not an IAM user or role ARN. The API caller is never assigned as the owner automatically. If you don't specify a primary owner and don't grant owner access in <code>Permissions</code>, the knowledge base is created without an owner, even when you call the operation as an Amazon QuickSight user.</p> <p>When you call <code>CreateKnowledgeBase</code> as an IAM user or an assumed IAM role, specify <code>PrimaryOwnerArn</code> (as an Amazon QuickSight principal ARN) or an owner entry in <code>Permissions</code> so that the knowledge base has an owner. Although optional, specifying a primary owner is recommended.</p>"
         },
         "Tags":{
           "shape":"TagList",
@@ -13603,6 +14734,67 @@
           "documentation":"<p>The HTTP status of the request.</p>",
           "box":true,
           "location":"statusCode"
+        }
+      }
+    },
+    "CreateLimitsProfileRequest":{
+      "type":"structure",
+      "required":[
+        "accountId",
+        "profileName",
+        "resourceLimits",
+        "clientToken"
+      ],
+      "members":{
+        "accountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that contains the limits profile.</p>",
+          "location":"uri",
+          "locationName":"accountId"
+        },
+        "profileName":{
+          "shape":"ProfileName",
+          "documentation":"<p>A display name for the limits profile.</p>"
+        },
+        "description":{
+          "shape":"ProfileDescription",
+          "documentation":"<p>A description for the limits profile.</p>"
+        },
+        "resourceLimits":{
+          "shape":"CreateLimitsProfileRequestResourceLimitsMap",
+          "documentation":"<p>A map of resource types to their limit values for this profile.</p>"
+        },
+        "clientToken":{
+          "shape":"CreateLimitsProfileRequestClientTokenString",
+          "documentation":"<p>A unique, case-sensitive identifier to ensure that the operation completes no more than one time. If this token matches a previous request, the service ignores the request, but does not return an error.</p>"
+        }
+      }
+    },
+    "CreateLimitsProfileRequestClientTokenString":{
+      "type":"string",
+      "max":128,
+      "min":1
+    },
+    "CreateLimitsProfileRequestResourceLimitsMap":{
+      "type":"map",
+      "key":{"shape":"ResourceType"},
+      "value":{"shape":"ProfileLimitValue"},
+      "min":1
+    },
+    "CreateLimitsProfileResponse":{
+      "type":"structure",
+      "required":[
+        "arn",
+        "profileId"
+      ],
+      "members":{
+        "arn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the created limits profile.</p>"
+        },
+        "profileId":{
+          "shape":"ProfileId",
+          "documentation":"<p>The unique identifier for the created limits profile.</p>"
         }
       }
     },
@@ -13978,7 +15170,7 @@
         },
         "SourceEntity":{
           "shape":"TemplateSourceEntity",
-          "documentation":"<p>The entity that you are using as a source when you create the template. In <code>SourceEntity</code>, you specify the type of object you're using as source: <code>SourceTemplate</code> for a template or <code>SourceAnalysis</code> for an analysis. Both of these require an Amazon Resource Name (ARN). For <code>SourceTemplate</code>, specify the ARN of the source template. For <code>SourceAnalysis</code>, specify the ARN of the source analysis. The <code>SourceTemplate</code> ARN can contain any Amazon Web Services account and any Quick Sight-supported Amazon Web Services Region. </p> <p>Use the <code>DataSetReferences</code> entity within <code>SourceTemplate</code> or <code>SourceAnalysis</code> to list the replacement datasets for the placeholders listed in the original. The schema in each dataset must match its placeholder. </p> <p>Either a <code>SourceEntity</code> or a <code>Definition</code> must be provided in order for the request to be valid.</p>"
+          "documentation":"<p>The entity that you are using as a source when you create the template. In <code>SourceEntity</code>, you specify the type of object you're using as source: <code>SourceTemplate</code> for a template or <code>SourceAnalysis</code> for an analysis. Both of these require an Amazon Resource Name (ARN). For <code>SourceTemplate</code>, specify the ARN of the source template. For <code>SourceAnalysis</code>, specify the ARN of the source analysis. The <code>SourceTemplate</code> ARN can contain any Amazon Web Services account and any Quick Sight-supported Amazon Web Services Region. </p> <p>Use the <code>DataSetReferences</code> entity within <code>SourceTemplate</code> or <code>SourceAnalysis</code> to list the replacement datasets for the placeholders listed in the original. The schema in each dataset must match its placeholder. Use the <code>TopicReferences</code> entity to list the replacement topics for the topic placeholders listed in the original. The schema in each topic must match its placeholder.</p> <p>Either a <code>SourceEntity</code> or a <code>Definition</code> must be provided in order for the request to be valid.</p>"
         },
         "Tags":{
           "shape":"TagList",
@@ -14297,7 +15489,7 @@
           "documentation":"<p>The Dataset arn for the <code>CreateTopicReviewedAnswer</code>.</p>"
         },
         "Question":{
-          "shape":"LimitedString",
+          "shape":"LimitedSensitiveString",
           "documentation":"<p>The Question to be created.</p>"
         },
         "Mir":{
@@ -14320,6 +15512,61 @@
       "member":{"shape":"CreateTopicReviewedAnswer"},
       "max":100,
       "min":0
+    },
+    "CreateTopicV2Request":{
+      "type":"structure",
+      "required":[
+        "AwsAccountId",
+        "TopicId",
+        "Topic"
+      ],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that you want to create a topic in.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "TopicId":{
+          "shape":"TopicId",
+          "documentation":"<p>The ID for the topic that you want to create. This ID is unique per Amazon Web Services Region for each Amazon Web Services account.</p>"
+        },
+        "Topic":{
+          "shape":"TopicV2Details",
+          "documentation":"<p>The definition of a topic to create.</p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>Contains a map of the key-value pairs for the resource tag or tags that are assigned to the topic.</p>"
+        },
+        "FolderArns":{
+          "shape":"FolderArnList",
+          "documentation":"<p>The Amazon Resource Names (ARNs) of the folders that you want the topic to reside in.</p>"
+        },
+        "CustomInstructions":{"shape":"CustomInstructions"}
+      }
+    },
+    "CreateTopicV2Response":{
+      "type":"structure",
+      "members":{
+        "Arn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the topic.</p>"
+        },
+        "TopicId":{
+          "shape":"TopicId",
+          "documentation":"<p>The ID for the topic that you want to create. This ID is unique per Amazon Web Services Region for each Amazon Web Services account.</p>"
+        },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        },
+        "Status":{
+          "shape":"StatusCode",
+          "documentation":"<p>The HTTP status of the request.</p>",
+          "location":"statusCode"
+        }
+      }
     },
     "CreateVPCConnectionRequest":{
       "type":"structure",
@@ -14613,10 +15860,7 @@
     },
     "CustomContentVisual":{
       "type":"structure",
-      "required":[
-        "VisualId",
-        "DataSetIdentifier"
-      ],
+      "required":["VisualId"],
       "members":{
         "VisualId":{
           "shape":"ShortRestrictiveResourceId",
@@ -14640,7 +15884,11 @@
         },
         "DataSetIdentifier":{
           "shape":"DataSetIdentifier",
-          "documentation":"<p>The dataset that is used to create the custom content visual. You can't create a visual without a dataset.</p>"
+          "documentation":"<p>The dataset that is used to create the custom content visual. You can't create a visual without a dataset or a topic.</p>"
+        },
+        "TopicIdentifier":{
+          "shape":"TopicIdentifier",
+          "documentation":"<p>The topic that is used in the custom content visual. You can't create a visual without a dataset or a topic.</p>"
         },
         "VisualContentAltText":{
           "shape":"LongPlainText",
@@ -14789,6 +16037,10 @@
         "Capabilities":{
           "shape":"Capabilities",
           "documentation":"<p>A set of actions in the custom permissions profile.</p>"
+        },
+        "Governance":{
+          "shape":"Governance",
+          "documentation":"<p>The governance configuration for the custom permissions profile. When you enable governance for a category, Amazon Quick denies access to any current or new capability in that category unless you explicitly set that capability to <code>ALLOW</code> in <code>Capabilities</code>.</p>"
         }
       },
       "documentation":"<p>The custom permissions profile.</p>"
@@ -15214,6 +16466,10 @@
           "shape":"DataSetReferenceList",
           "documentation":"<p>Dataset references.</p>"
         },
+        "TopicReferences":{
+          "shape":"TopicReferenceList",
+          "documentation":"<p>The topic references for the source template of a dashboard.</p>"
+        },
         "Arn":{
           "shape":"Arn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the resource.</p>"
@@ -15296,7 +16552,11 @@
         },
         "DataSetArns":{
           "shape":"DataSetArnsList",
-          "documentation":"<p>The Amazon Resource Numbers (ARNs) for the datasets that are associated with this version of the dashboard.</p>"
+          "documentation":"<p>The Amazon Resource Names (ARNs) for the datasets that are associated with this version of the dashboard.</p>"
+        },
+        "TopicArns":{
+          "shape":"TopicArnsList",
+          "documentation":"<p>The Amazon Resource Names (ARNs) for the topics that are associated with this version of the dashboard.</p>"
         },
         "Description":{
           "shape":"VersionDescription",
@@ -15320,6 +16580,10 @@
         "DataSetIdentifierDeclarations":{
           "shape":"DataSetIdentifierDeclarationList",
           "documentation":"<p>An array of dataset identifier declarations. With this mapping,you can use dataset identifiers instead of dataset Amazon Resource Names (ARNs) throughout the dashboard's sub-structures.</p>"
+        },
+        "TopicIdentifierDeclarations":{
+          "shape":"TopicIdentifierDeclarationList",
+          "documentation":"<p>An array of topic identifier declarations. With this mapping, you can use topic identifiers instead of topic Amazon Resource Names (ARNs) throughout the dashboard's sub-structures.</p>"
         },
         "Sheets":{
           "shape":"SheetDefinitionList",
@@ -16185,7 +17449,7 @@
     "DataSetIdentifier":{
       "type":"string",
       "max":2048,
-      "min":1
+      "min":0
     },
     "DataSetIdentifierDeclaration":{
       "type":"structure",
@@ -16209,7 +17473,7 @@
       "type":"list",
       "member":{"shape":"DataSetIdentifierDeclaration"},
       "max":50,
-      "min":1
+      "min":0
     },
     "DataSetImportMode":{
       "type":"string",
@@ -16323,7 +17587,7 @@
     "DataSetReferenceList":{
       "type":"list",
       "member":{"shape":"DataSetReference"},
-      "min":1
+      "min":0
     },
     "DataSetRefreshProperties":{
       "type":"structure",
@@ -17708,6 +18972,17 @@
         "VARP"
       ]
     },
+    "DefaultCategoryEffect":{
+      "type":"string",
+      "documentation":"<p>The default effect that Amazon Quick applies to capabilities in a governed category when you do not explicitly list those capabilities in <code>Capabilities</code>. Valid values:</p> <ul> <li> <p> <code>DENY_BY_DEFAULT</code> – Amazon Quick denies any capability access in the given category that the profile does not explicitly set to <code>ALLOW</code>.</p> </li> </ul>",
+      "enum":["DENY_BY_DEFAULT"]
+    },
+    "DefaultCategoryEffectsMap":{
+      "type":"map",
+      "key":{"shape":"GovernanceCategoryName"},
+      "value":{"shape":"DefaultCategoryEffect"},
+      "max":50
+    },
     "DefaultDateTimePickerControlOptions":{
       "type":"structure",
       "members":{
@@ -18200,6 +19475,52 @@
         }
       }
     },
+    "DeleteAppRequest":{
+      "type":"structure",
+      "required":[
+        "AwsAccountId",
+        "AppId"
+      ],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that contains the app.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "AppId":{
+          "shape":"AppId",
+          "documentation":"<p>The ID of the app that you want to delete.</p>",
+          "location":"uri",
+          "locationName":"AppId"
+        }
+      }
+    },
+    "DeleteAppResponse":{
+      "type":"structure",
+      "members":{
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        }
+      }
+    },
+    "DeleteApprovalPolicyRequest":{
+      "type":"structure",
+      "required":["PolicyId"],
+      "members":{
+        "PolicyId":{
+          "shape":"PolicyId",
+          "documentation":"<p>The unique identifier of the approval policy to delete.</p>",
+          "location":"uri",
+          "locationName":"PolicyId"
+        }
+      }
+    },
+    "DeleteApprovalPolicyResponse":{
+      "type":"structure",
+      "members":{}
+    },
     "DeleteBrandAssignmentRequest":{
       "type":"structure",
       "required":["AwsAccountId"],
@@ -18488,6 +19809,48 @@
           "shape":"StatusCode",
           "documentation":"<p>The HTTP status of the request.</p>",
           "location":"statusCode"
+        }
+      }
+    },
+    "DeleteDlpSettingRequest":{
+      "type":"structure",
+      "required":[
+        "AwsAccountId",
+        "DlpSettingId"
+      ],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that contains the DLP setting that you want to delete.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "DlpSettingId":{
+          "shape":"DlpSettingId",
+          "documentation":"<p>The ID of the DLP setting that you want to delete.</p>",
+          "location":"uri",
+          "locationName":"DlpSettingId"
+        }
+      }
+    },
+    "DeleteDlpSettingResponse":{
+      "type":"structure",
+      "required":[
+        "Arn",
+        "DlpSettingId"
+      ],
+      "members":{
+        "Arn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the deleted DLP setting.</p>"
+        },
+        "DlpSettingId":{
+          "shape":"DlpSettingId",
+          "documentation":"<p>The ID of the deleted DLP setting.</p>"
+        },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
         }
       }
     },
@@ -18834,6 +20197,37 @@
           "documentation":"<p>The HTTP status of the request.</p>",
           "box":true,
           "location":"statusCode"
+        }
+      }
+    },
+    "DeleteLimitsProfileRequest":{
+      "type":"structure",
+      "required":[
+        "profileId",
+        "accountId"
+      ],
+      "members":{
+        "profileId":{
+          "shape":"ProfileId",
+          "documentation":"<p>The unique identifier for the limits profile to delete.</p>",
+          "location":"uri",
+          "locationName":"profileId"
+        },
+        "accountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that contains the limits profile.</p>",
+          "location":"uri",
+          "locationName":"accountId"
+        }
+      }
+    },
+    "DeleteLimitsProfileResponse":{
+      "type":"structure",
+      "required":["arn"],
+      "members":{
+        "arn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the deleted limits profile.</p>"
         }
       }
     },
@@ -19376,6 +20770,49 @@
       }
     },
     "DeleteTopicResponse":{
+      "type":"structure",
+      "members":{
+        "Arn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the topic.</p>"
+        },
+        "TopicId":{
+          "shape":"TopicId",
+          "documentation":"<p>The ID of the topic that you want to delete. This ID is unique per Amazon Web Services Region for each Amazon Web Services account.</p>"
+        },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        },
+        "Status":{
+          "shape":"StatusCode",
+          "documentation":"<p>The HTTP status of the request.</p>",
+          "location":"statusCode"
+        }
+      }
+    },
+    "DeleteTopicV2Request":{
+      "type":"structure",
+      "required":[
+        "AwsAccountId",
+        "TopicId"
+      ],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that contains the topic that you want to delete.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "TopicId":{
+          "shape":"TopicId",
+          "documentation":"<p>The ID of the topic that you want to delete. This ID is unique per Amazon Web Services Region for each Amazon Web Services account.</p>",
+          "location":"uri",
+          "locationName":"TopicId"
+        }
+      }
+    },
+    "DeleteTopicV2Response":{
       "type":"structure",
       "members":{
         "Arn":{
@@ -20034,6 +21471,105 @@
         "RequestId":{
           "shape":"String",
           "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        }
+      }
+    },
+    "DescribeAppPermissionsRequest":{
+      "type":"structure",
+      "required":[
+        "AwsAccountId",
+        "AppId"
+      ],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that contains the app.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "AppId":{
+          "shape":"AppId",
+          "documentation":"<p>The ID of the app.</p>",
+          "location":"uri",
+          "locationName":"AppId"
+        }
+      }
+    },
+    "DescribeAppPermissionsResponse":{
+      "type":"structure",
+      "members":{
+        "AppId":{
+          "shape":"AppId",
+          "documentation":"<p>The ID of the app.</p>"
+        },
+        "Arn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the app.</p>"
+        },
+        "Permissions":{
+          "shape":"ResourcePermissionList",
+          "documentation":"<p>The resource permissions for the app.</p>"
+        },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        }
+      }
+    },
+    "DescribeAppRequest":{
+      "type":"structure",
+      "required":[
+        "AwsAccountId",
+        "AppId"
+      ],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that contains the app.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "AppId":{
+          "shape":"AppId",
+          "documentation":"<p>The ID of the app that you want to describe.</p>",
+          "location":"uri",
+          "locationName":"AppId"
+        }
+      }
+    },
+    "DescribeAppResponse":{
+      "type":"structure",
+      "required":["App"],
+      "members":{
+        "App":{
+          "shape":"AppSummary",
+          "documentation":"<p>The information about the app.</p>"
+        },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        }
+      }
+    },
+    "DescribeApprovalPolicyRequest":{
+      "type":"structure",
+      "required":["PolicyId"],
+      "members":{
+        "PolicyId":{
+          "shape":"PolicyId",
+          "documentation":"<p>The unique identifier of the approval policy to describe.</p>",
+          "location":"uri",
+          "locationName":"PolicyId"
+        }
+      }
+    },
+    "DescribeApprovalPolicyResponse":{
+      "type":"structure",
+      "required":["Policy"],
+      "members":{
+        "Policy":{
+          "shape":"ApprovalPolicy",
+          "documentation":"<p>The approval policy.</p>"
         }
       }
     },
@@ -21061,6 +22597,41 @@
         }
       }
     },
+    "DescribeDlpSettingRequest":{
+      "type":"structure",
+      "required":[
+        "AwsAccountId",
+        "DlpSettingId"
+      ],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that contains the DLP setting that you want to describe.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "DlpSettingId":{
+          "shape":"DlpSettingId",
+          "documentation":"<p>The ID of the DLP setting that you want to describe.</p>",
+          "location":"uri",
+          "locationName":"DlpSettingId"
+        }
+      }
+    },
+    "DescribeDlpSettingResponse":{
+      "type":"structure",
+      "required":["DlpSetting"],
+      "members":{
+        "DlpSetting":{
+          "shape":"DlpSettingDetails",
+          "documentation":"<p>The full configuration of the requested DLP setting, returned as a <code>DlpSettingDetails</code> object.</p>"
+        },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        }
+      }
+    },
     "DescribeFlowRequest":{
       "type":"structure",
       "required":[
@@ -21654,6 +23225,37 @@
           "documentation":"<p>The HTTP status of the request.</p>",
           "box":true,
           "location":"statusCode"
+        }
+      }
+    },
+    "DescribeLimitsProfileRequest":{
+      "type":"structure",
+      "required":[
+        "profileId",
+        "accountId"
+      ],
+      "members":{
+        "profileId":{
+          "shape":"ProfileId",
+          "documentation":"<p>The unique identifier for the limits profile.</p>",
+          "location":"uri",
+          "locationName":"profileId"
+        },
+        "accountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that contains the limits profile.</p>",
+          "location":"uri",
+          "locationName":"accountId"
+        }
+      }
+    },
+    "DescribeLimitsProfileResponse":{
+      "type":"structure",
+      "required":["profile"],
+      "members":{
+        "profile":{
+          "shape":"LimitsProfile",
+          "documentation":"<p>The details of the requested limits profile, including its name, description, resource limits, and metadata.</p>"
         }
       }
     },
@@ -22434,6 +24036,53 @@
         }
       }
     },
+    "DescribeTopicPermissionsV2Request":{
+      "type":"structure",
+      "required":[
+        "AwsAccountId",
+        "TopicId"
+      ],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that contains the topic that you want described.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "TopicId":{
+          "shape":"TopicId",
+          "documentation":"<p>The ID of the topic that you want to describe. This ID is unique per Amazon Web Services Region for each Amazon Web Services account.</p>",
+          "location":"uri",
+          "locationName":"TopicId"
+        }
+      }
+    },
+    "DescribeTopicPermissionsV2Response":{
+      "type":"structure",
+      "members":{
+        "TopicId":{
+          "shape":"TopicId",
+          "documentation":"<p>The ID of the topic that you want to describe. This ID is unique per Amazon Web Services Region for each Amazon Web Services account.</p>"
+        },
+        "TopicArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the topic.</p>"
+        },
+        "Permissions":{
+          "shape":"ResourcePermissionList",
+          "documentation":"<p>A list of resource permissions that are configured to the topic.</p>"
+        },
+        "Status":{
+          "shape":"StatusCode",
+          "documentation":"<p>The HTTP status of the request.</p>",
+          "location":"statusCode"
+        },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        }
+      }
+    },
     "DescribeTopicRefreshRequest":{
       "type":"structure",
       "required":[
@@ -22589,6 +24238,54 @@
         }
       }
     },
+    "DescribeTopicV2Request":{
+      "type":"structure",
+      "required":[
+        "AwsAccountId",
+        "TopicId"
+      ],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that contains the topic that you want to describe.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "TopicId":{
+          "shape":"TopicId",
+          "documentation":"<p>The ID of the topic that you want to describe. This ID is unique per Amazon Web Services Region for each Amazon Web Services account.</p>",
+          "location":"uri",
+          "locationName":"TopicId"
+        }
+      }
+    },
+    "DescribeTopicV2Response":{
+      "type":"structure",
+      "members":{
+        "Arn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the topic.</p>"
+        },
+        "TopicId":{
+          "shape":"TopicId",
+          "documentation":"<p>The ID of the topic that you want to describe. This ID is unique per Amazon Web Services Region for each Amazon Web Services account.</p>"
+        },
+        "Topic":{
+          "shape":"TopicV2Details",
+          "documentation":"<p>The definition of a topic.</p>"
+        },
+        "CustomInstructions":{"shape":"CustomInstructions"},
+        "Status":{
+          "shape":"StatusCode",
+          "documentation":"<p>The HTTP status of the request.</p>",
+          "location":"statusCode"
+        },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        }
+      }
+    },
     "DescribeUserRequest":{
       "type":"structure",
       "required":[
@@ -22678,6 +24375,12 @@
       "max":2048,
       "min":1,
       "pattern":"[ -ÿ]+"
+    },
+    "DescriptionSensitiveString":{
+      "type":"string",
+      "max":500,
+      "min":0,
+      "sensitive":true
     },
     "DestinationParameterValueConfiguration":{
       "type":"structure",
@@ -22838,6 +24541,139 @@
       },
       "documentation":"<p>A structure that represents additional options for display formatting.</p>"
     },
+    "DlpAction":{
+      "type":"string",
+      "enum":[
+        "ALLOW",
+        "WARN",
+        "BLOCK"
+      ]
+    },
+    "DlpProviderType":{
+      "type":"string",
+      "enum":["MICROSOFT_PURVIEW"]
+    },
+    "DlpSettingDetails":{
+      "type":"structure",
+      "required":[
+        "DlpSettingId",
+        "Name",
+        "Arn",
+        "Status",
+        "ProviderType",
+        "ProviderConfig",
+        "ProviderOutageAction",
+        "CreatedAt",
+        "UpdatedAt"
+      ],
+      "members":{
+        "DlpSettingId":{
+          "shape":"DlpSettingId",
+          "documentation":"<p>The ID of the DLP setting.</p>"
+        },
+        "Name":{
+          "shape":"DlpSettingName",
+          "documentation":"<p>The display name of the DLP setting.</p>"
+        },
+        "Arn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the DLP setting.</p>"
+        },
+        "Status":{
+          "shape":"DlpSettingStatus",
+          "documentation":"<p>The status of the DLP setting. Valid values are <code>ACTIVE</code> and <code>INACTIVE</code>.</p>"
+        },
+        "ProviderType":{
+          "shape":"DlpProviderType",
+          "documentation":"<p>The type of external DLP provider used for sensitivity label classification.</p>"
+        },
+        "ProviderConfig":{
+          "shape":"ProviderConfig",
+          "documentation":"<p>The provider-specific configuration for the DLP integration.</p>"
+        },
+        "ProviderOutageAction":{
+          "shape":"DlpAction",
+          "documentation":"<p>The behavior applied when the DLP provider is unreachable. Valid values are <code>ALLOW</code>, <code>WARN</code>, and <code>BLOCK</code>.</p>"
+        },
+        "CreatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time that the DLP setting was created, in ISO 8601 format.</p>"
+        },
+        "UpdatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time that the DLP setting was most recently updated, in ISO 8601 format.</p>"
+        }
+      },
+      "documentation":"<p>The full configuration details of a DLP setting.</p>"
+    },
+    "DlpSettingId":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"[a-zA-Z0-9\\-_]+"
+    },
+    "DlpSettingName":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"[A-Za-z0-9](?:[\\w- &]*[A-Za-z0-9])?"
+    },
+    "DlpSettingStatus":{
+      "type":"string",
+      "enum":[
+        "ACTIVE",
+        "INACTIVE"
+      ]
+    },
+    "DlpSettingSummary":{
+      "type":"structure",
+      "required":[
+        "DlpSettingId",
+        "Name",
+        "Arn",
+        "Status",
+        "ProviderType",
+        "CreatedAt",
+        "UpdatedAt"
+      ],
+      "members":{
+        "DlpSettingId":{
+          "shape":"DlpSettingId",
+          "documentation":"<p>The ID of the DLP setting.</p>"
+        },
+        "Name":{
+          "shape":"DlpSettingName",
+          "documentation":"<p>The display name of the DLP setting.</p>"
+        },
+        "Arn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the DLP setting.</p>"
+        },
+        "Status":{
+          "shape":"DlpSettingStatus",
+          "documentation":"<p>The status of the DLP setting. Valid values are <code>ACTIVE</code> and <code>INACTIVE</code>.</p>"
+        },
+        "ProviderType":{
+          "shape":"DlpProviderType",
+          "documentation":"<p>The type of external DLP provider used for sensitivity label classification.</p>"
+        },
+        "CreatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time that the DLP setting was created, in ISO 8601 format.</p>"
+        },
+        "UpdatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time that the DLP setting was most recently updated, in ISO 8601 format.</p>"
+        }
+      },
+      "documentation":"<p>A summary of a DLP setting returned by list operations.</p>"
+    },
+    "DlpSettingSummaryList":{
+      "type":"list",
+      "member":{"shape":"DlpSettingSummary"},
+      "max":10,
+      "min":0
+    },
     "DnsResolverList":{
       "type":"list",
       "member":{"shape":"IPv4Address"},
@@ -22954,6 +24790,48 @@
         "ENTERPRISE_AND_Q"
       ]
     },
+    "EffectiveLimit":{
+      "type":"structure",
+      "required":[
+        "resourceType",
+        "limitValue",
+        "limitUnit",
+        "source",
+        "profileId"
+      ],
+      "members":{
+        "resourceType":{
+          "shape":"ResourceType",
+          "documentation":"<p>The type of resource that the limit applies to.</p>"
+        },
+        "limitValue":{
+          "shape":"EffectiveLimitLimitValueLong",
+          "documentation":"<p>The maximum allowed value for the resource.</p>"
+        },
+        "limitUnit":{
+          "shape":"LimitUnit",
+          "documentation":"<p>The unit of measurement for the limit.</p>"
+        },
+        "source":{
+          "shape":"LimitSource",
+          "documentation":"<p>The source from which this limit was inherited. Possible values:</p> <ul> <li> <p> <code>DIRECT_USER</code> – The limit comes from a profile directly assigned to the user.</p> </li> <li> <p> <code>GROUP</code> – The limit comes from a profile assigned to a group the user belongs to.</p> </li> <li> <p> <code>ROLE</code> – The limit comes from a profile assigned to a role the user has.</p> </li> <li> <p> <code>ACCOUNT</code> – The limit comes from the account-level default profile.</p> </li> <li> <p> <code>SYSTEM_DEFAULT</code> – The limit comes from the built-in system default.</p> </li> </ul>"
+        },
+        "profileId":{
+          "shape":"ProfileId",
+          "documentation":"<p>The identifier of the limits profile that defines this limit.</p>"
+        }
+      },
+      "documentation":"<p>The effective limit for a resource type that applies to a user, considering all applicable profile assignments and inheritance rules.</p>"
+    },
+    "EffectiveLimitLimitValueLong":{
+      "type":"long",
+      "box":true,
+      "min":0
+    },
+    "EffectiveLimitList":{
+      "type":"list",
+      "member":{"shape":"EffectiveLimit"}
+    },
     "ElementValue":{
       "type":"string",
       "max":1024
@@ -22977,10 +24855,7 @@
     },
     "EmptyVisual":{
       "type":"structure",
-      "required":[
-        "VisualId",
-        "DataSetIdentifier"
-      ],
+      "required":["VisualId"],
       "members":{
         "VisualId":{
           "shape":"ShortRestrictiveResourceId",
@@ -22988,7 +24863,11 @@
         },
         "DataSetIdentifier":{
           "shape":"DataSetIdentifier",
-          "documentation":"<p>The data set that is used in the empty visual. Every visual requires a dataset to render.</p>"
+          "documentation":"<p>The data set that is used in the empty visual. Every visual requires a dataset or a topic to render.</p>"
+        },
+        "TopicIdentifier":{
+          "shape":"TopicIdentifier",
+          "documentation":"<p>The topic that is used in the empty visual. Every visual requires a dataset or a topic to render.</p>"
         },
         "Actions":{
           "shape":"VisualCustomActionList",
@@ -23751,7 +25630,8 @@
       "enum":[
         "ENFORCED_VALUE_FILTER",
         "CONDITIONAL_VALUE_FILTER",
-        "NAMED_VALUE_FILTER"
+        "NAMED_VALUE_FILTER",
+        "DASHBOARD_DEFAULT_FILTER"
       ]
     },
     "FilterControl":{
@@ -26726,6 +28606,32 @@
       },
       "documentation":"<p>The connection parameters for a Google Drive data source. Provide these parameters in the <code>DataSourceParameters</code> object when you create or update a data source that uses Google Drive.</p>"
     },
+    "Governance":{
+      "type":"structure",
+      "members":{
+        "DefaultCategoryEffects":{
+          "shape":"DefaultCategoryEffectsMap",
+          "documentation":"<p>A map of <code>DefaultCategoryEffects</code>.</p>"
+        }
+      },
+      "documentation":"<p>Contains the governance configuration for a custom permissions profile. When governance controls are defined for a category, any capabilities in that category not explicitly set to <code>ALLOW</code> in <code>Capabilities</code> are denied. Even newly added capabilities in the category are implicitly disabled when Amazon Quick releases them.</p>"
+    },
+    "GovernanceCategoryName":{
+      "type":"string",
+      "documentation":"<p>The name of a governance category. A governance category groups related capabilities so that you can apply a default effect to all capabilities in the category at once. Valid values:</p> <ul> <li> <p> <code>AI</code> – Capabilities related to Amazon Quick AI features.</p> </li> </ul>",
+      "max":128,
+      "min":1
+    },
+    "GovernedAction":{
+      "type":"string",
+      "enum":["SHARE"]
+    },
+    "GovernedActionList":{
+      "type":"list",
+      "member":{"shape":"GovernedAction"},
+      "max":10,
+      "min":1
+    },
     "GradientColor":{
       "type":"structure",
       "members":{
@@ -26934,6 +28840,11 @@
         }
       },
       "documentation":"<p>A <i>group</i> in Quick Sight consists of a set of users. You can use groups to make it easier to manage access and security. </p>"
+    },
+    "GroupArnList":{
+      "type":"list",
+      "member":{"shape":"Arn"},
+      "min":1
     },
     "GroupByColumnNameList":{
       "type":"list",
@@ -28089,10 +30000,7 @@
     },
     "InsightVisual":{
       "type":"structure",
-      "required":[
-        "VisualId",
-        "DataSetIdentifier"
-      ],
+      "required":["VisualId"],
       "members":{
         "VisualId":{
           "shape":"ShortRestrictiveResourceId",
@@ -28117,6 +30025,10 @@
         "DataSetIdentifier":{
           "shape":"DataSetIdentifier",
           "documentation":"<p>The dataset that is used in the insight visual.</p>"
+        },
+        "TopicIdentifier":{
+          "shape":"TopicIdentifier",
+          "documentation":"<p>The topic that is used in the insight visual.</p>"
         },
         "VisualContentAltText":{
           "shape":"LongPlainText",
@@ -28846,10 +30758,10 @@
       "members":{
         "template":{
           "shape":"KbTemplate",
-          "documentation":"<p>The template document that defines the knowledge base behavior.</p>"
+          "documentation":"<p>The connector configuration for the knowledge base data source. The structure depends on the connector type of the data source referenced by <code>DataSourceArn</code>.</p> <p>The template must be a JSON object. All connector types share the following top-level keys. The value of <code>type</code> and the contents of <code>connectionConfiguration</code> vary by connector type.</p> <ul> <li> <p> <code>type</code> – (Required) The connector type of the data source. This value identifies the connector. Valid values: <code>S3V2</code>, <code>WEBCRAWLERV3</code>, <code>GOOGLEDRIVEV3</code>, <code>ONEDRIVEV3</code>, <code>SHAREPOINTV3</code>. For the fields required by each connector, see the connector-specific list that follows.</p> </li> <li> <p> <code>connectionConfiguration</code> – (Required) The connection details for the data source. The keys in this object vary by connector type; see the connector-specific list that follows.</p> </li> <li> <p> <code>filterConfiguration</code> – (Optional) Rules that determine which content is crawled, such as inclusion and exclusion prefixes, patterns, or file-size limits.</p> </li> <li> <p> <code>accessControlConfiguration</code> – (Optional) Document-level access control (ACL) settings. Supported by all connector types except Web Crawler (<code>WEBCRAWLERV3</code>). The available fields depend on the connector type.</p> </li> <li> <p> <code>deletionProtectionConfiguration</code> – (Optional) Deletion-protection settings, supported by all connector types. Contains <code>enableDeletionProtection</code> (Boolean) and <code>deletionProtectionThreshold</code> (String; a value from 1 to 100).</p> </li> </ul> <p>The following list describes the valid <code>type</code> value, the <code>connectionConfiguration</code> contents, and any connector-specific fields for each connector type:</p> <ul> <li> <p> <b>Amazon S3</b> (<code>type</code>: <code>S3V2</code>) – The <code>type</code> value must be <code>S3V2</code>. <code>connectionConfiguration</code> is required and contains:</p> <ul> <li> <p> <code>bucketName</code> – (Required) The name of the Amazon S3 bucket to crawl. Type: String. Length: 3–63 characters. Pattern: <code>^[a-z0-9][.\\-a-z0-9]{1,61}[a-z0-9]$</code>.</p> </li> <li> <p> <code>bucketOwnerAccountId</code> – (Required) The ID of the AWS account that owns the bucket. Type: String. Pattern: <code>^\\d{12}$</code>.</p> </li> </ul> <p>Amazon S3 supports the following optional <code>filterConfiguration</code> fields:</p> <ul> <li> <p> <code>inclusionPrefixes</code> or <code>exclusionPrefixes</code> – Amazon S3 key prefixes to include or exclude. Type: Array of String. Up to 350 items, each 1–1,024 characters.</p> </li> <li> <p> <code>inclusionPatterns</code> or <code>exclusionPatterns</code> – Patterns to include or exclude objects. Type: Array of String. Up to 350 items, each 1–1,024 characters.</p> </li> <li> <p> <code>maxFileSizeInMegaBytes</code> – The maximum size, in MB, of a file to ingest. Type: String. Pattern: <code>^\\d+$</code>.</p> </li> </ul> <p>For Amazon S3, <code>accessControlConfiguration</code> supports the following fields:</p> <ul> <li> <p> <code>crawlAcl</code> – Specifies whether the connector crawls and enforces document access control lists (ACLs). Type: Boolean. When set to <code>true</code>, provide ACLs either in a global ACL configuration file (<code>aclConfigurationFilePath</code>) or in per-document metadata files.</p> </li> <li> <p> <code>aclConfigurationFilePath</code> – The Amazon S3 URI of the global ACL configuration file. Type: String. Length: 1–1,024 characters. Optional. If you don't provide a global ACL configuration file, define ACLs in per-document metadata files.</p> </li> <li> <p> <code>defaultAccessType</code> – The access behavior applied to Amazon S3 prefixes that are not listed in the ACL configuration. Type: String. The only supported value is <code>ALLOW</code>.</p> </li> </ul> <p> <code>metadataFilesPrefix</code> – (Optional) The Amazon S3 prefix under which per-document metadata files are stored. Each metadata file describes a single source document and its indexable attributes. This is not the global ACL configuration file. For a single global ACL file, use <code>accessControlConfiguration.aclConfigurationFilePath</code>. Type: String. Length: 1–1,024 characters.</p> </li> <li> <p> <b>Google Drive</b> (<code>type</code>: <code>GOOGLEDRIVEV3</code>) – Requires <code>connectionConfiguration</code> with <code>authType</code> set to <code>SERVICE_ACCOUNT</code>. Supports <code>dataEntityConfiguration</code> with <code>crawlMyDrive</code>, <code>crawlSharedWithMe</code>, and <code>crawlSharedDrives</code>.</p> </li> <li> <p> <b>OneDrive</b> (<code>type</code>: <code>ONEDRIVEV3</code>) – Requires <code>authType</code> at the template root level set to <code>TWO_LEGGED_OAUTH</code>. Requires <code>connectionConfiguration</code> with <code>tenantId</code> in UUID format. Supports <code>dataEntityConfiguration</code> with <code>crawlPersonalDrives</code> and <code>crawlSharedWithMe</code>.</p> </li> <li> <p> <b>SharePoint</b> (<code>type</code>: <code>SHAREPOINTV3</code>) – Requires <code>connectionConfiguration</code> with <code>tenantId</code> in UUID format. Supports <code>dataEntityConfiguration</code> with <code>siteUrls</code>, <code>crawlFiles</code>, and <code>crawlPages</code>.</p> </li> <li> <p> <b>Web Crawler</b> (<code>type</code>: <code>WEBCRAWLERV3</code>) – Requires <code>connectionConfiguration</code> with <code>seedUrls</code> or <code>siteMapUrls</code> (mutually exclusive) and <code>authType</code>. Supports <code>crawlConfiguration</code> for crawl depth, rate limits, and scope. Supports <code>filterConfiguration</code> for file size limits and URL patterns. Valid values for <code>authType</code>: <code>NO_AUTH</code>, <code>BASIC_AUTH</code>, <code>FORM</code>, <code>SAML</code>.</p> </li> </ul> <p> <b>Enabling document-level access control for Amazon S3</b> </p> <p>For an Amazon S3 (<code>S3V2</code>) knowledge base, document-level access control is governed by two settings that must both be enabled:</p> <ol> <li> <p>In this template, set <code>accessControlConfiguration.crawlAcl</code> to <code>true</code>. Define ACLs either in a global ACL configuration file, referenced by <code>accessControlConfiguration.aclConfigurationFilePath</code>, or in per-document metadata files. To control access for prefixes that are not listed in the ACL file, you can also set <code>accessControlConfiguration.defaultAccessType</code>.</p> </li> <li> <p>In the <code>CreateKnowledgeBase</code> or <code>UpdateKnowledgeBase</code> request, set the top-level <code>AccessControlConfiguration.isACLEnabled</code> to <code>true</code>.</p> </li> </ol>"
         }
       },
-      "documentation":"<p>The template configuration for a knowledge base.</p>"
+      "documentation":"<p>The template configuration for a knowledge base. This object contains connector-specific configuration that defines how data is crawled and indexed.</p>"
     },
     "KeyPairCredentials":{
       "type":"structure",
@@ -28985,7 +30897,7 @@
       "members":{
         "templateConfiguration":{
           "shape":"KbTemplateConfiguration",
-          "documentation":"<p>The template configuration for the knowledge base.</p>"
+          "documentation":"<p>The template configuration that defines how the data source connector crawls and indexes data for the knowledge base. The template structure varies by connector type. See <code>KbTemplateConfiguration</code> for connector-specific details.</p>"
         }
       },
       "documentation":"<p>The configuration settings for a knowledge base.</p>",
@@ -29179,6 +31091,45 @@
       },
       "documentation":"<p>A summary of a knowledge base, including its identifier, name, status, and metadata.</p>"
     },
+    "LabelActionMapping":{
+      "type":"structure",
+      "required":[
+        "LabelId",
+        "LabelName",
+        "Action"
+      ],
+      "members":{
+        "LabelId":{
+          "shape":"LabelId",
+          "documentation":"<p>The identifier of the sensitivity label from the DLP provider.</p>"
+        },
+        "LabelName":{
+          "shape":"LabelName",
+          "documentation":"<p>The display name of the sensitivity label from the DLP provider.</p>"
+        },
+        "Action":{
+          "shape":"DlpAction",
+          "documentation":"<p>The enforcement action to apply when content with this sensitivity label is detected. Valid values are <code>ALLOW</code>, <code>BLOCK</code>, and <code>WARN</code>.</p>"
+        }
+      },
+      "documentation":"<p>Maps a sensitivity label from Microsoft Purview to an enforcement action.</p>"
+    },
+    "LabelActionMappingList":{
+      "type":"list",
+      "member":{"shape":"LabelActionMapping"},
+      "max":100,
+      "min":0
+    },
+    "LabelId":{
+      "type":"string",
+      "max":512,
+      "min":1
+    },
+    "LabelName":{
+      "type":"string",
+      "max":512,
+      "min":1
+    },
     "LabelOptions":{
       "type":"structure",
       "members":{
@@ -29269,10 +31220,7 @@
     },
     "LayerMapVisual":{
       "type":"structure",
-      "required":[
-        "VisualId",
-        "DataSetIdentifier"
-      ],
+      "required":["VisualId"],
       "members":{
         "VisualId":{
           "shape":"ShortRestrictiveResourceId",
@@ -29286,7 +31234,11 @@
         },
         "DataSetIdentifier":{
           "shape":"DataSetIdentifier",
-          "documentation":"<p>The dataset that is used to create the layer map visual. You can't create a visual without a dataset.</p>"
+          "documentation":"<p>The dataset that is used to create the layer map visual. You can't create a visual without a dataset or a topic.</p>"
+        },
+        "TopicIdentifier":{
+          "shape":"TopicIdentifier",
+          "documentation":"<p>The topic that is used in the layer map visual. You can't create a visual without a dataset or a topic.</p>"
         },
         "VisualContentAltText":{
           "shape":"LongPlainText",
@@ -29397,9 +31349,86 @@
       "error":{"httpStatusCode":409},
       "exception":true
     },
+    "LimitSource":{
+      "type":"string",
+      "documentation":"<p>The source from which an effective limit was inherited.</p>",
+      "enum":[
+        "DIRECT_USER",
+        "GROUP",
+        "ROLE",
+        "ACCOUNT",
+        "SYSTEM_DEFAULT"
+      ]
+    },
+    "LimitUnit":{
+      "type":"string",
+      "documentation":"<p>The unit of measurement for a resource limit value.</p>",
+      "enum":[
+        "MB",
+        "GB",
+        "HOURS",
+        "DAYS"
+      ]
+    },
+    "LimitedSensitiveString":{
+      "type":"string",
+      "max":256,
+      "sensitive":true
+    },
     "LimitedString":{
       "type":"string",
       "max":256
+    },
+    "LimitsProfile":{
+      "type":"structure",
+      "required":[
+        "profileId",
+        "arn",
+        "accountId",
+        "profileName",
+        "resourceLimits",
+        "createdAt",
+        "updatedAt"
+      ],
+      "members":{
+        "profileId":{
+          "shape":"ProfileId",
+          "documentation":"<p>The unique identifier for the limits profile.</p>"
+        },
+        "arn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the limits profile.</p>"
+        },
+        "accountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that contains the limits profile.</p>"
+        },
+        "profileName":{
+          "shape":"ProfileName",
+          "documentation":"<p>The display name of the limits profile.</p>"
+        },
+        "description":{
+          "shape":"ProfileDescription",
+          "documentation":"<p>The description of the limits profile.</p>"
+        },
+        "resourceLimits":{
+          "shape":"ResourceLimitsMap",
+          "documentation":"<p>A map of resource types to their limit values.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time that the limits profile was created.</p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time that the limits profile was last updated.</p>"
+        }
+      },
+      "documentation":"<p>A limits profile that defines resource usage limits for Amazon Quick Sight users. Limits profiles can be assigned to users, groups, or roles to control resource consumption.</p>"
+    },
+    "LimitsProfileList":{
+      "type":"list",
+      "member":{"shape":"LimitsProfile"}
     },
     "LineChartAggregatedFieldWells":{
       "type":"structure",
@@ -29888,6 +31917,81 @@
         }
       }
     },
+    "ListApprovalPoliciesRequest":{
+      "type":"structure",
+      "members":{
+        "NextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The token for the next set of results, or null if there are no more results.</p>",
+          "location":"querystring",
+          "locationName":"next-token"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return in a single call. If you don't specify a value, the service returns a default number of results. Use the <code>NextToken</code> value in the response to retrieve additional results.</p>",
+          "box":true,
+          "location":"querystring",
+          "locationName":"max-results"
+        }
+      }
+    },
+    "ListApprovalPoliciesResponse":{
+      "type":"structure",
+      "required":["Policies"],
+      "members":{
+        "Policies":{
+          "shape":"ApprovalPolicyList",
+          "documentation":"<p>The list of approval policies.</p>"
+        },
+        "NextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The token for the next set of results, or null if there are no more results.</p>"
+        }
+      }
+    },
+    "ListAppsRequest":{
+      "type":"structure",
+      "required":["AwsAccountId"],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that contains the apps.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return in a single request. Valid range is 1 to 100. If you don't specify a value, the default is 20.</p>",
+          "box":true,
+          "location":"querystring",
+          "locationName":"max-results"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of results, or null if there are no more results.</p>",
+          "location":"querystring",
+          "locationName":"next-token"
+        }
+      }
+    },
+    "ListAppsResponse":{
+      "type":"structure",
+      "required":["AppSummaryList"],
+      "members":{
+        "AppSummaryList":{
+          "shape":"AppSummaryList",
+          "documentation":"<p>A list of app summaries.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of results, or null if there are no more results.</p>"
+        },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        }
+      }
+    },
     "ListAssetBundleExportJobsRequest":{
       "type":"structure",
       "required":["AwsAccountId"],
@@ -30303,6 +32407,49 @@
           "shape":"StatusCode",
           "documentation":"<p>The HTTP status of the request.</p>",
           "location":"statusCode"
+        }
+      }
+    },
+    "ListDlpSettingsRequest":{
+      "type":"structure",
+      "required":["AwsAccountId"],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that contains the DLP settings that you want to list.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "NextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The token for the next set of results, or null if there are no more results.</p>",
+          "location":"querystring",
+          "locationName":"next-token"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return per request.</p>",
+          "box":true,
+          "location":"querystring",
+          "locationName":"max-results"
+        }
+      }
+    },
+    "ListDlpSettingsResponse":{
+      "type":"structure",
+      "required":["DlpSettingSummaries"],
+      "members":{
+        "DlpSettingSummaries":{
+          "shape":"DlpSettingSummaryList",
+          "documentation":"<p>A list of <code>DlpSettingSummary</code> objects for the DLP settings in the account. The list is empty if no DLP settings have been configured.</p>"
+        },
+        "NextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The token for the next set of results, or null if there are no more results.</p>"
+        },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
         }
       }
     },
@@ -30909,6 +33056,56 @@
           "documentation":"<p>The HTTP status of the request.</p>",
           "box":true,
           "location":"statusCode"
+        }
+      }
+    },
+    "ListLimitsProfilesRequest":{
+      "type":"structure",
+      "required":["accountId"],
+      "members":{
+        "accountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that contains the limits profiles.</p>",
+          "location":"uri",
+          "locationName":"accountId"
+        },
+        "resourceType":{
+          "shape":"ResourceType",
+          "documentation":"<p>An optional filter that limits the results to profiles that contain the specified resource type. If you don't specify a value, the operation returns all profiles.</p>",
+          "location":"querystring",
+          "locationName":"resourceType"
+        },
+        "maxResults":{
+          "shape":"ListLimitsProfilesRequestMaxResultsInteger",
+          "documentation":"<p>The maximum number of results to return in a single call. If you don't specify a value, the service uses the default maximum.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>The token for the next set of results, or null if there are no more results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListLimitsProfilesRequestMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "ListLimitsProfilesResponse":{
+      "type":"structure",
+      "required":["profiles"],
+      "members":{
+        "profiles":{
+          "shape":"LimitsProfileList",
+          "documentation":"<p>A list of limits profiles.</p>"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>The token for the next set of results, or null if there are no more results.</p>"
         }
       }
     },
@@ -31758,6 +33955,53 @@
         }
       }
     },
+    "ListTopicsV2Request":{
+      "type":"structure",
+      "required":["AwsAccountId"],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that contains the topics that you want to list.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token for the next set of results, or null if there are no more results.</p>",
+          "location":"querystring",
+          "locationName":"next-token"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to be returned per request.</p>",
+          "box":true,
+          "location":"querystring",
+          "locationName":"max-results"
+        }
+      }
+    },
+    "ListTopicsV2Response":{
+      "type":"structure",
+      "members":{
+        "TopicSummaryList":{
+          "shape":"TopicV2Summaries",
+          "documentation":"<p>A list of topic summaries.</p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token for the next set of results, or null if there are no more results.</p>"
+        },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        },
+        "Status":{
+          "shape":"StatusCode",
+          "documentation":"<p>The HTTP status of the request.</p>",
+          "location":"statusCode"
+        }
+      }
+    },
     "ListUserGroupsRequest":{
       "type":"structure",
       "required":[
@@ -32442,6 +34686,40 @@
       },
       "documentation":"<p>The metric comparison computation configuration.</p>"
     },
+    "MicrosoftPurviewCredentials":{
+      "type":"structure",
+      "required":["SecretArn"],
+      "members":{
+        "SecretArn":{
+          "shape":"SecretManagerArn",
+          "documentation":"<p>The ARN of the Amazon Web Services Secrets Manager secret that contains the Microsoft Purview OAuth credentials. The secret includes the Azure tenant ID, client ID, and client secret or certificate.</p>"
+        }
+      },
+      "documentation":"<p>The credentials for Microsoft Purview DLP integration. The credentials are stored in Amazon Web Services Secrets Manager and referenced by ARN.</p>"
+    },
+    "MicrosoftPurviewProviderConfig":{
+      "type":"structure",
+      "required":[
+        "Credentials",
+        "LabelActionMappings",
+        "UnmappedAction"
+      ],
+      "members":{
+        "Credentials":{
+          "shape":"MicrosoftPurviewCredentials",
+          "documentation":"<p>The credentials used to authenticate with Microsoft Purview.</p>"
+        },
+        "LabelActionMappings":{
+          "shape":"LabelActionMappingList",
+          "documentation":"<p>The mappings from Microsoft Purview sensitivity labels to enforcement actions.</p>"
+        },
+        "UnmappedAction":{
+          "shape":"DlpAction",
+          "documentation":"<p>The default action to apply to content that has no sensitivity label or whose label is not mapped. Valid values are <code>ALLOW</code>, <code>BLOCK</code>, and <code>WARN</code>.</p>"
+        }
+      },
+      "documentation":"<p>The full configuration for Microsoft Purview DLP integration, including the provider credentials and the label-action mappings that define the enforcement policy.</p>"
+    },
     "MinimumLabelType":{
       "type":"structure",
       "members":{
@@ -32550,6 +34828,18 @@
         "Metric":{
           "shape":"NamedEntityDefinitionMetric",
           "documentation":"<p>The definition of a metric.</p>"
+        },
+        "RankOrder":{
+          "shape":"NullableInteger",
+          "documentation":"<p>The rank order of the named entity definition.</p>"
+        },
+        "PresentationOrder":{
+          "shape":"NullableInteger",
+          "documentation":"<p>The presentation order of the named entity definition.</p>"
+        },
+        "IsHidden":{
+          "shape":"NullableBoolean",
+          "documentation":"<p>A Boolean value that indicates whether the named entity definition is hidden.</p>"
         }
       },
       "documentation":"<p>A structure that represents a named entity.</p>"
@@ -32581,6 +34871,29 @@
         }
       },
       "documentation":"<p>The definition for a <code>NamedEntityRef</code>.</p>"
+    },
+    "NamedEntitySort":{
+      "type":"structure",
+      "required":[
+        "FieldName",
+        "Direction"
+      ],
+      "members":{
+        "FieldName":{
+          "shape":"LimitedString",
+          "documentation":"<p>The name of the field that is used for the sort.</p>"
+        },
+        "Direction":{
+          "shape":"TopicSortDirection",
+          "documentation":"<p>The direction of the sort. Valid values are <code>ASCENDING</code> and <code>DESCENDING</code>.</p>"
+        }
+      },
+      "documentation":"<p>A structure that represents a sort for a named entity.</p>"
+    },
+    "NamedEntitySortList":{
+      "type":"list",
+      "member":{"shape":"NamedEntitySort"},
+      "max":1
     },
     "NamedFilterAggType":{
       "type":"string",
@@ -32897,6 +35210,7 @@
       "documentation":"<p>The options that determine the null value format configuration.</p>"
     },
     "NullableBoolean":{"type":"boolean"},
+    "NullableInteger":{"type":"integer"},
     "NumberDisplayFormatConfiguration":{
       "type":"structure",
       "members":{
@@ -33583,6 +35897,11 @@
         }
       },
       "documentation":"<p>The pagination configuration for a table visual or boxplot.</p>"
+    },
+    "PaginationToken":{
+      "type":"string",
+      "max":4096,
+      "min":1
     },
     "Palette":{
       "type":"structure",
@@ -35180,6 +37499,22 @@
       },
       "documentation":"<p>The table query sorting options for the plugin visual.</p>"
     },
+    "PolicyDescription":{
+      "type":"string",
+      "max":1024,
+      "min":0
+    },
+    "PolicyId":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"[a-zA-Z0-9\\-_]+"
+    },
+    "PolicyName":{
+      "type":"string",
+      "max":256,
+      "min":1
+    },
     "Port":{
       "type":"integer",
       "max":65535,
@@ -35375,6 +37710,45 @@
       "max":256,
       "sensitive":true
     },
+    "ProfileDescription":{
+      "type":"string",
+      "max":1024,
+      "min":0
+    },
+    "ProfileId":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"lp-[a-f0-9-]+"
+    },
+    "ProfileLimitValue":{
+      "type":"structure",
+      "required":[
+        "maxValue",
+        "unit"
+      ],
+      "members":{
+        "maxValue":{
+          "shape":"ProfileLimitValueMaxValueLong",
+          "documentation":"<p>The maximum allowed value for the resource.</p>"
+        },
+        "unit":{
+          "shape":"LimitUnit",
+          "documentation":"<p>The unit of measurement for the limit value.</p>"
+        }
+      },
+      "documentation":"<p>A value that defines a resource usage limit, consisting of a maximum value and a unit of measurement.</p>"
+    },
+    "ProfileLimitValueMaxValueLong":{
+      "type":"long",
+      "box":true,
+      "min":0
+    },
+    "ProfileName":{
+      "type":"string",
+      "max":256,
+      "min":1
+    },
     "ProgressBarOptions":{
       "type":"structure",
       "members":{
@@ -35429,6 +37803,17 @@
         "DIMENSION",
         "MEASURE"
       ]
+    },
+    "ProviderConfig":{
+      "type":"structure",
+      "members":{
+        "MicrosoftPurview":{
+          "shape":"MicrosoftPurviewProviderConfig",
+          "documentation":"<p>The configuration for a Microsoft Purview DLP integration.</p>"
+        }
+      },
+      "documentation":"<p>The provider-specific configuration for a DLP integration. This is a union type structure. For this structure to be valid, only one of the attributes can be defined.</p>",
+      "union":true
     },
     "PublicSpaceArn":{
       "type":"string",
@@ -35860,11 +38245,11 @@
       "type":"structure",
       "members":{
         "Minimum":{
-          "shape":"LimitedString",
+          "shape":"LimitedSensitiveString",
           "documentation":"<p>The minimum value for a range constant.</p>"
         },
         "Maximum":{
-          "shape":"LimitedString",
+          "shape":"LimitedSensitiveString",
           "documentation":"<p>The maximum value for a range constant.</p>"
         }
       },
@@ -36989,6 +39374,11 @@
       "exception":true
     },
     "ResourceId":{"type":"string"},
+    "ResourceLimitsMap":{
+      "type":"map",
+      "key":{"shape":"ResourceType"},
+      "value":{"shape":"ProfileLimitValue"}
+    },
     "ResourceName":{
       "type":"string",
       "max":128,
@@ -37046,6 +39436,18 @@
         "UPDATE_FAILED",
         "DELETED"
       ]
+    },
+    "ResourceType":{
+      "type":"string",
+      "documentation":"<p>The type of resource that a limit applies to.</p>",
+      "enum":[
+        "INDEX_STORAGE",
+        "AGENT_HOURS"
+      ]
+    },
+    "ResourceTypeList":{
+      "type":"list",
+      "member":{"shape":"ResourceType"}
     },
     "ResourceUnavailableException":{
       "type":"structure",
@@ -37398,10 +39800,10 @@
         },
         "MetadataFilesLocation":{
           "shape":"MetadataFilesLocation",
-          "documentation":"<p>The location of metadata files within the S3 bucket that describe the structure and content of the knowledge base.</p>"
+          "documentation":"<p>The Amazon S3 location (prefix) of per-document metadata files. Each metadata file describes a single source document and its indexable attributes, such as title, category, and version. This is not the global ACL configuration file. To apply a single global ACL file to the entire knowledge base, use the access control configuration instead.</p>"
         }
       },
-      "documentation":"<p>The parameters that are required to connect to a S3 Knowledge Base data source.</p>"
+      "documentation":"<p>The parameters that are required to connect to an S3 knowledge base data source.</p> <p> <b>Prerequisites: Amazon S3 bucket access</b> </p> <p>Before you call <code>CreateKnowledgeBase</code> for an Amazon S3 knowledge base, an administrator must grant Amazon QuickSight access to the source S3 bucket. If access has not been granted for the bucket, knowledge base creation fails.</p> <p>To grant access, an administrator adds the bucket in the Amazon QuickSight admin console, under Permissions, Amazon Web Services resources, Amazon S3, Select S3 buckets. This authorizes the Amazon QuickSight service role to read the bucket. The bucket can be in the same Amazon Web Services account or, when the bucket owner has authorized your account, in a different account.</p> <p>The service role requires at least the following permissions on the bucket:</p> <ul> <li> <p> <code>s3:GetObject</code> </p> </li> <li> <p> <code>s3:ListBucket</code> </p> </li> <li> <p> <code>s3:GetBucketLocation</code> </p> </li> <li> <p> <code>s3:GetObjectVersion</code> </p> </li> <li> <p> <code>s3:ListBucketVersions</code> </p> </li> </ul> <p>For the full procedure, including cross-account buckets and KMS-encrypted buckets, see the Amazon S3 knowledge base administrator setup guide.</p> <note> <p>To grant access for a specific S3 knowledge base data source without granting account-wide S3 access, provide a custom IAM role on the data source by using <code>RoleArn</code>.</p> </note>"
     },
     "S3Parameters":{
       "type":"structure",
@@ -37947,6 +40349,90 @@
         }
       }
     },
+    "SearchAppsFilter":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Operator",
+        "Value"
+      ],
+      "members":{
+        "Name":{
+          "shape":"SearchAppsFilterName",
+          "documentation":"<p>The name of the filter attribute.</p>"
+        },
+        "Operator":{
+          "shape":"FilterOperator",
+          "documentation":"<p>The comparison operator for the filter.</p>"
+        },
+        "Value":{
+          "shape":"String",
+          "documentation":"<p>The value to filter on.</p>"
+        }
+      },
+      "documentation":"<p>A filter to apply when searching for apps.</p>"
+    },
+    "SearchAppsFilterList":{
+      "type":"list",
+      "member":{"shape":"SearchAppsFilter"}
+    },
+    "SearchAppsFilterName":{
+      "type":"string",
+      "documentation":"<p>The name of a field that you can use to filter app search results. Valid values are:</p> <ul> <li> <p> <code>APP_ID</code> – The unique identifier of the app.</p> </li> <li> <p> <code>APP_NAME</code> – The display name of the app.</p> </li> <li> <p> <code>DIRECT_QUICKSIGHT_SOLE_OWNER</code> – An Amazon QuickSight user or group that is the sole direct owner.</p> </li> <li> <p> <code>DIRECT_QUICKSIGHT_OWNER</code> – An Amazon QuickSight user or group with direct owner permissions.</p> </li> <li> <p> <code>DIRECT_QUICKSIGHT_VIEWER_OR_OWNER</code> – An Amazon QuickSight user or group with direct viewer or owner permissions.</p> </li> </ul>",
+      "enum":[
+        "APP_ID",
+        "APP_NAME",
+        "DIRECT_QUICKSIGHT_SOLE_OWNER",
+        "DIRECT_QUICKSIGHT_OWNER",
+        "DIRECT_QUICKSIGHT_VIEWER_OR_OWNER"
+      ]
+    },
+    "SearchAppsRequest":{
+      "type":"structure",
+      "required":[
+        "AwsAccountId",
+        "Filters"
+      ],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that contains the apps to search.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "Filters":{
+          "shape":"SearchAppsFilterList",
+          "documentation":"<p>The filters to apply to the search.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return in a single request. Valid range is 1 to 100. If you don't specify a value, the default is 20.</p>",
+          "box":true
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of results, or null if there are no more results.</p>"
+        }
+      }
+    },
+    "SearchAppsResponse":{
+      "type":"structure",
+      "required":["AppSummaryList"],
+      "members":{
+        "AppSummaryList":{
+          "shape":"AppSummaryList",
+          "documentation":"<p>A list of app summaries that match the search criteria.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of results, or null if there are no more results.</p>"
+        },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        }
+      }
+    },
     "SearchDashboardsRequest":{
       "type":"structure",
       "required":[
@@ -38451,6 +40937,56 @@
         }
       }
     },
+    "SearchTopicsV2Request":{
+      "type":"structure",
+      "required":[
+        "AwsAccountId",
+        "Filters"
+      ],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that contains the topic that you want to search.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "Filters":{
+          "shape":"TopicSearchFilterList",
+          "documentation":"<p>The filters that you want to use to search for the topic.</p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token for the next set of results, or null if there are no more results.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to be returned per request.</p>",
+          "box":true
+        }
+      }
+    },
+    "SearchTopicsV2Response":{
+      "type":"structure",
+      "members":{
+        "TopicSummaryList":{
+          "shape":"TopicV2Summaries",
+          "documentation":"<p>A list of topic summaries that is returned by the search topic request.</p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token for the next set of results, or null if there are no more results.</p>"
+        },
+        "Status":{
+          "shape":"StatusCode",
+          "documentation":"<p>The HTTP status of the request.</p>",
+          "location":"statusCode"
+        },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        }
+      }
+    },
     "Seasonality":{
       "type":"integer",
       "max":180,
@@ -38471,6 +41007,12 @@
       "max":2048,
       "min":1,
       "pattern":"^arn:[-a-z0-9]*:secretsmanager:[-a-z0-9]*:[0-9]{12}:secret:.+"
+    },
+    "SecretManagerArn":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "pattern":"arn:aws(-[\\w]+)*:secretsmanager:[a-z0-9\\-]+:\\d{12}:secret:.+"
     },
     "SectionAfterPageBreak":{
       "type":"structure",
@@ -41324,9 +43866,15 @@
       "min":1,
       "sensitive":true
     },
+    "SynonymString":{
+      "type":"string",
+      "max":256,
+      "min":0,
+      "sensitive":true
+    },
     "Synonyms":{
       "type":"list",
-      "member":{"shape":"LimitedString"}
+      "member":{"shape":"SynonymString"}
     },
     "TableAggregatedFieldWells":{
       "type":"structure",
@@ -42135,6 +44683,10 @@
         "DataSetReferences":{
           "shape":"DataSetReferenceList",
           "documentation":"<p>A structure containing information about the dataset references used as placeholders in the template.</p>"
+        },
+        "TopicReferences":{
+          "shape":"TopicReferenceList",
+          "documentation":"<p>A structure containing information about the topic references used as placeholders in the template.</p>"
         }
       },
       "documentation":"<p>The source analysis of the template.</p>"
@@ -42222,6 +44774,10 @@
           "shape":"DataSetConfigurationList",
           "documentation":"<p>Schema of the dataset identified by the placeholder. Any dashboard created from this template should be bound to new datasets matching the same schema described through this API operation.</p>"
         },
+        "TopicConfigurations":{
+          "shape":"TopicConfigurationList",
+          "documentation":"<p>Schema of the topic identified by the placeholder. Any dashboard created from this template should be bound to new topics matching the same schema described through this API operation.</p>"
+        },
         "Description":{
           "shape":"VersionDescription",
           "documentation":"<p>The description of the template.</p>"
@@ -42248,6 +44804,10 @@
         "DataSetConfigurations":{
           "shape":"DataSetConfigurationList",
           "documentation":"<p>An array of dataset configurations. These configurations define the required columns for each dataset used within a template.</p>"
+        },
+        "TopicConfigurations":{
+          "shape":"TopicConfigurationList",
+          "documentation":"<p>An array of topic configurations. These configurations define the required columns for each topic used within a template.</p>"
         },
         "Sheets":{
           "shape":"SheetDefinitionList",
@@ -43186,6 +45746,11 @@
         "ABSOLUTE_DIFFERENCE"
       ]
     },
+    "TopicArnsList":{
+      "type":"list",
+      "member":{"shape":"Arn"},
+      "max":100
+    },
     "TopicCalculatedField":{
       "type":"structure",
       "required":[
@@ -43194,11 +45759,11 @@
       ],
       "members":{
         "CalculatedFieldName":{
-          "shape":"LimitedString",
+          "shape":"LimitedSensitiveString",
           "documentation":"<p>The calculated field name.</p>"
         },
         "CalculatedFieldDescription":{
-          "shape":"LimitedString",
+          "shape":"DescriptionSensitiveString",
           "documentation":"<p>The calculated field description.</p>"
         },
         "Expression":{
@@ -43286,6 +45851,10 @@
         "Inverse":{
           "shape":"Boolean",
           "documentation":"<p>A Boolean value that indicates if the filter is inverse.</p>"
+        },
+        "NullFilter":{
+          "shape":"NullFilterType",
+          "documentation":"<p>The <code>null</code> filter that is applied to the category filter.</p>"
         }
       },
       "documentation":"<p>A structure that represents a category filter.</p>"
@@ -43298,7 +45867,7 @@
           "documentation":"<p>The type of category filter constant. This element is used to specify whether a constant is a singular or collective. Valid values are <code>SINGULAR</code> and <code>COLLECTIVE</code>.</p>"
         },
         "SingularConstant":{
-          "shape":"LimitedString",
+          "shape":"LimitedSensitiveString",
           "documentation":"<p>A singular constant used in a category filter. This element is used to specify a single value for the constant.</p>"
         },
         "CollectiveConstant":{
@@ -43318,11 +45887,11 @@
           "documentation":"<p>The name of the column.</p>"
         },
         "ColumnFriendlyName":{
-          "shape":"LimitedString",
+          "shape":"LimitedSensitiveString",
           "documentation":"<p>A user-friendly name for the column.</p>"
         },
         "ColumnDescription":{
-          "shape":"LimitedString",
+          "shape":"DescriptionSensitiveString",
           "documentation":"<p>A description of the column and its contents.</p>"
         },
         "ColumnSynonyms":{
@@ -43398,6 +45967,29 @@
       },
       "documentation":"<p>Configuration options for a <code>Topic</code>.</p>"
     },
+    "TopicConfiguration":{
+      "type":"structure",
+      "members":{
+        "Placeholder":{
+          "shape":"String",
+          "documentation":"<p>The placeholder for the topic configuration.</p>"
+        },
+        "DataSetSchema":{
+          "shape":"DataSetSchema",
+          "documentation":"<p>Topic schema.</p>"
+        },
+        "ColumnGroupSchemaList":{
+          "shape":"ColumnGroupSchemaList",
+          "documentation":"<p>The list of column group schemas in the topic configuration.</p>"
+        }
+      },
+      "documentation":"<p>The configuration of a topic.</p>"
+    },
+    "TopicConfigurationList":{
+      "type":"list",
+      "member":{"shape":"TopicConfiguration"},
+      "max":30
+    },
     "TopicConstantValue":{
       "type":"structure",
       "members":{
@@ -43434,9 +46026,19 @@
         "Constant":{
           "shape":"TopicRangeFilterConstant",
           "documentation":"<p>The constant used in a date range filter.</p>"
+        },
+        "NullFilter":{
+          "shape":"NullFilterType",
+          "documentation":"<p>The <code>null</code> filter that is applied to the date range filter.</p>"
         }
       },
       "documentation":"<p>A filter used to restrict data based on a range of dates or times.</p>"
+    },
+    "TopicDescription":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":".*\\S.*"
     },
     "TopicDetails":{
       "type":"structure",
@@ -43472,7 +46074,7 @@
       ],
       "members":{
         "FilterDescription":{
-          "shape":"LimitedString",
+          "shape":"DescriptionSensitiveString",
           "documentation":"<p>A description of the filter used to select items for a topic.</p>"
         },
         "FilterClass":{
@@ -43813,6 +46415,34 @@
       "max":256,
       "pattern":"^[A-Za-z0-9-_.\\\\+]*$"
     },
+    "TopicIdentifier":{
+      "type":"string",
+      "max":2048,
+      "min":1
+    },
+    "TopicIdentifierDeclaration":{
+      "type":"structure",
+      "required":[
+        "Identifier",
+        "TopicArn"
+      ],
+      "members":{
+        "Identifier":{
+          "shape":"TopicIdentifier",
+          "documentation":"<p>The identifier of the topic, typically the topic's name.</p>"
+        },
+        "TopicArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the topic.</p>"
+        }
+      },
+      "documentation":"<p>A topic.</p>"
+    },
+    "TopicIdentifierDeclarationList":{
+      "type":"list",
+      "member":{"shape":"TopicIdentifierDeclaration"},
+      "max":50
+    },
     "TopicNamedEntities":{
       "type":"list",
       "member":{"shape":"TopicNamedEntity"}
@@ -43826,7 +46456,7 @@
           "documentation":"<p>The name of the named entity.</p>"
         },
         "EntityDescription":{
-          "shape":"LimitedString",
+          "shape":"DescriptionSensitiveString",
           "documentation":"<p>The description of the named entity.</p>"
         },
         "EntitySynonyms":{
@@ -43840,6 +46470,18 @@
         "Definition":{
           "shape":"NamedEntityDefinitions",
           "documentation":"<p>The definition of a named entity.</p>"
+        },
+        "Sort":{
+          "shape":"NamedEntitySortList",
+          "documentation":"<p>The sort configuration of the named entity.</p>"
+        },
+        "RankOrder":{
+          "shape":"NullableInteger",
+          "documentation":"<p>The rank order of the named entity.</p>"
+        },
+        "PresentationOrder":{
+          "shape":"NullableInteger",
+          "documentation":"<p>The presentation order of the named entity.</p>"
         }
       },
       "documentation":"<p>A structure that represents a named entity.</p>"
@@ -43869,6 +46511,14 @@
         "Aggregation":{
           "shape":"NamedFilterAggType",
           "documentation":"<p>An aggregation function that specifies how to calculate the value of a numeric field for a topic. Valid values for this structure are <code>NO_AGGREGATION</code>, <code>SUM</code>, <code>AVERAGE</code>, <code>COUNT</code>, <code>DISTINCT_COUNT</code>, <code>MAX</code>, <code>MEDIAN</code>, <code>MIN</code>, <code>STDEV</code>, <code>STDEVP</code>, <code>VAR</code>, and <code>VARP</code>.</p>"
+        },
+        "Inverse":{
+          "shape":"Boolean",
+          "documentation":"<p>A Boolean value that indicates if the filter is inverse.</p>"
+        },
+        "NullFilter":{
+          "shape":"NullFilterType",
+          "documentation":"<p>The <code>null</code> filter that is applied to the numeric equality filter.</p>"
         }
       },
       "documentation":"<p>A filter that filters topics based on the value of a numeric field. The filter includes only topics whose numeric field value matches the specified value.</p>"
@@ -43887,6 +46537,14 @@
         "Aggregation":{
           "shape":"NamedFilterAggType",
           "documentation":"<p>An aggregation function that specifies how to calculate the value of a numeric field for a topic, Valid values for this structure are <code>NO_AGGREGATION</code>, <code>SUM</code>, <code>AVERAGE</code>, <code>COUNT</code>, <code>DISTINCT_COUNT</code>, <code>MAX</code>, <code>MEDIAN</code>, <code>MIN</code>, <code>STDEV</code>, <code>STDEVP</code>, <code>VAR</code>, and <code>VARP</code>.</p>"
+        },
+        "Inverse":{
+          "shape":"Boolean",
+          "documentation":"<p>A Boolean value that indicates if the filter is inverse.</p>"
+        },
+        "NullFilter":{
+          "shape":"NullFilterType",
+          "documentation":"<p>The <code>null</code> filter that is applied to the numeric range filter.</p>"
         }
       },
       "documentation":"<p>A filter that filters topics based on the value of a numeric field. The filter includes only topics whose numeric field value falls within the specified range.</p>"
@@ -43912,6 +46570,29 @@
       },
       "documentation":"<p>A constant value that is used in a range filter to specify the endpoints of the range.</p>",
       "sensitive":true
+    },
+    "TopicReference":{
+      "type":"structure",
+      "required":[
+        "TopicPlaceholder",
+        "TopicArn"
+      ],
+      "members":{
+        "TopicPlaceholder":{
+          "shape":"TopicIdentifier",
+          "documentation":"<p>Topic placeholder.</p>"
+        },
+        "TopicArn":{
+          "shape":"Arn",
+          "documentation":"<p>Topic Amazon Resource Name (ARN).</p>"
+        }
+      },
+      "documentation":"<p>Topic reference.</p>"
+    },
+    "TopicReferenceList":{
+      "type":"list",
+      "member":{"shape":"TopicReference"},
+      "min":1
     },
     "TopicRefreshDetails":{
       "type":"structure",
@@ -44015,6 +46696,10 @@
         "Constant":{
           "shape":"TopicSingularFilterConstant",
           "documentation":"<p>The constant used in a relative date filter.</p>"
+        },
+        "NullFilter":{
+          "shape":"NullFilterType",
+          "documentation":"<p>The <code>null</code> filter that is applied to the relative date filter.</p>"
         }
       },
       "documentation":"<p>A structure that represents a relative date filter.</p>"
@@ -44050,7 +46735,7 @@
           "documentation":"<p>The Dataset ARN for the <code>TopicReviewedAnswer</code>.</p>"
         },
         "Question":{
-          "shape":"LimitedString",
+          "shape":"LimitedSensitiveString",
           "documentation":"<p>The question for the <code>TopicReviewedAnswer</code>.</p>"
         },
         "Mir":{
@@ -44098,7 +46783,7 @@
           "documentation":"<p>The name of the topic search filter.</p>"
         },
         "Value":{
-          "shape":"String",
+          "shape":"SensitiveString",
           "documentation":"<p>The value of the topic search filter.</p>"
         }
       },
@@ -44118,7 +46803,7 @@
           "documentation":"<p>The type of the singular filter constant. Valid values for this structure are <code>SINGULAR</code>.</p>"
         },
         "SingularConstant":{
-          "shape":"LimitedString",
+          "shape":"LimitedSensitiveString",
           "documentation":"<p>The value of the singular filter constant.</p>"
         }
       },
@@ -44205,6 +46890,126 @@
         "LEGACY",
         "NEW_READER_EXPERIENCE"
       ]
+    },
+    "TopicV2DataSetReference":{
+      "type":"structure",
+      "required":["DataSetArn"],
+      "members":{
+        "DataSetArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the data set.</p>"
+        },
+        "DataSetName":{
+          "shape":"LimitedString",
+          "documentation":"<p>The name of the data set.</p>"
+        }
+      },
+      "documentation":"<p>A structure that represents a data set reference of a topic.</p>"
+    },
+    "TopicV2DataSetReferences":{
+      "type":"list",
+      "member":{"shape":"TopicV2DataSetReference"},
+      "max":100,
+      "min":1
+    },
+    "TopicV2DataSetRelation":{
+      "type":"structure",
+      "required":[
+        "Left",
+        "Right"
+      ],
+      "members":{
+        "Left":{
+          "shape":"TopicV2DataSetRelationEndpoint",
+          "documentation":"<p>The left endpoint of the data set relation.</p>"
+        },
+        "Right":{
+          "shape":"TopicV2DataSetRelationEndpoint",
+          "documentation":"<p>The right endpoint of the data set relation.</p>"
+        }
+      },
+      "documentation":"<p>A structure that represents a relation between two data sets of a topic.</p>"
+    },
+    "TopicV2DataSetRelationColumnNames":{
+      "type":"list",
+      "member":{"shape":"String"},
+      "max":5,
+      "min":1
+    },
+    "TopicV2DataSetRelationEndpoint":{
+      "type":"structure",
+      "required":[
+        "DataSetArn",
+        "ColumnNames"
+      ],
+      "members":{
+        "DataSetArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the data set at this endpoint of the relation.</p>"
+        },
+        "ColumnNames":{
+          "shape":"TopicV2DataSetRelationColumnNames",
+          "documentation":"<p>The names of the columns that are used in the data set relation.</p>"
+        }
+      },
+      "documentation":"<p>A structure that represents an endpoint of a data set relation of a topic.</p>"
+    },
+    "TopicV2DataSetRelationList":{
+      "type":"list",
+      "member":{"shape":"TopicV2DataSetRelation"},
+      "max":100
+    },
+    "TopicV2Details":{
+      "type":"structure",
+      "required":["Name"],
+      "members":{
+        "Name":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the topic.</p>"
+        },
+        "Description":{
+          "shape":"LimitedString",
+          "documentation":"<p>The description of the topic.</p>"
+        },
+        "DataSets":{
+          "shape":"TopicV2DataSetReferences",
+          "documentation":"<p>The data sets that the topic is associated with.</p>"
+        },
+        "DataSetRelations":{
+          "shape":"TopicV2DataSetRelationList",
+          "documentation":"<p>The relations between the data sets that the topic is associated with.</p>"
+        }
+      },
+      "documentation":"<p>The definition of a topic.</p>"
+    },
+    "TopicV2PublishOption":{
+      "type":"string",
+      "enum":[
+        "DRAFT",
+        "PUBLISH"
+      ]
+    },
+    "TopicV2Summaries":{
+      "type":"list",
+      "member":{"shape":"TopicV2Summary"}
+    },
+    "TopicV2Summary":{
+      "type":"structure",
+      "members":{
+        "Arn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the topic.</p>"
+        },
+        "TopicId":{
+          "shape":"TopicId",
+          "documentation":"<p>The ID of the topic. This ID is unique per Amazon Web Services Region for each Amazon Web Services account.</p>"
+        },
+        "Name":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the topic.</p>"
+        }
+      },
+      "documentation":"<p>A summary of the topic.</p>"
     },
     "TopicVisual":{
       "type":"structure",
@@ -45497,7 +48302,7 @@
         },
         "SourceEntity":{
           "shape":"AnalysisSourceEntity",
-          "documentation":"<p>A source entity to use for the analysis that you're updating. This metadata structure contains details that describe a source template and one or more datasets.</p>"
+          "documentation":"<p>A source entity to use for the analysis that you're updating. This metadata structure contains details that describe a source template and one or more datasets or topics.</p>"
         },
         "ThemeArn":{
           "shape":"Arn",
@@ -45539,6 +48344,64 @@
         }
       }
     },
+    "UpdateAppPermissionsRequest":{
+      "type":"structure",
+      "required":[
+        "AwsAccountId",
+        "AppId"
+      ],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that contains the app.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "AppId":{
+          "shape":"AppId",
+          "documentation":"<p>The ID of the app.</p>",
+          "location":"uri",
+          "locationName":"AppId"
+        },
+        "GrantPermissions":{
+          "shape":"ResourcePermissionList",
+          "documentation":"<p>The permissions that you want to grant on the app.</p>"
+        },
+        "RevokePermissions":{
+          "shape":"ResourcePermissionList",
+          "documentation":"<p>The permissions that you want to revoke from the app.</p>"
+        },
+        "Visibility":{
+          "shape":"AppVisibility",
+          "documentation":"<p>The visibility to set for the app. Currently, only <code>PRIVATE</code> is accepted, which removes public (anonymous) access from the app. If you don't specify a value, the app's visibility is unchanged. Setting an app to <code>PUBLIC</code> through this operation is not supported.</p>"
+        }
+      }
+    },
+    "UpdateAppPermissionsResponse":{
+      "type":"structure",
+      "members":{
+        "Arn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the app.</p>"
+        },
+        "AppId":{
+          "shape":"AppId",
+          "documentation":"<p>The ID of the app.</p>"
+        },
+        "Permissions":{
+          "shape":"ResourcePermissionList",
+          "documentation":"<p>The updated resource permissions for the app.</p>"
+        },
+        "Visibility":{
+          "shape":"AppVisibility",
+          "documentation":"<p>The visibility of the app after the update (<code>PRIVATE</code> or <code>PUBLIC</code>).</p>"
+        },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        }
+      }
+    },
     "UpdateApplicationWithTokenExchangeGrantRequest":{
       "type":"structure",
       "required":[
@@ -45571,6 +48434,52 @@
         "RequestId":{
           "shape":"String",
           "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        }
+      }
+    },
+    "UpdateApprovalPolicyRequest":{
+      "type":"structure",
+      "required":["PolicyId"],
+      "members":{
+        "PolicyId":{
+          "shape":"PolicyId",
+          "documentation":"<p>The unique identifier of the approval policy to update.</p>",
+          "location":"uri",
+          "locationName":"PolicyId"
+        },
+        "Name":{
+          "shape":"PolicyName",
+          "documentation":"<p>The name of the approval policy.</p>"
+        },
+        "Description":{
+          "shape":"PolicyDescription",
+          "documentation":"<p>A description of the approval policy.</p>"
+        },
+        "Actions":{
+          "shape":"GovernedActionList",
+          "documentation":"<p>The list of governed actions that trigger the approval workflow.</p>"
+        },
+        "AssetTypes":{
+          "shape":"AssetTypeList",
+          "documentation":"<p>The list of asset types that the approval policy applies to.</p>"
+        },
+        "ApplicableTo":{
+          "shape":"ApplicableTo",
+          "documentation":"<p>The scoping configuration that determines who the approval policy applies to.</p>"
+        },
+        "ApprovalGroups":{
+          "shape":"ApprovalGroupList",
+          "documentation":"<p>The list of group ARNs whose members can approve requests.</p>"
+        }
+      }
+    },
+    "UpdateApprovalPolicyResponse":{
+      "type":"structure",
+      "required":["Policy"],
+      "members":{
+        "Policy":{
+          "shape":"ApprovalPolicy",
+          "documentation":"<p>The updated approval policy.</p>"
         }
       }
     },
@@ -45709,6 +48618,10 @@
         "Capabilities":{
           "shape":"Capabilities",
           "documentation":"<p>A set of actions to include in the custom permissions profile.</p>"
+        },
+        "Governance":{
+          "shape":"Governance",
+          "documentation":"<p>The governance configuration for the custom permissions profile. The <code>UpdateCustomPermissions</code> operation replaces all existing <code>Capabilities</code> and <code>Governance</code> values. If you omit this parameter, Amazon Quick removes governance from the profile and the existing custom permission behavior applies.</p>"
         }
       }
     },
@@ -45920,7 +48833,7 @@
         },
         "SourceEntity":{
           "shape":"DashboardSourceEntity",
-          "documentation":"<p>The entity that you are using as a source when you update the dashboard. In <code>SourceEntity</code>, you specify the type of object you're using as source. You can only update a dashboard from a template, so you use a <code>SourceTemplate</code> entity. If you need to update a dashboard from an analysis, first convert the analysis to a template by using the <code> <a href=\"https://docs.aws.amazon.com/quicksight/latest/APIReference/API_CreateTemplate.html\">CreateTemplate</a> </code> API operation. For <code>SourceTemplate</code>, specify the Amazon Resource Name (ARN) of the source template. The <code>SourceTemplate</code> ARN can contain any Amazon Web Services account and any Amazon Quick Sight-supported Amazon Web Services Region. </p> <p>Use the <code>DataSetReferences</code> entity within <code>SourceTemplate</code> to list the replacement datasets for the placeholders listed in the original. The schema in each dataset must match its placeholder. </p>"
+          "documentation":"<p>The entity that you are using as a source when you update the dashboard. In <code>SourceEntity</code>, you specify the type of object you're using as source. You can only update a dashboard from a template, so you use a <code>SourceTemplate</code> entity. If you need to update a dashboard from an analysis, first convert the analysis to a template by using the <code> <a href=\"https://docs.aws.amazon.com/quicksight/latest/APIReference/API_CreateTemplate.html\">CreateTemplate</a> </code> API operation. For <code>SourceTemplate</code>, specify the Amazon Resource Name (ARN) of the source template. The <code>SourceTemplate</code> ARN can contain any Amazon Web Services account and any Amazon Quick Sight-supported Amazon Web Services Region. </p> <p>Use the <code>DataSetReferences</code> entity within <code>SourceTemplate</code> to list the replacement datasets for the placeholders listed in the original. The schema in each dataset must match its placeholder. Use the <code>TopicReferences</code> entity to list the replacement topics for the topic placeholders listed in the original. The schema in each topic must match its placeholder.</p>"
         },
         "Parameters":{
           "shape":"Parameters",
@@ -46336,6 +49249,69 @@
           "shape":"StatusCode",
           "documentation":"<p>The HTTP status of the request.</p>",
           "location":"statusCode"
+        }
+      }
+    },
+    "UpdateDlpSettingRequest":{
+      "type":"structure",
+      "required":[
+        "AwsAccountId",
+        "DlpSettingId"
+      ],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that contains the DLP setting that you want to update.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "DlpSettingId":{
+          "shape":"DlpSettingId",
+          "documentation":"<p>The ID of the DLP setting that you want to update.</p>",
+          "location":"uri",
+          "locationName":"DlpSettingId"
+        },
+        "Name":{
+          "shape":"DlpSettingName",
+          "documentation":"<p>An updated display name for the DLP setting.</p>"
+        },
+        "ProviderType":{
+          "shape":"DlpProviderType",
+          "documentation":"<p>An updated DLP provider type. Currently, the only supported value is <code>MICROSOFT_PURVIEW</code>.</p>"
+        },
+        "ProviderConfig":{
+          "shape":"ProviderConfig",
+          "documentation":"<p>An updated provider-specific configuration for the DLP integration. This is a union type structure. For this structure to be valid, only one of the attributes can be defined.</p>"
+        },
+        "ProviderOutageAction":{
+          "shape":"DlpAction",
+          "documentation":"<p>An updated behavior to apply when the DLP provider is unreachable. Valid values are <code>ALLOW</code>, <code>WARN</code>, and <code>BLOCK</code>.</p>"
+        },
+        "Enabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether DLP enforcement is active for this setting. Set to <code>true</code> to enable enforcement, or <code>false</code> to disable it.</p>",
+          "box":true
+        }
+      }
+    },
+    "UpdateDlpSettingResponse":{
+      "type":"structure",
+      "required":[
+        "Arn",
+        "DlpSettingId"
+      ],
+      "members":{
+        "Arn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the updated DLP setting.</p>"
+        },
+        "DlpSettingId":{
+          "shape":"DlpSettingId",
+          "documentation":"<p>The ID of the updated DLP setting.</p>"
+        },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
         }
       }
     },
@@ -46952,6 +49928,49 @@
           "documentation":"<p>The HTTP status of the request.</p>",
           "box":true,
           "location":"statusCode"
+        }
+      }
+    },
+    "UpdateLimitsProfileRequest":{
+      "type":"structure",
+      "required":[
+        "profileId",
+        "accountId"
+      ],
+      "members":{
+        "profileId":{
+          "shape":"ProfileId",
+          "documentation":"<p>The unique identifier for the limits profile to update.</p>",
+          "location":"uri",
+          "locationName":"profileId"
+        },
+        "accountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that contains the limits profile.</p>",
+          "location":"uri",
+          "locationName":"accountId"
+        },
+        "profileName":{
+          "shape":"ProfileName",
+          "documentation":"<p>A new display name for the limits profile.</p>"
+        },
+        "description":{
+          "shape":"ProfileDescription",
+          "documentation":"<p>A new description for the limits profile.</p>"
+        },
+        "resourceLimits":{
+          "shape":"ResourceLimitsMap",
+          "documentation":"<p>A map of resource types to their updated limit values.</p>"
+        }
+      }
+    },
+    "UpdateLimitsProfileResponse":{
+      "type":"structure",
+      "required":["arn"],
+      "members":{
+        "arn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the updated limits profile.</p>"
         }
       }
     },
@@ -47638,7 +50657,7 @@
         },
         "SourceEntity":{
           "shape":"TemplateSourceEntity",
-          "documentation":"<p>The entity that you are using as a source when you update the template. In <code>SourceEntity</code>, you specify the type of object you're using as source: <code>SourceTemplate</code> for a template or <code>SourceAnalysis</code> for an analysis. Both of these require an Amazon Resource Name (ARN). For <code>SourceTemplate</code>, specify the ARN of the source template. For <code>SourceAnalysis</code>, specify the ARN of the source analysis. The <code>SourceTemplate</code> ARN can contain any Amazon Web Services account and any Quick Sight-supported Amazon Web Services Region;. </p> <p>Use the <code>DataSetReferences</code> entity within <code>SourceTemplate</code> or <code>SourceAnalysis</code> to list the replacement datasets for the placeholders listed in the original. The schema in each dataset must match its placeholder. </p>"
+          "documentation":"<p>The entity that you are using as a source when you update the template. In <code>SourceEntity</code>, you specify the type of object you're using as source: <code>SourceTemplate</code> for a template or <code>SourceAnalysis</code> for an analysis. Both of these require an Amazon Resource Name (ARN). For <code>SourceTemplate</code>, specify the ARN of the source template. For <code>SourceAnalysis</code>, specify the ARN of the source analysis. The <code>SourceTemplate</code> ARN can contain any Amazon Web Services account and any Quick Sight-supported Amazon Web Services Region;. </p> <p>Use the <code>DataSetReferences</code> entity within <code>SourceTemplate</code> or <code>SourceAnalysis</code> to list the replacement datasets for the placeholders listed in the original. The schema in each dataset must match its placeholder. Use the <code>TopicReferences</code> entity to list the replacement topics for the topic placeholders listed in the original. The schema in each topic must match its placeholder.</p>"
         },
         "VersionDescription":{
           "shape":"VersionDescription",
@@ -47917,6 +50936,61 @@
         }
       }
     },
+    "UpdateTopicPermissionsV2Request":{
+      "type":"structure",
+      "required":[
+        "AwsAccountId",
+        "TopicId"
+      ],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that contains the topic that you want to update the permissions for.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "TopicId":{
+          "shape":"TopicId",
+          "documentation":"<p>The ID of the topic that you want to modify. This ID is unique per Amazon Web Services Region for each Amazon Web Services account.</p>",
+          "location":"uri",
+          "locationName":"TopicId"
+        },
+        "GrantPermissions":{
+          "shape":"UpdateResourcePermissionList",
+          "documentation":"<p>The resource permissions that you want to grant to the topic.</p>"
+        },
+        "RevokePermissions":{
+          "shape":"UpdateResourcePermissionList",
+          "documentation":"<p>The resource permissions that you want to revoke from the topic.</p>"
+        }
+      }
+    },
+    "UpdateTopicPermissionsV2Response":{
+      "type":"structure",
+      "members":{
+        "TopicId":{
+          "shape":"TopicId",
+          "documentation":"<p>The ID of the topic that you want to modify. This ID is unique per Amazon Web Services Region for each Amazon Web Services account.</p>"
+        },
+        "TopicArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the topic.</p>"
+        },
+        "Permissions":{
+          "shape":"ResourcePermissionList",
+          "documentation":"<p>A list of resource permissions on the topic.</p>"
+        },
+        "Status":{
+          "shape":"StatusCode",
+          "documentation":"<p>The HTTP status of the request.</p>",
+          "location":"statusCode"
+        },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        }
+      }
+    },
     "UpdateTopicRefreshScheduleRequest":{
       "type":"structure",
       "required":[
@@ -48020,6 +51094,59 @@
         "RefreshArn":{
           "shape":"Arn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the topic refresh.</p>"
+        },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        },
+        "Status":{
+          "shape":"StatusCode",
+          "documentation":"<p>The HTTP status of the request.</p>",
+          "location":"statusCode"
+        }
+      }
+    },
+    "UpdateTopicV2Request":{
+      "type":"structure",
+      "required":[
+        "AwsAccountId",
+        "TopicId",
+        "Topic"
+      ],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that contains the topic that you want to update.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "TopicId":{
+          "shape":"TopicId",
+          "documentation":"<p>The ID of the topic that you want to modify. This ID is unique per Amazon Web Services Region for each Amazon Web Services account.</p>",
+          "location":"uri",
+          "locationName":"TopicId"
+        },
+        "Topic":{
+          "shape":"TopicV2Details",
+          "documentation":"<p>The definition of the topic that you want to update.</p>"
+        },
+        "CustomInstructions":{"shape":"CustomInstructions"},
+        "PublishOption":{
+          "shape":"TopicV2PublishOption",
+          "documentation":"<p>The publish option for the topic that you want to update.</p>"
+        }
+      }
+    },
+    "UpdateTopicV2Response":{
+      "type":"structure",
+      "members":{
+        "Arn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the topic.</p>"
+        },
+        "TopicId":{
+          "shape":"TopicId",
+          "documentation":"<p>The ID of the topic that you want to modify. This ID is unique per Amazon Web Services Region for each Amazon Web Services account.</p>"
         },
         "RequestId":{
           "shape":"String",
@@ -48423,6 +51550,51 @@
         "ASC",
         "DESC"
       ]
+    },
+    "UserLimits":{
+      "type":"structure",
+      "required":[
+        "userName",
+        "namespace",
+        "effectiveLimits"
+      ],
+      "members":{
+        "userName":{
+          "shape":"String",
+          "documentation":"<p>The name of the user.</p>"
+        },
+        "namespace":{
+          "shape":"String",
+          "documentation":"<p>The namespace of the user.</p>"
+        },
+        "effectiveLimits":{
+          "shape":"EffectiveLimitList",
+          "documentation":"<p>A list of effective limits for the user.</p>"
+        }
+      },
+      "documentation":"<p>The effective limits for an Amazon Quick Sight user.</p>"
+    },
+    "UserLimitsEntry":{
+      "type":"structure",
+      "required":[
+        "userName",
+        "namespace"
+      ],
+      "members":{
+        "userName":{
+          "shape":"String",
+          "documentation":"<p>The name of the user.</p>"
+        },
+        "namespace":{
+          "shape":"String",
+          "documentation":"<p>The namespace of the user.</p>"
+        }
+      },
+      "documentation":"<p>Identifies a user for the <code>BatchDescribeUserLimits</code> operation.</p>"
+    },
+    "UserLimitsList":{
+      "type":"list",
+      "member":{"shape":"UserLimits"}
     },
     "UserList":{
       "type":"list",
@@ -48980,6 +52152,64 @@
         }
       },
       "documentation":"<p>The menu options for a visual.</p>"
+    },
+    "VisualMessageConfiguration":{
+      "type":"structure",
+      "members":{
+        "Enabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether the custom message is displayed on the visual. When set to <code>true</code>, the custom message appears in place of the default message. When set to <code>false</code> or omitted, the default message is displayed.</p>"
+        },
+        "Title":{
+          "shape":"VisualMessageText",
+          "documentation":"<p>The title text of the message that is displayed on the visual.</p>"
+        },
+        "TitleVisibility":{
+          "shape":"Visibility",
+          "documentation":"<p>Specifies whether the title of the message is displayed.</p>"
+        },
+        "Description":{
+          "shape":"VisualMessageText",
+          "documentation":"<p>The description text of the message that is displayed on the visual.</p>"
+        },
+        "DescriptionVisibility":{
+          "shape":"Visibility",
+          "documentation":"<p>Specifies whether the description of the message is displayed.</p>"
+        },
+        "LinkText":{
+          "shape":"VisualMessageText",
+          "documentation":"<p>The display text of the hyperlink that is shown in the message.</p>"
+        },
+        "LinkUrl":{
+          "shape":"VisualMessageLinkUrl",
+          "documentation":"<p>The destination URL of the hyperlink that is shown in the message. Only valid <code>http</code>, <code>https</code>, and <code>mailto</code> URLs are supported.</p>"
+        },
+        "LinkVisibility":{
+          "shape":"Visibility",
+          "documentation":"<p>Specifies whether the hyperlink in the message is displayed.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for a customizable message displayed on a visual. Supports parameter substitution in text fields.</p>"
+    },
+    "VisualMessageLinkUrl":{
+      "type":"string",
+      "max":120,
+      "pattern":"(?i)\\A(?:(?:https?://|mailto:)\\S*<<\\$.+?>>\\S*|https?://[a-z\\d.-]+\\.[a-z]{2,63}(?::\\d+)?(?:[/?#][^\\s]*)?|mailto:[^\\s@]+@[a-z\\d.-]+\\.[a-z]{2,63})\\z"
+    },
+    "VisualMessageText":{
+      "type":"string",
+      "max":120,
+      "pattern":"\\A[\\p{L}\\p{M}\\p{N}\\s.,/\\\\:_()\\[\\]<>$!?'\"#@%+&|^\\-]*\\z"
+    },
+    "VisualMessages":{
+      "type":"structure",
+      "members":{
+        "NoDataMessage":{
+          "shape":"VisualMessageConfiguration",
+          "documentation":"<p>The message that is displayed on a visual when there is no data to display.</p>"
+        }
+      },
+      "documentation":"<p>The messages that are displayed on a visual under specific conditions, such as when the visual returns no data.</p>"
     },
     "VisualOptions":{
       "type":"structure",

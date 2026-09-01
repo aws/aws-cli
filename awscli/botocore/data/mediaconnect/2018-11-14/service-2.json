@@ -3272,6 +3272,11 @@
           "documentation":"<p>Key-value pairs that can be used to tag this router output.</p>",
           "locationName":"tags"
         },
+        "FabricConfiguration":{
+          "shape":"FabricConfiguration",
+          "documentation":"<p>The fabric configuration settings for the router output.</p>",
+          "locationName":"fabricConfiguration"
+        },
         "ClientToken":{
           "shape":"ClientToken",
           "documentation":"<p>A unique identifier for the request to ensure idempotency.</p>",
@@ -4034,6 +4039,25 @@
       "enum":[
         "ENABLED",
         "DISABLED"
+      ]
+    },
+    "FabricConfiguration":{
+      "type":"structure",
+      "required":["RecoveryLatencyMode"],
+      "members":{
+        "RecoveryLatencyMode":{
+          "shape":"FabricLatencyMode",
+          "documentation":"<p>The recovery latency mode for the router fabric connection. Valid values include the following:</p> <ul> <li> <p> <code>BALANCED</code> (default) – Optimizes for stream quality.</p> </li> <li> <p> <code>LOW_LATENCY</code> – Reduces latency at the potential cost of stream quality under adverse network conditions.</p> </li> </ul>",
+          "locationName":"recoveryLatencyMode"
+        }
+      },
+      "documentation":"<p>The fabric configuration settings for the router output.</p>"
+    },
+    "FabricLatencyMode":{
+      "type":"string",
+      "enum":[
+        "BALANCED",
+        "LOW_LATENCY"
       ]
     },
     "FailoverConfig":{
@@ -8233,7 +8257,8 @@
         "Tags",
         "StreamDetails",
         "MaintenanceType",
-        "MaintenanceConfiguration"
+        "MaintenanceConfiguration",
+        "FabricConfiguration"
       ],
       "members":{
         "Name":{
@@ -8348,6 +8373,11 @@
           "shape":"MaintenanceSchedule",
           "documentation":"<p>The current maintenance schedule details for this router output.</p>",
           "locationName":"maintenanceSchedule"
+        },
+        "FabricConfiguration":{
+          "shape":"FabricConfiguration",
+          "documentation":"<p>The fabric configuration settings for the router output.</p>",
+          "locationName":"fabricConfiguration"
         }
       },
       "documentation":"<p>A router output in AWS Elemental MediaConnect. A router output is a destination for media content that can receive input from one or more router inputs.</p>"
@@ -10966,6 +10996,11 @@
           "shape":"MaintenanceConfiguration",
           "documentation":"<p>The updated maintenance configuration settings for the router output, including any changes to preferred maintenance windows and schedules.</p>",
           "locationName":"maintenanceConfiguration"
+        },
+        "FabricConfiguration":{
+          "shape":"FabricConfiguration",
+          "documentation":"<p>The updated fabric configuration settings for the router output. You cannot update the fabric configuration while the output has an active route. You must unroute the output before updating the fabric configuration.</p>",
+          "locationName":"fabricConfiguration"
         }
       }
     },

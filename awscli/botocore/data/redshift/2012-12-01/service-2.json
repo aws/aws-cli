@@ -496,6 +496,25 @@
       ],
       "documentation":"<p>Creates a zero-ETL integration or S3 event integration with Amazon Redshift.</p>"
     },
+    "CreateQev2IdcApplication":{
+      "name":"CreateQev2IdcApplication",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateQev2IdcApplicationMessage"},
+      "output":{
+        "shape":"CreateQev2IdcApplicationResult",
+        "resultWrapper":"CreateQev2IdcApplicationResult"
+      },
+      "errors":[
+        {"shape":"Qev2IdcApplicationAlreadyExistsFault"},
+        {"shape":"DependentServiceUnavailableFault"},
+        {"shape":"UnsupportedOperationFault"},
+        {"shape":"DependentServiceAccessDeniedFault"}
+      ],
+      "documentation":"<p>Creates an Amazon Redshift Query Editor (QEV2) IAM Identity Center application.</p>"
+    },
     "CreateRedshiftIdcApplication":{
       "name":"CreateRedshiftIdcApplication",
       "http":{
@@ -841,6 +860,21 @@
         {"shape":"UnsupportedOperationFault"}
       ],
       "documentation":"<p>Deletes a partner integration from a cluster. Data can still flow to the cluster until the integration is deleted at the partner's website.</p>"
+    },
+    "DeleteQev2IdcApplication":{
+      "name":"DeleteQev2IdcApplication",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteQev2IdcApplicationMessage"},
+      "errors":[
+        {"shape":"Qev2IdcApplicationNotExistsFault"},
+        {"shape":"DependentServiceUnavailableFault"},
+        {"shape":"UnsupportedOperationFault"},
+        {"shape":"DependentServiceAccessDeniedFault"}
+      ],
+      "documentation":"<p>Deletes an Amazon Redshift Query Editor (QEV2) IAM Identity Center application.</p>"
     },
     "DeleteRedshiftIdcApplication":{
       "name":"DeleteRedshiftIdcApplication",
@@ -1425,6 +1459,25 @@
         {"shape":"UnsupportedOperationFault"}
       ],
       "documentation":"<p>Returns information about the partner integrations defined for a cluster.</p>"
+    },
+    "DescribeQev2IdcApplications":{
+      "name":"DescribeQev2IdcApplications",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeQev2IdcApplicationsMessage"},
+      "output":{
+        "shape":"DescribeQev2IdcApplicationsResult",
+        "resultWrapper":"DescribeQev2IdcApplicationsResult"
+      },
+      "errors":[
+        {"shape":"Qev2IdcApplicationNotExistsFault"},
+        {"shape":"DependentServiceUnavailableFault"},
+        {"shape":"UnsupportedOperationFault"},
+        {"shape":"DependentServiceAccessDeniedFault"}
+      ],
+      "documentation":"<p>Lists the Amazon Redshift Query Editor (QEV2) IAM Identity Center applications. To retrieve additional results, use the MaxRecords and Marker parameters.</p>"
     },
     "DescribeRedshiftIdcApplications":{
       "name":"DescribeRedshiftIdcApplications",
@@ -2181,6 +2234,25 @@
         {"shape":"DependentServiceAccessDeniedFault"}
       ],
       "documentation":"<p>Modifies the lakehouse configuration for a cluster. This operation allows you to manage Amazon Redshift federated permissions and Amazon Web Services IAM Identity Center trusted identity propagation.</p>"
+    },
+    "ModifyQev2IdcApplication":{
+      "name":"ModifyQev2IdcApplication",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ModifyQev2IdcApplicationMessage"},
+      "output":{
+        "shape":"ModifyQev2IdcApplicationResult",
+        "resultWrapper":"ModifyQev2IdcApplicationResult"
+      },
+      "errors":[
+        {"shape":"Qev2IdcApplicationNotExistsFault"},
+        {"shape":"DependentServiceUnavailableFault"},
+        {"shape":"UnsupportedOperationFault"},
+        {"shape":"DependentServiceAccessDeniedFault"}
+      ],
+      "documentation":"<p>Modifies an Amazon Redshift Query Editor (QEV2) IAM Identity Center application.</p>"
     },
     "ModifyRedshiftIdcApplication":{
       "name":"ModifyRedshiftIdcApplication",
@@ -3481,6 +3553,10 @@
         "ExtraComputeForAutomaticOptimization":{
           "shape":"String",
           "documentation":"<p>A boolean value that, if <code>true</code>, indicates that the cluster allocates additional compute resources to run automatic optimization operations.</p> <p>Default: false</p>"
+        },
+        "LoggingPublishStatus":{
+          "shape":"LoggingPublishStatus",
+          "documentation":"<p>The status of system table publishing for the cluster. This field is present only when system table publishing is configured.</p>"
         }
       },
       "documentation":"<p>Describes a cluster.</p>",
@@ -4779,6 +4855,38 @@
         }
       }
     },
+    "CreateQev2IdcApplicationMessage":{
+      "type":"structure",
+      "required":[
+        "IdcInstanceArn",
+        "Qev2IdcApplicationName",
+        "IdcDisplayName"
+      ],
+      "members":{
+        "IdcInstanceArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM Identity Center instance used to create the Amazon Redshift Query Editor (QEV2) managed application.</p>"
+        },
+        "Qev2IdcApplicationName":{
+          "shape":"Qev2IdcApplicationName",
+          "documentation":"<p>The name of the Amazon Redshift Query Editor (QEV2) application in IAM Identity Center.</p>"
+        },
+        "IdcDisplayName":{
+          "shape":"IdcDisplayNameString",
+          "documentation":"<p>The display name for the Amazon Redshift Query Editor (QEV2) IAM Identity Center application. It appears in the console.</p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>A list of tags to associate with the application. Tags are key-value pairs that you can use to organize and identify your resources.</p>"
+        }
+      }
+    },
+    "CreateQev2IdcApplicationResult":{
+      "type":"structure",
+      "members":{
+        "Qev2IdcApplication":{"shape":"Qev2IdcApplication"}
+      }
+    },
     "CreateRedshiftIdcApplicationMessage":{
       "type":"structure",
       "required":[
@@ -5427,6 +5535,16 @@
         "IntegrationArn":{
           "shape":"IntegrationArn",
           "documentation":"<p>The unique identifier of the integration to delete.</p>"
+        }
+      }
+    },
+    "DeleteQev2IdcApplicationMessage":{
+      "type":"structure",
+      "required":["Qev2IdcApplicationArn"],
+      "members":{
+        "Qev2IdcApplicationArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) for the Amazon Redshift Query Editor (QEV2) IAM Identity Center application to delete.</p>"
         }
       }
     },
@@ -6345,6 +6463,36 @@
         }
       }
     },
+    "DescribeQev2IdcApplicationsMessage":{
+      "type":"structure",
+      "members":{
+        "Qev2IdcApplicationArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) for the Amazon Redshift Query Editor (QEV2) application that integrates with IAM Identity Center.</p>"
+        },
+        "MaxRecords":{
+          "shape":"IntegerOptional",
+          "documentation":"<p>The maximum number of response records to return in each call. If the number of remaining response records exceeds the specified MaxRecords value, a value is returned in a marker field of the response. You can retrieve the next set of records by retrying the command with the returned marker value.</p>"
+        },
+        "Marker":{
+          "shape":"String",
+          "documentation":"<p>A value that indicates the starting point for the next set of response records in a subsequent request. If a value is returned in a response, you can retrieve the next set of records by providing this returned marker value in the Marker parameter and retrying the command. If the Marker field is empty, all response records have been retrieved for the request. </p>"
+        }
+      }
+    },
+    "DescribeQev2IdcApplicationsResult":{
+      "type":"structure",
+      "members":{
+        "Qev2IdcApplications":{
+          "shape":"Qev2IdcApplicationList",
+          "documentation":"<p>The list of Amazon Redshift Query Editor (QEV2) IAM Identity Center applications.</p>"
+        },
+        "Marker":{
+          "shape":"String",
+          "documentation":"<p>A value that indicates the starting point for the next set of response records in a subsequent request. If a value is returned in a response, you can retrieve the next set of records by providing this returned marker value in the Marker parameter and retrying the command. If the Marker field is empty, all response records have been retrieved for the request. </p>"
+        }
+      }
+    },
     "DescribeRedshiftIdcApplicationsMessage":{
       "type":"structure",
       "members":{
@@ -6659,6 +6807,14 @@
         "ClusterIdentifier":{
           "shape":"String",
           "documentation":"<p>The identifier of the cluster on which logging is to be stopped.</p> <p>Example: <code>examplecluster</code> </p>"
+        },
+        "LogDestinationType":{
+          "shape":"LogDestinationType",
+          "documentation":"<p>The log destination type. An enum with possible values of <code>s3</code>, <code>cloudwatch</code>, and <code>s3table</code>. When set to <code>s3table</code>, stops system table publishing. When omitted, the operation disables audit logging.</p>"
+        },
+        "LogExports":{
+          "shape":"LogTypeList",
+          "documentation":"<p>The collection of log types to stop exporting. When <code>LogDestinationType</code> is <code>s3table</code>, the values are the names of the system tables to stop publishing. Omitting this parameter or passing <code>all</code> stops publishing all system tables.</p>"
         }
       },
       "documentation":"<p/>"
@@ -6772,11 +6928,19 @@
         },
         "LogDestinationType":{
           "shape":"LogDestinationType",
-          "documentation":"<p>The log destination type. An enum with possible values of <code>s3</code> and <code>cloudwatch</code>.</p>"
+          "documentation":"<p>The log destination type. An enum with possible values of <code>s3</code>, <code>cloudwatch</code>, and <code>s3table</code>.</p>"
         },
         "LogExports":{
           "shape":"LogTypeList",
-          "documentation":"<p>The collection of exported log types. Possible values are <code>connectionlog</code>, <code>useractivitylog</code>, and <code>userlog</code>.</p>"
+          "documentation":"<p>The collection of exported log types. When <code>LogDestinationType</code> is <code>s3</code> or <code>cloudwatch</code>, possible values are <code>connectionlog</code>, <code>useractivitylog</code>, and <code>userlog</code>. When <code>LogDestinationType</code> is <code>s3table</code>, the values are the names of the system tables to publish. Omitting this parameter, passing an empty list, or including the value <code>all</code> publishes all current and future system tables.</p>"
+        },
+        "S3TableKmsKeyId":{
+          "shape":"String",
+          "documentation":"<p>The identifier of a customer managed KMS key used to encrypt the S3 tables. This parameter is valid only when <code>LogDestinationType</code> is <code>s3table</code>.</p>"
+        },
+        "S3TableGranularity":{
+          "shape":"String",
+          "documentation":"<p>The scope of system table publishing. Valid values are <code>cluster</code> and <code>account</code>. A value of <code>cluster</code> scopes publishing to the individual cluster. A value of <code>account</code> scopes publishing to the Amazon Web Services account. This parameter is valid only when <code>LogDestinationType</code> is <code>s3table</code>.</p>"
         }
       },
       "documentation":"<p/>"
@@ -8417,12 +8581,23 @@
       "type":"string",
       "enum":[
         "s3",
-        "cloudwatch"
+        "cloudwatch",
+        "s3table"
       ]
     },
     "LogTypeList":{
       "type":"list",
       "member":{"shape":"String"}
+    },
+    "LoggingPublishStatus":{
+      "type":"structure",
+      "members":{
+        "S3Tables":{
+          "shape":"S3TablePublishStatus",
+          "documentation":"<p>The status of system table publishing to S3 Tables.</p>"
+        }
+      },
+      "documentation":"<p>Describes the system table publishing status for a cluster.</p>"
     },
     "LoggingStatus":{
       "type":"structure",
@@ -8453,11 +8628,15 @@
         },
         "LogDestinationType":{
           "shape":"LogDestinationType",
-          "documentation":"<p>The log destination type. An enum with possible values of <code>s3</code> and <code>cloudwatch</code>.</p>"
+          "documentation":"<p>The log destination type. An enum with possible values of <code>s3</code>, <code>cloudwatch</code>, and <code>s3table</code>.</p>"
         },
         "LogExports":{
           "shape":"LogTypeList",
-          "documentation":"<p>The collection of exported log types. Possible values are <code>connectionlog</code>, <code>useractivitylog</code>, and <code>userlog</code>.</p>"
+          "documentation":"<p>The collection of exported log types. When <code>LogDestinationType</code> is <code>s3</code> or <code>cloudwatch</code>, possible values are <code>connectionlog</code>, <code>useractivitylog</code>, and <code>userlog</code>. When <code>LogDestinationType</code> is <code>s3table</code>, the values are the names of the system tables being published.</p>"
+        },
+        "S3Tables":{
+          "shape":"S3TablePublishStatus",
+          "documentation":"<p>The status of system table publishing to S3 Tables. This field is populated only when system table publishing is active.</p>"
         }
       },
       "documentation":"<p>Describes the status of logging for a cluster.</p>"
@@ -8995,6 +9174,26 @@
           "shape":"BooleanOptional",
           "documentation":"<p>A boolean value that, if <code>true</code>, validates the request without actually modifying the lakehouse configuration. Use this to check for errors before making changes.</p>"
         }
+      }
+    },
+    "ModifyQev2IdcApplicationMessage":{
+      "type":"structure",
+      "required":["Qev2IdcApplicationArn"],
+      "members":{
+        "Qev2IdcApplicationArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) for the Amazon Redshift Query Editor (QEV2) application that integrates with IAM Identity Center.</p>"
+        },
+        "IdcDisplayName":{
+          "shape":"IdcDisplayNameString",
+          "documentation":"<p>The display name for the Amazon Redshift Query Editor (QEV2) IAM Identity Center application. It appears in the console.</p>"
+        }
+      }
+    },
+    "ModifyQev2IdcApplicationResult":{
+      "type":"structure",
+      "members":{
+        "Qev2IdcApplication":{"shape":"Qev2IdcApplication"}
       }
     },
     "ModifyRedshiftIdcApplicationMessage":{
@@ -9658,6 +9857,73 @@
           "documentation":"<p>The content of the updated resource policy.</p>"
         }
       }
+    },
+    "Qev2IdcApplication":{
+      "type":"structure",
+      "members":{
+        "IdcInstanceArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) for the IAM Identity Center instance that the Amazon Redshift Query Editor (QEV2) application integrates with.</p>"
+        },
+        "Qev2IdcApplicationName":{
+          "shape":"Qev2IdcApplicationName",
+          "documentation":"<p>The name of the Amazon Redshift Query Editor (QEV2) application in IAM Identity Center.</p>"
+        },
+        "Qev2IdcApplicationArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) for the Amazon Redshift Query Editor (QEV2) application that integrates with IAM Identity Center.</p>"
+        },
+        "IdcManagedApplicationArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) for the Amazon Redshift Query Editor (QEV2) IAM Identity Center managed application.</p>"
+        },
+        "IdcOnboardStatus":{
+          "shape":"String",
+          "documentation":"<p>The onboarding status for the Amazon Redshift Query Editor (QEV2) IAM Identity Center application.</p>"
+        },
+        "IdcDisplayName":{
+          "shape":"IdcDisplayNameString",
+          "documentation":"<p>The display name for the Amazon Redshift Query Editor (QEV2) IAM Identity Center application. It appears in the console.</p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>A list of tags associated with the application. Tags are key-value pairs that you can use to organize and identify your resources.</p>"
+        }
+      },
+      "documentation":"<p>Contains configuration and status information for an Amazon Redshift Query Editor (QEV2) application that is registered with IAM Identity Center.</p>",
+      "wrapper":true
+    },
+    "Qev2IdcApplicationAlreadyExistsFault":{
+      "type":"structure",
+      "members":{},
+      "documentation":"<p>The Amazon Redshift Query Editor (QEV2) IAM Identity Center application already exists. Use a different application name or describe existing applications to find the ARN.</p>",
+      "error":{
+        "code":"Qev2IdcApplicationAlreadyExists",
+        "httpStatusCode":400,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "Qev2IdcApplicationList":{
+      "type":"list",
+      "member":{"shape":"Qev2IdcApplication"}
+    },
+    "Qev2IdcApplicationName":{
+      "type":"string",
+      "max":63,
+      "min":1,
+      "pattern":"[a-z][a-z0-9]*(-[a-z0-9]+)*"
+    },
+    "Qev2IdcApplicationNotExistsFault":{
+      "type":"structure",
+      "members":{},
+      "documentation":"<p>The specified Amazon Redshift Query Editor (QEV2) IAM Identity Center application doesn't exist. Verify that the application ARN is correct and that the application exists in this Region.</p>",
+      "error":{
+        "code":"Qev2IdcApplicationNotExists",
+        "httpStatusCode":404,
+        "senderFault":true
+      },
+      "exception":true
     },
     "ReadWriteAccess":{
       "type":"structure",
@@ -10894,6 +11160,37 @@
       "type":"string",
       "max":256,
       "pattern":"[\\p{L}\\p{Z}\\p{N}_.:/=+\\-@]*"
+    },
+    "S3TableLastIngestionTimeMap":{
+      "type":"map",
+      "key":{"shape":"String"},
+      "value":{"shape":"String"}
+    },
+    "S3TablePublishStatus":{
+      "type":"structure",
+      "members":{
+        "S3Tables":{
+          "shape":"LogTypeList",
+          "documentation":"<p>The system tables currently being published.</p>"
+        },
+        "S3TableNamespace":{
+          "shape":"String",
+          "documentation":"<p>The namespace in the S3 table bucket that holds the published tables.</p>"
+        },
+        "S3TableGranularity":{
+          "shape":"String",
+          "documentation":"<p>The scope of system table publishing in effect. Possible values are <code>cluster</code> and <code>account</code>.</p>"
+        },
+        "EnabledAll":{
+          "shape":"BooleanOptional",
+          "documentation":"<p> <code>true</code> if the cluster is enrolled in all current and future system tables rather than an explicit subset.</p>"
+        },
+        "LastIngestionTimes":{
+          "shape":"S3TableLastIngestionTimeMap",
+          "documentation":"<p>A map whose keys are the names of the published system tables and whose values are the time each table last received data. Use this to judge data freshness.</p>"
+        }
+      },
+      "documentation":"<p>Describes the status of system table publishing to S3 Tables for a cluster.</p>"
     },
     "SNSInvalidTopicFault":{
       "type":"structure",

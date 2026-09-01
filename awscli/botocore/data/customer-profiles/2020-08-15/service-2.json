@@ -32,6 +32,24 @@
       ],
       "documentation":"<p>Associates a new key value with a specific profile, such as a Contact Record ContactId.</p> <p>A profile object can have a single unique key and any number of additional keys that can be used to identify the profile that it belongs to.</p>"
     },
+    "AssociateStreamForSegments":{
+      "name":"AssociateStreamForSegments",
+      "http":{
+        "method":"POST",
+        "requestUri":"/domains/{DomainName}/segment-streams",
+        "responseCode":200
+      },
+      "input":{"shape":"AssociateStreamForSegmentsRequest"},
+      "output":{"shape":"AssociateStreamForSegmentsResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"BadRequestException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Associates an Amazon Kinesis data stream to receive segment membership events for a given domain. This is a domain-level configuration that applies to all segment subscriptions within the domain. A domain can have only one associated stream at a time. </p>"
+    },
     "BatchGetCalculatedAttributeForProfile":{
       "name":"BatchGetCalculatedAttributeForProfile",
       "http":{
@@ -588,6 +606,25 @@
       "documentation":"<p>Deletes a segment definition from the domain.</p>",
       "idempotent":true
     },
+    "DeleteSegmentSubscription":{
+      "name":"DeleteSegmentSubscription",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/domains/{DomainName}/segment-definitions/{SegmentDefinitionName}/subscriptions",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteSegmentSubscriptionRequest"},
+      "output":{"shape":"DeleteSegmentSubscriptionResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"BadRequestException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Deletes a segment subscription for membership events. All active event notifications for this segment are stopped. </p>",
+      "idempotent":true
+    },
     "DeleteWorkflow":{
       "name":"DeleteWorkflow",
       "http":{
@@ -621,6 +658,25 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>The process of detecting profile object type mapping by using given objects.</p>"
+    },
+    "DisassociateStreamForSegments":{
+      "name":"DisassociateStreamForSegments",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/domains/{DomainName}/segment-streams",
+        "responseCode":200
+      },
+      "input":{"shape":"DisassociateStreamForSegmentsRequest"},
+      "output":{"shape":"DisassociateStreamForSegmentsResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"BadRequestException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Disassociates the Amazon Kinesis data stream configured for segment membership events. All active segment subscriptions delivering events to this stream are eventually stopped. </p>",
+      "idempotent":true
     },
     "GetAutoMergingPreview":{
       "name":"GetAutoMergingPreview",
@@ -1023,6 +1079,25 @@
       ],
       "documentation":"<p>Retrieve the latest status of a segment snapshot.</p>"
     },
+    "GetSegmentSubscription":{
+      "name":"GetSegmentSubscription",
+      "http":{
+        "method":"GET",
+        "requestUri":"/domains/{DomainName}/segment-definitions/{SegmentDefinitionName}/subscriptions",
+        "responseCode":200
+      },
+      "input":{"shape":"GetSegmentSubscriptionRequest"},
+      "output":{"shape":"GetSegmentSubscriptionResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"BadRequestException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Returns the current subscription configuration, execution schedule, and status for segment membership events. </p>",
+      "readonly":true
+    },
     "GetSimilarProfiles":{
       "name":"GetSimilarProfiles",
       "http":{
@@ -1039,6 +1114,25 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Returns a set of profiles that belong to the same matching group using the <code>matchId</code> or <code>profileId</code>. You can also specify the type of matching that you want for finding similar profiles using either <code>RULE_BASED_MATCHING</code> or <code>ML_BASED_MATCHING</code>.</p>"
+    },
+    "GetStreamForSegments":{
+      "name":"GetStreamForSegments",
+      "http":{
+        "method":"GET",
+        "requestUri":"/domains/{DomainName}/segment-streams",
+        "responseCode":200
+      },
+      "input":{"shape":"GetStreamForSegmentsRequest"},
+      "output":{"shape":"GetStreamForSegmentsResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"BadRequestException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Returns information about the segment membership event stream configured for a specific domain, including the stream state and associated segments. </p>",
+      "readonly":true
     },
     "GetUploadJob":{
       "name":"GetUploadJob",
@@ -1512,6 +1606,25 @@
       "documentation":"<p>Lists all segment definitions under a domain.</p>",
       "readonly":true
     },
+    "ListSegmentSubscriptionEvents":{
+      "name":"ListSegmentSubscriptionEvents",
+      "http":{
+        "method":"GET",
+        "requestUri":"/domains/{DomainName}/segment-definitions/{SegmentDefinitionName}/subscription-events",
+        "responseCode":200
+      },
+      "input":{"shape":"ListSegmentSubscriptionEventsRequest"},
+      "output":{"shape":"ListSegmentSubscriptionEventsResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"BadRequestException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Returns the most recent membership events for a segment. Each event represents a profile that entered or exited the segment. </p> <p>This operation is paginated. </p>",
+      "readonly":true
+    },
     "ListTagsForResource":{
       "name":"ListTagsForResource",
       "http":{
@@ -1646,6 +1759,25 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Defines a ProfileObjectType.</p> <p>To add or remove tags on an existing ObjectType, see <a href=\"https://docs.aws.amazon.com/customerprofiles/latest/APIReference/API_TagResource.html\"> TagResource</a>/<a href=\"https://docs.aws.amazon.com/customerprofiles/latest/APIReference/API_UntagResource.html\">UntagResource</a>.</p>"
+    },
+    "PutSegmentSubscription":{
+      "name":"PutSegmentSubscription",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/domains/{DomainName}/segment-definitions/{SegmentDefinitionName}/subscriptions",
+        "responseCode":200
+      },
+      "input":{"shape":"PutSegmentSubscriptionRequest"},
+      "output":{"shape":"PutSegmentSubscriptionResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"BadRequestException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Creates or updates a segment subscription for membership events. When a subscription is created, an initial snapshot is taken and the system begins monitoring for membership changes. </p> <p>You can optionally set a schedule configuration interval to control how often membership snapshots are run. The interval can be from 1 to 24 hours. If not set, the interval defaults to 24 hours. Scheduled snapshots run on a best-effort basis. If a scheduled snapshot takes longer than the configured interval, the next scheduled run does not start until the in-progress snapshot completes, so a run might be delayed or skipped and is not guaranteed to occur at exactly the requested time. </p> <p>For Classic segments, membership events are generated from these scheduled snapshots and also in near real-time as profile attribute changes occur. For SQL segments, membership events are generated only from the scheduled snapshots. </p>",
+      "idempotent":true
     },
     "SearchProfiles":{
       "name":"SearchProfiles",
@@ -2163,6 +2295,59 @@
       "type":"string",
       "pattern":"arn:([a-z\\d-]+):profile:.*:.*:.+"
     },
+    "AssociateStreamForSegmentsRequest":{
+      "type":"structure",
+      "required":[
+        "DomainName",
+        "DestinationArn",
+        "DestinationRoleArn"
+      ],
+      "members":{
+        "DomainName":{
+          "shape":"name",
+          "documentation":"<p>The unique name of the domain.</p>",
+          "location":"uri",
+          "locationName":"DomainName"
+        },
+        "DestinationArn":{
+          "shape":"DestinationArnString",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon Kinesis data stream to deliver segment membership events to. For example, <code>arn:aws:kinesis:region:account-id:stream/stream-name</code>. </p>"
+        },
+        "DestinationRoleArn":{
+          "shape":"DestinationRoleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role that allows Customer Profiles service principal to assume the role for conducting AWS Key Management Service (KMS) and Amazon Kinesis operations. The role must grant the following Amazon Kinesis permissions to deliver segment membership events to the stream: </p> <ul> <li> <p> <code>kinesis:PutRecord</code> </p> </li> <li> <p> <code>kinesis:PutRecords</code> </p> </li> <li> <p> <code>kinesis:DescribeStream</code> </p> </li> </ul>"
+        }
+      }
+    },
+    "AssociateStreamForSegmentsResponse":{
+      "type":"structure",
+      "members":{}
+    },
+    "AssociatedSegment":{
+      "type":"structure",
+      "members":{
+        "SegmentName":{
+          "shape":"name",
+          "documentation":"<p>The unique name of the segment definition. </p>",
+          "locationName":"SegmentName"
+        },
+        "Status":{
+          "shape":"EventSubscriptionSegmentStatus",
+          "documentation":"<p>The subscription status of the segment. The following are valid values: </p> <ul> <li> <p> <b>STARTING</b>: The segment is being prepared to publish membership events. </p> </li> <li> <p> <b>RUNNING</b>: The segment is actively publishing membership events to the stream. </p> </li> <li> <p> <b>STOPPED</b>: The segment has stopped publishing membership events. </p> </li> <li> <p> <b>FAILED</b>: The segment failed to publish membership events. </p> </li> </ul>",
+          "locationName":"Status"
+        },
+        "Message":{
+          "shape":"string1To1000",
+          "documentation":"<p>An optional message providing context, such as a failure reason. </p>",
+          "locationName":"Message"
+        }
+      },
+      "documentation":"<p>Represents a segment associated with a membership event stream. </p>"
+    },
+    "AssociatedSegmentsList":{
+      "type":"list",
+      "member":{"shape":"AssociatedSegment"}
+    },
     "AttributeDetails":{
       "type":"structure",
       "required":[
@@ -2196,7 +2381,7 @@
         },
         "Values":{
           "shape":"Values",
-          "documentation":"<p>The values to apply the DimensionType on.</p>",
+          "documentation":"<p>The values to apply the DimensionType on. To reference a calculated attribute or profile attribute as a dynamic value, use handlebar notation: <code>{{_profile.ProfileAttributeName}}</code> or <code>{{_calculated_attribute.CalculatedAttributeName}}</code>.</p>",
           "locationName":"Values"
         }
       },
@@ -2219,7 +2404,9 @@
         "LESS_THAN",
         "GREATER_THAN_OR_EQUAL",
         "LESS_THAN_OR_EQUAL",
-        "EQUAL"
+        "EQUAL",
+        "LIST_CONTAINS",
+        "LIST_CONTAINS_ALL"
       ]
     },
     "AttributeItem":{
@@ -2637,7 +2824,7 @@
         },
         "Values":{
           "shape":"Values",
-          "documentation":"<p>The values to apply the DimensionType with.</p>",
+          "documentation":"<p>The values to apply the DimensionType with. To reference a calculated attribute or profile attribute as a dynamic value, use handlebar notation: <code>{{_profile.ProfileAttributeName}}</code> or <code>{{_calculated_attribute.CalculatedAttributeName}}</code>.</p>",
           "locationName":"Values"
         },
         "ConditionOverrides":{
@@ -3981,7 +4168,7 @@
         },
         "Values":{
           "shape":"DateValues",
-          "documentation":"<p>The values to apply the DimensionType on.</p>",
+          "documentation":"<p>The values to apply the DimensionType on. To reference a calculated attribute or profile attribute as a dynamic value, use handlebar notation: <code>{{_profile.ProfileAttributeName}}</code> or <code>{{_calculated_attribute.CalculatedAttributeName}}</code>.</p>",
           "locationName":"Values"
         }
       },
@@ -4443,6 +4630,37 @@
         }
       }
     },
+    "DeleteSegmentSubscriptionRequest":{
+      "type":"structure",
+      "required":[
+        "DomainName",
+        "SegmentDefinitionName"
+      ],
+      "members":{
+        "DomainName":{
+          "shape":"name",
+          "documentation":"<p>The unique name of the domain.</p>",
+          "location":"uri",
+          "locationName":"DomainName"
+        },
+        "SegmentDefinitionName":{
+          "shape":"name",
+          "documentation":"<p>The unique name of the segment definition. </p>",
+          "location":"uri",
+          "locationName":"SegmentDefinitionName"
+        }
+      }
+    },
+    "DeleteSegmentSubscriptionResponse":{
+      "type":"structure",
+      "members":{
+        "Message":{
+          "shape":"string1To1000",
+          "documentation":"<p>A confirmation message indicating the subscription was deleted successfully. </p>",
+          "locationName":"Message"
+        }
+      }
+    },
     "DeleteWorkflowRequest":{
       "type":"structure",
       "required":[
@@ -4468,10 +4686,21 @@
       "type":"structure",
       "members":{}
     },
+    "DestinationArnString":{
+      "type":"string",
+      "max":2048,
+      "min":1
+    },
     "DestinationField":{
       "type":"string",
       "max":256,
       "pattern":".*"
+    },
+    "DestinationRoleArn":{
+      "type":"string",
+      "max":512,
+      "min":1,
+      "pattern":".*arn:aws:iam:.*:[0-9]+:.*"
     },
     "DestinationSummary":{
       "type":"structure",
@@ -4565,6 +4794,28 @@
     "DimensionList":{
       "type":"list",
       "member":{"shape":"Dimension"}
+    },
+    "DisassociateStreamForSegmentsRequest":{
+      "type":"structure",
+      "required":["DomainName"],
+      "members":{
+        "DomainName":{
+          "shape":"name",
+          "documentation":"<p>The unique name of the domain.</p>",
+          "location":"uri",
+          "locationName":"DomainName"
+        }
+      }
+    },
+    "DisassociateStreamForSegmentsResponse":{
+      "type":"structure",
+      "members":{
+        "Message":{
+          "shape":"string1To1000",
+          "documentation":"<p>A confirmation message indicating the stream was disassociated successfully. </p>",
+          "locationName":"Message"
+        }
+      }
     },
     "DiversityCapType":{
       "type":"string",
@@ -4890,6 +5141,23 @@
       "type":"list",
       "member":{"shape":"EventStreamSummary"}
     },
+    "EventSubscriptionSegmentStatus":{
+      "type":"string",
+      "enum":[
+        "STARTING",
+        "RUNNING",
+        "STOPPED",
+        "FAILED"
+      ]
+    },
+    "EventSubscriptionState":{
+      "type":"string",
+      "enum":[
+        "RUNNING",
+        "UNHEALTHY",
+        "STOPPED"
+      ]
+    },
     "EventTriggerCondition":{
       "type":"structure",
       "required":[
@@ -5046,7 +5314,7 @@
         },
         "Values":{
           "shape":"ExtraLengthValues",
-          "documentation":"<p>The values to apply the DimensionType on.</p>",
+          "documentation":"<p>The values to apply the DimensionType on. To reference a calculated attribute or profile attribute as a dynamic value, use handlebar notation: <code>{{_profile.ProfileAttributeName}}</code> or <code>{{_calculated_attribute.CalculatedAttributeName}}</code>.</p>",
           "locationName":"Values"
         }
       },
@@ -6882,6 +7150,62 @@
         }
       }
     },
+    "GetSegmentSubscriptionRequest":{
+      "type":"structure",
+      "required":[
+        "DomainName",
+        "SegmentDefinitionName"
+      ],
+      "members":{
+        "DomainName":{
+          "shape":"name",
+          "documentation":"<p>The unique name of the domain.</p>",
+          "location":"uri",
+          "locationName":"DomainName"
+        },
+        "SegmentDefinitionName":{
+          "shape":"name",
+          "documentation":"<p>The unique name of the segment definition. </p>",
+          "location":"uri",
+          "locationName":"SegmentDefinitionName"
+        }
+      }
+    },
+    "GetSegmentSubscriptionResponse":{
+      "type":"structure",
+      "members":{
+        "Status":{
+          "shape":"SegmentSubscriptionStatus",
+          "documentation":"<p>The current lifecycle status of the subscription. The following are valid values: </p> <ul> <li> <p> <b>STARTING</b>: Initial snapshot is in progress. </p> </li> <li> <p> <b>RUNNING</b>: Notifications are active and running. </p> </li> <li> <p> <b>STOPPED</b>: Notifications have been stopped. </p> </li> <li> <p> <b>FAILED</b>: Notifications failed (for example, the Amazon Kinesis data stream became inaccessible). </p> </li> </ul>",
+          "locationName":"Status"
+        },
+        "Message":{
+          "shape":"string1To1000",
+          "documentation":"<p>A status message providing additional context, such as a failure reason. </p>",
+          "locationName":"Message"
+        },
+        "ScheduleConfiguration":{
+          "shape":"ScheduleConfiguration",
+          "documentation":"<p>The schedule configuration for periodic membership event notifications. </p>",
+          "locationName":"ScheduleConfiguration"
+        },
+        "ScheduledExecutions":{
+          "shape":"ScheduledExecutions",
+          "documentation":"<p>Information about scheduled execution timestamps. </p>",
+          "locationName":"ScheduledExecutions"
+        },
+        "StartedAt":{
+          "shape":"timestamp",
+          "documentation":"<p>The timestamp of when the subscription was first started. </p>",
+          "locationName":"StartedAt"
+        },
+        "LastUpdatedAt":{
+          "shape":"timestamp",
+          "documentation":"<p>The timestamp of the most recent configuration change. </p>",
+          "locationName":"LastUpdatedAt"
+        }
+      }
+    },
     "GetSimilarProfilesRequest":{
       "type":"structure",
       "required":[
@@ -6949,6 +7273,63 @@
         "NextToken":{
           "shape":"token",
           "documentation":"<p>The pagination token from the previous <code>GetSimilarProfiles</code> API call.</p>"
+        }
+      }
+    },
+    "GetStreamForSegmentsRequest":{
+      "type":"structure",
+      "required":["DomainName"],
+      "members":{
+        "DomainName":{
+          "shape":"name",
+          "documentation":"<p>The unique name of the domain.</p>",
+          "location":"uri",
+          "locationName":"DomainName"
+        }
+      }
+    },
+    "GetStreamForSegmentsResponse":{
+      "type":"structure",
+      "members":{
+        "AssociatedAt":{
+          "shape":"timestamp",
+          "documentation":"<p>The timestamp of when the stream was associated. </p>",
+          "locationName":"AssociatedAt"
+        },
+        "AssociatedSegments":{
+          "shape":"AssociatedSegmentsList",
+          "documentation":"<p>A list of segments currently associated with the stream and their subscription status. </p>",
+          "locationName":"AssociatedSegments"
+        },
+        "DomainName":{
+          "shape":"name",
+          "documentation":"<p>The unique name of the domain.</p>",
+          "locationName":"DomainName"
+        },
+        "DestinationArn":{
+          "shape":"DestinationArnString",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon Kinesis data stream receiving segment membership events. </p>",
+          "locationName":"DestinationArn"
+        },
+        "DestinationRoleArn":{
+          "shape":"DestinationRoleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role used for Amazon Kinesis and AWS Key Management Service (KMS) operations. </p>",
+          "locationName":"DestinationRoleArn"
+        },
+        "State":{
+          "shape":"EventSubscriptionState",
+          "documentation":"<p>The operational state of the destination stream. The following are valid values: </p> <ul> <li> <p> <b>RUNNING</b>: The stream is associated and healthy. Segment membership events are being published. </p> </li> <li> <p> <b>UNHEALTHY</b>: The stream is associated but events cannot currently be published. See <code>FailureReason</code> for details. </p> </li> <li> <p> <b>STOPPED</b>: The stream is no longer publishing segment membership events. </p> </li> </ul>",
+          "locationName":"State"
+        },
+        "DisassociatedAt":{
+          "shape":"timestamp",
+          "documentation":"<p>The timestamp of when the stream was disassociated. </p>",
+          "locationName":"DisassociatedAt"
+        },
+        "FailureReason":{
+          "shape":"string1To255",
+          "documentation":"<p>The reason why the stream is in an unhealthy state, if applicable. </p>",
+          "locationName":"FailureReason"
         }
       }
     },
@@ -7340,6 +7721,12 @@
       "error":{"httpStatusCode":500},
       "exception":true,
       "fault":true
+    },
+    "IntervalValue":{
+      "type":"integer",
+      "box":true,
+      "max":24,
+      "min":1
     },
     "JobSchedule":{
       "type":"structure",
@@ -8620,6 +9007,54 @@
         }
       }
     },
+    "ListSegmentSubscriptionEventsRequest":{
+      "type":"structure",
+      "required":[
+        "DomainName",
+        "SegmentDefinitionName"
+      ],
+      "members":{
+        "DomainName":{
+          "shape":"name",
+          "documentation":"<p>The unique name of the domain.</p>",
+          "location":"uri",
+          "locationName":"DomainName"
+        },
+        "SegmentDefinitionName":{
+          "shape":"name",
+          "documentation":"<p>The unique name of the segment definition. </p>",
+          "location":"uri",
+          "locationName":"SegmentDefinitionName"
+        },
+        "MaxResults":{
+          "shape":"maxSize100",
+          "documentation":"<p>The maximum number of events to return per page. </p>",
+          "location":"querystring",
+          "locationName":"max-results"
+        },
+        "NextToken":{
+          "shape":"token",
+          "documentation":"<p>The pagination token from the previous call to retrieve the next page of results. </p>",
+          "location":"querystring",
+          "locationName":"next-token"
+        }
+      }
+    },
+    "ListSegmentSubscriptionEventsResponse":{
+      "type":"structure",
+      "members":{
+        "Events":{
+          "shape":"SubscriptionEventsList",
+          "documentation":"<p>A list of segment membership events. </p>",
+          "locationName":"Events"
+        },
+        "NextToken":{
+          "shape":"token",
+          "documentation":"<p>The pagination token to use to retrieve the next page of results. </p>",
+          "locationName":"NextToken"
+        }
+      }
+    },
     "ListTagsForResourceRequest":{
       "type":"structure",
       "required":["resourceArn"],
@@ -9485,7 +9920,7 @@
         },
         "Values":{
           "shape":"Values",
-          "documentation":"<p>The values to apply the DimensionType on.</p>",
+          "documentation":"<p>The values to apply the DimensionType on. To reference a calculated attribute or profile attribute as a dynamic value, use handlebar notation: <code>{{_profile.ProfileAttributeName}}</code> or <code>{{_calculated_attribute.CalculatedAttributeName}}</code>.</p>",
           "locationName":"Values"
         }
       },
@@ -10007,6 +10442,51 @@
         "Tags":{
           "shape":"TagMap",
           "documentation":"<p>The tags used to organize, track, or control access for this resource.</p>"
+        }
+      }
+    },
+    "PutSegmentSubscriptionRequest":{
+      "type":"structure",
+      "required":[
+        "DomainName",
+        "SegmentDefinitionName"
+      ],
+      "members":{
+        "DomainName":{
+          "shape":"name",
+          "documentation":"<p>The unique name of the domain.</p>",
+          "location":"uri",
+          "locationName":"DomainName"
+        },
+        "SegmentDefinitionName":{
+          "shape":"name",
+          "documentation":"<p>The unique name of the segment definition. </p>",
+          "location":"uri",
+          "locationName":"SegmentDefinitionName"
+        },
+        "ScheduleConfiguration":{
+          "shape":"ScheduleConfiguration",
+          "documentation":"<p>The optional schedule configuration that controls how often membership snapshots are run. If not provided, the subscription defaults to a 24-hour interval. </p>"
+        }
+      }
+    },
+    "PutSegmentSubscriptionResponse":{
+      "type":"structure",
+      "members":{
+        "Status":{
+          "shape":"SegmentSubscriptionStatus",
+          "documentation":"<p>The current lifecycle status of the subscription. The following are valid values: </p> <ul> <li> <p> <b>STARTING</b>: Initial snapshot is in progress. </p> </li> <li> <p> <b>RUNNING</b>: Notifications are active and running. </p> </li> <li> <p> <b>STOPPED</b>: Notifications have been stopped. </p> </li> <li> <p> <b>FAILED</b>: Notifications failed (for example, the Amazon Kinesis data stream became inaccessible). </p> </li> </ul>",
+          "locationName":"Status"
+        },
+        "ScheduleConfiguration":{
+          "shape":"ScheduleConfiguration",
+          "documentation":"<p>The schedule configuration for the subscription, if configured. </p>",
+          "locationName":"ScheduleConfiguration"
+        },
+        "StartedAt":{
+          "shape":"timestamp",
+          "documentation":"<p>The timestamp of when the subscription was started. </p>",
+          "locationName":"StartedAt"
         }
       }
     },
@@ -10720,6 +11200,27 @@
       },
       "documentation":"<p>The properties that are applied when Salesforce is being used as a source.</p>"
     },
+    "ScheduleConfiguration":{
+      "type":"structure",
+      "required":["Interval"],
+      "members":{
+        "Interval":{
+          "shape":"IntervalValue",
+          "documentation":"<p>The interval between scheduled executions. </p>",
+          "locationName":"Interval"
+        },
+        "Unit":{
+          "shape":"ScheduleConfigurationUnit",
+          "documentation":"<p>The unit for the interval. The following are valid values: </p> <ul> <li> <p> <b>HOURLY</b>: The interval is measured in hours. </p> </li> </ul>",
+          "locationName":"Unit"
+        }
+      },
+      "documentation":"<p>Configuration for scheduled segment membership event notifications. </p>"
+    },
+    "ScheduleConfigurationUnit":{
+      "type":"string",
+      "enum":["HOURLY"]
+    },
     "ScheduleExpression":{
       "type":"string",
       "max":256,
@@ -10729,6 +11230,22 @@
       "type":"long",
       "max":36000,
       "min":0
+    },
+    "ScheduledExecutions":{
+      "type":"structure",
+      "members":{
+        "NextExecutedAt":{
+          "shape":"timestamp",
+          "documentation":"<p>The timestamp of the next scheduled execution. </p>",
+          "locationName":"NextExecutedAt"
+        },
+        "LastExecutedAt":{
+          "shape":"timestamp",
+          "documentation":"<p>The timestamp of the last successful scheduled execution. </p>",
+          "locationName":"LastExecutedAt"
+        }
+      },
+      "documentation":"<p>Information about scheduled execution timestamps. </p>"
     },
     "ScheduledTriggerProperties":{
       "type":"structure",
@@ -10949,6 +11466,15 @@
       "enum":[
         "ASC",
         "DESC"
+      ]
+    },
+    "SegmentSubscriptionStatus":{
+      "type":"string",
+      "enum":[
+        "STARTING",
+        "RUNNING",
+        "STOPPED",
+        "FAILED"
       ]
     },
     "SegmentType":{
@@ -11209,7 +11735,8 @@
         "MINIMUM",
         "MAXIMUM",
         "AVERAGE",
-        "MAX_OCCURRENCE"
+        "MAX_OCCURRENCE",
+        "RECENT_OCCURRENCES"
       ],
       "sensitive":true
     },
@@ -11293,6 +11820,50 @@
         "BEGINS_WITH",
         "ENDS_WITH"
       ]
+    },
+    "SubscriptionEvent":{
+      "type":"string",
+      "enum":[
+        "JOINED",
+        "LEFT"
+      ]
+    },
+    "SubscriptionEventItem":{
+      "type":"structure",
+      "members":{
+        "ProfileId":{
+          "shape":"uuid",
+          "documentation":"<p>The unique identifier of a customer profile.</p>",
+          "locationName":"ProfileId"
+        },
+        "UpdatedAt":{
+          "shape":"timestamp",
+          "documentation":"<p>The timestamp of when the membership change was detected. </p>",
+          "locationName":"UpdatedAt"
+        },
+        "EventType":{
+          "shape":"SubscriptionEventType",
+          "documentation":"<p>The type of event that triggered the membership change. The following are valid values: </p> <ul> <li> <p> <b>LIVE</b>: Real-time event triggered by a profile or calculated attribute change (Classic segments only). </p> </li> <li> <p> <b>SCHEDULE</b>: Event generated during a scheduled execution. </p> </li> </ul>",
+          "locationName":"EventType"
+        },
+        "Event":{
+          "shape":"SubscriptionEvent",
+          "documentation":"<p>Whether the profile joined or left the segment. The following are valid values: </p> <ul> <li> <p> <b>JOINED</b>: The profile joined the segment. </p> </li> <li> <p> <b>LEFT</b>: The profile left the segment. </p> </li> </ul>",
+          "locationName":"Event"
+        }
+      },
+      "documentation":"<p>Represents a single segment membership event. </p>"
+    },
+    "SubscriptionEventType":{
+      "type":"string",
+      "enum":[
+        "LIVE",
+        "SCHEDULE"
+      ]
+    },
+    "SubscriptionEventsList":{
+      "type":"list",
+      "member":{"shape":"SubscriptionEventItem"}
     },
     "TagArn":{
       "type":"string",

@@ -78,28 +78,41 @@ def _check_params(request, params: dict, param_map: dict, op_name: str):
             )
         elif loc == "payload":
             actual_body = _parse_xml_body(request.body, wire)
-            _assert_subset(actual_body, expected, f"{op_name}.{param_name}")
+            _assert_subset(actual_body, expected, f"{op_name}.{param_name}",
+                           coerce_strings=True)
 
 
-def _assert_subset(actual, expected, path: str):
-    """Assert expected is a subset of actual (recursive)."""
+def _assert_subset(actual, expected, path: str, coerce_strings: bool = False):
+    """Assert expected is a subset of actual (recursive).
+
+    When coerce_strings is True, leaf values are compared as strings.
+    This is used for XML body comparisons where the parser returns all
+    values as strings, but test authors may pass native types.
+    """
     if isinstance(expected, dict):
         assert isinstance(actual, dict), f"{path}: expected dict, got {type(actual)}"
         for k, v in expected.items():
             assert k in actual, f"{path}: missing key {k!r}, have {list(actual.keys())}"
-            _assert_subset(actual[k], v, f"{path}.{k}")
+            _assert_subset(actual[k], v, f"{path}.{k}", coerce_strings)
     elif isinstance(expected, list):
         assert isinstance(actual, list), f"{path}: expected list, got {type(actual)}"
         for i, item in enumerate(expected):
-            found = any(_matches(a, item) for a in actual)
+            found = any(_matches(a, item, coerce_strings) for a in actual)
             assert found, f"{path}[{i}]: {item!r} not found in {actual!r}"
     else:
-        assert actual == expected, f"{path}: expected {expected!r}, got {actual!r}"
+        if coerce_strings:
+            assert str(actual) == str(expected), (
+                f"{path}: expected {expected!r}, got {actual!r}"
+            )
+        else:
+            assert actual == expected, (
+                f"{path}: expected {expected!r}, got {actual!r}"
+            )
 
 
-def _matches(actual, expected) -> bool:
+def _matches(actual, expected, coerce_strings: bool = False) -> bool:
     try:
-        _assert_subset(actual, expected, "")
+        _assert_subset(actual, expected, "", coerce_strings)
         return True
     except AssertionError:
         return False

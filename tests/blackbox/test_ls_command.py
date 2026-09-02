@@ -12,14 +12,13 @@ from tests.blackbox.s3_assertions import (
     assert_list_buckets,
     assert_list_objects_v2,
 )
-
 from tests.blackbox.utils import (
     cli_env,
     format_requests,
     get_query_params,
     list_objects_xml,
-    run_cli,
     mock_server,
+    run_cli,
     setup_responses,
     xml_response,
 )
@@ -572,7 +571,6 @@ async def test_list_objects_ignores_bucket_region(aws_cli: str) -> None:
     req = server.requests[0]
     params = get_query_params(req)
     assert "bucket-region" not in params
-
 
 
 @pytest.mark.asyncio

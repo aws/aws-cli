@@ -2,6 +2,20 @@
 CHANGELOG
 =========
 
+2.36.38
+=======
+
+* api-change:``sagemaker-featurestore-runtime``: Amazon SageMaker Feature Store now supports the UpdateRecord API, enabling partial updates to individual feature values in an existing Online Store record without rewriting the entire record. This reduces write payloads and latency for high-frequency feature-level writes .
+* api-change:``mgn``: AWS Transform for migrations adds a second network migration option - apply your source security posture to existing VPCs. Upload a source network file with firewall rules, tag the in-scope VPCs, and AWS Transform matches source subnets to them by CIDR and generates the security groups.
+* api-change:``appintegrations``: This release adds a force parameter to DeleteApplication and a ConflictException to UpdateApplication, letting customers delete applications with existing associations in one call and get a clear error when an update conflicts with the application's current state.
+* api-change:``ec2``: This release adds support to retain interruptible Capacity Reservations in an active state when all capacity is reclaimed.
+* api-change:``medialive``: AWS Elemental MediaLive now supports AB forensic video watermarking
+* api-change:``mwaa``: Enabled customers to clear optional S3 paths (plugins, requirements, and startup script) for their Amazon MWAA environments by accepting empty strings for the associated fields in UpdateEnvironment requests.
+* api-change:``bedrock-agentcore``: Batch evaluation now supports up to 10 CloudWatch log groups per CloudWatchLogsSource
+* api-change:``odb``: Adds the ListFlexComponents API for listing the flex components available for a given DB system shape.
+* api-change:``sagemaker``: Amazon SageMaker Feature Store now supports the Standard V2 online store type, which enables feature-level writes to feature groups. You can select Standard V2 when creating a feature group, and update the storage type of an existing feature group via UpdateFeatureGroup.
+
+
 2.36.37
 =======
 

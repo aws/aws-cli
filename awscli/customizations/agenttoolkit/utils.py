@@ -137,7 +137,7 @@ def read_skill_metadata(skill_dir):
     path = os.path.join(skill_dir, SKILL_METADATA_FILENAME)
     try:
         with open(path) as f:
-            return json.load(f)
+            metadata = json.load(f)
     except FileNotFoundError:
         return None
     except json.JSONDecodeError as e:
@@ -149,6 +149,15 @@ def read_skill_metadata(skill_dir):
             e,
         )
         return None
+    if not isinstance(metadata, dict):
+        # Valid JSON, but not an object, so there are no fields to read.
+        LOG.debug(
+            'Ignoring skill metadata at %s: expected a JSON object, got %s.',
+            path,
+            type(metadata).__name__,
+        )
+        return None
+    return metadata
 
 
 def write_skill_metadata(skill_dir, version):

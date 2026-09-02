@@ -114,8 +114,21 @@ def test_check_updates_reports_up_to_date(tmp_path, monkeypatch):
     assert result['skills'][0]['latestVersion'] == 'v1'
 
 
+@pytest.mark.parametrize(
+    'marker_contents',
+    [
+        '{ not valid json',
+        '',
+        'null',
+        # Valid JSON, but not an object, so there is no version field to read.
+        '[]',
+        '["v1"]',
+        '"v1"',
+        '42',
+    ],
+)
 def test_check_updates_unreadable_metadata_reports_null_version(
-    tmp_path, monkeypatch
+    tmp_path, monkeypatch, marker_contents
 ):
     make_skill(tmp_path, '.test-agent', 'aws-s3')
     marker = (
@@ -125,7 +138,7 @@ def test_check_updates_unreadable_metadata_reports_null_version(
         / 'aws-s3'
         / SKILL_METADATA_FILENAME
     )
-    marker.write_text('{ not valid json')
+    marker.write_text(marker_contents)
     result, _, _ = _run_check(
         monkeypatch,
         [make_config(tmp_path)],

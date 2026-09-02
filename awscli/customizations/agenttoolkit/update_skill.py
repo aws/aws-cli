@@ -87,19 +87,23 @@ class UpdateSkillCommand(BasicCommand):
         if not agents:
             raise ParamValidationError('No supported AI coding agents found.')
 
-        client = self._client or create_client(self._session, parsed_globals)
-
         if update_all:
-            return self._update_all_skills(agents, client)
-        return self._update_one_skill(agents, client, skill_name)
+            return self._update_all_skills(agents, parsed_globals)
+        return self._update_one_skill(agents, parsed_globals, skill_name)
 
-    def _update_one_skill(self, agents, client, skill_name):
+    def _create_client(self, parsed_globals):
+        return self._client or create_client(self._session, parsed_globals)
+
+    def _update_one_skill(self, agents, parsed_globals, skill_name):
         installed_agents = agents_with_skill(agents, skill_name)
         if not installed_agents:
             raise ParamValidationError(
                 f'Skill "{skill_name}" is not installed.'
             )
 
+        # Build the client only once we know there is something to update, so
+        # local failures are not masked by endpoint or credential errors.
+        client = self._create_client(parsed_globals)
         remote_version, outdated = self._find_outdated(
             installed_agents, client, skill_name
         )
@@ -112,7 +116,7 @@ class UpdateSkillCommand(BasicCommand):
         self._install_version(client, skill_name, remote_version, outdated)
         return 0
 
-    def _update_all_skills(self, agents, client):
+    def _update_all_skills(self, agents, parsed_globals):
         installed_skills = collect_installed_skills(agents)
         if not installed_skills:
             self._stream.write('No installed AWS skills found.\n')
@@ -125,6 +129,7 @@ class UpdateSkillCommand(BasicCommand):
         for skill in installed_skills:
             agents_by_skill.setdefault(skill.name, []).append(skill.agent)
 
+        client = self._create_client(parsed_globals)
         updated_any = False
         for skill_name in sorted(agents_by_skill):
             remote_version, outdated = self._find_outdated(

@@ -166,6 +166,38 @@ def test_update_skill_rejects_skill_name_with_all(tmp_path):
         _run_update(configs, ['--all', '--skill-name', 'aws-s3'])
 
 
+def test_update_all_no_client_when_nothing_installed(tmp_path):
+    # Creating a client can fail on its own (no region, bad credentials), so
+    # local state must be checked first.
+    (tmp_path / '.test-agent' / 'skills').mkdir(parents=True)
+    with patch(
+        'awscli.customizations.agenttoolkit.update_skill.create_client'
+    ) as create:
+        cmd = UpdateSkillCommand(
+            make_session(),
+            stream=StringIO(),
+            agent_configs=[make_config(tmp_path)],
+        )
+        rc = cmd(args=['--all'], parsed_globals=Mock())
+    assert rc == 0
+    assert create.call_count == 0
+
+
+def test_update_one_no_client_when_skill_not_installed(tmp_path):
+    (tmp_path / '.test-agent' / 'skills').mkdir(parents=True)
+    with patch(
+        'awscli.customizations.agenttoolkit.update_skill.create_client'
+    ) as create:
+        cmd = UpdateSkillCommand(
+            make_session(),
+            stream=StringIO(),
+            agent_configs=[make_config(tmp_path)],
+        )
+        with pytest.raises(ParamValidationError, match='not installed'):
+            cmd(args=['--skill-name', 'aws-s3'], parsed_globals=Mock())
+    assert create.call_count == 0
+
+
 def test_update_all_updates_only_outdated_skills(tmp_path):
     _install_skill_at_version(tmp_path, '.test-agent', 'aws-s3', 'v1')
     _install_skill_at_version(tmp_path, '.test-agent', 'aws-lambda', 'v3')

@@ -889,3 +889,38 @@ class TestSyncCaseConflict:
             )
 
         assert rc == 0, stderr.decode()
+
+
+
+@pytest.mark.asyncio
+async def test_download_url_encoded_key_from_list(aws_cli, tmp_path):
+    """sync downloads objects whose keys contain spaces from ListObjectsV2."""
+    async with mock_server(on_headers_received=handle_expect_header) as (
+        server,
+        proxy,
+    ):
+        setup_responses(
+            server,
+            [
+                xml_response(
+                    list_objects_xml(
+                        contents=[
+                            {
+                                "Key": "my file.txt",
+                                "Size": 3,
+                                "LastModified": "2023-01-01T00:00:00Z",
+                            }
+                        ]
+                    )
+                ),
+                get_object_response(b"foo"),
+            ],
+        )
+        stdout, stderr, rc = await run_cli(
+            aws_cli,
+            ["s3", "sync", "s3://bucket/", str(tmp_path)],
+            cli_env(proxy),
+        )
+
+    assert rc == 0, stderr.decode()
+    assert (tmp_path / "my file.txt").exists()

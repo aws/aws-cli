@@ -5475,3 +5475,81 @@ class TestS3ExpressCpRecursive:
 
         assert rc == 0, stderr.decode()
         assert "warning: Recursive copies/moves" in stderr.decode()
+
+
+
+@pytest.mark.asyncio
+async def test_upload_key_with_spaces(aws_cli, tmp_path):
+    """cp uploads a file whose S3 key contains spaces."""
+    src = tmp_path / "my file.txt"
+    src.write_text("content")
+    async with mock_server(on_headers_received=handle_expect_header) as (
+        server,
+        proxy,
+    ):
+        setup_responses(server, [put_object_response()])
+        stdout, stderr, rc = await run_cli(
+            aws_cli,
+            ["s3", "cp", str(src), "s3://bucket/my file.txt"],
+            cli_env(proxy),
+        )
+
+    assert rc == 0, stderr.decode()
+    # Space must be percent-encoded as %20, not + or literal space
+    assert server.requests[0].path == "/my%20file.txt"
+
+
+@pytest.mark.asyncio
+async def test_download_unicode_key_from_s3(aws_cli, tmp_path):
+    """cp --recursive downloads an object with a Unicode key."""
+    async with mock_server(on_headers_received=handle_expect_header) as (
+        server,
+        proxy,
+    ):
+        setup_responses(
+            server,
+            [
+                xml_response(
+                    list_objects_xml(
+                        contents=[
+                            {
+                                "Key": "données.txt",
+                                "Size": 5,
+                                "LastModified": "2023-01-01T00:00:00Z",
+                            }
+                        ]
+                    )
+                ),
+                get_object_response(b"hello"),
+            ],
+        )
+        stdout, stderr, rc = await run_cli(
+            aws_cli,
+            ["s3", "cp", "s3://bucket/", str(tmp_path), "--recursive"],
+            cli_env(proxy),
+        )
+
+    assert rc == 0, stderr.decode()
+    assert (tmp_path / "données.txt").exists()
+
+
+@pytest.mark.asyncio
+async def test_upload_file_with_unicode_local_name(aws_cli, tmp_path):
+    """cp uploads a local file with a Unicode filename."""
+    src = tmp_path / "données.txt"
+    src.write_text("content")
+    async with mock_server(on_headers_received=handle_expect_header) as (
+        server,
+        proxy,
+    ):
+        setup_responses(server, [put_object_response()])
+        stdout, stderr, rc = await run_cli(
+            aws_cli,
+            ["s3", "cp", str(src), "s3://bucket/"],
+            cli_env(proxy),
+        )
+
+    assert rc == 0, stderr.decode()
+    assert len(server.requests) == 1, format_requests(server)
+    # Unicode filename is percent-encoded as UTF-8 on the wire
+    assert server.requests[0].path == "/donn%C3%A9es.txt"

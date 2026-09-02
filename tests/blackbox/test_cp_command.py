@@ -5477,7 +5477,6 @@ class TestS3ExpressCpRecursive:
         assert "warning: Recursive copies/moves" in stderr.decode()
 
 
-
 @pytest.mark.asyncio
 async def test_upload_key_with_spaces(aws_cli, tmp_path):
     """cp uploads a file whose S3 key contains spaces."""
@@ -5553,3 +5552,47 @@ async def test_upload_file_with_unicode_local_name(aws_cli, tmp_path):
     assert len(server.requests) == 1, format_requests(server)
     # Unicode filename is percent-encoded as UTF-8 on the wire
     assert server.requests[0].path == "/donn%C3%A9es.txt"
+
+
+
+@pytest.mark.asyncio
+async def test_user_agent_contains_cli_version(aws_cli, tmp_path):
+    """Requests include a User-Agent with aws-cli version info."""
+    src = tmp_path / "foo.txt"
+    src.write_text("content")
+    async with mock_server(on_headers_received=handle_expect_header) as (
+        server,
+        proxy,
+    ):
+        setup_responses(server, [put_object_response()])
+        _, stderr, rc = await run_cli(
+            aws_cli,
+            ["s3", "cp", str(src), "s3://bucket/foo.txt"],
+            cli_env(proxy),
+        )
+
+    assert rc == 0, stderr.decode()
+    ua = server.requests[0].headers.get("user-agent")
+    assert ua is not None, "User-Agent header missing"
+    assert "aws-cli/" in ua, f"Expected 'aws-cli/' in User-Agent: {ua}"
+
+
+@pytest.mark.asyncio
+async def test_user_agent_contains_command(aws_cli, tmp_path):
+    """User-Agent includes the command being run (e.g. s3.cp)."""
+    src = tmp_path / "foo.txt"
+    src.write_text("content")
+    async with mock_server(on_headers_received=handle_expect_header) as (
+        server,
+        proxy,
+    ):
+        setup_responses(server, [put_object_response()])
+        _, stderr, rc = await run_cli(
+            aws_cli,
+            ["s3", "cp", str(src), "s3://bucket/foo.txt"],
+            cli_env(proxy),
+        )
+
+    assert rc == 0, stderr.decode()
+    ua = server.requests[0].headers.get("user-agent")
+    assert "s3.cp" in ua, f"Expected 's3.cp' in User-Agent: {ua}"

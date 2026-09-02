@@ -300,7 +300,6 @@ class TestMBCommand:
             assert "ParamValidation" in stderr.decode()
 
 
-
 @pytest.mark.asyncio
 async def test_create_bucket_with_non_ascii_tag_value(aws_cli):
     """mb --tags with non-ASCII tag value sends correct XML body."""

@@ -21446,6 +21446,11 @@
           "shape": "__listOfAdditionalDestinations",
           "locationName": "additionalDestinations",
           "documentation": "Optional an array of additional destinational HTTP destinations for the OutputGroup outputs"
+        },
+        "WatermarkingSettings": {
+          "shape": "CmafIngestWatermarkingSettings",
+          "locationName": "watermarkingSettings",
+          "documentation": "Specifies the type of watermarking technology to use."
         }
       },
       "documentation": "Cmaf Ingest Group Settings",
@@ -29794,6 +29799,11 @@
           "shape": "__listOfMediaPackageAdditionalDestinations",
           "locationName": "additionalDestinations",
           "documentation": "Optional an array of additional destinational HTTP destinations for the OutputGroup outputs"
+        },
+        "WatermarkingSettings": {
+          "shape": "MediaPackageV2WatermarkingSettings",
+          "locationName": "watermarkingSettings",
+          "documentation": "Specifies the type of watermarking technology to use."
         }
       },
       "documentation": "Media Package V2 Group Settings"
@@ -30905,6 +30915,182 @@
     "__integerMin2Max8192": {
       "type": "integer",
       "documentation": "Placeholder documentation for __integerMin2Max8192"
+    },
+    "AbWatermarkerIdLength": {
+      "type": "string",
+      "documentation": "Ab Watermarker Id Length",
+      "enum": [
+        "ID_2048",
+        "ID_512"
+      ]
+    },
+    "AbWatermarkingCustomProfile": {
+      "type": "structure",
+      "members": {
+        "EmbeddingFrequency": {
+          "shape": "__doubleMin250Max5000",
+          "locationName": "embeddingFrequency",
+          "documentation": "The frequency with which watermarks will be embedded, in milliseconds."
+        },
+        "SceneCut": {
+          "shape": "__doubleMinNegative1Max5",
+          "locationName": "sceneCut",
+          "documentation": "The number of frames after scene-cut to embed the watermark."
+        },
+        "TargetPsnr": {
+          "shape": "__doubleMin32Max46",
+          "locationName": "targetPsnr",
+          "documentation": "The target PSNR of the watermarked frame"
+        }
+      },
+      "documentation": "The vendor-specified custom profile options",
+      "required": [
+        "SceneCut",
+        "EmbeddingFrequency",
+        "TargetPsnr"
+      ]
+    },
+    "AbWatermarkingProfile": {
+      "type": "string",
+      "documentation": "Ab Watermarking Profile",
+      "enum": [
+        "CAMCORDING",
+        "CUSTOM",
+        "DEFAULT",
+        "HQ",
+        "MEZZANINE",
+        "ROBUST"
+      ]
+    },
+    "CmafIngestAbWatermarkerIrdetoSettings": {
+      "type": "structure",
+      "members": {
+        "AdditionalDestinationsAlternateDestinations": {
+          "shape": "__listOfOutputLocationRef",
+          "locationName": "additionalDestinationsAlternateDestinations",
+          "documentation": "The \"B\" pipeline renditions for the additional destinations."
+        },
+        "AlternateDestination": {
+          "shape": "OutputLocationRef",
+          "locationName": "alternateDestination",
+          "documentation": "The \"B\" pipeline renditions for the main destination."
+        },
+        "CustomProfile": {
+          "shape": "AbWatermarkingCustomProfile",
+          "locationName": "customProfile",
+          "documentation": "The vendor-provided custom profile values."
+        },
+        "License": {
+          "shape": "__string",
+          "locationName": "license",
+          "documentation": "The name of the Secrets Manager secret containing the license file."
+        },
+        "OperatorId": {
+          "shape": "__integerMin1Max511",
+          "locationName": "operatorId",
+          "documentation": "The vendor-provided Operator ID."
+        },
+        "PolyPeriod": {
+          "shape": "__integerMin1Max1000",
+          "locationName": "polyPeriod",
+          "documentation": "The number of segments per watermarking bit. The total duration of the watermarking bit\nshould be the LCM (least common multiple) of all segments sizes emitted by the downstream packager."
+        },
+        "Profile": {
+          "shape": "AbWatermarkingProfile",
+          "locationName": "profile",
+          "documentation": "The vendor-provided profile choice."
+        },
+        "WatermarkIdLength": {
+          "shape": "AbWatermarkerIdLength",
+          "locationName": "watermarkIdLength",
+          "documentation": "The number of bits that compose the watermarking identifier to be embedded."
+        }
+      },
+      "documentation": "A/B Watermarker settings for CMAF Ingest output groups.",
+      "required": [
+        "AlternateDestination",
+        "OperatorId",
+        "Profile"
+      ]
+    },
+    "CmafIngestWatermarkingSettings": {
+      "type": "structure",
+      "members": {
+        "CmafIngestAbWatermarkerIrdetoSettings": {
+          "shape": "CmafIngestAbWatermarkerIrdetoSettings",
+          "locationName": "cmafIngestAbWatermarkerIrdetoSettings"
+        }
+      },
+      "documentation": "A/B Watermarker settings for CMAF Ingest output groups."
+    },
+    "MediaPackageV2AbWatermarkerIrdetoSettings": {
+      "type": "structure",
+      "members": {
+        "AdditionalDestinationsAlternateDestinations": {
+          "shape": "__listOfOutputLocationRef",
+          "locationName": "additionalDestinationsAlternateDestinations",
+          "documentation": "The \"B\" pipeline renditions for the additional destinations."
+        },
+        "AlternateDestination": {
+          "shape": "OutputLocationRef",
+          "locationName": "alternateDestination",
+          "documentation": "The \"B\" pipeline renditions for the main destination."
+        },
+        "CustomProfile": {
+          "shape": "AbWatermarkingCustomProfile",
+          "locationName": "customProfile",
+          "documentation": "The vendor-provided custom profile values."
+        },
+        "License": {
+          "shape": "__string",
+          "locationName": "license",
+          "documentation": "The name of the Secrets Manager secret containing the license file."
+        },
+        "OperatorId": {
+          "shape": "__integerMin1Max511",
+          "locationName": "operatorId",
+          "documentation": "The vendor-provided Operator ID."
+        },
+        "PolyPeriod": {
+          "shape": "__integerMin1Max1000",
+          "locationName": "polyPeriod",
+          "documentation": "The number of segments per watermarking bit. The total duration of the watermarking bit\nshould be the LCM (least common multiple) of all segments sizes emitted by the downstream packager."
+        },
+        "Profile": {
+          "shape": "AbWatermarkingProfile",
+          "locationName": "profile",
+          "documentation": "The vendor-provided profile choice."
+        },
+        "WatermarkIdLength": {
+          "shape": "AbWatermarkerIdLength",
+          "locationName": "watermarkIdLength",
+          "documentation": "The number of bits that compose the watermarking identifier to be embedded."
+        }
+      },
+      "documentation": "A/B Watermarker settings for MediaPackage V2 output groups.",
+      "required": [
+        "AlternateDestination",
+        "OperatorId",
+        "Profile"
+      ]
+    },
+    "MediaPackageV2WatermarkingSettings": {
+      "type": "structure",
+      "members": {
+        "MediaPackageV2AbWatermarkerIrdetoSettings": {
+          "shape": "MediaPackageV2AbWatermarkerIrdetoSettings",
+          "locationName": "mediaPackageV2AbWatermarkerIrdetoSettings"
+        }
+      },
+      "documentation": "A/B Watermarker settings for MediaPackage V2 output groups."
+    },
+    "__integerMin1Max1000": {
+      "type": "integer",
+      "documentation": "Placeholder documentation for __integerMin1Max1000"
+    },
+    "__integerMin1Max511": {
+      "type": "integer",
+      "documentation": "Placeholder documentation for __integerMin1Max511"
     }
   },
   "documentation": "API for AWS Elemental MediaLive"

@@ -13970,6 +13970,11 @@
           "shape":"InterruptionInfo",
           "documentation":"<p> Information about the interruption configuration and association with the source reservation for interruptible Capacity Reservations. </p>",
           "locationName":"interruptionInfo"
+        },
+        "ZeroSizePreference":{
+          "shape":"ZeroSizePreference",
+          "documentation":"<p> The zero-size preference configured for the interruptible Capacity Reservation. A value of <code>retain</code> keeps the interruptible Capacity Reservation active at zero capacity when you reduce its allocation to zero. A value of <code>default</code> cancels the interruptible Capacity Reservation when you reduce its allocation to zero. </p>",
+          "locationName":"zeroSizePreference"
         }
       },
       "documentation":"<p>Describes a Capacity Reservation.</p>"
@@ -17823,6 +17828,10 @@
           "shape":"TagSpecificationList",
           "documentation":"<p> The tags to apply to the interruptible Capacity Reservation during creation. </p>",
           "locationName":"TagSpecification"
+        },
+        "ZeroSizePreference":{
+          "shape":"ZeroSizePreference",
+          "documentation":"<p> Specifies the behavior for the interruptible Capacity Reservation when you reduce its allocation to zero instances. Specify <code>retain</code> to keep the interruptible Capacity Reservation active at zero capacity so that you can allocate instances to it again later. Specify <code>default</code> to cancel the interruptible Capacity Reservation and return the capacity to your source Capacity Reservation. The default value is <code>default</code>. </p>"
         }
       }
     },
@@ -27399,12 +27408,12 @@
         },
         "ErrorCode":{
           "shape":"String",
-          "documentation":"<p>The error code that indicates why the instance could not be launched. For more information about error codes, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/errors-overview.html.html\">Error codes</a>.</p>",
+          "documentation":"<p>The error code that indicates why the instance could not be launched. For more information about error codes, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/errors-overview.html\">Error codes</a>.</p>",
           "locationName":"errorCode"
         },
         "ErrorMessage":{
           "shape":"String",
-          "documentation":"<p>The error message that describes why the instance could not be launched. For more information about error messages, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/errors-overview.html.html\">Error codes</a>.</p>",
+          "documentation":"<p>The error message that describes why the instance could not be launched. For more information about error messages, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/errors-overview.html\">Error codes</a>.</p>",
           "locationName":"errorMessage"
         }
       },
@@ -48472,7 +48481,7 @@
         },
         "ApplicationStatus":{
           "shape":"ApplicationStatusSummary",
-          "documentation":"<p>Reports impaired functionality that stems from issues with applications running on the instance.</p>",
+          "documentation":"<p>Reports the application-level health status for the instance.</p>",
           "locationName":"applicationStatus"
         }
       },
@@ -50530,6 +50539,11 @@
           "shape":"InterruptionType",
           "documentation":"<p> The type of interruption policy applied to the interruptible reservation. </p>",
           "locationName":"interruptionType"
+        },
+        "ZeroSizePreference":{
+          "shape":"ZeroSizePreference",
+          "documentation":"<p> Specifies how Amazon EC2 handles the interruptible Capacity Reservation when you reduce its allocation to zero instances. A value of <code>retain</code> keeps the interruptible Capacity Reservation active at zero capacity so that you can allocate instances to it again later. A value of <code>default</code> cancels the interruptible Capacity Reservation and returns the capacity to your source Capacity Reservation. </p>",
+          "locationName":"zeroSizePreference"
         }
       },
       "documentation":"<p> Represents the allocation of capacity from a source reservation to an interruptible reservation, tracking current and target instance counts for allocation management. </p>"
@@ -51384,6 +51398,11 @@
           "shape":"IpamInternetRegistryAssociationState",
           "documentation":"<p>The state of the internet registry association. Valid values: <code>pending-activation</code> | <code>pending-enable</code> | <code>create-in-progress</code> | <code>create-failed</code> | <code>enable-in-progress</code> | <code>enable-complete</code> | <code>enable-failed</code> | <code>delete-in-progress</code> | <code>delete-complete</code> | <code>delete-failed</code>.</p>",
           "locationName":"state"
+        },
+        "StateMessage":{
+          "shape":"String",
+          "documentation":"<p>A message describing the current state of the internet registry association, including additional details such as the reason for a failure.</p>",
+          "locationName":"stateMessage"
         },
         "ChildRequestXml":{
           "shape":"String",
@@ -71004,9 +71023,11 @@
       "members":{
         "Value":{
           "shape":"SecureBlob",
+          "documentation":"<p>The attribute value.</p>",
           "locationName":"value"
         }
-      }
+      },
+      "documentation":"<p>Describes a value for a resource attribute that is a Base64-encoded binary data object.</p>"
     },
     "SecurityGroup":{
       "type":"structure",
@@ -77798,10 +77819,7 @@
     },
     "UpdateInterruptibleCapacityReservationAllocationRequest":{
       "type":"structure",
-      "required":[
-        "CapacityReservationId",
-        "TargetInstanceCount"
-      ],
+      "required":["CapacityReservationId"],
       "members":{
         "CapacityReservationId":{
           "shape":"CapacityReservationId",
@@ -77814,6 +77832,10 @@
         "DryRun":{
           "shape":"Boolean",
           "documentation":"<p> Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. </p>"
+        },
+        "ZeroSizePreference":{
+          "shape":"ZeroSizePreference",
+          "documentation":"<p> Specifies the updated behavior for the interruptible Capacity Reservation when you reduce its allocation to zero instances. Specify <code>retain</code> to keep the interruptible Capacity Reservation active at zero capacity so that you can allocate instances to it again later. Specify <code>default</code> to cancel the interruptible Capacity Reservation and return the capacity to your source Capacity Reservation. </p>"
         }
       }
     },
@@ -81600,6 +81622,13 @@
         "shape":"Workload",
         "locationName":"item"
       }
+    },
+    "ZeroSizePreference":{
+      "type":"string",
+      "enum":[
+        "retain",
+        "default"
+      ]
     },
     "ZoneIdStringList":{
       "type":"list",

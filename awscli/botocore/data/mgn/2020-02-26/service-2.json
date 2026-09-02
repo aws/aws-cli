@@ -379,7 +379,7 @@
         {"shape":"UninitializedAccountException"},
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p>Returns a list of Jobs. Use the JobsID and fromDate and toData filters to limit which jobs are returned. The response is sorted by creationDataTime - latest date first. Jobs are normally created by the StartTest, StartCutover, and TerminateTargetInstances APIs. Jobs are also created by DiagnosticLaunch and TerminateDiagnosticInstances, which are APIs available only to *Support* and only used in response to relevant support tickets.</p>",
+      "documentation":"<p>Returns a list of Jobs. Use the jobIDs and fromDate and toDate filters to limit which jobs are returned. The response is sorted by creationDateTime - latest date first. Jobs are normally created by the StartTest, StartCutover, and TerminateTargetInstances APIs. Jobs are also created by DiagnosticLaunch and TerminateDiagnosticInstances, which are APIs available only to *Support* and only used in response to relevant support tickets.</p>",
       "readonly":true
     },
     "DescribeLaunchConfigurationTemplates":{
@@ -413,7 +413,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p>Lists all ReplicationConfigurationTemplates, filtered by Source Server IDs.</p>",
+      "documentation":"<p>Lists all ReplicationConfigurationTemplates, filtered by replication configuration template IDs.</p>",
       "readonly":true
     },
     "DescribeSourceServers":{
@@ -497,7 +497,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ConflictException"}
       ],
-      "documentation":"<p>Disconnects specific Source Servers from Application Migration Service. Data replication is stopped immediately. All AWS resources created by Application Migration Service for enabling the replication of these source servers will be terminated / deleted within 90 minutes. Launched Test or Cutover instances will NOT be terminated. If the agent on the source server has not been prevented from communicating with the Application Migration Service service, then it will receive a command to uninstall itself (within approximately 10 minutes). The following properties of the SourceServer will be changed immediately: dataReplicationInfo.dataReplicationState will be set to DISCONNECTED; The totalStorageBytes property for each of dataReplicationInfo.replicatedDisks will be set to zero; dataReplicationInfo.lagDuration and dataReplicationInfo.lagDuration will be nullified.</p>"
+      "documentation":"<p>Disconnects specific Source Servers from Application Migration Service. Data replication is stopped immediately. All AWS resources created by Application Migration Service for enabling the replication of these source servers will be terminated / deleted within 90 minutes. Launched Test or Cutover instances will NOT be terminated. If the agent on the source server has not been prevented from communicating with Application Migration Service, then it will receive a command to uninstall itself (within approximately 10 minutes). The following properties of the SourceServer will be changed immediately: dataReplicationInfo.dataReplicationState will be set to DISCONNECTED; The totalStorageBytes property for each of dataReplicationInfo.replicatedDisks will be set to zero; dataReplicationInfo.lagDuration and dataReplicationInfo.lagDuration will be nullified.</p>"
     },
     "FinalizeCutover":{
       "name":"FinalizeCutover",
@@ -514,7 +514,7 @@
         {"shape":"ValidationException"},
         {"shape":"ConflictException"}
       ],
-      "documentation":"<p>Finalizes the cutover immediately for specific Source Servers. All AWS resources created by Application Migration Service for enabling the replication of these source servers will be terminated / deleted within 90 minutes. Launched Test or Cutover instances will NOT be terminated. The AWS Replication Agent will receive a command to uninstall itself (within 10 minutes). The following properties of the SourceServer will be changed immediately: dataReplicationInfo.dataReplicationState will be changed to DISCONNECTED; The SourceServer.lifeCycle.state will be changed to CUTOVER; The totalStorageBytes property fo each of dataReplicationInfo.replicatedDisks will be set to zero; dataReplicationInfo.lagDuration and dataReplicationInfo.lagDuration will be nullified.</p>"
+      "documentation":"<p>Finalizes the cutover immediately for specific Source Servers. All AWS resources created by Application Migration Service for enabling the replication of these source servers will be terminated / deleted within 90 minutes. Launched Test or Cutover instances will NOT be terminated. The AWS Replication Agent will receive a command to uninstall itself (within 10 minutes). The following properties of the SourceServer will be changed immediately: dataReplicationInfo.dataReplicationState will be changed to DISCONNECTED; The SourceServer.lifeCycle.state will be changed to CUTOVER; The totalStorageBytes property for each of dataReplicationInfo.replicatedDisks will be set to zero; dataReplicationInfo.lagDuration and dataReplicationInfo.lagDuration will be nullified.</p>"
     },
     "GetLaunchConfiguration":{
       "name":"GetLaunchConfiguration",
@@ -1012,7 +1012,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ConflictException"}
       ],
-      "documentation":"<p>Archives specific Source Servers by setting the SourceServer.isArchived property to true for specified SourceServers by ID. This command only works for SourceServers with a lifecycle. state which equals DISCONNECTED or CUTOVER.</p>"
+      "documentation":"<p>Archives specific Source Servers by setting the SourceServer.isArchived property to true for specified SourceServers by ID. This command only works for SourceServers with a lifecycle state that equals DISCONNECTED or CUTOVER.</p>"
     },
     "PauseReplication":{
       "name":"PauseReplication",
@@ -1486,7 +1486,7 @@
         {"shape":"ValidationException"},
         {"shape":"ConflictException"}
       ],
-      "documentation":"<p>Updates multiple LaunchConfigurations by Source Server ID.</p> <note> <p>bootMode valid values are <code>LEGACY_BIOS | UEFI</code> </p> </note>",
+      "documentation":"<p>Updates multiple LaunchConfigurations by Source Server ID.</p> <note> <p>bootMode valid values are <code>LEGACY_BIOS | UEFI | USE_SOURCE</code> </p> </note>",
       "idempotent":true
     },
     "UpdateLaunchConfigurationTemplate":{
@@ -1574,7 +1574,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p>Updates multiple ReplicationConfigurationTemplates by ID.</p>"
+      "documentation":"<p>Updates a ReplicationConfigurationTemplate by ID.</p>"
     },
     "UpdateSourceServer":{
       "name":"UpdateSourceServer",
@@ -1640,7 +1640,7 @@
         "message":{"shape":"LargeBoundedString"},
         "code":{"shape":"LargeBoundedString"}
       },
-      "documentation":"<p>Operating denied due to a file permission or access check error.</p>",
+      "documentation":"<p>Operation denied due to a file permission or access check error.</p>",
       "error":{
         "httpStatusCode":403,
         "senderFault":true
@@ -1998,6 +1998,30 @@
       "type":"string",
       "pattern":"([0-9]{1,3}\\.){3}[0-9]{1,3}/[0-9]{1,2}"
     },
+    "CidrMapping":{
+      "type":"structure",
+      "required":[
+        "originalCidr",
+        "updatedCidr"
+      ],
+      "members":{
+        "originalCidr":{
+          "shape":"Cidr",
+          "documentation":"<p>The original CIDR range in the source network.</p>"
+        },
+        "updatedCidr":{
+          "shape":"Cidr",
+          "documentation":"<p>The updated CIDR range to use in the target network.</p>"
+        }
+      },
+      "documentation":"<p>Maps a source CIDR range to the corresponding target CIDR range to use in the target network.</p>"
+    },
+    "CidrMappingsList":{
+      "type":"list",
+      "member":{"shape":"CidrMapping"},
+      "max":50,
+      "min":0
+    },
     "ClientIdempotencyToken":{
       "type":"string",
       "max":64,
@@ -2332,6 +2356,14 @@
         "targetDeployment":{
           "shape":"TargetDeployment",
           "documentation":"<p>The target deployment configuration for the migrated network.</p>"
+        },
+        "vpcProvisioningStrategy":{
+          "shape":"VpcProvisioningStrategy",
+          "documentation":"<p>Specifies whether to create new target VPCs or use existing ones. Set to <code>CREATE_NEW</code> to provision new target VPCs as part of the migration, or <code>USE_EXISTING</code> to migrate into existing VPCs in the target account.</p>"
+        },
+        "cidrMappings":{
+          "shape":"CidrMappingsList",
+          "documentation":"<p>A list of CIDR mappings that map original source CIDR ranges to updated target CIDR ranges. CIDR mappings can be provided only when <code>vpcProvisioningStrategy</code> is set to <code>USE_EXISTING</code>.</p>"
         },
         "tags":{
           "shape":"TagsMap",
@@ -2947,7 +2979,7 @@
         },
         "accountID":{
           "shape":"AccountID",
-          "documentation":"<p>Request to filter Source Servers list by Accoun ID.</p>"
+          "documentation":"<p>Request to filter Source Servers list by Account ID.</p>"
         }
       }
     },
@@ -2994,11 +3026,11 @@
       "members":{
         "items":{
           "shape":"SourceServersList",
-          "documentation":"<p>Request to filter Source Servers list by item.</p>"
+          "documentation":"<p>The list of returned Source Servers.</p>"
         },
         "nextToken":{
           "shape":"PaginationToken",
-          "documentation":"<p>Request to filter Source Servers next token.</p>"
+          "documentation":"<p>The token of the next Source Server to retrieve.</p>"
         }
       }
     },
@@ -3774,14 +3806,14 @@
       "members":{
         "createdCount":{
           "shape":"PositiveInteger",
-          "documentation":"<p>Import task summery waves created count.</p>"
+          "documentation":"<p>Import task summary waves created count.</p>"
         },
         "modifiedCount":{
           "shape":"PositiveInteger",
-          "documentation":"<p>Import task summery waves modified count.</p>"
+          "documentation":"<p>Import task summary waves modified count.</p>"
         }
       },
-      "documentation":"<p>Import task summery waves.</p>"
+      "documentation":"<p>Import task summary waves.</p>"
     },
     "InitializeServiceRequest":{
       "type":"structure",
@@ -3971,7 +4003,7 @@
       "members":{
         "ssmDocument":{
           "shape":"SsmDocument",
-          "documentation":"<p>AWS Systems Manager's Document of the of the Job Post Launch Actions.</p>"
+          "documentation":"<p>AWS Systems Manager's Document of the Job Post Launch Actions.</p>"
         },
         "ssmDocumentType":{
           "shape":"SsmDocumentType",
@@ -3979,7 +4011,7 @@
         },
         "executionID":{
           "shape":"BoundedString",
-          "documentation":"<p>AWS Systems Manager Document's execution ID of the of the Job Post Launch Actions.</p>"
+          "documentation":"<p>AWS Systems Manager Document's execution ID of the Job Post Launch Actions.</p>"
         },
         "executionStatus":{
           "shape":"PostLaunchActionExecutionStatus",
@@ -4293,7 +4325,7 @@
       "members":{
         "addedToServiceDateTime":{
           "shape":"ISO8601DatetimeString",
-          "documentation":"<p>Lifecycle added to service data and time.</p>"
+          "documentation":"<p>Lifecycle added to service date and time.</p>"
         },
         "firstByteDateTime":{
           "shape":"ISO8601DatetimeString",
@@ -4397,7 +4429,7 @@
       "members":{
         "apiCallDateTime":{
           "shape":"ISO8601DatetimeString",
-          "documentation":"<p>Lifecycle Test failed API call date and time.</p>"
+          "documentation":"<p>Lifecycle Test finalized API call date and time.</p>"
         }
       },
       "documentation":"<p>Lifecycle last Test finalized.</p>"
@@ -5793,7 +5825,7 @@
         },
         "artifactType":{
           "shape":"NetworkMigrationCodeGenerationArtifactType",
-          "documentation":"<p>The type of the artifact, such as CLOUDFORMATION_TEMPLATE or TERRAFORM_MODULE.</p>"
+          "documentation":"<p>The type of the generated artifact.</p>"
         },
         "artifactSubType":{
           "shape":"NetworkMigrationCodeGenerationArtifactSubType",
@@ -5984,6 +6016,14 @@
         "targetDeployment":{
           "shape":"TargetDeployment",
           "documentation":"<p>The target deployment configuration for the migrated network.</p>"
+        },
+        "vpcProvisioningStrategy":{
+          "shape":"VpcProvisioningStrategy",
+          "documentation":"<p>Indicates whether the migration creates new target VPCs or uses existing ones. <code>CREATE_NEW</code> provisions new target VPCs; <code>USE_EXISTING</code> migrates into existing VPCs in the target account.</p>"
+        },
+        "cidrMappings":{
+          "shape":"CidrMappingsList",
+          "documentation":"<p>A list of CIDR mappings that map original source CIDR ranges to updated target CIDR ranges. CIDR mappings apply only when <code>vpcProvisioningStrategy</code> is set to <code>USE_EXISTING</code>.</p>"
         },
         "createdAt":{
           "shape":"Timestamp",
@@ -6275,7 +6315,7 @@
         },
         "segmentType":{
           "shape":"NetworkMigrationMapperSegmentType",
-          "documentation":"<p>The type of the segment, such as VPC, subnet, or security group.</p>"
+          "documentation":"<p>The category of the network migration segment. A segment groups the network constructs (such as VPCs, subnets, and security groups) that are migrated together. Valid values: <code>WORKLOAD</code>, <code>APPLIANCE</code>.</p>"
         },
         "name":{
           "shape":"SegmentName",
@@ -6597,7 +6637,7 @@
           "documentation":"<p>AWS Systems Manager Documents.</p>"
         }
       },
-      "documentation":"<p>Post Launch Actions to executed on the Test or Cutover instance.</p>"
+      "documentation":"<p>Post Launch Actions to be executed on the Test or Cutover instance.</p>"
     },
     "PostLaunchActionsDeploymentType":{
       "type":"string",
@@ -7281,7 +7321,7 @@
           "documentation":"<p>Exceeded the service quota value.</p>"
         }
       },
-      "documentation":"<p>The request could not be completed because its exceeded the service quota.</p>",
+      "documentation":"<p>The request could not be completed because it exceeded the service quota.</p>",
       "error":{
         "httpStatusCode":402,
         "senderFault":true
@@ -7752,7 +7792,7 @@
         },
         "tags":{
           "shape":"TagsMap",
-          "documentation":"<p>Start import request tags.</p>"
+          "documentation":"<p>Start export request tags.</p>"
         }
       },
       "documentation":"<p>Start export request.</p>"
@@ -8669,6 +8709,14 @@
           "shape":"TargetDeployment",
           "documentation":"<p>The updated target deployment configuration.</p>"
         },
+        "vpcProvisioningStrategy":{
+          "shape":"VpcProvisioningStrategy",
+          "documentation":"<p>Updates whether the migration creates new target VPCs or uses existing ones. Set to <code>USE_EXISTING</code> to migrate into existing VPCs in the target account, or to <code>CREATE_NEW</code> to provision new target VPCs.</p>"
+        },
+        "cidrMappings":{
+          "shape":"CidrMappingsList",
+          "documentation":"<p>The updated list of CIDR mappings that map original source CIDR ranges to updated target CIDR ranges. CIDR mappings can be provided only when <code>vpcProvisioningStrategy</code> is set to <code>USE_EXISTING</code>.</p>"
+        },
         "scopeTags":{
           "shape":"ScopeTagsMap",
           "documentation":"<p>The updated scope tags for the network migration definition.</p>"
@@ -9080,6 +9128,13 @@
       "max":10,
       "min":0
     },
+    "VpcProvisioningStrategy":{
+      "type":"string",
+      "enum":[
+        "CREATE_NEW",
+        "USE_EXISTING"
+      ]
+    },
     "Wave":{
       "type":"structure",
       "members":{
@@ -9196,5 +9251,5 @@
       "member":{"shape":"SegmentID"}
     }
   },
-  "documentation":"<p>The Application Migration Service service.</p>"
+  "documentation":"<p>Application Migration Service.</p>"
 }

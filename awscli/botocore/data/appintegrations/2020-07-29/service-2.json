@@ -102,7 +102,7 @@
         {"shape":"InvalidRequestException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Deletes the Application. Only Applications that don't have any Application Associations can be deleted.</p>"
+      "documentation":"<p>Deletes an application. If the application has associations, you must delete them first. Alternatively, use the <code>force</code> option to delete the application and remove its associations.</p>"
     },
     "DeleteDataIntegration":{
       "name":"DeleteDataIntegration",
@@ -350,7 +350,8 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"InvalidRequestException"},
         {"shape":"AccessDeniedException"},
-        {"shape":"UnsupportedOperationException"}
+        {"shape":"UnsupportedOperationException"},
+        {"shape":"ConflictException"}
       ],
       "documentation":"<p>Updates and persists an Application resource.</p>"
     },
@@ -563,6 +564,15 @@
       "max":255,
       "min":1,
       "pattern":".*"
+    },
+    "ConflictException":{
+      "type":"structure",
+      "members":{
+        "Message":{"shape":"Message"}
+      },
+      "documentation":"<p>The request conflicts with the current state of the resource. Verify the application's current state and retry the request.</p>",
+      "error":{"httpStatusCode":409},
+      "exception":true
     },
     "ContactHandling":{
       "type":"structure",
@@ -920,6 +930,12 @@
           "documentation":"<p>The Amazon Resource Name (ARN) of the Application.</p>",
           "location":"uri",
           "locationName":"ApplicationIdentifier"
+        },
+        "Force":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether to delete the application even if it still has application associations. If <code>true</code>, the operation removes the application and its associations. If <code>false</code> or absent, the delete fails when associations exist.</p> <important> <p>Setting this parameter to <code>true</code> permanently removes all of the application's associations. Doing so might impact other resources that rely on and reference the application. This action can't be undone.</p> </important>",
+          "location":"querystring",
+          "locationName":"force"
         }
       }
     },

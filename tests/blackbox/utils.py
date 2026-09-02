@@ -11,15 +11,6 @@ from localstub.server import AsyncHTTPTestServer, HTTPResponse
 from localstub.tlsproxy import AsyncTLSInterceptProxy
 
 
-import tempfile
-
-_CRT_CONFIG = tempfile.NamedTemporaryFile(
-    mode="w", suffix=".cfg", delete=False, prefix="blackbox_crt_"
-)
-_CRT_CONFIG.write("[default]\ns3 =\n    preferred_transfer_client = crt\n")
-_CRT_CONFIG.close()
-
-
 def cli_env(proxy: AsyncTLSInterceptProxy) -> dict[str, str]:
     return {
         "PATH": os.environ.get("PATH", ""),
@@ -29,7 +20,7 @@ def cli_env(proxy: AsyncTLSInterceptProxy) -> dict[str, str]:
         "AWS_REGION": "us-east-1",
         "AWS_DEFAULT_REGION": "us-east-1",
         "AWS_MAX_ATTEMPTS": "1",
-        "AWS_CONFIG_FILE": _CRT_CONFIG.name,
+        "AWS_CONFIG_FILE": "",
         "AWS_SHARED_CREDENTIALS_FILE": "",
         "HTTPS_PROXY": proxy.endpoint_url,
         "HTTP_PROXY": proxy.endpoint_url,

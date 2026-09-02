@@ -298,3 +298,31 @@ class TestMBCommand:
             assert rc == 252
             assert len(server.requests) == 0, format_requests(server)
             assert "ParamValidation" in stderr.decode()
+
+
+
+@pytest.mark.asyncio
+async def test_create_bucket_with_non_ascii_tag_value(aws_cli):
+    """mb --tags with non-ASCII tag value sends correct XML body."""
+    async with mock_server() as (server, proxy):
+        setup_responses(server, [create_bucket_response()])
+        stdout, stderr, rc = await run_cli(
+            aws_cli,
+            [
+                "s3",
+                "mb",
+                "s3://bucket",
+                "--tags",
+                "Author",
+                "José García",
+                "--region",
+                "us-west-2",
+            ],
+            cli_env(proxy),
+        )
+
+    assert rc == 0, stderr.decode()
+    req = server.requests[0]
+    assert "José" in req.body or "Jos" in req.body, (
+        f"Expected non-ASCII tag value in body, got: {req.body[:200]}"
+    )

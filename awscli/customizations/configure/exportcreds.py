@@ -11,6 +11,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import csv
+import hashlib
 import io
 import json
 import os
@@ -20,6 +21,8 @@ from datetime import datetime
 
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.exceptions import ConfigurationError
+from awscli.customizations.sso.logout import revoke_sso_token
+from awscli.customizations.sso.utils import SSO_TOKEN_DIR
 
 # Takes botocore's ReadOnlyCredentials and exposes an expiry_time.
 Credentials = namedtuple(
@@ -199,6 +202,27 @@ class ConfigureExportCredentialsCommand(BasicCommand):
             'choices': list(SUPPORTED_FORMATS),
             'default': CredentialProcessFormatter.FORMAT,
         },
+        {
+            'name': 'revoke-sso-token',
+            'action': 'store_true',
+            'default': False,
+            'help_text': (
+                'After exporting credentials, server-side revoke the AWS '
+                'IAM Identity Center access token used to mint them and '
+                'remove its on-disk cache file. The token is cached per SSO '
+                'session, so this revokes the shared session token: any '
+                'other profile bound to the same ``sso_session`` (or legacy '
+                '``sso_start_url``), including in other shells, will need to '
+                'run ``aws sso login`` again. For assume-role profiles the '
+                'token is resolved by following ``source_profile`` to the '
+                'IAM Identity Center-backed profile. This is a no-op for '
+                'profiles that do not resolve credentials through IAM '
+                'Identity Center. Use this to minimize the on-disk lifetime '
+                'of the SSO access token. Note: when used in a '
+                '``credential_process`` configuration, every credential '
+                'refresh will require a new ``aws sso login`` flow.'
+            ),
+        },
     ]
     _RECURSION_VAR = '_AWS_CLI_PROFILE_CHAIN'
     # Two levels is reasonable because you might explicitly run
@@ -280,3 +304,75 @@ class ConfigureExportCredentialsCommand(BasicCommand):
         creds_with_expiry = convert_botocore_credentials(creds)
         formatter = SUPPORTED_FORMATS[parsed_args.format](self._out_stream)
         formatter.display_credentials(creds_with_expiry)
+        if parsed_args.revoke_sso_token:
+            self._revoke_sso_token_for_profile(parsed_globals)
+
+    def _revoke_sso_token_for_profile(self, parsed_globals):
+        # Best-effort: credentials have already been emitted at this point,
+        # so any failure here must not change the exit status. We catch
+        # broadly to cover transport-level errors from the sso.Logout call
+        # (BotoCoreError, EndpointResolutionError, etc.) in addition to
+        # the ``ClientError`` path that ``revoke_sso_token`` already logs.
+        try:
+            self._do_revoke_sso_token_for_profile(parsed_globals)
+        except Exception:
+            pass
+
+    def _do_revoke_sso_token_for_profile(self, parsed_globals):
+        cache_key = self._sso_cache_key_for_current_profile()
+        if cache_key is None:
+            return
+        cache_path = os.path.join(SSO_TOKEN_DIR, cache_key + '.json')
+        try:
+            with open(cache_path) as f:
+                contents = json.load(f)
+        except (OSError, ValueError):
+            return
+        access_token = contents.get('accessToken')
+        sso_region = contents.get('region')
+        if not access_token or not sso_region:
+            return
+        revoke_sso_token(
+            self._session, sso_region, access_token, parsed_globals
+        )
+        try:
+            os.remove(cache_path)
+        except OSError:
+            pass
+
+    def _sso_cache_key_for_current_profile(self):
+        # Walks the credential-resolution chain to the profile that carries
+        # the IAM Identity Center configuration and returns its SSO token
+        # cache key (sha1 digest), or None if no profile in the chain
+        # resolves through IAM Identity Center.
+        #
+        # The active profile may not hold the SSO config itself: an
+        # assume-role profile (``role_arn`` + ``source_profile``) inherits
+        # its SSO token from the source profile, possibly through several
+        # hops. We follow ``source_profile`` until we find the profile with
+        # ``sso_session`` (or the legacy ``sso_start_url``), guarding against
+        # cycles in malformed configs.
+        #
+        # The cache key is computed identically to
+        # ``botocore.utils.SSOTokenLoader``: sha1 of the sso_session name
+        # when present, otherwise sha1 of the legacy sso_start_url.
+        profiles = self._session.full_config.get('profiles', {})
+        config = self._session.get_scoped_config()
+        seen_profiles = set()
+        while True:
+            sso_session = config.get('sso_session')
+            if sso_session:
+                cache_input = sso_session
+                break
+            sso_start_url = config.get('sso_start_url')
+            if sso_start_url:
+                cache_input = sso_start_url
+                break
+            source_profile = config.get('source_profile')
+            if source_profile is None or source_profile in seen_profiles:
+                return None
+            seen_profiles.add(source_profile)
+            config = profiles.get(source_profile)
+            if config is None:
+                return None
+        return hashlib.sha1(cache_input.encode('utf-8')).hexdigest()

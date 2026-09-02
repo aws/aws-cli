@@ -39,10 +39,10 @@ from tests.blackbox.utils import (
     get_object_tagging_response,
     head_object_response,
     list_objects_xml,
+    mock_server,
     put_object_response,
     put_object_tagging_response,
     run_cli,
-    mock_server,
     setup_responses,
     upload_part_copy_response,
     upload_part_response,
@@ -452,12 +452,8 @@ class TestCPCommand:
 
         assert rc == 0, stderr.decode()
         assert len(server.requests) == 2, format_requests(server)
-        assert_head_object(
-            server.requests[0], Bucket="bucket", Key="key.txt"
-        )
-        assert_get_object(
-            server.requests[1], Bucket="bucket", Key="key.txt"
-        )
+        assert_head_object(server.requests[0], Bucket="bucket", Key="key.txt")
+        assert_get_object(server.requests[1], Bucket="bucket", Key="key.txt")
 
     async def test_operations_used_in_recursive_download(
         self, aws_cli, tmp_path
@@ -482,9 +478,7 @@ class TestCPCommand:
 
         assert rc == 0, stderr.decode()
         assert len(server.requests) == 1, format_requests(server)
-        assert_list_objects_v2(
-            server.requests[0], Bucket="bucket"
-        )
+        assert_list_objects_v2(server.requests[0], Bucket="bucket")
 
     async def test_no_overwrite_flag_when_object_not_exists_on_target(
         self, aws_cli, tmp_path
@@ -512,9 +506,7 @@ class TestCPCommand:
         assert rc == 0, stderr.decode()
         assert len(server.requests) == 1, format_requests(server)
         req = server.requests[0]
-        assert_put_object(
-            req, Bucket="bucket", Key="key.txt", IfNoneMatch="*"
-        )
+        assert_put_object(req, Bucket="bucket", Key="key.txt", IfNoneMatch="*")
 
     async def test_no_overwrite_flag_when_object_exists_on_target(
         self, aws_cli, tmp_path
@@ -551,9 +543,7 @@ class TestCPCommand:
         assert rc == 0, stderr.decode()
         assert len(server.requests) == 1, format_requests(server)
         req = server.requests[0]
-        assert_put_object(
-            req, Bucket="bucket", Key="key.txt", IfNoneMatch="*"
-        )
+        assert_put_object(req, Bucket="bucket", Key="key.txt", IfNoneMatch="*")
 
     async def test_no_overwrite_flag_multipart_upload_when_object_not_exists_on_target(
         self, aws_cli, tmp_path
@@ -686,9 +676,7 @@ class TestCPCommand:
 
         assert rc == 0, stderr.decode()
         assert len(server.requests) == 2, format_requests(server)
-        assert_head_object(
-            server.requests[0], Bucket="bucket1", Key="key.txt"
-        )
+        assert_head_object(server.requests[0], Bucket="bucket1", Key="key.txt")
         assert_copy_object(
             server.requests[1],
             Bucket="bucket",
@@ -730,9 +718,7 @@ class TestCPCommand:
 
         assert rc == 0, stderr.decode()
         assert len(server.requests) == 2, format_requests(server)
-        assert_head_object(
-            server.requests[0], Bucket="bucket1", Key="key.txt"
-        )
+        assert_head_object(server.requests[0], Bucket="bucket1", Key="key.txt")
         assert_copy_object(
             server.requests[1],
             Bucket="bucket",
@@ -861,9 +847,7 @@ class TestCPCommand:
 
         assert rc == 0, stderr.decode()
         assert len(server.requests) == 2, format_requests(server)
-        assert_head_object(
-            server.requests[0], Bucket="bucket", Key="key.txt"
-        )
+        assert_head_object(server.requests[0], Bucket="bucket", Key="key.txt")
         assert_copy_object(
             server.requests[1],
             Bucket="bucket",
@@ -974,9 +958,7 @@ class TestCPCommand:
 
         assert rc == 0, stderr.decode()
         assert len(server.requests) == 2, format_requests(server)
-        assert_head_object(
-            server.requests[0], Bucket="bucket", Key="key.txt"
-        )
+        assert_head_object(server.requests[0], Bucket="bucket", Key="key.txt")
         assert_copy_object(
             server.requests[1],
             Bucket="bucket",
@@ -1056,9 +1038,7 @@ class TestCPCommand:
 
         assert rc == 0, stderr.decode()
         assert len(server.requests) == 2, format_requests(server)
-        assert_list_objects_v2(
-            server.requests[0], Bucket="bucket"
-        )
+        assert_list_objects_v2(server.requests[0], Bucket="bucket")
         assert_get_object(
             server.requests[1], Bucket="bucket", Key="foo/bar.txt"
         )
@@ -1098,9 +1078,7 @@ class TestCPCommand:
 
         assert rc == 2
         assert len(server.requests) == 1, format_requests(server)
-        assert_list_objects_v2(
-            server.requests[0], Bucket="bucket"
-        )
+        assert_list_objects_v2(server.requests[0], Bucket="bucket")
         assert "GLACIER" in stderr.decode()
 
     async def test_warns_on_glacier_incompatible_operation(
@@ -1134,9 +1112,7 @@ class TestCPCommand:
 
         assert rc == 2
         assert len(server.requests) == 1, format_requests(server)
-        assert_head_object(
-            server.requests[0], Bucket="bucket", Key="key.txt"
-        )
+        assert_head_object(server.requests[0], Bucket="bucket", Key="key.txt")
         assert "GLACIER" in stderr.decode()
 
     async def test_warns_on_deep_archive_incompatible_operation(
@@ -1170,9 +1146,7 @@ class TestCPCommand:
 
         assert rc == 2
         assert len(server.requests) == 1, format_requests(server)
-        assert_head_object(
-            server.requests[0], Bucket="bucket", Key="key.txt"
-        )
+        assert_head_object(server.requests[0], Bucket="bucket", Key="key.txt")
         assert "GLACIER" in stderr.decode()
 
     async def test_turn_off_glacier_warnings(self, aws_cli, tmp_path):
@@ -1210,9 +1184,7 @@ class TestCPCommand:
 
         assert rc == 0, stderr.decode()
         assert len(server.requests) == 1, format_requests(server)
-        assert_head_object(
-            server.requests[0], Bucket="bucket", Key="key.txt"
-        )
+        assert_head_object(server.requests[0], Bucket="bucket", Key="key.txt")
         assert stderr.decode() == ""
 
     async def test_turn_off_glacier_warnings_for_deep_archive(
@@ -1252,9 +1224,7 @@ class TestCPCommand:
 
         assert rc == 0, stderr.decode()
         assert len(server.requests) == 1, format_requests(server)
-        assert_head_object(
-            server.requests[0], Bucket="bucket", Key="key.txt"
-        )
+        assert_head_object(server.requests[0], Bucket="bucket", Key="key.txt")
         assert stderr.decode() == ""
 
     async def test_cp_with_sse_flag(self, aws_cli, tmp_path):
@@ -2273,9 +2243,7 @@ class TestCPCommand:
 
         assert rc == 0, stderr.decode()
         assert len(server.requests) == 1, format_requests(server)
-        assert_head_object(
-            server.requests[0], Bucket="bucket", Key="foo.txt"
-        )
+        assert_head_object(server.requests[0], Bucket="bucket", Key="foo.txt")
         # File should not have been overwritten
         assert target.read_text() == "existing content"
 
@@ -2309,12 +2277,8 @@ class TestCPCommand:
 
         assert rc == 0, stderr.decode()
         assert len(server.requests) == 2, format_requests(server)
-        assert_head_object(
-            server.requests[0], Bucket="bucket", Key="foo.txt"
-        )
-        assert_get_object(
-            server.requests[1], Bucket="bucket", Key="foo.txt"
-        )
+        assert_head_object(server.requests[0], Bucket="bucket", Key="foo.txt")
+        assert_get_object(server.requests[1], Bucket="bucket", Key="foo.txt")
         assert target.read_text() == "foo"
 
     async def test_warns_on_deep_arhive_incompatible_operation(
@@ -2348,9 +2312,7 @@ class TestCPCommand:
 
         assert rc == 2
         assert len(server.requests) == 1, format_requests(server)
-        assert_head_object(
-            server.requests[0], Bucket="bucket", Key="key.txt"
-        )
+        assert_head_object(server.requests[0], Bucket="bucket", Key="key.txt")
         assert "GLACIER" in stderr.decode()
 
     async def test_warns_on_glacier_incompatible_operation_for_multipart_file(
@@ -2384,9 +2346,7 @@ class TestCPCommand:
 
         assert rc == 2
         assert len(server.requests) == 1, format_requests(server)
-        assert_head_object(
-            server.requests[0], Bucket="bucket", Key="key.txt"
-        )
+        assert_head_object(server.requests[0], Bucket="bucket", Key="key.txt")
         assert "GLACIER" in stderr.decode()
 
     async def test_warns_on_deep_archive_incompatible_op_for_multipart_file(
@@ -2420,9 +2380,7 @@ class TestCPCommand:
 
         assert rc == 2
         assert len(server.requests) == 1, format_requests(server)
-        assert_head_object(
-            server.requests[0], Bucket="bucket", Key="key.txt"
-        )
+        assert_head_object(server.requests[0], Bucket="bucket", Key="key.txt")
         assert "GLACIER" in stderr.decode()
 
     async def test_s3s3_cp_with_destination_sse_c_multipart(
@@ -3275,9 +3233,7 @@ class TestAccesspointCPCommand:
 
         assert rc == 0, stderr.decode()
         assert len(server.requests) == 1, format_requests(server)
-        assert_put_object(
-            server.requests[0], Bucket=self.ARN, Key="mykey"
-        )
+        assert_put_object(server.requests[0], Bucket=self.ARN, Key="mykey")
 
     async def test_recursive_upload(self, aws_cli, tmp_path):
         """cp local s3://<accesspoint-arn>/ --recursive uploads to accesspoint."""
@@ -3301,9 +3257,7 @@ class TestAccesspointCPCommand:
 
         assert rc == 0, stderr.decode()
         assert len(server.requests) == 1, format_requests(server)
-        assert_put_object(
-            server.requests[0], Bucket=self.ARN, Key="myfile"
-        )
+        assert_put_object(server.requests[0], Bucket=self.ARN, Key="myfile")
 
     async def test_download(self, aws_cli, tmp_path):
         """cp s3://<accesspoint-arn>/key local downloads from accesspoint."""
@@ -3332,9 +3286,7 @@ class TestAccesspointCPCommand:
             Key="mykey",
             ChecksumMode="ENABLED",
         )
-        assert_get_object(
-            server.requests[1], Bucket=self.ARN, Key="mykey"
-        )
+        assert_get_object(server.requests[1], Bucket=self.ARN, Key="mykey")
 
     async def test_recursive_download(self, aws_cli, tmp_path):
         """cp s3://<accesspoint-arn> local --recursive downloads from accesspoint."""
@@ -3371,9 +3323,7 @@ class TestAccesspointCPCommand:
             server.requests[0],
             Bucket=self.ARN,
         )
-        assert_get_object(
-            server.requests[1], Bucket=self.ARN, Key="mykey"
-        )
+        assert_get_object(server.requests[1], Bucket=self.ARN, Key="mykey")
 
     async def test_copy(self, aws_cli, tmp_path):
         """cp s3://<arn>/key s3://<arn-dest>/key copies between accesspoints."""
@@ -3408,9 +3358,7 @@ class TestAccesspointCPCommand:
             Key="mykey",
             ChecksumMode="ENABLED",
         )
-        assert_copy_object(
-            server.requests[1], Bucket=dest_arn, Key="mykey"
-        )
+        assert_copy_object(server.requests[1], Bucket=dest_arn, Key="mykey")
 
     async def test_recursive_copy(self, aws_cli, tmp_path):
         """cp s3://<arn> s3://<arn-dest> --recursive copies between accesspoints."""
@@ -3454,9 +3402,7 @@ class TestAccesspointCPCommand:
             server.requests[0],
             Bucket=self.ARN,
         )
-        assert_copy_object(
-            server.requests[1], Bucket=dest_arn, Key="mykey"
-        )
+        assert_copy_object(server.requests[1], Bucket=dest_arn, Key="mykey")
 
     async def test_accepts_mrap_arns(self, aws_cli, tmp_path):
         """cp to MRAP ARN (colon separator) works."""
@@ -3476,9 +3422,7 @@ class TestAccesspointCPCommand:
 
         assert rc == 0, stderr.decode()
         assert len(server.requests) == 1, format_requests(server)
-        assert_put_object(
-            server.requests[0], Bucket=mrap_arn, Key="mykey"
-        )
+        assert_put_object(server.requests[0], Bucket=mrap_arn, Key="mykey")
 
     async def test_accepts_mrap_arns_with_slash(self, aws_cli, tmp_path):
         """cp to MRAP ARN (slash separator) works."""
@@ -3498,9 +3442,7 @@ class TestAccesspointCPCommand:
 
         assert rc == 0, stderr.decode()
         assert len(server.requests) == 1, format_requests(server)
-        assert_put_object(
-            server.requests[0], Bucket=mrap_arn, Key="mykey"
-        )
+        assert_put_object(server.requests[0], Bucket=mrap_arn, Key="mykey")
 
 
 @pytest.mark.asyncio
@@ -5284,9 +5226,7 @@ class TestCpSourceRegion:
         assert rc == 0, stderr.decode()
         assert len(server.requests) == 7, format_requests(server)
         # Source region: ListObjectsV2
-        assert_list_objects_v2(
-            server.requests[0], Bucket=self.SOURCE_BUCKET
-        )
+        assert_list_objects_v2(server.requests[0], Bucket=self.SOURCE_BUCKET)
         assert server.requests[0].headers.get("host") == self.SOURCE_HOST
         # Source region: HeadObject (for metadata + size/etag)
         assert_head_object(
@@ -5552,7 +5492,6 @@ async def test_upload_file_with_unicode_local_name(aws_cli, tmp_path):
     assert len(server.requests) == 1, format_requests(server)
     # Unicode filename is percent-encoded as UTF-8 on the wire
     assert server.requests[0].path == "/donn%C3%A9es.txt"
-
 
 
 @pytest.mark.asyncio

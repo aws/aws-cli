@@ -9,13 +9,12 @@ import pytest
 from tests.blackbox.s3_assertions import (
     assert_create_bucket,
 )
-
 from tests.blackbox.utils import (
     cli_env,
     create_bucket_response,
     format_requests,
-    run_cli,
     mock_server,
+    run_cli,
     setup_responses,
 )
 
@@ -39,9 +38,7 @@ class TestMBCommand:
             )
             assert rc == 0, stderr.decode()
             assert len(server.requests) == 1, format_requests(server)
-            assert_create_bucket(
-                server.requests[0], Bucket="bucket"
-            )
+            assert_create_bucket(server.requests[0], Bucket="bucket")
 
     async def test_adds_location_constraint(self, aws_cli):
         async with mock_server() as (server, proxy):
@@ -322,6 +319,6 @@ async def test_create_bucket_with_non_ascii_tag_value(aws_cli):
 
     assert rc == 0, stderr.decode()
     req = server.requests[0]
-    assert "José" in req.body or "Jos" in req.body, (
-        f"Expected non-ASCII tag value in body, got: {req.body[:200]}"
-    )
+    assert (
+        "José" in req.body or "Jos" in req.body
+    ), f"Expected non-ASCII tag value in body, got: {req.body[:200]}"

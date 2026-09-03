@@ -115,6 +115,8 @@ _xform_cache = {
         'GetLinkedWhatsAppBusinessAccountPhoneNumber',
         '-',
     ): 'get-linked-whatsapp-business-account-phone-number',
+    ('GetWhatsAppBusinessPublicKey', '_'): 'get_whatsapp_business_public_key',
+    ('GetWhatsAppBusinessPublicKey', '-'): 'get-whatsapp-business-public-key',
     ('GetWhatsAppFlow', '_'): 'get_whatsapp_flow',
     ('GetWhatsAppFlow', '-'): 'get-whatsapp-flow',
     ('GetWhatsAppFlowPreview', '_'): 'get_whatsapp_flow_preview',
@@ -143,6 +145,8 @@ _xform_cache = {
     ('PostWhatsAppMessageMedia', '-'): 'post-whatsapp-message-media',
     ('PublishWhatsAppFlow', '_'): 'publish_whatsapp_flow',
     ('PublishWhatsAppFlow', '-'): 'publish-whatsapp-flow',
+    ('PutWhatsAppBusinessPublicKey', '_'): 'put_whatsapp_business_public_key',
+    ('PutWhatsAppBusinessPublicKey', '-'): 'put-whatsapp-business-public-key',
     (
         'PutWhatsAppBusinessAccountEventDestinations',
         '_',

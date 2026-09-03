@@ -62,7 +62,10 @@ jobs:
       - name: Regenerate lock files
         if: runner.os != 'Windows'
         run: |
-          python scripts/regenerate-lock-files --show-files --include-sdist
+          python scripts/regenerate-lock-files \
+            --show-files \
+            --include-sdist \
+            --include-blackbox
           echo "CHANGES<<EOF" >> $GITHUB_ENV
           echo "CHANGES=$(git status --porcelain=v1)" >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV

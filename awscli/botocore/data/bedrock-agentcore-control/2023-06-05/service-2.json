@@ -221,6 +221,27 @@
       ],
       "documentation":"<p>Creates a new configuration bundle resource. A configuration bundle stores versioned component configurations for agent evaluation workflows.</p>"
     },
+    "CreateConsentPortal":{
+      "name":"CreateConsentPortal",
+      "http":{
+        "method":"POST",
+        "requestUri":"/identities/CreateConsentPortal",
+        "responseCode":202
+      },
+      "input":{"shape":"CreateConsentPortalRequest"},
+      "output":{"shape":"CreateConsentPortalResponse"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"UnauthorizedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Creates a new consent portal.</p>"
+    },
     "CreateDataset":{
       "name":"CreateDataset",
       "http":{
@@ -794,6 +815,27 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Deletes a configuration bundle and all of its versions.</p>",
+      "idempotent":true
+    },
+    "DeleteConsentPortal":{
+      "name":"DeleteConsentPortal",
+      "http":{
+        "method":"POST",
+        "requestUri":"/identities/DeleteConsentPortal",
+        "responseCode":204
+      },
+      "input":{"shape":"DeleteConsentPortalRequest"},
+      "output":{"shape":"DeleteConsentPortalResponse"},
+      "errors":[
+        {"shape":"UnauthorizedException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Deletes a consent portal.</p>",
       "idempotent":true
     },
     "DeleteDataset":{
@@ -1384,6 +1426,26 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Gets a specific version of a configuration bundle by its version identifier.</p>",
+      "readonly":true
+    },
+    "GetConsentPortal":{
+      "name":"GetConsentPortal",
+      "http":{
+        "method":"POST",
+        "requestUri":"/identities/GetConsentPortal",
+        "responseCode":200
+      },
+      "input":{"shape":"GetConsentPortalRequest"},
+      "output":{"shape":"GetConsentPortalResponse"},
+      "errors":[
+        {"shape":"UnauthorizedException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Retrieves information about a consent portal.</p>",
       "readonly":true
     },
     "GetDataset":{
@@ -2069,6 +2131,25 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Lists all configuration bundles in the account.</p>",
+      "readonly":true
+    },
+    "ListConsentPortals":{
+      "name":"ListConsentPortals",
+      "http":{
+        "method":"POST",
+        "requestUri":"/identities/ListConsentPortals",
+        "responseCode":200
+      },
+      "input":{"shape":"ListConsentPortalsRequest"},
+      "output":{"shape":"ListConsentPortalsResponse"},
+      "errors":[
+        {"shape":"UnauthorizedException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Lists all of the consent portals in your account.</p>",
       "readonly":true
     },
     "ListDatasetExamples":{
@@ -2840,6 +2921,27 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Updates a configuration bundle by creating a new version with the specified changes. Each update creates a new version in the version history.</p>"
+    },
+    "UpdateConsentPortal":{
+      "name":"UpdateConsentPortal",
+      "http":{
+        "method":"POST",
+        "requestUri":"/identities/UpdateConsentPortal",
+        "responseCode":202
+      },
+      "input":{"shape":"UpdateConsentPortalRequest"},
+      "output":{"shape":"UpdateConsentPortalResponse"},
+      "errors":[
+        {"shape":"UnauthorizedException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Updates an existing consent portal.</p>",
+      "idempotent":true
     },
     "UpdateDataset":{
       "name":"UpdateDataset",
@@ -3666,6 +3768,7 @@
       "member":{"shape":"AllowedAudience"},
       "min":1
     },
+    "AllowedAudienceType":{"type":"string"},
     "AllowedClient":{"type":"string"},
     "AllowedClientsList":{
       "type":"list",
@@ -4619,14 +4722,15 @@
     },
     "CloudWatchLogsInputConfig":{
       "type":"structure",
-      "required":[
-        "logGroupNames",
-        "serviceNames"
-      ],
+      "required":["serviceNames"],
       "members":{
         "logGroupNames":{
           "shape":"CloudWatchLogsInputConfigLogGroupNamesList",
           "documentation":"<p> The list of CloudWatch log group names to monitor for agent traces.</p>"
+        },
+        "logGroupNamePrefixes":{
+          "shape":"CloudWatchLogsInputConfigLogGroupNamePrefixesList",
+          "documentation":"<p> The list of CloudWatch log group name prefixes to monitor for agent traces. Specify this instead of <code>logGroupNames</code> to match log groups by prefix. Specify either <code>logGroupNames</code> or <code>logGroupNamePrefixes</code>, not both. One of the two is required. </p>"
         },
         "serviceNames":{
           "shape":"CloudWatchLogsInputConfigServiceNamesList",
@@ -4635,11 +4739,18 @@
       },
       "documentation":"<p> The configuration for reading agent traces from CloudWatch logs as input for online evaluation. </p>"
     },
+    "CloudWatchLogsInputConfigLogGroupNamePrefixesList":{
+      "type":"list",
+      "member":{"shape":"LogGroupNamePrefix"},
+      "documentation":"<p>List of CloudWatch Logs log group name prefixes to source trace data from.</p>",
+      "max":5,
+      "min":1
+    },
     "CloudWatchLogsInputConfigLogGroupNamesList":{
       "type":"list",
       "member":{"shape":"LogGroupName"},
       "max":10,
-      "min":1
+      "min":0
     },
     "CloudWatchLogsInputConfigServiceNamesList":{
       "type":"list",
@@ -4649,11 +4760,18 @@
     },
     "CloudWatchOutputConfig":{
       "type":"structure",
-      "required":["logGroupName"],
       "members":{
         "logGroupName":{
-          "shape":"LogGroupName",
-          "documentation":"<p> The name of the CloudWatch log group where evaluation results will be written. The log group will be created if it doesn't exist. </p>"
+          "shape":"OptionalLogGroupName",
+          "documentation":"<p> The name of the CloudWatch log group where evaluation results will be written. An existing log group is used as-is; otherwise the service creates it, which requires the evaluation execution role to grant <code>logs:CreateLogGroup</code> on the log group. Don't specify this value when <code>resultDestination</code> is <code>SOURCE_LOG_GROUP</code>. The name can't be under the service-reserved <code>/aws/bedrock-agentcore/evaluations/</code> namespace, apart from this configuration's own service-managed default group. </p>"
+        },
+        "metricsNamespace":{
+          "shape":"MetricsNamespace",
+          "documentation":"<p> The CloudWatch metrics namespace where evaluation result metrics are published. If you omit this value, the service publishes metrics to <code>Bedrock-AgentCore/Evaluations</code>. This value can't begin with <code>AWS/</code>. </p>"
+        },
+        "resultDestination":{
+          "shape":"ResultDestination",
+          "documentation":"<p> The destination where evaluation results are written. Valid values: </p> <ul> <li> <p> <code>DEDICATED_LOG_GROUP</code> (default) – Writes results to a dedicated result log group.</p> </li> <li> <p> <code>SOURCE_LOG_GROUP</code> – Writes results back to the log group that the agent traces were read from. If you use this value, don't specify <code>logGroupName</code>.</p> </li> </ul>"
         }
       },
       "documentation":"<p> The configuration for writing evaluation results to CloudWatch logs with embedded metric format (EMF) for monitoring. </p>"
@@ -5250,6 +5368,153 @@
       "max":32,
       "min":5,
       "pattern":"(?:0|[1-9]\\d*)\\.(?:0|[1-9]\\d*)\\.(?:0|[1-9]\\d*)"
+    },
+    "ConsentPortalArnType":{
+      "type":"string",
+      "pattern":"arn:aws[^:]*:bedrock-agentcore:[a-z0-9-]+:[0-9]{12}:consent-portal/[a-zA-Z0-9\\-_]{1,50}-[A-Za-z0-9]{10}"
+    },
+    "ConsentPortalDescriptionType":{
+      "type":"string",
+      "max":512,
+      "min":0
+    },
+    "ConsentPortalIdType":{
+      "type":"string",
+      "pattern":"[a-zA-Z0-9\\-_]{1,50}-[A-Za-z0-9]{10}"
+    },
+    "ConsentPortalIdentifier":{
+      "type":"string",
+      "pattern":"[a-zA-Z0-9\\-_]{1,50}-[A-Za-z0-9]{10}"
+    },
+    "ConsentPortalIdpConfig":{
+      "type":"structure",
+      "required":[
+        "credentialProviderArn",
+        "scopes"
+      ],
+      "members":{
+        "credentialProviderArn":{
+          "shape":"OAuth2CredentialProviderArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the OAuth2 credential provider used to authenticate end users to the consent portal.</p>"
+        },
+        "scopes":{
+          "shape":"AllowedScopesType",
+          "documentation":"<p>The OAuth2 scopes that the consent portal requests when authenticating end users.</p>"
+        },
+        "audience":{
+          "shape":"AllowedAudienceType",
+          "documentation":"<p>The audience value that the consent portal includes when requesting tokens from the identity provider.</p>"
+        }
+      },
+      "documentation":"<p>The identity provider configuration used to authenticate end users to the consent portal.</p>"
+    },
+    "ConsentPortalNameType":{
+      "type":"string",
+      "max":50,
+      "min":1,
+      "pattern":"[a-zA-Z0-9_-]{1,50}"
+    },
+    "ConsentPortalSource":{
+      "type":"structure",
+      "required":[
+        "identifier",
+        "type"
+      ],
+      "members":{
+        "identifier":{
+          "shape":"ConsentPortalSourceIdentifierType",
+          "documentation":"<p>The identifier of the source resource. For an <code>agentcore-gateway</code> source, this is the gateway ID or its Amazon Resource Name (ARN).</p>"
+        },
+        "type":{
+          "shape":"ConsentPortalSourceType",
+          "documentation":"<p>The type of the source resource.</p>"
+        }
+      },
+      "documentation":"<p>A resource served by the consent portal.</p>"
+    },
+    "ConsentPortalSourceIdentifierType":{
+      "type":"string",
+      "pattern":"([0-9a-z][-]?){1,100}-[0-9a-z]{10}$|^arn:aws(-[a-z-]+)?:bedrock-agentcore:[a-z0-9-]{1,20}:[0-9]{12}:gateway/([0-9a-z][-]?){1,48}-[a-z0-9]{10}"
+    },
+    "ConsentPortalSourceType":{
+      "type":"string",
+      "documentation":"<p>The type of a consent portal source. Currently, we only support type <code>agentcore-gateway</code>.</p>",
+      "enum":["agentcore-gateway"]
+    },
+    "ConsentPortalSources":{
+      "type":"list",
+      "member":{"shape":"ConsentPortalSource"},
+      "documentation":"<p>The list of resources served by the consent portal.</p>",
+      "max":1,
+      "min":1
+    },
+    "ConsentPortalStatus":{
+      "type":"string",
+      "documentation":"<p>The lifecycle status of a consent portal.</p>",
+      "enum":[
+        "CREATING",
+        "ACTIVE",
+        "UPDATING",
+        "UPDATE_FAILED",
+        "DELETING",
+        "FAILED"
+      ]
+    },
+    "ConsentPortalSummaries":{
+      "type":"list",
+      "member":{"shape":"ConsentPortalSummary"},
+      "documentation":"<p>A list of consent portal summaries.</p>"
+    },
+    "ConsentPortalSummary":{
+      "type":"structure",
+      "required":[
+        "sources",
+        "consentPortalArn",
+        "consentPortalId",
+        "createdAt",
+        "name",
+        "status",
+        "updatedAt"
+      ],
+      "members":{
+        "sources":{
+          "shape":"ConsentPortalSources",
+          "documentation":"<p>The resources served by the consent portal.</p>"
+        },
+        "consentPortalArn":{
+          "shape":"ConsentPortalArnType",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the consent portal.</p>"
+        },
+        "consentPortalId":{
+          "shape":"ConsentPortalIdType",
+          "documentation":"<p>The unique identifier of the consent portal.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp for when the consent portal was created.</p>"
+        },
+        "description":{
+          "shape":"ConsentPortalDescriptionType",
+          "documentation":"<p>The description of the consent portal.</p>"
+        },
+        "name":{
+          "shape":"ConsentPortalNameType",
+          "documentation":"<p>The name of the consent portal.</p>"
+        },
+        "portalUrl":{
+          "shape":"PortalUrlType",
+          "documentation":"<p>The URL used to access the consent portal.</p>"
+        },
+        "status":{
+          "shape":"ConsentPortalStatus",
+          "documentation":"<p>The current status of the consent portal.</p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp for when the consent portal was last updated.</p>"
+        }
+      },
+      "documentation":"<p>Summary information about a consent portal.</p>"
     },
     "ConsolidationConfiguration":{
       "type":"structure",
@@ -5879,6 +6144,105 @@
         "createdAt":{
           "shape":"Timestamp",
           "documentation":"<p>The timestamp when the configuration bundle was created.</p>"
+        }
+      }
+    },
+    "CreateConsentPortalRequest":{
+      "type":"structure",
+      "required":[
+        "executionRoleArn",
+        "idpConfig",
+        "name",
+        "sources"
+      ],
+      "members":{
+        "executionRoleArn":{
+          "shape":"ExecutionRoleArnType",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role that the consent portal assumes to access the resources defined in its sources.</p>"
+        },
+        "idpConfig":{
+          "shape":"ConsentPortalIdpConfig",
+          "documentation":"<p>The identity provider configuration that the consent portal uses to authenticate end users.</p>"
+        },
+        "name":{
+          "shape":"ConsentPortalNameType",
+          "documentation":"<p>The name of the consent portal. The name must be unique within your account.</p>"
+        },
+        "sources":{
+          "shape":"ConsentPortalSources",
+          "documentation":"<p>The resources served by the consent portal. Currently, we only support type <code>agentcore-gateway</code>.</p>"
+        },
+        "description":{
+          "shape":"ConsentPortalDescriptionType",
+          "documentation":"<p>The description of the consent portal.</p>"
+        },
+        "tags":{
+          "shape":"TagsMap",
+          "documentation":"<p>A map of tag keys and values to assign to the consent portal. Tags enable you to categorize your resources in different ways, for example, by purpose, owner, or environment.</p>"
+        }
+      }
+    },
+    "CreateConsentPortalResponse":{
+      "type":"structure",
+      "required":[
+        "sources",
+        "consentPortalArn",
+        "consentPortalId",
+        "createdAt",
+        "executionRoleArn",
+        "idpConfig",
+        "name",
+        "status",
+        "updatedAt"
+      ],
+      "members":{
+        "sources":{
+          "shape":"ConsentPortalSources",
+          "documentation":"<p>The resources served by the consent portal.</p>"
+        },
+        "consentPortalArn":{
+          "shape":"ConsentPortalArnType",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the consent portal.</p>"
+        },
+        "consentPortalId":{
+          "shape":"ConsentPortalIdType",
+          "documentation":"<p>The unique identifier of the consent portal.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp for when the consent portal was created.</p>"
+        },
+        "description":{
+          "shape":"ConsentPortalDescriptionType",
+          "documentation":"<p>The description of the consent portal.</p>"
+        },
+        "executionRoleArn":{
+          "shape":"ExecutionRoleArnType",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role that the consent portal assumes to access the resources defined in its sources.</p>"
+        },
+        "idpConfig":{
+          "shape":"ConsentPortalIdpConfig",
+          "documentation":"<p>The identity provider configuration that the consent portal uses to authenticate end users.</p>"
+        },
+        "name":{
+          "shape":"ConsentPortalNameType",
+          "documentation":"<p>The name of the consent portal.</p>"
+        },
+        "portalUrl":{
+          "shape":"PortalUrlType",
+          "documentation":"<p>The URL used to access the consent portal.</p>"
+        },
+        "status":{
+          "shape":"ConsentPortalStatus",
+          "documentation":"<p>The current status of the consent portal.</p>"
+        },
+        "statusReason":{
+          "shape":"StatusReasonType",
+          "documentation":"<p>A message that provides additional information about the current status of the consent portal.</p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp for when the consent portal was last updated.</p>"
         }
       }
     },
@@ -6843,6 +7207,7 @@
           "shape":"ClusteringConfig",
           "documentation":"<p>Configuration for periodic batch evaluation clustering of insight results.</p>"
         },
+        "outputConfig":{"shape":"OutputConfig"},
         "evaluationExecutionRoleArn":{
           "shape":"RoleArn",
           "documentation":"<p> The Amazon Resource Name (ARN) of the IAM role that grants permissions to read from CloudWatch logs, write evaluation results, and invoke Amazon Bedrock models for evaluation. If the configuration references evaluators encrypted with a customer managed KMS key, this role must also have <code>kms:Decrypt</code> permission on the KMS key. The service validates this permission at configuration creation time. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/evaluations-encryption.html\">Encryption at rest for AgentCore Evaluations</a>. </p>"
@@ -8445,6 +8810,20 @@
           "documentation":"<p>The status of the configuration bundle deletion operation.</p>"
         }
       }
+    },
+    "DeleteConsentPortalRequest":{
+      "type":"structure",
+      "required":["consentPortalIdentifier"],
+      "members":{
+        "consentPortalIdentifier":{
+          "shape":"ConsentPortalIdentifier",
+          "documentation":"<p>The identifier of the consent portal. You can specify either the consent portal ID or its Amazon Resource Name (ARN).</p>"
+        }
+      }
+    },
+    "DeleteConsentPortalResponse":{
+      "type":"structure",
+      "members":{}
     },
     "DeleteDatasetExamplesRequest":{
       "type":"structure",
@@ -10055,6 +10434,10 @@
       "type":"string",
       "enum":["DEBUG"]
     },
+    "ExecutionRoleArnType":{
+      "type":"string",
+      "pattern":"arn:aws(-[a-z-]+)?:iam::[0-9]{12}:role/[a-zA-Z0-9+=,.@\\-_/]+"
+    },
     "ExtractionConfig":{
       "type":"structure",
       "members":{
@@ -11361,6 +11744,80 @@
         "kmsKeyArn":{
           "shape":"KmsKeyArn",
           "documentation":"<p>KMS key ARN used to encrypt component configurations, if CMK was provided.</p>"
+        }
+      }
+    },
+    "GetConsentPortalRequest":{
+      "type":"structure",
+      "required":["consentPortalIdentifier"],
+      "members":{
+        "consentPortalIdentifier":{
+          "shape":"ConsentPortalIdentifier",
+          "documentation":"<p>The identifier of the consent portal. You can specify either the consent portal ID or its Amazon Resource Name (ARN).</p>"
+        }
+      }
+    },
+    "GetConsentPortalResponse":{
+      "type":"structure",
+      "required":[
+        "sources",
+        "consentPortalArn",
+        "consentPortalId",
+        "createdAt",
+        "executionRoleArn",
+        "idpConfig",
+        "name",
+        "status",
+        "updatedAt"
+      ],
+      "members":{
+        "sources":{
+          "shape":"ConsentPortalSources",
+          "documentation":"<p>The resources served by the consent portal.</p>"
+        },
+        "consentPortalArn":{
+          "shape":"ConsentPortalArnType",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the consent portal.</p>"
+        },
+        "consentPortalId":{
+          "shape":"ConsentPortalIdType",
+          "documentation":"<p>The unique identifier of the consent portal.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp for when the consent portal was created.</p>"
+        },
+        "description":{
+          "shape":"ConsentPortalDescriptionType",
+          "documentation":"<p>The description of the consent portal.</p>"
+        },
+        "executionRoleArn":{
+          "shape":"ExecutionRoleArnType",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role that the consent portal assumes to access the resources defined in its sources.</p>"
+        },
+        "idpConfig":{
+          "shape":"ConsentPortalIdpConfig",
+          "documentation":"<p>The identity provider configuration that the consent portal uses to authenticate end users.</p>"
+        },
+        "name":{
+          "shape":"ConsentPortalNameType",
+          "documentation":"<p>The name of the consent portal.</p>"
+        },
+        "portalUrl":{
+          "shape":"PortalUrlType",
+          "documentation":"<p>The URL used to access the consent portal.</p>"
+        },
+        "status":{
+          "shape":"ConsentPortalStatus",
+          "documentation":"<p>The current status of the consent portal.</p>"
+        },
+        "statusReason":{
+          "shape":"StatusReasonType",
+          "documentation":"<p>A message that provides additional information about the current status of the consent portal.</p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp for when the consent portal was last updated.</p>"
         }
       }
     },
@@ -15481,6 +15938,39 @@
         }
       }
     },
+    "ListConsentPortalsRequest":{
+      "type":"structure",
+      "members":{
+        "maxResults":{
+          "shape":"ListConsentPortalsRequestMaxResultsInteger",
+          "documentation":"<p>The maximum number of consent portals to return in a single call.</p>"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>A token to retrieve the next page of results. Use the value returned in a previous response to request the next page.</p>"
+        }
+      }
+    },
+    "ListConsentPortalsRequestMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "ListConsentPortalsResponse":{
+      "type":"structure",
+      "required":["consentPortals"],
+      "members":{
+        "consentPortals":{
+          "shape":"ConsentPortalSummaries",
+          "documentation":"<p>The list of consent portals.</p>"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>The token to use in a subsequent request to retrieve the next page of results. This value is null when there are no more results to return.</p>"
+        }
+      }
+    },
     "ListDatasetExamplesRequest":{
       "type":"structure",
       "required":["datasetId"],
@@ -16617,6 +17107,13 @@
       "type":"string",
       "pattern":"[.\\-_/#A-Za-z0-9]+"
     },
+    "LogGroupNamePrefix":{
+      "type":"string",
+      "documentation":"<p>Prefix of a CloudWatch Logs log group name.</p>",
+      "max":512,
+      "min":1,
+      "pattern":"[.\\-_/#A-Za-z0-9]+"
+    },
     "Long":{
       "type":"long",
       "box":true
@@ -17260,6 +17757,13 @@
         "NUMBER"
       ]
     },
+    "MetricsNamespace":{
+      "type":"string",
+      "documentation":"<p>CloudWatch metrics namespace for evaluation result metrics.</p>",
+      "max":255,
+      "min":1,
+      "pattern":"[a-zA-Z0-9._#/:-]+"
+    },
     "MicrosoftOauth2ProviderConfigInput":{
       "type":"structure",
       "required":["clientId"],
@@ -17696,6 +18200,10 @@
       "max":128,
       "min":1
     },
+    "OAuth2CredentialProviderArn":{
+      "type":"string",
+      "pattern":"arn:(aws|aws-cn|aws-us-gov|aws-iso|aws-iso-b|aws-iso-e|aws-iso-f|aws-eusc):bedrock-agentcore:[a-z0-9-]{1,32}:[0-9]{12}:token-vault/[a-zA-Z0-9_-]{1,64}/oauth2credentialprovider/[a-zA-Z0-9_-]{1,128}"
+    },
     "OAuthCredentialProvider":{
       "type":"structure",
       "required":[
@@ -18105,6 +18613,11 @@
         "LINUX_X86_64",
         "LINUX_ARM64"
       ]
+    },
+    "OptionalLogGroupName":{
+      "type":"string",
+      "documentation":"<p>A log group name that may also be empty. The empty string is the @default of members that were relaxed from @required, and carries the meaning &quot;no log group&quot; for that member.</p>",
+      "pattern":"$|^[.\\-_/#A-Za-z0-9]+"
     },
     "OutputConfig":{
       "type":"structure",
@@ -18981,6 +19494,11 @@
         "IGNORE_ALL_FINDINGS"
       ]
     },
+    "PortalUrlType":{
+      "type":"string",
+      "max":2000,
+      "min":1
+    },
     "PrincipalMatchOperator":{
       "type":"string",
       "enum":[
@@ -19652,6 +20170,14 @@
     "RestApiMethods":{
       "type":"list",
       "member":{"shape":"RestApiMethod"}
+    },
+    "ResultDestination":{
+      "type":"string",
+      "documentation":"<p>Where evaluation results are written: dedicated results log group (default) or the source log group.</p>",
+      "enum":[
+        "DEDICATED_LOG_GROUP",
+        "SOURCE_LOG_GROUP"
+      ]
     },
     "RetryableConflictException":{
       "type":"structure",
@@ -20689,6 +21215,11 @@
       "type":"string",
       "max":2048,
       "min":0
+    },
+    "StatusReasonType":{
+      "type":"string",
+      "max":1024,
+      "min":1
     },
     "StatusReasons":{
       "type":"list",
@@ -22158,6 +22689,92 @@
         }
       }
     },
+    "UpdateConsentPortalRequest":{
+      "type":"structure",
+      "required":["consentPortalIdentifier"],
+      "members":{
+        "consentPortalIdentifier":{
+          "shape":"ConsentPortalIdentifier",
+          "documentation":"<p>The identifier of the consent portal. You can specify either the consent portal ID or its Amazon Resource Name (ARN).</p>"
+        },
+        "executionRoleArn":{
+          "shape":"ExecutionRoleArnType",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role that the consent portal assumes to access the resources defined in its sources.</p>"
+        },
+        "idpConfig":{
+          "shape":"ConsentPortalIdpConfig",
+          "documentation":"<p>The identity provider configuration that the consent portal uses to authenticate end users.</p>"
+        },
+        "description":{
+          "shape":"ConsentPortalDescriptionType",
+          "documentation":"<p>The description of the consent portal.</p>"
+        }
+      }
+    },
+    "UpdateConsentPortalResponse":{
+      "type":"structure",
+      "required":[
+        "sources",
+        "consentPortalArn",
+        "consentPortalId",
+        "createdAt",
+        "executionRoleArn",
+        "idpConfig",
+        "name",
+        "status",
+        "updatedAt"
+      ],
+      "members":{
+        "sources":{
+          "shape":"ConsentPortalSources",
+          "documentation":"<p>The resources served by the consent portal.</p>"
+        },
+        "consentPortalArn":{
+          "shape":"ConsentPortalArnType",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the consent portal.</p>"
+        },
+        "consentPortalId":{
+          "shape":"ConsentPortalIdType",
+          "documentation":"<p>The unique identifier of the consent portal.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp for when the consent portal was created.</p>"
+        },
+        "description":{
+          "shape":"ConsentPortalDescriptionType",
+          "documentation":"<p>The description of the consent portal.</p>"
+        },
+        "executionRoleArn":{
+          "shape":"ExecutionRoleArnType",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role that the consent portal assumes to access the resources defined in its sources.</p>"
+        },
+        "idpConfig":{
+          "shape":"ConsentPortalIdpConfig",
+          "documentation":"<p>The identity provider configuration that the consent portal uses to authenticate end users.</p>"
+        },
+        "name":{
+          "shape":"ConsentPortalNameType",
+          "documentation":"<p>The name of the consent portal.</p>"
+        },
+        "portalUrl":{
+          "shape":"PortalUrlType",
+          "documentation":"<p>The URL used to access the consent portal.</p>"
+        },
+        "status":{
+          "shape":"ConsentPortalStatus",
+          "documentation":"<p>The current status of the consent portal.</p>"
+        },
+        "statusReason":{
+          "shape":"StatusReasonType",
+          "documentation":"<p>A message that provides additional information about the current status of the consent portal.</p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp for when the consent portal was last updated.</p>"
+        }
+      }
+    },
     "UpdateDatasetExamplesRequest":{
       "type":"structure",
       "required":[
@@ -23093,6 +23710,7 @@
           "shape":"ClusteringConfig",
           "documentation":"<p>The updated clustering configuration for periodic batch evaluation.</p>"
         },
+        "outputConfig":{"shape":"OutputConfig"},
         "evaluationExecutionRoleArn":{
           "shape":"RoleArn",
           "documentation":"<p> The updated Amazon Resource Name (ARN) of the IAM role used for evaluation execution. </p>"

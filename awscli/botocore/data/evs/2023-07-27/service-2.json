@@ -171,6 +171,22 @@
       "documentation":"<p>Disassociates an Elastic IP address from a public HCX VLAN. This operation is only allowed for public HCX VLANs at this time.</p>",
       "idempotent":true
     },
+    "GetAccountSettings":{
+      "name":"GetAccountSettings",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetAccountSettingsRequest"},
+      "output":{"shape":"GetAccountSettingsResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Returns the configured EVS settings for your Amazon Web Services account in the specified Amazon Web Services Region. If no settings have been set, an empty list is returned.</p>",
+      "readonly":true
+    },
     "GetDepotUrl":{
       "name":"GetDepotUrl",
       "http":{
@@ -305,6 +321,22 @@
       "documentation":"<p>Lists the Windows Server License entitlements for virtual machines in an Amazon EVS environment. Returns existing entitlements for virtual machines associated with the specified environment and connector.</p>",
       "readonly":true
     },
+    "PutAccountSettings":{
+      "name":"PutAccountSettings",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"PutAccountSettingsRequest"},
+      "output":{"shape":"PutAccountSettingsResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Creates or updates account-level EVS settings for your Amazon Web Services account in the specified Amazon Web Services Region.</p> <p>EVS settings included in the request are created or overwritten. Settings omitted from the request retain their current values.</p>",
+      "idempotent":true
+    },
     "TagResource":{
       "name":"TagResource",
       "http":{
@@ -355,6 +387,31 @@
     }
   },
   "shapes":{
+    "AccountSetting":{
+      "type":"structure",
+      "required":[
+        "name",
+        "value"
+      ],
+      "members":{
+        "name":{
+          "shape":"SettingName",
+          "documentation":"<p>The name of the EVS setting. Valid values are:</p> <ul> <li> <p> <code>vcfPortedCoreCount</code> (type: numeric string) - The total number of VCF license cores ported to Amazon EVS for the account in that Region. The maximum value is 1,000,000 cores. This setting value is shared with Broadcom for record-keeping.</p> </li> </ul>"
+        },
+        "value":{
+          "shape":"SettingValue",
+          "documentation":"<p>The value of the EVS setting.</p>"
+        }
+      },
+      "documentation":"<p>A regional account-level EVS setting, represented as a name and value pair.</p>"
+    },
+    "AccountSettingList":{
+      "type":"list",
+      "member":{"shape":"AccountSetting"},
+      "documentation":"<p>A list of regional account-level EVS settings.</p>",
+      "max":100,
+      "min":0
+    },
     "AllocationId":{
       "type":"string",
       "max":26,
@@ -1196,6 +1253,21 @@
       "type":"list",
       "member":{"shape":"String"}
     },
+    "GetAccountSettingsRequest":{
+      "type":"structure",
+      "members":{},
+      "documentation":"<p>The request for the GetAccountSettings operation.</p>"
+    },
+    "GetAccountSettingsResponse":{
+      "type":"structure",
+      "members":{
+        "settings":{
+          "shape":"AccountSettingList",
+          "documentation":"<p>A list of regional account-level EVS settings for the account. EVS settings that have never been explicitly set are omitted from the response.</p>"
+        }
+      },
+      "documentation":"<p>The response for the GetAccountSettings operation.</p>"
+    },
     "GetDepotUrlRequest":{
       "type":"structure",
       "required":["environmentId"],
@@ -1766,6 +1838,27 @@
       "min":1,
       "pattern":"pg-[a-f0-9]{8}([a-f0-9]{9})?"
     },
+    "PutAccountSettingsRequest":{
+      "type":"structure",
+      "required":["settings"],
+      "members":{
+        "settings":{
+          "shape":"AccountSettingList",
+          "documentation":"<p>A list of regional account-level EVS settings to create or update. Only the settings included in this list are modified.</p>"
+        }
+      },
+      "documentation":"<p>The request for the PutAccountSettings operation.</p>"
+    },
+    "PutAccountSettingsResponse":{
+      "type":"structure",
+      "members":{
+        "settings":{
+          "shape":"AccountSettingList",
+          "documentation":"<p>A list of regional account-level EVS settings, and their values, that were modified in this request.</p>"
+        }
+      },
+      "documentation":"<p>The response for the PutAccountSettings operation.</p>"
+    },
     "RequestTagMap":{
       "type":"map",
       "key":{"shape":"TagKey"},
@@ -1866,6 +1959,20 @@
       },
       "documentation":"<p>The number of one or more Amazon EVS resources exceeds the maximum allowed. For a list of Amazon EVS quotas, see <a href=\"https://docs.aws.amazon.com/evs/latest/userguide/service-quotas-evs.html\">Amazon EVS endpoints and quotas</a> in the <i>Amazon EVS User Guide</i>. Delete some resources or request an increase in your service quota. To request an increase, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws_service_limits.html\">Amazon Web Services Service Quotas</a> in the <i>Amazon Web Services General Reference Guide</i>. </p>",
       "exception":true
+    },
+    "SettingName":{
+      "type":"string",
+      "documentation":"<p>The name of a regional account-level EVS setting, such as <code>vcfPortedCoreCount</code>.</p>",
+      "max":128,
+      "min":1,
+      "pattern":"[a-zA-Z0-9]+"
+    },
+    "SettingValue":{
+      "type":"string",
+      "documentation":"<p>The value of a regional account-level EVS setting, represented as a string.</p>",
+      "max":128,
+      "min":1,
+      "pattern":"[a-zA-Z0-9]+"
     },
     "SolutionKey":{
       "type":"string",

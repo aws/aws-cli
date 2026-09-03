@@ -1924,6 +1924,35 @@
       },
       "documentation":"<p>Contains information about actions.</p>"
     },
+    "Activities":{
+      "type":"list",
+      "member":{"shape":"Activity"},
+      "documentation":"<p>A list of activities that were observed for a signal.</p>",
+      "max":100,
+      "min":0
+    },
+    "Activity":{
+      "type":"structure",
+      "required":["Type"],
+      "members":{
+        "Type":{
+          "shape":"ActivityType",
+          "documentation":"<p>The type of the observed activity.</p>",
+          "locationName":"type"
+        },
+        "Api":{
+          "shape":"ApiCall",
+          "documentation":"<p>Contains information about the API call that was observed, when the activity type is <code>API_CALL</code>.</p>",
+          "locationName":"api"
+        }
+      },
+      "documentation":"<p>Contains information about an activity, such as an API call, that was observed for a signal.</p>"
+    },
+    "ActivityType":{
+      "type":"string",
+      "documentation":"<p>The type of an observed activity.</p>",
+      "enum":["API_CALL"]
+    },
     "Actor":{
       "type":"structure",
       "required":["Id"],
@@ -2163,6 +2192,52 @@
       "type":"map",
       "key":{"shape":"String"},
       "value":{"shape":"AnomalyObject"}
+    },
+    "ApiCall":{
+      "type":"structure",
+      "members":{
+        "Operation":{
+          "shape":"ApiCallOperationString",
+          "documentation":"<p>The name of the API operation that was invoked.</p>",
+          "locationName":"operation"
+        },
+        "Service":{
+          "shape":"ApiCallServiceString",
+          "documentation":"<p>The service that the API operation was invoked against.</p>",
+          "locationName":"service"
+        },
+        "Error":{
+          "shape":"ApiCallErrorString",
+          "documentation":"<p>The error code that was returned, if the API call failed.</p>",
+          "locationName":"error"
+        },
+        "UserAgent":{
+          "shape":"ApiCallUserAgentString",
+          "documentation":"<p>User agent in the request to the API operation</p>",
+          "locationName":"userAgent"
+        }
+      },
+      "documentation":"<p>Contains information about an API call that was observed as part of an activity.</p>"
+    },
+    "ApiCallErrorString":{
+      "type":"string",
+      "max":512,
+      "min":0
+    },
+    "ApiCallOperationString":{
+      "type":"string",
+      "max":512,
+      "min":0
+    },
+    "ApiCallServiceString":{
+      "type":"string",
+      "max":512,
+      "min":0
+    },
+    "ApiCallUserAgentString":{
+      "type":"string",
+      "max":1024,
+      "min":0
     },
     "ArchiveFindingsRequest":{
       "type":"structure",
@@ -12819,6 +12894,11 @@
           "shape":"Indicators",
           "documentation":"<p>Contains information about the indicators associated with the signals.</p>",
           "locationName":"signalIndicators"
+        },
+        "Activities":{
+          "shape":"Activities",
+          "documentation":"<p>Contains information about the activities, such as API calls, that were observed for this signal.</p>",
+          "locationName":"activities"
         }
       },
       "documentation":"<p>Contains information about the signals involved in the attack sequence.</p>"

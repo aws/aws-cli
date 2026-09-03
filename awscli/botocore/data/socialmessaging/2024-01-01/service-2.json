@@ -287,6 +287,28 @@
       "documentation":"<p>Retrieve the WABA account id and phone number details of a WhatsApp business account phone number.</p>",
       "readonly":true
     },
+    "GetWhatsAppBusinessPublicKey":{
+      "name":"GetWhatsAppBusinessPublicKey",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v1/whatsapp/business-public-key",
+        "responseCode":200
+      },
+      "input":{"shape":"GetWhatsAppBusinessPublicKeyInput"},
+      "output":{"shape":"GetWhatsAppBusinessPublicKeyOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidParametersException"},
+        {"shape":"AccessDeniedByMetaException"},
+        {"shape":"ThrottledRequestException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"DependencyException"}
+      ],
+      "documentation":"<p>Retrieves the business public key for a phone number and its signature status.</p>",
+      "readonly":true
+    },
     "GetWhatsAppFlow":{
       "name":"GetWhatsAppFlow",
       "http":{
@@ -562,6 +584,28 @@
       "documentation":"<p>Add an event destination to log event data from WhatsApp for a WhatsApp Business Account (WABA). A WABA can only have one event destination at a time. All resources associated with the WABA use the same event destination.</p>",
       "idempotent":true
     },
+    "PutWhatsAppBusinessPublicKey":{
+      "name":"PutWhatsAppBusinessPublicKey",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/v1/whatsapp/business-public-key",
+        "responseCode":200
+      },
+      "input":{"shape":"PutWhatsAppBusinessPublicKeyInput"},
+      "output":{"shape":"PutWhatsAppBusinessPublicKeyOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidParametersException"},
+        {"shape":"AccessDeniedByMetaException"},
+        {"shape":"ThrottledRequestException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"DependencyException"}
+      ],
+      "documentation":"<p>Sets the business public key used to encrypt the data exchanged with the endpoint of a data exchange Flow.</p>",
+      "idempotent":true
+    },
     "SendWhatsAppConversionEvent":{
       "name":"SendWhatsAppConversionEvent",
       "http":{
@@ -790,6 +834,16 @@
       "type":"boolean",
       "box":true
     },
+    "BusinessPublicKeyPem":{
+      "type":"string",
+      "max":8192,
+      "min":1
+    },
+    "BusinessPublicKeySignatureStatus":{
+      "type":"string",
+      "max":20,
+      "min":1
+    },
     "ButtonType":{
       "type":"string",
       "max":25,
@@ -850,6 +904,10 @@
         "cloneFlowId":{
           "shape":"MetaFlowId",
           "documentation":"<p>The ID of an existing Flow within the same WhatsApp Business Account to clone.</p>"
+        },
+        "endpointUri":{
+          "shape":"MetaFlowEndpointUri",
+          "documentation":"<p>Optional HTTPS endpoint for a dynamic Flow, registered with Meta as the Flow's endpoint_uri and called by Meta directly. When omitted, the Flow has no endpoint (static Flow). Meta only calls the endpoint when the Flow JSON also declares data_api_version. To verify that requests originate from Meta, attach your own Meta app via UpdateWhatsAppFlow.</p>"
         }
       }
     },
@@ -1165,6 +1223,31 @@
         }
       }
     },
+    "GetWhatsAppBusinessPublicKeyInput":{
+      "type":"structure",
+      "required":["originationPhoneNumberId"],
+      "members":{
+        "originationPhoneNumberId":{
+          "shape":"WhatsAppPhoneNumberId",
+          "documentation":"<p>The unique identifier of the phone number whose business public key to retrieve.</p>",
+          "location":"querystring",
+          "locationName":"originationPhoneNumberId"
+        }
+      }
+    },
+    "GetWhatsAppBusinessPublicKeyOutput":{
+      "type":"structure",
+      "members":{
+        "businessPublicKey":{
+          "shape":"BusinessPublicKeyPem",
+          "documentation":"<p>The stored RSA business public key (PEM), if present.</p>"
+        },
+        "businessPublicKeySignatureStatus":{
+          "shape":"BusinessPublicKeySignatureStatus",
+          "documentation":"<p>Meta's signing status: &quot;VALID&quot; | &quot;MISMATCH&quot;.</p>"
+        }
+      }
+    },
     "GetWhatsAppFlowInput":{
       "type":"structure",
       "required":[
@@ -1404,6 +1487,12 @@
     "IsoCountryCode":{
       "type":"string",
       "pattern":"[A-Z]{2}"
+    },
+    "KmsKeyArn":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"arn:aws[a-z-]*:kms:[a-z0-9-]+:[0-9]{12}:(key/.+|alias/.+)"
     },
     "LibraryTemplateBodyInputs":{
       "type":"structure",
@@ -2487,6 +2576,28 @@
       "type":"structure",
       "members":{}
     },
+    "PutWhatsAppBusinessPublicKeyInput":{
+      "type":"structure",
+      "required":["originationPhoneNumberId"],
+      "members":{
+        "originationPhoneNumberId":{
+          "shape":"WhatsAppPhoneNumberId",
+          "documentation":"<p>The unique identifier of the phone number to associate with the business public key.</p>"
+        },
+        "businessPublicKey":{
+          "shape":"BusinessPublicKeyPem",
+          "documentation":"<p>PEM-encoded RSA public key. Mutually exclusive with kmsKeyArn.</p>"
+        },
+        "kmsKeyArn":{
+          "shape":"KmsKeyArn",
+          "documentation":"<p>Customer-managed KMS asymmetric RSA key ARN. Mutually exclusive with businessPublicKey.</p>"
+        }
+      }
+    },
+    "PutWhatsAppBusinessPublicKeyOutput":{
+      "type":"structure",
+      "members":{}
+    },
     "RegistrationStatus":{
       "type":"string",
       "enum":[
@@ -2841,6 +2952,14 @@
         "categories":{
           "shape":"MetaFlowCategoryList",
           "documentation":"<p>The updated categories for the Flow.</p>"
+        },
+        "endpointUri":{
+          "shape":"MetaFlowEndpointUri",
+          "documentation":"<p>Optional HTTPS endpoint for a dynamic Flow, registered with Meta as the Flow's endpoint_uri and called by Meta directly. When omitted, the Flow's endpoint is unchanged.</p>"
+        },
+        "metaAppId":{
+          "shape":"MetaFlowApplicationId",
+          "documentation":"<p>Optional Meta app ID to attach to the Flow. Meta signs data-exchange requests with the attached app's secret, so attaching your own app is what enables X-Hub-Signature-256 and flow_token_signature verification at your endpoint. Meta requires the app to be owned by the same business that owns the WABA. Attaching your own app is one-way: the service's app cannot be re-attached afterwards. When omitted, the attached app is unchanged. (Set via update because Meta ignores application_id at creation time.)</p>"
         }
       }
     },

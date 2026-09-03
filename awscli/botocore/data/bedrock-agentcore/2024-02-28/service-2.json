@@ -2368,10 +2368,7 @@
     },
     "CloudWatchLogsSource":{
       "type":"structure",
-      "required":[
-        "serviceNames",
-        "logGroupNames"
-      ],
+      "required":["serviceNames"],
       "members":{
         "serviceNames":{
           "shape":"CloudWatchLogsSourceServiceNamesList",
@@ -2381,6 +2378,10 @@
           "shape":"CloudWatchLogsSourceLogGroupNamesList",
           "documentation":"<p>The list of CloudWatch log group names to read agent traces from. Maximum of 10 log groups.</p>"
         },
+        "logGroupNamePrefixes":{
+          "shape":"CloudWatchLogsSourceLogGroupNamePrefixesList",
+          "documentation":"<p>The list of CloudWatch log group name prefixes to read agent traces from. Specify this instead of <code>logGroupNames</code> to match log groups by prefix. Maximum of 5 prefixes. Specify either <code>logGroupNames</code> or <code>logGroupNamePrefixes</code>, not both. One of the two is required.</p>"
+        },
         "filterConfig":{
           "shape":"CloudWatchFilterConfig",
           "documentation":"<p>Optional filter configuration to narrow down which sessions to evaluate.</p>"
@@ -2388,11 +2389,19 @@
       },
       "documentation":"<p>The configuration for reading agent traces from CloudWatch Logs.</p>"
     },
+    "CloudWatchLogsSourceLogGroupNamePrefixesList":{
+      "type":"list",
+      "member":{"shape":"LogGroupNamePrefix"},
+      "documentation":"<p>List of CloudWatch Logs log group name prefixes to source trace data from.</p>",
+      "max":5,
+      "min":1
+    },
     "CloudWatchLogsSourceLogGroupNamesList":{
       "type":"list",
-      "member":{"shape":"String"},
+      "member":{"shape":"LogGroupName"},
+      "documentation":"<p>Length is constrained per member, because members relaxed from @required carry @default([]).</p>",
       "max":10,
-      "min":1
+      "min":0
     },
     "CloudWatchLogsSourceServiceNamesList":{
       "type":"list",
@@ -2440,18 +2449,22 @@
     },
     "CloudWatchOutputConfig":{
       "type":"structure",
-      "required":[
-        "logGroupName",
-        "logStreamName"
-      ],
       "members":{
         "logGroupName":{
-          "shape":"String",
-          "documentation":"<p>The name of the CloudWatch log group where evaluation results will be written.</p>"
+          "shape":"OptionalLogGroupName",
+          "documentation":"<p>The name of the CloudWatch log group where evaluation results will be written. This value doesn't apply when <code>resultDestination</code> is <code>SOURCE_LOG_GROUP</code>, because results are written back to the trace source log group. The name can't be under the service-reserved <code>/aws/bedrock-agentcore/evaluations/</code> namespace, apart from the service-managed default group.</p>"
         },
         "logStreamName":{
-          "shape":"String",
+          "shape":"LogStreamName",
           "documentation":"<p>The name of the CloudWatch log stream where evaluation results will be written.</p>"
+        },
+        "metricsNamespace":{
+          "shape":"MetricsNamespace",
+          "documentation":"<p>The CloudWatch metrics namespace where evaluation result metrics are published. If you omit this value, the service publishes metrics to <code>Bedrock-AgentCore/Evaluations</code>. This value can't begin with <code>AWS/</code>.</p>"
+        },
+        "resultDestination":{
+          "shape":"ResultDestination",
+          "documentation":"<p>The destination where evaluation results are written. Valid values:</p> <ul> <li> <p> <code>DEDICATED_LOG_GROUP</code> (default) – Writes results to a dedicated result log group.</p> </li> <li> <p> <code>SOURCE_LOG_GROUP</code> – Writes results back to the log group that the agent traces were read from. If you use this value, don't specify <code>logGroupName</code>.</p> </li> </ul>"
         }
       },
       "documentation":"<p>CloudWatch Logs destination for batch evaluation results.</p>"
@@ -8229,6 +8242,22 @@
       },
       "documentation":"<p>The configuration for a stream that provides a visual representation of a browser session in Amazon Bedrock AgentCore. This stream enables agents to observe the current state of the browser, including rendered web pages, visual elements, and the results of interactions.</p>"
     },
+    "LogGroupName":{
+      "type":"string",
+      "pattern":"[.\\-_/#A-Za-z0-9]+"
+    },
+    "LogGroupNamePrefix":{
+      "type":"string",
+      "documentation":"<p>Prefix of a CloudWatch Logs log group name.</p>",
+      "max":512,
+      "min":1,
+      "pattern":"[.\\-_/#A-Za-z0-9]+"
+    },
+    "LogStreamName":{
+      "type":"string",
+      "documentation":"<p>A log stream name. The pattern is CloudWatch Logs' own log stream name pattern, which already admits the empty string; empty is the @default of members relaxed from @required and means &quot;no log stream&quot;. No @length is applied, because CloudWatch's min of 1 would reject that default.</p>",
+      "pattern":"[^:*]*"
+    },
     "Long":{
       "type":"long",
       "box":true
@@ -8707,6 +8736,13 @@
       "max":256,
       "min":0,
       "pattern":"[a-zA-Z0-9\\s._:/=+@-]*"
+    },
+    "MetricsNamespace":{
+      "type":"string",
+      "documentation":"<p>CloudWatch metrics namespace for evaluation result metrics.</p>",
+      "max":255,
+      "min":1,
+      "pattern":"[a-zA-Z0-9._#/:-]+"
     },
     "MimeType":{
       "type":"string",
@@ -9188,6 +9224,11 @@
         "EXISTS",
         "NOT_EXISTS"
       ]
+    },
+    "OptionalLogGroupName":{
+      "type":"string",
+      "documentation":"<p>A log group name that may also be empty. The empty string is the @default of members that were relaxed from @required, and carries the meaning &quot;no log group&quot; for that member.</p>",
+      "pattern":"$|^[.\\-_/#A-Za-z0-9]+"
     },
     "OutputConfig":{
       "type":"structure",
@@ -10202,6 +10243,14 @@
       "sensitive":true,
       "streaming":true
     },
+    "ResultDestination":{
+      "type":"string",
+      "documentation":"<p>Where evaluation results are written: dedicated results log group (default) or the source log group.</p>",
+      "enum":[
+        "DEDICATED_LOG_GROUP",
+        "SOURCE_LOG_GROUP"
+      ]
+    },
     "RetrieveMemoryRecordsInput":{
       "type":"structure",
       "required":[
@@ -10926,7 +10975,8 @@
         "description":{
           "shape":"BatchEvaluationDescription",
           "documentation":"<p>The description of the batch evaluation.</p>"
-        }
+        },
+        "outputConfig":{"shape":"OutputConfig"}
       }
     },
     "StartBatchEvaluationRequestEvaluatorsList":{

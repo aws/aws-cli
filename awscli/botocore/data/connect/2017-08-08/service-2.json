@@ -13302,10 +13302,18 @@
           "shape":"RulePublishStatus",
           "documentation":"<p>The publish status of the rule.</p>"
         },
+        "PreEvaluationFilters":{
+          "shape":"PreEvaluationFilters",
+          "documentation":"<p>The pre-evaluation filters for the rule, that restrict the rule to be applied to only certain resources based on the resource's attributes, such as tags assigned to a contact. The pre-evaluation filters are applied even before rule conditions are evaluated and are used to enforce tag-based-access-control while applying rules.</p>"
+        },
         "ClientToken":{
           "shape":"ClientToken",
           "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the Amazon Web Services SDK populates this field. For more information about idempotency, see <a href=\"https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/\">Making retries safe with idempotent APIs</a>.</p>",
           "idempotencyToken":true
+        },
+        "Tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags used to organize, track, or control access for this resource. For example, { \"Tags\": {\"key1\":\"value1\", \"key2\":\"value2\"} }.</p>"
         }
       }
     },
@@ -29144,6 +29152,65 @@
       "max":128,
       "min":0
     },
+    "PreEvaluationFilter":{
+      "type":"structure",
+      "required":[
+        "ResourceType",
+        "FilterType",
+        "FilterKey",
+        "FilterValue",
+        "Operator"
+      ],
+      "members":{
+        "ResourceType":{
+          "shape":"PreEvaluationFilterResourceType",
+          "documentation":"<p>The type of resource to filter on. Valid values: <code>CONTACT</code>.</p>"
+        },
+        "FilterType":{
+          "shape":"PreEvaluationFilterType",
+          "documentation":"<p>The type of filter to apply. Valid values: <code>TAG</code>.</p>"
+        },
+        "FilterKey":{
+          "shape":"String",
+          "documentation":"<p>The key of the attribute to filter on. For tag filters, this is the tag key.</p>"
+        },
+        "FilterValue":{
+          "shape":"String",
+          "documentation":"<p>The value to match against. For tag filters, this is the tag value.</p>"
+        },
+        "Operator":{
+          "shape":"PreEvaluationFilterOperator",
+          "documentation":"<p>The comparison operator for the filter condition. Valid values: <code>EQUALS</code>.</p>"
+        }
+      },
+      "documentation":"<p>A single pre-evaluation filter condition. Specifies a resource type, filter type, key, value, and operator to match against a resource attribute.</p>"
+    },
+    "PreEvaluationFilterList":{
+      "type":"list",
+      "member":{"shape":"PreEvaluationFilter"}
+    },
+    "PreEvaluationFilterOperator":{
+      "type":"string",
+      "enum":["EQUALS"]
+    },
+    "PreEvaluationFilterResourceType":{
+      "type":"string",
+      "enum":["CONTACT"]
+    },
+    "PreEvaluationFilterType":{
+      "type":"string",
+      "enum":["TAG"]
+    },
+    "PreEvaluationFilters":{
+      "type":"structure",
+      "members":{
+        "AndConditions":{
+          "shape":"PreEvaluationFilterList",
+          "documentation":"<p>A list of conditions that the rule evaluates together using AND logic. All conditions must be met for the event to be evaluated by the rule.</p>"
+        }
+      },
+      "documentation":"<p>The pre-evaluation filters for a rule, that restrict a rule to be applied to only certain resources based on the resource's attributes, such as tags assigned to a contact. The pre-evaluation filters are applied even before rule conditions are evaluated and are used to enforce tag-based-access-control while applying rules.</p>"
+    },
     "PreSignedAttachmentUrl":{
       "type":"string",
       "max":2000,
@@ -31766,6 +31833,10 @@
           "shape":"RulePublishStatus",
           "documentation":"<p>The publish status of the rule.</p>"
         },
+        "PreEvaluationFilters":{
+          "shape":"PreEvaluationFilters",
+          "documentation":"<p>The pre-evaluation filters for the rule, that restrict the rule to be applied to only certain resources based on the resource's attributes, such as tags assigned to a contact. The pre-evaluation filters are applied even before rule conditions are evaluated and are used to enforce tag-based-access-control while applying rules.</p>"
+        },
         "CreatedTime":{
           "shape":"Timestamp",
           "documentation":"<p>The timestamp for when the rule was created.</p>"
@@ -31937,6 +32008,10 @@
         "PublishStatus":{
           "shape":"RulePublishStatus",
           "documentation":"<p>The publish status of the rule.</p>"
+        },
+        "PreEvaluationFilters":{
+          "shape":"PreEvaluationFilters",
+          "documentation":"<p>The pre-evaluation filters for the rule, that restrict the rule to be applied to only certain resources based on the resource's attributes, such as tags assigned to a contact. The pre-evaluation filters are applied even before rule conditions are evaluated and are used to enforce tag-based-access-control while applying rules.</p>"
         },
         "CreatedTime":{
           "shape":"Timestamp",
@@ -38670,6 +38745,10 @@
         "PublishStatus":{
           "shape":"RulePublishStatus",
           "documentation":"<p>The publish status of the rule.</p>"
+        },
+        "PreEvaluationFilters":{
+          "shape":"PreEvaluationFilters",
+          "documentation":"<p>The pre-evaluation filters for the rule, that restrict the rule to be applied to only certain resources based on the resource's attributes, such as tags assigned to a contact. The pre-evaluation filters are applied even before rule conditions are evaluated and are used to enforce tag-based-access-control while applying rules.</p>"
         }
       }
     },

@@ -330,3 +330,32 @@ async def test_use_dualstack_endpoint_false(aws_cli, aws_config, tmp_path):
     assert (
         "dualstack" not in host
     ), f"Expected no dualstack in host, got {host}"
+
+
+
+@pytest.mark.asyncio
+async def test_multipart_threshold_independent_of_chunksize(
+    aws_cli, aws_config, tmp_path
+):
+    """File below multipart_threshold uses single PUT even when above chunksize.
+
+    multipart_threshold and multipart_chunksize are independent settings.
+    A 15MB file with threshold=16MB should use single PUT regardless of
+    chunksize=8MB.
+    """
+    src = tmp_path / "data.bin"
+    src.write_bytes(b"x" * (15 * 1024 * 1024))
+    config_path = aws_config(
+        {"default": {"s3": "\n    multipart_threshold = 16MB\n    multipart_chunksize = 8MB"}}
+    )
+    async with mock_server(on_headers_received=handle_expect_header) as (server, proxy):
+        setup_responses(server, [put_object_response()])
+        _, stderr, rc = await run_cli(
+            aws_cli,
+            ["s3", "cp", str(src), "s3://bucket/data.bin"],
+            _cli_env_with_config(proxy, config_path),
+        )
+
+    assert rc == 0, stderr.decode()
+    assert len(server.requests) == 1, format_requests(server)
+    assert_put_object(server.requests[0], Bucket="bucket", Key="data.bin")

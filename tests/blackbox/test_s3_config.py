@@ -145,7 +145,7 @@ async def test_multipart_chunksize_controls_part_count(
     part_reqs = [
         r
         for r in server.requests
-        if r.method == "PUT" and "partNumber" in r.path
+        if r.method == "PUT" and "partNumber" in r.effective_path
     ]
     assert len(part_reqs) == 3, format_requests(server)
     assert_complete_multipart_upload(
@@ -178,7 +178,7 @@ async def test_addressing_style_path(aws_cli, aws_config, tmp_path):
     assert rc == 0, stderr.decode()
     req = server.requests[0]
     assert req.headers.get("host") == "s3.us-east-1.amazonaws.com"
-    assert req.path.startswith("/bucket/foo.txt")
+    assert req.effective_path.startswith("/bucket/foo.txt")
 
 
 @pytest.mark.asyncio
@@ -203,7 +203,9 @@ async def test_addressing_style_virtual(aws_cli, aws_config, tmp_path):
     assert rc == 0, stderr.decode()
     req = server.requests[0]
     assert "bucket" in req.headers.get("host", "")
-    assert req.path == "/foo.txt" or req.path.startswith("/foo.txt")
+    assert req.effective_path == "/foo.txt" or req.effective_path.startswith(
+        "/foo.txt"
+    )
 
 
 @pytest.mark.asyncio
@@ -332,7 +334,6 @@ async def test_use_dualstack_endpoint_false(aws_cli, aws_config, tmp_path):
     ), f"Expected no dualstack in host, got {host}"
 
 
-
 @pytest.mark.asyncio
 async def test_multipart_threshold_independent_of_chunksize(
     aws_cli, aws_config, tmp_path
@@ -346,9 +347,16 @@ async def test_multipart_threshold_independent_of_chunksize(
     src = tmp_path / "data.bin"
     src.write_bytes(b"x" * (15 * 1024 * 1024))
     config_path = aws_config(
-        {"default": {"s3": "\n    multipart_threshold = 16MB\n    multipart_chunksize = 8MB"}}
+        {
+            "default": {
+                "s3": "\n    multipart_threshold = 16MB\n    multipart_chunksize = 8MB"
+            }
+        }
     )
-    async with mock_server(on_headers_received=handle_expect_header) as (server, proxy):
+    async with mock_server(on_headers_received=handle_expect_header) as (
+        server,
+        proxy,
+    ):
         setup_responses(server, [put_object_response()])
         _, stderr, rc = await run_cli(
             aws_cli,

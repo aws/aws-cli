@@ -6458,7 +6458,10 @@ async def test_multipart_upload_part_rejected_by_server(aws_cli, tmp_path):
 
     assert rc == 1
     assert len(server.requests) == 4, format_requests(server)
-    assert b"BadDigest" in stderr or b"upload failed" in stderr
+    assert (
+        b"An error occurred (BadDigest) when "
+        b"calling the UploadPart operation" in stderr
+    )
 
 
 @pytest.mark.asyncio

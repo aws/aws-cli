@@ -5763,14 +5763,13 @@ async def test_content_disposition_non_ascii(aws_cli, tmp_path):
     assert len(server.requests) == 1, format_requests(server)
     req = server.requests[0]
     # The × character (U+00D7) is sent as UTF-8 bytes on the wire
-    cd = (
-        req.headers.get("Content-Disposition")
-        or req.headers.get("content-disposition")
+    cd = req.headers.get("Content-Disposition") or req.headers.get(
+        "content-disposition"
     )
     assert cd is not None, "Content-Disposition header missing"
-    assert "500\u00d7500.jpg" in cd, (
-        f"Expected \u00d7 in Content-Disposition, got {cd!r}"
-    )
+    assert (
+        "500\u00d7500.jpg" in cd
+    ), f"Expected \u00d7 in Content-Disposition, got {cd!r}"
 
 
 @pytest.mark.asyncio
@@ -6342,8 +6341,8 @@ async def test_download_checksum_mismatch_fails(aws_cli, tmp_path):
     assert rc == 1
     assert len(server.requests) == 2, format_requests(server)
     assert (
-       b"Expected checksum AAAAAA== did not "
-       b"match calculated checksum: jHNlIQ=="
+        b"Expected checksum AAAAAA== did not "
+        b"match calculated checksum: jHNlIQ=="
     ) in stderr
 
 

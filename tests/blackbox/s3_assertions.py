@@ -1,9 +1,9 @@
 """Per-operation S3 assertion helpers."""
+
 from __future__ import annotations
 
 import xml.etree.ElementTree as ET
 from urllib.parse import parse_qs, urlparse
-
 
 # Known list wrapper elements in S3 XML request bodies.
 _LIST_ELEMENTS = {"Tags", "TagSet", "Parts"}

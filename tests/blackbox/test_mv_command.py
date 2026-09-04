@@ -37,10 +37,10 @@ from tests.blackbox.utils import (
     get_object_tagging_response,
     head_object_response,
     list_objects_xml,
+    mock_server,
     put_object_response,
     put_object_tagging_response,
     run_cli,
-    mock_server,
     setup_responses,
     upload_part_copy_response,
     upload_part_response,
@@ -176,9 +176,7 @@ class TestMvCommand:
 
         assert rc == 0, stderr.decode()
         assert len(server.requests) == 3, format_requests(server)
-        assert_head_object(
-            server.requests[0], Bucket="bucket", Key="key.txt"
-        )
+        assert_head_object(server.requests[0], Bucket="bucket", Key="key.txt")
         assert_copy_object(
             server.requests[1],
             Bucket="bucket",
@@ -213,9 +211,7 @@ class TestMvCommand:
 
         assert rc == 0, stderr.decode()
         assert len(server.requests) == 1, format_requests(server)
-        assert_put_object(
-            server.requests[0], Bucket="bucket", Key="key.txt"
-        )
+        assert_put_object(server.requests[0], Bucket="bucket", Key="key.txt")
         # MetadataDirective header should NOT be present for uploads
         assert (
             server.requests[0].headers.get("x-amz-metadata-directive") is None
@@ -459,9 +455,7 @@ class TestMvCommand:
             server.requests[5], Bucket="bucket", Key="key"
         )
         # The delete should be for the destination (cleanup), not the source
-        assert_delete_object(
-            server.requests[6], Bucket="bucket", Key="key"
-        )
+        assert_delete_object(server.requests[6], Bucket="bucket", Key="key")
 
     async def test_upload_with_checksum_algorithm_crc32(
         self, aws_cli, tmp_path
@@ -534,9 +528,7 @@ class TestMvCommand:
             Key="foo",
             ChecksumMode="ENABLED",
         )
-        assert_delete_object(
-            server.requests[2], Bucket="bucket", Key="foo"
-        )
+        assert_delete_object(server.requests[2], Bucket="bucket", Key="foo")
 
     async def test_mv_no_overwrite_flag_when_object_not_exists_on_target(
         self, aws_cli, tmp_path
@@ -749,9 +741,7 @@ class TestMvCommand:
 
         assert rc == 0, stderr.decode()
         assert len(server.requests) == 3, format_requests(server)
-        assert_head_object(
-            server.requests[0], Bucket="bucket1", Key="key.txt"
-        )
+        assert_head_object(server.requests[0], Bucket="bucket1", Key="key.txt")
         assert_copy_object(
             server.requests[1],
             Bucket="bucket2",
@@ -795,9 +785,7 @@ class TestMvCommand:
 
         assert rc == 0, stderr.decode()
         assert len(server.requests) == 2, format_requests(server)
-        assert_head_object(
-            server.requests[0], Bucket="bucket1", Key="key.txt"
-        )
+        assert_head_object(server.requests[0], Bucket="bucket1", Key="key.txt")
         assert_copy_object(
             server.requests[1],
             Bucket="bucket2",
@@ -953,9 +941,7 @@ class TestMvCommand:
 
         assert rc == 0, stderr.decode()
         assert len(server.requests) == 1, format_requests(server)
-        assert_head_object(
-            server.requests[0], Bucket="bucket", Key="foo.txt"
-        )
+        assert_head_object(server.requests[0], Bucket="bucket", Key="foo.txt")
         # File should retain original content (not overwritten)
         assert target.read_text() == "existing content"
 
@@ -992,12 +978,8 @@ class TestMvCommand:
 
         assert rc == 0, stderr.decode()
         assert len(server.requests) == 3, format_requests(server)
-        assert_head_object(
-            server.requests[0], Bucket="bucket", Key="foo.txt"
-        )
-        assert_get_object(
-            server.requests[1], Bucket="bucket", Key="foo.txt"
-        )
+        assert_head_object(server.requests[0], Bucket="bucket", Key="foo.txt")
+        assert_get_object(server.requests[1], Bucket="bucket", Key="foo.txt")
         assert_delete_object(
             server.requests[2], Bucket="bucket", Key="foo.txt"
         )
@@ -1036,9 +1018,9 @@ async def test_mv_download_checksum_mismatch_fails(aws_cli, tmp_path):
     assert rc == 1
     assert len(server.requests) == 2, format_requests(server)
     assert (
-       b"Expected checksum AAAAAA== did not "
-       b"match calculated checksum: jHNlIQ=="
-   ) in stderr
+        b"Expected checksum AAAAAA== did not "
+        b"match calculated checksum: jHNlIQ=="
+    ) in stderr
 
 
 @pytest.mark.asyncio
@@ -1069,8 +1051,8 @@ async def test_mv_upload_checksum_rejected_by_server(aws_cli, tmp_path):
     assert rc == 1
     assert len(server.requests) == 1, format_requests(server)
     assert (
-            b"The CRC32 you specified did not "
-            b"match the calculated checksum." in stderr
+        b"The CRC32 you specified did not "
+        b"match the calculated checksum." in stderr
     )
     # Source file should NOT be deleted on failed upload
     assert src.exists()
@@ -1503,17 +1485,13 @@ class TestMvCommandWithValidateSameS3Paths:
         assert rc == 0, stderr.decode()
         assert len(server.requests) == 4, format_requests(server)
         assert_get_access_point(server.requests[0])
-        assert_head_object(
-            server.requests[1], Bucket="bucket", Key="key"
-        )
+        assert_head_object(server.requests[1], Bucket="bucket", Key="key")
         assert_copy_object(
             server.requests[2],
             Bucket="arn:aws:s3:us-west-2:123456789012:accesspoint/myaccesspoint",
             Key="key",
         )
-        assert_delete_object(
-            server.requests[3], Bucket="bucket", Key="key"
-        )
+        assert_delete_object(server.requests[3], Bucket="bucket", Key="key")
 
     async def test_mv_works_if_access_point_alias_resolves_to_different_bucket(
         self, aws_cli, tmp_path
@@ -1549,17 +1527,13 @@ class TestMvCommandWithValidateSameS3Paths:
         assert len(server.requests) == 5, format_requests(server)
         assert_get_caller_identity(server.requests[0])
         assert_get_access_point(server.requests[1])
-        assert_head_object(
-            server.requests[2], Bucket="bucket", Key="key"
-        )
+        assert_head_object(server.requests[2], Bucket="bucket", Key="key")
         assert_copy_object(
             server.requests[3],
             Bucket="myaccesspoint-foobar-s3alias",
             Key="key",
         )
-        assert_delete_object(
-            server.requests[4], Bucket="bucket", Key="key"
-        )
+        assert_delete_object(server.requests[4], Bucket="bucket", Key="key")
 
     async def test_mv_works_if_outpost_access_point_arn_resolves_to_different_bucket(
         self, aws_cli, tmp_path
@@ -1593,17 +1567,13 @@ class TestMvCommandWithValidateSameS3Paths:
         assert rc == 0, stderr.decode()
         assert len(server.requests) == 4, format_requests(server)
         assert_get_access_point(server.requests[0])
-        assert_head_object(
-            server.requests[1], Bucket="bucket", Key="key"
-        )
+        assert_head_object(server.requests[1], Bucket="bucket", Key="key")
         assert_copy_object(
             server.requests[2],
             Bucket="arn:aws:s3-outposts:us-east-1:123456789012:outpost/op-foobar/accesspoint/myaccesspoint",
             Key="key",
         )
-        assert_delete_object(
-            server.requests[3], Bucket="bucket", Key="key"
-        )
+        assert_delete_object(server.requests[3], Bucket="bucket", Key="key")
 
     async def test_skips_validation_if_keys_are_different_accesspoint_arn(
         self, aws_cli, tmp_path

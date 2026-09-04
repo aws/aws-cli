@@ -5550,6 +5550,7 @@ async def test_acl_private(aws_cli, tmp_path):
         )
 
     assert rc == 0, stderr.decode()
+    assert len(server.requests) == 1
     assert_put_object(server.requests[0], Bucket="bucket", Key="foo.txt", ACL="private")
 
 
@@ -5567,6 +5568,7 @@ async def test_acl_public_read(aws_cli, tmp_path):
         )
 
     assert rc == 0, stderr.decode()
+    assert len(server.requests) == 1
     assert_put_object(server.requests[0], Bucket="bucket", Key="foo.txt", ACL="public-read")
 
 
@@ -5585,6 +5587,7 @@ async def test_acl_bucket_owner_full_control(aws_cli, tmp_path):
         )
 
     assert rc == 0, stderr.decode()
+    assert len(server.requests) == 1
     assert_put_object(
         server.requests[0], Bucket="bucket", Key="foo.txt",
         ACL="bucket-owner-full-control",
@@ -5606,6 +5609,7 @@ async def test_content_type_override(aws_cli, tmp_path):
         )
 
     assert rc == 0, stderr.decode()
+    assert len(server.requests) == 1
     assert_put_object(
         server.requests[0], Bucket="bucket", Key="data.bin",
         ContentType="application/octet-stream",
@@ -5627,6 +5631,7 @@ async def test_content_type_html(aws_cli, tmp_path):
         )
 
     assert rc == 0, stderr.decode()
+    assert len(server.requests) == 1
     assert_put_object(
         server.requests[0], Bucket="bucket", Key="page.html",
         ContentType="text/html",
@@ -5648,6 +5653,7 @@ async def test_content_disposition(aws_cli, tmp_path):
         )
 
     assert rc == 0, stderr.decode()
+    assert len(server.requests) == 1
     assert_put_object(
         server.requests[0], Bucket="bucket", Key="report.pdf",
         ContentDisposition="attachment; filename=\"report.pdf\"",
@@ -5678,6 +5684,7 @@ async def test_content_disposition_non_ascii(aws_cli, tmp_path):
         )
 
     assert rc == 0, stderr.decode()
+    assert len(server.requests) == 1
     req = server.requests[0]
     # The × character (U+00D7) is sent as UTF-8 bytes \xc3\x97 on the wire
     assert b'500\xc3\x97500.jpg' in req.wire_raw_bytes, (
@@ -5700,6 +5707,7 @@ async def test_content_encoding(aws_cli, tmp_path):
         )
 
     assert rc == 0, stderr.decode()
+    assert len(server.requests) == 1
     # Content-Encoding on the wire combines user value with aws-chunked
     assert_put_object(
         server.requests[0], Bucket="bucket", Key="data.gz",
@@ -5722,6 +5730,7 @@ async def test_content_language(aws_cli, tmp_path):
         )
 
     assert rc == 0, stderr.decode()
+    assert len(server.requests) == 1
     assert_put_object(
         server.requests[0], Bucket="bucket", Key="doc.txt",
         ContentLanguage="fr",
@@ -5743,6 +5752,7 @@ async def test_cache_control(aws_cli, tmp_path):
         )
 
     assert rc == 0, stderr.decode()
+    assert len(server.requests) == 1
     assert_put_object(
         server.requests[0], Bucket="bucket", Key="index.html",
         CacheControl="max-age=3600, public",
@@ -5764,6 +5774,7 @@ async def test_expires(aws_cli, tmp_path):
         )
 
     assert rc == 0, stderr.decode()
+    assert len(server.requests) == 1
     assert_put_object(
         server.requests[0], Bucket="bucket", Key="temp.txt",
         Expires="Tue, 01 Jan 2030 00:00:00 GMT",
@@ -5785,6 +5796,7 @@ async def test_metadata_single_key(aws_cli, tmp_path):
         )
 
     assert rc == 0, stderr.decode()
+    assert len(server.requests) == 1
     assert_put_object(
         server.requests[0], Bucket="bucket", Key="foo.txt",
         Metadata={"author": "jsmith"},
@@ -5806,6 +5818,7 @@ async def test_metadata_multiple_keys(aws_cli, tmp_path):
         )
 
     assert rc == 0, stderr.decode()
+    assert len(server.requests) == 1
     assert_put_object(
         server.requests[0], Bucket="bucket", Key="foo.txt",
         Metadata={"author": "jsmith", "project": "alpha"},
@@ -5828,6 +5841,7 @@ async def test_metadata_directive_replace(aws_cli, tmp_path):
         )
 
     assert rc == 0, stderr.decode()
+    assert len(server.requests) == 2
     assert_copy_object(
         server.requests[1], Bucket="dst", Key="key.txt",
         MetadataDirective="REPLACE",
@@ -5850,6 +5864,7 @@ async def test_metadata_directive_copy(aws_cli, tmp_path):
         )
 
     assert rc == 0, stderr.decode()
+    assert len(server.requests) == 2
     assert_copy_object(
         server.requests[1], Bucket="dst", Key="key.txt",
         MetadataDirective="COPY",
@@ -5873,6 +5888,7 @@ async def test_metadata_directive_replace_with_metadata(aws_cli, tmp_path):
         )
 
     assert rc == 0, stderr.decode()
+    assert len(server.requests) == 2
     assert_copy_object(
         server.requests[1], Bucket="dst", Key="key.txt",
         MetadataDirective="REPLACE",
@@ -5901,6 +5917,7 @@ async def test_combined_metadata_params(aws_cli, tmp_path):
         )
 
     assert rc == 0, stderr.decode()
+    assert len(server.requests) == 2
     assert_put_object(
         server.requests[0], Bucket="bucket", Key="app.js",
         ContentType="application/javascript",
@@ -5925,6 +5942,7 @@ async def test_content_type_auto_guessed_from_extension(aws_cli, tmp_path):
         )
 
     assert rc == 0, stderr.decode()
+    assert len(server.requests) == 1
     assert_put_object(
         server.requests[0], Bucket="bucket", Key="page.html",
         ContentType="text/html",
@@ -5945,6 +5963,7 @@ async def test_content_type_auto_guessed_json(aws_cli, tmp_path):
         )
 
     assert rc == 0, stderr.decode()
+    assert len(server.requests) == 1
     assert_put_object(
         server.requests[0], Bucket="bucket", Key="data.json",
         ContentType="application/json",
@@ -5966,6 +5985,7 @@ async def test_metadata_value_with_spaces(aws_cli, tmp_path):
         )
 
     assert rc == 0, stderr.decode()
+    assert len(server.requests) == 1
     assert_put_object(
         server.requests[0], Bucket="bucket", Key="foo.txt",
         Metadata={"description": "hello world"},
@@ -5987,6 +6007,7 @@ async def test_metadata_value_with_equals(aws_cli, tmp_path):
         )
 
     assert rc == 0, stderr.decode()
+    assert len(server.requests) == 1
     assert_put_object(
         server.requests[0], Bucket="bucket", Key="foo.txt",
         Metadata={"formula": "a=b+c"},
@@ -6008,6 +6029,7 @@ async def test_metadata_empty_value(aws_cli, tmp_path):
         )
 
     assert rc == 0, stderr.decode()
+    assert len(server.requests) == 1
     assert_put_object(
         server.requests[0], Bucket="bucket", Key="foo.txt",
         Metadata={"tag": ""},
@@ -6029,6 +6051,7 @@ async def test_expires_numeric_value(aws_cli, tmp_path):
         )
 
     assert rc == 0, stderr.decode()
+    assert len(server.requests) == 1
     # CLI interprets "90" as Unix timestamp (90 seconds since epoch)
     assert_put_object(
         server.requests[0], Bucket="bucket", Key="foo.txt",
@@ -6055,6 +6078,7 @@ async def test_content_type_not_guessed_on_s3_to_s3_copy(aws_cli, tmp_path):
         )
 
     assert rc == 0, stderr.decode()
+    assert len(server.requests) == 2
     # CopyObject should NOT have a Content-Type header set by the CLI
     req = server.requests[1]
     ct = (

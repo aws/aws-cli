@@ -11,7 +11,7 @@ _LIST_ELEMENTS = {"Tags", "TagSet", "Parts"}
 
 def _check_bucket(request, bucket: str, addressing_style: str, op_name: str):
     """Assert Bucket is in the correct location based on addressing style."""
-    parsed_url = urlparse(request.path)
+    parsed_url = urlparse(request.effective_path)
     host = request.headers.get("host", "")
     if bucket.startswith("arn:"):
         resource = bucket.split(":", 5)[-1]
@@ -31,7 +31,7 @@ def _check_bucket(request, bucket: str, addressing_style: str, op_name: str):
 
 def _check_key(request, key: str, addressing_style: str, op_name: str):
     """Assert Key is in the correct path location based on addressing style."""
-    parsed_url = urlparse(request.path)
+    parsed_url = urlparse(request.effective_path)
     if addressing_style == "path":
         assert parsed_url.path.endswith(f"/{key}"), (
             f"{op_name}.Key: expected path ending with /{key}, got {parsed_url.path!r}"
@@ -48,7 +48,7 @@ def _check_params(request, params: dict, param_map: dict, op_name: str):
     param_map maps param_name -> (location, wire_name) where location
     is "header", "headers", or "querystring".
     """
-    parsed_url = urlparse(request.path)
+    parsed_url = urlparse(request.effective_path)
     actual_qs = parse_qs(parsed_url.query)
     for param_name, expected in params.items():
         if param_name not in param_map:
@@ -394,7 +394,7 @@ def assert_list_objects_v2(request, Bucket: str, addressing_style: str = "virtua
     assert request.method == "GET", (
         f"ListObjectsV2: expected GET, got {request.method}"
     )
-    _qs = parse_qs(urlparse(request.path).query)
+    _qs = parse_qs(urlparse(request.effective_path).query)
     assert _qs.get("list-type") == ["2"], (
         f"ListObjectsV2: expected ?list-type=2 in query"
     )
@@ -441,9 +441,9 @@ def assert_create_multipart_upload(request, Bucket: str, Key: str, addressing_st
     assert request.method == "POST", (
         f"CreateMultipartUpload: expected POST, got {request.method}"
     )
-    _qs = parse_qs(urlparse(request.path).query)
-    assert "uploads" in urlparse(request.path).query, (
-        f"CreateMultipartUpload: expected ?uploads in {request.path}"
+    _qs = parse_qs(urlparse(request.effective_path).query)
+    assert "uploads" in urlparse(request.effective_path).query, (
+        f"CreateMultipartUpload: expected ?uploads in {request.effective_path}"
     )
     _check_bucket(request, Bucket, addressing_style, "CreateMultipartUpload")
     _check_key(request, Key, addressing_style, "CreateMultipartUpload")
@@ -482,10 +482,10 @@ def assert_upload_part(request, Bucket: str, Key: str, addressing_style: str = "
     )
     _check_bucket(request, Bucket, addressing_style, "UploadPart")
     _check_key(request, Key, addressing_style, "UploadPart")
-    assert "partNumber" in parse_qs(urlparse(request.path).query), (
+    assert "partNumber" in parse_qs(urlparse(request.effective_path).query), (
         f"UploadPart: required query param partNumber (PartNumber) is missing"
     )
-    assert "uploadId" in parse_qs(urlparse(request.path).query), (
+    assert "uploadId" in parse_qs(urlparse(request.effective_path).query), (
         f"UploadPart: required query param uploadId (UploadId) is missing"
     )
     _check_params(request, params, _UPLOAD_PART_PARAMS, "UploadPart")
@@ -520,10 +520,10 @@ def assert_upload_part_copy(request, Bucket: str, Key: str, addressing_style: st
     )
     _check_bucket(request, Bucket, addressing_style, "UploadPartCopy")
     _check_key(request, Key, addressing_style, "UploadPartCopy")
-    assert "partNumber" in parse_qs(urlparse(request.path).query), (
+    assert "partNumber" in parse_qs(urlparse(request.effective_path).query), (
         f"UploadPartCopy: required query param partNumber (PartNumber) is missing"
     )
-    assert "uploadId" in parse_qs(urlparse(request.path).query), (
+    assert "uploadId" in parse_qs(urlparse(request.effective_path).query), (
         f"UploadPartCopy: required query param uploadId (UploadId) is missing"
     )
     assert (
@@ -566,7 +566,7 @@ def assert_complete_multipart_upload(request, Bucket: str, Key: str, addressing_
     )
     _check_bucket(request, Bucket, addressing_style, "CompleteMultipartUpload")
     _check_key(request, Key, addressing_style, "CompleteMultipartUpload")
-    assert "uploadId" in parse_qs(urlparse(request.path).query), (
+    assert "uploadId" in parse_qs(urlparse(request.effective_path).query), (
         f"CompleteMultipartUpload: required query param uploadId (UploadId) is missing"
     )
     _check_params(request, params, _COMPLETE_MULTIPART_UPLOAD_PARAMS, "CompleteMultipartUpload")
@@ -588,7 +588,7 @@ def assert_abort_multipart_upload(request, Bucket: str, Key: str, addressing_sty
     )
     _check_bucket(request, Bucket, addressing_style, "AbortMultipartUpload")
     _check_key(request, Key, addressing_style, "AbortMultipartUpload")
-    assert "uploadId" in parse_qs(urlparse(request.path).query), (
+    assert "uploadId" in parse_qs(urlparse(request.effective_path).query), (
         f"AbortMultipartUpload: required query param uploadId (UploadId) is missing"
     )
     _check_params(request, params, _ABORT_MULTIPART_UPLOAD_PARAMS, "AbortMultipartUpload")
@@ -646,9 +646,9 @@ def assert_get_object_tagging(request, Bucket: str, Key: str, addressing_style: 
     assert request.method == "GET", (
         f"GetObjectTagging: expected GET, got {request.method}"
     )
-    _qs = parse_qs(urlparse(request.path).query)
-    assert "tagging" in urlparse(request.path).query, (
-        f"GetObjectTagging: expected ?tagging in {request.path}"
+    _qs = parse_qs(urlparse(request.effective_path).query)
+    assert "tagging" in urlparse(request.effective_path).query, (
+        f"GetObjectTagging: expected ?tagging in {request.effective_path}"
     )
     _check_bucket(request, Bucket, addressing_style, "GetObjectTagging")
     _check_key(request, Key, addressing_style, "GetObjectTagging")
@@ -671,9 +671,9 @@ def assert_put_object_tagging(request, Bucket: str, Key: str, addressing_style: 
     assert request.method == "PUT", (
         f"PutObjectTagging: expected PUT, got {request.method}"
     )
-    _qs = parse_qs(urlparse(request.path).query)
-    assert "tagging" in urlparse(request.path).query, (
-        f"PutObjectTagging: expected ?tagging in {request.path}"
+    _qs = parse_qs(urlparse(request.effective_path).query)
+    assert "tagging" in urlparse(request.effective_path).query, (
+        f"PutObjectTagging: expected ?tagging in {request.effective_path}"
     )
     _check_bucket(request, Bucket, addressing_style, "PutObjectTagging")
     _check_key(request, Key, addressing_style, "PutObjectTagging")
@@ -713,8 +713,8 @@ def assert_list_object_annotations(request, Bucket: str, Key: str, addressing_st
     assert request.method == "GET", (
         f"ListObjectAnnotations: expected GET, got {request.method}"
     )
-    assert "annotation" in urlparse(request.path).query, (
-        f"ListObjectAnnotations: expected ?annotation in {request.path}"
+    assert "annotation" in urlparse(request.effective_path).query, (
+        f"ListObjectAnnotations: expected ?annotation in {request.effective_path}"
     )
     _check_bucket(request, Bucket, addressing_style, "ListObjectAnnotations")
     _check_key(request, Key, addressing_style, "ListObjectAnnotations")
@@ -736,7 +736,7 @@ def assert_get_object_annotation(request, Bucket: str, Key: str, addressing_styl
     assert request.method == "GET", (
         f"GetObjectAnnotation: expected GET, got {request.method}"
     )
-    _qs = parse_qs(urlparse(request.path).query)
+    _qs = parse_qs(urlparse(request.effective_path).query)
     assert "annotationName" in _qs, (
         f"GetObjectAnnotation: required query param annotationName is missing"
     )
@@ -761,7 +761,7 @@ def assert_put_object_annotation(request, Bucket: str, Key: str, addressing_styl
     assert request.method == "PUT", (
         f"PutObjectAnnotation: expected PUT, got {request.method}"
     )
-    _qs = parse_qs(urlparse(request.path).query)
+    _qs = parse_qs(urlparse(request.effective_path).query)
     assert "annotationName" in _qs, (
         f"PutObjectAnnotation: required query param annotationName is missing"
     )
@@ -775,8 +775,8 @@ def assert_get_access_point(request):
     assert request.method == "GET", (
         f"GetAccessPoint: expected GET, got {request.method}"
     )
-    assert "/v20180820/accesspoint/" in request.path, (
-        f"GetAccessPoint: expected /v20180820/accesspoint/ in {request.path}"
+    assert "/v20180820/accesspoint/" in request.effective_path, (
+        f"GetAccessPoint: expected /v20180820/accesspoint/ in {request.effective_path}"
     )
     assert (
         request.headers.get("x-amz-account-id") is not None
@@ -788,7 +788,8 @@ def assert_get_caller_identity(request):
     assert request.method == "POST", (
         f"GetCallerIdentity: expected POST, got {request.method}"
     )
-    assert "Action=GetCallerIdentity" in request.body, (
+    body = request.body.decode("utf-8") if isinstance(request.body, bytes) else (request.body or "")
+    assert "Action=GetCallerIdentity" in body, (
         f"GetCallerIdentity: expected Action=GetCallerIdentity in body, "
-        f"got {request.body!r}"
+        f"got {body!r}"
     )

@@ -59,7 +59,7 @@ def xml_response(xml: str) -> HTTPResponse:
 def format_requests(server: AsyncHTTPTestServer) -> str:
     """Format captured requests for inclusion in assertion messages."""
     lines = [
-        f"  [{i}] {r.method} {r.path} Host={r.headers.get('host')}"
+        f"  [{i}] {r.method} {r.effective_path} Host={r.headers.get('host')}"
         for i, r in enumerate(server.requests)
     ]
     return (
@@ -71,7 +71,7 @@ def format_requests(server: AsyncHTTPTestServer) -> str:
 
 def get_query_params(request) -> dict[str, list[str]]:
     """Parse query string params from a recorded request's path."""
-    parsed = urlparse(request.path)
+    parsed = urlparse(request.effective_path)
     return parse_qs(parsed.query)
 
 
@@ -279,7 +279,7 @@ def create_session_response() -> HTTPResponse:
 
 def get_path(request) -> str:
     """Get the path portion without query string."""
-    return urlparse(request.path).path
+    return urlparse(request.effective_path).path
 
 
 def delete_response() -> HTTPResponse:

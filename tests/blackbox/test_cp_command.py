@@ -6404,7 +6404,8 @@ async def test_download_content_length_mismatch_fails(aws_cli, tmp_path):
         )
 
         async def inject_fault():
-            await server.next_request()  # HeadObject completes
+            # HeadObject completes
+            await server.next_request()
             # Drop connection after sending the short body so the
             # CLI sees EOF instead of blocking for remaining bytes.
             server.set_transmission_strategy(

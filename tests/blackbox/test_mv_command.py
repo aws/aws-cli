@@ -720,7 +720,9 @@ class TestMvCommand:
     async def test_mv_no_overwrite_flag_on_copy_when_small_object_does_not_exist_on_target(
         self, aws_cli, tmp_path
     ):
-        """mv s3->s3 --no-overwrite small object sends IfNoneMatch on CopyObject and deletes source."""
+        """mv s3->s3 --no-overwrite small object sends
+        IfNoneMatch on CopyObject and deletes source.
+        """
         async with mock_server(on_headers_received=handle_expect_header) as (
             server,
             proxy,
@@ -960,7 +962,9 @@ class TestMvCommand:
     async def test_no_overwrite_flag_on_mv_download_when_single_object_does_not_exist_at_target(
         self, aws_cli, tmp_path
     ):
-        """mv s3://bucket/foo.txt local --no-overwrite downloads and deletes source if no local file."""
+        """mv s3://bucket/foo.txt local --no-overwrite downloads and
+        deletes source if no local file.
+        """
         target = tmp_path / "foo.txt"
         async with mock_server(on_headers_received=handle_expect_header) as (
             server,
@@ -1095,7 +1099,8 @@ async def test_mv_download_content_length_mismatch_fails(aws_cli, tmp_path):
         )
 
         async def inject_fault():
-            await server.next_request()  # HeadObject completes
+            # HeadObject completes
+            await server.next_request()
             server.set_transmission_strategy(
                 FaultyTransmission([DropConnection(after_bytes=3)])
             )

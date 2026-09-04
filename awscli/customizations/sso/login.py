@@ -70,6 +70,11 @@ class LoginCommand(BaseSSOCommand):
         on_pending_authorization = None
         if parsed_args.no_browser:
             on_pending_authorization = PrintOnlyHandler()
+        redirect_port = parsed_args.redirect_port
+        if redirect_port is None:
+            config_port = sso_config.get('sso_redirect_port')
+            if config_port is not None:
+                redirect_port = int(config_port)
         do_sso_login(
             session=self._session,
             parsed_globals=parsed_globals,
@@ -81,6 +86,7 @@ class LoginCommand(BaseSSOCommand):
             session_name=sso_config.get('session_name'),
             registration_scopes=sso_config.get('registration_scopes'),
             use_device_code=parsed_args.use_device_code,
+            redirect_port=redirect_port,
         )
 
         # Only rewrite sso_region after successful login.

@@ -2,11 +2,12 @@
 
 from __future__ import annotations
 
+import asyncio
 import os
 
 import pytest
 from localstub.handlers import handle_expect_header
-from localstub.server import HTTPResponse
+from localstub.server import DropConnection, FaultyTransmission, HTTPResponse
 
 from tests.blackbox.s3_assertions import (
     assert_abort_multipart_upload,
@@ -997,6 +998,155 @@ class TestMvCommand:
             server.requests[2], Bucket="bucket", Key="foo.txt"
         )
         assert target.read_text() == "foo"
+
+
+@pytest.mark.asyncio
+async def test_mv_download_checksum_mismatch_fails(aws_cli, tmp_path):
+    """mv s3->local --checksum-mode ENABLED fails if checksum doesn't match body."""
+    async with mock_server(on_headers_received=handle_expect_header) as (
+        server,
+        proxy,
+    ):
+        setup_responses(
+            server,
+            [
+                head_object_response(),
+                get_object_response(
+                    b"foo", **{"x-amz-checksum-crc32": "AAAAAA=="}
+                ),
+            ],
+        )
+        stdout, stderr, rc = await run_cli(
+            aws_cli,
+            [
+                "s3",
+                "mv",
+                "s3://bucket/key.txt",
+                str(tmp_path),
+                "--checksum-mode",
+                "ENABLED",
+            ],
+            cli_env(proxy),
+        )
+
+    assert rc == 1
+    assert len(server.requests) == 2, format_requests(server)
+    assert (
+       b"Expected checksum AAAAAA== did not "
+       b"match calculated checksum: jHNlIQ=="
+   ) in stderr
+
+
+@pytest.mark.asyncio
+async def test_mv_upload_checksum_rejected_by_server(aws_cli, tmp_path):
+    """mv upload fails when server rejects with BadDigest."""
+    src = tmp_path / "foo.txt"
+    src.write_text("content")
+    async with mock_server(on_headers_received=handle_expect_header) as (
+        server,
+        proxy,
+    ):
+        setup_responses(
+            server,
+            [
+                error_response(
+                    "BadDigest",
+                    "The CRC32 you specified did not match the calculated checksum.",
+                    status=400,
+                ),
+            ],
+        )
+        stdout, stderr, rc = await run_cli(
+            aws_cli,
+            ["s3", "mv", str(src), "s3://bucket/key.txt"],
+            cli_env(proxy),
+        )
+
+    assert rc == 1
+    assert len(server.requests) == 1, format_requests(server)
+    assert (
+            b"The CRC32 you specified did not "
+            b"match the calculated checksum." in stderr
+    )
+    # Source file should NOT be deleted on failed upload
+    assert src.exists()
+
+
+@pytest.mark.asyncio
+async def test_mv_download_content_length_mismatch_fails(aws_cli, tmp_path):
+    """mv download fails when body is shorter than Content-Length header."""
+    async with mock_server(on_headers_received=handle_expect_header) as (
+        server,
+        proxy,
+    ):
+        setup_responses(
+            server,
+            [
+                head_object_response(content_length=100),
+                HTTPResponse.raw(
+                    b"foo",
+                    status=200,
+                    headers={
+                        "Content-Length": "100",
+                        "ETag": '"foo-1"',
+                    },
+                ),
+            ],
+        )
+
+        async def inject_fault():
+            await server.next_request()  # HeadObject completes
+            server.set_transmission_strategy(
+                FaultyTransmission([DropConnection(after_bytes=3)])
+            )
+
+        (stdout, stderr, rc), _ = await asyncio.gather(
+            run_cli(
+                aws_cli,
+                ["s3", "mv", "s3://bucket/key.txt", str(tmp_path)],
+                cli_env(proxy),
+            ),
+            inject_fault(),
+        )
+
+    assert rc == 1
+    assert len(server.requests) == 2, format_requests(server)
+    assert b"move failed" in stderr
+
+
+@pytest.mark.asyncio
+async def test_mv_multipart_upload_part_rejected_by_server(aws_cli, tmp_path):
+    """mv multipart upload fails when server rejects a part with BadDigest."""
+    src = tmp_path / "foo.txt"
+    src.write_bytes(b"a" * 10 * (1024**2))
+    async with mock_server(on_headers_received=handle_expect_header) as (
+        server,
+        proxy,
+    ):
+        setup_responses(
+            server,
+            [
+                create_mpu_response("foo"),
+                upload_part_response("etag1"),
+                error_response(
+                    "BadDigest",
+                    "The CRC32 you specified did not match the calculated checksum.",
+                    status=400,
+                ),
+                abort_mpu_response(),
+            ],
+        )
+        stdout, stderr, rc = await run_cli(
+            aws_cli,
+            ["s3", "mv", str(src), "s3://bucket/key.txt"],
+            cli_env(proxy),
+        )
+
+    assert rc == 1
+    assert len(server.requests) == 4, format_requests(server)
+    assert b"BadDigest" in stderr or b"upload failed" in stderr
+    # Source file should NOT be deleted on failed upload
+    assert src.exists()
 
 
 def get_access_point_response(bucket: str) -> HTTPResponse:

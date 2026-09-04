@@ -244,6 +244,33 @@ class FiltersTest(unittest.TestCase):
         for filtered_file in filtered:
             self.assertFalse('.txt' in filtered_file.src)
 
+    def test_reuses_filter_across_src_types(self):
+        # Patterns are compiled per source type and cached, so a filter
+        # reused across source types has to keep giving each type its own
+        # separator normalization rather than the first one it saw.
+        exclude_filter = self.create_filter([['exclude', '*.txt']])
+        for _ in range(2):
+            local = list(exclude_filter.call(self.local_files))
+            self.assertEqual(
+                [os.path.basename(f.src) for f in local],
+                ['test.jpg', 'test.jpg'],
+            )
+            s3 = list(exclude_filter.call(self.s3_files))
+            self.assertEqual(
+                [f.src for f in s3], ['bucket/test.jpg', 'bucket/key/test.jpg']
+            )
+
+    def test_repeated_calls_are_stable(self):
+        # The compiled-pattern cache must not accumulate or mutate state
+        # between calls.
+        include_filter = self.create_filter(
+            [['exclude', '*'], ['include', '*.jpg']]
+        )
+        first = [f.src for f in include_filter.call(self.local_files)]
+        second = [f.src for f in include_filter.call(self.local_files)]
+        self.assertEqual(first, second)
+        self.assertEqual(len(first), 2)
+
 
 if __name__ == "__main__":
     unittest.main()

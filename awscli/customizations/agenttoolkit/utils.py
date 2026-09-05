@@ -103,6 +103,29 @@ def get_skill_download(client, skill_name, version=None):
     return zip_bytes, checksum, version
 
 
+def collect_installed_skills(agents):
+    seen_paths = set()
+    skills = []
+    for agent in universal_first(agents):
+        for skill in agent.get_installed_skills():
+            real_path = os.path.realpath(skill.path)
+            if real_path in seen_paths:
+                continue
+            seen_paths.add(real_path)
+            skills.append(skill)
+    return skills
+
+
+def agents_with_skill(agents, skill_name):
+    return [
+        agent
+        for agent in agents
+        if any(
+            skill.name == skill_name for skill in agent.get_installed_skills()
+        )
+    ]
+
+
 def read_installed_version(skill_dir):
     metadata = read_skill_metadata(skill_dir)
     if metadata is None:
@@ -114,7 +137,7 @@ def read_skill_metadata(skill_dir):
     path = os.path.join(skill_dir, SKILL_METADATA_FILENAME)
     try:
         with open(path) as f:
-            return json.load(f)
+            metadata = json.load(f)
     except FileNotFoundError:
         return None
     except json.JSONDecodeError as e:
@@ -126,6 +149,15 @@ def read_skill_metadata(skill_dir):
             e,
         )
         return None
+    if not isinstance(metadata, dict):
+        # Valid JSON, but not an object, so there are no fields to read.
+        LOG.debug(
+            'Ignoring skill metadata at %s: expected a JSON object, got %s.',
+            path,
+            type(metadata).__name__,
+        )
+        return None
+    return metadata
 
 
 def write_skill_metadata(skill_dir, version):

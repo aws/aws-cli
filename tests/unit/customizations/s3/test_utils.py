@@ -17,7 +17,6 @@ import os
 import time
 
 import pytest
-from botocore.hooks import HierarchicalEmitter
 from dateutil.tz import tzlocal
 from s3transfer.compat import seekable
 
@@ -25,7 +24,6 @@ from awscli.compat import StringIO
 from awscli.customizations.exceptions import ParamValidationError
 from awscli.customizations.s3.utils import (
     AppendFilter,
-    BucketLister,
     NonSeekableStream,
     RequestParamsMapper,
     S3PathResolver,
@@ -505,82 +503,6 @@ class TestStablePriorityQueue(unittest.TestCase):
 
         self.assertIs(q.get(), b)
         self.assertIs(q.get(), a)
-
-
-class TestBucketList(unittest.TestCase):
-    def setUp(self):
-        self.client = mock.Mock()
-        self.emitter = HierarchicalEmitter()
-        self.client.meta.events = self.emitter
-        self.date_parser = mock.Mock()
-        self.date_parser.return_value = mock.sentinel.now
-        self.responses = []
-
-    def fake_paginate(self, *args, **kwargs):
-        for response in self.responses:
-            self.emitter.emit('after-call.s3.ListObjectsV2', parsed=response)
-        return self.responses
-
-    def test_list_objects(self):
-        now = mock.sentinel.now
-        self.client.get_paginator.return_value.paginate = self.fake_paginate
-        individual_response_elements = [
-            {
-                'LastModified': '2014-02-27T04:20:38.000Z',
-                'Key': 'a',
-                'Size': 1,
-            },
-            {
-                'LastModified': '2014-02-27T04:20:38.000Z',
-                'Key': 'b',
-                'Size': 2,
-            },
-            {
-                'LastModified': '2014-02-27T04:20:38.000Z',
-                'Key': 'c',
-                'Size': 3,
-            },
-        ]
-        self.responses = [
-            {'Contents': individual_response_elements[0:2]},
-            {'Contents': [individual_response_elements[2]]},
-        ]
-        lister = BucketLister(self.client, self.date_parser)
-        objects = list(lister.list_objects(bucket='foo'))
-        self.assertEqual(
-            objects,
-            [
-                ('foo/a', individual_response_elements[0]),
-                ('foo/b', individual_response_elements[1]),
-                ('foo/c', individual_response_elements[2]),
-            ],
-        )
-        for individual_response in individual_response_elements:
-            self.assertEqual(individual_response['LastModified'], now)
-
-    def test_list_objects_passes_in_extra_args(self):
-        self.client.get_paginator.return_value.paginate.return_value = [
-            {
-                'Contents': [
-                    {
-                        'LastModified': '2014-02-27T04:20:38.000Z',
-                        'Key': 'mykey',
-                        'Size': 3,
-                    }
-                ]
-            }
-        ]
-        lister = BucketLister(self.client, self.date_parser)
-        list(
-            lister.list_objects(
-                bucket='mybucket', extra_args={'RequestPayer': 'requester'}
-            )
-        )
-        self.client.get_paginator.return_value.paginate.assert_called_with(
-            Bucket='mybucket',
-            PaginationConfig={'PageSize': None},
-            RequestPayer='requester',
-        )
 
 
 class TestGetFileStat(unittest.TestCase):

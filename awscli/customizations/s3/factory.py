@@ -15,6 +15,7 @@ import logging
 import awscrt.s3
 from botocore.client import Config
 from botocore.httpsession import DEFAULT_CA_BUNDLE
+from botocore.parsers import ResponseParserFactory
 from s3transfer.crt import (
     BotocoreCRTCredentialsWrapper,
     BotocoreCRTRequestSerializer,
@@ -33,11 +34,41 @@ from awscli.customizations.s3.transferconfig import (
 LOGGER = logging.getLogger(__name__)
 
 
+def _identity(value):
+    return value
+
+
 class ClientFactory:
+    _RESPONSE_PARSER_FACTORY_COMPONENT = 'response_parser_factory'
+
     def __init__(self, session):
         self._session = session
 
     def create_client(self, params, is_source_client=False):
+        create_client_kwargs = self._get_client_kwargs(
+            params, is_source_client=is_source_client
+        )
+        return self._session.create_client('s3', **create_client_kwargs)
+
+    def create_listing_client(self, params, is_source_client=False):
+        original_factory = self._session.get_component(
+            self._RESPONSE_PARSER_FACTORY_COMPONENT
+        )
+        listing_factory = ResponseParserFactory()
+        listing_factory.set_parser_defaults(timestamp_parser=_identity)
+        self._session.register_component(
+            self._RESPONSE_PARSER_FACTORY_COMPONENT, listing_factory
+        )
+        try:
+            return self.create_client(
+                params, is_source_client=is_source_client
+            )
+        finally:
+            self._session.register_component(
+                self._RESPONSE_PARSER_FACTORY_COMPONENT, original_factory
+            )
+
+    def _get_client_kwargs(self, params, is_source_client=False):
         create_client_kwargs = {'verify': params['verify_ssl']}
         if params.get('sse') == 'aws:kms':
             create_client_kwargs['config'] = Config(signature_version='s3v4')
@@ -50,7 +81,7 @@ class ClientFactory:
 
         create_client_kwargs['region_name'] = region
         create_client_kwargs['endpoint_url'] = endpoint_url
-        return self._session.create_client('s3', **create_client_kwargs)
+        return create_client_kwargs
 
 
 class TransferManagerFactory:

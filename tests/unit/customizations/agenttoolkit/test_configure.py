@@ -15,6 +15,7 @@ from io import StringIO
 from unittest.mock import MagicMock, patch
 
 import pytest
+from botocore.exceptions import NoRegionError
 
 from awscli.customizations.agenttoolkit.agents import AgentConfig
 from awscli.customizations.agenttoolkit.configure import (
@@ -90,6 +91,51 @@ def test_no_agents_detected_raises_error(tmp_path):
     ]
     with pytest.raises(ConfigurationError):
         _run(configs)
+
+
+def test_skill_install_continues_without_configured_region(tmp_path):
+    configs = _make_agent_configs(tmp_path, count=1)
+    zip_bytes, checksum = make_skill_zip()
+    client = _make_client(skills=[{'name': 'aws-serverless'}])
+    session = make_session()
+
+    def create_client(service_name, region_name=None, **kwargs):
+        if region_name is None:
+            raise NoRegionError()
+        return client
+
+    session.create_client.side_effect = create_client
+    stream = StringIO()
+    cmd = ConfigureAgentToolkitCommand(
+        session, stream=stream, agent_configs=configs
+    )
+    parsed_args = MagicMock()
+    parsed_args.yes = False
+
+    with (
+        patch(
+            'awscli.customizations.agenttoolkit.configure.multiselect_choice',
+            side_effect=lambda msg, items, **kw: items,
+        ),
+        patch(
+            'awscli.customizations.agenttoolkit.configure.yes_no_choice',
+            return_value=True,
+        ),
+        patch(
+            'awscli.customizations.agenttoolkit.configure.get_skill_download',
+            return_value=(zip_bytes, checksum, 'v1'),
+        ),
+    ):
+        rc = cmd._run_main(parsed_args, {})
+
+    assert rc == 0
+    session.create_client.assert_called_once_with(
+        'agenttoolkit', region_name='us-east-1'
+    )
+    skill_path = (
+        tmp_path / '.agent-0' / 'skills' / 'aws-serverless' / 'SKILL.md'
+    )
+    assert skill_path.exists()
 
 
 def test_detection_output(tmp_path):

@@ -116,3 +116,7 @@
   *   enhanced
   
   
+``--apn-id`` (string)
+  
+  An AWS Partner Network identifier used for Partner Revenue Measurement (PRM) attribution. The value should include the type prefix (e.g. ``pc_PRODUCTCODE`` for product codes or ``ra_PARTNERID`` for referral agents). The value is appended to the User-Agent header of all requests as ``APN_1.1/<value>$``. Overrides the ``AWS_APN_ID`` environment variable and the ``apn_id`` setting in the shared config file. See `the PRM onboarding guide <https://docs.aws.amazon.com/PRM/latest/aws-prm-onboarding-guide/user-agent-string.html>`__ for the canonical format.
+  

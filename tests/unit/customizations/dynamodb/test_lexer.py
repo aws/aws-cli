@@ -31,6 +31,13 @@ STRING_TOKENS = ['and', 'between', 'in', 'or', 'not']
         ("'f\\'oo'", [{'type': 'identifier', 'value': "f'oo"}]),
         ('"spam"', [{'type': 'literal', 'value': 'spam'}]),
         ('"s\\"pam"', [{'type': 'literal', 'value': 's"pam'}]),
+        # An escaped backslash resolves to a single backslash.
+        (r'"C:\\path"', [{'type': 'literal', 'value': 'C:\\path'}]),
+        (r"'C:\\path'", [{'type': 'identifier', 'value': 'C:\\path'}]),
+        (r'"trailing\\"', [{'type': 'literal', 'value': 'trailing\\'}]),
+        # A backslash that does not escape the delimiter or another
+        # backslash is preserved verbatim.
+        (r'"a\nb"', [{'type': 'literal', 'value': 'a\\nb'}]),
         ('100', [{'type': 'literal', 'value': Decimal('100')}]),
         ('-100', [{'type': 'literal', 'value': Decimal('-100')}]),
         ('1.01', [{'type': 'literal', 'value': Decimal('1.01')}]),
@@ -133,10 +140,33 @@ def test_lexer_empty_error():
         ('b"&"', 'b"&"\n^'),
         # Invalid padding
         ('b"898989;;"', 'b"898989;;"\n^'),
+        # Invalid characters anywhere in the string must be rejected,
+        # not just at its start.  Otherwise base64 decoding silently
+        # discards them and yields a truncated value.
+        ('b"AAAA!!!!"', 'b"AAAA!!!!"\n^'),
+        ('b"AAAA AAAA"', 'b"AAAA AAAA"\n^'),
     ],
 )
 def test_lexer_error(expression, error_part):
     LexTester().assert_lex_error(expression, error_part)
+
+
+@pytest.mark.parametrize(
+    "expression,expected_lexeme",
+    [
+        ("'foo'", "'foo'"),
+        ('"foo"', '"foo"'),
+        ("bar = 'foo'", "'foo'"),
+        ('bar = "foo"', '"foo"'),
+    ],
+)
+def test_quoted_token_offsets(expression, expected_lexeme):
+    # ``start``/``end`` are offsets into the expression and are used to
+    # underline the offending token in error messages, so slicing the
+    # expression with them has to produce the token's source text.
+    tokens = list(Lexer().tokenize(expression))
+    token = next(t for t in tokens if t['type'] in ('identifier', 'literal'))
+    assert expression[token['start'] : token['end']] == expected_lexeme
 
 
 class LexTester:

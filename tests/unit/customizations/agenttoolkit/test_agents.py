@@ -177,8 +177,8 @@ def test_configure_mcp_new_file(tmp_path):
     action, path = agent.configure_mcp_server()
     assert action is McpConfigureAction.CONFIGURED
     data = json.loads(open(path).read())
-    assert data['mcpServers']['aws-mcp']['command'] == 'uvx'
-    assert 'mcp-proxy-for-aws@latest' in data['mcpServers']['aws-mcp']['args']
+    entry = data['mcpServers']['aws-knowledge-mcp-server']
+    assert entry == {'url': 'https://knowledge-mcp.global.api.aws'}
 
 
 def test_configure_mcp_already_configured(tmp_path):
@@ -186,12 +186,22 @@ def test_configure_mcp_already_configured(tmp_path):
     agent = make_config(tmp_path, mcp_config_path='mcp.json').detect()
     mcp_path = tmp_path / '.test-agent' / 'mcp.json'
     mcp_path.write_text(
-        json.dumps({'mcpServers': {'aws-mcp': {'command': 'custom'}}})
+        json.dumps(
+            {
+                'mcpServers': {
+                    'aws-knowledge-mcp-server': {
+                        'url': 'https://custom.example.com'
+                    }
+                }
+            }
+        )
     )
     action, _ = agent.configure_mcp_server()
     assert action is McpConfigureAction.ALREADY_CONFIGURED
     data = json.loads(mcp_path.read_text())
-    assert data['mcpServers']['aws-mcp']['command'] == 'custom'
+    assert data['mcpServers']['aws-knowledge-mcp-server'] == {
+        'url': 'https://custom.example.com'
+    }
 
 
 def test_configure_mcp_preserves_other_servers(tmp_path):
@@ -204,7 +214,7 @@ def test_configure_mcp_preserves_other_servers(tmp_path):
     agent.configure_mcp_server()
     data = json.loads(mcp_path.read_text())
     assert data['mcpServers']['other']['command'] == 'foo'
-    assert 'aws-mcp' in data['mcpServers']
+    assert 'aws-knowledge-mcp-server' in data['mcpServers']
 
 
 def test_configure_mcp_extra_config_merged(tmp_path):
@@ -212,21 +222,23 @@ def test_configure_mcp_extra_config_merged(tmp_path):
     agent = make_config(
         tmp_path,
         mcp_config_path='mcp.json',
-        mcp_extra_config={'timeout': 100000},
+        mcp_extra_config={'disabled': False},
     ).detect()
     agent.configure_mcp_server()
     mcp_path = tmp_path / '.test-agent' / 'mcp.json'
     data = json.loads(mcp_path.read_text())
-    entry = data['mcpServers']['aws-mcp']
-    assert entry['timeout'] == 100000
-    assert entry['command'] == 'uvx'
+    entry = data['mcpServers']['aws-knowledge-mcp-server']
+    assert entry == {
+        'url': 'https://knowledge-mcp.global.api.aws',
+        'disabled': False,
+    }
 
 
 def test_configure_mcp_server_entry_overrides_default(tmp_path):
     (tmp_path / '.test-agent').mkdir()
     custom_entry = {
-        'type': 'local',
-        'command': ['uvx', 'something@latest'],
+        'type': 'remote',
+        'url': 'https://custom.example.com',
     }
     agent = make_config(
         tmp_path,
@@ -237,16 +249,16 @@ def test_configure_mcp_server_entry_overrides_default(tmp_path):
     agent.configure_mcp_server()
     mcp_path = tmp_path / '.test-agent' / 'mcp.json'
     data = json.loads(mcp_path.read_text())
-    entry = data['mcp']['aws-mcp']
+    entry = data['mcp']['aws-knowledge-mcp-server']
     assert entry == custom_entry
-    assert 'args' not in entry
+    assert 'command' not in entry
 
 
 def test_configure_mcp_shell_command_runs_when_executable_present(tmp_path):
     (tmp_path / '.test-agent').mkdir()
     config = make_config(
         tmp_path,
-        mcp_shell_command=['some-cli', 'mcp', 'add', 'aws-mcp'],
+        mcp_shell_command=['some-cli', 'mcp', 'add', 'test-server'],
     )
     agent = config.detect()
     with (
@@ -262,7 +274,7 @@ def test_configure_mcp_shell_command_runs_when_executable_present(tmp_path):
     assert action is McpConfigureAction.CONFIGURED
     assert detail == 'some-cli'
     run_mock.assert_called_once_with(
-        ['some-cli', 'mcp', 'add', 'aws-mcp'], check=True
+        ['some-cli', 'mcp', 'add', 'test-server'], check=True
     )
 
 
@@ -270,7 +282,7 @@ def test_configure_mcp_shell_command_skipped_when_executable_missing(tmp_path):
     (tmp_path / '.test-agent').mkdir()
     config = make_config(
         tmp_path,
-        mcp_shell_command=['missing-cli', 'mcp', 'add', 'aws-mcp'],
+        mcp_shell_command=['missing-cli', 'mcp', 'add', 'test-server'],
     )
     agent = config.detect()
     with (

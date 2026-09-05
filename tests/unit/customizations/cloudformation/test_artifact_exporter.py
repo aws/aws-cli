@@ -1640,6 +1640,44 @@ class TestArtifactExporter(BaseYAMLTest):
                 os.remove(zipfile_name)
             test_file_creator.remove_all()
 
+    def test_make_zip_deterministic_order(self):
+        test_file_creator = FileCreator()
+        test_file_creator.append_file('b/y.txt', 'y')
+        test_file_creator.append_file('a/x.txt', 'x')
+        test_file_creator.append_file('b/a.txt', 'a')
+        test_file_creator.append_file('a/z.txt', 'z')
+        test_file_creator.append_file('c.txt', 'c')
+        test_file_creator.append_file('a.txt', 'a')
+
+        dirname = test_file_creator.rootdir
+        random_name = ''.join(
+            random.choice(string.ascii_letters) for _ in range(10)
+        )
+        outfile = os.path.join(tempfile.gettempdir(), random_name)
+
+        zipfile_name = None
+        try:
+            zipfile_name = make_zip(outfile, dirname)
+
+            test_zip_file = zipfile.ZipFile(zipfile_name, "r")
+            with closing(test_zip_file) as zf:
+                names = zf.namelist()
+
+            expected_order = [
+                'a.txt',
+                'c.txt',
+                os.path.join('a', 'x.txt'),
+                os.path.join('a', 'z.txt'),
+                os.path.join('b', 'a.txt'),
+                os.path.join('b', 'y.txt'),
+            ]
+            self.assertEqual(names, expected_order)
+
+        finally:
+            if zipfile_name:
+                os.remove(zipfile_name)
+            test_file_creator.remove_all()
+
     @mock.patch("shutil.copy")
     @mock.patch("tempfile.mkdtemp")
     def test_copy_to_temp_dir(self, mkdtemp_mock, copyfile_mock):

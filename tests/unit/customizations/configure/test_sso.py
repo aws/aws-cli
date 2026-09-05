@@ -793,12 +793,15 @@ class PTKStubber:
     _ALLOWED_SELECT_MENU_KWARGS = {
         "display_format",
         "max_height",
+        "enable_filter",
+        "no_results_message",
     }
 
     def __init__(self, user_inputs=None):
         if user_inputs is None:
             user_inputs = UserInputs()
         self.user_inputs = user_inputs
+        self.select_menu_calls = []
         self._expected_inputs = None
 
     def prompt(self, message, **kwargs):
@@ -833,6 +836,7 @@ class PTKStubber:
     def select_menu(self, items, **kwargs):
         self._initialize_expected_inputs_if_needed()
         self._validate_kwargs(kwargs, self._ALLOWED_SELECT_MENU_KWARGS)
+        self.select_menu_calls.append(kwargs)
         if not self._expected_inputs:
             raise AssertionError(
                 f'Received select_menu with no stubbed answer: "{items}"'
@@ -1529,6 +1533,104 @@ class TestConfigureSSOCommand:
         )
         sso_cmd = sso_cmd_factory(session=session)
         assert sso_cmd(args, parsed_globals) == 0
+
+    def test_multiple_accounts_uses_filterable_menu(
+        self,
+        sso_cmd,
+        ptk_stubber,
+        aws_config,
+        stub_sso_list_roles,
+        stub_sso_list_accounts,
+        mock_do_sso_login,
+        botocore_session,
+        args,
+        parsed_globals,
+        configure_sso_legacy_inputs,
+        capsys,
+    ):
+        """Test that multiple accounts selection shows filter instructions"""
+        inputs = configure_sso_legacy_inputs
+        selected_account_id = inputs.account_id_select.answer["accountId"]
+        ptk_stubber.user_inputs = inputs
+
+        stub_sso_list_accounts(inputs.account_id_select.expected_choices)
+        stub_sso_list_roles(
+            inputs.role_name_select.expected_choices,
+            expected_account_id=selected_account_id,
+        )
+
+        sso_cmd(args, parsed_globals)
+
+        stdout = capsys.readouterr().out
+        assert "Use arrow keys to navigate, type to filter" in stdout
+        assert "There are 2 AWS accounts available to you" in stdout
+        assert ptk_stubber.select_menu_calls[0]["enable_filter"] is True
+        assert (
+            ptk_stubber.select_menu_calls[0]["no_results_message"]
+            == "No matching accounts found"
+        )
+
+    def test_multiple_roles_uses_filterable_menu(
+        self,
+        sso_cmd,
+        ptk_stubber,
+        aws_config,
+        stub_sso_list_roles,
+        stub_sso_list_accounts,
+        mock_do_sso_login,
+        botocore_session,
+        args,
+        parsed_globals,
+        configure_sso_legacy_inputs,
+        capsys,
+    ):
+        """Test that multiple roles selection is filterable as well"""
+        inputs = configure_sso_legacy_inputs
+        selected_account_id = inputs.account_id_select.answer["accountId"]
+        ptk_stubber.user_inputs = inputs
+
+        stub_sso_list_accounts(inputs.account_id_select.expected_choices)
+        stub_sso_list_roles(
+            inputs.role_name_select.expected_choices,
+            expected_account_id=selected_account_id,
+        )
+
+        sso_cmd(args, parsed_globals)
+
+        stdout = capsys.readouterr().out
+        assert "There are 2 roles available to you" in stdout
+        role_menu_kwargs = ptk_stubber.select_menu_calls[1]
+        assert role_menu_kwargs["enable_filter"] is True
+        assert (
+            role_menu_kwargs["no_results_message"] == "No matching roles found"
+        )
+
+    def test_single_account_does_not_use_filterable_menu(
+        self,
+        sso_cmd,
+        ptk_stubber,
+        aws_config,
+        stub_simple_single_item_sso_responses,
+        mock_do_sso_login,
+        botocore_session,
+        args,
+        parsed_globals,
+        configure_sso_legacy_inputs,
+        account_id,
+        role_name,
+        capsys,
+    ):
+        """Test that single account does not show filter instructions"""
+        inputs = configure_sso_legacy_inputs
+        inputs.skip_account_and_role_selection()
+        ptk_stubber.user_inputs = inputs
+        stub_simple_single_item_sso_responses(account_id, role_name)
+
+        sso_cmd(args, parsed_globals)
+
+        stdout = capsys.readouterr().out
+        assert "Use arrow keys to navigate, type to filter" not in stdout
+        assert "The only AWS account available to you is" in stdout
 
     def test_single_account_single_role_device_code_fallback(
         self,

@@ -35,6 +35,9 @@ from botocore.configprovider import ConstantProvider
 from botocore.exceptions import ProfileNotFound
 from botocore.useragent import register_feature_id
 
+from awscli.customizations.agenttoolkit.hint import (
+    maybe_prompt_agent_toolkit,
+)
 from awscli.customizations.configure import (
     get_section_header,
     profile_to_section,
@@ -184,6 +187,10 @@ class ConfigureSSOCommand(BaseSSOConfigurationCommand):
             self._profile_config = self._session.get_scoped_config()
         except ProfileNotFound:
             self._profile_config = {}
+        try:
+            self._resolved_region = self._session.get_config_variable('region')
+        except ProfileNotFound:
+            self._resolved_region = None
 
     def _init_prompt_toolkit(self):
         super()._init_prompt_toolkit()
@@ -345,13 +352,20 @@ class ConfigureSSOCommand(BaseSSOConfigurationCommand):
         )
         configured_for_aws_credentials = all((sso_account_id, sso_role_name))
 
-        self._prompt_for_cli_default_region()
+        region = self._prompt_for_cli_default_region()
         self._prompt_for_cli_output_format()
 
         profile_name = self._prompt_for_profile(sso_account_id, sso_role_name)
 
         self._write_new_config(profile_name)
         self._print_conclusion(configured_for_aws_credentials, profile_name)
+        maybe_prompt_agent_toolkit(
+            self._session,
+            parsed_globals,
+            # A region just entered at the prompt postdates what the session
+            # resolved, so it wins.
+            region=region or self._resolved_region,
+        )
         return 0
 
     def _prompt_for_sso_registration_args(self, verify=None):

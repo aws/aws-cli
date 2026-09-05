@@ -1035,6 +1035,51 @@ class TestConfigureSSOCommand:
             ],
         )
 
+    def test_prompts_agent_toolkit_after_configuring_profile(
+        self,
+        sso_cmd,
+        ptk_stubber,
+        aws_config,
+        stub_simple_single_item_sso_responses,
+        args,
+        parsed_globals,
+        configure_sso_legacy_inputs,
+        account_id,
+        role_name,
+    ):
+        inputs = configure_sso_legacy_inputs
+        inputs.skip_account_and_role_selection()
+        ptk_stubber.user_inputs = inputs
+        stub_simple_single_item_sso_responses(account_id, role_name)
+
+        with mock.patch(
+            'awscli.customizations.configure.sso_commands.'
+            'maybe_prompt_agent_toolkit'
+        ) as prompt:
+            sso_cmd(args, parsed_globals)
+        prompt.assert_called_once_with(
+            mock.ANY, parsed_globals, region=inputs.region_prompt.answer
+        )
+
+    def test_agent_toolkit_region_prefers_env_over_config_file(
+        self, aws_config, sso_cmd_factory, existing_profile_name
+    ):
+        # AWS_DEFAULT_REGION is us-west-2 via the env fixture. It outranks the
+        # config file in botocore, and must be captured before
+        # _unset_session_profile drops the profile, so `aws configure sso`
+        # agrees with `aws configure`.
+        write_aws_config(
+            aws_config,
+            [
+                f"[profile {existing_profile_name}]",
+                "region = us-gov-east-1",
+            ],
+        )
+        session = StubbedSession(profile=existing_profile_name)
+        cmd = sso_cmd_factory(session=session)
+        assert cmd._profile_config.get('region') == 'us-gov-east-1'
+        assert cmd._resolved_region == 'us-west-2'
+
     def test_no_accounts_flow_raises_error(
         self,
         sso_cmd,

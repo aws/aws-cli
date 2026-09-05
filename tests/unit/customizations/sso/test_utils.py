@@ -317,6 +317,16 @@ class TestAuthCodeFetcher:
         assert actual_code is None
         assert actual_state is None
 
+    def test_callback_page_attempts_best_effort_close(self):
+        url = self.url + '?code=1234&state=4567'
+
+        http = urllib3.PoolManager()
+        response = http.request("GET", url)
+
+        self.fetcher.get_auth_code_and_state()
+        assert response.status == 200
+        assert b'window.close()' in response.data
+
 
 @mock.patch(
     'awscli.customizations.sso.utils.AuthCodeFetcher._REQUEST_TIMEOUT', 0.1

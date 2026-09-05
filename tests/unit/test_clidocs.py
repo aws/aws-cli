@@ -221,7 +221,8 @@ class TestCLIDocumentEventHandler(unittest.TestCase):
         doc_handler = CLIDocumentEventHandler(help_cmd)
         doc_handler.doc_breadcrumbs(help_cmd)
         self.assertEqual(
-            help_cmd.doc.getvalue().decode('utf-8'), '[ :ref:`aws <cli:aws>` ]\n\n'
+            help_cmd.doc.getvalue().decode('utf-8'),
+            '[ :ref:`aws <cli:aws>` ]\n\n',
         )
 
     def test_breadcrumbs_service_command_html(self):
@@ -237,7 +238,8 @@ class TestCLIDocumentEventHandler(unittest.TestCase):
         doc_handler = CLIDocumentEventHandler(help_cmd)
         doc_handler.doc_breadcrumbs(help_cmd)
         self.assertEqual(
-            help_cmd.doc.getvalue().decode('utf-8'), '[ :ref:`aws <cli:aws>` ]\n\n'
+            help_cmd.doc.getvalue().decode('utf-8'),
+            '[ :ref:`aws <cli:aws>` ]\n\n',
         )
 
     def test_breadcrumbs_operation_command_html(self):
@@ -254,7 +256,7 @@ class TestCLIDocumentEventHandler(unittest.TestCase):
         doc_handler.doc_breadcrumbs(help_cmd)
         self.assertEqual(
             help_cmd.doc.getvalue().decode('utf-8'),
-            '[ :ref:`aws <cli:aws>` . :ref:`ec2 <cli:aws ec2>` ]\n\n'
+            '[ :ref:`aws <cli:aws>` . :ref:`ec2 <cli:aws ec2>` ]\n\n',
         )
 
     def test_breadcrumbs_wait_command_html(self):
@@ -274,7 +276,7 @@ class TestCLIDocumentEventHandler(unittest.TestCase):
             (
                 '[ :ref:`aws <cli:aws>` . :ref:`s3api <cli:aws s3api>`'
                 ' . :ref:`wait <cli:aws s3api wait>` ]\n\n'
-            )
+            ),
         )
 
     def test_documents_json_header_shape(self):
@@ -418,6 +420,58 @@ class TestCLIDocumentEventHandler(unittest.TestCase):
             rendered,
         )
 
+    def test_includes_agent_toolkit_note_in_operation_help(self):
+        help_command = self.create_help_command()
+        help_command.event_class = 'ec2.describe-instances'
+        operation_handler = OperationDocumentEventHandler(help_command)
+        operation_handler.doc_description(help_command=help_command)
+        rendered = help_command.doc.getvalue().decode('utf-8')
+        self.assertIn(
+            'See also: Official AWS skills may be available, '
+            '"aws agent-toolkit help".',
+            rendered,
+        )
+
+    def test_excludes_agent_toolkit_note_for_agent_toolkit_namespace(self):
+        help_command = self.create_help_command()
+        help_command.event_class = 'agent-toolkit.list-available-skills'
+        operation_handler = OperationDocumentEventHandler(help_command)
+        operation_handler.doc_description(help_command=help_command)
+        rendered = help_command.doc.getvalue().decode('utf-8')
+        self.assertNotIn('aws agent-toolkit help', rendered)
+
+    def test_includes_agent_toolkit_note_in_service_help(self):
+        help_cmd = ServiceHelpCommand(
+            self.session,
+            mock.Mock(documentation='description'),
+            self.command_table,
+            self.arg_table,
+            self.name,
+            'ec2',
+        )
+        doc_handler = ServiceDocumentEventHandler(help_cmd)
+        doc_handler.doc_description(help_command=help_cmd)
+        rendered = help_cmd.doc.getvalue().decode('utf-8')
+        self.assertIn(
+            'See also: Official AWS skills may be available, '
+            '"aws agent-toolkit help".',
+            rendered,
+        )
+
+    def test_excludes_agent_toolkit_note_for_agent_toolkit_service_help(self):
+        help_cmd = ServiceHelpCommand(
+            self.session,
+            mock.Mock(documentation='description'),
+            self.command_table,
+            self.arg_table,
+            self.name,
+            'agent-toolkit',
+        )
+        doc_handler = ServiceDocumentEventHandler(help_cmd)
+        doc_handler.doc_description(help_command=help_cmd)
+        rendered = help_cmd.doc.getvalue().decode('utf-8')
+        self.assertNotIn('aws agent-toolkit help', rendered)
+
     def test_includes_streaming_blob_options(self):
         help_command = self.create_help_command()
         blob_shape = Shape('blob_shape', {'type': 'blob'})
@@ -546,8 +600,12 @@ class TestCLIDocumentEventHandler(unittest.TestCase):
 
     def test_meta_description_operation_command_html(self):
         help_cmd = ServiceHelpCommand(
-            self.session, self.obj, self.command_table, self.arg_table,
-            self.name, 'ec2.run-instances'
+            self.session,
+            self.obj,
+            self.command_table,
+            self.arg_table,
+            self.name,
+            'ec2.run-instances',
         )
         help_cmd.doc.target = 'html'
         doc_handler = OperationDocumentEventHandler(help_cmd)
@@ -559,15 +617,22 @@ class TestCLIDocumentEventHandler(unittest.TestCase):
 
     def test_meta_description_service_html(self):
         help_cmd = ServiceHelpCommand(
-            self.session, self.obj, self.command_table, self.arg_table,
-            self.name, 'ec2'
+            self.session,
+            self.obj,
+            self.command_table,
+            self.arg_table,
+            self.name,
+            'ec2',
         )
         help_cmd.doc.target = 'html'
         doc_handler = ServiceDocumentEventHandler(help_cmd)
         doc_handler.doc_meta_description(help_cmd)
 
         meta_description = help_cmd.doc.getvalue().decode('utf-8')
-        self.assertIn(".. meta::\n   :description: Learn about the AWS CLI ", meta_description)
+        self.assertIn(
+            ".. meta::\n   :description: Learn about the AWS CLI ",
+            meta_description,
+        )
         self.assertIn(' ec2 commands', meta_description)
 
 

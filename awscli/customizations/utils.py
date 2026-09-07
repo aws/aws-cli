@@ -21,6 +21,7 @@ import sys
 import xml
 
 from botocore.exceptions import ClientError
+from botocore.loaders import Loader
 
 from awscli.customizations.exceptions import ParamValidationError
 
@@ -208,12 +209,15 @@ def uni_print(statement, out_file=None):
 def get_policy_arn_suffix(region):
     """Method to return region value as expected by policy arn"""
     region_string = region.lower()
-    if region_string.startswith("cn-"):
-        return "aws-cn"
-    elif region_string.startswith("us-gov"):
-        return "aws-us-gov"
-    else:
-        return "aws"
+    loader = Loader()
+    partitions_data = loader.load_data('partitions')
+
+    for partition in partitions_data['partitions']:
+        region_regex = partition['regionRegex']
+        if re.match(region_regex, region_string):
+            return partition['id']
+
+    return "aws"
 
 
 def get_shape_doc_overview(shape):

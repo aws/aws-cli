@@ -33,6 +33,7 @@ from botocore.utils import (
 
 from awscli.compat import (
     StringIO,
+    get_output_encoding,
     get_popen_kwargs_for_pager_cmd,
     get_stdout_text_writer,
 )
@@ -45,9 +46,18 @@ class PagerInitializationException(Exception):
 
 
 class LazyStdin:
-    def __init__(self, process):
+    def __init__(self, process, encoding=None):
         self._process = process
         self._stream = None
+        self._encoding = encoding
+
+    @property
+    def encoding(self):
+        # Reported up front so that callers can adapt their output to the
+        # encoding without forcing the pager process to start.
+        if self._stream is not None:
+            return self._stream.encoding
+        return self._encoding
 
     def __getattr__(self, item):
         if self._stream is None:
@@ -60,6 +70,18 @@ class LazyStdin:
         if self._stream is not None:
             return self._stream.flush()
 
+    def reconfigure(self, **kwargs):
+        # The pipe's encoding is fixed when the pager is started, and already
+        # accounts for the user's configured output encoding, so there is
+        # nothing to change here. Answering directly also keeps callers from
+        # reaching reconfigure through __getattr__, which would start the
+        # pager process just to settle a question about its encoding.
+        logger.debug(
+            'Ignoring reconfigure(%s) on a pager pipe; its encoding is set '
+            'when the process starts.',
+            kwargs,
+        )
+
 
 class LazyPager:
     # Spin up a new process only in case it has been called or its stdin
@@ -68,7 +90,7 @@ class LazyPager:
         self._popen = popen
         self._popen_kwargs = kwargs
         self._process = None
-        self.stdin = LazyStdin(self)
+        self.stdin = LazyStdin(self, encoding=kwargs.get('encoding'))
 
     def initialize(self):
         if self._process is None:
@@ -466,6 +488,12 @@ class OutputStreamFactory:
             env['LESS'] = self._default_less_flags
         kwargs['env'] = env
         kwargs['universal_newlines'] = True
+        # State the pipe's encoding rather than letting subprocess derive it,
+        # so that it can be reported before the pager is started. Where that
+        # encoding is a legacy code page it cannot represent most of Unicode,
+        # so degrade those characters rather than aborting the command.
+        kwargs['encoding'] = get_output_encoding()
+        kwargs['errors'] = 'backslashreplace'
         return kwargs
 
 

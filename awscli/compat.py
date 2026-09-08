@@ -10,6 +10,7 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import codecs
 import collections.abc as collections_abc
 import contextlib
 import io
@@ -75,6 +76,11 @@ raw_input = input
 OUTPUT_ENCODING_ENV_VAR = 'AWS_CLI_OUTPUT_ENCODING'
 PYTHONUTF8_ENV_VAR = 'PYTHONUTF8'
 
+# How to handle characters an output stream's encoding cannot represent.
+# Escaping keeps the value recoverable, where 'replace' would discard it and
+# 'strict' would abort the command partway through its output.
+OUTPUT_ERROR_HANDLER = 'backslashreplace'
+
 # cmd.exe characters that require double-quoting to be treated as literals.
 # https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/cmd
 _WIN_CMD_UNSAFE_CHARS = set('&<>[]|{}^=;!\'()+,`~ \t')
@@ -131,8 +137,34 @@ def get_binary_stdout():
 
 
 def _get_text_writer(stream, errors):
-    set_preferred_output_encoding(stream)
+    set_preferred_output_encoding(stream, errors)
     return stream
+
+
+def _stream_encoding(stream):
+    return getattr(stream, 'encoding', None)
+
+
+def encoding_supports_unicode(encoding):
+    """Whether every Unicode character can be encoded by ``encoding``.
+
+    ``None`` means the destination never encodes to bytes at all (e.g.
+    io.StringIO), so it imposes no restriction. Otherwise only the UTF codecs
+    cover all of Unicode; legacy code pages such as cp1252, which Windows
+    uses for redirected output and for pipes to a pager, cover a small subset
+    and raise UnicodeEncodeError on anything outside it.
+    """
+    if encoding is None:
+        return True
+    try:
+        return codecs.lookup(encoding).name.startswith('utf')
+    except (LookupError, TypeError):
+        return False
+
+
+def stream_encoding_supports_unicode(stream):
+    """Whether every Unicode character can be written to ``stream``."""
+    return encoding_supports_unicode(_stream_encoding(stream))
 
 
 def validate_preferred_output_encoding():
@@ -153,32 +185,69 @@ def validate_preferred_output_encoding():
             )
 
 
-def set_preferred_output_encoding(stream):
+def set_preferred_output_encoding(stream, errors=None):
     """
     If the user specified AWS_CLI_OUTPUT_ENCODING, use that encoding
     for the output stream. This lets us move away from the Python-specific
     environment variables in the long-term, though we support PYTHONUTF8
     here as well for backwards compatability.
+
+    ``errors`` is applied in the same call as the encoding, because
+    ``reconfigure`` resets the error handler to ``strict`` whenever it is
+    given an encoding without one.
     """
+    encoding = None
     if OUTPUT_ENCODING_ENV_VAR in os.environ:
-        try:
-            stream.reconfigure(encoding=os.environ[OUTPUT_ENCODING_ENV_VAR])
-        except LookupError:
-            # At this point we don't want to raise the exception, since we
-            # could be writing out another error. Callers should call
-            # validate_preferred_output_encoding first.
-            LOG.debug(
-                f'Ignoring invalid codec '
-                f'{os.environ[OUTPUT_ENCODING_ENV_VAR]} '
-                f'specified for {OUTPUT_ENCODING_ENV_VAR}.'
-            )
+        encoding = os.environ[OUTPUT_ENCODING_ENV_VAR]
     # Fall back to PYTHONUTF8, for users who were setting it
     # before the PyInstaller 6 upgrade which stopped supporting it
-    elif (
-        PYTHONUTF8_ENV_VAR in os.environ
-        and os.environ[PYTHONUTF8_ENV_VAR] == '1'
+    elif os.environ.get(PYTHONUTF8_ENV_VAR) == '1':
+        encoding = 'UTF-8'
+    _reconfigure_output_stream(stream, encoding, errors)
+
+
+def _reconfigure_output_stream(stream, encoding, errors):
+    """Apply ``encoding`` and ``errors`` to a stream in a single call.
+
+    An error handler is only worth applying to a stream whose encoding cannot
+    represent all of Unicode; elsewhere a failed write is a real bug and
+    should still raise.
+    """
+    kwargs = {}
+    if encoding is not None:
+        kwargs['encoding'] = encoding
+    if errors is not None and not encoding_supports_unicode(
+        encoding if encoding is not None else _stream_encoding(stream)
     ):
-        stream.reconfigure(encoding='UTF-8')
+        kwargs['errors'] = errors
+    if not kwargs:
+        return
+    try:
+        stream.reconfigure(**kwargs)
+    except LookupError:
+        # At this point we don't want to raise the exception, since we
+        # could be writing out another error. Callers should call
+        # validate_preferred_output_encoding first.
+        LOG.debug(
+            'Ignoring invalid codec %s specified for %s.',
+            encoding,
+            OUTPUT_ENCODING_ENV_VAR,
+        )
+    except (AttributeError, ValueError, OSError):
+        LOG.debug('Unable to reconfigure %r with %s.', stream, kwargs)
+
+
+def get_output_encoding():
+    """The encoding the CLI should write its output in.
+
+    Mirrors the precedence of set_preferred_output_encoding for callers that
+    need to state an encoding up front rather than reconfigure a stream.
+    """
+    if OUTPUT_ENCODING_ENV_VAR in os.environ:
+        return os.environ[OUTPUT_ENCODING_ENV_VAR]
+    if os.environ.get(PYTHONUTF8_ENV_VAR) == '1':
+        return 'UTF-8'
+    return locale.getpreferredencoding(False)
 
 
 def getpreferredencoding(*args, **kwargs):
@@ -233,11 +302,11 @@ def bytes_print(statement, stdout=None):
 
 
 def get_stdout_text_writer():
-    return _get_text_writer(sys.stdout, errors="strict")
+    return _get_text_writer(sys.stdout, errors=OUTPUT_ERROR_HANDLER)
 
 
 def get_stderr_text_writer():
-    return _get_text_writer(sys.stderr, errors="replace")
+    return _get_text_writer(sys.stderr, errors=OUTPUT_ERROR_HANDLER)
 
 
 def get_stderr_encoding():

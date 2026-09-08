@@ -24,8 +24,9 @@ import pytest
 import ruamel.yaml
 from botocore.exceptions import ConnectionClosedError, MetadataRetrievalError
 
+from awscli import compat
 from awscli.clidriver import create_clidriver
-from awscli.compat import is_windows
+from awscli.compat import get_output_encoding, is_windows
 from awscli.testutils import mock, skip_if_windows, unittest
 from awscli.utils import (
     IMDSRegionProvider,
@@ -220,6 +221,8 @@ class TestOutputStreamFactory(unittest.TestCase):
             'stdin': subprocess.PIPE,
             'env': mock.ANY,
             'universal_newlines': True,
+            'encoding': mock.ANY,
+            'errors': 'backslashreplace',
         }
         if is_windows:
             popen_kwargs['args'] = expected_pager_cmd
@@ -334,6 +337,29 @@ class TestOutputStreamFactory(unittest.TestCase):
             self.assert_popen_call(
                 expected_pager_cmd='less', env={'LESS': 'ABC'}
             )
+
+    def test_reports_encoding_without_creating_process(self):
+        # Formatters read the encoding to decide whether to escape characters
+        # the pager pipe cannot represent, which must not start the pager.
+        self.set_session_pager('less')
+        with self.stream_factory.get_output_stream() as stream:
+            self.assertEqual(stream.encoding, get_output_encoding())
+            self.assertEqual(self.popen.call_count, 0)
+
+    def test_formatter_does_not_start_pager_or_change_encoding(self):
+        # Formatters call set_preferred_output_encoding on whatever stream
+        # they are handed. On a pager pipe that must not reach reconfigure
+        # through __getattr__, which would start the process, and must not
+        # replace the encoding the pipe was created with.
+        with mock.patch.dict(
+            os.environ, {'AWS_CLI_OUTPUT_ENCODING': 'cp1252'}
+        ):
+            with self.stream_factory.get_pager_stream() as stream:
+                compat.set_preferred_output_encoding(
+                    stream, 'backslashreplace'
+                )
+                self.assertEqual(self.popen.call_count, 0)
+                self.assertEqual(stream.encoding, 'cp1252')
 
     def test_not_create_process_if_stream_not_created(self):
         self.set_session_pager('less')

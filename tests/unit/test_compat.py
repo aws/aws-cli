@@ -21,10 +21,12 @@ from awscli.compat import (
     compat_open,
     compat_shell_quote,
     ensure_text_type,
+    get_output_encoding,
     get_popen_kwargs_for_pager_cmd,
     getpreferredencoding,
     ignore_user_entered_signals,
     set_preferred_output_encoding,
+    stream_encoding_supports_unicode,
     validate_preferred_output_encoding,
 )
 from awscli.testutils import FileCreator, mock, skip_if_windows, unittest
@@ -265,3 +267,76 @@ def test_validate_preferred_output_encoding():
     with mock.patch.dict(os.environ, {'AWS_CLI_OUTPUT_ENCODING': 'invalid'}):
         with pytest.raises(ValueError):
             validate_preferred_output_encoding()
+
+
+@pytest.mark.parametrize(
+    'encoding, expected',
+    [
+        ('utf-8', True),
+        ('UTF-8', True),
+        ('utf8', True),
+        ('utf-16', True),
+        ('cp1252', False),
+        ('cp437', False),
+        ('latin-1', False),
+        ('not-a-codec', False),
+        (None, True),
+    ],
+)
+def test_stream_encoding_supports_unicode(encoding, expected):
+    stream = mock.Mock(encoding=encoding)
+    assert stream_encoding_supports_unicode(stream) is expected
+
+
+def test_stream_encoding_supports_unicode_without_encoding_attribute():
+    assert stream_encoding_supports_unicode(io.StringIO()) is True
+
+
+def test_error_handler_applies_to_legacy_code_page():
+    stream = io.TextIOWrapper(io.BytesIO(), encoding='cp1252')
+    set_preferred_output_encoding(stream, 'backslashreplace')
+    assert stream.errors == 'backslashreplace'
+
+
+def test_error_handler_leaves_unicode_stream_strict():
+    stream = io.TextIOWrapper(io.BytesIO(), encoding='utf-8')
+    set_preferred_output_encoding(stream, 'backslashreplace')
+    assert stream.errors == 'strict'
+
+
+def test_error_handler_ignores_stream_without_reconfigure():
+    # Must not raise; some wrapped streams do not support reconfigure().
+    set_preferred_output_encoding(
+        mock.Mock(spec=[], encoding='cp1252'), 'replace'
+    )
+
+
+def test_error_handler_survives_encoding_override():
+    # reconfigure() resets errors to 'strict' when given an encoding without
+    # one, so both have to be applied in the same call.
+    stream = io.TextIOWrapper(io.BytesIO(), encoding='utf-8')
+    with mock.patch.dict(os.environ, {'AWS_CLI_OUTPUT_ENCODING': 'cp1252'}):
+        set_preferred_output_encoding(stream, 'backslashreplace')
+    assert stream.encoding == 'cp1252'
+    assert stream.errors == 'backslashreplace'
+
+
+@pytest.mark.parametrize(
+    'env_vars, expected',
+    [
+        ({'AWS_CLI_OUTPUT_ENCODING': 'cp1252'}, 'cp1252'),
+        ({'PYTHONUTF8': '1'}, 'UTF-8'),
+        ({'AWS_CLI_OUTPUT_ENCODING': 'cp1252', 'PYTHONUTF8': '1'}, 'cp1252'),
+    ],
+)
+def test_get_output_encoding(env_vars, expected):
+    with mock.patch.dict(os.environ, env_vars):
+        assert get_output_encoding() == expected
+
+
+def test_get_output_encoding_falls_back_to_locale():
+    with mock.patch.dict(os.environ, {}, clear=True):
+        with mock.patch.object(
+            locale, 'getpreferredencoding', return_value='cp1252'
+        ):
+            assert get_output_encoding() == 'cp1252'

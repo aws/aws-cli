@@ -69,7 +69,9 @@ class FullyBufferedFormatter(Formatter):
             # so that if anything wraps stdout we'll pick up those changes
             # (specifically colorama on windows wraps stdout).
             stream = self._get_default_stream()
-        compat.set_preferred_output_encoding(stream)
+        compat.set_preferred_output_encoding(
+            stream, compat.OUTPUT_ERROR_HANDLER
+        )
         # I think the interfaces between non-paginated
         # and paginated responses can still be cleaned up.
         if is_response_paginated(response):
@@ -103,7 +105,9 @@ class JSONFormatter(FullyBufferedFormatter):
                 stream,
                 indent=4,
                 default=json_encoder,
-                ensure_ascii=False,
+                ensure_ascii=not compat.stream_encoding_supports_unicode(
+                    stream
+                ),
             )
             stream.write('\n')
 
@@ -118,6 +122,11 @@ class YAMLDumper:
         self._yaml.representer.default_flow_style = False
 
     def dump(self, value, stream):
+        # Characters the stream cannot encode are escaped instead. Both JSON
+        # and YAML escapes round-trip losslessly, so the output stays parseable
+        # on a stream restricted to a legacy code page.
+        supports_unicode = compat.stream_encoding_supports_unicode(stream)
+        self._yaml.allow_unicode = supports_unicode
         if self._is_json_scalar(value) or isinstance(value, datetime):
             # YAML will attempt to disambiguate scalars by ending the stream
             # with an elipsis. While this is technically valid YAML,
@@ -127,7 +136,12 @@ class YAMLDumper:
             # - the json dumper will complain if you pass them in. datetime
             # values should respect the cli timestamp format, which is
             # impossible to do from the Formatter.
-            json.dump(value, stream, ensure_ascii=False, default=json_encoder)
+            json.dump(
+                value,
+                stream,
+                ensure_ascii=not supports_unicode,
+                default=json_encoder,
+            )
             stream.write('\n')
         else:
             self._yaml.dump(value, stream)
@@ -161,7 +175,9 @@ class StreamedYAMLFormatter(Formatter):
     def __call__(self, command_name, response, stream=None):
         if stream is None:
             stream = self._get_default_stream()
-        compat.set_preferred_output_encoding(stream)
+        compat.set_preferred_output_encoding(
+            stream, compat.OUTPUT_ERROR_HANDLER
+        )
         response_stream = self._get_response_stream(response)
         for response in response_stream:
             try:

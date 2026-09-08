@@ -11,12 +11,14 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import io
+import json
 import os
 import sys
 from argparse import Namespace
 
 import pytest
 from botocore.paginate import PageIterator
+from ruamel.yaml import YAML
 
 from awscli.compat import StringIO, contextlib
 from awscli.formatter import (
@@ -24,6 +26,7 @@ from awscli.formatter import (
     OffFormatter,
     StreamedYAMLFormatter,
     YAMLDumper,
+    get_formatter,
 )
 from awscli.testutils import mock, unittest
 
@@ -76,7 +79,7 @@ class TestStreamedYAMLFormatter:
     def test_format_single_response(self):
         response = {'TableNames': ['MyTable']}
         self.formatter('list-tables', response, self.output)
-        assert self.output.getvalue() == ('- TableNames:\n' '  - MyTable\n')
+        assert self.output.getvalue() == ('- TableNames:\n  - MyTable\n')
 
     def test_format_paginated_response(self):
         response = FakePageIterator(
@@ -87,10 +90,7 @@ class TestStreamedYAMLFormatter:
         )
         self.formatter('list-tables', response, self.output)
         assert self.output.getvalue() == (
-            '- TableNames:\n'
-            '  - MyTable\n'
-            '- TableNames:\n'
-            '  - MyTable2\n'
+            '- TableNames:\n  - MyTable\n- TableNames:\n  - MyTable2\n'
         )
 
     def test_flushes_after_io_error(self):
@@ -141,7 +141,7 @@ class TestStreamedYAMLFormatter:
                 assert 'UTF-8' == sys.stdout.encoding
                 stdout.flush()
 
-        assert stdout_b.getvalue() == ('- TableNames:\n' '  - 桌子\n').encode()
+        assert stdout_b.getvalue() == ('- TableNames:\n  - 桌子\n').encode()
 
 
 class TestJSONFormatter:
@@ -177,13 +177,7 @@ class TestJSONFormatter:
 
         assert (
             stdout_b.getvalue()
-            == (
-                '{\n'
-                '    "TableNames": [\n'
-                '        "桌子"\n'
-                '    ]\n'
-                '}\n'
-            ).encode()
+            == ('{\n    "TableNames": [\n        "桌子"\n    ]\n}\n').encode()
         )
 
 
@@ -199,10 +193,9 @@ class TestOffFormatter:
         assert self.output.getvalue() == ''
 
     def test_suppresses_paginated_response(self):
-        response = FakePageIterator([
-            {'Items': ['Item1']},
-            {'Items': ['Item2']}
-        ])
+        response = FakePageIterator(
+            [{'Items': ['Item1']}, {'Items': ['Item2']}]
+        )
         self.formatter('test-command', response, self.output)
         assert self.output.getvalue() == ''
 
@@ -210,3 +203,51 @@ class TestOffFormatter:
         response = {'Key': 'Value'}
         # Should not raise an exception
         self.formatter('test-command', response, None)
+
+
+NON_ENCODABLE = 'arrow → accent é emoji \U0001f600'
+
+
+def _format(output, response, encoding):
+    """Format ``response`` onto a stream restricted to ``encoding``."""
+    raw = io.BytesIO()
+    stream = io.TextIOWrapper(
+        raw, encoding=encoding, errors='backslashreplace'
+    )
+    args = Namespace(query=None, color='off', output=output)
+    get_formatter(output, args)('command-name', response, stream)
+    stream.flush()
+    return raw.getvalue().decode(encoding)
+
+
+@pytest.mark.parametrize('output', ['json', 'yaml', 'text', 'table'])
+@pytest.mark.parametrize('encoding', ['cp1252', 'cp437', 'latin-1'])
+def test_output_survives_legacy_code_page(output, encoding):
+    # A stream that cannot encode the response must not abort the command.
+    # See https://github.com/aws/aws-cli/issues/10574
+    assert _format(output, {'Value': NON_ENCODABLE}, encoding)
+
+
+@pytest.mark.parametrize('encoding', ['cp1252', 'cp437', 'latin-1'])
+def test_json_output_on_legacy_code_page_round_trips(encoding):
+    formatted = _format('json', {'Value': NON_ENCODABLE}, encoding)
+    assert json.loads(formatted)['Value'] == NON_ENCODABLE
+
+
+@pytest.mark.parametrize('encoding', ['cp1252', 'cp437', 'latin-1'])
+def test_yaml_output_on_legacy_code_page_round_trips(encoding):
+    formatted = _format('yaml', {'Value': NON_ENCODABLE}, encoding)
+    assert YAML(typ='safe').load(formatted)['Value'] == NON_ENCODABLE
+
+
+@pytest.mark.parametrize('output', ['json', 'yaml'])
+def test_utf8_output_is_not_escaped(output):
+    # Escaping is only a fallback; UTF-8 streams keep the literal characters.
+    # Restricted to the BMP because ruamel escapes astral characters even
+    # when allow_unicode is on.
+    value = 'arrow → accent é'
+    assert value in _format(output, {'Value': value}, 'utf-8')
+
+
+def test_utf8_json_output_keeps_astral_characters_literal():
+    assert NON_ENCODABLE in _format('json', {'Value': NON_ENCODABLE}, 'utf-8')

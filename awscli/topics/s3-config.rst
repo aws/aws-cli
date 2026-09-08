@@ -376,9 +376,6 @@ files to and from S3. Valid choices are:
 
   * S3 to S3 copies - Falls back to using the ``classic`` transfer client
 
-  * Region redirects - Transfers fail for requests sent to a region that does
-    not match the region of the targeted S3 bucket.
-
   * ``max_concurrent_requests``, ``max_queue_size``, ``multipart_threshold``,
     and ``max_bandwidth`` configuration values - Ignores these configuration
     values.

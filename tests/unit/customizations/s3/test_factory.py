@@ -205,6 +205,8 @@ class TestTransferManagerFactory(unittest.TestCase):
 
     def assert_is_crt_manager(self, manager):
         self.assertIsInstance(manager, CRTTransferManager)
+        # The CRT client is initialized lazily once the region is known
+        manager.get_crt_client()
 
     def assert_expected_throughput_target_gbps(
         self, mock_crt_client, expected_throughput_target_gbps
@@ -282,6 +284,36 @@ class TestTransferManagerFactory(unittest.TestCase):
         self.assertEqual(
             self.session.create_client.call_args[1]['region_name'],
             'param-region',
+        )
+
+    @mock.patch('s3transfer.crt.S3Client')
+    def test_creates_crt_client_for_redirected_region(self, mock_crt_client):
+        self.runtime_config = self.get_runtime_config(
+            preferred_transfer_client='crt'
+        )
+        transfer_manager = self.factory.create_transfer_manager(
+            self.params, self.runtime_config
+        )
+
+        # Client creation is lazy and each selected region is cached.
+        self.assertEqual(mock_crt_client.call_count, 0)
+        self.assertIs(
+            transfer_manager.get_crt_client(),
+            transfer_manager.get_crt_client(),
+        )
+        self.assertIs(
+            transfer_manager.get_crt_client('eu-central-1'),
+            transfer_manager.get_crt_client('eu-central-1'),
+        )
+
+        self.assertEqual(mock_crt_client.call_count, 2)
+        self.assertEqual(
+            mock_crt_client.call_args_list[0].kwargs['region'],
+            'us-west-2',
+        )
+        self.assertEqual(
+            mock_crt_client.call_args_list[1].kwargs['region'],
+            'eu-central-1',
         )
 
     @mock.patch('s3transfer.crt.S3Client')

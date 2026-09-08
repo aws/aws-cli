@@ -7,7 +7,13 @@ import os
 
 import pytest
 from localstub.handlers import handle_expect_header
-from localstub.server import DropConnection, FaultyTransmission, HTTPResponse
+from localstub.server import (
+    DropConnection,
+    FaultyTransmission,
+    HTTPResponse,
+    ImmediateTransmission,
+    TruncateBody,
+)
 
 from tests.blackbox.s3_assertions import (
     assert_abort_multipart_upload,
@@ -6498,3 +6504,95 @@ async def test_content_type_not_guessed_on_s3_to_s3_copy(aws_cli, tmp_path):
     assert (
         ct != "text/html"
     ), f"Content-Type should not be guessed on s3-to-s3 copy, got {ct!r}"
+
+
+@pytest.mark.skip(
+    reason="urllib3 2.x enforce_content_length regression: "
+    "urllib3 raises ProtocolError before botocore's "
+    "IncompleteReadError can fire. Fix: pass "
+    "enforce_content_length=False in botocore httpsession."
+)
+@pytest.mark.asyncio
+async def test_streaming_download_retries_on_truncated_response(
+    aws_cli, tmp_path
+):
+    """cp s3://bucket/key - retries when server closes mid-transfer.
+
+    Simulates the production scenario where a slow consumer (stdout pipe)
+    causes the CLI to pause reading, S3 times out the idle connection,
+    and the CLI sees EOF before reading all expected bytes.  botocore's
+    _verify_content_length raises IncompleteReadError, which s3transfer
+    catches and retries.  The partial data from the first attempt is
+    already written to stdout (non-seekable), so the final output
+    contains bytes from both the truncated and retried responses.
+    """
+    body = b"A" * 10
+    async with mock_server(on_headers_received=handle_expect_header) as (
+        server,
+        proxy,
+    ):
+        setup_responses(
+            server,
+            [
+                head_object_response(
+                    content_length=10,
+                    **{
+                        "Accept-Ranges": "bytes",
+                        "Content-Type": "binary/octet-stream",
+                    },
+                ),
+                # First GET: server sends 5 of 10 bytes then closes.
+                # Connection: close triggers a clean TLS shutdown so the
+                # client sees EOF rather than a socket error.  This is
+                # how we simulate S3 closing an idle connection —
+                # localstub's DropConnection closes the TLS stream too
+                # aggressively (the proxy can't accept retries), so we
+                # use Connection: close + TruncateBody instead.
+                HTTPResponse.raw(
+                    body,
+                    status=200,
+                    headers={
+                        "Content-Length": "10",
+                        "ETag": '"foo-1"',
+                        "Accept-Ranges": "bytes",
+                        "Connection": "close",
+                    },
+                ),
+                # Retry: full response
+                get_object_response(
+                    body,
+                    **{
+                        "Accept-Ranges": "bytes",
+                        "Content-Type": "binary/octet-stream",
+                    },
+                ),
+            ],
+        )
+        server.set_transmission_strategy(
+            FaultyTransmission([TruncateBody(5)])
+        )
+
+        async def reset_after_truncated():
+            await server.next_request()  # HeadObject
+            await server.next_request()  # First GET (truncated)
+            server.set_transmission_strategy(ImmediateTransmission())
+
+        (stdout, stderr, rc), _ = await asyncio.gather(
+            run_cli(
+                aws_cli,
+                ["s3", "cp", "s3://bucket/key.txt", "-"],
+                cli_env(proxy),
+            ),
+            reset_after_truncated(),
+        )
+
+    assert rc == 0, stderr.decode()
+    assert len(server.requests) == 3, format_requests(server)
+    assert_head_object(server.requests[0], Bucket="bucket", Key="key.txt")
+    assert_get_object(server.requests[1], Bucket="bucket", Key="key.txt")
+    assert_get_object(server.requests[2], Bucket="bucket", Key="key.txt")
+    # stdout contains partial bytes from the truncated response (5)
+    # followed by the full retry response (10) = 15 total.
+    # The CLI can't rewind stdout, so both writes are present.
+    assert len(stdout) == 15
+    assert stdout == b"A" * 15

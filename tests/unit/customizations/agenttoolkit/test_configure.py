@@ -114,8 +114,9 @@ def test_mcp_configured_on_yes(tmp_path):
     mcp_path = tmp_path / '.agent-0' / 'mcp.json'
     assert mcp_path.exists()
     data = json.loads(mcp_path.read_text())
-    assert 'aws-mcp' in data['mcpServers']
-    assert data['mcpServers']['aws-mcp']['command'] == 'uvx'
+    assert data['mcpServers']['aws-knowledge-mcp-server'] == {
+        'url': 'https://knowledge-mcp.global.api.aws'
+    }
 
 
 def test_mcp_skipped_on_no(tmp_path):
@@ -130,12 +131,20 @@ def test_mcp_already_configured_not_overwritten(tmp_path):
     mcp_path = tmp_path / '.agent-0' / 'mcp.json'
     mcp_path.write_text(
         json.dumps(
-            {'mcpServers': {'aws-mcp': {'command': 'custom', 'args': []}}}
+            {
+                'mcpServers': {
+                    'aws-knowledge-mcp-server': {
+                        'url': 'https://custom.example.com'
+                    }
+                }
+            }
         )
     )
     _, stream = _run(configs, yes_no_return=True)
     data = json.loads(mcp_path.read_text())
-    assert data['mcpServers']['aws-mcp']['command'] == 'custom'
+    assert data['mcpServers']['aws-knowledge-mcp-server'] == {
+        'url': 'https://custom.example.com'
+    }
     assert 'already configured' in stream.getvalue()
 
 

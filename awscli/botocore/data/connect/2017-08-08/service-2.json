@@ -9959,6 +9959,14 @@
       "key":{"shape":"Channel"},
       "value":{"shape":"IntegerCount"}
     },
+    "ChannelWorkloadBehaviorType":{
+      "type":"string",
+      "enum":[
+        "ROUTE_CURRENT_CHANNEL_CURRENT_WORKLOADTYPE_ONLY",
+        "ROUTE_CURRENT_CHANNEL_ANY_WORKLOADTYPE_ONLY",
+        "ROUTE_ANY_CHANNEL_ANY_WORKLOAD_TYPE"
+      ]
+    },
     "Channels":{
       "type":"list",
       "member":{"shape":"Channel"},
@@ -10297,7 +10305,7 @@
     "Concurrency":{
       "type":"integer",
       "max":10,
-      "min":1
+      "min":0
     },
     "Condition":{
       "type":"structure",
@@ -14060,6 +14068,16 @@
         }
       },
       "documentation":"<p>Defines the cross-channel routing behavior that allows an agent working on a contact in one channel to be offered a contact from a different channel.</p>"
+    },
+    "CrossChannelWorkloadBehavior":{
+      "type":"structure",
+      "members":{
+        "ChannelWorkloadBehaviorType":{
+          "shape":"ChannelWorkloadBehaviorType",
+          "documentation":"<p>Specifies the routing behavior for an agent handling their current channel and workload type.</p>"
+        }
+      },
+      "documentation":"<p>Defines the cross-channel and workload type routing behavior that allows an agent working on a contact to be offered a contact from a different channel or workload type.</p>"
     },
     "CurrentMetric":{
       "type":"structure",
@@ -26843,10 +26861,7 @@
     },
     "MediaConcurrency":{
       "type":"structure",
-      "required":[
-        "Channel",
-        "Concurrency"
-      ],
+      "required":["Channel"],
       "members":{
         "Channel":{
           "shape":"Channel",
@@ -26859,6 +26874,10 @@
         "CrossChannelBehavior":{
           "shape":"CrossChannelBehavior",
           "documentation":"<p>Defines the cross-channel routing behavior for each channel that is enabled for this Routing Profile. For example, this allows you to offer an agent a different contact from another channel when they are currently working with a contact from a Voice channel.</p>"
+        },
+        "WorkloadTypeConcurrencies":{
+          "shape":"WorkloadTypeConcurrencies",
+          "documentation":"<p>Defines the list of workload type concurrency configurations for a channel. When provided, enables granular concurrency control based on workload type values.</p>"
         }
       },
       "documentation":"<p>Contains information about which channels are supported, and how many contacts an agent can have on a channel simultaneously.</p>"
@@ -40849,6 +40868,40 @@
         }
       },
       "documentation":"<p>Information about Connect Customer Wisdom.</p>"
+    },
+    "WorkloadType":{"type":"string"},
+    "WorkloadTypeConcurrencies":{
+      "type":"list",
+      "member":{"shape":"WorkloadTypeConcurrency"},
+      "max":5,
+      "min":1
+    },
+    "WorkloadTypeConcurrency":{
+      "type":"structure",
+      "required":[
+        "WorkloadType",
+        "Concurrency"
+      ],
+      "members":{
+        "WorkloadType":{
+          "shape":"WorkloadType",
+          "documentation":"<p>The value of the workload type.</p>"
+        },
+        "Concurrency":{
+          "shape":"WorkloadTypeConcurrencyType",
+          "documentation":"<p>The maximum number of contacts an agent can handle simultaneously for a specific channel and workload type combination.</p> <p>Valid Range for <code>VOICE</code>: Minimum value of 1. Maximum value of 1.</p> <p>Valid Range for <code>CHAT</code>: Minimum value of 1. Maximum value of 10.</p> <p>Valid Range for <code>TASK</code>: Minimum value of 1. Maximum value of 10.</p>"
+        },
+        "CrossChannelWorkloadBehavior":{
+          "shape":"CrossChannelWorkloadBehavior",
+          "documentation":"<p>Defines the cross-channel and workload type routing behavior for each channel and workload type combination that is enabled for this Routing Profile.</p>"
+        }
+      },
+      "documentation":"<p>Defines the maximum number of contacts an agent can handle simultaneously for a specific channel and workload type combination.</p>"
+    },
+    "WorkloadTypeConcurrencyType":{
+      "type":"integer",
+      "max":10,
+      "min":1
     },
     "Workspace":{
       "type":"structure",

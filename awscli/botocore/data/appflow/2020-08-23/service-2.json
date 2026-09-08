@@ -757,6 +757,13 @@
       "max":512,
       "pattern":"\\S+"
     },
+    "CodeVerifier":{
+      "type":"string",
+      "max":128,
+      "min":43,
+      "pattern":"^[A-Za-z0-9\\-._~]+$",
+      "sensitive":true
+    },
     "ConflictException":{
       "type":"structure",
       "members":{
@@ -1171,6 +1178,10 @@
         "redirectUri":{
           "shape":"RedirectUri",
           "documentation":"<p> The URL to which the authentication server redirects the browser after authorization has been granted. </p>"
+        },
+        "codeVerifier":{
+          "shape":"CodeVerifier",
+          "documentation":"<p> The code verifier used in the PKCE (Proof Key for Code Exchange) OAuth flow. </p>"
         }
       },
       "documentation":"<p> Used by select connectors for which the OAuth workflow is supported, such as Salesforce, Google Analytics, Marketo, Zendesk, and Slack. </p>"
@@ -3870,6 +3881,13 @@
         "CREATED"
       ]
     },
+    "PrivateKey":{
+      "type":"string",
+      "max":8192,
+      "min":1,
+      "pattern":".*",
+      "sensitive":true
+    },
     "PrivateLinkServiceName":{
       "type":"string",
       "max":512,
@@ -4822,10 +4840,7 @@
     },
     "SnowflakeConnectorProfileCredentials":{
       "type":"structure",
-      "required":[
-        "username",
-        "password"
-      ],
+      "required":["username"],
       "members":{
         "username":{
           "shape":"Username",
@@ -4834,6 +4849,10 @@
         "password":{
           "shape":"Password",
           "documentation":"<p> The password that corresponds to the user name. </p>"
+        },
+        "privateKey":{
+          "shape":"PrivateKey",
+          "documentation":"<p> The RSA private key used for key pair authentication with Snowflake. Provide this instead of a password when your Snowflake account uses key pair authentication. </p>"
         }
       },
       "documentation":"<p> The connector-specific profile credentials required when using Snowflake. </p>"

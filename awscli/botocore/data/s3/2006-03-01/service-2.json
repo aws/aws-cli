@@ -3179,6 +3179,24 @@
           "location":"header",
           "locationName":"x-amz-object-lock-legal-hold"
         },
+        "ObjectLockEventHold":{
+          "shape":"ObjectLockEventHold",
+          "documentation":"<p>The event hold status to apply to the object copy. Set to <code>ON</code> to enable or <code>OFF</code> to disable.</p> <note> <p>This functionality is not supported for directory buckets.</p> </note>",
+          "location":"header",
+          "locationName":"x-amz-object-lock-event-hold"
+        },
+        "ObjectLockEventHoldDurationDays":{
+          "shape":"ObjectLockEventHoldDurationDays",
+          "documentation":"<p>The event hold duration in days to apply to the object copy.</p> <note> <p>This functionality is not supported for directory buckets.</p> </note>",
+          "location":"header",
+          "locationName":"x-amz-object-lock-event-hold-duration-days"
+        },
+        "ObjectLockEventHoldDurationYears":{
+          "shape":"ObjectLockEventHoldDurationYears",
+          "documentation":"<p>The event hold duration in years to apply to the object copy.</p> <note> <p>This functionality is not supported for directory buckets.</p> </note>",
+          "location":"header",
+          "locationName":"x-amz-object-lock-event-hold-duration-years"
+        },
         "ExpectedBucketOwner":{
           "shape":"AccountId",
           "documentation":"<p>The account ID of the expected destination bucket owner. If the account ID that you provide does not match the actual owner of the destination bucket, the request fails with the HTTP status code <code>403 Forbidden</code> (access denied).</p>",
@@ -3210,7 +3228,7 @@
         },
         "ChecksumCRC32":{
           "shape":"ChecksumCRC32",
-          "documentation":"<p>The Base64 encoded, 32-bit <code>CRC32</code> checksum of the object. This checksum is only present if the object was uploaded with the object. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html\"> Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.</p>"
+          "documentation":"<p>The Base64 encoded, 32-bit <code>CRC32</code> checksum of the object. This checksum is only present if the checksum was uploaded with the object. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html\"> Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.</p>"
         },
         "ChecksumCRC32C":{
           "shape":"ChecksumCRC32C",
@@ -3774,6 +3792,24 @@
           "location":"header",
           "locationName":"x-amz-object-lock-legal-hold"
         },
+        "ObjectLockEventHold":{
+          "shape":"ObjectLockEventHold",
+          "documentation":"<p>Specifies the event hold status to apply to the uploaded object. Set to <code>ON</code> to enable or <code>OFF</code> to disable.</p> <note> <p>This functionality is not supported for directory buckets.</p> </note>",
+          "location":"header",
+          "locationName":"x-amz-object-lock-event-hold"
+        },
+        "ObjectLockEventHoldDurationDays":{
+          "shape":"ObjectLockEventHoldDurationDays",
+          "documentation":"<p>Specifies the event hold duration in days to apply to the uploaded object.</p> <note> <p>This functionality is not supported for directory buckets.</p> </note>",
+          "location":"header",
+          "locationName":"x-amz-object-lock-event-hold-duration-days"
+        },
+        "ObjectLockEventHoldDurationYears":{
+          "shape":"ObjectLockEventHoldDurationYears",
+          "documentation":"<p>Specifies the event hold duration in years to apply to the uploaded object.</p> <note> <p>This functionality is not supported for directory buckets.</p> </note>",
+          "location":"header",
+          "locationName":"x-amz-object-lock-event-hold-duration-years"
+        },
         "ExpectedBucketOwner":{
           "shape":"AccountId",
           "documentation":"<p>The account ID of the expected bucket owner. If the account ID that you provide does not match the actual owner of the bucket, the request fails with the HTTP status code <code>403 Forbidden</code> (access denied).</p>",
@@ -3906,6 +3942,10 @@
         "Years":{
           "shape":"Years",
           "documentation":"<p>The number of years that you want to specify for the default retention period. Must be used with <code>Mode</code>.</p>"
+        },
+        "DefaultEventHold":{
+          "shape":"EventHoldDuration",
+          "documentation":"<p>The default event hold duration to be applied to new objects placed in the specified bucket. When configured, new objects will automatically have an event hold enabled with this duration.</p>"
         }
       },
       "documentation":"<p>The container element for optionally specifying the default Object Lock retention settings for new objects placed in the specified bucket.</p> <note> <ul> <li> <p>The <code>DefaultRetention</code> settings require both a mode and a period.</p> </li> <li> <p>The <code>DefaultRetention</code> period can be either <code>Days</code> or <code>Years</code> but you must select one. You cannot specify <code>Days</code> and <code>Years</code> at the same time.</p> </li> </ul> </note>"
@@ -4839,13 +4879,28 @@
         "s3:ObjectTagging:Delete",
         "s3:ObjectAnnotation:*",
         "s3:ObjectAnnotation:Put",
-        "s3:ObjectAnnotation:Delete"
+        "s3:ObjectAnnotation:Delete",
+        "s3:ObjectRetention:Put"
       ]
     },
     "EventBridgeConfiguration":{
       "type":"structure",
       "members":{},
       "documentation":"<p>A container for specifying the configuration for Amazon EventBridge.</p>"
+    },
+    "EventHoldDuration":{
+      "type":"structure",
+      "members":{
+        "Days":{
+          "shape":"Days",
+          "documentation":"<p>The number of days for the event hold duration. The minimum value is 1 and the maximum value is 36,500.</p>"
+        },
+        "Years":{
+          "shape":"Years",
+          "documentation":"<p>The number of years for the event hold duration. The minimum value is 1 and the maximum value is 100.</p>"
+        }
+      },
+      "documentation":"<p>Contains the event hold duration configuration, specified in either days or years.</p>"
     },
     "EventList":{
       "type":"list",
@@ -4889,7 +4944,7 @@
       "type":"boolean",
       "box":true
     },
-    "Expires":{"type":"timestamp"},
+    "Expires":{"type":"string"},
     "ExposeHeader":{"type":"string"},
     "ExposeHeaders":{
       "type":"list",
@@ -6236,7 +6291,7 @@
         },
         "ChecksumCRC32":{
           "shape":"ChecksumCRC32",
-          "documentation":"<p>The Base64 encoded, 32-bit <code>CRC32</code> checksum of the object. This checksum is only present if the object was uploaded with the object. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html\"> Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.</p>",
+          "documentation":"<p>The Base64 encoded, 32-bit <code>CRC32</code> checksum of the object. This checksum is only present if the checksum was uploaded with the object. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html\"> Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.</p>",
           "location":"header",
           "locationName":"x-amz-checksum-crc32"
         },
@@ -6442,6 +6497,24 @@
           "documentation":"<p>Indicates whether this object has an active legal hold. This field is only returned if you have permission to view an object's legal hold status. </p> <note> <p>This functionality is not supported for directory buckets.</p> </note>",
           "location":"header",
           "locationName":"x-amz-object-lock-legal-hold"
+        },
+        "ObjectLockEventHold":{
+          "shape":"ObjectLockEventHold",
+          "documentation":"<p>The event hold status for this object. This header is only returned if the requester has the <code>s3:GetObjectRetention</code> permission.</p> <note> <p>This functionality is not supported for directory buckets.</p> </note>",
+          "location":"header",
+          "locationName":"x-amz-object-lock-event-hold"
+        },
+        "ObjectLockEventHoldDurationDays":{
+          "shape":"ObjectLockEventHoldDurationDays",
+          "documentation":"<p>The event hold duration in days for this object. Only returned when the event hold is enabled.</p> <note> <p>This functionality is not supported for directory buckets.</p> </note>",
+          "location":"header",
+          "locationName":"x-amz-object-lock-event-hold-duration-days"
+        },
+        "ObjectLockEventHoldDurationYears":{
+          "shape":"ObjectLockEventHoldDurationYears",
+          "documentation":"<p>The event hold duration in years for this object. Only returned when the event hold is enabled.</p> <note> <p>This functionality is not supported for directory buckets.</p> </note>",
+          "location":"header",
+          "locationName":"x-amz-object-lock-event-hold-duration-years"
         }
       },
       "payload":"Body"
@@ -7152,6 +7225,24 @@
           "documentation":"<p>Specifies whether a legal hold is in effect for this object. This header is only returned if the requester has the <code>s3:GetObjectLegalHold</code> permission. This header is not returned if the specified version of this object has never had a legal hold applied. For more information about S3 Object Lock, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/dev/object-lock.html\">Object Lock</a>.</p> <note> <p>This functionality is not supported for directory buckets.</p> </note>",
           "location":"header",
           "locationName":"x-amz-object-lock-legal-hold"
+        },
+        "ObjectLockEventHold":{
+          "shape":"ObjectLockEventHold",
+          "documentation":"<p>The event hold status for this object. This header is only returned if the requester has the <code>s3:GetObjectRetention</code> permission.</p> <note> <p>This functionality is not supported for directory buckets.</p> </note>",
+          "location":"header",
+          "locationName":"x-amz-object-lock-event-hold"
+        },
+        "ObjectLockEventHoldDurationDays":{
+          "shape":"ObjectLockEventHoldDurationDays",
+          "documentation":"<p>The event hold duration in days for this object. Only returned when the event hold is enabled.</p> <note> <p>This functionality is not supported for directory buckets.</p> </note>",
+          "location":"header",
+          "locationName":"x-amz-object-lock-event-hold-duration-days"
+        },
+        "ObjectLockEventHoldDurationYears":{
+          "shape":"ObjectLockEventHoldDurationYears",
+          "documentation":"<p>The event hold duration in years for this object. Only returned when the event hold is enabled.</p> <note> <p>This functionality is not supported for directory buckets.</p> </note>",
+          "location":"header",
+          "locationName":"x-amz-object-lock-event-hold-duration-years"
         }
       }
     },
@@ -7614,6 +7705,8 @@
         "ObjectLockRetainUntilDate",
         "ObjectLockMode",
         "ObjectLockLegalHoldStatus",
+        "ObjectLockEventHoldStatus",
+        "ObjectLockEventHoldDuration",
         "IntelligentTieringAccessTier",
         "BucketKeyStatus",
         "ChecksumAlgorithm",
@@ -9619,6 +9712,15 @@
       "type":"boolean",
       "box":true
     },
+    "ObjectLockEventHold":{
+      "type":"string",
+      "enum":[
+        "ON",
+        "OFF"
+      ]
+    },
+    "ObjectLockEventHoldDurationDays":{"type":"integer"},
+    "ObjectLockEventHoldDurationYears":{"type":"integer"},
     "ObjectLockLegalHold":{
       "type":"structure",
       "members":{
@@ -9657,6 +9759,14 @@
         "RetainUntilDate":{
           "shape":"Date",
           "documentation":"<p>The date on which this Object Lock Retention will expire.</p>"
+        },
+        "EventHold":{
+          "shape":"ObjectLockEventHold",
+          "documentation":"<p>The event hold status for the object. Set to <code>ON</code> to enable an event hold or <code>OFF</code> to disable it.</p>"
+        },
+        "EventHoldDuration":{
+          "shape":"EventHoldDuration",
+          "documentation":"<p>The event hold duration for the object. Specifies how long the object remains protected after the event hold is released.</p>"
         }
       },
       "documentation":"<p>A Retention configuration for an object.</p>"
@@ -11872,6 +11982,24 @@
           "documentation":"<p>Specifies whether a legal hold will be applied to this object. For more information about S3 Object Lock, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/dev/object-lock.html\">Object Lock</a> in the <i>Amazon S3 User Guide</i>.</p> <note> <p>This functionality is not supported for directory buckets.</p> </note>",
           "location":"header",
           "locationName":"x-amz-object-lock-legal-hold"
+        },
+        "ObjectLockEventHold":{
+          "shape":"ObjectLockEventHold",
+          "documentation":"<p>Specifies the event hold status to apply to this object. Set to <code>ON</code> to enable or <code>OFF</code> to disable.</p> <note> <p>This functionality is not supported for directory buckets.</p> </note>",
+          "location":"header",
+          "locationName":"x-amz-object-lock-event-hold"
+        },
+        "ObjectLockEventHoldDurationDays":{
+          "shape":"ObjectLockEventHoldDurationDays",
+          "documentation":"<p>Specifies the event hold duration in days to apply to this object.</p> <note> <p>This functionality is not supported for directory buckets.</p> </note>",
+          "location":"header",
+          "locationName":"x-amz-object-lock-event-hold-duration-days"
+        },
+        "ObjectLockEventHoldDurationYears":{
+          "shape":"ObjectLockEventHoldDurationYears",
+          "documentation":"<p>Specifies the event hold duration in years to apply to this object.</p> <note> <p>This functionality is not supported for directory buckets.</p> </note>",
+          "location":"header",
+          "locationName":"x-amz-object-lock-event-hold-duration-years"
         },
         "ExpectedBucketOwner":{
           "shape":"AccountId",

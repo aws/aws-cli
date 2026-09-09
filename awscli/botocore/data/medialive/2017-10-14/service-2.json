@@ -10489,7 +10489,18 @@
     },
     "EmbeddedDestinationSettings": {
       "type": "structure",
-      "members": {},
+      "members": {
+        "Position": {
+          "shape": "EmbeddedCaptionPositionSettings",
+          "locationName": "position",
+          "documentation": "Specifies the position of the output captions. Applies only when styleControl is set to manual."
+        },
+        "StyleControl": {
+          "shape": "EmbeddedDestinationStyleControl",
+          "locationName": "styleControl",
+          "documentation": "Controls the source of position and style information for the output captions.\n\n- \"passthrough\": Carry the caption position and style from the source captions. When the source captions are embedded, SCTE-20, or ancillary, the position and style are preserved exactly. When the source captions are another format, the position and any supported style are carried over.\n- \"manual\": Applies the specified styling and positioning. All other styling and positioning is given default values."
+        }
+      },
       "documentation": "Embedded Destination Settings"
     },
     "EmbeddedPlusScte20DestinationSettings": {
@@ -19080,7 +19091,12 @@
         "StyleControl": {
           "shape": "TtmlDestinationStyleControl",
           "locationName": "styleControl",
-          "documentation": "This field is not currently supported and will not affect the output styling. Leave the default value."
+          "documentation": "Controls the source of style and position information for the output captions.  PASSTHROUGH - Preserve the style and position from the source captions.  USE_CONFIGURED - Don't pass through the style. The output captions will use the default styling.  MANUAL - Applies the specified styling and positioning. All other styling and positioning is given default values."
+        },
+        "Position": {
+          "shape": "TextCaptionPositionSettings",
+          "locationName": "position",
+          "documentation": "Specifies the position of the output captions. Applies only when styleControl is set to manual."
         }
       },
       "documentation": "Ttml Destination Settings"
@@ -19090,7 +19106,8 @@
       "documentation": "Ttml Destination Style Control",
       "enum": [
         "PASSTHROUGH",
-        "USE_CONFIGURED"
+        "USE_CONFIGURED",
+        "MANUAL"
       ]
     },
     "UdpContainerSettings": {
@@ -20125,6 +20142,11 @@
           "shape": "VideoPositionRectangle",
           "locationName": "outputPositionRectangle",
           "documentation": "Position of the encoded video within the output frame. The area outside the rectangle\nis filled with black. If not specified, the video fills the entire output frame.\nWhen used, both {@link width} and {@link height} of the VideoDescription must be\nexplicitly specified so that the rectangle can be validated against the output frame."
+        },
+        "Border": {
+          "shape": "__integerMin0Max100",
+          "locationName": "border",
+          "documentation": "Specifies the number of pixels of black border that will be inserted around the edge\nof the encoded picture. Must be an even integer from 0 (no border, the default) up\nto 100. The width and height of the VideoDescription must each be greater than twice\nthis value. Cannot be used together with {@link outputPositionRectangle} -- both\ngovern the position of the encoded content within the output frame."
         }
       },
       "documentation": "Video settings for this stream.",
@@ -20328,7 +20350,12 @@
         "StyleControl": {
           "shape": "WebvttDestinationStyleControl",
           "locationName": "styleControl",
-          "documentation": "Controls whether the color and position of the source captions is passed through to the WebVTT output captions.  PASSTHROUGH - Valid only if the source captions are EMBEDDED or TELETEXT.  NO_STYLE_DATA - Don't pass through the style. The output captions will not contain any font styling information."
+          "documentation": "Controls whether the color and position of the source captions is passed through to the WebVTT output captions.  PASSTHROUGH - Valid only if the source captions are EMBEDDED, TELETEXT, or SMART SUBTITLES.  NO_STYLE_DATA - Don't pass through the style. The output captions will not contain any font styling information. MANUAL - Applies the specified styling and positioning. All other styling and positioning is given default values."
+        },
+        "Position": {
+          "shape": "TextCaptionPositionSettings",
+          "locationName": "position",
+          "documentation": "Specifies the position of the output captions. Applies only when styleControl is set to manual."
         }
       },
       "documentation": "Webvtt Destination Settings"
@@ -20338,7 +20365,8 @@
       "documentation": "Webvtt Destination Style Control",
       "enum": [
         "NO_STYLE_DATA",
-        "PASSTHROUGH"
+        "PASSTHROUGH",
+        "MANUAL"
       ]
     },
     "__boolean": {
@@ -29738,6 +29766,11 @@
           "shape": "HlsDefault",
           "locationName": "hlsDefault",
           "documentation": "Specifies whether MediaPackage should set this output as the default rendition in the HLS manifest. YES means this must be the default. NO means this should never be the default. OMIT means MediaPackage decides what to set on this rendition.\nWhen you consider all the renditions, follow these guidelines. You can set zero or one renditions to YES. You can set zero or more renditions to NO, but you can't set all renditions to NO. You can set zero, some, or all to OMIT."
+        },
+        "OutputUsage": {
+          "shape": "__listOfOutputUsage",
+          "locationName": "outputUsage",
+          "documentation": "List of usage tags declaring how this MediaPackage V2 output is used. Currently these are all multiview-related (multiviewPrimaryView, multiviewSecondaryView, multiviewEqualSizeView) and enable multiview validations and augmentations to help ensure proper multiview configuration and compatibility with MediaPackage. Leave empty (the default) if this output has no multiview role. If any video-carrying MediaPackage V2 output in an output group specifies a multiview value, every video-carrying MediaPackage V2 output in the group must also specify a multiview value; place standalone video outputs in a separate output group."
         }
       },
       "documentation": "Media Package V2 Destination Settings"
@@ -30587,6 +30620,11 @@
           "shape": "__listOfAudioFeedInput",
           "locationName": "audioFeedInputs",
           "documentation": "A list of audio feed inputs that map audio selectors in the channel to feed inputs on the associated Elemental Inference feed."
+        },
+        "EnrichmentMethods": {
+          "shape": "__listOfEnrichmentMethod",
+          "locationName": "enrichmentMethods",
+          "documentation": "The set of Contextual Metadata Enrichment methods enabled for this channel. Each method represents a specific way the channel uses the inference feed to augment its output with contextual metadata."
         }
       },
       "documentation": "Configures Elemental Inference features in a channel."
@@ -30603,6 +30641,11 @@
           "shape": "__listOfAudioFeedInput",
           "locationName": "audioFeedInputs",
           "documentation": "A list of audio feed inputs that map audio selectors in the channel to feed inputs on the associated Elemental Inference feed."
+        },
+        "EnrichmentMethods": {
+          "shape": "__listOfEnrichmentMethod",
+          "locationName": "enrichmentMethods",
+          "documentation": "The set of Contextual Metadata Enrichment methods enabled for this channel. Each method represents a specific way the channel will use the inference feed to augment its output with contextual metadata. An empty array (or omitting the field) disables enrichment. Order is not significant; duplicate values are not permitted."
         }
       },
       "documentation": "Configures Elemental Inference features in a channel."
@@ -31091,6 +31134,70 @@
     "__integerMin1Max511": {
       "type": "integer",
       "documentation": "Placeholder documentation for __integerMin1Max511"
+    },
+    "EnrichmentMethod": {
+      "type": "string",
+      "documentation": "A Contextual Metadata Enrichment method. Each value selects a strategy for enriching the channel's output with contextual metadata derived from the Elemental Inference feed. SCTE35_ELEMENTAL_INFERENCE_QUERY_PARAMS enriches outbound SCTE-35 messages with query parameters that downstream systems can use to call the Elemental Inference GetMetadata API.",
+      "enum": [
+        "SCTE35_ELEMENTAL_INFERENCE_QUERY_PARAMS"
+      ]
+    },
+    "__listOfEnrichmentMethod": {
+      "type": "list",
+      "member": {
+        "shape": "EnrichmentMethod"
+      },
+      "documentation": "Placeholder documentation for __listOfEnrichmentMethod"
+    },
+    "EmbeddedCaptionPositionSettings": {
+      "type": "structure",
+      "members": {
+        "YPositionLine": {
+          "shape": "__integerMin1Max15",
+          "locationName": "yPositionLine",
+          "documentation": "Specifies the vertical position of the caption as a row counted from the top of the output. Row 1 is the topmost row. Acceptable values are 1 through 15."
+        }
+      },
+      "documentation": "Embedded Caption Position Settings"
+    },
+    "EmbeddedDestinationStyleControl": {
+      "type": "string",
+      "documentation": "Controls the source of position and style information for embedded outputs.\n- \"passthrough\": Carry the caption position and style from the source captions. When the source captions are embedded, SCTE-20, or ancillary, the position and style are preserved exactly. When the source captions are another format, the position and any supported style are carried over.\n- \"manual\": Use the position specified in the destination's position field.",
+      "enum": [
+        "MANUAL",
+        "PASSTHROUGH"
+      ]
+    },
+    "TextCaptionPositionSettings": {
+      "type": "structure",
+      "members": {
+        "YPositionPercentage": {
+          "shape": "__integerMin0Max100",
+          "locationName": "yPositionPercentage",
+          "documentation": "Specifies the vertical position of the top edge of the caption relative to the top of the output as a percentage. A value of 0 places the caption at the top of the output and 100 at the bottom."
+        }
+      },
+      "documentation": "Text Caption Position Settings"
+    },
+    "__integerMin1Max15": {
+      "type": "integer",
+      "documentation": "Placeholder documentation for __integerMin1Max15"
+    },
+    "OutputUsage": {
+      "type": "string",
+      "documentation": "Output Usage",
+      "enum": [
+        "MULTIVIEW_EQUAL_SIZE_VIEW",
+        "MULTIVIEW_PRIMARY_VIEW",
+        "MULTIVIEW_SECONDARY_VIEW"
+      ]
+    },
+    "__listOfOutputUsage": {
+      "type": "list",
+      "member": {
+        "shape": "OutputUsage"
+      },
+      "documentation": "Placeholder documentation for __listOfOutputUsage"
     }
   },
   "documentation": "API for AWS Elemental MediaLive"

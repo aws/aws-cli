@@ -3741,6 +3741,22 @@
       ],
       "documentation":"<p> Lists all security profiles attached to a Q in Connect AIAgent Entity in an Amazon Connect instance. </p>"
     },
+    "ListEvaluationFormAIVersions":{
+      "name":"ListEvaluationFormAIVersions",
+      "http":{
+        "method":"GET",
+        "requestUri":"/instances/{InstanceId}/evaluation-form-ai-versions"
+      },
+      "input":{"shape":"ListEvaluationFormAIVersionsRequest"},
+      "output":{"shape":"ListEvaluationFormAIVersionsResponse"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceException"}
+      ],
+      "documentation":"<p>Lists the available AI versions for evaluation forms in the specified Connect Customer instance.</p>"
+    },
     "ListEvaluationFormVersions":{
       "name":"ListEvaluationFormVersions",
       "http":{
@@ -5335,7 +5351,7 @@
         {"shape":"ServiceQuotaExceededException"},
         {"shape":"ResourceConflictException"}
       ],
-      "documentation":"<p>Starts an empty evaluation in the specified Connect Customer instance, using the given evaluation form for the particular contact. The evaluation form version used for the contact evaluation corresponds to the currently activated version. If no version is activated for the evaluation form, the contact evaluation cannot be started. </p> <note> <p>Evaluations created through the public API do not contain answer values suggested from automation.</p> </note>",
+      "documentation":"<p>Starts an empty evaluation in the specified Connect Customer instance, using the given evaluation form for the particular contact. The evaluation form version used for the contact evaluation corresponds to the currently activated version. If no version is activated for the evaluation form, the contact evaluation cannot be started. </p>",
       "idempotent":true
     },
     "StartContactMediaProcessing":{
@@ -12464,6 +12480,10 @@
         "LanguageConfiguration":{
           "shape":"EvaluationFormLanguageConfiguration",
           "documentation":"<p>Configuration for language settings of the evaluation form.</p>"
+        },
+        "AIVersion":{
+          "shape":"EvaluationFormAIVersion",
+          "documentation":"<p>The AI version to use for the evaluation form. This specifies which AI model version is used for automated evaluations.</p>"
         }
       }
     },
@@ -18671,9 +18691,71 @@
         "LastValidationTime":{
           "shape":"Timestamp",
           "documentation":"<p>The timestamp when the most recent validation was started for this evaluation form.</p>"
+        },
+        "AIVersion":{
+          "shape":"EvaluationFormAIVersion",
+          "documentation":"<p>The AI version to use for the evaluation form. This specifies which AI model version is used for automated evaluations.</p>"
         }
       },
       "documentation":"<p>Information about the evaluation form.</p>"
+    },
+    "EvaluationFormAIVersion":{
+      "type":"string",
+      "max":256,
+      "min":1
+    },
+    "EvaluationFormAIVersionLifecycle":{
+      "type":"structure",
+      "required":[
+        "Status",
+        "StartOfLifeTime"
+      ],
+      "members":{
+        "Status":{
+          "shape":"EvaluationFormAIVersionStatus",
+          "documentation":"<p>The status of the AI version. Valid values:</p> <ul> <li> <p> <code>Latest</code> - The most recent AI version.</p> </li> <li> <p> <code>Preview</code> - An AI version available for preview.</p> </li> <li> <p> <code>Active</code> - An AI version that is currently available.</p> </li> <li> <p> <code>Deprecated</code> - An AI version that is no longer recommended for use.</p> </li> <li> <p> <code>Removed</code> - An AI version that is no longer available.</p> </li> </ul>"
+        },
+        "StartOfLifeTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp for when this AI version became available.</p>"
+        },
+        "EndOfLifeTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when this AI version reaches or reached end of life.</p>"
+        }
+      },
+      "documentation":"<p>Contains the status and availability dates for an AI version, indicating when the version became active and when it reaches end of life.</p>"
+    },
+    "EvaluationFormAIVersionStatus":{
+      "type":"string",
+      "enum":[
+        "LATEST",
+        "PREVIEW",
+        "ACTIVE",
+        "DEPRECATED"
+      ]
+    },
+    "EvaluationFormAIVersionSummary":{
+      "type":"structure",
+      "required":[
+        "AIVersionName",
+        "AIVersionLifecycle"
+      ],
+      "members":{
+        "AIVersionName":{
+          "shape":"EvaluationFormAIVersion",
+          "documentation":"<p>The name of the AI version.</p>"
+        },
+        "AIVersionLifecycle":{
+          "shape":"EvaluationFormAIVersionLifecycle",
+          "documentation":"<p>The lifecycle information for this AI version, including its status and availability dates.</p>"
+        }
+      },
+      "documentation":"<p>Contains the name and lifecycle information for an AI version that you can use when creating or updating an evaluation form.</p>"
+    },
+    "EvaluationFormAIVersionSummaryList":{
+      "type":"list",
+      "member":{"shape":"EvaluationFormAIVersionSummary"}
     },
     "EvaluationFormAutoEvaluationConfiguration":{
       "type":"structure",
@@ -18739,6 +18821,10 @@
         "ReviewConfiguration":{
           "shape":"EvaluationReviewConfiguration",
           "documentation":"<p>Configuration for evaluation review settings of this evaluation form content.</p>"
+        },
+        "AIVersion":{
+          "shape":"EvaluationFormAIVersion",
+          "documentation":"<p>The AI version to use for the evaluation form. This specifies which AI model version is used for automated evaluations.</p>"
         }
       },
       "documentation":"<p>Information about an evaluation form used in a contact evaluation.</p>"
@@ -18937,6 +19023,34 @@
         }
       },
       "documentation":"<p>Language configuration for an evaluation form.</p>"
+    },
+    "EvaluationFormMetricConfiguration":{
+      "type":"structure",
+      "required":[
+        "MetricType",
+        "MetricName"
+      ],
+      "members":{
+        "MetricType":{
+          "shape":"EvaluationFormMetricType",
+          "documentation":"<p>The type of metric. Currently, only <code>BUSINESS_OUTCOME</code> is supported.</p>"
+        },
+        "MetricName":{
+          "shape":"EvaluationFormMetricName",
+          "documentation":"<p>The name of the metric. Valid values are:</p> <ul> <li> <p> <code>SALE_SUCCESS</code> – Sale success.</p> </li> <li> <p> <code>CSAT</code> – Customer satisfaction.</p> </li> <li> <p> <code>CHURN_PROPENSITY</code> – Churn propensity.</p> </li> <li> <p> <code>SELF_SERVICE_SUCCESS</code> – Self-service success.</p> </li> <li> <p> <code>PARTIAL_SELF_SERVICE_SUCCESS</code> – Partial self-service success.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>Information about the metric configuration for an evaluation form question. Use this to associate a business outcome metric with a question.</p>"
+    },
+    "EvaluationFormMetricName":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"^[^\\p{C}]*$"
+    },
+    "EvaluationFormMetricType":{
+      "type":"string",
+      "enum":["BUSINESS_OUTCOME"]
     },
     "EvaluationFormMultiSelectQuestionAutomation":{
       "type":"structure",
@@ -19156,6 +19270,10 @@
         "ScoringConfiguration":{
           "shape":"EvaluationFormQuestionScoringConfiguration",
           "documentation":"<p>The scoring configuration of the question.</p>"
+        },
+        "MetricConfiguration":{
+          "shape":"EvaluationFormMetricConfiguration",
+          "documentation":"<p>The metric configuration for the question. Use this to associate a business outcome metric with the question.</p>"
         }
       },
       "documentation":"<p>Information about a question from an evaluation form.</p>"
@@ -19410,6 +19528,10 @@
         "Tags":{
           "shape":"TagMap",
           "documentation":"<p>The tags used to organize, track, or control access for this resource. For example, { \"Tags\": {\"key1\":\"value1\", \"key2\":\"value2\"} }.</p>"
+        },
+        "AIVersion":{
+          "shape":"EvaluationFormAIVersion",
+          "documentation":"<p>The AI version to use for the evaluation form. This specifies which AI model version is used for automated evaluations.</p>"
         }
       },
       "documentation":"<p>Information about the returned evaluation forms.</p>"
@@ -24484,6 +24606,54 @@
         "NextToken":{
           "shape":"NextToken2500",
           "documentation":"<p> The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results. </p>"
+        }
+      }
+    },
+    "ListEvaluationFormAIVersionsRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "ContactInteractionType"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Connect Customer instance. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "ContactInteractionType":{
+          "shape":"ContactInteractionType",
+          "documentation":"<p>The contact interaction type for the evaluation form.</p>",
+          "location":"querystring",
+          "locationName":"contactInteractionType"
+        },
+        "MaxResults":{
+          "shape":"MaxResult100",
+          "documentation":"<p>The maximum number of results to return per page.</p>",
+          "box":true,
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListEvaluationFormAIVersionsResponse":{
+      "type":"structure",
+      "required":["AIVersionSummaries"],
+      "members":{
+        "AIVersionSummaries":{
+          "shape":"EvaluationFormAIVersionSummaryList",
+          "documentation":"<p>The list of AI version summaries.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If there are additional results, this is the token for the next set of results.</p>"
         }
       }
     },
@@ -37828,6 +37998,10 @@
         "LanguageConfiguration":{
           "shape":"EvaluationFormLanguageConfiguration",
           "documentation":"<p>Configuration for language settings of the evaluation form.</p>"
+        },
+        "AIVersion":{
+          "shape":"EvaluationFormAIVersion",
+          "documentation":"<p>The AI version to use for the evaluation form. This specifies which AI model version is used for automated evaluations.</p>"
         }
       }
     },

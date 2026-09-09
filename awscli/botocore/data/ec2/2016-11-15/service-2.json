@@ -16207,6 +16207,14 @@
           "shape":"String",
           "documentation":"<p>Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. For more information, see <a href=\"https://docs.aws.amazon.com/ec2/latest/devguide/ec2-api-idempotency.html\"> Ensure Idempotency</a>.</p>",
           "idempotencyToken":true
+        },
+        "Encrypted":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether to encrypt the volume copy. If the source volume is encrypted, the service always encrypts the copy regardless of this value. Set to <code>true</code> to encrypt a copy of an unencrypted source volume during the copy operation. If you set <code>Encrypted</code> to <code>true</code> but do not specify <code>KmsKeyId</code>, the service uses the default KMS key for EBS encryption in your account.</p>"
+        },
+        "KmsKeyId":{
+          "shape":"KmsKeyId",
+          "documentation":"<p>The identifier of the KMS key to use for encryption of the volume copy. Specify a symmetric encryption KMS key. You can specify a KMS key using the key ID, key ARN, alias name, or alias ARN. If you set <code>Encrypted</code> to <code>true</code> but do not specify this parameter, the service uses the default KMS key for EBS encryption in your account. For cross-account volume copies, this must be a KMS key in the calling account.</p>"
         }
       }
     },
@@ -79374,6 +79382,16 @@
           "shape":"Integer",
           "documentation":"<p>The Amazon EBS Provisioned Rate for Volume Initialization (volume initialization rate) specified for the volume during creation, in MiB/s. If no volume initialization rate was specified, the value is <code>null</code>.</p>",
           "locationName":"volumeInitializationRate"
+        },
+        "VolumeArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the volume.</p>",
+          "locationName":"volumeArn"
+        },
+        "OwnerId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the Amazon Web Services account that owns the volume.</p>",
+          "locationName":"ownerId"
         },
         "VolumeId":{
           "shape":"String",

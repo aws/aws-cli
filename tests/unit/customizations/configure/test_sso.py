@@ -41,6 +41,7 @@ from awscli.customizations.configure.sso_commands import (
     display_account,
     get_account_sorting_key,
 )
+from awscli.customizations.exceptions import ParamValidationError
 from awscli.customizations.sso.utils import (
     PrintOnlyHandler,
     do_sso_login,
@@ -881,6 +882,7 @@ class TestConfigureSSOCommand:
         expected_scopes=None,
         expected_auth_handler_cls=None,
         expected_force_refresh=None,
+        expected_redirect_port=None,
     ):
         expected_kwargs = {
             "sso_region": expected_sso_region,
@@ -889,6 +891,7 @@ class TestConfigureSSOCommand:
             "on_pending_authorization": None,
             "token_cache": None,
             "use_device_code": expected_use_device_code,
+            "redirect_port": expected_redirect_port,
         }
         if expected_session_name is not None:
             expected_kwargs["session_name"] = expected_session_name
@@ -956,6 +959,44 @@ class TestConfigureSSOCommand:
             f"aws sts get-caller-identity --profile {inputs.profile_prompt.answer}"
             in stdout
         )
+
+    def test_configure_sso_passes_redirect_port(
+        self,
+        sso_cmd,
+        ptk_stubber,
+        aws_config,
+        stub_simple_single_item_sso_responses,
+        mock_do_sso_login,
+        botocore_session,
+        parsed_globals,
+        configure_sso_legacy_inputs,
+        account_id,
+        role_name,
+    ):
+        inputs = configure_sso_legacy_inputs
+        inputs.skip_account_and_role_selection()
+        ptk_stubber.user_inputs = inputs
+        stub_simple_single_item_sso_responses(account_id, role_name)
+
+        sso_cmd(["--redirect-port", "34535"], parsed_globals)
+        self.assert_do_sso_login_call(
+            mock_do_sso_login,
+            botocore_session,
+            expected_sso_region=inputs.sso_region_prompt.answer,
+            expected_start_url=inputs.start_url_prompt.answer,
+            expected_redirect_port=34535,
+        )
+
+    def test_configure_sso_rejects_out_of_range_redirect_port(
+        self,
+        sso_cmd,
+        parsed_globals,
+        mock_do_sso_login,
+    ):
+        with pytest.raises(ParamValidationError) as excinfo:
+            sso_cmd(["--redirect-port", "65536"], parsed_globals)
+        assert "must be between 1 and 65535" in str(excinfo.value)
+        mock_do_sso_login.assert_not_called()
 
     def test_single_account_single_role_flow_no_browser(
         self,

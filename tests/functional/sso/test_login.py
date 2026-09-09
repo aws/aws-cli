@@ -443,6 +443,29 @@ class TestLoginCommand(BaseSSOTest):
         _, stderr, _ = self.run_cmd('sso login', expected_rc=255)
         self.assertIn('State parameter does not match expected value.', stderr)
 
+    def test_login_auth_default_redirect_port(self):
+        content = self.get_sso_session_config('test-session')
+        self.set_config_file_content(content=content)
+        self.add_oidc_auth_code_responses(self.access_token)
+        self.run_cmd('sso login')
+        self.fetcher_mock.assert_called_once_with(redirect_port=None)
+
+    def test_login_auth_explicit_redirect_port(self):
+        content = self.get_sso_session_config('test-session')
+        self.set_config_file_content(content=content)
+        self.add_oidc_auth_code_responses(self.access_token)
+        self.run_cmd('sso login --redirect-port 34535')
+        self.fetcher_mock.assert_called_once_with(redirect_port=34535)
+
+    def test_login_rejects_out_of_range_redirect_port(self):
+        content = self.get_sso_session_config('test-session')
+        self.set_config_file_content(content=content)
+        _, stderr, _ = self.run_cmd(
+            'sso login --redirect-port 65536', expected_rc=252
+        )
+        self.assertIn('must be between 1 and 65535', stderr)
+        self.fetcher_mock.assert_not_called()
+
     def test_login_device_no_extra_user_agent(self):
         self.add_oidc_device_responses(self.access_token)
         self.run_cmd('sso login --use-device-code')

@@ -21,6 +21,7 @@ from awscli.customizations.sso.utils import (
     BaseSSOCommand,
     PrintOnlyHandler,
     do_sso_login,
+    validate_redirect_port,
 )
 from awscli.customizations.utils import uni_print
 
@@ -49,6 +50,7 @@ class LoginCommand(BaseSSOCommand):
     ]
 
     def _run_main(self, parsed_args, parsed_globals):
+        validate_redirect_port(parsed_args.redirect_port)
         sso_config = self._get_sso_config(sso_session=parsed_args.sso_session)
         start_url = sso_config['sso_start_url']
         configured_region = sso_config.get('sso_region')
@@ -81,6 +83,7 @@ class LoginCommand(BaseSSOCommand):
             session_name=sso_config.get('session_name'),
             registration_scopes=sso_config.get('registration_scopes'),
             use_device_code=parsed_args.use_device_code,
+            redirect_port=parsed_args.redirect_port,
         )
 
         # Only rewrite sso_region after successful login.

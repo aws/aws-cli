@@ -120,7 +120,6 @@ class TransferManagerFactory:
         )
 
     def _create_crt_client(self, params, runtime_config):
-        config_file_params = self._session.get_scoped_config().get('s3', {})
         create_crt_client_kwargs = {
             'region': self._resolve_region(params),
             'verify': self._resolve_verify(params),
@@ -131,11 +130,11 @@ class TransferManagerFactory:
         target_throughput = runtime_config.get('target_bandwidth', None)
         if target_throughput:
             create_crt_client_kwargs['target_throughput'] = target_throughput
-        multipart_chunksize = runtime_config.get('multipart_chunksize', None)
-        # User didn't explicitly configure `multipart_chunksize`. Set it to
-        # `None` and let CRT dynamically calculate the part size.
-        if 'multipart_chunksize' not in config_file_params:
-            multipart_chunksize = None
+        # Leaving this unset lets the CRT client dynamically calculate the
+        # part size if user didn't explicitly configure it.
+        multipart_chunksize = None
+        if runtime_config.is_explicitly_set('multipart_chunksize'):
+            multipart_chunksize = runtime_config['multipart_chunksize']
         create_crt_client_kwargs['part_size'] = multipart_chunksize
         if params.get('sign_request', True):
             crt_credentials_provider = self._get_crt_credentials_provider()

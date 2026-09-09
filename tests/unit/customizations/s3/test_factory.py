@@ -547,11 +547,6 @@ class TestTransferManagerFactory(unittest.TestCase):
         self, mock_crt_client
     ):
         part_size = 16 * (1024**2)
-        self.session.get_scoped_config.return_value = {
-            's3': {
-                'multipart_chunksize': part_size,
-            }
-        }
         self.runtime_config = self.get_runtime_config(
             preferred_transfer_client='crt', multipart_chunksize=part_size
         )
@@ -563,12 +558,10 @@ class TestTransferManagerFactory(unittest.TestCase):
 
     @mock.patch('s3transfer.crt.S3Client')
     def test_default_part_size_for_crt_manager(self, mock_crt_client):
-        part_size = 16 * (1024**2)
-        # Explicitly showing that the user has not configured
-        # `multipart_chunksize`.
-        self.session.get_scoped_config.return_value = {'s3': {}}
+        # `multipart_chunksize` is not provided, so it is not explicitly
+        # configured even though the runtime config still resolves a default.
         self.runtime_config = self.get_runtime_config(
-            preferred_transfer_client='crt', multipart_chunksize=part_size
+            preferred_transfer_client='crt'
         )
         transfer_manager = self.factory.create_transfer_manager(
             self.params, self.runtime_config
@@ -577,6 +570,23 @@ class TestTransferManagerFactory(unittest.TestCase):
         # When `multipart_chunksize` isn't explicitly provided, configure
         # `part_size` to `None`.
         self.assertEqual(mock_crt_client.call_args[1]['part_size'], None)
+
+    @mock.patch('s3transfer.crt.S3Client')
+    def test_part_size_configured_when_matching_default(self, mock_crt_client):
+        # Explicitly configuring the same value as the default still counts
+        # as explicitly configured.
+        default_chunksize = RuntimeConfig.defaults()['multipart_chunksize']
+        self.runtime_config = self.get_runtime_config(
+            preferred_transfer_client='crt',
+            multipart_chunksize=default_chunksize,
+        )
+        transfer_manager = self.factory.create_transfer_manager(
+            self.params, self.runtime_config
+        )
+        self.assert_is_crt_manager(transfer_manager)
+        self.assertEqual(
+            mock_crt_client.call_args[1]['part_size'], default_chunksize
+        )
 
 
 @pytest.mark.parametrize(

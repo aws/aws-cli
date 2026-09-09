@@ -20,6 +20,7 @@ _OTEL_OPERATIONS = [
     'GetOTelEnrichment',
     'StartOTelEnrichment',
     'StopOTelEnrichment',
+    'UpdateOTelEnrichment',
 ]
 
 

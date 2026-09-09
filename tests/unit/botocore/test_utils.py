@@ -406,6 +406,10 @@ class TestTransformName(unittest.TestCase):
             'stop-otel-enrichment',
         )
         self.assertEqual(
+            xform_name('UpdateOTelEnrichment', '-'),
+            'update-otel-enrichment',
+        )
+        self.assertEqual(
             xform_name('UpdateWhatsAppFlow', '-'),
             'update-whatsapp-flow',
         )

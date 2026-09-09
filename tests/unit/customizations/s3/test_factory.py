@@ -572,6 +572,54 @@ class TestTransferManagerFactory(unittest.TestCase):
         self.assertEqual(mock_crt_client.call_args[1]['part_size'], None)
 
     @mock.patch('s3transfer.crt.S3Client')
+    def test_multipart_threshold_configure_for_crt_manager(
+        self, mock_crt_client
+    ):
+        threshold = 64 * (1024**2)
+        self.runtime_config = self.get_runtime_config(
+            preferred_transfer_client='crt', multipart_threshold=threshold
+        )
+        transfer_manager = self.factory.create_transfer_manager(
+            self.params, self.runtime_config
+        )
+        self.assert_is_crt_manager(transfer_manager)
+        self.assertEqual(
+            mock_crt_client.call_args[1]['multipart_upload_threshold'],
+            threshold,
+        )
+
+    @mock.patch('s3transfer.crt.S3Client')
+    def test_max_concurrent_requests_configure_for_crt_manager(
+        self, mock_crt_client
+    ):
+        self.runtime_config = self.get_runtime_config(
+            preferred_transfer_client='crt', max_concurrent_requests=3
+        )
+        transfer_manager = self.factory.create_transfer_manager(
+            self.params, self.runtime_config
+        )
+        self.assert_is_crt_manager(transfer_manager)
+        self.assertEqual(
+            mock_crt_client.call_args[1]['max_active_connections_override'], 3
+        )
+
+    @mock.patch('s3transfer.crt.S3Client')
+    def test_unconfigured_options_not_passed_to_crt_manager(
+        self, mock_crt_client
+    ):
+        self.runtime_config = self.get_runtime_config(
+            preferred_transfer_client='crt'
+        )
+        transfer_manager = self.factory.create_transfer_manager(
+            self.params, self.runtime_config
+        )
+        self.assert_is_crt_manager(transfer_manager)
+        call_kwargs = mock_crt_client.call_args[1]
+        self.assertIsNone(call_kwargs['part_size'])
+        self.assertIsNone(call_kwargs['multipart_upload_threshold'])
+        self.assertIsNone(call_kwargs['max_active_connections_override'])
+
+    @mock.patch('s3transfer.crt.S3Client')
     def test_part_size_configured_when_matching_default(self, mock_crt_client):
         # Explicitly configuring the same value as the default still counts
         # as explicitly configured.

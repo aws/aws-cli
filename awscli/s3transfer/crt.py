@@ -89,6 +89,8 @@ def create_s3_crt_client(
     use_ssl=True,
     verify=None,
     fio_options=None,
+    multipart_upload_threshold=None,
+    max_active_connections_override=None,
 ):
     """
     :type region: str
@@ -135,6 +137,16 @@ def create_s3_crt_client(
 
     :type fio_options: Optional[dict]
     :param fio_options: Kwargs to use to build an `awscrt.s3.S3FileIoOptions`.
+
+    :type multipart_upload_threshold: Optional[int]
+    :param multipart_upload_threshold: Size, in bytes, above which uploads use
+        a multipart upload rather than a single request. Only affects uploads.
+        If not set, the maximum of ``part_size`` and 5 MiB is used.
+
+    :type max_active_connections_override: Optional[int]
+    :param max_active_connections_override: Caps the number of active
+        connections. Only applies when lower than the connection count derived
+        from ``target_throughput``. If not set, the derived value is used.
     """
 
     event_loop_group = EventLoopGroup(num_threads)
@@ -180,6 +192,8 @@ def create_s3_crt_client(
         throughput_target_gbps=target_gbps,
         enable_s3express=True,
         fio_options=crt_fio_options,
+        multipart_upload_threshold=multipart_upload_threshold,
+        max_active_connections_override=max_active_connections_override,
     )
 
 

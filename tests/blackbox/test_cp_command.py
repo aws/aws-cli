@@ -58,7 +58,7 @@ from tests.blackbox.utils import (
 
 
 def relative_path(filename):
-    """Cross platform relative path of a filename."""
+    """Cross-platform relative path of a filename."""
     try:
         dirname, basename = os.path.split(filename)
         relative_dir = os.path.relpath(dirname)
@@ -6509,8 +6509,8 @@ async def test_content_type_not_guessed_on_s3_to_s3_copy(aws_cli, tmp_path):
 @pytest.mark.skip(
     reason="urllib3 2.x enforce_content_length regression: "
     "urllib3 raises ProtocolError before botocore's "
-    "IncompleteReadError can fire. Fix: pass "
-    "enforce_content_length=False in botocore httpsession."
+    "IncompleteReadError can fire. Fix: "
+    "https://github.com/aws/aws-cli/pull/10622"
 )
 @pytest.mark.asyncio
 async def test_streaming_download_retries_on_truncated_response(
@@ -6520,9 +6520,9 @@ async def test_streaming_download_retries_on_truncated_response(
 
     Simulates the production scenario where a slow consumer (stdout pipe)
     causes the CLI to pause reading, S3 times out the idle connection,
-    and the CLI sees EOF before reading all expected bytes.  botocore's
-    _verify_content_length raises IncompleteReadError, which s3transfer
-    catches and retries.  The partial data from the first attempt is
+    and the CLI sees EOF before reading all expected bytes. botocore
+    raises IncompleteReadError, which s3transfer
+    catches and retries. The partial data from the first attempt is
     already written to stdout (non-seekable), so the final output
     contains bytes from both the truncated and retried responses.
     """
@@ -6543,11 +6543,8 @@ async def test_streaming_download_retries_on_truncated_response(
                 ),
                 # First GET: server sends 5 of 10 bytes then closes.
                 # Connection: close triggers a clean TLS shutdown so the
-                # client sees EOF rather than a socket error.  This is
-                # how we simulate S3 closing an idle connection —
-                # localstub's DropConnection closes the TLS stream too
-                # aggressively (the proxy can't accept retries), so we
-                # use Connection: close + TruncateBody instead.
+                # client sees EOF rather than a socket error. This is
+                # how we simulate S3 closing an idle connection
                 HTTPResponse.raw(
                     body,
                     status=200,
@@ -6573,8 +6570,10 @@ async def test_streaming_download_retries_on_truncated_response(
         )
 
         async def reset_after_truncated():
-            await server.next_request()  # HeadObject
-            await server.next_request()  # First GET (truncated)
+            # HeadObject
+            await server.next_request()
+            # First GET (truncated)
+            await server.next_request()
             server.set_transmission_strategy(ImmediateTransmission())
 
         (stdout, stderr, rc), _ = await asyncio.gather(
@@ -6591,8 +6590,229 @@ async def test_streaming_download_retries_on_truncated_response(
     assert_head_object(server.requests[0], Bucket="bucket", Key="key.txt")
     assert_get_object(server.requests[1], Bucket="bucket", Key="key.txt")
     assert_get_object(server.requests[2], Bucket="bucket", Key="key.txt")
-    # stdout contains partial bytes from the truncated response (5)
-    # followed by the full retry response (10) = 15 total.
-    # The CLI can't rewind stdout, so both writes are present.
-    assert len(stdout) == 15
-    assert stdout == b"A" * 15
+    assert len(stdout) == 10
+    assert stdout == b"A" * 10
+
+
+@pytest.mark.asyncio
+async def test_upload_retries_on_502(aws_cli, tmp_path):
+    """cp retries on 502 BadGateway and succeeds on second attempt.
+
+    Verifies the Python CLI retries 502 responses.
+    """
+    src = tmp_path / "foo.txt"
+    src.write_text("content")
+    async with mock_server(on_headers_received=handle_expect_header) as (
+        server,
+        proxy,
+    ):
+        setup_responses(
+            server,
+            [
+                error_response("BadGateway", "Bad Gateway", status=502),
+                put_object_response(),
+            ],
+        )
+        env = cli_env(proxy)
+        env["AWS_MAX_ATTEMPTS"] = "2"
+        stdout, stderr, rc = await run_cli(
+            aws_cli,
+            ["s3", "cp", str(src), "s3://bucket/foo.txt"],
+            env,
+        )
+
+    assert rc == 0, stderr.decode()
+    assert len(server.requests) == 2, format_requests(server)
+    assert_put_object(server.requests[0], Bucket="bucket", Key="foo.txt")
+    assert_put_object(server.requests[1], Bucket="bucket", Key="foo.txt")
+
+
+@pytest.mark.asyncio
+async def test_upload_retries_on_504(aws_cli, tmp_path):
+    """cp retries on 504 GatewayTimeout and succeeds on second attempt.
+
+    Verifies the Python CLI retries 504 responses.
+    """
+    src = tmp_path / "foo.txt"
+    src.write_text("content")
+    async with mock_server(on_headers_received=handle_expect_header) as (
+        server,
+        proxy,
+    ):
+        setup_responses(
+            server,
+            [
+                error_response(
+                    "GatewayTimeout", "Gateway Timeout", status=504
+                ),
+                put_object_response(),
+            ],
+        )
+        env = cli_env(proxy)
+        env["AWS_MAX_ATTEMPTS"] = "2"
+        stdout, stderr, rc = await run_cli(
+            aws_cli,
+            ["s3", "cp", str(src), "s3://bucket/foo.txt"],
+            env,
+        )
+
+    assert rc == 0, stderr.decode()
+    assert len(server.requests) == 2, format_requests(server)
+    assert_put_object(server.requests[0], Bucket="bucket", Key="foo.txt")
+    assert_put_object(server.requests[1], Bucket="bucket", Key="foo.txt")
+
+
+@pytest.mark.asyncio
+async def test_upload_retries_on_500(aws_cli, tmp_path):
+    """cp retries on 500 InternalError and succeeds on second attempt."""
+    src = tmp_path / "foo.txt"
+    src.write_text("content")
+    async with mock_server(on_headers_received=handle_expect_header) as (
+        server,
+        proxy,
+    ):
+        setup_responses(
+            server,
+            [
+                error_response(
+                    "InternalError", "Internal Server Error", status=500
+                ),
+                put_object_response(),
+            ],
+        )
+        env = cli_env(proxy)
+        env["AWS_MAX_ATTEMPTS"] = "2"
+        stdout, stderr, rc = await run_cli(
+            aws_cli,
+            ["s3", "cp", str(src), "s3://bucket/foo.txt"],
+            env,
+        )
+
+    assert rc == 0, stderr.decode()
+    assert len(server.requests) == 2, format_requests(server)
+    assert_put_object(server.requests[0], Bucket="bucket", Key="foo.txt")
+    assert_put_object(server.requests[1], Bucket="bucket", Key="foo.txt")
+
+
+
+@pytest.mark.asyncio
+async def test_upload_follows_301_region_redirect(aws_cli, tmp_path):
+    """cp follows 301 PermanentRedirect to the correct bucket region.
+
+    When S3 returns 301 with x-amz-bucket-region, the CLI retries the
+    request against the indicated region.
+    """
+    src = tmp_path / "foo.txt"
+    src.write_text("content")
+    redirect_body = (
+        '<?xml version="1.0" encoding="UTF-8"?>'
+        "<Error>"
+        "<Code>PermanentRedirect</Code>"
+        "<Message>The bucket must be addressed using the specified endpoint.</Message>"
+        "<Bucket>bucket</Bucket>"
+        "</Error>"
+    )
+    async with mock_server(on_headers_received=handle_expect_header) as (
+        server,
+        proxy,
+    ):
+        setup_responses(
+            server,
+            [
+                HTTPResponse.raw(
+                    redirect_body.encode(),
+                    status=301,
+                    headers={
+                        "Content-Type": "application/xml",
+                        "x-amz-bucket-region": "eu-west-1",
+                    },
+                ),
+                put_object_response(),
+            ],
+        )
+        stdout, stderr, rc = await run_cli(
+            aws_cli,
+            [
+                "s3",
+                "cp",
+                str(src),
+                "s3://bucket/foo.txt",
+                "--region",
+                "us-east-1",
+            ],
+            cli_env(proxy),
+        )
+
+    assert rc == 0, stderr.decode()
+    assert len(server.requests) == 2, format_requests(server)
+    # First request goes to the configured region
+    assert (
+        server.requests[0].headers.get("host")
+        == "bucket.s3.us-east-1.amazonaws.com"
+    )
+    # Redirect sends the retry to the correct region
+    assert (
+        server.requests[1].headers.get("host")
+        == "bucket.s3.eu-west-1.amazonaws.com"
+    )
+
+
+@pytest.mark.asyncio
+async def test_upload_follows_auth_header_malformed_redirect(aws_cli, tmp_path):
+    """cp follows AuthorizationHeaderMalformed error to the correct region.
+
+    S3 returns 400 with the correct region in the error body when the
+    request is signed for the wrong region.  The CLI extracts the region
+    and retries.
+    """
+    src = tmp_path / "foo.txt"
+    src.write_text("content")
+    error_body = (
+        '<?xml version="1.0" encoding="UTF-8"?>'
+        "<Error>"
+        "<Code>AuthorizationHeaderMalformed</Code>"
+        "<Message>The authorization header is malformed</Message>"
+        "<Region>eu-west-1</Region>"
+        "</Error>"
+    )
+    async with mock_server(on_headers_received=handle_expect_header) as (
+        server,
+        proxy,
+    ):
+        setup_responses(
+            server,
+            [
+                HTTPResponse.raw(
+                    error_body.encode(),
+                    status=400,
+                    headers={
+                        "Content-Type": "application/xml",
+                        "x-amz-bucket-region": "eu-west-1",
+                    },
+                ),
+                put_object_response(),
+            ],
+        )
+        stdout, stderr, rc = await run_cli(
+            aws_cli,
+            [
+                "s3",
+                "cp",
+                str(src),
+                "s3://bucket/foo.txt",
+                "--region",
+                "us-east-1",
+            ],
+            cli_env(proxy),
+        )
+
+    assert rc == 0, stderr.decode()
+    assert len(server.requests) == 2, format_requests(server)
+    assert (
+        server.requests[0].headers.get("host")
+        == "bucket.s3.us-east-1.amazonaws.com"
+    )
+    assert (
+        server.requests[1].headers.get("host")
+        == "bucket.s3.eu-west-1.amazonaws.com"
+    )

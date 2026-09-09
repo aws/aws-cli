@@ -505,6 +505,7 @@ class BaseCRTTransferClientTest(BaseS3CLIRunnerTest):
         s3_request = FakeCRTS3Request(
             future=FakeCRTFuture(kwargs.get('on_done'))
         )
+        s3_request.finished_future.result()
         return s3_request
 
     def simulate_file_download(self, recv_filepath):

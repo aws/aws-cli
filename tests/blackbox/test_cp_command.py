@@ -6565,9 +6565,7 @@ async def test_streaming_download_retries_on_truncated_response(
                 ),
             ],
         )
-        server.set_transmission_strategy(
-            FaultyTransmission([TruncateBody(5)])
-        )
+        server.set_transmission_strategy(FaultyTransmission([TruncateBody(5)]))
 
         async def reset_after_truncated():
             # HeadObject
@@ -6694,7 +6692,6 @@ async def test_upload_retries_on_500(aws_cli, tmp_path):
     assert_put_object(server.requests[1], Bucket="bucket", Key="foo.txt")
 
 
-
 @pytest.mark.asyncio
 async def test_upload_follows_301_region_redirect(aws_cli, tmp_path):
     """cp follows 301 PermanentRedirect to the correct bucket region.
@@ -6758,7 +6755,9 @@ async def test_upload_follows_301_region_redirect(aws_cli, tmp_path):
 
 
 @pytest.mark.asyncio
-async def test_upload_follows_auth_header_malformed_redirect(aws_cli, tmp_path):
+async def test_upload_follows_auth_header_malformed_redirect(
+    aws_cli, tmp_path
+):
     """cp follows AuthorizationHeaderMalformed error to the correct region.
 
     S3 returns 400 with the correct region in the error body when the

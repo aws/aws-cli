@@ -16,6 +16,7 @@ import s3transfer.crt
 from awscrt.s3 import S3FileIoOptions, S3RequestTlsMode
 from botocore.config import Config
 from botocore.credentials import Credentials
+from botocore.exceptions import InvalidConfigError
 from botocore.httpsession import DEFAULT_CA_BUNDLE
 from botocore.session import Session
 from s3transfer.crt import CRTTransferManager
@@ -205,8 +206,6 @@ class TestTransferManagerFactory(unittest.TestCase):
 
     def assert_is_crt_manager(self, manager):
         self.assertIsInstance(manager, CRTTransferManager)
-        # The CRT client is initialized lazily once the region is known
-        manager.get_crt_client()
 
     def assert_expected_throughput_target_gbps(
         self, mock_crt_client, expected_throughput_target_gbps
@@ -295,8 +294,9 @@ class TestTransferManagerFactory(unittest.TestCase):
             self.params, self.runtime_config
         )
 
-        # Client creation is lazy and each selected region is cached.
-        self.assertEqual(mock_crt_client.call_count, 0)
+        # The client for the configured region is created up front, and each
+        # selected region is cached.
+        self.assertEqual(mock_crt_client.call_count, 1)
         self.assertIs(
             transfer_manager.get_crt_client(),
             transfer_manager.get_crt_client(),
@@ -423,6 +423,21 @@ class TestTransferManagerFactory(unittest.TestCase):
         self.assert_is_crt_manager(transfer_manager)
         self.session.get_credentials.assert_not_called()
         self.assertIsNone(mock_crt_client.call_args[1]['credential_provider'])
+
+    @mock.patch('s3transfer.crt.S3Client')
+    def test_invalid_client_config_raises_when_creating_crt_manager(
+        self, mock_crt_client
+    ):
+        self.runtime_config = self.get_runtime_config(
+            preferred_transfer_client='crt'
+        )
+        self.params['verify_ssl'] = ' '
+
+        # Reported once here rather than once per submitted transfer.
+        with self.assertRaises(InvalidConfigError):
+            self.factory.create_transfer_manager(
+                self.params, self.runtime_config
+            )
 
     @mock.patch('s3transfer.crt.S3Client')
     @mock.patch('s3transfer.crt.ClientTlsContext')

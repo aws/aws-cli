@@ -376,6 +376,13 @@ files to and from S3. Valid choices are:
 
   * S3 to S3 copies - Falls back to using the ``classic`` transfer client
 
+  * Some region redirects - Transfers to a region that does not match the
+    region of the targeted S3 bucket are retried in the bucket's region, but
+    only if the transfer can be replayed from the start. A transfer fails
+    instead of being redirected if it is an upload whose source cannot be
+    rewound or if any of its data was already transferred. The ``classic``
+    transfer client is able to redirect in both of those cases.
+
   * ``max_concurrent_requests``, ``max_queue_size``, ``multipart_threshold``,
     and ``max_bandwidth`` configuration values - Ignores these configuration
     values.

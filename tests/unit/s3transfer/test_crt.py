@@ -449,21 +449,21 @@ class TestCRTTransferCoordinator:
         self.coordinator.set_s3_request(s3_request)
         assert self.coordinator.s3_request is s3_request
 
-    def test_original_request_cannot_replace_retry(self):
+    def test_original_request_cannot_replace_redirect(self):
         first_request = self.create_s3_request()
         second_request = self.create_s3_request()
-        # The retry started before the original request registered its native
-        # request, so the original request must not become active.
-        self.coordinator.set_s3_request(second_request, is_retry=True)
+        # The redirect started before the original request registered its
+        # native request, so the original request must not become active.
+        self.coordinator.set_s3_request(second_request, is_region_redirect=True)
         self.coordinator.set_s3_request(first_request)
 
         assert self.coordinator.s3_request is second_request
 
-    def test_cancel_cancels_retry_request(self):
+    def test_cancel_cancels_redirected_request(self):
         first_request = self.create_s3_request()
         second_request = self.create_s3_request()
         self.coordinator.set_s3_request(first_request)
-        self.coordinator.set_s3_request(second_request, is_retry=True)
+        self.coordinator.set_s3_request(second_request, is_region_redirect=True)
 
         self.coordinator.cancel()
 
@@ -525,20 +525,24 @@ class TestS3RegionRedirectPolicy:
         )
         self.serializer.get_cached_bucket_region.return_value = None
         self.serializer.get_bucket_region.return_value = 'eu-central-1'
+        self.serializer.get_configured_region.return_value = 'us-west-2'
         self.policy = s3transfer.crt.CRTS3RegionRedirectPolicy(self.serializer)
 
-    def get_retry_region(self, **overrides):
+    def is_error_redirect_candidate(self, **overrides):
         kwargs = {
             'bucket': self.bucket,
-            'transfer_type': 'put_object',
-            'error': self.error,
-            'is_retry': False,
+            'is_region_redirect': False,
             'bytes_transferred': 0,
             'cancelled': False,
             'is_replayable': True,
         }
         kwargs.update(overrides)
-        return self.policy.get_retry_region(**kwargs)
+        return self.policy.is_error_redirect_candidate(**kwargs)
+
+    def get_retry_region(self, request_region=None):
+        return self.policy.get_retry_region(
+            self.bucket, 'put_object', self.error, request_region
+        )
 
     def test_returns_and_caches_discovered_region(self):
         assert self.get_retry_region() == 'eu-central-1'
@@ -551,37 +555,66 @@ class TestS3RegionRedirectPolicy:
         assert self.get_retry_region() is None
         self.serializer.cache_bucket_region.assert_not_called()
 
-    def test_returns_none_for_no_error(self):
-        assert self.get_retry_region(error=None) is None
-        self.serializer.get_bucket_region.assert_not_called()
-
-    def test_returns_none_after_redirect(self):
-        assert self.get_retry_region(is_retry=True) is None
-        self.serializer.get_bucket_region.assert_not_called()
-
-    def test_returns_none_after_bytes_transferred(self):
-        assert self.get_retry_region(bytes_transferred=1) is None
-        self.serializer.get_bucket_region.assert_not_called()
-
-    def test_returns_none_when_cancelled(self):
-        assert self.get_retry_region(cancelled=True) is None
-        self.serializer.get_bucket_region.assert_not_called()
-
-    def test_returns_none_when_stream_is_not_replayable(self):
-        assert self.get_retry_region(is_replayable=False) is None
-        self.serializer.get_bucket_region.assert_not_called()
-
-    def test_returns_none_for_s3express_bucket(self):
-        region = self.get_retry_region(bucket='mybucket--usw2-az5--x-s3')
-        assert region is None
-        self.serializer.get_bucket_region.assert_not_called()
-
     def test_returns_none_when_discovery_raises(self):
         self.serializer.get_bucket_region.side_effect = InvalidRegionError(
             region_name='not a region!'
         )
         assert self.get_retry_region() is None
         self.serializer.cache_bucket_region.assert_not_called()
+
+    def test_returns_none_when_discovered_region_is_configured_region(self):
+        # Retrying in the region the request already used would fail the same
+        # way, and caching it would build a duplicate client for that region.
+        self.serializer.get_bucket_region.return_value = 'us-west-2'
+        assert self.get_retry_region() is None
+        self.serializer.cache_bucket_region.assert_not_called()
+
+    def test_returns_none_when_discovered_region_is_request_region(self):
+        self.serializer.get_bucket_region.return_value = 'eu-west-1'
+        assert self.get_retry_region(request_region='eu-west-1') is None
+        self.serializer.cache_bucket_region.assert_not_called()
+
+    def test_reuses_region_discovered_by_another_transfer(self):
+        # A transfer that failed in the configured region does not need to
+        # rediscover a region another transfer already cached.
+        self.serializer.get_cached_bucket_region.return_value = 'eu-west-1'
+        assert self.get_retry_region() == 'eu-west-1'
+        self.serializer.get_bucket_region.assert_not_called()
+
+    def test_rediscovers_region_when_cached_region_failed(self):
+        # The failed request already used the cached region, so the cache is
+        # stale and retrying there again would just fail the same way.
+        self.serializer.get_cached_bucket_region.return_value = 'eu-west-1'
+        assert self.get_retry_region(request_region='eu-west-1') == (
+            'eu-central-1'
+        )
+        self.serializer.get_bucket_region.assert_called_once_with(
+            self.bucket, 'put_object', self.error
+        )
+
+    def test_is_candidate_for_failed_replayable_transfer(self):
+        assert self.is_error_redirect_candidate()
+
+    def test_not_candidate_after_redirect(self):
+        assert not self.is_error_redirect_candidate(is_region_redirect=True)
+
+    def test_not_candidate_after_bytes_transferred(self):
+        assert not self.is_error_redirect_candidate(bytes_transferred=1)
+
+    def test_not_candidate_when_cancelled(self):
+        assert not self.is_error_redirect_candidate(cancelled=True)
+
+    def test_not_candidate_when_stream_is_not_replayable(self):
+        assert not self.is_error_redirect_candidate(is_replayable=False)
+
+    def test_not_candidate_for_s3express_bucket(self):
+        assert not self.is_error_redirect_candidate(
+            bucket='mybucket--usw2-az5--x-s3'
+        )
+
+    def test_candidate_checks_do_not_discover_region(self):
+        self.is_error_redirect_candidate()
+        self.serializer.get_bucket_region.assert_not_called()
 
     def test_get_cached_bucket_region(self):
         self.serializer.get_cached_bucket_region.return_value = 'eu-west-1'

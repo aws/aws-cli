@@ -117,7 +117,7 @@ class TransferManagerFactory:
         self._acquire_crt_s3_process_lock()
         region = self._resolve_region(params)
         bootstrap = create_crt_client_bootstrap()
-        return CRTTransferManager(
+        transfer_manager = CRTTransferManager(
             crt_client_factory=lambda client_region=None: (
                 self._create_crt_client(
                     params,
@@ -128,6 +128,12 @@ class TransferManagerFactory:
             ),
             crt_request_serializer=self._create_crt_request_serializer(params),
         )
+        # Clients for redirected regions are created on demand, but create the
+        # one for the configured region now. Otherwise invalid client
+        # configuration is not reported until a transfer is submitted, which
+        # reports it once per object instead of once for the command.
+        transfer_manager.get_crt_client()
+        return transfer_manager
 
     def _create_crt_client(
         self, params, runtime_config, region=None, bootstrap=None

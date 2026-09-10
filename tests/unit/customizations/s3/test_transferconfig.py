@@ -193,3 +193,56 @@ class TestConvertToS3TransferConfig:
         assert result.max_bandwidth == 1024 * 1024
         assert result.io_chunksize == 1024 * 1024
         assert result.max_in_memory_upload_chunks != 1000
+
+
+class TestResolvedRuntimeConfig:
+    def build(self, **kwargs):
+        return transferconfig.RuntimeConfig().build_config(**kwargs)
+
+    def test_tracks_explicitly_provided_keys(self):
+        config = self.build(max_concurrent_requests=5, io_chunksize='1MB')
+        assert config.explicit_keys == {
+            'max_concurrent_requests',
+            'io_chunksize',
+        }
+
+    def test_nothing_is_explicit_when_no_values_provided(self):
+        config = self.build()
+        assert config.explicit_keys == set()
+        assert not config.is_explicitly_set('max_concurrent_requests')
+
+    def test_value_matching_default_is_still_explicit(self):
+        default = transferconfig.DEFAULTS['max_concurrent_requests']
+        config = self.build(max_concurrent_requests=default)
+        assert config.is_explicitly_set('max_concurrent_requests')
+
+    def test_defaults_are_not_explicit(self):
+        config = self.build(max_concurrent_requests=5)
+        assert not config.is_explicitly_set('multipart_threshold')
+        # The default value is still resolved and available.
+        assert (
+            config['multipart_threshold']
+            == transferconfig.DEFAULTS['multipart_threshold']
+        )
+
+    def test_unknown_keys_are_tracked_as_explicit(self):
+        config = self.build(not_a_real_option='foo')
+        assert config.is_explicitly_set('not_a_real_option')
+        assert 'not_a_real_option' not in transferconfig.DEFAULTS
+
+    def test_copy_preserves_provenance(self):
+        config = self.build(io_chunksize='1MB').copy()
+        assert config.is_explicitly_set('io_chunksize')
+        assert not config.is_explicitly_set('multipart_threshold')
+
+    def test_provenance_records_keys_not_converted_values(self):
+        # Values are converted after provenance is captured.
+        config = self.build(multipart_chunksize='16MB')
+        assert config.is_explicitly_set('multipart_chunksize')
+        assert config['multipart_chunksize'] == 16 * 1024 * 1024
+
+    def test_behaves_like_a_dict(self):
+        config = self.build(max_queue_size=10)
+        assert config['max_queue_size'] == 10
+        assert config.get('max_queue_size') == 10
+        assert 'multipart_threshold' in dict(config)

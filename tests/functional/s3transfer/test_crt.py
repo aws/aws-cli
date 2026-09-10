@@ -214,6 +214,117 @@ class TestCRTTransferManager(unittest.TestCase):
         checksum_config_kwargs.update(overrides)
         return awscrt.s3.S3ChecksumConfig(**checksum_config_kwargs)
 
+    def _set_checksum_config_variables(
+        self, request_calculation=None, response_validation=None
+    ):
+        if request_calculation is not None:
+            self.session.set_config_variable(
+                'request_checksum_calculation', request_calculation
+            )
+        if response_validation is not None:
+            self.session.set_config_variable(
+                'response_checksum_validation', response_validation
+            )
+        # The serializer resolves these when it creates its client, so it has
+        # to be rebuilt after changing them.
+        self.request_serializer = s3transfer.crt.BotocoreCRTRequestSerializer(
+            self.session
+        )
+        self.transfer_manager = s3transfer.crt.CRTTransferManager(
+            crt_s3_client=self.s3_crt_client,
+            crt_request_serializer=self.request_serializer,
+        )
+
+    def _get_checksum_config_from_make_request(self):
+        return self.s3_crt_client.make_request.call_args[1]['checksum_config']
+
+    def test_upload_calculates_checksum_when_supported(self):
+        self._set_checksum_config_variables(
+            request_calculation='when_supported'
+        )
+        future = self.transfer_manager.upload(
+            self.filename, self.bucket, self.key, {}, []
+        )
+        future.result()
+        self.assertEqual(
+            self._get_checksum_config_from_make_request(),
+            self._get_expected_upload_checksum_config(),
+        )
+
+    def test_upload_skips_checksum_when_required(self):
+        self._set_checksum_config_variables(
+            request_calculation='when_required'
+        )
+        future = self.transfer_manager.upload(
+            self.filename, self.bucket, self.key, {}, []
+        )
+        future.result()
+        self.assertIsNone(self._get_checksum_config_from_make_request())
+
+    def test_upload_uses_requested_algorithm_when_required(self):
+        self._set_checksum_config_variables(
+            request_calculation='when_required'
+        )
+        future = self.transfer_manager.upload(
+            self.filename,
+            self.bucket,
+            self.key,
+            {'ChecksumAlgorithm': 'CRC32'},
+            [],
+        )
+        future.result()
+        self.assertEqual(
+            self._get_checksum_config_from_make_request(),
+            self._get_expected_upload_checksum_config(
+                algorithm=awscrt.s3.S3ChecksumAlgorithm.CRC32
+            ),
+        )
+
+    def test_download_validates_checksum_when_supported(self):
+        self._set_checksum_config_variables(
+            response_validation='when_supported'
+        )
+        future = self.transfer_manager.download(
+            self.bucket, self.key, self.filename, {}, []
+        )
+        future.result()
+        self.assertEqual(
+            self._get_checksum_config_from_make_request(),
+            self._get_expected_download_checksum_config(),
+        )
+
+    def test_download_skips_validation_when_required(self):
+        self._set_checksum_config_variables(
+            response_validation='when_required'
+        )
+        future = self.transfer_manager.download(
+            self.bucket, self.key, self.filename, {}, []
+        )
+        future.result()
+        self.assertEqual(
+            self._get_checksum_config_from_make_request(),
+            self._get_expected_download_checksum_config(
+                validate_response=False
+            ),
+        )
+
+    def test_download_validates_when_checksum_mode_requested(self):
+        self._set_checksum_config_variables(
+            response_validation='when_required'
+        )
+        future = self.transfer_manager.download(
+            self.bucket,
+            self.key,
+            self.filename,
+            {'ChecksumMode': 'ENABLED'},
+            [],
+        )
+        future.result()
+        self.assertEqual(
+            self._get_checksum_config_from_make_request(),
+            self._get_expected_download_checksum_config(),
+        )
+
     def _invoke_done_callbacks(self, **kwargs):
         callargs = self.s3_crt_client.make_request.call_args
         callargs_kwargs = callargs[1]

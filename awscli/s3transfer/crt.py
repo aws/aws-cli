@@ -55,6 +55,13 @@ logger = logging.getLogger(__name__)
 CRT_S3_PROCESS_LOCK = None
 
 
+WHEN_REQUIRED = 'when_required'
+
+
+def _get_operation_name(request_type):
+    return ''.join(part.title() for part in request_type.split('_'))
+
+
 def acquire_crt_s3_process_lock(name):
     # Currently, the CRT S3 client performs best when there is only one
     # instance of it running on a host. This lock allows an application to
@@ -430,6 +437,22 @@ class CRTTransferFuture(BaseTransferFuture):
 
 
 class BaseCRTRequestSerializer:
+    @property
+    def client_config(self):
+        """Resolved botocore configuration, if this serializer has any.
+
+        :rtype: Optional[botocore.config.Config]
+        """
+        return None
+
+    @property
+    def service_model(self):
+        """Model of the service being serialized, if there is one.
+
+        :rtype: Optional[botocore.model.ServiceModel]
+        """
+        return None
+
     def serialize_http_request(self, transfer_type, future):
         """Serialize CRT HTTP requests.
 
@@ -478,6 +501,14 @@ class BotocoreCRTRequestSerializer(BaseCRTRequestSerializer):
         self._client.meta.events.register(
             'before-call.s3.*', self._remove_checksum_context
         )
+
+    @property
+    def client_config(self):
+        return self._client.meta.config
+
+    @property
+    def service_model(self):
+        return self._client.meta.service_model
 
     def _resolve_client_config(self, session, client_kwargs):
         user_provided_config = None
@@ -718,6 +749,8 @@ class S3ClientArgsCreator:
     def __init__(self, crt_request_serializer, os_utils):
         self._request_serializer = crt_request_serializer
         self._os_utils = os_utils
+        self._client_config = crt_request_serializer.client_config
+        self._service_model = crt_request_serializer.service_model
 
     def get_make_request_args(
         self, request_type, call_args, coordinator, future, on_done_after_calls
@@ -779,9 +812,8 @@ class S3ClientArgsCreator:
             call_args.extra_args["Body"] = call_args.fileobj
 
         checksum_config = None
-        if not any(
-            checksum_arg in call_args.extra_args
-            for checksum_arg in FULL_OBJECT_CHECKSUM_ARGS
+        if self._should_calculate_upload_checksum(
+            request_type, call_args.extra_args
         ):
             checksum_algorithm = call_args.extra_args.pop(
                 'ChecksumAlgorithm', 'CRC64NVME'
@@ -819,7 +851,11 @@ class S3ClientArgsCreator:
     ):
         recv_filepath = None
         on_body = None
-        checksum_config = awscrt.s3.S3ChecksumConfig(validate_response=True)
+        checksum_config = awscrt.s3.S3ChecksumConfig(
+            validate_response=self._should_validate_download_checksum(
+                call_args.extra_args
+            )
+        )
         if isinstance(call_args.fileobj, str):
             final_filepath = call_args.fileobj
             recv_filepath = self._os_utils.get_temp_filename(final_filepath)
@@ -843,6 +879,45 @@ class S3ClientArgsCreator:
         make_request_args['on_body'] = on_body
         make_request_args['checksum_config'] = checksum_config
         return make_request_args
+
+    def _should_calculate_upload_checksum(self, request_type, extra_args):
+        if any(
+            checksum_arg in extra_args
+            for checksum_arg in FULL_OBJECT_CHECKSUM_ARGS
+        ):
+            return False
+        if 'ChecksumAlgorithm' in extra_args:
+            return True
+        if self._is_request_checksum_required(request_type):
+            return True
+        return (
+            self._get_client_config('request_checksum_calculation')
+            != WHEN_REQUIRED
+        )
+
+    def _is_request_checksum_required(self, request_type):
+        if self._service_model is None:
+            return False
+        operation_model = self._service_model.operation_model(
+            _get_operation_name(request_type)
+        )
+        return bool(
+            operation_model.http_checksum_required
+            or operation_model.http_checksum.get('requestChecksumRequired')
+        )
+
+    def _should_validate_download_checksum(self, extra_args):
+        if 'ChecksumMode' in extra_args:
+            return True
+        return (
+            self._get_client_config('response_checksum_validation')
+            != WHEN_REQUIRED
+        )
+
+    def _get_client_config(self, name):
+        if self._client_config is None:
+            return None
+        return getattr(self._client_config, name)
 
     def _default_get_make_request_args(
         self,
@@ -869,8 +944,8 @@ class S3ClientArgsCreator:
         # For DEFAULT requests, CRT requires the official S3 operation name.
         # So transform string like "delete_object" -> "DeleteObject".
         if make_request_args['type'] == S3RequestType.DEFAULT:
-            make_request_args['operation_name'] = ''.join(
-                x.title() for x in request_type.split('_')
+            make_request_args['operation_name'] = _get_operation_name(
+                request_type
             )
 
         arn_handler = _S3ArnParamHandler()

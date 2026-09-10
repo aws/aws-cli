@@ -27,6 +27,7 @@ from s3transfer.manager import TransferManager
 from awscli.compat import urlparse
 from awscli.customizations.s3 import constants
 from awscli.customizations.s3.transferconfig import (
+    DEFAULTS,
     create_transfer_config_from_runtime_config,
 )
 
@@ -157,15 +158,26 @@ class TransferManagerFactory:
         return create_s3_crt_client(**create_crt_client_kwargs)
 
     def _resolve_crt_client_config_kwargs(self, runtime_config):
+        use_defaults = self._should_use_transfer_config_defaults(
+            runtime_config
+        )
         kwargs = {}
         for config_name, crt_name in CRT_CLIENT_KWARG_MAP.items():
             if runtime_config.is_explicitly_set(config_name):
                 kwargs[crt_name] = runtime_config[config_name]
+            elif use_defaults:
+                kwargs[crt_name] = DEFAULTS[config_name]
         if 'part_size' not in kwargs:
             # `create_s3_crt_client` defaults this to 8MB, so `None` has to be
             # passed to opt into the CRT's dynamic part size calculation.
             kwargs['part_size'] = None
         return kwargs
+
+    def _should_use_transfer_config_defaults(self, runtime_config):
+        preferred = runtime_config.get('preferred_transfer_client')
+        if preferred == constants.CRT_TRANSFER_CLIENT:
+            return False
+        return not awscrt.s3.is_optimized_for_system()
 
     def _create_crt_request_serializer(self, params):
         return BotocoreCRTRequestSerializer(

@@ -265,7 +265,7 @@ class TransferManagerFactory:
         bootstrap = create_crt_client_bootstrap()
 		config_kwargs = self._resolve_crt_client_config_kwargs(runtime_config)
 
-        return CRTTransferManager(
+        transfer_manager = CRTTransferManager(
             crt_client_factory=lambda client_region=None: (
                 self._create_crt_client(
                     params,
@@ -278,6 +278,12 @@ class TransferManagerFactory:
             crt_request_serializer=self._create_crt_request_serializer(params),
 			transfer_config=self._create_crt_transfer_config(config_kwargs),
         )
+        # Clients for redirected regions are created on demand, but create the
+        # one for the configured region now. Otherwise invalid client
+        # configuration is not reported until a transfer is submitted, which
+        # reports it once per object instead of once for the command.
+        transfer_manager.get_crt_client()
+        return transfer_manager
 
 
   def _create_crt_transfer_config(self, config_kwargs):

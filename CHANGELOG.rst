@@ -2,6 +2,18 @@
 CHANGELOG
 =========
 
+2.36.43
+=======
+
+* bugfix:crt: Pass configured ``response_checksum_validation`` and ``request_checksum_calculation`` options to CRT transfers.
+* api-change:``ec2``: The CreateImage API now supports a BootModeOverride parameter to explicitly set UEFI boot mode on a new AMI, overriding the source instance's inherited boot mode.
+* api-change:``sagemaker``: This release adds the ability for customers to attach customer owned Elastic Network Interfaces (ENIs) to HyperPod cluster nodes.
+* api-change:``outposts``: Added fields to identify Outpost generation and rack scaling configuration on Outpost and CatalogItem resources.
+* api-change:``bedrock-agent``: TwelveLabs Marengo 3.0 is now an embedding model option in Amazon Bedrock Managed Knowledge Base. Create multimodal embeddings for video, audio, and image content that capture visual scenes, speech, and video cues, not just transcribed text.
+* api-change:``resiliencehubv2``: This release adds the ListTestRunSourceEvents and ListTestRunDependencies APIs, which return the alarm state changes during a test run and the dependencies the run blocked.
+* api-change:``rtbfabric``: AWS RTB Fabric now lets you control how traffic is routed to your responder gateway across Availability Zones. Set the new clientRoutingPolicy parameter  to keep traffic within the same Availability Zone or distribute traffic across all Availability Zones.
+
+
 2.36.42
 =======
 

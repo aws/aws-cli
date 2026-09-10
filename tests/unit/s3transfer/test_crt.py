@@ -11,12 +11,14 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import io
+from concurrent.futures import Future
 
 import pytest
 from botocore.credentials import Credentials, ReadOnlyCredentials
 from botocore.exceptions import (
     ClientError,
     InvalidConfigError,
+    InvalidRegionError,
     NoCredentialsError,
 )
 from botocore.session import Session
@@ -169,14 +171,10 @@ class TestBotocoreCRTRequestSerializer(unittest.TestCase):
         self.assertIsNone(crt_request.headers.get("Authorization"))
 
     def _create_crt_response_error(
-        self, status_code, body, operation_name=None
+        self, status_code, body, operation_name=None, headers=None
     ):
-        return awscrt.s3.S3ResponseError(
-            code=14343,
-            name='AWS_ERROR_S3_INVALID_RESPONSE_STATUS',
-            message='Invalid response status from request',
-            status_code=status_code,
-            headers=[
+        if headers is None:
+            headers = [
                 ('x-amz-request-id', 'QSJHJJZR2EDYD4GQ'),
                 (
                     'x-amz-id-2',
@@ -186,10 +184,25 @@ class TestBotocoreCRTRequestSerializer(unittest.TestCase):
                 ('Transfer-Encoding', 'chunked'),
                 ('Date', 'Fri, 10 Nov 2023 23:22:47 GMT'),
                 ('Server', 'AmazonS3'),
-            ],
+            ]
+        return awscrt.s3.S3ResponseError(
+            code=14343,
+            name='AWS_ERROR_S3_INVALID_RESPONSE_STATUS',
+            message='Invalid response status from request',
+            status_code=status_code,
+            headers=headers,
             body=body,
             operation_name=operation_name,
         )
+
+    def _create_serializer_with_redirect_client(self):
+        redirect_client = mock.Mock()
+        client_factory = mock.Mock(return_value=redirect_client)
+        serializer = s3transfer.crt.BotocoreCRTRequestSerializer(
+            self.session,
+            region_redirect_client_factory=client_factory,
+        )
+        return serializer, redirect_client, client_factory
 
     def test_translate_get_object_404(self):
         body = (
@@ -221,6 +234,98 @@ class TestBotocoreCRTRequestSerializer(unittest.TestCase):
         crt_exc = self._create_crt_response_error(404, body)
         boto_err = self.request_serializer.translate_crt_exception(crt_exc)
         self.assertIsInstance(boto_err, ClientError)
+
+    def test_cached_bucket_region_changes_serialized_endpoint(self):
+        self.request_serializer.cache_bucket_region(
+            self.bucket, 'eu-central-1'
+        )
+        callargs = CallArgs(
+            bucket=self.bucket,
+            key=self.key,
+            fileobj=self.filename,
+            extra_args={},
+            subscribers=[],
+        )
+        coordinator = s3transfer.crt.CRTTransferCoordinator()
+        future = s3transfer.crt.CRTTransferFuture(
+            s3transfer.crt.CRTTransferMeta(call_args=callargs), coordinator
+        )
+
+        crt_request = self.request_serializer.serialize_http_request(
+            "get_object", future
+        )
+
+        self.assertEqual(
+            crt_request.headers.get("host"),
+            "s3.eu-central-1.amazonaws.com",
+        )
+
+    def test_redirect_region_does_not_create_fallback_client(self):
+        serializer, redirect_client, client_factory = (
+            self._create_serializer_with_redirect_client()
+        )
+        error = self._create_crt_response_error(
+            301,
+            None,
+            operation_name='GetObject',
+            headers=[('x-amz-bucket-region', 'eu-central-1')],
+        )
+
+        region = serializer.get_bucket_region(self.bucket, 'get_object', error)
+
+        self.assertEqual(region, 'eu-central-1')
+        client_factory.assert_not_called()
+        redirect_client.head_bucket.assert_not_called()
+
+    def test_redirect_region_creates_fallback_client(self):
+        serializer, redirect_client, client_factory = (
+            self._create_serializer_with_redirect_client()
+        )
+        redirect_client.head_bucket.return_value = {
+            'ResponseMetadata': {
+                'HTTPHeaders': {'x-amz-bucket-region': 'eu-central-1'}
+            }
+        }
+        error = self._create_crt_response_error(
+            301,
+            b'<Error><Code>PermanentRedirect</Code></Error>',
+            operation_name='DeleteObject',
+        )
+
+        region = serializer.get_bucket_region(
+            self.bucket, 'delete_object', error
+        )
+
+        self.assertEqual(region, 'eu-central-1')
+        client_factory.assert_called_once_with()
+        redirect_client.head_bucket.assert_called_once_with(Bucket=self.bucket)
+
+    def test_redirect_region_rejects_invalid_region(self):
+        error = self._create_crt_response_error(
+            301,
+            b'<Error><Code>PermanentRedirect</Code></Error>',
+            operation_name='GetObject',
+            headers=[('x-amz-bucket-region', 'invalid region!')],
+        )
+        with self.assertRaises(InvalidRegionError):
+            self.request_serializer.get_bucket_region(
+                self.bucket, 'get_object', error
+            )
+
+    def test_redirect_region_ignores_arn_bucket(self):
+        error = self._create_crt_response_error(
+            301,
+            b'<Error><Code>PermanentRedirect</Code></Error>',
+            operation_name='GetObject',
+            headers=[('x-amz-bucket-region', 'eu-central-1')],
+        )
+        bucket = 'arn:aws:s3:us-west-2:123456789012:accesspoint/myendpoint'
+
+        region = self.request_serializer.get_bucket_region(
+            bucket, 'get_object', error
+        )
+
+        self.assertIsNone(region)
 
 
 @requires_crt_pytest
@@ -301,7 +406,9 @@ class TestCRTTransferFuture(unittest.TestCase):
         self.mock_s3_request = mock.Mock(awscrt.s3.S3RequestType)
         self.mock_crt_future = mock.Mock(awscrt.s3.Future)
         self.mock_s3_request.finished_future = self.mock_crt_future
-        self.coordinator = s3transfer.crt.CRTTransferCoordinator()
+        self.coordinator = s3transfer.crt.CRTTransferCoordinator(
+            completion_future=self.mock_crt_future
+        )
         self.coordinator.set_s3_request(self.mock_s3_request)
         self.future = s3transfer.crt.CRTTransferFuture(
             coordinator=self.coordinator
@@ -322,6 +429,197 @@ class TestCRTTransferFuture(unittest.TestCase):
         self.future.set_exception(CustomFutureException())
         with self.assertRaises(CustomFutureException):
             self.future.result()
+
+
+@requires_crt_pytest
+class TestCRTTransferCoordinator:
+    def setup_method(self):
+        self.completion_future = Future()
+        self.coordinator = s3transfer.crt.CRTTransferCoordinator(
+            completion_future=self.completion_future
+        )
+
+    def create_s3_request(self):
+        s3_request = mock.Mock(awscrt.s3.S3Request)
+        s3_request.finished_future = Future()
+        return s3_request
+
+    def test_set_s3_request(self):
+        s3_request = self.create_s3_request()
+        self.coordinator.set_s3_request(s3_request)
+        assert self.coordinator.s3_request is s3_request
+
+    def test_original_request_cannot_replace_redirect(self):
+        first_request = self.create_s3_request()
+        second_request = self.create_s3_request()
+        # The redirect started before the original request registered its
+        # native request, so the original request must not become active.
+        self.coordinator.set_s3_request(second_request, is_region_redirect=True)
+        self.coordinator.set_s3_request(first_request)
+
+        assert self.coordinator.s3_request is second_request
+
+    def test_cancel_cancels_redirected_request(self):
+        first_request = self.create_s3_request()
+        second_request = self.create_s3_request()
+        self.coordinator.set_s3_request(first_request)
+        self.coordinator.set_s3_request(second_request, is_region_redirect=True)
+
+        self.coordinator.cancel()
+
+        second_request.cancel.assert_called_once_with()
+        first_request.cancel.assert_not_called()
+
+    def test_cancel_before_request_cancels_request(self):
+        self.coordinator.cancel()
+        s3_request = self.create_s3_request()
+
+        self.coordinator.set_s3_request(s3_request)
+
+        assert self.coordinator.cancelled
+        s3_request.cancel.assert_called_once_with()
+
+    def test_default_completion_future_can_complete_without_request(self):
+        coordinator = s3transfer.crt.CRTTransferCoordinator()
+
+        coordinator.complete()
+
+        assert coordinator.done()
+        assert coordinator.result() is None
+
+    def test_complete_resolves_completion_future(self):
+        self.coordinator.complete()
+        assert self.completion_future.done()
+        assert self.coordinator.result() is None
+
+    def test_complete_with_error(self):
+        self.coordinator.complete(CustomFutureException())
+        with pytest.raises(CustomFutureException):
+            self.coordinator.result()
+
+    def test_complete_is_idempotent(self):
+        self.coordinator.complete()
+        self.coordinator.complete(CustomFutureException())
+        assert self.coordinator.result() is None
+
+    def test_not_done_until_completed(self):
+        s3_request = self.create_s3_request()
+        self.coordinator.set_s3_request(s3_request)
+        # A native CRT request failing does not complete the transfer,
+        # since it may still be redirected to another region.
+        s3_request.finished_future.set_exception(CustomFutureException())
+
+        assert not self.coordinator.done()
+
+        self.coordinator.complete()
+        assert self.coordinator.done()
+
+
+@requires_crt_pytest
+class TestS3RegionRedirectPolicy:
+    def setup_method(self):
+        self.bucket = 'mybucket'
+        self.error = Exception('wrong region')
+        self.serializer = mock.Mock(
+            s3transfer.crt.BotocoreCRTRequestSerializer
+        )
+        self.serializer.get_cached_bucket_region.return_value = None
+        self.serializer.get_bucket_region.return_value = 'eu-central-1'
+        self.serializer.get_configured_region.return_value = 'us-west-2'
+        self.policy = s3transfer.crt.CRTS3RegionRedirectPolicy(self.serializer)
+
+    def is_error_redirect_candidate(self, **overrides):
+        kwargs = {
+            'bucket': self.bucket,
+            'is_region_redirect': False,
+            'bytes_transferred': 0,
+            'cancelled': False,
+            'is_replayable': True,
+        }
+        kwargs.update(overrides)
+        return self.policy.is_error_redirect_candidate(**kwargs)
+
+    def get_retry_region(self, request_region=None):
+        return self.policy.get_retry_region(
+            self.bucket, 'put_object', self.error, request_region
+        )
+
+    def test_returns_and_caches_discovered_region(self):
+        assert self.get_retry_region() == 'eu-central-1'
+        self.serializer.cache_bucket_region.assert_called_once_with(
+            self.bucket, 'eu-central-1'
+        )
+
+    def test_returns_none_when_region_not_discovered(self):
+        self.serializer.get_bucket_region.return_value = None
+        assert self.get_retry_region() is None
+        self.serializer.cache_bucket_region.assert_not_called()
+
+    def test_returns_none_when_discovery_raises(self):
+        self.serializer.get_bucket_region.side_effect = InvalidRegionError(
+            region_name='not a region!'
+        )
+        assert self.get_retry_region() is None
+        self.serializer.cache_bucket_region.assert_not_called()
+
+    def test_returns_none_when_discovered_region_is_configured_region(self):
+        # Retrying in the region the request already used would fail the same
+        # way, and caching it would build a duplicate client for that region.
+        self.serializer.get_bucket_region.return_value = 'us-west-2'
+        assert self.get_retry_region() is None
+        self.serializer.cache_bucket_region.assert_not_called()
+
+    def test_returns_none_when_discovered_region_is_request_region(self):
+        self.serializer.get_bucket_region.return_value = 'eu-west-1'
+        assert self.get_retry_region(request_region='eu-west-1') is None
+        self.serializer.cache_bucket_region.assert_not_called()
+
+    def test_reuses_region_discovered_by_another_transfer(self):
+        # A transfer that failed in the configured region does not need to
+        # rediscover a region another transfer already cached.
+        self.serializer.get_cached_bucket_region.return_value = 'eu-west-1'
+        assert self.get_retry_region() == 'eu-west-1'
+        self.serializer.get_bucket_region.assert_not_called()
+
+    def test_rediscovers_region_when_cached_region_failed(self):
+        # The failed request already used the cached region, so the cache is
+        # stale and retrying there again would just fail the same way.
+        self.serializer.get_cached_bucket_region.return_value = 'eu-west-1'
+        assert self.get_retry_region(request_region='eu-west-1') == (
+            'eu-central-1'
+        )
+        self.serializer.get_bucket_region.assert_called_once_with(
+            self.bucket, 'put_object', self.error
+        )
+
+    def test_is_candidate_for_failed_replayable_transfer(self):
+        assert self.is_error_redirect_candidate()
+
+    def test_not_candidate_after_redirect(self):
+        assert not self.is_error_redirect_candidate(is_region_redirect=True)
+
+    def test_not_candidate_after_bytes_transferred(self):
+        assert not self.is_error_redirect_candidate(bytes_transferred=1)
+
+    def test_not_candidate_when_cancelled(self):
+        assert not self.is_error_redirect_candidate(cancelled=True)
+
+    def test_not_candidate_when_stream_is_not_replayable(self):
+        assert not self.is_error_redirect_candidate(is_replayable=False)
+
+    def test_not_candidate_for_s3express_bucket(self):
+        assert not self.is_error_redirect_candidate(
+            bucket='mybucket--usw2-az5--x-s3'
+        )
+
+    def test_candidate_checks_do_not_discover_region(self):
+        self.is_error_redirect_candidate()
+        self.serializer.get_bucket_region.assert_not_called()
+
+    def test_get_cached_bucket_region(self):
+        self.serializer.get_cached_bucket_region.return_value = 'eu-west-1'
+        region = self.policy.get_cached_bucket_region(self.bucket)
+        assert region == 'eu-west-1'
 
 
 @requires_crt()

@@ -16,6 +16,7 @@ import threading
 import time
 from concurrent.futures import Future
 
+from botocore.exceptions import ClientError
 from botocore.session import Session
 from s3transfer.subscribers import BaseSubscriber
 
@@ -33,6 +34,10 @@ if HAS_CRT:
     import awscrt
     import s3transfer.crt
 
+# Bound on waiting for a transfer that completes from another thread, so a
+# transfer that never completes fails the test instead of hanging it.
+RESULT_TIMEOUT = 20
+
 
 class submitThread(threading.Thread):
     def __init__(self, transfer_manager, futures, callargs):
@@ -49,16 +54,20 @@ class RecordingSubscriber(BaseSubscriber):
     def __init__(self):
         self.on_queued_called = False
         self.on_done_called = False
+        self.on_queued_calls = 0
+        self.on_done_calls = 0
         self.bytes_transferred = 0
         self.on_queued_future = None
         self.on_done_future = None
 
     def on_queued(self, future, **kwargs):
         self.on_queued_called = True
+        self.on_queued_calls += 1
         self.on_queued_future = future
 
     def on_done(self, future, **kwargs):
         self.on_done_called = True
+        self.on_done_calls += 1
         self.on_done_future = future
 
 
@@ -97,11 +106,13 @@ class TestCRTTransferManager(unittest.TestCase):
         self.request_serializer = s3transfer.crt.BotocoreCRTRequestSerializer(
             self.session
         )
+        self.crt_client_factory = mock.Mock(return_value=self.s3_crt_client)
         self.transfer_manager = s3transfer.crt.CRTTransferManager(
-            crt_s3_client=self.s3_crt_client,
+            crt_client_factory=self.crt_client_factory,
             crt_request_serializer=self.request_serializer,
         )
         self.record_subscriber = RecordingSubscriber()
+        self.completion_threads = []
 
     def tearDown(self):
         self.files.remove_all()
@@ -218,7 +229,7 @@ class TestCRTTransferManager(unittest.TestCase):
         callargs = self.s3_crt_client.make_request.call_args
         callargs_kwargs = callargs[1]
         on_done = callargs_kwargs["on_done"]
-        on_done(error=None)
+        on_done(error=kwargs.get('error'))
 
     def _simulate_file_download(self, recv_filepath):
         self.files.create_file(
@@ -235,6 +246,96 @@ class TestCRTTransferManager(unittest.TestCase):
             self._simulate_on_body_download(kwargs['on_body'])
         self._invoke_done_callbacks()
         return self.s3_request
+
+    def _create_redirect_error(self, region=None):
+        headers = [] if region is None else [('x-amz-bucket-region', region)]
+        return awscrt.s3.S3ResponseError(
+            code=14343,
+            name='AWS_ERROR_S3_INVALID_RESPONSE_STATUS',
+            message='Invalid response status from request',
+            status_code=301,
+            headers=headers,
+            body=b'<Error><Code>PermanentRedirect</Code></Error>',
+            operation_name='PutObject',
+        )
+
+    def _create_redirect_transfer_manager(
+        self, initial_client, client_factory
+    ):
+        def create_client(region=None):
+            if region is None:
+                return initial_client
+            return client_factory(region)
+
+        return s3transfer.crt.CRTTransferManager(
+            crt_client_factory=create_client,
+            crt_request_serializer=self.request_serializer,
+        )
+
+    def _create_redirecting_transfer_manager(
+        self, initial_make_request, redirected_make_request=None
+    ):
+        """Create a manager whose initial region and redirected region differ.
+
+        The clients for both regions and the factory that creates the
+        redirected one are recorded as ``self.initial_client``,
+        ``self.redirected_client``, and ``self.redirected_client_factory``.
+        """
+        self.initial_client = mock.Mock(awscrt.s3.S3Client)
+        self.initial_client.make_request.side_effect = initial_make_request
+        self.redirected_client = mock.Mock(awscrt.s3.S3Client)
+        self.redirected_client.make_request.side_effect = (
+            redirected_make_request or self._succeed_make_request
+        )
+        self.redirected_client_factory = mock.Mock(
+            return_value=self.redirected_client
+        )
+        return self._create_redirect_transfer_manager(
+            self.initial_client, self.redirected_client_factory
+        )
+
+    def _upload_and_wait(self, transfer_manager, subscribers=None):
+        future = transfer_manager.upload(
+            self.filename,
+            self.bucket,
+            self.key,
+            {},
+            subscribers if subscribers is not None else [],
+        )
+        future.result(timeout=RESULT_TIMEOUT)
+        return future
+
+    def _fail_make_request(self, error):
+        def make_request(**kwargs):
+            kwargs['on_done'](error=error)
+            return mock.Mock(awscrt.s3.S3Request)
+
+        return make_request
+
+    def _fail_make_request_on_other_thread(self, error):
+        """Fail a request from another thread, like a CRT completion thread.
+
+        The thread the request completed on is recorded in
+        ``self.completion_threads``.
+        """
+
+        def complete_request(on_done):
+            self.completion_threads.append(threading.get_ident())
+            on_done(error=error)
+
+        def make_request(**kwargs):
+            thread = threading.Thread(
+                target=complete_request, args=(kwargs['on_done'],)
+            )
+            self.addCleanup(thread.join)
+            thread.start()
+            return mock.Mock(awscrt.s3.S3Request)
+
+        return make_request
+
+    def _succeed_make_request(self, **kwargs):
+        kwargs['on_done'](error=None)
+        return mock.Mock(awscrt.s3.S3Request)
 
     def test_upload(self):
         future = self.transfer_manager.upload(
@@ -261,6 +362,305 @@ class TestCRTTransferManager(unittest.TestCase):
             expected_missing_headers=['Content-MD5'],
         )
         self._assert_subscribers_called(future)
+
+    def test_upload_redirects_and_reuses_cached_region(self):
+        redirected_region = 'eu-central-1'
+        transfer_manager = self._create_redirecting_transfer_manager(
+            self._fail_make_request(
+                self._create_redirect_error(redirected_region)
+            )
+        )
+
+        first_subscriber = RecordingSubscriber()
+        first_future = transfer_manager.upload(
+            self.filename,
+            self.bucket,
+            self.key,
+            {},
+            [first_subscriber],
+        )
+        first_future.result()
+
+        self.assertEqual(self.initial_client.make_request.call_count, 1)
+        self.assertEqual(self.redirected_client.make_request.call_count, 1)
+        self.redirected_client_factory.assert_called_once_with(
+            redirected_region
+        )
+        initial_call = self.initial_client.make_request.call_args_list[
+            0
+        ].kwargs
+        redirected_call = self.redirected_client.make_request.call_args_list[
+            0
+        ].kwargs
+        self.assertEqual(
+            initial_call['request'].headers.get('host'),
+            f's3.{self.region}.amazonaws.com',
+        )
+        self.assertEqual(
+            redirected_call['request'].headers.get('host'),
+            f's3.{redirected_region}.amazonaws.com',
+        )
+        # The redirect is internal to one logical transfer, so subscribers
+        # only see it once.
+        self.assertEqual(first_subscriber.on_queued_calls, 1)
+        self.assertEqual(first_subscriber.on_done_calls, 1)
+
+        second_subscriber = RecordingSubscriber()
+        second_future = transfer_manager.upload(
+            self.filename,
+            self.bucket,
+            self.key,
+            {},
+            [second_subscriber],
+        )
+        second_future.result()
+
+        self.assertEqual(self.initial_client.make_request.call_count, 1)
+        self.assertEqual(self.redirected_client.make_request.call_count, 2)
+        self.redirected_client_factory.assert_called_once_with(
+            redirected_region
+        )
+        self.assertEqual(second_subscriber.on_queued_calls, 1)
+        self.assertEqual(second_subscriber.on_done_calls, 1)
+
+    def test_upload_redirect_restores_seekable_stream_position(self):
+        redirected_region = 'eu-central-1'
+        redirect_error = self._create_redirect_error(redirected_region)
+        attempt_bodies = []
+
+        def consume_body_and_finish(error):
+            def make_request(**kwargs):
+                attempt_bodies.append(
+                    kwargs['request'].body_stream._stream.read()
+                )
+                kwargs['on_done'](error=error)
+                return mock.Mock(awscrt.s3.S3Request)
+
+            return make_request
+
+        transfer_manager = self._create_redirecting_transfer_manager(
+            consume_body_and_finish(redirect_error),
+            consume_body_and_finish(None),
+        )
+
+        future = transfer_manager.upload(
+            io.BytesIO(self.expected_content), self.bucket, self.key, {}, []
+        )
+        future.result()
+
+        self.assertEqual(
+            attempt_bodies, [self.expected_content, self.expected_content]
+        )
+
+    def test_successful_upload_does_not_consult_redirect_policy(self):
+        # A transfer that did not fail is never a redirect candidate.
+        with mock.patch.object(
+            self.transfer_manager._region_redirect_policy,
+            'is_error_redirect_candidate',
+        ) as is_error_redirect_candidate:
+            future = self.transfer_manager.upload(
+                self.filename, self.bucket, self.key, {}, []
+            )
+            future.result(timeout=RESULT_TIMEOUT)
+
+        is_error_redirect_candidate.assert_not_called()
+
+    def test_upload_does_not_redirect_to_configured_region(self):
+        # A redirect naming the region the request already used, e.g. from an
+        # accelerate or dualstack endpoint, is not worth retrying.
+        transfer_manager = self._create_redirecting_transfer_manager(
+            self._fail_make_request(self._create_redirect_error(self.region))
+        )
+
+        with self.assertRaises(ClientError):
+            self._upload_and_wait(transfer_manager)
+
+        # No duplicate client for a region the transfer already used, and no
+        # retry that would just fail again.
+        self.redirected_client_factory.assert_not_called()
+        self.assertEqual(self.initial_client.make_request.call_count, 1)
+
+    def test_upload_does_not_redirect_nonseekable_stream(self):
+        transfer_manager = self._create_redirecting_transfer_manager(
+            self._fail_make_request(
+                self._create_redirect_error('eu-central-1')
+            )
+        )
+
+        future = transfer_manager.upload(
+            NonSeekableReader(self.expected_content),
+            self.bucket,
+            self.key,
+            {},
+            [],
+        )
+
+        with self.assertRaises(ClientError):
+            future.result()
+        self.redirected_client_factory.assert_not_called()
+        self.redirected_client.make_request.assert_not_called()
+
+    def test_upload_does_not_redirect_after_progress(self):
+        redirect_error = self._create_redirect_error('eu-central-1')
+
+        def fail_after_progress(**kwargs):
+            kwargs['on_progress'](1)
+            kwargs['on_done'](error=redirect_error)
+            return mock.Mock(awscrt.s3.S3Request)
+
+        transfer_manager = self._create_redirecting_transfer_manager(
+            fail_after_progress
+        )
+
+        with self.assertRaises(ClientError):
+            self._upload_and_wait(transfer_manager)
+        self.redirected_client_factory.assert_not_called()
+        self.redirected_client.make_request.assert_not_called()
+
+    def test_concurrent_redirects_discover_region_once(self):
+        # Transfers redirected at the same time share one region lookup, and
+        # each request is sent on a client for the region it was signed for.
+        redirected_region = 'eu-central-1'
+        redirect_error = self._create_redirect_error(redirected_region)
+        release = threading.Event()
+
+        def fail_when_released(**kwargs):
+            def complete_request():
+                release.wait(RESULT_TIMEOUT)
+                kwargs['on_done'](error=redirect_error)
+
+            thread = threading.Thread(target=complete_request)
+            self.addCleanup(thread.join)
+            thread.start()
+            return mock.Mock(awscrt.s3.S3Request)
+
+        transfer_manager = self._create_redirecting_transfer_manager(
+            fail_when_released
+        )
+
+        with mock.patch.object(
+            self.request_serializer,
+            'get_bucket_region',
+            wraps=self.request_serializer.get_bucket_region,
+        ) as discover_region:
+            # Both transfers are in flight before either has a region to
+            # reuse, then both fail with a redirect at once.
+            futures = [
+                transfer_manager.upload(
+                    self.filename, self.bucket, f'{self.key}-{i}', {}, []
+                )
+                for i in range(2)
+            ]
+            release.set()
+            for future in futures:
+                future.result(timeout=RESULT_TIMEOUT)
+
+        # The region is discovered once and reused, rather than every
+        # redirected transfer paying for its own lookup.
+        self.assertEqual(discover_region.call_count, 1)
+        self.assertEqual(self.redirected_client.make_request.call_count, 2)
+        # Sending a request signed for one region on a client configured for
+        # another fails with SignatureDoesNotMatch, so every request has to
+        # agree with the client it was sent on.
+        for call in self.initial_client.make_request.call_args_list:
+            self.assertEqual(
+                call.kwargs['request'].headers.get('host'),
+                self.expected_host,
+            )
+        for call in self.redirected_client.make_request.call_args_list:
+            self.assertEqual(
+                call.kwargs['request'].headers.get('host'),
+                f's3.{redirected_region}.amazonaws.com',
+            )
+
+    def test_upload_redirect_does_not_block_completion_thread(self):
+        # Redirecting must not run on the CRT thread that reported the
+        # failure, since it can block on the network.
+        redirect_threads = []
+
+        def succeed_and_record_thread(**kwargs):
+            redirect_threads.append(threading.get_ident())
+            return self._succeed_make_request(**kwargs)
+
+        transfer_manager = self._create_redirecting_transfer_manager(
+            self._fail_make_request_on_other_thread(
+                self._create_redirect_error('eu-central-1')
+            ),
+            succeed_and_record_thread,
+        )
+
+        self._upload_and_wait(transfer_manager)
+
+        # Discovering the region and serializing the retry can both block on
+        # the network, so they must not run on the thread the CRT completed
+        # the original request on.
+        self.assertEqual(len(redirect_threads), 1)
+        self.assertEqual(len(self.completion_threads), 1)
+        self.assertNotEqual(redirect_threads[0], self.completion_threads[0])
+
+    def test_cancel_cancels_retry_started_before_original_request_returned(
+        self,
+    ):
+        # A redirect can start before the original request registers, so a
+        # cancel has to reach the retry rather than the finished request.
+        redirect_error = self._create_redirect_error('eu-central-1')
+        original_request = mock.Mock(awscrt.s3.S3Request)
+        retry_request = mock.Mock(awscrt.s3.S3Request)
+        retry_started = threading.Event()
+        retry_callbacks = {}
+
+        def start_retry(**kwargs):
+            # Leave the retry in flight so it is the request a cancel has to
+            # reach.
+            retry_callbacks['on_done'] = kwargs['on_done']
+            retry_started.set()
+            return retry_request
+
+        def redirect_before_returning(**kwargs):
+            kwargs['on_done'](error=redirect_error)
+            # The redirect is handled on another thread, so wait for the retry
+            # to register before this request reports its own native request.
+            self.assertTrue(retry_started.wait(RESULT_TIMEOUT))
+            return original_request
+
+        transfer_manager = self._create_redirecting_transfer_manager(
+            redirect_before_returning, start_retry
+        )
+
+        future = transfer_manager.upload(
+            self.filename, self.bucket, self.key, {}, []
+        )
+        future.cancel()
+
+        # The original request completed and was replaced by the retry, so
+        # cancelling must not target the request that already finished.
+        retry_request.cancel.assert_called_once_with()
+        original_request.cancel.assert_not_called()
+
+        retry_callbacks['on_done'](error=None)
+        future.result(timeout=RESULT_TIMEOUT)
+
+    def test_upload_completes_when_redirect_decision_raises(self):
+        # A redirect decision that raises must still finish the transfer.
+        # The CRT invokes on_done from one of its own threads, so raising
+        # there strands the transfer instead of failing make_request().
+        transfer_manager = self._create_redirecting_transfer_manager(
+            self._fail_make_request_on_other_thread(
+                self._create_redirect_error('eu-central-1')
+            )
+        )
+        with mock.patch.object(
+            transfer_manager._region_redirect_policy,
+            'get_retry_region',
+            side_effect=RuntimeError('Unexpected redirect failure'),
+        ):
+            # The transfer must still finish, and surface the error from the
+            # transfer itself instead of the one from the redirect decision.
+            with self.assertRaises(ClientError):
+                self._upload_and_wait(transfer_manager)
+            transfer_manager.shutdown()
+
+        self.redirected_client_factory.assert_not_called()
 
     def test_upload_from_seekable_stream(self):
         with open(self.filename, 'rb') as f:
@@ -667,13 +1067,14 @@ class TestCRTTransferManager(unittest.TestCase):
 
     def _cancel_function(self):
         self.cancel_called = True
-        self.s3_request.finished_future.set_exception(
-            awscrt.exceptions.from_code(0)
-        )
-        self._invoke_done_callbacks()
+        error = awscrt.exceptions.from_code(0)
+        self.s3_request.finished_future.set_exception(error)
+        self._invoke_done_callbacks(error=error)
 
     def test_cancel(self):
         self.s3_request.finished_future = Future()
+        self.s3_crt_client.make_request.side_effect = None
+        self.s3_crt_client.make_request.return_value = self.s3_request
         self.cancel_called = False
         self.s3_request.cancel = self._cancel_function
         try:
@@ -701,7 +1102,7 @@ class TestCRTTransferManager(unittest.TestCase):
 
         not_impl_serializer = ExceptionRaisingSerializer()
         transfer_manager = s3transfer.crt.CRTTransferManager(
-            crt_s3_client=self.s3_crt_client,
+            crt_client_factory=self.crt_client_factory,
             crt_request_serializer=not_impl_serializer,
         )
         future = transfer_manager.upload(

@@ -16,6 +16,7 @@ import s3transfer.crt
 from awscrt.s3 import S3FileIoOptions, S3RequestTlsMode
 from botocore.config import Config
 from botocore.credentials import Credentials
+from botocore.exceptions import InvalidConfigError
 from botocore.httpsession import DEFAULT_CA_BUNDLE
 from botocore.session import Session
 from s3transfer.crt import CRTTransferManager
@@ -285,6 +286,37 @@ class TestTransferManagerFactory(unittest.TestCase):
         )
 
     @mock.patch('s3transfer.crt.S3Client')
+    def test_creates_crt_client_for_redirected_region(self, mock_crt_client):
+        self.runtime_config = self.get_runtime_config(
+            preferred_transfer_client='crt'
+        )
+        transfer_manager = self.factory.create_transfer_manager(
+            self.params, self.runtime_config
+        )
+
+        # The client for the configured region is created up front, and each
+        # selected region is cached.
+        self.assertEqual(mock_crt_client.call_count, 1)
+        self.assertIs(
+            transfer_manager.get_crt_client(),
+            transfer_manager.get_crt_client(),
+        )
+        self.assertIs(
+            transfer_manager.get_crt_client('eu-central-1'),
+            transfer_manager.get_crt_client('eu-central-1'),
+        )
+
+        self.assertEqual(mock_crt_client.call_count, 2)
+        self.assertEqual(
+            mock_crt_client.call_args_list[0].kwargs['region'],
+            'us-west-2',
+        )
+        self.assertEqual(
+            mock_crt_client.call_args_list[1].kwargs['region'],
+            'eu-central-1',
+        )
+
+    @mock.patch('s3transfer.crt.S3Client')
     def test_falls_back_to_session_region_for_crt_manager(
         self, mock_crt_client
     ):
@@ -391,6 +423,21 @@ class TestTransferManagerFactory(unittest.TestCase):
         self.assert_is_crt_manager(transfer_manager)
         self.session.get_credentials.assert_not_called()
         self.assertIsNone(mock_crt_client.call_args[1]['credential_provider'])
+
+    @mock.patch('s3transfer.crt.S3Client')
+    def test_invalid_client_config_raises_when_creating_crt_manager(
+        self, mock_crt_client
+    ):
+        self.runtime_config = self.get_runtime_config(
+            preferred_transfer_client='crt'
+        )
+        self.params['verify_ssl'] = ' '
+
+        # Reported once here rather than once per submitted transfer.
+        with self.assertRaises(InvalidConfigError):
+            self.factory.create_transfer_manager(
+                self.params, self.runtime_config
+            )
 
     @mock.patch('s3transfer.crt.S3Client')
     @mock.patch('s3transfer.crt.ClientTlsContext')

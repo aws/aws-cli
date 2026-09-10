@@ -240,3 +240,66 @@ class TestUserAgentCommandSection(BaseAWSCommandParamsTest):
         self._assert_customization_in_user_agent(
             ' md/command#rds.add-option-to-option-group'
         )
+
+
+class _CmdWithValueOptionAndSubcommand(BasicCommand):
+    """A command that has BOTH a value-taking option and a subcommand whose
+    name can equal that option's value. This is the arrangement that exposes
+    the `_subcommand_precedes_help` `args.index` edge.
+
+    No command currently has this shape, so the edge is not reachable
+    through the real CLI today; this synthetic command exercises the routing
+    helper's logic directly so the fix is testable.
+    """
+
+    NAME = 'valsubcmd'
+    ARG_TABLE = [
+        {
+            'name': 'opt',
+            'help_text': 'A value-taking option.',
+            'action': 'store',
+            'cli_type_name': 'string',
+        }
+    ]
+    SUBCOMMANDS = [{'name': 'get', 'command_class': BasicCommand}]
+
+
+class TestSubcommandPrecedesHelp(unittest.TestCase):
+    """`_subcommand_precedes_help` must decide from the subcommand's real
+    parsed position, not from `args.index()` (first literal occurrence).
+
+    With an `args.index` implementation, an option value that equals the
+    subcommand name and sits before `--help` is mistaken for the subcommand, so
+    `['--opt', 'get', '--help', 'get']` (real subcommand after `--help`) wrongly
+    returns True. The parser-derived implementation returns False.
+    """
+
+    def setUp(self):
+        self.cmd = _CmdWithValueOptionAndSubcommand(FakeSession())
+        # Build the tables the routing helper relies on.
+        self.cmd._subcommand_table = self.cmd._build_subcommand_table()
+        self.cmd._arg_table = self.cmd._build_arg_table()
+
+    def _decide(self, args):
+        mps = self.cmd._parse_potential_subcommand(
+            args, self.cmd._subcommand_table
+        )
+        assert mps is not None, f'no subcommand parsed for {args!r}'
+        return self.cmd._subcommand_precedes_help(args, mps)
+
+    def test_option_value_equal_to_subcommand_name_before_help(self):
+        # 'get' appears first as --opt's VALUE (before --help); the real 'get'
+        # subcommand is AFTER --help.  Must be False (render parent help).
+        self.assertFalse(
+            self._decide(['--opt', 'get', '--help', 'get']),
+            "the option value 'get' before --help must not be mistaken for "
+            "the subcommand that appears after --help",
+        )
+
+    def test_real_subcommand_before_help(self):
+        # Real subcommand 'get' before --help -> descend into it (True).
+        self.assertTrue(self._decide(['get', '--help']))
+
+    def test_real_subcommand_after_help(self):
+        # 'get' only after --help -> parent help (False).
+        self.assertFalse(self._decide(['--help', 'get']))

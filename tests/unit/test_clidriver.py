@@ -217,6 +217,7 @@ def _generate_auto_prompt_resolve_cases():
         Case(['--no-cli-auto-prompt'], 'on-partial', 'off'),
         Case(['--version'], 'on', 'off'),
         Case(['help'], 'on', 'off'),
+        Case(['--help'], 'on', 'off'),
     ]
 
 
@@ -834,7 +835,7 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
         self.assertIn(HELP_BLURB, self.stderr.getvalue())
 
     def test_help_blurb_in_unknown_argument_error_message(self):
-        args = ['s3api', 'list-objects', '--help']
+        args = ['s3api', 'list-objects', '--unknown-flag-xyz']
         driver = create_clidriver(args)
         rc = driver.main(args)
         self.assertEqual(rc, 252)
@@ -1130,6 +1131,39 @@ class TestServiceOperation(unittest.TestCase):
             'Idempotency tokens should not be required',
         )
 
+    def test_help_flag_before_subcommand_renders_operation_help(self):
+        # With --help BEFORE a subcommand token, help must resolve at this
+        # operation's depth, not the subcommand's.  No operation has a
+        # subcommand table, so inject a fake one: a fake operation with a single
+        # fake "fake-subcommand".  For ``<operation> --help fake-subcommand`` the
+        # operation's help must render and the subcommand must not be dispatched.
+        # (Without the guard the dispatch would descend into the subcommand.)
+        fake_subcommand = mock.Mock()
+        self.cmd._subcommand_table = {'fake-subcommand': fake_subcommand}
+        operation_help = mock.Mock()
+        self.cmd.create_help_command = mock.Mock(return_value=operation_help)
+        parsed_globals = mock.Mock()
+
+        self.cmd(['--help', 'fake-subcommand'], parsed_globals)
+
+        operation_help.assert_called_once()
+        fake_subcommand.assert_not_called()
+
+    def test_subcommand_before_help_flag_still_dispatches_subcommand(self):
+        # Symmetric check: for ``<operation> fake-subcommand --help`` the
+        # subcommand is named before --help, so the dispatch still descends into
+        # it (and the subcommand renders its own help).
+        fake_subcommand = mock.Mock()
+        self.cmd._subcommand_table = {'fake-subcommand': fake_subcommand}
+        operation_help = mock.Mock()
+        self.cmd.create_help_command = mock.Mock(return_value=operation_help)
+        parsed_globals = mock.Mock()
+
+        self.cmd(['fake-subcommand', '--help'], parsed_globals)
+
+        fake_subcommand.assert_called_once()
+        operation_help.assert_not_called()
+
 
 class TestAWSCLIEntryPoint(unittest.TestCase):
     def setUp(self):
@@ -1306,6 +1340,53 @@ class TestGetDistributionSource:
         self._write_json(data_dir / 'metadata.json', {'version': '2.0.0'})
 
         assert get_distribution_source() == 'other'
+
+
+class TestHelpFlagPreHelpSliceParse(unittest.TestCase):
+    """The pre-help-slice parse in ``CLIDriver._names_a_command`` must catch
+    only argparse errors (``ArgParseException``), not ``BaseException``.
+
+    A broad ``except BaseException`` swallows ``SystemExit`` (raised by the
+    ``--version`` action) and ``KeyboardInterrupt`` during the slice parse.
+    Swallowing ``--version``'s ``SystemExit`` misroutes ``aws --version --help``
+    as "no command named" instead of mirroring the positional ``help`` token.
+    Swallowing ``KeyboardInterrupt`` hides a user interrupt.  Narrowing to
+    ``ArgParseException`` lets both propagate.
+    """
+
+    def test_version_flag_before_help_agrees_with_positional_help(self):
+        # `aws --version --help` must behave like `aws --version help`: the
+        # --version action fires and the process exits 0 in both cases.
+        driver = create_clidriver()
+        rc_flag = driver.main(['--version', '--help'])
+        driver2 = create_clidriver()
+        rc_positional = driver2.main(['--version', 'help'])
+        self.assertEqual(rc_flag, 0)
+        self.assertEqual(rc_positional, 0)
+        self.assertEqual(rc_flag, rc_positional)
+
+    def test_keyboard_interrupt_during_slice_parse_propagates(self):
+        # A KeyboardInterrupt raised while parsing the pre-help slice must
+        # propagate, not be swallowed and reported as "no command named".
+        driver = create_clidriver()
+        command_table = driver._get_command_table()
+        parser = driver.create_parser(command_table)
+        with mock.patch.object(
+            parser, 'parse_known_args', side_effect=KeyboardInterrupt
+        ):
+            with self.assertRaises(KeyboardInterrupt):
+                driver._names_a_command(['ec2', '--help'], parser)
+
+    def test_argparse_error_during_slice_parse_is_no_command(self):
+        # A genuine argparse failure on the slice (e.g. `--region` missing its
+        # value) is caught and reported as "no command named" so provider help
+        # renders.
+        driver = create_clidriver()
+        command_table = driver._get_command_table()
+        parser = driver.create_parser(command_table)
+        self.assertFalse(
+            driver._names_a_command(['--region', '--help'], parser)
+        )
 
 
 if __name__ == '__main__':

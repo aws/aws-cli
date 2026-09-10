@@ -32,6 +32,12 @@ from awscli.customizations.s3.transferconfig import (
 
 LOGGER = logging.getLogger(__name__)
 
+CRT_CLIENT_KWARG_MAP = {
+    'multipart_chunksize': 'part_size',
+    'multipart_threshold': 'multipart_upload_threshold',
+    'max_concurrent_requests': 'max_active_connections_override',
+}
+
 
 class ClientFactory:
     def __init__(self, session):
@@ -120,7 +126,6 @@ class TransferManagerFactory:
         )
 
     def _create_crt_client(self, params, runtime_config):
-        config_file_params = self._session.get_scoped_config().get('s3', {})
         create_crt_client_kwargs = {
             'region': self._resolve_region(params),
             'verify': self._resolve_verify(params),
@@ -131,12 +136,9 @@ class TransferManagerFactory:
         target_throughput = runtime_config.get('target_bandwidth', None)
         if target_throughput:
             create_crt_client_kwargs['target_throughput'] = target_throughput
-        multipart_chunksize = runtime_config.get('multipart_chunksize', None)
-        # User didn't explicitly configure `multipart_chunksize`. Set it to
-        # `None` and let CRT dynamically calculate the part size.
-        if 'multipart_chunksize' not in config_file_params:
-            multipart_chunksize = None
-        create_crt_client_kwargs['part_size'] = multipart_chunksize
+        create_crt_client_kwargs.update(
+            self._resolve_crt_client_config_kwargs(runtime_config)
+        )
         if params.get('sign_request', True):
             crt_credentials_provider = self._get_crt_credentials_provider()
             create_crt_client_kwargs['crt_credentials_provider'] = (
@@ -153,6 +155,17 @@ class TransferManagerFactory:
         create_crt_client_kwargs['fio_options'] = fio_options
 
         return create_s3_crt_client(**create_crt_client_kwargs)
+
+    def _resolve_crt_client_config_kwargs(self, runtime_config):
+        kwargs = {}
+        for config_name, crt_name in CRT_CLIENT_KWARG_MAP.items():
+            if runtime_config.is_explicitly_set(config_name):
+                kwargs[crt_name] = runtime_config[config_name]
+        if 'part_size' not in kwargs:
+            # `create_s3_crt_client` defaults this to 8MB, so `None` has to be
+            # passed to opt into the CRT's dynamic part size calculation.
+            kwargs['part_size'] = None
+        return kwargs
 
     def _create_crt_request_serializer(self, params):
         return BotocoreCRTRequestSerializer(

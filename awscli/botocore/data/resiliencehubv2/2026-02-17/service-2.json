@@ -845,6 +845,24 @@
       "documentation":"<p>Lists the tags for a resource.</p>",
       "readonly":true
     },
+    "ListTestRunDependencies":{
+      "name":"ListTestRunDependencies",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v2/test-runs/{testRunId}/dependencies",
+        "responseCode":200
+      },
+      "input":{"shape":"ListTestRunDependenciesRequest"},
+      "output":{"shape":"ListTestRunDependenciesResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Lists the dependencies that a test run blocked. Each dependency reflects the discovered classification captured when the run started, so results do not change if a dependency is reclassified after the run.</p>",
+      "readonly":true
+    },
     "ListTestRunEvents":{
       "name":"ListTestRunEvents",
       "http":{
@@ -861,6 +879,24 @@
         {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Lists the events in a test run's timeline.</p>",
+      "readonly":true
+    },
+    "ListTestRunSourceEvents":{
+      "name":"ListTestRunSourceEvents",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v2/test-runs/{testRunId}/source-events",
+        "responseCode":200
+      },
+      "input":{"shape":"ListTestRunSourceEventsRequest"},
+      "output":{"shape":"ListTestRunSourceEventsResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Lists the state-change events observed for a test run monitoring source. Events are returned for one source per call, in chronological order.</p>",
       "readonly":true
     },
     "ListTestRunSources":{
@@ -1308,6 +1344,39 @@
         "USER",
         "SYSTEM"
       ]
+    },
+    "AlarmState":{
+      "type":"string",
+      "documentation":"<p>The state of a CloudWatch alarm.</p>",
+      "enum":[
+        "OK",
+        "ALARM",
+        "INSUFFICIENT_DATA"
+      ]
+    },
+    "AlarmStateChangeDetail":{
+      "type":"structure",
+      "required":["state"],
+      "members":{
+        "state":{
+          "shape":"AlarmState",
+          "documentation":"<p>The state the alarm transitioned to.</p>"
+        },
+        "previousState":{
+          "shape":"AlarmState",
+          "documentation":"<p>The state the alarm transitioned from. Absent on the initial event, which records the alarm's state when collection began.</p>"
+        },
+        "reason":{
+          "shape":"AlarmStateChangeDetailReasonString",
+          "documentation":"<p>A human-readable explanation of the state change, as reported by CloudWatch.</p>"
+        }
+      },
+      "documentation":"<p>Details about a CloudWatch alarm state change observed during a test run.</p>"
+    },
+    "AlarmStateChangeDetailReasonString":{
+      "type":"string",
+      "max":1023,
+      "min":0
     },
     "Arn":{
       "type":"string",
@@ -1893,7 +1962,7 @@
           "documentation":"<p>The stop conditions for the test.</p>"
         },
         "roleName":{
-          "shape":"EntityName",
+          "shape":"IamRoleName",
           "documentation":"<p>The name of the IAM execution role to use when running the test.</p>"
         },
         "parameters":{
@@ -2205,6 +2274,7 @@
     },
     "DependencyCriticality":{
       "type":"string",
+      "documentation":"<p>The criticality classification of a dependency.</p>",
       "enum":[
         "HARD",
         "SOFT",
@@ -2399,6 +2469,88 @@
       },
       "documentation":"<p>Contains the effective resilience policy values for a service.</p>"
     },
+    "EksLabelKey":{
+      "type":"string",
+      "documentation":"<p>A Kubernetes label key. It can include an optional DNS subdomain prefix.</p>",
+      "max":317,
+      "min":1,
+      "pattern":"([a-z0-9]([-a-z0-9.]*[a-z0-9])?/)?[A-Za-z0-9]([-A-Za-z0-9_.]*[A-Za-z0-9])?"
+    },
+    "EksLabelSelector":{
+      "type":"structure",
+      "members":{
+        "matchLabels":{
+          "shape":"EksLabelSelectorMatchLabelsMap",
+          "documentation":"<p>The label key-value pairs that an object must have. All pairs must match for the object to be selected.</p>"
+        },
+        "matchExpressions":{
+          "shape":"EksLabelSelectorMatchExpressionsList",
+          "documentation":"<p>The label requirements that an object must satisfy. All requirements in the list must match for the object to be selected.</p>"
+        }
+      },
+      "documentation":"<p>A label selector that filters the Kubernetes objects discovered from an Amazon EKS input source. An object must satisfy both matchLabels and matchExpressions to match the selector. A selector with neither matches every object. The selector must render to 2,048 characters or fewer in Kubernetes label selector syntax.</p>"
+    },
+    "EksLabelSelectorMatchExpressionsList":{
+      "type":"list",
+      "member":{"shape":"EksLabelSelectorRequirement"},
+      "max":20,
+      "min":0,
+      "sensitive":true
+    },
+    "EksLabelSelectorMatchLabelsMap":{
+      "type":"map",
+      "key":{"shape":"EksLabelKey"},
+      "value":{"shape":"EksLabelValue"},
+      "documentation":"<p>Specifies Kubernetes labels as a map of label keys to values.</p>",
+      "max":20,
+      "min":0,
+      "sensitive":true
+    },
+    "EksLabelSelectorOperator":{
+      "type":"string",
+      "documentation":"<p>The operator that a label selector requirement applies to its key and values.</p> <ul> <li> <p>IN — the key's value must be one of the specified values.</p> </li> <li> <p>NOT_IN — the key's value must not be one of the specified values.</p> </li> <li> <p>EXISTS — the key must be present, regardless of its value.</p> </li> <li> <p>DOES_NOT_EXIST — the key must not be present.</p> </li> </ul>",
+      "enum":[
+        "IN",
+        "NOT_IN",
+        "EXISTS",
+        "DOES_NOT_EXIST"
+      ]
+    },
+    "EksLabelSelectorRequirement":{
+      "type":"structure",
+      "required":[
+        "key",
+        "operator"
+      ],
+      "members":{
+        "key":{
+          "shape":"EksLabelKey",
+          "documentation":"<p>The label key that the requirement applies to.</p>"
+        },
+        "operator":{
+          "shape":"EksLabelSelectorOperator",
+          "documentation":"<p>The operator that relates the label key to the values.</p>"
+        },
+        "values":{
+          "shape":"EksLabelSelectorRequirementValuesList",
+          "documentation":"<p>The label values to compare against. Specify values when the operator is IN or NOT_IN. Leave this empty when the operator is EXISTS or DOES_NOT_EXIST.</p>"
+        }
+      },
+      "documentation":"<p>A single label requirement in a label selector, expressed as a key, an operator, and an optional list of values.</p>"
+    },
+    "EksLabelSelectorRequirementValuesList":{
+      "type":"list",
+      "member":{"shape":"EksLabelValue"},
+      "max":20,
+      "min":0
+    },
+    "EksLabelValue":{
+      "type":"string",
+      "documentation":"<p>A Kubernetes label value. This value can be empty.</p>",
+      "max":63,
+      "min":0,
+      "pattern":"([A-Za-z0-9]([-A-Za-z0-9_.]*[A-Za-z0-9])?)?"
+    },
     "EksNamespace":{
       "type":"string",
       "documentation":"<p>Kubernetes namespace name (RFC 1123 Label).</p>",
@@ -2417,6 +2569,10 @@
         "namespaces":{
           "shape":"EksSourceNamespacesList",
           "documentation":"<p>The list of Kubernetes namespaces within the EKS cluster.</p>"
+        },
+        "labelSelector":{
+          "shape":"EksLabelSelector",
+          "documentation":"<p>Filters discovery to the Kubernetes objects whose labels match the selector. When omitted, all supported objects in the specified namespaces are discovered.</p>"
         }
       },
       "documentation":"<p>Defines an Amazon EKS cluster and its namespaces as an input source for resource discovery.</p>"
@@ -3724,6 +3880,48 @@
         "tags":{"shape":"TagMap"}
       }
     },
+    "ListTestRunDependenciesRequest":{
+      "type":"structure",
+      "required":[
+        "testRunId",
+        "serviceArn"
+      ],
+      "members":{
+        "testRunId":{
+          "shape":"TestRunId",
+          "documentation":"<p>The identifier of the test run to list dependencies for.</p>",
+          "location":"uri",
+          "locationName":"testRunId"
+        },
+        "serviceArn":{
+          "shape":"Arn",
+          "documentation":"<p>The ARN of the service the test run belongs to.</p>",
+          "location":"querystring",
+          "locationName":"serviceArn"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListTestRunDependenciesResponse":{
+      "type":"structure",
+      "required":["dependencies"],
+      "members":{
+        "dependencies":{
+          "shape":"TestRunDependencySummaryList",
+          "documentation":"<p>The list of dependencies the test run blocked.</p>"
+        },
+        "nextToken":{"shape":"NextToken"}
+      }
+    },
     "ListTestRunEventsRequest":{
       "type":"structure",
       "required":[
@@ -3774,6 +3972,55 @@
         "events":{
           "shape":"TestRunEventList",
           "documentation":"<p>The list of test run events.</p>"
+        },
+        "nextToken":{"shape":"NextToken"}
+      }
+    },
+    "ListTestRunSourceEventsRequest":{
+      "type":"structure",
+      "required":[
+        "testRunId",
+        "serviceArn",
+        "sourceArn"
+      ],
+      "members":{
+        "testRunId":{
+          "shape":"TestRunId",
+          "documentation":"<p>The identifier of the test run to list source events for.</p>",
+          "location":"uri",
+          "locationName":"testRunId"
+        },
+        "serviceArn":{
+          "shape":"Arn",
+          "documentation":"<p>The ARN of the service the test run belongs to.</p>",
+          "location":"querystring",
+          "locationName":"serviceArn"
+        },
+        "sourceArn":{
+          "shape":"TestRunSourceArn",
+          "documentation":"<p>The ARN of the monitoring source to list events for, such as the ARN of a CloudWatch alarm. If the source was not monitored during the test run, the response is an empty list.</p>",
+          "location":"querystring",
+          "locationName":"sourceArn"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListTestRunSourceEventsResponse":{
+      "type":"structure",
+      "required":["testRunSourceEvents"],
+      "members":{
+        "testRunSourceEvents":{
+          "shape":"TestRunSourceEventList",
+          "documentation":"<p>The list of source events, in chronological order.</p>"
         },
         "nextToken":{"shape":"NextToken"}
       }
@@ -6127,7 +6374,7 @@
           "documentation":"<p>The stop conditions for the test.</p>"
         },
         "roleName":{
-          "shape":"EntityName",
+          "shape":"IamRoleName",
           "documentation":"<p>The name of the IAM execution role used to run the test.</p>"
         },
         "parameters":{
@@ -6177,7 +6424,8 @@
     },
     "TestId":{
       "type":"string",
-      "documentation":"<p>The unique identifier of a test.</p>"
+      "documentation":"<p>The unique identifier of a test.</p>",
+      "min":1
     },
     "TestParameters":{
       "type":"map",
@@ -6245,7 +6493,7 @@
           "documentation":"<p>The logging configuration snapshotted from the test when the run was started.</p>"
         },
         "roleName":{
-          "shape":"EntityName",
+          "shape":"IamRoleName",
           "documentation":"<p>The IAM execution role name snapshotted from the test when the run was started.</p>"
         },
         "testTemplateArn":{
@@ -6282,10 +6530,88 @@
         },
         "accountTargeting":{
           "shape":"AccountTargeting",
-          "documentation":"<p>Indicates whether this test run targets a single account or multiple accounts.</p>"
+          "documentation":"<p>Indicates whether the test run targets resources in a single AWS account or across multiple accounts.</p>"
         }
       },
       "documentation":"<p>Represents a single run of a test. Configuration is snapshotted from the test and service at the time the run is started.</p>"
+    },
+    "TestRunDependencySource":{
+      "type":"string",
+      "documentation":"<p>The origin of a blocked dependency.</p>",
+      "enum":[
+        "DISCOVERED",
+        "MANUAL"
+      ]
+    },
+    "TestRunDependencySummary":{
+      "type":"structure",
+      "required":[
+        "dependencyName",
+        "dnsName",
+        "criticality",
+        "source"
+      ],
+      "members":{
+        "dependencyId":{
+          "shape":"Uuid",
+          "documentation":"<p>The unique identifier of the dependency. Absent when the dependency was entered manually and was not part of dependency discovery.</p>"
+        },
+        "dependencyName":{
+          "shape":"TestRunDependencySummaryDependencyNameString",
+          "documentation":"<p>The name of the dependency.</p>"
+        },
+        "dnsName":{
+          "shape":"TestRunDependencySummaryDnsNameString",
+          "documentation":"<p>The DNS name of the dependency that the test run blocked.</p>"
+        },
+        "criticality":{
+          "shape":"DependencyCriticality",
+          "documentation":"<p>The criticality classification of the dependency when the run started. A dependency that was not discovered has the UNKNOWN criticality.</p>"
+        },
+        "source":{
+          "shape":"TestRunDependencySource",
+          "documentation":"<p>The origin of the dependency. A discovered dependency was found by dependency discovery; a manual dependency was entered when the run started.</p>"
+        },
+        "location":{
+          "shape":"TestRunDependencySummaryLocationString",
+          "documentation":"<p>The location of the dependency.</p>"
+        },
+        "sourceRegions":{
+          "shape":"RegionList",
+          "documentation":"<p>The source Regions from which the dependency was detected.</p>"
+        },
+        "provider":{
+          "shape":"TestRunDependencySummaryProviderString",
+          "documentation":"<p>The provider of the dependency.</p>"
+        }
+      },
+      "documentation":"<p>Contains summary information about a dependency that a test run blocked, as captured when the run started.</p>"
+    },
+    "TestRunDependencySummaryDependencyNameString":{
+      "type":"string",
+      "max":1024,
+      "min":1
+    },
+    "TestRunDependencySummaryDnsNameString":{
+      "type":"string",
+      "max":253,
+      "min":1
+    },
+    "TestRunDependencySummaryList":{
+      "type":"list",
+      "member":{"shape":"TestRunDependencySummary"},
+      "max":100,
+      "min":0
+    },
+    "TestRunDependencySummaryLocationString":{
+      "type":"string",
+      "max":1024,
+      "min":1
+    },
+    "TestRunDependencySummaryProviderString":{
+      "type":"string",
+      "max":1024,
+      "min":1
     },
     "TestRunEvent":{
       "type":"structure",
@@ -6361,7 +6687,8 @@
     },
     "TestRunId":{
       "type":"string",
-      "documentation":"<p>The unique identifier of a test run.</p>"
+      "documentation":"<p>The unique identifier of a test run.</p>",
+      "min":1
     },
     "TestRunObservabilityAlarmSummary":{
       "type":"structure",
@@ -6431,6 +6758,98 @@
         }
       },
       "documentation":"<p>A snapshot of the report configuration captured onto a test run from the service when the run was started.</p>"
+    },
+    "TestRunSourceArn":{
+      "type":"string",
+      "documentation":"<p>The ARN of a test run monitoring source, such as a CloudWatch alarm.</p>",
+      "max":1024,
+      "min":31,
+      "pattern":"arn:aws[a-zA-Z-]*:[a-z][a-z0-9-]*:[a-z]{2}(-[a-z]+)+-\\d{1}:\\d{12}:.+"
+    },
+    "TestRunSourceEvent":{
+      "type":"structure",
+      "required":[
+        "timestamp",
+        "sourceArn",
+        "eventType",
+        "detail"
+      ],
+      "members":{
+        "timestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the event occurred.</p>"
+        },
+        "sourceArn":{
+          "shape":"TestRunSourceArn",
+          "documentation":"<p>The ARN of the monitoring source the event belongs to.</p>"
+        },
+        "eventType":{
+          "shape":"TestRunSourceEventType",
+          "documentation":"<p>The type of the event. ALARM indicates an event from a CloudWatch alarm source; the detail member carries either the alarm state change or a collection error.</p>"
+        },
+        "detail":{
+          "shape":"TestRunSourceEventDetail",
+          "documentation":"<p>The event payload.</p>"
+        }
+      },
+      "documentation":"<p>A state-change event observed for a test run monitoring source.</p>"
+    },
+    "TestRunSourceEventDetail":{
+      "type":"structure",
+      "members":{
+        "alarmStateChange":{
+          "shape":"AlarmStateChangeDetail",
+          "documentation":"<p>A CloudWatch alarm state change.</p>"
+        },
+        "error":{
+          "shape":"TestRunSourceEventError",
+          "documentation":"<p>An error that prevented event collection from the source.</p>"
+        }
+      },
+      "documentation":"<p>The payload of a test run source event. Exactly one member is set.</p>",
+      "union":true
+    },
+    "TestRunSourceEventError":{
+      "type":"structure",
+      "required":[
+        "errorCode",
+        "errorMessage"
+      ],
+      "members":{
+        "errorCode":{
+          "shape":"TestRunSourceEventErrorCode",
+          "documentation":"<p>The error code.</p>"
+        },
+        "errorMessage":{
+          "shape":"TestRunSourceEventErrorErrorMessageString",
+          "documentation":"<p>A human-readable description of the error.</p>"
+        }
+      },
+      "documentation":"<p>Describes an error that prevented event collection from a test run monitoring source.</p>"
+    },
+    "TestRunSourceEventErrorCode":{
+      "type":"string",
+      "documentation":"<p>The cause of a source event collection error.</p>",
+      "enum":[
+        "ACCESS_DENIED",
+        "INTERNAL_ERROR"
+      ]
+    },
+    "TestRunSourceEventErrorErrorMessageString":{
+      "type":"string",
+      "max":2048,
+      "min":0
+    },
+    "TestRunSourceEventList":{
+      "type":"list",
+      "member":{"shape":"TestRunSourceEvent"},
+      "max":100,
+      "min":0
+    },
+    "TestRunSourceEventType":{
+      "type":"string",
+      "documentation":"<p>The type of a test run source event. ALARM indicates an event produced from a CloudWatch alarm source.</p>",
+      "enum":["ALARM"]
     },
     "TestRunSourceSummary":{
       "type":"structure",
@@ -6549,7 +6968,7 @@
         },
         "accountTargeting":{
           "shape":"AccountTargeting",
-          "documentation":"<p>Indicates whether this test run targets a single account or multiple accounts.</p>"
+          "documentation":"<p>Indicates whether the test run targets resources in a single AWS account or across multiple accounts.</p>"
         }
       },
       "documentation":"<p>Contains summary information about a test run.</p>"
@@ -7092,7 +7511,7 @@
           "documentation":"<p>The updated stop conditions for the test.</p>"
         },
         "roleName":{
-          "shape":"EntityName",
+          "shape":"IamRoleName",
           "documentation":"<p>The updated IAM execution role name.</p>"
         },
         "parameters":{

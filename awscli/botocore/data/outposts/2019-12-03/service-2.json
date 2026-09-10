@@ -1259,6 +1259,10 @@
         "SupportedStorage":{
           "shape":"SupportedStorageList",
           "documentation":"<p> The supported storage options for the catalog item. </p>"
+        },
+        "RackScalingType":{
+          "shape":"RackScalingType",
+          "documentation":"<p>The rack scaling type supported by the catalog item. Valid values are <code>SINGLE_RACK</code> and <code>MULTI_RACK</code>.</p>"
         }
       },
       "documentation":"<p> Information about a catalog item. </p>"
@@ -3160,6 +3164,14 @@
         "SupportedHardwareType":{
           "shape":"SupportedHardwareType",
           "documentation":"<p> The hardware type. </p>"
+        },
+        "Generation":{
+          "shape":"OutpostGeneration",
+          "documentation":"<p>The Outpost generation. Valid values are <code>GENERATION_1</code> for first-generation rack deployments and <code>GENERATION_2</code> for second-generation rack deployments.</p>"
+        },
+        "RackScalingType":{
+          "shape":"RackScalingType",
+          "documentation":"<p>The rack scaling type. Valid values are <code>SINGLE_RACK</code> for single-rack Outposts and <code>MULTI_RACK</code> for multi-rack Outposts that can expand across multiple racks.</p>"
         }
       },
       "documentation":"<p>Information about an Outpost.</p>"
@@ -3460,7 +3472,7 @@
       "members":{
         "QuoteConstraintType":{
           "shape":"QuoteConstraintType",
-          "documentation":"<p>The type of constraint. Valid values are <code>RACK_MAXIMUM</code>, <code>RACK_MAX_POWER_KVA</code>, and <code>RACK_MAX_WEIGHT_LBS</code>.</p>"
+          "documentation":"<p>The type of constraint. Valid values are <code>RACK_MAXIMUM</code>, <code>RACK_MAX_POWER_KVA</code>, <code>RACK_MAX_WEIGHT_LBS</code>, and <code>RACK_SPACE_CONSTRAINED</code>.</p>"
         },
         "Value":{
           "shape":"ConstraintValue",
@@ -3479,7 +3491,8 @@
       "enum":[
         "RACK_MAXIMUM",
         "RACK_MAX_POWER_KVA",
-        "RACK_MAX_WEIGHT_LBS"
+        "RACK_MAX_WEIGHT_LBS",
+        "RACK_SPACE_CONSTRAINED"
       ]
     },
     "QuoteDescription":{
@@ -3717,6 +3730,13 @@
         }
       },
       "documentation":"<p> Information about the physical and logistical details for racks at sites. For more information about hardware requirements for racks, see <a href=\"https://docs.aws.amazon.com/outposts/latest/userguide/outposts-requirements.html#checklist\">Network readiness checklist</a> in the Amazon Web Services Outposts User Guide. </p>"
+    },
+    "RackScalingType":{
+      "type":"string",
+      "enum":[
+        "SINGLE_RACK",
+        "MULTI_RACK"
+      ]
     },
     "RackSpecificationDetails":{
       "type":"structure",

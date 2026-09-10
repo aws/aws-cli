@@ -42,6 +42,29 @@ class InvalidConfigError(Exception):
     pass
 
 
+class ResolvedRuntimeConfig(dict):
+    """A runtime config that tracks which values the user supplied.
+
+    A value matching its default says nothing about whether the user
+    configured it, so callers needing that distinction cannot infer it from
+    the resolved value alone.
+    """
+
+    def __init__(self, values, explicit_keys):
+        super().__init__(values)
+        self._explicit_keys = frozenset(explicit_keys)
+
+    @property
+    def explicit_keys(self):
+        return self._explicit_keys
+
+    def is_explicitly_set(self, name):
+        return name in self._explicit_keys
+
+    def copy(self):
+        return ResolvedRuntimeConfig(dict(self), self._explicit_keys)
+
+
 class RuntimeConfig:
     POSITIVE_INTEGERS = [
         'multipart_chunksize',
@@ -89,9 +112,11 @@ class RuntimeConfig:
         that use this runtime config.
 
         :param kwargs:  Any key in the ``DEFAULTS`` dict.
-        :return: A dictionary of the merged and converted values.
+        :return: A ``ResolvedRuntimeConfig`` of the merged and converted
+            values, which also tracks which keys were explicitly provided.
 
         """
+        explicit_keys = set(kwargs)
         runtime_config = DEFAULTS.copy()
         if kwargs:
             runtime_config.update(kwargs)
@@ -100,7 +125,7 @@ class RuntimeConfig:
         self._convert_booleans(runtime_config)
         self._resolve_choice_aliases(runtime_config)
         self._validate_config(runtime_config)
-        return runtime_config
+        return ResolvedRuntimeConfig(runtime_config, explicit_keys)
 
     def _convert_human_readable_sizes(self, runtime_config):
         for attr in self.HUMAN_READABLE_SIZES:

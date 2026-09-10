@@ -21,6 +21,7 @@ from botocore.session import Session
 from s3transfer.crt import CRTTransferManager
 from s3transfer.manager import TransferManager
 
+from awscli.customizations.s3 import constants
 from awscli.customizations.s3.factory import (
     ClientFactory,
     TransferManagerFactory,
@@ -601,6 +602,70 @@ class TestTransferManagerFactory(unittest.TestCase):
         self.assert_is_crt_manager(transfer_manager)
         self.assertEqual(
             mock_crt_client.call_args[1]['max_active_connections_override'], 3
+        )
+
+    def test_optimized_system_does_not_use_transfer_config_defaults(self):
+        runtime_config = self.get_runtime_config()
+        with mock.patch(
+            'awscrt.s3.is_optimized_for_system', return_value=True
+        ):
+            self.assertFalse(
+                self.factory._should_use_transfer_config_defaults(
+                    runtime_config
+                )
+            )
+
+    def test_explicit_crt_does_not_use_transfer_config_defaults(self):
+        runtime_config = self.get_runtime_config(
+            preferred_transfer_client='crt'
+        )
+        with mock.patch(
+            'awscrt.s3.is_optimized_for_system', return_value=False
+        ):
+            self.assertFalse(
+                self.factory._should_use_transfer_config_defaults(
+                    runtime_config
+                )
+            )
+
+    def test_newly_eligible_system_uses_transfer_config_defaults(self):
+        runtime_config = self.get_runtime_config()
+        with mock.patch(
+            'awscrt.s3.is_optimized_for_system', return_value=False
+        ):
+            self.assertTrue(
+                self.factory._should_use_transfer_config_defaults(
+                    runtime_config
+                )
+            )
+
+    @mock.patch('awscrt.s3.is_optimized_for_system', return_value=False)
+    @mock.patch('s3transfer.crt.S3Client')
+    def test_transfer_config_defaults_passed_for_newly_eligible_system(
+        self, mock_crt_client, mock_is_optimized
+    ):
+        self.runtime_config = self.get_runtime_config()
+        with mock.patch.object(
+            self.factory,
+            '_resolve_transfer_client_type_for_system',
+            return_value=constants.CRT_TRANSFER_CLIENT,
+        ):
+            transfer_manager = self.factory.create_transfer_manager(
+                self.params, self.runtime_config
+            )
+        self.assert_is_crt_manager(transfer_manager)
+        call_kwargs = mock_crt_client.call_args[1]
+        defaults = RuntimeConfig.defaults()
+        self.assertEqual(
+            call_kwargs['part_size'], defaults['multipart_chunksize']
+        )
+        self.assertEqual(
+            call_kwargs['multipart_upload_threshold'],
+            defaults['multipart_threshold'],
+        )
+        self.assertEqual(
+            call_kwargs['max_active_connections_override'],
+            defaults['max_concurrent_requests'],
         )
 
     @mock.patch('s3transfer.crt.S3Client')

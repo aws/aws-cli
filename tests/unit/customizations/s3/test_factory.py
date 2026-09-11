@@ -702,6 +702,141 @@ class TestTransferManagerFactory(unittest.TestCase):
         )
 
 
+@pytest.fixture
+def auto_resolve_session():
+    session = mock.Mock(Session)
+    session.get_config_variable.return_value = None
+    session.get_default_client_config.return_value = None
+    session.get_scoped_config.return_value = {}
+    return session
+
+
+@pytest.fixture
+def auto_resolve_factory(auto_resolve_session, monkeypatch):
+    monkeypatch.setenv('AWS_CLI_AUTO_RESOLVE_CLIENT', 'crt')
+    return TransferManagerFactory(auto_resolve_session)
+
+
+@pytest.fixture
+def mock_crt_lock_held(auto_resolve_factory):
+    with mock.patch.object(
+        auto_resolve_factory,
+        '_is_crt_client_running_in_other_aws_cli_process',
+        return_value=False,
+    ) as mock_lock_held:
+        yield mock_lock_held
+
+
+@pytest.fixture
+def resolve_client_type(
+    auto_resolve_factory,
+    s3_params,
+    mock_crt_is_optimized_for_system,
+    mock_crt_lock_held,
+):
+    def _resolve(**kwargs):
+        runtime_config = RuntimeConfig().build_config(**kwargs)
+        return auto_resolve_factory._compute_transfer_client_type(
+            s3_params, runtime_config
+        )
+
+    return _resolve
+
+
+class TestAutoResolveCrtClient:
+    def test_resolves_to_crt_when_enabled(self, resolve_client_type):
+        assert resolve_client_type() == constants.CRT_TRANSFER_CLIENT
+
+    def test_resolves_to_classic_when_env_var_unset(
+        self, resolve_client_type, monkeypatch
+    ):
+        monkeypatch.delenv('AWS_CLI_AUTO_RESOLVE_CLIENT')
+        assert resolve_client_type() == constants.CLASSIC_TRANSFER_CLIENT
+
+    def test_resolves_to_classic_when_env_var_is_other_value(
+        self, resolve_client_type, monkeypatch
+    ):
+        monkeypatch.setenv('AWS_CLI_AUTO_RESOLVE_CLIENT', 'classic')
+        assert resolve_client_type() == constants.CLASSIC_TRANSFER_CLIENT
+
+    def test_optimized_system_resolves_to_crt_without_env_var(
+        self,
+        resolve_client_type,
+        monkeypatch,
+        mock_crt_is_optimized_for_system,
+    ):
+        monkeypatch.delenv('AWS_CLI_AUTO_RESOLVE_CLIENT')
+        mock_crt_is_optimized_for_system.return_value = True
+        assert resolve_client_type() == constants.CRT_TRANSFER_CLIENT
+
+    def test_resolves_to_classic_when_max_bandwidth_configured(
+        self, resolve_client_type
+    ):
+        assert (
+            resolve_client_type(max_bandwidth=1024)
+            == constants.CLASSIC_TRANSFER_CLIENT
+        )
+
+    def test_resolves_to_classic_for_adaptive_retry_mode(
+        self, resolve_client_type, auto_resolve_session
+    ):
+        auto_resolve_session.get_config_variable.return_value = 'adaptive'
+        assert resolve_client_type() == constants.CLASSIC_TRANSFER_CLIENT
+
+    def test_resolves_to_crt_for_standard_retry_mode(
+        self, resolve_client_type, auto_resolve_session
+    ):
+        auto_resolve_session.get_config_variable.return_value = 'standard'
+        assert resolve_client_type() == constants.CRT_TRANSFER_CLIENT
+
+    def test_resolves_to_classic_for_stream_upload(
+        self, resolve_client_type, s3_params
+    ):
+        s3_params['is_stream'] = True
+        s3_params['paths_type'] = 'locals3'
+        assert resolve_client_type() == constants.CLASSIC_TRANSFER_CLIENT
+
+    def test_resolves_to_crt_for_stream_download(
+        self, resolve_client_type, s3_params
+    ):
+        s3_params['is_stream'] = True
+        s3_params['paths_type'] = 's3local'
+        assert resolve_client_type() == constants.CRT_TRANSFER_CLIENT
+
+    def test_optimized_system_resolves_to_crt_for_stream_upload(
+        self,
+        resolve_client_type,
+        s3_params,
+        mock_crt_is_optimized_for_system,
+    ):
+        mock_crt_is_optimized_for_system.return_value = True
+        s3_params['is_stream'] = True
+        s3_params['paths_type'] = 'locals3'
+        assert resolve_client_type() == constants.CRT_TRANSFER_CLIENT
+
+    def test_resolves_to_classic_when_lock_held(
+        self, resolve_client_type, mock_crt_lock_held
+    ):
+        mock_crt_lock_held.return_value = True
+        assert resolve_client_type() == constants.CLASSIC_TRANSFER_CLIENT
+
+    def test_explicit_crt_ignores_unsupported_settings(
+        self, resolve_client_type
+    ):
+        assert (
+            resolve_client_type(
+                preferred_transfer_client='crt', max_bandwidth=1024
+            )
+            == constants.CRT_TRANSFER_CLIENT
+        )
+
+    def test_s3s3_always_resolves_to_classic(
+        self, resolve_client_type, s3_params
+    ):
+        s3_params['paths_type'] = 's3s3'
+        assert resolve_client_type() == constants.CLASSIC_TRANSFER_CLIENT
+
+
 @pytest.mark.parametrize(
     'preferred_transfer_client,extra_params,'
     'crt_is_optimized_for_system,crt_running_in_other_process,'

@@ -12,6 +12,7 @@
 # language governing permissions and limitations under the License.
 import logging
 import os
+import sys
 
 import awscrt.s3
 from botocore.client import Config
@@ -31,10 +32,29 @@ from awscli.customizations.s3.transferconfig import (
     DEFAULTS,
     create_transfer_config_from_runtime_config,
 )
+from awscli.customizations.utils import uni_print
 
 LOGGER = logging.getLogger(__name__)
 
 ADAPTIVE_RETRY_MODE = 'adaptive'
+
+WARN_IGNORED = 'warn_ignored'
+
+EXCLUDE_FROM_AUTO = 'exclude_from_auto'
+
+UNSUPPORTED_OPTIONS = {
+    constants.CRT_TRANSFER_CLIENT: {
+        'max_bandwidth': EXCLUDE_FROM_AUTO,
+        'max_queue_size': WARN_IGNORED,
+        'io_chunksize': WARN_IGNORED,
+    },
+    constants.CLASSIC_TRANSFER_CLIENT: {
+        'target_bandwidth': WARN_IGNORED,
+        'should_stream': WARN_IGNORED,
+        'disk_throughput': WARN_IGNORED,
+        'direct_io': WARN_IGNORED,
+    },
+}
 
 CRT_CLIENT_KWARG_MAP = {
     'multipart_chunksize': 'part_size',
@@ -77,6 +97,7 @@ class TransferManagerFactory:
         client_type = self._compute_transfer_client_type(
             params, runtime_config
         )
+        self.warn_unsupported_settings(client_type, runtime_config)
         if client_type == constants.CRT_TRANSFER_CLIENT:
             return self._create_crt_transfer_manager(params, runtime_config)
         else:
@@ -126,6 +147,7 @@ class TransferManagerFactory:
                 f'Not auto resolving to the crt s3 transfer client because '
                 f'it does not support: {", ".join(unsupported)}'
             )
+            self._warn_classic_only_settings(runtime_config)
             return False
         return True
 
@@ -136,17 +158,72 @@ class TransferManagerFactory:
         )
 
     def _get_unsupported_settings(self, params, runtime_config):
-        unsupported = []
-        if runtime_config.is_explicitly_set('max_bandwidth'):
-            unsupported.append('max_bandwidth')
-        if (
-            self._session.get_config_variable('retry_mode')
-            == ADAPTIVE_RETRY_MODE
-        ):
+        unsupported = self._get_classic_only_settings(runtime_config)
+        if self._is_adaptive_retry_mode():
             unsupported.append(f'retry_mode = {ADAPTIVE_RETRY_MODE}')
         if self._is_non_seekable_stream_upload(params):
             unsupported.append('uploads from a non-seekable stream')
         return unsupported
+
+    def _get_classic_only_settings(self, runtime_config):
+        return self._get_unsupported_options(
+            constants.CRT_TRANSFER_CLIENT,
+            runtime_config,
+            action=EXCLUDE_FROM_AUTO,
+        )
+
+    def _get_unsupported_options(
+        self, client_type, runtime_config, action=None
+    ):
+        return [
+            name
+            for name, option_action in UNSUPPORTED_OPTIONS.get(
+                client_type, {}
+            ).items()
+            if (action is None or option_action == action)
+            and runtime_config.is_explicitly_set(name)
+        ]
+
+    def _is_adaptive_retry_mode(self):
+        return (
+            self._session.get_config_variable('retry_mode')
+            == ADAPTIVE_RETRY_MODE
+        )
+
+    def _warn_classic_only_settings(self, runtime_config):
+        classic_only = self._get_classic_only_settings(runtime_config)
+        if not classic_only:
+            return
+        uni_print(
+            f"warning: Using the '{constants.CLASSIC_TRANSFER_CLIENT}' s3 "
+            f"transfer client because the "
+            f"'{constants.CRT_TRANSFER_CLIENT}' s3 transfer client does not "
+            f"support: {', '.join(classic_only)}. A future version of the AWS "
+            f"CLI will use the '{constants.CRT_TRANSFER_CLIENT}' s3 transfer "
+            f"client by default, at which point these values will be "
+            f"ignored. Set the preferred_transfer_client configuration value "
+            f"to '{constants.CLASSIC_TRANSFER_CLIENT}' to continue using the "
+            f"'{constants.CLASSIC_TRANSFER_CLIENT}' s3 transfer client.\n",
+            sys.stderr,
+        )
+
+    def warn_unsupported_settings(self, client_type, runtime_config):
+        unsupported = self._get_unsupported_options(
+            client_type, runtime_config
+        )
+        if (
+            client_type == constants.CRT_TRANSFER_CLIENT
+            and self._is_adaptive_retry_mode()
+        ):
+            unsupported.append(f'retry_mode = {ADAPTIVE_RETRY_MODE}')
+        if not unsupported:
+            return
+        uni_print(
+            f"warning: The following configuration values are not supported "
+            f"by the '{client_type}' s3 transfer client and will be ignored: "
+            f"{', '.join(unsupported)}.\n",
+            sys.stderr,
+        )
 
     def _is_non_seekable_stream_upload(self, params):
         return bool(

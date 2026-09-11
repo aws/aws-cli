@@ -11,6 +11,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import logging
+import os
 
 import awscrt.s3
 from botocore.client import Config
@@ -32,6 +33,8 @@ from awscli.customizations.s3.transferconfig import (
 )
 
 LOGGER = logging.getLogger(__name__)
+
+ADAPTIVE_RETRY_MODE = 'adaptive'
 
 CRT_CLIENT_KWARG_MAP = {
     'multipart_chunksize': 'part_size',
@@ -88,16 +91,14 @@ class TransferManagerFactory:
             'preferred_transfer_client', constants.AUTO_RESOLVE_TRANSFER_CLIENT
         )
         if preferred_transfer_client == constants.AUTO_RESOLVE_TRANSFER_CLIENT:
-            return self._resolve_transfer_client_type_for_system()
+            return self._resolve_transfer_client_type_for_system(
+                params, runtime_config
+            )
         return preferred_transfer_client
 
-    def _resolve_transfer_client_type_for_system(self):
+    def _resolve_transfer_client_type_for_system(self, params, runtime_config):
         transfer_client_type = constants.CLASSIC_TRANSFER_CLIENT
-        is_optimized_for_system = awscrt.s3.is_optimized_for_system()
-        LOGGER.debug(
-            'S3 CRT client optimized for system: %s', is_optimized_for_system
-        )
-        if is_optimized_for_system:
+        if self._is_eligible_for_crt_client(params, runtime_config):
             is_running = self._is_crt_client_running_in_other_aws_cli_process()
             LOGGER.debug(
                 'S3 CRT client running in different AWS CLI process: %s',
@@ -109,6 +110,48 @@ class TransferManagerFactory:
             'Auto resolved s3 transfer client to: %s', transfer_client_type
         )
         return transfer_client_type
+
+    def _is_eligible_for_crt_client(self, params, runtime_config):
+        is_optimized_for_system = awscrt.s3.is_optimized_for_system()
+        LOGGER.debug(
+            f'S3 CRT client optimized for system: {is_optimized_for_system}'
+        )
+        if is_optimized_for_system:
+            return True
+        if not self._is_crt_auto_resolve_enabled():
+            return False
+        unsupported = self._get_unsupported_settings(params, runtime_config)
+        if unsupported:
+            LOGGER.debug(
+                f'Not auto resolving to the crt s3 transfer client because '
+                f'it does not support: {", ".join(unsupported)}'
+            )
+            return False
+        return True
+
+    def _is_crt_auto_resolve_enabled(self):
+        return (
+            os.environ.get('AWS_CLI_AUTO_RESOLVE_CLIENT')
+            == constants.CRT_TRANSFER_CLIENT
+        )
+
+    def _get_unsupported_settings(self, params, runtime_config):
+        unsupported = []
+        if runtime_config.is_explicitly_set('max_bandwidth'):
+            unsupported.append('max_bandwidth')
+        if (
+            self._session.get_config_variable('retry_mode')
+            == ADAPTIVE_RETRY_MODE
+        ):
+            unsupported.append(f'retry_mode = {ADAPTIVE_RETRY_MODE}')
+        if self._is_non_seekable_stream_upload(params):
+            unsupported.append('uploads from a non-seekable stream')
+        return unsupported
+
+    def _is_non_seekable_stream_upload(self, params):
+        return bool(
+            params.get('is_stream') and params.get('paths_type') == 'locals3'
+        )
 
     def _is_crt_client_running_in_other_aws_cli_process(self):
         # If None is returned from acquiring the CRT process lock, it

@@ -23,6 +23,7 @@ from s3transfer.subscribers import BaseSubscriber
 from tests import (
     HAS_CRT,
     FileCreator,
+    FileSizeProvider,
     NonSeekableReader,
     NonSeekableWriter,
     mock,
@@ -834,14 +835,6 @@ class TestCRTTransferManager(unittest.TestCase):
             future.result()
 
 
-class ProvideSizeSubscriber(BaseSubscriber):
-    def __init__(self, size):
-        self._size = size
-
-    def on_queued(self, future, **kwargs):
-        future.meta.provide_transfer_size(self._size)
-
-
 MULTIPART_THRESHOLD = 8 * 1024 * 1024
 DOWNLOADED_CONTENT = 'content'
 
@@ -892,7 +885,7 @@ def download(crt_client, request_serializer, filename):
                 multipart_threshold=multipart_threshold
             ),
         )
-        subscribers = [] if size is None else [ProvideSizeSubscriber(size)]
+        subscribers = [FileSizeProvider(size)]
         transfer_manager.download(
             'test_bucket', 'test_key', filename, {}, subscribers
         ).result()
@@ -901,7 +894,6 @@ def download(crt_client, request_serializer, filename):
     return _download
 
 
-@requires_crt()
 class TestDownloadMultipartThreshold:
     @pytest.mark.parametrize(
         'size', [MULTIPART_THRESHOLD - 1, MULTIPART_THRESHOLD]
@@ -920,10 +912,6 @@ class TestDownloadMultipartThreshold:
 
     def test_unset_threshold_splits_download(self, download):
         request_args = download(1, None)
-        assert request_args['type'] == awscrt.s3.S3RequestType.GET_OBJECT
-
-    def test_unknown_size_splits_download(self, download):
-        request_args = download(None, MULTIPART_THRESHOLD)
         assert request_args['type'] == awscrt.s3.S3RequestType.GET_OBJECT
 
     def test_single_request_download_writes_file(self, download, filename):

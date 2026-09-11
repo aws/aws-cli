@@ -97,7 +97,7 @@ class TransferManagerFactory:
         client_type = self._compute_transfer_client_type(
             params, runtime_config
         )
-        self._warn_unsupported_settings(client_type, runtime_config)
+        self.warn_unsupported_settings(client_type, runtime_config)
         if client_type == constants.CRT_TRANSFER_CLIENT:
             return self._create_crt_transfer_manager(params, runtime_config)
         else:
@@ -207,7 +207,7 @@ class TransferManagerFactory:
             sys.stderr,
         )
 
-    def _warn_unsupported_settings(self, client_type, runtime_config):
+    def warn_unsupported_settings(self, client_type, runtime_config):
         unsupported = self._get_unsupported_options(
             client_type, runtime_config
         )

@@ -901,7 +901,7 @@ class TestClassicOnlySettingsWarning:
 def warn_unsupported_settings(auto_resolve_factory, capsys):
     def _warn(client_type, **kwargs):
         runtime_config = RuntimeConfig().build_config(**kwargs)
-        auto_resolve_factory._warn_unsupported_settings(
+        auto_resolve_factory.warn_unsupported_settings(
             client_type, runtime_config
         )
         return capsys.readouterr().err

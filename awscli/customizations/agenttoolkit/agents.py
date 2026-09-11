@@ -419,3 +419,11 @@ def get_detected_agents(agent_configs=None):
         if agent is not None:
             detected.append(agent)
     return detected
+
+
+def get_detected_real_agents(agent_configs=None):
+    return [
+        agent
+        for agent in get_detected_agents(agent_configs)
+        if agent.config.id != UNIVERSAL_ROW_ID
+    ]

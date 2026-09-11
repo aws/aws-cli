@@ -16,10 +16,12 @@ from unittest.mock import patch
 
 from awscli.customizations.agenttoolkit.agents import (
     AGENT_CONFIGS,
+    UNIVERSAL_ROW_ID,
     AgentConfig,
     DetectedAgent,
     McpConfigureAction,
     get_detected_agents,
+    get_detected_real_agents,
 )
 from awscli.testutils import skip_if_windows
 from tests.unit.customizations.agenttoolkit.utils import (
@@ -134,6 +136,27 @@ def test_get_detected_agents(tmp_path):
     detected = get_detected_agents(agent_configs=test_configs)
     assert len(detected) == 1
     assert detected[0].display_name == 'Kiro'
+
+
+def test_get_detected_real_agents_excludes_universal_row(tmp_path):
+    # Only the universal row detects (``~/.agents`` exists) but no real
+    # per-agent directory does. The wizard would find nothing here, so the
+    # hint must not treat this as an eligible detection.
+    (tmp_path / '.agents').mkdir()
+    test_configs = [
+        AgentConfig(
+            id='cursor',
+            display_name='Cursor',
+            detection_path=str(tmp_path / '.cursor'),
+        ),
+        AgentConfig(
+            id=UNIVERSAL_ROW_ID,
+            display_name='Universal',
+            detection_path=str(tmp_path / '.agents'),
+        ),
+    ]
+    assert get_detected_agents(agent_configs=test_configs)
+    assert get_detected_real_agents(agent_configs=test_configs) == []
 
 
 def test_mcp_config_path_honors_detection_env_override(tmp_path, monkeypatch):

@@ -23,6 +23,7 @@ from s3transfer.manager import TransferManager
 
 from awscli.customizations.s3 import constants
 from awscli.customizations.s3.factory import (
+    ADAPTIVE_RETRY_MODE,
     ClientFactory,
     TransferManagerFactory,
 )
@@ -835,6 +836,167 @@ class TestAutoResolveCrtClient:
     ):
         s3_params['paths_type'] = 's3s3'
         assert resolve_client_type() == constants.CLASSIC_TRANSFER_CLIENT
+
+
+class TestClassicOnlySettingsWarning:
+    def test_warns_when_routed_away_for_max_bandwidth(
+        self, resolve_client_type, capsys
+    ):
+        resolve_client_type(max_bandwidth=1024)
+        warning = capsys.readouterr().err
+        assert 'max_bandwidth' in warning
+        assert 'A future version of the AWS CLI' in warning
+        assert 'preferred_transfer_client' in warning
+
+    def test_does_not_warn_for_adaptive_retry_mode(
+        self, resolve_client_type, auto_resolve_session, capsys
+    ):
+        # The crt transfer client will eventually support adaptive retries, so
+        # there is nothing for the user to act on.
+        auto_resolve_session.get_config_variable.return_value = 'adaptive'
+        resolve_client_type()
+        assert capsys.readouterr().err == ''
+
+    def test_does_not_warn_for_stream_upload_fallback(
+        self, resolve_client_type, s3_params, capsys
+    ):
+        s3_params['is_stream'] = True
+        s3_params['paths_type'] = 'locals3'
+        resolve_client_type()
+        assert capsys.readouterr().err == ''
+
+    def test_does_not_warn_when_crt_is_resolved(
+        self, resolve_client_type, capsys
+    ):
+        resolve_client_type()
+        assert capsys.readouterr().err == ''
+
+    def test_does_not_warn_when_auto_resolve_disabled(
+        self, resolve_client_type, monkeypatch, capsys
+    ):
+        monkeypatch.delenv('AWS_CLI_AUTO_RESOLVE_CLIENT')
+        resolve_client_type(max_bandwidth=1024)
+        assert capsys.readouterr().err == ''
+
+    def test_does_not_warn_on_optimized_system(
+        self,
+        resolve_client_type,
+        mock_crt_is_optimized_for_system,
+        capsys,
+    ):
+        mock_crt_is_optimized_for_system.return_value = True
+        resolve_client_type(max_bandwidth=1024)
+        assert capsys.readouterr().err == ''
+
+    def test_does_not_warn_when_classic_explicitly_preferred(
+        self, resolve_client_type, capsys
+    ):
+        resolve_client_type(
+            preferred_transfer_client='classic', max_bandwidth=1024
+        )
+        assert capsys.readouterr().err == ''
+
+
+@pytest.fixture
+def warn_unsupported_settings(auto_resolve_factory, capsys):
+    def _warn(client_type, **kwargs):
+        runtime_config = RuntimeConfig().build_config(**kwargs)
+        auto_resolve_factory._warn_unsupported_settings(
+            client_type, runtime_config
+        )
+        return capsys.readouterr().err
+
+    return _warn
+
+
+class TestWarnUnsupportedSettings:
+    def test_warns_for_options_crt_ignores(self, warn_unsupported_settings):
+        warning = warn_unsupported_settings(
+            constants.CRT_TRANSFER_CLIENT,
+            max_queue_size=500,
+            io_chunksize=1024,
+        )
+        assert 'max_queue_size' in warning
+        assert 'io_chunksize' in warning
+        assert constants.CRT_TRANSFER_CLIENT in warning
+
+    def test_warns_for_options_classic_ignores(
+        self, warn_unsupported_settings
+    ):
+        warning = warn_unsupported_settings(
+            constants.CLASSIC_TRANSFER_CLIENT,
+            target_bandwidth=1024,
+            direct_io=True,
+        )
+        assert 'target_bandwidth' in warning
+        assert 'direct_io' in warning
+        assert constants.CLASSIC_TRANSFER_CLIENT in warning
+
+    def test_warns_for_max_bandwidth_when_crt_resolved(
+        self, warn_unsupported_settings
+    ):
+        warning = warn_unsupported_settings(
+            constants.CRT_TRANSFER_CLIENT, max_bandwidth=1024
+        )
+        assert 'max_bandwidth' in warning
+
+    def test_does_not_warn_for_max_bandwidth_when_classic_resolved(
+        self, warn_unsupported_settings
+    ):
+        assert (
+            warn_unsupported_settings(
+                constants.CLASSIC_TRANSFER_CLIENT, max_bandwidth=1024
+            )
+            == ''
+        )
+
+    def test_warns_for_adaptive_retry_mode_under_crt(
+        self, warn_unsupported_settings, auto_resolve_session
+    ):
+        auto_resolve_session.get_config_variable.return_value = 'adaptive'
+        warning = warn_unsupported_settings(constants.CRT_TRANSFER_CLIENT)
+        assert f'retry_mode = {ADAPTIVE_RETRY_MODE}' in warning
+
+    def test_does_not_warn_for_supported_retry_mode(
+        self, warn_unsupported_settings, auto_resolve_session
+    ):
+        auto_resolve_session.get_config_variable.return_value = 'standard'
+        assert warn_unsupported_settings(constants.CRT_TRANSFER_CLIENT) == ''
+
+    def test_does_not_warn_for_adaptive_retry_mode_under_classic(
+        self, warn_unsupported_settings, auto_resolve_session
+    ):
+        auto_resolve_session.get_config_variable.return_value = 'adaptive'
+        assert (
+            warn_unsupported_settings(constants.CLASSIC_TRANSFER_CLIENT) == ''
+        )
+
+    def test_does_not_warn_when_nothing_configured(
+        self, warn_unsupported_settings
+    ):
+        assert warn_unsupported_settings(constants.CRT_TRANSFER_CLIENT) == ''
+
+    def test_does_not_warn_for_supported_options(
+        self, warn_unsupported_settings
+    ):
+        assert (
+            warn_unsupported_settings(
+                constants.CRT_TRANSFER_CLIENT,
+                multipart_chunksize=8 * (1024**2),
+                max_concurrent_requests=5,
+            )
+            == ''
+        )
+
+    def test_does_not_warn_across_clients(self, warn_unsupported_settings):
+        assert (
+            warn_unsupported_settings(
+                constants.CLASSIC_TRANSFER_CLIENT,
+                max_queue_size=500,
+                io_chunksize=1024,
+            )
+            == ''
+        )
 
 
 @pytest.mark.parametrize(

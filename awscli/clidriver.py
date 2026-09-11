@@ -36,11 +36,15 @@ from botocore.history import get_global_history_recorder
 from awscli import __version__
 from awscli.alias import AliasCommandInjector, AliasLoader
 from awscli.argparser import (
+    ArgParseException,
     ArgTableArgParser,
     FirstPassGlobalArgParser,
     MainArgParser,
     ServiceArgParser,
     SubCommandArgParser,
+    first_help_option_index,
+    is_help_option_present,
+    strip_help_options,
 )
 from awscli.argprocess import unpack_argument
 from awscli.arguments import (
@@ -94,7 +98,7 @@ LOG_FORMAT = (
 HISTORY_RECORDER = get_global_history_recorder()
 METADATA_FILENAME = 'metadata.json'
 INSTALL_FILENAME = 'install.json'
-_NO_AUTO_PROMPT_ARGS = ['help', '--version']
+_NO_AUTO_PROMPT_ARGS = ['help', '--help', '--version']
 _CLI_AUTO_PROMPT_OPTION = '--cli-auto-prompt'
 _NO_CLI_AUTO_PROMPT_OPTION = '--no-cli-auto-prompt'
 # Don't remove this line.  The idna encoding
@@ -591,6 +595,16 @@ class CLIDriver:
         self._add_aliases(command_table, parser)
         parsed_args = None
         try:
+            # When --help is present but no command is named, render provider
+            # help instead of failing on the required ``command`` positional
+            # argument.  When a command is named, fall through so its own
+            # __call__ renders the more specific help.  Kept inside the try so a
+            # ``--version`` SystemExit(0) from the pre-help slice parse still
+            # exits 0.
+            if is_help_option_present(args) and not self._names_a_command(
+                args, parser
+            ):
+                args = self._route_to_provider_help(args)
             # Because _handle_top_level_args emits events, it's possible
             # that exceptions can be raised, which should have the same
             # general exception handling logic as calling into the
@@ -614,6 +628,44 @@ class CLIDriver:
                 stderr=get_stderr_text_writer(),
                 parsed_globals=parsed_args,
             )
+
+    def _names_a_command(self, args, parser):
+        # ``parser`` is the provider-level ``MainArgParser`` (the one built in
+        # ``main()`` and passed in).  Return True if a real command is named
+        # before the first --help token.  Parsing the pre-help slice with that
+        # parser lets argparse consume the VALUES of value-taking global options
+        # instead of mistaking them for a command: in ``aws --region ec2
+        # --help`` the ``ec2`` is --region's value, so no command is named and
+        # provider help renders.
+        head = self._tokens_before_help(args)
+        if head == list(args):
+            # No --help token present; nothing to decide here.
+            return True
+        try:
+            parsed, _ = parser.parse_known_args(head)
+        except ArgParseException:
+            # Only ArgParseException (raised by CLIArgParser.error) means "no
+            # parseable command", e.g. ``--region ec2`` -> "required: command".
+            # We deliberately do not catch broader exceptions so a --version
+            # SystemExit and a user KeyboardInterrupt propagate.
+            return False
+        return getattr(parsed, 'command', None) is not None
+
+    def _tokens_before_help(self, args):
+        # The tokens that precede the first --help token.  Tokens at or after
+        # the first help token are ignored for routing, exactly as the
+        # positional ``help`` token ignores everything after it.
+        help_index = first_help_option_index(args)
+        if help_index is None:
+            return list(args)
+        return list(args[:help_index])
+
+    def _route_to_provider_help(self, args):
+        # Render provider help: keep the tokens before the first --help and
+        # append the ``help`` positional argument, so a trailing command is
+        # ignored.
+        head = self._tokens_before_help(args)
+        return head + ['help']
 
     def _emit_session_event(self, parsed_args):
         # This event is guaranteed to run after the session has been
@@ -737,9 +789,32 @@ class ServiceCommand(CLICommand):
         # we can go ahead and create the parser for it.  We
         # can also grab the Service object from botocore.
         service_parser = self.create_parser()
-        parsed_args, remaining = service_parser.parse_known_args(args)
         command_table = self._get_command_table()
+        # Resolve help intent before binding.  If --help is present we still
+        # want to route to a specific operation's help when an operation was
+        # named (e.g. ``aws ec2 describe-instances --help``); the operation's
+        # own __call__ renders it.  Only when no operation token is present
+        # (e.g. ``aws ec2 --help``) do we render this service's help here.
+        if is_help_option_present(args):
+            operation = self._find_operation_in_args(args, command_table)
+            if operation is None:
+                return self.create_help_command()(
+                    strip_help_options(args), parsed_globals
+                )
+        parsed_args, remaining = service_parser.parse_known_args(args)
         return command_table[parsed_args.operation](remaining, parsed_globals)
+
+    def _find_operation_in_args(self, args, command_table):
+        # Return the first token before the first --help that names an
+        # operation, or None.  An operation named after --help is ignored:
+        # ``aws ec2 --help describe-instances`` renders EC2 (service) help, the
+        # same as ``aws ec2 help describe-instances``.
+        help_index = first_help_option_index(args)
+        candidates = args if help_index is None else args[:help_index]
+        for token in candidates:
+            if not token.startswith('-') and token in command_table:
+                return token
+        return None
 
     def _create_command_table(self):
         command_table = OrderedDict()
@@ -890,6 +965,21 @@ class ServiceOperation:
             return parser.parse_known_args(args)
         return None
 
+    def _subcommand_precedes_help(self, args, maybe_parsed_subcommand):
+        # True if the subcommand is named before the first --help token,
+        # decided from what the subcommand parser binds on the pre-help slice
+        # rather than a value-blind string index. Mirrors
+        # ``BasicCommand._subcommand_precedes_help``.
+        help_index = first_help_option_index(args)
+        if help_index is None:
+            return True
+        subcommand_name = maybe_parsed_subcommand[1]
+        head = args[:help_index]
+        parsed_head = self._parse_potential_subcommand(
+            head, self.subcommand_table
+        )
+        return parsed_head is not None and parsed_head[1] == subcommand_name
+
     def __call__(self, args, parsed_globals):
         # Once we know we're trying to call a particular operation
         # of a service we can go ahead and load the parameters.
@@ -907,9 +997,26 @@ class ServiceOperation:
         maybe_parsed_subcommand = self._parse_potential_subcommand(
             args, subcommand_table
         )
-        if maybe_parsed_subcommand is not None:
+        # Descend into a parsed subcommand only when it is named before the
+        # first --help token, mirroring the guard in ``BasicCommand.__call__``.
+        # Otherwise ``--help`` before a subcommand (e.g. a hypothetical
+        # ``aws myservice myoperation --help mysubcommand``) would render the
+        # subcommand's help instead of this operation's.  No operation
+        # currently has a subcommand table, so this is a forward-looking
+        # robustness check that keeps the two dispatch layers symmetric.
+        if (
+            maybe_parsed_subcommand is not None
+            and self._subcommand_precedes_help(args, maybe_parsed_subcommand)
+        ):
             new_args, subcommand_name = maybe_parsed_subcommand
             return subcommand_table[subcommand_name](new_args, parsed_globals)
+        # Resolve --help before binding so a preceding value option (e.g.
+        # ``--instance-ids i-123 --help``) cannot swallow it.  The positional
+        # ``help`` path below still works; this is an additional path.
+        if is_help_option_present(args):
+            return self.create_help_command()(
+                strip_help_options(args), parsed_globals
+            )
         operation_parser = self._create_operation_parser(
             self.arg_table, subcommand_table
         )

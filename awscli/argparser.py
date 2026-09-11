@@ -21,6 +21,7 @@ HELP_BLURB = (
     "  aws help\n"
     "  aws <command> help\n"
     "  aws <command> <subcommand> help\n"
+    "  aws <command> [<subcommand> ...] --help\n"
 )
 USAGE = (
     "aws [options] <command> <subcommand> [<subcommand> ...] [parameters]\n"
@@ -58,6 +59,37 @@ class CommandAction(argparse.Action):
         # generated from the command table keys. So make this a
         # NOOP if argparse.Action tries to set this value.
         pass
+
+
+def _is_help_option_token(arg):
+    """Return True only for the literal ``--help`` token.
+
+    Abbreviations (``--he``/``--hel``/``--h``) and ``=``-bearing forms
+    (``--help=x``, ``--instance-ids=--help``) are not help; they fall through to
+    the normal parser.
+    """
+    return arg == '--help'
+
+
+def first_help_option_index(args):
+    """Return the index of the first ``--help`` token, or ``None`` if absent."""
+    for index, arg in enumerate(args):
+        if _is_help_option_token(arg):
+            return index
+    return None
+
+
+def is_help_option_present(args):
+    """Return True if the literal ``--help`` token is present in ``args``."""
+    return first_help_option_index(args) is not None
+
+
+def strip_help_options(args):
+    """Return ``args`` with every ``--help`` token removed.
+
+    All other tokens keep their original position and value.
+    """
+    return [arg for arg in args if not _is_help_option_token(arg)]
 
 
 class CLIArgParser(argparse.ArgumentParser):

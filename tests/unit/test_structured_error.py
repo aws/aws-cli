@@ -793,6 +793,7 @@ class TestNonModeledErrorStructuredFormatting:
             '  aws help\n'
             '  aws <command> help\n'
             '  aws <command> <subcommand> help\n'
+            '  aws <command> [<subcommand> ...] --help\n'
             '\n'
             '\n'
             'aws: [ERROR]: --invalid-arg\n'

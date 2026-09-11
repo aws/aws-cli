@@ -1,3 +1,4 @@
+import argparse
 import copy
 import logging
 import os
@@ -7,7 +8,12 @@ from botocore.compat import OrderedDict
 from botocore.validate import validate_parameters
 
 import awscli
-from awscli.argparser import ArgTableArgParser, SubCommandArgParser
+from awscli.argparser import (
+    ArgTableArgParser,
+    SubCommandArgParser,
+    first_help_option_index,
+    is_help_option_present,
+)
 from awscli.argprocess import unpack_argument, unpack_cli_arg
 from awscli.arguments import CustomArgument, create_argument_model_from_schema
 from awscli.bcdoc import docevents
@@ -148,11 +154,24 @@ class BasicCommand(CLICommand):
         maybe_parsed_subcommand = self._parse_potential_subcommand(
             args, self._subcommand_table
         )
-        if maybe_parsed_subcommand is not None:
+        # Descend into a subcommand only when it is named before the first
+        # --help token: ``aws configure get --help`` renders ``get`` help, but
+        # ``aws configure --help get`` renders configure help (help resolves at
+        # the depth reached when --help appears; later tokens are ignored).
+        if (
+            maybe_parsed_subcommand is not None
+            and self._subcommand_precedes_help(args, maybe_parsed_subcommand)
+        ):
             new_args, subcommand_name = maybe_parsed_subcommand
             return self._subcommand_table[subcommand_name](
                 new_args, parsed_globals
             )
+        # Resolve --help before binding so a preceding positional value (e.g.
+        # ``aws configure get region --help``) cannot hide it.  The positional
+        # ``help`` path below still works; this is an additional path.
+        if is_help_option_present(args):
+            self._display_help(self._build_help_parsed_args(), parsed_globals)
+            return 0
         parser = ArgTableArgParser(self.arg_table, self.subcommand_table)
         parsed_args, remaining = parser.parse_known_args(args)
 
@@ -248,6 +267,37 @@ class BasicCommand(CLICommand):
     def _display_help(self, parsed_args, parsed_globals):
         help_command = self.create_help_command()
         help_command(parsed_args, parsed_globals)
+
+    def _subcommand_precedes_help(self, args, maybe_parsed_subcommand):
+        # True if the subcommand is named before the first --help token: when
+        # --help comes first, render this command's help instead of descending
+        # into the subcommand.
+        #
+        # Decide by re-parsing the pre-help slice via
+        # ``_parse_potential_subcommand`` rather than by
+        # ``args.index(subcommand_name)``.  A naive string index returns the
+        # first literal occurrence of the name.  If an option value equals the
+        # subcommand name, that occurrence can be the value rather than the
+        # actual subcommand token.  Parsing the slice consumes option values
+        # correctly, mirroring ``CLIDriver._names_a_command``.
+        help_index = first_help_option_index(args)
+        if help_index is None:
+            return True
+        subcommand_name = maybe_parsed_subcommand[1]
+        head = args[:help_index]
+        parsed_head = self._parse_potential_subcommand(
+            head, self._subcommand_table
+        )
+        return parsed_head is not None and parsed_head[1] == subcommand_name
+
+    def _build_help_parsed_args(self):
+        # BasicHelp.__call__ does not read the parsed args namespace (it
+        # generates doc events from the command object), so a minimal
+        # namespace with help='help' is sufficient and mirrors what the
+        # positional ``help`` path produced.
+        namespace = argparse.Namespace()
+        namespace.help = 'help'
+        return namespace
 
     def create_help_command(self):
         command_help_table = {}

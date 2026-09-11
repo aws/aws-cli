@@ -26,7 +26,21 @@
         {"shape":"ClientException"},
         {"shape":"ServerException"}
       ],
-      "documentation":"<p>Cancels a job in an Batch job queue. Jobs that are in a <code>SUBMITTED</code>, <code>PENDING</code>, or <code>RUNNABLE</code> state are cancelled and the job status is updated to <code>FAILED</code>.</p> <note> <p>A <code>PENDING</code> job is canceled after all dependency jobs are completed. Therefore, it may take longer than expected to cancel a job in <code>PENDING</code> status.</p> <p>When you try to cancel an array parent job in <code>PENDING</code>, Batch attempts to cancel all child jobs. The array parent job is canceled when all child jobs are completed.</p> </note> <p>Jobs that progressed to the <code>STARTING</code> or <code>RUNNING</code> state aren't canceled. However, the API operation still succeeds, even if no job is canceled. These jobs must be terminated with the <a>TerminateJob</a> operation.</p>"
+      "documentation":"<p>Cancels a job in an Batch job queue. Jobs that are in a <code>SUBMITTED</code>, <code>PENDING</code>, or <code>RUNNABLE</code> state are cancelled and the job status is updated to <code>FAILED</code>.</p> <note> <p>A <code>PENDING</code> job is cancelled after all dependency jobs are completed. Therefore, it might take longer than expected to cancel a job in <code>PENDING</code> status.</p> <p>When you try to cancel an array parent job in <code>PENDING</code>, Batch attempts to cancel all child jobs. The array parent job is cancelled when all child jobs are completed.</p> </note> <p>Jobs that progressed to the <code>STARTING</code> or <code>RUNNING</code> state aren't cancelled. However, the API operation still succeeds, even if no job is cancelled. These jobs must be terminated with the <a>TerminateJob</a> or <a>TerminateJobs</a> operation.</p>"
+    },
+    "CancelJobs":{
+      "name":"CancelJobs",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v1/canceljobs"
+      },
+      "input":{"shape":"CancelJobsRequest"},
+      "output":{"shape":"CancelJobsResponse"},
+      "errors":[
+        {"shape":"ClientException"},
+        {"shape":"ServerException"}
+      ],
+      "documentation":"<p>Cancels up to 50 jobs in an Batch job queue. This is a bulk version of <a>CancelJob</a>. Jobs that are in a <code>SUBMITTED</code>, <code>PENDING</code>, or <code>RUNNABLE</code> state are cancelled and the job status is updated to <code>FAILED</code>.</p> <note> <p>A <code>PENDING</code> job is cancelled after all dependency jobs are completed. Therefore, it might take longer than expected to cancel a job in <code>PENDING</code> status.</p> <p>When you try to cancel an array parent job in <code>PENDING</code>, Batch attempts to cancel all child jobs. The array parent job is cancelled when all child jobs are completed.</p> </note> <p>Jobs that progressed to the <code>STARTING</code> or <code>RUNNING</code> state aren't cancelled. These jobs must be terminated with the <a>TerminateJob</a> or <a>TerminateJobs</a> operation.</p> <p>Batch reports the result for each job individually in the response. Jobs that were processed successfully are reported in the <code>successful</code> list. Jobs that encountered errors are reported in the <code>errors</code> list. The response returns an HTTP status code of <code>200</code> even when some jobs encountered errors, so check the <code>errors</code> list. Jobs that can't be found are treated as successfully processed.</p>"
     },
     "CreateComputeEnvironment":{
       "name":"CreateComputeEnvironment",
@@ -518,6 +532,20 @@
       ],
       "documentation":"<p>Terminates a job in a job queue. Jobs that are in the <code>STARTING</code> or <code>RUNNING</code> state are terminated, which causes them to transition to <code>FAILED</code>. Jobs that have not progressed to the <code>STARTING</code> state are cancelled.</p>"
     },
+    "TerminateJobs":{
+      "name":"TerminateJobs",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v1/terminatejobs"
+      },
+      "input":{"shape":"TerminateJobsRequest"},
+      "output":{"shape":"TerminateJobsResponse"},
+      "errors":[
+        {"shape":"ClientException"},
+        {"shape":"ServerException"}
+      ],
+      "documentation":"<p>Terminates up to 50 jobs in a job queue. This is a bulk version of <a>TerminateJob</a>. Jobs that are in the <code>STARTING</code> or <code>RUNNING</code> state are terminated, which causes them to transition to <code>FAILED</code>. Jobs that have not progressed to the <code>STARTING</code> state are cancelled.</p> <p>Batch reports the result for each job individually in the response. Jobs that were processed successfully are reported in the <code>successful</code> list. Jobs that encountered errors are reported in the <code>errors</code> list. The response returns an HTTP status code of <code>200</code> even when some jobs encountered errors, so check the <code>errors</code> list. Jobs that can't be found are treated as successfully processed.</p>"
+    },
     "TerminateServiceJob":{
       "name":"TerminateServiceJob",
       "http":{
@@ -531,6 +559,20 @@
         {"shape":"ServerException"}
       ],
       "documentation":"<p>Terminates a service job in a job queue. </p>"
+    },
+    "TerminateServiceJobs":{
+      "name":"TerminateServiceJobs",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v1/terminateservicejobs"
+      },
+      "input":{"shape":"TerminateServiceJobsRequest"},
+      "output":{"shape":"TerminateServiceJobsResponse"},
+      "errors":[
+        {"shape":"ClientException"},
+        {"shape":"ServerException"}
+      ],
+      "documentation":"<p>Terminates up to 50 service jobs in a job queue. This is a bulk version of <a>TerminateServiceJob</a>.</p> <p>Batch reports the result for each service job individually in the response. Service jobs that were processed successfully are reported in the <code>successful</code> list. Service jobs that encountered errors are reported in the <code>errors</code> list. The response returns an HTTP status code of <code>200</code> even when some service jobs encountered errors, so check the <code>errors</code> list. Service jobs that can't be found are treated as successfully processed.</p>"
     },
     "UntagResource":{
       "name":"UntagResource",
@@ -893,7 +935,7 @@
         },
         "reason":{
           "shape":"String",
-          "documentation":"<p>A message to attach to the job that explains the reason for canceling it. This message is returned by future <a>DescribeJobs</a> operations on the job. It is also recorded in the Batch activity logs.</p> <p>This parameter has as limit of 1024 characters.</p>"
+          "documentation":"<p>A message to attach to the job that explains the reason for cancelling it. This message is returned by future <a>DescribeJobs</a> operations on the job. It is also recorded in the Batch activity logs.</p> <p>This parameter has a limit of 1024 characters.</p>"
         }
       },
       "documentation":"<p>Contains the parameters for <code>CancelJob</code>.</p>"
@@ -901,6 +943,69 @@
     "CancelJobResponse":{
       "type":"structure",
       "members":{}
+    },
+    "CancelJobsErrorDetail":{
+      "type":"structure",
+      "required":[
+        "job",
+        "code",
+        "message"
+      ],
+      "members":{
+        "job":{
+          "shape":"String",
+          "documentation":"<p>The Batch job ID of the job that couldn't be cancelled.</p>"
+        },
+        "code":{
+          "shape":"String",
+          "documentation":"<p>An error code that identifies the reason the job couldn't be cancelled. Valid values are:</p> <ul> <li> <p> <code>ValidationException</code> – A job identifier in the request is malformed or isn't valid.</p> </li> <li> <p> <code>ClientException</code> – The request failed because of a client error.</p> </li> <li> <p> <code>ThrottlingException</code> – The request was throttled. Retry the request.</p> </li> <li> <p> <code>ServerException</code> – An internal error occurred. Retry the request.</p> </li> <li> <p> <code>AccessDenied</code> – The caller isn't authorized to perform the action on the specified job.</p> </li> </ul>"
+        },
+        "message":{
+          "shape":"String",
+          "documentation":"<p>A message that describes the reason the job couldn't be cancelled.</p>"
+        }
+      },
+      "documentation":"<p>An object that contains the details of a job that couldn't be cancelled by a <code>CancelJobs</code> operation.</p>"
+    },
+    "CancelJobsErrorDetailList":{
+      "type":"list",
+      "member":{"shape":"CancelJobsErrorDetail"}
+    },
+    "CancelJobsRequest":{
+      "type":"structure",
+      "required":[
+        "jobs",
+        "reason"
+      ],
+      "members":{
+        "jobs":{
+          "shape":"StringList",
+          "documentation":"<p>An array of up to 50 Batch job IDs of the jobs to cancel.</p>"
+        },
+        "reason":{
+          "shape":"String",
+          "documentation":"<p>A message to attach to the job that explains the reason for cancelling it. This message is returned by future <a>DescribeJobs</a> operations on the job. It is also recorded in the Batch activity logs.</p> <p>This parameter has a limit of 1024 characters.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the jobs to cancel and the reason for the cancellation.</p>"
+    },
+    "CancelJobsResponse":{
+      "type":"structure",
+      "required":[
+        "successful",
+        "errors"
+      ],
+      "members":{
+        "successful":{
+          "shape":"StringList",
+          "documentation":"<p>A list of the job IDs whose cancellation request was accepted.</p>"
+        },
+        "errors":{
+          "shape":"CancelJobsErrorDetailList",
+          "documentation":"<p>A list of <code>CancelJobsErrorDetail</code> items, one for each job that couldn't be cancelled. Each item includes the job ID along with a code and message that describe why the job wasn't cancelled.</p>"
+        }
+      },
+      "documentation":"<p>The result of a <code>CancelJobs</code> request, including the jobs whose cancellation request was accepted and the errors for jobs that couldn't be cancelled.</p>"
     },
     "CapacityLimit":{
       "type":"structure",
@@ -3900,7 +4005,7 @@
         },
         "isCancelled":{
           "shape":"Boolean",
-          "documentation":"<p>Indicates whether the job is canceled.</p>"
+          "documentation":"<p>Indicates whether the job is cancelled.</p>"
         },
         "isTerminated":{
           "shape":"Boolean",
@@ -4118,6 +4223,14 @@
         "jobDefinition":{
           "shape":"String",
           "documentation":"<p>The Amazon Resource Name (ARN) of the job definition.</p>"
+        },
+        "isCancelled":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether a cancellation request has been accepted for the job. This field is only present when the value is <code>true</code>.</p>"
+        },
+        "isTerminated":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether a termination request has been accepted for the job. This field is only present when the value is <code>true</code>.</p>"
         }
       },
       "documentation":"<p>An object that represents summary details of a job.</p>"
@@ -5737,6 +5850,10 @@
         "stoppedAt":{
           "shape":"Long",
           "documentation":"<p>The Unix timestamp (in milliseconds) for when the service job stopped running.</p>"
+        },
+        "isTerminated":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether a termination request has been accepted for the service job. This field is only present when the value is <code>true</code>.</p>"
         }
       },
       "documentation":"<p>Summary information about a service job.</p>"
@@ -6281,7 +6398,7 @@
         },
         "reason":{
           "shape":"String",
-          "documentation":"<p>A message to attach to the job that explains the reason for canceling it. This message is returned by future <a>DescribeJobs</a> operations on the job. It is also recorded in the Batch activity logs.</p> <p>This parameter has as limit of 1024 characters.</p>"
+          "documentation":"<p>A message to attach to the job that explains the reason for terminating it. This message is returned by future <a>DescribeJobs</a> operations on the job. It is also recorded in the Batch activity logs.</p> <p>This parameter has a limit of 1024 characters.</p>"
         }
       },
       "documentation":"<p>Contains the parameters for <code>TerminateJob</code>.</p>"
@@ -6289,6 +6406,69 @@
     "TerminateJobResponse":{
       "type":"structure",
       "members":{}
+    },
+    "TerminateJobsErrorDetail":{
+      "type":"structure",
+      "required":[
+        "job",
+        "code",
+        "message"
+      ],
+      "members":{
+        "job":{
+          "shape":"String",
+          "documentation":"<p>The Batch job ID of the job that couldn't be terminated.</p>"
+        },
+        "code":{
+          "shape":"String",
+          "documentation":"<p>An error code that identifies the reason the job couldn't be terminated. Valid values are:</p> <ul> <li> <p> <code>ValidationException</code> – A job identifier in the request is malformed or isn't valid.</p> </li> <li> <p> <code>ClientException</code> – The request failed because of a client error.</p> </li> <li> <p> <code>ThrottlingException</code> – The request was throttled. Retry the request.</p> </li> <li> <p> <code>ServerException</code> – An internal error occurred. Retry the request.</p> </li> <li> <p> <code>AccessDenied</code> – The caller isn't authorized to perform the action on the specified job.</p> </li> </ul>"
+        },
+        "message":{
+          "shape":"String",
+          "documentation":"<p>A message that describes the reason the job couldn't be terminated.</p>"
+        }
+      },
+      "documentation":"<p>An object that contains the details of a job that couldn't be terminated by a <code>TerminateJobs</code> operation.</p>"
+    },
+    "TerminateJobsErrorDetailList":{
+      "type":"list",
+      "member":{"shape":"TerminateJobsErrorDetail"}
+    },
+    "TerminateJobsRequest":{
+      "type":"structure",
+      "required":[
+        "jobs",
+        "reason"
+      ],
+      "members":{
+        "jobs":{
+          "shape":"StringList",
+          "documentation":"<p>An array of up to 50 Batch job IDs of the jobs to terminate.</p>"
+        },
+        "reason":{
+          "shape":"String",
+          "documentation":"<p>A message to attach to the job that explains the reason for terminating it. This message is returned by future <a>DescribeJobs</a> operations on the job. It is also recorded in the Batch activity logs.</p> <p>This parameter has a limit of 1024 characters.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the jobs to terminate and the reason for the termination.</p>"
+    },
+    "TerminateJobsResponse":{
+      "type":"structure",
+      "required":[
+        "successful",
+        "errors"
+      ],
+      "members":{
+        "successful":{
+          "shape":"StringList",
+          "documentation":"<p>A list of the job IDs whose termination request was accepted.</p>"
+        },
+        "errors":{
+          "shape":"TerminateJobsErrorDetailList",
+          "documentation":"<p>A list of <code>TerminateJobsErrorDetail</code> items, one for each job that couldn't be terminated. Each item includes the job ID along with a code and message that describe why the job wasn't terminated.</p>"
+        }
+      },
+      "documentation":"<p>The result of a <code>TerminateJobs</code> request, including the jobs whose termination request was accepted and the errors for jobs that couldn't be terminated.</p>"
     },
     "TerminateServiceJobRequest":{
       "type":"structure",
@@ -6303,13 +6483,76 @@
         },
         "reason":{
           "shape":"String",
-          "documentation":"<p>A message to attach to the service job that explains the reason for canceling it. This message is returned by <code>DescribeServiceJob</code> operations on the service job.</p>"
+          "documentation":"<p>A message to attach to the service job that explains the reason for terminating it. This message is returned by <code>DescribeServiceJob</code> operations on the service job.</p>"
         }
       }
     },
     "TerminateServiceJobResponse":{
       "type":"structure",
       "members":{}
+    },
+    "TerminateServiceJobsErrorDetail":{
+      "type":"structure",
+      "required":[
+        "job",
+        "code",
+        "message"
+      ],
+      "members":{
+        "job":{
+          "shape":"String",
+          "documentation":"<p>The service job ID of the service job that couldn't be terminated.</p>"
+        },
+        "code":{
+          "shape":"String",
+          "documentation":"<p>An error code that identifies the reason the service job couldn't be terminated. Valid values are:</p> <ul> <li> <p> <code>ValidationException</code> – A service job identifier in the request is malformed or isn't valid.</p> </li> <li> <p> <code>ClientException</code> – The request failed because of a client error.</p> </li> <li> <p> <code>ThrottlingException</code> – The request was throttled. Retry the request.</p> </li> <li> <p> <code>ServerException</code> – An internal error occurred. Retry the request.</p> </li> <li> <p> <code>AccessDenied</code> – The caller isn't authorized to perform the action on the specified service job.</p> </li> </ul>"
+        },
+        "message":{
+          "shape":"String",
+          "documentation":"<p>A message that describes the reason the service job couldn't be terminated.</p>"
+        }
+      },
+      "documentation":"<p>An object that contains the details of a service job that couldn't be terminated by a <code>TerminateServiceJobs</code> operation.</p>"
+    },
+    "TerminateServiceJobsErrorDetailList":{
+      "type":"list",
+      "member":{"shape":"TerminateServiceJobsErrorDetail"}
+    },
+    "TerminateServiceJobsRequest":{
+      "type":"structure",
+      "required":[
+        "jobs",
+        "reason"
+      ],
+      "members":{
+        "jobs":{
+          "shape":"StringList",
+          "documentation":"<p>An array of up to 50 service job IDs of the service jobs to terminate.</p>"
+        },
+        "reason":{
+          "shape":"String",
+          "documentation":"<p>A message to attach to the service job that explains the reason for terminating it. This message is returned by <code>DescribeServiceJob</code> operations on the service job.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the service jobs to terminate and the reason for the termination.</p>"
+    },
+    "TerminateServiceJobsResponse":{
+      "type":"structure",
+      "required":[
+        "successful",
+        "errors"
+      ],
+      "members":{
+        "successful":{
+          "shape":"StringList",
+          "documentation":"<p>A list of the service job IDs whose termination request was accepted.</p>"
+        },
+        "errors":{
+          "shape":"TerminateServiceJobsErrorDetailList",
+          "documentation":"<p>A list of <code>TerminateServiceJobsErrorDetail</code> items, one for each service job that couldn't be terminated. Each item includes the service job ID along with a code and message that describe why the service job wasn't terminated.</p>"
+        }
+      },
+      "documentation":"<p>The result of a <code>TerminateServiceJobs</code> request, including the service jobs whose termination request was accepted and the errors for service jobs that couldn't be terminated.</p>"
     },
     "Tmpfs":{
       "type":"structure",

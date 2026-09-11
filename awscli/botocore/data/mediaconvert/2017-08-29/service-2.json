@@ -1162,6 +1162,10 @@
           "documentation": "The service can't process your request because of a problem in the request. Please check your request form and syntax."
         },
         {
+          "shape": "UnprocessableEntityException",
+          "documentation": "The input file was recognized but appears to be malformed or corrupt."
+        },
+        {
           "shape": "InternalServerErrorException",
           "documentation": "The service encountered an unexpected condition and can't fulfill your request."
         },
@@ -2132,7 +2136,7 @@
           "documentation": "The numerator, or top number, in the fractional aspect ratio. For example, for a display aspect ratio of 16 / 9, the numerator would be 16."
         }
       },
-      "documentation": "An aspect ratio expressed as a fraction with numerator and denominator values, reduced to lowest terms. Used for the sample (pixel) aspect ratio and the display aspect ratio of a video track. For example, a 720x576 anamorphic track has a sample aspect ratio of 64 / 45 and a display aspect ratio of 16 / 9."
+      "documentation": "An aspect ratio expressed as a fraction with numerator and denominator values, reduced to lowest terms. Used for the sample (pixel) aspect ratio and the display aspect ratio of a video track. For example, a 720x576 anamorphic track has a sample aspect ratio of 64 / 45 and a display aspect ratio of 16 / 9. A video track can declare an aspect ratio in two independent places, and MediaConvert reports each one where it was found rather than choosing between them. The ratio declared by the container appears on the video track itself, and the ratio declared by the video essence appears under codecMetadata. When a file declares an aspect ratio in only one of the two places, the other is null; when it declares both and they disagree, you can compare them and decide which to use."
     },
     "AssociateCertificateRequest": {
       "type": "structure",
@@ -4311,6 +4315,16 @@
           "locationName": "contentLightLevel",
           "documentation": "Content light level information (CTA-861.3). Describes the light level characteristics of the content."
         },
+        "DisplayAspectRatio": {
+          "shape": "AspectRatio",
+          "locationName": "displayAspectRatio",
+          "documentation": "An aspect ratio expressed as a fraction with numerator and denominator values, reduced to lowest terms. Used for the sample (pixel) aspect ratio and the display aspect ratio of a video track. For example, a 720x576 anamorphic track has a sample aspect ratio of 64 / 45 and a display aspect ratio of 16 / 9. A video track can declare an aspect ratio in two independent places, and MediaConvert reports each one where it was found rather than choosing between them. The ratio declared by the container appears on the video track itself, and the ratio declared by the video essence appears under codecMetadata. When a file declares an aspect ratio in only one of the two places, the other is null; when it declares both and they disagree, you can compare them and decide which to use."
+        },
+        "DolbyVision": {
+          "shape": "DolbyVisionMetadata",
+          "locationName": "dolbyVision",
+          "documentation": "Dolby Vision characteristics of the video track: the profile and level, and whether the RPU (dynamic metadata), base layer, and enhancement layer are present. Use this to distinguish Dolby Vision content from standard HEVC and to choose your encoding or passthrough settings. Omitted when the content is not Dolby Vision."
+        },
         "FieldOrder": {
           "shape": "__string",
           "locationName": "fieldOrder",
@@ -4345,6 +4359,11 @@
           "shape": "__integer",
           "locationName": "rotation",
           "documentation": "The clockwise rotation angle of the video, in degrees, as specified in the codec bitstream via a Display Orientation SEI message (payload type 47 for both H.264 and H.265). This field is null when the video essence does not contain a Display Orientation SEI message or when the rotation is 0 degrees."
+        },
+        "SampleAspectRatio": {
+          "shape": "AspectRatio",
+          "locationName": "sampleAspectRatio",
+          "documentation": "An aspect ratio expressed as a fraction with numerator and denominator values, reduced to lowest terms. Used for the sample (pixel) aspect ratio and the display aspect ratio of a video track. For example, a 720x576 anamorphic track has a sample aspect ratio of 64 / 45 and a display aspect ratio of 16 / 9. A video track can declare an aspect ratio in two independent places, and MediaConvert reports each one where it was found rather than choosing between them. The ratio declared by the container appears on the video track itself, and the ratio declared by the video essence appears under codecMetadata. When a file declares an aspect ratio in only one of the two places, the other is null; when it declares both and they disagree, you can compare them and decide which to use."
         },
         "ScanType": {
           "shape": "__string",
@@ -4559,7 +4578,7 @@
         "Format": {
           "shape": "Format",
           "locationName": "format",
-          "documentation": "The format of your media file. For example: MP4, QuickTime (MOV), Matroska (MKV), WebM, MXF, Wave, AVI, MPEG-TS, MPEG-PS, MP3, FLAC, ASF (Windows Media / WMA), OGG. Note that this will be blank if your media file has a format that the MediaConvert Probe operation does not recognize."
+          "documentation": "The format of your media file. For example: MP4, QuickTime (MOV), Matroska (MKV), WebM, MXF, Wave, AVI, MPEG-TS, MPEG-PS, MP3, FLAC, ASF (Windows Media / WMA), or OGG. Note that this will be blank if your media file has a format that the MediaConvert Probe operation does not recognize."
         },
         "StartTimecode": {
           "shape": "__string",
@@ -5569,6 +5588,45 @@
       "enum": [
         "HDR10_NOMAP",
         "HDR10_1000"
+      ]
+    },
+    "DolbyVisionMetadata": {
+      "type": "structure",
+      "members": {
+        "BaseLayer": {
+          "shape": "DolbyVisionPresence",
+          "locationName": "baseLayer",
+          "documentation": "Whether a Dolby Vision component is present in the track."
+        },
+        "EnhancementLayer": {
+          "shape": "DolbyVisionPresence",
+          "locationName": "enhancementLayer",
+          "documentation": "Whether a Dolby Vision component is present in the track."
+        },
+        "Level": {
+          "shape": "__integer",
+          "locationName": "level",
+          "documentation": "The Dolby Vision level, which indicates the maximum resolution and frame rate."
+        },
+        "Profile": {
+          "shape": "__integer",
+          "locationName": "profile",
+          "documentation": "The Dolby Vision profile, for example 5, 7, or 8. The profile determines the layer structure and playback compatibility of the content."
+        },
+        "Rpu": {
+          "shape": "DolbyVisionPresence",
+          "locationName": "rpu",
+          "documentation": "Whether a Dolby Vision component is present in the track."
+        }
+      },
+      "documentation": "Dolby Vision characteristics of the video track: the profile and level, and whether the RPU (dynamic metadata), base layer, and enhancement layer are present. Use this to distinguish Dolby Vision content from standard HEVC and to choose your encoding or passthrough settings. Omitted when the content is not Dolby Vision."
+    },
+    "DolbyVisionPresence": {
+      "type": "string",
+      "documentation": "Whether a Dolby Vision component is present in the track.",
+      "enum": [
+        "PRESENT",
+        "ABSENT"
       ]
     },
     "DolbyVisionProfile": {
@@ -14333,6 +14391,20 @@
         "HARD"
       ]
     },
+    "UnprocessableEntityException": {
+      "type": "structure",
+      "members": {
+        "Message": {
+          "shape": "__string",
+          "locationName": "message"
+        }
+      },
+      "exception": true,
+      "error": {
+        "httpStatusCode": 422
+      },
+      "documentation": "The input file was recognized but appears to be malformed or corrupt."
+    },
     "UntagResourceRequest": {
       "type": "structure",
       "members": {
@@ -15103,7 +15175,7 @@
         "DisplayAspectRatio": {
           "shape": "AspectRatio",
           "locationName": "displayAspectRatio",
-          "documentation": "An aspect ratio expressed as a fraction with numerator and denominator values, reduced to lowest terms. Used for the sample (pixel) aspect ratio and the display aspect ratio of a video track. For example, a 720x576 anamorphic track has a sample aspect ratio of 64 / 45 and a display aspect ratio of 16 / 9."
+          "documentation": "An aspect ratio expressed as a fraction with numerator and denominator values, reduced to lowest terms. Used for the sample (pixel) aspect ratio and the display aspect ratio of a video track. For example, a 720x576 anamorphic track has a sample aspect ratio of 64 / 45 and a display aspect ratio of 16 / 9. A video track can declare an aspect ratio in two independent places, and MediaConvert reports each one where it was found rather than choosing between them. The ratio declared by the container appears on the video track itself, and the ratio declared by the video essence appears under codecMetadata. When a file declares an aspect ratio in only one of the two places, the other is null; when it declares both and they disagree, you can compare them and decide which to use."
         },
         "FrameRate": {
           "shape": "FrameRate",
@@ -15133,7 +15205,7 @@
         "SampleAspectRatio": {
           "shape": "AspectRatio",
           "locationName": "sampleAspectRatio",
-          "documentation": "An aspect ratio expressed as a fraction with numerator and denominator values, reduced to lowest terms. Used for the sample (pixel) aspect ratio and the display aspect ratio of a video track. For example, a 720x576 anamorphic track has a sample aspect ratio of 64 / 45 and a display aspect ratio of 16 / 9."
+          "documentation": "An aspect ratio expressed as a fraction with numerator and denominator values, reduced to lowest terms. Used for the sample (pixel) aspect ratio and the display aspect ratio of a video track. For example, a 720x576 anamorphic track has a sample aspect ratio of 64 / 45 and a display aspect ratio of 16 / 9. A video track can declare an aspect ratio in two independent places, and MediaConvert reports each one where it was found rather than choosing between them. The ratio declared by the container appears on the video track itself, and the ratio declared by the video essence appears under codecMetadata. When a file declares an aspect ratio in only one of the two places, the other is null; when it declares both and they disagree, you can compare them and decide which to use."
         },
         "TransferCharacteristics": {
           "shape": "TransferCharacteristics",

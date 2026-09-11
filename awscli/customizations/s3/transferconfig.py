@@ -35,6 +35,7 @@ DEFAULTS = {
     'should_stream': None,
     'disk_throughput': None,
     'direct_io': None,
+    'bucket_lister': constants.SINGLE_BUCKET_LISTER,
 }
 
 
@@ -68,7 +69,11 @@ class RuntimeConfig:
             constants.AUTO_RESOLVE_TRANSFER_CLIENT,
             constants.CLASSIC_TRANSFER_CLIENT,
             constants.CRT_TRANSFER_CLIENT,
-        ]
+        ],
+        'bucket_lister': [
+            constants.THREADED_BUCKET_LISTER,
+            constants.SINGLE_BUCKET_LISTER,
+        ],
     }
     CHOICE_ALIASES = {
         'preferred_transfer_client': {

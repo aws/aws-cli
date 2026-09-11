@@ -16,12 +16,14 @@ import threading
 import time
 from concurrent.futures import Future
 
+import pytest
 from botocore.session import Session
 from s3transfer.subscribers import BaseSubscriber
 
 from tests import (
     HAS_CRT,
     FileCreator,
+    FileSizeProvider,
     NonSeekableReader,
     NonSeekableWriter,
     mock,
@@ -831,3 +833,88 @@ class TestCRTTransferManager(unittest.TestCase):
         )
         with self.assertRaises(awscrt.exceptions.AwsCrtError):
             future.result()
+
+
+MULTIPART_THRESHOLD = 8 * 1024 * 1024
+DOWNLOADED_CONTENT = 'content'
+
+
+@pytest.fixture
+def files():
+    file_creator = FileCreator()
+    yield file_creator
+    file_creator.remove_all()
+
+
+@pytest.fixture
+def filename(files):
+    return files.full_path('myfile')
+
+
+@pytest.fixture
+def crt_client(files):
+    client = mock.Mock(awscrt.s3.S3Client)
+
+    def simulate_make_request(**kwargs):
+        files.create_file(
+            kwargs['recv_filepath'], DOWNLOADED_CONTENT, mode='w'
+        )
+        kwargs['on_done'](error=None)
+        return mock.Mock(awscrt.s3.S3Request)
+
+    client.make_request.side_effect = simulate_make_request
+    return client
+
+
+@pytest.fixture
+def request_serializer():
+    session = Session()
+    session.set_config_variable('region', 'us-west-2')
+    return s3transfer.crt.BotocoreCRTRequestSerializer(session)
+
+
+@pytest.fixture
+def download(crt_client, request_serializer, filename):
+    """Downloads an object of a given size and returns the crt request args"""
+
+    def _download(size, multipart_threshold):
+        transfer_manager = s3transfer.crt.CRTTransferManager(
+            crt_s3_client=crt_client,
+            crt_request_serializer=request_serializer,
+            transfer_config=s3transfer.crt.CRTTransferConfig(
+                multipart_threshold=multipart_threshold
+            ),
+        )
+        subscribers = [FileSizeProvider(size)]
+        transfer_manager.download(
+            'test_bucket', 'test_key', filename, {}, subscribers
+        ).result()
+        return crt_client.make_request.call_args[1]
+
+    return _download
+
+
+class TestDownloadMultipartThreshold:
+    @pytest.mark.parametrize(
+        'size', [MULTIPART_THRESHOLD - 1, MULTIPART_THRESHOLD]
+    )
+    def test_within_threshold_downloads_in_single_request(
+        self, download, size
+    ):
+        request_args = download(size, MULTIPART_THRESHOLD)
+        assert request_args['type'] == awscrt.s3.S3RequestType.DEFAULT
+        assert request_args['operation_name'] == 'GetObject'
+
+    def test_above_threshold_splits_download(self, download):
+        request_args = download(MULTIPART_THRESHOLD + 1, MULTIPART_THRESHOLD)
+        assert request_args['type'] == awscrt.s3.S3RequestType.GET_OBJECT
+        assert 'operation_name' not in request_args
+
+    def test_unset_threshold_splits_download(self, download):
+        request_args = download(1, None)
+        assert request_args['type'] == awscrt.s3.S3RequestType.GET_OBJECT
+
+    def test_single_request_download_writes_file(self, download, filename):
+        download(MULTIPART_THRESHOLD - 1, MULTIPART_THRESHOLD)
+        with open(filename) as f:
+            assert f.read() == DOWNLOADED_CONTENT

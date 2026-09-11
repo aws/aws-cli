@@ -222,8 +222,31 @@ def _get_crt_throughput_target_gbps(provided_throughput_target_bytes=None):
     return target_gbps
 
 
+class CRTTransferConfig:
+    def __init__(self, multipart_threshold=None):
+        """Configuration the CRT transfer manager applies itself
+
+        This only covers configuration that the CRT s3 client cannot apply
+        on its own. Everything else is configured on the client, so it
+        deliberately has no equivalent here.
+
+        :type multipart_threshold: Optional[int]
+        :param multipart_threshold: The size, in bytes, that a download must
+            exceed to be split into ranged requests. The CRT s3 client only
+            applies its own threshold to uploads. If not set, the client
+            decides how to split every download.
+        """
+        self.multipart_threshold = multipart_threshold
+
+
 class CRTTransferManager:
-    def __init__(self, crt_s3_client, crt_request_serializer, osutil=None):
+    def __init__(
+        self,
+        crt_s3_client,
+        crt_request_serializer,
+        osutil=None,
+        transfer_config=None,
+    ):
         """A transfer manager interface for Amazon S3 on CRT s3 client.
 
         :type crt_s3_client: awscrt.s3.S3Client
@@ -237,12 +260,19 @@ class CRTTransferManager:
         :type osutil: s3transfer.utils.OSUtils
         :param osutil: OSUtils object to use for os-related behavior when
             using with transfer manager.
+
+        :type transfer_config: s3transfer.crt.CRTTransferConfig
+        :param transfer_config: The transfer configuration to apply. If not
+            provided, the CRT s3 client's own configuration applies to every
+            transfer.
         """
         if osutil is None:
             self._osutil = OSUtils()
         self._crt_s3_client = crt_s3_client
         self._s3_args_creator = S3ClientArgsCreator(
-            crt_request_serializer, self._osutil
+            crt_request_serializer,
+            self._osutil,
+            transfer_config=transfer_config,
         )
         self._crt_exception_translator = (
             crt_request_serializer.translate_crt_exception
@@ -398,6 +428,7 @@ class CRTTransferMeta(BaseTransferMeta):
         self._transfer_id = transfer_id
         self._call_args = call_args
         self._user_context = {}
+        self._size = None
 
     @property
     def call_args(self):
@@ -410,6 +441,13 @@ class CRTTransferMeta(BaseTransferMeta):
     @property
     def user_context(self):
         return self._user_context
+
+    @property
+    def size(self):
+        return self._size
+
+    def provide_transfer_size(self, size):
+        self._size = size
 
 
 class CRTTransferFuture(BaseTransferFuture):
@@ -760,9 +798,10 @@ class CRTTransferCoordinator:
 
 
 class S3ClientArgsCreator:
-    def __init__(self, crt_request_serializer, os_utils):
+    def __init__(self, crt_request_serializer, os_utils, transfer_config=None):
         self._request_serializer = crt_request_serializer
         self._os_utils = os_utils
+        self._transfer_config = transfer_config
         self._client_config = crt_request_serializer.client_config
         self._service_model = crt_request_serializer.service_model
 
@@ -892,7 +931,18 @@ class S3ClientArgsCreator:
         make_request_args['recv_filepath'] = recv_filepath
         make_request_args['on_body'] = on_body
         make_request_args['checksum_config'] = checksum_config
+        if self._should_download_in_single_request(future.meta.size):
+            make_request_args['type'] = S3RequestType.DEFAULT
+            make_request_args['operation_name'] = _get_operation_name(
+                request_type
+            )
         return make_request_args
+
+    def _should_download_in_single_request(self, size):
+        if self._transfer_config is None or size is None:
+            return False
+        threshold = self._transfer_config.multipart_threshold
+        return threshold is not None and size <= threshold
 
     def _should_calculate_upload_checksum(self, request_type, extra_args):
         if any(

@@ -20,6 +20,7 @@ from botocore.httpsession import DEFAULT_CA_BUNDLE
 from s3transfer.crt import (
     BotocoreCRTCredentialsWrapper,
     BotocoreCRTRequestSerializer,
+    CRTTransferConfig,
     CRTTransferManager,
     acquire_crt_s3_process_lock,
     create_s3_crt_client,
@@ -241,12 +242,22 @@ class TransferManagerFactory:
 
     def _create_crt_transfer_manager(self, params, runtime_config):
         self._acquire_crt_s3_process_lock()
+        config_kwargs = self._resolve_crt_client_config_kwargs(runtime_config)
         return CRTTransferManager(
-            self._create_crt_client(params, runtime_config),
+            self._create_crt_client(params, runtime_config, config_kwargs),
             self._create_crt_request_serializer(params),
+            transfer_config=self._create_crt_transfer_config(config_kwargs),
         )
 
-    def _create_crt_client(self, params, runtime_config):
+    def _create_crt_transfer_config(self, config_kwargs):
+        # The crt client only applies its multipart threshold to uploads, so
+        # downloads rely on the transfer config to match it. Leaving the
+        # threshold unset keeps the client's own download behavior.
+        return CRTTransferConfig(
+            multipart_threshold=config_kwargs.get('multipart_upload_threshold')
+        )
+
+    def _create_crt_client(self, params, runtime_config, config_kwargs):
         create_crt_client_kwargs = {
             'region': self._resolve_region(params),
             'verify': self._resolve_verify(params),
@@ -257,9 +268,7 @@ class TransferManagerFactory:
         target_throughput = runtime_config.get('target_bandwidth', None)
         if target_throughput:
             create_crt_client_kwargs['target_throughput'] = target_throughput
-        create_crt_client_kwargs.update(
-            self._resolve_crt_client_config_kwargs(runtime_config)
-        )
+        create_crt_client_kwargs.update(config_kwargs)
         if params.get('sign_request', True):
             crt_credentials_provider = self._get_crt_credentials_provider()
             create_crt_client_kwargs['crt_credentials_provider'] = (

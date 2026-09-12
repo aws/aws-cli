@@ -128,6 +128,146 @@ def list_objects_xml(
     return xml
 
 
+def put_object_response() -> HTTPResponse:
+    return HTTPResponse.raw(
+        b"", status=200, headers={"ETag": '"c8afdb36c52cf4727836669019e69222"'}
+    )
+
+
+def head_object_response(
+    content_length: int = 100, **extra_headers
+) -> HTTPResponse:
+    headers = {
+        "Content-Length": str(content_length),
+        "Last-Modified": "Thu, 01 Jan 1970 00:00:00 GMT",
+        "ETag": '"foo-1"',
+    }
+    headers.update(extra_headers)
+    return HTTPResponse.raw(b"", status=200, headers=headers)
+
+
+def get_object_response(body: bytes = b"foo", **extra_headers) -> HTTPResponse:
+    headers = {
+        "Content-Length": str(len(body)),
+        "ETag": '"foo-1"',
+    }
+    headers.update(extra_headers)
+    return HTTPResponse.raw(body, status=200, headers=headers)
+
+
+def empty_list_objects_response() -> HTTPResponse:
+    body = (
+        '<?xml version="1.0" encoding="UTF-8"?>'
+        '<ListBucketResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/">'
+        "<Name>bucket</Name><Prefix></Prefix><IsTruncated>false</IsTruncated>"
+        "</ListBucketResult>"
+    )
+    return HTTPResponse.raw(
+        body.encode(), status=200, headers={"Content-Type": "application/xml"}
+    )
+
+
+def create_mpu_response(upload_id: str) -> HTTPResponse:
+    body = (
+        '<?xml version="1.0" encoding="UTF-8"?>'
+        '<InitiateMultipartUploadResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/">'
+        f"<Bucket>bucket</Bucket><Key>key.txt</Key><UploadId>{upload_id}</UploadId>"
+        "</InitiateMultipartUploadResult>"
+    )
+    return HTTPResponse.raw(
+        body.encode(), status=200, headers={"Content-Type": "application/xml"}
+    )
+
+
+def upload_part_response(etag: str) -> HTTPResponse:
+    return HTTPResponse.raw(b"", status=200, headers={"ETag": f'"{etag}"'})
+
+
+def complete_mpu_response() -> HTTPResponse:
+    body = (
+        '<?xml version="1.0" encoding="UTF-8"?>'
+        '<CompleteMultipartUploadResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/">'
+        "<Location>http://bucket.s3.amazonaws.com/key.txt</Location>"
+        "<Bucket>bucket</Bucket><Key>key.txt</Key>"
+        '<ETag>"etag"</ETag>'
+        "</CompleteMultipartUploadResult>"
+    )
+    return HTTPResponse.raw(
+        body.encode(), status=200, headers={"Content-Type": "application/xml"}
+    )
+
+
+def abort_mpu_response() -> HTTPResponse:
+    return HTTPResponse.raw(b"", status=204)
+
+
+def copy_object_response() -> HTTPResponse:
+    body = (
+        '<?xml version="1.0" encoding="UTF-8"?>'
+        '<CopyObjectResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/">'
+        '<ETag>"etag"</ETag>'
+        "<LastModified>2023-01-01T00:00:00.000Z</LastModified>"
+        "</CopyObjectResult>"
+    )
+    return HTTPResponse.raw(
+        body.encode(), status=200, headers={"Content-Type": "application/xml"}
+    )
+
+
+def get_object_tagging_response(tags: dict | None = None) -> HTTPResponse:
+    tag_xml = ""
+    if tags:
+        for k, v in tags.items():
+            tag_xml += f"<Tag><Key>{k}</Key><Value>{v}</Value></Tag>"
+    body = (
+        '<?xml version="1.0" encoding="UTF-8"?>'
+        '<Tagging xmlns="http://s3.amazonaws.com/doc/2006-03-01/">'
+        f"<TagSet>{tag_xml}</TagSet></Tagging>"
+    )
+    return HTTPResponse.raw(
+        body.encode(), status=200, headers={"Content-Type": "application/xml"}
+    )
+
+
+def put_object_tagging_response() -> HTTPResponse:
+    return HTTPResponse.raw(b"", status=200)
+
+
+def upload_part_copy_response() -> HTTPResponse:
+    body = (
+        '<?xml version="1.0" encoding="UTF-8"?>'
+        '<CopyPartResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/">'
+        '<ETag>"etag"</ETag>'
+        "<LastModified>2023-01-01T00:00:00.000Z</LastModified>"
+        "</CopyPartResult>"
+    )
+    return HTTPResponse.raw(
+        body.encode(), status=200, headers={"Content-Type": "application/xml"}
+    )
+
+
+def create_session_response() -> HTTPResponse:
+    body = (
+        '<?xml version="1.0" encoding="UTF-8"?>'
+        '<CreateSessionResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/">'
+        '<Credentials>'
+        '<AccessKeyId>ASIATESTSESSIONKEY</AccessKeyId>'
+        '<SecretAccessKey>testsessionsecret</SecretAccessKey>'
+        '<SessionToken>testsessiontoken</SessionToken>'
+        '<Expiration>2099-01-01T00:00:00Z</Expiration>'
+        '</Credentials>'
+        '</CreateSessionResult>'
+    )
+    return HTTPResponse.raw(
+        body.encode(), status=200, headers={"Content-Type": "application/xml"}
+    )
+
+
+def get_path(request) -> str:
+    """Get the path portion without query string."""
+    return urlparse(request.path).path
+
+
 def delete_response() -> HTTPResponse:
     return HTTPResponse.raw(b"", status=204)
 

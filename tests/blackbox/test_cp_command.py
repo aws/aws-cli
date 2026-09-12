@@ -2,11 +2,12 @@
 
 from __future__ import annotations
 
+import asyncio
 import os
 
 import pytest
 from localstub.handlers import handle_expect_header
-from localstub.server import HTTPResponse
+from localstub.server import DropConnection, FaultyTransmission, HTTPResponse
 
 from tests.blackbox.s3_assertions import (
     assert_abort_multipart_upload,
@@ -5440,6 +5441,7 @@ async def test_upload_key_with_spaces(aws_cli, tmp_path):
         )
 
     assert rc == 0, stderr.decode()
+    assert len(server.requests) == 1, format_requests(server)
     # Space must be percent-encoded as %20, not + or literal space
     assert server.requests[0].effective_path == "/my%20file.txt"
 
@@ -5475,6 +5477,7 @@ async def test_download_unicode_key_from_s3(aws_cli, tmp_path):
         )
 
     assert rc == 0, stderr.decode()
+    assert len(server.requests) == 2, format_requests(server)
     assert (tmp_path / "données.txt").exists()
 
 
@@ -5517,6 +5520,7 @@ async def test_user_agent_contains_cli_version(aws_cli, tmp_path):
         )
 
     assert rc == 0, stderr.decode()
+    assert len(server.requests) == 1, format_requests(server)
     ua = server.requests[0].headers.get("user-agent")
     assert ua is not None, "User-Agent header missing"
     assert "aws-cli/" in ua, f"Expected 'aws-cli/' in User-Agent: {ua}"
@@ -5539,6 +5543,7 @@ async def test_user_agent_contains_command(aws_cli, tmp_path):
         )
 
     assert rc == 0, stderr.decode()
+    assert len(server.requests) == 1, format_requests(server)
     ua = server.requests[0].headers.get("user-agent")
     assert "s3.cp" in ua, f"Expected 's3.cp' in User-Agent: {ua}"
 
@@ -5560,7 +5565,7 @@ async def test_acl_private(aws_cli, tmp_path):
         )
 
     assert rc == 0, stderr.decode()
-    assert len(server.requests) == 1
+    assert len(server.requests) == 1, format_requests(server)
     assert_put_object(
         server.requests[0], Bucket="bucket", Key="foo.txt", ACL="private"
     )
@@ -5590,7 +5595,7 @@ async def test_acl_public_read(aws_cli, tmp_path):
         )
 
     assert rc == 0, stderr.decode()
-    assert len(server.requests) == 1
+    assert len(server.requests) == 1, format_requests(server)
     assert_put_object(
         server.requests[0], Bucket="bucket", Key="foo.txt", ACL="public-read"
     )
@@ -5620,7 +5625,7 @@ async def test_acl_bucket_owner_full_control(aws_cli, tmp_path):
         )
 
     assert rc == 0, stderr.decode()
-    assert len(server.requests) == 1
+    assert len(server.requests) == 1, format_requests(server)
     assert_put_object(
         server.requests[0],
         Bucket="bucket",
@@ -5653,7 +5658,7 @@ async def test_content_type_override(aws_cli, tmp_path):
         )
 
     assert rc == 0, stderr.decode()
-    assert len(server.requests) == 1
+    assert len(server.requests) == 1, format_requests(server)
     assert_put_object(
         server.requests[0],
         Bucket="bucket",
@@ -5686,7 +5691,7 @@ async def test_content_type_html(aws_cli, tmp_path):
         )
 
     assert rc == 0, stderr.decode()
-    assert len(server.requests) == 1
+    assert len(server.requests) == 1, format_requests(server)
     assert_put_object(
         server.requests[0],
         Bucket="bucket",
@@ -5719,7 +5724,7 @@ async def test_content_disposition(aws_cli, tmp_path):
         )
 
     assert rc == 0, stderr.decode()
-    assert len(server.requests) == 1
+    assert len(server.requests) == 1, format_requests(server)
     assert_put_object(
         server.requests[0],
         Bucket="bucket",
@@ -5755,12 +5760,16 @@ async def test_content_disposition_non_ascii(aws_cli, tmp_path):
         )
 
     assert rc == 0, stderr.decode()
-    assert len(server.requests) == 1
+    assert len(server.requests) == 1, format_requests(server)
     req = server.requests[0]
-    # The × character (U+00D7) is sent as UTF-8 bytes \xc3\x97 on the wire
+    # The × character (U+00D7) is sent as UTF-8 bytes on the wire
+    cd = req.headers.get("Content-Disposition") or req.headers.get(
+        "content-disposition"
+    )
+    assert cd is not None, "Content-Disposition header missing"
     assert (
-        b'500\xc3\x97500.jpg' in req.wire_raw_bytes
-    ), "Expected UTF-8 encoded \u00d7 in wire data"
+        "500\u00d7500.jpg" in cd
+    ), f"Expected \u00d7 in Content-Disposition, got {cd!r}"
 
 
 @pytest.mark.asyncio
@@ -5787,7 +5796,7 @@ async def test_content_encoding(aws_cli, tmp_path):
         )
 
     assert rc == 0, stderr.decode()
-    assert len(server.requests) == 1
+    assert len(server.requests) == 1, format_requests(server)
     # Content-Encoding on the wire combines user value with aws-chunked
     assert_put_object(
         server.requests[0],
@@ -5821,7 +5830,7 @@ async def test_content_language(aws_cli, tmp_path):
         )
 
     assert rc == 0, stderr.decode()
-    assert len(server.requests) == 1
+    assert len(server.requests) == 1, format_requests(server)
     assert_put_object(
         server.requests[0],
         Bucket="bucket",
@@ -5854,7 +5863,7 @@ async def test_cache_control(aws_cli, tmp_path):
         )
 
     assert rc == 0, stderr.decode()
-    assert len(server.requests) == 1
+    assert len(server.requests) == 1, format_requests(server)
     assert_put_object(
         server.requests[0],
         Bucket="bucket",
@@ -5887,7 +5896,7 @@ async def test_expires(aws_cli, tmp_path):
         )
 
     assert rc == 0, stderr.decode()
-    assert len(server.requests) == 1
+    assert len(server.requests) == 1, format_requests(server)
     assert_put_object(
         server.requests[0],
         Bucket="bucket",
@@ -5920,7 +5929,7 @@ async def test_metadata_single_key(aws_cli, tmp_path):
         )
 
     assert rc == 0, stderr.decode()
-    assert len(server.requests) == 1
+    assert len(server.requests) == 1, format_requests(server)
     assert_put_object(
         server.requests[0],
         Bucket="bucket",
@@ -5953,7 +5962,7 @@ async def test_metadata_multiple_keys(aws_cli, tmp_path):
         )
 
     assert rc == 0, stderr.decode()
-    assert len(server.requests) == 1
+    assert len(server.requests) == 1, format_requests(server)
     assert_put_object(
         server.requests[0],
         Bucket="bucket",
@@ -5990,7 +5999,7 @@ async def test_metadata_directive_replace(aws_cli, tmp_path):
         )
 
     assert rc == 0, stderr.decode()
-    assert len(server.requests) == 2
+    assert len(server.requests) == 2, format_requests(server)
     assert_copy_object(
         server.requests[1],
         Bucket="dst",
@@ -6027,7 +6036,7 @@ async def test_metadata_directive_copy(aws_cli, tmp_path):
         )
 
     assert rc == 0, stderr.decode()
-    assert len(server.requests) == 2
+    assert len(server.requests) == 2, format_requests(server)
     assert_copy_object(
         server.requests[1],
         Bucket="dst",
@@ -6066,7 +6075,7 @@ async def test_metadata_directive_replace_with_metadata(aws_cli, tmp_path):
         )
 
     assert rc == 0, stderr.decode()
-    assert len(server.requests) == 2
+    assert len(server.requests) == 2, format_requests(server)
     assert_copy_object(
         server.requests[1],
         Bucket="dst",
@@ -6108,7 +6117,7 @@ async def test_combined_metadata_params(aws_cli, tmp_path):
         )
 
     assert rc == 0, stderr.decode()
-    assert len(server.requests) == 1
+    assert len(server.requests) == 1, format_requests(server)
     assert_put_object(
         server.requests[0],
         Bucket="bucket",
@@ -6138,7 +6147,7 @@ async def test_content_type_auto_guessed_from_extension(aws_cli, tmp_path):
         )
 
     assert rc == 0, stderr.decode()
-    assert len(server.requests) == 1
+    assert len(server.requests) == 1, format_requests(server)
     assert_put_object(
         server.requests[0],
         Bucket="bucket",
@@ -6164,7 +6173,7 @@ async def test_content_type_auto_guessed_json(aws_cli, tmp_path):
         )
 
     assert rc == 0, stderr.decode()
-    assert len(server.requests) == 1
+    assert len(server.requests) == 1, format_requests(server)
     assert_put_object(
         server.requests[0],
         Bucket="bucket",
@@ -6197,7 +6206,7 @@ async def test_metadata_value_with_spaces(aws_cli, tmp_path):
         )
 
     assert rc == 0, stderr.decode()
-    assert len(server.requests) == 1
+    assert len(server.requests) == 1, format_requests(server)
     assert_put_object(
         server.requests[0],
         Bucket="bucket",
@@ -6230,7 +6239,7 @@ async def test_metadata_value_with_equals(aws_cli, tmp_path):
         )
 
     assert rc == 0, stderr.decode()
-    assert len(server.requests) == 1
+    assert len(server.requests) == 1, format_requests(server)
     assert_put_object(
         server.requests[0],
         Bucket="bucket",
@@ -6263,7 +6272,7 @@ async def test_metadata_empty_value(aws_cli, tmp_path):
         )
 
     assert rc == 0, stderr.decode()
-    assert len(server.requests) == 1
+    assert len(server.requests) == 1, format_requests(server)
     assert_put_object(
         server.requests[0],
         Bucket="bucket",
@@ -6289,13 +6298,169 @@ async def test_expires_numeric_value(aws_cli, tmp_path):
         )
 
     assert rc == 0, stderr.decode()
-    assert len(server.requests) == 1
+    assert len(server.requests) == 1, format_requests(server)
     # CLI interprets "90" as Unix timestamp (90 seconds since epoch)
     assert_put_object(
         server.requests[0],
         Bucket="bucket",
         Key="foo.txt",
         Expires="Thu, 01 Jan 1970 00:01:30 GMT",
+    )
+
+
+@pytest.mark.asyncio
+async def test_download_checksum_mismatch_fails(aws_cli, tmp_path):
+    """cp with --checksum-mode ENABLED fails if checksum doesn't match body."""
+    async with mock_server(on_headers_received=handle_expect_header) as (
+        server,
+        proxy,
+    ):
+        setup_responses(
+            server,
+            [
+                head_object_response(),
+                # Body is b"foo" but checksum is wrong
+                get_object_response(
+                    b"foo", **{"x-amz-checksum-crc32": "AAAAAA=="}
+                ),
+            ],
+        )
+        stdout, stderr, rc = await run_cli(
+            aws_cli,
+            [
+                "s3",
+                "cp",
+                "s3://bucket/key.txt",
+                str(tmp_path),
+                "--checksum-mode",
+                "ENABLED",
+            ],
+            cli_env(proxy),
+        )
+
+    assert rc == 1
+    assert len(server.requests) == 2, format_requests(server)
+    assert (
+        b"Expected checksum AAAAAA== did not "
+        b"match calculated checksum: jHNlIQ=="
+    ) in stderr
+
+
+@pytest.mark.asyncio
+async def test_upload_checksum_rejected_by_server(aws_cli, tmp_path):
+    """cp upload fails when server rejects with BadDigest."""
+    src = tmp_path / "foo.txt"
+    src.write_text("content")
+    async with mock_server(on_headers_received=handle_expect_header) as (
+        server,
+        proxy,
+    ):
+        setup_responses(
+            server,
+            [
+                error_response(
+                    "BadDigest",
+                    "The CRC32 you specified did not match the calculated checksum.",
+                    status=400,
+                ),
+            ],
+        )
+        stdout, stderr, rc = await run_cli(
+            aws_cli,
+            ["s3", "cp", str(src), "s3://bucket/key.txt"],
+            cli_env(proxy),
+        )
+
+    assert rc == 1
+    assert len(server.requests) == 1, format_requests(server)
+    assert (
+        b"The CRC32 you specified did not "
+        b"match the calculated checksum." in stderr
+    )
+
+
+@pytest.mark.asyncio
+async def test_download_content_length_mismatch_fails(aws_cli, tmp_path):
+    """cp download fails when body is shorter than Content-Length header."""
+    async with mock_server(on_headers_received=handle_expect_header) as (
+        server,
+        proxy,
+    ):
+        setup_responses(
+            server,
+            [
+                head_object_response(content_length=100),
+                # Content-Length says 100 but body is only 3 bytes
+                HTTPResponse.raw(
+                    b"foo",
+                    status=200,
+                    headers={
+                        "Content-Length": "100",
+                        "ETag": '"foo-1"',
+                    },
+                ),
+            ],
+        )
+
+        async def inject_fault():
+            # HeadObject completes
+            await server.next_request()
+            # Drop connection after sending the short body so the
+            # CLI sees EOF instead of blocking for remaining bytes.
+            server.set_transmission_strategy(
+                FaultyTransmission([DropConnection(after_bytes=3)])
+            )
+
+        (stdout, stderr, rc), _ = await asyncio.gather(
+            run_cli(
+                aws_cli,
+                ["s3", "cp", "s3://bucket/key.txt", str(tmp_path)],
+                cli_env(proxy),
+            ),
+            inject_fault(),
+        )
+
+    assert rc == 1
+    assert len(server.requests) == 2, format_requests(server)
+    assert (
+        b"download failed" in stderr
+        and b"Connection broken: IncompleteRead" in stderr
+    )
+
+
+@pytest.mark.asyncio
+async def test_multipart_upload_part_rejected_by_server(aws_cli, tmp_path):
+    """cp multipart upload fails when server rejects a part with BadDigest."""
+    src = tmp_path / "foo.txt"
+    src.write_bytes(b"a" * 10 * (1024**2))
+    async with mock_server(on_headers_received=handle_expect_header) as (
+        server,
+        proxy,
+    ):
+        setup_responses(
+            server,
+            [
+                create_mpu_response("foo"),
+                upload_part_response("etag1"),
+                error_response(
+                    "BadDigest",
+                    "The CRC32 you specified did not match the calculated checksum.",
+                    status=400,
+                ),
+                abort_mpu_response(),
+            ],
+        )
+        stdout, stderr, rc = await run_cli(
+            aws_cli,
+            ["s3", "cp", str(src), "s3://bucket/key.txt"],
+            cli_env(proxy),
+        )
+
+    assert rc == 1
+    assert len(server.requests) == 4, format_requests(server)
+    assert (
+        b"An error occurred (BadDigest) when "
+        b"calling the UploadPart operation" in stderr
     )
 
 
@@ -6324,7 +6489,7 @@ async def test_content_type_not_guessed_on_s3_to_s3_copy(aws_cli, tmp_path):
         )
 
     assert rc == 0, stderr.decode()
-    assert len(server.requests) == 2
+    assert len(server.requests) == 2, format_requests(server)
     # CopyObject should NOT have a Content-Type header set by the CLI
     req = server.requests[1]
     ct = req.headers.get("Content-Type") or req.headers.get("content-type")

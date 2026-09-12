@@ -21,6 +21,7 @@ from botocore.session import Session
 
 from awscli.compat import BytesIO, StringIO
 from awscli.customizations.sso.utils import (
+    LOGIN_ARGS,
     AuthCodeFetcher,
     OAuthCallbackHandler,
     OpenBrowserHandler,
@@ -47,6 +48,14 @@ from awscli.testutils import mock, unittest
 )
 def test_parse_registration_scopes(raw_scopes, parsed_scopes):
     assert parse_sso_registration_scopes(raw_scopes) == parsed_scopes
+
+
+def test_use_device_code_help_text_names_config_setting():
+    use_device_code_arg = next(
+        arg for arg in LOGIN_ARGS if arg['name'] == 'use-device-code'
+    )
+    assert 'sso_use_device_code' in use_device_code_arg['help_text']
+    assert 'aws configure set' in use_device_code_arg['help_text']
 
 
 class TestDoSSOLogin(unittest.TestCase):

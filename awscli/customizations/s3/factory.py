@@ -44,6 +44,20 @@ ADAPTIVE_RETRY_MODE = 'adaptive'
 # disabling retries, so it cannot honor a single attempt.
 MIN_CRT_MAX_ATTEMPTS = 2
 
+# Throughput target, in gigabits per second, for hosts the crt client has not
+# been tuned for. Staying at 4 keeps it in its smallest memory pool tier.
+UNTUNED_TARGET_THROUGHPUT_GBPS = 4.0
+
+# Largest part size the crt client accepts in its smallest memory pool tier. It
+# rejects a part size over half the pool, and rejects it while constructing the
+# client, so a larger chunksize would fail every transfer rather than just
+# large ones.
+UNTUNED_MAX_MULTIPART_CHUNKSIZE = 128 * (1024**2)
+
+# Throughput target, in gigabits per second, to fall back to rather than
+# accepting a lower recommendation from the crt.
+MINIMUM_TARGET_THROUGHPUT_GBPS = 10.0
+
 WARN_IGNORED = 'warn_ignored'
 
 EXCLUDE_FROM_AUTO = 'exclude_from_auto'
@@ -67,6 +81,10 @@ CRT_CLIENT_KWARG_MAP = {
     'multipart_threshold': 'multipart_upload_threshold',
     'max_concurrent_requests': 'max_active_connections_override',
 }
+
+
+def _gbps_to_bytes_per_sec(gbps):
+    return int(gbps * 1_000_000_000 / 8)
 
 
 class ClientFactory:
@@ -171,7 +189,23 @@ class TransferManagerFactory:
             unsupported.append('uploads from a non-seekable stream')
         if self._is_retries_disabled(runtime_config):
             unsupported.append('max_attempts = 1')
+        if self._is_multipart_chunksize_too_large(runtime_config):
+            unsupported.append(
+                f'multipart_chunksize over '
+                f'{UNTUNED_MAX_MULTIPART_CHUNKSIZE} on this system'
+            )
         return unsupported
+
+    def _is_multipart_chunksize_too_large(self, runtime_config):
+        # Only the pool for untuned systems is small enough to reject a
+        # configurable chunksize.
+        if not self._is_untuned_system():
+            return False
+        return (
+            runtime_config.is_explicitly_set('multipart_chunksize')
+            and runtime_config['multipart_chunksize']
+            > UNTUNED_MAX_MULTIPART_CHUNKSIZE
+        )
 
     def _is_retries_disabled(self, runtime_config):
         max_attempts = self._resolve_max_attempts(runtime_config)
@@ -309,7 +343,7 @@ class TransferManagerFactory:
         endpoint_url = params.get('endpoint_url')
         if endpoint_url and urlparse.urlparse(endpoint_url).scheme == 'http':
             create_crt_client_kwargs['use_ssl'] = False
-        target_throughput = runtime_config.get('target_bandwidth', None)
+        target_throughput = self._resolve_target_throughput(runtime_config)
         if target_throughput:
             create_crt_client_kwargs['target_throughput'] = target_throughput
         create_crt_client_kwargs.update(config_kwargs)
@@ -349,11 +383,48 @@ class TransferManagerFactory:
             kwargs['retry_options'] = {'max_retries': max_attempts - 1}
         return kwargs
 
-    def _should_use_transfer_config_defaults(self, runtime_config):
-        preferred = runtime_config.get('preferred_transfer_client')
-        if preferred == constants.CRT_TRANSFER_CLIENT:
+    def _resolve_target_throughput(self, runtime_config):
+        target_throughput = runtime_config.get('target_bandwidth')
+        if target_throughput is not None:
+            return target_throughput
+        if self._is_preferring_crt_client(runtime_config):
+            # Users who opted into the crt transfer client keep the throughput
+            # they get today, even on hosts the crt recommends less for.
+            recommended = awscrt.s3.get_recommended_throughput_target_gbps()
+            return _gbps_to_bytes_per_sec(
+                max(recommended or 0, MINIMUM_TARGET_THROUGHPUT_GBPS)
+            )
+        if self._is_newly_eligible_for_crt_client(runtime_config) and (
+            self._is_untuned_system()
+        ):
+            # The crt client sizes its memory pool from the throughput target.
+            # Without a recommendation it assumes 10gbps, which maps to a max
+            # pool size of 2GiB. Newly-eligible hosts that auto-resolve to crt
+            # may not be able to afford 2GiB, so it sets the maximum throughput
+            # that maps to the smallest 256MiB tier.
+            return _gbps_to_bytes_per_sec(UNTUNED_TARGET_THROUGHPUT_GBPS)
+        return None
+
+    def _is_untuned_system(self):
+        # The crt client has no throughput recommendation for systems it has
+        # not been tuned for.
+        return awscrt.s3.get_recommended_throughput_target_gbps() is None
+
+    def _is_preferring_crt_client(self, runtime_config):
+        return (
+            runtime_config.get('preferred_transfer_client')
+            == constants.CRT_TRANSFER_CLIENT
+        )
+
+    def _is_newly_eligible_for_crt_client(self, runtime_config):
+        if self._is_preferring_crt_client(runtime_config):
             return False
         return not awscrt.s3.is_optimized_for_system()
+
+    def _should_use_transfer_config_defaults(self, runtime_config):
+        # Configurations that already resolve to the crt transfer client keep
+        # its defaults so their behavior is unchanged.
+        return self._is_newly_eligible_for_crt_client(runtime_config)
 
     def _create_crt_request_serializer(self, params):
         return BotocoreCRTRequestSerializer(

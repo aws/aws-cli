@@ -1467,6 +1467,7 @@ class S3ClientArgsCreator:
             call_args.extra_args["Body"] = call_args.fileobj
 
         checksum_config = None
+        provided_checksum_algorithm = None
         if self._should_calculate_upload_checksum(
             request_type, call_args.extra_args
         ):

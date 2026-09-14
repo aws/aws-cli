@@ -244,7 +244,7 @@ class TestCRTTransferManager(unittest.TestCase):
             self.session
         )
         self.transfer_manager = s3transfer.crt.CRTTransferManager(
-            crt_s3_client=self.s3_crt_client,
+            crt_client_factory=self.crt_client_factory,
             crt_request_serializer=self.request_serializer,
         )
 

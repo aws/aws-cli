@@ -37,6 +37,7 @@ from awscrt.s3 import (
     S3RequestTlsMode,
     S3RequestType,
     S3ResponseError,
+    S3RetryConfig,
     get_recommended_throughput_target_gbps,
 )
 from botocore import UNSIGNED
@@ -98,6 +99,7 @@ def create_s3_crt_client(
     fio_options=None,
     multipart_upload_threshold=None,
     max_active_connections_override=None,
+    retry_options=None,
 ):
     """
     :type region: str
@@ -154,6 +156,11 @@ def create_s3_crt_client(
     :param max_active_connections_override: Caps the number of active
         connections. Only applies when lower than the connection count derived
         from ``target_throughput``. If not set, the derived value is used.
+
+    :type retry_options: Optional[dict]
+    :param retry_options: Kwargs to use to build an
+        `awscrt.s3.S3RetryConfig`. If not set, the CRT's own retry
+        configuration is used.
     """
 
     event_loop_group = EventLoopGroup(num_threads)
@@ -189,6 +196,9 @@ def create_s3_crt_client(
     crt_fio_options = None
     if fio_options:
         crt_fio_options = S3FileIoOptions(**fio_options)
+    crt_retry_config = None
+    if retry_options:
+        crt_retry_config = S3RetryConfig(**retry_options)
     return S3Client(
         bootstrap=bootstrap,
         region=region,
@@ -201,6 +211,7 @@ def create_s3_crt_client(
         fio_options=crt_fio_options,
         multipart_upload_threshold=multipart_upload_threshold,
         max_active_connections_override=max_active_connections_override,
+        retry_config=crt_retry_config,
     )
 
 

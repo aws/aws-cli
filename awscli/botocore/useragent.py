@@ -170,6 +170,23 @@ def _agentic_env_var_is_set(env_var, expected_value):
     return value == expected_value
 
 
+def is_agentic_caller():
+    """Return True if the current process appears to be driven by a known
+    agentic caller (e.g. Claude Code, Gemini CLI, Codex).
+
+    Detection uses the same environment-variable signals that populate the
+    ``AGENTIC_CALLER_*`` metrics in the User-Agent header, so callers that
+    want to adapt their behavior for agents stay in sync with what the SDK
+    already reports.
+    """
+    return any(
+        _agentic_env_var_is_set(env_var, expected_value)
+        for env_var, _feature_id, expected_value in (
+            _USERAGENT_AGENTIC_CALLER_ENV_VAR_MAPPINGS
+        )
+    )
+
+
 def _register_agentic_caller_env_features():
     for (
         env_var,

@@ -1421,11 +1421,14 @@
     },
     "CreateTieringInput":{
       "type":"structure",
-      "required":["FreeTier"],
       "members":{
         "FreeTier":{
           "shape":"CreateFreeTierConfig",
           "documentation":"<p> The possible Amazon Web Services Free Tier configurations. </p>"
+        },
+        "CustomTiers":{
+          "shape":"CustomTiersList",
+          "documentation":"<p> The set of custom tiers for the pricing rule. </p>"
         }
       },
       "documentation":"<p> The set of tiering configurations for the pricing rule. </p>"
@@ -1716,6 +1719,49 @@
         }
       },
       "documentation":"<p>A representation of a custom line item version.</p>"
+    },
+    "CustomTier":{
+      "type":"structure",
+      "required":[
+        "BeginRangeInclusive",
+        "RateValue"
+      ],
+      "members":{
+        "BeginRangeInclusive":{
+          "shape":"CustomTierBeginRangeInclusive",
+          "documentation":"<p> The inclusive start of the usage range that this tier applies to. </p>"
+        },
+        "EndRangeExclusive":{
+          "shape":"CustomTierEndRangeExclusive",
+          "documentation":"<p> The exclusive end of the usage range that this tier applies to. If you don't specify a value, this tier applies to all usage that is greater than or equal to <code>BeginRangeInclusive</code>. </p>"
+        },
+        "RateValue":{
+          "shape":"CustomTierRateValue",
+          "documentation":"<p> The rate that's applied to the usage that falls within this tier. </p>"
+        }
+      },
+      "documentation":"<p> A custom tier for the pricing rule. Each custom tier applies a rate to the usage that falls within the tier's range. </p>"
+    },
+    "CustomTierBeginRangeInclusive":{
+      "type":"double",
+      "box":true,
+      "min":0
+    },
+    "CustomTierEndRangeExclusive":{
+      "type":"double",
+      "box":true,
+      "min":0
+    },
+    "CustomTierRateValue":{
+      "type":"double",
+      "box":true,
+      "min":0
+    },
+    "CustomTiersList":{
+      "type":"list",
+      "member":{"shape":"CustomTier"},
+      "max":10,
+      "min":1
     },
     "DeleteBillingGroupInput":{
       "type":"structure",
@@ -3048,11 +3094,14 @@
     },
     "Tiering":{
       "type":"structure",
-      "required":["FreeTier"],
       "members":{
         "FreeTier":{
           "shape":"FreeTierConfig",
           "documentation":"<p> The possible Amazon Web Services Free Tier configurations. </p>"
+        },
+        "CustomTiers":{
+          "shape":"CustomTiersList",
+          "documentation":"<p> The set of custom tiers for the pricing rule. </p>"
         }
       },
       "documentation":"<p> The set of tiering configurations for the pricing rule. </p>"
@@ -3415,11 +3464,14 @@
     },
     "UpdateTieringInput":{
       "type":"structure",
-      "required":["FreeTier"],
       "members":{
         "FreeTier":{
           "shape":"UpdateFreeTierConfig",
           "documentation":"<p> The possible Amazon Web Services Free Tier configurations. </p>"
+        },
+        "CustomTiers":{
+          "shape":"CustomTiersList",
+          "documentation":"<p> The set of custom tiers for the pricing rule. </p>"
         }
       },
       "documentation":"<p> The set of tiering configurations for the pricing rule. </p>"

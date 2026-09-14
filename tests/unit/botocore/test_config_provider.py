@@ -499,6 +499,7 @@ class TestScopedConfigProvider(unittest.TestCase):
 def _make_provider_that_returns(return_value):
     provider = mock.Mock(spec=BaseProvider)
     provider.provide.return_value = return_value
+    provider.resolve.side_effect = lambda: BaseProvider.resolve(provider)
     return provider
 
 
@@ -824,3 +825,90 @@ class TestConfiguredEndpointProvider:
         env['AWS_ENDPOINT_URL_BATCH'] = 'https://another-new-endpoint-override'
         assert provider.provide() == 'https://another-new-endpoint-override'
         assert provider_deepcopy.provide() == 'https://endpoint-override'
+
+
+class TestIsExplicitlySet:
+    def test_constant_only_is_not_explicitly_set(self):
+        store = ConfigValueStore({'foo': ChainProvider([ConstantProvider(3)])})
+        assert store.get_config_variable('foo') == 3
+        assert not store.is_explicitly_set('foo')
+
+    def test_value_from_environment_is_explicitly_set(self):
+        store = ConfigValueStore(
+            {
+                'foo': ChainProvider(
+                    [
+                        EnvironmentProvider('FOO', {'FOO': '1'}),
+                        ConstantProvider(3),
+                    ]
+                )
+            }
+        )
+        assert store.is_explicitly_set('foo')
+
+    def test_value_matching_constant_is_still_explicitly_set(self):
+        store = ConfigValueStore(
+            {
+                'foo': ChainProvider(
+                    [
+                        EnvironmentProvider('FOO', {'FOO': '3'}),
+                        ConstantProvider(3),
+                    ]
+                )
+            }
+        )
+        assert store.is_explicitly_set('foo')
+
+    def test_override_is_explicitly_set(self):
+        store = ConfigValueStore({'foo': ConstantProvider(3)})
+        store.set_config_variable('foo', 1)
+        assert store.is_explicitly_set('foo')
+
+    def test_unknown_variable_is_not_explicitly_set(self):
+        assert not ConfigValueStore({}).is_explicitly_set('foo')
+
+    def test_conversion_func_applies_to_explicit_value(self):
+        store = ConfigValueStore(
+            {
+                'foo': ChainProvider(
+                    [EnvironmentProvider('FOO', {'FOO': '3'})],
+                    conversion_func=int,
+                )
+            }
+        )
+        assert store.is_explicitly_set('foo')
+
+
+class TestResolve:
+    def test_constant_provider_resolves_as_unconfigured(self):
+        resolved = ConstantProvider(3).resolve()
+        assert resolved.value == 3
+        assert not resolved.is_configured
+
+    def test_environment_provider_resolves_as_configured(self):
+        resolved = EnvironmentProvider('FOO', {'FOO': '3'}).resolve()
+        assert resolved.value == '3'
+        assert resolved.is_configured
+
+    def test_provider_without_value_resolves_to_none(self):
+        assert EnvironmentProvider('FOO', {}).resolve() is None
+
+    def test_chain_preserves_origin_of_winning_provider(self):
+        chain = ChainProvider(
+            [EnvironmentProvider('FOO', {}), ConstantProvider(3)]
+        )
+        assert not chain.resolve().is_configured
+
+    def test_chain_applies_conversion_func_to_resolved_value(self):
+        chain = ChainProvider(
+            [EnvironmentProvider('FOO', {'FOO': '3'})], conversion_func=int
+        )
+        resolved = chain.resolve()
+        assert resolved.value == 3
+        assert resolved.is_configured
+
+    def test_provide_still_returns_the_value(self):
+        chain = ChainProvider(
+            [EnvironmentProvider('FOO', {}), ConstantProvider(3)]
+        )
+        assert chain.provide() == 3

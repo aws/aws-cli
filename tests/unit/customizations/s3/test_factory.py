@@ -56,10 +56,23 @@ def mock_crt_s3_client():
         yield mock_client
 
 
+def stub_config_variables(session, **values):
+    """Resolves the named config variables and everything else to None"""
+    session.get_config_variable.side_effect = values.get
+
+
+def stub_configured_variables(session, *names):
+    """Marks the named config variables as explicitly configured"""
+    session.get_component.return_value.is_explicitly_set.side_effect = (
+        lambda name: name in names
+    )
+
+
 @pytest.fixture
 def transfer_manager_factory():
     session = mock.Mock(Session)
-    session.get_config_variable.return_value = None
+    stub_config_variables(session)
+    stub_configured_variables(session)
     session.get_default_client_config.return_value = None
     session.get_scoped_config.return_value = {}
     return TransferManagerFactory(session)
@@ -163,7 +176,8 @@ class TestClientFactory(unittest.TestCase):
 class TestTransferManagerFactory(unittest.TestCase):
     def setUp(self):
         self.session = mock.Mock(Session)
-        self.session.get_config_variable.return_value = None
+        stub_config_variables(self.session)
+        stub_configured_variables(self.session)
         self.session.get_default_client_config.return_value = None
         self.session.get_scoped_config.return_value = {}
         self.factory = TransferManagerFactory(self.session)
@@ -294,7 +308,7 @@ class TestTransferManagerFactory(unittest.TestCase):
             preferred_transfer_client='crt'
         )
         params = {'verify_ssl': DEFAULT_CA_BUNDLE}
-        self.session.get_config_variable.return_value = 'config-region'
+        stub_config_variables(self.session, region='config-region')
         transfer_manager = self.factory.create_transfer_manager(
             params, self.runtime_config
         )
@@ -429,7 +443,7 @@ class TestTransferManagerFactory(unittest.TestCase):
         fake_ca_bundle = self.files.create_file(
             "fake_ca", fake_ca_contents, mode='wb'
         )
-        self.session.get_config_variable.return_value = fake_ca_bundle
+        stub_config_variables(self.session, ca_bundle=fake_ca_bundle)
         transfer_manager = self.factory.create_transfer_manager(
             self.params, self.runtime_config
         )
@@ -706,7 +720,8 @@ class TestTransferManagerFactory(unittest.TestCase):
 @pytest.fixture
 def auto_resolve_session():
     session = mock.Mock(Session)
-    session.get_config_variable.return_value = None
+    stub_config_variables(session)
+    stub_configured_variables(session)
     session.get_default_client_config.return_value = None
     session.get_scoped_config.return_value = {}
     return session
@@ -781,13 +796,13 @@ class TestAutoResolveCrtClient:
     def test_resolves_to_classic_for_adaptive_retry_mode(
         self, resolve_client_type, auto_resolve_session
     ):
-        auto_resolve_session.get_config_variable.return_value = 'adaptive'
+        stub_config_variables(auto_resolve_session, retry_mode='adaptive')
         assert resolve_client_type() == constants.CLASSIC_TRANSFER_CLIENT
 
     def test_resolves_to_crt_for_standard_retry_mode(
         self, resolve_client_type, auto_resolve_session
     ):
-        auto_resolve_session.get_config_variable.return_value = 'standard'
+        stub_config_variables(auto_resolve_session, retry_mode='standard')
         assert resolve_client_type() == constants.CRT_TRANSFER_CLIENT
 
     def test_resolves_to_classic_for_stream_upload(
@@ -853,7 +868,7 @@ class TestClassicOnlySettingsWarning:
     ):
         # The crt transfer client will eventually support adaptive retries, so
         # there is nothing for the user to act on.
-        auto_resolve_session.get_config_variable.return_value = 'adaptive'
+        stub_config_variables(auto_resolve_session, retry_mode='adaptive')
         resolve_client_type()
         assert capsys.readouterr().err == ''
 
@@ -895,6 +910,17 @@ class TestClassicOnlySettingsWarning:
             preferred_transfer_client='classic', max_bandwidth=1024
         )
         assert capsys.readouterr().err == ''
+
+
+@pytest.fixture
+def crt_client_kwargs(auto_resolve_factory, mock_crt_is_optimized_for_system):
+    def _resolve(**kwargs):
+        runtime_config = RuntimeConfig().build_config(**kwargs)
+        return auto_resolve_factory._resolve_crt_client_config_kwargs(
+            runtime_config
+        )
+
+    return _resolve
 
 
 @pytest.fixture
@@ -953,20 +979,20 @@ class TestWarnUnsupportedSettings:
     def test_warns_for_adaptive_retry_mode_under_crt(
         self, warn_unsupported_settings, auto_resolve_session
     ):
-        auto_resolve_session.get_config_variable.return_value = 'adaptive'
+        stub_config_variables(auto_resolve_session, retry_mode='adaptive')
         warning = warn_unsupported_settings(constants.CRT_TRANSFER_CLIENT)
         assert f'retry_mode = {ADAPTIVE_RETRY_MODE}' in warning
 
     def test_does_not_warn_for_supported_retry_mode(
         self, warn_unsupported_settings, auto_resolve_session
     ):
-        auto_resolve_session.get_config_variable.return_value = 'standard'
+        stub_config_variables(auto_resolve_session, retry_mode='standard')
         assert warn_unsupported_settings(constants.CRT_TRANSFER_CLIENT) == ''
 
     def test_does_not_warn_for_adaptive_retry_mode_under_classic(
         self, warn_unsupported_settings, auto_resolve_session
     ):
-        auto_resolve_session.get_config_variable.return_value = 'adaptive'
+        stub_config_variables(auto_resolve_session, retry_mode='adaptive')
         assert (
             warn_unsupported_settings(constants.CLASSIC_TRANSFER_CLIENT) == ''
         )
@@ -1121,3 +1147,70 @@ def _create_transfer_manager_from_factory(
     return transfer_manager_factory.create_transfer_manager(
         params, runtime_config
     )
+
+
+class TestMaxAttempts:
+    def test_resolves_to_classic_when_retries_disabled(
+        self, resolve_client_type, auto_resolve_session
+    ):
+        stub_config_variables(auto_resolve_session, max_attempts=1)
+        stub_configured_variables(auto_resolve_session, 'max_attempts')
+        assert resolve_client_type() == constants.CLASSIC_TRANSFER_CLIENT
+
+    def test_resolves_to_crt_when_retries_enabled(
+        self, resolve_client_type, auto_resolve_session
+    ):
+        stub_config_variables(auto_resolve_session, max_attempts=2)
+        stub_configured_variables(auto_resolve_session, 'max_attempts')
+        assert resolve_client_type() == constants.CRT_TRANSFER_CLIENT
+
+    def test_does_not_warn_when_falling_back_for_disabled_retries(
+        self, resolve_client_type, auto_resolve_session, capsys
+    ):
+        stub_config_variables(auto_resolve_session, max_attempts=1)
+        stub_configured_variables(auto_resolve_session, 'max_attempts')
+        resolve_client_type()
+        assert capsys.readouterr().err == ''
+
+    def test_warns_when_crt_explicitly_preferred_with_retries_disabled(
+        self, warn_unsupported_settings, auto_resolve_session
+    ):
+        stub_config_variables(auto_resolve_session, max_attempts=1)
+        stub_configured_variables(auto_resolve_session, 'max_attempts')
+        warning = warn_unsupported_settings(
+            constants.CRT_TRANSFER_CLIENT,
+            preferred_transfer_client=constants.CRT_TRANSFER_CLIENT,
+        )
+        assert 'max_attempts = 1' in warning
+
+    def test_maps_configured_max_attempts_to_crt_client(
+        self, crt_client_kwargs, auto_resolve_session
+    ):
+        stub_config_variables(auto_resolve_session, max_attempts=5)
+        stub_configured_variables(auto_resolve_session, 'max_attempts')
+        assert crt_client_kwargs()['retry_options'] == {'max_retries': 4}
+
+    def test_applies_default_max_attempts_for_newly_eligible_hosts(
+        self, crt_client_kwargs, auto_resolve_session
+    ):
+        stub_config_variables(auto_resolve_session, max_attempts=3)
+        assert crt_client_kwargs()['retry_options'] == {'max_retries': 2}
+
+    def test_omits_max_attempts_when_crt_explicitly_preferred(
+        self, crt_client_kwargs, auto_resolve_session
+    ):
+        stub_config_variables(auto_resolve_session, max_attempts=3)
+        kwargs = crt_client_kwargs(
+            preferred_transfer_client=constants.CRT_TRANSFER_CLIENT
+        )
+        assert 'retry_options' not in kwargs
+
+    def test_maps_configured_max_attempts_when_crt_explicitly_preferred(
+        self, crt_client_kwargs, auto_resolve_session
+    ):
+        stub_config_variables(auto_resolve_session, max_attempts=5)
+        stub_configured_variables(auto_resolve_session, 'max_attempts')
+        kwargs = crt_client_kwargs(
+            preferred_transfer_client=constants.CRT_TRANSFER_CLIENT
+        )
+        assert kwargs['retry_options'] == {'max_retries': 4}

@@ -379,9 +379,15 @@ files to and from S3. Valid choices are:
   * Region redirects - Transfers fail for requests sent to a region that does
     not match the region of the targeted S3 bucket.
 
-  * ``max_concurrent_requests``, ``max_queue_size``, ``multipart_threshold``,
-    and ``max_bandwidth`` configuration values - Ignores these configuration
-    values.
+  * ``max_queue_size`` and ``max_bandwidth`` configuration values - Ignores
+    these configuration values.
+
+  * ``max_attempts`` configuration value - Honors values greater than one.
+    Ignores a value of one because the ``crt`` transfer client cannot disable
+    retries.
+
+  When a configured value is not supported by the transfer client being used,
+  the AWS CLI emits a warning naming the values it is ignoring.
 
 
 target_bandwidth

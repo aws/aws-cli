@@ -184,6 +184,44 @@ def verify_is_valid_rst(filename):
         raise AssertionError(_make_error_msg(filename, errors))
 
 
+def verify_filename_matches_command(filename, command_validator):
+    relative = os.path.relpath(filename, EXAMPLES_DIR)
+    parts = relative.split(os.sep)
+
+    # Only check top-level examples, skip files in subdirectories (e.g. wait/).
+    if len(parts) != 2:
+        return
+
+    service_name = parts[0]
+
+    # Special cases for custom commands
+    operation_filename = parts[1]
+    if operation_filename.startswith("_") or operation_filename.endswith("_description.rst"):
+        return
+
+    command_name = operation_filename.replace('.rst', '')
+
+    if service_name not in command_validator._service_command_table:
+        raise AssertionError(
+            f'Example file "{filename}" is under directory "{service_name}" '
+            f'which does not match any CLI service command.'
+        )
+
+    service_cmd = command_validator._service_command_table[service_name]
+
+    cmd_table = service_cmd.create_help_command().command_table
+    if not cmd_table:
+        # Top-level commands without sub-operations (e.g. login)
+        return
+
+    if command_name not in cmd_table:
+        raise AssertionError(
+            f'Example file "{filename}" does not match any command under '
+            f'"{service_name}". The filename must exactly match a CLI '
+            f'command name.'
+        )
+
+
 def parse_rst(filename):
     with open(filename) as f:
         contents = f.read()
@@ -366,10 +404,11 @@ class CollectCLICommands(docutils.nodes.GenericNodeVisitor):
 
 
 @pytest.mark.parametrize("example_file", RST_DOC_EXAMPLES + OTHER_DOC_EXAMPLES)
-def test_example_file_name(example_file):
+def test_example_file_name(command_validator, example_file):
     filename = example_file.split(os.sep)[-1]
     _assert_file_is_rst_or_txt(example_file)
     _assert_name_contains_only_allowed_characters(filename)
+    verify_filename_matches_command(example_file, command_validator)
 
 
 def _assert_file_is_rst_or_txt(filepath):

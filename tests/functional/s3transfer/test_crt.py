@@ -593,6 +593,31 @@ class TestCRTTransferManager(unittest.TestCase):
         self.redirected_client_factory.assert_not_called()
         self.assertEqual(self.initial_client.make_request.call_count, 1)
 
+    def test_upload_does_not_redirect_unrelated_error(self):
+        # An error that is not a redirect is ruled out on the completion
+        # thread, without handing anything off to a new thread.
+        access_denied = awscrt.s3.S3ResponseError(
+            code=14343,
+            name='AWS_ERROR_S3_INVALID_RESPONSE_STATUS',
+            message='Invalid response status from request',
+            status_code=403,
+            headers=[],
+            body=b'<Error><Code>AccessDenied</Code></Error>',
+            operation_name='PutObject',
+        )
+        transfer_manager = self._create_redirecting_transfer_manager(
+            self._fail_make_request(access_denied)
+        )
+
+        with mock.patch.object(
+            transfer_manager._region_redirect_policy, 'get_retry_region'
+        ) as get_retry_region:
+            with self.assertRaises(ClientError):
+                self._upload_and_wait(transfer_manager)
+
+        get_retry_region.assert_not_called()
+        self.redirected_client_factory.assert_not_called()
+
     def test_upload_does_not_redirect_nonseekable_stream(self):
         transfer_manager = self._create_redirecting_transfer_manager(
             self._fail_make_request(

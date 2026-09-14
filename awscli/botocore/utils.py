@@ -1617,8 +1617,13 @@ class S3RegionRedirectorv2:
             return
 
         bucket = redirect_ctx.get('bucket')
+        if bucket is None:
+            return
+        if not self.is_redirect_response(response, operation):
+            return
+
         client_region = request_dict.get('context', {}).get('client_region')
-        new_region = self.get_redirect_region(bucket, response, operation)
+        new_region = self.get_bucket_region(bucket, response)
 
         if new_region is None:
             logger.debug(
@@ -1663,10 +1668,15 @@ class S3RegionRedirectorv2:
         return 0
 
     def get_redirect_region(self, bucket, response, operation):
-        if bucket is None:
+        """Return the region a response redirects a bucket to, if any."""
+        if bucket is None or ArnParser.is_arn(bucket):
             return None
-        if ArnParser.is_arn(bucket):
+        if not self.is_redirect_response(response, operation):
             return None
+        return self.get_bucket_region(bucket, response)
+
+    def is_redirect_response(self, response, operation):
+        """Return whether a response says the bucket is in another region."""
         error = response[1].get('Error', {})
         error_code = error.get('Code')
         response_metadata = response[1].get('ResponseMetadata', {})
@@ -1695,7 +1705,7 @@ class S3RegionRedirectorv2:
             error_code == 'IllegalLocationConstraintException'
             and operation.name != 'CreateBucket'
         )
-        if not any(
+        return any(
             [
                 is_special_head_object,
                 is_wrong_signing_region,
@@ -1704,9 +1714,7 @@ class S3RegionRedirectorv2:
                 is_redirect_status,
                 is_opt_in_region_redirect,
             ]
-        ):
-            return None
-        return self.get_bucket_region(bucket, response)
+        )
 
     def get_bucket_region(self, bucket, response):
         """

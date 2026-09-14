@@ -261,32 +261,18 @@ class CRTS3RegionRedirectPolicy:
 
     def __init__(self, crt_request_serializer):
         self._crt_request_serializer = crt_request_serializer
-        # Bucket regions are held under one lock so that a burst of transfers
-        # failing at once shares a single lookup instead of each paying for
-        # its own, potentially a HeadBucket request each, and so that a
-        # request cannot be built for a region that changes while it is built.
-        # One lock covers every bucket because a command generally transfers
-        # to or from a single one.
-        self._region_lock = threading.Lock()
-
-    def get_cached_bucket_region(self, bucket):
-        """Return a region already discovered for a bucket, if any."""
-        return self._crt_request_serializer.get_cached_bucket_region(bucket)
-
-    @contextlib.contextmanager
-    def locked_bucket_region(self, bucket):
-        """Hold a bucket's region steady while a request is built for it.
-
-        Serializing a request resolves its endpoint from the region cached for
-        its bucket. The caller has to select a client for that same region, so
-        the region must not change in between.
-        """
-        with self._region_lock:
-            yield self.get_cached_bucket_region(bucket)
+        # Held while a failed transfer looks up its bucket's region, so that a
+        # burst of transfers failing at once shares a single lookup instead of
+        # each paying for its own, potentially a HeadBucket request each.
+        # Request construction uses the serializer's separate cache lock, so a
+        # slow lookup does not block other transfers.
+        self._redirect_lock = threading.Lock()
 
     def is_error_redirect_candidate(
         self,
         bucket,
+        transfer_type,
+        error,
         is_region_redirect,
         bytes_transferred,
         cancelled,
@@ -294,11 +280,10 @@ class CRTS3RegionRedirectPolicy:
     ):
         """Return whether a failed request may be worth redirecting.
 
-        Callers only ask this about a request that failed, so this inspects
-        the state of the transfer rather than the error itself. These checks
-        are cheap and never do I/O, so a caller running on a CRT completion
-        thread can use them to decide whether discovering a region is worth
-        handing off to another thread.
+        These checks never make a request, so a caller running on a CRT
+        completion thread can use them to decide whether looking up a region
+        is worth handing off to another thread. Finding the region is what may
+        need a ``HeadBucket``, and that is left to ``get_retry_region``.
         """
         if is_region_redirect:
             logger.debug(
@@ -328,7 +313,11 @@ class CRTS3RegionRedirectPolicy:
             return False
         if is_s3express_bucket(bucket):
             return False
-        return True
+        # Parsing the error response is the most expensive check here, so it
+        # runs only once the transfer is otherwise worth redirecting.
+        return self._crt_request_serializer.is_redirect_error(
+            transfer_type, error
+        )
 
     def get_retry_region(
         self, bucket, transfer_type, error, request_region=None
@@ -347,7 +336,7 @@ class CRTS3RegionRedirectPolicy:
         retry_region = self._get_cached_retry_region(bucket, request_region)
         if retry_region is not None:
             return retry_region
-        with self._region_lock:
+        with self._redirect_lock:
             # Another transfer may have discovered the region while this one
             # waited for the lock.
             retry_region = self._get_cached_retry_region(
@@ -365,18 +354,27 @@ class CRTS3RegionRedirectPolicy:
         A region another transfer discovered is worth retrying in, but the one
         the request just failed in is not.
         """
-        cached_region = self.get_cached_bucket_region(bucket)
+        cached_region = self._crt_request_serializer.get_cached_bucket_region(
+            bucket
+        )
         if cached_region is None:
             return None
         if cached_region == request_region:
-            # The failed request already used this region, so the cached
-            # region is stale and retrying there would fail the same way.
+            # The failed request was already made in this region, so retrying
+            # there would fail the same way. A bucket does not move between
+            # regions, so the redirect points somewhere else or nowhere.
             return None
         return cached_region
 
     def _discover_bucket_region(
         self, bucket, transfer_type, error, request_region=None
     ):
+        """Look up and cache a bucket's region.
+
+        Callers must hold ``_redirect_lock``. Every write to the region cache
+        happens here, so holding it is what lets ``get_retry_region`` treat its
+        second cache read as final rather than racing another lookup.
+        """
         try:
             new_region = self._crt_request_serializer.get_bucket_region(
                 bucket, transfer_type, error
@@ -462,6 +460,7 @@ class CRTTransferManager:
             self._osutil,
             transfer_config=transfer_config,
         )
+        self._crt_request_serializer = crt_request_serializer
         self._crt_exception_translator = (
             crt_request_serializer.translate_crt_exception
         )
@@ -627,24 +626,23 @@ class CRTTransferManager:
                 # Reset the stream if we're redirecting due to bucket region
                 if is_region_redirect and upload_stream_position is not None:
                     call_args.fileobj.seek(upload_stream_position)
-                policy = self._region_redirect_policy
-                with policy.locked_bucket_region(bucket) as region:
+                with self._crt_request_serializer.locked_bucket_region(
+                    bucket
+                ) as region:
                     if region is not None:
                         logger.debug(
                             'Using cached region %s for S3 bucket %s',
                             region,
                             bucket,
                         )
-                    crt_callargs = (
-                        self._s3_args_creator.get_make_request_args(
-                            request_type,
-                            call_args,
-                            coordinator,
-                            future,
-                            on_done_after_calls,
-                        )
+                    crt_callargs = self._s3_args_creator.get_make_request_args(
+                        request_type,
+                        call_args,
+                        coordinator,
+                        future,
+                        on_done_after_calls,
                     )
-                    crt_client = self.get_crt_client(region)
+                crt_client = self.get_crt_client(region)
                 return crt_client, crt_callargs, region
 
             coordinator.submit(
@@ -780,6 +778,15 @@ class BaseCRTRequestSerializer:
     def cache_bucket_region(self, bucket, region):
         """Remember the region a bucket was found in."""
 
+    @contextlib.contextmanager
+    def locked_bucket_region(self, bucket):
+        """Hold a bucket's cached region steady while a request is built."""
+        yield self.get_cached_bucket_region(bucket)
+
+    def is_redirect_error(self, transfer_type, error):
+        """Return whether a failed request reports a region redirect."""
+        return False
+
     def get_bucket_region(self, bucket, transfer_type, error):
         """Return the region a failed request should be retried in, if any."""
         return None
@@ -843,21 +850,23 @@ class BotocoreCRTRequestSerializer(BaseCRTRequestSerializer):
         if region_redirect_client_factory is None:
             redirect_client_kwargs = client_kwargs.copy()
             redirect_client_kwargs['service_name'] = 's3'
-            region_redirect_client_factory = lambda: session.create_client(
-                **redirect_client_kwargs
-            )
+
+            def region_redirect_client_factory():
+                return session.create_client(**redirect_client_kwargs)
 
         # Build the botocore client that converts API arguments into the
         # unsigned HTTP requests consumed by CRT.
         self._resolve_client_config(session, client_kwargs)
         self._client = session.create_client(**client_kwargs)
 
-        # Share the bucket-region cache between redirect discovery and later
-        # request serialization. The real fallback client remains lazy.
+        # Store discovered bucket regions beside the lock that serializes
+        # updates against the requests being built from them. The real
+        # fallback client remains lazy.
         self._region_redirect_client = LazyHeadBucketClient(
             region_redirect_client_factory
         )
         self._region_cache = {}
+        self._region_cache_lock = threading.Lock()
         self._region_redirector = S3RegionRedirectorv2(
             None, self._region_redirect_client, cache=self._region_cache
         )
@@ -977,6 +986,9 @@ class BotocoreCRTRequestSerializer(BaseCRTRequestSerializer):
         )['HTTPRequest']
 
     def serialize_http_request(self, transfer_type, future):
+        # Resolving the endpoint reads the bucket region cache, so callers
+        # have to run this inside locked_bucket_region() to be able to send
+        # the request on a client for the region it was built for.
         botocore_http_request = self._get_botocore_http_request(
             transfer_type, future.meta.call_args
         )
@@ -1023,17 +1035,57 @@ class BotocoreCRTRequestSerializer(BaseCRTRequestSerializer):
             del request_context["checksum"]
 
     def cache_bucket_region(self, bucket, region):
-        self._region_cache[bucket] = region
+        with self._region_cache_lock:
+            self._region_cache[bucket] = region
 
     def get_cached_bucket_region(self, bucket):
-        return self._region_cache.get(bucket)
+        with self.locked_bucket_region(bucket) as region:
+            return region
 
     def get_configured_region(self):
         return self._client.meta.region_name
 
+    @contextlib.contextmanager
+    def locked_bucket_region(self, bucket):
+        """Hold a bucket's cached region steady while a request is built.
+
+        Endpoint resolution reads the cache again while a request is being
+        serialized, so the caller has to hold this open until the request is
+        built for the yielded region to be the one it was built for.
+        """
+        with self._region_cache_lock:
+            yield self._region_cache.get(bucket)
+
+    def is_redirect_error(self, transfer_type, error):
+        """Return whether a CRT response error reports a region redirect.
+
+        This parses the error response but never makes a request, so unlike
+        ``get_bucket_region`` it is safe to call from a CRT completion thread.
+        """
+        redirect_args = self._get_redirect_args(transfer_type, error)
+        if redirect_args is None:
+            return False
+        return self._region_redirector.is_redirect_response(*redirect_args)
+
     def get_bucket_region(self, bucket, transfer_type, error):
         """Extract a redirect region from a CRT response error.
         This adapts the CRT error for S3RegionRedirectorv2.
+        """
+        redirect_args = self._get_redirect_args(transfer_type, error)
+        if redirect_args is None:
+            return None
+        # The redirector checks the CRT response first. It only uses this
+        # serializer's real botocore client for HeadBucket when the response
+        # identifies a redirect but omits the target region.
+        return self._region_redirector.get_redirect_region(
+            bucket, *redirect_args
+        )
+
+    def _get_redirect_args(self, transfer_type, error):
+        """Adapt a CRT response error for S3RegionRedirectorv2.
+
+        Returns the ``(response, operation)`` pair the redirector expects, or
+        ``None`` if the error is not one it can be asked about.
         """
         if not isinstance(error, S3ResponseError):
             return None
@@ -1054,15 +1106,7 @@ class BotocoreCRTRequestSerializer(BaseCRTRequestSerializer):
             dict(error.headers or []),
             FakeRawResponse(error.body or b''),
         )
-        response = (http_response, translated_error.response)
-        # The redirector checks the CRT response first. It only uses this
-        # serializer's real botocore client for HeadBucket when the response
-        # identifies a redirect but omits the target region.
-        return self._region_redirector.get_redirect_region(
-            bucket,
-            response,
-            operation,
-        )
+        return (http_response, translated_error.response), operation
 
 
 class FakeRawResponse(BytesIO):
@@ -1261,7 +1305,7 @@ class CRTTransferCoordinator:
 
         def request_done(error=None, **kwargs):
             if error is not None and self._can_redirect(
-                is_region_redirect, bytes_transferred
+                error, is_region_redirect, bytes_transferred
             ):
                 # Discovering a region and serializing the retry can both
                 # block, and this runs on a CRT completion thread, where
@@ -1277,10 +1321,12 @@ class CRTTransferCoordinator:
         s3_request = crt_client.make_request(**crt_callargs)
         self.set_s3_request(s3_request, is_region_redirect=is_region_redirect)
 
-    def _can_redirect(self, is_region_redirect, bytes_transferred):
+    def _can_redirect(self, error, is_region_redirect, bytes_transferred):
         try:
             return self._region_redirect_policy.is_error_redirect_candidate(
                 bucket=self._bucket,
+                transfer_type=self._transfer_type,
+                error=error,
                 is_region_redirect=is_region_redirect,
                 bytes_transferred=bytes_transferred,
                 cancelled=self.cancelled,
@@ -1340,6 +1386,11 @@ class CRTTransferCoordinator:
                 return
             self._completion_started = True
             completion_future = self._completion_future
+            # No further request will be started for this transfer, so release
+            # the factory. It holds the transfer's call args, including an
+            # upload's stream, and the manager keeps every coordinator until
+            # it shuts down.
+            self._request_factory = None
         if error is None:
             completion_future.set_result(None)
         else:

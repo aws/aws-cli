@@ -39,6 +39,10 @@ LOGGER = logging.getLogger(__name__)
 
 ADAPTIVE_RETRY_MODE = 'adaptive'
 
+# A max_retries of 0 configures the crt client's own retry count instead of
+# disabling retries, so it cannot honor a single attempt.
+MIN_CRT_MAX_ATTEMPTS = 2
+
 WARN_IGNORED = 'warn_ignored'
 
 EXCLUDE_FROM_AUTO = 'exclude_from_auto'
@@ -164,7 +168,21 @@ class TransferManagerFactory:
             unsupported.append(f'retry_mode = {ADAPTIVE_RETRY_MODE}')
         if self._is_non_seekable_stream_upload(params):
             unsupported.append('uploads from a non-seekable stream')
+        if self._is_retries_disabled(runtime_config):
+            unsupported.append('max_attempts = 1')
         return unsupported
+
+    def _is_retries_disabled(self, runtime_config):
+        max_attempts = self._resolve_max_attempts(runtime_config)
+        return max_attempts is not None and max_attempts < MIN_CRT_MAX_ATTEMPTS
+
+    def _resolve_max_attempts(self, runtime_config):
+        config_store = self._session.get_component('config_store')
+        if config_store.is_explicitly_set('max_attempts') or (
+            self._should_use_transfer_config_defaults(runtime_config)
+        ):
+            return self._session.get_config_variable('max_attempts')
+        return None
 
     def _get_classic_only_settings(self, runtime_config):
         return self._get_unsupported_options(
@@ -212,11 +230,11 @@ class TransferManagerFactory:
         unsupported = self._get_unsupported_options(
             client_type, runtime_config
         )
-        if (
-            client_type == constants.CRT_TRANSFER_CLIENT
-            and self._is_adaptive_retry_mode()
-        ):
-            unsupported.append(f'retry_mode = {ADAPTIVE_RETRY_MODE}')
+        if client_type == constants.CRT_TRANSFER_CLIENT:
+            if self._is_adaptive_retry_mode():
+                unsupported.append(f'retry_mode = {ADAPTIVE_RETRY_MODE}')
+            if self._is_retries_disabled(runtime_config):
+                unsupported.append('max_attempts = 1')
         if not unsupported:
             return
         uni_print(
@@ -300,6 +318,9 @@ class TransferManagerFactory:
             # `create_s3_crt_client` defaults this to 8MB, so `None` has to be
             # passed to opt into the CRT's dynamic part size calculation.
             kwargs['part_size'] = None
+        max_attempts = self._resolve_max_attempts(runtime_config)
+        if max_attempts is not None and max_attempts >= MIN_CRT_MAX_ATTEMPTS:
+            kwargs['retry_options'] = {'max_retries': max_attempts - 1}
         return kwargs
 
     def _should_use_transfer_config_defaults(self, runtime_config):

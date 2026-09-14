@@ -11,15 +11,20 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import os
+import socket
 import threading
 import webbrowser
 
 import pytest
 import urllib3
-from botocore.exceptions import PendingAuthorizationExpiredError
+from botocore.exceptions import (
+    AuthCodeFetcherError,
+    PendingAuthorizationExpiredError,
+)
 from botocore.session import Session
 
 from awscli.compat import BytesIO, StringIO
+from awscli.customizations.exceptions import ParamValidationError
 from awscli.customizations.sso.utils import (
     AuthCodeFetcher,
     OAuthCallbackHandler,
@@ -28,6 +33,7 @@ from awscli.customizations.sso.utils import (
     do_sso_login,
     open_browser_with_original_ld_path,
     parse_sso_registration_scopes,
+    validate_redirect_port,
 )
 from awscli.testutils import mock, unittest
 
@@ -330,3 +336,50 @@ def test_get_auth_code_and_state_timeout():
     """
     with pytest.raises(PendingAuthorizationExpiredError):
         AuthCodeFetcher().get_auth_code_and_state()
+
+
+def _get_available_port():
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
+        sock.bind(('', 0))
+        return sock.getsockname()[1]
+
+
+def test_auth_code_fetcher_binds_random_port_by_default():
+    fetcher = AuthCodeFetcher()
+    try:
+        assert fetcher.http_server.server_port != 0
+    finally:
+        fetcher.http_server.server_close()
+
+
+def test_auth_code_fetcher_binds_requested_redirect_port():
+    redirect_port = _get_available_port()
+    fetcher = AuthCodeFetcher(redirect_port=redirect_port)
+    try:
+        assert fetcher.http_server.server_port == redirect_port
+        assert fetcher.redirect_uri_with_port() == (
+            f'http://127.0.0.1:{redirect_port}/oauth/callback'
+        )
+    finally:
+        fetcher.http_server.server_close()
+
+
+@pytest.mark.parametrize('redirect_port', [None, 1, 8080, 65535])
+def test_validate_redirect_port_allows_valid_ports(redirect_port):
+    validate_redirect_port(redirect_port)
+
+
+@pytest.mark.parametrize('redirect_port', [-1, 0, 65536])
+def test_validate_redirect_port_rejects_out_of_range_ports(redirect_port):
+    with pytest.raises(ParamValidationError) as excinfo:
+        validate_redirect_port(redirect_port)
+    assert 'must be between 1 and 65535' in str(excinfo.value)
+
+
+def test_auth_code_fetcher_errors_when_redirect_port_in_use():
+    occupied = AuthCodeFetcher()
+    try:
+        with pytest.raises(AuthCodeFetcherError):
+            AuthCodeFetcher(redirect_port=occupied.http_server.server_port)
+    finally:
+        occupied.http_server.server_close()

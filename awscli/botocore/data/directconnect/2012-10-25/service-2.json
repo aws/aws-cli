@@ -125,6 +125,21 @@
       ],
       "documentation":"<p>Associates an existing connection with a link aggregation group (LAG). The connection is interrupted and re-established as a member of the LAG (connectivity to Amazon Web Services is interrupted). The connection must be hosted on the same Direct Connect endpoint as the LAG, and its bandwidth must match the bandwidth for the LAG. You can re-associate a connection that's currently associated with a different LAG; however, if removing the connection would cause the original LAG to fall below its setting for minimum number of operational connections, the request fails.</p> <p>Any virtual interfaces that are directly associated with the connection are automatically re-associated with the LAG. If the connection was originally associated with a different LAG, the virtual interfaces remain associated with the original LAG.</p> <p>For interconnects, any hosted connections are automatically re-associated with the LAG. If the interconnect was originally associated with a different LAG, the hosted connections remain associated with the original LAG.</p>"
     },
+    "AssociateConnectionsToResiliencyGroup":{
+      "name":"AssociateConnectionsToResiliencyGroup",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"AssociateConnectionsToResiliencyGroupRequest"},
+      "output":{"shape":"AssociateConnectionsToResiliencyGroupResult"},
+      "errors":[
+        {"shape":"LimitExceededException"},
+        {"shape":"DirectConnectServerException"},
+        {"shape":"DirectConnectClientException"}
+      ],
+      "documentation":"<p>Associates one or more connections with the specified resiliency group. This operation is atomic: either all of the specified connections are associated, or the operation fails and no changes are made.</p>"
+    },
     "AssociateHostedConnection":{
       "name":"AssociateHostedConnection",
       "http":{
@@ -375,6 +390,23 @@
       ],
       "documentation":"<p>Creates a public virtual interface. A virtual interface is the VLAN that transports Direct Connect traffic. A public virtual interface supports sending traffic to public services of Amazon Web Services such as Amazon S3.</p> <p>When creating an IPv6 public virtual interface (<code>addressFamily</code> is <code>ipv6</code>), leave the <code>customer</code> and <code>amazon</code> address fields blank to use auto-assigned IPv6 space. Custom IPv6 addresses are not supported.</p>"
     },
+    "CreateResiliencyGroup":{
+      "name":"CreateResiliencyGroup",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateResiliencyGroupRequest"},
+      "output":{"shape":"CreateResiliencyGroupResult"},
+      "errors":[
+        {"shape":"DuplicateTagKeysException"},
+        {"shape":"TooManyTagsException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"DirectConnectServerException"},
+        {"shape":"DirectConnectClientException"}
+      ],
+      "documentation":"<p>Creates a resiliency group. A resiliency group lets you group Direct Connect connections together and manage them as a single unit to meet a target resiliency model.</p>"
+    },
     "CreateTransitVirtualInterface":{
       "name":"CreateTransitVirtualInterface",
       "http":{
@@ -489,6 +521,20 @@
         {"shape":"DirectConnectClientException"}
       ],
       "documentation":"<p>Deletes the specified link aggregation group (LAG). You cannot delete a LAG if it has active virtual interfaces or hosted connections.</p>"
+    },
+    "DeleteResiliencyGroup":{
+      "name":"DeleteResiliencyGroup",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteResiliencyGroupRequest"},
+      "output":{"shape":"DeleteResiliencyGroupResult"},
+      "errors":[
+        {"shape":"DirectConnectServerException"},
+        {"shape":"DirectConnectClientException"}
+      ],
+      "documentation":"<p>Deletes the specified resiliency group. Deletion is asynchronous: the resiliency group transitions through the <code>deleting</code> state before it reaches the <code>deleted</code> state. The response returns the resiliency group so you can observe its current state without a subsequent <a>GetResiliencyGroup</a> call.</p>"
     },
     "DeleteVirtualInterface":{
       "name":"DeleteVirtualInterface",
@@ -770,6 +816,20 @@
       ],
       "documentation":"<p>Disassociates a connection from a link aggregation group (LAG). The connection is interrupted and re-established as a standalone connection (the connection is not deleted; to delete the connection, use the <a>DeleteConnection</a> request). If the LAG has associated virtual interfaces or hosted connections, they remain associated with the LAG. A disassociated connection owned by an Direct Connect Partner is automatically converted to an interconnect.</p> <p>If disassociating the connection would cause the LAG to fall below its setting for minimum number of operational connections, the request fails, except when it's the last member of the LAG. If all connections are disassociated, the LAG continues to exist as an empty LAG with no physical connections. </p>"
     },
+    "DisassociateConnectionsFromResiliencyGroup":{
+      "name":"DisassociateConnectionsFromResiliencyGroup",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DisassociateConnectionsFromResiliencyGroupRequest"},
+      "output":{"shape":"DisassociateConnectionsFromResiliencyGroupResult"},
+      "errors":[
+        {"shape":"DirectConnectServerException"},
+        {"shape":"DirectConnectClientException"}
+      ],
+      "documentation":"<p>Disassociates one or more connections from the specified resiliency group. This operation is atomic: either all of the specified connections are disassociated, or the operation fails and no changes are made.</p>"
+    },
     "DisassociateMacSecKey":{
       "name":"DisassociateMacSecKey",
       "http":{
@@ -783,6 +843,48 @@
         {"shape":"DirectConnectClientException"}
       ],
       "documentation":"<p>Removes the association between a MAC Security (MACsec) security key and a Direct Connect connection.</p>"
+    },
+    "GetResiliencyGroup":{
+      "name":"GetResiliencyGroup",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetResiliencyGroupRequest"},
+      "output":{"shape":"GetResiliencyGroupResult"},
+      "errors":[
+        {"shape":"DirectConnectServerException"},
+        {"shape":"DirectConnectClientException"}
+      ],
+      "documentation":"<p>Gets information about the specified resiliency group.</p>"
+    },
+    "ListResiliencyGroupAssociations":{
+      "name":"ListResiliencyGroupAssociations",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListResiliencyGroupAssociationsRequest"},
+      "output":{"shape":"ListResiliencyGroupAssociationsResult"},
+      "errors":[
+        {"shape":"DirectConnectServerException"},
+        {"shape":"DirectConnectClientException"}
+      ],
+      "documentation":"<p>Lists the connection associations for the specified resiliency group.</p>"
+    },
+    "ListResiliencyGroups":{
+      "name":"ListResiliencyGroups",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListResiliencyGroupsRequest"},
+      "output":{"shape":"ListResiliencyGroupsResult"},
+      "errors":[
+        {"shape":"DirectConnectServerException"},
+        {"shape":"DirectConnectClientException"}
+      ],
+      "documentation":"<p>Lists the resiliency groups owned by your Amazon Web Services account in the current Amazon Web Services Region.</p>"
     },
     "ListVirtualInterfaceRoutes":{
       "name":"ListVirtualInterfaceRoutes",
@@ -884,6 +986,20 @@
       ],
       "documentation":"<p>Updates the Direct Connect connection configuration.</p> <p>You can update the following parameters for a connection:</p> <ul> <li> <p>The connection name</p> </li> <li> <p>The connection's MAC Security (MACsec) encryption mode.</p> </li> </ul>"
     },
+    "UpdateConnectionsBillingMode":{
+      "name":"UpdateConnectionsBillingMode",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateConnectionsBillingModeRequest"},
+      "output":{"shape":"UpdateConnectionsBillingModeResponse"},
+      "errors":[
+        {"shape":"DirectConnectServerException"},
+        {"shape":"DirectConnectClientException"}
+      ],
+      "documentation":"<p>Updates the billing mode for the specified Direct Connect connections. You can update the billing mode for up to 200 connections in a single request.</p>"
+    },
     "UpdateDirectConnectGateway":{
       "name":"UpdateDirectConnectGateway",
       "http":{
@@ -925,6 +1041,20 @@
         {"shape":"DirectConnectClientException"}
       ],
       "documentation":"<p>Updates the attributes of the specified link aggregation group (LAG).</p> <p>You can update the following LAG attributes:</p> <ul> <li> <p>The name of the LAG.</p> </li> <li> <p>The value for the minimum number of connections that must be operational for the LAG itself to be operational. </p> </li> <li> <p>The LAG's MACsec encryption mode.</p> <p>Amazon Web Services assigns this value to each connection which is part of the LAG.</p> </li> <li> <p>The tags</p> </li> </ul> <note> <p>If you adjust the threshold value for the minimum number of operational connections, ensure that the new value does not cause the LAG to fall below the threshold and become non-operational.</p> </note>"
+    },
+    "UpdateResiliencyGroup":{
+      "name":"UpdateResiliencyGroup",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateResiliencyGroupRequest"},
+      "output":{"shape":"UpdateResiliencyGroupResult"},
+      "errors":[
+        {"shape":"DirectConnectServerException"},
+        {"shape":"DirectConnectClientException"}
+      ],
+      "documentation":"<p>Updates the name of the specified resiliency group.</p>"
     },
     "UpdateVirtualInterfaceAttributes":{
       "name":"UpdateVirtualInterfaceAttributes",
@@ -1183,6 +1313,36 @@
         }
       }
     },
+    "AssociateConnectionsToResiliencyGroupRequest":{
+      "type":"structure",
+      "required":[
+        "connectionIdentifiers",
+        "resiliencyGroupId"
+      ],
+      "members":{
+        "connectionIdentifiers":{
+          "shape":"ConnectionIdentifierList",
+          "documentation":"<p>The IDs or ARNs of the connections to associate with the resiliency group.</p>"
+        },
+        "resiliencyGroupId":{
+          "shape":"ResiliencyGroupId",
+          "documentation":"<p>The ID of the resiliency group.</p>"
+        },
+        "clientToken":{
+          "shape":"IdempotencyToken",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request.</p>"
+        }
+      }
+    },
+    "AssociateConnectionsToResiliencyGroupResult":{
+      "type":"structure",
+      "members":{
+        "resiliencyGroupAssociations":{
+          "shape":"ResiliencyGroupAssociationList",
+          "documentation":"<p>The connection associations for the resiliency group.</p>"
+        }
+      }
+    },
     "AssociateHostedConnectionRequest":{
       "type":"structure",
       "required":[
@@ -1293,6 +1453,28 @@
       "documentation":"<p>Information about the associated gateway.</p>"
     },
     "AssociatedGatewayId":{"type":"string"},
+    "AvailableBillingMode":{
+      "type":"structure",
+      "members":{
+        "billingMode":{
+          "shape":"BillingMode",
+          "documentation":"<p>The billing mode.</p>"
+        },
+        "availablePortSpeeds":{
+          "shape":"AvailablePortSpeeds",
+          "documentation":"<p>The port speeds available for the billing mode.</p>"
+        },
+        "includedRegions":{
+          "shape":"IncludedRegionList",
+          "documentation":"<p>The Amazon Web Services Regions included with the billing mode.</p>"
+        }
+      },
+      "documentation":"<p>Information about a billing mode available at an Direct Connect location.</p>"
+    },
+    "AvailableBillingModeList":{
+      "type":"list",
+      "member":{"shape":"AvailableBillingMode"}
+    },
     "AvailableMacSecPortSpeeds":{
       "type":"list",
       "member":{"shape":"PortSpeed"}
@@ -1386,6 +1568,22 @@
       ]
     },
     "Bandwidth":{"type":"string"},
+    "BillingMode":{
+      "type":"string",
+      "enum":[
+        "PayAsYouGo",
+        "FlatRateTier1",
+        "FlatRateTier2",
+        "FlatRateTier3",
+        "FlatRateTier4",
+        "FlatRateTier5",
+        "PortPairFlatRateTier1",
+        "PortPairFlatRateTier2",
+        "PortPairFlatRateTier3",
+        "PortPairFlatRateTier4",
+        "PortPairFlatRateTier5"
+      ]
+    },
     "BooleanFlag":{"type":"boolean"},
     "CIDR":{"type":"string"},
     "Cak":{"type":"string"},
@@ -1618,11 +1816,37 @@
         "prefixPoolUnallocatedCountIpv6":{
           "shape":"PrefixPoolUnallocatedCount",
           "documentation":"<p>The number of inbound IPv6 route prefixes in the connection prefix pool not yet allocated to a virtual interface. Not applicable to hosted connections or interconnects.</p>"
+        },
+        "billingMode":{
+          "shape":"BillingMode",
+          "documentation":"<p>The billing mode of the connection.</p>"
         }
       },
       "documentation":"<p>Information about an Direct Connect connection.</p>"
     },
+    "ConnectionArn":{
+      "type":"string",
+      "max":1024,
+      "min":1
+    },
     "ConnectionId":{"type":"string"},
+    "ConnectionIdList":{
+      "type":"list",
+      "member":{"shape":"ConnectionId"},
+      "max":200,
+      "min":1
+    },
+    "ConnectionIdentifier":{
+      "type":"string",
+      "max":1024,
+      "min":1
+    },
+    "ConnectionIdentifierList":{
+      "type":"list",
+      "member":{"shape":"ConnectionIdentifier"},
+      "max":50,
+      "min":1
+    },
     "ConnectionList":{
       "type":"list",
       "member":{"shape":"Connection"}
@@ -1725,6 +1949,10 @@
         "requestMACSec":{
           "shape":"RequestMACSec",
           "documentation":"<p>Indicates whether you want the connection to support MAC Security (MACsec).</p> <p>MAC Security (MACsec) is unavailable on hosted connections. For information about MAC Security (MACsec) prerequisites, see <a href=\"https://docs.aws.amazon.com/directconnect/latest/UserGuide/MACSec.html\">MAC Security in Direct Connect</a> in the <i>Direct Connect User Guide</i>.</p>"
+        },
+        "billingMode":{
+          "shape":"RequestBillingMode",
+          "documentation":"<p>The billing mode for the connection.</p>"
         }
       }
     },
@@ -1907,6 +2135,10 @@
         "requestMACSec":{
           "shape":"RequestMACSec",
           "documentation":"<p>Indicates whether the connection will support MAC Security (MACsec).</p> <note> <p>All connections in the LAG must be capable of supporting MAC Security (MACsec). For information about MAC Security (MACsec) prerequisties, see <a href=\"https://docs.aws.amazon.com/directconnect/latest/UserGuide/direct-connect-mac-sec-getting-started.html#mac-sec-prerequisites\">MACsec prerequisties</a> in the <i>Direct Connect User Guide</i>.</p> </note>"
+        },
+        "billingMode":{
+          "shape":"RequestBillingMode",
+          "documentation":"<p>The billing mode for the LAG.</p>"
         }
       }
     },
@@ -1941,6 +2173,40 @@
         "newPublicVirtualInterface":{
           "shape":"NewPublicVirtualInterface",
           "documentation":"<p>Information about the public virtual interface.</p>"
+        }
+      }
+    },
+    "CreateResiliencyGroupRequest":{
+      "type":"structure",
+      "required":[
+        "resiliencyGroupName",
+        "intendedResiliencyModel"
+      ],
+      "members":{
+        "resiliencyGroupName":{
+          "shape":"ResiliencyGroupName",
+          "documentation":"<p>The name of the resiliency group.</p>"
+        },
+        "intendedResiliencyModel":{
+          "shape":"ResiliencyModel",
+          "documentation":"<p>The resiliency model that the resiliency group is intended to meet. The valid values are <code>maximum-resiliency</code>, <code>high-resiliency</code>, and <code>basic-resiliency</code>.</p>"
+        },
+        "clientToken":{
+          "shape":"IdempotencyToken",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request.</p>"
+        },
+        "tags":{
+          "shape":"TagList",
+          "documentation":"<p>The tags to associate with the resiliency group.</p>"
+        }
+      }
+    },
+    "CreateResiliencyGroupResult":{
+      "type":"structure",
+      "members":{
+        "resiliencyGroup":{
+          "shape":"ResiliencyGroup",
+          "documentation":"<p>Information about the resiliency group.</p>"
         }
       }
     },
@@ -2119,6 +2385,25 @@
         "lagId":{
           "shape":"LagId",
           "documentation":"<p>The ID of the LAG.</p>"
+        }
+      }
+    },
+    "DeleteResiliencyGroupRequest":{
+      "type":"structure",
+      "required":["resiliencyGroupId"],
+      "members":{
+        "resiliencyGroupId":{
+          "shape":"ResiliencyGroupId",
+          "documentation":"<p>The ID of the resiliency group.</p>"
+        }
+      }
+    },
+    "DeleteResiliencyGroupResult":{
+      "type":"structure",
+      "members":{
+        "resiliencyGroup":{
+          "shape":"ResiliencyGroup",
+          "documentation":"<p>Information about the resiliency group.</p>"
         }
       }
     },
@@ -2777,6 +3062,36 @@
         }
       }
     },
+    "DisassociateConnectionsFromResiliencyGroupRequest":{
+      "type":"structure",
+      "required":[
+        "connectionIdentifiers",
+        "resiliencyGroupId"
+      ],
+      "members":{
+        "connectionIdentifiers":{
+          "shape":"ConnectionIdentifierList",
+          "documentation":"<p>The IDs or ARNs of the connections to disassociate from the resiliency group.</p>"
+        },
+        "resiliencyGroupId":{
+          "shape":"ResiliencyGroupId",
+          "documentation":"<p>The ID of the resiliency group.</p>"
+        },
+        "clientToken":{
+          "shape":"IdempotencyToken",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request.</p>"
+        }
+      }
+    },
+    "DisassociateConnectionsFromResiliencyGroupResult":{
+      "type":"structure",
+      "members":{
+        "resiliencyGroupAssociations":{
+          "shape":"ResiliencyGroupAssociationList",
+          "documentation":"<p>The connection associations for the resiliency group.</p>"
+        }
+      }
+    },
     "DisassociateMacSecKeyRequest":{
       "type":"structure",
       "required":[
@@ -2827,6 +3142,25 @@
         "transitGateway"
       ]
     },
+    "GetResiliencyGroupRequest":{
+      "type":"structure",
+      "required":["resiliencyGroupId"],
+      "members":{
+        "resiliencyGroupId":{
+          "shape":"ResiliencyGroupId",
+          "documentation":"<p>The ID of the resiliency group.</p>"
+        }
+      }
+    },
+    "GetResiliencyGroupResult":{
+      "type":"structure",
+      "members":{
+        "resiliencyGroup":{
+          "shape":"ResiliencyGroup",
+          "documentation":"<p>Information about the resiliency group.</p>"
+        }
+      }
+    },
     "HasLogicalRedundancy":{
       "type":"string",
       "enum":[
@@ -2834,6 +3168,15 @@
         "yes",
         "no"
       ]
+    },
+    "IdempotencyToken":{
+      "type":"string",
+      "max":128,
+      "min":1
+    },
+    "IncludedRegionList":{
+      "type":"list",
+      "member":{"shape":"Region"}
     },
     "Interconnect":{
       "type":"structure",
@@ -3055,6 +3398,10 @@
         "rateLimiterStatus":{
           "shape":"RateLimiterStatus",
           "documentation":"<p>The rate limiter status for the LAG, including how many rate limiters are in use and the maximum allowed.</p>"
+        },
+        "billingMode":{
+          "shape":"BillingMode",
+          "documentation":"<p>The billing mode of the LAG.</p>"
         }
       },
       "documentation":"<p>Information about a link aggregation group (LAG).</p>"
@@ -3095,6 +3442,63 @@
       "members":{},
       "documentation":"<p>The rate limiter limit has been exceeded for the connection. You cannot add more rate limiters to virtual interfaces on this connection.</p>",
       "exception":true
+    },
+    "ListResiliencyGroupAssociationsRequest":{
+      "type":"structure",
+      "required":["resiliencyGroupId"],
+      "members":{
+        "resiliencyGroupId":{
+          "shape":"ResiliencyGroupId",
+          "documentation":"<p>The ID of the resiliency group.</p>"
+        },
+        "maxResults":{
+          "shape":"MaxResultSetSize",
+          "documentation":"<p>The maximum number of results to return with a single call. To retrieve the remaining results, make another call with the returned <code>nextToken</code> value.</p> <p>If <code>MaxResults</code> is given a value larger than 100, only 100 results are returned.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The token for the next page of results.</p>"
+        }
+      }
+    },
+    "ListResiliencyGroupAssociationsResult":{
+      "type":"structure",
+      "members":{
+        "items":{
+          "shape":"ResiliencyGroupAssociationList",
+          "documentation":"<p>The connection associations for the resiliency group.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The token to use to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.</p>"
+        }
+      }
+    },
+    "ListResiliencyGroupsRequest":{
+      "type":"structure",
+      "members":{
+        "maxResults":{
+          "shape":"MaxResultSetSize",
+          "documentation":"<p>The maximum number of results to return with a single call. To retrieve the remaining results, make another call with the returned <code>nextToken</code> value.</p> <p>If <code>MaxResults</code> is given a value larger than 100, only 100 results are returned.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The token for the next page of results.</p>"
+        }
+      }
+    },
+    "ListResiliencyGroupsResult":{
+      "type":"structure",
+      "members":{
+        "items":{
+          "shape":"ResiliencyGroupSummaryList",
+          "documentation":"<p>Summary information about the resiliency groups.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The token to use to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.</p>"
+        }
+      }
     },
     "ListVirtualInterfaceRoutesRequest":{
       "type":"structure",
@@ -3222,6 +3626,10 @@
         "availableMacSecPortSpeeds":{
           "shape":"AvailableMacSecPortSpeeds",
           "documentation":"<p>The available MAC Security (MACsec) port speeds for the location.</p>"
+        },
+        "availableBillingModes":{
+          "shape":"AvailableBillingModeList",
+          "documentation":"<p>The billing modes available at the location, including the port speeds and Amazon Web Services Regions supported by each mode.</p>"
         }
       },
       "documentation":"<p>Information about an Direct Connect location.</p>"
@@ -3712,7 +4120,156 @@
       "documentation":"<p>Contains information about the rate limiter status for a connection, including the maximum number of rate limiters allowed, the number currently in use, and the remaining capacity.</p>"
     },
     "Region":{"type":"string"},
+    "RequestBillingMode":{
+      "type":"string",
+      "enum":[
+        "PayAsYouGo",
+        "FlatRateTier1",
+        "FlatRateTier2",
+        "FlatRateTier3",
+        "FlatRateTier4",
+        "FlatRateTier5"
+      ]
+    },
     "RequestMACSec":{"type":"boolean"},
+    "ResiliencyGroup":{
+      "type":"structure",
+      "members":{
+        "resiliencyGroupId":{
+          "shape":"ResiliencyGroupId",
+          "documentation":"<p>The ID of the resiliency group.</p>"
+        },
+        "resiliencyGroupArn":{
+          "shape":"ResiliencyGroupArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resiliency group.</p>"
+        },
+        "resiliencyGroupName":{
+          "shape":"ResiliencyGroupName",
+          "documentation":"<p>The name of the resiliency group.</p>"
+        },
+        "resiliencyGroupType":{
+          "shape":"ResiliencyGroupType",
+          "documentation":"<p>The type of the resiliency group. The valid value is <code>Managed</code>.</p>"
+        },
+        "ownerAccount":{
+          "shape":"OwnerAccount",
+          "documentation":"<p>The ID of the Amazon Web Services account that owns the resiliency group.</p>"
+        },
+        "state":{
+          "shape":"ResiliencyGroupState",
+          "documentation":"<p>The state of the resiliency group. The valid values are <code>pending</code>, <code>available</code>, <code>deleting</code>, and <code>deleted</code>.</p>"
+        },
+        "tags":{
+          "shape":"TagList",
+          "documentation":"<p>The tags associated with the resiliency group.</p>"
+        }
+      },
+      "documentation":"<p>Information about a resiliency group.</p>"
+    },
+    "ResiliencyGroupArn":{
+      "type":"string",
+      "max":1024,
+      "min":1,
+      "pattern":"^arn:(aws|aws-cn|aws-us-gov):directconnect::[0-9]{12}:dx-resiliency-group/dxrg-[0-9a-z]{17}$"
+    },
+    "ResiliencyGroupAssociation":{
+      "type":"structure",
+      "members":{
+        "resiliencyGroupId":{
+          "shape":"ResiliencyGroupId",
+          "documentation":"<p>The ID of the resiliency group.</p>"
+        },
+        "connectionArn":{
+          "shape":"ConnectionArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the associated connection.</p>"
+        },
+        "state":{
+          "shape":"ResiliencyGroupAssociationState",
+          "documentation":"<p>The state of the association. The valid values are <code>associating</code>, <code>associated</code>, <code>disassociating</code>, and <code>disassociated</code>.</p>"
+        }
+      },
+      "documentation":"<p>Information about an association between a connection and a resiliency group.</p>"
+    },
+    "ResiliencyGroupAssociationList":{
+      "type":"list",
+      "member":{"shape":"ResiliencyGroupAssociation"}
+    },
+    "ResiliencyGroupAssociationState":{
+      "type":"string",
+      "enum":[
+        "associating",
+        "associated",
+        "disassociating",
+        "disassociated"
+      ]
+    },
+    "ResiliencyGroupId":{
+      "type":"string",
+      "max":22,
+      "min":22,
+      "pattern":"^(dxrg|DXRG)-[0-9a-zA-Z]{17}$"
+    },
+    "ResiliencyGroupName":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"^[a-zA-Z0-9_\\-]+$"
+    },
+    "ResiliencyGroupState":{
+      "type":"string",
+      "enum":[
+        "pending",
+        "available",
+        "deleting",
+        "deleted"
+      ]
+    },
+    "ResiliencyGroupSummary":{
+      "type":"structure",
+      "members":{
+        "resiliencyGroupId":{
+          "shape":"ResiliencyGroupId",
+          "documentation":"<p>The ID of the resiliency group.</p>"
+        },
+        "resiliencyGroupArn":{
+          "shape":"ResiliencyGroupArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resiliency group.</p>"
+        },
+        "resiliencyGroupName":{
+          "shape":"ResiliencyGroupName",
+          "documentation":"<p>The name of the resiliency group.</p>"
+        },
+        "resiliencyGroupType":{
+          "shape":"ResiliencyGroupType",
+          "documentation":"<p>The type of the resiliency group. The valid value is <code>Managed</code>.</p>"
+        },
+        "ownerAccount":{
+          "shape":"OwnerAccount",
+          "documentation":"<p>The ID of the Amazon Web Services account that owns the resiliency group.</p>"
+        },
+        "state":{
+          "shape":"ResiliencyGroupState",
+          "documentation":"<p>The state of the resiliency group.</p>"
+        }
+      },
+      "documentation":"<p>Summary information about a resiliency group.</p>"
+    },
+    "ResiliencyGroupSummaryList":{
+      "type":"list",
+      "member":{"shape":"ResiliencyGroupSummary"}
+    },
+    "ResiliencyGroupType":{
+      "type":"string",
+      "enum":["Managed"]
+    },
+    "ResiliencyModel":{
+      "type":"string",
+      "enum":[
+        "maximum-resiliency",
+        "high-resiliency",
+        "basic-resiliency"
+      ]
+    },
     "ResourceArn":{"type":"string"},
     "ResourceArnList":{
       "type":"list",
@@ -4026,6 +4583,36 @@
         }
       }
     },
+    "UpdateConnectionsBillingModeRequest":{
+      "type":"structure",
+      "required":[
+        "connectionIds",
+        "billingMode"
+      ],
+      "members":{
+        "connectionIds":{
+          "shape":"ConnectionIdList",
+          "documentation":"<p>The IDs of the connections to update. You can specify from 1 to 200 connections.</p>"
+        },
+        "billingMode":{
+          "shape":"RequestBillingMode",
+          "documentation":"<p>The billing mode to apply to the specified connections. The valid values are <code>PayAsYouGo</code>, <code>FlatRateTier1</code>, <code>FlatRateTier2</code>, <code>FlatRateTier3</code>, <code>FlatRateTier4</code>, and <code>FlatRateTier5</code>.</p>"
+        }
+      }
+    },
+    "UpdateConnectionsBillingModeResponse":{
+      "type":"structure",
+      "members":{
+        "billingMode":{
+          "shape":"BillingMode",
+          "documentation":"<p>The billing mode applied to the connections.</p>"
+        },
+        "connections":{
+          "shape":"ConnectionList",
+          "documentation":"<p>The connections with the updated billing mode.</p>"
+        }
+      }
+    },
     "UpdateDirectConnectGatewayAssociationRequest":{
       "type":"structure",
       "members":{
@@ -4097,6 +4684,36 @@
         "encryptionMode":{
           "shape":"EncryptionMode",
           "documentation":"<p>The LAG MAC Security (MACsec) encryption mode.</p> <p>Amazon Web Services applies the value to all connections which are part of the LAG.</p>"
+        }
+      }
+    },
+    "UpdateResiliencyGroupRequest":{
+      "type":"structure",
+      "required":[
+        "resiliencyGroupId",
+        "resiliencyGroupName"
+      ],
+      "members":{
+        "resiliencyGroupId":{
+          "shape":"ResiliencyGroupId",
+          "documentation":"<p>The ID of the resiliency group.</p>"
+        },
+        "resiliencyGroupName":{
+          "shape":"ResiliencyGroupName",
+          "documentation":"<p>The new name of the resiliency group.</p>"
+        },
+        "clientToken":{
+          "shape":"IdempotencyToken",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request.</p>"
+        }
+      }
+    },
+    "UpdateResiliencyGroupResult":{
+      "type":"structure",
+      "members":{
+        "resiliencyGroup":{
+          "shape":"ResiliencyGroup",
+          "documentation":"<p>Information about the resiliency group.</p>"
         }
       }
     },

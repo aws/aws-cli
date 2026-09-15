@@ -32,6 +32,7 @@ from awscli.compat import urlparse
 from awscli.customizations.s3 import constants
 from awscli.customizations.s3.transferconfig import (
     DEFAULTS,
+    InvalidConfigError,
     create_transfer_config_from_runtime_config,
 )
 from awscli.customizations.utils import uni_print
@@ -48,15 +49,16 @@ MIN_CRT_MAX_ATTEMPTS = 2
 # been tuned for. Staying at 4 keeps it in its smallest memory pool tier.
 UNTUNED_TARGET_THROUGHPUT_GBPS = 4.0
 
-# Largest part size the crt client accepts in its smallest memory pool tier. It
-# rejects a part size over half the pool, and rejects it while constructing the
-# client, so a larger chunksize would fail every transfer rather than just
-# large ones.
-UNTUNED_MAX_MULTIPART_CHUNKSIZE = 128 * (1024**2)
-
 # Throughput target, in gigabits per second, to fall back to rather than
 # accepting a lower recommendation from the crt.
 MINIMUM_TARGET_THROUGHPUT_GBPS = 10.0
+
+# The crt client rejects a part size over half of its memory pool while it is
+# being constructed. The pool is sized from the throughput target, and neither
+# the sizing nor the limit is exposed, so the only way to know a multipart
+# chunksize does not fit is to build the client and see. awscrt raises a plain
+# RuntimeError for this, leaving the error code as the only thing to match on.
+CRT_PART_SIZE_EXCEEDS_MEMORY_LIMIT = 14371
 
 WARN_IGNORED = 'warn_ignored'
 
@@ -121,13 +123,38 @@ class TransferManagerFactory:
         client_type = self._compute_transfer_client_type(
             params, runtime_config
         )
-        self.warn_unsupported_settings(client_type, runtime_config)
         if client_type == constants.CRT_TRANSFER_CLIENT:
-            return self._create_crt_transfer_manager(params, runtime_config)
-        else:
-            return self._create_classic_transfer_manager(
-                params, runtime_config, botocore_client
+            transfer_manager = self._try_create_crt_transfer_manager(
+                params, runtime_config
             )
+            if transfer_manager is not None:
+                self.warn_unsupported_settings(client_type, runtime_config)
+                return transfer_manager
+            client_type = constants.CLASSIC_TRANSFER_CLIENT
+        self.warn_unsupported_settings(client_type, runtime_config)
+        return self._create_classic_transfer_manager(
+            params, runtime_config, botocore_client
+        )
+
+    def _try_create_crt_transfer_manager(self, params, runtime_config):
+        try:
+            return self._create_crt_transfer_manager(params, runtime_config)
+        except RuntimeError as e:
+            if str(CRT_PART_SIZE_EXCEEDS_MEMORY_LIMIT) not in str(e):
+                raise
+            if self._is_preferring_crt_client(runtime_config):
+                raise InvalidConfigError(
+                    f'The configured multipart_chunksize is too large for the '
+                    f"'{constants.CRT_TRANSFER_CLIENT}' s3 transfer client. "
+                    f'Lower multipart_chunksize or raise the '
+                    f'memory available to the transfer client by setting the '
+                    f'AWS_CRT_S3_MEMORY_LIMIT_IN_GIB environment variable.'
+                ) from e
+            LOGGER.debug(
+                f'Not using the crt s3 transfer client because the configured '
+                f'multipart_chunksize does not fit its memory pool: {e}'
+            )
+            return None
 
     def _compute_transfer_client_type(self, params, runtime_config):
         if params.get('paths_type') == 's3s3':
@@ -189,23 +216,7 @@ class TransferManagerFactory:
             unsupported.append('uploads from a non-seekable stream')
         if self._is_retries_disabled(runtime_config):
             unsupported.append('max_attempts = 1')
-        if self._is_multipart_chunksize_too_large(runtime_config):
-            unsupported.append(
-                f'multipart_chunksize over '
-                f'{UNTUNED_MAX_MULTIPART_CHUNKSIZE} on this system'
-            )
         return unsupported
-
-    def _is_multipart_chunksize_too_large(self, runtime_config):
-        # Only the pool for untuned systems is small enough to reject a
-        # configurable chunksize.
-        if not self._is_untuned_system():
-            return False
-        return (
-            runtime_config.is_explicitly_set('multipart_chunksize')
-            and runtime_config['multipart_chunksize']
-            > UNTUNED_MAX_MULTIPART_CHUNKSIZE
-        )
 
     def _is_retries_disabled(self, runtime_config):
         max_attempts = self._resolve_max_attempts(runtime_config)

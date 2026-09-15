@@ -10,6 +10,7 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import awscrt.exceptions
 import awscrt.s3
 import pytest
 import s3transfer.crt
@@ -25,12 +26,15 @@ from s3transfer.manager import TransferManager
 from awscli.customizations.s3 import constants
 from awscli.customizations.s3.factory import (
     ADAPTIVE_RETRY_MODE,
+    CRT_PART_SIZE_EXCEEDS_MEMORY_LIMIT,
     MINIMUM_TARGET_THROUGHPUT_GBPS,
-    UNTUNED_MAX_MULTIPART_CHUNKSIZE,
     ClientFactory,
     TransferManagerFactory,
 )
-from awscli.customizations.s3.transferconfig import RuntimeConfig
+from awscli.customizations.s3.transferconfig import (
+    InvalidConfigError,
+    RuntimeConfig,
+)
 from awscli.testutils import FileCreator, mock, unittest
 
 
@@ -1377,44 +1381,83 @@ class TestTargetThroughput:
         assert crt_s3_client_kwargs()['throughput_target_gbps'] == 3.0
 
 
-class TestLargeMultipartChunksize:
-    def test_resolves_to_classic_when_chunksize_exceeds_pool(
-        self, resolve_client_type
-    ):
-        assert (
-            resolve_client_type(
-                multipart_chunksize=UNTUNED_MAX_MULTIPART_CHUNKSIZE + 1
-            )
-            == constants.CLASSIC_TRANSFER_CLIENT
+class TestChunksizeExceedingCrtMemoryPool:
+    """The crt client only reports an oversized chunksize while constructing."""
+
+    @pytest.fixture
+    def part_size_error(self):
+        return RuntimeError(
+            f'{CRT_PART_SIZE_EXCEEDS_MEMORY_LIMIT} '
+            f'(AWS_ERROR_S3_PART_SIZE_EXCEEDS_MEMORY_LIMIT): Part size '
+            f'exceeds the configured memory limit.'
         )
 
-    def test_resolves_to_crt_at_the_largest_accepted_chunksize(
-        self, resolve_client_type
-    ):
-        assert (
-            resolve_client_type(
-                multipart_chunksize=UNTUNED_MAX_MULTIPART_CHUNKSIZE
+    @pytest.fixture
+    def create_manager(self, auto_resolve_factory, s3_params):
+        def _create(**kwargs):
+            runtime_config = RuntimeConfig().build_config(**kwargs)
+            return auto_resolve_factory.create_transfer_manager(
+                s3_params, runtime_config, mock.Mock()
             )
-            == constants.CRT_TRANSFER_CLIENT
+
+        return _create
+
+    @pytest.fixture
+    def crt_manager_raises(self, auto_resolve_factory, part_size_error):
+        with mock.patch.object(
+            auto_resolve_factory,
+            '_create_crt_transfer_manager',
+            side_effect=part_size_error,
+        ) as mock_create:
+            yield mock_create
+
+    def test_error_code_still_means_what_we_match_on(self):
+        # Guards against awscrt renumbering the code out from under us.
+        assert (
+            awscrt.exceptions.from_code(
+                CRT_PART_SIZE_EXCEEDS_MEMORY_LIMIT
+            ).name
+            == 'AWS_ERROR_S3_PART_SIZE_EXCEEDS_MEMORY_LIMIT'
         )
 
-    def test_resolves_to_crt_on_tuned_systems(
-        self, resolve_client_type, mock_crt_recommended_throughput
+    def test_falls_back_to_classic_when_auto_resolved(
+        self, create_manager, crt_manager_raises, mock_crt_lock_held
     ):
-        # A tuned system gets a pool large enough for the configured chunksize.
-        mock_crt_recommended_throughput.return_value = 50.0
-        assert (
-            resolve_client_type(
-                multipart_chunksize=UNTUNED_MAX_MULTIPART_CHUNKSIZE * 8
-            )
-            == constants.CRT_TRANSFER_CLIENT
-        )
+        assert isinstance(create_manager(), TransferManager)
 
-    def test_does_not_warn_when_falling_back_for_chunksize(
-        self, resolve_client_type, capsys
+    def test_does_not_warn_when_falling_back(
+        self, create_manager, crt_manager_raises, mock_crt_lock_held, capsys
     ):
         # Classic honors the configured chunksize, so nothing is lost.
-        resolve_client_type(
-            multipart_chunksize=UNTUNED_MAX_MULTIPART_CHUNKSIZE + 1
-        )
+        create_manager()
         assert capsys.readouterr().err == ''
+
+    def test_raises_when_crt_explicitly_preferred(
+        self, create_manager, crt_manager_raises
+    ):
+        with pytest.raises(InvalidConfigError) as excinfo:
+            create_manager(
+                preferred_transfer_client=constants.CRT_TRANSFER_CLIENT
+            )
+        message = str(excinfo.value)
+        assert 'multipart_chunksize' in message
+        assert 'AWS_CRT_S3_MEMORY_LIMIT_IN_GIB' in message
+        # Explicit crt must never be told to switch to classic.
+        assert constants.CLASSIC_TRANSFER_CLIENT not in message
+
+    def test_reraises_unrelated_runtime_errors(
+        self, create_manager, auto_resolve_factory, mock_crt_lock_held
+    ):
+        with mock.patch.object(
+            auto_resolve_factory,
+            '_create_crt_transfer_manager',
+            side_effect=RuntimeError('something else entirely'),
+        ):
+            with pytest.raises(RuntimeError, match='something else entirely'):
+                create_manager()
+
+    def test_uses_crt_when_the_chunksize_fits(
+        self, create_manager, mock_crt_lock_held, mock_crt_s3_client
+    ):
+        manager = create_manager(multipart_chunksize=8 * 1024 * 1024)
+        assert not isinstance(manager, TransferManager)

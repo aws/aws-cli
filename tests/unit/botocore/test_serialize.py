@@ -17,6 +17,7 @@ import datetime
 import decimal
 import io
 import json
+import struct
 
 import dateutil.tz
 from botocore import serialize
@@ -615,6 +616,177 @@ class TestRestXMLUnicodeSerialization(unittest.TestCase):
         except UnicodeEncodeError:
             self.fail("RestXML serializer failed to serialize unicode text.")
 
+
+class TestTimestampPrecision(unittest.TestCase):
+    def setUp(self):
+        self.model = {
+            'metadata': {'protocol': 'query', 'apiVersion': '2014-01-01'},
+            'documentation': '',
+            'operations': {
+                'TestOperation': {
+                    'name': 'TestOperation',
+                    'http': {
+                        'method': 'POST',
+                        'requestUri': '/',
+                    },
+                    'input': {'shape': 'InputShape'},
+                }
+            },
+            'shapes': {
+                'InputShape': {
+                    'type': 'structure',
+                    'members': {
+                        'UnixTimestamp': {'shape': 'UnixTimestampType'},
+                        'IsoTimestamp': {'shape': 'IsoTimestampType'},
+                        'Rfc822Timestamp': {'shape': 'Rfc822TimestampType'},
+                    },
+                },
+                'IsoTimestampType': {
+                    'type': 'timestamp',
+                    "timestampFormat": "iso8601",
+                },
+                'UnixTimestampType': {
+                    'type': 'timestamp',
+                    "timestampFormat": "unixTimestamp",
+                },
+                'Rfc822TimestampType': {
+                    'type': 'timestamp',
+                    "timestampFormat": "rfc822",
+                },
+            },
+        }
+        self.service_model = ServiceModel(self.model)
+
+    def serialize_to_request(self, input_params):
+        request_serializer = serialize.create_serializer(
+            self.service_model.metadata['protocol']
+        )
+        return request_serializer.serialize_to_request(
+            input_params, self.service_model.operation_model('TestOperation')
+        )
+
+    def test_whole_seconds_serialize_without_fraction(self):
+        test_datetime = datetime.datetime(2024, 1, 1, 12, 0, 0)
+        request = self.serialize_to_request(
+            {'UnixTimestamp': test_datetime, 'IsoTimestamp': test_datetime}
+        )
+        self.assertEqual(request['body']['UnixTimestamp'], 1704110400)
+        self.assertIsInstance(request['body']['UnixTimestamp'], int)
+        self.assertEqual(
+            request['body']['IsoTimestamp'], '2024-01-01T12:00:00Z'
+        )
+
+    def test_millisecond_precision_is_preserved(self):
+        test_datetime = datetime.datetime(2024, 1, 1, 12, 0, 0, 123000)
+        request = self.serialize_to_request(
+            {'UnixTimestamp': test_datetime, 'IsoTimestamp': test_datetime}
+        )
+        self.assertEqual(request['body']['UnixTimestamp'], 1704110400.123)
+        self.assertEqual(
+            request['body']['IsoTimestamp'], '2024-01-01T12:00:00.123000Z'
+        )
+
+    def test_microsecond_precision_is_preserved(self):
+        test_datetime = datetime.datetime(2024, 1, 1, 12, 0, 0, 123456)
+        request = self.serialize_to_request(
+            {'UnixTimestamp': test_datetime, 'IsoTimestamp': test_datetime}
+        )
+        self.assertEqual(request['body']['UnixTimestamp'], 1704110400.123456)
+        self.assertEqual(
+            request['body']['IsoTimestamp'], '2024-01-01T12:00:00.123456Z'
+        )
+
+    def test_unix_timestamp_fraction_round_trips_through_repr(self):
+        # The float must render with exactly the digits the caller provided
+        # (no binary floating point noise) when written to a request body.
+        test_datetime = datetime.datetime(2024, 1, 1, 12, 0, 0, 123456)
+        request = self.serialize_to_request({'UnixTimestamp': test_datetime})
+        self.assertEqual(
+            str(request['body']['UnixTimestamp']), '1704110400.123456'
+        )
+
+    def test_unix_timestamp_before_epoch_with_fraction(self):
+        test_datetime = datetime.datetime(1969, 12, 31, 23, 59, 59, 250000)
+        request = self.serialize_to_request({'UnixTimestamp': test_datetime})
+        self.assertEqual(request['body']['UnixTimestamp'], -0.75)
+
+    def test_rfc822_timestamp_always_uses_second_precision(self):
+        # RFC822 format doesn't support sub-second precision.
+        test_datetime = datetime.datetime(2024, 1, 1, 12, 0, 0, 123456)
+        request = self.serialize_to_request({'Rfc822Timestamp': test_datetime})
+        self.assertEqual(
+            request['body']['Rfc822Timestamp'],
+            'Mon, 01 Jan 2024 12:00:00 GMT',
+        )
+
+
+class TestRpcV2CBORTimestampSerialization(unittest.TestCase):
+    def setUp(self):
+        self.model = {
+            'metadata': {
+                'protocol': 'smithy-rpc-v2-cbor',
+                'apiVersion': '2014-01-01',
+                'serviceId': 'MyService',
+                'targetPrefix': 'sampleservice',
+                'documentation': '',
+            },
+            'operations': {
+                'TestOperation': {
+                    'name': 'TestOperation',
+                    'input': {'shape': 'InputShape'},
+                }
+            },
+            'shapes': {
+                'InputShape': {
+                    'type': 'structure',
+                    'members': {
+                        'Timestamp': {'shape': 'TimestampType'},
+                    },
+                },
+                'TimestampType': {'type': 'timestamp'},
+            },
+        }
+        self.service_model = ServiceModel(self.model)
+
+    def serialize_timestamp(self, value):
+        request_serializer = serialize.create_serializer(
+            self.service_model.metadata['protocol']
+        )
+        request = request_serializer.serialize_to_request(
+            {'Timestamp': value},
+            self.service_model.operation_model('TestOperation'),
+        )
+        # Skip the leading map header and "Timestamp" key; return the
+        # encoded value only.
+        body = bytes(request['body'])
+        prefix = b'\xa1\x69Timestamp'
+        self.assertTrue(body.startswith(prefix))
+        return body[len(prefix) :]
+
+    def test_whole_seconds_serialize_as_tagged_integer(self):
+        encoded = self.serialize_timestamp(
+            datetime.datetime(2024, 1, 1, 12, 0, 0)
+        )
+        # Tag 1, then uint32 1704110400
+        self.assertEqual(encoded, b'\xc1\x1a\x65\x92\xa9\x40')
+
+    def test_fractional_seconds_serialize_as_tagged_double(self):
+        encoded = self.serialize_timestamp(
+            datetime.datetime(2024, 1, 1, 12, 0, 0, 500000)
+        )
+        # Tag 1, then float64 1704110400.5
+        self.assertEqual(
+            encoded, b'\xc1\xfb' + struct.pack('>d', 1704110400.5)
+        )
+
+    def test_negative_timestamp_serializes_as_tagged_negative_integer(self):
+        encoded = self.serialize_timestamp(
+            datetime.datetime(1969, 12, 31, 23, 59, 59)
+        )
+        # Tag 1, then negative integer -1 (major type 1, value 0)
+        self.assertEqual(encoded, b'\xc1\x20')
+
+
 class TestRpcV2CBORHostPrefix(unittest.TestCase):
     def setUp(self):
         self.model = {
@@ -649,7 +821,9 @@ class TestRpcV2CBORHostPrefix(unittest.TestCase):
         self.service_model = ServiceModel(self.model)
 
     def test_host_prefix_added_to_serialized_request(self):
-        operation_model = self.service_model.operation_model('TestHostPrefixOperation')
+        operation_model = self.service_model.operation_model(
+            'TestHostPrefixOperation'
+        )
         serializer = serialize.create_serializer('smithy-rpc-v2-cbor')
 
         params = {'Foo': 'bound'}
@@ -658,7 +832,9 @@ class TestRpcV2CBORHostPrefix(unittest.TestCase):
         self.assertEqual(serialized['host_prefix'], 'bound')
 
     def test_no_host_prefix_when_not_configured(self):
-        operation_model = self.service_model.operation_model('TestNoHostPrefixOperation')
+        operation_model = self.service_model.operation_model(
+            'TestNoHostPrefixOperation'
+        )
         serializer = serialize.create_serializer('smithy-rpc-v2-cbor')
 
         params = {'Foo': 'bound'}

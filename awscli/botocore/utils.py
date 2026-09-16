@@ -1576,7 +1576,7 @@ class S3RegionRedirectorv2:
     """
 
     def __init__(self, endpoint_bridge, client, cache=None):
-        self._cache = cache or {}
+        self._cache = {} if cache is None else cache
         self._client = weakref.proxy(client)
 
     def register(self, event_emitter=None):
@@ -1616,48 +1616,13 @@ class S3RegionRedirectorv2:
             )
             return
 
-        error = response[1].get('Error', {})
-        error_code = error.get('Code')
-        response_metadata = response[1].get('ResponseMetadata', {})
-
-        # We have to account for 400 responses because
-        # if we sign a Head* request with the wrong region,
-        # we'll get a 400 Bad Request but we won't get a
-        # body saying it's an "AuthorizationHeaderMalformed".
-        is_special_head_object = (
-            error_code in ('301', '400') and operation.name == 'HeadObject'
-        )
-        is_special_head_bucket = (
-            error_code in ('301', '400')
-            and operation.name == 'HeadBucket'
-            and 'x-amz-bucket-region'
-            in response_metadata.get('HTTPHeaders', {})
-        )
-        is_wrong_signing_region = (
-            error_code == 'AuthorizationHeaderMalformed' and 'Region' in error
-        )
-        is_redirect_status = response[0] is not None and response[
-            0
-        ].status_code in (301, 302, 307)
-        is_permanent_redirect = error_code == 'PermanentRedirect'
-        is_opt_in_region_redirect = (
-            error_code == 'IllegalLocationConstraintException'
-            and operation.name != 'CreateBucket'
-        )
-        if not any(
-            [
-                is_special_head_object,
-                is_wrong_signing_region,
-                is_permanent_redirect,
-                is_special_head_bucket,
-                is_redirect_status,
-                is_opt_in_region_redirect,
-            ]
-        ):
+        bucket = redirect_ctx.get('bucket')
+        if bucket is None:
+            return
+        if not self.is_redirect_response(response, operation):
             return
 
-        bucket = request_dict['context']['s3_redirect']['bucket']
-        client_region = request_dict['context'].get('client_region')
+        client_region = request_dict.get('context', {}).get('client_region')
         new_region = self.get_bucket_region(bucket, response)
 
         if new_region is None:
@@ -1701,6 +1666,55 @@ class S3RegionRedirectorv2:
 
         # Return 0 so it doesn't wait to retry
         return 0
+
+    def get_redirect_region(self, bucket, response, operation):
+        """Return the region a response redirects a bucket to, if any."""
+        if bucket is None or ArnParser.is_arn(bucket):
+            return None
+        if not self.is_redirect_response(response, operation):
+            return None
+        return self.get_bucket_region(bucket, response)
+
+    def is_redirect_response(self, response, operation):
+        """Return whether a response says the bucket is in another region."""
+        error = response[1].get('Error', {})
+        error_code = error.get('Code')
+        response_metadata = response[1].get('ResponseMetadata', {})
+
+        # We have to account for 400 responses because
+        # if we sign a Head* request with the wrong region,
+        # we'll get a 400 Bad Request but we won't get a
+        # body saying it's an "AuthorizationHeaderMalformed".
+        is_special_head_object = (
+            error_code in ('301', '400') and operation.name == 'HeadObject'
+        )
+        is_special_head_bucket = (
+            error_code in ('301', '400')
+            and operation.name == 'HeadBucket'
+            and 'x-amz-bucket-region'
+            in response_metadata.get('HTTPHeaders', {})
+        )
+        is_wrong_signing_region = (
+            error_code == 'AuthorizationHeaderMalformed' and 'Region' in error
+        )
+        is_redirect_status = response[0] is not None and response[
+            0
+        ].status_code in (301, 302, 307)
+        is_permanent_redirect = error_code == 'PermanentRedirect'
+        is_opt_in_region_redirect = (
+            error_code == 'IllegalLocationConstraintException'
+            and operation.name != 'CreateBucket'
+        )
+        return any(
+            [
+                is_special_head_object,
+                is_wrong_signing_region,
+                is_permanent_redirect,
+                is_special_head_bucket,
+                is_redirect_status,
+                is_opt_in_region_redirect,
+            ]
+        )
 
     def get_bucket_region(self, bucket, response):
         """

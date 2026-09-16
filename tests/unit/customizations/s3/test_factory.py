@@ -32,9 +32,9 @@ from awscli.customizations.s3.factory import (
     TransferManagerFactory,
 )
 from awscli.customizations.s3.transferconfig import (
-    InvalidConfigError,
-    RuntimeConfig,
+    InvalidConfigError as InvalidTransferConfigError,
 )
+from awscli.customizations.s3.transferconfig import RuntimeConfig
 from awscli.testutils import FileCreator, mock, unittest
 
 
@@ -1425,6 +1425,17 @@ class TestChunksizeExceedingCrtMemoryPool:
     ):
         assert isinstance(create_manager(), TransferManager)
 
+    def test_releases_process_lock_when_falling_back(
+        self, create_manager, crt_manager_raises, mock_crt_lock_held
+    ):
+        # Holding the lock while running classic denies the crt client to
+        # every other process of the same application.
+        with mock.patch(
+            'awscli.customizations.s3.factory.release_crt_s3_process_lock'
+        ) as mock_release:
+            create_manager()
+        assert mock_release.called
+
     def test_does_not_warn_when_falling_back(
         self, create_manager, crt_manager_raises, mock_crt_lock_held, capsys
     ):
@@ -1435,7 +1446,7 @@ class TestChunksizeExceedingCrtMemoryPool:
     def test_raises_when_crt_explicitly_preferred(
         self, create_manager, crt_manager_raises
     ):
-        with pytest.raises(InvalidConfigError) as excinfo:
+        with pytest.raises(InvalidTransferConfigError) as excinfo:
             create_manager(
                 preferred_transfer_client=constants.CRT_TRANSFER_CLIENT
             )

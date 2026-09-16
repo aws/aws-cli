@@ -25,6 +25,7 @@ from s3transfer.crt import (
     acquire_crt_s3_process_lock,
     create_crt_client_bootstrap,
     create_s3_crt_client,
+    release_crt_s3_process_lock,
 )
 from s3transfer.manager import TransferManager
 
@@ -154,6 +155,7 @@ class TransferManagerFactory:
                 f'Not using the crt s3 transfer client because the configured '
                 f'multipart_chunksize does not fit its memory pool: {e}'
             )
+            release_crt_s3_process_lock()
             return None
 
     def _compute_transfer_client_type(self, params, runtime_config):

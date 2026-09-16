@@ -379,6 +379,25 @@
       ],
       "documentation":"<p>Deletes a user journey.</p>"
     },
+    "GetDependencyInsights":{
+      "name":"GetDependencyInsights",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v2/get-dependency-insights",
+        "responseCode":200
+      },
+      "input":{"shape":"GetDependencyInsightsRequest"},
+      "output":{"shape":"GetDependencyInsightsResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Retrieves the dependency insights generated for a service. The response reports the current generation status; insights are populated once generation has completed. If generation failed, the response includes an error code, whose possible values are listed under the response's errorCode field, and a message describing the cause. To use this operation, you must have the <code>resiliencehub:GetDependencyInsights</code> permission on the service.</p>",
+      "readonly":true
+    },
     "GetFailureModeFinding":{
       "name":"GetFailureModeFinding",
       "http":{
@@ -664,6 +683,24 @@
         {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Lists resilience policies.</p>",
+      "readonly":true
+    },
+    "ListPolicyEvents":{
+      "name":"ListPolicyEvents",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v2/list-policy-events",
+        "responseCode":200
+      },
+      "input":{"shape":"ListPolicyEventsRequest"},
+      "output":{"shape":"ListPolicyEventsResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Lists events for a resilience policy, including services that started or stopped using it, changes to cross-account sharing, and deletion of the policy.</p>",
       "readonly":true
     },
     "ListReports":{
@@ -1024,6 +1061,25 @@
         {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Adds or updates the monitoring sources on a test. The operation is transactional — either every source is written or the call fails and nothing is written.</p>"
+    },
+    "StartDependencyInsights":{
+      "name":"StartDependencyInsights",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v2/start-dependency-insights",
+        "responseCode":202
+      },
+      "input":{"shape":"StartDependencyInsightsRequest"},
+      "output":{"shape":"StartDependencyInsightsResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Starts generating dependency insights for a service. Generation runs asynchronously; the response returns the initial status, and you retrieve the results with GetDependencyInsights. To use this operation, you must have the <code>resiliencehub:StartDependencyInsights</code> permission on the service.</p>"
     },
     "StartFailureModeAssessment":{
       "name":"StartFailureModeAssessment",
@@ -1757,6 +1813,10 @@
           "shape":"DataRecoveryTargets",
           "documentation":"<p>The data recovery targets for the resilience policy.</p>"
         },
+        "sharingEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether cross-account sharing is enabled for the policy. Only a delegated administrator or the management account can enable sharing.</p>"
+        },
         "kmsKeyId":{"shape":"KmsKeyId"},
         "tags":{"shape":"TagMap"},
         "clientToken":{
@@ -2330,6 +2390,51 @@
         "DISABLED"
       ]
     },
+    "DependencyInsight":{
+      "type":"structure",
+      "required":[
+        "category",
+        "description"
+      ],
+      "members":{
+        "category":{
+          "shape":"InsightsCategory",
+          "documentation":"<p>The category of the insight. Valid values:</p> <ul> <li> <p>CROSS_REGION - The insight relates to dependencies used across multiple Regions.</p> </li> <li> <p>NEW_DEPENDENCY - The insight relates to a recently detected dependency.</p> </li> <li> <p>THIRD_PARTY - The insight relates to a third-party dependency.</p> </li> <li> <p>UNEVEN_USAGE - The insight relates to a dependency with uneven usage across the service.</p> </li> <li> <p>AWS_SERVICE - The insight relates to a dependency on an Amazon Web Services service.</p> </li> </ul>"
+        },
+        "description":{
+          "shape":"DependencyInsightDescriptionString",
+          "documentation":"<p>A human-readable explanation of the insight, describing the dependency behavior or condition that was detected.</p>"
+        }
+      },
+      "documentation":"<p>Contains a single insight about a service's dependencies.</p>"
+    },
+    "DependencyInsightDescriptionString":{
+      "type":"string",
+      "max":1024,
+      "min":0
+    },
+    "DependencyInsightsErrorCode":{
+      "type":"string",
+      "enum":[
+        "INSUFFICIENT_DATA",
+        "LLM_GENERATION_FAILED",
+        "INTERNAL_ERROR"
+      ]
+    },
+    "DependencyInsightsList":{
+      "type":"list",
+      "member":{"shape":"DependencyInsight"},
+      "max":5,
+      "min":0
+    },
+    "DependencyInsightsStatus":{
+      "type":"string",
+      "enum":[
+        "IN_PROGRESS",
+        "COMPLETED",
+        "FAILED"
+      ]
+    },
     "DependencySummary":{
       "type":"structure",
       "required":[
@@ -2809,6 +2914,57 @@
       "max":20,
       "min":0
     },
+    "GetDependencyInsightsRequest":{
+      "type":"structure",
+      "required":["serviceArn"],
+      "members":{
+        "serviceArn":{
+          "shape":"Arn",
+          "location":"querystring",
+          "locationName":"serviceArn"
+        }
+      }
+    },
+    "GetDependencyInsightsResponse":{
+      "type":"structure",
+      "required":["status"],
+      "members":{
+        "overview":{
+          "shape":"GetDependencyInsightsResponseOverviewString",
+          "documentation":"<p>A summary of the dependency insights for the service. This field is not returned until the status is COMPLETED.</p>"
+        },
+        "insights":{
+          "shape":"DependencyInsightsList",
+          "documentation":"<p>The list of dependency insights generated for the service. This field is not returned until the status is COMPLETED.</p>"
+        },
+        "status":{
+          "shape":"DependencyInsightsStatus",
+          "documentation":"<p>The status of the dependency insights generation. Valid values:</p> <ul> <li> <p>IN_PROGRESS - Insights generation is in progress.</p> </li> <li> <p>COMPLETED - Insights generation completed successfully.</p> </li> <li> <p>FAILED - Insights generation failed. See errorCode and errorMessage for details.</p> </li> </ul>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the dependency insights were generated.</p>"
+        },
+        "errorCode":{
+          "shape":"DependencyInsightsErrorCode",
+          "documentation":"<p>The error code returned when insights generation failed. Valid values:</p> <ul> <li> <p>INSUFFICIENT_DATA - There was not enough dependency data to generate insights.</p> </li> <li> <p>LLM_GENERATION_FAILED - The insights could not be generated.</p> </li> <li> <p>INTERNAL_ERROR - An internal error occurred while generating insights.</p> </li> </ul>"
+        },
+        "errorMessage":{
+          "shape":"GetDependencyInsightsResponseErrorMessageString",
+          "documentation":"<p>A message describing why insights generation failed.</p>"
+        }
+      }
+    },
+    "GetDependencyInsightsResponseErrorMessageString":{
+      "type":"string",
+      "max":1024,
+      "min":0
+    },
+    "GetDependencyInsightsResponseOverviewString":{
+      "type":"string",
+      "max":4096,
+      "min":0
+    },
     "GetFailureModeFindingRequest":{
       "type":"structure",
       "required":[
@@ -3180,6 +3336,16 @@
         "MONITORING"
       ]
     },
+    "InsightsCategory":{
+      "type":"string",
+      "enum":[
+        "CROSS_REGION",
+        "NEW_DEPENDENCY",
+        "THIRD_PARTY",
+        "UNEVEN_USAGE",
+        "AWS_SERVICE"
+      ]
+    },
     "Integer":{
       "type":"integer",
       "box":true
@@ -3441,6 +3607,12 @@
     "ListPoliciesRequest":{
       "type":"structure",
       "members":{
+        "accountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The identifier of the account that owns the policies to include in the results.</p>",
+          "location":"querystring",
+          "locationName":"accountId"
+        },
         "maxResults":{
           "shape":"MaxResults",
           "location":"querystring",
@@ -3460,6 +3632,56 @@
         "policySummaries":{
           "shape":"PolicySummaryList",
           "documentation":"<p>The list of policy summaries.</p>"
+        },
+        "nextToken":{"shape":"NextToken"}
+      }
+    },
+    "ListPolicyEventsRequest":{
+      "type":"structure",
+      "required":["policyArn"],
+      "members":{
+        "policyArn":{
+          "shape":"Arn",
+          "location":"querystring",
+          "locationName":"policyArn"
+        },
+        "eventTypes":{
+          "shape":"PolicyEventTypeList",
+          "documentation":"<p>The type of events to include in the results.</p>",
+          "location":"querystring",
+          "locationName":"eventTypes"
+        },
+        "startTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The start time for filtering events.</p>",
+          "location":"querystring",
+          "locationName":"startTime"
+        },
+        "endTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The end time for filtering events.</p>",
+          "location":"querystring",
+          "locationName":"endTime"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListPolicyEventsResponse":{
+      "type":"structure",
+      "required":["events"],
+      "members":{
+        "events":{
+          "shape":"PolicyEventList",
+          "documentation":"<p>The list of policy events.</p>"
         },
         "nextToken":{"shape":"NextToken"}
       }
@@ -3619,7 +3841,7 @@
         },
         "eventTypes":{
           "shape":"ServiceEventTypeList",
-          "documentation":"<p>Filter events by type.</p>",
+          "documentation":"<p>The type of events to include in the results.</p>",
           "location":"querystring",
           "locationName":"eventTypes"
         },
@@ -3792,7 +4014,7 @@
         },
         "eventTypes":{
           "shape":"SystemEventTypeList",
-          "documentation":"<p>Filter events by type.</p>",
+          "documentation":"<p>The type of events to include in the results.</p>",
           "location":"querystring",
           "locationName":"eventTypes"
         },
@@ -4488,6 +4710,14 @@
           "shape":"DataRecoveryTargets",
           "documentation":"<p>The data recovery targets defined in the policy.</p>"
         },
+        "sharingEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether cross-account sharing is enabled.</p>"
+        },
+        "organizationId":{
+          "shape":"OrganizationId",
+          "documentation":"<p>The identifier of the organization this policy is shared with.</p>"
+        },
         "kmsKeyId":{"shape":"KmsKeyId"},
         "tags":{"shape":"TagMap"},
         "associatedServiceCount":{
@@ -4505,6 +4735,17 @@
       },
       "documentation":"<p>Represents a resilience policy that defines availability and disaster recovery requirements.</p>"
     },
+    "PolicyAttachedToServiceMetadata":{
+      "type":"structure",
+      "members":{
+        "serviceArn":{"shape":"Arn"},
+        "accountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The account that owns the service.</p>"
+        }
+      },
+      "documentation":"<p>Contains details about the service that started using the policy, such as the account that owns the service.</p>"
+    },
     "PolicyComponent":{
       "type":"string",
       "enum":[
@@ -4513,6 +4754,141 @@
         "MULTI_REGION_DISASTER_RECOVERY",
         "DATA_RECOVERY"
       ]
+    },
+    "PolicyDeletedMetadata":{
+      "type":"structure",
+      "members":{
+        "affectedServiceCount":{
+          "shape":"Integer",
+          "documentation":"<p>The number of services that were using the policy when it was deleted.</p>"
+        }
+      },
+      "documentation":"<p>Contains details about a policy that was deleted, including the number of services that were affected.</p>"
+    },
+    "PolicyDetachedFromServiceMetadata":{
+      "type":"structure",
+      "members":{
+        "serviceArn":{"shape":"Arn"},
+        "accountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The account that owns the service.</p>"
+        }
+      },
+      "documentation":"<p>Contains details about the service that stopped using the policy, such as the account that owns the service.</p>"
+    },
+    "PolicyDisassociationReason":{
+      "type":"string",
+      "enum":[
+        "REPLACED_BY_UPDATE",
+        "SHARING_REVOKED",
+        "POLICY_DELETED"
+      ]
+    },
+    "PolicyEvent":{
+      "type":"structure",
+      "required":[
+        "eventId",
+        "timestamp",
+        "eventType",
+        "policyArn",
+        "actor",
+        "eventDetails"
+      ],
+      "members":{
+        "eventId":{
+          "shape":"Uuid",
+          "documentation":"<p>The identifier of the event.</p>"
+        },
+        "timestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time the event occurred.</p>"
+        },
+        "eventType":{
+          "shape":"PolicyEventType",
+          "documentation":"<p>The type of the event.</p>"
+        },
+        "policyArn":{"shape":"Arn"},
+        "actor":{"shape":"EventActor"},
+        "eventDetails":{
+          "shape":"PolicyEventDetails",
+          "documentation":"<p>The details of the event.</p>"
+        }
+      },
+      "documentation":"<p>An event on the timeline of a resilience policy.</p>"
+    },
+    "PolicyEventDetails":{
+      "type":"structure",
+      "required":[
+        "title",
+        "description"
+      ],
+      "members":{
+        "title":{
+          "shape":"String",
+          "documentation":"<p>A short summary of the event.</p>"
+        },
+        "description":{
+          "shape":"String",
+          "documentation":"<p>A description of the event.</p>"
+        },
+        "eventMetadata":{
+          "shape":"PolicyEventMetadata",
+          "documentation":"<p>The event-specific metadata, with one member populated according to the event type.</p>"
+        }
+      },
+      "documentation":"<p>Contains the title, description, and event-specific metadata for a single event on the timeline of a resilience policy.</p>"
+    },
+    "PolicyEventList":{
+      "type":"list",
+      "member":{"shape":"PolicyEvent"}
+    },
+    "PolicyEventMetadata":{
+      "type":"structure",
+      "members":{
+        "policyAttachedToService":{
+          "shape":"PolicyAttachedToServiceMetadata",
+          "documentation":"<p>Contains details about the service that started using the policy, such as the account that owns the service.</p>"
+        },
+        "policyDetachedFromService":{
+          "shape":"PolicyDetachedFromServiceMetadata",
+          "documentation":"<p>Contains details about the service that stopped using the policy, such as the account that owns the service.</p>"
+        },
+        "policySharingRevoked":{
+          "shape":"PolicySharingRevokedMetadata",
+          "documentation":"<p>Contains details about a policy for which organization sharing was revoked, including the number of services that were affected.</p>"
+        },
+        "policyDeleted":{
+          "shape":"PolicyDeletedMetadata",
+          "documentation":"<p>Contains details about a policy that was deleted, including the number of services that were affected.</p>"
+        }
+      },
+      "documentation":"<p>Contains the event-specific metadata for a policy event. Exactly one member is populated, according to the event type.</p> <ul> <li> <p>policyAttachedToService — a service started using the policy.</p> </li> <li> <p>policyDetachedFromService — a service stopped using the policy.</p> </li> <li> <p>policySharingRevoked — cross-account sharing was disabled for the policy.</p> </li> <li> <p>policyDeleted — the policy was deleted.</p> </li> </ul>",
+      "union":true
+    },
+    "PolicyEventType":{
+      "type":"string",
+      "enum":[
+        "POLICY_ATTACHED_TO_SERVICE",
+        "POLICY_DETACHED_FROM_SERVICE",
+        "POLICY_SHARING_REVOKED",
+        "POLICY_DELETED"
+      ]
+    },
+    "PolicyEventTypeList":{
+      "type":"list",
+      "member":{"shape":"PolicyEventType"},
+      "max":4,
+      "min":0
+    },
+    "PolicySharingRevokedMetadata":{
+      "type":"structure",
+      "members":{
+        "affectedServiceCount":{
+          "shape":"Integer",
+          "documentation":"<p>The number of services that were using the policy when sharing was revoked.</p>"
+        }
+      },
+      "documentation":"<p>Contains details about a policy for which organization sharing was revoked, including the number of services that were affected.</p>"
     },
     "PolicySummary":{
       "type":"structure",
@@ -4538,6 +4914,14 @@
         "dataRecovery":{
           "shape":"DataRecoveryTargets",
           "documentation":"<p>The data recovery targets defined in the policy.</p>"
+        },
+        "sharingEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether cross-account sharing is enabled.</p>"
+        },
+        "organizationId":{
+          "shape":"OrganizationId",
+          "documentation":"<p>The identifier of the organization this policy is shared with.</p>"
         },
         "associatedServiceCount":{
           "shape":"Integer",
@@ -5460,7 +5844,15 @@
           "shape":"String",
           "documentation":"<p>The name of the associated policy.</p>"
         },
-        "policyArn":{"shape":"Arn"}
+        "policyArn":{"shape":"Arn"},
+        "policyOwnerAccountId":{
+          "shape":"String",
+          "documentation":"<p>The account that owns the policy.</p>"
+        },
+        "policySource":{
+          "shape":"PolicyValueSource",
+          "documentation":"<p>The source of the policy.</p> <ul> <li> <p>SELF — the policy belongs to the account that owns the service.</p> </li> <li> <p>CROSS_ACCOUNT — the policy belongs to another account and was shared with the organization.</p> </li> </ul>"
+        }
       },
       "documentation":"<p>Metadata for a service policy associated event.</p>"
     },
@@ -5471,7 +5863,19 @@
           "shape":"String",
           "documentation":"<p>The name of the disassociated policy.</p>"
         },
-        "policyArn":{"shape":"Arn"}
+        "policyArn":{"shape":"Arn"},
+        "policyOwnerAccountId":{
+          "shape":"String",
+          "documentation":"<p>The account that owns the policy.</p>"
+        },
+        "policySource":{
+          "shape":"PolicyValueSource",
+          "documentation":"<p>The source of the policy.</p> <ul> <li> <p>SELF — the policy belongs to the account that owns the service.</p> </li> <li> <p>CROSS_ACCOUNT — the policy belongs to another account and was shared with the organization.</p> </li> </ul>"
+        },
+        "reason":{
+          "shape":"PolicyDisassociationReason",
+          "documentation":"<p>The reason the policy was disassociated from the service.</p>"
+        }
       },
       "documentation":"<p>Metadata for a service policy disassociated event.</p>"
     },
@@ -5754,6 +6158,27 @@
         "ASC",
         "DESC"
       ]
+    },
+    "StartDependencyInsightsRequest":{
+      "type":"structure",
+      "required":["serviceArn"],
+      "members":{
+        "serviceArn":{"shape":"Arn"},
+        "clientToken":{
+          "shape":"ClientToken",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "StartDependencyInsightsResponse":{
+      "type":"structure",
+      "required":["status"],
+      "members":{
+        "status":{
+          "shape":"DependencyInsightsStatus",
+          "documentation":"<p>The status of the dependency insights generation. Valid values:</p> <ul> <li> <p>IN_PROGRESS - Insights generation is in progress.</p> </li> <li> <p>COMPLETED - Insights generation completed successfully.</p> </li> <li> <p>FAILED - Insights generation failed. Call GetDependencyInsights for the error code and message.</p> </li> </ul>"
+        }
+      }
     },
     "StartFailureModeAssessmentRequest":{
       "type":"structure",
@@ -7389,6 +7814,10 @@
         "dataRecovery":{
           "shape":"DataRecoveryTargets",
           "documentation":"<p>The updated data recovery targets for the policy.</p>"
+        },
+        "sharingEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether cross-account sharing is enabled for the policy. Disabling sharing stops member services from using the policy.</p>"
         }
       }
     },

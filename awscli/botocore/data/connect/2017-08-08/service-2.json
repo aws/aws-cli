@@ -10586,6 +10586,36 @@
       },
       "documentation":"<p>A structure that defines search criteria for contacts using analysis outputs from Connect Customer Contact Lens.</p>"
     },
+    "ContactAnalysisReference":{
+      "type":"structure",
+      "members":{
+        "Name":{
+          "shape":"ReferenceKey",
+          "documentation":"<p>Identifier of the contact analysis reference.</p>"
+        },
+        "Value":{
+          "shape":"ReferenceValue",
+          "documentation":"<p>The location path of the contact analysis reference.</p>"
+        },
+        "Status":{
+          "shape":"ReferenceStatus",
+          "documentation":"<p>Status of the contact analysis reference type.</p>"
+        },
+        "Arn":{
+          "shape":"ARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the contact analysis reference.</p>"
+        },
+        "AnalyticsMode":{
+          "shape":"AnalyticsMode",
+          "documentation":"<p>The analytics mode of the contact analysis.</p>"
+        },
+        "IsRedacted":{
+          "shape":"NullableBoolean",
+          "documentation":"<p>Indicates whether sensitive data has been redacted from the contact analysis.</p>"
+        }
+      },
+      "documentation":"<p>Information about a reference when the <code>referenceType</code> is <code>CONTACT_ANALYSIS</code>. Otherwise, null.</p>"
+    },
     "ContactConfiguration":{
       "type":"structure",
       "required":["ContactId"],
@@ -31252,7 +31282,8 @@
         "Email":{
           "shape":"EmailReference",
           "documentation":"<p>Information about a reference when the <code>referenceType</code> is <code>EMAIL</code>. Otherwise, null.</p>"
-        }
+        },
+        "ContactAnalysis":{"shape":"ContactAnalysisReference"}
       },
       "documentation":"<p>Contains summary information about a reference. <code>ReferenceSummary</code> contains only one non null field between the URL and attachment based on the reference type.</p>",
       "union":true

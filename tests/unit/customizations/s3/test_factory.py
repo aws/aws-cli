@@ -20,13 +20,15 @@ from botocore.credentials import Credentials
 from botocore.exceptions import InvalidConfigError
 from botocore.httpsession import DEFAULT_CA_BUNDLE
 from botocore.session import Session
-from s3transfer.crt import CRTTransferManager
+from s3transfer.crt import CRTTransferManager, create_s3_crt_client
 from s3transfer.manager import TransferManager
 
 from awscli.customizations.s3 import constants
 from awscli.customizations.s3.factory import (
     ADAPTIVE_RETRY_MODE,
     CRT_PART_SIZE_EXCEEDS_MEMORY_LIMIT,
+    MAX_CRT_MAX_ATTEMPTS,
+    MIN_CRT_MAX_ATTEMPTS,
     MINIMUM_TARGET_THROUGHPUT_GBPS,
     ClientFactory,
     TransferManagerFactory,
@@ -1472,3 +1474,70 @@ class TestChunksizeExceedingCrtMemoryPool:
     ):
         manager = create_manager(multipart_chunksize=8 * 1024 * 1024)
         assert not isinstance(manager, TransferManager)
+
+
+class TestMaxAttemptsBounds:
+    """The crt rejects max_retries of 0 and of 64 or more."""
+
+    @pytest.mark.parametrize(
+        'max_attempts', [MIN_CRT_MAX_ATTEMPTS, 3, MAX_CRT_MAX_ATTEMPTS]
+    )
+    def test_resolves_to_crt_within_bounds(
+        self, resolve_client_type, auto_resolve_session, max_attempts
+    ):
+        stub_config_variables(auto_resolve_session, max_attempts=max_attempts)
+        stub_configured_variables(auto_resolve_session, 'max_attempts')
+        assert resolve_client_type() == constants.CRT_TRANSFER_CLIENT
+
+    @pytest.mark.parametrize(
+        'max_attempts',
+        [MIN_CRT_MAX_ATTEMPTS - 1, MAX_CRT_MAX_ATTEMPTS + 1, 1000],
+    )
+    def test_resolves_to_classic_outside_bounds(
+        self, resolve_client_type, auto_resolve_session, max_attempts
+    ):
+        stub_config_variables(auto_resolve_session, max_attempts=max_attempts)
+        stub_configured_variables(auto_resolve_session, 'max_attempts')
+        assert resolve_client_type() == constants.CLASSIC_TRANSFER_CLIENT
+
+    @pytest.mark.parametrize(
+        'max_attempts', [MAX_CRT_MAX_ATTEMPTS, MAX_CRT_MAX_ATTEMPTS + 1]
+    )
+    def test_only_maps_retries_within_bounds(
+        self, crt_client_kwargs, auto_resolve_session, max_attempts
+    ):
+        stub_config_variables(auto_resolve_session, max_attempts=max_attempts)
+        stub_configured_variables(auto_resolve_session, 'max_attempts')
+        kwargs = crt_client_kwargs()
+        if max_attempts == MAX_CRT_MAX_ATTEMPTS:
+            assert kwargs['retry_options'] == {'max_retries': max_attempts - 1}
+        else:
+            assert 'retry_options' not in kwargs
+
+    def test_warns_when_crt_explicitly_preferred_above_bounds(
+        self, warn_unsupported_settings, auto_resolve_session
+    ):
+        too_many = MAX_CRT_MAX_ATTEMPTS + 1
+        stub_config_variables(auto_resolve_session, max_attempts=too_many)
+        stub_configured_variables(auto_resolve_session, 'max_attempts')
+        warning = warn_unsupported_settings(
+            constants.CRT_TRANSFER_CLIENT,
+            preferred_transfer_client=constants.CRT_TRANSFER_CLIENT,
+        )
+        assert f'max_attempts = {too_many}' in warning
+        assert (
+            f'must be between {MIN_CRT_MAX_ATTEMPTS} and '
+            f'{MAX_CRT_MAX_ATTEMPTS}'
+        ) in warning
+
+    def test_upper_bound_matches_what_awscrt_accepts(self):
+        # Guards against awscrt moving the limit out from under us.
+        create_s3_crt_client(
+            region='us-west-2',
+            retry_options={'max_retries': MAX_CRT_MAX_ATTEMPTS - 1},
+        )
+        with pytest.raises(RuntimeError):
+            create_s3_crt_client(
+                region='us-west-2',
+                retry_options={'max_retries': MAX_CRT_MAX_ATTEMPTS},
+            )

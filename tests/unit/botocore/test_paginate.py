@@ -1708,6 +1708,56 @@ class TestAggregateNumericKeys(unittest.TestCase):
             self.paginator._aggregate_numeric_keys, ('ConsumedCapacity',)
         )
 
+    def test_aggregated_key_dropped_from_non_aggregate_keys(self):
+        # A member in both lists is aggregated; the non_aggregate declaration
+        # for it (and any other non_aggregate members) is handled correctly.
+        config = {
+            'output_token': 'NextToken',
+            'input_token': 'NextToken',
+            'result_key': 'Items',
+            'non_aggregate_keys': ['ConsumedCapacity', 'SomethingElse'],
+            'aggregate_numeric_keys': ['ConsumedCapacity'],
+        }
+        paginator = Paginator(self.method, config, self.model)
+        kept = [k.expression for k in paginator._non_aggregate_keys]
+        # ConsumedCapacity is aggregated, so it must not be treated as
+        # non-aggregate; unrelated members are preserved.
+        self.assertEqual(kept, ['SomethingElse'])
+
+    def test_aggregated_key_drops_nested_non_aggregate_paths(self):
+        config = {
+            'output_token': 'NextToken',
+            'input_token': 'NextToken',
+            'result_key': 'Items',
+            'non_aggregate_keys': ['ConsumedCapacity.TableName', 'Other'],
+            'aggregate_numeric_keys': ['ConsumedCapacity'],
+        }
+        paginator = Paginator(self.method, config, self.model)
+        kept = [k.expression for k in paginator._non_aggregate_keys]
+        self.assertEqual(kept, ['Other'])
+
+    def test_aggregation_wins_when_member_in_both_lists(self):
+        # Even with ConsumedCapacity declared non-aggregate, the result is the
+        # cross-page sum, not a single page's value.
+        config = {
+            'output_token': 'NextToken',
+            'input_token': 'NextToken',
+            'result_key': 'Items',
+            'non_aggregate_keys': ['ConsumedCapacity'],
+            'aggregate_numeric_keys': ['ConsumedCapacity'],
+        }
+        paginator = Paginator(self.method, config, self.model)
+        self.method.side_effect = [
+            {
+                'Items': ['a'],
+                'ConsumedCapacity': {'CapacityUnits': 100.0},
+                'NextToken': 'tok',
+            },
+            {'Items': ['b'], 'ConsumedCapacity': {'CapacityUnits': 102.0}},
+        ]
+        result = paginator.paginate().build_full_result()
+        self.assertEqual(result['ConsumedCapacity']['CapacityUnits'], 202.0)
+
     def test_sums_across_pages(self):
         self.method.side_effect = [
             {

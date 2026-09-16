@@ -324,9 +324,19 @@ def _get_all_page_output_keys(page_config):
         yield 'output_token', key
     if 'more_results' in page_config:
         yield 'more_results', page_config['more_results']
+    aggregate_numeric_keys = page_config.get('aggregate_numeric_keys', [])
     for key in page_config.get('non_aggregate_keys', []):
+        # A member declared under aggregate_numeric_keys is aggregated across
+        # pages and takes precedence over any non_aggregate declaration for the
+        # same member (mirroring Paginator._get_non_aggregate_keys). Skip it
+        # here so it is only accounted for once.
+        if any(
+            key == agg or key.startswith(f'{agg}.')
+            for agg in aggregate_numeric_keys
+        ):
+            continue
         yield 'non_aggregate_keys', key
-    for key in page_config.get('aggregate_numeric_keys', []):
+    for key in aggregate_numeric_keys:
         yield 'aggregate_numeric_keys', key
 
 

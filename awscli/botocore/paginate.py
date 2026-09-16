@@ -660,14 +660,14 @@ class Paginator:
         self._output_token = self._get_output_tokens(self._pagination_cfg)
         self._input_token = self._get_input_tokens(self._pagination_cfg)
         self._more_results = self._get_more_results_token(self._pagination_cfg)
+        self._aggregate_numeric_keys = self._get_aggregate_numeric_keys(
+            self._pagination_cfg
+        )
         self._non_aggregate_keys = self._get_non_aggregate_keys(
             self._pagination_cfg
         )
         self._result_keys = self._get_result_keys(self._pagination_cfg)
         self._limit_key = self._get_limit_key(self._pagination_cfg)
-        self._aggregate_numeric_keys = self._get_aggregate_numeric_keys(
-            self._pagination_cfg
-        )
 
     @property
     def result_keys(self):
@@ -676,8 +676,25 @@ class Paginator:
     def _get_non_aggregate_keys(self, config):
         keys = []
         for key in config.get('non_aggregate_keys', []):
+            # A member that is aggregated across pages takes precedence over
+            # any non-aggregate declaration for the same member (or a path
+            # nested under it). This lets a member be moved to
+            # aggregate_numeric_keys via an overlay without having to edit the
+            # upstream-synced non_aggregate_keys list (and lets that list keep
+            # receiving unrelated upstream additions).
+            if self._is_aggregated(key):
+                continue
             keys.append(jmespath.compile(key))
         return keys
+
+    def _is_aggregated(self, non_aggregate_key):
+        for aggregate_key in self._aggregate_numeric_keys:
+            if (
+                non_aggregate_key == aggregate_key
+                or non_aggregate_key.startswith(f'{aggregate_key}.')
+            ):
+                return True
+        return False
 
     def _get_aggregate_numeric_keys(self, config):
         # These are top-level response members whose numeric leaves are

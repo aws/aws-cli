@@ -14,6 +14,7 @@
 import base64
 import json
 import logging
+import numbers
 from copy import deepcopy
 from functools import partial
 from itertools import tee
@@ -29,8 +30,11 @@ log = logging.getLogger(__name__)
 
 
 def _is_summable_number(value):
+    # Accept any number (int, float, and decimal.Decimal, which DynamoDB
+    # numbers can be parsed as). numbers.Number is used rather than
+    # numbers.Real because Decimal registers as Number but NOT as Real.
     # Booleans are ints in Python but should never be summed as numbers.
-    return isinstance(value, (int, float)) and not isinstance(value, bool)
+    return isinstance(value, numbers.Number) and not isinstance(value, bool)
 
 
 def _deep_add_numeric(accumulator, new_value):
@@ -46,9 +50,10 @@ def _deep_add_numeric(accumulator, new_value):
     """
     for key, value in new_value.items():
         if key not in accumulator:
-            # First time we've seen this leaf; take it as-is.
+            # First time we've seen this leaf. Deep-copy mutable containers so
+            # the aggregate never aliases (and later mutates) a source page.
             accumulator[key] = (
-                deepcopy(value) if isinstance(value, dict) else value
+                deepcopy(value) if isinstance(value, (dict, list)) else value
             )
         elif isinstance(value, dict) and isinstance(accumulator[key], dict):
             _deep_add_numeric(accumulator[key], value)

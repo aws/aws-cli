@@ -171,6 +171,20 @@ def test_lint_pagination_configs(
     _validate_new_numeric_keys(
         operation_name, page_config, service_model, record_property
     )
+    _validate_aggregate_numeric_keys(operation_name, page_config)
+
+
+def _validate_aggregate_numeric_keys(operation_name, page_config):
+    # aggregate_numeric_keys must be top-level output member names. A nested
+    # path (e.g. "ConsumedCapacity.Table") would silently never aggregate at
+    # runtime (build_full_result uses page.get(key)), so reject it here.
+    for key in page_config.get('aggregate_numeric_keys', []):
+        if '.' in key:
+            raise AssertionError(
+                f"aggregate_numeric_keys entry '{key}' for operation "
+                f"{operation_name} must be a top-level output member name, "
+                "not a nested path."
+            )
 
 
 def _validate_known_pagination_keys(page_config):

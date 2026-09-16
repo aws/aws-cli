@@ -88,6 +88,14 @@ def detect_help_flag(args):
     flag is removed from the arg list but is *not* replaced with the
     positional ``help`` token.  Callers are responsible for routing to
     the appropriate help rendering.
+
+    --help is intercepted here rather than handled by argparse because
+    it must take priority over all other argument validation.  If --help
+    were a normal parser argument, a preceding value-taking flag (e.g.
+    ``--query --help``) could consume it as that flag's value, or the
+    parser could reject it due to missing required positional args.
+    By stripping it early, we guarantee that --help always renders help
+    regardless of what else is in the arg list.
     """
     try:
         parsed, remaining = _HELP_RESOLVER.parse_known_args(args)

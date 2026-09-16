@@ -159,6 +159,8 @@ _xform_cache = {
     ('SendWhatsAppConversionEvent', '-'): 'send-whatsapp-conversion-event',
     ('SendWhatsAppMessage', '_'): 'send_whatsapp_message',
     ('SendWhatsAppMessage', '-'): 'send-whatsapp-message',
+    ('UpdateOTelEnrichment', '_'): 'update_otel_enrichment',
+    ('UpdateOTelEnrichment', '-'): 'update-otel-enrichment',
     ('UpdateWhatsAppFlow', '_'): 'update_whatsapp_flow',
     ('UpdateWhatsAppFlow', '-'): 'update-whatsapp-flow',
     ('UpdateWhatsAppFlowAssets', '_'): 'update_whatsapp_flow_assets',

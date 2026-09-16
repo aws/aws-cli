@@ -103,7 +103,7 @@ class LockFileBuilder:
             f.write(content)
 
 
-def show_files(build_directory: Path, include_sdist: bool, include_base: bool):
+def show_files(build_directory: Path, include_sdist: bool, include_base: bool, include_blackbox: bool):
     if include_sdist:
         for root, dirs, files in os.walk(build_directory / 'requirements'):
             for filename in files:
@@ -114,6 +114,11 @@ def show_files(build_directory: Path, include_sdist: bool, include_base: bool):
         for filename in Path.iterdir(build_directory):
             stemmed_filename = Path(filename).stem
             if stemmed_filename.endswith('-lock'):
+                show_file(filename)
+    if include_blackbox:
+        for filename in Path.iterdir(build_directory):
+            stemmed_filename = Path(filename).stem
+            if stemmed_filename.endswith('-lock') and 'blackbox' in stemmed_filename:
                 show_file(filename)
 
 
@@ -128,6 +133,7 @@ def main(
     should_show_files: bool,
     include_sdist: bool,
     include_base: bool,
+    include_blackbox: bool,
 ):
     builder = LockFileBuilder(
         source_directory=ROOT,
@@ -191,8 +197,16 @@ def main(
             output=Path("requirements-docs"),
             allow_unsafe=True,
         )
+    if include_blackbox:
+        builder.build_lock_file(
+            sources=[
+                Path("requirements-test-blackbox.txt"),
+            ],
+            output=Path("requirements-test-blackbox"),
+            allow_unsafe=True,
+        )
     if should_show_files:
-        show_files(build_directory, include_sdist, include_base)
+        show_files(build_directory, include_sdist, include_base, include_blackbox)
 
 
 if __name__ == "__main__":
@@ -218,10 +232,16 @@ if __name__ == "__main__":
         '--no-include-base', action='store_false', dest='include_base'
     )
     parser.set_defaults(include_base=False)
+    parser.add_argument('--include-blackbox', action='store_true')
+    parser.add_argument(
+        '--no-include-blackbox', action='store_false', dest='include_blackbox'
+    )
+    parser.set_defaults(include_blackbox=False)
     args = parser.parse_args()
     main(
         args.output_directory,
         args.show_files,
         args.include_sdist,
         args.include_base,
+        args.include_blackbox,
     )

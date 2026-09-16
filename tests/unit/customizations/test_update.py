@@ -1,5 +1,7 @@
 # Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 # SPDX-License-Identifier: Apache-2.0
+import builtins
+import json
 import os
 import subprocess
 from argparse import Namespace
@@ -7,6 +9,7 @@ from unittest import mock
 
 import pytest
 
+import awscli
 from awscli.customizations import update as update_module
 from awscli.customizations.update import (
     UnixUpdateCommand,
@@ -448,6 +451,32 @@ class TestDownloadWithRetry:
                 session=session,
             )
         assert session.send.call_count == 4
+
+
+class TestReadInstallJson:
+    def test_reads_install_json_as_utf8_under_non_utf8_locale(
+        self, tmp_path, monkeypatch
+    ):
+        contents = {
+            'distribution_source': 'script-exe',
+            'install_dir': 'C:\\Users\\김희원',
+        }
+        data_dir = tmp_path / 'data'
+        data_dir.mkdir()
+        (data_dir / 'install.json').write_bytes(
+            json.dumps(contents, ensure_ascii=False).encode('utf-8')
+        )
+        monkeypatch.setattr(awscli, '__file__', str(tmp_path / '__init__.py'))
+        real_open = builtins.open
+
+        def cp949_open(file, *args, **kwargs):
+            kwargs.setdefault('encoding', 'cp949')
+            return real_open(file, *args, **kwargs)
+
+        monkeypatch.setattr(builtins, 'open', cp949_open)
+        command = UnixUpdateCommand(mock_session(), source='script-exe')
+
+        assert command._install_metadata == contents
 
 
 def _fake_ctypes(module_filename):

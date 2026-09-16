@@ -80,7 +80,7 @@ class BaseUpdateCommand(BasicCommand):
         )
         if not os.path.isfile(path):
             return {}
-        with open(path) as f:
+        with open(path, encoding='utf-8') as f:
             return json.load(f)
 
     def _run_main(self, parsed_args, parsed_globals):

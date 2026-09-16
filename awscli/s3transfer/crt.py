@@ -96,6 +96,17 @@ def acquire_crt_s3_process_lock(name):
     return CRT_S3_PROCESS_LOCK
 
 
+def release_crt_s3_process_lock():
+    # Acquiring the lock signals to other processes that this one is using the
+    # CRT S3 client, so a process that acquired it and then did not use the
+    # client has to release it. Otherwise it denies the client to every other
+    # process of the same application for the rest of its lifetime.
+    global CRT_S3_PROCESS_LOCK
+    if CRT_S3_PROCESS_LOCK is not None:
+        CRT_S3_PROCESS_LOCK.release()
+        CRT_S3_PROCESS_LOCK = None
+
+
 def create_s3_crt_client(
     region,
     crt_credentials_provider=None,

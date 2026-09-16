@@ -10,6 +10,7 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import awscrt.exceptions
 import awscrt.s3
 import pytest
 import s3transfer.crt
@@ -25,8 +26,13 @@ from s3transfer.manager import TransferManager
 from awscli.customizations.s3 import constants
 from awscli.customizations.s3.factory import (
     ADAPTIVE_RETRY_MODE,
+    CRT_PART_SIZE_EXCEEDS_MEMORY_LIMIT,
+    MINIMUM_TARGET_THROUGHPUT_GBPS,
     ClientFactory,
     TransferManagerFactory,
+)
+from awscli.customizations.s3.transferconfig import (
+    InvalidConfigError as InvalidTransferConfigError,
 )
 from awscli.customizations.s3.transferconfig import RuntimeConfig
 from awscli.testutils import FileCreator, mock, unittest
@@ -573,7 +579,7 @@ class TestTransferManagerFactory(unittest.TestCase):
             mock_crt_client.call_args[1]['fio_options'], expected_fio_options
         )
 
-    @mock.patch('s3transfer.crt.get_recommended_throughput_target_gbps')
+    @mock.patch('awscrt.s3.get_recommended_throughput_target_gbps')
     @mock.patch('s3transfer.crt.S3Client')
     def test_target_bandwidth_uses_crt_recommended_throughput(
         self, mock_crt_client, mock_get_target_gbps
@@ -795,6 +801,7 @@ def resolve_client_type(
     auto_resolve_factory,
     s3_params,
     mock_crt_is_optimized_for_system,
+    mock_crt_recommended_throughput,
     mock_crt_lock_held,
 ):
     def _resolve(**kwargs):
@@ -957,6 +964,52 @@ class TestClassicOnlySettingsWarning:
             preferred_transfer_client='classic', max_bandwidth=1024
         )
         assert capsys.readouterr().err == ''
+
+
+@pytest.fixture
+def mock_crt_get_ec2_instance_type():
+    with mock.patch('awscrt.s3.get_ec2_instance_type') as mock_instance_type:
+        mock_instance_type.return_value = None
+        yield mock_instance_type
+
+
+@pytest.fixture
+def mock_crt_recommended_throughput():
+    # The factory and s3transfer each hold their own reference, and which one
+    # resolves the target depends on the transfer client being created.
+    with (
+        mock.patch(
+            'awscrt.s3.get_recommended_throughput_target_gbps'
+        ) as mock_recommended,
+        mock.patch(
+            's3transfer.crt.get_recommended_throughput_target_gbps',
+            new=mock_recommended,
+        ),
+    ):
+        mock_recommended.return_value = None
+        yield mock_recommended
+
+
+@pytest.fixture
+def crt_s3_client_kwargs(
+    auto_resolve_factory,
+    s3_params,
+    mock_crt_is_optimized_for_system,
+    mock_crt_get_ec2_instance_type,
+    mock_crt_recommended_throughput,
+    mock_crt_s3_client,
+    mock_crt_process_lock,
+):
+    """Creates a crt transfer manager and returns the S3Client kwargs"""
+
+    def _create(**kwargs):
+        runtime_config = RuntimeConfig().build_config(**kwargs)
+        auto_resolve_factory._create_crt_transfer_manager(
+            s3_params, runtime_config
+        )
+        return mock_crt_s3_client.call_args[1]
+
+    return _create
 
 
 @pytest.fixture
@@ -1261,3 +1314,161 @@ class TestMaxAttempts:
             preferred_transfer_client=constants.CRT_TRANSFER_CLIENT
         )
         assert kwargs['retry_options'] == {'max_retries': 4}
+
+
+class TestTargetThroughput:
+    def test_targets_less_when_crt_has_no_recommendation(
+        self, crt_s3_client_kwargs
+    ):
+        assert crt_s3_client_kwargs()['throughput_target_gbps'] == 4.0
+
+    def test_defers_to_crt_recommendation_when_it_has_one(
+        self, crt_s3_client_kwargs, mock_crt_recommended_throughput
+    ):
+        mock_crt_recommended_throughput.return_value = 50.0
+        assert crt_s3_client_kwargs()['throughput_target_gbps'] == 50.0
+
+    def test_targets_less_on_ec2_hosts_crt_cannot_recommend_for(
+        self, crt_s3_client_kwargs, mock_crt_get_ec2_instance_type
+    ):
+        # Being on EC2 does not mean the crt client sized a pool for this
+        # host, so the instance type must not decide the throughput target.
+        mock_crt_get_ec2_instance_type.return_value = 't3.micro'
+        assert crt_s3_client_kwargs()['throughput_target_gbps'] == 4.0
+
+    def test_configured_target_bandwidth_wins(self, crt_s3_client_kwargs):
+        kwargs = crt_s3_client_kwargs(target_bandwidth=1_250_000_000)
+        assert kwargs['throughput_target_gbps'] == 10.0
+
+    def test_floors_throughput_when_crt_explicitly_preferred(
+        self, crt_s3_client_kwargs, mock_crt_recommended_throughput
+    ):
+        mock_crt_recommended_throughput.return_value = 3.0
+
+        kwargs = crt_s3_client_kwargs(
+            preferred_transfer_client=constants.CRT_TRANSFER_CLIENT
+        )
+        assert (
+            kwargs['throughput_target_gbps'] == MINIMUM_TARGET_THROUGHPUT_GBPS
+        )
+
+    def test_keeps_higher_recommendation_when_crt_explicitly_preferred(
+        self, crt_s3_client_kwargs, mock_crt_recommended_throughput
+    ):
+        mock_crt_recommended_throughput.return_value = 50.0
+        kwargs = crt_s3_client_kwargs(
+            preferred_transfer_client=constants.CRT_TRANSFER_CLIENT
+        )
+        assert kwargs['throughput_target_gbps'] == 50.0
+
+    def test_does_not_floor_configured_target_bandwidth(
+        self, crt_s3_client_kwargs
+    ):
+        kwargs = crt_s3_client_kwargs(
+            preferred_transfer_client=constants.CRT_TRANSFER_CLIENT,
+            target_bandwidth=125_000_000,
+        )
+        assert kwargs['throughput_target_gbps'] == 1.0
+
+    def test_defers_to_crt_on_optimized_host(
+        self,
+        crt_s3_client_kwargs,
+        mock_crt_is_optimized_for_system,
+        mock_crt_recommended_throughput,
+    ):
+        mock_crt_is_optimized_for_system.return_value = True
+        mock_crt_recommended_throughput.return_value = 3.0
+        assert crt_s3_client_kwargs()['throughput_target_gbps'] == 3.0
+
+
+class TestChunksizeExceedingCrtMemoryPool:
+    """The crt client only reports an oversized chunksize while constructing."""
+
+    @pytest.fixture
+    def part_size_error(self):
+        return RuntimeError(
+            f'{CRT_PART_SIZE_EXCEEDS_MEMORY_LIMIT} '
+            f'(AWS_ERROR_S3_PART_SIZE_EXCEEDS_MEMORY_LIMIT): Part size '
+            f'exceeds the configured memory limit.'
+        )
+
+    @pytest.fixture
+    def create_manager(self, auto_resolve_factory, s3_params):
+        def _create(**kwargs):
+            runtime_config = RuntimeConfig().build_config(**kwargs)
+            return auto_resolve_factory.create_transfer_manager(
+                s3_params, runtime_config, mock.Mock()
+            )
+
+        return _create
+
+    @pytest.fixture
+    def crt_manager_raises(self, auto_resolve_factory, part_size_error):
+        with mock.patch.object(
+            auto_resolve_factory,
+            '_create_crt_transfer_manager',
+            side_effect=part_size_error,
+        ) as mock_create:
+            yield mock_create
+
+    def test_error_code_still_means_what_we_match_on(self):
+        # Guards against awscrt renumbering the code out from under us.
+        assert (
+            awscrt.exceptions.from_code(
+                CRT_PART_SIZE_EXCEEDS_MEMORY_LIMIT
+            ).name
+            == 'AWS_ERROR_S3_PART_SIZE_EXCEEDS_MEMORY_LIMIT'
+        )
+
+    def test_falls_back_to_classic_when_auto_resolved(
+        self, create_manager, crt_manager_raises, mock_crt_lock_held
+    ):
+        assert isinstance(create_manager(), TransferManager)
+
+    def test_releases_process_lock_when_falling_back(
+        self, create_manager, crt_manager_raises, mock_crt_lock_held
+    ):
+        # Holding the lock while running classic denies the crt client to
+        # every other process of the same application.
+        with mock.patch(
+            'awscli.customizations.s3.factory.release_crt_s3_process_lock'
+        ) as mock_release:
+            create_manager()
+        assert mock_release.called
+
+    def test_does_not_warn_when_falling_back(
+        self, create_manager, crt_manager_raises, mock_crt_lock_held, capsys
+    ):
+        # Classic honors the configured chunksize, so nothing is lost.
+        create_manager()
+        assert capsys.readouterr().err == ''
+
+    def test_raises_when_crt_explicitly_preferred(
+        self, create_manager, crt_manager_raises
+    ):
+        with pytest.raises(InvalidTransferConfigError) as excinfo:
+            create_manager(
+                preferred_transfer_client=constants.CRT_TRANSFER_CLIENT
+            )
+        message = str(excinfo.value)
+        assert 'multipart_chunksize' in message
+        assert 'AWS_CRT_S3_MEMORY_LIMIT_IN_GIB' in message
+        # Explicit crt must never be told to switch to classic.
+        assert constants.CLASSIC_TRANSFER_CLIENT not in message
+
+    def test_reraises_unrelated_runtime_errors(
+        self, create_manager, auto_resolve_factory, mock_crt_lock_held
+    ):
+        with mock.patch.object(
+            auto_resolve_factory,
+            '_create_crt_transfer_manager',
+            side_effect=RuntimeError('something else entirely'),
+        ):
+            with pytest.raises(RuntimeError, match='something else entirely'):
+                create_manager()
+
+    def test_uses_crt_when_the_chunksize_fits(
+        self, create_manager, mock_crt_lock_held, mock_crt_s3_client
+    ):
+        manager = create_manager(multipart_chunksize=8 * 1024 * 1024)
+        assert not isinstance(manager, TransferManager)

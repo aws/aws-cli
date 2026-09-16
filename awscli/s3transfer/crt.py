@@ -408,6 +408,8 @@ class CRTS3RegionRedirectPolicy:
         )
         self._crt_request_serializer.cache_bucket_region(bucket, new_region)
         return new_region
+
+
 class CRTTransferConfig:
     def __init__(self, multipart_threshold=None):
         """Configuration the CRT transfer manager applies itself

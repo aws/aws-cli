@@ -294,9 +294,13 @@ class TransferManagerFactory:
         )
 
     def _create_crt_client(
-        self, params, runtime_config, config_kwargs, region=None, bootstrap=None
+        self,
+        params,
+        runtime_config,
+        config_kwargs,
+        region=None,
+        bootstrap=None,
     ):
-        config_file_params = self._session.get_scoped_config().get('s3', {})
         create_crt_client_kwargs = {
             'region': region or self._resolve_region(params),
             'verify': self._resolve_verify(params),

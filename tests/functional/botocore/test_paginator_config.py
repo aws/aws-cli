@@ -26,6 +26,7 @@ KNOWN_PAGE_KEYS = set(
         'limit_key',
         'more_results',
         'non_aggregate_keys',
+        'aggregate_numeric_keys',
     ]
 )
 MEMBER_NAME_CHARS = set(string.ascii_letters + string.digits)
@@ -325,6 +326,8 @@ def _get_all_page_output_keys(page_config):
         yield 'more_results', page_config['more_results']
     for key in page_config.get('non_aggregate_keys', []):
         yield 'non_aggregate_keys', key
+    for key in page_config.get('aggregate_numeric_keys', []):
+        yield 'aggregate_numeric_keys', key
 
 
 def _get_list_value(page_config, key):

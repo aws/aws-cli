@@ -14,6 +14,7 @@
 import base64
 import json
 import logging
+from copy import deepcopy
 from functools import partial
 from itertools import tee
 
@@ -25,6 +26,31 @@ from botocore.useragent import register_feature_id
 from botocore.utils import merge_dicts, set_value_from_jmespath
 
 log = logging.getLogger(__name__)
+
+
+def _is_summable_number(value):
+    # Booleans are ints in Python but should never be summed as numbers.
+    return isinstance(value, (int, float)) and not isinstance(value, bool)
+
+
+def _deep_add_numeric(accumulator, new_value):
+    """Recursively sum the numeric leaves of ``new_value`` into ``accumulator``.
+
+    This is used to aggregate response members that are dicts of numbers
+    (and nested dicts of numbers) across paginated responses, for example
+    DynamoDB's ``ConsumedCapacity``. Numeric leaves are summed, nested dicts
+    are merged recursively (which handles maps keyed by runtime-defined names
+    such as ``GlobalSecondaryIndexes``/``LocalSecondaryIndexes``), and any
+    non-numeric leaves (e.g. ``TableName``) are preserved from the first page
+    they appear on. Booleans are treated as non-numeric.
+    """
+    for key, value in new_value.items():
+        if isinstance(value, dict):
+            _deep_add_numeric(accumulator.setdefault(key, {}), value)
+        elif _is_summable_number(value):
+            accumulator[key] = accumulator.get(key, 0) + value
+        else:
+            accumulator.setdefault(key, value)
 
 
 class TokenEncoder:
@@ -201,6 +227,7 @@ class PageIterator:
         starting_token,
         page_size,
         op_kwargs,
+        aggregate_numeric_keys=(),
     ):
         self._method = method
         self._input_token = input_token
@@ -214,6 +241,7 @@ class PageIterator:
         self._op_kwargs = op_kwargs
         self._resume_token = None
         self._non_aggregate_key_exprs = non_aggregate_keys
+        self._aggregate_numeric_keys = aggregate_numeric_keys
         self._non_aggregate_part = {}
         self._token_encoder = TokenEncoder()
         self._token_decoder = TokenDecoder()
@@ -480,6 +508,9 @@ class PageIterator:
 
     def build_full_result(self):
         complete_result = {}
+        # Running totals for members that are aggregated by recursively
+        # summing their numeric leaves (e.g. DynamoDB's ConsumedCapacity).
+        aggregate_numeric_totals = {}
         for response in self:
             page = response
             # We want to try to catch operation object pagination
@@ -489,6 +520,23 @@ class PageIterator:
             # uses. We can remove it though once operation objects are removed.
             if isinstance(response, tuple) and len(response) == 2:
                 page = response[1]
+            for key in self._aggregate_numeric_keys:
+                page_value = page.get(key)
+                if page_value is None:
+                    continue
+                if key not in aggregate_numeric_totals:
+                    aggregate_numeric_totals[key] = deepcopy(page_value)
+                elif isinstance(page_value, dict) and isinstance(
+                    aggregate_numeric_totals[key], dict
+                ):
+                    _deep_add_numeric(
+                        aggregate_numeric_totals[key], page_value
+                    )
+                elif _is_summable_number(page_value) and _is_summable_number(
+                    aggregate_numeric_totals[key]
+                ):
+                    aggregate_numeric_totals[key] += page_value
+                # Any other/unexpected shape: keep the first page's value.
             # We're incrementally building the full response page
             # by page.  For each page in the response we need to
             # inject the necessary components from the page
@@ -523,6 +571,9 @@ class PageIterator:
                         existing_value + result_value,
                     )
         merge_dicts(complete_result, self.non_aggregate_part)
+        # Overlay the recursively-summed totals last so they take precedence
+        # over any single-page value merged in via the non-aggregate keys.
+        complete_result.update(aggregate_numeric_totals)
         if self.resume_token is not None:
             complete_result['NextToken'] = self.resume_token
         return complete_result
@@ -607,6 +658,9 @@ class Paginator:
         )
         self._result_keys = self._get_result_keys(self._pagination_cfg)
         self._limit_key = self._get_limit_key(self._pagination_cfg)
+        self._aggregate_numeric_keys = self._get_aggregate_numeric_keys(
+            self._pagination_cfg
+        )
 
     @property
     def result_keys(self):
@@ -617,6 +671,13 @@ class Paginator:
         for key in config.get('non_aggregate_keys', []):
             keys.append(jmespath.compile(key))
         return keys
+
+    def _get_aggregate_numeric_keys(self, config):
+        # These are top-level response members whose numeric leaves are
+        # recursively summed across pages. Unlike ``result_key`` entries they
+        # may be (possibly nested) dicts, and unlike ``non_aggregate_keys``
+        # they are totaled rather than taken from a single page.
+        return tuple(config.get('aggregate_numeric_keys', []))
 
     def _get_output_tokens(self, config):
         output = []
@@ -670,6 +731,7 @@ class Paginator:
             page_params['StartingToken'],
             page_params['PageSize'],
             kwargs,
+            self._aggregate_numeric_keys,
         )
 
     def _extract_paging_params(self, kwargs):

@@ -18,6 +18,7 @@ from botocore.paginate import (
     PaginatorModel,
     TokenDecoder,
     TokenEncoder,
+    _deep_add_numeric,
 )
 
 from tests import mock, unittest
@@ -1619,6 +1620,120 @@ class TestStringPageSize(unittest.TestCase):
     def test_str_page_size(self):
         list(self.paginator.paginate(PaginationConfig={'PageSize': '1'}))
         self.method.assert_called_with(MaxItems='1')
+
+
+class TestDeepAddNumeric(unittest.TestCase):
+    def test_sums_numeric_leaves(self):
+        acc = {'CapacityUnits': 100.0}
+        _deep_add_numeric(acc, {'CapacityUnits': 102.5})
+        self.assertEqual(acc, {'CapacityUnits': 202.5})
+
+    def test_recurses_into_nested_dicts(self):
+        acc = {'Table': {'CapacityUnits': 1.0}}
+        _deep_add_numeric(acc, {'Table': {'CapacityUnits': 2.0}})
+        self.assertEqual(acc, {'Table': {'CapacityUnits': 3.0}})
+
+    def test_sums_maps_with_runtime_defined_keys(self):
+        # e.g. GlobalSecondaryIndexes keyed by a user-chosen index name.
+        acc = {'GlobalSecondaryIndexes': {'my-index': {'CapacityUnits': 5.0}}}
+        _deep_add_numeric(
+            acc,
+            {'GlobalSecondaryIndexes': {'my-index': {'CapacityUnits': 7.0}}},
+        )
+        self.assertEqual(
+            acc,
+            {'GlobalSecondaryIndexes': {'my-index': {'CapacityUnits': 12.0}}},
+        )
+
+    def test_preserves_strings(self):
+        acc = {'TableName': 'T'}
+        _deep_add_numeric(acc, {'TableName': 'T'})
+        self.assertEqual(acc, {'TableName': 'T'})
+
+    def test_does_not_sum_booleans(self):
+        acc = {'Flag': True}
+        _deep_add_numeric(acc, {'Flag': True})
+        self.assertEqual(acc, {'Flag': True})
+
+    def test_adds_new_keys_from_later_pages(self):
+        acc = {'CapacityUnits': 1.0}
+        _deep_add_numeric(acc, {'CapacityUnits': 1.0, 'TableName': 'T'})
+        self.assertEqual(acc, {'CapacityUnits': 2.0, 'TableName': 'T'})
+
+
+class TestAggregateNumericKeys(unittest.TestCase):
+    def setUp(self):
+        self.method = mock.Mock()
+        self.model = mock.Mock()
+        self.paginate_config = {
+            'output_token': 'NextToken',
+            'input_token': 'NextToken',
+            'result_key': 'Items',
+            'aggregate_numeric_keys': ['ConsumedCapacity'],
+        }
+        self.paginator = Paginator(
+            self.method, self.paginate_config, self.model
+        )
+
+    def test_config_parsed(self):
+        self.assertEqual(
+            self.paginator._aggregate_numeric_keys, ('ConsumedCapacity',)
+        )
+
+    def test_sums_across_pages(self):
+        self.method.side_effect = [
+            {
+                'Items': ['a'],
+                'ConsumedCapacity': {
+                    'TableName': 'T',
+                    'CapacityUnits': 100.0,
+                    'GlobalSecondaryIndexes': {
+                        'my-index': {'CapacityUnits': 100.0}
+                    },
+                },
+                'NextToken': 'tok',
+            },
+            {
+                'Items': ['b'],
+                'ConsumedCapacity': {
+                    'TableName': 'T',
+                    'CapacityUnits': 102.0,
+                    'GlobalSecondaryIndexes': {
+                        'my-index': {'CapacityUnits': 102.0}
+                    },
+                },
+            },
+        ]
+        result = self.paginator.paginate().build_full_result()
+        self.assertEqual(result['Items'], ['a', 'b'])
+        cc = result['ConsumedCapacity']
+        self.assertEqual(cc['CapacityUnits'], 202.0)
+        self.assertEqual(cc['TableName'], 'T')
+        self.assertEqual(
+            cc['GlobalSecondaryIndexes']['my-index']['CapacityUnits'], 202.0
+        )
+
+    def test_absent_when_never_returned(self):
+        self.method.side_effect = [
+            {'Items': ['a'], 'NextToken': 'tok'},
+            {'Items': ['b']},
+        ]
+        result = self.paginator.paginate().build_full_result()
+        self.assertNotIn('ConsumedCapacity', result)
+
+    def test_does_not_mutate_source_pages(self):
+        page = {
+            'Items': ['a'],
+            'ConsumedCapacity': {'CapacityUnits': 100.0},
+            'NextToken': 'tok',
+        }
+        self.method.side_effect = [
+            page,
+            {'Items': ['b'], 'ConsumedCapacity': {'CapacityUnits': 2.0}},
+        ]
+        self.paginator.paginate().build_full_result()
+        # The first page's dict must be left untouched (deepcopy on first sight).
+        self.assertEqual(page['ConsumedCapacity']['CapacityUnits'], 100.0)
 
 
 if __name__ == '__main__':

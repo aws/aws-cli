@@ -1348,7 +1348,11 @@ class TestMvCommandWithValidateSameS3Paths:
         assert_head_object(
             server.requests[1], Bucket="bucket", Key="key"
         )
-        assert_copy_object(server.requests[2])
+        assert_copy_object(
+            server.requests[2],
+            Bucket="arn:aws:s3:us-west-2:123456789012:accesspoint/myaccesspoint",
+            Key="key",
+        )
         assert_delete_object(
             server.requests[3], Bucket="bucket", Key="key"
         )
@@ -1390,7 +1394,11 @@ class TestMvCommandWithValidateSameS3Paths:
         assert_head_object(
             server.requests[2], Bucket="bucket", Key="key"
         )
-        assert_copy_object(server.requests[3])
+        assert_copy_object(
+            server.requests[3],
+            Bucket="myaccesspoint-foobar-s3alias",
+            Key="key",
+        )
         assert_delete_object(
             server.requests[4], Bucket="bucket", Key="key"
         )
@@ -1430,7 +1438,11 @@ class TestMvCommandWithValidateSameS3Paths:
         assert_head_object(
             server.requests[1], Bucket="bucket", Key="key"
         )
-        assert_copy_object(server.requests[2])
+        assert_copy_object(
+            server.requests[2],
+            Bucket="arn:aws:s3-outposts:us-east-1:123456789012:outpost/op-foobar/accesspoint/myaccesspoint",
+            Key="key",
+        )
         assert_delete_object(
             server.requests[3], Bucket="bucket", Key="key"
         )

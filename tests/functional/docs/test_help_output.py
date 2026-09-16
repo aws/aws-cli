@@ -694,5 +694,3 @@ class TestHelpOutputBrowserRenderer:
             "Opening help file in the default browser." in runner_result.stdout
         )
         mock_open_new_tab.assert_called_once()
-
-

@@ -674,6 +674,13 @@ class TestHelpFlagEdgeCases(BaseAWSHelpOutputTest):
         self.driver.main(['s3', 'cp', '--expected-size', '--help'])
         self.assert_contains('cp')
 
+    def test_help_flag_with_positional_args(self):
+        # Positional args should be ignored when --help is present.
+        self.driver.main(
+            ['s3', 'cp', 'localfile', 's3://bucket/key', '--help']
+        )
+        self.assert_contains('cp')
+
     def test_help_flag_with_invalid_top_level_command(self):
         stderr = StringIO()
         with mock.patch('sys.stderr', stderr):

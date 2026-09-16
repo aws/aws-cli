@@ -194,7 +194,6 @@ class MainArgParser(CLIArgParser):
         )
 
 
-
 class ServiceArgParser(CLIArgParser):
     def __init__(self, operations_table, service_name):
         super().__init__(

@@ -620,34 +620,34 @@ class CLIDriver:
             )
 
     def _route_help(self, args, command_table):
-        # Walk the command tree to find the deepest recognized command,
-        # then render its help directly.  This avoids injecting a bare
-        # 'help' token that could be consumed as a flag value.
+        # Follow the user's command path (e.g. "s3api delete-object") to
+        # find the deepest recognized command, then render its help
+        # directly.  This avoids injecting a bare 'help' token that
+        # could be consumed as a flag value.
         current_cmd = None
-        remaining_args = list(args)
         for arg in args:
             if arg.startswith('-'):
                 continue
             if arg in command_table:
                 current_cmd = command_table[arg]
-                remaining_args = [a for a in remaining_args if a != arg]
-                # Try to go one level deeper (service → operation).
                 command_table = getattr(
                     current_cmd, 'subcommand_table', {}
                 )
+                if not command_table:
+                    # No further subcommands (e.g. we reached an
+                    # operation).  Stop scanning so remaining bare
+                    # words (positional param values) aren't
+                    # misinterpreted as commands.
+                    break
             else:
-                # Bare word that isn't a known command — let the real
-                # parser produce the "invalid choice" error.  We append
-                # the bare word back so the parser sees it.
+                # Bare word that isn't a known command — let the
+                # real parser produce the "invalid choice" error.
                 if current_cmd is not None:
-                    # We matched a command already; delegate to it with
-                    # the invalid token so its parser errors.
-                    remaining_args.append('help')
-                    return current_cmd(remaining_args, None)
+                    current_cmd([arg, 'help'], None)
                 else:
                     parser = self.create_parser(command_table)
                     parser.parse_known_args(args)
-                    return
+                return
         if current_cmd is None:
             return self.create_help_command()([], None)
         help_cmd = current_cmd.create_help_command()

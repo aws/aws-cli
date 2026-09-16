@@ -62,11 +62,10 @@ class CommandAction(argparse.Action):
 
 
 class _HelpFlagResolver(argparse.ArgumentParser):
-    """Minimal parser that resolves --help (and abbreviations) to 'help'.
+    """Minimal parser that detects --help (and abbreviations like --hel, --he).
 
     This is used as a first pass before the real parse so that argparse
-    handles abbreviation matching (e.g. --hel, --he) consistently with
-    all other flags.
+    handles abbreviation matching consistently with all other flags.
     """
 
     def __init__(self):
@@ -76,28 +75,25 @@ class _HelpFlagResolver(argparse.ArgumentParser):
         )
 
     def error(self, message):
-        # Suppress errors from this resolver; the real parser will
-        # report them.
         raise ArgParseException(message)
 
 
 _HELP_RESOLVER = _HelpFlagResolver()
 
 
-def _rewrite_help_flag(args):
-    """Rewrite --help (and abbreviations) to the help positional.
+def detect_help_flag(args):
+    """Detect and strip --help (and abbreviations) from args.
 
-    Uses a minimal argparse parser so that standard abbreviation
-    matching is applied (e.g. --hel, --he all resolve to --help).
+    Returns (remaining_args, help_detected).  When --help is present the
+    flag is removed from the arg list but is *not* replaced with the
+    positional ``help`` token.  Callers are responsible for routing to
+    the appropriate help rendering.
     """
     try:
         parsed, remaining = _HELP_RESOLVER.parse_known_args(args)
     except ArgParseException:
-        return args
-    if parsed.help_flag:
-        remaining.append('help')
-        return remaining
-    return args
+        return args, False
+    return remaining, parsed.help_flag
 
 
 class CLIArgParser(argparse.ArgumentParser):
@@ -121,7 +117,6 @@ class CLIArgParser(argparse.ArgumentParser):
             raise argparse.ArgumentError(action, '\n'.join(msg))
 
     def parse_known_args(self, args, namespace=None):
-        args = _rewrite_help_flag(args)
         parsed, remaining = super().parse_known_args(args, namespace)
         terminal_encoding = getattr(sys.stdin, 'encoding', 'utf-8')
         if terminal_encoding is None:

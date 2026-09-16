@@ -41,6 +41,7 @@ from awscli.argparser import (
     MainArgParser,
     ServiceArgParser,
     SubCommandArgParser,
+    detect_help_flag,
 )
 from awscli.argprocess import unpack_argument
 from awscli.arguments import (
@@ -589,8 +590,11 @@ class CLIDriver:
         command_table = self._get_command_table()
         parser = self.create_parser(command_table)
         self._add_aliases(command_table, parser)
+        args, help_flag = detect_help_flag(args)
         parsed_args = None
         try:
+            if help_flag:
+                return self._route_help(args, command_table)
             # Because _handle_top_level_args emits events, it's possible
             # that exceptions can be raised, which should have the same
             # general exception handling logic as calling into the
@@ -614,6 +618,41 @@ class CLIDriver:
                 stderr=get_stderr_text_writer(),
                 parsed_globals=parsed_args,
             )
+
+    def _route_help(self, args, command_table):
+        # Walk the command tree to find the deepest recognized command,
+        # then render its help directly.  This avoids injecting a bare
+        # 'help' token that could be consumed as a flag value.
+        current_cmd = None
+        remaining_args = list(args)
+        for arg in args:
+            if arg.startswith('-'):
+                continue
+            if arg in command_table:
+                current_cmd = command_table[arg]
+                remaining_args = [a for a in remaining_args if a != arg]
+                # Try to go one level deeper (service → operation).
+                command_table = getattr(
+                    current_cmd, 'subcommand_table', {}
+                )
+            else:
+                # Bare word that isn't a known command — let the real
+                # parser produce the "invalid choice" error.  We append
+                # the bare word back so the parser sees it.
+                if current_cmd is not None:
+                    # We matched a command already; delegate to it with
+                    # the invalid token so its parser errors.
+                    remaining_args.append('help')
+                    return current_cmd(remaining_args, None)
+                else:
+                    parser = self.create_parser(command_table)
+                    parser.parse_known_args(args)
+                    return
+        if current_cmd is None:
+            return self.create_help_command()([], None)
+        help_cmd = current_cmd.create_help_command()
+        if help_cmd is not None:
+            return help_cmd([], None)
 
     def _emit_session_event(self, parsed_args):
         # This event is guaranteed to run after the session has been

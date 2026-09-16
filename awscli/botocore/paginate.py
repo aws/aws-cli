@@ -45,12 +45,19 @@ def _deep_add_numeric(accumulator, new_value):
     they appear on. Booleans are treated as non-numeric.
     """
     for key, value in new_value.items():
-        if isinstance(value, dict):
-            _deep_add_numeric(accumulator.setdefault(key, {}), value)
-        elif _is_summable_number(value):
-            accumulator[key] = accumulator.get(key, 0) + value
-        else:
-            accumulator.setdefault(key, value)
+        if key not in accumulator:
+            # First time we've seen this leaf; take it as-is.
+            accumulator[key] = (
+                deepcopy(value) if isinstance(value, dict) else value
+            )
+        elif isinstance(value, dict) and isinstance(accumulator[key], dict):
+            _deep_add_numeric(accumulator[key], value)
+        elif _is_summable_number(value) and _is_summable_number(
+            accumulator[key]
+        ):
+            accumulator[key] = accumulator[key] + value
+        # Any type mismatch across pages (e.g. a number where an earlier page
+        # had a string/dict/None): keep the first page's value.
 
 
 class TokenEncoder:

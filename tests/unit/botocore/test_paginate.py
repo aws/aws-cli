@@ -1660,6 +1660,34 @@ class TestDeepAddNumeric(unittest.TestCase):
         _deep_add_numeric(acc, {'CapacityUnits': 1.0, 'TableName': 'T'})
         self.assertEqual(acc, {'CapacityUnits': 2.0, 'TableName': 'T'})
 
+    def test_deep_copies_new_dict_leaves(self):
+        # A dict leaf introduced by a later page must not alias the source.
+        source = {'CapacityUnits': 1.0}
+        acc = {}
+        _deep_add_numeric(acc, {'Index': source})
+        acc['Index']['CapacityUnits'] += 5.0
+        self.assertEqual(source['CapacityUnits'], 1.0)
+
+    def test_type_mismatch_number_then_dict_keeps_first(self):
+        acc = {'k': 5.0}
+        _deep_add_numeric(acc, {'k': {'CapacityUnits': 1.0}})
+        self.assertEqual(acc, {'k': 5.0})
+
+    def test_type_mismatch_string_then_number_keeps_first(self):
+        acc = {'k': 'T'}
+        _deep_add_numeric(acc, {'k': 3.0})
+        self.assertEqual(acc, {'k': 'T'})
+
+    def test_type_mismatch_none_then_number_keeps_first(self):
+        acc = {'k': None}
+        _deep_add_numeric(acc, {'k': 3.0})
+        self.assertEqual(acc, {'k': None})
+
+    def test_type_mismatch_none_then_dict_keeps_first(self):
+        acc = {'k': None}
+        _deep_add_numeric(acc, {'k': {'x': 1.0}})
+        self.assertEqual(acc, {'k': None})
+
 
 class TestAggregateNumericKeys(unittest.TestCase):
     def setUp(self):

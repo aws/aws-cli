@@ -23,6 +23,7 @@ from s3transfer.crt import (
     CRTTransferConfig,
     CRTTransferManager,
     acquire_crt_s3_process_lock,
+    create_crt_client_bootstrap,
     create_s3_crt_client,
 )
 from s3transfer.manager import TransferManager
@@ -260,12 +261,29 @@ class TransferManagerFactory:
 
     def _create_crt_transfer_manager(self, params, runtime_config):
         self._acquire_crt_s3_process_lock()
+        region = self._resolve_region(params)
+        bootstrap = create_crt_client_bootstrap()
         config_kwargs = self._resolve_crt_client_config_kwargs(runtime_config)
-        return CRTTransferManager(
-            self._create_crt_client(params, runtime_config, config_kwargs),
-            self._create_crt_request_serializer(params),
+
+        transfer_manager = CRTTransferManager(
+            crt_client_factory=lambda client_region=None: (
+                self._create_crt_client(
+                    params,
+                    runtime_config,
+                    config_kwargs,
+                    region=client_region or region,
+                    bootstrap=bootstrap,
+                )
+            ),
+            crt_request_serializer=self._create_crt_request_serializer(params),
             transfer_config=self._create_crt_transfer_config(config_kwargs),
         )
+        # Clients for redirected regions are created on demand, but create the
+        # one for the configured region now. Otherwise invalid client
+        # configuration is not reported until a transfer is submitted, which
+        # reports it once per object instead of once for the command.
+        transfer_manager.get_crt_client()
+        return transfer_manager
 
     def _create_crt_transfer_config(self, config_kwargs):
         # The crt client only applies its multipart threshold to uploads, so
@@ -275,10 +293,18 @@ class TransferManagerFactory:
             multipart_threshold=config_kwargs.get('multipart_upload_threshold')
         )
 
-    def _create_crt_client(self, params, runtime_config, config_kwargs):
+    def _create_crt_client(
+        self,
+        params,
+        runtime_config,
+        config_kwargs,
+        region=None,
+        bootstrap=None,
+    ):
         create_crt_client_kwargs = {
-            'region': self._resolve_region(params),
+            'region': region or self._resolve_region(params),
             'verify': self._resolve_verify(params),
+            'bootstrap': bootstrap,
         }
         endpoint_url = params.get('endpoint_url')
         if endpoint_url and urlparse.urlparse(endpoint_url).scheme == 'http':
@@ -336,6 +362,9 @@ class TransferManagerFactory:
                 'region_name': self._resolve_region(params),
                 'endpoint_url': params.get('endpoint_url'),
             },
+            region_redirect_client_factory=lambda: (
+                self._botocore_client_factory.create_client(params)
+            ),
         )
 
     def _create_classic_transfer_manager(

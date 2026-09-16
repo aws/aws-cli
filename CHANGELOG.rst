@@ -2,6 +2,18 @@
 CHANGELOG
 =========
 
+2.36.47
+=======
+
+* api-change:``connect``: Adds support for ContactAnalysis via ListContactReferences.
+* api-change:``ec2``: Releasing new EC2 R9g and R9gd memory-optimized instances powered by AWS Graviton5 processors, with up to 25 percent better compute performance than R8g instances, faster DDR5 memory, and up to 100 Gbps network and 72 Gbps EBS bandwidth. R9gd instances additionally provide local NVMe SSD storage.
+* api-change:``resiliencehubv2``: Next Gen Resilience Hub now supports dependency insights (LLM-based insights about customer's service dependencies) and organization-level policy sharing (provision to share policy with member accounts for an organization)
+* api-change:``customer-profiles``: This release introduces the SearchRecommendations API, which retrieves recommendations for a profile identified by a search key.
+* api-change:``bedrock-agentcore-control``: Adds support for a new DELETE FAILED status for Bedrock AgentCore Runtimes and Bedrock AgentCore Runtime Endpoints.
+* api-change:``marketplace-catalog``: This release enhances the ListEntities API to support issuerAccountId and SourceAuthorization filter for ResaleAuthorization entity.
+* api-change:``elasticbeanstalk``: Adds support to create and manage Elastic Beanstalk Cluster Environments.
+
+
 2.36.46
 =======
 

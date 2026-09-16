@@ -1305,7 +1305,7 @@ def download(crt_client, request_serializer, filename):
 
     def _download(size, multipart_threshold):
         transfer_manager = s3transfer.crt.CRTTransferManager(
-            crt_s3_client=crt_client,
+            crt_client_factory=lambda region=None: crt_client,
             crt_request_serializer=request_serializer,
             transfer_config=s3transfer.crt.CRTTransferConfig(
                 multipart_threshold=multipart_threshold

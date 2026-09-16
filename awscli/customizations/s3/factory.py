@@ -263,20 +263,20 @@ class TransferManagerFactory:
         self._acquire_crt_s3_process_lock()
         region = self._resolve_region(params)
         bootstrap = create_crt_client_bootstrap()
-		config_kwargs = self._resolve_crt_client_config_kwargs(runtime_config)
+        config_kwargs = self._resolve_crt_client_config_kwargs(runtime_config)
 
         transfer_manager = CRTTransferManager(
             crt_client_factory=lambda client_region=None: (
                 self._create_crt_client(
                     params,
                     runtime_config,
-					config_kwargs,
+                    config_kwargs,
                     region=client_region or region,
                     bootstrap=bootstrap,
                 )
             ),
             crt_request_serializer=self._create_crt_request_serializer(params),
-			transfer_config=self._create_crt_transfer_config(config_kwargs),
+            transfer_config=self._create_crt_transfer_config(config_kwargs),
         )
         # Clients for redirected regions are created on demand, but create the
         # one for the configured region now. Otherwise invalid client
@@ -285,15 +285,13 @@ class TransferManagerFactory:
         transfer_manager.get_crt_client()
         return transfer_manager
 
-
-  def _create_crt_transfer_config(self, config_kwargs):
+    def _create_crt_transfer_config(self, config_kwargs):
         # The crt client only applies its multipart threshold to uploads, so
         # downloads rely on the transfer config to match it. Leaving the
         # threshold unset keeps the client's own download behavior.
         return CRTTransferConfig(
             multipart_threshold=config_kwargs.get('multipart_upload_threshold')
         )
-
 
     def _create_crt_client(
         self, params, runtime_config, config_kwargs, region=None, bootstrap=None

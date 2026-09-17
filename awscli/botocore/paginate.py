@@ -37,16 +37,19 @@ def _is_summable_number(value):
     return isinstance(value, (int, float)) and not isinstance(value, bool)
 
 
-def _deep_add_numeric(accumulator, new_value):
-    """Recursively sum the numeric leaves of ``new_value`` into ``accumulator``.
+def _deep_add_numeric(accumulator, new_value, summable_leaf_names):
+    """Recursively sum selected numeric leaves of ``new_value`` into ``accumulator``.
 
     This is used to aggregate response members that are dicts of numbers
     (and nested dicts of numbers) across paginated responses, for example
-    DynamoDB's ``ConsumedCapacity``. Numeric leaves are summed, nested dicts
-    are merged recursively (which handles maps keyed by runtime-defined names
-    such as ``GlobalSecondaryIndexes``/``LocalSecondaryIndexes``), and any
-    non-numeric leaves (e.g. ``TableName``) are preserved from the first page
-    they appear on. Booleans are treated as non-numeric.
+    DynamoDB's ``ConsumedCapacity``. Nested dicts are merged recursively (which
+    handles maps keyed by runtime-defined names such as
+    ``GlobalSecondaryIndexes``/``LocalSecondaryIndexes``).
+
+    Only numeric leaves whose key is in ``summable_leaf_names`` are summed. This
+    is an allowlist: any other leaf (a string like ``TableName``, or a numeric
+    field not named in the allowlist) is preserved from the first page it
+    appears on, rather than being auto-aggregated. Booleans are never summed.
     """
     for key, value in new_value.items():
         if key not in accumulator:
@@ -56,13 +59,15 @@ def _deep_add_numeric(accumulator, new_value):
                 deepcopy(value) if isinstance(value, (dict, list)) else value
             )
         elif isinstance(value, dict) and isinstance(accumulator[key], dict):
-            _deep_add_numeric(accumulator[key], value)
-        elif _is_summable_number(value) and _is_summable_number(
-            accumulator[key]
+            _deep_add_numeric(accumulator[key], value, summable_leaf_names)
+        elif (
+            key in summable_leaf_names
+            and _is_summable_number(value)
+            and _is_summable_number(accumulator[key])
         ):
             accumulator[key] = accumulator[key] + value
-        # Any type mismatch across pages (e.g. a number where an earlier page
-        # had a string/dict/None): keep the first page's value.
+        # Everything else (non-allowlisted numeric leaf, string, or cross-page
+        # type mismatch): keep the first page's value.
 
 
 class TokenEncoder:
@@ -532,7 +537,7 @@ class PageIterator:
             # uses. We can remove it though once operation objects are removed.
             if isinstance(response, tuple) and len(response) == 2:
                 page = response[1]
-            for key in self._aggregate_numeric_keys:
+            for key, leaf_names in self._aggregate_numeric_keys.items():
                 page_value = page.get(key)
                 if page_value is None:
                     continue
@@ -542,11 +547,13 @@ class PageIterator:
                     aggregate_numeric_totals[key], dict
                 ):
                     _deep_add_numeric(
-                        aggregate_numeric_totals[key], page_value
+                        aggregate_numeric_totals[key], page_value, leaf_names
                     )
                 elif _is_summable_number(page_value) and _is_summable_number(
                     aggregate_numeric_totals[key]
                 ):
+                    # The whole member is a bare number (not a dict). Opting the
+                    # member in via config is itself the allowlist decision.
                     aggregate_numeric_totals[key] += page_value
                 # Any other/unexpected shape: keep the first page's value.
             # We're incrementally building the full response page
@@ -702,11 +709,18 @@ class Paginator:
         return False
 
     def _get_aggregate_numeric_keys(self, config):
-        # These are top-level response members whose numeric leaves are
-        # recursively summed across pages. Unlike ``result_key`` entries they
-        # may be (possibly nested) dicts, and unlike ``non_aggregate_keys``
-        # they are totaled rather than taken from a single page.
-        return tuple(config.get('aggregate_numeric_keys', []))
+        # Maps a top-level response member to the set of leaf field-names whose
+        # numeric values are summed (recursively, so nested/dynamic-key maps
+        # like GlobalSecondaryIndexes are covered). This is an allowlist: only
+        # the named leaves are totaled; any other leaf (strings, or numbers not
+        # named here) is preserved from the first page rather than summed.
+        # Unlike ``result_key`` these members may be (nested) dicts, and unlike
+        # ``non_aggregate_keys`` the named leaves are totaled across pages.
+        config_value = config.get('aggregate_numeric_keys', {})
+        return {
+            member: frozenset(leaf_names)
+            for member, leaf_names in config_value.items()
+        }
 
     def _get_output_tokens(self, config):
         output = []

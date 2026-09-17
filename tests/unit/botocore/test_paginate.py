@@ -1623,14 +1623,18 @@ class TestStringPageSize(unittest.TestCase):
 
 
 class TestDeepAddNumeric(unittest.TestCase):
+    LEAVES = frozenset(
+        {'CapacityUnits', 'ReadCapacityUnits', 'WriteCapacityUnits'}
+    )
+
     def test_sums_numeric_leaves(self):
         acc = {'CapacityUnits': 100.0}
-        _deep_add_numeric(acc, {'CapacityUnits': 102.5})
+        _deep_add_numeric(acc, {'CapacityUnits': 102.5}, self.LEAVES)
         self.assertEqual(acc, {'CapacityUnits': 202.5})
 
     def test_recurses_into_nested_dicts(self):
         acc = {'Table': {'CapacityUnits': 1.0}}
-        _deep_add_numeric(acc, {'Table': {'CapacityUnits': 2.0}})
+        _deep_add_numeric(acc, {'Table': {'CapacityUnits': 2.0}}, self.LEAVES)
         self.assertEqual(acc, {'Table': {'CapacityUnits': 3.0}})
 
     def test_sums_maps_with_runtime_defined_keys(self):
@@ -1639,6 +1643,7 @@ class TestDeepAddNumeric(unittest.TestCase):
         _deep_add_numeric(
             acc,
             {'GlobalSecondaryIndexes': {'my-index': {'CapacityUnits': 7.0}}},
+            self.LEAVES,
         )
         self.assertEqual(
             acc,
@@ -1647,53 +1652,63 @@ class TestDeepAddNumeric(unittest.TestCase):
 
     def test_preserves_strings(self):
         acc = {'TableName': 'T'}
-        _deep_add_numeric(acc, {'TableName': 'T'})
+        _deep_add_numeric(acc, {'TableName': 'T'}, self.LEAVES)
         self.assertEqual(acc, {'TableName': 'T'})
 
     def test_does_not_sum_booleans(self):
+        # Even if the leaf name is allowlisted, booleans are never summed.
         acc = {'Flag': True}
-        _deep_add_numeric(acc, {'Flag': True})
+        _deep_add_numeric(acc, {'Flag': True}, frozenset({'Flag'}))
         self.assertEqual(acc, {'Flag': True})
+
+    def test_does_not_sum_non_allowlisted_numeric_leaf(self):
+        # A numeric leaf whose name is NOT in the allowlist is preserved from
+        # the first page, not auto-aggregated.
+        acc = {'SomeRate': 5.0}
+        _deep_add_numeric(acc, {'SomeRate': 7.0}, self.LEAVES)
+        self.assertEqual(acc, {'SomeRate': 5.0})
 
     def test_deep_copies_new_list_leaves(self):
         # A list leaf introduced by a later page must not alias the source.
         source = ['a']
         acc = {}
-        _deep_add_numeric(acc, {'Names': source})
+        _deep_add_numeric(acc, {'Names': source}, self.LEAVES)
         acc['Names'].append('b')
         self.assertEqual(source, ['a'])
 
     def test_adds_new_keys_from_later_pages(self):
         acc = {'CapacityUnits': 1.0}
-        _deep_add_numeric(acc, {'CapacityUnits': 1.0, 'TableName': 'T'})
+        _deep_add_numeric(
+            acc, {'CapacityUnits': 1.0, 'TableName': 'T'}, self.LEAVES
+        )
         self.assertEqual(acc, {'CapacityUnits': 2.0, 'TableName': 'T'})
 
     def test_deep_copies_new_dict_leaves(self):
         # A dict leaf introduced by a later page must not alias the source.
         source = {'CapacityUnits': 1.0}
         acc = {}
-        _deep_add_numeric(acc, {'Index': source})
+        _deep_add_numeric(acc, {'Index': source}, self.LEAVES)
         acc['Index']['CapacityUnits'] += 5.0
         self.assertEqual(source['CapacityUnits'], 1.0)
 
     def test_type_mismatch_number_then_dict_keeps_first(self):
-        acc = {'k': 5.0}
-        _deep_add_numeric(acc, {'k': {'CapacityUnits': 1.0}})
-        self.assertEqual(acc, {'k': 5.0})
+        acc = {'CapacityUnits': 5.0}
+        _deep_add_numeric(acc, {'CapacityUnits': {'x': 1.0}}, self.LEAVES)
+        self.assertEqual(acc, {'CapacityUnits': 5.0})
 
     def test_type_mismatch_string_then_number_keeps_first(self):
-        acc = {'k': 'T'}
-        _deep_add_numeric(acc, {'k': 3.0})
-        self.assertEqual(acc, {'k': 'T'})
+        acc = {'CapacityUnits': 'T'}
+        _deep_add_numeric(acc, {'CapacityUnits': 3.0}, self.LEAVES)
+        self.assertEqual(acc, {'CapacityUnits': 'T'})
 
     def test_type_mismatch_none_then_number_keeps_first(self):
-        acc = {'k': None}
-        _deep_add_numeric(acc, {'k': 3.0})
-        self.assertEqual(acc, {'k': None})
+        acc = {'CapacityUnits': None}
+        _deep_add_numeric(acc, {'CapacityUnits': 3.0}, self.LEAVES)
+        self.assertEqual(acc, {'CapacityUnits': None})
 
     def test_type_mismatch_none_then_dict_keeps_first(self):
         acc = {'k': None}
-        _deep_add_numeric(acc, {'k': {'x': 1.0}})
+        _deep_add_numeric(acc, {'k': {'x': 1.0}}, self.LEAVES)
         self.assertEqual(acc, {'k': None})
 
 
@@ -1705,7 +1720,13 @@ class TestAggregateNumericKeys(unittest.TestCase):
             'output_token': 'NextToken',
             'input_token': 'NextToken',
             'result_key': 'Items',
-            'aggregate_numeric_keys': ['ConsumedCapacity'],
+            'aggregate_numeric_keys': {
+                'ConsumedCapacity': [
+                    'CapacityUnits',
+                    'ReadCapacityUnits',
+                    'WriteCapacityUnits',
+                ]
+            },
         }
         self.paginator = Paginator(
             self.method, self.paginate_config, self.model
@@ -1713,7 +1734,16 @@ class TestAggregateNumericKeys(unittest.TestCase):
 
     def test_config_parsed(self):
         self.assertEqual(
-            self.paginator._aggregate_numeric_keys, ('ConsumedCapacity',)
+            self.paginator._aggregate_numeric_keys,
+            {
+                'ConsumedCapacity': frozenset(
+                    {
+                        'CapacityUnits',
+                        'ReadCapacityUnits',
+                        'WriteCapacityUnits',
+                    }
+                )
+            },
         )
 
     def test_aggregated_key_dropped_from_non_aggregate_keys(self):
@@ -1724,7 +1754,7 @@ class TestAggregateNumericKeys(unittest.TestCase):
             'input_token': 'NextToken',
             'result_key': 'Items',
             'non_aggregate_keys': ['ConsumedCapacity', 'SomethingElse'],
-            'aggregate_numeric_keys': ['ConsumedCapacity'],
+            'aggregate_numeric_keys': {'ConsumedCapacity': ['CapacityUnits']},
         }
         paginator = Paginator(self.method, config, self.model)
         kept = [k.expression for k in paginator._non_aggregate_keys]
@@ -1738,7 +1768,7 @@ class TestAggregateNumericKeys(unittest.TestCase):
             'input_token': 'NextToken',
             'result_key': 'Items',
             'non_aggregate_keys': ['ConsumedCapacity.TableName', 'Other'],
-            'aggregate_numeric_keys': ['ConsumedCapacity'],
+            'aggregate_numeric_keys': {'ConsumedCapacity': ['CapacityUnits']},
         }
         paginator = Paginator(self.method, config, self.model)
         kept = [k.expression for k in paginator._non_aggregate_keys]
@@ -1752,7 +1782,7 @@ class TestAggregateNumericKeys(unittest.TestCase):
             'input_token': 'NextToken',
             'result_key': 'Items',
             'non_aggregate_keys': ['ConsumedCapacity'],
-            'aggregate_numeric_keys': ['ConsumedCapacity'],
+            'aggregate_numeric_keys': {'ConsumedCapacity': ['CapacityUnits']},
         }
         paginator = Paginator(self.method, config, self.model)
         self.method.side_effect = [
@@ -1765,6 +1795,24 @@ class TestAggregateNumericKeys(unittest.TestCase):
         ]
         result = paginator.paginate().build_full_result()
         self.assertEqual(result['ConsumedCapacity']['CapacityUnits'], 202.0)
+
+    def test_non_allowlisted_numeric_leaf_not_summed_end_to_end(self):
+        # A numeric field under the member that is not in the allowlist must be
+        # preserved from the first page, not summed.
+        self.method.side_effect = [
+            {
+                'Items': ['a'],
+                'ConsumedCapacity': {'CapacityUnits': 100.0, 'SomeRate': 7.0},
+                'NextToken': 'tok',
+            },
+            {
+                'Items': ['b'],
+                'ConsumedCapacity': {'CapacityUnits': 102.0, 'SomeRate': 9.0},
+            },
+        ]
+        cc = self.paginator.paginate().build_full_result()['ConsumedCapacity']
+        self.assertEqual(cc['CapacityUnits'], 202.0)  # allowlisted -> summed
+        self.assertEqual(cc['SomeRate'], 7.0)  # not allowlisted -> first page
 
     def test_sums_across_pages(self):
         self.method.side_effect = [

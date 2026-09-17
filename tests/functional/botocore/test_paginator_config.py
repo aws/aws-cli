@@ -175,15 +175,30 @@ def test_lint_pagination_configs(
 
 
 def _validate_aggregate_numeric_keys(operation_name, page_config):
-    # aggregate_numeric_keys must be top-level output member names. A nested
-    # path (e.g. "ConsumedCapacity.Table") would silently never aggregate at
-    # runtime (build_full_result uses page.get(key)), so reject it here.
-    for key in page_config.get('aggregate_numeric_keys', []):
-        if '.' in key:
+    # aggregate_numeric_keys maps a top-level output member name to a list of
+    # leaf field-names to sum. The member must be a top-level member (a nested
+    # path like "ConsumedCapacity.Table" would silently never aggregate at
+    # runtime, since build_full_result uses page.get(member)); leaf names are
+    # matched by key anywhere in the subtree, so they must be bare field names.
+    config_value = page_config.get('aggregate_numeric_keys', {})
+    if not isinstance(config_value, dict):
+        raise AssertionError(
+            f"aggregate_numeric_keys for operation {operation_name} must be a "
+            "map of member name -> list of leaf field-names."
+        )
+    for member, leaf_names in config_value.items():
+        if '.' in member:
             raise AssertionError(
-                f"aggregate_numeric_keys entry '{key}' for operation "
+                f"aggregate_numeric_keys member '{member}' for operation "
                 f"{operation_name} must be a top-level output member name, "
                 "not a nested path."
+            )
+        if not isinstance(leaf_names, list) or not all(
+            isinstance(n, str) and '.' not in n for n in leaf_names
+        ):
+            raise AssertionError(
+                f"aggregate_numeric_keys['{member}'] for operation "
+                f"{operation_name} must be a list of bare leaf field-names."
             )
 
 

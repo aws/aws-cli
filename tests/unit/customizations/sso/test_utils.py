@@ -340,7 +340,7 @@ def test_get_auth_code_and_state_timeout():
 
 def _get_available_port():
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
-        sock.bind(('', 0))
+        sock.bind(('127.0.0.1', 0))
         return sock.getsockname()[1]
 
 
@@ -376,10 +376,10 @@ def test_validate_redirect_port_rejects_out_of_range_ports(redirect_port):
     assert 'must be between 1 and 65535' in str(excinfo.value)
 
 
-def test_auth_code_fetcher_errors_when_redirect_port_in_use():
-    occupied = AuthCodeFetcher()
-    try:
-        with pytest.raises(AuthCodeFetcherError):
-            AuthCodeFetcher(redirect_port=occupied.http_server.server_port)
-    finally:
-        occupied.http_server.server_close()
+@mock.patch('awscli.customizations.sso.utils.HTTPServer')
+def test_auth_code_fetcher_errors_when_redirect_port_in_use(http_server):
+    # Simulate an occupied port without relying on platform-specific binds.
+    http_server.side_effect = OSError('Address already in use')
+
+    with pytest.raises(AuthCodeFetcherError):
+        AuthCodeFetcher(redirect_port=34535)

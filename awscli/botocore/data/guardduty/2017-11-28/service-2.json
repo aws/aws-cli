@@ -2571,6 +2571,33 @@
       "min":1,
       "pattern":"(([1-9][0-9]{0,7})|(DRAFT))"
     },
+    "BedrockGuardrailResource":{
+      "type":"structure",
+      "members":{
+        "Version":{
+          "shape":"BedrockGuardrailResourceVersionString",
+          "documentation":"<p>The version of the Amazon Bedrock guardrail. Valid values are a numeric version, <code>DRAFT</code>, or <code>ENFORCED</code>.</p>",
+          "locationName":"version"
+        },
+        "GuardrailAction":{
+          "shape":"GuardrailAction",
+          "documentation":"<p>Indicates whether the guardrail intervened during the model invocation.</p>",
+          "locationName":"guardrailAction"
+        },
+        "GuardrailSource":{
+          "shape":"GuardrailSource",
+          "documentation":"<p>Indicates whether the guardrail was applied on the input or output of the model invocation.</p>",
+          "locationName":"guardrailSource"
+        }
+      },
+      "documentation":"<p>Contains details about an Amazon Bedrock guardrail evaluated during a model invocation.</p>"
+    },
+    "BedrockGuardrailResourceVersionString":{
+      "type":"string",
+      "max":8,
+      "min":1,
+      "pattern":"(([1-9][0-9]{0,7})|(DRAFT)|(ENFORCED))"
+    },
     "BedrockGuardrailVersionString":{
       "type":"string",
       "max":8,
@@ -6065,7 +6092,17 @@
         "CLOUDFORMATION_STACK",
         "EC2_LAUNCH_TEMPLATE",
         "EC2_VPC",
-        "EC2_IMAGE"
+        "EC2_IMAGE",
+        "BEDROCK_CUSTOM_MODEL",
+        "BEDROCK_IMPORTED_MODEL",
+        "BEDROCK_PROVISIONED_MODEL",
+        "BEDROCK_CUSTOM_MODEL_DEPLOYMENT",
+        "BEDROCK_INFERENCE_PROFILE",
+        "BEDROCK_APPLICATION_INFERENCE_PROFILE",
+        "BEDROCK_PROMPT",
+        "BEDROCK_PROMPT_ROUTER",
+        "BEDROCK_GUARDRAIL",
+        "SAGEMAKER_ENDPOINT"
       ]
     },
     "FindingStatisticType":{
@@ -11315,6 +11352,11 @@
           "shape":"CloudformationStack",
           "documentation":"<p>Contains detailed information about the CloudFormation stack associated with the activity that prompted GuardDuty to generate a finding.</p>",
           "locationName":"cloudformationStack"
+        },
+        "BedrockGuardrail":{
+          "shape":"BedrockGuardrailResource",
+          "documentation":"<p>Contains detailed information about the Amazon Bedrock guardrail associated with the activity that prompted GuardDuty to generate a finding.</p>",
+          "locationName":"bedrockGuardrail"
         }
       },
       "documentation":"<p>Contains information about the Amazon Web Services resource that is associated with the activity that prompted GuardDuty to generate a finding.</p>"

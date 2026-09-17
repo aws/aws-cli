@@ -7969,7 +7969,7 @@
       },
       "input":{"shape":"ValidateSecurityGroupQuotasForInterfaceRequest"},
       "output":{"shape":"ValidateSecurityGroupQuotasForInterfaceResult"},
-      "documentation":"<p>Validates whether the specified security groups can be associated with a single network interface. The operation checks Amazon Virtual Private Cloud (Amazon VPC) quotas for inbound or outbound rules per security group and security groups per network interface. Only authorized AWS services can call this operation.</p> <p>For more information about security group quotas, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/amazon-vpc-limits.html#vpc-limits-security-groups\">Amazon VPC quotas</a> in the <i>Amazon VPC User Guide</i>.</p>"
+      "documentation":"<p>Validates whether the specified security groups can be associated with a single network interface. The operation checks Amazon Virtual Private Cloud (Amazon VPC) quotas. It checks inbound or outbound rules per security group and security groups per network interface. Only authorized AWS services can call this operation.</p> <p>For more information about security group quotas, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/amazon-vpc-limits.html#vpc-limits-security-groups\">Amazon VPC quotas</a> in the <i>Amazon VPC User Guide</i>.</p>"
     },
     "WithdrawByoipCidr":{
       "name":"WithdrawByoipCidr",
@@ -63410,7 +63410,10 @@
     },
     "PayerResponsibilityScope":{
       "type":"string",
-      "enum":["vpc-endpoint-charges"]
+      "enum":[
+        "vpc-endpoint-charges",
+        "resource-gateway-charges"
+      ]
     },
     "PayerResponsibilitySet":{
       "type":"list",
@@ -63423,6 +63426,7 @@
       "type":"string",
       "enum":[
         "vpc-endpoint-account",
+        "resource-gateway-account",
         "vpc-endpoint-service-account"
       ]
     },
@@ -78239,7 +78243,7 @@
       "members":{
         "Valid":{
           "shape":"Boolean",
-          "documentation":"<p>The operation returns <code>true</code> if the specified security groups can be associated with a single network interface without exceeding the quotas. It returns an error if associating the security groups would exceed a quota.</p>",
+          "documentation":"<p>Specifies whether the specified security groups can be associated with a single network interface without exceeding the quotas. If associating the security groups would exceed a quota, the operation returns an error.</p>",
           "locationName":"valid"
         }
       }
@@ -80909,7 +80913,8 @@
         "Gateway",
         "GatewayLoadBalancer",
         "Resource",
-        "ServiceNetwork"
+        "ServiceNetwork",
+        "Tunnel"
       ]
     },
     "VpcFlowLogId":{"type":"string"},

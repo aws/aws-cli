@@ -2299,6 +2299,10 @@
         "timeRange":{
           "shape":"SessionFilterConfig",
           "documentation":"<p>The time range filter for selecting sessions to evaluate.</p>"
+        },
+        "sessionTraceIds":{
+          "shape":"SessionTraceIdsList",
+          "documentation":"<p>A list of session and trace ID pairs that restrict evaluation to specific traces within a session. If specified, only the listed traces are evaluated instead of the entire session.</p>"
         }
       },
       "documentation":"<p>Filter configuration for narrowing down CloudWatch Logs sessions for evaluation.</p>"
@@ -10861,6 +10865,30 @@
       "type":"list",
       "member":{"shape":"SessionSummary"}
     },
+    "SessionTraceIds":{
+      "type":"structure",
+      "required":[
+        "sessionId",
+        "traceIds"
+      ],
+      "members":{
+        "sessionId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the session that contains the traces to evaluate.</p>"
+        },
+        "traceIds":{
+          "shape":"TraceIdList",
+          "documentation":"<p>The list of trace IDs within the session to evaluate.</p>"
+        }
+      },
+      "documentation":"<p>A pairing of a session with the specific trace IDs to evaluate within that session. Use this to evaluate individual traces rather than an entire session.</p>"
+    },
+    "SessionTraceIdsList":{
+      "type":"list",
+      "member":{"shape":"SessionTraceIds"},
+      "max":500,
+      "min":1
+    },
     "SessionType":{
       "type":"string",
       "max":256,
@@ -12268,6 +12296,12 @@
       "type":"string",
       "max":32,
       "min":32
+    },
+    "TraceIdList":{
+      "type":"list",
+      "member":{"shape":"TraceId"},
+      "max":100,
+      "min":1
     },
     "TraceIds":{
       "type":"list",

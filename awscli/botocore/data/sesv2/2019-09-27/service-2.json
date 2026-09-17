@@ -6453,6 +6453,10 @@
           "shape":"IspFilterList",
           "documentation":"<p>The recipient's ISP (e.g., <code>Gmail</code>, <code>Yahoo</code>, etc.).</p>"
         },
+        "TenantName":{
+          "shape":"TenantNameFilterList",
+          "documentation":"<p>The name of the tenant used when sending the message.</p>"
+        },
         "LastDeliveryEvent":{
           "shape":"LastDeliveryEventList",
           "documentation":"<p> The last delivery-related event for the email, where the ordering is as follows: <code>SEND</code> &lt; <code>BOUNCE</code> &lt; <code>DELIVERY</code> &lt; <code>COMPLAINT</code>. </p>"
@@ -6582,11 +6586,12 @@
     },
     "MetricDimensionName":{
       "type":"string",
-      "documentation":"<p>The <code>BatchGetMetricDataQuery</code> dimension name. This can be one of the following:</p> <ul> <li> <p> <code>EMAIL_IDENTITY</code> – The email identity used when sending messages.</p> </li> <li> <p> <code>CONFIGURATION_SET</code> – The configuration set used when sending messages (if one was used).</p> </li> <li> <p> <code>ISP</code> – The recipient ISP (e.g. <code>Gmail</code>, <code>Yahoo</code>, etc.).</p> </li> </ul>",
+      "documentation":"<p>The <code>BatchGetMetricDataQuery</code> dimension name. This can be one of the following:</p> <ul> <li> <p> <code>EMAIL_IDENTITY</code> – The email identity used when sending messages.</p> </li> <li> <p> <code>CONFIGURATION_SET</code> – The configuration set used when sending messages (if one was used).</p> </li> <li> <p> <code>ISP</code> – The recipient ISP (e.g. <code>Gmail</code>, <code>Yahoo</code>, etc.).</p> </li> <li> <p> <code>TENANT_NAME</code> – The name of the tenant used when sending messages (if one was used).</p> </li> </ul>",
       "enum":[
         "EMAIL_IDENTITY",
         "CONFIGURATION_SET",
-        "ISP"
+        "ISP",
+        "TENANT_NAME"
       ]
     },
     "MetricDimensionValue":{
@@ -8374,6 +8379,11 @@
       "type":"string",
       "documentation":"<p>The name of a tenant. The name can contain up to 64 alphanumeric characters, including letters, numbers, hyphens (-) and underscores (_) only.</p>",
       "min":1
+    },
+    "TenantNameFilterList":{
+      "type":"list",
+      "member":{"shape":"TenantName"},
+      "max":5
     },
     "TenantResource":{
       "type":"structure",

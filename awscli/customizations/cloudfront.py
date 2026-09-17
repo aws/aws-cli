@@ -10,6 +10,7 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import base64
 import hashlib
 import random
 import sys
@@ -18,7 +19,7 @@ import time
 from botocore.signers import CloudFrontSigner
 from botocore.utils import parse_to_aware_datetime
 
-from awscrt.crypto import RSA, RSASignatureAlgorithm
+from awscrt.crypto import EC, RSA, RSASignatureAlgorithm
 
 from awscli.arguments import CustomArgument
 from awscli.customizations.commands import BasicCommand
@@ -226,7 +227,10 @@ def _add_sign(command_table, session, **kwargs):
 
 class SignCommand(BasicCommand):
     NAME = 'sign'
-    DESCRIPTION = 'Sign a given url.'
+    DESCRIPTION = (
+        'Sign a given url. Supports RSA and ECDSA private keys. '
+        'The key type is auto-detected from the PEM header.'
+    )
     DATE_FORMAT = """Supported formats include:
         YYYY-MM-DD (which means 0AM UTC of that day),
         YYYY-MM-DDThh:mm:ss (with default timezone as UTC),
@@ -251,7 +255,11 @@ class SignCommand(BasicCommand):
         {
             'name': 'private-key',
             'required': True,
-            'help_text': 'file://path/to/your/private-key.pem',
+            'help_text': (
+                'file://path/to/your/private-key.pem. Both RSA and ECDSA '
+                '(P-256) keys are supported; the key type is detected '
+                'automatically.'
+            ),
         },
         {
             'name': 'date-less-than',
@@ -275,7 +283,7 @@ class SignCommand(BasicCommand):
 
     def _run_main(self, args, parsed_globals):
         signer = CloudFrontSigner(
-            args.key_pair_id, RSASigner(args.private_key).sign
+            args.key_pair_id, _build_signer(args.private_key).sign
         )
         date_less_than = parse_to_aware_datetime(args.date_less_than)
         date_greater_than = args.date_greater_than
@@ -300,6 +308,35 @@ class SignCommand(BasicCommand):
         return 0
 
 
+def _build_signer(private_key):
+    """Return the appropriate signer based on the private key type."""
+    if 'BEGIN EC PRIVATE KEY' in private_key:
+        return ECDSASigner(private_key)
+    if 'BEGIN RSA PRIVATE KEY' in private_key:
+        return RSASigner(private_key)
+    if 'BEGIN PRIVATE KEY' in private_key:
+        return _create_signer_from_pkcs8(private_key)
+    raise ValueError(
+        "Unsupported key type. Supported formats: "
+        "RSA (PKCS#1 or PKCS#8) and EC (SEC1 or PKCS#8). "
+        "Check that your key file has a valid PEM header."
+    )
+
+def _create_signer_from_pkcs8(private_key):
+    try:
+        return RSASigner(private_key)
+    except (RuntimeError, ValueError):
+        pass
+    try:
+        return ECDSASigner(private_key)
+    except (RuntimeError, ValueError):
+        pass
+    raise ValueError(
+        "Failed to load PKCS#8 private key as either RSA or EC. "
+        "Check that your key file is a valid private key in PKCS#8 format."
+    )
+
+
 class RSASigner:
     def __init__(self, private_key):
         key_bytes = private_key.encode('utf8')
@@ -310,3 +347,34 @@ class RSASigner:
             RSASignatureAlgorithm.PKCS1_5_SHA1,
             hashlib.sha1(message).digest()
         )
+
+
+class ECDSASigner:
+    _P256_COORDINATE_LENGTH = 32
+
+    def __init__(self, private_key):
+        try:
+            der_bytes = _pem_to_der(private_key)
+            self.priv_key = EC.new_key_from_der_data(der_bytes)
+        except (RuntimeError, ValueError) as e:
+            raise ValueError(
+                "Failed to load EC private key. Ensure the key is a valid "
+                "EC private key in SEC1 or PKCS#8 PEM format."
+            ) from e
+        coords = self.priv_key.get_public_coords()
+        if len(coords.x) > self._P256_COORDINATE_LENGTH:
+            raise ValueError(
+                "Only P-256 EC keys are supported for CloudFront signing. "
+                "The provided key appears to use a different curve."
+            )
+
+    def sign(self, message):
+        return self.priv_key.sign(hashlib.sha256(message).digest())
+
+
+def _pem_to_der(pem):
+    """Strip the PEM armor and base64-decode the body to raw DER bytes."""
+    body = ''.join(
+        line for line in pem.splitlines() if '-----' not in line
+    )
+    return base64.b64decode(body)

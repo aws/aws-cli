@@ -11,8 +11,6 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 
-from decimal import Decimal
-
 from botocore import model
 from botocore.exceptions import PaginationError
 from botocore.paginate import (
@@ -1657,11 +1655,6 @@ class TestDeepAddNumeric(unittest.TestCase):
         _deep_add_numeric(acc, {'Flag': True})
         self.assertEqual(acc, {'Flag': True})
 
-    def test_sums_decimal_values(self):
-        acc = {'CapacityUnits': Decimal('100.5')}
-        _deep_add_numeric(acc, {'CapacityUnits': Decimal('101.5')})
-        self.assertEqual(acc, {'CapacityUnits': Decimal('202.0')})
-
     def test_deep_copies_new_list_leaves(self):
         # A list leaf introduced by a later page must not alias the source.
         source = ['a']
@@ -1814,18 +1807,6 @@ class TestAggregateNumericKeys(unittest.TestCase):
         ]
         result = self.paginator.paginate().build_full_result()
         self.assertEqual(result['ConsumedCapacity'], 202.0)
-
-    def test_sums_scalar_decimal_member_across_pages(self):
-        self.method.side_effect = [
-            {
-                'Items': ['a'],
-                'ConsumedCapacity': Decimal('1.5'),
-                'NextToken': 'tok',
-            },
-            {'Items': ['b'], 'ConsumedCapacity': Decimal('2.5')},
-        ]
-        result = self.paginator.paginate().build_full_result()
-        self.assertEqual(result['ConsumedCapacity'], Decimal('4.0'))
 
     def test_does_not_sum_scalar_boolean_member(self):
         # A boolean must never be summed; keep the first page's value.

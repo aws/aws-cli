@@ -14,7 +14,6 @@
 import base64
 import json
 import logging
-import numbers
 from copy import deepcopy
 from functools import partial
 from itertools import tee
@@ -30,11 +29,12 @@ log = logging.getLogger(__name__)
 
 
 def _is_summable_number(value):
-    # Accept any number (int, float, and decimal.Decimal, which DynamoDB
-    # numbers can be parsed as). numbers.Number is used rather than
-    # numbers.Real because Decimal registers as Number but NOT as Real.
-    # Booleans are ints in Python but should never be summed as numbers.
-    return isinstance(value, numbers.Number) and not isinstance(value, bool)
+    # Match the numeric types used by the existing result_key aggregation
+    # (int, float). Strings are intentionally excluded here (unlike that path,
+    # which concatenates them) so string leaves such as TableName are kept
+    # from the first page rather than concatenated. Booleans are ints in
+    # Python but should never be summed as numbers.
+    return isinstance(value, (int, float)) and not isinstance(value, bool)
 
 
 def _deep_add_numeric(accumulator, new_value):

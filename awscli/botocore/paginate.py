@@ -37,37 +37,46 @@ def _is_summable_number(value):
     return isinstance(value, (int, float)) and not isinstance(value, bool)
 
 
-def _deep_add_numeric(accumulator, new_value, summable_leaf_names):
-    """Recursively sum selected numeric leaves of ``new_value`` into ``accumulator``.
+def _add_numeric_path(accumulator, page_value, segments):
+    """Add the numeric leaf at ``segments`` from ``page_value`` into ``accumulator``.
 
-    This is used to aggregate response members that are dicts of numbers
-    (and nested dicts of numbers) across paginated responses, for example
-    DynamoDB's ``ConsumedCapacity``. Nested dicts are merged recursively (which
-    handles maps keyed by runtime-defined names such as
-    ``GlobalSecondaryIndexes``/``LocalSecondaryIndexes``).
+    ``segments`` is an explicit path within a response member, e.g.
+    ``('CapacityUnits',)``, ``('Table', 'CapacityUnits')``, or
+    ``('GlobalSecondaryIndexes', '*', 'CapacityUnits')``. A ``'*'`` segment
+    matches every key at that level (for maps keyed by runtime-defined names
+    such as index names); every other segment is matched literally.
 
-    Only numeric leaves whose key is in ``summable_leaf_names`` are summed. This
-    is an allowlist: any other leaf (a string like ``TableName``, or a numeric
-    field not named in the allowlist) is preserved from the first page it
-    appears on, rather than being auto-aggregated. Booleans are never summed.
+    Only the exact leaf named by the full path is summed — this is a strict,
+    path-based allowlist. Intermediate keys seen for the first time (e.g. a new
+    index name on a later page) are seeded by deep-copy; anything not on a
+    configured path is left untouched (it was seeded from the first page).
+    Booleans and cross-page type mismatches are never summed.
     """
-    for key, value in new_value.items():
-        if key not in accumulator:
-            # First time we've seen this leaf. Deep-copy mutable containers so
-            # the aggregate never aliases (and later mutates) a source page.
+    if not isinstance(page_value, dict) or not isinstance(accumulator, dict):
+        return
+    seg, rest = segments[0], segments[1:]
+    keys = (
+        list(page_value)
+        if seg == '*'
+        else ([seg] if seg in page_value else [])
+    )
+    for key in keys:
+        value = page_value[key]
+        if rest:
+            if key not in accumulator:
+                # First time this (possibly dynamic) key appears; seed subtree.
+                accumulator[key] = deepcopy(value)
+            else:
+                _add_numeric_path(accumulator[key], value, rest)
+        elif key not in accumulator:
             accumulator[key] = (
                 deepcopy(value) if isinstance(value, (dict, list)) else value
             )
-        elif isinstance(value, dict) and isinstance(accumulator[key], dict):
-            _deep_add_numeric(accumulator[key], value, summable_leaf_names)
-        elif (
-            key in summable_leaf_names
-            and _is_summable_number(value)
-            and _is_summable_number(accumulator[key])
+        elif _is_summable_number(value) and _is_summable_number(
+            accumulator[key]
         ):
             accumulator[key] = accumulator[key] + value
-        # Everything else (non-allowlisted numeric leaf, string, or cross-page
-        # type mismatch): keep the first page's value.
+        # else: non-numeric or cross-page type mismatch -> keep first value.
 
 
 class TokenEncoder:
@@ -537,24 +546,35 @@ class PageIterator:
             # uses. We can remove it though once operation objects are removed.
             if isinstance(response, tuple) and len(response) == 2:
                 page = response[1]
-            for key, leaf_names in self._aggregate_numeric_keys.items():
-                page_value = page.get(key)
+            for member, paths in self._aggregate_numeric_keys.items():
+                page_value = page.get(member)
                 if page_value is None:
                     continue
-                if key not in aggregate_numeric_totals:
-                    aggregate_numeric_totals[key] = deepcopy(page_value)
-                elif isinstance(page_value, dict) and isinstance(
-                    aggregate_numeric_totals[key], dict
-                ):
-                    _deep_add_numeric(
-                        aggregate_numeric_totals[key], page_value, leaf_names
+                if member not in aggregate_numeric_totals:
+                    # Seed the whole member from the first page it appears on;
+                    # later pages only add the configured leaf paths, so any
+                    # field NOT on a path keeps this first-page value.
+                    aggregate_numeric_totals[member] = (
+                        deepcopy(page_value)
+                        if isinstance(page_value, (dict, list))
+                        else page_value
                     )
-                elif _is_summable_number(page_value) and _is_summable_number(
-                    aggregate_numeric_totals[key]
+                elif isinstance(page_value, dict) and isinstance(
+                    aggregate_numeric_totals[member], dict
                 ):
-                    # The whole member is a bare number (not a dict). Opting the
-                    # member in via config is itself the allowlist decision.
-                    aggregate_numeric_totals[key] += page_value
+                    for segments in paths:
+                        if segments:
+                            _add_numeric_path(
+                                aggregate_numeric_totals[member],
+                                page_value,
+                                segments,
+                            )
+                elif _is_summable_number(page_value) and _is_summable_number(
+                    aggregate_numeric_totals[member]
+                ):
+                    # The whole member is a bare number (opted in as a path with
+                    # no leaf, e.g. just "SomeCount").
+                    aggregate_numeric_totals[member] += page_value
                 # Any other/unexpected shape: keep the first page's value.
             # We're incrementally building the full response page
             # by page.  For each page in the response we need to
@@ -709,18 +729,19 @@ class Paginator:
         return False
 
     def _get_aggregate_numeric_keys(self, config):
-        # Maps a top-level response member to the set of leaf field-names whose
-        # numeric values are summed (recursively, so nested/dynamic-key maps
-        # like GlobalSecondaryIndexes are covered). This is an allowlist: only
-        # the named leaves are totaled; any other leaf (strings, or numbers not
-        # named here) is preserved from the first page rather than summed.
-        # Unlike ``result_key`` these members may be (nested) dicts, and unlike
-        # ``non_aggregate_keys`` the named leaves are totaled across pages.
-        config_value = config.get('aggregate_numeric_keys', {})
-        return {
-            member: frozenset(leaf_names)
-            for member, leaf_names in config_value.items()
-        }
+        # A list of explicit dotted paths to numeric leaves that are summed
+        # across pages, e.g. "ConsumedCapacity.CapacityUnits" or
+        # "ConsumedCapacity.GlobalSecondaryIndexes.*.CapacityUnits" (a "*"
+        # segment matches every key at that level, for maps keyed by
+        # runtime-defined names). This is a strict allowlist: only the exact
+        # leaf at each full path is totaled; any other field (strings, or
+        # numbers on a path that is not configured) is preserved from the first
+        # page. Parsed into member -> list of segment-tuples (after the member).
+        paths = {}
+        for path in config.get('aggregate_numeric_keys', []):
+            segments = path.split('.')
+            paths.setdefault(segments[0], []).append(tuple(segments[1:]))
+        return paths
 
     def _get_output_tokens(self, config):
         output = []

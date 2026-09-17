@@ -175,30 +175,29 @@ def test_lint_pagination_configs(
 
 
 def _validate_aggregate_numeric_keys(operation_name, page_config):
-    # aggregate_numeric_keys maps a top-level output member name to a list of
-    # leaf field-names to sum. The member must be a top-level member (a nested
-    # path like "ConsumedCapacity.Table" would silently never aggregate at
-    # runtime, since build_full_result uses page.get(member)); leaf names are
-    # matched by key anywhere in the subtree, so they must be bare field names.
-    config_value = page_config.get('aggregate_numeric_keys', {})
-    if not isinstance(config_value, dict):
+    # aggregate_numeric_keys is a list of explicit dotted paths to the numeric
+    # leaves to sum, e.g. "ConsumedCapacity.CapacityUnits" or
+    # "ConsumedCapacity.GlobalSecondaryIndexes.*.CapacityUnits". A "*" matches
+    # every key at that level and may only appear as an interior segment (not
+    # the top-level member, which must be a real output member, nor the leaf).
+    config_value = page_config.get('aggregate_numeric_keys', [])
+    if not isinstance(config_value, list):
         raise AssertionError(
             f"aggregate_numeric_keys for operation {operation_name} must be a "
-            "map of member name -> list of leaf field-names."
+            "list of dotted leaf paths."
         )
-    for member, leaf_names in config_value.items():
-        if '.' in member:
+    for path in config_value:
+        segments = path.split('.')
+        if segments[0] == '*':
             raise AssertionError(
-                f"aggregate_numeric_keys member '{member}' for operation "
-                f"{operation_name} must be a top-level output member name, "
-                "not a nested path."
+                f"aggregate_numeric_keys path '{path}' for operation "
+                f"{operation_name} must start with a top-level output member, "
+                "not '*'."
             )
-        if not isinstance(leaf_names, list) or not all(
-            isinstance(n, str) and '.' not in n for n in leaf_names
-        ):
+        if segments[-1] == '*':
             raise AssertionError(
-                f"aggregate_numeric_keys['{member}'] for operation "
-                f"{operation_name} must be a list of bare leaf field-names."
+                f"aggregate_numeric_keys path '{path}' for operation "
+                f"{operation_name} must end with a leaf field-name, not '*'."
             )
 
 
@@ -353,20 +352,25 @@ def _get_all_page_output_keys(page_config):
         yield 'output_token', key
     if 'more_results' in page_config:
         yield 'more_results', page_config['more_results']
-    aggregate_numeric_keys = page_config.get('aggregate_numeric_keys', [])
+    # aggregate_numeric_keys is a list of dotted paths; only the top-level
+    # member of each path is an output member to account for.
+    aggregate_members = {
+        path.split('.')[0]
+        for path in page_config.get('aggregate_numeric_keys', [])
+    }
     for key in page_config.get('non_aggregate_keys', []):
-        # A member declared under aggregate_numeric_keys is aggregated across
-        # pages and takes precedence over any non_aggregate declaration for the
-        # same member (mirroring Paginator._get_non_aggregate_keys). Skip it
-        # here so it is only accounted for once.
+        # A member that is aggregated across pages takes precedence over any
+        # non_aggregate declaration for the same member (mirroring
+        # Paginator._get_non_aggregate_keys). Skip it here so it is only
+        # accounted for once.
         if any(
-            key == agg or key.startswith(f'{agg}.')
-            for agg in aggregate_numeric_keys
+            key == member or key.startswith(f'{member}.')
+            for member in aggregate_members
         ):
             continue
         yield 'non_aggregate_keys', key
-    for key in aggregate_numeric_keys:
-        yield 'aggregate_numeric_keys', key
+    for member in aggregate_members:
+        yield 'aggregate_numeric_keys', member
 
 
 def _get_list_value(page_config, key):

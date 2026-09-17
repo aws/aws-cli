@@ -18,7 +18,7 @@ from botocore.paginate import (
     PaginatorModel,
     TokenDecoder,
     TokenEncoder,
-    _deep_add_numeric,
+    _add_numeric_path,
 )
 
 from tests import mock, unittest
@@ -1622,94 +1622,84 @@ class TestStringPageSize(unittest.TestCase):
         self.method.assert_called_with(MaxItems='1')
 
 
-class TestDeepAddNumeric(unittest.TestCase):
-    LEAVES = frozenset(
-        {'CapacityUnits', 'ReadCapacityUnits', 'WriteCapacityUnits'}
-    )
-
-    def test_sums_numeric_leaves(self):
+class TestAddNumericPath(unittest.TestCase):
+    def test_sums_leaf(self):
         acc = {'CapacityUnits': 100.0}
-        _deep_add_numeric(acc, {'CapacityUnits': 102.5}, self.LEAVES)
+        _add_numeric_path(acc, {'CapacityUnits': 102.5}, ('CapacityUnits',))
         self.assertEqual(acc, {'CapacityUnits': 202.5})
 
-    def test_recurses_into_nested_dicts(self):
+    def test_sums_nested_static_path(self):
         acc = {'Table': {'CapacityUnits': 1.0}}
-        _deep_add_numeric(acc, {'Table': {'CapacityUnits': 2.0}}, self.LEAVES)
+        _add_numeric_path(
+            acc, {'Table': {'CapacityUnits': 2.0}}, ('Table', 'CapacityUnits')
+        )
         self.assertEqual(acc, {'Table': {'CapacityUnits': 3.0}})
 
-    def test_sums_maps_with_runtime_defined_keys(self):
-        # e.g. GlobalSecondaryIndexes keyed by a user-chosen index name.
-        acc = {'GlobalSecondaryIndexes': {'my-index': {'CapacityUnits': 5.0}}}
-        _deep_add_numeric(
+    def test_wildcard_sums_dynamic_key(self):
+        acc = {'GSI': {'idx': {'CapacityUnits': 5.0}}}
+        _add_numeric_path(
             acc,
-            {'GlobalSecondaryIndexes': {'my-index': {'CapacityUnits': 7.0}}},
-            self.LEAVES,
+            {'GSI': {'idx': {'CapacityUnits': 7.0}}},
+            ('GSI', '*', 'CapacityUnits'),
+        )
+        self.assertEqual(acc, {'GSI': {'idx': {'CapacityUnits': 12.0}}})
+
+    def test_wildcard_seeds_new_dynamic_key(self):
+        # An index first seen on a later page is seeded, not skipped.
+        acc = {'GSI': {'idx1': {'CapacityUnits': 5.0}}}
+        _add_numeric_path(
+            acc,
+            {
+                'GSI': {
+                    'idx1': {'CapacityUnits': 1.0},
+                    'idx2': {'CapacityUnits': 9.0},
+                }
+            },
+            ('GSI', '*', 'CapacityUnits'),
         )
         self.assertEqual(
             acc,
-            {'GlobalSecondaryIndexes': {'my-index': {'CapacityUnits': 12.0}}},
+            {
+                'GSI': {
+                    'idx1': {'CapacityUnits': 6.0},
+                    'idx2': {'CapacityUnits': 9.0},
+                }
+            },
         )
 
-    def test_preserves_strings(self):
-        acc = {'TableName': 'T'}
-        _deep_add_numeric(acc, {'TableName': 'T'}, self.LEAVES)
-        self.assertEqual(acc, {'TableName': 'T'})
-
-    def test_does_not_sum_booleans(self):
-        # Even if the leaf name is allowlisted, booleans are never summed.
-        acc = {'Flag': True}
-        _deep_add_numeric(acc, {'Flag': True}, frozenset({'Flag'}))
-        self.assertEqual(acc, {'Flag': True})
-
-    def test_does_not_sum_non_allowlisted_numeric_leaf(self):
-        # A numeric leaf whose name is NOT in the allowlist is preserved from
-        # the first page, not auto-aggregated.
-        acc = {'SomeRate': 5.0}
-        _deep_add_numeric(acc, {'SomeRate': 7.0}, self.LEAVES)
-        self.assertEqual(acc, {'SomeRate': 5.0})
-
-    def test_deep_copies_new_list_leaves(self):
-        # A list leaf introduced by a later page must not alias the source.
-        source = ['a']
-        acc = {}
-        _deep_add_numeric(acc, {'Names': source}, self.LEAVES)
-        acc['Names'].append('b')
-        self.assertEqual(source, ['a'])
-
-    def test_adds_new_keys_from_later_pages(self):
-        acc = {'CapacityUnits': 1.0}
-        _deep_add_numeric(
-            acc, {'CapacityUnits': 1.0, 'TableName': 'T'}, self.LEAVES
+    def test_does_not_touch_unconfigured_sibling(self):
+        # The AemousCapacity case: a numeric leaf NOT on a configured path is
+        # left as the first-page value, even though its leaf name matches an
+        # aggregated one elsewhere.
+        acc = {
+            'CapacityUnits': 100.0,
+            'AemousCapacity': {'CapacityUnits': 123.0},
+        }
+        _add_numeric_path(
+            acc,
+            {
+                'CapacityUnits': 102.0,
+                'AemousCapacity': {'CapacityUnits': 123.0},
+            },
+            ('CapacityUnits',),
         )
-        self.assertEqual(acc, {'CapacityUnits': 2.0, 'TableName': 'T'})
+        self.assertEqual(acc['CapacityUnits'], 202.0)
+        self.assertEqual(acc['AemousCapacity'], {'CapacityUnits': 123.0})
 
-    def test_deep_copies_new_dict_leaves(self):
-        # A dict leaf introduced by a later page must not alias the source.
-        source = {'CapacityUnits': 1.0}
-        acc = {}
-        _deep_add_numeric(acc, {'Index': source}, self.LEAVES)
-        acc['Index']['CapacityUnits'] += 5.0
-        self.assertEqual(source['CapacityUnits'], 1.0)
+    def test_missing_path_in_page_is_noop(self):
+        acc = {'CapacityUnits': 100.0}
+        _add_numeric_path(acc, {}, ('CapacityUnits',))
+        self.assertEqual(acc, {'CapacityUnits': 100.0})
 
-    def test_type_mismatch_number_then_dict_keeps_first(self):
-        acc = {'CapacityUnits': 5.0}
-        _deep_add_numeric(acc, {'CapacityUnits': {'x': 1.0}}, self.LEAVES)
-        self.assertEqual(acc, {'CapacityUnits': 5.0})
-
-    def test_type_mismatch_string_then_number_keeps_first(self):
+    def test_type_mismatch_keeps_first(self):
         acc = {'CapacityUnits': 'T'}
-        _deep_add_numeric(acc, {'CapacityUnits': 3.0}, self.LEAVES)
+        _add_numeric_path(acc, {'CapacityUnits': 3.0}, ('CapacityUnits',))
         self.assertEqual(acc, {'CapacityUnits': 'T'})
 
-    def test_type_mismatch_none_then_number_keeps_first(self):
-        acc = {'CapacityUnits': None}
-        _deep_add_numeric(acc, {'CapacityUnits': 3.0}, self.LEAVES)
-        self.assertEqual(acc, {'CapacityUnits': None})
-
-    def test_type_mismatch_none_then_dict_keeps_first(self):
-        acc = {'k': None}
-        _deep_add_numeric(acc, {'k': {'x': 1.0}}, self.LEAVES)
-        self.assertEqual(acc, {'k': None})
+    def test_does_not_sum_boolean(self):
+        acc = {'CapacityUnits': True}
+        _add_numeric_path(acc, {'CapacityUnits': True}, ('CapacityUnits',))
+        self.assertIs(acc['CapacityUnits'], True)
 
 
 class TestAggregateNumericKeys(unittest.TestCase):
@@ -1720,13 +1710,10 @@ class TestAggregateNumericKeys(unittest.TestCase):
             'output_token': 'NextToken',
             'input_token': 'NextToken',
             'result_key': 'Items',
-            'aggregate_numeric_keys': {
-                'ConsumedCapacity': [
-                    'CapacityUnits',
-                    'ReadCapacityUnits',
-                    'WriteCapacityUnits',
-                ]
-            },
+            'aggregate_numeric_keys': [
+                'ConsumedCapacity.CapacityUnits',
+                'ConsumedCapacity.GlobalSecondaryIndexes.*.CapacityUnits',
+            ],
         }
         self.paginator = Paginator(
             self.method, self.paginate_config, self.model
@@ -1736,13 +1723,10 @@ class TestAggregateNumericKeys(unittest.TestCase):
         self.assertEqual(
             self.paginator._aggregate_numeric_keys,
             {
-                'ConsumedCapacity': frozenset(
-                    {
-                        'CapacityUnits',
-                        'ReadCapacityUnits',
-                        'WriteCapacityUnits',
-                    }
-                )
+                'ConsumedCapacity': [
+                    ('CapacityUnits',),
+                    ('GlobalSecondaryIndexes', '*', 'CapacityUnits'),
+                ]
             },
         )
 
@@ -1754,7 +1738,7 @@ class TestAggregateNumericKeys(unittest.TestCase):
             'input_token': 'NextToken',
             'result_key': 'Items',
             'non_aggregate_keys': ['ConsumedCapacity', 'SomethingElse'],
-            'aggregate_numeric_keys': {'ConsumedCapacity': ['CapacityUnits']},
+            'aggregate_numeric_keys': ['ConsumedCapacity.CapacityUnits'],
         }
         paginator = Paginator(self.method, config, self.model)
         kept = [k.expression for k in paginator._non_aggregate_keys]
@@ -1768,7 +1752,7 @@ class TestAggregateNumericKeys(unittest.TestCase):
             'input_token': 'NextToken',
             'result_key': 'Items',
             'non_aggregate_keys': ['ConsumedCapacity.TableName', 'Other'],
-            'aggregate_numeric_keys': {'ConsumedCapacity': ['CapacityUnits']},
+            'aggregate_numeric_keys': ['ConsumedCapacity.CapacityUnits'],
         }
         paginator = Paginator(self.method, config, self.model)
         kept = [k.expression for k in paginator._non_aggregate_keys]
@@ -1782,7 +1766,7 @@ class TestAggregateNumericKeys(unittest.TestCase):
             'input_token': 'NextToken',
             'result_key': 'Items',
             'non_aggregate_keys': ['ConsumedCapacity'],
-            'aggregate_numeric_keys': {'ConsumedCapacity': ['CapacityUnits']},
+            'aggregate_numeric_keys': ['ConsumedCapacity.CapacityUnits'],
         }
         paginator = Paginator(self.method, config, self.model)
         self.method.side_effect = [
@@ -1796,23 +1780,33 @@ class TestAggregateNumericKeys(unittest.TestCase):
         result = paginator.paginate().build_full_result()
         self.assertEqual(result['ConsumedCapacity']['CapacityUnits'], 202.0)
 
-    def test_non_allowlisted_numeric_leaf_not_summed_end_to_end(self):
-        # A numeric field under the member that is not in the allowlist must be
-        # preserved from the first page, not summed.
+    def test_unconfigured_nested_leaf_not_summed_end_to_end(self):
+        # The exact concern: a NEW nested numeric field (AemousCapacity) whose
+        # leaf name matches an aggregated one must NOT be summed, because its
+        # full path is not configured.
         self.method.side_effect = [
             {
                 'Items': ['a'],
-                'ConsumedCapacity': {'CapacityUnits': 100.0, 'SomeRate': 7.0},
+                'ConsumedCapacity': {
+                    'CapacityUnits': 100.0,
+                    'AemousCapacity': {'CapacityUnits': 123.0},
+                },
                 'NextToken': 'tok',
             },
             {
                 'Items': ['b'],
-                'ConsumedCapacity': {'CapacityUnits': 102.0, 'SomeRate': 9.0},
+                'ConsumedCapacity': {
+                    'CapacityUnits': 102.0,
+                    'AemousCapacity': {'CapacityUnits': 123.0},
+                },
             },
         ]
         cc = self.paginator.paginate().build_full_result()['ConsumedCapacity']
-        self.assertEqual(cc['CapacityUnits'], 202.0)  # allowlisted -> summed
-        self.assertEqual(cc['SomeRate'], 7.0)  # not allowlisted -> first page
+        self.assertEqual(
+            cc['CapacityUnits'], 202.0
+        )  # configured path -> summed
+        # Not on a configured path -> kept from first page, not doubled.
+        self.assertEqual(cc['AemousCapacity'], {'CapacityUnits': 123.0})
 
     def test_sums_across_pages(self):
         self.method.side_effect = [

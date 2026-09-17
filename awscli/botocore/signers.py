@@ -358,7 +358,7 @@ class RequestSigner:
 class CloudFrontSigner:
     '''A signer to create a signed CloudFront URL.
 
-    First you create a cloudfront signer based on a normalized RSA signer::
+    First you create a cloudfront signer based on a normalized signer::
 
         import rsa
         def rsa_signer(message):
@@ -366,7 +366,7 @@ class CloudFrontSigner:
             return rsa.sign(
                 message,
                 rsa.PrivateKey.load_pkcs1(private_key.encode('utf8')),
-                'SHA-1')  # CloudFront requires SHA-1 hash
+                'SHA-1')  # RSA uses SHA-1; ECDSA (P-256) uses SHA-256
         cf_signer = CloudFrontSigner(key_id, rsa_signer)
 
     To sign with a canned policy::
@@ -386,10 +386,12 @@ class CloudFrontSigner:
         :param key_id: The CloudFront Key Pair ID
 
         :type rsa_signer: callable
-        :param rsa_signer: An RSA signer.
+        :param rsa_signer: An RSA or ECDSA signer.
                Its only input parameter will be the message to be signed,
                and its output will be the signed content as a binary string.
-               The hash algorithm needed by CloudFront is SHA-1.
+               CloudFront requires a SHA-1 hash for RSA keys and a SHA-256
+               hash for ECDSA keys. Name is kept as ``rsa_signer`` for backward
+               compatibility.
         """
         self.key_id = key_id
         self.rsa_signer = rsa_signer

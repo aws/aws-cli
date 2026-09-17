@@ -25,7 +25,7 @@ from botocore.exceptions import (
 from botocore.session import Session
 from s3transfer.constants import GB
 from s3transfer.exceptions import TransferNotDoneError
-from s3transfer.utils import CallArgs
+from s3transfer.utils import CallArgs, OSUtils
 
 from tests import HAS_CRT, FileCreator, mock, requires_crt, unittest
 
@@ -876,3 +876,42 @@ class TestCreateS3CRTClient:
             mock_s3_crt_client.call_args[1]['fio_options'].direct_io
             is direct_io
         )
+
+
+@requires_crt_pytest
+class TestRenameTempFileHandler:
+    @pytest.fixture
+    def coordinator(self):
+        return s3transfer.crt.CRTTransferCoordinator()
+
+    @pytest.fixture
+    def osutil(self):
+        return mock.Mock(spec=OSUtils)
+
+    @pytest.fixture
+    def handler(self, coordinator, osutil):
+        return s3transfer.crt.RenameTempFileHandler(
+            coordinator, 'final', 'temp', osutil
+        )
+
+    def test_renames_temp_file(self, handler, osutil):
+        handler(error=None)
+        osutil.rename_file.assert_called_once_with('temp', 'final')
+
+    def test_removes_temp_file_on_transfer_error(self, handler, osutil):
+        handler(error=Exception('transfer failed'))
+        osutil.remove_file.assert_called_once_with('temp')
+        assert not osutil.rename_file.called
+
+    def test_surfaces_rename_error(self, coordinator, handler, osutil):
+        osutil.rename_file.side_effect = OSError('Is a directory')
+        # The handler runs as an on done callback, so the transfer is already
+        # complete by the time the rename fails.
+        coordinator.complete()
+        assert coordinator.done()
+
+        handler(error=None)
+
+        osutil.remove_file.assert_called_once_with('temp')
+        with pytest.raises(OSError):
+            coordinator.result()

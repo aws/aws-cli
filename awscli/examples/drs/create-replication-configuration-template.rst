@@ -5,7 +5,7 @@ The following ``create-replication-configuration-template`` example creates a re
     aws drs create-replication-configuration-template \
         --staging-area-subnet-id subnet-0123456789abcdef0 \
         --associate-default-security-group \
-        --replication-servers-security-groups-i-ds sg-0123456789abcdef0 \
+        --replication-servers-security-groups-ids sg-0123456789abcdef0 \
         --replication-server-instance-type t3.small \
         --ebs-encryption DEFAULT \
         --data-plane-routing PUBLIC_IP \

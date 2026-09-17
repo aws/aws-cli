@@ -1699,8 +1699,11 @@ class RenameTempFileHandler:
                 )
             except Exception as e:
                 self._osutil.remove_file(self._temp_filename)
-                # the CRT future has done already at this point
-                self._coordinator.set_exception(e)
+                # This runs as an on_done callback, so the transfer is already
+                # marked complete and the exception has to override that
+                # result. Otherwise the download reports success having
+                # written nothing.
+                self._coordinator.set_exception(e, override=True)
 
 
 class AfterDoneHandler:

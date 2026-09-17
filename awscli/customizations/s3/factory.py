@@ -43,8 +43,10 @@ LOGGER = logging.getLogger(__name__)
 ADAPTIVE_RETRY_MODE = 'adaptive'
 
 # A max_retries of 0 configures the crt client's own retry count instead of
-# disabling retries, so it cannot honor a single attempt.
+# disabling retries, so it cannot honor a single attempt. It also rejects a
+# max_retries of 64 or more outright.
 MIN_CRT_MAX_ATTEMPTS = 2
+MAX_CRT_MAX_ATTEMPTS = 64
 
 # Throughput target, in gigabits per second, for hosts the crt client has not
 # been tuned for. Staying at 4 keeps it in its smallest memory pool tier.
@@ -216,13 +218,22 @@ class TransferManagerFactory:
             unsupported.append(f'retry_mode = {ADAPTIVE_RETRY_MODE}')
         if self._is_non_seekable_stream_upload(params):
             unsupported.append('uploads from a non-seekable stream')
-        if self._is_retries_disabled(runtime_config):
-            unsupported.append('max_attempts = 1')
+        if unsupported_attempts := self._get_unsupported_max_attempts(
+            runtime_config
+        ):
+            unsupported.append(unsupported_attempts)
         return unsupported
 
-    def _is_retries_disabled(self, runtime_config):
+    def _get_unsupported_max_attempts(self, runtime_config):
         max_attempts = self._resolve_max_attempts(runtime_config)
-        return max_attempts is not None and max_attempts < MIN_CRT_MAX_ATTEMPTS
+        if max_attempts is None or (
+            MIN_CRT_MAX_ATTEMPTS <= max_attempts <= MAX_CRT_MAX_ATTEMPTS
+        ):
+            return None
+        return (
+            f'max_attempts = {max_attempts} (must be between '
+            f'{MIN_CRT_MAX_ATTEMPTS} and {MAX_CRT_MAX_ATTEMPTS})'
+        )
 
     def _resolve_max_attempts(self, runtime_config):
         config_store = self._session.get_component('config_store')
@@ -281,8 +292,10 @@ class TransferManagerFactory:
         if client_type == constants.CRT_TRANSFER_CLIENT:
             if self._is_adaptive_retry_mode():
                 unsupported.append(f'retry_mode = {ADAPTIVE_RETRY_MODE}')
-            if self._is_retries_disabled(runtime_config):
-                unsupported.append('max_attempts = 1')
+            if unsupported_attempts := self._get_unsupported_max_attempts(
+                runtime_config
+            ):
+                unsupported.append(unsupported_attempts)
         if not unsupported:
             return
         uni_print(
@@ -392,7 +405,9 @@ class TransferManagerFactory:
             # passed to opt into the CRT's dynamic part size calculation.
             kwargs['part_size'] = None
         max_attempts = self._resolve_max_attempts(runtime_config)
-        if max_attempts is not None and max_attempts >= MIN_CRT_MAX_ATTEMPTS:
+        if max_attempts is not None and (
+            MIN_CRT_MAX_ATTEMPTS <= max_attempts <= MAX_CRT_MAX_ATTEMPTS
+        ):
             kwargs['retry_options'] = {'max_retries': max_attempts - 1}
         return kwargs
 

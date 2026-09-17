@@ -2,6 +2,29 @@
 CHANGELOG
 =========
 
+2.36.48
+=======
+
+* bugfix:crt: Return error when final rename task fails on downloads
+* api-change:``iotwireless``: Adds Multi-frame GNSS support to the AWS IoT Core Device Location GetPositionEstimate API. The new GnssMultiFrame measurement type improves location accuracy by combining multiple GNSS signal captures (2, 4, 8, 16, or 32) from the same device to estimate its position.
+* enhancement:``s3``: Follow bucket region redirects for the ``s3`` commands when CRT is enabled.
+* api-change:``ec2``: Adding support for "Tunnel" VPC Endpoint
+* api-change:``vpc-lattice``: Adding support for CIDR Resource Configuration
+* enhancement:awscrt: Update awscrt to version 0.36.4
+* enhancement:crt: Set lower 4gbps target throughput default for non-EC2 hosts.
+* enhancement:crt: Configure CRT client to download with single GET when object size is below ``multipart_threshold``
+* enhancement:crt: Pass resolved ``max_attempts`` value to the CRT client.
+* api-change:``bedrock-agentcore``: Batch evaluation now supports evaluating specific traces within a session. Each session can specify up to 100 trace IDs to evaluate.
+* api-change:``notifications``: Added support for attachments on managed notification events. Added support to access and subscribe sensitive managed notification events.
+* enhancement:crt: Enforce minimum 10gbps target throughput for explicitly configured crt environments
+* api-change:``sesv2``: Added support to query the tenant name for BatchGetMetricData and CreateExportJob APIs to filter metrics and messages at the tenant level.
+* enhancement:crt: Support ``multipart_threshold`` (upload only) and ``max_concurrent_requests`` config options for CRT client.
+* api-change:``socialmessaging``: Add support for WhatsApp Calling APIs.
+* api-change:``sns``: SNS API reference documentation update
+* api-change:``connect``: Made the replicaAlias attribute optional in the ReplicateInstance API to support Global routing for Amazon Connect Global Resiliency (ACGR) instances. This change maintains backward compatibility. When onboarding to ACGR without Global routing, you must specify a custom replicaAlias in your API call
+* api-change:``guardduty``: This change surfaces AI Protection resources on existing public IAM attack sequences. Customers will now see which model was accessed and whether a guardrail intervened as part of the credential-compromise sequence.
+
+
 2.36.47
 =======
 

@@ -338,6 +338,17 @@ class TestHelpFlagOutput(BaseAWSHelpOutputTest):
         )
         self.assert_contains('cp')
 
+    def test_help_flag_before_modeled_operation(self):
+        # --help before the operation should still show operation help.
+        self.driver.main(['s3api', '--help', 'put-object'])
+        self.assert_contains('put-object')
+
+    def test_help_flag_before_modeled_service(self):
+        # --help before the service should still show the deepest
+        # recognized command's help.
+        self.driver.main(['--help', 's3api', 'put-object'])
+        self.assert_contains('put-object')
+
     def test_help_flag_with_invalid_top_level_command(self):
         stderr = StringIO()
         with mock.patch('sys.stderr', stderr):

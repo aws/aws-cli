@@ -60,6 +60,50 @@ class CommandAction(argparse.Action):
         pass
 
 
+
+class _HelpFlagResolver(argparse.ArgumentParser):
+    """Minimal parser that detects --help (and abbreviations like --hel, --he).
+
+    This is used as a first pass before the real parse so that argparse
+    handles abbreviation matching consistently with all other flags.
+    """
+
+    def __init__(self):
+        super().__init__(add_help=False)
+        self.add_argument(
+            '--help', action='store_true', default=False, dest='help_flag'
+        )
+
+    def error(self, message):
+        raise ArgParseException(message)
+
+
+_HELP_RESOLVER = _HelpFlagResolver()
+
+
+def detect_help_flag(args):
+    """Detect and strip --help (and abbreviations) from args.
+
+    Returns (remaining_args, help_detected).  When --help is present the
+    flag is removed from the arg list but is *not* replaced with the
+    positional ``help`` token.  Callers are responsible for routing to
+    the appropriate help rendering.
+
+    --help is intercepted here rather than handled by argparse because
+    it must take priority over all other argument validation.  If --help
+    were a normal parser argument, a preceding value-taking flag (e.g.
+    ``--query --help``) could consume it as that flag's value, or the
+    parser could reject it due to missing required positional args.
+    By stripping it early, we guarantee that --help always renders help
+    regardless of what else is in the arg list.
+    """
+    try:
+        parsed, remaining = _HELP_RESOLVER.parse_known_args(args)
+    except ArgParseException:
+        return args, False
+    return remaining, parsed.help_flag
+
+
 class CLIArgParser(argparse.ArgumentParser):
     Formatter = argparse.RawTextHelpFormatter
 

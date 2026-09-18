@@ -11,6 +11,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import os
+import socket
 import threading
 import webbrowser
 
@@ -142,6 +143,31 @@ class TestDoSSOLogin(unittest.TestCase):
         self.assert_token_cache_was_filled()
         # Handler should not have been invoked as client was pre-authorized
         self.on_pending_authorization_mock.assert_not_called()
+
+    def test_do_sso_login_passes_redirect_port_to_auth_code_fetcher(self):
+        with mock.patch(
+            'awscli.customizations.sso.utils.AuthCodeFetcher'
+        ) as auth_code_fetcher:
+            with mock.patch(
+                'awscli.customizations.sso.utils.SSOTokenFetcherAuth'
+            ) as token_fetcher:
+                do_sso_login(
+                    session=self.session,
+                    sso_region=self.region,
+                    parsed_globals=mock.Mock(),
+                    start_url=self.start_url,
+                    session_name='test-session',
+                    redirect_port=34535,
+                )
+
+        auth_code_fetcher.assert_called_once_with(redirect_port=34535)
+        token_fetcher.return_value.fetch_token.assert_called_once_with(
+            start_url=self.start_url,
+            session_name='test-session',
+            force_refresh=False,
+            registration_scopes=None,
+            resolved_start_url=None,
+        )
 
 
 class BaseHandlerTest(unittest.TestCase):
@@ -330,3 +356,21 @@ def test_get_auth_code_and_state_timeout():
     """
     with pytest.raises(PendingAuthorizationExpiredError):
         AuthCodeFetcher().get_auth_code_and_state()
+
+
+def test_auth_code_fetcher_uses_redirect_port():
+    redirect_port = _get_available_port()
+    fetcher = AuthCodeFetcher(redirect_port=redirect_port)
+    try:
+        assert fetcher.http_server.server_port == redirect_port
+        assert fetcher.redirect_uri_with_port() == (
+            f'http://127.0.0.1:{redirect_port}/oauth/callback'
+        )
+    finally:
+        fetcher.http_server.server_close()
+
+
+def _get_available_port():
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
+        sock.bind(('', 0))
+        return sock.getsockname()[1]

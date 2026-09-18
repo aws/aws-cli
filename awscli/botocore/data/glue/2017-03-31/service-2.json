@@ -12452,6 +12452,10 @@
         "CreatedRulesetName":{
           "shape":"NameString",
           "documentation":"<p>The name of the ruleset that was created by the recommendation run.</p>"
+        },
+        "RecommendationMode":{
+          "shape":"RecommendationMode",
+          "documentation":"<p>The mode that Glue Data Quality uses to recommend rules.</p> <p>The default is <code>BASIC</code>.</p>"
         }
       },
       "documentation":"<p>Describes the result of a data quality rule recommendation run.</p>"
@@ -16732,7 +16736,7 @@
         },
         "Role":{
           "shape":"RoleString",
-          "documentation":"<p>An IAM role supplied to encrypt the results of the run.</p>"
+          "documentation":"<p>The IAM role that Glue assumes to access resources for the run.</p>"
         },
         "NumberOfWorkers":{
           "shape":"NullableInteger",
@@ -16781,6 +16785,10 @@
         "AdditionalRunOptions":{
           "shape":"DataQualityRuleRecommendationRunAdditionalRunOptions",
           "documentation":"<p>Additional run options you can specify for a recommendation run.</p>"
+        },
+        "RecommendationMode":{
+          "shape":"RecommendationMode",
+          "documentation":"<p>The mode that Glue Data Quality uses to recommend rules.</p> <p>The default is <code>BASIC</code>.</p>"
         }
       },
       "documentation":"<p>The response for the Data Quality rule recommendation run.</p>"
@@ -25620,6 +25628,14 @@
       "max":16,
       "min":1
     },
+    "RecommendationMode":{
+      "type":"string",
+      "documentation":"<p>Specifies the mode for how Glue Data Quality recommends rules.</p> <ul> <li> <p> <code>BASIC</code> uses an Glue job to analyze table data and recommend rules. This value is the default.</p> </li> <li> <p> <code>ADVANCED</code> uses Amazon Athena to analyze table data and Amazon Bedrock to recommend rules.</p> </li> </ul>",
+      "enum":[
+        "BASIC",
+        "ADVANCED"
+      ]
+    },
     "Record":{
       "type":"structure",
       "members":{},
@@ -28906,7 +28922,7 @@
         },
         "Role":{
           "shape":"RoleString",
-          "documentation":"<p>An IAM role supplied to encrypt the results of the run.</p>"
+          "documentation":"<p>The IAM role that Glue assumes to access resources for the run.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/glue/latest/dg/data-quality-authorization.html\">Configure IAM permissions for Glue Data Quality</a>.</p>"
         },
         "NumberOfWorkers":{
           "shape":"NullableInteger",
@@ -28931,6 +28947,10 @@
         "AdditionalRunOptions":{
           "shape":"DataQualityRuleRecommendationRunAdditionalRunOptions",
           "documentation":"<p>Additional run options you can specify for a recommendation run.</p>"
+        },
+        "RecommendationMode":{
+          "shape":"RecommendationMode",
+          "documentation":"<p>The mode that Glue Data Quality uses to recommend rules.</p> <p>The default is <code>BASIC</code>.</p>"
         }
       },
       "documentation":"<p>The request of the Data Quality rule recommendation request.</p>"

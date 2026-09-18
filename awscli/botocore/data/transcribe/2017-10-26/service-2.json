@@ -637,6 +637,23 @@
       ],
       "documentation":"<p>Updates the specified Call Analytics category with new rules. Note that the <code>UpdateCallAnalyticsCategory</code> operation overwrites all existing rules contained in the specified category. You cannot append additional rules onto an existing category.</p> <p>To create a new category, see .</p>"
     },
+    "UpdateLanguageModel":{
+      "name":"UpdateLanguageModel",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateLanguageModelRequest"},
+      "output":{"shape":"UpdateLanguageModelResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"NotFoundException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Updates the encryption configuration for an existing custom language model. You can use this operation to change the KMS key used to encrypt your model artifacts. The model artifacts are re-encrypted in place. No model training is required.</p> <p>Your custom language model must not be in the <code>IN_PROGRESS</code> state when you call this operation. You cannot submit another update while a previous update is in progress. Use to check the current state of your model.</p> <p>Your custom language model remains available for transcription jobs while the update is being processed.</p>"
+    },
     "UpdateMedicalVocabulary":{
       "name":"UpdateMedicalVocabulary",
       "http":{
@@ -669,7 +686,7 @@
         {"shape":"NotFoundException"},
         {"shape":"ConflictException"}
       ],
-      "documentation":"<p>Updates an existing custom vocabulary with new values. This operation overwrites all existing information with your new values; you cannot append new terms onto an existing custom vocabulary.</p>"
+      "documentation":"<p>Updates an existing custom vocabulary with new values. This operation overwrites all existing information with your new values; you cannot append new terms onto an existing custom vocabulary.</p> <p>Your custom vocabulary must be in a terminal state (<code>READY</code> or <code>FAILED</code>) before you can update it. You must include either <code>Phrases</code> or <code>VocabularyFileUri</code> in your request.</p>"
     },
     "UpdateVocabularyFilter":{
       "name":"UpdateVocabularyFilter",
@@ -683,9 +700,10 @@
         {"shape":"BadRequestException"},
         {"shape":"LimitExceededException"},
         {"shape":"InternalFailureException"},
-        {"shape":"NotFoundException"}
+        {"shape":"NotFoundException"},
+        {"shape":"ConflictException"}
       ],
-      "documentation":"<p>Updates an existing custom vocabulary filter with a new list of words. The new list you provide overwrites all previous entries; you cannot append new terms onto an existing custom vocabulary filter.</p>"
+      "documentation":"<p>Updates an existing custom vocabulary filter with a new list of words. The new list you provide overwrites all previous entries; you cannot append new terms onto an existing custom vocabulary filter.</p> <p>You must include either <code>Words</code> or <code>VocabularyFilterFileUri</code> in your request.</p>"
     }
   },
   "shapes":{
@@ -1109,6 +1127,10 @@
           "shape":"InputDataConfig",
           "documentation":"<p>Contains the Amazon S3 location of the training data you want to use to create a new custom language model, and permissions to access this location.</p> <p>When using <code>InputDataConfig</code>, you must include these sub-parameters: <code>S3Uri</code>, which is the Amazon S3 location of your training data, and <code>DataAccessRoleArn</code>, which is the Amazon Resource Name (ARN) of the role that has permission to access your specified Amazon S3 location. You can optionally include <code>TuningDataS3Uri</code>, which is the Amazon S3 location of your tuning data. If you specify different Amazon S3 locations for training and tuning data, the ARN you use must have permissions to access both locations.</p>"
         },
+        "EncryptionConfiguration":{
+          "shape":"EncryptionConfiguration",
+          "documentation":"<p>Specifies the encryption configuration for your custom language model. Your model artifacts are encrypted with the specified KMS key or with an AWS-owned key if a key is not supplied.</p>"
+        },
         "Tags":{
           "shape":"TagList",
           "documentation":"<p>Adds one or more custom tags, each in the form of a key:value pair, to a new custom language model at the time you create this new model.</p> <p>To learn more about using tags with Amazon Transcribe, refer to <a href=\"https://docs.aws.amazon.com/transcribe/latest/dg/tagging.html\">Tagging resources</a>.</p>"
@@ -1220,7 +1242,11 @@
         },
         "DataAccessRoleArn":{
           "shape":"DataAccessRoleArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of an IAM role that has permissions to access the Amazon S3 bucket that contains your input files (in this case, your custom vocabulary filter). If the role that you specify doesn’t have the appropriate permissions to access the specified Amazon S3 location, your request fails.</p> <p>IAM role ARNs have the format <code>arn:partition:iam::account:role/role-name-with-path</code>. For example: <code>arn:aws:iam::111122223333:role/Admin</code>.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_identifiers.html#identifiers-arns\">IAM ARNs</a>.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of an IAM role that has permissions to access the Amazon S3 bucket that contains your input files (in this case, your custom vocabulary filter). If you include <code>EncryptionConfiguration</code> in your request, this role must also have permissions to access the specified KMS key. If the role that you specify doesn’t have the appropriate permissions, your request fails.</p> <p>IAM role ARNs have the format <code>arn:partition:iam::account:role/role-name-with-path</code>. For example: <code>arn:aws:iam::111122223333:role/Admin</code>.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_identifiers.html#identifiers-arns\">IAM ARNs</a>.</p>"
+        },
+        "EncryptionConfiguration":{
+          "shape":"EncryptionConfiguration",
+          "documentation":"<p>Specifies the encryption configuration for your custom vocabulary filter. Your vocabulary filter artifacts are encrypted with the specified KMS key or with an AWS-owned key if a key is not supplied.</p>"
         }
       }
     },
@@ -1270,7 +1296,11 @@
         },
         "DataAccessRoleArn":{
           "shape":"DataAccessRoleArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of an IAM role that has permissions to access the Amazon S3 bucket that contains your input files (in this case, your custom vocabulary). If the role that you specify doesn’t have the appropriate permissions to access the specified Amazon S3 location, your request fails.</p> <p>IAM role ARNs have the format <code>arn:partition:iam::account:role/role-name-with-path</code>. For example: <code>arn:aws:iam::111122223333:role/Admin</code>.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_identifiers.html#identifiers-arns\">IAM ARNs</a>.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of an IAM role that has permissions to access the Amazon S3 bucket that contains your input files (in this case, your custom vocabulary). If you include <code>EncryptionConfiguration</code> in your request, this role must also have permissions to access the specified KMS key. If the role that you specify doesn’t have the appropriate permissions, your request fails.</p> <p>IAM role ARNs have the format <code>arn:partition:iam::account:role/role-name-with-path</code>. For example: <code>arn:aws:iam::111122223333:role/Admin</code>.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_identifiers.html#identifiers-arns\">IAM ARNs</a>.</p>"
+        },
+        "EncryptionConfiguration":{
+          "shape":"EncryptionConfiguration",
+          "documentation":"<p>Specifies the encryption configuration for your custom vocabulary. Your vocabulary artifacts are encrypted with the specified KMS key or with an AWS-owned key if a key is not supplied.</p>"
         }
       }
     },
@@ -1424,6 +1454,21 @@
       }
     },
     "DurationInSeconds":{"type":"float"},
+    "EncryptionConfiguration":{
+      "type":"structure",
+      "required":["KMSKey"],
+      "members":{
+        "KMSEncryptionContext":{
+          "shape":"KMSEncryptionContextMap",
+          "documentation":"<p>A map of plain text, non-secret key:value pairs, known as encryption context pairs, that provide an added layer of security for your data. For more information, see <a href=\"https://docs.aws.amazon.com/transcribe/latest/dg/key-management.html#kms-context\">KMS encryption context</a>.</p>"
+        },
+        "KMSKey":{
+          "shape":"KMSKeyId",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the KMS key you want to use to encrypt your resource artifacts. Only full KMS key ARN format is supported.</p> <p>KMS key ARNs have the format <code>arn:partition:kms:region:account:key/key-id</code>. For example: <code>arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab</code>.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#key-id-key-ARN\">KMS key ARNs</a>.</p>"
+        }
+      },
+      "documentation":"Encryption configuration for the invocation"
+    },
     "FailureReason":{"type":"string"},
     "GetCallAnalyticsCategoryRequest":{
       "type":"structure",
@@ -1587,6 +1632,14 @@
         "DownloadUri":{
           "shape":"Uri",
           "documentation":"<p>The Amazon S3 location where the custom vocabulary filter is stored; use this URI to view or download the custom vocabulary filter.</p>"
+        },
+        "DataAccessRoleArn":{
+          "shape":"DataAccessRoleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role used to access the Amazon S3 bucket that contains your input files and, if applicable, the KMS key specified in <code>EncryptionConfiguration</code>.</p>"
+        },
+        "EncryptionConfiguration":{
+          "shape":"EncryptionConfiguration",
+          "documentation":"<p>The encryption configuration used for your custom vocabulary filter.</p>"
         }
       }
     },
@@ -1626,6 +1679,14 @@
         "DownloadUri":{
           "shape":"Uri",
           "documentation":"<p>The Amazon S3 location where the custom vocabulary is stored; use this URI to view or download the custom vocabulary.</p>"
+        },
+        "DataAccessRoleArn":{
+          "shape":"DataAccessRoleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role used to access the Amazon S3 bucket that contains your input files and, if applicable, the KMS key specified in <code>EncryptionConfiguration</code>.</p>"
+        },
+        "EncryptionConfiguration":{
+          "shape":"EncryptionConfiguration",
+          "documentation":"<p>The encryption configuration used for your custom vocabulary.</p>"
         }
       }
     },
@@ -1710,8 +1771,8 @@
     },
     "KMSEncryptionContextMap":{
       "type":"map",
-      "key":{"shape":"NonEmptyString"},
-      "value":{"shape":"NonEmptyString"},
+      "key":{"shape":"PrintableNonEmptyString"},
+      "value":{"shape":"PrintableNonEmptyString"},
       "max":10,
       "min":1
     },
@@ -1924,6 +1985,10 @@
         "InputDataConfig":{
           "shape":"InputDataConfig",
           "documentation":"<p>The Amazon S3 location of the input files used to train and tune your custom language model, in addition to the data access role ARN (Amazon Resource Name) that has permissions to access these data.</p>"
+        },
+        "EncryptionConfiguration":{
+          "shape":"EncryptionConfiguration",
+          "documentation":"<p>The encryption configuration used for your custom language model.</p>"
         }
       },
       "documentation":"<p>Provides information about a custom language model, including:</p> <ul> <li> <p>The base model name</p> </li> <li> <p>When the model was created</p> </li> <li> <p>The location of the files used to train the model</p> </li> <li> <p>When the model was last modified</p> </li> <li> <p>The name you chose for the model</p> </li> <li> <p>The model's language</p> </li> <li> <p>The model's processing state</p> </li> <li> <p>Any available upgrades for the base model</p> </li> </ul>"
@@ -2879,6 +2944,12 @@
       "max":29,
       "min":0
     },
+    "PrintableNonEmptyString":{
+      "type":"string",
+      "max":2000,
+      "min":1,
+      "pattern":"^[\\x20-\\x7E]+$"
+    },
     "Pronouns":{
       "type":"string",
       "enum":[
@@ -3777,6 +3848,41 @@
         }
       }
     },
+    "UpdateLanguageModelRequest":{
+      "type":"structure",
+      "required":["ModelName"],
+      "members":{
+        "ModelName":{
+          "shape":"ModelName",
+          "documentation":"<p>The name of the custom language model you want to update. Model names are case sensitive.</p>"
+        },
+        "DataAccessRoleArn":{
+          "shape":"DataAccessRoleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of an IAM role. If you include <code>EncryptionConfiguration</code> in your request, this role must have permissions to access the specified KMS key. If the role that you specify doesn't have the appropriate permissions, your request fails.</p> <p>IAM role ARNs have the format <code>arn:partition:iam::account:role/role-name-with-path</code>. For example: <code>arn:aws:iam::111122223333:role/Admin</code>.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_identifiers.html#identifiers-arns\">IAM ARNs</a>.</p>"
+        },
+        "EncryptionConfiguration":{
+          "shape":"EncryptionConfiguration",
+          "documentation":"<p>Specifies the new encryption configuration for your custom language model. The model artifacts are re-encrypted in place using the specified KMS key or with an AWS-owned key if a key is not supplied.</p>"
+        }
+      }
+    },
+    "UpdateLanguageModelResponse":{
+      "type":"structure",
+      "members":{
+        "ModelName":{
+          "shape":"ModelName",
+          "documentation":"<p>The name of the custom language model that was updated.</p>"
+        },
+        "ModelStatus":{
+          "shape":"ModelStatus",
+          "documentation":"<p>The status of the specified custom language model.</p>"
+        },
+        "LastModifiedTime":{
+          "shape":"DateTime",
+          "documentation":"<p>The date and time the specified custom language model was last modified.</p>"
+        }
+      }
+    },
     "UpdateMedicalVocabularyRequest":{
       "type":"structure",
       "required":[
@@ -3838,7 +3944,11 @@
         },
         "DataAccessRoleArn":{
           "shape":"DataAccessRoleArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of an IAM role that has permissions to access the Amazon S3 bucket that contains your input files (in this case, your custom vocabulary filter). If the role that you specify doesn’t have the appropriate permissions to access the specified Amazon S3 location, your request fails.</p> <p>IAM role ARNs have the format <code>arn:partition:iam::account:role/role-name-with-path</code>. For example: <code>arn:aws:iam::111122223333:role/Admin</code>.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_identifiers.html#identifiers-arns\">IAM ARNs</a>.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of an IAM role that has permissions to access the Amazon S3 bucket that contains your input files (in this case, your custom vocabulary filter). If you include <code>EncryptionConfiguration</code> in your request, this role must also have permissions to access the specified KMS key. If the role that you specify doesn’t have the appropriate permissions, your request fails.</p> <p>IAM role ARNs have the format <code>arn:partition:iam::account:role/role-name-with-path</code>. For example: <code>arn:aws:iam::111122223333:role/Admin</code>.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_identifiers.html#identifiers-arns\">IAM ARNs</a>.</p>"
+        },
+        "EncryptionConfiguration":{
+          "shape":"EncryptionConfiguration",
+          "documentation":"<p>Specifies the new encryption configuration for your custom vocabulary filter. The vocabulary filter artifacts are re-encrypted in place using the specified KMS key or with an AWS-owned key if a key is not supplied.</p>"
         }
       }
     },
@@ -3884,7 +3994,11 @@
         },
         "DataAccessRoleArn":{
           "shape":"DataAccessRoleArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of an IAM role that has permissions to access the Amazon S3 bucket that contains your input files (in this case, your custom vocabulary). If the role that you specify doesn’t have the appropriate permissions to access the specified Amazon S3 location, your request fails.</p> <p>IAM role ARNs have the format <code>arn:partition:iam::account:role/role-name-with-path</code>. For example: <code>arn:aws:iam::111122223333:role/Admin</code>.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_identifiers.html#identifiers-arns\">IAM ARNs</a>.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of an IAM role that has permissions to access the Amazon S3 bucket that contains your input files (in this case, your custom vocabulary). If you include <code>EncryptionConfiguration</code> in your request, this role must also have permissions to access the specified KMS key. If the role that you specify doesn’t have the appropriate permissions, your request fails.</p> <p>IAM role ARNs have the format <code>arn:partition:iam::account:role/role-name-with-path</code>. For example: <code>arn:aws:iam::111122223333:role/Admin</code>.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_identifiers.html#identifiers-arns\">IAM ARNs</a>.</p>"
+        },
+        "EncryptionConfiguration":{
+          "shape":"EncryptionConfiguration",
+          "documentation":"<p>Specifies the new encryption configuration for your custom vocabulary. The vocabulary artifacts are re-encrypted in place using the specified KMS key or with an AWS-owned key if a key is not supplied.</p>"
         }
       }
     },

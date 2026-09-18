@@ -532,7 +532,8 @@
       "enum":[
         "STANDARD",
         "SERVICE",
-        "MCP_SERVER"
+        "MCP_SERVER",
+        "A2A_SERVER"
       ]
     },
     "ApplicationsList":{
@@ -552,6 +553,24 @@
       "max":2048,
       "min":1,
       "pattern":"^(arn:aws:[A-Za-z0-9][A-Za-z0-9_/.-]{0,62}:[A-Za-z0-9_/.-]{0,63}:[A-Za-z0-9_/.-]{0,63}:[A-Za-z0-9][A-Za-z0-9:_/+=,@.-]{0,1023}|[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})(:[\\w\\$]+)?$"
+    },
+    "AuthConfig":{
+      "type":"structure",
+      "members":{
+        "AuthType":{
+          "shape":"AuthType",
+          "documentation":"<p>The type of authentication used when calling the external application.</p>"
+        },
+        "CredentialProviderIdentifier":{
+          "shape":"Arn",
+          "documentation":"<p>The ARN of the Secrets Manager secret that stores the credentials. The secret must be accessible to Connect Customer.</p>"
+        }
+      },
+      "documentation":"<p>Contains the authentication settings that Connect Customer uses to call an external application endpoint. The configuration includes the authentication type and credential location.</p>"
+    },
+    "AuthType":{
+      "type":"string",
+      "enum":["API_KEY"]
     },
     "Boolean":{"type":"boolean"},
     "ClientAssociationMetadata":{
@@ -662,6 +681,10 @@
         "ApplicationType":{
           "shape":"ApplicationType",
           "documentation":"<p>The type of application.</p>"
+        },
+        "AuthConfig":{
+          "shape":"AuthConfig",
+          "documentation":"<p>The authentication settings that Connect Customer uses when calling the external application.</p>"
         }
       }
     },
@@ -1273,6 +1296,10 @@
         "ApplicationType":{
           "shape":"ApplicationType",
           "documentation":"<p>The type of application.</p>"
+        },
+        "AuthConfig":{
+          "shape":"AuthConfig",
+          "documentation":"<p>The authentication settings that Connect Customer uses when calling the external application.</p>"
         }
       }
     },
@@ -2009,6 +2036,10 @@
         "ApplicationType":{
           "shape":"ApplicationType",
           "documentation":"<p>The type of application.</p>"
+        },
+        "AuthConfig":{
+          "shape":"AuthConfig",
+          "documentation":"<p>The authentication settings that Connect Customer uses when calling the external application.</p>"
         }
       }
     },

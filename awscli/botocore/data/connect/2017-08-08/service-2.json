@@ -4233,6 +4233,23 @@
       ],
       "documentation":"<p>This API is in preview release for Connect Customer and is subject to change.</p> <p>Returns a paginated list of all security keys associated with the instance.</p>"
     },
+    "ListSecurityProfileAIAgents":{
+      "name":"ListSecurityProfileAIAgents",
+      "http":{
+        "method":"GET",
+        "requestUri":"/security-profiles-ai-agents/{InstanceId}/{SecurityProfileId}"
+      },
+      "input":{"shape":"ListSecurityProfileAIAgentsRequest"},
+      "output":{"shape":"ListSecurityProfileAIAgentsResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceException"}
+      ],
+      "documentation":"<p>Returns a list of the allowed AI agents in a specific security profile.</p>"
+    },
     "ListSecurityProfileApplications":{
       "name":"ListSecurityProfileApplications",
       "http":{
@@ -7019,6 +7036,25 @@
       "type":"string",
       "pattern":"^[a-zA-Z0-9_-]+$"
     },
+    "AIAgent":{
+      "type":"structure",
+      "members":{
+        "Arn":{
+          "shape":"ARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AI agent.</p>"
+        },
+        "Type":{
+          "shape":"AIAgentType",
+          "documentation":"<p>The type of the AI agent. The valid value is <code>THIRD_PARTY</code>.</p>"
+        }
+      },
+      "documentation":"<p>Information about an AI agent that a security profile allows access to for Agent-to-Agent authorization.</p>"
+    },
+    "AIAgentType":{
+      "type":"string",
+      "documentation":"<p>The type of the AI agent.</p>",
+      "enum":["THIRD_PARTY"]
+    },
     "ARN":{"type":"string"},
     "AWSAccountId":{"type":"string"},
     "AccessDeniedException":{
@@ -7711,6 +7747,11 @@
       "type":"list",
       "member":{"shape":"AliasConfiguration"},
       "max":1
+    },
+    "AllowedAIAgents":{
+      "type":"list",
+      "member":{"shape":"AIAgent"},
+      "max":100
     },
     "AllowedAccessControlTags":{
       "type":"map",
@@ -13450,6 +13491,10 @@
         "AllowedFlowModules":{
           "shape":"AllowedFlowModules",
           "documentation":"<p> A list of Flow Modules an AI Agent can invoke as a tool. </p>"
+        },
+        "AllowedAIAgents":{
+          "shape":"AllowedAIAgents",
+          "documentation":"<p>A list of AI agents that the security profile will give access to.</p>"
         },
         "GranularAccessControlConfiguration":{
           "shape":"GranularAccessControlConfiguration",
@@ -25998,6 +26043,61 @@
         "NextToken":{
           "shape":"NextToken",
           "documentation":"<p>If there are additional results, this is the token for the next set of results.</p>"
+        }
+      }
+    },
+    "ListSecurityProfileAIAgentsRequest":{
+      "type":"structure",
+      "required":[
+        "SecurityProfileId",
+        "InstanceId"
+      ],
+      "members":{
+        "SecurityProfileId":{
+          "shape":"SecurityProfileId",
+          "documentation":"<p>The identifier for the security profle.</p>",
+          "location":"uri",
+          "locationName":"SecurityProfileId"
+        },
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Connect Customer instance. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "MaxResults":{
+          "shape":"MaxResult1000",
+          "documentation":"<p>The maximum number of results to return per page.</p>",
+          "box":true,
+          "location":"querystring",
+          "locationName":"maxResults"
+        }
+      }
+    },
+    "ListSecurityProfileAIAgentsResponse":{
+      "type":"structure",
+      "members":{
+        "AllowedAIAgents":{
+          "shape":"AllowedAIAgents",
+          "documentation":"<p>A list of the allowed AI agents and their types.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If there are additional results, this is the token for the next set of results.</p>"
+        },
+        "LastModifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when this resource was last modified.</p>"
+        },
+        "LastModifiedRegion":{
+          "shape":"RegionName",
+          "documentation":"<p>The Amazon Web Services Region where this resource was last modified.</p>"
         }
       }
     },
@@ -39025,6 +39125,10 @@
         "AllowedFlowModules":{
           "shape":"AllowedFlowModules",
           "documentation":"<p> A list of Flow Modules an AI Agent can invoke as a tool </p>"
+        },
+        "AllowedAIAgents":{
+          "shape":"AllowedAIAgents",
+          "documentation":"<p>A list of AI agents that the security profile will give access to.</p>"
         },
         "GranularAccessControlConfiguration":{
           "shape":"GranularAccessControlConfiguration",

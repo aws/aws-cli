@@ -187,7 +187,18 @@ def _validate_aggregate_numeric_keys(operation_name, page_config):
             "list of dotted leaf paths."
         )
     for path in config_value:
+        if not isinstance(path, str) or not path:
+            raise AssertionError(
+                f"aggregate_numeric_keys entry {path!r} for operation "
+                f"{operation_name} must be a non-empty string path."
+            )
         segments = path.split('.')
+        if any(segment == '' for segment in segments):
+            raise AssertionError(
+                f"aggregate_numeric_keys path '{path}' for operation "
+                f"{operation_name} has an empty segment (leading/trailing or "
+                "doubled '.')."
+            )
         if segments[0] == '*':
             raise AssertionError(
                 f"aggregate_numeric_keys path '{path}' for operation "

@@ -1691,6 +1691,12 @@ class TestAddNumericPath(unittest.TestCase):
         _add_numeric_path(acc, {}, ('CapacityUnits',))
         self.assertEqual(acc, {'CapacityUnits': 100.0})
 
+    def test_empty_segments_is_noop(self):
+        # Defensive: an empty path must not raise (IndexError) and change nothing.
+        acc = {'CapacityUnits': 100.0}
+        _add_numeric_path(acc, {'CapacityUnits': 5.0}, ())
+        self.assertEqual(acc, {'CapacityUnits': 100.0})
+
     def test_type_mismatch_keeps_first(self):
         acc = {'CapacityUnits': 'T'}
         _add_numeric_path(acc, {'CapacityUnits': 3.0}, ('CapacityUnits',))

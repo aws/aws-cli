@@ -52,6 +52,8 @@ def _add_numeric_path(accumulator, page_value, segments):
     configured path is left untouched (it was seeded from the first page).
     Booleans and cross-page type mismatches are never summed.
     """
+    if not segments:
+        return
     if not isinstance(page_value, dict) or not isinstance(accumulator, dict):
         return
     seg, rest = segments[0], segments[1:]
@@ -253,7 +255,7 @@ class PageIterator:
         starting_token,
         page_size,
         op_kwargs,
-        aggregate_numeric_keys=(),
+        aggregate_numeric_keys=None,
     ):
         self._method = method
         self._input_token = input_token
@@ -267,7 +269,8 @@ class PageIterator:
         self._op_kwargs = op_kwargs
         self._resume_token = None
         self._non_aggregate_key_exprs = non_aggregate_keys
-        self._aggregate_numeric_keys = aggregate_numeric_keys
+        # Maps member -> list of segment-tuples; may be omitted by callers.
+        self._aggregate_numeric_keys = aggregate_numeric_keys or {}
         self._non_aggregate_part = {}
         self._token_encoder = TokenEncoder()
         self._token_decoder = TokenDecoder()

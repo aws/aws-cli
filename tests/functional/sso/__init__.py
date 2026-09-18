@@ -197,7 +197,9 @@ class BaseSSOTest(BaseAWSCommandParamsTest):
         )
         return content
 
-    def get_sso_session_config(self, session_name, include_profile=True):
+    def get_sso_session_config(
+        self, session_name, include_profile=True, use_device_code=None
+    ):
         content = ''
         if include_profile:
             content += (
@@ -213,7 +215,9 @@ class BaseSSOTest(BaseAWSCommandParamsTest):
         )
         if self.registration_scopes:
             scopes = ', '.join(self.registration_scopes)
-            content += f'sso_registration_scopes={scopes}'
+            content += f'sso_registration_scopes={scopes}\n'
+        if use_device_code is not None:
+            content += f'sso_use_device_code={use_device_code}\n'
         return content
 
     def set_config_file_content(self, content=None):

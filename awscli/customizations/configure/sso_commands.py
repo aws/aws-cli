@@ -325,12 +325,16 @@ class ConfigureSSOCommand(BaseSSOConfigurationCommand):
         sso_registration_args = self._prompt_for_sso_registration_args(
             verify=verify,
         )
+        use_device_code = (
+            sso_registration_args.pop('use_device_code', False)
+            or parsed_args.use_device_code
+        )
         sso_token = self._sso_login(
             self._session,
             parsed_globals=parsed_globals,
             token_cache=self._sso_token_cache,
             on_pending_authorization=on_pending_authorization,
-            use_device_code=parsed_args.use_device_code,
+            use_device_code=use_device_code,
             **sso_registration_args,
         )
 
@@ -393,6 +397,7 @@ class ConfigureSSOCommand(BaseSSOConfigurationCommand):
             'start_url': sso_config['sso_start_url'],
             'sso_region': sso_config['sso_region'],
             'registration_scopes': sso_config.get('registration_scopes'),
+            'use_device_code': sso_config.get('use_device_code', False),
         }
 
     def _prompt_for_registration_args_for_new_sso_session(

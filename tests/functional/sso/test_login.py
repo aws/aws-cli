@@ -355,6 +355,149 @@ class TestLoginCommand(BaseSSOTest):
             expected_token=self.access_token,
         )
 
+    def test_login_device_sso_session_from_config(self):
+        content = self.get_sso_session_config(
+            'test-session', use_device_code='true'
+        )
+        self.set_config_file_content(content=content)
+        self.add_oidc_device_responses(self.access_token)
+        self.run_cmd('sso login')
+        self.assert_used_expected_sso_region(expected_region=self.sso_region)
+        self.assert_device_browser_handler_called_with(
+            'foo',
+            'https://sso.fake/device',
+            'https://sso.verify',
+        )
+        self.assert_cache_contains_registration(
+            start_url=self.start_url,
+            session_name='test-session',
+            scopes=self.registration_scopes,
+            expected_client_id='device-client-id',
+        )
+        self.assert_cache_contains_token(
+            start_url=self.start_url,
+            session_name='test-session',
+            expected_token=self.access_token,
+        )
+
+    def test_login_device_no_browser_from_config(self):
+        content = self.get_sso_session_config(
+            'test-session', use_device_code='true'
+        )
+        self.set_config_file_content(content=content)
+        self.add_oidc_device_responses(self.access_token)
+        stdout, _, _ = self.run_cmd('sso login --no-browser')
+        self.assertIn('Browser will not be automatically opened.', stdout)
+        self.open_browser_mock.assert_not_called()
+        self.assert_used_expected_sso_region(expected_region=self.sso_region)
+        self.assert_cache_contains_token(
+            start_url=self.start_url,
+            session_name='test-session',
+            expected_token=self.access_token,
+        )
+
+    def test_login_auth_sso_session_config_setting_false(self):
+        content = self.get_sso_session_config(
+            'test-session', use_device_code='false'
+        )
+        self.set_config_file_content(content=content)
+        self.add_oidc_auth_code_responses(self.access_token)
+        self.run_cmd('sso login')
+        self.assert_auth_browser_handler_called_with('sso%3Aaccount%3Aaccess')
+        self.assert_cache_contains_registration(
+            start_url=self.start_url,
+            session_name='test-session',
+            scopes=self.registration_scopes,
+            expected_client_id='auth-client-id',
+        )
+
+    def test_login_auth_sso_session_config_setting_invalid(self):
+        content = self.get_sso_session_config(
+            'test-session', use_device_code='maybe'
+        )
+        self.set_config_file_content(content=content)
+        self.add_oidc_auth_code_responses(self.access_token)
+        self.run_cmd('sso login')
+        self.assert_auth_browser_handler_called_with('sso%3Aaccount%3Aaccess')
+        self.assert_cache_contains_registration(
+            start_url=self.start_url,
+            session_name='test-session',
+            scopes=self.registration_scopes,
+            expected_client_id='auth-client-id',
+        )
+
+    def test_login_auth_sso_session_config_setting_in_profile_ignored(self):
+        content = (
+            f'[default]\n'
+            f'sso_session=test-session\n'
+            f'sso_use_device_code=true\n'
+            f'[sso-session test-session]\n'
+            f'sso_start_url={self.start_url}\n'
+            f'sso_region={self.sso_region}\n'
+        )
+        self.set_config_file_content(content=content)
+        self.add_oidc_auth_code_responses(self.access_token)
+        self.run_cmd('sso login')
+        self.assert_auth_browser_handler_called_with('sso%3Aaccount%3Aaccess')
+        self.assert_cache_contains_registration(
+            start_url=self.start_url,
+            session_name='test-session',
+            scopes=self.registration_scopes,
+            expected_client_id='auth-client-id',
+        )
+
+    def test_login_device_sso_session_config_setting_from_session(self):
+        content = (
+            f'[default]\n'
+            f'sso_session=test-session\n'
+            f'sso_use_device_code=false\n'
+            f'[sso-session test-session]\n'
+            f'sso_start_url={self.start_url}\n'
+            f'sso_region={self.sso_region}\n'
+            f'sso_use_device_code=true\n'
+        )
+        self.set_config_file_content(content=content)
+        self.add_oidc_device_responses(self.access_token)
+        self.run_cmd('sso login')
+        self.assert_device_browser_handler_called_with(
+            'foo',
+            'https://sso.fake/device',
+            'https://sso.verify',
+        )
+        self.assert_cache_contains_registration(
+            start_url=self.start_url,
+            session_name='test-session',
+            scopes=self.registration_scopes,
+            expected_client_id='device-client-id',
+        )
+
+    def test_login_device_sso_with_explicit_sso_session_arg_from_config(self):
+        content = self.get_sso_session_config(
+            'default-session', use_device_code='false'
+        )
+        content += self.get_sso_session_config(
+            'named-session', include_profile=False, use_device_code='true'
+        )
+        self.set_config_file_content(content=content)
+        self.add_oidc_device_responses(self.access_token)
+        self.run_cmd('sso login --sso-session named-session')
+        self.assert_device_browser_handler_called_with(
+            'foo',
+            'https://sso.fake/device',
+            'https://sso.verify',
+        )
+        self.assert_cache_contains_registration(
+            start_url=self.start_url,
+            session_name='named-session',
+            scopes=self.registration_scopes,
+            expected_client_id='device-client-id',
+        )
+        self.assert_cache_contains_token(
+            start_url=self.start_url,
+            session_name='named-session',
+            expected_token=self.access_token,
+        )
+
     def test_login_device_sso_session_with_scopes(self):
         self.registration_scopes = ['sso:foo', 'sso:bar']
         content = self.get_sso_session_config('test-session')

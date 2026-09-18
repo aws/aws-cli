@@ -29,6 +29,7 @@ from botocore.exceptions import (
 from botocore.utils import (
     SSOTokenFetcher,
     SSOTokenFetcherAuth,
+    ensure_boolean,
     original_ld_library_path,
 )
 
@@ -57,8 +58,11 @@ LOGIN_ARGS = [
         'action': 'store_true',
         'default': False,
         'help_text': (
-            'Uses the Device Code authorization grant and login flow '
-            'instead of the Authorization Code flow.'
+            'Uses the Device Code authorization grant and login flow instead '
+            'of the Authorization Code flow. To use the Device Code flow for '
+            'every login, this can be set in the AWS CLI config file for the '
+            'profile\'s sso-session using the ``aws configure set '
+            'sso_use_device_code true --sso-session <name>`` command.'
         ),
     },
 ]
@@ -351,6 +355,12 @@ class BaseSSOCommand(BasicCommand):
             raw_scopes = session_config[scopes_var]
             parsed_scopes = parse_sso_registration_scopes(raw_scopes)
             sso_config['registration_scopes'] = parsed_scopes
+
+        device_code_var = 'sso_use_device_code'
+        if device_code_var in session_config:
+            sso_config['use_device_code'] = ensure_boolean(
+                session_config[device_code_var]
+            )
 
         if missing:
             error_msg = f'Missing the following required SSO configuration values: {", ".join(missing)}. '

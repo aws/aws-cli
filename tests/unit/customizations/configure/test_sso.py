@@ -1349,6 +1349,121 @@ class TestConfigureSSOCommand:
             ],
         )
 
+    @pytest.mark.parametrize(
+        "args",
+        [
+            [],
+            ["--use-device-code"],
+        ],
+    )
+    def test_configure_sso_with_existing_sso_session_use_device_code(
+        self,
+        sso_cmd_factory,
+        ptk_stubber,
+        aws_config,
+        sso_stubber_factory,
+        stub_simple_single_item_sso_responses,
+        mock_do_sso_login,
+        args,
+        parsed_globals,
+        configure_sso_using_existing_session_inputs,
+        aws_config_lines_for_existing_sso_session,
+        account_id,
+        role_name,
+        existing_start_url,
+        existing_sso_region,
+        existing_scopes,
+    ):
+        existing_lines = aws_config_lines_for_existing_sso_session + [
+            "sso_use_device_code = true"
+        ]
+        write_aws_config(aws_config, lines=existing_lines)
+        session = StubbedSession()
+
+        inputs = configure_sso_using_existing_session_inputs
+        inputs.skip_account_and_role_selection()
+        ptk_stubber.user_inputs = inputs
+
+        sso_stubber = sso_stubber_factory(session)
+        stub_simple_single_item_sso_responses(
+            account_id, role_name, sso_stubber
+        )
+        sso_cmd = sso_cmd_factory(session=session)
+        sso_cmd(args, parsed_globals)
+
+        self.assert_do_sso_login_call(
+            mock_do_sso_login,
+            session,
+            expected_session_name=inputs.session_prompt.answer,
+            expected_sso_region=existing_sso_region,
+            expected_start_url=existing_start_url,
+            expected_scopes=parse_sso_registration_scopes(existing_scopes),
+            expected_use_device_code=True,
+        )
+        assert_aws_config(
+            aws_config,
+            expected_lines=existing_lines
+            + [
+                f"[profile {inputs.profile_prompt.answer}]",
+                f"sso_session = {inputs.session_prompt.answer}",
+                f"sso_account_id = {account_id}",
+                f"sso_role_name = {role_name}",
+                f"region = {inputs.region_prompt.answer}",
+                f"output = {inputs.output_prompt.answer}",
+            ],
+        )
+
+    def test_configure_sso_with_new_sso_session_use_device_code_flag(
+        self,
+        sso_cmd,
+        ptk_stubber,
+        aws_config,
+        stub_sso_list_roles,
+        stub_sso_list_accounts,
+        mock_do_sso_login,
+        botocore_session,
+        parsed_globals,
+        configure_sso_using_new_session_inputs,
+    ):
+        inputs = configure_sso_using_new_session_inputs
+        selected_account_id = inputs.account_id_select.answer["accountId"]
+        ptk_stubber.user_inputs = inputs
+
+        stub_sso_list_accounts(inputs.account_id_select.expected_choices)
+        stub_sso_list_roles(
+            inputs.role_name_select.expected_choices,
+            expected_account_id=selected_account_id,
+        )
+
+        sso_cmd(["--use-device-code"], parsed_globals)
+        self.assert_do_sso_login_call(
+            mock_do_sso_login,
+            botocore_session,
+            expected_session_name=inputs.session_prompt.answer,
+            expected_sso_region=inputs.sso_region_prompt.answer,
+            expected_start_url=inputs.start_url_prompt.answer,
+            expected_scopes=parse_sso_registration_scopes(
+                inputs.scopes_prompt.answer
+            ),
+            expected_force_refresh=True,
+            expected_use_device_code=True,
+        )
+        assert_aws_config(
+            aws_config,
+            expected_lines=[
+                f"[profile {inputs.profile_prompt.answer}]",
+                f"sso_session = {inputs.session_prompt.answer}",
+                f"sso_account_id = {selected_account_id}",
+                f"sso_role_name = {inputs.role_name_select.answer}",
+                f"region = {inputs.region_prompt.answer}",
+                f"output = {inputs.output_prompt.answer}",
+                f"[sso-session {inputs.session_prompt.answer}]",
+                f"sso_start_url = {inputs.start_url_prompt.answer}",
+                f"sso_region = {inputs.sso_region_prompt.answer}",
+                f"sso_registration_scopes = {inputs.scopes_prompt.answer}",
+            ],
+        )
+
     def test_configure_sso_reusing_existing_configuration(
         self,
         sso_cmd_factory,

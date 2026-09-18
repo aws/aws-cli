@@ -70,6 +70,9 @@ class LoginCommand(BaseSSOCommand):
         on_pending_authorization = None
         if parsed_args.no_browser:
             on_pending_authorization = PrintOnlyHandler()
+        use_device_code = parsed_args.use_device_code or sso_config.get(
+            'use_device_code', False
+        )
         do_sso_login(
             session=self._session,
             parsed_globals=parsed_globals,
@@ -80,7 +83,7 @@ class LoginCommand(BaseSSOCommand):
             force_refresh=True,
             session_name=sso_config.get('session_name'),
             registration_scopes=sso_config.get('registration_scopes'),
-            use_device_code=parsed_args.use_device_code,
+            use_device_code=use_device_code,
         )
 
         # Only rewrite sso_region after successful login.

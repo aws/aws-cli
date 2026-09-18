@@ -702,6 +702,23 @@ TAGS = {
     ),
 }
 
+OBJECT_TAGS = {
+    'name': 'tags',
+    'synopsis': '--tags <key> <value>',
+    'action': 'append',
+    'nargs': 2,
+    'help_text': (
+        'Tags to set on objects uploaded to S3, in the format of '
+        '``--tags key value``. You can specify this flag multiple times, '
+        'once for each tag. Tags are only applied to objects that are '
+        'uploaded (local-to-S3 transfers); they are not applied during '
+        'S3-to-S3 copies, where tag propagation is controlled by '
+        '``--copy-props``. For a ``sync``, tags are only set on objects that '
+        'are actually uploaded, consistent with ``--metadata`` and '
+        '``--storage-class``.'
+    ),
+}
+
 
 CASE_CONFLICT = {
     'name': 'case-conflict',
@@ -747,6 +764,7 @@ TRANSFER_ARGS = [
     SSE_C_COPY_SOURCE,
     SSE_C_COPY_SOURCE_KEY,
     STORAGE_CLASS,
+    OBJECT_TAGS,
     GRANTS,
     WEBSITE_REDIRECT,
     CONTENT_TYPE,

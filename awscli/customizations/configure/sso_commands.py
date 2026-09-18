@@ -208,11 +208,16 @@ class ConfigureSSOCommand(BaseSSOConfigurationCommand):
     def _handle_multiple_accounts(self, accounts):
         available_accounts_msg = (
             'There are {} AWS accounts available to you.\n'
+            'Use arrow keys to navigate, type to filter, '
+            'and press Enter to select.\n'
         )
         uni_print(available_accounts_msg.format(len(accounts)))
         sorted_accounts = sorted(accounts, key=get_account_sorting_key)
         selected_account = self._selector(
-            sorted_accounts, display_format=display_account
+            sorted_accounts,
+            display_format=display_account,
+            enable_filter=True,
+            no_results_message='No matching accounts found',
         )
         sso_account_id = selected_account['accountId']
         return sso_account_id
@@ -241,11 +246,19 @@ class ConfigureSSOCommand(BaseSSOConfigurationCommand):
         return sso_role_name
 
     def _handle_multiple_roles(self, roles):
-        available_roles_msg = 'There are {} roles available to you.\n'
+        available_roles_msg = (
+            'There are {} roles available to you.\n'
+            'Use arrow keys to navigate, type to filter, '
+            'and press Enter to select.\n'
+        )
         uni_print(available_roles_msg.format(len(roles)))
         sorted_roles = sorted(roles, key=lambda x: x['roleName'].lower())
         role_names = [r['roleName'] for r in sorted_roles]
-        sso_role_name = self._selector(role_names)
+        sso_role_name = self._selector(
+            role_names,
+            enable_filter=True,
+            no_results_message='No matching roles found',
+        )
         return sso_role_name
 
     def _get_all_roles(self, sso, sso_token, sso_account_id):

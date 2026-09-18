@@ -314,6 +314,22 @@ class TestMvCommand(BaseS3TransferCommandTest):
             self.operations_called[0][1]['ChecksumAlgorithm'], 'CRC32'
         )
 
+    def test_upload_with_tags(self):
+        full_path = self.files.create_file('foo.txt', 'mycontent')
+        cmdline = (
+            '%s %s s3://bucket/key.txt --tags key1 value1 --tags key2 value2'
+            % (self.prefix, full_path)
+        )
+        self.parsed_responses = [
+            {'ETag': '"c8afdb36c52cf4727836669019e69222"'}
+        ]
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assertEqual(self.operations_called[0][0].name, 'PutObject')
+        args = self.operations_called[0][1]
+        self.assertEqual(args['Tagging'], 'key1=value1&key2=value2')
+        # Source file was deleted (move operation).
+        self.assertFalse(os.path.exists(full_path))
+
     def test_download_with_checksum_mode_crc32(self):
         self.parsed_responses = [
             self.head_object_response(),

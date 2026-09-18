@@ -6,10 +6,13 @@ from unittest import mock
 
 import pytest
 
-from awscli.customizations.exceptions import ConfigurationError
+from awscli.customizations.exceptions import (
+    ConfigurationError,
+    ParamValidationError,
+)
 from awscli.customizations.login.login import LoginCommand
 
-DEFAULT_ARGS = Namespace(remote=False)
+DEFAULT_ARGS = Namespace(remote=False, redirect_port=None)
 DEFAULT_GLOBAL_ARGS = Namespace(
     region='us-east-1', endpoint_url=None, verify_ssl=None
 )
@@ -102,6 +105,50 @@ def test_run_main_same_device_flow(
         },
         'configfile',
     )
+
+
+@mock.patch('awscli.customizations.login.utils.get_base_sign_in_uri')
+@mock.patch('awscli.customizations.login.login.AuthCodeFetcher')
+@mock.patch(
+    'awscli.customizations.login.utils.SameDeviceLoginTokenFetcher.fetch_token'
+)
+@pytest.mark.parametrize('redirect_port', [None, 34535])
+def test_run_main_passes_redirect_port_to_auth_code_fetcher(
+    mock_token_fetcher,
+    mock_auth_code_fetcher,
+    mock_base_sign_in_uri,
+    mock_login_command,
+    redirect_port,
+):
+    mock_base_sign_in_uri.return_value = 'https://foo'
+    mock_token_fetcher.return_value = (
+        {
+            'accessToken': 'access_token',
+            'idToken': SAMPLE_ID_TOKEN,
+            'expiresIn': 3600,
+        },
+        'arn:aws:iam::0123456789012:user/Admin',
+    )
+    args = Namespace(**vars(DEFAULT_ARGS))
+    args.redirect_port = redirect_port
+
+    mock_login_command._run_main(args, DEFAULT_GLOBAL_ARGS)
+
+    mock_auth_code_fetcher.assert_called_once_with(redirect_port=redirect_port)
+
+
+@mock.patch('awscli.customizations.login.login.AuthCodeFetcher')
+def test_run_main_rejects_out_of_range_redirect_port(
+    mock_auth_code_fetcher, mock_login_command
+):
+    args = Namespace(**vars(DEFAULT_ARGS))
+    args.redirect_port = 65536
+
+    with pytest.raises(ParamValidationError) as excinfo:
+        mock_login_command._run_main(args, DEFAULT_GLOBAL_ARGS)
+
+    assert 'must be between 1 and 65535' in str(excinfo.value)
+    mock_auth_code_fetcher.assert_not_called()
 
 
 @mock.patch('awscli.customizations.login.utils.get_base_sign_in_uri')

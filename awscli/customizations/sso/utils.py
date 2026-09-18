@@ -61,6 +61,23 @@ LOGIN_ARGS = [
             'instead of the Authorization Code flow.'
         ),
     },
+    {
+        'name': 'redirect-port',
+        'cli_type_name': 'integer',
+        'default': None,
+        'help_text': (
+            'Specifies a fixed port for the local PKCE callback server '
+            'used during browser-based authorization. When set, the '
+            'callback server listens on '
+            '``http://127.0.0.1:<port>/oauth/callback`` instead of a '
+            'randomly assigned port. This is useful when pre-configuring '
+            'SSH local port forwarding to a remote machine. '
+            'If not specified, the port from the ``sso_redirect_port`` '
+            'config setting is used, or a random available port is '
+            'chosen if neither is set. Has no effect when '
+            '``--use-device-code`` or ``--no-browser`` is specified.'
+        ),
+    },
 ]
 
 
@@ -85,6 +102,7 @@ def do_sso_login(
     registration_scopes=None,
     session_name=None,
     use_device_code=False,
+    redirect_port=None,
     resolved_start_url=None,
 ):
     if token_cache is None:
@@ -101,7 +119,7 @@ def do_sso_login(
             sso_region=sso_region,
             client_creator=session.create_client,
             parsed_globals=parsed_globals,
-            auth_code_fetcher=AuthCodeFetcher(),
+            auth_code_fetcher=AuthCodeFetcher(port=redirect_port or 0),
             cache=token_cache,
             on_pending_authorization=on_pending_authorization,
         )
@@ -230,7 +248,7 @@ class AuthCodeFetcher:
     # How long we wait overall for the callback
     _OVERALL_TIMEOUT = 60 * 10
 
-    def __init__(self):
+    def __init__(self, port=0):
         self._auth_code = None
         self._state = None
         self._is_done = False
@@ -239,7 +257,7 @@ class AuthCodeFetcher:
         # AuthCodeFetcher so that it can pass back the state and auth code
         try:
             handler = partial(OAuthCallbackHandler, self)
-            self.http_server = HTTPServer(('', 0), handler)
+            self.http_server = HTTPServer(('', port), handler)
             self.http_server.timeout = self._REQUEST_TIMEOUT
         except OSError as e:
             raise AuthCodeFetcherError(error_msg=e)

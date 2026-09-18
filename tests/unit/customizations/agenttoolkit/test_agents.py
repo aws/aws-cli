@@ -320,3 +320,27 @@ def test_configure_mcp_preserves_existing_permissions(tmp_path):
 def test_agent_configs_sorted_alphabetically():
     ids = [c.id for c in AGENT_CONFIGS if c.id != 'universal']
     assert ids == sorted(ids)
+
+
+def test_read_mcp_config_decodes_utf8_characters(tmp_path):
+    # Regression test for #10452: on non-English Windows (e.g. Japanese CP932),
+    # open() without explicit encoding defaults to the system locale codec which
+    # cannot decode UTF-8 multibyte characters such as the em-dash (U+2014).
+    mcp_path = tmp_path / 'mcp.json'
+    config_with_emdash = {'mcpServers': {'aws-mcp': {'description': 'test — value'}}}
+    mcp_path.write_text(json.dumps(config_with_emdash), encoding='utf-8')
+    result = DetectedAgent._read_mcp_config(str(mcp_path))
+    assert result['mcpServers']['aws-mcp']['description'] == 'test — value'
+
+
+def test_write_mcp_config_encodes_utf8_characters(tmp_path):
+    # Regression test for #10452: write must also use UTF-8 so round-trips
+    # of configs containing non-ASCII characters (e.g. em-dash) are stable.
+    mcp_path = tmp_path / 'mcp.json'
+    config_with_emdash = {'mcpServers': {'aws-mcp': {'description': 'test — value'}}}
+    DetectedAgent._write_mcp_config(str(mcp_path), config_with_emdash)
+    raw_bytes = mcp_path.read_bytes()
+    # UTF-8 encoding of em-dash is 0xE2 0x80 0x94
+    assert b'\xe2\x80\x94' in raw_bytes
+    result = json.loads(raw_bytes.decode('utf-8'))
+    assert result['mcpServers']['aws-mcp']['description'] == 'test — value'

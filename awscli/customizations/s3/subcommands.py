@@ -1476,12 +1476,14 @@ class CommandArchitecture:
         result_queue = queue.Queue()
         operation_name = cmd_translation[paths_type]
 
+        file_filter = create_filter(self.parameters)
         fgen_kwargs = {
             'client': self._source_client,
             'operation_name': operation_name,
             'follow_symlinks': self.parameters['follow_symlinks'],
             'page_size': self.parameters['page_size'],
             'result_queue': result_queue,
+            'file_filter': file_filter,
         }
         rgen_kwargs = {
             'client': self._client,
@@ -1489,6 +1491,8 @@ class CommandArchitecture:
             'follow_symlinks': self.parameters['follow_symlinks'],
             'page_size': self.parameters['page_size'],
             'result_queue': result_queue,
+            'file_filter': file_filter,
+            'is_dst_walker': True,
         }
 
         fgen_request_parameters = (

@@ -124,7 +124,7 @@ def read_installed_version(skill_dir):
 def read_skill_metadata(skill_dir):
     path = os.path.join(skill_dir, SKILL_METADATA_FILENAME)
     try:
-        with open(path) as f:
+        with open(path, encoding='utf-8') as f:
             return json.load(f)
     except FileNotFoundError:
         return None
@@ -141,7 +141,7 @@ def read_skill_metadata(skill_dir):
 
 def write_skill_metadata(skill_dir, version):
     path = os.path.join(skill_dir, SKILL_METADATA_FILENAME)
-    with open(path, 'w') as f:
+    with open(path, 'w', encoding='utf-8') as f:
         json.dump({'version': version}, f)
         f.write('\n')
 

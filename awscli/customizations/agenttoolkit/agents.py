@@ -251,14 +251,14 @@ class DetectedAgent:
     def _read_mcp_config(path):
         if not os.path.exists(path):
             return {}
-        with open(path) as f:
+        with open(path, encoding='utf-8') as f:
             return json.load(f)
 
     @staticmethod
     def _write_mcp_config(path, config):
         os.makedirs(os.path.dirname(path), exist_ok=True)
         is_new = not os.path.exists(path)
-        with open(path, 'w') as f:
+        with open(path, 'w', encoding='utf-8') as f:
             json.dump(config, f, indent=2)
             f.write('\n')
         # If we created the MCP config file, set permissions to 600, otherwise

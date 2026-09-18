@@ -70,7 +70,7 @@ def _state_file():
 
 def _load_state():
     try:
-        with open(_state_file()) as f:
+        with open(_state_file(), encoding='utf-8') as f:
             return json.load(f)
     except FileNotFoundError:
         return {}
@@ -84,7 +84,7 @@ def _save_state(state):
     try:
         os.makedirs(os.path.dirname(path), exist_ok=True)
         tmp_path = f'{path}.tmp'
-        with open(tmp_path, 'w') as f:
+        with open(tmp_path, 'w', encoding='utf-8') as f:
             json.dump(state, f)
             f.write('\n')
         os.replace(tmp_path, path)

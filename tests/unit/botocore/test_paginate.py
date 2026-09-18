@@ -18,6 +18,7 @@ from botocore.paginate import (
     PaginatorModel,
     TokenDecoder,
     TokenEncoder,
+    _add_numeric_path,
 )
 
 from tests import mock, unittest
@@ -1619,6 +1620,272 @@ class TestStringPageSize(unittest.TestCase):
     def test_str_page_size(self):
         list(self.paginator.paginate(PaginationConfig={'PageSize': '1'}))
         self.method.assert_called_with(MaxItems='1')
+
+
+class TestAddNumericPath(unittest.TestCase):
+    def test_sums_leaf(self):
+        acc = {'CapacityUnits': 100.0}
+        _add_numeric_path(acc, {'CapacityUnits': 102.5}, ('CapacityUnits',))
+        self.assertEqual(acc, {'CapacityUnits': 202.5})
+
+    def test_sums_nested_static_path(self):
+        acc = {'Table': {'CapacityUnits': 1.0}}
+        _add_numeric_path(
+            acc, {'Table': {'CapacityUnits': 2.0}}, ('Table', 'CapacityUnits')
+        )
+        self.assertEqual(acc, {'Table': {'CapacityUnits': 3.0}})
+
+    def test_wildcard_sums_dynamic_key(self):
+        acc = {'GSI': {'idx': {'CapacityUnits': 5.0}}}
+        _add_numeric_path(
+            acc,
+            {'GSI': {'idx': {'CapacityUnits': 7.0}}},
+            ('GSI', '*', 'CapacityUnits'),
+        )
+        self.assertEqual(acc, {'GSI': {'idx': {'CapacityUnits': 12.0}}})
+
+    def test_wildcard_seeds_new_dynamic_key(self):
+        # An index first seen on a later page is seeded, not skipped.
+        acc = {'GSI': {'idx1': {'CapacityUnits': 5.0}}}
+        _add_numeric_path(
+            acc,
+            {
+                'GSI': {
+                    'idx1': {'CapacityUnits': 1.0},
+                    'idx2': {'CapacityUnits': 9.0},
+                }
+            },
+            ('GSI', '*', 'CapacityUnits'),
+        )
+        self.assertEqual(
+            acc,
+            {
+                'GSI': {
+                    'idx1': {'CapacityUnits': 6.0},
+                    'idx2': {'CapacityUnits': 9.0},
+                }
+            },
+        )
+
+    def test_does_not_touch_unconfigured_sibling(self):
+        # The AemousCapacity case: a numeric leaf NOT on a configured path is
+        # left as the first-page value, even though its leaf name matches an
+        # aggregated one elsewhere.
+        acc = {
+            'CapacityUnits': 100.0,
+            'AemousCapacity': {'CapacityUnits': 123.0},
+        }
+        _add_numeric_path(
+            acc,
+            {
+                'CapacityUnits': 102.0,
+                'AemousCapacity': {'CapacityUnits': 123.0},
+            },
+            ('CapacityUnits',),
+        )
+        self.assertEqual(acc['CapacityUnits'], 202.0)
+        self.assertEqual(acc['AemousCapacity'], {'CapacityUnits': 123.0})
+
+    def test_missing_path_in_page_is_noop(self):
+        acc = {'CapacityUnits': 100.0}
+        _add_numeric_path(acc, {}, ('CapacityUnits',))
+        self.assertEqual(acc, {'CapacityUnits': 100.0})
+
+    def test_empty_segments_is_noop(self):
+        # Defensive: an empty path must not raise (IndexError) and change nothing.
+        acc = {'CapacityUnits': 100.0}
+        _add_numeric_path(acc, {'CapacityUnits': 5.0}, ())
+        self.assertEqual(acc, {'CapacityUnits': 100.0})
+
+    def test_type_mismatch_keeps_first(self):
+        acc = {'CapacityUnits': 'T'}
+        _add_numeric_path(acc, {'CapacityUnits': 3.0}, ('CapacityUnits',))
+        self.assertEqual(acc, {'CapacityUnits': 'T'})
+
+    def test_does_not_sum_boolean(self):
+        acc = {'CapacityUnits': True}
+        _add_numeric_path(acc, {'CapacityUnits': True}, ('CapacityUnits',))
+        self.assertIs(acc['CapacityUnits'], True)
+
+
+class TestAggregateNumericKeys(unittest.TestCase):
+    def setUp(self):
+        self.method = mock.Mock()
+        self.model = mock.Mock()
+        self.paginate_config = {
+            'output_token': 'NextToken',
+            'input_token': 'NextToken',
+            'result_key': 'Items',
+            'aggregate_numeric_keys': [
+                'ConsumedCapacity.CapacityUnits',
+                'ConsumedCapacity.GlobalSecondaryIndexes.*.CapacityUnits',
+            ],
+        }
+        self.paginator = Paginator(
+            self.method, self.paginate_config, self.model
+        )
+
+    def test_config_parsed(self):
+        self.assertEqual(
+            self.paginator._aggregate_numeric_keys,
+            {
+                'ConsumedCapacity': [
+                    ('CapacityUnits',),
+                    ('GlobalSecondaryIndexes', '*', 'CapacityUnits'),
+                ]
+            },
+        )
+
+    def test_aggregated_key_dropped_from_non_aggregate_keys(self):
+        # A member in both lists is aggregated; the non_aggregate declaration
+        # for it (and any other non_aggregate members) is handled correctly.
+        config = {
+            'output_token': 'NextToken',
+            'input_token': 'NextToken',
+            'result_key': 'Items',
+            'non_aggregate_keys': ['ConsumedCapacity', 'SomethingElse'],
+            'aggregate_numeric_keys': ['ConsumedCapacity.CapacityUnits'],
+        }
+        paginator = Paginator(self.method, config, self.model)
+        kept = [k.expression for k in paginator._non_aggregate_keys]
+        # ConsumedCapacity is aggregated, so it must not be treated as
+        # non-aggregate; unrelated members are preserved.
+        self.assertEqual(kept, ['SomethingElse'])
+
+    def test_aggregated_key_drops_nested_non_aggregate_paths(self):
+        config = {
+            'output_token': 'NextToken',
+            'input_token': 'NextToken',
+            'result_key': 'Items',
+            'non_aggregate_keys': ['ConsumedCapacity.TableName', 'Other'],
+            'aggregate_numeric_keys': ['ConsumedCapacity.CapacityUnits'],
+        }
+        paginator = Paginator(self.method, config, self.model)
+        kept = [k.expression for k in paginator._non_aggregate_keys]
+        self.assertEqual(kept, ['Other'])
+
+    def test_aggregation_wins_when_member_in_both_lists(self):
+        # Even with ConsumedCapacity declared non-aggregate, the result is the
+        # cross-page sum, not a single page's value.
+        config = {
+            'output_token': 'NextToken',
+            'input_token': 'NextToken',
+            'result_key': 'Items',
+            'non_aggregate_keys': ['ConsumedCapacity'],
+            'aggregate_numeric_keys': ['ConsumedCapacity.CapacityUnits'],
+        }
+        paginator = Paginator(self.method, config, self.model)
+        self.method.side_effect = [
+            {
+                'Items': ['a'],
+                'ConsumedCapacity': {'CapacityUnits': 100.0},
+                'NextToken': 'tok',
+            },
+            {'Items': ['b'], 'ConsumedCapacity': {'CapacityUnits': 102.0}},
+        ]
+        result = paginator.paginate().build_full_result()
+        self.assertEqual(result['ConsumedCapacity']['CapacityUnits'], 202.0)
+
+    def test_unconfigured_nested_leaf_not_summed_end_to_end(self):
+        # The exact concern: a NEW nested numeric field (AemousCapacity) whose
+        # leaf name matches an aggregated one must NOT be summed, because its
+        # full path is not configured.
+        self.method.side_effect = [
+            {
+                'Items': ['a'],
+                'ConsumedCapacity': {
+                    'CapacityUnits': 100.0,
+                    'AemousCapacity': {'CapacityUnits': 123.0},
+                },
+                'NextToken': 'tok',
+            },
+            {
+                'Items': ['b'],
+                'ConsumedCapacity': {
+                    'CapacityUnits': 102.0,
+                    'AemousCapacity': {'CapacityUnits': 123.0},
+                },
+            },
+        ]
+        cc = self.paginator.paginate().build_full_result()['ConsumedCapacity']
+        self.assertEqual(
+            cc['CapacityUnits'], 202.0
+        )  # configured path -> summed
+        # Not on a configured path -> kept from first page, not doubled.
+        self.assertEqual(cc['AemousCapacity'], {'CapacityUnits': 123.0})
+
+    def test_sums_across_pages(self):
+        self.method.side_effect = [
+            {
+                'Items': ['a'],
+                'ConsumedCapacity': {
+                    'TableName': 'T',
+                    'CapacityUnits': 100.0,
+                    'GlobalSecondaryIndexes': {
+                        'my-index': {'CapacityUnits': 100.0}
+                    },
+                },
+                'NextToken': 'tok',
+            },
+            {
+                'Items': ['b'],
+                'ConsumedCapacity': {
+                    'TableName': 'T',
+                    'CapacityUnits': 102.0,
+                    'GlobalSecondaryIndexes': {
+                        'my-index': {'CapacityUnits': 102.0}
+                    },
+                },
+            },
+        ]
+        result = self.paginator.paginate().build_full_result()
+        self.assertEqual(result['Items'], ['a', 'b'])
+        cc = result['ConsumedCapacity']
+        self.assertEqual(cc['CapacityUnits'], 202.0)
+        self.assertEqual(cc['TableName'], 'T')
+        self.assertEqual(
+            cc['GlobalSecondaryIndexes']['my-index']['CapacityUnits'], 202.0
+        )
+
+    def test_sums_scalar_member_across_pages(self):
+        # A top-level scalar (non-dict) aggregate member is summed too.
+        self.method.side_effect = [
+            {'Items': ['a'], 'ConsumedCapacity': 100.0, 'NextToken': 'tok'},
+            {'Items': ['b'], 'ConsumedCapacity': 102.0},
+        ]
+        result = self.paginator.paginate().build_full_result()
+        self.assertEqual(result['ConsumedCapacity'], 202.0)
+
+    def test_does_not_sum_scalar_boolean_member(self):
+        # A boolean must never be summed; keep the first page's value.
+        self.method.side_effect = [
+            {'Items': ['a'], 'ConsumedCapacity': True, 'NextToken': 'tok'},
+            {'Items': ['b'], 'ConsumedCapacity': True},
+        ]
+        result = self.paginator.paginate().build_full_result()
+        self.assertIs(result['ConsumedCapacity'], True)
+
+    def test_absent_when_never_returned(self):
+        self.method.side_effect = [
+            {'Items': ['a'], 'NextToken': 'tok'},
+            {'Items': ['b']},
+        ]
+        result = self.paginator.paginate().build_full_result()
+        self.assertNotIn('ConsumedCapacity', result)
+
+    def test_does_not_mutate_source_pages(self):
+        page = {
+            'Items': ['a'],
+            'ConsumedCapacity': {'CapacityUnits': 100.0},
+            'NextToken': 'tok',
+        }
+        self.method.side_effect = [
+            page,
+            {'Items': ['b'], 'ConsumedCapacity': {'CapacityUnits': 2.0}},
+        ]
+        self.paginator.paginate().build_full_result()
+        # The first page's dict must be left untouched (deepcopy on first sight).
+        self.assertEqual(page['ConsumedCapacity']['CapacityUnits'], 100.0)
 
 
 if __name__ == '__main__':

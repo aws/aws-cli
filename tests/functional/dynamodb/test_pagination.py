@@ -17,7 +17,7 @@ from awscli.testutils import BaseAWSCommandParamsTest
 
 class TestPagination(BaseAWSCommandParamsTest):
     def setUp(self):
-        super(TestPagination, self).setUp()
+        super().setUp()
         self.first_response = {
             "Items": [{"Key": {"B": "MjEzNw=="}}],
             "Count": 1,
@@ -47,3 +47,110 @@ class TestPagination(BaseAWSCommandParamsTest):
         stdout, _, _ = self.run_cmd(cmd, expected_rc=0)
         # Ensure the base64 encoded last evaluated key is in stdout
         self.assertIn('"MjEzNw=="', stdout)
+
+
+class TestConsumedCapacityAggregation(BaseAWSCommandParamsTest):
+    """ConsumedCapacity must be summed across pages, not taken from one page.
+
+    See CLI-4199: auto-pagination previously reported only a single page's
+    ConsumedCapacity, undercounting the true cost of a Scan/Query.
+    """
+
+    def _page(self, consumed_capacity, last_key=None):
+        page = {
+            "Items": [{"Key": {"S": "item"}}],
+            "Count": 1,
+            "ScannedCount": 1,
+            "ConsumedCapacity": consumed_capacity,
+        }
+        if last_key is not None:
+            page["LastEvaluatedKey"] = last_key
+        return page
+
+    def test_scan_sums_total_consumed_capacity(self):
+        self.parsed_responses = [
+            self._page(
+                {"TableName": "T", "CapacityUnits": 100.0},
+                last_key={"Key": {"S": "a"}},
+            ),
+            self._page({"TableName": "T", "CapacityUnits": 102.0}),
+        ]
+        cmd = (
+            'dynamodb scan --table-name T --output json '
+            '--return-consumed-capacity TOTAL'
+        )
+        stdout, _, _ = self.run_cmd(cmd, expected_rc=0)
+        result = json.loads(stdout)
+        self.assertEqual(result["ConsumedCapacity"]["CapacityUnits"], 202.0)
+        self.assertEqual(result["ConsumedCapacity"]["TableName"], "T")
+        self.assertEqual(result["Count"], 2)
+        self.assertEqual(result["ScannedCount"], 2)
+
+    def test_scan_sums_index_consumed_capacity(self):
+        # Index maps are keyed by a user-defined index name; the total must
+        # sum each index across pages regardless of that name.
+        self.parsed_responses = [
+            self._page(
+                {
+                    "TableName": "T",
+                    "CapacityUnits": 100.0,
+                    "Table": {"CapacityUnits": 0.0},
+                    "GlobalSecondaryIndexes": {
+                        "my-index": {"CapacityUnits": 100.0}
+                    },
+                },
+                last_key={"Key": {"S": "a"}},
+            ),
+            self._page(
+                {
+                    "TableName": "T",
+                    "CapacityUnits": 102.0,
+                    "Table": {"CapacityUnits": 0.0},
+                    "GlobalSecondaryIndexes": {
+                        "my-index": {"CapacityUnits": 102.0}
+                    },
+                }
+            ),
+        ]
+        cmd = (
+            'dynamodb scan --table-name T --index-name my-index '
+            '--output json --return-consumed-capacity INDEXES'
+        )
+        stdout, _, _ = self.run_cmd(cmd, expected_rc=0)
+        cc = json.loads(stdout)["ConsumedCapacity"]
+        self.assertEqual(cc["CapacityUnits"], 202.0)
+        self.assertEqual(
+            cc["GlobalSecondaryIndexes"]["my-index"]["CapacityUnits"], 202.0
+        )
+
+    def test_query_sums_total_consumed_capacity(self):
+        self.parsed_responses = [
+            self._page(
+                {"TableName": "T", "CapacityUnits": 5.5},
+                last_key={"Key": {"S": "a"}},
+            ),
+            self._page({"TableName": "T", "CapacityUnits": 4.5}),
+        ]
+        cmd = (
+            'dynamodb query --table-name T --output json '
+            '--key-condition-expression Id=:id '
+            '--expression-attribute-values {":id":{"S":"x"}} '
+            '--return-consumed-capacity TOTAL'
+        )
+        stdout, _, _ = self.run_cmd(cmd, expected_rc=0)
+        result = json.loads(stdout)
+        self.assertEqual(result["ConsumedCapacity"]["CapacityUnits"], 10.0)
+
+    def test_no_consumed_capacity_key_when_not_requested(self):
+        self.parsed_responses = [
+            {
+                "Items": [{"Key": {"S": "a"}}],
+                "Count": 1,
+                "ScannedCount": 1,
+                "LastEvaluatedKey": {"Key": {"S": "a"}},
+            },
+            {"Items": [{"Key": {"S": "b"}}], "Count": 1, "ScannedCount": 1},
+        ]
+        cmd = 'dynamodb scan --table-name T --output json'
+        stdout, _, _ = self.run_cmd(cmd, expected_rc=0)
+        self.assertNotIn("ConsumedCapacity", json.loads(stdout))

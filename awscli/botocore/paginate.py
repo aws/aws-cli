@@ -14,6 +14,7 @@
 import base64
 import json
 import logging
+from copy import deepcopy
 from functools import partial
 from itertools import tee
 
@@ -25,6 +26,59 @@ from botocore.useragent import register_feature_id
 from botocore.utils import merge_dicts, set_value_from_jmespath
 
 log = logging.getLogger(__name__)
+
+
+def _is_summable_number(value):
+    # Match the numeric types used by the existing result_key aggregation
+    # (int, float). Strings are intentionally excluded here (unlike that path,
+    # which concatenates them) so string leaves such as TableName are kept
+    # from the first page rather than concatenated. Booleans are ints in
+    # Python but should never be summed as numbers.
+    return isinstance(value, (int, float)) and not isinstance(value, bool)
+
+
+def _add_numeric_path(accumulator, page_value, segments):
+    """Add the numeric leaf at ``segments`` from ``page_value`` into ``accumulator``.
+
+    ``segments`` is an explicit path within a response member, e.g.
+    ``('CapacityUnits',)``, ``('Table', 'CapacityUnits')``, or
+    ``('GlobalSecondaryIndexes', '*', 'CapacityUnits')``. A ``'*'`` segment
+    matches every key at that level (for maps keyed by runtime-defined names
+    such as index names); every other segment is matched literally.
+
+    Only the exact leaf named by the full path is summed — this is a strict,
+    path-based allowlist. Intermediate keys seen for the first time (e.g. a new
+    index name on a later page) are seeded by deep-copy; anything not on a
+    configured path is left untouched (it was seeded from the first page).
+    Booleans and cross-page type mismatches are never summed.
+    """
+    if not segments:
+        return
+    if not isinstance(page_value, dict) or not isinstance(accumulator, dict):
+        return
+    seg, rest = segments[0], segments[1:]
+    keys = (
+        list(page_value)
+        if seg == '*'
+        else ([seg] if seg in page_value else [])
+    )
+    for key in keys:
+        value = page_value[key]
+        if rest:
+            if key not in accumulator:
+                # First time this (possibly dynamic) key appears; seed subtree.
+                accumulator[key] = deepcopy(value)
+            else:
+                _add_numeric_path(accumulator[key], value, rest)
+        elif key not in accumulator:
+            accumulator[key] = (
+                deepcopy(value) if isinstance(value, (dict, list)) else value
+            )
+        elif _is_summable_number(value) and _is_summable_number(
+            accumulator[key]
+        ):
+            accumulator[key] = accumulator[key] + value
+        # else: non-numeric or cross-page type mismatch -> keep first value.
 
 
 class TokenEncoder:
@@ -201,6 +255,7 @@ class PageIterator:
         starting_token,
         page_size,
         op_kwargs,
+        aggregate_numeric_keys=None,
     ):
         self._method = method
         self._input_token = input_token
@@ -214,6 +269,8 @@ class PageIterator:
         self._op_kwargs = op_kwargs
         self._resume_token = None
         self._non_aggregate_key_exprs = non_aggregate_keys
+        # Maps member -> list of segment-tuples; may be omitted by callers.
+        self._aggregate_numeric_keys = aggregate_numeric_keys or {}
         self._non_aggregate_part = {}
         self._token_encoder = TokenEncoder()
         self._token_decoder = TokenDecoder()
@@ -480,6 +537,9 @@ class PageIterator:
 
     def build_full_result(self):
         complete_result = {}
+        # Running totals for members that are aggregated by recursively
+        # summing their numeric leaves (e.g. DynamoDB's ConsumedCapacity).
+        aggregate_numeric_totals = {}
         for response in self:
             page = response
             # We want to try to catch operation object pagination
@@ -489,6 +549,36 @@ class PageIterator:
             # uses. We can remove it though once operation objects are removed.
             if isinstance(response, tuple) and len(response) == 2:
                 page = response[1]
+            for member, paths in self._aggregate_numeric_keys.items():
+                page_value = page.get(member)
+                if page_value is None:
+                    continue
+                if member not in aggregate_numeric_totals:
+                    # Seed the whole member from the first page it appears on;
+                    # later pages only add the configured leaf paths, so any
+                    # field NOT on a path keeps this first-page value.
+                    aggregate_numeric_totals[member] = (
+                        deepcopy(page_value)
+                        if isinstance(page_value, (dict, list))
+                        else page_value
+                    )
+                elif isinstance(page_value, dict) and isinstance(
+                    aggregate_numeric_totals[member], dict
+                ):
+                    for segments in paths:
+                        if segments:
+                            _add_numeric_path(
+                                aggregate_numeric_totals[member],
+                                page_value,
+                                segments,
+                            )
+                elif _is_summable_number(page_value) and _is_summable_number(
+                    aggregate_numeric_totals[member]
+                ):
+                    # The whole member is a bare number (opted in as a path with
+                    # no leaf, e.g. just "SomeCount").
+                    aggregate_numeric_totals[member] += page_value
+                # Any other/unexpected shape: keep the first page's value.
             # We're incrementally building the full response page
             # by page.  For each page in the response we need to
             # inject the necessary components from the page
@@ -523,6 +613,9 @@ class PageIterator:
                         existing_value + result_value,
                     )
         merge_dicts(complete_result, self.non_aggregate_part)
+        # Overlay the recursively-summed totals last so they take precedence
+        # over any single-page value merged in via the non-aggregate keys.
+        complete_result.update(aggregate_numeric_totals)
         if self.resume_token is not None:
             complete_result['NextToken'] = self.resume_token
         return complete_result
@@ -602,6 +695,9 @@ class Paginator:
         self._output_token = self._get_output_tokens(self._pagination_cfg)
         self._input_token = self._get_input_tokens(self._pagination_cfg)
         self._more_results = self._get_more_results_token(self._pagination_cfg)
+        self._aggregate_numeric_keys = self._get_aggregate_numeric_keys(
+            self._pagination_cfg
+        )
         self._non_aggregate_keys = self._get_non_aggregate_keys(
             self._pagination_cfg
         )
@@ -615,8 +711,40 @@ class Paginator:
     def _get_non_aggregate_keys(self, config):
         keys = []
         for key in config.get('non_aggregate_keys', []):
+            # A member that is aggregated across pages takes precedence over
+            # any non-aggregate declaration for the same member (or a path
+            # nested under it). This lets a member be moved to
+            # aggregate_numeric_keys via an overlay without having to edit the
+            # upstream-synced non_aggregate_keys list (and lets that list keep
+            # receiving unrelated upstream additions).
+            if self._is_aggregated(key):
+                continue
             keys.append(jmespath.compile(key))
         return keys
+
+    def _is_aggregated(self, non_aggregate_key):
+        for aggregate_key in self._aggregate_numeric_keys:
+            if (
+                non_aggregate_key == aggregate_key
+                or non_aggregate_key.startswith(f'{aggregate_key}.')
+            ):
+                return True
+        return False
+
+    def _get_aggregate_numeric_keys(self, config):
+        # A list of explicit dotted paths to numeric leaves that are summed
+        # across pages, e.g. "ConsumedCapacity.CapacityUnits" or
+        # "ConsumedCapacity.GlobalSecondaryIndexes.*.CapacityUnits" (a "*"
+        # segment matches every key at that level, for maps keyed by
+        # runtime-defined names). This is a strict allowlist: only the exact
+        # leaf at each full path is totaled; any other field (strings, or
+        # numbers on a path that is not configured) is preserved from the first
+        # page. Parsed into member -> list of segment-tuples (after the member).
+        paths = {}
+        for path in config.get('aggregate_numeric_keys', []):
+            segments = path.split('.')
+            paths.setdefault(segments[0], []).append(tuple(segments[1:]))
+        return paths
 
     def _get_output_tokens(self, config):
         output = []
@@ -670,6 +798,7 @@ class Paginator:
             page_params['StartingToken'],
             page_params['PageSize'],
             kwargs,
+            self._aggregate_numeric_keys,
         )
 
     def _extract_paging_params(self, kwargs):

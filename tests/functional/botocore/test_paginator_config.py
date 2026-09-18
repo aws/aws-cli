@@ -26,6 +26,7 @@ KNOWN_PAGE_KEYS = set(
         'limit_key',
         'more_results',
         'non_aggregate_keys',
+        'aggregate_numeric_keys',
     ]
 )
 MEMBER_NAME_CHARS = set(string.ascii_letters + string.digits)
@@ -170,6 +171,45 @@ def test_lint_pagination_configs(
     _validate_new_numeric_keys(
         operation_name, page_config, service_model, record_property
     )
+    _validate_aggregate_numeric_keys(operation_name, page_config)
+
+
+def _validate_aggregate_numeric_keys(operation_name, page_config):
+    # aggregate_numeric_keys is a list of explicit dotted paths to the numeric
+    # leaves to sum, e.g. "ConsumedCapacity.CapacityUnits" or
+    # "ConsumedCapacity.GlobalSecondaryIndexes.*.CapacityUnits". A "*" matches
+    # every key at that level and may only appear as an interior segment (not
+    # the top-level member, which must be a real output member, nor the leaf).
+    config_value = page_config.get('aggregate_numeric_keys', [])
+    if not isinstance(config_value, list):
+        raise AssertionError(
+            f"aggregate_numeric_keys for operation {operation_name} must be a "
+            "list of dotted leaf paths."
+        )
+    for path in config_value:
+        if not isinstance(path, str) or not path:
+            raise AssertionError(
+                f"aggregate_numeric_keys entry {path!r} for operation "
+                f"{operation_name} must be a non-empty string path."
+            )
+        segments = path.split('.')
+        if any(segment == '' for segment in segments):
+            raise AssertionError(
+                f"aggregate_numeric_keys path '{path}' for operation "
+                f"{operation_name} has an empty segment (leading/trailing or "
+                "doubled '.')."
+            )
+        if segments[0] == '*':
+            raise AssertionError(
+                f"aggregate_numeric_keys path '{path}' for operation "
+                f"{operation_name} must start with a top-level output member, "
+                "not '*'."
+            )
+        if segments[-1] == '*':
+            raise AssertionError(
+                f"aggregate_numeric_keys path '{path}' for operation "
+                f"{operation_name} must end with a leaf field-name, not '*'."
+            )
 
 
 def _validate_known_pagination_keys(page_config):
@@ -323,8 +363,25 @@ def _get_all_page_output_keys(page_config):
         yield 'output_token', key
     if 'more_results' in page_config:
         yield 'more_results', page_config['more_results']
+    # aggregate_numeric_keys is a list of dotted paths; only the top-level
+    # member of each path is an output member to account for.
+    aggregate_members = {
+        path.split('.')[0]
+        for path in page_config.get('aggregate_numeric_keys', [])
+    }
     for key in page_config.get('non_aggregate_keys', []):
+        # A member that is aggregated across pages takes precedence over any
+        # non_aggregate declaration for the same member (mirroring
+        # Paginator._get_non_aggregate_keys). Skip it here so it is only
+        # accounted for once.
+        if any(
+            key == member or key.startswith(f'{member}.')
+            for member in aggregate_members
+        ):
+            continue
         yield 'non_aggregate_keys', key
+    for member in aggregate_members:
+        yield 'aggregate_numeric_keys', member
 
 
 def _get_list_value(page_config, key):

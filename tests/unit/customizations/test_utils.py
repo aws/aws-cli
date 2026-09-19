@@ -151,6 +151,39 @@ class TestS3BucketExists(unittest.TestCase):
             utils.s3_bucket_exists(self.s3_client, self.bucket_name)
         )
 
+    def test_bucket_not_exists_with_named_error(self):
+        self.s3_client.head_bucket.side_effect = ClientError(
+            {
+                'Error': {'Code': 'NoSuchBucket', 'Message': 'Not Found'},
+                'ResponseMetadata': {'HTTPStatusCode': 404},
+            },
+            'HeadBucket',
+        )
+        self.assertFalse(
+            utils.s3_bucket_exists(self.s3_client, self.bucket_name)
+        )
+
+    def test_bucket_exists_with_named_non_404_error(self):
+        self.s3_client.head_bucket.side_effect = ClientError(
+            {
+                'Error': {'Code': 'AccessDenied', 'Message': 'Forbidden'},
+                'ResponseMetadata': {'HTTPStatusCode': 403},
+            },
+            'HeadBucket',
+        )
+        self.assertTrue(
+            utils.s3_bucket_exists(self.s3_client, self.bucket_name)
+        )
+
+    def test_bucket_exists_with_named_error_without_metadata(self):
+        self.s3_client.head_bucket.side_effect = ClientError(
+            {'Error': {'Code': 'AccessDenied', 'Message': 'Forbidden'}},
+            'HeadBucket',
+        )
+        self.assertTrue(
+            utils.s3_bucket_exists(self.s3_client, self.bucket_name)
+        )
+
 
 class TestClientCreationFromGlobals(unittest.TestCase):
     def setUp(self):

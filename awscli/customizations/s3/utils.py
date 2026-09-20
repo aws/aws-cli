@@ -19,6 +19,7 @@ import os
 import re
 import time
 from collections import namedtuple, deque
+from urllib.parse import urlencode
 
 from dateutil.parser import parse
 from dateutil.tz import tzlocal, tzutc
@@ -475,6 +476,7 @@ class RequestParamsMapper(object):
         """Map CLI params to PutObject request params"""
         cls._set_general_object_params(request_params, cli_params)
         cls._set_metadata_params(request_params, cli_params)
+        cls._set_tagging_params(request_params, cli_params)
         cls._set_sse_request_params(request_params, cli_params)
         cls._set_sse_c_request_params(request_params, cli_params)
         cls._set_request_payer_param(request_params, cli_params)
@@ -526,6 +528,7 @@ class RequestParamsMapper(object):
         cls._set_sse_request_params(request_params, cli_params)
         cls._set_sse_c_request_params(request_params, cli_params)
         cls._set_metadata_params(request_params, cli_params)
+        cls._set_tagging_params(request_params, cli_params)
         cls._set_request_payer_param(request_params, cli_params)
 
     @classmethod
@@ -614,6 +617,14 @@ class RequestParamsMapper(object):
     def _set_metadata_params(cls, request_params, cli_params):
         if cli_params.get('metadata'):
             request_params['Metadata'] = cli_params['metadata']
+
+    @classmethod
+    def _set_tagging_params(cls, request_params, cli_params):
+        # Tagging is a URL-encoded query string built from the --tags pairs.
+        if cli_params.get('tags'):
+            request_params['Tagging'] = urlencode(
+                [(key, value) for key, value in cli_params['tags']]
+            )
 
     @classmethod
     def _auto_populate_metadata_directive(cls, request_params):

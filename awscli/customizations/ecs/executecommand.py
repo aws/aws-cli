@@ -13,10 +13,12 @@
 import logging
 import json
 import errno
+import os
 
-from subprocess import check_call
+from subprocess import check_call, check_output
 from awscli.compat import ignore_user_entered_signals
 from awscli.clidriver import ServiceOperation, CLIOperationCaller
+from awscli.customizations.sessionmanager import VersionRequirement
 
 logger = logging.getLogger(__name__)
 
@@ -74,6 +76,9 @@ def build_ssm_request_paramaters(response, client):
 
 
 class ExecuteCommandCaller(CLIOperationCaller):
+    LAST_PLUGIN_VERSION_WITHOUT_ENV_VAR = "1.2.497.0"
+    DEFAULT_SSM_ENV_NAME = "AWS_SSM_START_SESSION_RESPONSE"
+
     def invoke(self, service_name, operation_name, parameters, parsed_globals):
         try:
             # making an execute-command call to connect to an
@@ -83,7 +88,9 @@ class ExecuteCommandCaller(CLIOperationCaller):
             # before calling execute-command to ensure that
             # session-manager-plugin is installed
             # before execute-command-command is made
-            check_call(["session-manager-plugin"])
+            plugin_version = check_output(
+                ["session-manager-plugin", "--version"], text=True
+            )
             client = self._session.create_client(
                 service_name, region_name=parsed_globals.region,
                 endpoint_url=parsed_globals.endpoint_url,
@@ -94,6 +101,15 @@ class ExecuteCommandCaller(CLIOperationCaller):
                 if self._session.profile is not None else ''
             endpoint_url = client.meta.endpoint_url
             ssm_request_params = build_ssm_request_paramaters(response, client)
+            start_session_response = json.dumps(response['session'])
+            ssm_env_name = self.DEFAULT_SSM_ENV_NAME
+            env = os.environ.copy()
+            version_requirement = VersionRequirement(
+                min_version=self.LAST_PLUGIN_VERSION_WITHOUT_ENV_VAR
+            )
+            if version_requirement.meets_requirement(plugin_version):
+                env[ssm_env_name] = start_session_response
+                start_session_response = ssm_env_name
             # ignore_user_entered_signals ignores these signals
             # because if signals which kills the process are not
             # captured would kill the foreground process but not the
@@ -103,12 +119,12 @@ class ExecuteCommandCaller(CLIOperationCaller):
             with ignore_user_entered_signals():
                 # call executable with necessary input
                 check_call(["session-manager-plugin",
-                            json.dumps(response['session']),
+                            start_session_response,
                             region_name,
                             "StartSession",
                             profile_name,
                             json.dumps(ssm_request_params),
-                            endpoint_url])
+                            endpoint_url], env=env)
             return 0
         except OSError as ex:
             if ex.errno == errno.ENOENT:

@@ -24,18 +24,32 @@ from awscli.customizations.commands import BasicCommand
 from awscli.formatter import get_formatter
 from awscli.utils import OutputStreamFactory
 
+ALL_SKILLS_ARG = {
+    'name': 'all',
+    'help_text': (
+        'Include skills that are already up to date. By default only skills '
+        'with an update available are listed.'
+    ),
+    'action': 'store_true',
+    'required': False,
+}
 
-class CheckUpdatesCommand(BasicCommand):
-    NAME = 'check-updates'
+
+class CheckSkillUpdatesCommand(BasicCommand):
+    NAME = 'check-skill-updates'
     DESCRIPTION = (
-        'Check installed AWS skills for available updates. For each installed '
-        'skill this reports the version currently on disk, the latest version '
-        'available, and whether an update is available. Nothing is downloaded '
-        'or modified, run ``aws agent-toolkit update-skill`` to apply an '
-        'update. By default it checks skills for all detected agents, use '
-        '``--agent`` to check only a specific tool.'
+        'Check installed AWS skills for available updates. Lists the version '
+        'currently on disk alongside the latest version available. Only skills '
+        'with an update available are listed, pass ``--all`` to list every '
+        'installed skill. Nothing is downloaded or modified, run '
+        '``aws agent-toolkit update-skill`` to apply an update. By default it '
+        'checks skills for all detected agents, use ``--agent`` to check only '
+        'a specific tool.'
     )
-    ARG_TABLE = [AGENT_ARG]
+    ARG_TABLE = [
+        ALL_SKILLS_ARG,
+        AGENT_ARG,
+    ]
 
     def __init__(
         self,
@@ -53,22 +67,25 @@ class CheckUpdatesCommand(BasicCommand):
 
     def _run_main(self, parsed_args, parsed_globals):
         agent_filter = getattr(parsed_args, 'agent', None)
+        include_up_to_date = getattr(parsed_args, 'all', False)
         agents = resolve_agents(agent_filter, self._agent_configs)
         installed_skills = collect_installed_skills(agents)
 
-        result = {'skills': []}
+        rows = []
         if installed_skills:
             client = self._client or create_client(
                 self._session, parsed_globals
             )
-            result['skills'] = self._build_rows(client, installed_skills)
+            rows = self._build_rows(client, installed_skills)
+        if not include_up_to_date:
+            rows = [row for row in rows if row['updateAvailable']]
 
         output = parsed_globals.output
         if output is None:
             output = self._session.get_config_variable('output')
         formatter = get_formatter(output, parsed_globals)
         with self._output_stream_factory.get_output_stream() as stream:
-            formatter(self.NAME, result, stream=stream)
+            formatter(self.NAME, {'skills': rows}, stream=stream)
         return 0
 
     def _build_rows(self, client, installed_skills):

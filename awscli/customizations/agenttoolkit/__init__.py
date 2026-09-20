@@ -13,8 +13,8 @@
 import os
 
 from awscli.customizations.agenttoolkit.add_skill import AddSkillCommand
-from awscli.customizations.agenttoolkit.check_updates import (
-    CheckUpdatesCommand,
+from awscli.customizations.agenttoolkit.check_skill_updates import (
+    CheckSkillUpdatesCommand,
 )
 from awscli.customizations.agenttoolkit.get_skill_file import (
     GetSkillFileCommand,
@@ -79,4 +79,4 @@ def _inject_commands(command_table, session, **kwargs):
     )
     command_table['remove-skill'] = RemoveCommand(session)
     command_table['update-skill'] = UpdateSkillCommand(session)
-    command_table['check-updates'] = CheckUpdatesCommand(session)
+    command_table['check-skill-updates'] = CheckSkillUpdatesCommand(session)

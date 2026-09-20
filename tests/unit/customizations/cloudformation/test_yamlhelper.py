@@ -157,6 +157,16 @@ class TestYaml(unittest.TestCase):
         self.assertTrue(isinstance(output, OrderedDict))
         self.assertEqual(output.get('test').get('property'), 'value')
 
+    def test_yaml_dump_escapes_non_ascii_characters(self):
+        # PyYAML defaults write raw UTF-8; CloudFormation shows '?' for non-ASCII
+        data = {'Value': '\U0001F6A8 firing \U0001F7E2 resolved'}
+        dumped = yaml_dump(data)
+        self.assertNotIn('\U0001F6A8', dumped)
+        self.assertNotIn('\U0001F7E2', dumped)
+        self.assertIn('\\U0001F6A8', dumped)
+        self.assertIn('\\U0001F7E2', dumped)
+        self.assertEqual(yaml_parse(dumped), data)
+
     def test_unroll_yaml_anchors(self):
         properties = {
             "Foo": "bar",

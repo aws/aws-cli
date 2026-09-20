@@ -378,7 +378,7 @@ except ImportError:
     def _dist_try_harder(distname, version, id):
         """Tries some special tricks to get the distribution
         information in case the default method fails.
-        Currently supports older SuSE Linux, Caldera OpenLinux and
+        Currently supports older SuSE Linux and
         Slackware Linux distributions.
         """
         if os.path.exists('/var/adm/inst-log/info'):
@@ -397,16 +397,6 @@ except ImportError:
                         values = value.split('-')
                         id = values[2]
             return distname, version, id
-
-        if os.path.exists('/etc/.installed'):
-            # Caldera OpenLinux has some infos in that file (thanks to Colin Kong)
-            with open('/etc/.installed') as f:
-                for line in f:
-                    pkg = line.split('-')
-                    if len(pkg) >= 2 and pkg[0] == 'OpenLinux':
-                        # XXX does Caldera support non Intel platforms ? If yes,
-                        #     where can we find the needed id ?
-                        return 'OpenLinux', pkg[1], id
 
         if os.path.isdir('/usr/lib/setup'):
             # Check for slackware version tag file (thanks to Greg Andruk)

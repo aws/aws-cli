@@ -17,6 +17,7 @@ import sys
 import awscrt.s3
 from botocore.client import Config
 from botocore.httpsession import DEFAULT_CA_BUNDLE
+from botocore.useragent import register_feature_id
 from s3transfer.crt import (
     BotocoreCRTCredentialsWrapper,
     BotocoreCRTRequestSerializer,
@@ -131,12 +132,31 @@ class TransferManagerFactory:
                 params, runtime_config
             )
             if transfer_manager is not None:
+                self._register_transfer_client_feature_id(
+                    client_type, runtime_config
+                )
                 self.warn_unsupported_settings(client_type, runtime_config)
                 return transfer_manager
             client_type = constants.CLASSIC_TRANSFER_CLIENT
+        self._register_transfer_client_feature_id(client_type, runtime_config)
         self.warn_unsupported_settings(client_type, runtime_config)
         return self._create_classic_transfer_manager(
             params, runtime_config, botocore_client
+        )
+
+    def _register_transfer_client_feature_id(
+        self, client_type, runtime_config
+    ):
+        preferred = runtime_config.get(
+            'preferred_transfer_client', constants.AUTO_RESOLVE_TRANSFER_CLIENT
+        )
+        resolve_type = (
+            'AUTO'
+            if preferred == constants.AUTO_RESOLVE_TRANSFER_CLIENT
+            else 'EXPLICIT'
+        )
+        register_feature_id(
+            f'S3_TRANSFER_{client_type.upper()}_{resolve_type}'
         )
 
     def _try_create_crt_transfer_manager(self, params, runtime_config):

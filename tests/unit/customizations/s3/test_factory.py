@@ -16,6 +16,7 @@ import pytest
 import s3transfer.crt
 from awscrt.s3 import S3FileIoOptions, S3RequestTlsMode
 from botocore.config import Config
+from botocore.context import get_context, start_as_current_context
 from botocore.credentials import Credentials
 from botocore.exceptions import InvalidConfigError
 from botocore.httpsession import DEFAULT_CA_BUNDLE
@@ -57,6 +58,12 @@ def mock_crt_process_lock(monkeypatch):
     monkeypatch.setattr('s3transfer.crt.CRT_S3_PROCESS_LOCK', None)
     with mock.patch('awscrt.s3.CrossProcessLock', spec=True) as mock_lock:
         yield mock_lock
+
+
+@pytest.fixture
+def registered_feature_ids():
+    with start_as_current_context():
+        yield get_context().features
 
 
 @pytest.fixture
@@ -1251,6 +1258,42 @@ def _create_transfer_manager_from_factory(
     )
 
 
+@pytest.mark.parametrize(
+    'preferred_transfer_client,extra_params,crt_is_optimized_for_system,'
+    'expected_feature_id',
+    [
+        ('classic', {}, False, 'Ad'),
+        ('crt', {}, False, 'Ae'),
+        (None, {}, False, 'Af'),
+        ('auto', {}, False, 'Af'),
+        (None, {}, True, 'Ag'),
+        ('auto', {}, True, 'Ag'),
+        # S3 copies always use the classic client.
+        ('crt', {'paths_type': 's3s3'}, True, 'Ad'),
+        ('classic', {'paths_type': 's3s3'}, True, 'Ad'),
+        (None, {'paths_type': 's3s3'}, True, 'Af'),
+    ],
+)
+def test_registers_transfer_client_feature_id(
+    preferred_transfer_client,
+    extra_params,
+    crt_is_optimized_for_system,
+    expected_feature_id,
+    transfer_manager_factory,
+    s3_params,
+    registered_feature_ids,
+    mock_crt_is_optimized_for_system,
+    mock_crt_process_lock,
+    mock_crt_s3_client,
+):
+    s3_params.update(extra_params)
+    mock_crt_is_optimized_for_system.return_value = crt_is_optimized_for_system
+    _create_transfer_manager_from_factory(
+        transfer_manager_factory, s3_params, preferred_transfer_client
+    )
+    assert expected_feature_id in registered_feature_ids
+
+
 class TestMaxAttempts:
     def test_resolves_to_classic_when_retries_disabled(
         self, resolve_client_type, auto_resolve_session
@@ -1437,6 +1480,16 @@ class TestChunksizeExceedingCrtMemoryPool:
         ) as mock_release:
             create_manager()
         assert mock_release.called
+
+    def test_reports_classic_feature_id_when_falling_back(
+        self,
+        create_manager,
+        crt_manager_raises,
+        mock_crt_lock_held,
+        registered_feature_ids,
+    ):
+        create_manager()
+        assert 'Af' in registered_feature_ids
 
     def test_does_not_warn_when_falling_back(
         self, create_manager, crt_manager_raises, mock_crt_lock_held, capsys

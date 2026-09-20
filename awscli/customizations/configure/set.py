@@ -50,6 +50,13 @@ class ConfigureSetCommand(BasicCommand):
         config_path = self._session.get_config_variable(path)
         return os.path.expanduser(config_path)
 
+    def _is_known_profile_name(self, name):
+        """Return whether name is a configured profile (mirrors configure get)."""
+        full_config = getattr(self._session, 'full_config', None)
+        if full_config is None:
+            return False
+        return name in full_config.get('profiles', {})
+
     def _run_main(self, args, parsed_globals):
         varname = args.varname
         value = args.value
@@ -77,6 +84,14 @@ class ConfigureSetCommand(BasicCommand):
                     # [profile, profile_name, ...]
                     profile = parts[1]
                     remaining = parts[2:]
+                varname = remaining[0]
+                if len(remaining) == 2:
+                    value = {remaining[1]: value}
+            elif self._is_known_profile_name(parts[0]):
+                # Same syntax as configure get, e.g.
+                # emr-dev.emr.instance_profile
+                profile = parts[0]
+                remaining = parts[1:]
                 varname = remaining[0]
                 if len(remaining) == 2:
                     value = {remaining[1]: value}

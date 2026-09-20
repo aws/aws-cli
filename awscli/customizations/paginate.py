@@ -194,7 +194,7 @@ def add_paging_argument(argument_table, arg_name, argument, shadowed_args):
 
 def check_should_enable_pagination(input_tokens, shadowed_args, argument_table,
                                    parsed_args, parsed_globals, **kwargs):
-    normalized_paging_args = ['start_token', 'max_items']
+    normalized_paging_args = ['start_token', 'max_items', 'page_size', 'starting_token']
     for token in input_tokens:
         py_name = token.replace('-', '_')
         if getattr(parsed_args, py_name) is not None and \

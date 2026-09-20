@@ -20,7 +20,9 @@ import sys
 import re
 import locale
 
-from awscli.formatter import Formatter
+from botocore.paginate import PageIterator
+
+from awscli.formatter import Formatter, TextFormatter
 
 
 class TestListUsers(BaseAWSCommandParamsTest):
@@ -151,3 +153,61 @@ class TestDescribeChangesets(BaseAWSCommandParamsTest):
                     key, actual_count, count
                 )
             )
+
+
+class TestTextFormatterResumeToken(unittest.TestCase):
+    """Tests for issue #10449: --query must not corrupt the NextToken hint."""
+
+    def _make_formatter(self, query=None):
+        args = mock.Mock()
+        args.query = query
+        return TextFormatter(args)
+
+    def _make_paginated_response(self, pages, resume_token=None):
+        result_key = mock.Mock()
+        result_key.expression = 'Users'
+        result_key.search.side_effect = lambda page: page.get('Users', [])
+
+        response = mock.Mock(spec=PageIterator)
+        response.result_keys = [result_key]
+        response.non_aggregate_part = {}
+        response.__iter__ = mock.Mock(return_value=iter(pages))
+        response.resume_token = resume_token
+        return response
+
+    def test_resume_token_printed_without_query(self):
+        formatter = self._make_formatter(query=None)
+        stream = StringIO()
+        pages = [{'Users': [{'UserName': 'alice'}]}]
+        response = self._make_paginated_response(pages, resume_token='tok123')
+        formatter('list-users', response, stream)
+        output = stream.getvalue()
+        self.assertIn('NEXTTOKEN', output)
+        self.assertIn('tok123', output)
+
+    def test_resume_token_not_filtered_to_none_when_query_set(self):
+        # Regression test for #10449: a JMESPath query on data keys
+        # must not cause the NextToken hint to print as "None".
+        query = mock.Mock()
+        query.search.side_effect = lambda data: (
+            None if 'NextToken' in data
+            else [u['UserName'] for u in data.get('Users', [])]
+        )
+        formatter = self._make_formatter(query=query)
+        stream = StringIO()
+        pages = [{'Users': [{'UserName': 'alice'}]}]
+        response = self._make_paginated_response(pages, resume_token='tok123')
+        formatter('list-users', response, stream)
+        output = stream.getvalue()
+        self.assertIn('NEXTTOKEN', output)
+        self.assertIn('tok123', output)
+        self.assertNotIn('None', output)
+
+    def test_no_resume_token_output_when_not_truncated(self):
+        formatter = self._make_formatter(query=None)
+        stream = StringIO()
+        pages = [{'Users': [{'UserName': 'alice'}]}]
+        response = self._make_paginated_response(pages, resume_token=None)
+        formatter('list-users', response, stream)
+        output = stream.getvalue()
+        self.assertNotIn('NEXTTOKEN', output)

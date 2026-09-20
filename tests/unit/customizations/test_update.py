@@ -69,6 +69,33 @@ class TestUnixUpdateCommand:
         assert command([], global_args()) == 0
         runner.assert_called_once()
 
+    def test_prints_agent_toolkit_tip_after_successful_update(self, capsys):
+        command = self._command(USER_INSTALL)
+        command([], global_args())
+        assert 'aws configure agent-toolkit' in capsys.readouterr().out
+
+    def test_install_script_tip_is_suppressed(self):
+        # The install script prints the same tip, so we silence its copy and
+        # print our own, otherwise the user sees it twice.
+        _, env = self._run(USER_INSTALL)
+
+        assert env['AWS_CLI_AGENT_TOOLKIT_HINT_DISABLED'] == 'true'
+
+    def test_no_agent_toolkit_tip_when_hint_disabled(
+        self, capsys, monkeypatch
+    ):
+        monkeypatch.setenv('AWS_CLI_AGENT_TOOLKIT_HINT_DISABLED', 'true')
+        command = self._command(USER_INSTALL)
+        command([], global_args())
+        assert 'aws configure agent-toolkit' not in capsys.readouterr().out
+
+    def test_no_agent_toolkit_tip_when_update_fails(self, capsys):
+        runner = mock.Mock(side_effect=subprocess.CalledProcessError(1, 'x'))
+        command = self._command(USER_INSTALL, runner=runner)
+        with pytest.raises(UpdateError):
+            command([], global_args())
+        assert 'aws configure agent-toolkit' not in capsys.readouterr().out
+
     @pytest.mark.parametrize('source', ['source', 'other', 'pip', ''])
     def test_unsupported_distribution_source_raises(self, source):
         runner = mock.Mock()
@@ -255,6 +282,11 @@ class TestWindowsUpdateCommand:
         assert cmd[1] == '/c'
         assert cmd[2].endswith('.cmd')
         assert len(cmd) == 3
+
+    def test_prints_agent_toolkit_tip(self, capsys):
+        command = self._command(USER_INSTALL)
+        command([], global_args())
+        assert 'aws configure agent-toolkit' in capsys.readouterr().out
 
     def test_downloads_install_script_referenced_by_wrapper(self):
         downloader = mock.Mock()

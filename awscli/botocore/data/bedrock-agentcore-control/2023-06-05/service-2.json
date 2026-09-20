@@ -221,6 +221,27 @@
       ],
       "documentation":"<p>Creates a new configuration bundle resource. A configuration bundle stores versioned component configurations for agent evaluation workflows.</p>"
     },
+    "CreateConsentPortal":{
+      "name":"CreateConsentPortal",
+      "http":{
+        "method":"POST",
+        "requestUri":"/identities/CreateConsentPortal",
+        "responseCode":202
+      },
+      "input":{"shape":"CreateConsentPortalRequest"},
+      "output":{"shape":"CreateConsentPortalResponse"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"UnauthorizedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Creates a new consent portal.</p>"
+    },
     "CreateDataset":{
       "name":"CreateDataset",
       "http":{
@@ -553,7 +574,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Creates a policy within the AgentCore Policy system. Policies provide real-time, deterministic control over agentic interactions with AgentCore Gateway. Using the Cedar policy language, you can define fine-grained policies that specify which interactions with Gateway tools are permitted based on input parameters and OAuth claims, ensuring agents operate within defined boundaries and business rules. The policy is validated during creation against the Cedar schema generated from the Gateway's tools' input schemas, which defines the available tools, their parameters, and expected data types. This is an asynchronous operation. Use the <a href=\"https://docs.aws.amazon.com/bedrock-agentcore-control/latest/APIReference/API_GetPolicy.html\">GetPolicy</a> operation to poll the <code>status</code> field to track completion.</p> <p>If the new policy is a temporal policy, creating it invalidates the policy engine's active temporal sessions. For more information about temporal policy sessions, see <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/policy-session-based-temporal.html\">session-based temporal policies</a>. The policy engine returns an HTTP 409 <code>ConflictException</code> to in-flight sessions. To resume, you must start a new session with a new session ID.</p>"
+      "documentation":"<p>Creates a policy within the AgentCore Policy system. Policies provide real-time, deterministic control over agentic interactions with AgentCore Gateway. Using Cedar or Dogwood, you can define fine-grained policies that specify which interactions with Gateway tools are permitted based on input parameters and OAuth claims, ensuring agents operate within defined boundaries and business rules. The policy is validated during creation against the Cedar schema generated from the Gateway's tools' input schemas, which defines the available tools, their parameters, and expected data types. This is an asynchronous operation. Use the <a href=\"https://docs.aws.amazon.com/bedrock-agentcore-control/latest/APIReference/API_GetPolicy.html\">GetPolicy</a> operation to poll the <code>status</code> field to track completion.</p> <p>If the new policy is a temporal policy, creating it invalidates the policy engine's active temporal sessions. For more information about temporal policy sessions, see <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/policy-session-based-temporal.html\">session-based temporal policies</a>. The policy engine returns an HTTP 409 <code>ConflictException</code> to in-flight sessions. To resume, you must start a new session with a new session ID.</p>"
     },
     "CreatePolicyEngine":{
       "name":"CreatePolicyEngine",
@@ -794,6 +815,27 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Deletes a configuration bundle and all of its versions.</p>",
+      "idempotent":true
+    },
+    "DeleteConsentPortal":{
+      "name":"DeleteConsentPortal",
+      "http":{
+        "method":"POST",
+        "requestUri":"/identities/DeleteConsentPortal",
+        "responseCode":204
+      },
+      "input":{"shape":"DeleteConsentPortalRequest"},
+      "output":{"shape":"DeleteConsentPortalResponse"},
+      "errors":[
+        {"shape":"UnauthorizedException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Deletes a consent portal.</p>",
       "idempotent":true
     },
     "DeleteDataset":{
@@ -1386,6 +1428,26 @@
       "documentation":"<p>Gets a specific version of a configuration bundle by its version identifier.</p>",
       "readonly":true
     },
+    "GetConsentPortal":{
+      "name":"GetConsentPortal",
+      "http":{
+        "method":"POST",
+        "requestUri":"/identities/GetConsentPortal",
+        "responseCode":200
+      },
+      "input":{"shape":"GetConsentPortalRequest"},
+      "output":{"shape":"GetConsentPortalResponse"},
+      "errors":[
+        {"shape":"UnauthorizedException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Retrieves information about a consent portal.</p>",
+      "readonly":true
+    },
     "GetDataset":{
       "name":"GetDataset",
       "http":{
@@ -1730,7 +1792,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Retrieves information about a policy generation request within the AgentCore Policy system. Policy generation converts natural language descriptions into Cedar policy statements using AI-powered translation, enabling non-technical users to create policies.</p>",
+      "documentation":"<p>Retrieves information about a policy generation request within the AgentCore Policy system. Policy generation converts natural language descriptions into Dogwood policy statements using AI-powered translation, enabling non-technical users to create policies.</p>",
       "readonly":true
     },
     "GetPolicyGenerationSummary":{
@@ -2069,6 +2131,25 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Lists all configuration bundles in the account.</p>",
+      "readonly":true
+    },
+    "ListConsentPortals":{
+      "name":"ListConsentPortals",
+      "http":{
+        "method":"POST",
+        "requestUri":"/identities/ListConsentPortals",
+        "responseCode":200
+      },
+      "input":{"shape":"ListConsentPortalsRequest"},
+      "output":{"shape":"ListConsentPortalsResponse"},
+      "errors":[
+        {"shape":"UnauthorizedException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Lists all of the consent portals in your account.</p>",
       "readonly":true
     },
     "ListDatasetExamples":{
@@ -2461,7 +2542,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Retrieves a list of generated policy assets from a policy generation request within the AgentCore Policy system. This operation returns the actual Cedar policies and related artifacts produced by the AI-powered policy generation process, allowing users to review and select from multiple generated policy options.</p>",
+      "documentation":"<p>Retrieves a list of generated policy assets from a policy generation request within the AgentCore Policy system. This operation returns the actual Dogwood policies and related artifacts produced by the AI-powered policy generation process, allowing users to review and select from multiple generated policy options.</p>",
       "readonly":true
     },
     "ListPolicyGenerationSummaries":{
@@ -2655,7 +2736,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Initiates the AI-powered generation of Cedar policies from natural language descriptions within the AgentCore Policy system. This feature enables both technical and non-technical users to create policies by describing their authorization requirements in plain English, which is then automatically translated into formal Cedar policy statements. The generation process analyzes the natural language input along with the Gateway's tool context to produce validated policy options. Generated policy assets are automatically deleted after 7 days, so you should review and create policies from the generated assets within this timeframe. Once created, policies are permanent and not subject to this expiration. Generated policies should be reviewed and tested in log-only mode before deploying to production. Use this when you want to describe policy intent naturally rather than learning Cedar syntax, though generated policies may require refinement for complex scenarios.</p>"
+      "documentation":"<p>Initiates the AI-powered generation of Dogwood policies from natural language descriptions within the AgentCore Policy system. This feature enables both technical and non-technical users to create policies by describing their authorization requirements in plain English, which is then automatically translated into formal Dogwood policy statements. The generation process analyzes the natural language input along with the Gateway's tool context to produce validated policy options. Generated policy assets are automatically deleted after 7 days, so you should review and create policies from the generated assets within this timeframe. Once created, policies are permanent and not subject to this expiration. Generated policies should be reviewed and tested in log-only mode before deploying to production. Use this when you want to describe policy intent naturally rather than learning Dogwood syntax, though generated policies may require refinement for complex scenarios.</p>"
     },
     "SubmitRegistryRecordForApproval":{
       "name":"SubmitRegistryRecordForApproval",
@@ -2840,6 +2921,27 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Updates a configuration bundle by creating a new version with the specified changes. Each update creates a new version in the version history.</p>"
+    },
+    "UpdateConsentPortal":{
+      "name":"UpdateConsentPortal",
+      "http":{
+        "method":"POST",
+        "requestUri":"/identities/UpdateConsentPortal",
+        "responseCode":202
+      },
+      "input":{"shape":"UpdateConsentPortalRequest"},
+      "output":{"shape":"UpdateConsentPortalResponse"},
+      "errors":[
+        {"shape":"UnauthorizedException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Updates an existing consent portal.</p>",
+      "idempotent":true
     },
     "UpdateDataset":{
       "name":"UpdateDataset",
@@ -3583,7 +3685,8 @@
         "UPDATING",
         "UPDATE_FAILED",
         "READY",
-        "DELETING"
+        "DELETING",
+        "DELETE_FAILED"
       ]
     },
     "AgentRuntimeEndpoints":{
@@ -3606,7 +3709,8 @@
         "UPDATING",
         "UPDATE_FAILED",
         "READY",
-        "DELETING"
+        "DELETING",
+        "DELETE_FAILED"
       ]
     },
     "AgentRuntimeVersion":{
@@ -3666,6 +3770,7 @@
       "member":{"shape":"AllowedAudience"},
       "min":1
     },
+    "AllowedAudienceType":{"type":"string"},
     "AllowedClient":{"type":"string"},
     "AllowedClientsList":{
       "type":"list",
@@ -4619,14 +4724,15 @@
     },
     "CloudWatchLogsInputConfig":{
       "type":"structure",
-      "required":[
-        "logGroupNames",
-        "serviceNames"
-      ],
+      "required":["serviceNames"],
       "members":{
         "logGroupNames":{
           "shape":"CloudWatchLogsInputConfigLogGroupNamesList",
           "documentation":"<p> The list of CloudWatch log group names to monitor for agent traces.</p>"
+        },
+        "logGroupNamePrefixes":{
+          "shape":"CloudWatchLogsInputConfigLogGroupNamePrefixesList",
+          "documentation":"<p> The list of CloudWatch log group name prefixes to monitor for agent traces. Specify this instead of <code>logGroupNames</code> to match log groups by prefix. Specify either <code>logGroupNames</code> or <code>logGroupNamePrefixes</code>, not both. One of the two is required. </p>"
         },
         "serviceNames":{
           "shape":"CloudWatchLogsInputConfigServiceNamesList",
@@ -4635,11 +4741,18 @@
       },
       "documentation":"<p> The configuration for reading agent traces from CloudWatch logs as input for online evaluation. </p>"
     },
+    "CloudWatchLogsInputConfigLogGroupNamePrefixesList":{
+      "type":"list",
+      "member":{"shape":"LogGroupNamePrefix"},
+      "documentation":"<p>List of CloudWatch Logs log group name prefixes to source trace data from.</p>",
+      "max":5,
+      "min":1
+    },
     "CloudWatchLogsInputConfigLogGroupNamesList":{
       "type":"list",
       "member":{"shape":"LogGroupName"},
-      "max":5,
-      "min":1
+      "max":10,
+      "min":0
     },
     "CloudWatchLogsInputConfigServiceNamesList":{
       "type":"list",
@@ -4649,11 +4762,18 @@
     },
     "CloudWatchOutputConfig":{
       "type":"structure",
-      "required":["logGroupName"],
       "members":{
         "logGroupName":{
-          "shape":"LogGroupName",
-          "documentation":"<p> The name of the CloudWatch log group where evaluation results will be written. The log group will be created if it doesn't exist. </p>"
+          "shape":"OptionalLogGroupName",
+          "documentation":"<p> The name of the CloudWatch log group where evaluation results will be written. An existing log group is used as-is; otherwise the service creates it, which requires the evaluation execution role to grant <code>logs:CreateLogGroup</code> on the log group. Don't specify this value when <code>resultDestination</code> is <code>SOURCE_LOG_GROUP</code>. The name can't be under the service-reserved <code>/aws/bedrock-agentcore/evaluations/</code> namespace, apart from this configuration's own service-managed default group. </p>"
+        },
+        "metricsNamespace":{
+          "shape":"MetricsNamespace",
+          "documentation":"<p> The CloudWatch metrics namespace where evaluation result metrics are published. If you omit this value, the service publishes metrics to <code>Bedrock-AgentCore/Evaluations</code>. This value can't begin with <code>AWS/</code>. </p>"
+        },
+        "resultDestination":{
+          "shape":"ResultDestination",
+          "documentation":"<p> The destination where evaluation results are written. Valid values: </p> <ul> <li> <p> <code>DEDICATED_LOG_GROUP</code> (default) – Writes results to a dedicated result log group.</p> </li> <li> <p> <code>SOURCE_LOG_GROUP</code> – Writes results back to the log group that the agent traces were read from. If you use this value, don't specify <code>logGroupName</code>.</p> </li> </ul>"
         }
       },
       "documentation":"<p> The configuration for writing evaluation results to CloudWatch logs with embedded metric format (EMF) for monitoring. </p>"
@@ -5251,6 +5371,153 @@
       "min":5,
       "pattern":"(?:0|[1-9]\\d*)\\.(?:0|[1-9]\\d*)\\.(?:0|[1-9]\\d*)"
     },
+    "ConsentPortalArnType":{
+      "type":"string",
+      "pattern":"arn:aws[^:]*:bedrock-agentcore:[a-z0-9-]+:[0-9]{12}:consent-portal/[a-zA-Z0-9\\-_]{1,50}-[A-Za-z0-9]{10}"
+    },
+    "ConsentPortalDescriptionType":{
+      "type":"string",
+      "max":512,
+      "min":0
+    },
+    "ConsentPortalIdType":{
+      "type":"string",
+      "pattern":"[a-zA-Z0-9\\-_]{1,50}-[A-Za-z0-9]{10}"
+    },
+    "ConsentPortalIdentifier":{
+      "type":"string",
+      "pattern":"[a-zA-Z0-9\\-_]{1,50}-[A-Za-z0-9]{10}"
+    },
+    "ConsentPortalIdpConfig":{
+      "type":"structure",
+      "required":[
+        "credentialProviderArn",
+        "scopes"
+      ],
+      "members":{
+        "credentialProviderArn":{
+          "shape":"OAuth2CredentialProviderArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the OAuth2 credential provider used to authenticate end users to the consent portal.</p>"
+        },
+        "scopes":{
+          "shape":"AllowedScopesType",
+          "documentation":"<p>The OAuth2 scopes that the consent portal requests when authenticating end users.</p>"
+        },
+        "audience":{
+          "shape":"AllowedAudienceType",
+          "documentation":"<p>The audience value that the consent portal includes when requesting tokens from the identity provider.</p>"
+        }
+      },
+      "documentation":"<p>The identity provider configuration used to authenticate end users to the consent portal.</p>"
+    },
+    "ConsentPortalNameType":{
+      "type":"string",
+      "max":50,
+      "min":1,
+      "pattern":"[a-zA-Z0-9_-]{1,50}"
+    },
+    "ConsentPortalSource":{
+      "type":"structure",
+      "required":[
+        "identifier",
+        "type"
+      ],
+      "members":{
+        "identifier":{
+          "shape":"ConsentPortalSourceIdentifierType",
+          "documentation":"<p>The identifier of the source resource. For an <code>agentcore-gateway</code> source, this is the gateway ID or its Amazon Resource Name (ARN).</p>"
+        },
+        "type":{
+          "shape":"ConsentPortalSourceType",
+          "documentation":"<p>The type of the source resource.</p>"
+        }
+      },
+      "documentation":"<p>A resource served by the consent portal.</p>"
+    },
+    "ConsentPortalSourceIdentifierType":{
+      "type":"string",
+      "pattern":"([0-9a-z][-]?){1,100}-[0-9a-z]{10}$|^arn:aws(-[a-z-]+)?:bedrock-agentcore:[a-z0-9-]{1,20}:[0-9]{12}:gateway/([0-9a-z][-]?){1,48}-[a-z0-9]{10}"
+    },
+    "ConsentPortalSourceType":{
+      "type":"string",
+      "documentation":"<p>The type of a consent portal source. Currently, we only support type <code>agentcore-gateway</code>.</p>",
+      "enum":["agentcore-gateway"]
+    },
+    "ConsentPortalSources":{
+      "type":"list",
+      "member":{"shape":"ConsentPortalSource"},
+      "documentation":"<p>The list of resources served by the consent portal.</p>",
+      "max":1,
+      "min":1
+    },
+    "ConsentPortalStatus":{
+      "type":"string",
+      "documentation":"<p>The lifecycle status of a consent portal.</p>",
+      "enum":[
+        "CREATING",
+        "ACTIVE",
+        "UPDATING",
+        "UPDATE_FAILED",
+        "DELETING",
+        "FAILED"
+      ]
+    },
+    "ConsentPortalSummaries":{
+      "type":"list",
+      "member":{"shape":"ConsentPortalSummary"},
+      "documentation":"<p>A list of consent portal summaries.</p>"
+    },
+    "ConsentPortalSummary":{
+      "type":"structure",
+      "required":[
+        "sources",
+        "consentPortalArn",
+        "consentPortalId",
+        "createdAt",
+        "name",
+        "status",
+        "updatedAt"
+      ],
+      "members":{
+        "sources":{
+          "shape":"ConsentPortalSources",
+          "documentation":"<p>The resources served by the consent portal.</p>"
+        },
+        "consentPortalArn":{
+          "shape":"ConsentPortalArnType",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the consent portal.</p>"
+        },
+        "consentPortalId":{
+          "shape":"ConsentPortalIdType",
+          "documentation":"<p>The unique identifier of the consent portal.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp for when the consent portal was created.</p>"
+        },
+        "description":{
+          "shape":"ConsentPortalDescriptionType",
+          "documentation":"<p>The description of the consent portal.</p>"
+        },
+        "name":{
+          "shape":"ConsentPortalNameType",
+          "documentation":"<p>The name of the consent portal.</p>"
+        },
+        "portalUrl":{
+          "shape":"PortalUrlType",
+          "documentation":"<p>The URL used to access the consent portal.</p>"
+        },
+        "status":{
+          "shape":"ConsentPortalStatus",
+          "documentation":"<p>The current status of the consent portal.</p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp for when the consent portal was last updated.</p>"
+        }
+      },
+      "documentation":"<p>Summary information about a consent portal.</p>"
+    },
     "ConsolidationConfiguration":{
       "type":"structure",
       "members":{
@@ -5278,7 +5545,7 @@
       "members":{
         "rawText":{
           "shape":"NaturalLanguage",
-          "documentation":"<p>The raw text content containing natural language descriptions of desired policy behavior. This text is processed by AI to generate corresponding Cedar policy statements that match the described intent.</p>"
+          "documentation":"<p>The raw text content containing natural language descriptions of desired policy behavior. This text is processed by AI to generate corresponding Dogwood policy statements that match the described intent.</p>"
         }
       },
       "documentation":"<p>Represents content input for policy generation operations. This structure encapsulates the natural language descriptions or other content formats that are used as input for AI-powered policy generation.</p>",
@@ -5447,6 +5714,10 @@
         "tags":{
           "shape":"TagsMap",
           "documentation":"<p>A map of tag keys and values to assign to the agent runtime. Tags enable you to categorize your resources in different ways, for example, by purpose, owner, or environment.</p>"
+        },
+        "platformVersion":{
+          "shape":"PlatformVersion",
+          "documentation":"<p>The version of the runtime platform to use for the AgentCore Runtime.</p>"
         }
       }
     },
@@ -5879,6 +6150,105 @@
         "createdAt":{
           "shape":"Timestamp",
           "documentation":"<p>The timestamp when the configuration bundle was created.</p>"
+        }
+      }
+    },
+    "CreateConsentPortalRequest":{
+      "type":"structure",
+      "required":[
+        "executionRoleArn",
+        "idpConfig",
+        "name",
+        "sources"
+      ],
+      "members":{
+        "executionRoleArn":{
+          "shape":"ExecutionRoleArnType",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role that the consent portal assumes to access the resources defined in its sources.</p>"
+        },
+        "idpConfig":{
+          "shape":"ConsentPortalIdpConfig",
+          "documentation":"<p>The identity provider configuration that the consent portal uses to authenticate end users.</p>"
+        },
+        "name":{
+          "shape":"ConsentPortalNameType",
+          "documentation":"<p>The name of the consent portal. The name must be unique within your account.</p>"
+        },
+        "sources":{
+          "shape":"ConsentPortalSources",
+          "documentation":"<p>The resources served by the consent portal. Currently, we only support type <code>agentcore-gateway</code>.</p>"
+        },
+        "description":{
+          "shape":"ConsentPortalDescriptionType",
+          "documentation":"<p>The description of the consent portal.</p>"
+        },
+        "tags":{
+          "shape":"TagsMap",
+          "documentation":"<p>A map of tag keys and values to assign to the consent portal. Tags enable you to categorize your resources in different ways, for example, by purpose, owner, or environment.</p>"
+        }
+      }
+    },
+    "CreateConsentPortalResponse":{
+      "type":"structure",
+      "required":[
+        "sources",
+        "consentPortalArn",
+        "consentPortalId",
+        "createdAt",
+        "executionRoleArn",
+        "idpConfig",
+        "name",
+        "status",
+        "updatedAt"
+      ],
+      "members":{
+        "sources":{
+          "shape":"ConsentPortalSources",
+          "documentation":"<p>The resources served by the consent portal.</p>"
+        },
+        "consentPortalArn":{
+          "shape":"ConsentPortalArnType",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the consent portal.</p>"
+        },
+        "consentPortalId":{
+          "shape":"ConsentPortalIdType",
+          "documentation":"<p>The unique identifier of the consent portal.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp for when the consent portal was created.</p>"
+        },
+        "description":{
+          "shape":"ConsentPortalDescriptionType",
+          "documentation":"<p>The description of the consent portal.</p>"
+        },
+        "executionRoleArn":{
+          "shape":"ExecutionRoleArnType",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role that the consent portal assumes to access the resources defined in its sources.</p>"
+        },
+        "idpConfig":{
+          "shape":"ConsentPortalIdpConfig",
+          "documentation":"<p>The identity provider configuration that the consent portal uses to authenticate end users.</p>"
+        },
+        "name":{
+          "shape":"ConsentPortalNameType",
+          "documentation":"<p>The name of the consent portal.</p>"
+        },
+        "portalUrl":{
+          "shape":"PortalUrlType",
+          "documentation":"<p>The URL used to access the consent portal.</p>"
+        },
+        "status":{
+          "shape":"ConsentPortalStatus",
+          "documentation":"<p>The current status of the consent portal.</p>"
+        },
+        "statusReason":{
+          "shape":"StatusReasonType",
+          "documentation":"<p>A message that provides additional information about the current status of the consent portal.</p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp for when the consent portal was last updated.</p>"
         }
       }
     },
@@ -6843,6 +7213,7 @@
           "shape":"ClusteringConfig",
           "documentation":"<p>Configuration for periodic batch evaluation clustering of insight results.</p>"
         },
+        "outputConfig":{"shape":"OutputConfig"},
         "evaluationExecutionRoleArn":{
           "shape":"RoleArn",
           "documentation":"<p> The Amazon Resource Name (ARN) of the IAM role that grants permissions to read from CloudWatch logs, write evaluation results, and invoke Amazon Bedrock models for evaluation. If the configuration references evaluators encrypted with a customer managed KMS key, this role must also have <code>kms:Decrypt</code> permission on the KMS key. The service validates this permission at configuration creation time. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/evaluations-encryption.html\">Encryption at rest for AgentCore Evaluations</a>. </p>"
@@ -7221,7 +7592,7 @@
         },
         "definition":{
           "shape":"PolicyDefinition",
-          "documentation":"<p>The Cedar policy statement that defines the access control rules. This contains the actual policy logic written in Cedar policy language, specifying effect (permit or forbid), principals, actions, resources, and conditions for agent behavior control.</p>"
+          "documentation":"<p>The Cedar or Dogwood policy statement that defines the access control rules. This contains the actual policy logic written in Cedar or Dogwood, specifying effect (permit or forbid), principals, actions, resources, and conditions for agent behavior control.</p>"
         },
         "description":{
           "shape":"Description",
@@ -7296,7 +7667,7 @@
         },
         "definition":{
           "shape":"PolicyDefinition",
-          "documentation":"<p>The Cedar policy statement that was created. This is the validated policy definition that will be used for agent behavior control and access decisions.</p>"
+          "documentation":"<p>The Cedar or Dogwood policy statement that was created. This is the validated policy definition that will be used for agent behavior control and access decisions.</p>"
         },
         "description":{
           "shape":"Description",
@@ -8445,6 +8816,20 @@
           "documentation":"<p>The status of the configuration bundle deletion operation.</p>"
         }
       }
+    },
+    "DeleteConsentPortalRequest":{
+      "type":"structure",
+      "required":["consentPortalIdentifier"],
+      "members":{
+        "consentPortalIdentifier":{
+          "shape":"ConsentPortalIdentifier",
+          "documentation":"<p>The identifier of the consent portal. You can specify either the consent portal ID or its Amazon Resource Name (ARN).</p>"
+        }
+      }
+    },
+    "DeleteConsentPortalResponse":{
+      "type":"structure",
+      "members":{}
     },
     "DeleteDatasetExamplesRequest":{
       "type":"structure",
@@ -9918,7 +10303,7 @@
     "EvaluatorList":{
       "type":"list",
       "member":{"shape":"EvaluatorReference"},
-      "max":10,
+      "max":25,
       "min":0
     },
     "EvaluatorModelConfig":{
@@ -10054,6 +10439,10 @@
     "ExceptionLevel":{
       "type":"string",
       "enum":["DEBUG"]
+    },
+    "ExecutionRoleArnType":{
+      "type":"string",
+      "pattern":"arn:aws(-[a-z-]+)?:iam::[0-9]{12}:role/[a-zA-Z0-9+=,.@\\-_/]+"
     },
     "ExtractionConfig":{
       "type":"structure",
@@ -10329,7 +10718,7 @@
       "members":{
         "arn":{
           "shape":"GatewayPolicyEngineArn",
-          "documentation":"<p>The ARN of the policy engine. The policy engine contains Cedar policies that define fine-grained authorization rules specifying who can perform what actions on which resources as agents interact through the gateway.</p>"
+          "documentation":"<p>The ARN of the policy engine. The policy engine contains Cedar or Dogwood policies that define fine-grained authorization rules specifying who can perform what actions on which resources as agents interact through the gateway.</p>"
         },
         "mode":{
           "shape":"GatewayPolicyEngineMode",
@@ -10877,6 +11266,10 @@
         "capacityProviderConfiguration":{
           "shape":"CapacityProviderConfiguration",
           "documentation":"<p>The capacity provider configuration for the AgentCore Runtime.</p>"
+        },
+        "platformVersion":{
+          "shape":"PlatformVersion",
+          "documentation":"<p>The version of the runtime platform used by the AgentCore Runtime.</p>"
         }
       }
     },
@@ -11361,6 +11754,80 @@
         "kmsKeyArn":{
           "shape":"KmsKeyArn",
           "documentation":"<p>KMS key ARN used to encrypt component configurations, if CMK was provided.</p>"
+        }
+      }
+    },
+    "GetConsentPortalRequest":{
+      "type":"structure",
+      "required":["consentPortalIdentifier"],
+      "members":{
+        "consentPortalIdentifier":{
+          "shape":"ConsentPortalIdentifier",
+          "documentation":"<p>The identifier of the consent portal. You can specify either the consent portal ID or its Amazon Resource Name (ARN).</p>"
+        }
+      }
+    },
+    "GetConsentPortalResponse":{
+      "type":"structure",
+      "required":[
+        "sources",
+        "consentPortalArn",
+        "consentPortalId",
+        "createdAt",
+        "executionRoleArn",
+        "idpConfig",
+        "name",
+        "status",
+        "updatedAt"
+      ],
+      "members":{
+        "sources":{
+          "shape":"ConsentPortalSources",
+          "documentation":"<p>The resources served by the consent portal.</p>"
+        },
+        "consentPortalArn":{
+          "shape":"ConsentPortalArnType",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the consent portal.</p>"
+        },
+        "consentPortalId":{
+          "shape":"ConsentPortalIdType",
+          "documentation":"<p>The unique identifier of the consent portal.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp for when the consent portal was created.</p>"
+        },
+        "description":{
+          "shape":"ConsentPortalDescriptionType",
+          "documentation":"<p>The description of the consent portal.</p>"
+        },
+        "executionRoleArn":{
+          "shape":"ExecutionRoleArnType",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role that the consent portal assumes to access the resources defined in its sources.</p>"
+        },
+        "idpConfig":{
+          "shape":"ConsentPortalIdpConfig",
+          "documentation":"<p>The identity provider configuration that the consent portal uses to authenticate end users.</p>"
+        },
+        "name":{
+          "shape":"ConsentPortalNameType",
+          "documentation":"<p>The name of the consent portal.</p>"
+        },
+        "portalUrl":{
+          "shape":"PortalUrlType",
+          "documentation":"<p>The URL used to access the consent portal.</p>"
+        },
+        "status":{
+          "shape":"ConsentPortalStatus",
+          "documentation":"<p>The current status of the consent portal.</p>"
+        },
+        "statusReason":{
+          "shape":"StatusReasonType",
+          "documentation":"<p>A message that provides additional information about the current status of the consent portal.</p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp for when the consent portal was last updated.</p>"
         }
       }
     },
@@ -12677,7 +13144,7 @@
         },
         "definition":{
           "shape":"PolicyDefinition",
-          "documentation":"<p>The Cedar policy statement that defines the access control rules. This contains the actual policy logic used for agent behavior control and access decisions.</p>"
+          "documentation":"<p>The Cedar or Dogwood policy statement that defines the access control rules. This contains the actual policy logic used for agent behavior control and access decisions.</p>"
         },
         "description":{
           "shape":"Description",
@@ -15481,6 +15948,39 @@
         }
       }
     },
+    "ListConsentPortalsRequest":{
+      "type":"structure",
+      "members":{
+        "maxResults":{
+          "shape":"ListConsentPortalsRequestMaxResultsInteger",
+          "documentation":"<p>The maximum number of consent portals to return in a single call.</p>"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>A token to retrieve the next page of results. Use the value returned in a previous response to request the next page.</p>"
+        }
+      }
+    },
+    "ListConsentPortalsRequestMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "ListConsentPortalsResponse":{
+      "type":"structure",
+      "required":["consentPortals"],
+      "members":{
+        "consentPortals":{
+          "shape":"ConsentPortalSummaries",
+          "documentation":"<p>The list of consent portals.</p>"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>The token to use in a subsequent request to retrieve the next page of results. This value is null when there are no more results to return.</p>"
+        }
+      }
+    },
     "ListDatasetExamplesRequest":{
       "type":"structure",
       "required":["datasetId"],
@@ -16277,7 +16777,7 @@
       "members":{
         "policyGenerationAssets":{
           "shape":"PolicyGenerationAssets",
-          "documentation":"<p>An array of generated policy assets including Cedar policies and related artifacts from the AI-powered policy generation process. Each asset represents a different policy option or variation generated from the original natural language input.</p>"
+          "documentation":"<p>An array of generated policy assets including Dogwood policies and related artifacts from the AI-powered policy generation process. Each asset represents a different policy option or variation generated from the original natural language input.</p>"
         },
         "nextToken":{
           "shape":"NextToken",
@@ -16615,6 +17115,13 @@
     },
     "LogGroupName":{
       "type":"string",
+      "pattern":"[.\\-_/#A-Za-z0-9]+"
+    },
+    "LogGroupNamePrefix":{
+      "type":"string",
+      "documentation":"<p>Prefix of a CloudWatch Logs log group name.</p>",
+      "max":512,
+      "min":1,
       "pattern":"[.\\-_/#A-Za-z0-9]+"
     },
     "Long":{
@@ -17260,6 +17767,13 @@
         "NUMBER"
       ]
     },
+    "MetricsNamespace":{
+      "type":"string",
+      "documentation":"<p>CloudWatch metrics namespace for evaluation result metrics.</p>",
+      "max":255,
+      "min":1,
+      "pattern":"[a-zA-Z0-9._#/:-]+"
+    },
     "MicrosoftOauth2ProviderConfigInput":{
       "type":"structure",
       "required":["clientId"],
@@ -17696,6 +18210,10 @@
       "max":128,
       "min":1
     },
+    "OAuth2CredentialProviderArn":{
+      "type":"string",
+      "pattern":"arn:(aws|aws-cn|aws-us-gov|aws-iso|aws-iso-b|aws-iso-e|aws-iso-f|aws-eusc):bedrock-agentcore:[a-z0-9-]{1,32}:[0-9]{12}:token-vault/[a-zA-Z0-9_-]{1,64}/oauth2credentialprovider/[a-zA-Z0-9_-]{1,128}"
+    },
     "OAuthCredentialProvider":{
       "type":"structure",
       "required":[
@@ -18106,6 +18624,11 @@
         "LINUX_ARM64"
       ]
     },
+    "OptionalLogGroupName":{
+      "type":"string",
+      "documentation":"<p>A log group name that may also be empty. The empty string is the @default of members that were relaxed from @required, and carries the meaning &quot;no log group&quot; for that member.</p>",
+      "pattern":"$|^[.\\-_/#A-Za-z0-9]+"
+    },
     "OutputConfig":{
       "type":"structure",
       "required":["cloudWatchConfig"],
@@ -18479,6 +19002,12 @@
       },
       "documentation":"<p>The permissions configuration for a capacity provider. This specifies the IAM role that AgentCore uses to manage the Amazon EC2 instances for the capacity provider on your behalf.</p>"
     },
+    "PlatformVersion":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"[^\\s]+"
+    },
     "Policies":{
       "type":"list",
       "member":{"shape":"Policy"},
@@ -18533,7 +19062,7 @@
         },
         "definition":{
           "shape":"PolicyDefinition",
-          "documentation":"<p>The Cedar policy statement that defines the access control rules. This contains the actual policy logic used for agent behavior control and access decisions.</p>"
+          "documentation":"<p>The Cedar or Dogwood policy statement that defines the access control rules. This contains the actual policy logic used for agent behavior control and access decisions.</p>"
         },
         "description":{
           "shape":"Description",
@@ -18544,7 +19073,7 @@
           "documentation":"<p>Additional information about the policy status. This provides details about any failures or the current state of the policy lifecycle.</p>"
         }
       },
-      "documentation":"<p>Represents a complete policy resource within the AgentCore Policy system. Policies are ARN-able resources that contain Cedar policy statements and associated metadata for controlling agent behavior and access decisions. Each policy belongs to a policy engine and defines fine-grained authorization rules that are evaluated in real-time as agents interact with tools through Gateway. Policies use the Cedar policy language to specify who (principals based on OAuth claims like username, role, or scope) can perform what actions (tool calls) on which resources (Gateways), with optional conditions for attribute-based access control. Multiple policies can apply to a single request, with Cedar's forbid-wins semantics ensuring that security restrictions are never accidentally overridden.</p>"
+      "documentation":"<p>Represents a complete policy resource within the AgentCore Policy system. Policies are ARN-able resources that contain Cedar or Dogwood policy statements and associated metadata for controlling agent behavior and access decisions. Each policy belongs to a policy engine and defines fine-grained authorization rules that are evaluated in real-time as agents interact with tools through Gateway. Policies use Cedar or Dogwood to specify who (principals based on OAuth claims like username, role, or scope) can perform what actions (tool calls) on which resources (Gateways), with optional conditions for attribute-based access control. Multiple policies can apply to a single request, with forbid-wins semantics ensuring that security restrictions are never accidentally overridden.</p>"
     },
     "PolicyArn":{
       "type":"string",
@@ -18561,11 +19090,11 @@
         },
         "policyGeneration":{
           "shape":"PolicyGenerationDetails",
-          "documentation":"<p>The generated policy asset information within the policy definition structure. This contains information identifying a generated policy asset from the AI-powered policy generation process within the AgentCore Policy system. Each asset contains a Cedar policy statement generated from natural language input, along with associated metadata and analysis findings to help users evaluate and select the most appropriate policy option.</p>"
+          "documentation":"<p>The generated policy asset information within the policy definition structure. This contains information identifying a generated policy asset from the AI-powered policy generation process within the AgentCore Policy system. Each asset contains a Dogwood policy statement generated from natural language input, along with associated metadata and analysis findings to help users evaluate and select the most appropriate policy option.</p>"
         },
         "policy":{
           "shape":"PolicyStatement",
-          "documentation":"<p>An AgentCore policy statement that defines the access control rules. The statement can be a Cedar policy or a guardrails definition.</p>"
+          "documentation":"<p>The Dogwood policy statement that defines the access control rules. This policy definition can include Dogwood policies and supports temporal conditions and information providers such as guardrails.</p>"
         }
       },
       "documentation":"<p>Represents the definition structure for policies within the AgentCore Policy system. This structure encapsulates different policy formats and languages that can be used to define access control rules.</p>",
@@ -18755,7 +19284,7 @@
           "documentation":"<p>Additional information about the generation status.</p>"
         }
       },
-      "documentation":"<p>Represents a policy generation request within the AgentCore Policy system. Tracks the AI-powered conversion of natural language descriptions into Cedar policy statements, enabling users to author policies by describing authorization requirements in plain English. The generation process analyzes the natural language input along with the Gateway's tool context and Cedar schema to produce one or more validated policy options. Each generation request tracks the status of the conversion process and maintains findings about the generated policies, including validation results and potential issues. Generated policy assets remain available for one week after successful generation, allowing time to review and create policies from the generated options.</p>"
+      "documentation":"<p>Represents a policy generation request within the AgentCore Policy system. Tracks the AI-powered conversion of natural language descriptions into Dogwood policy statements, enabling users to author policies by describing authorization requirements in plain English. The generation process analyzes the natural language input along with the Gateway's tool context and Cedar schema to produce one or more validated policy options. Each generation request tracks the status of the conversion process and maintains findings about the generated policies, including validation results and potential issues. Generated policy assets remain available for one week after successful generation, allowing time to review and create policies from the generated options.</p>"
     },
     "PolicyGenerationArn":{
       "type":"string",
@@ -18778,14 +19307,14 @@
         "definition":{"shape":"PolicyDefinition"},
         "rawTextFragment":{
           "shape":"NaturalLanguage",
-          "documentation":"<p>The portion of the original natural language input that this generated policy asset addresses. This helps users understand which part of their policy description was translated into this specific Cedar policy statement, enabling better policy selection and refinement. When a single natural language input describes multiple authorization requirements, the generation process creates separate policy assets for each requirement, with each asset's rawTextFragment showing which requirement it addresses. Use this mapping to verify that all parts of your natural language input were correctly translated into Cedar policies.</p>"
+          "documentation":"<p>The portion of the original natural language input that this generated policy asset addresses. This helps users understand which part of their policy description was translated into this specific Dogwood policy statement, enabling better policy selection and refinement. When a single natural language input describes multiple authorization requirements, the generation process creates separate policy assets for each requirement, with each asset's rawTextFragment showing which requirement it addresses. Use this mapping to verify that all parts of your natural language input were correctly translated into Dogwood policies.</p>"
         },
         "findings":{
           "shape":"Findings",
           "documentation":"<p>Analysis findings and insights related to this specific generated policy asset. These findings may include validation results, potential issues, or recommendations for improvement to help users evaluate the quality and appropriateness of the generated policy.</p>"
         }
       },
-      "documentation":"<p>Represents a generated policy asset from the AI-powered policy generation process within the AgentCore Policy system. Each asset contains a Cedar policy statement generated from natural language input, along with associated metadata and analysis findings to help users evaluate and select the most appropriate policy option.</p>"
+      "documentation":"<p>Represents a generated policy asset from the AI-powered policy generation process within the AgentCore Policy system. Each asset contains a Dogwood policy statement generated from natural language input, along with associated metadata and analysis findings to help users evaluate and select the most appropriate policy option.</p>"
     },
     "PolicyGenerationAssets":{
       "type":"list",
@@ -18807,7 +19336,7 @@
           "documentation":"<p>The unique identifier for this generated policy asset within the policy generation request.</p>"
         }
       },
-      "documentation":"<p>Represents the information identifying a generated policy asset from the AI-powered policy generation process within the AgentCore Policy system. Each asset contains a Cedar policy statement generated from natural language input, along with associated metadata and analysis findings to help users evaluate and select the most appropriate policy option.</p>"
+      "documentation":"<p>Represents the information identifying a generated policy asset from the AI-powered policy generation process within the AgentCore Policy system. Each asset contains a Dogwood policy statement generated from natural language input, along with associated metadata and analysis findings to help users evaluate and select the most appropriate policy option.</p>"
     },
     "PolicyGenerationName":{
       "type":"string",
@@ -18900,10 +19429,10 @@
       "members":{
         "statement":{
           "shape":"Statement",
-          "documentation":"<p>The body of the AgentCore policy statement. Contains the policy logic, which can be a Cedar policy or a guardrails definition.</p>"
+          "documentation":"<p>The body of the AgentCore Cedar or Dogwood policy statement. Contains the policy logic, which can be a Cedar policy, a temporal policy, or a guardrails definition.</p>"
         }
       },
-      "documentation":"<p>An AgentCore policy statement, which supports plain Cedar policies as well as guardrails definitions.</p>"
+      "documentation":"<p>An AgentCore Cedar or Dogwood policy statement, which supports plain Cedar policies, temporal policies, and guardrails definitions.</p>"
     },
     "PolicyStatus":{
       "type":"string",
@@ -18980,6 +19509,11 @@
         "FAIL_ON_ANY_FINDINGS",
         "IGNORE_ALL_FINDINGS"
       ]
+    },
+    "PortalUrlType":{
+      "type":"string",
+      "max":2000,
+      "min":1
     },
     "PrincipalMatchOperator":{
       "type":"string",
@@ -19652,6 +20186,14 @@
     "RestApiMethods":{
       "type":"list",
       "member":{"shape":"RestApiMethod"}
+    },
+    "ResultDestination":{
+      "type":"string",
+      "documentation":"<p>Where evaluation results are written: dedicated results log group (default) or the source log group.</p>",
+      "enum":[
+        "DEDICATED_LOG_GROUP",
+        "SOURCE_LOG_GROUP"
+      ]
     },
     "RetryableConflictException":{
       "type":"structure",
@@ -20539,7 +21081,7 @@
         },
         "content":{
           "shape":"Content",
-          "documentation":"<p>The natural language description of the desired policy behavior. This content is processed by AI to generate corresponding Cedar policy statements that match the described intent.</p>"
+          "documentation":"<p>The natural language description of the desired policy behavior. This content is processed by AI to generate corresponding Dogwood policy statements that match the described intent.</p>"
         },
         "name":{
           "shape":"PolicyGenerationName",
@@ -20689,6 +21231,11 @@
       "type":"string",
       "max":2048,
       "min":0
+    },
+    "StatusReasonType":{
+      "type":"string",
+      "max":1024,
+      "min":1
     },
     "StatusReasons":{
       "type":"list",
@@ -21906,6 +22453,10 @@
           "shape":"CapacityProviderConfiguration",
           "documentation":"<p>The updated capacity provider configuration for the AgentCore Runtime.</p>"
         },
+        "platformVersion":{
+          "shape":"PlatformVersion",
+          "documentation":"<p>The updated version of the runtime platform to use for the AgentCore Runtime.</p>"
+        },
         "clientToken":{
           "shape":"ClientToken",
           "documentation":"<p>A unique, case-sensitive identifier to ensure idempotency of the request.</p>",
@@ -22076,7 +22627,10 @@
     },
     "UpdateConfigurationBundleRequest":{
       "type":"structure",
-      "required":["bundleId"],
+      "required":[
+        "bundleId",
+        "parentVersionIds"
+      ],
       "members":{
         "clientToken":{
           "shape":"ClientToken",
@@ -22152,6 +22706,92 @@
         "updatedAt":{
           "shape":"Timestamp",
           "documentation":"<p>The timestamp when the configuration bundle was updated.</p>"
+        }
+      }
+    },
+    "UpdateConsentPortalRequest":{
+      "type":"structure",
+      "required":["consentPortalIdentifier"],
+      "members":{
+        "consentPortalIdentifier":{
+          "shape":"ConsentPortalIdentifier",
+          "documentation":"<p>The identifier of the consent portal. You can specify either the consent portal ID or its Amazon Resource Name (ARN).</p>"
+        },
+        "executionRoleArn":{
+          "shape":"ExecutionRoleArnType",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role that the consent portal assumes to access the resources defined in its sources.</p>"
+        },
+        "idpConfig":{
+          "shape":"ConsentPortalIdpConfig",
+          "documentation":"<p>The identity provider configuration that the consent portal uses to authenticate end users.</p>"
+        },
+        "description":{
+          "shape":"ConsentPortalDescriptionType",
+          "documentation":"<p>The description of the consent portal.</p>"
+        }
+      }
+    },
+    "UpdateConsentPortalResponse":{
+      "type":"structure",
+      "required":[
+        "sources",
+        "consentPortalArn",
+        "consentPortalId",
+        "createdAt",
+        "executionRoleArn",
+        "idpConfig",
+        "name",
+        "status",
+        "updatedAt"
+      ],
+      "members":{
+        "sources":{
+          "shape":"ConsentPortalSources",
+          "documentation":"<p>The resources served by the consent portal.</p>"
+        },
+        "consentPortalArn":{
+          "shape":"ConsentPortalArnType",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the consent portal.</p>"
+        },
+        "consentPortalId":{
+          "shape":"ConsentPortalIdType",
+          "documentation":"<p>The unique identifier of the consent portal.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp for when the consent portal was created.</p>"
+        },
+        "description":{
+          "shape":"ConsentPortalDescriptionType",
+          "documentation":"<p>The description of the consent portal.</p>"
+        },
+        "executionRoleArn":{
+          "shape":"ExecutionRoleArnType",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role that the consent portal assumes to access the resources defined in its sources.</p>"
+        },
+        "idpConfig":{
+          "shape":"ConsentPortalIdpConfig",
+          "documentation":"<p>The identity provider configuration that the consent portal uses to authenticate end users.</p>"
+        },
+        "name":{
+          "shape":"ConsentPortalNameType",
+          "documentation":"<p>The name of the consent portal.</p>"
+        },
+        "portalUrl":{
+          "shape":"PortalUrlType",
+          "documentation":"<p>The URL used to access the consent portal.</p>"
+        },
+        "status":{
+          "shape":"ConsentPortalStatus",
+          "documentation":"<p>The current status of the consent portal.</p>"
+        },
+        "statusReason":{
+          "shape":"StatusReasonType",
+          "documentation":"<p>A message that provides additional information about the current status of the consent portal.</p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp for when the consent portal was last updated.</p>"
         }
       }
     },
@@ -23090,6 +23730,7 @@
           "shape":"ClusteringConfig",
           "documentation":"<p>The updated clustering configuration for periodic batch evaluation.</p>"
         },
+        "outputConfig":{"shape":"OutputConfig"},
         "evaluationExecutionRoleArn":{
           "shape":"RoleArn",
           "documentation":"<p> The updated Amazon Resource Name (ARN) of the IAM role used for evaluation execution. </p>"
@@ -23454,7 +24095,7 @@
         },
         "definition":{
           "shape":"PolicyDefinition",
-          "documentation":"<p>The new Cedar policy statement that defines the access control rules. This replaces the existing policy definition with new logic while maintaining the policy's identity.</p>"
+          "documentation":"<p>The new Cedar or Dogwood policy statement that defines the access control rules. This replaces the existing policy definition with new logic while maintaining the policy's identity.</p>"
         },
         "validationMode":{
           "shape":"PolicyValidationMode",
@@ -23514,7 +24155,7 @@
         },
         "definition":{
           "shape":"PolicyDefinition",
-          "documentation":"<p>The updated Cedar policy statement.</p>"
+          "documentation":"<p>The updated Cedar or Dogwood policy statement.</p>"
         },
         "description":{
           "shape":"Description",

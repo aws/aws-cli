@@ -2955,6 +2955,10 @@
         "clientToken":{
           "shape":"String",
           "documentation":"<p>An identifier that you provide to ensure the idempotency of the request. It must be unique and is case sensitive. Up to 36 ASCII characters in the range of 33-126 (inclusive) are allowed.</p>"
+        },
+        "critical":{
+          "shape":"BoxedBoolean",
+          "documentation":"<p>If the <code>critical</code> parameter of a daemon is <code>true</code>, and the daemon task fails, stops, or becomes unhealthy, Amazon ECS drains the container instance and stops the other tasks running on it. If the <code>critical</code> parameter is <code>false</code>, the daemon task failure doesn't affect the other tasks on the instance. The default value is <code>true</code>.</p> <p>A non-critical daemon doesn't block instance registration. The container instance becomes active and continues to run your other tasks, whether the daemon task fails during scale-out or during a deployment.</p> <p>Amazon ECS emits an EventBridge event when a daemon task fails to start, for both critical and non-critical daemons.</p> <p>Daemon task launch failures during a deployment are still counted by the deployment circuit breaker. The circuit breaker can roll back an unstable target revision.</p>"
         }
       }
     },
@@ -3023,6 +3027,10 @@
           "shape":"String",
           "documentation":"<p>The amount of memory (in MiB) used by the task. This parameter determines the memory allocation for each task in the Express service. The default value for an express service is 512 MiB.</p>"
         },
+        "cpuArchitecture":{
+          "shape":"ExpressCpuArchitecture",
+          "documentation":"<p>The CPU architecture that the tasks in the Express service run on. Amazon ECS applies this value to the task definition revision that it registers for the service. If you don't specify a value, the default is <code>X86_64</code>.</p> <p>Valid values:</p> <ul> <li> <p> <code>X86_64</code> - The x86 64-bit architecture.</p> </li> <li> <p> <code>ARM64</code> - The 64-bit ARM architecture.</p> </li> </ul> <p>Make sure that the container image that you specify supports the architecture that you choose. The operating system family for an Express service is always <code>LINUX</code>.</p> <p>You can't specify <code>cpuArchitecture</code> when you also specify <code>taskDefinitionArn</code>, because this value applies only to a task definition that Amazon ECS registers on your behalf.</p>"
+        },
         "scalingTarget":{
           "shape":"ExpressGatewayScalingTarget",
           "documentation":"<p>The auto-scaling configuration for the Express service. This defines how the service automatically adjusts the number of running tasks based on demand.</p> <p>You can specify the minimum and maximum number of tasks, the scaling metric (CPU utilization, memory utilization, or request count per target), and the target value for the metric. If not specified, the default target value for an Express service is 60.</p>"
@@ -3033,7 +3041,7 @@
         },
         "taskDefinitionArn":{
           "shape":"String",
-          "documentation":"<p>The Amazon Resource Name (ARN) of a task definition to use to create the Express Gateway service. This allows you to manage your own task definition, giving you more control over the service configuration such as adding sidecar containers.</p> <p>The task definition must have a container named <code>Main</code> with a single TCP port mapping that includes a container port and port name. The task definition must also have <code>FARGATE</code> compatibility.</p> <p>If you provide a task definition ARN, you cannot also specify <code>primaryContainer</code>, <code>executionRoleArn</code>, <code>taskRoleArn</code>, <code>cpu</code>, or <code>memory</code>.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of a task definition to use to create the Express Gateway service. This allows you to manage your own task definition, giving you more control over the service configuration such as adding sidecar containers.</p> <p>The task definition must have a container named <code>Main</code> with a single TCP port mapping that includes a container port and port name. The task definition must also have <code>FARGATE</code> compatibility.</p> <p>If you provide a task definition ARN, you cannot also specify <code>primaryContainer</code>, <code>executionRoleArn</code>, <code>taskRoleArn</code>, <code>cpu</code>, <code>memory</code>, or <code>cpuArchitecture</code>.</p>"
         }
       }
     },
@@ -3310,6 +3318,10 @@
         "runningCount":{
           "shape":"Integer",
           "documentation":"<p>The number of daemon tasks running on this capacity provider.</p>"
+        },
+        "withoutDaemonCount":{
+          "shape":"Integer",
+          "documentation":"<p>The number of instances on this capacity provider that are running without the daemon task. This applies to daemons that aren't critical, where the instance remains available for your other tasks even if the daemon task can't start or stops. These instances aren't included in <code>runningCount</code>.</p>"
         }
       },
       "documentation":"<p>Information about a capacity provider associated with a daemon revision.</p>"
@@ -3576,6 +3588,10 @@
           "shape":"BoxedInteger",
           "documentation":"<p>The number of instances running daemon tasks on this capacity provider.</p>"
         },
+        "withoutDaemonInstanceCount":{
+          "shape":"BoxedInteger",
+          "documentation":"<p>The number of instances on this capacity provider that are running without the daemon task. This applies to daemons that aren't critical, where the instance remains available for your other tasks even if the daemon task can't start or stops. These instances aren't included in <code>runningInstanceCount</code>.</p>"
+        },
         "drainingInstanceCount":{
           "shape":"BoxedInteger",
           "documentation":"<p>The number of instances being drained on this capacity provider during the deployment.</p>"
@@ -3623,6 +3639,10 @@
         "totalRunningInstanceCount":{
           "shape":"BoxedInteger",
           "documentation":"<p>The total number of instances running daemon tasks for this revision.</p>"
+        },
+        "totalWithoutDaemonInstanceCount":{
+          "shape":"BoxedInteger",
+          "documentation":"<p>The total number of instances running without the daemon task for this revision, across all capacity providers. These instances aren't included in <code>totalRunningInstanceCount</code>.</p>"
         },
         "totalDrainingInstanceCount":{
           "shape":"BoxedInteger",
@@ -3854,6 +3874,10 @@
         "enableExecuteCommand":{
           "shape":"BoxedBoolean",
           "documentation":"<p>Specifies whether the execute command functionality is turned on for the daemon tasks.</p>"
+        },
+        "critical":{
+          "shape":"BoxedBoolean",
+          "documentation":"<p>If the <code>critical</code> parameter of this daemon revision is <code>true</code>, and the daemon task fails, stops, or becomes unhealthy, Amazon ECS drains the container instance and stops the other tasks running on it. If the parameter is <code>false</code>, the daemon task failure doesn't affect the other tasks on the instance, and doesn't block instance registration. The default value is <code>true</code>.</p>"
         }
       },
       "documentation":"<p>Information about a daemon revision. A daemon revision is a snapshot of the daemon's configuration at the time a deployment was initiated.</p>"
@@ -3872,6 +3896,10 @@
         "totalRunningCount":{
           "shape":"Integer",
           "documentation":"<p>The total number of daemon tasks running for this revision.</p>"
+        },
+        "totalWithoutDaemonCount":{
+          "shape":"Integer",
+          "documentation":"<p>The total number of instances running without the daemon task for this revision, across all capacity providers. These instances aren't included in <code>totalRunningCount</code>.</p>"
         }
       },
       "documentation":"<p>Details about a daemon revision, including the running task counts per capacity provider.</p>"
@@ -5583,6 +5611,13 @@
         }
       }
     },
+    "ExpressCpuArchitecture":{
+      "type":"string",
+      "enum":[
+        "X86_64",
+        "ARM64"
+      ]
+    },
     "ExpressGatewayContainer":{
       "type":"structure",
       "required":["image"],
@@ -5694,6 +5729,10 @@
         "memory":{
           "shape":"String",
           "documentation":"<p>The memory allocation for tasks in this service revision.</p>"
+        },
+        "cpuArchitecture":{
+          "shape":"ExpressCpuArchitecture",
+          "documentation":"<p>The CPU architecture that the tasks in this service revision run on. This is the architecture from the task definition that the service revision uses, so it reflects the default or the previously configured architecture when the request that created the revision didn't specify one.</p> <p>Valid values:</p> <ul> <li> <p> <code>X86_64</code> - The x86 64-bit architecture.</p> </li> <li> <p> <code>ARM64</code> - The 64-bit ARM architecture.</p> </li> </ul> <p>This value isn't returned when the task definition for the service revision doesn't specify a runtime platform. Because the architecture comes from each service revision's own task definition, revisions of the same service can report different architectures.</p>"
         },
         "networkConfiguration":{
           "shape":"ExpressGatewayServiceNetworkConfiguration",
@@ -11157,6 +11196,10 @@
         "enableExecuteCommand":{
           "shape":"Boolean",
           "documentation":"<p>If <code>true</code>, the execute command functionality is turned on for all tasks in the daemon. If <code>false</code>, the execute command functionality is turned off.</p>"
+        },
+        "critical":{
+          "shape":"BoxedBoolean",
+          "documentation":"<p>If the <code>critical</code> parameter of a daemon is <code>true</code>, and the daemon task fails, stops, or becomes unhealthy, Amazon ECS drains the container instance and stops the other tasks running on it. If the <code>critical</code> parameter is <code>false</code>, the daemon task failure doesn't affect the other tasks on the instance. The default value is <code>true</code>.</p> <p>A non-critical daemon doesn't block instance registration. The container instance becomes active and continues to run your other tasks, whether the daemon task fails during scale-out or during a deployment.</p> <p>Amazon ECS emits an EventBridge event when a daemon task fails to start, for both critical and non-critical daemons.</p> <p>Daemon task launch failures during a deployment are still counted by the deployment circuit breaker. The circuit breaker can roll back an unstable target revision.</p>"
         }
       }
     },
@@ -11221,13 +11264,17 @@
           "shape":"String",
           "documentation":"<p>The amount of memory (in MiB) used by the task.</p>"
         },
+        "cpuArchitecture":{
+          "shape":"ExpressCpuArchitecture",
+          "documentation":"<p>The CPU architecture that the tasks in the Express service run on. Amazon ECS applies this value to the task definition revision that it registers for the service. If you don't specify a value, the service keeps the architecture that it currently runs on.</p> <p>Valid values:</p> <ul> <li> <p> <code>X86_64</code> - The x86 64-bit architecture.</p> </li> <li> <p> <code>ARM64</code> - The 64-bit ARM architecture.</p> </li> </ul> <p>Changing the architecture starts a new deployment that replaces the running tasks. Make sure that the container image that the service uses supports the architecture that you choose. The operating system family for an Express service is always <code>LINUX</code>.</p> <p>You can't specify <code>cpuArchitecture</code> when you also specify <code>taskDefinitionArn</code>, because this value applies only to a task definition that Amazon ECS registers on your behalf.</p>"
+        },
         "scalingTarget":{
           "shape":"ExpressGatewayScalingTarget",
           "documentation":"<p>The auto-scaling configuration for the Express service.</p>"
         },
         "taskDefinitionArn":{
           "shape":"String",
-          "documentation":"<p>The Amazon Resource Name (ARN) of a task definition to use to update the Express Gateway service. This allows you to manage your own task definition, giving you more control over the service configuration such as adding sidecar containers.</p> <p>The task definition must have a container named <code>Main</code> with a single TCP port mapping that includes a container port and port name. The task definition must also have <code>FARGATE</code> compatibility.</p> <p>If you provide a task definition ARN, you cannot also specify <code>primaryContainer</code>, <code>executionRoleArn</code>, <code>taskRoleArn</code>, <code>cpu</code>, or <code>memory</code>.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of a task definition to use to update the Express Gateway service. This allows you to manage your own task definition, giving you more control over the service configuration such as adding sidecar containers.</p> <p>The task definition must have a container named <code>Main</code> with a single TCP port mapping that includes a container port and port name. The task definition must also have <code>FARGATE</code> compatibility.</p> <p>If you provide a task definition ARN, you cannot also specify <code>primaryContainer</code>, <code>executionRoleArn</code>, <code>taskRoleArn</code>, <code>cpu</code>, <code>memory</code>, or <code>cpuArchitecture</code>.</p>"
         }
       }
     },

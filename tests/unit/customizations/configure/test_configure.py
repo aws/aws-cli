@@ -12,6 +12,8 @@
 # language governing permissions and limitations under the License.
 import os
 
+import pytest
+
 from awscli.compat import StringIO
 from awscli.customizations.configure import (
     NOT_SET,
@@ -41,9 +43,7 @@ class TestConfigureCommand(unittest.TestCase):
         expected_creds_file = os.path.expanduser('~/fake_credentials_filename')
         self.assertEqual(
             credentials_file_call,
-            mock.call(
-                new_values, expected_creds_file, check_permissions=True
-            ),
+            mock.call(new_values, expected_creds_file, check_permissions=True),
         )
 
     def test_configure_command_sends_values_to_writer(self):
@@ -428,3 +428,95 @@ class KeyValuePrompter:
 
     def get_value(self, current_value, config_name, prompt_text=''):
         return self.mapping.get(prompt_text)
+
+
+@pytest.fixture
+def agent_toolkit_hint():
+    with mock.patch.object(
+        configure, 'maybe_prompt_agent_toolkit'
+    ) as maybe_prompt:
+        yield maybe_prompt
+
+
+def _run_configure(session, responses):
+    global_args = mock.Mock()
+    global_args.profile = None
+    command = configure.ConfigureCommand(
+        session,
+        prompter=KeyValuePrompter(responses),
+        config_writer=mock.Mock(),
+    )
+    command(args=[], parsed_globals=global_args)
+    return global_args
+
+
+def _session_with_region(region, profile=None, profile_exists=True):
+    session = FakeSession(
+        {'config_file': 'myconfigfile', 'region': region},
+        profile_does_not_exist=not profile_exists,
+        profile=profile,
+    )
+    session.config = {'region': region}
+    return session
+
+
+@pytest.mark.parametrize(
+    'entered_region,expected_region',
+    [
+        ('us-gov-east-1', 'us-gov-east-1'),
+        (None, 'us-east-1'),
+    ],
+)
+def test_agent_toolkit_hint_gets_configured_region(
+    agent_toolkit_hint, entered_region, expected_region
+):
+    session = _session_with_region('us-east-1')
+    global_args = _run_configure(
+        session,
+        {
+            'Default region name': entered_region,
+            'Default output format': 'json',
+        },
+    )
+    agent_toolkit_hint.assert_called_once_with(
+        session, global_args, region=expected_region
+    )
+
+
+def test_agent_toolkit_hint_region_falls_back_to_the_session(
+    agent_toolkit_hint,
+):
+    # AWS_REGION/AWS_DEFAULT_REGION never reach the config file, so pressing
+    # enter at the region prompt must still resolve the env var's region --
+    # otherwise a GovCloud user looks region-less and gets the prompt.
+    session = FakeSession(
+        {'config_file': 'myconfigfile', 'region': 'us-gov-west-1'}
+    )
+    session.config = {}
+    global_args = _run_configure(session, {'Default output format': 'json'})
+    agent_toolkit_hint.assert_called_once_with(
+        session, global_args, region='us-gov-west-1'
+    )
+
+
+def test_new_profile_is_registered_with_the_session(agent_toolkit_hint):
+    session = _session_with_region(
+        None, profile='brandnew', profile_exists=False
+    )
+    _run_configure(session, {'Default output format': 'json'})
+    assert 'brandnew' in session._profile_map
+
+
+def test_existing_profile_map_is_left_alone(agent_toolkit_hint):
+    # A named profile that already exists must not be reset to {}, which would
+    # drop the config the session had cached for it.
+    session = _session_with_region('us-east-1', profile='existing')
+    session._profile_map['existing'] = {'region': 'us-east-1'}
+    _run_configure(session, {'Default output format': 'json'})
+    assert session._profile_map['existing'] == {'region': 'us-east-1'}
+
+
+def test_no_agent_toolkit_hint_when_nothing_is_written(agent_toolkit_hint):
+    session = _session_with_region('us-east-1')
+    _run_configure(session, {})
+    agent_toolkit_hint.assert_not_called()

@@ -114,6 +114,24 @@
       "documentation":"<p>Deletes the specified feed. You can delete the feed at any time. Elemental Inference doesn't block you from deleting a feed when the calling application is calling PutMedia or GetMetadata on that feed, although both these calls will start to fail. For more information about managing inactive feeds, see the Elemental Inference User Guide. </p>",
       "idempotent":true
     },
+    "DeleteFeedPolicy":{
+      "name":"DeleteFeedPolicy",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/v1/feed/{id}/policy",
+        "responseCode":204
+      },
+      "input":{"shape":"DeleteFeedPolicyRequest"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerErrorException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"TooManyRequestException"}
+      ],
+      "documentation":"<p>Deletes the resource-based policy attached to the specified feed. After you delete the policy, the operation revokes the cross-account access that the policy granted. </p>",
+      "idempotent":true
+    },
     "DisassociateFeed":{
       "name":"DisassociateFeed",
       "http":{
@@ -188,6 +206,25 @@
         {"shape":"TooManyRequestException"}
       ],
       "documentation":"<p>Retrieves information about the specified feed.</p>",
+      "readonly":true
+    },
+    "GetFeedPolicy":{
+      "name":"GetFeedPolicy",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v1/feed/{id}/policy",
+        "responseCode":200
+      },
+      "input":{"shape":"GetFeedPolicyRequest"},
+      "output":{"shape":"GetFeedPolicyResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerErrorException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"TooManyRequestException"}
+      ],
+      "documentation":"<p>Retrieves the resource-based policy attached to the specified feed.</p>",
       "readonly":true
     },
     "GetFixture":{
@@ -266,6 +303,26 @@
       ],
       "documentation":"<p>List all tags that are on an Elemental Inference resource in the current region.</p>",
       "readonly":true
+    },
+    "PutFeedPolicy":{
+      "name":"PutFeedPolicy",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/v1/feed/{id}/policy",
+        "responseCode":200
+      },
+      "input":{"shape":"PutFeedPolicyRequest"},
+      "output":{"shape":"PutFeedPolicyResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerErrorException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"TooManyRequestException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Attaches or replaces a resource-based policy on the specified feed. A resource-based policy grants cross-account access to the feed. </p>",
+      "idempotent":true
     },
     "SearchFixtures":{
       "name":"SearchFixtures",
@@ -502,6 +559,16 @@
       "exception":true,
       "retryable":{"throttling":false}
     },
+    "ContextualMetadataConfig":{
+      "type":"structure",
+      "members":{
+        "summaryGeneration":{
+          "shape":"SummaryGenerationMode",
+          "documentation":"<p>Specifies whether Elemental Inference generates a descriptive summary of the media content for this output. </p> <p>Valid values:</p> <ul> <li> <p>ENABLED (default) – Elemental Inference generates a descriptive summary along with IAB taxonomy and GARM suitability classifications. </p> </li> <li> <p>DISABLED – No descriptive summary is generated.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>The output configuration settings for the contextual metadata feature. Use this structure when the feed output generates metadata that describes the media content. </p>"
+    },
     "CreateDictionaryRequest":{
       "type":"structure",
       "required":[
@@ -731,6 +798,18 @@
         "status":{
           "shape":"DictionaryStatus",
           "documentation":"<p>The status of the dictionary after deletion.</p>"
+        }
+      }
+    },
+    "DeleteFeedPolicyRequest":{
+      "type":"structure",
+      "required":["id"],
+      "members":{
+        "id":{
+          "shape":"FeedId",
+          "documentation":"<p>The ID of the feed whose policy you want to delete.</p>",
+          "location":"uri",
+          "locationName":"id"
         }
       }
     },
@@ -1096,6 +1175,28 @@
         }
       }
     },
+    "GetFeedPolicyRequest":{
+      "type":"structure",
+      "required":["id"],
+      "members":{
+        "id":{
+          "shape":"FeedId",
+          "documentation":"<p>The ID of the feed whose policy you want to retrieve.</p>",
+          "location":"uri",
+          "locationName":"id"
+        }
+      }
+    },
+    "GetFeedPolicyResponse":{
+      "type":"structure",
+      "required":["policy"],
+      "members":{
+        "policy":{
+          "shape":"PolicyDocument",
+          "documentation":"<p>The resource-based policy document attached to the feed.</p>"
+        }
+      }
+    },
     "GetFeedRequest":{
       "type":"structure",
       "required":["id"],
@@ -1370,6 +1471,10 @@
         "subtitling":{
           "shape":"SubtitlingConfig",
           "documentation":"<p>The output config type that applies to the smart subtitling feature.</p>"
+        },
+        "contextualMetadata":{
+          "shape":"ContextualMetadataConfig",
+          "documentation":"<p>The output config type that applies to the contextual metadata feature.</p>"
         }
       },
       "documentation":"<p>Contains one typed output. It is used in the CreateOutput, GetOutput, and Update Output structures.</p>",
@@ -1382,6 +1487,11 @@
         "DISABLED"
       ]
     },
+    "PolicyDocument":{
+      "type":"string",
+      "max":2048,
+      "min":1
+    },
     "ProfanityFilterMode":{
       "type":"string",
       "enum":[
@@ -1389,6 +1499,29 @@
         "CENSOR",
         "DROP"
       ]
+    },
+    "PutFeedPolicyRequest":{
+      "type":"structure",
+      "required":[
+        "id",
+        "policy"
+      ],
+      "members":{
+        "id":{
+          "shape":"FeedId",
+          "documentation":"<p>The ID of the feed to attach the policy to.</p>",
+          "location":"uri",
+          "locationName":"id"
+        },
+        "policy":{
+          "shape":"PolicyDocument",
+          "documentation":"<p>The resource-based policy document to attach to the feed.</p>"
+        }
+      }
+    },
+    "PutFeedPolicyResponse":{
+      "type":"structure",
+      "members":{}
     },
     "ResourceArn":{
       "type":"string",
@@ -1552,6 +1685,13 @@
         }
       },
       "documentation":"<p>A type of OutputConfig, used when the output in a feed is for the smart subtitling feature. smart subtitling uses automatic speech recognition (ASR) to generate live TTML subtitles from the audio in your source media. </p>"
+    },
+    "SummaryGenerationMode":{
+      "type":"string",
+      "enum":[
+        "ENABLED",
+        "DISABLED"
+      ]
     },
     "SyntheticTimestamp_date_time":{
       "type":"timestamp",

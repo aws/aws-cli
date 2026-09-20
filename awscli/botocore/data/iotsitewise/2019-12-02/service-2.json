@@ -5798,6 +5798,10 @@
         "executionEnvironmentVariables":{
           "shape":"ExecutionEnvironmentVariablesMap",
           "documentation":"<p>The fully resolved environment variables used for this compute node execution.</p>"
+        },
+        "executionMounts":{
+          "shape":"MountList",
+          "documentation":"<p>The fully resolved mounts used for this compute node execution, after merging task-defined mounts with any execution-level mount overrides. Each mount attaches an external data source to the container filesystem at a relative path under the service-owned mount root.</p>"
         }
       },
       "documentation":"<p>Contains detailed execution information for a compute node within a pipeline execution.</p>"
@@ -5859,6 +5863,20 @@
       "type":"list",
       "member":{"shape":"ComputeNode"},
       "documentation":"<p>A list of compute nodes forming a pipeline DAG.</p>",
+      "max":50,
+      "min":0
+    },
+    "ComputeNodeMountsMap":{
+      "type":"map",
+      "key":{
+        "shape":"ResourceName",
+        "documentation":"<p>The compute node name from the pipeline definition.</p>"
+      },
+      "value":{
+        "shape":"MountList",
+        "documentation":"<p>The mount overrides applied to this compute node for this execution. Each entry is merged into the compute node's task-defined mounts by mount name: a matching name replaces the task-defined mount, a new name adds a mount, and task-defined mounts not referenced remain unchanged.</p>"
+      },
+      "documentation":"<p>A map of compute node names to their mount overrides. Applies to a single pipeline execution.</p>",
       "max":50,
       "min":0
     },
@@ -5957,6 +5975,10 @@
           "shape":"ProcessingUnit",
           "documentation":"<p>The processing unit allocation that determines the vCPU, memory, and GPU resources.</p>"
         },
+        "ephemeralStorageConfiguration":{
+          "shape":"EphemeralStorageConfiguration",
+          "documentation":"<p>Ephemeral storage configuration for the container task.</p>"
+        },
         "command":{
           "shape":"CommandList",
           "documentation":"<p>The command to execute in the container.</p>"
@@ -5968,6 +5990,10 @@
         "environmentVariables":{
           "shape":"EnvironmentVariablesMap",
           "documentation":"<p>Environment variables passed to the container at runtime.</p>"
+        },
+        "mounts":{
+          "shape":"MountList",
+          "documentation":"<p>Mounts attached to the container filesystem. Each mount exposes an external data source as a local directory inside the container. The service assigns each mount a container path based on the mount name. The container reads files through that path as if the data were on the local filesystem.</p>"
         }
       },
       "documentation":"<p>Configuration for a container task, including the container image, IAM role, and compute settings.</p>"
@@ -9553,6 +9579,10 @@
           "shape":"ExecutionEnvironmentVariables",
           "documentation":"<p>The environment variables provided as input for the pipeline execution.</p>"
         },
+        "requestMountOverrides":{
+          "shape":"MountOverrides",
+          "documentation":"<p>The mount overrides provided as input for the pipeline execution. Present when mount overrides were supplied at execution time.</p>"
+        },
         "executionPriority":{
           "shape":"ExecutionPriority",
           "documentation":"<p>Scheduling priority for the execution. When not specified, defaults to lowest priority.</p>"
@@ -10516,6 +10546,30 @@
       "max":20,
       "min":0,
       "sensitive":true
+    },
+    "EphemeralStorageConfiguration":{
+      "type":"structure",
+      "required":[
+        "storageClass",
+        "storageSizeInGiB"
+      ],
+      "members":{
+        "storageClass":{
+          "shape":"StorageClass",
+          "documentation":"<p>Storage type that determines I/O performance family and level.</p>"
+        },
+        "storageSizeInGiB":{
+          "shape":"EphemeralStorageConfigurationStorageSizeInGiBInteger",
+          "documentation":"<p>Storage volume size in GiB.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for ephemeral storage attached to the container task.</p>"
+    },
+    "EphemeralStorageConfigurationStorageSizeInGiBInteger":{
+      "type":"integer",
+      "box":true,
+      "max":16384,
+      "min":1
     },
     "ErrorCode":{
       "type":"string",
@@ -14051,6 +14105,88 @@
       "documentation":"<p>Contains IoT SiteWise Monitor error details.</p>"
     },
     "MonitorErrorMessage":{"type":"string"},
+    "Mount":{
+      "type":"structure",
+      "required":[
+        "name",
+        "relativePath",
+        "source",
+        "storageType"
+      ],
+      "members":{
+        "name":{
+          "shape":"ResourceName",
+          "documentation":"<p>A unique name for the mount within the task.</p>"
+        },
+        "relativePath":{
+          "shape":"MountRelativePath",
+          "documentation":"<p>The relative path under the service-owned mount root where this mount is attached inside the container.</p>"
+        },
+        "source":{
+          "shape":"MountSource",
+          "documentation":"<p>The data source for the mount.</p>"
+        },
+        "storageType":{
+          "shape":"MountStorageType",
+          "documentation":"<p>The type of storage used for the mount.</p>"
+        }
+      },
+      "documentation":"<p>Attaches a data source to the container filesystem for a task at a customer-supplied relative path under the service-owned mount root.</p>"
+    },
+    "MountList":{
+      "type":"list",
+      "member":{"shape":"Mount"},
+      "documentation":"<p>A list of mounts for a task. Each mount attaches an external data source to the container filesystem at a customer-supplied relative path under the service-owned mount root.</p>",
+      "max":5,
+      "min":0
+    },
+    "MountOverrides":{
+      "type":"structure",
+      "required":["computeNodes"],
+      "members":{
+        "computeNodes":{
+          "shape":"ComputeNodeMountsMap",
+          "documentation":"<p>The mount overrides for each compute node, keyed by compute node name.</p>"
+        }
+      },
+      "documentation":"<p>Runtime mount overrides applied to a single pipeline execution. Overrides are transient — they do not modify the stored task configuration.</p>"
+    },
+    "MountRelativePath":{
+      "type":"string",
+      "documentation":"<p>A relative path under the service-owned mount root where this mount is attached inside the container.</p>",
+      "max":1024,
+      "min":1,
+      "pattern":"((?!.*(^|/)\\.\\.?(/|$))(?!.*//)[a-zA-Z0-9._-][a-zA-Z0-9._/-]*[a-zA-Z0-9._-]|[a-zA-Z0-9_-])"
+    },
+    "MountS3AccessPointArn":{
+      "type":"string",
+      "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon S3 access point. The mount reads objects from the bucket associated with this access point. Access is governed by the access point policy and the task execution role's IAM permissions.</p>",
+      "max":128,
+      "min":4,
+      "pattern":"arn:aws(-cn|-us-gov)?:s3:[a-z0-9-]*:\\d{12}:accesspoint[/:][a-zA-Z0-9._-]+"
+    },
+    "MountS3KeyPrefix":{
+      "type":"string",
+      "documentation":"<p>An object key name prefix. If specified, the mount includes only objects whose keys begin with this prefix. The maximum prefix length is 1,024 characters. To include all objects at the access point, omit this field.</p>",
+      "max":1024,
+      "min":1
+    },
+    "MountSource":{
+      "type":"structure",
+      "members":{
+        "s3AccessPoint":{
+          "shape":"S3AccessPointSource",
+          "documentation":"<p>Configuration for a mount that reads from an Amazon S3 access point.</p>"
+        }
+      },
+      "documentation":"<p>The data source configuration for a mount. Specify exactly one of the following.</p>",
+      "union":true
+    },
+    "MountStorageType":{
+      "type":"string",
+      "documentation":"<p>The type of storage used for a mount inside the container.</p>",
+      "enum":["SHARED_STORAGE"]
+    },
     "Mp4":{
       "type":"structure",
       "members":{},
@@ -15249,6 +15385,21 @@
       "type":"list",
       "member":{"shape":"Row"}
     },
+    "S3AccessPointSource":{
+      "type":"structure",
+      "required":["accessPointArn"],
+      "members":{
+        "accessPointArn":{
+          "shape":"MountS3AccessPointArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the S3 access point.</p>"
+        },
+        "prefix":{
+          "shape":"MountS3KeyPrefix",
+          "documentation":"<p>An optional key prefix to scope the mount to a subset of objects at the access point.</p>"
+        }
+      },
+      "documentation":"<p>Configures a mount that reads from an Amazon S3 access point.</p>"
+    },
     "S3Uri":{
       "type":"string",
       "documentation":"&lt;p&gt;An S3 URI identifying an object location, in the form s3://bucket/key.&lt;/p&gt;",
@@ -15531,6 +15682,10 @@
           "shape":"ExecutionEnvironmentVariables",
           "documentation":"<p>Runtime environment variable overrides for the execution. Includes global variables that apply to all compute nodes and computeNodes for per-node overrides. These take the highest priority in the environment variable hierarchy.</p>"
         },
+        "executionMountOverrides":{
+          "shape":"MountOverrides",
+          "documentation":"<p>Runtime mount overrides for the execution. Overrides are merged by mount name into each listed compute node's task-defined mounts: a matching name replaces the task-defined mount, a new name adds a mount, and task-defined mounts not referenced remain unchanged. Compute nodes not listed use their task-defined mounts as-is.</p>"
+        },
         "executionPriority":{
           "shape":"ExecutionPriority",
           "documentation":"<p>Scheduling priority for the execution. Lower values indicate higher priority. Defaults to 2 when not specified.</p>"
@@ -15659,6 +15814,16 @@
         }
       },
       "documentation":"<p>Output of the StartSearch operation.</p>"
+    },
+    "StorageClass":{
+      "type":"string",
+      "documentation":"<p>The storage type that determines I/O performance characteristics. Family name indicates workload pattern, level number indicates performance within that family.</p>",
+      "enum":[
+        "STANDARD_1",
+        "STANDARD_2",
+        "THROUGHPUT_1",
+        "THROUGHPUT_2"
+      ]
     },
     "StorageType":{
       "type":"string",

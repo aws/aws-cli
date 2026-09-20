@@ -3741,6 +3741,22 @@
       ],
       "documentation":"<p> Lists all security profiles attached to a Q in Connect AIAgent Entity in an Amazon Connect instance. </p>"
     },
+    "ListEvaluationFormAIVersions":{
+      "name":"ListEvaluationFormAIVersions",
+      "http":{
+        "method":"GET",
+        "requestUri":"/instances/{InstanceId}/evaluation-form-ai-versions"
+      },
+      "input":{"shape":"ListEvaluationFormAIVersionsRequest"},
+      "output":{"shape":"ListEvaluationFormAIVersionsResponse"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceException"}
+      ],
+      "documentation":"<p>Lists the available AI versions for evaluation forms in the specified Connect Customer instance.</p>"
+    },
     "ListEvaluationFormVersions":{
       "name":"ListEvaluationFormVersions",
       "http":{
@@ -4216,6 +4232,23 @@
         {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>This API is in preview release for Connect Customer and is subject to change.</p> <p>Returns a paginated list of all security keys associated with the instance.</p>"
+    },
+    "ListSecurityProfileAIAgents":{
+      "name":"ListSecurityProfileAIAgents",
+      "http":{
+        "method":"GET",
+        "requestUri":"/security-profiles-ai-agents/{InstanceId}/{SecurityProfileId}"
+      },
+      "input":{"shape":"ListSecurityProfileAIAgentsRequest"},
+      "output":{"shape":"ListSecurityProfileAIAgentsResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceException"}
+      ],
+      "documentation":"<p>Returns a list of the allowed AI agents in a specific security profile.</p>"
     },
     "ListSecurityProfileApplications":{
       "name":"ListSecurityProfileApplications",
@@ -5335,7 +5368,7 @@
         {"shape":"ServiceQuotaExceededException"},
         {"shape":"ResourceConflictException"}
       ],
-      "documentation":"<p>Starts an empty evaluation in the specified Connect Customer instance, using the given evaluation form for the particular contact. The evaluation form version used for the contact evaluation corresponds to the currently activated version. If no version is activated for the evaluation form, the contact evaluation cannot be started. </p> <note> <p>Evaluations created through the public API do not contain answer values suggested from automation.</p> </note>",
+      "documentation":"<p>Starts an empty evaluation in the specified Connect Customer instance, using the given evaluation form for the particular contact. The evaluation form version used for the contact evaluation corresponds to the currently activated version. If no version is activated for the evaluation form, the contact evaluation cannot be started. </p>",
       "idempotent":true
     },
     "StartContactMediaProcessing":{
@@ -7003,6 +7036,25 @@
       "type":"string",
       "pattern":"^[a-zA-Z0-9_-]+$"
     },
+    "AIAgent":{
+      "type":"structure",
+      "members":{
+        "Arn":{
+          "shape":"ARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AI agent.</p>"
+        },
+        "Type":{
+          "shape":"AIAgentType",
+          "documentation":"<p>The type of the AI agent. The valid value is <code>THIRD_PARTY</code>.</p>"
+        }
+      },
+      "documentation":"<p>Information about an AI agent that a security profile allows access to for Agent-to-Agent authorization.</p>"
+    },
+    "AIAgentType":{
+      "type":"string",
+      "documentation":"<p>The type of the AI agent.</p>",
+      "enum":["THIRD_PARTY"]
+    },
     "ARN":{"type":"string"},
     "AWSAccountId":{"type":"string"},
     "AccessDeniedException":{
@@ -7695,6 +7747,11 @@
       "type":"list",
       "member":{"shape":"AliasConfiguration"},
       "max":1
+    },
+    "AllowedAIAgents":{
+      "type":"list",
+      "member":{"shape":"AIAgent"},
+      "max":100
     },
     "AllowedAccessControlTags":{
       "type":"map",
@@ -9959,6 +10016,14 @@
       "key":{"shape":"Channel"},
       "value":{"shape":"IntegerCount"}
     },
+    "ChannelWorkloadBehaviorType":{
+      "type":"string",
+      "enum":[
+        "ROUTE_CURRENT_CHANNEL_CURRENT_WORKLOADTYPE_ONLY",
+        "ROUTE_CURRENT_CHANNEL_ANY_WORKLOADTYPE_ONLY",
+        "ROUTE_ANY_CHANNEL_ANY_WORKLOAD_TYPE"
+      ]
+    },
     "Channels":{
       "type":"list",
       "member":{"shape":"Channel"},
@@ -10297,7 +10362,7 @@
     "Concurrency":{
       "type":"integer",
       "max":10,
-      "min":1
+      "min":0
     },
     "Condition":{
       "type":"structure",
@@ -10561,6 +10626,36 @@
         }
       },
       "documentation":"<p>A structure that defines search criteria for contacts using analysis outputs from Connect Customer Contact Lens.</p>"
+    },
+    "ContactAnalysisReference":{
+      "type":"structure",
+      "members":{
+        "Name":{
+          "shape":"ReferenceKey",
+          "documentation":"<p>Identifier of the contact analysis reference.</p>"
+        },
+        "Value":{
+          "shape":"ReferenceValue",
+          "documentation":"<p>The location path of the contact analysis reference.</p>"
+        },
+        "Status":{
+          "shape":"ReferenceStatus",
+          "documentation":"<p>Status of the contact analysis reference type.</p>"
+        },
+        "Arn":{
+          "shape":"ARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the contact analysis reference.</p>"
+        },
+        "AnalyticsMode":{
+          "shape":"AnalyticsMode",
+          "documentation":"<p>The analytics mode of the contact analysis.</p>"
+        },
+        "IsRedacted":{
+          "shape":"NullableBoolean",
+          "documentation":"<p>Indicates whether sensitive data has been redacted from the contact analysis.</p>"
+        }
+      },
+      "documentation":"<p>Information about a reference when the <code>referenceType</code> is <code>CONTACT_ANALYSIS</code>. Otherwise, null.</p>"
     },
     "ContactConfiguration":{
       "type":"structure",
@@ -12456,6 +12551,10 @@
         "LanguageConfiguration":{
           "shape":"EvaluationFormLanguageConfiguration",
           "documentation":"<p>Configuration for language settings of the evaluation form.</p>"
+        },
+        "AIVersion":{
+          "shape":"EvaluationFormAIVersion",
+          "documentation":"<p>The AI version to use for the evaluation form. This specifies which AI model version is used for automated evaluations.</p>"
         }
       }
     },
@@ -13302,10 +13401,18 @@
           "shape":"RulePublishStatus",
           "documentation":"<p>The publish status of the rule.</p>"
         },
+        "PreEvaluationFilters":{
+          "shape":"PreEvaluationFilters",
+          "documentation":"<p>The pre-evaluation filters for the rule, that restrict the rule to be applied to only certain resources based on the resource's attributes, such as tags assigned to a contact. The pre-evaluation filters are applied even before rule conditions are evaluated and are used to enforce tag-based-access-control while applying rules.</p>"
+        },
         "ClientToken":{
           "shape":"ClientToken",
           "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the Amazon Web Services SDK populates this field. For more information about idempotency, see <a href=\"https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/\">Making retries safe with idempotent APIs</a>.</p>",
           "idempotencyToken":true
+        },
+        "Tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags used to organize, track, or control access for this resource. For example, { \"Tags\": {\"key1\":\"value1\", \"key2\":\"value2\"} }.</p>"
         }
       }
     },
@@ -13384,6 +13491,10 @@
         "AllowedFlowModules":{
           "shape":"AllowedFlowModules",
           "documentation":"<p> A list of Flow Modules an AI Agent can invoke as a tool. </p>"
+        },
+        "AllowedAIAgents":{
+          "shape":"AllowedAIAgents",
+          "documentation":"<p>A list of AI agents that the security profile will give access to.</p>"
         },
         "GranularAccessControlConfiguration":{
           "shape":"GranularAccessControlConfiguration",
@@ -14052,6 +14163,16 @@
         }
       },
       "documentation":"<p>Defines the cross-channel routing behavior that allows an agent working on a contact in one channel to be offered a contact from a different channel.</p>"
+    },
+    "CrossChannelWorkloadBehavior":{
+      "type":"structure",
+      "members":{
+        "ChannelWorkloadBehaviorType":{
+          "shape":"ChannelWorkloadBehaviorType",
+          "documentation":"<p>Specifies the routing behavior for an agent handling their current channel and workload type.</p>"
+        }
+      },
+      "documentation":"<p>Defines the cross-channel and workload type routing behavior that allows an agent working on a contact to be offered a contact from a different channel or workload type.</p>"
     },
     "CurrentMetric":{
       "type":"structure",
@@ -18645,9 +18766,71 @@
         "LastValidationTime":{
           "shape":"Timestamp",
           "documentation":"<p>The timestamp when the most recent validation was started for this evaluation form.</p>"
+        },
+        "AIVersion":{
+          "shape":"EvaluationFormAIVersion",
+          "documentation":"<p>The AI version to use for the evaluation form. This specifies which AI model version is used for automated evaluations.</p>"
         }
       },
       "documentation":"<p>Information about the evaluation form.</p>"
+    },
+    "EvaluationFormAIVersion":{
+      "type":"string",
+      "max":256,
+      "min":1
+    },
+    "EvaluationFormAIVersionLifecycle":{
+      "type":"structure",
+      "required":[
+        "Status",
+        "StartOfLifeTime"
+      ],
+      "members":{
+        "Status":{
+          "shape":"EvaluationFormAIVersionStatus",
+          "documentation":"<p>The status of the AI version. Valid values:</p> <ul> <li> <p> <code>Latest</code> - The most recent AI version.</p> </li> <li> <p> <code>Preview</code> - An AI version available for preview.</p> </li> <li> <p> <code>Active</code> - An AI version that is currently available.</p> </li> <li> <p> <code>Deprecated</code> - An AI version that is no longer recommended for use.</p> </li> <li> <p> <code>Removed</code> - An AI version that is no longer available.</p> </li> </ul>"
+        },
+        "StartOfLifeTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp for when this AI version became available.</p>"
+        },
+        "EndOfLifeTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when this AI version reaches or reached end of life.</p>"
+        }
+      },
+      "documentation":"<p>Contains the status and availability dates for an AI version, indicating when the version became active and when it reaches end of life.</p>"
+    },
+    "EvaluationFormAIVersionStatus":{
+      "type":"string",
+      "enum":[
+        "LATEST",
+        "PREVIEW",
+        "ACTIVE",
+        "DEPRECATED"
+      ]
+    },
+    "EvaluationFormAIVersionSummary":{
+      "type":"structure",
+      "required":[
+        "AIVersionName",
+        "AIVersionLifecycle"
+      ],
+      "members":{
+        "AIVersionName":{
+          "shape":"EvaluationFormAIVersion",
+          "documentation":"<p>The name of the AI version.</p>"
+        },
+        "AIVersionLifecycle":{
+          "shape":"EvaluationFormAIVersionLifecycle",
+          "documentation":"<p>The lifecycle information for this AI version, including its status and availability dates.</p>"
+        }
+      },
+      "documentation":"<p>Contains the name and lifecycle information for an AI version that you can use when creating or updating an evaluation form.</p>"
+    },
+    "EvaluationFormAIVersionSummaryList":{
+      "type":"list",
+      "member":{"shape":"EvaluationFormAIVersionSummary"}
     },
     "EvaluationFormAutoEvaluationConfiguration":{
       "type":"structure",
@@ -18713,6 +18896,10 @@
         "ReviewConfiguration":{
           "shape":"EvaluationReviewConfiguration",
           "documentation":"<p>Configuration for evaluation review settings of this evaluation form content.</p>"
+        },
+        "AIVersion":{
+          "shape":"EvaluationFormAIVersion",
+          "documentation":"<p>The AI version to use for the evaluation form. This specifies which AI model version is used for automated evaluations.</p>"
         }
       },
       "documentation":"<p>Information about an evaluation form used in a contact evaluation.</p>"
@@ -18911,6 +19098,34 @@
         }
       },
       "documentation":"<p>Language configuration for an evaluation form.</p>"
+    },
+    "EvaluationFormMetricConfiguration":{
+      "type":"structure",
+      "required":[
+        "MetricType",
+        "MetricName"
+      ],
+      "members":{
+        "MetricType":{
+          "shape":"EvaluationFormMetricType",
+          "documentation":"<p>The type of metric. Currently, only <code>BUSINESS_OUTCOME</code> is supported.</p>"
+        },
+        "MetricName":{
+          "shape":"EvaluationFormMetricName",
+          "documentation":"<p>The name of the metric. Valid values are:</p> <ul> <li> <p> <code>SALE_SUCCESS</code> – Sale success.</p> </li> <li> <p> <code>CSAT</code> – Customer satisfaction.</p> </li> <li> <p> <code>CHURN_PROPENSITY</code> – Churn propensity.</p> </li> <li> <p> <code>SELF_SERVICE_SUCCESS</code> – Self-service success.</p> </li> <li> <p> <code>PARTIAL_SELF_SERVICE_SUCCESS</code> – Partial self-service success.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>Information about the metric configuration for an evaluation form question. Use this to associate a business outcome metric with a question.</p>"
+    },
+    "EvaluationFormMetricName":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"^[^\\p{C}]*$"
+    },
+    "EvaluationFormMetricType":{
+      "type":"string",
+      "enum":["BUSINESS_OUTCOME"]
     },
     "EvaluationFormMultiSelectQuestionAutomation":{
       "type":"structure",
@@ -19130,6 +19345,10 @@
         "ScoringConfiguration":{
           "shape":"EvaluationFormQuestionScoringConfiguration",
           "documentation":"<p>The scoring configuration of the question.</p>"
+        },
+        "MetricConfiguration":{
+          "shape":"EvaluationFormMetricConfiguration",
+          "documentation":"<p>The metric configuration for the question. Use this to associate a business outcome metric with the question.</p>"
         }
       },
       "documentation":"<p>Information about a question from an evaluation form.</p>"
@@ -19384,6 +19603,10 @@
         "Tags":{
           "shape":"TagMap",
           "documentation":"<p>The tags used to organize, track, or control access for this resource. For example, { \"Tags\": {\"key1\":\"value1\", \"key2\":\"value2\"} }.</p>"
+        },
+        "AIVersion":{
+          "shape":"EvaluationFormAIVersion",
+          "documentation":"<p>The AI version to use for the evaluation form. This specifies which AI model version is used for automated evaluations.</p>"
         }
       },
       "documentation":"<p>Information about the returned evaluation forms.</p>"
@@ -24461,6 +24684,54 @@
         }
       }
     },
+    "ListEvaluationFormAIVersionsRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "ContactInteractionType"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Connect Customer instance. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "ContactInteractionType":{
+          "shape":"ContactInteractionType",
+          "documentation":"<p>The contact interaction type for the evaluation form.</p>",
+          "location":"querystring",
+          "locationName":"contactInteractionType"
+        },
+        "MaxResults":{
+          "shape":"MaxResult100",
+          "documentation":"<p>The maximum number of results to return per page.</p>",
+          "box":true,
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListEvaluationFormAIVersionsResponse":{
+      "type":"structure",
+      "required":["AIVersionSummaries"],
+      "members":{
+        "AIVersionSummaries":{
+          "shape":"EvaluationFormAIVersionSummaryList",
+          "documentation":"<p>The list of AI version summaries.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If there are additional results, this is the token for the next set of results.</p>"
+        }
+      }
+    },
     "ListEvaluationFormVersionsRequest":{
       "type":"structure",
       "required":[
@@ -25775,6 +26046,61 @@
         }
       }
     },
+    "ListSecurityProfileAIAgentsRequest":{
+      "type":"structure",
+      "required":[
+        "SecurityProfileId",
+        "InstanceId"
+      ],
+      "members":{
+        "SecurityProfileId":{
+          "shape":"SecurityProfileId",
+          "documentation":"<p>The identifier for the security profle.</p>",
+          "location":"uri",
+          "locationName":"SecurityProfileId"
+        },
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Connect Customer instance. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "MaxResults":{
+          "shape":"MaxResult1000",
+          "documentation":"<p>The maximum number of results to return per page.</p>",
+          "box":true,
+          "location":"querystring",
+          "locationName":"maxResults"
+        }
+      }
+    },
+    "ListSecurityProfileAIAgentsResponse":{
+      "type":"structure",
+      "members":{
+        "AllowedAIAgents":{
+          "shape":"AllowedAIAgents",
+          "documentation":"<p>A list of the allowed AI agents and their types.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If there are additional results, this is the token for the next set of results.</p>"
+        },
+        "LastModifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when this resource was last modified.</p>"
+        },
+        "LastModifiedRegion":{
+          "shape":"RegionName",
+          "documentation":"<p>The Amazon Web Services Region where this resource was last modified.</p>"
+        }
+      }
+    },
     "ListSecurityProfileApplicationsRequest":{
       "type":"structure",
       "required":[
@@ -26835,10 +27161,7 @@
     },
     "MediaConcurrency":{
       "type":"structure",
-      "required":[
-        "Channel",
-        "Concurrency"
-      ],
+      "required":["Channel"],
       "members":{
         "Channel":{
           "shape":"Channel",
@@ -26851,6 +27174,10 @@
         "CrossChannelBehavior":{
           "shape":"CrossChannelBehavior",
           "documentation":"<p>Defines the cross-channel routing behavior for each channel that is enabled for this Routing Profile. For example, this allows you to offer an agent a different contact from another channel when they are currently working with a contact from a Voice channel.</p>"
+        },
+        "WorkloadTypeConcurrencies":{
+          "shape":"WorkloadTypeConcurrencies",
+          "documentation":"<p>Defines the list of workload type concurrency configurations for a channel. When provided, enables granular concurrency control based on workload type values.</p>"
         }
       },
       "documentation":"<p>Contains information about which channels are supported, and how many contacts an agent can have on a channel simultaneously.</p>"
@@ -29144,6 +29471,65 @@
       "max":128,
       "min":0
     },
+    "PreEvaluationFilter":{
+      "type":"structure",
+      "required":[
+        "ResourceType",
+        "FilterType",
+        "FilterKey",
+        "FilterValue",
+        "Operator"
+      ],
+      "members":{
+        "ResourceType":{
+          "shape":"PreEvaluationFilterResourceType",
+          "documentation":"<p>The type of resource to filter on. Valid values: <code>CONTACT</code>.</p>"
+        },
+        "FilterType":{
+          "shape":"PreEvaluationFilterType",
+          "documentation":"<p>The type of filter to apply. Valid values: <code>TAG</code>.</p>"
+        },
+        "FilterKey":{
+          "shape":"String",
+          "documentation":"<p>The key of the attribute to filter on. For tag filters, this is the tag key.</p>"
+        },
+        "FilterValue":{
+          "shape":"String",
+          "documentation":"<p>The value to match against. For tag filters, this is the tag value.</p>"
+        },
+        "Operator":{
+          "shape":"PreEvaluationFilterOperator",
+          "documentation":"<p>The comparison operator for the filter condition. Valid values: <code>EQUALS</code>.</p>"
+        }
+      },
+      "documentation":"<p>A single pre-evaluation filter condition. Specifies a resource type, filter type, key, value, and operator to match against a resource attribute.</p>"
+    },
+    "PreEvaluationFilterList":{
+      "type":"list",
+      "member":{"shape":"PreEvaluationFilter"}
+    },
+    "PreEvaluationFilterOperator":{
+      "type":"string",
+      "enum":["EQUALS"]
+    },
+    "PreEvaluationFilterResourceType":{
+      "type":"string",
+      "enum":["CONTACT"]
+    },
+    "PreEvaluationFilterType":{
+      "type":"string",
+      "enum":["TAG"]
+    },
+    "PreEvaluationFilters":{
+      "type":"structure",
+      "members":{
+        "AndConditions":{
+          "shape":"PreEvaluationFilterList",
+          "documentation":"<p>A list of conditions that the rule evaluates together using AND logic. All conditions must be met for the event to be evaluated by the rule.</p>"
+        }
+      },
+      "documentation":"<p>The pre-evaluation filters for a rule, that restrict a rule to be applied to only certain resources based on the resource's attributes, such as tags assigned to a contact. The pre-evaluation filters are applied even before rule conditions are evaluated and are used to enforce tag-based-access-control while applying rules.</p>"
+    },
     "PreSignedAttachmentUrl":{
       "type":"string",
       "max":2000,
@@ -30996,7 +31382,8 @@
         "Email":{
           "shape":"EmailReference",
           "documentation":"<p>Information about a reference when the <code>referenceType</code> is <code>EMAIL</code>. Otherwise, null.</p>"
-        }
+        },
+        "ContactAnalysis":{"shape":"ContactAnalysisReference"}
       },
       "documentation":"<p>Contains summary information about a reference. <code>ReferenceSummary</code> contains only one non null field between the URL and attachment based on the reference type.</p>",
       "union":true
@@ -31077,8 +31464,7 @@
       "type":"structure",
       "required":[
         "InstanceId",
-        "ReplicaRegion",
-        "ReplicaAlias"
+        "ReplicaRegion"
       ],
       "members":{
         "InstanceId":{
@@ -31766,6 +32152,10 @@
           "shape":"RulePublishStatus",
           "documentation":"<p>The publish status of the rule.</p>"
         },
+        "PreEvaluationFilters":{
+          "shape":"PreEvaluationFilters",
+          "documentation":"<p>The pre-evaluation filters for the rule, that restrict the rule to be applied to only certain resources based on the resource's attributes, such as tags assigned to a contact. The pre-evaluation filters are applied even before rule conditions are evaluated and are used to enforce tag-based-access-control while applying rules.</p>"
+        },
         "CreatedTime":{
           "shape":"Timestamp",
           "documentation":"<p>The timestamp for when the rule was created.</p>"
@@ -31937,6 +32327,10 @@
         "PublishStatus":{
           "shape":"RulePublishStatus",
           "documentation":"<p>The publish status of the rule.</p>"
+        },
+        "PreEvaluationFilters":{
+          "shape":"PreEvaluationFilters",
+          "documentation":"<p>The pre-evaluation filters for the rule, that restrict the rule to be applied to only certain resources based on the resource's attributes, such as tags assigned to a contact. The pre-evaluation filters are applied even before rule conditions are evaluated and are used to enforce tag-based-access-control while applying rules.</p>"
         },
         "CreatedTime":{
           "shape":"Timestamp",
@@ -37734,6 +38128,10 @@
         "LanguageConfiguration":{
           "shape":"EvaluationFormLanguageConfiguration",
           "documentation":"<p>Configuration for language settings of the evaluation form.</p>"
+        },
+        "AIVersion":{
+          "shape":"EvaluationFormAIVersion",
+          "documentation":"<p>The AI version to use for the evaluation form. This specifies which AI model version is used for automated evaluations.</p>"
         }
       }
     },
@@ -38670,6 +39068,10 @@
         "PublishStatus":{
           "shape":"RulePublishStatus",
           "documentation":"<p>The publish status of the rule.</p>"
+        },
+        "PreEvaluationFilters":{
+          "shape":"PreEvaluationFilters",
+          "documentation":"<p>The pre-evaluation filters for the rule, that restrict the rule to be applied to only certain resources based on the resource's attributes, such as tags assigned to a contact. The pre-evaluation filters are applied even before rule conditions are evaluated and are used to enforce tag-based-access-control while applying rules.</p>"
         }
       }
     },
@@ -38723,6 +39125,10 @@
         "AllowedFlowModules":{
           "shape":"AllowedFlowModules",
           "documentation":"<p> A list of Flow Modules an AI Agent can invoke as a tool </p>"
+        },
+        "AllowedAIAgents":{
+          "shape":"AllowedAIAgents",
+          "documentation":"<p>A list of AI agents that the security profile will give access to.</p>"
         },
         "GranularAccessControlConfiguration":{
           "shape":"GranularAccessControlConfiguration",
@@ -40770,6 +41176,40 @@
         }
       },
       "documentation":"<p>Information about Connect Customer Wisdom.</p>"
+    },
+    "WorkloadType":{"type":"string"},
+    "WorkloadTypeConcurrencies":{
+      "type":"list",
+      "member":{"shape":"WorkloadTypeConcurrency"},
+      "max":5,
+      "min":1
+    },
+    "WorkloadTypeConcurrency":{
+      "type":"structure",
+      "required":[
+        "WorkloadType",
+        "Concurrency"
+      ],
+      "members":{
+        "WorkloadType":{
+          "shape":"WorkloadType",
+          "documentation":"<p>The value of the workload type.</p>"
+        },
+        "Concurrency":{
+          "shape":"WorkloadTypeConcurrencyType",
+          "documentation":"<p>The maximum number of contacts an agent can handle simultaneously for a specific channel and workload type combination.</p> <p>Valid Range for <code>VOICE</code>: Minimum value of 1. Maximum value of 1.</p> <p>Valid Range for <code>CHAT</code>: Minimum value of 1. Maximum value of 10.</p> <p>Valid Range for <code>TASK</code>: Minimum value of 1. Maximum value of 10.</p>"
+        },
+        "CrossChannelWorkloadBehavior":{
+          "shape":"CrossChannelWorkloadBehavior",
+          "documentation":"<p>Defines the cross-channel and workload type routing behavior for each channel and workload type combination that is enabled for this Routing Profile.</p>"
+        }
+      },
+      "documentation":"<p>Defines the maximum number of contacts an agent can handle simultaneously for a specific channel and workload type combination.</p>"
+    },
+    "WorkloadTypeConcurrencyType":{
+      "type":"integer",
+      "max":10,
+      "min":1
     },
     "Workspace":{
       "type":"structure",

@@ -1162,6 +1162,25 @@
       ],
       "documentation":"<p>Retrieves the JSON text of the resource-based policy document attached to the End User Messaging SMS resource. A shared resource can be a Pool, Opt-out list, Sender Id, or Phone number.</p>"
     },
+    "ListAvailablePhoneNumbers":{
+      "name":"ListAvailablePhoneNumbers",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListAvailablePhoneNumbersRequest"},
+      "output":{"shape":"ListAvailablePhoneNumbersResult"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Search available phone numbers from aggregator inventory, optionally filtered by pattern. If NumberPreference is omitted, returns unfiltered available numbers. Returns empty list (not an exception) when no numbers match. ResourceNotFoundException is thrown only for invalid RegistrationId (campaign not found).</p>",
+      "readonly":true
+    },
     "ListNotifyCountries":{
       "name":"ListNotifyCountries",
       "http":{
@@ -2133,6 +2152,13 @@
       "max":2048,
       "min":1,
       "pattern":"\\S+"
+    },
+    "AvailablePhoneNumberList":{
+      "type":"list",
+      "member":{"shape":"PhoneNumber"},
+      "documentation":"<p>List of available phone numbers returned by the search. Max aligns with ListAvailablePhoneNumbersMaxResults (page size bound).</p>",
+      "max":10,
+      "min":0
     },
     "Boolean":{
       "type":"boolean",
@@ -5742,6 +5768,65 @@
         "ZH_TW"
       ]
     },
+    "ListAvailablePhoneNumbersMaxResults":{
+      "type":"integer",
+      "documentation":"<p>Maximum number of results per page for ListAvailablePhoneNumbers. Aligned with AvailablePhoneNumberList max of 10.</p>",
+      "box":true,
+      "max":10,
+      "min":1
+    },
+    "ListAvailablePhoneNumbersRequest":{
+      "type":"structure",
+      "required":[
+        "IsoCountryCode",
+        "NumberCapabilities",
+        "NumberType"
+      ],
+      "members":{
+        "IsoCountryCode":{
+          "shape":"IsoCountryCode",
+          "documentation":"<p>The two-character code, in ISO 3166-1 alpha-2 format, for the country or region in which to search for available phone numbers. This operation currently supports only <code>US</code>.</p>"
+        },
+        "NumberCapabilities":{
+          "shape":"NumberCapabilityList",
+          "documentation":"<p>The capabilities to filter by, such as SMS. Only phone numbers that support all of the specified capabilities are returned.</p>"
+        },
+        "NumberType":{
+          "shape":"SearchableNumberType",
+          "documentation":"<p>The type of phone number to search for.</p>"
+        },
+        "RegistrationId":{
+          "shape":"RegistrationIdOrArn",
+          "documentation":"<p>The registration associated with the request. A registration is required for regulated number types. You can specify either:</p> <ul> <li> <p>The unique identifier of the registration.</p> </li> <li> <p>The Amazon Resource Name (ARN) of the registration.</p> </li> </ul>"
+        },
+        "NumberPreference":{
+          "shape":"NumberPreferenceList",
+          "documentation":"<p>Optional. If omitted, returns unfiltered available numbers. Max 1 element for List API.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token returned from a previous request to retrieve the next page of results.</p>"
+        },
+        "MaxResults":{
+          "shape":"ListAvailablePhoneNumbersMaxResults",
+          "documentation":"<p>The maximum number of results to return per page. If you don't specify a value, the default is 10.</p>"
+        }
+      }
+    },
+    "ListAvailablePhoneNumbersResult":{
+      "type":"structure",
+      "required":["AvailablePhoneNumbers"],
+      "members":{
+        "AvailablePhoneNumbers":{
+          "shape":"AvailablePhoneNumberList",
+          "documentation":"<p>An array of phone numbers, in E.164 format, that are available to request based on the specified filters.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to include in the next request to retrieve the next page of results. This value is null when there are no more results.</p>"
+        }
+      }
+    },
     "ListNotifyCountriesRequest":{
       "type":"structure",
       "members":{
@@ -5958,6 +6043,11 @@
       "min":20,
       "pattern":"arn:\\S+"
     },
+    "LongMap":{
+      "type":"map",
+      "key":{"shape":"String"},
+      "value":{"shape":"PrimitiveLong"}
+    },
     "MCCType":{
       "type":"string",
       "max":3,
@@ -6025,6 +6115,20 @@
       "member":{"shape":"MessageType"},
       "max":2,
       "min":0
+    },
+    "MessagingLimits":{
+      "type":"structure",
+      "members":{
+        "RateLimits":{
+          "shape":"LongMap",
+          "documentation":"<p>The maximum send rate for each supported capability, in messages per second. The map is keyed by capability, such as <code>SMS</code>, <code>MMS</code>, <code>VOICE</code>, or <code>RCS</code>.</p>"
+        },
+        "DailyMessageCaps":{
+          "shape":"LongMap",
+          "documentation":"<p>The advisory maximum number of messages that can be sent per day, keyed by provider (for example, <code>T-MOBILE</code>). Applies to 10DLC phone numbers and is omitted when no daily cap applies.</p>"
+        }
+      },
+      "documentation":"<p>The messaging limits that apply to an origination identity, such as a phone number, sender ID, or RCS agent. Includes the per-capability send rates and, for supported origination identities, advisory per-provider daily message caps.</p>"
     },
     "MonthlyLimit":{
       "type":"long",
@@ -6446,6 +6550,45 @@
       "max":4,
       "min":1
     },
+    "NumberFilterList":{
+      "type":"list",
+      "member":{"shape":"NumberFilterValue"},
+      "documentation":"<p>List of filter values. Max 1 for pattern types (StartsWith/EndsWith/Contains), max 10 for ExactMatch.</p>",
+      "max":10,
+      "min":1
+    },
+    "NumberFilterValue":{
+      "type":"string",
+      "documentation":"<p>A filter value — either a pattern (e.g., &quot;+1510&quot;) or full E.164 number.</p>",
+      "max":16,
+      "min":2,
+      "pattern":"\\+?[0-9]{1,15}"
+    },
+    "NumberPreferenceItem":{
+      "type":"structure",
+      "required":[
+        "PreferenceType",
+        "Filter"
+      ],
+      "members":{
+        "PreferenceType":{
+          "shape":"PreferenceTypeList",
+          "documentation":"<p>The type of match to apply to the filter values.</p> <ul> <li> <p> <code>StartsWith</code>: Returns numbers that begin with the filter value.</p> </li> <li> <p> <code>EndsWith</code>: Returns numbers that end with the filter value.</p> </li> <li> <p> <code>Contains</code>: Returns numbers that contain the filter value.</p> </li> <li> <p> <code>ExactMatch</code>: Returns the number that exactly matches the filter value.</p> </li> </ul>"
+        },
+        "Filter":{
+          "shape":"NumberFilterList",
+          "documentation":"<p>The digit pattern values to match against available phone numbers, using the specified preference type.</p>"
+        }
+      },
+      "documentation":"<p>A single number preference — specifies a pattern type and filter value.</p>"
+    },
+    "NumberPreferenceList":{
+      "type":"list",
+      "member":{"shape":"NumberPreferenceItem"},
+      "documentation":"<p>List of number preference objects. Max 1 element.</p>",
+      "max":1,
+      "min":1
+    },
     "NumberStatus":{
       "type":"string",
       "enum":[
@@ -6762,6 +6905,10 @@
           "shape":"String",
           "documentation":"<p>The unique identifier for the registration.</p>"
         },
+        "MessagingLimits":{
+          "shape":"MessagingLimits",
+          "documentation":"<p>The messaging limits that apply to the phone number, including the per-capability send rates and any advisory per-provider daily message caps.</p>"
+        },
         "CreatedTimestamp":{
           "shape":"Timestamp",
           "documentation":"<p>The time when the phone number was created, in <a href=\"https://www.epochconverter.com/\">UNIX epoch time</a> format.</p>"
@@ -6951,6 +7098,23 @@
         "ACTIVE",
         "DELETING"
       ]
+    },
+    "PreferenceType":{
+      "type":"string",
+      "documentation":"<p>The type of pattern matching to apply.</p>",
+      "enum":[
+        "StartsWith",
+        "EndsWith",
+        "Contains",
+        "ExactMatch"
+      ]
+    },
+    "PreferenceTypeList":{
+      "type":"list",
+      "member":{"shape":"PreferenceType"},
+      "documentation":"<p>List of preference types. Max 1 at launch. Modeled as list for forward compatibility — will support multiple types in future phases.</p>",
+      "max":1,
+      "min":1
     },
     "PrimitiveBoolean":{"type":"boolean"},
     "PrimitiveLong":{"type":"long"},
@@ -7572,6 +7736,10 @@
         "TestingAgent":{
           "shape":"TestingAgentInformation",
           "documentation":"<p>The testing agent information associated with the RCS agent.</p>"
+        },
+        "MessagingLimits":{
+          "shape":"MessagingLimits",
+          "documentation":"<p>The messaging limits that apply to the RCS agent, including the per-capability send rates.</p>"
         }
       },
       "documentation":"<p>The information for an RCS agent in an Amazon Web Services account.</p>"
@@ -9059,6 +9227,10 @@
           "shape":"RegistrationIdOrArn",
           "documentation":"<p>Use this field to attach your phone number for an external registration process.</p>"
         },
+        "NumberPreference":{
+          "shape":"NumberPreferenceList",
+          "documentation":"<p>An optional selection preference used to request a specific phone number, such as a number that starts with, ends with, or contains a particular digit pattern. You can specify at most one preference. Number preferences apply only to <code>TEN_DLC</code> requests in the <code>US</code>.</p>"
+        },
         "InternationalSendingEnabled":{
           "shape":"Boolean",
           "documentation":"<p>By default this is set to false. When set to true the international sending of phone number is Enabled. </p>"
@@ -9303,6 +9475,11 @@
         "message",
         "rcs-agent"
       ]
+    },
+    "SearchableNumberType":{
+      "type":"string",
+      "documentation":"<p>The type of phone number to search for with ListAvailablePhoneNumbers. Currently only TEN_DLC is supported; additional number types (for example TOLL_FREE) will be added in future phases. Modeled as a dedicated enum rather than RequestableNumberType so this operation advertises only the values it actually supports. New values may be added over time (backward compatible).</p>",
+      "enum":["TEN_DLC"]
     },
     "SectionPath":{
       "type":"string",
@@ -9912,6 +10089,10 @@
         "RegistrationId":{
           "shape":"String",
           "documentation":"<p>The unique identifier for the registration.</p>"
+        },
+        "MessagingLimits":{
+          "shape":"MessagingLimits",
+          "documentation":"<p>The messaging limits that apply to the sender ID, including the per-capability send rates.</p>"
         }
       },
       "documentation":"<p>The information for all SenderIds in an Amazon Web Services account.</p>"

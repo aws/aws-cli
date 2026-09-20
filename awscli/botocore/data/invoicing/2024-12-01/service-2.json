@@ -213,6 +213,41 @@
       ],
       "documentation":"<p> <i> <b>This feature API is subject to changing at any time. For more information, see the <a href=\"https://aws.amazon.com/service-terms/\">Amazon Web Services Service Terms</a> (Betas and Previews).</b> </i> </p> <p>Retrieves a list of procurement portal preferences associated with the Amazon Web Services account.</p>"
     },
+    "ListProcurementPortalSuppliers":{
+      "name":"ListProcurementPortalSuppliers",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListProcurementPortalSuppliersRequest"},
+      "output":{"shape":"ListProcurementPortalSuppliersResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Returns the suppliers configured for a specified procurement portal, including supplier identifiers and associated metadata. For faster, more reliable responses, use pagination.</p>",
+      "readonly":true
+    },
+    "ListProcurementPortals":{
+      "name":"ListProcurementPortals",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListProcurementPortalsRequest"},
+      "output":{"shape":"ListProcurementPortalsResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Returns the Amazon Web Services-supported procurement portals for e-invoice delivery and purchase order retrieval. Each entry includes the portal identifier, name, and default feature configurations, which define the supported document and attachment types. For faster, more reliable responses, use pagination.</p>",
+      "readonly":true
+    },
     "ListTagsForResource":{
       "name":"ListTagsForResource",
       "http":{
@@ -526,6 +561,12 @@
       "member":{"shape":"Contact"},
       "max":1,
       "min":1
+    },
+    "CountryCode":{
+      "type":"string",
+      "max":2,
+      "min":2,
+      "pattern":"[A-Z]{2}"
     },
     "CreateInvoiceUnitRequest":{
       "type":"structure",
@@ -881,6 +922,16 @@
       },
       "documentation":"<p>The organization name providing Amazon Web Services services.</p>"
     },
+    "FeatureConfigurations":{
+      "type":"structure",
+      "members":{
+        "InvoiceConfiguration":{
+          "shape":"InvoiceConfiguration",
+          "documentation":"<p>The invoice configuration settings for the procurement portal.</p>"
+        }
+      },
+      "documentation":"<p>Contains the default feature configuration settings for a procurement portal.</p>"
+    },
     "FeesBreakdown":{
       "type":"structure",
       "members":{
@@ -1039,6 +1090,20 @@
       "documentation":"<p>The processing request failed because of an unknown error, exception, or failure. </p>",
       "exception":true,
       "fault":true
+    },
+    "InvoiceConfiguration":{
+      "type":"structure",
+      "members":{
+        "DocumentTypes":{
+          "shape":"EinvoiceDeliveryDocumentTypes",
+          "documentation":"<p>The e-invoice document types supported by the procurement portal.</p>"
+        },
+        "AttachmentTypes":{
+          "shape":"EinvoiceDeliveryAttachmentTypes",
+          "documentation":"<p>The attachment types supported by the procurement portal for e-invoice delivery.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the supported document types and attachment types for invoice delivery to a procurement portal.</p>"
     },
     "InvoiceCurrencyAmount":{
       "type":"structure",
@@ -1448,6 +1513,65 @@
         }
       }
     },
+    "ListProcurementPortalSuppliersRequest":{
+      "type":"structure",
+      "required":["PortalIdentifier"],
+      "members":{
+        "PortalIdentifier":{
+          "shape":"ProcurementPortalIdString",
+          "documentation":"<p>The unique identifier of the procurement portal for which to list suppliers. Use the <code>PortalIdentifier</code> value returned by <code>ListProcurementPortals</code>.</p>"
+        },
+        "NextToken":{
+          "shape":"BasicStringWithoutSpace",
+          "documentation":"<p>The token for the next set of results. You received this token from a previous call.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return in a single call. To retrieve the remaining results, make another call with the returned NextToken value. Default is 100.</p>"
+        }
+      }
+    },
+    "ListProcurementPortalSuppliersResponse":{
+      "type":"structure",
+      "required":["ProcurementPortalSuppliers"],
+      "members":{
+        "ProcurementPortalSuppliers":{
+          "shape":"ProcurementPortalSuppliers",
+          "documentation":"<p>The list of suppliers configured for the specified procurement portal.</p>"
+        },
+        "NextToken":{
+          "shape":"BasicStringWithoutSpace",
+          "documentation":"<p>The token to use to retrieve the next set of results, or null if there are no more results.</p>"
+        }
+      }
+    },
+    "ListProcurementPortalsRequest":{
+      "type":"structure",
+      "members":{
+        "NextToken":{
+          "shape":"BasicStringWithoutSpace",
+          "documentation":"<p>The token for the next set of results. You received this token from a previous call.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return in a single call. To retrieve the remaining results, make another call with the returned NextToken value. Default is 100.</p>"
+        }
+      }
+    },
+    "ListProcurementPortalsResponse":{
+      "type":"structure",
+      "required":["ProcurementPortals"],
+      "members":{
+        "ProcurementPortals":{
+          "shape":"ProcurementPortals",
+          "documentation":"<p>The list of procurement portals available for configuration.</p>"
+        },
+        "NextToken":{
+          "shape":"BasicStringWithoutSpace",
+          "documentation":"<p>The token to use to retrieve the next set of results, or null if there are no more results.</p>"
+        }
+      }
+    },
     "ListTagsForResourceRequest":{
       "type":"structure",
       "required":["ResourceArn"],
@@ -1493,6 +1617,44 @@
       "type":"string",
       "min":1,
       "pattern":"[\\S\\s]*"
+    },
+    "ProcurementPortal":{
+      "type":"structure",
+      "required":[
+        "PortalIdentifier",
+        "PortalName"
+      ],
+      "members":{
+        "PortalIdentifier":{
+          "shape":"ProcurementPortalIdString",
+          "documentation":"<p>The unique identifier of the procurement portal.</p>"
+        },
+        "PortalName":{
+          "shape":"ProcurementPortalName",
+          "documentation":"<p>The name of the procurement portal.</p>"
+        },
+        "PortalDisplayName":{
+          "shape":"BasicString",
+          "documentation":"<p>The display name of the procurement portal.</p>"
+        },
+        "DefaultFeatureConfigurations":{
+          "shape":"FeatureConfigurations",
+          "documentation":"<p>The default feature configurations for the procurement portal.</p>"
+        }
+      },
+      "documentation":"<p>Contains metadata for a procurement portal, including the portal identifier, name, and default feature configurations.</p>"
+    },
+    "ProcurementPortalEnv":{
+      "type":"string",
+      "documentation":"<p>The environment of a procurement portal supplier. <code>PROD</code> indicates the production environment. <code>TEST</code> indicates the sandbox or test environment.</p>",
+      "enum":[
+        "PROD",
+        "TEST"
+      ]
+    },
+    "ProcurementPortalIdString":{
+      "type":"string",
+      "min":1
     },
     "ProcurementPortalName":{
       "type":"string",
@@ -1730,6 +1892,37 @@
         }
       },
       "documentation":"<p>Provides a summary of a procurement portal preference, including key identifiers and status information.</p>"
+    },
+    "ProcurementPortalSupplier":{
+      "type":"structure",
+      "required":["SupplierIdentifier"],
+      "members":{
+        "SupplierIdentifier":{
+          "shape":"SupplierIdString",
+          "documentation":"<p>The unique identifier of the supplier within the procurement portal.</p>"
+        },
+        "SellerOfRecord":{
+          "shape":"BasicStringWithoutSpace",
+          "documentation":"<p>The Amazon Web Services seller of record associated with the supplier—the Amazon Web Services legal entity that issues invoices for the account (for example, <code>AWS_INC</code> or <code>AWS_EUROPE</code>).</p>"
+        },
+        "CountryCode":{
+          "shape":"CountryCode",
+          "documentation":"<p>The two-letter ISO 3166-1 alpha-2 country code associated with the supplier.</p>"
+        },
+        "Environment":{
+          "shape":"ProcurementPortalEnv",
+          "documentation":"<p>The environment identifier for the supplier in the procurement portal. PROD for production env, or TEST for sandbox/test env.</p>"
+        }
+      },
+      "documentation":"<p>Contains metadata for a supplier configured within a procurement portal.</p>"
+    },
+    "ProcurementPortalSuppliers":{
+      "type":"list",
+      "member":{"shape":"ProcurementPortalSupplier"}
+    },
+    "ProcurementPortals":{
+      "type":"list",
+      "member":{"shape":"ProcurementPortal"}
     },
     "ProfileList":{
       "type":"list",
@@ -2023,6 +2216,10 @@
     "SupplierDomain":{
       "type":"string",
       "enum":["NetworkID"]
+    },
+    "SupplierIdString":{
+      "type":"string",
+      "min":1
     },
     "TagResourceRequest":{
       "type":"structure",

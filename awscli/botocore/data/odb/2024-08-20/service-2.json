@@ -1017,6 +1017,23 @@
       "documentation":"<p>Returns information about the Exascale storage vaults owned by your Amazon Web Services account.</p>",
       "readonly":true
     },
+    "ListFlexComponents":{
+      "name":"ListFlexComponents",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListFlexComponentsInput"},
+      "output":{"shape":"ListFlexComponentsOutput"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Returns information about the flex components that are available for an Exadata infrastructure.</p>",
+      "readonly":true
+    },
     "ListGiMinorVersions":{
       "name":"ListGiMinorVersions",
       "http":{
@@ -5023,11 +5040,11 @@
         },
         "scanListenerPortTcp":{
           "shape":"CreateExadbVmClusterInputScanListenerPortTcpInteger",
-          "documentation":"<p>The port number for TCP connections to the single client access name (SCAN) listener.</p>"
+          "documentation":"<p>The port number for TCP connections to the Single Client Access Name (SCAN) listener.</p>"
         },
         "scanListenerPortTcpSsl":{
           "shape":"CreateExadbVmClusterInputScanListenerPortTcpSslInteger",
-          "documentation":"<p>The port number for TCP connections with SSL to the single client access name (SCAN) listener.</p>"
+          "documentation":"<p>The port number for TCP connections with SSL to the Single Client Access Name (SCAN) listener.</p>"
         },
         "shapeAttribute":{
           "shape":"ShapeAttribute",
@@ -5047,7 +5064,7 @@
         },
         "clientToken":{
           "shape":"CreateExadbVmClusterInputClientTokenString",
-          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If you don't specify a client token, the Amazon Web Services SDK automatically generates one and uses it for the request to ensure idempotency. The client token is valid for up to 24 hours after it's first used.</p>",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure that the operation completes no more than one time. If you submit the same request twice with the same client token, the service ignores the second request and returns the result of the first. If you don't specify a client token, the AWS SDK automatically generates one. The client token is valid for up to 24 hours after it's first used.</p>",
           "idempotencyToken":true
         }
       }
@@ -5181,7 +5198,7 @@
         },
         "clientToken":{
           "shape":"CreateExascaleDbStorageVaultInputClientTokenString",
-          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If you don't specify a client token, the Amazon Web Services SDK automatically generates one and uses it for the request to ensure idempotency. The client token is valid for up to 24 hours after it's first used.</p>",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure that the operation completes no more than one time. If you submit the same request twice with the same client token, the service ignores the second request and returns the result of the first. If you don't specify a client token, the AWS SDK automatically generates one. The client token is valid for up to 24 hours after it's first used.</p>",
           "idempotencyToken":true
         }
       }
@@ -6836,11 +6853,11 @@
         },
         "scanListenerPortTcp":{
           "shape":"Integer",
-          "documentation":"<p>The port number for TCP connections to the single client access name (SCAN) listener for the Exascale VM cluster.</p>"
+          "documentation":"<p>The port number for TCP connections to the Single Client Access Name (SCAN) listener for the Exascale VM cluster.</p>"
         },
         "scanListenerPortTcpSsl":{
           "shape":"Integer",
-          "documentation":"<p>The port number for TCP connections with SSL to the single client access name (SCAN) listener for the Exascale VM cluster.</p>"
+          "documentation":"<p>The port number for TCP connections with SSL to the Single Client Access Name (SCAN) listener for the Exascale VM cluster.</p>"
         },
         "shape":{
           "shape":"String",
@@ -7033,11 +7050,11 @@
         },
         "scanListenerPortTcp":{
           "shape":"Integer",
-          "documentation":"<p>The port number for TCP connections to the single client access name (SCAN) listener for the Exascale VM cluster.</p>"
+          "documentation":"<p>The port number for TCP connections to the Single Client Access Name (SCAN) listener for the Exascale VM cluster.</p>"
         },
         "scanListenerPortTcpSsl":{
           "shape":"Integer",
-          "documentation":"<p>The port number for TCP connections with SSL to the single client access name (SCAN) listener for the Exascale VM cluster.</p>"
+          "documentation":"<p>The port number for TCP connections with SSL to the Single Client Access Name (SCAN) listener for the Exascale VM cluster.</p>"
         },
         "shape":{
           "shape":"String",
@@ -7341,6 +7358,60 @@
           "documentation":"<p>Additional information about the status of the Autonomous Database after the failover operation.</p>"
         }
       }
+    },
+    "FlexComponentList":{
+      "type":"list",
+      "member":{"shape":"FlexComponentSummary"}
+    },
+    "FlexComponentSummary":{
+      "type":"structure",
+      "members":{
+        "availableCoreCount":{
+          "shape":"Integer",
+          "documentation":"<p>The maximum number of CPU cores that can be enabled for the flex component.</p>"
+        },
+        "availableDbStorageInGBs":{
+          "shape":"Integer",
+          "documentation":"<p>The maximum amount of database storage, in gigabytes (GB), that can be enabled for the flex component.</p>"
+        },
+        "availableLocalStorageInGBs":{
+          "shape":"Integer",
+          "documentation":"<p>The maximum amount of local storage, in gigabytes (GB), that can be enabled for the flex component.</p>"
+        },
+        "availableMemoryInGBs":{
+          "shape":"Integer",
+          "documentation":"<p>The maximum amount of memory, in gigabytes (GB), that can be enabled for the flex component.</p>"
+        },
+        "computeModel":{
+          "shape":"ComputeModel",
+          "documentation":"<p>The OCI model compute model used when you create or clone an instance: ECPU or OCPU. An ECPU is an abstracted measure of compute resources. ECPUs are based on the number of cores elastically allocated from a pool of compute and storage servers. An OCPU is a legacy physical measure of compute resources. OCPUs are based on the physical core of a processor with hyper-threading enabled. </p>"
+        },
+        "descriptionSummary":{
+          "shape":"String",
+          "documentation":"<p>A summary description of the flex component.</p>"
+        },
+        "hardwareType":{
+          "shape":"HardwareType",
+          "documentation":"<p>The type of hardware for the flex component. Valid values are <code>COMPUTE</code> for compute servers and <code>CELL</code> for storage servers.</p>"
+        },
+        "minimumCoreCount":{
+          "shape":"Integer",
+          "documentation":"<p>The minimum number of CPU cores that can be enabled for the flex component.</p>"
+        },
+        "name":{
+          "shape":"String",
+          "documentation":"<p>The name of the flex component.</p>"
+        },
+        "runtimeMinimumCoreCount":{
+          "shape":"Integer",
+          "documentation":"<p>The runtime minimum number of CPU cores that can be enabled for the flex component.</p>"
+        },
+        "shape":{
+          "shape":"String",
+          "documentation":"<p>The shape that uses the flex component.</p>"
+        }
+      },
+      "documentation":"<p>Information about a flex component that's available for an Exadata infrastructure. A flex component defines the hardware resources, such as CPU cores, memory, and storage, that can be allocated to a shape.</p>"
     },
     "Float":{
       "type":"float",
@@ -7686,6 +7757,13 @@
       "enum":[
         "RELEASE_UPDATE",
         "CUSTOM_IMAGE"
+      ]
+    },
+    "HardwareType":{
+      "type":"string",
+      "enum":[
+        "COMPUTE",
+        "CELL"
       ]
     },
     "Hostname":{
@@ -8476,6 +8554,53 @@
         "exascaleDbStorageVaults":{
           "shape":"ExascaleDbStorageVaultList",
           "documentation":"<p>The list of Exascale storage vaults.</p>"
+        }
+      }
+    },
+    "ListFlexComponentsInput":{
+      "type":"structure",
+      "members":{
+        "maxResults":{
+          "shape":"ListFlexComponentsInputMaxResultsInteger",
+          "documentation":"<p>The maximum number of items to return for this request. To get the next page of items, make another request with the token returned in the output.</p>"
+        },
+        "nextToken":{
+          "shape":"ListFlexComponentsInputNextTokenString",
+          "documentation":"<p>The token returned from a previous paginated request. Pagination continues from the end of the items returned by the previous request.</p>"
+        },
+        "shape":{
+          "shape":"ListFlexComponentsInputShapeString",
+          "documentation":"<p>The shape to return flex components for. For a list of valid shapes, use the <code>ListDbSystemShapes</code> operation.</p>"
+        }
+      }
+    },
+    "ListFlexComponentsInputMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":1000,
+      "min":1
+    },
+    "ListFlexComponentsInputNextTokenString":{
+      "type":"string",
+      "max":8192,
+      "min":1
+    },
+    "ListFlexComponentsInputShapeString":{
+      "type":"string",
+      "max":256,
+      "min":1
+    },
+    "ListFlexComponentsOutput":{
+      "type":"structure",
+      "required":["flexComponents"],
+      "members":{
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>The token to include in another request to get the next page of items. This value is <code>null</code> when there are no more items to return.</p>"
+        },
+        "flexComponents":{
+          "shape":"FlexComponentList",
+          "documentation":"<p>The list of flex components along with their properties.</p>"
         }
       }
     },

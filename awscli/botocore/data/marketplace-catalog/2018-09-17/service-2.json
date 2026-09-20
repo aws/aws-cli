@@ -3069,9 +3069,39 @@
         "ResellerRole":{
           "shape":"ResaleAuthorizationResellerRoleFilter",
           "documentation":"<p>Allows filtering on the <code>ResellerRole</code> of a ResaleAuthorization.</p>"
+        },
+        "SourceAuthorization":{
+          "shape":"ResaleAuthorizationSourceAuthorizationFilter",
+          "documentation":"<p>Allows filtering on the <code>SourceAuthorization</code> of a ResaleAuthorization.</p>"
+        },
+        "IssuerAccountId":{
+          "shape":"ResaleAuthorizationIssuerAccountIdFilter",
+          "documentation":"<p>Allows filtering on the <code>IssuerAccountId</code> of a ResaleAuthorization.</p>"
         }
       },
       "documentation":"<p>Object containing all the filter fields for resale authorization entity. Client can add only one wildcard filter and a maximum of 8 filters in a single <code>ListEntities</code> request.</p>"
+    },
+    "ResaleAuthorizationIssuerAccountIdFilter":{
+      "type":"structure",
+      "members":{
+        "ValueList":{
+          "shape":"ResaleAuthorizationIssuerAccountIdFilterValueList",
+          "documentation":"<p>Allows filtering on the <code>IssuerAccountId</code> of a ResaleAuthorization with list input.</p>"
+        }
+      },
+      "documentation":"<p>Allows filtering on the <code>IssuerAccountId</code> of a ResaleAuthorization.</p>"
+    },
+    "ResaleAuthorizationIssuerAccountIdFilterValueList":{
+      "type":"list",
+      "member":{"shape":"ResaleAuthorizationIssuerAccountIdString"},
+      "max":10,
+      "min":1
+    },
+    "ResaleAuthorizationIssuerAccountIdString":{
+      "type":"string",
+      "max":12,
+      "min":12,
+      "pattern":"^\\d{12}$"
     },
     "ResaleAuthorizationLastModifiedDateFilter":{
       "type":"structure",
@@ -3395,8 +3425,33 @@
         "OfferExtendedStatus",
         "CreatedDate",
         "AvailabilityEndDate",
-        "LastModifiedDate"
+        "LastModifiedDate",
+        "ResellerRole",
+        "SourceAuthorization",
+        "IssuerAccountId"
       ]
+    },
+    "ResaleAuthorizationSourceAuthorizationFilter":{
+      "type":"structure",
+      "members":{
+        "ValueList":{
+          "shape":"ResaleAuthorizationSourceAuthorizationFilterValueList",
+          "documentation":"<p>Allows filtering on the <code>SourceAuthorization</code> of a ResaleAuthorization with list input.</p>"
+        }
+      },
+      "documentation":"<p>Allows filtering on the <code>SourceAuthorization</code> of a ResaleAuthorization.</p>"
+    },
+    "ResaleAuthorizationSourceAuthorizationFilterValueList":{
+      "type":"list",
+      "member":{"shape":"ResaleAuthorizationSourceAuthorizationString"},
+      "max":10,
+      "min":1
+    },
+    "ResaleAuthorizationSourceAuthorizationString":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"^(.)+$"
     },
     "ResaleAuthorizationStatusFilter":{
       "type":"structure",
@@ -3472,6 +3527,14 @@
         "ResellerRole":{
           "shape":"ResaleAuthorizationResellerRoleString",
           "documentation":"<p>The reseller role of the ResaleAuthorization.</p>"
+        },
+        "SourceAuthorization":{
+          "shape":"ResaleAuthorizationSourceAuthorizationString",
+          "documentation":"<p>The source authorization of the ResaleAuthorization.</p>"
+        },
+        "IssuerAccountId":{
+          "shape":"ResaleAuthorizationIssuerAccountIdString",
+          "documentation":"<p>The issuer account ID of the ResaleAuthorization.</p>"
         }
       },
       "documentation":"<p>Summarized information about a Resale Authorization.</p>"

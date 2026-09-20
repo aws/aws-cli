@@ -376,12 +376,23 @@ files to and from S3. Valid choices are:
 
   * S3 to S3 copies - Falls back to using the ``classic`` transfer client
 
-  * Region redirects - Transfers fail for requests sent to a region that does
-    not match the region of the targeted S3 bucket.
+  * Some region redirects - Transfers to a region that does not match the
+    region of the targeted S3 bucket are retried in the bucket's region, but
+    only if the transfer can be replayed from the start. A transfer fails
+    instead of being redirected if it is an upload whose source cannot be
+    rewound or if any of its data was already transferred. The ``classic``
+    transfer client is able to redirect in both of those cases.
 
-  * ``max_concurrent_requests``, ``max_queue_size``, ``multipart_threshold``,
-    and ``max_bandwidth`` configuration values - Ignores these configuration
-    values.
+
+  * ``max_queue_size`` and ``max_bandwidth`` configuration values - Ignores
+    these configuration values.
+
+  * ``max_attempts`` configuration value - Honors values greater than one.
+    Ignores a value of one because the ``crt`` transfer client cannot disable
+    retries.
+
+  When a configured value is not supported by the transfer client being used,
+  the AWS CLI emits a warning naming the values it is ignoring.
 
 
 target_bandwidth

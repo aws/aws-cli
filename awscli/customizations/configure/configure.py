@@ -20,6 +20,9 @@ from awscli.compat import compat_input
 from awscli.customizations.agenttoolkit.configure import (
     ConfigureAgentToolkitCommand,
 )
+from awscli.customizations.agenttoolkit.hint import (
+    maybe_prompt_agent_toolkit,
+)
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.configure.addmodel import AddModelCommand
 from awscli.customizations.configure.exportcreds import (
@@ -148,10 +151,12 @@ class ConfigureCommand(BasicCommand):
         new_values = {}
         # This is the config from the config file scoped to a specific
         # profile.
+        profile_exists = True
         try:
             config = self._session.get_scoped_config()
         except ProfileNotFound:
             config = {}
+            profile_exists = False
 
         if not config:
             sys.stdout.write(
@@ -187,13 +192,27 @@ class ConfigureCommand(BasicCommand):
             self._session.get_config_variable('config_file')
         )
         if new_values:
+            region = self._resolve_configured_region(new_values)
             profile = self._session.profile
             self._write_out_creds_file_values(new_values, profile)
             if profile is not None:
                 section = profile_to_section(profile)
                 new_values['__section__'] = section
             self._config_writer.update_config(new_values, config_filename)
+            if not profile_exists and profile is not None:
+                self._session._profile_map[profile] = {}
+            maybe_prompt_agent_toolkit(
+                self._session, parsed_globals, region=region
+            )
         return 0
+
+    def _resolve_configured_region(self, new_values):
+        if new_values.get('region'):
+            return new_values['region']
+        try:
+            return self._session.get_config_variable('region')
+        except ProfileNotFound:
+            return None
 
     def _write_out_creds_file_values(self, new_values, profile_name):
         # The access_key/secret_key are now *always* written to the shared

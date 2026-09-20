@@ -391,6 +391,10 @@ class TestTransformName(unittest.TestCase):
             'post-whatsapp-message-media',
         )
         self.assertEqual(
+            xform_name('GetWhatsAppCallPermission', '-'),
+            'get-whatsapp-call-permission',
+        )
+        self.assertEqual(
             xform_name('PublishWhatsAppFlow', '-'),
             'publish-whatsapp-flow',
         )
@@ -406,12 +410,20 @@ class TestTransformName(unittest.TestCase):
             xform_name('SendWhatsAppMessage', '-'), 'send-whatsapp-message'
         )
         self.assertEqual(
+            xform_name('SendWhatsAppCallEvent', '-'),
+            'send-whatsapp-call-event',
+        )
+        self.assertEqual(
             xform_name('UpdateWhatsAppFlow', '-'),
             'update-whatsapp-flow',
         )
         self.assertEqual(
             xform_name('UpdateWhatsAppFlowAssets', '-'),
             'update-whatsapp-flow-assets',
+        )
+        self.assertEqual(
+            xform_name('UpdateLinkedWhatsAppBusinessAccountPhoneNumber', '-'),
+            'update-linked-whatsapp-business-account-phone-number',
         )
         self.assertEqual(
             xform_name('UpdateWhatsAppMessageTemplate', '-'),
@@ -1838,6 +1850,26 @@ class TestS3RegionRedirector(unittest.TestCase):
         )
         self.assertIsNone(redirect_response)
         self.assertEqual(request_dict, {})
+
+    def test_does_not_redirect_without_bucket(self):
+        request_dict = {
+            'url': 'https://s3.us-west-2.amazonaws.com',
+            'context': {},
+        }
+        response = (
+            None,
+            {
+                'Error': {'Code': 'PermanentRedirect'},
+                'ResponseMetadata': {'HTTPHeaders': {}},
+            },
+        )
+
+        redirect_response = self.redirector.redirect_from_error(
+            request_dict, response, self.operation
+        )
+
+        self.assertIsNone(redirect_response)
+        self.client.head_bucket.assert_not_called()
 
     def test_does_not_redirect_if_region_cannot_be_found(self):
         request_dict = {

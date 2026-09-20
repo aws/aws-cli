@@ -287,6 +287,49 @@
       "documentation":"<p>Retrieve the WABA account id and phone number details of a WhatsApp business account phone number.</p>",
       "readonly":true
     },
+    "GetWhatsAppBusinessPublicKey":{
+      "name":"GetWhatsAppBusinessPublicKey",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v1/whatsapp/business-public-key",
+        "responseCode":200
+      },
+      "input":{"shape":"GetWhatsAppBusinessPublicKeyInput"},
+      "output":{"shape":"GetWhatsAppBusinessPublicKeyOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidParametersException"},
+        {"shape":"AccessDeniedByMetaException"},
+        {"shape":"ThrottledRequestException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"DependencyException"}
+      ],
+      "documentation":"<p>Retrieves the business public key for a phone number and its signature status.</p>",
+      "readonly":true
+    },
+    "GetWhatsAppCallPermission":{
+      "name":"GetWhatsAppCallPermission",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v1/whatsapp/call/permission/get",
+        "responseCode":200
+      },
+      "input":{"shape":"GetWhatsAppCallPermissionInput"},
+      "output":{"shape":"GetWhatsAppCallPermissionOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidParametersException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedByMetaException"},
+        {"shape":"ThrottledRequestException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"DependencyException"}
+      ],
+      "documentation":"<p>Retrieves the current calling permission for a WhatsApp end user, along with the calling actions the business is allowed to take with that user. Provide the destination phone number or the business-scoped user ID to identify the end user.</p>"
+    },
     "GetWhatsAppFlow":{
       "name":"GetWhatsAppFlow",
       "http":{
@@ -562,6 +605,50 @@
       "documentation":"<p>Add an event destination to log event data from WhatsApp for a WhatsApp Business Account (WABA). A WABA can only have one event destination at a time. All resources associated with the WABA use the same event destination.</p>",
       "idempotent":true
     },
+    "PutWhatsAppBusinessPublicKey":{
+      "name":"PutWhatsAppBusinessPublicKey",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/v1/whatsapp/business-public-key",
+        "responseCode":200
+      },
+      "input":{"shape":"PutWhatsAppBusinessPublicKeyInput"},
+      "output":{"shape":"PutWhatsAppBusinessPublicKeyOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidParametersException"},
+        {"shape":"AccessDeniedByMetaException"},
+        {"shape":"ThrottledRequestException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"DependencyException"}
+      ],
+      "documentation":"<p>Sets the business public key used to encrypt the data exchanged with the endpoint of a data exchange Flow.</p>",
+      "idempotent":true
+    },
+    "SendWhatsAppCallEvent":{
+      "name":"SendWhatsAppCallEvent",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v1/whatsapp/call/event",
+        "responseCode":200
+      },
+      "input":{"shape":"SendWhatsAppCallEventInput"},
+      "output":{"shape":"SendWhatsAppCallEventOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidParametersException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedByMetaException"},
+        {"shape":"ThrottledRequestException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"DependencyException"}
+      ],
+      "documentation":"<p>Sends a WhatsApp calling event, such as connecting or terminating a call, for a business phone number. This operation passes the event through to Meta. To use this operation, the origination phone number must belong to a WhatsApp Business Account that is linked to your Amazon Web Services account.</p>"
+    },
     "SendWhatsAppConversionEvent":{
       "name":"SendWhatsAppConversionEvent",
       "http":{
@@ -638,6 +725,28 @@
         {"shape":"InternalServiceException"}
       ],
       "documentation":"<p>Removes the specified tags from a resource. </p>"
+    },
+    "UpdateLinkedWhatsAppBusinessAccountPhoneNumber":{
+      "name":"UpdateLinkedWhatsAppBusinessAccountPhoneNumber",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/v1/whatsapp/waba/phone",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateLinkedWhatsAppBusinessAccountPhoneNumberInput"},
+      "output":{"shape":"UpdateLinkedWhatsAppBusinessAccountPhoneNumberOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidParametersException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedByMetaException"},
+        {"shape":"ThrottledRequestException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"DependencyException"}
+      ],
+      "documentation":"<p>Updates the calling settings for a linked WhatsApp business phone number, such as whether calling is enabled and the hours during which the business accepts calls.</p>",
+      "idempotent":true
     },
     "UpdateWhatsAppFlow":{
       "name":"UpdateWhatsAppFlow",
@@ -790,6 +899,16 @@
       "type":"boolean",
       "box":true
     },
+    "BusinessPublicKeyPem":{
+      "type":"string",
+      "max":8192,
+      "min":1
+    },
+    "BusinessPublicKeySignatureStatus":{
+      "type":"string",
+      "max":20,
+      "min":1
+    },
     "ButtonType":{
       "type":"string",
       "max":25,
@@ -798,6 +917,18 @@
     "CodeExpirationMinutes":{
       "type":"integer",
       "box":true
+    },
+    "ConflictException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"ErrorMessage"}
+      },
+      "documentation":"<p>Your request has conflicting operations. This can occur if you're trying to perform more than one operation on the same resource at the same time.</p>",
+      "error":{
+        "httpStatusCode":409,
+        "senderFault":true
+      },
+      "exception":true
     },
     "CreateWhatsAppDatasetInput":{
       "type":"structure",
@@ -850,6 +981,10 @@
         "cloneFlowId":{
           "shape":"MetaFlowId",
           "documentation":"<p>The ID of an existing Flow within the same WhatsApp Business Account to clone.</p>"
+        },
+        "endpointUri":{
+          "shape":"MetaFlowEndpointUri",
+          "documentation":"<p>The HTTPS endpoint that Meta calls for a data exchange Flow.</p>"
         }
       }
     },
@@ -1162,6 +1297,70 @@
         "linkedWhatsAppBusinessAccountId":{
           "shape":"LinkedWhatsAppBusinessAccountId",
           "documentation":"<p>The WABA identifier linked to the phone number, formatted as <code>waba-01234567890123456789012345678901</code>.</p>"
+        },
+        "callSettings":{
+          "shape":"WhatsAppCallSettings",
+          "documentation":"<p>The calling settings configured for the phone number. This value is absent when calling is not configured.</p>"
+        }
+      }
+    },
+    "GetWhatsAppBusinessPublicKeyInput":{
+      "type":"structure",
+      "required":["originationPhoneNumberId"],
+      "members":{
+        "originationPhoneNumberId":{
+          "shape":"WhatsAppPhoneNumberId",
+          "documentation":"<p>The unique identifier of the phone number whose business public key to retrieve.</p>",
+          "location":"querystring",
+          "locationName":"originationPhoneNumberId"
+        }
+      }
+    },
+    "GetWhatsAppBusinessPublicKeyOutput":{
+      "type":"structure",
+      "members":{
+        "businessPublicKey":{
+          "shape":"BusinessPublicKeyPem",
+          "documentation":"<p>The stored PEM-encoded 2048-bit RSA public key.</p>"
+        },
+        "businessPublicKeySignatureStatus":{
+          "shape":"BusinessPublicKeySignatureStatus",
+          "documentation":"<p>The signature status of the stored business public key. Valid values are VALID and MISMATCH.</p>"
+        }
+      }
+    },
+    "GetWhatsAppCallPermissionInput":{
+      "type":"structure",
+      "required":["originationPhoneNumberId"],
+      "members":{
+        "originationPhoneNumberId":{
+          "shape":"WhatsAppPhoneNumberId",
+          "documentation":"<p>The unique identifier of the business phone number for which to retrieve the calling permission. The phone number identifiers are formatted as <code>phone-number-id-01234567890123456789012345678901</code>.</p>"
+        },
+        "destinationPhoneNumber":{
+          "shape":"WhatsAppDestinationPhoneNumber",
+          "documentation":"<p>The end user's phone number, in E.164 format, for which to retrieve the calling permission.</p>"
+        },
+        "endUserBsuid":{
+          "shape":"WhatsAppBusinessScopedUserId",
+          "documentation":"<p>The business-scoped user identifier (BSUID) of the end user for which to retrieve the calling permission.</p>"
+        }
+      }
+    },
+    "GetWhatsAppCallPermissionOutput":{
+      "type":"structure",
+      "required":[
+        "permission",
+        "actions"
+      ],
+      "members":{
+        "permission":{
+          "shape":"WhatsAppCallPermission",
+          "documentation":"<p>The current calling permission state for the end user.</p>"
+        },
+        "actions":{
+          "shape":"WhatsAppCallPermissionActionList",
+          "documentation":"<p>The calling actions the business can take with the end user, and any limits that apply to each action.</p>"
         }
       }
     },
@@ -1224,7 +1423,7 @@
         },
         "endpointUri":{
           "shape":"MetaFlowEndpointUri",
-          "documentation":"<p>The endpoint URI for data exchange Flows, if configured.</p>"
+          "documentation":"<p>The HTTPS endpoint that Meta calls for a data exchange Flow.</p>"
         },
         "preview":{
           "shape":"MetaFlowPreviewInfo",
@@ -1374,6 +1573,11 @@
       "key":{"shape":"String"},
       "value":{"shape":"String"}
     },
+    "IanaTimezone":{
+      "type":"string",
+      "max":100,
+      "min":1
+    },
     "Integer":{
       "type":"integer",
       "box":true
@@ -1401,9 +1605,20 @@
       },
       "exception":true
     },
+    "Iso8601Duration":{
+      "type":"string",
+      "max":20,
+      "min":1
+    },
     "IsoCountryCode":{
       "type":"string",
       "pattern":"[A-Z]{2}"
+    },
+    "KmsKeyArn":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"arn:aws[a-z-]*:kms:[a-z0-9-]+:[0-9]{12}:(key/.+|alias/.+)"
     },
     "LibraryTemplateBodyInputs":{
       "type":"structure",
@@ -2487,6 +2702,28 @@
       "type":"structure",
       "members":{}
     },
+    "PutWhatsAppBusinessPublicKeyInput":{
+      "type":"structure",
+      "required":["originationPhoneNumberId"],
+      "members":{
+        "originationPhoneNumberId":{
+          "shape":"WhatsAppPhoneNumberId",
+          "documentation":"<p>The unique identifier of the phone number to associate with the business public key.</p>"
+        },
+        "businessPublicKey":{
+          "shape":"BusinessPublicKeyPem",
+          "documentation":"<p>The PEM-encoded 2048-bit RSA public key to set. Mutually exclusive with <code>kmsKeyArn</code>.</p>"
+        },
+        "kmsKeyArn":{
+          "shape":"KmsKeyArn",
+          "documentation":"<p>The ARN of a customer managed asymmetric RSA key in Amazon Web Services KMS. Mutually exclusive with <code>businessPublicKey</code>.</p>"
+        }
+      }
+    },
+    "PutWhatsAppBusinessPublicKeyOutput":{
+      "type":"structure",
+      "members":{}
+    },
     "RegistrationStatus":{
       "type":"string",
       "enum":[
@@ -2564,6 +2801,38 @@
       "max":2000,
       "min":1,
       "pattern":"https://(.*)s3(.*).amazonaws.com/(.*)"
+    },
+    "SendWhatsAppCallEventInput":{
+      "type":"structure",
+      "required":[
+        "originationPhoneNumberId",
+        "metaApiVersion",
+        "callEvent"
+      ],
+      "members":{
+        "originationPhoneNumberId":{
+          "shape":"WhatsAppPhoneNumberId",
+          "documentation":"<p>The unique identifier of the origination phone number for the call. The phone number identifiers are formatted as <code>phone-number-id-01234567890123456789012345678901</code>. Use <code>GetLinkedWhatsAppBusinessAccount</code> to find a phone number's ID.</p>"
+        },
+        "metaApiVersion":{
+          "shape":"String",
+          "documentation":"<p>The version of the Meta Graph API to use for the request.</p>"
+        },
+        "callEvent":{
+          "shape":"WhatsAppCallEventBlob",
+          "documentation":"<p>The call event payload to send, as a JSON blob in the format defined by the Meta calling API.</p>"
+        }
+      }
+    },
+    "SendWhatsAppCallEventOutput":{
+      "type":"structure",
+      "required":["callId"],
+      "members":{
+        "callId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier that Meta assigns to the call.</p>"
+        }
+      }
     },
     "SendWhatsAppConversionEventInput":{
       "type":"structure",
@@ -2756,6 +3025,7 @@
       "exception":true,
       "retryable":{"throttling":false}
     },
+    "Timestamp":{"type":"timestamp"},
     "TwoFactorPin":{
       "type":"string",
       "max":6,
@@ -2785,6 +3055,35 @@
         "statusCode":{
           "shape":"Integer",
           "documentation":"<p>The status code of the untag resource operation.</p>"
+        }
+      }
+    },
+    "UpdateLinkedWhatsAppBusinessAccountPhoneNumberInput":{
+      "type":"structure",
+      "required":[
+        "id",
+        "callSettings"
+      ],
+      "members":{
+        "id":{
+          "shape":"WhatsAppPhoneNumberId",
+          "documentation":"<p>The unique identifier of the phone number to update. The phone number identifiers are formatted as <code>phone-number-id-01234567890123456789012345678901</code>.</p>",
+          "location":"querystring",
+          "locationName":"id"
+        },
+        "callSettings":{
+          "shape":"WhatsAppCallSettings",
+          "documentation":"<p>The calling settings to apply to the phone number.</p>"
+        }
+      }
+    },
+    "UpdateLinkedWhatsAppBusinessAccountPhoneNumberOutput":{
+      "type":"structure",
+      "required":["phoneNumberId"],
+      "members":{
+        "phoneNumberId":{
+          "shape":"WhatsAppPhoneNumberId",
+          "documentation":"<p>The unique identifier of the phone number that was updated.</p>"
         }
       }
     },
@@ -2841,6 +3140,14 @@
         "categories":{
           "shape":"MetaFlowCategoryList",
           "documentation":"<p>The updated categories for the Flow.</p>"
+        },
+        "endpointUri":{
+          "shape":"MetaFlowEndpointUri",
+          "documentation":"<p>The updated HTTPS endpoint for a data exchange Flow.</p>"
+        },
+        "metaAppId":{
+          "shape":"MetaFlowApplicationId",
+          "documentation":"<p>The ID of the Meta application to attach to the Flow.</p>"
         }
       }
     },
@@ -2991,6 +3298,163 @@
       "max":200,
       "min":0
     },
+    "WhatsAppBusinessScopedUserId":{
+      "type":"string",
+      "max":100,
+      "min":1,
+      "sensitive":true
+    },
+    "WhatsAppCallEventBlob":{
+      "type":"blob",
+      "max":2048000,
+      "min":1,
+      "sensitive":true
+    },
+    "WhatsAppCallHours":{
+      "type":"structure",
+      "required":[
+        "enabled",
+        "timezone",
+        "weeklyOperatingHours"
+      ],
+      "members":{
+        "enabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether call hours are enforced. When disabled, the business accepts calls at any time.</p>"
+        },
+        "timezone":{
+          "shape":"IanaTimezone",
+          "documentation":"<p>The IANA time zone in which the operating hours are interpreted, such as <code>America/New_York</code>.</p>"
+        },
+        "weeklyOperatingHours":{
+          "shape":"WhatsAppWeeklyOperatingHoursList",
+          "documentation":"<p>The weekly schedule of hours during which the business accepts calls.</p>"
+        },
+        "holidaySchedule":{
+          "shape":"WhatsAppHolidayScheduleList",
+          "documentation":"<p>Date-specific overrides to the weekly operating hours, such as holidays.</p>"
+        }
+      },
+      "documentation":"<p>The operating hours during which a business phone number accepts WhatsApp calls, including the time zone, weekly schedule, and any holiday overrides.</p>"
+    },
+    "WhatsAppCallIconVisibility":{
+      "type":"string",
+      "max":50,
+      "min":1
+    },
+    "WhatsAppCallPermission":{
+      "type":"structure",
+      "required":["status"],
+      "members":{
+        "status":{
+          "shape":"WhatsAppCallPermissionStatus",
+          "documentation":"<p>The permission status for the end user.</p>"
+        },
+        "expirationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when a temporary permission expires. This value is absent for permanent permissions and when there is no permission.</p>"
+        }
+      },
+      "documentation":"<p>The current calling permission state for a business phone number and a specific WhatsApp end user.</p>"
+    },
+    "WhatsAppCallPermissionAction":{
+      "type":"structure",
+      "required":[
+        "actionName",
+        "canPerformAction",
+        "limits"
+      ],
+      "members":{
+        "actionName":{
+          "shape":"WhatsAppCallPermissionActionName",
+          "documentation":"<p>The name of the calling action.</p>"
+        },
+        "canPerformAction":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether the business can currently perform the action.</p>"
+        },
+        "limits":{
+          "shape":"WhatsAppCallPermissionLimitList",
+          "documentation":"<p>The time-bound limits that apply to the action.</p>"
+        }
+      },
+      "documentation":"<p>Describes a single calling action the business can take with an end user, including whether the action is currently allowed and any limits that apply to it. Returned as an item in the actions list from <code>GetWhatsAppCallPermission</code>.</p>"
+    },
+    "WhatsAppCallPermissionActionList":{
+      "type":"list",
+      "member":{"shape":"WhatsAppCallPermissionAction"}
+    },
+    "WhatsAppCallPermissionActionName":{
+      "type":"string",
+      "max":50,
+      "min":1
+    },
+    "WhatsAppCallPermissionLimit":{
+      "type":"structure",
+      "required":[
+        "timePeriod",
+        "maxAllowed",
+        "currentUsage"
+      ],
+      "members":{
+        "timePeriod":{
+          "shape":"Iso8601Duration",
+          "documentation":"<p>The time period over which the limit applies, as an ISO 8601 duration.</p>"
+        },
+        "maxAllowed":{
+          "shape":"Integer",
+          "documentation":"<p>The maximum number of times the action is allowed within the time period.</p>"
+        },
+        "currentUsage":{
+          "shape":"Integer",
+          "documentation":"<p>The number of times the action has been used within the current time period.</p>"
+        },
+        "limitExpirationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the limit resets. This value is present only when the current usage has reached the maximum allowed.</p>"
+        }
+      },
+      "documentation":"<p>A time-bound restriction on a calling action, such as the number of calls allowed within a time period.</p>"
+    },
+    "WhatsAppCallPermissionLimitList":{
+      "type":"list",
+      "member":{"shape":"WhatsAppCallPermissionLimit"},
+      "max":10,
+      "min":0
+    },
+    "WhatsAppCallPermissionStatus":{
+      "type":"string",
+      "max":50,
+      "min":1
+    },
+    "WhatsAppCallSettings":{
+      "type":"structure",
+      "required":["callEnabled"],
+      "members":{
+        "callEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether calling is enabled for the phone number.</p>"
+        },
+        "callHours":{
+          "shape":"WhatsAppCallHours",
+          "documentation":"<p>The hours during which the business accepts calls on the phone number.</p>"
+        },
+        "callIconVisibility":{
+          "shape":"WhatsAppCallIconVisibility",
+          "documentation":"<p>The visibility setting for the call icon shown to end users in WhatsApp.</p>"
+        },
+        "callbackPermissionStatus":{
+          "shape":"WhatsAppCallbackPermissionStatus",
+          "documentation":"<p>The callback permission status for the phone number.</p>"
+        }
+      },
+      "documentation":"<p>The calling configuration for a WhatsApp business phone number.</p>"
+    },
+    "WhatsAppCallbackPermissionStatus":{
+      "type":"string",
+      "max":50,
+      "min":1
+    },
     "WhatsAppConversionEventBlob":{
       "type":"blob",
       "max":1024000,
@@ -3003,8 +3467,62 @@
       "min":10,
       "pattern":"[0-9]+"
     },
+    "WhatsAppDate":{
+      "type":"string",
+      "max":10,
+      "min":10,
+      "pattern":"[0-9]{4}-[0-9]{2}-[0-9]{2}"
+    },
+    "WhatsAppDayOfWeek":{
+      "type":"string",
+      "enum":[
+        "MONDAY",
+        "TUESDAY",
+        "WEDNESDAY",
+        "THURSDAY",
+        "FRIDAY",
+        "SATURDAY",
+        "SUNDAY"
+      ]
+    },
+    "WhatsAppDestinationPhoneNumber":{
+      "type":"string",
+      "max":20,
+      "min":1,
+      "pattern":"\\+[1-9]\\d{1,14}",
+      "sensitive":true
+    },
     "WhatsAppDisplayPhoneNumber":{
       "type":"string",
+      "max":20,
+      "min":0
+    },
+    "WhatsAppHolidayScheduleEntry":{
+      "type":"structure",
+      "required":[
+        "date",
+        "startTime",
+        "endTime"
+      ],
+      "members":{
+        "date":{
+          "shape":"WhatsAppDate",
+          "documentation":"<p>The date that the override applies to, in ISO 8601 format (<code>YYYY-MM-DD</code>).</p>"
+        },
+        "startTime":{
+          "shape":"WhatsAppTimeOfDay",
+          "documentation":"<p>The time of day when the business begins accepting calls on the override date.</p>"
+        },
+        "endTime":{
+          "shape":"WhatsAppTimeOfDay",
+          "documentation":"<p>The time of day when the business stops accepting calls on the override date.</p>"
+        }
+      },
+      "documentation":"<p>A date-specific override to the weekly operating hours, such as a holiday.</p>"
+    },
+    "WhatsAppHolidayScheduleList":{
+      "type":"list",
+      "member":{"shape":"WhatsAppHolidayScheduleEntry"},
       "max":20,
       "min":0
     },
@@ -3207,6 +3725,65 @@
         }
       },
       "documentation":"<p>Contains the results of WhatsAppSignupCallback.</p>"
+    },
+    "WhatsAppTimeOfDay":{
+      "type":"structure",
+      "required":[
+        "hours",
+        "minutes"
+      ],
+      "members":{
+        "hours":{
+          "shape":"WhatsAppTimeOfDayHoursInteger",
+          "documentation":"<p>The hour of the day, from 0 to 23.</p>"
+        },
+        "minutes":{
+          "shape":"WhatsAppTimeOfDayMinutesInteger",
+          "documentation":"<p>The minute of the hour, from 0 to 59.</p>"
+        }
+      },
+      "documentation":"<p>A time of day, expressed as an hour and minute.</p>"
+    },
+    "WhatsAppTimeOfDayHoursInteger":{
+      "type":"integer",
+      "box":true,
+      "max":23,
+      "min":0
+    },
+    "WhatsAppTimeOfDayMinutesInteger":{
+      "type":"integer",
+      "box":true,
+      "max":59,
+      "min":0
+    },
+    "WhatsAppWeeklyOperatingHoursEntry":{
+      "type":"structure",
+      "required":[
+        "dayOfWeek",
+        "openTime",
+        "closeTime"
+      ],
+      "members":{
+        "dayOfWeek":{
+          "shape":"WhatsAppDayOfWeek",
+          "documentation":"<p>The day of the week that the entry applies to.</p>"
+        },
+        "openTime":{
+          "shape":"WhatsAppTimeOfDay",
+          "documentation":"<p>The time of day when the business begins accepting calls.</p>"
+        },
+        "closeTime":{
+          "shape":"WhatsAppTimeOfDay",
+          "documentation":"<p>The time of day when the business stops accepting calls.</p>"
+        }
+      },
+      "documentation":"<p>A single entry in a weekly calling schedule, defining the open and close times for one day of the week.</p>"
+    },
+    "WhatsAppWeeklyOperatingHoursList":{
+      "type":"list",
+      "member":{"shape":"WhatsAppWeeklyOperatingHoursEntry"},
+      "max":14,
+      "min":0
     },
     "ZeroTapTermsAccepted":{
       "type":"boolean",

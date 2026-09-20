@@ -72,7 +72,7 @@
         {"shape":"ConflictException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
-      "documentation":"<p>Creates an agent that orchestrates interactions between foundation models, data sources, software applications, user conversations, and APIs to carry out tasks to help customers.</p> <ul> <li> <p>Specify the following fields for security purposes.</p> <ul> <li> <p> <code>agentResourceRoleArn</code> – The Amazon Resource Name (ARN) of the role with permissions to invoke API operations on an agent.</p> </li> <li> <p>(Optional) <code>customerEncryptionKeyArn</code> – The Amazon Resource Name (ARN) of a KMS key to encrypt the creation of the agent.</p> </li> <li> <p>(Optional) <code>idleSessionTTLinSeconds</code> – Specify the number of seconds for which the agent should maintain session information. After this time expires, the subsequent <code>InvokeAgent</code> request begins a new session.</p> </li> </ul> </li> <li> <p>To enable your agent to retain conversational context across multiple sessions, include a <code>memoryConfiguration</code> object. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/agents-configure-memory.html\">Configure memory</a>.</p> </li> <li> <p>To override the default prompt behavior for agent orchestration and to use advanced prompts, include a <code>promptOverrideConfiguration</code> object. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/advanced-prompts.html\">Advanced prompts</a>.</p> </li> <li> <p>If your agent fails to be created, the response returns a list of <code>failureReasons</code> alongside a list of <code>recommendedActions</code> for you to troubleshoot.</p> </li> <li> <p>The agent instructions will not be honored if your agent has only one knowledge base, uses default prompts, has no action group, and user input is disabled.</p> </li> </ul>",
+      "documentation":"<p><note> <p>Amazon Bedrock Agents (now Amazon Bedrock Agents Classic) is no longer open to new customers. For capabilities similar to Bedrock Agents Classic, explore Amazon Bedrock AgentCore. Existing customers can continue to use the service as normal. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/agents-classic-maintenance-mode.html\">Amazon Bedrock Agents Classic availability change</a>.</p> </note> <p>Creates an agent that orchestrates interactions between foundation models, data sources, software applications, user conversations, and APIs to carry out tasks to help customers.</p> <ul> <li> <p>Specify the following fields for security purposes.</p> <ul> <li> <p> <code>agentResourceRoleArn</code> – The Amazon Resource Name (ARN) of the role with permissions to invoke API operations on an agent.</p> </li> <li> <p>(Optional) <code>customerEncryptionKeyArn</code> – The Amazon Resource Name (ARN) of a KMS key to encrypt the creation of the agent.</p> </li> <li> <p>(Optional) <code>idleSessionTTLinSeconds</code> – Specify the number of seconds for which the agent should maintain session information. After this time expires, the subsequent <code>InvokeAgent</code> request begins a new session.</p> </li> </ul> </li> <li> <p>To enable your agent to retain conversational context across multiple sessions, include a <code>memoryConfiguration</code> object. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/agents-configure-memory.html\">Configure memory</a>.</p> </li> <li> <p>To override the default prompt behavior for agent orchestration and to use advanced prompts, include a <code>promptOverrideConfiguration</code> object. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/advanced-prompts.html\">Advanced prompts</a>.</p> </li> <li> <p>If your agent fails to be created, the response returns a list of <code>failureReasons</code> alongside a list of <code>recommendedActions</code> for you to troubleshoot.</p> </li> <li> <p>The agent instructions will not be honored if your agent has only one knowledge base, uses default prompts, has no action group, and user input is disabled.</p> </li> </ul></p>",
       "idempotent":true
     },
     "CreateAgentActionGroup":{
@@ -2645,11 +2645,21 @@
         },
         "audio":{
           "shape":"AudioConfigurations",
-          "documentation":"<p>Configuration settings for processing audio content in multimodal knowledge bases.</p>"
+          "documentation":"<p>Configuration settings for processing audio content in multimodal knowledge bases.</p> <important> <p>This field is deprecated. Use <code>modelConfiguration</code> instead.</p> </important>",
+          "deprecated":true,
+          "deprecatedMessage":"Use Managed Knowledge Base's modelConfiguration field. https://docs.aws.amazon.com/bedrock/latest/userguide/kb-build-managed.html",
+          "deprecatedSince":"2026-09-01"
         },
         "video":{
           "shape":"VideoConfigurations",
-          "documentation":"<p>Configuration settings for processing video content in multimodal knowledge bases.</p>"
+          "documentation":"<p>Configuration settings for processing video content in multimodal knowledge bases.</p> <important> <p>This field is deprecated. Use <code>modelConfiguration</code> instead.</p> </important>",
+          "deprecated":true,
+          "deprecatedMessage":"Use Managed Knowledge Base's modelConfiguration field. https://docs.aws.amazon.com/bedrock/latest/userguide/kb-build-managed.html",
+          "deprecatedSince":"2026-09-01"
+        },
+        "modelConfiguration":{
+          "shape":"Document",
+          "documentation":"<p>Model-specific configuration for the embedding model, provided as a JSON object. Use this field to specify settings that apply to the embedding model that you selected, such as how audio and video files are divided into segments.</p> <p>The fields that this object accepts depend on the embedding model. For the settings that each model accepts, see the documentation for that model.</p>"
         }
       },
       "documentation":"<p>The vector configuration details for the Bedrock embeddings model.</p>"
@@ -7168,7 +7178,10 @@
           "shape":"VectorKnowledgeBaseConfiguration",
           "documentation":"<p>Contains details about the model that's used to convert the data source into vector embeddings.</p>"
         },
-        "managedKnowledgeBaseConfiguration":{"shape":"ManagedKnowledgeBaseConfiguration"},
+        "managedKnowledgeBaseConfiguration":{
+          "shape":"ManagedKnowledgeBaseConfiguration",
+          "documentation":"<p>Contains configuration details for a knowledge base that uses a vector store fully managed by Amazon Bedrock. Specify this object when the knowledge base type is MANAGED.</p>"
+        },
         "kendraKnowledgeBaseConfiguration":{
           "shape":"KendraKnowledgeBaseConfiguration",
           "documentation":"<p>Settings for an Amazon Kendra knowledge base.</p>"
@@ -8108,13 +8121,26 @@
     "ManagedKnowledgeBaseConfiguration":{
       "type":"structure",
       "members":{
-        "embeddingModelType":{"shape":"EmbeddingModelType"},
+        "embeddingModelType":{
+          "shape":"EmbeddingModelType",
+          "documentation":"<p>Choose CUSTOM to provide your own Bedrock embedding model ARN. Choose MANAGED to use a service-managed embedding model.</p>"
+        },
         "embeddingModelArn":{
           "shape":"BedrockEmbeddingModelArn",
           "documentation":"<p>The ARN for the embeddings model.</p>"
         },
-        "embeddingModelConfiguration":{"shape":"EmbeddingModelConfiguration"},
-        "serverSideEncryptionConfiguration":{"shape":"ServerSideEncryptionConfiguration"}
+        "embeddingModelConfiguration":{
+          "shape":"EmbeddingModelConfiguration",
+          "documentation":"<p>The configuration details for the embeddings model. Not required when choosing the MANAGED embeddingModelType.</p>"
+        },
+        "serverSideEncryptionConfiguration":{
+          "shape":"ServerSideEncryptionConfiguration",
+          "documentation":"<p>Contains the configuration for server-side encryption for your managed knowledge base.</p>"
+        },
+        "supplementalDataStorageConfiguration":{
+          "shape":"SupplementalDataStorageConfiguration",
+          "documentation":"<p>Use this object to specify the Amazon S3 location that the knowledge base uses to process and ingest multimodal content. This field is required when you use a native multimodal embedding model.</p>"
+        }
       },
       "documentation":"<p>Configurations for a managed knowledge base.</p>"
     },
@@ -8864,7 +8890,7 @@
       "members":{
         "parsingStrategy":{
           "shape":"ParsingStrategy",
-          "documentation":"<p>The parsing strategy for the data source. Only <code>SMART_PARSING</code> can be selected for managed knowledge bases. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/kb-managed-customize-ingestion.html\">Customize ingestion for managed knowledge bases</a>.</p>"
+          "documentation":"<p>The parsing strategy for the data source.</p> <p>For managed knowledge bases, the strategy that you can select depends on the embedding model that your knowledge base uses:</p> <ul> <li> <p>If your knowledge base uses a native multimodal embedding model, specify <code>MULTI_MODAL_EMBEDDINGS</code>. With this strategy, files are sent directly to the embedding model instead of being parsed into text. This is the only strategy that is supported for these knowledge bases.</p> </li> <li> <p>Otherwise, specify <code>SMART_PARSING</code>.</p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/kb-managed-customize-ingestion.html\">Customize ingestion for managed knowledge bases</a>.</p>"
         },
         "bedrockFoundationModelConfiguration":{
           "shape":"BedrockFoundationModelConfiguration",
@@ -8902,7 +8928,8 @@
       "enum":[
         "BEDROCK_FOUNDATION_MODEL",
         "BEDROCK_DATA_AUTOMATION",
-        "SMART_PARSING"
+        "SMART_PARSING",
+        "MULTI_MODAL_EMBEDDINGS"
       ]
     },
     "PatternObjectFilter":{
@@ -10949,7 +10976,7 @@
         },
         "strict":{
           "shape":"Boolean",
-          "documentation":"<p>Whether to enforce strict JSON schema adherence for the tool input</p>"
+          "documentation":"<p>Whether the tool schema is strictly enforced.</p>"
         }
       },
       "documentation":"<p>Contains a specification for a tool. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/tool-use.html\">Use a tool to complete an Amazon Bedrock model response</a>.</p>"
@@ -12206,5 +12233,5 @@
       "pattern":"(arn:(aws(-[a-z]+)*):redshift-serverless:[a-z]{2}(-gov)?-[a-z]+-\\d{1}:\\d{12}:workgroup/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})"
     }
   },
-  "documentation":"<p>Describes the API operations for creating and managing Amazon Bedrock agents.</p>"
+  "documentation":"<p><note> <p>Amazon Bedrock Agents (now Amazon Bedrock Agents Classic) is no longer open to new customers. For capabilities similar to Bedrock Agents Classic, explore Amazon Bedrock AgentCore. Existing customers can continue to use the service as normal. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/agents-classic-maintenance-mode.html\">Amazon Bedrock Agents Classic availability change</a>.</p> </note> <p>Describes the API operations for creating and managing Amazon Bedrock agents.</p></p>"
 }

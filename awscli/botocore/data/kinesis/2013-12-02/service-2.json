@@ -57,7 +57,7 @@
         {"shape":"KMSThrottlingException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Creates a channel that delivers records from a Kinesis data stream to a destination. A channel reads records from the specified stream and writes them to streaming tables on Apache Iceberg (Amazon S3 Tables) or to a general purpose Amazon S3 bucket.</p> <p>You must specify either <code>S3DestinationConfiguration</code> or <code>S3TablesDestinationConfiguration</code>, but not both.</p> <p>Creating a channel is an asynchronous operation. Upon receiving the request, Amazon Kinesis Data Streams returns immediately with the channel in the <code>CREATING</code> state. After provisioning is complete, Amazon Kinesis Data Streams sets the state to <code>ACTIVE</code>. You can use <a>DescribeChannel</a> to check the current state.</p> <p>This operation is only supported for data streams with the on-demand capacity mode.</p> <p>This API has a call limit of 5 transactions per second (TPS) for each Amazon Web Services account. Exceeding 5 TPS results in a <code>LimitExceededException</code>.</p>",
+      "documentation":"<p>Creates a channel that delivers records from a Kinesis data stream to a destination. A channel reads records from the specified stream and writes them to streaming tables on Apache Iceberg (Amazon S3 Tables) or to a general purpose Amazon S3 bucket.</p> <p>You must specify either <code>S3DestinationConfiguration</code> or <code>S3TablesDestinationConfiguration</code>, but not both.</p> <p>To use this operation, you must have permission to pass the specified service execution IAM role to Amazon Kinesis Data Streams (the <code>iam:PassRole</code> permission on that role).</p> <p>Creating a channel is an asynchronous operation. Upon receiving the request, Amazon Kinesis Data Streams returns immediately with the channel in the <code>CREATING</code> state. After provisioning is complete, Amazon Kinesis Data Streams sets the state to <code>ACTIVE</code>. You can use <a>DescribeChannel</a> to check the current state.</p> <p>This operation is only supported for data streams with the on-demand capacity mode.</p> <p>This operation has a call limit of 5 transactions per second (TPS) for each Amazon Web Services account. Exceeding 5 TPS results in a <code>LimitExceededException</code>.</p>",
       "staticContextParams":{
         "OperationType":{"value":"control"}
       }
@@ -113,7 +113,7 @@
         {"shape":"InvalidArgumentException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Deletes the specified channel. Deleting a channel stops delivery from the source stream to the destination. Data already delivered to the destination is not deleted.</p> <p>A stream cannot be deleted while it has active channels. To delete the stream, first delete all channels attached to it. To find them, use <a>ListChannels</a> with a stream filter.</p> <p>This API has a call limit of 5 transactions per second (TPS) for each Amazon Web Services account. Exceeding 5 TPS results in a <code>LimitExceededException</code>.</p>",
+      "documentation":"<p>Deletes the specified channel. Deleting a channel stops delivery from the source stream to the destination. Data already delivered to the destination is not deleted.</p> <p>A stream cannot be deleted while it has active channels. To delete the stream, first delete all channels attached to it. To find them, use <a>ListChannels</a> with a stream filter.</p> <p>This operation has a call limit of 5 transactions per second (TPS) for each Amazon Web Services account. Exceeding 5 TPS results in a <code>LimitExceededException</code>.</p>",
       "staticContextParams":{
         "OperationType":{"value":"control"}
       }
@@ -204,7 +204,7 @@
         {"shape":"InvalidArgumentException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Describes the specified channel, including its configuration and current status.</p> <p>Use this operation to verify that a channel reached the <code>ACTIVE</code> state after creation, or to diagnose a channel in the <code>FAILED</code> state by reading the <code>ChannelStatusReason</code>.</p> <p>This API has a call limit of 5 transactions per second (TPS) for each Amazon Web Services account. Exceeding 5 TPS results in a <code>LimitExceededException</code>.</p>",
+      "documentation":"<p>Describes the specified channel, including its configuration and current status.</p> <p>Use this operation to verify that a channel reached the <code>ACTIVE</code> state after creation, or to diagnose a channel in the <code>FAILED</code> state by reading the <code>ChannelStatusReason</code>.</p> <p>This operation has a call limit of 5 transactions per second (TPS) for each Amazon Web Services account. Exceeding 5 TPS results in a <code>LimitExceededException</code>.</p>",
       "readonly":true,
       "staticContextParams":{
         "OperationType":{"value":"control"}
@@ -342,7 +342,8 @@
         {"shape":"KMSOptInRequired"},
         {"shape":"KMSThrottlingException"},
         {"shape":"AccessDeniedException"},
-        {"shape":"InternalFailureException"}
+        {"shape":"InternalFailureException"},
+        {"shape":"DryRunOperationException"}
       ],
       "documentation":"<p>Gets data records from a Kinesis data stream's shard.</p> <note> <p>When invoking this API, you must use either the <code>StreamARN</code> or the <code>StreamName</code> parameter, or both. It is recommended that you use the <code>StreamARN</code> input parameter when you invoke this API.</p> </note> <p>Specify a shard iterator using the <code>ShardIterator</code> parameter. The shard iterator specifies the position in the shard from which you want to start reading data records sequentially. If there are no records available in the portion of the shard that the iterator points to, <a>GetRecords</a> returns an empty list. It might take multiple calls to get to a portion of the shard that contains records.</p> <p>You can scale by provisioning multiple shards per stream while considering service limits (for more information, see <a href=\"https://docs.aws.amazon.com/kinesis/latest/dev/service-sizes-and-limits.html\">Amazon Kinesis Data Streams Limits</a> in the <i>Amazon Kinesis Data Streams Developer Guide</i>). Your application should have one thread per shard, each reading continuously from its stream. To read from a stream continually, call <a>GetRecords</a> in a loop. Use <a>GetShardIterator</a> to get the shard iterator to specify in the first <a>GetRecords</a> call. <a>GetRecords</a> returns a new shard iterator in <code>NextShardIterator</code>. Specify the shard iterator returned in <code>NextShardIterator</code> in subsequent calls to <a>GetRecords</a>. If the shard has been closed, the shard iterator can't return more data and <a>GetRecords</a> returns <code>null</code> in <code>NextShardIterator</code>. You can terminate the loop when the shard is closed, or when the shard iterator reaches the record with the sequence number or other attribute that marks it as the last record to process.</p> <p>Each data record can be up to 1 MiB in size by default. Amazon Kinesis Data Streams supports large records up to 10 MiB in size, but the average throughput for your stream cannot exceed 1 MiB per second. For more information about how large records are handled, see <a href=\"https://docs.aws.amazon.com/streams/latest/dev/large-records.html\">Large records</a>. Each shard can read up to 2 MiB per second. You can ensure that your calls don't exceed the maximum supported size or throughput by using the <code>Limit</code> parameter to specify the maximum number of records that <a>GetRecords</a> can return. Consider your average record size when determining this limit. The maximum number of records that can be returned per call is 10,000.</p> <p>The size of the data returned by <a>GetRecords</a> varies depending on the utilization of the shard. It is recommended that consumer applications retrieve records via the <code>GetRecords</code> command using the 5 TPS limit to remain caught up. Retrieving records less frequently can lead to consumer applications falling behind. The maximum size of data that <a>GetRecords</a> can return is 10 MiB. If a call returns this amount of data, subsequent calls made within the next 5 seconds throw <code>ProvisionedThroughputExceededException</code>. If there is insufficient provisioned throughput on the stream, subsequent calls made within the next 1 second throw <code>ProvisionedThroughputExceededException</code>. <a>GetRecords</a> doesn't return any data when it throws an exception. For this reason, we recommend that you wait 1 second between calls to <a>GetRecords</a>. However, it's possible that the application will get exceptions for longer than 1 second.</p> <p>To detect whether the application is falling behind in processing, you can use the <code>MillisBehindLatest</code> response attribute. You can also monitor the stream using CloudWatch metrics and other mechanisms (see <a href=\"https://docs.aws.amazon.com/kinesis/latest/dev/monitoring.html\">Monitoring</a> in the <i>Amazon Kinesis Data Streams Developer Guide</i>).</p> <p>Each Amazon Kinesis record includes a value, <code>ApproximateArrivalTimestamp</code>, that is set when a stream successfully receives and stores a record. This is commonly referred to as a server-side time stamp, whereas a client-side time stamp is set when a data producer creates or sends the record to a stream (a data producer is any data source putting data records into a stream, for example with <a>PutRecords</a>). The time stamp has millisecond precision. There are no guarantees about the time stamp accuracy, or that the time stamp is always increasing. For example, records in a shard or across a stream might have time stamps that are out of order.</p> <p>This operation has a limit of five transactions per second per shard.</p>",
       "staticContextParams":{
@@ -382,7 +383,8 @@
         {"shape":"InvalidArgumentException"},
         {"shape":"ProvisionedThroughputExceededException"},
         {"shape":"AccessDeniedException"},
-        {"shape":"InternalFailureException"}
+        {"shape":"InternalFailureException"},
+        {"shape":"DryRunOperationException"}
       ],
       "documentation":"<p>Gets an Amazon Kinesis shard iterator. A shard iterator expires 5 minutes after it is returned to the requester.</p> <note> <p>When invoking this API, you must use either the <code>StreamARN</code> or the <code>StreamName</code> parameter, or both. It is recommended that you use the <code>StreamARN</code> input parameter when you invoke this API.</p> </note> <p>A shard iterator specifies the shard position from which to start reading data records sequentially. The position is specified using the sequence number of a data record in a shard. A sequence number is the identifier associated with every record ingested in the stream, and is assigned when a record is put into the stream. Each stream has one or more shards.</p> <p>You must specify the shard iterator type. For example, you can set the <code>ShardIteratorType</code> parameter to read exactly from the position denoted by a specific sequence number by using the <code>AT_SEQUENCE_NUMBER</code> shard iterator type. Alternatively, the parameter can read right after the sequence number by using the <code>AFTER_SEQUENCE_NUMBER</code> shard iterator type, using sequence numbers returned by earlier calls to <a>PutRecord</a>, <a>PutRecords</a>, <a>GetRecords</a>, or <a>DescribeStream</a>. In the request, you can specify the shard iterator type <code>AT_TIMESTAMP</code> to read records from an arbitrary point in time, <code>TRIM_HORIZON</code> to cause <code>ShardIterator</code> to point to the last untrimmed record in the shard in the system (the oldest data record in the shard), or <code>LATEST</code> so that you always read the most recent data in the shard. </p> <p>When you read repeatedly from a stream, use a <a>GetShardIterator</a> request to get the first shard iterator for use in your first <a>GetRecords</a> request and for subsequent reads use the shard iterator returned by the <a>GetRecords</a> request in <code>NextShardIterator</code>. A new shard iterator is returned by every <a>GetRecords</a> request in <code>NextShardIterator</code>, which you use in the <code>ShardIterator</code> parameter of the next <a>GetRecords</a> request. </p> <p>If a <a>GetShardIterator</a> request is made too often, you receive a <code>ProvisionedThroughputExceededException</code>. For more information about throughput limits, see <a>GetRecords</a>, and <a href=\"https://docs.aws.amazon.com/kinesis/latest/dev/service-sizes-and-limits.html\">Streams Limits</a> in the <i>Amazon Kinesis Data Streams Developer Guide</i>.</p> <p>If the shard is closed, <a>GetShardIterator</a> returns a valid iterator for the last sequence number of the shard. A shard can be closed as a result of using <a>SplitShard</a> or <a>MergeShards</a>.</p> <p> <a>GetShardIterator</a> has a limit of five transactions per second per account per open shard.</p>",
       "staticContextParams":{
@@ -423,7 +425,7 @@
         {"shape":"InvalidArgumentException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Lists the channels in your account. You can filter the results by source stream. The results are paginated. Use the <code>NextToken</code> value returned in the response to retrieve additional results.</p> <p>Use this operation to find channels before deleting a stream, or to audit the channels configured in an Amazon Web Services Region.</p> <p>This API has a call limit of 5 transactions per second (TPS) for each Amazon Web Services account. Exceeding 5 TPS results in a <code>LimitExceededException</code>.</p>",
+      "documentation":"<p>Lists the channels in your account. You can filter the results by source stream. The results are paginated. Use the <code>NextToken</code> value returned in the response to retrieve additional results.</p> <p>Use this operation to find channels before deleting a stream, or to audit the channels configured in an Amazon Web Services Region.</p> <p>This operation has a call limit of 5 transactions per second (TPS) for each Amazon Web Services account. Exceeding 5 TPS results in a <code>LimitExceededException</code>.</p>",
       "readonly":true,
       "staticContextParams":{
         "OperationType":{"value":"control"}
@@ -566,7 +568,8 @@
         {"shape":"KMSOptInRequired"},
         {"shape":"KMSThrottlingException"},
         {"shape":"AccessDeniedException"},
-        {"shape":"InternalFailureException"}
+        {"shape":"InternalFailureException"},
+        {"shape":"DryRunOperationException"}
       ],
       "documentation":"<p>Writes a single data record into an Amazon Kinesis data stream. Call <code>PutRecord</code> to send data into the stream for real-time ingestion and subsequent processing, one record at a time. Each shard can support writes up to 1,000 records per second, up to a maximum data write total of 10 MiB per second.</p> <note> <p>When invoking this API, you must use either the <code>StreamARN</code> or the <code>StreamName</code> parameter, or both. It is recommended that you use the <code>StreamARN</code> input parameter when you invoke this API.</p> </note> <p>You must specify the name of the stream that captures, stores, and transports the data; a partition key; and the data blob itself.</p> <p>The data blob can be any type of data; for example, a segment from a log file, geographic/location data, website clickstream data, and so on.</p> <p>The partition key is used by Kinesis Data Streams to distribute data across shards. Kinesis Data Streams segregates the data records that belong to a stream into multiple shards, using the partition key associated with each data record to determine the shard to which a given data record belongs.</p> <p>Partition keys are Unicode strings, with a maximum length limit of 256 characters for each key. An MD5 hash function is used to map partition keys to 128-bit integer values and to map associated data records to shards using the hash key ranges of the shards. You can override hashing the partition key to determine the shard by explicitly specifying a hash value using the <code>ExplicitHashKey</code> parameter. For more information, see <a href=\"https://docs.aws.amazon.com/kinesis/latest/dev/developing-producers-with-sdk.html#kinesis-using-sdk-java-add-data-to-stream\">Adding Data to a Stream</a> in the <i>Amazon Kinesis Data Streams Developer Guide</i>.</p> <p> <code>PutRecord</code> returns the shard ID of where the data record was placed and the sequence number that was assigned to the data record.</p> <p>Sequence numbers increase over time and are specific to a shard within a stream, not across all shards within a stream. To guarantee strictly increasing ordering, write serially to a shard and use the <code>SequenceNumberForOrdering</code> parameter. For more information, see <a href=\"https://docs.aws.amazon.com/kinesis/latest/dev/developing-producers-with-sdk.html#kinesis-using-sdk-java-add-data-to-stream\">Adding Data to a Stream</a> in the <i>Amazon Kinesis Data Streams Developer Guide</i>.</p> <important> <p>After you write a record to a stream, you cannot modify that record or its order within the stream.</p> </important> <p>If a <code>PutRecord</code> request cannot be processed because of insufficient provisioned throughput on the shard involved in the request, <code>PutRecord</code> throws <code>ProvisionedThroughputExceededException</code>. </p> <p>By default, data records are accessible for 24 hours from the time that they are added to a stream. You can use <a>IncreaseStreamRetentionPeriod</a> or <a>DecreaseStreamRetentionPeriod</a> to modify this retention period.</p>",
       "staticContextParams":{
@@ -592,7 +595,8 @@
         {"shape":"KMSOptInRequired"},
         {"shape":"KMSThrottlingException"},
         {"shape":"AccessDeniedException"},
-        {"shape":"InternalFailureException"}
+        {"shape":"InternalFailureException"},
+        {"shape":"DryRunOperationException"}
       ],
       "documentation":"<p>Writes multiple data records into a Kinesis data stream in a single call (also referred to as a <code>PutRecords</code> request). Use this operation to send data into the stream for data ingestion and processing. </p> <note> <p>When invoking this API, you must use either the <code>StreamARN</code> or the <code>StreamName</code> parameter, or both. It is recommended that you use the <code>StreamARN</code> input parameter when you invoke this API.</p> </note> <p>Each <code>PutRecords</code> request can support up to 500 records. Each record in the request can be as large as 10 MiB, up to a limit of 10 MiB for the entire request, including partition keys. Each shard can support writes up to 1,000 records per second, up to a maximum data write total of 1 MB per second.</p> <p>You must specify the name of the stream that captures, stores, and transports the data; and an array of request <code>Records</code>, with each record in the array requiring a partition key and data blob. The record size limit applies to the total size of the partition key and data blob.</p> <p>The data blob can be any type of data; for example, a segment from a log file, geographic/location data, website clickstream data, and so on.</p> <p>The partition key is used by Kinesis Data Streams as input to a hash function that maps the partition key and associated data to a specific shard. An MD5 hash function is used to map partition keys to 128-bit integer values and to map associated data records to shards. As a result of this hashing mechanism, all data records with the same partition key map to the same shard within the stream. For more information, see <a href=\"https://docs.aws.amazon.com/kinesis/latest/dev/developing-producers-with-sdk.html#kinesis-using-sdk-java-add-data-to-stream\">Adding Data to a Stream</a> in the <i>Amazon Kinesis Data Streams Developer Guide</i>.</p> <p>Each record in the <code>Records</code> array may include an optional parameter, <code>ExplicitHashKey</code>, which overrides the partition key to shard mapping. This parameter allows a data producer to determine explicitly the shard where the record is stored. For more information, see <a href=\"https://docs.aws.amazon.com/kinesis/latest/dev/developing-producers-with-sdk.html#kinesis-using-sdk-java-putrecords\">Adding Multiple Records with PutRecords</a> in the <i>Amazon Kinesis Data Streams Developer Guide</i>.</p> <p>The <code>PutRecords</code> response includes an array of response <code>Records</code>. Each record in the response array directly correlates with a record in the request array using natural ordering, from the top to the bottom of the request and response. The response <code>Records</code> array always includes the same number of records as the request array.</p> <p>The response <code>Records</code> array includes both successfully and unsuccessfully processed records. Kinesis Data Streams attempts to process all records in each <code>PutRecords</code> request. A single record failure does not stop the processing of subsequent records. As a result, PutRecords doesn't guarantee the ordering of records. If you need to read records in the same order they are written to the stream, use <a>PutRecord</a> instead of <code>PutRecords</code>, and write to the same shard.</p> <p>A successfully processed record includes <code>ShardId</code> and <code>SequenceNumber</code> values. The <code>ShardId</code> parameter identifies the shard in the stream where the record is stored. The <code>SequenceNumber</code> parameter is an identifier assigned to the put record, unique to all records in the stream.</p> <p>An unsuccessfully processed record includes <code>ErrorCode</code> and <code>ErrorMessage</code> values. <code>ErrorCode</code> reflects the type of error and can be one of the following values: <code>ProvisionedThroughputExceededException</code> or <code>InternalFailure</code>. <code>ErrorMessage</code> provides more detailed information about the <code>ProvisionedThroughputExceededException</code> exception including the account ID, stream name, and shard ID of the record that was throttled. For more information about partially successful responses, see <a href=\"https://docs.aws.amazon.com/kinesis/latest/dev/kinesis-using-sdk-java-add-data-to-stream.html#kinesis-using-sdk-java-putrecords\">Adding Multiple Records with PutRecords</a> in the <i>Amazon Kinesis Data Streams Developer Guide</i>.</p> <important> <p>After you write a record to a stream, you cannot modify that record or its order within the stream.</p> </important> <p>By default, data records are accessible for 24 hours from the time that they are added to a stream. You can use <a>IncreaseStreamRetentionPeriod</a> or <a>DecreaseStreamRetentionPeriod</a> to modify this retention period.</p>",
       "staticContextParams":{
@@ -733,7 +737,8 @@
         {"shape":"InvalidArgumentException"},
         {"shape":"ResourceInUseException"},
         {"shape":"LimitExceededException"},
-        {"shape":"AccessDeniedException"}
+        {"shape":"AccessDeniedException"},
+        {"shape":"DryRunOperationException"}
       ],
       "documentation":"<p>This operation establishes an HTTP/2 connection between the consumer you specify in the <code>ConsumerARN</code> parameter and the shard you specify in the <code>ShardId</code> parameter. After the connection is successfully established, Kinesis Data Streams pushes records from the shard to the consumer over this connection. Before you call this operation, call <a>RegisterStreamConsumer</a> to register the consumer with Kinesis Data Streams.</p> <p>When the <code>SubscribeToShard</code> call succeeds, your consumer starts receiving events of type <a>SubscribeToShardEvent</a> over the HTTP/2 connection for up to 5 minutes, after which time you need to call <code>SubscribeToShard</code> again to renew the subscription if you want to continue to receive records.</p> <p>You can make one call to <code>SubscribeToShard</code> per second per registered consumer per shard. For example, if you have a 4000 shard stream and two registered stream consumers, you can make one <code>SubscribeToShard</code> request per second for each combination of shard and registered consumer, allowing you to subscribe both consumers to all 4000 shards in one second. </p> <p>If you call <code>SubscribeToShard</code> again with the same <code>ConsumerARN</code> and <code>ShardId</code> within 5 seconds of a successful call, you'll get a <code>ResourceInUseException</code>. If you call <code>SubscribeToShard</code> 5 seconds or more after a successful call, the second call takes over the subscription and the previous connection expires or fails with a <code>ResourceInUseException</code>.</p> <p>For an example of how to use this operation, see <a href=\"https://docs.aws.amazon.com/streams/latest/dev/building-enhanced-consumers-api.html\">Enhanced Fan-Out Using the Kinesis Data Streams API</a>.</p>",
       "staticContextParams":{
@@ -812,7 +817,7 @@
         {"shape":"InvalidArgumentException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Updates the data freshness interval or the Amazon CloudWatch Logs configuration of an existing channel. You cannot change the destination, source stream, record format, schema, encryption configuration, or service execution role of an existing channel. To change any other setting, delete the channel and create a new one.</p> <p>Updating a channel is an asynchronous operation. Upon receiving the request, Amazon Kinesis Data Streams sets the channel to the <code>UPDATING</code> state and returns immediately. After the change is applied, Amazon Kinesis Data Streams sets the channel back to the <code>ACTIVE</code> state.</p> <p>This API has a call limit of 5 transactions per second (TPS) for each Amazon Web Services account. Exceeding 5 TPS results in a <code>LimitExceededException</code>.</p>",
+      "documentation":"<p>Updates the data freshness interval or the Amazon CloudWatch Logs configuration of an existing channel. You cannot change the destination, source stream, record format, schema, encryption configuration, or service execution role of an existing channel. To change any other setting, delete the channel and create a new one.</p> <p>Updating a channel is an asynchronous operation. Upon receiving the request, Amazon Kinesis Data Streams sets the channel to the <code>UPDATING</code> state and returns immediately. After the change is applied, Amazon Kinesis Data Streams sets the channel back to the <code>ACTIVE</code> state.</p> <p>This operation has a call limit of 5 transactions per second (TPS) for each Amazon Web Services account. Exceeding 5 TPS results in a <code>LimitExceededException</code>.</p>",
       "staticContextParams":{
         "OperationType":{"value":"control"}
       }
@@ -978,7 +983,7 @@
         },
         "ChannelStatus":{
           "shape":"ChannelStatus",
-          "documentation":"<p>The current status of the channel. Valid values:</p> <ul> <li> <p> <code>CREATING</code> </p> </li> <li> <p> <code>ACTIVE</code> </p> </li> <li> <p> <code>UPDATING</code> </p> </li> <li> <p> <code>DELETING</code> </p> </li> <li> <p> <code>FAILED</code> - See <code>ChannelStatusReason</code> for the failure cause.</p> </li> </ul>"
+          "documentation":"<p>The current status of the channel. Valid values:</p> <ul> <li> <p> <code>CREATING</code> - The channel is being created.</p> </li> <li> <p> <code>ACTIVE</code> - The channel is ready to deliver records.</p> </li> <li> <p> <code>UPDATING</code> - The channel configuration is being updated.</p> </li> <li> <p> <code>DELETING</code> - The channel is being deleted.</p> </li> <li> <p> <code>FAILED</code> - See <code>ChannelStatusReason</code> for the failure cause.</p> </li> </ul>"
         },
         "ChannelStatusReason":{
           "shape":"ChannelStatusReason",
@@ -1038,7 +1043,7 @@
           "documentation":"<p>The identifier of the customer managed Amazon Web Services KMS key. You cannot use the Amazon Kinesis Data Streams service key (<code>aws/kinesis</code>).</p>"
         }
       },
-      "documentation":"<p>The server-side encryption configuration for a channel.</p>"
+      "documentation":"<p>Specifies the Amazon Web Services KMS key that Amazon Kinesis Data Streams uses to encrypt data delivered to the channel's destination.</p>"
     },
     "ChannelEncryptionType":{
       "type":"string",
@@ -1195,7 +1200,7 @@
         },
         "ChannelStatus":{
           "shape":"ChannelStatus",
-          "documentation":"<p>The current status of the channel. Valid values:</p> <ul> <li> <p> <code>CREATING</code> </p> </li> <li> <p> <code>ACTIVE</code> </p> </li> <li> <p> <code>UPDATING</code> </p> </li> <li> <p> <code>DELETING</code> </p> </li> <li> <p> <code>FAILED</code> - See <code>ChannelStatusReason</code> for the failure cause.</p> </li> </ul>"
+          "documentation":"<p>The current status of the channel. Valid values:</p> <ul> <li> <p> <code>CREATING</code> - The channel is being created.</p> </li> <li> <p> <code>ACTIVE</code> - The channel is ready to deliver records.</p> </li> <li> <p> <code>UPDATING</code> - The channel configuration is being updated.</p> </li> <li> <p> <code>DELETING</code> - The channel is being deleted.</p> </li> <li> <p> <code>FAILED</code> - See <code>ChannelStatusReason</code> for the failure cause.</p> </li> </ul>"
         },
         "ChannelStatusReason":{
           "shape":"ChannelStatusReason",
@@ -1800,6 +1805,14 @@
       },
       "documentation":"<p>Represents the input for <a>DisableEnhancedMonitoring</a>.</p>"
     },
+    "DryRunOperationException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"ErrorMessage"}
+      },
+      "documentation":"<p>The request was rejected because the DryRun parameter was specified.</p>",
+      "exception":true
+    },
     "EnableEnhancedMonitoringInput":{
       "type":"structure",
       "required":["ShardLevelMetrics"],
@@ -1922,6 +1935,10 @@
           "shape":"StreamId",
           "documentation":"<p>Not Implemented. Reserved for future use.</p>",
           "contextParam":{"name":"StreamId"}
+        },
+        "DryRun":{
+          "shape":"BooleanObject",
+          "documentation":"<p>Checks if your request will succeed. <code>DryRun</code> is an optional parameter.</p>"
         }
       },
       "documentation":"<p>Represents the input for <a>GetRecords</a>.</p>"
@@ -2016,6 +2033,10 @@
           "shape":"StreamId",
           "documentation":"<p>Not Implemented. Reserved for future use.</p>",
           "contextParam":{"name":"StreamId"}
+        },
+        "DryRun":{
+          "shape":"BooleanObject",
+          "documentation":"<p>Checks if your request will succeed. <code>DryRun</code> is an optional parameter.</p>"
         }
       },
       "documentation":"<p>Represents the input for <code>GetShardIterator</code>.</p>"
@@ -2673,6 +2694,10 @@
           "shape":"StreamId",
           "documentation":"<p>Not Implemented. Reserved for future use.</p>",
           "contextParam":{"name":"StreamId"}
+        },
+        "DryRun":{
+          "shape":"BooleanObject",
+          "documentation":"<p>Checks if your request will succeed. <code>DryRun</code> is an optional parameter.</p>"
         }
       },
       "documentation":"<p>Represents the input for <code>PutRecord</code>.</p>"
@@ -2720,6 +2745,10 @@
           "shape":"StreamId",
           "documentation":"<p>Not Implemented. Reserved for future use.</p>",
           "contextParam":{"name":"StreamId"}
+        },
+        "DryRun":{
+          "shape":"BooleanObject",
+          "documentation":"<p>Checks if your request will succeed. <code>DryRun</code> is an optional parameter.</p>"
         }
       },
       "documentation":"<p>A <code>PutRecords</code> request.</p>"
@@ -3081,7 +3110,7 @@
         },
         "StorageClass":{
           "shape":"S3StorageClass",
-          "documentation":"<p>The Amazon S3 storage class for delivered objects. Valid values:</p> <ul> <li> <p> <code>STANDARD</code> (default)</p> </li> <li> <p> <code>INTELLIGENT_TIERING</code> </p> </li> <li> <p> <code>GLACIER_IR</code> </p> </li> </ul>"
+          "documentation":"<p>The Amazon S3 storage class for delivered objects. Valid values:</p> <ul> <li> <p> <code>STANDARD</code> - Default storage class for frequently accessed data. (default)</p> </li> <li> <p> <code>INTELLIGENT_TIERING</code> - Automatically moves objects to the most cost-effective access tier based on usage patterns.</p> </li> <li> <p> <code>GLACIER_IR</code> - Low-cost storage for rarely accessed data that requires millisecond retrieval.</p> </li> </ul>"
         },
         "CompressionType":{
           "shape":"S3CompressionType",
@@ -3749,6 +3778,10 @@
         "StartingPosition":{
           "shape":"StartingPosition",
           "documentation":"<p>The starting position in the data stream from which to start streaming.</p>"
+        },
+        "DryRun":{
+          "shape":"BooleanObject",
+          "documentation":"<p>Checks if your request will succeed. <code>DryRun</code> is an optional parameter.</p>"
         }
       }
     },

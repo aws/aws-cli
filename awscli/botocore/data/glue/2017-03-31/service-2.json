@@ -3544,6 +3544,25 @@
       ],
       "documentation":"<p>List integration resource properties for a single customer. It supports the filters, maxRecords and markers.</p>"
     },
+    "ListIntegrationTableProperties":{
+      "name":"ListIntegrationTableProperties",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListIntegrationTablePropertiesRequest"},
+      "output":{"shape":"ListIntegrationTablePropertiesResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"EntityNotFoundException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"InvalidInputException"}
+      ],
+      "documentation":"<p>Lists the integration table properties in your account. This operation supports filtering and pagination.</p>"
+    },
     "ListIterableForms":{
       "name":"ListIterableForms",
       "http":{
@@ -12433,6 +12452,10 @@
         "CreatedRulesetName":{
           "shape":"NameString",
           "documentation":"<p>The name of the ruleset that was created by the recommendation run.</p>"
+        },
+        "RecommendationMode":{
+          "shape":"RecommendationMode",
+          "documentation":"<p>The mode that Glue Data Quality uses to recommend rules.</p> <p>The default is <code>BASIC</code>.</p>"
         }
       },
       "documentation":"<p>Describes the result of a data quality rule recommendation run.</p>"
@@ -16713,7 +16736,7 @@
         },
         "Role":{
           "shape":"RoleString",
-          "documentation":"<p>An IAM role supplied to encrypt the results of the run.</p>"
+          "documentation":"<p>The IAM role that Glue assumes to access resources for the run.</p>"
         },
         "NumberOfWorkers":{
           "shape":"NullableInteger",
@@ -16762,6 +16785,10 @@
         "AdditionalRunOptions":{
           "shape":"DataQualityRuleRecommendationRunAdditionalRunOptions",
           "documentation":"<p>Additional run options you can specify for a recommendation run.</p>"
+        },
+        "RecommendationMode":{
+          "shape":"RecommendationMode",
+          "documentation":"<p>The mode that Glue Data Quality uses to recommend rules.</p> <p>The default is <code>BASIC</code>.</p>"
         }
       },
       "documentation":"<p>The response for the Data Quality rule recommendation run.</p>"
@@ -20456,6 +20483,58 @@
       ]
     },
     "IntegrationString":{"type":"string"},
+    "IntegrationTableProperties":{
+      "type":"structure",
+      "required":[
+        "ResourceArn",
+        "TableName"
+      ],
+      "members":{
+        "ResourceArn":{
+          "shape":"String512",
+          "documentation":"<p>The connection ARN of the source, or the database ARN of the target.</p>"
+        },
+        "TableName":{
+          "shape":"String128",
+          "documentation":"<p>The name of the source table to be replicated.</p>"
+        },
+        "SourceTableConfig":{
+          "shape":"SourceTableConfig",
+          "documentation":"<p>A structure for the source table configuration.</p>"
+        },
+        "TargetTableConfig":{
+          "shape":"TargetTableConfig",
+          "documentation":"<p>A structure for the target table configuration.</p>"
+        }
+      },
+      "documentation":"<p>The properties of a single integration table, including the resource ARN, the table name, and the source or target table configuration.</p>"
+    },
+    "IntegrationTablePropertiesFilter":{
+      "type":"structure",
+      "members":{
+        "Name":{
+          "shape":"String128",
+          "documentation":"<p>The name of the filter. Supported filter keys are <code>SourceArn</code>, <code>TargetArn</code>, <code>SourceTableName</code>, and <code>TargetTableName</code>.</p>"
+        },
+        "Values":{
+          "shape":"IntegrationTablePropertiesFilterValues",
+          "documentation":"<p>A list of filter values.</p>"
+        }
+      },
+      "documentation":"<p>A key-value filter used to narrow the list of integration table properties returned by ListIntegrationTableProperties. Specify a filter key and one or more values to match.</p>"
+    },
+    "IntegrationTablePropertiesFilterList":{
+      "type":"list",
+      "member":{"shape":"IntegrationTablePropertiesFilter"}
+    },
+    "IntegrationTablePropertiesFilterValues":{
+      "type":"list",
+      "member":{"shape":"String128"}
+    },
+    "IntegrationTablePropertiesList":{
+      "type":"list",
+      "member":{"shape":"IntegrationTableProperties"}
+    },
     "IntegrationTagsList":{
       "type":"list",
       "member":{"shape":"Tag"}
@@ -22400,7 +22479,7 @@
       "type":"structure",
       "members":{
         "Marker":{
-          "shape":"String1024",
+          "shape":"String4096",
           "documentation":"<p>This is the pagination token for next page, initial value is <code>null</code>.</p>"
         },
         "Filters":{
@@ -22421,8 +22500,38 @@
           "documentation":"<p>A list of integration resource property meeting the filter criteria.</p>"
         },
         "Marker":{
-          "shape":"String1024",
+          "shape":"String4096",
           "documentation":"<p>This is the pagination token for the next page.</p>"
+        }
+      }
+    },
+    "ListIntegrationTablePropertiesRequest":{
+      "type":"structure",
+      "members":{
+        "Marker":{
+          "shape":"String4096",
+          "documentation":"<p>The pagination token for the next page of results. The initial value is <code>null</code>.</p>"
+        },
+        "Filters":{
+          "shape":"IntegrationTablePropertiesFilterList",
+          "documentation":"<p>A list of filters. Supported filter keys are <code>SourceArn</code>, <code>TargetArn</code>, <code>SourceTableName</code>, and <code>TargetTableName</code>.</p>"
+        },
+        "MaxRecords":{
+          "shape":"IntegrationInteger",
+          "documentation":"<p>The maximum number of records to return in the response.</p>"
+        }
+      }
+    },
+    "ListIntegrationTablePropertiesResponse":{
+      "type":"structure",
+      "members":{
+        "IntegrationTablePropertiesList":{
+          "shape":"IntegrationTablePropertiesList",
+          "documentation":"<p>A list of integration table properties meeting the filter criteria.</p>"
+        },
+        "Marker":{
+          "shape":"String4096",
+          "documentation":"<p>The pagination token for the next page. Returns <code>null</code> if there are no more results.</p>"
         }
       }
     },
@@ -25518,6 +25627,14 @@
       "type":"string",
       "max":16,
       "min":1
+    },
+    "RecommendationMode":{
+      "type":"string",
+      "documentation":"<p>Specifies the mode for how Glue Data Quality recommends rules.</p> <ul> <li> <p> <code>BASIC</code> uses an Glue job to analyze table data and recommend rules. This value is the default.</p> </li> <li> <p> <code>ADVANCED</code> uses Amazon Athena to analyze table data and Amazon Bedrock to recommend rules.</p> </li> </ul>",
+      "enum":[
+        "BASIC",
+        "ADVANCED"
+      ]
     },
     "Record":{
       "type":"structure",
@@ -28805,7 +28922,7 @@
         },
         "Role":{
           "shape":"RoleString",
-          "documentation":"<p>An IAM role supplied to encrypt the results of the run.</p>"
+          "documentation":"<p>The IAM role that Glue assumes to access resources for the run.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/glue/latest/dg/data-quality-authorization.html\">Configure IAM permissions for Glue Data Quality</a>.</p>"
         },
         "NumberOfWorkers":{
           "shape":"NullableInteger",
@@ -28830,6 +28947,10 @@
         "AdditionalRunOptions":{
           "shape":"DataQualityRuleRecommendationRunAdditionalRunOptions",
           "documentation":"<p>Additional run options you can specify for a recommendation run.</p>"
+        },
+        "RecommendationMode":{
+          "shape":"RecommendationMode",
+          "documentation":"<p>The mode that Glue Data Quality uses to recommend rules.</p> <p>The default is <code>BASIC</code>.</p>"
         }
       },
       "documentation":"<p>The request of the Data Quality rule recommendation request.</p>"
@@ -29638,11 +29759,6 @@
       "documentation":"<p>Specifies options related to data preview for viewing a sample of your data.</p>"
     },
     "String":{"type":"string"},
-    "String1024":{
-      "type":"string",
-      "max":1024,
-      "min":1
-    },
     "String128":{
       "type":"string",
       "max":128,
@@ -29651,6 +29767,11 @@
     "String2048":{
       "type":"string",
       "max":2048,
+      "min":1
+    },
+    "String4096":{
+      "type":"string",
+      "max":4096,
       "min":1
     },
     "String512":{
@@ -30298,6 +30419,10 @@
         "TargetTableName":{
           "shape":"String128",
           "documentation":"<p>The optional name of a target table.</p>"
+        },
+        "IntegrationArn":{
+          "shape":"String128",
+          "documentation":"<p>The ARN of the integration that owns this target table configuration.</p>"
         }
       },
       "documentation":"<p>Properties used by the target leg to partition the data on the target.</p>"

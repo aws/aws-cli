@@ -2133,6 +2133,23 @@
       ],
       "documentation":"<p>Gets operations for a specific resource (an instance or a static IP).</p>"
     },
+    "GetProfile":{
+      "name":"GetProfile",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetProfileRequest"},
+      "output":{"shape":"GetProfileResult"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"AccountSetupInProgressException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"ServiceException"},
+        {"shape":"UnauthenticatedException"}
+      ],
+      "documentation":"<p>Returns information about the profile of the Amazon Lightsail account that makes the request. The response includes the profile type and, for accounts enrolled in the Lightsail partner program, the partner membership details.</p>"
+    },
     "GetRegions":{
       "name":"GetRegions",
       "http":{
@@ -5401,6 +5418,18 @@
         "viewerMinimumTlsProtocolVersion":{
           "shape":"ViewerMinimumTlsProtocolVersionEnum",
           "documentation":"<p>The minimum TLS protocol version for the SSL/TLS certificate.</p>"
+        },
+        "enablePrivateOriginAccess":{
+          "shape":"boolean",
+          "documentation":"<p>Specifies whether to enable private origin access for the distribution. With private origin access, the distribution can serve objects that aren't publicly accessible from a Lightsail bucket.</p> <p>Lightsail grants the distribution permission to read the bucket's objects. Enabling private origin access doesn't change the bucket's access settings, and you can still retrieve publicly accessible objects directly from the bucket's endpoint.</p> <note> <p>You can enable private origin access only when the distribution's origin is a Lightsail bucket. If the origin is another resource type, the request fails.</p> </note>"
+        },
+        "defaultRootObject":{
+          "shape":"string",
+          "documentation":"<p>The object (for example, <code>index.html</code>) that the distribution returns when a viewer requests the root URL of the distribution (<code>/</code>) instead of a specific object. The object that you specify must be available from the origin.</p>"
+        },
+        "customErrorResponses":{
+          "shape":"DistributionCustomErrorResponseList",
+          "documentation":"<p>An array of objects that describe the custom error responses for the distribution. With a custom error response, you can specify the page to return when the origin responds with a given HTTP error code. You can also specify the HTTP status code to send to the viewer.</p>"
         }
       }
     },
@@ -6771,6 +6800,32 @@
     "DistributionBundleList":{
       "type":"list",
       "member":{"shape":"DistributionBundle"}
+    },
+    "DistributionCustomErrorResponse":{
+      "type":"structure",
+      "members":{
+        "errorCode":{
+          "shape":"integer",
+          "documentation":"<p>The HTTP error code from the origin that triggers the custom error response (for example, <code>403</code> or <code>404</code>).</p>"
+        },
+        "responseCode":{
+          "shape":"string",
+          "documentation":"<p>The HTTP status code that the distribution returns to the viewer for the custom error response.</p>"
+        },
+        "responsePagePath":{
+          "shape":"string",
+          "documentation":"<p>The path to the custom error page that the distribution returns to the viewer (for example, <code>/404.html</code>). The path must begin with a forward slash (<code>/</code>) and reference an object that is available from the origin.</p>"
+        },
+        "errorCachingMinTTL":{
+          "shape":"long",
+          "documentation":"<p>The minimum time, in seconds, that the distribution caches the custom error response before requesting the object again from the origin. If you don't specify a value, the default is <code>10</code> seconds.</p>"
+        }
+      },
+      "documentation":"<p>Describes a custom error response for a Lightsail distribution. A custom error response specifies the page that the distribution returns to the viewer. It also specifies the HTTP status code that the distribution sends when the origin responds with a given HTTP error code.</p>"
+    },
+    "DistributionCustomErrorResponseList":{
+      "type":"list",
+      "member":{"shape":"DistributionCustomErrorResponse"}
     },
     "DistributionList":{
       "type":"list",
@@ -8411,6 +8466,24 @@
         }
       }
     },
+    "GetProfileRequest":{
+      "type":"structure",
+      "members":{}
+    },
+    "GetProfileResult":{
+      "type":"structure",
+      "required":["profileType"],
+      "members":{
+        "profileType":{
+          "shape":"ProfileType",
+          "documentation":"<p>The type of the profile.</p> <p>The following profile types are possible:</p> <ul> <li> <p> <code>Lightsailor</code> – The account is not enrolled in the Lightsail partner program.</p> </li> <li> <p> <code>LightsailPartner</code> – The account is enrolled in the Lightsail partner program.</p> </li> </ul>"
+        },
+        "partner":{
+          "shape":"PartnerInfo",
+          "documentation":"<p>An object that describes the partner membership of the account, such as the tier of the membership, its status, and when the account was enrolled.</p> <p>This parameter is returned only for accounts that have a <code>profileType</code> of <code>LightsailPartner</code>.</p>"
+        }
+      }
+    },
     "GetRegionsRequest":{
       "type":"structure",
       "members":{
@@ -9705,6 +9778,14 @@
         "viewerMinimumTlsProtocolVersion":{
           "shape":"string",
           "documentation":"<p>The minimum TLS protocol version that the distribution can use to communicate with viewers.</p>"
+        },
+        "defaultRootObject":{
+          "shape":"string",
+          "documentation":"<p>The object (for example, <code>index.html</code>) that the distribution returns when a viewer requests the root URL of the distribution (<code>/</code>) instead of a specific object.</p>"
+        },
+        "customErrorResponses":{
+          "shape":"DistributionCustomErrorResponseList",
+          "documentation":"<p>An array of objects that describe the custom error responses configured for the distribution.</p>"
         }
       },
       "documentation":"<p>Describes an Amazon Lightsail content delivery network (CDN) distribution.</p>"
@@ -10227,6 +10308,8 @@
         "FreeStorageSpace",
         "NetworkReceiveThroughput",
         "NetworkTransmitThroughput",
+        "FreeableMemory",
+        "SwapUsage",
         "BurstCapacityTime",
         "BurstCapacityPercentage"
       ]
@@ -10552,7 +10635,8 @@
         "UpdateInstanceMetadataOptions",
         "StartGUISession",
         "StopGUISession",
-        "SetupInstanceHttps"
+        "SetupInstanceHttps",
+        "GetProfile"
       ]
     },
     "Origin":{
@@ -10581,6 +10665,10 @@
         "ipAddressType":{
           "shape":"OriginIpAddressTypeEnum",
           "documentation":"<p>The IP address type that the distribution uses when connecting to the origin.</p> <p>The possible values are <code>ipv4</code> for IPv4 only, <code>ipv6</code> for IPv6 only, and <code>dualstack</code> for IPv4 and IPv6.</p>"
+        },
+        "isPrivateOriginAccessEnabled":{
+          "shape":"boolean",
+          "documentation":"<p>Specifies whether private origin access is enabled for the distribution's origin. With private origin access, the distribution can serve objects that aren't publicly accessible from a Lightsail bucket.</p> <p>This applies when you set the bucket's <code>getObject</code> access rule to <code>private</code>. It also applies when you set <code>getObject</code> to <code>public</code> but set individual objects to private.</p>"
         }
       },
       "documentation":"<p>Describes the origin resource of an Amazon Lightsail content delivery network (CDN) distribution.</p> <p>An origin can be a Lightsail instance, bucket, or load balancer. A distribution pulls content from an origin, caches it, and serves it to viewers via a worldwide network of edge servers.</p>"
@@ -10604,6 +10692,35 @@
       "type":"list",
       "member":{"shape":"NonEmptyString"},
       "max":10
+    },
+    "PartnerInfo":{
+      "type":"structure",
+      "required":[
+        "enrolledAt",
+        "status"
+      ],
+      "members":{
+        "enrolledAt":{
+          "shape":"IsoDate",
+          "documentation":"<p>The timestamp when the account was enrolled in the Lightsail partner program.</p>"
+        },
+        "tierName":{
+          "shape":"TierName",
+          "documentation":"<p>The tier of the partner membership.</p>"
+        },
+        "status":{
+          "shape":"PartnerStatus",
+          "documentation":"<p>The status of the partner membership.</p> <p>The following statuses are possible:</p> <ul> <li> <p> <code>Active</code> – The membership is active, and the benefits of the current tier are available to the account.</p> </li> <li> <p> <code>Suspended</code> – The membership is suspended, and the benefits of the tier are not available to the account.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>An object that contains information about the Lightsail partner program membership of an Amazon Lightsail account.</p>"
+    },
+    "PartnerStatus":{
+      "type":"string",
+      "enum":[
+        "Active",
+        "Suspended"
+      ]
     },
     "PasswordData":{
       "type":"structure",
@@ -10772,6 +10889,13 @@
         }
       },
       "documentation":"<p>Describes a request to configure an Amazon Lightsail container service to access private container image repositories, such as Amazon Elastic Container Registry (Amazon ECR) private repositories.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-container-service-ecr-private-repo-access\">Configuring access to an Amazon ECR private repository for an Amazon Lightsail container service</a> in the <i>Amazon Lightsail Developer Guide</i>.</p>"
+    },
+    "ProfileType":{
+      "type":"string",
+      "enum":[
+        "Lightsailor",
+        "LightsailPartner"
+      ]
     },
     "PutAlarmRequest":{
       "type":"structure",
@@ -11337,7 +11461,9 @@
         "DiskQueueDepth",
         "FreeStorageSpace",
         "NetworkReceiveThroughput",
-        "NetworkTransmitThroughput"
+        "NetworkTransmitThroughput",
+        "FreeableMemory",
+        "SwapUsage"
       ]
     },
     "RelationalDatabaseParameter":{
@@ -12252,6 +12378,15 @@
         }
       }
     },
+    "TierName":{
+      "type":"string",
+      "enum":[
+        "Essential",
+        "Growth",
+        "Accelerate",
+        "Premier"
+      ]
+    },
     "TimeOfDay":{
       "type":"string",
       "pattern":"^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$"
@@ -12502,6 +12637,18 @@
         "useDefaultCertificate":{
           "shape":"boolean",
           "documentation":"<p>Indicates whether the default SSL/TLS certificate is attached to the distribution. The default value is <code>true</code>. When <code>true</code>, the distribution uses the default domain name such as <code>d111111abcdef8.cloudfront.net</code>.</p> <p> Set this value to <code>false</code> to attach a new certificate to the distribution.</p>"
+        },
+        "enablePrivateOriginAccess":{
+          "shape":"boolean",
+          "documentation":"<p>Specifies whether to enable private origin access for the distribution. With private origin access, the distribution can serve objects that aren't publicly accessible from a Lightsail bucket.</p> <p>Lightsail grants the distribution permission to read the bucket's objects. Enabling private origin access doesn't change the bucket's access settings, and you can still retrieve publicly accessible objects directly from the bucket's endpoint.</p> <note> <p>When you include this parameter, you must also include the <code>origin</code> parameter with the resource name, even if the origin is not changing.</p> <p>You can enable private origin access only when the distribution's origin is a Lightsail bucket. If the origin is another resource type, the request fails.</p> </note>"
+        },
+        "defaultRootObject":{
+          "shape":"string",
+          "documentation":"<p>The object (for example, <code>index.html</code>) that the distribution returns when a viewer requests the root URL of the distribution (<code>/</code>) instead of a specific object. The object that you specify must be available from the origin.</p>"
+        },
+        "customErrorResponses":{
+          "shape":"DistributionCustomErrorResponseList",
+          "documentation":"<p>An array of objects that describe the custom error responses for the distribution. With a custom error response, you can specify the page to return when the origin responds with a given HTTP error code. You can also specify the HTTP status code to send to the viewer.</p>"
         }
       }
     },

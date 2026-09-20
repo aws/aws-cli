@@ -3417,7 +3417,7 @@
       },
       "input":{"shape":"DescribeInstanceCreditSpecificationsRequest"},
       "output":{"shape":"DescribeInstanceCreditSpecificationsResult"},
-      "documentation":"<p>Describes the credit option for CPU usage of the specified burstable performance instances. The credit options are <code>standard</code> and <code>unlimited</code>.</p> <p>If you do not specify an instance ID, Amazon EC2 returns burstable performance instances with the <code>unlimited</code> credit option, as well as instances that were previously configured as T2, T3, and T3a with the <code>unlimited</code> credit option. For example, if you resize a T2 instance, while it is configured as <code>unlimited</code>, to an M4 instance, Amazon EC2 returns the M4 instance.</p> <p>If you specify one or more instance IDs, Amazon EC2 returns the credit option (<code>standard</code> or <code>unlimited</code>) of those instances. If you specify an instance ID that is not valid, such as an instance that is not a burstable performance instance, an error is returned.</p> <p>Recently terminated instances might appear in the returned results. This interval is usually less than one hour.</p> <p>If an Availability Zone is experiencing a service disruption and you specify instance IDs in the affected zone, or do not specify any instance IDs at all, the call fails. If you specify only instance IDs in an unaffected zone, the call works normally.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/burstable-performance-instances.html\">Burstable performance instances</a> in the <i>Amazon EC2 User Guide</i>.</p>"
+      "documentation":"<p>Describes the credit option for CPU usage of the specified burstable performance instances. The credit options are <code>standard</code> and <code>unlimited</code>.</p> <p>If you do not specify an instance ID, Amazon EC2 returns burstable performance instances with the <code>unlimited</code> credit option, as well as instances that were previously configured as T2, T3, and T3a with the <code>unlimited</code> credit option. For example, if you resize a T2 instance, while it is configured as <code>unlimited</code>, to an M4 instance, Amazon EC2 returns the M4 instance.</p> <p>If you specify one or more instance IDs, Amazon EC2 returns the credit option (<code>standard</code> or <code>unlimited</code>) of those instances. If you specify an instance ID that is not a burstable performance instance, Amazon EC2 returns the <code>standard</code> credit option.</p> <p>Recently terminated instances might appear in the returned results. This interval is usually less than one hour.</p> <p>If an Availability Zone is experiencing a service disruption and you specify instance IDs in the affected zone, or do not specify any instance IDs at all, the call fails. If you specify only instance IDs in an unaffected zone, the call works normally.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/burstable-performance-instances.html\">Burstable performance instances</a> in the <i>Amazon EC2 User Guide</i>.</p>"
     },
     "DescribeInstanceEventNotificationAttributes":{
       "name":"DescribeInstanceEventNotificationAttributes",
@@ -7961,6 +7961,16 @@
       "output":{"shape":"UpdateSecurityGroupRuleDescriptionsIngressResult"},
       "documentation":"<p>Updates the description of an ingress (inbound) security group rule. You can replace an existing description, or add a description to a rule that did not have one previously. You can remove a description for a security group rule by omitting the description parameter in the request.</p>"
     },
+    "ValidateSecurityGroupQuotasForInterface":{
+      "name":"ValidateSecurityGroupQuotasForInterface",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ValidateSecurityGroupQuotasForInterfaceRequest"},
+      "output":{"shape":"ValidateSecurityGroupQuotasForInterfaceResult"},
+      "documentation":"<p>Validates whether the specified security groups can be associated with a single network interface. The operation checks Amazon Virtual Private Cloud (Amazon VPC) quotas. It checks inbound or outbound rules per security group and security groups per network interface. Only authorized Amazon Web Services services can call this operation.</p> <p>For more information about security group quotas, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/amazon-vpc-limits.html#vpc-limits-security-groups\">Amazon VPC quotas</a> in the <i>Amazon VPC User Guide</i>.</p>"
+    },
     "WithdrawByoipCidr":{
       "name":"WithdrawByoipCidr",
       "http":{
@@ -12359,6 +12369,10 @@
       "documentation":"<p>The state of VPC Block Public Access (BPA).</p>"
     },
     "Boolean":{"type":"boolean"},
+    "BootModeOverrideValues":{
+      "type":"string",
+      "enum":["uefi"]
+    },
     "BootModeType":{
       "type":"string",
       "enum":[
@@ -13970,6 +13984,11 @@
           "shape":"InterruptionInfo",
           "documentation":"<p> Information about the interruption configuration and association with the source reservation for interruptible Capacity Reservations. </p>",
           "locationName":"interruptionInfo"
+        },
+        "ZeroSizePreference":{
+          "shape":"ZeroSizePreference",
+          "documentation":"<p> The zero-size preference configured for the interruptible Capacity Reservation. A value of <code>retain</code> keeps the interruptible Capacity Reservation active at zero capacity when you reduce its allocation to zero. A value of <code>default</code> cancels the interruptible Capacity Reservation when you reduce its allocation to zero. </p>",
+          "locationName":"zeroSizePreference"
         }
       },
       "documentation":"<p>Describes a Capacity Reservation.</p>"
@@ -16192,6 +16211,14 @@
           "shape":"String",
           "documentation":"<p>Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. For more information, see <a href=\"https://docs.aws.amazon.com/ec2/latest/devguide/ec2-api-idempotency.html\"> Ensure Idempotency</a>.</p>",
           "idempotencyToken":true
+        },
+        "Encrypted":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether to encrypt the volume copy. If the source volume is encrypted, the service always encrypts the copy regardless of this value. Set to <code>true</code> to encrypt a copy of an unencrypted source volume during the copy operation. If you set <code>Encrypted</code> to <code>true</code> but do not specify <code>KmsKeyId</code>, the service uses the default KMS key for EBS encryption in your account.</p>"
+        },
+        "KmsKeyId":{
+          "shape":"KmsKeyId",
+          "documentation":"<p>The identifier of the KMS key to use for encryption of the volume copy. Specify a symmetric encryption KMS key. You can specify a KMS key using the key ID, key ARN, alias name, or alias ARN. If you set <code>Encrypted</code> to <code>true</code> but do not specify this parameter, the service uses the default KMS key for EBS encryption in your account. For cross-account volume copies, this must be a KMS key in the calling account.</p>"
         }
       }
     },
@@ -17542,6 +17569,10 @@
           "shape":"SnapshotLocationEnum",
           "documentation":"<note> <p>Only supported for instances in Local Zones and for instances on Outposts that support local snapshots. If the source instance is not in one of these locations, omit this parameter.</p> </note> <p>The Amazon S3 location where the snapshots will be stored.</p> <ul> <li> <p>To create local snapshots in the same Local Zone or on the same Outpost as the source instance, specify <code>local</code>.</p> </li> <li> <p>To create regional snapshots in the parent Region of the Local Zone or Outpost, specify <code>regional</code>.</p> </li> </ul> <p>If the source instance is in a Local Zone and you omit this parameter, regional snapshots are created in the parent Region of the Local Zone.</p> <p>If the source instance is on an Outpost that supports local snapshots, this parameter is required. If you omit it, the request fails with an <code>InvalidParameterValue</code> error.</p> <p>Default: <code>regional</code> (for instances in Local Zones only)</p>"
         },
+        "BootModeOverride":{
+          "shape":"BootModeOverrideValues",
+          "documentation":"<p>The boot mode of the new image, which overrides the default boot mode. By default, if you do not specify this parameter, the new image inherits the <code>boot-mode</code> from the source instance.</p> <p>A value of <code>uefi</code> indicates that the image only supports UEFI boot mode. You can specify this parameter only if the <code>current-instance-boot-mode</code> of the source instance is <code>uefi</code>. To find the <code>boot-mode</code> or <code>current-instance-boot-mode</code> of an instance, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_DescribeInstances.html\">DescribeInstances</a>.</p> <note> <p>The operating system contained in the AMI must be configured to support the specified boot mode.</p> </note> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ami-boot.html\">Instance launch behavior with Amazon EC2 boot modes</a> in the <i>Amazon EC2 User Guide</i>.</p>"
+        },
         "DryRun":{
           "shape":"Boolean",
           "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>",
@@ -17823,6 +17854,10 @@
           "shape":"TagSpecificationList",
           "documentation":"<p> The tags to apply to the interruptible Capacity Reservation during creation. </p>",
           "locationName":"TagSpecification"
+        },
+        "ZeroSizePreference":{
+          "shape":"ZeroSizePreference",
+          "documentation":"<p> Specifies the behavior for the interruptible Capacity Reservation when you reduce its allocation to zero instances. Specify <code>retain</code> to keep the interruptible Capacity Reservation active at zero capacity so that you can allocate instances to it again later. Specify <code>default</code> to cancel the interruptible Capacity Reservation and return the capacity to your source Capacity Reservation. The default value is <code>default</code>. </p>"
         }
       }
     },
@@ -27399,12 +27434,12 @@
         },
         "ErrorCode":{
           "shape":"String",
-          "documentation":"<p>The error code that indicates why the instance could not be launched. For more information about error codes, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/errors-overview.html.html\">Error codes</a>.</p>",
+          "documentation":"<p>The error code that indicates why the instance could not be launched. For more information about error codes, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/errors-overview.html\">Error codes</a>.</p>",
           "locationName":"errorCode"
         },
         "ErrorMessage":{
           "shape":"String",
-          "documentation":"<p>The error message that describes why the instance could not be launched. For more information about error messages, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/errors-overview.html.html\">Error codes</a>.</p>",
+          "documentation":"<p>The error message that describes why the instance could not be launched. For more information about error messages, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/errors-overview.html\">Error codes</a>.</p>",
           "locationName":"errorMessage"
         }
       },
@@ -48472,7 +48507,7 @@
         },
         "ApplicationStatus":{
           "shape":"ApplicationStatusSummary",
-          "documentation":"<p>Reports impaired functionality that stems from issues with applications running on the instance.</p>",
+          "documentation":"<p>Reports the application-level health status for the instance.</p>",
           "locationName":"applicationStatus"
         }
       },
@@ -50077,7 +50112,30 @@
         "c9gd.16xlarge",
         "c9gd.24xlarge",
         "c9gd.48xlarge",
-        "c9gd.metal-48xl"
+        "c9gd.metal-48xl",
+        "r9g.medium",
+        "r9g.large",
+        "r9g.xlarge",
+        "r9g.2xlarge",
+        "r9g.4xlarge",
+        "r9g.8xlarge",
+        "r9g.12xlarge",
+        "r9g.16xlarge",
+        "r9g.24xlarge",
+        "r9g.48xlarge",
+        "r9g.metal-48xl",
+        "r9gd.medium",
+        "r9gd.large",
+        "r9gd.xlarge",
+        "r9gd.2xlarge",
+        "r9gd.4xlarge",
+        "r9gd.8xlarge",
+        "r9gd.12xlarge",
+        "r9gd.16xlarge",
+        "r9gd.24xlarge",
+        "r9gd.48xlarge",
+        "r9gd.metal-48xl",
+        "m9g.medium"
       ]
     },
     "InstanceTypeHypervisor":{
@@ -50530,6 +50588,11 @@
           "shape":"InterruptionType",
           "documentation":"<p> The type of interruption policy applied to the interruptible reservation. </p>",
           "locationName":"interruptionType"
+        },
+        "ZeroSizePreference":{
+          "shape":"ZeroSizePreference",
+          "documentation":"<p> Specifies how Amazon EC2 handles the interruptible Capacity Reservation when you reduce its allocation to zero instances. A value of <code>retain</code> keeps the interruptible Capacity Reservation active at zero capacity so that you can allocate instances to it again later. A value of <code>default</code> cancels the interruptible Capacity Reservation and returns the capacity to your source Capacity Reservation. </p>",
+          "locationName":"zeroSizePreference"
         }
       },
       "documentation":"<p> Represents the allocation of capacity from a source reservation to an interruptible reservation, tracking current and target instance counts for allocation management. </p>"
@@ -51384,6 +51447,11 @@
           "shape":"IpamInternetRegistryAssociationState",
           "documentation":"<p>The state of the internet registry association. Valid values: <code>pending-activation</code> | <code>pending-enable</code> | <code>create-in-progress</code> | <code>create-failed</code> | <code>enable-in-progress</code> | <code>enable-complete</code> | <code>enable-failed</code> | <code>delete-in-progress</code> | <code>delete-complete</code> | <code>delete-failed</code>.</p>",
           "locationName":"state"
+        },
+        "StateMessage":{
+          "shape":"String",
+          "documentation":"<p>A message describing the current state of the internet registry association, including additional details such as the reason for a failure.</p>",
+          "locationName":"stateMessage"
         },
         "ChildRequestXml":{
           "shape":"String",
@@ -61591,6 +61659,11 @@
           "shape":"MaximumEnaQueueCountPerInterface",
           "documentation":"<p>The maximum number of the ENA queues for each interface.</p>",
           "locationName":"maximumEnaQueueCountPerInterface"
+        },
+        "InterfaceTypes":{
+          "shape":"NetworkCardInterfaceTypeList",
+          "documentation":"<p>The supported interface types for the network card.</p>",
+          "locationName":"interfaceTypeSet"
         }
       },
       "documentation":"<p>Describes the network card support of the instance type.</p>"
@@ -61599,6 +61672,22 @@
       "type":"list",
       "member":{
         "shape":"NetworkCardInfo",
+        "locationName":"item"
+      }
+    },
+    "NetworkCardInterfaceType":{
+      "type":"string",
+      "enum":[
+        "interface",
+        "efa",
+        "efa-only",
+        "secondary"
+      ]
+    },
+    "NetworkCardInterfaceTypeList":{
+      "type":"list",
+      "member":{
+        "shape":"NetworkCardInterfaceType",
         "locationName":"item"
       }
     },
@@ -63321,7 +63410,10 @@
     },
     "PayerResponsibilityScope":{
       "type":"string",
-      "enum":["vpc-endpoint-charges"]
+      "enum":[
+        "vpc-endpoint-charges",
+        "resource-gateway-charges"
+      ]
     },
     "PayerResponsibilitySet":{
       "type":"list",
@@ -63334,6 +63426,7 @@
       "type":"string",
       "enum":[
         "vpc-endpoint-account",
+        "resource-gateway-account",
         "vpc-endpoint-service-account"
       ]
     },
@@ -71004,9 +71097,11 @@
       "members":{
         "Value":{
           "shape":"SecureBlob",
+          "documentation":"<p>The attribute value.</p>",
           "locationName":"value"
         }
-      }
+      },
+      "documentation":"<p>Describes a value for a resource attribute that is a Base64-encoded binary data object.</p>"
     },
     "SecurityGroup":{
       "type":"structure",
@@ -77499,7 +77594,8 @@
         "t2",
         "t3",
         "t3a",
-        "t4g"
+        "t4g",
+        "t8i"
       ]
     },
     "UnlockSnapshotRequest":{
@@ -77798,10 +77894,7 @@
     },
     "UpdateInterruptibleCapacityReservationAllocationRequest":{
       "type":"structure",
-      "required":[
-        "CapacityReservationId",
-        "TargetInstanceCount"
-      ],
+      "required":["CapacityReservationId"],
       "members":{
         "CapacityReservationId":{
           "shape":"CapacityReservationId",
@@ -77814,6 +77907,10 @@
         "DryRun":{
           "shape":"Boolean",
           "documentation":"<p> Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. </p>"
+        },
+        "ZeroSizePreference":{
+          "shape":"ZeroSizePreference",
+          "documentation":"<p> Specifies the updated behavior for the interruptible Capacity Reservation when you reduce its allocation to zero instances. Specify <code>retain</code> to keep the interruptible Capacity Reservation active at zero capacity so that you can allocate instances to it again later. Specify <code>default</code> to cancel the interruptible Capacity Reservation and return the capacity to your source Capacity Reservation. </p>"
         }
       }
     },
@@ -78126,6 +78223,31 @@
         }
       },
       "documentation":"<p>Describes the vCPU configurations for the instance type.</p>"
+    },
+    "ValidateSecurityGroupQuotasForInterfaceRequest":{
+      "type":"structure",
+      "required":["SecurityGroupIds"],
+      "members":{
+        "SecurityGroupIds":{
+          "shape":"SecurityGroupIdList",
+          "documentation":"<p>The IDs of the security groups to validate for association with a single network interface. You must specify at least one ID, and each ID must be unique. The number of IDs cannot exceed the maximum number of security groups allowed per network interface.</p>",
+          "locationName":"SecurityGroupId"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "ValidateSecurityGroupQuotasForInterfaceResult":{
+      "type":"structure",
+      "members":{
+        "Valid":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether the specified security groups can be associated with a single network interface without exceeding the quotas. If associating the security groups would exceed a quota, the operation returns an error.</p>",
+          "locationName":"valid"
+        }
+      }
     },
     "ValidationError":{
       "type":"structure",
@@ -79296,6 +79418,16 @@
           "shape":"Integer",
           "documentation":"<p>The Amazon EBS Provisioned Rate for Volume Initialization (volume initialization rate) specified for the volume during creation, in MiB/s. If no volume initialization rate was specified, the value is <code>null</code>.</p>",
           "locationName":"volumeInitializationRate"
+        },
+        "VolumeArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the volume.</p>",
+          "locationName":"volumeArn"
+        },
+        "OwnerId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the Amazon Web Services account that owns the volume.</p>",
+          "locationName":"ownerId"
         },
         "VolumeId":{
           "shape":"String",
@@ -80782,7 +80914,8 @@
         "Gateway",
         "GatewayLoadBalancer",
         "Resource",
-        "ServiceNetwork"
+        "ServiceNetwork",
+        "Tunnel"
       ]
     },
     "VpcFlowLogId":{"type":"string"},
@@ -81600,6 +81733,13 @@
         "shape":"Workload",
         "locationName":"item"
       }
+    },
+    "ZeroSizePreference":{
+      "type":"string",
+      "enum":[
+        "retain",
+        "default"
+      ]
     },
     "ZoneIdStringList":{
       "type":"list",

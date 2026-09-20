@@ -44,24 +44,26 @@ def enhance_error_msg(parsed, **kwargs):
         message += REGION_ERROR_MSG
         parsed['Error']['Message'] = message
     elif _is_permanent_redirect_message(parsed):
-        endpoint = parsed['Error']['Endpoint']
-        message = parsed['Error']['Message']
+        endpoint = parsed['Error'].get('Endpoint', '')
+        message = parsed['Error'].get('Message') or ''
         new_message = message[:-1] + ': %s\n' % endpoint
         new_message += REGION_ERROR_MSG
         parsed['Error']['Message'] = new_message
     elif _is_kms_sigv4_error_message(parsed):
-        parsed['Error']['Message'] += ENABLE_SIGV4_MSG
+        current_msg = parsed['Error'].get('Message') or ''
+        parsed['Error']['Message'] = current_msg + ENABLE_SIGV4_MSG
 
 
 def _is_sigv4_error_message(parsed):
-    return ('Please use AWS4-HMAC-SHA256' in
-            parsed.get('Error', {}).get('Message', ''))
+    error_message = parsed.get('Error', {}).get('Message') or ''
+    return 'Please use AWS4-HMAC-SHA256' in error_message
 
 
 def _is_permanent_redirect_message(parsed):
-    return parsed.get('Error', {}).get('Code', '') == 'PermanentRedirect'
+    error_code = parsed.get('Error', {}).get('Code') or ''
+    return error_code == 'PermanentRedirect'
 
 
 def _is_kms_sigv4_error_message(parsed):
-    return ('AWS KMS managed keys require AWS Signature Version 4' in
-            parsed.get('Error', {}).get('Message', ''))
+    error_message = parsed.get('Error', {}).get('Message') or ''
+    return 'AWS KMS managed keys require AWS Signature Version 4' in error_message

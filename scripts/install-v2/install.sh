@@ -255,13 +255,14 @@ check_dependencies() {
   fi
 }
 
-# AWS CLI v2 Linux binaries are built and tested against glibc. A musl loader
-# can sit next to glibc on a glibc distribution, so trust getconf over the
-# loader files whenever it answers.
+# AWS CLI v2 Linux binaries are built and tested against glibc. A musl loader can
+# sit alongside glibc, so ask getconf before trusting the loader paths.
 check_libc() {
   [ "$PLATFORM" = "linux" ] || return 0
   if command -v getconf >/dev/null 2>&1; then
-    case "$(getconf GNU_LIBC_VERSION 2>/dev/null || true)" in
+    local libc_version
+    libc_version="$(getconf GNU_LIBC_VERSION 2>/dev/null || true)"
+    case "$libc_version" in
       glibc*) return 0 ;;
     esac
   fi

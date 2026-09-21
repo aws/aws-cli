@@ -2,6 +2,19 @@
 CHANGELOG
 =========
 
+2.36.50
+=======
+
+* enhancement:configure: ``aws configure agent-toolkit`` now defaults to the ``us-east-1`` region unless ``--region`` is given, and always runs against ``us-east-1`` when launched from the Agent Toolkit prompt. Outside the commercial partition the prompt is replaced by a non-interactive tip, so accepting it does not results in a cross-partition call.
+* enhancement:configure: Suggest installing the Agent Toolkit for AWS when a supported AI coding agent is detected. An interactive prompt is shown after ``aws configure``, ``aws configure sso``, and a first-time ``aws login`` that creates a new profile. The prompt only appears on a terminal when no AWS skills are installed yet, and can be permanently suppressed by answering ``never`` or by setting the ``AWS_CLI_AGENT_TOOLKIT_HINT_DISABLED`` environment variable to ``true``. A tip is also printed by the install scripts and after ``aws update``.
+* api-change:``bedrock-agentcore``: Amazon Bedrock AgentCore Harness now supports lifecycle hooks for invocations and tool calls, with Lambda, SNS, and EventBridge targets. This release also adds apiBase for custom OpenAI-compatible endpoints.
+* api-change:``billingconductor``: Launching Auto Billing Transfer Billing Group Creation Preference feature
+* enhancement:OpenSSL: Update bundled OpenSSL version to ``3.5.8`` for Linux installers.
+* api-change:``bedrock-agentcore-control``: Amazon Bedrock AgentCore Harness now supports lifecycle hooks for invocations and tool calls, with Lambda, SNS, and EventBridge targets. This release also adds apiBase for custom OpenAI-compatible endpoints
+* api-change:``docdb``: Add support for CopyTagsToSnapshot field in CreateDbCluster, ModifyDbCluster, RestoreDbClusterFromSnapshot and RestoreDbClusterToPointInTime for DocumentDB.
+* api-change:``sagemaker``: Add support for r6i, m8i, c8i, r8i instance types in Training and Processing
+
+
 2.36.49
 =======
 

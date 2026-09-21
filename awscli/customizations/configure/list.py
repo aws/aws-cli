@@ -10,12 +10,15 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import profile
 import sys
 
 from awscli.customizations.commands import BasicCommand
+#from tests.unit.customizations.test_overridesslcommonname import parsed_globals
 
 from . import ConfigValue, NOT_SET
 
+from awscli.formatter import get_formatter
 
 class ConfigureListCommand(BasicCommand):
     NAME = 'list'
@@ -57,23 +60,51 @@ class ConfigureListCommand(BasicCommand):
         self._stream = stream
 
     def _run_main(self, args, parsed_globals):
-        self._display_config_value(ConfigValue('Value', 'Type', 'Location'),
-                                   'Name')
-        self._display_config_value(ConfigValue('-----', '----', '--------'),
-                                   '----')
-
         if parsed_globals and parsed_globals.profile is not None:
             profile = ConfigValue(self._session.profile, 'manual', '--profile')
         else:
             profile = self._lookup_config('profile')
-        self._display_config_value(profile, 'profile')
 
         access_key, secret_key = self._lookup_credentials()
-        self._display_config_value(access_key, 'access_key')
-        self._display_config_value(secret_key, 'secret_key')
-
         region = self._lookup_config('region')
-        self._display_config_value(region, 'region')
+
+        output_format = getattr(parsed_globals, 'output', None)
+
+        if output_format and output_format != 'table':
+            config_data = {
+            'profile': {
+                'value': profile.value,
+                'type': profile.config_type,
+                'location': profile.config_variable,
+            },
+            'access_key': {
+                'value': access_key.value,
+                'type': access_key.config_type,
+                'location': access_key.config_variable,
+            },
+            'secret_key': {
+                'value': secret_key.value,
+                'type': secret_key.config_type,
+                'location': secret_key.config_variable,
+            },
+            'region': {
+                'value': region.value,
+                'type': region.config_type,
+                'location': region.config_variable,
+            },
+        }
+            formatter = get_formatter(output_format, parsed_globals)
+            formatter(self.NAME, config_data, stream=self._stream)
+        else:
+            self._display_config_value(
+            ConfigValue('Value', 'Type', 'Location'), 'Name')
+            self._display_config_value(
+            ConfigValue('-----', '----', '--------'), '----')
+            self._display_config_value(profile, 'profile')
+            self._display_config_value(access_key, 'access_key')
+            self._display_config_value(secret_key, 'secret_key')
+            self._display_config_value(region, 'region')
+
         return 0
 
     def _display_config_value(self, config_value, config_name):

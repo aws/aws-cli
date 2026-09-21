@@ -15,6 +15,7 @@ from argparse import Namespace
 from awscli.testutils import mock, unittest
 from awscli.customizations.configure.list import ConfigureListCommand
 from awscli.compat import StringIO
+#from tests.unit.customizations.test_overridesslcommonname import parsed_globals, session
 
 from . import FakeSession
 
@@ -129,3 +130,33 @@ class TestConfigureListCommand(unittest.TestCase):
         rendered = stream.getvalue()
         self.assertRegex(
             rendered, r'profile\s+foo\s+manual\s+--profile')
+
+
+    def test_configure_list_json_output(self):
+        session = FakeSession(
+            all_variables={'config_file': '/config/location'})
+        session.full_config = {
+            'profiles': {'default': {'region': 'AWS_DEFAULT_REGION'}}}
+        stream = StringIO()
+        self.configure_list = ConfigureListCommand(session, stream)
+        parsed_globals = Namespace(
+        output='json', query=None, profile=None, color='auto')
+        self.configure_list(args=[], parsed_globals=parsed_globals)
+        rendered = stream.getvalue()
+        self.assertIn('"profile"', rendered)
+        self.assertIn('"access_key"', rendered)
+        self.assertIn('"region"', rendered)
+
+    def test_configure_list_default_output(self):
+        session = FakeSession(
+            all_variables={'config_file': '/config/location'})
+        session.full_config = {
+            'profiles': {'default': {'region': 'AWS_DEFAULT_REGION'}}}
+        stream = StringIO()
+        self.configure_list = ConfigureListCommand(session, stream)
+        parsed_globals = Namespace(
+            output=None, query=None, profile=None, color='auto')
+        self.configure_list(args=[], parsed_globals=parsed_globals)
+        rendered = stream.getvalue()
+        self.assertRegex(rendered, r'profile\s+<not set>')
+        self.assertRegex(rendered, r'region\s+<not set>')

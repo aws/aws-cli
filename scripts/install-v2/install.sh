@@ -59,6 +59,7 @@ E91G7bb0hOb/cA==
 ARG_VERSION=""            # --version value, empty means "latest"
 ARG_SYSTEM=0              # 1 if --system
 ARG_QUIET=0               # 1 if --quiet
+ARG_SKIP_VERIFY=0         # 1 if --skip-signature-verification
 
 # ----- Resolved state (set at runtime) --------------------------------------
 PLATFORM=""               # "linux" | "macos"
@@ -147,6 +148,12 @@ Options:
                       and uses /usr/local/aws-cli + /usr/local/bin.
   -q, --quiet         Suppress non-essential output. Errors and warnings are
                       still printed to stderr.
+  --skip-signature-verification
+                      Skip signature verification of the downloaded installer.
+                      NOT RECOMMENDED: this disables a security control that
+                      confirms the installer is authentic. Only use it if you
+                      understand and accept the risk (e.g. gpg is unavailable
+                      and cannot be installed).
   -h, --help          Show this help and exit.
 
 Environment:
@@ -181,6 +188,10 @@ parse_args() {
         ;;
       -q|--quiet)
         ARG_QUIET=1
+        shift
+        ;;
+      --skip-signature-verification)
+        ARG_SKIP_VERIFY=1
         shift
         ;;
       -h|--help)
@@ -425,8 +436,7 @@ download_installer() {
 
 verify_linux_signature() {
   if ! command -v gpg >/dev/null 2>&1; then
-    warn "gpg not found; skipping signature verification. Install gnupg for stronger integrity guarantees."
-    return 0
+    error 1 "gpg not found; cannot verify the installer signature. Install gnupg and re-run, or re-run with --skip-signature-verification to install without verification (not recommended)."
   fi
 
   local sig_url sig_path gpghome keyfile
@@ -476,6 +486,13 @@ verify_macos_signature() {
 }
 
 verify_installer() {
+  # Verification is on by default. --skip-signature-verification is an explicit,
+  # human-made opt-out (e.g. when gpg cannot be installed); it disables a
+  # security control, so it is never silent.
+  if [ "$ARG_SKIP_VERIFY" -eq 1 ]; then
+    warn "signature verification disabled via --skip-signature-verification; installing without verifying installer authenticity."
+    return 0
+  fi
   case "$PLATFORM" in
     linux) verify_linux_signature ;;
     macos) verify_macos_signature ;;

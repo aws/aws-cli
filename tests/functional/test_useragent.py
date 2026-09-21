@@ -1,5 +1,6 @@
 from awscli import __version__ as awscli_version
-from tests import CLIRunner
+from awscli.testutils import mock
+from tests import CLIRunner, HTTPResponse
 from tests.functional.botocore.test_useragent import (
     get_captured_ua_strings,
     parse_registered_feature_ids,
@@ -38,3 +39,16 @@ def test_user_agent_for_customization():
     ua_string = result.aws_requests[0].http_requests[0].headers['User-Agent']
     feature_list = parse_registered_feature_ids(ua_string)
     assert 'C' in feature_list
+
+
+def test_user_agent_reports_s3_transfer_client(tmp_path):
+    upload = tmp_path / 'foo.txt'
+    upload.write_text('contents')
+    cli_runner = CLIRunner()
+    cli_runner.add_response(HTTPResponse(headers={'ETag': '"etag"'}))
+    with mock.patch('awscrt.s3.is_optimized_for_system', return_value=False):
+        result = cli_runner.run(['s3', 'cp', str(upload), 's3://bucket/key'])
+    assert result.rc == 0
+    ua_string = result.aws_requests[0].http_requests[0].headers['User-Agent']
+    feature_list = parse_registered_feature_ids(ua_string)
+    assert 'Af' in feature_list

@@ -5784,6 +5784,69 @@
       },
       "documentation":"<p>Configuration for a Google Gemini model provider. Requires an API key stored in AgentCore Identity.</p>"
     },
+    "HarnessHookDecision":{
+      "type":"string",
+      "enum":[
+        "allow",
+        "deny"
+      ]
+    },
+    "HarnessHookEvent":{
+      "type":"structure",
+      "required":[
+        "hookEventId",
+        "name",
+        "type"
+      ],
+      "members":{
+        "hookEventId":{
+          "shape":"HarnessHookEventId",
+          "documentation":"<p>The unique identifier for this hook event.</p>"
+        },
+        "name":{
+          "shape":"HarnessHookName",
+          "documentation":"<p>The name of the hook that ran.</p>"
+        },
+        "type":{
+          "shape":"HarnessHookEventType",
+          "documentation":"<p>The type of lifecycle hook event.</p>"
+        },
+        "decision":{
+          "shape":"HarnessHookDecision",
+          "documentation":"<p>The decision applied to the hook event. This field is present only for blocking Lambda targets.</p>"
+        },
+        "reason":{
+          "shape":"HarnessHookEventReasonString",
+          "documentation":"<p>The optional reason for the applied decision.</p>"
+        }
+      },
+      "documentation":"<p>A lifecycle hook event emitted in the invocation stream for visibility into hook decisions.</p>",
+      "event":true
+    },
+    "HarnessHookEventId":{
+      "type":"string",
+      "pattern":"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+    },
+    "HarnessHookEventReasonString":{
+      "type":"string",
+      "max":1024,
+      "min":0
+    },
+    "HarnessHookEventType":{
+      "type":"string",
+      "enum":[
+        "before_tool_call",
+        "after_tool_call",
+        "before_invocation",
+        "after_invocation"
+      ]
+    },
+    "HarnessHookName":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"[a-zA-Z0-9_-]+"
+    },
     "HarnessInlineFunctionConfig":{
       "type":"structure",
       "required":[
@@ -5937,6 +6000,12 @@
       "documentation":"<p>Specification of which model to use.</p>",
       "union":true
     },
+    "HarnessOpenAiApiBase":{
+      "type":"string",
+      "max":16383,
+      "min":1,
+      "sensitive":true
+    },
     "HarnessOpenAiApiFormat":{
       "type":"string",
       "enum":[
@@ -5958,6 +6027,10 @@
         "apiKeyArn":{
           "shape":"ApiKeyArn",
           "documentation":"<p>The ARN of your OpenAI API key on AgentCore Identity.</p>"
+        },
+        "apiBase":{
+          "shape":"HarnessOpenAiApiBase",
+          "documentation":"<p>Optional custom endpoint URL for an OpenAI-compatible endpoint.</p>"
         },
         "maxTokens":{
           "shape":"MaxTokens",
@@ -6170,7 +6243,8 @@
         "model_context_window_exceeded",
         "max_iterations_exceeded",
         "max_output_tokens_exceeded",
-        "timeout_exceeded"
+        "timeout_exceeded",
+        "hook_stopped"
       ]
     },
     "HarnessStreamMetrics":{
@@ -7472,6 +7546,10 @@
         "runtimeClientError":{
           "shape":"RuntimeClientError",
           "documentation":"<p>An error returned by the runtime container during agent execution.</p>"
+        },
+        "hookEvent":{
+          "shape":"HarnessHookEvent",
+          "documentation":"<p>A lifecycle hook event emitted when a configured hook runs.</p>"
         }
       },
       "documentation":"<p>The streaming events returned by a harness invocation.</p>",

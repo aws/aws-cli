@@ -3095,6 +3095,7 @@
       "input":{"shape":"UpdateHarnessRequest"},
       "output":{"shape":"UpdateHarnessResponse"},
       "errors":[
+        {"shape":"ServiceQuotaExceededException"},
         {"shape":"AccessDeniedException"},
         {"shape":"ConflictException"},
         {"shape":"ValidationException"},
@@ -7002,6 +7003,10 @@
         "truncation":{
           "shape":"HarnessTruncationConfiguration",
           "documentation":"<p>The truncation configuration for managing conversation context when it exceeds model limits.</p>"
+        },
+        "hooks":{
+          "shape":"HarnessHooks",
+          "documentation":"<p>The lifecycle hooks to run at defined points in the agent loop.</p>"
         },
         "maxIterations":{
           "shape":"Integer",
@@ -13646,6 +13651,10 @@
           "shape":"HarnessMemoryConfiguration",
           "documentation":"<p>AgentCore Memory instance configuration for short and long term memory.</p>"
         },
+        "hooks":{
+          "shape":"HarnessHooks",
+          "documentation":"<p>The lifecycle hooks configured for the harness.</p>"
+        },
         "maxIterations":{
           "shape":"Integer",
           "documentation":"<p>The maximum number of iterations in the agent loop allowed before exiting per invocation.</p>"
@@ -13664,6 +13673,42 @@
         }
       },
       "documentation":"<p>Representation of a harness.</p>"
+    },
+    "HarnessAfterInvocationHook":{
+      "type":"structure",
+      "required":[
+        "name",
+        "target"
+      ],
+      "members":{
+        "name":{
+          "shape":"HarnessHookName",
+          "documentation":"<p>The name of the hook.</p>"
+        },
+        "target":{
+          "shape":"HarnessHookTarget",
+          "documentation":"<p>The target that receives the hook event.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for a hook that runs after an invocation completes.</p>"
+    },
+    "HarnessAfterToolCallHook":{
+      "type":"structure",
+      "required":[
+        "name",
+        "target"
+      ],
+      "members":{
+        "name":{
+          "shape":"HarnessHookName",
+          "documentation":"<p>The name of the hook.</p>"
+        },
+        "target":{
+          "shape":"HarnessHookTarget",
+          "documentation":"<p>The target that receives the hook event.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for a hook that runs after a tool call completes.</p>"
     },
     "HarnessAgentCoreBrowserConfig":{
       "type":"structure",
@@ -13852,6 +13897,42 @@
       },
       "documentation":"<p>Configuration for an Amazon Bedrock model provider.</p>"
     },
+    "HarnessBeforeInvocationHook":{
+      "type":"structure",
+      "required":[
+        "name",
+        "target"
+      ],
+      "members":{
+        "name":{
+          "shape":"HarnessHookName",
+          "documentation":"<p>The name of the hook.</p>"
+        },
+        "target":{
+          "shape":"HarnessHookTarget",
+          "documentation":"<p>The target that receives the hook event.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for a hook that runs before an invocation begins.</p>"
+    },
+    "HarnessBeforeToolCallHook":{
+      "type":"structure",
+      "required":[
+        "name",
+        "target"
+      ],
+      "members":{
+        "name":{
+          "shape":"HarnessHookName",
+          "documentation":"<p>The name of the hook.</p>"
+        },
+        "target":{
+          "shape":"HarnessHookTarget",
+          "documentation":"<p>The target that receives the hook event.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for a hook that runs before the agent calls a tool.</p>"
+    },
     "HarnessBrowserArn":{
       "type":"string",
       "documentation":"<p>Browser ARN for Harness tool configuration. Accepts both managed (aws.browser.v1) and custom browser ARNs.</p>",
@@ -13985,6 +14066,13 @@
       "documentation":"<p>The environment provider request configuration.</p>",
       "union":true
     },
+    "HarnessEventBridgeBusArn":{
+      "type":"string",
+      "documentation":"<p>The ARN of an Amazon EventBridge event bus.</p>",
+      "max":2048,
+      "min":20,
+      "pattern":"arn:aws(-[^:]+)?:events:[a-z0-9-]+:[0-9]{12}:event-bus/.+"
+    },
     "HarnessGatewayOutboundAuth":{
       "type":"structure",
       "members":{
@@ -14042,6 +14130,117 @@
       },
       "documentation":"<p>Configuration for a Google Gemini model provider. Requires an API key stored in AgentCore Identity.</p>"
     },
+    "HarnessHook":{
+      "type":"structure",
+      "members":{
+        "beforeInvocation":{
+          "shape":"HarnessBeforeInvocationHook",
+          "documentation":"<p>A hook that runs before an invocation begins.</p>"
+        },
+        "afterInvocation":{
+          "shape":"HarnessAfterInvocationHook",
+          "documentation":"<p>A hook that runs after an invocation completes.</p>"
+        },
+        "beforeToolCall":{
+          "shape":"HarnessBeforeToolCallHook",
+          "documentation":"<p>A hook that runs before the agent calls a tool.</p>"
+        },
+        "afterToolCall":{
+          "shape":"HarnessAfterToolCallHook",
+          "documentation":"<p>A hook that runs after a tool call completes.</p>"
+        }
+      },
+      "documentation":"<p>A lifecycle hook configuration. Specify one hook type.</p>",
+      "union":true
+    },
+    "HarnessHookEventBridgeTarget":{
+      "type":"structure",
+      "required":["arn"],
+      "members":{
+        "arn":{
+          "shape":"HarnessEventBridgeBusArn",
+          "documentation":"<p>The ARN of the Amazon EventBridge event bus to send hook events to.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for an Amazon EventBridge hook target.</p>"
+    },
+    "HarnessHookFailureMode":{
+      "type":"string",
+      "documentation":"<p>The behavior when a synchronous hook target fails.</p>",
+      "enum":[
+        "allow",
+        "deny"
+      ]
+    },
+    "HarnessHookLambdaTarget":{
+      "type":"structure",
+      "required":["arn"],
+      "members":{
+        "arn":{
+          "shape":"HarnessLambdaFunctionArn",
+          "documentation":"<p>The ARN of the Lambda function to invoke.</p>"
+        },
+        "timeoutSeconds":{
+          "shape":"HarnessHookLambdaTargetTimeoutSecondsInteger",
+          "documentation":"<p>The maximum number of seconds to wait for the Lambda function response. The default is 60 seconds.</p>"
+        },
+        "failureMode":{
+          "shape":"HarnessHookFailureMode",
+          "documentation":"<p>The behavior when the Lambda function times out, returns an error, or returns an invalid response. The default is <code>DENY</code>.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for an AWS Lambda hook target.</p>"
+    },
+    "HarnessHookLambdaTargetTimeoutSecondsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":900,
+      "min":1
+    },
+    "HarnessHookName":{
+      "type":"string",
+      "documentation":"<p>The name of a lifecycle hook.</p>",
+      "max":64,
+      "min":1,
+      "pattern":"[a-zA-Z0-9_-]+"
+    },
+    "HarnessHookSnsTarget":{
+      "type":"structure",
+      "required":["arn"],
+      "members":{
+        "arn":{
+          "shape":"HarnessSnsTopicArn",
+          "documentation":"<p>The ARN of the Amazon SNS topic to publish hook events to.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for an Amazon SNS hook target.</p>"
+    },
+    "HarnessHookTarget":{
+      "type":"structure",
+      "members":{
+        "lambda":{
+          "shape":"HarnessHookLambdaTarget",
+          "documentation":"<p>A Lambda hook target that invokes an AWS Lambda function synchronously and waits for its response.</p>"
+        },
+        "sns":{
+          "shape":"HarnessHookSnsTarget",
+          "documentation":"<p>An Amazon SNS hook target that publishes the hook event without waiting for a response.</p>"
+        },
+        "eventBridge":{
+          "shape":"HarnessHookEventBridgeTarget",
+          "documentation":"<p>An Amazon EventBridge hook target that sends the hook event without waiting for a response.</p>"
+        }
+      },
+      "documentation":"<p>The target that receives lifecycle hook events. Specify one target type.</p>",
+      "union":true
+    },
+    "HarnessHooks":{
+      "type":"list",
+      "member":{"shape":"HarnessHook"},
+      "documentation":"<p>The lifecycle hooks configured to run at defined points in the agent loop.</p>",
+      "max":20,
+      "min":0
+    },
     "HarnessId":{
       "type":"string",
       "pattern":"[a-zA-Z][a-zA-Z0-9_]{0,39}-[a-zA-Z0-9]{10}"
@@ -14069,6 +14268,13 @@
       "max":4096,
       "min":1,
       "sensitive":true
+    },
+    "HarnessLambdaFunctionArn":{
+      "type":"string",
+      "documentation":"<p>The ARN of an AWS Lambda function.</p>",
+      "max":2048,
+      "min":20,
+      "pattern":"arn:aws(-[^:]+)?:lambda:[a-z0-9-]+:[0-9]{12}:function:.+"
     },
     "HarnessLiteLlmApiBase":{
       "type":"string",
@@ -14200,6 +14406,12 @@
       "type":"string",
       "pattern":"[a-zA-Z][a-zA-Z0-9_]{0,39}"
     },
+    "HarnessOpenAiApiBase":{
+      "type":"string",
+      "max":16383,
+      "min":1,
+      "sensitive":true
+    },
     "HarnessOpenAiApiFormat":{
       "type":"string",
       "enum":[
@@ -14221,6 +14433,10 @@
         "apiKeyArn":{
           "shape":"ApiKeyArn",
           "documentation":"<p>The ARN of your OpenAI API key on AgentCore Identity.</p>"
+        },
+        "apiBase":{
+          "shape":"HarnessOpenAiApiBase",
+          "documentation":"<p>Optional custom endpoint URL for an OpenAI-compatible endpoint.</p>"
         },
         "maxTokens":{
           "shape":"MaxTokens",
@@ -14374,6 +14590,13 @@
         }
       },
       "documentation":"<p>Configuration for sliding window truncation strategy.</p>"
+    },
+    "HarnessSnsTopicArn":{
+      "type":"string",
+      "documentation":"<p>The ARN of an Amazon SNS topic.</p>",
+      "max":2048,
+      "min":20,
+      "pattern":"arn:aws(-[^:]+)?:sns:[a-z0-9-]+:[0-9]{12}:.+"
     },
     "HarnessStatus":{
       "type":"string",
@@ -23521,6 +23744,10 @@
         "truncation":{
           "shape":"HarnessTruncationConfiguration",
           "documentation":"<p>The truncation configuration for managing conversation context. If not specified, the existing value is retained.</p>"
+        },
+        "hooks":{
+          "shape":"HarnessHooks",
+          "documentation":"<p>The lifecycle hooks to run at defined points in the agent loop. If specified, this replaces all existing hooks. If not specified, the existing hooks are retained.</p>"
         },
         "maxIterations":{
           "shape":"Integer",

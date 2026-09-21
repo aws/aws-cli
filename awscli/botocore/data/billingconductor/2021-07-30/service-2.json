@@ -310,6 +310,25 @@
       "documentation":"<p>Retrieves the margin summary report, which includes the Amazon Web Services cost and charged amount (pro forma cost) by Amazon Web Services service for a specific billing group.</p>",
       "readonly":true
     },
+    "GetBillingTransferPreference":{
+      "name":"GetBillingTransferPreference",
+      "http":{
+        "method":"POST",
+        "requestUri":"/get-billing-transfer-preference",
+        "responseCode":200
+      },
+      "input":{"shape":"GetBillingTransferPreferenceInput"},
+      "output":{"shape":"GetBillingTransferPreferenceOutput"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Retrieves the auto billing group creation preference for a billing transfer.</p>",
+      "readonly":true
+    },
     "ListAccountAssociations":{
       "name":"ListAccountAssociations",
       "http":{
@@ -569,6 +588,26 @@
         {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>This updates an existing billing group. </p>",
+      "idempotent":true
+    },
+    "UpdateBillingTransferPreference":{
+      "name":"UpdateBillingTransferPreference",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/update-billing-transfer-preference",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateBillingTransferPreferenceInput"},
+      "output":{"shape":"UpdateBillingTransferPreferenceOutput"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Sets the auto billing group creation preference for a billing transfer. When the preference is enabled, Billing Conductor automatically creates an indirect billing transfer billing group in your account, with the pricing plan that you specify, for each account that transfers its bill to the bill source account of this billing transfer. The preference applies only to billing groups that are created after you enable it.</p> <p>Enabling the preference requires the <code>iam:CreateServiceLinkedRole</code> permission. While a pricing plan is specified in an enabled preference, you can't delete that pricing plan.</p>",
       "idempotent":true
     },
     "UpdateCustomLineItem":{
@@ -848,6 +887,21 @@
     "AttributesList":{
       "type":"list",
       "member":{"shape":"Attribute"}
+    },
+    "AutoTransferBillingGroupCreationPreference":{
+      "type":"structure",
+      "required":["Enabled"],
+      "members":{
+        "Enabled":{
+          "shape":"Boolean",
+          "documentation":"<p> Specifies whether Billing Conductor automatically creates billing groups for the billing transfer. The preference is disabled by default. </p>"
+        },
+        "PricingPlanArn":{
+          "shape":"PricingPlanArn",
+          "documentation":"<p> The Amazon Resource Name (ARN) of the pricing plan to apply to the automatically created billing groups. This value is required when <code>Enabled</code> is <code>true</code>, and must be omitted when <code>Enabled</code> is <code>false</code>. </p>"
+        }
+      },
+      "documentation":"<p> The auto billing group creation preference for a billing transfer. When the preference is enabled, Billing Conductor automatically creates an indirect billing transfer billing group, with the specified pricing plan, for each account that transfers its bill to the bill source account of the billing transfer. </p>"
     },
     "BatchAssociateResourcesToCustomLineItemInput":{
       "type":"structure",
@@ -1183,6 +1237,7 @@
         "RESOURCE_NAME_CONFLICT",
         "PRICING_RULE_IN_PRICING_PLAN_CONFLICT",
         "PRICING_PLAN_ATTACHED_TO_BILLING_GROUP_DELETE_CONFLICT",
+        "PRICING_PLAN_REFERENCED_BY_PREFERENCE_DELETE_CONFLICT",
         "PRICING_RULE_ATTACHED_TO_PRICING_PLAN_DELETE_CONFLICT",
         "WRITE_CONFLICT_RETRY"
       ]
@@ -1957,6 +2012,38 @@
         "NextToken":{
           "shape":"Token",
           "documentation":"<p>The pagination token used on subsequent calls to get reports.</p>"
+        }
+      }
+    },
+    "GetBillingTransferPreferenceInput":{
+      "type":"structure",
+      "required":["ResponsibilityTransferArn"],
+      "members":{
+        "ResponsibilityTransferArn":{
+          "shape":"ResponsibilityTransferArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the billing transfer whose preference you want to retrieve.</p>"
+        }
+      }
+    },
+    "GetBillingTransferPreferenceOutput":{
+      "type":"structure",
+      "required":[
+        "ResponsibilityTransferArn",
+        "AutoBillingTransferBillingGroupCreation"
+      ],
+      "members":{
+        "ResponsibilityTransferArn":{
+          "shape":"ResponsibilityTransferArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the billing transfer that the preference applies to.</p>"
+        },
+        "AutoBillingTransferBillingGroupCreation":{
+          "shape":"AutoTransferBillingGroupCreationPreference",
+          "documentation":"<p>The auto billing group creation preference for the billing transfer.</p>"
+        },
+        "LastModifiedTime":{
+          "shape":"Instant",
+          "documentation":"<p>The most recent time when the preference was modified. This value is empty if the preference has never been set for the billing transfer.</p>",
+          "box":true
         }
       }
     },
@@ -3222,6 +3309,52 @@
         "AccountGrouping":{
           "shape":"UpdateBillingGroupAccountGrouping",
           "documentation":"<p>Specifies if the billing group has automatic account association (<code>AutoAssociate</code>) enabled.</p>"
+        }
+      }
+    },
+    "UpdateBillingTransferPreferenceInput":{
+      "type":"structure",
+      "required":[
+        "ResponsibilityTransferArn",
+        "AutoBillingTransferBillingGroupCreation"
+      ],
+      "members":{
+        "ClientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier that you specify to ensure idempotency of the request. Idempotency ensures that an API request completes no more than one time. With an idempotent request, if the original request completes successfully, any subsequent retries complete successfully without performing any further actions.</p>",
+          "idempotencyToken":true,
+          "location":"header",
+          "locationName":"X-Amzn-Client-Token"
+        },
+        "ResponsibilityTransferArn":{
+          "shape":"ResponsibilityTransferArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the billing transfer whose preference you want to set.</p>"
+        },
+        "AutoBillingTransferBillingGroupCreation":{
+          "shape":"AutoTransferBillingGroupCreationPreference",
+          "documentation":"<p>The auto billing group creation preference to set for the billing transfer.</p>"
+        }
+      }
+    },
+    "UpdateBillingTransferPreferenceOutput":{
+      "type":"structure",
+      "required":[
+        "ResponsibilityTransferArn",
+        "AutoBillingTransferBillingGroupCreation",
+        "LastModifiedTime"
+      ],
+      "members":{
+        "ResponsibilityTransferArn":{
+          "shape":"ResponsibilityTransferArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the billing transfer that the preference applies to.</p>"
+        },
+        "AutoBillingTransferBillingGroupCreation":{
+          "shape":"AutoTransferBillingGroupCreationPreference",
+          "documentation":"<p>The updated auto billing group creation preference for the billing transfer.</p>"
+        },
+        "LastModifiedTime":{
+          "shape":"Instant",
+          "documentation":"<p>The most recent time when the preference was modified.</p>"
         }
       }
     },

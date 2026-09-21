@@ -45,7 +45,7 @@ from awscrt.s3 import (
 from botocore import UNSIGNED
 from botocore.compat import urlsplit
 from botocore.config import Config
-from botocore.context import start_as_current_context
+from botocore.context import get_context, start_as_current_context
 from botocore.exceptions import InvalidConfigError, NoCredentialsError
 from botocore.useragent import register_feature_id
 from botocore.utils import (
@@ -599,6 +599,7 @@ class CRTTransferManager:
 
     def _submit_transfer(self, request_type, call_args):
         register_feature_id('S3_TRANSFER')
+        request_context = get_context()
         on_done_after_calls = [self._release_semaphore]
         coordinator = CRTTransferCoordinator(
             transfer_id=self._id_counter,
@@ -639,9 +640,9 @@ class CRTTransferManager:
             def create_request(is_region_redirect):
                 # The first redirect retry runs on a new thread, where context
                 # variables from the initial command thread are not inherited.
-                # Create a request context here so the redirected request's
-                # user agent includes the S3 redirect feature ID.
-                with start_as_current_context():
+                # Restore the request context so its existing feature IDs and
+                # the S3 redirect feature ID are included in the user agent.
+                with start_as_current_context(request_context):
                     if is_region_redirect:
                         register_feature_id('S3_REDIRECT')
                         # Reset the stream, since the initial wrong-region

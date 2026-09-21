@@ -17,8 +17,10 @@ import time
 from concurrent.futures import Future
 
 import pytest
+from botocore.context import with_current_context
 from botocore.exceptions import ClientError
 from botocore.session import Session
+from botocore.useragent import register_feature_id
 from s3transfer.subscribers import BaseSubscriber
 
 from tests import (
@@ -479,7 +481,9 @@ class TestCRTTransferManager(unittest.TestCase):
         )
         self._assert_subscribers_called(future)
 
+    @with_current_context()
     def test_upload_redirects_and_reuses_cached_region(self):
+        register_feature_id('S3_TRANSFER_CRT_AUTO')
         redirected_region = 'eu-central-1'
         transfer_manager = self._create_redirecting_transfer_manager(
             self._fail_make_request(
@@ -526,6 +530,9 @@ class TestCRTTransferManager(unittest.TestCase):
         )
         self.assertNotIn('Ah', initial_features)
         self.assertIn('Ah', redirected_features)
+        for feature_id in ('Ag', 'G'):
+            self.assertIn(feature_id, initial_features)
+            self.assertIn(feature_id, redirected_features)
 
         # The redirect is internal to one logical transfer, so subscribers
         # only see it once.
@@ -556,6 +563,8 @@ class TestCRTTransferManager(unittest.TestCase):
             cached_call['request'].headers.get('User-Agent')
         )
         self.assertIn('Ah', cached_features)
+        for feature_id in ('Ag', 'G'):
+            self.assertIn(feature_id, cached_features)
 
         self.assertEqual(second_subscriber.on_queued_calls, 1)
         self.assertEqual(second_subscriber.on_done_calls, 1)

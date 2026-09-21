@@ -31,6 +31,9 @@ from tests import (
     requires_crt,
     unittest,
 )
+from tests.functional.botocore.test_useragent import (
+    parse_registered_feature_ids,
+)
 
 if HAS_CRT:
     import awscrt
@@ -513,6 +516,17 @@ class TestCRTTransferManager(unittest.TestCase):
             redirected_call['request'].headers.get('host'),
             f's3.{redirected_region}.amazonaws.com',
         )
+
+        # Verify S3 redirect feature ID
+        initial_features = parse_registered_feature_ids(
+            initial_call['request'].headers.get('User-Agent')
+        )
+        redirected_features = parse_registered_feature_ids(
+            redirected_call['request'].headers.get('User-Agent')
+        )
+        self.assertNotIn('Ah', initial_features)
+        self.assertIn('Ah', redirected_features)
+
         # The redirect is internal to one logical transfer, so subscribers
         # only see it once.
         self.assertEqual(first_subscriber.on_queued_calls, 1)
@@ -533,6 +547,16 @@ class TestCRTTransferManager(unittest.TestCase):
         self.redirected_client_factory.assert_called_once_with(
             redirected_region
         )
+
+        # Verify S3 redirect feature ID
+        cached_call = self.redirected_client.make_request.call_args_list[
+            1
+        ].kwargs
+        cached_features = parse_registered_feature_ids(
+            cached_call['request'].headers.get('User-Agent')
+        )
+        self.assertIn('Ah', cached_features)
+
         self.assertEqual(second_subscriber.on_queued_calls, 1)
         self.assertEqual(second_subscriber.on_done_calls, 1)
 

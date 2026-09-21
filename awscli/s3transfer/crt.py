@@ -45,6 +45,7 @@ from awscrt.s3 import (
 from botocore import UNSIGNED
 from botocore.compat import urlsplit
 from botocore.config import Config
+from botocore.context import start_as_current_context
 from botocore.exceptions import InvalidConfigError, NoCredentialsError
 from botocore.useragent import register_feature_id
 from botocore.utils import (
@@ -636,25 +637,35 @@ class CRTTransferManager:
             on_queued()
 
             def create_request(is_region_redirect):
-                # Reset the stream if we're redirecting due to bucket region
-                if is_region_redirect and upload_stream_position is not None:
-                    call_args.fileobj.seek(upload_stream_position)
-                with self._crt_request_serializer.locked_bucket_region(
-                    bucket
-                ) as region:
-                    if region is not None:
-                        logger.debug(
-                            'Using cached region %s for S3 bucket %s',
-                            region,
-                            bucket,
+                # The first redirect retry runs on a new thread, where context
+                # variables from the initial command thread are not inherited.
+                # Create a request context here so the redirected request's
+                # user agent includes the S3 redirect feature ID.
+                with start_as_current_context():
+                    if is_region_redirect:
+                        register_feature_id('S3_REDIRECT')
+                        # Reset the stream, since the initial wrong-region
+                        # call could have consumed content
+                        if upload_stream_position is not None:
+                            call_args.fileobj.seek(upload_stream_position)
+                    with self._crt_request_serializer.locked_bucket_region(
+                        bucket
+                    ) as region:
+                        if region is not None:
+                            logger.debug(
+                                'Using cached region %s for S3 bucket %s',
+                                region,
+                                bucket,
+                            )
+                        crt_callargs = (
+                            self._s3_args_creator.get_make_request_args(
+                                request_type,
+                                call_args,
+                                coordinator,
+                                future,
+                                on_done_after_calls,
+                            )
                         )
-                    crt_callargs = self._s3_args_creator.get_make_request_args(
-                        request_type,
-                        call_args,
-                        coordinator,
-                        future,
-                        on_done_after_calls,
-                    )
                 crt_client = self.get_crt_client(region)
                 return crt_client, crt_callargs, region
 

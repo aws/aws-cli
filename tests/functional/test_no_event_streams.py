@@ -19,50 +19,47 @@ from awscli.clidriver import create_clidriver
 _ALLOWED_COMMANDS = ['s3api select-object-content']
 
 
-def _generate_command_tests():
-    driver = create_clidriver()
+def _generate_command_tests(driver, command_name):
     help_command = driver.create_help_command()
-    for command_name, command_obj in help_command.command_table.items():
-        sub_help = command_obj.create_help_command()
-        if hasattr(sub_help, 'command_table'):
-            for sub_name, sub_command in sub_help.command_table.items():
-                op_help = sub_command.create_help_command()
-                model = op_help.obj
-                if isinstance(model, OperationModel):
-                    # Extract the properties needed for tests to avoid
-                    # parametrizing entire model objects, which may cause
-                    # excessive memory usage.
-                    if not model.has_event_stream_input and not model.has_event_stream_output:
-                        # Only parameterize the models that actually have event streams.
-                        # This has shown to improve test execution performance.
-                        continue
-                    model_description = {
-                        'service_name': model.service_model.service_name,
-                        'name': model.name,
-                    }
-                    yield command_name, sub_name, model_description
+    command_obj = help_command.command_table[command_name]
+    sub_help = command_obj.create_help_command()
+    if hasattr(sub_help, 'command_table'):
+        for sub_name, sub_command in sub_help.command_table.items():
+            op_help = sub_command.create_help_command()
+            model = op_help.obj
+            if isinstance(model, OperationModel):
+                if (
+                    not model.has_event_stream_input
+                    and not model.has_event_stream_output
+                ):
+                    continue
+                model_description = {
+                    'service_name': model.service_model.service_name,
+                    'name': model.name,
+                }
+                yield command_name, sub_name, model_description
 
 
 @pytest.mark.validates_models
 @pytest.mark.parametrize(
-    "command_name, sub_name, model", _generate_command_tests()
+    'command_name',
+    tuple(create_clidriver().create_help_command().command_table),
 )
 def test_no_event_stream_unless_allowed(
-        command_name,
-        sub_name,
-        model,
-        record_property
+    command_name, cli_driver, record_property
 ):
-    full_command = f'{command_name} {sub_name}'
-    # Store the service and operation in
-    # PyTest custom properties
-    record_property(
-        'aws_service', model['service_name']
-    )
-    record_property('aws_operation', model['name'])
+    disallowed = []
+    for _, sub_name, model in _generate_command_tests(
+        cli_driver, command_name
+    ):
+        full_command = f'{command_name} {sub_name}'
+        record_property('aws_service', model['service_name'])
+        record_property('aws_operation', model['name'])
+        if full_command not in _ALLOWED_COMMANDS:
+            disallowed.append(full_command)
     supported_commands = '\n'.join(_ALLOWED_COMMANDS)
-    assert full_command in _ALLOWED_COMMANDS, (
-        f'The {full_command} command uses event streams '
+    assert not disallowed, (
+        f'The {", ".join(disallowed)} commands use event streams '
         'which is only supported for these operations:\n'
         f'{supported_commands}'
     )

@@ -78,6 +78,7 @@ from botocore.exceptions import (
     UnsupportedS3ControlArnError,
     UnsupportedS3ControlConfigurationError,
 )
+from botocore.useragent import register_feature_id
 from dateutil.tz import tzutc
 from urllib3.exceptions import LocationParseError
 
@@ -1664,6 +1665,8 @@ class S3RegionRedirectorv2:
                 **signing_context,
             }
 
+        register_feature_id('S3_REDIRECT')
+
         # Return 0 so it doesn't wait to retry
         return 0
 
@@ -1766,6 +1769,7 @@ class S3RegionRedirectorv2:
         if bucket is not None and bucket in self._cache:
             new_region = self._cache.get(bucket)
             builtins['AWS::Region'] = new_region
+            register_feature_id('S3_REDIRECT')
 
     def annotate_request_context(self, params, context, **kwargs):
         """Store the bucket name in context for later use when redirecting.

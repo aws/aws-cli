@@ -58,7 +58,10 @@ from awscli.compat import (
     validate_preferred_output_encoding,
 )
 from awscli.constants import PARAM_VALIDATION_ERROR_RC
-from awscli.customizations.exceptions import ParamValidationError
+from awscli.customizations.exceptions import (
+    ConfigurationError,
+    ParamValidationError,
+)
 from awscli.errorhandler import (
     construct_cli_error_handlers_chain,
     construct_entry_point_handlers_chain,
@@ -334,6 +337,9 @@ class CLIDriver:
         config_store.set_config_provider(
             'cli_error_format', self._construct_cli_error_format_chain()
         )
+        config_store.set_config_provider(
+            'cli_page_size_mode', self._construct_cli_page_size_mode_chain()
+        )
 
     def _construct_cli_region_chain(self):
         providers = [
@@ -438,6 +444,16 @@ class CLIDriver:
                 session=self.session,
             ),
             ConstantProvider(value='enhanced'),
+        ]
+        return ChainProvider(providers=providers)
+
+    def _construct_cli_page_size_mode_chain(self):
+        providers = [
+            ScopedConfigProvider(
+                config_var_name='cli_page_size_mode',
+                session=self.session,
+            ),
+            ConstantProvider(value='legacy'),
         ]
         return ChainProvider(providers=providers)
 
@@ -1104,10 +1120,24 @@ class CLIOperationCaller:
         py_operation_name = xform_name(operation_name)
         if client.can_paginate(py_operation_name) and parsed_globals.paginate:
             paginator = client.get_paginator(py_operation_name)
+            self._inject_page_size_mode(parameters)
             response = paginator.paginate(**parameters)
         else:
             response = getattr(client, py_operation_name)(**parameters)
         return response
+
+    def _inject_page_size_mode(self, parameters):
+        page_size_mode = (
+            self._session.get_config_variable('cli_page_size_mode') or 'legacy'
+        )
+        if page_size_mode not in ('legacy', 'dynamic'):
+            raise ConfigurationError(
+                f'Unknown cli_page_size_mode value: {page_size_mode}, valid '
+                'values are "legacy" or "dynamic"'
+            )
+        pagination_config = parameters.get('PaginationConfig', {})
+        pagination_config['PageSizeMode'] = page_size_mode
+        parameters['PaginationConfig'] = pagination_config
 
     def _display_response(self, command_name, response, parsed_globals):
         output = parsed_globals.output

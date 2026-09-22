@@ -14,6 +14,7 @@
 import base64
 import json
 import logging
+import math
 from functools import partial
 from itertools import tee
 
@@ -201,6 +202,8 @@ class PageIterator:
         starting_token,
         page_size,
         op_kwargs,
+        page_size_mode='legacy',
+        limit_key_min=None,
     ):
         self._method = method
         self._input_token = input_token
@@ -212,6 +215,8 @@ class PageIterator:
         self._starting_token = starting_token
         self._page_size = page_size
         self._op_kwargs = op_kwargs
+        self._page_size_mode = page_size_mode
+        self._limit_key_min = limit_key_min
         self._resume_token = None
         self._non_aggregate_key_exprs = non_aggregate_keys
         self._non_aggregate_part = {}
@@ -263,7 +268,18 @@ class PageIterator:
         primary_result_key = self.result_keys[0]
         starting_truncation = 0
         self._inject_starting_params(current_kwargs)
+        # Per-call page sizes for dynamic mode, or None for legacy behavior.
+        dynamic_page_sizes = self._compute_dynamic_page_sizes()
+        page_index = 0
         while True:
+            if dynamic_page_sizes is not None:
+                self._inject_dynamic_page_size(
+                    current_kwargs,
+                    dynamic_page_sizes,
+                    page_index,
+                    total_items,
+                )
+                page_index += 1
             response = self._make_request(current_kwargs)
             parsed = self._extract_parsed_response(response)
             if first_request:
@@ -353,7 +369,52 @@ class PageIterator:
 
     @with_current_context(partial(register_feature_id, 'PAGINATOR'))
     def _make_request(self, current_kwargs):
+        if self._page_size_mode == 'dynamic':
+            register_feature_id('PAGINATOR_DYNAMIC_PAGE_SIZE')
         return self._method(**current_kwargs)
+
+    def _compute_dynamic_page_sizes(self):
+        """Compute the per-request page sizes for dynamic page size mode.
+
+        Returns a list of page sizes (one per successive request), or ``None``
+        to indicate that legacy pagination behavior should be used. Legacy
+        behavior is used when the mode is not enabled, when the inputs are not
+        applicable, or when a zero page offset is mathematically impossible.
+        """
+        if self._page_size_mode != 'dynamic':
+            return None
+        max_items = self._max_items
+        max_page_size = self._page_size
+        if not isinstance(max_items, int) or not isinstance(
+            max_page_size, int
+        ):
+            return None
+        if max_items <= 0 or max_page_size <= 0:
+            return None
+        # A multiple of the page size already yields a zero offset (legacy).
+        if max_items % max_page_size == 0:
+            return None
+        num_calls = math.ceil(max_items / max_page_size)
+        min_page_size = self._limit_key_min or 1
+        if math.floor(max_items / num_calls) < min_page_size:
+            # A zero offset is mathematically impossible; fall back to legacy.
+            return None
+        base_page_size = max_items // num_calls
+        num_larger_calls = max_items % num_calls
+        num_base_calls = num_calls - num_larger_calls
+        return [base_page_size] * num_base_calls + [
+            base_page_size + 1
+        ] * num_larger_calls
+
+    def _inject_dynamic_page_size(
+        self, op_kwargs, dynamic_page_sizes, page_index, total_items
+    ):
+        if page_index < len(dynamic_page_sizes):
+            page_size = dynamic_page_sizes[page_index]
+        else:
+            # Schedule exhausted (service returned short pages): request only what remains.
+            page_size = self._max_items - total_items
+        op_kwargs[self._limit_key] = page_size
 
     def _extract_parsed_response(self, response):
         return response
@@ -607,6 +668,7 @@ class Paginator:
         )
         self._result_keys = self._get_result_keys(self._pagination_cfg)
         self._limit_key = self._get_limit_key(self._pagination_cfg)
+        self._limit_key_min = self._get_limit_key_min()
 
     @property
     def result_keys(self):
@@ -649,6 +711,22 @@ class Paginator:
     def _get_limit_key(self, config):
         return config.get('limit_key')
 
+    def _get_limit_key_min(self):
+        """Return the modeled minimum value of the limit key, or ``None``.
+
+        Used by dynamic page size mode to determine whether a zero page offset
+        is achievable.
+        """
+        if self._limit_key is None:
+            return None
+        input_shape = self._model.input_shape
+        if input_shape is None:
+            return None
+        member = input_shape.members.get(self._limit_key)
+        if member is None:
+            return None
+        return member.metadata.get('min')
+
     def paginate(self, **kwargs):
         """Create paginator object for an operation.
 
@@ -670,6 +748,8 @@ class Paginator:
             page_params['StartingToken'],
             page_params['PageSize'],
             kwargs,
+            page_size_mode=page_params['PageSizeMode'],
+            limit_key_min=self._limit_key_min,
         )
 
     def _extract_paging_params(self, kwargs):
@@ -677,6 +757,7 @@ class Paginator:
         max_items = pagination_config.get('MaxItems', None)
         if max_items is not None:
             max_items = int(max_items)
+        page_size_mode = pagination_config.get('PageSizeMode', 'legacy')
         page_size = pagination_config.get('PageSize', None)
         if page_size is not None:
             if self._limit_key is None:
@@ -695,6 +776,7 @@ class Paginator:
             'MaxItems': max_items,
             'StartingToken': pagination_config.get('StartingToken', None),
             'PageSize': page_size,
+            'PageSizeMode': page_size_mode,
         }
 
 

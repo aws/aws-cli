@@ -85,6 +85,8 @@ cli_pager            --no-cli-pager cli_pager             AWS_PAGER             
 -------------------- -------------- --------------------- --------------------- --------------------------------
 cli_error_format     --cli-error-   cli_error_format      AWS_CLI_ERROR_FORMAT  Format for error output
                      format
+-------------------- -------------- --------------------- --------------------- --------------------------------
+cli_page_size_mode   N/A            cli_page_size_mode    N/A                   How ``--page-size`` is interpreted
 ==================== ============== ===================== ===================== ================================
 
 The third column, Config Entry, is the value you would specify in the AWS CLI
@@ -142,6 +144,24 @@ The default value is ``iso8601``.
 when serializing requests. The default is True. You can disable parameter
 validation for performance reasons. Otherwise, it's recommended to leave
 parameter validation enabled.
+
+``cli_page_size_mode`` controls how the ``--page-size`` parameter is
+interpreted during pagination. The valid values are:
+
+* legacy - ``--page-size`` is the exact number of items requested from the
+  service on every API call. This is the default. When ``--max-items`` is not
+  a multiple of ``--page-size``, the last output item can fall in the middle
+  of a service page, which can cause items to be skipped or duplicated if the
+  underlying data is mutated between paginated calls.
+* dynamic - ``--page-size`` is the *maximum* number of items requested per
+  API call. The AWS CLI computes the per-request page size so that exactly
+  ``--max-items`` items are requested from the service in total, keeping the
+  output aligned with service page boundaries and avoiding skipped or
+  duplicated items. In this mode the AWS CLI may request fewer items than
+  ``--page-size`` per call and may make at most one additional API call. When
+  it is mathematically impossible to align with page boundaries (for example,
+  when the requested item count is below the operation's minimum page size),
+  the AWS CLI falls back to ``legacy`` behavior.
 
 The ``max_attempts`` and ``retry_mode`` are explained in the
 "Retry Configuration" section below.

@@ -40,6 +40,7 @@ from awscli.argparser import HELP_BLURB
 from awscli.clidriver import (
     CLICommand,
     CLIDriver,
+    CLIOperationCaller,
     CustomArgument,
     ServiceCommand,
     ServiceOperation,
@@ -51,7 +52,10 @@ from awscli.clidriver import (
 )
 from awscli.compat import StringIO
 from awscli.customizations.commands import BasicCommand
-from awscli.customizations.exceptions import ParamValidationError
+from awscli.customizations.exceptions import (
+    ConfigurationError,
+    ParamValidationError,
+)
 from awscli.paramfile import URIArgumentHandler
 from awscli.testutils import BaseAWSCommandParamsTest, mock, unittest
 
@@ -411,6 +415,41 @@ class TestCliDriver:
     def test_can_access_subcommand_table(self):
         table = self.driver.subcommand_table
         assert list(table) == self.session.get_available_services()
+
+    def test_page_size_mode_config_chain_defaults_to_legacy(self):
+        # The config store is the single resolution point, defaulting to 'legacy'.
+        assert (
+            self.session.config_store.get_config_variable('cli_page_size_mode')
+            == 'legacy'
+        )
+
+    def test_page_size_mode_defaults_to_legacy(self):
+        self.session.set_config_variable('cli_page_size_mode', None)
+        caller = CLIOperationCaller(self.session)
+        parameters = {}
+        caller._inject_page_size_mode(parameters)
+        assert parameters['PaginationConfig']['PageSizeMode'] == 'legacy'
+
+    def test_page_size_mode_reads_dynamic_from_config(self):
+        self.session.set_config_variable('cli_page_size_mode', 'dynamic')
+        caller = CLIOperationCaller(self.session)
+        parameters = {}
+        caller._inject_page_size_mode(parameters)
+        assert parameters['PaginationConfig']['PageSizeMode'] == 'dynamic'
+
+    def test_page_size_mode_preserves_existing_pagination_config(self):
+        self.session.set_config_variable('cli_page_size_mode', None)
+        caller = CLIOperationCaller(self.session)
+        parameters = {'PaginationConfig': {'MaxItems': 5}}
+        caller._inject_page_size_mode(parameters)
+        assert parameters['PaginationConfig']['MaxItems'] == 5
+        assert parameters['PaginationConfig']['PageSizeMode'] == 'legacy'
+
+    def test_page_size_mode_invalid_value_raises(self):
+        self.session.set_config_variable('cli_page_size_mode', 'bogus')
+        caller = CLIOperationCaller(self.session)
+        with pytest.raises(ConfigurationError):
+            caller._inject_page_size_mode({})
 
     def test_can_access_argument_table(self):
         arg_table = self.driver.arg_table

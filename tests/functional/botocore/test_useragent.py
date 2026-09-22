@@ -250,6 +250,37 @@ def test_user_agent_has_registered_feature_id(patched_session):
     assert 'C' in feature_list
 
 
+def test_user_agent_has_dynamic_page_size_feature_id(patched_session):
+    client_s3 = patched_session.create_client('s3')
+    with UACapHTTPStubber(client_s3) as stub_client:
+        paginator = client_s3.get_paginator('list_buckets')
+        # Opting in registers 'PAGINATOR_DYNAMIC_PAGE_SIZE' ('Ai') plus 'PAGINATOR'.
+        for _ in paginator.paginate(
+            PaginationConfig={'PageSizeMode': 'dynamic'}
+        ):
+            pass
+    uafields = stub_client.captured_ua_string.split(' ')
+    feature_field = [field for field in uafields if field.startswith('m/')][0]
+    feature_list = feature_field[2:].split(',')
+    assert 'C' in feature_list
+    assert 'Ai' in feature_list
+
+
+def test_user_agent_no_dynamic_page_size_feature_id_by_default(
+    patched_session,
+):
+    client_s3 = patched_session.create_client('s3')
+    with UACapHTTPStubber(client_s3) as stub_client:
+        paginator = client_s3.get_paginator('list_buckets')
+        for _ in paginator.paginate():
+            pass
+    uafields = stub_client.captured_ua_string.split(' ')
+    feature_field = [field for field in uafields if field.startswith('m/')][0]
+    feature_list = feature_field[2:].split(',')
+    assert 'C' in feature_list
+    assert 'Ai' not in feature_list
+
+
 @pytest.mark.parametrize(
     'env_var, env_value, expected_feature',
     _AGENTIC_CALLER_ENV_FEATURE_MAPPINGS,

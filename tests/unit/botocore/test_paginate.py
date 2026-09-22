@@ -1621,5 +1621,156 @@ class TestStringPageSize(unittest.TestCase):
         self.method.assert_called_with(MaxItems='1')
 
 
+class TestDynamicPageSizeMode(unittest.TestCase):
+    def setUp(self):
+        self.paginate_config = {
+            'input_token': 'NextToken',
+            'output_token': 'NextToken',
+            'limit_key': 'MaxItems',
+            'result_key': 'Stuff',
+        }
+
+    def _make_paginator(self, min_limit_key=None):
+        max_items_shape = {'type': 'integer'}
+        if min_limit_key is not None:
+            max_items_shape['min'] = min_limit_key
+        service_model = {
+            'metadata': {'protocol': 'query', 'endpointPrefix': 'prefix'},
+            'documentation': 'best service ever',
+            'operations': {
+                'ListStuff': {
+                    'name': 'ListStuff',
+                    'http': {'method': 'GET', 'requestUri': '/things'},
+                    'input': {'shape': 'ListStuffInputShape'},
+                    'output': {'shape': 'ListStuffOutputShape'},
+                    'errors': [],
+                    'documentation': 'Lists stuff',
+                }
+            },
+            'shapes': {
+                'String': {'type': 'string'},
+                'MaxItemsShape': max_items_shape,
+                'ListOfStuff': {'type': 'list', 'member': {'type': 'string'}},
+                'ListStuffInputShape': {
+                    'type': 'structure',
+                    'required': [],
+                    'members': {
+                        'NextToken': {'shape': 'String'},
+                        'MaxItems': {'shape': 'MaxItemsShape'},
+                    },
+                },
+                'ListStuffOutputShape': {
+                    'type': 'structure',
+                    'required': [],
+                    'members': {
+                        'NextToken': {'shape': 'String'},
+                        'Stuff': {'shape': 'ListOfStuff'},
+                    },
+                },
+            },
+        }
+        service = model.ServiceModel(service_model)
+        op_model = service.operation_model('ListStuff')
+        method = mock.Mock()
+        paginator = Paginator(method, self.paginate_config, op_model)
+        return paginator, method
+
+    def _responses(self, page_sizes):
+        # Responses returning the requested item counts, NextToken except on the last.
+        responses = []
+        for i, size in enumerate(page_sizes):
+            response = {'Stuff': ['item'] * size}
+            if i < len(page_sizes) - 1:
+                response['NextToken'] = f'token{i}'
+            responses.append(response)
+        return responses
+
+    def _requested_page_sizes(self, method):
+        return [call.kwargs['MaxItems'] for call in method.call_args_list]
+
+    def test_dynamic_mode_splits_pages_to_align_boundaries(self):
+        paginator, method = self._make_paginator()
+        method.side_effect = self._responses([7, 8])
+        result = paginator.paginate(
+            PaginationConfig={
+                'MaxItems': 15,
+                'PageSize': 10,
+                'PageSizeMode': 'dynamic',
+            }
+        ).build_full_result()
+        # 15 items over a max page size of 10 => two balanced calls of 7 and 8.
+        self.assertEqual(self._requested_page_sizes(method), [7, 8])
+        self.assertEqual(len(result['Stuff']), 15)
+        # Exactly max_items requested: no truncation, no non-zero-offset resume token.
+        self.assertNotIn('NextToken', result)
+
+    def test_dynamic_mode_efficient_small_max_items(self):
+        paginator, method = self._make_paginator()
+        method.side_effect = self._responses([5])
+        paginator.paginate(
+            PaginationConfig={
+                'MaxItems': 5,
+                'PageSize': 1000,
+                'PageSizeMode': 'dynamic',
+            }
+        ).build_full_result()
+        # Only 5 items are requested instead of the full page size of 1000.
+        self.assertEqual(self._requested_page_sizes(method), [5])
+
+    def test_dynamic_mode_multiple_uses_legacy_page_size(self):
+        paginator, method = self._make_paginator()
+        method.side_effect = self._responses([10, 10])
+        paginator.paginate(
+            PaginationConfig={
+                'MaxItems': 20,
+                'PageSize': 10,
+                'PageSizeMode': 'dynamic',
+            }
+        ).build_full_result()
+        # max_items is a multiple of page_size, so legacy behavior is used.
+        self.assertEqual(self._requested_page_sizes(method), [10, 10])
+
+    def test_dynamic_mode_falls_back_when_impossible(self):
+        # min limit key 10, max_items 15, page size 12 => impossible, fall back to legacy.
+        paginator, method = self._make_paginator(min_limit_key=10)
+        method.side_effect = [
+            {'Stuff': ['item'] * 12, 'NextToken': 't0'},
+            {'Stuff': ['item'] * 12},
+        ]
+        paginator.paginate(
+            PaginationConfig={
+                'MaxItems': 15,
+                'PageSize': 12,
+                'PageSizeMode': 'dynamic',
+            }
+        ).build_full_result()
+        self.assertEqual(self._requested_page_sizes(method), [12, 12])
+
+    def test_dynamic_mode_succeeds_with_min_limit_key(self):
+        # min limit key of 10, max_items 55, page size 50 => k=2, b=27.
+        paginator, method = self._make_paginator(min_limit_key=10)
+        method.side_effect = self._responses([27, 28])
+        paginator.paginate(
+            PaginationConfig={
+                'MaxItems': 55,
+                'PageSize': 50,
+                'PageSizeMode': 'dynamic',
+            }
+        ).build_full_result()
+        self.assertEqual(self._requested_page_sizes(method), [27, 28])
+
+    def test_legacy_mode_is_default(self):
+        paginator, method = self._make_paginator()
+        method.side_effect = [
+            {'Stuff': ['item'] * 10, 'NextToken': 't0'},
+            {'Stuff': ['item'] * 10},
+        ]
+        paginator.paginate(
+            PaginationConfig={'MaxItems': 15, 'PageSize': 10}
+        ).build_full_result()
+        # Without opting in, page size stays fixed at the requested value.
+        self.assertEqual(self._requested_page_sizes(method), [10, 10])
+
+
 if __name__ == '__main__':
     unittest.main()

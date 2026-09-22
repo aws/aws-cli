@@ -2,6 +2,21 @@
 CHANGELOG
 =========
 
+2.37.0
+======
+
+* api-change:``cloudwatchomni``: Amazon CloudWatch Omni is now generally available, an AI-powered unified observability for AI agents, applications, and infrastructure. As part of it, organization centralization rules now support cross-account context graph centralization.
+* enhancement:agent-toolkit: Adds ``--all`` to ``aws agent-toolkit update-skill`` to update every installed AWS skill that is out of date in a single command.
+* api-change:``sso-admin``: AWS IAM Identity Center now returns PrimaryRegion and Regions in the DescribeInstance response, providing information about replicated instances, and returns IdentityStoreArn in both the ListInstances and DescribeInstance responses.
+* api-change:``ec2``: Amazon EC2 now supports quote-based start date changes for future-dated Capacity Reservations
+* feature:crt: Enable the CRT S3 transfer client by default on the following EC2 instance families - dl1, g6e, g6, g5, g5g, g4dn, inf2, inf1, x2iedn, x2idn, x2iezn, x1e, x1, i4i, i3en, i3, is4gen, im4gn, d3en, d3, h1
+* enhancement:agent-toolkit: Adds ``aws agent-toolkit check-skill-updates``, which lists installed AWS skills that have a newer version available. Pass ``--all`` to list every installed skill with its installed and latest version.
+* api-change:``quicksight``: Adds support for granular custom permissions on 28 action connectors, including Gmail, Google Drive, Google Sheets, Airtable, and Dropbox. Administrators can now allow or deny individual connector operations instead of all action connectors at once.
+* api-change:``apigateway``: API Gateway now supports two new security policies for REST APIs and custom domain names, SecurityPolicy-TLS13-1-2-Ext2-PQ-2025-09 (TLS 1.3 1.2 with post-quantum cryptography) and SecurityPolicy-TLS13-1-2-Ext2-FIPS-PQ-2025-09 (adds FIPS). Both retain legacy algorithms for backward compatibility.
+* api-change:``observabilityadmin``: Amazon CloudWatch Omni is now generally available, an AI-powered unified observability for AI agents, applications, and infrastructure. Centralization now supports context graph for multi-account resource discovery, and dataset integrations makes logs available in CloudWatch datasets.
+* api-change:``glue``: Adding two new fields for Glue Materialized Views feature - (1) SubObjectsStatistics and (2) SparkPipelineInfo.
+
+
 2.36.50
 =======
 

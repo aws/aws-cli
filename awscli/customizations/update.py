@@ -359,22 +359,52 @@ class WindowsUpdateCommand(BaseUpdateCommand):
         orgs = ','.join(
             "'" + org.replace("'", "''") + "'" for org in _WINDOWS_SIGNER_ORGS
         )
-        ps_command = (
-            "$ErrorActionPreference = 'Stop'; "
-            "$path = $env:AWS_CLI_VERIFY_PATH; "
-            "$sig = Get-AuthenticodeSignature -FilePath $path; "
-            "if ($sig.Status -ne 'Valid') { "
-            "Write-Error \"signature status is '$($sig.Status)'\"; exit 1 }; "
-            "$cert = $sig.SignerCertificate; "
-            "if (-not $cert) { Write-Error 'no signer certificate'; exit 1 }; "
-            f"$orgs = @({orgs}); $ok = $false; "
-            "foreach ($o in $orgs) { "
-            "if ($cert.Subject -like \"*$o*\") { $ok = $true; break } }; "
-            "if (-not $ok) { "
-            "Write-Error \"not signed by AWS: $($cert.Subject)\"; exit 1 }; "
-            f"if ($cert.Issuer -notlike '*{_WINDOWS_SIGNER_ISSUER}*') {{ "
-            "Write-Error \"unexpected issuer: $($cert.Issuer)\"; exit 1 }; "
-            "exit 0"
+        # Match the certificate's Organization (O) relative distinguished name
+        # *exactly* against the allowlist, rather than substring-matching the
+        # whole subject DN: a substring match on the DN would also accept a
+        # DigiCert-issued cert whose CN/OU merely contained one of these
+        # strings. X500DistinguishedName.Format($true) emits one RDN per line,
+        # so an O value that itself contains commas (e.g. "Amazon Web Services,
+        # Inc.") is parsed correctly. Format wraps such values in double
+        # quotes, so Get-Org strips a surrounding quote pair before matching.
+        ps_command = "\n".join(
+            [
+                "$ErrorActionPreference = 'Stop'",
+                "function Get-Org("
+                "[System.Security.Cryptography.X509Certificates."
+                "X500DistinguishedName]$name) {",
+                '  foreach ($line in ($name.Format($true) '
+                '-split "\\r?\\n")) {',
+                "    if ($line -match '^O=(.*)$') {",
+                "      $v = $matches[1].Trim();",
+                "      if ($v.Length -ge 2 -and $v.StartsWith('\"') "
+                "-and $v.EndsWith('\"')) "
+                "{ $v = $v.Substring(1, $v.Length - 2) "
+                "-replace '\"\"', '\"' };",
+                "      return $v",
+                "    }",
+                "  }",
+                "  return $null",
+                "}",
+                "$path = $env:AWS_CLI_VERIFY_PATH",
+                "$sig = Get-AuthenticodeSignature -FilePath $path",
+                "if ($sig.Status -ne 'Valid') "
+                "{ Write-Error \"signature status is '$($sig.Status)'\"; "
+                "exit 1 }",
+                "$cert = $sig.SignerCertificate",
+                "if (-not $cert) "
+                "{ Write-Error 'no signer certificate'; exit 1 }",
+                f"$orgs = @({orgs})",
+                "$subjectOrg = Get-Org $cert.SubjectName",
+                "if ($orgs -notcontains $subjectOrg) "
+                '{ Write-Error "not signed by AWS (O=$subjectOrg): '
+                '$($cert.Subject)"; exit 1 }',
+                "$issuerOrg = Get-Org $cert.IssuerName",
+                f"if ($issuerOrg -notlike '*{_WINDOWS_SIGNER_ISSUER}*') "
+                '{ Write-Error "unexpected issuer (O=$issuerOrg): '
+                '$($cert.Issuer)"; exit 1 }',
+                "exit 0",
+            ]
         )
         env = os.environ.copy()
         env['AWS_CLI_VERIFY_PATH'] = script_path

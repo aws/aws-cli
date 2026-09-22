@@ -282,6 +282,25 @@ $AwsCliSignerOrgs = @(
 )
 $AwsCliSignerIssuerPattern = 'DigiCert'
 
+# Extract the Organization (O) relative distinguished name from a certificate's
+# subject/issuer. Format($true) emits one RDN per line, so an O value that
+# itself contains commas (e.g. "Amazon Web Services, Inc.") parses correctly.
+# Format wraps such values in double quotes, so we strip a surrounding quote
+# pair before returning so the value matches the plain allowlist entry.
+function Get-CertOrg {
+    param([System.Security.Cryptography.X509Certificates.X500DistinguishedName] $Name)
+    foreach ($line in ($Name.Format($true) -split "\r?\n")) {
+        if ($line -match '^O=(.*)$') {
+            $v = $matches[1].Trim()
+            if ($v.Length -ge 2 -and $v.StartsWith('"') -and $v.EndsWith('"')) {
+                $v = $v.Substring(1, $v.Length - 2) -replace '""', '"'
+            }
+            return $v
+        }
+    }
+    return $null
+}
+
 function Verify-Installer {
     # Verification is on by default. -SkipSignatureVerification is an explicit,
     # human-made opt-out; it disables a security control, so it is never silent.
@@ -310,21 +329,23 @@ function Verify-Installer {
 
     # 2. The signer must be AWS. A valid signature alone only proves *some*
     #    trusted CA signed it; checking the organization confirms it is ours.
-    $signedByAws = $false
-    foreach ($org in $AwsCliSignerOrgs) {
-        if ($cert.Subject -like "*$org*") { $signedByAws = $true; break }
-    }
-    if (-not $signedByAws) {
+    #    Match the O RDN exactly, not a substring of the whole subject DN: a
+    #    substring match would also accept a cert whose CN/OU merely contained
+    #    one of these strings.
+    $subjectOrg = Get-CertOrg $cert.SubjectName
+    if ($AwsCliSignerOrgs -notcontains $subjectOrg) {
         Throw-Error 1 ("$($Script:InstallerPath) is not signed by AWS " +
-            "(signer: $($cert.Subject)). Refusing to install.")
+            "(signer O=$subjectOrg; subject: $($cert.Subject)). " +
+            'Refusing to install.')
     }
 
     # 3. The certificate must be issued by our CA (DigiCert). This narrows
     #    "any trusted CA" down to the CA that issues AWS's code-signing certs.
-    if ($cert.Issuer -notlike "*$AwsCliSignerIssuerPattern*") {
+    $issuerOrg = Get-CertOrg $cert.IssuerName
+    if ($issuerOrg -notlike "*$AwsCliSignerIssuerPattern*") {
         Throw-Error 1 ("$($Script:InstallerPath) was signed by an unexpected " +
-            "certificate authority (issuer: $($cert.Issuer)). " +
-            'Refusing to install.')
+            "certificate authority (issuer O=$issuerOrg; " +
+            "issuer: $($cert.Issuer)). Refusing to install.")
     }
 
     Write-Success 'MSI Authenticode signature verified (signed by AWS).'

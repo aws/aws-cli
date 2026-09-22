@@ -502,6 +502,36 @@ class TestWindowsVerifyScript:
             command([], global_args())
         runner.assert_not_called()
 
+    def test_verification_matches_org_exactly(self, monkeypatch):
+        # The signer check must gate on an exact match of the certificate's
+        # Organization (O) RDN, not a substring of the whole subject DN: a
+        # substring match would also accept a DigiCert-issued cert whose CN/OU
+        # merely contained one of the allowlisted org strings. The PowerShell
+        # logic itself is exercised out-of-band (it needs a real
+        # Get-AuthenticodeSignature); here we lock in the shape of the emitted
+        # command so the fragile substring form cannot silently return.
+        captured = {}
+
+        def fake_run(cmd, **kwargs):
+            captured['ps'] = cmd[cmd.index('-Command') + 1]
+            return mock.Mock(returncode=0, stdout='', stderr='')
+
+        monkeypatch.setattr(update_module.subprocess, 'run', fake_run)
+        command = self._command(runner=mock.Mock())
+
+        command([], global_args())
+
+        ps = captured['ps']
+        # Exact O-RDN match against the allowlist.
+        assert '-notcontains $subjectOrg' in ps
+        assert 'Get-Org' in ps
+        # Format($true) quotes comma-bearing O values (e.g. "Amazon Web
+        # Services, Inc."); the surrounding quote pair must be stripped so the
+        # value matches the plain allowlist entry.
+        assert '-replace' in ps
+        # The previous whole-subject substring check must be gone.
+        assert '$cert.Subject -like' not in ps
+
 
 def _response(status_code, content=b''):
     return mock.Mock(status_code=status_code, content=content)

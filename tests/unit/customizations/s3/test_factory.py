@@ -27,6 +27,7 @@ from s3transfer.manager import TransferManager
 from awscli.customizations.s3 import constants
 from awscli.customizations.s3.factory import (
     ADAPTIVE_RETRY_MODE,
+    CRT_AUTO_RESOLVE_INSTANCE_FAMILIES,
     CRT_PART_SIZE_EXCEEDS_MEMORY_LIMIT,
     MAX_CRT_MAX_ATTEMPTS,
     MIN_CRT_MAX_ATTEMPTS,
@@ -796,6 +797,13 @@ def auto_resolve_factory(auto_resolve_session, monkeypatch):
 
 
 @pytest.fixture
+def mock_crt_get_ec2_instance_type():
+    with mock.patch('awscrt.s3.get_ec2_instance_type') as mock_instance_type:
+        mock_instance_type.return_value = None
+        yield mock_instance_type
+
+
+@pytest.fixture
 def mock_crt_lock_held(auto_resolve_factory):
     with mock.patch.object(
         auto_resolve_factory,
@@ -810,6 +818,7 @@ def resolve_client_type(
     auto_resolve_factory,
     s3_params,
     mock_crt_is_optimized_for_system,
+    mock_crt_get_ec2_instance_type,
     mock_crt_recommended_throughput,
     mock_crt_lock_held,
 ):
@@ -916,6 +925,64 @@ class TestAutoResolveCrtClient:
         assert resolve_client_type() == constants.CLASSIC_TRANSFER_CLIENT
 
 
+class TestAutoResolveCrtClientForInstanceFamily:
+    """Instance families rolled out to the crt client without the env var."""
+
+    @pytest.fixture(autouse=True)
+    def no_auto_resolve_env_var(self, auto_resolve_factory, monkeypatch):
+        monkeypatch.delenv('AWS_CLI_AUTO_RESOLVE_CLIENT')
+
+    @pytest.mark.parametrize(
+        'instance_family', sorted(CRT_AUTO_RESOLVE_INSTANCE_FAMILIES)
+    )
+    def test_resolves_to_crt_for_rolled_out_instance_families(
+        self,
+        resolve_client_type,
+        mock_crt_get_ec2_instance_type,
+        instance_family,
+    ):
+        mock_crt_get_ec2_instance_type.return_value = (
+            f'{instance_family}.2xlarge'
+        )
+        assert resolve_client_type() == constants.CRT_TRANSFER_CLIENT
+
+    def test_resolves_to_classic_when_not_on_ec2(
+        self, resolve_client_type, mock_crt_get_ec2_instance_type
+    ):
+        mock_crt_get_ec2_instance_type.return_value = None
+        assert resolve_client_type() == constants.CLASSIC_TRANSFER_CLIENT
+
+    def test_resolves_to_classic_for_instance_family_not_rolled_out(
+        self, resolve_client_type, mock_crt_get_ec2_instance_type
+    ):
+        mock_crt_get_ec2_instance_type.return_value = 'm5.2xlarge'
+        assert resolve_client_type() == constants.CLASSIC_TRANSFER_CLIENT
+
+    def test_instance_family_must_match_in_full(
+        self, resolve_client_type, mock_crt_get_ec2_instance_type
+    ):
+        # 'g5' is rolled out but 'g5dn' is a different family, so a prefix
+        # match is not enough.
+        mock_crt_get_ec2_instance_type.return_value = 'g5dn.2xlarge'
+        assert resolve_client_type() == constants.CLASSIC_TRANSFER_CLIENT
+
+    def test_resolves_to_classic_for_unsupported_settings(
+        self, resolve_client_type, mock_crt_get_ec2_instance_type
+    ):
+        mock_crt_get_ec2_instance_type.return_value = 'g5.2xlarge'
+        assert (
+            resolve_client_type(max_bandwidth=1024)
+            == constants.CLASSIC_TRANSFER_CLIENT
+        )
+
+    def test_warns_when_routed_away_for_classic_only_settings(
+        self, resolve_client_type, mock_crt_get_ec2_instance_type, capsys
+    ):
+        mock_crt_get_ec2_instance_type.return_value = 'g5.2xlarge'
+        resolve_client_type(max_bandwidth=1024)
+        assert 'max_bandwidth' in capsys.readouterr().err
+
+
 class TestClassicOnlySettingsWarning:
     def test_warns_when_routed_away_for_max_bandwidth(
         self, resolve_client_type, capsys
@@ -973,13 +1040,6 @@ class TestClassicOnlySettingsWarning:
             preferred_transfer_client='classic', max_bandwidth=1024
         )
         assert capsys.readouterr().err == ''
-
-
-@pytest.fixture
-def mock_crt_get_ec2_instance_type():
-    with mock.patch('awscrt.s3.get_ec2_instance_type') as mock_instance_type:
-        mock_instance_type.return_value = None
-        yield mock_instance_type
 
 
 @pytest.fixture

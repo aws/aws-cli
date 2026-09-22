@@ -64,6 +64,32 @@ MINIMUM_TARGET_THROUGHPUT_GBPS = 10.0
 # RuntimeError for this, leaving the error code as the only thing to match on.
 CRT_PART_SIZE_EXCEEDS_MEMORY_LIMIT = 14371
 
+CRT_AUTO_RESOLVE_INSTANCE_FAMILIES = frozenset(
+    [
+        'dl1',
+        'g6e',
+        'g6',
+        'g5',
+        'g5g',
+        'g4dn',
+        'inf2',
+        'inf1',
+        'x2iedn',
+        'x2idn',
+        'x2iezn',
+        'x1e',
+        'x1',
+        'i4i',
+        'i3en',
+        'i3',
+        'is4gen',
+        'im4gn',
+        'd3en',
+        'd3',
+        'h1',
+    ]
+)
+
 WARN_IGNORED = 'warn_ignored'
 
 EXCLUDE_FROM_AUTO = 'exclude_from_auto'
@@ -227,10 +253,19 @@ class TransferManagerFactory:
         return True
 
     def _is_crt_auto_resolve_enabled(self):
-        return (
+        if (
             os.environ.get('AWS_CLI_AUTO_RESOLVE_CLIENT')
             == constants.CRT_TRANSFER_CLIENT
-        )
+        ):
+            return True
+        return self._is_rolled_out_instance_family()
+
+    def _is_rolled_out_instance_family(self):
+        instance_type = awscrt.s3.get_ec2_instance_type()
+        if instance_type is None:
+            return False
+        instance_family = instance_type.split('.')[0].lower()
+        return instance_family in CRT_AUTO_RESOLVE_INSTANCE_FAMILIES
 
     def _get_unsupported_settings(self, params, runtime_config):
         unsupported = self._get_classic_only_settings(runtime_config)

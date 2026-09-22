@@ -338,20 +338,33 @@ files to and from S3. Valid choices are:
     transfer client currently only supports uploads to S3, downloads from
     S3, and deletion of S3 objects.
 
-  * The host running the AWS CLI is optimized for the ``crt`` transfer client.
-    Currently, the ``crt`` transfer client is optimized for Amazon EC2 instances
-    that are running Linux as the operating system and are of any of these
-    instance types:
+  * The host running the AWS CLI is an Amazon EC2 instance running Linux as the
+    operating system and is either:
 
-    * ``p4d.24xlarge``
-    * ``p4de.24xlarge``
-    * ``p5.48xlarge``
-    * ``trn1n.32xlarge``
-    * ``trn1.32xlarge``
-    * ``p5e.48xlarge``
-    * ``p5en.48xlarge``
-    * ``p6-b200.48xlarge``
-    * ``p6-b300.48xlarge``
+    * Of an instance type that the ``crt`` transfer client is optimized for.
+      Currently, these instance types are: ``p4d.24xlarge``, ``p4de.24xlarge``,
+      ``p5.48xlarge``, ``p5e.48xlarge``, ``p5en.48xlarge``, ``p6-b200.48xlarge``,
+      ``p6-b300.48xlarge``, ``trn1.32xlarge``, and ``trn1n.32xlarge``.
+
+    * Of one of these instance families: ``d3``, ``d3en``, ``dl1``, ``g4dn``,
+      ``g5``, ``g5g``, ``g6``, ``g6e``, ``h1``, ``i3``, ``i3en``, ``i4i``,
+      ``im4gn``, ``inf1``, ``inf2``, ``is4gen``, ``x1``, ``x1e``, ``x2idn``,
+      ``x2iedn``, and ``x2iezn``.
+
+  * The ``crt`` transfer client supports the requested transfer. If the host
+    qualifies by instance family instead of by being of an instance type that
+    the ``crt`` transfer client is optimized for, the AWS CLI falls back to the
+    ``classic`` transfer client when any of the following are in use:
+
+    * The ``max_bandwidth`` configuration value.
+    * A ``retry_mode`` configuration value of ``adaptive``.
+    * A ``max_attempts`` configuration value outside of ``2`` through ``64``.
+    * Uploads whose source is a non-seekable stream, such as
+      ``aws s3 cp - s3://bucket/key``.
+
+    Hosts that are of an instance type that the ``crt`` transfer client is
+    optimized for do not fall back for these reasons. They use the ``crt``
+    transfer client and ignore the configuration values it does not support.
 
   * There are no other running processes of the AWS CLI using the CRT S3 transfer
     client. To force multiple concurrently running processes of the AWS CLI to use
@@ -387,9 +400,10 @@ files to and from S3. Valid choices are:
   * ``max_queue_size`` and ``max_bandwidth`` configuration values - Ignores
     these configuration values.
 
-  * ``max_attempts`` configuration value - Honors values greater than one.
-    Ignores a value of one because the ``crt`` transfer client cannot disable
-    retries.
+  * ``max_attempts`` configuration value - Honors values from ``2`` through
+    ``64`` and ignores values outside of that range. The ``crt`` transfer
+    client cannot disable retries, so it cannot honor a value of ``1``, and it
+    rejects values of ``65`` or greater.
 
   When a configured value is not supported by the transfer client being used,
   the AWS CLI emits a warning naming the values it is ignoring.
@@ -407,12 +421,23 @@ target_bandwidth
 Controls the target bandwidth that the transfer client will try to reach
 for S3 uploads and downloads. By default, the AWS CLI will automatically
 attempt to choose a target bandwidth that matches the system's maximum
-network bandwidth. Currently, if the AWS CLI is unable to determine the
-maximum network bandwith, the AWS CLI falls back to a target bandwidth of
-ten gigabits per second (i.e. equivalent to setting the ``target_bandwidth``
-configuration option to ``10000000000b/s``). To set a specific target bandwith,
-explicitly configure the ``target_bandwidth`` configuration option. Its
-value can be specified as:
+network bandwidth. Currently, the default is resolved as follows:
+
+* When the ``preferred_transfer_client`` configuration value is set to
+  ``crt``, the AWS CLI uses the greater of the detected maximum network
+  bandwidth and ten gigabits per second (i.e. equivalent to setting the
+  ``target_bandwidth`` configuration option to ``10000000000b/s``).
+
+* When the ``preferred_transfer_client`` configuration value resolves to
+  ``crt`` through ``auto``, the AWS CLI uses the detected maximum network
+  bandwidth, or four gigabits per second (i.e. equivalent to setting the
+  ``target_bandwidth`` configuration option to ``4000000000b/s``) if it is
+  unable to detect it. The lower fallback limits the memory that the ``crt``
+  transfer client reserves for buffering parts on hosts whose maximum network
+  bandwidth is unknown.
+
+To set a specific target bandwidth, explicitly configure the
+``target_bandwidth`` configuration option. Its value can be specified as:
 
 * An integer in terms of **bytes** per second. For example,
   ``1073741824`` would set the target bandwidth to 1 gibibyte per second.

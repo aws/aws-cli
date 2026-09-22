@@ -23927,6 +23927,10 @@
       "type":"integer",
       "box":true
     },
+    "NullableLong":{
+      "type":"long",
+      "box":true
+    },
     "NullableString":{
       "type":"string",
       "box":true
@@ -28670,6 +28674,23 @@
       },
       "documentation":"<p>Specifies a target that uses an Apache Spark connector.</p>"
     },
+    "SparkPipelineInfoKey":{
+      "type":"string",
+      "max":128,
+      "min":1
+    },
+    "SparkPipelineInfoMap":{
+      "type":"map",
+      "key":{"shape":"SparkPipelineInfoKey"},
+      "value":{"shape":"SparkPipelineInfoValue"},
+      "max":50,
+      "min":0
+    },
+    "SparkPipelineInfoValue":{
+      "type":"string",
+      "max":2048,
+      "min":0
+    },
     "SparkSQL":{
       "type":"structure",
       "required":[
@@ -29815,6 +29836,49 @@
       "type":"map",
       "key":{"shape":"NullableString"},
       "value":{"shape":"NullableString"}
+    },
+    "SubObjectSourceType":{
+      "type":"string",
+      "enum":[
+        "HIVE_PARQUET",
+        "HIVE_ORC",
+        "HIVE_CSV",
+        "HIVE_JSON",
+        "PLAIN_PARQUET",
+        "ICEBERG"
+      ]
+    },
+    "SubObjectStatistics":{
+      "type":"structure",
+      "members":{
+        "SourceType":{
+          "shape":"SubObjectSourceType",
+          "documentation":"<p>The source type of the sub-object (for example, its table format), which identifies the sub-object.</p>"
+        },
+        "GlueVersionId":{
+          "shape":"NullableString",
+          "documentation":"<p>The Glue version ID of the sub-object that the statistics were captured for.</p>"
+        },
+        "PartitionCount":{
+          "shape":"NullableLong",
+          "documentation":"<p>The number of sub-object partitions selected for that refresh. Not present for unpartitioned sub-objects.</p>"
+        },
+        "FileCount":{
+          "shape":"NullableLong",
+          "documentation":"<p>The number of sub-object data files selected for that refresh.</p>"
+        },
+        "TotalFileBytes":{
+          "shape":"NullableLong",
+          "documentation":"<p>The total size, in bytes, of the data files counted by <code>FileCount</code>.</p>"
+        }
+      },
+      "documentation":"<p>Statistics for one sub-object referenced by a materialized view, recorded when the materialized view was created or last fully refreshed. These values describe what that refresh selected from the sub-object, which can be a subset of the table when the materialized view's definition limits the data it reads. The fields present depend on the sub-object's format.</p>"
+    },
+    "SubObjectsStatisticsList":{
+      "type":"list",
+      "member":{"shape":"SubObjectStatistics"},
+      "max":250,
+      "min":0
     },
     "SupportedDialect":{
       "type":"structure",
@@ -32593,9 +32657,17 @@
           "shape":"ViewSubObjectVersionIdsList",
           "documentation":"<p>List of the Apache Iceberg table versions referenced by the materialized view.</p>"
         },
+        "SubObjectsStatistics":{
+          "shape":"SubObjectsStatisticsList",
+          "documentation":"<p>Statistics captured for each sub-object referenced by the materialized view as of its most recent refresh, such as the source type, Glue version ID, and the partition, file, and byte counts. Each entry describes one sub-object, identified by its source type.</p>"
+        },
         "Representations":{
           "shape":"ViewRepresentationList",
           "documentation":"<p>A list of representations.</p>"
+        },
+        "SparkPipelineInfo":{
+          "shape":"SparkPipelineInfoMap",
+          "documentation":"<p>A map of key-value pairs containing Spark Declarative Pipelines (SDP) information for the materialized view.</p>"
         }
       },
       "documentation":"<p>A structure containing details for representations.</p>"
@@ -32638,6 +32710,14 @@
         "SubObjectVersionIds":{
           "shape":"ViewSubObjectVersionIdsList",
           "documentation":"<p>List of the Apache Iceberg table versions referenced by the materialized view.</p>"
+        },
+        "SubObjectsStatistics":{
+          "shape":"SubObjectsStatisticsList",
+          "documentation":"<p>Statistics for each sub-object referenced by the materialized view, such as the source type, Glue version ID, and the partition, file, and byte counts. Each entry describes one sub-object, identified by its source type.</p>"
+        },
+        "SparkPipelineInfo":{
+          "shape":"SparkPipelineInfoMap",
+          "documentation":"<p>A map of key-value pairs containing Spark Declarative Pipelines (SDP) information for the materialized view.</p>"
         }
       },
       "documentation":"<p>A structure containing details for creating or updating an Glue view.</p>"

@@ -23,6 +23,17 @@ SAMPLE_ID_TOKEN = (
 )
 
 
+@pytest.fixture(autouse=True)
+def mock_auth_code_fetcher():
+    # Same-device login creates a local callback server, and binding it does
+    # a reverse DNS lookup that can stall for seconds. These tests mock
+    # fetch_token, so the server is never used.
+    with mock.patch(
+        'awscli.customizations.login.login.AuthCodeFetcher', autospec=True
+    ) as auth_code_fetcher:
+        yield auth_code_fetcher
+
+
 @pytest.fixture
 def mock_token_loader():
     return mock.Mock()

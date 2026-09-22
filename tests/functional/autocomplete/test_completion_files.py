@@ -90,65 +90,60 @@ class ServiceTestData:
     service_name: str
 
 
-def get_models_with_completions():
+def get_services_with_completions():
     session = clidriver.create_clidriver().session
     loader = session.get_component('data_loader')
-    services_with_completions = loader.list_available_services('completions-1')
-    models = []
-    for service_name in services_with_completions:
-        service_model = loader.load_service_model(service_name, 'service-2')
-        api_version = service_model['metadata']['apiVersion']
-        completions = loader.load_service_model(
-            service_name, 'completions-1', api_version
-        )
-        models.append(
-            ServiceTestData(service_model, completions, service_name)
-        )
-    return models
+    return loader.list_available_services('completions-1')
 
 
-def _get_invalid_completion_operations():
+@pytest.fixture(scope='module', params=get_services_with_completions())
+def service_test_data(request):
+    # Only the current service's documents live in this fixture; collection
+    # retains service names, not another copy of every service model.
+    service_name = request.param
+    session = clidriver.create_clidriver().session
+    loader = session.get_component('data_loader')
+    service_model = loader.load_service_model(service_name, 'service-2')
+    api_version = service_model['metadata']['apiVersion']
+    completions = loader.load_service_model(
+        service_name, 'completions-1', api_version
+    )
+    return ServiceTestData(service_model, completions, service_name)
+
+
+def _get_invalid_completion_operations(service_test_data):
     cases = []
-    for test_data in get_models_with_completions():
-        known_ops = set(test_data.service_model['operations'])
-        for op_name in test_data.completions['operations']:
-            if op_name not in known_ops:
-                cases.append((test_data.service_name, op_name))
-        for resource in test_data.completions.get('resources', {}).values():
-            op_name = resource.get('operation')
-            if op_name and op_name not in known_ops:
-                cases.append((test_data.service_name, op_name))
+    known_ops = set(service_test_data.service_model['operations'])
+    for op_name in service_test_data.completions['operations']:
+        if op_name not in known_ops:
+            cases.append(op_name)
+    resources = service_test_data.completions.get('resources', {})
+    for resource in resources.values():
+        op_name = resource.get('operation')
+        if op_name and op_name not in known_ops:
+            cases.append(op_name)
     return cases
 
 
 @pytest.mark.validates_models
-@pytest.mark.parametrize(
-    "service_name, operation_name",
-    _get_invalid_completion_operations(),
-    ids=lambda val: str(val),
-)
 def test_completions_operations_exist_in_model(
-    service_name, operation_name, record_property
+    service_test_data, record_property
 ):
-    record_property('aws_service', service_name)
-    record_property('aws_operation', operation_name)
-    pytest.fail(
-        f"Completions file for '{service_name}' references operation "
-        f"'{operation_name}' which does not exist in the service model. "
-        f"The completions-1.json file must be updated to remove or "
-        f"update references to this operation."
+    invalid_operations = _get_invalid_completion_operations(service_test_data)
+    record_property('aws_service', service_test_data.service_name)
+    for operation_name in invalid_operations:
+        record_property('aws_operation', operation_name)
+    assert not invalid_operations, (
+        f"Completions file for '{service_test_data.service_name}' references "
+        f"operations absent from the service model: {invalid_operations}. "
+        "The completions-1.json file must remove or update these references."
     )
 
 
 @pytest.mark.validates_models
-@pytest.mark.parametrize(
-    "test_data",
-    get_models_with_completions(),
-    ids=lambda test_data: test_data.service_name,
-)
-def test_verify_generated_completions_are_valid(test_data):
-    completions = test_data.completions
-    service_model = test_data.service_model
+def test_verify_generated_completions_are_valid(service_test_data):
+    completions = service_test_data.completions
+    service_model = service_test_data.service_model
     _validate_schema(completions)
     # Validate that every operation named in the completions
     # file references a known operation.
@@ -256,11 +251,11 @@ def _validate_jmespath_expression(
     arg_gen = ArgumentGenerator(use_member_names=True)
     sample_output = arg_gen.generate_skeleton(output_shape)
     search_result = jmespath.search(jmespath_expr, sample_output)
-    assert (
-        search_result is not None
-    ), "Expression is blob or another unsupported type"
+    assert search_result is not None, (
+        "Expression is blob or another unsupported type"
+    )
     assert search_result, f"Expression is broken: {jmespath_expr}"
     sample_arg = search_result[0]
-    assert isinstance(
-        sample_arg, str
-    ), f"Expression not a string: {jmespath_expr}"
+    assert isinstance(sample_arg, str), (
+        f"Expression not a string: {jmespath_expr}"
+    )

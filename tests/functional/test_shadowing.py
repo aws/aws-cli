@@ -16,43 +16,35 @@ from botocore.model import OperationModel
 from awscli.clidriver import create_clidriver
 
 
-def _generate_command_tests():
-    driver = create_clidriver()
+def _generate_command_tests(driver, command_name):
     help_command = driver.create_help_command()
     top_level_params = set(driver.create_help_command().arg_table.keys())
-    for command_name, command_obj in list(help_command.command_table.items()):
-        sub_help = command_obj.create_help_command()
-        if hasattr(sub_help, 'command_table'):
-            for sub_name, sub_command in sub_help.command_table.items():
-                op_help = sub_command.create_help_command()
-                model = op_help.obj
-                arg_table = op_help.arg_table
-                if not isinstance(model, OperationModel):
-                    continue
-                yield (
-                    command_name,
-                    sub_name,
-                    model.service_model.service_name,
-                    model.name,
-                    arg_table,
-                    top_level_params
-                )
+    command_obj = help_command.command_table[command_name]
+    sub_help = command_obj.create_help_command()
+    if hasattr(sub_help, 'command_table'):
+        for sub_name, sub_command in sub_help.command_table.items():
+            op_help = sub_command.create_help_command()
+            model = op_help.obj
+            arg_table = op_help.arg_table
+            if not isinstance(model, OperationModel):
+                continue
+            yield (
+                command_name,
+                sub_name,
+                model.service_model.service_name,
+                model.name,
+                tuple(arg_table),
+                top_level_params,
+            )
 
 
 @pytest.mark.validates_models
 @pytest.mark.parametrize(
-    "command_name, sub_name, service_name, "
-    "operation_name, arg_table, builtins",
-    _generate_command_tests()
+    'command_name',
+    tuple(create_clidriver().create_help_command().command_table),
 )
 def test_no_shadowed_builtins(
-        command_name,
-        sub_name,
-        service_name,
-        operation_name,
-        arg_table,
-        builtins,
-        record_property
+    command_name, cli_driver, record_property
 ):
     """Verify no command params are shadowed or prefixed by the built-in param.
 
@@ -80,18 +72,20 @@ def test_no_shadowed_builtins(
 
     """
     errors = []
-    for arg_name in arg_table:
-        if any(p.startswith(arg_name) for p in builtins):
-            # Then we are shadowing or prefixing a top level argument
-            errors.append(
+    for case in _generate_command_tests(cli_driver, command_name):
+        _, sub_name, service_name, operation_name, arg_table, builtins = case
+        shadowed = [
+            arg_name
+            for arg_name in arg_table
+            if any(p.startswith(arg_name) for p in builtins)
+        ]
+        if shadowed:
+            record_property('aws_service', service_name)
+            record_property('aws_operation', operation_name)
+            errors.extend(
                 'Shadowing/Prefixing a top level option: '
                 f'{command_name}.{sub_name}.{arg_name}'
+                for arg_name in shadowed
             )
     if errors:
-        # Store the service and operation in
-        # PyTest custom properties
-        record_property(
-            'aws_service', service_name
-        )
-        record_property('aws_operation', operation_name)
         raise AssertionError('\n' + '\n'.join(errors))

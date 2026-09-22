@@ -19,6 +19,14 @@ from prompt_toolkit.input import create_pipe_input
 from prompt_toolkit.output import DummyOutput
 
 import awscli.logger
+from awscli.clidriver import create_clidriver
+
+
+@pytest.fixture
+def cli_driver():
+    # Each model-validation command gets its own driver so previously checked
+    # command tables and models do not accumulate in a module-wide cache.
+    return create_clidriver()
 
 
 @pytest.fixture(autouse=True)
@@ -33,7 +41,11 @@ def clear_loggers():
     for logger_name in loggers:
         logger = logging.getLogger(logger_name)
         logger.handlers = []
-        logger.setLevel(logging.NOTSET)
+        if logger.level != logging.NOTSET:
+            logger.setLevel(logging.NOTSET)
+    # setLevel clears every logger's effective-level cache. Do this once even
+    # when no levels changed, rather than once per already-reset logger.
+    logging.root.setLevel(logging.root.level)
     awscli.logger.disable_crt_logging()
 
 

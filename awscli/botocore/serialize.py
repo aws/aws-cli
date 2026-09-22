@@ -153,8 +153,10 @@ class Serializer:
         return timestamp
 
     def _timestamp_rfc822(self, value):
+        """Return RFC822 timestamp (always second precision - RFC doesn't support sub-second)."""
+        # RFC 2822 doesn't support sub-second precision, so always use second precision format
         if isinstance(value, datetime.datetime):
-            value = self._timestamp_unixtimestamp(value)
+            value = int(calendar.timegm(value.timetuple()))
         return formatdate(value, usegmt=True)
 
     def _convert_timestamp_to_str(self, value, timestamp_format=None):

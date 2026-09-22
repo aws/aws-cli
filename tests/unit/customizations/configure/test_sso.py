@@ -41,6 +41,7 @@ from awscli.customizations.configure.sso_commands import (
     display_account,
     get_account_sorting_key,
 )
+from awscli.customizations.exceptions import ConfigurationError
 from awscli.customizations.sso.utils import (
     PrintOnlyHandler,
     do_sso_login,
@@ -290,6 +291,19 @@ def mock_do_sso_login():
         "expiresAt": datetime.now(tzlocal()) + timedelta(hours=24),
     }
     return login_mock
+
+
+@pytest.fixture(autouse=True)
+def mock_resolve_start_url():
+    # The placeholder start URLs in these tests are not AWS-owned, so the
+    # command would otherwise try to resolve them over the network. Failing
+    # fast exercises the same fallback to the region prompt without any
+    # network access. Tests covering resolution patch this explicitly.
+    with mock.patch(
+        'awscli.customizations.configure.sso_commands.resolve_start_url',
+        side_effect=ConfigurationError('Failed to resolve start URL'),
+    ) as resolve_start_url:
+        yield resolve_start_url
 
 
 @pytest.fixture

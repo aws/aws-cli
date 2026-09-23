@@ -292,7 +292,7 @@ class TestCompleteCustomCommands(BaseCompleterTest):
     def setUp(self):
         super(TestCompleteCustomCommands, self).setUp()
         custom_arguments = [
-            {'name': 'recursive'},
+            {'name': 'recursive', 'aliases': ['r']},
             {'name': 'sse'}
         ]
         custom_commands = [
@@ -337,6 +337,10 @@ class TestCompleteCustomCommands(BaseCompleterTest):
     def test_complete_custom_command_arguments(self):
         self.assert_completion(self.completer, 'aws s3 cp --', [
             '--bar', '--recursive', '--sse'])
+
+    def test_complete_custom_command_short_arguments(self):
+        self.assert_completion(self.completer, 'aws s3 cp -', [
+            '-r', '--bar', '--recursive', '--sse'])
 
     def test_complete_custom_command_arguments_with_arg_already_used(self):
         self.assert_completion(self.completer, 'aws s3 cp --recursive --', [

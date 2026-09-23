@@ -39,6 +39,15 @@ GLOBAL_OPTIONS_SYNOPSIS_FILE = os.path.join(
 )
 
 
+def iter_option_cli_flags(argument):
+    yield argument.cli_name
+    cli_flags = getattr(argument, 'cli_flags', None)
+    if cli_flags:
+        for flag in cli_flags:
+            if flag != argument.cli_name:
+                yield flag
+
+
 class CLIDocumentEventHandler:
     def __init__(self, help_command):
         self.help_command = help_command
@@ -147,13 +156,14 @@ class CLIDocumentEventHandler:
                 # This arg is already documented so we can move on.
                 return
             option_str = ' | '.join(
-                a.cli_name for a in self._arg_groups[argument.group_name]
+                ' | '.join(iter_option_cli_flags(a))
+                for a in self._arg_groups[argument.group_name]
             )
             self._documented_arg_groups.append(argument.group_name)
         elif argument.cli_name.startswith('--'):
-            option_str = f'{argument.cli_name} <value>'
+            option_str = f'{" | ".join(iter_option_cli_flags(argument))} <value>'
         else:
-            option_str = f'<{argument.cli_name}>'
+            option_str = f'<{" | ".join(iter_option_cli_flags(argument))}>'
         if not (
             argument.required
             or getattr(argument, '_DOCUMENT_AS_REQUIRED', False)
@@ -185,11 +195,14 @@ class CLIDocumentEventHandler:
                 # This arg is already documented so we can move on.
                 return
             name = ' | '.join(
-                f'``{a.cli_name}``' for a in self._arg_groups[argument.group_name]
+                ' | '.join(f'``{f}``' for f in iter_option_cli_flags(a))
+                for a in self._arg_groups[argument.group_name]
             )
             self._documented_arg_groups.append(argument.group_name)
         else:
-            name = f'``{argument.cli_name}``'
+            name = ' | '.join(
+                f'``{f}``' for f in iter_option_cli_flags(argument)
+            )
         argument_type_name = self._get_argument_type_name(
             argument.argument_model, argument.cli_type_name
         )

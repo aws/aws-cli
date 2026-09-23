@@ -219,6 +219,7 @@ class CustomArgument(BaseCLIArgument):
         argument_model=None,
         synopsis='',
         const=None,
+        aliases=None,
     ):
         self._name = name
         self._help = help_text
@@ -235,6 +236,9 @@ class CustomArgument(BaseCLIArgument):
             choices = []
         self._choices = choices
         self._synopsis = synopsis
+        if positional_arg and aliases:
+            raise ValueError("A positional argument cannot have aliases")
+        self._aliases = aliases
 
         # These are public attributes that are ok to access from external
         # objects.
@@ -271,13 +275,22 @@ class CustomArgument(BaseCLIArgument):
         else:
             return '--' + self._name
 
+    @property
+    def cli_flags(self):
+        if self._aliases is None:
+            return (self.cli_name,)
+        return (
+            *(("-" if len(a) == 1 else "--") + a for a in self._aliases),
+            self.cli_name,
+        )
+
     def add_to_parser(self, parser):
         """
 
         See the ``BaseCLIArgument.add_to_parser`` docs for more information.
 
         """
-        cli_name = self.cli_name
+        cli_flags = self.cli_flags
         kwargs = {}
         if self._dest is not None:
             kwargs['dest'] = self._dest
@@ -293,7 +306,7 @@ class CustomArgument(BaseCLIArgument):
             kwargs['nargs'] = self._nargs
         if self._const is not None:
             kwargs['const'] = self._const
-        parser.add_argument(cli_name, **kwargs)
+        parser.add_argument(*cli_flags, **kwargs)
 
     @property
     def required(self):
@@ -348,6 +361,10 @@ class CustomArgument(BaseCLIArgument):
     @property
     def nargs(self):
         return self._nargs
+
+    @property
+    def aliases(self):
+        return self._aliases
 
 
 class CLIArgument(BaseCLIArgument):

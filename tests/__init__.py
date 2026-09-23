@@ -426,7 +426,7 @@ class AppRunContext:
 
 
 class PromptToolkitAppRunner:
-    _EVENT_WAIT_TIMEOUT = 5
+    _EVENT_WAIT_TIMEOUT = 10
 
     def __init__(self, app, pre_run=None):
         self.app = app
@@ -553,8 +553,14 @@ class PromptToolkitAppRunner:
             )
 
     def _wait_until_app_is_done_rendering(self):
-        self._done_rendering_event.wait(self._EVENT_WAIT_TIMEOUT)
+        rendered = self._done_rendering_event.wait(self._EVENT_WAIT_TIMEOUT)
         self._done_rendering_event.clear()
+        # Continuing without the render leaves the UI half-updated, which
+        # surfaces as a confusing assertion failure instead of a timeout.
+        if not rendered and self._app_is_exitable():
+            raise TimeoutError(
+                'Timed out waiting for prompt-toolkit application to render'
+            )
 
     def _notify_done_rendering(self, app):
         self._done_rendering_event.set()

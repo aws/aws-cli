@@ -59,6 +59,7 @@ import prompt_toolkit.keys
 import prompt_toolkit.utils
 import prompt_toolkit.key_binding.key_processor
 from prompt_toolkit.input.ansi_escape_sequences import REVERSE_ANSI_SEQUENCES
+from prompt_toolkit.input.vt100_parser import Vt100Parser
 
 # Botocore testing utilities that we want to preserve import statements for
 # in botocore specific tests.
@@ -430,36 +431,76 @@ class PromptToolkitAppRunner:
     def __init__(self, app, pre_run=None):
         self.app = app
         self._pre_run = pre_run
+        self._done_pre_run_event = threading.Event()
         self._done_rendering_event = threading.Event()
         self.app.after_render = prompt_toolkit.utils.Event(
             self.app, self._notify_done_rendering
         )
         self._done_completing_event = threading.Event()
+        # Rendering can also occur before queued input has been processed.
+        self._done_processing_input_event = threading.Event()
+        self._remaining_input_keys = 0
+        self.app.key_processor.before_key_press.add_handler(
+            self._notify_done_processing_input
+        )
 
     @contextlib.contextmanager
     def run_app_in_thread(self, target=None, args=None):
+        """Run the app in a thread and wait for its default initialization."""
+        wait_for_pre_run = target is None and args is None
         if target is None:
             target = self.app.run
         if args is None:
-            args = (self._pre_run,)
+            args = (self._run_pre_run,)
 
         run_context = AppRunContext()
         thread = threading.Thread(
-            target=self._do_run_app, args=(target, args, run_context)
+            target=self._do_run_app,
+            args=(target, args, run_context),
+            daemon=True,
         )
         try:
+            self._done_pre_run_event.clear()
             thread.start()
+            if wait_for_pre_run:
+                self._wait_until_pre_run_is_done(thread)
             self._wait_until_app_is_done_updating()
             yield run_context
         finally:
             if self._app_is_exitable():
                 self.app.exit()
-            thread.join()
+            thread.join(self._EVENT_WAIT_TIMEOUT)
+            # Do not let a stuck application thread hang the test process, but
+            # never mask an exception already propagating from the test body.
+            if thread.is_alive() and sys.exc_info()[1] is None:
+                raise TimeoutError(
+                    'Timed out waiting for prompt-toolkit application to exit'
+                )
 
     def feed_input(self, *keys):
+        """Send input and wait for its handlers and resulting UI updates."""
         for key in keys:
+            if not self._app_is_exitable():
+                return
+            input_data = self._convert_key_to_vt100_data(key)
+            # An input string such as an escape sequence can contain many keys.
+            self._remaining_input_keys = self._get_key_press_count(input_data)
+            self._done_processing_input_event.clear()
             self._done_rendering_event.clear()
-            self.app.input.send_text(self._convert_key_to_vt100_data(key))
+            self.app.input.send_text(input_data)
+            if (
+                self._remaining_input_keys
+                and not self._done_processing_input_event.wait(
+                    self._EVENT_WAIT_TIMEOUT
+                )
+            ):
+                if not self._app_is_exitable():
+                    return
+                raise TimeoutError(
+                    'Timed out waiting for prompt-toolkit input processing'
+                )
+            # Key handlers may schedule work after consuming the input.
+            self._wait_until_app_loop_is_idle()
             self._wait_until_app_is_done_updating()
 
     def wait_for_completions_on_current_buffer(self):
@@ -486,8 +527,32 @@ class PromptToolkitAppRunner:
         finally:
             loop.close()
 
+    def _run_pre_run(self):
+        """Run the configured pre-run hook and always signal completion."""
+        try:
+            if self._pre_run is not None:
+                self._pre_run()
+        finally:
+            # Always release the runner, including when initialization fails.
+            self._done_pre_run_event.set()
+
+    def _wait_until_pre_run_is_done(self, app_thread):
+        """Wait up to the event timeout for pre-run or application exit."""
+        deadline = time.monotonic() + self._EVENT_WAIT_TIMEOUT
+        while app_thread.is_alive():
+            remaining = deadline - time.monotonic()
+            if remaining <= 0:
+                raise TimeoutError(
+                    'Timed out waiting for prompt-toolkit pre-run initialization'
+                )
+            if self._done_pre_run_event.wait(min(0.1, remaining)):
+                return
+
     def _wait_until_app_is_done_updating(self):
+        """Wait for rendering and flush any UI update it schedules."""
         self._wait_until_app_is_done_rendering()
+        if not self._app_is_exitable():
+            return
         # Generally it is not a safe assumption to make that once the
         # app is done rendering the UI will be in its final state.
         # It is possible that because of the rendering it triggers another
@@ -496,6 +561,21 @@ class PromptToolkitAppRunner:
         # changes to be rendered.
         self.app.invalidate()
         self._wait_until_app_is_done_rendering()
+
+    def _wait_until_app_loop_is_idle(self):
+        """Wait until work already scheduled on the app loop has executed."""
+        loop = self.app.loop
+        if loop is None or loop.is_closed():
+            return
+        app_loop_idle = threading.Event()
+        # Queue a marker behind work already scheduled by the key handler.
+        loop.call_soon_threadsafe(app_loop_idle.set)
+        if not app_loop_idle.wait(self._EVENT_WAIT_TIMEOUT):
+            if not self._app_is_exitable():
+                return
+            raise TimeoutError(
+                'Timed out waiting for prompt-toolkit input processing'
+            )
 
     def _wait_until_app_is_done_rendering(self):
         self._done_rendering_event.wait(self._EVENT_WAIT_TIMEOUT)
@@ -506,6 +586,23 @@ class PromptToolkitAppRunner:
 
     def _notify_done_completing(self, app):
         self._done_completing_event.set()
+
+    def _notify_done_processing_input(self, key_processor):
+        """Signal when all keys in the current input reach the key processor."""
+        if self._remaining_input_keys <= 0:
+            return
+        self._remaining_input_keys -= 1
+        if self._remaining_input_keys == 0:
+            self._done_processing_input_event.set()
+
+    def _get_key_press_count(self, input_data):
+        """Count logical keys using prompt-toolkit's VT100 input decoding."""
+        key_presses = []
+        # Count keys using the same VT100 decoding used by prompt-toolkit.
+        parser = Vt100Parser(key_presses.append)
+        parser.feed(input_data)
+        parser.flush()
+        return len(key_presses)
 
     def _current_buffer_has_completions(self):
         return (

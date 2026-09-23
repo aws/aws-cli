@@ -11,40 +11,72 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import pytest
-from botocore.model import OperationModel
 
 from awscli.clidriver import create_clidriver
+from tests import ALL_SERVICES
 
 
-def _generate_command_tests(driver, command_name):
-    help_command = driver.create_help_command()
-    top_level_params = set(driver.create_help_command().arg_table.keys())
-    command_obj = help_command.command_table[command_name]
-    sub_help = command_obj.create_help_command()
-    if hasattr(sub_help, 'command_table'):
-        for sub_name, sub_command in sub_help.command_table.items():
-            op_help = sub_command.create_help_command()
-            model = op_help.obj
-            arg_table = op_help.arg_table
-            if not isinstance(model, OperationModel):
-                continue
-            yield (
-                command_name,
-                sub_name,
-                model.service_model.service_name,
-                model.name,
-                tuple(arg_table),
-                top_level_params,
+def _all_operations():
+    return [
+        (model.service_name, name)
+        for model in ALL_SERVICES
+        for name in model.operation_names
+    ]
+
+
+class _ShadowingIndex:
+    def __init__(self, command_names, iter_operation_commands):
+        self.builtins = set(create_clidriver().create_help_command().arg_table)
+        self._command_names = command_names
+        self._iter_operation_commands = iter_operation_commands
+        self._services = {}
+
+    def lookup(self, service_name, operation_name):
+        # Returns a list of (command_name, sub_name, arg_names) for every
+        # command exposing the operation, which is empty when the CLI does
+        # not expose it. A customization can keep a hidden alias, so there
+        # may be more than one.
+        if service_name not in self._services:
+            self._services[service_name] = self._index_service(service_name)
+        return self._services[service_name].get(operation_name, [])
+
+    def _index_service(self, service_name):
+        command_name = self._command_names.get(service_name)
+        if command_name is None:
+            return {}
+        # A fresh driver per service keeps command tables from accumulating
+        # across services. Only strings are kept once it is discarded.
+        driver = create_clidriver()
+        operations = {}
+        commands = self._iter_operation_commands(
+            driver, command_name, service_name
+        )
+        for _, sub_name, sub_command, operation_model in commands:
+            operations.setdefault(operation_model.name, []).append(
+                (command_name, sub_name, tuple(sub_command.arg_table))
             )
+        return operations
+
+
+@pytest.fixture(scope='module')
+def shadowing_index(service_command_names, iter_operation_commands):
+    return _ShadowingIndex(service_command_names, iter_operation_commands)
+
+
+_ALL_OPERATIONS = _all_operations()
 
 
 @pytest.mark.validates_models
 @pytest.mark.parametrize(
-    'command_name',
-    tuple(create_clidriver().create_help_command().command_table),
+    'service_name, operation_name',
+    _ALL_OPERATIONS,
+    ids=[
+        f'{service_name}-{operation_name}'
+        for service_name, operation_name in _ALL_OPERATIONS
+    ],
 )
 def test_no_shadowed_builtins(
-    command_name, cli_driver, record_property
+    service_name, operation_name, shadowing_index, record_property
 ):
     """Verify no command params are shadowed or prefixed by the built-in param.
 
@@ -66,26 +98,29 @@ def test_no_shadowed_builtins(
     through every command table and ensure we're not shadowing
     any builtins.
 
-    Also, rather than being a test generator, we're going to just
-    aggregate all the failures in one pass and surface them as
-    a single test failure.
+    Each test case covers a single operation, so a failure reports
+    every shadowed option of that operation and records exactly one
+    service and operation.
 
     """
+    exposed = shadowing_index.lookup(service_name, operation_name)
+    if not exposed:
+        # The CLI does not expose this operation.
+        return
+    # Store the service and operation in PyTest custom properties
+    record_property('aws_service', service_name)
+    record_property('aws_operation', operation_name)
     errors = []
-    for case in _generate_command_tests(cli_driver, command_name):
-        _, sub_name, service_name, operation_name, arg_table, builtins = case
+    for command_name, sub_name, arg_names in exposed:
         shadowed = [
             arg_name
-            for arg_name in arg_table
-            if any(p.startswith(arg_name) for p in builtins)
+            for arg_name in arg_names
+            if any(p.startswith(arg_name) for p in shadowing_index.builtins)
         ]
-        if shadowed:
-            record_property('aws_service', service_name)
-            record_property('aws_operation', operation_name)
-            errors.extend(
-                'Shadowing/Prefixing a top level option: '
-                f'{command_name}.{sub_name}.{arg_name}'
-                for arg_name in shadowed
-            )
+        errors.extend(
+            'Shadowing/Prefixing a top level option: '
+            f'{command_name}.{sub_name}.{arg_name}'
+            for arg_name in shadowed
+        )
     if errors:
         raise AssertionError('\n' + '\n'.join(errors))

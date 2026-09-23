@@ -476,15 +476,22 @@ class CBORSerializer(Serializer):
     MAP_MAJOR_TYPE = 5
     TAG_MAJOR_TYPE = 6
     FLOAT_AND_SIMPLE_MAJOR_TYPE = 7
+    # Pre-computed initial bytes for values whose encoding never varies.  These
+    # are equivalent to _get_initial_byte() calls, inlined to avoid the work on
+    # every serialized item.
     _CBOR_NULL = b'\xf6'
     _CBOR_TRUE = b'\xf5'
     _CBOR_FALSE = b'\xf4'
-    _CBOR_TAG_1 = b'\xc1'
+    # Tag 1 marks the following integer or float as a unix timestamp
+    _CBOR_TAG_EPOCH_TIME = b'\xc1'
     _FLOAT32_HEADER = b'\xfa'
     _FLOAT64_HEADER = b'\xfb'
+    # Special numbers are always encoded as half precision floats
     _CBOR_POS_INF = b'\xf9\x7c\x00'
     _CBOR_NEG_INF = b'\xf9\xfc\x00'
     _CBOR_NAN = b'\xf9\x7e\x00'
+    # Every valid (major type, additional info) pair, indexed by initial byte, so
+    # _get_initial_byte() is a lookup instead of bit math plus an int conversion
     _INITIAL_BYTE_TABLE = [
         ((mt << 5) | ai).to_bytes(1, 'big')
         for mt in range(8)
@@ -492,6 +499,8 @@ class CBORSerializer(Serializer):
     ]
 
     def _serialize_data_item(self, serialized, value, shape, key=None):
+        # This dispatches on the type name directly rather than looking up the
+        # method by name; it's on the hot path for every member of every request.
         type_name = shape.type_name
         if type_name == 'string':
             self._serialize_type_string(serialized, value, shape, key)
@@ -698,9 +707,14 @@ class CBORSerializer(Serializer):
             return 27, 8
 
     def _get_initial_byte(self, major_type, additional_info):
+        # The highest order three bits are the major type and the lowest order
+        # five are the additional info, so additional_info must be in [0, 32) for
+        # the index to land on the byte we mean
         return self._INITIAL_BYTE_TABLE[(major_type << 5) | additional_info]
 
     def _get_bytes_for_special_numbers(self, value):
+        # Callers must have already established that the value is not finite;
+        # anything that isn't an infinity is treated as NaN
         if value == float('inf'):
             return self._CBOR_POS_INF
         elif value == float('-inf'):

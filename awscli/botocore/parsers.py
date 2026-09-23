@@ -828,6 +828,8 @@ class BaseCBORParser(ResponseParser):
 
     # Major type 0 - unsigned integers
     def _parse_unsigned_integer(self, stream, additional_info):
+        # Values under 24 don't need a full byte to be stored; their values are
+        # instead stored as the "additional info" in the initial byte
         if additional_info < 24:
             return additional_info
         num_bytes = self._ADDITIONAL_INFO_TO_NUM_BYTES.get(additional_info)
@@ -916,9 +918,14 @@ class BaseCBORParser(ResponseParser):
     # currently boolean values, CBOR's null, and CBOR's undefined type.  All other
     # values are either floats or invalid.
     def _parse_simple_and_float(self, stream, additional_info):
+        # For major type 7, values 20-23 correspond to CBOR "simple" values.  We
+        # can't use `.get()` here because null and undefined map to None, so a
+        # miss would be indistinguishable from a hit.
         if additional_info in self._SIMPLE_VALUES:
             return self._SIMPLE_VALUES[additional_info]
 
+        # Otherwise it's a float, and the additional info tells us the format and
+        # number of bytes to read
         float_info = self._FLOAT_FORMATS.get(additional_info)
         if float_info is not None:
             float_format, num_bytes = float_info

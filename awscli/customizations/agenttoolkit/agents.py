@@ -21,7 +21,8 @@ from typing import Optional
 
 SKILL_FILENAME = 'SKILL.md'
 SKILL_METADATA_FILENAME = '.aws-skill-metadata'
-AWS_MCP_SERVER_KEY = 'aws-mcp'
+AWS_KNOWLEDGE_MCP_SERVER_KEY = 'aws-knowledge-mcp-server'
+AWS_KNOWLEDGE_MCP_SERVER_URL = 'https://knowledge-mcp.global.api.aws'
 UNIVERSAL_ROW_ID = 'universal'
 
 
@@ -40,17 +41,8 @@ class McpConfigureAction(enum.Enum):
     SKIPPED = 'skipped'
 
 
-_AWS_MCP_PROXY_ARGS = [
-    'mcp-proxy-for-aws@latest',
-    'https://aws-mcp.us-east-1.api.aws/mcp',
-    '--metadata',
-    'INSTALL_SOURCE=aws-cli',
-]
-
-
 DEFAULT_MCP_SERVER_CONFIG = {
-    'command': 'uvx',
-    'args': _AWS_MCP_PROXY_ARGS,
+    'url': AWS_KNOWLEDGE_MCP_SERVER_URL,
 }
 
 
@@ -98,20 +90,19 @@ class AgentConfig:
     agents use ``mcpServers``; OpenCode uses ``mcp``."""
 
     mcp_extra_config: Optional[dict] = None
-    """Extra fields merged into the default MCP server entry (e.g.
-    Kiro requires ``timeout`` and ``transport``). Used only when
+    """Extra fields merged into the default ``{url}`` MCP server entry
+    (e.g. Claude Code requires ``type``). Used only when
     ``mcp_server_entry`` is not set."""
 
     mcp_server_entry: Optional[dict] = None
     """Complete MCP server entry, replacing the default schema. Use
-    when an agent expects a different shape than ``{command, args}``
-    (e.g. OpenCode expects ``{type, command: [...]}``)."""
+    when an agent expects a different remote-server shape (e.g. Gemini CLI
+    expects ``httpUrl`` and Windsurf documents ``serverUrl``)."""
 
     mcp_shell_command: Optional[list] = None
-    """Argv for a CLI invocation that registers the AWS MCP server
-    (e.g. ``codex mcp add ...``). Used for agents whose MCP config is
-    not JSON. The wizard skips MCP setup if the executable is not on
-    PATH."""
+    """Argv for a CLI invocation that registers the AWS Knowledge MCP server
+    (e.g. ``codex mcp add ... --url ...``). Used for agents whose MCP config
+    is not JSON. The wizard skips MCP setup if the executable is not on PATH."""
 
     def __post_init__(self):
         if self.mcp_extra_config is None:
@@ -225,7 +216,7 @@ class DetectedAgent:
         existing_config = self._read_mcp_config(config_path)
         servers = existing_config.setdefault(self.config.mcp_servers_key, {})
 
-        if AWS_MCP_SERVER_KEY in servers:
+        if AWS_KNOWLEDGE_MCP_SERVER_KEY in servers:
             return McpConfigureAction.ALREADY_CONFIGURED, config_path
 
         if self.config.mcp_server_entry is not None:
@@ -235,7 +226,7 @@ class DetectedAgent:
                 **DEFAULT_MCP_SERVER_CONFIG,
                 **self.config.mcp_extra_config,
             }
-        servers[AWS_MCP_SERVER_KEY] = server_entry
+        servers[AWS_KNOWLEDGE_MCP_SERVER_KEY] = server_entry
         self._write_mcp_config(config_path, existing_config)
         return McpConfigureAction.CONFIGURED, config_path
 
@@ -284,6 +275,7 @@ AGENT_CONFIGS = [
         detection_path='~/.claude/',
         mcp_config_path='~/.claude.json',
         mcp_servers_key='mcpServers',
+        mcp_extra_config={'type': 'http'},
         detection_path_env_override='CLAUDE_CONFIG_DIR',
     ),
     # https://docs.cline.bot/mcp/mcp-overview
@@ -294,6 +286,10 @@ AGENT_CONFIGS = [
         detection_path='~/.cline/',
         mcp_config_path='mcp.json',
         mcp_servers_key='mcpServers',
+        mcp_extra_config={
+            'type': 'streamableHttp',
+            'disabled': False,
+        },
     ),
     # https://developers.openai.com/codex/skills
     # https://github.com/openai/codex/blob/main/codex-rs/cli/src/mcp_cmd.rs
@@ -309,10 +305,9 @@ AGENT_CONFIGS = [
             'codex',
             'mcp',
             'add',
-            AWS_MCP_SERVER_KEY,
-            '--',
-            'uvx',
-            *_AWS_MCP_PROXY_ARGS,
+            AWS_KNOWLEDGE_MCP_SERVER_KEY,
+            '--url',
+            AWS_KNOWLEDGE_MCP_SERVER_URL,
         ],
     ),
     # https://docs.cursor.com/context/model-context-protocol
@@ -333,6 +328,7 @@ AGENT_CONFIGS = [
         skills_path_override='~/.agents/skills/',
         mcp_config_path='settings.json',
         mcp_servers_key='mcpServers',
+        mcp_server_entry={'httpUrl': AWS_KNOWLEDGE_MCP_SERVER_URL},
     ),
     # https://kiro.dev/docs/mcp/configuration/
     AgentConfig(
@@ -341,7 +337,7 @@ AGENT_CONFIGS = [
         detection_path='~/.kiro/',
         mcp_config_path='settings/mcp.json',
         mcp_servers_key='mcpServers',
-        mcp_extra_config={'timeout': 100000, 'transport': 'stdio'},
+        mcp_extra_config={'disabled': False},
     ),
     # https://openclaw-openclaw.mintlify.app/configuration
     # OpenClaw does not document MCP support — install skills only.
@@ -360,8 +356,9 @@ AGENT_CONFIGS = [
         mcp_config_path='opencode.json',
         mcp_servers_key='mcp',
         mcp_server_entry={
-            'type': 'local',
-            'command': ['uvx', *_AWS_MCP_PROXY_ARGS],
+            'type': 'remote',
+            'url': AWS_KNOWLEDGE_MCP_SERVER_URL,
+            'enabled': True,
         },
     ),
     # https://github.com/badlogic/pi-mono/blob/main/packages/coding-agent/docs/settings.md
@@ -380,6 +377,7 @@ AGENT_CONFIGS = [
         skills_path_override='~/.agents/skills/',
         mcp_config_path='~/.codeium/mcp_config.json',
         mcp_servers_key='mcpServers',
+        mcp_server_entry={'serverUrl': AWS_KNOWLEDGE_MCP_SERVER_URL},
     ),
 ]
 

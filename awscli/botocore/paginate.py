@@ -411,10 +411,13 @@ class PageIterator:
         non_aggregate_keys = {}
         for expression in self._non_aggregate_key_exprs:
             result = expression.search(response)
-            if result is None:
-                # Don't materialize a missing member (which would otherwise
-                # surface as a spurious null, or — for a nested path such as
-                # ConsumedCapacity.TableName — a phantom {"TableName": null}).
+            if result is None and '.' in expression.expression:
+                # For a nested non_aggregate path (e.g.
+                # ConsumedCapacity.TableName), materializing a missing member
+                # would fabricate a phantom parent object ({"TableName": null})
+                # that looks like the member is present. Skip it. Top-level
+                # scalar non_aggregate members are still surfaced as null (their
+                # historical behavior) since that doesn't fabricate a parent.
                 continue
             set_value_from_jmespath(
                 non_aggregate_keys, expression.expression, result

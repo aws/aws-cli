@@ -346,10 +346,14 @@ files to and from S3. Valid choices are:
       ``p5.48xlarge``, ``p5e.48xlarge``, ``p5en.48xlarge``, ``p6-b200.48xlarge``,
       ``p6-b300.48xlarge``, ``trn1.32xlarge``, and ``trn1n.32xlarge``.
 
-    * Of one of these instance families: ``d3``, ``d3en``, ``dl1``, ``g4dn``,
-      ``g5``, ``g5g``, ``g6``, ``g6e``, ``h1``, ``i3``, ``i3en``, ``i4i``,
-      ``im4gn``, ``inf1``, ``inf2``, ``is4gen``, ``x1``, ``x1e``, ``x2idn``,
-      ``x2iedn``, and ``x2iezn``.
+    * Of one of these instance families: ``c7a``, ``c7g``, ``c7gd``, ``c7gn``,
+      ``c7i``, ``c7i-flex``, ``c8a``, ``c8g``, ``c8gb``, ``c8gd``, ``c8gn``,
+      ``c8i``, ``c8i-flex``, ``c8ib``, ``c8id``, ``c8in``, ``c8ine``, ``c9g``,
+      ``c9gd``, ``d3``, ``d3en``, ``dl1``, ``g4dn``, ``g5``, ``g5g``, ``g6``,
+      ``g6e``, ``h1``, ``i3``, ``i3en``, ``i4i``, ``im4gn``, ``inf1``,
+      ``inf2``, ``is4gen``, ``m7a``, ``m7g``, ``m7i``, ``m7i-flex``, ``m8a``,
+      ``m8g``, ``r7a``, ``r7g``, ``r7i``, ``r7iz``, ``x1``, ``x1e``,
+      ``x2idn``, ``x2iedn``, and ``x2iezn``.
 
   * The ``crt`` transfer client supports the requested transfer. If the host
     qualifies by instance family instead of by being of an instance type that

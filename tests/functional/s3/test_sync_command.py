@@ -1186,7 +1186,8 @@ class TestSyncCaseConflict(BaseS3TransferCommandTest):
             "--case-conflict error"
         )
         self.parsed_responses = [
-            self.list_objects_response([self.upper_key, self.lower_key])
+            self.list_objects_response([self.upper_key, self.lower_key]),
+            self.get_object_response(),
         ]
         _, stderr, _ = self.run_cmd(cmd, expected_rc=1)
         assert f"Failed to download bucket/{self.lower_key}" in stderr

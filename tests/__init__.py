@@ -431,7 +431,6 @@ class PromptToolkitAppRunner:
     def __init__(self, app, pre_run=None):
         self.app = app
         self._pre_run = pre_run
-        self._done_pre_run_event = threading.Event()
         self._done_rendering_event = threading.Event()
         self.app.after_render = prompt_toolkit.utils.Event(
             self.app, self._notify_done_rendering
@@ -446,12 +445,10 @@ class PromptToolkitAppRunner:
 
     @contextlib.contextmanager
     def run_app_in_thread(self, target=None, args=None):
-        """Run the app in a thread and wait for its default initialization."""
-        wait_for_pre_run = target is None and args is None
         if target is None:
             target = self.app.run
         if args is None:
-            args = (self._run_pre_run,)
+            args = (self._pre_run,)
 
         run_context = AppRunContext()
         thread = threading.Thread(
@@ -460,10 +457,9 @@ class PromptToolkitAppRunner:
             daemon=True,
         )
         try:
-            self._done_pre_run_event.clear()
             thread.start()
-            if wait_for_pre_run:
-                self._wait_until_pre_run_is_done(thread)
+            # prompt-toolkit invokes the pre-run hook before its first render,
+            # so waiting on the render implies initialization has finished.
             self._wait_until_app_is_done_updating()
             yield run_context
         finally:
@@ -526,27 +522,6 @@ class PromptToolkitAppRunner:
             app_run_context.raised_exception = e
         finally:
             loop.close()
-
-    def _run_pre_run(self):
-        """Run the configured pre-run hook and always signal completion."""
-        try:
-            if self._pre_run is not None:
-                self._pre_run()
-        finally:
-            # Always release the runner, including when initialization fails.
-            self._done_pre_run_event.set()
-
-    def _wait_until_pre_run_is_done(self, app_thread):
-        """Wait up to the event timeout for pre-run or application exit."""
-        deadline = time.monotonic() + self._EVENT_WAIT_TIMEOUT
-        while app_thread.is_alive():
-            remaining = deadline - time.monotonic()
-            if remaining <= 0:
-                raise TimeoutError(
-                    'Timed out waiting for prompt-toolkit pre-run initialization'
-                )
-            if self._done_pre_run_event.wait(min(0.1, remaining)):
-                return
 
     def _wait_until_app_is_done_updating(self):
         """Wait for rendering and flush any UI update it schedules."""

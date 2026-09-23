@@ -411,6 +411,11 @@ class PageIterator:
         non_aggregate_keys = {}
         for expression in self._non_aggregate_key_exprs:
             result = expression.search(response)
+            if result is None:
+                # Don't materialize a missing member (which would otherwise
+                # surface as a spurious null, or — for a nested path such as
+                # ConsumedCapacity.TableName — a phantom {"TableName": null}).
+                continue
             set_value_from_jmespath(
                 non_aggregate_keys, expression.expression, result
             )

@@ -145,7 +145,10 @@ class TestConsumedCapacityAggregation(BaseAWSCommandParamsTest):
         result = json.loads(stdout)
         self.assertEqual(result["ConsumedCapacity"]["CapacityUnits"], 10.0)
 
-    def test_no_consumed_capacity_summed_when_not_requested(self):
+    def test_no_consumed_capacity_when_not_requested(self):
+        # No ConsumedCapacity in the responses -> it must be entirely absent
+        # from the aggregated output (no summed value, and no phantom
+        # {"TableName": null} from the non_aggregate leaf).
         self.parsed_responses = [
             {
                 "Items": [{"Key": {"S": "a"}}],
@@ -159,4 +162,42 @@ class TestConsumedCapacityAggregation(BaseAWSCommandParamsTest):
         stdout, _, _ = self.run_cmd(cmd, expected_rc=0)
         result = json.loads(stdout)
         self.assertEqual(result["Count"], 2)
-        self.assertNotIn("CapacityUnits", json.dumps(result))
+        self.assertNotIn("ConsumedCapacity", result)
+
+    def test_scan_sums_vector_index_consumed_capacity(self):
+        self.parsed_responses = [
+            self._page(
+                {
+                    "TableName": "T",
+                    "CapacityUnits": 1.0,
+                    "VectorIndexes": {
+                        "vidx": {
+                            "VectorSearchRequestBytes": 100.0,
+                            "VectorWriteRequestBytes": 0.0,
+                        }
+                    },
+                },
+                last_key={"Key": {"S": "a"}},
+            ),
+            self._page(
+                {
+                    "TableName": "T",
+                    "CapacityUnits": 1.0,
+                    "VectorIndexes": {
+                        "vidx": {
+                            "VectorSearchRequestBytes": 50.0,
+                            "VectorWriteRequestBytes": 0.0,
+                        }
+                    },
+                }
+            ),
+        ]
+        cmd = (
+            'dynamodb scan --table-name T --output json '
+            '--return-consumed-capacity INDEXES'
+        )
+        stdout, _, _ = self.run_cmd(cmd, expected_rc=0)
+        cc = json.loads(stdout)["ConsumedCapacity"]
+        self.assertEqual(
+            cc["VectorIndexes"]["vidx"]["VectorSearchRequestBytes"], 150.0
+        )

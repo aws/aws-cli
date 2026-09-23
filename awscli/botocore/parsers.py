@@ -786,6 +786,9 @@ class BaseJSONParser(ResponseParser):
 class BaseCBORParser(ResponseParser):
     INDEFINITE_ITEM_ADDITIONAL_INFO = 31
     BREAK_CODE = 0xFF
+    _ADDITIONAL_INFO_TO_NUM_BYTES = {24: 1, 25: 2, 26: 4, 27: 8}
+    _SIMPLE_VALUES = {20: False, 21: True, 22: None, 23: None}
+    _FLOAT_FORMATS = {25: ('>e', 2), 26: ('>f', 4), 27: ('>d', 8)}
 
     @CachedProperty
     def major_type_to_parsing_method_map(self):
@@ -825,24 +828,15 @@ class BaseCBORParser(ResponseParser):
 
     # Major type 0 - unsigned integers
     def _parse_unsigned_integer(self, stream, additional_info):
-        additional_info_to_num_bytes = {
-            24: 1,
-            25: 2,
-            26: 4,
-            27: 8,
-        }
-        # Values under 24 don't need a full byte to be stored; their values are
-        # instead stored as the "additional info" in the initial byte
         if additional_info < 24:
             return additional_info
-        elif additional_info in additional_info_to_num_bytes:
-            num_bytes = additional_info_to_num_bytes[additional_info]
+        num_bytes = self._ADDITIONAL_INFO_TO_NUM_BYTES.get(additional_info)
+        if num_bytes is not None:
             return self._read_bytes_as_int(stream, num_bytes)
-        else:
-            raise ResponseParserError(
-                "Invalid CBOR integer returned from the service; unparsable "
-                f"additional info found for major type 0 or 1: {additional_info}"
-            )
+        raise ResponseParserError(
+            "Invalid CBOR integer returned from the service; unparsable "
+            f"additional info found for major type 0 or 1: {additional_info}"
+        )
 
     # Major type 1 - negative integers
     def _parse_negative_integer(self, stream, additional_info):
@@ -922,27 +916,12 @@ class BaseCBORParser(ResponseParser):
     # currently boolean values, CBOR's null, and CBOR's undefined type.  All other
     # values are either floats or invalid.
     def _parse_simple_and_float(self, stream, additional_info):
-        # For major type 7, values 20-23 correspond to CBOR "simple" values
-        additional_info_simple_values = {
-            20: False,  # CBOR false
-            21: True,  # CBOR true
-            22: None,  # CBOR null
-            23: None,  # CBOR undefined
-        }
-        # First we check if the additional info corresponds to a supported simple value
-        if additional_info in additional_info_simple_values:
-            return additional_info_simple_values[additional_info]
+        if additional_info in self._SIMPLE_VALUES:
+            return self._SIMPLE_VALUES[additional_info]
 
-        # If it's not a simple value, we need to parse it into the correct format and
-        # number fo bytes
-        float_formats = {
-            25: ('>e', 2),
-            26: ('>f', 4),
-            27: ('>d', 8),
-        }
-
-        if additional_info in float_formats:
-            float_format, num_bytes = float_formats[additional_info]
+        float_info = self._FLOAT_FORMATS.get(additional_info)
+        if float_info is not None:
+            float_format, num_bytes = float_info
             return struct.unpack(
                 float_format, self._read_from_stream(stream, num_bytes)
             )[0]
@@ -956,7 +935,8 @@ class BaseCBORParser(ResponseParser):
     # the break code, it advances past that byte and returns True so the calling
     # method knows to stop parsing that data item.
     def _handle_break_code(self, stream):
-        if int.from_bytes(stream.peek(1)[:1], 'big') == self.BREAK_CODE:
+        peeked = stream.peek(1)
+        if peeked and peeked[0] == self.BREAK_CODE:
             stream.seek(1, os.SEEK_CUR)
             return True
 

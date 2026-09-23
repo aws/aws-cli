@@ -476,15 +476,50 @@ class CBORSerializer(Serializer):
     MAP_MAJOR_TYPE = 5
     TAG_MAJOR_TYPE = 6
     FLOAT_AND_SIMPLE_MAJOR_TYPE = 7
+    _CBOR_NULL = b'\xf6'
+    _CBOR_TRUE = b'\xf5'
+    _CBOR_FALSE = b'\xf4'
+    _CBOR_TAG_1 = b'\xc1'
+    _FLOAT32_HEADER = b'\xfa'
+    _FLOAT64_HEADER = b'\xfb'
+    _CBOR_POS_INF = b'\xf9\x7c\x00'
+    _CBOR_NEG_INF = b'\xf9\xfc\x00'
+    _CBOR_NAN = b'\xf9\x7e\x00'
+    _INITIAL_BYTE_TABLE = [
+        ((mt << 5) | ai).to_bytes(1, 'big')
+        for mt in range(8)
+        for ai in range(32)
+    ]
 
     def _serialize_data_item(self, serialized, value, shape, key=None):
-        method = getattr(self, f'_serialize_type_{shape.type_name}')
-        if method is None:
+        type_name = shape.type_name
+        if type_name == 'string':
+            self._serialize_type_string(serialized, value, shape, key)
+        elif type_name == 'integer':
+            self._serialize_type_integer(serialized, value, shape, key)
+        elif type_name == 'structure':
+            self._serialize_type_structure(serialized, value, shape, key)
+        elif type_name == 'list':
+            self._serialize_type_list(serialized, value, shape, key)
+        elif type_name == 'map':
+            self._serialize_type_map(serialized, value, shape, key)
+        elif type_name == 'boolean':
+            self._serialize_type_boolean(serialized, value, shape, key)
+        elif type_name == 'long':
+            self._serialize_type_long(serialized, value, shape, key)
+        elif type_name == 'blob':
+            self._serialize_type_blob(serialized, value, shape, key)
+        elif type_name == 'timestamp':
+            self._serialize_type_timestamp(serialized, value, shape, key)
+        elif type_name == 'float':
+            self._serialize_type_float(serialized, value, shape, key)
+        elif type_name == 'double':
+            self._serialize_type_double(serialized, value, shape, key)
+        else:
             raise ValueError(
-                f"Unrecognized C2J type: {shape.type_name}, unable to "
+                f"Unrecognized C2J type: {type_name}, unable to "
                 f"serialize request"
             )
-        method(serialized, value, shape, key)
 
     def _serialize_type_integer(self, serialized, value, shape, key):
         if value >= 0:
@@ -557,11 +592,7 @@ class CBORSerializer(Serializer):
             serialized.extend(initial_byte + length.to_bytes(num_bytes, "big"))
         for item in value:
             if item is None:
-                serialized.extend(
-                    self._get_initial_byte(
-                        self.FLOAT_AND_SIMPLE_MAJOR_TYPE, 22
-                    )
-                )
+                serialized.extend(self._CBOR_NULL)
             else:
                 self._serialize_data_item(serialized, item, shape.member)
 
@@ -580,11 +611,7 @@ class CBORSerializer(Serializer):
         for key_item, item in value.items():
             self._serialize_data_item(serialized, key_item, shape.key)
             if item is None:
-                serialized.extend(
-                    self._get_initial_byte(
-                        self.FLOAT_AND_SIMPLE_MAJOR_TYPE, 22
-                    )
-                )
+                serialized.extend(self._CBOR_NULL)
             else:
                 self._serialize_data_item(serialized, item, shape.value)
 
@@ -634,34 +661,19 @@ class CBORSerializer(Serializer):
             self._serialize_type_integer(serialized, timestamp, shape, key)
 
     def _serialize_type_float(self, serialized, value, shape, key):
-        if self._is_special_number(value):
-            serialized.extend(
-                self._get_bytes_for_special_numbers(value)
-            )  # Handle special values like NaN or Infinity
+        if not math.isfinite(value):
+            serialized.extend(self._get_bytes_for_special_numbers(value))
         else:
-            initial_byte = self._get_initial_byte(
-                self.FLOAT_AND_SIMPLE_MAJOR_TYPE, 26
-            )
-            serialized.extend(initial_byte + struct.pack(">f", value))
+            serialized.extend(self._FLOAT32_HEADER + struct.pack(">f", value))
 
     def _serialize_type_double(self, serialized, value, shape, key):
-        if self._is_special_number(value):
-            serialized.extend(
-                self._get_bytes_for_special_numbers(value)
-            )  # Handle special values like NaN or Infinity
+        if not math.isfinite(value):
+            serialized.extend(self._get_bytes_for_special_numbers(value))
         else:
-            initial_byte = self._get_initial_byte(
-                self.FLOAT_AND_SIMPLE_MAJOR_TYPE, 27
-            )
-            serialized.extend(initial_byte + struct.pack(">d", value))
+            serialized.extend(self._FLOAT64_HEADER + struct.pack(">d", value))
 
     def _serialize_type_boolean(self, serialized, value, shape, key):
-        additional_info = 21 if value else 20
-        serialized.extend(
-            self._get_initial_byte(
-                self.FLOAT_AND_SIMPLE_MAJOR_TYPE, additional_info
-            )
-        )
+        serialized.extend(self._CBOR_TRUE if value else self._CBOR_FALSE)
 
     def _get_additional_info_and_num_bytes(self, value):
         # Values under 24 can be stored in the initial byte and don't need further
@@ -686,31 +698,15 @@ class CBORSerializer(Serializer):
             return 27, 8
 
     def _get_initial_byte(self, major_type, additional_info):
-        # The highest order three bits are the major type, so we need to bitshift the
-        # major type by 5
-        major_type_bytes = major_type << 5
-        return (major_type_bytes | additional_info).to_bytes(1, "big")
-
-    def _is_special_number(self, value):
-        return any(
-            [
-                value == float('inf'),
-                value == float('-inf'),
-                math.isnan(value),
-            ]
-        )
+        return self._INITIAL_BYTE_TABLE[(major_type << 5) | additional_info]
 
     def _get_bytes_for_special_numbers(self, value):
-        additional_info = 25
-        initial_byte = self._get_initial_byte(
-            self.FLOAT_AND_SIMPLE_MAJOR_TYPE, additional_info
-        )
         if value == float('inf'):
-            return initial_byte + struct.pack(">H", 0x7C00)
+            return self._CBOR_POS_INF
         elif value == float('-inf'):
-            return initial_byte + struct.pack(">H", 0xFC00)
-        elif math.isnan(value):
-            return initial_byte + struct.pack(">H", 0x7E00)
+            return self._CBOR_NEG_INF
+        else:
+            return self._CBOR_NAN
 
 
 class BaseRestSerializer(Serializer):

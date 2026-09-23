@@ -19,6 +19,7 @@ from jsonschema import Draft4Validator
 from awscli import clidriver
 from awscli.botocore.model import ServiceModel
 from awscli.botocore.utils import ArgumentGenerator
+from tests import ALL_SERVICES
 
 COMPLETIONS_SCHEMA = {
     "type": "object",
@@ -111,32 +112,43 @@ def service_test_data(request):
     return ServiceTestData(service_model, completions, service_name)
 
 
-def _get_invalid_completion_operations(service_test_data):
+def _get_invalid_completion_operations():
     cases = []
-    known_ops = set(service_test_data.service_model['operations'])
-    for op_name in service_test_data.completions['operations']:
-        if op_name not in known_ops:
-            cases.append(op_name)
-    resources = service_test_data.completions.get('resources', {})
-    for resource in resources.values():
-        op_name = resource.get('operation')
-        if op_name and op_name not in known_ops:
-            cases.append(op_name)
+    known = {model.service_name: model for model in ALL_SERVICES}
+    session = clidriver.create_clidriver().session
+    loader = session.get_component('data_loader')
+    for service_name in loader.list_available_services('completions-1'):
+        service_model = known[service_name]
+        completions = loader.load_service_model(
+            service_name, 'completions-1', service_model.api_version
+        )
+        known_ops = set(service_model.operation_names)
+        for op_name in completions['operations']:
+            if op_name not in known_ops:
+                cases.append((service_name, op_name))
+        for resource in completions.get('resources', {}).values():
+            op_name = resource.get('operation')
+            if op_name and op_name not in known_ops:
+                cases.append((service_name, op_name))
     return cases
 
 
 @pytest.mark.validates_models
+@pytest.mark.parametrize(
+    'service_name, operation_name',
+    _get_invalid_completion_operations(),
+    ids=lambda val: str(val),
+)
 def test_completions_operations_exist_in_model(
-    service_test_data, record_property
+    service_name, operation_name, record_property
 ):
-    invalid_operations = _get_invalid_completion_operations(service_test_data)
-    record_property('aws_service', service_test_data.service_name)
-    for operation_name in invalid_operations:
-        record_property('aws_operation', operation_name)
-    assert not invalid_operations, (
-        f"Completions file for '{service_test_data.service_name}' references "
-        f"operations absent from the service model: {invalid_operations}. "
-        "The completions-1.json file must remove or update these references."
+    record_property('aws_service', service_name)
+    record_property('aws_operation', operation_name)
+    pytest.fail(
+        f"Completions file for '{service_name}' references operation "
+        f"'{operation_name}' which does not exist in the service model. "
+        "The completions-1.json file must be updated to remove or "
+        "update references to this operation."
     )
 
 

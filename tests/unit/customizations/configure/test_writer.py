@@ -326,6 +326,78 @@ class TestConfigFileWriter(unittest.TestCase):
             '[profile foo]\n'
             'foo = bar\n')
 
+    def test_add_to_empty_nested_at_end_of_file(self):
+        original = (
+            '[default]\n'
+            's3 =\n'
+        )
+        self.assert_update_config(
+            original, {'__section__': 'default',
+                       's3': {'signature_version': 'newval'}},
+            '[default]\n'
+            's3 =\n'
+            '    signature_version = newval\n')
+
+    def test_add_to_nested_with_comment_after_nested_key(self):
+        original = (
+            '[default]\n'
+            's3 =\n'
+            '# a comment\n'
+            '    other = foo\n'
+        )
+        self.assert_update_config(
+            original, {'__section__': 'default',
+                       's3': {'signature_version': 'newval'}},
+            '[default]\n'
+            's3 =\n'
+            '# a comment\n'
+            '    other = foo\n'
+            '    signature_version = newval\n')
+
+    def test_add_to_nested_with_new_section_after_nested_key(self):
+        original = (
+            '[default]\n'
+            's3 =\n'
+            '[profile foo]\n'
+            'foo = bar\n'
+        )
+        self.assert_update_config(
+            original, {'__section__': 'default',
+                       's3': {'signature_version': 'newval'}},
+            '[default]\n'
+            's3 =\n'
+            '    signature_version = newval\n'
+            '[profile foo]\n'
+            'foo = bar\n')
+
+    def test_add_to_nested_with_blank_line_after_nested_key(self):
+        original = (
+            '[default]\n'
+            's3 =\n'
+            '\n'
+            '    other = foo\n'
+        )
+        self.assert_update_config(
+            original, {'__section__': 'default',
+                       's3': {'signature_version': 'newval'}},
+            '[default]\n'
+            's3 =\n'
+            '\n'
+            '    other = foo\n'
+            '    signature_version = newval\n')
+
+    def test_add_to_empty_nested_without_trailing_newline(self):
+        original = (
+            '[default]\n'
+            's3 ='
+        )
+        self.assert_update_config(
+            original, {'__section__': 'default',
+                       's3': {'signature_version': 'newval'}},
+            '[default]\n'
+            's3 =\n'
+            '    signature_version = newval\n')
+
     def test_update_nested_attr_no_prior_nesting(self):
         original = (
             '[default]\n'

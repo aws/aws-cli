@@ -215,6 +215,25 @@
       "documentation":"<p>Returns the resource-based policy document attached to the resource in <code>JSON</code> format. </p>",
       "readonly":true
     },
+    "ListBillingViewSegments":{
+      "name":"ListBillingViewSegments",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListBillingViewSegmentsRequest"},
+      "output":{"shape":"ListBillingViewSegmentsResponse"},
+      "errors":[
+        {"shape":"BillingViewHealthStatusException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Lists the segments of a billing view over a given time period. Each segment identifies the billing domain (<code>PRO_FORMA</code> or <code>BILLABLE</code>) and the account relationships that apply during its time range.</p> <p>If you don't provide an <code>arn</code>, the response includes segments for the caller's <code>PRIMARY</code> billing view.</p> <p>If a mid-period change occurs, the response includes multiple segments, each with its own time range. The response omits hidden segments, so the segments it returns might not cover the entire requested time period.</p>",
+      "readonly":true
+    },
     "ListBillingViews":{
       "name":"ListBillingViews",
       "http":{
@@ -489,6 +508,14 @@
         }
       }
     },
+    "BillingDomain":{
+      "type":"string",
+      "documentation":"<p>The billing domain for a billing view segment. The following values are valid:</p> <ul> <li> <p> <code>PRO_FORMA</code> - Data shaped by Billing Conductor that doesn't reflect the final charges owed to Amazon Web Services.</p> </li> <li> <p> <code>BILLABLE</code> - Data that represents the final charges owed to Amazon Web Services.</p> </li> </ul>",
+      "enum":[
+        "BILLABLE",
+        "PRO_FORMA"
+      ]
+    },
     "BillingFeature":{
       "type":"string",
       "enum":[
@@ -758,6 +785,51 @@
       "min":1,
       "pattern":"[ a-zA-Z0-9_\\+=\\.\\-@]+",
       "sensitive":true
+    },
+    "BillingViewSegmentTimeRange":{
+      "type":"structure",
+      "members":{
+        "beginDateInclusive":{
+          "shape":"Timestamp",
+          "documentation":"<p> The inclusive start of the time range. This value can't be in the future. </p>"
+        },
+        "endDateExclusive":{
+          "shape":"Timestamp",
+          "documentation":"<p> The exclusive end of the time range. This value must be after <code>beginDateInclusive</code>. </p>"
+        }
+      },
+      "documentation":"<p> Specifies a time range with an inclusive begin date and an exclusive end date. </p>"
+    },
+    "BillingViewSegmentsList":{
+      "type":"list",
+      "member":{"shape":"BillingViewSegmentsListElement"},
+      "documentation":"<p> A list of billing view segments. </p>"
+    },
+    "BillingViewSegmentsListElement":{
+      "type":"structure",
+      "members":{
+        "domain":{
+          "shape":"BillingDomain",
+          "documentation":"<p>The billing domain for this segment. The following values are valid:</p> <ul> <li> <p> <code>PRO_FORMA</code> - Data shaped by Billing Conductor that doesn't reflect the final charges owed to Amazon Web Services.</p> </li> <li> <p> <code>BILLABLE</code> - Data that represents the final charges owed to Amazon Web Services.</p> </li> </ul>"
+        },
+        "timeRange":{
+          "shape":"BillingViewSegmentTimeRange",
+          "documentation":"<p> The time range during which this segment is effective. </p>"
+        },
+        "billingTransferAccountId":{
+          "shape":"AccountId",
+          "documentation":"<p> The billing transfer account ID. The response includes this field only when the caller is a billing transfer source account. The response omits this field for billing group billing views. </p>"
+        },
+        "managementAccountId":{
+          "shape":"AccountId",
+          "documentation":"<p> The management account ID of the organization. The response includes this field for organization member accounts. </p>"
+        },
+        "billingGroupPrimaryAccountId":{
+          "shape":"AccountId",
+          "documentation":"<p> The billing group primary account ID. The response includes this field for billing group members. Compare this value to your own account ID to determine whether you are the primary account. </p>"
+        }
+      },
+      "documentation":"<p> A billing view segment. A segment represents a time range during which the billing domain and account relationships for a billing view remained unchanged. </p>"
     },
     "BillingViewSourceViewsList":{
       "type":"list",
@@ -1713,6 +1785,41 @@
       "documentation":"<p>A list of linked account charges.</p>",
       "max":100,
       "min":0
+    },
+    "ListBillingViewSegmentsRequest":{
+      "type":"structure",
+      "members":{
+        "timeRange":{
+          "shape":"BillingViewSegmentTimeRange",
+          "documentation":"<p> The billing period to query. If you don't provide a time range, the current billing period, which is the calendar month in UTC, is used. </p>"
+        },
+        "arn":{
+          "shape":"BillingViewArn",
+          "documentation":"<p> The Amazon Resource Name (ARN) that uniquely identifies the billing view to query. If you don't provide an ARN, the caller's <code>PRIMARY</code> billing view is used. The ARN must reference a primary billing view. Custom billing views aren't supported. </p>"
+        },
+        "maxResults":{
+          "shape":"BillingViewsMaxResults",
+          "documentation":"<p> The number of entries a paginated response contains. Valid values range from 1 to 100. The default is 100. </p>"
+        },
+        "nextToken":{
+          "shape":"PageToken",
+          "documentation":"<p> The pagination token that is used on subsequent calls to list billing view segments. </p>"
+        }
+      }
+    },
+    "ListBillingViewSegmentsResponse":{
+      "type":"structure",
+      "required":["items"],
+      "members":{
+        "items":{
+          "shape":"BillingViewSegmentsList",
+          "documentation":"<p> A list of billing view segments. Each segment covers a portion of the requested time period. The response omits hidden segments, so the segments it returns might not cover the entire requested time period. </p>"
+        },
+        "nextToken":{
+          "shape":"PageToken",
+          "documentation":"<p> The pagination token that is used on subsequent calls to list billing view segments. </p>"
+        }
+      }
     },
     "ListBillingViewsRequest":{
       "type":"structure",

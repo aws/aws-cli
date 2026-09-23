@@ -4015,6 +4015,10 @@
         "audioFillerSettings":{
           "shape":"AudioFillerSettings",
           "documentation":"<p>Audio filler settings to apply when importing the bot locale configuration. Audio filler requires <code>unifiedSpeechSettings</code> (speech-to-speech) to be enabled when <code>enabled</code> is <code>true</code>.</p>"
+        },
+        "speakerDiarizationSettings":{
+          "shape":"SpeakerDiarizationSettings",
+          "documentation":"<p>The speaker diarization settings to apply when importing the bot locale configuration.</p>"
         }
       },
       "documentation":"<p>Provides the bot locale parameters required for importing a bot locale.</p>"
@@ -5160,6 +5164,10 @@
         "speechDetectionSensitivity":{
           "shape":"SpeechDetectionSensitivity",
           "documentation":"<p>The sensitivity level for voice activity detection (VAD) in the bot locale. This setting helps optimize speech recognition accuracy by adjusting how the system responds to background noise during voice interactions.</p>"
+        },
+        "speakerDiarizationSettings":{
+          "shape":"SpeakerDiarizationSettings",
+          "documentation":"<p>The speaker diarization settings to configure for the new bot locale. When enabled, Amazon Lex restricts speech detection to the primary (loudest) speaker during streaming audio conversations.</p>"
         }
       }
     },
@@ -5218,6 +5226,10 @@
         "speechDetectionSensitivity":{
           "shape":"SpeechDetectionSensitivity",
           "documentation":"<p>The sensitivity level for voice activity detection (VAD) that was specified for the bot locale.</p>"
+        },
+        "speakerDiarizationSettings":{
+          "shape":"SpeakerDiarizationSettings",
+          "documentation":"<p>The speaker diarization settings configured for the created bot locale.</p>"
         }
       }
     },
@@ -7074,6 +7086,10 @@
         "speechDetectionSensitivity":{
           "shape":"SpeechDetectionSensitivity",
           "documentation":"<p>The sensitivity level for voice activity detection (VAD) configured for the bot locale.</p>"
+        },
+        "speakerDiarizationSettings":{
+          "shape":"SpeakerDiarizationSettings",
+          "documentation":"<p>The speaker diarization settings configured for the bot locale.</p>"
         }
       }
     },
@@ -12938,6 +12954,17 @@
         "Descending"
       ]
     },
+    "SpeakerDiarizationSettings":{
+      "type":"structure",
+      "required":["enabled"],
+      "members":{
+        "enabled":{
+          "shape":"Enabled",
+          "documentation":"<p>Specifies whether speaker diarization is enabled for the bot locale. Set to <code>true</code> to have Amazon Lex treat speech from speakers other than the primary speaker as non-speech. Set to <code>false</code> to disable speaker diarization and rely on voice activity detection alone.</p>"
+        }
+      },
+      "documentation":"<p>Specifies configuration that restricts speech detection to the primary (loudest) speaker during streaming audio conversations, so that speech from background speakers does not start a turn, interrupt the bot, or reach speech recognition.</p>"
+    },
     "Specifications":{
       "type":"structure",
       "required":[
@@ -12995,7 +13022,8 @@
       "enum":[
         "Standard",
         "Neural",
-        "Deepgram"
+        "Deepgram",
+        "Advanced"
       ]
     },
     "SpeechRecognitionSettings":{
@@ -14524,6 +14552,10 @@
         "speechDetectionSensitivity":{
           "shape":"SpeechDetectionSensitivity",
           "documentation":"<p>The new sensitivity level for voice activity detection (VAD) in the bot locale. This setting helps optimize speech recognition accuracy by adjusting how the system responds to background noise during voice interactions.</p>"
+        },
+        "speakerDiarizationSettings":{
+          "shape":"SpeakerDiarizationSettings",
+          "documentation":"<p>The updated speaker diarization settings to apply to the bot locale. If you omit this field, Amazon Lex keeps the setting currently stored on the bot locale. To turn speaker diarization off, set <code>enabled</code> to <code>false</code> explicitly.</p>"
         }
       }
     },
@@ -14597,6 +14629,10 @@
         "speechDetectionSensitivity":{
           "shape":"SpeechDetectionSensitivity",
           "documentation":"<p>The updated sensitivity level for voice activity detection (VAD) in the bot locale.</p>"
+        },
+        "speakerDiarizationSettings":{
+          "shape":"SpeakerDiarizationSettings",
+          "documentation":"<p>The updated speaker diarization settings for the bot locale.</p>"
         }
       }
     },
@@ -15814,5 +15850,5 @@
       "min":0
     }
   },
-  "documentation":"<p>Amazon Lex Model Building Service provides APIs for creating, managing, and deploying conversational bots and their components.</p>"
+  "documentation":"<p>This document provides detailed information about the Amazon Lex V2 API actions and their parameters.</p> <p>For information about the IAM access control permissions you need to use this API, see <a href=\"https://docs.aws.amazon.com/lexv2/latest/dg/security_iam_service-with-iam.html\">Identity-based policies for Amazon Lex V2</a>.</p> <p>Amazon Lex V2 Model Building V2 operations let you build and manage bots.</p> <p>If you use a custom HTTP client to call Amazon Lex Model Building V2 operations, you must set the \"Content-Type\" HTTP header to \"application/x-amz-json-1.1\". Otherwise, you receive an HTTP 404 - UnknownOperationException in the response.</p> <p>Amazon Lex Model Building V2 operations return the responses with the \"application/x-amz-json-1.1\" content type.</p> <p>You can use <a href=\"http://aws.amazon.com/tools/#sdk\">Amazon Web Services SDKs</a> to access Amazon Lex V2 APIs using your favorite programming language. The SDKs automatically perform useful tasks for you, such as:</p> <ul> <li> <p>Cryptographically sign your service requests</p> </li> <li> <p>Retry requests</p> </li> <li> <p>Handle error responses</p> </li> </ul> <p>The following resources provide additional information about the Amazon Lex V2 Model Building API.</p> <ul> <li> <p> <i>Amazon Web Services General Reference</i> </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/general/latest/gr/lex.html\">Amazon Lex V2 Endpoints for each region</a>.</p> </li> </ul> </li> <li> <p> <i>Command Line Interface</i> </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/cli/latest/reference/lexv2-models/index.html\"> Amazon Lex Model Building V2 CLI commands</a>.</p> </li> </ul> </li> </ul>"
 }

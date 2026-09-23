@@ -832,6 +832,24 @@
         "ISM"
       ]
     },
+    "ContentKeyPeriodConfiguration":{
+      "type":"structure",
+      "members":{
+        "ContentKeyPeriodTiming":{
+          "shape":"ContentKeyPeriodTiming",
+          "documentation":"<p>Specifies what timing information MediaPackage signals in the <code>ContentKeyPeriod</code> to your DRM key provider. If you don't specify a value, the default is <code>INDEX_ONLY</code>. Signaling start and end times (<code>START_END_ONLY</code> or <code>INDEX_WITH_START_END</code>) also requires key rotation to be enabled.</p> <p>The allowed values are:</p> <ul> <li> <p> <code>INDEX_ONLY</code> - Signals only the content key index. This is the default and matches the current behavior. It's supported for both SPEKE Version 2.0 and 2.1.</p> </li> <li> <p> <code>START_END_ONLY</code> - Signals only the start and end times the key is used for. Requires <code>SpekeVersion</code> <code>V2_1</code>.</p> </li> <li> <p> <code>INDEX_WITH_START_END</code> - Signals both the content key index and the start and end times the key is used for. Requires <code>SpekeVersion</code> <code>V2_1</code>.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>The configuration that controls the content key period timing information that MediaPackage signals to your DRM key provider.</p>"
+    },
+    "ContentKeyPeriodTiming":{
+      "type":"string",
+      "enum":[
+        "INDEX_ONLY",
+        "START_END_ONLY",
+        "INDEX_WITH_START_END"
+      ]
+    },
     "CreateChannelGroupRequest":{
       "type":"structure",
       "required":["ChannelGroupName"],
@@ -3495,7 +3513,7 @@
     },
     "MultiviewLayoutType":{
       "type":"string",
-      "documentation":"<p>A tile layout for a multiview channel. Each layout determines how many source tiles are composited into the output and how those tiles are arranged.</p> <p>The allowed values are:</p> <ul> <li> <p> <code>LAYOUT_SINGLE</code> – One tile at full resolution. Use this to serve a single source as a standard stream.</p> </li> <li> <p> <code>LAYOUT_2EH</code> – Two tiles of equal size, arranged horizontally.</p> </li> <li> <p> <code>LAYOUT_2PL</code> – Two tiles, with one larger primary tile.</p> </li> <li> <p> <code>LAYOUT_3EB</code> – Three tiles of equal size, with two on top and one below.</p> </li> <li> <p> <code>LAYOUT_3EL</code> – Three tiles of equal size, arranged in two columns.</p> </li> <li> <p> <code>LAYOUT_3PL</code> – Three tiles, with one larger primary tile on the left and two stacked on the right.</p> </li> <li> <p> <code>LAYOUT_4E</code> – Four tiles of equal size, arranged in a two-by-two grid.</p> </li> <li> <p> <code>LAYOUT_4PL</code> – Four tiles, with one larger primary tile on the left and three stacked on the right.</p> </li> </ul>",
+      "documentation":"<p>A tile layout for a multiview channel. Each layout determines how many source tiles are composited into the output and how those tiles are arranged.</p> <p>The allowed values are:</p> <ul> <li> <p> <code>LAYOUT_2EH</code> – Two tiles of equal size, arranged horizontally.</p> </li> <li> <p> <code>LAYOUT_2PL</code> – Two tiles, with one larger primary tile.</p> </li> <li> <p> <code>LAYOUT_3EL</code> – Three tiles of equal size, arranged in two columns.</p> </li> <li> <p> <code>LAYOUT_3PL</code> – Three tiles, with one larger primary tile on the left and two stacked on the right.</p> </li> <li> <p> <code>LAYOUT_4E</code> – Four tiles of equal size, arranged in a two-by-two grid.</p> </li> <li> <p> <code>LAYOUT_4PL</code> – Four tiles, with one larger primary tile on the left and three stacked on the right.</p> </li> </ul>",
       "enum":[
         "LAYOUT_2EH",
         "LAYOUT_2PL",
@@ -4070,6 +4088,14 @@
         "CertificateArn":{
           "shape":"SpekeKeyProviderCertificateArnString",
           "documentation":"<p>The ARN for the certificate that you imported to Amazon Web Services Certificate Manager to add content key encryption to this endpoint. For this feature to work, your DRM key provider must support content key encryption.</p>"
+        },
+        "SpekeVersion":{
+          "shape":"SpekeVersion",
+          "documentation":"<p>Specifies the SPEKE version used with your DRM key provider. If you don't specify a value, the default is <code>V2_0</code>.</p> <p>The allowed values are:</p> <ul> <li> <p> <code>V2_0</code> - Follows the SPEKE Version 2.0 contract and signals only the content key index in key requests. This is the default.</p> </li> <li> <p> <code>V2_1</code> - Follows the SPEKE Version 2.1 contract and additionally supports signaling the start and end times a content key is used for, using <code>ContentKeyPeriodConfiguration</code>.</p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/speke/latest/documentation/standard-payload-components-v2.html\">SPEKE Version 2.0 payload</a>.</p>"
+        },
+        "ContentKeyPeriodConfiguration":{
+          "shape":"ContentKeyPeriodConfiguration",
+          "documentation":"<p>The configuration that controls whether MediaPackage signals the start and end times a content key is used for, in the <code>ContentKeyPeriod</code> sent to your DRM key provider. Signaling this timing is supported only when key rotation is enabled (<code>KeyRotationIntervalSeconds</code> is set to a non-zero value) and <code>SpekeVersion</code> is <code>V2_1</code>. You can update these settings on an existing origin endpoint.</p>"
         }
       },
       "documentation":"<p>The parameters for the SPEKE key provider.</p>"
@@ -4101,6 +4127,13 @@
       "type":"string",
       "max":1024,
       "min":1
+    },
+    "SpekeVersion":{
+      "type":"string",
+      "enum":[
+        "V2_0",
+        "V2_1"
+      ]
     },
     "StartTag":{
       "type":"structure",
@@ -4717,7 +4750,9 @@
         "MULTIVIEW_INPUT_TYPE_WITH_NON_EPOCH_LOCKED",
         "MULTIVIEW_INPUT_TYPE_WITH_SEGMENT_DURATION",
         "MULTIVIEW_SOURCE_NON_EPOCH_LOCKED",
-        "MULTIVIEW_SCTE_REQUIRES_AVAILS_PERIOD_TRIGGER"
+        "MULTIVIEW_SCTE_REQUIRES_AVAILS_PERIOD_TRIGGER",
+        "CONTENT_KEY_PERIOD_TIMING_WITHOUT_KEY_ROTATION",
+        "CONTENT_KEY_PERIOD_TIMING_REQUIRES_SPEKE_V2_1"
       ]
     }
   },

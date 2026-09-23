@@ -1158,12 +1158,12 @@
       },
       "errors": [
         {
-          "shape": "BadRequestException",
-          "documentation": "The service can't process your request because of a problem in the request. Please check your request form and syntax."
-        },
-        {
           "shape": "UnprocessableEntityException",
           "documentation": "The input file was recognized but appears to be malformed or corrupt."
+        },
+        {
+          "shape": "BadRequestException",
+          "documentation": "The service can't process your request because of a problem in the request. Please check your request form and syntax."
         },
         {
           "shape": "InternalServerErrorException",
@@ -1190,7 +1190,7 @@
           "documentation": "The service couldn't complete your request because there is a conflict with the current state of the resource."
         }
       ],
-      "documentation": "Use Probe to obtain detailed information about your input media files. Probe returns a JSON that includes container, codec, frame rate, resolution, track count, audio layout, captions, and more. You can use this information to learn more about your media files, or to help make decisions while automating your transcoding workflow."
+      "documentation": "Use Probe to obtain detailed information about your input media files. Probe returns a JSON that includes container, codec, frame rate, resolution, track count, audio layout, captions, and more. You can use this information to learn more about your media files, or to help make decisions while automating your transcoding workflow. Probe supports the following input container formats: MP4, QuickTime (MOV), 3GP, 3G2, Matroska (MKV), WebM, MXF, MPEG-TS, MPEG-PS, AVI, WAV, MP3, FLAC, Ogg, and ASF (Windows Media / WMA). The fields that Probe returns vary by container and codec. A field isn't returned when the source doesn't contain it, or when it isn't available for that container and codec."
     },
     "PutPolicy": {
       "name": "PutPolicy",
@@ -2480,7 +2480,7 @@
         "BitDepth": {
           "shape": "__integer",
           "locationName": "bitDepth",
-          "documentation": "The bit depth of the audio track."
+          "documentation": "The bit depth of the audio track. This value is exact for PCM and FLAC audio. For lossy codecs, such as AAC, AC-3, and E-AC-3, it is a nominal value and should be treated as approximate."
         },
         "BitRate": {
           "shape": "__long",
@@ -2490,7 +2490,7 @@
         "ChannelLayout": {
           "shape": "__string",
           "locationName": "channelLayout",
-          "documentation": "The audio channel layout of the track, such as \"mono\", \"stereo\", \"5.1\", or \"7.1\". Object-based or immersive audio is reported as \"5.1.4\" or \"7.1.4\"."
+          "documentation": "The audio channel layout of the track, such as \"mono\", \"stereo\", \"5.1\", or \"7.1\". Object-based or immersive audio is reported as \"5.1.4\" or \"7.1.4\". The layout is exact for AC-3 and E-AC-3 audio. For other codecs, it is inferred from the channel count and should be treated as approximate."
         },
         "Channels": {
           "shape": "__integer",
@@ -2578,6 +2578,11 @@
           "locationName": "selectorType",
           "documentation": "Specify how MediaConvert selects audio content within your input. The default is Track. PID: Select audio by specifying the Packet Identifier (PID) values for MPEG Transport Stream inputs. Use this when you know the exact PID values of your audio streams. Track: Default. Select audio by track number. This is the most common option and works with most input container formats. If more types of audio data get recognized in the future, these numberings may shift, but the numberings used for Stream mode will not. Language code: Select audio by language using an ISO 639-2 or ISO 639-3 three-letter code in all capital letters. Use this when your source has embedded language metadata and you want to select tracks based on their language. HLS rendition group: Select audio from an HLS rendition group. Use this when your input is an HLS package with multiple audio renditions and you want to select specific rendition groups. All PCM: Select all uncompressed PCM audio tracks from your input automatically. This is useful when you want to include all PCM audio tracks without specifying individual track numbers. Stream: Select audio by stream number. Stream numbers include all tracks in the source file, regardless of type, and correspond to either the order of tracks in the file, or if applicable, the stream number metadata of the track. Although all tracks count toward these stream numbers, in this audio selector context, only the stream number of a track containing audio data may be used. If your source file contains a track which is not recognized by the service, then the corresponding stream number will still be reserved for future use. If more types of audio data get recognized in the future, these numberings will not shift."
         },
+        "Smpte337Passthrough": {
+          "shape": "AudioSmpte337Passthrough",
+          "locationName": "smpte337Passthrough",
+          "documentation": "Specify whether to pass SMPTE 337M-wrapped audio (such as Dolby E) through without unwrapping. Choose Enabled to pass the SMPTE 337M container through unchanged, treating the track as raw PCM. Choose Disabled (default) to automatically detect and unwrap SMPTE 337M data, extracting the underlying Dolby E programs as separate audio tracks for encoding. When this field is absent, the service defaults to Disabled (auto-unwrap)."
+        },
         "Streams": {
           "shape": "__listOf__integerMin1Max2147483647",
           "locationName": "streams",
@@ -2612,6 +2617,14 @@
         "HLS_RENDITION_GROUP",
         "ALL_PCM",
         "STREAM"
+      ]
+    },
+    "AudioSmpte337Passthrough": {
+      "type": "string",
+      "documentation": "Specify whether to pass SMPTE 337M-wrapped audio (such as Dolby E) through without unwrapping. Choose Enabled to pass the SMPTE 337M container through unchanged, treating the track as raw PCM. Choose Disabled (default) to automatically detect and unwrap SMPTE 337M data, extracting the underlying Dolby E programs as separate audio tracks for encoding. When this field is absent, the service defaults to Disabled (auto-unwrap).",
+      "enum": [
+        "ENABLED",
+        "DISABLED"
       ]
     },
     "AudioTypeControl": {
@@ -4381,7 +4394,7 @@
           "documentation": "The width in pixels as coded by the codec. This represents the actual encoded video width as specified in the video stream headers."
         }
       },
-      "documentation": "Codec-specific parameters parsed from the video essence headers. This information provides detailed technical specifications about how the video was encoded, including profile settings, resolution details, and color space information that can help you understand the source video characteristics and make informed encoding decisions."
+      "documentation": "Codec-specific parameters parsed from the video essence headers. This information provides detailed technical specifications about how the video was encoded, including profile settings, resolution details, and color space information that can help you understand the source video characteristics and make informed encoding decisions. These fields are returned for H.264 (AVC), H.265 (HEVC), and MPEG-2 video, and might not be returned for other codecs. For MPEG-TS and MPEG-PS inputs, color information (color primaries, transfer characteristics, and matrix coefficients) appears in these fields rather than in the top-level videoProperties."
     },
     "ColorConversion3DLUTSetting": {
       "type": "structure",
@@ -4578,7 +4591,7 @@
         "Format": {
           "shape": "Format",
           "locationName": "format",
-          "documentation": "The format of your media file. For example: MP4, QuickTime (MOV), Matroska (MKV), WebM, MXF, Wave, AVI, MPEG-TS, MPEG-PS, MP3, FLAC, ASF (Windows Media / WMA), or OGG. Note that this will be blank if your media file has a format that the MediaConvert Probe operation does not recognize."
+          "documentation": "The format of your media file. For example: MP4, QuickTime (MOV), Matroska (MKV), WebM, MXF, Wave, AVI, MPEG-TS, MPEG-PS, MP3, FLAC, ASF (Windows Media / WMA), OGG, 3GP, 3G2, AAC (raw ADTS), AC-3, or Enhanced AC-3 (E-AC-3). Note that this will be blank if your media file has a format that the MediaConvert Probe operation does not recognize."
         },
         "StartTimecode": {
           "shape": "__string",
@@ -6853,7 +6866,12 @@
         "mp3",
         "flac",
         "asf",
-        "ogg"
+        "ogg",
+        "three_gp",
+        "three_g2",
+        "aac",
+        "ac3",
+        "eac3"
       ]
     },
     "FrameCaptureSettings": {
@@ -9795,6 +9813,11 @@
           "locationName": "motionImageInserter",
           "documentation": "Overlay motion graphics on top of your video. The motion graphics that you specify here appear on all outputs in all output groups. For more information, see https://docs.aws.amazon.com/mediaconvert/latest/ug/motion-graphic-overlay.html."
         },
+        "MotionImageInserters": {
+          "shape": "__listOfMotionImageInserter",
+          "locationName": "motionImageInserters",
+          "documentation": "Array of motion image inserters for overlaying multiple independent motion graphics. Compositing order follows array index. Mutually exclusive with motionImageInserter."
+        },
         "NielsenConfiguration": {
           "shape": "NielsenConfiguration",
           "locationName": "nielsenConfiguration",
@@ -9965,6 +9988,11 @@
           "shape": "MotionImageInserter",
           "locationName": "motionImageInserter",
           "documentation": "Overlay motion graphics on top of your video. The motion graphics that you specify here appear on all outputs in all output groups. For more information, see https://docs.aws.amazon.com/mediaconvert/latest/ug/motion-graphic-overlay.html."
+        },
+        "MotionImageInserters": {
+          "shape": "__listOfMotionImageInserter",
+          "locationName": "motionImageInserters",
+          "documentation": "Array of motion image inserters for overlaying multiple independent motion graphics. Compositing order follows array index. Mutually exclusive with motionImageInserter."
         },
         "NielsenConfiguration": {
           "shape": "NielsenConfiguration",
@@ -12738,6 +12766,15 @@
       },
       "documentation": "If you work with a third party video watermarking partner, use the group of settings that correspond with your watermarking partner to include watermarks in your output."
     },
+    "PassthroughSegmentationMode": {
+      "type": "string",
+      "documentation": "Choose how MediaConvert determines segment boundaries when you passthrough video to a segmented ABR output (HLS, DASH, or CMAF). This setting applies only to ABR outputs. Keep the default value, Auto, to let MediaConvert choose based on your input: when your input is a segmented HLS or DASH source, MediaConvert reproduces your input's own segment boundaries, with one output segment per input segment; for all other inputs, MediaConvert places boundaries by duration, cutting at the first eligible IDR-frame at or after each configured Segment length or Fragment length target. Choose Duration based to always place boundaries by duration, at the first eligible IDR-frame at or after each configured Segment length or Fragment length target, regardless of your input. When your input GOP duration does not evenly divide your target segment length, output segment durations will vary. Choose GOP count to place a fixed number of input GOPs in every segment, and specify GOPs per segment. Every segment contains the same number of input GOPs, which produces consistent segment durations when your input GOP cadence is constant. In this mode MediaConvert ignores your configured Segment length and Fragment length for video boundary placement. Ad avails and input discontinuities are still honored as segment boundaries.",
+      "enum": [
+        "AUTO",
+        "DURATION_BASED",
+        "GOP_COUNT"
+      ]
+    },
     "PassthroughSettings": {
       "type": "structure",
       "members": {
@@ -12745,6 +12782,16 @@
           "shape": "FrameControl",
           "locationName": "frameControl",
           "documentation": "Choose how MediaConvert handles start and end times for input clipping with video passthrough. Your input video codec must be H.264 or H.265 to use IFRAME. To clip at the nearest IDR-frame: Choose Nearest IDR. If an IDR-frame is not found at the frame that you specify, MediaConvert uses the next compatible IDR-frame. Note that your output may be shorter than your input clip duration. To clip at the nearest I-frame: Choose Nearest I-frame. If an I-frame is not found at the frame that you specify, MediaConvert uses the next compatible I-frame. Note that your output may be shorter than your input clip duration. We only recommend this setting for special workflows, and when you choose this setting your output may not be compatible with most players."
+        },
+        "GopsPerSegment": {
+          "shape": "__integerMin1Max100",
+          "locationName": "gopsPerSegment",
+          "documentation": "Specify how many input GOPs MediaConvert places in each output segment when you set Passthrough segmentation mode to GOP count. For example, if your input has a closed GOP every 1.92 seconds and you specify 2, each output segment is 3.84 seconds. In this mode, output segment duration is determined by your input GOP structure rather than by your configured Segment length or Fragment length, so segment durations are consistent only when your input GOP cadence is constant. Segments at input discontinuities or ad avails may contain fewer GOPs."
+        },
+        "SegmentationMode": {
+          "shape": "PassthroughSegmentationMode",
+          "locationName": "segmentationMode",
+          "documentation": "Choose how MediaConvert determines segment boundaries when you passthrough video to a segmented ABR output (HLS, DASH, or CMAF). This setting applies only to ABR outputs. Keep the default value, Auto, to let MediaConvert choose based on your input: when your input is a segmented HLS or DASH source, MediaConvert reproduces your input's own segment boundaries, with one output segment per input segment; for all other inputs, MediaConvert places boundaries by duration, cutting at the first eligible IDR-frame at or after each configured Segment length or Fragment length target. Choose Duration based to always place boundaries by duration, at the first eligible IDR-frame at or after each configured Segment length or Fragment length target, regardless of your input. When your input GOP duration does not evenly divide your target segment length, output segment durations will vary. Choose GOP count to place a fixed number of input GOPs in every segment, and specify GOPs per segment. Every segment contains the same number of input GOPs, which produces consistent segment durations when your input GOP cadence is constant. In this mode MediaConvert ignores your configured Segment length and Fragment length for video boundary placement. Ad avails and input discontinuities are still honored as segment boundaries."
         },
         "VideoSelectorMode": {
           "shape": "VideoSelectorMode",
@@ -15165,7 +15212,7 @@
         "CodecMetadata": {
           "shape": "CodecMetadata",
           "locationName": "codecMetadata",
-          "documentation": "Codec-specific parameters parsed from the video essence headers. This information provides detailed technical specifications about how the video was encoded, including profile settings, resolution details, and color space information that can help you understand the source video characteristics and make informed encoding decisions."
+          "documentation": "Codec-specific parameters parsed from the video essence headers. This information provides detailed technical specifications about how the video was encoded, including profile settings, resolution details, and color space information that can help you understand the source video characteristics and make informed encoding decisions. These fields are returned for H.264 (AVC), H.265 (HEVC), and MPEG-2 video, and might not be returned for other codecs. For MPEG-TS and MPEG-PS inputs, color information (color primaries, transfer characteristics, and matrix coefficients) appears in these fields rather than in the top-level videoProperties."
         },
         "ColorPrimaries": {
           "shape": "ColorPrimaries",
@@ -15864,7 +15911,7 @@
         "InterlaceMode": {
           "shape": "XavcInterlaceMode",
           "locationName": "interlaceMode",
-          "documentation": "Choose the scan line type for the output. Keep the default value, Progressive to create a progressive output, regardless of the scan type of your input. Use Top field first or Bottom field first to create an output that's interlaced with the same field polarity throughout. Use Follow, default top or Follow, default bottom to produce outputs with the same field polarity as the source. For jobs that have multiple inputs, the output field polarity might change over the course of the output. Follow behavior depends on the input scan type. If the source is interlaced, the output will be interlaced with the same polarity as the source. If the source is progressive, the output will be interlaced with top field bottom field first, depending on which of the Follow options you choose."
+          "documentation": "Choose the scan line type for the output. Keep the default value, Progressive, to create a progressive output, regardless of the scan type of your input. To create an interlaced output, choose Top field first or Follow, default top. Outputs that you create with this profile are always top field first when they are interlaced. When you create an interlaced output, set your output frame rate to 25 or 29.97."
         },
         "XavcClass": {
           "shape": "XavcHdIntraCbgProfileClass",
@@ -15964,7 +16011,7 @@
     },
     "XavcProfile": {
       "type": "string",
-      "documentation": "Specify the XAVC profile for this output. For more information, see the Sony documentation at https://www.xavc-info.org/. Note that MediaConvert doesn't support the interlaced video XAVC operating points for XAVC_HD_INTRA_CBG. To create an interlaced XAVC output, choose the profile XAVC_HD.",
+      "documentation": "Specify the XAVC profile for this output. For more information, see the Sony documentation at https://www.xavc-info.org/. Note that when you choose XAVC_HD_INTRA_CBG, MediaConvert supports interlaced outputs only when they are top field first and your output frame rate is 25 or 29.97 fps.",
       "enum": [
         "XAVC_HD_INTRA_CBG",
         "XAVC_4K_INTRA_CBG",
@@ -16014,7 +16061,7 @@
         "Profile": {
           "shape": "XavcProfile",
           "locationName": "profile",
-          "documentation": "Specify the XAVC profile for this output. For more information, see the Sony documentation at https://www.xavc-info.org/. Note that MediaConvert doesn't support the interlaced video XAVC operating points for XAVC_HD_INTRA_CBG. To create an interlaced XAVC output, choose the profile XAVC_HD."
+          "documentation": "Specify the XAVC profile for this output. For more information, see the Sony documentation at https://www.xavc-info.org/. Note that when you choose XAVC_HD_INTRA_CBG, MediaConvert supports interlaced outputs only when they are top field first and your output frame rate is 25 or 29.97 fps."
         },
         "SlowPal": {
           "shape": "XavcSlowPal",
@@ -16860,6 +16907,12 @@
       "type": "list",
       "member": {
         "shape": "JobsQueryFilter"
+      }
+    },
+    "__listOfMotionImageInserter": {
+      "type": "list",
+      "member": {
+        "shape": "MotionImageInserter"
       }
     },
     "__listOfMsSmoothAdditionalManifest": {

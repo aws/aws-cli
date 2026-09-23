@@ -113,7 +113,7 @@
         {"shape":"InvalidArgumentException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Deletes the specified channel. Deleting a channel stops delivery from the source stream to the destination. Data already delivered to the destination is not deleted.</p> <p>A stream cannot be deleted while it has active channels. To delete the stream, first delete all channels attached to it. To find them, use <a>ListChannels</a> with a stream filter.</p> <p>This operation has a call limit of 5 transactions per second (TPS) for each Amazon Web Services account. Exceeding 5 TPS results in a <code>LimitExceededException</code>.</p>",
+      "documentation":"<p>Deletes the specified channel. Deleting a channel stops delivery from the source stream to the destination. Data already delivered to the destination is not deleted.</p> <p>A stream cannot be deleted while it has active channels. Use <a>ListChannels</a> with a stream filter to find the channels attached to a stream before deleting it.</p> <p>This operation has a call limit of 5 transactions per second (TPS) for each Amazon Web Services account. Exceeding 5 TPS results in a <code>LimitExceededException</code>.</p>",
       "staticContextParams":{
         "OperationType":{"value":"control"}
       }
@@ -882,6 +882,26 @@
         "OperationType":{"value":"control"}
       }
     },
+    "UpdateStreamRecordDistributionStrategy":{
+      "name":"UpdateStreamRecordDistributionStrategy",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateStreamRecordDistributionStrategyInput"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidArgumentException"},
+        {"shape":"ResourceInUseException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Updates the record distribution strategy for the specified Amazon Kinesis Data Streams on-demand data stream. The record distribution strategy determines how Amazon Kinesis Data Streams distributes records across the shards in a stream.</p> <note> <p>You must specify the stream using the <code>StreamARN</code> parameter.</p> </note> <p>The record distribution strategy is a stream-level setting. You can switch between the following strategies at any time, and the change takes effect immediately without downtime, data loss, or disruption to producer or consumer applications:</p> <ul> <li> <p> <code>AUTO</code> – Amazon Kinesis Data Streams distributes records evenly across shards using service-managed algorithms, and ignores any partition key and <code>ExplicitHashKey</code> that a producer provides. Use this strategy for stateless workloads that do not require partition-key ordering.</p> </li> <li> <p> <code>USER_PARTITION_KEY</code> – Producers must provide a partition key, and Amazon Kinesis Data Streams uses the partition key to determine shard placement. Records that share a partition key are sent to the same shard. This is the default strategy.</p> </li> </ul> <p>This operation is only supported for data streams that use the on-demand capacity mode. Provisioned capacity mode streams do not support the record distribution strategy setting. Attempting to set <code>AUTO</code> on a provisioned stream results in an <code>InvalidArgumentException</code>.</p> <p>New records that arrive after the change are distributed according to the new strategy. Records already in the stream keep their original shard assignments and are not redistributed.</p>",
+      "staticContextParams":{
+        "OperationType":{"value":"control"}
+      }
+    },
     "UpdateStreamWarmThroughput":{
       "name":"UpdateStreamWarmThroughput",
       "http":{
@@ -1011,7 +1031,7 @@
         },
         "EncryptionConfiguration":{
           "shape":"ChannelEncryptionConfiguration",
-          "documentation":"<p>The server-side encryption configuration for the channel.</p>"
+          "documentation":"<p>The Amazon Web Services KMS key configuration that Amazon Kinesis Data Streams uses to encrypt data delivered to the channel's destination.</p>"
         },
         "LoggingConfiguration":{
           "shape":"ChannelLoggingConfiguration",
@@ -1071,7 +1091,7 @@
       "members":{
         "CloudWatchLogs":{
           "shape":"CloudWatchLogsUpdateInput",
-          "documentation":"<p>The updated Amazon CloudWatch Logs settings for the channel.</p>"
+          "documentation":"<p>The updated Amazon CloudWatch Logs settings, including whether logging is enabled and the target log group and log stream.</p>"
         }
       },
       "documentation":"<p>The updated Amazon CloudWatch Logs configuration for a channel. Used in <a>UpdateChannel</a>.</p>"
@@ -1411,11 +1431,11 @@
         },
         "S3DestinationConfiguration":{
           "shape":"S3DestinationConfiguration",
-          "documentation":"<p>The configuration for delivery to a general purpose Amazon S3 bucket. You must specify either <code>S3DestinationConfiguration</code> or <code>S3TablesDestinationConfiguration</code>, but not both.</p>"
+          "documentation":"<p>The configuration for delivery to a general purpose Amazon S3 bucket. Specify this parameter when <code>S3TablesDestinationConfiguration</code> is not specified.</p>"
         },
         "S3TablesDestinationConfiguration":{
           "shape":"S3TablesDestinationConfiguration",
-          "documentation":"<p>The configuration for delivery to streaming tables on Apache Iceberg in Amazon S3 Tables. You must specify either <code>S3DestinationConfiguration</code> or <code>S3TablesDestinationConfiguration</code>, but not both.</p>"
+          "documentation":"<p>The configuration for delivery to streaming tables on Apache Iceberg in Amazon S3 Tables. Specify this parameter when <code>S3DestinationConfiguration</code> is not specified.</p>"
         },
         "EncryptionConfiguration":{
           "shape":"ChannelEncryptionConfiguration",
@@ -1437,7 +1457,7 @@
       "members":{
         "ChannelDescription":{
           "shape":"ChannelDescription",
-          "documentation":"<p>The configuration and current status of the channel.</p>"
+          "documentation":"<p>The configuration and current status of the channel, including its ARN, destination configuration, and lifecycle state. Immediately after creation, the state is <code>CREATING</code>.</p>"
         }
       }
     },
@@ -1468,6 +1488,10 @@
         "MaxRecordSizeInKiB":{
           "shape":"MaxRecordSizeInKiB",
           "documentation":"<p>The maximum record size of a single record in kibibyte (KiB) that you can write to, and read from a stream.</p>"
+        },
+        "RecordDistributionStrategy":{
+          "shape":"RecordDistributionStrategy",
+          "documentation":"<p>The record distribution strategy for the stream, which determines how Amazon Kinesis Data Streams distributes records across shards. Specify one of the following values:</p> <ul> <li> <p> <code>AUTO</code> – Amazon Kinesis Data Streams distributes records evenly across shards and ignores any partition key and <code>ExplicitHashKey</code> that producers supply. Use this value for stateless workloads that do not require partition-key ordering.</p> </li> <li> <p> <code>USER_PARTITION_KEY</code> – Producers must supply a partition key, which Amazon Kinesis Data Streams uses to determine shard placement. This is the default.</p> </li> </ul> <p>The record distribution strategy is only supported for streams that use the on-demand capacity mode. If you do not specify this parameter, the stream uses <code>USER_PARTITION_KEY</code>.</p>"
         }
       },
       "documentation":"<p>Represents the input for <code>CreateStream</code>.</p>"
@@ -1630,7 +1654,7 @@
       "members":{
         "ChannelDescription":{
           "shape":"ChannelDescription",
-          "documentation":"<p>The configuration and current status of the channel.</p>"
+          "documentation":"<p>The configuration and current status of the channel, including its ARN, source stream, destination configuration, and lifecycle state.</p>"
         }
       }
     },
@@ -2213,7 +2237,7 @@
         },
         "NextToken":{
           "shape":"NextToken",
-          "documentation":"<p>The pagination token returned by a previous call. Specify this token to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.</p>"
+          "documentation":"<p>The pagination token returned by a previous call. Specify this token to retrieve the next page of results.</p>"
         }
       }
     },
@@ -2660,10 +2684,7 @@
     },
     "PutRecordInput":{
       "type":"structure",
-      "required":[
-        "Data",
-        "PartitionKey"
-      ],
+      "required":["Data"],
       "members":{
         "StreamName":{
           "shape":"StreamName",
@@ -2675,7 +2696,7 @@
         },
         "PartitionKey":{
           "shape":"PartitionKey",
-          "documentation":"<p>Determines which shard in the stream the data record is assigned to. Partition keys are Unicode strings with a maximum length limit of 256 characters for each key. Amazon Kinesis Data Streams uses the partition key as input to a hash function that maps the partition key and associated data to a specific shard. Specifically, an MD5 hash function is used to map partition keys to 128-bit integer values and to map associated data records to shards. As a result of this hashing mechanism, all data records with the same partition key map to the same shard within the stream.</p>"
+          "documentation":"<p>Determines which shard in the stream the data record is assigned to. Partition keys are Unicode strings with a maximum length limit of 256 characters for each key. Amazon Kinesis Data Streams uses the partition key as input to a hash function that maps the partition key and associated data to a specific shard. Specifically, an MD5 hash function is used to map partition keys to 128-bit integer values and to map associated data records to shards. As a result of this hashing mechanism, all data records with the same partition key map to the same shard within the stream.</p> <p>If the stream uses the <code>USER_PARTITION_KEY</code> record distribution strategy (the default), a partition key is required. If the stream uses the <code>AUTO</code> record distribution strategy, the partition key is optional and any value you provide is ignored, along with any <code>ExplicitHashKey</code> you provide. In that case, Amazon Kinesis Data Streams distributes the record across shards using service-managed algorithms. For more information, see <code>UpdateStreamRecordDistributionStrategy</code>.</p>"
         },
         "ExplicitHashKey":{
           "shape":"HashKey",
@@ -2774,10 +2795,7 @@
     },
     "PutRecordsRequestEntry":{
       "type":"structure",
-      "required":[
-        "Data",
-        "PartitionKey"
-      ],
+      "required":["Data"],
       "members":{
         "Data":{
           "shape":"Data",
@@ -2789,7 +2807,7 @@
         },
         "PartitionKey":{
           "shape":"PartitionKey",
-          "documentation":"<p>Determines which shard in the stream the data record is assigned to. Partition keys are Unicode strings with a maximum length limit of 256 characters for each key. Amazon Kinesis Data Streams uses the partition key as input to a hash function that maps the partition key and associated data to a specific shard. Specifically, an MD5 hash function is used to map partition keys to 128-bit integer values and to map associated data records to shards. As a result of this hashing mechanism, all data records with the same partition key map to the same shard within the stream.</p>"
+          "documentation":"<p>Determines which shard in the stream the data record is assigned to. Partition keys are Unicode strings with a maximum length limit of 256 characters for each key. Amazon Kinesis Data Streams uses the partition key as input to a hash function that maps the partition key and associated data to a specific shard. Specifically, an MD5 hash function is used to map partition keys to 128-bit integer values and to map associated data records to shards. As a result of this hashing mechanism, all data records with the same partition key map to the same shard within the stream.</p> <p>If the stream uses the <code>USER_PARTITION_KEY</code> record distribution strategy (the default), a partition key is required for each record. If the stream uses the <code>AUTO</code> record distribution strategy, the partition key is optional and any value you provide is ignored, along with any <code>ExplicitHashKey</code> you provide. In that case, Amazon Kinesis Data Streams distributes records across shards using service-managed algorithms. For more information, see <code>UpdateStreamRecordDistributionStrategy</code>.</p>"
         }
       },
       "documentation":"<p>Represents the output for <code>PutRecords</code>.</p>"
@@ -2855,8 +2873,7 @@
       "type":"structure",
       "required":[
         "SequenceNumber",
-        "Data",
-        "PartitionKey"
+        "Data"
       ],
       "members":{
         "SequenceNumber":{
@@ -2873,7 +2890,7 @@
         },
         "PartitionKey":{
           "shape":"PartitionKey",
-          "documentation":"<p>Identifies which shard in the stream the data record is assigned to.</p>"
+          "documentation":"<p>Identifies which shard in the stream the data record is assigned to.</p> <p>For a stream that uses the <code>AUTO</code> record distribution strategy, this value is not returned if the producer did not provide a partition key when writing the record. If the producer provided a partition key, the original value is returned even though it was not used to determine shard placement.</p>"
         },
         "EncryptionType":{
           "shape":"EncryptionType",
@@ -2892,10 +2909,17 @@
         },
         "GSRSchemaARN":{
           "shape":"GSRSchemaARN",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon Web Services Glue Schema Registry schema used to validate records. Required when the channel destination is a streaming table (Amazon S3 Tables), for both the <code>JSON</code> and <code>GSR_JSON</code> record formats.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon Web Services Glue Schema Registry schema used to validate records. Required when the channel destination is a streaming table.</p>"
         }
       },
       "documentation":"<p>Specifies the format of records read from the source stream.</p>"
+    },
+    "RecordDistributionStrategy":{
+      "type":"string",
+      "enum":[
+        "AUTO",
+        "USER_PARTITION_KEY"
+      ]
     },
     "RecordFormatType":{
       "type":"string",
@@ -3021,7 +3045,7 @@
       "members":{
         "DataFreshnessInSeconds":{
           "shape":"DataFreshnessInSeconds",
-          "documentation":"<p>The maximum age, in seconds, of undelivered data. Valid range is 300 to 900 seconds (5 to 15 minutes). The default value is 300 seconds.</p>"
+          "documentation":"<p>The maximum age, in seconds, of undelivered data before the channel delivers it to the destination. The default value is 300 seconds.</p>"
         },
         "DeadLetterQueueS3Configuration":{
           "shape":"DeadLetterQueueS3Configuration",
@@ -3063,7 +3087,7 @@
       "members":{
         "DataFreshnessInSeconds":{
           "shape":"DataFreshnessInSeconds",
-          "documentation":"<p>The maximum age, in seconds, of undelivered data. Valid range is 300 to 900 seconds (5 to 15 minutes).</p>"
+          "documentation":"<p>The maximum age, in seconds, of undelivered data before the channel delivers it to the destination.</p>"
         }
       },
       "documentation":"<p>The updated configuration for a general purpose Amazon S3 destination. Used in <a>UpdateChannel</a>. Only <code>DataFreshnessInSeconds</code> can be updated.</p>"
@@ -3110,7 +3134,7 @@
         },
         "StorageClass":{
           "shape":"S3StorageClass",
-          "documentation":"<p>The Amazon S3 storage class for delivered objects. Valid values:</p> <ul> <li> <p> <code>STANDARD</code> - Default storage class for frequently accessed data. (default)</p> </li> <li> <p> <code>INTELLIGENT_TIERING</code> - Automatically moves objects to the most cost-effective access tier based on usage patterns.</p> </li> <li> <p> <code>GLACIER_IR</code> - Low-cost storage for rarely accessed data that requires millisecond retrieval.</p> </li> </ul>"
+          "documentation":"<p>The Amazon S3 storage class for delivered objects. Valid values:</p> <ul> <li> <p> <code>STANDARD</code> - The default storage class, for frequently accessed data.</p> </li> <li> <p> <code>INTELLIGENT_TIERING</code> - Automatically moves objects to the most cost-effective access tier based on usage patterns.</p> </li> <li> <p> <code>GLACIER_IR</code> - Low-cost storage for rarely accessed data that requires millisecond retrieval.</p> </li> </ul>"
         },
         "CompressionType":{
           "shape":"S3CompressionType",
@@ -3174,7 +3198,7 @@
       "members":{
         "DataFreshnessInSeconds":{
           "shape":"DataFreshnessInSeconds",
-          "documentation":"<p>The maximum age, in seconds, of undelivered data. Valid range is 300 to 900 seconds (5 to 15 minutes). The default value is 300 seconds.</p>"
+          "documentation":"<p>The maximum age, in seconds, of undelivered data before the channel delivers it to the destination. The default value is 300 seconds.</p>"
         },
         "DeadLetterQueueS3Configuration":{
           "shape":"DeadLetterQueueS3Configuration",
@@ -3216,7 +3240,7 @@
       "members":{
         "DataFreshnessInSeconds":{
           "shape":"DataFreshnessInSeconds",
-          "documentation":"<p>The maximum age, in seconds, of undelivered data. Valid range is 300 to 900 seconds (5 to 15 minutes).</p>"
+          "documentation":"<p>The maximum age, in seconds, of undelivered data before the channel delivers it to the destination.</p>"
         }
       },
       "documentation":"<p>The updated configuration for a streaming table destination. Used in <a>UpdateChannel</a>. Only <code>DataFreshnessInSeconds</code> can be updated.</p>"
@@ -3601,6 +3625,10 @@
         "ChannelCount":{
           "shape":"ChannelCountObject",
           "documentation":"<p>The number of channels associated with the stream.</p>"
+        },
+        "RecordDistributionStrategy":{
+          "shape":"RecordDistributionStrategy",
+          "documentation":"<p>The record distribution strategy that the stream currently uses. A value of <code>AUTO</code> indicates that Amazon Kinesis Data Streams distributes records across shards using service-managed algorithms. A value of <code>USER_PARTITION_KEY</code> indicates that shard placement is determined by the partition key that producers supply. This field is only present for streams that use the on-demand capacity mode.</p>"
         }
       },
       "documentation":"<p>Represents the output for <a>DescribeStreamSummary</a> </p>"
@@ -3922,11 +3950,11 @@
         },
         "S3DestinationConfiguration":{
           "shape":"S3DestinationUpdateInput",
-          "documentation":"<p>The updated configuration for a general purpose Amazon S3 destination. Only <code>DataFreshnessInSeconds</code> can be updated.</p>"
+          "documentation":"<p>The updated configuration for a general purpose Amazon S3 destination. Specify this parameter when the channel delivers to a general purpose Amazon S3 bucket. Only <code>DataFreshnessInSeconds</code> can be updated.</p>"
         },
         "S3TablesDestinationConfiguration":{
           "shape":"S3TablesDestinationUpdateInput",
-          "documentation":"<p>The updated configuration for a streaming table destination. Only <code>DataFreshnessInSeconds</code> can be updated.</p>"
+          "documentation":"<p>The updated configuration for a streaming table destination. Specify this parameter when the channel delivers to streaming tables on Apache Iceberg in Amazon S3 Tables. Only <code>DataFreshnessInSeconds</code> can be updated.</p>"
         },
         "LoggingConfiguration":{
           "shape":"ChannelLoggingUpdateInput",
@@ -3940,7 +3968,7 @@
       "members":{
         "ChannelDescription":{
           "shape":"ChannelDescription",
-          "documentation":"<p>The configuration and current status of the updated channel.</p>"
+          "documentation":"<p>The configuration and current status of the channel after the update, including its ARN, destination configuration, and lifecycle state. Immediately after the request, the state is <code>UPDATING</code>.</p>"
         }
       }
     },
@@ -4040,6 +4068,29 @@
         "WarmThroughputMiBps":{
           "shape":"NaturalIntegerObject",
           "documentation":"<p>The target warm throughput in MB/s that the stream should be scaled to handle. This represents the throughput capacity that will be immediately available for write operations. This field is only valid when the stream mode is being updated to on-demand.</p>"
+        }
+      }
+    },
+    "UpdateStreamRecordDistributionStrategyInput":{
+      "type":"structure",
+      "required":[
+        "StreamARN",
+        "RecordDistributionStrategy"
+      ],
+      "members":{
+        "StreamARN":{
+          "shape":"StreamARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the stream to update.</p>",
+          "contextParam":{"name":"StreamARN"}
+        },
+        "StreamId":{
+          "shape":"StreamId",
+          "documentation":"<p>Not Implemented. Reserved for future use.</p>",
+          "contextParam":{"name":"StreamId"}
+        },
+        "RecordDistributionStrategy":{
+          "shape":"RecordDistributionStrategy",
+          "documentation":"<p>The record distribution strategy to apply to the stream. Specify one of the following values:</p> <ul> <li> <p> <code>AUTO</code> – Amazon Kinesis Data Streams distributes records evenly across shards and ignores any partition key and <code>ExplicitHashKey</code> that producers supply.</p> </li> <li> <p> <code>USER_PARTITION_KEY</code> – Producers must supply a partition key, which Amazon Kinesis Data Streams uses to determine shard placement. This is the default.</p> </li> </ul>"
         }
       }
     },

@@ -204,11 +204,41 @@ class TestDatabaseHistoryHandler(unittest.TestCase):
         self.assertTrue(self.UUID_PATTERN.match(call['command_id']))
         self.assertTrue(self.UUID_PATTERN.match(call['request_id']))
 
+    def test_emit_redacts_sensitive_headers_of_http_request_record(self):
+        # Security regression test: request headers are what actually carry
+        # the caller's live credentials over the wire (Authorization has the
+        # SigV4 signature/access key ID, X-Amz-Security-Token has the full
+        # session token for temporary credentials). They must never be
+        # persisted in the CLI history database.
+        writer = mock.Mock(DatabaseRecordWriter)
+        record_builder = RecordBuilder()
+        handler = DatabaseHistoryHandler(writer, record_builder)
+        payload = {
+            'method': 'POST',
+            'headers': {
+                'Authorization': (
+                    'AWS4-HMAC-SHA256 Credential=AKIAIOSFODNN7EXAMPLE/...'
+                ),
+                'X-Amz-Security-Token': 'example-long-term-session-token',
+                'Content-Type': 'application/x-amz-json-1.1',
+            },
+        }
+        handler.emit('API_CALL', '', 'BOTOCORE')
+        handler.emit('HTTP_REQUEST', payload, 'BOTOCORE')
+        call = writer.write_record.call_args[0][0]
+        headers = call['payload']['headers']
+        self.assertEqual(headers['Authorization'], '***REDACTED***')
+        self.assertEqual(headers['X-Amz-Security-Token'], '***REDACTED***')
+        # Non-sensitive headers survive unredacted, since they have real
+        # debugging value and this feature would otherwise be much less
+        # useful for its intended purpose.
+        self.assertEqual(headers['Content-Type'], 'application/x-amz-json-1.1')
+
     def test_emit_does_write_http_response_record(self):
         writer = mock.Mock(DatabaseRecordWriter)
         record_builder = RecordBuilder()
         handler = DatabaseHistoryHandler(writer, record_builder)
-        payload = {'body': b'data'}
+        payload = {'status_code': 200, 'headers': {'Content-Type': 'text/xml'}}
         # In order for an http_response to have a request_id it must have been
         # preceeded by an api_call record.
         handler.emit('API_CALL', '', 'BOTOCORE')
@@ -227,6 +257,32 @@ class TestDatabaseHistoryHandler(unittest.TestCase):
         )
         self.assertTrue(self.UUID_PATTERN.match(call['command_id']))
         self.assertTrue(self.UUID_PATTERN.match(call['request_id']))
+
+    def test_emit_redacts_raw_body_of_http_response_record(self):
+        # Security regression test: the raw (pre-parse) HTTP_RESPONSE body can
+        # contain the same credential/secret material as the eventual
+        # PARSED_RESPONSE (e.g. the raw XML/JSON of an sts:AssumeRole
+        # response), but unlike PARSED_RESPONSE it isn't structured yet, so
+        # it can't be safely redacted field-by-field. It must not be
+        # persisted in the CLI history database.
+        writer = mock.Mock(DatabaseRecordWriter)
+        record_builder = RecordBuilder()
+        handler = DatabaseHistoryHandler(writer, record_builder)
+        payload = {
+            'status_code': 200,
+            'body': (
+                b'<AssumeRoleResponse><Credentials>'
+                b'<SecretAccessKey>wJalrXUtnFEMI-example-secret</SecretAccessKey>'
+                b'<SessionToken>example-session-token</SessionToken>'
+                b'</Credentials></AssumeRoleResponse>'
+            ),
+        }
+        handler.emit('API_CALL', '', 'BOTOCORE')
+        handler.emit('HTTP_RESPONSE', payload, 'BOTOCORE')
+        call = writer.write_record.call_args[0][0]
+        self.assertEqual(call['payload']['body'], '***REDACTED***')
+        # Non-body fields are unaffected.
+        self.assertEqual(call['payload']['status_code'], 200)
 
     def test_emit_does_write_parsed_response_record(self):
         writer = mock.Mock(DatabaseRecordWriter)
@@ -251,6 +307,73 @@ class TestDatabaseHistoryHandler(unittest.TestCase):
         )
         self.assertTrue(self.UUID_PATTERN.match(call['command_id']))
         self.assertTrue(self.UUID_PATTERN.match(call['request_id']))
+
+    def test_emit_redacts_nested_credentials_in_parsed_response_record(self):
+        # Security regression test: a PARSED_RESPONSE payload is the fully
+        # structured API response -- for calls like sts:AssumeRole this
+        # response body literally *is* a set of live, usable temporary
+        # credentials, and must not be persisted in the CLI history
+        # database, however deeply nested.
+        writer = mock.Mock(DatabaseRecordWriter)
+        record_builder = RecordBuilder()
+        handler = DatabaseHistoryHandler(writer, record_builder)
+        payload = {
+            'Credentials': {
+                'AccessKeyId': 'ASIAEXAMPLE',
+                'SecretAccessKey': 'example-secret-access-key',
+                'SessionToken': 'example-session-token',
+                'Expiration': '2026-01-01T00:00:00Z',
+            },
+            'AssumedRoleUser': {'Arn': 'arn:aws:sts::123456789012:assumed-role/x'},
+            'NextToken': 'example-pagination-token',
+        }
+        handler.emit('API_CALL', '', 'BOTOCORE')
+        handler.emit('PARSED_RESPONSE', payload, 'BOTOCORE')
+        call = writer.write_record.call_args[0][0]
+        creds = call['payload']['Credentials']
+        self.assertEqual(creds['SecretAccessKey'], '***REDACTED***')
+        self.assertEqual(creds['SessionToken'], '***REDACTED***')
+        # AccessKeyId is an identifier, not a secret on its own (AWS's own
+        # STS service model does not mark it sensitive either), and has
+        # real debugging value, e.g. "which key did this request use" --
+        # it must not be redacted.
+        self.assertEqual(creds['AccessKeyId'], 'ASIAEXAMPLE')
+        self.assertEqual(creds['Expiration'], '2026-01-01T00:00:00Z')
+        self.assertEqual(
+            call['payload']['AssumedRoleUser']['Arn'],
+            'arn:aws:sts::123456789012:assumed-role/x',
+        )
+        # A field whose name merely *contains* "Token" (extremely common
+        # across AWS APIs for non-secret pagination cursors, e.g. NextToken/
+        # ContinuationToken/ClientToken) must not be caught by a substring
+        # match on the sensitive-key list -- only an exact-name match on
+        # SessionToken (etc.) should redact.
+        self.assertEqual(
+            call['payload']['NextToken'], 'example-pagination-token'
+        )
+
+    def test_emit_redacts_sensitive_values_in_api_call_params(self):
+        # Security regression test: API_CALL params are what the *user* is
+        # sending -- e.g. a new IAM login password, or a value being written
+        # to Secrets Manager -- and are just as sensitive as what a service
+        # returns.
+        writer = mock.Mock(DatabaseRecordWriter)
+        record_builder = RecordBuilder()
+        handler = DatabaseHistoryHandler(writer, record_builder)
+        payload = {
+            'service': 'iam',
+            'operation': 'UpdateLoginProfile',
+            'params': {
+                'UserName': 'example-user',
+                'Password': 'example-new-password',
+            },
+        }
+        handler.emit('API_CALL', payload, 'BOTOCORE')
+        call = writer.write_record.call_args[0][0]
+        self.assertEqual(
+            call['payload']['params']['Password'], '***REDACTED***'
+        )
+        self.assertEqual(call['payload']['params']['UserName'], 'example-user')
 
 
 class BaseDatabaseRecordTester(unittest.TestCase):

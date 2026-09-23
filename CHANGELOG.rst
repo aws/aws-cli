@@ -2,6 +2,20 @@
 CHANGELOG
 =========
 
+2.37.1
+======
+
+* api-change:``network-security-manager``: AWS Network Security Manager is a new service that helps you centrally configure, deploy, and continuously enforce security policies on network security services across the accounts and resources in your AWS Organization.
+* api-change:``connecthealth``: Multi language support with code switching, custom template sectionHeader now allows underscores.
+* api-change:``billing``: Added the ListBillingViewSegments API, which returns billing view segment information for a specified billing view ARN and time range. This API enables customers and integrated tools to programmatically determine the billing context of their accounts.
+* api-change:``payment-cryptography-data``: Adds asymmetric key support to ReEncryptData for re-encrypting data between RSA and symmetric data encryption keys.
+* api-change:``imagebuilder``: Documentation update for EC2 Image Builder - adds API request and response examples for all operations, improves descriptions throughout, and corrects response field patterns for image versions and workflow ARNs.
+* api-change:``mediapackagev2``: This release adds support for signalling start and end in the ContentKeyPeriod element in key request from MediaPackageV2
+* api-change:``kinesis``: Amazon Kinesis Data Streams now supports service managed record distribution for on demand streams. Set the record distribution strategy to AUTO to evenly distribute records across shards. Configure it at stream creation with CreateStream or update anytime with UpdateStreamRecordDistributionStrategy
+* api-change:``lexv2-models``: Adds support for speaker diarization on Amazon Lex V2 bot locales. Speaker diarization keeps your bot on the primary (loudest) speaker during a streaming voice conversation, so background voices do not start a turn or interrupt a prompt.
+* api-change:``mediaconvert``: This release adds support for SMPTE 337M audio passthrough, compositing up to five motion graphic overlays in a single output, and controlling how passthrough video is segmented in ABR outputs. It also adds 3GP, 3G2, AAC, AC-3, and E-AC-3 as supported input containers for the Probe operation.
+
+
 2.37.0
 ======
 

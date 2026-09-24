@@ -37,11 +37,11 @@ Two certificate ARNs and a ``NextToken`` value will be displayed::
       "DomainName": "www.example.net"
     }
     ], 
-      "NextToken": "9f4d9f69-275a-41fe-b58e-2b837bd9ba48"
+      "NextToken": "eyJOZXh0VG9rZW4iOiBudWxsLCAiYm90b190cnVuY2F0ZV9hbW91bnQiOiA1fQ=="
 
 To display the next two certificates in your account, set this ``NextToken`` value in your next call::
 
-  aws acm list-certificates --max-items 2 --next-token 9f4d9f69-275a-41fe-b58e-2b837bd9ba48
+  aws acm list-certificates --max-items 2 --starting-token "eyJOZXh0VG9rZW4iOiBudWxsLCAiYm90b190cnVuY2F0ZV9hbW91bnQiOiA1fQ=="
 
 
 You can filter your output by using the ``certificate-statuses`` argument. The following command displays certificates that have a PENDING_VALIDATION status::

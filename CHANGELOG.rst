@@ -2,6 +2,26 @@
 CHANGELOG
 =========
 
+2.37.2
+======
+
+* api-change:``securityagent``: Added support for Confluence export, enabling customers to publish security findings to Confluence pages.
+* api-change:``elasticache``: Added tagging support for ElastiCache Global DataStore.
+* bugfix:Serialization: Preserve sub-second precision when serializing ``unixTimestamp`` request parameters. Timestamps with a fractional component are now sent as a fractional value (e.g. ``1704110400.123456``) instead of being truncated to whole seconds. Whole-second timestamps are unchanged.
+* enhancement:crt: Enable the CRT S3 transfer client by default on the following EC2 instance families - c9gd, c9g, c8ine, c8in, c8ib, c8id, c8i-flex, c8i, c8gn, c8gb, c8gd, c8g, c8a, c7i-flex, c7i, c7gn, c7gd, c7g, c7a, m8a, m8g, m7i-flex, m7i, m7a, m7g, r7iz, r7i, r7a, r7g
+* api-change:``redshift-data``: Updates to the ListDatabases and WorkgroupName validation
+* api-change:``eventbridgev2``: Introducing Amazon EventBridge enhanced Custom event bus, a new shareable event bus for organizational-scale event-driven applications feature ordered delivery, deduplication, open event formats, and cross-account bus sharing.
+* api-change:``marketplace-discovery``: AWS Marketplace Discovery API now supports localized responses and SigV4a request signing. It returns new fulfillment details, including AMI architecture, EBS volume and security group information, SaaS quick-launch status, and SageMaker input and output MIME types.
+* enhancement:awscrt: Update awscrt to version 0.37.0
+* api-change:``iot``: Fixed ListV2LoggingLevels and DeleteV2LoggingLevel documentation to include all supported target-types
+* api-change:``datazone``: Amazon DataZone now supports the TOOLING blueprint category on CreateEnvironmentBlueprint, UpdateEnvironmentBlueprint, GetEnvironmentBlueprint, and ListEnvironmentBlueprints, for custom tooling blueprints. CreateConnection now accepts roleArn in iamProperties.
+* enhancement:login: Support ``--redirect-port`` in ``aws login`` to select a fixed port for the Authorization Code callback server.
+* api-change:``route53resolver``: Documentation updates for Route 53 Resolver. Clarifies which Outpost Resolver operations apply to first-generation AWS Outposts and that Resolver is managed automatically on second-generation Outposts. Adds Local Network Interface subnet compatibility notes for Resolver endpoints.
+* enhancement:sso: Support ``--redirect-port`` in ``aws sso login`` and ``aws configure sso`` to select a fixed port for the Authorization Code callback server.
+* api-change:``events``: Adds a ManagedBy field to the DescribeEventBus and ListEventBuses responses, identifying the AWS service that created an event bus on your behalf.
+* api-change:``cloudwatch``: This release adds Create, Get, Update, and DeleteResourceMetricsConfiguration to enable detailed metric collection for an AWS resource, and adds UpdateOTelEnrichment plus include and exclude filters on StartOTelEnrichment so you can choose which metric namespaces CloudWatch enriches.
+
+
 2.37.1
 ======
 

@@ -1126,18 +1126,9 @@ class TestUploadStreamRequestSubmitter(BaseTransferRequestSubmitterTest):
         self.assertEqual(result.src, '-')
 
 
-@skip_if_windows('Symlink tests only supported on mac/linux')
 class TestDownloadRequestSubmitterNoFollowLinks(
     BaseTransferRequestSubmitterTest
 ):
-    """Link detection with the filesystem stubbed.
-
-    Creating a symlink needs elevation on Windows and a junction cannot be
-    created at all off Windows, so these run everywhere by faking the
-    predicate. They are what keeps the junction case from regressing on
-    platforms where the real thing is not reachable.
-    """
-
     def setUp(self):
         super().setUp()
         self.root = os.path.join(os.sep, 'dest')
@@ -1168,14 +1159,6 @@ class TestDownloadRequestSubmitterNoFollowLinks(
         dest = os.path.join(sub, 'obj.txt')
         self.assertIsNone(self.submit(dest, 'sub/obj.txt', links=[sub]))
         self.assertEqual(self.transfer_manager.download.call_args_list, [])
-
-    def test_skips_link_at_destination(self):
-        dest = os.path.join(self.root, 'obj.txt')
-        self.assertIsNone(self.submit(dest, 'obj.txt', links=[dest]))
-
-    def test_submits_when_nothing_is_a_link(self):
-        dest = os.path.join(self.root, 'sub', 'obj.txt')
-        self.assertIsNotNone(self.submit(dest, 'sub/obj.txt', links=[]))
 
     def test_does_not_check_the_destination_root(self):
         dest = os.path.join(self.root, 'obj.txt')

@@ -14,6 +14,7 @@
 import os
 
 from awscrt.s3 import S3RequestTlsMode, S3RequestType
+from botocore.response import StreamingBody
 
 from awscli.compat import BytesIO, OrderedDict
 from awscli.customizations.s3.utils import relative_path
@@ -23,7 +24,6 @@ from awscli.testutils import (
     mock,
     skip_if_windows,
 )
-from botocore.response import StreamingBody
 from tests.functional.s3 import (
     BaseCRTTransferClientTest,
     BaseS3CLIRunnerTest,
@@ -1538,6 +1538,60 @@ class TestCPCommand(BaseCPCommandTest):
         )
 
 
+@skip_if_windows('Symlink tests only supported on mac/linux')
+class TestCPDownloadNoFollowSymlinks(BaseCPCommandTest):
+    def setUp(self):
+        super().setUp()
+        self.target = self.files.create_file('target.txt', 'original')
+        self.symlink = os.path.join(self.files.rootdir, 'link.txt')
+        os.symlink(self.target, self.symlink)
+        self.parsed_responses = [
+            self.head_object_response(),
+            {'ETag': '"foo-1"', 'Body': BytesIO(b'injected')},
+        ]
+
+    def test_downloads_onto_symlink_named_by_user(self):
+        # The user typed the whole destination, so it is not checked, the same
+        # as a symlinked destination root.
+        cmdline = (
+            f'{self.prefix} s3://bucket/key.txt {self.symlink} '
+            f'--no-follow-symlinks'
+        )
+        self.run_cmd(cmdline, expected_rc=0)
+
+        self.assertEqual(
+            [op[0].name for op in self.operations_called],
+            ['HeadObject', 'GetObject'],
+        )
+
+    def test_skips_download_onto_symlink_named_by_key(self):
+        os.symlink(self.files.rootdir, os.path.join(self.files.rootdir, 'sub'))
+        self.parsed_responses = [
+            self.list_objects_response(['sub/key.txt']),
+        ]
+        cmdline = (
+            f'{self.prefix} s3://bucket/ {self.files.rootdir} '
+            f'--recursive --no-follow-symlinks'
+        )
+        self.run_cmd(cmdline, expected_rc=0)
+
+        self.assertEqual(
+            [op[0].name for op in self.operations_called], ['ListObjectsV2']
+        )
+
+    def test_replaces_symlink_by_default(self):
+        cmdline = f'{self.prefix} s3://bucket/key.txt {self.symlink}'
+        self.run_cmd(cmdline, expected_rc=0)
+
+        self.assertEqual(
+            [op[0].name for op in self.operations_called],
+            ['HeadObject', 'GetObject'],
+        )
+        self.assertFalse(os.path.islink(self.symlink))
+        with open(self.target) as f:
+            self.assertEqual(f.read(), 'original')
+
+
 class TestStreamingCPCommand(BaseAWSCommandParamsTest):
     def test_streaming_upload(self):
         command = "s3 cp - s3://bucket/streaming.txt"
@@ -2941,13 +2995,13 @@ class TestCopyPropsAllCpCommand(BaseCopyPropsCpCommandTest):
                 self.get_object_annotation_response(
                     StreamingBody(
                         BytesIO(self.annotation_payload_bytes),
-                        len(self.annotation_payload_bytes)
+                        len(self.annotation_payload_bytes),
                     )
                 ),
                 self.get_object_annotation_response(
                     StreamingBody(
                         BytesIO(self.annotation_payload_bytes),
-                        len(self.annotation_payload_bytes)
+                        len(self.annotation_payload_bytes),
                     )
                 ),
             ]
@@ -3008,13 +3062,13 @@ class TestCopyPropsAllCpCommand(BaseCopyPropsCpCommandTest):
                 self.get_object_annotation_response(
                     StreamingBody(
                         BytesIO(self.annotation_payload_bytes),
-                        len(self.annotation_payload_bytes)
+                        len(self.annotation_payload_bytes),
                     )
                 ),
                 self.get_object_annotation_response(
                     StreamingBody(
                         BytesIO(self.annotation_payload_bytes),
-                        len(self.annotation_payload_bytes)
+                        len(self.annotation_payload_bytes),
                     )
                 ),
             ]
@@ -3059,7 +3113,7 @@ class TestCopyPropsAllCpCommand(BaseCopyPropsCpCommandTest):
                 self.get_object_annotation_response(
                     StreamingBody(
                         BytesIO(self.annotation_payload_bytes),
-                        len(self.annotation_payload_bytes)
+                        len(self.annotation_payload_bytes),
                     )
                 ),
             ]

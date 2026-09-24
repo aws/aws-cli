@@ -463,8 +463,67 @@ class DownloadRequestSubmitter(BaseTransferRequestSubmitter):
         return [
             self._warn_glacier,
             self._warn_parent_reference,
+            self._warn_if_symlink_in_dest_path,
             self._warn_if_file_exists_with_no_overwrite,
         ]
+
+    def _warn_if_symlink_in_dest_path(self, fileinfo):
+        """
+        Skips downloads whose destination path is or goes through a symlink
+        when ``--no-follow-symlinks`` is set.
+
+        :type fileinfo: FileInfo
+        :param fileinfo: The FileInfo object containing transfer details
+
+        :rtype: bool
+        :returns: True if the download should be skipped, False otherwise
+        """
+        if self._cli_params.get('follow_symlinks', True):
+            return False
+        unfollowable = self._find_symlink_in_dest_path(fileinfo.dest)
+        if unfollowable is None:
+            return False
+        LOGGER.debug(
+            f"Skipping s3://{fileinfo.src} -> {fileinfo.dest}, not following "
+            f"{unfollowable} because --no-follow-symlinks is set"
+        )
+        return True
+
+    def _find_symlink_in_dest_path(self, dest):
+        """
+        Returns the first path below the destination root that cannot be
+        followed, or None if the whole destination path can be.
+
+        Only the paths below the destination root are checked. The root and
+        the paths above it are named by the user rather than derived from an
+        object key, so they redirect every object alike instead of being
+        chosen by a key, and they may legitimately be symlinks, e.g. ``/tmp``.
+
+        Paths are checked root first, so each one is only reached once
+        everything leading to it has been shown not to be a symlink. A parent
+        reference breaks that, because ``os.path.islink`` cannot resolve a
+        path through a directory that does not exist yet and the download
+        creates missing directories afterwards, so it is never followed.
+        """
+        dest = dest.rstrip(os.sep)
+        root = os.path.abspath(self._cli_params.get('dest', ''))
+        root = root.rstrip(os.sep) or os.sep
+        prefix = root if root.endswith(os.sep) else root + os.sep
+        if not dest.startswith(prefix):
+            # The destination is the root itself, or is not below it at all.
+            return None
+        parents = []
+        path = os.path.dirname(dest)
+        while path != root:
+            parents.append(path)
+            parent = os.path.dirname(path)
+            if parent == path:
+                break
+            path = parent
+        for path in reversed(parents):
+            if os.path.basename(path) == os.pardir or os.path.islink(path):
+                return path
+        return dest if os.path.islink(dest) else None
 
     def _warn_if_file_exists_with_no_overwrite(self, fileinfo):
         """
@@ -579,6 +638,9 @@ class DownloadStreamRequestSubmitter(DownloadRequestSubmitter):
 
     def _get_fileout(self, fileinfo):
         return StdoutBytesWriter()
+
+    def _warn_if_symlink_in_dest_path(self, fileinfo):
+        return False
 
     def _format_local_path(self, path):
         return '-'

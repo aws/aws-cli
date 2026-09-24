@@ -1131,7 +1131,9 @@ class TestDownloadRequestSubmitterNoFollowLinks(
 ):
     def setUp(self):
         super().setUp()
-        self.root = os.path.join(os.sep, 'dest')
+        # Drive qualified so that the root and the destinations built from it
+        # agree on Windows, where abspath adds the current drive.
+        self.root = os.path.abspath(os.path.join(os.sep, 'dest'))
         self.cli_params['dest'] = self.root
         self.cli_params['follow_symlinks'] = False
         self.transfer_request_submitter = DownloadRequestSubmitter(
@@ -1159,6 +1161,15 @@ class TestDownloadRequestSubmitterNoFollowLinks(
         dest = os.path.join(sub, 'obj.txt')
         self.assertIsNone(self.submit(dest, 'sub/obj.txt', links=[sub]))
         self.assertEqual(self.transfer_manager.download.call_args_list, [])
+
+    def test_skips_link_at_destination(self):
+        dest = os.path.join(self.root, 'obj.txt')
+        self.assertIsNone(self.submit(dest, 'obj.txt', links=[dest]))
+        self.assertEqual(self.transfer_manager.download.call_args_list, [])
+
+    def test_submits_when_nothing_is_a_link(self):
+        dest = os.path.join(self.root, 'sub', 'obj.txt')
+        self.assertIsNotNone(self.submit(dest, 'sub/obj.txt', links=[]))
 
     def test_does_not_check_the_destination_root(self):
         dest = os.path.join(self.root, 'obj.txt')

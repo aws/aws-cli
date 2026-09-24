@@ -14,6 +14,7 @@ import logging
 import os
 import platform
 import shlex
+import shutil
 import sys
 from subprocess import PIPE, Popen
 
@@ -162,12 +163,7 @@ class PosixHelpRenderer(PagingHelpRenderer):
     def _exists_on_path(self, name):
         # Since we're only dealing with POSIX systems, we can
         # ignore things like PATHEXT.
-        return any(
-            [
-                os.path.exists(os.path.join(p, name))
-                for p in os.environ.get('PATH', '').split(os.pathsep)
-            ]
-        )
+        return shutil.which(name) is not None
 
 
 class WindowsHelpRenderer(PagingHelpRenderer):

@@ -40,9 +40,11 @@
         {"shape":"ServerlessCacheSnapshotNotFoundFault"},
         {"shape":"InvalidServerlessCacheSnapshotStateFault"},
         {"shape":"TagQuotaPerResourceExceeded"},
-        {"shape":"InvalidARNFault"}
+        {"shape":"InvalidARNFault"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"GlobalReplicationGroupNotFoundFault"}
       ],
-      "documentation":"<p>A tag is a key-value pair where the key and value are case-sensitive. You can use tags to categorize and track all your ElastiCache resources, with the exception of global replication group. When you add or remove tags on replication groups, those actions will be replicated to all nodes in the replication group. For more information, see <a href=\"http://docs.aws.amazon.com/AmazonElastiCache/latest/dg/IAM.ResourceLevelPermissions.html\">Resource-level permissions</a>.</p> <p> For example, you can use cost-allocation tags to your ElastiCache resources, Amazon generates a cost allocation report as a comma-separated value (CSV) file with your usage and costs aggregated by your tags. You can apply tags that represent business categories (such as cost centers, application names, or owners) to organize your costs across multiple services.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonElastiCache/latest/dg/Tagging.html\">Using Cost Allocation Tags in Amazon ElastiCache</a> in the <i>ElastiCache User Guide</i>.</p>"
+      "documentation":"<p>A tag is a key-value pair where the key and value are case-sensitive. You can use tags to categorize and track all your ElastiCache resources. When you add or remove tags on replication groups, those actions will be replicated to all nodes in the replication group. For more information, see <a href=\"http://docs.aws.amazon.com/AmazonElastiCache/latest/dg/IAM.ResourceLevelPermissions.html\">Resource-level permissions</a>.</p> <p> For example, you can use cost-allocation tags to your ElastiCache resources, Amazon generates a cost allocation report as a comma-separated value (CSV) file with your usage and costs aggregated by your tags. You can apply tags that represent business categories (such as cost centers, application names, or owners) to organize your costs across multiple services.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonElastiCache/latest/dg/Tagging.html\">Using Cost Allocation Tags in Amazon ElastiCache</a> in the <i>ElastiCache User Guide</i>.</p>"
     },
     "AuthorizeCacheSecurityGroupIngress":{
       "name":"AuthorizeCacheSecurityGroupIngress",
@@ -268,6 +270,7 @@
         {"shape":"InvalidReplicationGroupStateFault"},
         {"shape":"GlobalReplicationGroupAlreadyExistsFault"},
         {"shape":"ServiceLinkedRoleNotFoundFault"},
+        {"shape":"TagQuotaPerResourceExceeded"},
         {"shape":"InvalidParameterValueException"}
       ],
       "documentation":"<p>Global Datastore offers fully managed, fast, reliable and secure cross-region replication. Using Global Datastore with Valkey or Redis OSS, you can create cross-region read replica clusters for ElastiCache to enable low-latency reads and disaster recovery across regions. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonElastiCache/latest/dg/Redis-Global-Datastore.html\">Replication Across Regions Using Global Datastore</a>. </p> <ul> <li> <p>The <b>GlobalReplicationGroupIdSuffix</b> is the name of the Global datastore.</p> </li> <li> <p>The <b>PrimaryReplicationGroupId</b> represents the name of the primary cluster that accepts writes and will replicate updates to the secondary cluster.</p> </li> </ul>"
@@ -1156,9 +1159,11 @@
         {"shape":"InvalidServerlessCacheStateFault"},
         {"shape":"ServerlessCacheSnapshotNotFoundFault"},
         {"shape":"InvalidServerlessCacheSnapshotStateFault"},
-        {"shape":"InvalidARNFault"}
+        {"shape":"InvalidARNFault"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"GlobalReplicationGroupNotFoundFault"}
       ],
-      "documentation":"<p>Lists all tags currently on a named resource.</p> <p> A tag is a key-value pair where the key and value are case-sensitive. You can use tags to categorize and track all your ElastiCache resources, with the exception of global replication group. When you add or remove tags on replication groups, those actions will be replicated to all nodes in the replication group. For more information, see <a href=\"http://docs.aws.amazon.com/AmazonElastiCache/latest/dg/IAM.ResourceLevelPermissions.html\">Resource-level permissions</a>.</p> <p>If the cluster is not in the <i>available</i> state, <code>ListTagsForResource</code> returns an error.</p>"
+      "documentation":"<p>Lists all tags currently on a named resource.</p> <p> A tag is a key-value pair where the key and value are case-sensitive. You can use tags to categorize and track all your ElastiCache resources. When you add or remove tags on replication groups, those actions will be replicated to all nodes in the replication group. For more information, see <a href=\"http://docs.aws.amazon.com/AmazonElastiCache/latest/dg/IAM.ResourceLevelPermissions.html\">Resource-level permissions</a>.</p> <p>If the cluster is not in the <i>available</i> state, <code>ListTagsForResource</code> returns an error.</p>"
     },
     "ModifyCacheCluster":{
       "name":"ModifyCacheCluster",
@@ -1449,9 +1454,11 @@
         {"shape":"ServerlessCacheSnapshotNotFoundFault"},
         {"shape":"InvalidServerlessCacheSnapshotStateFault"},
         {"shape":"InvalidARNFault"},
-        {"shape":"TagNotFoundFault"}
+        {"shape":"TagNotFoundFault"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"GlobalReplicationGroupNotFoundFault"}
       ],
-      "documentation":"<p>Removes the tags identified by the <code>TagKeys</code> list from the named resource. A tag is a key-value pair where the key and value are case-sensitive. You can use tags to categorize and track all your ElastiCache resources, with the exception of global replication group. When you add or remove tags on replication groups, those actions will be replicated to all nodes in the replication group. For more information, see <a href=\"http://docs.aws.amazon.com/AmazonElastiCache/latest/dg/IAM.ResourceLevelPermissions.html\">Resource-level permissions</a>.</p>"
+      "documentation":"<p>Removes the tags identified by the <code>TagKeys</code> list from the named resource. A tag is a key-value pair where the key and value are case-sensitive. You can use tags to categorize and track all your ElastiCache resources. When you add or remove tags on replication groups, those actions will be replicated to all nodes in the replication group. For more information, see <a href=\"http://docs.aws.amazon.com/AmazonElastiCache/latest/dg/IAM.ResourceLevelPermissions.html\">Resource-level permissions</a>.</p>"
     },
     "ResetCacheParameterGroup":{
       "name":"ResetCacheParameterGroup",
@@ -2941,6 +2948,10 @@
         "PrimaryReplicationGroupId":{
           "shape":"String",
           "documentation":"<p>The name of the primary cluster that accepts writes and will replicate updates to the secondary cluster. This value is stored as a lowercase string.</p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>A list of tags to be added to this resource. A tag is a key-value pair. A tag key must be accompanied by a tag value, although null is accepted.</p>"
         }
       }
     },
@@ -7537,7 +7548,7 @@
           "documentation":"<p>The tag's value. May be null.</p>"
         }
       },
-      "documentation":"<p>A tag that can be added to an ElastiCache cluster or replication group. Tags are composed of a Key/Value pair. You can use tags to categorize and track all your ElastiCache resources, with the exception of global replication group. When you add or remove tags on replication groups, those actions will be replicated to all nodes in the replication group. A tag with a null Value is permitted.</p>"
+      "documentation":"<p>A tag that can be added to an ElastiCache cluster or replication group. Tags are composed of a Key/Value pair. You can use tags to categorize and track all your ElastiCache resources. When you add or remove tags on replication groups, those actions will be replicated to all nodes in the replication group. A tag with a null Value is permitted.</p>"
     },
     "TagList":{
       "type":"list",

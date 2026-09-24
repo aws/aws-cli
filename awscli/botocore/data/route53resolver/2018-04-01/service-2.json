@@ -32,7 +32,7 @@
         {"shape":"InternalServiceErrorException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Associates a <a>FirewallRuleGroup</a> with a VPC, to provide DNS filtering for the VPC.</p> <p>If the rule group contains any rule configured with the <code>PartnerThreatProtection</code> rule type, the calling account must hold an active AWS Marketplace subscription to the named partner. If the subscription is missing, the association request is rejected.</p>"
+      "documentation":"<p>Associates a <a>FirewallRuleGroup</a> with a VPC, to provide DNS filtering for the VPC.</p> <p>If the rule group contains any rule configured with the <code>PartnerThreatProtection</code> rule type, the calling account must hold an active Amazon Web Services Marketplace subscription to the named partner. If the subscription is missing, the association request is rejected.</p>"
     },
     "AssociateResolverEndpointIpAddress":{
       "name":"AssociateResolverEndpointIpAddress",
@@ -177,7 +177,7 @@
         {"shape":"InternalServiceErrorException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Creates a single DNS Firewall rule in the specified rule group. The rule can use any one of the following match sources, and the chosen source must be supplied through the matching request field — they are mutually exclusive:</p> <ul> <li> <p> <code>FirewallDomainListId</code> — match a customer-managed or AWS-managed domain list.</p> </li> <li> <p> <code>DnsThreatProtection</code> — match a built-in DNS Firewall Advanced threat detector (<code>DGA</code>, <code>DNS_TUNNELING</code>, or <code>DICTIONARY_DGA</code>).</p> </li> <li> <p> <code>FirewallRuleType</code> — match one of the rule-type variants returned by <a>ListFirewallRuleTypes</a>: <code>FirewallAdvancedContentCategory</code>, <code>FirewallAdvancedThreatCategory</code>, <code>DnsThreatProtection</code>, or <code>PartnerThreatProtection</code>. The <code>PartnerThreatProtection</code> variant requires an active AWS Marketplace subscription to the named partner product.</p> </li> </ul> <p>For rules that require asynchronous provisioning (today, the <code>PartnerThreatProtection</code> rule type), the rule's <code>Status</code> begins at <code>CREATING</code> and transitions to <code>COMPLETE</code> once the rule is provisioned and the marketplace entitlement is verified. If provisioning fails, <code>Status</code> becomes <code>CREATION_FAILED</code> and <code>StatusMessage</code> contains a human-readable reason; the rule is then immutable and must be removed with <a>DeleteFirewallRule</a>.</p>"
+      "documentation":"<p>Creates a single DNS Firewall rule in the specified rule group. The rule can use any one of the following match sources, and the chosen source must be supplied through the matching request field — they are mutually exclusive:</p> <ul> <li> <p> <code>FirewallDomainListId</code> — match a customer-managed or Amazon Web Services-managed domain list.</p> </li> <li> <p> <code>DnsThreatProtection</code> — match a built-in DNS Firewall Advanced threat detector (<code>DGA</code>, <code>DNS_TUNNELING</code>, or <code>DICTIONARY_DGA</code>).</p> </li> <li> <p> <code>FirewallRuleType</code> — match one of the rule-type variants returned by <a>ListFirewallRuleTypes</a>: <code>FirewallAdvancedContentCategory</code>, <code>FirewallAdvancedThreatCategory</code>, <code>DnsThreatProtection</code>, or <code>PartnerThreatProtection</code>. The <code>PartnerThreatProtection</code> variant requires an active Amazon Web Services Marketplace subscription to the named partner product.</p> </li> </ul> <p>For rules that require asynchronous provisioning (today, the <code>PartnerThreatProtection</code> rule type), the rule's <code>Status</code> begins at <code>CREATING</code> and transitions to <code>COMPLETE</code> once the rule is provisioned and the marketplace entitlement is verified. If provisioning fails, <code>Status</code> becomes <code>CREATION_FAILED</code> and <code>StatusMessage</code> contains a human-readable reason; the rule is then immutable and must be removed with <a>DeleteFirewallRule</a>.</p>"
     },
     "CreateFirewallRuleGroup":{
       "name":"CreateFirewallRuleGroup",
@@ -212,7 +212,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p>Creates a Route 53 Resolver on an Outpost.</p>"
+      "documentation":"<p>Creates a Route 53 Resolver on an Outpost.</p> <note> <p>This operation applies to first-generation Outposts only. On second-generation Outposts, Resolver is enabled by default and managed automatically by Amazon Web Services, so you don't need to create it.</p> </note>"
     },
     "CreateResolverEndpoint":{
       "name":"CreateResolverEndpoint",
@@ -343,7 +343,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p>Deletes a Resolver on the Outpost.</p>"
+      "documentation":"<p>Deletes a Resolver on the Outpost.</p> <note> <p>This operation applies to first-generation Outposts only. On second-generation Outposts, Resolver is managed automatically by Amazon Web Services and can't be deleted directly. To opt out of Resolver on second-generation Outposts, contact Amazon Web Services Support.</p> </note>"
     },
     "DeleteResolverEndpoint":{
       "name":"DeleteResolverEndpoint",
@@ -835,7 +835,7 @@
         {"shape":"InternalServiceErrorException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Retrieves the rule-type variants that can be used in the <code>FirewallRuleType</code> field of <a>CreateFirewallRule</a> and <a>UpdateFirewallRule</a>. Each returned <a>FirewallRuleTypeDefinition</a> identifies one variant + value combination — for example, <code>FirewallAdvancedContentCategory</code> + <code>VIOLENCE_AND_HATE_SPEECH</code>, or <code>PartnerThreatProtection</code> + a partner-managed feed.</p> <p>The supported <code>RuleType</code> filter values are <code>FirewallAdvancedContentCategory</code>, <code>FirewallAdvancedThreatCategory</code>, <code>DnsThreatProtection</code>, and <code>PartnerThreatProtection</code>. When a returned definition's variant requires an external subscription (currently only <code>PartnerThreatProtection</code>), the response also includes a <a>SubscriptionInfo</a> identifying the AWS Marketplace product that backs it; absence of <code>SubscriptionInfo</code> means the variant is fully managed by AWS and requires no separate subscription.</p>"
+      "documentation":"<p>Retrieves the rule-type variants that can be used in the <code>FirewallRuleType</code> field of <a>CreateFirewallRule</a> and <a>UpdateFirewallRule</a>. Each returned <a>FirewallRuleTypeDefinition</a> identifies one variant + value combination — for example, <code>FirewallAdvancedContentCategory</code> + <code>VIOLENCE_AND_HATE_SPEECH</code>, or <code>PartnerThreatProtection</code> + a partner-managed feed.</p> <p>The supported <code>RuleType</code> filter values are <code>FirewallAdvancedContentCategory</code>, <code>FirewallAdvancedThreatCategory</code>, <code>DnsThreatProtection</code>, and <code>PartnerThreatProtection</code>. When a returned definition's variant requires an external subscription (currently only <code>PartnerThreatProtection</code>), the response also includes a <a>SubscriptionInfo</a> identifying the Amazon Web Services Marketplace product that backs it; absence of <code>SubscriptionInfo</code> means the variant is fully managed by Amazon Web Services and requires no separate subscription.</p>"
     },
     "ListFirewallRules":{
       "name":"ListFirewallRules",
@@ -1207,7 +1207,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p>You can use <code>UpdateOutpostResolver</code> to update the instance count, type, or name of a Resolver on an Outpost.</p>"
+      "documentation":"<p>You can use <code>UpdateOutpostResolver</code> to update the instance count, type, or name of a Resolver on an Outpost.</p> <note> <p>This operation applies to first-generation Outposts only. On second-generation Outposts, Resolver is managed automatically by Amazon Web Services and can't be updated directly.</p> </note>"
     },
     "UpdateResolverConfig":{
       "name":"UpdateResolverConfig",
@@ -1749,7 +1749,7 @@
         },
         "FirewallRuleType":{
           "shape":"FirewallRuleType",
-          "documentation":"<p>The rule type configuration for the firewall rule. This is a tagged union — set exactly one of its members. This setting is mutually exclusive with the top-level <code>FirewallDomainListId</code> and <code>DnsThreatProtection</code> fields. Use one of:</p> <ul> <li> <p> <code>FirewallAdvancedContentCategory</code> — match an AWS-managed content category (for example, <code>VIOLENCE_AND_HATE_SPEECH</code>).</p> </li> <li> <p> <code>FirewallAdvancedThreatCategory</code> — match an AWS-managed advanced threat category (for example, <code>PHISHING</code>).</p> </li> <li> <p> <code>DnsThreatProtection</code> — match a built-in DNS Firewall Advanced threat detector (<code>DGA</code>, <code>DNS_TUNNELING</code>, or <code>DICTIONARY_DGA</code>).</p> </li> <li> <p> <code>PartnerThreatProtection</code> — match a third-party threat feed delivered through AWS Marketplace. The selected partner must be an active subscription on the calling account.</p> </li> </ul> <p>To enumerate the values supported in your account, call <a>ListFirewallRuleTypes</a>.</p>",
+          "documentation":"<p>The rule type configuration for the firewall rule. This is a tagged union — set exactly one of its members. This setting is mutually exclusive with the top-level <code>FirewallDomainListId</code> and <code>DnsThreatProtection</code> fields. Use one of:</p> <ul> <li> <p> <code>FirewallAdvancedContentCategory</code> — match an Amazon Web Services-managed content category (for example, <code>VIOLENCE_AND_HATE_SPEECH</code>).</p> </li> <li> <p> <code>FirewallAdvancedThreatCategory</code> — match an Amazon Web Services-managed advanced threat category (for example, <code>PHISHING</code>).</p> </li> <li> <p> <code>DnsThreatProtection</code> — match a built-in DNS Firewall Advanced threat detector (<code>DGA</code>, <code>DNS_TUNNELING</code>, or <code>DICTIONARY_DGA</code>).</p> </li> <li> <p> <code>PartnerThreatProtection</code> — match a third-party threat feed delivered through Amazon Web Services Marketplace. The selected partner must be an active subscription on the calling account.</p> </li> </ul> <p>To enumerate the values supported in your account, call <a>ListFirewallRuleTypes</a>.</p>",
           "box":true
         }
       },
@@ -1865,7 +1865,7 @@
         },
         "FirewallRuleType":{
           "shape":"FirewallRuleType",
-          "documentation":"<p>The rule type configuration for the firewall rule. This is a tagged union — set exactly one of its members. This setting is mutually exclusive with the top-level <code>FirewallDomainListId</code> and <code>DnsThreatProtection</code> fields. Use one of:</p> <ul> <li> <p> <code>FirewallAdvancedContentCategory</code> — match an AWS-managed content category (for example, <code>VIOLENCE_AND_HATE_SPEECH</code>).</p> </li> <li> <p> <code>FirewallAdvancedThreatCategory</code> — match an AWS-managed advanced threat category (for example, <code>PHISHING</code>).</p> </li> <li> <p> <code>DnsThreatProtection</code> — match a built-in DNS Firewall Advanced threat detector (<code>DGA</code>, <code>DNS_TUNNELING</code>, or <code>DICTIONARY_DGA</code>).</p> </li> <li> <p> <code>PartnerThreatProtection</code> — match a third-party threat feed delivered through AWS Marketplace. The selected partner must be an active subscription on the calling account.</p> </li> </ul> <p>To enumerate the values supported in your account, call <a>ListFirewallRuleTypes</a>.</p>",
+          "documentation":"<p>The rule type configuration for the firewall rule. This is a tagged union — set exactly one of its members. This setting is mutually exclusive with the top-level <code>FirewallDomainListId</code> and <code>DnsThreatProtection</code> fields. Use one of:</p> <ul> <li> <p> <code>FirewallAdvancedContentCategory</code> — match an Amazon Web Services-managed content category (for example, <code>VIOLENCE_AND_HATE_SPEECH</code>).</p> </li> <li> <p> <code>FirewallAdvancedThreatCategory</code> — match an Amazon Web Services-managed advanced threat category (for example, <code>PHISHING</code>).</p> </li> <li> <p> <code>DnsThreatProtection</code> — match a built-in DNS Firewall Advanced threat detector (<code>DGA</code>, <code>DNS_TUNNELING</code>, or <code>DICTIONARY_DGA</code>).</p> </li> <li> <p> <code>PartnerThreatProtection</code> — match a third-party threat feed delivered through Amazon Web Services Marketplace. The selected partner must be an active subscription on the calling account.</p> </li> </ul> <p>To enumerate the values supported in your account, call <a>ListFirewallRuleTypes</a>.</p>",
           "box":true
         }
       }
@@ -1953,11 +1953,11 @@
         },
         "IpAddresses":{
           "shape":"IpAddressesRequest",
-          "documentation":"<p>The subnets and IP addresses in your VPC that DNS queries originate from (for outbound endpoints) or that you forward DNS queries to (for inbound endpoints). The subnet ID uniquely identifies a VPC. </p> <note> <p>Even though the minimum is 1, Route 53 requires that you create at least two.</p> </note>"
+          "documentation":"<p>The subnets and IP addresses in your VPC that DNS queries originate from (for outbound endpoints) or that you forward DNS queries to (for inbound endpoints). The subnet ID uniquely identifies a VPC. </p> <note> <p>Even though the minimum is 1, Route 53 requires that you create at least two.</p> </note> <p>We recommend using <a href=\"https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/outpost-resolver-getting-started.html\">VPC Resolver on Outposts</a> to create endpoints on Outposts Racks.</p> <important> <p>Outposts subnets with <a href=\"https://docs.aws.amazon.com/outposts/latest/server-userguide/local-network-interface.html\">Local Network Interface (LNI)</a> enabled are not compatible with Route 53 Resolver endpoints. If you enable LNI on a subnet that contains Route 53 Resolver endpoint elastic network interfaces (ENIs), those ENIs will stop functioning. For more information, see <a href=\"https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/best-practices-resolver.html#best-practices-resolver-subnet-compatibility\">Subnet compatibility for Resolver endpoints</a> in the <i>Amazon Route 53 Developer Guide</i>.</p> </important>"
         },
         "OutpostArn":{
           "shape":"OutpostArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the Outpost. If you specify this, you must also specify a value for the <code>PreferredInstanceType</code>. </p>",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Outpost. If you specify this, you must also specify a value for the <code>PreferredInstanceType</code>. </p> <note> <p>Resolver endpoints on Outposts are supported on first-generation Outposts only. Inbound and outbound Resolver endpoints aren't supported on second-generation Outposts.</p> </note>",
           "box":true
         },
         "PreferredInstanceType":{
@@ -2491,7 +2491,7 @@
     },
     "FirewallAdvancedContentCategoryValue":{
       "type":"string",
-      "documentation":"<p>The identifier of an AWS-managed content category (for example, <code>VIOLENCE_AND_HATE_SPEECH</code>), returned in the <code>Value</code> field of a <a>FirewallRuleTypeDefinition</a> for the <code>FirewallAdvancedContentCategory</code> rule type. Pass this string as <code>FirewallAdvancedContentCategoryConfig.Category</code> when creating a content-category firewall rule.</p>",
+      "documentation":"<p>The identifier of an Amazon Web Services-managed content category (for example, <code>VIOLENCE_AND_HATE_SPEECH</code>), returned in the <code>Value</code> field of a <a>FirewallRuleTypeDefinition</a> for the <code>FirewallAdvancedContentCategory</code> rule type. Pass this string as <code>FirewallAdvancedContentCategoryConfig.Category</code> when creating a content-category firewall rule.</p>",
       "max":128,
       "min":1
     },
@@ -2508,7 +2508,7 @@
     },
     "FirewallAdvancedThreatCategoryValue":{
       "type":"string",
-      "documentation":"<p>The identifier of an AWS-managed advanced threat category (for example, <code>PHISHING</code>), returned in the <code>Value</code> field of a <a>FirewallRuleTypeDefinition</a> for the <code>FirewallAdvancedThreatCategory</code> rule type. Pass this string as <code>FirewallAdvancedThreatCategoryConfig.Category</code> when creating a threat-category firewall rule.</p>",
+      "documentation":"<p>The identifier of an Amazon Web Services-managed advanced threat category (for example, <code>PHISHING</code>), returned in the <code>Value</code> field of a <a>FirewallRuleTypeDefinition</a> for the <code>FirewallAdvancedThreatCategory</code> rule type. Pass this string as <code>FirewallAdvancedThreatCategoryConfig.Category</code> when creating a threat-category firewall rule.</p>",
       "max":128,
       "min":1
     },
@@ -2749,11 +2749,11 @@
         },
         "FirewallRuleType":{
           "shape":"FirewallRuleType",
-          "documentation":"<p>The rule type configuration for the firewall rule. This is a tagged union — exactly one of its members will be populated. Possible members are:</p> <ul> <li> <p> <code>FirewallAdvancedContentCategory</code> — an AWS-managed content category (for example, <code>VIOLENCE_AND_HATE_SPEECH</code>).</p> </li> <li> <p> <code>FirewallAdvancedThreatCategory</code> — an AWS-managed advanced threat category (for example, <code>PHISHING</code>).</p> </li> <li> <p> <code>DnsThreatProtection</code> — a built-in DNS Firewall Advanced threat detector (<code>DGA</code>, <code>DNS_TUNNELING</code>, or <code>DICTIONARY_DGA</code>).</p> </li> <li> <p> <code>PartnerThreatProtection</code> — a third-party threat feed delivered through AWS Marketplace.</p> </li> </ul> <p>To enumerate the values supported in your account, call <a>ListFirewallRuleTypes</a>.</p>"
+          "documentation":"<p>The rule type configuration for the firewall rule. This is a tagged union — exactly one of its members will be populated. Possible members are:</p> <ul> <li> <p> <code>FirewallAdvancedContentCategory</code> — an Amazon Web Services-managed content category (for example, <code>VIOLENCE_AND_HATE_SPEECH</code>).</p> </li> <li> <p> <code>FirewallAdvancedThreatCategory</code> — an Amazon Web Services-managed advanced threat category (for example, <code>PHISHING</code>).</p> </li> <li> <p> <code>DnsThreatProtection</code> — a built-in DNS Firewall Advanced threat detector (<code>DGA</code>, <code>DNS_TUNNELING</code>, or <code>DICTIONARY_DGA</code>).</p> </li> <li> <p> <code>PartnerThreatProtection</code> — a third-party threat feed delivered through Amazon Web Services Marketplace.</p> </li> </ul> <p>To enumerate the values supported in your account, call <a>ListFirewallRuleTypes</a>.</p>"
         },
         "Status":{
           "shape":"FirewallRuleStatus",
-          "documentation":"<p>The lifecycle state of the firewall rule. Possible values:</p> <ul> <li> <p> <code>CREATING</code> — DNS Firewall is provisioning the rule. Rules created with the <code>PartnerThreatProtection</code> rule type begin in this state while DNS Firewall verifies the calling account's AWS Marketplace entitlement.</p> </li> <li> <p> <code>COMPLETE</code> — The rule is provisioned and enforcing matches.</p> </li> <li> <p> <code>CREATION_FAILED</code> — Provisioning failed. <code>StatusMessage</code> contains a human-readable reason. A rule in this state is immutable: <a>UpdateFirewallRule</a> rejects the request, and the rule must be removed with <a>DeleteFirewallRule</a>.</p> </li> </ul> <p>For rules that do not require asynchronous provisioning, this field may be absent.</p>"
+          "documentation":"<p>The lifecycle state of the firewall rule. Possible values:</p> <ul> <li> <p> <code>CREATING</code> — DNS Firewall is provisioning the rule. Rules created with the <code>PartnerThreatProtection</code> rule type begin in this state while DNS Firewall verifies the calling account's Amazon Web Services Marketplace entitlement.</p> </li> <li> <p> <code>COMPLETE</code> — The rule is provisioned and enforcing matches.</p> </li> <li> <p> <code>CREATION_FAILED</code> — Provisioning failed. <code>StatusMessage</code> contains a human-readable reason. A rule in this state is immutable: <a>UpdateFirewallRule</a> rejects the request, and the rule must be removed with <a>DeleteFirewallRule</a>.</p> </li> </ul> <p>For rules that do not require asynchronous provisioning, this field may be absent.</p>"
         },
         "StatusMessage":{
           "shape":"FirewallRuleStatusMessage",
@@ -2930,7 +2930,7 @@
     },
     "FirewallRuleStatus":{
       "type":"string",
-      "documentation":"<p>The lifecycle state of a DNS Firewall rule. Known values:</p> <ul> <li> <p> <code>CREATING</code> — DNS Firewall is provisioning the rule. Rules created with the <code>PartnerThreatProtection</code> rule type begin in this state while DNS Firewall verifies the calling account's AWS Marketplace entitlement.</p> </li> <li> <p> <code>COMPLETE</code> — The rule is provisioned and enforcing matches.</p> </li> <li> <p> <code>CREATION_FAILED</code> — Provisioning failed. <a>UpdateFirewallRule</a> rejects updates to a rule in this state; the rule must be removed with <a>DeleteFirewallRule</a>.</p> </li> </ul>",
+      "documentation":"<p>The lifecycle state of a DNS Firewall rule. Known values:</p> <ul> <li> <p> <code>CREATING</code> — DNS Firewall is provisioning the rule. Rules created with the <code>PartnerThreatProtection</code> rule type begin in this state while DNS Firewall verifies the calling account's Amazon Web Services Marketplace entitlement.</p> </li> <li> <p> <code>COMPLETE</code> — The rule is provisioned and enforcing matches.</p> </li> <li> <p> <code>CREATION_FAILED</code> — Provisioning failed. <a>UpdateFirewallRule</a> rejects updates to a rule in this state; the rule must be removed with <a>DeleteFirewallRule</a>.</p> </li> </ul>",
       "max":32
     },
     "FirewallRuleStatusMessage":{
@@ -2943,17 +2943,17 @@
       "members":{
         "PartnerThreatProtection":{
           "shape":"PartnerThreatProtectionConfig",
-          "documentation":"<p>Configures the rule to match a third-party threat feed delivered through AWS Marketplace. The calling account must hold an active subscription to the partner product named in <code>Partner</code>; if the subscription is missing or revoked, the rule is created with <code>Status</code> <code>CREATION_FAILED</code> and cannot be modified — only deleted. See <a>PartnerThreatProtectionConfig</a>.</p>",
+          "documentation":"<p>Configures the rule to match a third-party threat feed delivered through Amazon Web Services Marketplace. The calling account must hold an active subscription to the partner product named in <code>Partner</code>; if the subscription is missing or revoked, the rule is created with <code>Status</code> <code>CREATION_FAILED</code> and cannot be modified — only deleted. See <a>PartnerThreatProtectionConfig</a>.</p>",
           "box":true
         },
         "FirewallAdvancedContentCategory":{
           "shape":"FirewallAdvancedContentCategoryConfig",
-          "documentation":"<p>Configures the rule to match an AWS-managed content category (for example, <code>VIOLENCE_AND_HATE_SPEECH</code>). See <a>FirewallAdvancedContentCategoryConfig</a>.</p>",
+          "documentation":"<p>Configures the rule to match an Amazon Web Services-managed content category (for example, <code>VIOLENCE_AND_HATE_SPEECH</code>). See <a>FirewallAdvancedContentCategoryConfig</a>.</p>",
           "box":true
         },
         "FirewallAdvancedThreatCategory":{
           "shape":"FirewallAdvancedThreatCategoryConfig",
-          "documentation":"<p>Configures the rule to match an AWS-managed advanced threat category (for example, <code>PHISHING</code>). See <a>FirewallAdvancedThreatCategoryConfig</a>.</p>",
+          "documentation":"<p>Configures the rule to match an Amazon Web Services-managed advanced threat category (for example, <code>PHISHING</code>). See <a>FirewallAdvancedThreatCategoryConfig</a>.</p>",
           "box":true
         },
         "DnsThreatProtection":{
@@ -2985,7 +2985,7 @@
         },
         "SubscriptionInfo":{
           "shape":"SubscriptionInfo",
-          "documentation":"<p>For rule types that require an external subscription (today, only the <code>PartnerThreatProtection</code> variant), describes the AWS Marketplace product that backs the rule type. Absent for rule types that are managed by AWS and do not require a separate subscription. See <a>SubscriptionInfo</a>.</p>",
+          "documentation":"<p>For rule types that require an external subscription (today, only the <code>PartnerThreatProtection</code> variant), describes the Amazon Web Services Marketplace product that backs the rule type. Absent for rule types that are managed by Amazon Web Services and do not require a separate subscription. See <a>SubscriptionInfo</a>.</p>",
           "box":true
         }
       },
@@ -3393,7 +3393,7 @@
       "members":{
         "SubnetId":{
           "shape":"SubnetId",
-          "documentation":"<p>The ID of the subnet that contains the IP address. </p>"
+          "documentation":"<p>The ID of the subnet that contains the IP address. </p> <p>We recommend using <a href=\"https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/outpost-resolver-getting-started.html\">VPC Resolver on Outposts</a> to create endpoints on Outposts Racks.</p> <important> <p>Outposts subnets with <a href=\"https://docs.aws.amazon.com/outposts/latest/server-userguide/local-network-interface.html\">Local Network Interface (LNI)</a> enabled are not compatible with Route 53 Resolver endpoints. If you enable LNI on a subnet that contains Route 53 Resolver endpoint elastic network interfaces (ENIs), those ENIs will stop functioning. For more information, see <a href=\"https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/best-practices-resolver.html#best-practices-resolver-subnet-compatibility\">Subnet compatibility for Resolver endpoints</a> in the <i>Amazon Route 53 Developer Guide</i>.</p> </important>"
         },
         "Ip":{
           "shape":"Ip",
@@ -3475,7 +3475,7 @@
         },
         "SubnetId":{
           "shape":"SubnetId",
-          "documentation":"<p>The ID of the subnet that includes the IP address that you want to update. To get this ID, use <a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_GetResolverEndpoint.html\">GetResolverEndpoint</a>.</p>",
+          "documentation":"<p>The ID of the subnet that includes the IP address that you want to update. To get this ID, use <a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_GetResolverEndpoint.html\">GetResolverEndpoint</a>.</p> <p>We recommend using <a href=\"https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/outpost-resolver-getting-started.html\">VPC Resolver on Outposts</a> to create endpoints on Outposts Racks.</p> <important> <p>Outposts subnets with <a href=\"https://docs.aws.amazon.com/outposts/latest/server-userguide/local-network-interface.html\">Local Network Interface (LNI)</a> enabled are not compatible with Route 53 Resolver endpoints. If you enable LNI on a subnet that contains Route 53 Resolver endpoint elastic network interfaces (ENIs), those ENIs will stop functioning. For more information, see <a href=\"https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/best-practices-resolver.html#best-practices-resolver-subnet-compatibility\">Subnet compatibility for Resolver endpoints</a> in the <i>Amazon Route 53 Developer Guide</i>.</p> </important>",
           "box":true
         },
         "Ip":{
@@ -4255,10 +4255,10 @@
       "members":{
         "Partner":{
           "shape":"PartnerValue",
-          "documentation":"<p>The identifier of the partner threat-protection product, exactly as returned in the <code>Value</code> field of a <a>FirewallRuleTypeDefinition</a> with <code>RuleType</code> set to <code>PartnerThreatProtection</code>. The calling account must hold an active AWS Marketplace subscription to this product.</p>"
+          "documentation":"<p>The identifier of the partner threat-protection product, exactly as returned in the <code>Value</code> field of a <a>FirewallRuleTypeDefinition</a> with <code>RuleType</code> set to <code>PartnerThreatProtection</code>. The calling account must hold an active Amazon Web Services Marketplace subscription to this product.</p>"
         }
       },
-      "documentation":"<p>The configuration for a partner threat-protection rule. To enumerate the partners available in your account, call <a>ListFirewallRuleTypes</a> with <code>RuleType</code> set to <code>PartnerThreatProtection</code> — each returned <a>FirewallRuleTypeDefinition</a> includes a <a>SubscriptionInfo</a> identifying the AWS Marketplace product that backs it.</p>"
+      "documentation":"<p>The configuration for a partner threat-protection rule. To enumerate the partners available in your account, call <a>ListFirewallRuleTypes</a> with <code>RuleType</code> set to <code>PartnerThreatProtection</code> — each returned <a>FirewallRuleTypeDefinition</a> includes a <a>SubscriptionInfo</a> identifying the Amazon Web Services Marketplace product that backs it.</p>"
     },
     "PartnerValue":{
       "type":"string",
@@ -4978,14 +4978,14 @@
       "members":{
         "VendorName":{
           "shape":"VendorName",
-          "documentation":"<p>The name of the AWS Marketplace seller (vendor) that publishes the partner threat-protection product (for example, <code>Palo Alto Networks</code>).</p>"
+          "documentation":"<p>The name of the Amazon Web Services Marketplace seller (vendor) that publishes the partner threat-protection product (for example, <code>Palo Alto Networks</code>).</p>"
         },
         "ProductId":{
           "shape":"ProductId",
-          "documentation":"<p>The AWS Marketplace product identifier of the partner threat-protection product. Use this value to verify or manage the calling account's subscription in AWS Marketplace.</p>"
+          "documentation":"<p>The Amazon Web Services Marketplace product identifier of the partner threat-protection product. Use this value to verify or manage the calling account's subscription in Amazon Web Services Marketplace.</p>"
         }
       },
-      "documentation":"<p>Identifies the AWS Marketplace product that backs a partner-managed rule type. Returned as part of <a>FirewallRuleTypeDefinition</a> when the rule type variant requires an active customer subscription to the named product.</p>"
+      "documentation":"<p>Identifies the Amazon Web Services Marketplace product that backs a partner-managed rule type. Returned as part of <a>FirewallRuleTypeDefinition</a> when the rule type variant requires an active customer subscription to the named product.</p>"
     },
     "Tag":{
       "type":"structure",
@@ -5268,7 +5268,7 @@
         },
         "FirewallRuleType":{
           "shape":"FirewallRuleType",
-          "documentation":"<p>The rule type configuration for the firewall rule. This is a tagged union — set exactly one of its members. This setting is mutually exclusive with the top-level <code>FirewallDomainListId</code> and <code>DnsThreatProtection</code> fields. Use one of:</p> <ul> <li> <p> <code>FirewallAdvancedContentCategory</code> — match an AWS-managed content category (for example, <code>VIOLENCE_AND_HATE_SPEECH</code>).</p> </li> <li> <p> <code>FirewallAdvancedThreatCategory</code> — match an AWS-managed advanced threat category (for example, <code>PHISHING</code>).</p> </li> <li> <p> <code>DnsThreatProtection</code> — match a built-in DNS Firewall Advanced threat detector (<code>DGA</code>, <code>DNS_TUNNELING</code>, or <code>DICTIONARY_DGA</code>).</p> </li> <li> <p> <code>PartnerThreatProtection</code> — match a third-party threat feed delivered through AWS Marketplace. The selected partner must be an active subscription on the calling account.</p> </li> </ul> <p>To enumerate the values supported in your account, call <a>ListFirewallRuleTypes</a>.</p>",
+          "documentation":"<p>The rule type configuration for the firewall rule. This is a tagged union — set exactly one of its members. This setting is mutually exclusive with the top-level <code>FirewallDomainListId</code> and <code>DnsThreatProtection</code> fields. Use one of:</p> <ul> <li> <p> <code>FirewallAdvancedContentCategory</code> — match an Amazon Web Services-managed content category (for example, <code>VIOLENCE_AND_HATE_SPEECH</code>).</p> </li> <li> <p> <code>FirewallAdvancedThreatCategory</code> — match an Amazon Web Services-managed advanced threat category (for example, <code>PHISHING</code>).</p> </li> <li> <p> <code>DnsThreatProtection</code> — match a built-in DNS Firewall Advanced threat detector (<code>DGA</code>, <code>DNS_TUNNELING</code>, or <code>DICTIONARY_DGA</code>).</p> </li> <li> <p> <code>PartnerThreatProtection</code> — match a third-party threat feed delivered through Amazon Web Services Marketplace. The selected partner must be an active subscription on the calling account.</p> </li> </ul> <p>To enumerate the values supported in your account, call <a>ListFirewallRuleTypes</a>.</p>",
           "box":true
         }
       },
@@ -5382,7 +5382,7 @@
         },
         "FirewallRuleType":{
           "shape":"FirewallRuleType",
-          "documentation":"<p>The rule type configuration for the firewall rule. This is a tagged union — set exactly one of its members. This setting is mutually exclusive with the top-level <code>FirewallDomainListId</code> and <code>DnsThreatProtection</code> fields. Use one of:</p> <ul> <li> <p> <code>FirewallAdvancedContentCategory</code> — match an AWS-managed content category (for example, <code>VIOLENCE_AND_HATE_SPEECH</code>).</p> </li> <li> <p> <code>FirewallAdvancedThreatCategory</code> — match an AWS-managed advanced threat category (for example, <code>PHISHING</code>).</p> </li> <li> <p> <code>DnsThreatProtection</code> — match a built-in DNS Firewall Advanced threat detector (<code>DGA</code>, <code>DNS_TUNNELING</code>, or <code>DICTIONARY_DGA</code>).</p> </li> <li> <p> <code>PartnerThreatProtection</code> — match a third-party threat feed delivered through AWS Marketplace. The selected partner must be an active subscription on the calling account.</p> </li> </ul> <p>To enumerate the values supported in your account, call <a>ListFirewallRuleTypes</a>.</p>",
+          "documentation":"<p>The rule type configuration for the firewall rule. This is a tagged union — set exactly one of its members. This setting is mutually exclusive with the top-level <code>FirewallDomainListId</code> and <code>DnsThreatProtection</code> fields. Use one of:</p> <ul> <li> <p> <code>FirewallAdvancedContentCategory</code> — match an Amazon Web Services-managed content category (for example, <code>VIOLENCE_AND_HATE_SPEECH</code>).</p> </li> <li> <p> <code>FirewallAdvancedThreatCategory</code> — match an Amazon Web Services-managed advanced threat category (for example, <code>PHISHING</code>).</p> </li> <li> <p> <code>DnsThreatProtection</code> — match a built-in DNS Firewall Advanced threat detector (<code>DGA</code>, <code>DNS_TUNNELING</code>, or <code>DICTIONARY_DGA</code>).</p> </li> <li> <p> <code>PartnerThreatProtection</code> — match a third-party threat feed delivered through Amazon Web Services Marketplace. The selected partner must be an active subscription on the calling account.</p> </li> </ul> <p>To enumerate the values supported in your account, call <a>ListFirewallRuleTypes</a>.</p>",
           "box":true
         }
       }

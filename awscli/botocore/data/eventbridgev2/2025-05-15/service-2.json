@@ -1,0 +1,2735 @@
+{
+  "version":"2.0",
+  "metadata":{
+    "apiVersion":"2025-05-15",
+    "auth":["aws.auth#sigv4"],
+    "endpointPrefix":"eventsv2",
+    "protocol":"smithy-rpc-v2-cbor",
+    "protocols":["smithy-rpc-v2-cbor"],
+    "serviceFullName":"Amazon EventBridgeV2",
+    "serviceId":"EventBridgeV2",
+    "signatureVersion":"v4",
+    "signingName":"events",
+    "targetPrefix":"AWSEventsV2",
+    "uid":"eventbridgev2-2025-05-15"
+  },
+  "operations":{
+    "CreateEventBus":{
+      "name":"CreateEventBus",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateEventBusRequest"},
+      "output":{"shape":"CreateEventBusResponse"},
+      "errors":[
+        {"shape":"LimitExceededException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"IdempotentParameterMismatchException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"ResourceAlreadyExistsException"},
+        {"shape":"InternalException"},
+        {"shape":"ConcurrentModificationException"},
+        {"shape":"InvalidStateException"}
+      ],
+      "documentation":"<p>Creates an event bus. Provisioning is asynchronous: the bus is returned in the CREATING state and transitions to ACTIVE when ready (see the EventBusActive waiter). Retries carrying the same ClientToken are idempotent.</p>"
+    },
+    "CreateEventSource":{
+      "name":"CreateEventSource",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateEventSourceRequest"},
+      "output":{"shape":"CreateEventSourceResponse"},
+      "errors":[
+        {"shape":"LimitExceededException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"IdempotentParameterMismatchException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"ResourceAlreadyExistsException"},
+        {"shape":"InternalException"},
+        {"shape":"ConcurrentModificationException"},
+        {"shape":"InvalidStateException"}
+      ],
+      "documentation":"<p>Creates an EventSource, which forwards events from an origin (an AWS service or another account) onto an event bus. The bus must be ACTIVE. Retries carrying the same ClientToken are idempotent.</p>"
+    },
+    "CreateSubscriber":{
+      "name":"CreateSubscriber",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateSubscriberRequest"},
+      "output":{"shape":"CreateSubscriberResponse"},
+      "errors":[
+        {"shape":"LimitExceededException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"IdempotentParameterMismatchException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"ResourceAlreadyExistsException"},
+        {"shape":"InternalException"},
+        {"shape":"ConcurrentModificationException"},
+        {"shape":"InvalidStateException"}
+      ],
+      "documentation":"<p>Creates a subscriber on an event bus, which delivers matching events to the configured target. The bus must be ACTIVE. Retries carrying the same ClientToken are idempotent.</p>"
+    },
+    "DeleteEventBus":{
+      "name":"DeleteEventBus",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteEventBusRequest"},
+      "output":{"shape":"DeleteEventBusResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"InternalException"},
+        {"shape":"ConcurrentModificationException"},
+        {"shape":"InvalidStateException"},
+        {"shape":"ResourceInUseException"}
+      ],
+      "documentation":"<p>Deletes an event bus. Deletion is asynchronous: the bus moves to DELETING and disappears when complete (see the EventBusDeleted waiter). A bus with subscribers or event sources cannot be deleted.</p>",
+      "idempotent":true
+    },
+    "DeleteEventSource":{
+      "name":"DeleteEventSource",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteEventSourceRequest"},
+      "output":{"shape":"DeleteEventSourceResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"InternalException"},
+        {"shape":"ConcurrentModificationException"},
+        {"shape":"InvalidStateException"}
+      ],
+      "documentation":"<p>Deletes an EventSource. Forwarding from its origin stops.</p>",
+      "idempotent":true
+    },
+    "DeleteResourcePolicy":{
+      "name":"DeleteResourcePolicy",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteResourcePolicyRequest"},
+      "output":{"shape":"DeleteResourcePolicyResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"InternalException"},
+        {"shape":"ConcurrentModificationException"}
+      ],
+      "documentation":"<p>Deletes the named resource policy attached to an event bus.</p>",
+      "idempotent":true
+    },
+    "DeleteSubscriber":{
+      "name":"DeleteSubscriber",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteSubscriberRequest"},
+      "output":{"shape":"DeleteSubscriberResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"InternalException"},
+        {"shape":"ConcurrentModificationException"}
+      ],
+      "documentation":"<p>Deletes a subscriber. Events are no longer delivered to its target.</p>",
+      "idempotent":true
+    },
+    "DescribeEventBus":{
+      "name":"DescribeEventBus",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeEventBusRequest"},
+      "output":{"shape":"DescribeEventBusResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"InternalException"}
+      ],
+      "documentation":"<p>Returns the full configuration and lifecycle state of an event bus.</p>",
+      "readonly":true
+    },
+    "DescribeEventSource":{
+      "name":"DescribeEventSource",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeEventSourceRequest"},
+      "output":{"shape":"DescribeEventSourceResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"InternalException"}
+      ],
+      "documentation":"<p>Returns the full configuration and lifecycle state of an EventSource.</p>",
+      "readonly":true
+    },
+    "DescribeSubscriber":{
+      "name":"DescribeSubscriber",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeSubscriberRequest"},
+      "output":{"shape":"DescribeSubscriberResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"InternalException"}
+      ],
+      "documentation":"<p>Returns the full configuration and state of a subscriber.</p>",
+      "readonly":true
+    },
+    "GetResourcePolicy":{
+      "name":"GetResourcePolicy",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetResourcePolicyRequest"},
+      "output":{"shape":"GetResourcePolicyResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"InternalException"}
+      ],
+      "documentation":"<p>Returns the named resource policy attached to an event bus. Fails with ResourceNotFoundException when the event bus or the named policy does not exist.</p>",
+      "readonly":true
+    },
+    "ListEventBuses":{
+      "name":"ListEventBuses",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListEventBusesRequest"},
+      "output":{"shape":"ListEventBusesResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"InternalException"}
+      ],
+      "documentation":"<p>Lists the event buses visible to the caller: buses the account owns and buses shared with it through AWS RAM. Shared entries carry identity fields only (Name, EventBusArn, EventBusAccountId); owned entries carry every summary field. Set EventBusAccountId to scope the list to one owner account.</p>",
+      "readonly":true
+    },
+    "ListEventSources":{
+      "name":"ListEventSources",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListEventSourcesRequest"},
+      "output":{"shape":"ListEventSourcesResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"InternalException"}
+      ],
+      "documentation":"<p>Lists EventSources as summaries. By default the list spans the EventSources the caller account owns; set EventBusArn to scope it to one bus. Use DescribeEventSource to retrieve full configuration.</p>",
+      "readonly":true
+    },
+    "ListResourcePolicies":{
+      "name":"ListResourcePolicies",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListResourcePoliciesRequest"},
+      "output":{"shape":"ListResourcePoliciesResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"InternalException"}
+      ],
+      "documentation":"<p>Lists the resource policies attached to an event bus as summaries (policy name and revision ID). Use GetResourcePolicy to retrieve a policy document.</p>",
+      "readonly":true
+    },
+    "ListSubscribers":{
+      "name":"ListSubscribers",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListSubscribersRequest"},
+      "output":{"shape":"ListSubscribersResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"InternalException"}
+      ],
+      "documentation":"<p>Lists subscribers as summaries. By default the list spans the subscribers the caller account owns across all buses; set EventBusArn to scope it to one bus. Use DescribeSubscriber to retrieve full configuration.</p>",
+      "readonly":true
+    },
+    "ListTagsForResource":{
+      "name":"ListTagsForResource",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListTagsForResourceRequest"},
+      "output":{"shape":"ListTagsForResourceResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"InternalException"}
+      ],
+      "documentation":"<p>Lists the tags on an event bus, subscriber, or event source.</p>",
+      "readonly":true
+    },
+    "PutEvents":{
+      "name":"PutEvents",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"PutEventsRequest"},
+      "output":{"shape":"PutEventsResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"InternalException"},
+        {"shape":"InvalidStateException"}
+      ],
+      "documentation":"<p>Publishes events to an event bus.</p>"
+    },
+    "PutRawEvents":{
+      "name":"PutRawEvents",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"PutRawEventsRequest"},
+      "output":{"shape":"PutRawEventsResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"SchemaRegistryUnavailableException"},
+        {"shape":"InternalException"},
+        {"shape":"InvalidStateException"}
+      ],
+      "documentation":"<p>Publishes pre-shaped events to an event bus.</p>"
+    },
+    "PutResourcePolicy":{
+      "name":"PutResourcePolicy",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"PutResourcePolicyRequest"},
+      "output":{"shape":"PutResourcePolicyResponse"},
+      "errors":[
+        {"shape":"PolicyLengthExceededException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"InternalException"},
+        {"shape":"ConcurrentModificationException"},
+        {"shape":"PublicPolicyException"}
+      ],
+      "documentation":"<p>Attaches a named resource policy to an event bus — the only resource type that supports policies; other resource ARNs are rejected. Each bus holds two named policies: &quot;default&quot; (customer-managed, full IAM policy language including Deny) and &quot;AWS_RAM&quot; (written exclusively by AWS Resource Access Manager to reflect resource shares). Both policies are evaluated on cross-account authorization; an explicit Deny in either overrides an Allow in the other. Operations that omit PolicyName target &quot;default&quot;. A &quot;default&quot; policy that would grant public access is rejected with PublicPolicyException and is not attached; this check is always on and cannot be disabled.</p>",
+      "idempotent":true
+    },
+    "RevokeResource":{
+      "name":"RevokeResource",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"RevokeResourceRequest"},
+      "output":{"shape":"RevokeResourceResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"InternalException"},
+        {"shape":"ConcurrentModificationException"},
+        {"shape":"InvalidStateException"}
+      ],
+      "documentation":"<p>Revokes a subscriber or an EventSource. The bus owner calls this to withdraw a misbehaving resource attached to their bus. Revocation is terminal: there is no operation that clears it. A revoked resource refuses mutating operations with InvalidStateException; delete stays available for cleanup.</p>",
+      "idempotent":true
+    },
+    "TagResource":{
+      "name":"TagResource",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"TagResourceRequest"},
+      "output":{"shape":"TagResourceResponse"},
+      "errors":[
+        {"shape":"LimitExceededException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"InternalException"},
+        {"shape":"ConcurrentModificationException"},
+        {"shape":"InvalidStateException"}
+      ],
+      "documentation":"<p>Adds or replaces tags on an event bus, subscriber, or event source.</p>",
+      "idempotent":true
+    },
+    "UntagResource":{
+      "name":"UntagResource",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UntagResourceRequest"},
+      "output":{"shape":"UntagResourceResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"InternalException"},
+        {"shape":"ConcurrentModificationException"},
+        {"shape":"InvalidStateException"}
+      ],
+      "documentation":"<p>Removes tags from an event bus, subscriber, or event source.</p>",
+      "idempotent":true
+    },
+    "UpdateEventBus":{
+      "name":"UpdateEventBus",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateEventBusRequest"},
+      "output":{"shape":"UpdateEventBusResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"InternalException"},
+        {"shape":"ConcurrentModificationException"},
+        {"shape":"InvalidStateException"}
+      ],
+      "documentation":"<p>Updates an event bus. The update is asynchronous: the bus moves to UPDATING and returns to ACTIVE when the change is applied. Fields omitted from the request are left unchanged.</p>",
+      "idempotent":true
+    },
+    "UpdateEventSource":{
+      "name":"UpdateEventSource",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateEventSourceRequest"},
+      "output":{"shape":"UpdateEventSourceResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"InternalException"},
+        {"shape":"ConcurrentModificationException"},
+        {"shape":"InvalidStateException"}
+      ],
+      "documentation":"<p>Updates an EventSource. Fields omitted from the request are left unchanged.</p>",
+      "idempotent":true
+    },
+    "UpdateSubscriber":{
+      "name":"UpdateSubscriber",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateSubscriberRequest"},
+      "output":{"shape":"UpdateSubscriberResponse"},
+      "errors":[
+        {"shape":"LimitExceededException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"InternalException"},
+        {"shape":"ConcurrentModificationException"},
+        {"shape":"InvalidStateException"}
+      ],
+      "documentation":"<p>Updates a subscriber. Fields omitted from the request are left unchanged.</p>",
+      "idempotent":true
+    }
+  },
+  "shapes":{
+    "AccessDeniedException":{
+      "type":"structure",
+      "members":{
+        "Message":{"shape":"String"}
+      },
+      "documentation":"<p>The caller does not have the permissions required to perform the operation. This error is also returned when the operation cannot use the AWS KMS key for the event bus.</p>",
+      "error":{
+        "httpStatusCode":403,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "AccountId":{
+      "type":"string",
+      "documentation":"<p>AWS Account Id.</p>",
+      "max":12,
+      "min":12,
+      "pattern":"\\d{12}"
+    },
+    "AwsServiceEventsSourceConfiguration":{
+      "type":"structure",
+      "required":["AwsService"],
+      "members":{
+        "AwsService":{"shape":"AwsServiceSource"},
+        "Pattern":{
+          "shape":"AwsServiceEventsSourceConfigurationPatternString",
+          "documentation":"<p>A filter pattern, as a JSON string, that defines which of the service's events are forwarded to the event bus. Do not include source, account, or region as top-level fields. If no pattern is specified, all events from the service are forwarded.</p>"
+        },
+        "OnFailureConfiguration":{
+          "shape":"OnFailureConfiguration",
+          "documentation":"<p>The destination for events that could not be forwarded.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for forwarding a single AWS service's events from the account's default event bus.</p>"
+    },
+    "AwsServiceEventsSourceConfigurationPatternString":{
+      "type":"string",
+      "documentation":"<p>An event pattern, as a JSON string, that selects which events match.</p>",
+      "max":3753,
+      "min":0,
+      "sensitive":true
+    },
+    "AwsServiceSource":{
+      "type":"string",
+      "documentation":"<p>A single AWS service source identifier, e.g. &quot;aws.s3&quot;. Wildcards and lists are rejected.</p>",
+      "max":256,
+      "min":1,
+      "pattern":"aws\\.[a-z0-9\\-]+"
+    },
+    "BatchConfiguration":{
+      "type":"structure",
+      "members":{
+        "MaxBatchSize":{
+          "shape":"BatchConfigurationMaxBatchSizeInteger",
+          "documentation":"<p>The maximum number of events to include in a single batch delivered to the target. The service delivers up to this many events per batch; fewer may be delivered when the batch window elapses or the target's per-batch limit is smaller. This is a maximum, not a guaranteed count. Valid range is 1-500 (default: 10, or the target API's per-batch maximum). The resolved value applied by the service is returned on read.</p>"
+        },
+        "MaxBatchWindowInSeconds":{
+          "shape":"BatchConfigurationMaxBatchWindowInSecondsInteger",
+          "documentation":"<p>The maximum time in seconds to wait for a batch to fill before delivering it to the target. This is a maximum; a batch may be delivered sooner if it reaches MaxBatchSize or another delivery condition is met. Valid range is 0-300 (default: 0, meaning no wait). The resolved value applied by the service is always returned on read.</p>"
+        }
+      },
+      "documentation":"<p>Batching configuration for a subscriber.</p>"
+    },
+    "BatchConfigurationMaxBatchSizeInteger":{
+      "type":"integer",
+      "documentation":"<p>Nullable integer — no default, absence means &quot;not set&quot;.</p>",
+      "box":true,
+      "max":500,
+      "min":1
+    },
+    "BatchConfigurationMaxBatchWindowInSecondsInteger":{
+      "type":"integer",
+      "documentation":"<p>Nullable integer — no default, absence means &quot;not set&quot;.</p>",
+      "box":true,
+      "max":300,
+      "min":0
+    },
+    "Boolean":{
+      "type":"boolean",
+      "box":true
+    },
+    "BusState":{
+      "type":"string",
+      "documentation":"<p>Lifecycle state of an event bus.</p> <ul> <li>CREATING: Bus creation is in progress.</li> <li>CREATE_FAILED: Bus creation failed; see StateReason. The bus cannot be recovered or recreated in place: delete it with DeleteEventBus, then create a new bus.</li> <li>ACTIVE: Bus is fully operational and can accept events.</li> <li>UPDATING: Bus update is in progress.</li> <li>UPDATE_FAILED: Bus update failed; the bus remains operational with its previous configuration.</li> <li>DELETING: Bus deletion is actively in progress.</li> <li>DELETE_FAILED: Bus deletion failed; see StateReason. Retry DeleteEventBus after removing subscribers and event sources.</li> </ul>",
+      "enum":[
+        "CREATING",
+        "CREATE_FAILED",
+        "UPDATING",
+        "UPDATE_FAILED",
+        "DELETING",
+        "ACTIVE",
+        "DELETE_FAILED"
+      ]
+    },
+    "ClientToken":{
+      "type":"string",
+      "documentation":"<p>Unique, case-sensitive identifier that ensures the idempotency of the request. The SDK generates one automatically when the field is omitted.</p>",
+      "max":64,
+      "min":1,
+      "pattern":"[\\u0021-\\u007E]+"
+    },
+    "ConcurrentModificationException":{
+      "type":"structure",
+      "members":{
+        "Message":{"shape":"String"}
+      },
+      "documentation":"<p>Another change to the resource is already in progress. Retry the request.</p>",
+      "error":{
+        "httpStatusCode":409,
+        "senderFault":true
+      },
+      "exception":true,
+      "retryable":{"throttling":false}
+    },
+    "ConflictException":{
+      "type":"structure",
+      "members":{
+        "Message":{"shape":"String"}
+      },
+      "documentation":"<p>A client-supplied precondition (e.g. ExpectedRevisionId on a resource-policy write) did not match the current state of the resource. Retrying the same request will fail again; re-read the resource and re-evaluate before retrying.</p> <p>A conditional request is not retry-safe on its own. If an earlier attempt committed but its response never reached the caller, retrying fails with this error, which is indistinguishable from another writer having won. Compare the resource's current contents with what the request intended: a successful attempt stores a revision ID the caller never saw, so the revision alone cannot tell the two apart, but matching contents mean the change took effect.</p>",
+      "error":{
+        "httpStatusCode":409,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "ConfluentPublicRegistryConfiguration":{
+      "type":"structure",
+      "required":["ConnectionArn"],
+      "members":{
+        "ConnectionArn":{
+          "shape":"ConnectionArn",
+          "documentation":"<p>EventBridge Connection ARN that provides API Key or OAuth credentials for the registry.</p>"
+        }
+      },
+      "documentation":"<p>Authentication configuration for public Confluent Schema Registry via EventBridge Connection.</p>"
+    },
+    "ConnectionArn":{
+      "type":"string",
+      "documentation":"<p>EventBridge Connection ARN.</p>",
+      "max":1600,
+      "min":1,
+      "pattern":"arn:aws(-[a-z0-9]+)*:events:[a-z0-9-]+:\\d{12}:connection/.+"
+    },
+    "ContentType":{
+      "type":"string",
+      "documentation":"<p>Content type of the event data.</p>",
+      "max":256,
+      "min":1,
+      "pattern":"application/.*"
+    },
+    "CreateEventBusRequest":{
+      "type":"structure",
+      "required":["Name"],
+      "members":{
+        "Name":{"shape":"EventBusName"},
+        "Description":{"shape":"Description"},
+        "EncryptionConfiguration":{"shape":"EncryptionConfiguration"},
+        "StorageConfiguration":{"shape":"StorageConfiguration"},
+        "Tags":{"shape":"TagMap"},
+        "ClientToken":{
+          "shape":"ClientToken",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "CreateEventBusResponse":{
+      "type":"structure",
+      "members":{
+        "EventBusArn":{"shape":"EventBusArn"},
+        "Name":{"shape":"EventBusName"},
+        "Description":{"shape":"Description"},
+        "EncryptionConfiguration":{"shape":"EncryptionConfiguration"},
+        "StorageConfiguration":{"shape":"StorageConfigurationOutput"},
+        "State":{"shape":"BusState"},
+        "StateReason":{"shape":"StateReason"},
+        "CreationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time the event bus was created.</p>"
+        }
+      }
+    },
+    "CreateEventSourceRequest":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "EventBusArn",
+        "Configuration"
+      ],
+      "members":{
+        "Name":{"shape":"EventSourceName"},
+        "EventBusArn":{
+          "shape":"EventBusArn",
+          "contextParam":{"name":"EventBusArn"}
+        },
+        "Configuration":{"shape":"EventSourceConfiguration"},
+        "Description":{"shape":"Description"},
+        "Tags":{"shape":"TagMap"},
+        "ClientToken":{
+          "shape":"ClientToken",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "CreateEventSourceResponse":{
+      "type":"structure",
+      "members":{
+        "EventSourceArn":{"shape":"EventSourceArn"},
+        "Name":{"shape":"EventSourceName"},
+        "EventBusArn":{"shape":"EventBusArn"},
+        "State":{"shape":"EventSourceState"},
+        "CreationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time the EventSource was created.</p>"
+        }
+      }
+    },
+    "CreateSubscriberRequest":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "EventBusArn",
+        "InvokeConfiguration"
+      ],
+      "members":{
+        "Name":{"shape":"SubscriberName"},
+        "EventBusArn":{
+          "shape":"EventBusArn",
+          "contextParam":{"name":"EventBusArn"}
+        },
+        "InvokeConfiguration":{"shape":"InvokeConfiguration"},
+        "Description":{"shape":"Description"},
+        "FilterConfiguration":{"shape":"FilterConfiguration"},
+        "Type":{"shape":"OrderingType"},
+        "StartingPosition":{"shape":"StartingPosition"},
+        "PointInTimeConfiguration":{"shape":"PointInTimeConfiguration"},
+        "BatchConfiguration":{"shape":"BatchConfiguration"},
+        "Transformer":{
+          "shape":"Transformer",
+          "documentation":"<p>Not applicable to universal (aws-sdk) targets, whose input transformation is UniversalTargetParameters.Input; a Transformer on such a target is rejected.</p>"
+        },
+        "RetryPolicy":{"shape":"RetryPolicy"},
+        "OnFailureConfiguration":{"shape":"OnFailureConfiguration"},
+        "LogConfiguration":{"shape":"LogConfiguration"},
+        "State":{"shape":"SubscriberState"},
+        "Tags":{"shape":"TagMap"},
+        "ClientToken":{
+          "shape":"ClientToken",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "CreateSubscriberResponse":{
+      "type":"structure",
+      "members":{
+        "SubscriberArn":{"shape":"SubscriberArn"},
+        "Name":{"shape":"SubscriberName"},
+        "EventBusArn":{"shape":"EventBusArn"},
+        "Type":{"shape":"OrderingType"},
+        "StartingPosition":{"shape":"StartingPosition"},
+        "PointInTimeConfiguration":{"shape":"PointInTimeConfiguration"},
+        "State":{"shape":"SubscriberState"},
+        "CreationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time the subscriber was created.</p>"
+        }
+      }
+    },
+    "DeadLetterQueueArn":{
+      "type":"string",
+      "documentation":"<p>The ARN of the destination that receives events that could not be delivered. An Amazon SQS queue is the supported destination. The queue-name grammar mirrors SQS's own rule: 1-80 chars of [A-Za-z0-9_-], where a FIFO name's &quot;.fifo&quot; suffix counts toward the 80 (so a FIFO base name is at most 75 chars). Shared: both the subscriber's and the EventSource's OnFailureConfiguration point at it.</p>",
+      "max":1600,
+      "min":1,
+      "pattern":"arn:aws(-[a-z0-9]+)*:sqs:[a-z][a-z0-9]*(-[a-z0-9]+)*:[0-9]{12}:([A-Za-z0-9_-]{1,80}|[A-Za-z0-9_-]{1,75}\\.fifo)(?![\\s\\S]).*"
+    },
+    "DeduplicationConfiguration":{
+      "type":"structure",
+      "required":["DeduplicationType"],
+      "members":{
+        "DeduplicationType":{"shape":"DeduplicationType"}
+      },
+      "documentation":"<p>Deduplication settings for a publish request.</p>"
+    },
+    "DeduplicationType":{
+      "type":"string",
+      "documentation":"<p>How duplicate events are detected: by a hash of the event content (CONTENT_BASED). To deduplicate by a caller-supplied token instead, omit DeduplicationConfiguration and set DeduplicationId on each entry.</p>",
+      "enum":["CONTENT_BASED"]
+    },
+    "DeleteEventBusRequest":{
+      "type":"structure",
+      "required":["EventBusArn"],
+      "members":{
+        "EventBusArn":{
+          "shape":"EventBusArn",
+          "contextParam":{"name":"EventBusArn"}
+        }
+      }
+    },
+    "DeleteEventBusResponse":{
+      "type":"structure",
+      "members":{}
+    },
+    "DeleteEventSourceRequest":{
+      "type":"structure",
+      "required":["EventSourceArn"],
+      "members":{
+        "EventSourceArn":{"shape":"EventSourceArn"}
+      }
+    },
+    "DeleteEventSourceResponse":{
+      "type":"structure",
+      "members":{}
+    },
+    "DeleteResourcePolicyRequest":{
+      "type":"structure",
+      "required":["ResourceArn"],
+      "members":{
+        "ResourceArn":{
+          "shape":"EventBusArn",
+          "contextParam":{"name":"EventBusArn"}
+        },
+        "PolicyName":{
+          "shape":"PolicyName",
+          "documentation":"<p>Which named policy to delete. Defaults to &quot;default&quot; when omitted (a delete AWS Resource Access Manager makes on the owner's behalf resolves to &quot;AWS_RAM&quot; instead). The two writers are exclusive in both directions — only Resource Access Manager can delete &quot;AWS_RAM&quot;, and only the bus owner can delete &quot;default&quot; — so naming the other party's policy fails with AccessDeniedException. A well-formed name that is neither of the two fails with InvalidInputException.</p>"
+        },
+        "ExpectedRevisionId":{
+          "shape":"PolicyRevisionId",
+          "documentation":"<p>The delete succeeds only if the named policy's current revision ID matches this value; if it differs or the policy does not exist, the operation fails with ConflictException. The &quot;NO_POLICY&quot; sentinel is not valid here. When omitted, deleting an absent policy is an idempotent success. Supplying this value makes the delete non-idempotent: once it succeeds the expected revision no longer exists, so retrying an unanswered request fails with ConflictException even though the policy was deleted. To establish the outcome, read the policy back: ResourceNotFoundException means the delete took effect.</p>"
+        }
+      }
+    },
+    "DeleteResourcePolicyResponse":{
+      "type":"structure",
+      "members":{
+        "RevisionId":{
+          "shape":"PolicyRevisionId",
+          "documentation":"<p>Revision ID of the policy that was deleted. Absent when no policy was deleted.</p>"
+        }
+      }
+    },
+    "DeleteSubscriberRequest":{
+      "type":"structure",
+      "required":["SubscriberArn"],
+      "members":{
+        "SubscriberArn":{"shape":"SubscriberArn"}
+      }
+    },
+    "DeleteSubscriberResponse":{
+      "type":"structure",
+      "members":{}
+    },
+    "DescribeEventBusRequest":{
+      "type":"structure",
+      "required":["EventBusArn"],
+      "members":{
+        "EventBusArn":{
+          "shape":"EventBusArn",
+          "contextParam":{"name":"EventBusArn"}
+        }
+      }
+    },
+    "DescribeEventBusResponse":{
+      "type":"structure",
+      "members":{
+        "EventBusArn":{"shape":"EventBusArn"},
+        "Name":{"shape":"EventBusName"},
+        "Description":{"shape":"Description"},
+        "EncryptionConfiguration":{"shape":"EncryptionConfiguration"},
+        "StorageConfiguration":{"shape":"StorageConfigurationOutput"},
+        "CreationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time the event bus was created.</p>"
+        },
+        "LastModifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time the event bus was last modified.</p>"
+        },
+        "State":{"shape":"BusState"},
+        "StateReason":{"shape":"StateReason"}
+      }
+    },
+    "DescribeEventSourceRequest":{
+      "type":"structure",
+      "required":["EventSourceArn"],
+      "members":{
+        "EventSourceArn":{"shape":"EventSourceArn"}
+      }
+    },
+    "DescribeEventSourceResponse":{
+      "type":"structure",
+      "members":{
+        "EventSourceArn":{"shape":"EventSourceArn"},
+        "Name":{"shape":"EventSourceName"},
+        "EventBusArn":{"shape":"EventBusArn"},
+        "Configuration":{"shape":"EventSourceConfiguration"},
+        "Description":{"shape":"Description"},
+        "State":{"shape":"EventSourceState"},
+        "Revoked":{
+          "shape":"Boolean",
+          "documentation":"<p>True when the bus owner has withdrawn this EventSource. Present only when true, so an absent member means the EventSource is not revoked. Revocation is terminal: it never returns to false. Mutating operations on a revoked EventSource fail with InvalidStateException, except DeleteEventSource, which stays available so a revoked EventSource can still be cleaned up.</p>"
+        },
+        "CreationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time the EventSource was created.</p>"
+        },
+        "LastModifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time the EventSource was last modified.</p>"
+        }
+      }
+    },
+    "DescribeSubscriberRequest":{
+      "type":"structure",
+      "required":["SubscriberArn"],
+      "members":{
+        "SubscriberArn":{"shape":"SubscriberArn"}
+      }
+    },
+    "DescribeSubscriberResponse":{
+      "type":"structure",
+      "members":{
+        "SubscriberArn":{"shape":"SubscriberArn"},
+        "Name":{"shape":"SubscriberName"},
+        "EventBusArn":{"shape":"EventBusArn"},
+        "InvokeConfiguration":{"shape":"InvokeConfiguration"},
+        "Description":{"shape":"Description"},
+        "FilterConfiguration":{"shape":"FilterConfiguration"},
+        "Type":{"shape":"OrderingType"},
+        "StartingPosition":{"shape":"StartingPosition"},
+        "PointInTimeConfiguration":{"shape":"PointInTimeConfiguration"},
+        "BatchConfiguration":{"shape":"BatchConfiguration"},
+        "Transformer":{
+          "shape":"Transformer",
+          "documentation":"<p>Absent for universal (aws-sdk) targets, whose input transformation is UniversalTargetParameters.Input.</p>"
+        },
+        "RetryPolicy":{"shape":"RetryPolicy"},
+        "OnFailureConfiguration":{"shape":"OnFailureConfiguration"},
+        "LogConfiguration":{"shape":"LogConfiguration"},
+        "State":{"shape":"SubscriberState"},
+        "Revoked":{
+          "shape":"Boolean",
+          "documentation":"<p>True when the bus owner has revoked this subscriber. Present only when true, so an absent member means the subscriber is not revoked. Revocation is terminal: it never returns to false. Mutating operations on a revoked subscriber fail with InvalidStateException, except DeleteSubscriber, which stays available so a revoked subscriber can still be cleaned up.</p>"
+        },
+        "CreationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time the subscriber was created.</p>"
+        },
+        "LastModifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time the subscriber was last modified.</p>"
+        }
+      }
+    },
+    "Description":{
+      "type":"string",
+      "documentation":"<p>Free-text description. Used by every resource type that has one: event buses, subscribers, and event sources.</p>",
+      "max":512,
+      "min":0,
+      "pattern":"[^\\u0000-\\u001F\\u007F-\\u009F\\u2028\\u2029]*(?![\\s\\S]).*"
+    },
+    "DetailType":{
+      "type":"string",
+      "documentation":"<p>Free-form detail-type classifying an event within its source.</p>",
+      "max":128,
+      "min":1
+    },
+    "EncryptionConfiguration":{
+      "type":"structure",
+      "members":{
+        "KmsKeyIdentifier":{"shape":"KmsKeyIdentifier"}
+      },
+      "documentation":"<p>Encryption configuration for an event bus.</p>"
+    },
+    "ErrorCode":{
+      "type":"string",
+      "documentation":"<p>Error code identifying why a publish batch entry failed.</p>",
+      "max":256,
+      "min":1
+    },
+    "ErrorMessage":{
+      "type":"string",
+      "documentation":"<p>Human-readable explanation of why a publish batch entry failed.</p>",
+      "max":2048,
+      "min":1
+    },
+    "EventBusArn":{
+      "type":"string",
+      "documentation":"<p>The Amazon Resource Name (ARN) that uniquely identifies an event bus.</p>",
+      "max":1011,
+      "min":1,
+      "pattern":"arn:aws(-[a-z0-9]+)*:events:[a-z][a-z0-9]*(-[a-z0-9]+)*:([0-9]{12}):event-busv2\\/[A-Za-z0-9][\\.\\-_A-Za-z0-9]{0,255}\\/[a-z0-9]{25}"
+    },
+    "EventBusName":{
+      "type":"string",
+      "documentation":"<p>Name of an event bus. The first character must be alphanumeric; the remaining characters may also include '.', '-', and '_'. The grammar matches the name segment of EventBusArn (event-busv2/<name>/<id>), so every valid name can be represented in the bus's ARN. The same type is used everywhere a bus name appears.</p>",
+      "max":256,
+      "min":1,
+      "pattern":"[A-Za-z0-9][\\.\\-_A-Za-z0-9]*"
+    },
+    "EventBusSummary":{
+      "type":"structure",
+      "members":{
+        "Name":{"shape":"EventBusName"},
+        "EventBusArn":{"shape":"EventBusArn"},
+        "Description":{"shape":"Description"},
+        "CreationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time the event bus was created.</p>"
+        },
+        "LastModifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time the event bus was last modified.</p>"
+        },
+        "State":{"shape":"BusState"},
+        "StateReason":{"shape":"StateReason"},
+        "EventBusAccountId":{"shape":"AccountId"}
+      },
+      "documentation":"<p>Summary of an event bus, as returned by ListEventBuses.</p>"
+    },
+    "EventBusSummaryList":{
+      "type":"list",
+      "member":{"shape":"EventBusSummary"},
+      "documentation":"<p>List of event bus summaries.</p>"
+    },
+    "EventBusV2MetadataMap":{
+      "type":"map",
+      "key":{"shape":"String"},
+      "value":{"shape":"String"},
+      "documentation":"<p>Customer-defined metadata map for events forwarded to the downstream event bus. Keys and values are unconstrained strings so either side can contain a JSONata expression.</p>",
+      "max":100,
+      "min":0
+    },
+    "EventBusV2Parameters":{
+      "type":"structure",
+      "members":{
+        "Metadata":{
+          "shape":"EventBusV2MetadataMap",
+          "documentation":"<p>Customer-defined metadata forwarded with each event.</p>"
+        },
+        "SystemMetadata":{
+          "shape":"EventBusV2SystemMetadata",
+          "documentation":"<p>Customer-controllable system metadata attached to each forwarded event.</p>"
+        },
+        "DeduplicationConfiguration":{
+          "shape":"DeduplicationConfiguration",
+          "documentation":"<p>Deduplication settings applied to the forwarded events on the downstream bus.</p>"
+        }
+      },
+      "documentation":"<p>Parameters for forwarding events to another EventBridge event bus.</p>",
+      "sensitive":true
+    },
+    "EventBusV2SystemMetadata":{
+      "type":"structure",
+      "members":{
+        "EventGroupId":{
+          "shape":"String",
+          "documentation":"<p>Event group ID for FIFO ordering on the downstream bus. Accepts a literal or a JSONata expression.</p>"
+        },
+        "DeduplicationId":{
+          "shape":"String",
+          "documentation":"<p>Deduplication ID for FIFO deduplication on the downstream bus. Accepts a literal or a JSONata expression.</p>"
+        }
+      },
+      "documentation":"<p>Customer-controllable system metadata attached to events forwarded to the downstream event bus.</p>"
+    },
+    "EventData":{
+      "type":"blob",
+      "documentation":"<p>The event data of a raw publish entry, as a base64-encoded blob.</p>",
+      "sensitive":true
+    },
+    "EventDeduplicationId":{
+      "type":"string",
+      "documentation":"<p>Customer-supplied deduplication token for a published event. The token must contain at least one non-whitespace character. Values are treated literally, including text resembling a JSONata expression.</p>",
+      "max":128,
+      "min":1,
+      "pattern":"[\\s\\S]*[^\\u0009-\\u000D\\u001C-\\u0020\\u1680\\u2000-\\u2006\\u2008-\\u200A\\u2028\\u2029\\u205F\\u3000][\\s\\S]*"
+    },
+    "EventDetail":{
+      "type":"string",
+      "documentation":"<p>The event payload of a PutEvents entry, as a valid JSON string.</p>",
+      "sensitive":true
+    },
+    "EventGroupId":{
+      "type":"string",
+      "documentation":"<p>Event group ID for FIFO ordering.</p>",
+      "max":128,
+      "min":1
+    },
+    "EventId":{
+      "type":"string",
+      "documentation":"<p>Unique event ID assigned by the service.</p>",
+      "max":128,
+      "min":1
+    },
+    "EventMetadataKey":{
+      "type":"string",
+      "documentation":"<p>Customer-defined metadata field name. Must be 1-128 characters and must not contain &quot;/&quot;.</p>",
+      "max":128,
+      "min":1,
+      "pattern":"[^/]+"
+    },
+    "EventMetadataMap":{
+      "type":"map",
+      "key":{"shape":"EventMetadataKey"},
+      "value":{"shape":"EventMetadataValue"},
+      "documentation":"<p>Unstructured metadata map for customer-defined key-value pairs.</p>",
+      "max":100,
+      "min":0
+    },
+    "EventMetadataValue":{
+      "type":"string",
+      "documentation":"<p>Customer-defined metadata field value.</p>",
+      "min":1,
+      "sensitive":true
+    },
+    "EventPattern":{
+      "type":"string",
+      "documentation":"<p>An event pattern, as a JSON string, that selects which events match.</p>",
+      "max":4096,
+      "min":0,
+      "sensitive":true
+    },
+    "EventResource":{
+      "type":"string",
+      "max":2048,
+      "min":0
+    },
+    "EventSourceArn":{
+      "type":"string",
+      "documentation":"<p>EventSource ARN: event-sourcev2/<type>/<name>/<id>. The type segment is set by the service (aws.service for AWS service events, aws.partner for partner events) and is not part of the resource's name. The id segment is a 25-character identifier generated by the service.</p>",
+      "max":1011,
+      "min":1,
+      "pattern":"arn:aws(-[a-z0-9]+)*:events:[a-z][a-z0-9]*(-[a-z0-9]+)*:([0-9]{12}):event-sourcev2\\/(aws\\.service|aws\\.partner)\\/[A-Za-z0-9][\\.\\-_A-Za-z0-9]{0,255}\\/[a-z0-9]{25}"
+    },
+    "EventSourceConfiguration":{
+      "type":"structure",
+      "members":{
+        "AwsServiceEventsConfiguration":{"shape":"AwsServiceEventsSourceConfiguration"},
+        "PartnerEventsConfiguration":{"shape":"PartnerEventsSourceConfiguration"}
+      },
+      "documentation":"<p>Discriminated EventSource configuration. Exactly one variant must be set.</p>",
+      "union":true
+    },
+    "EventSourceName":{
+      "type":"string",
+      "documentation":"<p>EventSource name. First character alphanumeric; the rest may add '.', '-', '_'. Names may not begin with the reserved &quot;aws.&quot; prefix. The grammar matches the ARN local-name segment in EventSourceArn (event-sourcev2/<type>/<name>/<id>), mirroring EventBusName, so a name the ARN cannot represent cannot be created.</p>",
+      "max":256,
+      "min":1,
+      "pattern":"(?!aws\\.)[A-Za-z0-9][\\.\\-_A-Za-z0-9]*"
+    },
+    "EventSourceState":{
+      "type":"string",
+      "documentation":"<p>Lifecycle state of an EventSource. Revocation is reported by the Revoked flag.</p>",
+      "enum":[
+        "CREATING",
+        "ACTIVE",
+        "UPDATING",
+        "CREATE_FAILED",
+        "UPDATE_FAILED",
+        "DELETING",
+        "DELETE_FAILED"
+      ]
+    },
+    "EventSourceSummary":{
+      "type":"structure",
+      "members":{
+        "EventSourceArn":{"shape":"EventSourceArn"},
+        "Name":{"shape":"EventSourceName"},
+        "EventBusArn":{"shape":"EventBusArn"},
+        "Type":{"shape":"EventSourceType"},
+        "State":{"shape":"EventSourceState"},
+        "Revoked":{
+          "shape":"Boolean",
+          "documentation":"<p>True when the bus owner has withdrawn this EventSource. Present only when true, so a bus owner listing EventSources sees at a glance which ones they revoked. See DescribeEventSourceResponse$Revoked.</p>"
+        },
+        "CreationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time the EventSource was created.</p>"
+        },
+        "LastModifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time the EventSource was last modified.</p>"
+        },
+        "EventSourceAccountId":{"shape":"AccountId"}
+      },
+      "documentation":"<p>Summary of an EventSource, as returned by ListEventSources.</p>"
+    },
+    "EventSourceSummaryList":{
+      "type":"list",
+      "member":{"shape":"EventSourceSummary"},
+      "documentation":"<p>List of EventSource summaries.</p>"
+    },
+    "EventSourceType":{
+      "type":"string",
+      "documentation":"<p>Origin type of an EventSource: an AWS service's events (AWS_SERVICE_EVENTS) or a partner event source's events (PARTNER_EVENTS).</p>",
+      "enum":[
+        "AWS_SERVICE_EVENTS",
+        "PARTNER_EVENTS"
+      ]
+    },
+    "Filter":{
+      "type":"structure",
+      "required":[
+        "Pattern",
+        "Scope"
+      ],
+      "members":{
+        "Pattern":{"shape":"EventPattern"},
+        "Scope":{"shape":"FilterScope"}
+      },
+      "documentation":"<p>A single filter entry within a FilterConfiguration.</p>"
+    },
+    "FilterConfiguration":{
+      "type":"structure",
+      "members":{
+        "Language":{
+          "shape":"FilterLanguage",
+          "documentation":"<p>Defaults to EVENT_BRIDGE_PATTERN when not specified.</p>"
+        },
+        "Filters":{"shape":"FilterList"}
+      },
+      "documentation":"<p>Configuration for filtering events delivered to a subscriber. On CreateSubscriber, Filters is required and must contain at least one Filter with a non-empty Pattern. On UpdateSubscriber, an empty <code>FilterConfiguration:{}</code> clears the existing filter. Any non-empty shape (including <code>{Language:X}</code> without Filters) must contain a valid Filters list — same contract as CreateSubscriber. A non-empty Filters list overwrites; an omitted FilterConfiguration preserves existing state. All Filters are implicitly ANDed — an event must match every Filter to be delivered.</p>"
+    },
+    "FilterLanguage":{
+      "type":"string",
+      "documentation":"<p>Language used for filter pattern matching.</p>",
+      "enum":["EVENT_BRIDGE_PATTERN"]
+    },
+    "FilterList":{
+      "type":"list",
+      "member":{"shape":"Filter"},
+      "documentation":"<p>List of filters. An event must match every filter to be delivered.</p>",
+      "max":50,
+      "min":1
+    },
+    "FilterScope":{
+      "type":"string",
+      "documentation":"<p>Scope of a filter pattern within a FilterConfiguration.</p>",
+      "enum":[
+        "DATA",
+        "METADATA",
+        "SYSTEM_METADATA"
+      ]
+    },
+    "GetResourcePolicyRequest":{
+      "type":"structure",
+      "required":["ResourceArn"],
+      "members":{
+        "ResourceArn":{
+          "shape":"EventBusArn",
+          "contextParam":{"name":"EventBusArn"}
+        },
+        "PolicyName":{
+          "shape":"PolicyName",
+          "documentation":"<p>Which named policy to read. Defaults to &quot;default&quot; when omitted (a read AWS Resource Access Manager makes on the owner's behalf resolves to &quot;AWS_RAM&quot; instead). Unlike writing, neither name is reserved on a read: the bus owner can read both. There is no fallback between the two, so a bus shared only through Resource Access Manager fails with ResourceNotFoundException until &quot;AWS_RAM&quot; is named explicitly. A well-formed name that is neither of the two fails with InvalidInputException.</p>"
+        }
+      }
+    },
+    "GetResourcePolicyResponse":{
+      "type":"structure",
+      "required":[
+        "ResourceArn",
+        "PolicyDocument",
+        "PolicyName",
+        "RevisionId"
+      ],
+      "members":{
+        "ResourceArn":{"shape":"EventBusArn"},
+        "PolicyDocument":{"shape":"PolicyDocument"},
+        "PolicyName":{"shape":"PolicyName"},
+        "RevisionId":{"shape":"PolicyRevisionId"}
+      },
+      "documentation":"<p>Returned only when the named policy exists. A missing event bus or a missing named policy fails with ResourceNotFoundException rather than returning an empty or null policy document. Every member is therefore always present on a successful response.</p>"
+    },
+    "HeaderKey":{
+      "type":"string",
+      "max":512,
+      "min":0,
+      "pattern":"([!#$%&'*+\\-.^_`|~0-9a-zA-Z]+|\\{%[\\s\\S]+?%\\})"
+    },
+    "HeaderParametersMap":{
+      "type":"map",
+      "key":{"shape":"HeaderKey"},
+      "value":{"shape":"HeaderValue"},
+      "documentation":"<p>Map of HTTP header names to values, sent with the request to an HTTP target.</p>",
+      "max":50,
+      "min":0
+    },
+    "HeaderValue":{
+      "type":"string",
+      "max":2048,
+      "min":0,
+      "pattern":"([ \\t]*[\\x20-\\x7E]+([ \\t]+[\\x20-\\x7E]+)*[ \\t]*|\\{%[\\s\\S]+?%\\})"
+    },
+    "HttpParameters":{
+      "type":"structure",
+      "members":{
+        "PathParameterValues":{"shape":"PathParameterList"},
+        "HeaderParameters":{"shape":"HeaderParametersMap"},
+        "QueryStringParameters":{"shape":"QueryStringParametersMap"},
+        "InvocationTimeoutSeconds":{
+          "shape":"String",
+          "documentation":"<p>Timeout in seconds for each invocation of the target (1-30). String-typed (not integer) so the value may be a JSONata expression.</p>"
+        }
+      },
+      "documentation":"<p>HTTP invocation parameters for subscribers (API Gateway / API Destination). Values are forwarded to the HTTP endpoint.</p>",
+      "sensitive":true
+    },
+    "IdempotentParameterMismatchException":{
+      "type":"structure",
+      "members":{
+        "Message":{"shape":"String"}
+      },
+      "documentation":"<p>The request reuses the client token of an earlier request with different parameters. Use a new client token, or resend the earlier request unchanged.</p>",
+      "error":{
+        "httpStatusCode":409,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "IncludePayload":{
+      "type":"string",
+      "enum":[
+        "FULL",
+        "ON_ERROR_ONLY"
+      ]
+    },
+    "Integer":{"type":"integer"},
+    "InternalException":{
+      "type":"structure",
+      "members":{
+        "Message":{"shape":"String"}
+      },
+      "documentation":"<p>The request failed because of an internal service error. Retry the request.</p>",
+      "error":{"httpStatusCode":500},
+      "exception":true,
+      "fault":true,
+      "retryable":{"throttling":false}
+    },
+    "InvalidInputException":{
+      "type":"structure",
+      "members":{
+        "Message":{"shape":"String"}
+      },
+      "documentation":"<p>A request parameter is missing or not valid.</p>",
+      "error":{
+        "httpStatusCode":400,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "InvalidStateException":{
+      "type":"structure",
+      "members":{
+        "Message":{"shape":"String"}
+      },
+      "documentation":"<p>The resource is not in a state that allows the operation. For example, an event bus that is still being created cannot accept events.</p>",
+      "error":{
+        "httpStatusCode":409,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "InvocationType":{
+      "type":"string",
+      "documentation":"<p>How a compute target is invoked: EVENT invokes asynchronously and returns once the target has accepted the request; REQUEST_RESPONSE waits for the target to finish and surfaces its result.</p>",
+      "enum":[
+        "EVENT",
+        "REQUEST_RESPONSE"
+      ]
+    },
+    "InvokeConfiguration":{
+      "type":"structure",
+      "required":[
+        "RoleArn",
+        "TargetArn"
+      ],
+      "members":{
+        "RoleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>IAM role the service assumes to invoke the target. Must belong to the calling account.</p>"
+        },
+        "LambdaParameters":{"shape":"LambdaParameters"},
+        "SqsParameters":{"shape":"SqsParameters"},
+        "SnsParameters":{"shape":"SnsParameters"},
+        "KinesisParameters":{"shape":"KinesisParameters"},
+        "StepFunctionsParameters":{"shape":"StepFunctionsParameters"},
+        "HttpParameters":{"shape":"HttpParameters"},
+        "UniversalTargetParameters":{"shape":"UniversalTargetParameters"},
+        "EventBusV2Parameters":{"shape":"EventBusV2Parameters"},
+        "TargetArn":{"shape":"TargetResourceArn"}
+      },
+      "documentation":"<p>Configuration for how the subscriber invokes its target.</p>"
+    },
+    "JsonataConfiguration":{
+      "type":"structure",
+      "required":["Expression"],
+      "members":{
+        "Expression":{
+          "shape":"JsonataConfigurationExpressionString",
+          "documentation":"<p>JSONata expression to transform the event. Must be wrapped in {% %} delimiters.</p>"
+        }
+      },
+      "documentation":"<p>JSONata transform settings for a subscriber.</p>",
+      "sensitive":true
+    },
+    "JsonataConfigurationExpressionString":{
+      "type":"string",
+      "max":8192,
+      "min":1,
+      "pattern":"\\{%[\\s\\S]+?%\\}(?![\\s\\S]).*"
+    },
+    "KinesisParameters":{
+      "type":"structure",
+      "members":{
+        "PartitionKey":{
+          "shape":"KinesisParametersPartitionKeyString",
+          "documentation":"<p>Required by PutRecords even when an explicit hash key is supplied. Accepts JSONata expression.</p>"
+        },
+        "ExplicitHashKey":{
+          "shape":"KinesisParametersExplicitHashKeyString",
+          "documentation":"<p>Explicit hash key forwarded to PutRecords unchanged. Accepts JSONata expression.</p>"
+        }
+      },
+      "documentation":"<p>Kinesis Data Streams invocation parameters for subscribers. Values are forwarded to the Kinesis PutRecords API. All scalar values accept a literal or a JSONata expression (e.g. &quot;{% $events.Data.partitionKey %}&quot;).</p>",
+      "sensitive":true
+    },
+    "KinesisParametersExplicitHashKeyString":{
+      "type":"string",
+      "max":8192,
+      "min":0
+    },
+    "KinesisParametersPartitionKeyString":{
+      "type":"string",
+      "max":8192,
+      "min":0
+    },
+    "KmsKeyIdentifier":{
+      "type":"string",
+      "documentation":"<p>Identifier of the AWS KMS customer managed key used to encrypt events: a key ID, key ARN, alias name, or alias ARN. When absent, events are encrypted with an AWS owned key.</p>",
+      "max":2048,
+      "min":0,
+      "pattern":"[a-zA-Z0-9_\\-/:]*"
+    },
+    "LambdaParameters":{
+      "type":"structure",
+      "members":{
+        "InvocationType":{
+          "shape":"InvocationType",
+          "documentation":"<p>Lambda invocation type. EVENT invokes the function asynchronously; REQUEST_RESPONSE waits for its result.</p>"
+        },
+        "Qualifier":{
+          "shape":"LambdaParametersQualifierString",
+          "documentation":"<p>Lambda qualifier: $LATEST, $LATEST.PUBLISHED, a numeric version, or an alias. Accepts a JSONata expression.</p>"
+        },
+        "DurableExecutionName":{
+          "shape":"LambdaParametersDurableExecutionNameString",
+          "documentation":"<p>Durable execution name. Accepts a JSONata expression.</p>"
+        },
+        "TenantId":{
+          "shape":"LambdaParametersTenantIdString",
+          "documentation":"<p>Tenant identifier. Accepts a JSONata expression.</p>"
+        },
+        "InvocationTimeoutSeconds":{
+          "shape":"LambdaParametersInvocationTimeoutSecondsString",
+          "documentation":"<p>Timeout in seconds for each invocation of the target. String-typed so the value may be a JSONata expression.</p>"
+        }
+      },
+      "documentation":"<p>Lambda invocation parameters for subscribers. Values are forwarded to the Lambda Invoke API. Every string member accepts a literal or a JSONata expression (e.g. &quot;{% $events.Data.qualifier %}&quot;).</p>",
+      "sensitive":true
+    },
+    "LambdaParametersDurableExecutionNameString":{
+      "type":"string",
+      "max":8192,
+      "min":0
+    },
+    "LambdaParametersInvocationTimeoutSecondsString":{
+      "type":"string",
+      "max":8192,
+      "min":0
+    },
+    "LambdaParametersQualifierString":{
+      "type":"string",
+      "max":8192,
+      "min":0
+    },
+    "LambdaParametersTenantIdString":{
+      "type":"string",
+      "max":8192,
+      "min":0
+    },
+    "LimitExceededException":{
+      "type":"structure",
+      "members":{
+        "Message":{"shape":"String"}
+      },
+      "documentation":"<p>The request would exceed a service quota for the account.</p>",
+      "error":{
+        "httpStatusCode":400,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "ListEventBusesRequest":{
+      "type":"structure",
+      "members":{
+        "NamePrefix":{"shape":"EventBusName"},
+        "EventBusAccountId":{"shape":"AccountId"},
+        "NextToken":{"shape":"NextToken"},
+        "MaxResults":{"shape":"MaxResults"}
+      }
+    },
+    "ListEventBusesResponse":{
+      "type":"structure",
+      "members":{
+        "EventBuses":{"shape":"EventBusSummaryList"},
+        "NextToken":{"shape":"NextToken"}
+      }
+    },
+    "ListEventSourcesRequest":{
+      "type":"structure",
+      "members":{
+        "EventBusArn":{
+          "shape":"EventBusArn",
+          "contextParam":{"name":"EventBusArn"}
+        },
+        "NamePrefix":{"shape":"EventSourceName"},
+        "NextToken":{"shape":"NextToken"},
+        "MaxResults":{"shape":"MaxResults"}
+      }
+    },
+    "ListEventSourcesResponse":{
+      "type":"structure",
+      "members":{
+        "EventSources":{"shape":"EventSourceSummaryList"},
+        "NextToken":{"shape":"NextToken"}
+      }
+    },
+    "ListResourcePoliciesRequest":{
+      "type":"structure",
+      "required":["ResourceArn"],
+      "members":{
+        "ResourceArn":{
+          "shape":"EventBusArn",
+          "contextParam":{"name":"EventBusArn"}
+        },
+        "NextToken":{"shape":"NextToken"},
+        "MaxResults":{"shape":"MaxResults"}
+      }
+    },
+    "ListResourcePoliciesResponse":{
+      "type":"structure",
+      "members":{
+        "PolicySummaries":{"shape":"ResourcePolicySummaryList"},
+        "NextToken":{"shape":"NextToken"}
+      },
+      "documentation":"<p>Summaries only (policy name and revision ID). Use GetResourcePolicy to retrieve a policy document.</p>"
+    },
+    "ListSubscribersRequest":{
+      "type":"structure",
+      "members":{
+        "EventBusArn":{
+          "shape":"EventBusArn",
+          "contextParam":{"name":"EventBusArn"}
+        },
+        "NamePrefix":{"shape":"SubscriberName"},
+        "NextToken":{"shape":"NextToken"},
+        "MaxResults":{"shape":"MaxResults"}
+      }
+    },
+    "ListSubscribersResponse":{
+      "type":"structure",
+      "members":{
+        "Subscribers":{"shape":"SubscriberSummaryList"},
+        "NextToken":{"shape":"NextToken"}
+      }
+    },
+    "ListTagsForResourceRequest":{
+      "type":"structure",
+      "required":["ResourceArn"],
+      "members":{
+        "ResourceArn":{"shape":"TaggableResourceArn"}
+      }
+    },
+    "ListTagsForResourceResponse":{
+      "type":"structure",
+      "members":{
+        "Tags":{"shape":"TagMap"}
+      }
+    },
+    "LogConfiguration":{
+      "type":"structure",
+      "members":{
+        "Level":{
+          "shape":"LogLevel",
+          "documentation":"<p>Minimum log level. Records below this level are not emitted. Defaults to OFF.</p>"
+        },
+        "IncludePayload":{
+          "shape":"IncludePayload",
+          "documentation":"<p>Whether the customer event payload is embedded in log records. Defaults to ON_ERROR_ONLY.</p>"
+        }
+      },
+      "documentation":"<p>Log configuration for a subscriber.</p>"
+    },
+    "LogLevel":{
+      "type":"string",
+      "enum":[
+        "OFF",
+        "ERROR",
+        "INFO"
+      ]
+    },
+    "MaxResults":{
+      "type":"integer",
+      "documentation":"<p>Maximum number of results to return in one page of a List operation.</p>",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "MessageAttributeName":{
+      "type":"string",
+      "documentation":"<p>Message attribute name. The ceiling is wide enough to hold a JSONata expression, because a name may be a literal or an expression resolved once per delivered event.</p>",
+      "max":8192,
+      "min":0
+    },
+    "NextToken":{
+      "type":"string",
+      "documentation":"<p>Opaque pagination token returned by a List operation. Pass it back in the next request to retrieve the next page of results.</p>",
+      "max":4096,
+      "min":1
+    },
+    "OnFailureConfiguration":{
+      "type":"structure",
+      "members":{
+        "Arn":{
+          "shape":"DeadLetterQueueArn",
+          "documentation":"<p>The ARN of the destination that receives events that could not be delivered. An Amazon SQS queue is the supported destination.</p>"
+        }
+      },
+      "documentation":"<p>On-failure configuration: where a failed delivery is sent. Shared by the subscriber and the EventSource.</p>"
+    },
+    "OrderingType":{
+      "type":"string",
+      "documentation":"<p>Delivery ordering mode of a subscriber: FIFO delivers events in order within an event group; UNORDERED delivers without an ordering guarantee.</p>",
+      "enum":[
+        "FIFO",
+        "UNORDERED"
+      ]
+    },
+    "PartnerEventSourceArn":{
+      "type":"string",
+      "documentation":"<p>ARN of the partner event source to forward. It is a partner-owned resource, so the account segment is empty: arn:aws:events:<region>::event-source/aws.partner/<name>.</p>",
+      "max":1600,
+      "min":1,
+      "pattern":"arn:aws(-[a-z0-9]+)*:events:[a-z][a-z0-9]*(-[a-z0-9]+)*:([0-9]{12})?:event-source\\/aws\\.partner(\\/[\\.\\-_A-Za-z0-9]+){2,}"
+    },
+    "PartnerEventsSourceConfiguration":{
+      "type":"structure",
+      "required":["PartnerEventSourceArn"],
+      "members":{
+        "PartnerEventSourceArn":{"shape":"PartnerEventSourceArn"},
+        "Pattern":{
+          "shape":"PartnerEventsSourceConfigurationPatternString",
+          "documentation":"<p>A filter pattern, as a JSON string, that defines which of the partner event source's events are forwarded to the event bus. If no pattern is specified, all events from the partner event source are forwarded.</p>"
+        },
+        "PartnerBusKmsKeyIdentifier":{"shape":"KmsKeyIdentifier"},
+        "OnFailureConfiguration":{
+          "shape":"OnFailureConfiguration",
+          "documentation":"<p>The destination for events that could not be forwarded, covering both the forwarding target and the managed partner event bus.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for forwarding a partner event source's events through a managed partner event bus.</p>"
+    },
+    "PartnerEventsSourceConfigurationPatternString":{
+      "type":"string",
+      "documentation":"<p>An event pattern, as a JSON string, that selects which events match.</p>",
+      "max":3753,
+      "min":0,
+      "sensitive":true
+    },
+    "PathParameter":{
+      "type":"string",
+      "pattern":"(?!\\s*$).+"
+    },
+    "PathParameterList":{
+      "type":"list",
+      "member":{"shape":"PathParameter"},
+      "documentation":"<p>Values substituted, in order, for the path-parameter placeholders in an HTTP target's endpoint path.</p>",
+      "max":50,
+      "min":0
+    },
+    "PointInTimeConfiguration":{
+      "type":"structure",
+      "required":["PointType"],
+      "members":{
+        "PointType":{
+          "shape":"PointType",
+          "documentation":"<p>Whether to start from the horizon or a specific timestamp.</p>"
+        },
+        "StartingPoint":{
+          "shape":"Timestamp",
+          "documentation":"<p>Timestamp to start from. Required when PointType is TIMESTAMP.</p>"
+        },
+        "EndPoint":{
+          "shape":"Timestamp",
+          "documentation":"<p>Timestamp to stop at. Optional.</p>"
+        }
+      },
+      "documentation":"<p>Point-in-time configuration for a subscriber. Only applicable when StartingPosition is POINT_IN_TIME.</p>"
+    },
+    "PointType":{
+      "type":"string",
+      "enum":[
+        "HORIZON",
+        "TIMESTAMP"
+      ]
+    },
+    "PolicyDocument":{
+      "type":"string",
+      "documentation":"<p>A resource policy document, as a JSON string. The &quot;default&quot; policy can be up to 20 KB (20,480 bytes of UTF-8) by default. This quota is adjustable in Service Quotas. A &quot;default&quot; policy that exceeds the quota is rejected with PolicyLengthExceededException. No policy document can exceed 389,120 bytes of UTF-8, regardless of the quota.</p>",
+      "max":389120,
+      "min":1
+    },
+    "PolicyLengthExceededException":{
+      "type":"structure",
+      "members":{
+        "Message":{"shape":"String"}
+      },
+      "documentation":"<p>The policy document is larger than the account's resource policy size quota, or larger than the service maximum.</p>",
+      "error":{
+        "httpStatusCode":400,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "PolicyName":{
+      "type":"string",
+      "documentation":"<p>Name of a policy attached to a resource. Valid values: &quot;default&quot; (the customer-managed policy) and &quot;AWS_RAM&quot; (managed exclusively by AWS Resource Access Manager). Any other value is rejected.</p>",
+      "max":128,
+      "min":1,
+      "pattern":"[A-Za-z0-9_]+"
+    },
+    "PolicyRevisionId":{
+      "type":"string",
+      "documentation":"<p>Revision ID of a resource policy. A new revision ID is generated on every successful write.</p>",
+      "max":256,
+      "min":1
+    },
+    "PublicPolicyException":{
+      "type":"structure",
+      "members":{
+        "Message":{"shape":"String"}
+      },
+      "documentation":"<p>The policy was rejected because it would grant public access to the event bus. A statement grants public access when its principal is a wildcard and no condition limits the callers to specific AWS accounts or principals. To fix it, replace the wildcard principal with specific principals, or add a condition that limits the callers to specific AWS accounts. Conditions on event content (events:source, events:detail-type, events:Metadata/*) do not identify the caller and do not make a wildcard principal non-public. Returned only for the &quot;default&quot; policy; the &quot;AWS_RAM&quot; policy is composed by AWS Resource Access Manager and never grants public access.</p>",
+      "error":{
+        "httpStatusCode":400,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "PutEventsRequest":{
+      "type":"structure",
+      "required":[
+        "EventBusArn",
+        "Entries"
+      ],
+      "members":{
+        "EventBusArn":{
+          "shape":"EventBusArn",
+          "contextParam":{"name":"EventBusArn"}
+        },
+        "Entries":{"shape":"PutEventsRequestEntryList"},
+        "DeduplicationConfiguration":{
+          "shape":"DeduplicationConfiguration",
+          "documentation":"<p>Request-level deduplication settings, applied to every entry in the batch.</p>"
+        }
+      }
+    },
+    "PutEventsRequestEntry":{
+      "type":"structure",
+      "required":[
+        "Source",
+        "DetailType"
+      ],
+      "members":{
+        "Source":{
+          "shape":"Source",
+          "documentation":"<p>The source of the event. The <code>aws.</code> value prefix is service-reserved and cannot be used as a value.</p>"
+        },
+        "DetailType":{"shape":"DetailType"},
+        "Detail":{
+          "shape":"EventDetail",
+          "documentation":"<p>The event payload, as a valid JSON string.</p>"
+        },
+        "Resources":{
+          "shape":"PutEventsResourceList",
+          "documentation":"<p>ARNs of resources the event concerns. Included in the event delivered to subscribers.</p>"
+        },
+        "Time":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time the event occurred. Defaults to the time the service receives the event when omitted.</p>"
+        },
+        "SystemMetadata":{"shape":"PutEventsSystemMetadata"}
+      },
+      "documentation":"<p>A single event entry in a PutEvents request.</p>"
+    },
+    "PutEventsRequestEntryList":{
+      "type":"list",
+      "member":{"shape":"PutEventsRequestEntry"},
+      "documentation":"<p>List of event entries to publish. Must contain at least one entry.</p>",
+      "max":100,
+      "min":1
+    },
+    "PutEventsResourceList":{
+      "type":"list",
+      "member":{"shape":"EventResource"},
+      "max":100,
+      "min":0
+    },
+    "PutEventsResponse":{
+      "type":"structure",
+      "members":{
+        "FailedEntryCount":{
+          "shape":"Integer",
+          "documentation":"<p>The number of entries in the batch that failed to be published.</p>"
+        },
+        "Entries":{"shape":"PutEventsResultEntryList"}
+      }
+    },
+    "PutEventsResultEntry":{
+      "type":"structure",
+      "members":{
+        "EventId":{"shape":"EventId"},
+        "SequenceNumber":{"shape":"SequenceNumber"},
+        "SuccessCode":{"shape":"SuccessCode"},
+        "ErrorCode":{"shape":"ErrorCode"},
+        "ErrorMessage":{"shape":"ErrorMessage"}
+      },
+      "documentation":"<p>Result entry for a published event. The position of each entry in the response list aligns 1:1 with the corresponding request entry.</p>"
+    },
+    "PutEventsResultEntryList":{
+      "type":"list",
+      "member":{"shape":"PutEventsResultEntry"},
+      "documentation":"<p>List of per-entry publish results, in the same order as the request entries.</p>"
+    },
+    "PutEventsSystemMetadata":{
+      "type":"structure",
+      "members":{
+        "EventGroupId":{
+          "shape":"EventGroupId",
+          "documentation":"<p>Event group ID for FIFO ordering.</p>"
+        },
+        "DeduplicationId":{
+          "shape":"EventDeduplicationId",
+          "documentation":"<p>Deduplication ID for FIFO deduplication.</p>"
+        }
+      },
+      "documentation":"<p>System metadata for PutEvents entries. ContentType is not applicable (always application/eventbridge+json, set server-side).</p>"
+    },
+    "PutRawEventsRequest":{
+      "type":"structure",
+      "required":[
+        "EventBusArn",
+        "Entries"
+      ],
+      "members":{
+        "EventBusArn":{
+          "shape":"EventBusArn",
+          "contextParam":{"name":"EventBusArn"}
+        },
+        "Entries":{"shape":"PutRawEventsRequestEntryList"},
+        "SchemaRegistryConfiguration":{
+          "shape":"SchemaRegistryConfiguration",
+          "documentation":"<p>Schema-registry settings for encoding open-format (Avro/Protobuf) events. Required for open-format entries; ignored for JSON entries. The registry is read with the caller's credentials, so the caller needs read access to the registry it references.</p>"
+        },
+        "DeduplicationConfiguration":{
+          "shape":"DeduplicationConfiguration",
+          "documentation":"<p>Request-level deduplication settings, applied to every entry in the batch.</p>"
+        }
+      }
+    },
+    "PutRawEventsRequestEntry":{
+      "type":"structure",
+      "required":[
+        "Data",
+        "SystemMetadata"
+      ],
+      "members":{
+        "Data":{
+          "shape":"EventData",
+          "documentation":"<p>The event data as a base64-encoded blob. Supports binary formats.</p>"
+        },
+        "Metadata":{
+          "shape":"EventMetadataMap",
+          "documentation":"<p>Metadata key-value pairs you define. Keys must be 1-128 characters and must not contain &quot;/&quot;.</p>"
+        },
+        "SystemMetadata":{
+          "shape":"PutRawEventsSystemMetadata",
+          "documentation":"<p>Structured system metadata with defined properties.</p>"
+        }
+      },
+      "documentation":"<p>A single event entry in a raw publish request.</p>"
+    },
+    "PutRawEventsRequestEntryList":{
+      "type":"list",
+      "member":{"shape":"PutRawEventsRequestEntry"},
+      "documentation":"<p>List of event entries to publish. Must contain at least one entry.</p>",
+      "max":100,
+      "min":1
+    },
+    "PutRawEventsResponse":{
+      "type":"structure",
+      "members":{
+        "FailedEntryCount":{
+          "shape":"Integer",
+          "documentation":"<p>The number of entries in the batch that failed to be published.</p>"
+        },
+        "Entries":{"shape":"PutRawEventsResultEntryList"}
+      }
+    },
+    "PutRawEventsResultEntry":{
+      "type":"structure",
+      "members":{
+        "EventId":{
+          "shape":"EventId",
+          "documentation":"<p>Unique event ID assigned by the service. Present on successful entries.</p>"
+        },
+        "SequenceNumber":{
+          "shape":"SequenceNumber",
+          "documentation":"<p>Sequence number for ordering within the event group.</p>"
+        },
+        "SuccessCode":{
+          "shape":"SuccessCode",
+          "documentation":"<p>Indicates how the entry was processed. Present only on successful entries.</p>"
+        },
+        "ErrorCode":{
+          "shape":"ErrorCode",
+          "documentation":"<p>Error code if the entry failed.</p>"
+        },
+        "ErrorMessage":{
+          "shape":"ErrorMessage",
+          "documentation":"<p>Error message if the entry failed.</p>"
+        }
+      },
+      "documentation":"<p>Result entry for a published event. The position of each entry in the response list aligns 1:1 with the corresponding request entry, enabling co-location by index.</p>"
+    },
+    "PutRawEventsResultEntryList":{
+      "type":"list",
+      "member":{"shape":"PutRawEventsResultEntry"},
+      "documentation":"<p>List of per-entry publish results, in the same order as the request entries.</p>"
+    },
+    "PutRawEventsSystemMetadata":{
+      "type":"structure",
+      "required":["ContentType"],
+      "members":{
+        "ContentType":{
+          "shape":"ContentType",
+          "documentation":"<p>Content type of the event data (e.g., &quot;application/cloudevents+json&quot;).</p>"
+        },
+        "DeduplicationId":{
+          "shape":"EventDeduplicationId",
+          "documentation":"<p>Deduplication ID for FIFO deduplication.</p>"
+        },
+        "EventGroupId":{
+          "shape":"EventGroupId",
+          "documentation":"<p>Event group ID for FIFO ordering.</p>"
+        }
+      },
+      "documentation":"<p>System metadata for PutRawEvents entries. ContentType is required because PutRawEvents supports arbitrary binary formats.</p>"
+    },
+    "PutResourcePolicyRequest":{
+      "type":"structure",
+      "required":[
+        "ResourceArn",
+        "PolicyDocument"
+      ],
+      "members":{
+        "ResourceArn":{
+          "shape":"EventBusArn",
+          "contextParam":{"name":"EventBusArn"}
+        },
+        "PolicyDocument":{"shape":"PolicyDocument"},
+        "PolicyName":{
+          "shape":"PolicyName",
+          "documentation":"<p>Which named policy to write. Defaults to &quot;default&quot;, the customer-managed policy, when omitted (a write AWS Resource Access Manager makes on the owner's behalf resolves to &quot;AWS_RAM&quot; instead). The two writers are exclusive in both directions — only Resource Access Manager can write &quot;AWS_RAM&quot;, and only the bus owner can write &quot;default&quot; — so naming the other party's policy fails with AccessDeniedException. A well-formed name that is neither of the two fails with InvalidInputException.</p>"
+        },
+        "ExpectedRevisionId":{
+          "shape":"PolicyRevisionId",
+          "documentation":"<p>The write succeeds only if the named policy's current revision ID matches this value; a policy that does not exist yet matches only the sentinel &quot;NO_POLICY&quot; (create-only). On mismatch the operation fails with ConflictException. When omitted, the write is unconditional. Every attempt stores a newly generated revision ID, so retrying an unanswered request can conflict with the caller's own earlier attempt; read the policy back and compare it with the one you intended before treating a conflict as another writer's change.</p>"
+        }
+      }
+    },
+    "PutResourcePolicyResponse":{
+      "type":"structure",
+      "required":[
+        "ResourceArn",
+        "PolicyName"
+      ],
+      "members":{
+        "ResourceArn":{"shape":"EventBusArn"},
+        "PolicyName":{"shape":"PolicyName"},
+        "RevisionId":{
+          "shape":"PolicyRevisionId",
+          "documentation":"<p>Absent when the write removed the policy; a removal produces no new revision.</p>"
+        }
+      }
+    },
+    "QueryStringKey":{
+      "type":"string",
+      "max":512,
+      "min":0,
+      "pattern":"[^\\x00-\\x1F\\x7F]+"
+    },
+    "QueryStringParametersMap":{
+      "type":"map",
+      "key":{"shape":"QueryStringKey"},
+      "value":{"shape":"QueryStringValue"},
+      "documentation":"<p>Map of query-string parameter names to values, appended to the request to an HTTP target.</p>",
+      "max":50,
+      "min":0
+    },
+    "QueryStringValue":{
+      "type":"string",
+      "max":512,
+      "min":0,
+      "pattern":"[^\\x00-\\x09\\x0B\\x0C\\x0E-\\x1F\\x7F]+"
+    },
+    "ResourceAlreadyExistsException":{
+      "type":"structure",
+      "members":{
+        "Message":{"shape":"String"}
+      },
+      "documentation":"<p>A resource with the same name already exists.</p>",
+      "error":{
+        "httpStatusCode":409,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "ResourceInUseException":{
+      "type":"structure",
+      "members":{
+        "Message":{"shape":"String"}
+      },
+      "documentation":"<p>The resource is in use and cannot be deleted. For example, an event bus with subscribers or event sources cannot be deleted until they are deleted.</p>",
+      "error":{
+        "httpStatusCode":409,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "ResourceNotFoundException":{
+      "type":"structure",
+      "members":{
+        "Message":{"shape":"String"}
+      },
+      "documentation":"<p>The resource does not exist.</p>",
+      "error":{
+        "httpStatusCode":404,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "ResourcePolicySummary":{
+      "type":"structure",
+      "required":[
+        "PolicyName",
+        "RevisionId"
+      ],
+      "members":{
+        "PolicyName":{"shape":"PolicyName"},
+        "RevisionId":{"shape":"PolicyRevisionId"}
+      },
+      "documentation":"<p>Summary of a policy attached to a resource: its name and revision ID.</p>"
+    },
+    "ResourcePolicySummaryList":{
+      "type":"list",
+      "member":{"shape":"ResourcePolicySummary"},
+      "documentation":"<p>List of resource policy summaries.</p>"
+    },
+    "ResumePosition":{
+      "type":"string",
+      "documentation":"<p>Position from which delivery resumes when a subscriber is unpaused. Honored only on an UpdateSubscriber call that transitions State from STOPPED to RUNNING (unpause); ignored on any other call and not accepted on Create. Defaults to LAST_PROCESSED when omitted.</p>",
+      "enum":[
+        "LAST_PROCESSED",
+        "LATEST"
+      ]
+    },
+    "RetentionPeriodInDays":{
+      "type":"integer",
+      "documentation":"<p>Number of days events are retained on the event bus.</p>",
+      "box":true,
+      "max":365,
+      "min":1
+    },
+    "RetryPolicy":{
+      "type":"structure",
+      "members":{
+        "MaxRetryAttempts":{
+          "shape":"RetryPolicyMaxRetryAttemptsInteger",
+          "documentation":"<p>Maximum number of retry attempts (0-185, default: 5).</p>"
+        },
+        "MaxEventAgeInSeconds":{
+          "shape":"RetryPolicyMaxEventAgeInSecondsInteger",
+          "documentation":"<p>Maximum age of an event in seconds before it is discarded (60-86400, default: 300).</p>"
+        },
+        "RetryStrategy":{
+          "shape":"RetryStrategy",
+          "documentation":"<p>Strategy for determining which exceptions are retried. Default: ALL.</p>"
+        }
+      },
+      "documentation":"<p>Retry policy for a subscriber.</p>"
+    },
+    "RetryPolicyMaxEventAgeInSecondsInteger":{
+      "type":"integer",
+      "documentation":"<p>Nullable integer — no default, absence means &quot;not set&quot;.</p>",
+      "box":true,
+      "max":86400,
+      "min":60
+    },
+    "RetryPolicyMaxRetryAttemptsInteger":{
+      "type":"integer",
+      "documentation":"<p>Nullable integer — no default, absence means &quot;not set&quot;.</p>",
+      "box":true,
+      "max":185,
+      "min":0
+    },
+    "RetryStrategy":{
+      "type":"string",
+      "documentation":"<p>Retry strategy — determines which exceptions are retried.</p>",
+      "enum":["ALL"]
+    },
+    "RevocableResourceArn":{
+      "type":"string",
+      "documentation":"<p>ARN of a resource a bus owner can revoke: a subscriber or an EventSource. The pattern is the revocable subset of TaggableResourceArn; buses are not revocable.</p>",
+      "max":1011,
+      "min":1,
+      "pattern":"arn:aws(-[a-z0-9]+)*:events:[a-z][a-z0-9]*(-[a-z0-9]+)*:([0-9]{12}):(subscriber|event-sourcev2\\/(aws\\.service|aws\\.partner))\\/[A-Za-z0-9][\\.\\-_A-Za-z0-9]{0,255}\\/[a-z0-9]{25}"
+    },
+    "RevokeResourceRequest":{
+      "type":"structure",
+      "required":["Arn"],
+      "members":{
+        "Arn":{"shape":"RevocableResourceArn"}
+      }
+    },
+    "RevokeResourceResponse":{
+      "type":"structure",
+      "members":{
+        "Arn":{"shape":"RevocableResourceArn"}
+      }
+    },
+    "RoleArn":{
+      "type":"string",
+      "max":1600,
+      "min":1,
+      "pattern":"arn:aws(-[a-z0-9]+)*:iam::\\d{12}:role\\/[\\w+=,.@/-]+"
+    },
+    "SchemaRegistryConfiguration":{
+      "type":"structure",
+      "required":["RegistryUri"],
+      "members":{
+        "RegistryUri":{
+          "shape":"SchemaRegistryUri",
+          "documentation":"<p>Glue Schema Registry ARN, or Confluent Cloud HTTPS URL.</p>"
+        },
+        "ConfluentPublicRegistryConfiguration":{
+          "shape":"ConfluentPublicRegistryConfiguration",
+          "documentation":"<p>Required when RegistryUri is an HTTPS URL. Provides Connection-based auth for Confluent Cloud.</p>"
+        }
+      },
+      "documentation":"<p>Schema registry settings used to encode open-format (Avro/Protobuf) events.</p>"
+    },
+    "SchemaRegistryUnavailableException":{
+      "type":"structure",
+      "members":{
+        "Message":{"shape":"String"}
+      },
+      "documentation":"<p>The configured schema registry could not be reached. Retry the request.</p>",
+      "error":{
+        "httpStatusCode":400,
+        "senderFault":true
+      },
+      "exception":true,
+      "retryable":{"throttling":false}
+    },
+    "SchemaRegistryUri":{
+      "type":"string",
+      "documentation":"<p>Schema registry identifier: a Glue Schema Registry ARN, or a Confluent Cloud HTTPS URL.</p>",
+      "max":2048,
+      "min":1,
+      "pattern":"(arn:[a-z0-9-]+:glue:[a-z0-9-]+:[0-9]{12}:registry/[-_$#A-Za-z0-9]{1,255}|https://((([A-Za-z0-9]+-)*[A-Za-z0-9]+)\\.)*([A-Za-z]([A-Za-z0-9-]*[A-Za-z0-9])?)(:[0-9]{1,5})?)(?![\\s\\S]).*"
+    },
+    "SequenceNumber":{
+      "type":"string",
+      "documentation":"<p>Sequence number assigned to the message for ordering within the message group.</p>",
+      "max":128,
+      "min":1
+    },
+    "SnsMessageAttributeMap":{
+      "type":"map",
+      "key":{"shape":"MessageAttributeName"},
+      "value":{"shape":"SnsMessageAttributeValue"},
+      "documentation":"<p>Map of SNS message attribute names to values. At most 50 attributes; SNS also enforces its own per-message attribute limits on delivery.</p>",
+      "max":50,
+      "min":0
+    },
+    "SnsMessageAttributeValue":{
+      "type":"structure",
+      "members":{
+        "DataType":{
+          "shape":"SnsMessageAttributeValueDataTypeString",
+          "documentation":"<p>Attribute data type. Requiredness and the accepted vocabulary belong to SNS, which rejects an attribute without a data type on delivery.</p>"
+        },
+        "StringValue":{
+          "shape":"String",
+          "documentation":"<p>String attribute value. A JSONata expression resolves once per delivered event.</p>"
+        },
+        "BinaryValue":{
+          "shape":"String",
+          "documentation":"<p>Base64-encoded literal binary attribute value.</p>"
+        }
+      },
+      "documentation":"<p>A custom SNS message attribute (data type plus string or binary value).</p>"
+    },
+    "SnsMessageAttributeValueDataTypeString":{
+      "type":"string",
+      "max":8192,
+      "min":0
+    },
+    "SnsParameters":{
+      "type":"structure",
+      "members":{
+        "MessageGroupId":{
+          "shape":"SnsParametersMessageGroupIdString",
+          "documentation":"<p>Message group ID for FIFO topics. Accepts JSONata expression.</p>"
+        },
+        "MessageDeduplicationId":{
+          "shape":"SnsParametersMessageDeduplicationIdString",
+          "documentation":"<p>Message deduplication ID for FIFO topics. Accepts JSONata expression.</p>"
+        },
+        "Subject":{
+          "shape":"SnsParametersSubjectString",
+          "documentation":"<p>Subject line for email protocol subscriptions. Accepts JSONata expression.</p>"
+        },
+        "MessageStructure":{
+          "shape":"SnsParametersMessageStructureString",
+          "documentation":"<p>Per-protocol message formatting mode, forwarded to SNS Publish unchanged. Accepts JSONata expression.</p>"
+        },
+        "MessageAttributes":{
+          "shape":"SnsMessageAttributeMap",
+          "documentation":"<p>Custom message attributes for SNS filtering.</p>"
+        }
+      },
+      "documentation":"<p>SNS invocation parameters for subscribers. Values are forwarded to the SNS PublishBatch API. All scalar values accept a literal or a JSONata expression (e.g. &quot;{% $events.Data.groupId %}&quot;).</p>",
+      "sensitive":true
+    },
+    "SnsParametersMessageDeduplicationIdString":{
+      "type":"string",
+      "max":8192,
+      "min":0
+    },
+    "SnsParametersMessageGroupIdString":{
+      "type":"string",
+      "max":8192,
+      "min":0
+    },
+    "SnsParametersMessageStructureString":{
+      "type":"string",
+      "max":8192,
+      "min":0
+    },
+    "SnsParametersSubjectString":{
+      "type":"string",
+      "max":8192,
+      "min":0
+    },
+    "Source":{
+      "type":"string",
+      "documentation":"<p>The source of an event, e.g. &quot;myapp.orders&quot;.</p>",
+      "max":256,
+      "min":1
+    },
+    "SqsMessageAttributeMap":{
+      "type":"map",
+      "key":{"shape":"MessageAttributeName"},
+      "value":{"shape":"SqsMessageAttributeValue"},
+      "documentation":"<p>Map of SQS message attribute names to values. At most 50 attributes; SQS also enforces its own per-message attribute limits on delivery.</p>",
+      "max":50,
+      "min":0
+    },
+    "SqsMessageAttributeValue":{
+      "type":"structure",
+      "members":{
+        "DataType":{
+          "shape":"SqsMessageAttributeValueDataTypeString",
+          "documentation":"<p>Attribute data type. Requiredness, the accepted vocabulary, and any custom label belong to SQS, which rejects an attribute without a data type on delivery.</p>"
+        },
+        "StringValue":{
+          "shape":"String",
+          "documentation":"<p>String attribute value. A JSONata expression resolves once per delivered event.</p>"
+        },
+        "BinaryValue":{
+          "shape":"String",
+          "documentation":"<p>Base64-encoded literal binary attribute value.</p>"
+        }
+      },
+      "documentation":"<p>A custom SQS message attribute (data type plus string or binary value).</p>"
+    },
+    "SqsMessageAttributeValueDataTypeString":{
+      "type":"string",
+      "max":8192,
+      "min":0
+    },
+    "SqsParameters":{
+      "type":"structure",
+      "members":{
+        "MessageGroupId":{
+          "shape":"SqsParametersMessageGroupIdString",
+          "documentation":"<p>Message group ID for FIFO queues. Accepts JSONata expression.</p>"
+        },
+        "MessageDeduplicationId":{
+          "shape":"SqsParametersMessageDeduplicationIdString",
+          "documentation":"<p>Message deduplication ID for FIFO queues. Accepts JSONata expression.</p>"
+        },
+        "DelaySeconds":{
+          "shape":"SqsParametersDelaySecondsString",
+          "documentation":"<p>Delay in seconds before the message becomes visible, standard queues only. Accepts JSONata expression.</p>"
+        },
+        "MessageAttributes":{
+          "shape":"SqsMessageAttributeMap",
+          "documentation":"<p>Custom message attributes (name/type/value).</p>"
+        },
+        "MessageSystemAttributes":{
+          "shape":"SqsMessageAttributeMap",
+          "documentation":"<p>System message attributes (e.g., AWSTraceHeader).</p>"
+        }
+      },
+      "documentation":"<p>SQS invocation parameters for subscribers. Values are forwarded to the SQS SendMessageBatch API. All scalar values accept a literal or a JSONata expression (e.g. &quot;{% $events.Data.groupId %}&quot;).</p>",
+      "sensitive":true
+    },
+    "SqsParametersDelaySecondsString":{
+      "type":"string",
+      "max":8192,
+      "min":0
+    },
+    "SqsParametersMessageDeduplicationIdString":{
+      "type":"string",
+      "max":8192,
+      "min":0
+    },
+    "SqsParametersMessageGroupIdString":{
+      "type":"string",
+      "max":8192,
+      "min":0
+    },
+    "StartingPosition":{
+      "type":"string",
+      "documentation":"<p>Starting position for a subscriber.</p>",
+      "enum":[
+        "LATEST",
+        "POINT_IN_TIME"
+      ]
+    },
+    "StateReason":{
+      "type":"string",
+      "documentation":"<p>Human-readable explanation of why an event bus is in its current State. Omitted when the bus is in a normal operational state (ACTIVE). It stands in for the error response an asynchronous failure cannot return, so it applies only to resources with an asynchronous lifecycle: event buses. EventSources and subscribers are provisioned synchronously and report failures directly on the request.</p>",
+      "max":1000,
+      "min":0
+    },
+    "StepFunctionsParameters":{
+      "type":"structure",
+      "members":{
+        "InvocationType":{
+          "shape":"InvocationType",
+          "documentation":"<p>Selects StartExecution (EVENT) or StartSyncExecution (REQUEST_RESPONSE) at delivery.</p>"
+        },
+        "Name":{
+          "shape":"StepFunctionsParametersNameString",
+          "documentation":"<p>Name for the execution. Must be unique per account/region/state machine. Accepts JSONata expression.</p>"
+        },
+        "TraceHeader":{
+          "shape":"StepFunctionsParametersTraceHeaderString",
+          "documentation":"<p>X-Ray trace header for distributed tracing. Accepts JSONata expression.</p>"
+        },
+        "InvocationTimeoutSeconds":{
+          "shape":"StepFunctionsParametersInvocationTimeoutSecondsString",
+          "documentation":"<p>Timeout in seconds for each invocation of the target (1-30). String-typed (not integer) so the value may be a JSONata expression.</p>"
+        }
+      },
+      "documentation":"<p>Step Functions invocation parameters for subscribers. Values are forwarded to the Step Functions StartExecution or StartSyncExecution API. Every string member accepts a literal or a JSONata expression (e.g. &quot;{% $events.Data.executionName %}&quot;).</p>",
+      "sensitive":true
+    },
+    "StepFunctionsParametersInvocationTimeoutSecondsString":{
+      "type":"string",
+      "max":8192,
+      "min":0
+    },
+    "StepFunctionsParametersNameString":{
+      "type":"string",
+      "max":8192,
+      "min":0
+    },
+    "StepFunctionsParametersTraceHeaderString":{
+      "type":"string",
+      "max":8192,
+      "min":0
+    },
+    "StorageConfiguration":{
+      "type":"structure",
+      "members":{
+        "RetentionPeriodInDays":{"shape":"RetentionPeriodInDays"}
+      },
+      "documentation":"<p>Event storage configuration for an event bus.</p>"
+    },
+    "StorageConfigurationOutput":{
+      "type":"structure",
+      "members":{
+        "RetentionPeriodInDays":{"shape":"RetentionPeriodInDays"},
+        "RetentionWindowStartTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The earliest point in time from which stored events are available. Events older than this have expired from retention.</p>"
+        }
+      },
+      "documentation":"<p>Event storage configuration of an event bus, as returned on reads.</p>"
+    },
+    "String":{"type":"string"},
+    "SubscriberArn":{
+      "type":"string",
+      "documentation":"<p>The Amazon Resource Name (ARN) that uniquely identifies a subscriber.</p>",
+      "max":1011,
+      "min":1,
+      "pattern":"arn:aws(-[a-z0-9]+)*:events:[a-z][a-z0-9]*(-[a-z0-9]+)*:([0-9]{12}):subscriber\\/[A-Za-z0-9][\\.\\-_A-Za-z0-9]{0,255}\\/[a-z0-9]{25}"
+    },
+    "SubscriberName":{
+      "type":"string",
+      "documentation":"<p>Name of a subscriber. The first character must be alphanumeric; the remaining characters may also include '.', '-', and '_'.</p>",
+      "max":256,
+      "min":1,
+      "pattern":"[A-Za-z0-9][\\.\\-_A-Za-z0-9]*"
+    },
+    "SubscriberState":{
+      "type":"string",
+      "documentation":"<p>Customer-controlled run state of a subscriber, set on create or update. Distinct from the bus lifecycle vocabulary, where ACTIVE means &quot;provisioned and healthy&quot;. Delivery requires State RUNNING on a subscriber that is not revoked.</p>",
+      "enum":[
+        "RUNNING",
+        "STOPPED"
+      ]
+    },
+    "SubscriberSummary":{
+      "type":"structure",
+      "members":{
+        "SubscriberArn":{"shape":"SubscriberArn"},
+        "Name":{"shape":"SubscriberName"},
+        "EventBusArn":{"shape":"EventBusArn"},
+        "TargetArn":{"shape":"TargetResourceArn"},
+        "Type":{"shape":"OrderingType"},
+        "Revoked":{
+          "shape":"Boolean",
+          "documentation":"<p>True when the bus owner has revoked this subscriber. Present only when true, so a bus owner listing subscribers sees at a glance which ones they revoked. See DescribeSubscriberResponse$Revoked.</p>"
+        },
+        "State":{"shape":"SubscriberState"},
+        "CreationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time the subscriber was created.</p>"
+        },
+        "LastModifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time the subscriber was last modified.</p>"
+        },
+        "SubscriberAccountId":{"shape":"AccountId"}
+      },
+      "documentation":"<p>Summary of a subscriber, as returned by ListSubscribers.</p>"
+    },
+    "SubscriberSummaryList":{
+      "type":"list",
+      "member":{"shape":"SubscriberSummary"},
+      "documentation":"<p>List of subscriber summaries.</p>"
+    },
+    "SuccessCode":{
+      "type":"string",
+      "documentation":"<p>Indicates the outcome for a successfully processed publish entry.</p>",
+      "enum":[
+        "PUBLISHED",
+        "DEDUPLICATED"
+      ]
+    },
+    "TagKey":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"\\S([\\s\\S]*\\S)?(?![\\s\\S]).*"
+    },
+    "TagMap":{
+      "type":"map",
+      "key":{"shape":"TagKey"},
+      "value":{"shape":"TagValue"},
+      "documentation":"<p>Tags attached to a resource, as key-value pairs.</p>",
+      "max":200,
+      "min":0
+    },
+    "TagResourceRequest":{
+      "type":"structure",
+      "required":[
+        "ResourceArn",
+        "Tags"
+      ],
+      "members":{
+        "ResourceArn":{"shape":"TaggableResourceArn"},
+        "Tags":{"shape":"TagResourceRequestTagsMap"}
+      }
+    },
+    "TagResourceRequestTagsMap":{
+      "type":"map",
+      "key":{"shape":"TagKey"},
+      "value":{"shape":"TagValue"},
+      "documentation":"<p>Tags attached to a resource, as key-value pairs.</p>",
+      "min":1
+    },
+    "TagResourceResponse":{
+      "type":"structure",
+      "members":{}
+    },
+    "TagValue":{
+      "type":"string",
+      "max":256,
+      "min":0,
+      "pattern":"(\\S([\\s\\S]*\\S)?)?(?![\\s\\S]).*"
+    },
+    "TaggableResourceArn":{
+      "type":"string",
+      "documentation":"<p>ARN for an EventBridge resource that supports tagging: event buses, subscribers, and event sources.</p>",
+      "max":1011,
+      "min":1,
+      "pattern":"arn:aws(-[a-z0-9]+)*:events:[a-z][a-z0-9]*(-[a-z0-9]+)*:([0-9]{12}):(event-busv2|subscriber|event-sourcev2\\/(aws\\.service|aws\\.partner))\\/[A-Za-z0-9][\\.\\-_A-Za-z0-9]{0,255}\\/[a-z0-9]{25}"
+    },
+    "TargetResourceArn":{
+      "type":"string",
+      "documentation":"<p>ARN of the target a subscriber invokes. The resource grammar is service-neutral because target services use different separators and the USI form omits region and account.</p>",
+      "max":1600,
+      "min":1,
+      "pattern":"arn:aws(-[a-z0-9]+)*:[^\\s]+(?![\\s\\S]).*"
+    },
+    "ThrottlingException":{
+      "type":"structure",
+      "members":{
+        "Message":{"shape":"String"}
+      },
+      "documentation":"<p>The request was throttled because it exceeds a request rate limit. Retry the request with backoff.</p>",
+      "error":{
+        "httpStatusCode":429,
+        "senderFault":true
+      },
+      "exception":true,
+      "retryable":{"throttling":true}
+    },
+    "Timestamp":{"type":"timestamp"},
+    "Transformer":{
+      "type":"structure",
+      "members":{
+        "Type":{
+          "shape":"TransformerType",
+          "documentation":"<p>Transform type.</p>"
+        },
+        "JsonataConfiguration":{
+          "shape":"JsonataConfiguration",
+          "documentation":"<p>JSONata expression configuration. Required when Type is JSONATA.</p>"
+        }
+      },
+      "documentation":"<p>Transformer configuration for a subscriber.</p>"
+    },
+    "TransformerType":{
+      "type":"string",
+      "enum":[
+        "RAW",
+        "WITH_METADATA",
+        "JSONATA"
+      ]
+    },
+    "UniversalTargetInput":{
+      "type":"string",
+      "max":262144,
+      "min":1
+    },
+    "UniversalTargetParameters":{
+      "type":"structure",
+      "required":["Input"],
+      "members":{
+        "Input":{
+          "shape":"UniversalTargetInput",
+          "documentation":"<p>JSON string or JSONata expression that produces the API request. Supports {% ... %} JSONata expressions for dynamic values from the event.</p>"
+        },
+        "InvocationTimeoutSeconds":{
+          "shape":"String",
+          "documentation":"<p>Timeout in seconds for each invocation of the target (1-30, default 30). Accepts a literal integer or a {% ... %} JSONata expression evaluated against the event at invocation time. A JSONata expression is syntax-checked at create time. Resolved values outside of the range [1, 30] will be constrained to the nearest bound at delivery time. Defaults to 30 seconds when unset.</p>"
+        }
+      },
+      "documentation":"<p>Parameters for USI (Universal Service Integration) targets. Used when TargetArn is in the format arn:aws:events:::aws-sdk:{service}:{apiAction}</p>",
+      "sensitive":true
+    },
+    "UntagResourceRequest":{
+      "type":"structure",
+      "required":[
+        "ResourceArn",
+        "TagKeys"
+      ],
+      "members":{
+        "ResourceArn":{"shape":"TaggableResourceArn"},
+        "TagKeys":{"shape":"UntagResourceRequestTagKeysList"}
+      }
+    },
+    "UntagResourceRequestTagKeysList":{
+      "type":"list",
+      "member":{"shape":"TagKey"},
+      "documentation":"<p>List of tag keys.</p>",
+      "min":1
+    },
+    "UntagResourceResponse":{
+      "type":"structure",
+      "members":{}
+    },
+    "UpdateEventBusRequest":{
+      "type":"structure",
+      "required":["EventBusArn"],
+      "members":{
+        "EventBusArn":{
+          "shape":"EventBusArn",
+          "contextParam":{"name":"EventBusArn"}
+        },
+        "Description":{"shape":"Description"},
+        "EncryptionConfiguration":{"shape":"EncryptionConfiguration"},
+        "StorageConfiguration":{"shape":"StorageConfiguration"}
+      }
+    },
+    "UpdateEventBusResponse":{
+      "type":"structure",
+      "members":{
+        "EventBusArn":{"shape":"EventBusArn"},
+        "Name":{"shape":"EventBusName"},
+        "Description":{"shape":"Description"},
+        "EncryptionConfiguration":{"shape":"EncryptionConfiguration"},
+        "StorageConfiguration":{"shape":"StorageConfigurationOutput"},
+        "State":{"shape":"BusState"},
+        "StateReason":{"shape":"StateReason"},
+        "LastModifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time the event bus was last modified.</p>"
+        }
+      }
+    },
+    "UpdateEventSourceRequest":{
+      "type":"structure",
+      "required":["EventSourceArn"],
+      "members":{
+        "EventSourceArn":{"shape":"EventSourceArn"},
+        "Configuration":{"shape":"EventSourceConfiguration"},
+        "Description":{"shape":"Description"}
+      }
+    },
+    "UpdateEventSourceResponse":{
+      "type":"structure",
+      "members":{
+        "EventSourceArn":{"shape":"EventSourceArn"},
+        "Name":{"shape":"EventSourceName"},
+        "EventBusArn":{"shape":"EventBusArn"},
+        "State":{"shape":"EventSourceState"},
+        "LastModifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time the EventSource was last modified.</p>"
+        }
+      }
+    },
+    "UpdateInvokeConfiguration":{
+      "type":"structure",
+      "required":["RoleArn"],
+      "members":{
+        "RoleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>IAM role the service assumes to invoke the target. Must belong to the calling account.</p>"
+        },
+        "LambdaParameters":{"shape":"LambdaParameters"},
+        "SqsParameters":{"shape":"SqsParameters"},
+        "SnsParameters":{"shape":"SnsParameters"},
+        "KinesisParameters":{"shape":"KinesisParameters"},
+        "StepFunctionsParameters":{"shape":"StepFunctionsParameters"},
+        "HttpParameters":{"shape":"HttpParameters"},
+        "UniversalTargetParameters":{"shape":"UniversalTargetParameters"},
+        "EventBusV2Parameters":{"shape":"EventBusV2Parameters"}
+      },
+      "documentation":"<p>Update-able configuration for how the subscriber invokes its target.</p>"
+    },
+    "UpdateSubscriberRequest":{
+      "type":"structure",
+      "required":["SubscriberArn"],
+      "members":{
+        "SubscriberArn":{"shape":"SubscriberArn"},
+        "Description":{"shape":"Description"},
+        "State":{"shape":"SubscriberState"},
+        "ResumePosition":{"shape":"ResumePosition"},
+        "InvokeConfiguration":{"shape":"UpdateInvokeConfiguration"},
+        "FilterConfiguration":{"shape":"FilterConfiguration"},
+        "BatchConfiguration":{"shape":"BatchConfiguration"},
+        "Transformer":{
+          "shape":"Transformer",
+          "documentation":"<p>Not applicable to universal (aws-sdk) targets, whose input transformation is UniversalTargetParameters.Input; a Transformer on such a target is rejected.</p>"
+        },
+        "RetryPolicy":{"shape":"RetryPolicy"},
+        "OnFailureConfiguration":{"shape":"OnFailureConfiguration"},
+        "LogConfiguration":{"shape":"LogConfiguration"}
+      }
+    },
+    "UpdateSubscriberResponse":{
+      "type":"structure",
+      "members":{
+        "SubscriberArn":{"shape":"SubscriberArn"},
+        "Name":{"shape":"SubscriberName"},
+        "EventBusArn":{"shape":"EventBusArn"},
+        "Type":{"shape":"OrderingType"},
+        "StartingPosition":{"shape":"StartingPosition"},
+        "PointInTimeConfiguration":{"shape":"PointInTimeConfiguration"},
+        "State":{"shape":"SubscriberState"},
+        "LastModifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time the subscriber was last modified.</p>"
+        }
+      }
+    }
+  },
+  "documentation":"<p>Amazon EventBridge event bus API. An event bus receives events published by your applications and AWS services, stores them for a configurable retention period, and delivers them to subscribers. A subscriber filters events, optionally transforms them, and invokes a target such as Lambda, SQS, SNS, Kinesis, Step Functions, or an HTTP endpoint. The API manages event buses, subscribers, event sources, resource policies, and tags, and publishes events through PutEvents and PutRawEvents.</p>"
+}

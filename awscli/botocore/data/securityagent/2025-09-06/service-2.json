@@ -2770,6 +2770,14 @@
           "shape":"Double",
           "documentation":"<p>The maximum number of billable task hours allowed for jobs started from this code review. If a job reaches the configured limit, it is gracefully stopped. If not set, jobs run to completion with no budget cap.</p>"
         },
+        "reportDestination":{
+          "shape":"ReportDestination",
+          "documentation":"<p>The destination for publishing scan reports to an integrated document provider.</p>"
+        },
+        "reportFilters":{
+          "shape":"ReportFilters",
+          "documentation":"<p>The report-generation filters applied when the report is exported.</p>"
+        },
         "createdAt":{
           "shape":"SyntheticTimestamp_date_time",
           "documentation":"<p>The date and time the code review was created, in UTC format.</p>"
@@ -2848,6 +2856,10 @@
         "maxTaskHours":{
           "shape":"Double",
           "documentation":"<p>The maximum number of billable task hours allowed for this code review job. If the cumulative task hours reach this limit, the job is gracefully stopped.</p>"
+        },
+        "reportDestination":{
+          "shape":"ReportDestination",
+          "documentation":"<p>The destination for publishing scan reports to an integrated document provider.</p>"
         },
         "createdAt":{
           "shape":"SyntheticTimestamp_date_time",
@@ -3086,6 +3098,13 @@
         "MEDIUM",
         "HIGH"
       ]
+    },
+    "ConfidenceLevelFilterList":{
+      "type":"list",
+      "member":{"shape":"ConfidenceLevel"},
+      "documentation":"<p>A list of confidence levels for a report filter.</p>",
+      "max":50,
+      "min":0
     },
     "ConflictException":{
       "type":"structure",
@@ -3376,6 +3395,14 @@
         "maxTaskHours":{
           "shape":"Double",
           "documentation":"<p>The maximum number of billable task hours allowed for jobs started from this code review. Must be a positive number. If not set, jobs run to completion with no budget cap.</p>"
+        },
+        "reportDestination":{
+          "shape":"ReportDestination",
+          "documentation":"<p>The destination for publishing scan reports to an integrated document provider.</p>"
+        },
+        "reportFilters":{
+          "shape":"ReportFilters",
+          "documentation":"<p>The report-generation filters applied when the report is exported.</p>"
         }
       },
       "documentation":"<p>Input for creating a new code review.</p>"
@@ -3427,6 +3454,14 @@
         "maxTaskHours":{
           "shape":"Double",
           "documentation":"<p>The maximum number of billable task hours configured for jobs started from this code review. Null if no budget cap is set.</p>"
+        },
+        "reportDestination":{
+          "shape":"ReportDestination",
+          "documentation":"<p>The destination for publishing scan reports to an integrated document provider.</p>"
+        },
+        "reportFilters":{
+          "shape":"ReportFilters",
+          "documentation":"<p>The report-generation filters applied when the report is exported.</p>"
         }
       },
       "documentation":"<p>Output for the CreateCodeReview operation.</p>"
@@ -3562,6 +3597,14 @@
         "maxTaskHours":{
           "shape":"Double",
           "documentation":"<p>The maximum number of billable task hours allowed for jobs started from this pentest. Must be a positive number. If not set, jobs run to completion with no budget cap.</p>"
+        },
+        "reportDestination":{
+          "shape":"ReportDestination",
+          "documentation":"<p>The destination for publishing scan reports to an integrated document provider.</p>"
+        },
+        "reportFilters":{
+          "shape":"ReportFilters",
+          "documentation":"<p>The report-generation filters applied when the report is exported.</p>"
         }
       },
       "documentation":"<p>Input for creating a new pentest.</p>"
@@ -3604,6 +3647,14 @@
         "agentSpaceId":{
           "shape":"String",
           "documentation":"<p>The unique identifier of the agent space that contains the pentest.</p>"
+        },
+        "reportDestination":{
+          "shape":"ReportDestination",
+          "documentation":"<p>The destination for publishing scan reports to an integrated document provider.</p>"
+        },
+        "reportFilters":{
+          "shape":"ReportFilters",
+          "documentation":"<p>The report-generation filters applied when the report is exported.</p>"
         }
       },
       "documentation":"<p>Output for the CreatePentest operation.</p>"
@@ -3988,6 +4039,10 @@
         "updatedAt":{
           "shape":"SyntheticTimestamp_date_time",
           "documentation":"<p>The date and time the threat model was last updated, in UTC format.</p>"
+        },
+        "reportDestination":{
+          "shape":"ReportDestination",
+          "documentation":"<p>The destination for publishing scan reports to an integrated document provider.</p>"
         }
       },
       "documentation":"<p>Output for the CreateThreatModel operation.</p>"
@@ -4738,6 +4793,13 @@
         "ACCEPTED",
         "FALSE_POSITIVE"
       ]
+    },
+    "FindingStatusFilterList":{
+      "type":"list",
+      "member":{"shape":"FindingStatus"},
+      "documentation":"<p>A list of finding statuses for a report filter.</p>",
+      "max":50,
+      "min":0
     },
     "FindingSummary":{
       "type":"structure",
@@ -6669,6 +6731,14 @@
           "shape":"Double",
           "documentation":"<p>The maximum number of billable task hours allowed for jobs started from this pentest. If a job reaches the configured limit, it is gracefully stopped. If not set, jobs run to completion with no budget cap.</p>"
         },
+        "reportDestination":{
+          "shape":"ReportDestination",
+          "documentation":"<p>The destination for publishing scan reports to an integrated document provider.</p>"
+        },
+        "reportFilters":{
+          "shape":"ReportFilters",
+          "documentation":"<p>The report-generation filters applied when the report is exported.</p>"
+        },
         "createdAt":{
           "shape":"SyntheticTimestamp_date_time",
           "documentation":"<p>The date and time the pentest was created, in UTC format.</p>"
@@ -6794,6 +6864,10 @@
         "selectedFindingIds":{
           "shape":"StringList",
           "documentation":"<p>The list of finding identifiers selected for revalidation. Present only when jobType is REVALIDATION.</p>"
+        },
+        "reportDestination":{
+          "shape":"ReportDestination",
+          "documentation":"<p>The destination for publishing scan reports to an integrated document provider.</p>"
         },
         "createdAt":{
           "shape":"SyntheticTimestamp_date_time",
@@ -7109,6 +7183,57 @@
       },
       "documentation":"<p>Destination for publishing scan reports to an integrated document provider.</p>"
     },
+    "ReportFilterList":{
+      "type":"list",
+      "member":{"shape":"ReportFilterValue"},
+      "documentation":"<p>A bounded list of report-filter values for an open-ended filter dimension.</p>",
+      "max":50,
+      "min":0
+    },
+    "ReportFilterValue":{
+      "type":"string",
+      "documentation":"<p>A single report-filter value for one filter dimension.</p>",
+      "max":256,
+      "min":1
+    },
+    "ReportFilters":{
+      "type":"structure",
+      "members":{
+        "riskLevels":{
+          "shape":"RiskLevelFilterList",
+          "documentation":"<p>The severity levels to include in the report.</p>"
+        },
+        "confidenceLevels":{
+          "shape":"ConfidenceLevelFilterList",
+          "documentation":"<p>The confidence levels to include in the report.</p>"
+        },
+        "statuses":{
+          "shape":"FindingStatusFilterList",
+          "documentation":"<p>The finding statuses to include in the report.</p>"
+        },
+        "riskTypes":{
+          "shape":"RiskTypeFilterList",
+          "documentation":"<p>The risk types to include in the report.</p>"
+        },
+        "findingTypes":{
+          "shape":"ReportFilterList",
+          "documentation":"<p>The finding types to include in the report.</p>"
+        },
+        "taskStatuses":{
+          "shape":"TaskExecutionStatusFilterList",
+          "documentation":"<p>The task execution statuses to include in the report's task table.</p>"
+        },
+        "annotationNotes":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether to include reviewer annotation notes under each finding.</p>"
+        },
+        "complianceReport":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether to include the compliance-ready report additions.</p>"
+        }
+      },
+      "documentation":"<p>The report-generation filters applied when a pentest or code review report is exported.</p>"
+    },
     "ResourceArn":{
       "type":"string",
       "documentation":"<p>ARN of a taggable resource.</p>"
@@ -7165,6 +7290,13 @@
         "CRITICAL"
       ]
     },
+    "RiskLevelFilterList":{
+      "type":"list",
+      "member":{"shape":"RiskLevel"},
+      "documentation":"<p>A list of severity levels for a report filter.</p>",
+      "max":50,
+      "min":0
+    },
     "RiskType":{
       "type":"string",
       "documentation":"<p>Type of security risk.</p>",
@@ -7198,6 +7330,13 @@
         "OUTBOUND_SERVICE_REQUEST",
         "UNKNOWN"
       ]
+    },
+    "RiskTypeFilterList":{
+      "type":"list",
+      "member":{"shape":"RiskType"},
+      "documentation":"<p>A list of risk types for a report filter.</p>",
+      "max":50,
+      "min":0
     },
     "RiskTypeList":{
       "type":"list",
@@ -8069,6 +8208,13 @@
         "FAILED"
       ]
     },
+    "TaskExecutionStatusFilterList":{
+      "type":"list",
+      "member":{"shape":"TaskExecutionStatus"},
+      "documentation":"<p>A list of task execution statuses for a report filter.</p>",
+      "max":50,
+      "min":0
+    },
     "TaskIdList":{
       "type":"list",
       "member":{"shape":"String"}
@@ -8314,6 +8460,10 @@
           "shape":"CloudWatchLog",
           "documentation":"<p>The CloudWatch Logs configuration for the threat model.</p>"
         },
+        "reportDestination":{
+          "shape":"ReportDestination",
+          "documentation":"<p>The destination for publishing scan reports to an integrated document provider.</p>"
+        },
         "createdAt":{
           "shape":"SyntheticTimestamp_date_time",
           "documentation":"<p>The date and time the threat model was created, in UTC format.</p>"
@@ -8392,6 +8542,10 @@
         "systemOverview":{
           "shape":"String",
           "documentation":"<p>The system overview generated during threat modeling.</p>"
+        },
+        "reportDestination":{
+          "shape":"ReportDestination",
+          "documentation":"<p>The destination for publishing scan reports to an integrated document provider.</p>"
         }
       },
       "documentation":"<p>Represents a threat model job, which is an execution instance of a threat model.</p>"
@@ -8691,7 +8845,7 @@
       "members":{
         "source":{
           "shape":"CaCertificateSource",
-          "documentation":"<p>The source that AWS Security Agent reads the certificate from.</p>"
+          "documentation":"<p>The source that Security Agent reads the certificate from.</p>"
         }
       },
       "documentation":"<p>A trust anchor used when validating a target endpoint's TLS certificate.</p>",
@@ -8871,6 +9025,14 @@
         "maxTaskHours":{
           "shape":"Double",
           "documentation":"<p>The updated maximum number of billable task hours allowed for jobs started from this code review.</p>"
+        },
+        "reportDestination":{
+          "shape":"ReportDestination",
+          "documentation":"<p>The destination for publishing scan reports to an integrated document provider.</p>"
+        },
+        "reportFilters":{
+          "shape":"ReportFilters",
+          "documentation":"<p>The report-generation filters applied when the report is exported.</p>"
         }
       },
       "documentation":"<p>Input for updating an existing code review.</p>"
@@ -8922,6 +9084,14 @@
         "maxTaskHours":{
           "shape":"Double",
           "documentation":"<p>The maximum number of billable task hours configured for jobs started from this code review. Null if no budget cap is set.</p>"
+        },
+        "reportDestination":{
+          "shape":"ReportDestination",
+          "documentation":"<p>The destination for publishing scan reports to an integrated document provider.</p>"
+        },
+        "reportFilters":{
+          "shape":"ReportFilters",
+          "documentation":"<p>The report-generation filters applied when the report is exported.</p>"
         }
       },
       "documentation":"<p>Output for the UpdateCodeReview operation.</p>"
@@ -9065,6 +9235,14 @@
         "maxTaskHours":{
           "shape":"Double",
           "documentation":"<p>The updated maximum number of billable task hours allowed for jobs started from this pentest.</p>"
+        },
+        "reportDestination":{
+          "shape":"ReportDestination",
+          "documentation":"<p>The destination for publishing scan reports to an integrated document provider.</p>"
+        },
+        "reportFilters":{
+          "shape":"ReportFilters",
+          "documentation":"<p>The report-generation filters applied when the report is exported.</p>"
         }
       },
       "documentation":"<p>Input for updating an existing pentest.</p>"
@@ -9107,6 +9285,14 @@
         "agentSpaceId":{
           "shape":"String",
           "documentation":"<p>The unique identifier of the agent space that contains the pentest.</p>"
+        },
+        "reportDestination":{
+          "shape":"ReportDestination",
+          "documentation":"<p>The destination for publishing scan reports to an integrated document provider.</p>"
+        },
+        "reportFilters":{
+          "shape":"ReportFilters",
+          "documentation":"<p>The report-generation filters applied when the report is exported.</p>"
         }
       },
       "documentation":"<p>Output for the UpdatePentest operation.</p>"
@@ -9427,6 +9613,10 @@
         "logConfig":{
           "shape":"CloudWatchLog",
           "documentation":"<p>The updated CloudWatch Logs configuration for the threat model.</p>"
+        },
+        "reportDestination":{
+          "shape":"ReportDestination",
+          "documentation":"<p>The destination for publishing scan reports to an integrated document provider.</p>"
         }
       },
       "documentation":"<p>Input for updating an existing threat model.</p>"
@@ -9474,6 +9664,10 @@
         "updatedAt":{
           "shape":"SyntheticTimestamp_date_time",
           "documentation":"<p>The date and time the threat model was last updated, in UTC format.</p>"
+        },
+        "reportDestination":{
+          "shape":"ReportDestination",
+          "documentation":"<p>The destination for publishing scan reports to an integrated document provider.</p>"
         }
       },
       "documentation":"<p>Output for the UpdateThreatModel operation.</p>"
@@ -9779,15 +9973,15 @@
       "members":{
         "vpcArn":{
           "shape":"VpcArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the VPC.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) or ID of the VPC.</p>"
         },
         "securityGroupArns":{
           "shape":"SecurityGroupArns",
-          "documentation":"<p>The Amazon Resource Names (ARNs) of the security groups for the VPC configuration.</p>"
+          "documentation":"<p>The Amazon Resource Names (ARNs) or IDs of the security groups for the VPC configuration.</p>"
         },
         "subnetArns":{
           "shape":"SubnetArns",
-          "documentation":"<p>The Amazon Resource Names (ARNs) of the subnets for the VPC configuration.</p>"
+          "documentation":"<p>The Amazon Resource Names (ARNs) or IDs of the subnets for the VPC configuration.</p>"
         }
       },
       "documentation":"<p>The VPC configuration for a pentest, specifying the VPC, security groups, and subnets to use during testing.</p>"

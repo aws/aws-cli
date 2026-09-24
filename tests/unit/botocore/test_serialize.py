@@ -841,4 +841,3 @@ class TestRpcV2CBORHostPrefix(unittest.TestCase):
         serialized = serializer.serialize_to_request(params, operation_model)
 
         self.assertNotIn('host_prefix', serialized)
-

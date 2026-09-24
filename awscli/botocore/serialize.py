@@ -659,9 +659,7 @@ class CBORSerializer(Serializer):
 
     def _serialize_type_timestamp(self, serialized, value, shape, key):
         timestamp = self._convert_timestamp_to_str(value)
-        tag = 1  # Use tag 1 for unix timestamp
-        initial_byte = self._get_initial_byte(self.TAG_MAJOR_TYPE, tag)
-        serialized.extend(initial_byte)  # Tagging the timestamp
+        serialized.extend(self._CBOR_TAG_EPOCH_TIME)
         # Tag 1 permits either an integer or a floating-point epoch seconds
         # value; a float is used when sub-second precision is present.
         if isinstance(timestamp, float):

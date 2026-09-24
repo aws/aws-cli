@@ -27,10 +27,12 @@ from awscli.customizations.login.utils import (
 )
 from awscli.customizations.prompts import yes_no_choice
 from awscli.customizations.sso.utils import (
+    REDIRECT_PORT_ARG,
     AuthCodeFetcher,
     OpenBrowserHandler,
     PrintOnlyHandler,
     open_browser_with_original_ld_path,
+    validate_redirect_port,
 )
 from awscli.customizations.utils import uni_print
 
@@ -63,7 +65,8 @@ class LoginCommand(BasicCommand):
                 'intended when running the CLI on remote hosts via SSH '
                 'where a local browser is not available.'
             ),
-        }
+        },
+        REDIRECT_PORT_ARG,
     ]
 
     def __init__(
@@ -88,6 +91,7 @@ class LoginCommand(BasicCommand):
         self._config_file_writer = config_file_writer
 
     def _run_main(self, parsed_args, parsed_globals):
+        validate_redirect_port(parsed_args.redirect_port)
         region = self._resolve_region(parsed_globals)
         profile_name = self.resolve_profile_name()
         sign_in_type = self.resolve_sign_in_type(parsed_args)
@@ -119,7 +123,9 @@ class LoginCommand(BasicCommand):
         if sign_in_type is LoginType.SAME_DEVICE:
             token_fetcher = SameDeviceLoginTokenFetcher(
                 client=client,
-                auth_code_fetcher=AuthCodeFetcher(),
+                auth_code_fetcher=AuthCodeFetcher(
+                    redirect_port=parsed_args.redirect_port,
+                ),
                 on_pending_authorization=OpenBrowserHandler(
                     open_browser=open_browser_with_original_ld_path
                 ),

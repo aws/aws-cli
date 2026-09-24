@@ -52,6 +52,7 @@ from awscli.customizations.sso.utils import (
     BaseSSOCommand,
     PrintOnlyHandler,
     do_sso_login,
+    validate_redirect_port,
 )
 from awscli.customizations.utils import uni_print
 from awscli.formatter import CLI_OUTPUT_FORMATS
@@ -321,6 +322,7 @@ class ConfigureSSOCommand(BaseSSOConfigurationCommand):
         config_store.set_config_provider('profile', ConstantProvider(None))
 
     def _run_main(self, parsed_args, parsed_globals):
+        validate_redirect_port(parsed_args.redirect_port)
         super()._run_main(parsed_args, parsed_globals)
         self._unset_session_profile()
         on_pending_authorization = None
@@ -338,6 +340,7 @@ class ConfigureSSOCommand(BaseSSOConfigurationCommand):
             token_cache=self._sso_token_cache,
             on_pending_authorization=on_pending_authorization,
             use_device_code=parsed_args.use_device_code,
+            redirect_port=parsed_args.redirect_port,
             **sso_registration_args,
         )
 

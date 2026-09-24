@@ -6,10 +6,13 @@ from unittest import mock
 
 import pytest
 
-from awscli.customizations.exceptions import ConfigurationError
+from awscli.customizations.exceptions import (
+    ConfigurationError,
+    ParamValidationError,
+)
 from awscli.customizations.login.login import LoginCommand
 
-DEFAULT_ARGS = Namespace(remote=False)
+DEFAULT_ARGS = Namespace(remote=False, redirect_port=None)
 DEFAULT_GLOBAL_ARGS = Namespace(
     region='us-east-1', endpoint_url=None, verify_ssl=None
 )
@@ -46,6 +49,8 @@ def mock_session():
     mock_session.get_config_variable.side_effect = config_variables
     mock_session.full_config = {'profiles': {'profile-name': {}}}
     mock_session._profile_map = {'profile-name': {}}
+    mock_session.user_agent_extra = ''
+    mock_session.emit_first_non_none_response.return_value = None
 
     return mock_session
 
@@ -61,6 +66,8 @@ def mock_login_command(
     )
 
 
+@pytest.mark.parametrize('redirect_port', [None, 34535])
+@mock.patch('awscli.customizations.login.login.AuthCodeFetcher')
 @mock.patch('awscli.customizations.login.utils.get_base_sign_in_uri')
 @mock.patch(
     'awscli.customizations.login.utils.SameDeviceLoginTokenFetcher.fetch_token'
@@ -68,9 +75,11 @@ def mock_login_command(
 def test_run_main_same_device_flow(
     mock_token_fetcher,
     mock_base_sign_in_uri,
+    mock_auth_code_fetcher,
     mock_login_command,
     mock_token_loader,
     mock_config_file_writer,
+    redirect_port,
 ):
     mock_base_sign_in_uri.return_value = 'https://foo'
     mock_token_fetcher.return_value = (
@@ -82,9 +91,13 @@ def test_run_main_same_device_flow(
         'arn:aws:iam::0123456789012:user/Admin',
     )
 
-    mock_login_command._run_main(DEFAULT_ARGS, DEFAULT_GLOBAL_ARGS)
+    args = []
+    if redirect_port is not None:
+        args = ['--redirect-port', str(redirect_port)]
+    mock_login_command(args, DEFAULT_GLOBAL_ARGS)
 
     mock_token_fetcher.assert_called_once()
+    mock_auth_code_fetcher.assert_called_once_with(redirect_port=redirect_port)
 
     mock_token_loader.save_token.assert_called_once_with(
         'arn:aws:iam::0123456789012:user/Admin',
@@ -104,6 +117,19 @@ def test_run_main_same_device_flow(
     )
 
 
+@pytest.mark.parametrize('redirect_port', [-1, 0, 65536])
+def test_invalid_redirect_port(mock_login_command, redirect_port):
+    with mock.patch.object(mock_login_command, '_resolve_region') as region:
+        with pytest.raises(ParamValidationError, match='--redirect-port'):
+            mock_login_command(
+                ['--redirect-port', str(redirect_port)], DEFAULT_GLOBAL_ARGS
+            )
+    region.assert_not_called()
+    mock_login_command._session.create_client.assert_not_called()
+
+
+@pytest.mark.parametrize('redirect_port', [None, 34535])
+@mock.patch('awscli.customizations.login.login.AuthCodeFetcher')
 @mock.patch('awscli.customizations.login.utils.get_base_sign_in_uri')
 @mock.patch(
     'awscli.customizations.login.utils.CrossDeviceLoginTokenFetcher.fetch_token'
@@ -111,13 +137,15 @@ def test_run_main_same_device_flow(
 def test_run_main_cross_device_flow(
     mock_token_fetcher,
     mock_base_sign_in_uri,
+    mock_auth_code_fetcher,
     mock_login_command,
     mock_token_loader,
     mock_config_file_writer,
+    redirect_port,
 ):
-    # Set the --remote argument
-    args = Namespace(**vars(DEFAULT_ARGS))
-    args.remote = True
+    args = ['--remote']
+    if redirect_port is not None:
+        args += ['--redirect-port', str(redirect_port)]
 
     mock_base_sign_in_uri.return_value = 'https://foo'
     mock_token_fetcher.return_value = (
@@ -129,9 +157,10 @@ def test_run_main_cross_device_flow(
         'arn:aws:iam::0123456789012:user/Admin',
     )
 
-    mock_login_command._run_main(args, DEFAULT_GLOBAL_ARGS)
+    mock_login_command(args, DEFAULT_GLOBAL_ARGS)
 
     mock_token_fetcher.assert_called_once()
+    mock_auth_code_fetcher.assert_not_called()
 
     mock_token_loader.save_token.assert_called_once_with(
         'arn:aws:iam::0123456789012:user/Admin',

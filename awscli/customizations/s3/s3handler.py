@@ -12,11 +12,12 @@
 # language governing permissions and limitations under the License.
 import logging
 import os
+import stat
 
 from s3transfer.checksums import resolve_full_object_checksum
 from s3transfer.manager import TransferManager
 
-from awscli.compat import get_binary_stdin
+from awscli.compat import get_binary_stdin, is_windows
 from awscli.customizations.s3.results import (
     CommandResultRecorder,
     DoneResultSubscriber,
@@ -60,6 +61,25 @@ from awscli.customizations.s3.utils import (
 )
 
 LOGGER = logging.getLogger(__name__)
+
+
+def is_link(path):
+    """Whether a path redirects to somewhere else.
+
+    On Windows this covers junctions as well as symbolic links.
+    ``os.path.islink`` does not report junctions, and they are the redirect
+    an unprivileged process can create there, so leaving them out would miss
+    the more reachable case. ``os.path.isjunction`` is only available in
+    Python 3.12 and later, so the reparse tag is read directly.
+    """
+    if os.path.islink(path):
+        return True
+    if not is_windows:
+        return False
+    try:
+        return os.lstat(path).st_reparse_tag == stat.IO_REPARSE_TAG_MOUNT_POINT
+    except (OSError, ValueError, AttributeError):
+        return False
 
 
 class S3TransferHandlerFactory:
@@ -501,7 +521,7 @@ class DownloadRequestSubmitter(BaseTransferRequestSubmitter):
 
         Paths are checked root first, so each one is only reached once
         everything leading to it has been shown not to be a symlink. A parent
-        reference breaks that, because ``os.path.islink`` cannot resolve a
+        reference breaks that, because a link check cannot resolve a
         path through a directory that does not exist yet and the download
         creates missing directories afterwards, so it is never followed.
         """
@@ -521,9 +541,9 @@ class DownloadRequestSubmitter(BaseTransferRequestSubmitter):
                 break
             path = parent
         for path in reversed(parents):
-            if os.path.basename(path) == os.pardir or os.path.islink(path):
+            if os.path.basename(path) == os.pardir or is_link(path):
                 return path
-        return dest if os.path.islink(dest) else None
+        return dest if is_link(dest) else None
 
     def _warn_if_file_exists_with_no_overwrite(self, fileinfo):
         """

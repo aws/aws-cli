@@ -273,13 +273,20 @@ class TestOAuthCallbackHandler:
         fetcher.set_auth_code_and_state.assert_not_called()
 
 
+def _create_auth_code_fetcher():
+    # Binding the fetcher's HTTPServer does a reverse DNS lookup of the host,
+    # which can stall for seconds. The resulting server name is unused.
+    with mock.patch('socket.getfqdn', return_value='localhost'):
+        return AuthCodeFetcher()
+
+
 class TestAuthCodeFetcher:
     """Tests for the AuthCodeFetcher class, which is the local
     web server we use to handle the OAuth 2.0 callback
     """
 
     def setup_method(self):
-        self.fetcher = AuthCodeFetcher()
+        self.fetcher = _create_auth_code_fetcher()
         self.url = (
             f'http://127.0.0.1:{self.fetcher.http_server.server_address[1]}/'
         )
@@ -329,4 +336,4 @@ def test_get_auth_code_and_state_timeout():
     since we need to override the constants
     """
     with pytest.raises(PendingAuthorizationExpiredError):
-        AuthCodeFetcher().get_auth_code_and_state()
+        _create_auth_code_fetcher().get_auth_code_and_state()

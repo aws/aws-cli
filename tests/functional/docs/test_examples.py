@@ -135,15 +135,13 @@ def test_examples(command, subcommand):
 @pytest.mark.filterwarnings('ignore::DeprecationWarning')
 @pytest.mark.parametrize("example_file", RST_DOC_EXAMPLES)
 def test_rst_doc_examples(command_validator, example_file):
-    verify_has_only_ascii_chars(example_file)
-    verify_is_valid_rst(example_file)
-    verify_cli_commands_valid(example_file, command_validator)
-    verify_no_http_links(example_file)
+    contents = verify_has_only_ascii_chars(example_file)
+    document = verify_is_valid_rst(example_file, contents)
+    verify_cli_commands_valid(example_file, command_validator, document)
+    verify_no_http_links(example_file, contents)
 
 
-def verify_no_http_links(filename):
-    with open(filename) as f:
-        contents = f.read()
+def verify_no_http_links(filename, contents):
     match = HTTP_LINK_REGEX.search(contents)
     if match:
         error_line_number = line_num(contents, match.span()[0])
@@ -153,8 +151,8 @@ def verify_no_http_links(filename):
         marker_idx = error_line.find('http://') - 1
         marker_line = (" " * marker_idx) + '^'
         raise AssertionError(
-            'Found http:// link in the examples file %s, line %s\n'
-            '%s\n%s' % (filename, error_line_number, error_line, marker_line)
+            f'Found http:// link in the examples file {filename}, line {error_line_number}\n'
+            f'{error_line}\n{marker_line}'
         )
 
 
@@ -162,31 +160,34 @@ def verify_has_only_ascii_chars(filename):
     with open(filename, 'rb') as f:
         bytes_content = f.read()
         try:
-            bytes_content.decode('ascii')
+            contents = bytes_content.decode('ascii')
         except UnicodeDecodeError as e:
             # The test has failed so we'll try to provide a useful error
             # message.
             offset = e.start
             spread = 20
-            bad_text = bytes_content[offset - spread : e.start + spread]
+            bad_text = bytes_content[
+                offset - spread : e.start + spread
+            ].decode('ascii', errors='backslashreplace')
             underlined = ' ' * spread + '^'
             error_text = '\n'.join([bad_text, underlined])
             line_number = bytes_content[:offset].count(b'\n') + 1
             raise AssertionError(
-                "Non ascii characters found in the examples file %s, line %s:"
-                "\n\n%s\n" % (filename, line_number, error_text)
+                f"Non ascii characters found in the examples file {filename}, line {line_number}:"
+                f"\n\n{error_text}\n"
             )
+    # Match the universal-newline translation of the previous text reads.
+    return contents.replace('\r\n', '\n').replace('\r', '\n')
 
 
-def verify_is_valid_rst(filename):
-    _, errors = parse_rst(filename)
+def verify_is_valid_rst(filename, contents):
+    document, errors = parse_rst(contents)
     if errors:
         raise AssertionError(_make_error_msg(filename, errors))
+    return document
 
 
-def parse_rst(filename):
-    with open(filename) as f:
-        contents = f.read()
+def parse_rst(contents):
     parser = docutils.parsers.rst.Parser()
     components = (docutils.parsers.rst.Parser,)
     settings = docutils.frontend.OptionParser(
@@ -213,7 +214,7 @@ def _make_error_msg(filename, errors):
         lines = f.readlines()
     relative_name = filename[len(EXAMPLES_DIR) + 1 :]
     failure_message = [
-        'The file "%s" contains invalid RST: ' % relative_name,
+        f'The file "{relative_name}" contains invalid RST: ',
         '',
     ]
     for error in errors:
@@ -226,21 +227,20 @@ def _make_error_msg(filename, errors):
         if line_number > 0:
             line_number -= 1
         current_message = [
-            'Line %s: %s' % (error['line_number'], error['msg']),
-            '  %s' % lines[line_number],
+            f"Line {error['line_number']}: {error['msg']}",
+            f'  {lines[line_number]}',
         ]
         failure_message.extend(current_message)
     return '\n'.join(failure_message)
 
 
-def verify_cli_commands_valid(filename, command_validator):
-    cli_commands = find_all_cli_commands(filename)
+def verify_cli_commands_valid(filename, command_validator, document):
+    cli_commands = find_all_cli_commands(document)
     for command in cli_commands:
         command_validator.validate_cli_command(command, filename)
 
 
-def find_all_cli_commands(filename):
-    document, _ = parse_rst(filename)
+def find_all_cli_commands(document):
     visitor = CollectCLICommands(document)
     document.walk(visitor)
     return visitor.cli_commands
@@ -276,8 +276,8 @@ class CommandValidator:
             command_parts = [part.lstrip('\n') for part in command_parts]
         except Exception as e:
             raise AssertionError(
-                "Failed to parse this example as shell command: %s\n\n"
-                "Error:\n%s\n" % (command, e)
+                f"Failed to parse this example as shell command: {command}\n\n"
+                f"Error:\n{e}\n"
             )
 
         # TODO - for now skip validation if command uses
@@ -326,8 +326,8 @@ class CommandValidator:
             operation_parser = ArgTableArgParser(arg_table)
 
             errors = []
-            operation_parser._print_message = (
-                lambda message, file: errors.append(message)
+            operation_parser._print_message = lambda message, file: (
+                errors.append(message)
             )
 
             try:

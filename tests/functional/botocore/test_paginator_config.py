@@ -17,6 +17,8 @@ import jmespath
 import pytest
 from jmespath.exceptions import JMESPathError
 
+from tests import ALL_SERVICES
+
 KNOWN_PAGE_KEYS = set(
     [
         'input_token',
@@ -142,8 +144,9 @@ def _pagination_configs():
     session = botocore.session.get_session()
     loader = session.get_component('data_loader')
     services = loader.list_available_services('paginators-1')
+    service_models = {model.service_name: model for model in ALL_SERVICES}
     for service_name in services:
-        service_model = session.get_service_model(service_name)
+        service_model = service_models[service_name]
         page_config = loader.load_service_model(service_name, 'paginators-1')
         for op_name, single_config in page_config['pagination'].items():
             yield (op_name, single_config, service_model)

@@ -11,7 +11,8 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import pytest
-from botocore.session import get_session
+
+from tests import ALL_SERVICES
 
 _H2_REQUIRED = object()
 # Service names to list of known HTTP 2 operations
@@ -27,15 +28,11 @@ _KNOWN_SERVICES = {
 
 
 def _all_test_cases():
-    session = get_session()
-    loader = session.get_component('data_loader')
-
-    services = loader.list_available_services('service-2')
     h2_services = []
     h2_operations = []
 
-    for service in services:
-        service_model = session.get_service_model(service)
+    for service_model in ALL_SERVICES:
+        service = service_model.service_name
         h2_config = service_model.metadata.get('protocolSettings', {}).get(
             'h2'
         )

@@ -21,7 +21,7 @@ import pytest
 from botocore.compat import urlsplit
 from botocore.config import Config
 
-from tests import ClientHTTPStubber
+from tests import ALL_SERVICES, ClientHTTPStubber, create_session
 
 ENDPOINT_TESTDATA_FILE = Path(__file__).parent / "profile-tests.json"
 
@@ -124,7 +124,7 @@ def client_creator(tmp_path):
             f.write(config_file_contents)
             f.flush()
 
-        return botocore.session.Session(profile=profile).create_client(
+        return create_session(profile=profile).create_client(
             service, **client_args
         )
 
@@ -159,15 +159,9 @@ def assert_endpoint_url_used_for_operation(
 
 
 def _known_service_names_and_ids():
-    my_session = botocore.session.get_session()
-    loader = my_session.get_component('data_loader')
-    available_services = loader.list_available_services('service-2')
-
-    result = []
-    for service_name in available_services:
-        model = my_session.get_service_model(service_name)
-        result.append((model.service_name, model.service_id))
-    return sorted(result)
+    return sorted(
+        (model.service_name, model.service_id) for model in ALL_SERVICES
+    )
 
 
 SERVICE_TO_OPERATION = {'s3': 'list_buckets', 'dynamodb': 'list_tables'}

@@ -282,8 +282,11 @@ class SignCommand(BasicCommand):
     ]
 
     def _run_main(self, args, parsed_globals):
+        key_signer = _build_signer(args.private_key)
         signer = CloudFrontSigner(
-            args.key_pair_id, _build_signer(args.private_key).sign
+            args.key_pair_id,
+            key_signer.sign,
+            hash_algorithm=key_signer.hash_algorithm,
         )
         date_less_than = parse_to_aware_datetime(args.date_less_than)
         date_greater_than = args.date_greater_than
@@ -338,6 +341,10 @@ def _create_signer_from_pkcs8(private_key):
 
 
 class RSASigner:
+    # RSA uses SHA-1, which is CloudFront's default verification hash, so the
+    # signed URL needs no Hash-Algorithm parameter.
+    hash_algorithm = None
+
     def __init__(self, private_key):
         key_bytes = private_key.encode('utf8')
         self.priv_key = RSA.new_private_key_from_pem_data(key_bytes)
@@ -351,6 +358,8 @@ class RSASigner:
 
 class ECDSASigner:
     _P256_COORDINATE_LENGTH = 32
+    # ECDSA signs a SHA-256 digest
+    hash_algorithm = 'SHA256'
 
     def __init__(self, private_key):
         try:

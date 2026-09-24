@@ -379,7 +379,7 @@ class CloudFrontSigner:
         signed_url = cf_signer.generate_signed_url(url, policy=my_policy)
     '''
 
-    def __init__(self, key_id, rsa_signer):
+    def __init__(self, key_id, rsa_signer, hash_algorithm=None):
         """Create a CloudFrontSigner.
 
         :type key_id: str
@@ -392,9 +392,17 @@ class CloudFrontSigner:
                CloudFront requires a SHA-1 hash for RSA keys and a SHA-256
                hash for ECDSA keys. Name is kept as ``rsa_signer`` for backward
                compatibility.
+
+        :type hash_algorithm: str
+        :param hash_algorithm: The hash algorithm CloudFront must use to verify
+               the signature, emitted as the ``Hash-Algorithm`` query parameter
+               of the signed URL. CloudFront's edge defaults to SHA-1, so this
+               is only required for ECDSA keys (value ``SHA256``). Leave as
+               ``None`` for RSA (SHA-1) keys, which need no parameter.
         """
         self.key_id = key_id
         self.rsa_signer = rsa_signer
+        self.hash_algorithm = hash_algorithm
 
     def generate_presigned_url(self, url, date_less_than=None, policy=None):
         """Creates a signed CloudFront URL based on given parameters.
@@ -439,6 +447,8 @@ class CloudFrontSigner:
                 f'Key-Pair-Id={self.key_id}',
             ]
         )
+        if self.hash_algorithm is not None:
+            params.append(f'Hash-Algorithm={self.hash_algorithm}')
         return self._build_url(url, params)
 
     def _build_url(self, base_url, extra_params):

@@ -150,6 +150,10 @@ class BaseECDSASignTest(BaseAWSCommandParamsTest):
         # rather than comparing against a fixed value we verify the signature
         # cryptographically against the policy that was signed.
         self.assertEqual(params['Key-Pair-Id'], ['my_id'])
+        # ECDSA signatures are SHA-256; the URL must carry Hash-Algorithm=SHA256
+        # so CloudFront's edge verifies with SHA-256 instead of its SHA-1
+        # default (otherwise verification fails with AccessDenied).
+        self.assertEqual(params['Hash-Algorithm'], ['SHA256'])
         key = EC.new_key_from_der_data(_pem_to_der(self.private_key))
         signature = _url_b64decode(params['Signature'][0])
         digest = hashlib.sha256(policy.encode('utf8')).digest()

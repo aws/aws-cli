@@ -636,6 +636,20 @@ class TestCloudfrontSigner(BaseSignerTest):
         )
         assert_url_equal(signed_url, expected)
 
+    def test_generate_presign_url_with_hash_algorithm(self):
+        signer = CloudFrontSigner(
+            "MY_KEY_ID", lambda message: b'signed', hash_algorithm='SHA256'
+        )
+        signed_url = signer.generate_presigned_url(
+            'http://test.com/foo.txt',
+            date_less_than=datetime.datetime(2016, 1, 1),
+        )
+        expected = (
+            'http://test.com/foo.txt?Expires=1451606400&Signature=c2lnbmVk'
+            '&Key-Pair-Id=MY_KEY_ID&Hash-Algorithm=SHA256'
+        )
+        assert_url_equal(signed_url, expected)
+
     def test_generate_presign_url_with_custom_policy(self):
         policy = self.signer.build_policy(
             'foo',

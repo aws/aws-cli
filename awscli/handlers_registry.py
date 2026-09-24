@@ -919,4 +919,9 @@ MAIN_COMMAND_TABLE_OPS: list[
         'awscli.customizations.update',
         'UpdateCommand',
     ),
+    (
+        CommandTableOp.RENAME,
+        'eventbridgev2',
+        'eventsv2',
+    ),
 ]

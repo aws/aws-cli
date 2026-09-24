@@ -10,12 +10,15 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import contextlib
 import os
 
+import pytest
 from botocore.exceptions import ClientError
 from s3transfer.manager import TransferManager
 
 from awscli.compat import queue
+from awscli.customizations.s3 import s3handler as s3handler_module
 from awscli.customizations.s3.fileinfo import FileInfo
 from awscli.customizations.s3.results import (
     CommandResultRecorder,
@@ -1121,6 +1124,132 @@ class TestUploadStreamRequestSubmitter(BaseTransferRequestSubmitterTest):
         self.assertEqual(result.transfer_type, 'upload')
         self.assertEqual(result.dest, 's3://' + self.bucket + '/' + self.key)
         self.assertEqual(result.src, '-')
+
+
+@skip_if_windows('Symlink tests only supported on mac/linux')
+class TestDownloadRequestSubmitterNoFollowLinks(
+    BaseTransferRequestSubmitterTest
+):
+    """Link detection with the filesystem stubbed.
+
+    Creating a symlink needs elevation on Windows and a junction cannot be
+    created at all off Windows, so these run everywhere by faking the
+    predicate. They are what keeps the junction case from regressing on
+    platforms where the real thing is not reachable.
+    """
+
+    def setUp(self):
+        super().setUp()
+        self.root = os.path.join(os.sep, 'dest')
+        self.cli_params['dest'] = self.root
+        self.cli_params['follow_symlinks'] = False
+        self.transfer_request_submitter = DownloadRequestSubmitter(
+            self.transfer_manager, self.result_queue, self.cli_params
+        )
+
+    def submit(self, dest, key, links=()):
+        with mock.patch(
+            'awscli.customizations.s3.s3handler.is_link',
+            side_effect=lambda p: p in links,
+        ):
+            return self.transfer_request_submitter.submit(
+                FileInfo(
+                    src=self.bucket + '/' + key,
+                    src_type='s3',
+                    dest=dest,
+                    dest_type='local',
+                    operation_name='download',
+                    compare_key=key,
+                )
+            )
+
+    def test_skips_link_in_parent_directory(self):
+        sub = os.path.join(self.root, 'sub')
+        dest = os.path.join(sub, 'obj.txt')
+        self.assertIsNone(self.submit(dest, 'sub/obj.txt', links=[sub]))
+        self.assertEqual(self.transfer_manager.download.call_args_list, [])
+
+    def test_skips_link_at_destination(self):
+        dest = os.path.join(self.root, 'obj.txt')
+        self.assertIsNone(self.submit(dest, 'obj.txt', links=[dest]))
+
+    def test_submits_when_nothing_is_a_link(self):
+        dest = os.path.join(self.root, 'sub', 'obj.txt')
+        self.assertIsNotNone(self.submit(dest, 'sub/obj.txt', links=[]))
+
+    def test_does_not_check_the_destination_root(self):
+        dest = os.path.join(self.root, 'obj.txt')
+        self.assertIsNotNone(self.submit(dest, 'obj.txt', links=[self.root]))
+
+
+MOUNT_POINT_TAG = 0xA0000003
+
+
+@contextlib.contextmanager
+def windows_reparse_tag(tag):
+    """Fakes a Windows filesystem reporting a reparse tag for a path."""
+    with (
+        mock.patch('os.path.islink', return_value=False),
+        mock.patch.object(s3handler_module, 'is_windows', True),
+        mock.patch.object(
+            s3handler_module.stat,
+            'IO_REPARSE_TAG_MOUNT_POINT',
+            MOUNT_POINT_TAG,
+            create=True,
+        ),
+        mock.patch('os.lstat', return_value=mock.Mock(st_reparse_tag=tag)),
+    ):
+        yield
+
+
+def test_is_link_for_symlink():
+    with mock.patch('os.path.islink', return_value=True):
+        assert s3handler_module.is_link('anything')
+
+
+def test_is_link_for_plain_path():
+    with mock.patch('os.path.islink', return_value=False):
+        assert not s3handler_module.is_link('anything')
+
+
+def test_is_link_for_windows_junction():
+    # os.path.islink is False for a junction, so the reparse tag is what
+    # identifies it. Junctions need no elevation to create, unlike symlinks,
+    # so missing them would leave the easier vector open.
+    with windows_reparse_tag(MOUNT_POINT_TAG):
+        assert s3handler_module.is_link('junction')
+
+
+@pytest.mark.parametrize(
+    'tag',
+    [
+        0xA000000C,  # IO_REPARSE_TAG_SYMLINK, already covered by islink
+        0xA000001D,  # IO_REPARSE_TAG_APPEXECLINK, a Store app stub
+        0x9000001A,  # IO_REPARSE_TAG_CLOUD, a OneDrive placeholder
+    ],
+)
+def test_is_link_for_other_reparse_tags(tag):
+    with windows_reparse_tag(tag):
+        assert not s3handler_module.is_link('reparse-point')
+
+
+def test_is_link_for_missing_path():
+    with (
+        mock.patch('os.path.islink', return_value=False),
+        mock.patch.object(s3handler_module, 'is_windows', True),
+        mock.patch('os.lstat', side_effect=OSError()),
+    ):
+        assert not s3handler_module.is_link('missing')
+
+
+def test_is_link_does_not_read_reparse_tag_off_windows():
+    with (
+        mock.patch('os.path.islink', return_value=False),
+        mock.patch.object(s3handler_module, 'is_windows', False),
+        mock.patch('os.lstat') as lstat,
+    ):
+        assert not s3handler_module.is_link('path')
+        assert not lstat.called
 
 
 @skip_if_windows('Symlink tests only supported on mac/linux')

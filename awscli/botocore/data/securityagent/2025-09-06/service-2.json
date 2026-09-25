@@ -700,6 +700,17 @@
       ],
       "documentation":"<p>Initiates the OAuth registration flow with a third-party provider. Returns a redirect URL and CSRF state token for completing the authorization.</p>"
     },
+    "ListActorMessages":{
+      "name":"ListActorMessages",
+      "http":{
+        "method":"POST",
+        "requestUri":"/ListActorMessages",
+        "responseCode":200
+      },
+      "input":{"shape":"ListActorMessagesInput"},
+      "output":{"shape":"ListActorMessagesOutput"},
+      "documentation":"<p>Returns a paginated list of the email MFA messages received for an actor at its server-generated email address, most recent first.</p>"
+    },
     "ListAgentSpaces":{
       "name":"ListAgentSpaces",
       "http":{
@@ -1357,6 +1368,32 @@
     "ActorList":{
       "type":"list",
       "member":{"shape":"Actor"}
+    },
+    "ActorMessage":{
+      "type":"structure",
+      "members":{
+        "sender":{
+          "shape":"SensitiveMessageSender",
+          "documentation":"<p>The address the message was sent from.</p>"
+        },
+        "subject":{
+          "shape":"SensitiveMessageSubject",
+          "documentation":"<p>The subject line of the message.</p>"
+        },
+        "body":{
+          "shape":"SensitiveMessageBody",
+          "documentation":"<p>The plain-text body of the message, containing the MFA code or verification link.</p>"
+        },
+        "receivedAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The time the message was received.</p>"
+        }
+      },
+      "documentation":"<p>A message received at an actor's server-generated email MFA address.</p>"
+    },
+    "ActorMessageList":{
+      "type":"list",
+      "member":{"shape":"ActorMessage"}
     },
     "AddArtifactInput":{
       "type":"structure",
@@ -5616,6 +5653,49 @@
       "type":"list",
       "member":{"shape":"LambdaFunctionArn"}
     },
+    "ListActorMessagesInput":{
+      "type":"structure",
+      "required":[
+        "agentSpaceId",
+        "pentestId",
+        "actorIdentifier"
+      ],
+      "members":{
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return in a single call.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token to use for paginating results that are returned in the response. Set the value of this parameter to null for the first request. For subsequent calls, use the nextToken value returned from the previous request.</p>"
+        },
+        "agentSpaceId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the agent space that owns the pentest.</p>"
+        },
+        "pentestId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the pentest that the actor belongs to.</p>"
+        },
+        "actorIdentifier":{
+          "shape":"String",
+          "documentation":"<p>The identifier of the actor whose messages to list. The identifier is case-insensitive.</p>"
+        }
+      }
+    },
+    "ListActorMessagesOutput":{
+      "type":"structure",
+      "members":{
+        "messages":{
+          "shape":"ActorMessageList",
+          "documentation":"<p>The list of messages received for the actor, most recent first.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token to use for paginating results that are returned in the response. Set the value of this parameter to null for the first request. For subsequent calls, use the nextToken value returned from the previous request.</p>"
+        }
+      }
+    },
     "ListAgentSpacesInput":{
       "type":"structure",
       "members":{
@@ -7547,6 +7627,18 @@
       "documentation":"<p>Sensitive email address.</p>"
     },
     "SensitiveEmailAddress":{
+      "type":"string",
+      "sensitive":true
+    },
+    "SensitiveMessageBody":{
+      "type":"string",
+      "sensitive":true
+    },
+    "SensitiveMessageSender":{
+      "type":"string",
+      "sensitive":true
+    },
+    "SensitiveMessageSubject":{
       "type":"string",
       "sensitive":true
     },

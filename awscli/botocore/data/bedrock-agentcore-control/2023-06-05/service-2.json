@@ -2698,6 +2698,26 @@
       "documentation":"<p>Creates or updates a resource-based policy for a resource with the specified resourceArn.</p> <note> <p>This feature is currently available only for AgentCore Runtime and Gateway.</p> </note>",
       "idempotent":true
     },
+    "RotatePaymentConnectorCredentials":{
+      "name":"RotatePaymentConnectorCredentials",
+      "http":{
+        "method":"POST",
+        "requestUri":"/payments/managers/{paymentManagerId}/connectors/{paymentConnectorId}/rotate-credentials",
+        "responseCode":202
+      },
+      "input":{"shape":"RotatePaymentConnectorCredentialsRequest"},
+      "output":{"shape":"RotatePaymentConnectorCredentialsResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Replaces the service-managed credentials of a payment connector with newly issued credentials.</p> <p>Use this operation only for payment connectors with a <code>provisionMode</code> of <code>QUICK_CREATE</code>. For payment connectors with a <code>provisionMode</code> of <code>MANUAL</code>, call <code>UpdatePaymentCredentialProvider</code> instead after rotating credentials with the payment provider directly.</p> <p>The rotation finishes before the response is returned, and only one rotation runs at a time for a given payment connector. When it succeeds, the new credential is in effect and the payment connector stays in the <code>READY</code> state. When it fails, an error is returned, the payment connector and its existing credential are left unchanged, and you can retry the request.</p> <p>Rotation replaces the credential on the connector's credential provider, so every payment connector that uses that provider is affected. Replace any copy of the previous credential that you use outside AgentCore.</p>",
+      "idempotent":true
+    },
     "SetTokenVaultCMK":{
       "name":"SetTokenVaultCMK",
       "http":{
@@ -5014,6 +5034,29 @@
         }
       },
       "documentation":"<p>Coinbase CDP configuration output with secret ARNs.</p>"
+    },
+    "CoinbaseCdpRotationTargets":{
+      "type":"structure",
+      "required":["secrets"],
+      "members":{
+        "secrets":{
+          "shape":"CoinbaseCdpSecrets",
+          "documentation":"<p>The secrets to rotate. Specify at least one value. Each secret that you specify is rotated independently.</p> <ul> <li> <p> <code>API_KEY</code> - The API key that the payment connector uses to call Coinbase CDP. Rotate it as routine maintenance, or if you suspect that it is compromised.</p> </li> <li> <p> <code>WALLET_SECRET</code> - The wallet secret that signs transactions. Rotate it only if it is lost or compromised. Coinbase CDP allows one wallet secret per project, so it is replaced in place and signing can be briefly interrupted.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>Specifies the service-managed Coinbase CDP secrets to rotate.</p>"
+    },
+    "CoinbaseCdpSecret":{
+      "type":"string",
+      "enum":[
+        "API_KEY",
+        "WALLET_SECRET"
+      ]
+    },
+    "CoinbaseCdpSecrets":{
+      "type":"list",
+      "member":{"shape":"CoinbaseCdpSecret"},
+      "min":1
     },
     "ComponentConfiguration":{
       "type":"structure",
@@ -7925,6 +7968,17 @@
         "Auth0Oauth2",
         "CognitoOauth2"
       ]
+    },
+    "CredentialRotationConfig":{
+      "type":"structure",
+      "members":{
+        "coinbaseCDP":{
+          "shape":"CoinbaseCdpRotationTargets",
+          "documentation":"<p>The credentials to rotate for a Coinbase CDP payment connector.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the service-managed credentials to rotate. Provide the member that matches the payment connector's <code>type</code>.</p>",
+      "union":true
     },
     "CredentialsProviderConfiguration":{
       "type":"structure",
@@ -12670,6 +12724,10 @@
           "shape":"PaymentConnectorType",
           "documentation":"<p>The type of the payment connector, which determines the payment provider integration.</p>"
         },
+        "provisionMode":{
+          "shape":"PaymentConnectorProvisionMode",
+          "documentation":"<p>Specifies how the payment connector was provisioned. Payment connectors that were created before this field was available return <code>MANUAL</code>.</p> <ul> <li> <p> <code>MANUAL</code> - You provided the credential provider configurations, so you own the credentials. Rotate them with the payment provider, then call <code>UpdatePaymentCredentialProvider</code>.</p> </li> <li> <p> <code>QUICK_CREATE</code> - AgentCore provisioned the credential provider for you, so the credentials are service-managed. You can rotate them with <code>RotatePaymentConnectorCredentials</code>.</p> </li> </ul>"
+        },
         "credentialProviderConfigurations":{
           "shape":"CredentialsProviderConfigurations",
           "documentation":"<p>The credential provider configurations for the payment connector.</p>"
@@ -12689,6 +12747,10 @@
         "authorizationUrl":{
           "shape":"PaymentConnectorAuthorizationUrl",
           "documentation":"<p>The URL that the user must open to complete OAuth consent. This field is only present when the payment connector status is <code>PENDING_AUTHENTICATION</code>.</p>"
+        },
+        "credentialsUpdatedAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The timestamp when the payment connector's current service-managed credentials took effect. It is first set when the credentials are provisioned and is updated by each rotation. This field is present only for payment connectors with a <code>provisionMode</code> of <code>QUICK_CREATE</code>.</p>"
         }
       }
     },
@@ -17551,7 +17613,7 @@
         },
         "mcpToolSchema":{
           "shape":"McpToolSchemaConfiguration",
-          "documentation":"<p>The tool schema configuration for the MCP server target. Supported only when the credential provider is configured with an authorization code grant type. Dynamic tool discovery/synchronization will be disabled when target is configured with mcpToolSchema.</p>"
+          "documentation":"<p>A static tool list for the MCP server target. It is supported for all credential providers. Dynamic tool discovery/synchronization will be disabled when a target is configured with mcpToolSchema.</p>"
         },
         "listingMode":{
           "shape":"ListingMode",
@@ -18989,6 +19051,10 @@
         "type":{
           "shape":"PaymentConnectorType",
           "documentation":"<p>The type of the payment connector, which determines the payment provider integration.</p>"
+        },
+        "provisionMode":{
+          "shape":"PaymentConnectorProvisionMode",
+          "documentation":"<p>Specifies how the payment connector was provisioned. Payment connectors that were created before this field was available return <code>MANUAL</code>.</p> <ul> <li> <p> <code>MANUAL</code> - You provided the credential provider configurations, so you own the credentials.</p> </li> <li> <p> <code>QUICK_CREATE</code> - AgentCore provisioned the credential provider for you, so the credentials are service-managed and you can rotate them with <code>RotatePaymentConnectorCredentials</code>.</p> </li> </ul>"
         },
         "status":{
           "shape":"PaymentConnectorStatus",
@@ -20479,6 +20545,64 @@
       "box":true,
       "max":2000,
       "min":125
+    },
+    "RotatePaymentConnectorCredentialsRequest":{
+      "type":"structure",
+      "required":[
+        "paymentManagerId",
+        "paymentConnectorId",
+        "credentialsToRotate"
+      ],
+      "members":{
+        "paymentManagerId":{
+          "shape":"PaymentManagerId",
+          "documentation":"<p>The unique identifier of the parent payment manager.</p>",
+          "location":"uri",
+          "locationName":"paymentManagerId"
+        },
+        "paymentConnectorId":{
+          "shape":"PaymentConnectorId",
+          "documentation":"<p>The unique identifier of the payment connector whose credentials you want to rotate.</p>",
+          "location":"uri",
+          "locationName":"paymentConnectorId"
+        },
+        "credentialsToRotate":{
+          "shape":"CredentialRotationConfig",
+          "documentation":"<p>The credentials to rotate. Specify the member that matches the payment connector's <code>type</code>. Each credential that you select is rotated independently.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier to ensure that the API request completes no more than one time. If you don't specify this field, a value is randomly generated for you. If this token matches a previous request, the service ignores the request, but doesn't return an error. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html\">Ensuring idempotency</a>.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "RotatePaymentConnectorCredentialsResponse":{
+      "type":"structure",
+      "required":[
+        "paymentConnectorId",
+        "paymentManagerId",
+        "lastUpdatedAt",
+        "status"
+      ],
+      "members":{
+        "paymentConnectorId":{
+          "shape":"PaymentConnectorId",
+          "documentation":"<p>The unique identifier of the payment connector.</p>"
+        },
+        "paymentManagerId":{
+          "shape":"PaymentManagerId",
+          "documentation":"<p>The unique identifier of the parent payment manager.</p>"
+        },
+        "lastUpdatedAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The timestamp when the payment connector was last updated, which is when the rotation completed.</p>"
+        },
+        "status":{
+          "shape":"PaymentConnectorStatus",
+          "documentation":"<p>The current status of the payment connector, which is <code>READY</code> after a successful rotation.</p>"
+        }
+      }
     },
     "RouteToTargetAction":{
       "type":"structure",

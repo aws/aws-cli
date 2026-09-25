@@ -77,7 +77,7 @@ def runner_url():
     file_creator = FileCreator()
     return runner(
         file_creator.create_file(
-            'config', '[default]\n' 'cli_help_output = url\n'
+            'config', '[default]\ncli_help_output = url\n'
         )
     )
 
@@ -87,7 +87,7 @@ def runner_browser():
     file_creator = FileCreator()
     return runner(
         file_creator.create_file(
-            'config', '[default]\n' 'cli_help_output = browser\n'
+            'config', '[default]\ncli_help_output = browser\n'
         )
     )
 
@@ -524,6 +524,44 @@ class TestIotData(BaseAWSHelpOutputTest):
             'The default endpoints (intended for testing purposes only) can be found at '
             'https://docs.aws.amazon.com/general/latest/gr/iot-core.html#iot-core-data-plane-endpoints'
         )
+
+
+class TestAgentToolkitNote(BaseAWSHelpOutputTest):
+    NOTE = 'See also: Official AWS skills may be available, "aws agent-toolkit help".'
+
+    def test_note_in_provider_help(self):
+        self.driver.main(['help'])
+        self.assert_contains(
+            'Use *aws agent-toolkit help* to browse and install'
+        )
+
+    def test_note_in_service_help(self):
+        self.driver.main(['ec2', 'help'])
+        self.assert_contains(self.NOTE)
+
+    def test_note_in_operation_help(self):
+        self.driver.main(['ec2', 'describe-instances', 'help'])
+        self.assert_contains(self.NOTE)
+
+    def test_note_in_custom_service_help(self):
+        self.driver.main(['s3', 'help'])
+        self.assert_contains(self.NOTE)
+
+    def test_note_in_custom_operation_help(self):
+        self.driver.main(['s3', 'ls', 'help'])
+        self.assert_contains(self.NOTE)
+
+    def test_note_not_in_agent_toolkit_service_help(self):
+        self.driver.main(['agent-toolkit', 'help'])
+        self.assert_not_contains(self.NOTE)
+
+    def test_note_not_in_agent_toolkit_modeled_operation_help(self):
+        self.driver.main(['agent-toolkit', 'list-available-skills', 'help'])
+        self.assert_not_contains(self.NOTE)
+
+    def test_note_not_in_agent_toolkit_custom_operation_help(self):
+        self.driver.main(['agent-toolkit', 'add-skill', 'help'])
+        self.assert_not_contains(self.NOTE)
 
 
 class TestAliases(BaseAWSHelpOutputTest):

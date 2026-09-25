@@ -518,6 +518,16 @@ class CloudFormationStackResource(Resource):
             )
 
 
+class CloudFormationStackSetResource(CloudFormationStackResource):
+    """
+    Represents CloudFormation::StackSet resource that can refer to a
+    stack template via the TemplateURL property.
+    """
+
+    RESOURCE_TYPE = "AWS::CloudFormation::StackSet"
+    PROPERTY_NAME = "TemplateURL"
+
+
 class ServerlessApplicationResource(CloudFormationStackResource):
     """
     Represents Serverless::Application resource that can refer to a nested
@@ -565,6 +575,7 @@ RESOURCES_EXPORT_LIST = [
     LambdaFunctionResource,
     ElasticBeanstalkApplicationVersion,
     CloudFormationStackResource,
+    CloudFormationStackSetResource,
     ServerlessApplicationResource,
     ServerlessLayerVersionResource,
     LambdaLayerVersionResource,

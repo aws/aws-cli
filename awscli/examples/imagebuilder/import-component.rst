@@ -1,29 +1,28 @@
-**To import a component**
+**To import a component from a shell script**
 
-The following ``import-component`` example imports a preexisting script using a JSON file. ::
+The following ``import-component`` example imports a plain shell script as a Linux build component. Image Builder wraps the script in a component document with a single step that runs the script. ::
 
     aws imagebuilder import-component \
-        --cli-input-json file://import-component.json
+        --name my-example-imported-component \
+        --semantic-version 1.0.0 \
+        --description "Installs my application from an imported shell script" \
+        --type BUILD \
+        --format SHELL \
+        --platform Linux \
+        --data file://my-app-install.sh \
+        --client-token a1b2c3d4-5678-90ab-cdef-EXAMPLE22222
 
-Contents of ``import-component.json``::
+Contents of ``my-app-install.sh``::
 
-    {
-        "name": "MyImportedComponent",
-        "semanticVersion": "1.0.0",
-        "description": "An example of how to import a component",
-        "changeDescription": "First commit message.",
-        "format": "SHELL",
-        "platform": "Windows",
-        "type": "BUILD",
-        "uri": "s3://s3-bucket-name/s3-bucket-path/component.yaml"
-    }
+    sudo yum update -y
+    sudo yum -y install my-app
 
 Output::
 
     {
         "requestId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
         "clientToken": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
-        "componentBuildVersionArn": "arn:aws:imagebuilder:us-west-2:123456789012:component/myimportedcomponent/1.0.0/1"
+        "componentBuildVersionArn": "arn:aws:imagebuilder:us-west-2:123456789012:component/my-example-imported-component/1.0.0/1"
     }
 
-For more information, see `Setting Up and Managing an EC2 Image Builder Image Pipeline Using the AWS CLI <https://docs.aws.amazon.com/imagebuilder/latest/userguide/managing-image-builder-cli.html>`__ in the *EC2 Image Builder Users Guide*.
+For more information, see `Develop custom components for your Image Builder image <https://docs.aws.amazon.com/imagebuilder/latest/userguide/create-custom-components.html>`__ in the *EC2 Image Builder User Guide*.

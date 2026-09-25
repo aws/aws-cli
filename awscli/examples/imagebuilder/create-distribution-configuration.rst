@@ -1,54 +1,80 @@
-**To create a distribution configuration**
+**Example 1: To create a distribution configuration**
 
-The following ``create-distribution-configuration`` example creates a distribution configuration using a JSON file. ::
+The following ``create-distribution-configuration`` example creates a distribution configuration that distributes the output AMI to two Regions. The AMI name includes the build date, so that repeated builds create unique AMI names. ::
 
     aws imagebuilder create-distribution-configuration \
-        --cli-input-json file:/create-distribution-configuration.json
+        --name my-example-distribution \
+        --description "Copies the output AMI to a second Region" \
+        --distributions file://distribution-settings.json \
+        --client-token a1b2c3d4-5678-90ab-cdef-EXAMPLE22222
 
-Contents of ``create-distribution-configuration.json``::
+Contents of ``distribution-settings.json``::
 
-    {
-        "name": "MyExampleDistribution",
-        "description": "Copies AMI to eu-west-1",
-        "distributions": [
-            {
-                "region": "us-west-2",
-                "amiDistributionConfiguration": {
-                    "name": "Name {{imagebuilder:buildDate}}",
-                    "description": "An example image name with parameter references",
-                    "amiTags": {
-                        "KeyName": "{{ssm:parameter_name}}"
-                    },
-                    "launchPermission": {
-                        "userIds": [
-                            "123456789012"
-                        ]
-                    }
-                }
-            },
-            {
-                "region": "eu-west-1",
-                "amiDistributionConfiguration": {
-                    "name": "My {{imagebuilder:buildVersion}} image {{imagebuilder:buildDate}}",
-                    "amiTags": {
-                        "KeyName": "Value"
-                    },
-                    "launchPermission": {
-                        "userIds": [
-                            "123456789012"
-                        ]
-                    }
-                }
+    [
+        {
+            "region": "us-west-2",
+            "amiDistributionConfiguration": {
+                "name": "my-example-image-{{ imagebuilder:buildDate }}"
             }
-        ]
-    }
+        },
+        {
+            "region": "us-east-1",
+            "amiDistributionConfiguration": {
+                "name": "my-example-image-{{ imagebuilder:buildDate }}"
+            }
+        }
+    ]
 
 Output::
 
     {
         "requestId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
         "clientToken": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
-        "distributionConfigurationArn": "arn:aws:imagebuilder:us-west-2:123456789012:distribution-configuration/myexampledistribution"
+        "distributionConfigurationArn": "arn:aws:imagebuilder:us-west-2:123456789012:distribution-configuration/my-example-distribution"
     }
 
-For more information, see `Setting Up and Managing an EC2 Image Builder Image Pipeline Using the AWS CLI <https://docs.aws.amazon.com/imagebuilder/latest/userguide/managing-image-builder-cli.html>`__ in the *EC2 Image Builder Users Guide*.
+**Example 2: To create a distribution configuration with launch permissions and a launch template update**
+
+The following ``create-distribution-configuration`` example creates a distribution configuration that distributes the output AMI to two Regions. In us-east-1, it shares the AMI with another AWS account. In us-west-2, it sets the new AMI as the default version of your launch template. ::
+
+    aws imagebuilder create-distribution-configuration \
+        --name my-example-distribution \
+        --description "Distributes the output AMI to two Regions and shares it with another account" \
+        --distributions file://distributions.json \
+        --client-token a1b2c3d4-5678-90ab-cdef-EXAMPLE22222
+
+Contents of ``distributions.json``::
+
+    [
+        {
+            "region": "us-west-2",
+            "amiDistributionConfiguration": {
+                "name": "my-example-image-{{ imagebuilder:buildDate }}"
+            },
+            "launchTemplateConfigurations": [
+                {
+                    "launchTemplateId": "lt-1234567890abcdef0",
+                    "setDefaultVersion": true
+                }
+            ]
+        },
+        {
+            "region": "us-east-1",
+            "amiDistributionConfiguration": {
+                "name": "my-example-image-{{ imagebuilder:buildDate }}",
+                "launchPermission": {
+                    "userIds": ["123456789111"]
+                }
+            }
+        }
+    ]
+
+Output::
+
+    {
+        "requestId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
+        "clientToken": "a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
+        "distributionConfigurationArn": "arn:aws:imagebuilder:us-west-2:123456789012:distribution-configuration/my-example-distribution"
+    }
+
+For more information, see `Create and update AMI distribution configurations <https://docs.aws.amazon.com/imagebuilder/latest/userguide/cr-upd-ami-distribution-settings.html>`__ in the *EC2 Image Builder User Guide*.

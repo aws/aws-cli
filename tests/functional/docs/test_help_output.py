@@ -267,6 +267,110 @@ class TestHelpOutput(BaseAWSHelpOutputTest):
         self.assert_not_contains('put-bucket-notification\n')
 
 
+class TestHelpFlagOutput(BaseAWSHelpOutputTest):
+    """Test that --help flag produces the same output as the help subcommand."""
+
+    def test_top_level_help_flag(self):
+        self.driver.main(['--help'])
+        self.assert_contains('***\naws\n***')
+        self.assert_contains(
+            'The AWS Command Line Interface is a unified tool '
+            'to manage your AWS services.'
+        )
+
+    def test_service_help_flag(self):
+        self.driver.main(['ec2', '--help'])
+        self.assert_contains('***\nec2\n***')
+        self.assert_contains('===========\nDescription\n===========')
+        self.assert_contains('* describe-instances')
+
+    def test_operation_help_flag(self):
+        self.driver.main(['ec2', 'run-instances', '--help'])
+        self.assert_contains('*************\nrun-instances\n*************')
+        self.assert_contains('Launches the specified number of instances')
+
+    def test_custom_service_help_flag(self):
+        self.driver.main(['s3', '--help'])
+        self.assert_contains('high-level S3 commands')
+        self.assert_contains('* cp')
+
+    def test_custom_operation_help_flag(self):
+        self.driver.main(['s3', 'ls', '--help'])
+        self.assert_contains('List S3 objects')
+
+    def test_help_flag_takes_priority_over_missing_param_value(self):
+        # --query is a global arg unknown to the operation parser, so --help
+        # takes priority and renders operation help.
+        self.driver.main(
+            [
+                "s3api",
+                "delete-object",
+                "--bucket",
+                "b",
+                "--key",
+                "k",
+                "--query",
+                "--help",
+            ]
+        )
+        self.assert_contains('delete-object')
+
+    def test_help_flag_abbreviation(self):
+        self.driver.main(['--hel'])
+        self.assert_contains('***\naws\n***')
+
+    def test_help_flag_with_operation_level_choices_param(self):
+        # --acl is an operation-level param with constrained choices.
+        # --help should render help, not error about invalid choice.
+        self.driver.main(['s3', 'cp', '--acl', '--help'])
+        self.assert_contains('cp')
+
+    def test_help_flag_with_operation_level_value_param(self):
+        # --expected-size takes a free-form value.
+        # --help should render help, not consume 'help' as the value.
+        self.driver.main(['s3', 'cp', '--expected-size', '--help'])
+        self.assert_contains('cp')
+
+    def test_help_flag_with_positional_args(self):
+        # Positional args should be ignored when --help is present.
+        self.driver.main(
+            ['s3', 'cp', 'localfile', 's3://bucket/key', '--help']
+        )
+        self.assert_contains('cp')
+
+    def test_help_flag_before_modeled_operation(self):
+        # --help before the operation should still show operation help.
+        self.driver.main(['s3api', '--help', 'put-object'])
+        self.assert_contains('put-object')
+
+    def test_help_flag_before_modeled_service(self):
+        # --help before the service should still show the deepest
+        # recognized command's help.
+        self.driver.main(['--help', 's3api', 'put-object'])
+        self.assert_contains('put-object')
+
+    def test_help_flag_with_invalid_top_level_command(self):
+        stderr = StringIO()
+        with mock.patch('sys.stderr', stderr):
+            rc = self.driver.main(['fake-service', '--help'])
+        self.assertEqual(rc, 252)
+        self.assertIn('Found invalid choice', stderr.getvalue())
+
+    def test_help_flag_with_invalid_service_operation(self):
+        stderr = StringIO()
+        with mock.patch('sys.stderr', stderr):
+            rc = self.driver.main(['s3api', 'fake-command', '--help'])
+        self.assertEqual(rc, 252)
+        self.assertIn('Found invalid choice', stderr.getvalue())
+
+    def test_help_flag_with_invalid_custom_command_operation(self):
+        stderr = StringIO()
+        with mock.patch('sys.stderr', stderr):
+            rc = self.driver.main(['s3', 'fake-command', '--help'])
+        self.assertEqual(rc, 252)
+        self.assertIn('Found invalid choice', stderr.getvalue())
+
+
 class TestRemoveDeprecatedCommands(BaseAWSHelpOutputTest):
     def assert_command_does_not_exist(self, service, command):
         # Basically try to get the help output for the removed

@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+2.37.3
+======
+
+* enhancement:``eventsv2``: Renamed ``aws eventbridgev2`` command to ``aws eventsv2``.
+
+
 2.37.2
 ======
 

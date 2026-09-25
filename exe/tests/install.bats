@@ -147,3 +147,14 @@ assert_expected_symlink() {
   [[ "$output" = *"Found same AWS CLI version"* ]]
   assert_expected_installation "$AWS_EXE_VERSION"
 }
+
+@test "fails when aws executable cannot be run (e.g. on Alpine/musl)" {
+  # Modify the aws executable to fail
+  aws_exe="$EXE_DIST_DIR/aws"
+  echo "exit 1" > "$aws_exe"
+
+  run_install -i "$INSTALL_DIR" -b "$BIN_DIR"
+  [ "$status" -eq 1 ]
+  [[ "$output" = *"Failed to run"* ]]
+  [[ "$output" = *"musl-based Linux"* ]]
+}

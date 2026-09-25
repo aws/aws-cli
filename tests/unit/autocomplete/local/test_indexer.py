@@ -72,6 +72,7 @@ class DummyArg:
         self.positional_arg = positional_arg
         self.required = required
         self.help_text = help_text
+        self.documentation = help_text
 
 
 class BaseIndexerTest(unittest.TestCase):
@@ -92,9 +93,9 @@ class BaseIndexerTest(unittest.TestCase):
                         'describe-instances': DummyCommand(
                             'describe-instances',
                             arg_table={
-                                'instance-ids': DummyArg('instance-ids'),
+                                'instance-ids': DummyArg('instance-ids', help_text='The IDs of the instances'),
                                 'filters': DummyArg(
-                                    'filters', 'list', nargs='+'
+                                    'filters', 'list', nargs='+', help_text='The filters'
                                 ),
                             },
                         ),
@@ -200,7 +201,7 @@ class TestCanRetrieveCommands(BaseIndexerTest):
         self.indexer.generate_index(self.aws_command)
         self.assertEqual(
             set(self.query.commands_with_full_name(lineage=['aws'])),
-            set([('ec2', 'Amazon Elastic'), ('s3', 'High level S3 commands')]),
+            set([('ec2', 'Amazon Elastic', ''), ('s3', 'High level S3 commands', '')]),
         )
 
     def test_can_get_argument_data(self):
@@ -217,6 +218,7 @@ class TestCanRetrieveCommands(BaseIndexerTest):
                 type_name='list',
                 command='describe-instances',
                 parent='aws.ec2',
+                help_text='The filters',
                 nargs='+',
                 positional_arg='0',
                 required=False,

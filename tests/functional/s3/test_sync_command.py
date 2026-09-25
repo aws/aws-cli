@@ -966,6 +966,64 @@ class TestSyncCommand(BaseS3TransferCommandTest):
         self.assertEqual(self.operations_called[1][0].name, 'ListObjectsV2')
 
 
+@skip_if_windows('Symlink tests only supported on mac/linux')
+class TestSyncDownloadNoFollowSymlinks(BaseS3TransferCommandTest):
+    prefix = 's3 sync '
+
+    def setUp(self):
+        super().setUp()
+        self.dest = os.path.join(self.files.rootdir, 'dest')
+        os.makedirs(self.dest)
+        self.outside = os.path.join(self.files.rootdir, 'outside')
+        os.makedirs(self.outside)
+        self.escaped = os.path.join(self.outside, 'escaped.txt')
+        with open(self.escaped, 'w') as f:
+            f.write('original')
+        # Object keys under 'sub/' resolve to self.outside.
+        self.symlink = os.path.join(self.dest, 'sub')
+        os.symlink(self.outside, self.symlink)
+        self.parsed_responses = [
+            {
+                'Contents': [
+                    {
+                        'Key': 'sub/escaped.txt',
+                        'Size': 8,
+                        'LastModified': '00:00:00Z',
+                        'ETag': '"foo-1"',
+                    },
+                ],
+                'CommonPrefixes': [],
+            },
+            {'ETag': '"foo-1"', 'Body': BytesIO(b'injected')},
+        ]
+
+    def assert_symlink_intact(self):
+        self.assertTrue(os.path.islink(self.symlink))
+
+    def test_skips_object_that_would_be_written_through_symlink(self):
+        cmdline = f'{self.prefix} s3://bucket {self.dest} --no-follow-symlinks'
+        self.run_cmd(cmdline, expected_rc=0)
+
+        self.assertEqual(
+            [op[0].name for op in self.operations_called], ['ListObjectsV2']
+        )
+        with open(self.escaped) as f:
+            self.assertEqual(f.read(), 'original')
+        self.assert_symlink_intact()
+
+    def test_follows_symlink_by_default(self):
+        cmdline = f'{self.prefix} s3://bucket {self.dest}'
+        self.run_cmd(cmdline, expected_rc=0)
+
+        self.assertEqual(
+            [op[0].name for op in self.operations_called],
+            ['ListObjectsV2', 'GetObject'],
+        )
+        with open(self.escaped) as f:
+            self.assertEqual(f.read(), 'injected')
+        self.assert_symlink_intact()
+
+
 class TestSyncSourceRegion(BaseS3CLIRunnerTest):
     def test_respects_source_region(self):
         source_region = 'af-south-1'

@@ -10,12 +10,17 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import contextlib
 import os
+import signal
+import stat
 
+import pytest
 from botocore.exceptions import ClientError
 from s3transfer.manager import TransferManager
 
 from awscli.compat import queue
+from awscli.customizations.s3 import s3handler as s3handler_module
 from awscli.customizations.s3.fileinfo import FileInfo
 from awscli.customizations.s3.results import (
     CommandResultRecorder,
@@ -60,7 +65,7 @@ from awscli.customizations.s3.utils import (
     StdoutBytesWriter,
     WarningResult,
 )
-from awscli.testutils import FileCreator, mock, unittest
+from awscli.testutils import FileCreator, mock, skip_if_windows, unittest
 
 
 def runtime_config(**kwargs):
@@ -1123,6 +1128,361 @@ class TestUploadStreamRequestSubmitter(BaseTransferRequestSubmitterTest):
         self.assertEqual(result.src, '-')
 
 
+class TestDownloadRequestSubmitterNoFollowLinks(
+    BaseTransferRequestSubmitterTest
+):
+    def setUp(self):
+        super().setUp()
+        # Drive qualified so that the root and the destinations built from it
+        # agree on Windows, where abspath adds the current drive.
+        self.root = os.path.abspath(os.path.join(os.sep, 'dest'))
+        self.cli_params['dest'] = self.root
+        self.cli_params['follow_symlinks'] = False
+        self.transfer_request_submitter = DownloadRequestSubmitter(
+            self.transfer_manager, self.result_queue, self.cli_params
+        )
+
+    def submit(self, dest, key, links=()):
+        with mock.patch(
+            'awscli.customizations.s3.s3handler.is_link',
+            side_effect=lambda p: p in links,
+        ):
+            return self.transfer_request_submitter.submit(
+                FileInfo(
+                    src=self.bucket + '/' + key,
+                    src_type='s3',
+                    dest=dest,
+                    dest_type='local',
+                    operation_name='download',
+                    compare_key=key,
+                )
+            )
+
+    def test_skips_link_in_parent_directory(self):
+        sub = os.path.join(self.root, 'sub')
+        dest = os.path.join(sub, 'obj.txt')
+        self.assertIsNone(self.submit(dest, 'sub/obj.txt', links=[sub]))
+        self.assertEqual(self.transfer_manager.download.call_args_list, [])
+
+    def test_skips_link_at_destination(self):
+        dest = os.path.join(self.root, 'obj.txt')
+        self.assertIsNone(self.submit(dest, 'obj.txt', links=[dest]))
+        self.assertEqual(self.transfer_manager.download.call_args_list, [])
+
+    def test_submits_when_nothing_is_a_link(self):
+        dest = os.path.join(self.root, 'sub', 'obj.txt')
+        self.assertIsNotNone(self.submit(dest, 'sub/obj.txt', links=[]))
+
+    def test_skips_link_at_the_destination_root(self):
+        dest = os.path.join(self.root, 'obj.txt')
+        self.assertIsNone(self.submit(dest, 'obj.txt', links=[self.root]))
+        self.assertEqual(self.transfer_manager.download.call_args_list, [])
+
+
+@contextlib.contextmanager
+def _time_limit(seconds):
+    """Fails instead of hanging if the body does not finish in time."""
+
+    def _raise(*args):
+        raise AssertionError('timed out, likely a non-terminating loop')
+
+    previous = signal.signal(signal.SIGALRM, _raise)
+    signal.alarm(seconds)
+    try:
+        yield
+    finally:
+        signal.alarm(0)
+        signal.signal(signal.SIGALRM, previous)
+
+
+MOUNT_POINT_TAG = 0xA0000003
+
+
+@contextlib.contextmanager
+def windows_reparse_tag(tag):
+    """Fakes a Windows filesystem reporting a reparse tag for a path.
+
+    ``stat.IO_REPARSE_TAG_MOUNT_POINT`` only exists on Windows, so it is
+    created here to let these run everywhere. ``test_junction_tag_constant``
+    covers the real name, which this would otherwise hide.
+    """
+    with (
+        mock.patch('os.path.islink', return_value=False),
+        mock.patch.object(s3handler_module, 'is_windows', True),
+        mock.patch.object(
+            s3handler_module.stat,
+            'IO_REPARSE_TAG_MOUNT_POINT',
+            MOUNT_POINT_TAG,
+            create=True,
+        ),
+        mock.patch('os.lstat', return_value=mock.Mock(st_reparse_tag=tag)),
+    ):
+        yield
+
+
+@pytest.mark.skipif(
+    not hasattr(stat, 'IO_REPARSE_TAG_MOUNT_POINT'),
+    reason='Reparse tags only exist on Windows',
+)
+def test_junction_tag_constant_matches_the_platform():
+    # Guards against a typo in the constant or attribute name, which
+    # is_link would otherwise swallow and report as "not a link".
+    assert stat.IO_REPARSE_TAG_MOUNT_POINT == MOUNT_POINT_TAG
+    assert hasattr(os.lstat(os.getcwd()), 'st_reparse_tag')
+
+
+def test_is_link_for_symlink():
+    with mock.patch('os.path.islink', return_value=True):
+        assert s3handler_module.is_link('anything')
+
+
+def test_is_link_for_plain_path():
+    with mock.patch('os.path.islink', return_value=False):
+        assert not s3handler_module.is_link('anything')
+
+
+def test_is_link_for_windows_junction():
+    # os.path.islink is False for a junction, so the reparse tag is what
+    # identifies it. Junctions need no elevation to create, unlike symlinks,
+    # so missing them would leave the easier vector open.
+    with windows_reparse_tag(MOUNT_POINT_TAG):
+        assert s3handler_module.is_link('junction')
+
+
+@pytest.mark.parametrize(
+    'tag',
+    [
+        0xA000000C,  # IO_REPARSE_TAG_SYMLINK, already covered by islink
+        0xA000001D,  # IO_REPARSE_TAG_APPEXECLINK, a Store app stub
+        0x9000001A,  # IO_REPARSE_TAG_CLOUD, a OneDrive placeholder
+    ],
+)
+def test_is_link_for_other_reparse_tags(tag):
+    with windows_reparse_tag(tag):
+        assert not s3handler_module.is_link('reparse-point')
+
+
+def test_is_link_for_missing_path():
+    with (
+        mock.patch('os.path.islink', return_value=False),
+        mock.patch.object(s3handler_module, 'is_windows', True),
+        mock.patch('os.lstat', side_effect=OSError()),
+    ):
+        assert not s3handler_module.is_link('missing')
+
+
+def test_is_link_does_not_read_reparse_tag_off_windows():
+    with (
+        mock.patch('os.path.islink', return_value=False),
+        mock.patch.object(s3handler_module, 'is_windows', False),
+        mock.patch('os.lstat') as lstat,
+    ):
+        assert not s3handler_module.is_link('path')
+        assert not lstat.called
+
+
+@skip_if_windows('Symlink tests only supported on mac/linux')
+class TestDownloadRequestSubmitterNoFollowSymlinks(
+    BaseTransferRequestSubmitterTest
+):
+    def setUp(self):
+        super().setUp()
+        self.files = FileCreator()
+        self.root = os.path.join(self.files.rootdir, 'dest')
+        os.makedirs(self.root)
+        self.cli_params['dest'] = self.root
+        self.cli_params['follow_symlinks'] = False
+        self.transfer_request_submitter = DownloadRequestSubmitter(
+            self.transfer_manager, self.result_queue, self.cli_params
+        )
+        self.outside = os.path.join(self.files.rootdir, 'outside')
+        os.makedirs(self.outside)
+
+    def tearDown(self):
+        super().tearDown()
+        self.files.remove_all()
+
+    def submit(self, dest, key='mykey'):
+        return self.transfer_request_submitter.submit(
+            FileInfo(
+                src=self.bucket + '/' + key,
+                src_type='s3',
+                dest=dest,
+                dest_type='local',
+                operation_name='download',
+                compare_key=key,
+            )
+        )
+
+    def assert_skipped(self, dest, key='mykey'):
+        self.assertIsNone(self.submit(dest, key))
+        self.assertEqual(self.transfer_manager.download.call_args_list, [])
+        # Skips are silent so that the exit code is unaffected.
+        self.assertTrue(self.result_queue.empty())
+
+    def assert_submitted(self, dest, key='mykey'):
+        self.assertIsNotNone(self.submit(dest, key))
+        self.assertEqual(len(self.transfer_manager.download.call_args_list), 1)
+
+    def test_skips_dest_that_is_symlink(self):
+        target = self.files.create_file('target.txt', 'contents')
+        dest = os.path.join(self.root, 'link.txt')
+        os.symlink(target, dest)
+        self.assert_skipped(dest)
+
+    def test_skips_dest_under_symlinked_directory(self):
+        os.symlink(self.outside, os.path.join(self.root, 'sub'))
+        self.assert_skipped(
+            os.path.join(self.root, 'sub', 'obj.txt'), key='sub/obj.txt'
+        )
+
+    def test_skips_dest_with_parent_reference_after_symlink(self):
+        # os.path.relpath would normalize 'link/..' away, hiding the symlink
+        # that the kernel resolves first.
+        os.symlink(self.outside, os.path.join(self.root, 'link'))
+        self.assert_skipped(
+            os.path.join(self.root, 'link', os.pardir, 'obj.txt'),
+            key='link/../obj.txt',
+        )
+
+    def test_skips_dest_with_parent_reference_and_no_symlink(self):
+        # Conservative: a parent reference is skipped even with no symlink
+        # present, because whether one is reachable through it cannot be
+        # determined before the download creates the missing directories.
+        os.makedirs(os.path.join(self.root, 'sub'))
+        self.assert_skipped(
+            os.path.join(self.root, 'sub', os.pardir, 'obj.txt'),
+            key='sub/../obj.txt',
+        )
+
+    def test_terminates_for_dest_root_of_filesystem_root(self):
+        # 'sync s3://bucket /' really produces root '/' and destinations of
+        # the form '//key'. dirname('//') is '//' on POSIX, so without the
+        # fixpoint break the walk never reaches the root and loops forever.
+        self.cli_params['dest'] = os.sep
+        with _time_limit(5):
+            self.transfer_request_submitter._find_link_in_dest_path(
+                os.sep * 2 + 'a' + os.sep + 'b'
+            )
+
+    def test_skips_dest_with_trailing_separator(self):
+        # A key ending in '/' produces a destination with a trailing
+        # separator, which islink never reports as a link.
+        symlink = os.path.join(self.root, 'sub')
+        os.symlink(self.outside, symlink)
+        self.assert_skipped(symlink + os.sep, key='sub/')
+
+    def test_handles_dest_root_of_filesystem_root(self):
+        # A root of os.sep must not send the walk into an endless loop. Every
+        # path below the root is in scope, so the outermost symlink is the one
+        # reported, which on macOS is /var rather than the one created here.
+        self.cli_params['dest'] = os.sep
+        os.symlink(self.outside, os.path.join(self.root, 'sub'))
+        dest = os.path.join(self.root, 'sub', 'obj.txt')
+        found = self.transfer_request_submitter._find_link_in_dest_path(dest)
+        self.assertIsNotNone(found)
+        self.assertTrue(dest.startswith(found))
+
+    def test_skips_dest_under_deeply_nested_symlinked_directory(self):
+        os.makedirs(os.path.join(self.root, 'a', 'b'))
+        os.symlink(self.outside, os.path.join(self.root, 'a', 'b', 'sub'))
+        self.assert_skipped(
+            os.path.join(self.root, 'a', 'b', 'sub', 'obj.txt'),
+            key='a/b/sub/obj.txt',
+        )
+
+    def test_skips_when_dest_root_is_symlink(self):
+        # Matches uploads, where a symlinked source root transfers nothing.
+        root_link = os.path.join(self.files.rootdir, 'rootlink')
+        os.symlink(self.outside, root_link)
+        self.cli_params['dest'] = root_link
+        self.assert_skipped(os.path.join(root_link, 'obj.txt'), key='obj.txt')
+
+    def test_skips_when_dest_itself_is_symlink(self):
+        # Single-file cp onto a symlink: writing to it means following it.
+        target = self.files.create_file('target.txt', 'contents')
+        dest = os.path.join(self.files.rootdir, 'filelink')
+        os.symlink(target, dest)
+        self.cli_params['dest'] = dest
+        self.assert_skipped(dest)
+
+    def test_skips_symlink_reached_through_missing_parent_reference(self):
+        # os.path.islink cannot resolve a path through a directory that does
+        # not exist yet, and the download creates missing directories after
+        # this check runs, so a parent reference is never followed.
+        os.symlink(self.outside, os.path.join(self.root, 'b'))
+        self.assert_skipped(
+            os.path.join(self.root, 'a', os.pardir, 'b', 'obj.txt'),
+            key='a/../b/obj.txt',
+        )
+
+    def test_skips_with_relative_dest_root(self):
+        # cli_params['dest'] is the raw user string, so a relative destination
+        # must still be resolved before it is compared against fileinfo.dest.
+        os.symlink(self.outside, os.path.join(self.root, 'sub'))
+        with mock.patch('os.getcwd', return_value=self.files.rootdir):
+            self.cli_params['dest'] = 'dest'
+            self.assert_skipped(
+                os.path.join(self.root, 'sub', 'obj.txt'), key='sub/obj.txt'
+            )
+
+    def test_submits_dest_with_no_symlinks(self):
+        os.makedirs(os.path.join(self.root, 'sub'))
+        self.assert_submitted(
+            os.path.join(self.root, 'sub', 'obj.txt'), key='sub/obj.txt'
+        )
+
+    def test_submits_when_symlink_is_above_dest_root(self):
+        link_to_root = os.path.join(self.files.rootdir, 'rootlink')
+        os.symlink(self.root, link_to_root)
+        nested = os.path.join(link_to_root, 'sub')
+        os.makedirs(nested)
+        self.cli_params['dest'] = nested
+        self.assert_submitted(os.path.join(nested, 'obj.txt'), key='obj.txt')
+
+    def test_submits_when_following_symlinks(self):
+        self.cli_params['follow_symlinks'] = True
+        target = self.files.create_file('target.txt', 'contents')
+        dest = os.path.join(self.root, 'link.txt')
+        os.symlink(target, dest)
+        self.assert_submitted(dest)
+
+    def test_does_not_delete_source_object_for_skipped_move(self):
+        self.cli_params['is_move'] = True
+        os.symlink(self.outside, os.path.join(self.root, 'sub'))
+        dest = os.path.join(self.root, 'sub', 'obj.txt')
+        self.assert_skipped(dest, key='sub/obj.txt')
+
+        # A submitted move attaches the subscriber that deletes the source
+        # object, so assert the skip path never builds one.
+        self.cli_params['follow_symlinks'] = True
+        self.assert_submitted(dest, key='sub/obj.txt')
+        subscribers = self.transfer_manager.download.call_args[1][
+            'subscribers'
+        ]
+        self.assertTrue(
+            any(
+                isinstance(s, DeleteSourceObjectSubscriber)
+                for s in subscribers
+            )
+        )
+
+    def test_checks_the_dest_root_then_each_directory_below_it(self):
+        sub = os.path.join(self.root, 'a', 'b')
+        os.makedirs(sub)
+        dest = os.path.join(sub, 'obj.txt')
+        with mock.patch(
+            'awscli.customizations.s3.s3handler.os.path.islink',
+            side_effect=os.path.islink,
+        ) as islink:
+            self.submit(dest, key='a/b/obj.txt')
+        # Root-most first, so the outermost symlink is the one reported.
+        self.assertEqual(
+            [call[0][0] for call in islink.call_args_list],
+            [self.root, os.path.join(self.root, 'a'), sub, dest],
+        )
+
+
 class TestDownloadStreamRequestSubmitter(BaseTransferRequestSubmitterTest):
     def setUp(self):
         super(TestDownloadStreamRequestSubmitter, self).setUp()
@@ -1131,6 +1491,22 @@ class TestDownloadStreamRequestSubmitter(BaseTransferRequestSubmitterTest):
         self.transfer_request_submitter = DownloadStreamRequestSubmitter(
             self.transfer_manager, self.result_queue, self.cli_params
         )
+
+    def test_submits_when_a_link_shares_the_stream_dest_name(self):
+        # '-' resolves against the working directory like any other
+        # destination, so a link of that name must not cause a skip.
+        self.cli_params['follow_symlinks'] = False
+        self.cli_params['dest'] = self.filename
+        fileinfo = FileInfo(
+            src=self.bucket + '/' + self.key,
+            dest=self.filename,
+            compare_key=self.key,
+        )
+        with mock.patch(
+            'awscli.customizations.s3.s3handler.is_link', return_value=True
+        ):
+            future = self.transfer_request_submitter.submit(fileinfo)
+        self.assertIs(self.transfer_manager.download.return_value, future)
 
     def test_can_submit(self):
         fileinfo = FileInfo(

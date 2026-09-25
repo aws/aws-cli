@@ -255,9 +255,17 @@ check_dependencies() {
   fi
 }
 
-# AWS CLI v2 Linux binaries are built and tested against glibc.
+# AWS CLI v2 Linux binaries are built and tested against glibc. A musl loader can
+# sit alongside glibc, so ask getconf before trusting the loader paths.
 check_libc() {
   [ "$PLATFORM" = "linux" ] || return 0
+  if command -v getconf >/dev/null 2>&1; then
+    local libc_version
+    libc_version="$(getconf GNU_LIBC_VERSION 2>/dev/null || true)"
+    case "$libc_version" in
+      glibc*) return 0 ;;
+    esac
+  fi
   if compgen -G '/lib/ld-musl-*' >/dev/null 2>&1 || \
      compgen -G '/lib64/ld-musl-*' >/dev/null 2>&1; then
     error 1 "musl-based Linux detected. AWS CLI v2 binaries require glibc; install from source instead. See https://docs.aws.amazon.com/cli/latest/userguide/getting-started-source-install.html"

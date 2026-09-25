@@ -1170,6 +1170,118 @@ class TestArtifactExporter(unittest.TestCase):
             with self.assertRaises(exceptions.InvalidForEachIntrinsicFunctionError):
                 template_exporter.export()
 
+    def _build_template_exporter(self, yaml_parse_mock, template_dict,
+                                 resources_to_export=None):
+        parent_dir = os.path.abspath(os.path.sep)
+        template_dir = os.path.join(parent_dir, 'foo', 'bar')
+        template_path = os.path.join(template_dir, 'path')
+        template_str = self.example_yaml_template()
+
+        open_mock = mock.mock_open()
+        yaml_parse_mock.return_value = template_dict
+
+        kwargs = {}
+        if resources_to_export is not None:
+            kwargs["resources_to_export"] = resources_to_export
+        with mock.patch(
+                "awscli.customizations.cloudformation.artifact_exporter.open",
+                open_mock(read_data=template_str)):
+            return Template(
+                template_path, parent_dir, self.s3_uploader_mock, **kwargs)
+
+    @mock.patch("awscli.customizations.cloudformation.artifact_exporter.yaml_parse")
+    def test_template_export_raises_when_template_is_none(self, yaml_parse_mock):
+        # Regression: empty template file (yaml_parse returns None) used to
+        # raise an opaque AttributeError in export_metadata / export.
+        # See https://github.com/aws/aws-cli/issues/2307
+        exporter = self._build_template_exporter(yaml_parse_mock, None)
+        with self.assertRaisesRegex(exceptions.InvalidTemplateError,
+                                    "template body is empty"):
+            exporter.export()
+
+    @mock.patch("awscli.customizations.cloudformation.artifact_exporter.yaml_parse")
+    def test_template_export_raises_when_resources_is_none(self, yaml_parse_mock):
+        # Regression for the exact stack trace in issue #2307: misindented
+        # resource entries cause `Resources:` to parse as None, which then
+        # raised "AttributeError: 'NoneType' object has no attribute 'items'".
+        exporter = self._build_template_exporter(
+            yaml_parse_mock, {"Resources": None})
+        with self.assertRaisesRegex(exceptions.InvalidTemplateError,
+                                    '"Resources" section is empty'):
+            exporter.export()
+
+    @mock.patch("awscli.customizations.cloudformation.artifact_exporter.yaml_parse")
+    def test_template_export_raises_when_resources_is_list(self, yaml_parse_mock):
+        exporter = self._build_template_exporter(
+            yaml_parse_mock, {"Resources": ["bad"]})
+        with self.assertRaisesRegex(exceptions.InvalidTemplateError,
+                                    '"Resources" section must be a mapping'):
+            exporter.export()
+
+    @mock.patch("awscli.customizations.cloudformation.artifact_exporter.yaml_parse")
+    def test_template_export_raises_when_resource_body_is_none(self, yaml_parse_mock):
+        # Regression: a resource declared with an empty body (e.g. `MyFn:`
+        # with nothing under it) used to raise
+        # "AttributeError: 'NoneType' object has no attribute 'get'".
+        exporter = self._build_template_exporter(
+            yaml_parse_mock, {"Resources": {"MyFn": None}})
+        with self.assertRaisesRegex(exceptions.InvalidTemplateError,
+                                    'resource "MyFn" has no body'):
+            exporter.export()
+
+    @mock.patch("awscli.customizations.cloudformation.artifact_exporter.yaml_parse")
+    def test_template_export_raises_when_resource_body_is_string(self, yaml_parse_mock):
+        exporter = self._build_template_exporter(
+            yaml_parse_mock, {"Resources": {"MyFn": "not-a-mapping"}})
+        with self.assertRaisesRegex(exceptions.InvalidTemplateError,
+                                    'resource "MyFn" must be a mapping'):
+            exporter.export()
+
+    @mock.patch("awscli.customizations.cloudformation.artifact_exporter.yaml_parse")
+    def test_template_export_raises_when_metadata_is_not_mapping(self, yaml_parse_mock):
+        exporter = self._build_template_exporter(
+            yaml_parse_mock,
+            {"Metadata": ["bad"], "Resources": {}})
+        with self.assertRaisesRegex(exceptions.InvalidTemplateError,
+                                    '"Metadata" section must be a mapping'):
+            exporter.export()
+
+    @mock.patch("awscli.customizations.cloudformation.artifact_exporter.yaml_parse")
+    def test_template_export_allows_null_metadata(self, yaml_parse_mock):
+        # `Metadata:` with nothing under it should be tolerated, just like
+        # an absent section, since CFN treats it as no metadata at all.
+        exporter = self._build_template_exporter(
+            yaml_parse_mock, {"Metadata": None, "Resources": {}})
+        # Should not raise.
+        exporter.export()
+
+    @mock.patch("awscli.customizations.cloudformation.artifact_exporter.yaml_parse")
+    def test_template_export_allows_empty_resources_mapping(self, yaml_parse_mock):
+        # An empty `Resources: {}` is structurally valid; nothing to export.
+        exporter = self._build_template_exporter(
+            yaml_parse_mock, {"Resources": {}})
+        result = exporter.export()
+        self.assertEqual(result, {"Resources": {}})
+
+    def test_include_transform_handler_tolerates_non_dict(self):
+        # The handler is called recursively over arbitrary template fragments;
+        # passing a non-dict (e.g. a stray scalar) must not crash with
+        # AttributeError when it tries to call `.get("Name")`.
+        result = include_transform_export_handler(
+            None, self.s3_uploader_mock, "/tmp")
+        self.assertIsNone(result)
+        result = include_transform_export_handler(
+            "scalar", self.s3_uploader_mock, "/tmp")
+        self.assertEqual(result, "scalar")
+
+    def test_include_transform_handler_tolerates_null_parameters(self):
+        # `Fn::Transform` with `Parameters:` left empty used to raise
+        # AttributeError on `.get("Location")`.
+        template_dict = {"Name": "AWS::Include", "Parameters": None}
+        result = include_transform_export_handler(
+            template_dict, self.s3_uploader_mock, "/tmp")
+        self.assertEqual(result, template_dict)
+
 
     @mock.patch("awscli.customizations.cloudformation.artifact_exporter.yaml_parse")
     def test_template_global_export(self, yaml_parse_mock):

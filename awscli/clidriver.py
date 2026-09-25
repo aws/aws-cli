@@ -173,7 +173,7 @@ def get_distribution_source():
         path = os.path.join(data_dir, name)
         if not os.path.isfile(path):
             continue
-        with open(path) as f:
+        with open(path, encoding='utf-8') as f:
             data = json.load(f)
         if 'distribution_source' in data:
             return data['distribution_source']

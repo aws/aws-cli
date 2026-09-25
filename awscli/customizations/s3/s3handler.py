@@ -78,7 +78,7 @@ def is_link(path):
         return False
     try:
         return os.lstat(path).st_reparse_tag == stat.IO_REPARSE_TAG_MOUNT_POINT
-    except (OSError, ValueError, AttributeError):
+    except OSError:
         return False
 
 
@@ -483,13 +483,13 @@ class DownloadRequestSubmitter(BaseTransferRequestSubmitter):
         return [
             self._warn_glacier,
             self._warn_parent_reference,
-            self._warn_if_symlink_in_dest_path,
+            self._warn_if_link_in_dest_path,
             self._warn_if_file_exists_with_no_overwrite,
         ]
 
-    def _warn_if_symlink_in_dest_path(self, fileinfo):
+    def _warn_if_link_in_dest_path(self, fileinfo):
         """
-        Skips downloads whose destination path is or goes through a symlink
+        Skips downloads whose destination path is or goes through a link
         when ``--no-follow-symlinks`` is set.
 
         :type fileinfo: FileInfo
@@ -500,7 +500,7 @@ class DownloadRequestSubmitter(BaseTransferRequestSubmitter):
         """
         if self._cli_params.get('follow_symlinks', True):
             return False
-        unfollowable = self._find_symlink_in_dest_path(fileinfo.dest)
+        unfollowable = self._find_link_in_dest_path(fileinfo.dest)
         if unfollowable is None:
             return False
         LOGGER.debug(
@@ -509,25 +509,25 @@ class DownloadRequestSubmitter(BaseTransferRequestSubmitter):
         )
         return True
 
-    def _find_symlink_in_dest_path(self, dest):
+    def _find_link_in_dest_path(self, dest):
         """
-        Returns the first path below the destination root that cannot be
-        followed, or None if the whole destination path can be.
+        Returns the first path in the destination that cannot be followed, or
+        None if the whole destination path can be.
 
-        Only the paths below the destination root are checked. The root and
-        the paths above it are named by the user rather than derived from an
-        object key, so they redirect every object alike instead of being
-        chosen by a key, and they may legitimately be symlinks, e.g. ``/tmp``.
+        The destination the user named is checked along with everything below
+        it, matching uploads, where a symlinked source root makes the command
+        transfer nothing. Paths above it are not part of the transfer and may
+        legitimately be symlinks, e.g. ``/tmp``.
 
         Paths are checked root first, so each one is only reached once
-        everything leading to it has been shown not to be a symlink. A parent
+        everything leading to it has been shown not to be a link. A parent
         reference breaks that, because a link check cannot resolve a
         path through a directory that does not exist yet and the download
         creates missing directories afterwards, so it is never followed.
         """
-        dest = dest.rstrip(os.sep)
         root = os.path.abspath(self._cli_params.get('dest', ''))
-        root = root.rstrip(os.sep) or os.sep
+        if is_link(root):
+            return root
         prefix = root if root.endswith(os.sep) else root + os.sep
         if not dest.startswith(prefix):
             # The destination is the root itself, or is not below it at all.
@@ -659,7 +659,8 @@ class DownloadStreamRequestSubmitter(DownloadRequestSubmitter):
     def _get_fileout(self, fileinfo):
         return StdoutBytesWriter()
 
-    def _warn_if_symlink_in_dest_path(self, fileinfo):
+    def _warn_if_link_in_dest_path(self, fileinfo):
+        # Streamed downloads go to stdout, so there is no path to check.
         return False
 
     def _format_local_path(self, path):

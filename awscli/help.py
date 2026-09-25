@@ -20,11 +20,6 @@ import webbrowser
 from subprocess import PIPE, Popen
 
 from botocore.exceptions import ProfileNotFound
-from docutils.core import publish_string
-from docutils.writers import (
-    html4css1,
-    manpage,
-)
 
 from awscli import (
     _DEFAULT_BASE_REMOTE_URL,
@@ -239,6 +234,9 @@ class PosixHelpRenderer(PosixPagingHelpRenderer):
     """
 
     def _convert_doc_content(self, contents):
+        from docutils.core import publish_string
+        from docutils.writers import manpage
+
         settings_overrides = self._DEFAULT_DOCUTILS_SETTINGS_OVERRIDES.copy()
         settings_overrides["report_level"] = 3
         man_contents = publish_string(
@@ -265,6 +263,9 @@ class PosixBrowserHelpRenderer(BrowserHelpRenderer):
     """
 
     def _convert_doc_content(self, contents):
+        from docutils.core import publish_string
+        from docutils.writers import manpage
+
         settings_overrides = self._DEFAULT_DOCUTILS_SETTINGS_OVERRIDES.copy()
         settings_overrides["report_level"] = 3
         man_contents = publish_string(
@@ -310,6 +311,8 @@ class WindowsHelpRenderer(WindowsPagingHelpRenderer):
     """Render help content on a Windows platform."""
 
     def _convert_doc_content(self, contents):
+        from docutils.core import publish_string
+
         text_output = publish_string(
             contents,
             writer=TextWriter(),
@@ -322,6 +325,9 @@ class WindowsBrowserHelpRenderer(BrowserHelpRenderer):
     """Render help content in the browser on a Windows platform."""
 
     def _convert_doc_content(self, contents):
+        from docutils.core import publish_string
+        from docutils.writers import html4css1
+
         text_output = publish_string(
             contents,
             writer=html4css1.Writer(),

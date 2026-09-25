@@ -1550,19 +1550,20 @@ class TestCPDownloadNoFollowSymlinks(BaseCPCommandTest):
             {'ETag': '"foo-1"', 'Body': BytesIO(b'injected')},
         ]
 
-    def test_downloads_onto_symlink_named_by_user(self):
-        # The user typed the whole destination, so it is not checked, the same
-        # as a symlinked destination root.
+    def test_skips_download_onto_symlink(self):
+        # Writing to the destination means following it, so nothing is
+        # downloaded. Matches uploads, which silently omit symlinks.
         cmdline = (
             f'{self.prefix} s3://bucket/key.txt {self.symlink} '
             f'--no-follow-symlinks'
         )
         self.run_cmd(cmdline, expected_rc=0)
-
         self.assertEqual(
-            [op[0].name for op in self.operations_called],
-            ['HeadObject', 'GetObject'],
+            [op[0].name for op in self.operations_called], ['HeadObject']
         )
+        self.assertTrue(os.path.islink(self.symlink))
+        with open(self.target) as f:
+            self.assertEqual(f.read(), 'original')
 
     def test_skips_download_onto_symlink_named_by_key(self):
         os.symlink(self.files.rootdir, os.path.join(self.files.rootdir, 'sub'))

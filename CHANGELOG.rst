@@ -2,6 +2,22 @@
 CHANGELOG
 =========
 
+2.37.4
+======
+
+* api-change:``bedrock-agent``: Adds support for calling VPC configuration API's in Bedrock. These configurations allow the use of On Prem connectors in Bedrock Managed Knowledge bases
+* api-change:``rekognition``: This release adds support for Feedback and Metadata in the GetFaceLivenessSessionResults response. Feedback returns codes explaining why a Face Liveness check produced its result. Metadata includes the client SDK type.
+* api-change:``bedrock-agentcore-control``: Amazon Bedrock AgentCore Payments now supports credential rotation for payment connectors, letting you rotate API and wallet secrets for Quick Create payment auths from the console. This release also adds Type and Creation type columns to the payment managers views.
+* api-change:``glue``: add support for table level federation
+* api-change:``wellarchitected``: This change releases the Well-Architected Agent, a generative AI service that analyzes a customer's AWS environment and delivers personalized, prioritized recommendations across cost, security, performance, and resilience.
+* api-change:``mediaconnect``: This release adds support for RTMP push router outputs in AWS Elemental MediaConnect.
+* api-change:``securityagent``: This release adds the ListActorMessages operation, which returns the multi-factor authentication messages received at an actor's server-generated email address
+* api-change:``connect``: Agent Privacy During Hold is a new privacy capability for Amazon Connect Voice that prevents agent audio from being captured in call recordings or Contact Lens conversational analytics during hold. When enabled, agents are automatically muted on entering hold and unmuted on resuming the contact
+* api-change:``neptune-graph``: Add GraphIdentifier filter for ListImportTasks
+* api-change:``qconnect``: Release shapes for the proactive agentic recommendations and the multi-knowledge base search features. Increases the maximum length of QuickResponseContent.
+* api-change:``arc-region-switch``: Adds a service quota checker to Region switch to verify quota parity between your primary and standby Region, and automatically submit quota limit increases. Adds an optional EC2 Auto Scaling and ECS setting that waits for instances or tasks in the scaled-up Region to be healthy in target groups.
+
+
 2.37.3
 ======
 

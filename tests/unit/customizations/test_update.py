@@ -1,6 +1,7 @@
 # Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 # SPDX-License-Identifier: Apache-2.0
 import os
+import re
 import subprocess
 from argparse import Namespace
 from unittest import mock
@@ -34,6 +35,8 @@ def global_args(color='auto'):
 def mock_session():
     session = mock.Mock()
     session.user_agent_extra = 'aws-cli'
+    # A real session returns None when no plugin overrides an arg value.
+    session.emit_first_non_none_response.return_value = None
     return session
 
 
@@ -45,8 +48,9 @@ class TestUnixUpdateCommand:
         elevated=True,
         runner=None,
         downloader=None,
+        verifier=None,
     ):
-        return UnixUpdateCommand(
+        command = UnixUpdateCommand(
             mock_session(),
             source=source,
             install_metadata=install,
@@ -54,6 +58,10 @@ class TestUnixUpdateCommand:
             is_elevated=elevated,
             runner=runner or mock.Mock(),
         )
+        # Signature verification is exercised by TestUnixVerifyScript; here we
+        # replace it so the behavioral tests don't shell out to gpg.
+        command._verify_script = verifier or mock.Mock()
+        return command
 
     def _run(self, install, color='auto', **kwargs):
         runner = mock.Mock()
@@ -256,8 +264,9 @@ class TestWindowsUpdateCommand:
         runner=None,
         downloader=None,
         powershell_path='powershell.exe',
+        verifier=None,
     ):
-        return WindowsUpdateCommand(
+        command = WindowsUpdateCommand(
             mock_session(),
             source='exe',
             install_metadata=install,
@@ -266,6 +275,10 @@ class TestWindowsUpdateCommand:
             runner=runner or mock.Mock(),
             powershell_path=powershell_path,
         )
+        # Signature verification is exercised by TestWindowsVerifyScript; here
+        # we replace it so the behavioral tests don't shell out to PowerShell.
+        command._verify_script = verifier or mock.Mock()
+        return command
 
     def _run(self, install, color='auto', **kwargs):
         runner = mock.Mock()
@@ -399,6 +412,159 @@ class TestWindowsUpdateCommand:
         assert '-System' not in wrapper
 
 
+class TestUnixVerifyScript:
+    def _command(self, runner=None, downloader=None):
+        # Note: does NOT mock _verify_script -- these tests exercise it.
+        return UnixUpdateCommand(
+            mock_session(),
+            source='exe',
+            install_metadata=USER_INSTALL,
+            downloader=downloader or mock.Mock(),
+            is_elevated=True,
+            runner=runner or mock.Mock(),
+        )
+
+    def test_skips_verification_with_flag(self, monkeypatch):
+        which = mock.Mock()
+        run = mock.Mock()
+        monkeypatch.setattr(update_module.shutil, 'which', which)
+        monkeypatch.setattr(update_module.subprocess, 'run', run)
+        runner = mock.Mock()
+        command = self._command(runner=runner)
+
+        command(['--skip-signature-verification'], global_args())
+
+        which.assert_not_called()
+        run.assert_not_called()
+        runner.assert_called_once()
+
+    def test_missing_gpg_raises(self, monkeypatch):
+        monkeypatch.setattr(update_module.shutil, 'which', lambda name: None)
+        runner = mock.Mock()
+        command = self._command(runner=runner)
+
+        with pytest.raises(UpdateError, match='gpg was not found'):
+            command([], global_args())
+        runner.assert_not_called()
+
+    def test_verifies_and_runs_on_success(self, monkeypatch):
+        monkeypatch.setattr(
+            update_module.shutil, 'which', lambda name: '/usr/bin/gpg'
+        )
+        run = mock.Mock(return_value=mock.Mock(returncode=0, stderr=''))
+        monkeypatch.setattr(update_module.subprocess, 'run', run)
+        downloader = mock.Mock()
+        runner = mock.Mock()
+        command = self._command(runner=runner, downloader=downloader)
+
+        command([], global_args())
+
+        downloaded = [c.args[0] for c in downloader.call_args_list]
+        assert UnixUpdateCommand.SCRIPT_URL + '.sig' in downloaded
+        assert any('--verify' in c.args[0] for c in run.call_args_list)
+        runner.assert_called_once()
+
+    def test_verification_failure_raises(self, monkeypatch):
+        monkeypatch.setattr(
+            update_module.shutil, 'which', lambda name: '/usr/bin/gpg'
+        )
+
+        def fake_run(cmd, **kwargs):
+            returncode = 1 if '--verify' in cmd else 0
+            return mock.Mock(returncode=returncode, stderr='bad signature')
+
+        monkeypatch.setattr(update_module.subprocess, 'run', fake_run)
+        runner = mock.Mock()
+        command = self._command(runner=runner)
+
+        with pytest.raises(UpdateError, match='signature verification failed'):
+            command([], global_args())
+        runner.assert_not_called()
+
+
+class TestWindowsVerifyScript:
+    def _command(self, runner=None, downloader=None):
+        # Note: does NOT mock _verify_script -- these tests exercise it.
+        return WindowsUpdateCommand(
+            mock_session(),
+            source='exe',
+            install_metadata=USER_INSTALL,
+            downloader=downloader or mock.Mock(),
+            is_elevated=True,
+            runner=runner or mock.Mock(),
+            powershell_path='powershell.exe',
+        )
+
+    def test_skips_verification_with_flag(self, monkeypatch):
+        run = mock.Mock()
+        monkeypatch.setattr(update_module.subprocess, 'run', run)
+        runner = mock.Mock()
+        command = self._command(runner=runner)
+
+        command(['--skip-signature-verification'], global_args())
+
+        run.assert_not_called()
+        runner.assert_called_once()
+
+    def test_verifies_and_runs_on_success(self, monkeypatch):
+        run = mock.Mock(
+            return_value=mock.Mock(returncode=0, stdout='', stderr='')
+        )
+        monkeypatch.setattr(update_module.subprocess, 'run', run)
+        runner = mock.Mock()
+        command = self._command(runner=runner)
+
+        command([], global_args())
+
+        ps_cmd = ' '.join(run.call_args.args[0])
+        assert 'Get-AuthenticodeSignature' in ps_cmd
+        runner.assert_called_once()
+
+    def test_verification_failure_raises(self, monkeypatch):
+        run = mock.Mock(
+            return_value=mock.Mock(
+                returncode=1, stdout='', stderr='not signed by AWS'
+            )
+        )
+        monkeypatch.setattr(update_module.subprocess, 'run', run)
+        runner = mock.Mock()
+        command = self._command(runner=runner)
+
+        with pytest.raises(UpdateError, match='signature verification failed'):
+            command([], global_args())
+        runner.assert_not_called()
+
+    def test_verification_matches_org_exactly(self, monkeypatch):
+        # The signer check must gate on an exact match of the certificate's
+        # Organization (O) RDN, not a substring of the whole subject DN: a
+        # substring match would also accept a DigiCert-issued cert whose CN/OU
+        # merely contained one of the allowlisted org strings. The PowerShell
+        # logic itself is exercised out-of-band (it needs a real
+        # Get-AuthenticodeSignature); here we lock in the shape of the emitted
+        # command so the fragile substring form cannot silently return.
+        captured = {}
+
+        def fake_run(cmd, **kwargs):
+            captured['ps'] = cmd[cmd.index('-Command') + 1]
+            return mock.Mock(returncode=0, stdout='', stderr='')
+
+        monkeypatch.setattr(update_module.subprocess, 'run', fake_run)
+        command = self._command(runner=mock.Mock())
+
+        command([], global_args())
+
+        ps = captured['ps']
+        # Exact O-RDN match against the allowlist.
+        assert '-notcontains $subjectOrg' in ps
+        assert 'Get-Org' in ps
+        # Format($true) quotes comma-bearing O values (e.g. "Amazon Web
+        # Services, Inc."); the surrounding quote pair must be stripped so the
+        # value matches the plain allowlist entry.
+        assert '-replace' in ps
+        # The previous whole-subject substring check must be gone.
+        assert '$cert.Subject -like' not in ps
+
+
 def _response(status_code, content=b''):
     return mock.Mock(status_code=status_code, content=content)
 
@@ -480,6 +646,39 @@ class TestDownloadWithRetry:
                 session=session,
             )
         assert session.send.call_count == 4
+
+
+_INSTALL_SH = os.path.normpath(
+    os.path.join(
+        os.path.dirname(__file__),
+        '..',
+        '..',
+        '..',
+        'scripts',
+        'install-v2',
+        'install.sh',
+    )
+)
+_PGP_BLOCK_RE = re.compile(
+    r'-----BEGIN PGP PUBLIC KEY BLOCK-----'
+    r'.*?'
+    r'-----END PGP PUBLIC KEY BLOCK-----',
+    re.DOTALL,
+)
+
+
+def test_embedded_pgp_key_matches_install_script():
+    # update.py embeds its own copy of the AWS CLI signing key because it
+    # cannot read install.sh at runtime (the script is standalone and scripts/
+    # is not shipped in the package). This test guards against the two copies
+    # drifting apart.
+    with open(_INSTALL_SH, encoding='utf-8') as f:
+        install_sh = f.read()
+    match = _PGP_BLOCK_RE.search(install_sh)
+    assert match is not None, 'no PGP key block found in install.sh'
+    assert (
+        match.group(0) == update_module.AWS_CLI_PGP_KEY
+    ), 'AWS_CLI_PGP_KEY in update.py does not match install.sh; update both.'
 
 
 def _fake_ctypes(module_filename):

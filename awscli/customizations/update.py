@@ -27,6 +27,53 @@ _DOWNLOAD_BASE_URL = 'https://awscli.amazonaws.com'
 
 _SUPPORTED_SOURCES = ('exe', 'script-exe', 'update-exe')
 
+# AWS CLI public signing key, used to verify the detached signature of the
+# downloaded Unix install script. This MUST stay in sync with AWS_CLI_PGP_KEY
+# in scripts/install-v2/install.sh (a unit test asserts they match).
+AWS_CLI_PGP_KEY = '''-----BEGIN PGP PUBLIC KEY BLOCK-----
+
+mQINBF2Cr7UBEADJZHcgusOJl7ENSyumXh85z0TRV0xJorM2B/JL0kHOyigQluUG
+ZMLhENaG0bYatdrKP+3H91lvK050pXwnO/R7fB/FSTouki4ciIx5OuLlnJZIxSzx
+PqGl0mkxImLNbGWoi6Lto0LYxqHN2iQtzlwTVmq9733zd3XfcXrZ3+LblHAgEt5G
+TfNxEKJ8soPLyWmwDH6HWCnjZ/aIQRBTIQ05uVeEoYxSh6wOai7ss/KveoSNBbYz
+gbdzoqI2Y8cgH2nbfgp3DSasaLZEdCSsIsK1u05CinE7k2qZ7KgKAUIcT/cR/grk
+C6VwsnDU0OUCideXcQ8WeHutqvgZH1JgKDbznoIzeQHJD238GEu+eKhRHcz8/jeG
+94zkcgJOz3KbZGYMiTh277Fvj9zzvZsbMBCedV1BTg3TqgvdX4bdkhf5cH+7NtWO
+lrFj6UwAsGukBTAOxC0l/dnSmZhJ7Z1KmEWilro/gOrjtOxqRQutlIqG22TaqoPG
+fYVN+en3Zwbt97kcgZDwqbuykNt64oZWc4XKCa3mprEGC3IbJTBFqglXmZ7l9ywG
+EEUJYOlb2XrSuPWml39beWdKM8kzr1OjnlOm6+lpTRCBfo0wa9F8YZRhHPAkwKkX
+XDeOGpWRj4ohOx0d2GWkyV5xyN14p2tQOCdOODmz80yUTgRpPVQUtOEhXQARAQAB
+tCFBV1MgQ0xJIFRlYW0gPGF3cy1jbGlAYW1hem9uLmNvbT6JAlQEEwEIAD4CGwMF
+CwkIBwIGFQoJCAsCBBYCAwECHgECF4AWIQT7Xbd/1cEYuAURraimMQrMRnJHXAUC
+akV0ygUJDqP4lQAKCRCmMQrMRnJHXFHjD/9eyZLYcKuQOlLvtqSDtUBiEZf6ZZjM
+i3ygYH8rJNtuToUH+HvSpe819urJCquXhDrlK6N+aqW0hCLtNABJG/vsafIgvIYJ
+hSGgpgtNnQyMV1jViRWqPjbouw8OkYKBThUfT1i2Y+wn58ifs6ODBCmTexWtXspA
+Si+Gt49xDOW0APmbOPnI+a4HJW6tVEo6MWS0WjzpiBayR3d1A4pt4YrPfSdDgpLo
+h2SLQqlRqvvVZJaWBjhkErNFpfsBA06sDcPEOb0G8LBUbR4WOcdvhe5LubJbZuxC
+AG9kNPCVeQP1ixwjgjXKysaxeQ6rv0VzIQgRp6tLVLWhy6AKDNvLjFSsmXZ1Wl08
+Y/RlOHXlzLuQMRE6sR1wOdRxc9TsrNWTGiBK65cvSWOy03JeBkQQ8pesqltiyxI9
+U21kkgiXtTSKNGfKK8pO27D81YANhRqPK7iTp6kuFiY2WtOg90KTMNlIT+Ff85Y2
+b1rHj6Z0SrCkJujhWk3IBPic/wJgz01LEc/OAdUPlby90RJZcIBhSlWhT7mXnXIO
+c0HWlNQrns2s3CTyYwZSiSlYe9ApeLwhjDo8NhbFuCAy61l6O5UsR4AfZxx/rGKv
+2wFb1/RN/P4gNe6vmxZAPjR0AQcwD3tc2McimOLr/22kmPz8IH3I0X7WoSFr0Biz
+E91G7bb0hOb/cA==
+=knv7
+-----END PGP PUBLIC KEY BLOCK-----'''
+
+# The Windows install script is Authenticode-signed by AWS Signer using a
+# DigiCert-issued EV code-signing certificate. We verify the signer *identity*
+# (organization + issuing CA) rather than a specific certificate thumbprint:
+# the certificate is renewed (~yearly) and pinning its thumbprint would break
+# `aws update` on every rotation, whereas the organization and issuing CA are
+# stable across renewals. The organization must be one of AWS's approved
+# code-signing org names.
+_WINDOWS_SIGNER_ORGS = (
+    'Amazon.com Services LLC',
+    'Amazon Web Services, Inc.',
+    'Amazon.com, Inc.',
+)
+_WINDOWS_SIGNER_ISSUER = 'DigiCert'
+
 
 def download_with_retry(url, dest, retries=1, session=None):
     session = session or URLLib3Session()
@@ -59,9 +106,24 @@ class BaseUpdateCommand(BasicCommand):
         'images are not supported.'
     )
     SYNOPSIS = 'aws update'
-    ARG_TABLE = []
+    ARG_TABLE = [
+        {
+            'name': 'skip-signature-verification',
+            'action': 'store_true',
+            'default': False,
+            'help_text': (
+                'Skip signature verification of the downloaded install '
+                'script. NOT RECOMMENDED: this disables a security control '
+                'that confirms the install script is authentic before it is '
+                'run. Only use it if you understand and accept the risk '
+                '(for example, when gpg is unavailable on Linux and cannot '
+                'be installed).'
+            ),
+        },
+    ]
 
     _no_color = False
+    _skip_verification = False
 
     def __init__(
         self, session, source=None, install_metadata=None, downloader=None
@@ -99,10 +161,19 @@ class BaseUpdateCommand(BasicCommand):
             )
         uni_print(f"Updating AWS CLI (source: {source})\n")
         self._no_color = parsed_globals.color == 'off'
+        self._skip_verification = parsed_args.skip_signature_verification
         self._do_update()
         if not hint_disabled():
             uni_print(HINT_TEXT)
         return 0
+
+    def _warn_skipping_verification(self):
+        uni_print(
+            "WARNING: skipping install script signature verification "
+            "(--skip-signature-verification); the downloaded script will be "
+            "run without confirming it is authentic.\n",
+            sys.stderr,
+        )
 
     def _do_update(self):
         raise NotImplementedError
@@ -132,6 +203,7 @@ class UnixUpdateCommand(BaseUpdateCommand):
         with tempfile.TemporaryDirectory() as tmp:
             script_path = os.path.join(tmp, 'install.sh')
             self._download(self.SCRIPT_URL, script_path)
+            self._verify_script(script_path, tmp)
             env = os.environ.copy()
             env['AWS_CLI_DISTRIBUTION_SOURCE_OVERRIDE'] = 'update-exe'
             # The install script prints the Agent Toolkit tip too. Silence its
@@ -159,6 +231,50 @@ class UnixUpdateCommand(BaseUpdateCommand):
 
     def _run_install(self, cmd, env):
         subprocess.run(cmd, env=env, check=True)
+
+    def _verify_script(self, script_path, tmp):
+        # Verify the downloaded install script with a detached PGP signature
+        # before executing it. `aws update` runs unattended, so a missing gpg
+        # is a hard failure by default; the explicit --skip-signature-verification
+        # opt-out is the only way to bypass it.
+        if self._skip_verification:
+            self._warn_skipping_verification()
+            return
+        gpg = shutil.which('gpg')
+        if gpg is None:
+            raise UpdateError(
+                'gpg was not found, so the downloaded install script cannot '
+                'be verified. Install gnupg and try again, or re-run with '
+                '--skip-signature-verification to update without verification '
+                '(not recommended).'
+            )
+        sig_path = script_path + '.sig'
+        self._download(self.SCRIPT_URL + '.sig', sig_path)
+        gpghome = os.path.join(tmp, 'gpghome')
+        os.makedirs(gpghome, mode=0o700, exist_ok=True)
+        keyfile = os.path.join(tmp, 'aws-cli.key')
+        with open(keyfile, 'w') as f:
+            f.write(AWS_CLI_PGP_KEY)
+        gpg_opts = [gpg, '--homedir', gpghome, '--batch', '--no-autostart']
+        # Import can exit non-zero on minimal systems even when it succeeds
+        # (key-preference warnings, missing agent), so judge success by
+        # --verify rather than the import's return code.
+        subprocess.run(
+            gpg_opts + ['--import', keyfile],
+            capture_output=True,
+            text=True,
+        )
+        result = subprocess.run(
+            gpg_opts + ['--verify', sig_path, script_path],
+            capture_output=True,
+            text=True,
+        )
+        if result.returncode != 0:
+            raise UpdateError(
+                'install script signature verification failed:\n'
+                f'{result.stderr.strip()}'
+            )
+        uni_print('Install script signature verified.\n')
 
     def _is_system_install(self, install_metadata):
         if 'script_install' in install_metadata:
@@ -207,6 +323,7 @@ class WindowsUpdateCommand(BaseUpdateCommand):
 
         wrapper_path = os.path.join(tmp, 'aws-update.cmd')
         ps_exe = self._powershell_path or self._find_powershell()
+        self._verify_script(script_path, ps_exe)
         ps_args = f'-NoProfile -File "{script_path}"'
         if is_system:
             ps_args += ' -System'
@@ -240,6 +357,79 @@ class WindowsUpdateCommand(BaseUpdateCommand):
             creationflags=subprocess.DETACHED_PROCESS
             | subprocess.CREATE_NEW_PROCESS_GROUP,
         )
+
+    def _verify_script(self, script_path, ps_exe):
+        # Verify the downloaded install script's Authenticode signature before
+        # executing it: the signature must be valid AND signed by AWS (signer
+        # organization) AND issued by our CA. The script path is passed via an
+        # environment variable to avoid any quoting issues.
+        if self._skip_verification:
+            self._warn_skipping_verification()
+            return
+        orgs = ','.join(
+            "'" + org.replace("'", "''") + "'" for org in _WINDOWS_SIGNER_ORGS
+        )
+        # Match the certificate's Organization (O) relative distinguished name
+        # *exactly* against the allowlist, rather than substring-matching the
+        # whole subject DN: a substring match on the DN would also accept a
+        # DigiCert-issued cert whose CN/OU merely contained one of these
+        # strings. X500DistinguishedName.Format($true) emits one RDN per line,
+        # so an O value that itself contains commas (e.g. "Amazon Web Services,
+        # Inc.") is parsed correctly. Format wraps such values in double
+        # quotes, so Get-Org strips a surrounding quote pair before matching.
+        ps_command = "\n".join(
+            [
+                "$ErrorActionPreference = 'Stop'",
+                "function Get-Org("
+                "[System.Security.Cryptography.X509Certificates."
+                "X500DistinguishedName]$name) {",
+                '  foreach ($line in ($name.Format($true) '
+                '-split "\\r?\\n")) {',
+                "    if ($line -match '^O=(.*)$') {",
+                "      $v = $matches[1].Trim();",
+                "      if ($v.Length -ge 2 -and $v.StartsWith('\"') "
+                "-and $v.EndsWith('\"')) "
+                "{ $v = $v.Substring(1, $v.Length - 2) "
+                "-replace '\"\"', '\"' };",
+                "      return $v",
+                "    }",
+                "  }",
+                "  return $null",
+                "}",
+                "$path = $env:AWS_CLI_VERIFY_PATH",
+                "$sig = Get-AuthenticodeSignature -FilePath $path",
+                "if ($sig.Status -ne 'Valid') "
+                "{ Write-Error \"signature status is '$($sig.Status)'\"; "
+                "exit 1 }",
+                "$cert = $sig.SignerCertificate",
+                "if (-not $cert) "
+                "{ Write-Error 'no signer certificate'; exit 1 }",
+                f"$orgs = @({orgs})",
+                "$subjectOrg = Get-Org $cert.SubjectName",
+                "if ($orgs -notcontains $subjectOrg) "
+                '{ Write-Error "not signed by AWS (O=$subjectOrg): '
+                '$($cert.Subject)"; exit 1 }',
+                "$issuerOrg = Get-Org $cert.IssuerName",
+                f"if ($issuerOrg -notlike '*{_WINDOWS_SIGNER_ISSUER}*') "
+                '{ Write-Error "unexpected issuer (O=$issuerOrg): '
+                '$($cert.Issuer)"; exit 1 }',
+                "exit 0",
+            ]
+        )
+        env = os.environ.copy()
+        env['AWS_CLI_VERIFY_PATH'] = script_path
+        result = subprocess.run(
+            [ps_exe, '-NoProfile', '-Command', ps_command],
+            capture_output=True,
+            text=True,
+            env=env,
+        )
+        if result.returncode != 0:
+            detail = (result.stderr or result.stdout).strip()
+            raise UpdateError(
+                f'install script signature verification failed: {detail}'
+            )
+        uni_print('Install script signature verified.\n')
 
     def _find_powershell(self):
         for name in ('powershell', 'pwsh'):

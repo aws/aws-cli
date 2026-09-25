@@ -7,6 +7,7 @@ param(
     [string] $Version,  # specific version to install; empty means "latest"
     [switch] $System,   # install system-wide (Program Files); requires admin
     [switch] $Quiet,    # suppress non-essential stdout
+    [switch] $SkipSignatureVerification,  # explicit opt-out of installer verification
     [switch] $Help
 )
 
@@ -110,7 +111,8 @@ function Throw-Error {
 
 function Show-Help {
     @"
-Usage: install.ps1 [-Version <X.Y.Z>] [-System] [-Quiet] [-Help]
+Usage: install.ps1 [-Version <X.Y.Z>] [-System] [-Quiet]
+                   [-SkipSignatureVerification] [-Help]
 
 Install or update the AWS CLI v2.
 
@@ -123,6 +125,11 @@ Parameters:
                     under %LOCALAPPDATA%\Programs\Amazon\AWSCLIV2\.
   -Quiet            Suppress non-essential output. Errors and warnings are
                     still printed to stderr.
+  -SkipSignatureVerification
+                    Skip signature verification of the downloaded installer.
+                    NOT RECOMMENDED: this disables a security control that
+                    confirms the installer is authentic. Only use it if you
+                    understand and accept the risk.
   -Help             Show this help and exit.
 "@ | Write-Host
 }
@@ -258,15 +265,90 @@ function Download-Installer {
 # Signature verification
 # ============================================================================
 
+# The AWS CLI MSI is Authenticode-signed by AWS Signer using a DigiCert-issued
+# EV code-signing certificate. We verify the signer *identity* (organization +
+# issuing CA) rather than a specific certificate thumbprint: the certificate is
+# renewed (~yearly) and pinning its thumbprint would break installs on every
+# rotation, whereas the organization and issuing CA are stable across renewals.
+#
+# The organization must be one of AWS's approved code-signing org names. Check
+# a signed MSI on Windows with:
+#   (Get-AuthenticodeSignature .\AWSCLIV2.msi).SignerCertificate |
+#       Format-List Subject, Issuer
+$AwsCliSignerOrgs = @(
+    'Amazon.com Services LLC',
+    'Amazon Web Services, Inc.',
+    'Amazon.com, Inc.'
+)
+$AwsCliSignerIssuerPattern = 'DigiCert'
+
+# Extract the Organization (O) relative distinguished name from a certificate's
+# subject/issuer. Format($true) emits one RDN per line, so an O value that
+# itself contains commas (e.g. "Amazon Web Services, Inc.") parses correctly.
+# Format wraps such values in double quotes, so we strip a surrounding quote
+# pair before returning so the value matches the plain allowlist entry.
+function Get-CertOrg {
+    param([System.Security.Cryptography.X509Certificates.X500DistinguishedName] $Name)
+    foreach ($line in ($Name.Format($true) -split "\r?\n")) {
+        if ($line -match '^O=(.*)$') {
+            $v = $matches[1].Trim()
+            if ($v.Length -ge 2 -and $v.StartsWith('"') -and $v.EndsWith('"')) {
+                $v = $v.Substring(1, $v.Length - 2) -replace '""', '"'
+            }
+            return $v
+        }
+    }
+    return $null
+}
+
 function Verify-Installer {
+    # Verification is on by default. -SkipSignatureVerification is an explicit,
+    # human-made opt-out; it disables a security control, so it is never silent.
+    if ($SkipSignatureVerification) {
+        Write-Warn ('signature verification disabled via ' +
+            '-SkipSignatureVerification; installing without verifying ' +
+            'installer authenticity.')
+        return
+    }
+
     $sig = Get-AuthenticodeSignature -FilePath $Script:InstallerPath
+
+    # 1. The signature must be cryptographically valid: the file is unmodified
+    #    and chains to a certificate trusted by the OS.
     if ($sig.Status -ne 'Valid') {
         Throw-Error 1 ("Authenticode signature verification failed for " +
             "$($Script:InstallerPath): status is '$($sig.Status)'. " +
             'Refusing to install.')
     }
 
-    Write-Success 'MSI Authenticode signature verified.'
+    $cert = $sig.SignerCertificate
+    if (-not $cert) {
+        Throw-Error 1 ("Authenticode signature for $($Script:InstallerPath) " +
+            'has no signer certificate. Refusing to install.')
+    }
+
+    # 2. The signer must be AWS. A valid signature alone only proves *some*
+    #    trusted CA signed it; checking the organization confirms it is ours.
+    #    Match the O RDN exactly, not a substring of the whole subject DN: a
+    #    substring match would also accept a cert whose CN/OU merely contained
+    #    one of these strings.
+    $subjectOrg = Get-CertOrg $cert.SubjectName
+    if ($AwsCliSignerOrgs -notcontains $subjectOrg) {
+        Throw-Error 1 ("$($Script:InstallerPath) is not signed by AWS " +
+            "(signer O=$subjectOrg; subject: $($cert.Subject)). " +
+            'Refusing to install.')
+    }
+
+    # 3. The certificate must be issued by our CA (DigiCert). This narrows
+    #    "any trusted CA" down to the CA that issues AWS's code-signing certs.
+    $issuerOrg = Get-CertOrg $cert.IssuerName
+    if ($issuerOrg -notlike "*$AwsCliSignerIssuerPattern*") {
+        Throw-Error 1 ("$($Script:InstallerPath) was signed by an unexpected " +
+            "certificate authority (issuer O=$issuerOrg; " +
+            "issuer: $($cert.Issuer)). Refusing to install.")
+    }
+
+    Write-Success 'MSI Authenticode signature verified (signed by AWS).'
 }
 
 # ============================================================================

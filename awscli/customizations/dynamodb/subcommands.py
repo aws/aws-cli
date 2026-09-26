@@ -86,11 +86,17 @@ class DDBCommand(BasicCommand):
             response = paginator.paginate(**client_args).build_full_result()
         else:
             response = getattr(self._client, operation_name)(**client_args)
-        if (
-            'ConsumedCapacity' in response
-            and response['ConsumedCapacity'] is None
+        # When --return-consumed-capacity is not requested, ConsumedCapacity is
+        # absent from the responses. The paginator still materializes its
+        # non_aggregate leaves (e.g. ConsumedCapacity.TableName) as null, so the
+        # value is either None or a dict whose values are all None. Drop it in
+        # either case so it isn't surfaced when the user didn't ask for it.
+        consumed_capacity = response.get('ConsumedCapacity')
+        if consumed_capacity is None or (
+            isinstance(consumed_capacity, dict)
+            and all(value is None for value in consumed_capacity.values())
         ):
-            del response['ConsumedCapacity']
+            response.pop('ConsumedCapacity', None)
         self._deserialize(operation_name, response)
         return response
 
@@ -137,7 +143,7 @@ class PaginatedDDBCommand(DDBCommand):
     ]
 
     def _build_arg_table(self):
-        arg_table = super(PaginatedDDBCommand, self)._build_arg_table()
+        arg_table = super()._build_arg_table()
         for arg_data in self.PAGING_ARGS:
             paging_arg = CustomArgument(**arg_data)
             arg_table[arg_data['name']] = paging_arg
@@ -181,7 +187,7 @@ class SelectCommand(PaginatedDDBCommand):
     _SUPPORTED_OUTPUT_TYPES = ('yaml',)
 
     def _run_main(self, parsed_args, parsed_globals):
-        super(SelectCommand, self)._run_main(parsed_args, parsed_globals)
+        super()._run_main(parsed_args, parsed_globals)
         self._select(parsed_args, parsed_globals)
         return 0
 
@@ -215,7 +221,7 @@ class SelectCommand(PaginatedDDBCommand):
         self._dump_yaml(operation, response, parsed_globals)
 
     def _get_client_args(self, parsed_args):
-        client_args = super(SelectCommand, self)._get_client_args(parsed_args)
+        client_args = super()._get_client_args(parsed_args)
         client_args.update(
             {
                 'TableName': parsed_args.table_name,
@@ -276,7 +282,7 @@ class PutCommand(DDBCommand):
     ]
 
     def _run_main(self, parsed_args, parsed_globals):
-        super(PutCommand, self)._run_main(parsed_args, parsed_globals)
+        super()._run_main(parsed_args, parsed_globals)
         self._yaml = YAML(typ='safe')
         self._yaml.constructor.add_constructor(
             'tag:yaml.org,2002:binary', self._load_binary

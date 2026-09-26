@@ -11,13 +11,16 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 
+import jmespath
 from botocore import model
 from botocore.exceptions import PaginationError
 from botocore.paginate import (
+    PageIterator,
     Paginator,
     PaginatorModel,
     TokenDecoder,
     TokenEncoder,
+    _iter_wildcard_leaves,
 )
 
 from tests import mock, unittest
@@ -1619,6 +1622,209 @@ class TestStringPageSize(unittest.TestCase):
     def test_str_page_size(self):
         list(self.paginator.paginate(PaginationConfig={'PageSize': '1'}))
         self.method.assert_called_with(MaxItems='1')
+
+
+class TestIterWildcardLeaves(unittest.TestCase):
+    def test_static_path(self):
+        data = {'a': {'b': 5}}
+        self.assertEqual(
+            list(_iter_wildcard_leaves(data, ('a', 'b'))), [(('a', 'b'), 5)]
+        )
+
+    def test_wildcard_expands_map_keys(self):
+        data = {'m': {'x': {'v': 1}, 'y': {'v': 2}}}
+        got = dict(_iter_wildcard_leaves(data, ('m', '*', 'v')))
+        self.assertEqual(got, {('m', 'x', 'v'): 1, ('m', 'y', 'v'): 2})
+
+    def test_missing_segment_yields_nothing(self):
+        self.assertEqual(list(_iter_wildcard_leaves({}, ('a', 'b'))), [])
+        self.assertEqual(
+            list(_iter_wildcard_leaves({'a': {}}, ('a', '*', 'v'))), []
+        )
+
+    def test_non_dict_is_safe(self):
+        self.assertEqual(list(_iter_wildcard_leaves(5, ('a',))), [])
+
+
+def _make_page_iterator(
+    pages,
+    numeric_wildcard_paths=None,
+    non_aggregate_wildcard_paths=None,
+    non_aggregate_keys=None,
+):
+    method = mock.Mock(side_effect=pages)
+    return PageIterator(
+        method,
+        ['NextToken'],
+        [jmespath.compile('NextToken')],
+        None,
+        [jmespath.compile('Items')],
+        non_aggregate_keys or [],
+        None,
+        None,
+        None,
+        None,
+        {},
+        numeric_wildcard_paths=numeric_wildcard_paths or [],
+        non_aggregate_wildcard_paths=non_aggregate_wildcard_paths or [],
+    )
+
+
+class TestWildcardResultKeyAggregation(unittest.TestCase):
+    def test_sums_each_map_key_across_pages(self):
+        pages = [
+            {
+                'Items': ['a'],
+                'CC': {'Idx': {'i1': {'U': 40.0}, 'i2': {'U': 10.0}}},
+                'NextToken': 'tok',
+            },
+            {
+                'Items': ['b'],
+                'CC': {'Idx': {'i1': {'U': 2.0}, 'i2': {'U': 5.0}}},
+            },
+        ]
+        it = _make_page_iterator(
+            pages, numeric_wildcard_paths=[('CC', 'Idx', '*', 'U')]
+        )
+        result = it.build_full_result()
+        self.assertEqual(result['Items'], ['a', 'b'])
+        self.assertEqual(result['CC']['Idx']['i1']['U'], 42.0)
+        self.assertEqual(result['CC']['Idx']['i2']['U'], 15.0)
+
+    def test_missing_on_a_page_treated_as_zero(self):
+        pages = [
+            {
+                'Items': ['a'],
+                'CC': {'Idx': {'i1': {'U': 40.0}}},
+                'NextToken': 't',
+            },
+            # i1 absent this page, new i2 appears
+            {'Items': ['b'], 'CC': {'Idx': {'i2': {'U': 5.0}}}},
+        ]
+        it = _make_page_iterator(
+            pages, numeric_wildcard_paths=[('CC', 'Idx', '*', 'U')]
+        )
+        result = it.build_full_result()
+        self.assertEqual(result['CC']['Idx']['i1']['U'], 40.0)
+        self.assertEqual(result['CC']['Idx']['i2']['U'], 5.0)
+
+    def test_non_numeric_leaf_skipped(self):
+        # A runtime non-numeric value on a numeric wildcard path is skipped
+        # (not summed, not placed) rather than crashing.
+        pages = [
+            {
+                'Items': ['a'],
+                'CC': {'Idx': {'i1': {'U': 'x'}}},
+                'NextToken': 't',
+            },
+            {'Items': ['b'], 'CC': {'Idx': {'i1': {'U': 'y'}}}},
+        ]
+        it = _make_page_iterator(
+            pages, numeric_wildcard_paths=[('CC', 'Idx', '*', 'U')]
+        )
+        result = it.build_full_result()
+        self.assertEqual(result['Items'], ['a', 'b'])
+        self.assertNotIn('CC', result)
+
+    def test_wildcard_non_aggregate_takes_first_page(self):
+        pages = [
+            {
+                'Items': ['a'],
+                'CC': {'Idx': {'i1': {'Name': 'first'}}},
+                'NextToken': 'tok',
+            },
+            {'Items': ['b'], 'CC': {'Idx': {'i1': {'Name': 'second'}}}},
+        ]
+        it = _make_page_iterator(
+            pages, non_aggregate_wildcard_paths=[('CC', 'Idx', '*', 'Name')]
+        )
+        result = it.build_full_result()
+        self.assertEqual(result['CC']['Idx']['i1']['Name'], 'first')
+
+
+class TestMapWildcardGate(unittest.TestCase):
+    def _paginator(self, config):
+        service_model = model.ServiceModel(
+            {
+                'metadata': {
+                    'protocol': 'json',
+                    'endpointPrefix': 'x',
+                    'apiVersion': '1',
+                    'jsonVersion': '1.1',
+                    'targetPrefix': 'x',
+                },
+                'operations': {
+                    'Op': {
+                        'name': 'Op',
+                        'http': {'method': 'POST', 'requestUri': '/'},
+                        'input': {'shape': 'In'},
+                        'output': {'shape': 'Out'},
+                    }
+                },
+                'shapes': {
+                    'In': {'type': 'structure', 'members': {}},
+                    'Out': {
+                        'type': 'structure',
+                        'members': {
+                            'Items': {'shape': 'StringList'},
+                            'CC': {'shape': 'CC'},
+                        },
+                    },
+                    'CC': {
+                        'type': 'structure',
+                        'members': {
+                            'Indexes': {'shape': 'IndexMap'},
+                            'NotAMap': {'shape': 'CapUnit'},
+                        },
+                    },
+                    'IndexMap': {
+                        'type': 'map',
+                        'key': {'shape': 'String'},
+                        'value': {'shape': 'IndexCap'},
+                    },
+                    'IndexCap': {
+                        'type': 'structure',
+                        'members': {'U': {'shape': 'CapUnit'}},
+                    },
+                    'CapUnit': {'type': 'double'},
+                    'String': {'type': 'string'},
+                    'StringList': {
+                        'type': 'list',
+                        'member': {'shape': 'String'},
+                    },
+                },
+            }
+        )
+        op_model = service_model.operation_model('Op')
+        return Paginator(mock.Mock(), config, op_model)
+
+    def test_valid_map_wildcard_is_classified(self):
+        p = self._paginator(
+            {
+                'input_token': 'NextToken',
+                'output_token': 'NextToken',
+                'result_key': ['Items', 'CC.Indexes.*.U'],
+            }
+        )
+        self.assertEqual(
+            p._numeric_wildcard_paths, [('CC', 'Indexes', '*', 'U')]
+        )
+        # The wildcard is pulled out of the plain result keys.
+        self.assertEqual([rk.expression for rk in p._result_keys], ['Items'])
+
+    def test_wildcard_over_non_map_falls_back(self):
+        # NotAMap's '*' parent is not a map -> not treated as a wildcard.
+        p = self._paginator(
+            {
+                'input_token': 'NextToken',
+                'output_token': 'NextToken',
+                'result_key': ['Items', 'CC.NotAMap.*.U'],
+            }
+        )
+        self.assertEqual(p._numeric_wildcard_paths, [])
+        self.assertIn(
+            'CC.NotAMap.*.U', [rk.expression for rk in p._result_keys]
+        )
 
 
 if __name__ == '__main__':

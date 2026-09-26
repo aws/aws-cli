@@ -270,6 +270,88 @@ class TestCPCommand(BaseCPCommandTest):
         self.assertEqual(args['Bucket'], 'bucket')
         self.assertEqual(args['StorageClass'], 'DEEP_ARCHIVE')
 
+    def test_upload_with_tags(self):
+        full_path = self.files.create_file('foo.txt', 'mycontent')
+        cmdline = (
+            '%s %s s3://bucket/key.txt --tags key1 value1 --tags key2 value2'
+            % (self.prefix, full_path)
+        )
+        self.parsed_responses = [
+            {'ETag': '"c8afdb36c52cf4727836669019e69222"'}
+        ]
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assertEqual(self.operations_called[0][0].name, 'PutObject')
+        args = self.operations_called[0][1]
+        self.assertEqual(args['Tagging'], 'key1=value1&key2=value2')
+
+    def test_multipart_upload_with_tags(self):
+        full_path = self.files.create_file('foo.txt', 'a' * 10 * (1024**2))
+        cmdline = (
+            '%s %s s3://bucket/key.txt --tags key1 value1'
+            % (self.prefix, full_path)
+        )
+        self.parsed_responses = [
+            {'UploadId': 'foo'},  # CreateMultipartUpload response
+            {'ETag': '"foo-1"'},  # UploadPart response
+            {'ETag': '"foo-2"'},  # UploadPart response
+            {},  # CompleteMultipartUpload response
+        ]
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assertEqual(
+            self.operations_called[0][0].name, 'CreateMultipartUpload'
+        )
+        # Tags are set on the CreateMultipartUpload request...
+        self.assertEqual(
+            self.operations_called[0][1]['Tagging'], 'key1=value1'
+        )
+        # ...but not on the individual part uploads.
+        self.assertEqual(self.operations_called[1][0].name, 'UploadPart')
+        self.assertNotIn('Tagging', self.operations_called[1][1])
+
+    def test_upload_with_tags_percent_encodes_reserved_characters(self):
+        full_path = self.files.create_file('foo.txt', 'mycontent')
+        cmdline = [
+            's3',
+            'cp',
+            full_path,
+            's3://bucket/key.txt',
+            '--tags',
+            'key1',
+            'a=b&c',
+            '--tags',
+            'key 2',
+            'has spaces',
+        ]
+        self.parsed_responses = [
+            {'ETag': '"c8afdb36c52cf4727836669019e69222"'}
+        ]
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assertEqual(self.operations_called[0][0].name, 'PutObject')
+        # Reserved characters (=, &) and spaces must be percent-encoded so the
+        # Tagging query string is not corrupted. quote_plus-style '+' encoding
+        # would be wrong here.
+        self.assertEqual(
+            self.operations_called[0][1]['Tagging'],
+            'key1=a%3Db%26c&key%202=has%20spaces',
+        )
+
+    def test_s3_to_s3_copy_does_not_set_tags(self):
+        cmdline = (
+            '%s s3://bucket/key1.txt s3://bucket/key2.txt --tags key1 value1'
+            % self.prefix
+        )
+        self.parsed_responses = [
+            {
+                "ContentLength": "100",
+                "LastModified": "00:00:00Z",
+                'ETag': '"foo-1"',
+            },
+            {'ETag': '"c8afdb36c52cf4727836669019e69222"'},
+        ]
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assertEqual(self.operations_called[1][0].name, 'CopyObject')
+        self.assertNotIn('Tagging', self.operations_called[1][1])
+
     def test_operations_used_in_download_file(self):
         self.parsed_responses = [
             {
@@ -3236,6 +3318,37 @@ class TestCpWithCRTClient(BaseCRTTransferClientTest):
             expected_host=self.get_virtual_s3_host('bucket'),
             expected_path='/key',
             expected_send_filepath=filename,
+        )
+
+    def test_upload_with_tags_using_crt_client(self):
+        filename = self.files.create_file('myfile', 'mycontent')
+        cmdline = [
+            's3',
+            'cp',
+            filename,
+            's3://bucket/key',
+            '--tags',
+            'key1',
+            'value1',
+            '--tags',
+            'key2',
+            'value2',
+        ]
+        self.run_command(cmdline)
+        crt_requests = self.get_crt_make_request_calls()
+        self.assertEqual(len(crt_requests), 1)
+        self.assert_crt_make_request_call(
+            crt_requests[0],
+            expected_type=S3RequestType.PUT_OBJECT,
+            expected_host=self.get_virtual_s3_host('bucket'),
+            expected_path='/key',
+            expected_send_filepath=filename,
+        )
+        # Tags ride the extra_args path on the CRT transfer too, ending up in
+        # the x-amz-tagging header on the PutObject request.
+        request = crt_requests[0][1]['request']
+        self.assertEqual(
+            request.headers.get('x-amz-tagging'), 'key1=value1&key2=value2'
         )
 
     def test_recursive_upload_using_crt_client(self):

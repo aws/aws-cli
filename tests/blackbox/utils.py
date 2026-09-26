@@ -76,7 +76,11 @@ def get_query_params(request) -> dict[str, list[str]]:
 
 
 async def run_cli(
-    aws_cli: str, args: list[str], env: dict, stdin: bytes | None = None
+    aws_cli: str,
+    args: list[str],
+    env: dict,
+    stdin: bytes | None = None,
+    timeout: float = 60,
 ) -> tuple[bytes, bytes, int]:
     proc = await asyncio.create_subprocess_exec(
         aws_cli,
@@ -86,7 +90,17 @@ async def run_cli(
         stdout=asyncio.subprocess.PIPE,
         stderr=asyncio.subprocess.PIPE,
     )
-    stdout, stderr = await proc.communicate(input=stdin)
+    try:
+        stdout, stderr = await asyncio.wait_for(
+            proc.communicate(input=stdin), timeout=timeout
+        )
+    except asyncio.TimeoutError:
+        proc.kill()
+        await proc.wait()
+        raise AssertionError(
+            f"CLI process timed out after {timeout}s. "
+            f"Command: {aws_cli} {' '.join(args)}"
+        )
     return stdout, stderr, proc.returncode
 
 

@@ -627,10 +627,16 @@ class TestSignBackwardCompatibility(BaseSigningCommandTest):
             'video.mp4',
             'http://example.com/caf\u00e9.jpg',
             'http://example.com/a"b',
-            'http://example.com/a#b',
         ]:
             with self.subTest(url=url):
                 self.assert_signs_canned(url)
+
+    def test_rejects_url_fragment(self):
+        # The signing parameters would be appended to the fragment, which is
+        # never sent to CloudFront, so such a URL could never be used.
+        for url in ['http://example.com/a#b', 'http://example.com/a#']:
+            with self.subTest(url=url):
+                self.assert_sign_error('URL fragment', '--url', url)
 
     def test_key_pair_id_is_not_validated(self):
         url, _ = self.sign_url(
@@ -638,18 +644,40 @@ class TestSignBackwardCompatibility(BaseSigningCommandTest):
         )
         self.assertIn('Key-Pair-Id=my_id', url)
 
-    def test_ip_address_is_not_validated(self):
+    def test_ipv4_address_is_not_validated(self):
         policy = self.assert_signs_custom(
-            'http://example.com/hi', '--ip-address', '2001:db8::/32'
+            'http://example.com/hi', '--ip-address', '300.1.2.3/40'
         )
         self.assertEqual(
             policy['Statement'][0]['Condition']['IpAddress'],
-            {'AWS:SourceIp': '2001:db8::/32'},
+            {'AWS:SourceIp': '300.1.2.3/40'},
         )
 
-    def test_date_range_is_not_validated(self):
+    def test_rejects_ipv6_address(self):
+        # CloudFront only supports IPv4, so such a URL could never be used.
+        self.assert_sign_error(
+            'IPv6',
+            '--url',
+            'http://example.com/hi',
+            '--ip-address',
+            '2001:db8::/32',
+        )
+
+    def test_rejects_active_date_not_before_expiration(self):
+        # The URL would never be valid, so it could never be used.
+        for date_greater_than in ['2016-2-1', '2016-1-1']:
+            with self.subTest(date_greater_than=date_greater_than):
+                self.assert_sign_error(
+                    'must be before --date-less-than',
+                    '--url',
+                    'http://example.com/hi',
+                    '--date-greater-than',
+                    date_greater_than,
+                )
+
+    def test_active_date_before_expiration(self):
         policy = self.assert_signs_custom(
-            'http://example.com/hi', '--date-greater-than', '2016-2-1'
+            'http://example.com/hi', '--date-greater-than', '2015-12-1'
         )
         self.assertIn('DateGreaterThan', policy['Statement'][0]['Condition'])
 
@@ -669,6 +697,12 @@ class TestSignPolicyResourceValidation(BaseSigningCommandTest):
         return self.sign(
             '--url', url, '--policy-resource', resource, expected_rc=252
         )[1]
+
+    def test_rejects_empty_policy_resource(self):
+        self.assertIn(
+            'must not be empty',
+            self.sign_policy_resource('http://example.com/hi', ''),
+        )
 
     def test_rejects_unsafe_policy_resource(self):
         for resource in ['http://example.com/\\*', 'http://example.com/"*']:
@@ -1035,6 +1069,56 @@ class TestSignCookies(BaseSigningCommandTest):
         policy = json.loads(_url_b64decode(cookies['CloudFront-Policy']))
         self.assertEqual(
             policy['Statement'][0]['Resource'], 'http://example.com/*'
+        )
+
+    def test_custom_policy_with_active_date_and_ip_address(self):
+        stdout, _, _ = self.sign_cookies(
+            '--resource',
+            'http://example.com/hi',
+            '--date-greater-than',
+            '2015-12-1',
+            '--ip-address',
+            '10.0.0.0/8',
+            '--output',
+            'json',
+        )
+        cookies = json.loads(stdout)
+        self.assertEqual(
+            set(cookies),
+            {
+                'CloudFront-Policy',
+                'CloudFront-Signature',
+                'CloudFront-Key-Pair-Id',
+            },
+        )
+
+        self.assertEqual(
+            _url_b64decode(cookies['CloudFront-Policy']).decode('utf-8'),
+            '{"Statement":[{"Resource":"http://example.com/hi","Condition":'
+            '{"DateLessThan":{"AWS:EpochTime":1451606400},"IpAddress":'
+            '{"AWS:SourceIp":"10.0.0.0/8"},"DateGreaterThan":'
+            '{"AWS:EpochTime":1448928000}}}]}',
+        )
+        _, params = self.sign_url(
+            '--url',
+            'http://example.com/hi',
+            '--date-greater-than',
+            '2015-12-1',
+            '--ip-address',
+            '10.0.0.0/8',
+        )
+        self.assertEqual(
+            cookies['CloudFront-Signature'], params['Signature'][0]
+        )
+
+    def test_rejects_empty_resource(self):
+        self.assert_sign_cookies_error('must not be empty', '--resource', '')
+
+    def test_default_output_from_config(self):
+        self.environ['AWS_DEFAULT_OUTPUT'] = 'json'
+        stdout, _, _ = self.sign_cookies('--resource', 'http://example.com/hi')
+        self.assertEqual(
+            json.loads(stdout)['CloudFront-Expires'], '1451606400'
         )
 
     def test_hash_algorithm_cookie(self):

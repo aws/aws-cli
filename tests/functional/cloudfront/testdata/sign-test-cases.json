@@ -298,6 +298,26 @@
     }
   },
   {
+    "id": "error-active-after-expiration",
+    "documentation": "Error when activeDate is after expirationDate",
+    "input": {
+      "resource": "https://d111111abcdef8.cloudfront.net/file.txt",
+      "keyPairId": "K1TESTKEY",
+      "privateKeyFile": "test-rsa-key.pem",
+      "expirationDate": 1767200000,
+      "activeDate": 1767290400
+    },
+    "expected": {
+      "error": true,
+      "errorContains": [
+        "active",
+        "before",
+        "expiration"
+      ],
+      "returnCode": 252
+    }
+  },
+  {
     "id": "error-unsupported-key-type",
     "documentation": "Error when a valid key of an unsupported type (DSA) is provided. Only RSA and ECDSA (P-256) are supported.",
     "input": {

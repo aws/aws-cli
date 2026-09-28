@@ -1741,6 +1741,35 @@ class TestWildcardResultKeyAggregation(unittest.TestCase):
         result = it.build_full_result()
         self.assertEqual(result['CC']['Idx']['i1']['Name'], 'first')
 
+    def test_nested_non_aggregate_null_leaf_kept_when_parent_present(self):
+        # Parent object present but leaf genuinely null (e.g. kinesis
+        # DescribeStream StreamDescription.KeyId on an unencrypted stream):
+        # the null must still be surfaced, not silently dropped.
+        pages = [
+            {'Items': ['a'], 'SD': {'KeyId': None}, 'NextToken': 'tok'},
+            {'Items': ['b'], 'SD': {'KeyId': None}},
+        ]
+        it = _make_page_iterator(
+            pages, non_aggregate_keys=[jmespath.compile('SD.KeyId')]
+        )
+        result = it.build_full_result()
+        self.assertIn('SD', result)
+        self.assertIn('KeyId', result['SD'])
+        self.assertIsNone(result['SD']['KeyId'])
+
+    def test_nested_non_aggregate_skipped_when_parent_absent(self):
+        # Parent object itself absent (e.g. ConsumedCapacity when capacity
+        # wasn't requested): don't fabricate a phantom {"KeyId": null} parent.
+        pages = [
+            {'Items': ['a'], 'NextToken': 'tok'},
+            {'Items': ['b']},
+        ]
+        it = _make_page_iterator(
+            pages, non_aggregate_keys=[jmespath.compile('SD.KeyId')]
+        )
+        result = it.build_full_result()
+        self.assertNotIn('SD', result)
+
 
 class TestMapWildcardGate(unittest.TestCase):
     def _paginator(self, config):
@@ -1812,8 +1841,11 @@ class TestMapWildcardGate(unittest.TestCase):
         # The wildcard is pulled out of the plain result keys.
         self.assertEqual([rk.expression for rk in p._result_keys], ['Items'])
 
-    def test_wildcard_over_non_map_falls_back(self):
-        # NotAMap's '*' parent is not a map -> not treated as a wildcard.
+    def test_wildcard_over_non_map_is_dropped(self):
+        # NotAMap's '*' parent is not a map -> the path is neither treated as a
+        # wildcard nor compiled as a plain jmespath key (which would make '*' a
+        # list projection that build_full_result silently concatenates). It is
+        # dropped entirely, leaving only the valid plain keys.
         p = self._paginator(
             {
                 'input_token': 'NextToken',
@@ -1822,9 +1854,20 @@ class TestMapWildcardGate(unittest.TestCase):
             }
         )
         self.assertEqual(p._numeric_wildcard_paths, [])
-        self.assertIn(
-            'CC.NotAMap.*.U', [rk.expression for rk in p._result_keys]
-        )
+        self.assertEqual([rk.expression for rk in p._result_keys], ['Items'])
+
+    def test_all_wildcard_result_keys_raises(self):
+        # If every result_key is diverted to a wildcard path there is no
+        # non-wildcard primary key for __iter__; surface a clear error instead
+        # of a later IndexError on result_keys[0].
+        with self.assertRaises(PaginationError):
+            self._paginator(
+                {
+                    'input_token': 'NextToken',
+                    'output_token': 'NextToken',
+                    'result_key': ['CC.Indexes.*.U'],
+                }
+            )
 
 
 if __name__ == '__main__':

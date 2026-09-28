@@ -86,17 +86,6 @@ class DDBCommand(BasicCommand):
             response = paginator.paginate(**client_args).build_full_result()
         else:
             response = getattr(self._client, operation_name)(**client_args)
-        # When --return-consumed-capacity is not requested, ConsumedCapacity is
-        # absent from the responses. The paginator still materializes its
-        # non_aggregate leaves (e.g. ConsumedCapacity.TableName) as null, so the
-        # value is either None or a dict whose values are all None. Drop it in
-        # either case so it isn't surfaced when the user didn't ask for it.
-        consumed_capacity = response.get('ConsumedCapacity')
-        if consumed_capacity is None or (
-            isinstance(consumed_capacity, dict)
-            and all(value is None for value in consumed_capacity.values())
-        ):
-            response.pop('ConsumedCapacity', None)
         self._deserialize(operation_name, response)
         return response
 

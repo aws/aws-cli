@@ -241,6 +241,13 @@
       },
       "documentation":"<p>Custom descriptor for user-defined content</p>"
     },
+    "CustomMetadataDocument":{
+      "type":"structure",
+      "members":{},
+      "documentation":"<p>Free-form JSON document representing custom metadata on a registry record. Values may be strings or booleans (native JSON types). Key/value constraints enforced in service code.</p>",
+      "document":true,
+      "sensitive":true
+    },
     "DataSchemaVersion":{
       "type":"string",
       "documentation":"<p>Version of the descriptor type schema</p>",
@@ -707,6 +714,10 @@
         "updatedAt":{
           "shape":"DateTimestamp",
           "documentation":"<p> The timestamp when the registry record was last updated.</p>"
+        },
+        "customMetadata":{
+          "shape":"CustomMetadataDocument",
+          "documentation":"<p> The custom metadata attached to this registry record. Values are strings (maximum 128 characters) or booleans. This field is only present if the registry has a custom metadata schema configured.</p>"
         }
       },
       "documentation":"<p> Summary information about a registry record, including its descriptors.</p>"
@@ -779,7 +790,7 @@
         },
         "filters":{
           "shape":"MetadataFilterExpression",
-          "documentation":"<p> An optional structured JSON metadata filter that narrows the search results. Supports the field-level operators <code>$eq</code>, <code>$ne</code>, and <code>$in</code>, and the logical operators <code>$and</code> and <code>$or</code> on filterable fields.</p>"
+          "documentation":"<p> An optional structured JSON metadata filter that narrows the search results. Supports the field-level operators <code>$eq</code>, <code>$ne</code>, and <code>$in</code>, and the logical operators <code>$and</code> and <code>$or</code> on filterable fields.</p> <p> You can also filter on custom metadata fields using the <code>customMetadata.{key}</code> prefix. For example, to filter by a custom metadata field: <code>{\"customMetadata.environment\": {\"$eq\": \"production\"}}</code>. Filter values must be strings, so match a boolean field on its string form: <code>{\"customMetadata.requiresApproval\": {\"$eq\": \"true\"}}</code>.</p>"
         }
       }
     },

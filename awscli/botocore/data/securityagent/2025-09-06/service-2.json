@@ -2654,6 +2654,16 @@
       "documentation":"<p>A PEM-encoded certificate chain for a private connection.</p>",
       "sensitive":true
     },
+    "CiCdConfiguration":{
+      "type":"structure",
+      "members":{
+        "enabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether CI/CD pentesting is enabled for this pentest.</p>"
+        }
+      },
+      "documentation":"<p>The configuration that enables a pentest to run as part of a CI/CD pipeline, scoped to the code changes in each pipeline run.</p>"
+    },
     "CleanUpStrategy":{
       "type":"string",
       "documentation":"<p>Strategy for handling resources created during a pentest.</p>",
@@ -3642,6 +3652,10 @@
         "reportFilters":{
           "shape":"ReportFilters",
           "documentation":"<p>The report-generation filters applied when the report is exported.</p>"
+        },
+        "cicdConfiguration":{
+          "shape":"CiCdConfiguration",
+          "documentation":"<p>The CI/CD pentesting configuration to apply to the pentest.</p>"
         }
       },
       "documentation":"<p>Input for creating a new pentest.</p>"
@@ -3692,6 +3706,10 @@
         "reportFilters":{
           "shape":"ReportFilters",
           "documentation":"<p>The report-generation filters applied when the report is exported.</p>"
+        },
+        "cicdConfiguration":{
+          "shape":"CiCdConfiguration",
+          "documentation":"<p>The CI/CD pentesting configuration applied to the pentest.</p>"
         }
       },
       "documentation":"<p>Output for the CreatePentest operation.</p>"
@@ -5638,7 +5656,8 @@
       "documentation":"<p>The type of pentest job execution.</p>",
       "enum":[
         "FULL",
-        "REVALIDATION"
+        "REVALIDATION",
+        "CICD"
       ]
     },
     "KmsKeyId":{
@@ -6189,6 +6208,10 @@
         "nextToken":{
           "shape":"NextToken",
           "documentation":"<p>A token to use for paginating results that are returned in the response. Set the value of this parameter to null for the first request. For subsequent calls, use the nextToken value returned from the previous request.</p>"
+        },
+        "jobType":{
+          "shape":"JobType",
+          "documentation":"<p>Filters the returned pentest jobs to only those of the specified job type.</p>"
         }
       },
       "documentation":"<p>Input for ListPentestJobsForPentest operation.</p>"
@@ -6819,6 +6842,10 @@
           "shape":"ReportFilters",
           "documentation":"<p>The report-generation filters applied when the report is exported.</p>"
         },
+        "cicdConfiguration":{
+          "shape":"CiCdConfiguration",
+          "documentation":"<p>The CI/CD pentesting configuration for this pentest. Present when the pentest is set up to run from a CI/CD pipeline.</p>"
+        },
         "createdAt":{
           "shape":"SyntheticTimestamp_date_time",
           "documentation":"<p>The date and time the pentest was created, in UTC format.</p>"
@@ -6939,7 +6966,7 @@
         },
         "jobType":{
           "shape":"JobType",
-          "documentation":"<p>The type of the pentest job. Valid values are FULL and REVALIDATION.</p>"
+          "documentation":"<p>The type of the pentest job. Valid values are FULL, REVALIDATION, and CICD.</p>"
         },
         "selectedFindingIds":{
           "shape":"StringList",
@@ -6949,6 +6976,19 @@
           "shape":"ReportDestination",
           "documentation":"<p>The destination for publishing scan reports to an integrated document provider.</p>"
         },
+        "reportUrl":{
+          "shape":"String",
+          "documentation":"<p>The URL to view this pentest job's findings report in the console.</p>"
+        },
+        "scopeResult":{
+          "shape":"ScopeResult",
+          "documentation":"<p>The scoping outcome for this CI/CD pentest job. Present only for jobs of type CICD.</p>"
+        },
+        "scopeChanges":{
+          "shape":"ScopeChangeList",
+          "documentation":"<p>The code changes that defined the scope of this CI/CD pentest job. Present only for jobs of type CICD.</p>"
+        },
+        "cicdConfiguration":{"shape":"CiCdConfiguration"},
         "createdAt":{
           "shape":"SyntheticTimestamp_date_time",
           "documentation":"<p>The date and time the pentest job was created, in UTC format.</p>"
@@ -6998,6 +7038,14 @@
         "updatedAt":{
           "shape":"SyntheticTimestamp_date_time",
           "documentation":"<p>The date and time the pentest job was last updated, in UTC format.</p>"
+        },
+        "jobType":{
+          "shape":"JobType",
+          "documentation":"<p>The type of the pentest job. Valid values are FULL, REVALIDATION, and CICD.</p>"
+        },
+        "reportUrl":{
+          "shape":"String",
+          "documentation":"<p>The URL to view this pentest job's findings report in the console.</p>"
         }
       },
       "documentation":"<p>Contains summary information about a pentest job.</p>"
@@ -7434,6 +7482,68 @@
       "type":"list",
       "member":{"shape":"S3BucketArn"}
     },
+    "ScopeChange":{
+      "type":"structure",
+      "required":[
+        "integrationId",
+        "providerResourceId",
+        "headCommitSha"
+      ],
+      "members":{
+        "integrationId":{
+          "shape":"String",
+          "documentation":"<p>The identifier of the integration for the source-code provider that hosts the repository.</p>"
+        },
+        "providerResourceId":{
+          "shape":"String",
+          "documentation":"<p>The provider-specific identifier of the repository the change belongs to.</p>"
+        },
+        "baseCommitSha":{
+          "shape":"String",
+          "documentation":"<p>The commit SHA that the change is compared against. When omitted, the change is evaluated against the head commit alone.</p>"
+        },
+        "headCommitSha":{
+          "shape":"String",
+          "documentation":"<p>The commit SHA at the tip of the change to be tested.</p>"
+        },
+        "triggerRunId":{
+          "shape":"String",
+          "documentation":"<p>The identifier of the CI/CD pipeline run that triggered this pentest job.</p>"
+        }
+      },
+      "documentation":"<p>A code change in a CI/CD pipeline run that defines what a CI/CD pentest job tests. Each scope change identifies an integrated repository and the commit range for the change.</p>"
+    },
+    "ScopeChangeList":{
+      "type":"list",
+      "member":{"shape":"ScopeChange"}
+    },
+    "ScopeDecision":{
+      "type":"string",
+      "documentation":"<p>The scoping decision for a CI/CD pentest job, indicating whether the supplied code changes are tested.</p>",
+      "enum":[
+        "IN_SCOPE",
+        "SCOPED_OUT",
+        "SCOPE_CONFLICT"
+      ]
+    },
+    "ScopeResult":{
+      "type":"structure",
+      "required":[
+        "decision",
+        "reason"
+      ],
+      "members":{
+        "decision":{
+          "shape":"ScopeDecision",
+          "documentation":"<p>The scoping decision for the job's code changes.</p>"
+        },
+        "reason":{
+          "shape":"String",
+          "documentation":"<p>A human-readable explanation of the scoping decision.</p>"
+        }
+      },
+      "documentation":"<p>The outcome of scoping a CI/CD pentest job's code changes, including the decision and the reason for it.</p>"
+    },
     "SecretArn":{
       "type":"string",
       "documentation":"<p>Secret ARN or name for agent space AWS resources.</p>"
@@ -7841,11 +7951,15 @@
         },
         "jobType":{
           "shape":"JobType",
-          "documentation":"<p>The type of pentest job to start. Valid values are FULL and REVALIDATION. When set to REVALIDATION, the selectedFindingIds parameter is required.</p>"
+          "documentation":"<p>The type of pentest job to start. Valid values are FULL, REVALIDATION, and CICD. When set to REVALIDATION, the selectedFindingIds parameter is required. When set to CICD, the scopeChanges parameter defines the code changes to test.</p>"
         },
         "selectedFindingIds":{
           "shape":"StringList",
           "documentation":"<p>The list of finding identifiers to revalidate. Required when jobType is REVALIDATION. Each finding must belong to the same agent space and pentest.</p>"
+        },
+        "scopeChanges":{
+          "shape":"ScopeChangeList",
+          "documentation":"<p>The code changes that define the scope of a CI/CD pentest job. Provide this when starting a job with jobType CICD to test only the changes in the current pipeline run.</p>"
         }
       },
       "documentation":"<p>Input for starting the execution of a pentest.</p>"
@@ -9335,6 +9449,10 @@
         "reportFilters":{
           "shape":"ReportFilters",
           "documentation":"<p>The report-generation filters applied when the report is exported.</p>"
+        },
+        "cicdConfiguration":{
+          "shape":"CiCdConfiguration",
+          "documentation":"<p>The updated CI/CD pentesting configuration to apply to the pentest.</p>"
         }
       },
       "documentation":"<p>Input for updating an existing pentest.</p>"
@@ -9385,6 +9503,10 @@
         "reportFilters":{
           "shape":"ReportFilters",
           "documentation":"<p>The report-generation filters applied when the report is exported.</p>"
+        },
+        "cicdConfiguration":{
+          "shape":"CiCdConfiguration",
+          "documentation":"<p>The CI/CD pentesting configuration applied to the pentest.</p>"
         }
       },
       "documentation":"<p>Output for the UpdatePentest operation.</p>"

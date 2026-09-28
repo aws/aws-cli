@@ -5332,7 +5332,7 @@
         {"shape":"InternalServiceException"},
         {"shape":"LimitExceededException"}
       ],
-      "documentation":"<p>Initiates a flow to start a new chat for the customer. Response of this API provides a token required to obtain credentials from the <a href=\"https://docs.aws.amazon.com/connect-participant/latest/APIReference/API_CreateParticipantConnection.html\">CreateParticipantConnection</a> API in the Connect Customer Participant Service.</p> <p>When a new chat contact is successfully created, clients must subscribe to the participant’s connection for the created chat within 5 minutes. This is achieved by invoking <a href=\"https://docs.aws.amazon.com/connect-participant/latest/APIReference/API_CreateParticipantConnection.html\">CreateParticipantConnection</a> with WEBSOCKET and CONNECTION_CREDENTIALS. </p> <p>A 429 error occurs in the following situations:</p> <ul> <li> <p>API rate limit is exceeded. API TPS throttling returns a <code>TooManyRequests</code> exception.</p> </li> <li> <p>The <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/amazon-connect-service-limits.html\">quota for concurrent active chats</a> is exceeded. Active chat throttling returns a <code>LimitExceededException</code>.</p> </li> </ul> <p>If you use the <code>ChatDurationInMinutes</code> parameter and receive a 400 error, your account may not support the ability to configure custom chat durations. For more information, contact Amazon Web Services Support. </p> <p>For more information about chat, see the following topics in the <i>Connect Customer Administrator Guide</i>: </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/web-and-mobile-chat.html\">Concepts: Web and mobile messaging capabilities in Connect Customer</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/security-best-practices.html#bp-security-chat\">Connect Customer Chat security best practices</a> </p> </li> </ul>"
+      "documentation":"<p>Initiates a flow to start a new chat for the customer. Response of this API provides a token required to obtain credentials from the <a href=\"https://docs.aws.amazon.com/connect-participant/latest/APIReference/API_CreateParticipantConnection.html\">CreateParticipantConnection</a> API in the Connect Customer Participant Service.</p> <p>When a new chat contact is successfully created, clients must subscribe to the participant’s connection for the created chat within 5 minutes. This is achieved by invoking <a href=\"https://docs.aws.amazon.com/connect-participant/latest/APIReference/API_CreateParticipantConnection.html\">CreateParticipantConnection</a> with WEBSOCKET and CONNECTION_CREDENTIALS. </p> <p>To receive connection information directly in the response, set <code>ConnectionTypes</code> on the request. To initiate real-time message streaming when the chat is created, set <code>ChatStreamingConfiguration</code> on the request. Both parameters are optional.</p> <p>A 429 error occurs in the following situations:</p> <ul> <li> <p>API rate limit is exceeded. API TPS throttling returns a <code>TooManyRequests</code> exception.</p> </li> <li> <p>The <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/amazon-connect-service-limits.html\">quota for concurrent active chats</a> is exceeded. Active chat throttling returns a <code>LimitExceededException</code>.</p> </li> </ul> <p>If you use the <code>ChatDurationInMinutes</code> parameter and receive a 400 error, your account may not support the ability to configure custom chat durations. For more information, contact Amazon Web Services Support. </p> <p>For more information about chat, see the following topics in the <i>Connect Customer Administrator Guide</i>: </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/web-and-mobile-chat.html\">Concepts: Web and mobile messaging capabilities in Connect Customer</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/security-best-practices.html#bp-security-chat\">Connect Customer Chat security best practices</a> </p> </li> </ul>"
     },
     "StartContactConversationalAnalyticsJob":{
       "name":"StartContactConversationalAnalyticsJob",
@@ -10408,6 +10408,20 @@
       "error":{"httpStatusCode":409},
       "exception":true
     },
+    "ConnectionCredentials":{
+      "type":"structure",
+      "members":{
+        "ConnectionToken":{
+          "shape":"ParticipantToken",
+          "documentation":"<p>The connection token used by the chat participant to call the Connect Customer Participant Service.</p>"
+        },
+        "Expiry":{
+          "shape":"ISO8601Datetime",
+          "documentation":"<p>The expiration of the token. It's specified in ISO 8601 format: yyyy-MM-ddThh:mm:ss.SSSZ. For example, 2019-11-08T02:41:28.172Z.</p>"
+        }
+      },
+      "documentation":"<p>The credentials that a chat participant uses to connect to the Connect Customer Participant Service.</p>"
+    },
     "ConnectionData":{
       "type":"structure",
       "members":{
@@ -10421,6 +10435,21 @@
         }
       },
       "documentation":"<p>Information required to join the call.</p>"
+    },
+    "ConnectionType":{
+      "type":"string",
+      "enum":[
+        "WEBSOCKET",
+        "CONNECTION_CREDENTIALS",
+        "AUTHENTICATION_SESSION",
+        "WEBRTC_CONNECTION"
+      ]
+    },
+    "ConnectionTypeList":{
+      "type":"list",
+      "member":{"shape":"ConnectionType"},
+      "max":2,
+      "min":1
     },
     "Contact":{
       "type":"structure",
@@ -29536,6 +29565,11 @@
       "max":2000,
       "min":1
     },
+    "PreSignedConnectionUrl":{
+      "type":"string",
+      "max":2000,
+      "min":1
+    },
     "PredefinedAttribute":{
       "type":"structure",
       "members":{
@@ -34956,6 +34990,14 @@
         "DisconnectOnCustomerExit":{
           "shape":"DisconnectOnCustomerExit",
           "documentation":"<p>A list of participant types to automatically disconnect when the end customer ends the chat session, allowing them to continue through disconnect flows such as surveys or feedback forms.</p>"
+        },
+        "ConnectionTypes":{
+          "shape":"ConnectionTypeList",
+          "documentation":"<p>The types of connection information to return in the response. This parameter is optional.</p> <p>Specify <code>CONNECTION_CREDENTIALS</code> to receive a connection token. Specify <code>WEBSOCKET</code> to receive a websocket URL. You can specify both. No other value returns connection information.</p> <p>Request <code>WEBSOCKET</code> to get a URL the participant connects to directly. You do not need to call <a href=\"https://docs.aws.amazon.com/connect-participant/latest/APIReference/API_CreateParticipantConnection.html\">CreateParticipantConnection</a> for it. Request <code>CONNECTION_CREDENTIALS</code> on its own and the response returns a connection token but no websocket URL.</p> <p>If you omit this parameter, the response has no connection information.</p> <note> <p>If the information you request cannot be returned, StartChatContact returns an error rather than a response that omits it.</p> </note>"
+        },
+        "ChatStreamingConfiguration":{
+          "shape":"ChatStreamingConfiguration",
+          "documentation":"<p>The streaming configuration, such as the Amazon SNS streaming endpoint. Use it to initiate real-time message streaming when the chat is created. This parameter is optional.</p> <p>When you set this parameter, the response includes <code>StreamingId</code>. You do not need to call <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_StartContactStreaming.html\">StartContactStreaming</a>.</p> <note> <p>This parameter starts message streaming only. The response does not include connection information, and setting this parameter does not remove the need to call <a href=\"https://docs.aws.amazon.com/connect-participant/latest/APIReference/API_CreateParticipantConnection.html\">CreateParticipantConnection</a>.</p> </note>"
         }
       }
     },
@@ -34977,6 +35019,18 @@
         "ContinuedFromContactId":{
           "shape":"ContactId",
           "documentation":"<p>The contactId from which a persistent chat session is started. This field is populated only for persistent chats.</p>"
+        },
+        "ConnectionCredentials":{
+          "shape":"ConnectionCredentials",
+          "documentation":"<p>The connection credentials for the chat participant. Returned only when the request includes <code>CONNECTION_CREDENTIALS</code> in <code>ConnectionTypes</code>.</p>"
+        },
+        "Websocket":{
+          "shape":"Websocket",
+          "documentation":"<p>The websocket for the chat participant. Returned only when the request includes <code>WEBSOCKET</code> in <code>ConnectionTypes</code>.</p>"
+        },
+        "StreamingId":{
+          "shape":"StreamingId",
+          "documentation":"<p>The identifier of the streaming configuration enabled with the chat. Returned only when the request sets <code>ChatStreamingConfiguration</code>. Use this value to call <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_StopContactStreaming.html\">StopContactStreaming</a>.</p>"
         }
       }
     },
@@ -38316,7 +38370,7 @@
         },
         "AttributeType":{
           "shape":"InstanceAttributeType",
-          "documentation":"<p>The type of attribute.</p> <note> <p>Only allowlisted customers can consume USE_CUSTOM_TTS_VOICES. To access this feature, contact Amazon Web Services Support for allowlisting.</p> </note> <note> <p>If you set the attribute type as <code>MESSAGE_STREAMING</code>, you need to update the Lex bot alias resource based policy to include the <code>lex:RecognizeMessageAsync</code> action for the connect instance ARN resource.</p> </note> <note> <p>If you set the attribute type <code>AUTO_MUTE_AGENT_ON_HOLD</code> to <code>true</code>, the system automatically mutes agents while they're on hold and unmutes them when they resume the contact. Agents can't change their mute state while on hold.</p> </note>",
+          "documentation":"<p>The type of attribute.</p> <note> <p>Only allowlisted customers can consume USE_CUSTOM_TTS_VOICES. To access this feature, contact Amazon Web Services Support for allowlisting.</p> </note> <note> <p>If you set the attribute type as <code>MESSAGE_STREAMING</code>, you need to update the Lex bot alias resource based policy to include the <code>lex:RecognizeMessageAsync</code> action for the connect instance ARN resource.</p> </note>",
           "location":"uri",
           "locationName":"AttributeType"
         },
@@ -41128,6 +41182,20 @@
       "type":"string",
       "max":36,
       "min":1
+    },
+    "Websocket":{
+      "type":"structure",
+      "members":{
+        "Url":{
+          "shape":"PreSignedConnectionUrl",
+          "documentation":"<p>The URL of the websocket.</p>"
+        },
+        "ConnectionExpiry":{
+          "shape":"ISO8601Datetime",
+          "documentation":"<p>The expiration of the websocket URL. It's specified in ISO 8601 format: yyyy-MM-ddThh:mm:ss.SSSZ. For example, 2019-11-08T02:41:28.172Z.</p>"
+        }
+      },
+      "documentation":"<p>The websocket that a chat participant uses to receive messages and events for the chat.</p>"
     },
     "WeekdayOccurrenceInteger":{
       "type":"integer",

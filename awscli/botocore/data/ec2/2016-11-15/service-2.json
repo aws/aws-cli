@@ -1797,6 +1797,16 @@
       "output":{"shape":"DeleteClientVpnEndpointResult"},
       "documentation":"<p>Deletes the specified Client VPN endpoint. You must disassociate all target networks before you can delete a Client VPN endpoint.</p>"
     },
+    "DeleteClientVpnEndpointAuthorizationPolicy":{
+      "name":"DeleteClientVpnEndpointAuthorizationPolicy",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteClientVpnEndpointAuthorizationPolicyRequest"},
+      "output":{"shape":"DeleteClientVpnEndpointAuthorizationPolicyResult"},
+      "documentation":"<p>Deletes the authorization policy for a Client VPN endpoint.</p>"
+    },
     "DeleteClientVpnRoute":{
       "name":"DeleteClientVpnRoute",
       "http":{
@@ -5591,6 +5601,16 @@
       "output":{"shape":"GetCapacityReservationUsageResult"},
       "documentation":"<p>Gets usage information about a Capacity Reservation. If the Capacity Reservation is shared, it shows usage information for the Capacity Reservation owner and each Amazon Web Services account that is currently using the shared capacity. If the Capacity Reservation is not shared, it shows only the Capacity Reservation owner's usage.</p>"
     },
+    "GetClientVpnEndpointAuthorizationPolicy":{
+      "name":"GetClientVpnEndpointAuthorizationPolicy",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetClientVpnEndpointAuthorizationPolicyRequest"},
+      "output":{"shape":"GetClientVpnEndpointAuthorizationPolicyResult"},
+      "documentation":"<p>Describes the authorization policy for a Client VPN endpoint.</p>"
+    },
     "GetCoipPoolUsage":{
       "name":"GetCoipPoolUsage",
       "http":{
@@ -6430,6 +6450,16 @@
       "input":{"shape":"ModifyClientVpnEndpointRequest"},
       "output":{"shape":"ModifyClientVpnEndpointResult"},
       "documentation":"<p>Modifies the specified Client VPN endpoint. Modifying the DNS server resets existing client connections.</p>"
+    },
+    "ModifyClientVpnEndpointAuthorizationPolicy":{
+      "name":"ModifyClientVpnEndpointAuthorizationPolicy",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ModifyClientVpnEndpointAuthorizationPolicyRequest"},
+      "output":{"shape":"ModifyClientVpnEndpointAuthorizationPolicyResult"},
+      "documentation":"<p>Creates or updates the authorization policy for a Client VPN endpoint. A Client VPN endpoint can have one authorization policy. If a policy already exists for the endpoint, the values that you specify replace the corresponding values in the existing policy, and values that you do not specify remain unchanged.</p>"
     },
     "ModifyDefaultCreditSpecification":{
       "name":"ModifyDefaultCreditSpecification",
@@ -15158,6 +15188,25 @@
         "federated-authentication"
       ]
     },
+    "ClientVpnAuthorizationPolicyShadowMode":{
+      "type":"string",
+      "documentation":"<p>Indicates whether the authorization policy for a Client VPN endpoint is evaluated in shadow mode. Possible values include:</p> <ul> <li> <p> <code>enabled</code> - The authorization policy is evaluated and the results are logged, but access is not enforced.</p> </li> <li> <p> <code>disabled</code> - The authorization policy is enforced.</p> </li> </ul>",
+      "enum":[
+        "enabled",
+        "disabled"
+      ]
+    },
+    "ClientVpnAuthorizationPolicyStatus":{
+      "type":"string",
+      "documentation":"<p>Describes the state of an authorization policy for a Client VPN endpoint. Possible states include:</p> <ul> <li> <p> <code>creating</code> - The authorization policy is being created.</p> </li> <li> <p> <code>updating</code> - The authorization policy is being updated.</p> </li> <li> <p> <code>active</code> - The authorization policy has been applied to the Client VPN endpoint.</p> </li> <li> <p> <code>failed</code> - The authorization policy could not be applied to the Client VPN endpoint.</p> </li> <li> <p> <code>deleting</code> - The authorization policy is being deleted.</p> </li> </ul>",
+      "enum":[
+        "creating",
+        "updating",
+        "active",
+        "failed",
+        "deleting"
+      ]
+    },
     "ClientVpnAuthorizationRuleStatus":{
       "type":"structure",
       "members":{
@@ -15274,6 +15323,11 @@
           "shape":"ValueStringList",
           "documentation":"<p>The statuses returned by the client connect handler for posture compliance, if applicable.</p>",
           "locationName":"postureComplianceStatusSet"
+        },
+        "AuthorizationPolicyLastEvaluatedTime":{
+          "shape":"String",
+          "documentation":"<p>The date and time the authorization policy was last evaluated for the client connection, if applicable.</p>",
+          "locationName":"authorizationPolicyLastEvaluatedTime"
         }
       },
       "documentation":"<p>Describes a client connection.</p>"
@@ -15308,6 +15362,14 @@
         "failed-to-terminate",
         "terminating",
         "terminated"
+      ]
+    },
+    "ClientVpnDeviceTrustProviderType":{
+      "type":"string",
+      "enum":[
+        "crowdstrike",
+        "jamf",
+        "jumpcloud"
       ]
     },
     "ClientVpnEndpoint":{
@@ -15454,6 +15516,11 @@
           "shape":"TransitGatewayConfigurationDescribeEndpointStructure",
           "documentation":"<p>The Transit Gateway configuration for the Client VPN endpoint.</p>",
           "locationName":"transitGatewayConfiguration"
+        },
+        "DevicePostureOptions":{
+          "shape":"DevicePostureResponseOptions",
+          "documentation":"<p>The device trust providers configured for the Client VPN endpoint, if applicable.</p>",
+          "locationName":"devicePostureOptions"
         }
       },
       "documentation":"<p>Describes a Client VPN endpoint.</p>"
@@ -15597,6 +15664,59 @@
       "type":"list",
       "member":{
         "shape":"SecurityGroupId",
+        "locationName":"item"
+      }
+    },
+    "ClientVpnTrustProvider":{
+      "type":"structure",
+      "members":{
+        "TrustProviderType":{
+          "shape":"ClientVpnDeviceTrustProviderType",
+          "documentation":"<p>The type of the device trust provider. Possible values include:</p> <ul> <li> <p> <code>crowdstrike</code> - CrowdStrike device trust provider.</p> </li> <li> <p> <code>jamf</code> - Jamf device trust provider.</p> </li> <li> <p> <code>jumpcloud</code> - JumpCloud device trust provider.</p> </li> </ul>",
+          "locationName":"trustProviderType"
+        },
+        "TenantId":{
+          "shape":"String",
+          "documentation":"<p>The tenant ID associated with your device trust provider account.</p>",
+          "locationName":"tenantId"
+        },
+        "PublicSigningKeyUrl":{
+          "shape":"String",
+          "documentation":"<p>The URL of the public signing key that is used to verify the identity token issued by the device trust provider.</p>",
+          "locationName":"publicSigningKeyUrl"
+        }
+      },
+      "documentation":"<p>Information about a device trust provider configured for a Client VPN endpoint.</p>"
+    },
+    "ClientVpnTrustProviderRequest":{
+      "type":"structure",
+      "members":{
+        "TrustProviderType":{
+          "shape":"ClientVpnDeviceTrustProviderType",
+          "documentation":"<p>The type of the device trust provider. Possible values include:</p> <ul> <li> <p> <code>crowdstrike</code> - CrowdStrike device trust provider.</p> </li> <li> <p> <code>jamf</code> - Jamf device trust provider.</p> </li> <li> <p> <code>jumpcloud</code> - JumpCloud device trust provider.</p> </li> </ul>"
+        },
+        "TenantId":{
+          "shape":"String",
+          "documentation":"<p>The tenant ID associated with your device trust provider account.</p>"
+        },
+        "PublicSigningKeyUrl":{
+          "shape":"String",
+          "documentation":"<p>The URL of the public signing key that is used to verify the identity token issued by the device trust provider.</p>"
+        }
+      },
+      "documentation":"<p>Describes a device trust provider to configure for a Client VPN endpoint.</p>"
+    },
+    "ClientVpnTrustProviderRequestList":{
+      "type":"list",
+      "member":{
+        "shape":"ClientVpnTrustProviderRequest",
+        "locationName":"item"
+      }
+    },
+    "ClientVpnTrustProviderSet":{
+      "type":"list",
+      "member":{
+        "shape":"ClientVpnTrustProvider",
         "locationName":"item"
       }
     },
@@ -15852,6 +15972,10 @@
         "CloudwatchLogStream":{
           "shape":"String",
           "documentation":"<p>The name of the CloudWatch Logs log stream to which the connection data is published.</p>"
+        },
+        "IncludeAuthorizationPolicyContext":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether to include the authorization policy evaluation context in the connection logs for the Client VPN endpoint.</p>"
         }
       },
       "documentation":"<p>Describes the client connection logging options for the Client VPN endpoint.</p>"
@@ -15870,6 +15994,10 @@
         "CloudwatchLogStream":{
           "shape":"String",
           "documentation":"<p>The name of the Amazon CloudWatch Logs log stream to which connection logging data is published.</p>"
+        },
+        "IncludeAuthorizationPolicyContext":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether the authorization policy evaluation context is included in the connection logs for the Client VPN endpoint.</p>"
         }
       },
       "documentation":"<p>Information about the client connection logging options for a Client VPN endpoint.</p>"
@@ -17081,6 +17209,10 @@
         "TransitGatewayConfiguration":{
           "shape":"TransitGatewayConfigurationInputStructure",
           "documentation":"<p>The Transit Gateway configuration for the Client VPN endpoint. Use this parameter to associate the endpoint with a Transit Gateway instead of a VPC. You cannot specify both <code>TransitGatewayConfiguration</code> and <code>VpcId</code>/<code>SecurityGroupIds</code>.</p>"
+        },
+        "DevicePostureOptions":{
+          "shape":"DevicePostureOptions",
+          "documentation":"<p>The device posture options for the Client VPN endpoint. Use this parameter to specify the device trust providers that the endpoint uses to evaluate the security posture of connecting devices.</p>"
         }
       }
     },
@@ -21979,7 +22111,7 @@
         },
         "VpcEndpointType":{
           "shape":"VpcEndpointType",
-          "documentation":"<p>The type of endpoint.</p> <p>Default: Gateway</p>"
+          "documentation":"<p>The type of endpoint.</p> <p>For more information about the types of VPC endpoints, see <a href=\"https://docs.aws.amazon.com/vpc/latest/privatelink/concepts.html#concepts-vpc-endpoints\">VPC endpoints</a> in the <i>Amazon Web Services PrivateLink User Guide</i>.</p> <p>Default: Gateway</p>"
         },
         "VpcId":{
           "shape":"VpcId",
@@ -22000,12 +22132,12 @@
         },
         "SubnetIds":{
           "shape":"VpcEndpointSubnetIdList",
-          "documentation":"<p>(Interface and Gateway Load Balancer endpoints) The IDs of the subnets in which to create endpoint network interfaces. For a Gateway Load Balancer endpoint, you can specify only one subnet.</p>",
+          "documentation":"<p>(Interface, Gateway Load Balancer endpoints, Resource, ServiceNetwork, and Tunnel endpoints only) The IDs of the subnets in which to create endpoint network interfaces. For a Gateway Load Balancer endpoint, you can specify only one subnet. For a <code>Tunnel</code> endpoint, the subnets must be in the Availability Zones of the resource gateway associated with the shared resource configuration. An endpoint network interface is created only in an Availability Zone that the resource gateway is also in.</p>",
           "locationName":"SubnetId"
         },
         "SecurityGroupIds":{
           "shape":"VpcEndpointSecurityGroupIdList",
-          "documentation":"<p>(Interface endpoint) The IDs of the security groups to associate with the endpoint network interfaces. If this parameter is not specified, we use the default security group for the VPC.</p>",
+          "documentation":"<p>(Interface, Resource, ServiceNetwork, and Tunnel endpoints only) The IDs of the security groups to associate with the endpoint network interfaces. If this parameter is not specified, we use the default security group for the VPC.</p>",
           "locationName":"SecurityGroupId"
         },
         "IpAddressType":{
@@ -22040,7 +22172,7 @@
         },
         "ResourceConfigurationArn":{
           "shape":"ResourceConfigurationArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of a resource configuration that will be associated with the VPC endpoint of type resource.</p>"
+          "documentation":"<p>(Resource and Tunnel endpoints only) The Amazon Resource Name (ARN) of a resource configuration associated with the VPC endpoint. The type of resource configuration depends on the endpoint type:</p> <ul> <li> <p>For a Resource endpoint, you can specify a resource configuration that is of type <code>SINGLE</code>, <code>GROUP</code>, or <code>ARN</code>. To reach a resource that belongs to a group, specify the parent <code>GROUP</code> resource configuration.</p> </li> <li> <p>For a Tunnel endpoint, you can specify a resource configuration that is of type <code>CIDR</code>.</p> </li> </ul> <p>For more information about the types of resource configurations, see <a href=\"https://docs.aws.amazon.com/vpc/latest/privatelink/resource-configuration.html\">Types of resource configurations</a> in the <i>Amazon Web Services PrivateLink User Guide</i>.</p> <p>This request fails if a VPC endpoint owned by a different Amazon Web Services account already exists on a resource gateway that is enabled for <code>ResourceGatewayCharges</code> payer responsibility.</p>"
         },
         "ServiceRegion":{
           "shape":"String",
@@ -22865,6 +22997,30 @@
           "shape":"CarrierGateway",
           "documentation":"<p>Information about the carrier gateway.</p>",
           "locationName":"carrierGateway"
+        }
+      }
+    },
+    "DeleteClientVpnEndpointAuthorizationPolicyRequest":{
+      "type":"structure",
+      "required":["ClientVpnEndpointId"],
+      "members":{
+        "ClientVpnEndpointId":{
+          "shape":"ClientVpnEndpointId",
+          "documentation":"<p>The ID of the Client VPN endpoint.</p>"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "DeleteClientVpnEndpointAuthorizationPolicyResult":{
+      "type":"structure",
+      "members":{
+        "Status":{
+          "shape":"ClientVpnAuthorizationPolicyStatus",
+          "documentation":"<p>The current state of the authorization policy.</p>",
+          "locationName":"status"
         }
       }
     },
@@ -34154,7 +34310,7 @@
         },
         "Filters":{
           "shape":"FilterList",
-          "documentation":"<p>The filters.</p> <ul> <li> <p> <code>ip-address-type</code> - The IP address type (<code>ipv4</code> | <code>ipv6</code>).</p> </li> <li> <p> <code>service-name</code> - The name of the service.</p> </li> <li> <p> <code>service-region</code> - The Region of the service.</p> </li> <li> <p> <code>tag</code>:&lt;key&gt; - The key/value combination of a tag assigned to the resource. Use the tag key in the filter name and the tag value as the filter value. For example, to find all resources that have a tag with the key <code>Owner</code> and the value <code>TeamA</code>, specify <code>tag:Owner</code> for the filter name and <code>TeamA</code> for the filter value.</p> </li> <li> <p> <code>tag-key</code> - The key of a tag assigned to the resource. Use this filter to find all resources assigned a tag with a specific key, regardless of the tag value.</p> </li> <li> <p> <code>vpc-id</code> - The ID of the VPC in which the endpoint resides.</p> </li> <li> <p> <code>vpc-endpoint-id</code> - The ID of the endpoint.</p> </li> <li> <p> <code>vpc-endpoint-state</code> - The state of the endpoint (<code>pendingAcceptance</code> | <code>pending</code> | <code>available</code> | <code>deleting</code> | <code>deleted</code> | <code>rejected</code> | <code>failed</code>).</p> </li> <li> <p> <code>vpc-endpoint-type</code> - The type of VPC endpoint (<code>Interface</code> | <code>Gateway</code> | <code>GatewayLoadBalancer</code> | <code>Resource</code> | <code>ServiceNetwork</code>).</p> </li> </ul>",
+          "documentation":"<p>The filters.</p> <ul> <li> <p> <code>ip-address-type</code> - The IP address type (<code>ipv4</code> | <code>ipv6</code>).</p> </li> <li> <p> <code>service-name</code> - The name of the service.</p> </li> <li> <p> <code>service-region</code> - The Region of the service.</p> </li> <li> <p> <code>tag</code>:&lt;key&gt; - The key/value combination of a tag assigned to the resource. Use the tag key in the filter name and the tag value as the filter value. For example, to find all resources that have a tag with the key <code>Owner</code> and the value <code>TeamA</code>, specify <code>tag:Owner</code> for the filter name and <code>TeamA</code> for the filter value.</p> </li> <li> <p> <code>tag-key</code> - The key of a tag assigned to the resource. Use this filter to find all resources assigned a tag with a specific key, regardless of the tag value.</p> </li> <li> <p> <code>vpc-id</code> - The ID of the VPC in which the endpoint resides.</p> </li> <li> <p> <code>vpc-endpoint-id</code> - The ID of the endpoint.</p> </li> <li> <p> <code>vpc-endpoint-state</code> - The state of the endpoint (<code>pendingAcceptance</code> | <code>pending</code> | <code>available</code> | <code>deleting</code> | <code>deleted</code> | <code>rejected</code> | <code>failed</code>).</p> </li> <li> <p> <code>vpc-endpoint-type</code> - The type of VPC endpoint (<code>Interface</code> | <code>Gateway</code> | <code>GatewayLoadBalancer</code> | <code>Resource</code> | <code>ServiceNetwork</code> | <code>Tunnel</code>).</p> </li> </ul>",
           "locationName":"Filter"
         },
         "MaxResults":{
@@ -34647,6 +34803,32 @@
         }
       },
       "documentation":"<p>Describes the options for an Amazon Web Services Verified Access device-identity based trust provider.</p>"
+    },
+    "DevicePostureOptions":{
+      "type":"structure",
+      "members":{
+        "TrustProviders":{
+          "shape":"ClientVpnTrustProviderRequestList",
+          "documentation":"<p>The device trust providers to configure for the Client VPN endpoint.</p>",
+          "locationName":"TrustProvider"
+        },
+        "Enabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether device posture evaluation is enabled for the Client VPN endpoint. Specify <code>false</code> to disable device posture, which clears the configured device trust providers.</p>"
+        }
+      },
+      "documentation":"<p>Describes the device posture options for a Client VPN endpoint. Device posture options specify the device trust providers that the endpoint uses to evaluate the security posture of connecting devices.</p>"
+    },
+    "DevicePostureResponseOptions":{
+      "type":"structure",
+      "members":{
+        "TrustProviders":{
+          "shape":"ClientVpnTrustProviderSet",
+          "documentation":"<p>The device trust providers configured for the Client VPN endpoint.</p>",
+          "locationName":"trustProviderSet"
+        }
+      },
+      "documentation":"<p>Information about the device posture options for a Client VPN endpoint.</p>"
     },
     "DeviceTrustProviderType":{
       "type":"string",
@@ -40850,6 +41032,50 @@
           "shape":"InterruptionInfo",
           "documentation":"<p> Details about the interruption configuration and source reservation for interruptible Capacity Reservations. </p>",
           "locationName":"interruptionInfo"
+        }
+      }
+    },
+    "GetClientVpnEndpointAuthorizationPolicyRequest":{
+      "type":"structure",
+      "required":["ClientVpnEndpointId"],
+      "members":{
+        "ClientVpnEndpointId":{
+          "shape":"ClientVpnEndpointId",
+          "documentation":"<p>The ID of the Client VPN endpoint.</p>"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "GetClientVpnEndpointAuthorizationPolicyResult":{
+      "type":"structure",
+      "members":{
+        "ClientVpnEndpointId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the Client VPN endpoint.</p>",
+          "locationName":"clientVpnEndpointId"
+        },
+        "PolicyDocument":{
+          "shape":"String",
+          "documentation":"<p>The authorization policy document, written in the Cedar policy language.</p>",
+          "locationName":"policyDocument"
+        },
+        "Description":{
+          "shape":"String",
+          "documentation":"<p>A brief description of the authorization policy.</p>",
+          "locationName":"description"
+        },
+        "ShadowMode":{
+          "shape":"ClientVpnAuthorizationPolicyShadowMode",
+          "documentation":"<p>Specifies whether the authorization policy is evaluated in shadow mode. Possible values include:</p> <ul> <li> <p> <code>enabled</code> - The authorization policy is evaluated and the results are logged, but access is not enforced.</p> </li> <li> <p> <code>disabled</code> - The authorization policy is enforced.</p> </li> </ul>",
+          "locationName":"shadowMode"
+        },
+        "Status":{
+          "shape":"ClientVpnAuthorizationPolicyStatus",
+          "documentation":"<p>The current state of the authorization policy.</p>",
+          "locationName":"status"
         }
       }
     },
@@ -51767,6 +51993,9 @@
         "enable-in-progress",
         "enable-complete",
         "enable-failed",
+        "disable-in-progress",
+        "disable-complete",
+        "disable-failed",
         "delete-in-progress",
         "delete-complete",
         "delete-failed"
@@ -57595,6 +57824,47 @@
         }
       }
     },
+    "ModifyClientVpnEndpointAuthorizationPolicyRequest":{
+      "type":"structure",
+      "required":["ClientVpnEndpointId"],
+      "members":{
+        "ClientVpnEndpointId":{
+          "shape":"ClientVpnEndpointId",
+          "documentation":"<p>The ID of the Client VPN endpoint.</p>"
+        },
+        "PolicyDocument":{
+          "shape":"String",
+          "documentation":"<p>The authorization policy document, written in the Cedar policy language. This parameter is required when you create the authorization policy for a Client VPN endpoint that does not already have one.</p>"
+        },
+        "Description":{
+          "shape":"String",
+          "documentation":"<p>A brief description of the authorization policy.</p>"
+        },
+        "ShadowMode":{
+          "shape":"ClientVpnAuthorizationPolicyShadowMode",
+          "documentation":"<p>Specifies whether the authorization policy is evaluated in shadow mode. Possible values include:</p> <ul> <li> <p> <code>enabled</code> - The authorization policy is evaluated and the results are logged, but access is not enforced.</p> </li> <li> <p> <code>disabled</code> - The authorization policy is enforced.</p> </li> </ul> <p>The default value is <code>disabled</code>.</p>"
+        },
+        "ClientToken":{
+          "shape":"String",
+          "documentation":"<p>Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. For more information, see <a href=\"https://docs.aws.amazon.com/ec2/latest/devguide/ec2-api-idempotency.html\">Ensuring idempotency</a>.</p>",
+          "idempotencyToken":true
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "ModifyClientVpnEndpointAuthorizationPolicyResult":{
+      "type":"structure",
+      "members":{
+        "Status":{
+          "shape":"ClientVpnAuthorizationPolicyStatus",
+          "documentation":"<p>The current state of the authorization policy.</p>",
+          "locationName":"status"
+        }
+      }
+    },
     "ModifyClientVpnEndpointRequest":{
       "type":"structure",
       "required":["ClientVpnEndpointId"],
@@ -57667,6 +57937,10 @@
         "TransitGatewayConfiguration":{
           "shape":"TransitGatewayConfigurationInputStructure",
           "documentation":"<p>The Transit Gateway configuration for the Client VPN endpoint. This option is currently not supported.</p>"
+        },
+        "DevicePostureOptions":{
+          "shape":"DevicePostureOptions",
+          "documentation":"<p>The device posture options for the Client VPN endpoint. Specifying this parameter replaces the entire device posture configuration for the endpoint. To remove all device trust providers, specify an empty list.</p>"
         }
       }
     },
@@ -69119,7 +69393,8 @@
         "ripe",
         "apnic",
         "arin",
-        "lacnic"
+        "lacnic",
+        "nicbr"
       ]
     },
     "RoleId":{"type":"string"},
@@ -80904,7 +81179,7 @@
         },
         "VpcEndpointType":{
           "shape":"VpcEndpointType",
-          "documentation":"<p>The type of endpoint.</p>",
+          "documentation":"<p>The type of endpoint.</p> <p>For more information about the types of VPC endpoints, see <a href=\"https://docs.aws.amazon.com/vpc/latest/privatelink/concepts.html#concepts-vpc-endpoints\">VPC endpoints</a> in the <i>Amazon Web Services PrivateLink User Guide</i>.</p>",
           "locationName":"vpcEndpointType"
         },
         "VpcId":{
@@ -80934,12 +81209,12 @@
         },
         "SubnetIds":{
           "shape":"ValueStringList",
-          "documentation":"<p>(Interface endpoint) The subnets for the endpoint.</p>",
+          "documentation":"<p>(Interface, Gateway Load Balancer endpoints, Resource, ServiceNetwork, and Tunnel endpoints only) The subnets for the endpoint.</p>",
           "locationName":"subnetIdSet"
         },
         "Groups":{
           "shape":"GroupIdentifierSet",
-          "documentation":"<p>(Interface endpoint) Information about the security groups that are associated with the network interface.</p>",
+          "documentation":"<p>(Interface, Resource, ServiceNetwork, and Tunnel endpoints only) Information about the security groups that are associated with the network interface.</p>",
           "locationName":"groupSet"
         },
         "IpAddressType":{
@@ -80964,7 +81239,7 @@
         },
         "NetworkInterfaceIds":{
           "shape":"ValueStringList",
-          "documentation":"<p>(Interface endpoint) The network interfaces for the endpoint.</p>",
+          "documentation":"<p>(Interface, Gateway Load Balancer endpoints, Resource, ServiceNetwork, and Tunnel endpoints only) The network interfaces for the endpoint.</p>",
           "locationName":"networkInterfaceIdSet"
         },
         "DnsEntries":{

@@ -10,9 +10,24 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from botocore.compat import parse_qs, urlparse
+import base64
+import hashlib
 
+from botocore.compat import parse_qs, urlparse
+from botocore.signers import CloudFrontSigner
+from botocore.utils import parse_to_aware_datetime
+
+from awscrt.crypto import EC
+
+from awscli.customizations.cloudfront import _pem_to_der
 from awscli.testutils import BaseAWSCommandParamsTest, FileCreator, mock
+
+
+def _url_b64decode(value):
+    # Reverse the CloudFront-specific base64 substitutions applied by
+    # CloudFrontSigner._url_b64encode.
+    restored = value.replace('-', '+').replace('_', '=').replace('~', '/')
+    return base64.b64decode(restored)
 
 
 class TestSign(BaseAWSCommandParamsTest):
@@ -107,6 +122,155 @@ class TestSign(BaseAWSCommandParamsTest):
         self.assertDesiredUrl(
             self.run_cmd(cmdline)[0], 'http://example.com/hi', expected_params
         )
+
+
+class BaseECDSASignTest(BaseAWSCommandParamsTest):
+    # Abstract base; concrete subclasses supply an EC private key. Prevents
+    # pytest from collecting this base class directly.
+    __test__ = False
+    # Overridden by subclasses with an EC private key in a specific PEM format.
+    private_key = None
+    url = 'http://example.com/hi'
+    prefix = 'cloudfront sign --key-pair-id my_id --url http://example.com/hi '
+
+    def setUp(self):
+        files = FileCreator()
+        self.private_key_file = files.create_file('foo.pem', self.private_key)
+        self.addCleanup(files.remove_all)
+        super().setUp()
+
+    def _run_and_parse(self, cmdline):
+        url = self.run_cmd(cmdline)[0].strip()
+        self.assertEqual(len(url.splitlines()), 1, "Expects only 1 line")
+        self.assertTrue(url.startswith(self.url), "URL mismatch")
+        return parse_qs(urlparse(url).query)
+
+    def _assert_signature_verifies(self, params, policy):
+        # ECDSA signatures are non-deterministic (a random nonce is used), so
+        # rather than comparing against a fixed value we verify the signature
+        # cryptographically against the policy that was signed.
+        self.assertEqual(params['Key-Pair-Id'], ['my_id'])
+        # ECDSA signatures are SHA-256; the URL must carry Hash-Algorithm=SHA256
+        # so CloudFront's edge verifies with SHA-256 instead of its SHA-1
+        # default (otherwise verification fails with AccessDenied).
+        self.assertEqual(params['Hash-Algorithm'], ['SHA256'])
+        key = EC.new_key_from_der_data(_pem_to_der(self.private_key))
+        signature = _url_b64decode(params['Signature'][0])
+        digest = hashlib.sha256(policy.encode('utf8')).digest()
+        self.assertTrue(
+            key.verify(digest, signature),
+            "ECDSA signature failed to verify",
+        )
+
+    def test_canned_policy(self):
+        cmdline = (
+            self.prefix
+            + '--private-key file://'
+            + self.private_key_file
+            + ' --date-less-than 2016-1-1'
+        )
+        params = self._run_and_parse(cmdline)
+        self.assertEqual(params['Expires'], ['1451606400'])
+        self.assertNotIn('Policy', params)
+        # For a canned policy the signed payload is the canned policy that
+        # CloudFrontSigner builds internally from the expiration date.
+        policy = CloudFrontSigner('my_id', None).build_policy(
+            self.url, parse_to_aware_datetime('2016-1-1')
+        )
+        self._assert_signature_verifies(params, policy)
+
+    def test_custom_policy(self):
+        cmdline = (
+            self.prefix
+            + '--private-key file://'
+            + self.private_key_file
+            + ' --date-less-than 2016-1-1 --ip-address 12.34.56.78'
+        )
+        params = self._run_and_parse(cmdline)
+        self.assertNotIn('Expires', params)
+        # The custom policy is emitted (base64url encoded) in the URL, so the
+        # exact signed payload can be recovered and verified against.
+        policy = _url_b64decode(params['Policy'][0]).decode('utf8')
+        self._assert_signature_verifies(params, policy)
+
+
+class TestSignECDSASEC1(BaseECDSASignTest):
+    __test__ = True
+    # An EC (P-256) private key in SEC1 format, only for testing purpose.
+    private_key = (
+        '-----BEGIN EC PRIVATE KEY-----\n'
+        'MHcCAQEEIEJv7Bciy04Q7+wqRyaA2xSCsaHtqPmDIQ5msTzcH1xNoAoGCCqGSM49\n'
+        'AwEHoUQDQgAEdPNT3OyY+yjo4dOMWcnmKSeIUzrfH2WHkcfKFm32D9B0/DNP9Coj\n'
+        'qIXILIjVsmvtp0ULy/ICJEeZbKxUv1/OjA==\n'
+        '-----END EC PRIVATE KEY-----\n'
+    )
+
+
+class TestSignECDSAPKCS8(BaseECDSASignTest):
+    __test__ = True
+    # The same EC (P-256) key in PKCS#8 format, only for testing purpose.
+    private_key = (
+        '-----BEGIN PRIVATE KEY-----\n'
+        'MIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQgQm/sFyLLThDv7CpH\n'
+        'JoDbFIKxoe2o+YMhDmaxPNwfXE2hRANCAAR081Pc7Jj7KOjh04xZyeYpJ4hTOt8f\n'
+        'ZYeRx8oWbfYP0HT8M0/0KiOohcgsiNWya+2nRQvL8gIkR5lsrFS/X86M\n'
+        '-----END PRIVATE KEY-----\n'
+    )
+
+
+class TestSignECDSAUnsupportedCurve(BaseAWSCommandParamsTest):
+    # An EC private key on the P-384 curve, which CloudFront does not support.
+    private_key = (
+        '-----BEGIN EC PRIVATE KEY-----\n'
+        'MIGkAgEBBDCIoGBIXHIpvlHWVTT+jka5Jpj1YR5rWIncoxf6VUxxhlHjEI7hqDto\n'
+        'FajvDTKH5jSgBwYFK4EEACKhZANiAAT1i0QFJOMXeKxMx4VpZHw6OoKhEOB4nOXk\n'
+        'h+Z9dhiQ4H6O2D84WS6ql+iyNIH2qux8jBUju3fc8NdbVwIqyfQZWRRo/Lg5ekDp\n'
+        'M7re404ay7JYpiJXlCZP+RBCBn23NZU=\n'
+        '-----END EC PRIVATE KEY-----\n'
+    )
+    prefix = 'cloudfront sign --key-pair-id my_id --url http://example.com/hi '
+
+    def setUp(self):
+        files = FileCreator()
+        self.private_key_file = files.create_file('foo.pem', self.private_key)
+        self.addCleanup(files.remove_all)
+        super().setUp()
+
+    def test_non_p256_curve_raises_error(self):
+        cmdline = (
+            self.prefix
+            + '--private-key file://'
+            + self.private_key_file
+            + ' --date-less-than 2016-1-1'
+        )
+        _, stderr, _ = self.run_cmd(cmdline, expected_rc=255)
+        self.assertIn('Only P-256 EC keys are supported', stderr)
+
+
+class TestSignUnsupportedKeyType(BaseAWSCommandParamsTest):
+    # A key whose PEM header is neither RSA, EC, nor PKCS#8 "PRIVATE KEY".
+    private_key = (
+        '-----BEGIN OPENSSH PRIVATE KEY-----\n'
+        'b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAAAMwAAAAtz\n'
+        '-----END OPENSSH PRIVATE KEY-----\n'
+    )
+    prefix = 'cloudfront sign --key-pair-id my_id --url http://example.com/hi '
+
+    def setUp(self):
+        files = FileCreator()
+        self.private_key_file = files.create_file('foo.pem', self.private_key)
+        self.addCleanup(files.remove_all)
+        super().setUp()
+
+    def test_unsupported_key_type_raises_error(self):
+        cmdline = (
+            self.prefix
+            + '--private-key file://'
+            + self.private_key_file
+            + ' --date-less-than 2016-1-1'
+        )
+        _, stderr, _ = self.run_cmd(cmdline, expected_rc=255)
+        self.assertIn('Unsupported key type', stderr)
 
 
 class TestSignPKCS8(BaseAWSCommandParamsTest):

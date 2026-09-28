@@ -131,15 +131,7 @@ class BaseSignCommand(BasicCommand):
             date_greater_than = self._parse_date(
                 args.date_greater_than, 'date-greater-than'
             )
-            # Compare at the epoch-second precision written into the policy.
-            if int(datetime2timestamp(date_greater_than)) >= int(
-                datetime2timestamp(date_less_than)
-            ):
-                raise ParamValidationError(
-                    'Invalid date range: --date-greater-than (the active '
-                    'date) must be before --date-less-than (the expiration '
-                    'date).'
-                )
+            _validate_date_range(date_less_than, date_greater_than)
         return date_less_than, date_greater_than
 
     def _parse_date(self, value, arg_name):
@@ -161,11 +153,7 @@ class BaseSignCommand(BasicCommand):
         ip_address = args.ip_address
         if ip_address is None:
             return
-        if ':' in ip_address:
-            raise ParamValidationError(
-                f'Invalid value for --ip-address: "{ip_address}" is an IPv6 '
-                'address. CloudFront only supports IPv4 addresses and ranges.'
-            )
+        _reject_ipv6_address(ip_address)
         try:
             if not _IPV4_FORMAT.fullmatch(ip_address):
                 raise ValueError(ip_address)
@@ -234,6 +222,13 @@ class SignCommand(BaseSignCommand):
 
     def _get_policy_resource(self, args):
         if args.policy_resource is None:
+            # For backward compatibility --url is signed as it always was,
+            # except for URLs that CloudFront could never accept.
+            if '#' in args.url:
+                raise ParamValidationError(
+                    'Invalid value for --url: the URL must not contain a URL '
+                    'fragment ("#"), which is never sent to CloudFront.'
+                )
             return args.url
         _validate_resource(args.url, 'url', allow_wildcards=False)
         signing_params = _SIGNING_QUERY_PARAMS.intersection(
@@ -266,10 +261,14 @@ class SignCommand(BaseSignCommand):
         date_greater_than = args.date_greater_than
         if date_greater_than is not None:
             date_greater_than = parse_to_aware_datetime(date_greater_than)
+            _validate_date_range(date_less_than, date_greater_than)
         return date_less_than, date_greater_than
 
     def _validate_signing_args(self, args):
-        pass
+        # For backward compatibility only input that CloudFront could never
+        # accept is rejected, so every URL that could be used still signs.
+        if args.ip_address is not None:
+            _reject_ipv6_address(args.ip_address)
 
     def _requires_custom_policy(self, args, resource):
         return (
@@ -281,6 +280,29 @@ class SignCommand(BaseSignCommand):
     def _write_signed_output(self, signer, args, parsed_globals, kwargs):
         sys.stdout.write(signer.generate_presigned_url(args.url, **kwargs))
         return 0
+
+
+def _validate_date_range(date_less_than, date_greater_than):
+    # Compare at the epoch-second precision written into the policy.
+    if int(datetime2timestamp(date_greater_than)) >= int(
+        datetime2timestamp(date_less_than)
+    ):
+        raise ParamValidationError(
+            'Invalid date range: --date-greater-than (the active date) must '
+            'be before --date-less-than (the expiration date).'
+        )
+
+
+def _reject_ipv6_address(ip_address):
+    try:
+        is_ipv6 = ipaddress.ip_network(ip_address, strict=False).version == 6
+    except ValueError:
+        is_ipv6 = False
+    if is_ipv6:
+        raise ParamValidationError(
+            f'Invalid value for --ip-address: "{ip_address}" is an IPv6 '
+            'address. CloudFront only supports IPv4 addresses and ranges.'
+        )
 
 
 def _validate_resource(resource, arg_name, allow_wildcards=True):

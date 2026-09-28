@@ -2,6 +2,23 @@
 CHANGELOG
 =========
 
+2.37.5
+======
+
+* api-change:``billing``: Adds support for (a) listing Business Support account charges via ListBusinessSupportAccountCharges and (b) subscription history via ListBusinessSupportSubscriptionHistory through the AWS Billing API.
+* api-change:``ssm``: Add support for sharing SSM documents with organizations and OUs using RAM.
+* api-change:``ec2``: API changes to AWS Client VPN to support device posture assessment and Cedar authorization policies
+* api-change:``guardduty``: Adding awsServiceName field to GuardDuty Findings
+* api-change:``connect``: This release adds ConnectionTypes and ChatStreamingConfiguration to StartChatContact, and ConnectionCredentials, Websocket, and StreamingId to its response, so customers can request connection information and chat streaming in the same call that starts the chat.
+* api-change:``fsx``: Amazon FSx has expanded the model-level maximum on the ThroughputCapacity, ThroughputCapacityPerHAPair, and Iops API parameters. Actual supported values are unchanged and depend on file system type and configuration.
+* api-change:``bedrock-agentcore-control``: Amazon Bedrock AgentCore Gateway now supports returning the complete MCP tools list in a single response by disabling pagination for the tools list operation. This feature is available in limited preview.
+* api-change:``eks``: An optional customer provided prefix used to construct the hostname of the Argo CD server endpoint for EKS Argo CD Capability.
+* api-change:``glue``: Added a new exception to several batch APIs
+* api-change:``agent-registry``: AWS Agent Registry adds support for custom metadata. Discovery APIs now return custom metadata on registry records and support filtering by metadata fields. Semantic search includes custom metadata for improved relevance. Filter customMetadata fields using eq, ne, and in operators.
+* api-change:``agent-registry-control``: AWS Agent Registry adds support for custom metadata. Define a typed metadata schema on your registry and attach structured key-value metadata to registry records. Schemas are additive only. Enforcement is progressive. Records show a compliance status computed against the current schema.
+* api-change:``securityagent``: Run automated penetration tests directly from your CI-CD pipeline to scan code changes before they ship, gating deployments on the findings
+
+
 2.37.4
 ======
 

@@ -1,0 +1,215 @@
+[
+  {
+    "id": "canned-policy-cookies",
+    "documentation": "Generate signed cookies with canned policy, RSA-SHA1 (default hash)",
+    "input": {
+      "resource": "https://d111111abcdef8.cloudfront.net/image.jpg",
+      "keyPairId": "K1TESTKEY",
+      "privateKeyFile": "test-rsa-key.pem",
+      "expirationDate": 1767290400
+    },
+    "expected": {
+      "policyJson": "{\"Statement\":[{\"Resource\":\"https://d111111abcdef8.cloudfront.net/image.jpg\",\"Condition\":{\"DateLessThan\":{\"AWS:EpochTime\":1767290400}}}]}",
+      "cookies": {
+        "CloudFront-Expires": "1767290400",
+        "CloudFront-Key-Pair-Id": "K1TESTKEY",
+        "CloudFront-Signature": "iONoMLnhiCy9q1~WB9GkR2DiHz18I85i3o6kZ64REf-fCSOg-AyXEZiq7fJuS~DT-kbZXjVpgIQqI4sCTcBW9XpO6dyJ5sh8Igk3V~OVncS9acGVnI~ZhHBWiGhU8GmkEMAhn6R2RGO-wKGClrXdJGEUE26XoALdHUzHbmU6AGI_"
+      },
+      "signatureAlgorithm": "RSA-SHA1"
+    }
+  },
+  {
+    "id": "canned-policy-cookies-sha256",
+    "documentation": "Generate signed cookies with canned policy, RSA-SHA256",
+    "input": {
+      "resource": "https://d111111abcdef8.cloudfront.net/image.jpg",
+      "keyPairId": "K1TESTKEY",
+      "privateKeyFile": "test-rsa-key.pem",
+      "expirationDate": 1767290400,
+      "hashAlgorithm": "SHA256"
+    },
+    "expected": {
+      "policyJson": "{\"Statement\":[{\"Resource\":\"https://d111111abcdef8.cloudfront.net/image.jpg\",\"Condition\":{\"DateLessThan\":{\"AWS:EpochTime\":1767290400}}}]}",
+      "cookies": {
+        "CloudFront-Expires": "1767290400",
+        "CloudFront-Key-Pair-Id": "K1TESTKEY",
+        "CloudFront-Signature": "LiC~LakvNvZtR~AsTcirQ0CAsy-YIZmpHmI9uImK4xJmrhVdJULhWmRt3bXO7qqw2gJDECZN-xC~bKWEKcJ9Vgs1IgpRdMkY6XGDKZ1XHBdNbd~0v5UiRf4zXwVMRqoynkQPQcihkze7RkDBsOoYHh9jDdtO1iDm0QZ1Qp~cxro_",
+        "CloudFront-Hash-Algorithm": "SHA256"
+      },
+      "signatureAlgorithm": "RSA-SHA256"
+    }
+  },
+  {
+    "id": "custom-policy-cookies",
+    "documentation": "Generate signed cookies with custom policy, RSA-SHA1 (default hash)",
+    "input": {
+      "resource": "https://d111111abcdef8.cloudfront.net/*",
+      "keyPairId": "K1TESTKEY",
+      "privateKeyFile": "test-rsa-key.pem",
+      "expirationDate": 1767290400,
+      "ipRange": "10.0.0.0/8"
+    },
+    "expected": {
+      "policyJson": "{\"Statement\":[{\"Resource\":\"https://d111111abcdef8.cloudfront.net/*\",\"Condition\":{\"DateLessThan\":{\"AWS:EpochTime\":1767290400},\"IpAddress\":{\"AWS:SourceIp\":\"10.0.0.0/8\"}}}]}",
+      "cookies": {
+        "CloudFront-Key-Pair-Id": "K1TESTKEY",
+        "CloudFront-Policy": "eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cHM6Ly9kMTExMTExYWJjZGVmOC5jbG91ZGZyb250Lm5ldC8qIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNzY3MjkwNDAwfSwiSXBBZGRyZXNzIjp7IkFXUzpTb3VyY2VJcCI6IjEwLjAuMC4wLzgifX19XX0_",
+        "CloudFront-Signature": "r28Jnd0t9aq7cu0k9jGWl4L0YsRxgueZtGRw5oEEspU9-eIPGM~ZGMQh36~5HpKC5c67cZjDgJcsqrCacmTHMZZx613gbeYAsx2-hEatU8URiuNHnVp4hPV3HqtbuZ6Din9iEZUpOBYVg6DWGEFJRCQ7SPouBhhJdYDZZOPHGpA_"
+      },
+      "signatureAlgorithm": "RSA-SHA1"
+    }
+  },
+  {
+    "id": "custom-policy-cookies-sha256",
+    "documentation": "Generate signed cookies with custom policy, RSA-SHA256",
+    "input": {
+      "resource": "https://d111111abcdef8.cloudfront.net/*",
+      "keyPairId": "K1TESTKEY",
+      "privateKeyFile": "test-rsa-key.pem",
+      "expirationDate": 1767290400,
+      "ipRange": "10.0.0.0/8",
+      "hashAlgorithm": "SHA256"
+    },
+    "expected": {
+      "policyJson": "{\"Statement\":[{\"Resource\":\"https://d111111abcdef8.cloudfront.net/*\",\"Condition\":{\"DateLessThan\":{\"AWS:EpochTime\":1767290400},\"IpAddress\":{\"AWS:SourceIp\":\"10.0.0.0/8\"}}}]}",
+      "cookies": {
+        "CloudFront-Key-Pair-Id": "K1TESTKEY",
+        "CloudFront-Policy": "eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cHM6Ly9kMTExMTExYWJjZGVmOC5jbG91ZGZyb250Lm5ldC8qIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNzY3MjkwNDAwfSwiSXBBZGRyZXNzIjp7IkFXUzpTb3VyY2VJcCI6IjEwLjAuMC4wLzgifX19XX0_",
+        "CloudFront-Signature": "OzeonPh-NS8g3trdsFAo5LrMBEx1ef05GvdmWuLai6AaBLP63PVJRUGySYmGfQ-NqQ02geWzo7aZS7XFtkr4X1z9VTbQMfmzZftbuRXoP5ZDhFzVnSX3DeoEW8jP3BrOLHJsKwFCY5alIR4zO6LpqFmR5vVmqMYpRcbafg3~X18_",
+        "CloudFront-Hash-Algorithm": "SHA256"
+      },
+      "signatureAlgorithm": "RSA-SHA256"
+    }
+  },
+  {
+    "id": "ecdsa-canned-policy-url-sha1-reject",
+    "documentation": "SDKs that constrain ECDSA to SHA-256 (see Hash Algorithms): verify ECDSA+SHA-1 is rejected with an error. SDKs that support this combination instead MUST NOT run this case; see ecdsa-canned-policy-url-sha1-accept.",
+    "input": {
+      "resource": "https://d111111abcdef8.cloudfront.net/video.mp4",
+      "keyPairId": "K2ECDSATEST",
+      "privateKeyFile": "test-ecdsa-key.pem",
+      "expirationDate": 1767290400,
+      "hashAlgorithm": "SHA1"
+    },
+    "expected": {
+      "error": true,
+      "errorContains": [
+        "SHA"
+      ],
+      "returnCode": 252
+    }
+  },
+  {
+    "id": "ecdsa-custom-policy-cookies",
+    "documentation": "Generate signed cookies with an ECDSA key and custom policy. Verify the signature cryptographically against the public key.",
+    "input": {
+      "resource": "https://d111111abcdef8.cloudfront.net/*",
+      "keyPairId": "K2ECDSATEST",
+      "privateKeyFile": "test-ecdsa-key.pem",
+      "expirationDate": 1767290400,
+      "ipRange": "10.0.0.0/8",
+      "hashAlgorithm": "SHA256"
+    },
+    "expected": {
+      "policyJson": "{\"Statement\":[{\"Resource\":\"https://d111111abcdef8.cloudfront.net/*\",\"Condition\":{\"DateLessThan\":{\"AWS:EpochTime\":1767290400},\"IpAddress\":{\"AWS:SourceIp\":\"10.0.0.0/8\"}}}]}",
+      "cookies": {
+        "CloudFront-Key-Pair-Id": "K2ECDSATEST",
+        "CloudFront-Policy": "eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cHM6Ly9kMTExMTExYWJjZGVmOC5jbG91ZGZyb250Lm5ldC8qIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNzY3MjkwNDAwfSwiSXBBZGRyZXNzIjp7IkFXUzpTb3VyY2VJcCI6IjEwLjAuMC4wLzgifX19XX0_",
+        "CloudFront-Hash-Algorithm": "SHA256"
+      },
+      "verifyCryptographically": true,
+      "signatureAlgorithm": "ECDSA-SHA256"
+    }
+  },
+  {
+    "id": "error-missing-expiration",
+    "documentation": "Error when expiration date is not provided",
+    "input": {
+      "resource": "https://d111111abcdef8.cloudfront.net/file.txt",
+      "keyPairId": "K1TESTKEY",
+      "privateKeyFile": "test-rsa-key.pem"
+    },
+    "expected": {
+      "error": true,
+      "errorContains": [
+        "--date-less-than",
+        "required"
+      ],
+      "returnCode": 252
+    }
+  },
+  {
+    "id": "error-active-after-expiration",
+    "documentation": "Error when activeDate is after expirationDate",
+    "input": {
+      "resource": "https://d111111abcdef8.cloudfront.net/file.txt",
+      "keyPairId": "K1TESTKEY",
+      "privateKeyFile": "test-rsa-key.pem",
+      "expirationDate": 1767200000,
+      "activeDate": 1767290400
+    },
+    "expected": {
+      "error": true,
+      "errorContains": [
+        "active",
+        "before",
+        "--date-less-than"
+      ],
+      "returnCode": 252
+    }
+  },
+  {
+    "id": "error-unsupported-key-type",
+    "documentation": "Error when a valid key of an unsupported type (DSA) is provided. Only RSA and ECDSA (P-256) are supported.",
+    "input": {
+      "resource": "https://d111111abcdef8.cloudfront.net/video.mp4",
+      "keyPairId": "K1TESTKEY",
+      "privateKeyFile": "test-dsa-key.pem",
+      "expirationDate": 1767290400
+    },
+    "expected": {
+      "error": true,
+      "errorContains": [
+        "key",
+        "RSA",
+        "ECDSA"
+      ],
+      "returnCode": 255
+    }
+  },
+  {
+    "id": "json-injection-resource-url-reject",
+    "documentation": "SDKs that reject rather than escape (preferred, see Policy JSON Construction): verify a resource containing double quotes is rejected with an error. SDKs that escape unsafe characters instead MUST NOT run this case; see json-injection-resource-url-escape.",
+    "input": {
+      "resource": "https://example.com/file\",\"Resource\":\"*\",\"x\":\"",
+      "keyPairId": "K1TESTKEY",
+      "privateKeyFile": "test-rsa-key.pem",
+      "expirationDate": 1767290400
+    },
+    "expected": {
+      "error": true,
+      "errorContains": [
+        "resource"
+      ],
+      "returnCode": 252
+    }
+  },
+  {
+    "id": "json-injection-ip-range-reject",
+    "documentation": "SDKs that reject rather than escape (preferred, see Policy JSON Construction): verify an ipRange containing double quotes is rejected with an error. SDKs that escape unsafe characters instead MUST NOT run this case; see json-injection-ip-range-escape.",
+    "input": {
+      "resource": "https://d111111abcdef8.cloudfront.net/image.jpg",
+      "keyPairId": "K1TESTKEY",
+      "privateKeyFile": "test-rsa-key.pem",
+      "expirationDate": 1767290400,
+      "ipRange": "192.168.0.0/24\",\"IpAddress\":{\"AWS:SourceIp\":\"0.0.0.0/0"
+    },
+    "expected": {
+      "error": true,
+      "errorContains": [
+        "--ip-address"
+      ],
+      "returnCode": 252
+    }
+  }
+]

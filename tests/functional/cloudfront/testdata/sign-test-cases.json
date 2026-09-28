@@ -1,0 +1,357 @@
+[
+  {
+    "id": "canned-policy-url-basic",
+    "documentation": "Sign a URL with canned policy (expiration only), RSA-SHA1 (default hash)",
+    "input": {
+      "resource": "https://d111111abcdef8.cloudfront.net/image.jpg",
+      "keyPairId": "K1TESTKEY",
+      "privateKeyFile": "test-rsa-key.pem",
+      "expirationDate": 1767290400
+    },
+    "expected": {
+      "policyJson": "{\"Statement\":[{\"Resource\":\"https://d111111abcdef8.cloudfront.net/image.jpg\",\"Condition\":{\"DateLessThan\":{\"AWS:EpochTime\":1767290400}}}]}",
+      "queryParams": {
+        "Expires": "1767290400",
+        "Key-Pair-Id": "K1TESTKEY"
+      },
+      "signature": "iONoMLnhiCy9q1~WB9GkR2DiHz18I85i3o6kZ64REf-fCSOg-AyXEZiq7fJuS~DT-kbZXjVpgIQqI4sCTcBW9XpO6dyJ5sh8Igk3V~OVncS9acGVnI~ZhHBWiGhU8GmkEMAhn6R2RGO-wKGClrXdJGEUE26XoALdHUzHbmU6AGI_",
+      "signatureAlgorithm": "RSA-SHA1"
+    }
+  },
+  {
+    "id": "canned-policy-url-basic-sha256",
+    "documentation": "Sign a URL with canned policy (expiration only), RSA-SHA256",
+    "input": {
+      "resource": "https://d111111abcdef8.cloudfront.net/image.jpg",
+      "keyPairId": "K1TESTKEY",
+      "privateKeyFile": "test-rsa-key.pem",
+      "expirationDate": 1767290400,
+      "hashAlgorithm": "SHA256"
+    },
+    "expected": {
+      "policyJson": "{\"Statement\":[{\"Resource\":\"https://d111111abcdef8.cloudfront.net/image.jpg\",\"Condition\":{\"DateLessThan\":{\"AWS:EpochTime\":1767290400}}}]}",
+      "queryParams": {
+        "Expires": "1767290400",
+        "Key-Pair-Id": "K1TESTKEY",
+        "Hash-Algorithm": "SHA256"
+      },
+      "signature": "LiC~LakvNvZtR~AsTcirQ0CAsy-YIZmpHmI9uImK4xJmrhVdJULhWmRt3bXO7qqw2gJDECZN-xC~bKWEKcJ9Vgs1IgpRdMkY6XGDKZ1XHBdNbd~0v5UiRf4zXwVMRqoynkQPQcihkze7RkDBsOoYHh9jDdtO1iDm0QZ1Qp~cxro_",
+      "signatureAlgorithm": "RSA-SHA256"
+    }
+  },
+  {
+    "id": "canned-policy-url-rsa-pkcs1",
+    "documentation": "Sign a URL with canned policy using an RSA private key in PKCS#1 PEM format (BEGIN RSA PRIVATE KEY), verifying SDKs support this format in addition to PKCS#8",
+    "input": {
+      "resource": "https://d111111abcdef8.cloudfront.net/image.jpg",
+      "keyPairId": "K1TESTKEY",
+      "privateKeyFile": "test-rsa-key-pkcs1.pem",
+      "expirationDate": 1767290400
+    },
+    "expected": {
+      "policyJson": "{\"Statement\":[{\"Resource\":\"https://d111111abcdef8.cloudfront.net/image.jpg\",\"Condition\":{\"DateLessThan\":{\"AWS:EpochTime\":1767290400}}}]}",
+      "queryParams": {
+        "Expires": "1767290400",
+        "Key-Pair-Id": "K1TESTKEY"
+      },
+      "signature": "iONoMLnhiCy9q1~WB9GkR2DiHz18I85i3o6kZ64REf-fCSOg-AyXEZiq7fJuS~DT-kbZXjVpgIQqI4sCTcBW9XpO6dyJ5sh8Igk3V~OVncS9acGVnI~ZhHBWiGhU8GmkEMAhn6R2RGO-wKGClrXdJGEUE26XoALdHUzHbmU6AGI_",
+      "signatureAlgorithm": "RSA-SHA1"
+    }
+  },
+  {
+    "id": "canned-policy-url-existing-params",
+    "documentation": "Sign a URL that already has query parameters, RSA-SHA1 (default hash)",
+    "input": {
+      "resource": "https://d111111abcdef8.cloudfront.net/image.jpg?size=large",
+      "keyPairId": "K1TESTKEY",
+      "privateKeyFile": "test-rsa-key.pem",
+      "expirationDate": 1767290400
+    },
+    "expected": {
+      "policyJson": "{\"Statement\":[{\"Resource\":\"https://d111111abcdef8.cloudfront.net/image.jpg?size=large\",\"Condition\":{\"DateLessThan\":{\"AWS:EpochTime\":1767290400}}}]}",
+      "queryParams": {
+        "size": "large",
+        "Expires": "1767290400",
+        "Key-Pair-Id": "K1TESTKEY"
+      },
+      "signature": "kx5dxV5cSW50EuCMtYi9JI0D5H97if~zNqwKxZtS7FPc3NV5oi~zCb45ti8ve-YDYw45hzN4lceF6zhW~STVWa7r7fC9wi5XBG1T6ZT2b9R0wMWmGxsy9uVGXFn6JqcjQMsq09MnWrPezK0qFQ2X6pV1nGQqLQZ2sgO~FSlEoCo_",
+      "signatureAlgorithm": "RSA-SHA1"
+    }
+  },
+  {
+    "id": "canned-policy-url-existing-params-sha256",
+    "documentation": "Sign a URL that already has query parameters, RSA-SHA256",
+    "input": {
+      "resource": "https://d111111abcdef8.cloudfront.net/image.jpg?size=large",
+      "keyPairId": "K1TESTKEY",
+      "privateKeyFile": "test-rsa-key.pem",
+      "expirationDate": 1767290400,
+      "hashAlgorithm": "SHA256"
+    },
+    "expected": {
+      "policyJson": "{\"Statement\":[{\"Resource\":\"https://d111111abcdef8.cloudfront.net/image.jpg?size=large\",\"Condition\":{\"DateLessThan\":{\"AWS:EpochTime\":1767290400}}}]}",
+      "queryParams": {
+        "size": "large",
+        "Expires": "1767290400",
+        "Key-Pair-Id": "K1TESTKEY",
+        "Hash-Algorithm": "SHA256"
+      },
+      "signature": "g8vzqbTu5PxBzAXD3zowGFNHNlyaGZn7thMiCk27sTfvdy5CMAbECVz-aucgqrKYmqsz1xY7ZoxoMxOizzXWzfzTyJ6k38YwW6QMyJWT7B8pHStQrq0DGFSCnXqgRDXUDzkpIe8mHqyRWtgnFbdFQlbPweykfl7Eo4RJadveryQ_",
+      "signatureAlgorithm": "RSA-SHA256"
+    }
+  },
+  {
+    "id": "custom-policy-url-with-active-date",
+    "documentation": "Sign a URL with custom policy including activation date, RSA-SHA1 (default hash)",
+    "input": {
+      "resource": "https://d111111abcdef8.cloudfront.net/video.mp4",
+      "keyPairId": "K1TESTKEY",
+      "privateKeyFile": "test-rsa-key.pem",
+      "expirationDate": 1767290400,
+      "activeDate": 1767200000
+    },
+    "expected": {
+      "policyJson": "{\"Statement\":[{\"Resource\":\"https://d111111abcdef8.cloudfront.net/video.mp4\",\"Condition\":{\"DateLessThan\":{\"AWS:EpochTime\":1767290400},\"DateGreaterThan\":{\"AWS:EpochTime\":1767200000}}}]}",
+      "queryParams": {
+        "Key-Pair-Id": "K1TESTKEY"
+      },
+      "signature": "aF0WSOV6dkNn-D0HJ~-EwLG69-4QZZ9dv1PgAZEsER~WXkaNa1pBM2aTVXrskBWVHUU6hc1nD6ZKYgBS5Sb9JluFVT0MbQWR~DrtUGu8ugCsnfzUe6ov38nFPBwQICY~jnoQZEXxO2ZkQrluOO4~jWOpqAGrCw5tkdHAnb9gHYQ_",
+      "signatureAlgorithm": "RSA-SHA1"
+    }
+  },
+  {
+    "id": "custom-policy-url-with-active-date-sha256",
+    "documentation": "Sign a URL with custom policy including activation date, RSA-SHA256",
+    "input": {
+      "resource": "https://d111111abcdef8.cloudfront.net/video.mp4",
+      "keyPairId": "K1TESTKEY",
+      "privateKeyFile": "test-rsa-key.pem",
+      "expirationDate": 1767290400,
+      "activeDate": 1767200000,
+      "hashAlgorithm": "SHA256"
+    },
+    "expected": {
+      "policyJson": "{\"Statement\":[{\"Resource\":\"https://d111111abcdef8.cloudfront.net/video.mp4\",\"Condition\":{\"DateLessThan\":{\"AWS:EpochTime\":1767290400},\"DateGreaterThan\":{\"AWS:EpochTime\":1767200000}}}]}",
+      "queryParams": {
+        "Key-Pair-Id": "K1TESTKEY",
+        "Hash-Algorithm": "SHA256"
+      },
+      "signature": "RKoXpBb3IFyONXBnGGPj6021LmYyaphTYom0DsDID20xlCaK8gvNpcbYw493LloPhtDdGTdyadyuR59ok8eSPpJReRGbHbw8FDjGSXE9JWsVayzI7t7ZPGfPtKgK~ij0AekXDNQNFNUdwuSE0aR5nQmuPhw7CfDHCMpTWmoKPgE_",
+      "signatureAlgorithm": "RSA-SHA256"
+    }
+  },
+  {
+    "id": "custom-policy-url-with-ip-range",
+    "documentation": "Sign a URL with custom policy including IP restriction, RSA-SHA1 (default hash)",
+    "input": {
+      "resource": "https://d111111abcdef8.cloudfront.net/document.pdf",
+      "keyPairId": "K1TESTKEY",
+      "privateKeyFile": "test-rsa-key.pem",
+      "expirationDate": 1767290400,
+      "ipRange": "192.168.0.0/24"
+    },
+    "expected": {
+      "policyJson": "{\"Statement\":[{\"Resource\":\"https://d111111abcdef8.cloudfront.net/document.pdf\",\"Condition\":{\"DateLessThan\":{\"AWS:EpochTime\":1767290400},\"IpAddress\":{\"AWS:SourceIp\":\"192.168.0.0/24\"}}}]}",
+      "queryParams": {
+        "Key-Pair-Id": "K1TESTKEY"
+      },
+      "signature": "fq~vePR~kmc5kWDveZOJ3j6PSYRsHSSanN1shBBpj2rQwvVQPU8e9MRwUDizOYHLnuAXQG89Xm7kXL03HIX0uzELcY2Q6Bw68BcGQHq-nyC2U6h0Uv277pg~FIwatR84y1FZiswIVmZwfPmpkvR0X~1skuooCPGiztAXREe-hsg_",
+      "signatureAlgorithm": "RSA-SHA1"
+    }
+  },
+  {
+    "id": "custom-policy-url-with-ip-range-sha256",
+    "documentation": "Sign a URL with custom policy including IP restriction, RSA-SHA256",
+    "input": {
+      "resource": "https://d111111abcdef8.cloudfront.net/document.pdf",
+      "keyPairId": "K1TESTKEY",
+      "privateKeyFile": "test-rsa-key.pem",
+      "expirationDate": 1767290400,
+      "ipRange": "192.168.0.0/24",
+      "hashAlgorithm": "SHA256"
+    },
+    "expected": {
+      "policyJson": "{\"Statement\":[{\"Resource\":\"https://d111111abcdef8.cloudfront.net/document.pdf\",\"Condition\":{\"DateLessThan\":{\"AWS:EpochTime\":1767290400},\"IpAddress\":{\"AWS:SourceIp\":\"192.168.0.0/24\"}}}]}",
+      "queryParams": {
+        "Key-Pair-Id": "K1TESTKEY",
+        "Hash-Algorithm": "SHA256"
+      },
+      "signature": "aKDzeIIfHviQRbCu9jxlFpOenTNQHMnt8HL2V2cqYP0vqc-KpRBuez2k4LZAzmfH0sIiQuDMZZc1D149XYRVAjEZoqr3vzGzWmrpzZJV-CSHs-Scau1cCNdVXqswj~QX8SzOZtGsRSKb4bomqOWxSIUu~Sybjf5b12GXBcYRCH4_",
+      "signatureAlgorithm": "RSA-SHA256"
+    }
+  },
+  {
+    "id": "custom-policy-url-with-wildcard",
+    "documentation": "Sign with wildcard resource, apply components to specific URL, RSA-SHA1 (default hash)",
+    "input": {
+      "resource": "https://d111111abcdef8.cloudfront.net/images/*",
+      "keyPairId": "K1TESTKEY",
+      "privateKeyFile": "test-rsa-key.pem",
+      "expirationDate": 1767290400
+    },
+    "expected": {
+      "policyJson": "{\"Statement\":[{\"Resource\":\"https://d111111abcdef8.cloudfront.net/images/*\",\"Condition\":{\"DateLessThan\":{\"AWS:EpochTime\":1767290400}}}]}",
+      "applyTo": "https://d111111abcdef8.cloudfront.net/images/photo1.jpg",
+      "queryParams": {
+        "Key-Pair-Id": "K1TESTKEY"
+      },
+      "signature": "nP~GtuBVUSEUDMXW1ZTGTx~BUQfjl7FsWBQBKwnTNhHlBAeYlzdbMGMphViPQbjawdYt1Z~iBHDr0ctooQyhEdsXwZPQKmRJQm3yIxmbvnuCzB2qdMDVGRKH8l3PnfAJErrgUVIzb6m3KUdtIDvSkLV~Mb0tyQJwZ6QE4BdlEmQ_",
+      "signatureAlgorithm": "RSA-SHA1"
+    }
+  },
+  {
+    "id": "custom-policy-url-with-wildcard-sha256",
+    "documentation": "Sign with wildcard resource, apply components to specific URL, RSA-SHA256",
+    "input": {
+      "resource": "https://d111111abcdef8.cloudfront.net/images/*",
+      "keyPairId": "K1TESTKEY",
+      "privateKeyFile": "test-rsa-key.pem",
+      "expirationDate": 1767290400,
+      "hashAlgorithm": "SHA256"
+    },
+    "expected": {
+      "policyJson": "{\"Statement\":[{\"Resource\":\"https://d111111abcdef8.cloudfront.net/images/*\",\"Condition\":{\"DateLessThan\":{\"AWS:EpochTime\":1767290400}}}]}",
+      "applyTo": "https://d111111abcdef8.cloudfront.net/images/photo1.jpg",
+      "queryParams": {
+        "Key-Pair-Id": "K1TESTKEY",
+        "Hash-Algorithm": "SHA256"
+      },
+      "signature": "FoaoRDqA7H91xD8CL2zk2Ztm6WVx3kIunCdqvzwMCUdsduwVWEH8elbBZc2qqWy3ZixDBBEHegeJnZbgp~nHTsYtr~jv6R-8~BnmmvH3KNyjH7wgyKKtzKpteNXYacWgHYabkoreyHC4ek~JMjGo1o0gTiIeL8YCV3ueKK3Lqtk_",
+      "signatureAlgorithm": "RSA-SHA256"
+    }
+  },
+  {
+    "id": "ecdsa-canned-policy-url",
+    "documentation": "Sign a URL with ECDSA key and canned policy. ECDSA signatures are non-deterministic, so verify cryptographically against the public key rather than matching a fixed signature.",
+    "input": {
+      "resource": "https://d111111abcdef8.cloudfront.net/video.mp4",
+      "keyPairId": "K2ECDSATEST",
+      "privateKeyFile": "test-ecdsa-key.pem",
+      "expirationDate": 1767290400,
+      "hashAlgorithm": "SHA256"
+    },
+    "expected": {
+      "policyJson": "{\"Statement\":[{\"Resource\":\"https://d111111abcdef8.cloudfront.net/video.mp4\",\"Condition\":{\"DateLessThan\":{\"AWS:EpochTime\":1767290400}}}]}",
+      "queryParams": {
+        "Expires": "1767290400",
+        "Key-Pair-Id": "K2ECDSATEST",
+        "Hash-Algorithm": "SHA256"
+      },
+      "verifyCryptographically": true,
+      "signatureAlgorithm": "ECDSA-SHA256"
+    }
+  },
+  {
+    "id": "ecdsa-canned-policy-url-sha1-reject",
+    "documentation": "SDKs that constrain ECDSA to SHA-256 (see Hash Algorithms): verify ECDSA+SHA-1 is rejected with an error. SDKs that support this combination instead MUST NOT run this case; see ecdsa-canned-policy-url-sha1-accept.",
+    "input": {
+      "resource": "https://d111111abcdef8.cloudfront.net/video.mp4",
+      "keyPairId": "K2ECDSATEST",
+      "privateKeyFile": "test-ecdsa-key.pem",
+      "expirationDate": 1767290400,
+      "hashAlgorithm": "SHA1"
+    },
+    "expected": {
+      "error": true,
+      "errorContains": [
+        "SHA"
+      ],
+      "returnCode": 252
+    }
+  },
+  {
+    "id": "ecdsa-canned-policy-url-sec1",
+    "documentation": "Sign a URL with an ECDSA private key in SEC1 PEM format (BEGIN EC PRIVATE KEY), verifying SDKs support this format in addition to PKCS#8. ECDSA signatures are non-deterministic, so verify cryptographically against the public key rather than matching a fixed signature.",
+    "input": {
+      "resource": "https://d111111abcdef8.cloudfront.net/video.mp4",
+      "keyPairId": "K2ECDSATEST",
+      "privateKeyFile": "test-ecdsa-key-sec1.pem",
+      "expirationDate": 1767290400,
+      "hashAlgorithm": "SHA256"
+    },
+    "expected": {
+      "policyJson": "{\"Statement\":[{\"Resource\":\"https://d111111abcdef8.cloudfront.net/video.mp4\",\"Condition\":{\"DateLessThan\":{\"AWS:EpochTime\":1767290400}}}]}",
+      "queryParams": {
+        "Expires": "1767290400",
+        "Key-Pair-Id": "K2ECDSATEST",
+        "Hash-Algorithm": "SHA256"
+      },
+      "verifyCryptographically": true,
+      "signatureAlgorithm": "ECDSA-SHA256"
+    }
+  },
+  {
+    "id": "error-missing-expiration",
+    "documentation": "Error when expiration date is not provided",
+    "input": {
+      "resource": "https://d111111abcdef8.cloudfront.net/file.txt",
+      "keyPairId": "K1TESTKEY",
+      "privateKeyFile": "test-rsa-key.pem"
+    },
+    "expected": {
+      "error": true,
+      "errorContains": [
+        "--date-less-than",
+        "required"
+      ],
+      "returnCode": 252
+    }
+  },
+  {
+    "id": "error-unsupported-key-type",
+    "documentation": "Error when a valid key of an unsupported type (DSA) is provided. Only RSA and ECDSA (P-256) are supported.",
+    "input": {
+      "resource": "https://d111111abcdef8.cloudfront.net/video.mp4",
+      "keyPairId": "K1TESTKEY",
+      "privateKeyFile": "test-dsa-key.pem",
+      "expirationDate": 1767290400
+    },
+    "expected": {
+      "error": true,
+      "errorContains": [
+        "key",
+        "RSA",
+        "ECDSA"
+      ],
+      "returnCode": 255
+    }
+  },
+  {
+    "id": "json-injection-resource-url-escape",
+    "documentation": "SDKs that escape rather than reject: verify resource containing double quotes is properly escaped in policy JSON. SDKs that reject unsafe characters instead MUST NOT run this case; see json-injection-resource-url-reject. The wildcard in the resource does not select a custom policy: `aws cloudfront sign --url` keeps its canned policy for backward compatibility.",
+    "input": {
+      "resource": "https://example.com/file\",\"Resource\":\"*\",\"x\":\"",
+      "keyPairId": "K1TESTKEY",
+      "privateKeyFile": "test-rsa-key.pem",
+      "expirationDate": 1767290400
+    },
+    "expected": {
+      "policyJson": "{\"Statement\":[{\"Resource\":\"https://example.com/file\\\",\\\"Resource\\\":\\\"*\\\",\\\"x\\\":\\\"\",\"Condition\":{\"DateLessThan\":{\"AWS:EpochTime\":1767290400}}}]}",
+      "queryParams": {
+        "Expires": "1767290400",
+        "Key-Pair-Id": "K1TESTKEY"
+      },
+      "signature": "MNP0XV-bmzo5xrYyBU8m8mR3Yd0XdoB6UFAjxEt2R4VaNYtgvVYyIuI9hzD7KXX-GdBJUyqWG7wQIUJeBbEhPz7WzGKhlM1NqRW9EPGK-BwYjiLfDagfv-SHjOvIvNaWAhkaAkAlDJQ7qwzbogLAEsxboR9Ae47b6sSqBPxognM_",
+      "signatureAlgorithm": "RSA-SHA1"
+    }
+  },
+  {
+    "id": "json-injection-ip-range-escape",
+    "documentation": "SDKs that escape rather than reject: verify ipRange containing double quotes is properly escaped in policy JSON. SDKs that reject unsafe characters instead MUST NOT run this case; see json-injection-ip-range-reject.",
+    "input": {
+      "resource": "https://d111111abcdef8.cloudfront.net/image.jpg",
+      "keyPairId": "K1TESTKEY",
+      "privateKeyFile": "test-rsa-key.pem",
+      "expirationDate": 1767290400,
+      "ipRange": "192.168.0.0/24\",\"IpAddress\":{\"AWS:SourceIp\":\"0.0.0.0/0"
+    },
+    "expected": {
+      "policyJson": "{\"Statement\":[{\"Resource\":\"https://d111111abcdef8.cloudfront.net/image.jpg\",\"Condition\":{\"DateLessThan\":{\"AWS:EpochTime\":1767290400},\"IpAddress\":{\"AWS:SourceIp\":\"192.168.0.0/24\\\",\\\"IpAddress\\\":{\\\"AWS:SourceIp\\\":\\\"0.0.0.0/0\"}}}]}",
+      "queryParams": {
+        "Key-Pair-Id": "K1TESTKEY"
+      },
+      "signature": "k6A6kB9E5e~r3UKIhiRgjog0nGsXv2XaytBiZFAKvGSYuQpzx3rRRp1HSfxK-kIkC0cV2EqWFBAYQeVMMmEr-MOoMGHlWzvQgkIVFeolfU1kJk15u9qLeSbKOslgYYcJQpJlonA31H52CzmhKpsE9QJQZhfmaYxJzZQWEDpnUkM_",
+      "signatureAlgorithm": "RSA-SHA1"
+    }
+  }
+]

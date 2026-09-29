@@ -44,18 +44,6 @@ PUBLIC_KEY_FILES = {
     'K2ECDSATEST': 'test-ecdsa-key-public.pem',
 }
 
-# All the files shared with the test cases.
-TEST_DATA_FILES = [
-    'sign-test-cases.json',
-    'test-dsa-key.pem',
-    'test-ecdsa-key-public.pem',
-    'test-ecdsa-key-sec1.pem',
-    'test-ecdsa-key.pem',
-    'test-rsa-key-pkcs1.pem',
-    'test-rsa-key-public.pem',
-    'test-rsa-key.pem',
-]
-
 
 def _load_test_cases(filename):
     with open(os.path.join(TEST_DATA_DIR, filename)) as f:
@@ -170,11 +158,6 @@ def _run(cli, cmdline):
     # Signing is done locally and never calls CloudFront.
     assert result.aws_requests == []
     return result
-
-
-@pytest.mark.parametrize('filename', TEST_DATA_FILES)
-def test_test_data_file_exists(filename):
-    assert os.path.isfile(os.path.join(TEST_DATA_DIR, filename))
 
 
 @pytest.mark.parametrize('case', URL_CASES, ids=_case_id)

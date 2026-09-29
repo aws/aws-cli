@@ -69,7 +69,7 @@ class TestSign(BaseAWSCommandParamsTest):
         '5rB+y/UOS+nlEwQ6eOS09GByJDEXOXpcwjFcTr/f7V8mi0jH+gY/\n'
         '-----END RSA PRIVATE KEY-----\n'
     )
-    prefix = 'cloudfront sign --key-pair-id my_id --url http://example.com/hi '
+    prefix = 'cloudfront sign --key-pair-id MYID --url http://example.com/hi '
 
     def setUp(self):
         files = FileCreator()
@@ -99,7 +99,7 @@ class TestSign(BaseAWSCommandParamsTest):
             "-4Q5x6XH4yzII3JpbCmVwA__"
         )
         expected_params = {
-            'Key-Pair-Id': ['my_id'],
+            'Key-Pair-Id': ['MYID'],
             'Expires': ['1451606400'],
             'Signature': [expected_signature],
         }
@@ -123,7 +123,7 @@ class TestSign(BaseAWSCommandParamsTest):
             "bKxfgNEjSAoPWS0OvBkRmg__"
         )
         expected_params = {
-            'Key-Pair-Id': ['my_id'],
+            'Key-Pair-Id': ['MYID'],
             'Policy': [mock.ANY],
             'Signature': [expected_signature],
         }
@@ -177,7 +177,7 @@ class BaseECDSASignTest(BaseAWSCommandParamsTest):
     private_key = None
     pem_label = None
     url = 'http://example.com/hi'
-    prefix = 'cloudfront sign --key-pair-id my_id --url http://example.com/hi '
+    prefix = 'cloudfront sign --key-pair-id MYID --url http://example.com/hi '
 
     def setUp(self):
         files = FileCreator()
@@ -195,7 +195,7 @@ class BaseECDSASignTest(BaseAWSCommandParamsTest):
         # ECDSA signatures are non-deterministic (a random nonce is used), so
         # rather than comparing against a fixed value we verify the signature
         # cryptographically against the policy that was signed.
-        self.assertEqual(params['Key-Pair-Id'], ['my_id'])
+        self.assertEqual(params['Key-Pair-Id'], ['MYID'])
         # ECDSA signatures are SHA-256; the URL must carry Hash-Algorithm=SHA256
         # so CloudFront's edge verifies with SHA-256 instead of its SHA-1
         # default (otherwise verification fails with AccessDenied).
@@ -222,7 +222,7 @@ class BaseECDSASignTest(BaseAWSCommandParamsTest):
         self.assertNotIn('Policy', params)
         # For a canned policy the signed payload is the canned policy that
         # CloudFrontSigner builds internally from the expiration date.
-        policy = CloudFrontSigner('my_id', None).build_policy(
+        policy = CloudFrontSigner('MYID', None).build_policy(
             self.url, parse_to_aware_datetime('2016-1-1')
         )
         self._assert_signature_verifies(params, policy)
@@ -265,7 +265,7 @@ class TestSignECDSAUnsupportedCurve(BaseAWSCommandParamsTest):
         'M7re404ay7JYpiJXlCZP+RBCBn23NZU=\n'
         '-----END EC PRIVATE KEY-----\n'
     )
-    prefix = 'cloudfront sign --key-pair-id my_id --url http://example.com/hi '
+    prefix = 'cloudfront sign --key-pair-id MYID --url http://example.com/hi '
 
     def setUp(self):
         files = FileCreator()
@@ -291,7 +291,7 @@ class TestSignUnsupportedKeyType(BaseAWSCommandParamsTest):
         'b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAAAMwAAAAtz\n'
         '-----END OPENSSH PRIVATE KEY-----\n'
     )
-    prefix = 'cloudfront sign --key-pair-id my_id --url http://example.com/hi '
+    prefix = 'cloudfront sign --key-pair-id MYID --url http://example.com/hi '
 
     def setUp(self):
         files = FileCreator()
@@ -342,7 +342,7 @@ class TestSignPKCS8(BaseAWSCommandParamsTest):
         'YvT60qFc4be2Mfyzt+CuGhYi\n'
         '-----END PRIVATE KEY-----\n'
     )
-    prefix = 'cloudfront sign --key-pair-id my_id --url http://example.com/hi '
+    prefix = 'cloudfront sign --key-pair-id MYID --url http://example.com/hi '
 
     def setUp(self):
         files = FileCreator()
@@ -372,7 +372,7 @@ class TestSignPKCS8(BaseAWSCommandParamsTest):
             "9wx-HYwuqH4Klds03WZzRQ__"
         )
         expected_params = {
-            'Key-Pair-Id': ['my_id'],
+            'Key-Pair-Id': ['MYID'],
             'Expires': ['1451606400'],
             'Signature': [expected_signature],
         }
@@ -396,7 +396,7 @@ class TestSignPKCS8(BaseAWSCommandParamsTest):
             "bP2Z1d~ZU6X0rkeL~w1BlQ__"
         )
         expected_params = {
-            'Key-Pair-Id': ['my_id'],
+            'Key-Pair-Id': ['MYID'],
             'Policy': [mock.ANY],
             'Signature': [expected_signature],
         }
@@ -485,10 +485,30 @@ class BaseSigningCommandTest(BaseAWSCommandParamsTest):
 
 
 class TestSignPolicySelection(BaseSigningCommandTest):
-    def test_wildcard_url_keeps_canned_policy(self):
-        # For backward compatibility --url is always signed as it always
-        # was. Wildcard resources are signed with --policy-resource.
-        _, params = self.sign_url('--url', 'http://example.com/*')
+    def test_wildcard_url_uses_custom_policy(self):
+        # CloudFront only matches wildcards in a custom policy.
+        for url in ['http://example.com/*', 'http://example.com/a?x=*']:
+            with self.subTest(url=url):
+                _, params = self.sign_url('--url', url)
+                self.assertNotIn('Expires', params)
+                policy = json.loads(_url_b64decode(params['Policy'][0]))
+                self.assertEqual(policy['Statement'][0]['Resource'], url)
+
+    def test_wildcard_policy_resource_with_wildcard_url(self):
+        _, params = self.sign_url(
+            '--url',
+            'http://example.com/videos/*',
+            '--policy-resource',
+            'http://example.com/*',
+        )
+        policy = json.loads(_url_b64decode(params['Policy'][0]))
+        self.assertEqual(
+            policy['Statement'][0]['Resource'], 'http://example.com/*'
+        )
+
+    def test_question_mark_url_keeps_canned_policy(self):
+        # ``?`` is the query delimiter, so it never selects a custom policy.
+        _, params = self.sign_url('--url', 'http://example.com/hi?size=1')
         self.assertEqual(params['Expires'], ['1451606400'])
         self.assertNotIn('Policy', params)
 
@@ -553,70 +573,17 @@ class TestSignHashAlgorithm(BaseSigningCommandTest):
 
 
 class TestSignBackwardCompatibility(BaseSigningCommandTest):
-    # ``sign`` keeps accepting, and signing in the same way, every value of
-    # its original arguments that it accepted before they were validated.
-    def assert_signs_canned(self, url, *args):
-        signed_url, _ = self.sign_url('--url', url, *args)
-        # The signing parameters are appended to the URL as given.
-        self.assertTrue(signed_url.startswith(url + '?Expires=1451606400&'))
-
-    def test_urls_are_not_validated(self):
-        for url in [
-            'rtmp://example.com/video.mp4',
-            'video.mp4',
-            'http://example.com/caf\u00e9.jpg',
-            'http://example.com/a"b',
-            'http://example.com/a#b',
-        ]:
-            with self.subTest(url=url):
-                self.assert_signs_canned(url)
-
-    def test_key_pair_id_is_not_validated(self):
-        for key_pair_id in ['my_id', 'K#1']:
-            with self.subTest(key_pair_id=key_pair_id):
-                url, _ = self.sign_url(
-                    '--url',
-                    'http://example.com/hi',
-                    '--key-pair-id',
-                    key_pair_id,
-                )
-                self.assertIn(f'Key-Pair-Id={key_pair_id}', url)
-
-    def test_rejects_empty_key_pair_id(self):
-        self.assert_sign_error(
-            'Invalid value for --key-pair-id',
-            '--url',
-            'http://example.com/hi',
-            '--key-pair-id',
-            '',
+    # Every URL that CloudFront could accept is still signed exactly as
+    # before; only unusable input is rejected (see TestSignInputValidation).
+    def test_signs_single_ip_address_as_before(self):
+        _, params = self.sign_url(
+            '--url', 'http://example.com/hi', '--ip-address', '12.34.56.78'
         )
-
-    def test_ip_address_is_not_validated(self):
-        for ip_address in ['300.1.2.3/40', '2001:db8::/32']:
-            with self.subTest(ip_address=ip_address):
-                _, params = self.sign_url(
-                    '--url',
-                    'http://example.com/hi',
-                    '--ip-address',
-                    ip_address,
-                )
-                policy = json.loads(_url_b64decode(params['Policy'][0]))
-                self.assertEqual(
-                    policy['Statement'][0]['Condition']['IpAddress'],
-                    {'AWS:SourceIp': ip_address},
-                )
-
-    def test_rejects_active_date_not_before_expiration(self):
-        # The URL would never be valid, so it could never be used.
-        for date_greater_than in ['2016-2-1', '2016-1-1']:
-            with self.subTest(date_greater_than=date_greater_than):
-                self.assert_sign_error(
-                    'must be before --date-less-than',
-                    '--url',
-                    'http://example.com/hi',
-                    '--date-greater-than',
-                    date_greater_than,
-                )
+        policy = json.loads(_url_b64decode(params['Policy'][0]))
+        self.assertEqual(
+            policy['Statement'][0]['Condition']['IpAddress'],
+            {'AWS:SourceIp': '12.34.56.78/32'},
+        )
 
     def test_invalid_date_error(self):
         self.assert_sign_error(
@@ -692,9 +659,15 @@ class TestSignPolicyResourceValidation(BaseSigningCommandTest):
         self.assertIn('Policy', params)
 
 
-class TestSignCookiesInputValidation(BaseSigningCommandTest):
+class BaseInputValidationTest(BaseSigningCommandTest):
+    # Input that CloudFront can never accept is rejected by both commands
+    # instead of producing a signed URL or cookies that cannot be used.
+    # Concrete subclasses supply the command and its resource argument.
+    __test__ = False
+    resource_arg = None
+
     def assert_error(self, message, *args):
-        self.assert_sign_cookies_error(message, *args)
+        raise NotImplementedError('assert_error')
 
     def test_rejects_unsafe_characters(self):
         for resource in [
@@ -704,7 +677,9 @@ class TestSignCookiesInputValidation(BaseSigningCommandTest):
         ]:
             with self.subTest(resource=resource):
                 self.assert_error(
-                    'must not contain double quotes', '--resource', resource
+                    'must not contain double quotes',
+                    self.resource_arg,
+                    resource,
                 )
 
     def test_rejects_url_fragment(self):
@@ -714,19 +689,26 @@ class TestSignCookiesInputValidation(BaseSigningCommandTest):
             'http://example.com/*#frag',
         ]:
             with self.subTest(resource=resource):
-                self.assert_error('URL fragment', '--resource', resource)
+                self.assert_error('URL fragment', self.resource_arg, resource)
 
     def test_rejects_malformed_urls(self):
         for resource in [
+            '',
             'example.com/hi',
+            'video.mp4',
             'ftp://example.com/hi',
+            'rtmp://example.com/video.mp4',
             'https://[zz/a',
             'https://:80/a',
             'https://example.com:abc/a',
             'https://example.com:99999/a',
         ]:
             with self.subTest(resource=resource):
-                self.assert_error('is not a valid URL', '--resource', resource)
+                self.assert_error(
+                    f'Invalid value for {self.resource_arg}',
+                    self.resource_arg,
+                    resource,
+                )
 
     def test_rejects_non_ascii_and_spaces(self):
         for resource in [
@@ -735,7 +717,105 @@ class TestSignCookiesInputValidation(BaseSigningCommandTest):
             'https://example.com/a b.jpg',
         ]:
             with self.subTest(resource=resource):
-                self.assert_error('ASCII characters', '--resource', resource)
+                self.assert_error(
+                    'ASCII characters', self.resource_arg, resource
+                )
+
+    def test_rejects_active_date_not_before_expiration(self):
+        # The result would never be valid, so it could never be used.
+        for date_greater_than in ['2016-2-1', '2016-1-1']:
+            with self.subTest(date_greater_than=date_greater_than):
+                self.assert_error(
+                    'must be before --date-less-than',
+                    self.resource_arg,
+                    'http://example.com/hi',
+                    '--date-greater-than',
+                    date_greater_than,
+                )
+
+    def test_rejects_ipv6_address(self):
+        self.assert_error(
+            'CloudFront only supports IPv4',
+            self.resource_arg,
+            'http://example.com/hi',
+            '--ip-address',
+            '2001:db8::/32',
+        )
+
+    def test_rejects_invalid_ip_address(self):
+        for ip_address in [
+            'foo',
+            '1.2.3',
+            '256.1.1.1',
+            '300.1.2.3/40',
+            '1.2.3.4/33',
+            '1.2.3.4/a',
+            '1.2.3.0/255.255.255.0',
+            '01.2.3.4',
+            '1.2.3.4","x":"y',
+        ]:
+            with self.subTest(ip_address=ip_address):
+                self.assert_error(
+                    'not a valid IPv4 address or CIDR range',
+                    self.resource_arg,
+                    'http://example.com/hi',
+                    '--ip-address',
+                    ip_address,
+                )
+
+    def test_rejects_invalid_key_pair_ids(self):
+        for key_pair_id in ['', 'K&Policy=x', 'K 1', 'K#1', 'K;1', 'my_id']:
+            with self.subTest(key_pair_id=key_pair_id):
+                self.assert_error(
+                    'Invalid value for --key-pair-id',
+                    self.resource_arg,
+                    'http://example.com/hi',
+                    '--key-pair-id',
+                    key_pair_id,
+                )
+
+
+class TestSignInputValidation(BaseInputValidationTest):
+    __test__ = True
+    resource_arg = '--url'
+
+    def assert_error(self, message, *args):
+        self.assert_sign_error(message, *args)
+
+    def test_accepts_url_with_port_and_percent_encoding(self):
+        url = 'https://example.com:8443/caf%C3%A9.jpg'
+        signed_url, _ = self.sign_url('--url', url)
+        self.assertTrue(signed_url.startswith(url + '?Expires=1451606400&'))
+
+    def test_rejects_url_with_signing_params(self):
+        # CloudFront denies URLs whose signing parameters appear twice.
+        for url in [
+            'http://example.com/hi?Expires=1',
+            'http://example.com/hi?a=1&Signature=x',
+            'http://example.com/hi?Key-Pair-Id=K1',
+            'http://example.com/hi?Policy=x',
+            'http://example.com/hi?Hash-Algorithm=SHA1',
+        ]:
+            with self.subTest(url=url):
+                self.assert_sign_error(
+                    'already contains the CloudFront signing parameters',
+                    '--url',
+                    url,
+                )
+
+    def test_accepts_query_params_that_are_not_signing_params(self):
+        # Query parameter names are case-sensitive.
+        url = 'http://example.com/hi?expires=1&size=large'
+        signed_url, _ = self.sign_url('--url', url)
+        self.assertTrue(signed_url.startswith(url + '&Expires=1451606400&'))
+
+
+class TestSignCookiesInputValidation(BaseInputValidationTest):
+    __test__ = True
+    resource_arg = '--resource'
+
+    def assert_error(self, message, *args):
+        self.assert_sign_cookies_error(message, *args)
 
     def test_accepts_url_with_port_and_percent_encoding(self):
         stdout, _, _ = self.sign_cookies(
@@ -762,55 +842,6 @@ class TestSignCookiesInputValidation(BaseSigningCommandTest):
                     'http://example.com/hi',
                     arg,
                     value,
-                )
-
-    def test_rejects_active_date_not_before_expiration(self):
-        for date_greater_than in ['2016-2-1', '2016-1-1']:
-            with self.subTest(date_greater_than=date_greater_than):
-                self.assert_error(
-                    'must be before --date-less-than',
-                    '--resource',
-                    'http://example.com/hi',
-                    '--date-greater-than',
-                    date_greater_than,
-                )
-
-    def test_rejects_ipv6_address(self):
-        self.assert_error(
-            'CloudFront only supports IPv4',
-            '--resource',
-            'http://example.com/hi',
-            '--ip-address',
-            '2001:db8::/32',
-        )
-
-    def test_rejects_invalid_ip_address(self):
-        for ip_address in [
-            '1.2.3',
-            '256.1.1.1',
-            '1.2.3.4/33',
-            '1.2.3.4/a',
-            '1.2.3.0/255.255.255.0',
-            '01.2.3.4',
-        ]:
-            with self.subTest(ip_address=ip_address):
-                self.assert_error(
-                    'not a valid IPv4 address or CIDR range',
-                    '--resource',
-                    'http://example.com/hi',
-                    '--ip-address',
-                    ip_address,
-                )
-
-    def test_rejects_invalid_key_pair_ids(self):
-        for key_pair_id in ['', 'K&Policy=x', 'K 1', 'K#1', 'K;1', 'my_id']:
-            with self.subTest(key_pair_id=key_pair_id):
-                self.assert_error(
-                    'Invalid value for --key-pair-id',
-                    '--resource',
-                    'http://example.com/hi',
-                    '--key-pair-id',
-                    key_pair_id,
                 )
 
 

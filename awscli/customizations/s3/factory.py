@@ -405,7 +405,7 @@ class TransferManagerFactory:
 
     def _create_crt_transfer_manager(self, params, runtime_config):
         self._acquire_crt_s3_process_lock()
-        region = self._resolve_region(params)
+        region = self._resolve_crt_client_region(params)
         bootstrap = create_crt_client_bootstrap()
         config_kwargs = self._resolve_crt_client_config_kwargs(runtime_config)
 
@@ -446,7 +446,7 @@ class TransferManagerFactory:
         bootstrap=None,
     ):
         create_crt_client_kwargs = {
-            'region': region or self._resolve_region(params),
+            'region': region,
             'verify': self._resolve_verify(params),
             'bootstrap': bootstrap,
         }
@@ -581,6 +581,10 @@ class TransferManagerFactory:
         if region is None:
             region = self._session.get_config_variable('region')
         return region
+
+    def _resolve_crt_client_region(self, params):
+        # Match botocore, which signs for us-east-1 when no region is set.
+        return self._resolve_region(params) or 'us-east-1'
 
     def _resolve_verify(self, params):
         verify = params.get('verify_ssl')

@@ -370,6 +370,24 @@ class TestTransferManagerFactory(unittest.TestCase):
         )
 
     @mock.patch('s3transfer.crt.S3Client')
+    def test_crt_manager_signs_for_us_east_1_without_region(
+        self, mock_crt_client
+    ):
+        self.runtime_config = self.get_runtime_config(
+            preferred_transfer_client='crt'
+        )
+        params = {'verify_ssl': DEFAULT_CA_BUNDLE}
+        stub_config_variables(self.session)
+        transfer_manager = self.factory.create_transfer_manager(
+            params, self.runtime_config
+        )
+        self.assert_is_crt_manager(transfer_manager)
+        self.assertEqual(mock_crt_client.call_args[1]['region'], 'us-east-1')
+        self.assertIsNone(
+            self.session.create_client.call_args[1]['region_name']
+        )
+
+    @mock.patch('s3transfer.crt.S3Client')
     def test_uses_tls_by_default_for_crt_manager(self, mock_crt_client):
         self.runtime_config = self.get_runtime_config(
             preferred_transfer_client='crt'

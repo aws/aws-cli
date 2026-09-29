@@ -279,6 +279,12 @@ class TransferManagerFactory:
             )
             self._warn_classic_only_settings(runtime_config)
             return False
+        if self._resolve_region(params) is None:
+            LOGGER.debug(
+                'Not auto resolving to the crt s3 transfer client because '
+                'no region is configured'
+            )
+            return False
         return True
 
     def _is_crt_auto_resolve_enabled(self):

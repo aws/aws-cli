@@ -982,6 +982,25 @@ class TestAutoResolveCrtClientForInstanceFamily:
         resolve_client_type(max_bandwidth=1024)
         assert 'max_bandwidth' in capsys.readouterr().err
 
+    def test_resolves_to_classic_when_region_not_configured(
+        self, resolve_client_type, mock_crt_get_ec2_instance_type, s3_params
+    ):
+        mock_crt_get_ec2_instance_type.return_value = 'c7g.large'
+        s3_params['region'] = None
+        assert resolve_client_type() == constants.CLASSIC_TRANSFER_CLIENT
+
+    def test_resolves_to_crt_with_session_region(
+        self,
+        resolve_client_type,
+        mock_crt_get_ec2_instance_type,
+        s3_params,
+        auto_resolve_session,
+    ):
+        mock_crt_get_ec2_instance_type.return_value = 'c7g.large'
+        s3_params['region'] = None
+        stub_config_variables(auto_resolve_session, region='us-west-2')
+        assert resolve_client_type() == constants.CRT_TRANSFER_CLIENT
+
 
 class TestClassicOnlySettingsWarning:
     def test_warns_when_routed_away_for_max_bandwidth(

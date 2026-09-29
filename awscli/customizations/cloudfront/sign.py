@@ -225,13 +225,7 @@ class SignCommand(BaseSignCommand):
 
     def _get_policy_resource(self, args):
         if args.policy_resource is None:
-            # For backward compatibility --url is signed as it always was,
-            # except for URLs that CloudFront could never accept.
-            if '#' in args.url:
-                raise ParamValidationError(
-                    'Invalid value for --url: the URL must not contain a URL '
-                    'fragment ("#"), which is never sent to CloudFront.'
-                )
+            # For backward compatibility --url is signed as it always was.
             return args.url
         _validate_resource(args.url, 'url', allow_wildcards=False)
         signing_params = _SIGNING_QUERY_PARAMS.intersection(
@@ -267,15 +261,11 @@ class SignCommand(BaseSignCommand):
         )
 
     def _validate_signing_args(self, args):
-        # For backward compatibility only input that CloudFront could never
-        # accept is rejected, so every URL that could be used still signs.
         if not args.key_pair_id:
             raise ParamValidationError(
                 'Invalid value for --key-pair-id: the CloudFront key pair ID '
                 'must not be empty.'
             )
-        if args.ip_address is not None:
-            _reject_ipv6_address(args.ip_address)
 
     def _requires_custom_policy(self, args, resource):
         return (

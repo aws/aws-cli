@@ -13,7 +13,8 @@
 # language governing permissions and limitations under the License.
 import os
 
-from awscrt.s3 import S3RequestTlsMode, S3RequestType
+from awscrt.s3 import S3RequestTlsMode, S3RequestType, S3ResponseError
+from botocore.response import StreamingBody
 
 from awscli.compat import BytesIO, OrderedDict
 from awscli.customizations.s3.utils import relative_path
@@ -23,11 +24,12 @@ from awscli.testutils import (
     mock,
     skip_if_windows,
 )
-from botocore.response import StreamingBody
 from tests.functional.s3 import (
     BaseCRTTransferClientTest,
     BaseS3CLIRunnerTest,
     BaseS3TransferCommandTest,
+    FakeCRTFuture,
+    FakeCRTS3Request,
 )
 from tests.functional.s3.test_sync_command import TestSyncCaseConflict
 
@@ -2941,13 +2943,13 @@ class TestCopyPropsAllCpCommand(BaseCopyPropsCpCommandTest):
                 self.get_object_annotation_response(
                     StreamingBody(
                         BytesIO(self.annotation_payload_bytes),
-                        len(self.annotation_payload_bytes)
+                        len(self.annotation_payload_bytes),
                     )
                 ),
                 self.get_object_annotation_response(
                     StreamingBody(
                         BytesIO(self.annotation_payload_bytes),
-                        len(self.annotation_payload_bytes)
+                        len(self.annotation_payload_bytes),
                     )
                 ),
             ]
@@ -3008,13 +3010,13 @@ class TestCopyPropsAllCpCommand(BaseCopyPropsCpCommandTest):
                 self.get_object_annotation_response(
                     StreamingBody(
                         BytesIO(self.annotation_payload_bytes),
-                        len(self.annotation_payload_bytes)
+                        len(self.annotation_payload_bytes),
                     )
                 ),
                 self.get_object_annotation_response(
                     StreamingBody(
                         BytesIO(self.annotation_payload_bytes),
-                        len(self.annotation_payload_bytes)
+                        len(self.annotation_payload_bytes),
                     )
                 ),
             ]
@@ -3059,7 +3061,7 @@ class TestCopyPropsAllCpCommand(BaseCopyPropsCpCommandTest):
                 self.get_object_annotation_response(
                     StreamingBody(
                         BytesIO(self.annotation_payload_bytes),
-                        len(self.annotation_payload_bytes)
+                        len(self.annotation_payload_bytes),
                     )
                 ),
             ]
@@ -3343,6 +3345,52 @@ class TestCpWithCRTClient(BaseCRTTransferClientTest):
         )
         self.assertEqual(
             result.stdout, self.expected_download_content.decode('utf-8')
+        )
+
+    def test_upload_without_region_redirects_from_global_endpoint(self):
+        del self.cli_runner.env['AWS_DEFAULT_REGION']
+        self.cli_runner.env['AWS_EC2_METADATA_DISABLED'] = 'true'
+        redirect_error = S3ResponseError(
+            code=14343,
+            name='AWS_ERROR_S3_INVALID_RESPONSE_STATUS',
+            message='Invalid response status from request',
+            status_code=301,
+            headers=[('x-amz-bucket-region', 'eu-central-1')],
+            body=b'<Error><Code>PermanentRedirect</Code></Error>',
+            operation_name='PutObject',
+        )
+        make_request = self.mock_crt_client.return_value.make_request
+
+        def redirect_first_request(**kwargs):
+            if make_request.call_count == 1:
+                kwargs['on_done'](error=redirect_error)
+            else:
+                kwargs['on_done'](error=None)
+            return FakeCRTS3Request(future=FakeCRTFuture())
+
+        make_request.side_effect = redirect_first_request
+        filename = self.files.create_file('myfile', 'mycontent')
+        cmdline = ['s3', 'cp', filename, 's3://bucket/key']
+        self.run_command(cmdline)
+        self.assertEqual(
+            [c.kwargs['region'] for c in self.mock_crt_client.call_args_list],
+            ['us-east-1', 'eu-central-1'],
+        )
+        crt_requests = self.get_crt_make_request_calls()
+        self.assertEqual(len(crt_requests), 2)
+        self.assert_crt_make_request_call(
+            crt_requests[0],
+            expected_type=S3RequestType.PUT_OBJECT,
+            expected_host='bucket.s3.amazonaws.com',
+            expected_path='/key',
+            expected_send_filepath=filename,
+        )
+        self.assert_crt_make_request_call(
+            crt_requests[1],
+            expected_type=S3RequestType.PUT_OBJECT,
+            expected_host='bucket.s3.eu-central-1.amazonaws.com',
+            expected_path='/key',
+            expected_send_filepath=filename,
         )
 
     def test_respects_region_parameter(self):

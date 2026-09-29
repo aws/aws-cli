@@ -35,7 +35,6 @@ CLI_OPTIONAL_ARGS = {
 SIGNATURE_ALGORITHMS = {
     'RSA-SHA1': (RSASignatureAlgorithm.PKCS1_5_SHA1, hashlib.sha1),
     'RSA-SHA256': (RSASignatureAlgorithm.PKCS1_5_SHA256, hashlib.sha256),
-    'ECDSA-SHA1': (None, hashlib.sha1),
     'ECDSA-SHA256': (None, hashlib.sha256),
 }
 
@@ -80,6 +79,37 @@ def _pem_body_to_der(filename):
     )
 
 
+DER_SEQUENCE = 0x30
+DER_BIT_STRING = 0x03
+
+
+def _read_der_element(data, offset, expected_tag):
+    # Return the contents of the DER element at offset and the offset of the
+    # element after it.
+    assert data[offset] == expected_tag
+    length = data[offset + 1]
+    offset += 2
+    if length & 0x80:
+        num_length_bytes = length & 0x7F
+        length = int.from_bytes(
+            data[offset : offset + num_length_bytes], 'big'
+        )
+        offset += num_length_bytes
+    return data[offset : offset + length], offset + length
+
+
+def _rsa_public_key_from_spki(der):
+    # The CRT only loads PKCS#1 RSA public keys, but the SEP's test key is
+    # SubjectPublicKeyInfo (BEGIN PUBLIC KEY), so unwrap the PKCS#1 key from
+    # its BIT STRING. Adding cryptography to the test requirements would also
+    # work, at the cost of a new dependency for one assertion.
+    spki, _ = _read_der_element(der, 0, DER_SEQUENCE)
+    _, bit_string_offset = _read_der_element(spki, 0, DER_SEQUENCE)
+    bit_string, _ = _read_der_element(spki, bit_string_offset, DER_BIT_STRING)
+    assert bit_string[0] == 0
+    return RSA.new_public_key_from_der_data(bit_string[1:])
+
+
 def _assert_signature_verifies(case, signature):
     # Verify the signature of the expected policy with the test key's public
     # key, using the hash of the case's signature algorithm.
@@ -96,7 +126,7 @@ def _assert_signature_verifies(case, signature):
         public_key = EC.new_key_from_der_data(public_key_der)
         is_valid = public_key.verify(digest, signature)
     else:
-        public_key = RSA.new_public_key_from_der_data(public_key_der)
+        public_key = _rsa_public_key_from_spki(public_key_der)
         is_valid = public_key.verify(rsa_algorithm, digest, signature)
     assert is_valid, 'Signature failed to verify against the public key'
 

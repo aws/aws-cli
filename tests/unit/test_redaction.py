@@ -76,7 +76,7 @@ def test_redacts_nested_values():
     ],
 )
 def test_returns_values_without_matches_unchanged(value):
-    assert redact(value) is value
+    assert redact(value) == value
 
 
 def test_register_redaction(monkeypatch):

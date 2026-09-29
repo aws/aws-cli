@@ -35,8 +35,7 @@ def redact(value):
     """Return ``value`` with every registered pattern redacted.
 
     Strings and UTF-8 encoded bytes are redacted, including those nested in
-    lists, tuples, and mappings. Other values, and values without a match,
-    are returned unchanged.
+    lists, tuples, and mappings. Other values are returned unchanged.
     """
     if isinstance(value, str):
         return _redact_text(value)
@@ -45,31 +44,22 @@ def redact(value):
             text = value.decode('utf-8')
         except UnicodeDecodeError:
             return value
-        redacted = _redact_text(text)
-        return value if redacted is text else redacted.encode('utf-8')
+        return _redact_text(text).encode('utf-8')
     if isinstance(value, (list, tuple)):
         items = [redact(item) for item in value]
-        if all(new is old for new, old in zip(items, value)):
-            return value
         return items if isinstance(value, list) else tuple(items)
     if isinstance(value, Mapping):
-        items = {key: redact(item) for key, item in value.items()}
-        if all(items[key] is item for key, item in value.items()):
-            return value
-        return items
+        return {key: redact(item) for key, item in value.items()}
     return value
 
 
 def _redact_text(text):
-    redacted = text
     for pattern, replacement in _REDACTIONS:
-        redacted = pattern.sub(replacement, redacted)
-    # Keep the original object when nothing matched.
-    return text if redacted == text else redacted
+        text = pattern.sub(replacement, text)
+    return text
 
 
-# PEM private keys, e.g. passed inline to ``aws cloudfront sign
-# --private-key``. An unterminated key is redacted up to the end of the text.
+# PEM private keys.
 register_redaction(
     re.compile(
         r'-----BEGIN [A-Z0-9 ]*PRIVATE KEY-----'

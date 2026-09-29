@@ -31,7 +31,6 @@ _IPV4_FORMAT = re.compile(r'\d{1,3}(\.\d{1,3}){3}(/\d{1,2})?', re.ASCII)
 _SIGNING_QUERY_PARAMS = frozenset(
     ['Expires', 'Policy', 'Signature', 'Key-Pair-Id', 'Hash-Algorithm']
 )
-_KEY_PAIR_ID_FORMAT = re.compile(r'[A-Za-z0-9]+', re.ASCII)
 
 
 class BaseSignCommand(BasicCommand):
@@ -147,12 +146,6 @@ class BaseSignCommand(BasicCommand):
         )
 
     def _validate_signing_args(self, args):
-        if not _KEY_PAIR_ID_FORMAT.fullmatch(args.key_pair_id):
-            raise ParamValidationError(
-                f'Invalid value for --key-pair-id: "{args.key_pair_id}". The '
-                'CloudFront key pair ID must only contain letters and '
-                'digits, for example K2JCJMDEHXQW5F.'
-            )
         ip_address = args.ip_address
         if ip_address is None:
             return
@@ -468,11 +461,6 @@ class RSASigner(_KeySigner):
         if hash_algorithm is None:
             # SHA-1 is CloudFront's default
             hash_algorithm = 'SHA1'
-        if hash_algorithm not in self._SIGNATURE_ALGORITHMS:
-            raise ParamValidationError(
-                f'Unsupported hash algorithm "{hash_algorithm}". Supported '
-                f'hash algorithms: {", ".join(_HASH_ALGORITHMS)}'
-            )
         self.priv_key = priv_key
         self.hash_algorithm = hash_algorithm
         self._signature_algorithm, self._hash = self._SIGNATURE_ALGORITHMS[

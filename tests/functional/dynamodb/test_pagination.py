@@ -164,6 +164,27 @@ class TestConsumedCapacityAggregation(BaseAWSCommandParamsTest):
         self.assertEqual(result["Count"], 2)
         self.assertNotIn("ConsumedCapacity", result)
 
+    def test_no_consumed_capacity_with_starting_token(self):
+        # --starting-token drives _handle_first_request, which truncates
+        # secondary result keys. It must not fabricate a phantom
+        # ConsumedCapacity (with nested numeric leaves, then TableName) when
+        # capacity wasn't requested.
+        self.parsed_responses = [
+            {
+                "Items": [{"Key": {"S": "b"}}],
+                "Count": 1,
+                "ScannedCount": 1,
+            }
+        ]
+        token = 'eyJFeGNsdXNpdmVTdGFydEtleSI6IHsiS2V5IjogeyJTIjogImEifX19'
+        cmd = (
+            'dynamodb scan --table-name T --output json '
+            f'--starting-token {token}'
+        )
+        stdout, _, _ = self.run_cmd(cmd, expected_rc=0)
+        result = json.loads(stdout)
+        self.assertNotIn("ConsumedCapacity", result)
+
     def test_scan_sums_vector_index_consumed_capacity(self):
         self.parsed_responses = [
             self._page(

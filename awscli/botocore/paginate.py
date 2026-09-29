@@ -489,6 +489,13 @@ class PageIterator:
                 # items the server evaluated, even if the client is truncating
                 # due to a StartingToken.
                 empty_value = sample
+            elif sample is None:
+                # The secondary key isn't present on this page. Don't write it
+                # back: for a nested path (e.g. ConsumedCapacity.CapacityUnits)
+                # set_value_from_jmespath would fabricate a phantom parent
+                # object ({"CapacityUnits": null}) that then makes the member
+                # look present to later aggregation/non_aggregate handling.
+                continue
             else:
                 empty_value = None
             set_value_from_jmespath(parsed, token.expression, empty_value)

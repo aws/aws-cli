@@ -2633,6 +2633,13 @@
       },
       "documentation":"<p>Node group (shard) configuration options when adding or removing replicas. Each node group (shard) configuration has the following members: NodeGroupId, NewReplicaCount, and PreferredAvailabilityZones. </p>"
     },
+    "ConnectionType":{
+      "type":"string",
+      "enum":[
+        "vpc",
+        "public"
+      ]
+    },
     "CopyServerlessCacheSnapshotRequest":{
       "type":"structure",
       "required":[
@@ -3199,6 +3206,10 @@
         "NetworkType":{
           "shape":"NetworkType",
           "documentation":"<p>The IP protocol version used by the serverless cache. Must be either <code>ipv4</code> | <code>ipv6</code> | <code>dual_stack</code>. <code>ipv6</code> is only supported with IPv6-only subnets. If not specified, defaults to <code>ipv4</code>, unless all provided subnets are IPv6-only, in which case it defaults to <code>ipv6</code>. </p>"
+        },
+        "ConnectionType":{
+          "shape":"ConnectionType",
+          "documentation":"<p>The connection type for the serverless cache. Must be either <code>vpc</code> | <code>public</code>. Use <code>vpc</code> to access the cache through a VPC endpoint, or <code>public</code> to access the cache over the internet. If not specified, defaults to <code>vpc</code>. This value cannot be changed after the serverless cache is created. Setting this to <code>public</code> requires Valkey 9 or above.</p>"
         }
       }
     },
@@ -6952,6 +6963,10 @@
         "NetworkType":{
           "shape":"NetworkType",
           "documentation":"<p>The type of IP address protocol used by the serverless cache. Must be either <code>ipv4</code> | <code>ipv6</code> | <code>dual_stack</code>. <code>ipv6</code> is only supported with IPv6-only subnets. If not specified, defaults to <code>ipv4</code>, unless all provided subnets are IPv6-only, in which case it defaults to <code>ipv6</code>.</p>"
+        },
+        "ConnectionType":{
+          "shape":"ConnectionType",
+          "documentation":"<p>The connection type for the serverless cache. Must be either <code>vpc</code> | <code>public</code>. If not specified, defaults to <code>vpc</code>.</p>"
         }
       },
       "documentation":"<p>The resource representing a serverless cache.</p>"

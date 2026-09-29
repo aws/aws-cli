@@ -768,6 +768,7 @@
         "INTERSTITIAL_VOD_FAILURE",
         "PRE_ADS_REQUEST_HOOK_ERROR",
         "PRE_ADS_REQUEST_FUNCTION_ERROR",
+        "BEACON_RECEIVED",
         "POST_ADS_RESPONSE_HOOK_ERROR",
         "POST_ADS_RESPONSE_FUNCTION_ERROR",
         "PRE_MANIFEST_INSERTION_HOOK_ERROR",
@@ -1062,6 +1063,30 @@
       },
       "exception":true
     },
+    "BeaconEventType":{
+      "type":"string",
+      "documentation":"<p>A player operation event that MediaTailor can report on. Only the player can detect when a viewer performs this action, so MediaTailor doesn't send these beacons itself.</p>",
+      "enum":[
+        "MUTE",
+        "UNMUTE",
+        "PAUSE",
+        "SKIP"
+      ]
+    },
+    "BeaconEventTypeList":{
+      "type":"list",
+      "member":{"shape":"BeaconEventType"}
+    },
+    "BeaconingConfiguration":{
+      "type":"structure",
+      "members":{
+        "ClientSide":{
+          "shape":"ClientSideBeaconingConfiguration",
+          "documentation":"<p>The beaconing settings for client-side reporting sessions. If you omit this object, MediaTailor uses <code>INSIGHTS</code> reporting mode.</p>"
+        }
+      },
+      "documentation":"<p>The beaconing configuration for a playback configuration. Beaconing controls whether MediaTailor includes its own beacons in the ad tracking response, in addition to the ad server beacons.</p>"
+    },
     "Bumper":{
       "type":"structure",
       "members":{
@@ -1159,6 +1184,28 @@
       "enum":[
         "RUNNING",
         "STOPPED"
+      ]
+    },
+    "ClientSideBeaconingConfiguration":{
+      "type":"structure",
+      "required":["ReportingMode"],
+      "members":{
+        "ReportingMode":{
+          "shape":"ClientSideBeaconingMode",
+          "documentation":"<p>Specifies whether MediaTailor includes its beacons in the ad tracking response. Valid values, which are case-sensitive:</p> <ul> <li> <p> <code>INSIGHTS</code> – MediaTailor includes its beacons in the ad tracking response.</p> </li> <li> <p> <code>DISABLED</code> – MediaTailor doesn't include its beacons in the ad tracking response.</p> </li> </ul> <p>If you send a <code>ClientSide</code> object, this setting is required. If you omit <code>BeaconingConfiguration</code> or <code>ClientSide</code> entirely, MediaTailor uses <code>INSIGHTS</code>.</p> <p> <code>PutPlaybackConfiguration</code> replaces the whole playback configuration. To keep beaconing off, include <code>DISABLED</code> in every subsequent write.</p>"
+        },
+        "AdditionalEventTypes":{
+          "shape":"BeaconEventTypeList",
+          "documentation":"<p>The player operation events to report on, in addition to the ad progress events that MediaTailor always reports on. The default is an empty list. This parameter is valid only when <code>ReportingMode</code> is <code>INSIGHTS</code>. MediaTailor rejects the request if you specify a value while <code>ReportingMode</code> is <code>DISABLED</code>, or if you specify duplicate values.</p>"
+        }
+      },
+      "documentation":"<p>The beaconing settings that apply to client-side reporting sessions: whether MediaTailor includes its beacons in the ad tracking response, and which player operation events it reports on.</p>"
+    },
+    "ClientSideBeaconingMode":{
+      "type":"string",
+      "enum":[
+        "DISABLED",
+        "INSIGHTS"
       ]
     },
     "ClipRange":{
@@ -2783,6 +2830,10 @@
         "AdsPersonalizationConcurrency":{
           "shape":"AdsPersonalizationConcurrency",
           "documentation":"<p>The concurrency settings for ad decision server interactions. These settings control how many simultaneous ADS requests MediaTailor makes per manifest request.</p>"
+        },
+        "BeaconingConfiguration":{
+          "shape":"BeaconingConfiguration",
+          "documentation":"<p>The beaconing configuration for this playback configuration, which controls whether MediaTailor includes beacons of its own in the ad tracking response. MediaTailor always returns this setting. If you created the playback configuration before this setting existed, MediaTailor reports <code>ReportingMode</code> as <code>INSIGHTS</code>. This is also the value MediaTailor uses for that configuration at playback time.</p>"
         }
       }
     },
@@ -3663,6 +3714,10 @@
         "AdsPersonalizationConcurrency":{
           "shape":"AdsPersonalizationConcurrency",
           "documentation":"<p>The concurrency settings for ad decision server interactions. These settings control how many simultaneous ADS requests MediaTailor makes per manifest request.</p>"
+        },
+        "BeaconingConfiguration":{
+          "shape":"BeaconingConfiguration",
+          "documentation":"<p>The beaconing configuration for this playback configuration, which controls whether MediaTailor includes beacons of its own in the ad tracking response.</p>"
         }
       },
       "documentation":"<p>A playback configuration. For information about MediaTailor configurations, see <a href=\"https://docs.aws.amazon.com/mediatailor/latest/ug/configurations.html\">Working with configurations in AWS Elemental MediaTailor</a>.</p>"
@@ -4025,6 +4080,10 @@
         "AdsPersonalizationConcurrency":{
           "shape":"AdsPersonalizationConcurrency",
           "documentation":"<p>The concurrency settings for ad decision server interactions. These settings control how many simultaneous ADS requests MediaTailor makes per manifest request.</p>"
+        },
+        "BeaconingConfiguration":{
+          "shape":"BeaconingConfiguration",
+          "documentation":"<p>The beaconing configuration for this playback configuration, which controls whether MediaTailor includes beacons of its own in the ad tracking response. If you omit this setting, MediaTailor uses <code>INSIGHTS</code>.</p>"
         }
       }
     },
@@ -4143,6 +4202,10 @@
         "AdsPersonalizationConcurrency":{
           "shape":"AdsPersonalizationConcurrency",
           "documentation":"<p>The concurrency settings for ad decision server interactions. These settings control how many simultaneous ADS requests MediaTailor makes per manifest request.</p>"
+        },
+        "BeaconingConfiguration":{
+          "shape":"BeaconingConfiguration",
+          "documentation":"<p>The beaconing configuration for this playback configuration, which controls whether MediaTailor includes beacons of its own in the ad tracking response.</p>"
         }
       }
     },

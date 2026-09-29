@@ -1181,6 +1181,25 @@
       ],
       "documentation":"<p>Updates the integrated resources for an agent space, including their capabilities.</p>"
     },
+    "UpdateIntegration":{
+      "name":"UpdateIntegration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/UpdateIntegration",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateIntegrationInput"},
+      "output":{"shape":"UpdateIntegrationOutput"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Creates an integration's webhook, or rotates the HMAC signing secret of an existing one. The secret is returned only once, in this response, and cannot be retrieved again.</p>"
+    },
     "UpdatePentest":{
       "name":"UpdatePentest",
       "http":{
@@ -1723,6 +1742,92 @@
         "AWS_IAM_ROLE",
         "AWS_INTERNAL"
       ]
+    },
+    "AzureDevOpsIntegrationInput":{
+      "type":"structure",
+      "required":[
+        "code",
+        "state",
+        "organizationName"
+      ],
+      "members":{
+        "code":{
+          "shape":"AuthCode",
+          "documentation":"<p>The OAuth 2.0 authorization code returned to your redirect URL after the connection is authorized.</p>"
+        },
+        "state":{
+          "shape":"CsrfState",
+          "documentation":"<p>The CSRF state value returned by <code>InitiateProviderRegistration</code> and echoed back on the authorization redirect.</p>"
+        },
+        "organizationName":{
+          "shape":"String",
+          "documentation":"<p>The name of the Azure DevOps organization to connect, for example <code>my-org</code>.</p>"
+        }
+      },
+      "documentation":"<p>Connection details for an Azure DevOps integration.</p>"
+    },
+    "AzureDevOpsOrganization":{
+      "type":"string",
+      "documentation":"<p>An Azure DevOps organization name.</p>"
+    },
+    "AzureDevOpsRepositoryMetadata":{
+      "type":"structure",
+      "required":[
+        "name",
+        "providerResourceId",
+        "organization"
+      ],
+      "members":{
+        "name":{"shape":"ProviderResourceName"},
+        "providerResourceId":{"shape":"ProviderResourceId"},
+        "organization":{
+          "shape":"AzureDevOpsOrganization",
+          "documentation":"<p>The name of the Azure DevOps organization that owns the repository.</p>"
+        },
+        "project":{
+          "shape":"String",
+          "documentation":"<p>The name of the Azure DevOps project that contains the repository.</p>"
+        },
+        "projectId":{
+          "shape":"String",
+          "documentation":"<p>The GUID of the Azure DevOps project that contains the repository.</p>"
+        },
+        "accessType":{"shape":"AccessType"}
+      },
+      "documentation":"<p>Metadata for an integrated Azure DevOps repository.</p>"
+    },
+    "AzureDevOpsRepositoryResource":{
+      "type":"structure",
+      "required":[
+        "name",
+        "organization"
+      ],
+      "members":{
+        "name":{"shape":"ProviderResourceName"},
+        "organization":{
+          "shape":"AzureDevOpsOrganization",
+          "documentation":"<p>The name of the Azure DevOps organization that owns the repository.</p>"
+        },
+        "project":{
+          "shape":"String",
+          "documentation":"<p>The name of the Azure DevOps project that contains the repository.</p>"
+        }
+      },
+      "documentation":"<p>An Azure DevOps repository integrated as a resource.</p>"
+    },
+    "AzureDevOpsResourceCapabilities":{
+      "type":"structure",
+      "members":{
+        "leaveComments":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether to post code review comments on pull requests.</p>"
+        },
+        "remediateCode":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether to create pull requests with automated fixes.</p>"
+        }
+      },
+      "documentation":"<p>Capabilities for an integrated Azure DevOps repository.</p>"
     },
     "BatchCreateSecurityRequirementResult":{
       "type":"structure",
@@ -2517,6 +2622,29 @@
         }
       }
     },
+    "BitbucketDataCenterIntegrationInput":{
+      "type":"structure",
+      "required":[
+        "targetUrl",
+        "code",
+        "state"
+      ],
+      "members":{
+        "targetUrl":{
+          "shape":"TargetUrl",
+          "documentation":"<p>The HTTPS URL of your Bitbucket Data Center instance, for example <code>https://bitbucket.example.com</code>.</p>"
+        },
+        "code":{
+          "shape":"AuthCode",
+          "documentation":"<p>The OAuth 2.0 authorization code returned to your redirect URL after the connection is authorized.</p>"
+        },
+        "state":{
+          "shape":"CsrfState",
+          "documentation":"<p>The CSRF state value returned by <code>InitiateProviderRegistration</code> and echoed back on the authorization redirect.</p>"
+        }
+      },
+      "documentation":"<p>Connection details for a self-managed Bitbucket Data Center integration.</p>"
+    },
     "BitbucketInstallationId":{
       "type":"string",
       "documentation":"<p>An Atlassian installation identifier for a Bitbucket integration.</p>"
@@ -2671,6 +2799,15 @@
         "BEST_EFFORT_DELETE",
         "RETAIN_ALL"
       ]
+    },
+    "ClientId":{
+      "type":"string",
+      "documentation":"<p>A client ID for an OAuth application registered on a self-managed provider instance.</p>"
+    },
+    "ClientSecret":{
+      "type":"string",
+      "documentation":"<p>A client secret for an OAuth application registered on a self-managed provider instance.</p>",
+      "sensitive":true
     },
     "CloudWatchLog":{
       "type":"structure",
@@ -3523,7 +3660,7 @@
       "members":{
         "provider":{
           "shape":"Provider",
-          "documentation":"<p>The integration provider. Currently, only GITHUB is supported.</p>"
+          "documentation":"<p>The integration provider.</p>"
         },
         "input":{
           "shape":"ProviderInput",
@@ -5066,6 +5203,10 @@
           "shape":"TargetUrl",
           "documentation":"<p>The HTTPS URL of the customer self-hosted instance, such as a GitHub Enterprise Server or self-managed GitLab instance. This value is absent for SaaS integrations.</p>"
         },
+        "webhookUrl":{
+          "shape":"String",
+          "documentation":"<p>The payload URL of the integration's webhook, once it has been created. The signing secret is never returned on a read.</p>"
+        },
         "privateConnectionName":{
           "shape":"PrivateConnectionName",
           "documentation":"<p>The name of the private connection used to reach the integration's self-hosted instance over private networking, if one is configured.</p>"
@@ -5408,7 +5549,23 @@
       "members":{
         "provider":{
           "shape":"Provider",
-          "documentation":"<p>The provider to initiate registration with. Currently, only GITHUB is supported.</p>"
+          "documentation":"<p>The provider to initiate registration with.</p>"
+        },
+        "targetUrl":{
+          "shape":"TargetUrl",
+          "documentation":"<p>The HTTPS URL of a self-managed provider instance. Omit for SaaS providers.</p>"
+        },
+        "organizationName":{
+          "shape":"String",
+          "documentation":"<p>The name of the organization to connect.</p>"
+        },
+        "clientId":{
+          "shape":"ClientId",
+          "documentation":"<p>The client ID of the OAuth application registered on your self-managed provider instance.</p>"
+        },
+        "clientSecret":{
+          "shape":"ClientSecret",
+          "documentation":"<p>The client secret of the OAuth application registered on your self-managed provider instance.</p>"
         }
       }
     },
@@ -5486,7 +5643,11 @@
         },
         "gitlabRepository":{"shape":"GitLabRepositoryResource"},
         "bitbucketRepository":{"shape":"BitbucketRepositoryResource"},
-        "confluenceDocument":{"shape":"ConfluenceDocumentResource"}
+        "confluenceDocument":{"shape":"ConfluenceDocumentResource"},
+        "azureDevOpsRepository":{
+          "shape":"AzureDevOpsRepositoryResource",
+          "documentation":"<p>The Azure DevOps repository resource information.</p>"
+        }
       },
       "documentation":"<p>Represents an integrated resource from a third-party provider. This is a union type that contains provider-specific resource information.</p>",
       "union":true
@@ -5520,7 +5681,11 @@
         },
         "gitlabRepository":{"shape":"GitLabRepositoryMetadata"},
         "bitbucketRepository":{"shape":"BitbucketRepositoryMetadata"},
-        "confluenceDocument":{"shape":"ConfluenceDocumentMetadata"}
+        "confluenceDocument":{"shape":"ConfluenceDocumentMetadata"},
+        "azureDevOpsRepository":{
+          "shape":"AzureDevOpsRepositoryMetadata",
+          "documentation":"<p>The Azure DevOps repository metadata.</p>"
+        }
       },
       "documentation":"<p>Contains metadata about an integrated resource. This is a union type that contains provider-specific metadata.</p>",
       "union":true
@@ -5604,6 +5769,10 @@
         "targetUrl":{
           "shape":"TargetUrl",
           "documentation":"<p>The HTTPS URL of the customer self-hosted instance, such as a GitHub Enterprise Server or self-managed GitLab instance. This value is absent for SaaS integrations.</p>"
+        },
+        "webhookUrl":{
+          "shape":"String",
+          "documentation":"<p>The payload URL of the integration's webhook, once it has been created. The signing secret is never returned on a read.</p>"
         },
         "privateConnectionName":{
           "shape":"PrivateConnectionName",
@@ -7229,7 +7398,8 @@
         "GITHUB",
         "GITLAB",
         "BITBUCKET",
-        "CONFLUENCE"
+        "CONFLUENCE",
+        "AZURE_DEVOPS"
       ]
     },
     "ProviderInput":{
@@ -7250,6 +7420,14 @@
         "confluence":{
           "shape":"ConfluenceIntegrationInput",
           "documentation":"<p>The configuration for a Confluence integration.</p>"
+        },
+        "azureDevOps":{
+          "shape":"AzureDevOpsIntegrationInput",
+          "documentation":"<p>The Azure DevOps-specific input for creating an integration.</p>"
+        },
+        "bitbucketDataCenter":{
+          "shape":"BitbucketDataCenterIntegrationInput",
+          "documentation":"<p>The Bitbucket Data Center-specific input for creating an integration.</p>"
         }
       },
       "documentation":"<p>The provider-specific input for creating an integration. This is a union type that contains provider-specific configuration.</p>",
@@ -7264,7 +7442,11 @@
         },
         "gitlab":{"shape":"GitLabResourceCapabilities"},
         "bitbucket":{"shape":"BitbucketResourceCapabilities"},
-        "confluence":{"shape":"ConfluenceResourceCapabilities"}
+        "confluence":{"shape":"ConfluenceResourceCapabilities"},
+        "azureDevOps":{
+          "shape":"AzureDevOpsResourceCapabilities",
+          "documentation":"<p>The Azure DevOps-specific resource capabilities.</p>"
+        }
       },
       "documentation":"<p>The capabilities for an integrated resource from a third-party provider. This is a union type that contains provider-specific capabilities.</p>",
       "union":true
@@ -9387,6 +9569,43 @@
       "type":"structure",
       "members":{}
     },
+    "UpdateIntegrationInput":{
+      "type":"structure",
+      "required":[
+        "integrationId",
+        "webhookAction"
+      ],
+      "members":{
+        "integrationId":{
+          "shape":"IntegrationId",
+          "documentation":"<p>The ID of the integration whose webhook you want to create or rotate.</p>"
+        },
+        "webhookAction":{
+          "shape":"WebhookAction",
+          "documentation":"<p>The action to perform on the integration's webhook.</p>"
+        }
+      },
+      "documentation":"<p>Input for creating or rotating an integration's webhook.</p>"
+    },
+    "UpdateIntegrationOutput":{
+      "type":"structure",
+      "required":["integrationId"],
+      "members":{
+        "integrationId":{
+          "shape":"IntegrationId",
+          "documentation":"<p>The ID of the integration.</p>"
+        },
+        "webhookUrl":{
+          "shape":"String",
+          "documentation":"<p>The payload URL to configure on your provider instance. Returned when a webhook is created; unchanged by a rotate.</p>"
+        },
+        "secret":{
+          "shape":"WebhookSecret",
+          "documentation":"<p>The HMAC signing secret for the webhook. Returned only once, in this response; it is never returned again.</p>"
+        }
+      },
+      "documentation":"<p>Output for the UpdateIntegration operation.</p>"
+    },
     "UpdatePentestInput":{
       "type":"structure",
       "required":[
@@ -10203,6 +10422,19 @@
     "VpcConfigs":{
       "type":"list",
       "member":{"shape":"VpcConfig"}
+    },
+    "WebhookAction":{
+      "type":"string",
+      "documentation":"<p>The action to perform on an integration's webhook.</p>",
+      "enum":[
+        "CREATE_IF_ABSENT",
+        "ROTATE"
+      ]
+    },
+    "WebhookSecret":{
+      "type":"string",
+      "documentation":"<p>An HMAC signing secret for a provider webhook.</p>",
+      "sensitive":true
     }
   },
   "documentation":"<p>AWS Security Agent is a frontier agent that proactively secures your applications throughout the development lifecycle. It conducts automated security reviews tailored to your organizational requirements and delivers context-aware penetration testing on demand. By continuously validating security from design to deployment, AWS Security Agent helps prevent vulnerabilities early across all your environments. Key capabilities include design security review for architecture documents, code security review for pull requests in connected repositories, and on-demand penetration testing that discovers, validates, and remediates security vulnerabilities through tailored multi-step attack scenarios. For more information, see the <a href=\"https://docs.aws.amazon.com/securityagent/latest/userguide/what-is.html\">AWS Security Agent User Guide</a>.</p>"

@@ -10250,7 +10250,7 @@
     },
     "ClusterAvailabilityZoneId":{
       "type":"string",
-      "pattern":"[a-z]{3}\\d-az\\d"
+      "pattern":"[a-z]{3,5}\\d-az\\d"
     },
     "ClusterAvailabilityZones":{
       "type":"list",
@@ -23142,7 +23142,7 @@
       "required":["TrainingPlanName"],
       "members":{
         "TrainingPlanName":{
-          "shape":"TrainingPlanName",
+          "shape":"TrainingPlanNameOrArn",
           "documentation":"<p>The name of the training plan to describe.</p>"
         }
       }
@@ -41289,7 +41289,40 @@
         "ml.r8i.24xlarge",
         "ml.r8i.32xlarge",
         "ml.r8i.48xlarge",
-        "ml.r8i.96xlarge"
+        "ml.r8i.96xlarge",
+        "ml.m7i-flex.large",
+        "ml.m7i-flex.xlarge",
+        "ml.m7i-flex.2xlarge",
+        "ml.m7i-flex.4xlarge",
+        "ml.m7i-flex.8xlarge",
+        "ml.m7i-flex.12xlarge",
+        "ml.m7i-flex.16xlarge",
+        "ml.c7i-flex.xlarge",
+        "ml.c7i-flex.2xlarge",
+        "ml.c7i-flex.4xlarge",
+        "ml.c7i-flex.8xlarge",
+        "ml.c7i-flex.12xlarge",
+        "ml.c7i-flex.16xlarge",
+        "ml.m8i-flex.large",
+        "ml.m8i-flex.xlarge",
+        "ml.m8i-flex.2xlarge",
+        "ml.m8i-flex.4xlarge",
+        "ml.m8i-flex.8xlarge",
+        "ml.m8i-flex.12xlarge",
+        "ml.m8i-flex.16xlarge",
+        "ml.c8i-flex.xlarge",
+        "ml.c8i-flex.2xlarge",
+        "ml.c8i-flex.4xlarge",
+        "ml.c8i-flex.8xlarge",
+        "ml.c8i-flex.12xlarge",
+        "ml.c8i-flex.16xlarge",
+        "ml.r8i-flex.large",
+        "ml.r8i-flex.xlarge",
+        "ml.r8i-flex.2xlarge",
+        "ml.r8i-flex.4xlarge",
+        "ml.r8i-flex.8xlarge",
+        "ml.r8i-flex.12xlarge",
+        "ml.r8i-flex.16xlarge"
       ]
     },
     "ProcessingJob":{
@@ -47587,7 +47620,40 @@
         "ml.r8i.24xlarge",
         "ml.r8i.32xlarge",
         "ml.r8i.48xlarge",
-        "ml.r8i.96xlarge"
+        "ml.r8i.96xlarge",
+        "ml.m7i-flex.large",
+        "ml.m7i-flex.xlarge",
+        "ml.m7i-flex.2xlarge",
+        "ml.m7i-flex.4xlarge",
+        "ml.m7i-flex.8xlarge",
+        "ml.m7i-flex.12xlarge",
+        "ml.m7i-flex.16xlarge",
+        "ml.c7i-flex.xlarge",
+        "ml.c7i-flex.2xlarge",
+        "ml.c7i-flex.4xlarge",
+        "ml.c7i-flex.8xlarge",
+        "ml.c7i-flex.12xlarge",
+        "ml.c7i-flex.16xlarge",
+        "ml.m8i-flex.large",
+        "ml.m8i-flex.xlarge",
+        "ml.m8i-flex.2xlarge",
+        "ml.m8i-flex.4xlarge",
+        "ml.m8i-flex.8xlarge",
+        "ml.m8i-flex.12xlarge",
+        "ml.m8i-flex.16xlarge",
+        "ml.c8i-flex.xlarge",
+        "ml.c8i-flex.2xlarge",
+        "ml.c8i-flex.4xlarge",
+        "ml.c8i-flex.8xlarge",
+        "ml.c8i-flex.12xlarge",
+        "ml.c8i-flex.16xlarge",
+        "ml.r8i-flex.large",
+        "ml.r8i-flex.xlarge",
+        "ml.r8i-flex.2xlarge",
+        "ml.r8i-flex.4xlarge",
+        "ml.r8i-flex.8xlarge",
+        "ml.r8i-flex.12xlarge",
+        "ml.r8i-flex.16xlarge"
       ]
     },
     "TrainingInstanceTypes":{
@@ -48093,6 +48159,13 @@
       "max":64,
       "min":1,
       "pattern":"[a-zA-Z0-9](-*[a-zA-Z0-9]){0,63}"
+    },
+    "TrainingPlanNameOrArn":{
+      "type":"string",
+      "documentation":"<p>A training plan name, or the ARN of a training plan.</p>",
+      "max":2048,
+      "min":1,
+      "pattern":"(arn:aws[a-z\\-]*:sagemaker:[a-z0-9\\-]*:[0-9]{12}:training-plan/)?[a-zA-Z0-9](-*[a-zA-Z0-9]){0,63}"
     },
     "TrainingPlanOffering":{
       "type":"structure",

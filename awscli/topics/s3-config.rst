@@ -359,7 +359,7 @@ files to and from S3. Valid choices are:
       ``m8g``, ``r5``, ``r5a``, ``r5ad``, ``r5d``, ``r5dn``, ``r5n``, ``r6a``,
       ``r6g``, ``r6gd``, ``r6i``, ``r6id``, ``r6idn``,
       ``r6in``, ``r7a``, ``r7g``, ``r7i``, ``r7iz``, ``x1``, ``x1e``,
-      ``x2idn``, ``x2iedn``, ``x2iezn``.
+      ``x2idn``, ``x2iedn``, and ``x2iezn``.
 
   * The ``crt`` transfer client supports the requested transfer. If the host
     qualifies by instance family instead of by being of an instance type that

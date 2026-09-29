@@ -337,8 +337,8 @@
     }
   },
   {
-    "id": "json-injection-resource-url-escape",
-    "documentation": "SDKs that escape rather than reject: verify resource containing double quotes is properly escaped in policy JSON. SDKs that reject unsafe characters instead MUST NOT run this case; see json-injection-resource-url-reject. The wildcard in the resource does not select a custom policy: `aws cloudfront sign --url` keeps its canned policy for backward compatibility.",
+    "id": "json-injection-resource-url-reject",
+    "documentation": "SDKs that reject rather than escape (preferred, see Policy JSON Construction): verify a resource containing double quotes is rejected with an error. SDKs that escape unsafe characters instead MUST NOT run this case; see json-injection-resource-url-escape.",
     "input": {
       "resource": "https://example.com/file\",\"Resource\":\"*\",\"x\":\"",
       "keyPairId": "K1TESTKEY",
@@ -346,18 +346,17 @@
       "expirationDate": 1767290400
     },
     "expected": {
-      "policyJson": "{\"Statement\":[{\"Resource\":\"https://example.com/file\\\",\\\"Resource\\\":\\\"*\\\",\\\"x\\\":\\\"\",\"Condition\":{\"DateLessThan\":{\"AWS:EpochTime\":1767290400}}}]}",
-      "queryParams": {
-        "Expires": "1767290400",
-        "Key-Pair-Id": "K1TESTKEY"
-      },
-      "signature": "MNP0XV-bmzo5xrYyBU8m8mR3Yd0XdoB6UFAjxEt2R4VaNYtgvVYyIuI9hzD7KXX-GdBJUyqWG7wQIUJeBbEhPz7WzGKhlM1NqRW9EPGK-BwYjiLfDagfv-SHjOvIvNaWAhkaAkAlDJQ7qwzbogLAEsxboR9Ae47b6sSqBPxognM_",
-      "signatureAlgorithm": "RSA-SHA1"
+      "error": true,
+      "errorContains": [
+        "--url",
+        "resource"
+      ],
+      "returnCode": 252
     }
   },
   {
-    "id": "json-injection-ip-range-escape",
-    "documentation": "SDKs that escape rather than reject: verify ipRange containing double quotes is properly escaped in policy JSON. SDKs that reject unsafe characters instead MUST NOT run this case; see json-injection-ip-range-reject.",
+    "id": "json-injection-ip-range-reject",
+    "documentation": "SDKs that reject rather than escape (preferred, see Policy JSON Construction): verify an ipRange containing double quotes is rejected with an error. SDKs that escape unsafe characters instead MUST NOT run this case; see json-injection-ip-range-escape.",
     "input": {
       "resource": "https://d111111abcdef8.cloudfront.net/image.jpg",
       "keyPairId": "K1TESTKEY",
@@ -366,12 +365,11 @@
       "ipRange": "192.168.0.0/24\",\"IpAddress\":{\"AWS:SourceIp\":\"0.0.0.0/0"
     },
     "expected": {
-      "policyJson": "{\"Statement\":[{\"Resource\":\"https://d111111abcdef8.cloudfront.net/image.jpg\",\"Condition\":{\"DateLessThan\":{\"AWS:EpochTime\":1767290400},\"IpAddress\":{\"AWS:SourceIp\":\"192.168.0.0/24\\\",\\\"IpAddress\\\":{\\\"AWS:SourceIp\\\":\\\"0.0.0.0/0\"}}}]}",
-      "queryParams": {
-        "Key-Pair-Id": "K1TESTKEY"
-      },
-      "signature": "k6A6kB9E5e~r3UKIhiRgjog0nGsXv2XaytBiZFAKvGSYuQpzx3rRRp1HSfxK-kIkC0cV2EqWFBAYQeVMMmEr-MOoMGHlWzvQgkIVFeolfU1kJk15u9qLeSbKOslgYYcJQpJlonA31H52CzmhKpsE9QJQZhfmaYxJzZQWEDpnUkM_",
-      "signatureAlgorithm": "RSA-SHA1"
+      "error": true,
+      "errorContains": [
+        "--ip-address"
+      ],
+      "returnCode": 252
     }
   }
 ]

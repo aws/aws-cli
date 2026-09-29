@@ -898,6 +898,12 @@ MAIN_COMMAND_TABLE_OPS: list[
     ),
     (
         CommandTableOp.ADD,
+        'console',
+        'awscli.customizations.console',
+        'ConsoleCommand',
+    ),
+    (
+        CommandTableOp.ADD,
         'login',
         'awscli.customizations.login.login',
         'LoginCommand',

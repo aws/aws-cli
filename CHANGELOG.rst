@@ -2,6 +2,29 @@
 CHANGELOG
 =========
 
+2.37.6
+======
+
+* api-change:``opensearch``: Amazon OpenSearch Service now supports advisory pre-validations for domain config changes. Non-critical checks now surface as warnings you can acknowledge (via the new AcceptedWarnings parameter) and proceed, instead of hard-blocking. Severity is reported in change-progress and dry-run results.
+* api-change:``elasticache``: Amazon ElastiCache Serverless now supports public endpoints for Valkey caches. With the new Connection Type parameter, you can create a serverless cache accessible over the internet without any VPC configuration. Public endpoint caches require IAM authentication.
+* api-change:``glue``: Add support for Glue system-managed materialized views.
+* api-change:``identitystore``: Add support for network access controls to restrict Identity Store API and SCIM access to trusted networks, optimistic locking for users and groups via resource revisions, and resource ARNs as identifiers in requests.
+* api-change:``sesv2``: Added Filter support for ListTenants, ListEmailIdentities, and ListConfigurationSets APIs.
+* api-change:``bedrock-agent-runtime``: Amazon Bedrock Agentic Retrieve now supports the Bedrock Mantle (OpenAI Responses) endpoint via a new MantleFoundationModel configuration with an optional projectId.
+* api-change:``sagemaker``: Adds support for cpu flex type instances on SageMaker Training and Processing. Also contains minor updates to DescribeTrainingPlan to support ARN inputs.
+* enhancement:crt: Enable the CRT S3 transfer client by default on the following EC2 instance families - c6in, c6id, c6i, c6gn, c6gd, c6g, c6a, m6in, m6idn, m6id, m6i, m6a, m6gd, m6g, r6in, r6idn, r6id, r6i, r6a, r6gd, r6g
+* api-change:``securityagent``: Adds support for Azure DevOps and Bitbucket Data Center integration providers.
+* api-change:``appstream``: Add support for NVIDIA GRID driver version metadata in Workspace Applications image responses through the new ImageSoftwareMetadata field.
+* api-change:``mediatailor``: AWS Elemental MediaTailor now supports beaconing configuration on playback configurations. In Insights reporting mode, MediaTailor will now gather client side beaconing metrics. Set the reporting mode to Disabled to turn this off.
+* api-change:``ec2``: Adds the LaunchStatus field to CapacityReservation in the DescribeCapacityReservations response. This field indicates whether you can currently launch instances into an UltraServer.
+* api-change:``rds``: Adds the TargetResourceConfigurations parameter to CreateBlueGreenDeployment, letting you specify a target KMS key for each resource in the green environment.
+* api-change:``transfer``: AWS Transfer Family now supports configuring up to three custom ports on public SFTP servers, instead of the single default port 22. You can also set each port's communication mode (server-talk-first or client-talk-first) so legacy and modern SFTP clients connect reliably.
+* bugfix:crt: Default to global endpoint and sign for us-east-1 when CRT transfer client is resolved and region isn't configured
+* api-change:``elementalinference``: Adds an extendedAnalysis setting to contextual metadata outputs to control detection of people, environments, brands, and on-screen text, and updates the summaryGeneration documentation.
+* api-change:``deadline``: AWS Deadline Cloud now supports Docker software add-ons on service-managed fleets. Adds support for Open Job Description EXPR and Feature Bundle 1 job templates with typed job parameters and job, step, and parameter names up to 512 characters.
+* api-change:``inspector2``: The ListFindingAggregations API now includes Low, Informational, and Untriaged counts alongside the existing severity counts in SeverityCounts.
+
+
 2.37.5
 ======
 

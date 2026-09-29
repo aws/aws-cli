@@ -968,7 +968,7 @@ class TestSyncCommand(BaseS3TransferCommandTest):
 
 @skip_if_windows('Symlink tests only supported on mac/linux')
 class TestSyncDownloadNoFollowSymlinks(BaseS3TransferCommandTest):
-    prefix = 's3 sync '
+    prefix = 's3 sync'
 
     def setUp(self):
         super().setUp()
@@ -1022,6 +1022,26 @@ class TestSyncDownloadNoFollowSymlinks(BaseS3TransferCommandTest):
         with open(self.escaped) as f:
             self.assertEqual(f.read(), 'injected')
         self.assert_symlink_intact()
+
+    def assert_key_is_skipped(self, key):
+        self.parsed_responses[0]['Contents'][0]['Key'] = key
+        cmdline = f'{self.prefix} s3://bucket {self.dest} --no-follow-symlinks'
+        self.run_cmd(cmdline, expected_rc=0)
+
+        self.assertEqual(
+            [op[0].name for op in self.operations_called], ['ListObjectsV2']
+        )
+        with open(self.escaped) as f:
+            self.assertEqual(f.read(), 'original')
+
+    def test_skips_parent_reference_after_symlink(self):
+        self.assert_key_is_skipped('sub/../escaped.txt')
+        self.assertFalse(
+            os.path.exists(os.path.join(self.files.rootdir, 'escaped.txt'))
+        )
+
+    def test_skips_symlink_reached_through_missing_parent_reference(self):
+        self.assert_key_is_skipped('missing/../sub/escaped.txt')
 
 
 class TestSyncSourceRegion(BaseS3CLIRunnerTest):

@@ -198,16 +198,23 @@ class SignCommand(BaseSignCommand):
         'Sign a given url. Supports RSA and ECDSA private keys. '
         'The key type is auto-detected from the PEM header. A custom '
         'policy is used when --date-greater-than or --ip-address is '
-        'provided, or when --policy-resource differs from --url; otherwise '
-        'a canned policy is used. To sign a URL with wildcards, provide '
-        'the wildcard resource with --policy-resource.'
+        'provided, when the signed resource contains a ``*`` wildcard, or '
+        'when --policy-resource differs from --url; otherwise a canned '
+        'policy is used. To apply a wildcard signature to a specific URL, '
+        'provide the wildcard resource with --policy-resource.'
     )
     ARG_TABLE = [
         {
             'name': 'url',
             'no_paramfile': True,
             'required': True,
-            'help_text': 'The URL to be signed',
+            'help_text': (
+                'The URL to be signed. It must be an absolute http:// or '
+                'https:// URL without a fragment, with non-ASCII characters '
+                'and spaces percent-encoded, and without the CloudFront '
+                'signing parameters (Expires, Policy, Signature, '
+                'Key-Pair-Id, Hash-Algorithm).'
+            ),
         },
         {
             'name': 'policy-resource',
@@ -224,9 +231,6 @@ class SignCommand(BaseSignCommand):
     ] + BaseSignCommand.SIGNING_ARGS
 
     def _get_policy_resource(self, args):
-        if args.policy_resource is None:
-            # For backward compatibility --url is signed as it always was.
-            return args.url
         _validate_resource(args.url, 'url', allow_wildcards=False)
         signing_params = _SIGNING_QUERY_PARAMS.intersection(
             name for name, _ in parse_qsl(urlsplit(args.url).query)
@@ -238,6 +242,8 @@ class SignCommand(BaseSignCommand):
                 f'{", ".join(sorted(signing_params))}. Remove them before '
                 'signing the URL.'
             )
+        if args.policy_resource is None:
+            return args.url
         _validate_resource(args.policy_resource, 'policy-resource')
         # In CloudFront policies ``*`` matches zero or more characters and
         # ``?`` matches exactly one character.
@@ -260,17 +266,9 @@ class SignCommand(BaseSignCommand):
             f'Invalid value for --{arg_name}: {error}. {self.DATE_FORMAT}'
         )
 
-    def _validate_signing_args(self, args):
-        if not args.key_pair_id:
-            raise ParamValidationError(
-                'Invalid value for --key-pair-id: the CloudFront key pair ID '
-                'must not be empty.'
-            )
-
     def _requires_custom_policy(self, args, resource):
         return (
-            args.date_greater_than is not None
-            or args.ip_address is not None
+            super()._requires_custom_policy(args, resource)
             or resource != args.url
         )
 

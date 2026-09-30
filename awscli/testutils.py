@@ -417,12 +417,25 @@ class BaseAWSCommandParamsTest(unittest.TestCase):
         # future, but for now we just grab that value out of the real
         # os.environ so the patched os.environ has this data and
         # the CLI works.
+        # Pin the S3 transfer client to 'classic' so that tests relying
+        # on botocore HTTP mocking are not broken by environments where
+        # the CRT client is auto-resolved (e.g. CodeBuild instances).
+        # Tests that need the CRT client should use BaseCRTTransferClientTest
+        # or explicitly configure preferred_transfer_client = crt.
+        self._config_dir = tempfile.mkdtemp()
+        config_path = os.path.join(self._config_dir, 'config')
+        with open(config_path, 'w') as f:
+            f.write(
+                '[default]\n'
+                's3 =\n'
+                '  preferred_transfer_client = classic\n'
+            )
         self.environ = {
             'AWS_DATA_PATH': os.environ['AWS_DATA_PATH'],
             'AWS_DEFAULT_REGION': 'us-east-1',
             'AWS_ACCESS_KEY_ID': 'access_key',
             'AWS_SECRET_ACCESS_KEY': 'secret_key',
-            'AWS_CONFIG_FILE': '',
+            'AWS_CONFIG_FILE': config_path,
             'AWS_SHARED_CREDENTIALS_FILE': '',
         }
         if os.environ.get('ComSpec'):
@@ -450,6 +463,7 @@ class BaseAWSCommandParamsTest(unittest.TestCase):
         if self.make_request_is_patched:
             self.make_request_patch.stop()
             self.make_request_is_patched = False
+        shutil.rmtree(self._config_dir, ignore_errors=True)
 
     def before_call(self, params, **kwargs):
         self._store_params(params)

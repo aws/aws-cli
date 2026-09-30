@@ -417,9 +417,7 @@ class BaseAWSCommandParamsTest(unittest.TestCase):
         # future, but for now we just grab that value out of the real
         # os.environ so the patched os.environ has this data and
         # the CLI works.
-        # Pin the S3 transfer client to 'classic' so that tests relying
-        # on botocore HTTP mocking are not broken by environments where
-        # the CRT client is auto-resolved (e.g. CodeBuild instances).
+        # Pin the S3 transfer client to 'classic'.
         # Tests that need the CRT client should use BaseCRTTransferClientTest
         # or explicitly configure preferred_transfer_client = crt.
         self._config_dir = tempfile.mkdtemp()

@@ -15164,6 +15164,10 @@
           "shape":"StorageConfig",
           "documentation":"<p>The storage configuration of the notebook run, including the Amazon Simple Storage Service path and KMS key ARN.</p>"
         },
+        "notificationConfiguration":{
+          "shape":"NotificationConfig",
+          "documentation":"<p>The notification configuration of the notebook run, including the notebook run states that trigger notifications.</p>"
+        },
         "triggerSource":{
           "shape":"TriggerSource",
           "documentation":"<p>The source that triggered the notebook run.</p>"
@@ -20842,6 +20846,17 @@
         "SQL"
       ]
     },
+    "NotificationConfig":{
+      "type":"structure",
+      "required":["notifyOn"],
+      "members":{
+        "notifyOn":{
+          "shape":"NotifyOnStates",
+          "documentation":"<p>Notebook run states that trigger notifications. Ordering is not significant.</p>"
+        }
+      },
+      "documentation":"<p>The notification configuration for a notebook run in Amazon SageMaker Unified Studio.</p>"
+    },
     "NotificationOutput":{
       "type":"structure",
       "required":[
@@ -20953,6 +20968,25 @@
     "NotificationsList":{
       "type":"list",
       "member":{"shape":"NotificationOutput"}
+    },
+    "NotifyOnState":{
+      "type":"string",
+      "documentation":"<p>A notebook run state that triggers a notification in Amazon SageMaker Unified Studio.</p>",
+      "enum":[
+        "SUCCEEDED",
+        "FAILED",
+        "STOPPED",
+        "QUEUED",
+        "STARTING",
+        "RUNNING",
+        "STOPPING"
+      ]
+    },
+    "NotifyOnStates":{
+      "type":"list",
+      "member":{"shape":"NotifyOnState"},
+      "max":7,
+      "min":0
     },
     "OAuth2ClientApplication":{
       "type":"structure",
@@ -24991,6 +25025,10 @@
           "shape":"TimeoutConfig",
           "documentation":"<p>The timeout configuration for the notebook run. The default timeout is 720 minutes (12 hours) and the maximum is 1440 minutes (24 hours).</p>"
         },
+        "notificationConfiguration":{
+          "shape":"NotificationConfig",
+          "documentation":"<p>The notification configuration for the notebook run. Use this to specify the notebook run states that trigger notifications.</p>"
+        },
         "triggerSource":{
           "shape":"TriggerSource",
           "documentation":"<p>The source that triggered the notebook run.</p>"
@@ -25075,6 +25113,10 @@
         "storageConfiguration":{
           "shape":"StorageConfig",
           "documentation":"<p>The storage configuration of the notebook run, including the Amazon Simple Storage Service path and KMS key ARN.</p>"
+        },
+        "notificationConfiguration":{
+          "shape":"NotificationConfig",
+          "documentation":"<p>The notification configuration of the notebook run, including the notebook run states that trigger notifications.</p>"
         },
         "triggerSource":{
           "shape":"TriggerSource",

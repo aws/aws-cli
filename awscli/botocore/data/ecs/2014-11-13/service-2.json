@@ -3029,7 +3029,7 @@
         },
         "cpuArchitecture":{
           "shape":"ExpressCpuArchitecture",
-          "documentation":"<p>The CPU architecture that the tasks in the Express service run on. Amazon ECS applies this value to the task definition revision that it registers for the service. If you don't specify a value, the default is <code>X86_64</code>.</p> <p>Valid values:</p> <ul> <li> <p> <code>X86_64</code> - The x86 64-bit architecture.</p> </li> <li> <p> <code>ARM64</code> - The 64-bit ARM architecture.</p> </li> </ul> <p>Make sure that the container image that you specify supports the architecture that you choose. The operating system family for an Express service is always <code>LINUX</code>.</p> <p>You can't specify <code>cpuArchitecture</code> when you also specify <code>taskDefinitionArn</code>, because this value applies only to a task definition that Amazon ECS registers on your behalf.</p>"
+          "documentation":"<p>The CPU architecture that the task runs on. If you don't specify a value, the default is <code>X86_64</code>.</p> <p>Valid values:</p> <ul> <li> <p> <code>X86_64</code> - The x86 64-bit architecture.</p> </li> <li> <p> <code>ARM64</code> - The 64-bit ARM architecture.</p> </li> </ul> <p>Ensure that the container image you specify supports the architecture you choose. The operating system family for an Express service is always <code>LINUX</code>.</p> <p>You can't specify <code>cpuArchitecture</code> together with <code>taskDefinitionArn</code>.</p>"
         },
         "scalingTarget":{
           "shape":"ExpressGatewayScalingTarget",
@@ -5732,7 +5732,7 @@
         },
         "cpuArchitecture":{
           "shape":"ExpressCpuArchitecture",
-          "documentation":"<p>The CPU architecture that the tasks in this service revision run on. This is the architecture from the task definition that the service revision uses, so it reflects the default or the previously configured architecture when the request that created the revision didn't specify one.</p> <p>Valid values:</p> <ul> <li> <p> <code>X86_64</code> - The x86 64-bit architecture.</p> </li> <li> <p> <code>ARM64</code> - The 64-bit ARM architecture.</p> </li> </ul> <p>This value isn't returned when the task definition for the service revision doesn't specify a runtime platform. Because the architecture comes from each service revision's own task definition, revisions of the same service can report different architectures.</p>"
+          "documentation":"<p>The CPU architecture that the task runs on.</p> <p>Valid values:</p> <ul> <li> <p> <code>X86_64</code> - The x86 64-bit architecture.</p> </li> <li> <p> <code>ARM64</code> - The 64-bit ARM architecture.</p> </li> </ul> <p>Different service revisions can report different architectures. This value isn't returned when the service uses a customer-provided task definition that doesn't specify a CPU architecture.</p>"
         },
         "networkConfiguration":{
           "shape":"ExpressGatewayServiceNetworkConfiguration",
@@ -8542,6 +8542,10 @@
         "loadBalancers":{
           "shape":"ServiceRevisionLoadBalancers",
           "documentation":"<p>The resolved load balancer configuration for the service revision. This includes information about which target groups serve traffic and which listener rules direct traffic to them.</p>"
+        },
+        "vpcLatticeConfigurations":{
+          "shape":"ServiceRevisionVpcLatticeConfigurations",
+          "documentation":"<p>The resolved VPC Lattice configuration for the service revision. This includes information about which target groups serve traffic and which listener rules direct traffic to them.</p>"
         }
       },
       "documentation":"<p>The resolved configuration for a service revision, which contains the actual resources your service revision uses, such as which target groups serve traffic.</p>"
@@ -9740,6 +9744,24 @@
         }
       },
       "documentation":"<p>The information about the number of requested, pending, and running tasks for a service revision.</p>"
+    },
+    "ServiceRevisionVpcLatticeConfiguration":{
+      "type":"structure",
+      "members":{
+        "targetGroupArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the target group associated with the service revision.</p>"
+        },
+        "productionListenerRule":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the production listener rule or listener that directs traffic to the target group associated with the service revision.</p>"
+        }
+      },
+      "documentation":"<p>The resolved VPC Lattice configuration for a service revision. This includes information about which target groups serve traffic and which listener rules direct traffic to them.</p>"
+    },
+    "ServiceRevisionVpcLatticeConfigurations":{
+      "type":"list",
+      "member":{"shape":"ServiceRevisionVpcLatticeConfiguration"}
     },
     "ServiceRevisions":{
       "type":"list",
@@ -11266,7 +11288,7 @@
         },
         "cpuArchitecture":{
           "shape":"ExpressCpuArchitecture",
-          "documentation":"<p>The CPU architecture that the tasks in the Express service run on. Amazon ECS applies this value to the task definition revision that it registers for the service. If you don't specify a value, the service keeps the architecture that it currently runs on.</p> <p>Valid values:</p> <ul> <li> <p> <code>X86_64</code> - The x86 64-bit architecture.</p> </li> <li> <p> <code>ARM64</code> - The 64-bit ARM architecture.</p> </li> </ul> <p>Changing the architecture starts a new deployment that replaces the running tasks. Make sure that the container image that the service uses supports the architecture that you choose. The operating system family for an Express service is always <code>LINUX</code>.</p> <p>You can't specify <code>cpuArchitecture</code> when you also specify <code>taskDefinitionArn</code>, because this value applies only to a task definition that Amazon ECS registers on your behalf.</p>"
+          "documentation":"<p>The CPU architecture that the task runs on. If you don't specify a value, the service keeps its current architecture.</p> <p>Valid values:</p> <ul> <li> <p> <code>X86_64</code> - The x86 64-bit architecture.</p> </li> <li> <p> <code>ARM64</code> - The 64-bit ARM architecture.</p> </li> </ul> <p>Changing the architecture starts a new deployment that replaces the running tasks. Ensure that the container image you specify supports the architecture you choose. The operating system family for an Express service is always <code>LINUX</code>.</p> <p>You can't specify <code>cpuArchitecture</code> together with <code>taskDefinitionArn</code>.</p>"
         },
         "scalingTarget":{
           "shape":"ExpressGatewayScalingTarget",
@@ -11670,6 +11692,24 @@
       "type":"list",
       "member":{"shape":"Volume"}
     },
+    "VpcLatticeAdvancedConfiguration":{
+      "type":"structure",
+      "members":{
+        "alternateTargetGroupArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the alternate target group associated with the VPC Lattice Configuration for Amazon ECS blue/green deployments.</p>"
+        },
+        "productionListenerRule":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) that identifies the production listener rule or listener for routing production traffic.</p>"
+        },
+        "testListenerRule":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) that identifies the test listener rule or listener for routing test traffic.</p>"
+        }
+      },
+      "documentation":"<p>The advanced settings for VPC Lattice used in blue/green deployments. Specify the alternate target group and listener rules required for traffic shifting during blue/green deployments. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/blue-green-deployment-implementation.html\">Required resources for Amazon ECS blue/green deployments</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p>"
+    },
     "VpcLatticeConfiguration":{
       "type":"structure",
       "required":[
@@ -11689,7 +11729,8 @@
         "portName":{
           "shape":"String",
           "documentation":"<p>The name of the port mapping to register in the VPC Lattice target group. This is the name of the <code>portMapping</code> you defined in your task definition.</p>"
-        }
+        },
+        "advancedConfiguration":{"shape":"VpcLatticeAdvancedConfiguration"}
       },
       "documentation":"<p>The VPC Lattice configuration for your service that holds the information for the target group(s) Amazon ECS tasks will be registered to.</p>"
     },

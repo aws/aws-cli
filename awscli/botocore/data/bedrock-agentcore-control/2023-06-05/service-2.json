@@ -4683,6 +4683,31 @@
       },
       "documentation":"<p>A certificate to install in the browser or code interpreter.</p>"
     },
+    "CertificateBucketOwnerAccountId":{
+      "type":"string",
+      "pattern":"[0-9]{12}"
+    },
+    "CertificateConfiguration":{
+      "type":"structure",
+      "members":{
+        "s3":{
+          "shape":"S3CertificateConfiguration",
+          "documentation":"<p>The Amazon S3 location of the PEM-encoded private CA certificate.</p>"
+        },
+        "secretsManager":{
+          "shape":"SecretsManagerCertificateConfiguration",
+          "documentation":"<p>The Amazon Web Services Secrets Manager location of the PEM-encoded private CA certificate.</p>"
+        }
+      },
+      "documentation":"<p>A reference to a private certificate authority (CA) certificate that the gateway uses to verify TLS connections to the target endpoint. Use this when the target presents a certificate issued by a private CA that is not trusted by default. Specify exactly one certificate source. The configuration is a reference only and never contains the certificate content.</p>",
+      "union":true
+    },
+    "CertificateConfigurationList":{
+      "type":"list",
+      "member":{"shape":"CertificateConfiguration"},
+      "max":1,
+      "min":1
+    },
     "CertificateLocation":{
       "type":"structure",
       "members":{
@@ -4693,6 +4718,14 @@
       },
       "documentation":"<p>The location from which to retrieve a certificate.</p>",
       "union":true
+    },
+    "CertificateS3Uri":{
+      "type":"string",
+      "pattern":"s3://.{1,2043}"
+    },
+    "CertificateSecretArn":{
+      "type":"string",
+      "pattern":"arn:aws(-[^:]+)?:secretsmanager:[a-z0-9-]+:[0-9]{12}:secret:.+"
     },
     "Certificates":{
       "type":"list",
@@ -6858,6 +6891,10 @@
         "privateEndpoint":{
           "shape":"PrivateEndpoint",
           "documentation":"<p>The private endpoint configuration for the gateway target. Use this to connect the gateway to private resources in your VPC.</p>"
+        },
+        "certificateConfigurations":{
+          "shape":"CertificateConfigurationList",
+          "documentation":"<p>The private certificate authority (CA) configurations for the gateway target. Use this to have the gateway trust a private CA when it establishes TLS connections to the target endpoint. Provide each certificate by reference to an Amazon S3 object or an Amazon Web Services Secrets Manager secret. You can specify only one certificate authority configuration in this list.</p>"
         }
       }
     },
@@ -6937,6 +6974,10 @@
         "protocolType":{
           "shape":"TargetProtocolType",
           "documentation":"<p>The protocol type of the created gateway target.</p>"
+        },
+        "certificateConfigurations":{
+          "shape":"CertificateConfigurationList",
+          "documentation":"<p>The private certificate authority (CA) configurations for the gateway target.</p>"
         }
       }
     },
@@ -8862,10 +8903,15 @@
     "DeleteConfigurationBundleResponse":{
       "type":"structure",
       "required":[
+        "bundleArn",
         "bundleId",
         "status"
       ],
       "members":{
+        "bundleArn":{
+          "shape":"ConfigurationBundleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the deleted configuration bundle.</p>"
+        },
         "bundleId":{
           "shape":"ConfigurationBundleId",
           "documentation":"<p>The unique identifier of the deleted configuration bundle.</p>"
@@ -10766,7 +10812,7 @@
       "type":"string",
       "max":170,
       "min":1,
-      "pattern":"arn:aws:bedrock-agentcore:[a-z0-9-]+:[0-9]{12}:policy-engine\\/[a-zA-Z][a-zA-Z0-9-_]{0,99}-[a-zA-Z0-9_]{10}"
+      "pattern":"arn:aws(-[^:]+)?:bedrock-agentcore:[a-z0-9-]+:[0-9]{12}:policy-engine\\/[a-zA-Z][a-zA-Z0-9-_]{0,99}-[a-zA-Z0-9_]{10}"
     },
     "GatewayPolicyEngineConfiguration":{
       "type":"structure",
@@ -11121,6 +11167,10 @@
         "protocolType":{
           "shape":"TargetProtocolType",
           "documentation":"<p>The protocol type of the gateway target.</p>"
+        },
+        "certificateConfigurations":{
+          "shape":"CertificateConfigurationList",
+          "documentation":"<p>The private certificate authority (CA) configurations for the gateway target.</p>"
         }
       },
       "documentation":"<p>The gateway target.</p>"
@@ -12421,6 +12471,10 @@
         "protocolType":{
           "shape":"TargetProtocolType",
           "documentation":"<p>The protocol type of the gateway target.</p>"
+        },
+        "certificateConfigurations":{
+          "shape":"CertificateConfigurationList",
+          "documentation":"<p>The private certificate authority (CA) configurations for the gateway target.</p>"
         }
       }
     },
@@ -20695,6 +20749,21 @@
       "type":"string",
       "pattern":"s3://.{1,2043}"
     },
+    "S3CertificateConfiguration":{
+      "type":"structure",
+      "required":["uri"],
+      "members":{
+        "uri":{
+          "shape":"CertificateS3Uri",
+          "documentation":"<p>The URI of the Amazon S3 object that contains the PEM-encoded certificate.</p>"
+        },
+        "bucketOwnerAccountId":{
+          "shape":"CertificateBucketOwnerAccountId",
+          "documentation":"<p>The account ID of the Amazon S3 bucket owner. This ID is used for cross-account access to the bucket.</p>"
+        }
+      },
+      "documentation":"<p>A reference to a PEM-encoded private CA certificate stored as an Amazon S3 object.</p>"
+    },
     "S3Configuration":{
       "type":"structure",
       "members":{
@@ -20994,6 +21063,17 @@
         "MANAGED",
         "EXTERNAL"
       ]
+    },
+    "SecretsManagerCertificateConfiguration":{
+      "type":"structure",
+      "required":["secretArn"],
+      "members":{
+        "secretArn":{
+          "shape":"CertificateSecretArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon Web Services Secrets Manager secret that contains the PEM-encoded certificate.</p>"
+        }
+      },
+      "documentation":"<p>A reference to a PEM-encoded private CA certificate stored in an Amazon Web Services Secrets Manager secret.</p>"
     },
     "SecretsManagerLocation":{
       "type":"structure",
@@ -22980,7 +23060,8 @@
       "type":"structure",
       "required":[
         "bundleId",
-        "parentVersionIds"
+        "parentVersionIds",
+        "commitMessage"
       ],
       "members":{
         "clientToken":{
@@ -23690,6 +23771,10 @@
         "privateEndpoint":{
           "shape":"PrivateEndpoint",
           "documentation":"<p>The private endpoint configuration for the gateway target. Use this to connect the gateway to private resources in your VPC.</p>"
+        },
+        "certificateConfigurations":{
+          "shape":"CertificateConfigurationList",
+          "documentation":"<p>The private certificate authority (CA) configurations for the gateway target. Use this to have the gateway trust a private CA when it establishes TLS connections to the target endpoint. Provide each certificate by reference to an Amazon S3 object or an Amazon Web Services Secrets Manager secret. You can specify only one certificate authority configuration in this list. To remove a previously configured certificate authority, omit this field on update.</p>"
         }
       }
     },
@@ -23766,6 +23851,10 @@
         "protocolType":{
           "shape":"TargetProtocolType",
           "documentation":"<p>The protocol type of the updated gateway target.</p>"
+        },
+        "certificateConfigurations":{
+          "shape":"CertificateConfigurationList",
+          "documentation":"<p>The private certificate authority (CA) configurations for the gateway target.</p>"
         }
       }
     },

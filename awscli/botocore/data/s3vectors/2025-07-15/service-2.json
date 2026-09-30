@@ -314,6 +314,27 @@
       "documentation":"<p>List vectors in the specified vector index. To specify the vector index, you can either use both the vector bucket name and the vector index name, or use the vector index Amazon Resource Name (ARN). </p> <p> <code>ListVectors</code> operations proceed sequentially; however, for faster performance on a large number of vectors in a vector index, applications can request a parallel <code>ListVectors</code> operation by providing the <code>segmentCount</code> and <code>segmentIndex</code> parameters.</p> <dl> <dt>Permissions</dt> <dd> <p>You must have the <code>s3vectors:ListVectors</code> permission to use this operation. Additional permissions are required based on the request parameters you specify:</p> <ul> <li> <p>With only <code>s3vectors:ListVectors</code> permission, you can list vector keys when <code>returnData</code> and <code>returnMetadata</code> are both set to false or not specified..</p> </li> <li> <p>If you set <code>returnData</code> or <code>returnMetadata</code> to true, you must have both <code>s3vectors:ListVectors</code> and <code>s3vectors:GetVectors</code> permissions. The request fails with a <code>403 Forbidden</code> error if you request vector data or metadata without the <code>s3vectors:GetVectors</code> permission.</p> </li> </ul> </dd> </dl>",
       "readonly":true
     },
+    "PutVectorBucketDefaultIndexMode":{
+      "name":"PutVectorBucketDefaultIndexMode",
+      "http":{
+        "method":"POST",
+        "requestUri":"/PutVectorBucketDefaultIndexMode",
+        "responseCode":200
+      },
+      "input":{"shape":"PutVectorBucketDefaultIndexModeInput"},
+      "output":{"shape":"PutVectorBucketDefaultIndexModeOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"InternalServerException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"RequestTimeoutException"},
+        {"shape":"NotFoundException"}
+      ],
+      "documentation":"<p>Updates the default index mode for a vector bucket. The updated default applies to vector indexes that you create after the request succeeds. The operation doesn't change existing vector indexes. To specify the vector bucket, you must use either the vector bucket name or the vector bucket Amazon Resource Name (ARN).</p> <dl> <dt>Permissions</dt> <dd> <p>You must have the <code>s3vectors:PutVectorBucketDefaultIndexMode</code> permission to use this operation.</p> </dd> </dl>",
+      "idempotent":true
+    },
     "PutVectorBucketPolicy":{
       "name":"PutVectorBucketPolicy",
       "http":{
@@ -428,6 +449,27 @@
         {"shape":"ConflictException"}
       ],
       "documentation":"<p>Removes the specified user-defined tags from an Amazon S3 Vectors resource. You can pass one or more tag keys. </p> <note> <p>For a list of S3 resources that support tagging, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/tagging.html#manage-tags\">Managing tags for Amazon S3 resources</a>.</p> </note> <dl> <dt>Permissions</dt> <dd> <p>For vector buckets and vector indexes, you must have the <code>s3vectors:UntagResource</code> permission to use this operation.</p> </dd> </dl>",
+      "idempotent":true
+    },
+    "UpdateIndexMode":{
+      "name":"UpdateIndexMode",
+      "http":{
+        "method":"POST",
+        "requestUri":"/UpdateIndexMode",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateIndexModeInput"},
+      "output":{"shape":"UpdateIndexModeOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"InternalServerException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"RequestTimeoutException"},
+        {"shape":"NotFoundException"}
+      ],
+      "documentation":"<p>Updates the mode for an existing vector index. You can set the mode to <code>ENHANCED</code> for any vector index. You can set the mode to <code>CLASSIC</code> only for a vector index in a vector bucket created before September 30, 2026. This operation doesn't change the default index mode of the vector bucket or the mode of other vector indexes. Specify the vector index by using its Amazon Resource Name (ARN) or both the vector bucket name and vector index name.</p> <dl> <dt>Permissions</dt> <dd> <p>You must have the <code>s3vectors:UpdateIndexMode</code> permission to use this operation.</p> </dd> </dl>",
       "idempotent":true
     }
   },
@@ -867,6 +909,10 @@
         "encryptionConfiguration":{
           "shape":"EncryptionConfiguration",
           "documentation":"<p>The encryption configuration for a vector index. By default, if you don't specify, all new vectors in the vector index will use the encryption configuration of the vector bucket.</p>"
+        },
+        "indexMode":{
+          "shape":"IndexMode",
+          "documentation":"<p>The mode that determines how the vector index processes queries.</p> <p>Valid values:</p> <ul> <li> <p> <code>CLASSIC</code> - Applies metadata filters during the vector search.</p> </li> <li> <p> <code>ENHANCED</code> - Applies metadata filters before the vector search.</p> </li> </ul>"
         }
       },
       "documentation":"<p>The attributes of a vector index.</p>"
@@ -874,6 +920,13 @@
     "IndexArn":{
       "type":"string",
       "pattern":"arn:aws[-a-z0-9]*:s3vectors:[a-z0-9-]+:[0-9]{12}:bucket/[a-z0-9][a-z0-9-.]{1,61}[a-z0-9]/index/[a-z0-9][a-z0-9-.]{1,61}[a-z0-9]"
+    },
+    "IndexMode":{
+      "type":"string",
+      "enum":[
+        "CLASSIC",
+        "ENHANCED"
+      ]
     },
     "IndexName":{
       "type":"string",
@@ -1268,6 +1321,28 @@
       },
       "documentation":"<p>The attributes of a vector to add to a vector index.</p>"
     },
+    "PutVectorBucketDefaultIndexModeInput":{
+      "type":"structure",
+      "required":["defaultIndexMode"],
+      "members":{
+        "vectorBucketName":{
+          "shape":"VectorBucketName",
+          "documentation":"<p>The name of the vector bucket to update.</p>"
+        },
+        "vectorBucketArn":{
+          "shape":"VectorBucketArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the vector bucket to update.</p>"
+        },
+        "defaultIndexMode":{
+          "shape":"IndexMode",
+          "documentation":"<p>The default mode to assign to new vector indexes in the vector bucket. This change doesn't affect existing vector indexes.</p>"
+        }
+      }
+    },
+    "PutVectorBucketDefaultIndexModeOutput":{
+      "type":"structure",
+      "members":{}
+    },
     "PutVectorBucketPolicyInput":{
       "type":"structure",
       "required":["policy"],
@@ -1371,6 +1446,10 @@
         "filter":{
           "shape":"Document",
           "documentation":"<p>Metadata filter to apply during the query. For more information about metadata keys, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-vectors-metadata-filtering.html\">Metadata filtering</a> in the <i>Amazon S3 User Guide</i>. </p>"
+        },
+        "queryMode":{
+          "shape":"IndexMode",
+          "documentation":"<p>The mode to use to process the query. If you don't specify a query mode, the operation uses the mode that's currently configured for the vector index.</p> <p>Valid values:</p> <ul> <li> <p> <code>CLASSIC</code> - Applies metadata filters during the vector search. You can't specify <code>CLASSIC</code> for an <code>ENHANCED</code> index.</p> </li> <li> <p> <code>ENHANCED</code> - Applies metadata filters before the vector search.</p> </li> </ul>"
         },
         "returnMetadata":{
           "shape":"Boolean",
@@ -1557,6 +1636,32 @@
       "type":"structure",
       "members":{}
     },
+    "UpdateIndexModeInput":{
+      "type":"structure",
+      "required":["indexMode"],
+      "members":{
+        "vectorBucketName":{
+          "shape":"VectorBucketName",
+          "documentation":"<p>The name of the vector bucket that contains the vector index.</p>"
+        },
+        "indexName":{
+          "shape":"IndexName",
+          "documentation":"<p>The name of the vector index to update.</p>"
+        },
+        "indexArn":{
+          "shape":"IndexArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the vector index to update.</p>"
+        },
+        "indexMode":{
+          "shape":"IndexMode",
+          "documentation":"<p>The new mode for the vector index.</p> <p>Valid values:</p> <ul> <li> <p> <code>CLASSIC</code> - Applies metadata filters during the vector search. You can specify <code>CLASSIC</code> only for a vector index in a vector bucket created before September 30, 2026.</p> </li> <li> <p> <code>ENHANCED</code> - Applies metadata filters before the vector search.</p> </li> </ul>"
+        }
+      }
+    },
+    "UpdateIndexModeOutput":{
+      "type":"structure",
+      "members":{}
+    },
     "ValidationException":{
       "type":"structure",
       "required":["message"],
@@ -1615,6 +1720,10 @@
         "encryptionConfiguration":{
           "shape":"EncryptionConfiguration",
           "documentation":"<p>The encryption configuration for the vector bucket.</p>"
+        },
+        "defaultIndexMode":{
+          "shape":"IndexMode",
+          "documentation":"<p>The mode that is automatically assigned to new vector indexes in the vector bucket. Changing the default index mode doesn't affect existing vector indexes.</p>"
         }
       },
       "documentation":"<p>The attributes of a vector bucket. </p>"

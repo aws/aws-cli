@@ -10136,6 +10136,56 @@
       "min":1,
       "pattern":"[a-zA-Z0-9-]+"
     },
+    "ClusterAccountingDatabase":{
+      "type":"structure",
+      "required":[
+        "Endpoint",
+        "SecretArn"
+      ],
+      "members":{
+        "Endpoint":{
+          "shape":"ClusterAccountingDatabaseEndpoint",
+          "documentation":"<p>The hostname or endpoint of the accounting database, such as the endpoint of an Amazon RDS for MySQL or Aurora MySQL database. The database must be reachable from the subnets and security groups that you configure for the cluster.</p>"
+        },
+        "Port":{
+          "shape":"ClusterAccountingDatabasePort",
+          "documentation":"<p>The port that the accounting database listens on. The default is <code>3306</code>.</p>"
+        },
+        "Name":{
+          "shape":"ClusterAccountingDatabaseName",
+          "documentation":"<p>The name of the database schema that stores the Slurm accounting data. The default is <code>slurm_acct_db_</code> followed by the cluster ID from the cluster ARN, for example <code>slurm_acct_db_a1b2c3d4e5f6</code>.</p>"
+        },
+        "SecretArn":{
+          "shape":"ClusterAccountingDatabaseSecretArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon Web Services Secrets Manager secret that contains the user name and password for the accounting database. The database user must be able to create the schema and to read from and write to it.</p>"
+        }
+      },
+      "documentation":"<p>The external MySQL-compatible database that the Slurm accounting daemon (<code>slurmdbd</code>) connects to for a SageMaker HyperPod cluster. You provide the database credentials in an Amazon Web Services Secrets Manager secret instead of in the request.</p>"
+    },
+    "ClusterAccountingDatabaseEndpoint":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"(?=.{1,255}$)([a-zA-Z0-9]([a-zA-Z0-9\\-]{0,61}[a-zA-Z0-9])?)(\\.[a-zA-Z0-9]([a-zA-Z0-9\\-]{0,61}[a-zA-Z0-9])?)*"
+    },
+    "ClusterAccountingDatabaseName":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"[a-zA-Z0-9$_]+"
+    },
+    "ClusterAccountingDatabasePort":{
+      "type":"integer",
+      "box":true,
+      "max":65535,
+      "min":1
+    },
+    "ClusterAccountingDatabaseSecretArn":{
+      "type":"string",
+      "max":2048,
+      "min":20,
+      "pattern":"arn:aws[a-z\\-]*:secretsmanager:[a-z0-9\\-]*:[0-9]{12}:secret:.+"
+    },
     "ClusterArn":{
       "type":"string",
       "max":256,
@@ -11557,6 +11607,10 @@
         "SlurmConfigStrategy":{
           "shape":"ClusterSlurmConfigStrategy",
           "documentation":"<p>The strategy for managing partitions for the Slurm configuration. Valid values are <code>Managed</code>, <code>Overwrite</code>, and <code>Merge</code>.</p>"
+        },
+        "AccountingDatabase":{
+          "shape":"ClusterAccountingDatabase",
+          "documentation":"<p>The external database that stores the Slurm accounting data for the cluster, such as job history, associations, and usage. When you omit this field, Slurm accounting uses a database on the cluster's controller node.</p> <note> <p>This field is only supported for clusters using <code>Continuous</code> as the <code>NodeProvisioningMode</code>.</p> </note>"
         }
       },
       "documentation":"<p>The configuration settings for the Slurm orchestrator used with the SageMaker HyperPod cluster.</p>"
@@ -16804,6 +16858,32 @@
       "max":255,
       "min":1,
       "pattern":"[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\t]*"
+    },
+    "DatabaseConfigurationMetadata":{
+      "type":"structure",
+      "members":{
+        "RollbackStatus":{
+          "shape":"DatabaseConfigurationRollbackStatus",
+          "documentation":"<p>Whether HyperPod restored the previous accounting database configuration after the change failed. Valid values:</p> <ul> <li> <p> <code>NotApplicable</code>: The change failed before HyperPod modified the cluster, for example because the database could not be reached or rejected the credentials, so there was nothing to restore.</p> </li> <li> <p> <code>Reverted</code>: The change failed after it was applied, and HyperPod restored the previous configuration. The cluster continues to use the previous accounting database.</p> </li> <li> <p> <code>RevertFailed</code>: The change failed and HyperPod could not restore the previous configuration, so Slurm accounting on the cluster might not be working.</p> </li> </ul> <p>This field is omitted when the change succeeds.</p>"
+        },
+        "Advisory":{
+          "shape":"String",
+          "documentation":"<p>Additional information about a change that succeeded, such as an action to take on the cluster.</p>"
+        },
+        "FailureMessage":{
+          "shape":"String",
+          "documentation":"<p>An error message describing why the accounting database change failed, and how to resolve it.</p>"
+        }
+      },
+      "documentation":"<p>Metadata information about a change to the external Slurm accounting database of a HyperPod cluster.</p>"
+    },
+    "DatabaseConfigurationRollbackStatus":{
+      "type":"string",
+      "enum":[
+        "NotApplicable",
+        "Reverted",
+        "RevertFailed"
+      ]
     },
     "DatasetDefinition":{
       "type":"structure",
@@ -25419,6 +25499,14 @@
         "Instance":{
           "shape":"InstanceMetadata",
           "documentation":"<p>Metadata specific to instance-level events.</p>"
+        },
+        "DatabaseConfiguration":{
+          "shape":"DatabaseConfigurationMetadata",
+          "documentation":"<p>Metadata specific to events about the external Slurm accounting database of the cluster.</p>"
+        },
+        "SlurmHealth":{
+          "shape":"SlurmHealthMetadata",
+          "documentation":"<p>Metadata specific to events about the health of the Slurm components on the controller node of the cluster.</p>"
         }
       },
       "documentation":"<p>Metadata associated with a cluster event, which may include details about various resource types.</p>",
@@ -45332,6 +45420,47 @@
       "enum":[
         "All",
         "None"
+      ]
+    },
+    "SlurmHealthComponent":{
+      "type":"string",
+      "enum":["Slurmdbd"]
+    },
+    "SlurmHealthMetadata":{
+      "type":"structure",
+      "required":[
+        "Component",
+        "Status"
+      ],
+      "members":{
+        "Component":{
+          "shape":"SlurmHealthComponent",
+          "documentation":"<p>The Slurm component that the health information describes. The valid value is <code>Slurmdbd</code>, the Slurm accounting daemon.</p>"
+        },
+        "Status":{
+          "shape":"SlurmHealthStatus",
+          "documentation":"<p>The health of the component. Valid values are <code>Healthy</code> and <code>Unhealthy</code>.</p>"
+        },
+        "Reason":{
+          "shape":"SlurmHealthReason",
+          "documentation":"<p>The reason the component is unhealthy. Valid values:</p> <ul> <li> <p> <code>DaemonDown</code>: The daemon is not running, so job accounting records are not being written.</p> </li> <li> <p> <code>DaemonDisabled</code>: The daemon is running and its accounting database is responding, but the daemon is not enabled to start automatically. Job accounting stops the next time the controller node restarts.</p> </li> <li> <p> <code>DbUnreachable</code>: The daemon is running, but its accounting database did not respond. Job accounting records might not be written.</p> </li> </ul> <p>This field is omitted when the component is healthy.</p>"
+        }
+      },
+      "documentation":"<p>Metadata information about the health of a Slurm component on the controller node of a HyperPod cluster.</p>"
+    },
+    "SlurmHealthReason":{
+      "type":"string",
+      "enum":[
+        "DaemonDown",
+        "DaemonDisabled",
+        "DbUnreachable"
+      ]
+    },
+    "SlurmHealthStatus":{
+      "type":"string",
+      "enum":[
+        "Healthy",
+        "Unhealthy"
       ]
     },
     "SnsTopicArn":{

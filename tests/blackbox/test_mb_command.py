@@ -321,5 +321,5 @@ async def test_create_bucket_with_non_ascii_tag_value(aws_cli):
     req = server.requests[0]
     body_text = req.body.decode("utf-8") if req.body else ""
     assert (
-        "José" in body_text or "Jos" in body_text
+        "José" in body_text
     ), f"Expected non-ASCII tag value in body, got: {body_text[:200]}"

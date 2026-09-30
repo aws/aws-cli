@@ -12,14 +12,13 @@ from tests.blackbox.s3_assertions import (
     assert_list_buckets,
     assert_list_objects_v2,
 )
-
 from tests.blackbox.utils import (
     cli_env,
     format_requests,
     get_query_params,
     list_objects_xml,
-    run_cli,
     mock_server,
+    run_cli,
     setup_responses,
     xml_response,
 )
@@ -572,3 +571,77 @@ async def test_list_objects_ignores_bucket_region(aws_cli: str) -> None:
     req = server.requests[0]
     params = get_query_params(req)
     assert "bucket-region" not in params
+
+
+@pytest.mark.asyncio
+async def test_list_objects_with_unicode_keys(aws_cli):
+    """ls handles objects with Unicode keys (CJK, emoji)."""
+    async with mock_server() as (server, proxy):
+        setup_responses(
+            server,
+            [
+                xml_response(
+                    list_objects_xml(
+                        contents=[
+                            {
+                                "Key": "文件.txt",
+                                "Size": 100,
+                                "LastModified": "2023-01-01T00:00:00Z",
+                            },
+                            {
+                                "Key": "📄data.csv",
+                                "Size": 200,
+                                "LastModified": "2023-01-01T00:00:00Z",
+                            },
+                        ]
+                    )
+                ),
+            ],
+        )
+        stdout, stderr, rc = await run_cli(
+            aws_cli,
+            ["s3", "ls", "s3://bucket/"],
+            cli_env(proxy),
+        )
+
+    assert rc == 0, stderr.decode()
+    output = stdout.decode()
+    assert "文件.txt" in output
+    assert "📄data.csv" in output
+
+
+@pytest.mark.asyncio
+async def test_list_objects_with_url_encoded_keys(aws_cli):
+    """ls handles keys that S3 returns with URL encoding."""
+    async with mock_server() as (server, proxy):
+        setup_responses(
+            server,
+            [
+                xml_response(
+                    list_objects_xml(
+                        contents=[
+                            {
+                                "Key": "my+file.txt",
+                                "Size": 100,
+                                "LastModified": "2023-01-01T00:00:00Z",
+                            },
+                            {
+                                "Key": "path/to/my%20doc.pdf",
+                                "Size": 200,
+                                "LastModified": "2023-01-01T00:00:00Z",
+                            },
+                        ]
+                    )
+                ),
+            ],
+        )
+        stdout, stderr, rc = await run_cli(
+            aws_cli,
+            ["s3", "ls", "s3://bucket/"],
+            cli_env(proxy),
+        )
+
+    assert rc == 0, stderr.decode()
+    output = stdout.decode()
+    assert "my+file.txt" in output
+    assert "my%20doc.pdf" in output

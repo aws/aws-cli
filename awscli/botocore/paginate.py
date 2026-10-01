@@ -27,6 +27,47 @@ from botocore.utils import merge_dicts, set_value_from_jmespath
 log = logging.getLogger(__name__)
 
 
+def _is_summable_number(value):
+    # Match the numeric types the existing result_key aggregation sums.
+    # Booleans are ints in Python but must never be summed.
+    return isinstance(value, (int, float)) and not isinstance(value, bool)
+
+
+def _iter_wildcard_leaves(data, segments):
+    """Yield ``(path, value)`` for each leaf in ``data`` matching ``segments``.
+
+    ``segments`` is a tuple of path segments where ``'*'`` matches every key at
+    that level (used for map members keyed by runtime-defined names such as
+    DynamoDB index names) and any other segment is matched literally. Only
+    leaves actually present in ``data`` are yielded; a segment that is missing
+    simply produces no matches for that branch. ``path`` is the concrete tuple
+    of keys (with ``'*'`` resolved to real keys).
+    """
+    if not segments or not isinstance(data, dict):
+        return
+    seg, rest = segments[0], segments[1:]
+    keys = list(data) if seg == '*' else ([seg] if seg in data else [])
+    for key in keys:
+        value = data[key]
+        if rest:
+            for subpath, subvalue in _iter_wildcard_leaves(value, rest):
+                yield (key, *subpath), subvalue
+        else:
+            yield (key,), value
+
+
+def _walk_to_leaf_container(target, path):
+    # Walk/create nested dicts for all but the last path segment, returning the
+    # container dict and the final key. Returns (None, None) if a non-dict is
+    # encountered along the way (defensive; keep the first value in that case).
+    for key in path[:-1]:
+        nxt = target.setdefault(key, {})
+        if not isinstance(nxt, dict):
+            return None, None
+        target = nxt
+    return target, path[-1]
+
+
 class TokenEncoder:
     """Encodes dictionaries into opaque strings.
 
@@ -201,6 +242,8 @@ class PageIterator:
         starting_token,
         page_size,
         op_kwargs,
+        numeric_wildcard_paths=None,
+        non_aggregate_wildcard_paths=None,
     ):
         self._method = method
         self._input_token = input_token
@@ -214,6 +257,12 @@ class PageIterator:
         self._op_kwargs = op_kwargs
         self._resume_token = None
         self._non_aggregate_key_exprs = non_aggregate_keys
+        # Wildcard paths (tuples of segments, '*' = any map key) validated by
+        # the Paginator against the model. Numeric ones are summed across pages
+        # like non-primary numeric result keys; non-aggregate ones take the
+        # first page's value like other non_aggregate_keys.
+        self._numeric_wildcard_paths = numeric_wildcard_paths or []
+        self._non_aggregate_wildcard_paths = non_aggregate_wildcard_paths or []
         self._non_aggregate_part = {}
         self._token_encoder = TokenEncoder()
         self._token_decoder = TokenDecoder()
@@ -362,9 +411,32 @@ class PageIterator:
         non_aggregate_keys = {}
         for expression in self._non_aggregate_key_exprs:
             result = expression.search(response)
+            if result is None and '.' in expression.expression:
+                # A nested non_aggregate path (e.g.
+                # ConsumedCapacity.TableName) whose leaf is missing is only
+                # skipped when its parent object is itself absent from the
+                # response. Recording it then would fabricate a phantom parent
+                # ({"TableName": null}) implying the member is present (e.g.
+                # ConsumedCapacity when capacity wasn't requested). If the
+                # parent IS present, a genuinely-null leaf is still surfaced as
+                # null, preserving historical behavior for other services
+                # (e.g. kinesis DescribeStream's StreamDescription.KeyId on an
+                # unencrypted stream).
+                parent_path = expression.expression.rsplit('.', 1)[0]
+                if jmespath.compile(parent_path).search(response) is None:
+                    continue
             set_value_from_jmespath(
                 non_aggregate_keys, expression.expression, result
             )
+        # Wildcard non-aggregate paths: record each concrete matched leaf's
+        # first-page value, mirroring how plain non_aggregate_keys behave.
+        for segments in self._non_aggregate_wildcard_paths:
+            for path, value in _iter_wildcard_leaves(response, segments):
+                container, leaf = _walk_to_leaf_container(
+                    non_aggregate_keys, path
+                )
+                if container is not None:
+                    container[leaf] = value
         self._non_aggregate_part = non_aggregate_keys
 
     def _inject_starting_params(self, op_kwargs):
@@ -417,6 +489,13 @@ class PageIterator:
                 # items the server evaluated, even if the client is truncating
                 # due to a StartingToken.
                 empty_value = sample
+            elif sample is None:
+                # The secondary key isn't present on this page. Don't write it
+                # back: for a nested path (e.g. ConsumedCapacity.CapacityUnits)
+                # set_value_from_jmespath would fabricate a phantom parent
+                # object ({"CapacityUnits": null}) that then makes the member
+                # look present to later aggregation/non_aggregate handling.
+                continue
             else:
                 empty_value = None
             set_value_from_jmespath(parsed, token.expression, empty_value)
@@ -522,6 +601,24 @@ class PageIterator:
                         result_expression.expression,
                         existing_value + result_value,
                     )
+            # Wildcard numeric result keys: sum each concrete matched leaf
+            # (e.g. per index name) into the running total. A leaf missing on a
+            # page contributes 0 (it just isn't yielded); the first page a leaf
+            # appears on initializes it.
+            for segments in self._numeric_wildcard_paths:
+                for path, value in _iter_wildcard_leaves(page, segments):
+                    if not _is_summable_number(value):
+                        continue
+                    container, leaf = _walk_to_leaf_container(
+                        complete_result, path
+                    )
+                    if container is None:
+                        continue
+                    # Absent leaves default to 0, so the first page a leaf
+                    # appears on initializes it and every later page adds to it.
+                    current = container.get(leaf, 0)
+                    if _is_summable_number(current):
+                        container[leaf] = current + value
         merge_dicts(complete_result, self.non_aggregate_part)
         if self.resume_token is not None:
             complete_result['NextToken'] = self.resume_token
@@ -614,9 +711,54 @@ class Paginator:
 
     def _get_non_aggregate_keys(self, config):
         keys = []
+        self._non_aggregate_wildcard_paths = []
         for key in config.get('non_aggregate_keys', []):
+            segments = key.split('.')
+            if '*' in segments:
+                # As in _get_result_keys, only honor a wildcard the model
+                # confirms sits under a map; never fall through to
+                # jmespath.compile where '*' becomes a list projection.
+                if self._is_map_wildcard_path(
+                    segments, require_numeric_leaf=False
+                ):
+                    self._non_aggregate_wildcard_paths.append(tuple(segments))
+                else:
+                    log.debug(
+                        "Ignoring non_aggregate_key %r: it contains a wildcard "
+                        "but does not resolve to a map member in the service "
+                        "model.",
+                        key,
+                    )
+                continue
             keys.append(jmespath.compile(key))
         return keys
+
+    def _is_map_wildcard_path(self, segments, require_numeric_leaf):
+        # Gate wildcard ('*') paths on the model: every '*' must sit directly
+        # under a map member, and (for numeric result keys) the leaf must be a
+        # numeric type. Anything else falls back to the pre-existing code path.
+        numeric_types = {'integer', 'long', 'float', 'double'}
+        try:
+            shape = self._model.output_shape
+            for segment in segments:
+                if shape is None:
+                    return False
+                if segment == '*':
+                    if shape.type_name != 'map':
+                        return False
+                    shape = shape.value
+                else:
+                    if shape.type_name != 'structure':
+                        return False
+                    shape = shape.members.get(segment)
+            if shape is None:
+                return False
+            if require_numeric_leaf and shape.type_name not in numeric_types:
+                return False
+            return True
+        except AttributeError:
+            # Model/shape not resolvable (e.g. custom models): fall back.
+            return False
 
     def _get_output_tokens(self, config):
         output = []
@@ -639,12 +781,46 @@ class Paginator:
             return jmespath.compile(more_results)
 
     def _get_result_keys(self, config):
+        self._numeric_wildcard_paths = []
         result_key = config.get('result_key')
         if result_key is not None:
             if not isinstance(result_key, list):
                 result_key = [result_key]
-            result_key = [jmespath.compile(rk) for rk in result_key]
-            return result_key
+            compiled = []
+            for rk in result_key:
+                segments = rk.split('.')
+                if '*' in segments:
+                    # A wildcard is only honored when the model confirms the
+                    # parent is a map and the leaf is numeric. Otherwise we
+                    # must NOT fall through to jmespath.compile: there '*'
+                    # becomes a list projection that build_full_result would
+                    # concatenate across pages (silently wrong). Drop it.
+                    if self._is_map_wildcard_path(
+                        segments, require_numeric_leaf=True
+                    ):
+                        self._numeric_wildcard_paths.append(tuple(segments))
+                    else:
+                        log.debug(
+                            "Ignoring result_key %r: it contains a wildcard "
+                            "but does not resolve to a numeric map leaf in the "
+                            "service model.",
+                            rk,
+                        )
+                    continue
+                compiled.append(jmespath.compile(rk))
+            if not compiled:
+                # __iter__ uses result_keys[0] as the primary key driving
+                # iteration and --max-items truncation; an all-wildcard config
+                # would otherwise raise an opaque IndexError there.
+                raise PaginationError(
+                    message=(
+                        f"Invalid paginator configuration: result_key "
+                        f"{result_key!r} yields no non-wildcard primary key. "
+                        f"The first result_key must be a plain "
+                        f"(non-wildcard) path."
+                    )
+                )
+            return compiled
 
     def _get_limit_key(self, config):
         return config.get('limit_key')
@@ -670,6 +846,8 @@ class Paginator:
             page_params['StartingToken'],
             page_params['PageSize'],
             kwargs,
+            self._numeric_wildcard_paths,
+            self._non_aggregate_wildcard_paths,
         )
 
     def _extract_paging_params(self, kwargs):

@@ -239,6 +239,12 @@ class TestOutputStreamFactory(unittest.TestCase):
         except IOError:
             self.fail('Should not raise IOError')
 
+    def test_propagates_error_when_pager_process_fails_to_start(self):
+        self.popen.side_effect = OSError('No such file or directory')
+        with self.assertRaises(OSError):
+            with self.stream_factory.get_pager_stream():
+                pass
+
 
 class BaseShapeTest(unittest.TestCase):
     def setUp(self):

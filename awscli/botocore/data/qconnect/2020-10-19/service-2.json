@@ -1815,6 +1815,10 @@
         "aiAgentId":{
           "shape":"UuidWithQualifier",
           "documentation":"<p>The ID of the AI Agent to be configured.</p>"
+        },
+        "enabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether the AI Agent configured for this AI Agent type is enabled. When this value is omitted or set to true, the configured AI Agent runs; when set to false, the AI Agent ID is retained but no AI Agent runs for the AI Agent type. Setting this value to false is currently supported only for the <code>ANSWER_RECOMMENDATION</code> AI Agent type; other requests to set it to false are rejected with a validation error.</p>"
         }
       },
       "documentation":"<p>A type that specifies the AI Agent ID configuration data when mapping an AI Agents to be used for an AI Agent type on a session or assistant.</p>"
@@ -2726,7 +2730,7 @@
     "AssistantAssociationIdList":{
       "type":"list",
       "member":{"shape":"UuidOrArn"},
-      "max":1,
+      "max":5,
       "min":1
     },
     "AssistantAssociationInputData":{
@@ -4805,6 +4809,10 @@
         "notesChunkData":{
           "shape":"NotesChunkDataDetails",
           "documentation":"<p>Details about notes chunk data.</p>"
+        },
+        "proactiveRecommendationData":{
+          "shape":"ProactiveRecommendationDataDetails",
+          "documentation":"<p>Details about a proactive recommendation, including the token used to retrieve its chunked response with <code>GetNextMessage</code>.</p>"
         }
       },
       "documentation":"<p>Details about the data.</p>",
@@ -9190,6 +9198,17 @@
         "LOW"
       ]
     },
+    "ProactiveRecommendationDataDetails":{
+      "type":"structure",
+      "required":["nextMessageToken"],
+      "members":{
+        "nextMessageToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token used to retrieve the next message in the proactive recommendation. Pass this token in a <code>GetNextMessage</code> request to continue receiving the chunked proactive response. Each response returns the next token to use until the chunked response is complete.</p>"
+        }
+      },
+      "documentation":"<p>Details about a proactive recommendation, including the token used to retrieve its chunked response with <code>GetNextMessage</code>.</p>"
+    },
     "Probability":{
       "type":"float",
       "box":true,
@@ -9622,7 +9641,7 @@
     },
     "QuickResponseContent":{
       "type":"string",
-      "max":1024,
+      "max":4000,
       "min":1,
       "sensitive":true
     },
@@ -10231,7 +10250,8 @@
         "BLOCKED_CASE_SUMMARIZATION_CHUNK",
         "SUGGESTED_MESSAGE",
         "NOTES_CHUNK",
-        "BLOCKED_NOTES_CHUNK"
+        "BLOCKED_NOTES_CHUNK",
+        "PROACTIVE_RECOMMENDATION"
       ]
     },
     "ReferenceType":{
@@ -10515,6 +10535,52 @@
       "member":{"shape":"RetrievalFilterConfiguration"},
       "min":2
     },
+    "RetrieveError":{
+      "type":"structure",
+      "required":[
+        "associationId",
+        "code",
+        "message"
+      ],
+      "members":{
+        "associationId":{
+          "shape":"Uuid",
+          "documentation":"<p>The identifier of the assistant association whose knowledge base retrieval failed.</p>"
+        },
+        "code":{
+          "shape":"RetrieveErrorCode",
+          "documentation":"<p>The error code that categorizes the retrieval failure for the assistant association.</p>"
+        },
+        "message":{
+          "shape":"RetrieveErrorMessageString",
+          "documentation":"<p>A human-readable description of the retrieval failure for the assistant association.</p>"
+        }
+      },
+      "documentation":"<p>An error returned for a single assistant association whose knowledge base retrieval failed during a <code>Retrieve</code> operation. The overall operation still succeeds and returns the results from the associations that were queried successfully.</p>"
+    },
+    "RetrieveErrorCode":{
+      "type":"string",
+      "documentation":"<p>The error code that categorizes a per-association retrieval failure.</p> <ul> <li> <p> <code>ACCESS_DENIED</code> – you do not have permission to retrieve from the knowledge base for the assistant association.</p> </li> <li> <p> <code>RESOURCE_NOT_FOUND</code> – the assistant association or its knowledge base could not be found.</p> </li> <li> <p> <code>VALIDATION_ERROR</code> – the retrieval request or the knowledge base configuration for the assistant association was not valid.</p> </li> <li> <p> <code>THROTTLED</code> – the retrieval request for the assistant association was throttled.</p> </li> <li> <p> <code>DEPENDENCY_FAILED</code> – a dependency required to query the assistant association failed.</p> </li> <li> <p> <code>INTERNAL_SERVER_ERROR</code> – an internal error occurred while querying the assistant association.</p> </li> </ul>",
+      "enum":[
+        "ACCESS_DENIED",
+        "RESOURCE_NOT_FOUND",
+        "VALIDATION_ERROR",
+        "THROTTLED",
+        "DEPENDENCY_FAILED",
+        "INTERNAL_SERVER_ERROR"
+      ]
+    },
+    "RetrieveErrorList":{
+      "type":"list",
+      "member":{"shape":"RetrieveError"},
+      "max":5,
+      "min":0
+    },
+    "RetrieveErrorMessageString":{
+      "type":"string",
+      "max":1024,
+      "min":0
+    },
     "RetrieveRequest":{
       "type":"structure",
       "required":[
@@ -10546,6 +10612,10 @@
         "results":{
           "shape":"RetrieveResultList",
           "documentation":"<p>The results of the content retrieval operation.</p>"
+        },
+        "errors":{
+          "shape":"RetrieveErrorList",
+          "documentation":"<p>The per-association errors returned when one or more knowledge base associations fail during a <code>Retrieve</code> operation that spans multiple assistant associations. The overall operation still succeeds and returns the results from the associations that were queried successfully. This list contains one entry for each association that failed, up to a maximum of five.</p>"
         }
       }
     },

@@ -40,7 +40,7 @@
         {"shape":"ClientException"},
         {"shape":"ServerException"}
       ],
-      "documentation":"<p>Cancels up to 50 jobs in an Batch job queue. This is a bulk version of <a>CancelJob</a>. Jobs that are in a <code>SUBMITTED</code>, <code>PENDING</code>, or <code>RUNNABLE</code> state are cancelled and the job status is updated to <code>FAILED</code>.</p> <note> <p>A <code>PENDING</code> job is cancelled after all dependency jobs are completed. Therefore, it might take longer than expected to cancel a job in <code>PENDING</code> status.</p> <p>When you try to cancel an array parent job in <code>PENDING</code>, Batch attempts to cancel all child jobs. The array parent job is cancelled when all child jobs are completed.</p> </note> <p>Jobs that progressed to the <code>STARTING</code> or <code>RUNNING</code> state aren't cancelled. These jobs must be terminated with the <a>TerminateJob</a> or <a>TerminateJobs</a> operation.</p> <p>Batch reports the result for each job individually in the response. Jobs that were processed successfully are reported in the <code>successful</code> list. Jobs that encountered errors are reported in the <code>errors</code> list. The response returns an HTTP status code of <code>200</code> even when some jobs encountered errors, so check the <code>errors</code> list. Jobs that can't be found are treated as successfully processed.</p>"
+      "documentation":"<p>Cancels up to 50 jobs in an Batch job queue. This is a bulk version of <a>CancelJob</a>. Jobs that are in a <code>SUBMITTED</code>, <code>PENDING</code>, or <code>RUNNABLE</code> state are cancelled and the job status is updated to <code>FAILED</code>.</p> <note> <p>A <code>PENDING</code> job is cancelled after all dependency jobs are completed. Therefore, it might take longer than expected to cancel a job in <code>PENDING</code> status.</p> <p>When you try to cancel an array parent job in <code>PENDING</code>, Batch attempts to cancel all child jobs. The array parent job is cancelled when all child jobs are completed.</p> </note> <p>Jobs that progressed to the <code>STARTING</code> or <code>RUNNING</code> state aren't cancelled. These jobs must be terminated with the <a>TerminateJob</a> or <a>TerminateJobs</a> operation.</p> <p>Batch reports the result for each job individually in the response. Jobs that were processed successfully are reported in the <code>successful</code> list. Jobs that encountered errors are reported in the <code>errors</code> list. The response returns an HTTP status code of <code>200</code> even when some jobs encountered errors, so check the <code>errors</code> list. Jobs that can't be found are treated as successfully processed.</p> <important> <p>This operation requires <code>batch:CancelJob</code> permission for each job in the request. There is no separate <code>batch:CancelJobs</code> IAM action. If a caller's IAM policy grants <code>batch:CancelJob</code>, they can use both the singular <a>CancelJob</a> and bulk <code>CancelJobs</code> operations.</p> </important>"
     },
     "CreateComputeEnvironment":{
       "name":"CreateComputeEnvironment",
@@ -544,7 +544,7 @@
         {"shape":"ClientException"},
         {"shape":"ServerException"}
       ],
-      "documentation":"<p>Terminates up to 50 jobs in a job queue. This is a bulk version of <a>TerminateJob</a>. Jobs that are in the <code>STARTING</code> or <code>RUNNING</code> state are terminated, which causes them to transition to <code>FAILED</code>. Jobs that have not progressed to the <code>STARTING</code> state are cancelled.</p> <p>Batch reports the result for each job individually in the response. Jobs that were processed successfully are reported in the <code>successful</code> list. Jobs that encountered errors are reported in the <code>errors</code> list. The response returns an HTTP status code of <code>200</code> even when some jobs encountered errors, so check the <code>errors</code> list. Jobs that can't be found are treated as successfully processed.</p>"
+      "documentation":"<p>Terminates up to 50 jobs in a job queue. This is a bulk version of <a>TerminateJob</a>. Jobs that are in the <code>STARTING</code> or <code>RUNNING</code> state are terminated, which causes them to transition to <code>FAILED</code>. Jobs that have not progressed to the <code>STARTING</code> state are cancelled.</p> <p>Batch reports the result for each job individually in the response. Jobs that were processed successfully are reported in the <code>successful</code> list. Jobs that encountered errors are reported in the <code>errors</code> list. The response returns an HTTP status code of <code>200</code> even when some jobs encountered errors, so check the <code>errors</code> list. Jobs that can't be found are treated as successfully processed.</p> <important> <p>This operation requires <code>batch:TerminateJob</code> permission for each job in the request. There is no separate <code>batch:TerminateJobs</code> IAM action. If a caller's IAM policy grants <code>batch:TerminateJob</code>, they can use both the singular <a>TerminateJob</a> and bulk <code>TerminateJobs</code> operations.</p> </important>"
     },
     "TerminateServiceJob":{
       "name":"TerminateServiceJob",
@@ -572,7 +572,7 @@
         {"shape":"ClientException"},
         {"shape":"ServerException"}
       ],
-      "documentation":"<p>Terminates up to 50 service jobs in a job queue. This is a bulk version of <a>TerminateServiceJob</a>.</p> <p>Batch reports the result for each service job individually in the response. Service jobs that were processed successfully are reported in the <code>successful</code> list. Service jobs that encountered errors are reported in the <code>errors</code> list. The response returns an HTTP status code of <code>200</code> even when some service jobs encountered errors, so check the <code>errors</code> list. Service jobs that can't be found are treated as successfully processed.</p>"
+      "documentation":"<p>Terminates up to 50 service jobs in a job queue. This is a bulk version of <a>TerminateServiceJob</a>.</p> <p>Batch reports the result for each service job individually in the response. Service jobs that were processed successfully are reported in the <code>successful</code> list. Service jobs that encountered errors are reported in the <code>errors</code> list. The response returns an HTTP status code of <code>200</code> even when some service jobs encountered errors, so check the <code>errors</code> list. Service jobs that can't be found are treated as successfully processed.</p> <important> <p>This operation requires <code>batch:TerminateServiceJob</code> permission for each service job in the request. There is no separate <code>batch:TerminateServiceJobs</code> IAM action. If a caller's IAM policy grants <code>batch:TerminateServiceJob</code>, they can use both the singular <code>TerminateServiceJob</code> and bulk <code>TerminateServiceJobs</code> operations.</p> </important>"
     },
     "UntagResource":{
       "name":"UntagResource",
@@ -1733,7 +1733,7 @@
         },
         "eksConfiguration":{
           "shape":"EksConfiguration",
-          "documentation":"<p>The details for the Amazon EKS cluster that supports the compute environment.</p> <note> <p>To create a compute environment that uses EKS resources, the caller must have permissions to call <code>eks:DescribeCluster</code>.</p> </note>"
+          "documentation":"<p>The details for the Amazon EKS cluster that supports the compute environment.</p> <note> <p>To create a compute environment that uses EKS resources, the caller must have permissions to call <code>eks:DescribeCluster</code>. Additional Amazon EKS permissions are required for Batch to manage an access entry on the cluster; see <a href=\"https://docs.aws.amazon.com/batch/latest/userguide/eks-access-entries.html\">Amazon EKS access entry authentication</a> in the <i>Batch User Guide</i>.</p> </note>"
         },
         "context":{
           "shape":"String",
@@ -2770,6 +2770,38 @@
       },
       "documentation":"<p>The properties for a task definition that describes the container and volume definitions of an Amazon ECS task. You can specify which Docker images to use, the required resources, and other configurations related to launching the task definition through an Amazon ECS service or task.</p>"
     },
+    "EksAccessEntry":{
+      "type":"structure",
+      "required":["desiredState"],
+      "members":{
+        "desiredState":{
+          "shape":"EksAccessEntryDesiredState",
+          "documentation":"<p>The desired access entry state for the compute environment. Valid values:</p> <dl> <dt>ENABLED</dt> <dd> <p>Batch manages an access entry on the cluster for the compute environment.</p> </dd> <dt>DISABLED</dt> <dd> <p>Batch deletes the Batch-managed access entry for the cluster. This value is rejected if the cluster's <code>authenticationMode</code> is <code>API</code>, because such a cluster doesn't support the <code>aws-auth</code> ConfigMap.</p> </dd> <dt>INHERIT_FROM_CLUSTER</dt> <dd> <p>Batch defers to the cluster's current access entry <code>status</code>. On a cluster whose authentication mode is <code>API</code>, Batch creates and manages an access entry. On a cluster whose authentication mode is <code>API_AND_CONFIG_MAP</code> or <code>CONFIG_MAP</code>, Batch neither adds nor removes an access entry.</p> </dd> </dl>"
+        },
+        "status":{
+          "shape":"EksAccessEntryStatus",
+          "documentation":"<p>The observed state of the access entry on the cluster. <code>ACTIVE</code> means that an access entry for the compute environment exists on the cluster and takes precedence over the <code>aws-auth</code> ConfigMap. <code>INACTIVE</code> means that no Batch-managed access entry is present. This is a read-only field returned by <code>DescribeComputeEnvironments</code>.</p>"
+        }
+      },
+      "documentation":"<p>Configures whether Batch manages an Amazon EKS access entry on the cluster for the compute environment. For information on how the fields interact with the cluster's <code>authenticationMode</code> and with other compute environments that share the cluster, see <a href=\"https://docs.aws.amazon.com/batch/latest/userguide/eks-access-entries.html\">Amazon EKS access entry authentication</a> in the <i>Batch User Guide</i>.</p> <note> <p>Setting <code>desiredState=ENABLED</code> on a single compute environment does not guarantee that Batch creates an access entry, and setting <code>desiredState=DISABLED</code> on a single compute environment does not guarantee that Batch deletes one. Batch compares the <code>desiredState</code> across all compute environments that target the same cluster. The Batch-managed access entry is created only when all compute environments have <code>desiredState=ENABLED</code>, and deleted only when all have <code>desiredState=DISABLED</code>. If you have multiple compute environments on the same cluster, set <code>desiredState</code> consistently across all of them to avoid uncertainty. For more information, see <a href=\"https://docs.aws.amazon.com/batch/latest/userguide/eks-access-entries.html#eks-access-entries-reconciliation\">Reconciling desiredState across compute environments</a> in the <i>Batch User Guide</i>.</p> </note>"
+    },
+    "EksAccessEntryDesiredState":{
+      "type":"string",
+      "documentation":"<p>The desired state for the Batch-managed Amazon EKS access entry on a compute environment.</p>",
+      "enum":[
+        "ENABLED",
+        "DISABLED",
+        "INHERIT_FROM_CLUSTER"
+      ]
+    },
+    "EksAccessEntryStatus":{
+      "type":"string",
+      "documentation":"<p>The observed state of the Batch-managed Amazon EKS access entry on a compute environment.</p>",
+      "enum":[
+        "ACTIVE",
+        "INACTIVE"
+      ]
+    },
     "EksAnnotationsMap":{
       "type":"map",
       "key":{"shape":"String"},
@@ -2861,9 +2893,23 @@
         "kubernetesNamespace":{
           "shape":"String",
           "documentation":"<p>The namespace of the Amazon EKS cluster. Batch manages pods in this namespace. The value can't left empty or null. It must be fewer than 64 characters long, can't be set to <code>default</code>, can't start with \"<code>kube-</code>,\" and must match this regular expression: <code>^[a-z0-9]([-a-z0-9]*[a-z0-9])?$</code>. For more information, see <a href=\"https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/\">Namespaces</a> in the Kubernetes documentation.</p>"
+        },
+        "accessEntry":{
+          "shape":"EksAccessEntry",
+          "documentation":"<p>The Batch-managed Amazon EKS access entry for the compute environment. Set <code>desiredState</code> to declare whether Batch manages an access entry on the cluster. In a <code>DescribeComputeEnvironments</code> response, <code>desiredState</code> is the value that Batch recorded for the compute environment and <code>status</code> is the observed state of the access entry on the cluster. To change the access entry on an existing compute environment, use <a href=\"https://docs.aws.amazon.com/batch/latest/APIReference/API_EksConfigurationUpdate.html#Batch-Type-EksConfigurationUpdate-accessEntry\"> <code>EksConfigurationUpdate.accessEntry</code> </a>.</p> <p>Whether the entry is provisioned on the cluster depends on the cluster's <code>authenticationMode</code> and the <code>desiredState</code> recorded for each Batch compute environment targeting the cluster. For more information, see <a href=\"https://docs.aws.amazon.com/batch/latest/userguide/eks-access-entries.html\">Amazon EKS access entry authentication</a> in the <i>Batch User Guide</i>.</p> <p>If you don't specify this field, Batch doesn't record a <code>desiredState</code> for the compute environment and <code>DescribeComputeEnvironments</code> doesn't return one. For the purpose of provisioning the access entry, Batch behaves as it does for <code>INHERIT_FROM_CLUSTER</code>.</p>"
         }
       },
       "documentation":"<p>Configuration for the Amazon EKS cluster that supports the Batch compute environment. The cluster must exist before the compute environment can be created.</p>"
+    },
+    "EksConfigurationUpdate":{
+      "type":"structure",
+      "members":{
+        "accessEntry":{
+          "shape":"EksAccessEntry",
+          "documentation":"<p>The updated access entry configuration for the compute environment. Set <code>desiredState</code> to declare whether Batch will manage an access entry on the cluster. For the accepted values, see <a href=\"https://docs.aws.amazon.com/batch/latest/APIReference/API_EksAccessEntry.html\"> <code>EksAccessEntry</code> </a>.</p>"
+        }
+      },
+      "documentation":"<p>An object that represents the attributes of an Batch compute environment's Amazon EKS configuration that can be updated. Currently <code>accessEntry</code> is the only attribute that you can change after the compute environment is created. For more information, see <a href=\"https://docs.aws.amazon.com/batch/latest/userguide/eks-access-entries.html\">Amazon EKS access entry authentication</a> in the <i>Batch User Guide</i>.</p>"
     },
     "EksContainer":{
       "type":"structure",
@@ -6350,7 +6396,7 @@
         },
         "resourceRequirements":{
           "shape":"ResourceRequirements",
-          "documentation":"<p>The type and amount of a resource to assign to a container. The only supported resource is a GPU.</p>"
+          "documentation":"<p>The type and amount of a resource to assign to a container. The supported resources include <code>GPU</code>, <code>MEMORY</code>, and <code>VCPU</code>.</p>"
         },
         "secrets":{
           "shape":"SecretList",
@@ -6668,6 +6714,10 @@
         "ecsSettings":{
           "shape":"EcsSettings",
           "documentation":"<p>The Amazon ECS settings for the compute environment. These settings control CloudWatch Container Insights collection for the compute environment.</p>"
+        },
+        "eksConfiguration":{
+          "shape":"EksConfigurationUpdate",
+          "documentation":"<p>Updates the Amazon EKS configuration for the compute environment. Only specify this parameter if the compute environment's <code>containerOrchestrationType</code> is <code>EKS</code>. Currently, the <code>accessEntry</code> setting is the only Amazon EKS configuration that you can change after the compute environment is created. For more information, see <a href=\"https://docs.aws.amazon.com/batch/latest/userguide/eks-access-entries.html\">Amazon EKS access entry authentication</a> in the <i>Batch User Guide</i>.</p>"
         }
       },
       "documentation":"<p>Contains the parameters for <code>UpdateComputeEnvironment</code>.</p>"

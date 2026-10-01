@@ -251,6 +251,42 @@
       "documentation":"<p>Lists the billing views available for a given time period. </p> <p>Every Amazon Web Services account has a unique <code>PRIMARY</code> billing view that represents the billing data available by default. Accounts that use Billing Conductor also have <code>BILLING_GROUP</code> billing views representing pro forma costs associated with each created billing group.</p>",
       "readonly":true
     },
+    "ListBusinessSupportAccountCharges":{
+      "name":"ListBusinessSupportAccountCharges",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListBusinessSupportAccountChargesRequest"},
+      "output":{"shape":"ListBusinessSupportAccountChargesResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Returns Business Support charges broken down at the linked account level for a given billing month.</p>",
+      "readonly":true
+    },
+    "ListBusinessSupportSubscriptionHistory":{
+      "name":"ListBusinessSupportSubscriptionHistory",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListBusinessSupportSubscriptionHistoryRequest"},
+      "output":{"shape":"ListBusinessSupportSubscriptionHistoryResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Returns the history of Business Support subscription contracts across accounts.</p>",
+      "readonly":true
+    },
     "ListEnterpriseSupportLinkedAccountCharges":{
       "name":"ListEnterpriseSupportLinkedAccountCharges",
       "http":{
@@ -892,6 +928,197 @@
     "Boolean":{
       "type":"boolean",
       "box":true
+    },
+    "BusinessSupportAccountCharge":{
+      "type":"structure",
+      "required":[
+        "accountId",
+        "supportPlanName",
+        "totalCharge",
+        "totalUsageBasis"
+      ],
+      "members":{
+        "accountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The linked account ID.</p>"
+        },
+        "supportPlanName":{
+          "shape":"String",
+          "documentation":"<p>The Support plan name for this account. Valid values: <code>AWSSupportBusiness</code> (Business Support plan), <code>AWSSupportDeveloper</code> (Developer Support plan), <code>AWSSupportEssential</code> (Basic Support plan).</p>"
+        },
+        "totalCharge":{
+          "shape":"String",
+          "documentation":"<p>The total Business Support charge amount for this account in the billing month.</p>"
+        },
+        "totalUsageBasis":{
+          "shape":"String",
+          "documentation":"<p>The total Support-eligible spend used as the basis for calculating the Business Support charge for this account.</p>"
+        },
+        "tierCharges":{
+          "shape":"BusinessSupportTierChargeList",
+          "documentation":"<p>The tier-level charges that make up the total Business Support charge for this account. Each tier represents a spend range with its own rate.</p>"
+        },
+        "supportDiscount":{
+          "shape":"BusinessSupportDiscount",
+          "documentation":"<p>The discount applied to the Business Support charge for this account, if any. This field is absent when no discount applies.</p>"
+        },
+        "supportEligibleSpendByService":{
+          "shape":"BusinessSupportServiceSpendList",
+          "documentation":"<p>The Support-eligible spend broken down by contributing service for this account.</p>"
+        }
+      },
+      "documentation":"<p>Business Support charges for a linked account.</p>"
+    },
+    "BusinessSupportAccountChargeList":{
+      "type":"list",
+      "member":{"shape":"BusinessSupportAccountCharge"},
+      "documentation":"<p>A list of Business Support account charges.</p>",
+      "max":100,
+      "min":0
+    },
+    "BusinessSupportBillingMonth":{
+      "type":"string",
+      "documentation":"<p>A billing month in YYYY-MM format. Supports the current month (estimated charges) and past months (finalized charges).</p>",
+      "pattern":"\\d{4}-(0[1-9]|1[0-2])"
+    },
+    "BusinessSupportDiscount":{
+      "type":"structure",
+      "members":{
+        "discountAmount":{
+          "shape":"String",
+          "documentation":"<p>The discount amount applied to the Business Support charge. This value is negative, representing a reduction in the charge.</p>"
+        },
+        "discountPercentage":{
+          "shape":"String",
+          "documentation":"<p>The discount percentage applied to the Business Support charge, expressed as a decimal (for example, <code>0.12</code> for a 12% discount).</p>"
+        },
+        "discountType":{
+          "shape":"String",
+          "documentation":"<p>The type of discount applied. Valid values: <code>Distributor_Discount</code> (a discount applied through a distributor arrangement), <code>SPP_Discount</code> (a discount applied through the Solution Provider Program).</p>"
+        },
+        "discountSource":{
+          "shape":"String",
+          "documentation":"<p>The source or program through which the discount was applied.</p>"
+        }
+      },
+      "documentation":"<p>A discount applied to a Business Support account charge, including the discount amount, percentage, type, and source.</p>"
+    },
+    "BusinessSupportServiceSpend":{
+      "type":"structure",
+      "required":[
+        "contributingService",
+        "itemType",
+        "chargeAmount",
+        "currency"
+      ],
+      "members":{
+        "contributingService":{
+          "shape":"String",
+          "documentation":"<p>The name of the Amazon Web Services service contributing to the Support-eligible spend.</p>"
+        },
+        "itemType":{
+          "shape":"String",
+          "documentation":"<p>The type of the line item. Valid values: <code>Usage</code>.</p>"
+        },
+        "description":{
+          "shape":"String",
+          "documentation":"<p>A human-readable description of the service spend entry.</p>"
+        },
+        "chargeAmount":{
+          "shape":"String",
+          "documentation":"<p>The Support-eligible spend amount for this service.</p>"
+        },
+        "currency":{
+          "shape":"String",
+          "documentation":"<p>The ISO 4217 currency code for the charge amount (for example, <code>USD</code>).</p>"
+        }
+      },
+      "documentation":"<p>A service-level spend entry contributing to Business Support eligible spend.</p>"
+    },
+    "BusinessSupportServiceSpendList":{
+      "type":"list",
+      "member":{"shape":"BusinessSupportServiceSpend"},
+      "documentation":"<p>A list of Business Support service spend entries.</p>",
+      "max":50,
+      "min":0
+    },
+    "BusinessSupportSubscriptionContract":{
+      "type":"structure",
+      "required":[
+        "accountId",
+        "planName",
+        "contractStartDate",
+        "contractEndDate"
+      ],
+      "members":{
+        "accountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The account ID associated with this subscription contract.</p>"
+        },
+        "planName":{
+          "shape":"String",
+          "documentation":"<p>The name of the Support plan for this subscription contract. Valid values: <code>AWSSupportBusiness</code> (Business Support plan), <code>AWSSupportDeveloper</code> (Developer Support plan), <code>AWSSupportEssential</code> (Basic Support plan).</p>"
+        },
+        "contractStartDate":{
+          "shape":"Timestamp",
+          "documentation":"<p>The start date of the subscription contract.</p>"
+        },
+        "contractEndDate":{
+          "shape":"Timestamp",
+          "documentation":"<p>The end date of the subscription contract.</p>"
+        }
+      },
+      "documentation":"<p>A Business Support subscription contract for an account.</p>"
+    },
+    "BusinessSupportSubscriptionContractList":{
+      "type":"list",
+      "member":{"shape":"BusinessSupportSubscriptionContract"},
+      "documentation":"<p>A list of Business Support subscription contracts.</p>",
+      "max":1000,
+      "min":0
+    },
+    "BusinessSupportTierCharge":{
+      "type":"structure",
+      "required":[
+        "tierDescription",
+        "tierRate",
+        "usageSlice",
+        "tierCharge"
+      ],
+      "members":{
+        "tierDescription":{
+          "shape":"String",
+          "documentation":"<p>A human-readable description of the pricing tier, including the spend range and percentage rate applied.</p>"
+        },
+        "tierRate":{
+          "shape":"String",
+          "documentation":"<p>The percentage rate applied to Support-eligible spend within this pricing tier.</p>"
+        },
+        "usageSlice":{
+          "shape":"String",
+          "documentation":"<p>The amount of Support-eligible spend that falls within this pricing tier.</p>"
+        },
+        "tierCharge":{
+          "shape":"String",
+          "documentation":"<p>The Business Support charge amount calculated for this pricing tier.</p>"
+        },
+        "chargePeriodStartDate":{
+          "shape":"Timestamp",
+          "documentation":"<p>The start date of the charge period for this tier charge.</p>"
+        },
+        "chargePeriodEndDate":{
+          "shape":"Timestamp",
+          "documentation":"<p>The end date of the charge period for this tier charge.</p>"
+        }
+      },
+      "documentation":"<p>A tier-level charge within a Business Support pricing plan. Business Support uses tiered pricing where different percentage rates apply to different ranges of Support-eligible spend.</p>"
+    },
+    "BusinessSupportTierChargeList":{
+      "type":"list",
+      "member":{"shape":"BusinessSupportTierCharge"},
+      "documentation":"<p>A list of Business Support tier charges.</p>",
+      "max":20,
+      "min":0
     },
     "ChargeAccount":{
       "type":"structure",
@@ -1563,7 +1790,7 @@
         },
         "isEstimated":{
           "shape":"Boolean",
-          "documentation":"<p>When true, the Support charge amount is estimated. When false, the Support charge amount is finalized.</p>"
+          "documentation":"<p>Specifies whether the Support charge amount is estimated. When false, the charge amount is finalized.</p>"
         },
         "billDate":{
           "shape":"Timestamp",
@@ -1872,6 +2099,128 @@
         }
       }
     },
+    "ListBusinessSupportAccountChargesRequest":{
+      "type":"structure",
+      "required":["billingMonth"],
+      "members":{
+        "billingMonth":{
+          "shape":"BusinessSupportBillingMonth",
+          "documentation":"<p>The billing month to retrieve Business Support charges for, in YYYY-MM format. You can request the current month (charges will be estimated) or a past month (charges will be finalized).</p>"
+        },
+        "accountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The linked account ID to filter results to a specific account. If you don't specify a value, the response includes charges for all linked accounts.</p>"
+        },
+        "maxResults":{
+          "shape":"ListBusinessSupportAccountChargesRequestMaxResultsInteger",
+          "documentation":"<p>The maximum number of results to return per page. Default is 100.</p>"
+        },
+        "nextToken":{
+          "shape":"PageToken",
+          "documentation":"<p>The pagination token for the next page of results.</p>"
+        }
+      },
+      "documentation":"<p>Contains the billing month and optional filters used to retrieve Business Support charges broken down by linked account.</p>"
+    },
+    "ListBusinessSupportAccountChargesRequestMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "ListBusinessSupportAccountChargesResponse":{
+      "type":"structure",
+      "required":[
+        "billingMonth",
+        "isEstimated",
+        "totalSupportCharge",
+        "totalSupportEligibleSpend",
+        "accountCount",
+        "accountCharges"
+      ],
+      "members":{
+        "billingMonth":{
+          "shape":"BusinessSupportBillingMonth",
+          "documentation":"<p>The billing month for the returned charges, in YYYY-MM format.</p>"
+        },
+        "isEstimated":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether the Support charge amount is estimated. When false, the charge amount is finalized.</p>"
+        },
+        "totalSupportCharge":{
+          "shape":"String",
+          "documentation":"<p>The total Business Support charge amount for all accounts in the billing month.</p>"
+        },
+        "totalSupportEligibleSpend":{
+          "shape":"String",
+          "documentation":"<p>The total Support-eligible spend from all accounts in the billing month. This includes eligible spend from usage of Amazon Web Services.</p>"
+        },
+        "accountCount":{
+          "shape":"Integer",
+          "documentation":"<p>The total number of linked accounts with Business Support charges in the billing month.</p>"
+        },
+        "accountCharges":{
+          "shape":"BusinessSupportAccountChargeList",
+          "documentation":"<p>The list of Business Support charges per linked account.</p>"
+        },
+        "nextToken":{
+          "shape":"PageToken",
+          "documentation":"<p>The pagination token for the next page of results.</p>"
+        }
+      },
+      "documentation":"<p>Contains the Business Support charges broken down by linked account for the specified billing month, along with account and spend totals.</p>"
+    },
+    "ListBusinessSupportSubscriptionHistoryRequest":{
+      "type":"structure",
+      "members":{
+        "billingMonth":{
+          "shape":"BusinessSupportBillingMonth",
+          "documentation":"<p>The billing month to retrieve subscription contracts for, in YYYY-MM format. If you don't specify a value, defaults to the current month.</p>"
+        },
+        "accountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The account ID to filter results to a specific account. If you don't specify a value, the response includes subscription history for all accounts.</p>"
+        },
+        "startDate":{
+          "shape":"Timestamp",
+          "documentation":"<p>The start date to filter subscription contracts from.</p>"
+        },
+        "endDate":{
+          "shape":"Timestamp",
+          "documentation":"<p>The end date to filter subscription contracts to.</p>"
+        },
+        "maxResults":{
+          "shape":"ListBusinessSupportSubscriptionHistoryRequestMaxResultsInteger",
+          "documentation":"<p>The maximum number of results to return per page. Default is 100.</p>"
+        },
+        "nextToken":{
+          "shape":"PageToken",
+          "documentation":"<p>The pagination token for the next page of results.</p>"
+        }
+      },
+      "documentation":"<p>Contains the optional filters used to retrieve the history of Business Support subscription contracts across accounts.</p>"
+    },
+    "ListBusinessSupportSubscriptionHistoryRequestMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "ListBusinessSupportSubscriptionHistoryResponse":{
+      "type":"structure",
+      "required":["subscriptionContracts"],
+      "members":{
+        "subscriptionContracts":{
+          "shape":"BusinessSupportSubscriptionContractList",
+          "documentation":"<p>The list of Business Support subscription contracts.</p>"
+        },
+        "nextToken":{
+          "shape":"PageToken",
+          "documentation":"<p>The pagination token for the next page of results.</p>"
+        }
+      },
+      "documentation":"<p>Contains the list of Business Support subscription contracts that match the request filters.</p>"
+    },
     "ListEnterpriseSupportLinkedAccountChargesRequest":{
       "type":"structure",
       "required":["billingMonth"],
@@ -1882,11 +2231,11 @@
         },
         "accountId":{
           "shape":"AccountId",
-          "documentation":"<p>An optional linked account ID to filter results to a specific account.</p>"
+          "documentation":"<p>The linked account ID to filter results to a specific account. If you don't specify a value, the response includes charges for all linked accounts.</p>"
         },
         "maxResults":{
           "shape":"ListEnterpriseSupportLinkedAccountChargesRequestMaxResultsInteger",
-          "documentation":"<p>The maximum number of results to return per page.</p>"
+          "documentation":"<p>The maximum number of results to return per page. Default is 100.</p>"
         },
         "nextToken":{
           "shape":"PageToken",

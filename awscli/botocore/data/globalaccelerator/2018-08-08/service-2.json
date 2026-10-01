@@ -1702,7 +1702,7 @@
         },
         "FlowLogsS3Prefix":{
           "shape":"GenericString",
-          "documentation":"<p>The prefix for the location in the Amazon S3 bucket for the flow logs. Attribute is required if <code>FlowLogsEnabled</code> is <code>true</code>.</p> <p>If you don’t specify a prefix, the flow logs are stored in the root of the bucket. If you specify slash (/) for the S3 bucket prefix, the log file bucket folder structure will include a double slash (//), like the following:</p> <p>DOC-EXAMPLE-BUCKET//AWSLogs/aws_account_id</p>"
+          "documentation":"<p>The prefix for the location in the Amazon S3 bucket for the flow logs. Attribute is required if <code>FlowLogsEnabled</code> is <code>true</code>.</p> <p>If you specify slash (/) for the S3 bucket prefix, the log file bucket folder structure will include a double slash (//), like the following:</p> <p>DOC-EXAMPLE-BUCKET//AWSLogs/aws_account_id</p>"
         }
       },
       "documentation":"<p>Attributes of a custom routing accelerator.</p>"
@@ -2463,6 +2463,26 @@
       "type":"string",
       "max":45
     },
+    "IpAddressDetail":{
+      "type":"structure",
+      "members":{
+        "IpAddress":{
+          "shape":"IpAddress",
+          "documentation":"<p>The static IP address.</p>"
+        },
+        "NetworkZone":{
+          "shape":"NetworkZone",
+          "documentation":"<p>The network zone that the specified IP address is located on.</p>"
+        }
+      },
+      "documentation":"<p>Detailed information for the IP addresses assigned to the Global Accelerator.</p>"
+    },
+    "IpAddressDetails":{
+      "type":"list",
+      "member":{"shape":"IpAddressDetail"},
+      "max":2,
+      "min":0
+    },
     "IpAddressFamily":{
       "type":"string",
       "enum":[
@@ -2499,6 +2519,10 @@
         "IpAddressFamily":{
           "shape":"IpAddressFamily",
           "documentation":"<p>The types of IP addresses included in this IP set. </p>"
+        },
+        "IpAddressDetails":{
+          "shape":"IpAddressDetails",
+          "documentation":"<p>The array of IP addresses in the IP address set, with detailed information about the IP addresses. An IP address set can have a maximum of two IP addresses.</p>"
         }
       },
       "documentation":"<p>A complex type for the set of IP addresses for an accelerator.</p>"
@@ -2921,6 +2945,10 @@
       "type":"integer",
       "max":100,
       "min":1
+    },
+    "NetworkZone":{
+      "type":"string",
+      "max":24
     },
     "PortMapping":{
       "type":"structure",
@@ -3353,7 +3381,7 @@
         },
         "FlowLogsS3Prefix":{
           "shape":"GenericString",
-          "documentation":"<p>Update the prefix for the location in the Amazon S3 bucket for the flow logs. Attribute is required if <code>FlowLogsEnabled</code> is <code>true</code>. </p> <p>If you don’t specify a prefix, the flow logs are stored in the root of the bucket. If you specify slash (/) for the S3 bucket prefix, the log file bucket folder structure will include a double slash (//), like the following:</p> <p>DOC-EXAMPLE-BUCKET//AWSLogs/aws_account_id</p>"
+          "documentation":"<p>Update the prefix for the location in the Amazon S3 bucket for the flow logs. Attribute is required if <code>FlowLogsEnabled</code> is <code>true</code>. </p> <p>If you specify slash (/) for the S3 bucket prefix, the log file bucket folder structure will include a double slash (//), like the following:</p> <p>DOC-EXAMPLE-BUCKET//AWSLogs/aws_account_id</p>"
         }
       }
     },

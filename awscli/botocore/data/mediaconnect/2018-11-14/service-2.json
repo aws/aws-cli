@@ -6980,6 +6980,11 @@
       "type":"string",
       "pattern":"(?:[0-9]{1,3}\\.){3}[0-9]{1,3}/([0-9]|[12][0-9]|3[0-2])"
     },
+    "PublicTlsEncryptionConfiguration":{
+      "type":"structure",
+      "members":{},
+      "documentation":"<p>The TLS encryption configuration for destinations that present a certificate from a publicly trusted certificate authority. This type does not require any additional settings.</p>"
+    },
     "PurchaseOfferingRequest":{
       "type":"structure",
       "required":[
@@ -8480,7 +8485,8 @@
         "RTP",
         "RIST",
         "SRT_CALLER",
-        "SRT_LISTENER"
+        "SRT_LISTENER",
+        "RTMP_PUSH"
       ]
     },
     "RouterOutputProtocolConfiguration":{
@@ -8493,6 +8499,10 @@
         "SrtListener":{
           "shape":"SrtListenerRouterOutputConfiguration",
           "locationName":"srtListener"
+        },
+        "RtmpPush":{
+          "shape":"RtmpPushRouterOutputConfiguration",
+          "locationName":"rtmpPush"
         },
         "SrtCaller":{
           "shape":"SrtCallerRouterOutputConfiguration",
@@ -8594,6 +8604,49 @@
     "RoutingScopeList":{
       "type":"list",
       "member":{"shape":"RoutingScope"}
+    },
+    "RtmpPushRouterOutputConfiguration":{
+      "type":"structure",
+      "required":[
+        "DestinationAddress",
+        "DestinationPort",
+        "ApplicationName",
+        "StreamName"
+      ],
+      "members":{
+        "DestinationAddress":{
+          "shape":"String",
+          "documentation":"<p>The IP address or hostname of the destination RTMP server that the router output pushes the stream to. Provide only the server address; specify the application and stream names separately.</p>",
+          "locationName":"destinationAddress"
+        },
+        "DestinationPort":{
+          "shape":"RtmpPushRouterOutputConfigurationDestinationPortInteger",
+          "documentation":"<p>The TCP port on the destination RTMP server. For RTMP, valid values range from <code>1024</code> to <code>65535</code>. For RTMPS (RTMP over TLS), valid values are <code>443</code> or <code>1024</code> to <code>65535</code>. RTMP typically uses port <code>1935</code>, and RTMPS typically uses port <code>443</code>.</p>",
+          "locationName":"destinationPort"
+        },
+        "ApplicationName":{
+          "shape":"String",
+          "documentation":"<p>The name of the RTMP application on the destination server. Together with the stream name, the application name forms the RTMP URL path, in the pattern <code>rtmp://destinationAddress/applicationName/streamName</code>.</p>",
+          "locationName":"applicationName"
+        },
+        "StreamName":{
+          "shape":"String",
+          "documentation":"<p>The name of the RTMP stream that the output publishes to the destination application. The stream name forms the final segment of the RTMP URL path.</p>",
+          "locationName":"streamName"
+        },
+        "TlsEncryption":{
+          "shape":"TlsEncryption",
+          "documentation":"<p>The TLS encryption settings for the output. When you specify these settings, the output uses RTMPS (RTMP over TLS) to establish a secure, encrypted connection to the destination server.</p>",
+          "locationName":"tlsEncryption"
+        }
+      },
+      "documentation":"<p>The configuration settings for a router output that pushes a stream to a destination using the RTMP (Real-Time Messaging Protocol) protocol, or RTMPS (RTMP over TLS) when TLS encryption is specified. These settings include the destination address and port, the application and stream names, and optional TLS encryption configuration.</p>"
+    },
+    "RtmpPushRouterOutputConfigurationDestinationPortInteger":{
+      "type":"integer",
+      "box":true,
+      "max":65535,
+      "min":443
     },
     "RtpRouterInputConfiguration":{
       "type":"structure",
@@ -9676,6 +9729,39 @@
         "ENABLED",
         "DISABLED"
       ]
+    },
+    "TlsEncryption":{
+      "type":"structure",
+      "required":["EncryptionConfiguration"],
+      "members":{
+        "EncryptionType":{
+          "shape":"TlsEncryptionType",
+          "documentation":"<p>The type of TLS encryption to use for the connection.</p>",
+          "locationName":"encryptionType"
+        },
+        "EncryptionConfiguration":{
+          "shape":"TlsEncryptionConfiguration",
+          "documentation":"<p>The configuration settings for the specified TLS encryption type.</p>",
+          "locationName":"encryptionConfiguration"
+        }
+      },
+      "documentation":"<p>The Transport Layer Security (TLS) encryption settings used to establish a secure connection to a destination.</p>"
+    },
+    "TlsEncryptionConfiguration":{
+      "type":"structure",
+      "members":{
+        "Public":{
+          "shape":"PublicTlsEncryptionConfiguration",
+          "documentation":"<p>The TLS encryption configuration that validates the destination by using a publicly trusted certificate authority.</p>",
+          "locationName":"public"
+        }
+      },
+      "documentation":"<p>The configuration settings for TLS encryption.</p>",
+      "union":true
+    },
+    "TlsEncryptionType":{
+      "type":"string",
+      "enum":["PUBLIC"]
     },
     "TooManyRequestsException":{
       "type":"structure",

@@ -1779,6 +1779,11 @@
       },
       "documentation":"<p>Contains details about the accepted inbound connection.</p>"
     },
+    "AcceptedWarningsList":{
+      "type":"list",
+      "member":{"shape":"String"},
+      "max":25
+    },
     "AccessDeniedException":{
       "type":"structure",
       "members":{},
@@ -2882,6 +2887,14 @@
         "InitiatedBy":{
           "shape":"InitiatedBy",
           "documentation":"<p>The IAM principal who initiated the configuration change.</p>"
+        },
+        "ValidationFailures":{
+          "shape":"ValidationFailures",
+          "documentation":"<p>The validation failures that occurred as a result of the configuration change.</p>"
+        },
+        "AcceptedWarnings":{
+          "shape":"AcceptedWarningsList",
+          "documentation":"<p>The list of advisory warning codes that were accepted for the configuration change.</p>"
         }
       },
       "documentation":"<p>The progress details of a specific domain configuration change.</p>"
@@ -5270,7 +5283,11 @@
         },
         "ValidationFailures":{
           "shape":"ValidationFailures",
-          "documentation":"<p>Any validation failures that occurred as a result of the dry run.</p>"
+          "documentation":"<p>The validation failures that occurred as a result of the dry run.</p>"
+        },
+        "AcceptedWarnings":{
+          "shape":"AcceptedWarningsList",
+          "documentation":"<p>The list of advisory warning codes that were accepted for the configuration change.</p>"
         }
       },
       "documentation":"<p>Information about the progress of a pre-upgrade dry run analysis.</p>"
@@ -9713,6 +9730,10 @@
         "EngineMode":{
           "shape":"EngineMode",
           "documentation":"<p>The engine mode for the domain. The engine mode can't be changed after the domain is created. For valid values, see <code>EngineMode</code>.</p>"
+        },
+        "AcceptedWarnings":{
+          "shape":"AcceptedWarningsList",
+          "documentation":"<p>A list of advisory warning codes to accept for this configuration change. By default, any advisory warning blocks the change. Include the code of each warning you want to accept so the change can proceed. You can find warning codes in the<code>ValidationFailures</code> list returned by <code>DescribeDomainChangeProgress</code>and <code>DescribeDryRunProgress</code>. Critical validation failures cannot be accepted and always block the change. If you omit this parameter or pass an empty list, all warnings block the change. For more information, see <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/managedomains-configuration-changes#validation-check\">Validating a domain update</a>.</p>"
         }
       },
       "documentation":"<p>Container for the request parameters to the <code>UpdateDomain</code> operation.</p>"
@@ -10160,9 +10181,20 @@
         "Message":{
           "shape":"String",
           "documentation":"<p>A message corresponding to the failure.</p>"
+        },
+        "Severity":{
+          "shape":"ValidationFailureSeverity",
+          "documentation":"<p>The severity of the validation failure.</p>"
         }
       },
       "documentation":"<p>A validation failure that occurred as the result of a pre-update validation check (verbose dry run) on a domain.</p>"
+    },
+    "ValidationFailureSeverity":{
+      "type":"string",
+      "enum":[
+        "Critical",
+        "Warning"
+      ]
     },
     "ValidationFailures":{
       "type":"list",

@@ -4277,6 +4277,10 @@
         "TargetStorageThroughput":{
           "shape":"IntegerOptional",
           "documentation":"<p>The storage throughput value for the green DB instance.</p> <p>This setting applies only to the <code>gp3</code> storage type.</p> <p>This setting doesn't apply to Amazon Aurora blue/green deployments.</p>"
+        },
+        "TargetResourceConfigurations":{
+          "shape":"TargetResourceConfigurationList",
+          "documentation":"<p>Specifies resource-level configuration overrides for the green environment.</p> <p>Each entry identifies a resource in the blue environment by its Amazon Resource Name (ARN). It defines the desired configuration for the corresponding resource in the green environment. Any resource that you don't include in this parameter retains the same configuration as its counterpart in the blue environment.</p> <p>Use this parameter when one or more resources in the green environment require a different configuration than what they have in the blue environment.</p> <p>Constraints:</p> <ul> <li> <p>You can't specify the same <code>SourceArn</code> in more than one entry.</p> </li> </ul>"
         }
       }
     },
@@ -5758,6 +5762,12 @@
         "inactive",
         "inactive-except-restore"
       ]
+    },
+    "DBAndClusterArn":{
+      "type":"string",
+      "max":255,
+      "min":39,
+      "pattern":"arn:aws[a-z-]*:rds(-[a-z]+)?:[a-z0-9-]*:[0-9]{12}:(cluster|db):[a-zA-Z][a-zA-Z0-9-]{0,62}"
     },
     "DBCluster":{
       "type":"structure",
@@ -17658,6 +17668,30 @@
     "TargetList":{
       "type":"list",
       "member":{"shape":"DBProxyTarget"}
+    },
+    "TargetResourceConfiguration":{
+      "type":"structure",
+      "required":["SourceArn"],
+      "members":{
+        "SourceArn":{
+          "shape":"DBAndClusterArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the DB cluster or DB instance in the blue environment to which this configuration applies.</p>"
+        },
+        "TargetKmsKeyId":{
+          "shape":"KmsKeyIdOrArn",
+          "documentation":"<p>The Amazon Web Services KMS key identifier for encryption of the corresponding resource in the green environment.</p> <p>The Amazon Web Services KMS key identifier is the key ARN, key ID, alias ARN, or alias name for the KMS key.</p> <p>Specify this setting in either of the following cases:</p> <ul> <li> <p>You want the green resource to use a different KMS key than the blue resource.</p> </li> <li> <p>The blue resource is unencrypted and you want to encrypt the green resource.</p> </li> </ul> <p>For Aurora, encryption applies at the DB cluster level. Specify a DB cluster ARN in <code>SourceArn</code>. All DB instances in that cluster use the same KMS key.</p> <p>For RDS, encryption applies at the DB instance level. Specify a DB instance ARN in <code>SourceArn</code>. To encrypt read replicas, include a separate entry for each one. Each entry can specify a different KMS key.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for a single resource in the green environment of a blue/green deployment.</p> <p>Use <code>SourceArn</code> to identify a resource in the blue environment. Amazon RDS creates the corresponding resource in the green environment using this configuration.</p> <p>This data type is a request parameter of the <code>CreateBlueGreenDeployment</code> operation.</p>"
+    },
+    "TargetResourceConfigurationList":{
+      "type":"list",
+      "member":{
+        "shape":"TargetResourceConfiguration",
+        "locationName":"TargetResourceConfiguration"
+      },
+      "max":20,
+      "min":0
     },
     "TargetRole":{
       "type":"string",

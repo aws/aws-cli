@@ -3054,6 +3054,10 @@
         "IncrementalExportSpecification":{
           "shape":"IncrementalExportSpecification",
           "documentation":"<p>Optional object containing the parameters specific to an incremental export.</p>"
+        },
+        "FilterSpecification":{
+          "shape":"FilterSpecification",
+          "documentation":"<p>The filter criteria applied to the export. When present, only items that match the specified key conditions and filter expressions are included in the export output.</p>"
         }
       },
       "documentation":"<p>Represents the properties of the exported table.</p>"
@@ -3160,6 +3164,10 @@
         "IncrementalExportSpecification":{
           "shape":"IncrementalExportSpecification",
           "documentation":"<p>Optional object containing the parameters specific to an incremental export.</p>"
+        },
+        "FilterSpecification":{
+          "shape":"FilterSpecification",
+          "documentation":"<p>The criteria used to filter which items are included in the point-in-time export. When you specify this parameter, only items that match the key conditions and filter expressions are exported.</p>"
         }
       }
     },
@@ -3220,6 +3228,32 @@
       "type":"map",
       "key":{"shape":"AttributeName"},
       "value":{"shape":"Condition"}
+    },
+    "FilterSpecification":{
+      "type":"structure",
+      "members":{
+        "FilterExpression":{
+          "shape":"ConditionExpression",
+          "documentation":"<p>A condition that filters which items are included in the export. This parameter uses the same syntax as <code>FilterExpression</code> in <code>Query</code> and <code>Scan</code>. If you don't provide <code>KeyConditionExpression</code>, this expression can also reference key attributes. If you don't specify this parameter, all items are included in the export.</p>"
+        },
+        "ProjectionExpression":{
+          "shape":"ProjectionExpression",
+          "documentation":"<p>The attributes you want to retrieve for items included in the export. Separate attribute names in the expression with commas. If you don't specify this parameter, all attributes are returned.</p>"
+        },
+        "KeyConditionExpression":{
+          "shape":"KeyExpression",
+          "documentation":"<p>A condition expression that filters items by key values. The expression must test equality on a single partition key value and can optionally compare a sort key value. This parameter uses the same syntax as <code>KeyConditionExpression</code> in <code>Query</code>. When you provide this parameter, <code>FilterExpression</code> can only reference non-key attributes. If you don't specify this parameter, all items are eligible for export.</p>"
+        },
+        "ExpressionAttributeNames":{
+          "shape":"ExpressionAttributeNameMap",
+          "documentation":"<p>One or more substitution tokens for attribute names in an expression. For more information, see <a href=\"https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Expressions.ExpressionAttributeNames.html\">Expression Attribute Names</a> in the Amazon DynamoDB Developer Guide.</p>"
+        },
+        "ExpressionAttributeValues":{
+          "shape":"ExpressionAttributeValueMap",
+          "documentation":"<p>One or more values that can be substituted in an expression. For more information, see <a href=\"https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Expressions.ExpressionAttributeValues.html\">Expression Attribute Values</a> in the Amazon DynamoDB Developer Guide.</p>"
+        }
+      },
+      "documentation":"<p>Contains the filter criteria used to limit which items are included in an export. If you don't include this parameter, all items and attributes are exported.</p>"
     },
     "Get":{
       "type":"structure",

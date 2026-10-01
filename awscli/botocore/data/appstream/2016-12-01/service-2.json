@@ -1612,7 +1612,7 @@
     },
     "AgentSoftwareVersion":{
       "type":"string",
-      "documentation":"The image type is the type of AppStream image resource.",
+      "documentation":"<p>The image type is the type of AppStream image resource.</p>",
       "enum":[
         "CURRENT_LATEST",
         "ALWAYS_LATEST"
@@ -1840,11 +1840,13 @@
     "AppDisplayName":{
       "type":"string",
       "max":100,
+      "min":0,
       "pattern":"^[a-zA-Z0-9][a-zA-Z0-9_. -]{0,99}$"
     },
     "AppName":{
       "type":"string",
       "max":100,
+      "min":0,
       "pattern":"^[a-zA-Z0-9][a-zA-Z0-9_.-]{0,99}$"
     },
     "AppVisibility":{
@@ -4507,6 +4509,7 @@
     "FilePath":{
       "type":"string",
       "max":32767,
+      "min":0,
       "sensitive":true
     },
     "Filter":{
@@ -4872,6 +4875,10 @@
         "ImageType":{
           "shape":"ImageType",
           "documentation":"<p>The type of the image. Images created through AMI import have type \"custom\", while WorkSpaces Applications provided images have type \"native\". Custom images support additional instance types including GeneralPurpose, MemoryOptimized, ComputeOptimized, and Accelerated instance families.</p>"
+        },
+        "ImageSoftwareMetadata":{
+          "shape":"ImageSoftwareMetadata",
+          "documentation":"<p>The software metadata associated with the image.</p>"
         }
       },
       "documentation":"<p>Describes an image.</p>"
@@ -5011,11 +5018,13 @@
     "ImageImportDescription":{
       "type":"string",
       "max":256,
+      "min":0,
       "pattern":"^[a-zA-Z0-9_.() -]+$"
     },
     "ImageImportDisplayName":{
       "type":"string",
       "max":100,
+      "min":0,
       "pattern":"^[a-zA-Z0-9_.() -]+$"
     },
     "ImageList":{
@@ -5042,6 +5051,16 @@
         "TRUE",
         "FALSE"
       ]
+    },
+    "ImageSoftwareMetadata":{
+      "type":"structure",
+      "members":{
+        "nvidiaGridDriverVersion":{
+          "shape":"NvidiaGridDriverVersion",
+          "documentation":"<p>The version of the NVIDIA GRID driver installed on the image. This field is empty if no NVIDIA GRID driver is installed.</p>"
+        }
+      },
+      "documentation":"<p>Describes the software metadata for an image, such as the installed NVIDIA GRID driver version.</p>"
     },
     "ImageState":{
       "type":"string",
@@ -5082,7 +5101,7 @@
     },
     "ImageType":{
       "type":"string",
-      "documentation":"The image type is the type of AppStream image resource.",
+      "documentation":"<p>The image type is the type of AppStream image resource.</p>",
       "enum":[
         "CUSTOM",
         "NATIVE",
@@ -5167,7 +5186,8 @@
     "LaunchParameters":{
       "type":"string",
       "max":1024,
-      "pattern":"[^\\x00]+",
+      "min":0,
+      "pattern":"^[^\\x00]+$",
       "sensitive":true
     },
     "LimitExceededException":{
@@ -5360,6 +5380,12 @@
         }
       },
       "documentation":"<p>Describes the network details of the fleet or image builder instance.</p>"
+    },
+    "NvidiaGridDriverVersion":{
+      "type":"string",
+      "max":32,
+      "min":1,
+      "pattern":"^[0-9]+(\\.[0-9]+){1,2}$"
     },
     "OperationNotPermittedException":{
       "type":"structure",
@@ -6215,7 +6241,7 @@
     "Timestamp":{"type":"timestamp"},
     "UUID":{
       "type":"string",
-      "pattern":"[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}"
+      "pattern":"^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$"
     },
     "UntagResourceRequest":{
       "type":"structure",
@@ -6943,6 +6969,7 @@
     },
     "WorkspaceImageId":{
       "type":"string",
+      "documentation":"<p>WorkspaceImageId type with validation pattern</p>",
       "max":67,
       "min":12,
       "pattern":"^wsi-[0-9a-z]{8,63}$"

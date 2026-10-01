@@ -905,8 +905,8 @@
     "ListConfigurationSets":{
       "name":"ListConfigurationSets",
       "http":{
-        "method":"GET",
-        "requestUri":"/v2/email/configuration-sets"
+        "method":"POST",
+        "requestUri":"/v2/email/list-configuration-sets"
       },
       "input":{"shape":"ListConfigurationSetsRequest"},
       "output":{"shape":"ListConfigurationSetsResponse"},
@@ -1006,8 +1006,8 @@
     "ListEmailIdentities":{
       "name":"ListEmailIdentities",
       "http":{
-        "method":"GET",
-        "requestUri":"/v2/email/identities"
+        "method":"POST",
+        "requestUri":"/v2/email/list-identities"
       },
       "input":{"shape":"ListEmailIdentitiesRequest"},
       "output":{"shape":"ListEmailIdentitiesResponse"},
@@ -2320,6 +2320,21 @@
         }
       },
       "documentation":"<p>An object that overrides settings for a single email sending request. An override applies only to the message or messages in the request that contains it. It doesn't change your account-level settings, and it doesn't change the configuration set that the request uses.</p> <p>A setting that you don't override keeps the value that would otherwise apply to the message. Depending on the setting, that value comes from the configuration set that the message uses, from your account-level settings, or from the Amazon SES default.</p>"
+    },
+    "ConfigurationSetFilter":{
+      "type":"map",
+      "key":{"shape":"ConfigurationSetFilterKey"},
+      "value":{"shape":"ConfigurationSetFilterValue"},
+      "documentation":"<p>An object that contains filters to apply when listing configuration sets.</p>"
+    },
+    "ConfigurationSetFilterKey":{
+      "type":"string",
+      "documentation":"<p>The filter key to use when listing configuration sets. This can be one of the following:</p> <ul> <li> <p> <code>CONFIGURATION_SET_NAME_CONTAINS</code> – Filter by a substring of the configuration set name.</p> </li> </ul>",
+      "enum":["CONFIGURATION_SET_NAME_CONTAINS"]
+    },
+    "ConfigurationSetFilterValue":{
+      "type":"string",
+      "min":1
     },
     "ConfigurationSetName":{
       "type":"string",
@@ -5232,6 +5247,25 @@
         "FAILED"
       ]
     },
+    "IdentityFilter":{
+      "type":"map",
+      "key":{"shape":"IdentityFilterKey"},
+      "value":{"shape":"IdentityFilterValue"},
+      "documentation":"<p>An object that contains filters to apply when listing email identities.</p>"
+    },
+    "IdentityFilterKey":{
+      "type":"string",
+      "documentation":"<p>The filter key to use when listing email identities. This can be one of the following:</p> <ul> <li> <p> <code>IDENTITY_NAME_CONTAINS</code> – Filter by a substring of the identity name.</p> </li> <li> <p> <code>IDENTITY_TYPE</code> – Filter by identity type.</p> </li> <li> <p> <code>VERIFICATION_STATUS</code> – Filter by verification status.</p> </li> </ul>",
+      "enum":[
+        "IDENTITY_NAME_CONTAINS",
+        "IDENTITY_TYPE",
+        "VERIFICATION_STATUS"
+      ]
+    },
+    "IdentityFilterValue":{
+      "type":"string",
+      "min":1
+    },
     "IdentityInfo":{
       "type":"structure",
       "members":{
@@ -5488,17 +5522,17 @@
     "ListConfigurationSetsRequest":{
       "type":"structure",
       "members":{
+        "Filter":{
+          "shape":"ConfigurationSetFilter",
+          "documentation":"<p>An object that contains filters to apply when listing configuration sets. You can filter by configuration set name.</p>"
+        },
         "NextToken":{
           "shape":"NextToken",
-          "documentation":"<p>A token returned from a previous call to <code>ListConfigurationSets</code> to indicate the position in the list of configuration sets.</p>",
-          "location":"querystring",
-          "locationName":"NextToken"
+          "documentation":"<p>A token returned from a previous call to <code>ListConfigurationSets</code> to indicate the position in the list of configuration sets.</p>"
         },
         "PageSize":{
           "shape":"MaxItems",
-          "documentation":"<p>The number of results to show in a single call to <code>ListConfigurationSets</code>. If the number of results is larger than the number you specified in this parameter, then the response includes a <code>NextToken</code> element, which you can use to obtain additional results.</p>",
-          "location":"querystring",
-          "locationName":"PageSize"
+          "documentation":"<p>The number of results to show in a single call to <code>ListConfigurationSets</code>. If the number of results is larger than the number you specified in this parameter, then the response includes a <code>NextToken</code> element, which you can use to obtain additional results.</p>"
         }
       },
       "documentation":"<p>A request to obtain a list of configuration sets for your Amazon SES account in the current Amazon Web Services Region.</p>"
@@ -5754,17 +5788,17 @@
     "ListEmailIdentitiesRequest":{
       "type":"structure",
       "members":{
+        "Filter":{
+          "shape":"IdentityFilter",
+          "documentation":"<p>An object that contains filters to apply when listing email identities. You can filter by identity name, identity type, or verification status.</p>"
+        },
         "NextToken":{
           "shape":"NextToken",
-          "documentation":"<p>A token returned from a previous call to <code>ListEmailIdentities</code> to indicate the position in the list of identities.</p>",
-          "location":"querystring",
-          "locationName":"NextToken"
+          "documentation":"<p>A token returned from a previous call to <code>ListEmailIdentities</code> to indicate the position in the list of identities.</p>"
         },
         "PageSize":{
           "shape":"MaxItems",
-          "documentation":"<p>The number of results to show in a single call to <code>ListEmailIdentities</code>. If the number of results is larger than the number you specified in this parameter, then the response includes a <code>NextToken</code> element, which you can use to obtain additional results.</p> <p>The value you specify has to be at least 0, and can be no more than 1000.</p>",
-          "location":"querystring",
-          "locationName":"PageSize"
+          "documentation":"<p>The number of results to show in a single call to <code>ListEmailIdentities</code>. If the number of results is larger than the number you specified in this parameter, then the response includes a <code>NextToken</code> element, which you can use to obtain additional results.</p> <p>The value you specify has to be at least 0, and can be no more than 1000.</p>"
         }
       },
       "documentation":"<p>A request to list all of the email identities associated with your Amazon Web Services account. This list includes identities that you've already verified, identities that are unverified, and identities that were verified in the past, but are no longer verified.</p>"
@@ -6228,9 +6262,31 @@
       },
       "documentation":"<p>Information about resources associated with a specific tenant.</p>"
     },
+    "ListTenantsFilter":{
+      "type":"map",
+      "key":{"shape":"ListTenantsFilterKey"},
+      "value":{"shape":"ListTenantsFilterValue"},
+      "documentation":"<p>An object that contains filters to apply when listing tenants.</p>"
+    },
+    "ListTenantsFilterKey":{
+      "type":"string",
+      "documentation":"<p>The filter key to use when listing tenants. This can be one of the following:</p> <ul> <li> <p> <code>TENANT_NAME_CONTAINS</code> – Filter by a substring of the tenant name.</p> </li> <li> <p> <code>SENDING_STATUS</code> – Filter by sending status.</p> </li> </ul>",
+      "enum":[
+        "TENANT_NAME_CONTAINS",
+        "SENDING_STATUS"
+      ]
+    },
+    "ListTenantsFilterValue":{
+      "type":"string",
+      "min":1
+    },
     "ListTenantsRequest":{
       "type":"structure",
       "members":{
+        "Filter":{
+          "shape":"ListTenantsFilter",
+          "documentation":"<p>An object that contains filters to apply when listing tenants. You can filter by tenant name or sending status.</p>"
+        },
         "NextToken":{
           "shape":"NextToken",
           "documentation":"<p>A token returned from a previous call to <code>ListTenants</code> to indicate the position in the list of tenants.</p>"
@@ -8366,7 +8422,8 @@
         "CreatedTimestamp":{
           "shape":"Timestamp",
           "documentation":"<p>The date and time when the tenant was created.</p>"
-        }
+        },
+        "SendingStatus":{"shape":"SendingStatus"}
       },
       "documentation":"<p>A structure that contains basic information about a tenant.</p>"
     },

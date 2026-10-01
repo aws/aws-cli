@@ -1216,7 +1216,7 @@
     "AgenticRetrieveConfigurationMaxAgentIterationInteger":{
       "type":"integer",
       "box":true,
-      "min":2
+      "min":0
     },
     "AgenticRetrieveFailure":{
       "type":"structure",
@@ -4246,6 +4246,10 @@
           "shape":"BedrockFoundationModelConfiguration",
           "documentation":"<p>The Bedrock foundation model configuration.</p>"
         },
+        "mantleFoundationModelConfiguration":{
+          "shape":"MantleFoundationModelConfiguration",
+          "documentation":"<p>The Mantle foundation model configuration.</p>"
+        },
         "type":{
           "shape":"FoundationModelConfigurationType",
           "documentation":"<p>The type of foundation model configuration.</p>"
@@ -4256,7 +4260,10 @@
     "FoundationModelConfigurationType":{
       "type":"string",
       "documentation":"<p>The type of foundation model configuration.</p>",
-      "enum":["BEDROCK_FOUNDATION_MODEL"]
+      "enum":[
+        "BEDROCK_FOUNDATION_MODEL",
+        "MANTLE_FOUNDATION_MODEL"
+      ]
     },
     "FoundationModelType":{
       "type":"string",
@@ -6770,6 +6777,38 @@
       "type":"string",
       "documentation":"<p>The type of reranking configuration for managed search.</p>",
       "enum":["BEDROCK_RERANKING_MODEL"]
+    },
+    "MantleFoundationModelConfiguration":{
+      "type":"structure",
+      "required":["modelConfiguration"],
+      "members":{
+        "modelConfiguration":{
+          "shape":"MantleFoundationModelModelConfiguration",
+          "documentation":"<p>The model configuration containing the model ARN and project ID.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for a Mantle foundation model.</p>"
+    },
+    "MantleFoundationModelModelConfiguration":{
+      "type":"structure",
+      "required":["modelArn"],
+      "members":{
+        "modelArn":{
+          "shape":"BedrockModelArn",
+          "documentation":"<p>The ARN of the Mantle foundation model.</p>"
+        },
+        "projectId":{
+          "shape":"MantleProjectId",
+          "documentation":"<p>The Amazon Bedrock project ID used for billing and usage attribution. If you don't specify a value, the service uses the default project.</p>"
+        }
+      },
+      "documentation":"<p>Model configuration for a Mantle foundation model.</p>"
+    },
+    "MantleProjectId":{
+      "type":"string",
+      "max":128,
+      "min":0,
+      "pattern":"^(proj_[a-zA-Z0-9]+|default)$"
     },
     "MaxResults":{
       "type":"integer",

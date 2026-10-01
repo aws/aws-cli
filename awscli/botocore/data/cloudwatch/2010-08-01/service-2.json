@@ -41,6 +41,23 @@
       ],
       "documentation":"<p>Associates an Amazon Web Services Key Management Service (Amazon Web Services KMS) customer managed key with the specified dataset. After this operation completes, all data published to the dataset is encrypted at rest using the specified KMS key. Callers must have <code>kms:Decrypt</code> permission on the key to read the encrypted data.</p> <p>Only the <code>default</code> dataset is supported. The <code>default</code> dataset is implicit for every account in every Region — you do not need to create it before calling this operation.</p> <p>You can call <code>AssociateDatasetKmsKey</code> on a dataset that is already associated with a KMS key to replace the existing key with a different one. The caller must have <code>kms:Decrypt</code> permission on both the current key and the new key.</p> <note> <p>If the currently associated key has been deleted, is scheduled for deletion, is pending import, is unavailable, or has been disabled, Amazon CloudWatch does not require <code>kms:Decrypt</code> permission on the current key and the rotation proceeds. If the key was only disabled, consider re-enabling it instead of rotating, because re-enabling allows Amazon CloudWatch to resume decrypting your existing metric data encrypted with that key.</p> </note> <p>The KMS key that you specify must meet all of the following requirements:</p> <ul> <li> <p>It must be a symmetric encryption KMS key (key spec <code>SYMMETRIC_DEFAULT</code>, key usage <code>ENCRYPT_DECRYPT</code>). Asymmetric keys, HMAC keys, and key material types other than <code>SYMMETRIC_DEFAULT</code> are not supported.</p> </li> <li> <p>It must be enabled and not pending deletion.</p> </li> <li> <p>Its key policy must grant the CloudWatch service principal (<code>cloudwatch.amazonaws.com</code>) these permissions: <code>kms:DescribeKey</code>, <code>kms:GenerateDataKey</code>, <code>kms:Encrypt</code>, <code>kms:Decrypt</code>, and <code>kms:ReEncrypt*</code>. Amazon CloudWatch requires these permissions to manage the data on your behalf.</p> </li> <li> <p>The calling principal must have <code>kms:Decrypt</code> permission on the key.</p> </li> <li> <p>It must be specified as a fully qualified key ARN. Key IDs, aliases, and alias ARNs are not accepted.</p> </li> <li> <p>It must be in the same Amazon Web Services Region as the dataset.</p> </li> </ul> <p>Before completing the association, Amazon CloudWatch validates the key by performing a series of dry-run KMS operations. Service-principal checks run first to verify that the key policy grants the required access to Amazon CloudWatch. These checks include <code>kms:DescribeKey</code>, <code>kms:GenerateDataKey</code>, <code>kms:Encrypt</code>, <code>kms:Decrypt</code>, and <code>kms:ReEncrypt*</code>. After those succeed, a <code>kms:Decrypt</code> dry-run is run with the caller's credentials to verify that the calling principal can use the new key. When you are replacing an existing key, the caller's <code>kms:Decrypt</code> dry-run is also run on the current key.</p> <p>If any of these checks on the new key fails, the operation fails and the existing key association (if any) remains unchanged. Common failure causes include the new key being disabled, the key policy not granting the required permissions to Amazon CloudWatch, or the caller lacking <code>kms:Decrypt</code> permission on the new key.</p> <p>For more information about using customer managed keys with Amazon CloudWatch, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/cmk-encryption.html\">Encryption at rest with customer managed keys</a> in the <i>Amazon CloudWatch User Guide</i>.</p>"
     },
+    "CreateResourceMetricsConfiguration":{
+      "name":"CreateResourceMetricsConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateResourceMetricsConfigurationInput"},
+      "output":{
+        "shape":"CreateResourceMetricsConfigurationOutput",
+        "resultWrapper":"CreateResourceMetricsConfigurationResult"
+      },
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Creates a resource metrics configuration for an Amazon Web Services resource. After you create a configuration, Amazon CloudWatch collects detailed metrics for that resource.</p> <p>Each Amazon Web Services resource can have only one resource metrics configuration. If a configuration already exists for the specified resource ARN, this operation returns a <code>ConflictException</code>. To modify an existing configuration, use <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/APIReference/API_UpdateResourceMetricsConfiguration.html\">UpdateResourceMetricsConfiguration</a>.</p> <p>If the Amazon Web Services resource that you specify in <code>ResourceArn</code> does not exist, this operation returns a <code>ResourceNotFoundException</code>. Verify that the resource ARN is correct and that the resource exists before you retry the request.</p> <p>To create a resource metrics configuration, you must have the <code>cloudwatch:CreateResourceMetricsConfiguration</code> permission. For information about scoping this permission to specific resources, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/iam-cw-condition-keys-resource-arn.html\">Condition keys for resource metrics configuration access</a> in the <i>Amazon CloudWatch User Guide</i>.</p>"
+    },
     "DeleteAlarmMuteRule":{
       "name":"DeleteAlarmMuteRule",
       "http":{
@@ -135,6 +152,22 @@
         {"shape":"MissingRequiredParameterException"}
       ],
       "documentation":"<p>Permanently deletes the metric stream that you specify.</p>"
+    },
+    "DeleteResourceMetricsConfiguration":{
+      "name":"DeleteResourceMetricsConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteResourceMetricsConfigurationInput"},
+      "output":{
+        "shape":"DeleteResourceMetricsConfigurationOutput",
+        "resultWrapper":"DeleteResourceMetricsConfigurationResult"
+      },
+      "errors":[
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Deletes the resource metrics configuration for an Amazon Web Services resource. After you delete the configuration, Amazon CloudWatch stops collecting detailed metrics for the resource. Metric data that Amazon CloudWatch already collected for the resource is not deleted.</p> <p>This operation returns a <code>ResourceNotFoundException</code> if no resource metrics configuration exists for the specified resource ARN. Verify that the resource ARN is correct.</p> <p>To delete a resource metrics configuration, you must have the <code>cloudwatch:DeleteResourceMetricsConfiguration</code> permission. For information about scoping this permission to specific resources, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/iam-cw-condition-keys-resource-arn.html\">Condition keys for resource metrics configuration access</a> in the <i>Amazon CloudWatch User Guide</i>.</p>"
     },
     "DescribeAlarmContributors":{
       "name":"DescribeAlarmContributors",
@@ -336,7 +369,7 @@
         {"shape":"DashboardNotFoundError"},
         {"shape":"InternalServiceFault"}
       ],
-      "documentation":"<p>Displays the details of the dashboard that you specify.</p> <p>To copy an existing dashboard, use <code>GetDashboard</code>, and then use the data returned within <code>DashboardBody</code> as the template for the new dashboard when you call <code>PutDashboard</code> to create the copy.</p>"
+      "documentation":"<p>Displays the details of the dashboard that you specify.</p> <p>To copy an existing dashboard, use <code>GetDashboard</code>, and then use the data returned within <code>DashboardBody</code> as the template for the new dashboard when you call <code>PutDashboard</code> to create the copy.</p> <p>You might have recently enabled an <a href=\"https://docs.aws.amazon.com/glossary/latest/reference/glos-chap.html#optinregion\">opt-in Region (Region that is disabled by default)</a> for your account. In that Region, <code>GetDashboard</code> can return an access denied error for up to 24 hours after you enable the Region. This delay occurs while dashboard data propagates. The error does not indicate a problem with your permissions. Because dashboards are global, you can call <code>GetDashboard</code> in any other enabled Region, or retry after propagation completes.</p>"
     },
     "GetDataset":{
       "name":"GetDataset",
@@ -387,7 +420,7 @@
       "errors":[
         {"shape":"InvalidNextToken"}
       ],
-      "documentation":"<p>You can use the <code>GetMetricData</code> API to retrieve CloudWatch metric values. The operation can also include a CloudWatch Metrics Insights query, and one or more metric math functions.</p> <p>A <code>GetMetricData</code> operation that does not include a query can retrieve as many as 500 different metrics in a single request, with a total of as many as 100,800 data points. You can also optionally perform metric math expressions on the values of the returned statistics, to create new time series that represent new insights into your data. For example, using Lambda metrics, you could divide the Errors metric by the Invocations metric to get an error rate time series. For more information about metric math expressions, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/using-metric-math.html#metric-math-syntax\">Metric Math Syntax and Functions</a> in the <i>Amazon CloudWatch User Guide</i>.</p> <p>If you include a Metrics Insights query, each <code>GetMetricData</code> operation can include only one query. But the same <code>GetMetricData</code> operation can also retrieve other metrics. Metrics Insights queries can query only the most recent three hours of metric data. For more information about Metrics Insights, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/query_with_cloudwatch-metrics-insights.html\">Query your metrics with CloudWatch Metrics Insights</a>.</p> <p>Calls to the <code>GetMetricData</code> API have a different pricing structure than calls to <code>GetMetricStatistics</code>. For more information about pricing, see <a href=\"https://aws.amazon.com/cloudwatch/pricing/\">Amazon CloudWatch Pricing</a>.</p> <p>Amazon CloudWatch retains metric data as follows:</p> <ul> <li> <p>Data points with a period of less than 60 seconds are available for 3 hours. These data points are high-resolution metrics and are available only for custom metrics that have been defined with a <code>StorageResolution</code> of 1.</p> </li> <li> <p>Data points with a period of 60 seconds (1-minute) are available for 15 days.</p> </li> <li> <p>Data points with a period of 300 seconds (5-minute) are available for 63 days.</p> </li> <li> <p>Data points with a period of 3600 seconds (1 hour) are available for 455 days (15 months).</p> </li> </ul> <p>Data points that are initially published with a shorter period are aggregated together for long-term storage. For example, if you collect data using a period of 1 minute, the data remains available for 15 days with 1-minute resolution. After 15 days, this data is still available, but is aggregated and retrievable only with a resolution of 5 minutes. After 63 days, the data is further aggregated and is available with a resolution of 1 hour.</p> <p>If you omit <code>Unit</code> in your request, all data that was collected with any unit is returned, along with the corresponding units that were specified when the data was reported to CloudWatch. If you specify a unit, the operation returns only data that was collected with that unit specified. If you specify a unit that does not match the data collected, the results of the operation are null. CloudWatch does not perform unit conversions.</p> <p> <b>Using Metrics Insights queries with metric math</b> </p> <p>You can't mix a Metric Insights query and metric math syntax in the same expression, but you can reference results from a Metrics Insights query within other Metric math expressions. A Metrics Insights query without a <b>GROUP BY</b> clause returns a single time-series (TS), and can be used as input for a metric math expression that expects a single time series. A Metrics Insights query with a <b>GROUP BY</b> clause returns an array of time-series (TS[]), and can be used as input for a metric math expression that expects an array of time series. </p>"
+      "documentation":"<p>You can use the <code>GetMetricData</code> API to retrieve CloudWatch metric values. The operation can also include a CloudWatch Metrics Insights query, and one or more metric math functions.</p> <p>A <code>GetMetricData</code> operation that does not include a query can retrieve as many as 500 different metrics in a single request, with a total of as many as 100,800 data points. You can also optionally perform metric math expressions on the values of the returned statistics, to create new time series that represent new insights into your data. For example, using Lambda metrics, you could divide the Errors metric by the Invocations metric to get an error rate time series. For more information about metric math expressions, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/using-metric-math.html#metric-math-syntax\">Metric Math Syntax and Functions</a> in the <i>Amazon CloudWatch User Guide</i>.</p> <p>If you include a Metrics Insights query, each <code>GetMetricData</code> operation can include only one query. But the same <code>GetMetricData</code> operation can also retrieve other metrics. Metrics Insights queries can query the most recent two weeks of metric data. For alarm condition evaluations, Metrics Insights queries can query only the most recent three hours of metric data. For more information about Metrics Insights, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/query_with_cloudwatch-metrics-insights.html\">Query your metrics with CloudWatch Metrics Insights</a>.</p> <p>Calls to the <code>GetMetricData</code> API have a different pricing structure than calls to <code>GetMetricStatistics</code>. For more information about pricing, see <a href=\"https://aws.amazon.com/cloudwatch/pricing/\">Amazon CloudWatch Pricing</a>.</p> <p>Amazon CloudWatch retains metric data as follows:</p> <ul> <li> <p>Data points with a period of less than 60 seconds are available for 3 hours. These data points are high-resolution metrics and are available only for custom metrics that have been defined with a <code>StorageResolution</code> of 1.</p> </li> <li> <p>Data points with a period of 60 seconds (1-minute) are available for 15 days.</p> </li> <li> <p>Data points with a period of 300 seconds (5-minute) are available for 63 days.</p> </li> <li> <p>Data points with a period of 3600 seconds (1 hour) are available for 455 days (15 months).</p> </li> </ul> <p>Data points that are initially published with a shorter period are aggregated together for long-term storage. For example, if you collect data using a period of 1 minute, the data remains available for 15 days with 1-minute resolution. After 15 days, this data is still available, but is aggregated and retrievable only with a resolution of 5 minutes. After 63 days, the data is further aggregated and is available with a resolution of 1 hour.</p> <p>If you omit <code>Unit</code> in your request, all data that was collected with any unit is returned, along with the corresponding units that were specified when the data was reported to CloudWatch. If you specify a unit, the operation returns only data that was collected with that unit specified. If you specify a unit that does not match the data collected, the results of the operation are null. CloudWatch does not perform unit conversions.</p> <p> <b>Using Metrics Insights queries with metric math</b> </p> <p>You can't mix a Metric Insights query and metric math syntax in the same expression, but you can reference results from a Metrics Insights query within other Metric math expressions. A Metrics Insights query without a <b>GROUP BY</b> clause returns a single time-series (TS), and can be used as input for a metric math expression that expects a single time series. A Metrics Insights query with a <b>GROUP BY</b> clause returns an array of time-series (TS[]), and can be used as input for a metric math expression that expects an array of time series. </p>"
     },
     "GetMetricStatistics":{
       "name":"GetMetricStatistics",
@@ -454,6 +487,22 @@
       },
       "documentation":"<p>Returns the current status of vended metric enrichment for the account, including whether CloudWatch vended metrics are enriched with resource ARN and resource tag labels and queryable using PromQL. For the list of supported resources, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/UsingResourceTagsForTelemetry.html\">Supported Amazon Web Services infrastructure metrics</a>.</p>"
     },
+    "GetResourceMetricsConfiguration":{
+      "name":"GetResourceMetricsConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetResourceMetricsConfigurationInput"},
+      "output":{
+        "shape":"GetResourceMetricsConfigurationOutput",
+        "resultWrapper":"GetResourceMetricsConfigurationResult"
+      },
+      "errors":[
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Retrieves the current resource metrics configuration for an Amazon Web Services resource. The response includes the resource ARN, any metric selections, and the times at which the configuration was created and last updated.</p> <p>This operation returns a <code>ResourceNotFoundException</code> if no resource metrics configuration exists for the specified resource ARN. To create a configuration, use <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/APIReference/API_CreateResourceMetricsConfiguration.html\">CreateResourceMetricsConfiguration</a>.</p> <p>To retrieve a resource metrics configuration, you must have the <code>cloudwatch:GetResourceMetricsConfiguration</code> permission. For information about scoping this permission to specific resources, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/iam-cw-condition-keys-resource-arn.html\">Condition keys for resource metrics configuration access</a> in the <i>Amazon CloudWatch User Guide</i>.</p>"
+    },
     "ListAlarmMuteRules":{
       "name":"ListAlarmMuteRules",
       "http":{
@@ -486,7 +535,7 @@
         {"shape":"InvalidParameterValueException"},
         {"shape":"InternalServiceFault"}
       ],
-      "documentation":"<p>Returns a list of the dashboards for your account. If you include <code>DashboardNamePrefix</code>, only those dashboards with names starting with the prefix are listed. Otherwise, all dashboards in your account are listed. </p> <p> <code>ListDashboards</code> returns up to 1000 results on one page. If there are more than 1000 dashboards, you can call <code>ListDashboards</code> again and include the value you received for <code>NextToken</code> in the first call, to receive the next 1000 results.</p>"
+      "documentation":"<p>Returns a list of the dashboards for your account. If you include <code>DashboardNamePrefix</code>, only those dashboards with names starting with the prefix are listed. Otherwise, all dashboards in your account are listed. </p> <p> <code>ListDashboards</code> returns up to 1000 results on one page. If there are more than 1000 dashboards, you can call <code>ListDashboards</code> again and include the value you received for <code>NextToken</code> in the first call, to receive the next 1000 results.</p> <p>You might have recently enabled an <a href=\"https://docs.aws.amazon.com/glossary/latest/reference/glos-chap.html#optinregion\">opt-in Region (Region that is disabled by default)</a> for your account. In that Region, <code>ListDashboards</code> can return an access denied error for up to 24 hours after you enable the Region. This delay occurs while dashboard data propagates. The error does not indicate a problem with your permissions. Because dashboards are global, you can call <code>ListDashboards</code> in any other enabled Region, or retry after propagation completes.</p>"
     },
     "ListManagedInsightRules":{
       "name":"ListManagedInsightRules",
@@ -760,7 +809,10 @@
         "shape":"StartOTelEnrichmentOutput",
         "resultWrapper":"StartOTelEnrichmentResult"
       },
-      "documentation":"<p>Enables enrichment and PromQL access for CloudWatch vended metrics for <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/UsingResourceTagsForTelemetry.html\">supported Amazon Web Services resources</a> in the account. Once enabled, metrics that contain a resource identifier dimension (for example, EC2 <code>CPUUtilization</code> with an <code>InstanceId</code> dimension) are enriched with resource ARN and resource tag labels and become queryable using PromQL.</p> <p>Before calling this operation, you must enable resource tags on telemetry for your account. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/EnableResourceTagsOnTelemetry.html\">Enable resource tags on telemetry</a>.</p>"
+      "errors":[
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Enables enrichment and PromQL access for CloudWatch vended metrics for <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/UsingResourceTagsForTelemetry.html\">supported Amazon Web Services resources</a> in the account. Once enabled, metrics that contain a resource identifier dimension (for example, EC2 <code>CPUUtilization</code> with an <code>InstanceId</code> dimension) are enriched with resource ARN and resource tag labels and become queryable using PromQL.</p> <p>Before calling this operation, you must enable resource tags on telemetry for your account. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/EnableResourceTagsOnTelemetry.html\">Enable resource tags on telemetry</a>.</p> <p>Optionally, <code>IncludeFilters</code> and <code>ExcludeFilters</code> limit enrichment to a subset of the account's metrics. These filters are stored only when this operation starts enrichment. Calling <code>StartOTelEnrichment</code> for an account where enrichment is already running has no effect and does not modify the filters that are applied. To change them, use <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/APIReference/API_UpdateOTelEnrichment.html\">UpdateOTelEnrichment</a>.</p>"
     },
     "StopMetricStreams":{
       "name":"StopMetricStreams",
@@ -832,6 +884,39 @@
         {"shape":"ConflictException"}
       ],
       "documentation":"<p>Removes one or more tags from the specified resource. Currently, alarms, dashboards, metric streams and Contributor Insights rules support tagging.</p>"
+    },
+    "UpdateOTelEnrichment":{
+      "name":"UpdateOTelEnrichment",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateOTelEnrichmentInput"},
+      "output":{
+        "shape":"UpdateOTelEnrichmentOutput",
+        "resultWrapper":"UpdateOTelEnrichmentResult"
+      },
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Replaces the filters that determine which CloudWatch vended metrics are enriched with resource ARN and resource tag labels for the account. Enrichment must already be running for the account. If it is not, this operation returns a <code>ResourceNotFoundException</code>. To start enrichment, use <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/APIReference/API_StartOTelEnrichment.html\">StartOTelEnrichment</a>.</p> <p>The filters in the request completely replace the stored filters; they are not merged with them. <code>IncludeFilters</code> and <code>ExcludeFilters</code> are replaced as a pair, so a request that specifies only <code>IncludeFilters</code> also clears the stored <code>ExcludeFilters</code>, and a request that specifies neither clears both.</p>"
+    },
+    "UpdateResourceMetricsConfiguration":{
+      "name":"UpdateResourceMetricsConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateResourceMetricsConfigurationInput"},
+      "output":{
+        "shape":"UpdateResourceMetricsConfigurationOutput",
+        "resultWrapper":"UpdateResourceMetricsConfigurationResult"
+      },
+      "errors":[
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Updates the resource metrics configuration for an Amazon Web Services resource. The <code>MetricSelections</code> value that you provide replaces any existing metric selections for the resource; it is not merged with them.</p> <p>If you omit <code>MetricSelections</code>, Amazon CloudWatch removes any existing metric selection filter and collects all available detailed metrics for the resource.</p> <p>This operation returns a <code>ResourceNotFoundException</code> if no resource metrics configuration exists for the specified resource ARN. To create a configuration, use <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/APIReference/API_CreateResourceMetricsConfiguration.html\">CreateResourceMetricsConfiguration</a>.</p> <p>To update a resource metrics configuration, you must have the <code>cloudwatch:UpdateResourceMetricsConfiguration</code> permission. For information about scoping this permission to specific resources, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/iam-cw-condition-keys-resource-arn.html\">Condition keys for resource metrics configuration access</a> in the <i>Amazon CloudWatch User Guide</i>.</p>"
     }
   },
   "shapes":{
@@ -1366,6 +1451,32 @@
       "type":"list",
       "member":{"shape":"DatapointValue"}
     },
+    "CreateResourceMetricsConfigurationInput":{
+      "type":"structure",
+      "required":["ResourceArn"],
+      "members":{
+        "ResourceArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon Web Services resource to enable detailed monitoring for.</p>"
+        },
+        "MetricSelections":{
+          "shape":"ResourceMetricSelectionList",
+          "documentation":"<p>Specifies which metrics Amazon CloudWatch collects for the resource. If you omit this parameter, Amazon CloudWatch collects all available detailed metrics for the resource.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the resource ARN and optional metric selections for a <code>CreateResourceMetricsConfiguration</code> request.</p>"
+    },
+    "CreateResourceMetricsConfigurationOutput":{
+      "type":"structure",
+      "required":["ResourceMetricsConfiguration"],
+      "members":{
+        "ResourceMetricsConfiguration":{
+          "shape":"ResourceMetricsConfiguration",
+          "documentation":"<p>The resource metrics configuration that was created by this operation.</p>"
+        }
+      },
+      "documentation":"<p>Returns the newly created resource metrics configuration.</p>"
+    },
     "DashboardArn":{"type":"string"},
     "DashboardBody":{"type":"string"},
     "DashboardEntries":{
@@ -1642,6 +1753,22 @@
     "DeleteMetricStreamOutput":{
       "type":"structure",
       "members":{}
+    },
+    "DeleteResourceMetricsConfigurationInput":{
+      "type":"structure",
+      "required":["ResourceArn"],
+      "members":{
+        "ResourceArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon Web Services resource to delete the resource metrics configuration for.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the resource ARN for a <code>DeleteResourceMetricsConfiguration</code> request.</p>"
+    },
+    "DeleteResourceMetricsConfigurationOutput":{
+      "type":"structure",
+      "members":{},
+      "documentation":"<p>No data is returned.</p>"
     },
     "DescribeAlarmContributorsInput":{
       "type":"structure",
@@ -2576,8 +2703,46 @@
         "Status":{
           "shape":"OTelEnrichmentStatus",
           "documentation":"<p>The status of OTel enrichment for the account. Valid values are <code>Running</code> (enrichment is enabled) and <code>Stopped</code> (enrichment is disabled).</p>"
+        },
+        "IncludeFilters":{
+          "shape":"OTelEnrichmentMetricSelectorList",
+          "documentation":"<p>The metric namespaces, and the metric names, that are enriched. This parameter is omitted when enrichment is stopped, and when enrichment is running with no include filters, which means that every supported namespace is in scope.</p>"
+        },
+        "ExcludeFilters":{
+          "shape":"OTelEnrichmentMetricSelectorList",
+          "documentation":"<p>The metric namespaces, and the metric names, that are left unenriched. This parameter is omitted when enrichment is stopped, and when enrichment is running with no exclude filters, which means that nothing is excluded.</p>"
+        },
+        "CreatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time that enrichment started for the account. This parameter is omitted when enrichment is stopped.</p>"
+        },
+        "UpdatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time that the enrichment configuration for the account was last stored.</p>"
         }
       }
+    },
+    "GetResourceMetricsConfigurationInput":{
+      "type":"structure",
+      "required":["ResourceArn"],
+      "members":{
+        "ResourceArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon Web Services resource to retrieve the resource metrics configuration for.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the resource ARN for a <code>GetResourceMetricsConfiguration</code> request.</p>"
+    },
+    "GetResourceMetricsConfigurationOutput":{
+      "type":"structure",
+      "required":["ResourceMetricsConfiguration"],
+      "members":{
+        "ResourceMetricsConfiguration":{
+          "shape":"ResourceMetricsConfiguration",
+          "documentation":"<p>The resource metrics configuration for the specified resource.</p>"
+        }
+      },
+      "documentation":"<p>Returns the current resource metrics configuration for the specified resource.</p>"
     },
     "HistoryData":{
       "type":"string",
@@ -2807,6 +2972,7 @@
         "httpStatusCode":500
       },
       "exception":true,
+      "fault":true,
       "xmlOrder":["Message"]
     },
     "InvalidFormatFault":{
@@ -3727,6 +3893,12 @@
       "max":255,
       "min":1
     },
+    "MetricNameList":{
+      "type":"list",
+      "member":{"shape":"MetricName"},
+      "max":500,
+      "min":1
+    },
     "MetricStat":{
       "type":"structure",
       "required":[
@@ -3935,6 +4107,33 @@
       "pattern":"[^:].*"
     },
     "NextToken":{"type":"string"},
+    "OTelEnrichmentMetricNameList":{
+      "type":"list",
+      "member":{"shape":"MetricName"},
+      "max":100,
+      "min":0
+    },
+    "OTelEnrichmentMetricSelector":{
+      "type":"structure",
+      "required":["Namespace"],
+      "members":{
+        "Namespace":{
+          "shape":"Namespace",
+          "documentation":"<p>The namespace of the metrics to select. Namespaces are matched exactly and are case-sensitive.</p>"
+        },
+        "MetricNames":{
+          "shape":"OTelEnrichmentMetricNameList",
+          "documentation":"<p>The names of the metrics to select within the namespace. Metric names are matched exactly and are case-sensitive. If this parameter is omitted, every metric in the namespace is selected.</p> <p>A maximum of 100 metric names is allowed for each selector.</p>"
+        }
+      },
+      "documentation":"<p>Selects the metrics in one namespace, for use in the <code>IncludeFilters</code> or <code>ExcludeFilters</code> parameter of <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/APIReference/API_StartOTelEnrichment.html\">StartOTelEnrichment</a> or <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/APIReference/API_UpdateOTelEnrichment.html\">UpdateOTelEnrichment</a>.</p> <p>A maximum of 100 selectors is allowed across <code>IncludeFilters</code> and <code>ExcludeFilters</code> combined.</p>"
+    },
+    "OTelEnrichmentMetricSelectorList":{
+      "type":"list",
+      "member":{"shape":"OTelEnrichmentMetricSelector"},
+      "max":100,
+      "min":0
+    },
     "OTelEnrichmentStatus":{
       "type":"string",
       "documentation":"<p>The status of OTel enrichment for the account.</p>",
@@ -4522,6 +4721,12 @@
       "max":86400,
       "min":0
     },
+    "ResourceArn":{
+      "type":"string",
+      "max":2048,
+      "min":20,
+      "pattern":"arn:[a-zA-Z0-9-]+:[a-zA-Z0-9-]+:[a-zA-Z0-9-]*:\\d{12}:.+"
+    },
     "ResourceConflict":{
       "type":"structure",
       "members":{
@@ -4540,6 +4745,50 @@
       "type":"list",
       "member":{"shape":"ResourceName"},
       "max":5
+    },
+    "ResourceMetricSelection":{
+      "type":"structure",
+      "required":["IncludeMetrics"],
+      "members":{
+        "IncludeMetrics":{
+          "shape":"MetricNameList",
+          "documentation":"<p>The names of the metrics to collect for the resource. Amazon CloudWatch collects only the metrics that you list here.</p>"
+        }
+      },
+      "documentation":"<p>Specifies which metrics Amazon CloudWatch collects for a resource metrics configuration. Include this in a <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/APIReference/API_CreateResourceMetricsConfiguration.html\">CreateResourceMetricsConfiguration</a> or <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/APIReference/API_UpdateResourceMetricsConfiguration.html\">UpdateResourceMetricsConfiguration</a> request to limit collection to a specific set of metrics. If you omit metric selections, Amazon CloudWatch collects all available detailed metrics for the resource.</p>"
+    },
+    "ResourceMetricSelectionList":{
+      "type":"list",
+      "member":{"shape":"ResourceMetricSelection"},
+      "max":1,
+      "min":1
+    },
+    "ResourceMetricsConfiguration":{
+      "type":"structure",
+      "required":[
+        "ResourceArn",
+        "CreatedAt",
+        "UpdatedAt"
+      ],
+      "members":{
+        "ResourceArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon Web Services resource that this configuration applies to.</p>"
+        },
+        "CreatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time that the resource metrics configuration was created.</p>"
+        },
+        "UpdatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time that the resource metrics configuration was last updated. When the configuration is first created, this value is the same as <code>CreatedAt</code>.</p>"
+        },
+        "MetricSelections":{
+          "shape":"ResourceMetricSelectionList",
+          "documentation":"<p>The metrics that Amazon CloudWatch collects for the resource. If this field is not present, Amazon CloudWatch collects all available detailed metrics for the resource.</p>"
+        }
+      },
+      "documentation":"<p>Represents a resource metrics configuration for an Amazon Web Services resource. A resource metrics configuration enables detailed metric collection for the resource that is identified by its Amazon Resource Name (ARN). Each Amazon Web Services resource can have only one resource metrics configuration.</p> <p>This structure is returned by the <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/APIReference/API_CreateResourceMetricsConfiguration.html\">CreateResourceMetricsConfiguration</a>, <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/APIReference/API_UpdateResourceMetricsConfiguration.html\">UpdateResourceMetricsConfiguration</a>, and <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/APIReference/API_GetResourceMetricsConfiguration.html\">GetResourceMetricsConfiguration</a> operations.</p>"
     },
     "ResourceName":{
       "type":"string",
@@ -4791,11 +5040,37 @@
     },
     "StartOTelEnrichmentInput":{
       "type":"structure",
-      "members":{}
+      "members":{
+        "IncludeFilters":{
+          "shape":"OTelEnrichmentMetricSelectorList",
+          "documentation":"<p>The metric namespaces, and the metric names, to enrich. If this parameter is omitted, every namespace that Amazon CloudWatch supports for enrichment is in scope.</p> <p>A maximum of 100 filters is allowed across <code>IncludeFilters</code> and <code>ExcludeFilters</code> combined.</p>"
+        },
+        "ExcludeFilters":{
+          "shape":"OTelEnrichmentMetricSelectorList",
+          "documentation":"<p>The metric namespaces, and the metric names, to leave unenriched. If this parameter is omitted, nothing is excluded.</p> <p>Amazon CloudWatch applies <code>ExcludeFilters</code> after <code>IncludeFilters</code>, so a metric that both parameters match is not enriched.</p> <p>A maximum of 100 filters is allowed across <code>IncludeFilters</code> and <code>ExcludeFilters</code> combined.</p>"
+        }
+      }
     },
     "StartOTelEnrichmentOutput":{
       "type":"structure",
-      "members":{}
+      "members":{
+        "IncludeFilters":{
+          "shape":"OTelEnrichmentMetricSelectorList",
+          "documentation":"<p>The include filters that are stored for the account.</p>"
+        },
+        "ExcludeFilters":{
+          "shape":"OTelEnrichmentMetricSelectorList",
+          "documentation":"<p>The exclude filters that are stored for the account.</p>"
+        },
+        "CreatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time that enrichment started for the account.</p>"
+        },
+        "UpdatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time that the enrichment configuration for the account was last stored.</p>"
+        }
+      }
     },
     "StartTimeOffset":{
       "type":"long",
@@ -5003,6 +5278,81 @@
       "type":"structure",
       "members":{}
     },
+    "UpdateOTelEnrichmentInput":{
+      "type":"structure",
+      "members":{
+        "IncludeFilters":{
+          "shape":"OTelEnrichmentMetricSelectorList",
+          "documentation":"<p>The metric namespaces, and the metric names, to enrich. If this parameter is omitted, every namespace that Amazon CloudWatch supports for enrichment is in scope.</p> <p>A maximum of 100 filters is allowed across <code>IncludeFilters</code> and <code>ExcludeFilters</code> combined.</p>"
+        },
+        "ExcludeFilters":{
+          "shape":"OTelEnrichmentMetricSelectorList",
+          "documentation":"<p>The metric namespaces, and the metric names, to leave unenriched. If this parameter is omitted, nothing is excluded.</p> <p>Amazon CloudWatch applies <code>ExcludeFilters</code> after <code>IncludeFilters</code>, so a metric that both parameters match is not enriched.</p> <p>A maximum of 100 filters is allowed across <code>IncludeFilters</code> and <code>ExcludeFilters</code> combined.</p>"
+        }
+      }
+    },
+    "UpdateOTelEnrichmentOutput":{
+      "type":"structure",
+      "members":{
+        "IncludeFilters":{
+          "shape":"OTelEnrichmentMetricSelectorList",
+          "documentation":"<p>The include filters that are stored for the account after the replacement. This parameter is omitted when the request cleared the include filters, which means that every supported namespace is in scope.</p>"
+        },
+        "ExcludeFilters":{
+          "shape":"OTelEnrichmentMetricSelectorList",
+          "documentation":"<p>The exclude filters that are stored for the account after the replacement. This parameter is omitted when the request cleared the exclude filters, which means that nothing is excluded.</p>"
+        },
+        "CreatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time that enrichment started for the account.</p>"
+        },
+        "UpdatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time that the enrichment configuration for the account was last stored.</p>"
+        }
+      }
+    },
+    "UpdateResourceMetricsConfigurationInput":{
+      "type":"structure",
+      "required":["ResourceArn"],
+      "members":{
+        "ResourceArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon Web Services resource to update the resource metrics configuration for.</p>"
+        },
+        "MetricSelections":{
+          "shape":"ResourceMetricSelectionList",
+          "documentation":"<p>Specifies which metrics Amazon CloudWatch collects for the resource. The selections that you provide completely replace any existing metric selections.</p> <p>If you omit this parameter, Amazon CloudWatch removes any existing metric selection filter and collects all available detailed metrics for the resource.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the resource ARN and optional replacement metric selections for an <code>UpdateResourceMetricsConfiguration</code> request.</p>"
+    },
+    "UpdateResourceMetricsConfigurationOutput":{
+      "type":"structure",
+      "required":["ResourceMetricsConfiguration"],
+      "members":{
+        "ResourceMetricsConfiguration":{
+          "shape":"ResourceMetricsConfiguration",
+          "documentation":"<p>The resource metrics configuration after the update was applied.</p>"
+        }
+      },
+      "documentation":"<p>Returns the updated resource metrics configuration.</p>"
+    },
+    "ValidationException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"ValidationExceptionMessage"}
+      },
+      "documentation":"<p>The request failed validation. One or more input parameters do not satisfy the constraints that the operation requires.</p>",
+      "error":{
+        "code":"ValidationError",
+        "httpStatusCode":400,
+        "senderFault":true
+      },
+      "exception":true,
+      "synthetic":true
+    },
+    "ValidationExceptionMessage":{"type":"string"},
     "Values":{
       "type":"list",
       "member":{"shape":"DatapointValue"}

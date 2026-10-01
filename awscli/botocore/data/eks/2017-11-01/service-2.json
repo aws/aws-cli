@@ -1726,6 +1726,10 @@
         "networkAccess":{
           "shape":"ArgoCdNetworkAccessConfigRequest",
           "documentation":"<p>Configuration for network access to the Argo CD capability's managed API server endpoint. By default, the Argo CD server is accessible via a public endpoint. You can optionally specify one or more VPC endpoint IDs to enable private connectivity from your VPCs. When VPC endpoints are configured, public access is blocked and the Argo CD server is only accessible through the specified VPC endpoints.</p>"
+        },
+        "endpointPrefix":{
+          "shape":"ArgoCdEndpointPrefix",
+          "documentation":"<p>An optional prefix used to construct the hostname of the Argo CD server endpoint. If not specified, Amazon EKS automatically generates the endpoint. This value can't be changed after the capability is created.</p>"
         }
       },
       "documentation":"<p>Configuration settings for an Argo CD capability. This includes the Kubernetes namespace, IAM Identity CenterIAM; Identity Center integration, RBAC role mappings, and network access configuration.</p>"
@@ -1752,9 +1756,19 @@
         "serverUrl":{
           "shape":"String",
           "documentation":"<p>The URL of the Argo CD server. Use this URL to access the Argo CD web interface and API.</p>"
+        },
+        "endpointPrefix":{
+          "shape":"ArgoCdEndpointPrefix",
+          "documentation":"<p>The prefix that was configured for the hostname of the Argo CD server endpoint when the capability was created.</p>"
         }
       },
       "documentation":"<p>The response object containing Argo CD configuration details, including the server URL that you use to access the Argo CD web interface and API.</p>"
+    },
+    "ArgoCdEndpointPrefix":{
+      "type":"string",
+      "max":50,
+      "min":1,
+      "pattern":"^[a-z0-9]([a-z0-9-]*[a-z0-9])?$"
     },
     "ArgoCdNetworkAccessConfigRequest":{
       "type":"structure",

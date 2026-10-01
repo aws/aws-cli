@@ -261,6 +261,27 @@
       "documentation":"<p>Creates a static snapshot of your prompt that can be deployed to production. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/prompt-management-deploy.html\">Deploy prompts using Prompt management by creating versions</a> in the Amazon Bedrock User Guide.</p>",
       "idempotent":true
     },
+    "CreateVpcConfiguration":{
+      "name":"CreateVpcConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/knowledgebases/{knowledgeBaseId}/vpcconfigurations/",
+        "responseCode":202
+      },
+      "input":{"shape":"CreateVpcConfigurationRequest"},
+      "output":{"shape":"CreateVpcConfigurationResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"},
+        {"shape":"ServiceQuotaExceededException"}
+      ],
+      "documentation":"<p>Creates a VPC configuration that lets a knowledge base connect to a resource in your private VPC. This operation is asynchronous: it returns a <code>vpcConfigurationId</code> with status <code>CREATING</code>. Poll <code>GetVpcConfiguration</code> until the status becomes <code>CREATED</code> or <code>CREATE_FAILED</code>.</p>",
+      "idempotent":true
+    },
     "DeleteAgent":{
       "name":"DeleteAgent",
       "http":{
@@ -498,6 +519,26 @@
         {"shape":"ConflictException"}
       ],
       "documentation":"<p>Removes the resource policy associated with a knowledge base. After deletion, other AWS accounts can no longer access the knowledge base using cross-account permissions.</p>",
+      "idempotent":true
+    },
+    "DeleteVpcConfiguration":{
+      "name":"DeleteVpcConfiguration",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/knowledgebases/{knowledgeBaseId}/vpcconfigurations/{vpcConfigurationId}",
+        "responseCode":202
+      },
+      "input":{"shape":"DeleteVpcConfigurationRequest"},
+      "output":{"shape":"DeleteVpcConfigurationResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Deletes a VPC configuration. This operation is asynchronous: it returns status <code>DELETING</code>. Poll <code>GetVpcConfiguration</code> until it returns a <code>ResourceNotFoundException</code>, indicating the configuration is deleted. Delete requests are idempotent and safe to retry.</p>",
       "idempotent":true
     },
     "DisassociateAgentCollaborator":{
@@ -826,6 +867,25 @@
       "documentation":"<p>Retrieves the resource policy associated with a knowledge base.</p>",
       "readonly":true
     },
+    "GetVpcConfiguration":{
+      "name":"GetVpcConfiguration",
+      "http":{
+        "method":"GET",
+        "requestUri":"/knowledgebases/{knowledgeBaseId}/vpcconfigurations/{vpcConfigurationId}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetVpcConfigurationRequest"},
+      "output":{"shape":"GetVpcConfigurationResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Returns the details and current status of a single VPC configuration. Use this operation to poll for the outcome of an asynchronous create or delete.</p>",
+      "readonly":true
+    },
     "IngestKnowledgeBaseDocuments":{
       "name":"IngestKnowledgeBaseDocuments",
       "http":{
@@ -1127,6 +1187,25 @@
         {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>List all the tags for the resource you specify.</p>",
+      "readonly":true
+    },
+    "ListVpcConfigurations":{
+      "name":"ListVpcConfigurations",
+      "http":{
+        "method":"GET",
+        "requestUri":"/knowledgebases/{knowledgeBaseId}/vpcconfigurations/",
+        "responseCode":200
+      },
+      "input":{"shape":"ListVpcConfigurationsRequest"},
+      "output":{"shape":"ListVpcConfigurationsResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Returns a paginated list of the VPC configurations for a knowledge base. You can optionally filter by status. Use the <code>nextToken</code> parameter to retrieve additional results.</p>",
       "readonly":true
     },
     "PrepareAgent":{
@@ -2659,7 +2738,7 @@
         },
         "modelConfiguration":{
           "shape":"Document",
-          "documentation":"<p>Model-specific configuration for the embedding model, provided as a JSON object. Use this field to specify settings that apply to the embedding model that you selected, such as how audio and video files are divided into segments.</p> <p>The fields that this object accepts depend on the embedding model. For the settings that each model accepts, see the documentation for that model.</p>"
+          "documentation":"<p>Model-specific configuration for the embedding model, provided as a JSON object. Use this field to specify settings that apply to the embedding model that you selected, such as how audio and video files are divided into segments.</p> <p>The fields that this object accepts depend on the embedding model. For the settings that each model accepts, see the documentation for that model.</p> <p>For an example of a <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent_CreateKnowledgeBase.html\">CreateKnowledgeBase</a> request that uses this field to configure a multimodal embedding model, see the <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent_CreateKnowledgeBase.html#API_agent_CreateKnowledgeBase_Examples\">Examples</a> section of <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent_CreateKnowledgeBase.html\">CreateKnowledgeBase</a>.</p>"
         }
       },
       "documentation":"<p>The vector configuration details for the Bedrock embeddings model.</p>"
@@ -3736,6 +3815,88 @@
         }
       }
     },
+    "CreateVpcConfigurationRequest":{
+      "type":"structure",
+      "required":[
+        "knowledgeBaseId",
+        "vpcId",
+        "subnetIds",
+        "resourceTarget",
+        "port",
+        "protocol",
+        "resolutionMode"
+      ],
+      "members":{
+        "knowledgeBaseId":{
+          "shape":"Id",
+          "documentation":"<p>The unique identifier of the knowledge base to associate this VPC configuration with.</p>",
+          "location":"uri",
+          "locationName":"knowledgeBaseId"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier to ensure that the operation completes no more than one time. If this token matches a previous request, the service ignores the request but does not return an error.</p>",
+          "idempotencyToken":true
+        },
+        "vpcId":{
+          "shape":"VpcId",
+          "documentation":"<p>The identifier of the VPC that the knowledge base connects through to reach the resource.</p>"
+        },
+        "subnetIds":{
+          "shape":"SubnetIdList",
+          "documentation":"<p>The subnets, in the VPC identified by <code>vpcId</code>, that the knowledge base uses to connect to the resource.</p>"
+        },
+        "resourceTarget":{
+          "shape":"ResourceTarget",
+          "documentation":"<p>The private IPv4 address or DNS name of the resource you want the knowledge base to reach. The target must be privately reachable from inside your VPC, such as an internal load balancer or a private IP. The following are not supported:</p> <ul> <li> <p>Internet-facing endpoints</p> </li> <li> <p>Loopback addresses</p> </li> <li> <p>Link-local addresses</p> </li> <li> <p>Wildcard addresses</p> </li> <li> <p>Multicast addresses</p> </li> <li> <p>IPv6 literals</p> </li> </ul>"
+        },
+        "port":{
+          "shape":"Port",
+          "documentation":"<p>The port on which to reach the resource.</p>"
+        },
+        "protocol":{
+          "shape":"VpcProtocol",
+          "documentation":"<p>The protocol used to connect to the resource. Specify <code>HTTP</code> for plaintext or <code>HTTPS</code> for TLS. When you specify <code>HTTPS</code>, you must also provide <code>tlsServerName</code>.</p>"
+        },
+        "resolutionMode":{
+          "shape":"VpcResolutionMode",
+          "documentation":"<p>Controls how a domain-name <code>resourceTarget</code> is resolved. This applies only when the target is a domain name; it has no effect for IP-address targets, which have no name to resolve. In all cases the resolved address must be reachable from inside your VPC. Valid values:</p> <ul> <li> <p> <code>IN_VPC</code> (default, recommended) – The target domain name is resolved privately, using the DNS resolvers of the VPC, such as private Route 53 hosted zones or on-premises DNS reachable from the VPC. Use this for targets that are private to your VPC, such as internal load balancers, private hosted-zone names, or on-premises hosts.</p> </li> <li> <p> <code>PUBLIC</code> – The target domain name is resolved against public DNS resolvers. Select this only when the target's domain name must be resolved through public DNS and the resulting address is still reachable from the VPC, an uncommon split-horizon configuration. If you are unsure, use <code>IN_VPC</code>.</p> </li> </ul>"
+        },
+        "hostHeader":{
+          "shape":"HostHeader",
+          "documentation":"<p>An optional HTTP <code>Host</code> header value to send when invoking the resource. Set this only if your resource (or an upstream router or ingress) routes by the <code>Host</code> header and that host differs from the target. This setting is independent of <code>tlsServerName</code>.</p>"
+        },
+        "tlsServerName":{
+          "shape":"TlsServerName",
+          "documentation":"<p>The expected TLS server name. The service matches this value against the Subject Alternative Names on your resource's TLS certificate during invocation. This field is required when <code>protocol</code> is <code>HTTPS</code>. Set it to a hostname on your certificate, such as <code>app.internal.example.com</code>. You can use a single leftmost wildcard, such as <code>*.example.com</code>. The value must be a hostname without a port.</p>"
+        },
+        "name":{
+          "shape":"VpcConfigurationName",
+          "documentation":"<p>An optional human-readable name for the VPC configuration. If you don't specify a name, the VPC configuration has no name.</p>"
+        },
+        "description":{
+          "shape":"VpcConfigurationDescription",
+          "documentation":"<p>An optional description of the VPC configuration. If you don't specify a description, the VPC configuration has no description.</p>"
+        }
+      }
+    },
+    "CreateVpcConfigurationResponse":{
+      "type":"structure",
+      "required":[
+        "vpcConfigurationId",
+        "status"
+      ],
+      "members":{
+        "vpcConfigurationId":{
+          "shape":"VpcConfigurationId",
+          "documentation":"<p>The unique identifier of the VPC configuration that was created.</p>"
+        },
+        "status":{
+          "shape":"VpcConfigurationStatus",
+          "documentation":"<p>The current status of the VPC configuration. Immediately after creation this is <code>CREATING</code>.</p>"
+        }
+      }
+    },
     "CreationMode":{
       "type":"string",
       "enum":[
@@ -4542,6 +4703,44 @@
         "revisionId":{
           "shape":"RevisionId",
           "documentation":"<p>The revision identifier after the resource policy was deleted.</p>"
+        }
+      }
+    },
+    "DeleteVpcConfigurationRequest":{
+      "type":"structure",
+      "required":[
+        "knowledgeBaseId",
+        "vpcConfigurationId"
+      ],
+      "members":{
+        "knowledgeBaseId":{
+          "shape":"Id",
+          "documentation":"<p>The unique identifier of the knowledge base that owns the VPC configuration.</p>",
+          "location":"uri",
+          "locationName":"knowledgeBaseId"
+        },
+        "vpcConfigurationId":{
+          "shape":"VpcConfigurationId",
+          "documentation":"<p>The unique identifier of the VPC configuration to delete.</p>",
+          "location":"uri",
+          "locationName":"vpcConfigurationId"
+        }
+      }
+    },
+    "DeleteVpcConfigurationResponse":{
+      "type":"structure",
+      "required":[
+        "vpcConfigurationId",
+        "status"
+      ],
+      "members":{
+        "vpcConfigurationId":{
+          "shape":"VpcConfigurationId",
+          "documentation":"<p>The unique identifier of the VPC configuration being deleted.</p>"
+        },
+        "status":{
+          "shape":"VpcConfigurationStatus",
+          "documentation":"<p>The current status of the VPC configuration. Immediately after a delete request this is <code>DELETING</code>.</p>"
         }
       }
     },
@@ -6533,6 +6732,37 @@
         }
       }
     },
+    "GetVpcConfigurationRequest":{
+      "type":"structure",
+      "required":[
+        "knowledgeBaseId",
+        "vpcConfigurationId"
+      ],
+      "members":{
+        "knowledgeBaseId":{
+          "shape":"Id",
+          "documentation":"<p>The unique identifier of the knowledge base that owns the VPC configuration.</p>",
+          "location":"uri",
+          "locationName":"knowledgeBaseId"
+        },
+        "vpcConfigurationId":{
+          "shape":"VpcConfigurationId",
+          "documentation":"<p>The unique identifier of the VPC configuration to retrieve.</p>",
+          "location":"uri",
+          "locationName":"vpcConfigurationId"
+        }
+      }
+    },
+    "GetVpcConfigurationResponse":{
+      "type":"structure",
+      "required":["vpcConfiguration"],
+      "members":{
+        "vpcConfiguration":{
+          "shape":"VpcConfiguration",
+          "documentation":"<p>The VPC configuration, including its connection settings, resolution mode, and current lifecycle status.</p>"
+        }
+      }
+    },
     "GraphArn":{
       "type":"string",
       "documentation":"<p>ARN for Neptune Analytics graph database</p>",
@@ -6610,6 +6840,12 @@
       "member":{"shape":"HierarchicalChunkingLevelConfiguration"},
       "max":2,
       "min":2
+    },
+    "HostHeader":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"[A-Za-z0-9._:\\[\\]-]{1,255}"
     },
     "HttpsUrl":{
       "type":"string",
@@ -8012,6 +8248,56 @@
         }
       }
     },
+    "ListVpcConfigurationsRequest":{
+      "type":"structure",
+      "required":["knowledgeBaseId"],
+      "members":{
+        "knowledgeBaseId":{
+          "shape":"Id",
+          "documentation":"<p>The unique identifier of the knowledge base whose VPC configurations you want to list.</p>",
+          "location":"uri",
+          "locationName":"knowledgeBaseId"
+        },
+        "statusFilter":{
+          "shape":"VpcConfigurationStatus",
+          "documentation":"<p>The status to filter the results by. Only VPC configurations with the specified status are returned.</p>",
+          "location":"querystring",
+          "locationName":"status"
+        },
+        "maxResults":{
+          "shape":"ListVpcConfigurationsRequestMaxResultsInteger",
+          "documentation":"<p>The maximum number of results to return in the response. If more results are available, the response returns a <code>nextToken</code>.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A pagination token to retrieve the next page of results, returned in a previous response when more results are available.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListVpcConfigurationsRequestMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "ListVpcConfigurationsResponse":{
+      "type":"structure",
+      "required":["items"],
+      "members":{
+        "items":{
+          "shape":"VpcConfigurationSummaryList",
+          "documentation":"<p>A list of VPC configuration summaries.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A pagination token to retrieve the next page of results, present when the total number of results exceeds the maximum number of results.</p>"
+        }
+      }
+    },
     "LoopControllerFlowNodeConfiguration":{
       "type":"structure",
       "required":["continueCondition"],
@@ -9046,6 +9332,12 @@
       "max":2048,
       "min":0,
       "pattern":".*"
+    },
+    "Port":{
+      "type":"integer",
+      "box":true,
+      "max":65535,
+      "min":1
     },
     "PrepareAgentRequest":{
       "type":"structure",
@@ -10094,6 +10386,11 @@
       "min":1,
       "pattern":"[\\u0009\\u000A\\u000D\\u0020-\\u00FF]+"
     },
+    "ResourceTarget":{
+      "type":"string",
+      "max":255,
+      "min":1
+    },
     "RetrievalFlowNodeConfiguration":{
       "type":"structure",
       "required":["serviceConfiguration"],
@@ -10697,6 +10994,18 @@
       "min":1,
       "sensitive":true
     },
+    "SubnetId":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"subnet-[a-zA-Z0-9]+"
+    },
+    "SubnetIdList":{
+      "type":"list",
+      "member":{"shape":"SubnetId"},
+      "max":6,
+      "min":1
+    },
     "SupplementalDataStorageConfiguration":{
       "type":"structure",
       "required":["storageLocations"],
@@ -10881,6 +11190,12 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "TlsServerName":{
+      "type":"string",
+      "max":253,
+      "min":1,
+      "pattern":"(\\*\\.)?([A-Za-z0-9]([A-Za-z0-9-]{0,61}[A-Za-z0-9])?\\.)*[A-Za-z0-9]([A-Za-z0-9-]{0,61}[A-Za-z0-9])?"
     },
     "Tool":{
       "type":"structure",
@@ -12128,6 +12443,212 @@
       "box":true,
       "max":30,
       "min":1
+    },
+    "VpcConfiguration":{
+      "type":"structure",
+      "required":[
+        "vpcConfigurationId",
+        "status",
+        "vpcId",
+        "subnetIds",
+        "resourceTarget",
+        "port",
+        "protocol",
+        "resolutionMode",
+        "createdAt",
+        "updatedAt"
+      ],
+      "members":{
+        "vpcConfigurationId":{
+          "shape":"VpcConfigurationId",
+          "documentation":"<p>The unique identifier of the VPC configuration.</p>"
+        },
+        "status":{
+          "shape":"VpcConfigurationStatus",
+          "documentation":"<p>The current lifecycle status of the VPC configuration.</p>"
+        },
+        "statusMessage":{
+          "shape":"VpcConfigurationStatusMessage",
+          "documentation":"<p>Additional detail about the current status, such as the cause of a <code>CREATE_FAILED</code> or <code>DELETE_FAILED</code> status.</p>"
+        },
+        "vpcId":{
+          "shape":"VpcId",
+          "documentation":"<p>The identifier of the VPC that the knowledge base connects through to reach the resource.</p>"
+        },
+        "subnetIds":{
+          "shape":"SubnetIdList",
+          "documentation":"<p>The subnets that the knowledge base uses to connect to the resource.</p>"
+        },
+        "resourceTarget":{
+          "shape":"ResourceTarget",
+          "documentation":"<p>The private IPv4 address or DNS name of the resource.</p>"
+        },
+        "port":{
+          "shape":"Port",
+          "documentation":"<p>The port on which the resource is reached.</p>"
+        },
+        "protocol":{
+          "shape":"VpcProtocol",
+          "documentation":"<p>The protocol used to connect to the resource.</p>"
+        },
+        "resolutionMode":{
+          "shape":"VpcResolutionMode",
+          "documentation":"<p>Specifies how the resource target is resolved.</p>"
+        },
+        "hostHeader":{
+          "shape":"HostHeader",
+          "documentation":"<p>The HTTP <code>Host</code> header value sent when invoking the resource, if configured.</p>"
+        },
+        "tlsServerName":{
+          "shape":"TlsServerName",
+          "documentation":"<p>The expected TLS server name that the service matches against the Subject Alternative Names on the resource's TLS certificate. Present when <code>protocol</code> is <code>HTTPS</code>.</p>"
+        },
+        "name":{
+          "shape":"VpcConfigurationName",
+          "documentation":"<p>The human-readable name of the VPC configuration, if provided.</p>"
+        },
+        "description":{
+          "shape":"VpcConfigurationDescription",
+          "documentation":"<p>The description of the VPC configuration, if provided.</p>"
+        },
+        "createdAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The time at which the VPC configuration was created.</p>"
+        },
+        "updatedAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The time at which the VPC configuration was last updated.</p>"
+        }
+      },
+      "documentation":"<p>Contains the details of a VPC configuration, including its connection settings, resolution mode, and current lifecycle status.</p>"
+    },
+    "VpcConfigurationDescription":{
+      "type":"string",
+      "max":512,
+      "min":0,
+      "pattern":"[^\\p{C}]*"
+    },
+    "VpcConfigurationId":{
+      "type":"string",
+      "max":32,
+      "min":32,
+      "pattern":"[a-z0-9](?:[a-z0-9-]{30}[a-z0-9])"
+    },
+    "VpcConfigurationName":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"[a-zA-Z0-9]([a-zA-Z0-9 _-]*[a-zA-Z0-9])?"
+    },
+    "VpcConfigurationStatus":{
+      "type":"string",
+      "documentation":"<p>The lifecycle status of a VPC configuration. Valid values:</p> <ul> <li> <p> <code>CREATING</code> – The configuration is being created.</p> </li> <li> <p> <code>CREATED</code> – The configuration is ready to use.</p> </li> <li> <p> <code>DELETING</code> – The configuration is being deleted.</p> </li> <li> <p> <code>CREATE_FAILED</code> – Creation failed. See <code>statusMessage</code> for the cause.</p> </li> <li> <p> <code>DELETE_FAILED</code> – Deletion failed. See <code>statusMessage</code> for the cause.</p> </li> </ul>",
+      "enum":[
+        "CREATING",
+        "CREATED",
+        "DELETING",
+        "CREATE_FAILED",
+        "DELETE_FAILED"
+      ]
+    },
+    "VpcConfigurationStatusMessage":{
+      "type":"string",
+      "max":2048,
+      "min":1
+    },
+    "VpcConfigurationSummary":{
+      "type":"structure",
+      "required":[
+        "vpcConfigurationId",
+        "status",
+        "vpcId",
+        "resourceTarget",
+        "port",
+        "protocol",
+        "resolutionMode",
+        "createdAt"
+      ],
+      "members":{
+        "vpcConfigurationId":{
+          "shape":"VpcConfigurationId",
+          "documentation":"<p>The unique identifier of the VPC configuration.</p>"
+        },
+        "status":{
+          "shape":"VpcConfigurationStatus",
+          "documentation":"<p>The current lifecycle status of the VPC configuration.</p>"
+        },
+        "statusMessage":{
+          "shape":"VpcConfigurationStatusMessage",
+          "documentation":"<p>Additional detail about the current status, such as the cause of a failure.</p>"
+        },
+        "vpcId":{
+          "shape":"VpcId",
+          "documentation":"<p>The identifier of the VPC that the knowledge base connects through to reach the resource.</p>"
+        },
+        "resourceTarget":{
+          "shape":"ResourceTarget",
+          "documentation":"<p>The private IPv4 address or DNS name of the resource.</p>"
+        },
+        "port":{
+          "shape":"Port",
+          "documentation":"<p>The port on which the resource is reached.</p>"
+        },
+        "protocol":{
+          "shape":"VpcProtocol",
+          "documentation":"<p>The protocol used to connect to the resource.</p>"
+        },
+        "resolutionMode":{
+          "shape":"VpcResolutionMode",
+          "documentation":"<p>Specifies how the resource target is resolved.</p>"
+        },
+        "hostHeader":{
+          "shape":"HostHeader",
+          "documentation":"<p>The HTTP <code>Host</code> header value sent when invoking the resource, if configured.</p>"
+        },
+        "tlsServerName":{
+          "shape":"TlsServerName",
+          "documentation":"<p>The expected TLS server name that the service matches against the Subject Alternative Names on the resource's TLS certificate. Present when <code>protocol</code> is <code>HTTPS</code>.</p>"
+        },
+        "name":{
+          "shape":"VpcConfigurationName",
+          "documentation":"<p>The human-readable name of the VPC configuration, if provided.</p>"
+        },
+        "description":{
+          "shape":"VpcConfigurationDescription",
+          "documentation":"<p>The description of the VPC configuration, if provided.</p>"
+        },
+        "createdAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The time at which the VPC configuration was created.</p>"
+        }
+      },
+      "documentation":"<p>A summary of a VPC configuration returned by <code>ListVpcConfigurations</code>.</p>"
+    },
+    "VpcConfigurationSummaryList":{
+      "type":"list",
+      "member":{"shape":"VpcConfigurationSummary"}
+    },
+    "VpcId":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"vpc-[a-zA-Z0-9]+"
+    },
+    "VpcProtocol":{
+      "type":"string",
+      "documentation":"<p>The protocol used to connect to the resource. Valid values:</p> <ul> <li> <p> <code>HTTP</code> – Connect over plaintext HTTP.</p> </li> <li> <p> <code>HTTPS</code> – Connect over TLS.</p> </li> </ul>",
+      "enum":[
+        "HTTP",
+        "HTTPS"
+      ]
+    },
+    "VpcResolutionMode":{
+      "type":"string",
+      "documentation":"<p>Controls how a domain-name resource target is resolved. This applies only when the target is a domain name; it has no effect for IP-address targets. In all cases the resolved address must be reachable from inside the VPC. Valid values:</p> <ul> <li> <p> <code>IN_VPC</code> (default, recommended) – The target domain name is resolved privately, using the DNS resolvers of the VPC.</p> </li> <li> <p> <code>PUBLIC</code> – The target domain name is resolved against public DNS resolvers, for the uncommon case where the name must resolve through public DNS but the resulting address remains reachable from the VPC.</p> </li> </ul>",
+      "enum":[
+        "PUBLIC",
+        "IN_VPC"
+      ]
     },
     "WebCrawlerConfiguration":{
       "type":"structure",

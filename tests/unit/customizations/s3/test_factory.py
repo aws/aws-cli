@@ -370,6 +370,24 @@ class TestTransferManagerFactory(unittest.TestCase):
         )
 
     @mock.patch('s3transfer.crt.S3Client')
+    def test_crt_manager_signs_for_us_east_1_without_region(
+        self, mock_crt_client
+    ):
+        self.runtime_config = self.get_runtime_config(
+            preferred_transfer_client='crt'
+        )
+        params = {'verify_ssl': DEFAULT_CA_BUNDLE}
+        stub_config_variables(self.session)
+        transfer_manager = self.factory.create_transfer_manager(
+            params, self.runtime_config
+        )
+        self.assert_is_crt_manager(transfer_manager)
+        self.assertEqual(mock_crt_client.call_args[1]['region'], 'us-east-1')
+        self.assertIsNone(
+            self.session.create_client.call_args[1]['region_name']
+        )
+
+    @mock.patch('s3transfer.crt.S3Client')
     def test_uses_tls_by_default_for_crt_manager(self, mock_crt_client):
         self.runtime_config = self.get_runtime_config(
             preferred_transfer_client='crt'
@@ -955,7 +973,7 @@ class TestAutoResolveCrtClientForInstanceFamily:
     def test_resolves_to_classic_for_instance_family_not_rolled_out(
         self, resolve_client_type, mock_crt_get_ec2_instance_type
     ):
-        mock_crt_get_ec2_instance_type.return_value = 'm5.2xlarge'
+        mock_crt_get_ec2_instance_type.return_value = 't4g.2xlarge'
         assert resolve_client_type() == constants.CLASSIC_TRANSFER_CLIENT
 
     def test_instance_family_must_match_in_full(
@@ -1199,8 +1217,6 @@ class TestWarnUnsupportedSettings:
     'crt_is_optimized_for_system,crt_running_in_other_process,'
     'expected_transfer_manager_cls',
     [
-        (None, {}, False, False, TransferManager),
-        ('auto', {}, False, False, TransferManager),
         ('classic', {}, False, False, TransferManager),
         ('crt', {}, False, False, CRTTransferManager),
         # "default" is a supported alias for "classic"
@@ -1221,8 +1237,6 @@ class TestWarnUnsupportedSettings:
         ('classic', {'paths_type': 's3s3'}, True, False, TransferManager),
         ('crt', {'paths_type': 's3s3'}, True, False, TransferManager),
         # Streaming operations use requested transfer client
-        (None, {'is_stream': True}, False, False, TransferManager),
-        ('auto', {'is_stream': True}, False, False, TransferManager),
         ('classic', {'is_stream': True}, False, False, TransferManager),
         ('crt', {'is_stream': True}, False, False, CRTTransferManager),
     ],
@@ -1280,7 +1294,6 @@ def test_factory_always_acquires_crt_transfer_lock_for_crt_manager(
 @pytest.mark.parametrize(
     'preferred_transfer_client,crt_is_optimized_for_system',
     [
-        ('auto', False),
         ('classic', False),
         ('classic', True),
     ],
@@ -1324,8 +1337,6 @@ def _create_transfer_manager_from_factory(
     [
         ('classic', {}, False, 'Ad'),
         ('crt', {}, False, 'Ae'),
-        (None, {}, False, 'Af'),
-        ('auto', {}, False, 'Af'),
         (None, {}, True, 'Ag'),
         ('auto', {}, True, 'Ag'),
         # S3 copies always use the classic client.

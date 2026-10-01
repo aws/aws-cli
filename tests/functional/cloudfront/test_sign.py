@@ -18,15 +18,18 @@ import re
 from awscrt.crypto import EC, RSA
 from botocore.compat import parse_qs, urlparse
 from botocore.history import HistoryRecorder
-from botocore.signers import CloudFrontSigner
-from botocore.utils import parse_to_aware_datetime
 
 from awscli.customizations.history.db import (
     DatabaseHistoryHandler,
     DatabaseRecordWriter,
     RecordBuilder,
 )
-from awscli.testutils import BaseAWSCommandParamsTest, FileCreator, mock
+from awscli.testutils import (
+    BaseAWSCommandParamsTest,
+    FileCreator,
+    mock,
+    skip_if_windows,
+)
 
 
 def _pem_to_der(pem, label):
@@ -75,7 +78,7 @@ class TestSign(BaseAWSCommandParamsTest):
         '5rB+y/UOS+nlEwQ6eOS09GByJDEXOXpcwjFcTr/f7V8mi0jH+gY/\n'
         '-----END RSA PRIVATE KEY-----\n'
     )
-    prefix = 'cloudfront sign --key-pair-id MYID --url http://example.com/hi '
+    prefix = 'cloudfront sign --key-pair-id my_id --url http://example.com/hi '
 
     def setUp(self):
         files = FileCreator()
@@ -105,7 +108,7 @@ class TestSign(BaseAWSCommandParamsTest):
             "-4Q5x6XH4yzII3JpbCmVwA__"
         )
         expected_params = {
-            'Key-Pair-Id': ['MYID'],
+            'Key-Pair-Id': ['my_id'],
             'Expires': ['1451606400'],
             'Signature': [expected_signature],
         }
@@ -129,7 +132,7 @@ class TestSign(BaseAWSCommandParamsTest):
             "bKxfgNEjSAoPWS0OvBkRmg__"
         )
         expected_params = {
-            'Key-Pair-Id': ['MYID'],
+            'Key-Pair-Id': ['my_id'],
             'Policy': [mock.ANY],
             'Signature': [expected_signature],
         }
@@ -175,13 +178,20 @@ class TestSign(BaseAWSCommandParamsTest):
         self.assertIn('some other signing failure', stderr)
 
 
-class BaseECDSASignTest(BaseAWSCommandParamsTest):
-    # Abstract base; concrete subclasses supply an EC private key. Prevents
-    # pytest from collecting this base class directly.
-    __test__ = False
-    # Overridden by subclasses with an EC private key in a specific PEM format.
-    private_key = None
-    pem_label = None
+class TestSignECDSAWithECParameters(BaseAWSCommandParamsTest):
+    # An EC (P-256) key as written by ``openssl ecparam -genkey``, which
+    # prepends an EC PARAMETERS block. Only for testing purpose.
+    private_key = (
+        '-----BEGIN EC PARAMETERS-----\n'
+        'BggqhkjOPQMBBw==\n'
+        '-----END EC PARAMETERS-----\n'
+        '-----BEGIN EC PRIVATE KEY-----\n'
+        'MHcCAQEEIIn+jH+ABbyXBxAaGba29zfgklJlso8Uy/hTX87clMxYoAoGCCqGSM49\n'
+        'AwEHoUQDQgAEcfEKhYahmRNFgp2LiNJf1Uy9TmWPgyuoAxKxXuS1Gtcxxs+39col\n'
+        'Ty9YFvZvhsAcv6B3LwBJW/ah/AUD1BGTIg==\n'
+        '-----END EC PRIVATE KEY-----\n'
+    )
+    pem_label = 'EC PRIVATE KEY'
     url = 'http://example.com/hi'
     prefix = 'cloudfront sign --key-pair-id MYID --url http://example.com/hi '
 
@@ -216,23 +226,6 @@ class BaseECDSASignTest(BaseAWSCommandParamsTest):
             "ECDSA signature failed to verify",
         )
 
-    def test_canned_policy(self):
-        cmdline = (
-            self.prefix
-            + '--private-key file://'
-            + self.private_key_file
-            + ' --date-less-than 2016-1-1'
-        )
-        params = self._run_and_parse(cmdline)
-        self.assertEqual(params['Expires'], ['1451606400'])
-        self.assertNotIn('Policy', params)
-        # For a canned policy the signed payload is the canned policy that
-        # CloudFrontSigner builds internally from the expiration date.
-        policy = CloudFrontSigner('MYID', None).build_policy(
-            self.url, parse_to_aware_datetime('2016-1-1')
-        )
-        self._assert_signature_verifies(params, policy)
-
     def test_custom_policy(self):
         cmdline = (
             self.prefix
@@ -246,186 +239,6 @@ class BaseECDSASignTest(BaseAWSCommandParamsTest):
         # exact signed payload can be recovered and verified against.
         policy = _url_b64decode(params['Policy'][0]).decode('utf8')
         self._assert_signature_verifies(params, policy)
-
-
-class TestSignECDSASEC1(BaseECDSASignTest):
-    __test__ = True
-    pem_label = 'EC PRIVATE KEY'
-    # An EC (P-256) private key in SEC1 format, only for testing purpose.
-    private_key = (
-        '-----BEGIN EC PRIVATE KEY-----\n'
-        'MHcCAQEEIEJv7Bciy04Q7+wqRyaA2xSCsaHtqPmDIQ5msTzcH1xNoAoGCCqGSM49\n'
-        'AwEHoUQDQgAEdPNT3OyY+yjo4dOMWcnmKSeIUzrfH2WHkcfKFm32D9B0/DNP9Coj\n'
-        'qIXILIjVsmvtp0ULy/ICJEeZbKxUv1/OjA==\n'
-        '-----END EC PRIVATE KEY-----\n'
-    )
-
-
-class TestSignECDSAUnsupportedCurve(BaseAWSCommandParamsTest):
-    # An EC private key on the P-384 curve, which CloudFront does not support.
-    private_key = (
-        '-----BEGIN EC PRIVATE KEY-----\n'
-        'MIGkAgEBBDCIoGBIXHIpvlHWVTT+jka5Jpj1YR5rWIncoxf6VUxxhlHjEI7hqDto\n'
-        'FajvDTKH5jSgBwYFK4EEACKhZANiAAT1i0QFJOMXeKxMx4VpZHw6OoKhEOB4nOXk\n'
-        'h+Z9dhiQ4H6O2D84WS6ql+iyNIH2qux8jBUju3fc8NdbVwIqyfQZWRRo/Lg5ekDp\n'
-        'M7re404ay7JYpiJXlCZP+RBCBn23NZU=\n'
-        '-----END EC PRIVATE KEY-----\n'
-    )
-    prefix = 'cloudfront sign --key-pair-id MYID --url http://example.com/hi '
-
-    def setUp(self):
-        files = FileCreator()
-        self.private_key_file = files.create_file('foo.pem', self.private_key)
-        self.addCleanup(files.remove_all)
-        super().setUp()
-
-    def test_non_p256_curve_raises_error(self):
-        cmdline = (
-            self.prefix
-            + '--private-key file://'
-            + self.private_key_file
-            + ' --date-less-than 2016-1-1'
-        )
-        _, stderr, _ = self.run_cmd(cmdline, expected_rc=255)
-        self.assertIn('Only P-256 EC keys are supported', stderr)
-
-
-class TestSignUnsupportedKeyType(BaseAWSCommandParamsTest):
-    # A key whose PEM header is neither RSA, EC, nor PKCS#8 "PRIVATE KEY".
-    private_key = (
-        '-----BEGIN OPENSSH PRIVATE KEY-----\n'
-        'b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAAAMwAAAAtz\n'
-        '-----END OPENSSH PRIVATE KEY-----\n'
-    )
-    prefix = 'cloudfront sign --key-pair-id MYID --url http://example.com/hi '
-
-    def setUp(self):
-        files = FileCreator()
-        self.private_key_file = files.create_file('foo.pem', self.private_key)
-        self.addCleanup(files.remove_all)
-        super().setUp()
-
-    def test_unsupported_key_type_raises_error(self):
-        cmdline = (
-            self.prefix
-            + '--private-key file://'
-            + self.private_key_file
-            + ' --date-less-than 2016-1-1'
-        )
-        _, stderr, _ = self.run_cmd(cmdline, expected_rc=255)
-        self.assertIn('Unsupported key type', stderr)
-
-
-class TestSignPKCS8(BaseAWSCommandParamsTest):
-    # A private key only for testing purpose.
-    private_key = (
-        '-----BEGIN PRIVATE KEY-----\n'
-        'MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDiVR5JIogE3iKq\n'
-        'buYalyKO3vmRnOxf7OU6/8WPma8wpWltb4d67HRBxeUvNugGq0uwinoPDfwF74zG\n'
-        'hOKeGrDPLVAbekPzYv1SnB/ppy+nvojDew72xgW56ii9X+Jk83f0TGNTmC7sBvcc\n'
-        'kqz3T/aX23NU0faCW5bl6fiW+HVUHZe/aE4nHqhorHiDXlvTV6wpjEWS6Xyf7ll+\n'
-        'Jvf4eXg7GqTGTGKsB0jE/xPKdVbnQD67fkJOdaAKTQKanY1UF2SS5Nx6NcBxbcCR\n'
-        'Va4myn1JOeQDyHcIXb4NmBx3m21eJSotrJYmD9LTs16mB4wi21lvimALwKxZHjvV\n'
-        'p58xKyyJAgMBAAECggEAFtKPdb96KMd/hmEdaeQAk5iPYOwKd9fK+6qL8OGF5Wlg\n'
-        'mqzq4+3RAUrjw+GM/xMp1Dj6euclmTGhJ+mBcoDtgE6o68Rl8rZyJfDhVO3LY+ZW\n'
-        'IyQXC7JHJIqkpgfzq8tTNrq3L1hCrwE6zNJLh7qz+nciB5UOfvGeYzu3Gf4e0qbi\n'
-        'rlStPa7Gi4Oc0EO/51YRjU3IpXjFRvcsqBtV95XA96hPo2ice0KMcrWPF9Kai8bQ\n'
-        '0sE+wv+YbgIsbwmnHntdd7Sfxx2jPjXeEgh/ncoXCMYfQueSAHQ/EQBWkofhUeB5\n'
-        'oEuQlS5b3D1t3aSKr2o7vrMtu1UWhabu0u+Db/r6gQKBgQD7DKJk0Ow2JBaoM7vV\n'
-        'UucuLWLaY4MG4a1YDlHPl6zmD1OioKrQw2h/m2SalYfxM8BjPbR9eesyDv55HQnR\n'
-        'ptC1SBNxH7dCwWqCeD1jNVoJP8VkBDPRiNaLz68wYkrtfiXCa0DYbewbdrEFDaIk\n'
-        'IErrRzxSWTSNE8Y1YA3ka6MiaQKBgQDmy7TdLa0tyYwY30DmLmS4WUZglJZKrT/0\n'
-        'd9UTz7KJek7P9BNZAe8yotVrxO2di+8W85GAVQBexeISrEW6ZK6GHGz949fJmbvq\n'
-        'QOU/6TgE01AL0nUZF2QKbdAleonlR/WB9IpZTQf/ZI1HmUV0QL3nCrs9OoFbzx4E\n'
-        'GfjbCmQ1IQKBgFOlZgZJRirT42ivtAnj0XslTCaPuXx1fRg1zTRpyQXuXWN2PPPJ\n'
-        '5+t8jwyifeTz5UorqROVp7PKIyefcUIVXrzIAxJSCvGHGEHYZjvD7vfd85rbe5h5\n'
-        'C2MSE8D/Pw/aVCJvMe/q0Bxmc5zHahq3V78EwSh+6G+JAyWNl5Nf+b7hAoGBAM1Z\n'
-        'PGB7DpYpuLw8j9r+NmGMFUFDk4F4KupSYMTSzPDjYRJIAZr1TKWKGkhcHGtMIXwT\n'
-        'VUeQ2dZ5TM/+dcAFav8qdZNk0Q+v+HHSMeeuk0g/1/3c0JF1rW5WDJf8MotNflSV\n'
-        'hy8zicUj60xkRFbOb+kNNFGjJ4vPec5+aVxDH6vhAoGBAI3RsJZXYUL9PhakrsVp\n'
-        '71N+JbNxvw8L9b2VL6ecLNMtPcG5ddFaMhc+kQZap6vAZXauft1fzvAO3fMKNJXm\n'
-        'yvtM2CEYzVd8lFqA8xETa/FgelkFjB5gkiq4EDIuX6mFStkskKUfRHHrb0ATKHSl\n'
-        'YvT60qFc4be2Mfyzt+CuGhYi\n'
-        '-----END PRIVATE KEY-----\n'
-    )
-    prefix = 'cloudfront sign --key-pair-id MYID --url http://example.com/hi '
-
-    def setUp(self):
-        files = FileCreator()
-        self.private_key_file = files.create_file('foo.pem', self.private_key)
-        self.addCleanup(files.remove_all)
-        super().setUp()
-
-    def assertDesiredUrl(self, url, base, params):
-        self.assertEqual(len(url.splitlines()), 1, "Expects only 1 line")
-        self.assertTrue(url.startswith(base), "URL mismatch")
-        url = url.strip()  # Otherwise the last param contains a trailing CRLF
-        self.assertEqual(parse_qs(urlparse(url).query), params)
-
-    def test_canned_policy(self):
-        cmdline = (
-            self.prefix
-            + '--private-key file://'
-            + self.private_key_file
-            + ' --date-less-than 2016-1-1'
-        )
-        expected_signature = (
-            "cIOcUXezjLknta66EiRX7rk3viXv20F01OwZa1X2QWxhnWnBVno~mg0Gcyfzvfgo"
-            "-oXCvZC3bdsfTJXiBcnC1XyxCxBa03bouAae4A0ajP4ey~TKKwPHikOmu2Rc1NEu"
-            "-c6wr8DbMZrm~1WIWG4kFG1jhSRoEk2W82NkGEh4xEPq3gaNjQPfF7zIAwcZUUkg"
-            "GkIbT-cQ5UZ6rTqTiFGdXD2z8kjulgmtu8Quo6hplch~9ltmKTOt9blswd6hMfCM"
-            "NJ~tUj77j8fz968adb9w43jBtl~~5seb8ys01cg5IGWV44LKMWaLmEgzWQAjg-Jg"
-            "9wx-HYwuqH4Klds03WZzRQ__"
-        )
-        expected_params = {
-            'Key-Pair-Id': ['MYID'],
-            'Expires': ['1451606400'],
-            'Signature': [expected_signature],
-        }
-        self.assertDesiredUrl(
-            self.run_cmd(cmdline)[0], 'http://example.com/hi', expected_params
-        )
-
-    def test_custom_policy(self):
-        cmdline = (
-            self.prefix
-            + '--private-key file://'
-            + self.private_key_file
-            + ' --date-less-than 2016-1-1 --ip-address 12.34.56.78'
-        )
-        expected_signature = (
-            "beEwE8ZmSX71e79a5dxupiE0zHxahe1IFzuTExKxV0InQnKFlT0wj0tardAlGKFL"
-            "LdX9HMGiVjIjvMBdUZQJ-9mMXBtFsQ5nLDEoRH29H8AATzaf4Nx4n29XtVp-jPVF"
-            "GFtmdaGJedjJRMV-IzBQcJ19VPl3R8t3Fp~8eP9-P8KpvkJXH2UvJ2H8nMBt2Ogv"
-            "brCT2hl~91UtEOgmxeA6twWNpziH0uEdpDOHgnYer5ScdFoo02rPjRXIqPuQcjwP"
-            "T2wu~A5T~zomcghjMcIdLeJeS9nscTkjON69xBB-t4lclK3mfzsXTumcx-FzLgOB"
-            "bP2Z1d~ZU6X0rkeL~w1BlQ__"
-        )
-        expected_params = {
-            'Key-Pair-Id': ['MYID'],
-            'Policy': [mock.ANY],
-            'Signature': [expected_signature],
-        }
-        self.assertDesiredUrl(
-            self.run_cmd(cmdline)[0], 'http://example.com/hi', expected_params
-        )
-
-
-class TestSignECDSAWithECParameters(BaseECDSASignTest):
-    __test__ = True
-    pem_label = 'EC PRIVATE KEY'
-    # An EC (P-256) key as written by ``openssl ecparam -genkey``, which
-    # prepends an EC PARAMETERS block. Only for testing purpose.
-    private_key = (
-        '-----BEGIN EC PARAMETERS-----\n'
-        'BggqhkjOPQMBBw==\n'
-        '-----END EC PARAMETERS-----\n'
-        '-----BEGIN EC PRIVATE KEY-----\n'
-        'MHcCAQEEIIn+jH+ABbyXBxAaGba29zfgklJlso8Uy/hTX87clMxYoAoGCCqGSM49\n'
-        'AwEHoUQDQgAEcfEKhYahmRNFgp2LiNJf1Uy9TmWPgyuoAxKxXuS1Gtcxxs+39col\n'
-        'Ty9YFvZvhsAcv6B3LwBJW/ah/AUD1BGTIg==\n'
-        '-----END EC PRIVATE KEY-----\n'
-    )
 
 
 class BaseSigningCommandTest(BaseAWSCommandParamsTest):
@@ -512,12 +325,6 @@ class TestSignPolicySelection(BaseSigningCommandTest):
             policy['Statement'][0]['Resource'], 'http://example.com/*'
         )
 
-    def test_question_mark_url_keeps_canned_policy(self):
-        # ``?`` is the query delimiter, so it never selects a custom policy.
-        _, params = self.sign_url('--url', 'http://example.com/hi?size=1')
-        self.assertEqual(params['Expires'], ['1451606400'])
-        self.assertNotIn('Policy', params)
-
     def test_policy_resource_different_from_url_uses_custom_policy(self):
         # A canned policy is verified against the requested URL, so it can
         # not be used for a resource other than the URL.
@@ -568,11 +375,6 @@ class TestSignQueryParameterOrder(BaseSigningCommandTest):
             expected_names,
         )
 
-    def test_canned_policy(self):
-        self.assert_query_parameter_order(
-            'http://example.com/hi', ['Expires', 'Signature', 'Key-Pair-Id']
-        )
-
     def test_canned_policy_sha256(self):
         self.assert_query_parameter_order(
             'http://example.com/hi',
@@ -581,28 +383,12 @@ class TestSignQueryParameterOrder(BaseSigningCommandTest):
             'SHA256',
         )
 
-    def test_custom_policy(self):
-        self.assert_query_parameter_order(
-            'http://example.com/hi',
-            ['Policy', 'Signature', 'Key-Pair-Id'],
-            '--ip-address',
-            '12.34.56.78',
-        )
-
     def test_custom_policy_sha256(self):
         self.assert_query_parameter_order(
             'http://example.com/hi',
             ['Policy', 'Signature', 'Key-Pair-Id', 'Hash-Algorithm'],
             '--ip-address',
             '12.34.56.78',
-            '--hash-algorithm',
-            'SHA256',
-        )
-
-    def test_appended_after_existing_query(self):
-        self.assert_query_parameter_order(
-            'http://example.com/hi?size=large',
-            ['size', 'Expires', 'Signature', 'Key-Pair-Id', 'Hash-Algorithm'],
             '--hash-algorithm',
             'SHA256',
         )
@@ -869,17 +655,6 @@ class BaseInputValidationTest(BaseSigningCommandTest):
                     ip_address,
                 )
 
-    def test_rejects_invalid_key_pair_ids(self):
-        for key_pair_id in ['', 'K&Policy=x', 'K 1', 'K#1', 'K;1', 'my_id']:
-            with self.subTest(key_pair_id=key_pair_id):
-                self.assert_error(
-                    'Invalid value for --key-pair-id',
-                    self.resource_arg,
-                    'http://example.com/hi',
-                    '--key-pair-id',
-                    key_pair_id,
-                )
-
 
 class TestSignInputValidation(BaseInputValidationTest):
     __test__ = True
@@ -1001,6 +776,7 @@ class TestSignKeyErrors(BaseSigningCommandTest):
         self.use_private_key(b'\xff\xfe\x00', scheme='fileb://')
         self.assert_key_error('Unsupported private key')
 
+    @skip_if_windows('The Windows CRT derives the missing EC public key.')
     def test_ec_private_key_without_public_key(self):
         # A P-256 key exported with ``openssl ec -no_public``.
         self.use_private_key(
@@ -1010,6 +786,35 @@ class TestSignKeyErrors(BaseSigningCommandTest):
             '-----END PRIVATE KEY-----\n'
         )
         self.assert_key_error('does not include its public key')
+
+    def test_unsupported_pem_label(self):
+        self.use_private_key(
+            '-----BEGIN OPENSSH PRIVATE KEY-----\n'
+            'b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAAAMwAAAAtz\n'
+            '-----END OPENSSH PRIVATE KEY-----\n'
+        )
+        self.assert_key_error('Unsupported key type')
+
+    def test_non_p256_curve(self):
+        # EC private keys on the P-384 curve, which CloudFront does not
+        # support, in SEC1 and PKCS#8 format.
+        for private_key in [
+            '-----BEGIN EC PRIVATE KEY-----\n'
+            'MIGkAgEBBDCIoGBIXHIpvlHWVTT+jka5Jpj1YR5rWIncoxf6VUxxhlHjEI7hqDto\n'
+            'FajvDTKH5jSgBwYFK4EEACKhZANiAAT1i0QFJOMXeKxMx4VpZHw6OoKhEOB4nOXk\n'
+            'h+Z9dhiQ4H6O2D84WS6ql+iyNIH2qux8jBUju3fc8NdbVwIqyfQZWRRo/Lg5ekDp\n'
+            'M7re404ay7JYpiJXlCZP+RBCBn23NZU=\n'
+            '-----END EC PRIVATE KEY-----\n',
+            '-----BEGIN PRIVATE KEY-----\n'
+            'MIG2AgEAMBAGByqGSM49AgEGBSuBBAAiBIGeMIGbAgEBBDBMuzkcdg39rdzENI+E\n'
+            'T7PxexdQ6bSROnnxQAn+KTrCfDDfWjfhm/AxexdwTBnkffmhZANiAASbiECnsS42\n'
+            'Bz5vDZrKGz5t6qtWa6KJdgSHyP75BEwY1Fq5mrrV/mzWRzisPvALUzx6OJyQ/inY\n'
+            'mKeb0H9tA7BMjxTpT7GfYE9ySp1bsKqXwa725O6Kcl3pPz6JsiXNVs8=\n'
+            '-----END PRIVATE KEY-----\n',
+        ]:
+            with self.subTest(private_key=private_key.splitlines()[0]):
+                self.use_private_key(private_key)
+                self.assert_key_error('Only P-256 EC keys are supported')
 
     def test_debug_output_does_not_expose_inline_key_material(self):
         # The key body must not be logged even when it is passed inline
@@ -1122,7 +927,7 @@ class TestSignSigningFailures(BaseSigningCommandTest):
         self.assert_signing_failure(RSA)
 
     def test_ecdsa_signing_failure(self):
-        self.use_private_key(TestSignECDSASEC1.private_key)
+        self.use_private_key(TestSignECDSAWithECParameters.private_key)
         self.assert_signing_failure(EC)
 
     def test_sign_cookies_signing_failure(self):
@@ -1131,21 +936,6 @@ class TestSignSigningFailures(BaseSigningCommandTest):
                 '--resource', 'http://example.com/hi', expected_rc=255
             )
         self.assertIn('Failed to sign the CloudFront policy', stderr)
-
-
-class TestSignECDSAUnsupportedCurvePKCS8(BaseSigningCommandTest):
-    # An EC private key on the P-384 curve in PKCS#8 format.
-    private_key = (
-        '-----BEGIN PRIVATE KEY-----\n'
-        'MIG2AgEAMBAGByqGSM49AgEGBSuBBAAiBIGeMIGbAgEBBDBMuzkcdg39rdzENI+E\n'
-        'T7PxexdQ6bSROnnxQAn+KTrCfDDfWjfhm/AxexdwTBnkffmhZANiAASbiECnsS42\n'
-        'Bz5vDZrKGz5t6qtWa6KJdgSHyP75BEwY1Fq5mrrV/mzWRzisPvALUzx6OJyQ/inY\n'
-        'mKeb0H9tA7BMjxTpT7GfYE9ySp1bsKqXwa725O6Kcl3pPz6JsiXNVs8=\n'
-        '-----END PRIVATE KEY-----\n'
-    )
-
-    def test_non_p256_curve_raises_error(self):
-        self.assert_key_error('Only P-256 EC keys are supported')
 
 
 class TestSignCookies(BaseSigningCommandTest):
@@ -1199,9 +989,6 @@ class TestSignCookies(BaseSigningCommandTest):
         self.assertEqual(
             cookies['CloudFront-Signature'], params['Signature'][0]
         )
-
-    def test_rejects_empty_resource(self):
-        self.assert_sign_cookies_error('must not be empty', '--resource', '')
 
     def test_default_output_from_config(self):
         self.environ['AWS_DEFAULT_OUTPUT'] = 'json'

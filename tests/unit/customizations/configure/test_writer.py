@@ -326,6 +326,34 @@ class TestConfigFileWriter(unittest.TestCase):
             '[profile foo]\n'
             'foo = bar\n')
 
+    def test_add_to_empty_nested_stanza_followed_by_section(self):
+        original = (
+            '[default]\n'
+            's3 =\n'
+            '[profile foo]\n'
+            'foo = bar\n'
+        )
+        self.assert_update_config(
+            original, {'__section__': 'default',
+                       's3': {'signature_version': 'newval'}},
+            '[default]\n'
+            's3 =\n'
+            '    signature_version = newval\n'
+            '[profile foo]\n'
+            'foo = bar\n')
+
+    def test_add_to_empty_nested_stanza_at_eof(self):
+        original = (
+            '[default]\n'
+            's3 =\n'
+        )
+        self.assert_update_config(
+            original, {'__section__': 'default',
+                       's3': {'signature_version': 'newval'}},
+            '[default]\n'
+            's3 =\n'
+            '    signature_version = newval\n')
+
     def test_update_nested_attr_no_prior_nesting(self):
         original = (
             '[default]\n'

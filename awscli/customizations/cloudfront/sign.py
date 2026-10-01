@@ -137,11 +137,14 @@ class BaseSignCommand(BasicCommand):
     def _parse_date(self, value, arg_name):
         try:
             return parse_to_aware_datetime(value)
-        except (ValueError, TypeError, OverflowError, RuntimeError):
-            raise ParamValidationError(
-                f'Invalid value for --{arg_name}: "{value}" is not a valid '
-                f'date. {self.DATE_FORMAT}'
-            )
+        except (ValueError, TypeError, OverflowError, RuntimeError) as e:
+            raise self._invalid_date_error(value, arg_name, e)
+
+    def _invalid_date_error(self, value, arg_name, error):
+        return ParamValidationError(
+            f'Invalid value for --{arg_name}: "{value}" is not a valid '
+            f'date. {self.DATE_FORMAT}'
+        )
 
     def _validate_signing_args(self, args):
         if not _KEY_PAIR_ID_FORMAT.fullmatch(args.key_pair_id):
@@ -256,13 +259,23 @@ class SignCommand(BaseSignCommand):
             )
         return args.policy_resource
 
-    def _get_dates(self, args):
-        date_less_than = parse_to_aware_datetime(args.date_less_than)
-        date_greater_than = args.date_greater_than
-        if date_greater_than is not None:
-            date_greater_than = parse_to_aware_datetime(date_greater_than)
-            _validate_date_range(date_less_than, date_greater_than)
-        return date_less_than, date_greater_than
+    def _invalid_date_error(self, value, arg_name, error):
+        # For backward compatibility invalid dates are still reported with
+        # rc 255, but the message names the argument and supported formats.
+        return ValueError(
+            f'Invalid value for --{arg_name}: {error}. {self.DATE_FORMAT}'
+        )
+
+    def _validate_signing_args(self, args):
+        # For backward compatibility only input that CloudFront could never
+        # accept is rejected, so every URL that could be used still signs.
+        if not args.key_pair_id:
+            raise ParamValidationError(
+                'Invalid value for --key-pair-id: the CloudFront key pair ID '
+                'must not be empty.'
+            )
+        if args.ip_address is not None:
+            _reject_ipv6_address(args.ip_address)
 
     def _requires_custom_policy(self, args, resource):
         return (

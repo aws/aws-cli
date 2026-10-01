@@ -17,9 +17,15 @@ import re
 
 from awscrt.crypto import EC, RSA
 from botocore.compat import parse_qs, urlparse
+from botocore.history import HistoryRecorder
 from botocore.signers import CloudFrontSigner
 from botocore.utils import parse_to_aware_datetime
 
+from awscli.customizations.history.db import (
+    DatabaseHistoryHandler,
+    DatabaseRecordWriter,
+    RecordBuilder,
+)
 from awscli.testutils import BaseAWSCommandParamsTest, FileCreator, mock
 
 
@@ -553,6 +559,55 @@ class TestSignPolicySelection(BaseSigningCommandTest):
         self.assertNotIn('Policy', params)
 
 
+class TestSignQueryParameterOrder(BaseSigningCommandTest):
+    def assert_query_parameter_order(self, url, expected_names, *args):
+        signed_url = self.sign('--url', url, *args)[0].strip()
+        base, _, query = signed_url.partition('?')
+        self.assertEqual(
+            [param.split('=', 1)[0] for param in query.split('&')],
+            expected_names,
+        )
+
+    def test_canned_policy(self):
+        self.assert_query_parameter_order(
+            'http://example.com/hi', ['Expires', 'Signature', 'Key-Pair-Id']
+        )
+
+    def test_canned_policy_sha256(self):
+        self.assert_query_parameter_order(
+            'http://example.com/hi',
+            ['Expires', 'Signature', 'Key-Pair-Id', 'Hash-Algorithm'],
+            '--hash-algorithm',
+            'SHA256',
+        )
+
+    def test_custom_policy(self):
+        self.assert_query_parameter_order(
+            'http://example.com/hi',
+            ['Policy', 'Signature', 'Key-Pair-Id'],
+            '--ip-address',
+            '12.34.56.78',
+        )
+
+    def test_custom_policy_sha256(self):
+        self.assert_query_parameter_order(
+            'http://example.com/hi',
+            ['Policy', 'Signature', 'Key-Pair-Id', 'Hash-Algorithm'],
+            '--ip-address',
+            '12.34.56.78',
+            '--hash-algorithm',
+            'SHA256',
+        )
+
+    def test_appended_after_existing_query(self):
+        self.assert_query_parameter_order(
+            'http://example.com/hi?size=large',
+            ['size', 'Expires', 'Signature', 'Key-Pair-Id', 'Hash-Algorithm'],
+            '--hash-algorithm',
+            'SHA256',
+        )
+
+
 class TestSignHashAlgorithm(BaseSigningCommandTest):
     def test_rsa_explicit_sha1_matches_default(self):
         default_url, _ = self.sign_url('--url', 'http://example.com/hi')
@@ -573,27 +628,78 @@ class TestSignHashAlgorithm(BaseSigningCommandTest):
 
 
 class TestSignBackwardCompatibility(BaseSigningCommandTest):
-    # Every URL that CloudFront could accept is still signed exactly as
-    # before; only unusable input is rejected (see TestSignInputValidation).
-    def test_signs_single_ip_address_as_before(self):
-        _, params = self.sign_url(
-            '--url', 'http://example.com/hi', '--ip-address', '12.34.56.78'
+    # ``sign`` keeps accepting, and signing in the same way, every value of
+    # its original arguments that it accepted before they were validated.
+    def assert_signs_canned(self, url, *args):
+        signed_url, _ = self.sign_url('--url', url, *args)
+        # The signing parameters are appended to the URL as given.
+        self.assertTrue(signed_url.startswith(url + '?Expires=1451606400&'))
+
+    def assert_signs_custom(self, url, *args):
+        signed_url, params = self.sign_url('--url', url, *args)
+        self.assertTrue(signed_url.startswith(url))
+        return json.loads(_url_b64decode(params['Policy'][0]))
+
+    def test_urls_are_not_validated(self):
+        for url in [
+            'rtmp://example.com/video.mp4',
+            'video.mp4',
+            'http://example.com/caf\u00e9.jpg',
+            'http://example.com/a"b',
+        ]:
+            with self.subTest(url=url):
+                self.assert_signs_canned(url)
+
+    def test_rejects_url_fragment(self):
+        # The signing parameters would be appended to the fragment, which is
+        # never sent to CloudFront, so such a URL could never be used.
+        for url in ['http://example.com/a#b', 'http://example.com/a#']:
+            with self.subTest(url=url):
+                self.assert_sign_error('URL fragment', '--url', url)
+
+    def test_key_pair_id_is_not_validated(self):
+        url, _ = self.sign_url(
+            '--url', 'http://example.com/hi', '--key-pair-id', 'my_id'
         )
-        policy = json.loads(_url_b64decode(params['Policy'][0]))
+        self.assertIn('Key-Pair-Id=my_id', url)
+
+    def test_rejects_empty_key_pair_id(self):
+        self.assert_sign_error(
+            'Invalid value for --key-pair-id',
+            '--url',
+            'http://example.com/hi',
+            '--key-pair-id',
+            '',
+        )
+
+    def test_key_pair_id_characters_are_not_validated(self):
+        url, _ = self.sign_url(
+            '--url', 'http://example.com/hi', '--key-pair-id', 'K#1'
+        )
+        self.assertIn('Key-Pair-Id=K#1', url)
+
+    def test_ipv4_address_is_not_validated(self):
+        policy = self.assert_signs_custom(
+            'http://example.com/hi', '--ip-address', '300.1.2.3/40'
+        )
         self.assertEqual(
             policy['Statement'][0]['Condition']['IpAddress'],
-            {'AWS:SourceIp': '12.34.56.78/32'},
+            {'AWS:SourceIp': '300.1.2.3/40'},
         )
 
     def test_invalid_date_error(self):
-        self.assert_sign_error(
-            'Invalid timestamp',
-            '--url',
-            'http://example.com/hi',
-            '--date-less-than',
-            'not-a-date',
-            expected_rc=255,
-        )
+        for arg_name in ['--date-less-than', '--date-greater-than']:
+            with self.subTest(arg_name=arg_name):
+                _, stderr, _ = self.sign(
+                    '--url',
+                    'http://example.com/hi',
+                    arg_name,
+                    'not-a-date',
+                    expected_rc=255,
+                )
+                self.assertIn('Invalid timestamp', stderr)
+                self.assertIn(f'Invalid value for {arg_name}', stderr)
+                self.assertIn('Supported formats include', stderr)
 
 
 class TestSignPolicyResourceValidation(BaseSigningCommandTest):
@@ -904,6 +1010,63 @@ class TestSignKeyErrors(BaseSigningCommandTest):
             '-----END PRIVATE KEY-----\n'
         )
         self.assert_key_error('does not include its public key')
+
+    def test_debug_output_does_not_expose_inline_key_material(self):
+        # The key body must not be logged even when it is passed inline
+        # instead of with file:// or fileb://.
+        key_line = self.private_key.splitlines()[1]
+        for command, resource_arg in [
+            ('sign', '--url'),
+            ('sign-cookies', '--resource'),
+        ]:
+            with self.subTest(command=command):
+                cmdline = [
+                    'cloudfront',
+                    command,
+                    resource_arg,
+                    'http://example.com/hi',
+                    '--key-pair-id',
+                    'myid',
+                    '--private-key',
+                    self.private_key,
+                    '--date-less-than',
+                    '2016-1-1',
+                    '--debug',
+                ]
+                # The debug log records the arguments from sys.argv.
+                with mock.patch('sys.argv', ['aws'] + cmdline):
+                    _, stderr, _ = self.run_cmd(cmdline)
+                self.assertIn('<redacted private key>', stderr)
+                self.assertNotIn(key_line, stderr)
+
+    def test_history_does_not_record_inline_key_material(self):
+        cmdline = [
+            'cloudfront',
+            'sign',
+            '--url',
+            'http://example.com/hi',
+            '--key-pair-id',
+            'myid',
+            '--private-key',
+            self.private_key,
+            '--date-less-than',
+            '2016-1-1',
+        ]
+        writer = mock.Mock(DatabaseRecordWriter)
+        recorder = HistoryRecorder()
+        recorder.add_handler(DatabaseHistoryHandler(writer, RecordBuilder()))
+        recorder.enable()
+        with mock.patch('awscli.clidriver.HISTORY_RECORDER', recorder):
+            self.run_cmd(cmdline)
+        payloads = {
+            call.args[0]['event_type']: call.args[0]['payload']
+            for call in writer.write_record.call_args_list
+        }
+        self.assertEqual(
+            payloads['CLI_ARGUMENTS'],
+            # Only the key is redacted, so its trailing newline is kept.
+            cmdline[:7] + ['<redacted private key>\n'] + cmdline[8:],
+        )
 
 
 class TestSignPrivateKeyInputs(BaseSigningCommandTest):

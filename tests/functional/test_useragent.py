@@ -1,3 +1,5 @@
+import os
+
 from awscli import __version__ as awscli_version
 from awscli.testutils import mock
 from tests import CLIRunner, HTTPResponse
@@ -46,7 +48,10 @@ def test_user_agent_reports_s3_transfer_client(tmp_path):
     upload.write_text('contents')
     cli_runner = CLIRunner()
     cli_runner.add_response(HTTPResponse(headers={'ETag': '"etag"'}))
-    with mock.patch('awscrt.s3.is_optimized_for_system', return_value=False):
+    with mock.patch('awscrt.s3.is_optimized_for_system', return_value=False), \
+         mock.patch('awscrt.s3.get_ec2_instance_type', return_value=None), \
+         mock.patch.dict(os.environ, {}, clear=False) as env:
+        env.pop('AWS_CLI_AUTO_RESOLVE_CLIENT', None)
         result = cli_runner.run(['s3', 'cp', str(upload), 's3://bucket/key'])
     assert result.rc == 0
     ua_string = result.aws_requests[0].http_requests[0].headers['User-Agent']

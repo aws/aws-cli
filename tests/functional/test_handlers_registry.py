@@ -14,11 +14,20 @@ import importlib
 from collections import OrderedDict
 
 import botocore.session
+import pytest
 
+from awscli.clidriver import create_clidriver
 from awscli.handlers_registry import (
     MAIN_COMMAND_TABLE_OPS,
     PLUGIN_REGISTRY,
     CommandTableOp,
+)
+
+EXPECTED_RENAMES = (
+    ('codedeploy', 'deploy'),
+    ('config', 'configservice'),
+    ('agenttoolkit', 'agent-toolkit'),
+    ('eventbridgev2', 'eventsv2'),
 )
 
 
@@ -101,3 +110,16 @@ def test_all_main_command_table_ops_modules_are_importable():
         'The following MAIN_COMMAND_TABLE_OPS entries are invalid:\n'
         + '\n'.join(f'  - {v}' for v in violations)
     )
+
+
+@pytest.fixture(scope='module')
+def main_command_table():
+    return create_clidriver().subcommand_table
+
+
+@pytest.mark.parametrize('old_name, new_name', EXPECTED_RENAMES)
+def test_renamed_commands_keep_their_new_names(
+    old_name, new_name, main_command_table
+):
+    assert new_name in main_command_table
+    assert old_name not in main_command_table

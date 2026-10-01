@@ -624,6 +624,34 @@ class TestCloudfrontSigner(BaseSignerTest):
             ]
         }
         self.assertEqual(json.loads(policy), expected)
+        # The order is kept stable so that signed URLs are unchanged.
+        self.assertEqual(
+            policy,
+            '{"Statement":[{"Resource":"foo","Condition":{'
+            '"DateLessThan":{"AWS:EpochTime":1451606400},'
+            '"IpAddress":{"AWS:SourceIp":"12.34.56.78/9"},'
+            '"DateGreaterThan":{"AWS:EpochTime":1448928000}}}]}',
+        )
+
+    def test_url_b64encode(self):
+        # CloudFront's base64 variant replaces '+' with '-', '=' with '_'
+        # and '/' with '~'.
+        vectors = [
+            (bytes([251, 255, 254]), b'-~~-'),
+            (bytes([251, 255]), b'-~8_'),
+            (bytes([61, 43, 47]), b'PSsv'),
+        ]
+        for data, expected in vectors:
+            with self.subTest(data=list(data)):
+                self.assertEqual(self.signer._url_b64encode(data), expected)
+
+    def test_build_policy_escapes_resource(self):
+        policy = self.signer.build_policy(
+            'foo","Resource":"*', datetime.datetime(2016, 1, 1)
+        )
+        statement = json.loads(policy)['Statement']
+        self.assertEqual(len(statement), 1)
+        self.assertEqual(statement[0]['Resource'], 'foo","Resource":"*')
 
     def test_generate_presign_url_with_expire_time(self):
         signed_url = self.signer.generate_presigned_url(
@@ -670,6 +698,79 @@ class TestCloudfrontSigner(BaseSignerTest):
             '&Signature=c2lnbmVk&Key-Pair-Id=MY_KEY_ID'
         )
         assert_url_equal(signed_url, expected)
+
+    def test_generate_presign_url_requires_one_of_date_or_policy(self):
+        with self.assertRaises(ValueError):
+            self.signer.generate_presigned_url('http://test.com/foo.txt')
+        with self.assertRaises(ValueError):
+            self.signer.generate_presigned_url(
+                'http://test.com/foo.txt',
+                date_less_than=datetime.datetime(2016, 1, 1),
+                policy='{}',
+            )
+
+    def test_generate_signed_cookies_with_expire_time(self):
+        cookies = self.signer.generate_signed_cookies(
+            'http://test.com/foo.txt',
+            date_less_than=datetime.datetime(2016, 1, 1),
+        )
+        self.assertEqual(
+            cookies,
+            {
+                'CloudFront-Expires': '1451606400',
+                'CloudFront-Signature': 'c2lnbmVk',
+                'CloudFront-Key-Pair-Id': 'MY_KEY_ID',
+            },
+        )
+
+    def test_generate_signed_cookies_with_custom_policy(self):
+        policy = self.signer.build_policy(
+            'http://test.com/*', datetime.datetime(2016, 1, 1)
+        )
+        cookies = self.signer.generate_signed_cookies(
+            'http://test.com/*', policy=policy
+        )
+        self.assertEqual(
+            cookies,
+            {
+                'CloudFront-Policy': (
+                    'eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cDovL3Rlc3Q'
+                    'uY29tLyoiLCJDb25kaXRpb24iOnsiRGF0ZUxlc3NUaGFuIjp7Ik'
+                    'FXUzpFcG9jaFRpbWUiOjE0NTE2MDY0MDB9fX1dfQ__'
+                ),
+                'CloudFront-Signature': 'c2lnbmVk',
+                'CloudFront-Key-Pair-Id': 'MY_KEY_ID',
+            },
+        )
+
+    def test_generate_signed_cookies_with_hash_algorithm(self):
+        signer = CloudFrontSigner(
+            "MY_KEY_ID", lambda message: b'signed', hash_algorithm='SHA256'
+        )
+        cookies = signer.generate_signed_cookies(
+            'http://test.com/foo.txt',
+            date_less_than=datetime.datetime(2016, 1, 1),
+        )
+        self.assertEqual(cookies['CloudFront-Hash-Algorithm'], 'SHA256')
+
+    def test_generate_signed_cookies_signs_the_policy(self):
+        signed_messages = []
+
+        def signer(message):
+            signed_messages.append(message)
+            return b'signed'
+
+        policy = self.signer.build_policy(
+            'http://test.com/*', datetime.datetime(2016, 1, 1)
+        )
+        CloudFrontSigner('MY_KEY_ID', signer).generate_signed_cookies(
+            'http://test.com/*', policy=policy
+        )
+        self.assertEqual(signed_messages, [policy.encode('utf8')])
+
+    def test_generate_signed_cookies_requires_one_of_date_or_policy(self):
+        with self.assertRaises(ValueError):
+            self.signer.generate_signed_cookies('http://test.com/foo.txt')
 
 
 class TestS3PostPresigner(BaseSignerTest):

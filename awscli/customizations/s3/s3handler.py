@@ -324,7 +324,7 @@ class BaseTransferRequestSubmitter(object):
         # Anchor compare_key against '.' (the destination directory root)
         # to avoid false negatives on paths like '/../foo'
         normalized = os.path.normpath('.' + os.path.sep + fileinfo.compare_key)
-        escapes_cwd = normalized.startswith(parent_prefix)
+        escapes_cwd = normalized == '..' or normalized.startswith(parent_prefix)
         if escapes_cwd:
             warning = create_warning(
                 fileinfo.compare_key, "File references a parent directory.")

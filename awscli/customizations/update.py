@@ -211,6 +211,11 @@ class UnixUpdateCommand(BaseUpdateCommand):
                 else:
                     env['XDG_BIN_HOME'] = os.path.join(tmp, 'bin')
                     env['AWS_CLI_NO_BIN_DIR'] = '1'
+            if self._skip_verification:
+                # Forward the opt-out so the install script also skips its own
+                # installer-signature check. Without this it would hard-fail
+                # when gpg is unavailable, defeating --skip-signature-verification.
+                cmd.append('--skip-signature-verification')
             uni_print('Running install script...\n')
             try:
                 self._run_update(cmd, env)
@@ -317,6 +322,10 @@ class WindowsUpdateCommand(BaseUpdateCommand):
         ps_args = f'-NoProfile -File "{script_path}"'
         if is_system:
             ps_args += ' -System'
+        if self._skip_verification:
+            # Forward the opt-out so install.ps1 also skips its own installer
+            # verification, matching the user's --skip-signature-verification.
+            ps_args += ' -SkipSignatureVerification'
 
         with open(wrapper_path, 'w') as f:
             # Windows acquires a lock when running an exe process, preventing

@@ -157,6 +157,31 @@ class TestUnixUpdateCommand:
         assert 'XDG_DATA_HOME' not in env
         assert 'XDG_BIN_HOME' not in env
 
+    def test_forwards_skip_signature_verification_to_install_script(self):
+        # --skip-signature-verification must be passed through to install.sh,
+        # otherwise install.sh re-verifies and hard-fails when gpg is missing,
+        # defeating the opt-out.
+        runner = mock.Mock()
+        command = self._command(USER_INSTALL, runner=runner)
+        command(['--skip-signature-verification'], global_args())
+        cmd = runner.call_args.args[0]
+        assert '--skip-signature-verification' in cmd
+
+    def test_system_install_also_forwards_skip_flag(self):
+        runner = mock.Mock()
+        command = self._command(SYSTEM_INSTALL, elevated=True, runner=runner)
+        command(['--skip-signature-verification'], global_args())
+        cmd = runner.call_args.args[0]
+        assert '--system' in cmd
+        assert '--skip-signature-verification' in cmd
+
+    def test_no_skip_flag_passed_by_default(self):
+        runner = mock.Mock()
+        command = self._command(USER_INSTALL, runner=runner)
+        command([], global_args())
+        cmd = runner.call_args.args[0]
+        assert '--skip-signature-verification' not in cmd
+
     def test_system_install_requires_elevation(self):
         runner = mock.Mock()
         command = self._command(SYSTEM_INSTALL, elevated=False, runner=runner)
@@ -289,6 +314,20 @@ class TestWindowsUpdateCommand:
         _, wrapper = self._run(SYSTEM_INSTALL, elevated=True)
 
         assert wrapper.rstrip().endswith('-System')
+
+    def test_wrapper_forwards_skip_signature_verification(self):
+        runner = mock.Mock()
+        command = self._command(USER_INSTALL, runner=runner)
+        command(['--skip-signature-verification'], global_args())
+        (cmd,) = runner.call_args.args
+        with open(cmd[-1]) as f:
+            wrapper = f.read()
+        assert '-SkipSignatureVerification' in wrapper
+
+    def test_wrapper_omits_skip_flag_by_default(self):
+        _, wrapper = self._run(USER_INSTALL)
+
+        assert '-SkipSignatureVerification' not in wrapper
 
     def test_wrapper_sets_no_color_when_color_off(self):
         _, wrapper = self._run(USER_INSTALL, color='off')

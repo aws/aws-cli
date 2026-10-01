@@ -356,7 +356,7 @@ class RequestSigner:
 
 
 class CloudFrontSigner:
-    '''A signer to create a signed CloudFront URL.
+    '''A signer to create signed CloudFront URLs and signed cookies.
 
     First you create a cloudfront signer based on a normalized signer::
 
@@ -366,17 +366,22 @@ class CloudFrontSigner:
             return rsa.sign(
                 message,
                 rsa.PrivateKey.load_pkcs1(private_key.encode('utf8')),
-                'SHA-1')  # RSA uses SHA-1; ECDSA (P-256) uses SHA-256
+                'SHA-1')  # SHA-1 is CloudFront's default verification hash
         cf_signer = CloudFrontSigner(key_id, rsa_signer)
 
     To sign with a canned policy::
 
-        signed_url = cf_signer.generate_signed_url(
+        signed_url = cf_signer.generate_presigned_url(
             url, date_less_than=datetime(2015, 12, 1))
 
     To sign with a custom policy::
 
-        signed_url = cf_signer.generate_signed_url(url, policy=my_policy)
+        signed_url = cf_signer.generate_presigned_url(url, policy=my_policy)
+
+    To generate signed cookies instead of a signed URL::
+
+        cookies = cf_signer.generate_signed_cookies(
+            resource, date_less_than=datetime(2015, 12, 1))
     '''
 
     def __init__(self, key_id, rsa_signer, hash_algorithm=None):
@@ -389,16 +394,18 @@ class CloudFrontSigner:
         :param rsa_signer: An RSA or ECDSA signer.
                Its only input parameter will be the message to be signed,
                and its output will be the signed content as a binary string.
-               CloudFront requires a SHA-1 hash for RSA keys and a SHA-256
-               hash for ECDSA keys. Name is kept as ``rsa_signer`` for backward
+               The signer is responsible for hashing the message with the
+               algorithm declared by ``hash_algorithm`` (SHA-1 when it is
+               ``None``). Name is kept as ``rsa_signer`` for backward
                compatibility.
 
         :type hash_algorithm: str
         :param hash_algorithm: The hash algorithm CloudFront must use to verify
                the signature, emitted as the ``Hash-Algorithm`` query parameter
-               of the signed URL. CloudFront's edge defaults to SHA-1, so this
-               is only required for ECDSA keys (value ``SHA256``). Leave as
-               ``None`` for RSA (SHA-1) keys, which need no parameter.
+               of signed URLs and the ``CloudFront-Hash-Algorithm`` signed
+               cookie. CloudFront defaults to SHA-1 when it is absent, so
+               leave this as ``None`` for SHA-1 signatures and set it to
+               ``SHA256`` for SHA-256 signatures.
         """
         self.key_id = key_id
         self.rsa_signer = rsa_signer
@@ -419,6 +426,36 @@ class CloudFrontSigner:
         :rtype: str
         :return: The signed URL.
         """
+        params = self._generate_signing_params(url, date_less_than, policy)
+        return self._build_url(
+            url, [f'{name}={value}' for name, value in params.items()]
+        )
+
+    def generate_signed_cookies(
+        self, resource, date_less_than=None, policy=None
+    ):
+        """Creates CloudFront signed cookies based on given parameters.
+
+        :type resource: str
+        :param resource: The URL of the protected object. Only used to build
+            the canned policy, so it is ignored when ``policy`` is provided.
+
+        :type date_less_than: datetime
+        :param date_less_than: The cookies will expire after that date and time
+
+        :type policy: str
+        :param policy: The custom policy, possibly built by self.build_policy()
+
+        :rtype: dict
+        :return: The signed cookie names mapped to their values, without any
+            ``Set-Cookie`` attributes such as Domain or Path.
+        """
+        params = self._generate_signing_params(
+            resource, date_less_than, policy
+        )
+        return {f'CloudFront-{name}': value for name, value in params.items()}
+
+    def _generate_signing_params(self, resource, date_less_than, policy):
         if (
             date_less_than is not None
             and policy is not None
@@ -429,27 +466,20 @@ class CloudFrontSigner:
             raise ValueError(e)
         if date_less_than is not None:
             # We still need to build a canned policy for signing purpose
-            policy = self.build_policy(url, date_less_than)
+            policy = self.build_policy(resource, date_less_than)
         if isinstance(policy, str):
             policy = policy.encode('utf8')
+        params = {}
         if date_less_than is not None:
-            params = [f'Expires={int(datetime2timestamp(date_less_than))}']
+            params['Expires'] = str(int(datetime2timestamp(date_less_than)))
         else:
-            params = [
-                'Policy={}'.format(self._url_b64encode(policy).decode('utf8'))
-            ]
+            params['Policy'] = self._url_b64encode(policy).decode('utf8')
         signature = self.rsa_signer(policy)
-        params.extend(
-            [
-                'Signature={}'.format(
-                    self._url_b64encode(signature).decode('utf8')
-                ),
-                f'Key-Pair-Id={self.key_id}',
-            ]
-        )
+        params['Signature'] = self._url_b64encode(signature).decode('utf8')
+        params['Key-Pair-Id'] = self.key_id
         if self.hash_algorithm is not None:
-            params.append(f'Hash-Algorithm={self.hash_algorithm}')
-        return self._build_url(url, params)
+            params['Hash-Algorithm'] = self.hash_algorithm
+        return params
 
     def _build_url(self, base_url, extra_params):
         separator = '&' if '?' in base_url else '?'

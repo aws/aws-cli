@@ -2,6 +2,24 @@
 CHANGELOG
 =========
 
+2.37.8
+======
+
+* api-change:``ec2``: This release launches the AMI tag sharing feature, which lets AMI owners share tags alongside their AMIs, eliminating the need to build and maintain custom tag replication workflows.
+* api-change:``endusermessaging``: AWS End User Messaging now supports Brand profiles and Notify code configurations. Brand profiles capture your sender details once to reuse across phone number registrations. Notify code configurations let you define your OTP policy and delivery settings to send passcodes in minutes.
+* api-change:``sagemaker``: Release support for c8a.16xlarge and m8a.16xlarge instance types for SageMaker HyperPod
+* api-change:``quicksight``: This release adds HierarchyFilter support for Amazon QuickSight analysis and dashboard and 2 legged OAuth for databricks datasources.
+* api-change:``securityhub``: Adds GetRemediationsV2 and ListExposuresByRemediationV2 APIs. This feature allows customers to see their highest priority remediations for their Exposure findings. Remediations target key changes customers can make to resources to drive finding resolution.
+* api-change:``cloudfront``: Added always-amz-auth as a supported signing behavior for Origin Access Control (OAC), enabling CloudFront to authenticate requests to Lambda-Web origins.
+* api-change:``health``: Adds DescribeServiceLifecycle operation returning lifecycle information for AWS services, including end-of-support dates, version recommendations, and lifecycle events.
+* api-change:``lambda-web``: Lambda Web Functions GA launch. Lambda Web Functions enable customers to run web applications and API backends
+* api-change:``bedrock-agent``: Adds an optional textReadyAt field to ListIngestionJobs and GetIngestionJob for Managed Knowledge Bases data source sync jobs. The field denotes the timestamp at which all the documents in the scope of a sync job had their text content indexed and are available for retrieval.
+* enhancement:crt: Enable the CRT S3 transfer client by default on the following EC2 instance families - c5n, c5ad, c5a, c5d, c5, m5zn, m5dn, m5n, m5ad, m5a, m5d, m5, r5dn, r5n, r5ad, r5a, r5d, r5.
+* bugfix:cloudfront: Raise a friendly error message when SHA1 signing is unavailable on the platform while running ``aws cloudfront sign``.
+* api-change:``transfer``: AWS Transfer Family Workflows adds support for the structuredLogDestinations option, enabling customers to specify a custom Amazon CloudWatch Logs log group for managed workflow execution logs.
+* enhancement:``lambda-web``: Added ``aws lambda-web deploy`` to create or update an AWS Lambda Web Function from a local HTTP application.
+
+
 2.37.7
 ======
 

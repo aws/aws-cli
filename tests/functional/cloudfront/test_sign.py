@@ -108,6 +108,43 @@ class TestSign(BaseAWSCommandParamsTest):
             self.run_cmd(cmdline)[0], 'http://example.com/hi', expected_params
         )
 
+    def test_raises_friendly_error_when_sha1_unavailable(self):
+        cmdline = (
+            self.prefix
+            + '--private-key file://'
+            + self.private_key_file
+            + ' --date-less-than 2016-1-1'
+        )
+        
+        crt_error = RuntimeError(
+            '7174 (AWS_ERROR_CAL_UNSUPPORTED_ALGORITHM): The specified '
+            'algorithm is unsupported on this platform.'
+        )
+        with mock.patch(
+            'awscli.customizations.cloudfront.RSA.sign',
+            side_effect=crt_error,
+        ):
+            stdout, stderr, rc = self.run_cmd(cmdline, expected_rc=255)
+        self.assertNotEqual(rc, 0)
+        self.assertIn('SHA1', stderr)
+
+    def test_unrelated_signing_error_is_not_reported_as_sha1(self):
+        cmdline = (
+            self.prefix
+            + '--private-key file://'
+            + self.private_key_file
+            + ' --date-less-than 2016-1-1'
+        )
+        other_error = RuntimeError('some other signing failure')
+        with mock.patch(
+            'awscli.customizations.cloudfront.RSA.sign',
+            side_effect=other_error,
+        ):
+            stdout, stderr, rc = self.run_cmd(cmdline, expected_rc=255)
+        self.assertNotEqual(rc, 0)
+        self.assertNotIn('SHA1', stderr)
+        self.assertIn('some other signing failure', stderr)
+
 
 class TestSignPKCS8(BaseAWSCommandParamsTest):
     # A private key only for testing purpose.

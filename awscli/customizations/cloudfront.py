@@ -19,6 +19,7 @@ from botocore.signers import CloudFrontSigner
 from botocore.utils import parse_to_aware_datetime
 
 from awscrt.crypto import RSA, RSASignatureAlgorithm
+from awscrt.exceptions import AwsCrtError
 
 from awscli.arguments import CustomArgument
 from awscli.customizations.commands import BasicCommand
@@ -306,7 +307,18 @@ class RSASigner:
         self.priv_key = RSA.new_private_key_from_pem_data(key_bytes)
 
     def sign(self, message):
-        return self.priv_key.sign(
-            RSASignatureAlgorithm.PKCS1_5_SHA1,
-            hashlib.sha1(message).digest()
-        )
+        try:
+            return self.priv_key.sign(
+                RSASignatureAlgorithm.PKCS1_5_SHA1,
+                hashlib.sha1(message).digest()
+            )
+        except (AwsCrtError, RuntimeError) as e:
+            if 'AWS_ERROR_CAL_UNSUPPORTED_ALGORITHM' in str(e):
+                raise RuntimeError(
+                    "Failed to sign the URL using the SHA1 hash algorithm: "
+                    f"{e} CloudFront signed URLs require RSA PKCS1 v1.5 "
+                    "signing with SHA1, which may be disabled by default on "
+                    "your platform. Enable SHA1 support in your system's "
+                    "crypto provider and try again."
+                ) from e
+            raise

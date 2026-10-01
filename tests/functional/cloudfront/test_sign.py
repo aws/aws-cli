@@ -17,6 +17,13 @@ import re
 
 from awscrt.crypto import EC, RSA
 from botocore.compat import parse_qs, urlparse
+from botocore.history import HistoryRecorder
+
+from awscli.customizations.history.db import (
+    DatabaseHistoryHandler,
+    DatabaseRecordWriter,
+    RecordBuilder,
+)
 from awscli.testutils import (
     BaseAWSCommandParamsTest,
     FileCreator,
@@ -761,6 +768,63 @@ class TestSignKeyErrors(BaseSigningCommandTest):
             with self.subTest(private_key=private_key.splitlines()[0]):
                 self.use_private_key(private_key)
                 self.assert_key_error('Only P-256 EC keys are supported')
+
+    def test_debug_output_does_not_expose_inline_key_material(self):
+        # The key body must not be logged even when it is passed inline
+        # instead of with file:// or fileb://.
+        key_line = self.private_key.splitlines()[1]
+        for command, resource_arg in [
+            ('sign', '--url'),
+            ('sign-cookies', '--resource'),
+        ]:
+            with self.subTest(command=command):
+                cmdline = [
+                    'cloudfront',
+                    command,
+                    resource_arg,
+                    'http://example.com/hi',
+                    '--key-pair-id',
+                    'myid',
+                    '--private-key',
+                    self.private_key,
+                    '--date-less-than',
+                    '2016-1-1',
+                    '--debug',
+                ]
+                # The debug log records the arguments from sys.argv.
+                with mock.patch('sys.argv', ['aws'] + cmdline):
+                    _, stderr, _ = self.run_cmd(cmdline)
+                self.assertIn('<redacted private key>', stderr)
+                self.assertNotIn(key_line, stderr)
+
+    def test_history_does_not_record_inline_key_material(self):
+        cmdline = [
+            'cloudfront',
+            'sign',
+            '--url',
+            'http://example.com/hi',
+            '--key-pair-id',
+            'myid',
+            '--private-key',
+            self.private_key,
+            '--date-less-than',
+            '2016-1-1',
+        ]
+        writer = mock.Mock(DatabaseRecordWriter)
+        recorder = HistoryRecorder()
+        recorder.add_handler(DatabaseHistoryHandler(writer, RecordBuilder()))
+        recorder.enable()
+        with mock.patch('awscli.clidriver.HISTORY_RECORDER', recorder):
+            self.run_cmd(cmdline)
+        payloads = {
+            call.args[0]['event_type']: call.args[0]['payload']
+            for call in writer.write_record.call_args_list
+        }
+        self.assertEqual(
+            payloads['CLI_ARGUMENTS'],
+            # Only the key is redacted, so its trailing newline is kept.
+            cmdline[:7] + ['<redacted private key>\n'] + cmdline[8:],
+        )
 
 
 class TestSignPrivateKeyInputs(BaseSigningCommandTest):

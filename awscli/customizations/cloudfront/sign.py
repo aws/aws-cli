@@ -17,6 +17,7 @@ import re
 import sys
 
 from awscrt.crypto import EC, RSA, RSASignatureAlgorithm
+from awscrt.exceptions import AwsCrtError
 from botocore.compat import parse_qsl, urlsplit
 from botocore.signers import CloudFrontSigner
 from botocore.utils import datetime2timestamp, parse_to_aware_datetime
@@ -259,17 +260,6 @@ class SignCommand(BaseSignCommand):
             f'Invalid value for --{arg_name}: {error}. {self.DATE_FORMAT}'
         )
 
-    def _validate_signing_args(self, args):
-        # For backward compatibility only input that CloudFront could never
-        # accept is rejected, so every URL that could be used still signs.
-        if not args.key_pair_id:
-            raise ParamValidationError(
-                'Invalid value for --key-pair-id: the CloudFront key pair ID '
-                'must not be empty.'
-            )
-        if args.ip_address is not None:
-            _reject_ipv6_address(args.ip_address)
-
     def _requires_custom_policy(self, args, resource):
         return (
             super()._requires_custom_policy(args, resource)
@@ -449,9 +439,23 @@ class RSASigner(_KeySigner):
         return cls(key, hash_algorithm)
 
     def _sign(self, message):
-        return self.priv_key.sign(
-            self._signature_algorithm, self._hash(message).digest()
-        )
+        try:
+            return self.priv_key.sign(
+                self._signature_algorithm, self._hash(message).digest()
+            )
+        except (AwsCrtError, RuntimeError) as e:
+            if (
+                self.hash_algorithm == 'SHA1'
+                and 'AWS_ERROR_CAL_UNSUPPORTED_ALGORITHM' in str(e)
+            ):
+                raise RuntimeError(
+                    "Failed to sign the URL using the SHA1 hash algorithm: "
+                    f"{e} CloudFront signed URLs require RSA PKCS1 v1.5 "
+                    "signing with SHA1, which may be disabled by default on "
+                    "your platform. Enable SHA1 support in your system's "
+                    "crypto provider and try again."
+                ) from e
+            raise
 
 
 class ECDSASigner(_KeySigner):

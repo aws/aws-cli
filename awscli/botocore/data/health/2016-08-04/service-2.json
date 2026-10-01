@@ -178,6 +178,20 @@
       "documentation":"<p>This operation provides status information on enabling or disabling Health to work with your organization. To call this operation, you must use the organization's management account.</p>",
       "idempotent":true
     },
+    "DescribeServiceLifecycle":{
+      "name":"DescribeServiceLifecycle",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeServiceLifecycleRequest"},
+      "output":{"shape":"DescribeServiceLifecycleResponse"},
+      "errors":[
+        {"shape":"InvalidPaginationToken"}
+      ],
+      "documentation":"<p>Returns lifecycle information for Amazon Web Services services, including end-of-life dates, version recommendations, and lifecycle events.</p>",
+      "idempotent":true
+    },
     "DisableHealthServiceAccessForOrganization":{
       "name":"DisableHealthServiceAccessForOrganization",
       "http":{
@@ -665,6 +679,36 @@
         }
       }
     },
+    "DescribeServiceLifecycleRequest":{
+      "type":"structure",
+      "members":{
+        "filter":{
+          "shape":"ServiceLifecycleFilter",
+          "documentation":"<p>Values to narrow the results returned.</p>"
+        },
+        "nextToken":{
+          "shape":"nextToken",
+          "documentation":"<p>If the results of a search are large, only a portion of the results are returned, and a <code>nextToken</code> pagination token is returned in the response. To retrieve the next batch of results, reissue the search request and include the returned token. When all results have been returned, the response does not contain a pagination token value.</p>"
+        },
+        "maxResults":{
+          "shape":"LifecycleMaxResults",
+          "documentation":"<p>The maximum number of items to return in one batch, between 1 and 20, inclusive.</p>"
+        }
+      }
+    },
+    "DescribeServiceLifecycleResponse":{
+      "type":"structure",
+      "members":{
+        "serviceLifecycles":{
+          "shape":"ServiceLifecycleList",
+          "documentation":"<p>The list of service lifecycle entries matching the filter criteria.</p>"
+        },
+        "nextToken":{
+          "shape":"nextToken",
+          "documentation":"<p>If the results of a search are large, only a portion of the results are returned, and a <code>nextToken</code> pagination token is returned in the response. To retrieve the next batch of results, reissue the search request and include the returned token. When all results have been returned, the response does not contain a pagination token value.</p>"
+        }
+      }
+    },
     "EntityAccountFilter":{
       "type":"structure",
       "required":["eventArn"],
@@ -1078,6 +1122,10 @@
       "max":3,
       "min":1
     },
+    "ImpactRiskList":{
+      "type":"list",
+      "member":{"shape":"string"}
+    },
     "InvalidPaginationToken":{
       "type":"structure",
       "members":{
@@ -1085,6 +1133,41 @@
       },
       "documentation":"<p>The specified pagination token (<code>nextToken</code>) is not valid.</p>",
       "exception":true
+    },
+    "LifecycleEvent":{
+      "type":"structure",
+      "members":{
+        "lifecycleEventType":{
+          "shape":"string",
+          "documentation":"<p>The type of lifecycle event (for example, end-of-support, end-of-life).</p>"
+        },
+        "date":{
+          "shape":"timestamp",
+          "documentation":"<p>The date of the lifecycle event.</p>"
+        },
+        "regions":{
+          "shape":"regionList",
+          "documentation":"<p>The Amazon Web Services Regions affected by this lifecycle event.</p>"
+        },
+        "impactRisks":{
+          "shape":"ImpactRiskList",
+          "documentation":"<p>The potential impact risks associated with this lifecycle event.</p>"
+        },
+        "description":{
+          "shape":"string",
+          "documentation":"<p>A description of the lifecycle event.</p>"
+        }
+      },
+      "documentation":"<p>A lifecycle event for an Amazon Web Services service version, such as end-of-support or end-of-life.</p>"
+    },
+    "LifecycleEventList":{
+      "type":"list",
+      "member":{"shape":"LifecycleEvent"}
+    },
+    "LifecycleMaxResults":{
+      "type":"integer",
+      "max":20,
+      "min":1
     },
     "OrganizationAccountIdsList":{
       "type":"list",
@@ -1308,6 +1391,46 @@
     "OrganizationEventList":{
       "type":"list",
       "member":{"shape":"OrganizationEvent"}
+    },
+    "ServiceLifecycle":{
+      "type":"structure",
+      "members":{
+        "service":{
+          "shape":"service",
+          "documentation":"<p>The name of the Amazon Web Services service.</p>"
+        },
+        "version":{
+          "shape":"string",
+          "documentation":"<p>The version of the service.</p>"
+        },
+        "title":{
+          "shape":"string",
+          "documentation":"<p>A human-readable title for the lifecycle entry.</p>"
+        },
+        "recommendedVersion":{
+          "shape":"string",
+          "documentation":"<p>The recommended version to upgrade to.</p>"
+        },
+        "lifecycleEvents":{
+          "shape":"LifecycleEventList",
+          "documentation":"<p>The list of lifecycle events for this service version.</p>"
+        }
+      },
+      "documentation":"<p>Contains lifecycle information for an Amazon Web Services service version, including lifecycle events and version recommendations.</p>"
+    },
+    "ServiceLifecycleFilter":{
+      "type":"structure",
+      "members":{
+        "service":{
+          "shape":"service",
+          "documentation":"<p>The Amazon Web Services service name to filter by.</p>"
+        }
+      },
+      "documentation":"<p>A filter for narrowing down service lifecycle results.</p>"
+    },
+    "ServiceLifecycleList":{
+      "type":"list",
+      "member":{"shape":"ServiceLifecycle"}
     },
     "UnsupportedLocale":{
       "type":"structure",

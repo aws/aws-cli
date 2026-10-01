@@ -18778,6 +18778,14 @@
         "SqlEndpointPath":{
           "shape":"SqlEndpointPath",
           "documentation":"<p>The HTTP path of the Databricks data source.</p>"
+        },
+        "AuthenticationType":{
+          "shape":"AuthenticationType",
+          "documentation":"<p>The authentication type that you want to use for your connection. This parameter accepts OAuth and non-OAuth authentication types.</p>"
+        },
+        "OAuthParameters":{
+          "shape":"OAuthParameters",
+          "documentation":"<p>An object that contains information needed to create a data source connection between an Quick Sight account and Databricks.</p>"
         }
       },
       "documentation":"<p>The parameters that are required to connect to a Databricks data source.</p>"
@@ -19498,6 +19506,14 @@
         "DefaultRelativeDateTimeOptions":{
           "shape":"DefaultRelativeDateTimeControlOptions",
           "documentation":"<p>The default options that correspond to the <code>RelativeDateTime</code> filter control type.</p>"
+        },
+        "DefaultHierarchyList":{
+          "shape":"DefaultHierarchyFilterListControlOptions",
+          "documentation":"<p>The default options that correspond to the <code>HierarchyList</code> filter control type.</p>"
+        },
+        "DefaultHierarchyDropdown":{
+          "shape":"DefaultHierarchyFilterDropDownControlOptions",
+          "documentation":"<p>The default options that correspond to the <code>HierarchyDropdown</code> filter control type.</p>"
         }
       },
       "documentation":"<p>The option that corresponds to the control type of the filter.</p>"
@@ -19585,6 +19601,58 @@
         }
       },
       "documentation":"<p>The options that determine the default settings for a grid layout configuration.</p>"
+    },
+    "DefaultHierarchyFilterDropDownControlOptions":{
+      "type":"structure",
+      "members":{
+        "DisplayOptions":{
+          "shape":"HierarchyFilterDropDownControlDisplayOptions",
+          "documentation":"<p>The display options of a control.</p>"
+        },
+        "Type":{
+          "shape":"SheetControlListType",
+          "documentation":"<p>The type of the <code>DefaultHierarchyFilterDropDownControlOptions</code>. Choose one of the following options:</p> <ul> <li> <p> <code>MULTI_SELECT</code>: The user can select multiple entries from a dropdown menu.</p> </li> <li> <p> <code>SINGLE_SELECT</code>: The user can select a single entry from a dropdown menu.</p> </li> </ul>"
+        },
+        "CommitMode":{
+          "shape":"CommitMode",
+          "documentation":"<p>The visibility configuration of the Apply button on a <code>HierarchyFilterDropDownControl</code>.</p>"
+        },
+        "ControlSortConfigurations":{
+          "shape":"ControlSortConfigurationList",
+          "documentation":"<p>The sort configuration for the values displayed in the control. Only one sort configuration can be applied per control.</p>"
+        },
+        "ControlTitleFormatText":{
+          "shape":"ControlTitleFormatText",
+          "documentation":"<p>The title text format configuration for the control.</p>"
+        }
+      },
+      "documentation":"<p>The default options that correspond to the <code>HierarchyDropdown</code> filter control type.</p>"
+    },
+    "DefaultHierarchyFilterListControlOptions":{
+      "type":"structure",
+      "members":{
+        "DisplayOptions":{
+          "shape":"HierarchyFilterListControlDisplayOptions",
+          "documentation":"<p>The display options of a control.</p>"
+        },
+        "Type":{
+          "shape":"SheetControlListType",
+          "documentation":"<p>The type of the <code>DefaultHierarchyFilterListControlOptions</code>. Choose one of the following options:</p> <ul> <li> <p> <code>MULTI_SELECT</code>: The user can select multiple entries from the list.</p> </li> <li> <p> <code>SINGLE_SELECT</code>: The user can select a single entry from the list.</p> </li> </ul>"
+        },
+        "CommitMode":{
+          "shape":"CommitMode",
+          "documentation":"<p>The visibility configuration of the Apply button on a <code>HierarchyFilterListControl</code>.</p>"
+        },
+        "ControlSortConfigurations":{
+          "shape":"ControlSortConfigurationList",
+          "documentation":"<p>The sort configuration for the values displayed in the control. Only one sort configuration can be applied per control.</p>"
+        },
+        "ControlTitleFormatText":{
+          "shape":"ControlTitleFormatText",
+          "documentation":"<p>The title text format configuration for the control.</p>"
+        }
+      },
+      "documentation":"<p>The default options that correspond to the <code>HierarchyList</code> filter control type.</p>"
     },
     "DefaultInteractiveLayoutConfiguration":{
       "type":"structure",
@@ -26046,6 +26114,10 @@
         "NestedFilter":{
           "shape":"NestedFilter",
           "documentation":"<p>A <code>NestedFilter</code> filters data with a subset of data that is defined by the nested inner filter.</p>"
+        },
+        "HierarchyFilter":{
+          "shape":"HierarchyFilter",
+          "documentation":"<p>A <code>HierarchyFilter</code> filters data by drilling down through an ordered list of columns. Each level in the list narrows the data by one column, and the selected values at each level determine which values are available at the next.</p>"
         }
       },
       "documentation":"<p>With a <code>Filter</code>, you can remove portions of data from a particular visual or view.</p> <p>This is a union type structure. For this structure to be valid, only one of the attributes can be defined.</p>"
@@ -26116,6 +26188,14 @@
         "CrossSheet":{
           "shape":"FilterCrossSheetControl",
           "documentation":"<p>A control from a filter that is scoped across more than one sheet. This represents your filter control on a sheet</p>"
+        },
+        "HierarchyList":{
+          "shape":"HierarchyFilterListControl",
+          "documentation":"<p>A control from a hierarchy filter that displays the hierarchy as a list. You can expand a value to see and select the values beneath it, and select either a single value or multiple values.</p>"
+        },
+        "HierarchyDropdown":{
+          "shape":"HierarchyFilterDropDownControl",
+          "documentation":"<p>A control from a hierarchy filter that displays the hierarchy as a dropdown list. You can expand a value to see and select the values beneath it, and select either a single value or multiple values.</p>"
         }
       },
       "documentation":"<p>The control of a filter that is used to interact with a dashboard or an analysis.</p> <p>This is a union type structure. For this structure to be valid, only one of the attributes can be defined.</p>"
@@ -29602,10 +29682,240 @@
       "type":"string",
       "pattern":"^#[A-F0-9]{6}(?:[A-F0-9]{2})?$"
     },
+    "HierarchyFilter":{
+      "type":"structure",
+      "required":[
+        "FilterId",
+        "Column",
+        "HierarchyLevels",
+        "NullOption",
+        "MatchOperator"
+      ],
+      "members":{
+        "FilterId":{
+          "shape":"ShortRestrictiveResourceId",
+          "documentation":"<p>An identifier that uniquely identifies a filter within a dashboard, analysis, or template.</p>"
+        },
+        "Column":{
+          "shape":"ColumnIdentifier",
+          "documentation":"<p>The column that anchors the filter. This column determines the dataset that the whole filter applies to, so every column in <code>HierarchyLevels</code> and in <code>HierarchyTree</code> must belong to the same dataset.</p>"
+        },
+        "HierarchyLevels":{
+          "shape":"HierarchyFilterLevelList",
+          "documentation":"<p>The ordered list of columns that defines the drill-down path of the filter. The first level is the top of the hierarchy. You can specify a maximum of 5 levels.</p>"
+        },
+        "HierarchyTree":{
+          "shape":"HierarchyFilterNode",
+          "documentation":"<p>The tree of selected values for the filter. Each node records the values that are selected at one level of the hierarchy, and its children record the selections beneath those values. Omit this attribute to define the drill-down path without restricting any values.</p>"
+        },
+        "NullOption":{
+          "shape":"FilterNullOption",
+          "documentation":"<p>This option determines how null values should be treated when filtering data.</p> <ul> <li> <p> <code>ALL_VALUES</code>: Include null values in filtered results.</p> </li> <li> <p> <code>NULLS_ONLY</code>: Only include null values in filtered results.</p> </li> <li> <p> <code>NON_NULLS_ONLY</code>: Exclude null values from filtered results.</p> </li> </ul>"
+        },
+        "MatchOperator":{
+          "shape":"HierarchyFilterMatchOperator",
+          "documentation":"<p>Determines whether the values selected in <code>HierarchyTree</code> are kept or removed. Choose one of the following options:</p> <ul> <li> <p> <code>INCLUDE</code>: Keep only the selected values.</p> </li> <li> <p> <code>EXCLUDE</code>: Remove the selected values.</p> </li> </ul>"
+        },
+        "DefaultFilterControlConfiguration":{
+          "shape":"DefaultFilterControlConfiguration",
+          "documentation":"<p>The default configurations for the associated controls. This applies only for filters that are scoped to multiple sheets.</p>"
+        }
+      },
+      "documentation":"<p>A <code>HierarchyFilter</code> filters data by drilling down through an ordered list of columns. Each level in the list narrows the data by one column, and the selected values at each level determine which values are available at the next.</p>"
+    },
+    "HierarchyFilterDropDownControl":{
+      "type":"structure",
+      "required":[
+        "FilterControlId",
+        "SourceFilterId"
+      ],
+      "members":{
+        "FilterControlId":{
+          "shape":"ShortRestrictiveResourceId",
+          "documentation":"<p>The ID of the <code>HierarchyFilterDropDownControl</code>.</p>"
+        },
+        "SourceFilterId":{
+          "shape":"ShortRestrictiveResourceId",
+          "documentation":"<p>The source filter ID of the <code>HierarchyFilterDropDownControl</code>. This must be the <code>FilterId</code> of a <code>HierarchyFilter</code>.</p>"
+        },
+        "Title":{
+          "shape":"SheetControlTitle",
+          "documentation":"<p>The title of the <code>HierarchyFilterDropDownControl</code>.</p>"
+        },
+        "DisplayOptions":{
+          "shape":"HierarchyFilterDropDownControlDisplayOptions",
+          "documentation":"<p>The display options of a control.</p>"
+        },
+        "Type":{
+          "shape":"SheetControlListType",
+          "documentation":"<p>The type of the <code>HierarchyFilterDropDownControl</code>. Choose one of the following options:</p> <ul> <li> <p> <code>MULTI_SELECT</code>: The user can select multiple entries from a dropdown menu.</p> </li> <li> <p> <code>SINGLE_SELECT</code>: The user can select a single entry from a dropdown menu.</p> </li> </ul>"
+        },
+        "CommitMode":{
+          "shape":"CommitMode",
+          "documentation":"<p>The visibility configuration of the Apply button on a <code>HierarchyFilterDropDownControl</code>.</p>"
+        },
+        "ControlSortConfigurations":{
+          "shape":"ControlSortConfigurationList",
+          "documentation":"<p>The sort configuration for the values displayed in the control. Only one sort configuration can be applied per control.</p>"
+        },
+        "ControlTitleFormatText":{
+          "shape":"ControlTitleFormatText",
+          "documentation":"<p>The title text format configuration for the control.</p>"
+        }
+      },
+      "documentation":"<p>A control from a hierarchy filter that displays the hierarchy as a dropdown list. You can expand a value to see and select the values beneath it, and select either a single value or multiple values.</p>"
+    },
+    "HierarchyFilterDropDownControlDisplayOptions":{
+      "type":"structure",
+      "members":{
+        "TitleOptions":{
+          "shape":"LabelOptions",
+          "documentation":"<p>The options to configure the title visibility, name, and font size.</p>"
+        },
+        "InfoIconLabelOptions":{
+          "shape":"SheetControlInfoIconLabelOptions",
+          "documentation":"<p>The configuration of info icon label options.</p>"
+        }
+      },
+      "documentation":"<p>The display options of a control.</p>"
+    },
+    "HierarchyFilterLevel":{
+      "type":"structure",
+      "required":["Column"],
+      "members":{
+        "Column":{
+          "shape":"ColumnIdentifier",
+          "documentation":"<p>The column that this level of the hierarchy drills down by. This column must belong to the same dataset as <code>HierarchyFilter$Column</code>.</p>"
+        }
+      },
+      "documentation":"<p>One level of the drill-down path of a <code>HierarchyFilter</code>.</p>"
+    },
+    "HierarchyFilterLevelList":{
+      "type":"list",
+      "member":{"shape":"HierarchyFilterLevel"},
+      "max":5,
+      "min":1
+    },
+    "HierarchyFilterListControl":{
+      "type":"structure",
+      "required":[
+        "FilterControlId",
+        "SourceFilterId"
+      ],
+      "members":{
+        "FilterControlId":{
+          "shape":"ShortRestrictiveResourceId",
+          "documentation":"<p>The ID of the <code>HierarchyFilterListControl</code>.</p>"
+        },
+        "SourceFilterId":{
+          "shape":"ShortRestrictiveResourceId",
+          "documentation":"<p>The source filter ID of the <code>HierarchyFilterListControl</code>. This must be the <code>FilterId</code> of a <code>HierarchyFilter</code>.</p>"
+        },
+        "Title":{
+          "shape":"SheetControlTitle",
+          "documentation":"<p>The title of the <code>HierarchyFilterListControl</code>.</p>"
+        },
+        "DisplayOptions":{
+          "shape":"HierarchyFilterListControlDisplayOptions",
+          "documentation":"<p>The display options of a control.</p>"
+        },
+        "Type":{
+          "shape":"SheetControlListType",
+          "documentation":"<p>The type of the <code>HierarchyFilterListControl</code>. Choose one of the following options:</p> <ul> <li> <p> <code>MULTI_SELECT</code>: The user can select multiple entries from the list.</p> </li> <li> <p> <code>SINGLE_SELECT</code>: The user can select a single entry from the list.</p> </li> </ul>"
+        },
+        "CommitMode":{
+          "shape":"CommitMode",
+          "documentation":"<p>The visibility configuration of the Apply button on a <code>HierarchyFilterListControl</code>.</p>"
+        },
+        "ControlSortConfigurations":{
+          "shape":"ControlSortConfigurationList",
+          "documentation":"<p>The sort configuration for the values displayed in the control. Only one sort configuration can be applied per control.</p>"
+        },
+        "ControlTitleFormatText":{
+          "shape":"ControlTitleFormatText",
+          "documentation":"<p>The title text format configuration for the control.</p>"
+        }
+      },
+      "documentation":"<p>A control from a hierarchy filter that displays the hierarchy as a list. You can expand a value to see and select the values beneath it, and select either a single value or multiple values.</p>"
+    },
+    "HierarchyFilterListControlDisplayOptions":{
+      "type":"structure",
+      "members":{
+        "TitleOptions":{
+          "shape":"LabelOptions",
+          "documentation":"<p>The options to configure the title visibility, name, and font size.</p>"
+        },
+        "InfoIconLabelOptions":{
+          "shape":"SheetControlInfoIconLabelOptions",
+          "documentation":"<p>The configuration of info icon label options.</p>"
+        },
+        "SearchOptions":{
+          "shape":"HierarchyFilterListControlSearchOptions",
+          "documentation":"<p>The configuration of the search options in a hierarchy list control.</p>"
+        }
+      },
+      "documentation":"<p>The display options of a control.</p>"
+    },
+    "HierarchyFilterListControlSearchOptions":{
+      "type":"structure",
+      "members":{
+        "Visibility":{
+          "shape":"Visibility",
+          "documentation":"<p>The visibility configuration of the search options in a hierarchy list control.</p>"
+        }
+      },
+      "documentation":"<p>The configuration of the search options in a hierarchy list control.</p>"
+    },
+    "HierarchyFilterMatchOperator":{
+      "type":"string",
+      "enum":[
+        "INCLUDE",
+        "EXCLUDE"
+      ]
+    },
+    "HierarchyFilterNode":{
+      "type":"structure",
+      "required":["Column"],
+      "members":{
+        "Column":{
+          "shape":"ColumnIdentifier",
+          "documentation":"<p>The column that this node selects values from. This column must match the column of the corresponding level in <code>HierarchyFilter$HierarchyLevels</code>. The node at depth 1 must match the first level, the node at depth 2 must match the second level, and so on.</p>"
+        },
+        "ParentValue":{
+          "shape":"HierarchyFilterValue",
+          "documentation":"<p>The value in the parent node's <code>HierarchyValues</code> that this node belongs to. When a parent selects several values, each of its children repeats one of them here to identify which branch of the hierarchy that child describes.</p> <p>Omit this attribute on the root node of <code>HierarchyTree</code>, which has no parent.</p>"
+        },
+        "HierarchyValues":{
+          "shape":"HierarchyValuesList",
+          "documentation":"<p>The values that are selected at this level of the hierarchy. You can specify a maximum of 2,000 values per node.</p>"
+        },
+        "Children":{
+          "shape":"HierarchyFilterNodeList",
+          "documentation":"<p>The nodes that record the selections at the next level of the hierarchy. You can specify a maximum of 1,000 children per node.</p>"
+        }
+      },
+      "documentation":"<p>A node in the selection tree of a <code>HierarchyFilter</code>. Each node records the values that are selected at one level of the hierarchy. Nodes nest through <code>Children</code> to record selections at deeper levels.</p> <p>The tree cannot be deeper than the number of levels declared in <code>HierarchyLevels</code>. A tree can be a maximum of 5 levels deep, and a node can have a maximum of 1,000 children.</p>"
+    },
+    "HierarchyFilterNodeList":{
+      "type":"list",
+      "member":{"shape":"HierarchyFilterNode"},
+      "max":1000,
+      "min":0
+    },
+    "HierarchyFilterValue":{
+      "type":"string",
+      "max":512,
+      "sensitive":true
+    },
     "HierarchyId":{
       "type":"string",
       "max":512,
       "min":1
+    },
+    "HierarchyValuesList":{
+      "type":"list",
+      "member":{"shape":"HierarchyFilterValue"},
+      "max":2000
     },
     "HistogramAggregatedFieldWells":{
       "type":"structure",
@@ -36141,7 +36451,7 @@
           "documentation":"<p>The S3 URI of the identity provider's CA certificates bundle in PEM format. Use this parameter to provide a custom CA certificate bundle for the identity provider when the default trust store does not include the required certificates.</p>"
         }
       },
-      "documentation":"<p>An object that contains information needed to create a data source connection that uses OAuth client credentials. This option is available for data source connections that are made with Snowflake and Starburst.</p>"
+      "documentation":"<p>An object that contains information needed to create a data source connection that uses OAuth client credentials. This option is available for data source connections that are made with Snowflake, Starburst, and Databricks.</p>"
     },
     "OAuthScope":{
       "type":"string",

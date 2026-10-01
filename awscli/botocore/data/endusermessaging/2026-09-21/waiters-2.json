@@ -1,0 +1,49 @@
+{
+  "version" : 2,
+  "waiters" : {
+    "BrandProfileActive" : {
+      "description" : "Wait until a brand profile reaches the ACTIVE state.",
+      "delay" : 30,
+      "maxAttempts" : 5,
+      "operation" : "GetBrandProfile",
+      "acceptors" : [ {
+        "matcher" : "path",
+        "argument" : "status",
+        "state" : "success",
+        "expected" : "ACTIVE"
+      }, {
+        "matcher" : "path",
+        "argument" : "status",
+        "state" : "failure",
+        "expected" : "BLOCKED"
+      }, {
+        "matcher" : "path",
+        "argument" : "status",
+        "state" : "failure",
+        "expected" : "CANCELLED"
+      }, {
+        "matcher" : "path",
+        "argument" : "status",
+        "state" : "failure",
+        "expected" : "FAILED"
+      } ]
+    },
+    "JobSuccess" : {
+      "description" : "Wait until an async job reaches the SUCCESS terminal state.",
+      "delay" : 30,
+      "maxAttempts" : 5,
+      "operation" : "GetJob",
+      "acceptors" : [ {
+        "matcher" : "path",
+        "argument" : "status",
+        "state" : "success",
+        "expected" : "SUCCESS"
+      }, {
+        "matcher" : "path",
+        "argument" : "status",
+        "state" : "failure",
+        "expected" : "FAILED"
+      } ]
+    }
+  }
+}

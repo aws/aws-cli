@@ -1,0 +1,135 @@
+{
+  "version" : 2,
+  "waiters" : {
+    "WebFunctionActive" : {
+      "description" : "Waits for the web function's state to be Active. This should be used after new function creation.",
+      "delay" : 1,
+      "maxAttempts" : 300,
+      "operation" : "GetWebFunction",
+      "acceptors" : [ {
+        "matcher" : "path",
+        "argument" : "state",
+        "state" : "success",
+        "expected" : "Active"
+      }, {
+        "matcher" : "path",
+        "argument" : "state",
+        "state" : "failure",
+        "expected" : "Failed"
+      }, {
+        "matcher" : "path",
+        "argument" : "state",
+        "state" : "failure",
+        "expected" : "Deleting"
+      }, {
+        "matcher" : "path",
+        "argument" : "state",
+        "state" : "retry",
+        "expected" : "Pending"
+      } ]
+    },
+    "WebFunctionDeleted" : {
+      "description" : "Waits for the web function to be deleted. This should be used after function deletion.",
+      "delay" : 1,
+      "maxAttempts" : 300,
+      "operation" : "GetWebFunction",
+      "acceptors" : [ {
+        "matcher" : "error",
+        "state" : "success",
+        "expected" : "ResourceNotFoundException"
+      }, {
+        "matcher" : "path",
+        "argument" : "state",
+        "state" : "retry",
+        "expected" : "Deleting"
+      } ]
+    },
+    "WebFunctionEndpointActive" : {
+      "description" : "Waits for the web function endpoint's state to be Active. This should be used after new endpoint creation.",
+      "delay" : 1,
+      "maxAttempts" : 300,
+      "operation" : "GetWebFunctionEndpoint",
+      "acceptors" : [ {
+        "matcher" : "path",
+        "argument" : "state",
+        "state" : "success",
+        "expected" : "Active"
+      }, {
+        "matcher" : "path",
+        "argument" : "state",
+        "state" : "failure",
+        "expected" : "Failed"
+      }, {
+        "matcher" : "path",
+        "argument" : "state",
+        "state" : "failure",
+        "expected" : "Deleting"
+      }, {
+        "matcher" : "path",
+        "argument" : "state",
+        "state" : "retry",
+        "expected" : "Pending"
+      } ]
+    },
+    "WebFunctionEndpointDeleted" : {
+      "description" : "Waits for the web function endpoint to be deleted. This should be used after endpoint deletion.",
+      "delay" : 1,
+      "maxAttempts" : 300,
+      "operation" : "GetWebFunctionEndpoint",
+      "acceptors" : [ {
+        "matcher" : "error",
+        "state" : "success",
+        "expected" : "ResourceNotFoundException"
+      }, {
+        "matcher" : "path",
+        "argument" : "state",
+        "state" : "retry",
+        "expected" : "Deleting"
+      } ]
+    },
+    "WebFunctionEndpointUpdated" : {
+      "description" : "Waits for the web function endpoint's update status to be Successful. This should be used after endpoint updates.",
+      "delay" : 1,
+      "maxAttempts" : 300,
+      "operation" : "GetWebFunctionEndpoint",
+      "acceptors" : [ {
+        "matcher" : "path",
+        "argument" : "updateStatus",
+        "state" : "success",
+        "expected" : "Successful"
+      }, {
+        "matcher" : "path",
+        "argument" : "updateStatus",
+        "state" : "failure",
+        "expected" : "Failed"
+      }, {
+        "matcher" : "path",
+        "argument" : "updateStatus",
+        "state" : "retry",
+        "expected" : "InProgress"
+      } ]
+    },
+    "WebFunctionRevisionActive" : {
+      "description" : "Waits for the web function revision's state to be Active. This should be used after new revision creation.",
+      "delay" : 1,
+      "maxAttempts" : 300,
+      "operation" : "GetWebFunctionRevision",
+      "acceptors" : [ {
+        "matcher" : "path",
+        "argument" : "state",
+        "state" : "success",
+        "expected" : "Active"
+      }, {
+        "matcher" : "path",
+        "argument" : "state",
+        "state" : "failure",
+        "expected" : "Failed"
+      }, {
+        "matcher" : "path",
+        "argument" : "state",
+        "state" : "retry",
+        "expected" : "Pending"
+      } ]
+    }
+  }
+}

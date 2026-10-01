@@ -1,0 +1,2458 @@
+{
+  "version":"2.0",
+  "metadata":{
+    "apiVersion":"2025-03-07",
+    "auth":["aws.auth#sigv4"],
+    "endpointPrefix":"lambda",
+    "protocol":"rest-json",
+    "protocols":["rest-json"],
+    "serviceFullName":"Lambda Web",
+    "serviceId":"Lambda Web",
+    "signatureVersion":"v4",
+    "signingName":"lambda",
+    "uid":"lambda-web-2025-03-07"
+  },
+  "operations":{
+    "CreateWebFunction":{
+      "name":"CreateWebFunction",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/2025-03-07/web-functions",
+        "responseCode":202
+      },
+      "input":{"shape":"CreateWebFunctionRequest"},
+      "output":{"shape":"CreateWebFunctionResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ServiceQuotaExceededException"}
+      ],
+      "documentation":"<p>Creates a web function with an initial revision and endpoint. To create a web function, you provide the function name, revision configuration (code and service settings), and endpoint configuration.</p> <p>To use this operation, you must have the <code>CreateWebFunction</code> permission on the web function. You don't need separate permissions for the initial revision or endpoint.</p>",
+      "idempotent":true
+    },
+    "CreateWebFunctionEndpoint":{
+      "name":"CreateWebFunctionEndpoint",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/2025-03-07/web-functions/{functionName}/endpoints",
+        "responseCode":202
+      },
+      "input":{"shape":"CreateWebFunctionEndpointRequest"},
+      "output":{"shape":"CreateWebFunctionEndpointResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ServiceQuotaExceededException"}
+      ],
+      "documentation":"<p>Creates an endpoint for a web function. An endpoint exposes the web function over HTTPS and routes traffic to one or more revisions.</p> <p>To use this operation, you must have the <code>CreateWebFunctionEndpoint</code> permission on the web function, not on the endpoint being created.</p>",
+      "idempotent":true
+    },
+    "CreateWebFunctionRevision":{
+      "name":"CreateWebFunctionRevision",
+      "http":{
+        "method":"POST",
+        "requestUri":"/2025-03-07/web-functions/{functionName}/revisions",
+        "responseCode":202
+      },
+      "input":{"shape":"CreateWebFunctionRevisionRequest"},
+      "output":{"shape":"CreateWebFunctionRevisionResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ServiceQuotaExceededException"}
+      ],
+      "documentation":"<p>Creates an immutable revision for a web function. A revision represents a specific version of the function code and configuration.</p> <p>To use this operation, you must have the <code>CreateWebFunctionRevision</code> permission on the web function, not on the revision being created.</p>"
+    },
+    "DeleteResourcePolicy":{
+      "name":"DeleteResourcePolicy",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/2025-03-07/resource-policy/{resourceArn}",
+        "responseCode":204
+      },
+      "input":{"shape":"DeleteResourcePolicyRequest"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Removes the resource-based policy from a web function.</p>",
+      "idempotent":true
+    },
+    "DeleteWebFunction":{
+      "name":"DeleteWebFunction",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/2025-03-07/web-functions/{functionName}",
+        "responseCode":204
+      },
+      "input":{"shape":"DeleteWebFunctionRequest"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Deletes a web function and all of its associated revisions and endpoints.</p> <p>To use this operation, you must have the <code>DeleteWebFunction</code> permission on the web function. You don't need the <code>DeleteWebFunctionRevision</code> or <code>DeleteWebFunctionEndpoint</code> permission.</p>",
+      "idempotent":true
+    },
+    "DeleteWebFunctionEndpoint":{
+      "name":"DeleteWebFunctionEndpoint",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/2025-03-07/web-functions/{functionName}/endpoints/{endpointName}",
+        "responseCode":204
+      },
+      "input":{"shape":"DeleteWebFunctionEndpointRequest"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Deletes a web function endpoint.</p>",
+      "idempotent":true
+    },
+    "DeleteWebFunctionRevision":{
+      "name":"DeleteWebFunctionRevision",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/2025-03-07/web-functions/{functionName}/revisions/{revisionId}",
+        "responseCode":204
+      },
+      "input":{"shape":"DeleteWebFunctionRevisionRequest"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Deletes a web function revision. You cannot delete a revision that is currently serving traffic on an endpoint.</p>",
+      "idempotent":true
+    },
+    "GetResourcePolicy":{
+      "name":"GetResourcePolicy",
+      "http":{
+        "method":"GET",
+        "requestUri":"/2025-03-07/resource-policy/{resourceArn}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetResourcePolicyRequest"},
+      "output":{"shape":"GetResourcePolicyResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Retrieves the resource-based policy attached to a web function.</p>",
+      "readonly":true
+    },
+    "GetWebAccountSettings":{
+      "name":"GetWebAccountSettings",
+      "http":{
+        "method":"GET",
+        "requestUri":"/2025-03-07/web-account-settings",
+        "responseCode":200
+      },
+      "input":{"shape":"GetWebAccountSettingsRequest"},
+      "output":{"shape":"GetWebAccountSettingsResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Retrieves details about your AWS Lambda Web Functions account settings for the current AWS Region, including the quotas that apply to web functions and your current usage.</p>",
+      "readonly":true
+    },
+    "GetWebFunction":{
+      "name":"GetWebFunction",
+      "http":{
+        "method":"GET",
+        "requestUri":"/2025-03-07/web-functions/{functionName}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetWebFunctionRequest"},
+      "output":{"shape":"GetWebFunctionResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Retrieves details about a web function, including its current state and configuration.</p>",
+      "readonly":true
+    },
+    "GetWebFunctionEndpoint":{
+      "name":"GetWebFunctionEndpoint",
+      "http":{
+        "method":"GET",
+        "requestUri":"/2025-03-07/web-functions/{functionName}/endpoints/{endpointName}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetWebFunctionEndpointRequest"},
+      "output":{"shape":"GetWebFunctionEndpointResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Retrieves details about a web function endpoint, including its current state, configuration, and domain name.</p>",
+      "readonly":true
+    },
+    "GetWebFunctionRevision":{
+      "name":"GetWebFunctionRevision",
+      "http":{
+        "method":"GET",
+        "requestUri":"/2025-03-07/web-functions/{functionName}/revisions/{revisionId}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetWebFunctionRevisionRequest"},
+      "output":{"shape":"GetWebFunctionRevisionResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Retrieves details about a web function revision, including its state and configuration.</p>",
+      "readonly":true
+    },
+    "ListTags":{
+      "name":"ListTags",
+      "http":{
+        "method":"GET",
+        "requestUri":"/2025-03-07/tags/{resource}",
+        "responseCode":200
+      },
+      "input":{"shape":"ListTagsRequest"},
+      "output":{"shape":"ListTagsResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Returns a list of tags applied to a web function.</p>",
+      "readonly":true
+    },
+    "ListWebFunctionEndpoints":{
+      "name":"ListWebFunctionEndpoints",
+      "http":{
+        "method":"POST",
+        "requestUri":"/2025-03-07/web-functions/{functionName}/list-endpoints",
+        "responseCode":200
+      },
+      "input":{"shape":"ListWebFunctionEndpointsRequest"},
+      "output":{"shape":"ListWebFunctionEndpointsResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Lists endpoints for a web function. We recommend using pagination to ensure that the operation returns quickly and successfully.</p>",
+      "readonly":true
+    },
+    "ListWebFunctionRevisions":{
+      "name":"ListWebFunctionRevisions",
+      "http":{
+        "method":"POST",
+        "requestUri":"/2025-03-07/web-functions/{functionName}/list-revisions",
+        "responseCode":200
+      },
+      "input":{"shape":"ListWebFunctionRevisionsRequest"},
+      "output":{"shape":"ListWebFunctionRevisionsResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Lists revisions for a web function. We recommend using pagination to ensure that the operation returns quickly and successfully.</p>",
+      "readonly":true
+    },
+    "ListWebFunctions":{
+      "name":"ListWebFunctions",
+      "http":{
+        "method":"POST",
+        "requestUri":"/2025-03-07/web-functions",
+        "responseCode":200
+      },
+      "input":{"shape":"ListWebFunctionsRequest"},
+      "output":{"shape":"ListWebFunctionsResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Lists web functions in your account. We recommend using pagination to ensure that the operation returns quickly and successfully.</p>",
+      "readonly":true
+    },
+    "PutResourcePolicy":{
+      "name":"PutResourcePolicy",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/2025-03-07/resource-policy/{resourceArn}",
+        "responseCode":200
+      },
+      "input":{"shape":"PutResourcePolicyRequest"},
+      "output":{"shape":"PutResourcePolicyResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ServiceQuotaExceededException"}
+      ],
+      "documentation":"<p>Adds or updates a resource-based policy on a web function. A resource-based policy grants permissions to other AWS accounts or services to perform actions on the web function.</p>",
+      "idempotent":true
+    },
+    "TagResource":{
+      "name":"TagResource",
+      "http":{
+        "method":"POST",
+        "requestUri":"/2025-03-07/tags/{resource}",
+        "responseCode":204
+      },
+      "input":{"shape":"TagResourceRequest"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ServiceQuotaExceededException"}
+      ],
+      "documentation":"<p>Adds tags to a web function. If a tag key already exists, the existing value is overwritten with the new value.</p>",
+      "idempotent":true
+    },
+    "UntagResource":{
+      "name":"UntagResource",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/2025-03-07/tags/{resource}",
+        "responseCode":204
+      },
+      "input":{"shape":"UntagResourceRequest"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Removes tags from a web function.</p>",
+      "idempotent":true
+    },
+    "UpdateWebFunctionEndpoint":{
+      "name":"UpdateWebFunctionEndpoint",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/2025-03-07/web-functions/{functionName}/endpoints/{endpointName}",
+        "responseCode":202
+      },
+      "input":{"shape":"UpdateWebFunctionEndpointRequest"},
+      "output":{"shape":"UpdateWebFunctionEndpointResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ServiceQuotaExceededException"}
+      ],
+      "documentation":"<p>Updates the configuration of a web function endpoint. You can modify the authorization type, auto-deployment mode, revision weights, scaling, and throttling settings.</p>",
+      "idempotent":true
+    }
+  },
+  "shapes":{
+    "AccessDeniedException":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{
+          "shape":"String",
+          "documentation":"<p>A message describing the access denied error.</p>"
+        }
+      },
+      "documentation":"<p>You do not have sufficient permissions to perform this operation.</p>",
+      "error":{
+        "httpStatusCode":403,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "AccountQuotas":{
+      "type":"structure",
+      "required":[
+        "maxTotalArmVCpus",
+        "maxTotalRateLimit",
+        "maxRevisionsPerFunction",
+        "maxEndpointsPerFunction"
+      ],
+      "members":{
+        "maxTotalArmVCpus":{
+          "shape":"AccountQuotasMaxTotalArmVCpusInteger",
+          "documentation":"<p>The maximum total number of Arm vCPUs that you can allocate across all of your web functions in the current AWS Region.</p>"
+        },
+        "maxTotalRateLimit":{
+          "shape":"AccountQuotasMaxTotalRateLimitInteger",
+          "documentation":"<p>The maximum number of requests per second allowed across all of your web function endpoints in your account in the current AWS Region.</p>"
+        },
+        "maxRevisionsPerFunction":{
+          "shape":"AccountQuotasMaxRevisionsPerFunctionInteger",
+          "documentation":"<p>The maximum number of revisions that a single web function can have.</p>"
+        },
+        "maxEndpointsPerFunction":{
+          "shape":"AccountQuotasMaxEndpointsPerFunctionInteger",
+          "documentation":"<p>The maximum number of endpoints that a single web function can have.</p>"
+        }
+      },
+      "documentation":"<p>The quotas that apply to web functions in your account in the current AWS Region.</p>"
+    },
+    "AccountQuotasMaxEndpointsPerFunctionInteger":{
+      "type":"integer",
+      "box":true,
+      "min":0
+    },
+    "AccountQuotasMaxRevisionsPerFunctionInteger":{
+      "type":"integer",
+      "box":true,
+      "min":0
+    },
+    "AccountQuotasMaxTotalArmVCpusInteger":{
+      "type":"integer",
+      "box":true,
+      "min":0
+    },
+    "AccountQuotasMaxTotalRateLimitInteger":{
+      "type":"integer",
+      "box":true,
+      "min":0
+    },
+    "AccountUsage":{
+      "type":"structure",
+      "required":["functionCount"],
+      "members":{
+        "functionCount":{
+          "shape":"AccountUsageFunctionCountInteger",
+          "documentation":"<p>The number of web functions in your account in the current AWS Region.</p>"
+        }
+      },
+      "documentation":"<p>Contains your current web function usage for the current AWS Region.</p>"
+    },
+    "AccountUsageFunctionCountInteger":{
+      "type":"integer",
+      "box":true,
+      "min":0
+    },
+    "ApplicationLogLevel":{
+      "type":"string",
+      "documentation":"<p>The log level for application logs. Possible values: <code>TRACE</code>, <code>DEBUG</code>, <code>INFO</code>, <code>WARN</code>, <code>ERROR</code>, <code>FATAL</code>.</p>",
+      "enum":[
+        "TRACE",
+        "DEBUG",
+        "INFO",
+        "WARN",
+        "ERROR",
+        "FATAL"
+      ]
+    },
+    "AuthType":{
+      "type":"string",
+      "documentation":"<p>The authorization type for a web function endpoint. Possible values: <code>ApplicationManaged</code> (the function handles authorization), <code>IamAuth</code> (Lambda authorizes requests with AWS SigV4 and IAM).</p>",
+      "enum":[
+        "ApplicationManaged",
+        "IamAuth"
+      ]
+    },
+    "AutoDeploymentMode":{
+      "type":"string",
+      "documentation":"<p>The auto-deployment mode for a web function endpoint. Possible values: <code>LatestRevision</code> (endpoint automatically serves the newest revision), <code>Disabled</code> (revision routing is fixed until explicitly changed).</p>",
+      "enum":[
+        "LatestRevision",
+        "Disabled"
+      ]
+    },
+    "BuildConfig":{
+      "type":"structure",
+      "required":[
+        "codeConfig",
+        "runtimeConfig"
+      ],
+      "members":{
+        "codeConfig":{
+          "shape":"CodeConfig",
+          "documentation":"<p>The code configuration specifying where the deployment artifact is stored.</p>"
+        },
+        "runtimeConfig":{
+          "shape":"RuntimeConfig",
+          "documentation":"<p>The runtime configuration for the revision.</p>"
+        }
+      },
+      "documentation":"<p>The build configuration for a web function revision, including code location and runtime settings.</p>"
+    },
+    "CodeConfig":{
+      "type":"structure",
+      "required":["s3Object"],
+      "members":{
+        "s3Object":{
+          "shape":"S3Object",
+          "documentation":"<p>The Amazon S3 location of the deployment artifact.</p>"
+        }
+      },
+      "documentation":"<p>The code configuration specifying the location of the deployment artifact.</p>"
+    },
+    "ConflictException":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{
+          "shape":"String",
+          "documentation":"<p>A message describing the conflict.</p>"
+        },
+        "resourceId":{
+          "shape":"String",
+          "documentation":"<p>The identifier of the resource in conflict.</p>"
+        },
+        "resourceType":{
+          "shape":"String",
+          "documentation":"<p>The type of the resource in conflict.</p>"
+        }
+      },
+      "documentation":"<p>The request conflicts with the current state of the resource. Resolve the conflict and try again.</p>",
+      "error":{
+        "httpStatusCode":409,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "CreateWebFunctionEndpointRequest":{
+      "type":"structure",
+      "required":[
+        "functionName",
+        "endpointName",
+        "endpointType",
+        "authType"
+      ],
+      "members":{
+        "functionName":{
+          "shape":"FunctionName",
+          "documentation":"<p>The name of the web function to create the endpoint for. You can specify the function name or the function ARN. The length constraint applies only to the full ARN. If you specify only the function name, it is limited to 64 characters in length.</p>",
+          "location":"uri",
+          "locationName":"functionName"
+        },
+        "endpointName":{
+          "shape":"EndpointName",
+          "documentation":"<p>The name of the endpoint to create. The name can contain letters, numbers, hyphens (-), and underscores (_), and can't begin or end with a hyphen or an underscore. The length constraint applies only to the full ARN. If you specify only the endpoint name, it is limited to 64 characters in length.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>A description of the endpoint.</p>"
+        },
+        "endpointType":{
+          "shape":"EndpointType",
+          "documentation":"<p>The type of endpoint to create. Determines how traffic is served and routed across Regions.</p>"
+        },
+        "authType":{
+          "shape":"AuthType",
+          "documentation":"<p>The authorization type for the endpoint.</p>"
+        },
+        "autoDeploymentMode":{
+          "shape":"AutoDeploymentMode",
+          "documentation":"<p>The auto-deployment mode for the endpoint. Controls whether the endpoint automatically serves the newest revision. If you don't specify a value, the default is <code>Disabled</code>, and this default is returned in the response.</p>"
+        },
+        "revisionWeights":{
+          "shape":"RevisionWeightList",
+          "documentation":"<p>A list of revision weights that determine how traffic is distributed across revisions. Up to two revisions can be specified for canary or blue-green deployments.</p>"
+        },
+        "regions":{
+          "shape":"RegionList",
+          "documentation":"<p>The list of Regions for the endpoint. Required when the endpoint type is <code>MultiRegion</code> or <code>PerRegion</code>: specify at least one Region other than the Region where you create the endpoint (the home Region). The home Region is added automatically if you don't include it; specifying only the home Region isn't allowed. When the endpoint type is <code>HomeRegion</code>, omit this field or specify only the home Region.</p>"
+        },
+        "scalingConfig":{
+          "shape":"ScalingConfig",
+          "documentation":"<p>The scaling configuration for the endpoint. There is no default value. If you don't specify a scaling configuration, it is absent from the response.</p>"
+        },
+        "throttleConfig":{
+          "shape":"ThrottleConfig",
+          "documentation":"<p>The throttling configuration for the endpoint. There is no default value. If you don't specify a throttling configuration, it is absent from the response.</p>"
+        }
+      },
+      "documentation":"<p>The request to create a web function endpoint.</p>"
+    },
+    "CreateWebFunctionEndpointResponse":{
+      "type":"structure",
+      "required":[
+        "functionArn",
+        "endpointArn",
+        "endpointName",
+        "endpointType",
+        "domainName",
+        "authType",
+        "autoDeploymentMode",
+        "revisionWeights",
+        "regions",
+        "state",
+        "stateReason",
+        "regionalEndpoints",
+        "createdAt",
+        "updatedAt"
+      ],
+      "members":{
+        "functionArn":{
+          "shape":"FunctionArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the web function.</p>"
+        },
+        "endpointArn":{
+          "shape":"EndpointArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the endpoint.</p>"
+        },
+        "endpointName":{
+          "shape":"EndpointName",
+          "documentation":"<p>The name of the endpoint.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>The description of the endpoint.</p>"
+        },
+        "endpointType":{"shape":"EndpointType"},
+        "domainName":{
+          "shape":"DomainName",
+          "documentation":"<p>The domain name assigned to the endpoint.</p>"
+        },
+        "authType":{"shape":"AuthType"},
+        "autoDeploymentMode":{"shape":"AutoDeploymentMode"},
+        "revisionWeights":{
+          "shape":"RevisionWeightList",
+          "documentation":"<p>The traffic distribution across revisions for the endpoint. Each entry maps a revision to a weight from 1 to 100.</p>"
+        },
+        "regions":{
+          "shape":"RegionList",
+          "documentation":"<p>The Regions configured for the endpoint.</p>"
+        },
+        "scalingConfig":{"shape":"ScalingConfig"},
+        "throttleConfig":{"shape":"ThrottleConfig"},
+        "state":{
+          "shape":"EndpointState",
+          "documentation":"<p>The current state of the endpoint.</p>"
+        },
+        "stateReason":{
+          "shape":"String",
+          "documentation":"<p>The reason for the current state of the endpoint.</p>"
+        },
+        "updateStatus":{"shape":"EndpointUpdateStatus"},
+        "updateStatusReason":{
+          "shape":"String",
+          "documentation":"<p>The reason for the endpoint's most recent update status.</p>"
+        },
+        "regionalEndpoints":{
+          "shape":"RegionalEndpoints",
+          "documentation":"<p>The list of regional endpoint configurations.</p>"
+        },
+        "createdAt":{
+          "shape":"DateTime",
+          "documentation":"<p>The date and time the endpoint was created.</p>"
+        },
+        "updatedAt":{
+          "shape":"DateTime",
+          "documentation":"<p>The date and time the endpoint was last updated.</p>"
+        }
+      },
+      "documentation":"<p>Contains details about the created endpoint.</p>"
+    },
+    "CreateWebFunctionRequest":{
+      "type":"structure",
+      "required":["functionName"],
+      "members":{
+        "functionName":{
+          "shape":"FunctionName",
+          "documentation":"<p>The name of the web function. The name can contain letters, numbers, hyphens (-), and underscores (_), and can't begin or end with a hyphen or an underscore. The length constraint applies only to the full ARN. If you specify only the function name, it is limited to 64 characters in length.</p>"
+        },
+        "revisionConfig":{
+          "shape":"RevisionConfig",
+          "documentation":"<p>The configuration for the initial revision of the web function, including code and service settings.</p>"
+        },
+        "endpointConfig":{
+          "shape":"EndpointConfig",
+          "documentation":"<p>The configuration for the initial endpoint of the web function.</p>"
+        },
+        "tags":{
+          "shape":"Tags",
+          "documentation":"<p>A map of tag keys and values to apply to the web function.</p>"
+        }
+      },
+      "documentation":"<p>The request to create a web function.</p>"
+    },
+    "CreateWebFunctionResponse":{
+      "type":"structure",
+      "required":[
+        "functionName",
+        "functionArn",
+        "state",
+        "stateReason",
+        "createdAt",
+        "updatedAt"
+      ],
+      "members":{
+        "functionName":{
+          "shape":"FunctionName",
+          "documentation":"<p>The name of the web function.</p>"
+        },
+        "functionArn":{
+          "shape":"FunctionArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the web function.</p>"
+        },
+        "state":{
+          "shape":"FunctionState",
+          "documentation":"<p>The current state of the web function.</p>"
+        },
+        "stateReason":{
+          "shape":"String",
+          "documentation":"<p>The reason for the current state of the web function.</p>"
+        },
+        "createdAt":{
+          "shape":"DateTime",
+          "documentation":"<p>The date and time the web function was created.</p>"
+        },
+        "updatedAt":{
+          "shape":"DateTime",
+          "documentation":"<p>The date and time the web function was last updated.</p>"
+        },
+        "revision":{
+          "shape":"FunctionRevisionSummary",
+          "documentation":"<p>A summary of the initial revision created with the web function.</p>"
+        },
+        "endpoint":{
+          "shape":"FunctionEndpointSummary",
+          "documentation":"<p>A summary of the initial endpoint created with the web function.</p>"
+        },
+        "tags":{
+          "shape":"Tags",
+          "documentation":"<p>A map of tag keys and values associated with the web function.</p>"
+        }
+      },
+      "documentation":"<p>Contains details about the created web function.</p>"
+    },
+    "CreateWebFunctionRevisionRequest":{
+      "type":"structure",
+      "required":[
+        "functionName",
+        "buildConfig",
+        "serviceConfig"
+      ],
+      "members":{
+        "functionName":{
+          "shape":"FunctionName",
+          "documentation":"<p>The name of the web function. You can specify the function name or the function ARN. The length constraint applies only to the full ARN. If you specify only the function name, it is limited to 64 characters in length.</p>",
+          "location":"uri",
+          "locationName":"functionName"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>A description of the revision.</p>"
+        },
+        "kmsKeyArn":{
+          "shape":"KmsKeyArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS Key Management Service (AWS KMS) key used to encrypt the revision's code and environment variables.</p>"
+        },
+        "buildConfig":{
+          "shape":"BuildConfig",
+          "documentation":"<p>The build configuration for the revision, including code location and runtime settings.</p>"
+        },
+        "serviceConfig":{
+          "shape":"ServiceConfig",
+          "documentation":"<p>The service configuration for the revision, including execution role, timeout, and concurrency settings.</p>"
+        }
+      },
+      "documentation":"<p>The request to create a web function revision.</p>"
+    },
+    "CreateWebFunctionRevisionResponse":{
+      "type":"structure",
+      "required":[
+        "functionArn",
+        "revisionArn",
+        "revisionId",
+        "buildConfig",
+        "serviceConfig",
+        "state",
+        "stateReason",
+        "createdAt"
+      ],
+      "members":{
+        "functionArn":{
+          "shape":"FunctionArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the web function.</p>"
+        },
+        "revisionArn":{
+          "shape":"RevisionArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the revision.</p>"
+        },
+        "revisionId":{
+          "shape":"RevisionId",
+          "documentation":"<p>The identifier of the revision.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>The description of the revision.</p>"
+        },
+        "kmsKeyArn":{
+          "shape":"KmsKeyArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS KMS key used to encrypt the revision's code and environment variables.</p>"
+        },
+        "buildConfig":{"shape":"BuildConfig"},
+        "serviceConfig":{"shape":"ServiceConfig"},
+        "state":{
+          "shape":"RevisionState",
+          "documentation":"<p>The current state of the revision.</p>"
+        },
+        "stateReason":{
+          "shape":"String",
+          "documentation":"<p>The reason for the current state of the revision.</p>"
+        },
+        "errors":{
+          "shape":"RevisionErrors",
+          "documentation":"<p>A list of errors encountered during revision creation. This field is absent when the revision has no errors.</p>"
+        },
+        "createdAt":{
+          "shape":"DateTime",
+          "documentation":"<p>The date and time the revision was created.</p>"
+        }
+      },
+      "documentation":"<p>Contains details about the created revision.</p>"
+    },
+    "DateTime":{
+      "type":"timestamp",
+      "timestampFormat":"iso8601"
+    },
+    "DeleteResourcePolicyRequest":{
+      "type":"structure",
+      "required":["resourceArn"],
+      "members":{
+        "resourceArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the web function.</p>",
+          "location":"uri",
+          "locationName":"resourceArn"
+        },
+        "revisionId":{
+          "shape":"PolicyRevisionId",
+          "documentation":"<p>The revision ID of the policy. Use this to prevent deleting a policy that has been updated since you last retrieved it. If you don't specify a value, the policy is deleted regardless of its current revision.</p>",
+          "location":"querystring",
+          "locationName":"RevisionId"
+        }
+      },
+      "documentation":"<p>The request to delete a resource-based policy.</p>"
+    },
+    "DeleteWebFunctionEndpointRequest":{
+      "type":"structure",
+      "required":[
+        "functionName",
+        "endpointName"
+      ],
+      "members":{
+        "functionName":{
+          "shape":"FunctionName",
+          "documentation":"<p>The name of the web function. You can specify the function name or the function ARN. The length constraint applies only to the full ARN. If you specify only the function name, it is limited to 64 characters in length.</p>",
+          "location":"uri",
+          "locationName":"functionName"
+        },
+        "endpointName":{
+          "shape":"EndpointName",
+          "documentation":"<p>The name of the endpoint to delete. You can specify the endpoint name or the endpoint ARN. The length constraint applies only to the full ARN. If you specify only the endpoint name, it is limited to 64 characters in length.</p>",
+          "location":"uri",
+          "locationName":"endpointName"
+        }
+      },
+      "documentation":"<p>The request to delete a web function endpoint.</p>"
+    },
+    "DeleteWebFunctionRequest":{
+      "type":"structure",
+      "required":["functionName"],
+      "members":{
+        "functionName":{
+          "shape":"FunctionName",
+          "documentation":"<p>The name of the web function to delete. You can specify the function name or the function ARN. The length constraint applies only to the full ARN. If you specify only the function name, it is limited to 64 characters in length.</p>",
+          "location":"uri",
+          "locationName":"functionName"
+        }
+      },
+      "documentation":"<p>The request to delete a web function.</p>"
+    },
+    "DeleteWebFunctionRevisionRequest":{
+      "type":"structure",
+      "required":[
+        "functionName",
+        "revisionId"
+      ],
+      "members":{
+        "functionName":{
+          "shape":"FunctionName",
+          "documentation":"<p>The name of the web function. You can specify the function name or the function ARN. The length constraint applies only to the full ARN. If you specify only the function name, it is limited to 64 characters in length.</p>",
+          "location":"uri",
+          "locationName":"functionName"
+        },
+        "revisionId":{
+          "shape":"RevisionId",
+          "documentation":"<p>The identifier of the revision to delete. You can specify the revision identifier or the revision ARN. The length constraint applies only to the full ARN.</p>",
+          "location":"uri",
+          "locationName":"revisionId"
+        }
+      },
+      "documentation":"<p>The request to delete a web function revision.</p>"
+    },
+    "Description":{
+      "type":"string",
+      "max":256,
+      "min":0
+    },
+    "DomainName":{
+      "type":"string",
+      "max":256,
+      "min":4,
+      "pattern":"([a-z0-9-]+\\.)+[a-z]+"
+    },
+    "EndpointArn":{
+      "type":"string",
+      "max":2048,
+      "min":1
+    },
+    "EndpointConfig":{
+      "type":"structure",
+      "required":[
+        "endpointName",
+        "endpointType",
+        "authType"
+      ],
+      "members":{
+        "endpointName":{
+          "shape":"EndpointName",
+          "documentation":"<p>The name of the endpoint. The name can contain letters, numbers, hyphens (-), and underscores (_), and can't begin or end with a hyphen or an underscore. The length constraint applies only to the full ARN. If you specify only the endpoint name, it is limited to 64 characters in length.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>A description of the endpoint.</p>"
+        },
+        "endpointType":{
+          "shape":"EndpointType",
+          "documentation":"<p>The type of endpoint. Determines how traffic is served and routed across Regions.</p>"
+        },
+        "authType":{
+          "shape":"AuthType",
+          "documentation":"<p>The authorization type for the endpoint.</p>"
+        },
+        "autoDeploymentMode":{
+          "shape":"AutoDeploymentMode",
+          "documentation":"<p>The auto-deployment mode for the endpoint. If you don't specify a value, the default is <code>Disabled</code>, and this default is returned in the response.</p>"
+        },
+        "regions":{
+          "shape":"RegionList",
+          "documentation":"<p>The list of Regions for the endpoint. Required when the endpoint type is <code>MultiRegion</code> or <code>PerRegion</code>: specify at least one Region other than the Region where you create the endpoint (the home Region). The home Region is added automatically if you don't include it; specifying only the home Region isn't allowed. When the endpoint type is <code>HomeRegion</code>, omit this field or specify only the home Region.</p>"
+        },
+        "scalingConfig":{
+          "shape":"ScalingConfig",
+          "documentation":"<p>The scaling configuration for the endpoint.</p>"
+        },
+        "throttleConfig":{
+          "shape":"ThrottleConfig",
+          "documentation":"<p>The throttling configuration for the endpoint.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for a web function endpoint.</p>"
+    },
+    "EndpointName":{
+      "type":"string",
+      "max":256,
+      "min":1
+    },
+    "EndpointState":{
+      "type":"string",
+      "documentation":"<p>The state of a web function endpoint. Possible values: <code>Pending</code> (endpoint is being created), <code>Active</code> (endpoint is ready to receive traffic), <code>Failed</code> (endpoint creation or update failed), <code>Deleting</code> (endpoint is being deleted).</p>",
+      "enum":[
+        "Pending",
+        "Active",
+        "Failed",
+        "Deleting"
+      ]
+    },
+    "EndpointType":{
+      "type":"string",
+      "documentation":"<p>The type of a web function endpoint. Possible values: <code>HomeRegion</code> (serves from the Region where the function was created), <code>MultiRegion</code> (replicates across chosen Regions and routes to the nearest), <code>PerRegion</code> (separate endpoint per Region).</p>",
+      "enum":[
+        "HomeRegion",
+        "MultiRegion",
+        "PerRegion"
+      ]
+    },
+    "EndpointUpdateStatus":{
+      "type":"string",
+      "documentation":"<p>The status of the most recent update to an endpoint. Possible values: <code>InProgress</code> (update is in progress), <code>Successful</code> (update completed successfully), <code>Failed</code> (update failed).</p>",
+      "enum":[
+        "InProgress",
+        "Successful",
+        "Failed"
+      ]
+    },
+    "EnvironmentVariables":{
+      "type":"map",
+      "key":{"shape":"EnvironmentVariablesKeyString"},
+      "value":{"shape":"EnvironmentVariablesValueString"},
+      "sensitive":true
+    },
+    "EnvironmentVariablesKeyString":{
+      "type":"string",
+      "min":1,
+      "pattern":"[a-zA-Z]([a-zA-Z0-9_])*"
+    },
+    "EnvironmentVariablesValueString":{
+      "type":"string",
+      "min":1
+    },
+    "Filter":{
+      "type":"structure",
+      "required":[
+        "name",
+        "values"
+      ],
+      "members":{
+        "name":{
+          "shape":"FilterNameString",
+          "documentation":"<p>The name of the filter field.</p>"
+        },
+        "values":{
+          "shape":"FilterValueList",
+          "documentation":"<p>The values to match for the filter.</p>"
+        }
+      },
+      "documentation":"<p>A filter to apply when listing resources.</p>"
+    },
+    "FilterList":{
+      "type":"list",
+      "member":{"shape":"Filter"},
+      "max":10,
+      "min":1
+    },
+    "FilterNameString":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"[a-zA-Z0-9]+"
+    },
+    "FilterValueList":{
+      "type":"list",
+      "member":{"shape":"FilterValueListMemberString"},
+      "max":10,
+      "min":1
+    },
+    "FilterValueListMemberString":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"[a-zA-Z0-9_-]+"
+    },
+    "FunctionArn":{
+      "type":"string",
+      "max":2048,
+      "min":1
+    },
+    "FunctionEndpointSummary":{
+      "type":"structure",
+      "required":[
+        "endpointArn",
+        "endpointName",
+        "endpointType",
+        "domainName",
+        "authType",
+        "autoDeploymentMode",
+        "revisionWeights",
+        "regions",
+        "state",
+        "stateReason",
+        "createdAt",
+        "updatedAt"
+      ],
+      "members":{
+        "endpointArn":{
+          "shape":"EndpointArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the endpoint.</p>"
+        },
+        "endpointName":{
+          "shape":"EndpointName",
+          "documentation":"<p>The name of the endpoint.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>A description of the endpoint.</p>"
+        },
+        "endpointType":{
+          "shape":"EndpointType",
+          "documentation":"<p>The type of the endpoint.</p>"
+        },
+        "domainName":{
+          "shape":"DomainName",
+          "documentation":"<p>The domain name of the endpoint.</p>"
+        },
+        "authType":{
+          "shape":"AuthType",
+          "documentation":"<p>The authorization type for the endpoint.</p>"
+        },
+        "autoDeploymentMode":{
+          "shape":"AutoDeploymentMode",
+          "documentation":"<p>The auto-deployment mode for the endpoint.</p>"
+        },
+        "revisionWeights":{
+          "shape":"RevisionWeightList",
+          "documentation":"<p>The revision weights for the endpoint.</p>"
+        },
+        "regions":{
+          "shape":"RegionList",
+          "documentation":"<p>The list of Regions for the endpoint.</p>"
+        },
+        "scalingConfig":{
+          "shape":"ScalingConfig",
+          "documentation":"<p>The scaling configuration for the endpoint. This field is absent if the endpoint has no scaling configuration.</p>"
+        },
+        "throttleConfig":{
+          "shape":"ThrottleConfig",
+          "documentation":"<p>The throttling configuration for the endpoint. This field is absent if the endpoint has no throttling configuration.</p>"
+        },
+        "state":{
+          "shape":"EndpointState",
+          "documentation":"<p>The current state of the endpoint.</p>"
+        },
+        "stateReason":{
+          "shape":"String",
+          "documentation":"<p>The reason for the current state of the endpoint.</p>"
+        },
+        "updateStatus":{
+          "shape":"EndpointUpdateStatus",
+          "documentation":"<p>The status of the most recent update to the endpoint.</p>"
+        },
+        "updateStatusReason":{
+          "shape":"String",
+          "documentation":"<p>The reason for the current update status of the endpoint.</p>"
+        },
+        "createdAt":{
+          "shape":"DateTime",
+          "documentation":"<p>The date and time the endpoint was created.</p>"
+        },
+        "updatedAt":{
+          "shape":"DateTime",
+          "documentation":"<p>The date and time the endpoint was last updated.</p>"
+        }
+      },
+      "documentation":"<p>A summary of a web function endpoint.</p>"
+    },
+    "FunctionEndpointSummaryList":{
+      "type":"list",
+      "member":{"shape":"FunctionEndpointSummary"}
+    },
+    "FunctionName":{
+      "type":"string",
+      "max":256,
+      "min":1
+    },
+    "FunctionRevisionSummary":{
+      "type":"structure",
+      "required":[
+        "revisionArn",
+        "revisionId",
+        "state",
+        "stateReason",
+        "createdAt"
+      ],
+      "members":{
+        "revisionArn":{
+          "shape":"RevisionArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the revision.</p>"
+        },
+        "revisionId":{
+          "shape":"RevisionId",
+          "documentation":"<p>The identifier of the revision.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>A description of the revision.</p>"
+        },
+        "state":{
+          "shape":"RevisionState",
+          "documentation":"<p>The current state of the revision.</p>"
+        },
+        "stateReason":{
+          "shape":"String",
+          "documentation":"<p>The reason for the current state of the revision.</p>"
+        },
+        "createdAt":{
+          "shape":"DateTime",
+          "documentation":"<p>The date and time the revision was created.</p>"
+        }
+      },
+      "documentation":"<p>A summary of a web function revision.</p>"
+    },
+    "FunctionRevisionSummaryList":{
+      "type":"list",
+      "member":{"shape":"FunctionRevisionSummary"}
+    },
+    "FunctionState":{
+      "type":"string",
+      "documentation":"<p>The state of a web function. Possible values: <code>Pending</code> (function is being created), <code>Active</code> (function is ready to use), <code>Failed</code> (function creation or update failed), <code>Deleting</code> (function is being deleted).</p>",
+      "enum":[
+        "Pending",
+        "Active",
+        "Failed",
+        "Deleting"
+      ]
+    },
+    "FunctionSummary":{
+      "type":"structure",
+      "required":[
+        "functionName",
+        "functionArn",
+        "state",
+        "stateReason",
+        "createdAt",
+        "updatedAt"
+      ],
+      "members":{
+        "functionName":{
+          "shape":"FunctionName",
+          "documentation":"<p>The name of the web function.</p>"
+        },
+        "functionArn":{
+          "shape":"FunctionArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the web function.</p>"
+        },
+        "state":{
+          "shape":"FunctionState",
+          "documentation":"<p>The current state of the web function.</p>"
+        },
+        "stateReason":{
+          "shape":"String",
+          "documentation":"<p>The reason for the current state of the web function.</p>"
+        },
+        "createdAt":{
+          "shape":"DateTime",
+          "documentation":"<p>The date and time the web function was created.</p>"
+        },
+        "updatedAt":{
+          "shape":"DateTime",
+          "documentation":"<p>The date and time the web function was last updated.</p>"
+        }
+      },
+      "documentation":"<p>A summary of a web function.</p>"
+    },
+    "FunctionSummaryList":{
+      "type":"list",
+      "member":{"shape":"FunctionSummary"}
+    },
+    "GetResourcePolicyRequest":{
+      "type":"structure",
+      "required":["resourceArn"],
+      "members":{
+        "resourceArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the web function.</p>",
+          "location":"uri",
+          "locationName":"resourceArn"
+        }
+      },
+      "documentation":"<p>The request to retrieve a resource-based policy.</p>"
+    },
+    "GetResourcePolicyResponse":{
+      "type":"structure",
+      "required":[
+        "policy",
+        "revisionId"
+      ],
+      "members":{
+        "policy":{
+          "shape":"ResourcePolicy",
+          "documentation":"<p>The JSON-formatted resource-based policy attached to the web function.</p>",
+          "locationName":"Policy"
+        },
+        "revisionId":{
+          "shape":"PolicyRevisionId",
+          "documentation":"<p>The revision ID of the policy.</p>",
+          "locationName":"RevisionId"
+        }
+      },
+      "documentation":"<p>Contains the resource-based policy and its revision ID.</p>"
+    },
+    "GetWebAccountSettingsRequest":{
+      "type":"structure",
+      "members":{}
+    },
+    "GetWebAccountSettingsResponse":{
+      "type":"structure",
+      "required":[
+        "accountQuotas",
+        "accountUsage"
+      ],
+      "members":{
+        "accountQuotas":{
+          "shape":"AccountQuotas",
+          "documentation":"<p>The quotas that apply to web functions in your account in the current AWS Region.</p>"
+        },
+        "accountUsage":{
+          "shape":"AccountUsage",
+          "documentation":"<p>The current web function usage for your account in the current AWS Region.</p>"
+        }
+      },
+      "documentation":"<p>Contains your AWS Lambda Web Functions account quotas and usage for the current AWS Region.</p>"
+    },
+    "GetWebFunctionEndpointRequest":{
+      "type":"structure",
+      "required":[
+        "functionName",
+        "endpointName"
+      ],
+      "members":{
+        "functionName":{
+          "shape":"FunctionName",
+          "documentation":"<p>The name of the web function. You can specify the function name or the function ARN. The length constraint applies only to the full ARN. If you specify only the function name, it is limited to 64 characters in length.</p>",
+          "location":"uri",
+          "locationName":"functionName"
+        },
+        "endpointName":{
+          "shape":"EndpointName",
+          "documentation":"<p>The name of the endpoint to retrieve. You can specify the endpoint name or the endpoint ARN. The length constraint applies only to the full ARN. If you specify only the endpoint name, it is limited to 64 characters in length.</p>",
+          "location":"uri",
+          "locationName":"endpointName"
+        }
+      },
+      "documentation":"<p>The request to retrieve a web function endpoint.</p>"
+    },
+    "GetWebFunctionEndpointResponse":{
+      "type":"structure",
+      "required":[
+        "functionArn",
+        "endpointArn",
+        "endpointName",
+        "endpointType",
+        "domainName",
+        "authType",
+        "autoDeploymentMode",
+        "revisionWeights",
+        "regions",
+        "state",
+        "stateReason",
+        "regionalEndpoints",
+        "createdAt",
+        "updatedAt"
+      ],
+      "members":{
+        "functionArn":{
+          "shape":"FunctionArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the web function.</p>"
+        },
+        "endpointArn":{
+          "shape":"EndpointArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the endpoint.</p>"
+        },
+        "endpointName":{
+          "shape":"EndpointName",
+          "documentation":"<p>The name of the endpoint.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>The description of the endpoint.</p>"
+        },
+        "endpointType":{"shape":"EndpointType"},
+        "domainName":{
+          "shape":"DomainName",
+          "documentation":"<p>The domain name assigned to the endpoint.</p>"
+        },
+        "authType":{"shape":"AuthType"},
+        "autoDeploymentMode":{"shape":"AutoDeploymentMode"},
+        "revisionWeights":{
+          "shape":"RevisionWeightList",
+          "documentation":"<p>The traffic distribution across revisions for the endpoint. Each entry maps a revision to a weight from 1 to 100.</p>"
+        },
+        "regions":{
+          "shape":"RegionList",
+          "documentation":"<p>The Regions configured for the endpoint.</p>"
+        },
+        "scalingConfig":{"shape":"ScalingConfig"},
+        "throttleConfig":{"shape":"ThrottleConfig"},
+        "state":{
+          "shape":"EndpointState",
+          "documentation":"<p>The current state of the endpoint.</p>"
+        },
+        "stateReason":{
+          "shape":"String",
+          "documentation":"<p>The reason for the current state of the endpoint.</p>"
+        },
+        "updateStatus":{"shape":"EndpointUpdateStatus"},
+        "updateStatusReason":{
+          "shape":"String",
+          "documentation":"<p>The reason for the endpoint's most recent update status.</p>"
+        },
+        "regionalEndpoints":{
+          "shape":"RegionalEndpoints",
+          "documentation":"<p>The list of regional endpoint configurations.</p>"
+        },
+        "createdAt":{
+          "shape":"DateTime",
+          "documentation":"<p>The date and time the endpoint was created.</p>"
+        },
+        "updatedAt":{
+          "shape":"DateTime",
+          "documentation":"<p>The date and time the endpoint was last updated.</p>"
+        }
+      },
+      "documentation":"<p>Contains details about the web function endpoint.</p>"
+    },
+    "GetWebFunctionRequest":{
+      "type":"structure",
+      "required":["functionName"],
+      "members":{
+        "functionName":{
+          "shape":"FunctionName",
+          "documentation":"<p>The name of the web function to retrieve. You can specify the function name or the function ARN. The length constraint applies only to the full ARN. If you specify only the function name, it is limited to 64 characters in length.</p>",
+          "location":"uri",
+          "locationName":"functionName"
+        }
+      },
+      "documentation":"<p>The request to retrieve a web function.</p>"
+    },
+    "GetWebFunctionResponse":{
+      "type":"structure",
+      "required":[
+        "functionName",
+        "functionArn",
+        "state",
+        "stateReason",
+        "createdAt",
+        "updatedAt"
+      ],
+      "members":{
+        "functionName":{
+          "shape":"FunctionName",
+          "documentation":"<p>The name of the web function.</p>"
+        },
+        "functionArn":{
+          "shape":"FunctionArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the web function.</p>"
+        },
+        "state":{
+          "shape":"FunctionState",
+          "documentation":"<p>The current state of the web function.</p>"
+        },
+        "stateReason":{
+          "shape":"String",
+          "documentation":"<p>The reason for the current state of the web function.</p>"
+        },
+        "createdAt":{
+          "shape":"DateTime",
+          "documentation":"<p>The date and time the web function was created.</p>"
+        },
+        "updatedAt":{
+          "shape":"DateTime",
+          "documentation":"<p>The date and time the web function was last updated.</p>"
+        }
+      },
+      "documentation":"<p>Contains details about the web function.</p>"
+    },
+    "GetWebFunctionRevisionRequest":{
+      "type":"structure",
+      "required":[
+        "functionName",
+        "revisionId"
+      ],
+      "members":{
+        "functionName":{
+          "shape":"FunctionName",
+          "documentation":"<p>The name of the web function. You can specify the function name or the function ARN. The length constraint applies only to the full ARN. If you specify only the function name, it is limited to 64 characters in length.</p>",
+          "location":"uri",
+          "locationName":"functionName"
+        },
+        "revisionId":{
+          "shape":"RevisionId",
+          "documentation":"<p>The identifier of the revision to retrieve. You can specify the revision identifier or the revision ARN. The length constraint applies only to the full ARN.</p>",
+          "location":"uri",
+          "locationName":"revisionId"
+        }
+      },
+      "documentation":"<p>The request to retrieve a web function revision.</p>"
+    },
+    "GetWebFunctionRevisionResponse":{
+      "type":"structure",
+      "required":[
+        "functionArn",
+        "revisionArn",
+        "revisionId",
+        "buildConfig",
+        "serviceConfig",
+        "state",
+        "stateReason",
+        "createdAt"
+      ],
+      "members":{
+        "functionArn":{
+          "shape":"FunctionArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the web function.</p>"
+        },
+        "revisionArn":{
+          "shape":"RevisionArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the revision.</p>"
+        },
+        "revisionId":{
+          "shape":"RevisionId",
+          "documentation":"<p>The identifier of the revision.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>The description of the revision.</p>"
+        },
+        "kmsKeyArn":{
+          "shape":"KmsKeyArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS KMS key used to encrypt the revision's code and environment variables.</p>"
+        },
+        "buildConfig":{"shape":"BuildConfig"},
+        "serviceConfig":{"shape":"ServiceConfig"},
+        "state":{
+          "shape":"RevisionState",
+          "documentation":"<p>The current state of the revision.</p>"
+        },
+        "stateReason":{
+          "shape":"String",
+          "documentation":"<p>The reason for the current state of the revision.</p>"
+        },
+        "errors":{
+          "shape":"RevisionErrors",
+          "documentation":"<p>A list of errors encountered during revision creation. This field is absent when the revision has no errors.</p>"
+        },
+        "createdAt":{
+          "shape":"DateTime",
+          "documentation":"<p>The date and time the revision was created.</p>"
+        }
+      },
+      "documentation":"<p>Contains details about the web function revision.</p>"
+    },
+    "Integer":{
+      "type":"integer",
+      "box":true
+    },
+    "InternalServerException":{
+      "type":"structure",
+      "members":{
+        "message":{
+          "shape":"String",
+          "documentation":"<p>A message describing the internal error.</p>"
+        }
+      },
+      "documentation":"<p>An internal server error occurred. Try again later.</p>",
+      "error":{"httpStatusCode":500},
+      "exception":true,
+      "fault":true,
+      "retryable":{"throttling":false}
+    },
+    "KmsKeyArn":{
+      "type":"string",
+      "max":2048,
+      "min":20,
+      "pattern":"arn:(aws[a-z-]*):kms:[a-z0-9-]+:[0-9]{12}:key/[a-z0-9-]+"
+    },
+    "ListTagsRequest":{
+      "type":"structure",
+      "required":["resource"],
+      "members":{
+        "resource":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the web function.</p>",
+          "location":"uri",
+          "locationName":"resource"
+        }
+      },
+      "documentation":"<p>The request to list tags for a resource.</p>"
+    },
+    "ListTagsResponse":{
+      "type":"structure",
+      "members":{
+        "tags":{
+          "shape":"Tags",
+          "documentation":"<p>A map of tag keys and values associated with the web function.</p>",
+          "locationName":"Tags"
+        }
+      },
+      "documentation":"<p>Contains the list of tags.</p>"
+    },
+    "ListWebFunctionEndpointsRequest":{
+      "type":"structure",
+      "required":["functionName"],
+      "members":{
+        "functionName":{
+          "shape":"FunctionName",
+          "documentation":"<p>The name of the web function. You can specify the function name or the function ARN. The length constraint applies only to the full ARN. If you specify only the function name, it is limited to 64 characters in length.</p>",
+          "location":"uri",
+          "locationName":"functionName"
+        },
+        "filters":{
+          "shape":"FilterList",
+          "documentation":"<p>A list of filters to apply to the results. Supported filter names: <code>authType</code>, <code>autoDeploymentMode</code>, <code>endpointType</code>, <code>state</code>, and <code>updateStatus</code>.</p>"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return in a single call. Minimum value of 1, maximum value of 50. Default is 50.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The pagination token that's returned by a previous request to retrieve the next page of results.</p>"
+        }
+      },
+      "documentation":"<p>The request to list web function endpoints.</p>"
+    },
+    "ListWebFunctionEndpointsResponse":{
+      "type":"structure",
+      "required":["endpoints"],
+      "members":{
+        "endpoints":{
+          "shape":"FunctionEndpointSummaryList",
+          "documentation":"<p>A list of endpoint summaries for the web function.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The pagination token that's included if more results are available.</p>"
+        }
+      },
+      "documentation":"<p>Contains the list of web function endpoints.</p>"
+    },
+    "ListWebFunctionRevisionsRequest":{
+      "type":"structure",
+      "required":["functionName"],
+      "members":{
+        "functionName":{
+          "shape":"FunctionName",
+          "documentation":"<p>The name of the web function. You can specify the function name or the function ARN. The length constraint applies only to the full ARN. If you specify only the function name, it is limited to 64 characters in length.</p>",
+          "location":"uri",
+          "locationName":"functionName"
+        },
+        "filters":{
+          "shape":"FilterList",
+          "documentation":"<p>A list of filters to apply to the results. The only supported filter name is <code>state</code>.</p>"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return in a single call. Minimum value of 1, maximum value of 50. Default is 50.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The pagination token that's returned by a previous request to retrieve the next page of results.</p>"
+        }
+      },
+      "documentation":"<p>The request to list web function revisions.</p>"
+    },
+    "ListWebFunctionRevisionsResponse":{
+      "type":"structure",
+      "required":["revisions"],
+      "members":{
+        "revisions":{
+          "shape":"FunctionRevisionSummaryList",
+          "documentation":"<p>A list of revision summaries for the web function.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The pagination token that's included if more results are available.</p>"
+        }
+      },
+      "documentation":"<p>Contains the list of web function revisions.</p>"
+    },
+    "ListWebFunctionsRequest":{
+      "type":"structure",
+      "members":{
+        "filters":{
+          "shape":"FilterList",
+          "documentation":"<p>A list of filters to apply to the results. The only supported filter name is <code>state</code>.</p>"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return in a single call. Minimum value of 1, maximum value of 50. Default is 50.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The pagination token that's returned by a previous request to retrieve the next page of results.</p>"
+        }
+      },
+      "documentation":"<p>The request to list web functions.</p>"
+    },
+    "ListWebFunctionsResponse":{
+      "type":"structure",
+      "required":["functions"],
+      "members":{
+        "functions":{
+          "shape":"FunctionSummaryList",
+          "documentation":"<p>A list of web function summaries.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The pagination token that's included if more results are available.</p>"
+        }
+      },
+      "documentation":"<p>Contains the list of web functions.</p>"
+    },
+    "LoggingConfig":{
+      "type":"structure",
+      "members":{
+        "logGroup":{
+          "shape":"LoggingConfigLogGroupString",
+          "documentation":"<p>The name of the Amazon CloudWatch Logs log group the web function sends logs to. If you don't specify a value, the default is <code>/aws/lambda/web/{functionName}</code>, and this default is returned in the response.</p>"
+        },
+        "applicationLogLevel":{
+          "shape":"ApplicationLogLevel",
+          "documentation":"<p>The log level for application logs emitted by the web function. If you don't specify a value, the default is <code>INFO</code>, and this default is returned in the response.</p>"
+        },
+        "systemLogLevel":{
+          "shape":"SystemLogLevel",
+          "documentation":"<p>The log level for system logs emitted by the Lambda runtime. If you don't specify a value, the default is <code>INFO</code>, and this default is returned in the response.</p>"
+        }
+      },
+      "documentation":"<p>The logging configuration for a web function revision.</p>"
+    },
+    "LoggingConfigLogGroupString":{
+      "type":"string",
+      "max":500,
+      "min":1,
+      "pattern":"[a-zA-Z0-9\\.\\-_/#]+"
+    },
+    "MaxResults":{
+      "type":"integer",
+      "box":true,
+      "max":50,
+      "min":1
+    },
+    "NextToken":{
+      "type":"string",
+      "pattern":"[a-f0-9-]{36}"
+    },
+    "PolicyRevisionId":{
+      "type":"string",
+      "pattern":"[0-9a-f-]{36}"
+    },
+    "PutResourcePolicyRequest":{
+      "type":"structure",
+      "required":[
+        "resourceArn",
+        "policy"
+      ],
+      "members":{
+        "resourceArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the web function.</p>",
+          "location":"uri",
+          "locationName":"resourceArn"
+        },
+        "policy":{
+          "shape":"ResourcePolicy",
+          "documentation":"<p>The JSON-formatted resource-based policy to attach to the web function.</p>",
+          "locationName":"Policy"
+        },
+        "revisionId":{
+          "shape":"PolicyRevisionId",
+          "documentation":"<p>The revision ID of the existing policy. Use this to prevent conflicts when updating a policy concurrently. If you don't specify a value, the update proceeds without checking the current revision.</p>",
+          "locationName":"RevisionId"
+        }
+      },
+      "documentation":"<p>The request to add or update a resource-based policy.</p>"
+    },
+    "PutResourcePolicyResponse":{
+      "type":"structure",
+      "required":[
+        "policy",
+        "revisionId"
+      ],
+      "members":{
+        "policy":{
+          "shape":"ResourcePolicy",
+          "documentation":"<p>The JSON-formatted resource-based policy attached to the web function.</p>",
+          "locationName":"Policy"
+        },
+        "revisionId":{
+          "shape":"PolicyRevisionId",
+          "documentation":"<p>The revision ID of the policy. Use this value in subsequent <code>PutResourcePolicy</code> or <code>DeleteResourcePolicy</code> requests to prevent conflicts.</p>",
+          "locationName":"RevisionId"
+        }
+      },
+      "documentation":"<p>Contains the resource-based policy and its revision ID.</p>"
+    },
+    "Region":{
+      "type":"string",
+      "max":50,
+      "min":1,
+      "pattern":"([a-z]{2,}-){2,}[0-9]"
+    },
+    "RegionList":{
+      "type":"list",
+      "member":{"shape":"Region"},
+      "max":100,
+      "min":1
+    },
+    "RegionalEndpoint":{
+      "type":"structure",
+      "required":[
+        "authType",
+        "revisionWeights",
+        "state",
+        "stateReason"
+      ],
+      "members":{
+        "domainName":{
+          "shape":"DomainName",
+          "documentation":"<p>The domain name of the regional endpoint.</p>"
+        },
+        "authType":{
+          "shape":"AuthType",
+          "documentation":"<p>The authorization type for the regional endpoint.</p>"
+        },
+        "revisionWeights":{
+          "shape":"RevisionWeightList",
+          "documentation":"<p>The revision weights for the regional endpoint.</p>"
+        },
+        "scalingConfig":{
+          "shape":"ScalingConfig",
+          "documentation":"<p>The scaling configuration for the regional endpoint. This field is absent if the endpoint has no scaling configuration.</p>"
+        },
+        "throttleConfig":{
+          "shape":"ThrottleConfig",
+          "documentation":"<p>The throttling configuration for the regional endpoint. This field is absent if the endpoint has no throttling configuration.</p>"
+        },
+        "state":{
+          "shape":"EndpointState",
+          "documentation":"<p>The current state of the regional endpoint.</p>"
+        },
+        "stateReason":{
+          "shape":"String",
+          "documentation":"<p>The reason for the current state of the regional endpoint.</p>"
+        },
+        "updateStatus":{
+          "shape":"EndpointUpdateStatus",
+          "documentation":"<p>The status of the most recent update to the regional endpoint.</p>"
+        },
+        "updateStatusReason":{
+          "shape":"String",
+          "documentation":"<p>The reason for the current update status of the regional endpoint.</p>"
+        }
+      },
+      "documentation":"<p>Represents the endpoint configuration and state in a specific Region.</p>"
+    },
+    "RegionalEndpoints":{
+      "type":"map",
+      "key":{"shape":"Region"},
+      "value":{"shape":"RegionalEndpoint"}
+    },
+    "ResourceArn":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"arn:[^:]+:lambda:[^:]+:\\d{12}:web-function/[^/]+"
+    },
+    "ResourceNotFoundException":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{
+          "shape":"String",
+          "documentation":"<p>A message describing the resource not found error.</p>"
+        },
+        "resourceId":{
+          "shape":"String",
+          "documentation":"<p>The identifier of the resource that was not found.</p>"
+        },
+        "resourceType":{
+          "shape":"String",
+          "documentation":"<p>The type of the resource that was not found.</p>"
+        }
+      },
+      "documentation":"<p>The specified resource was not found. Verify the resource identifier and try again.</p>",
+      "error":{
+        "httpStatusCode":404,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "ResourcePolicy":{
+      "type":"string",
+      "max":20480,
+      "min":1
+    },
+    "RevisionArn":{
+      "type":"string",
+      "max":2048,
+      "min":1
+    },
+    "RevisionConfig":{
+      "type":"structure",
+      "required":[
+        "buildConfig",
+        "serviceConfig"
+      ],
+      "members":{
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>A description of the revision.</p>"
+        },
+        "kmsKeyArn":{
+          "shape":"KmsKeyArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS Key Management Service (AWS KMS) key used to encrypt the revision's code and environment variables.</p>"
+        },
+        "buildConfig":{
+          "shape":"BuildConfig",
+          "documentation":"<p>The build configuration for the revision.</p>"
+        },
+        "serviceConfig":{
+          "shape":"ServiceConfig",
+          "documentation":"<p>The service configuration for the revision.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for a web function revision, including code build settings and service configuration.</p>"
+    },
+    "RevisionError":{
+      "type":"structure",
+      "required":[
+        "attribute",
+        "errorCode",
+        "errorMessage"
+      ],
+      "members":{
+        "attribute":{
+          "shape":"RevisionErrorAttributeString",
+          "documentation":"<p>The name of the revision attribute that the error applies to. Must be between 1 and 64 characters.</p>"
+        },
+        "errorCode":{
+          "shape":"RevisionErrorErrorCodeString",
+          "documentation":"<p>A short, machine-readable code that identifies the error. Must be between 1 and 64 characters.</p>"
+        },
+        "errorMessage":{
+          "shape":"RevisionErrorErrorMessageString",
+          "documentation":"<p>A human-readable message describing the error. Must be between 1 and 2048 characters.</p>"
+        }
+      },
+      "documentation":"<p>A single error encountered while creating or reading a web function revision. The error describes the affected attribute, an error code, and a human-readable message. This structure is present only when the revision has errors.</p>"
+    },
+    "RevisionErrorAttributeString":{
+      "type":"string",
+      "max":64,
+      "min":1
+    },
+    "RevisionErrorErrorCodeString":{
+      "type":"string",
+      "max":64,
+      "min":1
+    },
+    "RevisionErrorErrorMessageString":{
+      "type":"string",
+      "max":2048,
+      "min":1
+    },
+    "RevisionErrors":{
+      "type":"list",
+      "member":{"shape":"RevisionError"},
+      "max":50,
+      "min":1
+    },
+    "RevisionId":{
+      "type":"string",
+      "max":256,
+      "min":1
+    },
+    "RevisionState":{
+      "type":"string",
+      "documentation":"<p>The state of a web function revision. Possible values: <code>Pending</code> (revision is being built), <code>Active</code> (revision is ready to serve traffic), <code>Failed</code> (revision build failed).</p>",
+      "enum":[
+        "Pending",
+        "Active",
+        "Failed"
+      ]
+    },
+    "RevisionWeight":{
+      "type":"structure",
+      "required":[
+        "revisionId",
+        "weight"
+      ],
+      "members":{
+        "revisionId":{
+          "shape":"RevisionId",
+          "documentation":"<p>The identifier of the revision.</p>"
+        },
+        "weight":{
+          "shape":"RevisionWeightWeightInteger",
+          "documentation":"<p>The percentage of traffic to route to this revision. Minimum value of 1, maximum value of 100.</p>"
+        }
+      },
+      "documentation":"<p>Specifies a revision and its traffic weight for an endpoint. Up to two revisions can be assigned weights to split traffic for canary or blue-green deployments.</p>"
+    },
+    "RevisionWeightList":{
+      "type":"list",
+      "member":{"shape":"RevisionWeight"},
+      "max":2,
+      "min":1
+    },
+    "RevisionWeightWeightInteger":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "RoleArn":{
+      "type":"string",
+      "max":2048,
+      "min":20,
+      "pattern":"arn:(aws[a-z-]*):iam::[0-9]{12}:role/[a-zA-Z0-9+=,.@_/-]+"
+    },
+    "RuntimeConfig":{
+      "type":"structure",
+      "required":["runtime"],
+      "members":{
+        "runtime":{
+          "shape":"RuntimeConfigRuntimeString",
+          "documentation":"<p>The runtime identifier for the web function (for example, a Node.js runtime identifier).</p>"
+        }
+      },
+      "documentation":"<p>The runtime configuration for a web function revision.</p>"
+    },
+    "RuntimeConfigRuntimeString":{
+      "type":"string",
+      "max":30,
+      "min":1,
+      "pattern":"[a-z][a-z0-9]*(\\.[a-z0-9]+)*"
+    },
+    "S3Object":{
+      "type":"structure",
+      "required":[
+        "bucket",
+        "key"
+      ],
+      "members":{
+        "bucket":{
+          "shape":"S3ObjectBucketString",
+          "documentation":"<p>The name of the Amazon S3 bucket. Must be between 3 and 63 characters.</p>"
+        },
+        "key":{
+          "shape":"S3ObjectKeyString",
+          "documentation":"<p>The Amazon S3 object key. Must be between 1 and 1024 characters.</p>"
+        },
+        "versionId":{
+          "shape":"S3ObjectVersionIdString",
+          "documentation":"<p>The version ID of the Amazon S3 object.</p>"
+        }
+      },
+      "documentation":"<p>The Amazon S3 location of a deployment artifact.</p>"
+    },
+    "S3ObjectBucketString":{
+      "type":"string",
+      "max":63,
+      "min":3,
+      "pattern":"([a-z0-9][a-z0-9\\.\\-]{1,61}[a-z0-9])"
+    },
+    "S3ObjectKeyString":{
+      "type":"string",
+      "max":1024,
+      "min":1
+    },
+    "S3ObjectVersionIdString":{
+      "type":"string",
+      "max":1024,
+      "min":1
+    },
+    "ScalingConfig":{
+      "type":"structure",
+      "members":{
+        "maxEnvironments":{
+          "shape":"ScalingConfigMaxEnvironmentsInteger",
+          "documentation":"<p>The maximum number of concurrent execution environments for the endpoint. Minimum value of 2, maximum value of 10000. There is no default value. If you don't specify a value, the scaling configuration is absent from the response. On an update, omit <code>scalingConfig</code> to keep the current value, or specify an empty object to clear a previously set value.</p>"
+        }
+      },
+      "documentation":"<p>The scaling configuration for a web function endpoint.</p>"
+    },
+    "ScalingConfigMaxEnvironmentsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":10000,
+      "min":2
+    },
+    "ServiceConfig":{
+      "type":"structure",
+      "required":["executionRoleArn"],
+      "members":{
+        "executionRoleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>The ARN of the IAM role that the web function assumes when it runs. This role provides permissions to access AWS services and resources.</p>"
+        },
+        "timeoutSeconds":{
+          "shape":"ServiceConfigTimeoutSecondsInteger",
+          "documentation":"<p>The amount of time (in seconds) that Lambda allows the web function to run before stopping it. Minimum value of 3, maximum value of 900. If you don't specify a value, the default is 30, and this default is returned in the response.</p>"
+        },
+        "maxConcurrencyPerEnvironment":{
+          "shape":"ServiceConfigMaxConcurrencyPerEnvironmentInteger",
+          "documentation":"<p>The maximum number of concurrent requests handled per execution environment. Minimum value of 1, maximum value of 128. If you don't specify a value, the default is 64, and this default is returned in the response.</p>"
+        },
+        "environmentVariables":{
+          "shape":"EnvironmentVariables",
+          "documentation":"<p>A map of environment variable key-value pairs available to the web function at runtime. Environment variable values are sensitive.</p>"
+        },
+        "telemetryConfig":{
+          "shape":"TelemetryConfig",
+          "documentation":"<p>The telemetry configuration for the web function, including logging settings.</p>"
+        }
+      },
+      "documentation":"<p>The service configuration for a web function revision, including execution role, timeout, concurrency, and telemetry settings.</p>"
+    },
+    "ServiceConfigMaxConcurrencyPerEnvironmentInteger":{
+      "type":"integer",
+      "box":true,
+      "max":128,
+      "min":1
+    },
+    "ServiceConfigTimeoutSecondsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":900,
+      "min":3
+    },
+    "ServiceQuotaExceededException":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{
+          "shape":"String",
+          "documentation":"<p>A message describing the quota that was exceeded.</p>"
+        },
+        "resourceId":{
+          "shape":"String",
+          "documentation":"<p>The identifier of the resource that exceeded the quota.</p>"
+        },
+        "resourceType":{
+          "shape":"String",
+          "documentation":"<p>The type of resource that exceeded the quota.</p>"
+        },
+        "serviceCode":{
+          "shape":"String",
+          "documentation":"<p>The service code of the service that owns the quota.</p>"
+        },
+        "quotaCode":{
+          "shape":"String",
+          "documentation":"<p>The quota code of the exceeded quota.</p>"
+        }
+      },
+      "documentation":"<p>A service quota was exceeded. Request a quota increase or reduce usage and try again.</p>",
+      "error":{
+        "httpStatusCode":402,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "String":{"type":"string"},
+    "SystemLogLevel":{
+      "type":"string",
+      "documentation":"<p>The log level for system logs from the Lambda runtime. Possible values: <code>DEBUG</code>, <code>INFO</code>, <code>WARN</code>.</p>",
+      "enum":[
+        "DEBUG",
+        "INFO",
+        "WARN"
+      ]
+    },
+    "TagKey":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"[a-zA-Z0-9 _\\.:/=+\\-@]+"
+    },
+    "TagKeyList":{
+      "type":"list",
+      "member":{"shape":"TagKey"},
+      "max":200,
+      "min":1
+    },
+    "TagResourceRequest":{
+      "type":"structure",
+      "required":[
+        "resource",
+        "tags"
+      ],
+      "members":{
+        "resource":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the web function.</p>",
+          "location":"uri",
+          "locationName":"resource"
+        },
+        "tags":{
+          "shape":"Tags",
+          "documentation":"<p>A map of tag keys and values to add to the web function.</p>",
+          "locationName":"Tags"
+        }
+      },
+      "documentation":"<p>The request to add tags to a resource.</p>"
+    },
+    "Tags":{
+      "type":"map",
+      "key":{"shape":"TagKey"},
+      "value":{"shape":"TagsValueString"},
+      "max":200,
+      "min":0
+    },
+    "TagsValueString":{
+      "type":"string",
+      "max":256,
+      "min":0,
+      "pattern":"[a-zA-Z0-9 _\\.:/=+\\-@]*"
+    },
+    "TelemetryConfig":{
+      "type":"structure",
+      "members":{
+        "loggingConfig":{
+          "shape":"LoggingConfig",
+          "documentation":"<p>The logging configuration for the web function.</p>"
+        }
+      },
+      "documentation":"<p>The telemetry configuration for a web function revision.</p>"
+    },
+    "ThrottleConfig":{
+      "type":"structure",
+      "members":{
+        "rateLimit":{
+          "shape":"ThrottleConfigRateLimitInteger",
+          "documentation":"<p>The maximum request rate per second for the endpoint. The value must be one of the following supported values: <code>0</code>, <code>100</code>, <code>200</code>, <code>300</code>, <code>400</code>, <code>500</code>, <code>600</code>, <code>700</code>, <code>800</code>, <code>900</code>, <code>1000</code>, <code>2000</code>, <code>3000</code>, <code>4000</code>, <code>5000</code>, <code>6000</code>, <code>7000</code>, <code>8000</code>, <code>9000</code>, or <code>10000</code>. The maximum effective value is also bounded by your account-level maximum total rate limit. There is no default value. If you don't specify a value, the throttling configuration is absent from the response. On an update, omit <code>throttleConfig</code> to keep the current value, or specify an empty object to clear a previously set value.</p>"
+        }
+      },
+      "documentation":"<p>The throttling configuration for a web function endpoint.</p>"
+    },
+    "ThrottleConfigRateLimitInteger":{
+      "type":"integer",
+      "box":true,
+      "min":0
+    },
+    "ThrottlingException":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{
+          "shape":"String",
+          "documentation":"<p>A message describing the throttling error.</p>"
+        },
+        "retryAfterSeconds":{
+          "shape":"Integer",
+          "documentation":"<p>The number of seconds to wait before retrying the request.</p>",
+          "location":"header",
+          "locationName":"Retry-After"
+        },
+        "serviceCode":{
+          "shape":"String",
+          "documentation":"<p>The service code of the throttled service.</p>"
+        },
+        "quotaCode":{
+          "shape":"String",
+          "documentation":"<p>The quota code that was exceeded, if applicable.</p>"
+        }
+      },
+      "documentation":"<p>The request was throttled. Reduce the frequency of requests and try again.</p>",
+      "error":{
+        "httpStatusCode":429,
+        "senderFault":true
+      },
+      "exception":true,
+      "retryable":{"throttling":true}
+    },
+    "UntagResourceRequest":{
+      "type":"structure",
+      "required":[
+        "resource",
+        "tagKeys"
+      ],
+      "members":{
+        "resource":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the web function.</p>",
+          "location":"uri",
+          "locationName":"resource"
+        },
+        "tagKeys":{
+          "shape":"TagKeyList",
+          "documentation":"<p>A list of tag keys to remove from the web function.</p>",
+          "location":"querystring",
+          "locationName":"tagKeys"
+        }
+      },
+      "documentation":"<p>The request to remove tags from a resource.</p>"
+    },
+    "UpdateWebFunctionEndpointRequest":{
+      "type":"structure",
+      "required":[
+        "functionName",
+        "endpointName"
+      ],
+      "members":{
+        "functionName":{
+          "shape":"FunctionName",
+          "documentation":"<p>The name of the web function. You can specify the function name or the function ARN. The length constraint applies only to the full ARN. If you specify only the function name, it is limited to 64 characters in length.</p>",
+          "location":"uri",
+          "locationName":"functionName"
+        },
+        "endpointName":{
+          "shape":"EndpointName",
+          "documentation":"<p>The name of the endpoint to update. You can specify the endpoint name or the endpoint ARN. The length constraint applies only to the full ARN. If you specify only the endpoint name, it is limited to 64 characters in length.</p>",
+          "location":"uri",
+          "locationName":"endpointName"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>A description of the endpoint.</p>"
+        },
+        "authType":{
+          "shape":"AuthType",
+          "documentation":"<p>The authorization type for the endpoint.</p>"
+        },
+        "autoDeploymentMode":{
+          "shape":"AutoDeploymentMode",
+          "documentation":"<p>The auto-deployment mode for the endpoint.</p>"
+        },
+        "revisionWeights":{
+          "shape":"RevisionWeightList",
+          "documentation":"<p>A list of revision weights that determine how traffic is distributed across revisions.</p>"
+        },
+        "scalingConfig":{
+          "shape":"ScalingConfig",
+          "documentation":"<p>The scaling configuration for the endpoint. Omit this field to keep the current scaling configuration. To clear a previously set <code>maxEnvironments</code> value, specify an empty object.</p>"
+        },
+        "throttleConfig":{
+          "shape":"ThrottleConfig",
+          "documentation":"<p>The throttling configuration for the endpoint. Omit this field to keep the current throttling configuration. To clear a previously set <code>rateLimit</code> value, specify an empty object.</p>"
+        }
+      },
+      "documentation":"<p>The request to update a web function endpoint.</p>"
+    },
+    "UpdateWebFunctionEndpointResponse":{
+      "type":"structure",
+      "required":[
+        "functionArn",
+        "endpointArn",
+        "endpointName",
+        "endpointType",
+        "domainName",
+        "authType",
+        "autoDeploymentMode",
+        "revisionWeights",
+        "regions",
+        "state",
+        "stateReason",
+        "regionalEndpoints",
+        "createdAt",
+        "updatedAt"
+      ],
+      "members":{
+        "functionArn":{
+          "shape":"FunctionArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the web function.</p>"
+        },
+        "endpointArn":{
+          "shape":"EndpointArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the endpoint.</p>"
+        },
+        "endpointName":{
+          "shape":"EndpointName",
+          "documentation":"<p>The name of the endpoint.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>The description of the endpoint.</p>"
+        },
+        "endpointType":{"shape":"EndpointType"},
+        "domainName":{
+          "shape":"DomainName",
+          "documentation":"<p>The domain name assigned to the endpoint.</p>"
+        },
+        "authType":{"shape":"AuthType"},
+        "autoDeploymentMode":{"shape":"AutoDeploymentMode"},
+        "revisionWeights":{
+          "shape":"RevisionWeightList",
+          "documentation":"<p>The traffic distribution across revisions for the endpoint. Each entry maps a revision to a weight from 1 to 100.</p>"
+        },
+        "regions":{
+          "shape":"RegionList",
+          "documentation":"<p>The Regions configured for the endpoint.</p>"
+        },
+        "scalingConfig":{"shape":"ScalingConfig"},
+        "throttleConfig":{"shape":"ThrottleConfig"},
+        "state":{
+          "shape":"EndpointState",
+          "documentation":"<p>The current state of the endpoint.</p>"
+        },
+        "stateReason":{
+          "shape":"String",
+          "documentation":"<p>The reason for the current state of the endpoint.</p>"
+        },
+        "updateStatus":{"shape":"EndpointUpdateStatus"},
+        "updateStatusReason":{
+          "shape":"String",
+          "documentation":"<p>The reason for the endpoint's most recent update status.</p>"
+        },
+        "regionalEndpoints":{
+          "shape":"RegionalEndpoints",
+          "documentation":"<p>The list of regional endpoint configurations.</p>"
+        },
+        "createdAt":{
+          "shape":"DateTime",
+          "documentation":"<p>The date and time the endpoint was created.</p>"
+        },
+        "updatedAt":{
+          "shape":"DateTime",
+          "documentation":"<p>The date and time the endpoint was last updated.</p>"
+        }
+      },
+      "documentation":"<p>Contains details about the updated endpoint.</p>"
+    },
+    "ValidationException":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{
+          "shape":"String",
+          "documentation":"<p>A message describing the validation error.</p>"
+        }
+      },
+      "documentation":"<p>The request failed validation. Check the request parameters and try again.</p>",
+      "error":{
+        "httpStatusCode":400,
+        "senderFault":true
+      },
+      "exception":true
+    }
+  },
+  "documentation":"<p>AWS Lambda Web Functions let you run web applications and APIs as HTTP servers on Lambda. A web function has one or more immutable revisions (code and configuration) and one or more endpoints that expose it over HTTPS.</p>"
+}

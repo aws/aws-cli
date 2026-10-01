@@ -1362,6 +1362,23 @@
       ],
       "documentation":"<p>Retrieves the recommended policy to remediate a Security Hub finding. <code>GetRecommendedPolicyV2</code> only supports findings for unused permissions.</p>"
     },
+    "GetRemediationsV2":{
+      "name":"GetRemediationsV2",
+      "http":{
+        "method":"POST",
+        "requestUri":"/GetRemediationsV2"
+      },
+      "input":{"shape":"GetRemediationsV2Request"},
+      "output":{"shape":"GetRemediationsV2Response"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Retrieves remediation targets for the account, or for all member accounts if the caller is the delegated administrator. Results are sorted by priority, highest first, and are paginated. Use <code>TargetUid</code> or <code>MetadataUid</code> to scope the request to a single target or finding.</p>"
+    },
     "GetResourcesStatisticsV2":{
       "name":"GetResourcesStatisticsV2",
       "http":{
@@ -1590,6 +1607,23 @@
         {"shape":"InvalidAccessException"}
       ],
       "documentation":"<p>Lists all findings-generating solutions (products) that you are subscribed to receive findings from in Security Hub CSPM.</p>"
+    },
+    "ListExposuresByRemediationV2":{
+      "name":"ListExposuresByRemediationV2",
+      "http":{
+        "method":"POST",
+        "requestUri":"/ListExposuresByRemediationV2"
+      },
+      "input":{"shape":"ListExposuresByRemediationV2Request"},
+      "output":{"shape":"ListExposuresByRemediationV2Response"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Retrieves the exposure findings tied to a specific remediation target. Results are sorted by previous severity, highest first, and are paginated.</p>"
     },
     "ListFindingAggregators":{
       "name":"ListFindingAggregators",
@@ -18992,6 +19026,63 @@
       },
       "documentation":"<p> The options for customizing a security control parameter that is a list of enums. </p>"
     },
+    "ExposureFinding":{
+      "type":"structure",
+      "required":[
+        "MetadataUid",
+        "Title",
+        "PreviousSeverity",
+        "ProjectedSeverity",
+        "Impact"
+      ],
+      "members":{
+        "MetadataUid":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The unique identifier (ID) of the Security Hub exposure finding, found under the <code>metadata.uid</code> field of the finding.</p>"
+        },
+        "Title":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The title of the exposure finding.</p>"
+        },
+        "PreviousSeverity":{
+          "shape":"ExposureSeverity",
+          "documentation":"<p>The severity of the exposure finding before the remediation target is resolved.</p>"
+        },
+        "ProjectedSeverity":{
+          "shape":"ExposureSeverity",
+          "documentation":"<p>The severity of the exposure finding after the remediation target is resolved.</p>"
+        },
+        "Impact":{
+          "shape":"ExposureImpact",
+          "documentation":"<p>The impact resolving a remediation target has on the exposure finding.</p> <ul> <li> <p> <code>Reduces</code> specifies that resolving the remediation target lowers the severity of the exposure finding, but does not resolve it.</p> </li> <li> <p> <code>Resolves</code> specifies that resolving the remediation target resolves the exposure finding.</p> </li> <li> <p> <code>Unchanged</code> specifies that resolving the remediation target does not change the severity of the exposure finding.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>Provides details about an exposure finding and the effect the specific remediation target has on it.</p>"
+    },
+    "ExposureFindingItemsList":{
+      "type":"list",
+      "member":{"shape":"ExposureFinding"},
+      "max":1000,
+      "min":0
+    },
+    "ExposureImpact":{
+      "type":"string",
+      "enum":[
+        "Reduces",
+        "Resolves",
+        "Unchanged"
+      ]
+    },
+    "ExposureSeverity":{
+      "type":"string",
+      "enum":[
+        "Informational",
+        "Low",
+        "Medium",
+        "High",
+        "Critical"
+      ]
+    },
     "ExternalIntegrationConfiguration":{
       "type":"structure",
       "members":{
@@ -19379,7 +19470,7 @@
         },
         "Status":{
           "shape":"FreeTrialStatusValue",
-          "documentation":"<p>Whether the free trial period is currently active. Valid values:</p> <ul> <li> <p> <code>ACTIVE</code> specifies that the free trial period is ongoing.</p> </li> <li> <p> <code>INACTIVE</code> specifies that the free trial period has ended, or that it never started.</p> </li> </ul> <p>To determine whether a trial has expired, compare <code>ExpiresAt</code> to the current time.</p>"
+          "documentation":"<p>Specifies whether the free trial period is currently active. Valid values:</p> <ul> <li> <p> <code>ACTIVE</code> specifies that the free trial period is ongoing.</p> </li> <li> <p> <code>INACTIVE</code> specifies that the free trial period has ended, or that it never started.</p> </li> </ul> <p>To determine whether a trial has expired, compare <code>ExpiresAt</code> to the current time.</p>"
         },
         "StartedAt":{
           "shape":"Timestamp",
@@ -20199,6 +20290,53 @@
         }
       }
     },
+    "GetRemediationsV2Request":{
+      "type":"structure",
+      "members":{
+        "TargetUid":{
+          "shape":"RemediationStringUid",
+          "documentation":"<p>The unique identifier (ID) of an existing remediation target to return. Returns the single matching target. You can't use <code>TargetUid</code> together with <code>MetadataUid</code> or <code>Filters</code>.</p>"
+        },
+        "MetadataUid":{
+          "shape":"RemediationStringUid",
+          "documentation":"<p>The unique identifier (ID) of the Security Hub exposure finding, found under the <code>metadata.uid</code> field of the finding. Returns the remediation targets associated with that finding. You can't use <code>MetadataUid</code> together with <code>TargetUid</code> or <code>Filters</code>.</p>"
+        },
+        "Filters":{
+          "shape":"RemediationFilters",
+          "documentation":"<p>Filters remediation targets based on a set of criteria. You can't use <code>Filters</code> together with <code>TargetUid</code> or <code>MetadataUid</code>.</p>"
+        },
+        "ShowGuidance":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether to show remediation target guidance.</p>"
+        },
+        "GuidanceFormat":{
+          "shape":"GuidanceFormat",
+          "documentation":"<p>The format of the remediation guidance examples to return. Valid values are <code>All</code>, <code>AwsCli</code>, <code>Cli</code>, <code>Python</code>, <code>Terraform</code>, <code>Cdk</code>, <code>CloudFormation</code>, <code>IaC</code>, and <code>Template</code>. If you don't specify a value, all formats are returned. Applies only when <code>ShowGuidance</code> is <code>true</code>.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return. Valid range is 1-100. If you don't specify a value, the operation returns up to 25 results.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token used to paginate the remediations target list returned. On your first call to <code>GetRemediationsV2</code>, omit this parameter or set it to <code>NULL</code>. For subsequent calls, use the <code>NextToken</code> value returned in the previous response to retrieve the next page of results.</p>"
+        }
+      }
+    },
+    "GetRemediationsV2Response":{
+      "type":"structure",
+      "required":["Items"],
+      "members":{
+        "Items":{
+          "shape":"RemediationV2ItemList",
+          "documentation":"<p>An array of remediation targets returned by the operation.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The pagination token to use to request the next page of results. Otherwise, this parameter is null.</p>"
+        }
+      }
+    },
     "GetResourcesStatisticsV2Request":{
       "type":"structure",
       "required":["GroupByRules"],
@@ -20437,6 +20575,20 @@
     "GroupByValues":{
       "type":"list",
       "member":{"shape":"GroupByValue"}
+    },
+    "GuidanceFormat":{
+      "type":"string",
+      "enum":[
+        "All",
+        "AwsCli",
+        "Cli",
+        "Python",
+        "Terraform",
+        "Cdk",
+        "CloudFormation",
+        "IaC",
+        "Template"
+      ]
     },
     "HealthCheck":{
       "type":"structure",
@@ -20905,6 +21057,30 @@
       },
       "documentation":"<p>The parameters used to modify an existing Jira Cloud integration.</p>"
     },
+    "KbArticle":{
+      "type":"structure",
+      "required":[
+        "Title",
+        "Url"
+      ],
+      "members":{
+        "Title":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The title of the <code>KbArticle</code>.</p>"
+        },
+        "Url":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The URL of the <code>KbArticle</code>.</p>"
+        }
+      },
+      "documentation":"<p>A knowledge base article that provides additional guidance related to the remediation target.</p>"
+    },
+    "KbArticleList":{
+      "type":"list",
+      "member":{"shape":"KbArticle"},
+      "max":10,
+      "min":0
+    },
     "KeywordFilter":{
       "type":"structure",
       "members":{
@@ -21204,6 +21380,60 @@
         "NextToken":{
           "shape":"NextToken",
           "documentation":"<p>The pagination token to use to request the next page of results.</p>"
+        }
+      }
+    },
+    "ListExposuresByRemediationV2Request":{
+      "type":"structure",
+      "required":["TargetUid"],
+      "members":{
+        "TargetUid":{
+          "shape":"RemediationStringUid",
+          "documentation":"<p>The unique identifier (ID) of an existing remediation target to list exposure findings for.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return. Valid range is 1-100. If you don't specify a value, the operation returns up to 25 results.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token used to paginate the exposures list returned. On your first call to <code>ListExposuresByRemediationV2</code>, omit this parameter or set it to <code>NULL</code>. For subsequent calls, use the <code>NextToken</code> value returned in the previous response to retrieve the next page of results.</p>"
+        }
+      }
+    },
+    "ListExposuresByRemediationV2Response":{
+      "type":"structure",
+      "required":[
+        "Items",
+        "TargetUid",
+        "Resource",
+        "TotalCount",
+        "Trait"
+      ],
+      "members":{
+        "Items":{
+          "shape":"ExposureFindingItemsList",
+          "documentation":"<p>An array of exposure findings returned by the operation.</p>"
+        },
+        "TargetUid":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The unique identifier (ID) of the remediation target that the exposure findings are associated with.</p>"
+        },
+        "Resource":{
+          "shape":"RemediationResource",
+          "documentation":"<p>Provides comprehensive details about a resource.</p>"
+        },
+        "TotalCount":{
+          "shape":"Integer",
+          "documentation":"<p>The total count of exposure findings associated with the remediation target.</p>"
+        },
+        "Trait":{
+          "shape":"RemediationTrait",
+          "documentation":"<p>The specific trait associated with the remediation target.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The pagination token to use to request the next page of results. Otherwise, this parameter is null.</p>"
         }
       }
     },
@@ -22950,6 +23180,546 @@
         }
       },
       "documentation":"<p>Details about the remediation steps for a finding.</p>"
+    },
+    "RemediationCompositeFilter":{
+      "type":"structure",
+      "members":{
+        "StringFilters":{
+          "shape":"RemediationStringFilterList",
+          "documentation":"<p>Enables filtering based on string field values.</p>"
+        }
+      },
+      "documentation":"<p>Enables the creation of criteria for remediation targets.</p>"
+    },
+    "RemediationCompositeFilterList":{
+      "type":"list",
+      "member":{"shape":"RemediationCompositeFilter"},
+      "max":1,
+      "min":0
+    },
+    "RemediationFilters":{
+      "type":"structure",
+      "members":{
+        "CompositeFilters":{
+          "shape":"RemediationCompositeFilterList",
+          "documentation":"<p>A collection of complex filtering conditions that can be applied to remediation target data.</p>"
+        }
+      },
+      "documentation":"<p>Contains the criteria used to filter remediation targets, such as resource type, priority, or status.</p>"
+    },
+    "RemediationGuidance":{
+      "type":"structure",
+      "required":[
+        "TargetTypeName",
+        "Pattern",
+        "Version",
+        "Context",
+        "Specification",
+        "Examples",
+        "Metadata"
+      ],
+      "members":{
+        "TargetTypeName":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The name of the remediation target type.</p>"
+        },
+        "Pattern":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The remediation pattern of the remediation target.</p>"
+        },
+        "Version":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The guidance version.</p>"
+        },
+        "Context":{
+          "shape":"RemediationGuidanceContext",
+          "documentation":"<p>The context behind the remediation target's existence and guidance.</p>"
+        },
+        "Specification":{
+          "shape":"RemediationGuidanceSpecification",
+          "documentation":"<p>The specification of the remediation target guidance. This outlines required resource parameters and permissions, remediation steps, and the end state.</p>"
+        },
+        "Examples":{
+          "shape":"RemediationGuidanceExamples",
+          "documentation":"<p>Provided remediation guidance examples in different formats that can be run for remediating the target.</p>"
+        },
+        "Metadata":{
+          "shape":"RemediationGuidanceMetadata",
+          "documentation":"<p>The metadata of the remediation guidance.</p>"
+        }
+      },
+      "documentation":"<p>A remediation guidebook outlining guidance in resolving the remediation target.</p>"
+    },
+    "RemediationGuidanceContext":{
+      "type":"structure",
+      "members":{
+        "ProblemStatement":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>Explains the cause which directly created the remediation target.</p>"
+        },
+        "RiskAssessment":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>An assessment of the existing risk the remediation target creates.</p>"
+        },
+        "AffectedScope":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The scope of the resources affected by the resolution of the remediation target.</p>"
+        },
+        "Prerequisites":{
+          "shape":"RemediationStringList",
+          "documentation":"<p>An array of prerequisite steps in resolving the remediation target.</p>"
+        }
+      },
+      "documentation":"<p>The context behind the remediation target's existence and guidance.</p>"
+    },
+    "RemediationGuidanceExamples":{
+      "type":"structure",
+      "members":{
+        "AwsCli":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>An AWS CLI snippet version of the example.</p>"
+        },
+        "Cli":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>A CLI snippet version of the example.</p>"
+        },
+        "Python":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>A Python snippet version of the example.</p>"
+        },
+        "Terraform":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>A Terraform snippet version of the example.</p>"
+        },
+        "Cdk":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>A CDK snippet version of the example.</p>"
+        },
+        "CloudFormation":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>A CloudFormation snippet version of the example.</p>"
+        },
+        "IaC":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>An IaC snippet version of the example.</p>"
+        },
+        "Template":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>A Template snippet version of the example.</p>"
+        }
+      },
+      "documentation":"<p>Provided remediation guidance examples in different formats that can be run for remediating the target.</p>"
+    },
+    "RemediationGuidanceMetadata":{
+      "type":"structure",
+      "required":[
+        "ResourceType",
+        "ExposureType",
+        "TraitTitles",
+        "Reversibility",
+        "FixEffect",
+        "RiskLevel"
+      ],
+      "members":{
+        "ResourceType":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The resource type of the remediation target.</p>"
+        },
+        "ExposureType":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The exposure type of the related exposure findings.</p>"
+        },
+        "TraitTitles":{
+          "shape":"RemediationStringList",
+          "documentation":"<p>The titles of traits this guidance applies to.</p>"
+        },
+        "Reversibility":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The extent to which changes made in accordance with the guidance can be reversed, for example <code>Fully reversible</code>.</p>"
+        },
+        "FixEffect":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>When the fix takes effect, for example <code>Immediate</code> or <code>Deferred</code>.</p>"
+        },
+        "RiskLevel":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The risk when implementing the guidance provided.</p>"
+        },
+        "AutomationLevel":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The extent to which the guidance can be automated, for example <code>Full</code>.</p>"
+        },
+        "HumanReviewRequired":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether human review is required.</p>"
+        },
+        "GeneratedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>Timestamp of when the guidance was generated.</p> <p>For more information about the validation and formatting of timestamp fields in Security Hub CSPM, see <a href=\"https://docs.aws.amazon.com/securityhub/1.0/APIReference/Welcome.html#timestamps\">Timestamps</a>.</p>"
+        },
+        "VerificationStatus":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>Verification status of the guidance.</p>"
+        }
+      },
+      "documentation":"<p>The metadata of the remediation guidance.</p>"
+    },
+    "RemediationGuidanceSpecification":{
+      "type":"structure",
+      "members":{
+        "Parameters":{
+          "shape":"RemediationParameterList",
+          "documentation":"<p>An array of the parameters used in running the steps provided.</p>"
+        },
+        "Steps":{
+          "shape":"RemediationStepList",
+          "documentation":"<p>An array of ordered steps for resolving the remediation targets.</p>"
+        },
+        "ExpectedEndState":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The expected end state of the associated resources after completion of the steps.</p>"
+        },
+        "RequiredPermissions":{
+          "shape":"RemediationStringList",
+          "documentation":"<p>An array of required permissions to run the steps.</p>"
+        }
+      },
+      "documentation":"<p>The specification of the remediation target guidance. This outlines required resource parameters and permissions, remediation steps, and the end state.</p>"
+    },
+    "RemediationOutcome":{
+      "type":"structure",
+      "required":[
+        "ResolvedFindingsCount",
+        "SeverityReductionFindingsCount",
+        "SeverityUnchangedCount"
+      ],
+      "members":{
+        "ResolvedFindingsCount":{
+          "shape":"Integer",
+          "documentation":"<p>The number of associated exposure findings that are resolved by remediating the target.</p>"
+        },
+        "SeverityReductionFindingsCount":{
+          "shape":"Integer",
+          "documentation":"<p>The number of associated exposure findings whose severity is reduced by remediating the target.</p>"
+        },
+        "SeverityUnchangedCount":{
+          "shape":"Integer",
+          "documentation":"<p>The number of associated exposure findings whose severity is unchanged by remediating the target.</p>"
+        }
+      },
+      "documentation":"<p>The outcome from resolving the remediation target.</p>"
+    },
+    "RemediationParameter":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Type",
+        "Description"
+      ],
+      "members":{
+        "Name":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The name of the parameter.</p>"
+        },
+        "Type":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The type of the parameter.</p>"
+        },
+        "Description":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>A description of the parameter.</p>"
+        },
+        "Required":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether the parameter is required for running the guidance steps.</p>"
+        }
+      },
+      "documentation":"<p>A parameter used in running the guidance steps.</p>"
+    },
+    "RemediationParameterList":{
+      "type":"list",
+      "member":{"shape":"RemediationParameter"},
+      "max":50,
+      "min":0
+    },
+    "RemediationPriority":{
+      "type":"string",
+      "enum":[
+        "Critical",
+        "High",
+        "Medium",
+        "Low"
+      ]
+    },
+    "RemediationResource":{
+      "type":"structure",
+      "required":[
+        "AccountId",
+        "Region",
+        "Type",
+        "Id",
+        "ResourceRegion",
+        "CloudProvider"
+      ],
+      "members":{
+        "AccountId":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The Amazon Web Services account that recorded the resource data in Security Hub.</p>"
+        },
+        "Region":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The Amazon Web Services Region in which Security Hub recorded the resource data.</p>"
+        },
+        "ResourceOwnerAccountId":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The identifier of the cloud account that owns the resource. For Amazon Web Services resources, this is the Amazon Web Services account ID. For Azure resources, this is the Azure subscription ID.</p>"
+        },
+        "ResourceOwnerOrgId":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The identifier of the cloud organization that owns the resource. For Amazon Web Services resources, this is the Organizations ID. For Azure resources, this is the Azure tenant ID.</p>"
+        },
+        "Type":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The type of the resource.</p>"
+        },
+        "Name":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The name of the resource.</p>"
+        },
+        "Id":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The unique identifier for a resource.</p>"
+        },
+        "ResourceGuid":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The global identifier used to identify a resource.</p>"
+        },
+        "ResourceRegion":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The native cloud region where the resource is located. For Amazon Web Services, this is an Amazon Web Services Region (for example, <code>us-east-1</code>). For Azure resources, this is the Azure region (for example, <code>westus2</code>). This field is always included.</p>"
+        },
+        "CloudProvider":{
+          "shape":"CloudProviderName",
+          "documentation":"<p>The cloud provider where the resource exists.</p> <ul> <li> <p> <code>AWS</code> specifies that the resource exists in Amazon Web Services.</p> </li> <li> <p> <code>Azure</code> specifies that the resource exists in Microsoft Azure.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>Provides comprehensive details about a resource.</p>"
+    },
+    "RemediationStatus":{
+      "type":"string",
+      "enum":[
+        "New",
+        "Updated",
+        "Resolved"
+      ]
+    },
+    "RemediationStep":{
+      "type":"structure",
+      "required":[
+        "Phase",
+        "Description",
+        "Service",
+        "Action"
+      ],
+      "members":{
+        "Phase":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The phase of the remediation plan that this step belongs to (for example, <code>FIX</code>).</p>"
+        },
+        "Description":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>A description of what the step does.</p>"
+        },
+        "Service":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>Which service this step is performed in.</p>"
+        },
+        "Action":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The action to be taken for this step.</p>"
+        },
+        "Logic":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The logic behind the existence of this step.</p>"
+        },
+        "Inverse":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The inverse of the step, to be used if the step needs to be rolled back.</p>"
+        },
+        "VerifyAfter":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The action to take after the step to verify its success.</p>"
+        }
+      },
+      "documentation":"<p>A step in the remediation guidance.</p>"
+    },
+    "RemediationStepList":{
+      "type":"list",
+      "member":{"shape":"RemediationStep"},
+      "max":50,
+      "min":0
+    },
+    "RemediationStringField":{
+      "type":"string",
+      "enum":[
+        "Resource.Type",
+        "Priority",
+        "Status",
+        "Resource.Id",
+        "Resource.ResourceOwnerAccountId",
+        "Resource.CloudProvider"
+      ]
+    },
+    "RemediationStringFilter":{
+      "type":"structure",
+      "required":[
+        "FieldName",
+        "Filter"
+      ],
+      "members":{
+        "FieldName":{
+          "shape":"RemediationStringField",
+          "documentation":"<p>The name of the filter field. Valid values are <code>Resource.Type</code>, <code>Priority</code>, <code>Status</code>, <code>Resource.Id</code>, <code>Resource.ResourceOwnerAccountId</code>, and <code>Resource.CloudProvider</code>.</p>"
+        },
+        "Filter":{
+          "shape":"RemediationStringFilterCondition",
+          "documentation":"<p>The string filter definition.</p>"
+        }
+      },
+      "documentation":"<p>A string filter for filtering remediation targets.</p>"
+    },
+    "RemediationStringFilterCondition":{
+      "type":"structure",
+      "required":["Value"],
+      "members":{
+        "Value":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The value the string filter is comparing against.</p>"
+        }
+      },
+      "documentation":"<p>The condition to apply to the string filter.</p>"
+    },
+    "RemediationStringFilterList":{
+      "type":"list",
+      "member":{"shape":"RemediationStringFilter"},
+      "max":2,
+      "min":0
+    },
+    "RemediationStringList":{
+      "type":"list",
+      "member":{"shape":"NonEmptyString"},
+      "max":50,
+      "min":0
+    },
+    "RemediationStringUid":{
+      "type":"string",
+      "max":2048,
+      "min":1
+    },
+    "RemediationSummaryDetail":{
+      "type":"structure",
+      "required":[
+        "Action",
+        "IsImmediate"
+      ],
+      "members":{
+        "Action":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>A summarized action to take for the remediation target.</p>"
+        },
+        "Description":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>A description of the remediation target.</p>"
+        },
+        "IsImmediate":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether the effect of this target is immediate.</p>"
+        },
+        "PostRemediationSteps":{
+          "shape":"RemediationStringList",
+          "documentation":"<p>An array of steps to be taken after remediation.</p>"
+        },
+        "KbArticles":{
+          "shape":"KbArticleList",
+          "documentation":"<p>An array of <code>KbArticle</code> objects.</p>"
+        }
+      },
+      "documentation":"<p>A summary of the remediation target.</p>"
+    },
+    "RemediationTrait":{
+      "type":"structure",
+      "required":[
+        "Type",
+        "Title"
+      ],
+      "members":{
+        "Type":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The trait type.</p>"
+        },
+        "Title":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The trait title.</p>"
+        }
+      },
+      "documentation":"<p>The trait associated with the remediation target.</p>"
+    },
+    "RemediationV2Item":{
+      "type":"structure",
+      "required":[
+        "TargetUid",
+        "Outcome",
+        "Priority",
+        "RemediationSummary",
+        "Resource",
+        "Status",
+        "Trait"
+      ],
+      "members":{
+        "TargetUid":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The unique identifier (ID) of the remediation target.</p>"
+        },
+        "Outcome":{
+          "shape":"RemediationOutcome",
+          "documentation":"<p>The outcome of the remediation target's resolution.</p>"
+        },
+        "Priority":{
+          "shape":"RemediationPriority",
+          "documentation":"<p>The remediation target's priority. Valid values are <code>Critical</code>, <code>High</code>, <code>Medium</code>, and <code>Low</code>.</p>"
+        },
+        "RemediationSummary":{
+          "shape":"RemediationSummaryDetail",
+          "documentation":"<p>A summary of the remediation target.</p>"
+        },
+        "Resource":{
+          "shape":"RemediationResource",
+          "documentation":"<p>The remediation target's associated resource.</p>"
+        },
+        "Status":{
+          "shape":"RemediationStatus",
+          "documentation":"<p>The current status of the remediation target.</p> <ul> <li> <p> <code>New</code> specifies that the remediation target was newly identified.</p> </li> <li> <p> <code>Updated</code> specifies that the remediation target changed after it was identified.</p> </li> <li> <p> <code>Resolved</code> specifies that the remediation target is no longer present.</p> </li> </ul>"
+        },
+        "Trait":{
+          "shape":"RemediationTrait",
+          "documentation":"<p>The trait associated with the remediation target.</p>"
+        },
+        "Guidance":{
+          "shape":"RemediationGuidance",
+          "documentation":"<p>The remediation target's guidance. Returned only when <code>ShowGuidance</code> is <code>true</code> in the request.</p>"
+        },
+        "UpdatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The remediation target's last updated timestamp.</p> <p>For more information about the validation and formatting of timestamp fields in Security Hub CSPM, see <a href=\"https://docs.aws.amazon.com/securityhub/1.0/APIReference/Welcome.html#timestamps\">Timestamps</a>.</p>"
+        }
+      },
+      "documentation":"<p>A remediation target.</p>"
+    },
+    "RemediationV2ItemList":{
+      "type":"list",
+      "member":{"shape":"RemediationV2Item"},
+      "max":100,
+      "min":0
     },
     "Resource":{
       "type":"structure",
@@ -25652,7 +26422,7 @@
         },
         "Comparison":{
           "shape":"StringFilterComparison",
-          "documentation":"<p>The condition to apply to a string value when filtering Security Hub CSPM findings.</p> <p>To search for values that have the filter value, use one of the following comparison operators:</p> <ul> <li> <p>To search for values that include the filter value, use <code>CONTAINS</code>. For example, the filter <code>Title CONTAINS CloudFront</code> matches findings that have a <code>Title</code> that includes the string CloudFront.</p> </li> <li> <p>To search for values that exactly match the filter value, use <code>EQUALS</code>. For example, the filter <code>AwsAccountId EQUALS 123456789012</code> only matches findings that have an account ID of <code>123456789012</code>.</p> </li> <li> <p>To search for values that start with the filter value, use <code>PREFIX</code>. For example, the filter <code>ResourceRegion PREFIX us</code> matches findings that have a <code>ResourceRegion</code> that starts with <code>us</code>. A <code>ResourceRegion</code> that starts with a different value, such as <code>af</code>, <code>ap</code>, or <code>ca</code>, doesn't match.</p> </li> </ul> <p> <code>CONTAINS</code>, <code>EQUALS</code>, and <code>PREFIX</code> filters on the same field are joined by <code>OR</code>. A finding matches if it matches any one of those filters. For example, the filters <code>Title CONTAINS CloudFront OR Title CONTAINS CloudWatch</code> match a finding that includes either <code>CloudFront</code>, <code>CloudWatch</code>, or both strings in the title.</p> <p>To search for values that don’t have the filter value, use one of the following comparison operators:</p> <ul> <li> <p>To search for values that exclude the filter value, use <code>NOT_CONTAINS</code>. For example, the filter <code>Title NOT_CONTAINS CloudFront</code> matches findings that have a <code>Title</code> that excludes the string CloudFront.</p> </li> <li> <p>To search for values other than the filter value, use <code>NOT_EQUALS</code>. For example, the filter <code>AwsAccountId NOT_EQUALS 123456789012</code> only matches findings that have an account ID other than <code>123456789012</code>.</p> </li> <li> <p>To search for values that don't start with the filter value, use <code>PREFIX_NOT_EQUALS</code>. For example, the filter <code>ResourceRegion PREFIX_NOT_EQUALS us</code> matches findings with a <code>ResourceRegion</code> that starts with a value other than <code>us</code>.</p> </li> </ul> <p> <code>NOT_CONTAINS</code>, <code>NOT_EQUALS</code>, and <code>PREFIX_NOT_EQUALS</code> filters on the same field are joined by <code>AND</code>. A finding matches only if it matches all of those filters. For example, the filters <code>Title NOT_CONTAINS CloudFront AND Title NOT_CONTAINS CloudWatch</code> match a finding that excludes both <code>CloudFront</code> and <code>CloudWatch</code> in the title.</p> <p>You can’t have both a <code>CONTAINS</code> filter and a <code>NOT_CONTAINS</code> filter on the same field. Similarly, you can't provide both an <code>EQUALS</code> filter and a <code>NOT_EQUALS</code> or <code>PREFIX_NOT_EQUALS</code> filter on the same field. Combining filters in this way returns an error. <code>CONTAINS</code> filters can only be used with other <code>CONTAINS</code> filters. <code>NOT_CONTAINS</code> filters can only be used with other <code>NOT_CONTAINS</code> filters. </p> <p>You can combine <code>PREFIX</code> filters with <code>NOT_EQUALS</code> or <code>PREFIX_NOT_EQUALS</code> filters for the same field. Security Hub CSPM first processes the <code>PREFIX</code> filters, and then the <code>NOT_EQUALS</code> or <code>PREFIX_NOT_EQUALS</code> filters.</p> <p>For example, for the following filters, Security Hub CSPM first identifies findings that have resource types that start with either <code>AwsIam</code> or <code>AwsEc2</code>. It then excludes findings that have a resource type of <code>AwsIamPolicy</code> and findings that have a resource type of <code>AwsEc2NetworkInterface</code>.</p> <ul> <li> <p> <code>ResourceType PREFIX AwsIam</code> </p> </li> <li> <p> <code>ResourceType PREFIX AwsEc2</code> </p> </li> <li> <p> <code>ResourceType NOT_EQUALS AwsIamPolicy</code> </p> </li> <li> <p> <code>ResourceType NOT_EQUALS AwsEc2NetworkInterface</code> </p> </li> </ul> <p>The <code>CONTAINS</code> operator works with automation rules V1 and V2. The <code>NOT_CONTAINS</code> operator works only with automation rules V1. The <code>CONTAINS_WORD</code> operator works only in the <code>GetFindingsV2</code>, <code>GetFindingStatisticsV2</code>, <code>GetResourcesV2</code>, and <code>GetResourcesStatisticsV2</code> APIs. For more information, see <a href=\"https://docs.aws.amazon.com/securityhub/latest/userguide/automation-rules.html\">Automation rules</a> in the <i>Security Hub CSPM User Guide</i>.</p>"
+          "documentation":"<p>The condition to apply to a string value when filtering Security Hub CSPM findings.</p> <p>To search for values that have the filter value, use one of the following comparison operators:</p> <ul> <li> <p>To search for values that include the filter value, use <code>CONTAINS</code>. For example, the filter <code>Title CONTAINS CloudFront</code> matches findings that have a <code>Title</code> that includes the string <code>CloudFront</code>.</p> </li> <li> <p>To search for values that contain a word matching the filter value, regardless of case, use <code>CONTAINS_WORD</code>. For example, the filter <code>Title CONTAINS_WORD lambda</code> matches a finding whose <code>Title</code> is <code>GuardDuty Lambda Protection</code>, because the <code>Title</code> contains the word Lambda. Including special characters in the filter value might produce unexpected search results.</p> </li> <li> <p>To search for values that exactly match the filter value, use <code>EQUALS</code>. For example, the filter <code>AwsAccountId EQUALS 123456789012</code> only matches findings that have an account ID of <code>123456789012</code>.</p> </li> <li> <p>To search for values that start with the filter value, use <code>PREFIX</code>. For example, the filter <code>ResourceRegion PREFIX us</code> matches findings that have a <code>ResourceRegion</code> that starts with <code>us</code>. A <code>ResourceRegion</code> that starts with a different value, such as <code>af</code>, <code>ap</code>, or <code>ca</code>, doesn't match.</p> </li> </ul> <p> <code>CONTAINS</code>, <code>EQUALS</code>, and <code>PREFIX</code> filters on the same field are joined by <code>OR</code>. A finding matches if it matches any one of those filters. For example, the filters <code>Title CONTAINS CloudFront OR Title CONTAINS CloudWatch</code> match a finding that includes either <code>CloudFront</code>, <code>CloudWatch</code>, or both strings in the title.</p> <p>To search for values that don’t have the filter value, use one of the following comparison operators:</p> <ul> <li> <p>To search for values that exclude the filter value, use <code>NOT_CONTAINS</code>. For example, the filter <code>Title NOT_CONTAINS CloudFront</code> matches findings that have a <code>Title</code> that excludes the string CloudFront.</p> </li> <li> <p>To search for values other than the filter value, use <code>NOT_EQUALS</code>. For example, the filter <code>AwsAccountId NOT_EQUALS 123456789012</code> only matches findings that have an account ID other than <code>123456789012</code>.</p> </li> <li> <p>To search for values that don't start with the filter value, use <code>PREFIX_NOT_EQUALS</code>. For example, the filter <code>ResourceRegion PREFIX_NOT_EQUALS us</code> matches findings with a <code>ResourceRegion</code> that starts with a value other than <code>us</code>.</p> </li> </ul> <p> <code>NOT_CONTAINS</code>, <code>NOT_EQUALS</code>, and <code>PREFIX_NOT_EQUALS</code> filters on the same field are joined by <code>AND</code>. A finding matches only if it matches all of those filters. For example, the filters <code>Title NOT_CONTAINS CloudFront AND Title NOT_CONTAINS CloudWatch</code> match a finding that excludes both <code>CloudFront</code> and <code>CloudWatch</code> in the title.</p> <p>You can’t have both a <code>CONTAINS</code> filter and a <code>NOT_CONTAINS</code> filter on the same field. Similarly, you can't provide both an <code>EQUALS</code> filter and a <code>NOT_EQUALS</code> or <code>PREFIX_NOT_EQUALS</code> filter on the same field. Combining filters in this way returns an error. <code>CONTAINS</code> filters can only be used with other <code>CONTAINS</code> filters. <code>NOT_CONTAINS</code> filters can only be used with other <code>NOT_CONTAINS</code> filters. </p> <p>You can combine <code>PREFIX</code> filters with <code>NOT_EQUALS</code> or <code>PREFIX_NOT_EQUALS</code> filters for the same field. Security Hub CSPM first processes the <code>PREFIX</code> filters, and then the <code>NOT_EQUALS</code> or <code>PREFIX_NOT_EQUALS</code> filters.</p> <p>For example, for the following filters, Security Hub CSPM first identifies findings that have resource types that start with either <code>AwsIam</code> or <code>AwsEc2</code>. It then excludes findings that have a resource type of <code>AwsIamPolicy</code> and findings that have a resource type of <code>AwsEc2NetworkInterface</code>.</p> <ul> <li> <p> <code>ResourceType PREFIX AwsIam</code> </p> </li> <li> <p> <code>ResourceType PREFIX AwsEc2</code> </p> </li> <li> <p> <code>ResourceType NOT_EQUALS AwsIamPolicy</code> </p> </li> <li> <p> <code>ResourceType NOT_EQUALS AwsEc2NetworkInterface</code> </p> </li> </ul> <p>The <code>CONTAINS</code> operator works with automation rules V1 and V2. The <code>NOT_CONTAINS</code> operator works only with automation rules V1. The <code>CONTAINS_WORD</code> operator works only in the <code>GetFindingsV2</code>, <code>GetFindingStatisticsV2</code>, <code>GetResourcesV2</code>, and <code>GetResourcesStatisticsV2</code> APIs. For more information, see <a href=\"https://docs.aws.amazon.com/securityhub/latest/userguide/automation-rules.html\">Automation rules</a> in the <i>Security Hub CSPM User Guide</i>.</p>"
         }
       },
       "documentation":"<p>A string filter for filtering Security Hub CSPM findings.</p>"

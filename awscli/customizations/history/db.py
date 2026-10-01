@@ -21,6 +21,7 @@ import uuid
 from botocore.history import BaseHistoryHandler
 
 from awscli.compat import binary_type, collections_abc, sqlite3
+from awscli.redaction import redact
 
 LOG = logging.getLogger(__name__)
 
@@ -285,5 +286,7 @@ class DatabaseHistoryHandler(BaseHistoryHandler):
         self._record_builder = record_builder
 
     def emit(self, event_type, payload, source):
-        record = self._record_builder.build_record(event_type, payload, source)
+        record = self._record_builder.build_record(
+            event_type, redact(payload), source
+        )
         self._writer.write_record(record)

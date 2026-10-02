@@ -215,6 +215,8 @@ class ConfigFileWriter(object):
 
     def _update_subattributes(self, index, contents, values, starting_indent):
         index += 1
+        # Seeded in case there are no lines after the nested option at all.
+        i = index - 1
         for i in range(index, len(contents)):
             line = contents[i]
             match = self.OPTION_REGEX.search(line)
@@ -228,16 +230,21 @@ class ConfigFileWriter(object):
                                                 key_name, option_value)
                     contents[i] = new_line
                     del values[key_name]
-            if starting_indent == current_indent or \
-                    self.SECTION_REGEX.search(line) is not None:
-                # We've arrived at the starting indent level so we can just
-                # write out all the values now.
-                self._insert_new_values(i - 1, contents, values, '    ')
-                break
+                if current_indent != starting_indent:
+                    # We're still inside the nested block.
+                    continue
+            elif self.SECTION_REGEX.search(line) is None:
+                # Comments, blank lines and the like don't end the block.
+                continue
+            # We've arrived at the starting indent level so we can just
+            # write out all the values now.
+            self._insert_new_values(i - 1, contents, values, '    ')
+            break
         else:
-            if starting_indent != current_indent:
-                # The option is the last option in the file
-                self._insert_new_values(i, contents, values, '    ')
+            # The option is the last option in the file
+            if values and not contents[-1].endswith('\n'):
+                contents[-1] += '\n'
+            self._insert_new_values(i, contents, values, '    ')
         return i
 
     def _insert_new_values(self, line_number, contents, new_values, indent=''):

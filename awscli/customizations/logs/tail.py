@@ -46,6 +46,7 @@ class BaseLogEventsFormatter:
     def _write_log_event(self, log_event):
         log_event = self._ensure_single_newline_ending(log_event)
         self._output.write(log_event)
+        self._output.flush()
 
     def _ensure_single_newline_ending(self, log):
         return log.rstrip() + '\n'

@@ -377,6 +377,11 @@ class CloudFrontSigner:
     To sign with a custom policy::
 
         signed_url = cf_signer.generate_presigned_url(url, policy=my_policy)
+
+    To generate signed cookies instead of a signed URL::
+
+        cookies = cf_signer.generate_signed_cookies(
+            resource, date_less_than=datetime(2015, 12, 1))
     '''
 
     def __init__(self, key_id, rsa_signer, hash_algorithm=None):
@@ -425,6 +430,30 @@ class CloudFrontSigner:
         return self._build_url(
             url, [f'{name}={value}' for name, value in params.items()]
         )
+
+    def generate_signed_cookies(
+        self, resource, date_less_than=None, policy=None
+    ):
+        """Creates CloudFront signed cookies based on given parameters.
+
+        :type resource: str
+        :param resource: The URL of the protected object. Only used to build
+            the canned policy, so it is ignored when ``policy`` is provided.
+
+        :type date_less_than: datetime
+        :param date_less_than: The cookies will expire after that date and time
+
+        :type policy: str
+        :param policy: The custom policy, possibly built by self.build_policy()
+
+        :rtype: dict
+        :return: The signed cookie names mapped to their values, without any
+            ``Set-Cookie`` attributes such as Domain or Path.
+        """
+        params = self._generate_signing_params(
+            resource, date_less_than, policy
+        )
+        return {f'CloudFront-{name}': value for name, value in params.items()}
 
     def _generate_signing_params(self, resource, date_less_than, policy):
         if (

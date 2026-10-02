@@ -268,8 +268,25 @@ class BaseSigningCommandTest(BaseAWSCommandParamsTest):
         url = self.sign(*args)[0].strip()
         return url, parse_qs(urlparse(url).query)
 
+    def sign_cookies(self, *args, expected_rc=0):
+        cmdline = [
+            'cloudfront',
+            'sign-cookies',
+            '--key-pair-id',
+            'myid',
+            '--private-key',
+            self.private_key_arg,
+            '--date-less-than',
+            '2016-1-1',
+        ] + list(args)
+        return self.run_cmd(cmdline, expected_rc=expected_rc)
+
     def assert_sign_error(self, message, *args, expected_rc=252):
         _, stderr, _ = self.sign(*args, expected_rc=expected_rc)
+        self.assertIn(message, stderr)
+
+    def assert_sign_cookies_error(self, message, *args):
+        _, stderr, _ = self.sign_cookies(*args, expected_rc=252)
         self.assertIn(message, stderr)
 
     def assert_key_error(self, message):
@@ -620,6 +637,41 @@ class TestSignInputValidation(BaseInputValidationTest):
         self.assertTrue(signed_url.startswith(url + '&Expires=1451606400&'))
 
 
+class TestSignCookiesInputValidation(BaseInputValidationTest):
+    __test__ = True
+    resource_arg = '--resource'
+
+    def assert_error(self, message, *args):
+        self.assert_sign_cookies_error(message, *args)
+
+    def test_accepts_url_with_port_and_percent_encoding(self):
+        stdout, _, _ = self.sign_cookies(
+            '--resource',
+            'https://example.com:8443/caf%C3%A9.jpg',
+            '--output',
+            'json',
+        )
+        self.assertEqual(
+            json.loads(stdout)['CloudFront-Expires'], '1451606400'
+        )
+
+    def test_rejects_invalid_dates(self):
+        for arg, value in [
+            ('--date-less-than', 'not-a-date'),
+            ('--date-greater-than', 'not-a-date'),
+            # A millisecond epoch, e.g. from JavaScript's Date.now().
+            ('--date-less-than', '1893456000000'),
+        ]:
+            with self.subTest(arg=arg, value=value):
+                self.assert_error(
+                    f'Invalid value for {arg}',
+                    '--resource',
+                    'http://example.com/hi',
+                    arg,
+                    value,
+                )
+
+
 class TestSignKeyErrors(BaseSigningCommandTest):
     def test_encrypted_pkcs8_private_key(self):
         self.use_private_key(
@@ -766,3 +818,96 @@ class TestSignSigningFailures(BaseSigningCommandTest):
     def test_ecdsa_signing_failure(self):
         self.use_private_key(TestSignECDSAWithECParameters.private_key)
         self.assert_signing_failure(EC)
+
+    def test_sign_cookies_signing_failure(self):
+        with mock.patch.object(RSA, 'sign', side_effect=self.signing_error):
+            _, stderr, _ = self.sign_cookies(
+                '--resource', 'http://example.com/hi', expected_rc=255
+            )
+        self.assertIn('Failed to sign the CloudFront policy', stderr)
+
+
+class TestSignCookies(BaseSigningCommandTest):
+    def test_wildcard_resource_uses_custom_policy(self):
+        stdout, _, _ = self.sign_cookies(
+            '--resource', 'http://example.com/*', '--output', 'json'
+        )
+        cookies = json.loads(stdout)
+        self.assertNotIn('CloudFront-Expires', cookies)
+        policy = json.loads(_url_b64decode(cookies['CloudFront-Policy']))
+        self.assertEqual(
+            policy['Statement'][0]['Resource'], 'http://example.com/*'
+        )
+
+    def test_custom_policy_with_active_date_and_ip_address(self):
+        stdout, _, _ = self.sign_cookies(
+            '--resource',
+            'http://example.com/hi',
+            '--date-greater-than',
+            '2015-12-1',
+            '--ip-address',
+            '10.0.0.0/8',
+            '--output',
+            'json',
+        )
+        cookies = json.loads(stdout)
+        self.assertEqual(
+            set(cookies),
+            {
+                'CloudFront-Policy',
+                'CloudFront-Signature',
+                'CloudFront-Key-Pair-Id',
+            },
+        )
+
+        self.assertEqual(
+            _url_b64decode(cookies['CloudFront-Policy']).decode('utf-8'),
+            '{"Statement":[{"Resource":"http://example.com/hi","Condition":'
+            '{"DateLessThan":{"AWS:EpochTime":1451606400},"IpAddress":'
+            '{"AWS:SourceIp":"10.0.0.0/8"},"DateGreaterThan":'
+            '{"AWS:EpochTime":1448928000}}}]}',
+        )
+        _, params = self.sign_url(
+            '--url',
+            'http://example.com/hi',
+            '--date-greater-than',
+            '2015-12-1',
+            '--ip-address',
+            '10.0.0.0/8',
+        )
+        self.assertEqual(
+            cookies['CloudFront-Signature'], params['Signature'][0]
+        )
+
+    def test_default_output_from_config(self):
+        self.environ['AWS_DEFAULT_OUTPUT'] = 'json'
+        stdout, _, _ = self.sign_cookies('--resource', 'http://example.com/hi')
+        self.assertEqual(
+            json.loads(stdout)['CloudFront-Expires'], '1451606400'
+        )
+
+    def test_query(self):
+        stdout, _, _ = self.sign_cookies(
+            '--resource',
+            'http://example.com/hi',
+            '--query',
+            '"CloudFront-Expires"',
+            '--output',
+            'text',
+        )
+        self.assertEqual(stdout.strip(), '1451606400')
+
+    def test_question_mark_does_not_select_custom_policy(self):
+        # ``?`` is ambiguous with the query string delimiter, so it is never
+        # treated as a wildcard when choosing the policy type.
+        for resource in [
+            'http://example.com/image.jpg?size=large',
+            'http://example.com/image?.jpg',
+        ]:
+            with self.subTest(resource=resource):
+                stdout, _, _ = self.sign_cookies(
+                    '--resource', resource, '--output', 'json'
+                )
+                cookies = json.loads(stdout)
+                self.assertEqual(cookies['CloudFront-Expires'], '1451606400')
+                self.assertNotIn('CloudFront-Policy', cookies)

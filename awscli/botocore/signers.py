@@ -356,9 +356,9 @@ class RequestSigner:
 
 
 class CloudFrontSigner:
-    '''A signer to create a signed CloudFront URL.
+    '''A signer to create signed CloudFront URLs and signed cookies.
 
-    First you create a cloudfront signer based on a normalized RSA signer::
+    First you create a cloudfront signer based on a normalized signer::
 
         import rsa
         def rsa_signer(message):
@@ -366,33 +366,45 @@ class CloudFrontSigner:
             return rsa.sign(
                 message,
                 rsa.PrivateKey.load_pkcs1(private_key.encode('utf8')),
-                'SHA-1')  # CloudFront requires SHA-1 hash
+                'SHA-1')  # SHA-1 is CloudFront's default verification hash
         cf_signer = CloudFrontSigner(key_id, rsa_signer)
 
     To sign with a canned policy::
 
-        signed_url = cf_signer.generate_signed_url(
+        signed_url = cf_signer.generate_presigned_url(
             url, date_less_than=datetime(2015, 12, 1))
 
     To sign with a custom policy::
 
-        signed_url = cf_signer.generate_signed_url(url, policy=my_policy)
+        signed_url = cf_signer.generate_presigned_url(url, policy=my_policy)
     '''
 
-    def __init__(self, key_id, rsa_signer):
+    def __init__(self, key_id, rsa_signer, hash_algorithm=None):
         """Create a CloudFrontSigner.
 
         :type key_id: str
         :param key_id: The CloudFront Key Pair ID
 
         :type rsa_signer: callable
-        :param rsa_signer: An RSA signer.
+        :param rsa_signer: An RSA or ECDSA signer.
                Its only input parameter will be the message to be signed,
                and its output will be the signed content as a binary string.
-               The hash algorithm needed by CloudFront is SHA-1.
+               The signer is responsible for hashing the message with the
+               algorithm declared by ``hash_algorithm`` (SHA-1 when it is
+               ``None``). Name is kept as ``rsa_signer`` for backward
+               compatibility.
+
+        :type hash_algorithm: str
+        :param hash_algorithm: The hash algorithm CloudFront must use to verify
+               the signature, emitted as the ``Hash-Algorithm`` query parameter
+               of signed URLs and the ``CloudFront-Hash-Algorithm`` signed
+               cookie. CloudFront defaults to SHA-1 when it is absent, so
+               leave this as ``None`` for SHA-1 signatures and set it to
+               ``SHA256`` for SHA-256 signatures.
         """
         self.key_id = key_id
         self.rsa_signer = rsa_signer
+        self.hash_algorithm = hash_algorithm
 
     def generate_presigned_url(self, url, date_less_than=None, policy=None):
         """Creates a signed CloudFront URL based on given parameters.
@@ -409,6 +421,12 @@ class CloudFrontSigner:
         :rtype: str
         :return: The signed URL.
         """
+        params = self._generate_signing_params(url, date_less_than, policy)
+        return self._build_url(
+            url, [f'{name}={value}' for name, value in params.items()]
+        )
+
+    def _generate_signing_params(self, resource, date_less_than, policy):
         if (
             date_less_than is not None
             and policy is not None
@@ -419,25 +437,20 @@ class CloudFrontSigner:
             raise ValueError(e)
         if date_less_than is not None:
             # We still need to build a canned policy for signing purpose
-            policy = self.build_policy(url, date_less_than)
+            policy = self.build_policy(resource, date_less_than)
         if isinstance(policy, str):
             policy = policy.encode('utf8')
+        params = {}
         if date_less_than is not None:
-            params = [f'Expires={int(datetime2timestamp(date_less_than))}']
+            params['Expires'] = str(int(datetime2timestamp(date_less_than)))
         else:
-            params = [
-                'Policy={}'.format(self._url_b64encode(policy).decode('utf8'))
-            ]
+            params['Policy'] = self._url_b64encode(policy).decode('utf8')
         signature = self.rsa_signer(policy)
-        params.extend(
-            [
-                'Signature={}'.format(
-                    self._url_b64encode(signature).decode('utf8')
-                ),
-                f'Key-Pair-Id={self.key_id}',
-            ]
-        )
-        return self._build_url(url, params)
+        params['Signature'] = self._url_b64encode(signature).decode('utf8')
+        params['Key-Pair-Id'] = self.key_id
+        if self.hash_algorithm is not None:
+            params['Hash-Algorithm'] = self.hash_algorithm
+        return params
 
     def _build_url(self, base_url, extra_params):
         separator = '&' if '?' in base_url else '?'

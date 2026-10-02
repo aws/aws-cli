@@ -171,6 +171,31 @@ class TestConfigFileWriter(unittest.TestCase):
             f.read()
         self.assertEqual(os.stat(self.config_filename).st_mode & 0xFFF, 0o600)
 
+    def test_existing_contents_kept_if_write_fails(self):
+        original = '[default]\nfoo = 1\n\n[work]\nfoo = 2\n'
+        with open(self.config_filename, 'w') as f:
+            f.write(original)
+        real_open = open
+
+        def fail_on_write(path, mode='r', *args, **kwargs):
+            handle = real_open(path, mode, *args, **kwargs)
+            if 'w' in mode:
+                handle.close()
+                raise OSError(27, 'File too large')
+            return handle
+
+        with mock.patch(
+            'awscli.customizations.configure.writer.open', fail_on_write
+        ):
+            with mock.patch('os.fdopen', fail_on_write):
+                with self.assertRaises(OSError):
+                    self.writer.update_config(
+                        {'__section__': 'work', 'foo': 'newvalue'},
+                        self.config_filename,
+                    )
+        with open(self.config_filename) as f:
+            self.assertEqual(f.read(), original)
+
     def test_update_config_with_comments(self):
         original = '[default]\n' '#foo = 1\n' 'bar = 1\n'
         self.assert_update_config(

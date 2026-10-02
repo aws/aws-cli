@@ -103,22 +103,28 @@ class TestExecuteCommand(unittest.TestCase):
         }
 
     @mock.patch('awscli.customizations.ecs.executecommand.check_call')
-    def test_when_calls_fails_from_ecs(self, mock_check_call):
+    @mock.patch('awscli.customizations.ecs.executecommand.check_output')
+    def test_when_calls_fails_from_ecs(self, mock_check_output, mock_check_call):
         self.client.execute_command.side_effect = Exception('some exception')
         mock_check_call.return_value = 0
+        mock_check_output.return_value = "1.2.0.0\n"
         with self.assertRaisesRegex(Exception, 'some exception'):
             self.caller.invoke('ecs', 'ExecuteCommand', {}, mock.Mock())
 
-    @mock.patch('awscli.customizations.ecs.executecommand.check_call')
-    def test_when_session_manager_plugin_not_installed(self, mock_check_call):
-        mock_check_call.side_effect = [OSError(errno.ENOENT, 'some error'), 0]
+    @mock.patch('awscli.customizations.ecs.executecommand.check_output')
+    def test_when_session_manager_plugin_not_installed(
+        self, mock_check_output
+    ):
+        mock_check_output.side_effect = OSError(errno.ENOENT, 'some error')
 
         with self.assertRaises(ValueError):
             self.caller.invoke('ecs', 'ExecuteCommand', {}, mock.Mock())
 
     @mock.patch('awscli.customizations.ecs.executecommand.check_call')
-    def test_execute_command_success(self, mock_check_call):
+    @mock.patch('awscli.customizations.ecs.executecommand.check_output')
+    def test_execute_command_success(self, mock_check_output, mock_check_call):
         mock_check_call.return_value = 0
+        mock_check_output.return_value = "1.2.0.0\n"
 
         self.client.execute_command.return_value = \
             self.execute_command_response
@@ -142,12 +148,16 @@ class TestExecuteCommand(unittest.TestCase):
              self.profile,
              json.dumps(self.ssm_request_parameters),
              self.endpoint_url
-             ]
+            ],
         )
 
     @mock.patch('awscli.customizations.ecs.executecommand.check_call')
-    def test_when_describe_task_fails(self, mock_check_call):
+    @mock.patch('awscli.customizations.ecs.executecommand.check_output')
+    def test_when_describe_task_fails(
+        self, mock_check_output, mock_check_call
+    ):
         mock_check_call.return_value = 0
+        mock_check_output.return_value = "1.2.0.0\n"
 
         self.client.execute_command.return_value = \
             self.execute_command_response
@@ -162,8 +172,12 @@ class TestExecuteCommand(unittest.TestCase):
                 assert_called_with(**self.execute_command_params)
 
     @mock.patch('awscli.customizations.ecs.executecommand.check_call')
-    def test_when_describe_task_returns_no_tasks(self, mock_check_call):
+    @mock.patch('awscli.customizations.ecs.executecommand.check_output')
+    def test_when_describe_task_returns_no_tasks(
+        self, mock_check_output, mock_check_call
+    ):
         mock_check_call.return_value = 0
+        mock_check_output.return_value = "1.2.0.0\n"
 
         self.client.execute_command.return_value = \
             self.execute_command_response
@@ -178,8 +192,10 @@ class TestExecuteCommand(unittest.TestCase):
                 assert_called_with(**self.execute_command_params)
 
     @mock.patch('awscli.customizations.ecs.executecommand.check_call')
-    def test_when_check_call_fails(self, mock_check_call):
-        mock_check_call.side_effect = [0, Exception('some Exception')]
+    @mock.patch('awscli.customizations.ecs.executecommand.check_output')
+    def test_when_check_call_fails(self, mock_check_output, mock_check_call):
+        mock_check_call.side_effect = Exception('some Exception')
+        mock_check_output.return_value = "1.2.0.0\n"
 
         self.client.execute_command.return_value = \
             self.execute_command_response
@@ -189,15 +205,51 @@ class TestExecuteCommand(unittest.TestCase):
             self.caller.invoke('ecs', 'ExecuteCommand',
                                self.execute_command_params, mock.Mock())
 
-            mock_check_call_list = mock_check_call.call_args[0][0]
-            mock_check_call_list[1] = json.loads(mock_check_call_list[1])
-            self.assertEqual(
-                mock_check_call_list,
-                ['session-manager-plugin',
-                 self.execute_command_response["session"],
-                 self.region,
-                 'StartSession',
-                 self.profile,
-                 json.dumps(self.ssm_request_parameters),
-                 self.endpoint_url],
-            )
+        mock_check_call_list = mock_check_call.call_args[0][0]
+        mock_check_call_list[1] = json.loads(mock_check_call_list[1])
+        self.assertEqual(
+            mock_check_call_list,
+            ['session-manager-plugin',
+             self.execute_command_response["session"],
+             self.region,
+             'StartSession',
+             self.profile,
+             json.dumps(self.ssm_request_parameters),
+             self.endpoint_url],
+        )
+
+    @mock.patch('awscli.customizations.ecs.executecommand.check_call')
+    @mock.patch('awscli.customizations.ecs.executecommand.check_output')
+    def test_execute_command_uses_env_var_with_new_plugin(
+        self, mock_check_output, mock_check_call
+    ):
+        mock_check_call.return_value = 0
+        mock_check_output.return_value = "1.2.500.0\n"
+
+        self.client.execute_command.return_value = \
+            self.execute_command_response
+        self.client.describe_tasks.return_value = self.describe_tasks_response
+        ssm_env_name = "AWS_SSM_START_SESSION_RESPONSE"
+
+        rc = self.caller.invoke('ecs', 'ExecuteCommand',
+                                self.execute_command_params, mock.Mock())
+
+        self.assertEqual(rc, 0)
+        mock_check_call_list = mock_check_call.call_args[0][0]
+        self.assertEqual(
+            mock_check_call_list,
+            [
+                'session-manager-plugin',
+                ssm_env_name,
+                self.region,
+                'StartSession',
+                self.profile,
+                json.dumps(self.ssm_request_parameters),
+                self.endpoint_url,
+            ],
+        )
+        env = mock_check_call.call_args[1]["env"]
+        self.assertEqual(
+            env[ssm_env_name],
+            json.dumps(self.execute_command_response["session"]),
+        )

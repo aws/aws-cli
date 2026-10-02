@@ -85,6 +85,11 @@ def _format_dict(scalar_keys, item, identifier, stream):
 def _all_scalar_keys(list_of_dicts):
     keys_seen = set()
     for item_dict in list_of_dicts:
+        if not isinstance(item_dict, dict):
+            # The list is only required to contain *at least* one dict,
+            # so skip over any elements that aren't dicts.  They are
+            # rendered on their own by _format_text.
+            continue
         for key, value in item_dict.items():
             if not isinstance(value, (dict, list)):
                 keys_seen.add(key)

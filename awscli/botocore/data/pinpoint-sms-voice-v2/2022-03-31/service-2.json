@@ -1178,7 +1178,7 @@
         {"shape":"ConflictException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Search available phone numbers from aggregator inventory, optionally filtered by pattern. If NumberPreference is omitted, returns unfiltered available numbers. Returns empty list (not an exception) when no numbers match. ResourceNotFoundException is thrown only for invalid RegistrationId (campaign not found).</p>",
+      "documentation":"<p>Retrieves a list of phone numbers that are available to request, based on the country, capabilities, and number type that you specify. You can optionally provide a number preference to return only numbers that match a specific digit pattern.</p> <p>If no numbers match your search, this operation returns an empty list rather than an error. This operation currently supports only <code>TEN_DLC</code> number types in the <code>US</code>.</p>",
       "readonly":true
     },
     "ListNotifyCountries":{
@@ -2177,6 +2177,10 @@
         "PhoneNumber":{
           "shape":"CarrierLookupInputPhoneNumberType",
           "documentation":"<p>The phone number that you want to retrieve information about. You can provide the phone number in various formats including special characters such as parentheses, brackets, spaces, hyphens, periods, and commas. The service automatically converts the input to E164 format for processing.</p>"
+        },
+        "EnableCleansing":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether the service cleanses the phone number that you provide. When set to <code>true</code>, the service normalizes the phone number according to the destination country's national numbering plan and dialing rules. The service returns the cleansed number in E.164 format in the <code>E164PhoneNumber</code> field and returns the number that you provided in the <code>OriginalPhoneNumber</code> field.</p>"
         }
       }
     },
@@ -2217,7 +2221,11 @@
         },
         "PhoneNumberType":{
           "shape":"PhoneNumberType",
-          "documentation":"<p>Describes the type of phone number. Valid values are: MOBILE, LANDLINE, OTHER, and INVALID. Avoid sending SMS or voice messages to INVALID phone numbers, as these numbers are unlikely to belong to actual recipients.</p>"
+          "documentation":"<p>Describes the type of phone number. Valid values are: MOBILE, LANDLINE, VOIP, PREPAID, OTHER, and INVALID. Avoid sending SMS or voice messages to INVALID phone numbers, as these numbers are unlikely to belong to actual recipients.</p>"
+        },
+        "OriginalPhoneNumber":{
+          "shape":"CarrierLookupInputPhoneNumberType",
+          "documentation":"<p>The phone number exactly as you supplied it in the request. This field is returned only when you set <code>EnableCleansing</code> to <code>true</code>, the phone number was cleansed, and a normalized E.164 phone number was returned in the <code>E164PhoneNumber</code> field.</p>"
         }
       }
     },
@@ -5801,7 +5809,7 @@
         },
         "NumberPreference":{
           "shape":"NumberPreferenceList",
-          "documentation":"<p>Optional. If omitted, returns unfiltered available numbers. Max 1 element for List API.</p>"
+          "documentation":"<p>An optional selection preference used to return only phone numbers that match a specific digit pattern, such as numbers that start with, end with, or contain a particular sequence. You can specify at most one preference. Number preferences apply only to <code>TEN_DLC</code> numbers in the <code>US</code>.</p>"
         },
         "NextToken":{
           "shape":"NextToken",
@@ -6580,7 +6588,7 @@
           "documentation":"<p>The digit pattern values to match against available phone numbers, using the specified preference type.</p>"
         }
       },
-      "documentation":"<p>A single number preference — specifies a pattern type and filter value.</p>"
+      "documentation":"<p>A single number preference that specifies how to match available phone numbers. Each preference pairs a match type with one or more filter values.</p>"
     },
     "NumberPreferenceList":{
       "type":"list",
@@ -6925,6 +6933,8 @@
       "enum":[
         "MOBILE",
         "LANDLINE",
+        "VOIP",
+        "PREPAID",
         "OTHER",
         "INVALID"
       ]

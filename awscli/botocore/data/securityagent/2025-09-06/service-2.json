@@ -1818,6 +1818,10 @@
     "AzureDevOpsResourceCapabilities":{
       "type":"structure",
       "members":{
+        "triggerFilterGroups":{
+          "shape":"TriggerFilterGroups",
+          "documentation":"<p>The filter groups that control which pull request events start an automatic code review when <code>leaveComments</code> is enabled. A review starts when any group matches. If you omit this, a review starts on <code>PULL_REQUEST_READY_FOR_REVIEW</code> events.</p>"
+        },
         "leaveComments":{
           "shape":"Boolean",
           "documentation":"<p>Whether to post code review comments on pull requests.</p>"
@@ -2713,6 +2717,10 @@
     "BitbucketResourceCapabilities":{
       "type":"structure",
       "members":{
+        "triggerFilterGroups":{
+          "shape":"TriggerFilterGroups",
+          "documentation":"<p>The filter groups that control which pull request events start an automatic code review when <code>leaveComments</code> is enabled. A review starts when any group matches. If you omit this, a review starts on <code>PULL_REQUEST_READY_FOR_REVIEW</code> events.</p>"
+        },
         "leaveComments":{
           "shape":"Boolean",
           "documentation":"<p>Whether to post code review comments on pull requests.</p>"
@@ -5358,6 +5366,10 @@
     "GitHubResourceCapabilities":{
       "type":"structure",
       "members":{
+        "triggerFilterGroups":{
+          "shape":"TriggerFilterGroups",
+          "documentation":"<p>The filter groups that control which pull request events start an automatic code review when <code>leaveComments</code> is enabled. A review starts when any group matches. If you omit this, a review starts on <code>PULL_REQUEST_READY_FOR_REVIEW</code> events.</p>"
+        },
         "leaveComments":{
           "shape":"Boolean",
           "documentation":"<p>Indicates whether the integration can leave comments on pull requests.</p>"
@@ -5435,6 +5447,10 @@
     "GitLabResourceCapabilities":{
       "type":"structure",
       "members":{
+        "triggerFilterGroups":{
+          "shape":"TriggerFilterGroups",
+          "documentation":"<p>The filter groups that control which merge request events start an automatic code review when <code>leaveComments</code> is enabled. A review starts when any group matches. If you omit this, a review starts on <code>PULL_REQUEST_READY_FOR_REVIEW</code> events.</p>"
+        },
         "leaveComments":{
           "shape":"Boolean",
           "documentation":"<p>Whether to post code review comments on merge request discussions.</p>"
@@ -9226,6 +9242,102 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "TriggerEvent":{
+      "type":"string",
+      "documentation":"<p>A pull request event that can start an automatic code review. For GitLab repositories, pull request refers to a merge request.</p>",
+      "enum":[
+        "PULL_REQUEST_READY_FOR_REVIEW",
+        "PULL_REQUEST_DRAFT",
+        "PULL_REQUEST_LABEL_ADDED"
+      ]
+    },
+    "TriggerEventList":{
+      "type":"list",
+      "member":{"shape":"TriggerEvent"},
+      "documentation":"<p>A list of pull request events that start an automatic code review.</p>",
+      "max":10,
+      "min":1
+    },
+    "TriggerFilter":{
+      "type":"structure",
+      "required":[
+        "type",
+        "patterns"
+      ],
+      "members":{
+        "type":{
+          "shape":"TriggerFilterType",
+          "documentation":"<p>The pull request value to match.</p>"
+        },
+        "patterns":{
+          "shape":"TriggerRegexPatternList",
+          "documentation":"<p>The regular expressions to match against the value.</p>"
+        },
+        "matchMode":{
+          "shape":"TriggerFilterMatchMode",
+          "documentation":"<p>Whether the value must match the patterns. The default is <code>INCLUDE</code>.</p>"
+        }
+      },
+      "documentation":"<p>A condition on a pull request value.</p>"
+    },
+    "TriggerFilterGroup":{
+      "type":"structure",
+      "members":{
+        "events":{
+          "shape":"TriggerEventList",
+          "documentation":"<p>Passes when the pull request event is one of the listed events. If you omit this, the group matches <code>PULL_REQUEST_READY_FOR_REVIEW</code> and <code>PULL_REQUEST_DRAFT</code> events only.</p>"
+        },
+        "filters":{
+          "shape":"TriggerFilterList",
+          "documentation":"<p>Passes when every filter passes. If you omit this, the group matches its events on any target branch and with any labels.</p>"
+        }
+      },
+      "documentation":"<p>A set of conditions that start an automatic code review when they all pass. A filter group must include <code>events</code>, <code>filters</code>, or both.</p>"
+    },
+    "TriggerFilterGroups":{
+      "type":"list",
+      "member":{"shape":"TriggerFilterGroup"},
+      "documentation":"<p>A list of filter groups. An automatic code review starts when any group matches. The filters across all groups can contain at most 100 patterns in total.</p>",
+      "max":5,
+      "min":1
+    },
+    "TriggerFilterList":{
+      "type":"list",
+      "member":{"shape":"TriggerFilter"},
+      "documentation":"<p>A list of filters that must all pass.</p>",
+      "max":5,
+      "min":1
+    },
+    "TriggerFilterMatchMode":{
+      "type":"string",
+      "documentation":"<p>Whether a filter's value must match its patterns.</p>",
+      "enum":[
+        "INCLUDE",
+        "EXCLUDE"
+      ]
+    },
+    "TriggerFilterType":{
+      "type":"string",
+      "documentation":"<p>A pull request value that a filter matches.</p>",
+      "enum":[
+        "TARGET_BRANCH",
+        "LABEL"
+      ]
+    },
+    "TriggerRegexPattern":{
+      "type":"string",
+      "documentation":"<p>A regular expression in RE2 syntax that must match the entire value, for example <code>main</code> or <code>release/.*</code>.</p>",
+      "max":256,
+      "min":1,
+      "pattern":"[^\\x00-\\x1F\\x7F-\\x9F]+"
+    },
+    "TriggerRegexPatternList":{
+      "type":"list",
+      "member":{"shape":"TriggerRegexPattern"},
+      "documentation":"<p>A list of regular expressions.</p>",
+      "max":20,
+      "min":1
     },
     "TrustedCaCertificate":{
       "type":"structure",

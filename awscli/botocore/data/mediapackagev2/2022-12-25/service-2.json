@@ -2194,6 +2194,10 @@
         "ClipStartTime":{
           "shape":"Timestamp",
           "documentation":"<p>Optionally specify the clip start time for all of your manifest egress requests. When you include clip start time, note that you cannot use clip start time query parameters for this manifest's endpoint URL.</p>"
+        },
+        "Multiview":{
+          "shape":"MultiviewFilterConfiguration",
+          "documentation":"<p>Optionally pin this manifest to a single multiview combination, so that players request it without an <code>aws.multiview</code> query parameter. When you pin a combination, note that you cannot use the <code>aws.multiview</code> query parameter for this manifest's endpoint URL, even when that parameter requests the same combination.</p> <p>This setting is valid only on an origin endpoint whose channel has an <code>InputType</code> of <code>MULTIVIEW</code>.</p>"
         }
       },
       "documentation":"<p>Filter configuration includes settings for manifest filtering, start and end times, and time delay that apply to all of your egress requests for this manifest. </p>"
@@ -3504,6 +3508,24 @@
       },
       "documentation":"<p>The multiview configuration for a channel. A multiview channel composites video from several source channels into a single tiled output stream. Players receive one standard HLS or DASH stream instead of several separate streams. This setting is required when <code>InputType</code> is <code>MULTIVIEW</code>, and can't be set for any other input type.</p>"
     },
+    "MultiviewFilterConfiguration":{
+      "type":"structure",
+      "required":[
+        "Layout",
+        "Sources"
+      ],
+      "members":{
+        "Layout":{
+          "shape":"MultiviewLayoutType",
+          "documentation":"<p>The layout that MediaPackage uses to composite the tiles into a single output. This layout must be one of the <code>AvailableLayouts</code> of the channel that this origin endpoint is on.</p>"
+        },
+        "Sources":{
+          "shape":"MultiviewSourceList",
+          "documentation":"<p>The source channels to composite, in tile order. Each channel must be one of the <code>AvailableSources</code> of the channel that this origin endpoint is on, and the number of channels must equal the number of tiles in <code>Layout</code>.</p>"
+        }
+      },
+      "documentation":"<p>The multiview combination for a pinned manifest. MediaPackage serves the manifest with this layout and these sources, so players request it without an <code>aws.multiview</code> query parameter.</p> <p>If a request for a pinned manifest also includes an <code>aws.multiview</code> query parameter, MediaPackage rejects the request, even when that parameter requests the same combination.</p>"
+    },
     "MultiviewLayoutList":{
       "type":"list",
       "member":{"shape":"MultiviewLayoutType"},
@@ -3527,7 +3549,7 @@
       "type":"list",
       "member":{"shape":"ResourceName"},
       "documentation":"<p>A list of channel names that players can use as tiles in a multiview channel's output.</p>",
-      "max":10,
+      "max":50,
       "min":1
     },
     "OriginEndpointListConfiguration":{
@@ -4752,7 +4774,13 @@
         "MULTIVIEW_SOURCE_NON_EPOCH_LOCKED",
         "MULTIVIEW_SCTE_REQUIRES_AVAILS_PERIOD_TRIGGER",
         "CONTENT_KEY_PERIOD_TIMING_WITHOUT_KEY_ROTATION",
-        "CONTENT_KEY_PERIOD_TIMING_REQUIRES_SPEKE_V2_1"
+        "CONTENT_KEY_PERIOD_TIMING_REQUIRES_SPEKE_V2_1",
+        "MULTIVIEW_FILTER_CONFIGURATION_NOT_ALLOWED",
+        "MULTIVIEW_FILTER_LAYOUT_NOT_AVAILABLE",
+        "MULTIVIEW_FILTER_SOURCE_NOT_AVAILABLE",
+        "MULTIVIEW_FILTER_SOURCE_COUNT_MISMATCH",
+        "MULTIVIEW_SOURCE_CHANNEL_LIMIT_EXCEEDED",
+        "MULTIVIEW_TS_USE_AUDIO_RENDITION_GROUP_DISABLED"
       ]
     }
   },

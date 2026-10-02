@@ -11,10 +11,12 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 from botocore.model import DenormalizedStructureBuilder
+from botocore.validate import ParamValidator
 
 from awscli.compat import StringIO
 from awscli.customizations.generatecliskeleton import (
     GenerateCliSkeletonArgument,
+    StubbedResponseArgumentGenerator,
 )
 from awscli.testutils import capture_output, mock, unittest
 
@@ -323,3 +325,93 @@ class TestGenerateCliSkeleton(unittest.TestCase):
         self.assert_skeleton_equals(
             'yaml-input', expected, input_shape=input_shape
         )
+
+
+class TestStubbedResponseArgumentGenerator(unittest.TestCase):
+    def setUp(self):
+        self.generator = StubbedResponseArgumentGenerator(
+            use_member_names=True
+        )
+
+    def generate(self, members):
+        shape = (
+            DenormalizedStructureBuilder().with_members(members).build_model()
+        )
+        skeleton = self.generator.generate_skeleton(shape)
+        return shape, skeleton
+
+    def assert_validates(self, shape, skeleton):
+        report = ParamValidator().validate(skeleton, shape)
+        self.assertFalse(report.has_errors(), report.generate_report())
+
+    def test_pads_string_shorter_than_min_length(self):
+        shape, skeleton = self.generate({'Arn': {'type': 'string', 'min': 20}})
+        self.assertEqual(skeleton['Arn'], 'Arn' + 'x' * 17)
+        self.assert_validates(shape, skeleton)
+
+    def test_leaves_string_that_is_already_long_enough(self):
+        _, skeleton = self.generate(
+            {'TableName': {'type': 'string', 'min': 3}}
+        )
+        self.assertEqual(skeleton['TableName'], 'TableName')
+
+    def test_leaves_string_without_a_min_length(self):
+        _, skeleton = self.generate({'Path': {'type': 'string'}})
+        self.assertEqual(skeleton['Path'], 'Path')
+
+    def test_raises_integer_to_min_value(self):
+        shape, skeleton = self.generate(
+            {'MaxSessionDuration': {'type': 'integer', 'min': 3600}}
+        )
+        self.assertEqual(skeleton['MaxSessionDuration'], 3600)
+        self.assert_validates(shape, skeleton)
+
+    def test_raises_double_to_min_value(self):
+        shape, skeleton = self.generate(
+            {'Ratio': {'type': 'double', 'min': 2.5}}
+        )
+        self.assertEqual(skeleton['Ratio'], 2.5)
+        self.assert_validates(shape, skeleton)
+
+    def test_leaves_boolean_alone(self):
+        _, skeleton = self.generate({'Enabled': {'type': 'boolean'}})
+        self.assertIs(skeleton['Enabled'], True)
+
+    def test_fills_list_up_to_min_items(self):
+        shape, skeleton = self.generate(
+            {
+                'Ids': {
+                    'type': 'list',
+                    'min': 3,
+                    'member': {'type': 'string', 'min': 20},
+                }
+            }
+        )
+        self.assertEqual(len(skeleton['Ids']), 3)
+        self.assertTrue(all(len(item) == 20 for item in skeleton['Ids']))
+        self.assert_validates(shape, skeleton)
+
+    def test_pads_map_key(self):
+        shape, skeleton = self.generate(
+            {
+                'Tags': {
+                    'type': 'map',
+                    'key': {'type': 'string', 'min': 12},
+                    'value': {'type': 'string'},
+                }
+            }
+        )
+        self.assertEqual(list(skeleton['Tags']), ['KeyNamexxxxx'])
+        self.assert_validates(shape, skeleton)
+
+    def test_pads_members_of_a_nested_structure(self):
+        shape, skeleton = self.generate(
+            {
+                'Role': {
+                    'type': 'structure',
+                    'members': {'RoleId': {'type': 'string', 'min': 16}},
+                }
+            }
+        )
+        self.assertEqual(skeleton['Role']['RoleId'], 'RoleIdxxxxxxxxxx')
+        self.assert_validates(shape, skeleton)

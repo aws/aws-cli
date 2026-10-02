@@ -151,6 +151,22 @@ class TestGenerateCliSkeletonOutput(BaseAWSCommandParamsTest):
         skeleton_output = json.loads(stdout)
         self.assertEqual(skeleton_output['TableNames'], ['TableName'])
 
+    def test_can_handle_strings_that_are_shorter_than_their_min_length(self):
+        # RoleId has a min length of 16 and Arn a min length of 20, so the
+        # member names on their own are too short for the output shape.
+        cmdline = 'iam list-roles --generate-cli-skeleton output'
+        stdout, _, _ = self.run_cmd(cmdline)
+        role = json.loads(stdout)['Roles'][0]
+        self.assertEqual(role['RoleId'], 'RoleIdxxxxxxxxxx')
+        self.assertEqual(role['Arn'], 'Arnxxxxxxxxxxxxxxxxx')
+
+    def test_can_handle_integers_that_are_below_their_min_value(self):
+        cmdline = 'iam list-roles --generate-cli-skeleton output'
+        stdout, _, _ = self.run_cmd(cmdline)
+        role = json.loads(stdout)['Roles'][0]
+        # MaxSessionDuration has a min value of 3600.
+        self.assertEqual(role['MaxSessionDuration'], 3600)
+
     def test_respects_formatting(self):
         cmdline = 'ec2 describe-regions --generate-cli-skeleton output '
         cmdline += ' --query Regions[].RegionName --output text'

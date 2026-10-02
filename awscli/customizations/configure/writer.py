@@ -10,8 +10,10 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import copy
 import os
 import re
+import shlex
 
 from . import SectionNotFoundError, warn_if_permissive
 
@@ -31,13 +33,19 @@ class ConfigFileWriter:
         msg_override=None,
     ):
         if isinstance(value, str) and ('\n' in value or '\r' in value):
-            err_msg = msg_override if msg_override is not None else (
-                f"Invalid {label}: newline "
-                f"characters and carriage returns are not allowed: {value!r}"
+            err_msg = (
+                msg_override
+                if msg_override is not None
+                else (
+                    f"Invalid {label}: newline "
+                    f"characters and carriage returns are not allowed: {value!r}"
+                )
             )
             raise ValueError(err_msg)
 
-    def update_config(self, new_values, config_filename, check_permissions=False):
+    def update_config(
+        self, new_values, config_filename, check_permissions=False
+    ):
         """Update config file with new values.
 
         This method will update a section in a config file with
@@ -68,10 +76,10 @@ class ConfigFileWriter:
             permissions more permissive than 0o600.
 
         """
+        new_values = copy.deepcopy(new_values)
         section_name = new_values.pop('__section__', 'default')
         self._validate_no_newlines_or_carriage_returns(
-            section_name,
-            'section name'
+            section_name, 'section name'
         )
         for k, v in new_values.items():
             self._validate_no_newlines_or_carriage_returns(k, 'key')
@@ -85,7 +93,7 @@ class ConfigFileWriter:
                         f"Invalid value for key {k}: "
                         f"newline characters and carriage "
                         f"returns are not allowed."
-                    )
+                    ),
                 )
             else:
                 for sk, sv in v.items():
@@ -99,7 +107,7 @@ class ConfigFileWriter:
                             f"Invalid value for key {k}: "
                             f"newline characters and carriage "
                             f"returns are not allowed."
-                        )
+                        ),
                     )
         if not os.path.isfile(config_filename):
             self._create_file(config_filename)
@@ -121,7 +129,7 @@ class ConfigFileWriter:
     def _create_file(self, config_filename):
         # Create the file as well as the parent dir if needed.
         dirname = os.path.split(config_filename)[0]
-        if not os.path.isdir(dirname):
+        if dirname and not os.path.isdir(dirname):
             os.makedirs(dirname)
         with os.fdopen(
             os.open(config_filename, os.O_WRONLY | os.O_CREAT, 0o600), 'w'
@@ -178,8 +186,12 @@ class ConfigFileWriter:
         # of, we're setting a nested value.
         last_matching_line = section_start_line_num
         j = last_matching_line + 1
+        starting_indent = None
         while j < len(contents):
             line = contents[j]
+            if line.strip().startswith(('#', ';')):
+                j += 1
+                continue
             if self.SECTION_REGEX.search(line) is not None:
                 # We've hit a new section which means the config key is
                 # not in the section.  We need to add it here.
@@ -192,6 +204,18 @@ class ConfigFileWriter:
             match = self.OPTION_REGEX.search(line)
             if match is not None:
                 last_matching_line = j
+                current_indent = len(match.group(1)) - len(
+                    match.group(1).lstrip()
+                )
+                if starting_indent is None:
+                    starting_indent = current_indent
+                elif current_indent > starting_indent:
+                    # Indented options belong to the preceding nested block,
+                    # not to the section being updated.
+                    j += 1
+                    continue
+                else:
+                    starting_indent = current_indent
                 key_name = match.group(1).strip()
                 if key_name in new_values:
                     # We've found the line that defines the option name.
@@ -268,14 +292,26 @@ class ConfigFileWriter:
                 new_contents.append(f'{indent}{key} = {value}\n')
             del new_values[key]
         if new_contents:
+            if contents:
+                preceding_line = min(line_number, len(contents) - 1)
+                if contents[preceding_line] and not contents[
+                    preceding_line
+                ].endswith('\n'):
+                    contents[preceding_line] += '\n'
             contents.insert(line_number + 1, ''.join(new_contents))
 
     def _matches_section(self, match, section_name):
+        header = match.group('header')
         parts = section_name.split(' ')
-        unquoted_match = match.group(0) == f'[{section_name}]'
+        unquoted_match = header == section_name
         if len(parts) > 1:
-            quoted_match = (
-                match.group(0) == f'[{parts[0]} "{" ".join(parts[1:])}"]'
-            )
-            return unquoted_match or quoted_match
+            quoted_match = header == f'{parts[0]} "{" ".join(parts[1:])}"'
+            if unquoted_match or quoted_match:
+                return True
+            try:
+                header_parts = shlex.split(header)
+                section_parts = shlex.split(section_name)
+            except ValueError:
+                return False
+            return len(header_parts) == 2 and header_parts == section_parts
         return unquoted_match

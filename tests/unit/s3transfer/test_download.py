@@ -19,6 +19,7 @@ from io import BytesIO
 
 from awscrt import checksums as crt_checksums
 from botocore.config import Config
+from botocore.response import StreamingBody
 from s3transfer.bandwidth import BandwidthLimiter
 from s3transfer.checksums import (
     FullObjectChecksum,
@@ -45,6 +46,7 @@ from s3transfer.download import (
 from s3transfer.exceptions import RetriesExceededError
 from s3transfer.futures import IN_MEMORY_DOWNLOAD_TAG, BoundedExecutor
 from s3transfer.utils import CallArgs, OSUtils
+from urllib3.exceptions import ProtocolError as URLLib3ProtocolError
 
 from tests import (
     BaseSubmissionTaskTest,
@@ -764,6 +766,31 @@ class TestGetObjectTask(BaseTaskTest):
 
         # Retryable error should have not affected the bytes placed into
         # the io queue.
+        self.stubber.assert_no_pending_responses()
+        self.assert_io_writes([(0, self.content)])
+
+    def test_retries_urllib3_protocol_error(self):
+        # A ProtocolError raised while streaming the response body (e.g. the
+        # connection is reset mid-download) is wrapped by StreamingBody into a
+        # ResponseStreamingError, which is retryable.
+        self.stubber.add_response(
+            'get_object',
+            service_response={
+                'Body': StreamingBody(
+                    StreamWithError(self.stream, URLLib3ProtocolError),
+                    content_length=None,
+                )
+            },
+            expected_params={'Bucket': self.bucket, 'Key': self.key},
+        )
+        self.stubber.add_response(
+            'get_object',
+            service_response={'Body': BytesIO(self.content)},
+            expected_params={'Bucket': self.bucket, 'Key': self.key},
+        )
+        task = self.get_download_task()
+        task()
+
         self.stubber.assert_no_pending_responses()
         self.assert_io_writes([(0, self.content)])
 

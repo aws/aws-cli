@@ -38,7 +38,10 @@ class TestSessionManager(unittest.TestCase):
         self.parsed_globals = mock.Mock()
         self.parsed_globals.profile = 'user_profile'
 
-    def test_start_session_when_non_custom_start_session_fails(self):
+    @mock.patch("awscli.customizations.sessionmanager.check_output")
+    def test_start_session_when_non_custom_start_session_fails(
+            self, mock_check_output):
+        mock_check_output.return_value = "1.2.500.0\n"
         self.client.start_session.side_effect = Exception('some exception')
         params = {}
         with self.assertRaisesRegex(Exception, 'some exception'):
@@ -226,12 +229,77 @@ class TestSessionManager(unittest.TestCase):
 
     @mock.patch("awscli.customizations.sessionmanager.check_call")
     @mock.patch("awscli.customizations.sessionmanager.check_output")
-    def test_start_session_when_check_output_fails(
+    def test_start_session_fails_fast_when_plugin_version_check_fails(
         self, mock_check_output, mock_check_call
     ):
+        # The plugin version is checked before the session is started, so a
+        # failure of that check must surface without any API calls.
         mock_check_output.side_effect = subprocess.CalledProcessError(
             returncode=1, cmd="session-manager-plugin", output="some error"
         )
+
+        start_session_params = {
+            "Target": "i-123456789"
+        }
+
+        with self.assertRaises(subprocess.CalledProcessError):
+            self.caller.invoke(
+                "ssm",
+                "StartSession",
+                start_session_params,
+                self.parsed_globals
+            )
+
+        self.client.start_session.assert_not_called()
+        self.client.terminate_session.assert_not_called()
+        mock_check_output.assert_called_with(
+            ["session-manager-plugin", "--version"], text=True
+        )
+        mock_check_call.assert_not_called()
+
+    @mock.patch("awscli.customizations.sessionmanager.check_call")
+    @mock.patch("awscli.customizations.sessionmanager.check_output")
+    def test_start_session_when_plugin_not_installed(
+        self, mock_check_output, mock_check_call
+    ):
+        # When the plugin is not installed the CLI must fail fast with the
+        # actionable plugin-not-found error: no session may be started (which
+        # would then require a terminate_session cleanup call that can fail
+        # with a misleading AccessDenied error of its own).
+        mock_check_output.side_effect = OSError(
+            errno.ENOENT, 'session-manager-plugin not found'
+        )
+
+        start_session_params = {
+            "Target": "i-123456789"
+        }
+
+        with self.assertRaisesRegex(
+                ValueError, 'SessionManagerPlugin is not found'):
+            self.caller.invoke(
+                "ssm",
+                "StartSession",
+                start_session_params,
+                self.parsed_globals
+            )
+
+        self.client.start_session.assert_not_called()
+        self.client.terminate_session.assert_not_called()
+        mock_check_call.assert_not_called()
+
+    @mock.patch("awscli.customizations.sessionmanager.check_call")
+    @mock.patch("awscli.customizations.sessionmanager.check_output")
+    def test_start_session_plugin_not_found_error_not_masked_by_cleanup(
+        self, mock_check_output, mock_check_call
+    ):
+        # If the plugin disappears after the pre-flight check, the
+        # terminate_session cleanup of the started session must not mask
+        # the plugin-not-found error (e.g. when the caller lacks the
+        # ssm:TerminateSession permission).
+        mock_check_output.return_value = "1.2.500.0\n"
+        mock_check_call.side_effect = OSError(errno.ENOENT, 'some error')
+        self.client.terminate_session.side_effect = Exception(
+            'AccessDenied')
 
         start_session_params = {
             "Target": "i-123456789"
@@ -241,9 +309,10 @@ class TestSessionManager(unittest.TestCase):
             "TokenValue": "token-value",
             "StreamUrl": "stream-url",
         }
-
         self.client.start_session.return_value = start_session_response
-        with self.assertRaises(subprocess.CalledProcessError):
+
+        with self.assertRaisesRegex(
+                ValueError, 'SessionManagerPlugin is not found'):
             self.caller.invoke(
                 "ssm",
                 "StartSession",
@@ -251,12 +320,8 @@ class TestSessionManager(unittest.TestCase):
                 self.parsed_globals
             )
 
-        self.client.start_session.assert_called_with(**start_session_params)
-        self.client.terminate_session.assert_not_called()
-        mock_check_output.assert_called_with(
-            ["session-manager-plugin", "--version"], text=True
-        )
-        mock_check_call.assert_not_called()
+        self.client.terminate_session.assert_called_with(
+            SessionId="session-id")
 
     @mock.patch("awscli.customizations.sessionmanager.check_call")
     @mock.patch("awscli.customizations.sessionmanager.check_output")

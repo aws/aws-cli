@@ -136,6 +136,15 @@ KNOWN_PAGINATORS_WITH_INTEGER_OUTPUTS = (
     ('dynamodb', 'Query'),
     ('dynamodb', 'Scan'),
 )
+# Paginators allowed to use wildcard ('*') numeric result keys that sum a
+# leaf under a map member across pages. This blocks a service from silently
+# opting into the wildcard-summing behavior by shipping a '*' result key
+# upstream; adding an entry here requires deliberate review.
+KNOWN_PAGINATORS_WITH_WILDCARD_RESULT_KEYS = (
+    ('dynamodb', 'Query'),
+    ('dynamodb', 'Scan'),
+)
+NUMERIC_SHAPE_TYPES = {'integer', 'long', 'float', 'double'}
 
 
 def _pagination_configs():
@@ -170,6 +179,59 @@ def test_lint_pagination_configs(
     _validate_new_numeric_keys(
         operation_name, page_config, service_model, record_property
     )
+    _validate_wildcard_result_keys(operation_name, page_config, service_model)
+
+
+def _resolve_leaf_shape(output_shape, segments):
+    # Walk the model output shape along `segments`, descending map values on
+    # '*'. Returns the leaf shape, or None if the path (or map gating) doesn't
+    # resolve.
+    shape = output_shape
+    for segment in segments:
+        if shape is None:
+            return None
+        if segment == '*':
+            if shape.type_name != 'map':
+                return None
+            shape = shape.value
+        else:
+            if shape.type_name != 'structure':
+                return None
+            shape = shape.members.get(segment)
+    return shape
+
+
+def _validate_wildcard_result_keys(operation_name, page_config, service_model):
+    result_keys = _get_list_value(page_config, 'result_key')
+    if not result_keys:
+        return
+    # The primary result key drives iteration and must not be a wildcard.
+    if '*' in str(result_keys[0]).split('.'):
+        raise AssertionError(
+            f"The first result_key for operation {operation_name} must not "
+            f"contain a wildcard '*': {result_keys[0]}"
+        )
+    output_shape = service_model.operation_model(operation_name).output_shape
+    for key in result_keys:
+        segments = key.split('.')
+        if '*' not in segments:
+            continue
+        leaf_shape = _resolve_leaf_shape(output_shape, segments)
+        # Only wildcard result keys whose '*' parents are maps and whose leaf
+        # is numeric use the new wildcard-summing behavior; others fall back.
+        if (
+            leaf_shape is not None
+            and getattr(leaf_shape, 'type_name', None) in NUMERIC_SHAPE_TYPES
+            and (service_model.service_name, operation_name)
+            not in KNOWN_PAGINATORS_WITH_WILDCARD_RESULT_KEYS
+        ):
+            raise AssertionError(
+                f"Operation {operation_name} for service "
+                f"{service_model.service_name} uses a wildcard numeric result "
+                f"key ({key}) that sums a map leaf across pages. Verify this "
+                "is correct before allow-listing in "
+                "KNOWN_PAGINATORS_WITH_WILDCARD_RESULT_KEYS."
+            )
 
 
 def _validate_known_pagination_keys(page_config):
@@ -242,18 +304,23 @@ def _validate_output_keys_match(operation_name, page_config, service_model):
     # this is no longer a realistic thing to check.  Someone would have to
     # backport the missing keys to all the paginators.
     output_shape = service_model.operation_model(operation_name).output_shape
+    all_members = set(output_shape.members)
     output_members = set(output_shape.members)
     for key_name, output_key in _get_all_page_output_keys(page_config):
         if _looks_like_jmespath(output_key):
             _validate_jmespath_compiles(output_key)
+            # A nested/wildcard path (e.g. ConsumedCapacity.CapacityUnits)
+            # accounts for its top-level output member. Use discard since the
+            # same member may be referenced by more than one key.
+            output_members.discard(output_key.split('.')[0])
         else:
-            if output_key not in output_members:
+            if output_key not in all_members:
                 raise AssertionError(
                     f"Pagination key '{key_name}' for operation "
                     f"{operation_name} refers to an output "
                     f"member that does not exist: {output_key}"
                 )
-            output_members.remove(output_key)
+            output_members.discard(output_key)
 
     for member in list(output_members):
         key = f"{service_model.service_name}.{operation_name}.{member}"
@@ -278,6 +345,10 @@ def _validate_new_numeric_keys(
 ):
     output_shape = service_model.operation_model(operation_name).output_shape
     for key in _get_list_value(page_config, 'result_key'):
+        if '*' in key.split('.'):
+            # Wildcard result keys are validated separately (they can't be
+            # walked with .members[...] and their leaf type is checked there).
+            continue
         current_shape = output_shape
         if '.' in key:  # result_key is a JMESPath expression
             for part in key.split('.'):

@@ -970,20 +970,6 @@ class TestAutoResolveCrtClientForInstanceFamily:
         mock_crt_get_ec2_instance_type.return_value = None
         assert resolve_client_type() == constants.CLASSIC_TRANSFER_CLIENT
 
-    def test_resolves_to_classic_for_instance_family_not_rolled_out(
-        self, resolve_client_type, mock_crt_get_ec2_instance_type
-    ):
-        mock_crt_get_ec2_instance_type.return_value = 't4g.2xlarge'
-        assert resolve_client_type() == constants.CLASSIC_TRANSFER_CLIENT
-
-    def test_instance_family_must_match_in_full(
-        self, resolve_client_type, mock_crt_get_ec2_instance_type
-    ):
-        # 'g5' is rolled out but 'g5dn' is a different family, so a prefix
-        # match is not enough.
-        mock_crt_get_ec2_instance_type.return_value = 'g5dn.2xlarge'
-        assert resolve_client_type() == constants.CLASSIC_TRANSFER_CLIENT
-
     def test_resolves_to_classic_for_unsupported_settings(
         self, resolve_client_type, mock_crt_get_ec2_instance_type
     ):

@@ -146,6 +146,10 @@ class ProxyConnectionError(ConnectionError):
     fmt = 'Failed to connect to proxy URL: "{proxy_url}"'
 
 
+class ResponseStreamingError(HTTPClientError):
+    fmt = 'An error occurred while reading from response stream: {error}'
+
+
 class NoCredentialsError(BotoCoreError):
     """
     No credentials could be found.

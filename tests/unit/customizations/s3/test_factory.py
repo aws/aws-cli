@@ -622,7 +622,7 @@ class TestTransferManagerFactory(unittest.TestCase):
         self.assert_is_crt_manager(transfer_manager)
         self.assert_expected_throughput_target_gbps(mock_crt_client, 100)
 
-    @mock.patch('s3transfer.crt.get_recommended_throughput_target_gbps')
+    @mock.patch('awscrt.s3.get_recommended_throughput_target_gbps')
     @mock.patch('s3transfer.crt.S3Client')
     def test_crt_recommended_target_throughput_default(
         self, mock_crt_client, mock_get_target_gbps

@@ -636,6 +636,9 @@ PLUGIN_REGISTRY = {
     'building-command-table.gamelift': [
         ('awscli.customizations.gamelift', 'register_gamelift_commands')
     ],
+    'building-command-table.healthlake': [
+        ('awscli.customizations.removals', 'register_removals')
+    ],
     'building-command-table.iam': [
         ('awscli.customizations.wizard.commands', 'register_wizard_commands')
     ],

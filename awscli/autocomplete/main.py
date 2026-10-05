@@ -15,6 +15,7 @@
 # This is the main entry point for auto-completion.  This is imported
 # everytime a user hits <TAB>.  Try to avoid any expensive module level
 # work or really heavyweight imports.  Prefer to lazy load as much as possible.
+import sys
 
 from awscli.autocomplete import completer, custom, filters, parser, serverside
 from awscli.autocomplete.local import basic, fetcher, model
@@ -59,4 +60,8 @@ def create_autocompleter(
 def autocomplete(command_line, position=None):
     completer = create_autocompleter()
     results = completer.autocomplete(command_line, position)
+    # On Windows, stdout translates "\n" to "\r\n", and shells such as
+    # Git Bash keep the trailing "\r" as part of each completion.
+    if hasattr(sys.stdout, 'reconfigure'):
+        sys.stdout.reconfigure(newline='\n')
     print("\n".join([result.name for result in results]))

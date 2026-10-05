@@ -783,6 +783,46 @@ class TestRequestParamsMapperChecksumAlgorithm:
         assert 'ChecksumAlgorithm' not in request_params
 
 
+class TestRequestParamsMapperTagging:
+    @pytest.fixture
+    def cli_params(self):
+        return {'tags': [['key1', 'value1'], ['key2', 'value with spaces']]}
+
+    def test_put_object(self, cli_params):
+        request_params = {}
+        RequestParamsMapper.map_put_object_params(request_params, cli_params)
+        assert request_params == {'Tagging': 'key1=value1&key2=value%20with%20spaces'}
+
+    def test_create_multipart_upload(self, cli_params):
+        request_params = {}
+        RequestParamsMapper.map_create_multipart_upload_params(
+            request_params, cli_params
+        )
+        assert request_params == {'Tagging': 'key1=value1&key2=value%20with%20spaces'}
+
+    def test_put_object_no_tags(self):
+        request_params = {}
+        RequestParamsMapper.map_put_object_params(request_params, {})
+        assert 'Tagging' not in request_params
+
+    def test_put_object_empty_tags(self):
+        request_params = {}
+        RequestParamsMapper.map_put_object_params(request_params, {'tags': []})
+        assert 'Tagging' not in request_params
+
+    def test_upload_part_excludes_tagging(self, cli_params):
+        # Tags must not be applied to individual part uploads.
+        request_params = {}
+        RequestParamsMapper.map_upload_part_params(request_params, cli_params)
+        assert 'Tagging' not in request_params
+
+    def test_copy_object_excludes_tagging(self, cli_params):
+        # Tagging is upload-only; copies rely on --copy-props.
+        request_params = {}
+        RequestParamsMapper.map_copy_object_params(request_params, cli_params)
+        assert 'Tagging' not in request_params
+
+
 class TestRequestParamsMapperChecksumMode:
     @pytest.fixture
     def cli_params(self):

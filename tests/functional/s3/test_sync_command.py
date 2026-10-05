@@ -53,6 +53,29 @@ class TestSyncCommand(BaseS3TransferCommandTest):
             'http://someserver',
         )
 
+    def test_upload_with_tags(self):
+        self.files.create_file('foo.txt', 'mycontent')
+        cmdline = '%s %s s3://bucket/ --tags key1 value1 --tags key2 value2' % (
+            self.prefix,
+            self.files.rootdir,
+        )
+        self.parsed_responses = [
+            {"CommonPrefixes": [], "Contents": []},
+            {'ETag': '"c8afdb36c52cf4727836669019e69222"'},
+        ]
+        self.run_cmd(cmdline, expected_rc=0)
+
+        # Only ListObjectsV2/PutObject should have been called, and tags are
+        # set on the uploaded object.
+        self.assertEqual(
+            len(self.operations_called), 2, self.operations_called
+        )
+        self.assertEqual(self.operations_called[0][0].name, 'ListObjectsV2')
+        self.assertEqual(self.operations_called[1][0].name, 'PutObject')
+        self.assertEqual(
+            self.operations_called[1][1]['Tagging'], 'key1=value1&key2=value2'
+        )
+
     def test_no_recursive_option(self):
         cmdline = '. s3://mybucket --recursive'
         # Return code will be 252 for invalid parameter ``--recursive``

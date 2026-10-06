@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+2.37.10
+=======
+
+* api-change:``lambda-web``: Removes operations that are not yet generally available from the Lambda Web.
+* bugfix:``lambda-web``: Remove operations that are not yet generally available.
+
+
 2.37.9
 ======
 

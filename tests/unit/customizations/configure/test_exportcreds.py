@@ -161,6 +161,39 @@ def test_cred_formatter(format_cls, expected):
     assert stream.getvalue() == expected_temporary
 
 
+@pytest.mark.parametrize(
+    'format_cls, expected',
+    [
+        (
+            BashEnvVarFormatter,
+            b'export AWS_ACCESS_KEY_ID=access_key\n'
+            b'export AWS_SECRET_ACCESS_KEY=secret_key\n',
+        ),
+        (
+            BashNoExportEnvFormatter,
+            b'AWS_ACCESS_KEY_ID=access_key\n'
+            b'AWS_SECRET_ACCESS_KEY=secret_key\n',
+        ),
+        (
+            FishShellFormatter,
+            b'set -gx AWS_ACCESS_KEY_ID "access_key"\n'
+            b'set -gx AWS_SECRET_ACCESS_KEY "secret_key"\n',
+        ),
+    ],
+)
+def test_posix_shell_formatters_do_not_write_carriage_returns(
+    format_cls, expected
+):
+    raw = io.BytesIO()
+    # Simulate Windows stdout, which writes "\r\n" for each "\n".
+    stream = io.TextIOWrapper(raw, encoding='utf-8', newline='\r\n')
+    format_cls(stream).display_credentials(
+        Credentials('access_key', 'secret_key', None, None)
+    )
+    stream.flush()
+    assert raw.getvalue() == expected
+
+
 class TestCanConvertBotocoreCredentials(unittest.TestCase):
     def test_can_convert_static_creds_with_no_expiry(self):
         self.assertEqual(

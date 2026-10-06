@@ -652,9 +652,6 @@ PLUGIN_REGISTRY = {
     'building-command-table.lexv2-runtime': [
         ('awscli.customizations.removals', 'register_removals')
     ],
-    'building-command-table.lambda-web': [
-        ('awscli.customizations.lambdaweb', 'register_lambda_web_commands')
-    ],
     'building-command-table.lightsail': [
         ('awscli.customizations.lightsail', 'initialize')
     ],

@@ -151,7 +151,7 @@ def total_seconds(delta):
 try:
     hashlib.md5()
     MD5_AVAILABLE = True
-except ValueError:
+except (AttributeError, ValueError):
     MD5_AVAILABLE = False
 
 

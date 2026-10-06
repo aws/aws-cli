@@ -19,7 +19,7 @@ import shutil
 import tempfile
 
 import pytest
-from dateutil.tz import tzlocal
+from dateutil.tz import tzlocal, tzstr
 from s3transfer.checksums import FullObjectChecksum
 from s3transfer.crt import CRTTransferFuture, CRTTransferMeta
 from s3transfer.futures import TransferFuture, TransferMeta
@@ -51,6 +51,7 @@ from awscli.customizations.s3.subscribers import (
     SetMetadataDirectivePropsSubscriber,
     SetTagsSubscriber,
 )
+from awscli.customizations.s3.syncstrategy.base import SizeAndLastModifiedSync
 from awscli.testutils import FileCreator, mock, unittest
 from tests.unit.customizations.s3 import (
     FakeTransferFuture,
@@ -214,6 +215,77 @@ class TestProvideLastModifiedTimeSubscriber(BaseTestWithFileCreator):
         self.subscriber.on_done(self.future)
         _, utime = utils.get_file_stat(self.filename)
         self.assertEqual(utime, self.desired_utime)
+
+    def test_on_success_preserves_epoch_for_aware_datetimes(self):
+        negative_dst = tzstr('IST-1GMT0,M10.5.0,M3.5.0')
+        times = [
+            datetime.datetime(
+                2021, 12, 2, 17, 42, 1, tzinfo=datetime.timezone.utc
+            ),
+            datetime.datetime(
+                2021,
+                12,
+                2,
+                23,
+                12,
+                1,
+                tzinfo=datetime.timezone(
+                    datetime.timedelta(hours=5, minutes=30)
+                ),
+            ),
+            datetime.datetime(2021, 12, 2, 17, 42, 1, tzinfo=negative_dst),
+        ]
+        for last_modified in times:
+            with self.subTest(last_modified=last_modified):
+                subscriber = ProvideLastModifiedTimeSubscriber(
+                    last_modified, self.result_queue
+                )
+                subscriber.on_done(self.future)
+                self.assertEqual(os.stat(self.filename).st_mtime, 1638466921)
+                self.assertTrue(self.result_queue.empty())
+
+    def test_on_success_truncates_fractional_seconds(self):
+        last_modified = datetime.datetime(
+            2021, 12, 2, 17, 42, 1, 987654, tzinfo=datetime.timezone.utc
+        )
+        subscriber = ProvideLastModifiedTimeSubscriber(
+            last_modified, self.result_queue
+        )
+        subscriber.on_done(self.future)
+        self.assertEqual(os.stat(self.filename).st_mtime, 1638466921)
+        self.assertTrue(self.result_queue.empty())
+
+    def test_download_with_negative_dst_does_not_sync_again(self):
+        last_modified = datetime.datetime(
+            2021,
+            12,
+            2,
+            17,
+            42,
+            1,
+            tzinfo=tzstr('IST-1GMT0,M10.5.0,M3.5.0'),
+        )
+        subscriber = ProvideLastModifiedTimeSubscriber(
+            last_modified, self.result_queue
+        )
+        subscriber.on_done(self.future)
+        size, local_last_modified = utils.get_file_stat(self.filename)
+        source = FileInfo(
+            'bucket/myfile',
+            dest=self.filename,
+            size=size,
+            last_update=last_modified,
+            operation_name='download',
+        )
+        destination = FileInfo(
+            self.filename, size=size, last_update=local_last_modified
+        )
+        self.assertFalse(
+            SizeAndLastModifiedSync().determine_should_sync(
+                source, destination
+            )
+        )
+        self.assertTrue(self.result_queue.empty())
 
     def test_on_success_failure_in_utime_mod_raises_warning(self):
         self.subscriber = ProvideLastModifiedTimeSubscriber(

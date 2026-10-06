@@ -13,7 +13,6 @@
 import errno
 import logging
 import os
-import time
 
 from botocore.utils import percent_encode_sequence
 from s3transfer.subscribers import BaseSubscriber
@@ -214,8 +213,7 @@ class ProvideLastModifiedTimeSubscriber(OnDoneFilteredSubscriber):
     def _on_success(self, future, **kwargs):
         filename = future.meta.call_args.fileobj
         try:
-            last_update_tuple = self._last_modified_time.timetuple()
-            mod_timestamp = time.mktime(last_update_tuple)
+            mod_timestamp = self._last_modified_time.timestamp()
             utils.set_file_utime(filename, int(mod_timestamp))
         except Exception as e:
             warning_message = (

@@ -232,13 +232,7 @@ class TransferManagerFactory:
             == constants.CRT_TRANSFER_CLIENT
         ):
             return True
-        return self._is_rolled_out_instance_family()
-
-    def _is_rolled_out_instance_family(self):
-        instance_type = awscrt.s3.get_ec2_instance_type()
-        if instance_type is None:
-            return False
-        return True
+        return awscrt.s3.get_ec2_instance_type() is not None
 
     def _get_unsupported_settings(self, params, runtime_config):
         unsupported = self._get_classic_only_settings(runtime_config)

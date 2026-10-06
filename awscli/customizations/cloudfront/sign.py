@@ -271,6 +271,48 @@ class SignCommand(BaseSignCommand):
         return 0
 
 
+class SignCookiesCommand(BaseSignCommand):
+    NAME = 'sign-cookies'
+    DESCRIPTION = (
+        'Generate CloudFront signed cookies for a given resource. Supports '
+        'RSA and ECDSA private keys. The key type is auto-detected from the '
+        'PEM header. The output maps each cookie name to its value; add the '
+        'cookie attributes (Domain, Path, Secure, HttpOnly, etc.) that your '
+        'application needs when setting them. A custom policy is used when '
+        '--date-greater-than or --ip-address is provided, or when the '
+        'resource contains a ``*`` wildcard; otherwise a canned policy is '
+        'used.'
+    )
+    ARG_TABLE = [
+        {
+            'name': 'resource',
+            'no_paramfile': True,
+            'required': True,
+            'help_text': (
+                'The URL of the protected content. It may contain ``*`` and '
+                '``?`` wildcards (for example '
+                '``https://d111111abcdef8.cloudfront.net/videos/*``) to grant '
+                'access to every matching URL. Wildcards require a custom '
+                'policy, which is only selected when the resource contains '
+                '``*`` or when --date-greater-than or --ip-address is given.'
+            ),
+        },
+    ] + BaseSignCommand.SIGNING_ARGS
+
+    def _get_policy_resource(self, args):
+        _validate_resource(args.resource, 'resource')
+        return args.resource
+
+    def _write_signed_output(self, signer, args, parsed_globals, kwargs):
+        cookies = signer.generate_signed_cookies(args.resource, **kwargs)
+        output = parsed_globals.output
+        if output is None:
+            output = self._session.get_config_variable('output')
+        formatter = get_formatter(output, parsed_globals)
+        formatter(self.NAME, cookies)
+        return 0
+
+
 def _validate_date_range(date_less_than, date_greater_than):
     # Compare at the epoch-second precision written into the policy.
     if int(datetime2timestamp(date_greater_than)) >= int(

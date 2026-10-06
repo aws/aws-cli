@@ -339,17 +339,32 @@ files to and from S3. Valid choices are:
     S3, and deletion of S3 objects.
 
   * The host running the AWS CLI is an Amazon EC2 instance running Linux as the
-    operating system.
+    operating system and is either:
 
-    * Note that the ``crt`` transfer client is currently optimized
-      for the following instance types: ``p4d.24xlarge``, ``p4de.24xlarge``,
+    * Of an instance type that the ``crt`` transfer client is optimized for.
+      Currently, these instance types are: ``p4d.24xlarge``, ``p4de.24xlarge``,
       ``p5.48xlarge``, ``p5e.48xlarge``, ``p5en.48xlarge``, ``p6-b200.48xlarge``,
       ``p6-b300.48xlarge``, ``trn1.32xlarge``, and ``trn1n.32xlarge``.
 
+    * Of one of these instance families: ``c5``, ``c5a``, ``c5ad``, ``c5d``,
+      ``c5n``, ``c6a``, ``c6g``, ``c6gd``, ``c6gn``, ``c6i``, ``c6id``,
+      ``c6in``, ``c7a``, ``c7g``, ``c7gd``, ``c7gn``,
+      ``c7i``, ``c7i-flex``, ``c8a``, ``c8g``, ``c8gb``, ``c8gd``, ``c8gn``,
+      ``c8i``, ``c8i-flex``, ``c8ib``, ``c8id``, ``c8in``, ``c8ine``, ``c9g``,
+      ``c9gd``, ``d3``, ``d3en``, ``dl1``, ``g4dn``, ``g5``, ``g5g``, ``g6``,
+      ``g6e``, ``h1``, ``i3``, ``i3en``, ``i4i``, ``im4gn``, ``inf1``,
+      ``inf2``, ``is4gen``, ``m5``, ``m5a``, ``m5ad``, ``m5d``, ``m5dn``,
+      ``m5n``, ``m5zn``, ``m6a``, ``m6g``, ``m6gd``, ``m6i``, ``m6id``,
+      ``m6idn``, ``m6in``, ``m7a``, ``m7g``, ``m7i``, ``m7i-flex``, ``m8a``,
+      ``m8g``, ``r5``, ``r5a``, ``r5ad``, ``r5d``, ``r5dn``, ``r5n``, ``r6a``,
+      ``r6g``, ``r6gd``, ``r6i``, ``r6id``, ``r6idn``,
+      ``r6in``, ``r7a``, ``r7g``, ``r7i``, ``r7iz``, ``x1``, ``x1e``,
+      ``x2idn``, ``x2iedn``, and ``x2iezn``.
+
   * The ``crt`` transfer client supports the requested transfer. If the host
-    is not of an instance type that the ``crt`` transfer client is optimized
-    for, the AWS CLI falls back to the ``classic`` transfer client when any
-    of the following are in use:
+    qualifies by instance family instead of by being of an instance type that
+    the ``crt`` transfer client is optimized for, the AWS CLI falls back to the
+    ``classic`` transfer client when any of the following are in use:
 
     * The ``max_bandwidth`` configuration value.
     * A ``retry_mode`` configuration value of ``adaptive``.

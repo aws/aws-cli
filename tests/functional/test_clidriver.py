@@ -66,9 +66,8 @@ class TestSession(BaseCLIDriverTest):
         # First response should be from the IMDS server for security token
         # if server supports IMDSv1 only there will be no response for token
         self.add_response(None)
-        # Then another response from the IMDS server for an availability
-        # zone.
-        self.add_response(b'us-mars-2a')
+        # Then another response from the IMDS server for the region.
+        self.add_response(b'us-mars-2')
         # Once a region is fetched form the IMDS server we need to mock an
         # XML response from ec2 so that the CLI driver doesn't throw an error
         # during parsing.
@@ -84,9 +83,8 @@ class TestSession(BaseCLIDriverTest):
         # First response should be from the IMDS server for security token
         # if server supports IMDSv2 it'll return token
         self.add_response(b'token')
-        # Then another response from the IMDS server for an availability
-        # zone.
-        self.add_response(b'us-mars-2a')
+        # Then another response from the IMDS server for the region.
+        self.add_response(b'us-mars-2')
         # Once a region is fetched form the IMDS server we need to mock an
         # XML response from ec2 so that the CLI driver doesn't throw an error
         # during parsing.

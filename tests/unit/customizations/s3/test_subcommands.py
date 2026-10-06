@@ -78,10 +78,12 @@ class TestListCommandTimestamps(unittest.TestCase):
             ('2021-10-31T00:59:59Z', '2021-10-31 01:59:59'),
             ('2021-10-31T01:00:00Z', '2021-10-31 01:00:00'),
         ]
+        original_tz = os.environ.get('TZ')
         try:
             with mock.patch.dict(
                 os.environ, {'TZ': 'IST-1GMT0,M10.5.0/2,M3.5.0/1'}
             ):
+                os.putenv('TZ', 'IST-1GMT0,M10.5.0/2,M3.5.0/1')
                 time.tzset()
                 for value, expected in cases:
                     with self.subTest(value=value):
@@ -89,6 +91,10 @@ class TestListCommandTimestamps(unittest.TestCase):
                             self.command._make_last_mod_str(value), expected
                         )
         finally:
+            if original_tz is None:
+                os.unsetenv('TZ')
+            else:
+                os.putenv('TZ', original_tz)
             time.tzset()
 
 

@@ -71,17 +71,24 @@ class TestLSCommand(BaseS3TransferCommandTest):
             ('UTC0', ('2021-12-02 17:42:01', '2021-07-02 17:42:01')),
             ('NPT-5:45', ('2021-12-02 23:27:01', '2021-07-02 23:27:01')),
         )
+        original_tz = self.process_environ.get('TZ')
         for zone, expected_times in cases:
             try:
                 with (
                     mock.patch.dict(self.process_environ, {'TZ': zone}),
                     mock.patch.dict(self.environ, {'TZ': zone}),
                 ):
+                    # os.environ may have been replaced with a plain dict.
+                    os.putenv('TZ', zone)
                     time.tzset()
                     for value, expected in zip(dates, expected_times):
                         with self.subTest(zone=zone, last_modified=value):
                             self._assert_listing_time(value, expected)
             finally:
+                if original_tz is None:
+                    os.unsetenv('TZ')
+                else:
+                    os.putenv('TZ', original_tz)
                 time.tzset()
 
     def _assert_listing_time(self, value, expected):

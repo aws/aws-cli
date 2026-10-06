@@ -41,6 +41,7 @@ class TestSyncCommand(BaseS3TransferCommandTest):
         not hasattr(time, 'tzset'), reason='Requires process-local TZ support'
     )
     def test_download_syncs_only_once_in_other_timezones(self):
+        original_tz = self.process_environ.get('TZ')
         for zone in (
             'IST-1GMT0,M10.5.0/2,M3.5.0/1',
             'UTC0',
@@ -53,9 +54,15 @@ class TestSyncCommand(BaseS3TransferCommandTest):
                         mock.patch.dict(self.process_environ, {'TZ': zone}),
                         mock.patch.dict(self.environ, {'TZ': zone}),
                     ):
+                        # os.environ may have been replaced with a plain dict.
+                        os.putenv('TZ', zone)
                         time.tzset()
                         self._assert_syncs_only_once(zone)
                 finally:
+                    if original_tz is None:
+                        os.unsetenv('TZ')
+                    else:
+                        os.putenv('TZ', original_tz)
                     time.tzset()
 
     def _assert_syncs_only_once(self, directory):

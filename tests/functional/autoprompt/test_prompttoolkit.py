@@ -176,12 +176,21 @@ class TestPromptToolkitPrompterBuffer:
     def test_handle_args_with_spaces(self, app_runner, prompter):
         original_args = ['iam', 'create-role', '--description', 'With spaces']
         prompter.args = original_args
-        with app_runner.run_app_in_thread(
-            target=prompter.prompt_for_args, args=(original_args,)
-        ) as ctx:
-            assert prompter.input_buffer.document.text == (
-                "iam create-role --description 'With spaces' "
-            )
+        initialized = Event()
+        original_pre_run = prompter.pre_run
+
+        def initialize():
+            original_pre_run()
+            initialized.set()
+
+        with mock.patch.object(prompter, 'pre_run', initialize):
+            with app_runner.run_app_in_thread(
+                target=prompter.prompt_for_args, args=(original_args,)
+            ) as ctx:
+                assert initialized.wait(5), 'Prompt initialization did not finish'
+                assert prompter.input_buffer.document.text == (
+                    "iam create-role --description 'With spaces' "
+                )
         assert ctx.return_value == original_args
 
 

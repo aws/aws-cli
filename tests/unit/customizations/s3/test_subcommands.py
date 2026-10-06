@@ -70,6 +70,17 @@ class TestListCommandTimestamps(unittest.TestCase):
         not hasattr(time, 'tzset'), reason='Requires process-local TZ support'
     )
     def test_timestamp_with_negative_dst(self):
+        self._assert_negative_dst_timestamps()
+
+    @pytest.mark.skipif(
+        not hasattr(time, 'tzset'), reason='Requires process-local TZ support'
+    )
+    def test_timestamp_with_negative_dst_and_plain_environ(self):
+        # Existing package teardown can replace os.environ with a plain dict.
+        with mock.patch('os.environ', os.environ.copy()):
+            self._assert_negative_dst_timestamps()
+
+    def _assert_negative_dst_timestamps(self):
         cases = [
             ('2021-12-02T17:42:01Z', '2021-12-02 17:42:01'),
             ('2021-07-02T17:42:01Z', '2021-07-02 18:42:01'),

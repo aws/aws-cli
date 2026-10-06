@@ -12,6 +12,7 @@
 # language governing permissions and limitations under the License.
 import json
 import os
+from threading import Event
 
 import awscrt.io
 import pytest
@@ -386,8 +387,14 @@ class TestDebugPanel(BasicPromptToolkitTest):
 
     def test_open_save_dialog_on_control_s(self, app_runner, prompter):
         prompter.app.debug = True
+        input_processed = Event()
+        app_runner.app.key_processor.after_key_press.add_handler(
+            lambda sender: input_processed.set()
+        )
         with app_runner.run_app_in_thread():
             app_runner.feed_input(Keys.ControlS)
+            # A redraw can finish before the key binding has been processed.
+            assert input_processed.wait(5), 'Control-S was not processed'
             self.assert_current_buffer_text(app_runner.app, 'prompt_debug.log')
 
     def test_can_save_log_file(self, app_runner, prompter, files):

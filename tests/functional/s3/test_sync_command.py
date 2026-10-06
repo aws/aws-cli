@@ -1063,6 +1063,8 @@ class TestSyncDownloadNoFollowSymlinks(BaseS3TransferCommandTest):
         self.escaped = os.path.join(self.outside, 'escaped.txt')
         with open(self.escaped, 'w') as f:
             f.write('original')
+        # Ensure the same-sized object is selected for download in every timezone.
+        os.utime(self.escaped, (946684800, 946684800))
         # Object keys under 'sub/' resolve to self.outside.
         self.symlink = os.path.join(self.dest, 'sub')
         os.symlink(self.outside, self.symlink)
@@ -1072,7 +1074,7 @@ class TestSyncDownloadNoFollowSymlinks(BaseS3TransferCommandTest):
                     {
                         'Key': 'sub/escaped.txt',
                         'Size': 8,
-                        'LastModified': '00:00:00Z',
+                        'LastModified': '1999-12-31T23:59:00Z',
                         'ETag': '"foo-1"',
                     },
                 ],

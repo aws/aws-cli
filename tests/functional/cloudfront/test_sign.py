@@ -10,9 +10,34 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from botocore.compat import parse_qs, urlparse
+import base64
+import hashlib
+import json
+import re
 
-from awscli.testutils import BaseAWSCommandParamsTest, FileCreator, mock
+from awscrt.crypto import EC, RSA
+from botocore.compat import parse_qs, urlparse
+from awscli.testutils import (
+    BaseAWSCommandParamsTest,
+    FileCreator,
+    mock,
+    skip_if_windows,
+)
+
+
+def _pem_to_der(pem, label):
+    # Decode the body of the PEM block with the given label.
+    match = re.search(
+        rf'-----BEGIN {label}-----(.*?)-----END {label}-----', pem, re.DOTALL
+    )
+    return base64.b64decode(''.join(match.group(1).split()))
+
+
+def _url_b64decode(value):
+    # Reverse the CloudFront-specific base64 substitutions applied by
+    # CloudFrontSigner._url_b64encode.
+    restored = value.replace('-', '+').replace('_', '=').replace('~', '/')
+    return base64.b64decode(restored)
 
 
 class TestSign(BaseAWSCommandParamsTest):
@@ -121,7 +146,7 @@ class TestSign(BaseAWSCommandParamsTest):
             'algorithm is unsupported on this platform.'
         )
         with mock.patch(
-            'awscli.customizations.cloudfront.RSA.sign',
+            'awscli.customizations.cloudfront.sign.RSA.sign',
             side_effect=crt_error,
         ):
             stdout, stderr, rc = self.run_cmd(cmdline, expected_rc=255)
@@ -137,7 +162,7 @@ class TestSign(BaseAWSCommandParamsTest):
         )
         other_error = RuntimeError('some other signing failure')
         with mock.patch(
-            'awscli.customizations.cloudfront.RSA.sign',
+            'awscli.customizations.cloudfront.sign.RSA.sign',
             side_effect=other_error,
         ):
             stdout, stderr, rc = self.run_cmd(cmdline, expected_rc=255)
@@ -146,39 +171,22 @@ class TestSign(BaseAWSCommandParamsTest):
         self.assertIn('some other signing failure', stderr)
 
 
-class TestSignPKCS8(BaseAWSCommandParamsTest):
-    # A private key only for testing purpose.
+class TestSignECDSAWithECParameters(BaseAWSCommandParamsTest):
+    # An EC (P-256) key as written by ``openssl ecparam -genkey``, which
+    # prepends an EC PARAMETERS block. Only for testing purpose.
     private_key = (
-        '-----BEGIN PRIVATE KEY-----\n'
-        'MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDiVR5JIogE3iKq\n'
-        'buYalyKO3vmRnOxf7OU6/8WPma8wpWltb4d67HRBxeUvNugGq0uwinoPDfwF74zG\n'
-        'hOKeGrDPLVAbekPzYv1SnB/ppy+nvojDew72xgW56ii9X+Jk83f0TGNTmC7sBvcc\n'
-        'kqz3T/aX23NU0faCW5bl6fiW+HVUHZe/aE4nHqhorHiDXlvTV6wpjEWS6Xyf7ll+\n'
-        'Jvf4eXg7GqTGTGKsB0jE/xPKdVbnQD67fkJOdaAKTQKanY1UF2SS5Nx6NcBxbcCR\n'
-        'Va4myn1JOeQDyHcIXb4NmBx3m21eJSotrJYmD9LTs16mB4wi21lvimALwKxZHjvV\n'
-        'p58xKyyJAgMBAAECggEAFtKPdb96KMd/hmEdaeQAk5iPYOwKd9fK+6qL8OGF5Wlg\n'
-        'mqzq4+3RAUrjw+GM/xMp1Dj6euclmTGhJ+mBcoDtgE6o68Rl8rZyJfDhVO3LY+ZW\n'
-        'IyQXC7JHJIqkpgfzq8tTNrq3L1hCrwE6zNJLh7qz+nciB5UOfvGeYzu3Gf4e0qbi\n'
-        'rlStPa7Gi4Oc0EO/51YRjU3IpXjFRvcsqBtV95XA96hPo2ice0KMcrWPF9Kai8bQ\n'
-        '0sE+wv+YbgIsbwmnHntdd7Sfxx2jPjXeEgh/ncoXCMYfQueSAHQ/EQBWkofhUeB5\n'
-        'oEuQlS5b3D1t3aSKr2o7vrMtu1UWhabu0u+Db/r6gQKBgQD7DKJk0Ow2JBaoM7vV\n'
-        'UucuLWLaY4MG4a1YDlHPl6zmD1OioKrQw2h/m2SalYfxM8BjPbR9eesyDv55HQnR\n'
-        'ptC1SBNxH7dCwWqCeD1jNVoJP8VkBDPRiNaLz68wYkrtfiXCa0DYbewbdrEFDaIk\n'
-        'IErrRzxSWTSNE8Y1YA3ka6MiaQKBgQDmy7TdLa0tyYwY30DmLmS4WUZglJZKrT/0\n'
-        'd9UTz7KJek7P9BNZAe8yotVrxO2di+8W85GAVQBexeISrEW6ZK6GHGz949fJmbvq\n'
-        'QOU/6TgE01AL0nUZF2QKbdAleonlR/WB9IpZTQf/ZI1HmUV0QL3nCrs9OoFbzx4E\n'
-        'GfjbCmQ1IQKBgFOlZgZJRirT42ivtAnj0XslTCaPuXx1fRg1zTRpyQXuXWN2PPPJ\n'
-        '5+t8jwyifeTz5UorqROVp7PKIyefcUIVXrzIAxJSCvGHGEHYZjvD7vfd85rbe5h5\n'
-        'C2MSE8D/Pw/aVCJvMe/q0Bxmc5zHahq3V78EwSh+6G+JAyWNl5Nf+b7hAoGBAM1Z\n'
-        'PGB7DpYpuLw8j9r+NmGMFUFDk4F4KupSYMTSzPDjYRJIAZr1TKWKGkhcHGtMIXwT\n'
-        'VUeQ2dZ5TM/+dcAFav8qdZNk0Q+v+HHSMeeuk0g/1/3c0JF1rW5WDJf8MotNflSV\n'
-        'hy8zicUj60xkRFbOb+kNNFGjJ4vPec5+aVxDH6vhAoGBAI3RsJZXYUL9PhakrsVp\n'
-        '71N+JbNxvw8L9b2VL6ecLNMtPcG5ddFaMhc+kQZap6vAZXauft1fzvAO3fMKNJXm\n'
-        'yvtM2CEYzVd8lFqA8xETa/FgelkFjB5gkiq4EDIuX6mFStkskKUfRHHrb0ATKHSl\n'
-        'YvT60qFc4be2Mfyzt+CuGhYi\n'
-        '-----END PRIVATE KEY-----\n'
+        '-----BEGIN EC PARAMETERS-----\n'
+        'BggqhkjOPQMBBw==\n'
+        '-----END EC PARAMETERS-----\n'
+        '-----BEGIN EC PRIVATE KEY-----\n'
+        'MHcCAQEEIIn+jH+ABbyXBxAaGba29zfgklJlso8Uy/hTX87clMxYoAoGCCqGSM49\n'
+        'AwEHoUQDQgAEcfEKhYahmRNFgp2LiNJf1Uy9TmWPgyuoAxKxXuS1Gtcxxs+39col\n'
+        'Ty9YFvZvhsAcv6B3LwBJW/ah/AUD1BGTIg==\n'
+        '-----END EC PRIVATE KEY-----\n'
     )
-    prefix = 'cloudfront sign --key-pair-id my_id --url http://example.com/hi '
+    pem_label = 'EC PRIVATE KEY'
+    url = 'http://example.com/hi'
+    prefix = 'cloudfront sign --key-pair-id MYID --url http://example.com/hi '
 
     def setUp(self):
         files = FileCreator()
@@ -186,34 +194,29 @@ class TestSignPKCS8(BaseAWSCommandParamsTest):
         self.addCleanup(files.remove_all)
         super().setUp()
 
-    def assertDesiredUrl(self, url, base, params):
+    def _run_and_parse(self, cmdline):
+        url = self.run_cmd(cmdline)[0].strip()
         self.assertEqual(len(url.splitlines()), 1, "Expects only 1 line")
-        self.assertTrue(url.startswith(base), "URL mismatch")
-        url = url.strip()  # Otherwise the last param contains a trailing CRLF
-        self.assertEqual(parse_qs(urlparse(url).query), params)
+        self.assertTrue(url.startswith(self.url), "URL mismatch")
+        return parse_qs(urlparse(url).query)
 
-    def test_canned_policy(self):
-        cmdline = (
-            self.prefix
-            + '--private-key file://'
-            + self.private_key_file
-            + ' --date-less-than 2016-1-1'
+    def _assert_signature_verifies(self, params, policy):
+        # ECDSA signatures are non-deterministic (a random nonce is used), so
+        # rather than comparing against a fixed value we verify the signature
+        # cryptographically against the policy that was signed.
+        self.assertEqual(params['Key-Pair-Id'], ['MYID'])
+        # ECDSA signatures are SHA-256; the URL must carry Hash-Algorithm=SHA256
+        # so CloudFront's edge verifies with SHA-256 instead of its SHA-1
+        # default (otherwise verification fails with AccessDenied).
+        self.assertEqual(params['Hash-Algorithm'], ['SHA256'])
+        key = EC.new_key_from_der_data(
+            _pem_to_der(self.private_key, self.pem_label)
         )
-        expected_signature = (
-            "cIOcUXezjLknta66EiRX7rk3viXv20F01OwZa1X2QWxhnWnBVno~mg0Gcyfzvfgo"
-            "-oXCvZC3bdsfTJXiBcnC1XyxCxBa03bouAae4A0ajP4ey~TKKwPHikOmu2Rc1NEu"
-            "-c6wr8DbMZrm~1WIWG4kFG1jhSRoEk2W82NkGEh4xEPq3gaNjQPfF7zIAwcZUUkg"
-            "GkIbT-cQ5UZ6rTqTiFGdXD2z8kjulgmtu8Quo6hplch~9ltmKTOt9blswd6hMfCM"
-            "NJ~tUj77j8fz968adb9w43jBtl~~5seb8ys01cg5IGWV44LKMWaLmEgzWQAjg-Jg"
-            "9wx-HYwuqH4Klds03WZzRQ__"
-        )
-        expected_params = {
-            'Key-Pair-Id': ['my_id'],
-            'Expires': ['1451606400'],
-            'Signature': [expected_signature],
-        }
-        self.assertDesiredUrl(
-            self.run_cmd(cmdline)[0], 'http://example.com/hi', expected_params
+        signature = _url_b64decode(params['Signature'][0])
+        digest = hashlib.sha256(policy.encode('utf8')).digest()
+        self.assertTrue(
+            key.verify(digest, signature),
+            "ECDSA signature failed to verify",
         )
 
     def test_custom_policy(self):
@@ -223,19 +226,543 @@ class TestSignPKCS8(BaseAWSCommandParamsTest):
             + self.private_key_file
             + ' --date-less-than 2016-1-1 --ip-address 12.34.56.78'
         )
-        expected_signature = (
-            "beEwE8ZmSX71e79a5dxupiE0zHxahe1IFzuTExKxV0InQnKFlT0wj0tardAlGKFL"
-            "LdX9HMGiVjIjvMBdUZQJ-9mMXBtFsQ5nLDEoRH29H8AATzaf4Nx4n29XtVp-jPVF"
-            "GFtmdaGJedjJRMV-IzBQcJ19VPl3R8t3Fp~8eP9-P8KpvkJXH2UvJ2H8nMBt2Ogv"
-            "brCT2hl~91UtEOgmxeA6twWNpziH0uEdpDOHgnYer5ScdFoo02rPjRXIqPuQcjwP"
-            "T2wu~A5T~zomcghjMcIdLeJeS9nscTkjON69xBB-t4lclK3mfzsXTumcx-FzLgOB"
-            "bP2Z1d~ZU6X0rkeL~w1BlQ__"
+        params = self._run_and_parse(cmdline)
+        self.assertNotIn('Expires', params)
+        # The custom policy is emitted (base64url encoded) in the URL, so the
+        # exact signed payload can be recovered and verified against.
+        policy = _url_b64decode(params['Policy'][0]).decode('utf8')
+        self._assert_signature_verifies(params, policy)
+
+
+class BaseSigningCommandTest(BaseAWSCommandParamsTest):
+    private_key = TestSign.private_key
+
+    def setUp(self):
+        self.files = FileCreator()
+        self.private_key_file = self.files.create_file(
+            'foo.pem', self.private_key
         )
-        expected_params = {
-            'Key-Pair-Id': ['my_id'],
-            'Policy': [mock.ANY],
-            'Signature': [expected_signature],
-        }
-        self.assertDesiredUrl(
-            self.run_cmd(cmdline)[0], 'http://example.com/hi', expected_params
+        self.private_key_arg = 'file://' + self.private_key_file
+        self.addCleanup(self.files.remove_all)
+        super().setUp()
+
+    def use_private_key(self, contents, scheme='file://'):
+        mode = 'wb' if isinstance(contents, bytes) else 'w'
+        path = self.files.create_file('key.pem', contents, mode=mode)
+        self.private_key_arg = scheme + path
+
+    def sign(self, *args, expected_rc=0):
+        cmdline = [
+            'cloudfront',
+            'sign',
+            '--key-pair-id',
+            'myid',
+            '--private-key',
+            self.private_key_arg,
+            '--date-less-than',
+            '2016-1-1',
+        ] + list(args)
+        return self.run_cmd(cmdline, expected_rc=expected_rc)
+
+    def sign_url(self, *args):
+        url = self.sign(*args)[0].strip()
+        return url, parse_qs(urlparse(url).query)
+
+    def assert_sign_error(self, message, *args, expected_rc=252):
+        _, stderr, _ = self.sign(*args, expected_rc=expected_rc)
+        self.assertIn(message, stderr)
+
+    def assert_key_error(self, message):
+        # Invalid keys have always been reported as an error with rc 255.
+        self.assert_sign_error(
+            message, '--url', 'http://example.com/hi', expected_rc=255
         )
+
+
+class TestSignPolicySelection(BaseSigningCommandTest):
+    def test_wildcard_url_uses_custom_policy(self):
+        # CloudFront only matches wildcards in a custom policy.
+        for url in ['http://example.com/*', 'http://example.com/a?x=*']:
+            with self.subTest(url=url):
+                _, params = self.sign_url('--url', url)
+                self.assertNotIn('Expires', params)
+                policy = json.loads(_url_b64decode(params['Policy'][0]))
+                self.assertEqual(policy['Statement'][0]['Resource'], url)
+
+    def test_wildcard_policy_resource_with_wildcard_url(self):
+        _, params = self.sign_url(
+            '--url',
+            'http://example.com/videos/*',
+            '--policy-resource',
+            'http://example.com/*',
+        )
+        policy = json.loads(_url_b64decode(params['Policy'][0]))
+        self.assertEqual(
+            policy['Statement'][0]['Resource'], 'http://example.com/*'
+        )
+
+    def test_policy_resource_different_from_url_uses_custom_policy(self):
+        # A canned policy is verified against the requested URL, so it can
+        # not be used for a resource other than the URL.
+        _, params = self.sign_url(
+            '--url',
+            'http://example.com/hi',
+            '--policy-resource',
+            'http://example.com/h?',
+        )
+        self.assertNotIn('Expires', params)
+        policy = json.loads(_url_b64decode(params['Policy'][0]))
+        self.assertEqual(
+            policy['Statement'][0]['Resource'], 'http://example.com/h?'
+        )
+
+    def test_rejects_policy_resource_not_matching_url(self):
+        for resource in [
+            'http://example.com/other',
+            'http://example.com/videos/*',
+            'http://example.com/h??',
+        ]:
+            with self.subTest(resource=resource):
+                self.assert_sign_error(
+                    'does not match --policy-resource',
+                    '--url',
+                    'http://example.com/hi',
+                    '--policy-resource',
+                    resource,
+                )
+
+    def test_policy_resource_same_as_url_uses_canned_policy(self):
+        _, params = self.sign_url(
+            '--url',
+            'http://example.com/hi',
+            '--policy-resource',
+            'http://example.com/hi',
+        )
+        self.assertEqual(params['Expires'], ['1451606400'])
+        self.assertNotIn('Policy', params)
+
+
+class TestSignQueryParameterOrder(BaseSigningCommandTest):
+    def assert_query_parameter_order(self, url, expected_names, *args):
+        signed_url = self.sign('--url', url, *args)[0].strip()
+        base, _, query = signed_url.partition('?')
+        self.assertEqual(
+            [param.split('=', 1)[0] for param in query.split('&')],
+            expected_names,
+        )
+
+    def test_canned_policy_sha256(self):
+        self.assert_query_parameter_order(
+            'http://example.com/hi',
+            ['Expires', 'Signature', 'Key-Pair-Id', 'Hash-Algorithm'],
+            '--hash-algorithm',
+            'SHA256',
+        )
+
+    def test_custom_policy_sha256(self):
+        self.assert_query_parameter_order(
+            'http://example.com/hi',
+            ['Policy', 'Signature', 'Key-Pair-Id', 'Hash-Algorithm'],
+            '--ip-address',
+            '12.34.56.78',
+            '--hash-algorithm',
+            'SHA256',
+        )
+
+
+class TestSignHashAlgorithm(BaseSigningCommandTest):
+    def test_rsa_explicit_sha1_matches_default(self):
+        default_url, _ = self.sign_url('--url', 'http://example.com/hi')
+        sha1_url, _ = self.sign_url(
+            '--url', 'http://example.com/hi', '--hash-algorithm', 'SHA1'
+        )
+        self.assertEqual(sha1_url, default_url)
+
+    def test_unsupported_hash_algorithm(self):
+        _, stderr, _ = self.sign(
+            '--url',
+            'http://example.com/hi',
+            '--hash-algorithm',
+            'MD5',
+            expected_rc=252,
+        )
+        self.assertIn('--hash-algorithm', stderr)
+
+
+class TestSignBackwardCompatibility(BaseSigningCommandTest):
+    # Every URL that CloudFront could accept is still signed exactly as
+    # before; only unusable input is rejected (see TestSignInputValidation).
+    def test_signs_single_ip_address_as_before(self):
+        _, params = self.sign_url(
+            '--url', 'http://example.com/hi', '--ip-address', '12.34.56.78'
+        )
+        policy = json.loads(_url_b64decode(params['Policy'][0]))
+        self.assertEqual(
+            policy['Statement'][0]['Condition']['IpAddress'],
+            {'AWS:SourceIp': '12.34.56.78/32'},
+        )
+
+    def test_invalid_date_error(self):
+        for arg_name in ['--date-less-than', '--date-greater-than']:
+            with self.subTest(arg_name=arg_name):
+                _, stderr, _ = self.sign(
+                    '--url',
+                    'http://example.com/hi',
+                    arg_name,
+                    'not-a-date',
+                    expected_rc=255,
+                )
+                self.assertIn('Invalid timestamp', stderr)
+                self.assertIn(f'Invalid value for {arg_name}', stderr)
+                self.assertIn('Supported formats include', stderr)
+
+
+class TestSignPolicyResourceValidation(BaseSigningCommandTest):
+    def sign_policy_resource(self, url, resource):
+        return self.sign(
+            '--url', url, '--policy-resource', resource, expected_rc=252
+        )[1]
+
+    def test_rejects_empty_policy_resource(self):
+        self.assertIn(
+            'must not be empty',
+            self.sign_policy_resource('http://example.com/hi', ''),
+        )
+
+    def test_rejects_unsafe_policy_resource(self):
+        for resource in ['http://example.com/\\*', 'http://example.com/"*']:
+            with self.subTest(resource=resource):
+                self.assertIn(
+                    'Invalid value for --policy-resource',
+                    self.sign_policy_resource(
+                        'http://example.com/hi', resource
+                    ),
+                )
+
+    def test_rejects_invalid_non_wildcard_policy_resource(self):
+        self.assertIn(
+            'Invalid value for --policy-resource',
+            self.sign_policy_resource('http://example.com/hi', 'not-a-url'),
+        )
+
+    def test_rejects_policy_resource_fragment(self):
+        self.assertIn(
+            'URL fragment',
+            self.sign_policy_resource(
+                'http://example.com/hi', 'http://example.com/*#frag'
+            ),
+        )
+
+    def test_validates_url_with_policy_resource(self):
+        for url in ['example.com/hi', 'http://example.com/h#i']:
+            with self.subTest(url=url):
+                self.assertIn(
+                    'Invalid value for --url',
+                    self.sign_policy_resource(url, '*'),
+                )
+
+    def test_rejects_already_signed_url_with_policy_resource(self):
+        self.assertIn(
+            'already contains the CloudFront signing parameters',
+            self.sign_policy_resource(
+                'http://example.com/hi?Expires=1&Signature=a&Key-Pair-Id=K',
+                'http://example.com/*',
+            ),
+        )
+
+    def test_allows_wildcard_scheme_in_policy_resource(self):
+        _, params = self.sign_url(
+            '--url',
+            'https://example.com/hi',
+            '--policy-resource',
+            'http*://example.com/*',
+        )
+        self.assertIn('Policy', params)
+
+
+class BaseInputValidationTest(BaseSigningCommandTest):
+    # Input that CloudFront can never accept is rejected by both commands
+    # instead of producing a signed URL or cookies that cannot be used.
+    # Concrete subclasses supply the command and its resource argument.
+    __test__ = False
+    resource_arg = None
+
+    def assert_error(self, message, *args):
+        raise NotImplementedError('assert_error')
+
+    def test_rejects_unsafe_characters(self):
+        for resource in [
+            'http://example.com/hi"',
+            'http://example.com/\\*',
+            'http://example.com/h\ni',
+        ]:
+            with self.subTest(resource=resource):
+                self.assert_error(
+                    'must not contain double quotes',
+                    self.resource_arg,
+                    resource,
+                )
+
+    def test_rejects_url_fragment(self):
+        for resource in [
+            'http://example.com/hi#frag',
+            'http://example.com/hi#',
+            'http://example.com/*#frag',
+        ]:
+            with self.subTest(resource=resource):
+                self.assert_error('URL fragment', self.resource_arg, resource)
+
+    def test_rejects_malformed_urls(self):
+        for resource in [
+            '',
+            'example.com/hi',
+            'video.mp4',
+            'ftp://example.com/hi',
+            'rtmp://example.com/video.mp4',
+            'https://[zz/a',
+            'https://:80/a',
+            'https://example.com:abc/a',
+            'https://example.com:99999/a',
+        ]:
+            with self.subTest(resource=resource):
+                self.assert_error(
+                    f'Invalid value for {self.resource_arg}',
+                    self.resource_arg,
+                    resource,
+                )
+
+    def test_rejects_non_ascii_and_spaces(self):
+        for resource in [
+            'https://example.com/caf\u00e9.jpg',
+            'https://b\u00fccher.example/a.jpg',
+            'https://example.com/a b.jpg',
+        ]:
+            with self.subTest(resource=resource):
+                self.assert_error(
+                    'ASCII characters', self.resource_arg, resource
+                )
+
+    def test_rejects_active_date_not_before_expiration(self):
+        # The result would never be valid, so it could never be used.
+        for date_greater_than in ['2016-2-1', '2016-1-1']:
+            with self.subTest(date_greater_than=date_greater_than):
+                self.assert_error(
+                    'must be before --date-less-than',
+                    self.resource_arg,
+                    'http://example.com/hi',
+                    '--date-greater-than',
+                    date_greater_than,
+                )
+
+    def test_rejects_ipv6_address(self):
+        self.assert_error(
+            'CloudFront only supports IPv4',
+            self.resource_arg,
+            'http://example.com/hi',
+            '--ip-address',
+            '2001:db8::/32',
+        )
+
+    def test_rejects_invalid_ip_address(self):
+        for ip_address in [
+            'foo',
+            '1.2.3',
+            '256.1.1.1',
+            '300.1.2.3/40',
+            '1.2.3.4/33',
+            '1.2.3.4/a',
+            '1.2.3.0/255.255.255.0',
+            '01.2.3.4',
+            '1.2.3.4","x":"y',
+        ]:
+            with self.subTest(ip_address=ip_address):
+                self.assert_error(
+                    'not a valid IPv4 address or CIDR range',
+                    self.resource_arg,
+                    'http://example.com/hi',
+                    '--ip-address',
+                    ip_address,
+                )
+
+
+class TestSignInputValidation(BaseInputValidationTest):
+    __test__ = True
+    resource_arg = '--url'
+
+    def assert_error(self, message, *args):
+        self.assert_sign_error(message, *args)
+
+    def test_accepts_url_with_port_and_percent_encoding(self):
+        url = 'https://example.com:8443/caf%C3%A9.jpg'
+        signed_url, _ = self.sign_url('--url', url)
+        self.assertTrue(signed_url.startswith(url + '?Expires=1451606400&'))
+
+    def test_rejects_url_with_signing_params(self):
+        # CloudFront denies URLs whose signing parameters appear twice.
+        for url in [
+            'http://example.com/hi?Expires=1',
+            'http://example.com/hi?a=1&Signature=x',
+            'http://example.com/hi?Key-Pair-Id=K1',
+            'http://example.com/hi?Policy=x',
+            'http://example.com/hi?Hash-Algorithm=SHA1',
+        ]:
+            with self.subTest(url=url):
+                self.assert_sign_error(
+                    'already contains the CloudFront signing parameters',
+                    '--url',
+                    url,
+                )
+
+    def test_accepts_query_params_that_are_not_signing_params(self):
+        # Query parameter names are case-sensitive.
+        url = 'http://example.com/hi?expires=1&size=large'
+        signed_url, _ = self.sign_url('--url', url)
+        self.assertTrue(signed_url.startswith(url + '&Expires=1451606400&'))
+
+
+class TestSignKeyErrors(BaseSigningCommandTest):
+    def test_encrypted_pkcs8_private_key(self):
+        self.use_private_key(
+            '-----BEGIN ENCRYPTED PRIVATE KEY-----\n'
+            'MIIC5TBfBgkqhkiG9w0BBQ0wUjAxBgkqhkiG9w0BBQwwJAQQ4VOg5sq9YVA9jnxg\n'
+            '-----END ENCRYPTED PRIVATE KEY-----\n'
+        )
+        self.assert_key_error('Encrypted private keys are not supported')
+
+    def test_encrypted_pkcs1_private_key(self):
+        self.use_private_key(
+            '-----BEGIN RSA PRIVATE KEY-----\n'
+            'Proc-Type: 4,ENCRYPTED\n'
+            'DEK-Info: AES-128-CBC,00000000000000000000000000000000\n'
+            '\n'
+            'AAAA\n'
+            '-----END RSA PRIVATE KEY-----\n'
+        )
+        self.assert_key_error('Encrypted private keys are not supported')
+
+    def test_malformed_key_bodies(self):
+        for label in ['RSA PRIVATE KEY', 'EC PRIVATE KEY', 'PRIVATE KEY']:
+            for body in ['MIIC5TBfBgkqhkiG9w0BBQ0w', 'not base64 !!']:
+                with self.subTest(label=label, body=body):
+                    self.use_private_key(
+                        f'-----BEGIN {label}-----\n{body}\n'
+                        f'-----END {label}-----\n'
+                    )
+                    self.assert_key_error(
+                        'Unsupported key type or invalid private key'
+                    )
+
+    def test_error_does_not_expose_key_material(self):
+        body = 'MIIC5TBfBgkqhkiG9w0BBQ0wUjAxBgkqhkiG9w0BBQwwJAQQ4VOg5sq9YVA9'
+        for scheme in ['file://', 'fileb://']:
+            with self.subTest(scheme=scheme):
+                self.use_private_key(
+                    f'-----BEGIN PRIVATE KEY-----\n{body}\n'
+                    '-----END PRIVATE KEY-----\n',
+                    scheme=scheme,
+                )
+                _, stderr, _ = self.sign(
+                    '--url', 'http://example.com/hi', expected_rc=255
+                )
+                self.assertNotIn(body[:24], stderr)
+
+    def test_non_utf8_private_key(self):
+        self.use_private_key(b'\xff\xfe\x00', scheme='fileb://')
+        self.assert_key_error('Unsupported private key')
+
+    @skip_if_windows('The Windows CRT derives the missing EC public key.')
+    def test_ec_private_key_without_public_key(self):
+        # A P-256 key exported with ``openssl ec -no_public``.
+        self.use_private_key(
+            '-----BEGIN PRIVATE KEY-----\n'
+            'MEECAQAwEwYHKoZIzj0CAQYIKoZIzj0DAQcEJzAlAgEBBCCtiWoCbDTjaVJiKBL+\n'
+            'EfVrw1qbBKZkc6ch+SgM8yMdsg==\n'
+            '-----END PRIVATE KEY-----\n'
+        )
+        self.assert_key_error('does not include its public key')
+
+    def test_unsupported_pem_label(self):
+        self.use_private_key(
+            '-----BEGIN OPENSSH PRIVATE KEY-----\n'
+            'b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAAAMwAAAAtz\n'
+            '-----END OPENSSH PRIVATE KEY-----\n'
+        )
+        self.assert_key_error('Unsupported key type')
+
+    def test_non_p256_curve(self):
+        # EC private keys on the P-384 curve, which CloudFront does not
+        # support, in SEC1 and PKCS#8 format.
+        for private_key in [
+            '-----BEGIN EC PRIVATE KEY-----\n'
+            'MIGkAgEBBDCIoGBIXHIpvlHWVTT+jka5Jpj1YR5rWIncoxf6VUxxhlHjEI7hqDto\n'
+            'FajvDTKH5jSgBwYFK4EEACKhZANiAAT1i0QFJOMXeKxMx4VpZHw6OoKhEOB4nOXk\n'
+            'h+Z9dhiQ4H6O2D84WS6ql+iyNIH2qux8jBUju3fc8NdbVwIqyfQZWRRo/Lg5ekDp\n'
+            'M7re404ay7JYpiJXlCZP+RBCBn23NZU=\n'
+            '-----END EC PRIVATE KEY-----\n',
+            '-----BEGIN PRIVATE KEY-----\n'
+            'MIG2AgEAMBAGByqGSM49AgEGBSuBBAAiBIGeMIGbAgEBBDBMuzkcdg39rdzENI+E\n'
+            'T7PxexdQ6bSROnnxQAn+KTrCfDDfWjfhm/AxexdwTBnkffmhZANiAASbiECnsS42\n'
+            'Bz5vDZrKGz5t6qtWa6KJdgSHyP75BEwY1Fq5mrrV/mzWRzisPvALUzx6OJyQ/inY\n'
+            'mKeb0H9tA7BMjxTpT7GfYE9ySp1bsKqXwa725O6Kcl3pPz6JsiXNVs8=\n'
+            '-----END PRIVATE KEY-----\n',
+        ]:
+            with self.subTest(private_key=private_key.splitlines()[0]):
+                self.use_private_key(private_key)
+                self.assert_key_error('Only P-256 EC keys are supported')
+
+
+class TestSignPrivateKeyInputs(BaseSigningCommandTest):
+    def assert_signs_like_file_key(self):
+        expected_url = self.sign_url_with('file://' + self.private_key_file)
+        self.assertEqual(
+            self.sign_url_with(self.private_key_arg), expected_url
+        )
+
+    def sign_url_with(self, private_key_arg):
+        self.private_key_arg, previous = private_key_arg, self.private_key_arg
+        try:
+            return self.sign('--url', 'http://example.com/hi')[0]
+        finally:
+            self.private_key_arg = previous
+
+    def test_fileb_private_key(self):
+        self.use_private_key(self.private_key.encode('ascii'), 'fileb://')
+        self.assert_signs_like_file_key()
+
+    def test_private_key_with_byte_order_mark(self):
+        self.use_private_key(
+            b'\xef\xbb\xbf' + self.private_key.encode('ascii'), 'fileb://'
+        )
+        self.assert_signs_like_file_key()
+
+    def test_private_key_with_crlf_line_endings(self):
+        self.use_private_key(self.private_key.replace('\n', '\r\n'))
+        self.assert_signs_like_file_key()
+
+    def test_private_key_after_certificate(self):
+        self.use_private_key(
+            '-----BEGIN CERTIFICATE-----\n'
+            'MIIB9DCCAV2gAwIBAgIUVURURxQltJ3nilDhiDP37i2FhcAwDQYJKoZIhvcNAQEL\n'
+            '-----END CERTIFICATE-----\n' + self.private_key
+        )
+        self.assert_signs_like_file_key()
+
+
+class TestSignSigningFailures(BaseSigningCommandTest):
+    signing_error = RuntimeError(
+        '7179 (AWS_ERROR_CAL_CRYPTO_OPERATION_FAILED): Unknown error when '
+        'calling underlying Crypto library.'
+    )
+
+    def assert_signing_failure(self, key_class):
+        with mock.patch.object(
+            key_class, 'sign', side_effect=self.signing_error
+        ):
+            self.assert_key_error('Failed to sign the CloudFront policy')
+
+    def test_rsa_signing_failure(self):
+        self.assert_signing_failure(RSA)
+
+    def test_ecdsa_signing_failure(self):
+        self.use_private_key(TestSignECDSAWithECParameters.private_key)
+        self.assert_signing_failure(EC)

@@ -453,11 +453,38 @@ class TestOutputPanel(BasicPromptToolkitTest):
     def test_output_panel_and_doc_panel_can_be_visible_together(
         self, app_runner
     ):
-        with app_runner.run_app_in_thread():
+        output_processed = Event()
+        doc_processed = Event()
+        output_binding = app_runner.app.key_bindings.get_bindings_for_keys(
+            (Keys.F5,)
+        )[-1]
+        doc_binding = app_runner.app.key_bindings.get_bindings_for_keys(
+            (Keys.F3,)
+        )[-1]
+        original_output_handler = output_binding.handler
+        original_doc_handler = doc_binding.handler
+
+        def toggle_output(event):
+            original_output_handler(event)
+            output_processed.set()
+
+        def toggle_doc(event):
+            original_doc_handler(event)
+            doc_processed.set()
+
+        with (
+            mock.patch.object(output_binding, 'handler', toggle_output),
+            mock.patch.object(doc_binding, 'handler', toggle_doc),
+            app_runner.run_app_in_thread(),
+        ):
             app_runner.feed_input(Keys.F5)
+            assert output_processed.wait(5), 'F5 was not processed'
+            app_runner._wait_until_app_is_done_updating()
             self.assert_buffer_is_visible(app_runner.app, 'output_buffer')
             self.assert_buffer_is_not_visible(app_runner.app, 'doc_buffer')
             app_runner.feed_input(Keys.F3)
+            assert doc_processed.wait(5), 'F3 was not processed'
+            app_runner._wait_until_app_is_done_updating()
             self.assert_buffer_is_visible(app_runner.app, 'doc_buffer')
             self.assert_buffer_is_visible(app_runner.app, 'output_buffer')
 

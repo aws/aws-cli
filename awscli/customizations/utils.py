@@ -134,8 +134,10 @@ def s3_bucket_exists(s3_client, bucket_name):
     except ClientError as e:
         # If a client error is thrown. Check that it was a 404 error.
         # If it was a 404 error, than the bucket does not exist.
-        error_code = int(e.response['Error']['Code'])
-        if error_code == 404:
+        error_code = e.response.get('ResponseMetadata', {}).get(
+            'HTTPStatusCode', e.response['Error']['Code']
+        )
+        if str(error_code) == '404':
             bucket_exists = False
     return bucket_exists
 

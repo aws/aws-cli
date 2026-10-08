@@ -13,7 +13,6 @@ from awscli.clidocs import OperationDocumentEventHandler
 from awscli.clidriver import CLICommand
 from awscli.bcdoc import docevents
 from awscli.help import HelpCommand
-from awscli.schema import SchemaTransformer
 
 LOG = logging.getLogger(__name__)
 _open = open

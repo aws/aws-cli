@@ -11,14 +11,11 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import base64
-import botocore
 import json
 import os
 import sys
 
 from datetime import timedelta
-from botocore.signers import RequestSigner
-from botocore.model import ServiceId
 
 from awscli.formatter import get_formatter
 from awscli.utils import create_nested_client

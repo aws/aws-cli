@@ -58,7 +58,7 @@ def get_container_runtime_id(client, container_name, task_id, cluster_name):
             return container['runtimeId']
 
 
-def build_ssm_request_paramaters(response, client):
+def build_ssm_request_parameters(response, client):
     cluster_name = response['clusterArn'].split('/')[-1]
     task_id = response['taskArn'].split('/')[-1]
     container_name = response['containerName']
@@ -93,7 +93,7 @@ class ExecuteCommandCaller(CLIOperationCaller):
             profile_name = self._session.profile \
                 if self._session.profile is not None else ''
             endpoint_url = client.meta.endpoint_url
-            ssm_request_params = build_ssm_request_paramaters(response, client)
+            ssm_request_params = build_ssm_request_parameters(response, client)
             # ignore_user_entered_signals ignores these signals
             # because if signals which kills the process are not
             # captured would kill the foreground process but not the

@@ -11,7 +11,9 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import os
+import time
 
+import pytest
 from awscrt.s3 import S3RequestType
 
 from awscli.compat import BytesIO
@@ -25,7 +27,89 @@ from tests.functional.s3 import (
 
 
 class TestSyncCommand(BaseS3TransferCommandTest):
+    def setUp(self):
+        # tzset reads the process environment, which the base class mocks.
+        self.process_environ = os.environ
+        super().setUp()
+
     prefix = 's3 sync '
+
+    def test_download_preserves_timestamp_and_syncs_only_once(self):
+        self._assert_syncs_only_once('host-local')
+
+    @pytest.mark.skipif(
+        not hasattr(time, 'tzset'), reason='Requires process-local TZ support'
+    )
+    def test_download_syncs_only_once_in_other_timezones(self):
+        original_tz = self.process_environ.get('TZ')
+        for zone in (
+            'IST-1GMT0,M10.5.0/2,M3.5.0/1',
+            'UTC0',
+            'GMT0BST,M3.5.0/1,M10.5.0/2',
+            'NPT-5:45',
+        ):
+            with self.subTest(zone=zone):
+                try:
+                    with (
+                        mock.patch.dict(self.process_environ, {'TZ': zone}),
+                        mock.patch.dict(self.environ, {'TZ': zone}),
+                    ):
+                        # os.environ may have been replaced with a plain dict.
+                        os.putenv('TZ', zone)
+                        time.tzset()
+                        self._assert_syncs_only_once(zone)
+                finally:
+                    if original_tz is None:
+                        os.unsetenv('TZ')
+                    else:
+                        os.putenv('TZ', original_tz)
+                    time.tzset()
+
+    def _assert_syncs_only_once(self, directory):
+        destination = os.path.join(self.files.rootdir, directory)
+        cmdline = ['s3', 'sync', 's3://bucket/', destination]
+        for value, epoch in (
+            ('2021-12-02T17:42:01Z', 1638466921),
+            ('2021-07-02T17:42:01Z', 1625247721),
+        ):
+            with self.subTest(last_modified=value):
+                filename = os.path.join(destination, 'foo.txt')
+                if os.path.exists(filename):
+                    os.remove(filename)
+                listing = self.list_objects_response(
+                    ['foo.txt'], Size=3, LastModified=value
+                )
+                self.operations_called.clear()
+                self.init_clidriver()
+                self.parsed_responses = [listing, self.get_object_response()]
+                stdout, stderr, _ = self.run_cmd(cmdline, expected_rc=0)
+                self.assertIn('download:', stdout)
+                self.assertEqual(stderr, '')
+                self.assert_operations_called(
+                    [
+                        self.list_objects_request('bucket'),
+                        self.get_object_request('bucket', 'foo.txt'),
+                    ]
+                )
+                with open(filename, 'rb') as f:
+                    self.assertEqual(f.read(), b'foo')
+                self.assertEqual(os.stat(filename).st_mtime, epoch)
+
+                self.operations_called.clear()
+                self.init_clidriver()
+                self.parsed_responses = [
+                    self.list_objects_response(
+                        ['foo.txt'], Size=3, LastModified=value
+                    )
+                ]
+                stdout, stderr, _ = self.run_cmd(cmdline, expected_rc=0)
+                self.assertEqual(stdout, '')
+                self.assertEqual(stderr, '')
+                self.assert_operations_called(
+                    [
+                        self.list_objects_request('bucket'),
+                    ]
+                )
 
     def test_website_redirect_ignore_paramfile(self):
         full_path = self.files.create_file('foo.txt', 'mycontent')
@@ -979,6 +1063,8 @@ class TestSyncDownloadNoFollowSymlinks(BaseS3TransferCommandTest):
         self.escaped = os.path.join(self.outside, 'escaped.txt')
         with open(self.escaped, 'w') as f:
             f.write('original')
+        # Ensure the same-sized object is selected for download in every timezone.
+        os.utime(self.escaped, (946684800, 946684800))
         # Object keys under 'sub/' resolve to self.outside.
         self.symlink = os.path.join(self.dest, 'sub')
         os.symlink(self.outside, self.symlink)
@@ -988,7 +1074,7 @@ class TestSyncDownloadNoFollowSymlinks(BaseS3TransferCommandTest):
                     {
                         'Key': 'sub/escaped.txt',
                         'Size': 8,
-                        'LastModified': '00:00:00Z',
+                        'LastModified': '1999-12-31T23:59:00Z',
                         'ETag': '"foo-1"',
                     },
                 ],

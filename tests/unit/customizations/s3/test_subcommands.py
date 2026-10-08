@@ -13,8 +13,10 @@
 import argparse
 import os
 import sys
+import time
 
 import botocore.session
+import pytest
 
 from awscli.compat import StringIO
 from awscli.customizations.exceptions import ParamValidationError
@@ -49,6 +51,62 @@ class FakeArgs:
 
     def __contains__(self, key):
         return key in self.__dict__
+
+
+class TestListCommandTimestamps(unittest.TestCase):
+    def setUp(self):
+        self.command = ListCommand(mock.Mock())
+
+    def test_timestamp_uses_host_local_time(self):
+        expected = time.strftime(
+            '%Y-%m-%d %H:%M:%S', time.localtime(1638466921)
+        )
+        self.assertEqual(
+            self.command._make_last_mod_str('2021-12-02T23:12:01+05:30'),
+            expected,
+        )
+
+    @pytest.mark.skipif(
+        not hasattr(time, 'tzset'), reason='Requires process-local TZ support'
+    )
+    def test_timestamp_with_negative_dst(self):
+        self._assert_negative_dst_timestamps()
+
+    @pytest.mark.skipif(
+        not hasattr(time, 'tzset'), reason='Requires process-local TZ support'
+    )
+    def test_timestamp_with_negative_dst_and_plain_environ(self):
+        # Existing package teardown can replace os.environ with a plain dict.
+        with mock.patch('os.environ', os.environ.copy()):
+            self._assert_negative_dst_timestamps()
+
+    def _assert_negative_dst_timestamps(self):
+        cases = [
+            ('2021-12-02T17:42:01Z', '2021-12-02 17:42:01'),
+            ('2021-07-02T17:42:01Z', '2021-07-02 18:42:01'),
+            ('2021-03-28T00:59:59Z', '2021-03-28 00:59:59'),
+            ('2021-03-28T01:00:00Z', '2021-03-28 02:00:00'),
+            ('2021-10-31T00:59:59Z', '2021-10-31 01:59:59'),
+            ('2021-10-31T01:00:00Z', '2021-10-31 01:00:00'),
+        ]
+        original_tz = os.environ.get('TZ')
+        try:
+            with mock.patch.dict(
+                os.environ, {'TZ': 'IST-1GMT0,M10.5.0/2,M3.5.0/1'}
+            ):
+                os.putenv('TZ', 'IST-1GMT0,M10.5.0/2,M3.5.0/1')
+                time.tzset()
+                for value, expected in cases:
+                    with self.subTest(value=value):
+                        self.assertEqual(
+                            self.command._make_last_mod_str(value), expected
+                        )
+        finally:
+            if original_tz is None:
+                os.unsetenv('TZ')
+            else:
+                os.putenv('TZ', original_tz)
+            time.tzset()
 
 
 class TestRbCommand(unittest.TestCase):

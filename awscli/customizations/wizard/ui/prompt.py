@@ -185,7 +185,14 @@ class WizardPromptCompletionAnswer(WizardPromptAnswer):
             lambda: getattr(self._buffer, 'complete_state', False)
         )
 
-        @kb.add(Keys.Enter, filter=is_completing)
+        has_selected_completion = Condition(
+            lambda: (
+                self._buffer.complete_state is not None
+                and self._buffer.complete_state.current_completion is not None
+            )
+        )
+
+        @kb.add(Keys.Enter, filter=has_selected_completion)
         def apply_completion(event):
             current_completion = self._buffer.complete_state.current_completion
             self._buffer.apply_completion(current_completion)

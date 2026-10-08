@@ -11,12 +11,98 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from dateutil import parser, tz
+import os
+import time
 
+import pytest
+from dateutil import parser
+
+from awscli.testutils import mock
 from tests.functional.s3 import BaseS3TransferCommandTest
 
 
 class TestLSCommand(BaseS3TransferCommandTest):
+    def setUp(self):
+        # tzset reads the process environment, which the base class mocks.
+        self.process_environ = os.environ
+        super().setUp()
+
+    def test_listing_uses_host_local_time(self):
+        self._assert_listing_time(
+            '2021-12-02T23:12:01+05:30',
+            time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(1638466921)),
+        )
+
+    @pytest.mark.skipif(
+        not hasattr(time, 'tzset'), reason='Requires process-local TZ support'
+    )
+    def test_listing_in_other_timezones(self):
+        dates = (
+            '2021-12-02T17:42:01Z',
+            '2021-07-02T17:42:01Z',
+            '2021-03-28T00:59:59Z',
+            '2021-03-28T01:00:00Z',
+            '2021-10-31T00:59:59Z',
+            '2021-10-31T01:00:00Z',
+        )
+        cases = (
+            (
+                'IST-1GMT0,M10.5.0/2,M3.5.0/1',
+                (
+                    '2021-12-02 17:42:01',
+                    '2021-07-02 18:42:01',
+                    '2021-03-28 00:59:59',
+                    '2021-03-28 02:00:00',
+                    '2021-10-31 01:59:59',
+                    '2021-10-31 01:00:00',
+                ),
+            ),
+            (
+                'GMT0BST,M3.5.0/1,M10.5.0/2',
+                (
+                    '2021-12-02 17:42:01',
+                    '2021-07-02 18:42:01',
+                    '2021-03-28 00:59:59',
+                    '2021-03-28 02:00:00',
+                    '2021-10-31 01:59:59',
+                    '2021-10-31 01:00:00',
+                ),
+            ),
+            ('UTC0', ('2021-12-02 17:42:01', '2021-07-02 17:42:01')),
+            ('NPT-5:45', ('2021-12-02 23:27:01', '2021-07-02 23:27:01')),
+        )
+        original_tz = self.process_environ.get('TZ')
+        for zone, expected_times in cases:
+            try:
+                with (
+                    mock.patch.dict(self.process_environ, {'TZ': zone}),
+                    mock.patch.dict(self.environ, {'TZ': zone}),
+                ):
+                    # os.environ may have been replaced with a plain dict.
+                    os.putenv('TZ', zone)
+                    time.tzset()
+                    for value, expected in zip(dates, expected_times):
+                        with self.subTest(zone=zone, last_modified=value):
+                            self._assert_listing_time(value, expected)
+            finally:
+                if original_tz is None:
+                    os.unsetenv('TZ')
+                else:
+                    os.putenv('TZ', original_tz)
+                time.tzset()
+
+    def _assert_listing_time(self, value, expected):
+        self.operations_called.clear()
+        self.init_clidriver()
+        self.parsed_responses = [
+            self.list_objects_response(['foo.txt'], Size=3, LastModified=value)
+        ]
+        stdout, stderr, _ = self.run_cmd(
+            's3 ls s3://bucket/ --recursive', expected_rc=0
+        )
+        self.assertEqual(stdout, f'{expected}          3 foo.txt\n')
+        self.assertEqual(stderr, '')
+
     def test_operations_used_in_recursive_list(self):
         time_utc = "2014-01-09T20:45:49.000Z"
         self.parsed_responses = [
@@ -42,11 +128,11 @@ class TestLSCommand(BaseS3TransferCommandTest):
         self.assertNotIn('delimiter', call_args)
         # Time is stored in UTC timezone, but the actual time displayed
         # is specific to your tzinfo, so shift the timezone to your local's.
-        time_local = parser.parse(time_utc).astimezone(tz.tzlocal())
+        time_local = time.localtime(parser.parse(time_utc).timestamp())
         self.assertEqual(
             stdout,
             '%s        100 foo/bar.txt\n'
-            % time_local.strftime('%Y-%m-%d %H:%M:%S'),
+            % time.strftime('%Y-%m-%d %H:%M:%S', time_local),
         )
 
     def test_errors_out_with_extra_arguments(self):
@@ -222,8 +308,8 @@ class TestLSCommand(BaseS3TransferCommandTest):
         call_args = self.operations_called[0][1]
         # Time is stored in UTC timezone, but the actual time displayed
         # is specific to your tzinfo, so shift the timezone to your local's.
-        time_local = parser.parse(time_utc).astimezone(tz.tzlocal())
-        time_fmt = time_local.strftime('%Y-%m-%d %H:%M:%S')
+        time_local = time.localtime(parser.parse(time_utc).timestamp())
+        time_fmt = time.strftime('%Y-%m-%d %H:%M:%S', time_local)
         self.assertIn('%s     1 Byte onebyte.txt\n' % time_fmt, stdout)
         self.assertIn('%s    1.0 KiB onekilobyte.txt\n' % time_fmt, stdout)
         self.assertIn('%s    1.0 MiB onemegabyte.txt\n' % time_fmt, stdout)
@@ -276,8 +362,8 @@ class TestLSCommand(BaseS3TransferCommandTest):
         call_args = self.operations_called[0][1]
         # Time is stored in UTC timezone, but the actual time displayed
         # is specific to your tzinfo, so shift the timezone to your local's.
-        time_local = parser.parse(time_utc).astimezone(tz.tzlocal())
-        time_fmt = time_local.strftime('%Y-%m-%d %H:%M:%S')
+        time_local = time.localtime(parser.parse(time_utc).timestamp())
+        time_fmt = time.strftime('%Y-%m-%d %H:%M:%S', time_local)
         self.assertIn('Total Objects: 6\n', stdout)
         self.assertIn('Total Size: 1127000493261825\n', stdout)
 
@@ -326,8 +412,8 @@ class TestLSCommand(BaseS3TransferCommandTest):
         call_args = self.operations_called[0][1]
         # Time is stored in UTC timezone, but the actual time displayed
         # is specific to your tzinfo, so shift the timezone to your local's.
-        time_local = parser.parse(time_utc).astimezone(tz.tzlocal())
-        time_fmt = time_local.strftime('%Y-%m-%d %H:%M:%S')
+        time_local = time.localtime(parser.parse(time_utc).timestamp())
+        time_fmt = time.strftime('%Y-%m-%d %H:%M:%S', time_local)
         self.assertIn('Total Objects: 6\n', stdout)
         self.assertIn('Total Size: 1.0 PiB\n', stdout)
 

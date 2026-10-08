@@ -46,6 +46,13 @@ class CLIDocumentEventHandler:
         self.register(help_command.session, help_command.event_class)
         self._arg_groups = self._build_arg_table_groups(help_command)
         self._documented_arg_groups = []
+        # Named structure shapes that have already been fully documented
+        # once on this page. Large APIs (e.g. QuickSight's dashboard/
+        # analysis "Definition" shapes) reuse the same named sub-structure
+        # hundreds of times across sibling fields; re-emitting the full
+        # member tree for every occurrence is what balloons generated RST
+        # (and the Sphinx doctree memory built from it) for those services.
+        self._seen_shape_names = set()
 
     def _build_arg_table_groups(self, help_command):
         arg_groups = {}
@@ -333,12 +340,23 @@ class CLIDocumentEventHandler:
         doc.style.new_paragraph()
         member_type_name = member_shape.type_name
         if member_type_name == 'structure':
-            required_members = member_shape.metadata.get('required', [])
-            for sub_name, sub_shape in member_shape.members.items():
-                sub_required = sub_name in required_members
-                self._doc_member(
-                    doc, sub_name, sub_shape, stack, required=sub_required
+            shape_name = member_shape.name
+            dedupe = doc.target == 'html' and shape_name
+            if dedupe and shape_name in self._seen_shape_names:
+                doc.write(
+                    f'( For the members of this structure, see the '
+                    f'``{shape_name}`` structure documented earlier '
+                    f'on this page. )'
                 )
+            else:
+                if dedupe:
+                    self._seen_shape_names.add(shape_name)
+                required_members = member_shape.metadata.get('required', [])
+                for sub_name, sub_shape in member_shape.members.items():
+                    sub_required = sub_name in required_members
+                    self._doc_member(
+                        doc, sub_name, sub_shape, stack, required=sub_required
+                    )
         elif member_type_name == 'map':
             key_shape = member_shape.key
             key_name = key_shape.serialization.get('name', 'key')

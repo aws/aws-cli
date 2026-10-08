@@ -13,6 +13,7 @@ SOURCEDIR     = source
 PAPEROPT_a4     = -D latex_paper_size=a4
 PAPEROPT_letter = -D latex_paper_size=letter
 ALLSPHINXOPTS   = -d $(BUILDDIR)/doctrees $(PAPEROPT_$(PAPER)) $(SPHINXOPTS) source
+SHARD_BATCH_SIZE = 40
 # the i18n builder cannot share the environment and doctrees with the others
 I18NSPHINXOPTS  = $(PAPEROPT_$(PAPER)) $(SPHINXOPTS) source
 
@@ -48,6 +49,14 @@ clean:
 
 html:
 	$(SPHINXBUILD) -b html $(ALLSPHINXOPTS) $(BUILDDIR)/html
+	@echo
+	@echo "Build finished. The HTML pages are in $(BUILDDIR)/html."
+
+# Builds html in batches of services instead of one sphinx-build over the
+# whole site, to bound peak memory. See build_sharded.py for details and
+# current limitations (search index is not merged across batches yet).
+html-sharded:
+	python build_sharded.py -b html -o $(BUILDDIR)/html --batch-size $(SHARD_BATCH_SIZE)
 	@echo
 	@echo "Build finished. The HTML pages are in $(BUILDDIR)/html."
 

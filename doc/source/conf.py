@@ -82,6 +82,14 @@ release = '2.37.10'
 # directories to ignore when looking for source files.
 exclude_patterns = ['examples']
 
+# build_sharded.py runs sphinx-build once per batch of services to bound
+# peak memory instead of parsing every service's docs into one environment.
+# It passes the services to skip for a given batch via this env var, since
+# sphinx-build's -D flag doesn't cleanly support list-valued overrides.
+_shard_exclude = os.environ.get('DOC_SHARD_EXCLUDE', '')
+if _shard_exclude:
+    exclude_patterns.extend(_shard_exclude.split('::'))
+
 # The reST default role (used for this markup: `text`) to use for all documents.
 # default_role = None
 

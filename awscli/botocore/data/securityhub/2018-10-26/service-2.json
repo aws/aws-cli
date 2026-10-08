@@ -252,6 +252,24 @@
       ],
       "documentation":"<p> For a batch of security controls and standards, this operation updates the enablement status of a control in a standard. </p>"
     },
+    "CancelExportJobV2":{
+      "name":"CancelExportJobV2",
+      "http":{
+        "method":"POST",
+        "requestUri":"/exportjobsv2/{ExportJobId}/cancel"
+      },
+      "input":{"shape":"CancelExportJobV2Request"},
+      "output":{"shape":"CancelExportJobV2Response"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Cancels a findings export job that is in progress. Security Hub transitions a running job to the <code>CANCELLED</code> state and returns the <code>ExportJobId</code> and its new <code>Status</code>. Canceling a job that is already in the <code>CANCELLED</code> state succeeds and returns the same result, so you can safely retry a cancel request.</p> <p>You can't cancel an export job that has already reached a terminal <code>SUCCEEDED</code> or <code>FAILED</code> state; in that case, this operation returns a <code>ConflictException</code>. If no export job matches the <code>ExportJobId</code> that you provide, this operation returns a <code>ResourceNotFoundException</code>.</p> <p>The <code>Status</code> value returned by this operation reflects the cancellation immediately, even though the job can take a short time to stop completely.</p>"
+    },
     "CreateActionTarget":{
       "name":"CreateActionTarget",
       "http":{
@@ -1154,6 +1172,24 @@
       ],
       "documentation":"<p>Returns a list of the standards that are currently enabled.</p>"
     },
+    "GetExportJobV2":{
+      "name":"GetExportJobV2",
+      "http":{
+        "method":"GET",
+        "requestUri":"/exportjobsv2/{ExportJobId}"
+      },
+      "input":{"shape":"GetExportJobV2Request"},
+      "output":{"shape":"GetExportJobV2Response"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Returns the details of a single findings export job, including its current <code>Status</code>, the <code>Destination</code> it writes to, the <code>OutputConfiguration</code> it was started with, and its <code>StartedAt</code> and <code>EndedAt</code> timestamps. Use this operation to poll an export job that you started with <code>StartExportJobV2</code> until it reaches a terminal state (<code>SUCCEEDED</code>, <code>FAILED</code>, or <code>CANCELLED</code>).</p> <p>If the job failed, the response includes a <code>FailureCode</code> and <code>FailureMessage</code> that describe the reason. Input values such as <code>Scopes</code> and <code>Filters</code> are echoed back as they were submitted, with relative date ranges returned unresolved. If no export job matches the <code>ExportJobId</code> that you provide, this operation returns a <code>ResourceNotFoundException</code>.</p>",
+      "readonly":true
+    },
     "GetFindingAggregator":{
       "name":"GetFindingAggregator",
       "http":{
@@ -1608,6 +1644,23 @@
       ],
       "documentation":"<p>Lists all findings-generating solutions (products) that you are subscribed to receive findings from in Security Hub CSPM.</p>"
     },
+    "ListExportJobsV2":{
+      "name":"ListExportJobsV2",
+      "http":{
+        "method":"GET",
+        "requestUri":"/exportjobsv2"
+      },
+      "input":{"shape":"ListExportJobsV2Request"},
+      "output":{"shape":"ListExportJobsV2Response"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Returns the findings export jobs in your account as a paginated list of <code>ExportSummary</code> objects. You can filter the results by job <code>Status</code> or <code>DataType</code>.</p> <p>To page through the results, use the <code>MaxResults</code> and <code>NextToken</code> parameters. If the response includes a <code>NextToken</code> value, pass it in a subsequent request to retrieve the next page of results.</p> <p>Each <code>ExportSummary</code> reports the output <code>Format</code> of the job but not its full <code>OutputConfiguration</code>. To retrieve the filters and selected fields that a job was started with, call <code>GetExportJobV2</code>.</p>",
+      "readonly":true
+    },
     "ListExposuresByRemediationV2":{
       "name":"ListExposuresByRemediationV2",
       "http":{
@@ -1807,6 +1860,27 @@
         {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p> Disassociates a target account, organizational unit, or the root from a specified configuration. When you disassociate a configuration from its target, the target inherits the configuration of the closest parent. If there’s no configuration to inherit, the target retains its settings but becomes a self-managed account. A target can be disassociated from a configuration policy or self-managed behavior. Only the Security Hub CSPM delegated administrator can invoke this operation from the home Region. </p>"
+    },
+    "StartExportJobV2":{
+      "name":"StartExportJobV2",
+      "http":{
+        "method":"POST",
+        "requestUri":"/exportjobsv2",
+        "responseCode":202
+      },
+      "input":{"shape":"StartExportJobV2Request"},
+      "output":{"shape":"StartExportJobV2Response"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"},
+        {"shape":"OrganizationalUnitNotFoundException"},
+        {"shape":"OrganizationNotFoundException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Starts an ad hoc export job that writes Security Hub findings to an Amazon Simple Storage Service (Amazon S3) bucket that you own. Because the export runs asynchronously, this operation returns only the <code>ExportJobId</code> of the new job; it doesn't wait for the export to finish. Use <code>GetExportJobV2</code> to poll the job, and <code>ListExportJobsV2</code> to view the export jobs in your account.</p> <p>Security Hub allows only one export job in the <code>RUNNING</code> state per account at a time. If an export job is already running, this operation returns a <code>ServiceQuotaExceededException</code>. Wait for the running job to finish, or cancel it with <code>CancelExportJobV2</code>, before you start a new one.</p> <p>Specify the destination bucket and Amazon Web Services Key Management Service (Amazon Web Services KMS) key in the <code>Destination</code> parameter, and the output format (<code>CSV</code> or <code>OCSF_JSON</code>), optional filters, and field selection in the <code>OutputConfiguration</code> parameter. Before you call this operation, you must grant Security Hub permission to write to your bucket and use your Amazon Web Services KMS key by adding the bucket policy and key policy statements shown in the Examples section.</p> <p>Two identities use your Amazon Web Services KMS key, and each needs its own permission. Security Hub uses the key when it writes the export objects to your bucket. The IAM principal that calls <code>StartExportJobV2</code> must also have <code>kms:GenerateDataKey</code> and <code>kms:Decrypt</code> permissions on the key. The Examples section shows both grants.</p> <p>A delegated administrator can use the optional <code>Scopes</code> parameter to export findings for specific organizations or organizational units (OUs).</p> <p>To make the request idempotent, provide a <code>ClientToken</code>. If you retry a <code>StartExportJobV2</code> request with the same <code>ClientToken</code> and the same request parameters, Security Hub returns the <code>ExportJobId</code> of the original job instead of starting a new one. If you reuse a <code>ClientToken</code> with different request parameters, this operation returns a <code>ConflictException</code>.</p>"
     },
     "TagResource":{
       "name":"TagResource",
@@ -16929,6 +17003,35 @@
       "type":"list",
       "member":{"shape":"BooleanFilter"}
     },
+    "CancelExportJobV2Request":{
+      "type":"structure",
+      "required":["ExportJobId"],
+      "members":{
+        "ExportJobId":{
+          "shape":"ExportJobId",
+          "documentation":"<p>The unique identifier of the export job to cancel. This is the value returned by <code>StartExportJobV2</code>.</p>",
+          "location":"uri",
+          "locationName":"ExportJobId"
+        }
+      }
+    },
+    "CancelExportJobV2Response":{
+      "type":"structure",
+      "required":[
+        "ExportJobId",
+        "Status"
+      ],
+      "members":{
+        "ExportJobId":{
+          "shape":"ExportJobId",
+          "documentation":"<p>The unique identifier of the export job.</p>"
+        },
+        "Status":{
+          "shape":"ExportStatus",
+          "documentation":"<p>The state of the export job after the cancel request.</p>"
+        }
+      }
+    },
     "CategoryList":{
       "type":"list",
       "member":{"shape":"NonEmptyString"}
@@ -19026,6 +19129,153 @@
       },
       "documentation":"<p> The options for customizing a security control parameter that is a list of enums. </p>"
     },
+    "ExportDataType":{
+      "type":"string",
+      "documentation":"<p>The category of data that an export job produces. Currently, the only supported value is <code>FINDINGS</code>.</p>",
+      "enum":["FINDINGS"]
+    },
+    "ExportDestination":{
+      "type":"structure",
+      "members":{
+        "S3":{
+          "shape":"S3ExportDestination",
+          "documentation":"<p>The Amazon Simple Storage Service (Amazon S3) bucket and Amazon Web Services Key Management Service (Amazon Web Services KMS) key that Security Hub uses to write the export.</p>"
+        }
+      },
+      "documentation":"<p>Specifies where Security Hub writes the export output. This is a union: you must specify exactly one member. Currently, the only supported member is <code>S3</code>.</p>",
+      "union":true
+    },
+    "ExportFailureCode":{
+      "type":"string",
+      "documentation":"<p>Classifies why a terminal-state export job failed. Present only when <code>Status</code> is <code>FAILED</code>. Valid values are as follows:</p> <ul> <li> <p> <code>ACCESS_DENIED</code> – Security Hub couldn't read a required resource or write to the destination. Verify the bucket policy and key policy.</p> </li> <li> <p> <code>RESOURCE_NOT_FOUND</code> – A referenced destination bucket or Amazon Web Services KMS key no longer exists.</p> </li> <li> <p> <code>INTERNAL_ERROR</code> – An unclassified service-side error occurred. Retry the export, and if the failure persists, contact Amazon Web Services Support.</p> </li> </ul>",
+      "enum":[
+        "ACCESS_DENIED",
+        "RESOURCE_NOT_FOUND",
+        "INTERNAL_ERROR"
+      ]
+    },
+    "ExportJobId":{
+      "type":"string",
+      "documentation":"<p>The unique identifier of an export job. Security Hub generates this value when you call <code>StartExportJobV2</code>. It consists of 1–64 lowercase alphanumeric characters.</p>",
+      "max":64,
+      "min":1,
+      "pattern":"^[a-z0-9]+$"
+    },
+    "ExportMaxResults":{
+      "type":"integer",
+      "max":20,
+      "min":1
+    },
+    "ExportName":{
+      "type":"string",
+      "documentation":"<p>A user-provided name for an export job. The value can be 1–256 characters. Alphanumeric characters, spaces, and the following ASCII characters are permitted: <code>. _ , : ( ) / + -</code>.</p>",
+      "max":256,
+      "min":1
+    },
+    "ExportOutput":{
+      "type":"structure",
+      "members":{
+        "Findings":{
+          "shape":"FindingsOutput",
+          "documentation":"<p>Configures an export of Security Hub findings, including the output format and any filters or selected fields.</p>"
+        }
+      },
+      "documentation":"<p>Specifies what data to export and how to format it. This is a union: you must specify exactly one member. Currently, the only supported member is <code>Findings</code>.</p>",
+      "union":true
+    },
+    "ExportOutputSummary":{
+      "type":"structure",
+      "members":{
+        "Findings":{
+          "shape":"FindingsOutputSummary",
+          "documentation":"<p>The output configuration summary for a findings export.</p>"
+        }
+      },
+      "documentation":"<p>A summary of the output configuration for an export job. The populated member corresponds to the data type that was exported.</p>",
+      "union":true
+    },
+    "ExportScopes":{
+      "type":"structure",
+      "members":{
+        "AwsOrganizations":{
+          "shape":"AwsOrganizationScopeList",
+          "documentation":"<p>A list of Organizations scopes to include in the export. Each entry in the list specifies an organization or organizational unit to include for the delegated administrator's account. If the list specifies multiple entries, the entries are combined using OR logic.</p>"
+        }
+      },
+      "documentation":"<p>Defines the data boundary for a findings export. Scopes determine which organizational units or organizations to retrieve data from.</p> <p>Only a delegated administrator can use this structure. If a delegated administrator omits it, the export covers the entire organization; any other caller exports only findings from its own account.</p>"
+    },
+    "ExportStatus":{
+      "type":"string",
+      "documentation":"<p>The state of an export job. Valid values are as follows:</p> <ul> <li> <p> <code>RUNNING</code> – The job is queued or in progress.</p> </li> <li> <p> <code>SUCCEEDED</code> – The job completed and the output is available in the destination bucket.</p> </li> <li> <p> <code>FAILED</code> – The job didn't complete. See <code>FailureCode</code> and <code>FailureMessage</code>.</p> </li> <li> <p> <code>CANCELLED</code> – The job was canceled with <code>CancelExportJobV2</code>.</p> </li> </ul>",
+      "enum":[
+        "RUNNING",
+        "SUCCEEDED",
+        "FAILED",
+        "CANCELLED"
+      ]
+    },
+    "ExportSummary":{
+      "type":"structure",
+      "required":[
+        "ExportJobId",
+        "Status",
+        "DataType",
+        "Destination",
+        "StartedAt"
+      ],
+      "members":{
+        "ExportJobId":{
+          "shape":"ExportJobId",
+          "documentation":"<p>The unique identifier of the export job.</p>"
+        },
+        "Name":{
+          "shape":"ExportName",
+          "documentation":"<p>The user-provided name of the export job, if one was specified.</p>"
+        },
+        "Status":{
+          "shape":"ExportStatus",
+          "documentation":"<p>The current state of the export job.</p>"
+        },
+        "DataType":{
+          "shape":"ExportDataType",
+          "documentation":"<p>The category of data that the export job produces.</p>"
+        },
+        "OutputConfiguration":{
+          "shape":"ExportOutputSummary",
+          "documentation":"<p>The output configuration of the export job. For findings exports, this reports the output format. Present only for findings exports; absent for other data types.</p>"
+        },
+        "Scopes":{
+          "shape":"ExportScopes",
+          "documentation":"<p>The organization scopes that the export job was started with, echoed verbatim. Absent if the caller didn't supply <code>Scopes</code>.</p>"
+        },
+        "Destination":{
+          "shape":"ExportDestination",
+          "documentation":"<p>The destination that the export job writes to.</p>"
+        },
+        "FailureCode":{
+          "shape":"ExportFailureCode",
+          "documentation":"<p>A code that classifies why the export job failed. Present only when <code>Status</code> is <code>FAILED</code>.</p>"
+        },
+        "FailureMessage":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>A human-readable message about why the export job failed. Present only when <code>Status</code> is <code>FAILED</code>.</p>"
+        },
+        "StartedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the export job was created.</p> <p>For more information about the validation and formatting of timestamp fields in Security Hub, see <a href=\"https://docs.aws.amazon.com/securityhub/1.0/APIReference/Welcome.html#timestamps\">Timestamps</a>.</p>"
+        },
+        "EndedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the export job reached a terminal state. Absent while the job is <code>RUNNING</code>.</p> <p>For more information about the validation and formatting of timestamp fields in Security Hub, see <a href=\"https://docs.aws.amazon.com/securityhub/1.0/APIReference/Welcome.html#timestamps\">Timestamps</a>.</p>"
+        }
+      },
+      "documentation":"<p>A summary of an export job, as returned by <code>ListExportJobsV2</code>.</p>"
+    },
+    "ExportSummaryList":{
+      "type":"list",
+      "member":{"shape":"ExportSummary"},
+      "documentation":"<p>A list of export job summaries.</p>"
+    },
     "ExposureFinding":{
       "type":"structure",
       "required":[
@@ -19298,6 +19548,166 @@
         }
       },
       "documentation":"<p>Defines the data boundary for a findings query. Scopes determine which organizational units or organizations to retrieve data from.</p>"
+    },
+    "FindingsExportFormat":{
+      "type":"string",
+      "documentation":"<p>The output format of an export. <code>CSV</code> produces comma-separated rows. <code>OCSF_JSON</code> produces newline-delimited JSON records in the Open Cybersecurity Schema Framework (OCSF) format.</p>",
+      "enum":[
+        "CSV",
+        "OCSF_JSON"
+      ]
+    },
+    "FindingsOutput":{
+      "type":"structure",
+      "required":["Format"],
+      "members":{
+        "Format":{
+          "shape":"FindingsExportFormat",
+          "documentation":"<p>The output format of the export. <code>CSV</code> produces comma-separated rows that are suitable for spreadsheets and analysis tools. <code>OCSF_JSON</code> produces newline-delimited JSON records in the Open Cybersecurity Schema Framework (OCSF) format used elsewhere in Security Hub.</p>"
+        },
+        "Filters":{
+          "shape":"OcsfFindingFilters",
+          "documentation":"<p>An optional set of OCSF finding filters that restrict which findings are exported. The filter structure is the same as the one used by <code>GetFindingsV2</code>. If you omit this member, Security Hub exports all findings available to the caller. When echoed by <code>GetExportJobV2</code>, relative date ranges are returned unresolved.</p>"
+        },
+        "SelectedFields":{
+          "shape":"FindingsSelectedFieldList",
+          "documentation":"<p>The OCSF finding fields to include in the export, specified as OCSF field paths (for example, <code>finding_info.title</code> or <code>severity</code>). You can specify from 1 to 50 fields.</p> <p>Whether this parameter is required depends on the value of <code>Format</code>:</p> <ul> <li> <p> <code>CSV</code> – Required. The field paths that you specify become the columns of the output, in the order that you provide them. If you omit this parameter, the request returns a <code>ValidationException</code>.</p> </li> <li> <p> <code>OCSF_JSON</code> – Not supported. This format includes each finding in full, so field selection doesn't apply. If you specify this parameter, the request returns a <code>ValidationException</code>.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>The configuration for a findings export: the output format, an optional set of filters, and the fields to include.</p>"
+    },
+    "FindingsOutputSummary":{
+      "type":"structure",
+      "required":["Format"],
+      "members":{
+        "Format":{
+          "shape":"FindingsExportFormat",
+          "documentation":"<p>The output format of the export. <code>CSV</code> produces comma-separated rows that are suitable for spreadsheets and analysis tools. <code>OCSF_JSON</code> produces newline-delimited JSON records in the Open Cybersecurity Schema Framework (OCSF) format used elsewhere in Security Hub.</p>"
+        }
+      },
+      "documentation":"<p>A summary of the output configuration for a findings export, returned by <code>ListExportJobsV2</code>. Unlike the configuration returned by <code>GetExportJobV2</code>, it reports only the output format.</p>"
+    },
+    "FindingsSelectableField":{
+      "type":"string",
+      "documentation":"<p>An OCSF finding field path that can be included in <code>FindingsOutput.SelectedFields</code>, for example <code>finding_info.title</code>, <code>severity</code>, or <code>cloud.account.uid</code>. Each value corresponds to a field in the OCSF finding schema.</p>",
+      "enum":[
+        "metadata.uid",
+        "activity_name",
+        "cloud.account.name",
+        "cloud.account.uid",
+        "cloud.provider",
+        "cloud.region",
+        "compliance.assessments.category",
+        "compliance.assessments.name",
+        "compliance.control",
+        "compliance.status",
+        "compliance.standards",
+        "finding_info.desc",
+        "finding_info.src_url",
+        "finding_info.title",
+        "finding_info.types",
+        "finding_info.uid",
+        "finding_info.related_events.traits.category",
+        "finding_info.related_events.uid",
+        "finding_info.related_events.product.uid",
+        "finding_info.related_events.title",
+        "metadata.product.feature.uid",
+        "metadata.product.name",
+        "metadata.product.uid",
+        "metadata.product.vendor_name",
+        "remediation.desc",
+        "remediation.references",
+        "resources.cloud_partition",
+        "resources.name",
+        "resources.owner.account.uid",
+        "resources.owner.org.uid",
+        "resources.owner.account.name",
+        "resources.provider",
+        "resources.region",
+        "resources.type",
+        "resources.uid",
+        "severity",
+        "status",
+        "comment",
+        "vulnerabilities.fix_coverage",
+        "class_name",
+        "databucket.encryption_details.algorithm",
+        "databucket.encryption_details.key_uid",
+        "databucket.file.data_classifications.classifier_details.type",
+        "evidences.actor.user.account.uid",
+        "evidences.api.operation",
+        "evidences.api.response.error_message",
+        "evidences.api.service.name",
+        "evidences.connection_info.direction",
+        "evidences.connection_info.protocol_name",
+        "evidences.dst_endpoint.autonomous_system.name",
+        "evidences.dst_endpoint.location.city",
+        "evidences.dst_endpoint.location.country",
+        "evidences.src_endpoint.autonomous_system.name",
+        "evidences.src_endpoint.hostname",
+        "evidences.src_endpoint.location.city",
+        "evidences.src_endpoint.location.country",
+        "finding_info.analytic.name",
+        "malware.name",
+        "malware_scan_info.uid",
+        "malware.severity",
+        "resources.cloud_function.layers.uid_alt",
+        "resources.cloud_function.runtime",
+        "resources.cloud_function.user.uid",
+        "resources.device.encryption_details.key_uid",
+        "resources.device.image.uid",
+        "resources.image.architecture",
+        "resources.image.registry_uid",
+        "resources.image.repository_name",
+        "resources.image.uid",
+        "resources.subnet_info.uid",
+        "resources.vpc_uid",
+        "vulnerabilities.affected_code.file.path",
+        "vulnerabilities.affected_packages.name",
+        "vulnerabilities.cve.cvss.vendor_name",
+        "vulnerabilities.cve.cvss.version",
+        "vulnerabilities.cve.epss.score",
+        "vulnerabilities.cve.uid",
+        "vulnerabilities.related_vulnerabilities",
+        "vendor_attributes.severity",
+        "activity_id",
+        "compliance.status_id",
+        "confidence_score",
+        "severity_id",
+        "status_id",
+        "finding_info.related_events_count",
+        "evidences.api.response.code",
+        "evidences.dst_endpoint.autonomous_system.number",
+        "evidences.dst_endpoint.port",
+        "evidences.src_endpoint.autonomous_system.number",
+        "evidences.src_endpoint.port",
+        "resources.image.in_use_count",
+        "vulnerabilities.cve.cvss.base_score",
+        "vendor_attributes.severity_id",
+        "finding_info.created_time_dt",
+        "finding_info.first_seen_time_dt",
+        "finding_info.last_seen_time_dt",
+        "finding_info.modified_time_dt",
+        "resources.image.created_time_dt",
+        "resources.image.last_used_time_dt",
+        "resources.modified_time_dt",
+        "compliance.assessments.meets_criteria",
+        "vulnerabilities.is_exploit_available",
+        "vulnerabilities.is_fix_available",
+        "resources.tags",
+        "compliance.control_parameters",
+        "databucket.tags",
+        "finding_info.tags",
+        "evidences.dst_endpoint.ip",
+        "evidences.src_endpoint.ip"
+      ]
+    },
+    "FindingsSelectedFieldList":{
+      "type":"list",
+      "member":{"shape":"FindingsSelectableField"},
+      "documentation":"<p>A list of the OCSF finding fields to include in an export.</p>",
+      "max":50,
+      "min":1
     },
     "FindingsTrendsCompositeFilter":{
       "type":"structure",
@@ -19909,6 +20319,74 @@
         "NextToken":{
           "shape":"NextToken",
           "documentation":"<p>The pagination token to use to request the next page of results.</p>"
+        }
+      }
+    },
+    "GetExportJobV2Request":{
+      "type":"structure",
+      "required":["ExportJobId"],
+      "members":{
+        "ExportJobId":{
+          "shape":"ExportJobId",
+          "documentation":"<p>The unique identifier of the export job to retrieve. This is the value returned by <code>StartExportJobV2</code>.</p>",
+          "location":"uri",
+          "locationName":"ExportJobId"
+        }
+      }
+    },
+    "GetExportJobV2Response":{
+      "type":"structure",
+      "required":[
+        "ExportJobId",
+        "Status",
+        "DataType",
+        "Destination",
+        "StartedAt"
+      ],
+      "members":{
+        "ExportJobId":{
+          "shape":"ExportJobId",
+          "documentation":"<p>The unique identifier of the export job.</p>"
+        },
+        "Name":{
+          "shape":"ExportName",
+          "documentation":"<p>The user-provided name of the export job, if one was specified when the job was started.</p>"
+        },
+        "Status":{
+          "shape":"ExportStatus",
+          "documentation":"<p>The current state of the export job.</p>"
+        },
+        "DataType":{
+          "shape":"ExportDataType",
+          "documentation":"<p>The category of data that the export job produces.</p>"
+        },
+        "OutputConfiguration":{
+          "shape":"ExportOutput",
+          "documentation":"<p>The output configuration that the export job was started with, including the format and any filters or selected fields.</p>"
+        },
+        "Scopes":{
+          "shape":"ExportScopes",
+          "documentation":"<p>The organization scopes that the export job was started with, echoed verbatim. This parameter is absent if the caller didn't supply <code>Scopes</code>. It contains only the organization or organizational unit (OU) identifiers that the caller submitted; it never contains resolved member-account identifiers.</p>"
+        },
+        "Destination":{
+          "shape":"ExportDestination",
+          "documentation":"<p>The destination that the export job writes to.</p>"
+        },
+        "FailureCode":{
+          "shape":"ExportFailureCode",
+          "documentation":"<p>A code that classifies why the export job failed. Present only when <code>Status</code> is <code>FAILED</code>.</p>"
+        },
+        "FailureMessage":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>A human-readable message that provides more detail about why the export job failed. Present only when <code>Status</code> is <code>FAILED</code>.</p>"
+        },
+        "StartedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the export job was created.</p> <p>For more information about the validation and formatting of timestamp fields in Security Hub, see <a href=\"https://docs.aws.amazon.com/securityhub/1.0/APIReference/Welcome.html#timestamps\">Timestamps</a>.</p>"
+        },
+        "EndedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the export job reached a terminal state (<code>SUCCEEDED</code>, <code>FAILED</code>, or <code>CANCELLED</code>). This parameter is absent while the job is <code>RUNNING</code>.</p> <p>For more information about the validation and formatting of timestamp fields in Security Hub, see <a href=\"https://docs.aws.amazon.com/securityhub/1.0/APIReference/Welcome.html#timestamps\">Timestamps</a>.</p>"
         }
       }
     },
@@ -21380,6 +21858,49 @@
         "NextToken":{
           "shape":"NextToken",
           "documentation":"<p>The pagination token to use to request the next page of results.</p>"
+        }
+      }
+    },
+    "ListExportJobsV2Request":{
+      "type":"structure",
+      "members":{
+        "Status":{
+          "shape":"ExportStatus",
+          "documentation":"<p>Filters the results to export jobs that have the specified status.</p>",
+          "location":"querystring",
+          "locationName":"Status"
+        },
+        "DataType":{
+          "shape":"ExportDataType",
+          "documentation":"<p>Filters the results to export jobs that produce the specified data type.</p>",
+          "location":"querystring",
+          "locationName":"DataType"
+        },
+        "MaxResults":{
+          "shape":"ExportMaxResults",
+          "documentation":"<p>The maximum number of results to return in a single call. Valid range is 1–20.</p>",
+          "location":"querystring",
+          "locationName":"MaxResults"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token required for pagination. On your first call, set the value of this parameter to <code>NULL</code>. For subsequent calls, to continue listing data, set the value of this parameter to the value returned in the previous response.</p>",
+          "location":"querystring",
+          "locationName":"NextToken"
+        }
+      }
+    },
+    "ListExportJobsV2Response":{
+      "type":"structure",
+      "required":["Items"],
+      "members":{
+        "Items":{
+          "shape":"ExportSummaryList",
+          "documentation":"<p>The export jobs that match the request, as <code>ExportSummary</code> objects.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The pagination token to use to request the next page of results. Otherwise, this parameter is null.</p>"
         }
       }
     },
@@ -23277,7 +23798,7 @@
       "members":{
         "AwsCli":{
           "shape":"NonEmptyString",
-          "documentation":"<p>An AWS CLI snippet version of the example.</p>"
+          "documentation":"<p>An CLI snippet version of the example.</p>"
         },
         "Cli":{
           "shape":"NonEmptyString",
@@ -25269,6 +25790,33 @@
         "DISABLED"
       ]
     },
+    "S3ExportDestination":{
+      "type":"structure",
+      "required":[
+        "BucketArn",
+        "KmsKeyArn"
+      ],
+      "members":{
+        "BucketArn":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon S3 bucket that Security Hub writes the export to. You must own the bucket, and its bucket policy must grant the Security Hub service principal (<code>exportv2.securityhub.amazonaws.com</code>) permission to write objects. For the required bucket policy, see the Examples section of <code>StartExportJobV2</code>.</p>"
+        },
+        "KmsKeyArn":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The ARN of the Amazon Web Services KMS key that Security Hub uses to encrypt the export objects with server-side encryption. The key policy must allow the Security Hub service principal (<code>exportv2.securityhub.amazonaws.com</code>) to use the key through Amazon S3. For the required key policy, see the Examples section of <code>StartExportJobV2</code>.</p> <p>The key must meet all of the following requirements:</p> <ul> <li> <p>It must be a symmetric key with a key usage of <code>ENCRYPT_DECRYPT</code>.</p> </li> <li> <p>It must be a single-Region key. Multi-Region keys, whose key IDs begin with <code>mrk-</code>, are rejected.</p> </li> <li> <p>You must specify the full key ARN. Key IDs and aliases are rejected.</p> </li> <li> <p>The key must be in the same Amazon Web Services account as the export job.</p> </li> <li> <p>The key must be in the same Amazon Web Services Region as the export job.</p> </li> <li> <p>The key must be in the <code>aws</code>, <code>aws-cn</code>, or <code>aws-us-gov</code> partition.</p> </li> </ul>"
+        },
+        "ObjectPrefix":{
+          "shape":"S3ObjectPrefix",
+          "documentation":"<p>An optional key prefix that Security Hub prepends to the Amazon S3 object keys of the export output. Use a prefix to organize exports within the bucket. The value can be up to 512 characters.</p>"
+        }
+      },
+      "documentation":"<p>The Amazon S3 destination for an export, including the bucket, the Amazon Web Services KMS key used for encryption, and an optional object key prefix.</p>"
+    },
+    "S3ObjectPrefix":{
+      "type":"string",
+      "documentation":"<p>A key prefix that Security Hub prepends to the Amazon S3 object keys of an export. The value can be up to 512 characters.</p>",
+      "max":512
+    },
     "ScopeType":{
       "type":"string",
       "documentation":"<p>The type of scope for an Azure connector. Valid values are <code>TENANT</code> (monitor all subscriptions in the tenant) and <code>SUBSCRIPTION</code> (monitor specific subscriptions).</p>",
@@ -26332,6 +26880,46 @@
     "StartConfigurationPolicyDisassociationResponse":{
       "type":"structure",
       "members":{}
+    },
+    "StartExportJobV2Request":{
+      "type":"structure",
+      "required":[
+        "Destination",
+        "OutputConfiguration"
+      ],
+      "members":{
+        "Name":{
+          "shape":"ExportName",
+          "documentation":"<p>An optional, user-provided name for the export job that helps you identify it in <code>ListExportJobsV2</code> results. The value can be 1–256 characters. Alphanumeric characters, spaces, and the following ASCII characters are permitted: <code>. _ , : ( ) / + -</code>.</p>"
+        },
+        "Destination":{
+          "shape":"ExportDestination",
+          "documentation":"<p>The destination that Security Hub writes the export to. You must specify exactly one destination type. Currently, the only supported type is Amazon S3.</p>"
+        },
+        "OutputConfiguration":{
+          "shape":"ExportOutput",
+          "documentation":"<p>Specifies what data to export and how to format it. You must specify exactly one output type. Currently, the only supported type is <code>Findings</code>.</p>"
+        },
+        "Scopes":{
+          "shape":"ExportScopes",
+          "documentation":"<p>Limits the export to findings from specific organizational units (OUs) or from the delegated administrator's organization. Only the delegated administrator account can use this parameter; other accounts that specify it receive an <code>AccessDeniedException</code>.</p> <p>This parameter is optional. If you omit it, the delegated administrator exports findings from all accounts across the entire organization, and other accounts export only their own findings.</p> <p>You can specify up to 10 entries in <code>Scopes.AwsOrganizations</code>. If you specify multiple entries, Security Hub combines them using OR logic.</p>"
+        },
+        "ClientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique identifier used to ensure idempotency.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "StartExportJobV2Response":{
+      "type":"structure",
+      "required":["ExportJobId"],
+      "members":{
+        "ExportJobId":{
+          "shape":"ExportJobId",
+          "documentation":"<p>The unique identifier of the export job that Security Hub started. Use this value with <code>GetExportJobV2</code> or <code>CancelExportJobV2</code>.</p>"
+        }
+      }
     },
     "StatelessCustomActionDefinition":{
       "type":"structure",

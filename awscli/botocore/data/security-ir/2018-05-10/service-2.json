@@ -219,6 +219,29 @@
       "documentation":"<p>Uploads an attachment to a case.</p>",
       "idempotent":true
     },
+    "GetFindingMetrics":{
+      "name":"GetFindingMetrics",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v1/membership/{membershipId}/finding-metrics",
+        "responseCode":200
+      },
+      "input":{"shape":"GetFindingMetricsRequest"},
+      "output":{"shape":"GetFindingMetricsResponse"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"SecurityIncidentResponseNotActiveException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidTokenException"}
+      ],
+      "documentation":"<p>Returns finding-lifecycle metrics for a membership over a date range.</p>",
+      "readonly":true
+    },
     "GetMembership":{
       "name":"GetMembership",
       "http":{
@@ -1351,6 +1374,97 @@
           "documentation":"<p>Case response metadata</p>"
         }
       }
+    },
+    "GetFindingMetricsRequest":{
+      "type":"structure",
+      "required":[
+        "membershipId",
+        "startDate",
+        "endDate"
+      ],
+      "members":{
+        "membershipId":{
+          "shape":"MembershipId",
+          "documentation":"<p>The membership ID to retrieve metrics for.</p>",
+          "location":"uri",
+          "locationName":"membershipId"
+        },
+        "startDate":{
+          "shape":"Timestamp",
+          "documentation":"<p>The start of the day-aligned UTC window, inclusive.</p>",
+          "location":"querystring",
+          "locationName":"startDate"
+        },
+        "endDate":{
+          "shape":"Timestamp",
+          "documentation":"<p>The end of the day-aligned UTC window, inclusive.</p>",
+          "location":"querystring",
+          "locationName":"endDate"
+        }
+      }
+    },
+    "GetFindingMetricsResponse":{
+      "type":"structure",
+      "required":[
+        "findingsIngestedSecurityHub",
+        "findingsIngestedGuardDuty",
+        "findingsTriaged",
+        "findingsTriagedFalsePositive",
+        "findingsInvestigated",
+        "findingsInvestigatedFalsePositive",
+        "findingsEscalated",
+        "findingsEscalatedFalsePositive",
+        "findingsTruePositive",
+        "findingsInvestigatedInProgress",
+        "findingsEscalatedInProgress"
+      ],
+      "members":{
+        "findingsIngestedSecurityHub":{
+          "shape":"Long",
+          "documentation":"<p>The number of findings ingested from AWS Security Hub during the requested date range.</p>"
+        },
+        "findingsIngestedGuardDuty":{
+          "shape":"Long",
+          "documentation":"<p>The number of findings ingested from Amazon GuardDuty during the requested date range.</p>"
+        },
+        "findingsTriaged":{
+          "shape":"Long",
+          "documentation":"<p>The number of findings triaged during the requested date range.</p>"
+        },
+        "findingsTriagedFalsePositive":{
+          "shape":"Long",
+          "documentation":"<p>The number of triaged findings that were closed as false positives during the requested date range.</p>"
+        },
+        "findingsInvestigated":{
+          "shape":"Long",
+          "documentation":"<p>The number of findings investigated during the requested date range.</p>"
+        },
+        "findingsInvestigatedFalsePositive":{
+          "shape":"Long",
+          "documentation":"<p>The number of investigated findings that were closed as false positives during the requested date range.</p>"
+        },
+        "findingsEscalated":{
+          "shape":"Long",
+          "documentation":"<p>The number of findings escalated during the requested date range.</p>"
+        },
+        "findingsEscalatedFalsePositive":{
+          "shape":"Long",
+          "documentation":"<p>The number of escalated findings that were closed as false positives during the requested date range.</p>"
+        },
+        "findingsTruePositive":{
+          "shape":"Long",
+          "documentation":"<p>The number of findings confirmed as true positives during the requested date range.</p>"
+        },
+        "findingsInvestigatedInProgress":{
+          "shape":"Long",
+          "documentation":"<p>The number of findings whose investigation was in progress during the requested date range.</p>"
+        },
+        "findingsEscalatedInProgress":{
+          "shape":"Long",
+          "documentation":"<p>The number of findings whose escalation was in progress during the requested date range.</p>"
+        }
+      },
+      "documentation":"<p>Finding-lifecycle metrics for a membership over the requested date range.</p>"
     },
     "GetMembershipAccountDetailError":{
       "type":"structure",

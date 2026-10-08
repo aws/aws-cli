@@ -5,8 +5,11 @@
     "auth":["aws.auth#sigv4"],
     "endpointPrefix":"agreement-marketplace",
     "jsonVersion":"1.0",
-    "protocol":"json",
-    "protocols":["json"],
+    "protocol":"smithy-rpc-v2-cbor",
+    "protocols":[
+      "smithy-rpc-v2-cbor",
+      "json"
+    ],
     "serviceAbbreviation":"Agreement Service",
     "serviceFullName":"AWS Marketplace Agreement Service",
     "serviceId":"Marketplace Agreement",
@@ -684,6 +687,10 @@
         }
       },
       "documentation":"<p>User does not have sufficient access to perform this action.</p>",
+      "error":{
+        "httpStatusCode":403,
+        "senderFault":true
+      },
       "exception":true
     },
     "AccessDeniedExceptionReason":{
@@ -1579,6 +1586,10 @@
         }
       },
       "documentation":"<p>Request was denied due to a resource conflict.</p>",
+      "error":{
+        "httpStatusCode":409,
+        "senderFault":true
+      },
       "exception":true
     },
     "Constraints":{
@@ -2291,6 +2302,7 @@
         }
       },
       "documentation":"<p>Unexpected error during processing of request.</p>",
+      "error":{"httpStatusCode":500},
       "exception":true,
       "fault":true
     },
@@ -3296,6 +3308,10 @@
         }
       },
       "documentation":"<p>Request references a resource which does not exist.</p>",
+      "error":{
+        "httpStatusCode":404,
+        "senderFault":true
+      },
       "exception":true
     },
     "ResourceType":{
@@ -3546,6 +3562,10 @@
         }
       },
       "documentation":"<p>Request exceeded the maximum allowed limit (quota) for a specific resource or API operation.</p>",
+      "error":{
+        "httpStatusCode":402,
+        "senderFault":true
+      },
       "exception":true
     },
     "Sort":{
@@ -3663,6 +3683,10 @@
         }
       },
       "documentation":"<p>Request was denied due to request throttling.</p>",
+      "error":{
+        "httpStatusCode":429,
+        "senderFault":true
+      },
       "exception":true
     },
     "Timestamp":{"type":"timestamp"},
@@ -3751,6 +3775,10 @@
         }
       },
       "documentation":"<p>The input fails to satisfy the constraints specified by the service.</p>",
+      "error":{
+        "httpStatusCode":400,
+        "senderFault":true
+      },
       "exception":true
     },
     "ValidationExceptionField":{

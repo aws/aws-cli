@@ -5380,6 +5380,10 @@
         "KmsKeyId":{
           "shape":"KmsKeyId",
           "documentation":"<p>The KMS key ID. Takes the form <code>1a2a3a4-1a2a-3a4a-5a6a-1a2a3a4a5a6a</code>.</p>"
+        },
+        "EncryptionMode":{
+          "shape":"EncryptionMode",
+          "documentation":"<p>The type of encryption at rest applied to the domain's data. Valid values are <code>DISK</code> and <code>NATIVE</code>. <code>DISK</code> is the default and uses volume-level encryption. <code>NATIVE</code> uses engine-native, index-level encryption and requires encryption at rest to be enabled and OpenSearch version 3.3 or later. After the mode is set to <code>NATIVE</code>, it can't be changed back to <code>DISK</code>.</p>"
         }
       },
       "documentation":"<p>Specifies whether the domain should encrypt data at rest, and if so, the Key Management Service (KMS) key to use. Can only be used when creating a new domain or enabling encryption at rest for the first time on an existing domain. You can't modify this parameter after it's already been specified.</p>"
@@ -5401,6 +5405,14 @@
         }
       },
       "documentation":"<p>Status of the encryption at rest options for the specified OpenSearch Service domain.</p>"
+    },
+    "EncryptionMode":{
+      "type":"string",
+      "documentation":"<p>The type of encryption at rest applied to a domain's data: <code>DISK</code> for volume-level encryption or <code>NATIVE</code> for engine-native, index-level encryption.</p>",
+      "enum":[
+        "DISK",
+        "NATIVE"
+      ]
     },
     "Endpoint":{
       "type":"string",
@@ -9733,7 +9745,7 @@
         },
         "AcceptedWarnings":{
           "shape":"AcceptedWarningsList",
-          "documentation":"<p>A list of advisory warning codes to accept for this configuration change. By default, any advisory warning blocks the change. Include the code of each warning you want to accept so the change can proceed. You can find warning codes in the<code>ValidationFailures</code> list returned by <code>DescribeDomainChangeProgress</code>and <code>DescribeDryRunProgress</code>. Critical validation failures cannot be accepted and always block the change. If you omit this parameter or pass an empty list, all warnings block the change. For more information, see <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/managedomains-configuration-changes#validation-check\">Validating a domain update</a>.</p>"
+          "documentation":"<p>A list of advisory warning codes to accept for this configuration change. By default, any advisory warning blocks the change. Include the code of each warning you want to accept so the change can proceed. You can find warning codes in the <code>ValidationFailures</code> list returned by <code>DescribeDomainChangeProgress</code> and <code>DescribeDryRunProgress</code>. Critical validation failures cannot be accepted and always block the change. If you omit this parameter or pass an empty list, all warnings block the change. For more information, see <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/managedomains-configuration-changes#validation-check\">Validating a domain update</a>.</p>"
         }
       },
       "documentation":"<p>Container for the request parameters to the <code>UpdateDomain</code> operation.</p>"

@@ -4,8 +4,11 @@
     "apiVersion":"2023-12-01",
     "endpointPrefix":"codeconnections",
     "jsonVersion":"1.0",
-    "protocol":"json",
-    "protocols":["json"],
+    "protocol":"smithy-rpc-v2-cbor",
+    "protocols":[
+      "smithy-rpc-v2-cbor",
+      "json"
+    ],
     "serviceFullName":"AWS CodeConnections",
     "serviceId":"CodeConnections",
     "signatureVersion":"v4",
@@ -456,6 +459,7 @@
         "Message":{"shape":"ErrorMessage"}
       },
       "documentation":"<p>You do not have sufficient access to perform this action.</p>",
+      "error":{"httpStatusCode":403},
       "exception":true
     },
     "AccountId":{
@@ -493,6 +497,7 @@
         "Message":{"shape":"ErrorMessage"}
       },
       "documentation":"<p>Exception thrown as a result of concurrent modification to an application. For example, two individuals attempting to edit the same application at the same time. </p>",
+      "error":{"httpStatusCode":409},
       "exception":true
     },
     "ConditionalCheckFailedException":{
@@ -501,6 +506,7 @@
         "Message":{"shape":"ErrorMessage"}
       },
       "documentation":"<p>The conditional check failed. Try again later.</p>",
+      "error":{"httpStatusCode":409},
       "exception":true
     },
     "ConflictException":{
@@ -509,6 +515,7 @@
         "Message":{"shape":"ErrorMessage"}
       },
       "documentation":"<p>Two conflicting operations have been made on the same resource.</p>",
+      "error":{"httpStatusCode":409},
       "exception":true
     },
     "Connection":{
@@ -1084,6 +1091,7 @@
         "Message":{"shape":"ErrorMessage"}
       },
       "documentation":"<p>Received an internal server exception. Try again later.</p>",
+      "error":{"httpStatusCode":503},
       "exception":true
     },
     "InvalidInputException":{
@@ -1092,6 +1100,7 @@
         "Message":{"shape":"ErrorMessage"}
       },
       "documentation":"<p>The input is not valid. Verify that the action is typed correctly.</p>",
+      "error":{"httpStatusCode":400},
       "exception":true
     },
     "KmsKeyArn":{
@@ -1110,6 +1119,7 @@
         "Message":{"shape":"ErrorMessage"}
       },
       "documentation":"<p>Exceeded the maximum limit for connections.</p>",
+      "error":{"httpStatusCode":429},
       "exception":true
     },
     "ListConnectionsInput":{
@@ -1498,6 +1508,7 @@
         "Message":{"shape":"ErrorMessage"}
       },
       "documentation":"<p>Unable to create resource. Resource already exists.</p>",
+      "error":{"httpStatusCode":409},
       "exception":true
     },
     "ResourceName":{
@@ -1512,6 +1523,7 @@
         "Message":{"shape":"ErrorMessage"}
       },
       "documentation":"<p>Resource not found. Verify the connection resource ARN and try again.</p>",
+      "error":{"httpStatusCode":404},
       "exception":true
     },
     "ResourceSyncAttempt":{
@@ -1598,6 +1610,7 @@
         "Message":{"shape":"ErrorMessage"}
       },
       "documentation":"<p>Resource not found. Verify the ARN for the host resource and try again.</p>",
+      "error":{"httpStatusCode":400},
       "exception":true
     },
     "RetryLatestCommitFailedException":{
@@ -1606,6 +1619,7 @@
         "Message":{"shape":"ErrorMessage"}
       },
       "documentation":"<p>Retrying the latest commit failed. Try again later.</p>",
+      "error":{"httpStatusCode":503},
       "exception":true
     },
     "Revision":{
@@ -1756,6 +1770,7 @@
         "Message":{"shape":"ErrorMessage"}
       },
       "documentation":"<p>Unable to continue. The sync blocker does not exist.</p>",
+      "error":{"httpStatusCode":404},
       "exception":true
     },
     "SyncBlockerSummary":{
@@ -1851,6 +1866,7 @@
         "Message":{"shape":"ErrorMessage"}
       },
       "documentation":"<p>Unable to continue. The sync blocker still exists.</p>",
+      "error":{"httpStatusCode":409},
       "exception":true
     },
     "SyncConfigurationType":{
@@ -1927,6 +1943,7 @@
         "Message":{"shape":"ErrorMessage"}
       },
       "documentation":"<p>The request was denied due to request throttling.</p>",
+      "error":{"httpStatusCode":429},
       "exception":true
     },
     "Timestamp":{"type":"timestamp"},
@@ -1950,6 +1967,7 @@
         "Message":{"shape":"ErrorMessage"}
       },
       "documentation":"<p>The operation is not supported. Check the connection status and try again.</p>",
+      "error":{"httpStatusCode":400},
       "exception":true
     },
     "UnsupportedProviderTypeException":{
@@ -1958,6 +1976,7 @@
         "Message":{"shape":"ErrorMessage"}
       },
       "documentation":"<p>The specified provider type is not supported for connections.</p>",
+      "error":{"httpStatusCode":400},
       "exception":true
     },
     "UntagResourceInput":{
@@ -2009,6 +2028,7 @@
         "Message":{"shape":"ErrorMessage"}
       },
       "documentation":"<p>The update is out of sync. Try syncing again.</p>",
+      "error":{"httpStatusCode":409},
       "exception":true
     },
     "UpdateRepositoryLinkInput":{

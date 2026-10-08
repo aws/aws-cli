@@ -2928,6 +2928,41 @@
       ],
       "documentation":"<p>Retrieves the statement.</p>"
     },
+    "GetSystemLogsForJobRun":{
+      "name":"GetSystemLogsForJobRun",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetSystemLogsForJobRunRequest"},
+      "output":{"shape":"GetSystemLogsForJobRunResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"EntityNotFoundException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"OperationTimeoutException"}
+      ],
+      "documentation":"<p>Retrieves the system logs for a job run.</p>",
+      "readonly":true
+    },
+    "GetSystemLogsForSession":{
+      "name":"GetSystemLogsForSession",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetSystemLogsForSessionRequest"},
+      "output":{"shape":"GetSystemLogsForSessionResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"EntityNotFoundException"},
+        {"shape":"InvalidInputException"}
+      ],
+      "documentation":"<p>Retrieves the system logs for an interactive session.</p>",
+      "readonly":true
+    },
     "GetTable":{
       "name":"GetTable",
       "http":{
@@ -18321,6 +18356,51 @@
         }
       }
     },
+    "GetSystemLogsForJobRunRequest":{
+      "type":"structure",
+      "required":[
+        "JobName",
+        "RunId"
+      ],
+      "members":{
+        "JobName":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the job.</p>"
+        },
+        "RunId":{
+          "shape":"IdString",
+          "documentation":"<p>The ID of the job run.</p>"
+        }
+      }
+    },
+    "GetSystemLogsForJobRunResponse":{
+      "type":"structure",
+      "members":{
+        "SystemLogsUrl":{
+          "shape":"Url",
+          "documentation":"<p>The URL to download the system logs for the job run.</p>"
+        }
+      }
+    },
+    "GetSystemLogsForSessionRequest":{
+      "type":"structure",
+      "required":["Id"],
+      "members":{
+        "Id":{
+          "shape":"NameString",
+          "documentation":"<p>The ID of the session.</p>"
+        }
+      }
+    },
+    "GetSystemLogsForSessionResponse":{
+      "type":"structure",
+      "members":{
+        "SystemLogsUrl":{
+          "shape":"Url",
+          "documentation":"<p>The URL to download the system logs for the session.</p>"
+        }
+      }
+    },
     "GetTableOptimizerRequest":{
       "type":"structure",
       "required":[
@@ -32505,6 +32585,10 @@
       "documentation":"<p>The options to configure an upsert operation when writing to a Redshift target .</p>"
     },
     "UriString":{"type":"string"},
+    "Url":{
+      "type":"string",
+      "max":40000
+    },
     "UrlString":{"type":"string"},
     "UsageProfileDefinition":{
       "type":"structure",

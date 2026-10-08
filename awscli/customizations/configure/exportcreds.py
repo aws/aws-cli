@@ -61,8 +61,14 @@ class BaseCredentialFormatter:
 
 class BasePerLineFormatter(BaseCredentialFormatter):
     _VAR_FORMAT = 'export {var_name}={var_value}'
+    # Formats meant for POSIX-style shells must always use "\n". On Windows,
+    # stdout translates "\n" to "\r\n", and shells such as Git Bash would
+    # otherwise keep the trailing "\r" as part of each value.
+    _FORCE_LF = False
 
     def display_credentials(self, credentials):
+        if self._FORCE_LF and hasattr(self._stream, 'reconfigure'):
+            self._stream.reconfigure(newline='\n')
         output = self._format_line(
             'AWS_ACCESS_KEY_ID', credentials.access_key
         ) + self._format_line('AWS_SECRET_ACCESS_KEY', credentials.secret_key)
@@ -88,6 +94,7 @@ class BashEnvVarFormatter(BasePerLineFormatter):
         "``export AWS_ACCESS_KEY_ID=EXAMPLE``"
     )
     _VAR_FORMAT = 'export {var_name}={var_value}'
+    _FORCE_LF = True
 
 
 class BashNoExportEnvFormatter(BasePerLineFormatter):
@@ -97,6 +104,7 @@ class BashNoExportEnvFormatter(BasePerLineFormatter):
         "``AWS_ACCESS_KEY_ID=EXAMPLE``"
     )
     _VAR_FORMAT = '{var_name}={var_value}'
+    _FORCE_LF = True
 
 
 class PowershellFormatter(BasePerLineFormatter):
@@ -124,6 +132,7 @@ class FishShellFormatter(BasePerLineFormatter):
         '``set -gx AWS_ACCESS_KEY_ID "EXAMPLE"``'
     )
     _VAR_FORMAT = 'set -gx {var_name} "{var_value}"'
+    _FORCE_LF = True
 
 
 class CredentialProcessFormatter(BaseCredentialFormatter):

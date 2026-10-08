@@ -41,6 +41,7 @@ from awscli.argparser import (
     MainArgParser,
     ServiceArgParser,
     SubCommandArgParser,
+    detect_help_flag,
 )
 from awscli.argprocess import unpack_argument
 from awscli.arguments import (
@@ -94,7 +95,7 @@ LOG_FORMAT = (
 HISTORY_RECORDER = get_global_history_recorder()
 METADATA_FILENAME = 'metadata.json'
 INSTALL_FILENAME = 'install.json'
-_NO_AUTO_PROMPT_ARGS = ['help', '--version']
+_NO_AUTO_PROMPT_ARGS = ['help', '--help', '--version']
 _CLI_AUTO_PROMPT_OPTION = '--cli-auto-prompt'
 _NO_CLI_AUTO_PROMPT_OPTION = '--no-cli-auto-prompt'
 # Don't remove this line.  The idna encoding
@@ -589,8 +590,11 @@ class CLIDriver:
         command_table = self._get_command_table()
         parser = self.create_parser(command_table)
         self._add_aliases(command_table, parser)
+        args, help_flag = detect_help_flag(args)
         parsed_args = None
         try:
+            if help_flag:
+                return self._route_help(args, command_table)
             # Because _handle_top_level_args emits events, it's possible
             # that exceptions can be raised, which should have the same
             # general exception handling logic as calling into the
@@ -614,6 +618,41 @@ class CLIDriver:
                 stderr=get_stderr_text_writer(),
                 parsed_globals=parsed_args,
             )
+
+    def _route_help(self, args, command_table):
+        # Follow the user's command path (e.g. "s3api delete-object") to
+        # find the deepest recognized command, then render its help
+        # directly.  This avoids injecting a bare 'help' token that
+        # could be consumed as a flag value.
+        current_cmd = None
+        for arg in args:
+            if arg.startswith('-'):
+                continue
+            if arg in command_table:
+                current_cmd = command_table[arg]
+                command_table = getattr(
+                    current_cmd, 'subcommand_table', {}
+                )
+                if not command_table:
+                    # No further subcommands (e.g. we reached an
+                    # operation).  Stop scanning so remaining bare
+                    # words (positional param values) aren't
+                    # misinterpreted as commands.
+                    break
+            else:
+                # Bare word that isn't a known command — let the
+                # real parser produce the "invalid choice" error.
+                if current_cmd is not None:
+                    current_cmd([arg, 'help'], None)
+                else:
+                    parser = self.create_parser(command_table)
+                    parser.parse_known_args(args)
+                return
+        if current_cmd is None:
+            return self.create_help_command()([], None)
+        help_cmd = current_cmd.create_help_command()
+        if help_cmd is not None:
+            return help_cmd([], None)
 
     def _emit_session_event(self, parsed_args):
         # This event is guaranteed to run after the session has been

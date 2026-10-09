@@ -1,35 +1,35 @@
-**To get image pipeline details**
+**To get the details of an image pipeline**
 
-The following ``get-image-pipeline`` example lists the details of an image pipeline by specifying its ARN. ::
+The following ``get-image-pipeline`` example retrieves an image pipeline that builds a new image every Sunday, including the image tests configuration and schedule start condition defaults that Image Builder applied at creation. ::
 
     aws imagebuilder get-image-pipeline \
-        --image-pipeline-arn arn:aws:imagebuilder:us-west-2:123456789012:image-pipeline/mywindows2016pipeline
+        --image-pipeline-arn arn:aws:imagebuilder:us-west-2:123456789012:image-pipeline/my-example-pipeline
 
 Output::
 
     {
         "requestId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
         "imagePipeline": {
-            "arn": "arn:aws:imagebuilder:us-west-2:123456789012:image-pipeline/mywindows2016pipeline",
-            "name": "MyWindows2016Pipeline",
-            "description": "Builds Windows 2016 Images",
-            "platform": "Windows",
-            "imageRecipeArn": "arn:aws:imagebuilder:us-west-2:123456789012:image-recipe/mybasicrecipe/2019.12.03",
-            "infrastructureConfigurationArn": "arn:aws:imagebuilder:us-west-2:123456789012:infrastructure-configuration/myexampleinfrastructure",
-            "distributionConfigurationArn": "arn:aws:imagebuilder:us-west-2:123456789012:distribution-configuration/myexampledistribution",
+            "arn": "arn:aws:imagebuilder:us-west-2:123456789012:image-pipeline/my-example-pipeline",
+            "name": "my-example-pipeline",
+            "description": "Builds an Amazon Linux 2023 image every Sunday",
+            "platform": "Linux",
+            "enhancedImageMetadataEnabled": true,
+            "imageRecipeArn": "arn:aws:imagebuilder:us-west-2:123456789012:image-recipe/my-example-recipe/1.0.0",
+            "infrastructureConfigurationArn": "arn:aws:imagebuilder:us-west-2:123456789012:infrastructure-configuration/my-example-infrastructure",
             "imageTestsConfiguration": {
                 "imageTestsEnabled": true,
-                "timeoutMinutes": 60
+                "timeoutMinutes": 720
             },
             "schedule": {
-                "scheduleExpression": "cron(0 0 * * SUN)",
+                "scheduleExpression": "cron(0 0 ? * SUN *)",
                 "pipelineExecutionStartCondition": "EXPRESSION_MATCH_AND_DEPENDENCY_UPDATES_AVAILABLE"
             },
             "status": "ENABLED",
-            "dateCreated": "2020-02-19T19:04:01.253Z",
-            "dateUpdated": "2020-02-19T19:04:01.253Z",
+            "dateCreated": "2026-09-09T19:38:26.574Z",
+            "dateUpdated": "2026-09-09T19:38:26.574Z",
             "tags": {}
         }
     }
 
-For more information, see `Setting Up and Managing an EC2 Image Builder Image Pipeline Using the AWS CLI <https://docs.aws.amazon.com/imagebuilder/latest/userguide/managing-image-builder-cli.html>`__ in the *EC2 Image Builder Users Guide*.
+For more information, see `List and view pipeline details <https://docs.aws.amazon.com/imagebuilder/latest/userguide/pipeline-details.html>`__ in the *EC2 Image Builder User Guide*.

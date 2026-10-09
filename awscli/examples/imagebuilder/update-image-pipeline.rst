@@ -1,32 +1,20 @@
 **To update an image pipeline**
 
-The following ``update-image-pipeline`` example updates an image pipeline using a JSON file. ::
+The following ``update-image-pipeline`` example changes the pipeline's schedule to build every day at 6:00 AM UTC. Updates require all of the settings that the pipeline keeps, not just the ones that change. ::
 
     aws imagebuilder update-image-pipeline \
-        --cli-input-json file://update-image-pipeline.json
-
-Contents of ``update-image-pipeline.json``::
-
-    {
-        "imagePipelineArn": "arn:aws:imagebuilder:us-west-2:123456789012:image-pipeline/mywindows2016pipeline",
-        "imageRecipeArn": "arn:aws:imagebuilder:us-west-2:123456789012:image-recipe/mybasicrecipe/2019.12.03",
-        "infrastructureConfigurationArn": "arn:aws:imagebuilder:us-west-2:123456789012:infrastructure-configuration/myexampleinfrastructure",
-        "distributionConfigurationArn": "arn:aws:imagebuilder:us-west-2:123456789012:distribution-configuration/myexampledistribution",
-        "imageTestsConfiguration": {
-            "imageTestsEnabled": true,
-            "timeoutMinutes": 120
-        },
-        "schedule": {
-            "scheduleExpression": "cron(0 0 * * MON)",
-            "pipelineExecutionStartCondition": "EXPRESSION_MATCH_AND_DEPENDENCY_UPDATES_AVAILABLE"
-        },
-        "status": "DISABLED"
-    }
+        --image-pipeline-arn arn:aws:imagebuilder:us-west-2:123456789012:image-pipeline/my-example-pipeline \
+        --image-recipe-arn arn:aws:imagebuilder:us-west-2:123456789012:image-recipe/my-example-recipe/1.0.0 \
+        --infrastructure-configuration-arn arn:aws:imagebuilder:us-west-2:123456789012:infrastructure-configuration/my-example-infrastructure \
+        --schedule 'scheduleExpression=cron(0 6 * * ? *),pipelineExecutionStartCondition=EXPRESSION_MATCH_AND_DEPENDENCY_UPDATES_AVAILABLE' \
+        --status ENABLED \
+        --client-token a1b2c3d4-5678-90ab-cdef-EXAMPLE22222
 
 Output::
 
     {
-        "requestId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
+        "requestId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
+        "imagePipelineArn": "arn:aws:imagebuilder:us-west-2:123456789012:image-pipeline/my-example-pipeline"
     }
 
-For more information, see `Setting Up and Managing an EC2 Image Builder Image Pipeline Using the AWS CLI <https://docs.aws.amazon.com/imagebuilder/latest/userguide/managing-image-builder-cli.html>`__ in the *EC2 Image Builder Users Guide*.
+For more information, see `Update AMI image pipelines from the AWS CLI <https://docs.aws.amazon.com/imagebuilder/latest/userguide/cli-update-image-pipeline.html>`__ in the *EC2 Image Builder User Guide*.

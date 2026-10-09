@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+2.37.12
+=======
+
+* api-change:``securityagent``: Adds a test scope field to specify whether a pentest targets a web application or a generative AI application.
+* api-change:``meteringmarketplace``: AWS Marketplace Metering Service adds AgreementId to ResolveCustomer API response.
+* api-change:``mediatailor``: Add caching settings to http functions
+* api-change:``deadline``: The new ListMemberships API enables users to discover their memberships across Deadline Cloud resources, enabling scoped users of Deadline resources to discover and interact with the resources they have been provided scoped access to.
+* api-change:``quicksight``: Adds granular custom permissions for the Gong action connector (GongAction, CreateAndUpdateGongAction, ShareGongAction, UseGongAction) and for create, update, and share operations on 45 data source connectors, such as Amazon S3 and Snowflake, through the Custom Permissions APIs.
+
+
 2.37.11
 =======
 

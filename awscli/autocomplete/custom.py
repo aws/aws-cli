@@ -10,6 +10,9 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+from awscli.autocomplete.serverside.custom_completers.console.autocomplete import (
+    add_console_completers,
+)
 from awscli.autocomplete.serverside.custom_completers.ddb.autocomplete import (
     add_ddb_completers,
 )
@@ -22,4 +25,5 @@ def get_custom_completers():
     custom_completers = []
     add_ddb_completers(custom_completers)
     add_log_completers(custom_completers)
+    add_console_completers(custom_completers)
     return custom_completers

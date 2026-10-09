@@ -25,7 +25,11 @@ from awscli.autoprompt.doc import DocsGetter
 from awscli.autoprompt.factory import PromptToolkitFactory
 from awscli.autoprompt.logger import PromptToolkitHandler
 from awscli.autoprompt.output import OutputGetter
-from awscli.logger import LOG_FORMAT, disable_crt_logging
+from awscli.logger import (
+    LOG_FORMAT,
+    RedactingFormatter,
+    disable_crt_logging,
+)
 
 LOG = logging.getLogger(__name__)
 
@@ -37,7 +41,7 @@ def loggers_handler_switcher():
 
     handler = PromptToolkitHandler()
     handler.setLevel(logging.DEBUG)
-    handler.setFormatter(logging.Formatter(LOG_FORMAT))
+    handler.setFormatter(RedactingFormatter(LOG_FORMAT))
     for logger_name in loggers:
         logger = logging.getLogger(logger_name)
         old_handlers[logger_name] = logger.handlers

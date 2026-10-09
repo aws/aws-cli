@@ -3801,7 +3801,8 @@
         "cicdConfiguration":{
           "shape":"CiCdConfiguration",
           "documentation":"<p>The CI/CD pentesting configuration to apply to the pentest.</p>"
-        }
+        },
+        "testScope":{"shape":"TestScope"}
       },
       "documentation":"<p>Input for creating a new pentest.</p>"
     },
@@ -3855,7 +3856,8 @@
         "cicdConfiguration":{
           "shape":"CiCdConfiguration",
           "documentation":"<p>The CI/CD pentesting configuration applied to the pentest.</p>"
-        }
+        },
+        "testScope":{"shape":"TestScope"}
       },
       "documentation":"<p>Output for the CreatePentest operation.</p>"
     },
@@ -7035,6 +7037,7 @@
           "shape":"CiCdConfiguration",
           "documentation":"<p>The CI/CD pentesting configuration for this pentest. Present when the pentest is set up to run from a CI/CD pipeline.</p>"
         },
+        "testScope":{"shape":"TestScope"},
         "createdAt":{
           "shape":"SyntheticTimestamp_date_time",
           "documentation":"<p>The date and time the pentest was created, in UTC format.</p>"
@@ -7178,6 +7181,7 @@
           "documentation":"<p>The code changes that defined the scope of this CI/CD pentest job. Present only for jobs of type CICD.</p>"
         },
         "cicdConfiguration":{"shape":"CiCdConfiguration"},
+        "testScope":{"shape":"TestScope"},
         "createdAt":{
           "shape":"SyntheticTimestamp_date_time",
           "documentation":"<p>The date and time the pentest job was created, in UTC format.</p>"
@@ -8682,6 +8686,25 @@
       "type":"list",
       "member":{"shape":"TaskSummary"}
     },
+    "TestScope":{
+      "type":"structure",
+      "required":["type"],
+      "members":{
+        "type":{
+          "shape":"TestScopeType",
+          "documentation":"<p>The category of application under test.</p>"
+        }
+      },
+      "documentation":"<p>The category of application a pentest targets.</p>"
+    },
+    "TestScopeType":{
+      "type":"string",
+      "documentation":"<p>The category of application a pentest targets.</p>",
+      "enum":[
+        "WEB_APP",
+        "GENERATIVE_AI_APP"
+      ]
+    },
     "Threat":{
       "type":"structure",
       "members":{
@@ -9788,7 +9811,8 @@
         "cicdConfiguration":{
           "shape":"CiCdConfiguration",
           "documentation":"<p>The updated CI/CD pentesting configuration to apply to the pentest.</p>"
-        }
+        },
+        "testScope":{"shape":"TestScope"}
       },
       "documentation":"<p>Input for updating an existing pentest.</p>"
     },
@@ -9842,7 +9866,8 @@
         "cicdConfiguration":{
           "shape":"CiCdConfiguration",
           "documentation":"<p>The CI/CD pentesting configuration applied to the pentest.</p>"
-        }
+        },
+        "testScope":{"shape":"TestScope"}
       },
       "documentation":"<p>Output for the UpdatePentest operation.</p>"
     },

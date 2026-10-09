@@ -1657,6 +1657,26 @@
       "endpoint":{"hostPrefix":"management."},
       "readonly":true
     },
+    "ListMemberships":{
+      "name":"ListMemberships",
+      "http":{
+        "method":"GET",
+        "requestUri":"/2023-10-12/memberships",
+        "responseCode":200
+      },
+      "input":{"shape":"ListMembershipsRequest"},
+      "output":{"shape":"ListMembershipsResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerErrorException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Lists the Deadline Cloud resource memberships associated with a specified IAM Identity Center principal, optionally filtered by the requested resource types.</p>",
+      "endpoint":{"hostPrefix":"management."},
+      "readonly":true
+    },
     "ListMeteredProducts":{
       "name":"ListMeteredProducts",
       "http":{
@@ -10380,6 +10400,64 @@
       },
       "documentation":"<p>Shared pagination field for List operation outputs (nextToken).</p>"
     },
+    "ListMembershipsRequest":{
+      "type":"structure",
+      "required":["principalId"],
+      "members":{
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of results, or <code>null</code> to start from the beginning.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return. Use this parameter with <code>NextToken</code> to get results as a set of sequential pages.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "principalId":{
+          "shape":"IdentityCenterPrincipalId",
+          "documentation":"<p>The ID of the IAM Identity Center principal whose Deadline Cloud resource memberships you want to list.</p>",
+          "location":"querystring",
+          "locationName":"principalId"
+        },
+        "identityStoreId":{
+          "shape":"IdentityStoreId",
+          "documentation":"<p>The identity store ID that contains the principal. This parameter is required for callers that do not use a monitor session.</p>",
+          "location":"querystring",
+          "locationName":"identityStoreId"
+        },
+        "identityCenterRegion":{
+          "shape":"Region",
+          "documentation":"<p>The Region of the IAM Identity Center instance. If not provided, the service defaults to the Amazon Web Services Region in which you make the request.</p>",
+          "location":"querystring",
+          "locationName":"identityCenterRegion"
+        },
+        "resourceTypes":{
+          "shape":"MembershipResourceTypes",
+          "documentation":"<p>The resource types to include when listing the principal's memberships. If not specified, memberships for all supported resource types are returned.</p>",
+          "location":"querystring",
+          "locationName":"resourceTypes"
+        }
+      },
+      "documentation":"<p>Shared pagination fields for List operation inputs (nextToken + maxResults).</p>"
+    },
+    "ListMembershipsResponse":{
+      "type":"structure",
+      "required":["memberships"],
+      "members":{
+        "memberships":{
+          "shape":"MembershipSummaries",
+          "documentation":"<p>The memberships associated with the specified principal.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If Deadline Cloud returns <code>nextToken</code>, then there are more results available. The value of <code>nextToken</code> is a unique pagination token for each page. To retrieve the next page, call the operation again using the returned token. Keep all other arguments unchanged. If no results remain, then <code>nextToken</code> is set to <code>null</code>. Each pagination token expires after 24 hours. If you provide a token that isn't valid, then you receive an HTTP 400 <code>ValidationException</code> error.</p>"
+        }
+      },
+      "documentation":"<p>Shared pagination field for List operation outputs (nextToken).</p>"
+    },
     "ListMeteredProductsRequest":{
       "type":"structure",
       "required":["licenseEndpointId"],
@@ -11498,6 +11576,50 @@
         "OWNER",
         "MANAGER"
       ]
+    },
+    "MembershipResourceType":{
+      "type":"string",
+      "enum":[
+        "FARM",
+        "QUEUE",
+        "FLEET",
+        "JOB"
+      ]
+    },
+    "MembershipResourceTypes":{
+      "type":"list",
+      "member":{"shape":"MembershipResourceType"},
+      "documentation":"<p>The list of resource types to include when listing a principal's memberships.</p>",
+      "max":4,
+      "min":1
+    },
+    "MembershipSummaries":{
+      "type":"list",
+      "member":{"shape":"MembershipSummary"},
+      "documentation":"<p>The list of membership records for the principal.</p>"
+    },
+    "MembershipSummary":{
+      "type":"structure",
+      "members":{
+        "farm":{
+          "shape":"FarmMember",
+          "documentation":"<p>A membership on a farm.</p>"
+        },
+        "queue":{
+          "shape":"QueueMember",
+          "documentation":"<p>A membership on a queue.</p>"
+        },
+        "fleet":{
+          "shape":"FleetMember",
+          "documentation":"<p>A membership on a fleet.</p>"
+        },
+        "job":{
+          "shape":"JobMember",
+          "documentation":"<p>A membership on a job.</p>"
+        }
+      },
+      "documentation":"<p>A membership record for a principal on a single Deadline Cloud resource. The summary identifies the resource that the principal is a member of and the principal's membership level for that resource.</p>",
+      "union":true
     },
     "MemoryAmountMiB":{
       "type":"integer",

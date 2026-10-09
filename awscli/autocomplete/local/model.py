@@ -35,6 +35,7 @@ CLIArgument = namedtuple(
         'type_name',
         'command',
         'parent',
+        'help_text',
         'nargs',
         'positional_arg',
         'required',
@@ -52,12 +53,14 @@ class ModelIndex:
     """
 
     _COMMAND_NAME_QUERY = """
-        SELECT command, full_name FROM command_table
+        SELECT command, full_name, help_text
+        FROM command_table
         WHERE parent = :parent
     """
 
     _ARG_NAME_QUERY = """
-        SELECT argname FROM param_table
+        SELECT argname
+        FROM param_table
         WHERE
           parent = :parent AND
           command = :command AND
@@ -65,8 +68,9 @@ class ModelIndex:
     """
 
     _ARG_DATA_QUERY = """\
-        SELECT argname, type_name, command, parent, nargs, positional_arg,
-            required FROM param_table
+        SELECT argname, type_name, command, parent, help_text,
+            nargs, positional_arg, required
+        FROM param_table
         WHERE
           parent = :parent AND
           command = :command AND
@@ -74,8 +78,9 @@ class ModelIndex:
     """
 
     _GLOBAL_ARG_DATA_QUERY = """
-        SELECT argname, type_name, command, parent, nargs, positional_arg,
-            required FROM param_table
+        SELECT argname, type_name, command, parent, help_text,
+            nargs, positional_arg, required
+        FROM param_table
         WHERE
           parent = :parent
     """

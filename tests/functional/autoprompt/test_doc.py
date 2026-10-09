@@ -40,6 +40,7 @@ class TestDocsGetter(unittest.TestCase):
                                 'string',
                                 'aws',
                                 '',
+                                'The region to use',
                                 None,
                                 False,
                                 False,

@@ -24,9 +24,12 @@ def main():
         os.environ.get('COMP_LINE') or os.environ.get('COMMAND_LINE') or ''
     )
     command_index = int(os.environ.get('COMP_POINT') or len(command_line))
+    shell = os.environ.get("SHELL")
+    if shell:
+        shell = shell.rsplit(os.sep, maxsplit=1)[-1]
 
     try:
-        autocomplete(command_line, command_index)
+        autocomplete(command_line, command_index, shell)
     except KeyboardInterrupt:
         # If the user hits Ctrl+C, we don't want to print
         # a traceback to the user.

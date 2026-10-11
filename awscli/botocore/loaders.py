@@ -106,7 +106,7 @@ import logging
 import os
 
 from botocore import BOTOCORE_ROOT
-from botocore.compat import OrderedDict, json
+from botocore.compat import json
 from botocore.exceptions import DataNotFoundError, UnknownServiceError
 from botocore.utils import deep_merge
 
@@ -175,7 +175,7 @@ class JSONFileLoader:
             payload = fp.read().decode('utf-8')
 
         logger.debug("Loading JSON file: %s", full_path)
-        return json.loads(payload, object_pairs_hook=OrderedDict)
+        return json.loads(payload)
 
 
 def create_loader(search_path_string=None):
@@ -257,6 +257,41 @@ class Loader:
         return self._extras_types
 
     @instance_cache
+    def _get_service_api_version_dirs(self):
+        """Enumerate every (search_path, service_name, api_version) dir
+        across the search path, once.
+
+        This directory walk (listing every service dir, then every
+        api-version dir within it) is the expensive part of
+        ``list_available_services`` - checking whether a given type_name
+        (service-2, paginators-1, waiters-2, ...) exists in each of those
+        dirs is comparatively cheap. Since ``list_available_services`` is
+        typically called once per type_name per process (a single CLI
+        invocation commonly loads several type_names for one service), this
+        caches the walk so only the first call pays it; subsequent calls
+        for other type_names reuse it and only redo the cheap existence
+        check.
+
+        :rtype: list
+        :return: A list of (possible_path, service_name, api_version)
+            tuples.
+
+        """
+        entries = []
+        for possible_path in self._potential_locations():
+            # Any directory in the search path is potentially a service.
+            possible_services = [
+                d
+                for d in os.listdir(possible_path)
+                if os.path.isdir(os.path.join(possible_path, d))
+            ]
+            for service_name in possible_services:
+                full_dirname = os.path.join(possible_path, service_name)
+                for api_version in os.listdir(full_dirname):
+                    entries.append((possible_path, service_name, api_version))
+        return entries
+
+    @instance_cache
     def list_available_services(self, type_name):
         """List all known services.
 
@@ -276,27 +311,18 @@ class Loader:
 
         """
         services = set()
-        for possible_path in self._potential_locations():
-            # Any directory in the search path is potentially a service.
-            # We'll collect any initial list of potential services,
-            # but we'll then need to further process these directories
-            # by searching for the corresponding type_name in each
-            # potential directory.
-            possible_services = [
-                d
-                for d in os.listdir(possible_path)
-                if os.path.isdir(os.path.join(possible_path, d))
-            ]
-            for service_name in possible_services:
-                full_dirname = os.path.join(possible_path, service_name)
-                api_versions = os.listdir(full_dirname)
-                for api_version in api_versions:
-                    full_load_path = os.path.join(
-                        full_dirname, api_version, type_name
-                    )
-                    if self.file_loader.exists(full_load_path):
-                        services.add(service_name)
-                        break
+        for (
+            possible_path,
+            service_name,
+            api_version,
+        ) in self._get_service_api_version_dirs():
+            if service_name in services:
+                continue
+            full_load_path = os.path.join(
+                possible_path, service_name, api_version, type_name
+            )
+            if self.file_loader.exists(full_load_path):
+                services.add(service_name)
         return sorted(services)
 
     @instance_cache
@@ -384,12 +410,13 @@ class Loader:
         """
         # Wrapper around the load_data.  This will calculate the path
         # to call load_data with.
-        known_services = self.list_available_services(type_name)
-        if service_name not in known_services:
-            raise UnknownServiceError(
-                service_name=service_name,
-                known_service_names=', '.join(sorted(known_services)),
-            )
+        if not self._is_known_service(service_name, type_name):
+            known_services = self.list_available_services(type_name)
+            if service_name not in known_services:
+                raise UnknownServiceError(
+                    service_name=service_name,
+                    known_service_names=', '.join(sorted(known_services)),
+                )
 
         if api_version is None:
             api_version = self.determine_latest_version(
@@ -404,6 +431,78 @@ class Loader:
         self._extras_processor.process(model, extras_data)
 
         return model
+
+    def _is_known_service(self, service_name, type_name):
+        """Cheaply check if ``service_name`` would be in
+        ``list_available_services(type_name)``.
+
+        Only ever returns True when certain; a False return means "not
+        known yet", and the caller must fall back to
+        ``list_available_services``. This lets ``load_service_model``
+        confirm a service by listing just that service's directory instead
+        of walking every service directory on the search path.
+
+        """
+        # If list_available_services or the walk it relies on has been
+        # overridden (subclass, instance attribute, or mock.patch on the
+        # class), its answer can't be inferred from the filesystem, or from
+        # what the original implementation cached.
+        cls = type(self)
+        if (
+            'list_available_services' in vars(self)
+            or '_get_service_api_version_dirs' in vars(self)
+            or cls.list_available_services
+            is not _ORIGINAL_LIST_AVAILABLE_SERVICES
+            or cls._get_service_api_version_dirs
+            is not _ORIGINAL_GET_SERVICE_API_VERSION_DIRS
+        ):
+            return False
+        cached = self._cache.get(('list_available_services', type_name))
+        if cached is not None:
+            return service_name in cached
+        try:
+            walk = self._cache.get(('_get_service_api_version_dirs',))
+            if walk is not None:
+                # Use the same directory snapshot list_available_services
+                # would use.
+                for possible_path, dir_service_name, api_version in walk:
+                    if dir_service_name == service_name and (
+                        self.file_loader.exists(
+                            os.path.join(
+                                possible_path,
+                                service_name,
+                                api_version,
+                                type_name,
+                            )
+                        )
+                    ):
+                        return True
+                return False
+            found = False
+            # Keep going after a match: every search path, and the service's
+            # dir in each of them, is still listed so that any error the
+            # full walk would hit for them is raised, via the fallback.
+            for possible_path in self._potential_locations():
+                # Match against the directory listing rather than
+                # os.path.isdir(join(...)) so the name must match exactly
+                # (case-sensitively, no path separators), as it does in
+                # list_available_services.
+                if service_name not in os.listdir(possible_path):
+                    continue
+                full_dirname = os.path.join(possible_path, service_name)
+                if not os.path.isdir(full_dirname):
+                    continue
+                api_versions = os.listdir(full_dirname)
+                if not found:
+                    found = any(
+                        self.file_loader.exists(
+                            os.path.join(full_dirname, api_version, type_name)
+                        )
+                        for api_version in api_versions
+                    )
+        except OSError:
+            return False
+        return found
 
     def _find_extras(self, service_name, type_name, api_version):
         """Creates an iterator over all the extras data."""
@@ -484,6 +583,12 @@ class Loader:
         """
         path = os.path.expanduser(os.path.expandvars(path))
         return path.startswith(self.BUILTIN_DATA_PATH)
+
+
+# The original implementations, captured so _is_known_service can tell if
+# they've been replaced (including by mock.patch on the Loader class itself).
+_ORIGINAL_LIST_AVAILABLE_SERVICES = Loader.list_available_services
+_ORIGINAL_GET_SERVICE_API_VERSION_DIRS = Loader._get_service_api_version_dirs
 
 
 class ExtrasProcessor:

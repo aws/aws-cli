@@ -21,7 +21,10 @@
 
 import contextlib
 import copy
+import json
 import os
+import shutil
+import tempfile
 
 from botocore.exceptions import DataNotFoundError, UnknownServiceError
 from botocore.loaders import (
@@ -31,7 +34,7 @@ from botocore.loaders import (
     create_loader,
 )
 
-from tests import BaseEnvVar, mock
+from tests import BaseEnvVar, mock, unittest
 
 
 class TestJSONFileLoader(BaseEnvVar):
@@ -503,3 +506,155 @@ class TestLoadersWithDirectorySearching(BaseEnvVar):
                 loader.determine_latest_version('ec2', 'service-1'),
                 '2015-03-01',
             )
+
+
+class TestLoadServiceModelKnownServiceCheck(BaseEnvVar):
+    def setUp(self):
+        super().setUp()
+        self.data_path = tempfile.mkdtemp()
+        self.addCleanup(shutil.rmtree, self.data_path)
+        self.create_model('foo', '2015-01-01', 'service-2')
+        self.create_model('foo', '2016-01-01', 'paginators-1')
+        self.create_model('bar', '2015-01-01', 'paginators-1')
+        # A stray file at the top level is not a service.
+        with open(os.path.join(self.data_path, 'stray.json'), 'w') as f:
+            f.write('{}')
+
+    def create_model(self, service_name, api_version, type_name):
+        dirname = os.path.join(self.data_path, service_name, api_version)
+        os.makedirs(dirname, exist_ok=True)
+        with open(os.path.join(dirname, f'{type_name}.json'), 'w') as f:
+            json.dump({'service': service_name, 'type': type_name}, f)
+
+    def create_loader(self, loader_cls=Loader):
+        return loader_cls(
+            extra_search_paths=[self.data_path],
+            include_default_search_paths=False,
+        )
+
+    def test_loads_known_service_without_walking_all_services(self):
+        loader = self.create_loader()
+        model = loader.load_service_model('foo', 'service-2')
+        self.assertEqual(model, {'service': 'foo', 'type': 'service-2'})
+        self.assertNotIn(('_get_service_api_version_dirs',), loader._cache)
+
+    def test_matches_list_available_services(self):
+        names = ['foo', 'bar', 'FOO', 'Foo', 'stray.json', 'missing', '']
+        for type_name in ('service-2', 'paginators-1', 'waiters-2'):
+            known = self.create_loader().list_available_services(type_name)
+            for name in names:
+                loader = self.create_loader()
+                if name in known:
+                    loader.load_service_model(name, type_name)
+                else:
+                    with self.assertRaisesRegex(
+                        UnknownServiceError, 'Unknown service'
+                    ):
+                        loader.load_service_model(name, type_name)
+
+    def test_enforces_case(self):
+        loader = self.create_loader()
+        with self.assertRaisesRegex(
+            UnknownServiceError, 'Unknown service.*FOO.*foo'
+        ):
+            loader.load_service_model('FOO', 'service-2')
+
+    def test_respects_class_level_patch(self):
+        loader = self.create_loader()
+        with mock.patch.object(
+            Loader, 'list_available_services', return_value=['other']
+        ):
+            with self.assertRaisesRegex(
+                UnknownServiceError, 'Unknown service.*foo.*other'
+            ):
+                loader.load_service_model('foo', 'service-2')
+
+    def test_respects_subclass_override(self):
+        class CustomLoader(Loader):
+            def list_available_services(self, type_name):
+                return ['other']
+
+        loader = self.create_loader(CustomLoader)
+        with self.assertRaisesRegex(
+            UnknownServiceError, 'Unknown service.*foo.*other'
+        ):
+            loader.load_service_model('foo', 'service-2')
+
+    def test_uses_cached_list_available_services(self):
+        loader = self.create_loader()
+        self.assertEqual(loader.list_available_services('service-2'), ['foo'])
+        # A model added after the services were listed is not picked up,
+        # same as when load_service_model always consulted the listing.
+        self.create_model('baz', '2015-01-01', 'service-2')
+        with self.assertRaisesRegex(UnknownServiceError, 'Unknown service'):
+            loader.load_service_model('baz', 'service-2')
+
+    def test_uses_cached_directory_walk(self):
+        loader = self.create_loader()
+        loader.list_available_services('paginators-1')
+        # The directory walk is now cached; a service dir created after it
+        # is not picked up, same as list_available_services('service-2').
+        self.create_model('baz', '2015-01-01', 'service-2')
+        with self.assertRaisesRegex(UnknownServiceError, 'Unknown service'):
+            loader.load_service_model('baz', 'service-2')
+        self.assertEqual(
+            loader.load_service_model('foo', 'service-2'),
+            {'service': 'foo', 'type': 'service-2'},
+        )
+
+    @unittest.skipIf(
+        not hasattr(os, 'geteuid') or os.geteuid() == 0,
+        'Requires a non-root POSIX user for unreadable directories.',
+    )
+    def test_unreadable_later_search_path_still_raises(self):
+        unreadable = tempfile.mkdtemp()
+        self.addCleanup(shutil.rmtree, unreadable)
+        os.chmod(unreadable, 0)
+        self.addCleanup(os.chmod, unreadable, 0o700)
+        loader = Loader(
+            extra_search_paths=[self.data_path, unreadable],
+            include_default_search_paths=False,
+        )
+        with self.assertRaises(PermissionError):
+            loader.load_service_model('foo', 'service-2')
+
+    @unittest.skipIf(
+        not hasattr(os, 'geteuid') or os.geteuid() == 0,
+        'Requires a non-root POSIX user for unreadable directories.',
+    )
+    def test_unreadable_later_copy_of_service_still_raises(self):
+        other = tempfile.mkdtemp()
+        self.addCleanup(shutil.rmtree, other)
+        service_dir = os.path.join(other, 'foo')
+        os.makedirs(service_dir)
+        os.chmod(service_dir, 0)
+        self.addCleanup(os.chmod, service_dir, 0o700)
+        loader = Loader(
+            extra_search_paths=[self.data_path, other],
+            include_default_search_paths=False,
+        )
+        with self.assertRaises(PermissionError):
+            loader.load_service_model('foo', 'service-2', '2015-01-01')
+
+    def test_respects_override_after_original_filled_cache(self):
+        class FilteringLoader(Loader):
+            def list_available_services(self, type_name):
+                return [
+                    s
+                    for s in super().list_available_services(type_name)
+                    if s != 'foo'
+                ]
+
+        loader = self.create_loader(FilteringLoader)
+        self.assertEqual(loader.list_available_services('service-2'), [])
+        with self.assertRaisesRegex(UnknownServiceError, 'Unknown service'):
+            loader.load_service_model('foo', 'service-2')
+
+    def test_respects_instance_mock_after_cache_filled(self):
+        loader = self.create_loader()
+        self.assertEqual(loader.list_available_services('service-2'), ['foo'])
+        loader.list_available_services = mock.Mock(return_value=['other'])
+        with self.assertRaisesRegex(
+            UnknownServiceError, 'Unknown service.*foo.*other'
+        ):
+            loader.load_service_model('foo', 'service-2')

@@ -2821,6 +2821,12 @@
       "min":1,
       "pattern":"[a-zA-Z0-9-_]+"
     },
+    "CustomHeaderNames":{
+      "type":"list",
+      "member":{"shape":"CustomHeaderName"},
+      "max":3,
+      "min":0
+    },
     "CustomHeaderValue":{
       "type":"string",
       "documentation":"<p>Value type for custom headers.</p>",
@@ -3514,6 +3520,7 @@
           "shape":"UsageMetric",
           "documentation":"<p>Monthly on-demand hours usage and limit for an account</p>"
         },
+        "monthlyAccountGraderHours":{"shape":"UsageMetric"},
         "usagePeriodStartTime":{
           "shape":"DateTime",
           "documentation":"<p>The start time of the usage tracking period</p>"
@@ -3533,6 +3540,12 @@
           "documentation":"<p>The unique identifier of the AgentSpace</p>",
           "location":"uri",
           "locationName":"agentSpaceId"
+        },
+        "includedData":{
+          "shape":"IncludedData",
+          "documentation":"<p>How much data to include in the response.</p>",
+          "location":"querystring",
+          "locationName":"includedData"
         }
       },
       "documentation":"<p>Input for retrieving a specific AgentSpace by ID.</p>"
@@ -4306,6 +4319,14 @@
       "min":1,
       "sensitive":true
     },
+    "IncludedData":{
+      "type":"string",
+      "documentation":"<p>How much data to include in the response. Defaults to ALL_DATA.</p>",
+      "enum":[
+        "METADATA_ONLY",
+        "ALL_DATA"
+      ]
+    },
     "Integer":{
       "type":"integer",
       "box":true
@@ -4431,6 +4452,12 @@
           "documentation":"<p>Token for the next page of results.</p>",
           "location":"querystring",
           "locationName":"nextToken"
+        },
+        "includedData":{
+          "shape":"IncludedData",
+          "documentation":"<p>How much data to include in the response.</p>",
+          "location":"querystring",
+          "locationName":"includedData"
         }
       },
       "documentation":"<p>Input for listing AgentSpaces with pagination support.</p>"
@@ -5346,6 +5373,10 @@
           "shape":"MCPServerBearerTokenConfig",
           "documentation":"<p>MCP server configuration with Bearer token (RFC 6750).</p>"
         },
+        "customHeaders":{
+          "shape":"MCPServerCustomHeadersConfig",
+          "documentation":"<p>MCP server configuration with one or more custom authentication headers.</p>"
+        },
         "authorizationDiscovery":{
           "shape":"MCPServerAuthorizationDiscoveryConfig",
           "documentation":"<p>MCP server authorization discovery configuration.</p>"
@@ -5376,7 +5407,8 @@
         "oauth-client-credentials",
         "oauth-3lo",
         "api-key",
-        "bearer-token"
+        "bearer-token",
+        "custom-headers"
       ]
     },
     "MCPServerBearerTokenConfig":{
@@ -5429,6 +5461,22 @@
         }
       },
       "documentation":"<p>Configuration for Model Context Protocol (MCP) server integration.</p>"
+    },
+    "MCPServerCustomHeadersConfig":{
+      "type":"structure",
+      "required":["headers"],
+      "members":{
+        "headers":{"shape":"MCPServerCustomHeadersConfigHeadersMap"}
+      },
+      "documentation":"<p>Configuration for authenticating to an MCP server with custom HTTP headers.</p>"
+    },
+    "MCPServerCustomHeadersConfigHeadersMap":{
+      "type":"map",
+      "key":{"shape":"CustomHeaderName"},
+      "value":{"shape":"CustomHeaderValue"},
+      "documentation":"<p>Custom headers map.</p>",
+      "max":3,
+      "min":1
     },
     "MCPServerDatadogConfiguration":{
       "type":"structure",
@@ -6707,6 +6755,10 @@
         "apiKeyHeader":{
           "shape":"String",
           "documentation":"<p>If the MCP server uses API key authentication, these details are provided.</p>"
+        },
+        "customHeaderNames":{
+          "shape":"CustomHeaderNames",
+          "documentation":"<p>The configured custom authentication header names when the MCP server uses custom-header authentication. Secret values are not returned.</p>"
         }
       },
       "documentation":"<p>Details specific to a registered MCP (Model Context Protocol) server.</p>"

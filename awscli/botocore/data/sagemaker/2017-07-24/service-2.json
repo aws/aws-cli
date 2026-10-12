@@ -1036,6 +1036,21 @@
       ],
       "documentation":"<p>Creates a new training plan in SageMaker to reserve compute capacity.</p> <p>Amazon SageMaker Training Plan is a capability within SageMaker that allows customers to reserve and manage GPU capacity for large-scale AI model training. It provides a way to secure predictable access to computational resources within specific timelines and budgets, without the need to manage underlying infrastructure. </p> <p> <b>How it works</b> </p> <p>Plans can be created for specific resources such as SageMaker Training Jobs or SageMaker HyperPod clusters, automatically provisioning resources, setting up infrastructure, executing workloads, and handling infrastructure failures.</p> <p> <b>Plan creation workflow</b> </p> <ul> <li> <p>Users search for available plan offerings based on their requirements (e.g., instance type, count, start time, duration) using the <code> <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_SearchTrainingPlanOfferings.html\">SearchTrainingPlanOfferings</a> </code> API operation.</p> </li> <li> <p>They create a plan that best matches their needs using the ID of the plan offering they want to use. </p> </li> <li> <p>After successful upfront payment, the plan's status becomes <code>Scheduled</code>. </p> </li> <li> <p>The plan can be used to:</p> <ul> <li> <p>Queue training jobs.</p> </li> <li> <p>Allocate to an instance group of a SageMaker HyperPod cluster. </p> </li> </ul> </li> <li> <p>When the plan start date arrives, it becomes <code>Active</code>. Based on available reserved capacity:</p> <ul> <li> <p>Training jobs are launched.</p> </li> <li> <p>Instance groups are provisioned.</p> </li> </ul> </li> </ul> <p> <b>Plan composition</b> </p> <p>A plan can consist of one or more Reserved Capacities, each defined by a specific instance type, quantity, Availability Zone, duration, and start and end times. For more information about Reserved Capacity, see <code> <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_ReservedCapacitySummary.html\">ReservedCapacitySummary</a> </code>.</p>"
     },
+    "CreateTrainingSession":{
+      "name":"CreateTrainingSession",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateTrainingSessionRequest"},
+      "output":{"shape":"CreateTrainingSessionResponse"},
+      "errors":[
+        {"shape":"ResourceNotFound"},
+        {"shape":"ResourceInUse"},
+        {"shape":"ResourceLimitExceeded"}
+      ],
+      "documentation":"<p>Creates a training session in Amazon SageMaker. A training session provisions compute resources for fine-tuning a foundation model using Low-Rank Adaptation (LoRA). After the session is created, you can submit training operations and sample inference requests through the Amazon SageMaker Training Session Runtime API.</p> <p>The following operations are related to <code>CreateTrainingSession</code>:</p> <ul> <li> <p> <code>DescribeTrainingSession</code> </p> </li> <li> <p> <code>ListTrainingSessions</code> </p> </li> <li> <p> <code>StopTrainingSession</code> </p> </li> <li> <p> <code>DeleteTrainingSession</code> </p> </li> </ul>"
+    },
     "CreateTransformJob":{
       "name":"CreateTransformJob",
       "http":{
@@ -1808,6 +1823,19 @@
         {"shape":"ResourceInUse"}
       ],
       "documentation":"<p>Deletes a training job. After SageMaker deletes a training job, all of the metadata for the training job is lost. You can delete only training jobs that are in a terminal state (<code>Stopped</code>, <code>Failed</code>, or <code>Completed</code>) and don't retain an <code>Available</code> <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/train-warm-pools.html\">managed warm pool</a>. You cannot delete a job that is in the <code>InProgress</code> or <code>Stopping</code> state. After deleting the job, you can reuse its name to create another training job.</p>"
+    },
+    "DeleteTrainingSession":{
+      "name":"DeleteTrainingSession",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteTrainingSessionRequest"},
+      "output":{"shape":"DeleteTrainingSessionResponse"},
+      "errors":[
+        {"shape":"ResourceNotFound"}
+      ],
+      "documentation":"<p>Deletes a training session. You must stop a running session before deleting it. Use the <code>StopTrainingSession</code> operation to stop the session first.</p> <p>The following operations are related to <code>DeleteTrainingSession</code>:</p> <ul> <li> <p> <code>CreateTrainingSession</code> </p> </li> <li> <p> <code>DescribeTrainingSession</code> </p> </li> <li> <p> <code>StopTrainingSession</code> </p> </li> </ul>"
     },
     "DeleteTrial":{
       "name":"DeleteTrial",
@@ -2755,6 +2783,20 @@
         {"shape":"ResourceNotFound"}
       ],
       "documentation":"<p>Retrieves the extension history for a specified training plan. The response includes details about each extension, such as the offering ID, start and end dates, status, payment status, and cost information.</p>"
+    },
+    "DescribeTrainingSession":{
+      "name":"DescribeTrainingSession",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeTrainingSessionRequest"},
+      "output":{"shape":"DescribeTrainingSessionResponse"},
+      "errors":[
+        {"shape":"ResourceNotFound"}
+      ],
+      "documentation":"<p>Retrieves detailed information about a training session, including its current status, model configuration, Low-Rank Adaptation (LoRA) parameters, and timestamps.</p> <p>The following operations are related to <code>DescribeTrainingSession</code>:</p> <ul> <li> <p> <code>CreateTrainingSession</code> </p> </li> <li> <p> <code>ListTrainingSessions</code> </p> </li> <li> <p> <code>StopTrainingSession</code> </p> </li> <li> <p> <code>DeleteTrainingSession</code> </p> </li> </ul>",
+      "readonly":true
     },
     "DescribeTransformJob":{
       "name":"DescribeTransformJob",
@@ -3870,6 +3912,17 @@
       "output":{"shape":"ListTrainingPlansResponse"},
       "documentation":"<p>Retrieves a list of training plans for the current account. </p>"
     },
+    "ListTrainingSessions":{
+      "name":"ListTrainingSessions",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListTrainingSessionsRequest"},
+      "output":{"shape":"ListTrainingSessionsResponse"},
+      "documentation":"<p>Lists training sessions in your account. You can filter results by creation time, name, and status. The operation paginates results. To retrieve additional results, use the <code>NextToken</code> parameter.</p> <p>The following operations are related to <code>ListTrainingSessions</code>:</p> <ul> <li> <p> <code>CreateTrainingSession</code> </p> </li> <li> <p> <code>DescribeTrainingSession</code> </p> </li> </ul>",
+      "readonly":true
+    },
     "ListTransformJobs":{
       "name":"ListTransformJobs",
       "http":{
@@ -4386,6 +4439,19 @@
         {"shape":"ResourceNotFound"}
       ],
       "documentation":"<p>Stops a training job. To stop a job, SageMaker sends the algorithm the <code>SIGTERM</code> signal, which delays job termination for 120 seconds. Algorithms might use this 120-second window to save the model artifacts, so the results of the training is not lost. </p> <p>When it receives a <code>StopTrainingJob</code> request, SageMaker changes the status of the job to <code>Stopping</code>. After SageMaker stops the job, it sets the status to <code>Stopped</code>.</p>"
+    },
+    "StopTrainingSession":{
+      "name":"StopTrainingSession",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"StopTrainingSessionRequest"},
+      "output":{"shape":"StopTrainingSessionResponse"},
+      "errors":[
+        {"shape":"ResourceNotFound"}
+      ],
+      "documentation":"<p>Stops a running training session and sets the session status to <code>Stopping</code>. After the session stops, the status changes to <code>Stopped</code>. To delete a stopped session, use the <code>DeleteTrainingSession</code> operation.</p> <p>The following operations are related to <code>StopTrainingSession</code>:</p> <ul> <li> <p> <code>CreateTrainingSession</code> </p> </li> <li> <p> <code>DescribeTrainingSession</code> </p> </li> <li> <p> <code>DeleteTrainingSession</code> </p> </li> </ul>"
     },
     "StopTransformJob":{
       "name":"StopTransformJob",
@@ -8333,6 +8399,12 @@
       },
       "documentation":"<p>Identifies the foundation model that was used as the starting point for model customization.</p>"
     },
+    "BaseModelArn":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "pattern":"(arn:[a-z0-9-.]{1,63}:sagemaker:[a-zA-Z0-9]+(?:-[a-zA-Z0-9]+)+:([0-9]{12}|aws):hub-content/)[a-zA-Z0-9](-*[a-zA-Z0-9]){0,62}/Model/[a-zA-Z0-9](-*[a-zA-Z0-9]){0,63}(/[0-9]{1,4}\\.[0-9]{1,4}\\.[0-9]{1,4})?"
+    },
     "BaseModelName":{
       "type":"string",
       "max":256,
@@ -9033,6 +9105,24 @@
       "type":"long",
       "box":true,
       "min":0
+    },
+    "BillableTokenUsage":{
+      "type":"structure",
+      "members":{
+        "PrefillTokenCount":{
+          "shape":"JavaLong",
+          "documentation":"<p>The number of prefill tokens consumed.</p>"
+        },
+        "SampleTokenCount":{
+          "shape":"JavaLong",
+          "documentation":"<p>The number of sample tokens consumed.</p>"
+        },
+        "TrainingTokenCount":{
+          "shape":"JavaLong",
+          "documentation":"<p>The number of training tokens consumed.</p>"
+        }
+      },
+      "documentation":"<p>The billable token usage for a training session, broken down by operation type.</p>"
     },
     "BlockedReason":{
       "type":"string",
@@ -16165,6 +16255,60 @@
         }
       }
     },
+    "CreateTrainingSessionRequest":{
+      "type":"structure",
+      "required":[
+        "TrainingSessionName",
+        "LoraConfig",
+        "RoleArn",
+        "ModelConfig",
+        "OutputConfig"
+      ],
+      "members":{
+        "TrainingSessionName":{
+          "shape":"TrainingSessionName",
+          "documentation":"<p>The name of the training session.</p>"
+        },
+        "ModelPackageGroupArn":{
+          "shape":"ModelPackageGroupArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the model package group where checkpoints and fine-tuned model artifacts are published.</p>"
+        },
+        "LoraConfig":{
+          "shape":"LoraConfig",
+          "documentation":"<p>The Low-Rank Adaptation (LoRA) configuration for the training session, including the rank and alpha parameters.</p>"
+        },
+        "RoleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role that Amazon SageMaker assumes to access resources on your behalf. The role must have permissions to access the output S3 path and model package group.</p>"
+        },
+        "VpcConfig":{
+          "shape":"VpcConfig",
+          "documentation":"<p>The Virtual Private Cloud (VPC) configuration for the training session. Specify subnets and security groups to run the training session in your VPC.</p>"
+        },
+        "ModelConfig":{
+          "shape":"TrainingSessionModelConfig",
+          "documentation":"<p>The configuration for the base model, including the model ARN and end-user license agreement (EULA) acceptance.</p>"
+        },
+        "OutputConfig":{
+          "shape":"TrainingSessionOutputConfig",
+          "documentation":"<p>The output configuration for the training session, including the S3 location and optional encryption settings.</p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>An array of key-value pairs to apply to the training session as tags. For more information, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html\">Tagging Amazon Web Services Resources</a>.</p>"
+        }
+      }
+    },
+    "CreateTrainingSessionResponse":{
+      "type":"structure",
+      "required":["TrainingSessionArn"],
+      "members":{
+        "TrainingSessionArn":{
+          "shape":"TrainingSessionArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the training session.</p>"
+        }
+      }
+    },
     "CreateTransformJobRequest":{
       "type":"structure",
       "required":[
@@ -16597,6 +16741,12 @@
         }
       },
       "documentation":"<p>Details about the POSIX identity that is used for file system operations.</p>"
+    },
+    "CustomerKmsKeyArn":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "pattern":"arn:aws[a-z\\-]*:kms:[a-z0-9\\-]+:[0-9]{12}:key/(mrk-)?[a-f0-9\\-]+"
     },
     "CustomerMetadataKey":{
       "type":"string",
@@ -17939,6 +18089,20 @@
           "documentation":"<p>The name of the training job to delete.</p>"
         }
       }
+    },
+    "DeleteTrainingSessionRequest":{
+      "type":"structure",
+      "required":["TrainingSessionName"],
+      "members":{
+        "TrainingSessionName":{
+          "shape":"TrainingSessionName",
+          "documentation":"<p>The name of the training session to delete.</p>"
+        }
+      }
+    },
+    "DeleteTrainingSessionResponse":{
+      "type":"structure",
+      "members":{}
     },
     "DeleteTrialComponentRequest":{
       "type":"structure",
@@ -23308,6 +23472,26 @@
         "ReservedCapacitySummaries":{
           "shape":"ReservedCapacitySummaries",
           "documentation":"<p>The list of Reserved Capacity providing the underlying compute resources of the plan. </p>"
+        }
+      }
+    },
+    "DescribeTrainingSessionRequest":{
+      "type":"structure",
+      "required":["TrainingSessionName"],
+      "members":{
+        "TrainingSessionName":{
+          "shape":"TrainingSessionName",
+          "documentation":"<p>The name of the training session to describe.</p>"
+        }
+      }
+    },
+    "DescribeTrainingSessionResponse":{
+      "type":"structure",
+      "required":["TrainingSessionDetail"],
+      "members":{
+        "TrainingSessionDetail":{
+          "shape":"TrainingSessionDetail",
+          "documentation":"<p>The detailed information about the training session.</p>"
         }
       }
     },
@@ -30085,6 +30269,18 @@
       "max":256,
       "min":1
     },
+    "JavaBoolean":{
+      "type":"boolean",
+      "box":true
+    },
+    "JavaInteger":{
+      "type":"integer",
+      "box":true
+    },
+    "JavaLong":{
+      "type":"long",
+      "box":true
+    },
     "Job":{
       "type":"structure",
       "members":{
@@ -35324,6 +35520,48 @@
         }
       }
     },
+    "ListTrainingSessionsRequest":{
+      "type":"structure",
+      "members":{
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If the response was truncated, use the token returned in the previous response to retrieve the next page of results.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of training sessions to return in the response.</p>"
+        },
+        "CreationTimeAfter":{
+          "shape":"Timestamp",
+          "documentation":"<p>A filter that returns only training sessions created after the specified time.</p>"
+        },
+        "CreationTimeBefore":{
+          "shape":"Timestamp",
+          "documentation":"<p>A filter that returns only training sessions created before the specified time.</p>"
+        },
+        "NameContains":{
+          "shape":"NameContains",
+          "documentation":"<p>A string in the training session name to filter results. Only sessions whose name contains the specified string are returned.</p>"
+        },
+        "StatusEquals":{
+          "shape":"TrainingSessionStatus",
+          "documentation":"<p>A filter that returns only training sessions with the specified status.</p>"
+        }
+      }
+    },
+    "ListTrainingSessionsResponse":{
+      "type":"structure",
+      "members":{
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If the response is truncated, this token retrieves the next set of results.</p>"
+        },
+        "TrainingSessionSummaries":{
+          "shape":"TrainingSessionSummaries",
+          "documentation":"<p>An array of <code>TrainingSessionSummary</code> objects that provide summary information about the training sessions.</p>"
+        }
+      }
+    },
     "ListTransformJobsRequest":{
       "type":"structure",
       "members":{
@@ -35669,6 +35907,29 @@
       "max":2048,
       "min":0,
       "pattern":"(https|s3)://([^/]+)/?(.*)"
+    },
+    "LoraAlpha":{
+      "type":"integer",
+      "box":true,
+      "min":1
+    },
+    "LoraConfig":{
+      "type":"structure",
+      "required":[
+        "Rank",
+        "Alpha"
+      ],
+      "members":{
+        "Rank":{
+          "shape":"Rank",
+          "documentation":"<p>The rank of the Low-Rank Adaptation (LoRA) adapter matrices.</p>"
+        },
+        "Alpha":{
+          "shape":"LoraAlpha",
+          "documentation":"<p>The Low-Rank Adaptation (LoRA) scaling factor.</p>"
+        }
+      },
+      "documentation":"<p>The Low-Rank Adaptation (LoRA) configuration for a training session, including the rank and alpha parameters.</p>"
     },
     "MIGProfileType":{
       "type":"string",
@@ -39980,6 +40241,12 @@
       "max":50,
       "min":0
     },
+    "OutputS3Path":{
+      "type":"string",
+      "max":1024,
+      "min":1,
+      "pattern":"(https|s3)://([^/]+)/?(.*)"
+    },
     "OwnershipSettings":{
       "type":"structure",
       "required":["OwnerUserProfileName"],
@@ -43055,6 +43322,12 @@
       "type":"integer",
       "box":true,
       "min":0
+    },
+    "Rank":{
+      "type":"integer",
+      "box":true,
+      "max":256,
+      "min":1
     },
     "RealTimeInferenceConfig":{
       "type":"structure",
@@ -46449,6 +46722,20 @@
         }
       }
     },
+    "StopTrainingSessionRequest":{
+      "type":"structure",
+      "required":["TrainingSessionName"],
+      "members":{
+        "TrainingSessionName":{
+          "shape":"TrainingSessionName",
+          "documentation":"<p>The name of the training session to stop.</p>"
+        }
+      }
+    },
+    "StopTrainingSessionResponse":{
+      "type":"structure",
+      "members":{}
+    },
     "StopTransformJobRequest":{
       "type":"structure",
       "required":["TransformJobName"],
@@ -48509,6 +48796,184 @@
       "max":2048,
       "min":1,
       "pattern":"arn:[\\p{Alnum}\\-]+:lambda:[\\p{Alnum}\\-]+:[0-9]{12}:function:.*"
+    },
+    "TrainingSessionArn":{
+      "type":"string",
+      "max":256,
+      "min":0,
+      "pattern":"arn:(aws[a-z\\-]*):sagemaker:[a-z0-9\\-]+:[0-9]{12}:training-session/[a-zA-Z0-9](-*[a-zA-Z0-9]){0,62}"
+    },
+    "TrainingSessionDetail":{
+      "type":"structure",
+      "required":[
+        "TrainingSessionArn",
+        "TrainingSessionName",
+        "TrainingSessionStatus",
+        "CreationTime"
+      ],
+      "members":{
+        "TrainingSessionArn":{
+          "shape":"TrainingSessionArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the training session.</p>"
+        },
+        "TrainingSessionName":{
+          "shape":"TrainingSessionName",
+          "documentation":"<p>The name of the training session.</p>"
+        },
+        "TrainingSessionStatus":{
+          "shape":"TrainingSessionStatus",
+          "documentation":"<p>The current status of the training session.</p>"
+        },
+        "ModelPackageGroupArn":{
+          "shape":"ModelPackageGroupArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the model package group where checkpoints are published.</p>"
+        },
+        "CreationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time that the training session was created.</p>"
+        },
+        "LastModifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time that the training session was last modified.</p>"
+        },
+        "EndTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time that the training session ended.</p>"
+        },
+        "ErrorDetails":{
+          "shape":"FailureReason",
+          "documentation":"<p>If the training session failed or is blocked, detailed error information.</p>"
+        },
+        "LastReceivedSequenceNumber":{
+          "shape":"JavaInteger",
+          "documentation":"<p>The sequence number of the last training operation received by the session.</p>"
+        },
+        "BillableTokenUsage":{
+          "shape":"BillableTokenUsage",
+          "documentation":"<p>The billable token usage for the training session.</p>"
+        },
+        "VpcConfig":{
+          "shape":"VpcConfig",
+          "documentation":"<p>The Virtual Private Cloud (VPC) configuration for the training session.</p>"
+        },
+        "RoleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role associated with the training session.</p>"
+        },
+        "LoraConfig":{
+          "shape":"LoraConfig",
+          "documentation":"<p>The Low-Rank Adaptation (LoRA) configuration for the training session.</p>"
+        },
+        "ModelConfig":{
+          "shape":"TrainingSessionModelConfig",
+          "documentation":"<p>The configuration for the base model.</p>"
+        },
+        "OutputConfig":{
+          "shape":"TrainingSessionOutputConfig",
+          "documentation":"<p>The output configuration for the training session.</p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>The tags associated with the training session.</p>"
+        }
+      },
+      "documentation":"<p>Contains detailed information about a training session.</p>"
+    },
+    "TrainingSessionModelConfig":{
+      "type":"structure",
+      "required":["BaseModelArn"],
+      "members":{
+        "BaseModelArn":{
+          "shape":"BaseModelArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the base foundation model from SageMaker Hub.</p>"
+        },
+        "AcceptEula":{
+          "shape":"JavaBoolean",
+          "documentation":"<p>Specifies whether you accept the end-user license agreement (EULA) for gated models.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for the base model used in a training session.</p>"
+    },
+    "TrainingSessionName":{
+      "type":"string",
+      "max":63,
+      "min":1,
+      "pattern":"[a-zA-Z0-9](-*[a-zA-Z0-9]){0,62}"
+    },
+    "TrainingSessionOutputConfig":{
+      "type":"structure",
+      "required":["S3Location"],
+      "members":{
+        "S3Location":{
+          "shape":"TrainingSessionS3Location",
+          "documentation":"<p>The Amazon S3 location where training session outputs, including checkpoints and model artifacts, are stored.</p>"
+        }
+      },
+      "documentation":"<p>The output configuration for a training session, including the Amazon S3 location for checkpoints and model artifacts, and optional encryption settings.</p>"
+    },
+    "TrainingSessionS3Location":{
+      "type":"structure",
+      "required":["Path"],
+      "members":{
+        "Path":{
+          "shape":"OutputS3Path",
+          "documentation":"<p>The Amazon S3 path where training session outputs are stored.</p>"
+        },
+        "KmsKeyArn":{
+          "shape":"CustomerKmsKeyArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the KMS key used to encrypt output data. If not specified, the default Amazon S3 encryption is used.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the Amazon S3 path and optional encryption settings for training session output data, including checkpoints, model artifacts, and invocation results.</p>"
+    },
+    "TrainingSessionStatus":{
+      "type":"string",
+      "documentation":"<p>The status of a training session.</p>",
+      "enum":[
+        "Created",
+        "Blocked",
+        "Running",
+        "Failed",
+        "Scheduled",
+        "Stopping",
+        "Stopped",
+        "Expired",
+        "Deleting",
+        "DeletionFailed"
+      ]
+    },
+    "TrainingSessionSummaries":{
+      "type":"list",
+      "member":{"shape":"TrainingSessionSummary"},
+      "max":100,
+      "min":0
+    },
+    "TrainingSessionSummary":{
+      "type":"structure",
+      "required":[
+        "TrainingSessionArn",
+        "TrainingSessionStatus",
+        "CreationTime"
+      ],
+      "members":{
+        "TrainingSessionArn":{
+          "shape":"TrainingSessionArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the training session.</p>"
+        },
+        "TrainingSessionStatus":{
+          "shape":"TrainingSessionStatus",
+          "documentation":"<p>The current status of the training session.</p>"
+        },
+        "CreationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time that the training session was created.</p>"
+        },
+        "LastModifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time that the training session was last modified.</p>"
+        }
+      },
+      "documentation":"<p>Contains summary information about a training session.</p>"
     },
     "TrainingSpecification":{
       "type":"structure",

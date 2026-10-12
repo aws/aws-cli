@@ -1,0 +1,1230 @@
+{
+  "version":"2.0",
+  "metadata":{
+    "apiVersion":"2025-02-10",
+    "auth":["aws.auth#sigv4"],
+    "endpointPrefix":"training-session-runtime.sagemaker",
+    "protocol":"rest-json",
+    "protocolSettings":{"h2":"optional"},
+    "protocols":["rest-json"],
+    "serviceFullName":"SageMaker Training Session Runtime",
+    "serviceId":"SageMakerTrainingSessionRuntime",
+    "signatureVersion":"v4",
+    "signingName":"sagemaker",
+    "uid":"sagemakertrainingsessionruntime-2025-02-10"
+  },
+  "operations":{
+    "ExecuteSamplingOperation":{
+      "name":"ExecuteSamplingOperation",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v1/training-sessions/{trainingSessionName}/sampling-operations",
+        "responseCode":200
+      },
+      "input":{"shape":"ExecuteSamplingOperationInput"},
+      "output":{"shape":"ExecuteSamplingOperationOutput"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Submits an asynchronous sampling operation to generate text or compute log-probabilities from the model associated with the specified training session. The session must be in <code>Running</code> or <code>Blocked</code> state. Use <code>GetSamplingOperationResult</code> to poll for the result.</p>"
+    },
+    "ExecuteTrainingOperation":{
+      "name":"ExecuteTrainingOperation",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v1/training-sessions/{trainingSessionName}/operations",
+        "responseCode":200
+      },
+      "input":{"shape":"ExecuteTrainingOperationInput"},
+      "output":{"shape":"ExecuteTrainingOperationOutput"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Submits an asynchronous training operation to the specified training session. The service executes operations in sequence number order. The session must be in <code>Running</code> or <code>Blocked</code> state. Use <code>GetTrainingOperationResult</code> to poll for the result. Supported operation types: <code>forward</code>, <code>forwardBackward</code>, <code>optimizerStep</code>, <code>saveWeights</code>, <code>saveState</code>, and <code>loadState</code>.</p>"
+    },
+    "GetSamplingOperationResult":{
+      "name":"GetSamplingOperationResult",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v1/training-sessions/{trainingSessionName}/sampling-operations/{operationId}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetSamplingOperationResultInput"},
+      "output":{"shape":"GetSamplingOperationResultOutput"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Retrieves the current status and result of a previously submitted sampling operation. Poll this operation until the status reaches a terminal state (Completed or Failed).</p>",
+      "readonly":true
+    },
+    "GetTrainingOperationResult":{
+      "name":"GetTrainingOperationResult",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v1/training-sessions/{trainingSessionName}/operations/{operationId}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetTrainingOperationResultInput"},
+      "output":{"shape":"GetTrainingOperationResultOutput"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Retrieves the current status and result of a previously submitted training operation. Poll this operation until the status reaches a terminal state (Completed, Failed, or Skipped).</p>",
+      "readonly":true
+    },
+    "SampleTrainingSession":{
+      "name":"SampleTrainingSession",
+      "http":{
+        "method":"POST",
+        "requestUri":"/training-sessions/{trainingSessionName}/sample",
+        "responseCode":200
+      },
+      "input":{"shape":"SampleTrainingSessionInput"},
+      "output":{"shape":"SampleTrainingSessionOutput"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Sends an inference request to the model associated with the specified training session and returns the response synchronously. The service passes the request and response bodies to and from the model without modification.</p>"
+    },
+    "SampleTrainingSessionWithResponseStream":{
+      "name":"SampleTrainingSessionWithResponseStream",
+      "http":{
+        "method":"POST",
+        "requestUri":"/training-sessions/{trainingSessionName}/sample-with-response-stream",
+        "responseCode":200
+      },
+      "input":{"shape":"SampleTrainingSessionWithResponseStreamInput"},
+      "output":{"shape":"SampleTrainingSessionWithResponseStreamOutput"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Streams inference responses from the model associated with the specified training session. Use this operation for real-time token-by-token generation. The service passes the request body to the model without modification.</p>"
+    }
+  },
+  "shapes":{
+    "AdamParamsConfig":{
+      "type":"structure",
+      "required":["learningRate"],
+      "members":{
+        "learningRate":{
+          "shape":"AdamParamsConfigLearningRateDouble",
+          "documentation":"<p>The learning rate for the optimizer. Must be greater than 0.</p>"
+        },
+        "beta1":{
+          "shape":"AdamParamsConfigBeta1Double",
+          "documentation":"<p>The exponential decay rate for the first moment estimates.</p>"
+        },
+        "beta2":{
+          "shape":"AdamParamsConfigBeta2Double",
+          "documentation":"<p>The exponential decay rate for the second moment estimates.</p>"
+        },
+        "eps":{
+          "shape":"AdamParamsConfigEpsDouble",
+          "documentation":"<p>A small constant added to the denominator for numerical stability.</p>"
+        },
+        "weightDecay":{
+          "shape":"AdamParamsConfigWeightDecayDouble",
+          "documentation":"<p>The weight decay (L2 regularization) coefficient.</p>"
+        },
+        "gradClipNorm":{
+          "shape":"AdamParamsConfigGradClipNormDouble",
+          "documentation":"<p>The maximum gradient norm for gradient clipping. Gradients are scaled down if their norm exceeds this value.</p>"
+        },
+        "loraPlusLrRatio":{
+          "shape":"AdamParamsConfigLoraPlusLrRatioDouble",
+          "documentation":"<p>The learning rate multiplier for LoRA+ B matrices relative to A matrices. When set, B matrices use <code>learningRate * loraPlusLrRatio</code> while A matrices use the base learning rate.</p>"
+        }
+      },
+      "documentation":"<p>The Adam optimizer hyperparameters used during an optimizer step.</p>"
+    },
+    "AdamParamsConfigBeta1Double":{
+      "type":"double",
+      "box":true,
+      "max":0.999999,
+      "min":0
+    },
+    "AdamParamsConfigBeta2Double":{
+      "type":"double",
+      "box":true,
+      "max":0.999999,
+      "min":0
+    },
+    "AdamParamsConfigEpsDouble":{
+      "type":"double",
+      "box":true,
+      "max":0.01,
+      "min":1e-16
+    },
+    "AdamParamsConfigGradClipNormDouble":{
+      "type":"double",
+      "box":true,
+      "max":100,
+      "min":0
+    },
+    "AdamParamsConfigLearningRateDouble":{
+      "type":"double",
+      "box":true,
+      "max":0.01,
+      "min":0
+    },
+    "AdamParamsConfigLoraPlusLrRatioDouble":{
+      "type":"double",
+      "box":true,
+      "max":100.0,
+      "min":1.0
+    },
+    "AdamParamsConfigWeightDecayDouble":{
+      "type":"double",
+      "box":true,
+      "max":1,
+      "min":0
+    },
+    "Boolean":{
+      "type":"boolean",
+      "box":true
+    },
+    "ClientToken":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"[a-zA-Z0-9-]+"
+    },
+    "ComputeLogprobsConfig":{
+      "type":"structure",
+      "required":["prompt"],
+      "members":{
+        "prompt":{
+          "shape":"ModelInput",
+          "documentation":"<p>The input prompt whose token log-probabilities will be computed.</p>"
+        },
+        "modelPackageArn":{
+          "shape":"String",
+          "documentation":"<p>The ARN of the model package whose checkpoint this operation should run against. Must be a valid SageMaker model package ARN in the format <code>arn:aws:sagemaker:REGION:ACCOUNT:model-package/PACKAGE_NAME/VERSION</code>. When absent, the operation runs against the session's latest checkpoint.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for computing log-probabilities of prompt tokens without generating new text.</p>"
+    },
+    "ComputeLogprobsResult":{
+      "type":"structure",
+      "required":["logprobs"],
+      "members":{
+        "logprobs":{
+          "shape":"DoubleList",
+          "documentation":"<p>The per-token log-probabilities for the input prompt.</p>"
+        }
+      },
+      "documentation":"<p>The result of a compute-logprobs operation.</p>"
+    },
+    "ConflictException":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{"shape":"String"}
+      },
+      "documentation":"<p>The training session is in a state that cannot accept new operations. The session must be in <code>Running</code> or <code>Blocked</code> state to accept requests.</p>",
+      "error":{
+        "httpStatusCode":409,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "Datum":{
+      "type":"structure",
+      "required":["modelInput"],
+      "members":{
+        "modelInput":{
+          "shape":"ModelInput",
+          "documentation":"<p>The tokenized input to feed to the model.</p>"
+        },
+        "lossFnInputs":{
+          "shape":"TensorDataMap",
+          "documentation":"<p>The tensor inputs for the loss function, keyed by name. Unsupported keys are rejected. Supported keys: <code>target_tokens</code>, <code>weights</code>, <code>advantages</code>, <code>logprobs</code>, <code>ref_log_prob</code>, <code>temperature</code>. Required keys depend on the loss function type: SFT (<code>cross_entropy</code>) requires <code>target_tokens</code> and <code>weights</code>; RL (<code>ppo</code>, <code>cispo</code>, <code>importance_sampling</code>) requires <code>target_tokens</code>, <code>weights</code>, <code>advantages</code>, and <code>logprobs</code>.</p>"
+        }
+      },
+      "documentation":"<p>A single training datum containing model input and optional loss function inputs.</p>",
+      "sensitive":true
+    },
+    "DatumList":{
+      "type":"list",
+      "member":{"shape":"Datum"}
+    },
+    "Document":{
+      "type":"structure",
+      "members":{},
+      "document":true
+    },
+    "Double":{
+      "type":"double",
+      "box":true
+    },
+    "DoubleList":{
+      "type":"list",
+      "member":{"shape":"Double"}
+    },
+    "EncodedTextChunk":{
+      "type":"structure",
+      "required":[
+        "tokens",
+        "type"
+      ],
+      "members":{
+        "tokens":{
+          "shape":"IntegerList",
+          "documentation":"<p>The token IDs representing the encoded text.</p>"
+        },
+        "type":{
+          "shape":"EncodedTextChunkType",
+          "documentation":"<p>The type of the chunk encoding.</p>"
+        }
+      },
+      "documentation":"<p>A chunk of pre-tokenized text represented as a list of token IDs.</p>"
+    },
+    "EncodedTextChunkList":{
+      "type":"list",
+      "member":{"shape":"EncodedTextChunk"}
+    },
+    "EncodedTextChunkType":{
+      "type":"string",
+      "enum":["encoded_text"]
+    },
+    "ExecuteSamplingOperationInput":{
+      "type":"structure",
+      "required":[
+        "trainingSessionName",
+        "operationConfig"
+      ],
+      "members":{
+        "trainingSessionName":{
+          "shape":"TrainingSessionName",
+          "documentation":"<p>The name of the training session to sample from.</p>",
+          "location":"uri",
+          "locationName":"trainingSessionName"
+        },
+        "operationConfig":{
+          "shape":"SampleOperationConfig",
+          "documentation":"<p>The configuration for the sample operation. Specify either a sample configuration to generate text or a computeLogprobs configuration to compute token log-probabilities.</p>"
+        }
+      }
+    },
+    "ExecuteSamplingOperationOutput":{
+      "type":"structure",
+      "required":["operationId"],
+      "members":{
+        "operationId":{
+          "shape":"OperationId",
+          "documentation":"<p>The unique identifier for the submitted sample operation. Use this identifier with <code>GetSamplingOperationResult</code> to retrieve the operation status and result.</p>"
+        }
+      }
+    },
+    "ExecuteTrainingOperationInput":{
+      "type":"structure",
+      "required":[
+        "trainingSessionName",
+        "sequenceNumber",
+        "operationConfig"
+      ],
+      "members":{
+        "trainingSessionName":{
+          "shape":"TrainingSessionName",
+          "documentation":"<p>The name of the training session to submit the operation to.</p>",
+          "location":"uri",
+          "locationName":"trainingSessionName"
+        },
+        "sequenceNumber":{
+          "shape":"SequenceNumber",
+          "documentation":"<p>The monotonically increasing sequence number that determines execution order. The training session processes operations strictly in sequence number order. If a gap exists, the session blocks until the missing operation arrives or times out. Must be at least 1.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure that the operation completes no more than one time. If you retry a request with the same client token and the same parameters, the service ignores the request but does not return an error.</p>"
+        },
+        "operationConfig":{
+          "shape":"OperationConfig",
+          "documentation":"<p>The configuration that specifies the type and parameters of the training operation. Exactly one member of the union must be set.</p>"
+        }
+      }
+    },
+    "ExecuteTrainingOperationOutput":{
+      "type":"structure",
+      "required":["operationId"],
+      "members":{
+        "operationId":{
+          "shape":"OperationId",
+          "documentation":"<p>The unique identifier for the submitted operation. Use this identifier with <code>GetTrainingOperationResult</code> to retrieve the operation status and result.</p>"
+        }
+      }
+    },
+    "ForwardBackwardConfig":{
+      "type":"structure",
+      "required":[
+        "lossFnName",
+        "datumList"
+      ],
+      "members":{
+        "lossFnName":{
+          "shape":"LossFnName",
+          "documentation":"<p>The name of the loss function to evaluate during the forward-backward pass.</p>"
+        },
+        "datumList":{
+          "shape":"DatumList",
+          "documentation":"<p>The list of input data to feed through the model. Must contain at least one datum, and each datum must have a non-empty modelInput with at least one chunk.</p>"
+        },
+        "lossFnConfig":{
+          "shape":"Document",
+          "documentation":"<p>Additional loss function configuration passed to the engine. Supported keys are <code>clip_low_threshold</code> (valid range: 0 to 1) and <code>clip_high_threshold</code> (valid range: 1 to 10). Unsupported keys are rejected.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for a forward and backward pass through the model. This computes both loss values and gradients for use in subsequent optimizer steps.</p>"
+    },
+    "ForwardBackwardResult":{
+      "type":"structure",
+      "members":{
+        "lossFnOutputType":{
+          "shape":"String",
+          "documentation":"<p>The data type of the loss function output tensors.</p>"
+        },
+        "lossFnOutputs":{
+          "shape":"TensorDataMapList",
+          "documentation":"<p>The loss function output tensors, keyed by name.</p>"
+        },
+        "metrics":{
+          "shape":"MetricsMap",
+          "documentation":"<p>The training metrics emitted by the engine, such as loss values.</p>"
+        },
+        "tokenUsage":{
+          "shape":"TrainingTokenUsage",
+          "documentation":"<p>The token usage statistics for metering.</p>"
+        }
+      },
+      "documentation":"<p>The result of a forward and backward pass through the model, including computed gradients.</p>"
+    },
+    "ForwardConfig":{
+      "type":"structure",
+      "required":[
+        "lossFnName",
+        "datumList"
+      ],
+      "members":{
+        "lossFnName":{
+          "shape":"LossFnName",
+          "documentation":"<p>The name of the loss function to evaluate during the forward pass.</p>"
+        },
+        "datumList":{
+          "shape":"DatumList",
+          "documentation":"<p>The list of input data to feed through the model. Must contain at least one datum, and each datum must have a non-empty modelInput with at least one chunk.</p>"
+        },
+        "lossFnConfig":{
+          "shape":"Document",
+          "documentation":"<p>Additional loss function configuration passed to the engine. Supported keys are <code>clip_low_threshold</code> (valid range: 0 to 1) and <code>clip_high_threshold</code> (valid range: 1 to 10). Unsupported keys are rejected.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for a forward-only pass through the model. This computes loss values without computing gradients.</p>"
+    },
+    "ForwardResult":{
+      "type":"structure",
+      "members":{
+        "lossFnOutputType":{
+          "shape":"String",
+          "documentation":"<p>The data type of the loss function output tensors.</p>"
+        },
+        "lossFnOutputs":{
+          "shape":"TensorDataMapList",
+          "documentation":"<p>The loss function output tensors, keyed by name.</p>"
+        },
+        "metrics":{
+          "shape":"MetricsMap",
+          "documentation":"<p>The training metrics emitted by the engine, such as loss values.</p>"
+        },
+        "tokenUsage":{
+          "shape":"TrainingTokenUsage",
+          "documentation":"<p>The token usage statistics for metering.</p>"
+        }
+      },
+      "documentation":"<p>The result of a forward-only pass through the model.</p>"
+    },
+    "GetSamplingOperationResultInput":{
+      "type":"structure",
+      "required":[
+        "trainingSessionName",
+        "operationId"
+      ],
+      "members":{
+        "trainingSessionName":{
+          "shape":"TrainingSessionName",
+          "documentation":"<p>The name of the training session that owns the sample operation.</p>",
+          "location":"uri",
+          "locationName":"trainingSessionName"
+        },
+        "operationId":{
+          "shape":"OperationId",
+          "documentation":"<p>The unique identifier of the sample operation to retrieve, returned by <code>ExecuteSamplingOperation</code>.</p>",
+          "location":"uri",
+          "locationName":"operationId"
+        }
+      }
+    },
+    "GetSamplingOperationResultOutput":{
+      "type":"structure",
+      "required":["status"],
+      "members":{
+        "status":{
+          "shape":"RequestStatus",
+          "documentation":"<p>The current status of the sample operation. Possible values are <code>Pending</code>, <code>InProgress</code>, <code>Completed</code>, or <code>Failed</code>.</p>"
+        },
+        "operationResult":{
+          "shape":"SampleOperationResult",
+          "documentation":"<p>The result payload of the sample operation. The service populates this field only when the status is <code>Completed</code>.</p>"
+        },
+        "errorDetails":{
+          "shape":"String",
+          "documentation":"<p>A message describing why the sample operation failed. The service populates this field only when the status is <code>Failed</code>.</p>"
+        }
+      }
+    },
+    "GetTrainingOperationResultInput":{
+      "type":"structure",
+      "required":[
+        "trainingSessionName",
+        "operationId"
+      ],
+      "members":{
+        "trainingSessionName":{
+          "shape":"TrainingSessionName",
+          "documentation":"<p>The name of the training session that owns the operation.</p>",
+          "location":"uri",
+          "locationName":"trainingSessionName"
+        },
+        "operationId":{
+          "shape":"OperationId",
+          "documentation":"<p>The unique identifier of the operation to retrieve, returned by <code>ExecuteTrainingOperation</code>.</p>",
+          "location":"uri",
+          "locationName":"operationId"
+        }
+      }
+    },
+    "GetTrainingOperationResultOutput":{
+      "type":"structure",
+      "required":["status"],
+      "members":{
+        "status":{
+          "shape":"RequestStatus",
+          "documentation":"<p>The current status of the operation. Possible values are <code>Pending</code>, <code>InProgress</code>, <code>Completed</code>, <code>Failed</code>, or <code>Skipped</code>.</p>"
+        },
+        "operationResult":{
+          "shape":"OperationResult",
+          "documentation":"<p>The result payload of the operation. The service populates this field only when the status is <code>Completed</code>. The populated member of the union corresponds to the operation type that was submitted.</p>"
+        },
+        "errorDetails":{
+          "shape":"String",
+          "documentation":"<p>A message describing why the operation failed. The service populates this field only when the status is <code>Failed</code>.</p>"
+        },
+        "tokenUsage":{
+          "shape":"TrainingTokenUsage",
+          "documentation":"<p>The token usage statistics for metering purposes. The service populates this field for forward and forwardBackward operations upon completion.</p>"
+        }
+      }
+    },
+    "InferenceBody":{
+      "type":"blob",
+      "documentation":"<p>Sensitive binary payload containing customer inference data.</p>",
+      "sensitive":true
+    },
+    "Integer":{
+      "type":"integer",
+      "box":true
+    },
+    "IntegerList":{
+      "type":"list",
+      "member":{"shape":"Integer"}
+    },
+    "InternalServerException":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{"shape":"String"}
+      },
+      "documentation":"<p>An internal service error occurred. Retry the request using exponential backoff.</p>",
+      "error":{"httpStatusCode":500},
+      "exception":true,
+      "fault":true
+    },
+    "LoadStateConfig":{
+      "type":"structure",
+      "required":[
+        "modelPackageArn",
+        "loadOptimizer"
+      ],
+      "members":{
+        "modelPackageArn":{
+          "shape":"String",
+          "documentation":"<p>The ARN of the model package containing the checkpoint to load. Must be a valid SageMaker model package ARN in the format <code>arn:aws:sagemaker:REGION:ACCOUNT:model-package/PACKAGE_NAME/VERSION</code>. Model package group ARNs are not accepted.</p>"
+        },
+        "loadOptimizer":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether to also restore the optimizer state alongside model weights. When true, optimizer state is restored to resume training from where it left off.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for loading training state from a previously saved checkpoint. This restores model weights and optionally optimizer state.</p>"
+    },
+    "LoadStateResult":{
+      "type":"structure",
+      "members":{},
+      "documentation":"<p>The result of loading training state. An empty response indicates success.</p>"
+    },
+    "LoadWeightsForSamplingConfig":{
+      "type":"structure",
+      "required":["modelPackageArn"],
+      "members":{
+        "modelPackageArn":{
+          "shape":"String",
+          "documentation":"<p>The ARN of the model package containing the weights to load for sampling. Must be a valid SageMaker model package ARN in the format <code>arn:aws:sagemaker:REGION:ACCOUNT:model-package/PACKAGE_NAME/VERSION</code>. The model package must belong to the same AWS account as the training session.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for loading model weights for inference and sampling without restoring optimizer state.</p>"
+    },
+    "LoadWeightsForSamplingResult":{
+      "type":"structure",
+      "members":{},
+      "documentation":"<p>The result of loading weights for sampling. An empty response indicates success.</p>"
+    },
+    "LossFnName":{
+      "type":"string",
+      "enum":[
+        "cross_entropy",
+        "importance_sampling",
+        "ppo",
+        "cispo"
+      ]
+    },
+    "MetricsMap":{
+      "type":"map",
+      "key":{"shape":"String"},
+      "value":{"shape":"Double"}
+    },
+    "ModelInput":{
+      "type":"structure",
+      "required":["chunks"],
+      "members":{
+        "chunks":{
+          "shape":"EncodedTextChunkList",
+          "documentation":"<p>The ordered list of encoded text chunks forming the input sequence.</p>"
+        }
+      },
+      "documentation":"<p>The tokenized model input composed of ordered encoded text chunks.</p>",
+      "sensitive":true
+    },
+    "OperationConfig":{
+      "type":"structure",
+      "members":{
+        "forward":{
+          "shape":"ForwardConfig",
+          "documentation":"<p>The configuration for a forward-only pass through the model without gradient computation.</p>"
+        },
+        "forwardBackward":{
+          "shape":"ForwardBackwardConfig",
+          "documentation":"<p>The configuration for a forward and backward pass that computes gradients.</p>"
+        },
+        "optimizerStep":{
+          "shape":"OptimizerStepConfig",
+          "documentation":"<p>The configuration for an optimizer step that updates model weights using accumulated gradients.</p>"
+        },
+        "saveWeights":{
+          "shape":"SaveWeightsConfig",
+          "documentation":"<p>The configuration for saving model weights as a checkpoint.</p>"
+        },
+        "saveState":{
+          "shape":"SaveStateConfig",
+          "documentation":"<p>The configuration for saving full training state, including model weights and optimizer state.</p>"
+        },
+        "loadState":{
+          "shape":"LoadStateConfig",
+          "documentation":"<p>The configuration for loading training state from a previously saved checkpoint.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for a training operation. Exactly one member must be set to specify the operation type and its parameters.</p>",
+      "union":true
+    },
+    "OperationId":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"[a-zA-Z0-9-]+"
+    },
+    "OperationResult":{
+      "type":"structure",
+      "members":{
+        "forward":{
+          "shape":"ForwardResult",
+          "documentation":"<p>The result from a forward-only pass.</p>"
+        },
+        "forwardBackward":{
+          "shape":"ForwardBackwardResult",
+          "documentation":"<p>The result from a forward and backward pass.</p>"
+        },
+        "optimizerStep":{
+          "shape":"OptimizerStepResult",
+          "documentation":"<p>The result from an optimizer step.</p>"
+        },
+        "saveWeights":{
+          "shape":"SaveWeightsResult",
+          "documentation":"<p>The result from saving model weights.</p>"
+        },
+        "saveState":{
+          "shape":"SaveStateResult",
+          "documentation":"<p>The result from saving full training state.</p>"
+        },
+        "loadState":{
+          "shape":"LoadStateResult",
+          "documentation":"<p>The result from loading training state.</p>"
+        }
+      },
+      "documentation":"<p>The result of a completed training operation. Exactly one member is populated, corresponding to the operation type that was submitted.</p>",
+      "union":true
+    },
+    "OptimizerStepConfig":{
+      "type":"structure",
+      "required":["adamParamsConfig"],
+      "members":{
+        "adamParamsConfig":{
+          "shape":"AdamParamsConfig",
+          "documentation":"<p>The Adam optimizer hyperparameters for this step.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for an optimizer step that updates model weights using gradients accumulated from previous forward-backward passes.</p>"
+    },
+    "OptimizerStepResult":{
+      "type":"structure",
+      "members":{
+        "metrics":{
+          "shape":"MetricsMap",
+          "documentation":"<p>The training metrics emitted by the engine after the optimizer step.</p>"
+        }
+      },
+      "documentation":"<p>The result of an optimizer step.</p>"
+    },
+    "RequestStatus":{
+      "type":"string",
+      "enum":[
+        "Pending",
+        "InProgress",
+        "Completed",
+        "Failed",
+        "Skipped"
+      ]
+    },
+    "ResourceNotFoundException":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{"shape":"String"}
+      },
+      "documentation":"<p>The specified training session or operation does not exist, or the operation does not belong to the specified training session.</p>",
+      "error":{
+        "httpStatusCode":404,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "SampleConfig":{
+      "type":"structure",
+      "required":[
+        "prompt",
+        "numSamples",
+        "samplingParams"
+      ],
+      "members":{
+        "prompt":{
+          "shape":"ModelInput",
+          "documentation":"<p>The input prompt to send to the model for text generation.</p>"
+        },
+        "numSamples":{
+          "shape":"SampleConfigNumSamplesInteger",
+          "documentation":"<p>The number of independent samples to generate for the prompt.</p>"
+        },
+        "samplingParams":{
+          "shape":"SamplingParams",
+          "documentation":"<p>The parameters controlling the sampling strategy.</p>"
+        },
+        "includePromptLogprobs":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether to include per-token log-probabilities for the input prompt in the response.</p>"
+        },
+        "topkPromptLogprobs":{
+          "shape":"Integer",
+          "documentation":"<p>The number of top-k log-probabilities to return per prompt token.</p>"
+        },
+        "modelPackageArn":{
+          "shape":"String",
+          "documentation":"<p>The ARN of the model package whose checkpoint this sample should run against. Must be a valid SageMaker model package ARN in the format <code>arn:aws:sagemaker:REGION:ACCOUNT:model-package/PACKAGE_NAME/VERSION</code>. When absent, the sample runs against the session's latest checkpoint.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for generating text samples from the model.</p>"
+    },
+    "SampleConfigNumSamplesInteger":{
+      "type":"integer",
+      "box":true,
+      "max":1000,
+      "min":1
+    },
+    "SampleOperationConfig":{
+      "type":"structure",
+      "members":{
+        "sample":{
+          "shape":"SampleConfig",
+          "documentation":"<p>The configuration for generating text samples from the model.</p>"
+        },
+        "computeLogprobs":{
+          "shape":"ComputeLogprobsConfig",
+          "documentation":"<p>The configuration for computing log-probabilities of prompt tokens without generating new text.</p>"
+        },
+        "loadWeightsForSampling":{
+          "shape":"LoadWeightsForSamplingConfig",
+          "documentation":"<p>The configuration for loading model weights for inference and sampling without restoring optimizer state.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for a sampling operation. Exactly one member must be set to specify the operation type.</p>",
+      "union":true
+    },
+    "SampleOperationResult":{
+      "type":"structure",
+      "members":{
+        "sample":{
+          "shape":"SampleResponse",
+          "documentation":"<p>The generated text samples from the model.</p>"
+        },
+        "computeLogprobs":{
+          "shape":"ComputeLogprobsResult",
+          "documentation":"<p>The computed log-probabilities for the prompt tokens.</p>"
+        },
+        "loadWeightsForSampling":{
+          "shape":"LoadWeightsForSamplingResult",
+          "documentation":"<p>The result from loading weights for sampling.</p>"
+        }
+      },
+      "documentation":"<p>The result of a completed sampling operation. Exactly one member is populated, corresponding to the operation type that was submitted.</p>",
+      "union":true
+    },
+    "SampleResponse":{
+      "type":"structure",
+      "required":["sequences"],
+      "members":{
+        "sequences":{
+          "shape":"SampledSequenceList",
+          "documentation":"<p>The list of generated sequences.</p>"
+        },
+        "promptLogprobs":{
+          "shape":"DoubleList",
+          "documentation":"<p>The per-token log-probabilities for the input prompt. Populated only when <code>includePromptLogprobs</code> is true.</p>"
+        },
+        "topkPromptLogprobs":{
+          "shape":"TopkPromptLogprobsList",
+          "documentation":"<p>The top-k log-probabilities per prompt token, as a list of lists. Populated only when <code>topkPromptLogprobs</code> is greater than 0.</p>"
+        }
+      },
+      "documentation":"<p>The response containing generated samples and optional log-probabilities.</p>",
+      "sensitive":true
+    },
+    "SampleResponseStream":{
+      "type":"blob",
+      "documentation":"<p>The streaming response body, delivered as Server-Sent Events (<code>text/event-stream</code>). Each event is a <code>data: {JSON}</code> line containing a chat completion chunk, and the stream is terminated by <code>data: [DONE]</code>. If an error occurs after streaming has started, it is delivered as a <code>data: {\"error\": {...}}</code> event and the stream ends without a <code>[DONE]</code> marker. Errors that occur before streaming starts are returned as the operation's errors.</p>",
+      "sensitive":true,
+      "streaming":true
+    },
+    "SampleTokenUsage":{
+      "type":"structure",
+      "required":[
+        "prefill",
+        "decode"
+      ],
+      "members":{
+        "prefill":{
+          "shape":"Integer",
+          "documentation":"<p>The number of tokens in the input prompt (prefill phase).</p>"
+        },
+        "decode":{
+          "shape":"Integer",
+          "documentation":"<p>The number of tokens generated (decode phase).</p>"
+        }
+      },
+      "documentation":"<p>The token usage statistics for a sample generation.</p>"
+    },
+    "SampleTrainingSessionInput":{
+      "type":"structure",
+      "required":["trainingSessionName"],
+      "members":{
+        "trainingSessionName":{
+          "shape":"TrainingSessionName",
+          "documentation":"<p>The name of the training session whose model to invoke.</p>",
+          "location":"uri",
+          "locationName":"trainingSessionName"
+        },
+        "contentType":{
+          "shape":"String",
+          "documentation":"<p>The MIME type of the input data in the request body.</p>",
+          "location":"header",
+          "locationName":"Content-Type"
+        },
+        "accept":{
+          "shape":"String",
+          "documentation":"<p>The desired MIME type of the inference body in the response.</p>",
+          "location":"header",
+          "locationName":"Accept"
+        },
+        "modelPackageArn":{
+          "shape":"String",
+          "documentation":"<p>The ARN of the model package whose checkpoint to invoke.</p>",
+          "location":"header",
+          "locationName":"X-Amzn-SageMaker-Model-Package"
+        },
+        "body":{
+          "shape":"InferenceBody",
+          "documentation":"<p>The raw inference request body.</p>"
+        }
+      },
+      "payload":"body"
+    },
+    "SampleTrainingSessionOutput":{
+      "type":"structure",
+      "required":["body"],
+      "members":{
+        "contentType":{
+          "shape":"String",
+          "documentation":"<p>The MIME type of the inference result in the response body.</p>",
+          "location":"header",
+          "locationName":"Content-Type"
+        },
+        "body":{
+          "shape":"InferenceBody",
+          "documentation":"<p>The raw inference response body from the model.</p>"
+        }
+      },
+      "payload":"body"
+    },
+    "SampleTrainingSessionWithResponseStreamInput":{
+      "type":"structure",
+      "required":["trainingSessionName"],
+      "members":{
+        "trainingSessionName":{
+          "shape":"TrainingSessionName",
+          "documentation":"<p>The name of the training session whose model to invoke.</p>",
+          "location":"uri",
+          "locationName":"trainingSessionName"
+        },
+        "contentType":{
+          "shape":"String",
+          "documentation":"<p>The MIME type of the input data in the request body.</p>",
+          "location":"header",
+          "locationName":"Content-Type"
+        },
+        "accept":{
+          "shape":"String",
+          "documentation":"<p>The desired MIME type of the inference body in the response.</p>",
+          "location":"header",
+          "locationName":"Accept"
+        },
+        "modelPackageArn":{
+          "shape":"String",
+          "documentation":"<p>The ARN of the model package whose checkpoint to invoke.</p>",
+          "location":"header",
+          "locationName":"X-Amzn-SageMaker-Model-Package"
+        },
+        "body":{
+          "shape":"InferenceBody",
+          "documentation":"<p>The raw inference request body.</p>"
+        }
+      },
+      "payload":"body"
+    },
+    "SampleTrainingSessionWithResponseStreamOutput":{
+      "type":"structure",
+      "required":["body"],
+      "members":{
+        "contentType":{
+          "shape":"String",
+          "documentation":"<p>The MIME type of the streaming inference result.</p>",
+          "location":"header",
+          "locationName":"Content-Type"
+        },
+        "body":{
+          "shape":"SampleResponseStream",
+          "documentation":"<p>The streaming inference response from the model, delivered as a series of chunks.</p>"
+        }
+      },
+      "payload":"body"
+    },
+    "SampledSequence":{
+      "type":"structure",
+      "required":[
+        "stopReason",
+        "tokens"
+      ],
+      "members":{
+        "stopReason":{
+          "shape":"StopReason",
+          "documentation":"<p>The reason why generation stopped. A value of <code>stop</code> indicates a stop sequence was encountered. A value of <code>length</code> indicates the maximum token limit was reached.</p>"
+        },
+        "tokens":{
+          "shape":"IntegerList",
+          "documentation":"<p>The token IDs of the generated sequence.</p>"
+        },
+        "logprobs":{
+          "shape":"DoubleList",
+          "documentation":"<p>The per-token log-probabilities for the generated tokens.</p>"
+        },
+        "tokenUsage":{
+          "shape":"SampleTokenUsage",
+          "documentation":"<p>The token usage statistics for this individual sample.</p>"
+        }
+      },
+      "documentation":"<p>A single generated sequence from the model.</p>"
+    },
+    "SampledSequenceList":{
+      "type":"list",
+      "member":{"shape":"SampledSequence"}
+    },
+    "SamplingParams":{
+      "type":"structure",
+      "required":["maxTokens"],
+      "members":{
+        "maxTokens":{
+          "shape":"SamplingParamsMaxTokensInteger",
+          "documentation":"<p>The maximum number of tokens to generate per sample.</p>"
+        },
+        "temperature":{
+          "shape":"SamplingParamsTemperatureDouble",
+          "documentation":"<p>The sampling temperature controlling randomness. Higher values produce more diverse outputs.</p>"
+        },
+        "topK":{
+          "shape":"Integer",
+          "documentation":"<p>The number of highest-probability vocabulary tokens to keep for top-k filtering. Set to -1 to disable.</p>"
+        },
+        "topP":{
+          "shape":"SamplingParamsTopPDouble",
+          "documentation":"<p>The cumulative probability threshold for nucleus (top-p) sampling. Only tokens with cumulative probability below this threshold are considered.</p>"
+        },
+        "seed":{
+          "shape":"Integer",
+          "documentation":"<p>The random seed for reproducible sampling. When set, the same seed with the same input produces deterministic outputs.</p>"
+        },
+        "stop":{
+          "shape":"StopSequenceList",
+          "documentation":"<p>The list of stop sequences that terminate generation when encountered in the output.</p>"
+        }
+      },
+      "documentation":"<p>The parameters controlling the text generation sampling strategy.</p>"
+    },
+    "SamplingParamsMaxTokensInteger":{
+      "type":"integer",
+      "box":true,
+      "max":131072,
+      "min":512
+    },
+    "SamplingParamsTemperatureDouble":{
+      "type":"double",
+      "box":true,
+      "max":2,
+      "min":0
+    },
+    "SamplingParamsTopPDouble":{
+      "type":"double",
+      "box":true,
+      "max":1,
+      "min":0
+    },
+    "SaveStateConfig":{
+      "type":"structure",
+      "members":{
+        "description":{
+          "shape":"SaveStateConfigDescriptionString",
+          "documentation":"<p>A human-readable description for the saved state checkpoint.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for saving full training state, including model weights and optimizer state. Use this to create resumable checkpoints.</p>"
+    },
+    "SaveStateConfigDescriptionString":{
+      "type":"string",
+      "max":1024,
+      "min":0
+    },
+    "SaveStateResult":{
+      "type":"structure",
+      "required":["modelPackageArn"],
+      "members":{
+        "modelPackageArn":{
+          "shape":"String",
+          "documentation":"<p>The ARN of the model package created for the saved state checkpoint.</p>"
+        }
+      },
+      "documentation":"<p>The result of saving full training state.</p>"
+    },
+    "SaveWeightsConfig":{
+      "type":"structure",
+      "members":{
+        "mergeWeights":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether to merge LoRA adapter weights into the base model before saving. When true, the saved checkpoint contains the full merged model weights.</p>"
+        },
+        "description":{
+          "shape":"SaveWeightsConfigDescriptionString",
+          "documentation":"<p>A human-readable description for the saved checkpoint.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for saving model weights as a checkpoint.</p>"
+    },
+    "SaveWeightsConfigDescriptionString":{
+      "type":"string",
+      "max":1024,
+      "min":0
+    },
+    "SaveWeightsResult":{
+      "type":"structure",
+      "members":{
+        "modelPackageArn":{
+          "shape":"String",
+          "documentation":"<p>The ARN of the model package created for the saved weights.</p>"
+        }
+      },
+      "documentation":"<p>The result of saving model weights.</p>"
+    },
+    "SequenceNumber":{
+      "type":"integer",
+      "box":true,
+      "min":1
+    },
+    "StopReason":{
+      "type":"string",
+      "enum":[
+        "stop",
+        "length"
+      ]
+    },
+    "StopSequenceList":{
+      "type":"list",
+      "member":{"shape":"String"}
+    },
+    "String":{"type":"string"},
+    "TensorData":{
+      "type":"structure",
+      "required":[
+        "data",
+        "dtype"
+      ],
+      "members":{
+        "data":{
+          "shape":"Document",
+          "documentation":"<p>The raw tensor data as JSON. The format is determined by the <code>dtype</code> field: integer arrays for <code>int64</code>, floating-point arrays for <code>float32</code>.</p>"
+        },
+        "dtype":{
+          "shape":"String",
+          "documentation":"<p>The data type of the tensor elements, such as <code>int64</code> or <code>float32</code>.</p>"
+        },
+        "shape":{
+          "shape":"IntegerList",
+          "documentation":"<p>The dimensions of the tensor, such as [batch_size, seq_length].</p>"
+        }
+      },
+      "documentation":"<p>A tensor with data, data type, and shape metadata.</p>"
+    },
+    "TensorDataMap":{
+      "type":"map",
+      "key":{"shape":"String"},
+      "value":{"shape":"TensorData"}
+    },
+    "TensorDataMapList":{
+      "type":"list",
+      "member":{"shape":"TensorDataMap"},
+      "documentation":"<p>List of TensorDataMap — represents per-datum loss function outputs. Each element is a map of tensor names to TensorData for one datum in the batch.</p>"
+    },
+    "ThrottlingException":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{"shape":"String"}
+      },
+      "documentation":"<p>The request was throttled. Retry the request after a brief wait using exponential backoff.</p>",
+      "error":{
+        "httpStatusCode":429,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "TokenLogprob":{
+      "type":"structure",
+      "required":[
+        "tokenId",
+        "logprob"
+      ],
+      "members":{
+        "tokenId":{
+          "shape":"Integer",
+          "documentation":"<p>The vocabulary token ID.</p>"
+        },
+        "logprob":{
+          "shape":"Double",
+          "documentation":"<p>The log-probability of the token.</p>"
+        }
+      },
+      "documentation":"<p>The log-probability for a single token.</p>"
+    },
+    "TokenLogprobList":{
+      "type":"list",
+      "member":{"shape":"TokenLogprob"}
+    },
+    "TopkPromptLogprobsList":{
+      "type":"list",
+      "member":{"shape":"TokenLogprobList"}
+    },
+    "TrainingSessionName":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"[a-zA-Z0-9-]+"
+    },
+    "TrainingTokenUsage":{
+      "type":"structure",
+      "members":{
+        "trainingTokens":{
+          "shape":"Integer",
+          "documentation":"<p>The number of training tokens consumed by the operation.</p>"
+        }
+      },
+      "documentation":"<p>The token usage statistics for training operations.</p>"
+    },
+    "ValidationException":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{"shape":"String"}
+      },
+      "documentation":"<p>The request is not valid. Check the request syntax and parameters. Examples include invalid sequence numbers, malformed client tokens, missing required fields, or invalid operation configuration.</p>",
+      "error":{
+        "httpStatusCode":400,
+        "senderFault":true
+      },
+      "exception":true
+    }
+  },
+  "documentation":"<p>Amazon SageMaker Training Session Runtime provides APIs for executing training operations and sampling operations against a running training session. Use these APIs to submit asynchronous training steps (such as forward-backward passes, optimizer steps, and checkpoint saves) and to generate text samples from the model being trained.</p>"
+}

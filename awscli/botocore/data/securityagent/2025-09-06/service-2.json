@@ -103,6 +103,46 @@
       "output":{"shape":"BatchDeleteThreatModelsOutput"},
       "documentation":"<p>Deletes one or more threat models from an agent space.</p>"
     },
+    "BatchDisassociateFindingIssue":{
+      "name":"BatchDisassociateFindingIssue",
+      "http":{
+        "method":"POST",
+        "requestUri":"/BatchDisassociateFindingIssue",
+        "responseCode":200
+      },
+      "input":{"shape":"BatchDisassociateFindingIssueInput"},
+      "output":{"shape":"BatchDisassociateFindingIssueOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ServiceQuotaExceededException"}
+      ],
+      "documentation":"<p>Disassociates a batch of findings from their linked issues.</p>"
+    },
+    "BatchExportFindings":{
+      "name":"BatchExportFindings",
+      "http":{
+        "method":"POST",
+        "requestUri":"/BatchExportFindings",
+        "responseCode":200
+      },
+      "input":{"shape":"BatchExportFindingsInput"},
+      "output":{"shape":"BatchExportFindingsOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ServiceQuotaExceededException"}
+      ],
+      "documentation":"<p>Exports a batch of findings to the connected issue tracker as issues.</p>"
+    },
     "BatchGetAgentSpaces":{
       "name":"BatchGetAgentSpaces",
       "http":{
@@ -2048,6 +2088,181 @@
         }
       },
       "documentation":"<p>Output for the BatchDeleteThreatModels operation.</p>"
+    },
+    "BatchDisassociateFindingIssueError":{
+      "type":"structure",
+      "required":[
+        "findingId",
+        "code",
+        "message"
+      ],
+      "members":{
+        "findingId":{
+          "shape":"String",
+          "documentation":"<p>The identifier of the finding that failed to disassociate.</p>"
+        },
+        "code":{
+          "shape":"ErrorCode",
+          "documentation":"<p>The machine-readable failure category.</p>"
+        },
+        "message":{
+          "shape":"BatchDisassociateFindingIssueErrorMessageString",
+          "documentation":"<p>A customer-facing explanation of the failure.</p>"
+        }
+      },
+      "documentation":"<p>A finding that failed to disassociate, with the cause of the failure.</p>"
+    },
+    "BatchDisassociateFindingIssueErrorMessageString":{
+      "type":"string",
+      "max":300,
+      "min":0
+    },
+    "BatchDisassociateFindingIssueErrors":{
+      "type":"list",
+      "member":{"shape":"BatchDisassociateFindingIssueError"},
+      "documentation":"<p>The per-finding errors from a BatchDisassociateFindingIssue request.</p>"
+    },
+    "BatchDisassociateFindingIssueInput":{
+      "type":"structure",
+      "required":[
+        "agentSpaceId",
+        "findingIds"
+      ],
+      "members":{
+        "agentSpaceId":{
+          "shape":"String",
+          "documentation":"<p>The identifier of the agent space where the job exists.</p>"
+        },
+        "pentestJobId":{
+          "shape":"String",
+          "documentation":"<p>The identifier of the penetration test job. This parameter is mutually exclusive with <code>codeReviewJobId</code>.</p>"
+        },
+        "codeReviewJobId":{
+          "shape":"String",
+          "documentation":"<p>The identifier of the code review job. This parameter is mutually exclusive with <code>pentestJobId</code>.</p>"
+        },
+        "findingIds":{
+          "shape":"FindingIdList",
+          "documentation":"<p>The identifiers of the findings to disassociate from their issues. Each must belong to the specified job.</p>"
+        }
+      },
+      "documentation":"<p>The input for the BatchDisassociateFindingIssue operation.</p>"
+    },
+    "BatchDisassociateFindingIssueOutput":{
+      "type":"structure",
+      "required":["errors"],
+      "members":{
+        "errors":{
+          "shape":"BatchDisassociateFindingIssueErrors",
+          "documentation":"<p>The findings whose issue could not be disassociated.</p>"
+        }
+      },
+      "documentation":"<p>The output for the BatchDisassociateFindingIssue operation.</p>"
+    },
+    "BatchExportFindingError":{
+      "type":"structure",
+      "required":[
+        "findingId",
+        "code",
+        "message"
+      ],
+      "members":{
+        "findingId":{
+          "shape":"String",
+          "documentation":"<p>The identifier of the finding this error corresponds to.</p>"
+        },
+        "code":{
+          "shape":"ErrorCode",
+          "documentation":"<p>The machine-readable failure category.</p>"
+        },
+        "message":{
+          "shape":"BatchExportFindingErrorMessageString",
+          "documentation":"<p>A customer-facing explanation of why the issue could not be created.</p>"
+        }
+      },
+      "documentation":"<p>A finding whose issue could not be created, with the cause of the failure.</p>"
+    },
+    "BatchExportFindingErrorList":{
+      "type":"list",
+      "member":{"shape":"BatchExportFindingError"},
+      "documentation":"<p>The per-finding errors of a BatchExportFindings request.</p>"
+    },
+    "BatchExportFindingErrorMessageString":{
+      "type":"string",
+      "max":300,
+      "min":0
+    },
+    "BatchExportFindingResult":{
+      "type":"structure",
+      "required":[
+        "findingId",
+        "linkedIssue"
+      ],
+      "members":{
+        "findingId":{
+          "shape":"String",
+          "documentation":"<p>The identifier of the finding this result corresponds to.</p>"
+        },
+        "linkedIssue":{
+          "shape":"LinkedIssue",
+          "documentation":"<p>The issue that was created for the finding.</p>"
+        }
+      },
+      "documentation":"<p>A finding whose issue was created.</p>"
+    },
+    "BatchExportFindingResultList":{
+      "type":"list",
+      "member":{"shape":"BatchExportFindingResult"},
+      "documentation":"<p>The per-finding successful results of a BatchExportFindings request.</p>"
+    },
+    "BatchExportFindingsInput":{
+      "type":"structure",
+      "required":[
+        "agentSpaceId",
+        "issueDestination",
+        "findingIds"
+      ],
+      "members":{
+        "agentSpaceId":{
+          "shape":"String",
+          "documentation":"<p>The identifier of the agent space where the job exists.</p>"
+        },
+        "pentestJobId":{
+          "shape":"String",
+          "documentation":"<p>The identifier of the penetration test job. This parameter is mutually exclusive with <code>codeReviewJobId</code>.</p>"
+        },
+        "codeReviewJobId":{
+          "shape":"String",
+          "documentation":"<p>The identifier of the code review job. This parameter is mutually exclusive with <code>pentestJobId</code>.</p>"
+        },
+        "issueDestination":{
+          "shape":"IssueDestination",
+          "documentation":"<p>The destination issue-tracker project the findings are exported to. Must be a connected capability of the agent space.</p>"
+        },
+        "findingIds":{
+          "shape":"FindingIdList",
+          "documentation":"<p>The identifiers of the findings to export. Each must belong to the specified job.</p>"
+        }
+      },
+      "documentation":"<p>The input for the BatchExportFindings operation.</p>"
+    },
+    "BatchExportFindingsOutput":{
+      "type":"structure",
+      "required":[
+        "results",
+        "errors"
+      ],
+      "members":{
+        "results":{
+          "shape":"BatchExportFindingResultList",
+          "documentation":"<p>The findings whose issue was created, each with its linked issue.</p>"
+        },
+        "errors":{
+          "shape":"BatchExportFindingErrorList",
+          "documentation":"<p>The findings whose issue could not be created, each with a customer-facing reason.</p>"
+        }
+      },
+      "documentation":"<p>The output for the BatchExportFindings operation.</p>"
     },
     "BatchGetAgentSpacesInput":{
       "type":"structure",
@@ -4970,6 +5185,10 @@
           "shape":"String",
           "documentation":"<p>The identifier of the original finding that this revalidation finding was produced from.</p>"
         },
+        "linkedIssue":{
+          "shape":"LinkedIssue",
+          "documentation":"<p>The issue in a third-party issue tracker that this finding has been exported to.</p>"
+        },
         "createdAt":{
           "shape":"SyntheticTimestamp_date_time",
           "documentation":"<p>The date and time the finding was created, in UTC format.</p>"
@@ -5216,6 +5435,10 @@
         "targetUrl":{
           "shape":"TargetUrl",
           "documentation":"<p>The HTTPS URL of the customer self-hosted instance, such as a GitHub Enterprise Server or self-managed GitLab instance. This value is absent for SaaS integrations.</p>"
+        },
+        "siteUrl":{
+          "shape":"TargetUrl",
+          "documentation":"<p>The Atlassian Cloud site URL for Atlassian integrations.</p>"
         },
         "webhookUrl":{
           "shape":"String",
@@ -5669,6 +5892,10 @@
         "azureDevOpsRepository":{
           "shape":"AzureDevOpsRepositoryResource",
           "documentation":"<p>The Azure DevOps repository resource information.</p>"
+        },
+        "jiraProject":{
+          "shape":"JiraProjectResource",
+          "documentation":"<p>The Jira project resource information.</p>"
         }
       },
       "documentation":"<p>Represents an integrated resource from a third-party provider. This is a union type that contains provider-specific resource information.</p>",
@@ -5707,6 +5934,10 @@
         "azureDevOpsRepository":{
           "shape":"AzureDevOpsRepositoryMetadata",
           "documentation":"<p>The Azure DevOps repository metadata.</p>"
+        },
+        "jiraProject":{
+          "shape":"JiraProjectMetadata",
+          "documentation":"<p>The Jira project metadata.</p>"
         }
       },
       "documentation":"<p>Contains metadata about an integrated resource. This is a union type that contains provider-specific metadata.</p>",
@@ -5831,6 +6062,137 @@
         "DUAL_STACK"
       ]
     },
+    "IssueDestination":{
+      "type":"structure",
+      "required":[
+        "integrationId",
+        "projectKey"
+      ],
+      "members":{
+        "integrationId":{
+          "shape":"String",
+          "documentation":"<p>The integration identifier for the issue-tracker provider.</p>"
+        },
+        "projectKey":{
+          "shape":"String",
+          "documentation":"<p>The identifier of the project the issues are filed under.</p>"
+        }
+      },
+      "documentation":"<p>The destination for filing findings as issues in an integrated issue tracker.</p>"
+    },
+    "JiraInstallationId":{
+      "type":"string",
+      "documentation":"<p>An Atlassian installation identifier for a Jira integration.</p>"
+    },
+    "JiraIntegrationInput":{
+      "type":"structure",
+      "required":[
+        "installationId",
+        "code",
+        "state",
+        "siteUrl"
+      ],
+      "members":{
+        "installationId":{
+          "shape":"JiraInstallationId",
+          "documentation":"<p>The Atlassian installation identifier, available from the Atlassian administration console.</p>"
+        },
+        "code":{
+          "shape":"AuthCode",
+          "documentation":"<p>The OAuth 2.0 authorization code returned from the consent redirect.</p>"
+        },
+        "state":{
+          "shape":"CsrfState",
+          "documentation":"<p>The CSRF state token echoed back from the OAuth redirect.</p>"
+        },
+        "siteUrl":{
+          "shape":"JiraSiteUrl",
+          "documentation":"<p>The Jira Cloud site URL, for example https://mysite.atlassian.net.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for creating a Jira integration.</p>"
+    },
+    "JiraProjectMetadata":{
+      "type":"structure",
+      "required":[
+        "name",
+        "providerResourceId",
+        "projectKey",
+        "projectId"
+      ],
+      "members":{
+        "name":{"shape":"ProviderResourceName"},
+        "providerResourceId":{"shape":"ProviderResourceId"},
+        "projectKey":{
+          "shape":"String",
+          "documentation":"<p>The Jira project key, for example PROJ.</p>"
+        },
+        "projectId":{
+          "shape":"String",
+          "documentation":"<p>The Jira project identifier.</p>"
+        },
+        "projectName":{
+          "shape":"JiraProjectMetadataProjectNameString",
+          "documentation":"<p>The display name of the Jira project.</p>"
+        }
+      },
+      "documentation":"<p>Contains metadata about a Jira project that is integrated with the service.</p>"
+    },
+    "JiraProjectMetadataProjectNameString":{
+      "type":"string",
+      "max":255,
+      "min":1
+    },
+    "JiraProjectResource":{
+      "type":"structure",
+      "required":[
+        "name",
+        "projectKey",
+        "projectId"
+      ],
+      "members":{
+        "name":{"shape":"ProviderResourceName"},
+        "projectKey":{
+          "shape":"String",
+          "documentation":"<p>The Jira project key, for example PROJ.</p>"
+        },
+        "projectId":{
+          "shape":"String",
+          "documentation":"<p>The Jira project identifier.</p>"
+        },
+        "projectName":{
+          "shape":"JiraProjectResourceProjectNameString",
+          "documentation":"<p>The display name of the Jira project.</p>"
+        }
+      },
+      "documentation":"<p>Represents a Jira project resource used in an integration.</p>"
+    },
+    "JiraProjectResourceProjectNameString":{
+      "type":"string",
+      "max":255,
+      "min":1
+    },
+    "JiraResourceCapabilities":{
+      "type":"structure",
+      "members":{
+        "createIssue":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether to create issues in the integrated jira project.</p>"
+        },
+        "commentIssue":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether to post comments on issues in the integrated jira project.</p>"
+        }
+      },
+      "documentation":"<p>Capabilities for an integrated Jira project.</p>"
+    },
+    "JiraSiteUrl":{
+      "type":"string",
+      "documentation":"<p>The URL of a Jira Cloud site.</p>",
+      "max":512,
+      "min":1,
+      "pattern":"https://[a-zA-Z0-9\\-]+\\.atlassian\\.net"
+    },
     "JobStatus":{
       "type":"string",
       "documentation":"<p>Status of a pentest job.</p>",
@@ -5862,6 +6224,40 @@
     "LambdaFunctionArns":{
       "type":"list",
       "member":{"shape":"LambdaFunctionArn"}
+    },
+    "LinkedIssue":{
+      "type":"structure",
+      "members":{
+        "provider":{
+          "shape":"Provider",
+          "documentation":"<p>The issue-tracker provider.</p>"
+        },
+        "integrationId":{
+          "shape":"String",
+          "documentation":"<p>The integration identifier for the issue-tracker provider.</p>"
+        },
+        "projectKey":{
+          "shape":"String",
+          "documentation":"<p>The key of the project the issue belongs to.</p>"
+        },
+        "issueKey":{
+          "shape":"String",
+          "documentation":"<p>The issue key.</p>"
+        },
+        "issueId":{
+          "shape":"String",
+          "documentation":"<p>The stable numeric issue identifier.</p>"
+        },
+        "issueUrl":{
+          "shape":"String",
+          "documentation":"<p>The issue URL.</p>"
+        },
+        "siteUrl":{
+          "shape":"String",
+          "documentation":"<p>The Atlassian Cloud site URL.</p>"
+        }
+      },
+      "documentation":"<p>A reference to an issue created for a finding in a third-party issue tracker.</p>"
     },
     "ListActorMessagesInput":{
       "type":"structure",
@@ -7423,7 +7819,8 @@
         "GITLAB",
         "BITBUCKET",
         "CONFLUENCE",
-        "AZURE_DEVOPS"
+        "AZURE_DEVOPS",
+        "JIRA"
       ]
     },
     "ProviderInput":{
@@ -7452,6 +7849,10 @@
         "bitbucketDataCenter":{
           "shape":"BitbucketDataCenterIntegrationInput",
           "documentation":"<p>The Bitbucket Data Center-specific input for creating an integration.</p>"
+        },
+        "jira":{
+          "shape":"JiraIntegrationInput",
+          "documentation":"<p>The configuration for a Jira integration.</p>"
         }
       },
       "documentation":"<p>The provider-specific input for creating an integration. This is a union type that contains provider-specific configuration.</p>",
@@ -7470,6 +7871,10 @@
         "azureDevOps":{
           "shape":"AzureDevOpsResourceCapabilities",
           "documentation":"<p>The Azure DevOps-specific resource capabilities.</p>"
+        },
+        "jira":{
+          "shape":"JiraResourceCapabilities",
+          "documentation":"<p>The Jira-specific resource capabilities.</p>"
         }
       },
       "documentation":"<p>The capabilities for an integrated resource from a third-party provider. This is a union type that contains provider-specific capabilities.</p>",
@@ -7488,7 +7893,8 @@
       "documentation":"<p>Type of provider integration.</p>",
       "enum":[
         "SOURCE_CODE",
-        "DOCUMENTATION"
+        "DOCUMENTATION",
+        "ISSUE_TRACKING"
       ]
     },
     "ReportDestination":{
@@ -7609,7 +8015,8 @@
       "documentation":"<p>Type of resource.</p>",
       "enum":[
         "CODE_REPOSITORY",
-        "DOCUMENT"
+        "DOCUMENT",
+        "PROJECT"
       ]
     },
     "RiskLevel":{

@@ -177,6 +177,21 @@
       ],
       "documentation":"<p>Retrieves a list of data quality results for the specified result IDs.</p>"
     },
+    "BatchGetDataQualityResultV2":{
+      "name":"BatchGetDataQualityResultV2",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"BatchGetDataQualityResultV2Request"},
+      "output":{"shape":"BatchGetDataQualityResultV2Response"},
+      "errors":[
+        {"shape":"InvalidInputException"},
+        {"shape":"OperationTimeoutException"},
+        {"shape":"InternalServiceException"}
+      ],
+      "documentation":"<p>Retrieves a list of data quality results for the specified result IDs. You can specify up to 100 result IDs in a single request.</p>"
+    },
     "BatchGetDataQualityRulesetEvaluationRun":{
       "name":"BatchGetDataQualityRulesetEvaluationRun",
       "http":{
@@ -2223,6 +2238,22 @@
       ],
       "documentation":"<p>Retrieves the result of a data quality rule evaluation.</p>"
     },
+    "GetDataQualityResultV2":{
+      "name":"GetDataQualityResultV2",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetDataQualityResultV2Request"},
+      "output":{"shape":"GetDataQualityResultV2Response"},
+      "errors":[
+        {"shape":"InvalidInputException"},
+        {"shape":"OperationTimeoutException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"EntityNotFoundException"}
+      ],
+      "documentation":"<p>Retrieves the result of a data quality rule evaluation published from any supported data platform.</p>"
+    },
     "GetDataQualityRuleRecommendationRun":{
       "name":"GetDataQualityRuleRecommendationRun",
       "http":{
@@ -3406,6 +3437,21 @@
       ],
       "documentation":"<p>Returns all data quality execution results for your account.</p>"
     },
+    "ListDataQualityResultsV2":{
+      "name":"ListDataQualityResultsV2",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListDataQualityResultsV2Request"},
+      "output":{"shape":"ListDataQualityResultsV2Response"},
+      "errors":[
+        {"shape":"InvalidInputException"},
+        {"shape":"OperationTimeoutException"},
+        {"shape":"InternalServiceException"}
+      ],
+      "documentation":"<p>Returns a paginated list of data quality execution results for your account, filtered by the specified criteria. Use the <code>NextToken</code> parameter to retrieve additional results.</p>"
+    },
     "ListDataQualityRuleRecommendationRuns":{
       "name":"ListDataQualityRuleRecommendationRuns",
       "http":{
@@ -3834,6 +3880,24 @@
         {"shape":"InvalidInputException"}
       ],
       "documentation":"<p>Modifies a Zero-ETL integration in the caller's account.</p>"
+    },
+    "PublishDataQualityResultV2":{
+      "name":"PublishDataQualityResultV2",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"PublishDataQualityResultV2Request"},
+      "output":{"shape":"PublishDataQualityResultV2Response"},
+      "errors":[
+        {"shape":"InvalidInputException"},
+        {"shape":"OperationTimeoutException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"IdempotentParameterMismatchException"},
+        {"shape":"ResourceNumberLimitExceededException"}
+      ],
+      "documentation":"<note> <p>This operation is intended for internal use. Do not call it directly.</p> </note> <p>AWS Glue Data Quality uses this operation to publish a data quality result.</p>",
+      "idempotent":true
     },
     "PutAsset":{
       "name":"PutAsset",
@@ -6319,6 +6383,30 @@
         }
       }
     },
+    "BatchGetDataQualityResultV2Request":{
+      "type":"structure",
+      "required":["ResultIds"],
+      "members":{
+        "ResultIds":{
+          "shape":"DataQualityResultV2IdList",
+          "documentation":"<p>A list of unique result IDs for the data quality results.</p>"
+        }
+      }
+    },
+    "BatchGetDataQualityResultV2Response":{
+      "type":"structure",
+      "required":["Results"],
+      "members":{
+        "Results":{
+          "shape":"DataQualityResultV2List",
+          "documentation":"<p>A list of <code>DataQualityResultV2Item</code> objects representing the data quality results.</p>"
+        },
+        "ResultsNotFound":{
+          "shape":"DataQualityResultV2IdList",
+          "documentation":"<p>A list of result IDs for which results were not found.</p>"
+        }
+      }
+    },
     "BatchGetDataQualityRulesetEvaluationRunRequest":{
       "type":"structure",
       "required":["RunIds"],
@@ -7765,6 +7853,12 @@
         }
       },
       "documentation":"<p>OAuth2 client credentials configuration that defines the properties needed for the Client Credentials grant type flow.</p>"
+    },
+    "ClientTokenString":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"^[a-zA-Z0-9_-]+$"
     },
     "CloudWatchEncryption":{
       "type":"structure",
@@ -12171,6 +12265,20 @@
       "max":2000,
       "min":0
     },
+    "DataQualityConfigurationV2":{
+      "type":"structure",
+      "members":{
+        "ObservationsEnabled":{
+          "shape":"ObservationConfiguration",
+          "documentation":"<p>Whether observations are enabled for the run. Valid values are:</p> <ul> <li> <p> <code>ALL</code> </p> </li> <li> <p> <code>NONE</code> </p> </li> </ul>"
+        },
+        "ObservationMode":{
+          "shape":"ObservationMode",
+          "documentation":"<p>The observation mode for the run. Valid values are:</p> <ul> <li> <p> <code>SCHEDULED</code> </p> </li> <li> <p> <code>FIXED</code> </p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>The run configuration for a data quality result.</p>"
+    },
     "DataQualityEncryption":{
       "type":"structure",
       "members":{
@@ -12190,6 +12298,13 @@
       "enum":[
         "DISABLED",
         "SSE-KMS"
+      ]
+    },
+    "DataQualityEngine":{
+      "type":"string",
+      "enum":[
+        "SPARK",
+        "PYTHON"
       ]
     },
     "DataQualityEvaluationRunAdditionalRunOptions":{
@@ -12237,6 +12352,13 @@
         }
       },
       "documentation":"<p>Additional run options you can specify for an evaluation run.</p>"
+    },
+    "DataQualityFlagsEnabled":{
+      "type":"map",
+      "key":{"shape":"NameString"},
+      "value":{"shape":"NameString"},
+      "max":30,
+      "min":0
     },
     "DataQualityGlueTable":{
       "type":"structure",
@@ -12378,15 +12500,15 @@
         },
         "RuleResults":{
           "shape":"DataQualityRuleResults",
-          "documentation":"<p>A list of <code>DataQualityRuleResult</code> objects representing the results for each rule. </p>"
+          "documentation":"<p>A list of <code>DataQualityRuleResult</code> objects representing the results for each rule.</p>"
         },
         "AnalyzerResults":{
           "shape":"DataQualityAnalyzerResults",
-          "documentation":"<p>A list of <code>DataQualityAnalyzerResult</code> objects representing the results for each analyzer. </p>"
+          "documentation":"<p>A list of <code>DataQualityAnalyzerResult</code> objects representing the results for each analyzer.</p>"
         },
         "Observations":{
           "shape":"DataQualityObservations",
-          "documentation":"<p>A list of <code>DataQualityObservation</code> objects representing the observations generated after evaluating the rules and analyzers. </p>"
+          "documentation":"<p>A list of <code>DataQualityObservation</code> objects representing the anomaly detection observations generated after evaluating the rules and analyzers.</p>"
         },
         "AggregatedMetrics":{
           "shape":"DataQualityAggregatedMetrics",
@@ -12463,9 +12585,150 @@
       "max":100,
       "min":1
     },
+    "DataQualityResultV2IdList":{
+      "type":"list",
+      "member":{"shape":"HashString"},
+      "max":100,
+      "min":1
+    },
+    "DataQualityResultV2Item":{
+      "type":"structure",
+      "required":["ResultId"],
+      "members":{
+        "ResultId":{
+          "shape":"HashString",
+          "documentation":"<p>A unique result ID for the data quality result.</p>"
+        },
+        "DataSource":{
+          "shape":"DataSource",
+          "documentation":"<p>The table associated with the data quality result, if any.</p>"
+        },
+        "Dimensions":{
+          "shape":"PublishDataQualityResultDimensions",
+          "documentation":"<p>A map of platform-specific identifiers, such as cluster, application, workgroup, or project IDs, that identify where the data quality evaluation ran.</p>"
+        },
+        "Tags":{
+          "shape":"PublishDataQualityResultTags",
+          "documentation":"<p>A map of tags associated with the data quality result.</p>"
+        },
+        "ExecutionStartedOn":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time when this data quality run started.</p>"
+        },
+        "ExecutionCompletedOn":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time when this data quality run completed.</p>"
+        },
+        "ResultPublishedOn":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time when this data quality result was published.</p>"
+        },
+        "Score":{
+          "shape":"GenericBoundedDouble",
+          "documentation":"<p>An aggregate data quality score. Represents the ratio of rules that passed to the total number of rules.</p>"
+        },
+        "RuleResults":{
+          "shape":"DataQualityRuleResults",
+          "documentation":"<p>A list of <code>DataQualityRuleResult</code> objects representing the results for each rule.</p>"
+        },
+        "AnalyzerResults":{
+          "shape":"DataQualityAnalyzerResults",
+          "documentation":"<p>A list of <code>DataQualityAnalyzerResult</code> objects representing the results for each analyzer.</p>"
+        },
+        "Observations":{
+          "shape":"DataQualityObservations",
+          "documentation":"<p>A list of <code>DataQualityObservation</code> objects representing the anomaly detection observations generated after evaluating the rules and analyzers.</p>"
+        },
+        "EvaluationContext":{
+          "shape":"NameString",
+          "documentation":"<p>The evaluation context for the data quality result. This value identifies a specific data quality result, or a series of related results, within a run.</p>"
+        },
+        "Descriptors":{
+          "shape":"PublishDataQualityResultDescriptors",
+          "documentation":"<p>A map of user-provided descriptors that add contextual metadata and configuration to the data quality result, such as database name, table name, team, or environment.</p>"
+        },
+        "AggregatedMetrics":{
+          "shape":"DataQualityAggregatedMetrics",
+          "documentation":"<p>A summary of <code>DataQualityAggregatedMetrics</code> objects showing the total counts of processed rows and rules, including their pass/fail statistics based on row-level results.</p>"
+        },
+        "RulesetName":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the ruleset associated with the data quality result.</p>"
+        }
+      },
+      "documentation":"<p>Describes a data quality result returned by <code>BatchGetDataQualityResultV2</code>.</p>"
+    },
+    "DataQualityResultV2List":{
+      "type":"list",
+      "member":{"shape":"DataQualityResultV2Item"},
+      "max":100,
+      "min":0
+    },
     "DataQualityResultsList":{
       "type":"list",
       "member":{"shape":"DataQualityResult"}
+    },
+    "DataQualityResultsV2Description":{
+      "type":"structure",
+      "members":{
+        "ResultId":{
+          "shape":"HashString",
+          "documentation":"<p>The unique result ID for this data quality result.</p>"
+        },
+        "DataSource":{
+          "shape":"DataSource",
+          "documentation":"<p>The table associated with the data quality result, if any.</p>"
+        },
+        "ResultPublishedOn":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time when this data quality result was published.</p>"
+        },
+        "Dimensions":{
+          "shape":"PublishDataQualityResultDimensions",
+          "documentation":"<p>A map of platform-specific identifiers, such as cluster, application, workgroup, or project IDs, that identify where the data quality evaluation ran.</p>"
+        },
+        "EvaluationContext":{
+          "shape":"NameString",
+          "documentation":"<p>The evaluation context for the data quality result. This value identifies a specific data quality result, or a series of related results, within a run.</p>"
+        },
+        "Descriptors":{
+          "shape":"PublishDataQualityResultDescriptors",
+          "documentation":"<p>A map of user-provided descriptors that add contextual metadata and configuration to the data quality result, such as database name, table name, team, or environment.</p>"
+        }
+      },
+      "documentation":"<p>Describes a data quality result returned by <code>ListDataQualityResultsV2</code>.</p>"
+    },
+    "DataQualityResultsV2DescriptionList":{
+      "type":"list",
+      "member":{"shape":"DataQualityResultsV2Description"},
+      "max":1000,
+      "min":0
+    },
+    "DataQualityResultsV2FilterCriteria":{
+      "type":"structure",
+      "members":{
+        "DataSource":{
+          "shape":"DataSource",
+          "documentation":"<p>The data source used to filter the results. For example, you can retrieve all results for an Glue table. <code>DatabaseName</code> and <code>TableName</code> are required. If you omit <code>CatalogId</code>, the catalog of the calling account is used.</p> <p>When you filter by data source, a page of results can be empty but still include a <code>NextToken</code>. Keep requesting pages until <code>NextToken</code> is absent.</p>"
+        },
+        "PublishedAfter":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time after which to include published results.</p>"
+        },
+        "PublishedBefore":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time before which to include published results.</p>"
+        },
+        "Dimensions":{
+          "shape":"PublishDataQualityResultDimensions",
+          "documentation":"<p>The platform dimensions to filter results by.</p>"
+        },
+        "EvaluationContext":{
+          "shape":"NameString",
+          "documentation":"<p>The evaluation context to filter results by.</p>"
+        }
+      },
+      "documentation":"<p>Describes the criteria used to filter the data quality results returned by <code>ListDataQualityResultsV2</code>.</p>"
     },
     "DataQualityRuleRecommendationRunAdditionalRunOptions":{
       "type":"structure",
@@ -12820,6 +13083,17 @@
         }
       },
       "documentation":"<p>An object representing an Glue table.</p>"
+    },
+    "DataQualityTelemetry":{
+      "type":"structure",
+      "members":{
+        "VcpuHours":{"shape":"NullableDouble"},
+        "FlagsEnabled":{"shape":"DataQualityFlagsEnabled"},
+        "LibraryVersion":{"shape":"NameString"},
+        "SparkVersion":{"shape":"NameString"},
+        "HostRuntimeVersion":{"shape":"NameString"},
+        "Engine":{"shape":"DataQualityEngine"}
+      }
     },
     "DataSource":{
       "type":"structure",
@@ -16755,15 +17029,15 @@
         },
         "RuleResults":{
           "shape":"DataQualityRuleResults",
-          "documentation":"<p>A list of <code>DataQualityRuleResult</code> objects representing the results for each rule. </p>"
+          "documentation":"<p>A list of <code>DataQualityRuleResult</code> objects representing the results for each rule.</p>"
         },
         "AnalyzerResults":{
           "shape":"DataQualityAnalyzerResults",
-          "documentation":"<p>A list of <code>DataQualityAnalyzerResult</code> objects representing the results for each analyzer. </p>"
+          "documentation":"<p>A list of <code>DataQualityAnalyzerResult</code> objects representing the results for each analyzer.</p>"
         },
         "Observations":{
           "shape":"DataQualityObservations",
-          "documentation":"<p>A list of <code>DataQualityObservation</code> objects representing the observations generated after evaluating the rules and analyzers. </p>"
+          "documentation":"<p>A list of <code>DataQualityObservation</code> objects representing the anomaly detection observations generated after evaluating the rules and analyzers.</p>"
         },
         "AggregatedMetrics":{
           "shape":"DataQualityAggregatedMetrics",
@@ -16771,6 +17045,85 @@
         }
       },
       "documentation":"<p>The response for the data quality result.</p>"
+    },
+    "GetDataQualityResultV2Request":{
+      "type":"structure",
+      "required":["ResultId"],
+      "members":{
+        "ResultId":{
+          "shape":"HashString",
+          "documentation":"<p>A unique result ID for the data quality result.</p>"
+        }
+      }
+    },
+    "GetDataQualityResultV2Response":{
+      "type":"structure",
+      "members":{
+        "ResultId":{
+          "shape":"HashString",
+          "documentation":"<p>A unique result ID for the data quality result.</p>"
+        },
+        "DataSource":{
+          "shape":"DataSource",
+          "documentation":"<p>The table associated with the data quality result, if any.</p>"
+        },
+        "ProfileId":{
+          "shape":"HashString",
+          "documentation":"<p>The Profile ID for the data quality result.</p>"
+        },
+        "Dimensions":{
+          "shape":"PublishDataQualityResultDimensions",
+          "documentation":"<p>A map of platform-specific identifiers, such as cluster, application, workgroup, or project IDs, that identify where the data quality evaluation ran.</p>"
+        },
+        "Tags":{
+          "shape":"PublishDataQualityResultTags",
+          "documentation":"<p>A map of tags associated with the data quality result.</p>"
+        },
+        "ExecutionStartedOn":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time when this data quality run started.</p>"
+        },
+        "ExecutionCompletedOn":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time when this data quality run completed.</p>"
+        },
+        "ResultPublishedOn":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time when this data quality result was published.</p>"
+        },
+        "Score":{
+          "shape":"GenericBoundedDouble",
+          "documentation":"<p>An aggregate data quality score. Represents the ratio of rules that passed to the total number of rules.</p>"
+        },
+        "RuleResults":{
+          "shape":"DataQualityRuleResults",
+          "documentation":"<p>A list of <code>DataQualityRuleResult</code> objects representing the results for each rule.</p>"
+        },
+        "AnalyzerResults":{
+          "shape":"DataQualityAnalyzerResults",
+          "documentation":"<p>A list of <code>DataQualityAnalyzerResult</code> objects representing the results for each analyzer.</p>"
+        },
+        "Observations":{
+          "shape":"DataQualityObservations",
+          "documentation":"<p>A list of <code>DataQualityObservation</code> objects representing the anomaly detection observations generated after evaluating the rules and analyzers.</p>"
+        },
+        "EvaluationContext":{
+          "shape":"NameString",
+          "documentation":"<p>The evaluation context for the data quality result. This value identifies a specific data quality result, or a series of related results, within a run.</p>"
+        },
+        "Descriptors":{
+          "shape":"PublishDataQualityResultDescriptors",
+          "documentation":"<p>A map of user-provided descriptors that add contextual metadata and configuration to the data quality result, such as database name, table name, team, or environment.</p>"
+        },
+        "AggregatedMetrics":{
+          "shape":"DataQualityAggregatedMetrics",
+          "documentation":"<p>A summary of <code>DataQualityAggregatedMetrics</code> objects showing the total counts of processed rows and rules, including their pass/fail statistics based on row-level results.</p>"
+        },
+        "RulesetName":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the ruleset associated with the data quality result.</p>"
+        }
+      }
     },
     "GetDataQualityRuleRecommendationRunRequest":{
       "type":"structure",
@@ -22257,6 +22610,37 @@
         }
       }
     },
+    "ListDataQualityResultsV2Request":{
+      "type":"structure",
+      "members":{
+        "Filter":{
+          "shape":"DataQualityResultsV2FilterCriteria",
+          "documentation":"<p>The filter criteria.</p>"
+        },
+        "NextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>A pagination token to retrieve the next page of results.</p>"
+        },
+        "MaxResults":{
+          "shape":"PageSize",
+          "documentation":"<p>The maximum number of results to return. If you don't specify a value, the operation uses the default number of results.</p>"
+        }
+      }
+    },
+    "ListDataQualityResultsV2Response":{
+      "type":"structure",
+      "required":["Results"],
+      "members":{
+        "Results":{
+          "shape":"DataQualityResultsV2DescriptionList",
+          "documentation":"<p>A list of <code>DataQualityResultsV2Description</code> objects.</p>"
+        },
+        "NextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>A pagination token, if more results are available.</p>"
+        }
+      }
+    },
     "ListDataQualityRuleRecommendationRunsRequest":{
       "type":"structure",
       "members":{
@@ -25166,6 +25550,114 @@
       "member":{"shape":"GenericString"},
       "max":5
     },
+    "PublishDataQualityResultDescriptors":{
+      "type":"map",
+      "key":{"shape":"NameString"},
+      "value":{"shape":"NameString"},
+      "max":10,
+      "min":0
+    },
+    "PublishDataQualityResultDimensions":{
+      "type":"map",
+      "key":{"shape":"NameString"},
+      "value":{"shape":"NameString"},
+      "max":10,
+      "min":1
+    },
+    "PublishDataQualityResultTags":{
+      "type":"map",
+      "key":{"shape":"NameString"},
+      "value":{"shape":"NameString"},
+      "max":5,
+      "min":1
+    },
+    "PublishDataQualityResultV2Request":{
+      "type":"structure",
+      "required":[
+        "Dimensions",
+        "Score",
+        "RuleResults",
+        "EvaluationContext"
+      ],
+      "members":{
+        "Dimensions":{
+          "shape":"PublishDataQualityResultDimensions",
+          "documentation":"<p>The dimensions for the result.</p>"
+        },
+        "Tags":{
+          "shape":"PublishDataQualityResultTags",
+          "documentation":"<p>The tags for the result.</p>"
+        },
+        "ExecutionStartedOn":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time execution started for the result.</p>"
+        },
+        "ExecutionCompletedOn":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time execution completed for the result.</p>"
+        },
+        "Score":{
+          "shape":"GenericBoundedDouble",
+          "documentation":"<p>The score for the result.</p>"
+        },
+        "RuleResults":{
+          "shape":"DataQualityRuleResults",
+          "documentation":"<p>The rule level results.</p>"
+        },
+        "AnalyzerResults":{
+          "shape":"DataQualityAnalyzerResults",
+          "documentation":"<p>The analyzer level results.</p>"
+        },
+        "Observations":{
+          "shape":"DataQualityObservations",
+          "documentation":"<p>The observations for the result.</p>"
+        },
+        "AggregatedMetrics":{
+          "shape":"DataQualityAggregatedMetrics",
+          "documentation":"<p>The aggregated metrics for the result.</p>"
+        },
+        "Statistics":{
+          "shape":"StatisticSummaryList",
+          "documentation":"<p>The statistics for the result.</p>"
+        },
+        "RunConfiguration":{
+          "shape":"DataQualityConfigurationV2",
+          "documentation":"<p>The run configuration for the result.</p>"
+        },
+        "ClientToken":{
+          "shape":"ClientTokenString",
+          "documentation":"<p>The client token for the request.</p>",
+          "idempotencyToken":true
+        },
+        "EvaluationContext":{
+          "shape":"NameString",
+          "documentation":"<p>The evaluation context for the result.</p>"
+        },
+        "Descriptors":{
+          "shape":"PublishDataQualityResultDescriptors",
+          "documentation":"<p>The descriptors for the result.</p>"
+        },
+        "RulesetName":{
+          "shape":"HashString",
+          "documentation":"<p>The ruleset name for the result.</p>"
+        },
+        "DataQualitySecurityConfiguration":{
+          "shape":"NameString",
+          "documentation":"<p>The security configuration for the result.</p>"
+        },
+        "Telemetry":{"shape":"DataQualityTelemetry"}
+      }
+    },
+    "PublishDataQualityResultV2Response":{
+      "type":"structure",
+      "required":["ResultId"],
+      "members":{
+        "ResultId":{
+          "shape":"HashString",
+          "documentation":"<p>The ID of the result.</p>"
+        }
+      }
+    },
     "PutAssetRequest":{
       "type":"structure",
       "required":[
@@ -25657,6 +26149,16 @@
         "single_quote",
         "disabled"
       ]
+    },
+    "RLSProperties":{
+      "type":"structure",
+      "members":{
+        "DefaultRLSPolicy":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the default row-level security policy applied to the table.</p>"
+        }
+      },
+      "documentation":"<p>A structure that describes the default row-level security policy of a table.</p>"
     },
     "Recipe":{
       "type":"structure",
@@ -30122,6 +30624,10 @@
         "Status":{
           "shape":"TableStatus",
           "documentation":"<p>Indicates the the state of an asynchronous change to a table.</p>"
+        },
+        "RLSProperties":{
+          "shape":"RLSProperties",
+          "documentation":"<p>A <code>RLSProperties</code> structure that describes the default row-level security policy of the table.</p>"
         }
       },
       "documentation":"<p>Represents a collection of related data organized in columns and rows.</p>"

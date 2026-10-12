@@ -808,16 +808,8 @@ def auto_resolve_session():
 
 
 @pytest.fixture
-def auto_resolve_factory(auto_resolve_session, monkeypatch):
-    monkeypatch.setenv('AWS_CLI_AUTO_RESOLVE_CLIENT', 'crt')
+def auto_resolve_factory(auto_resolve_session):
     return TransferManagerFactory(auto_resolve_session)
-
-
-@pytest.fixture
-def mock_crt_get_ec2_instance_type():
-    with mock.patch('awscrt.s3.get_ec2_instance_type') as mock_instance_type:
-        mock_instance_type.return_value = None
-        yield mock_instance_type
 
 
 @pytest.fixture
@@ -835,7 +827,6 @@ def resolve_client_type(
     auto_resolve_factory,
     s3_params,
     mock_crt_is_optimized_for_system,
-    mock_crt_get_ec2_instance_type,
     mock_crt_recommended_throughput,
     mock_crt_lock_held,
 ):
@@ -849,29 +840,7 @@ def resolve_client_type(
 
 
 class TestAutoResolveCrtClient:
-    def test_resolves_to_crt_when_enabled(self, resolve_client_type):
-        assert resolve_client_type() == constants.CRT_TRANSFER_CLIENT
-
-    def test_resolves_to_classic_when_env_var_unset(
-        self, resolve_client_type, monkeypatch
-    ):
-        monkeypatch.delenv('AWS_CLI_AUTO_RESOLVE_CLIENT')
-        assert resolve_client_type() == constants.CLASSIC_TRANSFER_CLIENT
-
-    def test_resolves_to_classic_when_env_var_is_other_value(
-        self, resolve_client_type, monkeypatch
-    ):
-        monkeypatch.setenv('AWS_CLI_AUTO_RESOLVE_CLIENT', 'classic')
-        assert resolve_client_type() == constants.CLASSIC_TRANSFER_CLIENT
-
-    def test_optimized_system_resolves_to_crt_without_env_var(
-        self,
-        resolve_client_type,
-        monkeypatch,
-        mock_crt_is_optimized_for_system,
-    ):
-        monkeypatch.delenv('AWS_CLI_AUTO_RESOLVE_CLIENT')
-        mock_crt_is_optimized_for_system.return_value = True
+    def test_resolves_to_crt_by_default(self, resolve_client_type):
         assert resolve_client_type() == constants.CRT_TRANSFER_CLIENT
 
     def test_resolves_to_classic_when_max_bandwidth_configured(
@@ -942,44 +911,6 @@ class TestAutoResolveCrtClient:
         assert resolve_client_type() == constants.CLASSIC_TRANSFER_CLIENT
 
 
-class TestAutoResolveCrtClientForInstanceFamily:
-    """Instance families rolled out to the crt client without the env var."""
-
-    @pytest.fixture(autouse=True)
-    def no_auto_resolve_env_var(self, auto_resolve_factory, monkeypatch):
-        monkeypatch.delenv('AWS_CLI_AUTO_RESOLVE_CLIENT')
-
-    def test_resolves_to_crt_for_rolled_out_instance_families(
-        self,
-        resolve_client_type,
-        mock_crt_get_ec2_instance_type,
-    ):
-        mock_crt_get_ec2_instance_type.return_value = 'm5.2xlarge'
-        assert resolve_client_type() == constants.CRT_TRANSFER_CLIENT
-
-    def test_resolves_to_classic_when_not_on_ec2(
-        self, resolve_client_type, mock_crt_get_ec2_instance_type
-    ):
-        mock_crt_get_ec2_instance_type.return_value = None
-        assert resolve_client_type() == constants.CLASSIC_TRANSFER_CLIENT
-
-    def test_resolves_to_classic_for_unsupported_settings(
-        self, resolve_client_type, mock_crt_get_ec2_instance_type
-    ):
-        mock_crt_get_ec2_instance_type.return_value = 'g5.2xlarge'
-        assert (
-            resolve_client_type(max_bandwidth=1024)
-            == constants.CLASSIC_TRANSFER_CLIENT
-        )
-
-    def test_warns_when_routed_away_for_classic_only_settings(
-        self, resolve_client_type, mock_crt_get_ec2_instance_type, capsys
-    ):
-        mock_crt_get_ec2_instance_type.return_value = 'g5.2xlarge'
-        resolve_client_type(max_bandwidth=1024)
-        assert 'max_bandwidth' in capsys.readouterr().err
-
-
 class TestClassicOnlySettingsWarning:
     def test_warns_when_routed_away_for_max_bandwidth(
         self, resolve_client_type, capsys
@@ -1011,13 +942,6 @@ class TestClassicOnlySettingsWarning:
         self, resolve_client_type, capsys
     ):
         resolve_client_type()
-        assert capsys.readouterr().err == ''
-
-    def test_does_not_warn_when_auto_resolve_disabled(
-        self, resolve_client_type, monkeypatch, capsys
-    ):
-        monkeypatch.delenv('AWS_CLI_AUTO_RESOLVE_CLIENT')
-        resolve_client_type(max_bandwidth=1024)
         assert capsys.readouterr().err == ''
 
     def test_does_not_warn_on_optimized_system(
@@ -1061,7 +985,6 @@ def crt_s3_client_kwargs(
     auto_resolve_factory,
     s3_params,
     mock_crt_is_optimized_for_system,
-    mock_crt_get_ec2_instance_type,
     mock_crt_recommended_throughput,
     mock_crt_s3_client,
     mock_crt_process_lock,
@@ -1200,17 +1123,23 @@ class TestWarnUnsupportedSettings:
         ('crt', {}, False, False, CRTTransferManager),
         # "default" is a supported alias for "classic"
         ('default', {}, False, False, TransferManager),
+        # Auto resolves to CRT when CRT is not optimized for system
+        (None, {}, False, False, CRTTransferManager),
+        ('auto', {}, False, False, CRTTransferManager),
         # Cases when CRT is optimized for system
         (None, {}, True, False, CRTTransferManager),
         ('auto', {}, True, False, CRTTransferManager),
         ('classic', {}, True, False, TransferManager),
         ('crt', {}, True, False, CRTTransferManager),
         # Cases when another AWS CLI process is running CRT
+        (None, {}, False, True, TransferManager),
+        ('auto', {}, False, True, TransferManager),
         (None, {}, True, True, TransferManager),
         ('auto', {}, True, True, TransferManager),
         ('classic', {}, True, True, TransferManager),
         ('crt', {}, True, True, CRTTransferManager),
         # S3 copies always default to classic transfer manager
+        (None, {'paths_type': 's3s3'}, False, False, TransferManager),
         (None, {'paths_type': 's3s3'}, True, False, TransferManager),
         ('auto', {'paths_type': 's3s3'}, True, False, TransferManager),
         ('classic', {'paths_type': 's3s3'}, True, False, TransferManager),
@@ -1218,6 +1147,22 @@ class TestWarnUnsupportedSettings:
         # Streaming operations use requested transfer client
         ('classic', {'is_stream': True}, False, False, TransferManager),
         ('crt', {'is_stream': True}, False, False, CRTTransferManager),
+        # Auto falls back to classic for stream uploads unless CRT is
+        # optimized for system
+        (
+            'auto',
+            {'is_stream': True, 'paths_type': 'locals3'},
+            False,
+            False,
+            TransferManager,
+        ),
+        (
+            'auto',
+            {'is_stream': True, 'paths_type': 'locals3'},
+            True,
+            False,
+            CRTTransferManager,
+        ),
     ],
 )
 def test_transfer_manager_cls_resolution(
@@ -1246,6 +1191,7 @@ def test_transfer_manager_cls_resolution(
 @pytest.mark.parametrize(
     'preferred_transfer_client,crt_is_optimized_for_system',
     [
+        ('auto', False),
         ('auto', True),
         ('crt', False),
         ('crt', True),
@@ -1316,6 +1262,8 @@ def _create_transfer_manager_from_factory(
     [
         ('classic', {}, False, 'Ad'),
         ('crt', {}, False, 'Ae'),
+        (None, {}, False, 'Ag'),
+        ('auto', {}, False, 'Ag'),
         (None, {}, True, 'Ag'),
         ('auto', {}, True, 'Ag'),
         # S3 copies always use the classic client.
@@ -1422,14 +1370,6 @@ class TestTargetThroughput:
     ):
         mock_crt_recommended_throughput.return_value = 50.0
         assert crt_s3_client_kwargs()['throughput_target_gbps'] == 50.0
-
-    def test_targets_less_on_ec2_hosts_crt_cannot_recommend_for(
-        self, crt_s3_client_kwargs, mock_crt_get_ec2_instance_type
-    ):
-        # Being on EC2 does not mean the crt client sized a pool for this
-        # host, so the instance type must not decide the throughput target.
-        mock_crt_get_ec2_instance_type.return_value = 't3.micro'
-        assert crt_s3_client_kwargs()['throughput_target_gbps'] == 4.0
 
     def test_configured_target_bandwidth_wins(self, crt_s3_client_kwargs):
         kwargs = crt_s3_client_kwargs(target_bandwidth=1_250_000_000)

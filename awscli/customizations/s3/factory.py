@@ -11,7 +11,6 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import logging
-import os
 import sys
 
 import awscrt.s3
@@ -214,8 +213,6 @@ class TransferManagerFactory:
         )
         if is_optimized_for_system:
             return True
-        if not self._is_crt_auto_resolve_enabled():
-            return False
         unsupported = self._get_unsupported_settings(params, runtime_config)
         if unsupported:
             LOGGER.debug(
@@ -225,14 +222,6 @@ class TransferManagerFactory:
             self._warn_classic_only_settings(runtime_config)
             return False
         return True
-
-    def _is_crt_auto_resolve_enabled(self):
-        if (
-            os.environ.get('AWS_CLI_AUTO_RESOLVE_CLIENT')
-            == constants.CRT_TRANSFER_CLIENT
-        ):
-            return True
-        return awscrt.s3.get_ec2_instance_type() is not None
 
     def _get_unsupported_settings(self, params, runtime_config):
         unsupported = self._get_classic_only_settings(runtime_config)

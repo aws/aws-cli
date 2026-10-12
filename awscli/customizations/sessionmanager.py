@@ -116,6 +116,23 @@ class StartSessionCaller(CLIOperationCaller):
     RECOMMENDED_MINIMUM_PLUGIN_VERSION = "1.2.764.0"
     DEFAULT_SSM_ENV_NAME = "AWS_SSM_START_SESSION_RESPONSE"
 
+    def _get_plugin_version(self):
+        """Return the session-manager-plugin version string.
+
+        Raises a ValueError with a helpful message when the plugin is not
+        installed instead of letting the raw OSError propagate.
+        """
+        try:
+            return check_output(
+                ["session-manager-plugin", "--version"], text=True
+            )
+        except OSError as ex:
+            if ex.errno == errno.ENOENT:
+                logger.debug('SessionManagerPlugin is not present',
+                             exc_info=True)
+                raise ValueError(''.join(ERROR_MESSAGE))
+            raise
+
     def _warn_if_plugin_version_is_outdated(self, plugin_version):
         """Warn when the plugin is older than the recommended minimum."""
         version_requirement = VersionRequirement(
@@ -139,6 +156,14 @@ class StartSessionCaller(CLIOperationCaller):
             service_name, region_name=parsed_globals.region,
             endpoint_url=parsed_globals.endpoint_url,
             verify=parsed_globals.verify_ssl)
+        # Check that the session-manager-plugin is installed before starting
+        # the session. Previously the plugin was only checked after the
+        # session had been started; when it was missing, the CLI called
+        # terminate_session to clean up, and if the caller lacked the
+        # ssm:TerminateSession permission that AccessDenied error masked the
+        # real "plugin not found" error. Failing fast also avoids creating a
+        # session that is immediately torn down.
+        plugin_version = self._get_plugin_version()
         response = client.start_session(**parameters)
         session_id = response['SessionId']
         region_name = client.meta.region_name
@@ -159,9 +184,6 @@ class StartSessionCaller(CLIOperationCaller):
             }
             start_session_response = json.dumps(session_parameters)
 
-            plugin_version = check_output(
-                ["session-manager-plugin", "--version"], text=True
-            )
             env = os.environ.copy()
 
             # Warn, but do not fail, when the plugin is older than the
@@ -207,6 +229,14 @@ class StartSessionCaller(CLIOperationCaller):
                 # session-manager-plugin. If plugin is not present, terminate
                 # is called so that service and ssm-agent terminates the
                 # session to avoid zombie session active on ssm-agent for
-                # default self terminate time
-                client.terminate_session(SessionId=session_id)
+                # default self terminate time. A failure of this cleanup
+                # call (e.g. the caller lacks ssm:TerminateSession
+                # permission) must not mask the plugin-not-found error
+                # below, which is the actionable message for the user.
+                try:
+                    client.terminate_session(SessionId=session_id)
+                except Exception:
+                    logger.debug('Failed to terminate session %s after the '
+                                 'session-manager-plugin was not found.',
+                                 session_id, exc_info=True)
                 raise ValueError(''.join(ERROR_MESSAGE))

@@ -3520,6 +3520,25 @@ class TestCpWithCRTClient(BaseCRTTransferClientTest):
             S3RequestTlsMode.DISABLED,
         )
 
+    def test_can_disable_ssl_using_endpoint_url_env_var(self):
+        self.cli_runner.env['AWS_ENDPOINT_URL'] = 'http://my.endpoint.com'
+        filename = self.files.create_file('myfile', 'mycontent')
+        cmdline = ['s3', 'cp', filename, 's3://bucket/key']
+        self.run_command(cmdline)
+        crt_requests = self.get_crt_make_request_calls()
+        self.assertEqual(len(crt_requests), 1)
+        self.assert_crt_make_request_call(
+            crt_requests[0],
+            expected_type=S3RequestType.PUT_OBJECT,
+            expected_host='my.endpoint.com',
+            expected_path='/bucket/key',
+            expected_send_filepath=filename,
+        )
+        self.assertEqual(
+            self.mock_crt_client.call_args[1]['tls_mode'],
+            S3RequestTlsMode.DISABLED,
+        )
+
     def test_respects_no_sign_request_parameter(self):
         filename = self.files.create_file('myfile', 'mycontent')
         cmdline = [

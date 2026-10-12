@@ -129,7 +129,7 @@ class TransferManagerFactory:
         )
         if client_type == constants.CRT_TRANSFER_CLIENT:
             transfer_manager = self._try_create_crt_transfer_manager(
-                params, runtime_config
+                params, runtime_config, botocore_client
             )
             if transfer_manager is not None:
                 self._register_transfer_client_feature_id(
@@ -159,9 +159,13 @@ class TransferManagerFactory:
             f'S3_TRANSFER_{client_type.upper()}_{resolve_type}'
         )
 
-    def _try_create_crt_transfer_manager(self, params, runtime_config):
+    def _try_create_crt_transfer_manager(
+        self, params, runtime_config, botocore_client=None
+    ):
         try:
-            return self._create_crt_transfer_manager(params, runtime_config)
+            return self._create_crt_transfer_manager(
+                params, runtime_config, botocore_client
+            )
         except RuntimeError as e:
             if str(CRT_PART_SIZE_EXCEEDS_MEMORY_LIMIT) not in str(e):
                 raise
@@ -341,9 +345,12 @@ class TransferManagerFactory:
     def _acquire_crt_s3_process_lock(self):
         return acquire_crt_s3_process_lock(self._CRT_PROCESS_LOCK_NAME)
 
-    def _create_crt_transfer_manager(self, params, runtime_config):
+    def _create_crt_transfer_manager(
+        self, params, runtime_config, botocore_client=None
+    ):
         self._acquire_crt_s3_process_lock()
         region = self._resolve_crt_client_region(params)
+        endpoint_url = self._resolve_endpoint_url(params, botocore_client)
         bootstrap = create_crt_client_bootstrap()
         config_kwargs = self._resolve_crt_client_config_kwargs(runtime_config)
 
@@ -354,6 +361,7 @@ class TransferManagerFactory:
                     runtime_config,
                     config_kwargs,
                     region=client_region or region,
+                    endpoint_url=endpoint_url,
                     bootstrap=bootstrap,
                 )
             ),
@@ -381,6 +389,7 @@ class TransferManagerFactory:
         runtime_config,
         config_kwargs,
         region=None,
+        endpoint_url=None,
         bootstrap=None,
     ):
         create_crt_client_kwargs = {
@@ -388,7 +397,6 @@ class TransferManagerFactory:
             'verify': self._resolve_verify(params),
             'bootstrap': bootstrap,
         }
-        endpoint_url = params.get('endpoint_url')
         if endpoint_url and urlparse.urlparse(endpoint_url).scheme == 'http':
             create_crt_client_kwargs['use_ssl'] = False
         target_throughput = self._resolve_target_throughput(runtime_config)
@@ -523,6 +531,13 @@ class TransferManagerFactory:
     def _resolve_crt_client_region(self, params):
         # Match botocore, which signs for us-east-1 when no region is set.
         return self._resolve_region(params) or 'us-east-1'
+
+    def _resolve_endpoint_url(self, params, botocore_client=None):
+        # The botocore client also picks up endpoints configured through
+        # AWS_ENDPOINT_URL and the config file, not just --endpoint-url.
+        if botocore_client is not None:
+            return botocore_client.meta.endpoint_url
+        return params.get('endpoint_url')
 
     def _resolve_verify(self, params):
         verify = params.get('verify_ssl')

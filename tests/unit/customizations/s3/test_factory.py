@@ -434,6 +434,21 @@ class TestTransferManagerFactory(unittest.TestCase):
         self.assert_tls_disabled_for_crt_client(mock_crt_client)
 
     @mock.patch('s3transfer.crt.S3Client')
+    def test_can_disable_tls_using_botocore_client_endpoint_for_crt_manager(
+        self, mock_crt_client
+    ):
+        self.runtime_config = self.get_runtime_config(
+            preferred_transfer_client='crt'
+        )
+        transfer_client = mock.Mock()
+        transfer_client.meta.endpoint_url = 'http://my.endpoint.com'
+        transfer_manager = self.factory.create_transfer_manager(
+            self.params, self.runtime_config, botocore_client=transfer_client
+        )
+        self.assert_is_crt_manager(transfer_manager)
+        self.assert_tls_disabled_for_crt_client(mock_crt_client)
+
+    @mock.patch('s3transfer.crt.S3Client')
     def test_uses_botocore_credentials_for_crt_manager(self, mock_crt_client):
         credentials = Credentials('access_key', 'secret_key', 'token')
         self.session.get_credentials.return_value = credentials
@@ -1491,8 +1506,10 @@ class TestChunksizeExceedingCrtMemoryPool:
     def create_manager(self, auto_resolve_factory, s3_params):
         def _create(**kwargs):
             runtime_config = RuntimeConfig().build_config(**kwargs)
+            botocore_client = mock.Mock()
+            botocore_client.meta.endpoint_url = 'https://s3.amazonaws.com'
             return auto_resolve_factory.create_transfer_manager(
-                s3_params, runtime_config, mock.Mock()
+                s3_params, runtime_config, botocore_client
             )
 
         return _create

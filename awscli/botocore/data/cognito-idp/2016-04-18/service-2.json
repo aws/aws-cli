@@ -339,7 +339,8 @@
         {"shape":"PasswordResetRequiredException"},
         {"shape":"UserNotFoundException"},
         {"shape":"UserNotConfirmedException"},
-        {"shape":"OperationNotEnabledException"}
+        {"shape":"OperationNotEnabledException"},
+        {"shape":"FeatureUnavailableInTierException"}
       ],
       "documentation":"<p>Starts sign-in for applications with a server-side component, for example a traditional web application. This operation specifies the authentication flow that you'd like to begin. The authentication flow that you specify must be supported in your app client configuration. For more information about authentication flows, see <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/amazon-cognito-user-pools-authentication-flow-methods.html\">Authentication flows</a>.</p> <note> <p>This action might generate an SMS text message. Starting June 1, 2021, US telecom carriers require you to register an origination phone number before you can send SMS messages to US phone numbers. If you use SMS text messages in Amazon Cognito, you must register a phone number with <a href=\"https://console.aws.amazon.com/pinpoint/home/\">Amazon Pinpoint</a>. Amazon Cognito uses the registered number automatically. Otherwise, Amazon Cognito users who must receive SMS messages might not be able to sign up, activate their accounts, or sign in.</p> <p>If you have never used SMS text messages with Amazon Cognito or any other Amazon Web Services service, Amazon Simple Notification Service might place your account in the SMS sandbox. In <i> <a href=\"https://docs.aws.amazon.com/sns/latest/dg/sns-sms-sandbox.html\">sandbox mode</a> </i>, you can send messages only to verified phone numbers. After you test your app while in the sandbox environment, you can move out of the sandbox and into production. For more information, see <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-sms-settings.html\"> SMS message settings for Amazon Cognito user pools</a> in the <i>Amazon Cognito Developer Guide</i>.</p> </note> <note> <p>Amazon Cognito evaluates Identity and Access Management (IAM) policies in requests for this API operation. For this operation, you must use IAM credentials to authorize requests, and you must grant yourself the corresponding IAM permission in a policy.</p> <p class=\"title\"> <b>Learn more</b> </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_aws-signing.html\">Signing Amazon Web Services API Requests</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/user-pools-API-operations.html\">Using the Amazon Cognito user pools API and user pool endpoints</a> </p> </li> </ul> </note>"
     },
@@ -1390,7 +1391,7 @@
         {"shape":"OperationNotEnabledException"},
         {"shape":"InternalErrorException"}
       ],
-      "documentation":"<p>Returns details for the terms documents that are associated with an app client, identified by the app client ID, user pool ID, and terms name. For more information, see <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pools-managed-login.html#managed-login-terms-documents\">Terms documents</a>.</p> <p>To call <code>DescribeTermsByClient</code>, you must have the <code>cognito-idp:DescribeTermsByClient</code> Identity and Access Management (IAM) permission. This operation additionally validates your permission for <code>cognito-idp:DescribeTerms</code>, the action for . As a result, an IAM policy that denies <code>cognito-idp:DescribeTerms</code> also denies requests to <code>DescribeTermsByClient</code>.</p> <note> <p>Amazon Cognito evaluates Identity and Access Management (IAM) policies in requests for this API operation. For this operation, you must use IAM credentials to authorize requests, and you must grant yourself the corresponding IAM permission in a policy.</p> <p class=\"title\"> <b>Learn more</b> </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_aws-signing.html\">Signing Amazon Web Services API Requests</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/user-pools-API-operations.html\">Using the Amazon Cognito user pools API and user pool endpoints</a> </p> </li> </ul> </note>"
+      "documentation":"<p>Returns details for the terms documents that are associated with an app client, identified by the app client ID, user pool ID, and terms name. For more information, see <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pools-managed-login.html#managed-login-terms-documents\">Terms documents</a>.</p> <p>To call <code>DescribeTermsByClient</code>, you must have the <code>cognito-idp:DescribeTermsByClient</code> Identity and Access Management (IAM) permission. An IAM policy that denies <code>cognito-idp:DescribeTerms</code> also denies requests to <code>DescribeTermsByClient</code>.</p> <note> <p>Amazon Cognito evaluates Identity and Access Management (IAM) policies in requests for this API operation. For this operation, you must use IAM credentials to authorize requests, and you must grant yourself the corresponding IAM permission in a policy.</p> <p class=\"title\"> <b>Learn more</b> </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_aws-signing.html\">Signing Amazon Web Services API Requests</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/user-pools-API-operations.html\">Using the Amazon Cognito user pools API and user pool endpoints</a> </p> </li> </ul> </note>"
     },
     "DescribeUserImportJob":{
       "name":"DescribeUserImportJob",
@@ -1553,7 +1554,7 @@
         {"shape":"OperationNotEnabledException"},
         {"shape":"ForbiddenException"}
       ],
-      "documentation":"<p>Issues an access token for machine-to-machine (M2M) authorization. Your app client provides its client ID and secret, and receives an access token that authorizes requests to your resource servers. <code>GetClientToken</code> provides the same functionality as the OAuth2 client-credentials grant; both authorize an application rather than a user.</p> <p>To use this operation, you must configure the app client with a client secret and enable the <code>ALLOW_CLIENT_TOKEN_AUTH</code> authentication flow. The <code>ALLOW_CLIENT_TOKEN_AUTH</code> flow is mutually exclusive with user authentication flows. It must be the only authentication flow that you configure for the app client. For more information, see <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pools-define-resource-servers.html\">Scopes, M2M, and resource servers</a>.</p> <note> <p>Amazon Cognito doesn't evaluate Identity and Access Management (IAM) policies in requests for this API operation. For this operation, you can't use IAM credentials to authorize requests, and you can't grant IAM permissions in policies. For more information about authorization models in Amazon Cognito, see <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/user-pools-API-operations.html\">Using the Amazon Cognito user pools API and user pool endpoints</a>.</p> </note>"
+      "documentation":"<p>Issues an access token for machine-to-machine (M2M) authorization. Your app client provides its client ID and secret, and receives an access token that authorizes requests to your resource servers.</p> <p>To use this operation, you must configure the app client with a client secret and enable the <code>ALLOW_CLIENT_TOKEN_AUTH</code> authentication flow. The <code>ALLOW_CLIENT_TOKEN_AUTH</code> flow is mutually exclusive with user authentication flows. It must be the only authentication flow that you configure for the app client. For more information, see <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pools-define-resource-servers.html\">Scopes, M2M, and resource servers</a>.</p> <note> <p>Amazon Cognito doesn't evaluate Identity and Access Management (IAM) policies in requests for this API operation. For this operation, you can't use IAM credentials to authorize requests, and you can't grant IAM permissions in policies. For more information about authorization models in Amazon Cognito, see <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/user-pools-API-operations.html\">Using the Amazon Cognito user pools API and user pool endpoints</a>.</p> </note>"
     },
     "GetDevice":{
       "name":"GetDevice",
@@ -1855,6 +1856,7 @@
         {"shape":"InvalidEmailRoleAccessPolicyException"},
         {"shape":"InvalidSmsRoleTrustRelationshipException"},
         {"shape":"OperationNotEnabledException"},
+        {"shape":"FeatureUnavailableInTierException"},
         {"shape":"ForbiddenException"}
       ],
       "documentation":"<p>Declares an authentication flow and initiates sign-in for a user in the Amazon Cognito user directory. Amazon Cognito might respond with an additional challenge or an <code>AuthenticationResult</code> that contains the outcome of a successful authentication. You can't sign in a user with a federated IdP with <code>InitiateAuth</code>. For more information, see <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/authentication.html\">Authentication</a>.</p> <note> <p>Amazon Cognito doesn't evaluate Identity and Access Management (IAM) policies in requests for this API operation. For this operation, you can't use IAM credentials to authorize requests, and you can't grant IAM permissions in policies. For more information about authorization models in Amazon Cognito, see <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/user-pools-API-operations.html\">Using the Amazon Cognito user pools API and user pool endpoints</a>.</p> </note> <note> <p>This action might generate an SMS text message. Starting June 1, 2021, US telecom carriers require you to register an origination phone number before you can send SMS messages to US phone numbers. If you use SMS text messages in Amazon Cognito, you must register a phone number with <a href=\"https://console.aws.amazon.com/pinpoint/home/\">Amazon Pinpoint</a>. Amazon Cognito uses the registered number automatically. Otherwise, Amazon Cognito users who must receive SMS messages might not be able to sign up, activate their accounts, or sign in.</p> <p>If you have never used SMS text messages with Amazon Cognito or any other Amazon Web Services service, Amazon Simple Notification Service might place your account in the SMS sandbox. In <i> <a href=\"https://docs.aws.amazon.com/sns/latest/dg/sns-sms-sandbox.html\">sandbox mode</a> </i>, you can send messages only to verified phone numbers. After you test your app while in the sandbox environment, you can move out of the sandbox and into production. For more information, see <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-sms-settings.html\"> SMS message settings for Amazon Cognito user pools</a> in the <i>Amazon Cognito Developer Guide</i>.</p> </note>",
@@ -2891,6 +2893,47 @@
       },
       "documentation":"<p>The settings for automated responses and notification templates for adaptive authentication with threat protection features.</p>"
     },
+    "AcrConfigurationType":{
+      "type":"map",
+      "key":{"shape":"AcrLevelKeyType"},
+      "value":{"shape":"AcrLevelConfigType"},
+      "documentation":"<p>Defines the custom names that Amazon Cognito reports for the four fixed authentication context class reference (ACR) levels in a user pool. The map is keyed by level, from <code>Level1</code> through <code>Level4</code>, and each value provides the custom name for that level. Amazon Cognito reports the name of the level that a user meets in the <code>acr</code> token claim.</p>",
+      "max":4,
+      "min":0
+    },
+    "AcrLevelConfigType":{
+      "type":"structure",
+      "required":["AcrValue"],
+      "members":{
+        "AcrValue":{
+          "shape":"AcrValueType",
+          "documentation":"<p>The custom name for this authentication context class reference (ACR) level. This value is the URI that Amazon Cognito reports in the <code>acr</code> token claim when a user meets this level. The name must be unique across all levels in the user pool, including default names.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for a single authentication context class reference (ACR) level in a user pool. Each entry in an <code>AcrConfiguration</code> map associates a level (<code>Level1</code> through <code>Level4</code>) with this configuration, which provides the custom name that Amazon Cognito reports for that level in the <code>acr</code> token claim.</p>"
+    },
+    "AcrLevelKeyType":{
+      "type":"string",
+      "pattern":"Level[1-4]"
+    },
+    "AcrMappingKeyType":{
+      "type":"string",
+      "pattern":"Level[1-4]"
+    },
+    "AcrMappingType":{
+      "type":"map",
+      "key":{"shape":"AcrMappingKeyType"},
+      "value":{"shape":"AcrValueType"},
+      "documentation":"<p>A map between the authentication context class reference (ACR) levels of a user pool and the ACR values of an external OpenID Connect (OIDC) identity provider (IdP), so that your application gets a consistent step-up experience regardless of which IdP authenticated the user. The map is keyed by level, from <code>Level1</code> through <code>Level4</code>, and each value is the ACR value that the IdP uses for the corresponding level.</p>",
+      "max":4,
+      "min":0
+    },
+    "AcrValueType":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"[\\x21\\x23-\\x5B\\x5D-\\x7E]+"
+    },
     "AddCustomAttributesRequest":{
       "type":"structure",
       "required":[
@@ -3387,7 +3430,7 @@
         },
         "AuthParameters":{
           "shape":"AuthParametersType",
-          "documentation":"<p>The authentication parameters. These are inputs corresponding to the <code>AuthFlow</code> that you're invoking.</p> <p>The following are some authentication flows and their parameters. Add a <code>SECRET_HASH</code> parameter if your app client has a client secret. Add <code>DEVICE_KEY</code> if you want to bypass multi-factor authentication with a remembered device. </p> <dl> <dt>USER_AUTH</dt> <dd> <ul> <li> <p> <code>USERNAME</code> (required)</p> </li> <li> <p> <code>PREFERRED_CHALLENGE</code>. If you don't provide a value for <code>PREFERRED_CHALLENGE</code>, Amazon Cognito responds with the <code>AvailableChallenges</code> parameter that specifies the available sign-in methods.</p> </li> </ul> </dd> <dt>USER_SRP_AUTH</dt> <dd> <ul> <li> <p> <code>USERNAME</code> (required)</p> </li> <li> <p> <code>SRP_A</code> (required)</p> </li> </ul> </dd> <dt>ADMIN_USER_PASSWORD_AUTH</dt> <dd> <ul> <li> <p> <code>USERNAME</code> (required)</p> </li> <li> <p> <code>PASSWORD</code> (required)</p> </li> </ul> </dd> <dt>REFRESH_TOKEN_AUTH/REFRESH_TOKEN</dt> <dd> <ul> <li> <p> <code>REFRESH_TOKEN</code>(required)</p> </li> </ul> </dd> <dt>CUSTOM_AUTH</dt> <dd> <ul> <li> <p> <code>USERNAME</code> (required)</p> </li> <li> <p> <code>ChallengeName: SRP_A</code> (when preceding custom authentication with SRP authentication)</p> </li> <li> <p> <code>SRP_A: (An SRP_A value)</code> (when preceding custom authentication with SRP authentication)</p> </li> </ul> </dd> </dl> <p>For more information about <code>SECRET_HASH</code>, see <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/signing-up-users-in-your-app.html#cognito-user-pools-computing-secret-hash\">Computing secret hash values</a>. For information about <code>DEVICE_KEY</code>, see <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/amazon-cognito-user-pools-device-tracking.html\">Working with user devices in your user pool</a>.</p>"
+          "documentation":"<p>The authentication parameters. These are inputs corresponding to the <code>AuthFlow</code> that you're invoking.</p> <p>The following are some authentication flows and their parameters. Add a <code>SECRET_HASH</code> parameter if your app client has a client secret. Add <code>DEVICE_KEY</code> if you want to bypass multi-factor authentication with a remembered device. </p> <dl> <dt>USER_AUTH</dt> <dd> <ul> <li> <p> <code>USERNAME</code> (required)</p> </li> <li> <p> <code>PREFERRED_CHALLENGE</code>. If you don't provide a value for <code>PREFERRED_CHALLENGE</code>, Amazon Cognito responds with the <code>AvailableChallenges</code> parameter that specifies the available sign-in methods.</p> </li> <li> <p> <code>TARGET_ACR_VALUES</code>. An optional, space-separated list of the authentication context class reference (ACR) level URIs that you want the user to reach. List the levels in priority order, from highest to lowest. Amazon Cognito attempts the highest-priority level that the user can satisfy, and falls back through the list. Amazon Cognito ignores any value that it doesn't recognize. If none of the requested values are valid, Amazon Cognito returns an error.</p> <p>Requesting step-up authentication with this parameter requires the Essentials or Plus feature plan. On a lower feature plan, AdminInitiateAuth returns a FeatureUnavailableInTierException. <code>USERNAME</code> is required. When you provide an <code>ACCESS_TOKEN</code>, you must also provide <code>TARGET_ACR_VALUES</code>. Amazon Cognito returns an error if you provide an <code>ACCESS_TOKEN</code> without <code>TARGET_ACR_VALUES</code>. The <code>USERNAME</code> that you provide must match the user that the <code>ACCESS_TOKEN</code> was issued for.</p> <p>For more information about step-up authentication and how Amazon Cognito handles multi-factor authentication requirements, see <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pools-step-up-authentication.html\">Step-up authentication with ACR and AMR</a> in the <i>Amazon Cognito Developer Guide</i>.</p> </li> <li> <p> <code>MAX_AGE</code>. An optional integer that sets the maximum number of seconds allowed since the user last authenticated. If the user's most recent authentication is older than this value, Amazon Cognito discards the authentication-methods credit from any access token that you provide and processes the request as a fresh authentication toward the target level. The access token itself remains valid.</p> </li> </ul> </dd> <dt>USER_SRP_AUTH</dt> <dd> <ul> <li> <p> <code>USERNAME</code> (required)</p> </li> <li> <p> <code>SRP_A</code> (required)</p> </li> </ul> </dd> <dt>ADMIN_USER_PASSWORD_AUTH</dt> <dd> <ul> <li> <p> <code>USERNAME</code> (required)</p> </li> <li> <p> <code>PASSWORD</code> (required)</p> </li> </ul> </dd> <dt>REFRESH_TOKEN_AUTH/REFRESH_TOKEN</dt> <dd> <ul> <li> <p> <code>REFRESH_TOKEN</code>(required)</p> </li> </ul> </dd> <dt>CUSTOM_AUTH</dt> <dd> <ul> <li> <p> <code>USERNAME</code> (required)</p> </li> <li> <p> <code>ChallengeName: SRP_A</code> (when preceding custom authentication with SRP authentication)</p> </li> <li> <p> <code>SRP_A: (An SRP_A value)</code> (when preceding custom authentication with SRP authentication)</p> </li> </ul> </dd> </dl> <p>For more information about <code>SECRET_HASH</code>, see <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/signing-up-users-in-your-app.html#cognito-user-pools-computing-secret-hash\">Computing secret hash values</a>. For information about <code>DEVICE_KEY</code>, see <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/amazon-cognito-user-pools-device-tracking.html\">Working with user devices in your user pool</a>.</p>"
         },
         "ClientMetadata":{
           "shape":"ClientMetadataType",
@@ -3686,6 +3729,10 @@
         "AuthenticationResult":{
           "shape":"AuthenticationResultType",
           "documentation":"<p>The outcome of a successful authentication process. After your application has passed all challenges, Amazon Cognito returns an <code>AuthenticationResult</code> with the JSON web tokens (JWTs) that indicate successful sign-in.</p>"
+        },
+        "AvailableChallenges":{
+          "shape":"AvailableChallengeListType",
+          "documentation":"<p>This response parameter lists the available authentication challenges that users can select from in <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/authentication-flows-selection-sdk.html#authentication-flows-selection-choice\">choice-based authentication</a>. For example, they might be able to choose between passkey authentication, a one-time password from an SMS message, and a traditional password.</p>"
         }
       },
       "documentation":"<p>Responds to the authentication challenge, as an administrator.</p>"
@@ -4841,6 +4888,10 @@
         "IdpIdentifiers":{
           "shape":"IdpIdentifiersListType",
           "documentation":"<p>An array of IdP identifiers, for example <code>\"IdPIdentifiers\": [ \"MyIdP\", \"MyIdP2\" ]</code>. Identifiers are friendly names that you can pass in the <code>idp_identifier</code> query parameter of requests to the <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/authorization-endpoint.html\">Authorize endpoint</a> to silently redirect to sign-in with the associated IdP. Identifiers in a domain format also enable the use of <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pools-managing-saml-idp-naming.html\">email-address matching with SAML providers</a>. </p>"
+        },
+        "AcrMapping":{
+          "shape":"AcrMappingType",
+          "documentation":"<p>A mapping between the authentication context class reference (ACR) levels of your user pool and the ACR values of the external OpenID Connect (OIDC) identity provider (IdP). The map is keyed by level, from <code>Level1</code> through <code>Level4</code>, and each value is the ACR value that the IdP uses for the corresponding level. Amazon Cognito uses this mapping to translate a requested user pool ACR level to the value that the IdP expects, and to map an ACR value that the IdP returns back to a user pool level. When the IdP returns an ACR value that isn't mapped, Amazon Cognito resolves it to the lowest level. Only OIDC IdPs support ACR mapping.</p> <p>Setting <code>AcrMapping</code> is available in all feature plans. It isn't restricted to the Essentials or Plus feature plan.</p>"
         }
       }
     },
@@ -5309,6 +5360,10 @@
         "IssuerConfiguration":{
           "shape":"IssuerConfigurationType",
           "documentation":"<p>The issuer configuration for the user pool. Specifies the issuer type for token generation.</p>"
+        },
+        "AcrConfiguration":{
+          "shape":"AcrConfigurationType",
+          "documentation":"<p>The custom names for the authentication context class reference (ACR) levels in your user pool. Amazon Cognito defines four fixed ACR levels that represent increasing authentication assurance. The combination of authentication factors that satisfies each level is fixed and you can't change it. With this configuration, you customize only the URI name that Amazon Cognito reports for each level in the <code>acr</code> token claim.</p> <p>You can override a subset of the levels. By default, the levels are named <code>urn:cognito:loa:1</code> through <code>urn:cognito:loa:4</code>, and Amazon Cognito applies the default name to any level that you don't specify. Each name must be unique across all four levels, including any default names that apply to levels you don't override. A name can contain any character that is valid in a URL or a URN.</p> <p>Configuring custom ACR level names requires the Essentials or Plus feature plan. To activate this setting, your user pool must be in the <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/feature-plans-features-essentials.html\"> Essentials tier</a> or higher.</p>"
         }
       },
       "documentation":"<p>Represents the request to create a user pool.</p>"
@@ -5829,7 +5884,7 @@
       "members":{
         "Terms":{
           "shape":"TermsType",
-          "documentation":"<p>A summary of the requested terms documents. Includes a unique identifier for later changes to the terms documents.</p>"
+          "documentation":"<p>A summary of the requested terms documents, including a unique identifier for later changes to the terms documents.</p>"
         }
       }
     },
@@ -6464,7 +6519,7 @@
       "members":{
         "message":{"shape":"MessageType"}
       },
-      "documentation":"<p>This exception is thrown when a feature you attempted to configure isn't available in your current feature plan.</p>",
+      "documentation":"<p>This exception is thrown when a feature that you attempted to use or configure isn't included in your user pool's current feature plan. This can occur when:</p> <ul> <li> <p>You configure a feature that your feature plan doesn't support.</p> </li> <li> <p>You make a request that uses a feature that requires a higher feature plan.</p> </li> </ul> <p>To resolve this issue, upgrade your user pool to a feature plan that includes the feature.</p>",
       "exception":true
     },
     "FeedbackValueType":{
@@ -7079,6 +7134,10 @@
           "shape":"IdpIdentifiersListType",
           "documentation":"<p>A list of IdP identifiers. IdP identifiers are strings that represent friendly names or domain names of IdPs, for example <code>MyIdP</code> or <code>auth.example.com</code>. You can choose to route user authorization requests to the right IdP with either IdP identifiers or IdP names. For more information, see <code>identity_provider</code> and <code>idp_identifier</code> at <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/authorization-endpoint.html#get-authorize-request-parameters\">Authorize endpoint</a>.</p>"
         },
+        "AcrMapping":{
+          "shape":"AcrMappingType",
+          "documentation":"<p>A mapping between the authentication context class reference (ACR) levels of your user pool and the ACR values of the external OpenID Connect (OIDC) identity provider (IdP), so that your application gets a consistent step-up experience regardless of which IdP authenticated the user. The map is keyed by level, from <code>Level1</code> through <code>Level4</code>.</p>"
+        },
         "LastModifiedDate":{
           "shape":"DateType",
           "documentation":"<p>The date and time when the item was modified. Amazon Cognito returns this timestamp in UNIX epoch time format. Your SDK might render the output in a human-readable format like ISO 8601 or a Java <code>Date</code> object.</p>"
@@ -7154,7 +7213,7 @@
         },
         "AuthParameters":{
           "shape":"AuthParametersType",
-          "documentation":"<p>The authentication parameters. These are inputs corresponding to the <code>AuthFlow</code> that you're invoking.</p> <p>The following are some authentication flows and their parameters. Add a <code>SECRET_HASH</code> parameter if your app client has a client secret. Add <code>DEVICE_KEY</code> if you want to bypass multi-factor authentication with a remembered device. </p> <dl> <dt>USER_AUTH</dt> <dd> <ul> <li> <p> <code>USERNAME</code> (required)</p> </li> <li> <p> <code>PREFERRED_CHALLENGE</code>. If you don't provide a value for <code>PREFERRED_CHALLENGE</code>, Amazon Cognito responds with the <code>AvailableChallenges</code> parameter that specifies the available sign-in methods.</p> </li> </ul> </dd> <dt>USER_SRP_AUTH</dt> <dd> <ul> <li> <p> <code>USERNAME</code> (required)</p> </li> <li> <p> <code>SRP_A</code> (required)</p> </li> </ul> </dd> <dt>USER_PASSWORD_AUTH</dt> <dd> <ul> <li> <p> <code>USERNAME</code> (required)</p> </li> <li> <p> <code>PASSWORD</code> (required)</p> </li> </ul> </dd> <dt>REFRESH_TOKEN_AUTH/REFRESH_TOKEN</dt> <dd> <ul> <li> <p> <code>REFRESH_TOKEN</code>(required)</p> </li> </ul> </dd> <dt>CUSTOM_AUTH</dt> <dd> <ul> <li> <p> <code>USERNAME</code> (required)</p> </li> <li> <p> <code>ChallengeName: SRP_A</code> (when doing SRP authentication before custom challenges)</p> </li> <li> <p> <code>SRP_A: (An SRP_A value)</code> (when doing SRP authentication before custom challenges)</p> </li> </ul> </dd> </dl> <p>For more information about <code>SECRET_HASH</code>, see <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/signing-up-users-in-your-app.html#cognito-user-pools-computing-secret-hash\">Computing secret hash values</a>. For information about <code>DEVICE_KEY</code>, see <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/amazon-cognito-user-pools-device-tracking.html\">Working with user devices in your user pool</a>.</p>"
+          "documentation":"<p>The authentication parameters. These are inputs corresponding to the <code>AuthFlow</code> that you're invoking.</p> <p>The following are some authentication flows and their parameters. Add a <code>SECRET_HASH</code> parameter if your app client has a client secret. Add <code>DEVICE_KEY</code> if you want to bypass multi-factor authentication with a remembered device. </p> <dl> <dt>USER_AUTH</dt> <dd> <ul> <li> <p> <code>USERNAME</code> (required)</p> </li> <li> <p> <code>PREFERRED_CHALLENGE</code>. If you don't provide a value for <code>PREFERRED_CHALLENGE</code>, Amazon Cognito responds with the <code>AvailableChallenges</code> parameter that specifies the available sign-in methods.</p> </li> <li> <p> <code>TARGET_ACR_VALUES</code>. An optional, space-separated list of the authentication context class reference (ACR) level URIs that you want the user to reach. List the levels in priority order, from highest to lowest. Amazon Cognito attempts the highest-priority level that the user can satisfy, and falls back through the list. Amazon Cognito ignores any value that it doesn't recognize. If none of the requested values are valid, Amazon Cognito returns an error.</p> <p>Requesting step-up authentication with this parameter requires the Essentials or Plus feature plan. On a lower feature plan, InitiateAuth returns a FeatureUnavailableInTierException. <code>USERNAME</code> is required. When you provide an <code>ACCESS_TOKEN</code>, you must also provide <code>TARGET_ACR_VALUES</code>. Amazon Cognito returns an error if you provide an <code>ACCESS_TOKEN</code> without <code>TARGET_ACR_VALUES</code>. The <code>USERNAME</code> that you provide must match the user that the <code>ACCESS_TOKEN</code> was issued for.</p> <p>For more information about step-up authentication and how Amazon Cognito handles multi-factor authentication requirements, see <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pools-step-up-authentication.html\">Step-up authentication with ACR and AMR</a> in the <i>Amazon Cognito Developer Guide</i>.</p> </li> <li> <p> <code>MAX_AGE</code>. An optional integer that sets the maximum number of seconds allowed since the user last authenticated. If the user's most recent authentication is older than this value, Amazon Cognito discards the authentication-methods credit from any access token that you provide and processes the request as a fresh authentication toward the target level. The access token itself remains valid.</p> </li> </ul> </dd> <dt>USER_SRP_AUTH</dt> <dd> <ul> <li> <p> <code>USERNAME</code> (required)</p> </li> <li> <p> <code>SRP_A</code> (required)</p> </li> </ul> </dd> <dt>USER_PASSWORD_AUTH</dt> <dd> <ul> <li> <p> <code>USERNAME</code> (required)</p> </li> <li> <p> <code>PASSWORD</code> (required)</p> </li> </ul> </dd> <dt>REFRESH_TOKEN_AUTH/REFRESH_TOKEN</dt> <dd> <ul> <li> <p> <code>REFRESH_TOKEN</code>(required)</p> </li> </ul> </dd> <dt>CUSTOM_AUTH</dt> <dd> <ul> <li> <p> <code>USERNAME</code> (required)</p> </li> <li> <p> <code>ChallengeName: SRP_A</code> (when doing SRP authentication before custom challenges)</p> </li> <li> <p> <code>SRP_A: (An SRP_A value)</code> (when doing SRP authentication before custom challenges)</p> </li> </ul> </dd> </dl> <p>For more information about <code>SECRET_HASH</code>, see <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/signing-up-users-in-your-app.html#cognito-user-pools-computing-secret-hash\">Computing secret hash values</a>. For information about <code>DEVICE_KEY</code>, see <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/amazon-cognito-user-pools-device-tracking.html\">Working with user devices in your user pool</a>.</p>"
         },
         "ClientMetadata":{
           "shape":"ClientMetadataType",
@@ -8758,6 +8817,10 @@
         "AuthenticationResult":{
           "shape":"AuthenticationResultType",
           "documentation":"<p>The outcome of a successful authentication process. After your application has passed all challenges, Amazon Cognito returns an <code>AuthenticationResult</code> with the JSON web tokens (JWTs) that indicate successful sign-in.</p>"
+        },
+        "AvailableChallenges":{
+          "shape":"AvailableChallengeListType",
+          "documentation":"<p>This response parameter lists the available authentication challenges that users can select from in <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/authentication-flows-selection-sdk.html#authentication-flows-selection-choice\">choice-based authentication</a>. For example, they might be able to choose between passkey authentication, a one-time password from an SMS message, and a traditional password.</p>"
         }
       },
       "documentation":"<p>The response to respond to the authentication challenge.</p>"
@@ -9006,7 +9069,7 @@
     },
     "SessionType":{
       "type":"string",
-      "max":2048,
+      "max":4096,
       "min":20,
       "sensitive":true
     },
@@ -9945,6 +10008,10 @@
         "IdpIdentifiers":{
           "shape":"IdpIdentifiersListType",
           "documentation":"<p>An array of IdP identifiers, for example <code>\"IdPIdentifiers\": [ \"MyIdP\", \"MyIdP2\" ]</code>. Identifiers are friendly names that you can pass in the <code>idp_identifier</code> query parameter of requests to the <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/authorization-endpoint.html\">Authorize endpoint</a> to silently redirect to sign-in with the associated IdP. Identifiers in a domain format also enable the use of <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pools-managing-saml-idp-naming.html\">email-address matching with SAML providers</a>. </p>"
+        },
+        "AcrMapping":{
+          "shape":"AcrMappingType",
+          "documentation":"<p>A mapping between the authentication context class reference (ACR) levels of your user pool and the ACR values of the external OpenID Connect (OIDC) identity provider (IdP). This mapping has the same behavior as it does when you create an identity provider. Only OIDC IdPs support ACR mapping.</p> <p>Setting <code>AcrMapping</code> is available in all feature plans. It isn't restricted to the Essentials or Plus feature plan.</p>"
         }
       }
     },
@@ -10422,6 +10489,10 @@
         "IssuerConfiguration":{
           "shape":"IssuerConfigurationType",
           "documentation":"<p>The issuer configuration for the user pool. In secondary regions, this parameter must match the existing configuration and cannot be modified.</p>"
+        },
+        "AcrConfiguration":{
+          "shape":"AcrConfigurationType",
+          "documentation":"<p>The custom names for the authentication context class reference (ACR) levels in your user pool. This configuration has the same behavior as it does when you create a user pool: you customize only the URI name that Amazon Cognito reports for each of the four fixed ACR levels, and any level that you don't specify keeps its default name. Each name must be unique across all four levels, including default names.</p> <p>Configuring custom ACR level names requires the Essentials or Plus feature plan. To activate this setting, your user pool must be in the <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/feature-plans-features-essentials.html\"> Essentials tier</a> or higher.</p>"
         }
       },
       "documentation":"<p>Represents the request to update the user pool.</p>"
@@ -11030,6 +11101,10 @@
         "IssuerConfiguration":{
           "shape":"IssuerConfigurationType",
           "documentation":"<p>The issuer configuration for the user pool, including token issuing settings.</p>"
+        },
+        "AcrConfiguration":{
+          "shape":"AcrConfigurationType",
+          "documentation":"<p>The names of the authentication context class reference (ACR) levels for the user pool. Amazon Cognito always returns the effective configuration, with default names merged in for any level that you haven't customized.</p> <p>Configuring custom ACR level names requires the Essentials or Plus feature plan. To activate this setting, your user pool must be in the <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/feature-plans-features-essentials.html\"> Essentials tier</a> or higher.</p>"
         }
       },
       "documentation":"<p>The configuration of a user pool.</p>"

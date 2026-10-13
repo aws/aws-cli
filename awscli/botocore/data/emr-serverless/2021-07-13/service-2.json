@@ -1138,6 +1138,12 @@
           "documentation":"<p>The type of resource to access the dashboard for. Currently, only <code>Session</code> is supported.</p>",
           "location":"querystring",
           "locationName":"resourceType"
+        },
+        "accessSystemProfileLogs":{
+          "shape":"Boolean",
+          "documentation":"<p>Allows access to system profile logs for Lake Formation-enabled sessions. Default is false.</p>",
+          "location":"querystring",
+          "locationName":"accessSystemProfileLogs"
         }
       }
     },
@@ -1528,7 +1534,7 @@
         },
         "executionTimeoutMinutes":{
           "shape":"Duration",
-          "documentation":"<p>Returns the job run timeout value from the <code>StartJobRun</code> call. If no timeout was specified, then it returns the default timeout of 720 minutes.</p>",
+          "documentation":"<p>Returns the job run timeout value from the <code>StartJobRun</code> call. If you didn't specify a timeout, this value defaults to 720 minutes.</p> <p>For BATCH mode job runs, the maximum value is 10080 minutes (7 days) starting with Amazon EMR release 7.11.</p>",
           "box":true
         },
         "billedResourceUtilization":{
@@ -2210,7 +2216,7 @@
       "type":"string",
       "max":1024,
       "min":60,
-      "pattern":"arn:(aws[a-zA-Z0-9-]*):emr-serverless:.+:(\\d{12}):\\/applications\\/[0-9a-zA-Z]+(\\/jobruns\\/[0-9a-zA-Z]+)?"
+      "pattern":"arn:(aws[a-zA-Z0-9-]*):emr-serverless:.+:(\\d{12}):\\/applications\\/[0-9a-zA-Z]+(\\/jobruns\\/[0-9a-zA-Z]+|\\/sessions\\/[0-9a-zA-Z]+)?"
     },
     "ResourceId":{
       "type":"string",
@@ -2636,7 +2642,7 @@
         },
         "executionTimeoutMinutes":{
           "shape":"Duration",
-          "documentation":"<p>The maximum duration for the job run to run. If the job run runs beyond this duration, it will be automatically cancelled.</p>",
+          "documentation":"<p>The maximum duration, in minutes, for the job run. If the job run exceeds this duration, Amazon EMR Serverless cancels it automatically.</p> <p>For BATCH mode job runs, the maximum value is 10080 minutes (7 days) starting with Amazon EMR release 7.11. Setting a value of 0 to disable the timeout is no longer supported for BATCH mode job runs.</p>",
           "box":true
         },
         "name":{

@@ -64,100 +64,6 @@ MINIMUM_TARGET_THROUGHPUT_GBPS = 10.0
 # RuntimeError for this, leaving the error code as the only thing to match on.
 CRT_PART_SIZE_EXCEEDS_MEMORY_LIMIT = 14371
 
-CRT_AUTO_RESOLVE_INSTANCE_FAMILIES = frozenset(
-    [
-        'dl1',
-        'g6e',
-        'g6',
-        'g5',
-        'g5g',
-        'g4dn',
-        'inf2',
-        'inf1',
-        'x2iedn',
-        'x2idn',
-        'x2iezn',
-        'x1e',
-        'x1',
-        'i4i',
-        'i3en',
-        'i3',
-        'is4gen',
-        'im4gn',
-        'd3en',
-        'd3',
-        'h1',
-        'c9gd',
-        'c9g',
-        'c8ine',
-        'c8in',
-        'c8ib',
-        'c8id',
-        'c8i-flex',
-        'c8i',
-        'c8gn',
-        'c8gb',
-        'c8gd',
-        'c8g',
-        'c8a',
-        'c7i-flex',
-        'c7i',
-        'c7gn',
-        'c7gd',
-        'c7g',
-        'c7a',
-        'm8a',
-        'm8g',
-        'm7i-flex',
-        'm7i',
-        'm7a',
-        'm7g',
-        'r7iz',
-        'r7i',
-        'r7a',
-        'r7g',
-        'c6in',
-        'c6id',
-        'c6i',
-        'c6gn',
-        'c6gd',
-        'c6g',
-        'c6a',
-        'm6in',
-        'm6idn',
-        'm6id',
-        'm6i',
-        'm6a',
-        'm6gd',
-        'm6g',
-        'r6in',
-        'r6idn',
-        'r6id',
-        'r6i',
-        'r6a',
-        'r6gd',
-        'r6g',
-        "c5n",
-        "c5ad",
-        "c5a",
-        "c5d",
-        "c5",
-        "m5zn",
-        "m5dn",
-        "m5n",
-        "m5ad",
-        "m5a",
-        "m5d",
-        "m5",
-        "r5dn",
-        "r5n",
-        "r5ad",
-        "r5a",
-        "r5d",
-        "r5",
-    ]
-)
-
 WARN_IGNORED = 'warn_ignored'
 
 EXCLUDE_FROM_AUTO = 'exclude_from_auto'
@@ -326,14 +232,7 @@ class TransferManagerFactory:
             == constants.CRT_TRANSFER_CLIENT
         ):
             return True
-        return self._is_rolled_out_instance_family()
-
-    def _is_rolled_out_instance_family(self):
-        instance_type = awscrt.s3.get_ec2_instance_type()
-        if instance_type is None:
-            return False
-        instance_family = instance_type.split('.')[0].lower()
-        return instance_family in CRT_AUTO_RESOLVE_INSTANCE_FAMILIES
+        return awscrt.s3.get_ec2_instance_type() is not None
 
     def _get_unsupported_settings(self, params, runtime_config):
         unsupported = self._get_classic_only_settings(runtime_config)

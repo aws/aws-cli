@@ -2,6 +2,107 @@
 CHANGELOG
 =========
 
+2.37.13
+=======
+
+* api-change:``glue``: Adds new AWS Glue Data Quality APIs to retrieve and list data quality evaluation results. The new GetDataQualityResultV2, BatchGetDataQualityResultV2, and ListDataQualityResultsV2 operations return data quality results published from any supported data processing engine.
+* api-change:``devops-agent``: Adds support for the includedData field in GetAgentSpace and ListAgentSpaces APIs
+* api-change:``bedrock-agentcore-control``: AgentCore Memory now supports configuring Long-Term Memory Time-to-Live (TTL) on Memory Strategies.
+* enhancement:``lambda-web``: Added ``aws lambda-web deploy`` to create or update an AWS Lambda Web Function from a local HTTP application.
+* api-change:``sagemaker``: Amazon SageMaker Training Session is a managed service for training on shared GPU infrastructure. It provides full lifecycle management of training sessions and exposes low-level primitive APIs for operations like forward-backward passes, optimizer steps, and state management.
+* api-change:``cloudwatchomni``: Adds support for updating agentCoreEvaluationRoleArn in UpdateSpace API
+* api-change:``sagemakertrainingsessionruntime``: Amazon SageMaker Training Session Runtime provides APIs for executing operations within active training sessions, including asynchronous training operations, sampling and inference requests, and streaming real-time model responses, enabling programmatic control over the training loop.
+* api-change:``observabilityadmin``: Adding support for TransactionSearch telemetry rules.
+* api-change:``pcs``: Adding scheduler version to RegisterComputeNodeGroup API. A compute node uses this value to run the matching scheduler version.
+* api-change:``mediaconnect``: This release adds support for MediaConnect Router high-bitrate tiers. It also adds a configurable audio reference level for NDI flows, and enhanced source metadata that includes color information and transport stream ID.
+* api-change:``lambda``: Doc updates to reposition Lambda Functions as Lambda Event Functions
+* api-change:``securityagent``: Adds support for Jira integration provider in AWS Security Agent.
+* api-change:``pinpoint-sms-voice-v2``: DescribePhoneNumbers and DescribeSenderIds now return an optional PricingTier field that indicates whether a phone number, sender ID, short code, or long code is classified as Domestic or International, enabling customers to identify origination identities eligible for local pricing.
+* api-change:``bedrock-agentcore``: AgentCore Memory now supports Long-Term Memory Time-to-Live on Batch APIs.
+* api-change:``lambda-core``: Lambda Network Connector now supports Lambda Web Functions, letting them reach private VPC resources, and adds versioning, each connector update creates an immutable version that revisions pin to, so customers can roll out and roll back networking changes without affecting running workloads
+* api-change:``lambda-web``: Lambda Web Functions GA launch. Lambda Web Functions enable customers to run web applications and API backends
+* api-change:``omics``: AWS HealthOmics now supports private workflow runs using VPC resources shared across accounts via AWS RAM. A new optional vpcOwnerAccountId field in CreateConfiguration's VpcConfig allows customers to specify the account that owns the shared subnets and security groups.
+
+
+2.37.12
+=======
+
+* api-change:``securityagent``: Adds a test scope field to specify whether a pentest targets a web application or a generative AI application.
+* api-change:``meteringmarketplace``: AWS Marketplace Metering Service adds AgreementId to ResolveCustomer API response.
+* api-change:``mediatailor``: Add caching settings to http functions
+* api-change:``deadline``: The new ListMemberships API enables users to discover their memberships across Deadline Cloud resources, enabling scoped users of Deadline resources to discover and interact with the resources they have been provided scoped access to.
+* api-change:``quicksight``: Adds granular custom permissions for the Gong action connector (GongAction, CreateAndUpdateGongAction, ShareGongAction, UseGongAction) and for create, update, and share operations on 45 data source connectors, such as Amazon S3 and Snowflake, through the Custom Permissions APIs.
+
+
+2.37.11
+=======
+
+* api-change:``cloudformation``: CloudFormation introduces force rollback, a new opt-in capability that lets your stacks complete a rollback even when an individual resource cannot be reverted. Set ForceRollback on ContinueUpdateRollback and CloudFormation records each resource that fails as skipped, completing the rollback.
+* api-change:``ce``: Adds a product attribute dimension to GetCostAndUsage, GetCostAndUsageWithResources, and GetDimensionValues, letting customers group, filter, and discover Cost Explorer costs by structured attributes such as Amazon Bedrock model, provider, inference type, and feature.
+* api-change:``securityhub``: Release findings export APIs - StartExportJobV2, GetExportJobV2, ListExportJobsV2, and CancelExportJobV2. This supports exporting findings from AWS Security Hub to Amazon S3 bucket.
+* api-change:``guardduty``: Added support for GuardDuty RDS Data Activity Monitoring
+* api-change:``devops-agent``: Adds release management associations with private network access to AWS DevOps Agent, and a releaseManagementAssociationId field on GitHub and GitLab associations. This helps release management agents (Release-readiness review and Release Testing) access customer resources that are behind a VPC.
+* api-change:``translate``: This release adds Smithy RPC v2 CBOR as an additional protocol alongside the existing AWS JSON 1.1. The SDK will prioritize its most performant protocol.
+* api-change:``marketplace-agreement``: This release adds Smithy RPC v2 CBOR as an additional protocol alongside the existing AWS JSON 1.0. The SDK will prioritize its most performant protocol.
+* api-change:``medialive``: AWS Elemental MediaLive Workflow Monitor now supports AWS Elemental Inference feeds as a target resource type for CloudWatch alarm templates.
+* api-change:``glue``: Introduced GetSystemLogsForJobRun and GetSystemLogsForSession APIs, enabling account admins to retrieve system-space logs for FGAC-enabled Glue jobs and sessions.
+* api-change:``gamelift``: Amazon GameLift Servers container fleets now support CPU bursting for game server container groups. The TotalVcpuLimit property of a game server container group definition is now optional. When you omit it, the group has no CPU cap and its containers can burst into unused CPU on the instance.
+* api-change:``eks``: Configurations support for EKS ACK Capabilities, including EnableCrossNamespace and DisableServices configuration.
+* api-change:``emr-serverless``: This release adds support for system profile logs for lakeformation enabled Spark connect sessions .
+* api-change:``securityagent``: Include model field for suggested remediation steps as part of findings
+* api-change:``security-ir``: Adds support for retrieving finding-lifecycle metrics for an AWS Security Incident Response membership.
+* api-change:``opensearch``: This release adds a new EncryptionMode option (DISK or NATIVE) to EncryptionAtRestOptions for the CreateDomain and UpdateDomainConfig operations, enabling selection of engine-native index-level encryption on supported Amazon OpenSearch Service domains.
+* api-change:``sesv2``: SESV2 DEED - Documentation Update
+* api-change:``keyspaces``: This release adds Smithy RPC v2 CBOR as an additional protocol alongside the existing AWS JSON 1.0. The SDK will prioritize its most performant protocol.
+* bugfix:md5: Fix the CLI failing at startup on systems where Python's hashlib has no MD5 support, such as FIPS-hardened builds.
+* api-change:``budgets``: Adds a product attribute dimension to CreateBudget and UpdateBudget, letting customers filter AWS Budgets costs by structured attributes such as Amazon Bedrock model, provider, inference type, and feature.
+* api-change:``codeconnections``: This release adds Smithy RPC v2 CBOR as an additional protocol alongside the existing AWS JSON 1.0. The SDK will prioritize its most performant protocol.
+* api-change:``lambda``: AWS Lambda now supports OAuth 2.0 (OAUTHBEARER), IAM, and IAM with OAUTHBEARER authentication for self-managed Apache Kafka event source mappings, including optional OAuth scope, audience, logical cluster, and identity pool parameters. OAuth 2.0 is also available for Confluent Schema Registry.
+* api-change:``datazone``: Adds support for multi-file notebook import. StartNotebookImport now accepts an s3Files source location with an ordered list of Amazon S3 objects, creating one notebook cell per file, plus a type field to create either a DATA or SQL notebook.
+* api-change:``pi``: This release adds Smithy RPC v2 CBOR as an additional protocol alongside the existing AWS JSON 1.1. The SDK will prioritize its most performant protocol.
+* api-change:``health``: This release adds Smithy RPC v2 CBOR as an additional protocol alongside the existing AWS JSON 1.1. The SDK will prioritize its most performant protocol.
+* enhancement:crt: Enable the CRT S3 transfer client by default on the following EC2 instance families - t4g, t3a, t3, t2, and any other instance families that have not been previously enabled by default. This also includes all EC2 instance families that will be released in the future.
+* api-change:``fms``: This release adds Smithy RPC v2 CBOR as an additional protocol alongside the existing AWS JSON 1.1. The SDK will prioritize its most performant protocol.
+
+
+2.37.10
+=======
+
+* api-change:``lambda-web``: Removes operations that are not yet generally available from the Lambda Web.
+* bugfix:``lambda-web``: Remove operations that are not yet generally available.
+
+
+2.37.9
+======
+
+* api-change:``securityagent``: Adds trigger filters that control which pull request events, target branches, and labels start an automatic code review.
+* api-change:``mediapackagev2``: Dynamic Multiview enables viewers to watch multiple live video streams in a single combined output. Static filter configuration allows users to configure endpoints with layouts and sources without using query parameters. The number of sources per multiview channel has been increased to 50.
+* api-change:``pinpoint-sms-voice-v2``: AWS End User Messaging SMS CarrierLookup API now supports phone number cleansing on customer opt-in. when selected, the response includes the additional field "OriginalPhoneNumber". It can also return additional PhoneNumberType enums, VOIP and PREPAID.
+* bugfix:``credentials``: Include the web identity token in the credential cache key to prevent collisions across different tokens for the same role.
+* api-change:``cognito-idp``: Amazon Cognito User Pools now supports the OIDC-standard authentication context class reference (ACR) and authentication methods reference (AMR) claims on issued access and Id tokens. Amazon Cognito User Pools also now supports step-up authentication via our existing authentication APIs.
+* api-change:``invoicing``: API and doc updates related to adding MarketplacePunchOutEnabled and MarketplacePunchOutPreference fields to ProcurementPortalPreferences related APIs
+* api-change:``lambda-web``: Documentation update for AWS Lambda Web Functions, clarifies that the LambdaWeb APIs are experimental and not yet available to external customers.
+* api-change:``glue``: Added refresh token grant type to Glue Connection supported OAuth 2.0 grant types
+
+
+2.37.8
+======
+
+* api-change:``ec2``: This release launches the AMI tag sharing feature, which lets AMI owners share tags alongside their AMIs, eliminating the need to build and maintain custom tag replication workflows.
+* api-change:``endusermessaging``: AWS End User Messaging now supports Brand profiles and Notify code configurations. Brand profiles capture your sender details once to reuse across phone number registrations. Notify code configurations let you define your OTP policy and delivery settings to send passcodes in minutes.
+* api-change:``sagemaker``: Release support for c8a.16xlarge and m8a.16xlarge instance types for SageMaker HyperPod
+* api-change:``quicksight``: This release adds HierarchyFilter support for Amazon QuickSight analysis and dashboard and 2 legged OAuth for databricks datasources.
+* api-change:``securityhub``: Adds GetRemediationsV2 and ListExposuresByRemediationV2 APIs. This feature allows customers to see their highest priority remediations for their Exposure findings. Remediations target key changes customers can make to resources to drive finding resolution.
+* api-change:``cloudfront``: Added always-amz-auth as a supported signing behavior for Origin Access Control (OAC), enabling CloudFront to authenticate requests to Lambda-Web origins.
+* api-change:``health``: Adds DescribeServiceLifecycle operation returning lifecycle information for AWS services, including end-of-support dates, version recommendations, and lifecycle events.
+* api-change:``lambda-web``: Lambda Web Functions GA launch. Lambda Web Functions enable customers to run web applications and API backends
+* api-change:``bedrock-agent``: Adds an optional textReadyAt field to ListIngestionJobs and GetIngestionJob for Managed Knowledge Bases data source sync jobs. The field denotes the timestamp at which all the documents in the scope of a sync job had their text content indexed and are available for retrieval.
+* enhancement:crt: Enable the CRT S3 transfer client by default on the following EC2 instance families - c5n, c5ad, c5a, c5d, c5, m5zn, m5dn, m5n, m5ad, m5a, m5d, m5, r5dn, r5n, r5ad, r5a, r5d, r5.
+* bugfix:cloudfront: Raise a friendly error message when SHA1 signing is unavailable on the platform while running ``aws cloudfront sign``.
+* api-change:``transfer``: AWS Transfer Family Workflows adds support for the structuredLogDestinations option, enabling customers to specify a custom Amazon CloudWatch Logs log group for managed workflow execution logs.
+* enhancement:``lambda-web``: Added ``aws lambda-web deploy`` to create or update an AWS Lambda Web Function from a local HTTP application.
+
+
 2.37.7
 ======
 

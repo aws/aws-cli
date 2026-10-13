@@ -5,8 +5,11 @@
     "auth":["aws.auth#sigv4"],
     "endpointPrefix":"cassandra",
     "jsonVersion":"1.0",
-    "protocol":"json",
-    "protocols":["json"],
+    "protocol":"smithy-rpc-v2-cbor",
+    "protocols":[
+      "smithy-rpc-v2-cbor",
+      "json"
+    ],
     "serviceFullName":"Amazon Keyspaces",
     "serviceId":"Keyspaces",
     "signatureVersion":"v4",
@@ -366,7 +369,6 @@
       },
       "documentation":"<p>You don't have sufficient access permissions to perform this action. </p>",
       "error":{
-        "code":"AccessDeniedException",
         "httpStatusCode":403,
         "senderFault":true
       },
@@ -601,7 +603,6 @@
       },
       "documentation":"<p>Amazon Keyspaces couldn't complete the requested action. This error may occur if you try to perform an action and the same or a different action is already in progress, or if you try to create a resource that already exists. </p>",
       "error":{
-        "code":"ConflictException",
         "httpStatusCode":409,
         "senderFault":true
       },
@@ -1137,10 +1138,7 @@
         }
       },
       "documentation":"<p>Amazon Keyspaces was unable to fully process this request because of an internal server error.</p>",
-      "error":{
-        "code":"InternalServerException",
-        "httpStatusCode":500
-      },
+      "error":{"httpStatusCode":500},
       "exception":true,
       "fault":true
     },
@@ -1503,7 +1501,6 @@
       },
       "documentation":"<p>The operation tried to access a keyspace, table, or type that doesn't exist. The resource might not be specified correctly, or its status might not be <code>ACTIVE</code>.</p>",
       "error":{
-        "code":"ResourceNotFoundException",
         "httpStatusCode":404,
         "senderFault":true
       },
@@ -1610,7 +1607,6 @@
       },
       "documentation":"<p>The operation exceeded the service quota for this resource. For more information on service quotas, see <a href=\"https://docs.aws.amazon.com/keyspaces/latest/devguide/quotas.html\">Quotas</a> in the <i>Amazon Keyspaces Developer Guide</i>.</p>",
       "error":{
-        "code":"ServiceQuotaExceededException",
         "httpStatusCode":402,
         "senderFault":true
       },
@@ -1945,11 +1941,6 @@
         }
       },
       "documentation":"<p>The operation failed due to an invalid or malformed request.</p>",
-      "error":{
-        "code":"ValidationException",
-        "httpStatusCode":400,
-        "senderFault":true
-      },
       "exception":true
     },
     "ViewType":{

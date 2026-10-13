@@ -7373,6 +7373,20 @@
         "TEXTFILE"
       ]
     },
+    "AthenaStepMetadata":{
+      "type":"structure",
+      "members":{
+        "QueryExecutionId":{
+          "shape":"String256",
+          "documentation":"<p>The unique identifier of the Amazon Athena query execution that was run by this step execution.</p>"
+        },
+        "S3OutputLocation":{
+          "shape":"String1024",
+          "documentation":"<p>The Amazon S3 location of the Amazon Athena query results. This is the effective output location reported by <code>GetQueryExecution</code> for the query. This value can be absent when the query uses Athena managed query results.</p>"
+        }
+      },
+      "documentation":"<p>The query execution identifier and the result output location for the Amazon Athena query that an Athena step runs.</p>"
+    },
     "AthenaWorkGroup":{
       "type":"string",
       "documentation":"<p>The name of the workgroup in which the Athena query is being started.</p>",
@@ -10206,6 +10220,62 @@
         "lij",
         "xx"
       ]
+    },
+    "CleanupFailure":{
+      "type":"structure",
+      "members":{
+        "StepName":{
+          "shape":"String256",
+          "documentation":"<p>The name of the upstream step whose Amazon S3 output resources the Cleanup step could not delete.</p>"
+        },
+        "ErrorCode":{
+          "shape":"CleanupFailureErrorCode",
+          "documentation":"<p>The error code that identifies why the Cleanup step could not delete the output resources associated with the upstream step.</p>"
+        },
+        "ErrorMessage":{
+          "shape":"String2048",
+          "documentation":"<p>A message describing why the Cleanup step could not delete the output resources associated with the upstream step.</p>"
+        }
+      },
+      "documentation":"<p>The Amazon S3 output resources associated with an upstream step that the Cleanup step could not delete.</p>"
+    },
+    "CleanupFailureErrorCode":{
+      "type":"string",
+      "documentation":"<p>The type of error that prevented the Cleanup step from deleting output resources. Valid values are:</p> <ul> <li> <p> <code>ClientError</code> indicates that the failure was caused by the request.</p> </li> <li> <p> <code>InternalFailure</code> indicates that the failure was caused by an internal error.</p> </li> </ul>",
+      "enum":[
+        "ClientError",
+        "InternalFailure"
+      ]
+    },
+    "CleanupFailureList":{
+      "type":"list",
+      "member":{"shape":"CleanupFailure"},
+      "max":100,
+      "min":0
+    },
+    "CleanupStepMetadata":{
+      "type":"structure",
+      "members":{
+        "CleanedSteps":{
+          "shape":"CleanupStepNameList",
+          "documentation":"<p>The names of upstream steps whose Amazon S3 output resources the Cleanup step deleted successfully.</p>"
+        },
+        "FailedSteps":{
+          "shape":"CleanupFailureList",
+          "documentation":"<p>The upstream steps whose Amazon S3 output resources the Cleanup step could not delete.</p>"
+        },
+        "SkippedSteps":{
+          "shape":"CleanupStepNameList",
+          "documentation":"<p>The names of upstream steps that the Cleanup step skipped. The Cleanup step skips a step when the output properties needed to locate its resources are unavailable.</p>"
+        }
+      },
+      "documentation":"<p>The cleanup outcomes for Amazon S3 output resources associated with upstream steps.</p>"
+    },
+    "CleanupStepNameList":{
+      "type":"list",
+      "member":{"shape":"String256"},
+      "max":100,
+      "min":0
     },
     "ClientId":{
       "type":"string",
@@ -24616,6 +24686,40 @@
       },
       "documentation":"<p>The settings for assigning a custom Amazon EFS file system to a user profile or space for an Amazon SageMaker AI Domain.</p>"
     },
+    "EMRServerlessApplicationId":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":".*[0-9a-z]+.*"
+    },
+    "EMRServerlessJobRunId":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":".*[0-9a-z]+.*"
+    },
+    "EMRServerlessStepMetadata":{
+      "type":"structure",
+      "members":{
+        "ApplicationId":{
+          "shape":"EMRServerlessApplicationId",
+          "documentation":"<p>The identifier of the Amazon EMR Serverless application.</p>"
+        },
+        "JobRunId":{
+          "shape":"EMRServerlessJobRunId",
+          "documentation":"<p>The identifier of the Amazon EMR Serverless job run.</p>"
+        },
+        "JobRunName":{
+          "shape":"String256",
+          "documentation":"<p>The name of the Amazon EMR Serverless job run.</p>"
+        },
+        "LogFilePath":{
+          "shape":"String1024",
+          "documentation":"<p>The path to the log file for the Amazon EMR Serverless job run.</p>"
+        }
+      },
+      "documentation":"<p>The configurations and outcomes of an Amazon EMR Serverless step execution.</p>"
+    },
     "EMRStepMetadata":{
       "type":"structure",
       "members":{
@@ -26658,6 +26762,69 @@
       "max":128,
       "min":1,
       "pattern":"[\\t\\n\\r -\\uD7FF\\uE000-\\uFFFD]*"
+    },
+    "ForEachSelectorResult":{
+      "type":"structure",
+      "members":{
+        "StepName":{
+          "shape":"String256",
+          "documentation":"<p>The name of the step associated with the iteration.</p>"
+        },
+        "Index":{
+          "shape":"Integer",
+          "documentation":"<p>The index of the iteration within the ForEach step.</p>",
+          "box":true
+        }
+      },
+      "documentation":"<p>The result of the selector that identifies an iteration of a ForEach step.</p>"
+    },
+    "ForEachStatus":{
+      "type":"string",
+      "documentation":"<p>The status of a ForEach step execution. Valid values are:</p> <ul> <li> <p> <code>Succeeded</code> indicates that the ForEach step execution completed successfully.</p> </li> <li> <p> <code>Failed</code> indicates that the ForEach step execution failed.</p> </li> <li> <p> <code>Stopped</code> indicates that the ForEach step execution was stopped.</p> </li> </ul>",
+      "enum":[
+        "Succeeded",
+        "Failed",
+        "Stopped"
+      ]
+    },
+    "ForEachStepMetadata":{
+      "type":"structure",
+      "members":{
+        "Status":{
+          "shape":"ForEachStatus",
+          "documentation":"<p>The status of the ForEach step execution.</p>"
+        },
+        "InputItemCount":{
+          "shape":"Integer",
+          "documentation":"<p>The number of input items that the ForEach step iterates over.</p>",
+          "box":true
+        },
+        "TotalStepCount":{
+          "shape":"Integer",
+          "documentation":"<p>The total number of steps generated across all iterations of the ForEach step.</p>",
+          "box":true
+        },
+        "SucceededStepCount":{
+          "shape":"Integer",
+          "documentation":"<p>The number of iteration steps that completed successfully.</p>",
+          "box":true
+        },
+        "FailedStepCount":{
+          "shape":"Integer",
+          "documentation":"<p>The number of iteration steps that failed.</p>",
+          "box":true
+        },
+        "StoppedStepCount":{
+          "shape":"Integer",
+          "documentation":"<p>The number of iteration steps that were stopped.</p>",
+          "box":true
+        },
+        "Selector":{
+          "shape":"ForEachSelectorResult",
+          "documentation":"<p>Identifies the body step and iteration selected within the ForEach step.</p>"
+        }
+      },
+      "documentation":"<p>The status, the iteration-step counts, and the selector information for a ForEach step execution.</p>"
     },
     "ForecastFrequency":{
       "type":"string",
@@ -30268,6 +30435,25 @@
       "type":"string",
       "max":256,
       "min":1
+    },
+    "IterationContext":{
+      "type":"structure",
+      "members":{
+        "ParentStepName":{
+          "shape":"String256",
+          "documentation":"<p>The name of the ForEach step that generated this iteration.</p>"
+        },
+        "Index":{
+          "shape":"Integer",
+          "documentation":"<p>The index of the iteration within the ForEach step.</p>",
+          "box":true
+        },
+        "Item":{
+          "shape":"String12800",
+          "documentation":"<p>The input item that is being processed in this iteration.</p>"
+        }
+      },
+      "documentation":"<p>The context for an iteration of a ForEach step.</p>"
     },
     "JavaBoolean":{
       "type":"boolean",
@@ -40838,7 +41024,8 @@
         "Stopping",
         "Stopped",
         "Failed",
-        "Succeeded"
+        "Succeeded",
+        "CompletedWithFailures"
       ]
     },
     "PipelineExecutionStep":{
@@ -40888,6 +41075,10 @@
         "SelectiveExecutionResult":{
           "shape":"SelectiveExecutionResult",
           "documentation":"<p>The ARN from an execution of the current pipeline from which results are reused for this step.</p>"
+        },
+        "IterationContext":{
+          "shape":"IterationContext",
+          "documentation":"<p>The context for the iteration of a ForEach step that generated this step execution.</p>"
         }
       },
       "documentation":"<p>An execution of a step in a pipeline.</p>"
@@ -40941,6 +41132,10 @@
           "shape":"EMRStepMetadata",
           "documentation":"<p>The configurations and outcomes of an Amazon EMR step execution.</p>"
         },
+        "EMRServerless":{
+          "shape":"EMRServerlessStepMetadata",
+          "documentation":"<p>The configurations and outcomes of an Amazon EMR Serverless step execution.</p>"
+        },
         "QualityCheck":{
           "shape":"QualityCheckStepMetadata",
           "documentation":"<p>The configurations and outcomes of the check step execution. This includes: </p> <ul> <li> <p>The type of the check conducted.</p> </li> <li> <p>The Amazon S3 URIs of baseline constraints and statistics files to be used for the drift check.</p> </li> <li> <p>The Amazon S3 URIs of newly calculated baseline constraints and statistics.</p> </li> <li> <p>The model package group name provided.</p> </li> <li> <p>The Amazon S3 URI of the violation report if violations detected.</p> </li> <li> <p>The Amazon Resource Name (ARN) of check processing job initiated by the step execution.</p> </li> <li> <p>The Boolean flags indicating if the drift check is skipped.</p> </li> <li> <p>If step property <code>BaselineUsedForDriftCheck</code> is set the same as <code>CalculatedBaseline</code>.</p> </li> </ul>"
@@ -40992,6 +41187,18 @@
         "Job":{
           "shape":"JobStepMetadata",
           "documentation":"<p>The metadata for a SageMaker job used in a pipeline execution step.</p>"
+        },
+        "Athena":{
+          "shape":"AthenaStepMetadata",
+          "documentation":"<p>The metadata for the Athena step execution.</p>"
+        },
+        "Cleanup":{
+          "shape":"CleanupStepMetadata",
+          "documentation":"<p>The metadata for the cleanup step execution.</p>"
+        },
+        "ForEach":{
+          "shape":"ForEachStepMetadata",
+          "documentation":"<p>The metadata for the ForEach step execution.</p>"
         }
       },
       "documentation":"<p>Metadata for a step execution.</p>"
@@ -46783,6 +46990,11 @@
     "String128":{
       "type":"string",
       "max":128,
+      "min":0
+    },
+    "String12800":{
+      "type":"string",
+      "max":12800,
       "min":0
     },
     "String200":{

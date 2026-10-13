@@ -246,7 +246,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Lists the service quota warnings for the plans that you can access. Region switch creates a warning when the applied quota value in one Region of a plan is lower than the value required for the matching resource in another Region or account in the plan.</p> <p>Returns the warnings for the plans that you own and for plans that are shared with your account through AWS Resource Access Manager (AWS RAM). To return warnings for specific plans, provide a list of plan Amazon Resource Names (ARNs). Region switch ignores any plan ARN that you can't access. If you don't provide any plan ARNs, Region switch returns the warnings for all of your accessible plans.</p>",
+      "documentation":"<p>Lists the service quota warnings for the plans that you can access. Region switch creates a warning when the applied quota value in one Region of a plan is lower than the value required for the matching resource in another Region or account in the plan.</p> <p>Returns the warnings for the plans that you own and for plans that are shared with your account through Resource Access Manager (RAM). To return warnings for specific plans, provide a list of plan Amazon Resource Names (ARNs). Region switch ignores any plan ARN that you can't access. If you don't provide any plan ARNs, Region switch returns the warnings for all of your accessible plans.</p>",
       "readonly":true
     },
     "ListTagsForResource":{
@@ -1393,6 +1393,10 @@
         "rdsSwitchoverReadReplicaConfig":{
           "shape":"RdsSwitchoverReadReplicaConfiguration",
           "documentation":"<p>An Amazon RDS switchover read replica execution block.</p>"
+        },
+        "ssmSendCommandConfig":{
+          "shape":"SsmSendCommandConfiguration",
+          "documentation":"<p>Specifies an AWS Systems Manager <code>SendCommand</code> execution block.</p>"
         }
       },
       "documentation":"<p>Execution block configurations for a workflow in a Region switch plan. An execution block represents a specific type of action to perform during a Region switch.</p>",
@@ -1418,7 +1422,8 @@
         "AuroraServerlessScaling",
         "AuroraProvisionedScaling",
         "NeptuneGlobalDatabase",
-        "RdsSwitchoverReadReplica"
+        "RdsSwitchoverReadReplica",
+        "SSMSendCommand"
       ]
     },
     "ExecutionComment":{
@@ -2700,6 +2705,14 @@
       "max":2,
       "min":2
     },
+    "RegionSsmDocumentMap":{
+      "type":"map",
+      "key":{"shape":"Region"},
+      "value":{"shape":"SsmDocumentConfig"},
+      "documentation":"<p>The Systems Manager document and target configuration for each Amazon Web Services Region that the configuration applies to.</p>",
+      "max":2,
+      "min":1
+    },
     "RegionSwitchPlanConfiguration":{
       "type":"structure",
       "required":["arn"],
@@ -3101,6 +3114,173 @@
     "ServiceQuotaWarningSummaryList":{
       "type":"list",
       "member":{"shape":"ServiceQuotaWarningSummary"}
+    },
+    "SsmDocumentArn":{
+      "type":"string",
+      "documentation":"<p>The Amazon Resource Name (ARN) of the Systems Manager document to run.</p>",
+      "max":256,
+      "min":20,
+      "pattern":"arn:[a-z0-9\\-]+:ssm:[a-z0-9\\-]+:([0-9]{12})?:document/[a-zA-Z0-9_.\\-]+"
+    },
+    "SsmDocumentConfig":{
+      "type":"structure",
+      "required":[
+        "documentArn",
+        "targets"
+      ],
+      "members":{
+        "crossAccountRole":{
+          "shape":"IamRoleArn",
+          "documentation":"<p>The cross-account role for the configuration.</p>"
+        },
+        "externalId":{
+          "shape":"String",
+          "documentation":"<p>The external ID (secret key) for the configuration.</p>"
+        },
+        "documentArn":{
+          "shape":"SsmDocumentArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Systems Manager document to run.</p>"
+        },
+        "targets":{
+          "shape":"SsmTargetList",
+          "documentation":"<p>The target filters that Systems Manager resolves to managed nodes when the command runs. To target specific managed nodes, use the <code>InstanceIds</code> key. You can specify up to five target filters.</p>"
+        },
+        "parameters":{
+          "shape":"SsmDocumentParameters",
+          "documentation":"<p>The parameters that are passed to this Region's Systems Manager document. You set parameters for each document, so each Region can run its document with its own parameters.</p>"
+        },
+        "documentVersion":{
+          "shape":"SsmDocumentVersion",
+          "documentation":"<p>The version of the Systems Manager document to run for this Region. When you omit it, Systems Manager runs the document's default version.</p>"
+        }
+      },
+      "documentation":"<p>The Systems Manager document to run and the managed nodes to target for a single Amazon Web Services Region.</p>"
+    },
+    "SsmDocumentParameters":{
+      "type":"map",
+      "key":{"shape":"SsmParameterKey"},
+      "value":{"shape":"SsmParameterValues"},
+      "documentation":"<p>The parameters passed to the Systems Manager document.</p>",
+      "max":30,
+      "min":0
+    },
+    "SsmDocumentVersion":{
+      "type":"string",
+      "documentation":"<p>The version of the Systems Manager document to run.</p>",
+      "max":8,
+      "min":1,
+      "pattern":"([$]LATEST|[$]DEFAULT|[1-9][0-9]*)"
+    },
+    "SsmParameterKey":{
+      "type":"string",
+      "documentation":"<p>The name of a Systems Manager document parameter.</p>",
+      "max":255,
+      "min":1
+    },
+    "SsmParameterValue":{
+      "type":"string",
+      "documentation":"<p>A single value supplied for a Systems Manager document parameter.</p>",
+      "max":65535,
+      "min":1,
+      "pattern":".{1,65535}"
+    },
+    "SsmParameterValues":{
+      "type":"list",
+      "member":{"shape":"SsmParameterValue"},
+      "documentation":"<p>The values supplied for a single Systems Manager document parameter.</p>",
+      "max":50,
+      "min":1
+    },
+    "SsmSendCommandConfiguration":{
+      "type":"structure",
+      "required":[
+        "regionDocuments",
+        "retryIntervalMinutes"
+      ],
+      "members":{
+        "timeoutMinutes":{
+          "shape":"SsmSendCommandConfigurationTimeoutMinutesInteger",
+          "documentation":"<p>The timeout value specified for the configuration.</p>"
+        },
+        "regionDocuments":{
+          "shape":"RegionSsmDocumentMap",
+          "documentation":"<p>The Systems Manager document and target configuration for each Amazon Web Services Region in the plan. Provide an entry for each Amazon Web Services Region that you want the command to run in.</p>"
+        },
+        "retryIntervalMinutes":{
+          "shape":"Float",
+          "documentation":"<p>How often, in minutes, Region switch retries the command if it returns a failure.</p>"
+        },
+        "ungraceful":{
+          "shape":"SsmSendCommandUngraceful",
+          "documentation":"<p>Specifies the settings that determine how the execution block behaves when the plan runs ungracefully, such as whether to skip the command.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for an AWS Systems Manager <code>SendCommand</code> execution block in a Region switch plan. This execution block runs a Systems Manager document on the managed nodes that you target in each Amazon Web Services Region of the plan.</p>"
+    },
+    "SsmSendCommandConfigurationTimeoutMinutesInteger":{
+      "type":"integer",
+      "box":true,
+      "min":1
+    },
+    "SsmSendCommandUngraceful":{
+      "type":"structure",
+      "members":{
+        "behavior":{
+          "shape":"SsmSendCommandUngracefulBehavior",
+          "documentation":"<p>Specifies whether to skip running this command during an ungraceful execution. Set to <code>skip</code> to skip the command.</p>"
+        }
+      },
+      "documentation":"<p>The ungraceful execution settings for an AWS Systems Manager <code>SendCommand</code> execution block.</p>"
+    },
+    "SsmSendCommandUngracefulBehavior":{
+      "type":"string",
+      "documentation":"<p>The ungraceful behavior for an AWS Systems Manager <code>SendCommand</code> execution block, which must be set to <code>skip</code>.</p>",
+      "enum":["skip"]
+    },
+    "SsmTarget":{
+      "type":"structure",
+      "required":[
+        "key",
+        "values"
+      ],
+      "members":{
+        "key":{
+          "shape":"SsmTargetKey",
+          "documentation":"<p>The target key, such as <code>tag:Environment</code> or <code>InstanceIds</code>.</p>"
+        },
+        "values":{
+          "shape":"SsmTargetValueList",
+          "documentation":"<p>The values matched by this target key. Multiple values combine with a logical OR.</p>"
+        }
+      },
+      "documentation":"<p>A single <code>SendCommand</code> target filter, consisting of a target key and the values matched by that key.</p>"
+    },
+    "SsmTargetKey":{
+      "type":"string",
+      "documentation":"<p>A target key used to select managed nodes, such as <code>tag:Environment</code> or <code>InstanceIds</code>.</p>",
+      "max":163,
+      "min":1,
+      "pattern":"[\\p{L}\\p{Z}\\p{N}_.:/=\\-@]*"
+    },
+    "SsmTargetList":{
+      "type":"list",
+      "member":{"shape":"SsmTarget"},
+      "documentation":"<p>The target filters passed to <code>SendCommand</code>. You can specify up to five filters.</p>",
+      "max":5,
+      "min":1
+    },
+    "SsmTargetValue":{
+      "type":"string",
+      "documentation":"<p>A single value matched by a target key.</p>",
+      "max":256,
+      "min":1
+    },
+    "SsmTargetValueList":{
+      "type":"list",
+      "member":{"shape":"SsmTargetValue"},
+      "documentation":"<p>The values matched by a single target key.</p>",
+      "max":50,
+      "min":1
     },
     "StartPlanExecutionRequest":{
       "type":"structure",

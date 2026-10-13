@@ -338,18 +338,10 @@ files to and from S3. Valid choices are:
     transfer client currently only supports uploads to S3, downloads from
     S3, and deletion of S3 objects.
 
-  * The host running the AWS CLI is an Amazon EC2 instance running Linux as the
-    operating system.
-
-    * Note that the ``crt`` transfer client is currently optimized
-      for the following instance types: ``p4d.24xlarge``, ``p4de.24xlarge``,
-      ``p5.48xlarge``, ``p5e.48xlarge``, ``p5en.48xlarge``, ``p6-b200.48xlarge``,
-      ``p6-b300.48xlarge``, ``trn1.32xlarge``, and ``trn1n.32xlarge``.
-
   * The ``crt`` transfer client supports the requested transfer. If the host
-    is not of an instance type that the ``crt`` transfer client is optimized
-    for, the AWS CLI falls back to the ``classic`` transfer client when any
-    of the following are in use:
+    running the AWS CLI is not an Amazon EC2 instance of a type that the
+    ``crt`` transfer client is optimized for, the AWS CLI falls back to the
+    ``classic`` transfer client when any of the following are in use:
 
     * The ``max_bandwidth`` configuration value.
     * A ``retry_mode`` configuration value of ``adaptive``.
@@ -360,6 +352,10 @@ files to and from S3. Valid choices are:
     Hosts that are of an instance type that the ``crt`` transfer client is
     optimized for do not fall back for these reasons. They use the ``crt``
     transfer client and ignore the configuration values it does not support.
+    Currently, these instance types are: ``p4d.24xlarge``, ``p4de.24xlarge``,
+    ``p5.48xlarge``, ``p5e.48xlarge``, ``p5en.48xlarge``,
+    ``p6-b200.48xlarge``, ``p6-b300.48xlarge``, ``trn1.32xlarge``, and
+    ``trn1n.32xlarge``.
 
   * There are no other running processes of the AWS CLI using the CRT S3 transfer
     client. To force multiple concurrently running processes of the AWS CLI to use

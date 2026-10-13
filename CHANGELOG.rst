@@ -2,6 +2,30 @@
 CHANGELOG
 =========
 
+2.38.0
+======
+
+* api-change:``omics``: With Expanded container registry support, you can use container images from registries such as Seqera (Wave), NVIDIA NGC, and Google Artifact Registry with AWS HealthOmics private workflows, without manually migrating images into Amazon ECR or editing your workflow definitions.
+* api-change:``appstream``: Adds support for administrators to require users to re-authenticate OneDrive and Google Drive storage connectors when a streaming session is reused.
+* api-change:``agent-registry-control``: AWS Agent Registry is improving recently launched custom metadata schema feature to make shared attributes easier to manage.
+* api-change:``resiliencehubv2``: Adds support for DevOpsAgent integration where users can specify the agent space ARN at service level and launch investigations directly from Resilience Hub v2.
+* bugfix:crt: Disable TLS in CRT client when resolved endpoint scheme is http. Fixes `#10748 <https://github.com/aws/aws-cli/issues/10748>`__
+* api-change:``arc-region-switch``: Adds support for SSM Execution Block in Region switch plans
+* api-change:``glue``: Amazon Glue releasing support for adding custom namespace for S3 Tables in Glue zero-ETL integration
+* api-change:``lambda-web``: Documentation update to include common use cases.
+* feature:crt: Enable the CRT S3 transfer client by default on all hosts.
+* api-change:``sagemaker``: Adds Amazon Athena, Cleanup, ForEach, and Amazon EMR Serverless step metadata, ForEach iteration context, and the CompletedWithFailures execution status to SageMaker Pipelines.
+* api-change:``gamelift``: Adds support for new instance types in the C8a, C8i, C9g, M8a, M8i, and M9g families for managed EC2 and container fleets
+* api-change:``securityhub``: Adds and updates APIs to support criticality. This feature allows customers to create automation rules to assign criticality to resources matching a criteria. With this release, resources and exposure findings will include the criticality.
+* api-change:``connect``: New APIs to support aliases and versions for ContactFlow.
+* api-change:``datasync``: AWS DataSync Enhanced mode now supports FSx for OpenZFS, NFS 4.2, and object metadata controls
+* api-change:``lakeformation``: Added new LakeFormation APIs and documentation updates for Simple Row-level Security (RLS).
+* api-change:``appintegrations``: This release adds the Connect JWT authentication type and the AudienceOverride field to AuthConfig, letting A2A server applications authenticate with JWTs issued by Amazon Connect.
+* bugfix:``s3``: Fixes a race condition where CreateSession is called multiple times across different threads during an S3-Express recursive upload/download.
+* api-change:``route53domains``: Route 53 Domains now supports premium domains. This release adds consent objects to operations on premium domains and a new GetDomainPrices API. Also, the Flags and PublicKey fields were deprecated from the DnssecKey response.
+* enhancement:``configure``: Add region autocomplete to the ``aws configure`` region prompt when run in an interactive terminal.
+
+
 2.37.13
 =======
 

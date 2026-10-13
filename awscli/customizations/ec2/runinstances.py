@@ -97,29 +97,26 @@ def _fix_args(params, **kwargs):
         'SecondaryPrivateIpAddressCount',
         'AssociatePublicIpAddress'
     ]
+    # Simple top-level params that just get renamed and moved into the
+    # NetworkInterfaces structure verbatim.
+    simple_param_map = {
+        'SubnetId': 'SubnetId',
+        'SecurityGroupIds': 'Groups',
+        'Ipv6AddressCount': 'Ipv6AddressCount',
+        'Ipv6Addresses': 'Ipv6Addresses',
+        'EnablePrimaryIpv6': 'PrimaryIpv6',
+    }
     if 'NetworkInterfaces' in params:
         interface = params['NetworkInterfaces'][0]
         if any(param in interface for param in network_interface_params):
-            if 'SubnetId' in params:
-                interface['SubnetId'] = params['SubnetId']
-                del params['SubnetId']
-            if 'SecurityGroupIds' in params:
-                interface['Groups'] = params['SecurityGroupIds']
-                del params['SecurityGroupIds']
+            for src_key, dest_key in simple_param_map.items():
+                if src_key in params:
+                    interface[dest_key] = params.pop(src_key)
             if 'PrivateIpAddress' in params:
                 ip_addr = {'PrivateIpAddress': params['PrivateIpAddress'],
                            'Primary': True}
                 interface['PrivateIpAddresses'] = [ip_addr]
                 del params['PrivateIpAddress']
-            if 'Ipv6AddressCount' in params:
-                interface['Ipv6AddressCount'] = params['Ipv6AddressCount']
-                del params['Ipv6AddressCount']
-            if 'Ipv6Addresses' in params:
-                interface['Ipv6Addresses'] = params['Ipv6Addresses']
-                del params['Ipv6Addresses']
-            if 'EnablePrimaryIpv6' in params:
-                interface['PrimaryIpv6'] = params['EnablePrimaryIpv6']
-                del params['EnablePrimaryIpv6']
 
 
 EVENTS = [

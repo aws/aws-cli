@@ -129,7 +129,7 @@ class TransferManagerFactory:
         )
         if client_type == constants.CRT_TRANSFER_CLIENT:
             transfer_manager = self._try_create_crt_transfer_manager(
-                params, runtime_config
+                params, runtime_config, botocore_client
             )
             if transfer_manager is not None:
                 self._register_transfer_client_feature_id(
@@ -159,9 +159,13 @@ class TransferManagerFactory:
             f'S3_TRANSFER_{client_type.upper()}_{resolve_type}'
         )
 
-    def _try_create_crt_transfer_manager(self, params, runtime_config):
+    def _try_create_crt_transfer_manager(
+        self, params, runtime_config, botocore_client=None
+    ):
         try:
-            return self._create_crt_transfer_manager(params, runtime_config)
+            return self._create_crt_transfer_manager(
+                params, runtime_config, botocore_client
+            )
         except RuntimeError as e:
             if str(CRT_PART_SIZE_EXCEEDS_MEMORY_LIMIT) not in str(e):
                 raise
@@ -341,12 +345,17 @@ class TransferManagerFactory:
     def _acquire_crt_s3_process_lock(self):
         return acquire_crt_s3_process_lock(self._CRT_PROCESS_LOCK_NAME)
 
-    def _create_crt_transfer_manager(self, params, runtime_config):
+    def _create_crt_transfer_manager(
+        self, params, runtime_config, botocore_client=None
+    ):
         self._acquire_crt_s3_process_lock()
         region = self._resolve_crt_client_region(params)
         bootstrap = create_crt_client_bootstrap()
         config_kwargs = self._resolve_crt_client_config_kwargs(runtime_config)
-        botocore_client = self._botocore_client_factory.create_client(params)
+        if botocore_client is None:
+            botocore_client = self._botocore_client_factory.create_client(
+                params
+            )
         use_ssl = not self._is_http_endpoint(botocore_client.meta.endpoint_url)
 
         transfer_manager = CRTTransferManager(

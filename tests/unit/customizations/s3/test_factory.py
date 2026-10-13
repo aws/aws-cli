@@ -84,6 +84,11 @@ def stub_configured_variables(session, *names):
     )
 
 
+def stub_endpoint_url(session, endpoint_url):
+    """Sets the endpoint resolved by botocore clients the session creates"""
+    session.create_client.return_value.meta.endpoint_url = endpoint_url
+
+
 @pytest.fixture
 def transfer_manager_factory():
     session = mock.Mock(Session)
@@ -91,6 +96,7 @@ def transfer_manager_factory():
     stub_configured_variables(session)
     session.get_default_client_config.return_value = None
     session.get_scoped_config.return_value = {}
+    stub_endpoint_url(session, 'https://s3.us-west-2.amazonaws.com')
     return TransferManagerFactory(session)
 
 
@@ -196,6 +202,7 @@ class TestTransferManagerFactory(unittest.TestCase):
         stub_configured_variables(self.session)
         self.session.get_default_client_config.return_value = None
         self.session.get_scoped_config.return_value = {}
+        stub_endpoint_url(self.session, 'https://s3.us-west-2.amazonaws.com')
         self.factory = TransferManagerFactory(self.session)
         self.params = {
             'region': 'us-west-2',
@@ -354,7 +361,11 @@ class TestTransferManagerFactory(unittest.TestCase):
         self.runtime_config = self.get_runtime_config(
             preferred_transfer_client='crt'
         )
-        params = {'verify_ssl': DEFAULT_CA_BUNDLE}
+        params = {
+            'region': None,
+            'endpoint_url': None,
+            'verify_ssl': DEFAULT_CA_BUNDLE,
+        }
         stub_config_variables(self.session, region='config-region')
         transfer_manager = self.factory.create_transfer_manager(
             params, self.runtime_config
@@ -375,7 +386,11 @@ class TestTransferManagerFactory(unittest.TestCase):
         self.runtime_config = self.get_runtime_config(
             preferred_transfer_client='crt'
         )
-        params = {'verify_ssl': DEFAULT_CA_BUNDLE}
+        params = {
+            'region': None,
+            'endpoint_url': None,
+            'verify_ssl': DEFAULT_CA_BUNDLE,
+        }
         stub_config_variables(self.session)
         transfer_manager = self.factory.create_transfer_manager(
             params, self.runtime_config
@@ -423,6 +438,7 @@ class TestTransferManagerFactory(unittest.TestCase):
             preferred_transfer_client='crt'
         )
         self.params['endpoint_url'] = 'http://my.endpoint.com'
+        stub_endpoint_url(self.session, 'http://my.endpoint.com')
         transfer_manager = self.factory.create_transfer_manager(
             self.params, self.runtime_config
         )
@@ -431,6 +447,22 @@ class TestTransferManagerFactory(unittest.TestCase):
             self.session.create_client.call_args[1]['endpoint_url'],
             'http://my.endpoint.com',
         )
+        self.assert_tls_disabled_for_crt_client(mock_crt_client)
+
+    @mock.patch('s3transfer.crt.S3Client')
+    def test_disables_tls_for_configured_http_endpoint_for_crt_manager(
+        self, mock_crt_client
+    ):
+        self.runtime_config = self.get_runtime_config(
+            preferred_transfer_client='crt'
+        )
+        # The endpoint is configured outside of the endpoint_url parameter,
+        # such as through AWS_ENDPOINT_URL, and resolved by botocore.
+        stub_endpoint_url(self.session, 'http://localhost:4566')
+        transfer_manager = self.factory.create_transfer_manager(
+            self.params, self.runtime_config
+        )
+        self.assert_is_crt_manager(transfer_manager)
         self.assert_tls_disabled_for_crt_client(mock_crt_client)
 
     @mock.patch('s3transfer.crt.S3Client')
@@ -804,6 +836,7 @@ def auto_resolve_session():
     stub_configured_variables(session)
     session.get_default_client_config.return_value = None
     session.get_scoped_config.return_value = {}
+    stub_endpoint_url(session, 'https://s3.us-west-2.amazonaws.com')
     return session
 
 

@@ -39,6 +39,8 @@ from awscli.customizations.configure.sso_commands import (
     ConfigureSSOSessionCommand,
 )
 from awscli.customizations.configure.writer import ConfigFileWriter
+from awscli.customizations.utils import load_all_regions
+from awscli.utils import is_a_tty, is_stdin_a_tty
 
 from . import mask_value, profile_to_section
 
@@ -57,13 +59,35 @@ class InteractivePrompter:
             'aws_session_token',
         ):
             current_value = mask_value(current_value)
-        response = compat_input(f"{prompt_text} [{current_value}]: ")
+        if config_name == 'region' and self._is_interactive():
+            response = self._prompt_with_region_completions(
+                current_value, prompt_text
+            )
+        else:
+            response = compat_input(f"{prompt_text} [{current_value}]: ")
         if not response:
             # If the user hits enter, we return a value of None
             # instead of an empty string.  That way we can determine
             # whether or not a value has changed.
             response = None
         return response
+
+    def _is_interactive(self):
+        # prompt_toolkit requires a real terminal; fall back to plain input
+        # when stdin/stdout are redirected.
+        return is_stdin_a_tty() and is_a_tty()
+
+    def _prompt_with_region_completions(self, current_value, prompt_text):
+        from awscli.customizations.configure.sso import PTKPrompt
+
+        # Pass an empty current value so hitting enter returns '' rather
+        # than the current value, preserving the "no change" semantics.
+        return PTKPrompt().get_value(
+            '',
+            prompt_text,
+            completions=list(load_all_regions()),
+            prompt_fmt=f'{prompt_text} [{current_value}]: ',
+        )
 
 
 class ConfigureCommand(BasicCommand):

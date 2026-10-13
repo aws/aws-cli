@@ -581,6 +581,20 @@ class TestDownloadRequestSubmitter(BaseTransferRequestSubmitterTest):
         self.assertIsInstance(warning_result, WarningResult)
         self.assert_no_downloads_happened()
 
+    def test_warn_and_ignore_on_bare_parent_reference(self):
+        fileinfo = self.create_file_info('..')
+        future = self.transfer_request_submitter.submit(fileinfo)
+        warning_result = self.result_queue.get()
+        self.assertIsInstance(warning_result, WarningResult)
+        self.assert_no_downloads_happened()
+
+    def test_warn_and_ignore_on_bare_parent_reference_with_prefix(self):
+        fileinfo = self.create_file_info('a/../..')
+        future = self.transfer_request_submitter.submit(fileinfo)
+        warning_result = self.result_queue.get()
+        self.assertIsInstance(warning_result, WarningResult)
+        self.assert_no_downloads_happened()
+
     def test_dry_run(self):
         self.cli_params['dryrun'] = True
         self.transfer_request_submitter = DownloadRequestSubmitter(

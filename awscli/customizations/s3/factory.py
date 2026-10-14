@@ -11,7 +11,6 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import logging
-import os
 import sys
 
 import awscrt.s3
@@ -129,7 +128,7 @@ class TransferManagerFactory:
         )
         if client_type == constants.CRT_TRANSFER_CLIENT:
             transfer_manager = self._try_create_crt_transfer_manager(
-                params, runtime_config
+                params, runtime_config, botocore_client
             )
             if transfer_manager is not None:
                 self._register_transfer_client_feature_id(
@@ -159,9 +158,13 @@ class TransferManagerFactory:
             f'S3_TRANSFER_{client_type.upper()}_{resolve_type}'
         )
 
-    def _try_create_crt_transfer_manager(self, params, runtime_config):
+    def _try_create_crt_transfer_manager(
+        self, params, runtime_config, botocore_client=None
+    ):
         try:
-            return self._create_crt_transfer_manager(params, runtime_config)
+            return self._create_crt_transfer_manager(
+                params, runtime_config, botocore_client
+            )
         except RuntimeError as e:
             if str(CRT_PART_SIZE_EXCEEDS_MEMORY_LIMIT) not in str(e):
                 raise
@@ -214,8 +217,6 @@ class TransferManagerFactory:
         )
         if is_optimized_for_system:
             return True
-        if not self._is_crt_auto_resolve_enabled():
-            return False
         unsupported = self._get_unsupported_settings(params, runtime_config)
         if unsupported:
             LOGGER.debug(
@@ -225,14 +226,6 @@ class TransferManagerFactory:
             self._warn_classic_only_settings(runtime_config)
             return False
         return True
-
-    def _is_crt_auto_resolve_enabled(self):
-        if (
-            os.environ.get('AWS_CLI_AUTO_RESOLVE_CLIENT')
-            == constants.CRT_TRANSFER_CLIENT
-        ):
-            return True
-        return awscrt.s3.get_ec2_instance_type() is not None
 
     def _get_unsupported_settings(self, params, runtime_config):
         unsupported = self._get_classic_only_settings(runtime_config)
@@ -341,11 +334,18 @@ class TransferManagerFactory:
     def _acquire_crt_s3_process_lock(self):
         return acquire_crt_s3_process_lock(self._CRT_PROCESS_LOCK_NAME)
 
-    def _create_crt_transfer_manager(self, params, runtime_config):
+    def _create_crt_transfer_manager(
+        self, params, runtime_config, botocore_client=None
+    ):
         self._acquire_crt_s3_process_lock()
         region = self._resolve_crt_client_region(params)
         bootstrap = create_crt_client_bootstrap()
         config_kwargs = self._resolve_crt_client_config_kwargs(runtime_config)
+        if botocore_client is None:
+            botocore_client = self._botocore_client_factory.create_client(
+                params
+            )
+        use_ssl = not self._is_http_endpoint(botocore_client.meta.endpoint_url)
 
         transfer_manager = CRTTransferManager(
             crt_client_factory=lambda client_region=None: (
@@ -355,9 +355,12 @@ class TransferManagerFactory:
                     config_kwargs,
                     region=client_region or region,
                     bootstrap=bootstrap,
+                    use_ssl=use_ssl,
                 )
             ),
-            crt_request_serializer=self._create_crt_request_serializer(params),
+            crt_request_serializer=self._create_crt_request_serializer(
+                params, botocore_client
+            ),
             transfer_config=self._create_crt_transfer_config(config_kwargs),
         )
         # Clients for redirected regions are created on demand, but create the
@@ -382,15 +385,14 @@ class TransferManagerFactory:
         config_kwargs,
         region=None,
         bootstrap=None,
+        use_ssl=True,
     ):
         create_crt_client_kwargs = {
             'region': region,
             'verify': self._resolve_verify(params),
             'bootstrap': bootstrap,
+            'use_ssl': use_ssl,
         }
-        endpoint_url = params.get('endpoint_url')
-        if endpoint_url and urlparse.urlparse(endpoint_url).scheme == 'http':
-            create_crt_client_kwargs['use_ssl'] = False
         target_throughput = self._resolve_target_throughput(runtime_config)
         if target_throughput:
             create_crt_client_kwargs['target_throughput'] = target_throughput
@@ -476,16 +478,17 @@ class TransferManagerFactory:
         # its defaults so their behavior is unchanged.
         return self._is_newly_eligible_for_crt_client(runtime_config)
 
-    def _create_crt_request_serializer(self, params):
+    def _is_http_endpoint(self, endpoint_url):
+        return urlparse.urlparse(endpoint_url).scheme == 'http'
+
+    def _create_crt_request_serializer(self, params, botocore_client):
         return BotocoreCRTRequestSerializer(
             self._session,
             {
                 'region_name': self._resolve_region(params),
                 'endpoint_url': params.get('endpoint_url'),
             },
-            region_redirect_client_factory=lambda: (
-                self._botocore_client_factory.create_client(params)
-            ),
+            region_redirect_client_factory=lambda: botocore_client,
         )
 
     def _create_classic_transfer_manager(

@@ -2728,7 +2728,8 @@
       "type":"string",
       "enum":[
         "FINDING_FIELDS_UPDATE",
-        "EXTERNAL_INTEGRATION"
+        "EXTERNAL_INTEGRATION",
+        "RESOURCE_FIELDS_UPDATE"
       ]
     },
     "AutomationRulesActionV2":{
@@ -2746,6 +2747,10 @@
         "ExternalIntegrationConfiguration":{
           "shape":"ExternalIntegrationConfiguration",
           "documentation":"<p>The settings for integrating automation rule actions with external systems or service.</p>"
+        },
+        "ResourceFieldsUpdate":{
+          "shape":"AutomationRulesResourceFieldsUpdateV2",
+          "documentation":"<p>The changes to be applied to resource fields when an automation rule is triggered.</p>"
         }
       },
       "documentation":"<p>Allows you to configure automated responses.</p>"
@@ -3122,6 +3127,17 @@
         }
       },
       "documentation":"<p>Includes essential metadata information about automation rules.</p>"
+    },
+    "AutomationRulesResourceFieldsUpdateV2":{
+      "type":"structure",
+      "required":["Criticality"],
+      "members":{
+        "Criticality":{
+          "shape":"ResourceCriticality",
+          "documentation":"<p>The criticality level to be assigned to resources that match the automation rule criteria.</p>"
+        }
+      },
+      "documentation":"<p>Allows you to define the structure for modifying specific fields of resources.</p>"
     },
     "AvailabilityZone":{
       "type":"structure",
@@ -18075,10 +18091,45 @@
         "OcsfFindingCriteria":{
           "shape":"OcsfFindingFilters",
           "documentation":"<p>The filtering conditions that align with OCSF standards.</p>"
+        },
+        "ResourceCriteria":{
+          "shape":"ResourcesFilters",
+          "documentation":"<p>The filtering conditions for resources.</p>"
         }
       },
-      "documentation":"<p>Defines the parameters and conditions used to evaluate and filter security findings.</p>",
+      "documentation":"<p>Defines the parameters and conditions used to evaluate and filter security findings or resources.</p>",
       "union":true
+    },
+    "CriticalitySource":{
+      "type":"structure",
+      "required":[
+        "Source",
+        "Reason"
+      ],
+      "members":{
+        "Source":{
+          "shape":"CriticalitySourceType",
+          "documentation":"<p>The source of the criticality.</p>"
+        },
+        "Reason":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The reason the criticality was assigned.</p>"
+        }
+      },
+      "documentation":"<p>Details the source and reason of a criticality.</p>"
+    },
+    "CriticalitySourceList":{
+      "type":"list",
+      "member":{"shape":"CriticalitySource"},
+      "max":3
+    },
+    "CriticalitySourceType":{
+      "type":"string",
+      "enum":[
+        "AutomationRule",
+        "ResourceName",
+        "TagInference"
+      ]
     },
     "CrossAccountMaxResults":{
       "type":"integer",
@@ -20976,10 +21027,13 @@
         "finding_info.title",
         "finding_info.related_events.traits.category",
         "finding_info.types",
+        "impact",
+        "likelihood",
         "metadata.product.name",
         "metadata.product.uid",
         "resources.type",
         "resources.cloud_partition",
+        "resources.criticality",
         "resources.name",
         "resources.owner.account.uid",
         "resources.owner.org.uid",
@@ -22933,12 +22987,15 @@
         "finding_info.related_events.uid",
         "finding_info.related_events.product.uid",
         "finding_info.related_events.title",
+        "impact",
+        "likelihood",
         "metadata.product.name",
         "metadata.product.uid",
         "metadata.product.vendor_name",
         "remediation.desc",
         "remediation.references",
         "resources.cloud_partition",
+        "resources.criticality",
         "resources.name",
         "resources.owner.account.uid",
         "resources.owner.org.uid",
@@ -24333,6 +24390,16 @@
       "error":{"httpStatusCode":409},
       "exception":true
     },
+    "ResourceCriticality":{
+      "type":"string",
+      "enum":[
+        "Very High",
+        "High",
+        "Medium",
+        "Low",
+        "Unknown"
+      ]
+    },
     "ResourceDetails":{
       "type":"structure",
       "members":{
@@ -24780,7 +24847,8 @@
         "ResourceSubCategory",
         "DiscoveryType",
         "ResourceInfo.AIDetails.HostResourceType",
-        "ResourceInfo.AIDetails.CanonicalId"
+        "ResourceInfo.AIDetails.CanonicalId",
+        "ResourceCriticality"
       ]
     },
     "ResourceGroupByRule":{
@@ -24964,6 +25032,14 @@
         "ResourceInfo":{
           "shape":"ResourceInfo",
           "documentation":"<p>Additional resource-type-specific details. For self-hosted AI resources and their host resources, contains an <code>AIDetails</code> structure.</p>"
+        },
+        "ResourceCriticality":{
+          "shape":"ResourceCriticality",
+          "documentation":"<p>The criticality assigned to a resource.</p>"
+        },
+        "CriticalitySources":{
+          "shape":"CriticalitySourceList",
+          "documentation":"<p>The sources of criticalities determined from a resource.</p>"
         }
       },
       "documentation":"<p>Provides comprehensive details about an Amazon Web Services resource and its associated security findings.</p>"
@@ -25217,7 +25293,8 @@
         "DiscoveryType",
         "ResourceInfo.AIDetails.HostResourceGuid",
         "ResourceInfo.AIDetails.HostResourceType",
-        "ResourceInfo.AIDetails.CanonicalId"
+        "ResourceInfo.AIDetails.CanonicalId",
+        "ResourceCriticality"
       ]
     },
     "ResourcesStringFilter":{

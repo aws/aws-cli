@@ -233,6 +233,22 @@
       ],
       "documentation":"<p>This operation returns detailed information about a specified domain that is associated with the current Amazon Web Services account. Contact information for the domain is also returned as part of the output.</p>"
     },
+    "GetDomainPrices":{
+      "name":"GetDomainPrices",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetDomainPricesRequest"},
+      "output":{"shape":"GetDomainPricesResponse"},
+      "errors":[
+        {"shape":"InvalidInput"},
+        {"shape":"UnsupportedTLD"},
+        {"shape":"TLDInMaintenance"}
+      ],
+      "documentation":"<p>Returns the following prices for the specified domain:</p> <ul> <li> <p>Registration</p> </li> <li> <p>Transfer</p> </li> <li> <p>Owner change</p> </li> <li> <p>Renewal</p> </li> <li> <p>Restoration</p> </li> </ul> <p>For most domains, the prices match the standard prices for the TLD that the <a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_domains_ListPrices.html\">ListPrices</a> operation returns. For a premium domain, the registry sets the price individually. Premium prices might differ from the standard prices and can change over time.</p>",
+      "readonly":true
+    },
     "GetDomainSuggestions":{
       "name":"GetDomainSuggestions",
       "http":{
@@ -299,7 +315,7 @@
         {"shape":"InvalidInput"},
         {"shape":"UnsupportedTLD"}
       ],
-      "documentation":"<p>Lists the following prices for either all the TLDs supported by Route 53, or the specified TLD:</p> <ul> <li> <p>Registration</p> </li> <li> <p>Transfer</p> </li> <li> <p>Owner change</p> </li> <li> <p>Domain renewal</p> </li> <li> <p>Domain restoration</p> </li> </ul>"
+      "documentation":"<p>Lists the following prices for either all the TLDs supported by Route 53, or the specified TLD:</p> <ul> <li> <p>Registration</p> </li> <li> <p>Transfer</p> </li> <li> <p>Owner change</p> </li> <li> <p>Renewal</p> </li> <li> <p>Restoration</p> </li> </ul> <note> <p>The prices that <code>ListPrices</code> returns are the standard rates for a TLD. <code>ListPrices</code> doesn't return registry premium prices, which apply to individual domain names rather than to a TLD. To get accurate pricing for a specific domain name, including premium prices, call <code>GetDomainPrices</code>.</p> </note>"
     },
     "ListTagsForDomain":{
       "name":"ListTagsForDomain",
@@ -678,6 +694,10 @@
         "Availability":{
           "shape":"DomainAvailability",
           "documentation":"<p>Whether the domain name is available for registering.</p> <note> <p>You can register only domains designated as <code>AVAILABLE</code>.</p> </note> <p>Valid values:</p> <dl> <dt>AVAILABLE</dt> <dd> <p>The domain name is available.</p> </dd> <dt>AVAILABLE_RESERVED</dt> <dd> <p>The domain name is reserved under specific conditions.</p> </dd> <dt>AVAILABLE_PREORDER</dt> <dd> <p>The domain name is available and can be preordered.</p> </dd> <dt>DONT_KNOW</dt> <dd> <p>The TLD registry didn't reply with a definitive answer about whether the domain name is available. Route 53 can return this response for a variety of reasons, for example, the registry is performing maintenance. Try again later.</p> </dd> <dt>INVALID_NAME_FOR_TLD</dt> <dd> <p>The TLD isn't valid. For example, it can contain characters that aren't allowed.</p> </dd> <dt>PENDING</dt> <dd> <p>The TLD registry didn't return a response in the expected amount of time. When the response is delayed, it usually takes just a few extra seconds. You can resubmit the request immediately.</p> </dd> <dt>RESERVED</dt> <dd> <p>The domain name has been reserved for another person or organization.</p> </dd> <dt>UNAVAILABLE</dt> <dd> <p>The domain name is not available.</p> </dd> <dt>UNAVAILABLE_PREMIUM</dt> <dd> <p>The domain name is not available.</p> </dd> <dt>UNAVAILABLE_RESTRICTED</dt> <dd> <p>The domain name is forbidden.</p> </dd> </dl>"
+        },
+        "Price":{
+          "shape":"PriceWithCurrency",
+          "documentation":"<p>The price to register the domain name, in the currency that <code>Currency</code> specifies. If the domain has registry premium pricing, this price is different from the standard rate for the TLD that <code>ListPrices</code> returns. Use <code>PriceType</code> to determine which rate applies.</p> <p>This element is returned only when <code>Availability</code> is <code>AVAILABLE</code>.</p>"
         }
       },
       "documentation":"<p>The CheckDomainAvailability response includes the following elements.</p>"
@@ -707,6 +727,10 @@
         "Message":{
           "shape":"Message",
           "documentation":"<p>Provides an explanation for when a domain can't be transferred.</p>"
+        },
+        "Price":{
+          "shape":"PriceWithCurrency",
+          "documentation":"<p>The price to transfer the domain name to Route 53, in the currency that <code>Currency</code> specifies. If the domain has registry premium pricing, this price is different from the standard rate for the TLD that <code>ListPrices</code> returns. Use <code>PriceType</code> to determine which rate applies.</p> <p>This element is returned only when Route 53 can determine whether the domain is transferable.</p>"
         }
       },
       "documentation":"<p>The CheckDomainTransferability response includes the following elements.</p>"
@@ -724,15 +748,20 @@
       ],
       "members":{
         "MaxPrice":{
-          "shape":"Price",
-          "documentation":"<p> Maximum amount the customer agreed to accept. </p>"
+          "shape":"ConsentPrice",
+          "documentation":"<p> The maximum amount that you agree to accept. </p>"
         },
         "Currency":{
           "shape":"Currency",
-          "documentation":"<p> Currency for the <code>MaxPrice</code>. </p>"
+          "documentation":"<p> The currency for the <code>MaxPrice</code>. </p>"
         }
       },
-      "documentation":"<p> Customer's consent for the owner change request. </p>"
+      "documentation":"<p> The maximum amount that you agree to pay for an operation, and the currency for that amount. </p>"
+    },
+    "ConsentPrice":{
+      "type":"double",
+      "max":2000000000.0,
+      "min":0.0
     },
     "ContactDetail":{
       "type":"structure",
@@ -1192,11 +1221,17 @@
         },
         "Flags":{
           "shape":"NullableInteger",
-          "documentation":"<p>Defines the type of key. It can be either a KSK (key-signing-key, value 257) or ZSK (zone-signing-key, value 256). Using KSK is always encouraged. Only use ZSK if your DNS provider isn't Route 53 and you don’t have KSK available.</p> <p>If you have KSK and ZSK keys, always use KSK to create a delegations signer (DS) record. If you have ZSK keys only – use ZSK to create a DS record.</p>"
+          "documentation":"<p>The DNSKEY flags that indicate the key type. This field is deprecated; the <code>DnssecKey</code> response no longer returns the flags.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"The DnssecKey response no longer returns the flags.",
+          "deprecatedSince":"2026-10-01"
         },
         "PublicKey":{
           "shape":"DnssecPublicKey",
-          "documentation":"<p>The base64-encoded public key part of the key pair that is passed to the registry .</p>"
+          "documentation":"<p>The base64-encoded public key of the key pair. This field is deprecated; the <code>DnssecKey</code> response no longer returns the public key.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"The DnssecKey response no longer returns the public key.",
+          "deprecatedSince":"2026-10-01"
         },
         "DigestType":{
           "shape":"NullableInteger",
@@ -1291,7 +1326,7 @@
       "members":{
         "Name":{
           "shape":"DomainPriceName",
-          "documentation":"<p>The name of the TLD for which the prices apply.</p>"
+          "documentation":"<p>The TLD or domain name that the prices apply to.</p>"
         },
         "RegistrationPrice":{
           "shape":"PriceWithCurrency",
@@ -1314,7 +1349,7 @@
           "documentation":"<p>The price for restoring the domain with Route 53.</p>"
         }
       },
-      "documentation":"<p>Information about the domain price associated with a TLD.</p>"
+      "documentation":"<p>Information about the prices associated with a TLD or a domain name.</p>"
     },
     "DomainPriceList":{
       "type":"list",
@@ -1339,7 +1374,11 @@
         },
         "Availability":{
           "shape":"String",
-          "documentation":"<p>Whether the domain name is available for registering.</p> <note> <p>You can register only the domains that are designated as <code>AVAILABLE</code>.</p> </note> <p>Valid values:</p> <dl> <dt>AVAILABLE</dt> <dd> <p>The domain name is available.</p> </dd> <dt>AVAILABLE_RESERVED</dt> <dd> <p>The domain name is reserved under specific conditions.</p> </dd> <dt>AVAILABLE_PREORDER</dt> <dd> <p>The domain name is available and can be preordered.</p> </dd> <dt>DONT_KNOW</dt> <dd> <p>The TLD registry didn't reply with a definitive answer about whether the domain name is available. Route 53 can return this response for a variety of reasons, for example, the registry is performing maintenance. Try again later.</p> </dd> <dt>PENDING</dt> <dd> <p>The TLD registry didn't return a response in the expected amount of time. When the response is delayed, it usually takes just a few extra seconds. You can resubmit the request immediately.</p> </dd> <dt>RESERVED</dt> <dd> <p>The domain name has been reserved for another person or organization.</p> </dd> <dt>UNAVAILABLE</dt> <dd> <p>The domain name is not available.</p> </dd> <dt>UNAVAILABLE_PREMIUM</dt> <dd> <p>The domain name is not available.</p> </dd> <dt>UNAVAILABLE_RESTRICTED</dt> <dd> <p>The domain name is forbidden.</p> </dd> </dl>"
+          "documentation":"<p>Specifies whether the domain name is available for registering. This element is populated only if you specified <code>true</code> for <code>OnlyAvailable</code> in the request.</p> <note> <p>You can register only the domains that are designated as <code>AVAILABLE</code>.</p> </note> <p>Valid values:</p> <dl> <dt>AVAILABLE</dt> <dd> <p>The domain name is available.</p> </dd> <dt>AVAILABLE_RESERVED</dt> <dd> <p>The domain name is reserved under specific conditions.</p> </dd> <dt>AVAILABLE_PREORDER</dt> <dd> <p>The domain name is available and can be preordered.</p> </dd> <dt>DONT_KNOW</dt> <dd> <p>The TLD registry didn't reply with a definitive answer about whether the domain name is available. Route 53 can return this response for a variety of reasons, for example, the registry is performing maintenance. Try again later.</p> </dd> <dt>PENDING</dt> <dd> <p>The TLD registry didn't return a response in the expected amount of time. When the response is delayed, it usually takes just a few extra seconds. You can resubmit the request immediately.</p> </dd> <dt>RESERVED</dt> <dd> <p>The domain name has been reserved for another person or organization.</p> </dd> <dt>UNAVAILABLE</dt> <dd> <p>The domain name is not available.</p> </dd> <dt>UNAVAILABLE_PREMIUM</dt> <dd> <p>The domain name is not available.</p> </dd> <dt>UNAVAILABLE_RESTRICTED</dt> <dd> <p>The domain name is forbidden.</p> </dd> </dl>"
+        },
+        "Price":{
+          "shape":"PriceWithCurrency",
+          "documentation":"<p>The price to register the suggested domain name, in the currency that <code>Currency</code> specifies. This element is populated only if you specified <code>true</code> for <code>OnlyAvailable</code> in the request.</p>"
         }
       },
       "documentation":"<p>Information about one suggested domain name.</p>"
@@ -1676,6 +1715,27 @@
       },
       "documentation":"<p>The GetDomainDetail response includes the following elements.</p>"
     },
+    "GetDomainPricesRequest":{
+      "type":"structure",
+      "required":["DomainName"],
+      "members":{
+        "DomainName":{
+          "shape":"DomainName",
+          "documentation":"<p>The name of the domain that you want to get the prices for.</p>"
+        }
+      },
+      "documentation":"<p>The GetDomainPrices request includes the following element.</p>"
+    },
+    "GetDomainPricesResponse":{
+      "type":"structure",
+      "members":{
+        "DomainPrice":{
+          "shape":"DomainPrice",
+          "documentation":"<p>The registration, transfer, owner change, renewal, and restoration prices for the specified domain.</p>"
+        }
+      },
+      "documentation":"<p>The GetDomainPrices response includes the following element.</p>"
+    },
     "GetDomainSuggestionsRequest":{
       "type":"structure",
       "required":[
@@ -1694,7 +1754,11 @@
         },
         "OnlyAvailable":{
           "shape":"Boolean",
-          "documentation":"<p>If <code>OnlyAvailable</code> is <code>true</code>, Route 53 returns only domain names that are available. If <code>OnlyAvailable</code> is <code>false</code>, Route 53 returns domain names without checking whether they're available to be registered. To determine whether the domain is available, you can call <code>checkDomainAvailability</code> for each suggestion.</p>"
+          "documentation":"<p>If <code>OnlyAvailable</code> is <code>true</code>, Route 53 returns only domain names that are available. If <code>OnlyAvailable</code> is <code>false</code>, Route 53 returns domain names without checking whether they're available to be registered. To determine whether the domain is available, call <code>checkDomainAvailability</code> for each suggestion.</p> <p>If <code>OnlyAvailable</code> is <code>false</code>, Route 53 does not return pricing information for the suggested domain names.</p>"
+        },
+        "OnlyStandardPrices":{
+          "shape":"Boolean",
+          "documentation":"<p>If <code>true</code>, Route 53 returns only domain names that are priced at the standard registration rate for their TLD. If <code>false</code>, Route 53 includes domain names with premium pricing in the suggestions list. The default is <code>true</code>.</p>"
         }
       }
     },
@@ -1789,7 +1853,7 @@
     },
     "LangCode":{
       "type":"string",
-      "pattern":"|[A-Za-z]{2,3}"
+      "pattern":"(|[A-Za-z]{2,3})"
     },
     "ListDomainsAttributeName":{
       "type":"string",
@@ -2089,6 +2153,13 @@
       "type":"double",
       "min":0.0
     },
+    "PriceType":{
+      "type":"string",
+      "enum":[
+        "STANDARD",
+        "REGISTRY_PREMIUM"
+      ]
+    },
     "PriceWithCurrency":{
       "type":"structure",
       "required":[
@@ -2103,6 +2174,10 @@
         "Currency":{
           "shape":"Currency",
           "documentation":"<p>The currency specifier.</p>"
+        },
+        "PriceType":{
+          "shape":"PriceType",
+          "documentation":"<p>Indicates whether the domain has standard or premium pricing. A value of <code>STANDARD</code> means the domain is priced at the regular rate for its TLD. A value of <code>REGISTRY_PREMIUM</code> means the domain has registry premium pricing, which may be different than the standard rate.</p>"
         }
       },
       "documentation":"<p>Currency-specific price information.</p>"
@@ -2189,6 +2264,10 @@
         "PrivacyProtectBillingContact":{
           "shape":"Boolean",
           "documentation":"<p>Whether you want to conceal contact information from WHOIS queries. If you specify <code>true</code>, WHOIS (\"who is\") queries return contact information either for Amazon Registrar or for our registrar associate, Gandi. If you specify <code>false</code>, WHOIS queries return the information that you entered for the billing contact.</p> <note> <p>You must specify the same privacy setting for the administrative, billing, registrant, and technical contacts.</p> </note>"
+        },
+        "Consent":{
+          "shape":"Consent",
+          "documentation":"<p>Specifies the maximum price that you agree to pay to register the domain name. This element is required if the domain has registry premium pricing, and optional if the domain is priced at the standard rate for its TLD. If you include it and the registration price is more than <code>MaxPrice</code>, the request fails.</p>"
         }
       },
       "documentation":"<p>The RegisterDomain request includes the following elements.</p>"
@@ -2246,6 +2325,10 @@
         "CurrentExpiryYear":{
           "shape":"CurrentExpiryYear",
           "documentation":"<p>The year when the registration for the domain is set to expire. This value must match the current expiration date for the domain.</p>"
+        },
+        "Consent":{
+          "shape":"Consent",
+          "documentation":"<p>Specifies the maximum price that you agree to pay to renew the domain name. This element is required if the domain has registry premium pricing, and optional if the domain is priced at the standard rate for its TLD. If you include it and the renewal price is more than <code>MaxPrice</code>, the request fails.</p>"
         }
       },
       "documentation":"<p>A <code>RenewDomain</code> request includes the number of years that you want to renew for and the current expiration year.</p>"
@@ -2487,6 +2570,10 @@
         "PrivacyProtectBillingContact":{
           "shape":"Boolean",
           "documentation":"<p> Whether you want to conceal contact information from WHOIS queries. If you specify <code>true</code>, WHOIS (\"who is\") queries return contact information either for Amazon Registrar or for our registrar associate, Gandi. If you specify <code>false</code>, WHOIS queries return the information that you entered for the billing contact. </p> <note> <p>You must specify the same privacy setting for the administrative, billing, registrant, and technical contacts.</p> </note>"
+        },
+        "Consent":{
+          "shape":"Consent",
+          "documentation":"<p>Specifies the maximum price that you agree to pay to transfer the domain name to Route 53. This element is required if the domain has registry premium pricing, and optional if the domain is priced at the standard rate for its TLD. If you include it and the transfer price is more than <code>MaxPrice</code>, the request fails.</p>"
         }
       },
       "documentation":"<p>The TransferDomain request includes the following elements.</p>"
@@ -2535,14 +2622,15 @@
     },
     "Transferable":{
       "type":"string",
-      "documentation":"<p>Whether the domain name can be transferred to Route 53.</p> <note> <p>You can transfer only domains that have a value of <code>TRANSFERABLE</code> or <code>Transferable</code>.</p> </note> <p>Valid values:</p> <dl> <dt>TRANSFERABLE</dt> <dd> <p>The domain name can be transferred to Route 53.</p> </dd> <dt>UNTRANSFERRABLE</dt> <dd> <p>The domain name can't be transferred to Route 53.</p> </dd> <dt>DONT_KNOW</dt> <dd> <p>The TLD registry didn't respond in time or didn't provide a definitive answer about domain transferability, which can occur due to registry maintenance or temporary delays.</p> </dd> <dt>DOMAIN_IN_OWN_ACCOUNT</dt> <dd> <p>The domain already exists in the current Amazon Web Services account.</p> </dd> <dt>DOMAIN_IN_ANOTHER_ACCOUNT</dt> <dd> <p> The domain exists in another Amazon Web Services account.</p> </dd> <dt>PREMIUM_DOMAIN</dt> <dd> <p>Premium domain transfer is not supported.</p> </dd> </dl>",
+      "documentation":"<p>Whether the domain name can be transferred to Route 53.</p> <note> <p>You can transfer only domains that have a value of <code>TRANSFERABLE</code> or <code>Transferable</code>.</p> </note> <p>Valid values:</p> <dl> <dt>TRANSFERABLE</dt> <dd> <p>The domain name can be transferred to Route 53.</p> </dd> <dt>UNTRANSFERRABLE</dt> <dd> <p>The domain name can't be transferred to Route 53.</p> </dd> <dt>DONT_KNOW</dt> <dd> <p>The TLD registry didn't reply with a definitive answer about whether the domain name can be transferred. Route 53 can return this response for a variety of reasons, for example, the registry is performing maintenance. Try again later.</p> </dd> <dt>PENDING</dt> <dd> <p>The TLD registry didn't return a response in the expected amount of time. When the response is delayed, it usually takes just a few extra seconds. You can resubmit the request immediately.</p> </dd> <dt>DOMAIN_IN_OWN_ACCOUNT</dt> <dd> <p>The domain already exists in the current Amazon Web Services account.</p> </dd> <dt>DOMAIN_IN_ANOTHER_ACCOUNT</dt> <dd> <p> The domain exists in another Amazon Web Services account.</p> </dd> <dt>PREMIUM_DOMAIN</dt> <dd> <p>Premium domain transfer is not supported.</p> </dd> </dl>",
       "enum":[
         "TRANSFERABLE",
         "UNTRANSFERABLE",
         "DONT_KNOW",
         "DOMAIN_IN_OWN_ACCOUNT",
         "DOMAIN_IN_ANOTHER_ACCOUNT",
-        "PREMIUM_DOMAIN"
+        "PREMIUM_DOMAIN",
+        "PENDING"
       ]
     },
     "UnsupportedTLD":{
@@ -2615,7 +2703,7 @@
         },
         "Consent":{
           "shape":"Consent",
-          "documentation":"<p> Customer's consent for the owner change request. Required if the domain is not free (consent price is more than $0.00).</p>"
+          "documentation":"<p> The maximum amount that you agree to pay for the owner change. Required if the domain is not free (consent price is more than USD $0.00).</p>"
         },
         "BillingContact":{
           "shape":"ContactDetail",

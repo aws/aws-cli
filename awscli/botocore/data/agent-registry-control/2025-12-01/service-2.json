@@ -682,7 +682,7 @@
         },
         "customMetadata":{
           "shape":"CustomMetadataDocument",
-          "documentation":"<p>The custom metadata to attach to the registry record. Each key must match a property defined in the registry's custom metadata schema. Values can be strings (maximum 128 characters) or native JSON booleans (<code>true</code> or <code>false</code>). Values are validated against the schema at creation time.</p>"
+          "documentation":"<p>The custom metadata for the record. Values are strings or JSON booleans.</p>"
         },
         "tags":{
           "shape":"TagsMap",
@@ -869,19 +869,19 @@
       "members":{
         "defaultSchema":{
           "shape":"CustomMetadataSchemaDefinition",
-          "documentation":"<p>The default JSON Schema that applies to record types without a specific override. Supported property types are <code>string</code>, <code>string</code> with an <code>enum</code> constraint, <code>string</code> with a <code>uri</code> format, and <code>boolean</code>.</p>"
+          "documentation":"<p>A JSON Schema with the common attributes: fields that records of every record type can carry.</p>"
         },
         "recordTypeSchemaOverrides":{
           "shape":"RecordTypeSchemaOverrideList",
-          "documentation":"<p>A list of per-record-type schema overrides. When a record's type matches an override, that override's schema is used instead of the default schema for validation. If you don't specify an override for a record type, the default schema applies. If no default schema exists, custom metadata on records of that type is rejected.</p>"
+          "documentation":"<p>The fields for individual record types. Records of a record type can carry the common attributes defined in <code>defaultSchema</code> plus that record type's fields.</p>"
         }
       },
-      "documentation":"<p>Configuration that defines a typed metadata schema for a registry. Specify at least one of a default schema or per-record-type schema overrides. You can provide both.</p>",
+      "documentation":"<p>The custom metadata fields that records in the registry can carry. <code>defaultSchema</code> defines the common attributes for every record type, and <code>recordTypeSchemaOverrides</code> adds fields for individual record types.</p>",
       "sensitive":true
     },
     "CustomMetadataSchemaDefinition":{
       "type":"string",
-      "max":10240,
+      "max":16384,
       "min":1,
       "sensitive":true
     },
@@ -1669,19 +1669,19 @@
       "members":{
         "recordType":{
           "shape":"RecordType",
-          "documentation":"<p>The record type that this schema override applies to.</p>"
+          "documentation":"<p>The record type these fields apply to.</p>"
         },
         "schema":{
           "shape":"CustomMetadataSchemaDefinition",
-          "documentation":"<p>The JSON Schema for the specified record type. Must follow the same structural rules as the default schema.</p>"
+          "documentation":"<p>A JSON Schema with the fields for this record type.</p>"
         }
       },
-      "documentation":"<p>A schema override for a specific record type within a custom metadata schema configuration.</p>"
+      "documentation":"<p>The custom metadata fields for one record type, in addition to the common attributes defined in <code>defaultSchema</code>.</p>"
     },
     "RecordTypeSchemaOverrideList":{
       "type":"list",
       "member":{"shape":"RecordTypeSchemaOverride"},
-      "max":5,
+      "max":10,
       "min":0
     },
     "RegistryArn":{
@@ -2584,7 +2584,7 @@
         },
         "customMetadataSchemaConfiguration":{
           "shape":"UpdatedCustomMetadataSchemaConfiguration",
-          "documentation":"<p>Updated custom metadata schema configuration for the registry. Omit to leave the existing schema unchanged. Schema evolution is additive only: you can add properties and enum values, but you cannot remove properties, change property types or formats, add or remove enum constraints, or remove record type overrides.</p>"
+          "documentation":"<p>The new custom metadata schema configuration, which replaces the current one. You can add fields and allowed values, but you can't remove a field or an allowed value, or change a field's type.</p>"
         },
         "autoDetectionConfiguration":{
           "shape":"UpdatedAutoDetectionConfiguration",

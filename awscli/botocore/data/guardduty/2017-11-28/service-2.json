@@ -4779,6 +4779,12 @@
       "max":50000,
       "min":0
     },
+    "DetectionRuleAgentVersion":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"[0-9]+(\\.[0-9]+){1,3}"
+    },
     "DetectionRuleArn":{
       "type":"string",
       "max":1024,
@@ -4795,12 +4801,48 @@
     },
     "DetectionRuleDataSource":{
       "type":"string",
-      "enum":["CloudTrailManagementEvent"]
+      "enum":[
+        "CloudTrailManagementEvent",
+        "RuntimeMonitoring"
+      ]
     },
     "DetectionRuleDescription":{
       "type":"string",
       "max":1024,
       "min":1
+    },
+    "DetectionRuleEc2Requirements":{
+      "type":"structure",
+      "members":{
+        "MinAgentVersion":{
+          "shape":"DetectionRuleAgentVersion",
+          "documentation":"<p>The minimum GuardDuty agent version required to run the rule on Amazon EC2.</p>",
+          "locationName":"minAgentVersion"
+        }
+      },
+      "documentation":"<p>The requirements for running a Runtime Monitoring custom detection rule on Amazon EC2.</p>"
+    },
+    "DetectionRuleEcsFargateRequirements":{
+      "type":"structure",
+      "members":{
+        "MinAgentVersion":{
+          "shape":"DetectionRuleAgentVersion",
+          "documentation":"<p>The minimum GuardDuty agent version required to run the rule on Amazon ECS with the Fargate launch type.</p>",
+          "locationName":"minAgentVersion"
+        }
+      },
+      "documentation":"<p>The requirements for running a Runtime Monitoring custom detection rule on Amazon ECS with the Fargate launch type.</p>"
+    },
+    "DetectionRuleEksRequirements":{
+      "type":"structure",
+      "members":{
+        "MinAgentVersion":{
+          "shape":"DetectionRuleAgentVersion",
+          "documentation":"<p>The minimum GuardDuty agent version required to run the rule on Amazon EKS.</p>",
+          "locationName":"minAgentVersion"
+        }
+      },
+      "documentation":"<p>The requirements for running a Runtime Monitoring custom detection rule on Amazon EKS.</p>"
     },
     "DetectionRuleFilter":{
       "type":"structure",
@@ -4969,6 +5011,38 @@
     "DetectionRuleOrgConfigurationSummaryList":{
       "type":"list",
       "member":{"shape":"DetectionRuleOrgConfigurationSummary"}
+    },
+    "DetectionRuleRuntimeMonitoringDetails":{
+      "type":"structure",
+      "members":{
+        "Platforms":{
+          "shape":"DetectionRuleRuntimePlatforms",
+          "documentation":"<p>The platforms on which the rule can run. The presence of a platform member indicates that the rule is supported on that platform; the absence of a member indicates that the rule cannot run on that platform at any agent version.</p>",
+          "locationName":"platforms"
+        }
+      },
+      "documentation":"<p>Contains Runtime Monitoring-specific details for a custom detection rule.</p>"
+    },
+    "DetectionRuleRuntimePlatforms":{
+      "type":"structure",
+      "members":{
+        "Eks":{
+          "shape":"DetectionRuleEksRequirements",
+          "documentation":"<p>The requirements for running the rule on Amazon EKS.</p>",
+          "locationName":"eks"
+        },
+        "Ec2":{
+          "shape":"DetectionRuleEc2Requirements",
+          "documentation":"<p>The requirements for running the rule on Amazon EC2.</p>",
+          "locationName":"ec2"
+        },
+        "EcsFargate":{
+          "shape":"DetectionRuleEcsFargateRequirements",
+          "documentation":"<p>The requirements for running the rule on Amazon ECS with the Fargate launch type.</p>",
+          "locationName":"ecsFargate"
+        }
+      },
+      "documentation":"<p>The platforms on which a Runtime Monitoring custom detection rule can run. A member's presence is the support statement: when present, the rule runs on that platform and <code>minAgentVersion</code> is the minimum GuardDuty agent version required there. When absent, the rule cannot run on that platform at any agent version.</p>"
     },
     "DetectionRuleServiceName":{
       "type":"string",
@@ -6051,6 +6125,11 @@
           "shape":"String",
           "documentation":"<p>Amazon Resource Name (ARN) associated with the attack sequence finding.</p>",
           "locationName":"associatedAttackSequenceArn"
+        },
+        "CustomDetectionRuleName":{
+          "shape":"String",
+          "documentation":"<p>The name of the custom detection rule that generated this finding.</p>",
+          "locationName":"customDetectionRuleName"
         }
       },
       "documentation":"<p>Contains information about the finding that is generated when abnormal or suspicious activity is detected.</p>"
@@ -11638,6 +11717,11 @@
           "shape":"RuleSchema",
           "documentation":"<p>The schema version used by the rule definition.</p>",
           "locationName":"schema"
+        },
+        "RuntimeMonitoringDetails":{
+          "shape":"DetectionRuleRuntimeMonitoringDetails",
+          "documentation":"<p>Runtime Monitoring-specific details for the rule, including the platforms on which the rule can run and the minimum GuardDuty agent version required on each.</p>",
+          "locationName":"runtimeMonitoringDetails"
         },
         "CreatedAt":{
           "shape":"Timestamp",

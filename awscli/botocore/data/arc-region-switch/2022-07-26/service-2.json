@@ -1804,11 +1804,11 @@
         },
         "behavior":{
           "shape":"GlobalAuroraDefaultBehavior",
-          "documentation":"<p>The behavior for a global database, that is, only allow switchover or also allow failover.</p>"
+          "documentation":"<p>The default behavior for the Aurora global database execution block. Valid values:</p> <ul> <li> <p> <code>switchoverOnly</code> - Calls <code>SwitchoverGlobalCluster</code> for a zero-data-loss switchover during graceful execution.</p> </li> <li> <p> <code>failover</code> - Calls <code>FailoverGlobalCluster</code> with <code>AllowDataLoss</code> set to <code>true</code>. This operation might cause data loss, including during graceful execution.</p> </li> </ul>"
         },
         "ungraceful":{
           "shape":"GlobalAuroraUngraceful",
-          "documentation":"<p>The settings for ungraceful execution.</p>"
+          "documentation":"<p>The behavior to use when the plan runs in ungraceful mode. If you omit this value, Region switch uses the value of <code>behavior</code>.</p>"
         },
         "globalClusterIdentifier":{
           "shape":"GlobalClusterIdentifier",
@@ -1838,10 +1838,10 @@
       "members":{
         "ungraceful":{
           "shape":"GlobalAuroraUngracefulBehavior",
-          "documentation":"<p>The settings for ungraceful execution.</p>"
+          "documentation":"<p>The ungraceful behavior. The only valid value is <code>failover</code>, which calls <code>FailoverGlobalCluster</code> with <code>AllowDataLoss</code> set to <code>true</code> and might cause data loss.</p>"
         }
       },
-      "documentation":"<p>Configuration for handling failures when performing operations on Aurora global databases.</p>"
+      "documentation":"<p>Configuration for an Aurora global database execution block in ungraceful mode.</p>"
     },
     "GlobalAuroraUngracefulBehavior":{
       "type":"string",
@@ -2004,6 +2004,12 @@
       "max":2,
       "min":1
     },
+    "LambdaPayload":{
+      "type":"string",
+      "max":786432,
+      "min":1,
+      "sensitive":true
+    },
     "LambdaUngraceful":{
       "type":"structure",
       "members":{
@@ -2032,6 +2038,10 @@
         "arn":{
           "shape":"LambdaArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the Lambda function.</p>"
+        },
+        "payload":{
+          "shape":"LambdaPayload",
+          "documentation":"<p>The JSON payload to send to the Lambda function invocation. If you don't specify a payload, Region switch invokes the function with only the execution metadata.</p> <p>If you provide a JSON object, Region switch merges execution metadata keys (<code>InvokedBy</code>, <code>PlanArn</code>, <code>ExecutionId</code>, <code>StepName</code>) into the top level. If one of your keys has the same name as a metadata key, your key takes precedence.</p> <p>If you provide any other JSON type (string, number, boolean, or array), Region switch forwards it to the Lambda function unchanged, without adding metadata.</p>"
         }
       },
       "documentation":"<p>Configuration for Amazon Web Services Lambda functions used in a Region switch plan.</p>"

@@ -16397,6 +16397,14 @@
         "redirect-to-https"
       ]
     },
+    "VpcIpAddressType":{
+      "type":"string",
+      "documentation":"<p>IP address type supported for VPC Origins. IPv6-only is not supported for VPC Origins.</p>",
+      "enum":[
+        "ipv4",
+        "dualstack"
+      ]
+    },
     "VpcOrigin":{
       "type":"structure",
       "required":[
@@ -16492,7 +16500,11 @@
           "shape":"OriginProtocolPolicy",
           "documentation":"<p>The origin protocol policy for the CloudFront VPC origin endpoint configuration.</p>"
         },
-        "OriginSslProtocols":{"shape":"OriginSslProtocols"}
+        "OriginSslProtocols":{"shape":"OriginSslProtocols"},
+        "IpAddressType":{
+          "shape":"VpcIpAddressType",
+          "documentation":"<p>The IP address type of the CloudFront VPC origin endpoint configuration. Valid values are <code>ipv4</code> and <code>dualstack</code>. IPv6-only is not supported for VPC origins.</p>"
+        }
       },
       "documentation":"<p>An Amazon CloudFront VPC origin endpoint configuration.</p>"
     },
@@ -16575,6 +16587,10 @@
         "OriginEndpointArn":{
           "shape":"string",
           "documentation":"<p>The VPC origin summary origin endpoint ARN.</p>"
+        },
+        "IpAddressType":{
+          "shape":"VpcIpAddressType",
+          "documentation":"<p>The IP address type of the CloudFront VPC origin. Valid values are <code>ipv4</code> and <code>dualstack</code>. IPv6-only is not supported for VPC origins.</p>"
         }
       },
       "documentation":"<p>A summary of the CloudFront VPC origin.</p>"

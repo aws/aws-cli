@@ -16,43 +16,69 @@ from botocore.model import OperationModel
 from awscli.clidriver import create_clidriver
 
 
+def _walk_command_tree(command_path, command_obj):
+    """Yield ``(command_path, help_command)`` for a command and every
+    descendant.
+
+    Services expose operations two levels deep, but customizations inject
+    commands at other depths (for example ``aws <service> wait <waiter>``),
+    and not every command is backed by an ``OperationModel``.  We recurse
+    the full command tree so that every command's options are audited.
+    """
+    help_command = command_obj.create_help_command()
+    yield command_path, help_command
+    for sub_name, sub_command in getattr(
+        help_command, 'command_table', {}
+    ).items():
+        # ``help`` is a synthetic command available in every command table.
+        if sub_name == 'help':
+            continue
+        yield from _walk_command_tree(
+            f'{command_path}.{sub_name}', sub_command
+        )
+
+
 def _generate_command_tests():
     driver = create_clidriver()
     help_command = driver.create_help_command()
     top_level_params = set(driver.create_help_command().arg_table.keys())
     for command_name, command_obj in list(help_command.command_table.items()):
-        sub_help = command_obj.create_help_command()
-        if hasattr(sub_help, 'command_table'):
-            for sub_name, sub_command in sub_help.command_table.items():
-                op_help = sub_command.create_help_command()
-                model = op_help.obj
-                arg_table = op_help.arg_table
-                if not isinstance(model, OperationModel):
-                    continue
-                yield (
-                    command_name,
-                    sub_name,
-                    model.service_model.service_name,
-                    model.name,
-                    arg_table,
-                    top_level_params
-                )
+        if command_name == 'help':
+            continue
+        for command_path, sub_help in _walk_command_tree(
+            command_name, command_obj
+        ):
+            arg_table = getattr(sub_help, 'arg_table', None)
+            if not arg_table:
+                continue
+            model = getattr(sub_help, 'obj', None)
+            if isinstance(model, OperationModel):
+                service_name = model.service_model.service_name
+                operation_name = model.name
+            else:
+                service_name = command_name
+                operation_name = None
+            yield (
+                command_path,
+                service_name,
+                operation_name,
+                arg_table,
+                top_level_params,
+            )
 
 
 @pytest.mark.validates_models
 @pytest.mark.parametrize(
-    "command_name, sub_name, service_name, "
-    "operation_name, arg_table, builtins",
-    _generate_command_tests()
+    "command_path, service_name, operation_name, arg_table, builtins",
+    _generate_command_tests(),
 )
 def test_no_shadowed_builtins(
-        command_name,
-        sub_name,
-        service_name,
-        operation_name,
-        arg_table,
-        builtins,
-        record_property
+    command_path,
+    service_name,
+    operation_name,
+    arg_table,
+    builtins,
+    record_property,
 ):
     """Verify no command params are shadowed or prefixed by the built-in param.
 
@@ -71,8 +97,15 @@ def test_no_shadowed_builtins(
     for instance.
 
     In order to ensure this doesn't happen, this test will go
-    through every command table and ensure we're not shadowing
-    any builtins.
+    through every command in the command tree, at every depth and
+    including customizations, and ensure we're not shadowing any
+    builtins.  Because each command's options are checked against
+    the current builtins, this also catches a newly added builtin
+    that would shadow an existing command option.
+
+    Note that a builtin which is a prefix of a longer command option
+    (e.g. ``--region`` and ``--region-name``) is not flagged: the
+    command option is still reachable by its full name.
 
     Also, rather than being a test generator, we're going to just
     aggregate all the failures in one pass and surface them as
@@ -85,13 +118,11 @@ def test_no_shadowed_builtins(
             # Then we are shadowing or prefixing a top level argument
             errors.append(
                 'Shadowing/Prefixing a top level option: '
-                f'{command_name}.{sub_name}.{arg_name}'
+                f'{command_path}.{arg_name}'
             )
     if errors:
         # Store the service and operation in
         # PyTest custom properties
-        record_property(
-            'aws_service', service_name
-        )
+        record_property('aws_service', service_name)
         record_property('aws_operation', operation_name)
         raise AssertionError('\n' + '\n'.join(errors))

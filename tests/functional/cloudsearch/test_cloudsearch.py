@@ -51,6 +51,21 @@ class TestCloudSearchDefineIndexField(BaseAWSCommandParamsTest):
                                           'SourceField': 'fieldname123'}}}
         self.assert_params_for_cmd(cmdline, result)
 
+    def test_array_index_field(self):
+        cmdline = self.prefix
+        cmdline += ' --domain-name abc123'
+        cmdline += ' --name foo'
+        cmdline += ' --type text-array'
+        cmdline += ' --search-enabled false'
+        cmdline += ' --source-field fieldname123'
+        result = {
+            'DomainName': 'abc123',
+            'IndexField': {'IndexFieldName': 'foo',
+                           'IndexFieldType': 'text-array',
+                           'TextArrayOptions': {'SearchEnabled': False,
+                                                'SourceFields': 'fieldname123'}}}
+        self.assert_params_for_cmd(cmdline, result)
+
     def test_latlon(self):
         cmdline = self.prefix
         cmdline += ' --domain-name abc123'

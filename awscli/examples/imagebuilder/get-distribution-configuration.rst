@@ -1,52 +1,36 @@
 **To get the details of a distribution configuration**
 
-The following ``get-distribution-configuration`` example displays the details of a distribution configuration by specifying its ARN. ::
+The following ``get-distribution-configuration`` example retrieves a distribution configuration that distributes the output AMI to two Regions. ::
 
     aws imagebuilder get-distribution-configuration \
-        --distribution-configuration-arn arn:aws:imagebuilder:us-west-2:123456789012:distribution-configuration/myexampledistribution
+        --distribution-configuration-arn arn:aws:imagebuilder:us-west-2:123456789012:distribution-configuration/my-example-distribution
 
 Output::
 
     {
         "requestId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
         "distributionConfiguration": {
-            "arn": "arn:aws:imagebuilder:us-west-2:123456789012:distribution-configuration/myexampledistribution",
-            "name": "MyExampleDistribution",
-            "description": "Copies AMI to eu-west-1 and exports to S3",
+            "arn": "arn:aws:imagebuilder:us-west-2:123456789012:distribution-configuration/my-example-distribution",
+            "name": "my-example-distribution",
+            "description": "Copies the output AMI to a second Region",
             "distributions": [
                 {
                     "region": "us-west-2",
                     "amiDistributionConfiguration": {
-                        "name": "Name {{imagebuilder:buildDate}}",
-                        "description": "An example image name with parameter references",
-                        "amiTags": {
-                            "KeyName": "{{ssm:parameter_name}}"
-                        },
-                        "launchPermission": {
-                            "userIds": [
-                                "123456789012"
-                            ]
-                        }
+                        "name": "my-example-image-{{ imagebuilder:buildDate }}"
                     }
                 },
                 {
-                    "region": "eu-west-1",
+                    "region": "us-east-1",
                     "amiDistributionConfiguration": {
-                        "name": "My {{imagebuilder:buildVersion}} image {{imagebuilder:buildDate}}",
-                        "amiTags": {
-                            "KeyName": "Value"
-                        },
-                        "launchPermission": {
-                            "userIds": [
-                                "123456789012"
-                            ]
-                        }
+                        "name": "my-example-image-{{ imagebuilder:buildDate }}"
                     }
                 }
             ],
-            "dateCreated": "2020-02-19T18:40:10.529Z",
+            "timeoutMinutes": 720,
+            "dateCreated": "2026-09-09T19:37:37.231Z",
             "tags": {}
         }
     }
 
-For more information, see `Setting Up and Managing an EC2 Image Builder Image Pipeline Using the AWS CLI <https://docs.aws.amazon.com/imagebuilder/latest/userguide/managing-image-builder-cli.html>`__ in the *EC2 Image Builder Users Guide*.
+For more information, see `List and view distribution configuration detail <https://docs.aws.amazon.com/imagebuilder/latest/userguide/distribution-settings-detail.html>`__ in the *EC2 Image Builder User Guide*.

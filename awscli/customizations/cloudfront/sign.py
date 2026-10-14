@@ -227,7 +227,10 @@ class SignCommand(BaseSignCommand):
     def _get_policy_resource(self, args):
         _validate_resource(args.url, 'url', allow_wildcards=False)
         signing_params = _SIGNING_QUERY_PARAMS.intersection(
-            name for name, _ in parse_qsl(urlsplit(args.url).query)
+            name
+            for name, _ in parse_qsl(
+                urlsplit(args.url).query, keep_blank_values=True
+            )
         )
         if signing_params:
             raise ParamValidationError(

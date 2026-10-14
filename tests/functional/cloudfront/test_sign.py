@@ -140,7 +140,7 @@ class TestSign(BaseAWSCommandParamsTest):
             + self.private_key_file
             + ' --date-less-than 2016-1-1'
         )
-        
+
         crt_error = RuntimeError(
             '7174 (AWS_ERROR_CAL_UNSUPPORTED_ALGORITHM): The specified '
             'algorithm is unsupported on this platform.'
@@ -605,6 +605,9 @@ class TestSignInputValidation(BaseInputValidationTest):
             'http://example.com/hi?Key-Pair-Id=K1',
             'http://example.com/hi?Policy=x',
             'http://example.com/hi?Hash-Algorithm=SHA1',
+            # Blank values must not hide a signing parameter.
+            'http://example.com/hi?Signature=',
+            'http://example.com/hi?Expires',
         ]:
             with self.subTest(url=url):
                 self.assert_sign_error(

@@ -36,6 +36,12 @@ _CACHE_DIR = Path.home() / '.aws' / 'cli' / 'cache'
 _DATABASE_FILENAME = 'session.db'
 _SESSION_LENGTH_SECONDS = 60 * 30
 _SESSION_ID_LENGTH = 12
+# How stale the stored timestamp must be before it is written. Refreshing on every
+# invocation takes a write lock each time, which can cause lock contention.
+_TIMESTAMP_REFRESH_SECONDS = 60
+# How long to wait for a database lock before giving up. Session data is not
+# critical, so it's better to skip it than to make the user wait
+_BUSY_TIMEOUT_SECONDS = 0.1
 # Set to "true" to skip collecting session ids entirely. Opting out avoids
 # opening the session database, whose file locking can be expensive when the
 # database lives on a network filesystem.
@@ -90,6 +96,7 @@ class CLISessionDatabaseConnection:
             self._cache_dir / _DATABASE_FILENAME,
             check_same_thread=False,
             isolation_level=None,
+            timeout=_BUSY_TIMEOUT_SECONDS,
         )
         self._ensure_database_setup()
 
@@ -196,6 +203,12 @@ class CLISessionDatabaseReader:
 
 
 class CLISessionDatabaseSweeper:
+    _CHECK_EXPIRED = """
+        SELECT 1
+        FROM session
+        WHERE timestamp < ?
+        LIMIT 1
+    """
     _DELETE_RECORDS = """
         DELETE FROM session
         WHERE timestamp < ?
@@ -206,6 +219,17 @@ class CLISessionDatabaseSweeper:
 
     def sweep(self, timestamp):
         try:
+            # A DELETE takes a write lock even when it matches no rows, which
+            # is the common case since expired records are rare. Reads don't
+            # take a write lock, so check for expired records first and only
+            # issue the DELETE when there's something to remove. This matters
+            # on network filesystems (e.g. NFS/EFS) where each lock is a
+            # network round trip.
+            has_expired = self._connection.execute(
+                self._CHECK_EXPIRED, (timestamp,)
+            ).fetchone()
+            if has_expired is None:
+                return
             self._connection.execute(self._DELETE_RECORDS, (timestamp,))
         except Exception:
             # This is just a background cleanup task. No need to
@@ -254,14 +278,23 @@ class CLISessionOrchestrator:
     def session_id(self):
         if (cached_data := self._reader.read(self.cache_key)) is not None:
             # Cache hit, but session id is expired. Generate new id and update.
-            if (
+            is_expired = (
                 cached_data.timestamp + _SESSION_LENGTH_SECONDS
                 < self._timestamp
-            ):
+            )
+            if is_expired:
                 cached_data.session_id = self._session_id
-            # Always update the timestamp to last used.
-            cached_data.timestamp = self._timestamp
-            self._writer.write(cached_data)
+            # Update the timestamp to last used, but only if the stored value
+            # is older than _TIMESTAMP_REFRESH_SECONDS. A session can expire
+            # up to this many seconds earlier than its last actual use, but
+            # avoids a write on every invocation if close together.
+            if (
+                is_expired
+                or self._timestamp - cached_data.timestamp
+                > _TIMESTAMP_REFRESH_SECONDS
+            ):
+                cached_data.timestamp = self._timestamp
+                self._writer.write(cached_data)
             return cached_data.session_id
         # Cache miss, generate and write new record.
         session_id = self._session_id

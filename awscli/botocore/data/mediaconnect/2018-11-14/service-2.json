@@ -2230,6 +2230,11 @@
           "shape":"NdiOutputTimecodeSource",
           "documentation":"<p>Controls how MediaConnect generates timecodes for NDI output frames. If you don't specify this field, MediaConnect uses <code>EMBEDDED_TIMECODE</code>.</p> <ul> <li> <p> <code>EMBEDDED_TIMECODE</code> (default) - Preserves timecodes from the input transport stream. The timecodes must be embedded in the video stream as SEI timing messages. If no embedded timecode is detected, MediaConnect uses the UTC system time instead.</p> </li> <li> <p> <code>UTC_SYSTEM_TIME</code> - Generates timecodes based on the system clock time when each frame is sent.</p> </li> </ul>",
           "locationName":"ndiOutputTimecodeSource"
+        },
+        "NdiAudioReferenceLevel":{
+          "shape":"NdiAudioReferenceLevel",
+          "documentation":"<p>The audio reference level of the NDI receiver, in decibels relative to full scale (dBFS). Common values are <code>-20</code> (NDI and SMPTE) and <code>-18</code> (EBU). If you don't specify this field, MediaConnect uses <code>-20</code>.</p>",
+          "locationName":"ndiAudioReferenceLevel"
         }
       },
       "documentation":"<p> A request to add an output to a flow.</p>"
@@ -2784,6 +2789,27 @@
       "min":0,
       "pattern":"[!-~]+"
     },
+    "ColorInformation":{
+      "type":"structure",
+      "members":{
+        "Colorimetry":{
+          "shape":"VideoColorimetry",
+          "documentation":"<p>The color primaries that the video stream uses (for example, <code>BT709</code> or <code>BT2020</code>).</p>",
+          "locationName":"colorimetry"
+        },
+        "TransferCharacteristics":{
+          "shape":"VideoTransferCharacteristics",
+          "documentation":"<p>The transfer characteristics that the video stream uses (for example, <code>BT601</code>, <code>BT709</code>, <code>BT2100_PQ</code>, or <code>BT2100_HLG</code>).</p>",
+          "locationName":"transferCharacteristics"
+        },
+        "MatrixCoefficients":{
+          "shape":"VideoMatrixCoefficients",
+          "documentation":"<p>The YCbCr matrix coefficients that the video stream uses (for example, <code>BT709</code> or <code>BT2020_NCL</code>).</p>",
+          "locationName":"matrixCoefficients"
+        }
+      },
+      "documentation":"<p>The color signaling of the video stream.</p>"
+    },
     "Colorimetry":{
       "type":"string",
       "enum":[
@@ -3108,7 +3134,7 @@
         },
         "Tier":{
           "shape":"RouterInputTier",
-          "documentation":"<p>The tier level for the router input.</p>",
+          "documentation":"<p>The tier level for the router input. The tier sets the maximum bitrate, in Mbps, for the router input. Valid values include the following:</p> <ul> <li> <p> <code>INPUT_20</code> – 20 Mbps</p> </li> <li> <p> <code>INPUT_50</code> – 50 Mbps</p> </li> <li> <p> <code>INPUT_100</code> – 100 Mbps</p> </li> <li> <p> <code>INPUT_250</code> – 250 Mbps</p> </li> <li> <p> <code>INPUT_500</code> – 500 Mbps</p> </li> </ul> <p>The 250 Mbps and 500 Mbps tiers are high-bitrate tiers that support TR-07 (JPEG XS) workflows.</p>",
           "locationName":"tier"
         },
         "RegionName":{
@@ -3249,7 +3275,7 @@
         },
         "Tier":{
           "shape":"RouterOutputTier",
-          "documentation":"<p>The tier level for the router output.</p>",
+          "documentation":"<p>The tier level for the router output. The tier sets the maximum bitrate, in Mbps, for the router output. Valid values include the following:</p> <ul> <li> <p> <code>OUTPUT_20</code> – 20 Mbps</p> </li> <li> <p> <code>OUTPUT_50</code> – 50 Mbps</p> </li> <li> <p> <code>OUTPUT_100</code> – 100 Mbps</p> </li> <li> <p> <code>OUTPUT_250</code> – 250 Mbps</p> </li> <li> <p> <code>OUTPUT_500</code> – 500 Mbps</p> </li> </ul> <p>The 250 Mbps and 500 Mbps tiers are high-bitrate tiers that support TR-07 (JPEG XS) workflows.</p>",
           "locationName":"tier"
         },
         "RegionName":{
@@ -6019,7 +6045,7 @@
           "locationName":"sourceTransitDecryption"
         }
       },
-      "documentation":"<p>Configuration settings for connecting a router input to a flow output.</p>"
+      "documentation":"<p>Configuration settings for connecting a router input to a flow output.</p> <p>To connect the router input to the flow output, provide both <code>flowArn</code> and <code>flowOutputArn</code>. To disconnect it, call the update operation and omit both fields while keeping this configuration object.</p> <note> <p>You can't change <code>sourceTransitDecryption</code> while the router input is connected to a flow output. To change it, first disconnect the router input, then update the decryption.</p> </note>"
     },
     "MediaConnectFlowRouterInputStreamDetails":{
       "type":"structure",
@@ -6046,7 +6072,7 @@
           "locationName":"destinationTransitEncryption"
         }
       },
-      "documentation":"<p>Configuration settings for connecting a router output to a MediaConnect flow source.</p>"
+      "documentation":"<p>Configuration settings for connecting a router output to a MediaConnect flow source.</p> <p>To connect the router output to the flow source, provide both <code>flowArn</code> and <code>flowSourceArn</code>. To disconnect it, call the update operation and omit both fields while keeping this configuration object.</p> <note> <p>You can't change <code>destinationTransitEncryption</code> while the router output is connected to a flow source. To change it, first disconnect the router output, then update the encryption.</p> </note>"
     },
     "MediaConnectFlowRouterOutputStreamDetails":{
       "type":"structure",
@@ -6088,7 +6114,7 @@
           "locationName":"sourceTransitDecryption"
         }
       },
-      "documentation":"<p>Configuration settings for connecting a router input to a MediaLive channel output.</p>"
+      "documentation":"<p>Configuration settings for connecting a router input to a MediaLive channel output.</p> <p>To connect the router input to the MediaLive channel output, provide all three of <code>mediaLiveChannelArn</code>, <code>mediaLivePipelineId</code>, and <code>mediaLiveChannelOutputName</code>. To disconnect it, call the update operation and omit all three fields while keeping this configuration object.</p> <note> <p>You can't change <code>sourceTransitDecryption</code> while the router input is connected to a MediaLive channel output. To change it, first disconnect the router input, then update the decryption.</p> </note>"
     },
     "MediaLiveChannelRouterInputStreamDetails":{
       "type":"structure",
@@ -6126,7 +6152,7 @@
           "locationName":"destinationTransitEncryption"
         }
       },
-      "documentation":"<p>Configuration settings for connecting a router output to a MediaLive input.</p>"
+      "documentation":"<p>Configuration settings for connecting a router output to a MediaLive input.</p> <p>To connect the router output to the MediaLive input, provide both <code>mediaLiveInputArn</code> and <code>mediaLivePipelineId</code>. To disconnect it, call the update operation and omit both fields while keeping this configuration object.</p> <note> <p>You can't change <code>destinationTransitEncryption</code> while the router output is connected to a MediaLive input. To change it, first disconnect the router output, then update the encryption.</p> </note>"
     },
     "MediaLiveInputRouterOutputStreamDetails":{
       "type":"structure",
@@ -6531,6 +6557,12 @@
       },
       "documentation":"<p> The settings related to the multicast source. </p>"
     },
+    "NdiAudioReferenceLevel":{
+      "type":"integer",
+      "box":true,
+      "max":0,
+      "min":-40
+    },
     "NdiConfig":{
       "type":"structure",
       "members":{
@@ -6617,6 +6649,11 @@
           "documentation":"<p> The method used to display video frames. Used when the <code>streamType</code> is <code>Video</code>.</p>",
           "locationName":"scanMode"
         },
+        "Color":{
+          "shape":"ColorInformation",
+          "documentation":"<p> The color signaling of the video stream. Used when the <code>streamType</code> is <code>Video</code>. </p>",
+          "locationName":"color"
+        },
         "FrameResolution":{
           "shape":"FrameResolution",
           "documentation":"<p> The width and height dimensions of the video frame in pixels. Used when the <code>streamType</code> is <code>Video</code>. </p>",
@@ -6697,9 +6734,14 @@
           "shape":"String",
           "documentation":"<p> The exact name of an existing NDI sender that's registered with your discovery server. If included, the format of this name must be <code>MACHINENAME (ProgramName)</code>. </p>",
           "locationName":"sourceName"
+        },
+        "AudioReferenceLevel":{
+          "shape":"NdiAudioReferenceLevel",
+          "documentation":"<p>The audio reference level of the NDI sender, in decibels relative to full scale (dBFS). Common values are <code>-20</code> (NDI and SMPTE) and <code>-18</code> (EBU). If you don't specify this field, MediaConnect uses <code>-20</code>.</p>",
+          "locationName":"audioReferenceLevel"
         }
       },
-      "documentation":"<p> The settings for the NDI® source. This includes the exact name of the upstream NDI sender that you want to connect to your source. </p>"
+      "documentation":"<p> The settings for the NDI® source. This includes the exact name of the upstream NDI sender that you want to connect to your source. </p> <note> <p>When you update the NDI source, include only the members you want to change. MediaConnect leaves the members that you don't specify unchanged.</p> </note>"
     },
     "NdiState":{
       "type":"string",
@@ -7684,7 +7726,7 @@
         },
         "Tier":{
           "shape":"RouterInputTier",
-          "documentation":"<p>The tier level of the router input.</p>",
+          "documentation":"<p>The tier level for the router input. The tier sets the maximum bitrate, in Mbps, for the router input. Valid values include the following:</p> <ul> <li> <p> <code>INPUT_20</code> – 20 Mbps</p> </li> <li> <p> <code>INPUT_50</code> – 50 Mbps</p> </li> <li> <p> <code>INPUT_100</code> – 100 Mbps</p> </li> <li> <p> <code>INPUT_250</code> – 250 Mbps</p> </li> <li> <p> <code>INPUT_500</code> – 500 Mbps</p> </li> </ul> <p>The 250 Mbps and 500 Mbps tiers are high-bitrate tiers that support TR-07 (JPEG XS) workflows.</p>",
           "locationName":"tier"
         },
         "RoutingScope":{
@@ -8015,7 +8057,9 @@
       "enum":[
         "INPUT_100",
         "INPUT_50",
-        "INPUT_20"
+        "INPUT_20",
+        "INPUT_500",
+        "INPUT_250"
       ]
     },
     "RouterInputTransitEncryption":{
@@ -8322,7 +8366,7 @@
         },
         "Tier":{
           "shape":"RouterOutputTier",
-          "documentation":"<p>The tier level of the router output.</p>",
+          "documentation":"<p>The tier level for the router output. The tier sets the maximum bitrate, in Mbps, for the router output. Valid values include the following:</p> <ul> <li> <p> <code>OUTPUT_20</code> – 20 Mbps</p> </li> <li> <p> <code>OUTPUT_50</code> – 50 Mbps</p> </li> <li> <p> <code>OUTPUT_100</code> – 100 Mbps</p> </li> <li> <p> <code>OUTPUT_250</code> – 250 Mbps</p> </li> <li> <p> <code>OUTPUT_500</code> – 500 Mbps</p> </li> </ul> <p>The 250 Mbps and 500 Mbps tiers are high-bitrate tiers that support TR-07 (JPEG XS) workflows.</p>",
           "locationName":"tier"
         },
         "CreatedAt":{
@@ -8579,7 +8623,9 @@
       "enum":[
         "OUTPUT_100",
         "OUTPUT_50",
-        "OUTPUT_20"
+        "OUTPUT_20",
+        "OUTPUT_500",
+        "OUTPUT_250"
       ]
     },
     "RouterOutputType":{
@@ -9868,6 +9914,11 @@
           "shape":"NdiOutputTimecodeSource",
           "documentation":"<p>The timecode source for NDI output frames. For NDI outputs, this field is always present and defaults to <code>EMBEDDED_TIMECODE</code>.</p> <ul> <li> <p> <code>EMBEDDED_TIMECODE</code> - Preserves timecodes from the input transport stream. The timecodes must be embedded in the video stream as SEI timing messages. If no embedded timecode is detected, MediaConnect uses the UTC system time instead.</p> </li> <li> <p> <code>UTC_SYSTEM_TIME</code> - Generates timecodes based on the system clock time when each frame is sent.</p> </li> </ul>",
           "locationName":"ndiOutputTimecodeSource"
+        },
+        "NdiAudioReferenceLevel":{
+          "shape":"NdiAudioReferenceLevel",
+          "documentation":"<p>The audio reference level of the NDI receiver, in decibels relative to full scale (dBFS). Common values are <code>-20</code> (NDI and SMPTE) and <code>-18</code> (EBU). For NDI outputs, this field is always present and defaults to <code>-20</code>.</p>",
+          "locationName":"ndiAudioReferenceLevel"
         }
       },
       "documentation":"<p> Attributes related to the transport stream that are used in a source or output.</p>"
@@ -9880,6 +9931,11 @@
           "shape":"__listOfTransportStreamProgram",
           "documentation":"<p> The list of transport stream programs in the current flow's source.</p>",
           "locationName":"programs"
+        },
+        "TsId":{
+          "shape":"Integer",
+          "documentation":"<p>The transport stream ID (TSID) of the source, from the Program Association Table (PAT).</p>",
+          "locationName":"tsId"
         }
       },
       "documentation":"<p> The metadata of the transport stream in the current flow's source.</p>"
@@ -9900,6 +9956,11 @@
           "shape":"String",
           "documentation":"<p> The codec used by the stream.</p>",
           "locationName":"codec"
+        },
+        "Color":{
+          "shape":"ColorInformation",
+          "documentation":"<p>The color signaling of the video stream.</p>",
+          "locationName":"color"
         },
         "FrameRate":{
           "shape":"String",
@@ -10609,6 +10670,11 @@
           "shape":"NdiOutputTimecodeSource",
           "documentation":"<p>Controls how MediaConnect generates timecodes for NDI output frames. If you don't specify this field, MediaConnect leaves the value unchanged.</p> <ul> <li> <p> <code>EMBEDDED_TIMECODE</code> - Preserves timecodes from the input transport stream. The timecodes must be embedded in the video stream as SEI timing messages. If no embedded timecode is detected, MediaConnect uses the UTC system time instead.</p> </li> <li> <p> <code>UTC_SYSTEM_TIME</code> - Generates timecodes based on the system clock time when each frame is sent.</p> </li> </ul>",
           "locationName":"ndiOutputTimecodeSource"
+        },
+        "NdiAudioReferenceLevel":{
+          "shape":"NdiAudioReferenceLevel",
+          "documentation":"<p>The audio reference level of the NDI receiver, in decibels relative to full scale (dBFS). Common values are <code>-20</code> (NDI and SMPTE) and <code>-18</code> (EBU). If you don't specify this field, MediaConnect leaves the value unchanged.</p>",
+          "locationName":"ndiAudioReferenceLevel"
         }
       }
     },
@@ -10968,7 +11034,7 @@
         },
         "Tier":{
           "shape":"RouterInputTier",
-          "documentation":"<p>The updated tier level for the router input.</p>",
+          "documentation":"<p>The updated tier level for the router input. The tier sets the maximum bitrate, in Mbps, for the router input. Valid values include the following:</p> <ul> <li> <p> <code>INPUT_20</code> – 20 Mbps</p> </li> <li> <p> <code>INPUT_50</code> – 50 Mbps</p> </li> <li> <p> <code>INPUT_100</code> – 100 Mbps</p> </li> <li> <p> <code>INPUT_250</code> – 250 Mbps</p> </li> <li> <p> <code>INPUT_500</code> – 500 Mbps</p> </li> </ul> <p>The 250 Mbps and 500 Mbps tiers are high-bitrate tiers that support TR-07 (JPEG XS) workflows.</p>",
           "locationName":"tier"
         },
         "TransitEncryption":{
@@ -11075,7 +11141,7 @@
         },
         "Tier":{
           "shape":"RouterOutputTier",
-          "documentation":"<p>The updated tier level for the router output.</p>",
+          "documentation":"<p>The updated tier level for the router output. The tier sets the maximum bitrate, in Mbps, for the router output. Valid values include the following:</p> <ul> <li> <p> <code>OUTPUT_20</code> – 20 Mbps</p> </li> <li> <p> <code>OUTPUT_50</code> – 50 Mbps</p> </li> <li> <p> <code>OUTPUT_100</code> – 100 Mbps</p> </li> <li> <p> <code>OUTPUT_250</code> – 250 Mbps</p> </li> <li> <p> <code>OUTPUT_500</code> – 500 Mbps</p> </li> </ul> <p>The 250 Mbps and 500 Mbps tiers are high-bitrate tiers that support TR-07 (JPEG XS) workflows.</p>",
           "locationName":"tier"
         },
         "MaintenanceConfiguration":{
@@ -11106,6 +11172,40 @@
         }
       }
     },
+    "VideoColorimetry":{
+      "type":"string",
+      "enum":[
+        "BT709",
+        "BT470M",
+        "BT470BG",
+        "BT601",
+        "SMPTE240M",
+        "GENERIC_FILM",
+        "BT2020",
+        "SMPTE428",
+        "SMPTE431",
+        "SMPTE432"
+      ]
+    },
+    "VideoMatrixCoefficients":{
+      "type":"string",
+      "enum":[
+        "IDENTITY",
+        "BT709",
+        "FCC",
+        "BT470BG",
+        "BT601",
+        "SMPTE240M",
+        "YCGCO",
+        "BT2020_NCL",
+        "BT2020_CL",
+        "SMPTE2085",
+        "CHROMATICITY_DERIVED_NCL",
+        "CHROMATICITY_DERIVED_CL",
+        "BT2100_ICTCP",
+        "IPT_C2"
+      ]
+    },
     "VideoMonitoringSetting":{
       "type":"structure",
       "members":{
@@ -11121,6 +11221,27 @@
         }
       },
       "documentation":"<p>Specifies the configuration for video stream metrics monitoring.</p>"
+    },
+    "VideoTransferCharacteristics":{
+      "type":"string",
+      "enum":[
+        "BT709",
+        "BT470M",
+        "BT470BG",
+        "BT601",
+        "SMPTE240M",
+        "LINEAR",
+        "LOG100",
+        "LOG316",
+        "IEC61966_2_4",
+        "BT1361_ECG",
+        "IEC61966_2_1",
+        "BT2020_10",
+        "BT2020_12",
+        "BT2100_PQ",
+        "SMPTE428",
+        "BT2100_HLG"
+      ]
     },
     "VpcInterface":{
       "type":"structure",

@@ -3020,6 +3020,10 @@
         "AgentAccessConfig":{
           "shape":"AgentAccessConfig",
           "documentation":"<p>The configuration for agent access on the stack. If specified, agent access is enabled for the stack.</p>"
+        },
+        "StorageConnectorAuthentication":{
+          "shape":"StorageConnectorAuthentication",
+          "documentation":"<p>Specifies whether users' cloud storage authentication persists across streaming sessions. When you specify FORCE_REAUTHENTICATION, WorkSpaces Applications removes the stored authentication for the stack's OneDrive and Google Drive connectors when a user's session ends. The user links their cloud storage again on their next session. The default is REUSE_CREDENTIALS.</p>"
         }
       }
     },
@@ -5843,13 +5847,17 @@
         "AgentAccessConfig":{
           "shape":"AgentAccessConfig",
           "documentation":"<p>The agent access configuration of the stack, if agent access is enabled.</p>"
+        },
+        "StorageConnectorAuthentication":{
+          "shape":"StorageConnectorAuthentication",
+          "documentation":"<p>Indicates whether users' cloud storage authentication persists across streaming sessions. When this attribute is FORCE_REAUTHENTICATION, WorkSpaces Applications removes the stored authentication for the stack's OneDrive and Google Drive connectors when a user's session ends. The user links their cloud storage again on their next session. The default is REUSE_CREDENTIALS.</p>"
         }
       },
       "documentation":"<p>Describes a stack.</p>"
     },
     "StackAttribute":{
       "type":"string",
-      "documentation":"<p>The stack attributes to delete.</p> <ul> <li> <p>STORAGE_CONNECTORS</p> </li> <li> <p>STORAGE_CONNECTOR_HOMEFOLDERS</p> </li> <li> <p>STORAGE_CONNECTOR_GOOGLE_DRIVE</p> </li> <li> <p>STORAGE_CONNECTOR_ONE_DRIVE</p> </li> <li> <p>REDIRECT_URL</p> </li> <li> <p>FEEDBACK_URL</p> </li> <li> <p>THEME_NAME</p> </li> <li> <p>USER_SETTINGS</p> </li> <li> <p>EMBED_HOST_DOMAINS</p> </li> <li> <p>IAM_ROLE_ARN</p> </li> <li> <p>ACCESS_ENDPOINTS</p> </li> <li> <p>STREAMING_EXPERIENCE_SETTINGS</p> </li> <li> <p>AGENT_ACCESS_CONFIG</p> </li> </ul>",
+      "documentation":"<p>The stack attributes to delete.</p> <ul> <li> <p>STORAGE_CONNECTORS</p> </li> <li> <p>STORAGE_CONNECTOR_HOMEFOLDERS</p> </li> <li> <p>STORAGE_CONNECTOR_GOOGLE_DRIVE</p> </li> <li> <p>STORAGE_CONNECTOR_ONE_DRIVE</p> </li> <li> <p>REDIRECT_URL</p> </li> <li> <p>FEEDBACK_URL</p> </li> <li> <p>THEME_NAME</p> </li> <li> <p>USER_SETTINGS</p> </li> <li> <p>EMBED_HOST_DOMAINS</p> </li> <li> <p>IAM_ROLE_ARN</p> </li> <li> <p>ACCESS_ENDPOINTS</p> </li> <li> <p>STREAMING_EXPERIENCE_SETTINGS</p> </li> <li> <p>AGENT_ACCESS_CONFIG</p> </li> <li> <p>STORAGE_CONNECTOR_AUTHENTICATION</p> </li> </ul>",
       "enum":[
         "STORAGE_CONNECTORS",
         "STORAGE_CONNECTOR_HOMEFOLDERS",
@@ -5864,7 +5872,8 @@
         "ACCESS_ENDPOINTS",
         "STREAMING_EXPERIENCE_SETTINGS",
         "CONTENT_REDIRECTION",
-        "AGENT_ACCESS_CONFIG"
+        "AGENT_ACCESS_CONFIG",
+        "STORAGE_CONNECTOR_AUTHENTICATION"
       ]
     },
     "StackAttributes":{
@@ -6044,6 +6053,14 @@
         }
       },
       "documentation":"<p>Describes a connector that enables persistent storage for users.</p>"
+    },
+    "StorageConnectorAuthentication":{
+      "type":"string",
+      "documentation":"<p>Specifies whether users' cloud storage authentication persists across streaming sessions.</p>",
+      "enum":[
+        "FORCE_REAUTHENTICATION",
+        "REUSE_CREDENTIALS"
+      ]
     },
     "StorageConnectorList":{
       "type":"list",
@@ -6635,6 +6652,10 @@
         "AgentAccessConfig":{
           "shape":"AgentAccessConfigForUpdate",
           "documentation":"<p>The configuration for agent access on the stack. Specify this to update agent access settings. To remove agent access, use AttributesToDelete with the AGENT_ACCESS_CONFIG value.</p>"
+        },
+        "StorageConnectorAuthentication":{
+          "shape":"StorageConnectorAuthentication",
+          "documentation":"<p>Specifies whether users' cloud storage authentication persists across streaming sessions. When you specify FORCE_REAUTHENTICATION, WorkSpaces Applications removes the stored authentication for the stack's OneDrive and Google Drive connectors when a user's session ends. The user links their cloud storage again on their next session. To clear this attribute, add STORAGE_CONNECTOR_AUTHENTICATION to AttributesToDelete.</p>"
         }
       }
     },

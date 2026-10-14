@@ -5374,9 +5374,6 @@ class TestS3ExpressCpRecursive:
         assert rc == 252
         assert "`skip` is not a valid value" in stderr.decode()
 
-    @pytest.mark.skip(
-        reason="S3 Express CreateSession race condition; fix pending in open PR"
-    )
     async def test_s3_express_warn_emits_warning(self, aws_cli, tmp_path):
         """--case-conflict warn on S3 Express emits warning for case conflicts."""
         async with mock_server(on_headers_received=handle_expect_header) as (
@@ -5406,9 +5403,7 @@ class TestS3ExpressCpRecursive:
                     ),
                     # CreateSession for the transfer/download client
                     create_session_response(),
-                    head_object_response(),
                     get_object_response(b"foo"),
-                    head_object_response(),
                     get_object_response(b"bar"),
                 ],
             )

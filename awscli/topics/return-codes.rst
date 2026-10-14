@@ -31,6 +31,11 @@ of a CLI command:
 
 * ``130`` -- The process received a SIGINT (Ctrl-C).
 
+* ``141`` -- The command was writing its output to a pipe that was closed
+  before the output was fully written, for example when piping to a command
+  such as ``head`` that exits after reading the lines it needs. This matches
+  the exit status that standard Unix utilities report for a closed pipe.
+
 * ``252`` -- Command syntax was invalid, an unknown parameter was provided, or
   a parameter value was incorrect and prevented the command from running.
 

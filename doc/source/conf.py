@@ -31,6 +31,8 @@ import bootstrapdocs
 extensions = [
     'notfound.extension',
     'crosslinker',
+    'parallel_chunks',
+    'parallel_write',
 ]
 notfound_context = {
     'title': 'Page not found',

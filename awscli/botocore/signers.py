@@ -356,7 +356,7 @@ class RequestSigner:
 
 
 class CloudFrontSigner:
-    '''A signer to create signed CloudFront URLs.
+    '''A signer to create signed CloudFront URLs and signed cookies.
 
     First you create a cloudfront signer based on a normalized signer::
 
@@ -402,8 +402,9 @@ class CloudFrontSigner:
         :type hash_algorithm: str
         :param hash_algorithm: The hash algorithm CloudFront must use to verify
                the signature, emitted as the ``Hash-Algorithm`` query parameter
-               of signed URLs. CloudFront defaults to SHA-1 when it is absent,
-               so leave this as ``None`` for SHA-1 signatures and set it to
+               of signed URLs and the ``CloudFront-Hash-Algorithm`` signed
+               cookie. CloudFront defaults to SHA-1 when it is absent, so
+               leave this as ``None`` for SHA-1 signatures and set it to
                ``SHA256`` for SHA-256 signatures.
         """
         self.key_id = key_id

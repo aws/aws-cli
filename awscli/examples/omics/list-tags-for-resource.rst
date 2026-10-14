@@ -13,4 +13,4 @@ Output::
         }
     }
 
-For more information, see `Tagging resources in Amazon Omics <https://docs.aws.amazon.com/omics/latest/dev/workflows.html>`__ in the *Amazon Omics Developer Guide*.
+For more information, see `Tagging resources in AWS HealthOmics <https://docs.aws.amazon.com/omics/latest/dev/tagging.html>`__ in the *AWS HealthOmics User Guide*.

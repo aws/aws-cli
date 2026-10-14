@@ -40,6 +40,7 @@ Output::
         "id": "1234567",
         "status": "CREATING",
         "tags": {}
+        "uuid": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
     }
 
 For more information, see `Creating private workflows <https://docs.aws.amazon.com/omics/latest/dev/workflows-setup.html>`__ in the *AWS HealthOmics User Guide*.

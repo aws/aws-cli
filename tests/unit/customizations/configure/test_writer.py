@@ -295,6 +295,34 @@ class TestConfigFileWriter(unittest.TestCase):
             '    other = foo\n'
             '    signature_version = newval\n')
 
+    def test_add_to_empty_nested_block_at_end_of_file(self):
+        original = (
+            '[default]\n'
+            's3 =\n'
+        )
+        self.assert_update_config(
+            original, {'__section__': 'default',
+                       's3': {'signature_version': 'newval'}},
+            '[default]\n'
+            's3 =\n'
+            '    signature_version = newval\n')
+
+    def test_add_to_nested_with_comment_in_block(self):
+        original = (
+            '[default]\n'
+            's3 =\n'
+            '# comment\n'
+            '    addressing_style = path\n'
+        )
+        self.assert_update_config(
+            original, {'__section__': 'default',
+                       's3': {'signature_version': 'newval'}},
+            '[default]\n'
+            's3 =\n'
+            '# comment\n'
+            '    addressing_style = path\n'
+            '    signature_version = newval\n')
+
     def test_update_nested_attribute(self):
         original = (
             '[default]\n'
@@ -326,6 +354,22 @@ class TestConfigFileWriter(unittest.TestCase):
             '[profile foo]\n'
             'foo = bar\n')
 
+    def test_add_to_nested_with_next_section_header(self):
+        original = (
+            '[default]\n'
+            's3 =\n'
+            '[profile foo]\n'
+            'foo = bar\n'
+        )
+        self.assert_update_config(
+            original, {'__section__': 'default',
+                       's3': {'signature_version': 'newval'}},
+            '[default]\n'
+            's3 =\n'
+            '    signature_version = newval\n'
+            '[profile foo]\n'
+            'foo = bar\n')
+
     def test_update_nested_attr_no_prior_nesting(self):
         original = (
             '[default]\n'
@@ -342,6 +386,20 @@ class TestConfigFileWriter(unittest.TestCase):
             '    signature_version = newval\n'
             '[profile foo]\n'
             'foo = bar\n')
+
+    def test_nested_attribute_does_not_update_same_indent_sibling(self):
+        original = (
+            '[default]\n'
+            's3 =\n'
+            'region = oldval\n'
+        )
+        self.assert_update_config(
+            original, {'__section__': 'default',
+                       's3': {'region': 'newval'}},
+            '[default]\n'
+            's3 =\n'
+            '    region = newval\n'
+            'region = oldval\n')
 
     def test_can_handle_empty_section(self):
         original = (

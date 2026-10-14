@@ -358,6 +358,28 @@ class TestConfigureCommand(BaseAWSCommandParamsTest):
         )
         self.assertEqual(stdout, "")
 
+    def test_set_get_roundtrip_with_profile_name_prefix(self):
+        self.set_config_file_contents(
+            "[profile emr-dev]\n"
+            "region = us-west-1\n"
+        )
+        self.run_cmd(
+            "configure set emr-dev.emr.instance_profile my_ip_emr",
+        )
+        self.assertEqual(
+            "[profile emr-dev]\n"
+            "region = us-west-1\n"
+            "emr =\n"
+            "    instance_profile = my_ip_emr\n",
+            self.get_config_file_contents(),
+        )
+        # Reload the driver so configure get sees the updated config file.
+        self.driver = create_clidriver()
+        stdout, _, _ = self.run_cmd(
+            "configure get emr-dev.emr.instance_profile"
+        )
+        self.assertEqual(stdout.strip(), "my_ip_emr")
+
     def test_can_handle_empty_section(self):
         self.set_config_file_contents("[default]\n")
         self.run_cmd(

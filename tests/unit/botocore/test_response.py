@@ -16,8 +16,13 @@ import io
 import botocore
 from botocore import response
 from botocore.awsrequest import AWSRequest, AWSResponse
-from botocore.exceptions import IncompleteReadError, ReadTimeoutError
+from botocore.exceptions import (
+    IncompleteReadError,
+    ReadTimeoutError,
+    ResponseStreamingError,
+)
 from dateutil.tz import tzutc
+from urllib3.exceptions import ProtocolError as URLLib3ProtocolError
 from urllib3.exceptions import ReadTimeoutError as URLLib3ReadTimeoutError
 
 from tests import unittest
@@ -167,6 +172,20 @@ class TestStreamWrapper(unittest.TestCase):
 
         stream = response.StreamingBody(TimeoutBody(), content_length=None)
         with self.assertRaises(ReadTimeoutError):
+            stream.read()
+
+    def test_catches_urllib3_protocol_error(self):
+        class ProtocolErrorBody:
+            def read(*args, **kwargs):
+                raise URLLib3ProtocolError(None, None, None)
+
+            def geturl(*args, **kwargs):
+                return 'http://example.com'
+
+        stream = response.StreamingBody(
+            ProtocolErrorBody(), content_length=None
+        )
+        with self.assertRaises(ResponseStreamingError):
             stream.read()
 
     def test_streaming_line_abstruse_newline_standard(self):

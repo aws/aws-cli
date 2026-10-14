@@ -58,6 +58,63 @@ def _dict_representer(dumper, data):
     return dumper.represent_dict(data.items())
 
 
+def _needs_quoting(value):
+    """
+    Check if a string value needs to be quoted to prevent YAML from
+    interpreting it as a non-string type (number, boolean, null, etc.).
+    
+    This addresses issue #3991 where strings like '1e10' were being
+    output without quotes, causing them to be interpreted as numbers
+    when the YAML is re-parsed.
+    """
+    if not isinstance(value, str) or not value:
+        return False
+    
+    # Check for scientific notation (e.g., 1e10, 1E-5, 2.5e+3)
+    # These are valid floats but should remain as strings if originally strings
+    import re
+    scientific_pattern = r'^[+-]?(\d+\.?\d*|\d*\.?\d+)[eE][+-]?\d+$'
+    if re.match(scientific_pattern, value):
+        return True
+    
+    # Check for octal notation (e.g., 0o755, 0O644)
+    if re.match(r'^0[oO][0-7]+$', value):
+        return True
+    
+    # Check for hex notation (e.g., 0x1A, 0X2B)
+    if re.match(r'^0[xX][0-9a-fA-F]+$', value):
+        return True
+    
+    # Check for binary notation (e.g., 0b1010)
+    if re.match(r'^0[bB][01]+$', value):
+        return True
+    
+    # Check for special YAML float values
+    if value.lower() in ('.inf', '-.inf', '.nan', '+.inf'):
+        return True
+    
+    # Check for YAML 1.1 legacy octals (e.g., 0755) - numbers starting with 0
+    # but not just "0" and containing only digits
+    if re.match(r'^0\d+$', value):
+        return True
+    
+    # Check for sexagesimal (base 60) numbers like 1:30:00
+    if re.match(r'^\d+:\d+(:\d+)*$', value):
+        return True
+    
+    return False
+
+
+def _string_representer(dumper, data):
+    """
+    Custom string representer that quotes strings which could be 
+    misinterpreted as numbers or other YAML types.
+    """
+    if _needs_quoting(data):
+        return dumper.represent_scalar('tag:yaml.org,2002:str', data, style="'")
+    return dumper.represent_scalar('tag:yaml.org,2002:str', data)
+
+
 def yaml_dump(dict_to_dump):
     """
     Dumps the dictionary as a YAML document
@@ -65,6 +122,7 @@ def yaml_dump(dict_to_dump):
     :return:
     """
     FlattenAliasDumper.add_representer(OrderedDict, _dict_representer)
+    FlattenAliasDumper.add_representer(str, _string_representer)
     return yaml.dump(
         dict_to_dump,
         default_flow_style=False,

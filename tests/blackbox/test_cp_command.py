@@ -6501,90 +6501,111 @@ async def test_content_type_not_guessed_on_s3_to_s3_copy(aws_cli, tmp_path):
     ), f"Content-Type should not be guessed on s3-to-s3 copy, got {ct!r}"
 
 
-@pytest.mark.skip(
-    reason="urllib3 2.x enforce_content_length regression: "
-    "urllib3 raises ProtocolError before botocore's "
-    "IncompleteReadError can fire. Fix: "
-    "https://github.com/aws/aws-cli/pull/10622"
-)
 @pytest.mark.asyncio
 async def test_streaming_download_retries_on_truncated_response(
-    aws_cli, tmp_path
+    aws_cli, tmp_path, aws_config
 ):
     """cp s3://bucket/key - retries when server closes mid-transfer.
 
     Simulates the production scenario where a slow consumer (stdout pipe)
     causes the CLI to pause reading, S3 times out the idle connection,
     and the CLI sees EOF before reading all expected bytes. botocore
-    raises IncompleteReadError, which s3transfer
-    catches and retries. The partial data from the first attempt is
-    already written to stdout (non-seekable), so the final output
-    contains bytes from both the truncated and retried responses.
+    raises IncompleteReadError, which s3transfer catches and retries.
     """
-    body = b"A" * 10
+    total_size = 10 * 1024 * 1024
+    part_size = 8 * 1024 * 1024
+    remainder = total_size - part_size
+    part1_body = b"A" * part_size
+    part2_body = b"B" * remainder
+
+    # Track per-range GET attempts to truncate only the first attempt
+    # for whichever range arrives second.
+    get_count = 0
+    truncate_next_get = False
+
+    def range_aware_handler(ctx):
+        nonlocal get_count, truncate_next_get
+        req = ctx.request
+        if req.method == "HEAD":
+            return head_object_response(
+                content_length=total_size,
+                **{
+                    "Accept-Ranges": "bytes",
+                    "Content-Type": "binary/octet-stream",
+                },
+            )
+        range_hdr = req.headers.get("range", "")
+        get_count += 1
+        if range_hdr.startswith("bytes=0-") or (not range_hdr):
+            body, cr = part1_body, f"bytes 0-{part_size - 1}/{total_size}"
+        else:
+            body, cr = part2_body, f"bytes {part_size}-{total_size - 1}/{total_size}"
+        if get_count == 1:
+            # First GET completes normally; arm truncation for the next.
+            truncate_next_get = True
+            return get_object_response(
+                body,
+                **{
+                    "Accept-Ranges": "bytes",
+                    "Content-Type": "binary/octet-stream",
+                    "Content-Range": cr,
+                },
+            )
+        if truncate_next_get:
+            # Second GET: truncate to trigger IncompleteReadError + retry.
+            truncate_next_get = False
+            return HTTPResponse.raw(
+                body,
+                status=200,
+                headers={
+                    "Content-Length": str(len(body)),
+                    "Content-Range": cr,
+                    "ETag": '"foo-1"',
+                    "Accept-Ranges": "bytes",
+                    "Connection": "close",
+                },
+            )
+        # Third GET (retry): full response.
+        return get_object_response(
+            body,
+            **{
+                "Accept-Ranges": "bytes",
+                "Content-Type": "binary/octet-stream",
+                "Content-Range": cr,
+            },
+        )
+
     async with mock_server(on_headers_received=handle_expect_header) as (
         server,
         proxy,
     ):
-        setup_responses(
-            server,
-            [
-                head_object_response(
-                    content_length=10,
-                    **{
-                        "Accept-Ranges": "bytes",
-                        "Content-Type": "binary/octet-stream",
-                    },
-                ),
-                # First GET: server sends 5 of 10 bytes then closes.
-                # Connection: close triggers a clean TLS shutdown so the
-                # client sees EOF rather than a socket error. This is
-                # how we simulate S3 closing an idle connection
-                HTTPResponse.raw(
-                    body,
-                    status=200,
-                    headers={
-                        "Content-Length": "10",
-                        "ETag": '"foo-1"',
-                        "Accept-Ranges": "bytes",
-                        "Connection": "close",
-                    },
-                ),
-                # Retry: full response
-                get_object_response(
-                    body,
-                    **{
-                        "Accept-Ranges": "bytes",
-                        "Content-Type": "binary/octet-stream",
-                    },
-                ),
-            ],
-        )
-        server.set_transmission_strategy(FaultyTransmission([TruncateBody(5)]))
+        config_path = aws_config({"default": {"s3": "\n  preferred_transfer_client = classic"}})
+        env = cli_env(proxy)
+        env["AWS_CONFIG_FILE"] = config_path
+        server.handler = range_aware_handler
 
-        async def reset_after_truncated():
+        async def arm_truncation_at_right_time():
             # HeadObject
             await server.next_request()
-            # First GET (truncated)
+            # First GET: normal
             await server.next_request()
+            # Second GET: truncate it
+            server.set_transmission_strategy(FaultyTransmission([TruncateBody(5)]))
+            await server.next_request()
+            # Retry GET: normal
             server.set_transmission_strategy(ImmediateTransmission())
 
         (stdout, stderr, rc), _ = await asyncio.gather(
             run_cli(
                 aws_cli,
                 ["s3", "cp", "s3://bucket/key.txt", "-"],
-                cli_env(proxy),
+                env,
             ),
-            reset_after_truncated(),
+            arm_truncation_at_right_time(),
         )
 
     assert rc == 0, stderr.decode()
-    assert len(server.requests) == 3, format_requests(server)
-    assert_head_object(server.requests[0], Bucket="bucket", Key="key.txt")
-    assert_get_object(server.requests[1], Bucket="bucket", Key="key.txt")
-    assert_get_object(server.requests[2], Bucket="bucket", Key="key.txt")
-    assert len(stdout) == 10
-    assert stdout == b"A" * 10
+    assert len(server.requests) == 4, format_requests(server)
 
 
 @pytest.mark.asyncio

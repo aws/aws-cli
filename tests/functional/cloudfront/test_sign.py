@@ -16,6 +16,7 @@ import json
 import re
 
 from awscrt.crypto import EC, RSA
+from awscrt.exceptions import AwsCrtError
 from botocore.compat import parse_qs, urlparse
 from awscli.testutils import (
     BaseAWSCommandParamsTest,
@@ -753,16 +754,27 @@ class TestSignPrivateKeyInputs(BaseSigningCommandTest):
 
 
 class TestSignSigningFailures(BaseSigningCommandTest):
-    signing_error = RuntimeError(
-        '7179 (AWS_ERROR_CAL_CRYPTO_OPERATION_FAILED): Unknown error when '
-        'calling underlying Crypto library.'
-    )
+    signing_errors = [
+        RuntimeError(
+            '7179 (AWS_ERROR_CAL_CRYPTO_OPERATION_FAILED): Unknown error '
+            'when calling underlying Crypto library.'
+        ),
+        AwsCrtError(
+            code=7179,
+            name='AWS_ERROR_CAL_CRYPTO_OPERATION_FAILED',
+            message='Unknown error when calling underlying Crypto library.',
+        ),
+    ]
 
     def assert_signing_failure(self, key_class):
-        with mock.patch.object(
-            key_class, 'sign', side_effect=self.signing_error
-        ):
-            self.assert_key_error('Failed to sign the CloudFront policy')
+        for signing_error in self.signing_errors:
+            with self.subTest(error=type(signing_error).__name__):
+                with mock.patch.object(
+                    key_class, 'sign', side_effect=signing_error
+                ):
+                    self.assert_key_error(
+                        'Failed to sign the CloudFront policy'
+                    )
 
     def test_rsa_signing_failure(self):
         self.assert_signing_failure(RSA)

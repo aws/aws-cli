@@ -709,6 +709,69 @@ class TestCloudfrontSigner(BaseSignerTest):
                 policy='{}',
             )
 
+    def test_generate_signed_cookies_with_expire_time(self):
+        cookies = self.signer.generate_signed_cookies(
+            'http://test.com/foo.txt',
+            date_less_than=datetime.datetime(2016, 1, 1),
+        )
+        self.assertEqual(
+            cookies,
+            {
+                'CloudFront-Expires': '1451606400',
+                'CloudFront-Signature': 'c2lnbmVk',
+                'CloudFront-Key-Pair-Id': 'MY_KEY_ID',
+            },
+        )
+
+    def test_generate_signed_cookies_with_custom_policy(self):
+        policy = self.signer.build_policy(
+            'http://test.com/*', datetime.datetime(2016, 1, 1)
+        )
+        cookies = self.signer.generate_signed_cookies(
+            'http://test.com/*', policy=policy
+        )
+        self.assertEqual(
+            cookies,
+            {
+                'CloudFront-Policy': (
+                    'eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cDovL3Rlc3Q'
+                    'uY29tLyoiLCJDb25kaXRpb24iOnsiRGF0ZUxlc3NUaGFuIjp7Ik'
+                    'FXUzpFcG9jaFRpbWUiOjE0NTE2MDY0MDB9fX1dfQ__'
+                ),
+                'CloudFront-Signature': 'c2lnbmVk',
+                'CloudFront-Key-Pair-Id': 'MY_KEY_ID',
+            },
+        )
+
+    def test_generate_signed_cookies_with_hash_algorithm(self):
+        signer = CloudFrontSigner(
+            "MY_KEY_ID", lambda message: b'signed', hash_algorithm='SHA256'
+        )
+        cookies = signer.generate_signed_cookies(
+            'http://test.com/foo.txt',
+            date_less_than=datetime.datetime(2016, 1, 1),
+        )
+        self.assertEqual(cookies['CloudFront-Hash-Algorithm'], 'SHA256')
+
+    def test_generate_signed_cookies_signs_the_policy(self):
+        signed_messages = []
+
+        def signer(message):
+            signed_messages.append(message)
+            return b'signed'
+
+        policy = self.signer.build_policy(
+            'http://test.com/*', datetime.datetime(2016, 1, 1)
+        )
+        CloudFrontSigner('MY_KEY_ID', signer).generate_signed_cookies(
+            'http://test.com/*', policy=policy
+        )
+        self.assertEqual(signed_messages, [policy.encode('utf8')])
+
+    def test_generate_signed_cookies_requires_one_of_date_or_policy(self):
+        with self.assertRaises(ValueError):
+            self.signer.generate_signed_cookies('http://test.com/foo.txt')
+
 
 class TestS3PostPresigner(BaseSignerTest):
     def setUp(self):

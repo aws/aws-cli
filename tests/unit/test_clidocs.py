@@ -19,11 +19,11 @@ from awscli.testutils import mock, unittest, FileCreator
 from awscli.clidocs import OperationDocumentEventHandler, \
     CLIDocumentEventHandler, TopicListerDocumentEventHandler, \
     TopicDocumentEventHandler, GlobalOptionsDocumenter, \
-    ServiceDocumentEventHandler
+    ServiceDocumentEventHandler, iter_option_cli_flags
 from awscli.bcdoc.restdoc import ReSTDocument
 from awscli.help import ServiceHelpCommand, TopicListerCommand, \
     TopicHelpCommand, HelpCommand
-from awscli.arguments import CustomArgument
+from awscli.arguments import BaseCLIArgument, CustomArgument
 
 
 class TestRecursiveShapes(unittest.TestCase):
@@ -131,6 +131,32 @@ class TestRecursiveShapes(unittest.TestCase):
         self.assert_rendered_docs_contain('None')
 
 
+class TestIterOptionCliFlags(unittest.TestCase):
+    def test_base_cli_argument(self):
+        argument = BaseCLIArgument('foo')
+        result_iter = iter_option_cli_flags(argument)
+        self.assertIs(iter(result_iter), result_iter)
+        self.assertEqual(list(result_iter), ['--foo'])
+
+    def test_custom_positional(self):
+        argument = CustomArgument('foo', positional_arg=True)
+        result_iter = iter_option_cli_flags(argument)
+        self.assertIs(iter(result_iter), result_iter)
+        self.assertEqual(list(result_iter), ['foo'])
+
+    def test_custom_nonpositional(self):
+        argument = CustomArgument('foo', positional_arg=False)
+        result_iter = iter_option_cli_flags(argument)
+        self.assertIs(iter(result_iter), result_iter)
+        self.assertEqual(list(result_iter), ['--foo'])
+
+    def test_custom_aliases(self):
+        argument = CustomArgument('foo', positional_arg=False, aliases=['f'])
+        result_iter = iter_option_cli_flags(argument)
+        self.assertIs(iter(result_iter), result_iter)
+        self.assertEqual(list(result_iter), ['--foo', '-f'])
+
+
 class TestCLIDocumentEventHandler(unittest.TestCase):
     def setUp(self):
         self.session = mock.Mock()
@@ -161,7 +187,12 @@ class TestCLIDocumentEventHandler(unittest.TestCase):
         return tagged_union
 
     def get_help_docs_for_argument(self, shape):
-        arg_table = {'arg-name': mock.Mock(argument_model=shape)}
+        arg_table = {
+            'arg-name': mock.Mock(
+                argument_model=shape,
+                cli_flags=['--arg-name'],
+            ),
+        }
         help_command = mock.Mock()
         help_command.doc = ReSTDocument()
         help_command.event_class = 'custom'
@@ -470,6 +501,34 @@ class TestCLIDocumentEventHandler(unittest.TestCase):
         meta_description = help_cmd.doc.getvalue().decode('utf-8')
         self.assertIn(".. meta::\n   :description: Learn about the AWS CLI ", meta_description)
         self.assertIn(' ec2 commands', meta_description)
+
+    def test_doc_synopsis_option_with_aliases(self):
+        help_command = self.create_help_command()
+        help_command.arg_table['foo'] = CustomArgument(
+            name='foo', help_text='FooBar', aliases=['f'],
+        )
+        operation_model = mock.Mock()
+        operation_model.service_model.operation_names = []
+        help_command.obj = operation_model
+        operation_handler = OperationDocumentEventHandler(help_command)
+        operation_handler.doc_synopsis_option('foo', help_command)
+        rendered = help_command.doc.getvalue().decode('utf-8')
+        self.assertRegex(rendered, r'\[--foo \| -f <value>]')
+
+    def test_doc_options_with_aliases(self):
+        help_command = self.create_help_command()
+        help_command.arg_table['foo'] = CustomArgument(
+            name='foo', help_text='FooBar', aliases=['f'],
+        )
+        operation_model = mock.Mock()
+        operation_model.service_model.operation_names = []
+        help_command.obj = operation_model
+        operation_handler = OperationDocumentEventHandler(help_command)
+        operation_handler.doc_option('foo', help_command)
+        rendered = help_command.doc.getvalue().decode('utf-8')
+        self.assertRegex(
+            rendered, r'(``)?--foo(``)?\s+\|\s+(``)?-f(``)?\s+\(string\)\s+FooBar'
+        )
 
 
 class TestTopicDocumentEventHandlerBase(unittest.TestCase):

@@ -2,6 +2,23 @@
 CHANGELOG
 =========
 
+2.38.1
+======
+
+* api-change:``organizations``: With dual-stack enabled, all requests now resolve to the endpoint in the partition's primary Region (for example, organizations.us-east-1.api.aws) and are signed for that Region. Previously, requests from other Regions resolved to a nonexistent endpoint. No API changes.
+* api-change:``dynamodbstreams``: Add support for a new iterator type (AT TIMESTAMP) for DynamoDB Streams GetShardIterator API that allows reading from a specific point in time from the stream.
+* api-change:``arc-region-switch``: Features - Adds support for an optional payload to invoke the Lambda function with as part of the Custom action Lambda execution block
+* api-change:``guardduty``: Releasing support for Custom Detection Rule Runtime Monitoring
+* api-change:``ec2``: Adds T8i instance sizes to the InstanceType enum. T8i instances are low-cost burstable instances powered by custom sixth generation Intel Xeon 6 processors, available exclusively on AWS, and built on the latest sixth generation AWS Nitro cards
+* api-change:``meteringmarketplace``: Documentation update - added a Get started pointer to the AWS Marketplace AI Metering Agent Skill in the BatchMeterUsage API reference. No API or behavior change.
+* api-change:``imagebuilder``: This release adds parentInstance to infrastructure configurations, so builds can use an already-running instance from an Amazon EC2 Auto Scaling group. It also adds terminateInstanceOnCompletion, which keeps build and test instances running after image creation ends.
+* api-change:``bedrock-agentcore-control``: This release supports scoping Amazon Bedrock AgentCore Gateway rate limits by request header or request body field.
+* bugfix:HTTP: Fixes regression where ``Content-Length`` validation is moved back to ``botocore`` from ``urllib3``. This re-enables functionality that depends on ``botocore``'s validation, such as resilient streaming from S3 to ``stdout`` in the case of an ``IncompleteRead``.
+* api-change:``transfer``: AWS Transfer Family now lets you store SFTP server host keys in AWS Secrets Manager in your own AWS account. This gives you greater control over your server identity and helps simplify server migrations and failover.
+* api-change:``lambda``: AWS Lambda now supports an optional X-Ray trace header for chained invocations in durable executions, enabling child invocations to be linked to the initiating span.
+* api-change:``cloudfront``: This release adds a new "IpAddressType" field to "VPCOriginEndpointConfig", allowing customers to specify whether their VPC origin accepts IPv4-only or dualstack connections.
+
+
 2.38.0
 ======
 

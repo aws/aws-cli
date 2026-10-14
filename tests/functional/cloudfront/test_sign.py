@@ -675,7 +675,8 @@ class TestSignKeyErrors(BaseSigningCommandTest):
 
     @skip_if_windows('The Windows CRT derives the missing EC public key.')
     def test_ec_private_key_without_public_key(self):
-        # A P-256 key exported with ``openssl ec -no_public``.
+        # A PKCS#8 P-256 key without its public key, exported with
+        # ``openssl ec -no_public | openssl pkcs8 -topk8 -nocrypt``.
         self.use_private_key(
             '-----BEGIN PRIVATE KEY-----\n'
             'MEECAQAwEwYHKoZIzj0CAQYIKoZIzj0DAQcEJzAlAgEBBCCtiWoCbDTjaVJiKBL+\n'

@@ -541,6 +541,24 @@ class TestWindowsVerifyScript:
             command([], global_args())
         runner.assert_not_called()
 
+    def test_verify_subprocess_clears_psmodulepath(self, monkeypatch):
+        # The verification PowerShell invocation must not inherit PSModulePath;
+        # inheriting it can break module resolution across PS5/PS7.
+        # https://github.com/aws/aws-cli/issues/10532
+        monkeypatch.setenv('PSModulePath', 'C:\\inherited\\modules')
+        captured = {}
+
+        def fake_run(cmd, **kwargs):
+            captured['env'] = kwargs.get('env')
+            return mock.Mock(returncode=0, stdout='', stderr='')
+
+        monkeypatch.setattr(update_module.subprocess, 'run', fake_run)
+        command = self._command(runner=mock.Mock())
+
+        command([], global_args())
+
+        assert 'PSModulePath' not in captured['env']
+
     def test_verification_matches_org_exactly(self, monkeypatch):
         # The signer check must gate on an exact match of the certificate's
         # Organization (O) RDN, not a substring of the whole subject DN: a

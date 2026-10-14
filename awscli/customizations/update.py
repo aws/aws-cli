@@ -416,6 +416,10 @@ class WindowsUpdateCommand(BaseUpdateCommand):
             ]
         )
         env = os.environ.copy()
+        # Clear any inherited PSModulePath so this PowerShell invocation
+        # rebuilds its own default; inheriting it can break module resolution
+        # across PS5/PS7. https://github.com/aws/aws-cli/issues/10532
+        env.pop('PSModulePath', None)
         env['AWS_CLI_VERIFY_PATH'] = script_path
         result = subprocess.run(
             [ps_exe, '-NoProfile', '-Command', ps_command],

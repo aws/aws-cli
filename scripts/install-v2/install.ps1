@@ -11,6 +11,16 @@ param(
     [switch] $Help
 )
 
+# Allow the signature-verification opt-out via environment as well as the
+# -SkipSignatureVerification switch. This is a version-independent escape hatch
+# for callers that cannot pass the switch -- notably `aws update` run from an
+# older AWS CLI, whose bundled update command predates the switch but still
+# fetches and runs this (newer, verification-enforcing) script.
+if (-not $SkipSignatureVerification -and
+    $env:AWS_CLI_INSTALL_SKIP_SIGNATURE_VERIFICATION -in @('1', 'true', 'TRUE', 'yes', 'YES')) {
+    $SkipSignatureVerification = $true
+}
+
 # Stop on any error so failures don't silently continue.
 $ErrorActionPreference = 'Stop'
 # PowerShell 5.1 defaults to TLS 1.0; force 1.2 for the CDN.
@@ -131,6 +141,13 @@ Parameters:
                     confirms the installer is authentic. Only use it if you
                     understand and accept the risk.
   -Help             Show this help and exit.
+
+Environment:
+  AWS_CLI_INSTALL_SKIP_SIGNATURE_VERIFICATION
+                    Set to 1 (or true/yes) to skip signature verification,
+                    equivalent to -SkipSignatureVerification. Provided so
+                    callers that cannot pass the switch (e.g. an older AWS CLI
+                    running 'aws update') can still opt out. NOT RECOMMENDED.
 "@ | Write-Host
 }
 
@@ -305,9 +322,10 @@ function Verify-Installer {
     # Verification is on by default. -SkipSignatureVerification is an explicit,
     # human-made opt-out; it disables a security control, so it is never silent.
     if ($SkipSignatureVerification) {
-        Write-Warn ('signature verification disabled via ' +
-            '-SkipSignatureVerification; installing without verifying ' +
-            'installer authenticity.')
+        Write-Warn ('signature verification disabled (via ' +
+            '-SkipSignatureVerification or ' +
+            'AWS_CLI_INSTALL_SKIP_SIGNATURE_VERIFICATION); installing ' +
+            'without verifying installer authenticity.')
         return
     }
 

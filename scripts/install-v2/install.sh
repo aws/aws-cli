@@ -161,6 +161,11 @@ Environment:
                       Default: $HOME/.local/share
   XDG_BIN_HOME        Symlink directory for user-local installs.
                       Default: $HOME/.local/bin
+  AWS_CLI_INSTALL_SKIP_SIGNATURE_VERIFICATION
+                      Set to 1 (or true/yes) to skip signature verification,
+                      equivalent to --skip-signature-verification. Provided so
+                      callers that cannot pass the flag (e.g. an older AWS CLI
+                      running 'aws update') can still opt out. NOT RECOMMENDED.
 EOF
 }
 
@@ -170,6 +175,14 @@ is_valid_semver() {
 }
 
 parse_args() {
+  # Allow the signature-verification opt-out via environment as well as the
+  # flag. This is a version-independent escape hatch for callers that cannot
+  # pass --skip-signature-verification -- notably `aws update` run from an
+  # older AWS CLI, whose bundled update command predates the flag but still
+  # fetches and runs this (newer, verification-enforcing) script.
+  case "${AWS_CLI_INSTALL_SKIP_SIGNATURE_VERIFICATION:-}" in
+    1 | true | TRUE | yes | YES) ARG_SKIP_VERIFY=1 ;;
+  esac
   while [ $# -gt 0 ]; do
     case "$1" in
       --version)
@@ -490,7 +503,7 @@ verify_installer() {
   # human-made opt-out (e.g. when gpg cannot be installed); it disables a
   # security control, so it is never silent.
   if [ "$ARG_SKIP_VERIFY" -eq 1 ]; then
-    warn "signature verification disabled via --skip-signature-verification; installing without verifying installer authenticity."
+    warn "signature verification disabled (via --skip-signature-verification or AWS_CLI_INSTALL_SKIP_SIGNATURE_VERIFICATION); installing without verifying installer authenticity."
     return 0
   fi
   case "$PLATFORM" in

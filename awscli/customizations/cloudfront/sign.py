@@ -402,7 +402,7 @@ class _KeySigner:
     def sign(self, message):
         try:
             return self._sign(message)
-        except RuntimeError as e:
+        except (AwsCrtError, RuntimeError) as e:
             # The CRT error only describes the failure, never the key.
             raise ValueError(
                 f'Failed to sign the CloudFront policy with the private key: '
@@ -451,7 +451,7 @@ class RSASigner(_KeySigner):
                 self.hash_algorithm == 'SHA1'
                 and 'AWS_ERROR_CAL_UNSUPPORTED_ALGORITHM' in str(e)
             ):
-                raise RuntimeError(
+                raise ValueError(
                     "Failed to sign the URL using the SHA1 hash algorithm: "
                     f"{e} CloudFront signed URLs require RSA PKCS1 v1.5 "
                     "signing with SHA1, which may be disabled by default on "

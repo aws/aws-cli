@@ -65,11 +65,6 @@ from awscli.errorhandler import (
 )
 from awscli.formatter import get_formatter
 from awscli.handlers_registry import MAIN_COMMAND_TABLE_OPS
-from awscli.help import (
-    OperationHelpCommand,
-    ProviderHelpCommand,
-    ServiceHelpCommand,
-)
 from awscli.lazy_emitter import LazyInitEmitter
 from awscli.logger import (
     disable_crt_logging,
@@ -534,6 +529,10 @@ class CLIDriver:
         )
 
     def create_help_command(self):
+        # Imported here because the help machinery pulls in docutils,
+        # which is only needed when help is actually requested.
+        from awscli.help import ProviderHelpCommand
+
         cli_data = self._get_cli_data()
         return ProviderHelpCommand(
             self.session,
@@ -769,6 +768,8 @@ class ServiceCommand(CLICommand):
             command_obj.lineage = self.lineage + [command_obj]
 
     def create_help_command(self):
+        from awscli.help import ServiceHelpCommand
+
         command_table = self._get_command_table()
         return ServiceHelpCommand(
             session=self.session,
@@ -964,6 +965,8 @@ class ServiceOperation:
             )
 
     def create_help_command(self):
+        from awscli.help import OperationHelpCommand
+
         return OperationHelpCommand(
             self._session,
             operation_model=self._operation_model,

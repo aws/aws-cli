@@ -10,6 +10,7 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import io
 import os
 import shutil
 import tempfile
@@ -122,6 +123,64 @@ class TestCliInputJSONArgument(unittest.TestCase):
                     parsed_globals=None,
                 )
 
+    def test_add_to_call_parameters_from_stdin(self):
+        with mock.patch(
+            'awscli.customizations.cliinput.sys.stdin',
+            io.StringIO(self.input_json),
+        ):
+            parsed_args = self.create_args('-')
+            call_parameters = {}
+            self.argument.add_to_call_parameters(
+                service_operation=None,
+                call_parameters=call_parameters,
+                parsed_args=parsed_args,
+                parsed_globals=None,
+            )
+            self.assertEqual(call_parameters, {'A': 'foo', 'B': 'bar'})
+
+    def test_stdin_does_not_clobber(self):
+        with mock.patch(
+            'awscli.customizations.cliinput.sys.stdin',
+            io.StringIO(self.input_json),
+        ):
+            parsed_args = self.create_args('-')
+            call_parameters = {'A': 'baz'}
+            self.argument.add_to_call_parameters(
+                service_operation=None,
+                call_parameters=call_parameters,
+                parsed_args=parsed_args,
+                parsed_globals=None,
+            )
+            self.assertEqual(call_parameters, {'A': 'baz', 'B': 'bar'})
+
+    def test_stdin_bad_json(self):
+        with mock.patch(
+            'awscli.customizations.cliinput.sys.stdin',
+            io.StringIO('not valid json'),
+        ):
+            parsed_args = self.create_args('-')
+            with self.assertRaises(ParamError):
+                self.argument.add_to_call_parameters(
+                    service_operation=None,
+                    call_parameters={},
+                    parsed_args=parsed_args,
+                    parsed_globals=None,
+                )
+
+    def test_stdin_empty(self):
+        with mock.patch(
+            'awscli.customizations.cliinput.sys.stdin',
+            io.StringIO(''),
+        ):
+            parsed_args = self.create_args('-')
+            with self.assertRaises(ParamError):
+                self.argument.add_to_call_parameters(
+                    service_operation=None,
+                    call_parameters={},
+                    parsed_args=parsed_args,
+                    parsed_globals=None,
+                )
+
 
 class TestCliInputYAMLArgument(TestCliInputJSONArgument):
     def setUp(self):
@@ -191,3 +250,18 @@ class TestCliInputYAMLArgument(TestCliInputJSONArgument):
             parsed_globals=None,
         )
         self.assertEqual(call_parameters, {'A': 'baz', 'B': 'bar'})
+
+    def test_input_yaml_from_stdin(self):
+        with mock.patch(
+            'awscli.customizations.cliinput.sys.stdin',
+            io.StringIO(self.input_yaml),
+        ):
+            parsed_args = self.create_args('-')
+            call_parameters = {}
+            self.argument.add_to_call_parameters(
+                service_operation=None,
+                call_parameters=call_parameters,
+                parsed_args=parsed_args,
+                parsed_globals=None,
+            )
+            self.assertEqual(call_parameters, {'A': 'foo', 'B': 'bar'})

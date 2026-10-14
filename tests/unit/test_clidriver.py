@@ -10,6 +10,7 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import builtins
 import contextlib
 import io
 import json
@@ -1306,6 +1307,26 @@ class TestGetDistributionSource:
         self._write_json(data_dir / 'metadata.json', {'version': '2.0.0'})
 
         assert get_distribution_source() == 'other'
+
+    def test_reads_install_json_as_utf8_under_non_utf8_locale(
+        self, data_dir, monkeypatch
+    ):
+        contents = {
+            'distribution_source': 'script-exe',
+            'install_dir': 'C:\\Users\\김희원',
+        }
+        (data_dir / 'install.json').write_bytes(
+            json.dumps(contents, ensure_ascii=False).encode('utf-8')
+        )
+        real_open = builtins.open
+
+        def cp949_open(file, *args, **kwargs):
+            kwargs.setdefault('encoding', 'cp949')
+            return real_open(file, *args, **kwargs)
+
+        monkeypatch.setattr(builtins, 'open', cp949_open)
+
+        assert get_distribution_source() == 'script-exe'
 
 
 if __name__ == '__main__':

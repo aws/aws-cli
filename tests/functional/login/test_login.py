@@ -105,6 +105,7 @@ def test_run_main_same_device_flow(
             'accessToken': 'access_token',
             'idToken': SAMPLE_ID_TOKEN,
             'expiresIn': 3600,
+            'signInRegion': 'us-east-1',
         },
     )
 
@@ -168,6 +169,7 @@ def test_run_main_cross_device_flow(
             'accessToken': 'access_token',
             'idToken': SAMPLE_ID_TOKEN,
             'expiresIn': 3600,
+            'signInRegion': 'us-east-1',
         },
     )
 
@@ -251,6 +253,11 @@ def test_new_profile_without_region(
 
     mock_prompt.assert_called_once()
     mock_token_fetcher.assert_called_once()
+
+    # The prompted region is the one we signed in to, so it's the one
+    # recorded for the refresh.
+    saved_token = mock_token_loader.save_token.call_args[0][1]
+    assert saved_token['signInRegion'] == 'us-west-2'
 
     mock_config_file_writer.update_config.assert_called_once_with(
         {

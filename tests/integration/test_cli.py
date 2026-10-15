@@ -50,7 +50,7 @@ class TestBasicCommandFunctionality(unittest.TestCase):
         client = session.create_client('s3', 'us-east-1')
         client.create_bucket(Bucket=bucket, ObjectOwnership='ObjectWriter')
         client.get_waiter('bucket_exists').wait(Bucket=bucket)
-        self.addCleanup(client.delete_bucket, Bucket=bucket)
+        self.addCleanup(self._delete_bucket_with_retry, client, bucket)
         client.delete_public_access_block(Bucket=bucket)
         # Deleting the public access block is eventually consistent, so
         # wait until it is consistently reported as gone.
@@ -84,6 +84,18 @@ class TestBasicCommandFunctionality(unittest.TestCase):
                 if code != 'AccessDenied' or attempt == attempts - 1:
                     raise
                 time.sleep(delay)
+
+    def _delete_bucket_with_retry(self, client, bucket, attempts=5, delay=5):
+        # S3 can intermittently reject DeleteBucket with OperationAborted
+        # while a conflicting operation on the bucket is still in progress.
+        for attempt in range(attempts):
+            try:
+                return client.delete_bucket(Bucket=bucket)
+            except ClientError as e:
+                code = e.response['Error']['Code']
+                if code != 'OperationAborted' or attempt == attempts - 1:
+                    raise
+                time.sleep(delay * 2**attempt)
 
     def test_ec2_describe_instances(self):
         # Verify we can make a call and get output.

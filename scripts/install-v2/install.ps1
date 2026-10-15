@@ -16,8 +16,11 @@ param(
 # for callers that cannot pass the switch -- notably `aws update` run from an
 # older AWS CLI, whose bundled update command predates the switch but still
 # fetches and runs this (newer, verification-enforcing) script.
+# Match the AWS CLI boolean-env-var convention (ensure_boolean): the value is
+# true only when it equals "true", case-insensitively. -ieq is case-insensitive
+# and null-safe.
 if (-not $SkipSignatureVerification -and
-    $env:AWS_CLI_INSTALL_SKIP_SIGNATURE_VERIFICATION -in @('1', 'true', 'TRUE', 'yes', 'YES')) {
+    $env:AWS_CLI_INSTALL_SKIP_SIGNATURE_VERIFICATION -ieq 'true') {
     $SkipSignatureVerification = $true
 }
 
@@ -144,10 +147,11 @@ Parameters:
 
 Environment:
   AWS_CLI_INSTALL_SKIP_SIGNATURE_VERIFICATION
-                    Set to 1 (or true/yes) to skip signature verification,
-                    equivalent to -SkipSignatureVerification. Provided so
-                    callers that cannot pass the switch (e.g. an older AWS CLI
-                    running 'aws update') can still opt out. NOT RECOMMENDED.
+                    Set to "true" (case-insensitive) to skip signature
+                    verification, equivalent to the
+                    -SkipSignatureVerification switch. Provided so callers
+                    that cannot pass the switch (e.g. an older AWS CLI running
+                    'aws update') can still opt out. NOT RECOMMENDED.
 "@ | Write-Host
 }
 

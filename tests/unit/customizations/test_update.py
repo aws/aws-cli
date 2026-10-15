@@ -182,6 +182,36 @@ class TestUnixUpdateCommand:
         cmd = runner.call_args.args[0]
         assert '--skip-signature-verification' not in cmd
 
+    def test_env_var_true_honored_as_skip(self, monkeypatch):
+        # AWS_CLI_INSTALL_SKIP_SIGNATURE_VERIFICATION=true is honored as a
+        # version-independent opt-out, equivalent to the flag, and is forwarded
+        # to the install script.
+        monkeypatch.setenv(
+            'AWS_CLI_INSTALL_SKIP_SIGNATURE_VERIFICATION', 'true'
+        )
+        runner = mock.Mock()
+        command = self._command(USER_INSTALL, runner=runner)
+        command([], global_args())
+        assert '--skip-signature-verification' in runner.call_args.args[0]
+
+    def test_env_var_is_case_insensitive(self, monkeypatch):
+        monkeypatch.setenv(
+            'AWS_CLI_INSTALL_SKIP_SIGNATURE_VERIFICATION', 'TRUE'
+        )
+        runner = mock.Mock()
+        command = self._command(USER_INSTALL, runner=runner)
+        command([], global_args())
+        assert '--skip-signature-verification' in runner.call_args.args[0]
+
+    def test_env_var_non_true_value_does_not_skip(self, monkeypatch):
+        # Follows the ensure_boolean convention: only "true" enables it, so a
+        # value like "1" must NOT disable verification.
+        monkeypatch.setenv('AWS_CLI_INSTALL_SKIP_SIGNATURE_VERIFICATION', '1')
+        runner = mock.Mock()
+        command = self._command(USER_INSTALL, runner=runner)
+        command([], global_args())
+        assert '--skip-signature-verification' not in runner.call_args.args[0]
+
     def test_system_install_requires_elevation(self):
         runner = mock.Mock()
         command = self._command(SYSTEM_INSTALL, elevated=False, runner=runner)

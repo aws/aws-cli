@@ -10,6 +10,7 @@ import tempfile
 
 from awscli.botocore.awsrequest import AWSRequest
 from awscli.botocore.httpsession import URLLib3Session
+from awscli.botocore.utils import ensure_boolean
 from awscli.clidriver import (
     INSTALL_FILENAME,
     get_distribution_source,
@@ -156,7 +157,13 @@ class BaseUpdateCommand(BasicCommand):
             )
         uni_print(f"Updating AWS CLI (source: {source})\n")
         self._no_color = parsed_globals.color == 'off'
-        self._skip_verification = parsed_args.skip_signature_verification
+        self._skip_verification = parsed_args.skip_signature_verification or (
+            ensure_boolean(
+                os.environ.get(
+                    'AWS_CLI_INSTALL_SKIP_SIGNATURE_VERIFICATION', ''
+                )
+            )
+        )
         self._do_update()
         return 0
 

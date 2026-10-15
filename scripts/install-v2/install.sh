@@ -162,10 +162,11 @@ Environment:
   XDG_BIN_HOME        Symlink directory for user-local installs.
                       Default: $HOME/.local/bin
   AWS_CLI_INSTALL_SKIP_SIGNATURE_VERIFICATION
-                      Set to 1 (or true/yes) to skip signature verification,
-                      equivalent to --skip-signature-verification. Provided so
-                      callers that cannot pass the flag (e.g. an older AWS CLI
-                      running 'aws update') can still opt out. NOT RECOMMENDED.
+                      Set to "true" (case-insensitive) to skip signature
+                      verification, equivalent to the
+                      --skip-signature-verification flag. Provided so callers
+                      that cannot pass the flag (e.g. an older AWS CLI running
+                      'aws update') can still opt out. NOT RECOMMENDED.
 EOF
 }
 
@@ -180,8 +181,10 @@ parse_args() {
   # pass --skip-signature-verification -- notably `aws update` run from an
   # older AWS CLI, whose bundled update command predates the flag but still
   # fetches and runs this (newer, verification-enforcing) script.
-  case "${AWS_CLI_INSTALL_SKIP_SIGNATURE_VERIFICATION:-}" in
-    1 | true | TRUE | yes | YES) ARG_SKIP_VERIFY=1 ;;
+  # Match the AWS CLI boolean-env-var convention (ensure_boolean): the value is
+  # true only when it equals "true", case-insensitively.
+  case "$(printf '%s' "${AWS_CLI_INSTALL_SKIP_SIGNATURE_VERIFICATION:-}" | tr '[:upper:]' '[:lower:]')" in
+    true) ARG_SKIP_VERIFY=1 ;;
   esac
   while [ $# -gt 0 ]; do
     case "$1" in

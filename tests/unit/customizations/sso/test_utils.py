@@ -383,7 +383,15 @@ def test_auth_code_fetcher_uses_redirect_port():
         fetcher.http_server.server_close()
 
 
+def test_auth_code_fetcher_binds_to_loopback_only():
+    fetcher = AuthCodeFetcher()
+    try:
+        assert fetcher.http_server.server_address[0] == '127.0.0.1'
+    finally:
+        fetcher.http_server.server_close()
+
+
 def _get_available_port():
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
-        sock.bind(('', 0))
+        sock.bind(('127.0.0.1', 0))
         return sock.getsockname()[1]

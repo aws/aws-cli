@@ -1708,6 +1708,38 @@ class TestWildcardResultKeyAggregation(unittest.TestCase):
         self.assertEqual(result['CC']['Idx']['i1']['U'], 40.0)
         self.assertEqual(result['CC']['Idx']['i2']['U'], 5.0)
 
+    def test_parent_missing_on_a_page_treated_as_zero(self):
+        # Entire CC (or just CC.Idx) absent on some pages, present on others:
+        # those pages contribute nothing and don't disturb the running sum.
+        pages = [
+            {
+                'Items': ['a'],
+                'CC': {'Idx': {'i1': {'U': 40.0}}},
+                'NextToken': 't1',
+            },
+            {'Items': ['b'], 'NextToken': 't2'},
+            {'Items': ['c'], 'CC': {'Other': 1.0}, 'NextToken': 't3'},
+            {'Items': ['d'], 'CC': {'Idx': {'i1': {'U': 2.0}}}},
+        ]
+        it = _make_page_iterator(
+            pages, numeric_wildcard_paths=[('CC', 'Idx', '*', 'U')]
+        )
+        result = it.build_full_result()
+        self.assertEqual(result['Items'], ['a', 'b', 'c', 'd'])
+        self.assertEqual(result['CC']['Idx']['i1']['U'], 42.0)
+
+    def test_parent_missing_on_first_page_only(self):
+        # The aggregate is seeded from the first page that has the path.
+        pages = [
+            {'Items': ['a'], 'NextToken': 't'},
+            {'Items': ['b'], 'CC': {'Idx': {'i1': {'U': 5.0}}}},
+        ]
+        it = _make_page_iterator(
+            pages, numeric_wildcard_paths=[('CC', 'Idx', '*', 'U')]
+        )
+        result = it.build_full_result()
+        self.assertEqual(result['CC']['Idx']['i1']['U'], 5.0)
+
     def test_non_numeric_leaf_skipped(self):
         # A runtime non-numeric value on a numeric wildcard path is skipped
         # (not summed, not placed) rather than crashing.

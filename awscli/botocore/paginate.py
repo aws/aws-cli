@@ -738,27 +738,24 @@ class Paginator:
         # under a map member, and (for numeric result keys) the leaf must be a
         # numeric type. Anything else falls back to the pre-existing code path.
         numeric_types = {'integer', 'long', 'float', 'double'}
-        try:
-            shape = self._model.output_shape
-            for segment in segments:
-                if shape is None:
-                    return False
-                if segment == '*':
-                    if shape.type_name != 'map':
-                        return False
-                    shape = shape.value
-                else:
-                    if shape.type_name != 'structure':
-                        return False
-                    shape = shape.members.get(segment)
+        # Models without an output shape (e.g. custom models) fall back.
+        shape = getattr(self._model, 'output_shape', None)
+        for segment in segments:
             if shape is None:
                 return False
-            if require_numeric_leaf and shape.type_name not in numeric_types:
-                return False
-            return True
-        except AttributeError:
-            # Model/shape not resolvable (e.g. custom models): fall back.
+            if segment == '*':
+                if shape.type_name != 'map':
+                    return False
+                shape = shape.value
+            else:
+                if shape.type_name != 'structure':
+                    return False
+                shape = shape.members.get(segment)
+        if shape is None:
             return False
+        if require_numeric_leaf and shape.type_name not in numeric_types:
+            return False
+        return True
 
     def _get_output_tokens(self, config):
         output = []

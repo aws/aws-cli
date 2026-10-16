@@ -624,6 +624,34 @@ class TestCloudfrontSigner(BaseSignerTest):
             ]
         }
         self.assertEqual(json.loads(policy), expected)
+        # The order is kept stable so that signed URLs are unchanged.
+        self.assertEqual(
+            policy,
+            '{"Statement":[{"Resource":"foo","Condition":{'
+            '"DateLessThan":{"AWS:EpochTime":1451606400},'
+            '"IpAddress":{"AWS:SourceIp":"12.34.56.78/9"},'
+            '"DateGreaterThan":{"AWS:EpochTime":1448928000}}}]}',
+        )
+
+    def test_url_b64encode(self):
+        # CloudFront's base64 variant replaces '+' with '-', '=' with '_'
+        # and '/' with '~'.
+        vectors = [
+            (bytes([251, 255, 254]), b'-~~-'),
+            (bytes([251, 255]), b'-~8_'),
+            (bytes([61, 43, 47]), b'PSsv'),
+        ]
+        for data, expected in vectors:
+            with self.subTest(data=list(data)):
+                self.assertEqual(self.signer._url_b64encode(data), expected)
+
+    def test_build_policy_escapes_resource(self):
+        policy = self.signer.build_policy(
+            'foo","Resource":"*', datetime.datetime(2016, 1, 1)
+        )
+        statement = json.loads(policy)['Statement']
+        self.assertEqual(len(statement), 1)
+        self.assertEqual(statement[0]['Resource'], 'foo","Resource":"*')
 
     def test_generate_presign_url_with_expire_time(self):
         signed_url = self.signer.generate_presigned_url(
@@ -633,6 +661,20 @@ class TestCloudfrontSigner(BaseSignerTest):
         expected = (
             'http://test.com/foo.txt?Expires=1451606400&Signature=c2lnbmVk'
             '&Key-Pair-Id=MY_KEY_ID'
+        )
+        assert_url_equal(signed_url, expected)
+
+    def test_generate_presign_url_with_hash_algorithm(self):
+        signer = CloudFrontSigner(
+            "MY_KEY_ID", lambda message: b'signed', hash_algorithm='SHA256'
+        )
+        signed_url = signer.generate_presigned_url(
+            'http://test.com/foo.txt',
+            date_less_than=datetime.datetime(2016, 1, 1),
+        )
+        expected = (
+            'http://test.com/foo.txt?Expires=1451606400&Signature=c2lnbmVk'
+            '&Key-Pair-Id=MY_KEY_ID&Hash-Algorithm=SHA256'
         )
         assert_url_equal(signed_url, expected)
 
@@ -656,6 +698,16 @@ class TestCloudfrontSigner(BaseSignerTest):
             '&Signature=c2lnbmVk&Key-Pair-Id=MY_KEY_ID'
         )
         assert_url_equal(signed_url, expected)
+
+    def test_generate_presign_url_requires_one_of_date_or_policy(self):
+        with self.assertRaises(ValueError):
+            self.signer.generate_presigned_url('http://test.com/foo.txt')
+        with self.assertRaises(ValueError):
+            self.signer.generate_presigned_url(
+                'http://test.com/foo.txt',
+                date_less_than=datetime.datetime(2016, 1, 1),
+                policy='{}',
+            )
 
 
 class TestS3PostPresigner(BaseSignerTest):

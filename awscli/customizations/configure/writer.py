@@ -12,6 +12,7 @@
 # language governing permissions and limitations under the License.
 import os
 import re
+import tempfile
 
 from . import SectionNotFoundError, warn_if_permissive
 
@@ -111,12 +112,24 @@ class ConfigFileWriter:
         # to find the section in question
         try:
             self._update_section_contents(contents, section_name, new_values)
-            with open(config_filename, 'w') as f:
-                f.write(''.join(contents))
+            self._atomic_write(config_filename, ''.join(contents))
         except SectionNotFoundError:
             self._write_new_section(section_name, new_values, config_filename)
         if check_permissions:
             warn_if_permissive(config_filename)
+
+    def _atomic_write(self, config_filename, contents):
+        dirname = os.path.dirname(config_filename) or '.'
+        fd, tmp_path = tempfile.mkstemp(dir=dirname)
+        try:
+            with os.fdopen(fd, 'w') as f:
+                f.write(contents)
+            os.chmod(tmp_path, os.stat(config_filename).st_mode & 0o777)
+            os.replace(tmp_path, config_filename)
+        except BaseException:
+            if os.path.exists(tmp_path):
+                os.unlink(tmp_path)
+            raise
 
     def _create_file(self, config_filename):
         # Create the file as well as the parent dir if needed.

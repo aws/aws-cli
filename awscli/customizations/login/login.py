@@ -145,6 +145,11 @@ class LoginCommand(BasicCommand):
         ):
             return
 
+        # Record where we signed in. Refresh tokens are regional, so the
+        # refresh has to go back to the same region rather than whatever
+        # region is configured when it runs.
+        access_token['signInRegion'] = region
+
         # Cache the access token to disk
         self._token_loader.save_token(session_id, access_token)
 

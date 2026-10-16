@@ -66,9 +66,8 @@ class TestSession(BaseCLIDriverTest):
         # First response should be from the IMDS server for security token
         # if server supports IMDSv1 only there will be no response for token
         self.add_response(None)
-        # Then another response from the IMDS server for an availability
-        # zone.
-        self.add_response(b'us-mars-2a')
+        # Then another response from the IMDS server for the region.
+        self.add_response(b'us-mars-2')
         # Once a region is fetched form the IMDS server we need to mock an
         # XML response from ec2 so that the CLI driver doesn't throw an error
         # during parsing.
@@ -84,8 +83,25 @@ class TestSession(BaseCLIDriverTest):
         # First response should be from the IMDS server for security token
         # if server supports IMDSv2 it'll return token
         self.add_response(b'token')
-        # Then another response from the IMDS server for an availability
-        # zone.
+        # Then another response from the IMDS server for the region.
+        self.add_response(b'us-mars-2')
+        # Once a region is fetched form the IMDS server we need to mock an
+        # XML response from ec2 so that the CLI driver doesn't throw an error
+        # during parsing.
+        self.add_response(b'<?xml version="1.0" ?><foo><bar>text</bar></foo>')
+        capture = RegionCapture()
+        self.session.register('before-send.ec2.*', capture)
+        self.driver.main(['ec2', 'describe-instances'])
+        self.assertEqual(capture.region, 'us-mars-2')
+
+    def test_imds_region_falls_back_to_availability_zone(self):
+        # Remove region override from the environment variables.
+        self.environ.pop('AWS_DEFAULT_REGION', 0)
+        # First response should be from the IMDS server for security token.
+        self.add_response(b'token')
+        # If the placement/region endpoint is unavailable, the region
+        # fetcher falls back to the availability-zone endpoint.
+        self.add_response(b'', status_code=404)
         self.add_response(b'us-mars-2a')
         # Once a region is fetched form the IMDS server we need to mock an
         # XML response from ec2 so that the CLI driver doesn't throw an error

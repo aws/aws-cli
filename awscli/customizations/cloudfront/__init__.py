@@ -16,7 +16,10 @@ from awscli.customizations.cloudfront.arguments import (
     UpdateDefaultRootObject,
     add_paths_argument,
 )
-from awscli.customizations.cloudfront.sign import SignCommand
+from awscli.customizations.cloudfront.sign import (
+    SignCommand,
+    SignCookiesCommand,
+)
 from awscli.customizations.utils import validate_mutually_exclusive_handler
 
 
@@ -78,3 +81,4 @@ def register(event_handler):
 
 def inject_commands(command_table, session, **kwargs):
     command_table['sign'] = SignCommand(session)
+    command_table['sign-cookies'] = SignCookiesCommand(session)

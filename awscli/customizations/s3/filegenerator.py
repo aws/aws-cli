@@ -19,6 +19,7 @@ from dateutil.parser import parse
 from dateutil.tz import tzlocal
 
 from awscli.compat import queue
+from awscli.customizations.s3.fileinfo import FileInfo
 from awscli.customizations.s3.utils import (
     EPOCH_TIME,
     BucketLister,
@@ -143,6 +144,8 @@ class FileGenerator:
         page_size=None,
         result_queue=None,
         request_parameters=None,
+        file_filter=None,
+        is_dst_walker=False,
     ):
         self._client = client
         self.operation_name = operation_name
@@ -154,6 +157,12 @@ class FileGenerator:
         self.request_parameters = {}
         if request_parameters is not None:
             self.request_parameters = request_parameters
+        self.file_filter = file_filter
+        # When True, this generator is the reverse/destination walker for
+        # ``sync``. Filter pruning consults ``dst_patterns`` instead of
+        # ``patterns`` because the paths it sees are rooted at the
+        # destination, not the source.
+        self.is_dst_walker = is_dst_walker
 
     def call(self, files):
         """
@@ -230,6 +239,18 @@ class FileGenerator:
                 for name in names:
                     file_path = join(path, name)
                     if isdir(file_path):
+                        # If the user's filter chain makes it impossible
+                        # for any descendant to be included, prune the
+                        # whole subtree instead of recursing into it.
+                        if (
+                            self.file_filter is not None
+                            and self.file_filter.can_skip_directory(
+                                file_path,
+                                'local',
+                                use_dst_patterns=self.is_dst_walker,
+                            )
+                        ):
+                            continue
                         # Anything in a directory will have a prefix of
                         # this current directory and will come before the
                         # remaining contents in this directory.  This
@@ -305,6 +326,44 @@ class FileGenerator:
                 path = path[:-1]
             if os.path.islink(path):
                 return True
+        # Only run the prefilter / existence-before-filter logic when the
+        # user actually supplied --include/--exclude patterns. With an
+        # empty filter, ``Filter.call`` cannot suppress anything anyway,
+        # so the extra os.path.exists() call here would be pure overhead
+        # on large unfiltered sync/cp/mv walks.
+        if self.file_filter is not None:
+            relevant_patterns = (
+                self.file_filter.dst_patterns
+                if self.is_dst_walker
+                else self.file_filter.patterns
+            )
+        else:
+            relevant_patterns = None
+        if relevant_patterns:
+            # Validate existence *before* the filter has a chance to
+            # suppress the warning. A broken symlink or a path that
+            # disappeared between listdir and stat should still produce
+            # the standard "File does not exist." warning even when
+            # --exclude/--include would otherwise mask it.
+            if not os.path.exists(path):
+                return self.triggers_warning(path)
+            # Pre-filter using the user's --include/--exclude rules so the
+            # walker does not stat / listdir entries that the filter chain
+            # is going to drop anyway. The directory check must run before
+            # triggers_warning() because is_readable() calls os.listdir()
+            # on directories — without this guard, excluded subtrees would
+            # be listed just to test readability and the prune would be
+            # defeated. The file branch silences readability warnings for
+            # files that the filter would drop anyway.
+            if os.path.isdir(path):
+                if self.file_filter.can_skip_directory(
+                    path, 'local', use_dst_patterns=self.is_dst_walker
+                ):
+                    return True
+            else:
+                probe = FileInfo(src=path, src_type='local')
+                if not list(self.file_filter.call([probe])):
+                    return True
         warning_triggered = self.triggers_warning(path)
         if warning_triggered:
             return True

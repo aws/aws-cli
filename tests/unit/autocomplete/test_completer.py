@@ -89,15 +89,17 @@ class TestAutoCompleter(unittest.TestCase):
         self.assertFalse(second.complete.called)
 
     def test_strip_html_tags_and_newlines(self):
-        STARTING_TOKEN_HELP = """
-<p>A token to specify where to start paginating.  This is the
-<code>NextToken</code> from a previously truncated response.</p>
+        EXAMPLE_HELP = """
+<p>The <i>short</i> help description should be short enough
+ to be a single <code>completion</code> sentence. The remaining
+ sentences should provide further detail when using
+ <code>aws help</code></p>
 """
-        help_text = basic.strip_html_tags_and_newlines(STARTING_TOKEN_HELP)
+        help_text = basic.strip_html_tags_and_newlines_and_multiple_sentences(EXAMPLE_HELP)
         self.assertEqual(
             help_text,
-            'A token to specify where to start paginating.  This is the'
-            'NextToken from a previously truncated response.',
+            'The short help description should be short '
+            'enough to be a single completion sentence'
         )
 
 
@@ -108,10 +110,10 @@ class TestModelIndexCompleter(unittest.TestCase):
                 'command_names': {
                     '': [('aws', None)],
                     'aws': [
-                        ('ec2', 'Amazon Elastic Compute Cloud'),
-                        ('ecs', 'Amazon EC2 Container Registry'),
-                        ('s3', 'Amazon Simple Storage Service'),
-                        ('s3api', 'Amazon Simple Storage Service'),
+                        ('ec2', 'Amazon Elastic Compute Cloud', 'Amazon Elastic Compute Cloud You can access the features of Amazon Elastic Compute Cloud (Amazon EC2) programmatically'),
+                        ('ecs', 'Amazon EC2 Container Registry', 'Amazon Elastic Container Service Amazon Elastic Container Service (Amazon ECS) is a highly scalable, fast, container management service'),
+                        ('s3', 'Amazon Simple Storage Service', 'This section explains prominent concepts and notations in the set of high-level S3 commands provided'),
+                        ('s3api', 'Amazon Simple Storage Service', ''),
                     ],
                     'aws.ec2': [('describe-instances', None)],
                     'aws.s3api': [('get-object', None)],
@@ -139,6 +141,7 @@ class TestModelIndexCompleter(unittest.TestCase):
                                 'string',
                                 'aws',
                                 '',
+                                "Override command's default URL with the given URL",
                                 None,
                                 False,
                                 False,
@@ -148,6 +151,7 @@ class TestModelIndexCompleter(unittest.TestCase):
                                 'string',
                                 'aws',
                                 '',
+                                'The region to use',
                                 None,
                                 False,
                                 False,
@@ -161,6 +165,7 @@ class TestModelIndexCompleter(unittest.TestCase):
                                 'string',
                                 'describe-instances',
                                 'aws.ec2.',
+                                'The instance IDs',
                                 None,
                                 False,
                                 False,
@@ -170,6 +175,7 @@ class TestModelIndexCompleter(unittest.TestCase):
                                 'string',
                                 'describe-instances',
                                 'aws.ec2.',
+                                '', # unknown help
                                 None,
                                 False,
                                 False,
@@ -179,6 +185,7 @@ class TestModelIndexCompleter(unittest.TestCase):
                                 'string',
                                 'describe-instances',
                                 'aws.ec2.',
+                                '', # unknown help
                                 None,
                                 True,
                                 False,
@@ -192,6 +199,7 @@ class TestModelIndexCompleter(unittest.TestCase):
                                 'string',
                                 'get-object',
                                 'aws.s3api.',
+                                'Filename where the content will be saved',
                                 None,
                                 False,
                                 False,
@@ -201,6 +209,7 @@ class TestModelIndexCompleter(unittest.TestCase):
                                 'string',
                                 'get-object',
                                 'aws.s3api.',
+                                'The bucket name containing the object',
                                 None,
                                 False,
                                 False,
@@ -210,6 +219,7 @@ class TestModelIndexCompleter(unittest.TestCase):
                                 'string',
                                 'get-object',
                                 'aws.s3api.',
+                                'Key of the object to get',
                                 None,
                                 False,
                                 False,
@@ -356,26 +366,6 @@ class TestModelIndexCompleter(unittest.TestCase):
         parsed = self.parser.parse('aws ec2 describe-instances --pos')
         self.assertEqual(self.completer.complete(parsed), [])
 
-    def test_get_documentation_if_fetcher_provided(self):
-        fake_cli_fetcher = mock.Mock()
-        fake_cli_fetcher.get_argument_documentation.return_value = (
-            '<p>Arg doc</p>'
-        )
-        fake_cli_fetcher.get_global_arg_documentation.return_value = (
-            '<p>Global arg doc</p>'
-        )
-        completer = basic.ModelIndexCompleter(self.index, fake_cli_fetcher)
-        parsed = self.parser.parse('aws ec2 describe-instances --r')
-        self.assertEqual(
-            completer.complete(parsed),
-            [
-                CompletionResult('--reserve', -3, False, 'string', 'Arg doc'),
-                CompletionResult(
-                    '--region', -3, False, 'string', 'Global arg doc'
-                ),
-            ],
-        )
-
     def test_return_service_full_name(self):
         parsed = self.parser.parse('aws ec')
         self.assertEqual(
@@ -460,6 +450,7 @@ class TestRegionCompleter(unittest.TestCase):
                                 'string',
                                 'aws',
                                 '',
+                                'The region to use',
                                 None,
                                 False,
                                 False,
@@ -513,6 +504,7 @@ class TestProfileCompleter(unittest.TestCase):
                                 'string',
                                 'aws',
                                 '',
+                                'Use a specific profile from your credential file',
                                 None,
                                 False,
                                 False,
@@ -568,6 +560,7 @@ class TestFilePathCompleter(unittest.TestCase):
                                 'string',
                                 'aws',
                                 '',
+                                'Use a specific profile from your credential file',
                                 None,
                                 False,
                                 False,

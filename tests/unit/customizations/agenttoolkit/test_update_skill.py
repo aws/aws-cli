@@ -11,11 +11,13 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import hashlib
+import io
 import json
 from io import StringIO
 from unittest.mock import Mock, patch
 
 import pytest
+from botocore.exceptions import NoCredentialsError
 
 from awscli.customizations.agenttoolkit.agents import (
     SKILL_METADATA_FILENAME,
@@ -421,3 +423,84 @@ def test_update_skill_removes_orphaned_files(tmp_path):
     assert rc == 0
     assert (skill_dir / 'SKILL.md').read_text() == 'new'
     assert not (skill_dir / 'old.md').exists()
+
+
+def _make_skill_client(bad_checksum_skill=None):
+    # Only the service responses are faked; the real download and install
+    # code runs, and install_skill rejects the bad checksum.
+    zip_bytes, checksum = make_skill_zip({'SKILL.md': 'new'})
+    client = Mock()
+    client.get_latest_skill_version.return_value = {'body': 'v2'}
+    client.get_skill_file.side_effect = lambda **kwargs: {
+        'body': io.BytesIO(zip_bytes)
+    }
+    client.get_skill_file_checksum.side_effect = lambda name, **kwargs: {
+        'body': '0' * 64 if name == bad_checksum_skill else checksum
+    }
+    return client
+
+
+def _make_update_command(tmp_path, client):
+    stream = StringIO()
+    error_stream = StringIO()
+    cmd = UpdateSkillCommand(
+        make_session(),
+        stream=stream,
+        error_stream=error_stream,
+        client=client,
+        agent_configs=[make_config(tmp_path)],
+    )
+    return cmd, stream, error_stream
+
+
+def test_update_all_continues_after_skill_failure(tmp_path):
+    for name in ('aws-cdk', 'aws-lambda', 'aws-s3'):
+        _install_skill_at_version(tmp_path, '.test-agent', name, 'v1')
+    client = _make_skill_client(bad_checksum_skill='aws-lambda')
+    cmd, stream, error_stream = _make_update_command(tmp_path, client)
+
+    rc = cmd(args=['--all'], parsed_globals=Mock())
+
+    assert rc == 1
+    assert 'Updated aws-cdk (v2)' in stream.getvalue()
+    assert 'Updated aws-s3 (v2)' in stream.getvalue()
+    assert (
+        'Failed to update aws-lambda: Checksum verification failed'
+        in error_stream.getvalue()
+    )
+    lambda_marker = (
+        tmp_path
+        / '.test-agent'
+        / 'skills'
+        / 'aws-lambda'
+        / SKILL_METADATA_FILENAME
+    )
+    assert json.loads(lambda_marker.read_text()) == {'version': 'v1'}
+
+
+def test_update_all_failure_with_rest_up_to_date(tmp_path):
+    _install_skill_at_version(tmp_path, '.test-agent', 'aws-cdk', 'v2')
+    _install_skill_at_version(tmp_path, '.test-agent', 'aws-lambda', 'v1')
+    client = _make_skill_client(bad_checksum_skill='aws-lambda')
+    cmd, stream, error_stream = _make_update_command(tmp_path, client)
+
+    rc = cmd(args=['--all'], parsed_globals=Mock())
+
+    assert rc == 1
+    assert 'already up to date' not in stream.getvalue()
+    assert 'Failed to update aws-lambda' in error_stream.getvalue()
+
+
+def test_update_all_stops_on_uncaught_error(tmp_path):
+    for name in ('aws-cdk', 'aws-lambda'):
+        _install_skill_at_version(tmp_path, '.test-agent', name, 'v1')
+    client = _make_skill_client()
+    client.get_latest_skill_version.side_effect = NoCredentialsError()
+    cmd, _, error_stream = _make_update_command(tmp_path, client)
+
+    with pytest.raises(NoCredentialsError):
+        cmd(args=['--all'], parsed_globals=Mock())
+
+    assert client.get_latest_skill_version.call_count == 1
+    assert not client.get_skill_file.called
+    assert error_stream.getvalue() == ''

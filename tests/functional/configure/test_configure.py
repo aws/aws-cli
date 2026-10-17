@@ -10,6 +10,7 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+from awscli.botocore.configloader import load_config
 from awscli.clidriver import AWSCLIEntryPoint
 from awscli.customizations.configure.configure import ConfigureCommand
 from awscli.testutils import (
@@ -227,6 +228,70 @@ class TestConfigureCommand(BaseAWSCommandParamsTest):
             self.get_config_file_contents(),
         )
 
+    def test_set_global_option_preserves_nested_s3_option(self):
+        self.set_config_file_contents(
+            '[default]\ns3 =\n    use_dualstack_endpoint = true\n'
+            'use_dualstack_endpoint = true\n'
+        )
+        self.run_cmd('configure set use_dualstack_endpoint false')
+        config = load_config(self.config_filename)['profiles']['default']
+        self.assertEqual(config['use_dualstack_endpoint'], 'false')
+        self.assertEqual(config['s3']['use_dualstack_endpoint'], 'true')
+
+    def test_set_nested_option_without_final_newline(self):
+        self.set_config_file_contents(
+            '[default]\ns3 =\n    addressing_style = path'
+        )
+        self.run_cmd('configure set s3.max_concurrent_requests 20')
+        config = load_config(self.config_filename)['profiles']['default']
+        self.assertEqual(
+            config['s3'],
+            {'addressing_style': 'path', 'max_concurrent_requests': '20'},
+        )
+
+    def test_set_quoted_profile_preserves_existing_options(self):
+        self.set_config_file_contents(
+            '[profile "team development"]\n'
+            'region = us-east-1\noutput = json\n'
+        )
+        self.run_cmd(
+            [
+                'configure',
+                'set',
+                'region',
+                'us-west-2',
+                '--profile',
+                'team development',
+            ]
+        )
+        config = load_config(self.config_filename)['profiles']
+        self.assertEqual(
+            config,
+            {'team development': {'region': 'us-west-2', 'output': 'json'}},
+        )
+        self.assertEqual(self.get_config_file_contents().count('[profile'), 1)
+
+    def test_set_service_endpoint_preserves_quoted_service_section(self):
+        self.set_config_file_contents(
+            '[default]\nservices = local\n'
+            '[services "local"]\n'
+            's3 =\n    endpoint_url = http://localhost:4567\n'
+            'ec2 =\n    endpoint_url = http://localhost:4568\n'
+        )
+        self.run_cmd(
+            'configure set s3.endpoint_url http://localhost:4569 '
+            '--services local'
+        )
+        config = load_config(self.config_filename)['services']['local']
+        self.assertEqual(
+            config,
+            {
+                's3': {'endpoint_url': 'http://localhost:4569'},
+                'ec2': {'endpoint_url': 'http://localhost:4568'},
+            },
+        )
+        self.assertEqual(self.get_config_file_contents().count('[services'), 1)
+
     def test_set_with_profile_spaces(self):
         self.run_cmd(
             [
@@ -436,6 +501,7 @@ class TestConfigureCommand(BaseAWSCommandParamsTest):
             "[sso-session my-sso-session]\nsso_region = eu-central-1\n",
             self.get_config_file_contents(),
         )
+
     def test_set_rejects_newline_in_value(self):
         _, stderr, _ = self.run_cmd(
             ["configure", "set", "region", "us-east-1\nus-west-2"],
@@ -477,7 +543,9 @@ class TestConfigureCommand(BaseAWSCommandParamsTest):
         contents = self.get_config_file_contents()
         self.assertNotIn("region", contents)
 
-    def test_newline_injection_does_not_set_injected_key_in_parsed_config(self):
+    def test_newline_injection_does_not_set_injected_key_in_parsed_config(
+        self,
+    ):
         # Even if the file were somehow written, the injected key must not be
         # readable back via 'configure get'.
         self.set_config_file_contents("[default]\n")
@@ -487,9 +555,7 @@ class TestConfigureCommand(BaseAWSCommandParamsTest):
         )
         # Re-create the driver so it re-reads the (unchanged) config file.
         self.driver = create_clidriver()
-        stdout, _, _ = self.run_cmd(
-            "configure get region", expected_rc=1
-        )
+        stdout, _, _ = self.run_cmd("configure get region", expected_rc=1)
         self.assertEqual(stdout.strip(), "")
 
 

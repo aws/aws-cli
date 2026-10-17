@@ -18,7 +18,6 @@ from botocore.client import Config
 from botocore.useragent import register_feature_id
 from botocore.utils import ensure_boolean, is_s3express_bucket
 from dateutil.parser import parse
-from dateutil.tz import tzlocal
 
 from awscli.compat import queue
 from awscli.customizations.commands import BasicCommand
@@ -942,7 +941,7 @@ class ListCommand(S3Command):
         or buckets are being listed
         """
         last_mod = parse(last_mod)
-        last_mod = last_mod.astimezone(tzlocal())
+        last_mod = last_mod.astimezone()
         last_mod_tup = (
             str(last_mod.year),
             str(last_mod.month).zfill(2),

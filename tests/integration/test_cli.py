@@ -49,18 +49,28 @@ class TestBasicCommandFunctionality(unittest.TestCase):
         session = botocore.session.get_session()
         client = session.create_client('s3', 'us-east-1')
         client.create_bucket(Bucket=bucket, ObjectOwnership='ObjectWriter')
+        # S3 can intermittently reject DeleteBucket with OperationAborted
+        # while a conflicting operation on the bucket is still in progress.
+        self.addCleanup(
+            self._call_with_retry,
+            'OperationAborted',
+            client.delete_bucket,
+            backoff=2,
+            Bucket=bucket,
+        )
         client.get_waiter('bucket_exists').wait(Bucket=bucket)
-        self.addCleanup(self._delete_bucket_with_retry, client, bucket)
         client.delete_public_access_block(Bucket=bucket)
         # Deleting the public access block is eventually consistent, so
-        # wait until it is consistently reported as gone.
-        ConsistencyWaiter(min_successes=3, delay=2, max_attempts=30).wait(
+        # wait until it is reported as gone.
+        ConsistencyWaiter(delay=2, max_attempts=30).wait(
             self._public_access_block_deleted, client, bucket
         )
         call_args = {'Bucket': bucket, 'Key': key, 'Body': content}
         if extra_args is not None:
             call_args.update(extra_args)
-        self._put_object_with_retry(client, call_args)
+        # Even after the public access block is reported as deleted, a
+        # PutObject with a public ACL can still briefly be denied.
+        self._call_with_retry('AccessDenied', client.put_object, **call_args)
         self.addCleanup(client.delete_object, Bucket=bucket, Key=key)
 
     def _public_access_block_deleted(self, client, bucket):
@@ -73,29 +83,19 @@ class TestBasicCommandFunctionality(unittest.TestCase):
             raise
         return False
 
-    def _put_object_with_retry(self, client, call_args, attempts=5, delay=5):
-        # Even after the public access block is reported as deleted, a
-        # PutObject with a public ACL can still briefly be denied.
+    def _call_with_retry(
+        self, error_code, func, attempts=5, delay=5, backoff=1, **kwargs
+    ):
+        # Retry func on a ClientError with the given code, sleeping
+        # delay * backoff**attempt seconds between attempts.
         for attempt in range(attempts):
             try:
-                return client.put_object(**call_args)
+                return func(**kwargs)
             except ClientError as e:
                 code = e.response['Error']['Code']
-                if code != 'AccessDenied' or attempt == attempts - 1:
+                if code != error_code or attempt == attempts - 1:
                     raise
-                time.sleep(delay)
-
-    def _delete_bucket_with_retry(self, client, bucket, attempts=5, delay=5):
-        # S3 can intermittently reject DeleteBucket with OperationAborted
-        # while a conflicting operation on the bucket is still in progress.
-        for attempt in range(attempts):
-            try:
-                return client.delete_bucket(Bucket=bucket)
-            except ClientError as e:
-                code = e.response['Error']['Code']
-                if code != 'OperationAborted' or attempt == attempts - 1:
-                    raise
-                time.sleep(delay * 2**attempt)
+                time.sleep(delay * backoff**attempt)
 
     def test_ec2_describe_instances(self):
         # Verify we can make a call and get output.

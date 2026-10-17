@@ -1371,7 +1371,7 @@ class TestMbRb(BaseS3IntegrationTest):
         p = aws('s3 rb s3://%s' % bucket_name)
         self.assert_no_errors(p)
 
-    def test_fail_mb_rb(self, shared_bucket, region):
+    def test_fail_mb_existing_bucket(self, shared_bucket, region):
         # Try to create a bucket we already own. Using a bucket owned by
         # someone else can intermittently fail with `OperationAborted` due
         # to concurrent requests outside our control. The region must match

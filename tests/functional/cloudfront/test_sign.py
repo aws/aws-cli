@@ -896,11 +896,15 @@ class TestSignSigningFailures(BaseSigningCommandTest):
         self.assert_signing_failure(EC)
 
     def test_sign_cookies_signing_failure(self):
-        with mock.patch.object(RSA, 'sign', side_effect=self.signing_error):
-            _, stderr, _ = self.sign_cookies(
-                '--resource', 'http://example.com/hi', expected_rc=255
-            )
-        self.assertIn('Failed to sign the CloudFront policy', stderr)
+        for signing_error in self.signing_errors:
+            with self.subTest(error=type(signing_error).__name__):
+                with mock.patch.object(
+                    RSA, 'sign', side_effect=signing_error
+                ):
+                    _, stderr, _ = self.sign_cookies(
+                        '--resource', 'http://example.com/hi', expected_rc=255
+                    )
+                self.assertIn('Failed to sign the CloudFront policy', stderr)
 
 
 class TestSignCookies(BaseSigningCommandTest):

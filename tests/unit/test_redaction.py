@@ -105,6 +105,12 @@ def test_redacts_truncated_base64_private_key():
     )
 
 
+@pytest.mark.parametrize('cls', [bytes, bytearray])
+def test_redacts_non_utf8_bytes(cls):
+    value = cls(b'\xff\xfe' + KEY_PEM.encode('ascii') + b'\x80')
+    assert redact(value) == cls(b'\xff\xfe' + REDACTED.encode() + b'\n\x80')
+
+
 def test_redacts_base64_private_key_bytes():
     value = b'{"PrivateKey": "' + _b64(KEY_PEM).encode('ascii') + b'"}'
     assert redact(value) == b'{"PrivateKey": "' + REDACTED.encode() + b'"}'

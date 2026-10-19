@@ -49,17 +49,17 @@ def register_redaction(pattern, replacement):
 def redact(value):
     """Return ``value`` with every registered pattern redacted.
 
-    Strings and UTF-8 encoded bytes are redacted, including those nested in
-    lists, tuples, and mappings. Other values are returned unchanged.
+    Strings and bytes are redacted, including those nested in lists, tuples,
+    and mappings. Bytes are matched as UTF-8, and any bytes that aren't valid
+    UTF-8 are preserved. Other values are returned unchanged.
     """
     if isinstance(value, str):
         return _redact_text(value)
-    if isinstance(value, bytes):
-        try:
-            text = value.decode('utf-8')
-        except UnicodeDecodeError:
-            return value
-        return _redact_text(text).encode('utf-8')
+    if isinstance(value, (bytes, bytearray)):
+        # surrogateescape round-trips bytes that aren't valid UTF-8.
+        text = value.decode('utf-8', 'surrogateescape')
+        redacted = _redact_text(text).encode('utf-8', 'surrogateescape')
+        return type(value)(redacted)
     if isinstance(value, (list, tuple)):
         items = [redact(item) for item in value]
         return items if isinstance(value, list) else tuple(items)

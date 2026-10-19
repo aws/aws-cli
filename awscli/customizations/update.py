@@ -113,7 +113,9 @@ class BaseUpdateCommand(BasicCommand):
                 'that confirms the install script is authentic before it is '
                 'run. Only use it if you understand and accept the risk '
                 '(for example, when gpg is unavailable on Linux and cannot '
-                'be installed).'
+                'be installed). Setting the '
+                'AWS_CLI_INSTALL_SKIP_SIGNATURE_VERIFICATION environment '
+                'variable to "true" does the same.'
             ),
         },
     ]
@@ -170,8 +172,9 @@ class BaseUpdateCommand(BasicCommand):
     def _warn_skipping_verification(self):
         uni_print(
             "WARNING: skipping install script signature verification "
-            "(--skip-signature-verification); the downloaded script will be "
-            "run without confirming it is authentic.\n",
+            "(--skip-signature-verification or "
+            "AWS_CLI_INSTALL_SKIP_SIGNATURE_VERIFICATION); the downloaded "
+            "script will be run without confirming it is authentic.\n",
             sys.stderr,
         )
 
@@ -246,9 +249,10 @@ class UnixUpdateCommand(BaseUpdateCommand):
         if gpg is None:
             raise UpdateError(
                 'gpg was not found, so the downloaded install script cannot '
-                'be verified. Install gnupg and try again, or re-run with '
-                '--skip-signature-verification to update without verification '
-                '(not recommended).'
+                'be verified. Install gnupg and try again, re-run with '
+                '--skip-signature-verification, or set '
+                'AWS_CLI_INSTALL_SKIP_SIGNATURE_VERIFICATION=true, to update '
+                'without verification (not recommended).'
             )
         sig_path = script_path + '.sig'
         self._download(self.SCRIPT_URL + '.sig', sig_path)

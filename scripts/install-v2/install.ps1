@@ -142,7 +142,9 @@ Parameters:
                     Skip signature verification of the downloaded installer.
                     NOT RECOMMENDED: this disables a security control that
                     confirms the installer is authentic. Only use it if you
-                    understand and accept the risk.
+                    understand and accept the risk. The
+                    AWS_CLI_INSTALL_SKIP_SIGNATURE_VERIFICATION env var
+                    (below) does the same.
   -Help             Show this help and exit.
 
 Environment:

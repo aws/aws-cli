@@ -153,7 +153,9 @@ Options:
                       NOT RECOMMENDED: this disables a security control that
                       confirms the installer is authentic. Only use it if you
                       understand and accept the risk (e.g. gpg is unavailable
-                      and cannot be installed).
+                      and cannot be installed). The
+                      AWS_CLI_INSTALL_SKIP_SIGNATURE_VERIFICATION env var
+                      (below) does the same.
   -h, --help          Show this help and exit.
 
 Environment:
@@ -452,7 +454,7 @@ download_installer() {
 
 verify_linux_signature() {
   if ! command -v gpg >/dev/null 2>&1; then
-    error 1 "gpg not found; cannot verify the installer signature. Install gnupg and re-run, or re-run with --skip-signature-verification to install without verification (not recommended)."
+    error 1 "gpg not found; cannot verify the installer signature. Install gnupg and re-run, re-run with --skip-signature-verification, or set AWS_CLI_INSTALL_SKIP_SIGNATURE_VERIFICATION=true, to install without verification (not recommended)."
   fi
 
   local sig_url sig_path gpghome keyfile

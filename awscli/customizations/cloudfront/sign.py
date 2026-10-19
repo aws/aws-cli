@@ -284,7 +284,8 @@ class SignCookiesCommand(BaseSignCommand):
         'application needs when setting them. A custom policy is used when '
         '--date-greater-than or --ip-address is provided, or when the '
         'resource contains a ``*`` wildcard; otherwise a canned policy is '
-        'used.'
+        'used. The set of cookies depends on the policy type and hash '
+        'algorithm, so use --query to read individual cookies in scripts.'
     )
     ARG_TABLE = [
         {

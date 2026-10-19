@@ -9092,9 +9092,38 @@
         "accessLogConfiguration":{
           "shape":"ServiceConnectAccessLogConfiguration",
           "documentation":"<p>The configuration for Service Connect access logging. Access logs capture detailed information about requests made to your service, including request patterns, response codes, and timing data. They can be useful for debugging connectivity issues, monitoring service performance, and auditing service-to-service communication for security and compliance purposes.</p> <note> <p>To enable access logs, you must also specify a <code>logConfiguration</code> in the <code>serviceConnectConfiguration</code>.</p> </note>"
+        },
+        "containerConfigurations":{
+          "shape":"ServiceConnectContainerConfigurations",
+          "documentation":"<p>The settings for the Service Connect proxy container that Amazon ECS adds to each task in this service. Each object in the list sets exactly one setting, and each setting can appear only once in the list.</p> <p>Your changes to these settings apply only to tasks that Amazon ECS launches after you update the service. Your running tasks keep their existing settings until Amazon ECS replaces them. If you update the <code>serviceConnectConfiguration</code> of your service and don't include <code>containerConfigurations</code>, the proxy container settings return to their defaults.</p>"
         }
       },
       "documentation":"<p>The Service Connect configuration of your Amazon ECS service. The configuration for this service to discover and connect to services, and be discovered by, and connected from, other services within a namespace.</p> <p>Tasks that run in a namespace can use short names to connect to services in the namespace. Tasks can connect to services across all of the clusters in the namespace. Tasks connect through a managed proxy container that collects logs and metrics for increased visibility. Only the tasks that Amazon ECS services create are supported with Service Connect. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/service-connect.html\">Service Connect</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p>"
+    },
+    "ServiceConnectContainerConfiguration":{
+      "type":"structure",
+      "members":{
+        "logLevel":{
+          "shape":"ServiceConnectContainerLogLevel",
+          "documentation":"<p>The log level of the Service Connect proxy container. Set the log level to <code>debug</code> to collect more detailed proxy logs when you troubleshoot connectivity issues between services, and set it back to <code>info</code> when you finish. Debug logging increases the volume of logs that the proxy container writes. If you don't specify a log level, the default is <code>info</code>.</p>"
+        }
+      },
+      "documentation":"<p>Contains a configuration setting for the Service Connect proxy container, such as the log level. Specify exactly one member in each object.</p>",
+      "union":true
+    },
+    "ServiceConnectContainerConfigurations":{
+      "type":"list",
+      "member":{"shape":"ServiceConnectContainerConfiguration"},
+      "max":10,
+      "min":0
+    },
+    "ServiceConnectContainerLogLevel":{
+      "type":"string",
+      "documentation":"<p>The log level of the Service Connect proxy container.</p> <p>Valid values:</p> <ul> <li> <p> <code>debug</code> - Collects more detailed proxy logs for troubleshooting connectivity issues between services.</p> </li> <li> <p> <code>info</code> - The default log level.</p> </li> </ul>",
+      "enum":[
+        "debug",
+        "info"
+      ]
     },
     "ServiceConnectIncludeQueryParameters":{
       "type":"string",

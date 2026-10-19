@@ -261,6 +261,47 @@
       "documentation":"<p>Creates a static snapshot of your prompt that can be deployed to production. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/prompt-management-deploy.html\">Deploy prompts using Prompt management by creating versions</a> in the Amazon Bedrock User Guide.</p>",
       "idempotent":true
     },
+    "CreateRetrievalInstruction":{
+      "name":"CreateRetrievalInstruction",
+      "http":{
+        "method":"POST",
+        "requestUri":"/retrievalinstructions/",
+        "responseCode":202
+      },
+      "input":{"shape":"CreateRetrievalInstructionRequest"},
+      "output":{"shape":"CreateRetrievalInstructionResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ConflictException"},
+        {"shape":"ServiceQuotaExceededException"}
+      ],
+      "documentation":"<p>Creates a new retrieval instruction. The retrieval instruction is usable once its status becomes ACTIVE. Use GetRetrievalInstruction to check whether it is ready.</p>",
+      "idempotent":true
+    },
+    "CreateRetrievalInstructionVersion":{
+      "name":"CreateRetrievalInstructionVersion",
+      "http":{
+        "method":"POST",
+        "requestUri":"/retrievalinstructions/{retrievalInstructionId}/versions",
+        "responseCode":201
+      },
+      "input":{"shape":"CreateRetrievalInstructionVersionRequest"},
+      "output":{"shape":"CreateRetrievalInstructionVersionResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"},
+        {"shape":"ServiceQuotaExceededException"}
+      ],
+      "documentation":"<p>Creates an immutable numbered version from the retrieval instruction's current reviewed content. The service creates the version synchronously.</p> <p>The service numbers versions from 1 and assigns them in order, never reusing a number.</p>",
+      "idempotent":true
+    },
     "CreateVpcConfiguration":{
       "name":"CreateVpcConfiguration",
       "http":{
@@ -519,6 +560,26 @@
         {"shape":"ConflictException"}
       ],
       "documentation":"<p>Removes the resource policy associated with a knowledge base. After deletion, other AWS accounts can no longer access the knowledge base using cross-account permissions.</p>",
+      "idempotent":true
+    },
+    "DeleteRetrievalInstruction":{
+      "name":"DeleteRetrievalInstruction",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/retrievalinstructions/{retrievalInstructionId}",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteRetrievalInstructionRequest"},
+      "output":{"shape":"DeleteRetrievalInstructionResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Deletes a retrieval instruction or a single version of it. Omit retrievalInstructionVersion to delete the retrieval instruction itself; the service rejects that request with ConflictException while the retrieval instruction has versions or while lastTransitionStatus is CREATING or UPDATING. Specify retrievalInstructionVersion to delete only that version; the retrieval instruction and its other versions are unaffected.</p>",
       "idempotent":true
     },
     "DeleteVpcConfiguration":{
@@ -867,6 +928,25 @@
       "documentation":"<p>Retrieves the resource policy associated with a knowledge base.</p>",
       "readonly":true
     },
+    "GetRetrievalInstruction":{
+      "name":"GetRetrievalInstruction",
+      "http":{
+        "method":"GET",
+        "requestUri":"/retrievalinstructions/{retrievalInstructionId}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetRetrievalInstructionRequest"},
+      "output":{"shape":"GetRetrievalInstructionResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Gets a retrieval instruction. Also used to poll the terminal reporting of an asynchronous create or update.</p>",
+      "readonly":true
+    },
     "GetVpcConfiguration":{
       "name":"GetVpcConfiguration",
       "http":{
@@ -1168,6 +1248,43 @@
         {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Returns either information about the working draft (<code>DRAFT</code> version) of each prompt in an account, or information about of all versions of a prompt, depending on whether you include the <code>promptIdentifier</code> field or not. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/prompt-management-manage.html#prompt-management-view.html\">View information about prompts using Prompt management</a> in the Amazon Bedrock User Guide.</p>",
+      "readonly":true
+    },
+    "ListRetrievalInstructionVersions":{
+      "name":"ListRetrievalInstructionVersions",
+      "http":{
+        "method":"GET",
+        "requestUri":"/retrievalinstructions/{retrievalInstructionId}/versions",
+        "responseCode":200
+      },
+      "input":{"shape":"ListRetrievalInstructionVersionsRequest"},
+      "output":{"shape":"ListRetrievalInstructionVersionsResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Lists the numbered versions of a retrieval instruction, newest first. DRAFT is not listed; read it with GetRetrievalInstruction without retrievalInstructionVersion. Results are paginated. Use the nextToken parameter to retrieve additional results.</p>",
+      "readonly":true
+    },
+    "ListRetrievalInstructions":{
+      "name":"ListRetrievalInstructions",
+      "http":{
+        "method":"GET",
+        "requestUri":"/retrievalinstructions/",
+        "responseCode":200
+      },
+      "input":{"shape":"ListRetrievalInstructionsRequest"},
+      "output":{"shape":"ListRetrievalInstructionsResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Lists the retrieval instructions in the caller's account. Results are paginated. Use the nextToken parameter to retrieve additional results.</p>",
       "readonly":true
     },
     "ListTagsForResource":{
@@ -1552,6 +1669,26 @@
         {"shape":"ServiceQuotaExceededException"}
       ],
       "documentation":"<p>Modifies a prompt in your prompt library. Include both fields that you want to keep and fields that you want to replace. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/prompt-management.html\">Prompt management in Amazon Bedrock</a> and <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/prompt-management-manage.html#prompt-management-edit\">Edit prompts in your prompt library</a> in the Amazon Bedrock User Guide.</p>",
+      "idempotent":true
+    },
+    "UpdateRetrievalInstruction":{
+      "name":"UpdateRetrievalInstruction",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/retrievalinstructions/{retrievalInstructionId}",
+        "responseCode":202
+      },
+      "input":{"shape":"UpdateRetrievalInstructionRequest"},
+      "output":{"shape":"UpdateRetrievalInstructionResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Updates the content of a retrieval instruction. The update is processed asynchronously; the stored content is a candidate until content review passes, and the served content does not change while the update is in flight. The service rejects the request with ConflictException while lastTransitionStatus is CREATING or UPDATING.</p>",
       "idempotent":true
     },
     "ValidateFlowDefinition":{
@@ -3815,6 +3952,134 @@
         }
       }
     },
+    "CreateRetrievalInstructionRequest":{
+      "type":"structure",
+      "required":[
+        "name",
+        "instruction"
+      ],
+      "members":{
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A caller-supplied token that makes a retried create return the existing resource rather than a second one. The window is 8 hours.</p>",
+          "idempotencyToken":true
+        },
+        "name":{
+          "shape":"RetrievalInstructionName",
+          "documentation":"<p>Specifies the name of the retrieval instruction.</p>"
+        },
+        "instruction":{
+          "shape":"RetrievalInstructionContent",
+          "documentation":"<p>The instruction content, as a set of named fields. Get does not return this field until the create review passes.</p>"
+        },
+        "description":{
+          "shape":"RetrievalInstructionDescription",
+          "documentation":"<p>Specifies a description of the retrieval instruction.</p>"
+        },
+        "customerEncryptionKeyArn":{
+          "shape":"KmsKeyArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of a customer managed AWS Key Management Service (AWS KMS) key used to encrypt the instruction content at rest. If you omit it, the service uses an AWS owned key. You fix the key at create and cannot change it later.</p>"
+        },
+        "tags":{
+          "shape":"TagsMap",
+          "documentation":"<p>Tags for the retrieval instruction.</p>"
+        }
+      }
+    },
+    "CreateRetrievalInstructionResponse":{
+      "type":"structure",
+      "required":[
+        "retrievalInstructionId",
+        "retrievalInstructionArn",
+        "name",
+        "status",
+        "lastTransitionStatus",
+        "createdAt",
+        "updatedAt"
+      ],
+      "members":{
+        "retrievalInstructionId":{
+          "shape":"RetrievalInstructionId",
+          "documentation":"<p>The identifier of the newly created retrieval instruction.</p>"
+        },
+        "retrievalInstructionArn":{
+          "shape":"RetrievalInstructionArn",
+          "documentation":"<p>The ARN of the newly created retrieval instruction.</p>"
+        },
+        "name":{
+          "shape":"RetrievalInstructionName",
+          "documentation":"<p>The name of the retrieval instruction.</p>"
+        },
+        "status":{
+          "shape":"RetrievalInstructionStatus",
+          "documentation":"<p>Always INACTIVE on this response. The content review has not run when this call returns, so the resource is not yet usable.</p>"
+        },
+        "lastTransitionStatus":{
+          "shape":"RetrievalInstructionLastTransitionStatus",
+          "documentation":"<p>Always CREATING on this response. Poll GetRetrievalInstruction until this member is neither CREATING nor UPDATING, then read the outcome from it.</p>"
+        },
+        "createdAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>When you created the retrieval instruction.</p>"
+        },
+        "updatedAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>When the retrieval instruction was last updated.</p>"
+        }
+      }
+    },
+    "CreateRetrievalInstructionVersionRequest":{
+      "type":"structure",
+      "required":["retrievalInstructionId"],
+      "members":{
+        "retrievalInstructionId":{
+          "shape":"RetrievalInstructionId",
+          "documentation":"<p>The identifier of the retrieval instruction to version.</p>",
+          "location":"uri",
+          "locationName":"retrievalInstructionId"
+        },
+        "description":{
+          "shape":"RetrievalInstructionDescription",
+          "documentation":"<p>A description of this version. Independent of the retrieval instruction's own description.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A caller-supplied token that makes a retried call return the version created by the first call rather than a second version. The window is 8 hours.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "CreateRetrievalInstructionVersionResponse":{
+      "type":"structure",
+      "required":[
+        "retrievalInstructionId",
+        "retrievalInstructionArn",
+        "version",
+        "createdAt"
+      ],
+      "members":{
+        "retrievalInstructionId":{
+          "shape":"RetrievalInstructionId",
+          "documentation":"<p>The identifier of the retrieval instruction.</p>"
+        },
+        "retrievalInstructionArn":{
+          "shape":"RetrievalInstructionArn",
+          "documentation":"<p>The ARN of the retrieval instruction. Versions do not have their own ARN.</p>"
+        },
+        "version":{
+          "shape":"RetrievalInstructionNumericalVersion",
+          "documentation":"<p>The number of the version created. Versions are numbered from 1 and allocated monotonically; a number is never reused, even after the version is deleted.</p>"
+        },
+        "createdAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>When this version was created.</p>"
+        },
+        "description":{
+          "shape":"RetrievalInstructionDescription",
+          "documentation":"<p>The description of this version, when one was supplied.</p>"
+        }
+      }
+    },
     "CreateVpcConfigurationRequest":{
       "type":"structure",
       "required":[
@@ -4703,6 +4968,45 @@
         "revisionId":{
           "shape":"RevisionId",
           "documentation":"<p>The revision identifier after the resource policy was deleted.</p>"
+        }
+      }
+    },
+    "DeleteRetrievalInstructionRequest":{
+      "type":"structure",
+      "required":["retrievalInstructionId"],
+      "members":{
+        "retrievalInstructionId":{
+          "shape":"RetrievalInstructionId",
+          "documentation":"<p>The identifier of the retrieval instruction to delete.</p>",
+          "location":"uri",
+          "locationName":"retrievalInstructionId"
+        },
+        "retrievalInstructionVersion":{
+          "shape":"RetrievalInstructionNumericalVersion",
+          "documentation":"<p>The version to delete. Omit this field to delete the retrieval instruction itself, which you can do only when it has no versions; while any version exists the service rejects the request with ConflictException. You cannot delete DRAFT on its own; deleting the retrieval instruction removes it.</p>",
+          "location":"querystring",
+          "locationName":"retrievalInstructionVersion"
+        }
+      }
+    },
+    "DeleteRetrievalInstructionResponse":{
+      "type":"structure",
+      "required":[
+        "retrievalInstructionId",
+        "retrievalInstructionArn"
+      ],
+      "members":{
+        "retrievalInstructionId":{
+          "shape":"RetrievalInstructionId",
+          "documentation":"<p>The identifier of the deleted retrieval instruction.</p>"
+        },
+        "retrievalInstructionArn":{
+          "shape":"RetrievalInstructionArn",
+          "documentation":"<p>The ARN of the retrieval instruction.</p>"
+        },
+        "version":{
+          "shape":"RetrievalInstructionNumericalVersion",
+          "documentation":"<p>The version that you deleted. Absent when you deleted the whole retrieval instruction.</p>"
         }
       }
     },
@@ -6732,6 +7036,90 @@
         }
       }
     },
+    "GetRetrievalInstructionRequest":{
+      "type":"structure",
+      "required":["retrievalInstructionId"],
+      "members":{
+        "retrievalInstructionId":{
+          "shape":"RetrievalInstructionId",
+          "documentation":"<p>The identifier of the retrieval instruction to get.</p>",
+          "location":"uri",
+          "locationName":"retrievalInstructionId"
+        },
+        "retrievalInstructionVersion":{
+          "shape":"RetrievalInstructionVersionSelector",
+          "documentation":"<p>The version to return: a version number, or DRAFT for the retrieval instruction's current reviewed content. When omitted, DRAFT is used. This default is permanent: omitting retrievalInstructionVersion will never resolve to a numbered version.</p>",
+          "location":"querystring",
+          "locationName":"retrievalInstructionVersion"
+        }
+      }
+    },
+    "GetRetrievalInstructionResponse":{
+      "type":"structure",
+      "required":[
+        "retrievalInstructionId",
+        "retrievalInstructionArn",
+        "name",
+        "status",
+        "lastTransitionStatus",
+        "createdAt",
+        "updatedAt"
+      ],
+      "members":{
+        "retrievalInstructionId":{
+          "shape":"RetrievalInstructionId",
+          "documentation":"<p>The identifier of the retrieval instruction.</p>"
+        },
+        "retrievalInstructionArn":{
+          "shape":"RetrievalInstructionArn",
+          "documentation":"<p>The ARN of the retrieval instruction.</p>"
+        },
+        "name":{
+          "shape":"RetrievalInstructionName",
+          "documentation":"<p>The name of the retrieval instruction.</p>"
+        },
+        "status":{
+          "shape":"RetrievalInstructionStatus",
+          "documentation":"<p>Specifies whether you can use the instruction. You can resolve only an ACTIVE instruction at retrieval time. Monotone: INACTIVE to ACTIVE once, never back. Numbered versions are always ACTIVE.</p>"
+        },
+        "lastTransitionStatus":{
+          "shape":"RetrievalInstructionLastTransitionStatus",
+          "documentation":"<p>The outcome or in-progress state of the most recent create or update. CREATING or UPDATING means the operation is still running. Independent of status. Always has a value from the create 202 onward. On a numbered version this is always CREATE_SUCCESSFUL: a version is created once, from reviewed content, and is immutable.</p>"
+        },
+        "instruction":{
+          "shape":"RetrievalInstructionContent",
+          "documentation":"<p>The reviewed content this instruction serves — what AgenticRetrieveStream resolves while status is ACTIVE. Absent until the first create review passes. Always present on a numbered version.</p>"
+        },
+        "createdAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>When the retrieval instruction was created. On a numbered version, when that version was created.</p>"
+        },
+        "updatedAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>When the retrieval instruction was last updated. Equal to createdAt on a numbered version, which is immutable.</p>"
+        },
+        "description":{
+          "shape":"RetrievalInstructionDescription",
+          "documentation":"<p>A description of the retrieval instruction. On a numbered version, the description of that version.</p>"
+        },
+        "customerEncryptionKeyArn":{
+          "shape":"KmsKeyArn",
+          "documentation":"<p>The ARN of the customer managed KMS key protecting this content, when one was supplied at create.</p>"
+        },
+        "lastTransitionStatusReasons":{
+          "shape":"RetrievalInstructionFailureReasons",
+          "documentation":"<p>Why the most recent create or update was rejected. One entry for each rejected field, or a single entry when the review itself failed. Each entry has a machine-readable code and a message, and names the field when it applies to one. The service includes this field only when lastTransitionStatus is CREATE_FAILED or UPDATE_FAILED. Never present on a numbered version.</p>"
+        },
+        "version":{
+          "shape":"RetrievalInstructionVersionSelector",
+          "documentation":"<p>The version this response describes: a version number, or DRAFT.</p>"
+        },
+        "latestVersion":{
+          "shape":"RetrievalInstructionNumericalVersion",
+          "documentation":"<p>The largest version number that currently exists for this retrieval instruction, that is, the newest version you can retrieve. Present only on a DRAFT read, and only when at least one version exists. Because version numbers are never reused, deleting versions can leave gaps: this is the newest existing version, not a count and not the highest number ever created.</p>"
+        }
+      }
+    },
     "GetVpcConfigurationRequest":{
       "type":"structure",
       "required":[
@@ -8232,6 +8620,81 @@
         "nextToken":{
           "shape":"NextToken",
           "documentation":"<p>If the total number of results is greater than the <code>maxResults</code> value provided in the request, use this token when making another request in the <code>nextToken</code> field to return the next batch of results.</p>"
+        }
+      }
+    },
+    "ListRetrievalInstructionVersionsRequest":{
+      "type":"structure",
+      "required":["retrievalInstructionId"],
+      "members":{
+        "retrievalInstructionId":{
+          "shape":"RetrievalInstructionId",
+          "documentation":"<p>The identifier of the retrieval instruction whose versions to list.</p>",
+          "location":"uri",
+          "locationName":"retrievalInstructionId"
+        },
+        "maxResults":{
+          "shape":"RetrievalInstructionMaxResults",
+          "documentation":"<p>Specifies the maximum number of versions to return in a single page. The service enforces the effective upper bound.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The pagination token from a previous ListRetrievalInstructionVersions response.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListRetrievalInstructionVersionsResponse":{
+      "type":"structure",
+      "required":["retrievalInstructionVersionSummaries"],
+      "members":{
+        "retrievalInstructionVersionSummaries":{
+          "shape":"RetrievalInstructionVersionSummaries",
+          "documentation":"<p>The version summaries in this page, newest first.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The pagination token to pass to the next ListRetrievalInstructionVersions call, absent on the last page.</p>"
+        }
+      }
+    },
+    "ListRetrievalInstructionsRequest":{
+      "type":"structure",
+      "members":{
+        "status":{
+          "shape":"RetrievalInstructionStatus",
+          "documentation":"<p>Return only instructions with this availability status.</p>",
+          "location":"querystring",
+          "locationName":"status"
+        },
+        "maxResults":{
+          "shape":"RetrievalInstructionMaxResults",
+          "documentation":"<p>The maximum number of results to return in a single page. The effective upper bound is enforced service-side.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The pagination token from a previous ListRetrievalInstructions response.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListRetrievalInstructionsResponse":{
+      "type":"structure",
+      "required":["retrievalInstructionSummaries"],
+      "members":{
+        "retrievalInstructionSummaries":{
+          "shape":"RetrievalInstructionSummaries",
+          "documentation":"<p>The retrieval instruction summaries in this page.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The pagination token to pass to the next ListRetrievalInstructions call, absent on the last page.</p>"
         }
       }
     },
@@ -10432,6 +10895,221 @@
       "documentation":"<p>Contains configurations for the service to use for retrieving data to return as the output from the node.</p>",
       "union":true
     },
+    "RetrievalInstructionArn":{
+      "type":"string",
+      "documentation":"<p>Arn representation of the RetrievalInstruction.</p>",
+      "pattern":"arn:aws(-cn|-us-gov|-eusc|-iso(-[b-f])?)?:bedrock:[a-z0-9-]{1,20}:[0-9]{12}:retrieval-instruction/[a-z0-9]{10}"
+    },
+    "RetrievalInstructionContent":{
+      "type":"structure",
+      "members":{
+        "retrievalGuidance":{
+          "shape":"RetrievalInstructionFieldText",
+          "documentation":"<p>How to interpret and decompose the question, and what to prioritise when searching.</p>"
+        },
+        "persona":{
+          "shape":"RetrievalInstructionFieldText",
+          "documentation":"<p>Who the assistant is: identity, tone and language.</p>"
+        },
+        "answerFormat":{
+          "shape":"RetrievalInstructionFieldText",
+          "documentation":"<p>How the answer is structured, including how sources are cited.</p>"
+        },
+        "answerPolicy":{
+          "shape":"RetrievalInstructionFieldText",
+          "documentation":"<p>Whether and how to answer: how strongly an answer must be supported, and what to do with questions outside scope.</p>"
+        }
+      },
+      "documentation":"<p>The instruction content, as a set of named fields. Every field is optional; at least one must be present. Service-side validation enforces per-field and aggregate size limits.</p>",
+      "sensitive":true
+    },
+    "RetrievalInstructionDescription":{
+      "type":"string",
+      "documentation":"<p>A description of a retrieval instruction.</p>",
+      "max":200,
+      "min":1,
+      "sensitive":true
+    },
+    "RetrievalInstructionFailureReason":{
+      "type":"structure",
+      "required":[
+        "code",
+        "message"
+      ],
+      "members":{
+        "fieldName":{
+          "shape":"RetrievalInstructionFieldName",
+          "documentation":"<p>The instruction field this entry is about. Present on review rejections of a specific field; absent when the failure applies to the whole review, because a client-side execution failure or a service fault has no single field.</p>"
+        },
+        "code":{
+          "shape":"RetrievalInstructionFailureReasonCode",
+          "documentation":"<p>Stable, machine-readable classification by fault attribution. Valid values:</p> <ul> <li> <p>CONTENT_REJECTED – The review rejected the named field's content; revise the text and resubmit.</p> </li> <li> <p>CLIENT_ERROR – The review could not run for a customer-side reason, for example the customer managed AWS KMS key could not be used; fix the configuration and resubmit.</p> </li> <li> <p>INTERNAL_ERROR – The review could not complete due to a service fault; retry the create or update.</p> </li> </ul> <p>New values may be added over time; your client should tolerate values it does not recognize and treat them as a failure.</p>"
+        },
+        "message":{
+          "shape":"String",
+          "documentation":"<p>Human-readable explanation of the specific cause. Never contains the customer's own text.</p>"
+        }
+      },
+      "documentation":"<p>One reason the most recent create or update did not succeed. code drives programmatic branching (fix the text, fix the configuration, or retry); message carries the specific cause.</p>"
+    },
+    "RetrievalInstructionFailureReasonCode":{
+      "type":"string",
+      "documentation":"<p>A machine-readable failure classification. See RetrievalInstructionFailureReason.code for the value semantics.</p>",
+      "enum":[
+        "CONTENT_REJECTED",
+        "CLIENT_ERROR",
+        "INTERNAL_ERROR"
+      ]
+    },
+    "RetrievalInstructionFailureReasons":{
+      "type":"list",
+      "member":{"shape":"RetrievalInstructionFailureReason"},
+      "documentation":"<p>Why the most recent create or update did not succeed: one entry per rejected field (CONTENT_REJECTED, with fieldName), or a single entry for a whole-review failure (CLIENT_ERROR or INTERNAL_ERROR, without fieldName). Present only when lastTransitionStatus is CREATE_FAILED or UPDATE_FAILED.</p>"
+    },
+    "RetrievalInstructionFieldName":{
+      "type":"string",
+      "documentation":"<p>Identifies one field of RetrievalInstructionContent:</p> <ul> <li> <p>RETRIEVAL_GUIDANCE – retrievalGuidance</p> </li> <li> <p>PERSONA – persona</p> </li> <li> <p>ANSWER_FORMAT – answerFormat</p> </li> <li> <p>ANSWER_POLICY – answerPolicy</p> </li> </ul>",
+      "enum":[
+        "RETRIEVAL_GUIDANCE",
+        "PERSONA",
+        "ANSWER_FORMAT",
+        "ANSWER_POLICY"
+      ]
+    },
+    "RetrievalInstructionFieldText":{
+      "type":"string",
+      "documentation":"<p>The text of a single retrieval instruction field.</p>",
+      "min":1,
+      "sensitive":true
+    },
+    "RetrievalInstructionId":{
+      "type":"string",
+      "documentation":"<p>The identifier of a retrieval instruction.</p>",
+      "max":10,
+      "min":10,
+      "pattern":"[a-z0-9]{10}"
+    },
+    "RetrievalInstructionLastTransitionStatus":{
+      "type":"string",
+      "documentation":"<p>The outcome or in-progress state of the most recent create or update of a retrieval instruction. Delete is synchronous and has no representation here. Independent of RetrievalInstructionStatus.</p>",
+      "enum":[
+        "CREATING",
+        "UPDATING",
+        "CREATE_SUCCESSFUL",
+        "CREATE_FAILED",
+        "UPDATE_SUCCESSFUL",
+        "UPDATE_FAILED"
+      ]
+    },
+    "RetrievalInstructionMaxResults":{
+      "type":"integer",
+      "documentation":"<p>The maximum number of items to return in a single page of ListRetrievalInstructions or ListRetrievalInstructionVersions. The effective upper bound is enforced service-side; the model constrains only to a positive value.</p>",
+      "box":true,
+      "min":1
+    },
+    "RetrievalInstructionName":{
+      "type":"string",
+      "documentation":"<p>The name of a retrieval instruction.</p>",
+      "max":100,
+      "min":1,
+      "pattern":"([0-9a-zA-Z][_-]?){1,100}",
+      "sensitive":true
+    },
+    "RetrievalInstructionNumericalVersion":{
+      "type":"string",
+      "documentation":"<p>A retrieval instruction version number: at most nine digits (1 to 999,999,999). Numbers are allocated monotonically from 1 and never reused, even after the version is deleted, so the shape also bounds the lifetime number of versions an instruction can ever allocate.</p>",
+      "pattern":"[1-9][0-9]{0,8}"
+    },
+    "RetrievalInstructionStatus":{
+      "type":"string",
+      "documentation":"<p>Specifies whether you can use a retrieval instruction. You can resolve only an ACTIVE retrieval instruction at retrieval time. Monotone: INACTIVE to ACTIVE once, never back.</p>",
+      "enum":[
+        "ACTIVE",
+        "INACTIVE"
+      ]
+    },
+    "RetrievalInstructionSummaries":{
+      "type":"list",
+      "member":{"shape":"RetrievalInstructionSummary"},
+      "documentation":"<p>List of retrieval instruction summaries.</p>"
+    },
+    "RetrievalInstructionSummary":{
+      "type":"structure",
+      "required":[
+        "retrievalInstructionId",
+        "retrievalInstructionArn",
+        "name",
+        "status",
+        "lastTransitionStatus",
+        "createdAt",
+        "updatedAt"
+      ],
+      "members":{
+        "retrievalInstructionId":{
+          "shape":"RetrievalInstructionId",
+          "documentation":"<p>The identifier of the retrieval instruction.</p>"
+        },
+        "retrievalInstructionArn":{
+          "shape":"RetrievalInstructionArn",
+          "documentation":"<p>The ARN of the retrieval instruction.</p>"
+        },
+        "name":{
+          "shape":"RetrievalInstructionName",
+          "documentation":"<p>The name of the retrieval instruction.</p>"
+        },
+        "status":{
+          "shape":"RetrievalInstructionStatus",
+          "documentation":"<p>Whether the instruction can be used. Only ACTIVE is resolvable at retrieval time.</p>"
+        },
+        "lastTransitionStatus":{
+          "shape":"RetrievalInstructionLastTransitionStatus",
+          "documentation":"<p>The outcome or in-progress state of the most recent create or update of the retrieval instruction.</p>"
+        },
+        "createdAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>When you created the retrieval instruction.</p>"
+        },
+        "updatedAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>When the retrieval instruction was last updated.</p>"
+        },
+        "description":{
+          "shape":"RetrievalInstructionDescription",
+          "documentation":"<p>A description of the retrieval instruction.</p>"
+        }
+      },
+      "documentation":"<p>A summary of a retrieval instruction, without the content.</p>"
+    },
+    "RetrievalInstructionVersionSelector":{
+      "type":"string",
+      "documentation":"<p>A version selector for a retrieval instruction: a version number, or DRAFT for the retrieval instruction's current reviewed content. Version numbers are 1 to 999,999,999 (at most nine digits, no leading zeros) — the same number space as RetrievalInstructionNumericalVersion.</p>",
+      "max":9,
+      "min":1,
+      "pattern":"(DRAFT|[1-9][0-9]{0,8})"
+    },
+    "RetrievalInstructionVersionSummaries":{
+      "type":"list",
+      "member":{"shape":"RetrievalInstructionVersionSummary"},
+      "documentation":"<p>List of retrieval instruction version summaries.</p>"
+    },
+    "RetrievalInstructionVersionSummary":{
+      "type":"structure",
+      "required":[
+        "version",
+        "createdAt"
+      ],
+      "members":{
+        "version":{
+          "shape":"RetrievalInstructionNumericalVersion",
+          "documentation":"<p>The version number.</p>"
+        },
+        "createdAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>When this version was created.</p>"
+        }
+      },
+      "documentation":"<p>A summary of one numbered version of a retrieval instruction, without the content.</p>"
+    },
     "RevisionId":{
       "type":"string",
       "max":255,
@@ -11138,7 +11816,7 @@
       "type":"string",
       "max":1011,
       "min":20,
-      "pattern":".*(^arn:aws:bedrock:[a-zA-Z0-9-]+:/d{12}:(agent|agent-alias|knowledge-base|flow|prompt)/[A-Z0-9]{10}(?:/[A-Z0-9]{10})?$|^arn:aws:bedrock:[a-zA-Z0-9-]+:/d{12}:flow/([A-Z0-9]{10})/alias/([A-Z0-9]{10})$|^arn:aws:bedrock:[a-zA-Z0-9-]+:/d{12}:prompt/([A-Z0-9]{10})?(?::/d+)?$).*"
+      "pattern":".*(^arn:aws:bedrock:[a-zA-Z0-9-]+:/d{12}:(agent|agent-alias|knowledge-base|flow|prompt)/[A-Z0-9]{10}(?:/[A-Z0-9]{10})?$|^arn:aws:bedrock:[a-zA-Z0-9-]+:/d{12}:flow/([A-Z0-9]{10})/alias/([A-Z0-9]{10})$|^arn:aws:bedrock:[a-zA-Z0-9-]+:/d{12}:prompt/([A-Z0-9]{10})?(?::/d+)?$|^arn:aws(-cn|-us-gov|-eusc|-iso(-[b-f])?)?:bedrock:[a-zA-Z0-9-]+:[0-9]{12}:retrieval-instruction/[a-z0-9]{10}$).*"
     },
     "TagsMap":{
       "type":"map",
@@ -12207,6 +12885,71 @@
         "updatedAt":{
           "shape":"DateTimestamp",
           "documentation":"<p>The time at which the prompt was last updated.</p>"
+        }
+      }
+    },
+    "UpdateRetrievalInstructionRequest":{
+      "type":"structure",
+      "required":[
+        "retrievalInstructionId",
+        "instruction"
+      ],
+      "members":{
+        "retrievalInstructionId":{
+          "shape":"RetrievalInstructionId",
+          "documentation":"<p>The identifier of the retrieval instruction to update.</p>",
+          "location":"uri",
+          "locationName":"retrievalInstructionId"
+        },
+        "instruction":{
+          "shape":"RetrievalInstructionContent",
+          "documentation":"<p>The replacement instruction content. This is a full replacement of all four fields, not a patch. During UPDATING, Get continues to return the previously-served content until the update review passes.</p>"
+        },
+        "description":{
+          "shape":"RetrievalInstructionDescription",
+          "documentation":"<p>A replacement description; applied together with the content when the review passes. Omit to clear.</p>"
+        }
+      }
+    },
+    "UpdateRetrievalInstructionResponse":{
+      "type":"structure",
+      "required":[
+        "retrievalInstructionId",
+        "retrievalInstructionArn",
+        "name",
+        "status",
+        "lastTransitionStatus",
+        "createdAt",
+        "updatedAt"
+      ],
+      "members":{
+        "retrievalInstructionId":{
+          "shape":"RetrievalInstructionId",
+          "documentation":"<p>The identifier of the retrieval instruction.</p>"
+        },
+        "retrievalInstructionArn":{
+          "shape":"RetrievalInstructionArn",
+          "documentation":"<p>The ARN of the retrieval instruction.</p>"
+        },
+        "name":{
+          "shape":"RetrievalInstructionName",
+          "documentation":"<p>The name of the retrieval instruction.</p>"
+        },
+        "status":{
+          "shape":"RetrievalInstructionStatus",
+          "documentation":"<p>Whether the instruction can be used. An update never lowers status. Unchanged from the previous value on this response.</p>"
+        },
+        "lastTransitionStatus":{
+          "shape":"RetrievalInstructionLastTransitionStatus",
+          "documentation":"<p>Always UPDATING on this response. Poll GetRetrievalInstruction until this member is neither CREATING nor UPDATING, then read the outcome from it.</p>"
+        },
+        "createdAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>When you created the retrieval instruction.</p>"
+        },
+        "updatedAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>When the retrieval instruction was last updated.</p>"
         }
       }
     },

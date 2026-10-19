@@ -11950,6 +11950,13 @@
       },
       "documentation":"<p>Optional attributes used to populate the content of an outbound web notification, such as recommender configuration for personalized content.</p>"
     },
+    "ContentDisposition":{
+      "type":"string",
+      "enum":[
+        "INLINE",
+        "ATTACHMENT"
+      ]
+    },
     "ContentType":{
       "type":"string",
       "max":255,
@@ -21432,7 +21439,8 @@
         "APPROVED",
         "REJECTED",
         "PROCESSING",
-        "FAILED"
+        "FAILED",
+        "DRAFTING"
       ]
     },
     "FileUseCaseType":{
@@ -21665,6 +21673,12 @@
           "documentation":"<p>The resource to which the attached file is (being) uploaded to. The supported resources are <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/cases.html\">Cases</a>, <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/setup-email-channel.html\">Email</a>, and <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/concepts-getting-started-tasks.html\">Task</a>.</p> <note> <p>This value must be a valid ARN.</p> </note>",
           "location":"querystring",
           "locationName":"associatedResourceArn"
+        },
+        "UrlContentDisposition":{
+          "shape":"ContentDisposition",
+          "documentation":"<p>Specifies how a browser handles the file at the pre-signed URL. The valid values are the following:</p> <dl> <dt>INLINE</dt> <dd> <p>Displays the file in the browser.</p> </dd> <dt>ATTACHMENT</dt> <dd> <p>Downloads the file. This is the default.</p> </dd> </dl>",
+          "location":"querystring",
+          "locationName":"urlContentDisposition"
         }
       },
       "documentation":"Request to GetAttachedFile API."

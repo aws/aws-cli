@@ -1217,6 +1217,12 @@
       "type":"structure",
       "members":{}
     },
+    "DirectSendEnforcementStatus":{
+      "type":"string",
+      "max":30,
+      "min":1
+    },
+    "DirectSendEnforcementStatusExpiresAt":{"type":"timestamp"},
     "DisassociateWhatsAppBusinessAccountInput":{
       "type":"structure",
       "required":["id"],
@@ -1772,6 +1778,14 @@
           "shape":"WhatsAppBusinessAccountMarketingMessagesOnboardingStatus",
           "documentation":"<p>The onboarding status for the Marketing Messages API. This value is fetched from Meta and indicates whether the WhatsApp Business Account is onboarded for Meta's Marketing Messages API.</p>"
         },
+        "directSendEnforcementStatus":{
+          "shape":"DirectSendEnforcementStatus",
+          "documentation":"<p>The Direct Send enforcement status for the WhatsApp Business Account. Enforcement applies when an account repeatedly sends messages in a category that does not match the content. This field is not present when no enforcement is active.</p>"
+        },
+        "directSendEnforcementStatusExpiresAt":{
+          "shape":"DirectSendEnforcementStatusExpiresAt",
+          "documentation":"<p>The time when the current Direct Send enforcement is expected to lift. This field is not present for permanent enforcement or when no enforcement is active.</p>"
+        },
         "datasetId":{
           "shape":"WhatsAppDatasetId",
           "documentation":"<p>The Meta Conversions API dataset ID associated with this WhatsApp Business Account. This value is a numeric string of 10 to 20 digits. This field is not present when no dataset has been created for this account.</p>"
@@ -1860,6 +1874,14 @@
         "marketingMessagesOnboardingStatus":{
           "shape":"WhatsAppBusinessAccountMarketingMessagesOnboardingStatus",
           "documentation":"<p>The onboarding status for the Marketing Messages API. This value is fetched from Meta and indicates whether the WhatsApp Business Account is onboarded for Meta's Marketing Messages API.</p>"
+        },
+        "directSendEnforcementStatus":{
+          "shape":"DirectSendEnforcementStatus",
+          "documentation":"<p>The Direct Send enforcement status for the WhatsApp Business Account. Enforcement applies when an account repeatedly sends messages in a category that does not match the content. This field is not present when no enforcement is active.</p>"
+        },
+        "directSendEnforcementStatusExpiresAt":{
+          "shape":"DirectSendEnforcementStatusExpiresAt",
+          "documentation":"<p>The time when the current Direct Send enforcement is expected to lift. This field is not present for permanent enforcement or when no enforcement is active.</p>"
         },
         "datasetId":{
           "shape":"WhatsAppDatasetId",
@@ -2576,6 +2598,11 @@
       "max":20,
       "min":1
     },
+    "MetaTemplateSource":{
+      "type":"string",
+      "max":20,
+      "min":1
+    },
     "MetaTemplateStatus":{
       "type":"string",
       "max":20,
@@ -3004,6 +3031,14 @@
         "templateCategory":{
           "shape":"MetaTemplateCategory",
           "documentation":"<p>The category of the template (for example, UTILITY or MARKETING).</p>"
+        },
+        "templateSource":{
+          "shape":"MetaTemplateSource",
+          "documentation":"<p>The source of the template. A value of AUTO_GENERATED indicates that the template was created automatically from a message that you sent. This field is not present for templates that you created manually.</p>"
+        },
+        "correctCategory":{
+          "shape":"MetaTemplateCategory",
+          "documentation":"<p>The category that the template content actually belongs to, when it differs from the template's current category. This field is present only when the template has been flagged as miscategorized.</p>"
         }
       },
       "documentation":"<p>Provides a summary of a WhatsApp message template's key attributes.</p>"

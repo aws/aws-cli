@@ -4532,6 +4532,26 @@
       "documentation":"<p>A value used in filter comparisons, supporting different data types.</p>",
       "union":true
     },
+    "FindingDescription":{
+      "type":"string",
+      "max":500,
+      "min":1,
+      "sensitive":true
+    },
+    "FindingTargetId":{
+      "type":"string",
+      "max":50,
+      "min":1
+    },
+    "FindingTargetType":{
+      "type":"string",
+      "documentation":"<p>The type of location in a session that a finding points to: a span ID, a trace ID, or a span name.</p>",
+      "enum":[
+        "SPAN_ID",
+        "TRACE_ID",
+        "SPAN_NAME"
+      ]
+    },
     "GatewayArn":{
       "type":"string",
       "pattern":"arn:aws(|-cn|-us-gov):bedrock-agentcore:[a-z0-9-]{1,20}:[0-9]{12}:gateway/([0-9a-z][-]?){1,48}-[a-z0-9]{10}"
@@ -4759,6 +4779,10 @@
         "evaluationResults":{
           "shape":"EvaluationJobResults",
           "documentation":"<p>The aggregated evaluation results, including session completion counts and evaluator score summaries.</p>"
+        },
+        "insightResults":{
+          "shape":"InsightResultList",
+          "documentation":"<p>The insights generated when the batch evaluation includes the <code>Builtin.FailureAnalysis</code> evaluator. Each insight groups related failures found across the evaluated sessions. An empty list means that no failures were found. If the analysis fails, this field is omitted and <code>errorDetails</code> describes the error.</p>"
         },
         "failureAnalysisResult":{
           "shape":"FailureAnalysisResultContent",
@@ -5748,7 +5772,7 @@
         },
         "oauth":{
           "shape":"OAuthCredentialProvider",
-          "documentation":"<p>OAuth 2.0 authentication via AgentCore Identity.</p>"
+          "documentation":"<p>OAuth 2.0 authentication via AgentCore Identity.</p> <p>The <code>AUTHORIZATION_CODE</code> grant type is not supported for outbound authentication from a harness to an AgentCore Gateway, even when <code>defaultReturnUrl</code> is specified.</p>"
         }
       },
       "documentation":"<p>Authentication method for calling a Gateway.</p>",
@@ -6772,6 +6796,12 @@
       },
       "documentation":"<p>A reference to an insight analysis to run against sessions during batch evaluation. Insights provide deeper analysis beyond individual evaluator scores, including failure detection, user intent clustering, and execution summarization.</p>"
     },
+    "InsightDescription":{
+      "type":"string",
+      "max":4000,
+      "min":1,
+      "sensitive":true
+    },
     "InsightId":{
       "type":"string",
       "documentation":"<p>Canonical insight identifiers using the Builtin.Insight.* naming convention. Used by BatchEvaluate, InternalEvaluate, and ServiceEngineEvaluate flows.</p>",
@@ -6782,6 +6812,105 @@
       "member":{"shape":"Insight"},
       "max":10,
       "min":0
+    },
+    "InsightName":{
+      "type":"string",
+      "max":200,
+      "min":1,
+      "sensitive":true
+    },
+    "InsightResult":{
+      "type":"structure",
+      "required":[
+        "type",
+        "name",
+        "description",
+        "createdAt"
+      ],
+      "members":{
+        "type":{
+          "shape":"InsightType",
+          "documentation":"<p>The type of insight. <code>FAILURE</code> indicates a group of related failures.</p>"
+        },
+        "name":{
+          "shape":"InsightName",
+          "documentation":"<p>A generated label for the insight. The name is not an identifier and can differ between batch evaluations.</p>"
+        },
+        "description":{
+          "shape":"InsightDescription",
+          "documentation":"<p>A description of the failure pattern that the insight represents.</p>"
+        },
+        "createdAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The timestamp when the insight was generated.</p>"
+        },
+        "affectedSessionCount":{
+          "shape":"Integer",
+          "documentation":"<p>The number of distinct sessions affected by the insight.</p>"
+        },
+        "sampleSessions":{
+          "shape":"InsightSampleSessionList",
+          "documentation":"<p>A sample of up to 10 sessions affected by the insight. Returned only when the insight has no root causes. Otherwise, sample sessions are returned for each root cause.</p>"
+        },
+        "rootCauses":{
+          "shape":"InsightRootCauseList",
+          "documentation":"<p>The root causes identified for the insight.</p>"
+        }
+      },
+      "documentation":"<p>An insight that groups related failures found across the sessions in a batch evaluation.</p>"
+    },
+    "InsightResultList":{
+      "type":"list",
+      "member":{"shape":"InsightResult"},
+      "max":50,
+      "min":0
+    },
+    "InsightRootCause":{
+      "type":"structure",
+      "required":[
+        "name",
+        "explanation"
+      ],
+      "members":{
+        "name":{
+          "shape":"RootCauseName",
+          "documentation":"<p>A generated label for the root cause.</p>"
+        },
+        "explanation":{
+          "shape":"RootCauseExplanation",
+          "documentation":"<p>An explanation of how the root cause leads to the failures in the insight.</p>"
+        },
+        "affectedSessionCount":{
+          "shape":"Integer",
+          "documentation":"<p>The number of distinct sessions affected by the root cause. A session can be affected by more than one root cause of the same insight.</p>"
+        },
+        "suggestedFix":{
+          "shape":"SuggestedFix",
+          "documentation":"<p>A suggested change to the agent that addresses the root cause.</p>"
+        },
+        "sampleSessions":{
+          "shape":"InsightSampleSessionList",
+          "documentation":"<p>A sample of up to 10 sessions affected by the root cause.</p>"
+        }
+      },
+      "documentation":"<p>A root cause that contributes to an insight.</p>"
+    },
+    "InsightRootCauseList":{
+      "type":"list",
+      "member":{"shape":"InsightRootCause"},
+      "max":50,
+      "min":0
+    },
+    "InsightSampleSessionList":{
+      "type":"list",
+      "member":{"shape":"SampleSession"},
+      "max":10,
+      "min":0
+    },
+    "InsightType":{
+      "type":"string",
+      "documentation":"<p>The type of insight.</p>",
+      "enum":["FAILURE"]
     },
     "InsightsFailureCategory":{
       "type":"string",
@@ -8098,7 +8227,7 @@
         },
         "namespace":{
           "shape":"Namespace",
-          "documentation":"<p>The namespace prefix to filter memory records by. Returns all memory records in namespaces that start with the provided prefix. Either <code>namespace</code> or <code>namespacePath</code> is required.</p>"
+          "documentation":"<p>The exact namespace to filter memory records by. Returns all memory records that matches the provided namespace. Either <code>namespace</code> or <code>namespacePath</code> is required.</p>"
         },
         "namespacePath":{
           "shape":"Namespace",
@@ -10393,7 +10522,7 @@
         },
         "namespace":{
           "shape":"Namespace",
-          "documentation":"<p>The namespace prefix to filter memory records by. Searches for memory records in namespaces that start with the provided prefix. Either <code>namespace</code> or <code>namespacePath</code> is required.</p>"
+          "documentation":"<p>The exact namespace to filter memory records by. Searches for memory records that matches the provided namespace value. Either <code>namespace</code> or <code>namespacePath</code> is required.</p>"
         },
         "namespacePath":{
           "shape":"Namespace",
@@ -10510,6 +10639,18 @@
       "member":{"shape":"RootCauseCluster"},
       "min":0
     },
+    "RootCauseExplanation":{
+      "type":"string",
+      "max":4000,
+      "min":1,
+      "sensitive":true
+    },
+    "RootCauseName":{
+      "type":"string",
+      "max":200,
+      "min":1,
+      "sensitive":true
+    },
     "RuntimeClientError":{
       "type":"structure",
       "members":{
@@ -10595,6 +10736,25 @@
       "type":"string",
       "max":1024,
       "min":1
+    },
+    "SampleSession":{
+      "type":"structure",
+      "required":["sessionId"],
+      "members":{
+        "sessionId":{
+          "shape":"SessionId",
+          "documentation":"<p>The unique identifier of the session.</p>"
+        },
+        "lastSeenAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The latest timestamp observed for the session in the batch evaluation input.</p>"
+        },
+        "findings":{
+          "shape":"SessionFindingList",
+          "documentation":"<p>The failures found in the session that belong to the insight or root cause, up to 10.</p>"
+        }
+      },
+      "documentation":"<p>A session affected by an insight or root cause. Use the session ID to find the per-session evaluation results in CloudWatch Logs.</p>"
     },
     "SaveBrowserSessionProfileRequest":{
       "type":"structure",
@@ -10907,6 +11067,50 @@
         }
       },
       "documentation":"<p>A time range filter for selecting sessions. Specifies the start and end times to narrow down which sessions are included.</p>"
+    },
+    "SessionFinding":{
+      "type":"structure",
+      "required":["description"],
+      "members":{
+        "targetId":{
+          "shape":"FindingTargetId",
+          "documentation":"<p>The identifier or name of the location in the session where the failure was found, interpreted according to <code>targetType</code>.</p>"
+        },
+        "targetType":{
+          "shape":"FindingTargetType",
+          "documentation":"<p>The type of location that <code>targetId</code> refers to.</p>"
+        },
+        "description":{
+          "shape":"FindingDescription",
+          "documentation":"<p>A description of the failure.</p>"
+        },
+        "category":{
+          "shape":"SessionFindingCategoryString",
+          "documentation":"<p>The category of the failure.</p>"
+        },
+        "confidence":{
+          "shape":"SessionFindingConfidenceDouble",
+          "documentation":"<p>The confidence that the finding is a failure, from 0 to 1.</p>"
+        }
+      },
+      "documentation":"<p>A failure found in a session.</p>"
+    },
+    "SessionFindingCategoryString":{
+      "type":"string",
+      "max":100,
+      "min":1
+    },
+    "SessionFindingConfidenceDouble":{
+      "type":"double",
+      "box":true,
+      "max":1,
+      "min":0
+    },
+    "SessionFindingList":{
+      "type":"list",
+      "member":{"shape":"SessionFinding"},
+      "max":10,
+      "min":0
     },
     "SessionId":{
       "type":"string",
@@ -11895,6 +12099,12 @@
       "type":"string",
       "max":2048,
       "min":1
+    },
+    "SuggestedFix":{
+      "type":"string",
+      "max":4000,
+      "min":1,
+      "sensitive":true
     },
     "SyntheticTimestamp_date_time":{
       "type":"timestamp",

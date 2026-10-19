@@ -10,12 +10,22 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import base64
+
 import pytest
 
 from awscli import redaction
 from awscli.redaction import redact, register_redaction
 
 REDACTED = '<redacted private key>'
+KEY_PEM = (
+    '-----BEGIN RSA PRIVATE KEY-----\nMIIEow\n-----END RSA PRIVATE KEY-----\n'
+)
+CERT_PEM = '-----BEGIN CERTIFICATE-----\nMIIC\n-----END CERTIFICATE-----\n'
+
+
+def _b64(text):
+    return base64.b64encode(text.encode('utf-8')).decode('ascii')
 
 
 @pytest.mark.parametrize(
@@ -70,6 +80,7 @@ def test_redacts_nested_values():
     [
         ['cloudfront', 'sign', '--private-key', 'file://key.pem'],
         '{"a": "-----BEGIN PUBLIC KEY-----"}',
+        '{"Certificate": "%s"}' % _b64(CERT_PEM),
         {'headers': {'a': 'b'}, 'body': b'\xff\xfe'},
         None,
         object(),
@@ -77,6 +88,29 @@ def test_redacts_nested_values():
 )
 def test_returns_values_without_matches_unchanged(value):
     assert redact(value) == value
+
+
+@pytest.mark.parametrize('pem', [KEY_PEM, CERT_PEM + KEY_PEM])
+def test_redacts_base64_private_keys(pem):
+    value = '{"Certificate": "%s", "PrivateKey": "%s"}' % (
+        _b64(CERT_PEM),
+        _b64(pem),
+    )
+    assert redact(value) == '{"Certificate": "%s", "PrivateKey": "%s"}' % (
+        _b64(CERT_PEM),
+        REDACTED,
+    )
+
+
+def test_redacts_truncated_base64_private_key():
+    assert redact('body: ' + _b64(KEY_PEM)[:45] + '...') == (
+        'body: ' + REDACTED + '...'
+    )
+
+
+def test_redacts_base64_private_key_bytes():
+    value = b'{"PrivateKey": "' + _b64(KEY_PEM).encode('ascii') + b'"}'
+    assert redact(value) == b'{"PrivateKey": "' + REDACTED.encode() + b'"}'
 
 
 def test_register_redaction(monkeypatch):

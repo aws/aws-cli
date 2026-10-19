@@ -11,6 +11,8 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 
+import base64
+import binascii
 import re
 from collections.abc import Mapping
 
@@ -23,8 +25,9 @@ def register_redaction(pattern, replacement):
     :type pattern: str or re.Pattern
     :param pattern: The regular expression to match sensitive text with.
 
-    :type replacement: str
-    :param replacement: The text to replace each match with.
+    :type replacement: str or callable
+    :param replacement: The text to replace each match with, or a function
+        that takes the match object and returns the replacement text.
     """
     if isinstance(pattern, str):
         pattern = re.compile(pattern)
@@ -60,11 +63,31 @@ def _redact_text(text):
 
 
 # PEM private keys.
+_PRIVATE_KEY_PATTERN = re.compile(
+    r'-----BEGIN [A-Z0-9 ]*PRIVATE KEY-----'
+    r'.*?(?:-----END [A-Z0-9 ]*PRIVATE KEY-----|\Z)',
+    re.DOTALL,
+)
+_REDACTED_PRIVATE_KEY = '<redacted private key>'
+
+
+def _redact_base64_private_key(match):
+    # Only redact PEM data containing a private key, not e.g. certificates.
+    encoded = match.group(0)
+    try:
+        decoded = base64.b64decode(encoded[: len(encoded) // 4 * 4])
+    except binascii.Error:
+        return encoded
+    if _PRIVATE_KEY_PATTERN.search(decoded.decode('latin-1')):
+        return _REDACTED_PRIVATE_KEY
+    return encoded
+
+
+register_redaction(_PRIVATE_KEY_PATTERN, _REDACTED_PRIVATE_KEY)
+
+# Base64 encoded PEM data, such as blob parameters read with fileb://.
+# "LS0tLS1CRUdJTi" is the base64 encoding of "-----BEGIN".
 register_redaction(
-    re.compile(
-        r'-----BEGIN [A-Z0-9 ]*PRIVATE KEY-----'
-        r'.*?(?:-----END [A-Z0-9 ]*PRIVATE KEY-----|\Z)',
-        re.DOTALL,
-    ),
-    '<redacted private key>',
+    r'(?<![A-Za-z0-9+/])LS0tLS1CRUdJTi[A-Za-z0-9+/]*={0,2}',
+    _redact_base64_private_key,
 )

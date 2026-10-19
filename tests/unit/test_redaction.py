@@ -116,6 +116,26 @@ def test_redacts_base64_private_key_bytes():
     assert redact(value) == b'{"PrivateKey": "' + REDACTED.encode() + b'"}'
 
 
+@pytest.mark.xfail(
+    strict=True,
+    reason='A key split across argv items, such as an unquoted $KEY, is '
+    'not redacted',
+)
+def test_redacts_word_split_private_key():
+    argv = ['--private-key'] + KEY_PEM.split()
+    assert 'MIIEow' not in redact(argv)
+
+
+@pytest.mark.xfail(
+    strict=True,
+    reason='Base64 PEM data that does not start with -----BEGIN is not '
+    'redacted',
+)
+def test_redacts_base64_private_key_with_leading_text():
+    encoded = _b64('Bag Attributes\n    localKeyID: 01\n' + KEY_PEM)
+    assert encoded not in redact(f'{{"PrivateKey": "{encoded}"}}')
+
+
 def test_register_redaction(monkeypatch):
     monkeypatch.setattr(redaction, '_REDACTIONS', list(redaction._REDACTIONS))
     register_redaction(r'secret-\w+', '<redacted secret>')

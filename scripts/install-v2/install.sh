@@ -59,6 +59,7 @@ E91G7bb0hOb/cA==
 ARG_VERSION=""            # --version value, empty means "latest"
 ARG_SYSTEM=0              # 1 if --system
 ARG_QUIET=0               # 1 if --quiet
+ARG_SKIP_VERIFY=0         # 1 if --skip-signature-verification
 
 # ----- Resolved state (set at runtime) --------------------------------------
 PLATFORM=""               # "linux" | "macos"
@@ -147,6 +148,14 @@ Options:
                       and uses /usr/local/aws-cli + /usr/local/bin.
   -q, --quiet         Suppress non-essential output. Errors and warnings are
                       still printed to stderr.
+  --skip-signature-verification
+                      Skip signature verification of the downloaded installer.
+                      NOT RECOMMENDED: this disables a security control that
+                      confirms the installer is authentic. Only use it if you
+                      understand and accept the risk (e.g. gpg is unavailable
+                      and cannot be installed). The
+                      AWS_CLI_INSTALL_SKIP_SIGNATURE_VERIFICATION env var
+                      (below) does the same.
   -h, --help          Show this help and exit.
 
 Environment:
@@ -154,6 +163,12 @@ Environment:
                       Default: $HOME/.local/share
   XDG_BIN_HOME        Symlink directory for user-local installs.
                       Default: $HOME/.local/bin
+  AWS_CLI_INSTALL_SKIP_SIGNATURE_VERIFICATION
+                      Set to "true" (case-insensitive) to skip signature
+                      verification, equivalent to the
+                      --skip-signature-verification flag. Provided so callers
+                      that cannot pass the flag (e.g. an older AWS CLI running
+                      'aws update') can still opt out. NOT RECOMMENDED.
 EOF
 }
 
@@ -163,6 +178,16 @@ is_valid_semver() {
 }
 
 parse_args() {
+  # Allow the signature-verification opt-out via environment as well as the
+  # flag. This is a version-independent escape hatch for callers that cannot
+  # pass --skip-signature-verification -- notably `aws update` run from an
+  # older AWS CLI, whose bundled update command predates the flag but still
+  # fetches and runs this (newer, verification-enforcing) script.
+  # Match the AWS CLI boolean-env-var convention (ensure_boolean): the value is
+  # true only when it equals "true", case-insensitively.
+  case "$(printf '%s' "${AWS_CLI_INSTALL_SKIP_SIGNATURE_VERIFICATION:-}" | tr '[:upper:]' '[:lower:]')" in
+    true) ARG_SKIP_VERIFY=1 ;;
+  esac
   while [ $# -gt 0 ]; do
     case "$1" in
       --version)
@@ -181,6 +206,10 @@ parse_args() {
         ;;
       -q|--quiet)
         ARG_QUIET=1
+        shift
+        ;;
+      --skip-signature-verification)
+        ARG_SKIP_VERIFY=1
         shift
         ;;
       -h|--help)
@@ -425,8 +454,7 @@ download_installer() {
 
 verify_linux_signature() {
   if ! command -v gpg >/dev/null 2>&1; then
-    warn "gpg not found; skipping signature verification. Install gnupg for stronger integrity guarantees."
-    return 0
+    error 1 "gpg not found; cannot verify the installer signature. Install gnupg and re-run, re-run with --skip-signature-verification, or set AWS_CLI_INSTALL_SKIP_SIGNATURE_VERIFICATION=true, to install without verification (not recommended)."
   fi
 
   local sig_url sig_path gpghome keyfile
@@ -476,6 +504,13 @@ verify_macos_signature() {
 }
 
 verify_installer() {
+  # Verification is on by default. --skip-signature-verification is an explicit,
+  # human-made opt-out (e.g. when gpg cannot be installed); it disables a
+  # security control, so it is never silent.
+  if [ "$ARG_SKIP_VERIFY" -eq 1 ]; then
+    warn "signature verification disabled (via --skip-signature-verification or AWS_CLI_INSTALL_SKIP_SIGNATURE_VERIFICATION); installing without verifying installer authenticity."
+    return 0
+  fi
   case "$PLATFORM" in
     linux) verify_linux_signature ;;
     macos) verify_macos_signature ;;

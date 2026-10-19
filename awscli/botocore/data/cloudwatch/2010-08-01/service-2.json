@@ -472,7 +472,7 @@
         "shape":"GetMetricWidgetImageOutput",
         "resultWrapper":"GetMetricWidgetImageResult"
       },
-      "documentation":"<p>You can use the <code>GetMetricWidgetImage</code> API to retrieve a snapshot graph of one or more Amazon CloudWatch metrics as a bitmap image. You can then embed this image into your services and products, such as wiki pages, reports, and documents. You could also retrieve images regularly, such as every minute, and create your own custom live dashboard.</p> <p>The graph you retrieve can include all CloudWatch metric graph features, including metric math and horizontal and vertical annotations.</p> <p>There is a limit of 20 transactions per second for this API. Each <code>GetMetricWidgetImage</code> action has the following limits:</p> <ul> <li> <p>As many as 100 metrics in the graph.</p> </li> <li> <p>Up to 100 KB uncompressed payload.</p> </li> </ul>"
+      "documentation":"<p>You can use the <code>GetMetricWidgetImage</code> API to retrieve a snapshot graph of one or more Amazon CloudWatch metrics as a bitmap image. You can then embed this image into your services and products, such as wiki pages, reports, and documents. You could also retrieve images regularly, such as every minute, and create your own custom live dashboard.</p> <note> <p> <code>GetMetricWidgetImage</code> is not available in the Amazon Web Services GovCloud (US) Regions. In those Regions, calls to this operation fail. For the list of Amazon CloudWatch features that are not available in Amazon Web Services GovCloud (US), see <a href=\"https://docs.aws.amazon.com/govcloud-us/latest/UserGuide/govcloud-cw.html\">Amazon CloudWatch in Amazon Web Services GovCloud (US)</a>.</p> </note> <p>The graph you retrieve can include all CloudWatch metric graph features, including metric math and horizontal and vertical annotations.</p> <p>There is a limit of 20 transactions per second for this API. Each <code>GetMetricWidgetImage</code> action has the following limits:</p> <ul> <li> <p>As many as 100 metrics in the graph.</p> </li> <li> <p>Up to 100 KB uncompressed payload.</p> </li> </ul>"
     },
     "GetOTelEnrichment":{
       "name":"GetOTelEnrichment",
@@ -925,6 +925,16 @@
       "max":255,
       "min":1
     },
+    "ActionConfiguration":{
+      "type":"structure",
+      "members":{
+        "AlarmTagsPropagation":{
+          "shape":"AlarmTagsPropagation",
+          "documentation":"<p>Settings for including the alarm's tags in its action notifications and state-change events.</p>"
+        }
+      },
+      "documentation":"<p>Settings that change the content of the notifications and events that an alarm sends when its state changes. These settings apply to the alarm's actions, whichever state triggers them.</p>"
+    },
     "ActionLogLineCount":{"type":"integer"},
     "ActionLogLineRoleArn":{"type":"string"},
     "ActionPrefix":{
@@ -1119,6 +1129,37 @@
     "AlarmRule":{
       "type":"string",
       "max":10240,
+      "min":1
+    },
+    "AlarmTagsPropagation":{
+      "type":"structure",
+      "required":["Enabled"],
+      "members":{
+        "Enabled":{
+          "shape":"AlarmTagsPropagationEnabled",
+          "documentation":"<p>Set to <code>true</code> to include the alarm's tags. Set to <code>false</code> to stop including them.</p> <p>When this is <code>true</code>, you must have the <code>cloudwatch:ListTagsForResource</code> permission on the alarm to create or update it.</p>"
+        },
+        "IncludedTagKeys":{
+          "shape":"AlarmTagsPropagationTagKeys",
+          "documentation":"<p>The tag keys to include. Only the alarm's tags with these keys are included.</p> <p>You can specify 1 to 50 tag keys. Each tag key must be 1 to 128 characters long.</p> <p>You can't specify both <code>IncludedTagKeys</code> and <code>ExcludedTagKeys</code>.</p>"
+        },
+        "ExcludedTagKeys":{
+          "shape":"AlarmTagsPropagationTagKeys",
+          "documentation":"<p>The tag keys to exclude. All of the alarm's tags except those with these keys are included.</p> <p>You can specify 1 to 50 tag keys. Each tag key must be 1 to 128 characters long.</p> <p>You can't specify both <code>IncludedTagKeys</code> and <code>ExcludedTagKeys</code>.</p>"
+        }
+      },
+      "documentation":"<p>Includes the alarm's tags in the notifications that the alarm sends to Amazon SNS topics and Lambda functions. The tags are also included in the alarm's state-change events in Amazon EventBridge. Other types of alarm actions don't receive the tags.</p> <p>By default, the alarm's tags aren't included.</p> <p>Use this to route or filter notifications and events by tag, such as by team or environment. You can also use it to read the alarm's tags without looking them up separately.</p> <p>To limit which tags are included, specify either <code>IncludedTagKeys</code> or <code>ExcludedTagKeys</code>. You can't specify both. If you specify neither, all of the alarm's tags are included. This includes tags that you add to the alarm later.</p>"
+    },
+    "AlarmTagsPropagationEnabled":{"type":"boolean"},
+    "AlarmTagsPropagationTagKey":{
+      "type":"string",
+      "max":128,
+      "min":1
+    },
+    "AlarmTagsPropagationTagKeys":{
+      "type":"list",
+      "member":{"shape":"AlarmTagsPropagationTagKey"},
+      "max":50,
       "min":1
     },
     "AlarmType":{
@@ -1386,6 +1427,10 @@
         "ActionsSuppressorExtensionPeriod":{
           "shape":"SuppressorPeriod",
           "documentation":"<p> The maximum time in seconds that the composite alarm waits after suppressor alarm goes out of the <code>ALARM</code> state. After this time, the composite alarm performs its actions. </p> <important> <p> <code>ExtensionPeriod</code> is required only when <code>ActionsSuppressor</code> is specified. </p> </important>"
+        },
+        "ActionConfiguration":{
+          "shape":"ActionConfiguration",
+          "documentation":"<p>Settings that change the content of the notifications and events that the alarm sends when its state changes. These settings apply to the alarm's actions, whichever state triggers them.</p>"
         }
       },
       "documentation":"<p>The details about a composite alarm.</p>",
@@ -1408,7 +1453,8 @@
         "ActionsSuppressedReason",
         "ActionsSuppressor",
         "ActionsSuppressorWaitPeriod",
-        "ActionsSuppressorExtensionPeriod"
+        "ActionsSuppressorExtensionPeriod",
+        "ActionConfiguration"
       ]
     },
     "CompositeAlarms":{
@@ -3402,6 +3448,10 @@
         "WarmUpConfiguration":{
           "shape":"WarmUpConfiguration",
           "documentation":"<p>The warm-up configuration for the alarm. A warm-up period delays alarm evaluation after you create or update the alarm. During the warm-up period, the alarm stays in <code>INSUFFICIENT_DATA</code> and does not perform alarm actions.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/alarm-warm-up.html\">Alarm warm-up periods</a> in the <i>Amazon CloudWatch User Guide</i>.</p>"
+        },
+        "ActionConfiguration":{
+          "shape":"ActionConfiguration",
+          "documentation":"<p>Settings that change the content of the notifications and events that the alarm sends when its state changes. These settings apply to the alarm's actions, whichever state triggers them.</p>"
         }
       },
       "documentation":"<p>The details about a log alarm.</p>",
@@ -3428,7 +3478,8 @@
         "EvaluationState",
         "ActionLogLineCount",
         "ActionLogLineRoleArn",
-        "WarmUpConfiguration"
+        "WarmUpConfiguration",
+        "ActionConfiguration"
       ]
     },
     "LogAlarms":{
@@ -3690,6 +3741,10 @@
         "EvaluationInterval":{
           "shape":"EvaluationInterval",
           "documentation":"<p>The frequency, in seconds, at which the alarm is evaluated.</p>"
+        },
+        "ActionConfiguration":{
+          "shape":"ActionConfiguration",
+          "documentation":"<p>Settings that change the content of the notifications and events that the alarm sends when its state changes. These settings apply to the alarm's actions, whichever state triggers them.</p>"
         }
       },
       "documentation":"<p>The details about a metric alarm.</p>",
@@ -3726,7 +3781,8 @@
         "EvaluationWindow",
         "WarmUpConfiguration",
         "EvaluationCriteria",
-        "EvaluationInterval"
+        "EvaluationInterval",
+        "ActionConfiguration"
       ]
     },
     "MetricAlarms":{
@@ -4321,6 +4377,10 @@
         "ActionsSuppressorExtensionPeriod":{
           "shape":"SuppressorPeriod",
           "documentation":"<p> The maximum time in seconds that the composite alarm waits after suppressor alarm goes out of the <code>ALARM</code> state. After this time, the composite alarm performs its actions. </p> <important> <p> <code>ExtensionPeriod</code> is required only when <code>ActionsSuppressor</code> is specified. </p> </important>"
+        },
+        "ActionConfiguration":{
+          "shape":"ActionConfiguration",
+          "documentation":"<p>Settings that change the content of the notifications and events that the alarm sends when its state changes. These settings apply to the alarm's actions, whichever state triggers them.</p>"
         }
       }
     },
@@ -4461,6 +4521,10 @@
         "WarmUpConfiguration":{
           "shape":"WarmUpConfiguration",
           "documentation":"<p>The warm-up configuration for the alarm. A warm-up period delays alarm evaluation after you create or update the alarm. The warm-up period reduces alarm noise from missing data while a new resource or service starts publishing data.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/alarm-warm-up.html\">Alarm warm-up periods</a> in the <i>Amazon CloudWatch User Guide</i>.</p>"
+        },
+        "ActionConfiguration":{
+          "shape":"ActionConfiguration",
+          "documentation":"<p>Settings that change the content of the notifications and events that the alarm sends when its state changes. These settings apply to the alarm's actions, whichever state triggers them.</p>"
         }
       }
     },
@@ -4590,6 +4654,10 @@
         "EvaluationInterval":{
           "shape":"EvaluationInterval",
           "documentation":"<p>The frequency, in seconds, at which the alarm is evaluated. Valid values are 10, 20, 30, and any multiple of 60.</p> <p>This parameter is required for alarms that use <code>EvaluationCriteria</code>, and cannot be specified for alarms configured with <code>MetricName</code> or <code>Metrics</code>.</p>"
+        },
+        "ActionConfiguration":{
+          "shape":"ActionConfiguration",
+          "documentation":"<p>Settings that change the content of the notifications and events that the alarm sends when its state changes. These settings apply to the alarm's actions, whichever state triggers them.</p>"
         }
       }
     },

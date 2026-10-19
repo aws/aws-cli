@@ -1662,6 +1662,21 @@
       },
       "documentation":"<p>Defines the rules by which an image pipeline is automatically disabled when it fails. By default, if the schedule doesn't include an auto-disable policy, Image Builder disables the pipeline after 5 consecutive failed scheduled builds.</p>"
     },
+    "AutoScalingGroupConfiguration":{
+      "type":"structure",
+      "required":["name"],
+      "members":{
+        "name":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The name of the Auto Scaling group, in the same account and Amazon Web Services Region as the infrastructure configuration. To specify a group, you must have permissions to describe it.</p>"
+        },
+        "capacityWaitTimeoutSeconds":{
+          "shape":"CapacityWaitTimeoutSeconds",
+          "documentation":"<p>The number of seconds that Image Builder waits for an instance to become available in the group before the build fails. If you set this value to 0 or omit it, the build fails as soon as the group has no instance available.</p>"
+        }
+      },
+      "documentation":"<p>Identifies the Amazon EC2 Auto Scaling group that Image Builder takes the build instance from, and how long Image Builder waits when the group has no instance available.</p>"
+    },
     "Boolean":{"type":"boolean"},
     "BuildType":{
       "type":"string",
@@ -1742,6 +1757,11 @@
           "documentation":"<p>The unique identifier of the lifecycle execution that the cancellation request applies to. The cancellation completes asynchronously.</p>"
         }
       }
+    },
+    "CapacityWaitTimeoutSeconds":{
+      "type":"integer",
+      "max":3600,
+      "min":0
     },
     "ClientException":{
       "type":"structure",
@@ -2848,6 +2868,10 @@
           "shape":"NullableBoolean",
           "documentation":"<p>Specifies whether to terminate the instance on failure. Set to false if you want Image Builder to retain the instance used to configure your AMI if the build or test phase of your workflow fails. Defaults to <code>true</code>.</p>"
         },
+        "terminateInstanceOnCompletion":{
+          "shape":"NullableBoolean",
+          "documentation":"<p>Specifies whether Image Builder terminates build and test instances when image creation ends without a failure (success, cancellation, or expiration). Defaults to <code>true</code>.</p>"
+        },
         "snsTopicArn":{
           "shape":"SnsTopicArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the SNS topic to which Image Builder sends image build event notifications. Specify a standard topic. Image Builder doesn't support FIFO topics. Image Builder validates the topic when you create or update the configuration. You must have permission to publish to the topic.</p> <note> <p>EC2 Image Builder can't send notifications to SNS topics that are encrypted using keys from other accounts. If your SNS topic is encrypted, the key must be owned by the same account that owns your Image Builder resources.</p> </note>"
@@ -2867,6 +2891,10 @@
         "placement":{
           "shape":"Placement",
           "documentation":"<p>The instance placement settings that define where the build and test instances that Image Builder launches during image creation run. These settings don't affect instances that you launch from the output image.</p>"
+        },
+        "parentInstance":{
+          "shape":"ParentInstanceConfiguration",
+          "documentation":"<p>The Amazon EC2 Auto Scaling group that Image Builder takes the build instance from, instead of launching a new instance. This applies only to the build phase.</p> <p>To use this feature, the execution role for the build must have permissions to describe the Auto Scaling group, tag the instance while it's still in the group, and detach it from the group. For more information, see <a href=\"https://docs.aws.amazon.com/imagebuilder/latest/userguide/infra-config-parent-instance.html\">Build on an instance from an Auto Scaling group</a> in the <i>EC2 Image Builder User Guide</i>.</p>"
         },
         "clientToken":{
           "shape":"ClientToken",
@@ -5415,6 +5443,14 @@
         "placement":{
           "shape":"Placement",
           "documentation":"<p>The instance placement settings that define where the build and test instances that Image Builder launches during image creation run. These settings don't affect instances that you launch from the output image.</p>"
+        },
+        "terminateInstanceOnCompletion":{
+          "shape":"NullableBoolean",
+          "documentation":"<p>Specifies whether Image Builder terminates build and test instances when image creation ends without a failure.</p>"
+        },
+        "parentInstance":{
+          "shape":"ParentInstanceConfiguration",
+          "documentation":"<p>The Amazon EC2 Auto Scaling group that Image Builder takes the build instance from, instead of launching a new instance. This applies only to the build phase.</p>"
         }
       },
       "documentation":"<p>Details of the infrastructure configuration.</p>"
@@ -7218,6 +7254,17 @@
       "min":1,
       "pattern":"^[A-Za-z0-9][A-Za-z0-9-_+#]{0,99}$"
     },
+    "ParentInstanceConfiguration":{
+      "type":"structure",
+      "required":["autoScalingGroup"],
+      "members":{
+        "autoScalingGroup":{
+          "shape":"AutoScalingGroupConfiguration",
+          "documentation":"<p>The Amazon EC2 Auto Scaling group that Image Builder takes the build instance from. This is required when you specify <code>parentInstance</code>.</p>"
+        }
+      },
+      "documentation":"<p>Settings for building on an instance that is already running, instead of an instance that Image Builder launches for the build.</p>"
+    },
     "PipelineExecutionStartCondition":{
       "type":"string",
       "enum":[
@@ -8263,6 +8310,10 @@
           "shape":"NullableBoolean",
           "documentation":"<p>Specifies whether to terminate the instance on failure. Set to false if you want Image Builder to retain the instance used to configure your AMI if the build or test phase of your workflow fails. Defaults to <code>true</code>.</p>"
         },
+        "terminateInstanceOnCompletion":{
+          "shape":"NullableBoolean",
+          "documentation":"<p>Specifies whether Image Builder terminates build and test instances when image creation ends without a failure (success, cancellation, or expiration). Defaults to <code>true</code>.</p>"
+        },
         "snsTopicArn":{
           "shape":"SnsTopicArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the SNS topic to which Image Builder sends image build event notifications. Specify a standard topic. Image Builder doesn't support FIFO topics. Image Builder validates the topic when you create or update the configuration. You must have permission to publish to the topic.</p> <note> <p>EC2 Image Builder can't send notifications to SNS topics that are encrypted using keys from other accounts. If your SNS topic is encrypted, the key must be owned by the same account that owns your Image Builder resources.</p> </note>"
@@ -8278,6 +8329,10 @@
         "placement":{
           "shape":"Placement",
           "documentation":"<p>The instance placement settings that define where the build and test instances that Image Builder launches during image creation run. These settings don't affect instances that you launch from the output image.</p>"
+        },
+        "parentInstance":{
+          "shape":"ParentInstanceConfiguration",
+          "documentation":"<p>The Amazon EC2 Auto Scaling group that Image Builder takes the build instance from, instead of launching a new instance. This applies only to the build phase.</p> <p>To use this feature, the execution role for the build must have permissions to describe the Auto Scaling group, tag the instance while it's still in the group, and detach it from the group. For more information, see <a href=\"https://docs.aws.amazon.com/imagebuilder/latest/userguide/infra-config-parent-instance.html\">Build on an instance from an Auto Scaling group</a> in the <i>EC2 Image Builder User Guide</i>.</p>"
         },
         "clientToken":{
           "shape":"ClientToken",

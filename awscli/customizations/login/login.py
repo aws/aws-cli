@@ -6,7 +6,6 @@ import webbrowser
 import botocore
 from awscrt.crypto import EC, ECType
 from botocore.exceptions import ProfileNotFound
-from botocore.loaders import Loader
 from botocore.utils import (
     JSONFileCache,
     LoginCredentialsLoader,
@@ -34,7 +33,7 @@ from awscli.customizations.sso.utils import (
     open_browser_with_original_ld_path,
     validate_redirect_port,
 )
-from awscli.customizations.utils import uni_print
+from awscli.customizations.utils import load_all_regions, uni_print
 
 DEFAULT_REGION_FOR_PROMPT = 'us-east-1'
 
@@ -264,18 +263,11 @@ class LoginCommand(BasicCommand):
         new_region = prompter.get_value(
             DEFAULT_REGION_FOR_PROMPT,
             'AWS Region',
-            completions=list(self._load_all_regions()),
+            completions=list(load_all_regions()),
             validator=RequiredInputValidator(DEFAULT_REGION_FOR_PROMPT),
         )
 
         return new_region if new_region else DEFAULT_REGION_FOR_PROMPT
-
-    @staticmethod
-    def _load_all_regions():
-        """Loads all regions from all partitions via partitions.json"""
-        loader = Loader()
-        for partition in loader.load_data('partitions')['partitions']:
-            yield from partition['regions'].keys()
 
     def _update_profile_with_login_session(
         self, profile_name, session_id, region

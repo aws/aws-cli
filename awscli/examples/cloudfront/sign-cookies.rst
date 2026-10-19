@@ -28,3 +28,22 @@ Output::
 Set each cookie in the response to the viewer, adding the cookie attributes
 (such as ``Domain``, ``Path``, ``Secure`` and ``HttpOnly``) that your
 application needs.
+
+**To extract a single cookie value**
+
+The set of cookies depends on the policy type and hash algorithm, so the
+columns of ``--output text`` vary between invocations. Use ``--query`` to
+select a cookie by name. ::
+
+    aws cloudfront sign-cookies \
+        --resource "https://d111111abcdef8.cloudfront.net/*" \
+        --key-pair-id APKAEIBAERJR2EXAMPLE \
+        --private-key file://cf-signer-priv-key.pem \
+        --date-less-than 2020-01-01 \
+        --hash-algorithm SHA256 \
+        --query '"CloudFront-Signature"' \
+        --output text
+
+Output::
+
+    Uu8FSzfyZ1pUJfnPTfpZpXoR3cHtu6Vk41gOodDpfCGmY4j~TBvOMBUsXzrcBjAqRuVV9b0Aa1HBpHeY-TR3G3Jbb2Yn2cxNSlAfC4tIYwWOkwypCZl4csuHdFC8XaN0yA0G8GRHDsxNPHKY6lq3ypbnJcXDSzzCixTAgJpOO7M_

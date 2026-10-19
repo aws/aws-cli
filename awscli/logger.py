@@ -10,6 +10,7 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import copy
 import logging
 
 import awscrt.io
@@ -37,6 +38,9 @@ class RedactingFormatter(logging.Formatter):
     """A formatter that redacts sensitive values from each log record."""
 
     def format(self, record):
+        if record.args:
+            record = copy.copy(record)
+            record.args = redact(record.args)
         # The whole formatted record, including any traceback, is redacted.
         return redact(super().format(record))
 

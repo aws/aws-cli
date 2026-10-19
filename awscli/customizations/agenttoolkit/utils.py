@@ -18,6 +18,9 @@ import os
 import shutil
 import zipfile
 
+from botocore.config import Config
+from botocore.configprovider import ConfiguredEndpointProvider
+
 from awscli.customizations.agenttoolkit.agents import (
     AGENT_CONFIGS,
     SKILL_FILENAME,
@@ -72,16 +75,38 @@ AGENT_ARG = {
 AGENT_TOOLKIT_REGION = 'us-east-1'
 
 
+class _ServiceEndpointProvider(ConfiguredEndpointProvider):
+    # Only AWS_ENDPOINT_URL_AGENTTOOLKIT and ``agenttoolkit`` in a
+    # ``services`` section, not the global endpoint_url sources.
+    _ENDPOINT_URL_LOOKUP_ORDER = ['environment_service', 'config_service']
+
+
 def create_client(session, parsed_globals):
     overrides = {}
     if not getattr(parsed_globals, 'region', None):
         overrides['region_name'] = AGENT_TOOLKIT_REGION
+    if not getattr(parsed_globals, 'endpoint_url', None):
+        overrides.update(_endpoint_overrides(session))
     return create_client_from_parsed_globals(
         session,
         'agenttoolkit',
         parsed_globals,
         overrides=overrides,
     )
+
+
+def _endpoint_overrides(session):
+    # Like the region, a global endpoint_url or AWS_ENDPOINT_URL is aimed at
+    # other services (a local emulator, an S3-compatible store). It cannot
+    # serve the Agent Toolkit API, so only service-specific settings apply.
+    if session.get_config_variable('ignore_configured_endpoint_urls'):
+        return {}
+    endpoint_url = _ServiceEndpointProvider(
+        session.full_config, session.get_scoped_config(), 'agenttoolkit'
+    ).provide()
+    if endpoint_url:
+        return {'endpoint_url': endpoint_url}
+    return {'config': Config(ignore_configured_endpoint_urls=True)}
 
 
 def resolve_latest_version(client, skill_name):

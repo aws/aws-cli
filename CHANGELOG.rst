@@ -2,6 +2,46 @@
 CHANGELOG
 =========
 
+2.38.2
+======
+
+* api-change:``codedeploy``: Adds support for suspending Amazon EC2 Auto Scaling processes during CodeDeploy EC2 in-place deployments. Use ec2DeploymentOptions to choose which processes are suspended and resumed.
+* api-change:``opensearch``: Amazon OpenSearch Service adds a new TLS security policy to support FIPS policy and post-quantum cryptography
+* api-change:``emr-containers``: Documentation update release for AWS service
+* api-change:``dynamodb``: Enable account endpoint generation for existing CN and GovCloud regions
+* api-change:``xray``: Adds support for encrypting the Transaction Search spans log group with a customer managed AWS KMS key. Pass the key ARN in the new CloudWatchLogsConfiguration.SpansLogGroupKmsKeyId field of UpdateTraceSegmentDestination. X-Ray applies the key when it creates the log group.
+* api-change:``guardduty``: Adding a new Expected Bucket Owner optional field for GuardDuty publishing destination APIs
+* bugfix:sso: Bind auth code callback server to 127.0.0.1 instead of listening on all interfaces
+* api-change:``iotwireless``: Documentation update release for AWS service
+* api-change:``amplify``: Documentation update release for AWS service
+* api-change:``workspaces``: Adds optional imageValidationMode enum to ImportCustomWorkspaceImageRequest. This allows customers to opt-in to having prevalidation run in the service account instead of customer account.
+* api-change:``bedrock-agent-runtime``: Adds support for applying a Retrieval Instruction, optionally by version, to AgenticRetrieveStream requests for Amazon Bedrock Knowledge Bases, and reports the applied instruction and version on the trace.
+* api-change:``grafana``: Documentation update release for AWS service
+* api-change:``codecommit``: Documentation update release for AWS service
+* api-change:``socialmessaging``: Adding support for WhatsApp Direct Send.
+* api-change:``ecs``: Adds support for configurable envoy application log levels. Customers can now debug network connectivity issues with their task's sidecar envoys.
+* bugfix:agent-toolkit: ``aws agent-toolkit update-skill --all`` now continues updating the remaining skills when one skill fails to update, printing the error to stderr.
+* bugfix:``logs tail``: Flush output after each event in ``logs tail`` so ``--follow`` streams events when stdout is not a terminal. Fixes `#10719 <https://github.com/aws/aws-cli/issues/10719>`__
+* api-change:``codestar-notifications``: Documentation update release for AWS service
+* api-change:``logs``: Amazon CloudWatch Logs now supports filtering DescribeDeliverySources by resourceArns, DescribeDeliveryDestinations by names, and DescribeDeliveries by deliverySourceNames.
+* api-change:``bedrock-agent``: Adds Retrieval Instructions for Amazon Bedrock Knowledge Bases. Create, get, update, delete, list, and version customer-authored instructions that guide how a knowledge base retrieves and answers, with content review before use.
+* enhancement:update: Verify the signature of the install script downloaded by ``aws update`` before running it, and add a ``--skip-signature-verification`` opt-out.
+* api-change:``datazone``: Adds SDK and CLI support for the Iceberg REST catalog connection types already available in Amazon SageMaker Unified Studio - ICEBERGRESTCATALOG, SNOWFLAKEICEBERGRESTCATALOG, and DATABRICKSICEBERGRESTCATALOG.
+* api-change:``connect``: Amazon Connect GetAttachedFile API now supports an optional UrlContentDisposition parameter. Set it to INLINE to get a pre-signed URL that displays the file in the browser, so agents can preview email attachments without downloading them. ATTACHMENT (download) remains the default.
+* api-change:``cloudwatch``: This release adds ActionConfiguration to PutMetricAlarm, PutCompositeAlarm and PutLogAlarm. It allows customers to include an alarm's tags in its notifications and alarm state change events
+* api-change:``timestream-influxdb``: Adds four new parameters to the InfluxDBv3Enterprise parameter group for Amazon Timestream for InfluxDB. The new parameters are upgradePachaTree, walBufferSize, snapshotSize, and snapshotDuration.
+* api-change:``devops-agent``: Documentation update release for AWS service
+* api-change:``drs``: Documentation update release for AWS service
+* api-change:``codepipeline``: Documentation update release for AWS service
+* api-change:``codeconnections``: Documentation update release for AWS service
+* api-change:``bedrock-agentcore``: Adds the Builtin.FailureAnalysis evaluator for batch evaluations. GetBatchEvaluation now returns insightResults that group session failures into insights with root causes and suggested fixes.
+* api-change:``workspaces-instances``: ModifyVolume is a new public API for WorkSpaces Core Managed Instances. Customers can change the size, type, IOPS, or throughput of an existing managed volume online, with no stop required. Customers track progress by calling EC2 DescribeVolumesModifications directly.
+* api-change:``controltower``: Documentation update release for AWS service
+* api-change:``observabilityadmin``: Adding support for EKS Container Insights Telemetry Rules
+* bugfix:``autocomplete``: Fix ``aws_completer`` emitting a trailing carriage return after each completion on Windows shells such as Git Bash. Fixes `#9135 <https://github.com/aws/aws-cli/issues/9135>`__
+* api-change:``databrew``: Documentation update release for AWS service
+
+
 2.38.1
 ======
 

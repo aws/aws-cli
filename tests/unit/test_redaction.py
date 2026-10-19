@@ -80,7 +80,7 @@ def test_redacts_nested_values():
     [
         ['cloudfront', 'sign', '--private-key', 'file://key.pem'],
         '{"a": "-----BEGIN PUBLIC KEY-----"}',
-        '{"Certificate": "%s"}' % _b64(CERT_PEM),
+        f'{{"Certificate": "{_b64(CERT_PEM)}"}}',
         {'headers': {'a': 'b'}, 'body': b'\xff\xfe'},
         None,
         object(),
@@ -92,13 +92,10 @@ def test_returns_values_without_matches_unchanged(value):
 
 @pytest.mark.parametrize('pem', [KEY_PEM, CERT_PEM + KEY_PEM])
 def test_redacts_base64_private_keys(pem):
-    value = '{"Certificate": "%s", "PrivateKey": "%s"}' % (
-        _b64(CERT_PEM),
-        _b64(pem),
-    )
-    assert redact(value) == '{"Certificate": "%s", "PrivateKey": "%s"}' % (
-        _b64(CERT_PEM),
-        REDACTED,
+    cert = _b64(CERT_PEM)
+    value = f'{{"Certificate": "{cert}", "PrivateKey": "{_b64(pem)}"}}'
+    assert redact(value) == (
+        f'{{"Certificate": "{cert}", "PrivateKey": "{REDACTED}"}}'
     )
 
 
@@ -117,3 +114,12 @@ def test_register_redaction(monkeypatch):
     monkeypatch.setattr(redaction, '_REDACTIONS', list(redaction._REDACTIONS))
     register_redaction(r'secret-\w+', '<redacted secret>')
     assert redact(['a secret-abc123']) == ['a <redacted secret>']
+
+
+@pytest.mark.parametrize('replacement', [r'\1', r'C:\x', r'C:\new'])
+def test_register_redaction_uses_replacement_literally(
+    monkeypatch, replacement
+):
+    monkeypatch.setattr(redaction, '_REDACTIONS', list(redaction._REDACTIONS))
+    register_redaction(r'secret-\w+', replacement)
+    assert redact('a secret-abc123') == 'a ' + replacement

@@ -26,11 +26,23 @@ def register_redaction(pattern, replacement):
     :param pattern: The regular expression to match sensitive text with.
 
     :type replacement: str or callable
-    :param replacement: The text to replace each match with, or a function
-        that takes the match object and returns the replacement text.
+    :param replacement: The literal text to replace each match with, or a
+        function that takes the match object and returns the replacement
+        text.
+
+    Patterns are applied in registration order, so a pattern also sees the
+    replacements made by patterns registered before it.
     """
     if isinstance(pattern, str):
         pattern = re.compile(pattern)
+    if not callable(replacement):
+        text = replacement
+
+        # A function's return value is used as is, whereas re.sub would
+        # interpret backslashes in a replacement string as escapes.
+        def replacement(match):
+            return text
+
     _REDACTIONS.append((pattern, replacement))
 
 

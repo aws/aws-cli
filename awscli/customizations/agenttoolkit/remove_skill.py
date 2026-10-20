@@ -11,9 +11,9 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import os
-import shutil
 import sys
 
+from awscli.customizations.agenttoolkit import atomic
 from awscli.customizations.agenttoolkit.agents import (
     AGENT_CONFIGS,
     universal_first,
@@ -22,6 +22,7 @@ from awscli.customizations.agenttoolkit.utils import (
     AGENT_ARG,
     SKILL_NAME_ARG,
     resolve_agents,
+    skills_lock,
 )
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.exceptions import ParamValidationError
@@ -69,10 +70,12 @@ class RemoveCommand(BasicCommand):
         ordered = universal_first(matches, get_id=lambda s: s.agent.config.id)
         for skill in ordered:
             skill_dir = os.path.dirname(skill.path)
-            if skill_dir in removed_paths:
+            real_dir = os.path.realpath(skill_dir)
+            if real_dir in removed_paths:
                 continue
-            shutil.rmtree(skill_dir)
-            removed_paths.add(skill_dir)
+            with skills_lock():
+                atomic.remove_dir(real_dir)
+            removed_paths.add(real_dir)
             self._stream.write(
                 f'Removed {skill.name} from {skill.agent.display_label}.\n'
             )

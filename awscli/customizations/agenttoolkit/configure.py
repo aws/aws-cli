@@ -20,6 +20,11 @@ from awscli.customizations.agenttoolkit.agents import (
     collapse_home,
     universal_first,
 )
+from awscli.customizations.agenttoolkit.state import (
+    StateFileError,
+    is_auto_update_enabled,
+    set_auto_update,
+)
 from awscli.customizations.agenttoolkit.utils import (
     AgentToolkitServiceError,
     create_client,
@@ -30,6 +35,12 @@ from awscli.customizations.commands import BasicCommand
 from awscli.customizations.exceptions import ConfigurationError
 from awscli.customizations.prompts import multiselect_choice, yes_no_choice
 from awscli.customizations.utils import uni_print
+
+AUTO_UPDATE_PROMPT = (
+    '\nKeep AWS skills up to date automatically? When your agent starts, '
+    'installed AWS skills are updated and new core AWS skills are '
+    'installed. [Y/n]: '
+)
 
 
 class ConfigureAgentToolkitCommand(BasicCommand):
@@ -47,7 +58,8 @@ class ConfigureAgentToolkitCommand(BasicCommand):
             'help_text': (
                 'Skip all interactive prompts and accept defaults: '
                 'select all detected agents, install default skills, '
-                'and configure the AWS MCP server.'
+                'configure the AWS MCP server, and enable automatic skill '
+                'updates.'
             ),
             'default': False,
             'action': 'store_true',
@@ -124,6 +136,7 @@ class ConfigureAgentToolkitCommand(BasicCommand):
         client = self._client or create_client(self._session, parsed_globals)
         self._install_default_skills(install_targets, client, yes=yes)
         self._configure_mcp(selected_agents, yes=yes)
+        self._configure_auto_update(yes=yes)
 
         uni_print(
             '\nYou can discover additional skills with '
@@ -194,6 +207,24 @@ class ConfigureAgentToolkitCommand(BasicCommand):
             uni_print(
                 '\nNo skills were installed successfully.\n', self._stream
             )
+
+    def _configure_auto_update(self, yes=False):
+        # This wizard is the only place allowed to change the setting.
+        if is_auto_update_enabled():
+            uni_print('\nAutomatic skill updates are enabled.\n', self._stream)
+            return
+
+        enabled = yes or yes_no_choice(AUTO_UPDATE_PROMPT, default=True)
+        try:
+            set_auto_update(enabled)
+        except StateFileError as e:
+            uni_print(
+                f'\nCould not save the automatic skill update setting to {e}\n',
+                self._stream,
+            )
+            return
+        if enabled:
+            uni_print('\nAutomatic skill updates enabled.\n', self._stream)
 
     def _configure_mcp(self, agents, yes=False):
         if not yes and not yes_no_choice(

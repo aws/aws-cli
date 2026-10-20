@@ -16,8 +16,10 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
+from awscli.customizations.agenttoolkit import state
 from awscli.customizations.agenttoolkit.agents import AgentConfig
 from awscli.customizations.agenttoolkit.configure import (
+    AUTO_UPDATE_PROMPT,
     ConfigureAgentToolkitCommand,
 )
 from awscli.customizations.exceptions import ConfigurationError
@@ -26,6 +28,13 @@ from tests.unit.customizations.agenttoolkit.utils import (
     make_session,
     make_skill_zip,
 )
+
+
+@pytest.fixture(autouse=True)
+def state_file(tmp_path):
+    path = tmp_path / 'agent-toolkit-state' / 'state.json'
+    with patch.object(state, 'STATE_PATH', str(path)):
+        yield path
 
 
 def _make_agent_configs(tmp_path, count=2):
@@ -56,7 +65,9 @@ def _make_client(skills=None):
     return client
 
 
-def _run(agent_configs, yes_no_return=True, client=None, yes=False):
+def _run(
+    agent_configs, yes_no_return=True, client=None, yes=False, prompts=None
+):
     stream = StringIO()
     session = make_session()
     if client is None:
@@ -74,9 +85,11 @@ def _run(agent_configs, yes_no_return=True, client=None, yes=False):
         patch(
             'awscli.customizations.agenttoolkit.configure.yes_no_choice',
             return_value=yes_no_return,
-        ),
+        ) as yes_no,
     ):
         rc = cmd._run_main(parsed_args, None)
+    if prompts is not None:
+        prompts.extend(c.args[0] for c in yes_no.call_args_list)
     return rc, stream
 
 
@@ -267,3 +280,135 @@ def test_skill_checksum_failure_reported(tmp_path):
     assert '[1/1] aws-bad' in stream.getvalue()
     skill_path = tmp_path / '.agent-0' / 'skills' / 'aws-bad'
     assert not skill_path.exists()
+
+
+def _auto_update_prompts(prompts):
+    return [p for p in prompts if p == AUTO_UPDATE_PROMPT]
+
+
+def test_auto_update_prompt_mentions_core_skills():
+    assert 'new core AWS skills' in AUTO_UPDATE_PROMPT
+
+
+def test_auto_update_enabled_on_yes(tmp_path, state_file):
+    configs = _make_agent_configs(tmp_path, count=1)
+    prompts = []
+    _, stream = _run(configs, yes_no_return=True, prompts=prompts)
+    assert _auto_update_prompts(prompts) == [AUTO_UPDATE_PROMPT]
+    assert json.loads(state_file.read_text()) == {
+        'agent_toolkit_auto_update': True
+    }
+    assert 'Automatic skill updates enabled.' in stream.getvalue()
+
+
+def test_auto_update_disabled_on_no(tmp_path, state_file):
+    configs = _make_agent_configs(tmp_path, count=1)
+    _, stream = _run(configs, yes_no_return=False)
+    assert json.loads(state_file.read_text()) == {
+        'agent_toolkit_auto_update': False
+    }
+    assert 'Automatic skill updates enabled' not in stream.getvalue()
+
+
+def test_auto_update_enabled_without_prompt_on_yes_flag(tmp_path, state_file):
+    configs = _make_agent_configs(tmp_path, count=1)
+    prompts = []
+    _run(configs, yes=True, prompts=prompts)
+    assert prompts == []
+    assert state.is_auto_update_enabled()
+
+
+def test_auto_update_not_prompted_when_already_enabled(tmp_path, state_file):
+    state_file.parent.mkdir(parents=True)
+    state_file.write_text(
+        json.dumps({'agent_toolkit_auto_update': True, 'hint_dismissed': True})
+    )
+    configs = _make_agent_configs(tmp_path, count=1)
+    prompts = []
+    _, stream = _run(configs, yes_no_return=False, prompts=prompts)
+    assert _auto_update_prompts(prompts) == []
+    assert 'Automatic skill updates are enabled.' in stream.getvalue()
+    assert json.loads(state_file.read_text()) == {
+        'agent_toolkit_auto_update': True,
+        'hint_dismissed': True,
+    }
+
+
+def test_auto_update_prompted_again_when_previously_declined(
+    tmp_path, state_file
+):
+    state_file.parent.mkdir(parents=True)
+    state_file.write_text(json.dumps({'agent_toolkit_auto_update': False}))
+    configs = _make_agent_configs(tmp_path, count=1)
+    prompts = []
+    _run(configs, yes_no_return=True, prompts=prompts)
+    assert _auto_update_prompts(prompts) == [AUTO_UPDATE_PROMPT]
+    assert state.is_auto_update_enabled()
+
+
+def test_auto_update_preserves_other_state_keys(tmp_path, state_file):
+    state_file.parent.mkdir(parents=True)
+    state_file.write_text(json.dumps({'hint_dismissed': True}))
+    configs = _make_agent_configs(tmp_path, count=1)
+    _run(configs, yes_no_return=True)
+    assert json.loads(state_file.read_text()) == {
+        'agent_toolkit_auto_update': True,
+        'hint_dismissed': True,
+    }
+
+
+def test_auto_update_corrupt_state_file_is_reported_not_overwritten(
+    tmp_path, state_file
+):
+    state_file.parent.mkdir(parents=True)
+    state_file.write_text('{ not valid json')
+    configs = _make_agent_configs(tmp_path, count=1)
+    rc, stream = _run(configs, yes_no_return=True)
+    assert rc == 0
+    assert state_file.read_text() == '{ not valid json'
+    assert (
+        'Could not save the automatic skill update setting'
+        in stream.getvalue()
+    )
+
+
+def test_auto_update_write_failure_is_reported(tmp_path, state_file):
+    configs = _make_agent_configs(tmp_path, count=1)
+    with patch(
+        'awscli.customizations.agenttoolkit.configure.set_auto_update',
+        side_effect=state.StateFileError('/x/state.json: disk full'),
+    ):
+        rc, stream = _run(configs, yes_no_return=True)
+    assert rc == 0
+    assert (
+        'Could not save the automatic skill update setting to '
+        '/x/state.json: disk full\n' in stream.getvalue()
+    )
+    assert 'Automatic skill updates enabled' not in stream.getvalue()
+
+
+def test_auto_update_not_prompted_when_no_agents_selected(
+    tmp_path, state_file
+):
+    configs = _make_agent_configs(tmp_path, count=1)
+    stream = StringIO()
+    cmd = ConfigureAgentToolkitCommand(
+        make_session(),
+        stream=stream,
+        agent_configs=configs,
+        client=MagicMock(),
+    )
+    parsed_args = MagicMock()
+    parsed_args.yes = False
+    with (
+        patch(
+            'awscli.customizations.agenttoolkit.configure.multiselect_choice',
+            return_value=[],
+        ),
+        patch(
+            'awscli.customizations.agenttoolkit.configure.yes_no_choice'
+        ) as yes_no,
+    ):
+        cmd._run_main(parsed_args, None)
+    assert not yes_no.called
+    assert not state_file.exists()

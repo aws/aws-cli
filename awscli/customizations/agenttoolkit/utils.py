@@ -205,7 +205,10 @@ def install_skill(
     action='Installed',
     overwrite_existing=False,
 ):
-    """Install a skill into each agent's skills directory."""
+    """Install a skill into each agent's skills directory.
+
+    Returns ``[(skill_dir, reason)]`` for each directory that was skipped.
+    """
     expected = checksum.strip().lower().split()[0]
     actual = hashlib.sha256(zip_bytes).hexdigest()
     if len(expected) != 64 or actual != expected:
@@ -222,6 +225,7 @@ def install_skill(
         ) from e
     with zf:
         _verify_skill_archive(skill_name, zf)
+        skipped = []
         extracted_paths = set()
         for agent in universal_first(agents):
             skill_dir = os.path.join(agent.skills_path, skill_name)
@@ -231,7 +235,7 @@ def install_skill(
             extracted_paths.add(real_dir)
             try:
                 with skills_lock():
-                    installed = _install_skill_dir(
+                    skip_reason = _install_skill_dir(
                         skill_name,
                         version,
                         zf,
@@ -243,11 +247,14 @@ def install_skill(
                 raise AgentToolkitServiceError(
                     f'Could not install {skill_name} at {real_dir}: {e}'
                 ) from e
-            if installed and stream:
+            if skip_reason is not None:
+                skipped.append((real_dir, skip_reason))
+            elif stream:
                 stream.write(
                     f'  {action} {skill_name} ({version})'
                     f' to {agent.display_label}.\n'
                 )
+    return skipped
 
 
 def _verify_skill_archive(skill_name, zf):
@@ -277,32 +284,30 @@ def _verify_skill_archive(skill_name, zf):
 def _install_skill_dir(
     skill_name, version, zf, real_dir, stream, overwrite_existing
 ):
-    """Install into ``real_dir``. Returns whether anything was written."""
+    """Install into ``real_dir``. Returns why it was skipped, or ``None``."""
     atomic.recover(real_dir)
     if os.path.lexists(real_dir) and not os.path.isdir(real_dir):
+        reason = 'a file that is not a skill directory is in the way'
         if stream:
-            stream.write(
-                f'  Skipped {skill_name} at {real_dir}: '
-                f'a file that is not a skill directory is in the way.\n'
-            )
-        return False
+            stream.write(f'  Skipped {skill_name} at {real_dir}: {reason}.\n')
+        return reason
     if os.path.isdir(real_dir):
         marker = os.path.join(real_dir, SKILL_METADATA_FILENAME)
         if not os.path.exists(marker):
+            reason = 'directory was not installed by the AWS CLI'
             if stream:
                 stream.write(
-                    f'  Skipped {skill_name} at {real_dir}: '
-                    f'directory was not installed by the AWS CLI.\n'
+                    f'  Skipped {skill_name} at {real_dir}: {reason}.\n'
                 )
-            return False
+            return reason
         # Marker is present, but if SKILL.md is missing the previous install
         # is corrupted (e.g. user deleted files by hand).
         skill_file = os.path.join(real_dir, SKILL_FILENAME)
         is_corrupted = not os.path.exists(skill_file)
         if not overwrite_existing and not is_corrupted:
+            installed = read_installed_version(real_dir)
+            version_note = f' ({installed})' if installed else ''
             if stream:
-                installed = read_installed_version(real_dir)
-                version_note = f' ({installed})' if installed else ''
                 stream.write(
                     f'  {skill_name} is already installed'
                     f'{version_note} at {real_dir}. Run '
@@ -310,7 +315,7 @@ def _install_skill_dir(
                     f'--skill-name {skill_name}" to update, '
                     f'or remove it first to reinstall.\n'
                 )
-            return False
+            return f'already installed{version_note}'
         if is_corrupted and not overwrite_existing and stream:
             stream.write(
                 f'  Reinstalling {skill_name} at {real_dir}: '
@@ -334,7 +339,7 @@ def _install_skill_dir(
     except BaseException:
         shutil.rmtree(staging_dir, ignore_errors=True)
         raise
-    return True
+    return None
 
 
 def skills_lock():

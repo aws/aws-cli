@@ -17,7 +17,9 @@ import logging
 import os
 import shutil
 import zipfile
+import zlib
 
+from awscli.customizations.agenttoolkit import atomic
 from awscli.customizations.agenttoolkit.agents import (
     AGENT_CONFIGS,
     SKILL_FILENAME,
@@ -25,11 +27,26 @@ from awscli.customizations.agenttoolkit.agents import (
     get_detected_agents,
     universal_first,
 )
+from awscli.customizations.agenttoolkit.filelock import file_lock
+from awscli.customizations.agenttoolkit.state import toolkit_dir
 from awscli.customizations.exceptions import ParamValidationError
 from awscli.customizations.utils import create_client_from_parsed_globals
 
 LOG = logging.getLogger(__name__)
 MAX_UNCOMPRESSED_SIZE = 10 * 1024 * 1024  # 10 MB
+
+# Serializes changes to skill directories across processes. Lives in the
+# agent toolkit state directory.
+SKILLS_LOCK_FILENAME = 'skills.lock'
+
+# Errors zipfile can raise while extracting a member.
+_ZIP_READ_ERRORS = (
+    zipfile.BadZipFile,
+    zlib.error,
+    EOFError,
+    RuntimeError,  # encrypted member
+    NotImplementedError,  # unsupported compression method
+)
 
 NONPROD_ACCESS_TOKEN_HEADER = 'x-nonprod-access-token'
 NONPROD_ACCESS_TOKEN_ENV_VAR = 'NONPROD_ACCESS_TOKEN_HEADER'
@@ -188,6 +205,7 @@ def install_skill(
     action='Installed',
     overwrite_existing=False,
 ):
+    """Install a skill into each agent's skills directory."""
     expected = checksum.strip().lower().split()[0]
     actual = hashlib.sha256(zip_bytes).hexdigest()
     if len(expected) != 64 or actual != expected:
@@ -196,21 +214,14 @@ def install_skill(
             f'(expected {expected!r}, got {actual!r}).'
         )
 
-    with zipfile.ZipFile(io.BytesIO(zip_bytes)) as zf:
-        total_size = sum(i.file_size for i in zf.infolist())
-        if total_size > MAX_UNCOMPRESSED_SIZE:
-            raise AgentToolkitServiceError(
-                f'Refusing to extract: uncompressed size '
-                f'({total_size} bytes) exceeds limit.'
-            )
-        for member in zf.namelist():
-            normalized = os.path.normpath(member)
-            if normalized.startswith('..') or os.path.isabs(normalized):
-                raise AgentToolkitServiceError(
-                    f'Refusing to extract {member!r}'
-                    ' (path escapes skill directory).'
-                )
-
+    try:
+        zf = zipfile.ZipFile(io.BytesIO(zip_bytes))
+    except zipfile.BadZipFile as e:
+        raise AgentToolkitServiceError(
+            f'Could not read the archive for {skill_name}: {e}'
+        ) from e
+    with zf:
+        _verify_skill_archive(skill_name, zf)
         extracted_paths = set()
         for agent in universal_first(agents):
             skill_dir = os.path.join(agent.skills_path, skill_name)
@@ -218,46 +229,133 @@ def install_skill(
             if real_dir in extracted_paths:
                 continue
             extracted_paths.add(real_dir)
-            if os.path.isdir(real_dir):
-                marker = os.path.join(real_dir, SKILL_METADATA_FILENAME)
-                if not os.path.exists(marker):
-                    if stream:
-                        stream.write(
-                            f'  Skipped {skill_name} at {real_dir}: '
-                            f'directory was not installed by the AWS CLI.\n'
-                        )
-                    continue
-                # Marker is present, but if SKILL.md is missing the
-                # previous install is corrupted (e.g. user deleted files
-                # by hand).
-                skill_file = os.path.join(real_dir, SKILL_FILENAME)
-                is_corrupted = not os.path.exists(skill_file)
-                if not overwrite_existing and not is_corrupted:
-                    if stream:
-                        installed = read_installed_version(real_dir)
-                        version_note = f' ({installed})' if installed else ''
-                        stream.write(
-                            f'  {skill_name} is already installed'
-                            f'{version_note} at {real_dir}. Run '
-                            f'"aws agent-toolkit update-skill '
-                            f'--skill-name {skill_name}" to update, '
-                            f'or remove it first to reinstall.\n'
-                        )
-                    continue
-                if is_corrupted and not overwrite_existing and stream:
-                    stream.write(
-                        f'  Reinstalling {skill_name} at {real_dir}: '
-                        f'previous install appears incomplete.\n'
+            try:
+                with skills_lock():
+                    installed = _install_skill_dir(
+                        skill_name,
+                        version,
+                        zf,
+                        real_dir,
+                        stream,
+                        overwrite_existing,
                     )
-                shutil.rmtree(real_dir)
-            os.makedirs(real_dir, exist_ok=True)
-            zf.extractall(real_dir)
-            write_skill_metadata(real_dir, version)
-            if stream:
+            except OSError as e:
+                raise AgentToolkitServiceError(
+                    f'Could not install {skill_name} at {real_dir}: {e}'
+                ) from e
+            if installed and stream:
                 stream.write(
                     f'  {action} {skill_name} ({version})'
                     f' to {agent.display_label}.\n'
                 )
+
+
+def _verify_skill_archive(skill_name, zf):
+    total_size = sum(i.file_size for i in zf.infolist())
+    if total_size > MAX_UNCOMPRESSED_SIZE:
+        raise AgentToolkitServiceError(
+            f'Refusing to extract: uncompressed size '
+            f'({total_size} bytes) exceeds limit.'
+        )
+    for member in zf.namelist():
+        normalized = os.path.normpath(member)
+        if normalized.startswith('..') or os.path.isabs(normalized):
+            raise AgentToolkitServiceError(
+                f'Refusing to extract {member!r}'
+                ' (path escapes skill directory).'
+            )
+    if not any(
+        os.path.normpath(info.filename) == SKILL_FILENAME and not info.is_dir()
+        for info in zf.infolist()
+    ):
+        raise AgentToolkitServiceError(
+            f'Refusing to install {skill_name}: the archive has no '
+            f'{SKILL_FILENAME}.'
+        )
+
+
+def _install_skill_dir(
+    skill_name, version, zf, real_dir, stream, overwrite_existing
+):
+    """Install into ``real_dir``. Returns whether anything was written."""
+    atomic.recover(real_dir)
+    if os.path.lexists(real_dir) and not os.path.isdir(real_dir):
+        if stream:
+            stream.write(
+                f'  Skipped {skill_name} at {real_dir}: '
+                f'a file that is not a skill directory is in the way.\n'
+            )
+        return False
+    if os.path.isdir(real_dir):
+        marker = os.path.join(real_dir, SKILL_METADATA_FILENAME)
+        if not os.path.exists(marker):
+            if stream:
+                stream.write(
+                    f'  Skipped {skill_name} at {real_dir}: '
+                    f'directory was not installed by the AWS CLI.\n'
+                )
+            return False
+        # Marker is present, but if SKILL.md is missing the previous install
+        # is corrupted (e.g. user deleted files by hand).
+        skill_file = os.path.join(real_dir, SKILL_FILENAME)
+        is_corrupted = not os.path.exists(skill_file)
+        if not overwrite_existing and not is_corrupted:
+            if stream:
+                installed = read_installed_version(real_dir)
+                version_note = f' ({installed})' if installed else ''
+                stream.write(
+                    f'  {skill_name} is already installed'
+                    f'{version_note} at {real_dir}. Run '
+                    f'"aws agent-toolkit update-skill '
+                    f'--skill-name {skill_name}" to update, '
+                    f'or remove it first to reinstall.\n'
+                )
+            return False
+        if is_corrupted and not overwrite_existing and stream:
+            stream.write(
+                f'  Reinstalling {skill_name} at {real_dir}: '
+                f'previous install appears incomplete.\n'
+            )
+
+    os.makedirs(os.path.dirname(real_dir), exist_ok=True)
+    staging_dir = atomic.make_staging_dir(real_dir)
+    try:
+        # Extraction reads and checks every member, so a corrupt archive
+        # fails here, before anything is swapped.
+        try:
+            zf.extractall(staging_dir)
+        except _ZIP_READ_ERRORS as e:
+            raise AgentToolkitServiceError(
+                f'Refusing to install {skill_name}: the archive is corrupt '
+                f'or unsupported ({e}).'
+            ) from e
+        write_skill_metadata(staging_dir, version)
+        atomic.swap_into_place(staging_dir, real_dir)
+    except BaseException:
+        shutil.rmtree(staging_dir, ignore_errors=True)
+        raise
+    return True
+
+
+def skills_lock():
+    """Lock held while changing skill directories."""
+    return file_lock(os.path.join(toolkit_dir(), SKILLS_LOCK_FILENAME))
+
+
+def _recover_interrupted_changes(agents):
+    """Restore or clean up skill directories left by an interrupted change.
+
+    A skill that was mid-swap is hidden from :meth:`get_installed_skills`
+    until it is recovered, so this runs whenever agents are resolved.
+    """
+    roots = {os.path.realpath(agent.skills_path) for agent in agents}
+    try:
+        with skills_lock():
+            for root in sorted(roots):
+                atomic.recover_all(root)
+    except OSError as e:
+        # Best effort: installing a skill recovers its directory again.
+        LOG.debug('Could not recover interrupted skill changes: %s', e)
 
 
 class AgentToolkitServiceError(Exception):
@@ -277,5 +375,8 @@ def resolve_agents(agent_filter, agent_configs=None):
                 f'{", ".join(sorted(c.id for c in agent_configs))}.'
             )
         agent = config.detect()
-        return [agent] if agent is not None else []
-    return get_detected_agents(agent_configs=agent_configs)
+        agents = [agent] if agent is not None else []
+    else:
+        agents = get_detected_agents(agent_configs=agent_configs)
+    _recover_interrupted_changes(agents)
+    return agents

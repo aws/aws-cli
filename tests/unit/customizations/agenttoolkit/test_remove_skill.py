@@ -11,11 +11,13 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import json
+import os
 from io import StringIO
-from unittest.mock import Mock
+from unittest.mock import Mock, patch
 
 import pytest
 
+from awscli.customizations.agenttoolkit import atomic
 from awscli.customizations.agenttoolkit.agents import SKILL_METADATA_FILENAME
 from awscli.customizations.agenttoolkit.remove_skill import RemoveCommand
 from awscli.customizations.exceptions import ParamValidationError
@@ -186,3 +188,59 @@ def test_remove_invalid_client_rejected(tmp_path):
             configs,
             ['--skill-name', 'aws-serverless', '--agent', 'nonexistent'],
         )
+
+
+def test_remove_skill_recovers_hidden_skill_first(tmp_path):
+    make_skill(tmp_path, '.test-agent', 'aws-s3')
+    skill_dir = tmp_path / '.test-agent' / 'skills' / 'aws-s3'
+    os.rename(skill_dir, atomic._sibling(str(skill_dir), atomic._BACKUP))
+    rc, output = _run_remove(
+        [make_config(tmp_path)], ['--skill-name', 'aws-s3']
+    )
+    assert rc == 0
+    assert 'Removed aws-s3' in output
+    assert list((tmp_path / '.test-agent' / 'skills').iterdir()) == []
+
+
+def test_remove_skill_leaves_no_partial_directory(tmp_path):
+    make_skill(tmp_path, '.test-agent', 'aws-s3')
+    skills = tmp_path / '.test-agent' / 'skills'
+    # Deletion is interrupted after the rename to the trash name.
+    with patch.object(atomic, '_remove_tree'):
+        rc, _ = _run_remove(
+            [make_config(tmp_path)], ['--skill-name', 'aws-s3']
+        )
+    assert rc == 0
+    assert not (skills / 'aws-s3').exists()
+    [trash] = list(skills.iterdir())
+    assert trash.name.startswith('.aws-s3.aws-cli-trash-')
+    # The next command finishes the deletion.
+    with pytest.raises(ParamValidationError, match='not installed'):
+        _run_remove([make_config(tmp_path)], ['--skill-name', 'aws-s3'])
+    assert list(skills.iterdir()) == []
+
+
+def test_remove_skill_from_skills_root_shared_by_symlink(tmp_path):
+    make_skill(tmp_path, '.agent-a', 'aws-s3')
+    (tmp_path / '.agent-b').mkdir()
+    (tmp_path / '.agent-b' / 'skills').symlink_to(
+        tmp_path / '.agent-a' / 'skills', target_is_directory=True
+    )
+    configs = [
+        make_config(
+            tmp_path,
+            id='a',
+            display_name='Agent A',
+            detection_path=str(tmp_path / '.agent-a'),
+        ),
+        make_config(
+            tmp_path,
+            id='b',
+            display_name='Agent B',
+            detection_path=str(tmp_path / '.agent-b'),
+        ),
+    ]
+    rc, output = _run_remove(configs, ['--skill-name', 'aws-s3'])
+    assert rc == 0
+    assert output.count('Removed aws-s3') == 1
+    assert list((tmp_path / '.agent-a' / 'skills').iterdir()) == []

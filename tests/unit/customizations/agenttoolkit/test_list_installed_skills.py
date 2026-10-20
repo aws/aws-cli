@@ -11,10 +11,12 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import json
+import os
 from io import StringIO
 
 import pytest
 
+from awscli.customizations.agenttoolkit import atomic
 from awscli.customizations.agenttoolkit.list_installed_skills import (
     ListInstalledSkillsCommand,
 )
@@ -173,3 +175,13 @@ def test_list_installed_universal_row_lists_alongside_override_agent(
     skills = result['skills']
     assert len(skills) == 1
     assert skills[0]['agent'] == 'Universal (Codex)'
+
+
+def test_list_installed_shows_skill_hidden_by_interrupted_swap(
+    tmp_path, monkeypatch
+):
+    make_skill(tmp_path, '.test-agent', 'aws-s3')
+    skill_dir = tmp_path / '.test-agent' / 'skills' / 'aws-s3'
+    os.rename(skill_dir, atomic._sibling(str(skill_dir), atomic._BACKUP))
+    result = _run_installed(monkeypatch, [make_config(tmp_path)])
+    assert [s['name'] for s in result['skills']] == ['aws-s3']

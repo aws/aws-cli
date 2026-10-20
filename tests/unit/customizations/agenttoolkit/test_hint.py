@@ -17,13 +17,13 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from awscli.customizations.agenttoolkit import hint
+from awscli.customizations.agenttoolkit import hint, state
 
 
 @pytest.fixture
 def state_file(tmp_path):
     path = tmp_path / 'agent-toolkit' / 'state.json'
-    with patch.object(hint, 'STATE_PATH', str(path)):
+    with patch.object(state, 'STATE_PATH', str(path)):
         yield path
 
 
@@ -96,7 +96,7 @@ def test_never_persists_dismissal(state_file, wizard_cls):
     assert not wizard_cls.called
     assert json.loads(state_file.read_text())['hint_dismissed'] is True
     # The atomic write must not leave its temp file behind.
-    assert not (state_file.parent / f'{state_file.name}.tmp').exists()
+    assert not list(state_file.parent.glob('*.tmp'))
 
 
 def test_skipped_when_not_a_tty(state_file, wizard_cls):
@@ -130,6 +130,26 @@ def test_skipped_when_already_dismissed(state_file, wizard_cls):
     state_file.write_text(json.dumps({'hint_dismissed': True}))
     _run(choice='yes')
     assert not wizard_cls.called
+
+
+def test_never_does_not_overwrite_corrupt_state_file(
+    state_file, wizard_cls, capsys
+):
+    state_file.parent.mkdir(parents=True, exist_ok=True)
+    state_file.write_text('{ not valid json')
+    _run(choice='never')
+    assert state_file.read_text() == '{ not valid json'
+    assert 'Could not save your choice' in capsys.readouterr().out
+
+
+def test_never_preserves_other_state_keys(state_file, wizard_cls):
+    state_file.parent.mkdir(parents=True, exist_ok=True)
+    state_file.write_text(json.dumps({'agent_toolkit_auto_update': True}))
+    _run(choice='never')
+    assert json.loads(state_file.read_text()) == {
+        'agent_toolkit_auto_update': True,
+        'hint_dismissed': True,
+    }
 
 
 def test_skipped_when_no_agents(state_file, wizard_cls):

@@ -114,9 +114,16 @@
       "errors":[
         {"shape":"ReplicationGroupNotFoundFault"},
         {"shape":"InvalidReplicationGroupStateFault"},
-        {"shape":"ReplicationGroupNotUnderMigrationFault"}
+        {"shape":"ReplicationGroupNotUnderMigrationFault"},
+        {"shape":"InvalidCacheClusterStateFault"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"InvalidParameterCombinationException"},
+        {"shape":"ServerlessCacheNotFoundFault"},
+        {"shape":"InvalidServerlessCacheStateFault"},
+        {"shape":"ServerlessCacheNotUnderMigrationFault"},
+        {"shape":"MigrationHealthFault"}
       ],
-      "documentation":"<p>Complete the migration of data.</p>"
+      "documentation":"<p>Completes the migration of data.</p>"
     },
     "CopyServerlessCacheSnapshot":{
       "name":"CopyServerlessCacheSnapshot",
@@ -1371,6 +1378,25 @@
       ],
       "documentation":"<p>Changes the list of users that belong to the user group.</p>"
     },
+    "PrepareMigration":{
+      "name":"PrepareMigration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"PrepareMigrationRequest"},
+      "output":{
+        "shape":"PrepareMigrationResponse",
+        "resultWrapper":"PrepareMigrationResult"
+      },
+      "errors":[
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ServerlessCacheNotFoundFault"},
+        {"shape":"InvalidServerlessCacheStateFault"},
+        {"shape":"ServerlessCacheAlreadyUnderMigrationFault"}
+      ],
+      "documentation":"<p>Prepares the serverless cache for data migration by validating the configuration and setting up the migration resources.</p>"
+    },
     "PurchaseReservedCacheNodesOffering":{
       "name":"PurchaseReservedCacheNodesOffering",
       "http":{
@@ -1515,9 +1541,34 @@
         {"shape":"ReplicationGroupNotFoundFault"},
         {"shape":"InvalidReplicationGroupStateFault"},
         {"shape":"ReplicationGroupAlreadyUnderMigrationFault"},
-        {"shape":"InvalidParameterValueException"}
+        {"shape":"InvalidCacheClusterStateFault"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"InvalidParameterCombinationException"},
+        {"shape":"ServerlessCacheNotFoundFault"},
+        {"shape":"InvalidServerlessCacheStateFault"},
+        {"shape":"ServerlessCacheNotUnderMigrationFault"},
+        {"shape":"MigrationHealthFault"}
       ],
-      "documentation":"<p>Start the migration of data.</p>"
+      "documentation":"<p>Starts the migration of data.</p>"
+    },
+    "StopMigration":{
+      "name":"StopMigration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"StopMigrationRequest"},
+      "output":{
+        "shape":"StopMigrationResponse",
+        "resultWrapper":"StopMigrationResult"
+      },
+      "errors":[
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ServerlessCacheNotFoundFault"},
+        {"shape":"InvalidServerlessCacheStateFault"},
+        {"shape":"ServerlessCacheNotUnderMigrationFault"}
+      ],
+      "documentation":"<p>Stops an ongoing data sync between the source and the serverless cache. The migration remains open and the data sync can be restarted. This operation is valid only while the migration is syncing; during cutover it returns <code>InvalidServerlessCacheStateFault</code>.</p>"
     },
     "TestFailover":{
       "name":"TestFailover",
@@ -1558,7 +1609,9 @@
         {"shape":"ReplicationGroupNotFoundFault"},
         {"shape":"InvalidReplicationGroupStateFault"},
         {"shape":"ReplicationGroupAlreadyUnderMigrationFault"},
-        {"shape":"InvalidParameterValueException"}
+        {"shape":"InvalidCacheClusterStateFault"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"InvalidParameterCombinationException"}
       ],
       "documentation":"<p> Async API to test connection between source and target replication group. </p>"
     }
@@ -2589,11 +2642,14 @@
     },
     "CompleteMigrationMessage":{
       "type":"structure",
-      "required":["ReplicationGroupId"],
       "members":{
         "ReplicationGroupId":{
           "shape":"String",
           "documentation":"<p>The ID of the replication group to which data is being migrated.</p>"
+        },
+        "ServerlessCacheName":{
+          "shape":"String",
+          "documentation":"<p>The name of the serverless cache to which data is being migrated.</p>"
         },
         "Force":{
           "shape":"Boolean",
@@ -2604,7 +2660,11 @@
     "CompleteMigrationResponse":{
       "type":"structure",
       "members":{
-        "ReplicationGroup":{"shape":"ReplicationGroup"}
+        "ReplicationGroup":{"shape":"ReplicationGroup"},
+        "ServerlessCache":{
+          "shape":"ServerlessCache",
+          "documentation":"<p>Provides the details of the serverless cache for which the migration completed.</p>"
+        }
       }
     },
     "ConfigureShard":{
@@ -5122,6 +5182,35 @@
         "engine-log"
       ]
     },
+    "MigrationHealthFault":{
+      "type":"structure",
+      "members":{},
+      "documentation":"<p>The migration is not healthy. Check the events for this serverless cache for more details. For <code>CompleteMigration</code>, set <code>Force</code> to true to bypass this check.</p>",
+      "error":{
+        "code":"MigrationHealthFault",
+        "httpStatusCode":400,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "MigrationSummary":{
+      "type":"structure",
+      "members":{
+        "Status":{
+          "shape":"String",
+          "documentation":"<p>The current status of the migration.</p>"
+        },
+        "MigrationEndpoint":{
+          "shape":"Endpoint",
+          "documentation":"<p>The migration endpoint, which is the standard endpoint of the serverless cache. Point your application at this endpoint during the migration. Until cutover, ElastiCache routes requests on this endpoint to your source.</p>"
+        },
+        "CutoverMode":{
+          "shape":"String",
+          "documentation":"<p>The cutover configuration for the migration.</p>"
+        }
+      },
+      "documentation":"<p>Provides a summary of the current migration status for a serverless cache.</p>"
+    },
     "ModifyCacheClusterMessage":{
       "type":"structure",
       "required":["CacheClusterId"],
@@ -6137,6 +6226,40 @@
         "locationName":"PreferredOutpostArn"
       }
     },
+    "PrepareMigrationRequest":{
+      "type":"structure",
+      "required":[
+        "ServerlessCacheName",
+        "CustomerNodeEndpointList"
+      ],
+      "members":{
+        "ServerlessCacheName":{
+          "shape":"String",
+          "documentation":"<p>The name of the serverless cache to prepare for migration.</p>"
+        },
+        "CustomerNodeEndpointList":{
+          "shape":"CustomerNodeEndpointList",
+          "documentation":"<p>The list of endpoints from which to migrate data. For serverless cache migrations, the list should have only one element.</p>"
+        },
+        "SourceAuthenticationConfiguration":{
+          "shape":"SourceAuthenticationConfiguration",
+          "documentation":"<p>The authentication configuration for connecting to the source during migration.</p>"
+        },
+        "SourceTlsConfiguration":{
+          "shape":"SourceTlsConfiguration",
+          "documentation":"<p>The TLS configuration for connecting to the source during migration.</p>"
+        }
+      }
+    },
+    "PrepareMigrationResponse":{
+      "type":"structure",
+      "members":{
+        "ServerlessCache":{
+          "shape":"ServerlessCache",
+          "documentation":"<p>Provides the details of the serverless cache prepared for migration.</p>"
+        }
+      }
+    },
     "ProcessedUpdateAction":{
       "type":"structure",
       "members":{
@@ -6866,6 +6989,16 @@
       },
       "documentation":"<p>Configuration settings for horizontal or vertical scaling operations on Memcached clusters.</p>"
     },
+    "SecretManagerAuthConfig":{
+      "type":"structure",
+      "members":{
+        "SecretArn":{
+          "shape":"String",
+          "documentation":"<p>The ARN of the secret in AWS Secrets Manager that contains the credentials for authenticating with the source.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for authenticating with the source using Secrets Manager during migration.</p>"
+    },
     "SecurityGroupIdsList":{
       "type":"list",
       "member":{
@@ -6967,6 +7100,10 @@
         "ConnectionType":{
           "shape":"ConnectionType",
           "documentation":"<p>The connection type for the serverless cache. Must be either <code>vpc</code> | <code>public</code>. If not specified, defaults to <code>vpc</code>.</p>"
+        },
+        "Migration":{
+          "shape":"MigrationSummary",
+          "documentation":"<p>Provides a summary of the migration status for the serverless cache.</p>"
         }
       },
       "documentation":"<p>The resource representing a serverless cache.</p>"
@@ -6977,6 +7114,17 @@
       "documentation":"<p>A serverless cache with this name already exists.</p>",
       "error":{
         "code":"ServerlessCacheAlreadyExistsFault",
+        "httpStatusCode":400,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "ServerlessCacheAlreadyUnderMigrationFault":{
+      "type":"structure",
+      "members":{},
+      "documentation":"<p>A migration is already in progress for this serverless cache. You cannot start another migration until the current one completes.</p>",
+      "error":{
+        "code":"ServerlessCacheAlreadyUnderMigrationFault",
         "httpStatusCode":400,
         "senderFault":true
       },
@@ -7011,6 +7159,17 @@
       "error":{
         "code":"ServerlessCacheNotFoundFault",
         "httpStatusCode":404,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "ServerlessCacheNotUnderMigrationFault":{
+      "type":"structure",
+      "members":{},
+      "documentation":"<p>The serverless cache is not currently under migration.</p>",
+      "error":{
+        "code":"ServerlessCacheNotUnderMigrationFault",
+        "httpStatusCode":400,
         "senderFault":true
       },
       "exception":true
@@ -7429,6 +7588,30 @@
       },
       "exception":true
     },
+    "SourceAuthenticationConfiguration":{
+      "type":"structure",
+      "members":{
+        "SecretManagerConfig":{
+          "shape":"SecretManagerAuthConfig",
+          "documentation":"<p>The Secrets Manager configuration used for authenticating with the source during migration.</p>"
+        }
+      },
+      "documentation":"<p>The authentication configuration for connecting to the source during migration.</p>"
+    },
+    "SourceTlsConfiguration":{
+      "type":"structure",
+      "members":{
+        "SourceTlsMode":{
+          "shape":"TlsMode",
+          "documentation":"<p>The TLS mode to use when connecting to the source. Valid values are <code>none</code> and <code>verify-ca</code>.</p>"
+        },
+        "SourceTlsCertificate":{
+          "shape":"String",
+          "documentation":"<p>The TLS certificate used to verify the identity of the source during migration.</p>"
+        }
+      },
+      "documentation":"<p>The TLS configuration for connecting to the source during migration.</p>"
+    },
     "SourceType":{
       "type":"string",
       "enum":[
@@ -7445,25 +7628,56 @@
     },
     "StartMigrationMessage":{
       "type":"structure",
-      "required":[
-        "ReplicationGroupId",
-        "CustomerNodeEndpointList"
-      ],
       "members":{
+        "ServerlessCacheName":{
+          "shape":"String",
+          "documentation":"<p>The name of the serverless cache to which data is being migrated.</p>"
+        },
         "ReplicationGroupId":{
           "shape":"String",
           "documentation":"<p>The ID of the replication group to which data should be migrated.</p>"
         },
         "CustomerNodeEndpointList":{
           "shape":"CustomerNodeEndpointList",
-          "documentation":"<p>List of endpoints from which data should be migrated. For Valkey or Redis OSS (cluster mode disabled), the list should have only one element.</p>"
+          "documentation":"<p>The list of endpoints from which to migrate data. For Valkey or Redis OSS (cluster mode disabled), the list should have only one element. For serverless cache migrations, ElastiCache uses the endpoint that you provided in <code>PrepareMigration</code>.</p>"
+        },
+        "AutoCutover":{
+          "shape":"BooleanOptional",
+          "documentation":"<p>Specifies whether ElastiCache automatically attempts to complete the migration after data sync is established.</p>"
+        },
+        "ClearTargetCacheData":{
+          "shape":"BooleanOptional",
+          "documentation":"<p>Specifies whether ElastiCache deletes existing data in the serverless cache before migration begins. After <code>StopMigration</code>, <code>StartMigration</code> requires this option to restart the data sync.</p>"
         }
       }
     },
     "StartMigrationResponse":{
       "type":"structure",
       "members":{
-        "ReplicationGroup":{"shape":"ReplicationGroup"}
+        "ReplicationGroup":{"shape":"ReplicationGroup"},
+        "ServerlessCache":{
+          "shape":"ServerlessCache",
+          "documentation":"<p>Provides the details of the serverless cache to which ElastiCache is migrating data.</p>"
+        }
+      }
+    },
+    "StopMigrationRequest":{
+      "type":"structure",
+      "required":["ServerlessCacheName"],
+      "members":{
+        "ServerlessCacheName":{
+          "shape":"String",
+          "documentation":"<p>The name of the serverless cache for which to stop the data sync.</p>"
+        }
+      }
+    },
+    "StopMigrationResponse":{
+      "type":"structure",
+      "members":{
+        "ServerlessCache":{
+          "shape":"ServerlessCache",
+          "documentation":"<p>Provides the details of the serverless cache for which the data sync stopped.</p>"
+        }
       }
     },
     "StorageEncryptionType":{
@@ -7674,6 +7888,13 @@
         }
       },
       "documentation":"<p>Filters update actions from the service updates that are in available status during the time range.</p>"
+    },
+    "TlsMode":{
+      "type":"string",
+      "enum":[
+        "none",
+        "verify-ca"
+      ]
     },
     "TransitEncryptionMode":{
       "type":"string",

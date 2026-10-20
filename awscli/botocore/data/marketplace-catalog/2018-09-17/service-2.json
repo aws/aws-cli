@@ -1519,6 +1519,10 @@
         "OfferSetSummary":{
           "shape":"OfferSetSummary",
           "documentation":"<p>An object that contains summary information about the offer set.</p>"
+        },
+        "ExpressPrivateOfferConfigurationSummary":{
+          "shape":"ExpressPrivateOfferConfigurationSummary",
+          "documentation":"<p>An object that contains summary information about the express private offer configuration.</p>"
         }
       },
       "documentation":"<p>This object is a container for common summary information about the entity. The summary doesn't contain the whole entity structure, but it does contain information common across all entities.</p>"
@@ -1564,6 +1568,10 @@
         "OfferSetFilters":{
           "shape":"OfferSetFilters",
           "documentation":"<p>A filter for offer sets.</p>"
+        },
+        "ExpressPrivateOfferConfigurationFilters":{
+          "shape":"ExpressPrivateOfferConfigurationFilters",
+          "documentation":"<p>A filter for express private offer configurations.</p>"
         }
       },
       "documentation":"<p>Object containing all the filter fields per entity type.</p>",
@@ -1600,6 +1608,10 @@
         "OfferSetSort":{
           "shape":"OfferSetSort",
           "documentation":"<p>A sort for offer sets.</p>"
+        },
+        "ExpressPrivateOfferConfigurationSort":{
+          "shape":"ExpressPrivateOfferConfigurationSort",
+          "documentation":"<p>A sort for express private offer configurations.</p>"
         }
       },
       "documentation":"<p>Object containing all the sort fields per entity type.</p>",
@@ -1668,6 +1680,128 @@
       "max":2048,
       "min":1,
       "pattern":"^(.)+$"
+    },
+    "ExpressPrivateOfferConfigurationEntityIdFilter":{
+      "type":"structure",
+      "members":{
+        "ValueList":{
+          "shape":"ExpressPrivateOfferConfigurationEntityIdFilterValueList",
+          "documentation":"<p>A list of <code>EntityId</code> values to filter on.</p>"
+        }
+      },
+      "documentation":"<p>The filter for the <code>EntityId</code> of an express private offer configuration.</p>"
+    },
+    "ExpressPrivateOfferConfigurationEntityIdFilterValueList":{
+      "type":"list",
+      "member":{"shape":"ExpressPrivateOfferConfigurationEntityIdString"},
+      "max":10,
+      "min":1
+    },
+    "ExpressPrivateOfferConfigurationEntityIdString":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"^[a-zA-Z0-9][.a-zA-Z0-9/-]+[a-zA-Z0-9]$"
+    },
+    "ExpressPrivateOfferConfigurationFilters":{
+      "type":"structure",
+      "members":{
+        "EntityId":{
+          "shape":"ExpressPrivateOfferConfigurationEntityIdFilter",
+          "documentation":"<p>You can filter on the <code>EntityId</code> of an express private offer configuration.</p>"
+        },
+        "ProductId":{
+          "shape":"ExpressPrivateOfferConfigurationProductIdFilter",
+          "documentation":"<p>You can filter on the <code>ProductId</code> of an express private offer configuration.</p>"
+        },
+        "State":{
+          "shape":"ExpressPrivateOfferConfigurationStateFilter",
+          "documentation":"<p>The state of the express private offer configuration to filter on. Valid values are the following:</p> <ul> <li> <p> <code>ACTIVE</code> – The configuration is active and you can use it to generate offers.</p> </li> <li> <p> <code>INACTIVE</code> – The configuration is deprecated or deleted.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>The filter fields for the express private offer configuration entity.</p>"
+    },
+    "ExpressPrivateOfferConfigurationProductIdFilter":{
+      "type":"structure",
+      "members":{
+        "ValueList":{
+          "shape":"ExpressPrivateOfferConfigurationProductIdFilterValueList",
+          "documentation":"<p>A list of <code>ProductId</code> values to filter on.</p>"
+        }
+      },
+      "documentation":"<p>The filter for the <code>ProductId</code> of an express private offer configuration.</p>"
+    },
+    "ExpressPrivateOfferConfigurationProductIdFilterValueList":{
+      "type":"list",
+      "member":{"shape":"ExpressPrivateOfferConfigurationProductIdString"},
+      "max":10,
+      "min":1
+    },
+    "ExpressPrivateOfferConfigurationProductIdString":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"^[a-zA-Z0-9][.a-zA-Z0-9/-]+[a-zA-Z0-9]$"
+    },
+    "ExpressPrivateOfferConfigurationSort":{
+      "type":"structure",
+      "members":{
+        "SortBy":{
+          "shape":"ExpressPrivateOfferConfigurationSortBy",
+          "documentation":"<p>The field to sort by. Valid values are <code>EntityId</code>, <code>LastModifiedDate</code>, <code>ProductId</code>, and <code>State</code>.</p>"
+        },
+        "SortOrder":{
+          "shape":"SortOrder",
+          "documentation":"<p>The sorting order. Valid values are <code>ASCENDING</code> and <code>DESCENDING</code>.</p>"
+        }
+      },
+      "documentation":"<p>The sort fields for express private offer configurations.</p>"
+    },
+    "ExpressPrivateOfferConfigurationSortBy":{
+      "type":"string",
+      "enum":[
+        "EntityId",
+        "LastModifiedDate",
+        "ProductId",
+        "State"
+      ]
+    },
+    "ExpressPrivateOfferConfigurationStateFilter":{
+      "type":"structure",
+      "members":{
+        "ValueList":{
+          "shape":"ExpressPrivateOfferConfigurationStateFilterValueList",
+          "documentation":"<p>A list of <code>State</code> values to filter on. Valid values are <code>ACTIVE</code> and <code>INACTIVE</code>.</p>"
+        }
+      },
+      "documentation":"<p>The filter for the <code>State</code> of an express private offer configuration.</p>"
+    },
+    "ExpressPrivateOfferConfigurationStateFilterValueList":{
+      "type":"list",
+      "member":{"shape":"ExpressPrivateOfferConfigurationStateString"},
+      "max":10,
+      "min":1
+    },
+    "ExpressPrivateOfferConfigurationStateString":{
+      "type":"string",
+      "enum":[
+        "ACTIVE",
+        "INACTIVE"
+      ]
+    },
+    "ExpressPrivateOfferConfigurationSummary":{
+      "type":"structure",
+      "members":{
+        "ProductId":{
+          "shape":"ExpressPrivateOfferConfigurationProductIdString",
+          "documentation":"<p>The product ID associated with the express private offer configuration.</p>"
+        },
+        "State":{
+          "shape":"ExpressPrivateOfferConfigurationStateString",
+          "documentation":"<p>The state of the express private offer configuration. Valid values are the following:</p> <ul> <li> <p> <code>ACTIVE</code> – The configuration is active and you can use it to generate offers.</p> </li> <li> <p> <code>INACTIVE</code> – The configuration is deprecated or deleted.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>Summarized information about an express private offer configuration.</p>"
     },
     "FailureCode":{
       "type":"string",

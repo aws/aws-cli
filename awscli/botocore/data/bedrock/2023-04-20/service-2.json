@@ -9404,6 +9404,10 @@
         "filters":{
           "shape":"GuardrailContextualGroundingFilters",
           "documentation":"<p>The filter details for the guardrails contextual grounding policy.</p>"
+        },
+        "tier":{
+          "shape":"GuardrailContextualGroundingTier",
+          "documentation":"<p>The tier that your guardrail uses for contextual grounding.</p>"
         }
       },
       "documentation":"<p>The details for the guardrails contextual grounding policy.</p>"
@@ -9415,9 +9419,43 @@
         "filtersConfig":{
           "shape":"GuardrailContextualGroundingFiltersConfig",
           "documentation":"<p>The filter configuration details for the guardrails contextual grounding policy.</p>"
+        },
+        "tierConfig":{
+          "shape":"GuardrailContextualGroundingTierConfig",
+          "documentation":"<p>The tier that your guardrail uses for contextual grounding.</p>"
         }
       },
       "documentation":"<p>The policy configuration details for the guardrails contextual grounding policy.</p>"
+    },
+    "GuardrailContextualGroundingTier":{
+      "type":"structure",
+      "required":["tierName"],
+      "members":{
+        "tierName":{
+          "shape":"GuardrailContextualGroundingTierName",
+          "documentation":"<p>The tier that your guardrail uses for contextual grounding. Valid values include:</p> <ul> <li> <p> <code>CLASSIC</code> tier – Provides established contextual grounding functionality supporting English, French, and Spanish languages.</p> </li> <li> <p> <code>STANDARD</code> tier – Provides a more robust solution than the <code>CLASSIC</code> tier, with support for reasoning, conversational content and more comprehensive language support. This tier requires that your guardrail use <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/guardrails-cross-region.html\">cross-Region inference</a>.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>Specifies the tier that your guardrail uses for contextual grounding checks.</p>"
+    },
+    "GuardrailContextualGroundingTierConfig":{
+      "type":"structure",
+      "required":["tierName"],
+      "members":{
+        "tierName":{
+          "shape":"GuardrailContextualGroundingTierName",
+          "documentation":"<p>The tier that your guardrail uses for contextual grounding. Valid values include:</p> <ul> <li> <p> <code>CLASSIC</code> tier – Provides established contextual grounding functionality supporting English, French, and Spanish languages.</p> </li> <li> <p> <code>STANDARD</code> tier – Provides a more robust solution than the <code>CLASSIC</code> tier, with support for reasoning, conversational content and more comprehensive language support. This tier requires that your guardrail use <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/guardrails-cross-region.html\">cross-Region inference</a>.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>Specifies the tier that your guardrail uses for contextual grounding checks.</p>"
+    },
+    "GuardrailContextualGroundingTierName":{
+      "type":"string",
+      "enum":[
+        "CLASSIC",
+        "STANDARD"
+      ],
+      "sensitive":true
     },
     "GuardrailCrossRegionConfig":{
       "type":"structure",
@@ -9835,7 +9873,7 @@
     "GuardrailRegexesConfig":{
       "type":"list",
       "member":{"shape":"GuardrailRegexConfig"},
-      "max":10,
+      "max":30,
       "min":1
     },
     "GuardrailSensitiveInformationAction":{
@@ -13567,7 +13605,7 @@
         },
         "listContains":{
           "shape":"FilterAttribute",
-          "documentation":"<p>Knowledge base data sources are returned if they contain a metadata attribute whose name matches the key and whose value is a list that contains the value as one of its members.</p> <p>The following example would return data sources with an animals attribute that is a list containing a cat member (for example, <code>[\"dog\", \"cat\"] </code>): <code>\"listContains\": { \"key\": \"animals\", \"value\": \"cat\" }</code> </p>"
+          "documentation":"<p>Knowledge base data sources are returned if they contain a metadata attribute whose name matches the key and whose value is a list that contains the value as one of its members.</p> <p>The following example would return data sources with an animals attribute that is a list containing a cat member (for example, <code>[\"dog\", \"cat\"]</code>): <code>\"listContains\": { \"key\": \"animals\", \"value\": \"cat\" }</code> </p>"
         },
         "stringContains":{
           "shape":"FilterAttribute",

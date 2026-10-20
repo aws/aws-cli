@@ -16,6 +16,25 @@
     "uid":"ecs-2014-11-13"
   },
   "operations":{
+    "AssociateGatewayWithCluster":{
+      "name":"AssociateGatewayWithCluster",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"AssociateGatewayWithClusterRequest"},
+      "output":{"shape":"AssociateGatewayWithClusterResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ServerException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ClientException"},
+        {"shape":"GatewayNotFoundException"},
+        {"shape":"ClusterNotFoundException"},
+        {"shape":"UnsupportedFeatureException"}
+      ],
+      "documentation":"<p>Associates a gateway with an Amazon ECS cluster. After a cluster is associated with a gateway, services in that cluster can use the gateway for ingress. No changes take effect until you update a service in the cluster to use the gateway. A single cluster can be associated with up to 5 gateways.</p>"
+    },
     "ContinueServiceDeployment":{
       "name":"ContinueServiceDeployment",
       "http":{
@@ -110,6 +129,23 @@
         {"shape":"UnsupportedFeatureException"}
       ],
       "documentation":"<p>Creates an Express service that simplifies deploying containerized web applications on Amazon ECS with managed Amazon Web Services infrastructure. This operation provisions and configures Application Load Balancers, target groups, security groups, and auto-scaling policies automatically.</p> <p>Specify a primary container configuration with your application image and basic settings. Amazon ECS creates the necessary Amazon Web Services resources for traffic distribution, health monitoring, network access control, and capacity management.</p> <p>Provide an execution role for task operations and an infrastructure role for managing Amazon Web Services resources on your behalf.</p>"
+    },
+    "CreateGateway":{
+      "name":"CreateGateway",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateGatewayRequest"},
+      "output":{"shape":"CreateGatewayResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ServerException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ClientException"},
+        {"shape":"UnsupportedFeatureException"}
+      ],
+      "documentation":"<p>Creates a gateway. A gateway defines and dynamically manages ingress paths for your Amazon ECS services, handling traffic routing and infrastructure across multiple services while optimizing infrastructure usage. <code>CreateGateway</code> is a synchronous operation and the gateway is returned with a status of <code>ACTIVE</code>. The load balancers and other infrastructure that a gateway manages aren't created until a service in an associated cluster begins using the gateway.</p> <p>To use this operation, you must have the <code>iam:PassRole</code> permission for the infrastructure role that you specify in <code>infrastructureRoleArn</code>.</p>"
     },
     "CreateService":{
       "name":"CreateService",
@@ -289,6 +325,24 @@
         {"shape":"UnsupportedFeatureException"}
       ],
       "documentation":"<p>Deletes an Express service and removes all associated Amazon Web Services resources. This operation stops service tasks, removes the Application Load Balancer, target groups, security groups, auto-scaling policies, and other managed infrastructure components.</p> <p>The service enters a <code>DRAINING</code> state where existing tasks complete current requests without starting new tasks. After all tasks stop, the service and infrastructure are permanently removed.</p> <p>This operation cannot be reversed. Back up important data and verify the service is no longer needed before deletion.</p>"
+    },
+    "DeleteGateway":{
+      "name":"DeleteGateway",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteGatewayRequest"},
+      "output":{"shape":"DeleteGatewayResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ServerException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ClientException"},
+        {"shape":"GatewayNotFoundException"},
+        {"shape":"UnsupportedFeatureException"}
+      ],
+      "documentation":"<p>Deletes a gateway. Before you can delete a gateway, deletion protection must be disabled and the gateway must not have any cluster associations that are in the <code>ACTIVE</code> or <code>DISASSOCIATING</code> state. If associations exist, the operation fails; disassociate all clusters first. <code>DeleteGateway</code> is a synchronous operation. After you delete a gateway, subsequent requests for it return a <code>GatewayNotFoundException</code>.</p>"
     },
     "DeleteService":{
       "name":"DeleteService",
@@ -530,6 +584,63 @@
       "documentation":"<p>Retrieves detailed information about an Express service, including current status, configuration, managed infrastructure, and service revisions.</p> <p>Returns comprehensive service details, active service revisions, ingress paths with endpoints, and managed Amazon Web Services resource status including load balancers and auto-scaling policies.</p> <p>Use the <code>include</code> parameter to retrieve additional information such as resource tags.</p>",
       "readonly":true
     },
+    "DescribeGateway":{
+      "name":"DescribeGateway",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeGatewayRequest"},
+      "output":{"shape":"DescribeGatewayResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ServerException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ClientException"},
+        {"shape":"GatewayNotFoundException"},
+        {"shape":"UnsupportedFeatureException"}
+      ],
+      "documentation":"<p>Describes a gateway, including its configuration, status, and the type-specific infrastructure settings that it uses.</p>",
+      "readonly":true
+    },
+    "DescribeGatewayResources":{
+      "name":"DescribeGatewayResources",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeGatewayResourcesRequest"},
+      "output":{"shape":"DescribeGatewayResourcesResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ServerException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ClientException"},
+        {"shape":"GatewayNotFoundException"},
+        {"shape":"UnsupportedFeatureException"}
+      ],
+      "documentation":"<p>Returns the infrastructure that a gateway has created and manages, so that you can follow the traffic path from top-level shared resources, such as load balancers, to the service-specific resources represented as gateway routes. Responses include only the Amazon Resource Names (ARNs) of gateway-managed infrastructure. For the current state of a resource, describe it with the corresponding Amazon Web Services service (Elastic Load Balancing, Amazon EC2, or Amazon Web Services Certificate Manager). The results are paginated.</p>",
+      "readonly":true
+    },
+    "DescribeGatewayRoute":{
+      "name":"DescribeGatewayRoute",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeGatewayRouteRequest"},
+      "output":{"shape":"DescribeGatewayRouteResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ServerException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ClientException"},
+        {"shape":"UnsupportedFeatureException"}
+      ],
+      "documentation":"<p>Describes a gateway route, including its status, the service it routes traffic to, and the service-specific infrastructure, such as target groups and listener rules, that the gateway manages for it.</p>",
+      "readonly":true
+    },
     "DescribeServiceDeployments":{
       "name":"DescribeServiceDeployments",
       "http":{
@@ -643,6 +754,26 @@
       ],
       "documentation":"<p>Describes a specified task or tasks.</p> <p>Currently, stopped tasks appear in the returned results for at least one hour.</p> <p>If you have tasks with tags, and then delete the cluster, the tagged tasks are returned in the response. If you create a new cluster with the same name as the deleted cluster, the tagged tasks are not included in the response.</p>",
       "readonly":true
+    },
+    "DisassociateGatewayFromCluster":{
+      "name":"DisassociateGatewayFromCluster",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DisassociateGatewayFromClusterRequest"},
+      "output":{"shape":"DisassociateGatewayFromClusterResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ServerException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ClientException"},
+        {"shape":"GatewayNotFoundException"},
+        {"shape":"ClusterNotFoundException"},
+        {"shape":"UnsupportedFeatureException"}
+      ],
+      "documentation":"<p>Removes the association between a gateway and an Amazon ECS cluster. The association remains in the <code>DISASSOCIATING</code> state until you remove all of the gateway routes for the cluster by updating the associated services. You can use <code>ListGatewayRoutes</code> with a cluster filter to determine which routes are preventing disassociation. No infrastructure changes are made until the affected services are updated.</p>"
     },
     "DiscoverPollEndpoint":{
       "name":"DiscoverPollEndpoint",
@@ -821,6 +952,61 @@
         {"shape":"UnsupportedFeatureException"}
       ],
       "documentation":"<p>Returns a list of daemons. You can filter the results by cluster or capacity provider.</p>",
+      "readonly":true
+    },
+    "ListGatewayClusterAssociations":{
+      "name":"ListGatewayClusterAssociations",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListGatewayClusterAssociationsRequest"},
+      "output":{"shape":"ListGatewayClusterAssociationsResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ServerException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ClientException"},
+        {"shape":"UnsupportedFeatureException"}
+      ],
+      "documentation":"<p>Returns a list of the associations between gateways and clusters. You can filter the results by gateway, cluster, and status. The results are paginated. We recommend that you use pagination to ensure that the operation returns quickly and successfully.</p>",
+      "readonly":true
+    },
+    "ListGatewayRoutes":{
+      "name":"ListGatewayRoutes",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListGatewayRoutesRequest"},
+      "output":{"shape":"ListGatewayRoutesResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ServerException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ClientException"},
+        {"shape":"GatewayNotFoundException"},
+        {"shape":"UnsupportedFeatureException"}
+      ],
+      "documentation":"<p>Returns a list of gateway routes. A gateway route represents the association between a service and a gateway and the service-specific infrastructure the gateway manages for it. You can filter the results by gateway, cluster, service, container port name, and status. The results are paginated. We recommend that you use pagination to ensure that the operation returns quickly and successfully.</p>",
+      "readonly":true
+    },
+    "ListGateways":{
+      "name":"ListGateways",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListGatewaysRequest"},
+      "output":{"shape":"ListGatewaysResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ServerException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ClientException"},
+        {"shape":"UnsupportedFeatureException"}
+      ],
+      "documentation":"<p>Returns a list of gateways in your account. You can filter the results by gateway name and status. The results are paginated. We recommend that you use pagination to ensure that the operation returns quickly and successfully.</p>",
       "readonly":true
     },
     "ListServiceDeployments":{
@@ -1368,6 +1554,24 @@
       ],
       "documentation":"<p>Updates an existing Express service configuration. Modifies container settings, resource allocation, auto-scaling configuration, and other service parameters without recreating the service.</p> <p>Amazon ECS creates a new service revision with updated configuration and performs a rolling deployment to replace existing tasks. The service remains available during updates, ensuring zero-downtime deployments.</p> <p>Some parameters like the infrastructure role cannot be modified after service creation and require creating a new service.</p>"
     },
+    "UpdateGateway":{
+      "name":"UpdateGateway",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateGatewayRequest"},
+      "output":{"shape":"UpdateGatewayResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ServerException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ClientException"},
+        {"shape":"GatewayNotFoundException"},
+        {"shape":"UnsupportedFeatureException"}
+      ],
+      "documentation":"<p>Modifies the configuration of a gateway. You can change only the properties that can be applied without interrupting traffic, and the configuration variant that you provide must match the gateway's type. <code>UpdateGateway</code> is an asynchronous operation: the changes are applied to each load balancer the gateway manages, and the gateway reports a status of <code>UPDATE_IN_PROGRESS</code> until the update completes. If Amazon ECS can't update one or more resources, it makes a best effort to update the rest and the gateway status changes to <code>UPDATE_FAILED</code>. Use <code>DescribeGateway</code> to inspect the gateway's <code>statusReason</code> and failures list, which gives the ARN of each load balancer that was not updated and the operation, error code, and message for each failure.</p> <p>If you specify <code>infrastructureRoleArn</code>, you must have the <code>iam:PassRole</code> permission for that role.</p>"
+    },
     "UpdateService":{
       "name":"UpdateService",
       "http":{
@@ -1543,10 +1747,18 @@
     },
     "AccessType":{
       "type":"string",
+      "documentation":"<p>Specifies whether a resource is publicly accessible from the internet or private to a VPC.</p>",
       "enum":[
         "PUBLIC",
         "PRIVATE"
       ]
+    },
+    "AccessTypeList":{
+      "type":"list",
+      "member":{"shape":"AccessType"},
+      "documentation":"<p>A list of access types.</p> <p>Valid values:</p> <ul> <li> <p> <code>PUBLIC</code> - The ingress path is publicly accessible.</p> </li> <li> <p> <code>PRIVATE</code> - The ingress path is only accessible privately.</p> </li> </ul>",
+      "max":2,
+      "min":0
     },
     "AdvancedConfiguration":{
       "type":"structure",
@@ -1607,6 +1819,40 @@
         "ENABLED",
         "DISABLED"
       ]
+    },
+    "AssociateGatewayWithClusterRequest":{
+      "type":"structure",
+      "required":[
+        "gateway",
+        "cluster"
+      ],
+      "members":{
+        "gateway":{
+          "shape":"String",
+          "documentation":"<p>The name or Amazon Resource Name (ARN) of the gateway to associate.</p>"
+        },
+        "cluster":{
+          "shape":"String",
+          "documentation":"<p>The name or Amazon Resource Name (ARN) of the cluster to associate the gateway with.</p>"
+        }
+      }
+    },
+    "AssociateGatewayWithClusterResponse":{
+      "type":"structure",
+      "members":{
+        "gatewayArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the gateway.</p>"
+        },
+        "clusterArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the cluster.</p>"
+        },
+        "status":{
+          "shape":"GatewayClusterAssociationStatus",
+          "documentation":"<p>The status of the association. A new association is <code>ACTIVE</code>.</p>"
+        }
+      }
     },
     "Attachment":{
       "type":"structure",
@@ -3054,6 +3300,62 @@
         }
       }
     },
+    "CreateGatewayRequest":{
+      "type":"structure",
+      "required":[
+        "name",
+        "infrastructureRoleArn",
+        "configuration"
+      ],
+      "members":{
+        "name":{
+          "shape":"String",
+          "documentation":"<p>The name for the gateway. The name must be unique within your account and can be up to 255 characters.</p>"
+        },
+        "infrastructureRoleArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role that the gateway assumes to create and manage infrastructure on your behalf.</p>"
+        },
+        "clientToken":{
+          "shape":"String",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure that the operation completes no more than one time. If this token matches a previous request, the service ignores the request, but does not return an error.</p>",
+          "idempotencyToken":true
+        },
+        "deletionProtection":{
+          "shape":"BoxedBoolean",
+          "documentation":"<p>Specifies whether to enable deletion protection for the gateway. When enabled, the gateway can't be deleted, and the gateway propagates this setting to the load balancers it manages. The default is <code>true</code>.</p>"
+        },
+        "configuration":{
+          "shape":"GatewayConfiguration",
+          "documentation":"<p>The type-specific configuration for the gateway. Exactly one configuration variant must be set, and it determines the gateway type. For example, <code>hostSharedAlb</code> configures a gateway that uses Application Load Balancers with host-based routing.</p>"
+        },
+        "tags":{
+          "shape":"Tags",
+          "documentation":"<p>The metadata that you apply to the gateway to help you categorize and organize it. Each tag consists of a key and an optional value. Depending on <code>propagateTags</code>, these tags can be applied to the infrastructure the gateway manages.</p>"
+        },
+        "propagateTags":{
+          "shape":"PropagateGatewayTags",
+          "documentation":"<p>Specifies whether to propagate the tags from the gateway to the infrastructure that the gateway manages. The default is <code>GATEWAY</code>.</p>"
+        }
+      }
+    },
+    "CreateGatewayResponse":{
+      "type":"structure",
+      "members":{
+        "gatewayArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the gateway.</p>"
+        },
+        "name":{
+          "shape":"String",
+          "documentation":"<p>The name of the gateway.</p>"
+        },
+        "status":{
+          "shape":"GatewayStatus",
+          "documentation":"<p>The status of the gateway. A newly created gateway is always <code>ACTIVE</code>.</p>"
+        }
+      }
+    },
     "CreateManagedInstancesProviderConfiguration":{
       "type":"structure",
       "required":[
@@ -3191,6 +3493,10 @@
         "vpcLatticeConfigurations":{
           "shape":"VpcLatticeConfigurations",
           "documentation":"<p>The VPC Lattice configuration for the service being created.</p>"
+        },
+        "gatewayConnectors":{
+          "shape":"GatewayConnectorList",
+          "documentation":"<p>The gateway connectors that attach the service to a gateway ingress path. You can specify at most one gateway connector.</p>"
         },
         "monitoring":{
           "shape":"MonitoringConfiguration",
@@ -4266,6 +4572,33 @@
         }
       }
     },
+    "DeleteGatewayRequest":{
+      "type":"structure",
+      "required":["gateway"],
+      "members":{
+        "gateway":{
+          "shape":"String",
+          "documentation":"<p>The name or Amazon Resource Name (ARN) of the gateway to delete.</p>"
+        }
+      }
+    },
+    "DeleteGatewayResponse":{
+      "type":"structure",
+      "members":{
+        "gatewayArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the deleted gateway.</p>"
+        },
+        "name":{
+          "shape":"String",
+          "documentation":"<p>The name of the deleted gateway.</p>"
+        },
+        "status":{
+          "shape":"GatewayStatus",
+          "documentation":"<p>The status of the gateway. After a successful delete, the status is <code>DELETED</code>.</p>"
+        }
+      }
+    },
     "DeleteServiceRequest":{
       "type":"structure",
       "required":["service"],
@@ -4996,6 +5329,132 @@
         }
       }
     },
+    "DescribeGatewayAlbConfiguration":{
+      "type":"structure",
+      "members":{
+        "networkConfiguration":{
+          "shape":"GatewayElbNetworkConfiguration",
+          "documentation":"<p>The network configuration for the load balancers that the gateway manages.</p>"
+        },
+        "scheme":{
+          "shape":"GatewayElbScheme",
+          "documentation":"<p>Specifies whether the load balancers the gateway manages are <code>internet-facing</code> or <code>internal</code>.</p>"
+        },
+        "accessLogs":{
+          "shape":"GatewayElbAccessLogConfiguration",
+          "documentation":"<p>The access log configuration for the load balancers that the gateway manages.</p>"
+        },
+        "webACLArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the WAF web ACL associated with the load balancers that the gateway manages.</p>"
+        },
+        "port":{
+          "shape":"BoxedInteger",
+          "documentation":"<p>The port that the load balancer listener uses is 443. The gateway supports only HTTPS at port 443.</p>"
+        },
+        "protocol":{
+          "shape":"GatewayAlbProtocol",
+          "documentation":"<p>The protocol for the load balancer listener is <code>HTTPS</code>. No other protocol is supported.</p>"
+        },
+        "maxAlbCount":{
+          "shape":"BoxedInteger",
+          "documentation":"<p>The maximum number of Application Load Balancers that the gateway manages.</p>"
+        },
+        "currentAlbCount":{
+          "shape":"BoxedInteger",
+          "documentation":"<p>The current number of Application Load Balancers that the gateway has allocated.</p>"
+        },
+        "httpDesync":{
+          "shape":"GatewayAlbDesyncMitigationMode",
+          "documentation":"<p>The desync mitigation mode for the load balancers that the gateway manages.</p>"
+        },
+        "testTrafficRules":{
+          "shape":"GatewayAlbTestTrafficRules",
+          "documentation":"<p>The rules that route test traffic for progressive deployments.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for a gateway that uses shared Application Load Balancers, as returned by <code>DescribeGateway</code>. This includes the current number of load balancers in addition to the configured settings.</p>"
+    },
+    "DescribeGatewayConfiguration":{
+      "type":"structure",
+      "members":{
+        "hostSharedAlb":{
+          "shape":"DescribeGatewayAlbConfiguration",
+          "documentation":"<p>The configuration for a host-based, shared Application Load Balancer gateway.</p>"
+        }
+      },
+      "documentation":"<p>The type-specific configuration for a gateway that is returned by <code>DescribeGateway</code>.</p>",
+      "union":true
+    },
+    "DescribeGatewayRequest":{
+      "type":"structure",
+      "required":["gateway"],
+      "members":{
+        "gateway":{
+          "shape":"String",
+          "documentation":"<p>The name or Amazon Resource Name (ARN) of the gateway to describe.</p>"
+        }
+      }
+    },
+    "DescribeGatewayResourcesRequest":{
+      "type":"structure",
+      "required":["gateway"],
+      "members":{
+        "gateway":{
+          "shape":"String",
+          "documentation":"<p>The name or Amazon Resource Name (ARN) of the gateway.</p>"
+        },
+        "maxResults":{
+          "shape":"BoxedInteger",
+          "documentation":"<p>The maximum number of results that the operation returns in a single page. The maximum value is 20 and the default is 10.</p>"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>The <code>nextToken</code> value returned from a previous paginated request.</p>"
+        }
+      }
+    },
+    "DescribeGatewayResourcesResponse":{
+      "type":"structure",
+      "members":{
+        "gatewayResources":{
+          "shape":"GatewayResources",
+          "documentation":"<p>The infrastructure resources that the gateway manages, grouped by gateway type.</p>"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>The <code>nextToken</code> value to include in a future request to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.</p>"
+        }
+      }
+    },
+    "DescribeGatewayResponse":{
+      "type":"structure",
+      "members":{
+        "gateway":{
+          "shape":"Gateway",
+          "documentation":"<p>The details of the gateway.</p>"
+        }
+      }
+    },
+    "DescribeGatewayRouteRequest":{
+      "type":"structure",
+      "required":["gatewayRouteArn"],
+      "members":{
+        "gatewayRouteArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the gateway route to describe.</p>"
+        }
+      }
+    },
+    "DescribeGatewayRouteResponse":{
+      "type":"structure",
+      "members":{
+        "gatewayRoute":{
+          "shape":"GatewayRoute",
+          "documentation":"<p>The details of the gateway route.</p>"
+        }
+      }
+    },
     "DescribeServiceDeploymentsRequest":{
       "type":"structure",
       "required":["serviceDeploymentArns"],
@@ -5218,6 +5677,40 @@
       "type":"list",
       "member":{"shape":"Device"}
     },
+    "DisassociateGatewayFromClusterRequest":{
+      "type":"structure",
+      "required":[
+        "gateway",
+        "cluster"
+      ],
+      "members":{
+        "gateway":{
+          "shape":"String",
+          "documentation":"<p>The name or Amazon Resource Name (ARN) of the gateway to disassociate.</p>"
+        },
+        "cluster":{
+          "shape":"String",
+          "documentation":"<p>The name or Amazon Resource Name (ARN) of the cluster to disassociate the gateway from.</p>"
+        }
+      }
+    },
+    "DisassociateGatewayFromClusterResponse":{
+      "type":"structure",
+      "members":{
+        "gatewayArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the gateway.</p>"
+        },
+        "clusterArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the cluster.</p>"
+        },
+        "status":{
+          "shape":"GatewayClusterAssociationStatus",
+          "documentation":"<p>The status of the association. After a successful request, the status is <code>DISASSOCIATING</code> until all routes are removed, after which the association is deleted.</p>"
+        }
+      }
+    },
     "DiscoverPollEndpointRequest":{
       "type":"structure",
       "members":{
@@ -5386,6 +5879,10 @@
         "logGroups":{
           "shape":"ManagedLogGroups",
           "documentation":"<p>The log groups managed by the Express service.</p>"
+        },
+        "gatewayConnections":{
+          "shape":"GatewayConnectionList",
+          "documentation":"<p>The gateway-managed connections for the service revision, including the gateway routes and infrastructure that a gateway created for the service's connector.</p>"
         }
       },
       "documentation":"<p>Represents the Amazon Web Services resources managed by Amazon ECS for an Express service, including ingress paths, auto-scaling policies, metric alarms, and security groups.</p>"
@@ -5445,6 +5942,35 @@
         }
       },
       "documentation":"<p>This parameter is specified when you're using an Amazon Elastic File System file system for task storage. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/efs-volumes.html\">Amazon EFS volumes</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p>"
+    },
+    "ElbGatewayResources":{
+      "type":"structure",
+      "members":{
+        "loadBalancerArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the load balancer.</p>"
+        },
+        "listenerArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the listener on the load balancer.</p>"
+        },
+        "securityGroup":{
+          "shape":"String",
+          "documentation":"<p>The ID of the security group attached to the load balancer.</p>"
+        },
+        "gatewayRouteArns":{
+          "shape":"StringList",
+          "documentation":"<p>The Amazon Resource Names (ARNs) of the gateway routes that use this load balancer for ingress.</p>"
+        }
+      },
+      "documentation":"<p>An Application Load Balancer and its associated resources that a gateway manages.</p>"
+    },
+    "ElbGatewayResourcesList":{
+      "type":"list",
+      "member":{"shape":"ElbGatewayResources"},
+      "documentation":"<p>A list of Application Load Balancer resource groups that a gateway manages.</p>",
+      "max":20,
+      "min":0
     },
     "EnvironmentFile":{
       "type":"structure",
@@ -5907,6 +6433,701 @@
         "fluentbit"
       ]
     },
+    "Gateway":{
+      "type":"structure",
+      "members":{
+        "gatewayArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the gateway.</p>"
+        },
+        "name":{
+          "shape":"String",
+          "documentation":"<p>The name of the gateway.</p>"
+        },
+        "status":{
+          "shape":"GatewayStatus",
+          "documentation":"<p>The status of the gateway.</p>"
+        },
+        "statusReason":{
+          "shape":"String",
+          "documentation":"<p>A human-readable explanation of the current status. This value is populated when the gateway is in a failure state, such as <code>UPDATE_FAILED</code>.</p>"
+        },
+        "failures":{
+          "shape":"GatewayResourceFailureList",
+          "documentation":"<p>The per-resource failure details for asynchronous gateway processes, such as an <code>UpdateGateway</code> operation that couldn't update every load balancer.</p>"
+        },
+        "infrastructureRoleArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role that the gateway uses to manage infrastructure on your behalf.</p>"
+        },
+        "deletionProtection":{
+          "shape":"BoxedBoolean",
+          "documentation":"<p>Specifies whether deletion protection is enabled for the gateway.</p>"
+        },
+        "configuration":{
+          "shape":"DescribeGatewayConfiguration",
+          "documentation":"<p>The type-specific configuration for the gateway.</p>"
+        },
+        "accessType":{
+          "shape":"AccessType",
+          "documentation":"<p>Specifies whether the gateway is publicly accessible (<code>PUBLIC</code>) or private (<code>PRIVATE</code>). The gateway derives this value from its scheme when you create the gateway, and the value is immutable.</p>"
+        },
+        "propagateTags":{
+          "shape":"PropagateGatewayTags",
+          "documentation":"<p>Specifies whether the gateway propagates its tags to the infrastructure it manages.</p>"
+        },
+        "tags":{
+          "shape":"Tags",
+          "documentation":"<p>The metadata applied to the gateway. Each tag consists of a key and an optional value.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The Unix timestamp for the time when the gateway was created.</p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The Unix timestamp for the time when the gateway was last updated.</p>"
+        }
+      },
+      "documentation":"<p>The details of a gateway, including its configuration, status, and the infrastructure settings for its type.</p>"
+    },
+    "GatewayAlbDesyncMitigationMode":{
+      "type":"string",
+      "documentation":"<p>The desync mitigation mode for a gateway's load balancers, which determines how the load balancers handle requests that might pose a security risk.</p>",
+      "enum":[
+        "monitor",
+        "defensive",
+        "strictest"
+      ]
+    },
+    "GatewayAlbProtocol":{
+      "type":"string",
+      "documentation":"<p>The protocol for a gateway's load balancer listener.</p>",
+      "enum":[
+        "HTTP",
+        "HTTPS"
+      ]
+    },
+    "GatewayAlbTestTrafficRules":{
+      "type":"structure",
+      "members":{
+        "header":{
+          "shape":"GatewayTestTrafficHeader",
+          "documentation":"<p>The header-based rule that identifies test traffic.</p>"
+        }
+      },
+      "documentation":"<p>The rules that route test traffic to services behind a gateway during progressive deployments.</p>"
+    },
+    "GatewayClusterAssociationStatus":{
+      "type":"string",
+      "documentation":"<p>The status of an association between a gateway and a cluster.</p>",
+      "enum":[
+        "ACTIVE",
+        "DISASSOCIATING",
+        "INACTIVE"
+      ]
+    },
+    "GatewayClusterAssociationStatusList":{
+      "type":"list",
+      "member":{"shape":"GatewayClusterAssociationStatus"},
+      "max":3,
+      "min":0
+    },
+    "GatewayClusterAssociationSummary":{
+      "type":"structure",
+      "members":{
+        "gatewayArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the gateway.</p>"
+        },
+        "clusterArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the cluster.</p>"
+        },
+        "status":{
+          "shape":"GatewayClusterAssociationStatus",
+          "documentation":"<p>The status of the association.</p>"
+        }
+      },
+      "documentation":"<p>A summary of an association between a gateway and a cluster.</p>"
+    },
+    "GatewayClusterAssociationSummaryList":{
+      "type":"list",
+      "member":{"shape":"GatewayClusterAssociationSummary"},
+      "documentation":"<p>A list of gateway-cluster association summaries.</p>"
+    },
+    "GatewayConfiguration":{
+      "type":"structure",
+      "members":{
+        "hostSharedAlb":{
+          "shape":"HostSharedAlbConfiguration",
+          "documentation":"<p>The configuration for a host-based, shared Application Load Balancer gateway. Each service that uses the gateway is assigned a unique DNS host name.</p>"
+        }
+      },
+      "documentation":"<p>The type-specific configuration for a gateway that you provide when you create it. Exactly one variant is set, and it determines the gateway type.</p>",
+      "union":true
+    },
+    "GatewayConnection":{
+      "type":"structure",
+      "members":{
+        "gatewayArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the gateway.</p>"
+        },
+        "gatewayRouteArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the gateway route for the connection.</p>"
+        },
+        "portName":{
+          "shape":"String",
+          "documentation":"<p>The name of the service port that receives gateway-managed ingress traffic.</p>"
+        },
+        "serviceUrl":{
+          "shape":"String",
+          "documentation":"<p>The URL that the gateway uses to route ingress traffic to the service.</p>"
+        },
+        "accessType":{
+          "shape":"AccessType",
+          "documentation":"<p>The access type of the gateway ingress path.</p> <p>Valid values:</p> <ul> <li> <p> <code>PUBLIC</code> - The ingress path is publicly accessible.</p> </li> <li> <p> <code>PRIVATE</code> - The ingress path is only accessible privately.</p> </li> </ul>"
+        },
+        "status":{
+          "shape":"GatewayRouteStatus",
+          "documentation":"<p>The status of the gateway route for the connection.</p>"
+        },
+        "resources":{
+          "shape":"GatewayConnectionResources",
+          "documentation":"<p>The gateway-managed infrastructure resources for the connection.</p>"
+        }
+      },
+      "documentation":"<p>A gateway-managed connection for a service revision. A connection represents the association between the service's gateway connector and a specific gateway, along with the infrastructure that the gateway created for it.</p>"
+    },
+    "GatewayConnectionAlbResources":{
+      "type":"structure",
+      "members":{
+        "acmCertificateArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon Web Services Certificate Manager certificate that is attached to the load balancer listener.</p>"
+        },
+        "loadBalancerArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the load balancer.</p>"
+        },
+        "loadBalancerSecurityGroupArns":{
+          "shape":"StringList",
+          "documentation":"<p>The Amazon Resource Names (ARNs) of the security groups that the gateway attaches to the load balancer.</p>"
+        },
+        "listenerArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the listener on the load balancer.</p>"
+        },
+        "listenerRuleArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the listener rule that routes production traffic to the service.</p>"
+        },
+        "testListenerRuleArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the listener rule that routes test traffic to the service during progressive deployments.</p>"
+        },
+        "targetGroupArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the target group that receives production traffic.</p>"
+        },
+        "alternateTargetGroupArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the alternate target group that the gateway uses during progressive deployments.</p>"
+        }
+      },
+      "documentation":"<p>The Application Load Balancer resources that a gateway created and manages for a connection.</p>"
+    },
+    "GatewayConnectionAlbResourcesList":{
+      "type":"list",
+      "member":{"shape":"GatewayConnectionAlbResources"},
+      "documentation":"<p>A list of Application Load Balancer resource groups for a gateway connection.</p>",
+      "max":1,
+      "min":0
+    },
+    "GatewayConnectionList":{
+      "type":"list",
+      "member":{"shape":"GatewayConnection"},
+      "documentation":"<p>A list of gateway-managed connections for a service revision.</p>",
+      "max":5,
+      "min":0
+    },
+    "GatewayConnectionResources":{
+      "type":"structure",
+      "members":{
+        "hostSharedAlb":{
+          "shape":"GatewayConnectionAlbResourcesList",
+          "documentation":"<p>The Application Load Balancer resources for a host-based, shared ALB gateway.</p>"
+        }
+      },
+      "documentation":"<p>The gateway-managed infrastructure resources for a connection, as a union keyed by gateway type.</p>",
+      "union":true
+    },
+    "GatewayConnector":{
+      "type":"structure",
+      "required":["portName"],
+      "members":{
+        "portName":{
+          "shape":"String",
+          "documentation":"<p>The name of the service port that the gateway routes ingress traffic to.</p>"
+        },
+        "healthCheck":{
+          "shape":"GatewayConnectorHealthCheck",
+          "documentation":"<p>The health check that the gateway uses to determine whether the targets for this connector are healthy.</p>"
+        },
+        "filters":{
+          "shape":"GatewayConnectorFilters",
+          "documentation":"<p>The filters that control which gateway ingress paths the connector applies to.</p>"
+        }
+      },
+      "documentation":"<p>A gateway connector that attaches an Amazon ECS service to a gateway ingress path. The connector specifies the service port that receives gateway-managed ingress traffic, along with the health check and traffic filters that the gateway applies. A service can have at most one gateway connector.</p>"
+    },
+    "GatewayConnectorFilters":{
+      "type":"structure",
+      "members":{
+        "accessTypes":{
+          "shape":"AccessTypeList",
+          "documentation":"<p>The access types of the gateway ingress paths that the connector applies to.</p> <p>The access type can be one of the following values:</p> <ul> <li> <p> <code>PUBLIC</code> - The ingress path is publicly accessible.</p> </li> <li> <p> <code>PRIVATE</code> - The ingress path is only accessible privately.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>The filters that determine which gateway ingress paths a connector applies to.</p>"
+    },
+    "GatewayConnectorHealthCheck":{
+      "type":"structure",
+      "members":{
+        "healthCheckProtocol":{
+          "shape":"GatewayConnectorHealthCheckProtocol",
+          "documentation":"<p>The protocol that the gateway uses to perform health checks.</p> <p>Valid values:</p> <ul> <li> <p> <code>HTTP</code> - Health checks are performed over HTTP.</p> </li> <li> <p> <code>HTTPS</code> - Health checks are performed over HTTPS.</p> </li> </ul>"
+        },
+        "healthCheckPort":{
+          "shape":"BoxedInteger",
+          "documentation":"<p>The port that the gateway uses to perform health checks on the targets.</p>"
+        },
+        "healthCheckPath":{
+          "shape":"String",
+          "documentation":"<p>The destination path for health check requests.</p>"
+        },
+        "healthCheckTimeoutSeconds":{
+          "shape":"BoxedInteger",
+          "documentation":"<p>The amount of time, in seconds, during which no response from a target means a failed health check.</p>"
+        },
+        "healthCheckIntervalSeconds":{
+          "shape":"BoxedInteger",
+          "documentation":"<p>The approximate amount of time, in seconds, between health checks of an individual target.</p>"
+        },
+        "healthyThresholdCount":{
+          "shape":"BoxedInteger",
+          "documentation":"<p>The number of consecutive successful health checks that a target must pass before the gateway considers it healthy.</p>"
+        },
+        "unhealthyThresholdCount":{
+          "shape":"BoxedInteger",
+          "documentation":"<p>The number of consecutive failed health checks that a target must fail before the gateway considers it unhealthy.</p>"
+        },
+        "matcher":{
+          "shape":"GatewayConnectorHealthCheckMatcher",
+          "documentation":"<p>The HTTP or gRPC codes that indicate a successful health check response from a target.</p>"
+        }
+      },
+      "documentation":"<p>The health check configuration that a gateway uses to evaluate the targets associated with a gateway connector.</p>"
+    },
+    "GatewayConnectorHealthCheckMatcher":{
+      "type":"structure",
+      "members":{
+        "httpCode":{
+          "shape":"String",
+          "documentation":"<p>The HTTP codes that indicate a successful response from a target.</p>"
+        },
+        "grpcCode":{
+          "shape":"String",
+          "documentation":"<p>The gRPC codes that indicate a successful response from a target.</p>"
+        }
+      },
+      "documentation":"<p>The codes that indicate a successful health check response from a target.</p>"
+    },
+    "GatewayConnectorHealthCheckProtocol":{
+      "type":"string",
+      "documentation":"<p>The protocol that a gateway uses to perform health checks on connector targets.</p>",
+      "enum":[
+        "HTTP",
+        "HTTPS"
+      ]
+    },
+    "GatewayConnectorList":{
+      "type":"list",
+      "member":{"shape":"GatewayConnector"},
+      "documentation":"<p>A list of gateway connectors. A service can have at most one gateway connector.</p>",
+      "max":1,
+      "min":0
+    },
+    "GatewayElbAccessLogConfiguration":{
+      "type":"structure",
+      "members":{
+        "destination":{
+          "shape":"GatewayElbAccessLogDestination",
+          "documentation":"<p>The destination where access logs are delivered.</p>"
+        }
+      },
+      "documentation":"<p>The access log configuration for the load balancers that a gateway manages.</p>"
+    },
+    "GatewayElbAccessLogDestination":{
+      "type":"structure",
+      "members":{
+        "s3":{
+          "shape":"GatewayElbAccessLogS3Destination",
+          "documentation":"<p>The Amazon S3 destination for access logs.</p>"
+        }
+      },
+      "documentation":"<p>The destination where the access logs for a gateway's load balancers are delivered.</p>",
+      "union":true
+    },
+    "GatewayElbAccessLogS3Destination":{
+      "type":"structure",
+      "required":["bucket"],
+      "members":{
+        "bucket":{
+          "shape":"String",
+          "documentation":"<p>The name of the Amazon S3 bucket where access logs are delivered.</p>"
+        },
+        "prefix":{
+          "shape":"String",
+          "documentation":"<p>The object key prefix for the access logs in the Amazon S3 bucket.</p>"
+        }
+      },
+      "documentation":"<p>The Amazon S3 destination for the access logs of a gateway's load balancers.</p>"
+    },
+    "GatewayElbIpAddressType":{
+      "type":"string",
+      "documentation":"<p>The IP address type for the load balancers that a gateway manages.</p>",
+      "enum":[
+        "ipv4",
+        "dualstack",
+        "dualstack-without-public-ipv4"
+      ]
+    },
+    "GatewayElbNetworkConfiguration":{
+      "type":"structure",
+      "members":{
+        "inboundSecurityGroup":{
+          "shape":"String",
+          "documentation":"<p>The ID of a security group that you provide to control inbound traffic to the load balancers that the gateway manages. When you specify a security group, the gateway doesn't create inbound rules on the security group it manages.</p>"
+        },
+        "subnets":{
+          "shape":"StringList",
+          "documentation":"<p>The subnets for the load balancers that the gateway manages. The default is the subnets in the default VPC.</p>"
+        },
+        "ipAddressType":{
+          "shape":"GatewayElbIpAddressType",
+          "documentation":"<p>The IP address type for the load balancers that the gateway manages. The default is <code>dualstack</code>.</p>"
+        }
+      },
+      "documentation":"<p>The network configuration for the load balancers that a gateway manages.</p>"
+    },
+    "GatewayElbScheme":{
+      "type":"string",
+      "documentation":"<p>Specifies whether the load balancers that a gateway manages are internet-facing or internal.</p>",
+      "enum":[
+        "internet-facing",
+        "internal"
+      ]
+    },
+    "GatewayInfrastructureResources":{
+      "type":"structure",
+      "members":{
+        "hostSharedAlb":{
+          "shape":"ElbGatewayResourcesList",
+          "documentation":"<p>The Application Load Balancer resource groups for a host-based, shared ALB gateway.</p>"
+        }
+      },
+      "documentation":"<p>The gateway-managed infrastructure in a <code>DescribeGatewayResources</code> response, as a union keyed by gateway type.</p>",
+      "union":true
+    },
+    "GatewayNotFoundException":{
+      "type":"structure",
+      "members":{
+        "message":{
+          "shape":"String",
+          "documentation":"<p> Message that describes the cause of the exception.</p>"
+        }
+      },
+      "documentation":"<p>The specified gateway wasn't found. Check that the gateway name or ARN is correct and that the gateway exists in your account and Region.</p>",
+      "exception":true
+    },
+    "GatewayOperationError":{
+      "type":"structure",
+      "members":{
+        "operation":{
+          "shape":"String",
+          "documentation":"<p>The IAM-style action identifier of the operation that failed, such as <code>elasticloadbalancing:ModifyLoadBalancerAttributes</code>.</p>"
+        },
+        "code":{
+          "shape":"String",
+          "documentation":"<p>The error code returned by the failed operation, passed through from the downstream service, such as <code>AccessDenied</code>.</p>"
+        },
+        "message":{
+          "shape":"String",
+          "documentation":"<p>The detailed error message.</p>"
+        }
+      },
+      "documentation":"<p>A single failed operation against a resource that a gateway manages.</p>"
+    },
+    "GatewayOperationErrorList":{
+      "type":"list",
+      "member":{"shape":"GatewayOperationError"},
+      "documentation":"<p>A list of operation errors.</p>",
+      "max":5,
+      "min":0
+    },
+    "GatewayResourceFailure":{
+      "type":"structure",
+      "members":{
+        "arn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource that failed to update, such as a load balancer ARN.</p>"
+        },
+        "errors":{
+          "shape":"GatewayOperationErrorList",
+          "documentation":"<p>The errors that were encountered while operating on the resource.</p>"
+        }
+      },
+      "documentation":"<p>The failures for a single resource that was touched by an asynchronous gateway process.</p>"
+    },
+    "GatewayResourceFailureList":{
+      "type":"list",
+      "member":{"shape":"GatewayResourceFailure"},
+      "documentation":"<p>A list of resource failures.</p>",
+      "max":200,
+      "min":0
+    },
+    "GatewayResources":{
+      "type":"structure",
+      "members":{
+        "gatewayArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the gateway.</p>"
+        },
+        "resources":{
+          "shape":"GatewayInfrastructureResources",
+          "documentation":"<p>The infrastructure resources that the gateway manages.</p>"
+        }
+      },
+      "documentation":"<p> <code>DescribeGatewayResources</code> returns the gateway-managed infrastructure, grouped by gateway type.</p>"
+    },
+    "GatewayRoute":{
+      "type":"structure",
+      "members":{
+        "gatewayRouteArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the gateway route.</p>"
+        },
+        "serviceArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the service associated with the route.</p>"
+        },
+        "serviceContainerPortName":{
+          "shape":"String",
+          "documentation":"<p>The task definition container port name that the route targets on the service.</p>"
+        },
+        "status":{
+          "shape":"GatewayRouteStatus",
+          "documentation":"<p>The status of the gateway route.</p>"
+        },
+        "serviceUrl":{
+          "shape":"String",
+          "documentation":"<p>The URL for accessing the service, including the <code>https://</code> scheme.</p>"
+        },
+        "resources":{
+          "shape":"GatewayRouteResources",
+          "documentation":"<p>The service-specific infrastructure that the gateway manages for the route, keyed by gateway type.</p>"
+        }
+      },
+      "documentation":"<p>A gateway route, which represents the association between a service and a gateway and the service-specific infrastructure that the gateway manages for the service's revisions.</p>"
+    },
+    "GatewayRouteAlbResources":{
+      "type":"structure",
+      "members":{
+        "acmCertificateArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon Web Services Certificate Manager certificate.</p>"
+        },
+        "loadBalancerArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the load balancer.</p>"
+        },
+        "listenerArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the listener.</p>"
+        },
+        "listenerRuleArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the listener rule for production traffic.</p>"
+        },
+        "testListenerRuleArns":{
+          "shape":"StringList",
+          "documentation":"<p>The Amazon Resource Names (ARNs) of the listener rules for test traffic. There is one rule except when a test header configuration is being changed to another.</p>"
+        },
+        "loadBalancerSecurityGroups":{
+          "shape":"GatewayRouteLoadBalancerSecurityGroupList",
+          "documentation":"<p>The security groups attached to the load balancer.</p>"
+        },
+        "serviceSecurityGroupArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the service security group in which the gateway manages the ingress rule for this route.</p>"
+        }
+      },
+      "documentation":"<p>The Application Load Balancer resources that a gateway manages for a route.</p>"
+    },
+    "GatewayRouteAlbResourcesList":{
+      "type":"list",
+      "member":{"shape":"GatewayRouteAlbResources"},
+      "documentation":"<p>A list of the Application Load Balancer resources for a gateway route.</p>"
+    },
+    "GatewayRouteLoadBalancerSecurityGroup":{
+      "type":"structure",
+      "members":{
+        "arn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the security group.</p>"
+        },
+        "ruleArns":{
+          "shape":"StringList",
+          "documentation":"<p>The Amazon Resource Names (ARNs) of the security group rules.</p>"
+        }
+      },
+      "documentation":"<p>A security group attached to the load balancer for a gateway route.</p>"
+    },
+    "GatewayRouteLoadBalancerSecurityGroupList":{
+      "type":"list",
+      "member":{"shape":"GatewayRouteLoadBalancerSecurityGroup"},
+      "documentation":"<p>A list of the security groups attached to a gateway route's load balancer.</p>"
+    },
+    "GatewayRouteResources":{
+      "type":"structure",
+      "members":{
+        "hostSharedAlb":{
+          "shape":"GatewayRouteAlbResourcesList",
+          "documentation":"<p>The Application Load Balancer resources for a host-based, shared ALB gateway.</p>"
+        }
+      },
+      "documentation":"<p>The service-specific infrastructure that a gateway manages for a route, keyed by gateway type.</p>",
+      "union":true
+    },
+    "GatewayRouteStatus":{
+      "type":"string",
+      "documentation":"<p>The status of a gateway route.</p>",
+      "enum":[
+        "ACTIVE",
+        "CREATE_IN_PROGRESS",
+        "CREATE_FAILED",
+        "UPDATE_IN_PROGRESS",
+        "UPDATE_FAILED",
+        "DELETE_IN_PROGRESS",
+        "DELETE_FAILED"
+      ]
+    },
+    "GatewayRouteStatusList":{
+      "type":"list",
+      "member":{"shape":"GatewayRouteStatus"},
+      "max":7,
+      "min":0
+    },
+    "GatewayRouteSummary":{
+      "type":"structure",
+      "members":{
+        "gatewayRouteArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the gateway route.</p>"
+        },
+        "gatewayArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the gateway.</p>"
+        },
+        "clusterArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the cluster.</p>"
+        },
+        "serviceArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the service.</p>"
+        },
+        "serviceContainerPortName":{
+          "shape":"String",
+          "documentation":"<p>The task definition container port name that the route targets on the service.</p>"
+        },
+        "status":{
+          "shape":"GatewayRouteStatus",
+          "documentation":"<p>The status of the gateway route.</p>"
+        }
+      },
+      "documentation":"<p>A summary of a gateway route that is returned by the <code>ListGatewayRoutes</code> operation.</p>"
+    },
+    "GatewayRouteSummaryList":{
+      "type":"list",
+      "member":{"shape":"GatewayRouteSummary"},
+      "documentation":"<p>A list of gateway route summaries.</p>"
+    },
+    "GatewayStatus":{
+      "type":"string",
+      "documentation":"<p>The status of a gateway.</p>",
+      "enum":[
+        "ACTIVE",
+        "UPDATE_IN_PROGRESS",
+        "UPDATE_COMPLETE",
+        "UPDATE_FAILED",
+        "DELETED"
+      ]
+    },
+    "GatewayStatusList":{
+      "type":"list",
+      "member":{"shape":"GatewayStatus"},
+      "max":5,
+      "min":0
+    },
+    "GatewaySummary":{
+      "type":"structure",
+      "members":{
+        "gatewayArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the gateway.</p>"
+        },
+        "name":{
+          "shape":"String",
+          "documentation":"<p>The name of the gateway.</p>"
+        },
+        "status":{
+          "shape":"GatewayStatus",
+          "documentation":"<p>The status of the gateway.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The Unix timestamp for the time when the gateway was created.</p>"
+        }
+      },
+      "documentation":"<p>A summary of a gateway that is returned by the <code>ListGateways</code> operation.</p>"
+    },
+    "GatewaySummaryList":{
+      "type":"list",
+      "member":{"shape":"GatewaySummary"},
+      "documentation":"<p>A list of gateway summaries.</p>"
+    },
+    "GatewayTestTrafficHeader":{
+      "type":"structure",
+      "required":[
+        "name",
+        "values"
+      ],
+      "members":{
+        "name":{
+          "shape":"String",
+          "documentation":"<p>The name of the header to match for test traffic routing.</p>"
+        },
+        "values":{
+          "shape":"StringList",
+          "documentation":"<p>The header values to match for test traffic routing.</p>"
+        }
+      },
+      "documentation":"<p>A header-based rule that identifies test traffic for progressive deployments.</p>"
+    },
     "GetTaskProtectionRequest":{
       "type":"structure",
       "required":["cluster"],
@@ -6005,6 +7226,48 @@
     "HostEntryList":{
       "type":"list",
       "member":{"shape":"HostEntry"}
+    },
+    "HostSharedAlbConfiguration":{
+      "type":"structure",
+      "members":{
+        "networkConfiguration":{
+          "shape":"GatewayElbNetworkConfiguration",
+          "documentation":"<p>The network configuration for the load balancers that the gateway manages.</p>"
+        },
+        "scheme":{
+          "shape":"GatewayElbScheme",
+          "documentation":"<p>Specifies whether the load balancers the gateway manages are <code>internet-facing</code> or <code>internal</code>. The default is <code>internet-facing</code>.</p>"
+        },
+        "webACLArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the WAF web ACL to associate with the load balancers that the gateway manages.</p>"
+        },
+        "accessLogs":{
+          "shape":"GatewayElbAccessLogConfiguration",
+          "documentation":"<p>The access log configuration for the load balancers that the gateway manages.</p>"
+        },
+        "port":{
+          "shape":"BoxedInteger",
+          "documentation":"<p>The port that the load balancer listener uses is 443. The gateway supports only HTTPS at port 443.</p>"
+        },
+        "protocol":{
+          "shape":"GatewayAlbProtocol",
+          "documentation":"<p>The protocol for the load balancer listener is <code>HTTPS</code>. No other protocol is supported.</p>"
+        },
+        "maxAlbCount":{
+          "shape":"BoxedInteger",
+          "documentation":"<p>The maximum number of Application Load Balancers that the gateway manages. The default is 10.</p>"
+        },
+        "httpDesync":{
+          "shape":"GatewayAlbDesyncMitigationMode",
+          "documentation":"<p>The desync mitigation mode for the load balancers that the gateway manages, which determines how the load balancers handle requests that might pose a security risk. The default is <code>defensive</code>.</p>"
+        },
+        "testTrafficRules":{
+          "shape":"GatewayAlbTestTrafficRules",
+          "documentation":"<p>The rules that route test traffic for progressive deployments. During a progressive deployment, requests whose headers match these rules are routed to the new service revision so that it can be validated before production traffic shifts to it.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for a gateway that uses shared Application Load Balancers with host-based routing. Where they apply, the field names and values are kept consistent with the Elastic Load Balancing API.</p>"
     },
     "HostVolumeProperties":{
       "type":"structure",
@@ -6746,6 +8009,124 @@
         "nextToken":{
           "shape":"String",
           "documentation":"<p>The <code>nextToken</code> value to include in a future <code>ListDaemons</code> request. When the results of a <code>ListDaemons</code> request exceed <code>maxResults</code>, this value can be used to retrieve the next page of results.</p>"
+        }
+      }
+    },
+    "ListGatewayClusterAssociationsRequest":{
+      "type":"structure",
+      "members":{
+        "gateway":{
+          "shape":"String",
+          "documentation":"<p>The name or Amazon Resource Name (ARN) of a gateway to filter the results by.</p>"
+        },
+        "cluster":{
+          "shape":"String",
+          "documentation":"<p>The name or Amazon Resource Name (ARN) of a cluster to filter the results by.</p>"
+        },
+        "status":{
+          "shape":"GatewayClusterAssociationStatusList",
+          "documentation":"<p>The association status to filter the results by.</p>"
+        },
+        "maxResults":{
+          "shape":"BoxedInteger",
+          "documentation":"<p>The maximum number of results that the operation returns in a single page. The default is 100.</p>"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>The <code>nextToken</code> value returned from a previous paginated request.</p>"
+        }
+      }
+    },
+    "ListGatewayClusterAssociationsResponse":{
+      "type":"structure",
+      "members":{
+        "gatewayClusterAssociations":{
+          "shape":"GatewayClusterAssociationSummaryList",
+          "documentation":"<p>The gateway-cluster associations that match the request.</p>"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>The <code>nextToken</code> value to include in a future request to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.</p>"
+        }
+      }
+    },
+    "ListGatewayRoutesRequest":{
+      "type":"structure",
+      "members":{
+        "gateway":{
+          "shape":"String",
+          "documentation":"<p>The name or Amazon Resource Name (ARN) of a gateway to filter the results by.</p>"
+        },
+        "cluster":{
+          "shape":"String",
+          "documentation":"<p>The name or Amazon Resource Name (ARN) of a cluster to filter the results by.</p>"
+        },
+        "service":{
+          "shape":"String",
+          "documentation":"<p>The name or Amazon Resource Name (ARN) of a service to filter the results by. Because services can span clusters, a service name isn't necessarily unique and can match multiple services.</p>"
+        },
+        "serviceContainerPortName":{
+          "shape":"String",
+          "documentation":"<p>The name of a task definition container port to filter the results by.</p>"
+        },
+        "status":{
+          "shape":"GatewayRouteStatusList",
+          "documentation":"<p>The gateway route status to filter the results by.</p>"
+        },
+        "maxResults":{
+          "shape":"BoxedInteger",
+          "documentation":"<p>The maximum number of results that the operation returns in a single page. The default is 100.</p>"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>The <code>nextToken</code> value returned from a previous paginated request.</p>"
+        }
+      }
+    },
+    "ListGatewayRoutesResponse":{
+      "type":"structure",
+      "members":{
+        "gatewayRoutes":{
+          "shape":"GatewayRouteSummaryList",
+          "documentation":"<p>The gateway routes that match the request.</p>"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>The <code>nextToken</code> value to include in a future request to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.</p>"
+        }
+      }
+    },
+    "ListGatewaysRequest":{
+      "type":"structure",
+      "members":{
+        "names":{
+          "shape":"StringList",
+          "documentation":"<p>The gateway names to filter the results by. You can specify up to 10 names.</p>"
+        },
+        "status":{
+          "shape":"GatewayStatusList",
+          "documentation":"<p>The gateway statuses to filter the results by.</p>"
+        },
+        "maxResults":{
+          "shape":"BoxedInteger",
+          "documentation":"<p>The maximum number of gateway results that <code>ListGateways</code> returns in a single page. The default is 100.</p>"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>The <code>nextToken</code> value returned from a previous paginated <code>ListGateways</code> request where <code>maxResults</code> was used and the results exceeded the value of that parameter. Pagination continues from the end of the previous results.</p>"
+        }
+      }
+    },
+    "ListGatewaysResponse":{
+      "type":"structure",
+      "members":{
+        "gateways":{
+          "shape":"GatewaySummaryList",
+          "documentation":"<p>The list of gateways that match the request.</p>"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>The <code>nextToken</code> value to include in a future <code>ListGateways</code> request. When the results of a <code>ListGateways</code> request exceed <code>maxResults</code>, this value can be used to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.</p>"
         }
       }
     },
@@ -8134,6 +9515,14 @@
       "box":true,
       "max":65535,
       "min":0
+    },
+    "PropagateGatewayTags":{
+      "type":"string",
+      "documentation":"<p>Specifies whether the tags on a gateway are propagated to the infrastructure that the gateway manages.</p>",
+      "enum":[
+        "NONE",
+        "GATEWAY"
+      ]
     },
     "PropagateMITags":{
       "type":"string",
@@ -9698,6 +11087,10 @@
         "overrides":{
           "shape":"ServiceRevisionOverrides",
           "documentation":"<p>The effective runtime overrides that Amazon ECS applies to this service revision. This value is present only when Amazon ECS detects a difference between the task definition and the actual runtime configuration.</p>"
+        },
+        "gatewayConnectors":{
+          "shape":"GatewayConnectorList",
+          "documentation":"<p>The gateway connectors that are associated with the service revision.</p>"
         },
         "monitoring":{
           "shape":"MonitoringConfiguration",
@@ -11338,6 +12731,100 @@
         }
       }
     },
+    "UpdateGatewayAlbConfiguration":{
+      "type":"structure",
+      "members":{
+        "networkConfiguration":{
+          "shape":"UpdateGatewayNetworkConfiguration",
+          "documentation":"<p>The mutable network configuration for the load balancers that the gateway manages.</p>"
+        },
+        "maxAlbCount":{
+          "shape":"BoxedInteger",
+          "documentation":"<p>The maximum number of Application Load Balancers that the gateway manages.</p>"
+        },
+        "webACLArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the WAF web ACL to associate with the load balancers that the gateway manages.</p>"
+        },
+        "accessLogs":{
+          "shape":"GatewayElbAccessLogConfiguration",
+          "documentation":"<p>The access log configuration for the load balancers that the gateway manages.</p>"
+        },
+        "httpDesync":{
+          "shape":"GatewayAlbDesyncMitigationMode",
+          "documentation":"<p>The desync mitigation mode for the load balancers that the gateway manages.</p>"
+        },
+        "testTrafficRules":{
+          "shape":"GatewayAlbTestTrafficRules",
+          "documentation":"<p>The rules that route test traffic for progressive deployments.</p>"
+        }
+      },
+      "documentation":"<p>The mutable configuration fields for a gateway that uses shared Application Load Balancers. Only fields that can be changed without interrupting traffic are included.</p>"
+    },
+    "UpdateGatewayConfiguration":{
+      "type":"structure",
+      "members":{
+        "hostSharedAlb":{
+          "shape":"UpdateGatewayAlbConfiguration",
+          "documentation":"<p>The mutable configuration for a host-based, shared Application Load Balancer gateway.</p>"
+        }
+      },
+      "documentation":"<p>The type-specific configuration to change on a gateway. The variant must match the gateway's existing type.</p>",
+      "union":true
+    },
+    "UpdateGatewayNetworkConfiguration":{
+      "type":"structure",
+      "members":{
+        "inboundSecurityGroup":{
+          "shape":"String",
+          "documentation":"<p>The ID of a security group that you provide to control inbound traffic to the load balancers that the gateway manages. When you specify a security group, the gateway doesn't create inbound rules on the security group it manages.</p>"
+        }
+      },
+      "documentation":"<p>The mutable network configuration for the load balancers that a gateway manages.</p>"
+    },
+    "UpdateGatewayRequest":{
+      "type":"structure",
+      "required":["gateway"],
+      "members":{
+        "gateway":{
+          "shape":"String",
+          "documentation":"<p>The name or Amazon Resource Name (ARN) of the gateway to update.</p>"
+        },
+        "infrastructureRoleArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role that the gateway assumes to manage infrastructure on your behalf.</p>"
+        },
+        "deletionProtection":{
+          "shape":"BoxedBoolean",
+          "documentation":"<p>Specifies whether to enable deletion protection for the gateway. When enabled, the gateway can't be deleted.</p>"
+        },
+        "configuration":{
+          "shape":"UpdateGatewayConfiguration",
+          "documentation":"<p>The updated type-specific configuration for the gateway. The configuration variant must match the gateway's existing type, and only mutable fields can be changed.</p>"
+        },
+        "propagateTags":{
+          "shape":"PropagateGatewayTags",
+          "documentation":"<p>Specifies whether to propagate the tags from the gateway to the infrastructure that the gateway manages. If you don't specify a value, the gateway's existing setting is unchanged.</p>"
+        }
+      }
+    },
+    "UpdateGatewayResponse":{
+      "type":"structure",
+      "members":{
+        "gatewayArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the gateway.</p>"
+        },
+        "name":{
+          "shape":"String",
+          "documentation":"<p>The name of the gateway.</p>"
+        },
+        "status":{
+          "shape":"GatewayStatus",
+          "documentation":"<p>The status of the gateway. After a successful update request, the status is <code>UPDATE_IN_PROGRESS</code>.</p>"
+        }
+      }
+    },
     "UpdateInProgressException":{
       "type":"structure",
       "members":{
@@ -11498,6 +12985,10 @@
         "vpcLatticeConfigurations":{
           "shape":"VpcLatticeConfigurations",
           "documentation":"<p>An object representing the VPC Lattice configuration for the service being updated.</p> <p>This parameter triggers a new service deployment.</p>"
+        },
+        "gatewayConnectors":{
+          "shape":"GatewayConnectorList",
+          "documentation":"<p>The updated set of gateway connectors that connect the service to a gateway ingress path. A service supports no more than one gateway connector.</p>"
         },
         "monitoring":{
           "shape":"MonitoringConfiguration",

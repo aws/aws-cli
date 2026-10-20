@@ -4913,6 +4913,10 @@
           "shape":"TableReference",
           "documentation":"<p>The table that this configured table represents.</p>"
         },
+        "tableType":{
+          "shape":"TableReferenceType",
+          "documentation":"<p>Type of the Configured Table DataSource, example: Glue, Snowflake, Athena, Databricks</p>"
+        },
         "createTime":{
           "shape":"Timestamp",
           "documentation":"<p>The time the configured table was created.</p>"
@@ -5328,6 +5332,10 @@
         "name":{
           "shape":"DisplayName",
           "documentation":"<p>The name of the configured table.</p>"
+        },
+        "tableType":{
+          "shape":"TableReferenceType",
+          "documentation":"<p>Type of the Configured Table DataSource, example: Glue, Snowflake, Athena, Databricks</p>"
         },
         "createTime":{
           "shape":"Timestamp",
@@ -6274,6 +6282,81 @@
         }
       },
       "documentation":"<p>The settings for client-side encryption for cryptographic computing.</p>"
+    },
+    "DatabricksConnectionType":{
+      "type":"structure",
+      "members":{
+        "deltaSharing":{
+          "shape":"DatabricksDeltaSharingConnection",
+          "documentation":"<p>Details about Connector for Databricks</p>"
+        }
+      },
+      "documentation":"<p>Type of the connector to be used for connecting to Databricks. Supported connector: Delta Sharing</p>",
+      "union":true
+    },
+    "DatabricksDeltaSharingConnection":{
+      "type":"structure",
+      "required":[
+        "deltaShareEndpoint",
+        "shareName"
+      ],
+      "members":{
+        "deltaShareEndpoint":{
+          "shape":"DatabricksEndpointUrl",
+          "documentation":"<p>The base URL of a Delta Sharing server that hosts shared datasets.</p>"
+        },
+        "shareName":{
+          "shape":"DatabricksObject",
+          "documentation":"<p>Name of the Share used for OpenSharing (Delta Sharing) the Databricks Table.</p>"
+        }
+      },
+      "documentation":"<p>Details about Delta Sharing Connector for Databricks</p>"
+    },
+    "DatabricksEndpointUrl":{
+      "type":"string",
+      "max":1024,
+      "min":10,
+      "pattern":"https://(?:[a-zA-Z0-9.-]+\\.cloud\\.databricks\\.com/api/2\\.0/delta-sharing|[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\\.opensharing\\.[a-z0-9-]+\\.cloud\\.databricks\\.com/api/2\\.0/opensharing)/metastores/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/recipients/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+    },
+    "DatabricksObject":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"[\\p{L}\\p{M}\\p{N}\\p{Pc}\\p{Pd}]+"
+    },
+    "DatabricksTableReference":{
+      "type":"structure",
+      "required":[
+        "schemaName",
+        "tableName",
+        "workspaceUrl",
+        "connectionType"
+      ],
+      "members":{
+        "schemaName":{
+          "shape":"DatabricksObject",
+          "documentation":"<p>Name of the Schema within Databricks.</p>"
+        },
+        "tableName":{
+          "shape":"DatabricksObject",
+          "documentation":"<p>Name of the Table within Databricks.</p>"
+        },
+        "workspaceUrl":{
+          "shape":"DatabricksWorkspaceUrl",
+          "documentation":"<p>URL for the Databricks Workspace.</p>"
+        },
+        "connectionType":{
+          "shape":"DatabricksConnectionType",
+          "documentation":"<p>Type of the connector to be used for connecting to Databricks. Supported connector: Delta Sharing</p>"
+        }
+      },
+      "documentation":"<p> A reference to a table within Databricks.</p>"
+    },
+    "DatabricksWorkspaceUrl":{
+      "type":"string",
+      "max":256,
+      "min":10,
+      "pattern":"https://[a-zA-Z0-9.-]+\\.cloud\\.databricks\\.com/?"
     },
     "DeleteAnalysisTemplateInput":{
       "type":"structure",
@@ -12795,10 +12878,23 @@
         "athena":{
           "shape":"AthenaTableReference",
           "documentation":"<p> If present, a reference to the Athena table referred to by this table reference.</p>"
+        },
+        "databricks":{
+          "shape":"DatabricksTableReference",
+          "documentation":"<p> If present, a reference to the Databricks table referred to by this table reference.</p>"
         }
       },
       "documentation":"<p>A pointer to the dataset that underlies this table.</p>",
       "union":true
+    },
+    "TableReferenceType":{
+      "type":"string",
+      "enum":[
+        "GLUE",
+        "SNOWFLAKE",
+        "ATHENA",
+        "DATABRICKS"
+      ]
     },
     "TagKey":{
       "type":"string",

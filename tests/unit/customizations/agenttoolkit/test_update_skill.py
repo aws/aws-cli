@@ -492,7 +492,11 @@ def test_update_all_failure_with_rest_up_to_date(tmp_path):
     rc = cmd(args=['--all'], parsed_globals=Mock())
 
     assert rc == 1
-    assert 'already up to date' not in stream.getvalue()
+    assert 'All installed AWS skills' not in stream.getvalue()
+    assert (
+        '0 updated, 0 skipped, 1 failed, 1 already up to date.'
+        in stream.getvalue()
+    )
     assert 'Failed to update aws-lambda' in error_stream.getvalue()
 
 
@@ -762,3 +766,126 @@ def test_install_rejects_encrypted_member(tmp_path):
     ):
         utils.install_skill('aws-s3', 'v1', zip_bytes, checksum, [agent])
     assert not _skill_dir(tmp_path).exists()
+
+
+def _skip_aws_cdk_at(tmp_path):
+    """Put a directory the CLI didn't create in aws-cdk's second location."""
+    _install_skill_at_version(tmp_path, '.agent-a', 'aws-cdk', 'v1')
+    other = tmp_path / '.agent-b' / 'skills' / 'aws-cdk'
+    other.mkdir(parents=True)
+    (other / 'SKILL.md').write_text('mine')
+    (other / SKILL_METADATA_FILENAME).write_text('{"version": "v1"}')
+    return other
+
+
+def _two_agent_configs(tmp_path):
+    return [
+        make_config(
+            tmp_path,
+            id='a',
+            display_name='Agent A',
+            detection_path=str(tmp_path / '.agent-a'),
+        ),
+        make_config(
+            tmp_path,
+            id='b',
+            display_name='Agent B',
+            detection_path=str(tmp_path / '.agent-b'),
+        ),
+    ]
+
+
+def test_update_all_reports_summary(tmp_path):
+    for name, version in (
+        ('aws-cdk', 'v1'),
+        ('aws-iam', 'v2'),
+        ('aws-s3', 'v1'),
+    ):
+        _install_skill_at_version(tmp_path, '.test-agent', name, version)
+    real_swap = atomic.swap_into_place
+
+    def swap(staging, live):
+        if live.endswith('aws-s3'):
+            raise PermissionError('in use')
+        real_swap(staging, live)
+
+    with patch.object(atomic, 'swap_into_place', side_effect=swap):
+        rc, output, errors = _run_update_all_with_errors(
+            [make_config(tmp_path)],
+            {'aws-cdk': 'v2', 'aws-iam': 'v2', 'aws-s3': 'v2'},
+        )
+    assert rc == 1
+    assert '1 updated, 0 skipped, 1 failed, 1 already up to date.' in output
+    assert 'Skipped:' not in output
+    assert '\nFailed:\n  Failed to update aws-s3: ' in errors
+    assert 'To retry, run "aws agent-toolkit update-skill' in errors
+
+
+def test_update_all_reports_skipped_with_reason(tmp_path):
+    other = _skip_aws_cdk_at(tmp_path)
+    # Agent B's copy has a marker so it is listed, but replace it with a
+    # directory the CLI didn't create just before installing.
+    real_install_dir = utils._install_skill_dir
+
+    def install_dir(skill_name, version, zf, real_dir, *args):
+        if real_dir == os.path.realpath(other):
+            os.remove(other / SKILL_METADATA_FILENAME)
+        return real_install_dir(skill_name, version, zf, real_dir, *args)
+
+    with patch.object(utils, '_install_skill_dir', side_effect=install_dir):
+        rc, output, errors = _run_update_all_with_errors(
+            _two_agent_configs(tmp_path), {'aws-cdk': 'v2'}
+        )
+    assert rc == 0
+    assert '0 updated, 1 skipped, 0 failed, 0 already up to date.' in output
+    assert (
+        f'Skipped:\n  aws-cdk at {os.path.realpath(other)}: directory was not '
+        'installed by the AWS CLI.\n'
+    ) in output
+    assert 'add-skill --skill-name <name>' in output
+    assert (other / 'SKILL.md').read_text() == 'mine'
+    assert errors == ''
+
+
+def test_update_one_skill_reports_skipped(tmp_path):
+    _install_skill_at_version(tmp_path, '.test-agent', 'aws-s3', 'v1')
+    with patch.object(utils, '_install_skill_dir', return_value='a reason'):
+        rc, output = _run_update(
+            [make_config(tmp_path)], ['--skill-name', 'aws-s3']
+        )
+    assert rc == 0
+    assert 'Skipped:\n  aws-s3 at ' in output
+    assert ': a reason.\n' in output
+
+
+def test_update_all_up_to_date_has_no_summary(tmp_path):
+    _install_skill_at_version(tmp_path, '.test-agent', 'aws-s3', 'v2')
+    rc, output, _ = _run_update_all_with_errors(
+        [make_config(tmp_path)], {'aws-s3': 'v2'}
+    )
+    assert rc == 0
+    assert output == 'All installed AWS skills are already up to date.\n'
+
+
+def test_install_skill_returns_skipped_dirs(tmp_path):
+    skills = tmp_path / '.test-agent' / 'skills'
+    skills.mkdir(parents=True)
+    (skills / 'aws-s3').write_text('not a skill')
+    zip_bytes, checksum = make_skill_zip()
+    agent = make_config(tmp_path).detect()
+    skipped = utils.install_skill('aws-s3', 'v1', zip_bytes, checksum, [agent])
+    assert skipped == [
+        (
+            os.path.realpath(skills / 'aws-s3'),
+            'a file that is not a skill directory is in the way',
+        )
+    ]
+
+
+def test_install_skill_returns_empty_when_installed(tmp_path):
+    (tmp_path / '.test-agent').mkdir()
+    zip_bytes, checksum = make_skill_zip()
+    agent = make_config(tmp_path).detect()
+    assert (
+        utils.install_skill('aws-s3', 'v1', zip_bytes, checksum, [agent]) == []
+    )

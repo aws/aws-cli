@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.46.2
+======
+
+* bugfix:``credentials``: Include the web identity token in the credential cache key to prevent collisions across different tokens for the same role.
+
+
 1.46.1
 ======
 

@@ -3131,6 +3131,26 @@ class TestJSONCache(unittest.TestCase):
         cache['foo'] = {'bar': 'baz'}
         self.assertEqual(cache['foo'], {'bar': 'baz'})
 
+    def test_working_dir_created_concurrently(self):
+        # Simulate another process creating the directory between the
+        # isdir() check and the makedirs() call.
+        working_dir = os.path.join(self.tempdir, 'foo')
+        cache = credentials.JSONFileCache(working_dir)
+        real_isdir = os.path.isdir
+        checked = []
+
+        def racing_isdir(path):
+            if not checked:
+                checked.append(path)
+                result = real_isdir(path)
+                os.makedirs(working_dir)
+                return result
+            return real_isdir(path)
+
+        with mock.patch('os.path.isdir', side_effect=racing_isdir):
+            cache['foo'] = {'bar': 'baz'}
+        self.assertEqual(cache['foo'], {'bar': 'baz'})
+
     def test_key_error_raised_when_cache_key_does_not_exist(self):
         with self.assertRaises(KeyError):
             self.cache['foo']

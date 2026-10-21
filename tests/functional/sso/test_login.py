@@ -15,6 +15,8 @@ import json
 import os
 import re
 
+from botocore.context import start_as_current_context
+
 from awscli.testutils import mock
 from tests.functional.sso import BaseSSOTest
 
@@ -243,7 +245,7 @@ class TestLoginCommand(BaseSSOTest):
         )
 
     def test_login_device_partially_missing_sso_configuration(self):
-        content = '[default]\n' 'sso_start_url=%s\n' % self.start_url
+        content = f'[default]\nsso_start_url={self.start_url}\n'
         self.set_config_file_content(content=content)
         _, stderr, _ = self.run_cmd(
             'sso login --use-device-code', expected_rc=253
@@ -295,12 +297,56 @@ class TestLoginCommand(BaseSSOTest):
         self.run_cmd('sso login')
         self.assert_used_expected_sso_region(expected_region=self.sso_region)
         self.assert_auth_browser_handler_called_with('sso%3Aaccount%3Aaccess')
+        self.fetcher_mock.assert_called_once_with(redirect_port=None)
         self.assert_cache_contains_registration(
             start_url=self.start_url,
             session_name='test-session',
             scopes=self.registration_scopes,
             expected_client_id='auth-client-id',
         )
+        self.assert_cache_contains_token(
+            start_url=self.start_url,
+            session_name='test-session',
+            expected_token=self.access_token,
+        )
+
+    def test_login_auth_sso_session_with_redirect_port(self):
+        content = self.get_sso_session_config('test-session')
+        self.set_config_file_content(content=content)
+        self.fetcher_mock.return_value.redirect_uri_with_port.return_value = (
+            'http://127.0.0.1:34535/oauth/callback'
+        )
+        self.add_oidc_auth_code_responses(self.access_token)
+        self.run_cmd('sso login --redirect-port 34535')
+        self.fetcher_mock.assert_called_once_with(redirect_port=34535)
+        self.assert_auth_browser_handler_called_with(
+            'sso%3Aaccount%3Aaccess',
+            expected_redirect_port=34535,
+        )
+
+    def test_login_invalid_redirect_port(self):
+        for redirect_port in (-1, 0, 65536):
+            with self.subTest(redirect_port=redirect_port):
+                _, stderr, _ = self.run_cmd(
+                    f'sso login --redirect-port {redirect_port}',
+                    expected_rc=252,
+                )
+                self.assertIn('Invalid value for --redirect-port', stderr)
+                self.fetcher_mock.assert_not_called()
+
+    def test_login_non_integer_redirect_port(self):
+        _, stderr, _ = self.run_cmd(
+            'sso login --redirect-port invalid', expected_rc=255
+        )
+        self.assertIn("invalid literal for int()", stderr)
+        self.fetcher_mock.assert_not_called()
+
+    def test_login_device_code_ignores_redirect_port(self):
+        content = self.get_sso_session_config('test-session')
+        self.set_config_file_content(content=content)
+        self.add_oidc_device_responses(self.access_token)
+        self.run_cmd('sso login --use-device-code --redirect-port 34535')
+        self.fetcher_mock.assert_not_called()
         self.assert_cache_contains_token(
             start_url=self.start_url,
             session_name='test-session',
@@ -480,3 +526,164 @@ class TestLoginCommand(BaseSSOTest):
             config=mock.ANY,
             verify=False,
         )
+
+
+class TestLoginWithVanityUrl(BaseSSOTest):
+    def setUp(self):
+        super().setUp()
+        self.vanity_url = 'https://aws.mycompany.com'
+        self.resolved_url = 'https://ssoins-abc.portal.us-east-1.app.aws'
+        self.start_url = self.vanity_url
+        self.set_config_file_content(
+            self.get_sso_session_config('vanity-session')
+        )
+        self._resolve_patch.stop()
+        self.resolve_patch = mock.patch(
+            'awscli.customizations.sso.login.resolve_start_url',
+            return_value=(self.resolved_url, 'us-east-1'),
+        )
+        self.mock_resolve = self.resolve_patch.start()
+
+    def tearDown(self):
+        super().tearDown()
+        self.resolve_patch.stop()
+
+    def test_login_uses_resolved_region(self):
+        self.add_oidc_auth_code_responses(self.access_token)
+        self.run_cmd('sso login')
+        self.assert_used_expected_sso_region('us-east-1')
+
+    def test_login_passes_resolved_url_to_register_client(self):
+        self.add_oidc_auth_code_responses(self.access_token)
+        self.run_cmd('sso login')
+        register_call = self.operations_called[0]
+        self.assertEqual(register_call[0].name, 'RegisterClient')
+        self.assertEqual(register_call[1]['issuerUrl'], self.resolved_url)
+
+    def test_config_rewritten_after_successful_login(self):
+        self.add_oidc_auth_code_responses(self.access_token)
+        self.run_cmd('sso login')
+        with open(self.config_file) as f:
+            config_content = f.read()
+        self.assertIn('sso_region = us-east-1', config_content)
+
+    def test_region_update_message_printed(self):
+        self.add_oidc_auth_code_responses(self.access_token)
+        stdout, _, _ = self.run_cmd('sso login')
+        self.assertIn('SSO region updated to us-east-1', stdout)
+
+    def test_no_region_update_message_when_region_matches(self):
+        self.sso_region = 'us-east-1'
+        self.set_config_file_content(
+            self.get_sso_session_config('vanity-session')
+        )
+        self.add_oidc_auth_code_responses(self.access_token)
+        stdout, _, _ = self.run_cmd('sso login')
+        self.assertNotIn('SSO region updated', stdout)
+
+    def test_config_not_rewritten_on_login_failure(self):
+        self.parsed_responses = [
+            {
+                'Error': {
+                    'Code': 'InvalidRequestException',
+                    'Message': 'Invalid start url provided',
+                }
+            }
+        ]
+        self.run_cmd('sso login', expected_rc=254)
+        with open(self.config_file) as f:
+            config_content = f.read()
+        self.assertIn(f'sso_region={self.sso_region}', config_content)
+
+    def test_config_not_rewritten_when_region_matches(self):
+        self.sso_region = 'us-east-1'
+        self.set_config_file_content(
+            self.get_sso_session_config('vanity-session')
+        )
+        self.add_oidc_auth_code_responses(self.access_token)
+        self.run_cmd('sso login')
+        with open(self.config_file) as f:
+            config_content = f.read()
+        self.assertIn('sso_region=us-east-1', config_content)
+
+    def test_vanity_url_sets_feature_id_in_user_agent(self):
+        self.add_oidc_auth_code_responses(self.access_token)
+        with start_as_current_context():
+            self.run_cmd('sso login')
+        self.assertIn('AM', self.last_request_dict['headers']['User-Agent'])
+
+
+class TestLoginWithVanityUrlLegacy(BaseSSOTest):
+    def setUp(self):
+        super().setUp()
+        self.vanity_url = 'https://aws.mycompany.com'
+        self.resolved_url = 'https://ssoins-abc.portal.us-east-1.app.aws'
+        self.start_url = self.vanity_url
+        self.set_config_file_content(self.get_legacy_config())
+        self._resolve_patch.stop()
+        self.resolve_patch = mock.patch(
+            'awscli.customizations.sso.login.resolve_start_url',
+            return_value=(self.resolved_url, 'us-east-1'),
+        )
+        self.mock_resolve = self.resolve_patch.start()
+
+    def tearDown(self):
+        super().tearDown()
+        self.resolve_patch.stop()
+
+    def test_legacy_login_uses_resolved_region(self):
+        self.add_oidc_device_responses(self.access_token)
+        self.run_cmd('sso login')
+        self.assert_used_expected_sso_region('us-east-1')
+
+    def test_legacy_config_rewritten_after_successful_login(self):
+        self.add_oidc_device_responses(self.access_token)
+        self.run_cmd('sso login')
+        with open(self.config_file) as f:
+            config_content = f.read()
+        self.assertIn('sso_region = us-east-1', config_content)
+
+    def test_legacy_passes_resolved_url_to_device_authorization(self):
+        self.add_oidc_device_responses(self.access_token)
+        self.run_cmd('sso login')
+        device_auth_call = self.operations_called[1]
+        self.assertEqual(device_auth_call[0].name, 'StartDeviceAuthorization')
+        self.assertEqual(device_auth_call[1]['startUrl'], self.resolved_url)
+
+
+class TestLoginWithDirectUrl(BaseSSOTest):
+    def setUp(self):
+        super().setUp()
+        self.start_url = 'https://ssoins-abc.portal.us-west-2.app.aws'
+        self.set_config_file_content(
+            self.get_sso_session_config('direct-session')
+        )
+        self._resolve_patch.stop()
+        self.resolve_patch = mock.patch(
+            'awscli.customizations.sso.login.resolve_start_url',
+            return_value=(self.start_url, 'us-west-2'),
+        )
+        self.mock_resolve = self.resolve_patch.start()
+
+    def tearDown(self):
+        super().tearDown()
+        self.resolve_patch.stop()
+
+    def test_config_not_rewritten_for_direct_url(self):
+        self.add_oidc_auth_code_responses(self.access_token)
+        self.run_cmd('sso login')
+        with open(self.config_file) as f:
+            config_content = f.read()
+        self.assertIn(f'sso_region={self.sso_region}', config_content)
+
+    def test_login_uses_configured_region(self):
+        self.add_oidc_auth_code_responses(self.access_token)
+        self.run_cmd('sso login')
+        self.assert_used_expected_sso_region('us-west-2')
+
+    def test_direct_url_does_not_set_vanity_feature_id(self):
+        self.add_oidc_auth_code_responses(self.access_token)
+        with start_as_current_context():
+            self.run_cmd('sso login')
+        user_agent = self.last_request_dict['headers']['User-Agent']
+        self.assertNotIn('AM', user_agent.split('m/')[-1])

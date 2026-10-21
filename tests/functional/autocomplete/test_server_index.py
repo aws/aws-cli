@@ -25,7 +25,7 @@ class TestCanGenerateServerIndex(unittest.TestCase):
             ],
         )
         driver = clidriver.create_clidriver()
-        driver.session.register(
+        driver.session.get_component('event_emitter').register_last(
             'building-command-table.main', _ddb_only_command_table
         )
         index_generator.generate_index(driver)
@@ -111,7 +111,7 @@ class TestCanHandleNoCompletionData(unittest.TestCase):
         # This will result in the loader not being able to find any
         # completion data, which allows us to verify the behavior when
         # there's no completion data.
-        driver.session.register(
+        driver.session.get_component('event_emitter').register_last(
             'building-command-table.main', _ddb_only_command_table
         )
         driver.session.register(

@@ -630,7 +630,7 @@
       "errors":[
         {"shape":"InternalException"}
       ],
-      "documentation":"<p>Sends custom events to Amazon EventBridge so that they can be matched to rules.</p> <p>You can batch multiple event entries into one request for efficiency. However, the total entry size must be less than 256KB. You can calculate the entry size before you send the events. For more information, see <a href=\"https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-putevents.html#eb-putevent-size\">Calculating PutEvents event entry size</a> in the <i> <i>Amazon EventBridge User Guide</i> </i>.</p> <p>PutEvents accepts the data in JSON format. For the JSON number (integer) data type, the constraints are: a minimum value of -9,223,372,036,854,775,808 and a maximum value of 9,223,372,036,854,775,807.</p> <note> <p>PutEvents will only process nested JSON up to 1000 levels deep.</p> </note>"
+      "documentation":"<p>Sends custom events to Amazon EventBridge so that they can be matched to rules.</p> <p>You can batch multiple event entries into one request for efficiency. However, the total entry size must be less than 1MB. You can calculate the entry size before you send the events. For more information, see <a href=\"https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-putevents.html#eb-putevent-size\">Calculating PutEvents event entry size</a> in the <i> <i>Amazon EventBridge User Guide</i> </i>.</p> <p>PutEvents accepts the data in JSON format. For the JSON number (integer) data type, the constraints are: a minimum value of -9,223,372,036,854,775,808 and a maximum value of 9,223,372,036,854,775,807.</p> <note> <p>PutEvents will only process nested JSON up to 1000 levels deep.</p> </note>"
     },
     "PutPartnerEvents":{
       "name":"PutPartnerEvents",
@@ -1906,7 +1906,7 @@
         "DeadLetterConfig":{"shape":"DeadLetterConfig"},
         "LogConfig":{
           "shape":"LogConfig",
-          "documentation":"<p>The logging configuration settings for the event bus.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/eb-event-bus-logs.html\">Configuring logs for event buses</a> in the <i>EventBridge User Guide</i>.</p>"
+          "documentation":"<p>The logging configuration settings for the event bus.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-event-bus-logs.html\">Configuring logs for event buses</a> in the <i>EventBridge User Guide</i>.</p>"
         },
         "Tags":{
           "shape":"TagList",
@@ -1932,7 +1932,7 @@
         "DeadLetterConfig":{"shape":"DeadLetterConfig"},
         "LogConfig":{
           "shape":"LogConfig",
-          "documentation":"<p>The logging configuration settings for the event bus.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/eb-event-bus-logs.html\">Configuring logs for event buses</a> in the <i>EventBridge User Guide</i>.</p>"
+          "documentation":"<p>The logging configuration settings for the event bus.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-event-bus-logs.html\">Configuring logs for event buses</a> in the <i>EventBridge User Guide</i>.</p>"
         }
       }
     },
@@ -2476,7 +2476,7 @@
         },
         "LogConfig":{
           "shape":"LogConfig",
-          "documentation":"<p>The logging configuration settings for the event bus.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/eb-event-bus-logs.html\">Configuring logs for event buses</a> in the <i>EventBridge User Guide</i>.</p>"
+          "documentation":"<p>The logging configuration settings for the event bus.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-event-bus-logs.html\">Configuring logs for event buses</a> in the <i>EventBridge User Guide</i>.</p>"
         },
         "CreationTime":{
           "shape":"Timestamp",
@@ -2485,6 +2485,10 @@
         "LastModifiedTime":{
           "shape":"Timestamp",
           "documentation":"<p>The time the event bus was last modified.</p>"
+        },
+        "ManagedBy":{
+          "shape":"ManagedBy",
+          "documentation":"<p>If the event bus was created on behalf of your account by an Amazon Web Services service, this field displays the principal name of the service that created the event bus.</p>"
         }
       }
     },
@@ -2917,6 +2921,10 @@
         "LastModifiedTime":{
           "shape":"Timestamp",
           "documentation":"<p>The time the event bus was last modified.</p>"
+        },
+        "ManagedBy":{
+          "shape":"ManagedBy",
+          "documentation":"<p>If the event bus was created on behalf of your account by an Amazon Web Services service, this field displays the principal name of the service that created the event bus.</p>"
         }
       },
       "documentation":"<p>An event bus receives events from a source, uses rules to evaluate them, applies any configured input transformation, and routes them to the appropriate target(s). Your account's default event bus receives events from Amazon Web Services services. A custom event bus can receive events from your custom applications and services. A partner event bus receives events from an event source created by an SaaS partner. These events come from the partners services or applications.</p>"
@@ -3642,7 +3650,7 @@
           "documentation":"<p>The level of logging detail to include. This applies to all log destinations for the event bus.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-event-bus-logs.html#eb-event-bus-logs-level\">Specifying event bus log level</a> in the <i>EventBridge User Guide</i>.</p>"
         }
       },
-      "documentation":"<p>The logging configuration settings for the event bus.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/eb-event-bus-logs.html\">Configuring logs for event buses</a> in the <i>EventBridge User Guide</i>.</p>"
+      "documentation":"<p>The logging configuration settings for the event bus.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-event-bus-logs.html\">Configuring logs for event buses</a> in the <i>EventBridge User Guide</i>.</p>"
     },
     "Long":{"type":"long"},
     "ManagedBy":{
@@ -4696,10 +4704,10 @@
       "members":{
         "MessageGroupId":{
           "shape":"MessageGroupId",
-          "documentation":"<p>The FIFO message group ID to use as the target.</p>"
+          "documentation":"<p>The ID of the message group to use as the target.</p>"
         }
       },
-      "documentation":"<p>This structure includes the custom parameter to be used when the target is an SQS FIFO queue.</p>"
+      "documentation":"<p>The custom parameters for EventBridge to use for a target that is an Amazon SQS fair or FIFO queue. </p> <p/>"
     },
     "StartReplayRequest":{
       "type":"structure",
@@ -4881,7 +4889,7 @@
         },
         "SqsParameters":{
           "shape":"SqsParameters",
-          "documentation":"<p>Contains the message group ID to use when the target is a FIFO queue.</p> <p>If you specify an SQS FIFO queue as a target, the queue must have content-based deduplication enabled.</p>"
+          "documentation":"<p>Contains the message group ID to use when the target is an Amazon SQS fair or FIFO queue.</p> <p>If you specify a fair or FIFO queue as a target, the queue must have content-based deduplication enabled.</p>"
         },
         "HttpParameters":{
           "shape":"HttpParameters",
@@ -5347,7 +5355,7 @@
         "DeadLetterConfig":{"shape":"DeadLetterConfig"},
         "LogConfig":{
           "shape":"LogConfig",
-          "documentation":"<p>The logging configuration settings for the event bus.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/eb-event-bus-logs.html\">Configuring logs for event buses</a> in the <i>EventBridge User Guide</i>.</p>"
+          "documentation":"<p>The logging configuration settings for the event bus.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-event-bus-logs.html\">Configuring logs for event buses</a> in the <i>EventBridge User Guide</i>.</p>"
         }
       }
     },
@@ -5373,7 +5381,7 @@
         "DeadLetterConfig":{"shape":"DeadLetterConfig"},
         "LogConfig":{
           "shape":"LogConfig",
-          "documentation":"<p>The logging configuration settings for the event bus.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/eb-event-bus-logs.html\">Configuring logs for event buses</a> in the <i>EventBridge User Guide</i>.</p>"
+          "documentation":"<p>The logging configuration settings for the event bus.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-event-bus-logs.html\">Configuring logs for event buses</a> in the <i>EventBridge User Guide</i>.</p>"
         }
       }
     }

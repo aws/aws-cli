@@ -58,17 +58,25 @@ class TestCRTS3Transfers(BaseTransferManagerIntegTest):
         self.s3_key = 's3key.txt'
         self.download_path = os.path.join(self.files.rootdir, 'download.txt')
 
-    def _create_s3_transfer(self):
+    def _create_s3_transfer(self, region=None):
+        if region is None:
+            region = self.region
         self.request_serializer = s3transfer.crt.BotocoreCRTRequestSerializer(
-            self.session, client_kwargs={'region_name': self.region}
+            self.session, client_kwargs={'region_name': region}
         )
-        self.s3_crt_client = s3transfer.crt.create_s3_crt_client(
-            self.region, self._get_crt_credentials_provider()
-        )
+        credentials_provider = self._get_crt_credentials_provider()
+        bootstrap = s3transfer.crt.create_crt_client_bootstrap()
         self.record_subscriber = RecordingSubscriber()
         self.osutil = OSUtils()
         return s3transfer.crt.CRTTransferManager(
-            self.s3_crt_client, self.request_serializer
+            crt_client_factory=lambda client_region=None: (
+                s3transfer.crt.create_s3_crt_client(
+                    client_region or region,
+                    credentials_provider,
+                    bootstrap=bootstrap,
+                )
+            ),
+            crt_request_serializer=self.request_serializer,
         )
 
     def _get_crt_credentials_provider(self):
@@ -149,6 +157,22 @@ class TestCRTS3Transfers(BaseTransferManagerIntegTest):
 
         self.assertTrue(self.object_exists('foo.txt'))
         self._assert_subscribers_called(file_size)
+
+    def test_upload_redirects_from_wrong_region(self):
+        wrong_region = (
+            'us-east-1' if self.region != 'us-east-1' else 'us-west-2'
+        )
+        transfer = self._create_s3_transfer(region=wrong_region)
+        filename = self.files.create_file('redirect.txt', 'content')
+        self.addCleanup(self.delete_object, 'redirect.txt')
+
+        with transfer:
+            future = transfer.upload(
+                filename, self.bucket_name, 'redirect.txt'
+            )
+            future.result()
+
+        self.assertTrue(self.object_exists('redirect.txt'))
 
     def test_upload_above_multipart_chunksize(self):
         transfer = self._create_s3_transfer()

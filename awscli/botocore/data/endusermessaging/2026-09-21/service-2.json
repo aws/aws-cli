@@ -1,0 +1,2891 @@
+{
+  "version":"2.0",
+  "metadata":{
+    "apiVersion":"2026-09-21",
+    "auth":["aws.auth#sigv4"],
+    "endpointPrefix":"end-user-messaging",
+    "protocol":"rest-json",
+    "protocols":["rest-json"],
+    "serviceFullName":"AWS End User Messaging",
+    "serviceId":"EndUserMessaging",
+    "signatureVersion":"v4",
+    "signingName":"end-user-messaging",
+    "uid":"endusermessaging-2026-09-21"
+  },
+  "operations":{
+    "CreateBrandProfile":{
+      "name":"CreateBrandProfile",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v1/brand-profiles",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateBrandProfileInput"},
+      "output":{"shape":"CreateBrandProfileOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ConflictException"},
+        {"shape":"ServiceQuotaExceededException"}
+      ],
+      "documentation":"<p>Creates a brand profile. A brand profile is a lightweight container that holds your brand identity information as flexible attributes. After you create a brand profile, use the CreateBrandProfileAttributes operation to add company information, addresses, compliance documents, and logos.</p>"
+    },
+    "CreateBrandProfileAttributes":{
+      "name":"CreateBrandProfileAttributes",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v1/brand-profiles/{brandProfileId}/attributes",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateBrandProfileAttributesInput"},
+      "output":{"shape":"CreateBrandProfileAttributesOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ConflictException"},
+        {"shape":"ServiceQuotaExceededException"}
+      ],
+      "documentation":"<p>Creates up to 10 attributes for a brand profile in a single request. For attributes of type IMAGE or DOCUMENT, the response includes a presigned Amazon S3 URL that you use to upload the media. This operation is atomic: either all of the attributes are created, or none of them are.</p>"
+    },
+    "CreateBrandProfileFromRegistration":{
+      "name":"CreateBrandProfileFromRegistration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v1/brand-profiles/create-from-registration",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateBrandProfileFromRegistrationInput"},
+      "output":{"shape":"CreateBrandProfileFromRegistrationOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ConflictException"},
+        {"shape":"ServiceQuotaExceededException"}
+      ],
+      "documentation":"<p>Creates a brand profile and populates its attributes from an existing registration. This operation runs asynchronously. Use the GetJob operation to track its progress.</p>"
+    },
+    "CreateNotifyCodeConfiguration":{
+      "name":"CreateNotifyCodeConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v1/notify-code-configurations",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateNotifyCodeConfigurationInput"},
+      "output":{"shape":"CreateNotifyCodeConfigurationOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ConflictException"},
+        {"shape":"ServiceQuotaExceededException"}
+      ],
+      "documentation":"<p>Creates a notify code configuration. A notify code configuration is a reusable policy that defines how one-time passcodes are generated and rendered, including the code type, length, validity period, maximum number of attempts, and channel templates.</p>"
+    },
+    "CreateRegistrationsFromBrandProfile":{
+      "name":"CreateRegistrationsFromBrandProfile",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v1/brand-profiles/{brandProfileId}/create-registrations",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateRegistrationsFromBrandProfileInput"},
+      "output":{"shape":"CreateRegistrationsFromBrandProfileOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Creates one or more registrations in the DRAFT state and prefills their fields from the attributes of a brand profile. This operation runs asynchronously. Use the GetJob operation to track its progress.</p>"
+    },
+    "DeleteBrandProfile":{
+      "name":"DeleteBrandProfile",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/v1/brand-profiles/{brandProfileId+}",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteBrandProfileInput"},
+      "output":{"shape":"DeleteBrandProfileOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Deletes a brand profile. This operation also deletes the attributes of the profile and any associated media. The request fails if deletion protection is enabled for the profile.</p>",
+      "idempotent":true
+    },
+    "DeleteBrandProfileAttribute":{
+      "name":"DeleteBrandProfileAttribute",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/v1/brand-profiles/{brandProfileId}/attributes/{attributeName}",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteBrandProfileAttributeInput"},
+      "output":{"shape":"DeleteBrandProfileAttributeOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Deletes a brand profile attribute. If the attribute stores media, this operation also deletes the associated media.</p>",
+      "idempotent":true
+    },
+    "DeleteNotifyCodeConfiguration":{
+      "name":"DeleteNotifyCodeConfiguration",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/v1/notify-code-configurations/{notifyCodeConfigurationId+}",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteNotifyCodeConfigurationInput"},
+      "output":{"shape":"DeleteNotifyCodeConfigurationOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Deletes a notify code configuration. Verifications that are already in progress are not affected, because they capture the policy at the time that the passcode was sent.</p>",
+      "idempotent":true
+    },
+    "GetBrandProfile":{
+      "name":"GetBrandProfile",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v1/brand-profiles/{brandProfileId+}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetBrandProfileInput"},
+      "output":{"shape":"GetBrandProfileOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Retrieves the metadata for a brand profile, including its name, status, deletion protection setting, and timestamps. To retrieve the attributes of the profile, use the ListBrandProfileAttributes operation.</p>",
+      "readonly":true
+    },
+    "GetBrandProfileAttribute":{
+      "name":"GetBrandProfileAttribute",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v1/brand-profiles/{brandProfileId}/attributes/{attributeName}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetBrandProfileAttributeInput"},
+      "output":{"shape":"GetBrandProfileAttributeOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Retrieves a single brand profile attribute.</p>",
+      "readonly":true
+    },
+    "GetJob":{
+      "name":"GetJob",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v1/jobs/{jobId}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetJobInput"},
+      "output":{"shape":"Job"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Retrieves the current state of an asynchronous job, including its status and any resources that it created or updated.</p>",
+      "readonly":true
+    },
+    "GetNotifyCodeConfiguration":{
+      "name":"GetNotifyCodeConfiguration",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v1/notify-code-configurations/{notifyCodeConfigurationId+}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetNotifyCodeConfigurationInput"},
+      "output":{"shape":"GetNotifyCodeConfigurationOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Retrieves a notify code configuration.</p>",
+      "readonly":true
+    },
+    "ListBrandProfileAttributes":{
+      "name":"ListBrandProfileAttributes",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v1/brand-profiles/{brandProfileId}/attributes",
+        "responseCode":200
+      },
+      "input":{"shape":"ListBrandProfileAttributesInput"},
+      "output":{"shape":"ListBrandProfileAttributesOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Retrieves a paginated list of the attributes for a brand profile.</p>",
+      "readonly":true
+    },
+    "ListBrandProfiles":{
+      "name":"ListBrandProfiles",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v1/brand-profiles",
+        "responseCode":200
+      },
+      "input":{"shape":"ListBrandProfilesInput"},
+      "output":{"shape":"ListBrandProfilesOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Retrieves a paginated list of the brand profiles in your account. Use the nextToken parameter to retrieve additional results.</p>",
+      "readonly":true
+    },
+    "ListJobs":{
+      "name":"ListJobs",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v1/jobs",
+        "responseCode":200
+      },
+      "input":{"shape":"ListJobsInput"},
+      "output":{"shape":"ListJobsOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Retrieves a paginated list of the asynchronous jobs in your account. You can filter the results by status, brand profile, or operation type.</p>",
+      "readonly":true
+    },
+    "ListNotifyCodeConfigurations":{
+      "name":"ListNotifyCodeConfigurations",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v1/notify-code-configurations",
+        "responseCode":200
+      },
+      "input":{"shape":"ListNotifyCodeConfigurationsInput"},
+      "output":{"shape":"ListNotifyCodeConfigurationsOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Retrieves a paginated list of the notify code configurations in your account.</p>",
+      "readonly":true
+    },
+    "ListRegistrationsFromBrandProfile":{
+      "name":"ListRegistrationsFromBrandProfile",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v1/brand-profiles/{brandProfileId}/registrations",
+        "responseCode":200
+      },
+      "input":{"shape":"ListRegistrationsFromBrandProfileInput"},
+      "output":{"shape":"ListRegistrationsFromBrandProfileOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Retrieves a paginated list of the registrations that were created from a brand profile through the synchronization operations.</p>",
+      "readonly":true
+    },
+    "ListTagsForResource":{
+      "name":"ListTagsForResource",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v1/tags/{resourceArn}",
+        "responseCode":200
+      },
+      "input":{"shape":"ListTagsForResourceInput"},
+      "output":{"shape":"ListTagsForResourceOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Retrieves the tags that are associated with a resource.</p>",
+      "readonly":true
+    },
+    "SendNotifyCodeVerification":{
+      "name":"SendNotifyCodeVerification",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v1/notify-code-verifications/send",
+        "responseCode":200
+      },
+      "input":{"shape":"SendNotifyCodeVerificationInput"},
+      "output":{"shape":"SendNotifyCodeVerificationOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ConflictException"},
+        {"shape":"ServiceQuotaExceededException"}
+      ],
+      "documentation":"<p>Generates a one-time passcode and delivers it to a recipient over the requested channel. The passcode policy is captured from the referenced notify code configuration at the time of the request, so later updates to the configuration do not affect verifications that are already in progress.</p>"
+    },
+    "TagResource":{
+      "name":"TagResource",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v1/tags/{resourceArn}",
+        "responseCode":200
+      },
+      "input":{"shape":"TagResourceInput"},
+      "output":{"shape":"TagResourceOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ServiceQuotaExceededException"}
+      ],
+      "documentation":"<p>Adds or overwrites the tags on a resource.</p>"
+    },
+    "UntagResource":{
+      "name":"UntagResource",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/v1/tags/{resourceArn}",
+        "responseCode":200
+      },
+      "input":{"shape":"UntagResourceInput"},
+      "output":{"shape":"UntagResourceOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Removes the specified tags from a resource.</p>",
+      "idempotent":true
+    },
+    "UpdateBrandProfile":{
+      "name":"UpdateBrandProfile",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/v1/brand-profiles/{brandProfileId+}",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateBrandProfileInput"},
+      "output":{"shape":"UpdateBrandProfileOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Updates the name or the deletion protection setting of a brand profile. To change the information that is stored in the profile, use the brand profile attribute operations.</p>",
+      "idempotent":true
+    },
+    "UpdateBrandProfileAttribute":{
+      "name":"UpdateBrandProfileAttribute",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/v1/brand-profiles/{brandProfileId}/attributes/{attributeName}",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateBrandProfileAttributeInput"},
+      "output":{"shape":"UpdateBrandProfileAttributeOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Updates the value, description, or category of an existing brand profile attribute.</p>",
+      "idempotent":true
+    },
+    "UpdateBrandProfileFromRegistration":{
+      "name":"UpdateBrandProfileFromRegistration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v1/brand-profiles/{brandProfileId}/update-from-registration",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateBrandProfileFromRegistrationInput"},
+      "output":{"shape":"UpdateBrandProfileFromRegistrationOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Imports or refreshes the attributes of an existing brand profile from an existing registration. This operation runs asynchronously. Use the GetJob operation to track its progress.</p>"
+    },
+    "UpdateNotifyCodeConfiguration":{
+      "name":"UpdateNotifyCodeConfiguration",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/v1/notify-code-configurations/{notifyCodeConfigurationId+}",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateNotifyCodeConfigurationInput"},
+      "output":{"shape":"UpdateNotifyCodeConfigurationOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Updates the mutable fields of a notify code configuration. Only the fields that you supply are changed. For the template and language fields, supplying an empty value clears the currently stored value.</p>",
+      "idempotent":true
+    },
+    "UpdateRegistrationsFromBrandProfile":{
+      "name":"UpdateRegistrationsFromBrandProfile",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v1/brand-profiles/{brandProfileId}/update-registrations",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateRegistrationsFromBrandProfileInput"},
+      "output":{"shape":"UpdateRegistrationsFromBrandProfileOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Repushes the attributes of a brand profile into existing DRAFT registrations. This operation runs asynchronously. Use the GetJob operation to track its progress.</p>"
+    },
+    "ValidateNotifyCodeVerification":{
+      "name":"ValidateNotifyCodeVerification",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v1/notify-code-verifications/validate",
+        "responseCode":200
+      },
+      "input":{"shape":"ValidateNotifyCodeVerificationInput"},
+      "output":{"shape":"ValidateNotifyCodeVerificationOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Validates a one-time passcode that a recipient submitted. Validation succeeds when the passcode matches, the validity period has not elapsed, and the maximum number of attempts has not been exceeded.</p>"
+    }
+  },
+  "shapes":{
+    "AccessDeniedException":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{"shape":"String"}
+      },
+      "documentation":"<p>You do not have sufficient access to perform this action.</p>",
+      "error":{
+        "httpStatusCode":403,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "AmazonResourceName":{
+      "type":"string",
+      "documentation":"<p>Amazon Resource Name.</p>",
+      "max":256,
+      "min":20,
+      "pattern":"arn:[A-Za-z0-9_:/-]+"
+    },
+    "AttachmentBody":{
+      "type":"blob",
+      "documentation":"<p>Attachment Body</p>",
+      "max":5242880,
+      "min":1,
+      "sensitive":true
+    },
+    "Blob":{"type":"blob"},
+    "Boolean":{
+      "type":"boolean",
+      "box":true
+    },
+    "BrandProfileAttributeCategory":{
+      "type":"string",
+      "documentation":"<p>Category for the attribute. Validated against supported values at runtime (see FoodCourtConstants).</p>",
+      "max":64,
+      "min":1
+    },
+    "BrandProfileAttributeDescription":{
+      "type":"string",
+      "documentation":"<p>Attribute description.</p>",
+      "max":1024,
+      "min":0,
+      "sensitive":true
+    },
+    "BrandProfileAttributeInput":{
+      "type":"structure",
+      "required":[
+        "attributeName",
+        "attributeType"
+      ],
+      "members":{
+        "attributeName":{
+          "shape":"BrandProfileAttributeName",
+          "documentation":"<p>The name of the brand profile attribute. The name is unique within a brand profile.</p>"
+        },
+        "attributeType":{
+          "shape":"BrandProfileAttributeType",
+          "documentation":"<p>The type of the attribute. TEXT stores an inline value. IMAGE and DOCUMENT store binary media that you upload.</p>"
+        },
+        "attributeValue":{
+          "shape":"BrandProfileAttributeValue",
+          "documentation":"<p>The text value for the attribute. This value applies to attributes of type TEXT. For attributes of type IMAGE or DOCUMENT, provide the media through the attachment body instead.</p>"
+        },
+        "attachmentBody":{
+          "shape":"AttachmentBody",
+          "documentation":"<p>The binary content for an attribute of type IMAGE or DOCUMENT. The content is base64-encoded when it is sent over the wire.</p>"
+        },
+        "description":{
+          "shape":"BrandProfileAttributeDescription",
+          "documentation":"<p>A description of the attribute.</p>"
+        },
+        "category":{
+          "shape":"BrandProfileAttributeCategory",
+          "documentation":"<p>The category of the attribute.</p>"
+        }
+      },
+      "documentation":"<p>Specifies an attribute to create for a brand profile.</p>"
+    },
+    "BrandProfileAttributeInputList":{
+      "type":"list",
+      "member":{"shape":"BrandProfileAttributeInput"},
+      "max":10,
+      "min":1
+    },
+    "BrandProfileAttributeName":{
+      "type":"string",
+      "documentation":"<p>Customer-provided attribute name (unique per brand profile). Alphanumeric, underscore, hyphen, and space only.</p>",
+      "max":256,
+      "min":1,
+      "pattern":"[A-Za-z0-9_ -]*[A-Za-z0-9_-][A-Za-z0-9_ -]*",
+      "sensitive":true
+    },
+    "BrandProfileAttributeOutput":{
+      "type":"structure",
+      "required":[
+        "attributeName",
+        "attributeType"
+      ],
+      "members":{
+        "attributeName":{
+          "shape":"BrandProfileAttributeName",
+          "documentation":"<p>The name of the brand profile attribute. The name is unique within a brand profile.</p>"
+        },
+        "attributeType":{
+          "shape":"BrandProfileAttributeType",
+          "documentation":"<p>The type of the attribute. TEXT stores an inline value. IMAGE and DOCUMENT store binary media that you upload.</p>"
+        },
+        "mediaDownloadUrl":{
+          "shape":"MediaDownloadUrl",
+          "documentation":"<p>A presigned Amazon S3 URL that you can use to download the attribute media. The URL is valid for one hour and is present only for attributes of type IMAGE or DOCUMENT.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about an attribute that was created for a brand profile.</p>"
+    },
+    "BrandProfileAttributeOutputList":{
+      "type":"list",
+      "member":{"shape":"BrandProfileAttributeOutput"},
+      "max":10,
+      "min":1
+    },
+    "BrandProfileAttributeSummary":{
+      "type":"structure",
+      "required":[
+        "attributeName",
+        "attributeType",
+        "createdAt",
+        "updatedAt"
+      ],
+      "members":{
+        "attributeName":{
+          "shape":"BrandProfileAttributeName",
+          "documentation":"<p>The name of the brand profile attribute. The name is unique within a brand profile.</p>"
+        },
+        "attributeType":{
+          "shape":"BrandProfileAttributeType",
+          "documentation":"<p>The type of the attribute. TEXT stores an inline value. IMAGE and DOCUMENT store binary media that you upload.</p>"
+        },
+        "description":{
+          "shape":"BrandProfileAttributeDescription",
+          "documentation":"<p>A description of the attribute.</p>"
+        },
+        "category":{
+          "shape":"BrandProfileAttributeCategory",
+          "documentation":"<p>The category of the attribute.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the resource was created, in Unix epoch time.</p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the resource was last updated, in Unix epoch time.</p>"
+        }
+      },
+      "documentation":"<p>Contains summary information about a brand profile attribute in a list response.</p>"
+    },
+    "BrandProfileAttributeSummaryList":{
+      "type":"list",
+      "member":{"shape":"BrandProfileAttributeSummary"},
+      "max":100,
+      "min":0
+    },
+    "BrandProfileAttributeType":{
+      "type":"string",
+      "documentation":"<p>Type of brand profile attribute. Drives whether a value is inline (TEXT) or referenced via a presigned media upload URL.</p>",
+      "enum":[
+        "TEXT",
+        "IMAGE",
+        "DOCUMENT"
+      ]
+    },
+    "BrandProfileAttributeValue":{
+      "type":"string",
+      "documentation":"<p>Attribute value for TEXT type.</p>",
+      "max":4096,
+      "min":0,
+      "sensitive":true
+    },
+    "BrandProfileIdOrArn":{
+      "type":"string",
+      "documentation":"<p>System-generated brand profile identifier or full ARN. Accepts either a bare ID (e.g., &quot;bp-abc12345678901234&quot;) or a full ARN (e.g., &quot;arn:aws:end-user-messaging:us-east-1:123456789012:brand-profile/bp-abc12345678901234&quot;). SDKs handle percent-encoding of ARN characters in path parameters transparently.</p>",
+      "max":256,
+      "min":1,
+      "pattern":"[A-Za-z0-9_:/-]+"
+    },
+    "BrandProfileInfo":{
+      "type":"structure",
+      "required":[
+        "brandProfileId",
+        "brandProfileArn",
+        "brandProfileName",
+        "status",
+        "deletionProtectionEnabled",
+        "createdAt",
+        "updatedAt"
+      ],
+      "members":{
+        "brandProfileId":{
+          "shape":"BrandProfileIdOrArn",
+          "documentation":"<p>The unique identifier of the brand profile.</p>"
+        },
+        "brandProfileArn":{
+          "shape":"AmazonResourceName",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the brand profile.</p>"
+        },
+        "brandProfileName":{
+          "shape":"BrandProfileName",
+          "documentation":"<p>The name of the brand profile. The name can contain alphanumeric characters, underscores, hyphens, and spaces.</p>"
+        },
+        "status":{
+          "shape":"Status",
+          "documentation":"<p>The current lifecycle status of the brand profile.</p>"
+        },
+        "deletionProtectionEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether deletion protection is enabled. When enabled, the resource cannot be deleted until deletion protection is turned off.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the resource was created, in Unix epoch time.</p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the resource was last updated, in Unix epoch time.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about a brand profile.</p>"
+    },
+    "BrandProfileInfoList":{
+      "type":"list",
+      "member":{"shape":"BrandProfileInfo"},
+      "max":100,
+      "min":0
+    },
+    "BrandProfileName":{
+      "type":"string",
+      "documentation":"<p>Customer-provided brand profile name. Alphanumeric, underscore, hyphen, and space only.</p>",
+      "max":64,
+      "min":1,
+      "pattern":"[A-Za-z0-9_ -]*[A-Za-z0-9_-][A-Za-z0-9_ -]*"
+    },
+    "ChannelParameters":{
+      "type":"structure",
+      "members":{
+        "text":{
+          "shape":"TextParameters",
+          "documentation":"<p>The parameters for the text channel, which delivers over SMS or RCS.</p>"
+        },
+        "voice":{
+          "shape":"VoiceParameters",
+          "documentation":"<p>The parameters for the voice channel.</p>"
+        },
+        "notify":{
+          "shape":"NotifyParameters",
+          "documentation":"<p>The parameters for the preapproved notify-template route over the SMS or voice channels.</p>"
+        },
+        "whatsApp":{
+          "shape":"WhatsAppParameters",
+          "documentation":"<p>The parameters for the WhatsApp channel.</p>"
+        }
+      },
+      "documentation":"<p>The channel-specific parameters used to render and deliver a one-time passcode. Each member configures the parameters for one delivery route. Populate only the channels that a configuration or send request supports. A notify code configuration can carry every channel at once, and a send request resolves to a single route that selects the matching channel at send time.</p>"
+    },
+    "ClientToken":{
+      "type":"string",
+      "documentation":"<p>Idempotency token for safe retries on Create operations.</p>",
+      "max":128,
+      "min":1,
+      "pattern":"[\\x21-\\x7E]+",
+      "sensitive":true
+    },
+    "CodeConfigurationParameters":{
+      "type":"structure",
+      "members":{
+        "codeType":{
+          "shape":"CodeType",
+          "documentation":"<p>The character set used to generate the one-time passcode. Valid values are NUMERIC (digits only), ALPHA (uppercase letters only), and ALPHANUMERIC (uppercase letters and digits). When you do not specify a value, the default is applied when a passcode is sent.</p>"
+        },
+        "codeLength":{
+          "shape":"CodeLength",
+          "documentation":"<p>The number of characters in the one-time passcode. Valid values range from 4 through 8. When you do not specify a value, the default is applied when a passcode is sent.</p>"
+        },
+        "validityPeriodMinutes":{
+          "shape":"ValidityPeriodMinutes",
+          "documentation":"<p>The length of time, in minutes, that the one-time passcode remains valid. Valid values range from 1 through 60. When you do not specify a value, the default is applied when a passcode is sent.</p>"
+        },
+        "maxAttempts":{
+          "shape":"MaxVerificationAttempts",
+          "documentation":"<p>The maximum number of validation attempts that are allowed before the verification is locked. Valid values range from 1 through 5. When you do not specify a value, the default is applied when a passcode is sent.</p>"
+        }
+      },
+      "documentation":"<p>The passcode policy parameters that are grouped for reuse across a notify code configuration and its create request. Each member is optional. When you omit a member on a create request, no value is applied at create time and the default is applied when a passcode is sent.</p>"
+    },
+    "CodeLength":{
+      "type":"integer",
+      "documentation":"<p>OTP code length (4-8 characters).</p>",
+      "box":true,
+      "max":8,
+      "min":4
+    },
+    "CodeType":{
+      "type":"string",
+      "documentation":"<p>OTP character alphabet used by a NotifyCodeConfiguration.</p>",
+      "enum":[
+        "NUMERIC",
+        "ALPHA",
+        "ALPHANUMERIC"
+      ]
+    },
+    "ConfigurationSetName":{
+      "type":"string",
+      "documentation":"<p>Configuration set name used to control event delivery for the verification message.</p>",
+      "max":256,
+      "min":1,
+      "pattern":"[A-Za-z0-9_-]+"
+    },
+    "ConflictException":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{"shape":"String"},
+        "resourceId":{
+          "shape":"String",
+          "documentation":"<p>The identifier of the resource that the request conflicts with.</p>"
+        },
+        "resourceType":{
+          "shape":"String",
+          "documentation":"<p>The type of the resource that the request conflicts with.</p>"
+        }
+      },
+      "documentation":"<p>The request conflicts with the current state of the resource.</p>",
+      "error":{
+        "httpStatusCode":409,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "ContextKey":{
+      "type":"string",
+      "documentation":"<p>Caller-supplied context propagated to delivery events for this verification.</p>",
+      "max":100,
+      "min":1,
+      "pattern":"\\S+",
+      "sensitive":true
+    },
+    "ContextMap":{
+      "type":"map",
+      "key":{"shape":"ContextKey"},
+      "value":{"shape":"ContextValue"},
+      "documentation":"<p>Caller-supplied context map propagated to delivery events for this verification.</p>",
+      "max":5,
+      "min":0
+    },
+    "ContextValue":{
+      "type":"string",
+      "documentation":"<p>Caller-supplied context value. Blank space is not allowed at the front or end.</p>",
+      "max":800,
+      "min":1,
+      "pattern":"\\S(?:[\\s\\S]*\\S)?",
+      "sensitive":true
+    },
+    "CreateBrandProfileAttributesInput":{
+      "type":"structure",
+      "required":[
+        "brandProfileId",
+        "attributes"
+      ],
+      "members":{
+        "brandProfileId":{
+          "shape":"BrandProfileIdOrArn",
+          "documentation":"<p>The unique identifier of the brand profile. You can specify either the bare ID or the full Amazon Resource Name (ARN).</p>",
+          "location":"uri",
+          "locationName":"brandProfileId"
+        },
+        "attributes":{
+          "shape":"BrandProfileAttributeInputList",
+          "documentation":"<p>The brand profile attributes.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If you do not specify a client token, the AWS SDK automatically generates one.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "CreateBrandProfileAttributesOutput":{
+      "type":"structure",
+      "required":["attributes"],
+      "members":{
+        "attributes":{
+          "shape":"BrandProfileAttributeOutputList",
+          "documentation":"<p>The brand profile attributes.</p>"
+        }
+      }
+    },
+    "CreateBrandProfileFromRegistrationInput":{
+      "type":"structure",
+      "required":[
+        "registrationId",
+        "brandProfileName"
+      ],
+      "members":{
+        "registrationId":{
+          "shape":"RegistrationIdOrArn",
+          "documentation":"<p>The identifier or Amazon Resource Name (ARN) of the registration to populate the brand profile from.</p>"
+        },
+        "brandProfileName":{
+          "shape":"BrandProfileName",
+          "documentation":"<p>The name of the brand profile. The name can contain alphanumeric characters, underscores, hyphens, and spaces.</p>"
+        },
+        "smartMatch":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether to use semantic field mapping between brand profile attributes and registration fields. The default is true. When false, the service maps fields using a fixed set of standard field types.</p>"
+        },
+        "tags":{
+          "shape":"TagList",
+          "documentation":"<p>An array of key and value pair tags that are associated with the resource.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If you do not specify a client token, the AWS SDK automatically generates one.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "CreateBrandProfileFromRegistrationOutput":{
+      "type":"structure",
+      "required":["results"],
+      "members":{
+        "results":{
+          "shape":"JobResults",
+          "documentation":"<p>The results of the operation. Each result pairs a requested item with the asynchronous job that processes it.</p>"
+        }
+      }
+    },
+    "CreateBrandProfileInput":{
+      "type":"structure",
+      "required":["brandProfileName"],
+      "members":{
+        "brandProfileName":{
+          "shape":"BrandProfileName",
+          "documentation":"<p>The name of the brand profile. The name can contain alphanumeric characters, underscores, hyphens, and spaces.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If you do not specify a client token, the AWS SDK automatically generates one.</p>",
+          "idempotencyToken":true
+        },
+        "deletionProtectionEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether deletion protection is enabled. When enabled, the resource cannot be deleted until deletion protection is turned off.</p>"
+        },
+        "tags":{
+          "shape":"TagList",
+          "documentation":"<p>An array of key and value pair tags that are associated with the resource.</p>"
+        }
+      }
+    },
+    "CreateBrandProfileOutput":{
+      "type":"structure",
+      "required":[
+        "brandProfileId",
+        "brandProfileArn",
+        "brandProfileName",
+        "status",
+        "deletionProtectionEnabled",
+        "createdAt",
+        "updatedAt",
+        "attributesCreated"
+      ],
+      "members":{
+        "brandProfileId":{
+          "shape":"BrandProfileIdOrArn",
+          "documentation":"<p>The unique identifier of the brand profile.</p>"
+        },
+        "brandProfileArn":{
+          "shape":"AmazonResourceName",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the brand profile.</p>"
+        },
+        "brandProfileName":{
+          "shape":"BrandProfileName",
+          "documentation":"<p>The name of the brand profile. The name can contain alphanumeric characters, underscores, hyphens, and spaces.</p>"
+        },
+        "status":{
+          "shape":"Status",
+          "documentation":"<p>The current lifecycle status of the brand profile.</p>"
+        },
+        "deletionProtectionEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether deletion protection is enabled. When enabled, the resource cannot be deleted until deletion protection is turned off.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the resource was created, in Unix epoch time.</p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the resource was last updated, in Unix epoch time.</p>"
+        },
+        "attributesCreated":{
+          "shape":"Integer",
+          "documentation":"<p>The number of default attributes that were created for the brand profile.</p>"
+        }
+      }
+    },
+    "CreateNotifyCodeConfigurationInput":{
+      "type":"structure",
+      "required":["notifyCodeConfigurationName"],
+      "members":{
+        "notifyCodeConfigurationName":{
+          "shape":"NotifyCodeConfigurationName",
+          "documentation":"<p>The name of the notify code configuration.</p>"
+        },
+        "codeConfigurationParameters":{
+          "shape":"CodeConfigurationParameters",
+          "documentation":"<p>The passcode policy parameters, including the code type, length, validity period, and maximum number of attempts. Each member is optional. When you omit a member, no value is applied at create time and the default is applied when a passcode is sent.</p>"
+        },
+        "channelParameters":{
+          "shape":"ChannelParameters",
+          "documentation":"<p>The channel-specific parameters used to render and deliver the one-time passcode. Provide parameters for any subset of channels. Each member configures one delivery route, and the route that is selected at send time uses the matching channel.</p>"
+        },
+        "deletionProtectionEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether deletion protection is enabled. When enabled, the resource cannot be deleted until deletion protection is turned off.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If you do not specify a client token, the AWS SDK automatically generates one.</p>",
+          "idempotencyToken":true
+        },
+        "tags":{
+          "shape":"TagList",
+          "documentation":"<p>An array of key and value pair tags that are associated with the resource.</p>"
+        }
+      }
+    },
+    "CreateNotifyCodeConfigurationOutput":{
+      "type":"structure",
+      "required":["notifyCodeConfiguration"],
+      "members":{
+        "notifyCodeConfiguration":{
+          "shape":"NotifyCodeConfiguration",
+          "documentation":"<p>The notify code configuration resource.</p>"
+        }
+      }
+    },
+    "CreateRegistrationsFromBrandProfileInput":{
+      "type":"structure",
+      "required":[
+        "brandProfileId",
+        "registrationTypes"
+      ],
+      "members":{
+        "brandProfileId":{
+          "shape":"BrandProfileIdOrArn",
+          "documentation":"<p>The unique identifier of the brand profile. You can specify either the bare ID or the full Amazon Resource Name (ARN).</p>",
+          "location":"uri",
+          "locationName":"brandProfileId"
+        },
+        "registrationTypes":{
+          "shape":"RegistrationTypeList",
+          "documentation":"<p>The registration types to create, for example US_TOLL_FREE_REGISTRATION or SENDER_ID.</p>"
+        },
+        "smartMatch":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether to use semantic field mapping between brand profile attributes and registration fields. The default is true. When false, the service maps fields using a fixed set of standard field types.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If you do not specify a client token, the AWS SDK automatically generates one.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "CreateRegistrationsFromBrandProfileOutput":{
+      "type":"structure",
+      "required":["results"],
+      "members":{
+        "results":{
+          "shape":"JobResults",
+          "documentation":"<p>The results of the operation. Each result pairs a requested item with the asynchronous job that processes it.</p>"
+        }
+      }
+    },
+    "DeleteBrandProfileAttributeInput":{
+      "type":"structure",
+      "required":[
+        "brandProfileId",
+        "attributeName"
+      ],
+      "members":{
+        "brandProfileId":{
+          "shape":"BrandProfileIdOrArn",
+          "documentation":"<p>The unique identifier of the brand profile. You can specify either the bare ID or the full Amazon Resource Name (ARN).</p>",
+          "location":"uri",
+          "locationName":"brandProfileId"
+        },
+        "attributeName":{
+          "shape":"BrandProfileAttributeName",
+          "documentation":"<p>The name of the brand profile attribute. The name is unique within a brand profile.</p>",
+          "location":"uri",
+          "locationName":"attributeName"
+        }
+      }
+    },
+    "DeleteBrandProfileAttributeOutput":{
+      "type":"structure",
+      "required":[
+        "brandProfileId",
+        "attributeName"
+      ],
+      "members":{
+        "brandProfileId":{
+          "shape":"BrandProfileIdOrArn",
+          "documentation":"<p>The unique identifier of the brand profile.</p>"
+        },
+        "attributeName":{
+          "shape":"BrandProfileAttributeName",
+          "documentation":"<p>The name of the brand profile attribute. The name is unique within a brand profile.</p>"
+        }
+      }
+    },
+    "DeleteBrandProfileInput":{
+      "type":"structure",
+      "required":["brandProfileId"],
+      "members":{
+        "brandProfileId":{
+          "shape":"BrandProfileIdOrArn",
+          "documentation":"<p>The unique identifier of the brand profile. You can specify either the bare ID or the full Amazon Resource Name (ARN).</p>",
+          "location":"uri",
+          "locationName":"brandProfileId"
+        }
+      }
+    },
+    "DeleteBrandProfileOutput":{
+      "type":"structure",
+      "required":[
+        "brandProfileId",
+        "brandProfileArn"
+      ],
+      "members":{
+        "brandProfileId":{
+          "shape":"BrandProfileIdOrArn",
+          "documentation":"<p>The unique identifier of the brand profile.</p>"
+        },
+        "brandProfileArn":{
+          "shape":"AmazonResourceName",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the brand profile.</p>"
+        }
+      }
+    },
+    "DeleteNotifyCodeConfigurationInput":{
+      "type":"structure",
+      "required":["notifyCodeConfigurationId"],
+      "members":{
+        "notifyCodeConfigurationId":{
+          "shape":"NotifyCodeConfigurationIdOrArn",
+          "documentation":"<p>The unique identifier of the notify code configuration. You can specify either the bare ID or the full Amazon Resource Name (ARN).</p>",
+          "location":"uri",
+          "locationName":"notifyCodeConfigurationId"
+        }
+      }
+    },
+    "DeleteNotifyCodeConfigurationOutput":{
+      "type":"structure",
+      "members":{}
+    },
+    "DestinationCountryParameterKey":{
+      "type":"string",
+      "documentation":"<p>Key of a <code>DestinationCountryParameters</code> map entry. Up to 64 non-whitespace characters.</p>",
+      "max":64,
+      "min":1,
+      "pattern":"\\S+"
+    },
+    "DestinationCountryParameterValue":{
+      "type":"string",
+      "documentation":"<p>Value of a <code>DestinationCountryParameters</code> map entry. Up to 64 non-whitespace characters.</p>",
+      "max":64,
+      "min":1,
+      "pattern":"\\S+",
+      "sensitive":true
+    },
+    "DestinationCountryParameters":{
+      "type":"map",
+      "key":{"shape":"DestinationCountryParameterKey"},
+      "value":{"shape":"DestinationCountryParameterValue"},
+      "documentation":"<p>Country-specific OTP delivery parameters as a map of destination-country-parameter keys to values.</p>",
+      "max":10,
+      "min":1
+    },
+    "DestinationIdentity":{
+      "type":"string",
+      "documentation":"<p>Recipient identifier. E.164 phone number for TEXT/VOICE, WhatsApp address for WHATSAPP.</p>",
+      "max":20,
+      "min":1,
+      "pattern":"[\\x21-\\x22\\x24-\\x7E]+",
+      "sensitive":true
+    },
+    "GetBrandProfileAttributeInput":{
+      "type":"structure",
+      "required":[
+        "brandProfileId",
+        "attributeName"
+      ],
+      "members":{
+        "brandProfileId":{
+          "shape":"BrandProfileIdOrArn",
+          "documentation":"<p>The unique identifier of the brand profile. You can specify either the bare ID or the full Amazon Resource Name (ARN).</p>",
+          "location":"uri",
+          "locationName":"brandProfileId"
+        },
+        "attributeName":{
+          "shape":"BrandProfileAttributeName",
+          "documentation":"<p>The name of the brand profile attribute. The name is unique within a brand profile.</p>",
+          "location":"uri",
+          "locationName":"attributeName"
+        }
+      }
+    },
+    "GetBrandProfileAttributeOutput":{
+      "type":"structure",
+      "required":[
+        "attributeName",
+        "attributeType",
+        "createdAt",
+        "updatedAt"
+      ],
+      "members":{
+        "attributeName":{
+          "shape":"BrandProfileAttributeName",
+          "documentation":"<p>The name of the brand profile attribute. The name is unique within a brand profile.</p>"
+        },
+        "attributeType":{
+          "shape":"BrandProfileAttributeType",
+          "documentation":"<p>The type of the attribute. TEXT stores an inline value. IMAGE and DOCUMENT store binary media that you upload.</p>"
+        },
+        "attributeValue":{
+          "shape":"BrandProfileAttributeValue",
+          "documentation":"<p>The text value of the attribute. This value applies to attributes of type TEXT.</p>"
+        },
+        "description":{
+          "shape":"BrandProfileAttributeDescription",
+          "documentation":"<p>A description of the attribute.</p>"
+        },
+        "category":{
+          "shape":"BrandProfileAttributeCategory",
+          "documentation":"<p>The category of the attribute.</p>"
+        },
+        "mediaContentType":{
+          "shape":"String",
+          "documentation":"<p>The MIME content type of the attribute media.</p>"
+        },
+        "mediaSizeBytes":{
+          "shape":"Long",
+          "documentation":"<p>The size of the attribute media, in bytes.</p>"
+        },
+        "mediaDownloadUrl":{
+          "shape":"MediaDownloadUrl",
+          "documentation":"<p>A presigned Amazon S3 URL that you can use to download the attribute media. The URL is valid for one hour and is present only for attributes of type IMAGE or DOCUMENT.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the resource was created, in Unix epoch time.</p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the resource was last updated, in Unix epoch time.</p>"
+        }
+      }
+    },
+    "GetBrandProfileInput":{
+      "type":"structure",
+      "required":["brandProfileId"],
+      "members":{
+        "brandProfileId":{
+          "shape":"BrandProfileIdOrArn",
+          "documentation":"<p>The unique identifier of the brand profile. You can specify either the bare ID or the full Amazon Resource Name (ARN).</p>",
+          "location":"uri",
+          "locationName":"brandProfileId"
+        }
+      }
+    },
+    "GetBrandProfileOutput":{
+      "type":"structure",
+      "required":[
+        "brandProfileId",
+        "brandProfileArn",
+        "brandProfileName",
+        "status",
+        "deletionProtectionEnabled",
+        "createdAt",
+        "updatedAt"
+      ],
+      "members":{
+        "brandProfileId":{
+          "shape":"BrandProfileIdOrArn",
+          "documentation":"<p>The unique identifier of the brand profile.</p>"
+        },
+        "brandProfileArn":{
+          "shape":"AmazonResourceName",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the brand profile.</p>"
+        },
+        "brandProfileName":{
+          "shape":"BrandProfileName",
+          "documentation":"<p>The name of the brand profile. The name can contain alphanumeric characters, underscores, hyphens, and spaces.</p>"
+        },
+        "status":{
+          "shape":"Status",
+          "documentation":"<p>The current lifecycle status of the brand profile.</p>"
+        },
+        "deletionProtectionEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether deletion protection is enabled. When enabled, the resource cannot be deleted until deletion protection is turned off.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the resource was created, in Unix epoch time.</p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the resource was last updated, in Unix epoch time.</p>"
+        }
+      }
+    },
+    "GetJobInput":{
+      "type":"structure",
+      "required":["jobId"],
+      "members":{
+        "jobId":{
+          "shape":"JobId",
+          "documentation":"<p>The unique identifier of the asynchronous job. Use the GetJob operation to check the status of the job and to retrieve its results.</p>",
+          "location":"uri",
+          "locationName":"jobId"
+        }
+      }
+    },
+    "GetNotifyCodeConfigurationInput":{
+      "type":"structure",
+      "required":["notifyCodeConfigurationId"],
+      "members":{
+        "notifyCodeConfigurationId":{
+          "shape":"NotifyCodeConfigurationIdOrArn",
+          "documentation":"<p>The unique identifier of the notify code configuration. You can specify either the bare ID or the full Amazon Resource Name (ARN).</p>",
+          "location":"uri",
+          "locationName":"notifyCodeConfigurationId"
+        }
+      }
+    },
+    "GetNotifyCodeConfigurationOutput":{
+      "type":"structure",
+      "required":["notifyCodeConfiguration"],
+      "members":{
+        "notifyCodeConfiguration":{
+          "shape":"NotifyCodeConfiguration",
+          "documentation":"<p>The notify code configuration resource.</p>"
+        }
+      }
+    },
+    "InlineTemplateBody":{
+      "type":"string",
+      "documentation":"<p>Freeform OTP template body. Must contain at least one non-whitespace character.</p>",
+      "max":6000,
+      "min":1,
+      "pattern":"[\\s\\S]*\\S[\\s\\S]*",
+      "sensitive":true
+    },
+    "Integer":{
+      "type":"integer",
+      "box":true
+    },
+    "InternalServerException":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{"shape":"String"}
+      },
+      "documentation":"<p>An unexpected error occurred during the processing of the request.</p>",
+      "error":{"httpStatusCode":500},
+      "exception":true,
+      "fault":true,
+      "retryable":{"throttling":false}
+    },
+    "Job":{
+      "type":"structure",
+      "required":[
+        "jobId",
+        "status",
+        "operationType",
+        "createdAt",
+        "updatedAt"
+      ],
+      "members":{
+        "jobId":{
+          "shape":"JobId",
+          "documentation":"<p>The unique identifier of the asynchronous job. Use the GetJob operation to check the status of the job and to retrieve its results.</p>"
+        },
+        "status":{
+          "shape":"JobStatus",
+          "documentation":"<p>The current lifecycle status of the job.</p>"
+        },
+        "operationType":{
+          "shape":"JobOperationType",
+          "documentation":"<p>The type of mutating operation that created the job.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the resource was created, in Unix epoch time.</p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the resource was last updated, in Unix epoch time.</p>"
+        },
+        "brandProfileId":{
+          "shape":"BrandProfileIdOrArn",
+          "documentation":"<p>The brand profile that the job operates on. This value is absent for operations that create a brand profile.</p>"
+        },
+        "errorCode":{
+          "shape":"JobErrorCode",
+          "documentation":"<p>A machine-readable code that identifies why the job failed. This value is present only when the job status is FAILED.</p>"
+        },
+        "errorMessage":{
+          "shape":"JobErrorMessage",
+          "documentation":"<p>A human-readable description of why the job failed. This value is present only when the job status is FAILED.</p>"
+        },
+        "resources":{
+          "shape":"JobResourceList",
+          "documentation":"<p>The resources that were created or updated by the job.</p>"
+        }
+      },
+      "documentation":"<p>Information about an async job tracked by the service. GetJob returns the full <code>Job</code>, which may grow detail-only fields that are not part of the <code>JobSummary</code> list view.</p>"
+    },
+    "JobErrorCode":{
+      "type":"string",
+      "documentation":"<p>Machine-readable code identifying why a job failed.</p>",
+      "max":128,
+      "min":1
+    },
+    "JobErrorMessage":{
+      "type":"string",
+      "documentation":"<p>Human-readable description of why a job failed.</p>",
+      "max":2048,
+      "min":1
+    },
+    "JobId":{
+      "type":"string",
+      "documentation":"<p>System-generated unique identifier for tracking async operations.</p>",
+      "max":64,
+      "min":1,
+      "pattern":"[A-Za-z0-9_-]+"
+    },
+    "JobOperationType":{
+      "type":"string",
+      "documentation":"<p>The type of mutating operation that created the job.</p>",
+      "max":128,
+      "min":1
+    },
+    "JobResource":{
+      "type":"structure",
+      "required":[
+        "resourceType",
+        "resourceId",
+        "resourceArn"
+      ],
+      "members":{
+        "resourceType":{
+          "shape":"JobResourceType",
+          "documentation":"<p>The type of the resource that the job created or updated.</p>"
+        },
+        "resourceId":{
+          "shape":"JobResourceId",
+          "documentation":"<p>The identifier of the resource that the job created or updated.</p>"
+        },
+        "resourceArn":{
+          "shape":"AmazonResourceName",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about a resource that was created or updated by an asynchronous job.</p>"
+    },
+    "JobResourceId":{
+      "type":"string",
+      "documentation":"<p>Identifier of a resource created or updated by a job (registration ID or brand profile ID). This is a distinct type from BrandProfileIdOrArn and RegistrationIdOrArn because:</p> <ol> <li>It represents the <em>result</em> of a job, not an <em>input</em> identifier</li> <li>Jobs can produce different resource types, so this is intentionally generic</li> <li>Semantic clarity: callers see &quot;JobResourceId&quot; and understand it came from a job</li> </ol>",
+      "max":256,
+      "min":1,
+      "pattern":"[A-Za-z0-9_:/-]+"
+    },
+    "JobResourceIdentifier":{
+      "type":"string",
+      "documentation":"<p>Resource identifier echoed back in job results. Can be a registration type, registration ID, or other request-specific identifier.</p>",
+      "max":256,
+      "min":1,
+      "pattern":"[\\S]+"
+    },
+    "JobResourceList":{
+      "type":"list",
+      "member":{"shape":"JobResource"},
+      "documentation":"<p>List of job resources.</p>",
+      "max":10,
+      "min":1
+    },
+    "JobResourceType":{
+      "type":"string",
+      "documentation":"<p>Type of resource associated with a job.</p>",
+      "enum":[
+        "REGISTRATION",
+        "BRAND_PROFILE"
+      ]
+    },
+    "JobResult":{
+      "type":"structure",
+      "required":[
+        "jobId",
+        "resourceIdentifier"
+      ],
+      "members":{
+        "jobId":{
+          "shape":"JobId",
+          "documentation":"<p>The unique identifier of the asynchronous job. Use the GetJob operation to check the status of the job and to retrieve its results.</p>"
+        },
+        "resourceIdentifier":{
+          "shape":"JobResourceIdentifier",
+          "documentation":"<p>The identifier from your request that this job is processing.</p>"
+        }
+      },
+      "documentation":"<p>Pairs an asynchronous job with the resource identifier from your request that the job processes.</p>"
+    },
+    "JobResults":{
+      "type":"list",
+      "member":{"shape":"JobResult"},
+      "documentation":"<p>List of job results.</p>",
+      "max":10,
+      "min":1
+    },
+    "JobStatus":{
+      "type":"string",
+      "documentation":"<p>Processing status of an async job.</p>",
+      "enum":[
+        "SUCCESS",
+        "PROCESSING",
+        "FAILED"
+      ]
+    },
+    "JobSummary":{
+      "type":"structure",
+      "required":[
+        "jobId",
+        "status",
+        "operationType",
+        "createdAt",
+        "updatedAt"
+      ],
+      "members":{
+        "jobId":{
+          "shape":"JobId",
+          "documentation":"<p>The unique identifier of the asynchronous job. Use the GetJob operation to check the status of the job and to retrieve its results.</p>"
+        },
+        "status":{
+          "shape":"JobStatus",
+          "documentation":"<p>The current lifecycle status of the job.</p>"
+        },
+        "operationType":{
+          "shape":"JobOperationType",
+          "documentation":"<p>The type of mutating operation that created the job.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the resource was created, in Unix epoch time.</p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the resource was last updated, in Unix epoch time.</p>"
+        },
+        "brandProfileId":{
+          "shape":"BrandProfileIdOrArn",
+          "documentation":"<p>The brand profile that the job operates on. This value is absent for operations that create a brand profile.</p>"
+        },
+        "errorCode":{
+          "shape":"JobErrorCode",
+          "documentation":"<p>A machine-readable code that identifies why the job failed. This value is present only when the job status is FAILED.</p>"
+        },
+        "errorMessage":{
+          "shape":"JobErrorMessage",
+          "documentation":"<p>A human-readable description of why the job failed. This value is present only when the job status is FAILED.</p>"
+        },
+        "resources":{
+          "shape":"JobResourceList",
+          "documentation":"<p>The resources that were created or updated by the job.</p>"
+        }
+      },
+      "documentation":"<p>Contains summary information about an asynchronous job in a list response.</p>"
+    },
+    "JobSummaryList":{
+      "type":"list",
+      "member":{"shape":"JobSummary"},
+      "max":100,
+      "min":0
+    },
+    "LanguageCode":{
+      "type":"string",
+      "documentation":"<p>BCP-47 language code for template rendering.</p>",
+      "max":35,
+      "min":2,
+      "pattern":"\\S+"
+    },
+    "ListBrandProfileAttributesInput":{
+      "type":"structure",
+      "required":["brandProfileId"],
+      "members":{
+        "brandProfileId":{
+          "shape":"BrandProfileIdOrArn",
+          "documentation":"<p>The unique identifier of the brand profile. You can specify either the bare ID or the full Amazon Resource Name (ARN).</p>",
+          "location":"uri",
+          "locationName":"brandProfileId"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to retrieve the next page of results. This value is returned when more results are available, and is null when there are no more results to return.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return per page.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        }
+      }
+    },
+    "ListBrandProfileAttributesOutput":{
+      "type":"structure",
+      "required":["brandProfileAttributes"],
+      "members":{
+        "brandProfileAttributes":{
+          "shape":"BrandProfileAttributeSummaryList",
+          "documentation":"<p>The list of brand profile attributes.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to retrieve the next page of results. This value is returned when more results are available, and is null when there are no more results to return.</p>"
+        }
+      }
+    },
+    "ListBrandProfilesInput":{
+      "type":"structure",
+      "members":{
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to retrieve the next page of results. This value is returned when more results are available, and is null when there are no more results to return.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return per page.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        }
+      }
+    },
+    "ListBrandProfilesOutput":{
+      "type":"structure",
+      "required":["brandProfiles"],
+      "members":{
+        "brandProfiles":{
+          "shape":"BrandProfileInfoList",
+          "documentation":"<p>The list of brand profiles.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to retrieve the next page of results. This value is returned when more results are available, and is null when there are no more results to return.</p>"
+        }
+      }
+    },
+    "ListJobsInput":{
+      "type":"structure",
+      "members":{
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return per page.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to retrieve the next page of results. This value is returned when more results are available, and is null when there are no more results to return.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "status":{
+          "shape":"JobStatus",
+          "documentation":"<p>Filters the results to jobs that have the specified status.</p>",
+          "location":"querystring",
+          "locationName":"status"
+        },
+        "brandProfileId":{
+          "shape":"BrandProfileIdOrArn",
+          "documentation":"<p>Filters the results to jobs for the specified brand profile.</p>",
+          "location":"querystring",
+          "locationName":"brandProfileId"
+        },
+        "operationType":{
+          "shape":"JobOperationType",
+          "documentation":"<p>Filters the results to jobs of the specified operation type.</p>",
+          "location":"querystring",
+          "locationName":"operationType"
+        }
+      }
+    },
+    "ListJobsOutput":{
+      "type":"structure",
+      "required":["jobs"],
+      "members":{
+        "jobs":{
+          "shape":"JobSummaryList",
+          "documentation":"<p>The list of asynchronous jobs.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to retrieve the next page of results. This value is returned when more results are available, and is null when there are no more results to return.</p>"
+        }
+      }
+    },
+    "ListNotifyCodeConfigurationsInput":{
+      "type":"structure",
+      "members":{
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return per page.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to retrieve the next page of results. This value is returned when more results are available, and is null when there are no more results to return.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListNotifyCodeConfigurationsOutput":{
+      "type":"structure",
+      "required":["notifyCodeConfigurations"],
+      "members":{
+        "notifyCodeConfigurations":{
+          "shape":"NotifyCodeConfigurationList",
+          "documentation":"<p>The list of notify code configurations.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to retrieve the next page of results. This value is returned when more results are available, and is null when there are no more results to return.</p>"
+        }
+      }
+    },
+    "ListRegistrationsFromBrandProfileInput":{
+      "type":"structure",
+      "required":["brandProfileId"],
+      "members":{
+        "brandProfileId":{
+          "shape":"BrandProfileIdOrArn",
+          "documentation":"<p>The unique identifier of the brand profile. You can specify either the bare ID or the full Amazon Resource Name (ARN).</p>",
+          "location":"uri",
+          "locationName":"brandProfileId"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return per page.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to retrieve the next page of results. This value is returned when more results are available, and is null when there are no more results to return.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListRegistrationsFromBrandProfileOutput":{
+      "type":"structure",
+      "required":["registrationAssociations"],
+      "members":{
+        "registrationAssociations":{
+          "shape":"RegistrationAssociationSummaryList",
+          "documentation":"<p>The list of registrations that are associated with the brand profile.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to retrieve the next page of results. This value is returned when more results are available, and is null when there are no more results to return.</p>"
+        }
+      }
+    },
+    "ListTagsForResourceInput":{
+      "type":"structure",
+      "required":["resourceArn"],
+      "members":{
+        "resourceArn":{
+          "shape":"AmazonResourceName",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource.</p>",
+          "location":"uri",
+          "locationName":"resourceArn"
+        }
+      }
+    },
+    "ListTagsForResourceOutput":{
+      "type":"structure",
+      "members":{
+        "tags":{
+          "shape":"TagList",
+          "documentation":"<p>An array of key and value pair tags that are associated with the resource.</p>"
+        }
+      }
+    },
+    "Long":{
+      "type":"long",
+      "box":true
+    },
+    "MaxResults":{
+      "type":"integer",
+      "documentation":"<p>Maximum number of results to return on a paginated operation.</p>",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "MaxVerificationAttempts":{
+      "type":"integer",
+      "documentation":"<p>Maximum number of verification attempts allowed (1-5).</p>",
+      "box":true,
+      "max":5,
+      "min":1
+    },
+    "MediaDownloadUrl":{
+      "type":"string",
+      "documentation":"<p>Presigned S3 GET URL for downloading attribute media. Marked <code>@sensitive</code> because the URL carries a SigV4 signature that grants object-read for the expiry window (1 hour). Without this trait the value would land in generated SDK <code>Debug</code> output and from there into log retention.</p>",
+      "max":4096,
+      "min":1,
+      "sensitive":true
+    },
+    "MessageId":{
+      "type":"string",
+      "documentation":"<p>Service-generated message id for the OTP delivery message.</p>",
+      "max":256,
+      "min":1,
+      "pattern":"[A-Za-z0-9_:/-]+"
+    },
+    "NextToken":{
+      "type":"string",
+      "documentation":"<p>Opaque pagination token.</p>",
+      "max":2048,
+      "min":1,
+      "pattern":".+"
+    },
+    "NotifyChannel":{
+      "type":"string",
+      "documentation":"<p>Channel used to deliver an OTP to the end user.</p>",
+      "enum":[
+        "TEXT",
+        "VOICE",
+        "WHATSAPP"
+      ]
+    },
+    "NotifyCodeConfiguration":{
+      "type":"structure",
+      "required":[
+        "notifyCodeConfigurationId",
+        "notifyCodeConfigurationArn",
+        "notifyCodeConfigurationName",
+        "deletionProtectionEnabled",
+        "createdAt",
+        "updatedAt"
+      ],
+      "members":{
+        "notifyCodeConfigurationId":{
+          "shape":"NotifyCodeConfigurationId",
+          "documentation":"<p>The unique identifier of the notify code configuration.</p>"
+        },
+        "notifyCodeConfigurationArn":{
+          "shape":"AmazonResourceName",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the notify code configuration.</p>"
+        },
+        "notifyCodeConfigurationName":{
+          "shape":"NotifyCodeConfigurationName",
+          "documentation":"<p>The name of the notify code configuration.</p>"
+        },
+        "codeConfigurationParameters":{
+          "shape":"CodeConfigurationParameters",
+          "documentation":"<p>The passcode policy parameters, including the code type, length, validity period, and maximum number of attempts.</p>"
+        },
+        "channelParameters":{
+          "shape":"ChannelParameters",
+          "documentation":"<p>The channel-specific parameters used to render and deliver the one-time passcode. A configuration can carry parameters for every channel at once, and the send route selects the matching channel at send time.</p>"
+        },
+        "deletionProtectionEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether deletion protection is enabled. When enabled, the resource cannot be deleted until deletion protection is turned off.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the resource was created, in Unix epoch time.</p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the resource was last updated, in Unix epoch time.</p>"
+        }
+      },
+      "documentation":"<p>Contains the settings of a notify code configuration, which is a reusable one-time passcode policy.</p>"
+    },
+    "NotifyCodeConfigurationId":{
+      "type":"string",
+      "documentation":"<p>Bare system-generated NotifyCodeConfiguration identifier (output-only). Always a bare id, never an ARN — the ARN is carried separately by <code>NotifyCodeConfiguration$notifyCodeConfigurationArn</code>. Identifiers are opaque tokens; clients must not assume a specific length or format.</p>",
+      "max":64,
+      "min":1,
+      "pattern":"[A-Za-z0-9_-]+"
+    },
+    "NotifyCodeConfigurationIdOrArn":{
+      "type":"string",
+      "documentation":"<p>System-generated NotifyCodeConfiguration identifier or full ARN. Accepts either a bare id or a full ARN (e.g., &quot;arn:aws:end-user-messaging:us-east-1:123456789012:notify-code-configuration/<id>&quot;). Identifiers are opaque tokens; clients must not assume a specific length or format. SDKs handle percent-encoding of ARN characters in path parameters transparently.</p>",
+      "max":256,
+      "min":1,
+      "pattern":"[A-Za-z0-9_:/-]+"
+    },
+    "NotifyCodeConfigurationList":{
+      "type":"list",
+      "member":{"shape":"NotifyCodeConfiguration"}
+    },
+    "NotifyCodeConfigurationName":{
+      "type":"string",
+      "documentation":"<p>Customer-provided NotifyCodeConfiguration display name. Alphanumeric, underscore, hyphen, and space only.</p>",
+      "max":64,
+      "min":1,
+      "pattern":"[A-Za-z0-9_ -]*[A-Za-z0-9_-][A-Za-z0-9_ -]*"
+    },
+    "NotifyParameters":{
+      "type":"structure",
+      "members":{
+        "notifyTemplateId":{
+          "shape":"NotifyTemplateId",
+          "documentation":"<p>The identifier of a preapproved notify template for the SMS or voice channels.</p>"
+        },
+        "voiceId":{
+          "shape":"VoiceId",
+          "documentation":"<p>The Amazon Polly voice ID used when the notify template is delivered over the voice channel.</p>"
+        }
+      },
+      "documentation":"<p>The delivery parameters for the preapproved notify-template route over the SMS or voice channels.</p>"
+    },
+    "NotifyTemplateId":{
+      "type":"string",
+      "documentation":"<p>Pre-approved SMS / Voice notify template identifier.</p>",
+      "max":256,
+      "min":1,
+      "pattern":"[A-Za-z0-9_-]+"
+    },
+    "OnAttributeConflict":{
+      "type":"string",
+      "documentation":"<p>Strategy for merging registration data into brand profile attributes.</p>",
+      "enum":[
+        "REPLACE",
+        "PRESERVE"
+      ]
+    },
+    "OriginationIdentity":{
+      "type":"string",
+      "documentation":"<p>Sender identifier. Phone number ARN, sender ID, or pool ARN owned by the caller's account.</p>",
+      "max":256,
+      "min":1,
+      "pattern":"[A-Za-z0-9_:/+-]+"
+    },
+    "ReferenceId":{
+      "type":"string",
+      "documentation":"<p>Caller-supplied reference id used to bind a Send to a subsequent Validate request.</p>",
+      "max":256,
+      "min":1,
+      "pattern":"[A-Za-z0-9_-]+"
+    },
+    "RegistrationAssociationSummary":{
+      "type":"structure",
+      "required":[
+        "registrationId",
+        "registrationType",
+        "createdAt",
+        "smartMatchUsed"
+      ],
+      "members":{
+        "registrationId":{
+          "shape":"RegistrationId",
+          "documentation":"<p>The identifier of the registration.</p>"
+        },
+        "registrationType":{
+          "shape":"RegistrationType",
+          "documentation":"<p>The type of the registration, for example US_TOLL_FREE_REGISTRATION or SENDER_ID.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the resource was created, in Unix epoch time.</p>"
+        },
+        "smartMatchUsed":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether smart matching was used to create the association.</p>"
+        }
+      },
+      "documentation":"<p>Contains summary information about a registration that is associated with a brand profile.</p>"
+    },
+    "RegistrationAssociationSummaryList":{
+      "type":"list",
+      "member":{"shape":"RegistrationAssociationSummary"},
+      "max":100,
+      "min":0
+    },
+    "RegistrationId":{
+      "type":"string",
+      "documentation":"<p>Bare registration identifier (output-only). Always a bare ID, never an ARN.</p>",
+      "max":256,
+      "min":1,
+      "pattern":"[A-Za-z0-9_-]+"
+    },
+    "RegistrationIdList":{
+      "type":"list",
+      "member":{"shape":"RegistrationIdOrArn"},
+      "max":10,
+      "min":1
+    },
+    "RegistrationIdOrArn":{
+      "type":"string",
+      "documentation":"<p>Registration identifier or ARN.</p>",
+      "max":256,
+      "min":1,
+      "pattern":"[A-Za-z0-9_:/-]+"
+    },
+    "RegistrationType":{
+      "type":"string",
+      "documentation":"<p>Registration type identifier (e.g., US_TOLL_FREE_REGISTRATION, SENDER_ID).</p>",
+      "max":64,
+      "min":1,
+      "pattern":"[A-Za-z0-9_]+"
+    },
+    "RegistrationTypeList":{
+      "type":"list",
+      "member":{"shape":"RegistrationType"},
+      "max":10,
+      "min":1
+    },
+    "ResourceNotFoundException":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{"shape":"String"},
+        "resourceId":{
+          "shape":"String",
+          "documentation":"<p>The identifier of the resource that could not be found.</p>"
+        },
+        "resourceType":{
+          "shape":"String",
+          "documentation":"<p>The type of the resource that could not be found.</p>"
+        }
+      },
+      "documentation":"<p>The request references a resource that does not exist. Verify that the resource identifier is correct and try your request again.</p>",
+      "error":{
+        "httpStatusCode":404,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "SendNotifyCodeVerificationInput":{
+      "type":"structure",
+      "required":[
+        "channel",
+        "destinationIdentity",
+        "originationIdentity"
+      ],
+      "members":{
+        "channel":{
+          "shape":"NotifyChannel",
+          "documentation":"<p>The channel used to deliver the one-time passcode to the recipient.</p>"
+        },
+        "destinationIdentity":{
+          "shape":"DestinationIdentity",
+          "documentation":"<p>The recipient identifier. For the TEXT and VOICE channels, specify an E.164 phone number. For the WhatsApp channel, specify a WhatsApp address.</p>"
+        },
+        "originationIdentity":{
+          "shape":"OriginationIdentity",
+          "documentation":"<p>The identity used to send the message, such as a phone number, sender ID, or pool that is owned by your account.</p>"
+        },
+        "notifyCodeConfiguration":{
+          "shape":"NotifyCodeConfigurationIdOrArn",
+          "documentation":"<p>The identifier or Amazon Resource Name (ARN) of the notify code configuration that supplies the passcode policy and template defaults. When you do not specify a configuration, you must supply the template in the request.</p>"
+        },
+        "overrideChannelParameters":{
+          "shape":"ChannelParameters",
+          "documentation":"<p>The channel-specific parameters used to render and deliver the one-time passcode for this request. The route that is derived from the channel and the origination identity selects the matching channel. When you do not specify channel parameters, the service uses the parameters from the referenced notify code configuration.</p>"
+        },
+        "overrideCodeConfigurationParameters":{
+          "shape":"CodeConfigurationParameters",
+          "documentation":"<p>The per-send overrides for the passcode policy parameters, including the code type, length, validity period, and maximum number of attempts. These values override the values from the referenced notify code configuration. When you do not specify a value, the value from the configuration is used, and if neither is set, the service default applies.</p>"
+        },
+        "configurationSetName":{
+          "shape":"ConfigurationSetName",
+          "documentation":"<p>The name of the configuration set used to control how delivery events for the message are handled.</p>"
+        },
+        "context":{
+          "shape":"ContextMap",
+          "documentation":"<p>A map of custom key and value pairs that are propagated to the delivery events for this verification.</p>"
+        },
+        "referenceId":{
+          "shape":"ReferenceId",
+          "documentation":"<p>A caller-supplied reference identifier that binds a send request to a later validate request. Specify the same value in both requests.</p>"
+        }
+      }
+    },
+    "SendNotifyCodeVerificationOutput":{
+      "type":"structure",
+      "required":[
+        "verificationId",
+        "messageId"
+      ],
+      "members":{
+        "verificationId":{
+          "shape":"VerificationId",
+          "documentation":"<p>The service-generated identifier for the verification.</p>"
+        },
+        "messageId":{
+          "shape":"MessageId",
+          "documentation":"<p>The service-generated identifier for the message that delivers the one-time passcode.</p>"
+        }
+      }
+    },
+    "ServiceQuotaExceededException":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{"shape":"String"}
+      },
+      "documentation":"<p>The request would exceed a service quota for your account.</p>",
+      "error":{
+        "httpStatusCode":400,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "Status":{
+      "type":"string",
+      "documentation":"<p>Brand profile lifecycle status. Exposed on brand profile API responses (Get, List, Create, Update).</p>",
+      "enum":[
+        "ACTIVE",
+        "BLOCKED",
+        "PAUSED",
+        "CANCELLED",
+        "FAILED"
+      ]
+    },
+    "String":{"type":"string"},
+    "Tag":{
+      "type":"structure",
+      "required":[
+        "key",
+        "value"
+      ],
+      "members":{
+        "key":{
+          "shape":"TagKey",
+          "documentation":"<p>The key of the tag.</p>"
+        },
+        "value":{
+          "shape":"TagValue",
+          "documentation":"<p>The value of the tag.</p>"
+        }
+      },
+      "documentation":"<p>Describes a tag as a key and value pair that you can associate with a resource.</p>"
+    },
+    "TagKey":{
+      "type":"string",
+      "documentation":"<p>The key of the tag. Tag keys are case-sensitive and must be unique per resource.</p>",
+      "max":128,
+      "min":1,
+      "pattern":".+"
+    },
+    "TagList":{
+      "type":"list",
+      "member":{"shape":"Tag"},
+      "max":50,
+      "min":0
+    },
+    "TagResourceInput":{
+      "type":"structure",
+      "required":[
+        "resourceArn",
+        "tags"
+      ],
+      "members":{
+        "resourceArn":{
+          "shape":"AmazonResourceName",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource.</p>",
+          "location":"uri",
+          "locationName":"resourceArn"
+        },
+        "tags":{
+          "shape":"TagResourceInputTagsList",
+          "documentation":"<p>An array of key and value pair tags that are associated with the resource.</p>"
+        }
+      }
+    },
+    "TagResourceInputTagsList":{
+      "type":"list",
+      "member":{"shape":"Tag"},
+      "max":50,
+      "min":1
+    },
+    "TagResourceOutput":{
+      "type":"structure",
+      "members":{}
+    },
+    "TagValue":{
+      "type":"string",
+      "documentation":"<p>The value of the tag associated with the tag key. May be an empty string.</p>",
+      "max":256,
+      "min":0,
+      "pattern":".*"
+    },
+    "TextParameters":{
+      "type":"structure",
+      "members":{
+        "inlineTemplateBody":{
+          "shape":"InlineTemplateBody",
+          "documentation":"<p>The freeform message template used to render the one-time passcode for the SMS or RCS channels. The template must contain the code placeholder.</p>"
+        },
+        "destinationCountryParameters":{
+          "shape":"DestinationCountryParameters",
+          "documentation":"<p>A map of country-specific parameters that control one-time passcode delivery.</p>"
+        }
+      },
+      "documentation":"<p>The delivery parameters for the text channel, which delivers over SMS or RCS.</p>"
+    },
+    "ThrottlingException":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{"shape":"String"}
+      },
+      "documentation":"<p>The request was denied because it exceeded the allowed request rate.</p>",
+      "error":{
+        "httpStatusCode":429,
+        "senderFault":true
+      },
+      "exception":true,
+      "retryable":{"throttling":true}
+    },
+    "Timestamp":{"type":"timestamp"},
+    "UntagResourceInput":{
+      "type":"structure",
+      "required":[
+        "resourceArn",
+        "tagKeys"
+      ],
+      "members":{
+        "resourceArn":{
+          "shape":"AmazonResourceName",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource.</p>",
+          "location":"uri",
+          "locationName":"resourceArn"
+        },
+        "tagKeys":{
+          "shape":"UntagResourceInputTagKeysList",
+          "documentation":"<p>The list of tag keys to remove from the resource.</p>",
+          "location":"querystring",
+          "locationName":"tagKeys"
+        }
+      }
+    },
+    "UntagResourceInputTagKeysList":{
+      "type":"list",
+      "member":{"shape":"TagKey"},
+      "min":1
+    },
+    "UntagResourceOutput":{
+      "type":"structure",
+      "members":{}
+    },
+    "UpdateBrandProfileAttributeInput":{
+      "type":"structure",
+      "required":[
+        "brandProfileId",
+        "attributeName"
+      ],
+      "members":{
+        "brandProfileId":{
+          "shape":"BrandProfileIdOrArn",
+          "documentation":"<p>The unique identifier of the brand profile. You can specify either the bare ID or the full Amazon Resource Name (ARN).</p>",
+          "location":"uri",
+          "locationName":"brandProfileId"
+        },
+        "attributeName":{
+          "shape":"BrandProfileAttributeName",
+          "documentation":"<p>The name of the brand profile attribute. The name is unique within a brand profile.</p>",
+          "location":"uri",
+          "locationName":"attributeName"
+        },
+        "attributeValue":{
+          "shape":"BrandProfileAttributeValue",
+          "documentation":"<p>The text value of the attribute. This value applies to attributes of type TEXT.</p>"
+        },
+        "attachmentBody":{
+          "shape":"Blob",
+          "documentation":"<p>The binary content for an attribute of type IMAGE or DOCUMENT. The content is base64-encoded when it is sent over the wire.</p>"
+        },
+        "description":{
+          "shape":"BrandProfileAttributeDescription",
+          "documentation":"<p>A description of the attribute.</p>"
+        },
+        "category":{
+          "shape":"BrandProfileAttributeCategory",
+          "documentation":"<p>The category of the attribute.</p>"
+        }
+      }
+    },
+    "UpdateBrandProfileAttributeOutput":{
+      "type":"structure",
+      "required":[
+        "attributeName",
+        "attributeType",
+        "createdAt",
+        "updatedAt"
+      ],
+      "members":{
+        "attributeName":{
+          "shape":"BrandProfileAttributeName",
+          "documentation":"<p>The name of the brand profile attribute. The name is unique within a brand profile.</p>"
+        },
+        "attributeType":{
+          "shape":"BrandProfileAttributeType",
+          "documentation":"<p>The type of the attribute. TEXT stores an inline value. IMAGE and DOCUMENT store binary media that you upload.</p>"
+        },
+        "attributeValue":{
+          "shape":"BrandProfileAttributeValue",
+          "documentation":"<p>The text value of the attribute. This value applies to attributes of type TEXT.</p>"
+        },
+        "description":{
+          "shape":"BrandProfileAttributeDescription",
+          "documentation":"<p>A description of the attribute.</p>"
+        },
+        "category":{
+          "shape":"BrandProfileAttributeCategory",
+          "documentation":"<p>The category of the attribute.</p>"
+        },
+        "mediaContentType":{
+          "shape":"String",
+          "documentation":"<p>The MIME content type of the attribute media.</p>"
+        },
+        "mediaSizeBytes":{
+          "shape":"Long",
+          "documentation":"<p>The size of the attribute media, in bytes.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the resource was created, in Unix epoch time.</p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the resource was last updated, in Unix epoch time.</p>"
+        }
+      }
+    },
+    "UpdateBrandProfileFromRegistrationInput":{
+      "type":"structure",
+      "required":[
+        "brandProfileId",
+        "registrationId"
+      ],
+      "members":{
+        "brandProfileId":{
+          "shape":"BrandProfileIdOrArn",
+          "documentation":"<p>The unique identifier of the brand profile. You can specify either the bare ID or the full Amazon Resource Name (ARN).</p>",
+          "location":"uri",
+          "locationName":"brandProfileId"
+        },
+        "registrationId":{
+          "shape":"RegistrationIdOrArn",
+          "documentation":"<p>The identifier or Amazon Resource Name (ARN) of the registration to import attributes from.</p>"
+        },
+        "smartMatch":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether to use semantic field mapping between brand profile attributes and registration fields. The default is true. When false, the service maps fields using a fixed set of standard field types.</p>"
+        },
+        "onAttributeConflict":{
+          "shape":"OnAttributeConflict",
+          "documentation":"<p>Specifies how the service resolves an attribute that already exists. REPLACE overwrites the existing value with the incoming value. PRESERVE keeps the existing value.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If you do not specify a client token, the AWS SDK automatically generates one.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "UpdateBrandProfileFromRegistrationOutput":{
+      "type":"structure",
+      "required":["results"],
+      "members":{
+        "results":{
+          "shape":"JobResults",
+          "documentation":"<p>The results of the operation. Each result pairs a requested item with the asynchronous job that processes it.</p>"
+        }
+      }
+    },
+    "UpdateBrandProfileInput":{
+      "type":"structure",
+      "required":["brandProfileId"],
+      "members":{
+        "brandProfileId":{
+          "shape":"BrandProfileIdOrArn",
+          "documentation":"<p>The unique identifier of the brand profile. You can specify either the bare ID or the full Amazon Resource Name (ARN).</p>",
+          "location":"uri",
+          "locationName":"brandProfileId"
+        },
+        "brandProfileName":{
+          "shape":"BrandProfileName",
+          "documentation":"<p>The name of the brand profile. The name can contain alphanumeric characters, underscores, hyphens, and spaces.</p>"
+        },
+        "deletionProtectionEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether deletion protection is enabled. When enabled, the resource cannot be deleted until deletion protection is turned off.</p>"
+        }
+      }
+    },
+    "UpdateBrandProfileOutput":{
+      "type":"structure",
+      "required":[
+        "brandProfileId",
+        "brandProfileArn",
+        "brandProfileName",
+        "status",
+        "deletionProtectionEnabled",
+        "createdAt",
+        "updatedAt"
+      ],
+      "members":{
+        "brandProfileId":{
+          "shape":"BrandProfileIdOrArn",
+          "documentation":"<p>The unique identifier of the brand profile.</p>"
+        },
+        "brandProfileArn":{
+          "shape":"AmazonResourceName",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the brand profile.</p>"
+        },
+        "brandProfileName":{
+          "shape":"BrandProfileName",
+          "documentation":"<p>The name of the brand profile. The name can contain alphanumeric characters, underscores, hyphens, and spaces.</p>"
+        },
+        "status":{
+          "shape":"Status",
+          "documentation":"<p>The current lifecycle status of the brand profile.</p>"
+        },
+        "deletionProtectionEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether deletion protection is enabled. When enabled, the resource cannot be deleted until deletion protection is turned off.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the resource was created, in Unix epoch time.</p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the resource was last updated, in Unix epoch time.</p>"
+        }
+      }
+    },
+    "UpdateChannelParameters":{
+      "type":"structure",
+      "members":{
+        "text":{
+          "shape":"UpdateTextParameters",
+          "documentation":"<p>The text-channel parameters to update. Omit this member to leave the text-channel parameters unchanged.</p>"
+        },
+        "voice":{
+          "shape":"UpdateVoiceParameters",
+          "documentation":"<p>The voice-channel parameters to update. Omit this member to leave the voice-channel parameters unchanged.</p>"
+        },
+        "notify":{
+          "shape":"UpdateNotifyParameters",
+          "documentation":"<p>The notify-template-route parameters to update. Omit this member to leave them unchanged.</p>"
+        },
+        "whatsApp":{
+          "shape":"UpdateWhatsAppParameters",
+          "documentation":"<p>The WhatsApp-channel parameters to update. Omit this member to leave the WhatsApp-channel parameters unchanged.</p>"
+        }
+      },
+      "documentation":"<p>The updated channel-specific parameters used only when you update a notify code configuration. When you omit a channel, that channel's parameters remain unchanged. When you supply a channel, you can clear individual fields by using the empty-string or empty-map sentinel on a member, or drop the whole channel's parameters by clearing every member. These sentinels apply only when you update a configuration; a create request rejects empty values with a validation error.</p>"
+    },
+    "UpdateCodeConfigurationParameters":{
+      "type":"structure",
+      "members":{
+        "codeType":{
+          "shape":"CodeType",
+          "documentation":"<p>The updated character set used to generate the one-time passcode. Omit this member to preserve the current value.</p>"
+        },
+        "codeLength":{
+          "shape":"CodeLength",
+          "documentation":"<p>The updated number of characters in the one-time passcode. Valid values range from 4 through 8. Omit this member to preserve the current value.</p>"
+        },
+        "validityPeriodMinutes":{
+          "shape":"ValidityPeriodMinutes",
+          "documentation":"<p>The updated length of time, in minutes, that the one-time passcode remains valid. Valid values range from 1 through 60. Omit this member to preserve the current value.</p>"
+        },
+        "maxAttempts":{
+          "shape":"MaxVerificationAttempts",
+          "documentation":"<p>The updated maximum number of validation attempts that are allowed before the verification is locked. Valid values range from 1 through 5. Omit this member to preserve the current value.</p>"
+        }
+      },
+      "documentation":"<p>The loose variant of the passcode policy parameters that is used only when you update a notify code configuration. When you omit a member, its current value is preserved.</p>"
+    },
+    "UpdateDestinationCountryParameters":{
+      "type":"map",
+      "key":{"shape":"DestinationCountryParameterKey"},
+      "value":{"shape":"DestinationCountryParameterValue"},
+      "documentation":"<p>Loose variant of <code>DestinationCountryParameters</code> used only in <code>UpdateNotifyCodeConfigurationInput</code>. Accepts an empty map as the sentinel to clear the persisted attribute.</p>",
+      "max":10,
+      "min":0
+    },
+    "UpdateInlineTemplateBody":{
+      "type":"string",
+      "documentation":"<p>Loose variant of <code>InlineTemplateBody</code> used only in <code>UpdateNotifyCodeConfigurationInput</code>. Empty (<code>&quot;&quot;</code>) is the clear sentinel; any non-empty value must satisfy the same character class as <code>InlineTemplateBody</code> (at least one non-whitespace character).</p>",
+      "max":6000,
+      "min":0,
+      "pattern":"([\\s\\S]*\\S[\\s\\S]*)?",
+      "sensitive":true
+    },
+    "UpdateLanguageCode":{
+      "type":"string",
+      "documentation":"<p>Loose variant of <code>LanguageCode</code> used only in <code>UpdateNotifyCodeConfigurationInput</code>. Empty (<code>&quot;&quot;</code>) is the clear sentinel; any non-empty value must satisfy the same character class as <code>LanguageCode</code> (2-35 non-whitespace characters — BCP-47 tag).</p>",
+      "max":35,
+      "min":0,
+      "pattern":"(\\S{2,35})?"
+    },
+    "UpdateNotifyCodeConfigurationInput":{
+      "type":"structure",
+      "required":["notifyCodeConfigurationId"],
+      "members":{
+        "notifyCodeConfigurationId":{
+          "shape":"NotifyCodeConfigurationIdOrArn",
+          "documentation":"<p>The unique identifier of the notify code configuration. You can specify either the bare ID or the full Amazon Resource Name (ARN).</p>",
+          "location":"uri",
+          "locationName":"notifyCodeConfigurationId"
+        },
+        "notifyCodeConfigurationName":{
+          "shape":"NotifyCodeConfigurationName",
+          "documentation":"<p>The name of the notify code configuration.</p>"
+        },
+        "codeConfigurationParameters":{
+          "shape":"UpdateCodeConfigurationParameters",
+          "documentation":"<p>The updated passcode policy parameters, including the code type, length, validity period, and maximum number of attempts. When you omit a member, its current value is preserved.</p>"
+        },
+        "channelParameters":{
+          "shape":"UpdateChannelParameters",
+          "documentation":"<p>The updated channel-specific parameters used to render and deliver the one-time passcode. This is a loose, nested update: when you omit a channel, that channel's parameters remain unchanged. Within a supplied channel, an empty string on a string member, or an empty map on the destination-country parameters, clears the currently stored value, and absent members preserve the current value.</p>"
+        },
+        "deletionProtectionEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether deletion protection is enabled. When enabled, the resource cannot be deleted until deletion protection is turned off.</p>"
+        }
+      }
+    },
+    "UpdateNotifyCodeConfigurationOutput":{
+      "type":"structure",
+      "required":["notifyCodeConfiguration"],
+      "members":{
+        "notifyCodeConfiguration":{
+          "shape":"NotifyCodeConfiguration",
+          "documentation":"<p>The notify code configuration resource.</p>"
+        }
+      }
+    },
+    "UpdateNotifyParameters":{
+      "type":"structure",
+      "members":{
+        "notifyTemplateId":{
+          "shape":"UpdateNotifyTemplateId",
+          "documentation":"<p>The updated identifier of a preapproved notify template for the SMS or voice channels. An empty string clears the previously stored value.</p>"
+        },
+        "voiceId":{
+          "shape":"UpdateVoiceId",
+          "documentation":"<p>The updated Amazon Polly voice ID. An empty string clears the previously stored value.</p>"
+        }
+      },
+      "documentation":"<p>The updated delivery parameters for the preapproved notify-template route. Absent members preserve the current value, and the empty sentinel on a member clears it.</p>"
+    },
+    "UpdateNotifyTemplateId":{
+      "type":"string",
+      "documentation":"<p>Loose variant of <code>NotifyTemplateId</code> used only in <code>UpdateNotifyCodeConfigurationInput</code>. Empty (<code>&quot;&quot;</code>) is the clear sentinel; any non-empty value must satisfy the same character class as <code>NotifyTemplateId</code> (<code>[A-Za-z0-9_-]</code>).</p>",
+      "max":256,
+      "min":0,
+      "pattern":"[A-Za-z0-9_-]*"
+    },
+    "UpdateRegistrationsFromBrandProfileInput":{
+      "type":"structure",
+      "required":[
+        "brandProfileId",
+        "registrationIds"
+      ],
+      "members":{
+        "brandProfileId":{
+          "shape":"BrandProfileIdOrArn",
+          "documentation":"<p>The unique identifier of the brand profile. You can specify either the bare ID or the full Amazon Resource Name (ARN).</p>",
+          "location":"uri",
+          "locationName":"brandProfileId"
+        },
+        "registrationIds":{
+          "shape":"RegistrationIdList",
+          "documentation":"<p>The identifiers of the registrations.</p>"
+        },
+        "smartMatch":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether to use semantic field mapping between brand profile attributes and registration fields. The default is true. When false, the service maps fields using a fixed set of standard field types.</p>"
+        },
+        "onAttributeConflict":{
+          "shape":"OnAttributeConflict",
+          "documentation":"<p>Specifies how the service resolves an attribute that already exists. REPLACE overwrites the existing value with the incoming value. PRESERVE keeps the existing value.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If you do not specify a client token, the AWS SDK automatically generates one.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "UpdateRegistrationsFromBrandProfileOutput":{
+      "type":"structure",
+      "required":["results"],
+      "members":{
+        "results":{
+          "shape":"JobResults",
+          "documentation":"<p>The results of the operation. Each result pairs a requested item with the asynchronous job that processes it.</p>"
+        }
+      }
+    },
+    "UpdateTextParameters":{
+      "type":"structure",
+      "members":{
+        "inlineTemplateBody":{
+          "shape":"UpdateInlineTemplateBody",
+          "documentation":"<p>The updated freeform SMS or RCS template body. An empty string clears the previously stored value.</p>"
+        },
+        "destinationCountryParameters":{
+          "shape":"UpdateDestinationCountryParameters",
+          "documentation":"<p>The updated map of country-specific parameters that control one-time passcode delivery. An empty map clears the previously stored value.</p>"
+        }
+      },
+      "documentation":"<p>The updated delivery parameters for the text channel. Absent members preserve the current value, and the empty sentinel on a member clears it.</p>"
+    },
+    "UpdateVoiceId":{
+      "type":"string",
+      "documentation":"<p>Loose variant of <code>VoiceId</code> used only in <code>UpdateNotifyCodeConfigurationInput</code>. Empty (<code>&quot;&quot;</code>) is the clear sentinel; any non-empty value must satisfy the same character class as <code>VoiceId</code> (<code>[A-Za-z0-9]</code>).</p>",
+      "max":64,
+      "min":0,
+      "pattern":"[A-Za-z0-9]*"
+    },
+    "UpdateVoiceParameters":{
+      "type":"structure",
+      "members":{
+        "inlineTemplateBody":{
+          "shape":"UpdateInlineTemplateBody",
+          "documentation":"<p>The updated freeform voice template body. An empty string clears the previously stored value.</p>"
+        },
+        "languageCode":{
+          "shape":"UpdateLanguageCode",
+          "documentation":"<p>The updated BCP 47 language code. An empty string clears the previously stored value.</p>"
+        },
+        "voiceId":{
+          "shape":"UpdateVoiceId",
+          "documentation":"<p>The updated Amazon Polly voice ID. An empty string clears the previously stored value.</p>"
+        },
+        "voiceMessageBodyTextType":{
+          "shape":"VoiceMessageBodyTextType",
+          "documentation":"<p>The updated format of the voice message body. Valid values are TEXT and SSML. Omit this member to preserve the current value.</p>"
+        }
+      },
+      "documentation":"<p>The updated delivery parameters for the voice channel. Absent members preserve the current value, and the empty sentinel on a member clears it.</p>"
+    },
+    "UpdateWhatsAppParameters":{
+      "type":"structure",
+      "members":{
+        "whatsAppTemplateName":{
+          "shape":"UpdateWhatsAppTemplateName",
+          "documentation":"<p>The updated name of the Meta-approved WhatsApp authentication template. An empty string clears the previously stored value.</p>"
+        },
+        "languageCode":{
+          "shape":"UpdateLanguageCode",
+          "documentation":"<p>The updated BCP 47 language code. An empty string clears the previously stored value.</p>"
+        }
+      },
+      "documentation":"<p>The updated delivery parameters for the WhatsApp channel. Absent members preserve the current value, and the empty sentinel on a member clears it.</p>"
+    },
+    "UpdateWhatsAppTemplateName":{
+      "type":"string",
+      "documentation":"<p>Loose variant of <code>WhatsAppTemplateName</code> used only in <code>UpdateNotifyCodeConfigurationInput</code>. Empty (<code>&quot;&quot;</code>) is the clear sentinel; non-empty values are validated by the service (lowercase letters, numbers, underscores).</p>",
+      "max":512,
+      "min":0,
+      "pattern":"\\S*"
+    },
+    "ValidateNotifyCodeVerificationInput":{
+      "type":"structure",
+      "required":[
+        "destinationIdentity",
+        "code"
+      ],
+      "members":{
+        "destinationIdentity":{
+          "shape":"DestinationIdentity",
+          "documentation":"<p>The recipient identifier. For the TEXT and VOICE channels, specify an E.164 phone number. For the WhatsApp channel, specify a WhatsApp address.</p>"
+        },
+        "referenceId":{
+          "shape":"ReferenceId",
+          "documentation":"<p>The caller-supplied reference identifier used to locate the verification. This value must match the value that you supplied to the SendNotifyCodeVerification operation.</p>"
+        },
+        "code":{
+          "shape":"VerificationCode",
+          "documentation":"<p>The one-time passcode that the recipient submitted for validation.</p>"
+        }
+      }
+    },
+    "ValidateNotifyCodeVerificationOutput":{
+      "type":"structure",
+      "required":["status"],
+      "members":{
+        "status":{
+          "shape":"VerificationStatus",
+          "documentation":"<p>The outcome of the validation attempt. VALID indicates that the submitted passcode matched an active verification. INVALID indicates that the passcode did not match, expired, or exceeded its attempt limit.</p>"
+        }
+      }
+    },
+    "ValidationException":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{
+          "shape":"String",
+          "documentation":"<p>A summary of the validation failure.</p>"
+        },
+        "fieldList":{
+          "shape":"ValidationExceptionFieldList",
+          "documentation":"<p>A list of specific failures encountered while validating the input. A member can appear in this list more than once if it failed to satisfy multiple constraints.</p>"
+        }
+      },
+      "documentation":"<p>A standard error for input validation failures. This should be thrown by services when a member of the input structure falls outside of the modeled or documented constraints.</p>",
+      "exception":true
+    },
+    "ValidationExceptionField":{
+      "type":"structure",
+      "required":[
+        "path",
+        "message"
+      ],
+      "members":{
+        "path":{
+          "shape":"String",
+          "documentation":"<p>A JSONPointer expression to the structure member whose value failed to satisfy the modeled constraints.</p>"
+        },
+        "message":{
+          "shape":"String",
+          "documentation":"<p>A detailed description of the validation failure.</p>"
+        }
+      },
+      "documentation":"<p>Describes one specific validation failure for an input member.</p>"
+    },
+    "ValidationExceptionFieldList":{
+      "type":"list",
+      "member":{"shape":"ValidationExceptionField"}
+    },
+    "ValidityPeriodMinutes":{
+      "type":"integer",
+      "documentation":"<p>OTP validity window in minutes (1-60).</p>",
+      "box":true,
+      "max":60,
+      "min":1
+    },
+    "VerificationCode":{
+      "type":"string",
+      "documentation":"<p>OTP code submitted by the end user for validation.</p>",
+      "max":8,
+      "min":4,
+      "pattern":"[A-Za-z0-9]+",
+      "sensitive":true
+    },
+    "VerificationId":{
+      "type":"string",
+      "documentation":"<p>Service-generated verification id returned from SendNotifyCodeVerification.</p>",
+      "max":64,
+      "min":1,
+      "pattern":"[A-Za-z0-9_:/-]+"
+    },
+    "VerificationStatus":{
+      "type":"string",
+      "documentation":"<p>Outcome of a ValidateNotifyCodeVerification request.</p>",
+      "enum":[
+        "VALID",
+        "INVALID"
+      ]
+    },
+    "VoiceId":{
+      "type":"string",
+      "documentation":"<p>Amazon Polly voice id for the Voice channel.</p>",
+      "max":64,
+      "min":1,
+      "pattern":"[A-Za-z0-9]+"
+    },
+    "VoiceMessageBodyTextType":{
+      "type":"string",
+      "documentation":"<p>The format of the voice message body text.</p>",
+      "enum":[
+        "TEXT",
+        "SSML"
+      ]
+    },
+    "VoiceParameters":{
+      "type":"structure",
+      "members":{
+        "inlineTemplateBody":{
+          "shape":"InlineTemplateBody",
+          "documentation":"<p>The freeform message template used to render the one-time passcode for the voice channel. The template must contain the code placeholder.</p>"
+        },
+        "languageCode":{
+          "shape":"LanguageCode",
+          "documentation":"<p>The BCP 47 language code used to render the voice message.</p>"
+        },
+        "voiceId":{
+          "shape":"VoiceId",
+          "documentation":"<p>The Amazon Polly voice ID used for the voice channel.</p>"
+        },
+        "voiceMessageBodyTextType":{
+          "shape":"VoiceMessageBodyTextType",
+          "documentation":"<p>The format of the voice message body. Valid values are TEXT and SSML.</p>"
+        }
+      },
+      "documentation":"<p>The delivery parameters for the voice channel.</p>"
+    },
+    "WhatsAppParameters":{
+      "type":"structure",
+      "members":{
+        "whatsAppTemplateName":{
+          "shape":"WhatsAppTemplateName",
+          "documentation":"<p>The name of the Meta-approved WhatsApp authentication template.</p>"
+        },
+        "languageCode":{
+          "shape":"LanguageCode",
+          "documentation":"<p>The BCP 47 language code used to render the template. This value is required for the WhatsApp channel.</p>"
+        }
+      },
+      "documentation":"<p>The delivery parameters for the WhatsApp channel.</p>"
+    },
+    "WhatsAppTemplateName":{
+      "type":"string",
+      "documentation":"<p>Meta-approved WhatsApp authentication template name. Character-class rules (lowercase letters, numbers, underscores) are enforced by the service.</p>",
+      "max":512,
+      "min":1,
+      "pattern":"\\S+"
+    }
+  },
+  "documentation":"<p>AWS End User Messaging provides a set of APIs to manage brand profiles, synchronize brand profile data with SMS and Rich Communication Services (RCS) registrations, and send and validate one-time passcodes across the SMS, voice, and WhatsApp channels.</p>"
+}

@@ -124,11 +124,14 @@ FOLLOW_SYMLINKS = {
     'default': True,
     'group_name': 'follow_symlinks',
     'help_text': (
-        "Symbolic links are followed "
-        "only when uploading to S3 from the local filesystem. "
-        "Note that S3 does not support symbolic links, so the "
+        "Symbolic links are followed when uploading to S3 from the local "
+        "filesystem. Note that S3 does not support symbolic links, so the "
         "contents of the link target are uploaded under the "
-        "name of the link. When neither ``--follow-symlinks`` "
+        "name of the link. When downloading from S3, "
+        "``--no-follow-symlinks`` skips any object whose destination is a "
+        "symbolic link, or is located under one, starting at the destination "
+        "you specified. Symbolic links in the path leading up to that "
+        "destination are still followed. When neither ``--follow-symlinks`` "
         "nor ``--no-follow-symlinks`` is specified, the default "
         "is to follow symlinks."
     ),
@@ -452,7 +455,7 @@ METADATA_DIRECTIVE = {
 
 COPY_PROPS = {
     'name': 'copy-props',
-    'choices': ['none', 'metadata-directive', 'default'],
+    'choices': ['none', 'metadata-directive', 'default', 'all'],
     'default': 'default',
     'help_text': (
         'Determines which properties are copied from the source S3 object. '
@@ -468,6 +471,9 @@ COPY_PROPS = {
         '<li>``default`` - The default value. Copies tags and properties '
         'covered under the ``metadata-directive`` value from the '
         'source S3 object.</li>'
+        '<li>``all`` - Copies annotations in addition to the tags and '
+        'properties covered under the ``default`` value from the source '
+        'S3 object.</li>'
         '</ul>'
         'In order to copy the appropriate properties for multipart copies, '
         'some of the options may require additional API calls if a multipart '
@@ -476,8 +482,11 @@ COPY_PROPS = {
         '<li>``metadata-directive`` may require additional ``HeadObject`` '
         'API calls.</li>'
         '<li>``default`` may require additional ``HeadObject``, '
-        '``GetObjectTagging``, and ``PutObjectTagging`` API calls. Note this'
-        ' list of API calls may grow in the future in order to ensure '
+        '``GetObjectTagging``, and ``PutObjectTagging`` API calls.</li>'
+        '<li>``all`` may require the additional API calls covered under the '
+        '``default`` value, as well as ``ListObjectAnnotations``, '
+        '``GetObjectAnnotation``, and ``PutObjectAnnotation`` API calls. Note '
+        'this list of API calls may grow in the future in order to ensure '
         'multipart copies preserve the exact properties a ``CopyObject`` '
         'API call would preserve.</li>'
         '</ul>'

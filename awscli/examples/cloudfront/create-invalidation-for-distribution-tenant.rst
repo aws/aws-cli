@@ -4,7 +4,7 @@ The following ``create-invalidation-for-distribution-tenant`` example creates an
 
     aws cloudfront create-invalidation-for-distribution-tenant \
         --id dt_2wjDZi3hD1ivOXf6rpZJO1AB \
-        --invalidation-batch '{"Paths": {"Quantity": 1, "Items": ["/*"]}, "CallerReference": "invalidation-$(date +%s)"}'
+        --invalidation-batch '{"Paths": {"Quantity": 1, "Items": ["/*"]}, "CallerReference": "invalidation-'$(date +%s)'"}'
 
 Output::
 
@@ -21,7 +21,7 @@ Output::
                         "/*"
                     ]
                 },
-                "CallerReference": "invalidation-$(date +%s)"
+                "CallerReference": "invalidation-1783101622"
             }
         }
     }

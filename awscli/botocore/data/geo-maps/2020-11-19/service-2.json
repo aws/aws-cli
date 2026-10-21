@@ -17,7 +17,7 @@
       "name":"GetGlyphs",
       "http":{
         "method":"GET",
-        "requestUri":"/glyphs/{FontStack}/{FontUnicodeRange}",
+        "requestUri":"/v2/glyphs/{FontStack}/{FontUnicodeRange}",
         "responseCode":200
       },
       "input":{"shape":"GetGlyphsRequest"},
@@ -29,7 +29,7 @@
       "name":"GetSprites",
       "http":{
         "method":"GET",
-        "requestUri":"/styles/{Style}/{ColorScheme}/{Variant}/sprites/{FileName}",
+        "requestUri":"/v2/styles/{Style}/{ColorScheme}/{Variant}/sprites/{FileName}",
         "responseCode":200
       },
       "input":{"shape":"GetSpritesRequest"},
@@ -41,7 +41,7 @@
       "name":"GetStaticMap",
       "http":{
         "method":"GET",
-        "requestUri":"/static/{FileName}",
+        "requestUri":"/v2/static/{FileName}",
         "responseCode":200
       },
       "input":{"shape":"GetStaticMapRequest"},
@@ -52,14 +52,14 @@
         {"shape":"ValidationException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p><note> <p>This operation is not supported in <code>ap-southeast-1</code> and <code>ap-southeast-5</code> regions for <a href=\"https://docs.aws.amazon.com/location/latest/developerguide/GrabMaps.html\">GrabMaps</a> customers. </p> </note> <p> <code>GetStaticMap</code> provides high-quality static map images with customizable options. You can modify the map's appearance and overlay additional information. It's an ideal solution for applications requiring tailored static map snapshots.</p> <p>For more information, see the following topics in the <i>Amazon Location Service Developer Guide</i>:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/location/latest/developerguide/static-maps.html\">Static maps</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/location/latest/developerguide/customizing-static-maps.html\">Customize static maps</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/location/latest/developerguide/overlaying-static-map.html\">Overlay on the static map</a> </p> </li> </ul></p>",
+      "documentation":"<p> <code>GetStaticMap</code> provides high-quality static map images with customizable options. You can modify the map's appearance and overlay additional information. It's an ideal solution for applications requiring tailored static map snapshots. Not supported in <code>ap-southeast-1</code> and <code>ap-southeast-5</code> regions for <a href=\"https://docs.aws.amazon.com/location/latest/developerguide/GrabMaps.html\">GrabMaps</a> customers.</p> <p>For more information, see the following topics in the <i>Amazon Location Service Developer Guide</i>:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/location/latest/developerguide/static-maps.html\">Static maps</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/location/latest/developerguide/customizing-static-maps.html\">Customize static maps</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/location/latest/developerguide/overlaying-static-map.html\">Overlay on the static map</a> </p> </li> </ul>",
       "readonly":true
     },
     "GetStyleDescriptor":{
       "name":"GetStyleDescriptor",
       "http":{
         "method":"GET",
-        "requestUri":"/styles/{Style}/descriptor",
+        "requestUri":"/v2/styles/{Style}/descriptor",
         "responseCode":200
       },
       "input":{"shape":"GetStyleDescriptorRequest"},
@@ -71,7 +71,7 @@
       "name":"GetTile",
       "http":{
         "method":"GET",
-        "requestUri":"/tiles/{Tileset}/{Z}/{X}/{Y}",
+        "requestUri":"/v2/tiles/{Tileset}/{Z}/{X}/{Y}",
         "responseCode":200
       },
       "input":{"shape":"GetTileRequest"},
@@ -550,6 +550,18 @@
           "location":"querystring",
           "locationName":"buildings"
         },
+        "PoiDensity":{
+          "shape":"PoiDensity",
+          "documentation":"<p>Controls how densely points of interest are rendered on the map. The density value controls the zoom level at which each category of points of interest appears, and how quickly less prominent points of interest are revealed as you zoom in. Denser values display more points of interest at lower zoom levels.</p> <p>Use <code>Off</code> to hide all points of interest. When you omit this parameter, the map renders at <code>Default</code> density.</p> <note> <p>The difference between density values is most noticeable at mid-range zoom levels. At high zoom levels, all density values converge on displaying every available point of interest.</p> </note> <p>This parameter is valid only for the <code>Standard</code> and <code>Hybrid</code> map styles. In <code>ap-southeast-1</code> and <code>ap-southeast-5</code> regions for <a href=\"https://docs.aws.amazon.com/location/latest/developerguide/GrabMaps.html\">GrabMaps</a> customers, this parameter is valid only for the <code>Standard</code> map style.</p>",
+          "location":"querystring",
+          "locationName":"poi-density"
+        },
+        "PoiCategories":{
+          "shape":"PoiCategoryList",
+          "documentation":"<p>Renders only the specified categories of points of interest. When you omit this parameter, the map renders all categories.</p> <p>The following categories are currently supported:</p> <ul> <li> <p> <code>FoodAndDrink</code> </p> </li> <li> <p> <code>Entertainment</code> </p> </li> <li> <p> <code>SightsAndMuseums</code> </p> </li> <li> <p> <code>Transportation</code> </p> </li> <li> <p> <code>Accommodations</code> </p> </li> <li> <p> <code>LeisureAndOutdoor</code> </p> </li> <li> <p> <code>Shopping</code> </p> </li> <li> <p> <code>BusinessAndServices</code> </p> </li> <li> <p> <code>FacilitiesAndBuildings</code> </p> </li> </ul> <p>Specify each category as a separate <code>poi-categories</code> query parameter. Duplicate values are rejected.</p> <note> <p>This parameter has no effect when <code>poi-density</code> is set to <code>Off</code>, which hides all points of interest regardless of category.</p> </note> <p>This parameter is valid only for the <code>Standard</code> and <code>Hybrid</code> map styles. In <code>ap-southeast-1</code> and <code>ap-southeast-5</code> regions for <a href=\"https://docs.aws.amazon.com/location/latest/developerguide/GrabMaps.html\">GrabMaps</a> customers, this parameter is valid only for the <code>Standard</code> map style.</p>",
+          "location":"querystring",
+          "locationName":"poi-categories"
+        },
         "Key":{
           "shape":"ApiKey",
           "documentation":"<p>Optional: The API key to be used for authorization. Either an API key or valid SigV4 signature must be provided when making a request. </p>",
@@ -732,6 +744,37 @@
         "Satellite"
       ]
     },
+    "PoiCategory":{
+      "type":"string",
+      "enum":[
+        "FoodAndDrink",
+        "Entertainment",
+        "SightsAndMuseums",
+        "Transportation",
+        "Accommodations",
+        "LeisureAndOutdoor",
+        "Shopping",
+        "BusinessAndServices",
+        "FacilitiesAndBuildings"
+      ]
+    },
+    "PoiCategoryList":{
+      "type":"list",
+      "member":{"shape":"PoiCategory"},
+      "max":9,
+      "min":0
+    },
+    "PoiDensity":{
+      "type":"string",
+      "enum":[
+        "Off",
+        "VerySparse",
+        "Sparse",
+        "Default",
+        "Dense",
+        "VeryDense"
+      ]
+    },
     "PositionString":{
       "type":"string",
       "max":36,
@@ -907,5 +950,5 @@
       "enum":["Default"]
     }
   },
-  "documentation":"<p> Integrate high-quality base map data into your applications using <a href=\"https://maplibre.org\">MapLibre</a>. Capabilities include: </p> <ul> <li> <p>Access to comprehensive base map data, allowing you to tailor the map display to your specific needs.</p> </li> <li> <p>Multiple pre-designed map styles suited for various application types, such as navigation, logistics, or data visualization.</p> </li> <li> <p>Generation of static map images for scenarios where interactive maps aren't suitable, such as:</p> <ul> <li> <p>Embedding in emails or documents</p> </li> <li> <p>Displaying in low-bandwidth environments</p> </li> <li> <p>Creating printable maps</p> </li> <li> <p>Enhancing application performance by reducing client-side rendering</p> </li> </ul> </li> </ul>"
+  "documentation":"<p> Integrate high-quality base map data into your applications using <a href=\"https://maplibre.org\">MapLibre</a>. Capabilities include: </p> <ul> <li> <p>Access to comprehensive base map data, allowing you to tailor the map display to your specific needs. See <a href=\"https://docs.aws.amazon.com/location/latest/APIReference/API_geomaps_GetTile.html\">GetTile</a>.</p> </li> <li> <p>Multiple pre-designed map styles suited for various application types, such as navigation, logistics, or data visualization. See <a href=\"https://docs.aws.amazon.com/location/latest/APIReference/API_geomaps_GetStyleDescriptor.html\">GetStyleDescriptor</a>.</p> </li> <li> <p>Generation of static map images for scenarios where interactive maps aren't suitable. See <a href=\"https://docs.aws.amazon.com/location/latest/APIReference/API_geomaps_GetStaticMap.html\">GetStaticMap</a>. Use cases include:</p> <ul> <li> <p>Embedding in emails or documents</p> </li> <li> <p>Displaying in low-bandwidth environments</p> </li> <li> <p>Creating printable maps</p> </li> <li> <p>Enhancing application performance by reducing client-side rendering</p> </li> </ul> </li> </ul>"
 }

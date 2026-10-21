@@ -258,12 +258,14 @@ class CopyPropsSubscriberFactory:
         return [
             ReplaceMetadataDirectiveSubscriber(),
             ReplaceTaggingDirectiveSubscriber(),
+            ExcludeAnnotationDirectiveSubscriber(),
         ]
 
     def _get_metadata_directive_subscribers(self, fileinfo):
         return [
             self._create_metadata_directive_props_subscriber(fileinfo),
             ReplaceTaggingDirectiveSubscriber(),
+            ExcludeAnnotationDirectiveSubscriber(),
         ]
 
     def _get_default_subscribers(self, fileinfo):
@@ -275,6 +277,19 @@ class CopyPropsSubscriberFactory:
                 self._cli_params,
                 source_client=fileinfo.source_client,
             ),
+            ExcludeAnnotationDirectiveSubscriber(),
+        ]
+
+    def _get_all_subscribers(self, fileinfo):
+        return [
+            self._create_metadata_directive_props_subscriber(fileinfo),
+            SetTagsSubscriber(
+                self._client,
+                self._transfer_config,
+                self._cli_params,
+                source_client=fileinfo.source_client,
+            ),
+            self._create_annotations_subscriber(fileinfo),
         ]
 
     def _create_metadata_directive_props_subscriber(self, fileinfo):
@@ -289,20 +304,43 @@ class CopyPropsSubscriberFactory:
             )
         return SetMetadataDirectivePropsSubscriber(**subscriber_kwargs)
 
+    def _create_annotations_subscriber(self, fileinfo):
+        kwargs = {
+            'client': self._client,
+            'transfer_config': self._transfer_config,
+            'cli_params': self._cli_params,
+            'source_client': fileinfo.source_client,
+        }
+        if not self._cli_params.get('dir_op'):
+            kwargs['head_object_response'] = (
+                fileinfo.associated_response_data
+            )
+        return SetAnnotationsSubscriber(**kwargs)
 
-class ReplaceDirectiveSubscriber(BaseSubscriber):
+
+class SetDirectiveSubscriber(BaseSubscriber):
     _DIRECTIVE_PARAM = ''
+    _DIRECTIVE_VALUE = ''
 
     def on_queued(self, future, **kwargs):
-        future.meta.call_args.extra_args[self._DIRECTIVE_PARAM] = 'REPLACE'
+        future.meta.call_args.extra_args[self._DIRECTIVE_PARAM] = (
+            self._DIRECTIVE_VALUE
+        )
 
 
-class ReplaceMetadataDirectiveSubscriber(ReplaceDirectiveSubscriber):
+class ReplaceMetadataDirectiveSubscriber(SetDirectiveSubscriber):
     _DIRECTIVE_PARAM = 'MetadataDirective'
+    _DIRECTIVE_VALUE = 'REPLACE'
 
 
-class ReplaceTaggingDirectiveSubscriber(ReplaceDirectiveSubscriber):
+class ReplaceTaggingDirectiveSubscriber(SetDirectiveSubscriber):
     _DIRECTIVE_PARAM = 'TaggingDirective'
+    _DIRECTIVE_VALUE = 'REPLACE'
+
+
+class ExcludeAnnotationDirectiveSubscriber(SetDirectiveSubscriber):
+    _DIRECTIVE_PARAM = 'AnnotationDirective'
+    _DIRECTIVE_VALUE = 'EXCLUDE'
 
 
 class SetMetadataDirectivePropsSubscriber(BaseSubscriber):
@@ -439,6 +477,140 @@ class SetTagsSubscriber(OnDoneFilteredSubscriber):
         return percent_encode_sequence(
             [(tag['Key'], tag['Value']) for tag in tags]
         )
+
+    def _is_multipart_copy(self, future):
+        return future.meta.size >= self._transfer_config.multipart_threshold
+
+
+class AnnotationCopyError(Exception):
+    def __init__(self, bucket, key, succeeded, failed):
+        succeeded_names = ', '.join(succeeded) or '(none)'
+        failed_descriptions = '; '.join(
+            f'{name}: {error}' for name, error in failed
+        )
+        super().__init__(
+            f'Failed to copy all annotations to s3://{bucket}/{key}. '
+            f'The object was copied successfully and was not deleted. '
+            f'Annotations written: {succeeded_names}. '
+            f'Annotations that failed: {failed_descriptions}.'
+        )
+
+
+class SetAnnotationsSubscriber(OnDoneFilteredSubscriber):
+    _ANNOTATIONS_CONTEXT_KEY = 'CopySourceAnnotations'
+
+    def __init__(
+        self, client, transfer_config, cli_params, source_client,
+        head_object_response=None,
+    ):
+        self._client = client
+        self._transfer_config = transfer_config
+        self._cli_params = cli_params
+        self._source_client = source_client
+        self._head_object_response = head_object_response
+
+    def on_queued(self, future, **kwargs):
+        # Annotations only need to be copied for multipart copies. Single-part
+        # copies carry them over server-side.
+        if not self._is_multipart_copy(future):
+            return
+        bucket, key = self._get_bucket_key_from_copy_source(future)
+        source_version_id = self._get_source_version_id()
+        annotation_names = self._list_annotation_names(
+            bucket, key, source_version_id
+        )
+        if not annotation_names:
+            return
+        annotations = {}
+        for name in annotation_names:
+            annotations[name] = self._get_annotation(
+                bucket, key, name, source_version_id
+            )
+        future.meta.user_context[self._ANNOTATIONS_CONTEXT_KEY] = annotations
+
+    def _on_success(self, future):
+        annotations = future.meta.user_context.get(
+            self._ANNOTATIONS_CONTEXT_KEY
+        )
+        if not annotations:
+            return
+        bucket = future.meta.call_args.bucket
+        key = future.meta.call_args.key
+        dest_etag, dest_version_id = self._get_dest_object_identity(future)
+        succeeded = []
+        failed = []
+        for name, payload in annotations.items():
+            try:
+                self._put_annotation(
+                    bucket, key, name, payload, dest_etag, dest_version_id
+                )
+                succeeded.append(name)
+            except Exception as e:
+                failed.append((name, str(e)))
+        if failed:
+            future.set_exception(
+                AnnotationCopyError(bucket, key, succeeded, failed)
+            )
+
+    def _get_dest_object_identity(self, future):
+        response = future.result()
+        return response.get('ETag'), response.get('VersionId')
+
+    def _get_source_version_id(self):
+        if self._head_object_response is not None:
+            return self._head_object_response.get('VersionId')
+        return None
+
+    def _list_annotation_names(self, bucket, key, version_id=None):
+        extra_args = {}
+        utils.RequestParamsMapper.map_list_object_annotations_params(
+            extra_args, self._cli_params
+        )
+        if version_id is not None:
+            extra_args['VersionId'] = version_id
+        paginator = self._source_client.get_paginator(
+            'list_object_annotations'
+        )
+        names = []
+        for page in paginator.paginate(Bucket=bucket, Key=key, **extra_args):
+            for annotation in page.get('Annotations', []):
+                names.append(annotation['AnnotationName'])
+        return names
+
+    def _get_annotation(self, bucket, key, name, version_id=None):
+        extra_args = {}
+        utils.RequestParamsMapper.map_get_object_annotation_params(
+            extra_args, self._cli_params
+        )
+        if version_id is not None:
+            extra_args['VersionId'] = version_id
+        response = self._source_client.get_object_annotation(
+            Bucket=bucket, Key=key, AnnotationName=name, **extra_args
+        )
+        return response['AnnotationPayload'].read()
+
+    def _put_annotation(
+        self, bucket, key, name, payload, dest_etag, dest_version_id
+    ):
+        extra_args = {}
+        utils.RequestParamsMapper.map_put_object_annotation_params(
+            extra_args, self._cli_params
+        )
+        if dest_etag is not None:
+            extra_args['ObjectIfMatch'] = dest_etag
+        if dest_version_id is not None:
+            extra_args['VersionId'] = dest_version_id
+        self._client.put_object_annotation(
+            Bucket=bucket,
+            Key=key,
+            AnnotationName=name,
+            AnnotationPayload=payload,
+            **extra_args,
+        )
+
+    def _get_bucket_key_from_copy_source(self, future):
+        copy_source = future.meta.call_args.copy_source
+        return copy_source['Bucket'], copy_source['Key']
 
     def _is_multipart_copy(self, future):
         return future.meta.size >= self._transfer_config.multipart_threshold

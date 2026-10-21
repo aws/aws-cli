@@ -36,7 +36,12 @@ class BaseS3TransferCommandTest(BaseAWSCommandParamsTest):
 
     def init_clidriver(self):
         with temporary_file('w') as f:
-            f.write('[default]\n' 's3 =\n' '  max_concurrent_requests = 1\n')
+            f.write(
+                '[default]\n'
+                's3 =\n'
+                '  preferred_transfer_client = classic\n'
+                '  max_concurrent_requests = 1\n'
+            )
             f.flush()
             self.environ['AWS_CONFIG_FILE'] = f.name
             self.driver = create_clidriver()
@@ -116,6 +121,15 @@ class BaseS3TransferCommandTest(BaseAWSCommandParamsTest):
     def put_object_tagging_response(self):
         return 'PutObjectTagging', self.empty_response()
 
+    def list_object_annotations_response(self, names):
+        return {'Annotations': [{'AnnotationName': name} for name in names]}
+
+    def get_object_annotation_response(self, payload):
+        return {'AnnotationPayload': payload}
+
+    def put_object_annotation_response(self):
+        return self.empty_response()
+
     def empty_response(self):
         return {}
 
@@ -162,6 +176,7 @@ class BaseS3TransferCommandTest(BaseAWSCommandParamsTest):
             'Key': key,
             'CopySource': {'Bucket': source_bucket, 'Key': source_key},
         }
+        override_kwargs.setdefault('AnnotationDirective', 'EXCLUDE')
         params.update(override_kwargs)
         return 'CopyObject', params
 
@@ -228,6 +243,34 @@ class BaseS3TransferCommandTest(BaseAWSCommandParamsTest):
                 'TagSet': [{'Key': k, 'Value': v} for k, v in tags.items()],
             },
         }
+
+    def list_object_annotations_request(self, bucket, key, **override_kwargs):
+        params = {'Bucket': bucket, 'Key': key}
+        params.update(override_kwargs)
+        return 'ListObjectAnnotations', params
+
+    def get_object_annotation_request(
+        self, bucket, key, annotation_name, **override_kwargs
+    ):
+        params = {
+            'Bucket': bucket,
+            'Key': key,
+            'AnnotationName': annotation_name,
+        }
+        params.update(override_kwargs)
+        return 'GetObjectAnnotation', params
+
+    def put_object_annotation_request(
+        self, bucket, key, annotation_name, payload, **override_kwargs
+    ):
+        params = {
+            'Bucket': bucket,
+            'Key': key,
+            'AnnotationName': annotation_name,
+            'AnnotationPayload': payload,
+        }
+        params.update(override_kwargs)
+        return 'PutObjectAnnotation', params
 
     def no_such_key_error_response(self):
         return {
@@ -467,6 +510,7 @@ class BaseCRTTransferClientTest(BaseS3CLIRunnerTest):
         s3_request = FakeCRTS3Request(
             future=FakeCRTFuture(kwargs.get('on_done'))
         )
+        s3_request.finished_future.result()
         return s3_request
 
     def simulate_file_download(self, recv_filepath):

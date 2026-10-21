@@ -27,9 +27,10 @@
         {"shape":"AttachmentSetIdNotFound"},
         {"shape":"AttachmentSetExpired"},
         {"shape":"AttachmentSetSizeLimitExceeded"},
-        {"shape":"AttachmentLimitExceeded"}
+        {"shape":"AttachmentLimitExceeded"},
+        {"shape":"DryRunOperationException"}
       ],
-      "documentation":"<p>Adds one or more attachments to an attachment set. </p> <p>An attachment set is a temporary container for attachments that you add to a case or case communication. The set is available for 1 hour after it's created. The <code>expiryTime</code> returned in the response is when the set expires. </p> <note> <ul> <li> <p>You must have a Business, Enterprise On-Ramp, or Enterprise Support plan to use the Amazon Web Services Support API. </p> </li> <li> <p>If you call the Amazon Web Services Support API from an account that doesn't have a Business, Enterprise On-Ramp, or Enterprise Support plan, the <code>SubscriptionRequiredException</code> error message appears. For information about changing your support plan, see <a href=\"http://aws.amazon.com/premiumsupport/\">Amazon Web Services Support</a>.</p> </li> </ul> </note>"
+      "documentation":"<p>Adds one or more attachments to an attachment set. </p> <p>An attachment set is a temporary container for attachments that you add to a case or case communication. The set is available for 1 hour after it's created. The <code>expiryTime</code> returned in the response is when the set expires. </p> <note> <ul> <li> <p>You must have an Amazon Web Services Business Support+, Amazon Web Services Enterprise Support, or Amazon Web Services Unified Operations plan to use the Amazon Web Services Support API. If you're in an Amazon Web Services Region that doesn't offer one of these Amazon Web Services Support plans, or if you haven't transitioned to one of these plans, you can use the Amazon Web Services Support API with a Business, Enterprise On-Ramp, or Enterprise Support plan.</p> </li> <li> <p>If you call the Amazon Web Services Support API from an account that doesn't have an Amazon Web Services Business Support+, Amazon Web Services Enterprise Support, or Amazon Web Services Unified Operations plan, the <code>SubscriptionRequiredException</code> error message appears. For information about changing your support plan, see <a href=\"http://aws.amazon.com/premiumsupport/\">Amazon Web Services Support</a>.</p> </li> </ul> </note>"
     },
     "AddCommunicationToCase":{
       "name":"AddCommunicationToCase",
@@ -43,9 +44,25 @@
         {"shape":"InternalServerError"},
         {"shape":"CaseIdNotFound"},
         {"shape":"AttachmentSetIdNotFound"},
-        {"shape":"AttachmentSetExpired"}
+        {"shape":"AttachmentSetExpired"},
+        {"shape":"DryRunOperationException"}
       ],
-      "documentation":"<p>Adds additional customer communication to an Amazon Web Services Support case. Use the <code>caseId</code> parameter to identify the case to which to add communication. You can list a set of email addresses to copy on the communication by using the <code>ccEmailAddresses</code> parameter. The <code>communicationBody</code> value contains the text of the communication.</p> <note> <ul> <li> <p>You must have a Business, Enterprise On-Ramp, or Enterprise Support plan to use the Amazon Web Services Support API. </p> </li> <li> <p>If you call the Amazon Web Services Support API from an account that doesn't have a Business, Enterprise On-Ramp, or Enterprise Support plan, the <code>SubscriptionRequiredException</code> error message appears. For information about changing your support plan, see <a href=\"http://aws.amazon.com/premiumsupport/\">Amazon Web Services Support</a>.</p> </li> </ul> </note>"
+      "documentation":"<p>Adds additional customer communication to a Amazon Web Services Support case. Use the <code>caseId</code> parameter to identify the case to which to add communication. To list a set of email addresses to copy on the communication, use the <code>ccEmailAddresses</code> parameter. The <code>communicationBody</code> value contains the text of the communication.</p> <p>To attach files larger than 5 MB to the communication, use the <code>uploadIds</code> parameter.</p> <important> <p>Amazon Web Services Support automatically redacts sensitive information from support cases to protect your data. The following information is replaced with <code>[REDACTED_BY_Amazon Web Services]</code> and is not stored:</p> <ul> <li> <p>Amazon Web Services secret keys - The complete key is replaced. Example: <code>[REDACTED_BY_Amazon Web Services]</code> </p> </li> <li> <p>Private keys - The complete key is replaced. Example: <code>[REDACTED_BY_Amazon Web Services]</code> </p> </li> <li> <p>Credit card numbers - The number is redacted, but the last 4 digits remain. Example: <code>[REDACTED_BY_Amazon Web Services]-7016</code> </p> </li> </ul> <p>This sensitive information is never required by Amazon Web Services Support.</p> </important> <note> <ul> <li> <p>You must have an Amazon Web Services Business Support+, Amazon Web Services Enterprise Support, or Amazon Web Services Unified Operations plan to use the Amazon Web Services Support API. If you're in an Amazon Web Services Region that doesn't offer one of these Amazon Web Services Support plans, or if you haven't transitioned to one of these plans, you can use the Amazon Web Services Support API with a Business, Enterprise On-Ramp, or Enterprise Support plan.</p> </li> <li> <p>If you call the Amazon Web Services Support API from an account that doesn't have an Amazon Web Services Business Support+, Amazon Web Services Enterprise Support, or Amazon Web Services Unified Operations plan, the <code>SubscriptionRequiredException</code> error message appears. For information about changing your support plan, see <a href=\"http://aws.amazon.com/premiumsupport/\">Amazon Web Services Support</a>.</p> </li> </ul> </note>"
+    },
+    "CompleteAttachmentUpload":{
+      "name":"CompleteAttachmentUpload",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CompleteAttachmentUploadRequest"},
+      "output":{"shape":"CompleteAttachmentUploadResponse"},
+      "errors":[
+        {"shape":"InternalServerError"},
+        {"shape":"DryRunOperationException"},
+        {"shape":"UploadIdNotFound"}
+      ],
+      "documentation":"<p>Completes an attachment upload that was started with <a>GetAttachmentUploadLinks</a>. After you upload a part of the file to its presigned Amazon S3 URL, call <code>CompleteAttachmentUpload</code> with the <code>partIndex</code> and <code>eTag</code> of that part. You can include one part per call, or multiple parts in a single call. After <code>CompleteAttachmentUpload</code> has been called for every part of the file, the service processes the upload asynchronously. The <code>attachment-ready</code> status might not be reflected immediately. Use <a>DescribeAttachmentUploadStatus</a> to poll for the <code>uploadStatus</code> to become <code>attachment-ready</code> before passing the <code>uploadId</code> to <a>CreateCase</a> or <a>AddCommunicationToCase</a>.</p>"
     },
     "CreateCase":{
       "name":"CreateCase",
@@ -59,9 +76,10 @@
         {"shape":"InternalServerError"},
         {"shape":"CaseCreationLimitExceeded"},
         {"shape":"AttachmentSetIdNotFound"},
-        {"shape":"AttachmentSetExpired"}
+        {"shape":"AttachmentSetExpired"},
+        {"shape":"DryRunOperationException"}
       ],
-      "documentation":"<p>Creates a case in the Amazon Web Services Support Center. This operation is similar to how you create a case in the Amazon Web Services Support Center <a href=\"https://console.aws.amazon.com/support/home#/case/create\">Create Case</a> page.</p> <p>The Amazon Web Services Support API doesn't support requesting service limit increases. You can submit a service limit increase in the following ways: </p> <ul> <li> <p>Submit a request from the Amazon Web Services Support Center <a href=\"https://console.aws.amazon.com/support/home#/case/create\">Create Case</a> page.</p> </li> <li> <p>Use the Service Quotas <a href=\"https://docs.aws.amazon.com/servicequotas/2019-06-24/apireference/API_RequestServiceQuotaIncrease.html\">RequestServiceQuotaIncrease</a> operation.</p> </li> </ul> <p>A successful <code>CreateCase</code> request returns an Amazon Web Services Support case number. You can use the <a>DescribeCases</a> operation and specify the case number to get existing Amazon Web Services Support cases. After you create a case, use the <a>AddCommunicationToCase</a> operation to add additional communication or attachments to an existing case.</p> <p>The <code>caseId</code> is separate from the <code>displayId</code> that appears in the <a href=\"https://console.aws.amazon.com/support\">Amazon Web Services Support Center</a>. Use the <a>DescribeCases</a> operation to get the <code>displayId</code>.</p> <note> <ul> <li> <p>You must have a Business, Enterprise On-Ramp, or Enterprise Support plan to use the Amazon Web Services Support API. </p> </li> <li> <p>If you call the Amazon Web Services Support API from an account that doesn't have a Business, Enterprise On-Ramp, or Enterprise Support plan, the <code>SubscriptionRequiredException</code> error message appears. For information about changing your support plan, see <a href=\"http://aws.amazon.com/premiumsupport/\">Amazon Web Services Support</a>.</p> </li> </ul> </note>"
+      "documentation":"<p>Creates a case in the Amazon Web Services Support Center. This operation is similar to how you create a case in the Amazon Web Services Support Center <a href=\"https://console.aws.amazon.com/support/home#/case/create\">Create Case</a> page.</p> <p>The Amazon Web Services Support API doesn't support requesting service limit increases. You can submit a service limit increase in the following ways: </p> <ul> <li> <p>Submit a request from the Amazon Web Services Support Center <a href=\"https://console.aws.amazon.com/support/home#/case/create\">Create Case</a> page.</p> </li> <li> <p>Use the Service Quotas <a href=\"https://docs.aws.amazon.com/servicequotas/2019-06-24/apireference/API_RequestServiceQuotaIncrease.html\">RequestServiceQuotaIncrease</a> operation.</p> </li> </ul> <important> <p>Amazon Web Services Support automatically redacts sensitive information from support cases to protect your data. The following information is replaced with <code>[REDACTED_BY_Amazon Web Services]</code> and is not stored:</p> <ul> <li> <p>Amazon Web Services secret keys - The complete key is replaced. Example: <code>[REDACTED_BY_Amazon Web Services]</code> </p> </li> <li> <p>Private keys - The complete key is replaced. Example: <code>[REDACTED_BY_Amazon Web Services]</code> </p> </li> <li> <p>Credit card numbers - The number is redacted, but the last 4 digits remain. Example: <code>[REDACTED_BY_Amazon Web Services]-7016</code> </p> </li> </ul> <p>This sensitive information is never required by Amazon Web Services Support.</p> </important> <p>A successful <code>CreateCase</code> request returns a Amazon Web Services Support case number. You can use the <a>DescribeCases</a> operation and specify the case number to get existing Amazon Web Services Support cases. After you create a case, use the <a>AddCommunicationToCase</a> operation to add additional communication or attachments to an existing case.</p> <p>The <code>caseId</code> is separate from the <code>displayId</code> that appears in the <a href=\"https://console.aws.amazon.com/support\">Amazon Web Services Support Center</a>. Use the <a>DescribeCases</a> operation to get the <code>displayId</code>.</p> <note> <ul> <li> <p>You must have an Amazon Web Services Business Support+, Amazon Web Services Enterprise Support, or Amazon Web Services Unified Operations plan to use the Amazon Web Services Support API. If you're in an Amazon Web Services Region that doesn't offer one of these Amazon Web Services Support plans, or if you haven't transitioned to one of these plans, you can use the Amazon Web Services Support API with a Business, Enterprise On-Ramp, or Enterprise Support plan.</p> </li> <li> <p>If you call the Amazon Web Services Support API from an account that doesn't have an Amazon Web Services Business Support+, Amazon Web Services Enterprise Support, or Amazon Web Services Unified Operations plan, the <code>SubscriptionRequiredException</code> error message appears. For information about changing your support plan, see <a href=\"http://aws.amazon.com/premiumsupport/\">Amazon Web Services Support</a>.</p> </li> </ul> </note>"
     },
     "DescribeAttachment":{
       "name":"DescribeAttachment",
@@ -74,9 +92,25 @@
       "errors":[
         {"shape":"InternalServerError"},
         {"shape":"DescribeAttachmentLimitExceeded"},
-        {"shape":"AttachmentIdNotFound"}
+        {"shape":"AttachmentIdNotFound"},
+        {"shape":"DryRunOperationException"}
       ],
-      "documentation":"<p>Returns the attachment that has the specified ID. Attachments can include screenshots, error logs, or other files that describe your issue. Attachment IDs are generated by the case management system when you add an attachment to a case or case communication. Attachment IDs are returned in the <a>AttachmentDetails</a> objects that are returned by the <a>DescribeCommunications</a> operation.</p> <note> <ul> <li> <p>You must have a Business, Enterprise On-Ramp, or Enterprise Support plan to use the Amazon Web Services Support API. </p> </li> <li> <p>If you call the Amazon Web Services Support API from an account that doesn't have a Business, Enterprise On-Ramp, or Enterprise Support plan, the <code>SubscriptionRequiredException</code> error message appears. For information about changing your support plan, see <a href=\"http://aws.amazon.com/premiumsupport/\">Amazon Web Services Support</a>.</p> </li> </ul> </note>"
+      "documentation":"<p>Returns the attachment that has the specified ID. Attachments can include screenshots, error logs, or other files that describe your issue. Attachment IDs are generated by the case management system when you add an attachment to a case or case communication. Attachment IDs are returned in the <a>AttachmentDetails</a> objects that are returned by the <a>DescribeCommunications</a> operation.</p> <note> <ul> <li> <p>You must have an Amazon Web Services Business Support+, Amazon Web Services Enterprise Support, or Amazon Web Services Unified Operations plan to use the Amazon Web Services Support API. If you're in an Amazon Web Services Region that doesn't offer one of these Amazon Web Services Support plans, or if you haven't transitioned to one of these plans, you can use the Amazon Web Services Support API with a Business, Enterprise On-Ramp, or Enterprise Support plan.</p> </li> <li> <p>If you call the Amazon Web Services Support API from an account that doesn't have an Amazon Web Services Business Support+, Amazon Web Services Enterprise Support, or Amazon Web Services Unified Operations plan, the <code>SubscriptionRequiredException</code> error message appears. For information about changing your support plan, see <a href=\"http://aws.amazon.com/premiumsupport/\">Amazon Web Services Support</a>.</p> </li> </ul> </note> <important> <p> <code>DescribeAttachment</code> can't return attachments larger than 5 MB. If the specified <code>attachmentId</code> refers to an attachment larger than 5 MB, the request fails with <code>InvalidParameterValueException</code>.</p> <p>To download an attachment of any size, including attachments larger than 5 MB, use <a>GetAttachmentDownloadLink</a>. <code>GetAttachmentDownloadLink</code> returns an Amazon S3 presigned URL that you can use to download the attachment directly.</p> </important>"
+    },
+    "DescribeAttachmentUploadStatus":{
+      "name":"DescribeAttachmentUploadStatus",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeAttachmentUploadStatusRequest"},
+      "output":{"shape":"DescribeAttachmentUploadStatusResponse"},
+      "errors":[
+        {"shape":"InternalServerError"},
+        {"shape":"DryRunOperationException"},
+        {"shape":"UploadIdNotFound"}
+      ],
+      "documentation":"<p>Returns the current status, file name, and progress of a multipart attachment upload that was started with <a>GetAttachmentUploadLinks</a>. Use this operation to track where an upload is in the workflow. While parts are still being uploaded and reported through <a>CompleteAttachmentUpload</a>, the <code>uploadStatus</code> is <code>attachment-not-ready</code> and <code>uploadProgress</code> reports the total number of parts and how many have been completed so far. After every part has been reported and the service finishes processing the upload asynchronously, the <code>uploadStatus</code> becomes <code>attachment-ready</code> and the <code>uploadId</code> can be attached to a case through <a>CreateCase</a> or <a>AddCommunicationToCase</a>.</p> <note> <ul> <li> <p>You must have an Amazon Web Services Business Support+, Amazon Web Services Enterprise Support, or Amazon Web Services Unified Operations plan to use the Amazon Web Services Support API. If you're in an Amazon Web Services Region that doesn't offer one of these Amazon Web Services Support plans, or if you haven't transitioned to one of these plans, you can use the Amazon Web Services Support API with a Business, Enterprise On-Ramp, or Enterprise Support plan.</p> </li> <li> <p>If you call the Amazon Web Services Support API from an account that doesn't have an Amazon Web Services Business Support+, Amazon Web Services Enterprise Support, or Amazon Web Services Unified Operations plan, the <code>SubscriptionRequiredException</code> error message appears. For information about changing your support plan, see <a href=\"http://aws.amazon.com/premiumsupport/\">Amazon Web Services Support</a>.</p> </li> </ul> </note>"
     },
     "DescribeCases":{
       "name":"DescribeCases",
@@ -88,9 +122,10 @@
       "output":{"shape":"DescribeCasesResponse"},
       "errors":[
         {"shape":"InternalServerError"},
-        {"shape":"CaseIdNotFound"}
+        {"shape":"CaseIdNotFound"},
+        {"shape":"DryRunOperationException"}
       ],
-      "documentation":"<p>Returns a list of cases that you specify by passing one or more case IDs. You can use the <code>afterTime</code> and <code>beforeTime</code> parameters to filter the cases by date. You can set values for the <code>includeResolvedCases</code> and <code>includeCommunications</code> parameters to specify how much information to return.</p> <p>The response returns the following in JSON format:</p> <ul> <li> <p>One or more <a href=\"https://docs.aws.amazon.com/awssupport/latest/APIReference/API_CaseDetails.html\">CaseDetails</a> data types.</p> </li> <li> <p>One or more <code>nextToken</code> values, which specify where to paginate the returned records represented by the <code>CaseDetails</code> objects.</p> </li> </ul> <p>Case data is available for 12 months after creation. If a case was created more than 12 months ago, a request might return an error.</p> <note> <ul> <li> <p>You must have a Business, Enterprise On-Ramp, or Enterprise Support plan to use the Amazon Web Services Support API. </p> </li> <li> <p>If you call the Amazon Web Services Support API from an account that doesn't have a Business, Enterprise On-Ramp, or Enterprise Support plan, the <code>SubscriptionRequiredException</code> error message appears. For information about changing your support plan, see <a href=\"http://aws.amazon.com/premiumsupport/\">Amazon Web Services Support</a>.</p> </li> </ul> </note>"
+      "documentation":"<p>Returns a list of cases that you specify by passing one or more case IDs. You can use the <code>afterTime</code> and <code>beforeTime</code> parameters to filter the cases by date. You can set values for the <code>includeResolvedCases</code> and <code>includeCommunications</code> parameters to specify how much information to return.</p> <p>The response returns the following in JSON format:</p> <ul> <li> <p>One or more <a href=\"https://docs.aws.amazon.com/awssupport/latest/APIReference/API_CaseDetails.html\">CaseDetails</a> data types.</p> </li> <li> <p>One or more <code>nextToken</code> values, which specify where to paginate the returned records represented by the <code>CaseDetails</code> objects.</p> </li> </ul> <p>Case data is available for 24 months after creation. If a case was created more than 24 months ago, a request might return an error.</p> <note> <ul> <li> <p>You must have an Amazon Web Services Business Support+, Amazon Web Services Enterprise Support, or Amazon Web Services Unified Operations plan to use the Amazon Web Services Support API. If you're in an Amazon Web Services Region that doesn't offer one of these Amazon Web Services Support plans, or if you haven't transitioned to one of these plans, you can use the Amazon Web Services Support API with a Business, Enterprise On-Ramp, or Enterprise Support plan.</p> </li> <li> <p>If you call the Amazon Web Services Support API from an account that doesn't have an Amazon Web Services Business Support+, Amazon Web Services Enterprise Support, or Amazon Web Services Unified Operations plan, the <code>SubscriptionRequiredException</code> error message appears. For information about changing your support plan, see <a href=\"http://aws.amazon.com/premiumsupport/\">Amazon Web Services Support</a>.</p> </li> </ul> </note> <important> <p>Each <a>Communication</a> returned by this operation includes attachment information in two fields:</p> <ul> <li> <p> <code>attachmentSet</code>: returns only attachments that are 5 MB or smaller. Attachments larger than 5 MB are not included in this field.</p> </li> <li> <p> <code>attachments</code>: returns all attachments regardless of size.</p> </li> </ul> <p>Amazon Web Services recommends that you use the <code>attachments</code> field and download each attachment with <a>GetAttachmentDownloadLink</a>, which supports attachments of any size. The <code>attachmentSet</code> field and <a>DescribeAttachment</a> return only attachments that are 5 MB or smaller.</p> </important>"
     },
     "DescribeCommunications":{
       "name":"DescribeCommunications",
@@ -102,9 +137,10 @@
       "output":{"shape":"DescribeCommunicationsResponse"},
       "errors":[
         {"shape":"InternalServerError"},
-        {"shape":"CaseIdNotFound"}
+        {"shape":"CaseIdNotFound"},
+        {"shape":"DryRunOperationException"}
       ],
-      "documentation":"<p>Returns communications and attachments for one or more support cases. Use the <code>afterTime</code> and <code>beforeTime</code> parameters to filter by date. You can use the <code>caseId</code> parameter to restrict the results to a specific case.</p> <p>Case data is available for 12 months after creation. If a case was created more than 12 months ago, a request for data might cause an error.</p> <p>You can use the <code>maxResults</code> and <code>nextToken</code> parameters to control the pagination of the results. Set <code>maxResults</code> to the number of cases that you want to display on each page, and use <code>nextToken</code> to specify the resumption of pagination.</p> <note> <ul> <li> <p>You must have a Business, Enterprise On-Ramp, or Enterprise Support plan to use the Amazon Web Services Support API. </p> </li> <li> <p>If you call the Amazon Web Services Support API from an account that doesn't have a Business, Enterprise On-Ramp, or Enterprise Support plan, the <code>SubscriptionRequiredException</code> error message appears. For information about changing your support plan, see <a href=\"http://aws.amazon.com/premiumsupport/\">Amazon Web Services Support</a>.</p> </li> </ul> </note>"
+      "documentation":"<p>Returns communications and attachments for one or more support cases. Use the <code>afterTime</code> and <code>beforeTime</code> parameters to filter by date. You can use the <code>caseId</code> parameter to restrict the results to a specific case.</p> <p>Case data is available for 24 months after creation. If a case was created more than 24 months ago, a request for data might cause an error.</p> <p>You can use the <code>maxResults</code> and <code>nextToken</code> parameters to control the pagination of the results. Set <code>maxResults</code> to the number of cases that you want to display on each page, and use <code>nextToken</code> to specify the resumption of pagination.</p> <note> <ul> <li> <p>You must have an Amazon Web Services Business Support+, Amazon Web Services Enterprise Support, or Amazon Web Services Unified Operations plan to use the Amazon Web Services Support API. If you're in an Amazon Web Services Region that doesn't offer one of these Amazon Web Services Support plans, or if you haven't transitioned to one of these plans, you can use the Amazon Web Services Support API with a Business, Enterprise On-Ramp, or Enterprise Support plan.</p> </li> <li> <p>If you call the Amazon Web Services Support API from an account that doesn't have an Amazon Web Services Business Support+, Amazon Web Services Enterprise Support, or Amazon Web Services Unified Operations plan, the <code>SubscriptionRequiredException</code> error message appears. For information about changing your support plan, see <a href=\"http://aws.amazon.com/premiumsupport/\">Amazon Web Services Support</a>.</p> </li> </ul> </note> <important> <p>Each <a>Communication</a> returned by this operation includes attachment information in two fields:</p> <ul> <li> <p> <code>attachmentSet</code>: returns only attachments that are 5 MB or smaller. Attachments larger than 5 MB are not included in this field.</p> </li> <li> <p> <code>attachments</code>: returns all attachments regardless of size.</p> </li> </ul> <p>Amazon Web Services recommends that you use the <code>attachments</code> field and download each attachment with <a>GetAttachmentDownloadLink</a>, which supports attachments of any size. The <code>attachmentSet</code> field and <a>DescribeAttachment</a> return only attachments that are 5 MB or smaller.</p> </important>"
     },
     "DescribeCreateCaseOptions":{
       "name":"DescribeCreateCaseOptions",
@@ -116,9 +152,10 @@
       "output":{"shape":"DescribeCreateCaseOptionsResponse"},
       "errors":[
         {"shape":"InternalServerError"},
-        {"shape":"ThrottlingException"}
+        {"shape":"ThrottlingException"},
+        {"shape":"DryRunOperationException"}
       ],
-      "documentation":"<p>Returns a list of CreateCaseOption types along with the corresponding supported hours and language availability. You can specify the <code>language</code> <code>categoryCode</code>, <code>issueType</code> and <code>serviceCode</code> used to retrieve the CreateCaseOptions.</p> <note> <ul> <li> <p>You must have a Business, Enterprise On-Ramp, or Enterprise Support plan to use the Amazon Web Services Support API. </p> </li> <li> <p>If you call the Amazon Web Services Support API from an account that doesn't have a Business, Enterprise On-Ramp, or Enterprise Support plan, the <code>SubscriptionRequiredException</code> error message appears. For information about changing your support plan, see <a href=\"http://aws.amazon.com/premiumsupport/\">Amazon Web Services Support</a>.</p> </li> </ul> </note>"
+      "documentation":"<p>Returns a list of CreateCaseOption types along with the corresponding supported hours and language availability. You can specify the <code>language</code> <code>categoryCode</code>, <code>issueType</code> and <code>serviceCode</code> used to retrieve the CreateCaseOptions.</p> <note> <ul> <li> <p>You must have an Amazon Web Services Business Support+, Amazon Web Services Enterprise Support, or Amazon Web Services Unified Operations plan to use the Amazon Web Services Support API. If you're in an Amazon Web Services Region that doesn't offer one of these Amazon Web Services Support plans, or if you haven't transitioned to one of these plans, you can use the Amazon Web Services Support API with a Business, Enterprise On-Ramp, or Enterprise Support plan.</p> </li> <li> <p>If you call the Amazon Web Services Support API from an account that doesn't have an Amazon Web Services Business Support+, Amazon Web Services Enterprise Support, or Amazon Web Services Unified Operations plan, the <code>SubscriptionRequiredException</code> error message appears. For information about changing your support plan, see <a href=\"http://aws.amazon.com/premiumsupport/\">Amazon Web Services Support</a>.</p> </li> </ul> </note>"
     },
     "DescribeServices":{
       "name":"DescribeServices",
@@ -129,9 +166,10 @@
       "input":{"shape":"DescribeServicesRequest"},
       "output":{"shape":"DescribeServicesResponse"},
       "errors":[
-        {"shape":"InternalServerError"}
+        {"shape":"InternalServerError"},
+        {"shape":"DryRunOperationException"}
       ],
-      "documentation":"<p>Returns the current list of Amazon Web Services services and a list of service categories for each service. You then use service names and categories in your <a>CreateCase</a> requests. Each Amazon Web Services service has its own set of categories.</p> <p>The service codes and category codes correspond to the values that appear in the <b>Service</b> and <b>Category</b> lists on the Amazon Web Services Support Center <a href=\"https://console.aws.amazon.com/support/home#/case/create\">Create Case</a> page. The values in those fields don't necessarily match the service codes and categories returned by the <code>DescribeServices</code> operation. Always use the service codes and categories that the <code>DescribeServices</code> operation returns, so that you have the most recent set of service and category codes.</p> <note> <ul> <li> <p>You must have a Business, Enterprise On-Ramp, or Enterprise Support plan to use the Amazon Web Services Support API. </p> </li> <li> <p>If you call the Amazon Web Services Support API from an account that doesn't have a Business, Enterprise On-Ramp, or Enterprise Support plan, the <code>SubscriptionRequiredException</code> error message appears. For information about changing your support plan, see <a href=\"http://aws.amazon.com/premiumsupport/\">Amazon Web Services Support</a>.</p> </li> </ul> </note>"
+      "documentation":"<p>Returns the current list of Amazon Web Services services and a list of service categories for each service. You then use service names and categories in your <a>CreateCase</a> requests. Each Amazon Web Services service has its own set of categories.</p> <p>The service codes and category codes correspond to the values that appear in the <b>Service</b> and <b>Category</b> lists on the Amazon Web Services Support Center <a href=\"https://console.aws.amazon.com/support/home#/case/create\">Create Case</a> page. The values in those fields don't necessarily match the service codes and categories returned by the <code>DescribeServices</code> operation. Always use the service codes and categories that the <code>DescribeServices</code> operation returns, so that you have the most recent set of service and category codes.</p> <note> <ul> <li> <p>You must have an Amazon Web Services Business Support+, Amazon Web Services Enterprise Support, or Amazon Web Services Unified Operations plan to use the Amazon Web Services Support API. If you're in an Amazon Web Services Region that doesn't offer one of these Amazon Web Services Support plans, or if you haven't transitioned to one of these plans, you can use the Amazon Web Services Support API with a Business, Enterprise On-Ramp, or Enterprise Support plan.</p> </li> <li> <p>If you call the Amazon Web Services Support API from an account that doesn't have an Amazon Web Services Business Support+, Amazon Web Services Enterprise Support, or Amazon Web Services Unified Operations plan, the <code>SubscriptionRequiredException</code> error message appears. For information about changing your support plan, see <a href=\"http://aws.amazon.com/premiumsupport/\">Amazon Web Services Support</a>.</p> </li> </ul> </note>"
     },
     "DescribeSeverityLevels":{
       "name":"DescribeSeverityLevels",
@@ -142,9 +180,10 @@
       "input":{"shape":"DescribeSeverityLevelsRequest"},
       "output":{"shape":"DescribeSeverityLevelsResponse"},
       "errors":[
-        {"shape":"InternalServerError"}
+        {"shape":"InternalServerError"},
+        {"shape":"DryRunOperationException"}
       ],
-      "documentation":"<p>Returns the list of severity levels that you can assign to a support case. The severity level for a case is also a field in the <a>CaseDetails</a> data type that you include for a <a>CreateCase</a> request.</p> <note> <ul> <li> <p>You must have a Business, Enterprise On-Ramp, or Enterprise Support plan to use the Amazon Web Services Support API. </p> </li> <li> <p>If you call the Amazon Web Services Support API from an account that doesn't have a Business, Enterprise On-Ramp, or Enterprise Support plan, the <code>SubscriptionRequiredException</code> error message appears. For information about changing your support plan, see <a href=\"http://aws.amazon.com/premiumsupport/\">Amazon Web Services Support</a>.</p> </li> </ul> </note>"
+      "documentation":"<p>Returns the list of severity levels that you can assign to a support case. The severity level for a case is also a field in the <a>CaseDetails</a> data type that you include for a <a>CreateCase</a> request.</p> <note> <ul> <li> <p>You must have an Amazon Web Services Business Support+, Amazon Web Services Enterprise Support, or Amazon Web Services Unified Operations plan to use the Amazon Web Services Support API. If you're in an Amazon Web Services Region that doesn't offer one of these Amazon Web Services Support plans, or if you haven't transitioned to one of these plans, you can use the Amazon Web Services Support API with a Business, Enterprise On-Ramp, or Enterprise Support plan.</p> </li> <li> <p>If you call the Amazon Web Services Support API from an account that doesn't have an Amazon Web Services Business Support+, Amazon Web Services Enterprise Support, or Amazon Web Services Unified Operations plan, the <code>SubscriptionRequiredException</code> error message appears. For information about changing your support plan, see <a href=\"http://aws.amazon.com/premiumsupport/\">Amazon Web Services Support</a>.</p> </li> </ul> </note>"
     },
     "DescribeSupportedLanguages":{
       "name":"DescribeSupportedLanguages",
@@ -156,9 +195,10 @@
       "output":{"shape":"DescribeSupportedLanguagesResponse"},
       "errors":[
         {"shape":"InternalServerError"},
-        {"shape":"ThrottlingException"}
+        {"shape":"ThrottlingException"},
+        {"shape":"DryRunOperationException"}
       ],
-      "documentation":"<p>Returns a list of supported languages for a specified <code>categoryCode</code>, <code>issueType</code> and <code>serviceCode</code>. The returned supported languages will include a ISO 639-1 code for the <code>language</code>, and the language display name.</p> <note> <ul> <li> <p>You must have a Business, Enterprise On-Ramp, or Enterprise Support plan to use the Amazon Web Services Support API. </p> </li> <li> <p>If you call the Amazon Web Services Support API from an account that doesn't have a Business, Enterprise On-Ramp, or Enterprise Support plan, the <code>SubscriptionRequiredException</code> error message appears. For information about changing your support plan, see <a href=\"http://aws.amazon.com/premiumsupport/\">Amazon Web Services Support</a>.</p> </li> </ul> </note>"
+      "documentation":"<p>Returns a list of supported languages for a specified <code>categoryCode</code>, <code>issueType</code> and <code>serviceCode</code>. The returned supported languages will include a ISO 639-1 code for the <code>language</code>, and the language display name.</p> <note> <ul> <li> <p>You must have an Amazon Web Services Business Support+, Amazon Web Services Enterprise Support, or Amazon Web Services Unified Operations plan to use the Amazon Web Services Support API. If you're in an Amazon Web Services Region that doesn't offer one of these Amazon Web Services Support plans, or if you haven't transitioned to one of these plans, you can use the Amazon Web Services Support API with a Business, Enterprise On-Ramp, or Enterprise Support plan.</p> </li> <li> <p>If you call the Amazon Web Services Support API from an account that doesn't have an Amazon Web Services Business Support+, Amazon Web Services Enterprise Support, or Amazon Web Services Unified Operations plan, the <code>SubscriptionRequiredException</code> error message appears. For information about changing your support plan, see <a href=\"http://aws.amazon.com/premiumsupport/\">Amazon Web Services Support</a>.</p> </li> </ul> </note>"
     },
     "DescribeTrustedAdvisorCheckRefreshStatuses":{
       "name":"DescribeTrustedAdvisorCheckRefreshStatuses",
@@ -172,7 +212,7 @@
         {"shape":"InternalServerError"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Returns the refresh status of the Trusted Advisor checks that have the specified check IDs. You can get the check IDs by calling the <a>DescribeTrustedAdvisorChecks</a> operation.</p> <p>Some checks are refreshed automatically, and you can't return their refresh statuses by using the <code>DescribeTrustedAdvisorCheckRefreshStatuses</code> operation. If you call this operation for these checks, you might see an <code>InvalidParameterValue</code> error.</p> <note> <ul> <li> <p>You must have a Business, Enterprise On-Ramp, or Enterprise Support plan to use the Amazon Web Services Support API. </p> </li> <li> <p>If you call the Amazon Web Services Support API from an account that doesn't have a Business, Enterprise On-Ramp, or Enterprise Support plan, the <code>SubscriptionRequiredException</code> error message appears. For information about changing your support plan, see <a href=\"http://aws.amazon.com/premiumsupport/\">Amazon Web Services Support</a>.</p> </li> </ul> </note> <p>To call the Trusted Advisor operations in the Amazon Web Services Support API, you must use the US East (N. Virginia) endpoint. Currently, the US West (Oregon) and Europe (Ireland) endpoints don't support the Trusted Advisor operations. For more information, see <a href=\"https://docs.aws.amazon.com/awssupport/latest/user/about-support-api.html#endpoint\">About the Amazon Web Services Support API</a> in the <i>Amazon Web Services Support User Guide</i>.</p>"
+      "documentation":"<p>Returns the refresh status of the Trusted Advisor checks that have the specified check IDs. You can get the check IDs by calling the <a>DescribeTrustedAdvisorChecks</a> operation.</p> <p>Some checks are refreshed automatically, and you can't return their refresh statuses by using the <code>DescribeTrustedAdvisorCheckRefreshStatuses</code> operation. If you call this operation for these checks, you might see an <code>InvalidParameterValue</code> error.</p> <note> <ul> <li> <p>You must have an Amazon Web Services Business Support+, Amazon Web Services Enterprise Support, or Amazon Web Services Unified Operations plan to use the Amazon Web Services Support API. If you're in an Amazon Web Services Region that doesn't offer one of these Amazon Web Services Support plans, or if you haven't transitioned to one of these plans, you can use the Amazon Web Services Support API with a Business, Enterprise On-Ramp, or Enterprise Support plan.</p> </li> <li> <p>If you call the Amazon Web Services Support API from an account that doesn't have an Amazon Web Services Business Support+, Amazon Web Services Enterprise Support, or Amazon Web Services Unified Operations plan, the <code>SubscriptionRequiredException</code> error message appears. For information about changing your support plan, see <a href=\"http://aws.amazon.com/premiumsupport/\">Amazon Web Services Support</a>.</p> </li> </ul> </note> <p>To call the Trusted Advisor operations in the Amazon Web Services Support API, you must use the US East (N. Virginia) endpoint. Currently, the US West (Oregon) and Europe (Ireland) endpoints don't support the Trusted Advisor operations. For more information, see <a href=\"https://docs.aws.amazon.com/awssupport/latest/user/about-support-api.html#endpoint\">About the Amazon Web Services Support API</a> in the <i>Amazon Web Services Support User Guide</i>.</p>"
     },
     "DescribeTrustedAdvisorCheckResult":{
       "name":"DescribeTrustedAdvisorCheckResult",
@@ -186,7 +226,7 @@
         {"shape":"InternalServerError"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Returns the results of the Trusted Advisor check that has the specified check ID. You can get the check IDs by calling the <a>DescribeTrustedAdvisorChecks</a> operation.</p> <p>The response contains a <a>TrustedAdvisorCheckResult</a> object, which contains these three objects:</p> <ul> <li> <p> <a>TrustedAdvisorCategorySpecificSummary</a> </p> </li> <li> <p> <a>TrustedAdvisorResourceDetail</a> </p> </li> <li> <p> <a>TrustedAdvisorResourcesSummary</a> </p> </li> </ul> <p>In addition, the response contains these fields:</p> <ul> <li> <p> <b>status</b> - The alert status of the check can be <code>ok</code> (green), <code>warning</code> (yellow), <code>error</code> (red), or <code>not_available</code>.</p> </li> <li> <p> <b>timestamp</b> - The time of the last refresh of the check.</p> </li> <li> <p> <b>checkId</b> - The unique identifier for the check.</p> </li> </ul> <note> <ul> <li> <p>You must have a Business, Enterprise On-Ramp, or Enterprise Support plan to use the Amazon Web Services Support API. </p> </li> <li> <p>If you call the Amazon Web Services Support API from an account that doesn't have a Business, Enterprise On-Ramp, or Enterprise Support plan, the <code>SubscriptionRequiredException</code> error message appears. For information about changing your support plan, see <a href=\"http://aws.amazon.com/premiumsupport/\">Amazon Web Services Support</a>.</p> </li> </ul> </note> <p>To call the Trusted Advisor operations in the Amazon Web Services Support API, you must use the US East (N. Virginia) endpoint. Currently, the US West (Oregon) and Europe (Ireland) endpoints don't support the Trusted Advisor operations. For more information, see <a href=\"https://docs.aws.amazon.com/awssupport/latest/user/about-support-api.html#endpoint\">About the Amazon Web Services Support API</a> in the <i>Amazon Web Services Support User Guide</i>.</p>"
+      "documentation":"<p>Returns the results of the Trusted Advisor check that has the specified check ID. You can get the check IDs by calling the <a>DescribeTrustedAdvisorChecks</a> operation.</p> <p>The response contains a <a>TrustedAdvisorCheckResult</a> object, which contains these three objects:</p> <ul> <li> <p> <a>TrustedAdvisorCategorySpecificSummary</a> </p> </li> <li> <p> <a>TrustedAdvisorResourceDetail</a> </p> </li> <li> <p> <a>TrustedAdvisorResourcesSummary</a> </p> </li> </ul> <p>In addition, the response contains these fields:</p> <ul> <li> <p> <b>status</b> - The alert status of the check can be <code>ok</code> (green), <code>warning</code> (yellow), <code>error</code> (red), or <code>not_available</code>.</p> </li> <li> <p> <b>timestamp</b> - The time of the last refresh of the check.</p> </li> <li> <p> <b>checkId</b> - The unique identifier for the check.</p> </li> </ul> <note> <ul> <li> <p>You must have an Amazon Web Services Business Support+, Amazon Web Services Enterprise Support, or Amazon Web Services Unified Operations plan to use the Amazon Web Services Support API. If you're in an Amazon Web Services Region that doesn't offer one of these Amazon Web Services Support plans, or if you haven't transitioned to one of these plans, you can use the Amazon Web Services Support API with a Business, Enterprise On-Ramp, or Enterprise Support plan.</p> </li> <li> <p>If you call the Amazon Web Services Support API from an account that doesn't have an Amazon Web Services Business Support+, Amazon Web Services Enterprise Support, or Amazon Web Services Unified Operations plan, the <code>SubscriptionRequiredException</code> error message appears. For information about changing your support plan, see <a href=\"http://aws.amazon.com/premiumsupport/\">Amazon Web Services Support</a>.</p> </li> </ul> </note> <p>To call the Trusted Advisor operations in the Amazon Web Services Support API, you must use the US East (N. Virginia) endpoint. Currently, the US West (Oregon) and Europe (Ireland) endpoints don't support the Trusted Advisor operations. For more information, see <a href=\"https://docs.aws.amazon.com/awssupport/latest/user/about-support-api.html#endpoint\">About the Amazon Web Services Support API</a> in the <i>Amazon Web Services Support User Guide</i>.</p>"
     },
     "DescribeTrustedAdvisorCheckSummaries":{
       "name":"DescribeTrustedAdvisorCheckSummaries",
@@ -200,7 +240,7 @@
         {"shape":"InternalServerError"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Returns the results for the Trusted Advisor check summaries for the check IDs that you specified. You can get the check IDs by calling the <a>DescribeTrustedAdvisorChecks</a> operation.</p> <p>The response contains an array of <a>TrustedAdvisorCheckSummary</a> objects.</p> <note> <ul> <li> <p>You must have a Business, Enterprise On-Ramp, or Enterprise Support plan to use the Amazon Web Services Support API. </p> </li> <li> <p>If you call the Amazon Web Services Support API from an account that doesn't have a Business, Enterprise On-Ramp, or Enterprise Support plan, the <code>SubscriptionRequiredException</code> error message appears. For information about changing your support plan, see <a href=\"http://aws.amazon.com/premiumsupport/\">Amazon Web Services Support</a>.</p> </li> </ul> </note> <p>To call the Trusted Advisor operations in the Amazon Web Services Support API, you must use the US East (N. Virginia) endpoint. Currently, the US West (Oregon) and Europe (Ireland) endpoints don't support the Trusted Advisor operations. For more information, see <a href=\"https://docs.aws.amazon.com/awssupport/latest/user/about-support-api.html#endpoint\">About the Amazon Web Services Support API</a> in the <i>Amazon Web Services Support User Guide</i>.</p>"
+      "documentation":"<p>Returns the results for the Trusted Advisor check summaries for the check IDs that you specified. You can get the check IDs by calling the <a>DescribeTrustedAdvisorChecks</a> operation.</p> <p>The response contains an array of <a>TrustedAdvisorCheckSummary</a> objects.</p> <note> <ul> <li> <p>You must have an Amazon Web Services Business Support+, Amazon Web Services Enterprise Support, or Amazon Web Services Unified Operations plan to use the Amazon Web Services Support API. If you're in an Amazon Web Services Region that doesn't offer one of these Amazon Web Services Support plans, or if you haven't transitioned to one of these plans, you can use the Amazon Web Services Support API with a Business, Enterprise On-Ramp, or Enterprise Support plan.</p> </li> <li> <p>If you call the Amazon Web Services Support API from an account that doesn't have an Amazon Web Services Business Support+, Amazon Web Services Enterprise Support, or Amazon Web Services Unified Operations plan, the <code>SubscriptionRequiredException</code> error message appears. For information about changing your support plan, see <a href=\"http://aws.amazon.com/premiumsupport/\">Amazon Web Services Support</a>.</p> </li> </ul> </note> <p>To call the Trusted Advisor operations in the Amazon Web Services Support API, you must use the US East (N. Virginia) endpoint. Currently, the US West (Oregon) and Europe (Ireland) endpoints don't support the Trusted Advisor operations. For more information, see <a href=\"https://docs.aws.amazon.com/awssupport/latest/user/about-support-api.html#endpoint\">About the Amazon Web Services Support API</a> in the <i>Amazon Web Services Support User Guide</i>.</p> <p> <b>Understanding the Trusted Advisor Resources processed value</b> </p> <p>The <b>Resources processed</b> value, <code>resourcesProcessed</code>, usually shows both flagged resources (those with warnings or errors) and resources in good standing (ok status resources). However, some checks report flagged resources only. To understand what a specific check reports, review the detailed check information in the <a href=\"https://docs.aws.amazon.com/awssupport/latest/user/trusted-advisor-check-reference.html\">Trusted Advisor check reference</a>. If you see a <b>Green</b> criterion listed in the <b>Alert criteria</b>, then the check reports all resources. If there's no <b>Green</b> criterion listed in the <b>Alert criteria</b>, then the check reports only flagged resources. For example, the <a href=\"https://docs.aws.amazon.com/awssupport/latest/user/cost-optimization-checks.html#amazon-ec2-reserved-instances-optimization\">Amazon EC2 Reserved Instance optimization check (cX3c2R1chu)</a> doesn't list a <b>Green</b> criterion in the <b>Alert criteria</b>. So, this check only reports flagged resources.</p>"
     },
     "DescribeTrustedAdvisorChecks":{
       "name":"DescribeTrustedAdvisorChecks",
@@ -214,7 +254,37 @@
         {"shape":"InternalServerError"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Returns information about all available Trusted Advisor checks, including the name, ID, category, description, and metadata. You must specify a language code.</p> <p>The response contains a <a>TrustedAdvisorCheckDescription</a> object for each check. You must set the Amazon Web Services Region to us-east-1.</p> <note> <ul> <li> <p>You must have a Business, Enterprise On-Ramp, or Enterprise Support plan to use the Amazon Web Services Support API. </p> </li> <li> <p>If you call the Amazon Web Services Support API from an account that doesn't have a Business, Enterprise On-Ramp, or Enterprise Support plan, the <code>SubscriptionRequiredException</code> error message appears. For information about changing your support plan, see <a href=\"http://aws.amazon.com/premiumsupport/\">Amazon Web Services Support</a>.</p> </li> <li> <p>The names and descriptions for Trusted Advisor checks are subject to change. We recommend that you specify the check ID in your code to uniquely identify a check.</p> </li> </ul> </note> <p>To call the Trusted Advisor operations in the Amazon Web Services Support API, you must use the US East (N. Virginia) endpoint. Currently, the US West (Oregon) and Europe (Ireland) endpoints don't support the Trusted Advisor operations. For more information, see <a href=\"https://docs.aws.amazon.com/awssupport/latest/user/about-support-api.html#endpoint\">About the Amazon Web Services Support API</a> in the <i>Amazon Web Services Support User Guide</i>.</p>"
+      "documentation":"<p>Returns information about all available Trusted Advisor checks, including the name, ID, category, description, and metadata. You must specify a language code.</p> <p>The response contains a <a>TrustedAdvisorCheckDescription</a> object for each check. You must set the Amazon Web Services Region to us-east-1.</p> <note> <ul> <li> <p>You must have a Amazon Web Services Business Support+, Amazon Web Services Enterprise Support, or Amazon Web Services Unified Operations plan to use the Amazon Web Services Support API. </p> </li> <li> <p>If you call the Amazon Web Services Support API from an account that doesn't have a Amazon Web Services Business Support+, Amazon Web Services Enterprise Support, or Amazon Web Services Unified Operations plan, the <code>SubscriptionRequiredException</code> error message appears. For information about changing your support plan, see <a href=\"http://aws.amazon.com/premiumsupport/\">Amazon Web Services Support</a>.</p> </li> <li> <p>The names and descriptions for Trusted Advisor checks are subject to change. We recommend that you specify the check ID in your code to uniquely identify a check.</p> </li> </ul> </note> <p>To call the Trusted Advisor operations in the Amazon Web Services Support API, you must use the US East (N. Virginia) endpoint. Currently, the US West (Oregon) and Europe (Ireland) endpoints don't support the Trusted Advisor operations. For more information, see <a href=\"https://docs.aws.amazon.com/awssupport/latest/user/about-support-api.html#endpoint\">About the Amazon Web Services Support API</a> in the <i>Amazon Web Services Support User Guide</i>.</p>"
+    },
+    "GetAttachmentDownloadLink":{
+      "name":"GetAttachmentDownloadLink",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetAttachmentDownloadLinkRequest"},
+      "output":{"shape":"GetAttachmentDownloadLinkResponse"},
+      "errors":[
+        {"shape":"AttachmentIdNotFound"},
+        {"shape":"InternalServerError"},
+        {"shape":"DryRunOperationException"}
+      ],
+      "documentation":"<p>Returns a presigned download URL for an attachment that is associated with a case communication. The download link works for an attachment of any size, including attachments added through <code>AddAttachmentsToSet</code> and attachments uploaded through <a>GetAttachmentUploadLinks</a>. The download URL is time-limited and expires at the date and time indicated in the <code>downloadUrl</code> response field. Download the attachment from the URL before it expires.</p> <note> <ul> <li> <p>You must have an Amazon Web Services Business Support+, Amazon Web Services Enterprise Support, or Amazon Web Services Unified Operations plan to use the Amazon Web Services Support API. If you're in an Amazon Web Services Region that doesn't offer one of these Amazon Web Services Support plans, or if you haven't transitioned to one of these plans, you can use the Amazon Web Services Support API with a Business, Enterprise On-Ramp, or Enterprise Support plan.</p> </li> <li> <p>If you call the Amazon Web Services Support API from an account that doesn't have an Amazon Web Services Business Support+, Amazon Web Services Enterprise Support, or Amazon Web Services Unified Operations plan, the <code>SubscriptionRequiredException</code> error message appears. For information about changing your support plan, see <a href=\"http://aws.amazon.com/premiumsupport/\">Amazon Web Services Support</a>.</p> </li> </ul> </note>"
+    },
+    "GetAttachmentUploadLinks":{
+      "name":"GetAttachmentUploadLinks",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetAttachmentUploadLinksRequest"},
+      "output":{"shape":"GetAttachmentUploadLinksResponse"},
+      "errors":[
+        {"shape":"InternalServerError"},
+        {"shape":"DryRunOperationException"},
+        {"shape":"UploadIdNotFound"}
+      ],
+      "documentation":"<p>Returns one or more presigned upload URLs for uploading a large file attachment to a support case by using a multipart upload workflow. The maximum file size that you can upload with this workflow is 150 MB, and parts can be up to 100 MB each. Initiate a new upload by providing <code>fileName</code> and <code>fileSizeBytes</code>; the response returns a unique <code>uploadId</code>, the part size, the total number of parts, and a list of presigned upload URLs for the requested range of parts. A maximum of 10 upload URLs are returned per call. To retrieve more upload URLs for an upload that's already in progress, call <code>GetAttachmentUploadLinks</code> again with the existing <code>uploadId</code> and a new <code>uploadRange</code>.</p> <p>Upload each part to its presigned URL by using HTTP <code>PUT</code> and capture the ETag from the response. After you upload all parts, call <a>CompleteAttachmentUpload</a> with the <code>uploadId</code> and the list of part indexes and ETags to finalize the upload. You can then attach the upload to a case by passing the <code>uploadId</code> in the <code>uploadIds</code> parameter of <a>CreateCase</a> or <a>AddCommunicationToCase</a>. To monitor progress before completion, call <a>DescribeAttachmentUploadStatus</a>.</p> <note> <ul> <li> <p>You must have an Amazon Web Services Business Support+, Amazon Web Services Enterprise Support, or Amazon Web Services Unified Operations plan to use the Amazon Web Services Support API. If you're in an Amazon Web Services Region that doesn't offer one of these Amazon Web Services Support plans, or if you haven't transitioned to one of these plans, you can use the Amazon Web Services Support API with a Business, Enterprise On-Ramp, or Enterprise Support plan.</p> </li> <li> <p>If you call the Amazon Web Services Support API from an account that doesn't have an Amazon Web Services Business Support+, Amazon Web Services Enterprise Support, or Amazon Web Services Unified Operations plan, the <code>SubscriptionRequiredException</code> error message appears. For information about changing your support plan, see <a href=\"http://aws.amazon.com/premiumsupport/\">Amazon Web Services Support</a>.</p> </li> </ul> </note>"
     },
     "RefreshTrustedAdvisorCheck":{
       "name":"RefreshTrustedAdvisorCheck",
@@ -227,7 +297,7 @@
       "errors":[
         {"shape":"InternalServerError"}
       ],
-      "documentation":"<p>Refreshes the Trusted Advisor check that you specify using the check ID. You can get the check IDs by calling the <a>DescribeTrustedAdvisorChecks</a> operation.</p> <p>Some checks are refreshed automatically. If you call the <code>RefreshTrustedAdvisorCheck</code> operation to refresh them, you might see the <code>InvalidParameterValue</code> error.</p> <p>The response contains a <a>TrustedAdvisorCheckRefreshStatus</a> object.</p> <note> <ul> <li> <p>You must have a Business, Enterprise On-Ramp, or Enterprise Support plan to use the Amazon Web Services Support API. </p> </li> <li> <p>If you call the Amazon Web Services Support API from an account that doesn't have a Business, Enterprise On-Ramp, or Enterprise Support plan, the <code>SubscriptionRequiredException</code> error message appears. For information about changing your support plan, see <a href=\"http://aws.amazon.com/premiumsupport/\">Amazon Web Services Support</a>.</p> </li> </ul> </note> <p>To call the Trusted Advisor operations in the Amazon Web Services Support API, you must use the US East (N. Virginia) endpoint. Currently, the US West (Oregon) and Europe (Ireland) endpoints don't support the Trusted Advisor operations. For more information, see <a href=\"https://docs.aws.amazon.com/awssupport/latest/user/about-support-api.html#endpoint\">About the Amazon Web Services Support API</a> in the <i>Amazon Web Services Support User Guide</i>.</p>"
+      "documentation":"<p>Refreshes the Trusted Advisor check that you specify using the check ID. You can get the check IDs by calling the <a>DescribeTrustedAdvisorChecks</a> operation.</p> <p>Some checks are refreshed automatically. If you call the <code>RefreshTrustedAdvisorCheck</code> operation to refresh them, you might see the <code>InvalidParameterValue</code> error.</p> <p>The response contains a <a>TrustedAdvisorCheckRefreshStatus</a> object.</p> <note> <ul> <li> <p>You must have an Amazon Web Services Business Support+, Amazon Web Services Enterprise Support, or Amazon Web Services Unified Operations plan to use the Amazon Web Services Support API. If you're in an Amazon Web Services Region that doesn't offer one of these Amazon Web Services Support plans, or if you haven't transitioned to one of these plans, you can use the Amazon Web Services Support API with a Business, Enterprise On-Ramp, or Enterprise Support plan.</p> </li> <li> <p>If you call the Amazon Web Services Support API from an account that doesn't have an Amazon Web Services Business Support+, Amazon Web Services Enterprise Support, or Amazon Web Services Unified Operations plan, the <code>SubscriptionRequiredException</code> error message appears. For information about changing your support plan, see <a href=\"http://aws.amazon.com/premiumsupport/\">Amazon Web Services Support</a>.</p> </li> </ul> </note> <p>To call the Trusted Advisor operations in the Amazon Web Services Support API, you must use the US East (N. Virginia) endpoint. Currently, the US West (Oregon) and Europe (Ireland) endpoints don't support the Trusted Advisor operations. For more information, see <a href=\"https://docs.aws.amazon.com/awssupport/latest/user/about-support-api.html#endpoint\">About the Amazon Web Services Support API</a> in the <i>Amazon Web Services Support User Guide</i>.</p>"
     },
     "ResolveCase":{
       "name":"ResolveCase",
@@ -239,9 +309,10 @@
       "output":{"shape":"ResolveCaseResponse"},
       "errors":[
         {"shape":"InternalServerError"},
-        {"shape":"CaseIdNotFound"}
+        {"shape":"CaseIdNotFound"},
+        {"shape":"DryRunOperationException"}
       ],
-      "documentation":"<p>Resolves a support case. This operation takes a <code>caseId</code> and returns the initial and final state of the case.</p> <note> <ul> <li> <p>You must have a Business, Enterprise On-Ramp, or Enterprise Support plan to use the Amazon Web Services Support API. </p> </li> <li> <p>If you call the Amazon Web Services Support API from an account that doesn't have a Business, Enterprise On-Ramp, or Enterprise Support plan, the <code>SubscriptionRequiredException</code> error message appears. For information about changing your support plan, see <a href=\"http://aws.amazon.com/premiumsupport/\">Amazon Web Services Support</a>.</p> </li> </ul> </note>"
+      "documentation":"<p>Resolves a support case. This operation takes a <code>caseId</code> and returns the initial and final state of the case.</p> <note> <ul> <li> <p>You must have an Amazon Web Services Business Support+, Amazon Web Services Enterprise Support, or Amazon Web Services Unified Operations plan to use the Amazon Web Services Support API. If you're in an Amazon Web Services Region that doesn't offer one of these Amazon Web Services Support plans, or if you haven't transitioned to one of these plans, you can use the Amazon Web Services Support API with a Business, Enterprise On-Ramp, or Enterprise Support plan.</p> </li> <li> <p>If you call the Amazon Web Services Support API from an account that doesn't have an Amazon Web Services Business Support+, Amazon Web Services Enterprise Support, or Amazon Web Services Unified Operations plan, the <code>SubscriptionRequiredException</code> error message appears. For information about changing your support plan, see <a href=\"http://aws.amazon.com/premiumsupport/\">Amazon Web Services Support</a>.</p> </li> </ul> </note>"
     }
   },
   "shapes":{
@@ -256,6 +327,10 @@
         "attachments":{
           "shape":"Attachments",
           "documentation":"<p>One or more attachments to add to the set. You can add up to three attachments per set. The size limit is 5 MB per attachment.</p> <p>In the <code>Attachment</code> object, use the <code>data</code> parameter to specify the contents of the attachment file. In the previous request syntax, the value for <code>data</code> appear as <code>blob</code>, which is represented as a base64-encoded string. The value for <code>fileName</code> is the name of the attachment, such as <code>troubleshoot-screenshot.png</code>.</p>"
+        },
+        "dryRun":{
+          "shape":"NullableBooleanType",
+          "documentation":"<p>Specifies whether to validate the request without actually adding the attachments. When set to <code>true</code>, the request is validated but no attachments are stored, and the operation returns a <code>DryRunOperationException</code>. When omitted or set to <code>false</code>, the request runs normally.</p>"
         }
       }
     },
@@ -279,7 +354,7 @@
       "members":{
         "caseId":{
           "shape":"CaseId",
-          "documentation":"<p>The support case ID requested or returned in the call. The case ID is an alphanumeric string formatted as shown in this example: case-<i>12345678910-2013-c4c1d2bf33c5cf47</i> </p>"
+          "documentation":"<p>The support case ID requested or returned in the call. The case ID is an alphanumeric string formatted as shown in this example: case-<i>12345678910-exen-2025-c4c1d2bf33c5cf47</i> </p>"
         },
         "communicationBody":{
           "shape":"CommunicationBody",
@@ -291,7 +366,15 @@
         },
         "attachmentSetId":{
           "shape":"AttachmentSetId",
-          "documentation":"<p>The ID of a set of one or more attachments for the communication to add to the case. Create the set by calling <a>AddAttachmentsToSet</a> </p>"
+          "documentation":"<p>The ID of a set of one or more attachments for the communication to add to the case. Create the set by calling <a>AddAttachmentsToSet</a>. Each attachment in the set must be 5 MB or smaller. To attach files larger than 5 MB, use <code>uploadIds</code>.</p>"
+        },
+        "uploadIds":{
+          "shape":"UploadIds",
+          "documentation":"<p>A list of upload IDs that identify attachments to add to the case. Each <code>uploadId</code> is returned by the <a>GetAttachmentUploadLinks</a> operation. The upload must reach the <code>attachment-ready</code> state by calling <a>CompleteAttachmentUpload</a> before it can be passed here. Use <code>uploadIds</code> to attach files of any supported size, including files larger than 5 MB.</p>"
+        },
+        "dryRun":{
+          "shape":"NullableBooleanType",
+          "documentation":"<p>Specifies whether to validate the request without actually adding the communication to the case. When set to <code>true</code>, the request is validated but the communication isn't added, and the operation returns a <code>DryRunOperationException</code>. When omitted or set to <code>false</code>, the request runs normally.</p>"
         }
       }
     },
@@ -418,7 +501,7 @@
       "members":{
         "caseId":{
           "shape":"CaseId",
-          "documentation":"<p>The support case ID requested or returned in the call. The case ID is an alphanumeric string formatted as shown in this example: case-<i>12345678910-2013-c4c1d2bf33c5cf47</i> </p>"
+          "documentation":"<p>The support case ID requested or returned in the call. The case ID is an alphanumeric string formatted as shown in this example: case-<i>12345678910-exen-2025-c4c1d2bf33c5cf47</i> </p>"
         },
         "displayId":{
           "shape":"DisplayId",
@@ -462,10 +545,10 @@
         },
         "language":{
           "shape":"Language",
-          "documentation":"<p>The language in which Amazon Web Services Support handles the case. Amazon Web Services Support currently supports Chinese (“zh”), English (\"en\"), Japanese (\"ja\") and Korean (“ko”). You must specify the ISO 639-1 code for the <code>language</code> parameter if you want support in that language.</p>"
+          "documentation":"<p>The language in which Amazon Web Services Support handles the case. Amazon Web Services Support currently supports Chinese (“zh”), English (\"en\"), Japanese (\"ja\") , Chinese (\"zh\"), Spanish (\"es\"), Portuguese (\"pt\"), French (\"fr\"), Korean (“ko”), and Turkish (\"tr\"). You must specify the ISO 639-1 code for the <code>language</code> parameter if you want support in that language.</p>"
         }
       },
-      "documentation":"<p>A JSON-formatted object that contains the metadata for a support case. It is contained in the response from a <a>DescribeCases</a> request. <b>CaseDetails</b> contains the following fields:</p> <ul> <li> <p> <b>caseId</b> - The support case ID requested or returned in the call. The case ID is an alphanumeric string formatted as shown in this example: case-<i>12345678910-2013-c4c1d2bf33c5cf47</i>.</p> </li> <li> <p> <b>categoryCode</b> - The category of problem for the support case. Corresponds to the <code>CategoryCode</code> values returned by a call to <a>DescribeServices</a>.</p> </li> <li> <p> <b>displayId</b> - The identifier for the case on pages in the Amazon Web Services Support Center.</p> </li> <li> <p> <b>language</b> - The language in which Amazon Web Services Support handles the case. Amazon Web Services Support currently supports Chinese (“zh”), English (\"en\"), Japanese (\"ja\") and Korean (“ko”). You must specify the ISO 639-1 code for the <code>language</code> parameter if you want support in that language.</p> </li> <li> <p> <b>nextToken</b> - A resumption point for pagination.</p> </li> <li> <p> <b>recentCommunications</b> - One or more <a>Communication</a> objects. Fields of these objects are <code>attachments</code>, <code>body</code>, <code>caseId</code>, <code>submittedBy</code>, and <code>timeCreated</code>.</p> </li> <li> <p> <b>serviceCode</b> - The identifier for the Amazon Web Services service that corresponds to the service code defined in the call to <a>DescribeServices</a>.</p> </li> <li> <p> <b>severityCode</b> - The severity code assigned to the case. Contains one of the values returned by the call to <a>DescribeSeverityLevels</a>. The possible values are: <code>low</code>, <code>normal</code>, <code>high</code>, <code>urgent</code>, and <code>critical</code>.</p> </li> <li> <p> <b>status</b> - The status of the case in the Amazon Web Services Support Center. Valid values:</p> <ul> <li> <p> <code>all-open</code> </p> </li> <li> <p> <code>customer-action-completed</code> </p> </li> <li> <p> <code>opened</code> </p> </li> <li> <p> <code>pending-customer-action</code> </p> </li> <li> <p> <code>reopened</code> </p> </li> <li> <p> <code>resolved</code> </p> </li> <li> <p> <code>unassigned</code> </p> </li> <li> <p> <code>work-in-progress</code> </p> </li> </ul> </li> <li> <p> <b>subject</b> - The subject line of the case.</p> </li> <li> <p> <b>submittedBy</b> - The email address of the account that submitted the case.</p> </li> <li> <p> <b>timeCreated</b> - The time the case was created, in ISO-8601 format.</p> </li> </ul>"
+      "documentation":"<p>A JSON-formatted object that contains the metadata for a support case. It is contained in the response from a <a>DescribeCases</a> request. <b>CaseDetails</b> contains the following fields:</p> <ul> <li> <p> <b>caseId</b> - The support case ID requested or returned in the call. The case ID is an alphanumeric string formatted as shown in this example: case-<i>12345678910-exen-2025-c4c1d2bf33c5cf47</i>.</p> </li> <li> <p> <b>categoryCode</b> - The category of problem for the support case. Corresponds to the <code>CategoryCode</code> values returned by a call to <a>DescribeServices</a>.</p> </li> <li> <p> <b>displayId</b> - The identifier for the case on pages in the Amazon Web Services Support Center.</p> </li> <li> <p> <b>language</b> - The language in which Amazon Web Services Support handles the case. Amazon Web Services Support currently supports Chinese (“zh”), English (\"en\"), Japanese (\"ja\") , Chinese (\"zh\"), Spanish (\"es\"), Portuguese (\"pt\"), French (\"fr\"), Korean (“ko”), and Turkish (\"tr\"). You must specify the ISO 639-1 code for the <code>language</code> parameter if you want support in that language.</p> </li> <li> <p> <b>nextToken</b> - A resumption point for pagination.</p> </li> <li> <p> <b>recentCommunications</b> - One or more <a>Communication</a> objects. Fields of these objects are <code>attachments</code>, <code>body</code>, <code>caseId</code>, <code>submittedBy</code>, and <code>timeCreated</code>.</p> </li> <li> <p> <b>serviceCode</b> - The identifier for the Amazon Web Services service that corresponds to the service code defined in the call to <a>DescribeServices</a>.</p> </li> <li> <p> <b>severityCode</b> - The severity code assigned to the case. Contains one of the values returned by the call to <a>DescribeSeverityLevels</a>. The possible values are: <code>low</code>, <code>normal</code>, <code>high</code>, <code>urgent</code>, and <code>critical</code>.</p> </li> <li> <p> <b>status</b> - The status of the case in the Amazon Web Services Support Center. Valid values:</p> <ul> <li> <p> <code>all-open</code> </p> </li> <li> <p> <code>customer-action-completed</code> </p> </li> <li> <p> <code>opened</code> </p> </li> <li> <p> <code>pending-customer-action</code> </p> </li> <li> <p> <code>reopened</code> </p> </li> <li> <p> <code>resolved</code> </p> </li> <li> <p> <code>unassigned</code> </p> </li> <li> <p> <code>work-in-progress</code> </p> </li> </ul> </li> <li> <p> <b>subject</b> - The subject line of the case.</p> </li> <li> <p> <b>submittedBy</b> - The email address of the account that submitted the case.</p> </li> <li> <p> <b>timeCreated</b> - The time the case was created, in ISO-8601 format.</p> </li> </ul>"
     },
     "CaseId":{"type":"string"},
     "CaseIdList":{
@@ -523,7 +606,7 @@
       "members":{
         "caseId":{
           "shape":"CaseId",
-          "documentation":"<p>The support case ID requested or returned in the call. The case ID is an alphanumeric string formatted as shown in this example: case-<i>12345678910-2013-c4c1d2bf33c5cf47</i> </p>"
+          "documentation":"<p>The support case ID requested or returned in the call. The case ID is an alphanumeric string formatted as shown in this example: case-<i>12345678910-exen-2025-c4c1d2bf33c5cf47</i> </p>"
         },
         "body":{
           "shape":"ValidatedCommunicationBody",
@@ -537,9 +620,13 @@
           "shape":"TimeCreated",
           "documentation":"<p>The time the communication was created.</p>"
         },
+        "attachments":{
+          "shape":"AttachmentSet",
+          "documentation":"<p>Information about all attachments on the case communication. This includes attachments added through <code>AddAttachmentsToSet</code> and attachments uploaded through <code>GetAttachmentUploadLinks</code>.</p> <p>Use this field to enumerate every attachment on the communication. To download an attachment listed in this field, use <a>GetAttachmentDownloadLink</a>. <code>GetAttachmentDownloadLink</code> returns a presigned URL that works for attachments of any size. </p>"
+        },
         "attachmentSet":{
           "shape":"AttachmentSet",
-          "documentation":"<p>Information about the attachments to the case communication.</p>"
+          "documentation":"<p>Information about the attachments to the case communication that are 5 MB or smaller. This field doesn't include attachments larger than 5 MB. To enumerate every attachment on the communication, including attachments larger than 5 MB, use the <code>attachments</code> field instead.</p>"
         }
       },
       "documentation":"<p>A communication associated with a support case. The communication consists of the case ID, the message body, attachment information, the submitter of the communication, and the date and time of the communication.</p>"
@@ -577,6 +664,61 @@
       "max":100,
       "min":1
     },
+    "CompleteAttachmentUploadRequest":{
+      "type":"structure",
+      "required":[
+        "uploadId",
+        "completedUploads"
+      ],
+      "members":{
+        "uploadId":{
+          "shape":"UploadId",
+          "documentation":"<p>The identifier associated with the upload to complete.</p>"
+        },
+        "completedUploads":{
+          "shape":"CompletedUploadList",
+          "documentation":"<p>The list of parts being reported as completed in this call. Each entry must contain the <code>partIndex</code> of an uploaded part and the <code>ETag</code> returned by Amazon S3 when that part was uploaded.</p>"
+        },
+        "dryRun":{
+          "shape":"NullableBooleanType",
+          "documentation":"<p>Specifies whether to validate the request without actually completing the upload. When set to <code>true</code>, the request is validated but the upload isn't finalized, and the operation returns a <code>DryRunOperationException</code>. When omitted or set to <code>false</code>, the request runs normally.</p>"
+        }
+      }
+    },
+    "CompleteAttachmentUploadResponse":{
+      "type":"structure",
+      "required":["uploadStatus"],
+      "members":{
+        "uploadStatus":{
+          "shape":"UploadStatus",
+          "documentation":"<p>The status of the multipart upload after the operation finalizes the attachment. Valid values: <code>attachment-ready</code>, <code>attachment-not-ready</code>, and <code>failed</code>.</p>"
+        }
+      }
+    },
+    "CompletedUpload":{
+      "type":"structure",
+      "required":[
+        "partIndex",
+        "eTag"
+      ],
+      "members":{
+        "partIndex":{
+          "shape":"FieldIntegerValue",
+          "documentation":"<p>The index of the uploaded part. This is the same <code>partIndex</code> value returned for the corresponding entry in the <code>uploadUrls</code> field of the <code>GetAttachmentUploadLinks</code> response.</p>"
+        },
+        "eTag":{
+          "shape":"ETag",
+          "documentation":"<p>The ETag returned in the response headers when the part was uploaded to Amazon S3. The <code>ETag</code> value identifies the part contents.</p>"
+        }
+      },
+      "documentation":"<p>Identifies a single uploaded part of a multipart attachment upload. Pass a list of <code>CompletedUpload</code> objects to <a>CompleteAttachmentUpload</a> to finalize the upload.</p>"
+    },
+    "CompletedUploadList":{
+      "type":"list",
+      "member":{"shape":"CompletedUpload"}
+    },
+    "CoralAvailabilityThrottledResource":{"type":"string"},
+    "CoralAvailabilityThrottlingReason":{"type":"string"},
     "CreateCaseRequest":{
       "type":"structure",
       "required":[
@@ -610,7 +752,7 @@
         },
         "language":{
           "shape":"Language",
-          "documentation":"<p>The language in which Amazon Web Services Support handles the case. Amazon Web Services Support currently supports Chinese (“zh”), English (\"en\"), Japanese (\"ja\") and Korean (“ko”). You must specify the ISO 639-1 code for the <code>language</code> parameter if you want support in that language.</p>"
+          "documentation":"<p>The language in which Amazon Web Services Support handles the case. Amazon Web Services Support currently supports Chinese (“zh”), English (\"en\"), Japanese (\"ja\") , Chinese (\"zh\"), Spanish (\"es\"), Portuguese (\"pt\"), French (\"fr\"), Korean (“ko”), and Turkish (\"tr\"). You must specify the ISO 639-1 code for the <code>language</code> parameter if you want support in that language.</p>"
         },
         "issueType":{
           "shape":"IssueType",
@@ -618,7 +760,15 @@
         },
         "attachmentSetId":{
           "shape":"AttachmentSetId",
-          "documentation":"<p>The ID of a set of one or more attachments for the case. Create the set by using the <a>AddAttachmentsToSet</a> operation.</p>"
+          "documentation":"<p>The ID of a set of one or more attachments for the case. Create the set by using the <a>AddAttachmentsToSet</a> operation. Each attachment in the set must be 5 MB or smaller. To attach files larger than 5 MB, use <code>uploadIds</code>.</p>"
+        },
+        "uploadIds":{
+          "shape":"UploadIds",
+          "documentation":"<p>A list of upload IDs that identify attachments to add to the case. Each <code>uploadId</code> is returned by the <a>GetAttachmentUploadLinks</a> operation. The upload must reach the <code>attachment-ready</code> state by calling <a>CompleteAttachmentUpload</a> before it can be passed here. Use <code>uploadIds</code> to attach files of any supported size, including files larger than 5 MB.</p>"
+        },
+        "dryRun":{
+          "shape":"NullableBooleanType",
+          "documentation":"<p>Specifies whether to validate the request without actually creating the case. When set to <code>true</code>, the request is validated but no case is created, and the operation returns a <code>DryRunOperationException</code>. When omitted or set to <code>false</code>, the request runs normally.</p>"
         }
       }
     },
@@ -627,7 +777,7 @@
       "members":{
         "caseId":{
           "shape":"CaseId",
-          "documentation":"<p>The support case ID requested or returned in the call. The case ID is an alphanumeric string in the following format: case-<i>12345678910-2013-c4c1d2bf33c5cf47</i> </p>"
+          "documentation":"<p>The support case ID requested or returned in the call. The case ID is an alphanumeric string in the following format: case-<i>12345678910-exen-2025-c4c1d2bf33c5cf47</i> </p>"
         }
       },
       "documentation":"<p>The support case ID returned by a successful completion of the <a>CreateCase</a> operation.</p>"
@@ -668,7 +818,11 @@
       "members":{
         "attachmentId":{
           "shape":"AttachmentId",
-          "documentation":"<p>The ID of the attachment to return. Attachment IDs are returned by the <a>DescribeCommunications</a> operation.</p>"
+          "documentation":"<p>The ID of the attachment to return. Attachment IDs are returned by the <a>DescribeCommunications</a> operation.</p> <p>If the specified attachment is larger than 5 MB, this operation returns <code>InvalidParameterValueException</code>. To download attachments larger than 5 MB, use <a>GetAttachmentDownloadLink</a>.</p>"
+        },
+        "dryRun":{
+          "shape":"NullableBooleanType",
+          "documentation":"<p>Specifies whether to validate the request without actually retrieving the attachment. When set to <code>true</code>, the request is validated but no attachment content is returned, and the operation returns a <code>DryRunOperationException</code>. When omitted or set to <code>false</code>, the request runs normally.</p>"
         }
       }
     },
@@ -681,6 +835,41 @@
         }
       },
       "documentation":"<p>The content and file name of the attachment returned by the <a>DescribeAttachment</a> operation.</p>"
+    },
+    "DescribeAttachmentUploadStatusRequest":{
+      "type":"structure",
+      "required":["uploadId"],
+      "members":{
+        "uploadId":{
+          "shape":"UploadId",
+          "documentation":"<p>The unique identifier for the upload. The <code>uploadId</code> is returned by <a>GetAttachmentUploadLinks</a> when you initiate the upload.</p>"
+        },
+        "dryRun":{
+          "shape":"NullableBooleanType",
+          "documentation":"<p>Specifies whether to validate the request without actually returning upload status. When set to <code>true</code>, the request is validated but no status is returned, and the operation returns a <code>DryRunOperationException</code>. When omitted or set to <code>false</code>, the request runs normally.</p>"
+        }
+      }
+    },
+    "DescribeAttachmentUploadStatusResponse":{
+      "type":"structure",
+      "required":[
+        "uploadStatus",
+        "fileName"
+      ],
+      "members":{
+        "uploadStatus":{
+          "shape":"UploadStatus",
+          "documentation":"<p>The current status of the multipart upload. Valid values: <code>attachment-ready</code>, <code>attachment-not-ready</code>, and <code>failed</code>.</p>"
+        },
+        "fileName":{
+          "shape":"FileName",
+          "documentation":"<p>The name of the file being uploaded, including the file extension.</p>"
+        },
+        "uploadProgress":{
+          "shape":"UploadProgress",
+          "documentation":"<p>The progress of the multipart upload, including the total number of parts and the number of parts that have been successfully uploaded.</p>"
+        }
+      }
     },
     "DescribeCasesRequest":{
       "type":"structure",
@@ -695,11 +884,11 @@
         },
         "afterTime":{
           "shape":"AfterTime",
-          "documentation":"<p>The start date for a filtered date search on support case communications. Case communications are available for 12 months after creation.</p>"
+          "documentation":"<p>The start date for a filtered date search on support case communications. Case communications are available for 24 months after creation.</p>"
         },
         "beforeTime":{
           "shape":"BeforeTime",
-          "documentation":"<p>The end date for a filtered date search on support case communications. Case communications are available for 12 months after creation.</p>"
+          "documentation":"<p>The end date for a filtered date search on support case communications. Case communications are available for 24 months after creation.</p>"
         },
         "includeResolvedCases":{
           "shape":"IncludeResolvedCases",
@@ -715,11 +904,15 @@
         },
         "language":{
           "shape":"Language",
-          "documentation":"<p>The language in which Amazon Web Services Support handles the case. Amazon Web Services Support currently supports Chinese (“zh”), English (\"en\"), Japanese (\"ja\") and Korean (“ko”). You must specify the ISO 639-1 code for the <code>language</code> parameter if you want support in that language.</p>"
+          "documentation":"<p>The language in which Amazon Web Services Support handles the case. Amazon Web Services Support currently supports Chinese (“zh”), English (\"en\"), Japanese (\"ja\") , Chinese (\"zh\"), Spanish (\"es\"), Portuguese (\"pt\"), French (\"fr\"), Korean (“ko”), and Turkish (\"tr\"). You must specify the ISO 639-1 code for the <code>language</code> parameter if you want support in that language.</p>"
         },
         "includeCommunications":{
           "shape":"IncludeCommunications",
           "documentation":"<p>Specifies whether to include communications in the <code>DescribeCases</code> response. By default, communications are included.</p>"
+        },
+        "dryRun":{
+          "shape":"NullableBooleanType",
+          "documentation":"<p>Specifies whether to validate the request without actually returning case data. When set to <code>true</code>, the request is validated but no cases are returned, and the operation returns a <code>DryRunOperationException</code>. When omitted or set to <code>false</code>, the request runs normally.</p>"
         }
       }
     },
@@ -743,15 +936,15 @@
       "members":{
         "caseId":{
           "shape":"CaseId",
-          "documentation":"<p>The support case ID requested or returned in the call. The case ID is an alphanumeric string formatted as shown in this example: case-<i>12345678910-2013-c4c1d2bf33c5cf47</i> </p>"
+          "documentation":"<p>The support case ID requested or returned in the call. The case ID is an alphanumeric string formatted as shown in this example: case-<i>12345678910-exen-2025-c4c1d2bf33c5cf47</i> </p>"
         },
         "beforeTime":{
           "shape":"BeforeTime",
-          "documentation":"<p>The end date for a filtered date search on support case communications. Case communications are available for 12 months after creation.</p>"
+          "documentation":"<p>The end date for a filtered date search on support case communications. Case communications are available for 24 months after creation.</p>"
         },
         "afterTime":{
           "shape":"AfterTime",
-          "documentation":"<p>The start date for a filtered date search on support case communications. Case communications are available for 12 months after creation.</p>"
+          "documentation":"<p>The start date for a filtered date search on support case communications. Case communications are available for 24 months after creation.</p>"
         },
         "nextToken":{
           "shape":"NextToken",
@@ -760,6 +953,10 @@
         "maxResults":{
           "shape":"MaxResults",
           "documentation":"<p>The maximum number of results to return before paginating.</p>"
+        },
+        "dryRun":{
+          "shape":"NullableBooleanType",
+          "documentation":"<p>Specifies whether to validate the request without actually returning communications. When set to <code>true</code>, the request is validated but no communications are returned, and the operation returns a <code>DryRunOperationException</code>. When omitted or set to <code>false</code>, the request runs normally.</p>"
         }
       }
     },
@@ -796,11 +993,15 @@
         },
         "language":{
           "shape":"Language",
-          "documentation":"<p>The language in which Amazon Web Services Support handles the case. Amazon Web Services Support currently supports Chinese (“zh”), English (\"en\"), Japanese (\"ja\") and Korean (“ko”). You must specify the ISO 639-1 code for the <code>language</code> parameter if you want support in that language.</p>"
+          "documentation":"<p>The language in which Amazon Web Services Support handles the case. Amazon Web Services Support currently supports Chinese (“zh”), English (\"en\"), Japanese (\"ja\") , Chinese (\"zh\"), Spanish (\"es\"), Portuguese (\"pt\"), French (\"fr\"), Korean (“ko”), and Turkish (\"tr\"). You must specify the ISO 639-1 code for the <code>language</code> parameter if you want support in that language.</p>"
         },
         "categoryCode":{
           "shape":"CategoryCode",
           "documentation":"<p>The category of problem for the support case. You also use the <a>DescribeServices</a> operation to get the category code for a service. Each Amazon Web Services service defines its own set of category codes.</p>"
+        },
+        "dryRun":{
+          "shape":"NullableBooleanType",
+          "documentation":"<p>Specifies whether to validate the request without actually returning case option data. When set to <code>true</code>, the request is validated but no options are returned, and the operation returns a <code>DryRunOperationException</code>. When omitted or set to <code>false</code>, the request runs normally.</p>"
         }
       }
     },
@@ -826,7 +1027,11 @@
         },
         "language":{
           "shape":"Language",
-          "documentation":"<p>The language in which Amazon Web Services Support handles the case. Amazon Web Services Support currently supports Chinese (“zh”), English (\"en\"), Japanese (\"ja\") and Korean (“ko”). You must specify the ISO 639-1 code for the <code>language</code> parameter if you want support in that language.</p>"
+          "documentation":"<p>The language in which Amazon Web Services Support handles the case. Amazon Web Services Support currently supports Chinese (“zh”), English (\"en\"), Japanese (\"ja\") , Chinese (\"zh\"), Spanish (\"es\"), Portuguese (\"pt\"), French (\"fr\"), Korean (“ko”), and Turkish (\"tr\"). You must specify the ISO 639-1 code for the <code>language</code> parameter if you want support in that language.</p>"
+        },
+        "dryRun":{
+          "shape":"NullableBooleanType",
+          "documentation":"<p>Specifies whether to validate the request without actually returning the list of services. When set to <code>true</code>, the request is validated but no services are returned, and the operation returns a <code>DryRunOperationException</code>. When omitted or set to <code>false</code>, the request runs normally.</p>"
         }
       }
     },
@@ -845,7 +1050,11 @@
       "members":{
         "language":{
           "shape":"Language",
-          "documentation":"<p>The language in which Amazon Web Services Support handles the case. Amazon Web Services Support currently supports Chinese (“zh”), English (\"en\"), Japanese (\"ja\") and Korean (“ko”). You must specify the ISO 639-1 code for the <code>language</code> parameter if you want support in that language.</p>"
+          "documentation":"<p>The language in which Amazon Web Services Support handles the case. Amazon Web Services Support currently supports Chinese (“zh”), English (\"en\"), Japanese (\"ja\") , Chinese (\"zh\"), Spanish (\"es\"), Portuguese (\"pt\"), French (\"fr\"), Korean (“ko”), and Turkish (\"tr\"). You must specify the ISO 639-1 code for the <code>language</code> parameter if you want support in that language.</p>"
+        },
+        "dryRun":{
+          "shape":"NullableBooleanType",
+          "documentation":"<p>Specifies whether to validate the request without actually returning severity levels. When set to <code>true</code>, the request is validated but no severity levels are returned, and the operation returns a <code>DryRunOperationException</code>. When omitted or set to <code>false</code>, the request runs normally.</p>"
         }
       }
     },
@@ -878,6 +1087,10 @@
         "categoryCode":{
           "shape":"ValidatedCategoryCode",
           "documentation":"<p>The category of problem for the support case. You also use the <a>DescribeServices</a> operation to get the category code for a service. Each Amazon Web Services service defines its own set of category codes.</p>"
+        },
+        "dryRun":{
+          "shape":"NullableBooleanType",
+          "documentation":"<p>Specifies whether to validate the request without actually returning supported languages. When set to <code>true</code>, the request is validated but no languages are returned, and the operation returns a <code>DryRunOperationException</code>. When omitted or set to <code>false</code>, the request runs normally.</p>"
         }
       }
     },
@@ -981,12 +1194,147 @@
     "Display":{"type":"string"},
     "DisplayId":{"type":"string"},
     "Double":{"type":"double"},
+    "DownloadUrl":{
+      "type":"structure",
+      "required":[
+        "url",
+        "expiryDate"
+      ],
+      "members":{
+        "url":{
+          "shape":"HttpsUrl",
+          "documentation":"<p>The presigned HTTPS URL that you can use to download the attachment. Download URLs are served from <code>downloadv1.attachments.support.{region}.amazonaws.com</code>. The <code>downloadv1</code> prefix is subject to change.</p>"
+        },
+        "expiryDate":{
+          "shape":"ValidatedDateTime",
+          "documentation":"<p>The date and time, in ISO-8601 format, when the presigned URL expires. Download the attachment before this time.</p>"
+        }
+      },
+      "documentation":"<p>A presigned URL for downloading an attachment, along with the date and time the URL expires. Returned by <a>GetAttachmentDownloadLink</a>.</p>"
+    },
+    "DryRunOperationException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"ErrorMessage"}
+      },
+      "documentation":"<p>The request was valid, but the operation wasn't performed because <code>dryRun</code> was set to <code>true</code>.</p>",
+      "exception":true
+    },
+    "ETag":{
+      "type":"string",
+      "max":256,
+      "min":1
+    },
+    "EndIndex":{
+      "type":"integer",
+      "min":2
+    },
     "EndTime":{"type":"string"},
     "ErrorMessage":{"type":"string"},
     "ExpiryTime":{"type":"string"},
+    "FieldIntegerValue":{"type":"integer"},
     "FileName":{"type":"string"},
+    "FileSize":{
+      "type":"long",
+      "max":157286400,
+      "min":1
+    },
+    "GetAttachmentDownloadLinkRequest":{
+      "type":"structure",
+      "required":["attachmentId"],
+      "members":{
+        "attachmentId":{
+          "shape":"AttachmentId",
+          "documentation":"<p>The unique identifier of the attachment for which to retrieve a download link. Attachment IDs are returned in the <code>AttachmentDetails</code> objects in the <code>attachments</code> field of a <a>Communication</a> returned by <a>DescribeCommunications</a> or <a>DescribeCases</a>.</p>"
+        },
+        "dryRun":{
+          "shape":"NullableBooleanType",
+          "documentation":"<p>Specifies whether to validate the request without actually returning a download link. When set to <code>true</code>, the request is validated but no URL is returned, and the operation returns a <code>DryRunOperationException</code>. When omitted or set to <code>false</code>, the request runs normally.</p>"
+        }
+      }
+    },
+    "GetAttachmentDownloadLinkResponse":{
+      "type":"structure",
+      "required":[
+        "fileName",
+        "downloadUrl"
+      ],
+      "members":{
+        "fileName":{
+          "shape":"FileName",
+          "documentation":"<p>The name of the attachment file, including the file extension.</p>"
+        },
+        "downloadUrl":{
+          "shape":"DownloadUrl",
+          "documentation":"<p>The presigned download URL and the date and time the URL expires.</p>"
+        }
+      }
+    },
+    "GetAttachmentUploadLinksRequest":{
+      "type":"structure",
+      "required":["fileName"],
+      "members":{
+        "fileName":{
+          "shape":"FileName",
+          "documentation":"<p>The name of the file to upload, including the file extension. This value is required when you initiate a new upload.</p>"
+        },
+        "fileSizeBytes":{
+          "shape":"FileSize",
+          "documentation":"<p>The total size of the file in bytes. The service uses this value to calculate the total number of parts and the size of each part. Required when you initiate a new upload (when <code>uploadId</code> isn't provided). Valid range: 1 to 157,286,400 bytes (approximately 150 MB).</p>"
+        },
+        "uploadId":{
+          "shape":"UploadId",
+          "documentation":"<p>The unique identifier of an in-progress multipart upload, returned by a previous call to <code>GetAttachmentUploadLinks</code>. Specify <code>uploadId</code> to retrieve additional presigned upload URLs for an upload that has already been initiated. Required when <code>fileSizeBytes</code> isn't provided. Length: 1 to 2,048 characters.</p>"
+        },
+        "uploadRange":{
+          "shape":"UploadRange",
+          "documentation":"<p>The range of part indexes for which to return presigned upload URLs. Use this parameter to page through the upload URLs for a large file across multiple calls. If you omit this parameter, the service determines the range to return.</p>"
+        },
+        "dryRun":{
+          "shape":"NullableBooleanType",
+          "documentation":"<p>Specifies whether to validate the request without actually generating upload URLs. When set to <code>true</code>, the request is validated but no URLs are returned, and the operation returns a <code>DryRunOperationException</code>. When omitted or set to <code>false</code>, the request runs normally.</p>"
+        }
+      }
+    },
+    "GetAttachmentUploadLinksResponse":{
+      "type":"structure",
+      "required":[
+        "uploadId",
+        "partSizeBytes",
+        "totalParts",
+        "uploadUrls"
+      ],
+      "members":{
+        "uploadId":{
+          "shape":"UploadId",
+          "documentation":"<p>The unique identifier for the multipart upload. Use this value in subsequent calls to <code>GetAttachmentUploadLinks</code>, <a>DescribeAttachmentUploadStatus</a>, and <a>CompleteAttachmentUpload</a>, and to attach the upload to a case through the <code>uploadIds</code> parameter on <a>CreateCase</a> or <a>AddCommunicationToCase</a>.</p>"
+        },
+        "partSizeBytes":{
+          "shape":"PartSizeBytes",
+          "documentation":"<p>The size, in bytes, of each part. Split the file into parts of this size before you upload them to the presigned URLs. For an upload with <code>n</code> total parts, parts 1 through <code>n</code> - 1 are exactly this size; the last part may be smaller. Maximum: 104,857,600 bytes (approximately 100 MB).</p>"
+        },
+        "totalParts":{
+          "shape":"Integer",
+          "documentation":"<p>The total number of parts that the file is split into. Upload one part to each presigned URL.</p>"
+        },
+        "nextIndex":{
+          "shape":"Integer",
+          "documentation":"<p>The next part index to request presigned URLs for. If all upload URLs for the file have been returned, this field is <code>null</code>. Use this value as the <code>startIndex</code> in <code>uploadRange</code> on a subsequent call to <code>GetAttachmentUploadLinks</code> to retrieve the next batch of upload URLs.</p>"
+        },
+        "uploadUrls":{
+          "shape":"UploadUrlList",
+          "documentation":"<p>The list of presigned upload URLs for the requested range of parts. The list contains at most 10 URLs per call. Upload each part to its corresponding URL by using HTTP <code>PUT</code> before the URL expires.</p>"
+        }
+      }
+    },
+    "HttpsUrl":{
+      "type":"string",
+      "min":8,
+      "pattern":"^https://[a-zA-Z0-9][a-zA-Z0-9.-]*[a-zA-Z0-9]\\.[a-zA-Z]{2,}(/.*)?$"
+    },
     "IncludeCommunications":{"type":"boolean"},
     "IncludeResolvedCases":{"type":"boolean"},
+    "Integer":{"type":"integer"},
     "InternalServerError":{
       "type":"structure",
       "members":{
@@ -1008,6 +1356,12 @@
       "min":10
     },
     "NextToken":{"type":"string"},
+    "NullableBooleanType":{"type":"boolean"},
+    "PartSizeBytes":{
+      "type":"long",
+      "max":104857600,
+      "min":1
+    },
     "RecentCaseCommunications":{
       "type":"structure",
       "members":{
@@ -1049,7 +1403,11 @@
       "members":{
         "caseId":{
           "shape":"CaseId",
-          "documentation":"<p>The support case ID requested or returned in the call. The case ID is an alphanumeric string formatted as shown in this example: case-<i>12345678910-2013-c4c1d2bf33c5cf47</i> </p>"
+          "documentation":"<p>The support case ID requested or returned in the call. The case ID is an alphanumeric string formatted as shown in this example: case-<i>12345678910-exen-2025-c4c1d2bf33c5cf47</i> </p>"
+        },
+        "dryRun":{
+          "shape":"NullableBooleanType",
+          "documentation":"<p>Specifies whether to validate the request without actually resolving the case. When set to <code>true</code>, the request is validated but the case isn't resolved, and the operation returns a <code>DryRunOperationException</code>. When omitted or set to <code>false</code>, the request runs normally.</p>"
         }
       }
     },
@@ -1119,6 +1477,10 @@
       "type":"list",
       "member":{"shape":"SeverityLevel"}
     },
+    "StartIndex":{
+      "type":"integer",
+      "min":1
+    },
     "StartTime":{"type":"string"},
     "Status":{"type":"string"},
     "String":{"type":"string"},
@@ -1173,11 +1535,33 @@
     "ThrottlingException":{
       "type":"structure",
       "members":{
-        "message":{"shape":"AvailabilityErrorMessage"}
+        "message":{"shape":"AvailabilityErrorMessage"},
+        "throttlingReasons":{
+          "shape":"ThrottlingReasonList",
+          "documentation":"<p>A list of one or more reasons that the request was throttled.</p>"
+        }
       },
       "documentation":"<p> You have exceeded the maximum allowed TPS (Transactions Per Second) for the operations. </p>",
       "exception":true,
       "synthetic":true
+    },
+    "ThrottlingReason":{
+      "type":"structure",
+      "members":{
+        "reason":{
+          "shape":"CoralAvailabilityThrottlingReason",
+          "documentation":"<p>The reason that the request was throttled.</p>"
+        },
+        "resource":{
+          "shape":"CoralAvailabilityThrottledResource",
+          "documentation":"<p>The resource that caused the request to be throttled.</p>"
+        }
+      },
+      "documentation":"<p>Information about why a request was throttled.</p>"
+    },
+    "ThrottlingReasonList":{
+      "type":"list",
+      "member":{"shape":"ThrottlingReason"}
     },
     "TimeCreated":{"type":"string"},
     "TrustedAdvisorCategorySpecificSummary":{
@@ -1409,6 +1793,89 @@
       "documentation":"<p>Details about Amazon Web Services resources that were analyzed in a call to Trusted Advisor <a>DescribeTrustedAdvisorCheckSummaries</a>.</p>"
     },
     "Type":{"type":"string"},
+    "UploadId":{
+      "type":"string",
+      "max":2048,
+      "min":1
+    },
+    "UploadIdNotFound":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"ErrorMessage"}
+      },
+      "documentation":"<p>The specified <code>uploadId</code> couldn't be located.</p>",
+      "exception":true
+    },
+    "UploadIds":{
+      "type":"list",
+      "member":{"shape":"UploadId"},
+      "max":10,
+      "min":0
+    },
+    "UploadProgress":{
+      "type":"structure",
+      "members":{
+        "totalParts":{
+          "shape":"FieldIntegerValue",
+          "documentation":"<p>The total number of parts that the file is split into.</p>"
+        },
+        "completedPartsCount":{
+          "shape":"FieldIntegerValue",
+          "documentation":"<p>The number of parts that have been successfully uploaded.</p>"
+        }
+      },
+      "documentation":"<p>The progress of a multipart attachment upload, returned by <a>DescribeAttachmentUploadStatus</a>.</p>"
+    },
+    "UploadRange":{
+      "type":"structure",
+      "required":["startIndex"],
+      "members":{
+        "startIndex":{
+          "shape":"StartIndex",
+          "documentation":"<p>The starting part index of the range, inclusive. Part indexes start at 1.</p>"
+        },
+        "endIndex":{
+          "shape":"EndIndex",
+          "documentation":"<p>The ending part index of the range, exclusive. The range is half-open: <code>startIndex</code> is inclusive and <code>endIndex</code> is exclusive. For example, a range with <code>startIndex</code> of 1 and <code>endIndex</code> of 4 requests URLs for parts 1, 2, and 3. The range size (<code>endIndex</code> - <code>startIndex</code>) must not exceed 10. If you omit <code>endIndex</code>, the service defaults to <code>startIndex</code> + 10, capped by the total number of parts.</p>"
+        }
+      },
+      "documentation":"<p>The range of part indexes for which to return presigned upload URLs from <a>GetAttachmentUploadLinks</a>.</p>"
+    },
+    "UploadStatus":{
+      "type":"string",
+      "enum":[
+        "attachment-ready",
+        "attachment-not-ready",
+        "failed"
+      ]
+    },
+    "UploadUrl":{
+      "type":"structure",
+      "required":[
+        "url",
+        "partIndex",
+        "expiryDate"
+      ],
+      "members":{
+        "url":{
+          "shape":"HttpsUrl",
+          "documentation":"<p>The presigned HTTPS URL that you use to upload a single part with HTTP <code>PUT</code>. Upload URLs are served from <code>uploadv1.attachments.support.{region}.amazonaws.com</code>. The <code>uploadv1</code> prefix is subject to change.</p>"
+        },
+        "partIndex":{
+          "shape":"Integer",
+          "documentation":"<p>The index of the part that this URL uploads.</p>"
+        },
+        "expiryDate":{
+          "shape":"ValidatedDateTime",
+          "documentation":"<p>The date and time, in ISO-8601 format, when the presigned URL expires. Upload the part before this time.</p>"
+        }
+      },
+      "documentation":"<p>A presigned URL for uploading a single part of a multipart attachment upload, along with the part index and the date and time the URL expires. Returned by <a>GetAttachmentUploadLinks</a>.</p>"
+    },
+    "UploadUrlList":{
+      "type":"list",
+      "member":{"shape":"UploadUrl"}
+    },
     "ValidatedCategoryCode":{
       "type":"string",
       "max":100,
@@ -1440,5 +1907,5 @@
       "min":0
     }
   },
-  "documentation":"<fullname>Amazon Web Services Support</fullname> <p>The <i>Amazon Web Services Support API Reference</i> is intended for programmers who need detailed information about the Amazon Web Services Support operations and data types. You can use the API to manage your support cases programmatically. The Amazon Web Services Support API uses HTTP methods that return results in JSON format.</p> <note> <ul> <li> <p>You must have a Business, Enterprise On-Ramp, or Enterprise Support plan to use the Amazon Web Services Support API. </p> </li> <li> <p>If you call the Amazon Web Services Support API from an account that doesn't have a Business, Enterprise On-Ramp, or Enterprise Support plan, the <code>SubscriptionRequiredException</code> error message appears. For information about changing your support plan, see <a href=\"http://aws.amazon.com/premiumsupport/\">Amazon Web Services Support</a>.</p> </li> </ul> </note> <p>You can also use the Amazon Web Services Support API to access features for <a href=\"http://aws.amazon.com/premiumsupport/trustedadvisor/\">Trusted Advisor</a>. You can return a list of checks and their descriptions, get check results, specify checks to refresh, and get the refresh status of checks.</p> <p>You can manage your support cases with the following Amazon Web Services Support API operations:</p> <ul> <li> <p>The <a>CreateCase</a>, <a>DescribeCases</a>, <a>DescribeAttachment</a>, and <a>ResolveCase</a> operations create Amazon Web Services Support cases, retrieve information about cases, and resolve cases.</p> </li> <li> <p>The <a>DescribeCommunications</a>, <a>AddCommunicationToCase</a>, and <a>AddAttachmentsToSet</a> operations retrieve and add communications and attachments to Amazon Web Services Support cases.</p> </li> <li> <p>The <a>DescribeServices</a> and <a>DescribeSeverityLevels</a> operations return Amazon Web Services service names, service codes, service categories, and problem severity levels. You use these values when you call the <a>CreateCase</a> operation.</p> </li> </ul> <p>You can also use the Amazon Web Services Support API to call the Trusted Advisor operations. For more information, see <a href=\"https://docs.aws.amazon.com/awssupport/latest/user/trusted-advisor.html\">Trusted Advisor</a> in the <i>Amazon Web Services Support User Guide</i>.</p> <p>For authentication of requests, Amazon Web Services Support uses <a href=\"https://docs.aws.amazon.com/general/latest/gr/signature-version-4.html\">Signature Version 4 Signing Process</a>.</p> <p>For more information about this service and the endpoints to use, see <a href=\"https://docs.aws.amazon.com/awssupport/latest/user/about-support-api.html\">About the Amazon Web Services Support API</a> in the <i>Amazon Web Services Support User Guide</i>.</p>"
+  "documentation":"<fullname>Amazon Web Services Support</fullname> <p>The <i>Amazon Web Services Support API Reference</i> is intended for programmers who need detailed information about the Amazon Web Services Support operations and data types. You can use the API to manage your support cases programmatically. The Amazon Web Services Support API uses HTTP methods that return results in JSON format.</p> <note> <ul> <li> <p>You must have an Amazon Web Services Business Support+, Amazon Web Services Enterprise Support, or Amazon Web Services Unified Operations plan to use the Amazon Web Services Support API. If you're in an Amazon Web Services Region that doesn't offer one of these Amazon Web Services Support plans, or if you haven't transitioned to one of these plans, you can use the Amazon Web Services Support API with a Business, Enterprise On-Ramp, or Enterprise Support plan.</p> </li> <li> <p>If you call the Amazon Web Services Support API from an account that doesn't have an Amazon Web Services Business Support+, Amazon Web Services Enterprise Support, or Amazon Web Services Unified Operations plan, the <code>SubscriptionRequiredException</code> error message appears. For information about changing your support plan, see <a href=\"http://aws.amazon.com/premiumsupport/\">Amazon Web Services Support</a>.</p> </li> </ul> </note> <p>You can also use the Amazon Web Services Support API to access features for <a href=\"http://aws.amazon.com/premiumsupport/trustedadvisor/\">Trusted Advisor</a>. You can return a list of checks and their descriptions, get check results, specify checks to refresh, and get the refresh status of checks.</p> <p>You can manage your support cases with the following Amazon Web Services Support API operations:</p> <ul> <li> <p>The <a>CreateCase</a>, <a>DescribeCases</a>, <a>DescribeAttachment</a>, and <a>ResolveCase</a> operations create Amazon Web Services Support cases, retrieve information about cases, and resolve cases.</p> </li> <li> <p>The <a>DescribeCommunications</a>, <a>AddCommunicationToCase</a>, and <a>AddAttachmentsToSet</a> operations retrieve and add communications and attachments to Amazon Web Services Support cases.</p> </li> <li> <p>The <a>DescribeServices</a> and <a>DescribeSeverityLevels</a> operations return Amazon Web Services service names, service codes, service categories, and problem severity levels. You use these values when you call the <a>CreateCase</a> operation.</p> </li> </ul> <p>You can also use the Amazon Web Services Support API to call the Trusted Advisor operations. For more information, see <a href=\"https://docs.aws.amazon.com/awssupport/latest/user/trusted-advisor.html\">Trusted Advisor</a> in the <i>Amazon Web Services Support User Guide</i>.</p> <p>For authentication of requests, Amazon Web Services Support uses <a href=\"https://docs.aws.amazon.com/general/latest/gr/signature-version-4.html\">Signature Version 4 Signing Process</a>.</p> <p>For more information about this service and the endpoints to use, see <a href=\"https://docs.aws.amazon.com/awssupport/latest/user/about-support-api.html\">About the Amazon Web Services Support API</a> in the <i>Amazon Web Services Support User Guide</i>.</p>"
 }

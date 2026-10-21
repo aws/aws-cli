@@ -14,7 +14,12 @@ import copy
 import functools
 from functools import partial
 
-from botocore.hooks import HierarchicalEmitter, first_non_none_response
+import pytest
+from botocore.hooks import (
+    HierarchicalEmitter,
+    PrefixTrie,
+    first_non_none_response,
+)
 
 from tests import unittest
 
@@ -582,6 +587,56 @@ class TestWildcardHandlers(unittest.TestCase):
         self.assertEqual(
             copied.emit_until_response('a.b', b='return-val')[1], 'return-val'
         )
+
+
+@pytest.fixture
+def trie():
+    return PrefixTrie()
+
+
+class TestPrefixTrie:
+    def test_append_and_prefix_search_exact_match(self, trie):
+        trie.append_item('building-command-table.main', 'handler1')
+        results = trie.prefix_search('building-command-table.main')
+        assert 'handler1' in results
+
+    def test_prefix_search_matches_parent(self, trie):
+        trie.append_item('building-command-table', 'handler1')
+        results = trie.prefix_search('building-command-table.main')
+        assert 'handler1' in results
+
+    def test_prefix_search_does_not_match_sibling(self, trie):
+        trie.append_item('building-command-table.ecs', 'handler1')
+        results = trie.prefix_search('building-command-table.main')
+        assert 'handler1' not in results
+
+    def test_prefix_search_does_not_match_child(self, trie):
+        trie.append_item('building-command-table.main.sub', 'handler1')
+        results = trie.prefix_search('building-command-table.main')
+        assert 'handler1' not in results
+
+    def test_wildcard_match(self, trie):
+        trie.append_item('building-command-table.*', 'handler1')
+        results = trie.prefix_search('building-command-table.main')
+        assert 'handler1' in results
+
+    def test_multiple_items_at_same_key(self, trie):
+        trie.append_item('building-command-table.main', 'handler1')
+        trie.append_item('building-command-table.main', 'handler2')
+        results = trie.prefix_search('building-command-table.main')
+        assert 'handler1' in results
+        assert 'handler2' in results
+
+    def test_multiple_levels_all_returned(self, trie):
+        trie.append_item('building-command-table', 'parent')
+        trie.append_item('building-command-table.main', 'exact')
+        results = trie.prefix_search('building-command-table.main')
+        assert 'parent' in results
+        assert 'exact' in results
+
+    def test_empty_trie_returns_empty(self, trie):
+        results = trie.prefix_search('building-command-table.main')
+        assert len(results) == 0
 
 
 if __name__ == '__main__':

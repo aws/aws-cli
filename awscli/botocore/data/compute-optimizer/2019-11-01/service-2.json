@@ -1110,7 +1110,9 @@
         "VolumeReadOpsPerSecond",
         "VolumeWriteOpsPerSecond",
         "VolumeReadBytesPerSecond",
-        "VolumeWriteBytesPerSecond"
+        "VolumeWriteBytesPerSecond",
+        "VolumeIOPSExceeded",
+        "VolumeThroughputExceeded"
       ]
     },
     "EBSSavingsEstimationMode":{
@@ -1150,7 +1152,7 @@
       "members":{
         "name":{
           "shape":"EBSMetricName",
-          "documentation":"<p>The name of the utilization metric.</p> <p>The following utilization metrics are available:</p> <ul> <li> <p> <code>VolumeReadOpsPerSecond</code> - The completed read operations per second from the volume in a specified period of time.</p> <p>Unit: Count</p> </li> <li> <p> <code>VolumeWriteOpsPerSecond</code> - The completed write operations per second to the volume in a specified period of time.</p> <p>Unit: Count</p> </li> <li> <p> <code>VolumeReadBytesPerSecond</code> - The bytes read per second from the volume in a specified period of time.</p> <p>Unit: Bytes</p> </li> <li> <p> <code>VolumeWriteBytesPerSecond</code> - The bytes written to the volume in a specified period of time.</p> <p>Unit: Bytes</p> </li> </ul>"
+          "documentation":"<p>The name of the utilization metric.</p> <p>The following utilization metrics are available:</p> <ul> <li> <p> <code>VolumeReadOpsPerSecond</code> - The completed read operations per second from the volume in a specified period of time.</p> <p>Unit: Count</p> </li> <li> <p> <code>VolumeWriteOpsPerSecond</code> - The completed write operations per second to the volume in a specified period of time.</p> <p>Unit: Count</p> </li> <li> <p> <code>VolumeReadBytesPerSecond</code> - The bytes read per second from the volume in a specified period of time.</p> <p>Unit: Bytes</p> </li> <li> <p> <code>VolumeWriteBytesPerSecond</code> - The bytes written to the volume in a specified period of time.</p> <p>Unit: Bytes</p> </li> <li> <p> <code>VolumeIOPSExceeded</code> - Indicates whether the volume's provisioned IOPS performance was exceeded in a specified period of time. A value of <code>1</code> means the provisioned IOPS were exceeded; a value of <code>0</code> means they were not.</p> <p>Unit: None</p> </li> <li> <p> <code>VolumeThroughputExceeded</code> - Indicates whether the volume's provisioned throughput performance was exceeded in a specified period of time. A value of <code>1</code> means the provisioned throughput was exceeded; a value of <code>0</code> means it was not.</p> <p>Unit: None</p> </li> </ul>"
         },
         "statistic":{
           "shape":"MetricStatistic",
@@ -2063,6 +2065,22 @@
         "UtilizationMetricsActiveConnectionCountMaximum",
         "UtilizationMetricsPacketsInFromSourceMaximum",
         "UtilizationMetricsPacketsInFromDestinationMaximum",
+        "UtilizationMetricsConsumedReadCapacityUnitsSum",
+        "UtilizationMetricsConsumedWriteCapacityUnitsSum",
+        "UtilizationMetricsNewConnectionsSum",
+        "UtilizationMetricsEngineCPUUtilizationMaximum",
+        "UtilizationMetricsCacheHitsSum",
+        "UtilizationMetricsCacheMissesSum",
+        "UtilizationMetricsKeyspaceHitsSum",
+        "UtilizationMetricsKeyspaceMissesSum",
+        "UtilizationMetricsIsIdleMinimum",
+        "UtilizationMetricsUserConnectedSum",
+        "UtilizationMetricsInvocationsSum",
+        "UtilizationMetricsGetTypeCmdsSum",
+        "UtilizationMetricsSetTypeCmdsSum",
+        "UtilizationMetricsElastiCacheProcessingUnitsSum",
+        "UtilizationMetricsCurrConnectionsSum",
+        "UtilizationMetricsDatabaseConnectionsSum",
         "Finding",
         "FindingDescription",
         "Tags"
@@ -2323,6 +2341,8 @@
         "UtilizationMetricsVolumeWriteOpsPerSecondMaximum",
         "UtilizationMetricsVolumeReadBytesPerSecondMaximum",
         "UtilizationMetricsVolumeWriteBytesPerSecondMaximum",
+        "UtilizationMetricsVolumeIOPSExceededMaximum",
+        "UtilizationMetricsVolumeThroughputExceededMaximum",
         "LookbackPeriodInDays",
         "CurrentConfigurationVolumeType",
         "CurrentConfigurationVolumeBaselineIOPS",
@@ -3159,6 +3179,30 @@
         "False"
       ]
     },
+    "IdleDimension":{
+      "type":"structure",
+      "members":{
+        "key":{
+          "shape":"IdleDimensionKey",
+          "documentation":"<p>The name of the dimension key.</p>"
+        },
+        "values":{
+          "shape":"IdleDimensionValues",
+          "documentation":"<p>The value of the dimension.</p>"
+        }
+      },
+      "documentation":"<p>Describes the dimension of an idle resource utilization metric.</p>"
+    },
+    "IdleDimensionKey":{"type":"string"},
+    "IdleDimensionValue":{"type":"string"},
+    "IdleDimensionValues":{
+      "type":"list",
+      "member":{"shape":"IdleDimensionValue"}
+    },
+    "IdleDimensions":{
+      "type":"list",
+      "member":{"shape":"IdleDimension"}
+    },
     "IdleEstimatedMonthlySavings":{
       "type":"structure",
       "members":{
@@ -3202,7 +3246,23 @@
         "VolumeWriteOpsPerSecond",
         "ActiveConnectionCount",
         "PacketsInFromSource",
-        "PacketsInFromDestination"
+        "PacketsInFromDestination",
+        "ConsumedReadCapacityUnits",
+        "ConsumedWriteCapacityUnits",
+        "ConsumedChangeDataCaptureUnits",
+        "NewConnections",
+        "EngineCPUUtilization",
+        "CacheHits",
+        "CacheMisses",
+        "KeyspaceHits",
+        "KeyspaceMisses",
+        "IsIdle",
+        "UserConnected",
+        "Invocations",
+        "GetTypeCmds",
+        "SetTypeCmds",
+        "ElastiCacheProcessingUnits",
+        "CurrConnections"
       ]
     },
     "IdleRecommendation":{
@@ -3318,7 +3378,13 @@
         "EBSVolume",
         "ECSService",
         "RDSDBInstance",
-        "NatGateway"
+        "NatGateway",
+        "DynamoDBTable",
+        "ElastiCacheCluster",
+        "MemoryDBCluster",
+        "DocumentDBCluster",
+        "WorkSpaces",
+        "SageMakerEndpoint"
       ]
     },
     "IdleRecommendations":{
@@ -3385,6 +3451,10 @@
         "value":{
           "shape":"MetricValue",
           "documentation":"<p>The value of the utilization metric.</p>"
+        },
+        "dimensions":{
+          "shape":"IdleDimensions",
+          "documentation":"<p>The dimensions of the utilization metric.</p>"
         }
       },
       "documentation":"<p>Describes the utilization metric of an idle resource.</p>"
@@ -5087,7 +5157,13 @@
         "RdsDBInstance",
         "RdsDBInstanceStorage",
         "AuroraDBClusterStorage",
-        "NatGateway"
+        "NatGateway",
+        "DynamoDBTable",
+        "ElastiCacheCluster",
+        "MemoryDBCluster",
+        "DocumentDBCluster",
+        "WorkSpaces",
+        "SageMakerEndpoint"
       ]
     },
     "RecommendationSources":{

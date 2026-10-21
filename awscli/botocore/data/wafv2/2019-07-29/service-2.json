@@ -158,7 +158,7 @@
         {"shape":"WAFConfigurationWarningException"},
         {"shape":"WAFExpiredManagedRuleGroupVersionException"}
       ],
-      "documentation":"<p>Creates a <a>WebACL</a> per the specifications provided.</p> <p> A web ACL defines a collection of rules to use to inspect and control web requests. Each rule has a statement that defines what to look for in web requests and an action that WAF applies to requests that match the statement. In the web ACL, you assign a default action to take (allow, block) for any request that does not match any of the rules. The rules in a web ACL can be a combination of the types <a>Rule</a>, <a>RuleGroup</a>, and managed rule group. You can associate a web ACL with one or more Amazon Web Services resources to protect. The resource types include Amazon CloudFront distribution, Amazon API Gateway REST API, Application Load Balancer, AppSync GraphQL API, Amazon Cognito user pool, App Runner service, Amplify application, and Amazon Web Services Verified Access instance. </p>"
+      "documentation":"<p>Creates a <a>WebACL</a> per the specifications provided.</p> <p> A web ACL defines a collection of rules to use to inspect and control web requests. Each rule has a statement that defines what to look for in web requests and an action that WAF applies to requests that match the statement. In the web ACL, you assign a default action to take (allow, block) for any request that does not match any of the rules. The rules in a web ACL can be a combination of the types <a>Rule</a>, <a>RuleGroup</a>, and managed rule group. You can associate a web ACL with one or more Amazon Web Services resources to protect. The resource types include Amazon CloudFront distribution, Amazon API Gateway REST API, Application Load Balancer, AppSync GraphQL API, Amazon Cognito user pool, App Runner service, Amplify application, Amazon Web Services Verified Access instance, and Amazon Bedrock AgentCore Gateway. </p>"
     },
     "DeleteAPIKey":{
       "name":"DeleteAPIKey",
@@ -515,6 +515,54 @@
       ],
       "documentation":"<p>Retrieves the specified <a>RegexPatternSet</a>.</p>"
     },
+    "GetRevenueStatistics":{
+      "name":"GetRevenueStatistics",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetRevenueStatisticsRequest"},
+      "output":{"shape":"GetRevenueStatisticsResponse"},
+      "errors":[
+        {"shape":"WAFInternalErrorException"},
+        {"shape":"WAFInvalidParameterException"},
+        {"shape":"WAFNonexistentItemException"},
+        {"shape":"WAFInvalidOperationException"}
+      ],
+      "documentation":"<p>Retrieves ranked monetization statistics. Use the <code>StatisticType</code> parameter to specify the ranking: <code>TOP_SOURCES_BY_REVENUE</code> for top sources by revenue, or <code>TOP_PATHS_BY_REVENUE</code> for top content paths by revenue. This operation is only available for <code>CLOUDFRONT</code> scope. The maximum supported time window is 90 days. When no <code>CurrencyMode</code> filter is provided, results default to <code>REAL</code>. To retrieve test data, include a <code>CurrencyMode</code> filter with the value <code>TEST</code>.</p>"
+    },
+    "GetRevenueStatisticsSummary":{
+      "name":"GetRevenueStatisticsSummary",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetRevenueStatisticsSummaryRequest"},
+      "output":{"shape":"GetRevenueStatisticsSummaryResponse"},
+      "errors":[
+        {"shape":"WAFInternalErrorException"},
+        {"shape":"WAFInvalidParameterException"},
+        {"shape":"WAFNonexistentItemException"},
+        {"shape":"WAFInvalidOperationException"}
+      ],
+      "documentation":"<p>Retrieves a summary of monetization revenue for the specified time window. Returns total revenue, revenue by verification tier, total settlements, and total HTTP 402 responses served. This operation is only available for <code>CLOUDFRONT</code> scope. The maximum supported time window is 90 days. When no <code>CurrencyMode</code> filter is provided, results default to <code>REAL</code>. To retrieve test data, include a <code>CurrencyMode</code> filter with the value <code>TEST</code>.</p>"
+    },
+    "GetRevenueStatisticsTimeSeries":{
+      "name":"GetRevenueStatisticsTimeSeries",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetRevenueStatisticsTimeSeriesRequest"},
+      "output":{"shape":"GetRevenueStatisticsTimeSeriesResponse"},
+      "errors":[
+        {"shape":"WAFInternalErrorException"},
+        {"shape":"WAFInvalidParameterException"},
+        {"shape":"WAFNonexistentItemException"},
+        {"shape":"WAFInvalidOperationException"}
+      ],
+      "documentation":"<p>Retrieves time series data for monetization revenue. Returns data points aggregated at the specified interval for the given time window. This operation is only available for <code>CLOUDFRONT</code> scope. The maximum supported time window is 90 days. When no <code>CurrencyMode</code> filter is provided, results default to <code>REAL</code>. To retrieve test data, include a <code>CurrencyMode</code> filter with the value <code>TEST</code>.</p>"
+    },
     "GetRuleGroup":{
       "name":"GetRuleGroup",
       "http":{
@@ -749,6 +797,22 @@
       ],
       "documentation":"<p>Retrieves an array of <a>RuleGroupSummary</a> objects for the rule groups that you manage. </p>"
     },
+    "ListSettlementRecords":{
+      "name":"ListSettlementRecords",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListSettlementRecordsRequest"},
+      "output":{"shape":"ListSettlementRecordsResponse"},
+      "errors":[
+        {"shape":"WAFInternalErrorException"},
+        {"shape":"WAFInvalidParameterException"},
+        {"shape":"WAFNonexistentItemException"},
+        {"shape":"WAFInvalidOperationException"}
+      ],
+      "documentation":"<p>Retrieves individual settlement transaction records for monetization. Each record represents a single payment transaction between a client and your protected resource. This operation is only available for <code>CLOUDFRONT</code> scope. The maximum supported time window is 90 days. When no <code>CurrencyMode</code> filter is provided, results default to <code>REAL</code>. To retrieve test data, include a <code>CurrencyMode</code> filter with the value <code>TEST</code>.</p>"
+    },
     "ListTagsForResource":{
       "name":"ListTagsForResource",
       "http":{
@@ -973,7 +1037,7 @@
         {"shape":"WAFConfigurationWarningException"},
         {"shape":"WAFFeatureNotIncludedInPricingPlanException"}
       ],
-      "documentation":"<p>Updates the specified <a>WebACL</a>. While updating a web ACL, WAF provides continuous coverage to the resources that you have associated with the web ACL. </p> <note> <p>This operation completely replaces the mutable specifications that you already have for the web ACL with the ones that you provide to this call. </p> <p>To modify a web ACL, do the following: </p> <ol> <li> <p>Retrieve it by calling <a>GetWebACL</a> </p> </li> <li> <p>Update its settings as needed</p> </li> <li> <p>Provide the complete web ACL specification to this call</p> </li> </ol> </note> <p> A web ACL defines a collection of rules to use to inspect and control web requests. Each rule has a statement that defines what to look for in web requests and an action that WAF applies to requests that match the statement. In the web ACL, you assign a default action to take (allow, block) for any request that does not match any of the rules. The rules in a web ACL can be a combination of the types <a>Rule</a>, <a>RuleGroup</a>, and managed rule group. You can associate a web ACL with one or more Amazon Web Services resources to protect. The resource types include Amazon CloudFront distribution, Amazon API Gateway REST API, Application Load Balancer, AppSync GraphQL API, Amazon Cognito user pool, App Runner service, Amplify application, and Amazon Web Services Verified Access instance. </p> <p> <b>Temporary inconsistencies during updates</b> </p> <p>When you create or change a web ACL or other WAF resources, the changes take a small amount of time to propagate to all areas where the resources are stored. The propagation time can be from a few seconds to a number of minutes. </p> <p>The following are examples of the temporary inconsistencies that you might notice during change propagation: </p> <ul> <li> <p>After you create a web ACL, if you try to associate it with a resource, you might get an exception indicating that the web ACL is unavailable. </p> </li> <li> <p>After you add a rule group to a web ACL, the new rule group rules might be in effect in one area where the web ACL is used and not in another.</p> </li> <li> <p>After you change a rule action setting, you might see the old action in some places and the new action in others. </p> </li> <li> <p>After you add an IP address to an IP set that is in use in a blocking rule, the new address might be blocked in one area while still allowed in another.</p> </li> </ul>"
+      "documentation":"<p>Updates the specified <a>WebACL</a>. While updating a web ACL, WAF provides continuous coverage to the resources that you have associated with the web ACL. </p> <note> <p>This operation completely replaces the mutable specifications that you already have for the web ACL with the ones that you provide to this call. </p> <p>To modify a web ACL, do the following: </p> <ol> <li> <p>Retrieve it by calling <a>GetWebACL</a> </p> </li> <li> <p>Update its settings as needed</p> </li> <li> <p>Provide the complete web ACL specification to this call</p> </li> </ol> </note> <p> A web ACL defines a collection of rules to use to inspect and control web requests. Each rule has a statement that defines what to look for in web requests and an action that WAF applies to requests that match the statement. In the web ACL, you assign a default action to take (allow, block) for any request that does not match any of the rules. The rules in a web ACL can be a combination of the types <a>Rule</a>, <a>RuleGroup</a>, and managed rule group. You can associate a web ACL with one or more Amazon Web Services resources to protect. The resource types include Amazon CloudFront distribution, Amazon API Gateway REST API, Application Load Balancer, AppSync GraphQL API, Amazon Cognito user pool, App Runner service, Amplify application, Amazon Web Services Verified Access instance, and Amazon Bedrock AgentCore Gateway. </p> <p> <b>Temporary inconsistencies during updates</b> </p> <p>When you create or change a web ACL or other WAF resources, the changes take a small amount of time to propagate to all areas where the resources are stored. The propagation time can be from a few seconds to a number of minutes. </p> <p>The following are examples of the temporary inconsistencies that you might notice during change propagation: </p> <ul> <li> <p>After you create a web ACL, if you try to associate it with a resource, you might get an exception indicating that the web ACL is unavailable. </p> </li> <li> <p>After you add a rule group to a web ACL, the new rule group rules might be in effect in one area where the web ACL is used and not in another.</p> </li> <li> <p>After you change a rule action setting, you might see the old action in some places and the new action in others. </p> </li> <li> <p>After you add an IP address to an IP set that is in use in a blocking rule, the new address might be blocked in one area while still allowed in another.</p> </li> </ul>"
     }
   },
   "shapes":{
@@ -1127,6 +1191,7 @@
         "COUNT",
         "CAPTCHA",
         "CHALLENGE",
+        "MONETIZE",
         "EXCLUDED_AS_COUNT"
       ]
     },
@@ -1240,7 +1305,7 @@
         },
         "ResourceArn":{
           "shape":"ResourceArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the resource to associate with the web ACL. </p> <p>The ARN must be in one of the following formats:</p> <ul> <li> <p>For an Application Load Balancer: <code>arn:<i>partition</i>:elasticloadbalancing:<i>region</i>:<i>account-id</i>:loadbalancer/app/<i>load-balancer-name</i>/<i>load-balancer-id</i> </code> </p> </li> <li> <p>For an Amazon API Gateway REST API: <code>arn:<i>partition</i>:apigateway:<i>region</i>::/restapis/<i>api-id</i>/stages/<i>stage-name</i> </code> </p> </li> <li> <p>For an AppSync GraphQL API: <code>arn:<i>partition</i>:appsync:<i>region</i>:<i>account-id</i>:apis/<i>GraphQLApiId</i> </code> </p> </li> <li> <p>For an Amazon Cognito user pool: <code>arn:<i>partition</i>:cognito-idp:<i>region</i>:<i>account-id</i>:userpool/<i>user-pool-id</i> </code> </p> </li> <li> <p>For an App Runner service: <code>arn:<i>partition</i>:apprunner:<i>region</i>:<i>account-id</i>:service/<i>apprunner-service-name</i>/<i>apprunner-service-id</i> </code> </p> </li> <li> <p>For an Amazon Web Services Verified Access instance: <code>arn:<i>partition</i>:ec2:<i>region</i>:<i>account-id</i>:verified-access-instance/<i>instance-id</i> </code> </p> </li> <li> <p>For an Amplify application: <code>arn:<i>partition</i>:amplify:<i>region</i>:<i>account-id</i>:apps/<i>app-id</i> </code> </p> </li> </ul>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource to associate with the web ACL. </p> <p>The ARN must be in one of the following formats:</p> <ul> <li> <p>For an Application Load Balancer: <code>arn:<i>partition</i>:elasticloadbalancing:<i>region</i>:<i>account-id</i>:loadbalancer/app/<i>load-balancer-name</i>/<i>load-balancer-id</i> </code> </p> </li> <li> <p>For an Amazon API Gateway REST API: <code>arn:<i>partition</i>:apigateway:<i>region</i>::/restapis/<i>api-id</i>/stages/<i>stage-name</i> </code> </p> </li> <li> <p>For an AppSync GraphQL API: <code>arn:<i>partition</i>:appsync:<i>region</i>:<i>account-id</i>:apis/<i>GraphQLApiId</i> </code> </p> </li> <li> <p>For an Amazon Cognito user pool: <code>arn:<i>partition</i>:cognito-idp:<i>region</i>:<i>account-id</i>:userpool/<i>user-pool-id</i> </code> </p> </li> <li> <p>For an App Runner service: <code>arn:<i>partition</i>:apprunner:<i>region</i>:<i>account-id</i>:service/<i>apprunner-service-name</i>/<i>apprunner-service-id</i> </code> </p> </li> <li> <p>For an Amazon Web Services Verified Access instance: <code>arn:<i>partition</i>:ec2:<i>region</i>:<i>account-id</i>:verified-access-instance/<i>instance-id</i> </code> </p> </li> <li> <p>For an Amplify application: <code>arn:<i>partition</i>:amplify:<i>region</i>:<i>account-id</i>:apps/<i>app-id</i> </code> </p> </li> <li> <p>For an Amazon Bedrock AgentCore Gateway: <code>arn:<i>partition</i>:bedrock-agentcore:<i>region</i>:<i>account-id</i>:gateway/<i>gateway-id</i> </code> </p> </li> </ul>"
         }
       }
     },
@@ -1255,7 +1320,8 @@
         "API_GATEWAY",
         "COGNITO_USER_POOL",
         "APP_RUNNER_SERVICE",
-        "VERIFIED_ACCESS_INSTANCE"
+        "VERIFIED_ACCESS_INSTANCE",
+        "AGENTCORE_GATEWAY"
       ]
     },
     "AssociationConfig":{
@@ -1294,6 +1360,15 @@
         }
       },
       "documentation":"<p>Specifies that WAF should block the request and optionally defines additional custom handling for the response to the web request.</p> <p>This is used in the context of other settings, for example to specify values for <a>RuleAction</a> and web ACL <a>DefaultAction</a>. </p>"
+    },
+    "BlockchainChain":{
+      "type":"string",
+      "enum":[
+        "BASE",
+        "SOLANA",
+        "BASE_SEPOLIA",
+        "SOLANA_DEVNET"
+      ]
     },
     "Body":{
       "type":"structure",
@@ -1361,6 +1436,10 @@
         "TextTransformations":{
           "shape":"TextTransformations",
           "documentation":"<p>Text transformations eliminate some of the unusual formatting that attackers use in web requests in an effort to bypass detection. Text transformations are used in rule match statements, to transform the <code>FieldToMatch</code> request component before inspecting it, and they're used in rate-based rule statements, to transform request components before using them as custom aggregation keys. If you specify one or more transformations to apply, WAF performs all transformations on the specified content, starting from the lowest priority setting, and then uses the transformed component contents. </p>"
+        },
+        "PreParseTextTransformations":{
+          "shape":"PreParseTextTransformations",
+          "documentation":"<p>Pre-parse text transformations normalize the raw query string before WAF parses it into individual query arguments. They are applied before the standard text transformations. Pre-parse text transformations are only supported when <code>FieldToMatch</code> is <code>SingleQueryArgument</code> or <code>AllQueryArguments</code>. You can specify up to 10 pre-parse text transformations per rule statement.</p>"
         },
         "PositionalConstraint":{
           "shape":"PositionalConstraint",
@@ -2006,6 +2085,10 @@
         "CustomResponseBodies":{
           "shape":"CustomResponseBodies",
           "documentation":"<p>A map of custom response keys and content bodies. When you create a rule with a block action, you can send a custom response to the web request. You define these for the rule group, and then use them in the rules that you define in the rule group. </p> <p>For information about customizing web requests and responses, see <a href=\"https://docs.aws.amazon.com/waf/latest/developerguide/waf-custom-request-response.html\">Customizing web requests and responses in WAF</a> in the <i>WAF Developer Guide</i>. </p> <p>For information about the limits on count and size for custom request and response settings, see <a href=\"https://docs.aws.amazon.com/waf/latest/developerguide/limits.html\">WAF quotas</a> in the <i>WAF Developer Guide</i>. </p>"
+        },
+        "MonetizationConfig":{
+          "shape":"MonetizationConfig",
+          "documentation":"<p>The monetization configuration for the rule group. Provide this when any rule in the rule group uses the <code>Monetize</code> action.</p>"
         }
       }
     },
@@ -2086,6 +2169,10 @@
         "ApplicationConfig":{
           "shape":"ApplicationConfig",
           "documentation":"<p>Configures the ability for the WAF console to store and retrieve application attributes during the web ACL creation process. Application attributes help WAF give recommendations for protection packs.</p>"
+        },
+        "MonetizationConfig":{
+          "shape":"MonetizationConfig",
+          "documentation":"<p>The monetization configuration for the web ACL. Provide this when any rule in the web ACL uses the <code>Monetize</code> action.</p>"
         }
       }
     },
@@ -2103,6 +2190,32 @@
       "max":256,
       "min":1,
       "pattern":".*\\S.*"
+    },
+    "CryptoConfig":{
+      "type":"structure",
+      "required":["PaymentNetworks"],
+      "members":{
+        "PaymentNetworks":{
+          "shape":"PaymentNetworks",
+          "documentation":"<p>The blockchain payment networks configured to receive payments. You can specify 1 to 2 networks. All networks must be in the same environment-either all production networks (Base, Solana) or all test networks (Base Sepolia, Solana Devnet).</p>"
+        }
+      },
+      "documentation":"<p>The cryptocurrency payment configuration for AI bot monetization. Contains the list of blockchain payment networks where you receive payments.</p>"
+    },
+    "CryptoCurrency":{
+      "type":"string",
+      "enum":["USDC"]
+    },
+    "Currency":{
+      "type":"string",
+      "enum":["USDC"]
+    },
+    "CurrencyMode":{
+      "type":"string",
+      "enum":[
+        "REAL",
+        "TEST"
+      ]
     },
     "CustomHTTPHeader":{
       "type":"structure",
@@ -2192,6 +2305,44 @@
         }
       },
       "documentation":"<p>The response body to use in a custom response to a web request. This is referenced by key from <a>CustomResponse</a> <code>CustomResponseBodyKey</code>.</p>"
+    },
+    "DataPointEntry":{
+      "type":"structure",
+      "members":{
+        "Date":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp for this data point.</p>"
+        },
+        "MonetizeServedCount":{
+          "shape":"RequestCount",
+          "documentation":"<p>The number of HTTP 402 Payment Required responses served during this interval.</p>"
+        },
+        "SettledCount":{
+          "shape":"RequestCount",
+          "documentation":"<p>The number of successfully settled payments during this interval.</p>"
+        },
+        "TotalAmount":{
+          "shape":"MonetizationAmountValue",
+          "documentation":"<p>The total revenue amount during this interval in the specified currency.</p>"
+        },
+        "Category":{
+          "shape":"FilterString",
+          "documentation":"<p>The bot category for this data point, when grouped by category.</p>"
+        },
+        "Intent":{
+          "shape":"FilterString",
+          "documentation":"<p>The intent classification for this data point, when grouped by intent.</p>"
+        },
+        "GroupByValue":{
+          "shape":"FilterString",
+          "documentation":"<p>The group-by dimension value for this data point.</p>"
+        }
+      },
+      "documentation":"<p>A single data point in a revenue time series, representing aggregated monetization metrics for a specific time interval.</p>"
+    },
+    "DataPointsList":{
+      "type":"list",
+      "member":{"shape":"DataPointEntry"}
     },
     "DataProtection":{
       "type":"structure",
@@ -2593,7 +2744,7 @@
       "members":{
         "ResourceArn":{
           "shape":"ResourceArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the resource to disassociate from the web ACL. </p> <p>The ARN must be in one of the following formats:</p> <ul> <li> <p>For an Application Load Balancer: <code>arn:<i>partition</i>:elasticloadbalancing:<i>region</i>:<i>account-id</i>:loadbalancer/app/<i>load-balancer-name</i>/<i>load-balancer-id</i> </code> </p> </li> <li> <p>For an Amazon API Gateway REST API: <code>arn:<i>partition</i>:apigateway:<i>region</i>::/restapis/<i>api-id</i>/stages/<i>stage-name</i> </code> </p> </li> <li> <p>For an AppSync GraphQL API: <code>arn:<i>partition</i>:appsync:<i>region</i>:<i>account-id</i>:apis/<i>GraphQLApiId</i> </code> </p> </li> <li> <p>For an Amazon Cognito user pool: <code>arn:<i>partition</i>:cognito-idp:<i>region</i>:<i>account-id</i>:userpool/<i>user-pool-id</i> </code> </p> </li> <li> <p>For an App Runner service: <code>arn:<i>partition</i>:apprunner:<i>region</i>:<i>account-id</i>:service/<i>apprunner-service-name</i>/<i>apprunner-service-id</i> </code> </p> </li> <li> <p>For an Amazon Web Services Verified Access instance: <code>arn:<i>partition</i>:ec2:<i>region</i>:<i>account-id</i>:verified-access-instance/<i>instance-id</i> </code> </p> </li> <li> <p>For an Amplify application: <code>arn:<i>partition</i>:amplify:<i>region</i>:<i>account-id</i>:apps/<i>app-id</i> </code> </p> </li> </ul>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource to disassociate from the web ACL. </p> <p>The ARN must be in one of the following formats:</p> <ul> <li> <p>For an Application Load Balancer: <code>arn:<i>partition</i>:elasticloadbalancing:<i>region</i>:<i>account-id</i>:loadbalancer/app/<i>load-balancer-name</i>/<i>load-balancer-id</i> </code> </p> </li> <li> <p>For an Amazon API Gateway REST API: <code>arn:<i>partition</i>:apigateway:<i>region</i>::/restapis/<i>api-id</i>/stages/<i>stage-name</i> </code> </p> </li> <li> <p>For an AppSync GraphQL API: <code>arn:<i>partition</i>:appsync:<i>region</i>:<i>account-id</i>:apis/<i>GraphQLApiId</i> </code> </p> </li> <li> <p>For an Amazon Cognito user pool: <code>arn:<i>partition</i>:cognito-idp:<i>region</i>:<i>account-id</i>:userpool/<i>user-pool-id</i> </code> </p> </li> <li> <p>For an App Runner service: <code>arn:<i>partition</i>:apprunner:<i>region</i>:<i>account-id</i>:service/<i>apprunner-service-name</i>/<i>apprunner-service-id</i> </code> </p> </li> <li> <p>For an Amazon Web Services Verified Access instance: <code>arn:<i>partition</i>:ec2:<i>region</i>:<i>account-id</i>:verified-access-instance/<i>instance-id</i> </code> </p> </li> <li> <p>For an Amplify application: <code>arn:<i>partition</i>:amplify:<i>region</i>:<i>account-id</i>:apps/<i>app-id</i> </code> </p> </li> <li> <p>For an Amazon Bedrock AgentCore Gateway: <code>arn:<i>partition</i>:bedrock-agentcore:<i>region</i>:<i>account-id</i>:gateway/<i>gateway-id</i> </code> </p> </li> </ul>"
         }
       }
     },
@@ -2762,7 +2913,7 @@
         },
         "FieldKeys":{
           "shape":"FieldToProtectKeys",
-          "documentation":"<p>Specifies the keys to protect for the specified field type. If you don't specify any key, then all keys for the field type are protected. </p>"
+          "documentation":"<p>Specifies the keys to protect for the specified field type.</p> <p>Required for <code>SINGLE_HEADER</code>, <code>SINGLE_COOKIE</code>, and <code>SINGLE_QUERY_ARGUMENT</code>: provide a non-empty array naming the specific headers, cookies, or query arguments to protect. There is no option to protect all keys of these field types, so enumerate each key you intend to protect.</p> <p>Must be omitted for <code>QUERY_STRING</code> and <code>BODY</code>: the entire component is protected and these field types take no keys. Supplying <code>FieldKeys</code> for them is rejected.</p>"
         }
       },
       "documentation":"<p>Specifies a field type and keys to protect in stored web request data. This is part of the data protection configuration for a web ACL. </p>"
@@ -3228,6 +3379,170 @@
         }
       }
     },
+    "GetRevenueStatisticsRequest":{
+      "type":"structure",
+      "required":[
+        "StatisticType",
+        "TimeWindow",
+        "Scope",
+        "Currency"
+      ],
+      "members":{
+        "StatisticType":{
+          "shape":"RankingStatisticType",
+          "documentation":"<p> <code>TOP_SOURCES_BY_REVENUE</code> ranks revenue from AI bot traffic, grouped by the dimension you specify in the <code>GroupBy</code> parameter (<code>NAME</code>, <code>CATEGORY</code>, <code>INTENT</code>, <code>ORGANIZATION</code>, or <code>WEBACL</code>); <code>GroupBy</code> is required for this statistic type. <code>TOP_PATHS_BY_REVENUE</code> ranks revenue by path.</p>"
+        },
+        "TimeWindow":{
+          "shape":"TimeWindow",
+          "documentation":"<p>The time range for the query. Specify start and end timestamps.</p>"
+        },
+        "Scope":{
+          "shape":"Scope",
+          "documentation":"<p>Specifies whether this is for a Amazon CloudFront distribution (<code>CLOUDFRONT</code>) or for a regional application (<code>REGIONAL</code>).</p>"
+        },
+        "Currency":{
+          "shape":"Currency",
+          "documentation":"<p>The currency for the revenue amounts in the response.</p>"
+        },
+        "GroupBy":{
+          "shape":"GroupByType",
+          "documentation":"<p>The dimension to group results by: <code>NAME</code>, <code>CATEGORY</code>, <code>INTENT</code>, <code>ORGANIZATION</code>, or <code>WEBACL</code>. Required when <code>StatisticType</code> is <code>TOP_SOURCES_BY_REVENUE</code>. Not required for <code>TOP_PATHS_BY_REVENUE</code>, where results are grouped by content path. If <code>StatisticType</code> is <code>TOP_SOURCES_BY_REVENUE</code> and <code>GroupBy</code> is omitted, the request is rejected with a <code>WAFInvalidParameterException</code>.</p>"
+        },
+        "Filters":{
+          "shape":"MonetizationFilterList",
+          "documentation":"<p>Optional filters to narrow the results.</p>"
+        },
+        "NextMarker":{
+          "shape":"NextMarker",
+          "documentation":"<p>When you get a paginated response, this marker indicates that additional results are available. Use it in a subsequent request to retrieve the next page of results.</p>"
+        },
+        "Limit":{
+          "shape":"PathStatisticsLimit",
+          "documentation":"<p>The maximum number of results to return.</p>"
+        },
+        "SortBy":{
+          "shape":"RankingSortBy",
+          "documentation":"<p>The field to sort results by: <code>REVENUE</code>, <code>PERCENTAGE</code>, or <code>NAME</code>.</p>"
+        },
+        "SortOrder":{
+          "shape":"SortOrder",
+          "documentation":"<p>The sort order: <code>ASC</code> for ascending or <code>DESC</code> for descending.</p>"
+        }
+      }
+    },
+    "GetRevenueStatisticsResponse":{
+      "type":"structure",
+      "members":{
+        "SourceStatistics":{
+          "shape":"SourceStatisticsList",
+          "documentation":"<p>Statistics for top revenue sources (AI bots). Populated when <code>StatisticType</code> is <code>TOP_SOURCES_BY_REVENUE</code>.</p>"
+        },
+        "RevenuePathStatistics":{
+          "shape":"RevenuePathStatisticsList",
+          "documentation":"<p>Statistics for top revenue paths. Populated when <code>StatisticType</code> is <code>TOP_PATHS_BY_REVENUE</code>.</p>"
+        },
+        "NextMarker":{
+          "shape":"NextMarker",
+          "documentation":"<p>When you get a paginated response, this marker indicates that additional results are available.</p>"
+        }
+      }
+    },
+    "GetRevenueStatisticsSummaryRequest":{
+      "type":"structure",
+      "required":[
+        "TimeWindow",
+        "Scope",
+        "Currency"
+      ],
+      "members":{
+        "TimeWindow":{
+          "shape":"TimeWindow",
+          "documentation":"<p>The time range for the revenue summary query. Specify start and end timestamps.</p>"
+        },
+        "Scope":{
+          "shape":"Scope",
+          "documentation":"<p>Specifies whether this is for a Amazon CloudFront distribution (<code>CLOUDFRONT</code>) or for a regional application (<code>REGIONAL</code>). AI bot monetization is only available for <code>CLOUDFRONT</code> scope.</p>"
+        },
+        "Currency":{
+          "shape":"Currency",
+          "documentation":"<p>The currency for the revenue amounts in the response. Currently only <code>USDC</code> is supported.</p>"
+        },
+        "Filters":{
+          "shape":"MonetizationFilterList",
+          "documentation":"<p>Optional filters to narrow the results. You can filter by source name, category, organization, intent, verified status, content path, web ACL ARN, or currency mode.</p>"
+        }
+      }
+    },
+    "GetRevenueStatisticsSummaryResponse":{
+      "type":"structure",
+      "members":{
+        "RevenueBreakdown":{
+          "shape":"RevenueBreakdown",
+          "documentation":"<p>The revenue breakdown summary for the specified time window and filters.</p>"
+        }
+      }
+    },
+    "GetRevenueStatisticsTimeSeriesRequest":{
+      "type":"structure",
+      "required":[
+        "StatisticType",
+        "TimeWindow",
+        "Scope",
+        "Interval",
+        "Currency"
+      ],
+      "members":{
+        "StatisticType":{
+          "shape":"TimeSeriesStatisticType",
+          "documentation":"<p>The type of time series data to retrieve: <code>DATE_HISTOGRAM</code> for revenue over time, or <code>PAYMENT_TRAFFIC</code> for payment traffic patterns.</p>"
+        },
+        "TimeWindow":{
+          "shape":"TimeWindow",
+          "documentation":"<p>The time range for the query. Specify start and end timestamps.</p>"
+        },
+        "Scope":{
+          "shape":"Scope",
+          "documentation":"<p>Specifies whether this is for a Amazon CloudFront distribution (<code>CLOUDFRONT</code>) or for a regional application (<code>REGIONAL</code>).</p>"
+        },
+        "Interval":{
+          "shape":"IntervalType",
+          "documentation":"<p>The time interval for aggregating data points: <code>MINUTELY</code>, <code>FIVE_MINUTELY</code>, <code>HOURLY</code>, or <code>DAILY</code>.</p>"
+        },
+        "Currency":{
+          "shape":"Currency",
+          "documentation":"<p>The currency for the amounts in the response.</p>"
+        },
+        "GroupBy":{
+          "shape":"GroupByType",
+          "documentation":"<p>The dimension to group results by.</p>"
+        },
+        "Filters":{
+          "shape":"MonetizationFilterList",
+          "documentation":"<p>Optional filters to narrow the results.</p>"
+        },
+        "Limit":{
+          "shape":"MaxDataPoints",
+          "documentation":"<p>The maximum number of data points to return. Minimum: 1. Maximum: 10000.</p>"
+        },
+        "NextMarker":{
+          "shape":"NextMarker",
+          "documentation":"<p>When you get a paginated response, this marker indicates that additional results are available.</p>"
+        }
+      }
+    },
+    "GetRevenueStatisticsTimeSeriesResponse":{
+      "type":"structure",
+      "members":{
+        "DataPoints":{
+          "shape":"DataPointsList",
+          "documentation":"<p>The list of time series data points.</p>"
+        },
+        "NextMarker":{
+          "shape":"NextMarker",
+          "documentation":"<p>When you get a paginated response, this marker indicates that additional results are available.</p>"
+        }
+      }
+    },
     "GetRuleGroupRequest":{
       "type":"structure",
       "members":{
@@ -3394,7 +3709,7 @@
       "members":{
         "ResourceArn":{
           "shape":"ResourceArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the resource whose web ACL you want to retrieve. </p> <p>The ARN must be in one of the following formats:</p> <ul> <li> <p>For an Application Load Balancer: <code>arn:<i>partition</i>:elasticloadbalancing:<i>region</i>:<i>account-id</i>:loadbalancer/app/<i>load-balancer-name</i>/<i>load-balancer-id</i> </code> </p> </li> <li> <p>For an Amazon API Gateway REST API: <code>arn:<i>partition</i>:apigateway:<i>region</i>::/restapis/<i>api-id</i>/stages/<i>stage-name</i> </code> </p> </li> <li> <p>For an AppSync GraphQL API: <code>arn:<i>partition</i>:appsync:<i>region</i>:<i>account-id</i>:apis/<i>GraphQLApiId</i> </code> </p> </li> <li> <p>For an Amazon Cognito user pool: <code>arn:<i>partition</i>:cognito-idp:<i>region</i>:<i>account-id</i>:userpool/<i>user-pool-id</i> </code> </p> </li> <li> <p>For an App Runner service: <code>arn:<i>partition</i>:apprunner:<i>region</i>:<i>account-id</i>:service/<i>apprunner-service-name</i>/<i>apprunner-service-id</i> </code> </p> </li> <li> <p>For an Amazon Web Services Verified Access instance: <code>arn:<i>partition</i>:ec2:<i>region</i>:<i>account-id</i>:verified-access-instance/<i>instance-id</i> </code> </p> </li> <li> <p>For an Amplify application: <code>arn:<i>partition</i>:amplify:<i>region</i>:<i>account-id</i>:apps/<i>app-id</i> </code> </p> </li> </ul>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource whose web ACL you want to retrieve. </p> <p>The ARN must be in one of the following formats:</p> <ul> <li> <p>For an Application Load Balancer: <code>arn:<i>partition</i>:elasticloadbalancing:<i>region</i>:<i>account-id</i>:loadbalancer/app/<i>load-balancer-name</i>/<i>load-balancer-id</i> </code> </p> </li> <li> <p>For an Amazon API Gateway REST API: <code>arn:<i>partition</i>:apigateway:<i>region</i>::/restapis/<i>api-id</i>/stages/<i>stage-name</i> </code> </p> </li> <li> <p>For an AppSync GraphQL API: <code>arn:<i>partition</i>:appsync:<i>region</i>:<i>account-id</i>:apis/<i>GraphQLApiId</i> </code> </p> </li> <li> <p>For an Amazon Cognito user pool: <code>arn:<i>partition</i>:cognito-idp:<i>region</i>:<i>account-id</i>:userpool/<i>user-pool-id</i> </code> </p> </li> <li> <p>For an App Runner service: <code>arn:<i>partition</i>:apprunner:<i>region</i>:<i>account-id</i>:service/<i>apprunner-service-name</i>/<i>apprunner-service-id</i> </code> </p> </li> <li> <p>For an Amazon Web Services Verified Access instance: <code>arn:<i>partition</i>:ec2:<i>region</i>:<i>account-id</i>:verified-access-instance/<i>instance-id</i> </code> </p> </li> <li> <p>For an Amplify application: <code>arn:<i>partition</i>:amplify:<i>region</i>:<i>account-id</i>:apps/<i>app-id</i> </code> </p> </li> <li> <p>For an Amazon Bedrock AgentCore Gateway: <code>arn:<i>partition</i>:bedrock-agentcore:<i>region</i>:<i>account-id</i>:gateway/<i>gateway-id</i> </code> </p> </li> </ul>"
         }
       }
     },
@@ -3444,6 +3759,16 @@
           "documentation":"<p>The URL to use in SDK integrations with Amazon Web Services managed rule groups. For example, you can use the integration SDKs with the account takeover prevention managed rule group <code>AWSManagedRulesATPRuleSet</code> and the account creation fraud prevention managed rule group <code>AWSManagedRulesACFPRuleSet</code>. This is only populated if you are using a rule group in your web ACL that integrates with your applications in this way. For more information, see <a href=\"https://docs.aws.amazon.com/waf/latest/developerguide/waf-application-integration.html\">WAF client application integration</a> in the <i>WAF Developer Guide</i>.</p>"
         }
       }
+    },
+    "GroupByType":{
+      "type":"string",
+      "enum":[
+        "NAME",
+        "CATEGORY",
+        "INTENT",
+        "ORGANIZATION",
+        "WEBACL"
+      ]
     },
     "HTTPHeader":{
       "type":"structure",
@@ -3694,6 +4019,15 @@
       "enum":[
         "COMMON",
         "TARGETED"
+      ]
+    },
+    "IntervalType":{
+      "type":"string",
+      "enum":[
+        "MINUTELY",
+        "FIVE_MINUTELY",
+        "HOURLY",
+        "DAILY"
       ]
     },
     "JA3Fingerprint":{
@@ -4191,6 +4525,61 @@
         }
       }
     },
+    "ListSettlementRecordsRequest":{
+      "type":"structure",
+      "required":[
+        "TimeWindow",
+        "Scope",
+        "Currency"
+      ],
+      "members":{
+        "TimeWindow":{
+          "shape":"TimeWindow",
+          "documentation":"<p>The time range for the query. Specify start and end timestamps.</p>"
+        },
+        "Scope":{
+          "shape":"Scope",
+          "documentation":"<p>Specifies whether this is for a Amazon CloudFront distribution (<code>CLOUDFRONT</code>) or for a regional application (<code>REGIONAL</code>).</p>"
+        },
+        "Currency":{
+          "shape":"Currency",
+          "documentation":"<p>The currency for the amounts in the response.</p>"
+        },
+        "Filters":{
+          "shape":"MonetizationFilterList",
+          "documentation":"<p>Optional filters to narrow the results. You can filter by payer address, status, source name, network, or other settlement fields.</p>"
+        },
+        "SortBy":{
+          "shape":"SettlementSortBy",
+          "documentation":"<p>The field to sort settlement records by: <code>TIMESTAMP</code>, <code>AMOUNT</code>, <code>NAME</code>, or <code>STATUS</code>.</p>"
+        },
+        "SortOrder":{
+          "shape":"SortOrder",
+          "documentation":"<p>The sort order: <code>ASC</code> for ascending or <code>DESC</code> for descending.</p>"
+        },
+        "Limit":{
+          "shape":"SettlementRecordLimit",
+          "documentation":"<p>The maximum number of settlement records to return. Minimum: 1. Maximum: 100.</p>"
+        },
+        "NextMarker":{
+          "shape":"NextMarker",
+          "documentation":"<p>When you get a paginated response, this marker indicates that additional results are available.</p>"
+        }
+      }
+    },
+    "ListSettlementRecordsResponse":{
+      "type":"structure",
+      "members":{
+        "Settlements":{
+          "shape":"SettlementRecordList",
+          "documentation":"<p>The list of settlement records.</p>"
+        },
+        "NextMarker":{
+          "shape":"NextMarker",
+          "documentation":"<p>When you get a paginated response, this marker indicates that additional results are available.</p>"
+        }
+      }
+    },
     "ListTagsForResourceRequest":{
       "type":"structure",
       "required":["ResourceARN"],
@@ -4639,6 +5028,11 @@
         "VALUE"
       ]
     },
+    "MaxDataPoints":{
+      "type":"integer",
+      "max":10000,
+      "min":1
+    },
     "Method":{
       "type":"structure",
       "members":{},
@@ -4671,6 +5065,71 @@
         }
       },
       "documentation":"<p>Information for a release of the mobile SDK, including release notes and tags.</p> <p>The mobile SDK is not generally available. Customers who have access to the mobile SDK can use it to establish and manage WAF tokens for use in HTTP(S) requests from a mobile device to WAF. For more information, see <a href=\"https://docs.aws.amazon.com/waf/latest/developerguide/waf-application-integration.html\">WAF client application integration</a> in the <i>WAF Developer Guide</i>.</p>"
+    },
+    "MonetizationAmountValue":{"type":"string"},
+    "MonetizationConfig":{
+      "type":"structure",
+      "members":{
+        "CryptoConfig":{
+          "shape":"CryptoConfig",
+          "documentation":"<p>The cryptocurrency payment configuration, including the blockchain networks and wallet addresses where you receive payments.</p>"
+        },
+        "CurrencyMode":{
+          "shape":"CurrencyMode",
+          "documentation":"<p>Specifies whether the configuration uses real or test currency. Set to <code>REAL</code> to settle payments in USDC on production blockchain networks (Base, Solana). Set to <code>TEST</code> to settle on testnet networks (Base Sepolia, Solana Devnet) with tokens that have no monetary value. If not specified, defaults to <code>REAL</code>.</p>"
+        }
+      },
+      "documentation":"<p>The monetization configuration for a web ACL or rule group. Specifies the cryptocurrency payment networks and currency mode for AI bot monetization. You must provide this configuration when any rule in the web ACL or rule group uses the <code>Monetize</code> action.</p>"
+    },
+    "MonetizationFilter":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Values"
+      ],
+      "members":{
+        "Name":{
+          "shape":"MonetizationFilterName",
+          "documentation":"<p>The filter name. Format: Key is a string, Value is a list of strings.</p> <p>Enum-restricted (invalid values rejected):</p> <ul> <li> <p> <code>CurrencyMode</code>: <code>REAL</code>, <code>TEST</code> </p> </li> <li> <p> <code>ChainName</code>: <code>BASE</code>, <code>SOLANA</code>, <code>BASE_SEPOLIA</code>, <code>SOLANA_DEVNET</code> </p> </li> <li> <p> <code>SettlementStatus</code>: <code>SETTLED</code>, <code>PENDING</code>, <code>FAILED</code>, <code>SERVICE_ERROR</code>, <code>SKIPPED_ORIGIN_ERROR</code>, <code>DUPLICATE</code> </p> </li> <li> <p> <code>HttpSourceName</code>: <code>CF</code>, <code>ALB</code>, <code>APIGW</code>, <code>APPRUNNER</code>, <code>COGNITO</code>, <code>VERIFIED_ACCESS</code> </p> </li> </ul> <p>ARN-validated:</p> <ul> <li> <p> <code>WebACLArn</code>: valid WAFv2 web ACL ARN</p> </li> </ul> <p>Free-text (any string up to 256 chars):</p> <ul> <li> <p> <code>SourceName</code>: The name of the bot. Populated from Bot Control verified bot labels.</p> </li> <li> <p> <code>SourceCategory</code>: The category classification of the bot. From Bot Control categorization.</p> </li> <li> <p> <code>Intent</code>: The declared intent of the bot request.</p> </li> <li> <p> <code>Organization</code>: The organization operating the bot.</p> </li> <li> <p> <code>UriPathPrefix</code>: The URI path of the request that was monetized.</p> </li> <li> <p> <code>RequestId</code>: The WAF request ID associated with the transaction. Matches the requestId in WAF logs. Pattern: <code>^[a-zA-Z0-9:._\\-=+/]+$</code> </p> </li> <li> <p> <code>TransactionId</code>: The blockchain transaction identifier. Pattern: <code>^[a-zA-Z0-9:._\\-=+/]+$</code> </p> </li> <li> <p> <code>TerminatingRuleName</code>: The name of the WAF rule that triggered the Monetize action.</p> </li> <li> <p> <code>PayerAddress</code>: The blockchain wallet address of the paying client. Pattern: <code>^[a-zA-Z0-9:._\\-=+/]+$</code> </p> </li> <li> <p> <code>HttpSourceId</code>: The identifier of the Amazon Web Services resource associated with the web ACL (for example, CloudFront distribution ID).</p> </li> </ul>"
+        },
+        "Values":{
+          "shape":"MonetizationFilterValueList",
+          "documentation":"<p>The values to filter on. Specify as a list of strings. Results match any of the specified values (OR logic). Duplicate values are silently deduplicated. Maximum: 20 values per filter.</p>"
+        }
+      },
+      "documentation":"<p>A filter for narrowing monetization statistics and settlement record results. Specify a filter name and one or more values to match.</p> <p>Filter behavior:</p> <ul> <li> <p>Multiple values within one filter: OR (match any)</p> </li> <li> <p>Multiple filters: AND (all must match)</p> </li> <li> <p>No duplicate filter names allowed (rejected with error)</p> </li> <li> <p>Duplicate values within a filter are silently deduplicated</p> </li> <li> <p>If no <code>CurrencyMode</code> filter is specified, defaults to <code>REAL</code> </p> </li> </ul>"
+    },
+    "MonetizationFilterList":{
+      "type":"list",
+      "member":{"shape":"MonetizationFilter"},
+      "max":20,
+      "min":1
+    },
+    "MonetizationFilterName":{
+      "type":"string",
+      "max":128,
+      "min":1
+    },
+    "MonetizationFilterValue":{
+      "type":"string",
+      "max":256,
+      "min":1
+    },
+    "MonetizationFilterValueList":{
+      "type":"list",
+      "member":{"shape":"MonetizationFilterValue"},
+      "max":20,
+      "min":1
+    },
+    "MonetizeAction":{
+      "type":"structure",
+      "members":{
+        "PriceMultiplier":{
+          "shape":"PriceMultiplier",
+          "documentation":"<p>An integer multiplier applied to the base price defined in the web ACL's <code>MonetizationConfig</code>. The effective price for the request is the base price multiplied by this value. Specify as a string. Valid values: 1 to 100.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the monetize action settings for a rule. When WAF applies this action, it returns an HTTP 402 Payment Required response containing pricing information that the requesting client uses to complete payment and gain access to the resource. This is a terminating action-if the client does not complete the 402 payment flow, the request is blocked. This action is available only for web ACLs associated with Amazon CloudFront distributions. You must configure a <code>MonetizationConfig</code> on the web ACL or rule group before adding rules that use this action. You cannot use the Monetize action for rate-based rules.</p>"
     },
     "NextMarker":{
       "type":"string",
@@ -4823,7 +5282,12 @@
         "CUSTOM_KEYS",
         "ACP_RULE_SET_RESPONSE_INSPECTION",
         "DATA_PROTECTION_CONFIG",
-        "LOW_REPUTATION_MODE"
+        "LOW_REPUTATION_MODE",
+        "MONETIZATION_CONFIG",
+        "WALLET_ADDRESS",
+        "PRICE_AMOUNT",
+        "PAYMENT_NETWORK",
+        "PRE_PARSE_TEXT_TRANSFORMATION"
       ]
     },
     "ParameterExceptionParameter":{
@@ -4893,6 +5357,35 @@
         "FORM_ENCODED"
       ]
     },
+    "PaymentNetwork":{
+      "type":"structure",
+      "required":[
+        "Chain",
+        "WalletAddress",
+        "Prices"
+      ],
+      "members":{
+        "Chain":{
+          "shape":"BlockchainChain",
+          "documentation":"<p>The blockchain network for receiving payments. Production networks: <code>BASE</code> (Base mainnet), <code>SOLANA</code> (Solana mainnet). Test networks: <code>BASE_SEPOLIA</code> (Base Sepolia testnet), <code>SOLANA_DEVNET</code> (Solana Devnet).</p>"
+        },
+        "WalletAddress":{
+          "shape":"WalletAddress",
+          "documentation":"<p>Your wallet address on the specified blockchain where payments are sent. For EVM chains (Base, Base Sepolia), provide a valid Ethereum address (42 characters including 0x prefix). For Solana chains, provide a valid Base58-encoded public key (32-44 characters).</p> <p>For EVM addresses, WAF performs EIP-55 checksum validation for typo detection when the address uses a mix of lower and upper case letters. You can bypass this validation by providing the address in all lowercase or all uppercase.</p>"
+        },
+        "Prices":{
+          "shape":"Prices",
+          "documentation":"<p>The price configuration for this payment network. Currently supports a single price entry in USDC.</p>"
+        }
+      },
+      "documentation":"<p>A blockchain payment network configuration for receiving AI bot monetization payments. Specifies the blockchain chain, your wallet address on that chain, and the price per request.</p>"
+    },
+    "PaymentNetworks":{
+      "type":"list",
+      "member":{"shape":"PaymentNetwork"},
+      "max":2,
+      "min":1
+    },
     "PercentageValue":{
       "type":"double",
       "max":100.0,
@@ -4936,6 +5429,78 @@
         "CONTAINS",
         "CONTAINS_WORD"
       ]
+    },
+    "PreParseTextTransformation":{
+      "type":"structure",
+      "required":[
+        "Priority",
+        "Type"
+      ],
+      "members":{
+        "Priority":{
+          "shape":"PreParseTextTransformationPriority",
+          "documentation":"<p>Sets the relative processing order for the pre-parse text transformations that you define. WAF processes all transformations, from lowest priority value to highest, before inspecting the transformed content. </p>"
+        },
+        "Type":{
+          "shape":"PreParseTextTransformationType",
+          "documentation":"<p>The type of pre-parse text transformation to apply to the raw query string.</p>"
+        }
+      },
+      "documentation":"<p>A pre-parse text transformation that normalizes the raw query string before WAF parses it into individual query arguments. Pre-parse text transformations are only supported when <code>FieldToMatch</code> is <code>SingleQueryArgument</code> or <code>AllQueryArguments</code>. </p>"
+    },
+    "PreParseTextTransformationPriority":{
+      "type":"integer",
+      "min":0
+    },
+    "PreParseTextTransformationType":{
+      "type":"string",
+      "enum":[
+        "NONE",
+        "URL_DECODE",
+        "URL_DECODE_UNI",
+        "COMBINE_DUPLICATE_QUERY_ARGS_BY_COMMA",
+        "REPLACE_SEMICOLONS_WITH_AMPERSANDS"
+      ]
+    },
+    "PreParseTextTransformations":{
+      "type":"list",
+      "member":{"shape":"PreParseTextTransformation"}
+    },
+    "Price":{
+      "type":"structure",
+      "required":[
+        "Amount",
+        "Currency"
+      ],
+      "members":{
+        "Amount":{
+          "shape":"PriceAmount",
+          "documentation":"<p>The price per request as a decimal string in the specified currency. Minimum: 0.001. Maximum: 999999999.999. Supports up to 3 decimal places.</p>"
+        },
+        "Currency":{
+          "shape":"CryptoCurrency",
+          "documentation":"<p>The cryptocurrency for payment. Currently only <code>USDC</code> is supported.</p>"
+        }
+      },
+      "documentation":"<p>The price per request for a payment network, specifying the amount and cryptocurrency.</p>"
+    },
+    "PriceAmount":{
+      "type":"string",
+      "max":13,
+      "min":1,
+      "pattern":"^([1-9][0-9]*(\\.[0-9]{1,3})?|0\\.([1-9][0-9]{0,2}|0[1-9][0-9]?|00[1-9]))$"
+    },
+    "PriceMultiplier":{
+      "type":"string",
+      "max":3,
+      "min":1,
+      "pattern":"^([1-9][0-9]?|100)$"
+    },
+    "Prices":{
+      "type":"list",
+      "member":{"shape":"Price"},
+      "max":1,
+      "min":1
     },
     "PricingPlanFeatureName":{
       "type":"string",
@@ -5058,6 +5623,21 @@
       "type":"structure",
       "members":{},
       "documentation":"<p>Inspect the query string of the web request. This is the part of a URL that appears after a <code>?</code> character, if any.</p> <p>This is used in the <a>FieldToMatch</a> specification for some web request component types. </p> <p>JSON specification: <code>\"QueryString\": {}</code> </p>"
+    },
+    "RankingSortBy":{
+      "type":"string",
+      "enum":[
+        "REVENUE",
+        "PERCENTAGE",
+        "NAME"
+      ]
+    },
+    "RankingStatisticType":{
+      "type":"string",
+      "enum":[
+        "TOP_SOURCES_BY_REVENUE",
+        "TOP_PATHS_BY_REVENUE"
+      ]
     },
     "RateBasedStatement":{
       "type":"structure",
@@ -5319,7 +5899,7 @@
       "members":{
         "RegexString":{
           "shape":"RegexPatternString",
-          "documentation":"<p>The string representing the regular expression.</p>"
+          "documentation":"<p>The string representing the regular expression. WAF enforces a quota on the maximum number of characters in a regex pattern. For the current limit, see <a href=\"https://docs.aws.amazon.com/waf/latest/developerguide/limits.html\">WAF quotas</a> in the <i>WAF Developer Guide</i>.</p>"
         }
       },
       "documentation":"<p>A single regular expression. This is used in a <a>RegexPatternSet</a> and also in the configuration for the Amazon Web Services Managed Rules rule group <code>AWSManagedRulesAntiDDoSRuleSet</code>.</p>"
@@ -5334,7 +5914,7 @@
       "members":{
         "RegexString":{
           "shape":"RegexPatternString",
-          "documentation":"<p>The string representing the regular expression.</p>"
+          "documentation":"<p>The string representing the regular expression. WAF enforces a quota on the maximum number of characters in a regex pattern. For the current limit, see <a href=\"https://docs.aws.amazon.com/waf/latest/developerguide/limits.html\">WAF quotas</a> in the <i>WAF Developer Guide</i>.</p>"
         },
         "FieldToMatch":{
           "shape":"FieldToMatch",
@@ -5343,6 +5923,10 @@
         "TextTransformations":{
           "shape":"TextTransformations",
           "documentation":"<p>Text transformations eliminate some of the unusual formatting that attackers use in web requests in an effort to bypass detection. Text transformations are used in rule match statements, to transform the <code>FieldToMatch</code> request component before inspecting it, and they're used in rate-based rule statements, to transform request components before using them as custom aggregation keys. If you specify one or more transformations to apply, WAF performs all transformations on the specified content, starting from the lowest priority setting, and then uses the transformed component contents. </p>"
+        },
+        "PreParseTextTransformations":{
+          "shape":"PreParseTextTransformations",
+          "documentation":"<p>Pre-parse text transformations normalize the raw query string before WAF parses it into individual query arguments. They are applied before the standard text transformations. Pre-parse text transformations are only supported when <code>FieldToMatch</code> is <code>SingleQueryArgument</code> or <code>AllQueryArguments</code>. You can specify up to 10 pre-parse text transformations per rule statement.</p>"
         }
       },
       "documentation":"<p>A rule statement used to search web request components for a match against a single regular expression. </p>"
@@ -5392,6 +5976,10 @@
         "TextTransformations":{
           "shape":"TextTransformations",
           "documentation":"<p>Text transformations eliminate some of the unusual formatting that attackers use in web requests in an effort to bypass detection. Text transformations are used in rule match statements, to transform the <code>FieldToMatch</code> request component before inspecting it, and they're used in rate-based rule statements, to transform request components before using them as custom aggregation keys. If you specify one or more transformations to apply, WAF performs all transformations on the specified content, starting from the lowest priority setting, and then uses the transformed component contents. </p>"
+        },
+        "PreParseTextTransformations":{
+          "shape":"PreParseTextTransformations",
+          "documentation":"<p>Pre-parse text transformations normalize the raw query string before WAF parses it into individual query arguments. They are applied before the standard text transformations. Pre-parse text transformations are only supported when <code>FieldToMatch</code> is <code>SingleQueryArgument</code> or <code>AllQueryArguments</code>. You can specify up to 10 pre-parse text transformations per rule statement.</p>"
         }
       },
       "documentation":"<p>A rule statement used to search web request components for matches with regular expressions. To use this, create a <a>RegexPatternSet</a> that specifies the expressions that you want to detect, then use the ARN of that set in this statement. A web request matches the pattern set rule statement if the request component matches any of the patterns in the set. To create a regex pattern set, see <a>CreateRegexPatternSet</a>.</p> <p>Each regex pattern set rule statement references a regex pattern set. You create and maintain the set independent of your rules. This allows you to use the single set in multiple rules. When you update the referenced set, WAF automatically updates all rules that reference it.</p>"
@@ -5560,7 +6148,8 @@
         "COGNITO_USER_POOL",
         "APP_RUNNER_SERVICE",
         "VERIFIED_ACCESS_INSTANCE",
-        "AMPLIFY"
+        "AMPLIFY",
+        "AGENTCORE_GATEWAY"
       ]
     },
     "ResponseCode":{"type":"integer"},
@@ -5741,6 +6330,68 @@
       "max":599,
       "min":200
     },
+    "RevenueBreakdown":{
+      "type":"structure",
+      "members":{
+        "TotalAmount":{
+          "shape":"MonetizationAmountValue",
+          "documentation":"<p>The total revenue amount in the specified currency.</p>"
+        },
+        "VerifiedAmount":{
+          "shape":"MonetizationAmountValue",
+          "documentation":"<p>The revenue amount from verified AI bots.</p>"
+        },
+        "UnverifiedAmount":{
+          "shape":"MonetizationAmountValue",
+          "documentation":"<p>The revenue amount from unverified AI bots.</p>"
+        },
+        "Currency":{
+          "shape":"Currency",
+          "documentation":"<p>The currency of the revenue amounts.</p>"
+        },
+        "TotalSettled":{
+          "shape":"RequestCount",
+          "documentation":"<p>The total number of successfully settled payment transactions.</p>"
+        },
+        "TotalMonetizeServed":{
+          "shape":"RequestCount",
+          "documentation":"<p>The total number of HTTP 402 Payment Required responses served to AI agents.</p>"
+        }
+      },
+      "documentation":"<p>A summary of AI bot monetization revenue, including total revenue, revenue by verification tier, and request counts.</p>"
+    },
+    "RevenuePathStatistics":{
+      "type":"structure",
+      "required":[
+        "Path",
+        "Percentage",
+        "Amount",
+        "RequestCount"
+      ],
+      "members":{
+        "Path":{
+          "shape":"PathString",
+          "documentation":"<p>The URI path.</p>"
+        },
+        "Percentage":{
+          "shape":"PercentageValue",
+          "documentation":"<p>The percentage of total revenue from this path.</p>"
+        },
+        "Amount":{
+          "shape":"MonetizationAmountValue",
+          "documentation":"<p>The total revenue amount from this path in the specified currency.</p>"
+        },
+        "RequestCount":{
+          "shape":"RequestCount",
+          "documentation":"<p>The number of monetized requests to this path.</p>"
+        }
+      },
+      "documentation":"<p>Revenue statistics for a single content path, including the path, revenue amount, and request count.</p>"
+    },
+    "RevenuePathStatisticsList":{
+      "type":"list",
+      "member":{"shape":"RevenuePathStatistics"}
+    },
     "Rule":{
       "type":"structure",
       "required":[
@@ -5811,6 +6462,10 @@
         "Challenge":{
           "shape":"ChallengeAction",
           "documentation":"<p>Instructs WAF to run a <code>Challenge</code> check against the web request.</p>"
+        },
+        "Monetize":{
+          "shape":"MonetizeAction",
+          "documentation":"<p>Instructs WAF to return an HTTP 402 Payment Required response with a price manifest. The requesting client can complete payment and resubmit the request to gain access. This is a terminating action-requests that do not complete payment are blocked. This action is available only for web ACLs associated with Amazon CloudFront distributions and requires a <code>MonetizationConfig</code> on the web ACL.</p>"
         }
       },
       "documentation":"<p>The action that WAF should take on a web request when it matches a rule's statement. Settings at the web ACL level can override the rule action setting. </p>"
@@ -5891,6 +6546,10 @@
         "ConsumedLabels":{
           "shape":"LabelSummaries",
           "documentation":"<p>The labels that one or more rules in this rule group match against in label match statements. These labels are defined in a <code>LabelMatchStatement</code> specification, in the <a>Statement</a> definition of a rule. </p>"
+        },
+        "MonetizationConfig":{
+          "shape":"MonetizationConfig",
+          "documentation":"<p>The monetization configuration for the rule group. Required when any rule in the rule group uses the <code>Monetize</code> action. When a rule group with a <code>MonetizationConfig</code> is used in a web ACL, the rule group's configuration applies to rules within that group unless overridden at the web ACL level.</p>"
         }
       },
       "documentation":"<p> A rule group defines a collection of rules to inspect and control web requests that you can use in a <a>WebACL</a>. When you create a rule group, you define an immutable capacity limit. If you update a rule group, you must stay within the capacity. This allows others to reuse the rule group with confidence in its capacity requirements. </p>"
@@ -6055,6 +6714,125 @@
         "HIGH"
       ]
     },
+    "SettlementFilterString":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"^[a-zA-Z0-9:._\\-=+/]+$"
+    },
+    "SettlementIdString":{
+      "type":"string",
+      "max":256,
+      "min":1
+    },
+    "SettlementRecord":{
+      "type":"structure",
+      "required":[
+        "Timestamp",
+        "Status",
+        "Amount"
+      ],
+      "members":{
+        "Timestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the settlement was recorded.</p>"
+        },
+        "PayerAddress":{
+          "shape":"SettlementFilterString",
+          "documentation":"<p>The blockchain wallet address of the paying AI agent.</p>"
+        },
+        "WalletAddress":{
+          "shape":"SettlementFilterString",
+          "documentation":"<p>Your receiving wallet address.</p>"
+        },
+        "Status":{
+          "shape":"SettlementStatus",
+          "documentation":"<p>The status of the settlement. Possible values:</p> <ul> <li> <p> <code>SETTLED</code> - The payment was successfully settled on the blockchain and the transfer from the payer's wallet to the publisher's wallet is confirmed. The <code>TransactionId</code> field contains the on-chain transaction hash. Content is served to the client.</p> </li> <li> <p> <code>PENDING</code> - The blockchain transaction has been submitted but not yet confirmed on-chain. This is a transient state that automatically resolves to either <code>SETTLED</code> or <code>FAILED</code>. No action is required. While pending, content is not served and the API returns a 402 response. Clients can retry the request.</p> </li> <li> <p> <code>FAILED</code> - The payment settlement was attempted but failed. Possible causes include insufficient funds, an expired payment authorization, or a reverted blockchain transaction. The <code>failureReason</code> field contains a machine-readable error code. Content is not served.</p> </li> <li> <p> <code>SERVICE_ERROR</code> - Settlement could not be completed due to an internal service issue or an issue with the payment network. Content is not served. The client's payment authorization remains valid and the request can be retried.</p> </li> <li> <p> <code>SKIPPED_ORIGIN_ERROR</code> - The origin returned a non-2xx response, so settlement was intentionally skipped. The client is not charged.</p> </li> <li> <p> <code>DUPLICATE</code> - A prior request with the same payment payload has already been settled. This status typically appears when a previous attempt timed out but the payment was ultimately processed. The client is not charged again.</p> </li> </ul>"
+        },
+        "Amount":{
+          "shape":"MonetizationAmountValue",
+          "documentation":"<p>The payment amount in the specified currency.</p>"
+        },
+        "Currency":{
+          "shape":"Currency",
+          "documentation":"<p>The currency of the payment amount.</p>"
+        },
+        "Network":{
+          "shape":"SettlementFilterString",
+          "documentation":"<p>The blockchain network on which the settlement occurred.</p>"
+        },
+        "TransactionId":{
+          "shape":"SettlementIdString",
+          "documentation":"<p>The blockchain transaction identifier. You can use this to verify the transaction on a blockchain explorer.</p>"
+        },
+        "RequestId":{
+          "shape":"SettlementFilterString",
+          "documentation":"<p>The WAF request ID associated with this settlement.</p>"
+        },
+        "SourceName":{
+          "shape":"FilterString",
+          "documentation":"<p>The name of the AI bot that made the payment.</p>"
+        },
+        "Organization":{
+          "shape":"FilterString",
+          "documentation":"<p>The organization associated with the AI bot.</p>"
+        },
+        "SourceCategory":{
+          "shape":"FilterString",
+          "documentation":"<p>The category of the AI bot source.</p>"
+        },
+        "Intent":{
+          "shape":"FilterString",
+          "documentation":"<p>The declared intent of the AI bot request.</p>"
+        },
+        "Verified":{
+          "shape":"VerifiedStatus",
+          "documentation":"<p>Whether the AI bot's identity was verified.</p>"
+        },
+        "ContentPath":{
+          "shape":"FilterString",
+          "documentation":"<p>The content path that was accessed.</p>"
+        },
+        "WebAclArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The ARN of the web ACL that processed the request.</p>"
+        },
+        "RequestTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp of the original web request.</p>"
+        }
+      },
+      "documentation":"<p>A single settlement transaction record for AI bot monetization. Contains details about the payment including timestamp, amount, status, and the parties involved.</p>"
+    },
+    "SettlementRecordLimit":{
+      "type":"integer",
+      "max":100,
+      "min":1
+    },
+    "SettlementRecordList":{
+      "type":"list",
+      "member":{"shape":"SettlementRecord"}
+    },
+    "SettlementSortBy":{
+      "type":"string",
+      "enum":[
+        "TIMESTAMP",
+        "AMOUNT",
+        "NAME",
+        "STATUS"
+      ]
+    },
+    "SettlementStatus":{
+      "type":"string",
+      "enum":[
+        "SETTLED",
+        "PENDING",
+        "FAILED",
+        "SERVICE_ERROR",
+        "SKIPPED_ORIGIN_ERROR",
+        "DUPLICATE"
+      ]
+    },
     "SingleCookieName":{
       "type":"string",
       "max":60,
@@ -6112,6 +6890,10 @@
         "TextTransformations":{
           "shape":"TextTransformations",
           "documentation":"<p>Text transformations eliminate some of the unusual formatting that attackers use in web requests in an effort to bypass detection. Text transformations are used in rule match statements, to transform the <code>FieldToMatch</code> request component before inspecting it, and they're used in rate-based rule statements, to transform request components before using them as custom aggregation keys. If you specify one or more transformations to apply, WAF performs all transformations on the specified content, starting from the lowest priority setting, and then uses the transformed component contents. </p>"
+        },
+        "PreParseTextTransformations":{
+          "shape":"PreParseTextTransformations",
+          "documentation":"<p>Pre-parse text transformations normalize the raw query string before WAF parses it into individual query arguments. They are applied before the standard text transformations. Pre-parse text transformations are only supported when <code>FieldToMatch</code> is <code>SingleQueryArgument</code> or <code>AllQueryArguments</code>. You can specify up to 10 pre-parse text transformations per rule statement.</p>"
         }
       },
       "documentation":"<p>A rule statement that compares a number of bytes against the size of a request component, using a comparison operator, such as greater than (&gt;) or less than (&lt;). For example, you can use a size constraint statement to look for query strings that are longer than 100 bytes. </p> <p>If you configure WAF to inspect the request body, WAF inspects only the number of bytes in the body up to the limit for the web ACL and protected resource type. If you know that the request body for your web requests should never exceed the inspection limit, you can use a size constraint statement to block requests that have a larger request body size. For more information about the inspection limits, see <code>Body</code> and <code>JsonBody</code> settings for the <code>FieldToMatch</code> data type. </p> <p>If you choose URI for the value of Part of the request to filter on, the slash (/) in the URI counts as one character. For example, the URI <code>/logo.jpg</code> is nine characters long.</p>"
@@ -6126,6 +6908,65 @@
       ]
     },
     "SolveTimestamp":{"type":"long"},
+    "SortOrder":{
+      "type":"string",
+      "enum":[
+        "ASC",
+        "DESC"
+      ]
+    },
+    "SourceStatistics":{
+      "type":"structure",
+      "required":[
+        "SourceName",
+        "Percentage",
+        "Amount",
+        "RequestCount"
+      ],
+      "members":{
+        "SourceName":{
+          "shape":"FilterString",
+          "documentation":"<p>The name of the AI bot.</p>"
+        },
+        "Percentage":{
+          "shape":"PercentageValue",
+          "documentation":"<p>The percentage of total revenue from this source.</p>"
+        },
+        "Amount":{
+          "shape":"MonetizationAmountValue",
+          "documentation":"<p>The total revenue amount from this source in the specified currency.</p>"
+        },
+        "RequestCount":{
+          "shape":"RequestCount",
+          "documentation":"<p>The number of monetized requests from this source.</p>"
+        },
+        "SourceCategory":{
+          "shape":"FilterString",
+          "documentation":"<p>The category of this AI bot source.</p>"
+        },
+        "Intent":{
+          "shape":"FilterString",
+          "documentation":"<p>The declared intent of the AI bot (for example, summarize, index, or train).</p>"
+        },
+        "Organization":{
+          "shape":"FilterString",
+          "documentation":"<p>The organization associated with the AI bot.</p>"
+        },
+        "Verified":{
+          "shape":"VerifiedStatus",
+          "documentation":"<p>Indicates whether the AI bot's identity was verified — for example, through a cryptographically signed request (Web Bot Auth) or another published verification method. This value is meaningful only when GroupBy is NAME, where each result represents a single, identifiable bot. For all other GroupBy values (CATEGORY, INTENT, ORGANIZATION, or WEBACL), a result aggregates multiple bots that may have different verification states, so Verified is always returned as false and should be ignored. Type and required-ness are unchanged (Boolean, optional).</p>"
+        },
+        "GroupByValue":{
+          "shape":"FilterString",
+          "documentation":"<p>The value for the group-by dimension, when grouping is applied.</p>"
+        }
+      },
+      "documentation":"<p>Revenue statistics for a single AI bot source, including the bot name, revenue amount, request count, and verification status.</p>"
+    },
+    "SourceStatisticsList":{
+      "type":"list",
+      "member":{"shape":"SourceStatistics"}
+    },
     "SourceType":{"type":"string"},
     "SqliMatchStatement":{
       "type":"structure",
@@ -6141,6 +6982,10 @@
         "TextTransformations":{
           "shape":"TextTransformations",
           "documentation":"<p>Text transformations eliminate some of the unusual formatting that attackers use in web requests in an effort to bypass detection. Text transformations are used in rule match statements, to transform the <code>FieldToMatch</code> request component before inspecting it, and they're used in rate-based rule statements, to transform request components before using them as custom aggregation keys. If you specify one or more transformations to apply, WAF performs all transformations on the specified content, starting from the lowest priority setting, and then uses the transformed component contents. </p>"
+        },
+        "PreParseTextTransformations":{
+          "shape":"PreParseTextTransformations",
+          "documentation":"<p>Pre-parse text transformations normalize the raw query string before WAF parses it into individual query arguments. They are applied before the standard text transformations. Pre-parse text transformations are only supported when <code>FieldToMatch</code> is <code>SingleQueryArgument</code> or <code>AllQueryArguments</code>. You can specify up to 10 pre-parse text transformations per rule statement.</p>"
         },
         "SensitivityLevel":{
           "shape":"SensitivityLevel",
@@ -6355,13 +7200,30 @@
         "REPLACE_NULLS",
         "BASE64_DECODE_EXT",
         "URL_DECODE_UNI",
-        "UTF8_TO_UNICODE"
+        "UTF8_TO_UNICODE",
+        "REMOVE_WHITESPACE",
+        "TRIM",
+        "TRIM_LEFT",
+        "TRIM_RIGHT",
+        "REMOVE_COMMENTS_CHAR",
+        "UPPERCASE",
+        "CMD_LINE_WIN",
+        "CMD_LINE_UNIX",
+        "JS_DECODE_EXT",
+        "SHA256"
       ]
     },
     "TextTransformations":{
       "type":"list",
       "member":{"shape":"TextTransformation"},
       "min":1
+    },
+    "TimeSeriesStatisticType":{
+      "type":"string",
+      "enum":[
+        "DATE_HISTOGRAM",
+        "PAYMENT_TRAFFIC"
+      ]
     },
     "TimeWindow":{
       "type":"structure",
@@ -6608,6 +7470,10 @@
         "CustomResponseBodies":{
           "shape":"CustomResponseBodies",
           "documentation":"<p>A map of custom response keys and content bodies. When you create a rule with a block action, you can send a custom response to the web request. You define these for the rule group, and then use them in the rules that you define in the rule group. </p> <p>For information about customizing web requests and responses, see <a href=\"https://docs.aws.amazon.com/waf/latest/developerguide/waf-custom-request-response.html\">Customizing web requests and responses in WAF</a> in the <i>WAF Developer Guide</i>. </p> <p>For information about the limits on count and size for custom request and response settings, see <a href=\"https://docs.aws.amazon.com/waf/latest/developerguide/limits.html\">WAF quotas</a> in the <i>WAF Developer Guide</i>. </p>"
+        },
+        "MonetizationConfig":{
+          "shape":"MonetizationConfig",
+          "documentation":"<p>The monetization configuration for the rule group. Provide this when any rule in the rule group uses the <code>Monetize</code> action.</p>"
         }
       }
     },
@@ -6694,6 +7560,10 @@
         "ApplicationConfig":{
           "shape":"ApplicationConfig",
           "documentation":"<p>Configures the ability for the WAF console to store and retrieve application attributes. Application attributes help WAF give recommendations for protection packs.</p> <p>When using <code>UpdateWebACL</code>, <code>ApplicationConfig</code> follows these rules:</p> <ul> <li> <p>If you omit <code>ApplicationConfig</code> from the request, all existing entries in the web ACL are retained.</p> </li> <li> <p>If you include <code>ApplicationConfig</code>, entries must match the existing values exactly. Any attempt to modify existing entries will result in an error.</p> </li> </ul>"
+        },
+        "MonetizationConfig":{
+          "shape":"MonetizationConfig",
+          "documentation":"<p>The monetization configuration for the web ACL. Provide this when any rule in the web ACL uses the <code>Monetize</code> action.</p>"
         }
       }
     },
@@ -6751,6 +7621,7 @@
       "min":1,
       "pattern":".*\\S.*"
     },
+    "VerifiedStatus":{"type":"boolean"},
     "VersionKeyString":{
       "type":"string",
       "max":64,
@@ -6981,6 +7852,12 @@
       "documentation":"<p>The rule that you've named doesn't aggregate solely on the IP address or solely on the forwarded IP address. This call is only available for rate-based rules with an <code>AggregateKeyType</code> setting of <code>IP</code> or <code>FORWARDED_IP</code>.</p>",
       "exception":true
     },
+    "WalletAddress":{
+      "type":"string",
+      "max":44,
+      "min":26,
+      "pattern":".*\\S.*"
+    },
     "WebACL":{
       "type":"structure",
       "required":[
@@ -7074,9 +7951,13 @@
         "ApplicationConfig":{
           "shape":"ApplicationConfig",
           "documentation":"<p>Returns a list of <code>ApplicationAttribute</code>s.</p>"
+        },
+        "MonetizationConfig":{
+          "shape":"MonetizationConfig",
+          "documentation":"<p>The monetization configuration for the web ACL. Required when any rule in the web ACL uses the <code>Monetize</code> action. Specifies the cryptocurrency payment networks and currency mode for AI bot monetization.</p>"
         }
       },
-      "documentation":"<p> A web ACL defines a collection of rules to use to inspect and control web requests. Each rule has a statement that defines what to look for in web requests and an action that WAF applies to requests that match the statement. In the web ACL, you assign a default action to take (allow, block) for any request that does not match any of the rules. The rules in a web ACL can be a combination of the types <a>Rule</a>, <a>RuleGroup</a>, and managed rule group. You can associate a web ACL with one or more Amazon Web Services resources to protect. The resource types include Amazon CloudFront distribution, Amazon API Gateway REST API, Application Load Balancer, AppSync GraphQL API, Amazon Cognito user pool, App Runner service, Amplify application, and Amazon Web Services Verified Access instance. </p>"
+      "documentation":"<p> A web ACL defines a collection of rules to use to inspect and control web requests. Each rule has a statement that defines what to look for in web requests and an action that WAF applies to requests that match the statement. In the web ACL, you assign a default action to take (allow, block) for any request that does not match any of the rules. The rules in a web ACL can be a combination of the types <a>Rule</a>, <a>RuleGroup</a>, and managed rule group. You can associate a web ACL with one or more Amazon Web Services resources to protect. The resource types include Amazon CloudFront distribution, Amazon API Gateway REST API, Application Load Balancer, AppSync GraphQL API, Amazon Cognito user pool, App Runner service, Amplify application, Amazon Web Services Verified Access instance, and Amazon Bedrock AgentCore Gateway. </p>"
     },
     "WebACLSummaries":{
       "type":"list",
@@ -7122,6 +8003,10 @@
         "TextTransformations":{
           "shape":"TextTransformations",
           "documentation":"<p>Text transformations eliminate some of the unusual formatting that attackers use in web requests in an effort to bypass detection. Text transformations are used in rule match statements, to transform the <code>FieldToMatch</code> request component before inspecting it, and they're used in rate-based rule statements, to transform request components before using them as custom aggregation keys. If you specify one or more transformations to apply, WAF performs all transformations on the specified content, starting from the lowest priority setting, and then uses the transformed component contents. </p>"
+        },
+        "PreParseTextTransformations":{
+          "shape":"PreParseTextTransformations",
+          "documentation":"<p>Pre-parse text transformations normalize the raw query string before WAF parses it into individual query arguments. They are applied before the standard text transformations. Pre-parse text transformations are only supported when <code>FieldToMatch</code> is <code>SingleQueryArgument</code> or <code>AllQueryArguments</code>. You can specify up to 10 pre-parse text transformations per rule statement.</p>"
         }
       },
       "documentation":"<p>A rule statement that inspects for cross-site scripting (XSS) attacks. In XSS attacks, the attacker uses vulnerabilities in a benign website as a vehicle to inject malicious client-site scripts into other legitimate web browsers. </p>"

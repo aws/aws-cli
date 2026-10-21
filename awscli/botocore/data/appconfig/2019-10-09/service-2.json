@@ -81,6 +81,24 @@
       ],
       "documentation":"<p>Creates an environment. For each application, you define one or more environments. An environment is a deployment group of AppConfig targets, such as applications in a <code>Beta</code> or <code>Production</code> environment. You can also define environments for application subcomponents such as the <code>Web</code>, <code>Mobile</code> and <code>Back-end</code> components for your application. You can configure Amazon CloudWatch alarms for each environment. The system monitors alarms during a configuration deployment. If an alarm is triggered, the system rolls back the configuration.</p>"
     },
+    "CreateExperimentDefinition":{
+      "name":"CreateExperimentDefinition",
+      "http":{
+        "method":"POST",
+        "requestUri":"/applications/{ApplicationIdentifier}/experimentdefinitions",
+        "responseCode":201
+      },
+      "input":{"shape":"CreateExperimentDefinitionRequest"},
+      "output":{"shape":"ExperimentDefinition"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Creates an experiment definition in AppConfig. An experiment definition describes the purpose, scope, and operational configuration of an experiment, including the target audience, feature flag, and treatment configurations.</p>"
+    },
     "CreateExtension":{
       "name":"CreateExtension",
       "http":{
@@ -132,7 +150,7 @@
         {"shape":"PayloadTooLargeException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Creates a new configuration in the AppConfig hosted configuration store. If you're creating a feature flag, we recommend you familiarize yourself with the JSON schema for feature flag data. For more information, see <a href=\"https://docs.aws.amazon.com/appconfig/latest/userguide/appconfig-creating-configuration-and-profile-feature-flags.html#appconfig-type-reference-feature-flags\">Type reference for AWS.AppConfig.FeatureFlags</a> in the <i>AppConfig User Guide</i>.</p>"
+      "documentation":"<p>Creates a new configuration in the AppConfig hosted configuration store. If you're creating a feature flag, we recommend you familiarize yourself with the JSON schema for feature flag data. For more information, see <a href=\"https://docs.aws.amazon.com/appconfig/latest/userguide/appconfig-type-reference-feature-flags.html\">Type reference for AWS.AppConfig.FeatureFlags</a> in the <i>AppConfig User Guide</i>.</p>"
     },
     "DeleteApplication":{
       "name":"DeleteApplication",
@@ -195,6 +213,23 @@
         {"shape":"BadRequestException"}
       ],
       "documentation":"<p>Deletes an environment.</p> <p>To prevent users from unintentionally deleting actively-used environments, enable <a href=\"https://docs.aws.amazon.com/appconfig/latest/userguide/deletion-protection.html\">deletion protection</a>.</p>"
+    },
+    "DeleteExperimentDefinition":{
+      "name":"DeleteExperimentDefinition",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/applications/{ApplicationIdentifier}/experimentdefinitions/{ExperimentDefinitionIdentifier}",
+        "responseCode":204
+      },
+      "input":{"shape":"DeleteExperimentDefinitionRequest"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Deletes an experiment definition. You can archive the definition to hide it from the active list while preserving it for future reference, or permanently delete it along with all associated run history.</p>",
+      "idempotent":true
     },
     "DeleteExtension":{
       "name":"DeleteExtension",
@@ -353,6 +388,40 @@
       ],
       "documentation":"<p>Retrieves information about an environment. An environment is a deployment group of AppConfig applications, such as applications in a <code>Production</code> environment or in an <code>EU_Region</code> environment. Each configuration deployment targets an environment. You can enable one or more Amazon CloudWatch alarms for an environment. If an alarm is triggered during a deployment, AppConfig roles back the configuration.</p>"
     },
+    "GetExperimentDefinition":{
+      "name":"GetExperimentDefinition",
+      "http":{
+        "method":"GET",
+        "requestUri":"/applications/{ApplicationIdentifier}/experimentdefinitions/{ExperimentDefinitionIdentifier}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetExperimentDefinitionRequest"},
+      "output":{"shape":"ExperimentDefinition"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Retrieves information about an experiment definition.</p>",
+      "readonly":true
+    },
+    "GetExperimentRun":{
+      "name":"GetExperimentRun",
+      "http":{
+        "method":"GET",
+        "requestUri":"/applications/{ApplicationIdentifier}/experimentdefinitions/{ExperimentDefinitionIdentifier}/experimentruns/{Run}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetExperimentRunRequest"},
+      "output":{"shape":"ExperimentRun"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"BadRequestException"}
+      ],
+      "documentation":"<p>Retrieves information about an experiment run, including its status, start time, and exposure settings.</p>",
+      "readonly":true
+    },
     "GetExtension":{
       "name":"GetExtension",
       "http":{
@@ -479,6 +548,57 @@
       ],
       "documentation":"<p>Lists the environments for an application.</p>"
     },
+    "ListExperimentDefinitions":{
+      "name":"ListExperimentDefinitions",
+      "http":{
+        "method":"GET",
+        "requestUri":"/experimentdefinitions",
+        "responseCode":200
+      },
+      "input":{"shape":"ListExperimentDefinitionsRequest"},
+      "output":{"shape":"ExperimentDefinitions"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"BadRequestException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Lists the experiment definitions for an account. You can filter results by application, configuration profile, environment, or status.</p>",
+      "readonly":true
+    },
+    "ListExperimentRunEvents":{
+      "name":"ListExperimentRunEvents",
+      "http":{
+        "method":"GET",
+        "requestUri":"/applications/{ApplicationIdentifier}/experimentdefinitions/{ExperimentDefinitionIdentifier}/experimentruns/{Run}/events",
+        "responseCode":200
+      },
+      "input":{"shape":"ListExperimentRunEventsRequest"},
+      "output":{"shape":"ExperimentRunEvents"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"BadRequestException"}
+      ],
+      "documentation":"<p>Lists the events for a specified experiment run. Events provide a timeline of actions and state changes that occurred during the run.</p>",
+      "readonly":true
+    },
+    "ListExperimentRuns":{
+      "name":"ListExperimentRuns",
+      "http":{
+        "method":"GET",
+        "requestUri":"/applications/{ApplicationIdentifier}/experimentdefinitions/{ExperimentDefinitionIdentifier}/experimentruns",
+        "responseCode":200
+      },
+      "input":{"shape":"ListExperimentRunsRequest"},
+      "output":{"shape":"ExperimentRuns"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"BadRequestException"}
+      ],
+      "documentation":"<p>Lists the experiment runs for a specified experiment definition. You can filter by status.</p>",
+      "readonly":true
+    },
     "ListExtensionAssociations":{
       "name":"ListExtensionAssociations",
       "http":{
@@ -556,7 +676,24 @@
         {"shape":"ConflictException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Starts a deployment.</p>"
+      "documentation":"<p>Starts a deployment.</p> <note> <p>AppConfig Agent supports deploying feature flag or free-form configuration data to specific segments or individual users during a gradual rollout. Entity-based gradual deployments ensure that once a user or segment receives a configuration version, they continue to receive that same version throughout the deployment period, regardless of which compute resource serves their requests. For more information, see <a href=\"https://docs.aws.amazon.com/appconfig/latest/userguide/appconfig-agent-how-to-use.html#appconfig-entity-based-gradual-deployments\">Using AppConfig Agent for user-based or entity-based gradual deployments</a> </p> </note>"
+    },
+    "StartExperimentRun":{
+      "name":"StartExperimentRun",
+      "http":{
+        "method":"POST",
+        "requestUri":"/applications/{ApplicationIdentifier}/experimentdefinitions/{ExperimentDefinitionIdentifier}/experimentruns",
+        "responseCode":201
+      },
+      "input":{"shape":"StartExperimentRunRequest"},
+      "output":{"shape":"ExperimentRun"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Starts an experiment run for the specified experiment definition. An experiment run delivers treatments to the target audience and collects metrics. You can start multiple experiment runs from the same experiment definition.</p> <note> <p>Billing for this experiment begins when you call this operation and continues until the experiment is stopped. For pricing details, see <a href=\"https://aws.amazon.com/systems-manager/pricing/\">AppConfig pricing</a>.</p> </note>"
     },
     "StopDeployment":{
       "name":"StopDeployment",
@@ -573,6 +710,23 @@
         {"shape":"BadRequestException"}
       ],
       "documentation":"<p>Stops a deployment. This API action works only on deployments that have a status of <code>DEPLOYING</code>, unless an <code>AllowRevert</code> parameter is supplied. If the <code>AllowRevert</code> parameter is supplied, the status of an in-progress deployment will be <code>ROLLED_BACK</code>. The status of a completed deployment will be <code>REVERTED</code>. AppConfig only allows a revert within 72 hours of deployment completion.</p>"
+    },
+    "StopExperimentRun":{
+      "name":"StopExperimentRun",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/applications/{ApplicationIdentifier}/experimentdefinitions/{ExperimentDefinitionIdentifier}/experimentruns/{Run}/stop",
+        "responseCode":200
+      },
+      "input":{"shape":"StopExperimentRunRequest"},
+      "output":{"shape":"ExperimentRun"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ConflictException"},
+        {"shape":"BadRequestException"}
+      ],
+      "documentation":"<p>Stops a running experiment. Stopping an experiment run ends audience exposure and returns users to the currently deployed feature flag configuration.</p>"
     },
     "TagResource":{
       "name":"TagResource",
@@ -683,6 +837,40 @@
       ],
       "documentation":"<p>Updates an environment.</p>"
     },
+    "UpdateExperimentDefinition":{
+      "name":"UpdateExperimentDefinition",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/applications/{ApplicationIdentifier}/experimentdefinitions/{ExperimentDefinitionIdentifier}",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateExperimentDefinitionRequest"},
+      "output":{"shape":"ExperimentDefinition"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Updates an experiment definition. You can update treatments, the control, audience rules, and other properties. You cannot update an experiment definition while an experiment run is active.</p>"
+    },
+    "UpdateExperimentRun":{
+      "name":"UpdateExperimentRun",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/applications/{ApplicationIdentifier}/experimentdefinitions/{ExperimentDefinitionIdentifier}/experimentruns/{Run}/update",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateExperimentRunRequest"},
+      "output":{"shape":"ExperimentRun"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Updates a running experiment. Use this operation to increase audience exposure, modify treatment assignment overrides, or update the description of an active experiment run. Audience exposure can only be increased, not decreased.</p>"
+    },
     "UpdateExtension":{
       "name":"UpdateExtension",
       "http":{
@@ -739,6 +927,10 @@
         "DeletionProtection":{
           "shape":"DeletionProtectionSettings",
           "documentation":"<p>A parameter to configure deletion protection. Deletion protection prevents a user from deleting a configuration profile or an environment if AppConfig has called either <a href=\"https://docs.aws.amazon.com/appconfig/2019-10-09/APIReference/API_appconfigdata_GetLatestConfiguration.html\">GetLatestConfiguration</a> or for the configuration profile or from the environment during the specified interval. The default interval for <code>ProtectionPeriodInMinutes</code> is 60.</p>"
+        },
+        "VendedMetrics":{
+          "shape":"VendedMetricsSettings",
+          "documentation":"<p>The configuration for vended metrics in the account.</p>"
         }
       }
     },
@@ -894,6 +1086,51 @@
       "min":20,
       "pattern":"arn:(aws[a-zA-Z-]*)?:[a-z]+:((eusc-)?[a-z]{2}((-gov)|(-iso([a-z]?)))?-[a-z]+-\\d{1})?:(\\d{12})?:[a-zA-Z0-9-_/:.]+"
     },
+    "AttributeKey":{
+      "type":"string",
+      "pattern":"(?!enabled$)[a-z][a-zA-Z0-9_-]{0,63}"
+    },
+    "AttributeString":{
+      "type":"string",
+      "max":1024,
+      "min":0
+    },
+    "AttributeValue":{
+      "type":"structure",
+      "members":{
+        "StringValue":{
+          "shape":"AttributeString",
+          "documentation":"<p>A string value for the attribute.</p>"
+        },
+        "NumberValue":{
+          "shape":"Double",
+          "documentation":"<p>A numeric value for the attribute.</p>",
+          "box":true
+        },
+        "BooleanValue":{
+          "shape":"Boolean",
+          "documentation":"<p>A Boolean value for the attribute.</p>",
+          "box":true
+        },
+        "StringArray":{
+          "shape":"StringList",
+          "documentation":"<p>An array of string values for the attribute.</p>"
+        },
+        "NumberArray":{
+          "shape":"NumberList",
+          "documentation":"<p>An array of numeric values for the attribute.</p>"
+        }
+      },
+      "documentation":"<p>A value for a feature flag attribute. Only one of the members can be set.</p>",
+      "union":true
+    },
+    "AttributeValueMap":{
+      "type":"map",
+      "key":{"shape":"AttributeKey"},
+      "value":{"shape":"AttributeValue"},
+      "max":25,
+      "min":0
+    },
     "BadRequestDetails":{
       "type":"structure",
       "members":{
@@ -1032,7 +1269,7 @@
     },
     "ConfigurationProfileType":{
       "type":"string",
-      "pattern":"^[a-zA-Z\\.]+"
+      "pattern":"^[a-zA-Z0-9\\.\\-]+"
     },
     "ConfigurationProfiles":{
       "type":"structure",
@@ -1083,7 +1320,7 @@
       ],
       "members":{
         "ApplicationId":{
-          "shape":"Id",
+          "shape":"Name",
           "documentation":"<p>The application ID.</p>",
           "location":"uri",
           "locationName":"ApplicationId"
@@ -1140,7 +1377,7 @@
         },
         "DeploymentDurationInMinutes":{
           "shape":"MinutesBetween0And24Hours",
-          "documentation":"<p>Total amount of time for a deployment to last.</p>",
+          "documentation":"<p>Total amount of time for a deployment to last.</p> <note> <p>AppConfig Agent supports deploying feature flag or free-form configuration data to specific segments or individual users during a gradual rollout. Entity-based gradual deployments ensure that once a user or segment receives a configuration version, they continue to receive that same version throughout the deployment period, regardless of which compute resource serves their requests. For more information, see <a href=\"https://docs.aws.amazon.com/appconfig/latest/userguide/appconfig-agent-how-to-use.html#appconfig-entity-based-gradual-deployments\">Using AppConfig Agent for user-based or entity-based gradual deployments</a> </p> </note>",
           "box":true
         },
         "FinalBakeTimeInMinutes":{
@@ -1174,7 +1411,7 @@
       ],
       "members":{
         "ApplicationId":{
-          "shape":"Id",
+          "shape":"Name",
           "documentation":"<p>The application ID.</p>",
           "location":"uri",
           "locationName":"ApplicationId"
@@ -1194,6 +1431,71 @@
         "Tags":{
           "shape":"TagMap",
           "documentation":"<p>Metadata to assign to the environment. Tags help organize and categorize your AppConfig resources. Each tag consists of a key and an optional value, both of which you define.</p>"
+        }
+      }
+    },
+    "CreateExperimentDefinitionRequest":{
+      "type":"structure",
+      "required":[
+        "ApplicationIdentifier",
+        "Name",
+        "ConfigurationProfileIdentifier",
+        "EnvironmentIdentifier",
+        "FlagKey",
+        "Treatments",
+        "Control",
+        "AudienceRule"
+      ],
+      "members":{
+        "ApplicationIdentifier":{
+          "shape":"Identifier",
+          "documentation":"<p>The application ID or name.</p>",
+          "location":"uri",
+          "locationName":"ApplicationIdentifier"
+        },
+        "Name":{
+          "shape":"NameWithReservedAwsPrefix",
+          "documentation":"<p>A name for the experiment definition.</p>"
+        },
+        "ConfigurationProfileIdentifier":{
+          "shape":"Identifier",
+          "documentation":"<p>The configuration profile ID or name that stores the feature flag.</p>"
+        },
+        "EnvironmentIdentifier":{
+          "shape":"Identifier",
+          "documentation":"<p>The environment ID or name where the experiment will run.</p>"
+        },
+        "FlagKey":{
+          "shape":"FlagKey",
+          "documentation":"<p>The key of the existing feature flag to use with the experiment.</p>"
+        },
+        "Treatments":{
+          "shape":"TreatmentInputList",
+          "documentation":"<p>A list of treatments to evaluate during the experiment. Each treatment defines a distinct variation compared to the control.</p>"
+        },
+        "Control":{
+          "shape":"TreatmentInput",
+          "documentation":"<p>The control treatment that represents the baseline experience for comparison.</p>"
+        },
+        "AudienceRule":{
+          "shape":"Rule",
+          "documentation":"<p>A rule that defines which users are eligible to be assigned to treatments during the experiment.</p>"
+        },
+        "Hypothesis":{
+          "shape":"Description",
+          "documentation":"<p>A description of the goal or hypothesis the experiment is designed to validate.</p>"
+        },
+        "AudienceDescription":{
+          "shape":"Description",
+          "documentation":"<p>A description of the intended audience for the experiment.</p>"
+        },
+        "LaunchCriteria":{
+          "shape":"Description",
+          "documentation":"<p>Information about the conditions under which you would launch the winning treatment.</p>"
+        },
+        "Tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags to assign to the experiment definition. Tags help organize and categorize your AppConfig resources.</p>"
         }
       }
     },
@@ -1273,20 +1575,20 @@
       ],
       "members":{
         "ApplicationId":{
-          "shape":"Id",
+          "shape":"Name",
           "documentation":"<p>The application ID.</p>",
           "location":"uri",
           "locationName":"ApplicationId"
         },
         "ConfigurationProfileId":{
-          "shape":"Id",
+          "shape":"LongName",
           "documentation":"<p>The configuration profile ID.</p>",
           "location":"uri",
           "locationName":"ConfigurationProfileId"
         },
         "Description":{
           "shape":"Description",
-          "documentation":"<p>A description of the configuration.</p>",
+          "documentation":"<p>A description of the configuration.</p> <note> <p>Due to HTTP limitations, this field only supports ASCII characters.</p> </note>",
           "location":"header",
           "locationName":"Description"
         },
@@ -1321,7 +1623,7 @@
       "required":["ApplicationId"],
       "members":{
         "ApplicationId":{
-          "shape":"Id",
+          "shape":"Name",
           "documentation":"<p>The ID of the application to delete.</p>",
           "location":"uri",
           "locationName":"ApplicationId"
@@ -1336,13 +1638,13 @@
       ],
       "members":{
         "ApplicationId":{
-          "shape":"Id",
+          "shape":"Name",
           "documentation":"<p>The application ID that includes the configuration profile you want to delete.</p>",
           "location":"uri",
           "locationName":"ApplicationId"
         },
         "ConfigurationProfileId":{
-          "shape":"Id",
+          "shape":"LongName",
           "documentation":"<p>The ID of the configuration profile you want to delete.</p>",
           "location":"uri",
           "locationName":"ConfigurationProfileId"
@@ -1375,13 +1677,13 @@
       ],
       "members":{
         "EnvironmentId":{
-          "shape":"Id",
+          "shape":"Name",
           "documentation":"<p>The ID of the environment that you want to delete.</p>",
           "location":"uri",
           "locationName":"EnvironmentId"
         },
         "ApplicationId":{
-          "shape":"Id",
+          "shape":"Name",
           "documentation":"<p>The application ID that includes the environment that you want to delete.</p>",
           "location":"uri",
           "locationName":"ApplicationId"
@@ -1391,6 +1693,33 @@
           "documentation":"<p>A parameter to configure deletion protection. Deletion protection prevents a user from deleting an environment if your application called either <a href=\"https://docs.aws.amazon.com/appconfig/2019-10-09/APIReference/API_appconfigdata_GetLatestConfiguration.html\">GetLatestConfiguration</a> or in the environment during the specified interval. </p> <p>This parameter supports the following values:</p> <ul> <li> <p> <code>BYPASS</code>: Instructs AppConfig to bypass the deletion protection check and delete a configuration profile even if deletion protection would have otherwise prevented it. </p> </li> <li> <p> <code>APPLY</code>: Instructs the deletion protection check to run, even if deletion protection is disabled at the account level. <code>APPLY</code> also forces the deletion protection check to run against resources created in the past hour, which are normally excluded from deletion protection checks.</p> </li> <li> <p> <code>ACCOUNT_DEFAULT</code>: The default setting, which instructs AppConfig to implement the deletion protection value specified in the <code>UpdateAccountSettings</code> API.</p> </li> </ul>",
           "location":"header",
           "locationName":"x-amzn-deletion-protection-check"
+        }
+      }
+    },
+    "DeleteExperimentDefinitionRequest":{
+      "type":"structure",
+      "required":[
+        "ApplicationIdentifier",
+        "ExperimentDefinitionIdentifier"
+      ],
+      "members":{
+        "ApplicationIdentifier":{
+          "shape":"Identifier",
+          "documentation":"<p>The application ID or name.</p>",
+          "location":"uri",
+          "locationName":"ApplicationIdentifier"
+        },
+        "ExperimentDefinitionIdentifier":{
+          "shape":"Identifier",
+          "documentation":"<p>The experiment definition ID or name.</p>",
+          "location":"uri",
+          "locationName":"ExperimentDefinitionIdentifier"
+        },
+        "DeleteType":{
+          "shape":"DeleteType",
+          "documentation":"<p>The type of deletion to perform. Valid values include archive (hide but preserve) and permanent (delete permanently).</p>",
+          "location":"querystring",
+          "locationName":"delete_type"
         }
       }
     },
@@ -1434,13 +1763,13 @@
       ],
       "members":{
         "ApplicationId":{
-          "shape":"Id",
+          "shape":"Name",
           "documentation":"<p>The application ID.</p>",
           "location":"uri",
           "locationName":"ApplicationId"
         },
         "ConfigurationProfileId":{
-          "shape":"Id",
+          "shape":"LongName",
           "documentation":"<p>The configuration profile ID.</p>",
           "location":"uri",
           "locationName":"ConfigurationProfileId"
@@ -1452,6 +1781,13 @@
           "locationName":"VersionNumber"
         }
       }
+    },
+    "DeleteType":{
+      "type":"string",
+      "enum":[
+        "ARCHIVE",
+        "DESTROY"
+      ]
     },
     "DeletionProtectionCheck":{
       "type":"string",
@@ -1622,6 +1958,20 @@
       "type":"list",
       "member":{"shape":"DeploymentSummary"}
     },
+    "DeploymentParameters":{
+      "type":"structure",
+      "members":{
+        "DynamicExtensionParameters":{
+          "shape":"DynamicParameterMap",
+          "documentation":"<p>A map of extension parameters for the deployment.</p>"
+        },
+        "Tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags to assign to the deployment.</p>"
+        }
+      },
+      "documentation":"<p>The deployment parameters for an experiment run, including dynamic extension parameters and tags.</p>"
+    },
     "DeploymentState":{
       "type":"string",
       "enum":[
@@ -1699,6 +2049,10 @@
           "shape":"Integer",
           "documentation":"<p>The sequence number of the deployment.</p>"
         },
+        "ConfigurationProfileId":{
+          "shape":"Id",
+          "documentation":"<p>The ID of the configuration profile that was deployed.</p>"
+        },
         "ConfigurationName":{
           "shape":"Name",
           "documentation":"<p>The name of the configuration.</p>"
@@ -1742,9 +2096,20 @@
         "VersionLabel":{
           "shape":"VersionLabel",
           "documentation":"<p>A user-defined label for an AppConfig hosted configuration version.</p>"
+        },
+        "Type":{
+          "shape":"DeploymentType",
+          "documentation":"<p>The type of deployment.</p>"
         }
       },
       "documentation":"<p>Information about the deployment.</p>"
+    },
+    "DeploymentType":{
+      "type":"string",
+      "enum":[
+        "USER",
+        "MANAGED"
+      ]
     },
     "Deployments":{
       "type":"structure",
@@ -1764,6 +2129,7 @@
       "max":1024,
       "min":0
     },
+    "Double":{"type":"double"},
     "DynamicParameterKey":{
       "type":"string",
       "pattern":"^([^#\\n]{1,96})#([^\\/#\\n]{1,64})$"
@@ -1775,6 +2141,11 @@
       "max":10,
       "min":1,
       "sensitive":true
+    },
+    "EntityId":{
+      "type":"string",
+      "max":2048,
+      "min":1
     },
     "Environment":{
       "type":"structure",
@@ -1831,6 +2202,396 @@
           "documentation":"<p>The token for the next set of items to return. Use this token to get the next set of results.</p>"
         }
       }
+    },
+    "ExperimentDefinition":{
+      "type":"structure",
+      "members":{
+        "ApplicationId":{
+          "shape":"Id",
+          "documentation":"<p>The application ID.</p>"
+        },
+        "Id":{
+          "shape":"Id",
+          "documentation":"<p>The experiment definition ID.</p>"
+        },
+        "Name":{
+          "shape":"Name",
+          "documentation":"<p>The name of the experiment definition.</p>"
+        },
+        "Hypothesis":{
+          "shape":"Description",
+          "documentation":"<p>The hypothesis that the experiment is designed to validate.</p>"
+        },
+        "Status":{
+          "shape":"ExperimentDefinitionStatus",
+          "documentation":"<p>The current status of the experiment definition. Valid values: <code>ACTIVE</code>, <code>IDLE</code>, <code>ARCHIVED</code>.</p>"
+        },
+        "ConfigurationProfileId":{
+          "shape":"Id",
+          "documentation":"<p>The configuration profile ID associated with the experiment.</p>"
+        },
+        "EnvironmentId":{
+          "shape":"Id",
+          "documentation":"<p>The environment ID where the experiment runs.</p>"
+        },
+        "FlagKey":{
+          "shape":"FlagKey",
+          "documentation":"<p>The key of the feature flag used by the experiment.</p>"
+        },
+        "AudienceRule":{
+          "shape":"Rule",
+          "documentation":"<p>The rule that defines which users are eligible to be assigned to treatments.</p>"
+        },
+        "AudienceDescription":{
+          "shape":"Description",
+          "documentation":"<p>A description of the intended audience for the experiment.</p>"
+        },
+        "LaunchCriteria":{
+          "shape":"Description",
+          "documentation":"<p>The conditions under which the winning treatment should be launched.</p>"
+        },
+        "Treatments":{
+          "shape":"TreatmentList",
+          "documentation":"<p>The list of treatments defined for the experiment.</p>"
+        },
+        "Control":{
+          "shape":"Treatment",
+          "documentation":"<p>The control treatment used as the baseline for comparison.</p>"
+        },
+        "CreatedAt":{
+          "shape":"Iso8601DateTime",
+          "documentation":"<p>The date and time the experiment definition was created, in ISO 8601 format.</p>"
+        },
+        "UpdatedAt":{
+          "shape":"Iso8601DateTime",
+          "documentation":"<p>The date and time the experiment definition was last updated, in ISO 8601 format.</p>"
+        },
+        "KmsKeyIdentifier":{
+          "shape":"KmsKeyIdentifier",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the KMS key used to encrypt experiment data.</p>"
+        }
+      },
+      "documentation":"<p>Describes an experiment definition, including the target audience, feature flag, treatments, and current status.</p>"
+    },
+    "ExperimentDefinitionList":{
+      "type":"list",
+      "member":{"shape":"ExperimentDefinitionSummary"}
+    },
+    "ExperimentDefinitionSnapshot":{
+      "type":"structure",
+      "members":{
+        "ApplicationId":{
+          "shape":"Id",
+          "documentation":"<p>The application ID at the time the run was started.</p>"
+        },
+        "Id":{
+          "shape":"Id",
+          "documentation":"<p>The experiment definition ID.</p>"
+        },
+        "Name":{
+          "shape":"Name",
+          "documentation":"<p>The name of the experiment definition at the time the run was started.</p>"
+        },
+        "Hypothesis":{
+          "shape":"Description",
+          "documentation":"<p>The hypothesis at the time the run was started.</p>"
+        },
+        "ConfigurationProfileId":{
+          "shape":"Id",
+          "documentation":"<p>The configuration profile ID at the time the run was started.</p>"
+        },
+        "EnvironmentId":{
+          "shape":"Id",
+          "documentation":"<p>The environment ID at the time the run was started.</p>"
+        },
+        "FlagKey":{
+          "shape":"FlagKey",
+          "documentation":"<p>The feature flag key at the time the run was started.</p>"
+        },
+        "AudienceRule":{
+          "shape":"Rule",
+          "documentation":"<p>The audience rule at the time the run was started.</p>"
+        },
+        "AudienceDescription":{
+          "shape":"Description",
+          "documentation":"<p>The audience description at the time the run was started.</p>"
+        },
+        "LaunchCriteria":{
+          "shape":"Description",
+          "documentation":"<p>The launch criteria at the time the run was started.</p>"
+        },
+        "Treatments":{
+          "shape":"TreatmentList",
+          "documentation":"<p>The treatments at the time the run was started.</p>"
+        },
+        "Control":{
+          "shape":"Treatment",
+          "documentation":"<p>The control treatment at the time the run was started.</p>"
+        }
+      },
+      "documentation":"<p>A snapshot of the experiment definition captured at the time an experiment run was started. This preserves the configuration that was active during the run.</p>"
+    },
+    "ExperimentDefinitionStatus":{
+      "type":"string",
+      "enum":[
+        "ACTIVE",
+        "IDLE",
+        "ARCHIVED"
+      ]
+    },
+    "ExperimentDefinitionSummary":{
+      "type":"structure",
+      "members":{
+        "ApplicationId":{
+          "shape":"Id",
+          "documentation":"<p>The application ID.</p>"
+        },
+        "Id":{
+          "shape":"Id",
+          "documentation":"<p>The experiment definition ID.</p>"
+        },
+        "Name":{
+          "shape":"Name",
+          "documentation":"<p>The name of the experiment definition.</p>"
+        },
+        "Hypothesis":{
+          "shape":"Description",
+          "documentation":"<p>The hypothesis that the experiment is designed to validate.</p>"
+        },
+        "Status":{
+          "shape":"ExperimentDefinitionStatus",
+          "documentation":"<p>The current status of the experiment definition.</p>"
+        },
+        "ConfigurationProfileId":{
+          "shape":"Id",
+          "documentation":"<p>The configuration profile ID associated with the experiment.</p>"
+        },
+        "EnvironmentId":{
+          "shape":"Id",
+          "documentation":"<p>The environment ID where the experiment runs.</p>"
+        },
+        "FlagKey":{
+          "shape":"FlagKey",
+          "documentation":"<p>The key of the feature flag used by the experiment.</p>"
+        },
+        "CreatedAt":{
+          "shape":"Iso8601DateTime",
+          "documentation":"<p>The date and time the experiment definition was created, in ISO 8601 format.</p>"
+        },
+        "UpdatedAt":{
+          "shape":"Iso8601DateTime",
+          "documentation":"<p>The date and time the experiment definition was last updated, in ISO 8601 format.</p>"
+        }
+      },
+      "documentation":"<p>Summary information about an experiment definition.</p>"
+    },
+    "ExperimentDefinitions":{
+      "type":"structure",
+      "members":{
+        "Items":{
+          "shape":"ExperimentDefinitionList",
+          "documentation":"<p>The list of experiment definitions.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token to use for the next set of results.</p>"
+        }
+      },
+      "documentation":"<p>The response for a list experiment definitions request.</p>"
+    },
+    "ExperimentRun":{
+      "type":"structure",
+      "members":{
+        "ApplicationId":{
+          "shape":"Id",
+          "documentation":"<p>The application ID.</p>"
+        },
+        "ExperimentDefinitionId":{
+          "shape":"Id",
+          "documentation":"<p>The experiment definition ID.</p>"
+        },
+        "Run":{
+          "shape":"Integer",
+          "documentation":"<p>The experiment run number.</p>"
+        },
+        "Description":{
+          "shape":"Description",
+          "documentation":"<p>A description of the experiment run.</p>"
+        },
+        "Status":{
+          "shape":"ExperimentRunStatus",
+          "documentation":"<p>The current status of the experiment run. Valid values: <code>RUNNING</code>, <code>DONE</code>.</p>"
+        },
+        "ExposurePercentage":{
+          "shape":"NullablePercentage",
+          "documentation":"<p>The percentage of the target audience exposed to treatments.</p>"
+        },
+        "TreatmentOverrides":{
+          "shape":"TreatmentOverrides",
+          "documentation":"<p>Treatment assignment overrides that assign specific entity IDs to treatments.</p>"
+        },
+        "Result":{
+          "shape":"ExperimentRunResult",
+          "documentation":"<p>The result of the experiment run, including the executive summary and launch decision rationale.</p>"
+        },
+        "StartedAt":{
+          "shape":"Iso8601DateTime",
+          "documentation":"<p>The date and time the experiment run started, in ISO 8601 format.</p>"
+        },
+        "UpdatedAt":{
+          "shape":"Iso8601DateTime",
+          "documentation":"<p>The date and time the experiment run was last updated, in ISO 8601 format.</p>"
+        },
+        "EndedAt":{
+          "shape":"Iso8601DateTime",
+          "documentation":"<p>The date and time the experiment run ended, in ISO 8601 format.</p>"
+        },
+        "ExperimentDefinitionSnapshot":{
+          "shape":"ExperimentDefinitionSnapshot",
+          "documentation":"<p>A snapshot of the experiment definition at the time the run was started.</p>"
+        }
+      },
+      "documentation":"<p>Describes an experiment run, including its status, exposure settings, and treatment overrides.</p>"
+    },
+    "ExperimentRunEvent":{
+      "type":"structure",
+      "members":{
+        "Description":{
+          "shape":"Description",
+          "documentation":"<p>A description of the event.</p>"
+        },
+        "AssociatedDeployment":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the deployment associated with this event.</p>"
+        },
+        "EventType":{
+          "shape":"ExperimentRunEventType",
+          "documentation":"<p>The type of event. Valid values: <code>RUN_STARTED</code>, <code>EXPOSURE_UPDATED</code>, <code>OVERRIDES_UPDATED</code>, <code>RUN_STOPPED</code>.</p>"
+        },
+        "OccurredAt":{
+          "shape":"Iso8601DateTime",
+          "documentation":"<p>The date and time the event occurred, in ISO 8601 format.</p>"
+        },
+        "TriggeredBy":{
+          "shape":"TriggeredBy",
+          "documentation":"<p>The principal that triggered the event.</p>"
+        },
+        "ExposurePercentage":{
+          "shape":"NullablePercentage",
+          "documentation":"<p>The exposure percentage at the time of the event.</p>",
+          "box":true
+        },
+        "TreatmentOverrides":{
+          "shape":"TreatmentOverrides",
+          "documentation":"<p>The treatment overrides at the time of the event.</p>"
+        }
+      },
+      "documentation":"<p>Describes an event that occurred during an experiment run.</p>"
+    },
+    "ExperimentRunEventList":{
+      "type":"list",
+      "member":{"shape":"ExperimentRunEvent"}
+    },
+    "ExperimentRunEventType":{
+      "type":"string",
+      "enum":[
+        "RUN_STARTED",
+        "EXPOSURE_UPDATED",
+        "OVERRIDES_UPDATED",
+        "RUN_STOPPED"
+      ]
+    },
+    "ExperimentRunEvents":{
+      "type":"structure",
+      "members":{
+        "Items":{
+          "shape":"ExperimentRunEventList",
+          "documentation":"<p>The list of experiment run events.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token to use for the next set of results.</p>"
+        }
+      },
+      "documentation":"<p>The response for a list experiment run events request.</p>"
+    },
+    "ExperimentRunResult":{
+      "type":"structure",
+      "members":{
+        "ExecutiveSummary":{
+          "shape":"Description",
+          "documentation":"<p>A summary of the experiment outcome and key findings.</p>"
+        },
+        "ReasonsToLaunch":{
+          "shape":"Description",
+          "documentation":"<p>Evidence in favor of launching the winning treatment.</p>"
+        },
+        "ReasonsNotToLaunch":{
+          "shape":"Description",
+          "documentation":"<p>Evidence against launching the treatment.</p>"
+        }
+      },
+      "documentation":"<p>The result of an experiment run, including the executive summary and launch decision rationale.</p>",
+      "box":true
+    },
+    "ExperimentRunStatus":{
+      "type":"string",
+      "enum":[
+        "RUNNING",
+        "DONE"
+      ]
+    },
+    "ExperimentRunSummary":{
+      "type":"structure",
+      "members":{
+        "ExperimentDefinitionId":{
+          "shape":"Id",
+          "documentation":"<p>The experiment definition ID.</p>"
+        },
+        "Run":{
+          "shape":"Integer",
+          "documentation":"<p>The experiment run number.</p>"
+        },
+        "Description":{
+          "shape":"Description",
+          "documentation":"<p>A description of the experiment run.</p>"
+        },
+        "Status":{
+          "shape":"ExperimentRunStatus",
+          "documentation":"<p>The current status of the experiment run.</p>"
+        },
+        "StartedAt":{
+          "shape":"Iso8601DateTime",
+          "documentation":"<p>The date and time the experiment run started, in ISO 8601 format.</p>"
+        },
+        "UpdatedAt":{
+          "shape":"Iso8601DateTime",
+          "documentation":"<p>The date and time the experiment run was last updated, in ISO 8601 format.</p>"
+        },
+        "EndedAt":{
+          "shape":"Iso8601DateTime",
+          "documentation":"<p>The date and time the experiment run ended, in ISO 8601 format.</p>"
+        }
+      },
+      "documentation":"<p>Summary information about an experiment run.</p>"
+    },
+    "ExperimentRunSummaryList":{
+      "type":"list",
+      "member":{"shape":"ExperimentRunSummary"}
+    },
+    "ExperimentRuns":{
+      "type":"structure",
+      "members":{
+        "Items":{
+          "shape":"ExperimentRunSummaryList",
+          "documentation":"<p>The list of experiment runs.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token to use for the next set of results.</p>"
+        }
+      },
+      "documentation":"<p>The response for a list experiment runs request.</p>"
     },
     "Extension":{
       "type":"structure",
@@ -1976,13 +2737,32 @@
         }
       }
     },
+    "FlagKey":{
+      "type":"string",
+      "pattern":"^[a-z][a-zA-Z0-9_-]{1,64}"
+    },
+    "FlagValue":{
+      "type":"structure",
+      "required":["Enabled"],
+      "members":{
+        "Enabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether the feature flag is enabled for this treatment.</p>"
+        },
+        "AttributeValues":{
+          "shape":"AttributeValueMap",
+          "documentation":"<p>The attribute values associated with this flag value.</p>"
+        }
+      },
+      "documentation":"<p>The feature flag value configuration for a treatment, including the enabled state and attribute values.</p>"
+    },
     "Float":{"type":"float"},
     "GetApplicationRequest":{
       "type":"structure",
       "required":["ApplicationId"],
       "members":{
         "ApplicationId":{
-          "shape":"Id",
+          "shape":"Name",
           "documentation":"<p>The ID of the application you want to get.</p>",
           "location":"uri",
           "locationName":"ApplicationId"
@@ -1997,13 +2777,13 @@
       ],
       "members":{
         "ApplicationId":{
-          "shape":"Id",
+          "shape":"Name",
           "documentation":"<p>The ID of the application that includes the configuration profile you want to get.</p>",
           "location":"uri",
           "locationName":"ApplicationId"
         },
         "ConfigurationProfileId":{
-          "shape":"Id",
+          "shape":"LongName",
           "documentation":"<p>The ID of the configuration profile that you want to get.</p>",
           "location":"uri",
           "locationName":"ConfigurationProfileId"
@@ -2060,13 +2840,13 @@
       ],
       "members":{
         "ApplicationId":{
-          "shape":"Id",
+          "shape":"Name",
           "documentation":"<p>The ID of the application that includes the deployment you want to get. </p>",
           "location":"uri",
           "locationName":"ApplicationId"
         },
         "EnvironmentId":{
-          "shape":"Id",
+          "shape":"Name",
           "documentation":"<p>The ID of the environment that includes the deployment you want to get. </p>",
           "location":"uri",
           "locationName":"EnvironmentId"
@@ -2100,16 +2880,66 @@
       ],
       "members":{
         "ApplicationId":{
-          "shape":"Id",
+          "shape":"Name",
           "documentation":"<p>The ID of the application that includes the environment you want to get.</p>",
           "location":"uri",
           "locationName":"ApplicationId"
         },
         "EnvironmentId":{
-          "shape":"Id",
+          "shape":"Name",
           "documentation":"<p>The ID of the environment that you want to get.</p>",
           "location":"uri",
           "locationName":"EnvironmentId"
+        }
+      }
+    },
+    "GetExperimentDefinitionRequest":{
+      "type":"structure",
+      "required":[
+        "ApplicationIdentifier",
+        "ExperimentDefinitionIdentifier"
+      ],
+      "members":{
+        "ApplicationIdentifier":{
+          "shape":"Identifier",
+          "documentation":"<p>The application ID or name.</p>",
+          "location":"uri",
+          "locationName":"ApplicationIdentifier"
+        },
+        "ExperimentDefinitionIdentifier":{
+          "shape":"Identifier",
+          "documentation":"<p>The experiment definition ID or name.</p>",
+          "location":"uri",
+          "locationName":"ExperimentDefinitionIdentifier"
+        }
+      }
+    },
+    "GetExperimentRunRequest":{
+      "type":"structure",
+      "required":[
+        "ApplicationIdentifier",
+        "ExperimentDefinitionIdentifier",
+        "Run"
+      ],
+      "members":{
+        "ApplicationIdentifier":{
+          "shape":"Identifier",
+          "documentation":"<p>The application ID or name.</p>",
+          "location":"uri",
+          "locationName":"ApplicationIdentifier"
+        },
+        "ExperimentDefinitionIdentifier":{
+          "shape":"Identifier",
+          "documentation":"<p>The experiment definition ID or name.</p>",
+          "location":"uri",
+          "locationName":"ExperimentDefinitionIdentifier"
+        },
+        "Run":{
+          "shape":"PositiveInteger",
+          "documentation":"<p>The run number to retrieve.</p>",
+          "box":true,
+          "location":"uri",
+          "locationName":"Run"
         }
       }
     },
@@ -2153,13 +2983,13 @@
       ],
       "members":{
         "ApplicationId":{
-          "shape":"Id",
+          "shape":"Name",
           "documentation":"<p>The application ID.</p>",
           "location":"uri",
           "locationName":"ApplicationId"
         },
         "ConfigurationProfileId":{
-          "shape":"Id",
+          "shape":"LongName",
           "documentation":"<p>The configuration profile ID.</p>",
           "location":"uri",
           "locationName":"ConfigurationProfileId"
@@ -2374,7 +3204,7 @@
       "required":["ApplicationId"],
       "members":{
         "ApplicationId":{
-          "shape":"Id",
+          "shape":"Name",
           "documentation":"<p>The application ID.</p>",
           "location":"uri",
           "locationName":"ApplicationId"
@@ -2426,13 +3256,13 @@
       ],
       "members":{
         "ApplicationId":{
-          "shape":"Id",
+          "shape":"Name",
           "documentation":"<p>The application ID.</p>",
           "location":"uri",
           "locationName":"ApplicationId"
         },
         "EnvironmentId":{
-          "shape":"Id",
+          "shape":"Name",
           "documentation":"<p>The environment ID.</p>",
           "location":"uri",
           "locationName":"EnvironmentId"
@@ -2457,7 +3287,7 @@
       "required":["ApplicationId"],
       "members":{
         "ApplicationId":{
-          "shape":"Id",
+          "shape":"Name",
           "documentation":"<p>The application ID.</p>",
           "location":"uri",
           "locationName":"ApplicationId"
@@ -2474,6 +3304,130 @@
           "documentation":"<p>A token to start the list. Use this token to get the next set of results.</p>",
           "location":"querystring",
           "locationName":"next_token"
+        }
+      }
+    },
+    "ListExperimentDefinitionsRequest":{
+      "type":"structure",
+      "members":{
+        "ApplicationIdentifier":{
+          "shape":"Identifier",
+          "documentation":"<p>The application ID or name to filter results.</p>",
+          "location":"querystring",
+          "locationName":"application_identifier"
+        },
+        "ConfigurationProfileIdentifier":{
+          "shape":"Identifier",
+          "documentation":"<p>The configuration profile ID or name to filter results.</p>",
+          "location":"querystring",
+          "locationName":"configuration_profile_identifier"
+        },
+        "EnvironmentIdentifier":{
+          "shape":"Identifier",
+          "documentation":"<p>The environment ID or name to filter results.</p>",
+          "location":"querystring",
+          "locationName":"environment_identifier"
+        },
+        "Status":{
+          "shape":"ExperimentDefinitionStatus",
+          "documentation":"<p>A filter for the experiment definition status.</p>",
+          "location":"querystring",
+          "locationName":"status"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of items to return for this call.</p>",
+          "box":true,
+          "location":"querystring",
+          "locationName":"max_results"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token to start the list from a previously truncated response.</p>",
+          "location":"querystring",
+          "locationName":"next_token"
+        }
+      }
+    },
+    "ListExperimentRunEventsRequest":{
+      "type":"structure",
+      "required":[
+        "ApplicationIdentifier",
+        "ExperimentDefinitionIdentifier",
+        "Run"
+      ],
+      "members":{
+        "ApplicationIdentifier":{
+          "shape":"Identifier",
+          "documentation":"<p>The application ID or name.</p>",
+          "location":"uri",
+          "locationName":"ApplicationIdentifier"
+        },
+        "ExperimentDefinitionIdentifier":{
+          "shape":"Identifier",
+          "documentation":"<p>The experiment definition ID or name.</p>",
+          "location":"uri",
+          "locationName":"ExperimentDefinitionIdentifier"
+        },
+        "Run":{
+          "shape":"PositiveInteger",
+          "documentation":"<p>The run number.</p>",
+          "box":true,
+          "location":"uri",
+          "locationName":"Run"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of items to return.</p>",
+          "box":true,
+          "location":"querystring",
+          "locationName":"max_results"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token to start the list from a previously truncated response.</p>",
+          "location":"querystring",
+          "locationName":"next_token"
+        }
+      }
+    },
+    "ListExperimentRunsRequest":{
+      "type":"structure",
+      "required":[
+        "ApplicationIdentifier",
+        "ExperimentDefinitionIdentifier"
+      ],
+      "members":{
+        "ApplicationIdentifier":{
+          "shape":"Identifier",
+          "documentation":"<p>The application ID or name.</p>",
+          "location":"uri",
+          "locationName":"ApplicationIdentifier"
+        },
+        "ExperimentDefinitionIdentifier":{
+          "shape":"Identifier",
+          "documentation":"<p>The experiment definition ID or name.</p>",
+          "location":"uri",
+          "locationName":"ExperimentDefinitionIdentifier"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of items to return.</p>",
+          "box":true,
+          "location":"querystring",
+          "locationName":"max_results"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token to start the list from a previously truncated response.</p>",
+          "location":"querystring",
+          "locationName":"next_token"
+        },
+        "Status":{
+          "shape":"ExperimentRunStatus",
+          "documentation":"<p>A filter for the experiment run status.</p>",
+          "location":"querystring",
+          "locationName":"status"
         }
       }
     },
@@ -2546,13 +3500,13 @@
       ],
       "members":{
         "ApplicationId":{
-          "shape":"Id",
+          "shape":"Name",
           "documentation":"<p>The application ID.</p>",
           "location":"uri",
           "locationName":"ApplicationId"
         },
         "ConfigurationProfileId":{
-          "shape":"Id",
+          "shape":"LongName",
           "documentation":"<p>The configuration profile ID.</p>",
           "location":"uri",
           "locationName":"ConfigurationProfileId"
@@ -2631,10 +3585,26 @@
       "max":64,
       "min":1
     },
+    "NameWithReservedAwsPrefix":{
+      "type":"string",
+      "pattern":"^(?!AWS\\.).{1,64}$"
+    },
     "NextToken":{
       "type":"string",
       "max":2048,
       "min":1
+    },
+    "NullablePercentage":{
+      "type":"float",
+      "box":true,
+      "max":100.0,
+      "min":0.0
+    },
+    "NumberList":{
+      "type":"list",
+      "member":{"shape":"Double"},
+      "max":25,
+      "min":0
     },
     "Parameter":{
       "type":"structure",
@@ -2685,6 +3655,11 @@
       "max":100.0,
       "min":1.0
     },
+    "PositiveInteger":{
+      "type":"integer",
+      "box":true,
+      "min":1
+    },
     "QueryName":{
       "type":"string",
       "max":64,
@@ -2722,12 +3697,17 @@
       "min":20,
       "pattern":"^((arn):(aws|aws-cn|aws-iso|aws-iso-[a-z]{1}|aws-us-gov|aws-eusc):(iam)::\\d{12}:role[/].*)$"
     },
+    "Rule":{
+      "type":"string",
+      "max":16384,
+      "min":1
+    },
     "ServiceQuotaExceededException":{
       "type":"structure",
       "members":{
         "Message":{"shape":"String"}
       },
-      "documentation":"<p>The number of one more AppConfig resources exceeds the maximum allowed. Verify that your environment doesn't exceed the following service quotas:</p> <p>Applications: 100 max</p> <p>Deployment strategies: 20 max</p> <p>Configuration profiles: 100 max per application</p> <p>Environments: 20 max per application</p> <p>To resolve this issue, you can delete one or more resources and try again. Or, you can request a quota increase. For more information about quotas and to request an increase, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/appconfig.html#limits_appconfig\">Service quotas for AppConfig</a> in the Amazon Web Services General Reference.</p>",
+      "documentation":"<p>The number of one more AppConfig resources exceeds the maximum allowed. Verify that your environment doesn't exceed the following service quotas:</p> <p>Applications: 100 max</p> <p>To resolve this issue, you can delete one or more resources and try again. Or, you can request a quota increase. For more information about quotas and to request an increase, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/appconfig.html#limits_appconfig\">Service quotas for AppConfig</a> in the Amazon Web Services General Reference.</p>",
       "error":{"httpStatusCode":402},
       "exception":true
     },
@@ -2742,13 +3722,13 @@
       ],
       "members":{
         "ApplicationId":{
-          "shape":"Id",
+          "shape":"Name",
           "documentation":"<p>The application ID.</p>",
           "location":"uri",
           "locationName":"ApplicationId"
         },
         "EnvironmentId":{
-          "shape":"Id",
+          "shape":"Name",
           "documentation":"<p>The environment ID.</p>",
           "location":"uri",
           "locationName":"EnvironmentId"
@@ -2758,7 +3738,7 @@
           "documentation":"<p>The deployment strategy ID.</p>"
         },
         "ConfigurationProfileId":{
-          "shape":"Id",
+          "shape":"LongName",
           "documentation":"<p>The configuration profile ID.</p>"
         },
         "ConfigurationVersion":{
@@ -2780,6 +3760,52 @@
         "DynamicExtensionParameters":{
           "shape":"DynamicParameterMap",
           "documentation":"<p>A map of dynamic extension parameter names to values to pass to associated extensions with <code>PRE_START_DEPLOYMENT</code> actions.</p>"
+        },
+        "LatestDeploymentNumber":{
+          "shape":"Integer",
+          "documentation":"<p>The number of the latest deployment. Use this value to ensure that the deployment starts from the expected state and to prevent conflicting updates.</p>",
+          "box":true
+        }
+      }
+    },
+    "StartExperimentRunRequest":{
+      "type":"structure",
+      "required":[
+        "ApplicationIdentifier",
+        "ExperimentDefinitionIdentifier"
+      ],
+      "members":{
+        "ApplicationIdentifier":{
+          "shape":"Identifier",
+          "documentation":"<p>The application ID or name.</p>",
+          "location":"uri",
+          "locationName":"ApplicationIdentifier"
+        },
+        "ExperimentDefinitionIdentifier":{
+          "shape":"Identifier",
+          "documentation":"<p>The experiment definition ID or name.</p>",
+          "location":"uri",
+          "locationName":"ExperimentDefinitionIdentifier"
+        },
+        "Description":{
+          "shape":"Description",
+          "documentation":"<p>A description of this experiment run.</p>"
+        },
+        "ExposurePercentage":{
+          "shape":"NullablePercentage",
+          "documentation":"<p>The percentage of the target audience to expose to treatments. Set to 0 to validate the experiment before exposing production users.</p>"
+        },
+        "TreatmentOverrides":{
+          "shape":"TreatmentOverrides",
+          "documentation":"<p>Treatment assignment overrides that assign specific entity IDs to treatments directly, bypassing random assignment.</p>"
+        },
+        "Tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags to assign to the experiment run.</p>"
+        },
+        "DeploymentParameters":{
+          "shape":"DeploymentParameters",
+          "documentation":"<p>The deployment parameters for the experiment run, including a KMS key identifier for encryption.</p>"
         }
       }
     },
@@ -2792,13 +3818,13 @@
       ],
       "members":{
         "ApplicationId":{
-          "shape":"Id",
+          "shape":"Name",
           "documentation":"<p>The application ID.</p>",
           "location":"uri",
           "locationName":"ApplicationId"
         },
         "EnvironmentId":{
-          "shape":"Id",
+          "shape":"Name",
           "documentation":"<p>The environment ID.</p>",
           "location":"uri",
           "locationName":"EnvironmentId"
@@ -2819,7 +3845,50 @@
         }
       }
     },
+    "StopExperimentRunRequest":{
+      "type":"structure",
+      "required":[
+        "ApplicationIdentifier",
+        "ExperimentDefinitionIdentifier",
+        "Run"
+      ],
+      "members":{
+        "ApplicationIdentifier":{
+          "shape":"Identifier",
+          "documentation":"<p>The application ID or name.</p>",
+          "location":"uri",
+          "locationName":"ApplicationIdentifier"
+        },
+        "ExperimentDefinitionIdentifier":{
+          "shape":"Identifier",
+          "documentation":"<p>The experiment definition ID or name.</p>",
+          "location":"uri",
+          "locationName":"ExperimentDefinitionIdentifier"
+        },
+        "Run":{
+          "shape":"PositiveInteger",
+          "documentation":"<p>The run number to stop.</p>",
+          "box":true,
+          "location":"uri",
+          "locationName":"Run"
+        },
+        "Result":{
+          "shape":"ExperimentRunResult",
+          "documentation":"<p>The result of the experiment run, including an executive summary and reasons for or against launching.</p>"
+        },
+        "DeploymentParameters":{
+          "shape":"DeploymentParameters",
+          "documentation":"<p>The deployment parameters for the stop operation.</p>"
+        }
+      }
+    },
     "String":{"type":"string"},
+    "StringList":{
+      "type":"list",
+      "member":{"shape":"AttributeString"},
+      "max":25,
+      "min":0
+    },
     "StringWithLengthBetween0And32768":{
       "type":"string",
       "max":32768,
@@ -2882,6 +3951,88 @@
       "type":"string",
       "max":256
     },
+    "Treatment":{
+      "type":"structure",
+      "required":[
+        "Weight",
+        "FlagValue"
+      ],
+      "members":{
+        "Key":{
+          "shape":"TreatmentKey",
+          "documentation":"<p>The unique key that identifies this treatment.</p>"
+        },
+        "Weight":{
+          "shape":"Weight",
+          "documentation":"<p>The traffic allocation weight for this treatment.</p>"
+        },
+        "Description":{
+          "shape":"Description",
+          "documentation":"<p>A description of the treatment.</p>"
+        },
+        "FlagValue":{
+          "shape":"FlagValue",
+          "documentation":"<p>The feature flag value served to users assigned to this treatment.</p>"
+        }
+      },
+      "documentation":"<p>Describes a treatment in an experiment, including its traffic allocation weight and feature flag value.</p>"
+    },
+    "TreatmentInput":{
+      "type":"structure",
+      "required":[
+        "Weight",
+        "FlagValue"
+      ],
+      "members":{
+        "Weight":{
+          "shape":"Weight",
+          "documentation":"<p>The traffic allocation weight for this treatment.</p>"
+        },
+        "Description":{
+          "shape":"Description",
+          "documentation":"<p>A description of the treatment.</p>"
+        },
+        "FlagValue":{
+          "shape":"FlagValue",
+          "documentation":"<p>The feature flag value to serve to users assigned to this treatment.</p>"
+        }
+      },
+      "documentation":"<p>Input structure for defining a treatment when creating or updating an experiment definition.</p>"
+    },
+    "TreatmentInputList":{
+      "type":"list",
+      "member":{"shape":"TreatmentInput"},
+      "max":5,
+      "min":1
+    },
+    "TreatmentKey":{
+      "type":"string",
+      "pattern":"^[a-zA-Z0-9]{1,8}"
+    },
+    "TreatmentList":{
+      "type":"list",
+      "member":{"shape":"Treatment"},
+      "max":5,
+      "min":1
+    },
+    "TreatmentOverrideMap":{
+      "type":"map",
+      "key":{"shape":"EntityId"},
+      "value":{"shape":"TreatmentKey"},
+      "max":32,
+      "min":0
+    },
+    "TreatmentOverrides":{
+      "type":"structure",
+      "members":{
+        "Inline":{
+          "shape":"TreatmentOverrideMap",
+          "documentation":"<p>A map of entity IDs to treatment keys. Each entry assigns the specified entity to the specified treatment, bypassing random assignment.</p>"
+        }
+      },
+      "documentation":"<p>Treatment assignment overrides that assign specific entity IDs to treatments, bypassing random assignment.</p>",
+      "union":true
+    },
     "TriggeredBy":{
       "type":"string",
       "enum":[
@@ -2918,6 +4069,10 @@
         "DeletionProtection":{
           "shape":"DeletionProtectionSettings",
           "documentation":"<p>A parameter to configure deletion protection. Deletion protection prevents a user from deleting a configuration profile or an environment if AppConfig has called either <a href=\"https://docs.aws.amazon.com/appconfig/2019-10-09/APIReference/API_appconfigdata_GetLatestConfiguration.html\">GetLatestConfiguration</a> or for the configuration profile or from the environment during the specified interval. The default interval for <code>ProtectionPeriodInMinutes</code> is 60.</p>"
+        },
+        "VendedMetrics":{
+          "shape":"VendedMetricsSettings",
+          "documentation":"<p>The configuration for vended metrics in the account.</p>"
         }
       }
     },
@@ -2926,7 +4081,7 @@
       "required":["ApplicationId"],
       "members":{
         "ApplicationId":{
-          "shape":"Id",
+          "shape":"Name",
           "documentation":"<p>The application ID.</p>",
           "location":"uri",
           "locationName":"ApplicationId"
@@ -2949,13 +4104,13 @@
       ],
       "members":{
         "ApplicationId":{
-          "shape":"Id",
+          "shape":"Name",
           "documentation":"<p>The application ID.</p>",
           "location":"uri",
           "locationName":"ApplicationId"
         },
         "ConfigurationProfileId":{
-          "shape":"Id",
+          "shape":"LongName",
           "documentation":"<p>The ID of the configuration profile.</p>",
           "location":"uri",
           "locationName":"ConfigurationProfileId"
@@ -3025,13 +4180,13 @@
       ],
       "members":{
         "ApplicationId":{
-          "shape":"Id",
+          "shape":"Name",
           "documentation":"<p>The application ID.</p>",
           "location":"uri",
           "locationName":"ApplicationId"
         },
         "EnvironmentId":{
-          "shape":"Id",
+          "shape":"Name",
           "documentation":"<p>The environment ID.</p>",
           "location":"uri",
           "locationName":"EnvironmentId"
@@ -3047,6 +4202,97 @@
         "Monitors":{
           "shape":"MonitorList",
           "documentation":"<p>Amazon CloudWatch alarms to monitor during the deployment process.</p>"
+        }
+      }
+    },
+    "UpdateExperimentDefinitionRequest":{
+      "type":"structure",
+      "required":[
+        "ApplicationIdentifier",
+        "ExperimentDefinitionIdentifier"
+      ],
+      "members":{
+        "ApplicationIdentifier":{
+          "shape":"Identifier",
+          "documentation":"<p>The application ID or name.</p>",
+          "location":"uri",
+          "locationName":"ApplicationIdentifier"
+        },
+        "ExperimentDefinitionIdentifier":{
+          "shape":"Identifier",
+          "documentation":"<p>The experiment definition ID or name.</p>",
+          "location":"uri",
+          "locationName":"ExperimentDefinitionIdentifier"
+        },
+        "Treatments":{
+          "shape":"TreatmentInputList",
+          "documentation":"<p>The updated list of treatments to evaluate during the experiment. Each treatment defines a distinct variation compared to the control.</p>"
+        },
+        "Control":{
+          "shape":"TreatmentInput",
+          "documentation":"<p>An updated control treatment.</p>"
+        },
+        "Hypothesis":{
+          "shape":"Description",
+          "documentation":"<p>An updated hypothesis.</p>"
+        },
+        "AudienceRule":{
+          "shape":"Rule",
+          "documentation":"<p>An updated audience rule.</p>"
+        },
+        "AudienceDescription":{
+          "shape":"Description",
+          "documentation":"<p>An updated audience description.</p>"
+        },
+        "LaunchCriteria":{
+          "shape":"Description",
+          "documentation":"<p>Updated launch criteria.</p>"
+        }
+      }
+    },
+    "UpdateExperimentRunRequest":{
+      "type":"structure",
+      "required":[
+        "ApplicationIdentifier",
+        "ExperimentDefinitionIdentifier",
+        "Run"
+      ],
+      "members":{
+        "ApplicationIdentifier":{
+          "shape":"Identifier",
+          "documentation":"<p>The application ID or name.</p>",
+          "location":"uri",
+          "locationName":"ApplicationIdentifier"
+        },
+        "ExperimentDefinitionIdentifier":{
+          "shape":"Identifier",
+          "documentation":"<p>The experiment definition ID or name.</p>",
+          "location":"uri",
+          "locationName":"ExperimentDefinitionIdentifier"
+        },
+        "Run":{
+          "shape":"PositiveInteger",
+          "documentation":"<p>The run number to update.</p>",
+          "box":true,
+          "location":"uri",
+          "locationName":"Run"
+        },
+        "Description":{
+          "shape":"Description",
+          "documentation":"<p>An updated description for the experiment run.</p>"
+        },
+        "ExposurePercentage":{
+          "shape":"NullablePercentage",
+          "documentation":"<p>The new exposure percentage. This value can only be increased from the current setting.</p>",
+          "box":true
+        },
+        "TreatmentOverrides":{
+          "shape":"TreatmentOverrides",
+          "documentation":"<p>The updated treatment assignment overrides that assign specific entity IDs to treatments, bypassing random assignment.</p>"
+        },
+        "DeploymentParameters":{
+          "shape":"DeploymentParameters",
+          "documentation":"<p>The updated deployment parameters for the experiment run.</p>"
         }
       }
     },
@@ -3109,13 +4355,13 @@
       ],
       "members":{
         "ApplicationId":{
-          "shape":"Id",
+          "shape":"Name",
           "documentation":"<p>The application ID.</p>",
           "location":"uri",
           "locationName":"ApplicationId"
         },
         "ConfigurationProfileId":{
-          "shape":"Id",
+          "shape":"LongName",
           "documentation":"<p>The configuration profile ID.</p>",
           "location":"uri",
           "locationName":"ConfigurationProfileId"
@@ -3165,6 +4411,17 @@
       "max":2,
       "min":0
     },
+    "VendedMetricsSettings":{
+      "type":"structure",
+      "members":{
+        "Enabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether vended metrics are enabled for the account.</p>",
+          "box":true
+        }
+      },
+      "documentation":"<p>The configuration settings for vended metrics in your AppConfig account.</p>"
+    },
     "Version":{
       "type":"string",
       "max":1024,
@@ -3175,7 +4432,11 @@
       "max":64,
       "min":1,
       "pattern":".*[^0-9].*"
+    },
+    "Weight":{
+      "type":"float",
+      "min":0.0
     }
   },
-  "documentation":"<p>AppConfig feature flags and dynamic configurations help software builders quickly and securely adjust application behavior in production environments without full code deployments. AppConfig speeds up software release frequency, improves application resiliency, and helps you address emergent issues more quickly. With feature flags, you can gradually release new capabilities to users and measure the impact of those changes before fully deploying the new capabilities to all users. With operational flags and dynamic configurations, you can update block lists, allow lists, throttling limits, logging verbosity, and perform other operational tuning to quickly respond to issues in production environments.</p> <note> <p>AppConfig is a tool in Amazon Web Services Systems Manager.</p> </note> <p>Despite the fact that application configuration content can vary greatly from application to application, AppConfig supports the following use cases, which cover a broad spectrum of customer needs:</p> <ul> <li> <p> <b>Feature flags and toggles</b> - Safely release new capabilities to your customers in a controlled environment. Instantly roll back changes if you experience a problem.</p> </li> <li> <p> <b>Application tuning</b> - Carefully introduce application changes while testing the impact of those changes with users in production environments.</p> </li> <li> <p> <b>Allow list or block list</b> - Control access to premium features or instantly block specific users without deploying new code. </p> </li> <li> <p> <b>Centralized configuration storage</b> - Keep your configuration data organized and consistent across all of your workloads. You can use AppConfig to deploy configuration data stored in the AppConfig hosted configuration store, Secrets Manager, Systems Manager, Parameter Store, or Amazon S3.</p> </li> </ul> <p> <b>How AppConfig works</b> </p> <p>This section provides a high-level description of how AppConfig works and how you get started.</p> <dl> <dt>1. Identify configuration values in code you want to manage in the cloud</dt> <dd> <p>Before you start creating AppConfig artifacts, we recommend you identify configuration data in your code that you want to dynamically manage using AppConfig. Good examples include feature flags or toggles, allow and block lists, logging verbosity, service limits, and throttling rules, to name a few.</p> <p>If your configuration data already exists in the cloud, you can take advantage of AppConfig validation, deployment, and extension features to further streamline configuration data management.</p> </dd> <dt>2. Create an application namespace</dt> <dd> <p>To create a namespace, you create an AppConfig artifact called an application. An application is simply an organizational construct like a folder.</p> </dd> <dt>3. Create environments</dt> <dd> <p>For each AppConfig application, you define one or more environments. An environment is a logical grouping of targets, such as applications in a <code>Beta</code> or <code>Production</code> environment, Lambda functions, or containers. You can also define environments for application subcomponents, such as the <code>Web</code>, <code>Mobile</code>, and <code>Back-end</code>.</p> <p>You can configure Amazon CloudWatch alarms for each environment. The system monitors alarms during a configuration deployment. If an alarm is triggered, the system rolls back the configuration.</p> </dd> <dt>4. Create a configuration profile</dt> <dd> <p>A configuration profile includes, among other things, a URI that enables AppConfig to locate your configuration data in its stored location and a profile type. AppConfig supports two configuration profile types: feature flags and freeform configurations. Feature flag configuration profiles store their data in the AppConfig hosted configuration store and the URI is simply <code>hosted</code>. For freeform configuration profiles, you can store your data in the AppConfig hosted configuration store or any Amazon Web Services service that integrates with AppConfig, as described in <a href=\"http://docs.aws.amazon.com/appconfig/latest/userguide/appconfig-free-form-configurations-creating.html\">Creating a free form configuration profile</a> in the the <i>AppConfig User Guide</i>.</p> <p>A configuration profile can also include optional validators to ensure your configuration data is syntactically and semantically correct. AppConfig performs a check using the validators when you start a deployment. If any errors are detected, the deployment rolls back to the previous configuration data.</p> </dd> <dt>5. Deploy configuration data</dt> <dd> <p>When you create a new deployment, you specify the following:</p> <ul> <li> <p>An application ID</p> </li> <li> <p>A configuration profile ID</p> </li> <li> <p>A configuration version</p> </li> <li> <p>An environment ID where you want to deploy the configuration data</p> </li> <li> <p>A deployment strategy ID that defines how fast you want the changes to take effect</p> </li> </ul> <p>When you call the <a href=\"https://docs.aws.amazon.com/appconfig/2019-10-09/APIReference/API_StartDeployment.html\">StartDeployment</a> API action, AppConfig performs the following tasks:</p> <ol> <li> <p>Retrieves the configuration data from the underlying data store by using the location URI in the configuration profile.</p> </li> <li> <p>Verifies the configuration data is syntactically and semantically correct by using the validators you specified when you created your configuration profile.</p> </li> <li> <p>Caches a copy of the data so it is ready to be retrieved by your application. This cached copy is called the <i>deployed data</i>.</p> </li> </ol> </dd> <dt>6. Retrieve the configuration</dt> <dd> <p>You can configure AppConfig Agent as a local host and have the agent poll AppConfig for configuration updates. The agent calls the <a href=\"https://docs.aws.amazon.com/appconfig/2019-10-09/APIReference/API_appconfigdata_StartConfigurationSession.html\">StartConfigurationSession</a> and <a href=\"https://docs.aws.amazon.com/appconfig/2019-10-09/APIReference/API_appconfigdata_GetLatestConfiguration.html\">GetLatestConfiguration</a> API actions and caches your configuration data locally. To retrieve the data, your application makes an HTTP call to the localhost server. AppConfig Agent supports several use cases, as described in <a href=\"http://docs.aws.amazon.com/appconfig/latest/userguide/appconfig-retrieving-simplified-methods.html\">Simplified retrieval methods</a> in the the <i>AppConfig User Guide</i>.</p> <p>If AppConfig Agent isn't supported for your use case, you can configure your application to poll AppConfig for configuration updates by directly calling the <a href=\"https://docs.aws.amazon.com/appconfig/2019-10-09/APIReference/API_appconfigdata_StartConfigurationSession.html\">StartConfigurationSession</a> and <a href=\"https://docs.aws.amazon.com/appconfig/2019-10-09/APIReference/API_appconfigdata_GetLatestConfiguration.html\">GetLatestConfiguration</a> API actions. </p> </dd> </dl> <p>This reference is intended to be used with the <a href=\"http://docs.aws.amazon.com/appconfig/latest/userguide/what-is-appconfig.html\">AppConfig User Guide</a>.</p>"
+  "documentation":"<p>AppConfig helps you safely change application behavior in production without redeploying code. Using feature flags and dynamic free-form configurations, you can control how your application runs in real time. This approach reduces risk, accelerates releases, and enables faster responses to issues. You can gradually roll out new features to specific users, monitor their impact, and expand availability with confidence. You can also update block lists, allow lists, throttling limits, and logging levels instantly, allowing you to mitigate issues and fine-tune performance without a deployment.</p> <p>AppConfig supports a broad spectrum of use cases:</p> <ul> <li> <p> <b>Feature flags and toggles</b> – Gradually release new capabilities to targeted users, monitor impact, and instantly roll back changes if issues occur.</p> </li> <li> <p> <b>Application tuning</b> – Introduce changes safely in production, measure their effects, and refine behavior without redeploying code.</p> </li> <li> <p> <b>Allow list or block list</b> – Control access to features or restrict specific users in real time, without modifying application code. </p> </li> <li> <p> <b>Centralized configuration storage</b> – Manage configuration data consistently across workloads. AppConfig can deploy configuration from the AppConfig hosted configuration store, Secrets Manager, Systems Manager, Systems Manager Parameter Store, or Amazon S3.</p> </li> </ul> <p> <b>How AppConfig works</b> </p> <p>This section provides a high-level description of how AppConfig works and how you get started.</p> <dl> <dt>1. Identify configuration data to manage in AppConfig</dt> <dd> <p>Before creating a configuration profile, identify the configuration data in your code that you want to manage dynamically using AppConfig. Common examples include feature flags, allow and block lists, logging levels, service limits, and throttling rules. These values tend to change frequently and can cause issues if misconfigured.</p> <p>If your configuration data already exists in cloud services such as Systems Manager Parameter Store or Amazon S3, you can use AppConfig to validate, deploy, and manage that data more effectively.</p> </dd> <dt>2. Create a configuration profile in AppConfig</dt> <dd> <p>A configuration profile defines how AppConfig locates and manages your configuration data. It includes a URI that points to the data source and a profile type.</p> <p>AppConfig supports two profile types</p> <ul> <li> <p> <b>Feature flags</b> – Enable controlled feature releases, gradual rollouts, and testing in production.</p> </li> <li> <p> <b>Free-form configurations</b> – Store and retrieve configuration data from external sources and update it without redeploying code.</p> </li> </ul> <p>Both profile types help decouple configuration from code, support continuous delivery, and reduce deployment risk.</p> <p>You can also add optional validators to ensure that configuration data is syntactically and semantically correct. During deployment, AppConfig evaluates these validators and automatically rolls back changes if validation fails.</p> <p>Each configuration profile is associated with an application, which acts as a logical container for your configuration resources. For more information about creating a configuration profile, see <a href=\"http://docs.aws.amazon.com/appconfig/latest/userguide/appconfig-creating-configuration-profile.html\">Creating a configuration profile in AppConfig</a> in the the <i>AppConfig User Guide</i>.</p> </dd> <dt>3. Deploy configuration data</dt> <dd> <p>When you start a deployment, AppConfig:</p> <ol> <li> <p>Retrieves configuration data from the source defined in the configuration profile</p> </li> <li> <p>Validates the data using the configured validators</p> </li> <li> <p>Delivers the validated configuration to AppConfig Agent</p> </li> </ol> <p>The delivered configuration becomes the deployed version used by your application. For more information about deploying a configuration, see <a href=\"http://docs.aws.amazon.com/appconfig/latest/userguide/deploying-feature-flags.html\">Deploying feature flags and configuration data in AppConfig</a>.</p> </dd> <dt>4. Retrieve configuration data</dt> <dd> <p>Your application retrieves configuration data by calling a local endpoint exposed by AppConfig Agent, which caches the deployed configuration. Retrieving data is a metered event. AppConfig Agent supports a variety of use cases, as described in <a href=\"http://docs.aws.amazon.com/appconfig/latest/userguide/appconfig-agent-how-to-use.html\">How to use AppConfig Agent to retrieve configuration data</a>.</p> <p>If the agent is not suitable for your use case, your application can retrieve configuration data directly from AppConfig by calling the <a href=\"https://docs.aws.amazon.com/appconfig/2019-10-09/APIReference/API_appconfigdata_StartConfigurationSession.html\">StartConfigurationSession</a> and <a href=\"https://docs.aws.amazon.com/appconfig/2019-10-09/APIReference/API_appconfigdata_GetLatestConfiguration.html\">GetLatestConfiguration</a> API actions. </p> <p>For more information about retrieving a configuration, see <a href=\"http://docs.aws.amazon.com/appconfig/latest/userguide/retrieving-feature-flags.html\">Retrieving feature flags and configuration data in AppConfig</a>.</p> </dd> </dl> <p>This reference is intended to be used with the <a href=\"http://docs.aws.amazon.com/appconfig/latest/userguide/what-is-appconfig.html\">AppConfig User Guide</a>.</p>"
 }

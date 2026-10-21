@@ -12,14 +12,16 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 
+import datetime
 import logging
 import os
 import threading
 import time
+import uuid
 
 from botocore import parsers
 from botocore.awsrequest import create_request_object
-from botocore.exceptions import HTTPClientError
+from botocore.exceptions import HTTPClientError, InvalidConfigError
 from botocore.history import get_global_history_recorder
 from botocore.hooks import first_non_none_response
 from botocore.httpchecksum import handle_checksum_body
@@ -142,10 +144,54 @@ class Endpoint:
         self._encode_headers(request.headers)
         return request.prepare()
 
+    def _calculate_ttl(
+        self, response_received_timestamp, date_header, read_timeout
+    ):
+        local_timestamp = datetime.datetime.utcnow()
+        date_conversion = datetime.datetime.strptime(
+            date_header, "%a, %d %b %Y %H:%M:%S %Z"
+        )
+        estimated_skew = date_conversion - response_received_timestamp
+        ttl = (
+            local_timestamp
+            + datetime.timedelta(seconds=read_timeout)
+            + estimated_skew
+        )
+        return ttl.strftime('%Y%m%dT%H%M%SZ')
+
+    def _set_ttl(self, retries_context, read_timeout, success_response):
+        response_date_header = success_response[0].headers.get('Date')
+        has_streaming_input = retries_context.get('has_streaming_input')
+        if response_date_header and not has_streaming_input:
+            try:
+                response_received_timestamp = datetime.datetime.utcnow()
+                retries_context['ttl'] = self._calculate_ttl(
+                    response_received_timestamp,
+                    response_date_header,
+                    read_timeout,
+                )
+            except Exception:
+                logger.debug(
+                    "Exception received when updating retries context "
+                    "with TTL",
+                    exc_info=True,
+                )
+
+    def _update_retries_context(self, context, attempt, success_response=None):
+        retries_context = context.setdefault('retries', {})
+        retries_context['attempt'] = attempt
+        if 'invocation-id' not in retries_context:
+            retries_context['invocation-id'] = str(uuid.uuid4())
+
+        if success_response:
+            read_timeout = context['client_config'].read_timeout
+            self._set_ttl(retries_context, read_timeout, success_response)
+
     def _send_request(self, request_dict, operation_model):
         attempts = 1
-        request = self.create_request(request_dict, operation_model)
         context = request_dict['context']
+        self._update_retries_context(context, attempts)
+        request = self.create_request(request_dict, operation_model)
         success_response, exception = self._get_response(
             request, operation_model, context
         )
@@ -157,6 +203,7 @@ class Endpoint:
             exception,
         ):
             attempts += 1
+            self._update_retries_context(context, attempts, success_response)
             # If there is a stream associated with the request, we need
             # to reset it before attempting to send the request again.
             # This will ensure that we resend the entire contents of the
@@ -394,7 +441,21 @@ class EndpointCreator:
         # First, if verify is not None, then the user explicitly specified
         # a value so this automatically wins.
         if verify is not None:
-            return verify
+            return self._validate_verify_value(verify)
         # Otherwise use the value from REQUESTS_CA_BUNDLE, or default to
         # True if the env var does not exist.
-        return os.environ.get('REQUESTS_CA_BUNDLE', True)
+        return self._validate_verify_value(
+            os.environ.get('REQUESTS_CA_BUNDLE', True)
+        )
+
+    def _validate_verify_value(self, verify):
+        if isinstance(verify, str) and not verify.strip():
+            raise InvalidConfigError(
+                error_msg=(
+                    'Invalid CA bundle: the configured value (ca_bundle, '
+                    'AWS_CA_BUNDLE, REQUESTS_CA_BUNDLE, or verify) resolved '
+                    'to an empty or whitespace-only string. Provide a valid '
+                    'path to a CA bundle file.'
+                )
+            )
+        return verify

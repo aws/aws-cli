@@ -181,6 +181,24 @@
       "documentation":"<p>List a filterable set of Recommendations. This API provides global recommendations, eliminating the need to call the API in each AWS Region.</p>",
       "readonly":true
     },
+    "ListRecommendationsForResource":{
+      "name":"ListRecommendationsForResource",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v1/recommendations-for-resource/{awsResourceArn}",
+        "responseCode":200
+      },
+      "input":{"shape":"ListRecommendationsForResourceRequest"},
+      "output":{"shape":"ListRecommendationsForResourceResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>List all Trusted Advisor recommendations for a given AWS resource ARN.</p>",
+      "readonly":true
+    },
     "UpdateOrganizationRecommendationLifecycle":{
       "name":"UpdateOrganizationRecommendationLifecycle",
       "http":{
@@ -294,6 +312,12 @@
       "type":"list",
       "member":{"shape":"AccountRecommendationLifecycleSummary"}
     },
+    "AwsResourceArn":{
+      "type":"string",
+      "max":2048,
+      "min":20,
+      "pattern":"arn:aws(-\\w+)*:[\\w\\d-]+:([\\w\\d-]*)?:[\\w\\d_-]*([:/].+)*"
+    },
     "BatchUpdateRecommendationResourceExclusionRequest":{
       "type":"structure",
       "required":["recommendationResourceExclusions"],
@@ -374,6 +398,22 @@
         "metadata":{
           "shape":"StringMap",
           "documentation":"<p>The column headings for the metadata returned in the resource</p>"
+        },
+        "resourceArnQueryable":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether this check is supported by the ListRecommendationsForResource API.</p>"
+        },
+        "awsResourceTypes":{
+          "shape":"StringList",
+          "documentation":"<p>The AWS resource types that this check evaluates (for example, AWS::EC2::Instance).</p>"
+        },
+        "checkGranularity":{
+          "shape":"String",
+          "documentation":"<p>The granularity level at which the check operates: resource, account, or account_region.</p>"
+        },
+        "recommendationId":{
+          "shape":"String",
+          "documentation":"<p>The recommendation identifier associated with the check.</p>"
         }
       },
       "documentation":"<p>A summary of an AWS Trusted Advisor Check</p>"
@@ -844,6 +884,84 @@
       }
     },
     "ListRecommendationResourcesResponseNextTokenString":{
+      "type":"string",
+      "max":10000,
+      "min":4
+    },
+    "ListRecommendationsForResourceRequest":{
+      "type":"structure",
+      "required":["awsResourceArn"],
+      "members":{
+        "nextToken":{
+          "shape":"ListRecommendationsForResourceRequestNextTokenString",
+          "documentation":"<p>The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results. </p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "maxResults":{
+          "shape":"ListRecommendationsForResourceRequestMaxResultsInteger",
+          "documentation":"<p>The maximum number of results to return per page</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "awsResourceArn":{
+          "shape":"AwsResourceArn",
+          "documentation":"<p>The ARN of the AWS resource to query recommendations for</p>",
+          "location":"uri",
+          "locationName":"awsResourceArn"
+        },
+        "pillar":{
+          "shape":"RecommendationPillar",
+          "documentation":"<p>The pillar that the recommendation belongs to</p>",
+          "location":"querystring",
+          "locationName":"pillar"
+        },
+        "status":{
+          "shape":"ResourceStatus",
+          "documentation":"<p>The current status of the Recommendation Resource</p>",
+          "location":"querystring",
+          "locationName":"status"
+        },
+        "checkArn":{
+          "shape":"CheckArn",
+          "documentation":"<p>The AWS Trusted Advisor Check ARN that relates to the Recommendation</p>",
+          "location":"querystring",
+          "locationName":"checkArn"
+        },
+        "language":{
+          "shape":"RecommendationLanguage",
+          "documentation":"<p>The ISO 639-1 code for the language that you want your recommendations to appear in.</p>",
+          "location":"querystring",
+          "locationName":"language"
+        }
+      }
+    },
+    "ListRecommendationsForResourceRequestMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":600,
+      "min":1
+    },
+    "ListRecommendationsForResourceRequestNextTokenString":{
+      "type":"string",
+      "max":10000,
+      "min":4
+    },
+    "ListRecommendationsForResourceResponse":{
+      "type":"structure",
+      "required":["recommendationForResourceSummaries"],
+      "members":{
+        "nextToken":{
+          "shape":"ListRecommendationsForResourceResponseNextTokenString",
+          "documentation":"<p>The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results. </p>"
+        },
+        "recommendationForResourceSummaries":{
+          "shape":"RecommendationForResourceSummaryList",
+          "documentation":"<p>List of Trusted Advisor recommendations associated with the given AWS resource</p>"
+        }
+      }
+    },
+    "ListRecommendationsForResourceResponseNextTokenString":{
       "type":"string",
       "max":10000,
       "min":4
@@ -1334,6 +1452,58 @@
       },
       "documentation":"<p>Cost optimizing aggregates for a Recommendation</p>"
     },
+    "RecommendationForResourceSummary":{
+      "type":"structure",
+      "required":[
+        "checkArn",
+        "recommendationArn",
+        "awsResourceArn",
+        "status",
+        "lastUpdatedAt",
+        "exclusionStatus",
+        "metadata",
+        "pillars"
+      ],
+      "members":{
+        "checkArn":{
+          "shape":"CheckArn",
+          "documentation":"<p>The Check ARN</p>"
+        },
+        "recommendationArn":{
+          "shape":"AccountRecommendationArn",
+          "documentation":"<p>The Recommendation ARN</p>"
+        },
+        "awsResourceArn":{
+          "shape":"AwsResourceArn",
+          "documentation":"<p>The AWS Resource ARN</p>"
+        },
+        "status":{
+          "shape":"ResourceStatus",
+          "documentation":"<p>The current status of the recommendation</p>"
+        },
+        "lastUpdatedAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>When the recommendation was last updated</p>"
+        },
+        "exclusionStatus":{
+          "shape":"ExclusionStatus",
+          "documentation":"<p>The exclusion status of the recommendation</p>"
+        },
+        "metadata":{
+          "shape":"StringMap",
+          "documentation":"<p>Metadata associated with the recommendation</p>"
+        },
+        "pillars":{
+          "shape":"RecommendationPillarList",
+          "documentation":"<p>The Pillars that the Recommendation is optimizing</p>"
+        }
+      },
+      "documentation":"<p>Summary of a Recommendation for a specific AWS Resource</p>"
+    },
+    "RecommendationForResourceSummaryList":{
+      "type":"list",
+      "member":{"shape":"RecommendationForResourceSummary"}
+    },
     "RecommendationLanguage":{
       "type":"string",
       "enum":[
@@ -1651,6 +1821,10 @@
       "enum":["no_data_ok"]
     },
     "String":{"type":"string"},
+    "StringList":{
+      "type":"list",
+      "member":{"shape":"String"}
+    },
     "StringMap":{
       "type":"map",
       "key":{"shape":"String"},

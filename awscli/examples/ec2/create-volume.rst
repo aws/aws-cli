@@ -1,4 +1,4 @@
-**To create an empty General Purpose SSD (gp2) volume**
+**Example 1: To create an empty General Purpose SSD (gp2) volume**
 
 The following ``create-volume`` example creates an 80 GiB General Purpose SSD (gp2) volume in the specified Availability Zone. Note that the current Region must be ``us-east-1``, or you can add the ``--region`` parameter to specify the Region for the command. ::
 
@@ -10,6 +10,7 @@ The following ``create-volume`` example creates an 80 GiB General Purpose SSD (g
 Output::
 
     {
+        "AvailabilityZoneId": "use1-az1",
         "AvailabilityZone": "us-east-1a",
         "Tags": [],
         "Encrypted": false,
@@ -36,11 +37,12 @@ The following ``create-volume`` example creates a Provisioned IOPS SSD (io1) vol
         --volume-type io1 \
         --iops 1000 \
         --snapshot-id snap-066877671789bd71b \
-        --availability-zone us-east-1a  
+        --availability-zone us-east-1a
 
 Output::
 
     {
+        "AvailabilityZoneId": "use1-az1",
         "AvailabilityZone": "us-east-1a",
         "Tags": [],
         "Encrypted": false,
@@ -60,11 +62,12 @@ The following ``create-volume`` example creates an encrypted volume using the de
     aws ec2 create-volume \
         --size 80 \
         --encrypted \
-        --availability-zone us-east-1a 
+        --availability-zone us-east-1a
 
 Output::
 
     {
+        "AvailabilityZoneId": "use1-az1",
         "AvailabilityZone": "us-east-1a",
         "Tags": [],
         "Encrypted": true,

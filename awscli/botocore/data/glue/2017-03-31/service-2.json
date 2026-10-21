@@ -14,6 +14,24 @@
     "auth":["aws.auth#sigv4"]
   },
   "operations":{
+    "AssociateGlossaryTerms":{
+      "name":"AssociateGlossaryTerms",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"AssociateGlossaryTermsRequest"},
+      "output":{"shape":"AssociateGlossaryTermsResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"EntityNotFoundException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"ConcurrentModificationException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Associates one or more glossary terms with an asset in Glue Data Catalog.</p>"
+    },
     "BatchCreatePartition":{
       "name":"BatchCreatePartition",
       "http":{
@@ -29,7 +47,8 @@
         {"shape":"InternalServiceException"},
         {"shape":"EntityNotFoundException"},
         {"shape":"OperationTimeoutException"},
-        {"shape":"GlueEncryptionException"}
+        {"shape":"GlueEncryptionException"},
+        {"shape":"ConcurrentModificationException"}
       ],
       "documentation":"<p>Creates one or more partitions in a batch operation.</p>"
     },
@@ -59,7 +78,8 @@
         {"shape":"InvalidInputException"},
         {"shape":"EntityNotFoundException"},
         {"shape":"InternalServiceException"},
-        {"shape":"OperationTimeoutException"}
+        {"shape":"OperationTimeoutException"},
+        {"shape":"ConcurrentModificationException"}
       ],
       "documentation":"<p>Deletes one or more partitions in a batch operation.</p>"
     },
@@ -77,7 +97,8 @@
         {"shape":"InternalServiceException"},
         {"shape":"OperationTimeoutException"},
         {"shape":"GlueEncryptionException"},
-        {"shape":"ResourceNotReadyException"}
+        {"shape":"ResourceNotReadyException"},
+        {"shape":"ConcurrentModificationException"}
       ],
       "documentation":"<p>Deletes multiple tables at once.</p> <note> <p>After completing this operation, you no longer have access to the table versions and partitions that belong to the deleted table. Glue deletes these \"orphaned\" resources asynchronously in a timely manner, at the discretion of the service.</p> <p>To ensure the immediate deletion of all related resources, before calling <code>BatchDeleteTable</code>, use <code>DeleteTableVersion</code> or <code>BatchDeleteTableVersion</code>, and <code>DeletePartition</code> or <code>BatchDeletePartition</code>, to delete any resources that belong to the table.</p> </note>"
     },
@@ -156,6 +177,36 @@
       ],
       "documentation":"<p>Retrieves a list of data quality results for the specified result IDs.</p>"
     },
+    "BatchGetDataQualityResultV2":{
+      "name":"BatchGetDataQualityResultV2",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"BatchGetDataQualityResultV2Request"},
+      "output":{"shape":"BatchGetDataQualityResultV2Response"},
+      "errors":[
+        {"shape":"InvalidInputException"},
+        {"shape":"OperationTimeoutException"},
+        {"shape":"InternalServiceException"}
+      ],
+      "documentation":"<p>Retrieves a list of data quality results for the specified result IDs. You can specify up to 100 result IDs in a single request.</p>"
+    },
+    "BatchGetDataQualityRulesetEvaluationRun":{
+      "name":"BatchGetDataQualityRulesetEvaluationRun",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"BatchGetDataQualityRulesetEvaluationRunRequest"},
+      "output":{"shape":"BatchGetDataQualityRulesetEvaluationRunResponse"},
+      "errors":[
+        {"shape":"InvalidInputException"},
+        {"shape":"OperationTimeoutException"},
+        {"shape":"InternalServiceException"}
+      ],
+      "documentation":"<p>Retrieves the details of multiple evaluation runs in a single request.</p>"
+    },
     "BatchGetDevEndpoints":{
       "name":"BatchGetDevEndpoints",
       "http":{
@@ -171,6 +222,23 @@
         {"shape":"InvalidInputException"}
       ],
       "documentation":"<p>Returns a list of resource metadata for a given list of development endpoint names. After calling the <code>ListDevEndpoints</code> operation, you can call this operation to access the data to which you have been granted permissions. This operation supports all IAM permissions, including permission conditions that uses tags.</p>"
+    },
+    "BatchGetIterableForms":{
+      "name":"BatchGetIterableForms",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"BatchGetIterableFormsRequest"},
+      "output":{"shape":"BatchGetIterableFormsResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"EntityNotFoundException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Retrieves multiple items from an iterable form on an asset in Glue Data Catalog in a single request.</p>"
     },
     "BatchGetJobs":{
       "name":"BatchGetJobs",
@@ -298,7 +366,8 @@
         {"shape":"EntityNotFoundException"},
         {"shape":"OperationTimeoutException"},
         {"shape":"InternalServiceException"},
-        {"shape":"GlueEncryptionException"}
+        {"shape":"GlueEncryptionException"},
+        {"shape":"ConcurrentModificationException"}
       ],
       "documentation":"<p>Updates one or more partitions in a batch operation.</p>"
     },
@@ -569,6 +638,43 @@
       ],
       "documentation":"<p>Creates a new development endpoint.</p>"
     },
+    "CreateGlossary":{
+      "name":"CreateGlossary",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateGlossaryRequest"},
+      "output":{"shape":"CreateGlossaryResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"ConcurrentModificationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AlreadyExistsException"}
+      ],
+      "documentation":"<p>Creates a business glossary in Glue Data Catalog. A glossary is a container for glossary terms that define business concepts.</p>"
+    },
+    "CreateGlossaryTerm":{
+      "name":"CreateGlossaryTerm",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateGlossaryTermRequest"},
+      "output":{"shape":"CreateGlossaryTermResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"EntityNotFoundException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"ConcurrentModificationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AlreadyExistsException"}
+      ],
+      "documentation":"<p>Creates a glossary term within a business glossary in Glue Data Catalog.</p>"
+    },
     "CreateGlueIdentityCenterConfiguration":{
       "name":"CreateGlueIdentityCenterConfiguration",
       "http":{
@@ -811,7 +917,8 @@
         {"shape":"InvalidInputException"},
         {"shape":"ValidationException"},
         {"shape":"AlreadyExistsException"},
-        {"shape":"ResourceNumberLimitExceededException"}
+        {"shape":"ResourceNumberLimitExceededException"},
+        {"shape":"OperationNotSupportedException"}
       ],
       "documentation":"<p>Creates a new session.</p>"
     },
@@ -931,6 +1038,58 @@
         {"shape":"ConcurrentModificationException"}
       ],
       "documentation":"<p>Creates a new workflow.</p>"
+    },
+    "DeleteAsset":{
+      "name":"DeleteAsset",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteAssetRequest"},
+      "output":{"shape":"DeleteAssetResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConcurrentModificationException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Deletes an asset from Glue Data Catalog.</p>"
+    },
+    "DeleteAssetType":{
+      "name":"DeleteAssetType",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteAssetTypeRequest"},
+      "output":{"shape":"DeleteAssetTypeResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"ConcurrentModificationException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Deletes an asset type from Glue Data Catalog.</p>"
+    },
+    "DeleteAttachment":{
+      "name":"DeleteAttachment",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteAttachmentRequest"},
+      "output":{"shape":"DeleteAttachmentResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"EntityNotFoundException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"ConcurrentModificationException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Deletes a form attachment from an asset in Glue Data Catalog.</p>"
     },
     "DeleteBlueprint":{
       "name":"DeleteBlueprint",
@@ -1145,6 +1304,59 @@
         {"shape":"InvalidInputException"}
       ],
       "documentation":"<p>Deletes a specified development endpoint.</p>"
+    },
+    "DeleteFormType":{
+      "name":"DeleteFormType",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteFormTypeRequest"},
+      "output":{"shape":"DeleteFormTypeResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"ConcurrentModificationException"},
+        {"shape":"ConflictException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Deletes a form type from Glue Data Catalog. A form type cannot be deleted if it is still referenced by an asset type.</p>"
+    },
+    "DeleteGlossary":{
+      "name":"DeleteGlossary",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteGlossaryRequest"},
+      "output":{"shape":"DeleteGlossaryResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"ConflictException"},
+        {"shape":"ConcurrentModificationException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Deletes a business glossary from Glue Data Catalog. A glossary cannot be deleted if it still contains glossary terms.</p>"
+    },
+    "DeleteGlossaryTerm":{
+      "name":"DeleteGlossaryTerm",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteGlossaryTermRequest"},
+      "output":{"shape":"DeleteGlossaryTermResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"ConcurrentModificationException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Deletes a glossary term from Glue Data Catalog.</p>"
     },
     "DeleteGlueIdentityCenterConfiguration":{
       "name":"DeleteGlueIdentityCenterConfiguration",
@@ -1581,6 +1793,58 @@
       ],
       "documentation":"<p>The API is used to retrieve a list of integrations.</p>"
     },
+    "DisassociateGlossaryTerms":{
+      "name":"DisassociateGlossaryTerms",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DisassociateGlossaryTermsRequest"},
+      "output":{"shape":"DisassociateGlossaryTermsResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"EntityNotFoundException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"ConcurrentModificationException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Removes the association of one or more glossary terms from an asset in Glue Data Catalog.</p>"
+    },
+    "GetAsset":{
+      "name":"GetAsset",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetAssetInput"},
+      "output":{"shape":"GetAssetOutput"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"EntityNotFoundException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidInputException"}
+      ],
+      "documentation":"<p>Retrieves the metadata for an asset in Glue Data Catalog, including its forms, additional attachments, and associated glossary terms.</p>"
+    },
+    "GetAssetType":{
+      "name":"GetAssetType",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetAssetTypeRequest"},
+      "output":{"shape":"GetAssetTypeResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"EntityNotFoundException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Retrieves an asset type in Glue Data Catalog by its identifier.</p>"
+    },
     "GetBlueprint":{
       "name":"GetBlueprint",
       "http":{
@@ -1876,6 +2140,24 @@
       ],
       "documentation":"<p>Retrieves the details of a custom pattern by specifying its name.</p>"
     },
+    "GetDashboardUrl":{
+      "name":"GetDashboardUrl",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetDashboardUrlRequest"},
+      "output":{"shape":"GetDashboardUrlResponse"},
+      "errors":[
+        {"shape":"InvalidInputException"},
+        {"shape":"EntityNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"OperationNotSupportedException"},
+        {"shape":"InternalServiceException"}
+      ],
+      "documentation":"<p>Retrieves the URL for the Spark monitoring dashboard for a Glue resource.</p>",
+      "readonly":true
+    },
     "GetDataCatalogEncryptionSettings":{
       "name":"GetDataCatalogEncryptionSettings",
       "http":{
@@ -1890,6 +2172,23 @@
         {"shape":"OperationTimeoutException"}
       ],
       "documentation":"<p>Retrieves the security configuration for a specified catalog.</p>"
+    },
+    "GetDataCatalogExportConfiguration":{
+      "name":"GetDataCatalogExportConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetDataCatalogExportConfigurationInput"},
+      "output":{"shape":"GetDataCatalogExportConfigurationOutput"},
+      "errors":[
+        {"shape":"InvalidInputException"},
+        {"shape":"EntityNotFoundException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Retrieves the current export configuration for the Glue Data Catalog. The export configuration controls whether catalog metadata is exported to S3 Tables.</p>",
+      "readonly":true
     },
     "GetDataQualityModel":{
       "name":"GetDataQualityModel",
@@ -1938,6 +2237,22 @@
         {"shape":"EntityNotFoundException"}
       ],
       "documentation":"<p>Retrieves the result of a data quality rule evaluation.</p>"
+    },
+    "GetDataQualityResultV2":{
+      "name":"GetDataQualityResultV2",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetDataQualityResultV2Request"},
+      "output":{"shape":"GetDataQualityResultV2Response"},
+      "errors":[
+        {"shape":"InvalidInputException"},
+        {"shape":"OperationTimeoutException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"EntityNotFoundException"}
+      ],
+      "documentation":"<p>Retrieves the result of a data quality rule evaluation published from any supported data platform.</p>"
     },
     "GetDataQualityRuleRecommendationRun":{
       "name":"GetDataQualityRuleRecommendationRun",
@@ -2090,6 +2405,55 @@
         {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>This API is used to query preview data from a given connection type or from a native Amazon S3 based Glue Data Catalog.</p> <p>Returns records as an array of JSON blobs. Each record is formatted using Jackson JsonNode based on the field type defined by the <code>DescribeEntity</code> API.</p> <p>Spark connectors generate schemas according to the same data type mapping as in the <code>DescribeEntity</code> API. Spark connectors convert data to the appropriate data types matching the schema when returning rows.</p>"
+    },
+    "GetFormType":{
+      "name":"GetFormType",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetFormTypeRequest"},
+      "output":{"shape":"GetFormTypeResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"EntityNotFoundException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Retrieves a form type in Glue Data Catalog by its identifier.</p>"
+    },
+    "GetGlossary":{
+      "name":"GetGlossary",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetGlossaryRequest"},
+      "output":{"shape":"GetGlossaryResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"EntityNotFoundException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Retrieves a business glossary in Glue Data Catalog by its identifier.</p>"
+    },
+    "GetGlossaryTerm":{
+      "name":"GetGlossaryTerm",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetGlossaryTermRequest"},
+      "output":{"shape":"GetGlossaryTermResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"EntityNotFoundException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Retrieves a glossary term in Glue Data Catalog by its identifier.</p>"
     },
     "GetGlueIdentityCenterConfiguration":{
       "name":"GetGlueIdentityCenterConfiguration",
@@ -2557,6 +2921,26 @@
       ],
       "documentation":"<p>Retrieves the session.</p>"
     },
+    "GetSessionEndpoint":{
+      "name":"GetSessionEndpoint",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetSessionEndpointRequest"},
+      "output":{"shape":"GetSessionEndpointResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"EntityNotFoundException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"OperationTimeoutException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"OperationNotSupportedException"},
+        {"shape":"IllegalSessionStateException"}
+      ],
+      "documentation":"<p>Returns the Spark Connect endpoint URL and authentication token for an interactive session.</p>",
+      "readonly":true
+    },
     "GetStatement":{
       "name":"GetStatement",
       "http":{
@@ -2574,6 +2958,41 @@
         {"shape":"IllegalSessionStateException"}
       ],
       "documentation":"<p>Retrieves the statement.</p>"
+    },
+    "GetSystemLogsForJobRun":{
+      "name":"GetSystemLogsForJobRun",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetSystemLogsForJobRunRequest"},
+      "output":{"shape":"GetSystemLogsForJobRunResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"EntityNotFoundException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"OperationTimeoutException"}
+      ],
+      "documentation":"<p>Retrieves the system logs for a job run.</p>",
+      "readonly":true
+    },
+    "GetSystemLogsForSession":{
+      "name":"GetSystemLogsForSession",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetSystemLogsForSessionRequest"},
+      "output":{"shape":"GetSystemLogsForSessionResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"EntityNotFoundException"},
+        {"shape":"InvalidInputException"}
+      ],
+      "documentation":"<p>Retrieves the system logs for an interactive session.</p>",
+      "readonly":true
     },
     "GetTable":{
       "name":"GetTable",
@@ -2902,6 +3321,22 @@
       ],
       "documentation":"<p>Imports an existing Amazon Athena Data Catalog to Glue.</p>"
     },
+    "ListAssetTypes":{
+      "name":"ListAssetTypes",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListAssetTypesRequest"},
+      "output":{"shape":"ListAssetTypesResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Lists the asset types defined in Glue Data Catalog.</p>"
+    },
     "ListBlueprints":{
       "name":"ListBlueprints",
       "http":{
@@ -3001,6 +3436,21 @@
         {"shape":"InternalServiceException"}
       ],
       "documentation":"<p>Returns all data quality execution results for your account.</p>"
+    },
+    "ListDataQualityResultsV2":{
+      "name":"ListDataQualityResultsV2",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListDataQualityResultsV2Request"},
+      "output":{"shape":"ListDataQualityResultsV2Response"},
+      "errors":[
+        {"shape":"InvalidInputException"},
+        {"shape":"OperationTimeoutException"},
+        {"shape":"InternalServiceException"}
+      ],
+      "documentation":"<p>Returns a paginated list of data quality execution results for your account, filtered by the specified criteria. Use the <code>NextToken</code> parameter to retrieve additional results.</p>"
     },
     "ListDataQualityRuleRecommendationRuns":{
       "name":"ListDataQualityRuleRecommendationRuns",
@@ -3112,6 +3562,54 @@
       ],
       "documentation":"<p>Returns the available entities supported by the connection type. </p>"
     },
+    "ListFormTypes":{
+      "name":"ListFormTypes",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListFormTypesRequest"},
+      "output":{"shape":"ListFormTypesResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Lists the form types defined in Glue Data Catalog.</p>"
+    },
+    "ListGlossaries":{
+      "name":"ListGlossaries",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListGlossariesRequest"},
+      "output":{"shape":"ListGlossariesResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Lists business glossaries in Glue Data Catalog.</p>"
+    },
+    "ListGlossaryTerms":{
+      "name":"ListGlossaryTerms",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListGlossaryTermsRequest"},
+      "output":{"shape":"ListGlossaryTermsResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Lists glossary terms within a business glossary in Glue Data Catalog.</p>"
+    },
     "ListIntegrationResourceProperties":{
       "name":"ListIntegrationResourceProperties",
       "http":{
@@ -3130,6 +3628,42 @@
         {"shape":"InvalidInputException"}
       ],
       "documentation":"<p>List integration resource properties for a single customer. It supports the filters, maxRecords and markers.</p>"
+    },
+    "ListIntegrationTableProperties":{
+      "name":"ListIntegrationTableProperties",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListIntegrationTablePropertiesRequest"},
+      "output":{"shape":"ListIntegrationTablePropertiesResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"EntityNotFoundException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"InvalidInputException"}
+      ],
+      "documentation":"<p>Lists the integration table properties in your account. This operation supports filtering and pagination.</p>"
+    },
+    "ListIterableForms":{
+      "name":"ListIterableForms",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListIterableFormsRequest"},
+      "output":{"shape":"ListIterableFormsResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"EntityNotFoundException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidInputException"}
+      ],
+      "documentation":"<p>Lists the items in an iterable form on an asset in Glue Data Catalog. For example, lists the columns of a table asset.</p>"
     },
     "ListJobs":{
       "name":"ListJobs",
@@ -3347,6 +3881,78 @@
       ],
       "documentation":"<p>Modifies a Zero-ETL integration in the caller's account.</p>"
     },
+    "PublishDataQualityResultV2":{
+      "name":"PublishDataQualityResultV2",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"PublishDataQualityResultV2Request"},
+      "output":{"shape":"PublishDataQualityResultV2Response"},
+      "errors":[
+        {"shape":"InvalidInputException"},
+        {"shape":"OperationTimeoutException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"IdempotentParameterMismatchException"},
+        {"shape":"ResourceNumberLimitExceededException"}
+      ],
+      "documentation":"<note> <p>This operation is intended for internal use. Do not call it directly.</p> </note> <p>AWS Glue Data Quality uses this operation to publish a data quality result.</p>",
+      "idempotent":true
+    },
+    "PutAsset":{
+      "name":"PutAsset",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"PutAssetRequest"},
+      "output":{"shape":"PutAssetResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConcurrentModificationException"},
+        {"shape":"EntityNotFoundException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Creates or updates an asset in Glue Data Catalog. If the asset already exists, this operation updates it; otherwise, a new asset is created.</p>"
+    },
+    "PutAssetType":{
+      "name":"PutAssetType",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"PutAssetTypeRequest"},
+      "output":{"shape":"PutAssetTypeResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"EntityNotFoundException"},
+        {"shape":"ConcurrentModificationException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Creates or updates an asset type in Glue Data Catalog. An asset type defines the structure of assets by specifying which forms they include. If an asset type with the given name already exists, it is updated.</p>"
+    },
+    "PutAttachment":{
+      "name":"PutAttachment",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"PutAttachmentRequest"},
+      "output":{"shape":"PutAttachmentResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"EntityNotFoundException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"ConcurrentModificationException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Attaches a form to an asset or an iterable form item in Glue Data Catalog. If an attachment with the same name already exists, it is overwritten.</p>"
+    },
     "PutDataCatalogEncryptionSettings":{
       "name":"PutDataCatalogEncryptionSettings",
       "http":{
@@ -3362,6 +3968,23 @@
       ],
       "documentation":"<p>Sets the security configuration for a specified catalog. After the configuration has been set, the specified encryption is applied to every catalog write thereafter.</p>"
     },
+    "PutDataCatalogExportConfiguration":{
+      "name":"PutDataCatalogExportConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"PutDataCatalogExportConfigurationInput"},
+      "output":{"shape":"PutDataCatalogExportConfigurationOutput"},
+      "errors":[
+        {"shape":"InvalidInputException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Creates or updates the export configuration for the Glue Data Catalog. Use this operation to enable or disable the export of catalog metadata to S3 Tables.</p>"
+    },
     "PutDataQualityProfileAnnotation":{
       "name":"PutDataQualityProfileAnnotation",
       "http":{
@@ -3376,6 +3999,23 @@
         {"shape":"InternalServiceException"}
       ],
       "documentation":"<p>Annotate all datapoints for a Profile.</p>"
+    },
+    "PutFormType":{
+      "name":"PutFormType",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"PutFormTypeRequest"},
+      "output":{"shape":"PutFormTypeResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"ConcurrentModificationException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Creates or updates a form type in Glue Data Catalog. A form type defines the schema for structured metadata that can be attached to assets.</p>"
     },
     "PutResourcePolicy":{
       "name":"PutResourcePolicy",
@@ -3546,9 +4186,27 @@
         {"shape":"InvalidInputException"},
         {"shape":"ValidationException"},
         {"shape":"ResourceNumberLimitExceededException"},
+        {"shape":"OperationNotSupportedException"},
+        {"shape":"SessionBusyException"},
         {"shape":"IllegalSessionStateException"}
       ],
       "documentation":"<p>Executes the statement.</p>"
+    },
+    "SearchAssets":{
+      "name":"SearchAssets",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"SearchAssetsInput"},
+      "output":{"shape":"SearchAssetsOutput"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Searches for assets in Glue Data Catalog using full-text search, filters, sorting, and aggregations. Returns matching assets with relevance-ranked results.</p>"
     },
     "SearchTables":{
       "name":"SearchTables",
@@ -3786,7 +4444,7 @@
         {"shape":"ResourceNumberLimitExceededException"},
         {"shape":"InvalidInputException"}
       ],
-      "documentation":"<p>Starts a materialized view refresh task run, for a specified table and columns.</p>"
+      "documentation":"<p>Starts a materialized view refresh task run for a specified materialized view.</p>"
     },
     "StartTrigger":{
       "name":"StartTrigger",
@@ -3902,7 +4560,7 @@
         {"shape":"InvalidInputException"},
         {"shape":"OperationTimeoutException"}
       ],
-      "documentation":"<p>Stops a materialized view refresh task run, for a specified table and columns.</p>"
+      "documentation":"<p>Stops a materialized view refresh task run for a specified materialized view.</p>"
     },
     "StopSession":{
       "name":"StopSession",
@@ -4008,6 +4666,24 @@
         {"shape":"EntityNotFoundException"}
       ],
       "documentation":"<p>Removes tags from a resource.</p>"
+    },
+    "UpdateAsset":{
+      "name":"UpdateAsset",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateAssetRequest"},
+      "output":{"shape":"UpdateAssetResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"EntityNotFoundException"},
+        {"shape":"ConcurrentModificationException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Updates the name and description of an existing asset in Glue Data Catalog. Only the fields that you provide are updated.</p>"
     },
     "UpdateBlueprint":{
       "name":"UpdateBlueprint",
@@ -4221,6 +4897,44 @@
         {"shape":"ValidationException"}
       ],
       "documentation":"<p>Updates a specified development endpoint.</p>"
+    },
+    "UpdateGlossary":{
+      "name":"UpdateGlossary",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateGlossaryRequest"},
+      "output":{"shape":"UpdateGlossaryResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"EntityNotFoundException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"ConcurrentModificationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AlreadyExistsException"}
+      ],
+      "documentation":"<p>Updates a business glossary in Glue Data Catalog.</p>"
+    },
+    "UpdateGlossaryTerm":{
+      "name":"UpdateGlossaryTerm",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateGlossaryTermRequest"},
+      "output":{"shape":"UpdateGlossaryTermResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"EntityNotFoundException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"ConcurrentModificationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AlreadyExistsException"}
+      ],
+      "documentation":"<p>Updates a glossary term in Glue Data Catalog.</p>"
     },
     "UpdateGlueIdentityCenterConfiguration":{
       "name":"UpdateGlueIdentityCenterConfiguration",
@@ -4946,6 +5660,138 @@
       "max":2048,
       "min":20
     },
+    "AssetDescription":{"type":"string"},
+    "AssetFormEntry":{
+      "type":"structure",
+      "members":{
+        "FormTypeId":{
+          "shape":"FormTypeId",
+          "documentation":"<p>The identifier of the form type that defines this form's schema.</p>"
+        },
+        "Content":{
+          "shape":"FormContent",
+          "documentation":"<p>The JSON content of the form, conforming to the schema of the specified form type.</p>"
+        }
+      },
+      "documentation":"<p>A form on an asset, consisting of the form type identifier and its JSON content.</p>"
+    },
+    "AssetFormKey":{"type":"string"},
+    "AssetFormMap":{
+      "type":"map",
+      "key":{"shape":"AssetFormKey"},
+      "value":{"shape":"AssetFormEntry"}
+    },
+    "AssetId":{
+      "type":"string",
+      "max":1087,
+      "min":1,
+      "pattern":"[a-zA-Z0-9\\-\\:\\/\\.\\_\\*]+"
+    },
+    "AssetName":{"type":"string"},
+    "AssetTypeFormKey":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"^(?![0-9_])\\w+$|^_\\w*[a-zA-Z0-9]\\w*$"
+    },
+    "AssetTypeFormReference":{
+      "type":"structure",
+      "required":["FormTypeIdentifier"],
+      "members":{
+        "FormTypeIdentifier":{
+          "shape":"FormTypeId",
+          "documentation":"<p>The identifier of the referenced form type.</p>"
+        }
+      },
+      "documentation":"<p>A reference to a form type that is included in an asset type.</p>"
+    },
+    "AssetTypeFormsMap":{
+      "type":"map",
+      "key":{"shape":"AssetTypeFormKey"},
+      "value":{"shape":"AssetTypeFormReference"},
+      "max":100,
+      "min":1
+    },
+    "AssetTypeId":{
+      "type":"string",
+      "max":256,
+      "min":1
+    },
+    "AssetTypeItem":{
+      "type":"structure",
+      "members":{
+        "Id":{
+          "shape":"AssetTypeId",
+          "documentation":"<p>The identifier of the asset type.</p>"
+        },
+        "Name":{
+          "shape":"AssetTypeName",
+          "documentation":"<p>The name of the asset type.</p>"
+        }
+      },
+      "documentation":"<p>A summary of an asset type.</p>"
+    },
+    "AssetTypeItemList":{
+      "type":"list",
+      "member":{"shape":"AssetTypeItem"}
+    },
+    "AssetTypeName":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"^(?![0-9_])\\w+$|^_\\w*[a-zA-Z0-9]\\w*$"
+    },
+    "AssociateGlossaryTermsRequest":{
+      "type":"structure",
+      "required":[
+        "AssetIdentifier",
+        "GlossaryTermIdentifiers"
+      ],
+      "members":{
+        "AssetIdentifier":{
+          "shape":"AssetId",
+          "documentation":"<p>The unique identifier of the asset to associate glossary terms with.</p>"
+        },
+        "IterableFormName":{
+          "shape":"IterableFormName",
+          "documentation":"<p>The name of the iterable form. When specified along with <code>itemIdentifier</code>, the glossary terms are associated with an item within the iterable form rather than the asset itself.</p>"
+        },
+        "ItemIdentifier":{
+          "shape":"ItemIdentifier",
+          "documentation":"<p>The identifier of the item within the iterable form. Required when <code>iterableFormName</code> is specified.</p>"
+        },
+        "GlossaryTermIdentifiers":{
+          "shape":"GlossaryTermIdList",
+          "documentation":"<p>The list of glossary term identifiers to associate with the asset.</p>"
+        },
+        "ClientToken":{
+          "shape":"HashString",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "AssociateGlossaryTermsResponse":{
+      "type":"structure",
+      "members":{
+        "AssetIdentifier":{
+          "shape":"AssetId",
+          "documentation":"<p>The unique identifier of the asset.</p>"
+        },
+        "IterableFormName":{
+          "shape":"IterableFormName",
+          "documentation":"<p>The name of the iterable form, if the association targets an item.</p>"
+        },
+        "ItemIdentifier":{
+          "shape":"ItemIdentifier",
+          "documentation":"<p>The identifier of the item within the iterable form, if applicable.</p>"
+        },
+        "GlossaryTerms":{
+          "shape":"GlossaryTermIdList",
+          "documentation":"<p>The glossary terms now associated with the asset.</p>"
+        }
+      }
+    },
     "AthenaConnectorSource":{
       "type":"structure",
       "required":[
@@ -4986,6 +5832,12 @@
         }
       },
       "documentation":"<p>Specifies a connector to an Amazon Athena data source.</p>"
+    },
+    "AttachmentName":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"^[a-zA-Z][a-zA-Z0-9_]*$"
     },
     "AttemptCount":{"type":"integer"},
     "AuditColumnNamesList":{
@@ -5531,6 +6383,53 @@
         }
       }
     },
+    "BatchGetDataQualityResultV2Request":{
+      "type":"structure",
+      "required":["ResultIds"],
+      "members":{
+        "ResultIds":{
+          "shape":"DataQualityResultV2IdList",
+          "documentation":"<p>A list of unique result IDs for the data quality results.</p>"
+        }
+      }
+    },
+    "BatchGetDataQualityResultV2Response":{
+      "type":"structure",
+      "required":["Results"],
+      "members":{
+        "Results":{
+          "shape":"DataQualityResultV2List",
+          "documentation":"<p>A list of <code>DataQualityResultV2Item</code> objects representing the data quality results.</p>"
+        },
+        "ResultsNotFound":{
+          "shape":"DataQualityResultV2IdList",
+          "documentation":"<p>A list of result IDs for which results were not found.</p>"
+        }
+      }
+    },
+    "BatchGetDataQualityRulesetEvaluationRunRequest":{
+      "type":"structure",
+      "required":["RunIds"],
+      "members":{
+        "RunIds":{
+          "shape":"DataQualityRulesetEvaluationRunIdList",
+          "documentation":"<p>A list of unique run identifiers for the evaluation runs to retrieve.</p>"
+        }
+      }
+    },
+    "BatchGetDataQualityRulesetEvaluationRunResponse":{
+      "type":"structure",
+      "members":{
+        "Runs":{
+          "shape":"DataQualityRulesetEvaluationRunsList",
+          "documentation":"<p>A list of evaluation run details for the requested run IDs.</p>"
+        },
+        "RunsNotFound":{
+          "shape":"DataQualityRulesetEvaluationRunIdList",
+          "documentation":"<p>A list of run IDs that were not found.</p>"
+        }
+      }
+    },
     "BatchGetDevEndpointsRequest":{
       "type":"structure",
       "required":["DevEndpointNames"],
@@ -5551,6 +6450,41 @@
         "DevEndpointsNotFound":{
           "shape":"DevEndpointNames",
           "documentation":"<p>A list of <code>DevEndpoints</code> not found.</p>"
+        }
+      }
+    },
+    "BatchGetIterableFormsRequest":{
+      "type":"structure",
+      "required":[
+        "AssetIdentifier",
+        "IterableFormName",
+        "ItemIdentifiers"
+      ],
+      "members":{
+        "AssetIdentifier":{
+          "shape":"AssetId",
+          "documentation":"<p>The unique identifier of the asset.</p>"
+        },
+        "IterableFormName":{
+          "shape":"IterableFormName",
+          "documentation":"<p>The name of the iterable form to retrieve items from.</p>"
+        },
+        "ItemIdentifiers":{
+          "shape":"ItemIdentifierList",
+          "documentation":"<p>The list of item identifiers to retrieve. Each identifier can be an item ID or item name.</p>"
+        }
+      }
+    },
+    "BatchGetIterableFormsResponse":{
+      "type":"structure",
+      "members":{
+        "Items":{
+          "shape":"IterableFormItemList",
+          "documentation":"<p>The list of retrieved iterable form items.</p>"
+        },
+        "Errors":{
+          "shape":"ItemErrorList",
+          "documentation":"<p>The list of errors for items that could not be retrieved.</p>"
         }
       }
     },
@@ -5965,6 +6899,28 @@
       "box":true,
       "max":900,
       "min":1
+    },
+    "BetweenConfiguration":{
+      "type":"structure",
+      "members":{
+        "LowBoundKey":{
+          "shape":"String",
+          "documentation":"<p>The parameter name used for the lower bound value in a BETWEEN filter operation.</p>"
+        },
+        "HighBoundKey":{
+          "shape":"String",
+          "documentation":"<p>The parameter name used for the upper bound value in a BETWEEN filter operation.</p>"
+        },
+        "Template":{
+          "shape":"String",
+          "documentation":"<p>A template string for constructing the BETWEEN filter expression.</p>"
+        }
+      },
+      "documentation":"<p>Configuration that defines how BETWEEN range filter operations are translated into REST API request parameters.</p>"
+    },
+    "BinEdges":{
+      "type":"list",
+      "member":{"shape":"GenericString"}
     },
     "BinaryColumnStatisticsData":{
       "type":"structure",
@@ -6741,6 +7697,28 @@
       },
       "documentation":"<p>Specifies a data store in the Glue Data Catalog.</p>"
     },
+    "CatalogTableConfigOptions":{
+      "type":"structure",
+      "members":{
+        "DatabaseName":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the database in the Glue Data Catalog.</p>"
+        },
+        "TableName":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the table in the Glue Data Catalog.</p>"
+        },
+        "S3Location":{
+          "shape":"UriString",
+          "documentation":"<p>The Amazon S3 location for storing the results.</p>"
+        },
+        "CatalogId":{
+          "shape":"NameString",
+          "documentation":"<p>A unique identifier for the Glue Data Catalog.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for a Glue Data Catalog table used to store data quality results.</p>"
+    },
     "CatalogTablesList":{
       "type":"list",
       "member":{"shape":"NameString"},
@@ -6875,6 +7853,12 @@
         }
       },
       "documentation":"<p>OAuth2 client credentials configuration that defines the properties needed for the Client Credentials grant type flow.</p>"
+    },
+    "ClientTokenString":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"^[a-zA-Z0-9_-]+$"
     },
     "CloudWatchEncryption":{
       "type":"structure",
@@ -8283,6 +9267,11 @@
       "member":{"shape":"ConnectionString"},
       "max":1000
     },
+    "ConnectionStringToStringMap":{
+      "type":"map",
+      "key":{"shape":"String"},
+      "value":{"shape":"String"}
+    },
     "ConnectionType":{
       "type":"string",
       "enum":[
@@ -8647,6 +9636,10 @@
         "PropertyType":{
           "shape":"PropertyType",
           "documentation":"<p>The data type of this property</p>"
+        },
+        "Format":{
+          "shape":"String",
+          "documentation":"<p>A format template for the property value that defines how the value should be formatted before sending it in API requests. Use <code>{value}</code> as a placeholder for the actual property value (for example, <code>SSWS {value}</code>).</p>"
         }
       },
       "documentation":"<p>Defines a property configuration for connection types, default values, and where the property should be used in requests.</p>"
@@ -8685,6 +9678,10 @@
       "min":1
     },
     "ContinuousSync":{"type":"boolean"},
+    "Count":{
+      "type":"list",
+      "member":{"shape":"NullableInteger"}
+    },
     "Crawl":{
       "type":"structure",
       "members":{
@@ -8813,6 +9810,10 @@
         "LakeFormationConfiguration":{
           "shape":"LakeFormationConfiguration",
           "documentation":"<p>Specifies whether the crawler should use Lake Formation credentials for the crawler instead of the IAM role credentials.</p>"
+        },
+        "CatalogId":{
+          "shape":"CatalogIdString",
+          "documentation":"<p>The ID of the Data Catalog in which the crawler's output is stored.</p>"
         }
       },
       "documentation":"<p>Specifies a crawler program that examines a data source and uses classifiers to try to determine its schema. If successful, the crawler records metadata concerning the data source in the Glue Data Catalog.</p>"
@@ -9169,7 +10170,7 @@
           "documentation":"<p>The percentage of data to sample.</p>"
         },
         "CatalogID":{
-          "shape":"NameString",
+          "shape":"CatalogIdString",
           "documentation":"<p>The ID of the Data Catalog in which the database resides.</p>"
         },
         "SecurityConfiguration":{
@@ -9280,6 +10281,10 @@
         "Tags":{
           "shape":"TagsMap",
           "documentation":"<p>The tags to use with this crawler request. You may use tags to limit access to the crawler. For more information about tags in Glue, see <a href=\"https://docs.aws.amazon.com/glue/latest/dg/monitor-tags.html\">Amazon Web Services Tags in Glue</a> in the developer guide.</p>"
+        },
+        "CatalogId":{
+          "shape":"CatalogIdString",
+          "documentation":"<p>The ID of the Data Catalog in which to store the crawler's output. If none is supplied, the Amazon Web Services account ID is used by default.</p>"
         }
       }
     },
@@ -9584,6 +10589,97 @@
         "Arguments":{
           "shape":"MapValue",
           "documentation":"<p>The map of arguments used to configure this <code>DevEndpoint</code>.</p> <p>Valid arguments are:</p> <ul> <li> <p> <code>\"--enable-glue-datacatalog\": \"\"</code> </p> </li> </ul> <p>You can specify a version of Python support for development endpoints by using the <code>Arguments</code> parameter in the <code>CreateDevEndpoint</code> or <code>UpdateDevEndpoint</code> APIs. If no arguments are provided, the version defaults to Python 2.</p>"
+        }
+      }
+    },
+    "CreateGlossaryRequest":{
+      "type":"structure",
+      "required":["Name"],
+      "members":{
+        "Name":{
+          "shape":"GlossaryName",
+          "documentation":"<p>The name of the glossary.</p>"
+        },
+        "Description":{
+          "shape":"MetadataDescription",
+          "documentation":"<p>The description of the glossary.</p>"
+        },
+        "ClientToken":{
+          "shape":"HashString",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "CreateGlossaryResponse":{
+      "type":"structure",
+      "members":{
+        "Id":{
+          "shape":"GlossaryId",
+          "documentation":"<p>The unique identifier of the glossary.</p>"
+        },
+        "Name":{
+          "shape":"GlossaryName",
+          "documentation":"<p>The name of the glossary.</p>"
+        },
+        "Description":{
+          "shape":"MetadataDescription",
+          "documentation":"<p>The description of the glossary.</p>"
+        }
+      }
+    },
+    "CreateGlossaryTermRequest":{
+      "type":"structure",
+      "required":[
+        "GlossaryIdentifier",
+        "Name"
+      ],
+      "members":{
+        "GlossaryIdentifier":{
+          "shape":"GlossaryId",
+          "documentation":"<p>The unique identifier of the glossary in which to create the term.</p>"
+        },
+        "Name":{
+          "shape":"GlossaryTermName",
+          "documentation":"<p>The name of the glossary term.</p>"
+        },
+        "ShortDescription":{
+          "shape":"GlossaryShortDescription",
+          "documentation":"<p>A short description of the glossary term.</p>"
+        },
+        "LongDescription":{
+          "shape":"GlossaryLongDescription",
+          "documentation":"<p>A long description of the glossary term.</p>"
+        },
+        "ClientToken":{
+          "shape":"HashString",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "CreateGlossaryTermResponse":{
+      "type":"structure",
+      "members":{
+        "Id":{
+          "shape":"GlossaryTermId",
+          "documentation":"<p>The unique identifier of the glossary term.</p>"
+        },
+        "GlossaryId":{
+          "shape":"GlossaryId",
+          "documentation":"<p>The unique identifier of the glossary containing this term.</p>"
+        },
+        "Name":{
+          "shape":"GlossaryTermName",
+          "documentation":"<p>The name of the glossary term.</p>"
+        },
+        "ShortDescription":{
+          "shape":"GlossaryShortDescription",
+          "documentation":"<p>The short description of the glossary term.</p>"
+        },
+        "LongDescription":{
+          "shape":"GlossaryLongDescription",
+          "documentation":"<p>The long description of the glossary term.</p>"
         }
       }
     },
@@ -10392,6 +11488,10 @@
         "RequestOrigin":{
           "shape":"OrchestrationNameString",
           "documentation":"<p>The origin of the request. </p>"
+        },
+        "SessionType":{
+          "shape":"SessionType",
+          "documentation":"<p>The type of session to create.</p>"
         }
       },
       "documentation":"<p>Request to create a new session.</p>"
@@ -10654,6 +11754,7 @@
       },
       "documentation":"<p>Specifies an XML classifier for <code>CreateClassifier</code> to create.</p>"
     },
+    "CreatedAt":{"type":"timestamp"},
     "CreatedTimestamp":{"type":"string"},
     "CredentialKey":{
       "type":"string",
@@ -11150,6 +12251,10 @@
         "EvaluatedMetrics":{
           "shape":"EvaluatedMetricsMap",
           "documentation":"<p>A map of metrics associated with the evaluation of the analyzer.</p>"
+        },
+        "EvaluatedDistributions":{
+          "shape":"EvaluatedDistributionsMap",
+          "documentation":"<p>A map of distribution metrics associated with the evaluation of the analyzer.</p>"
         }
       },
       "documentation":"<p>Describes the result of the evaluation of a data quality analyzer.</p>"
@@ -11159,6 +12264,20 @@
       "member":{"shape":"DataQualityAnalyzerResult"},
       "max":2000,
       "min":0
+    },
+    "DataQualityConfigurationV2":{
+      "type":"structure",
+      "members":{
+        "ObservationsEnabled":{
+          "shape":"ObservationConfiguration",
+          "documentation":"<p>Whether observations are enabled for the run. Valid values are:</p> <ul> <li> <p> <code>ALL</code> </p> </li> <li> <p> <code>NONE</code> </p> </li> </ul>"
+        },
+        "ObservationMode":{
+          "shape":"ObservationMode",
+          "documentation":"<p>The observation mode for the run. Valid values are:</p> <ul> <li> <p> <code>SCHEDULED</code> </p> </li> <li> <p> <code>FIXED</code> </p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>The run configuration for a data quality result.</p>"
     },
     "DataQualityEncryption":{
       "type":"structure",
@@ -11181,6 +12300,13 @@
         "SSE-KMS"
       ]
     },
+    "DataQualityEngine":{
+      "type":"string",
+      "enum":[
+        "SPARK",
+        "PYTHON"
+      ]
+    },
     "DataQualityEvaluationRunAdditionalRunOptions":{
       "type":"structure",
       "members":{
@@ -11199,9 +12325,40 @@
         "CustomLogGroupPrefix":{
           "shape":"GenericString",
           "documentation":"<p>A custom prefix for the CloudWatch log group names. When specified, evaluation run logs are written to <code>&lt;CustomLogGroupPrefix&gt;/error</code> and <code>&lt;CustomLogGroupPrefix&gt;/output</code> instead of the default <code>/aws-glue/data-quality/error</code> and <code>/aws-glue/data-quality/output</code> log groups.</p>"
+        },
+        "RowLevelResults":{
+          "shape":"RowLevelResultsOptions",
+          "documentation":"<p>The configuration for writing row-level evaluation results to a Glue Data Catalog table.</p>"
+        },
+        "ProfilingResults":{
+          "shape":"ProfilingResultsOptions",
+          "documentation":"<p>The configuration for writing profiling results to a Glue Data Catalog table.</p>"
+        },
+        "ObservationScope":{
+          "shape":"ObservationConfiguration",
+          "documentation":"<p>The scope of the observation for the evaluation run. Specifies whether anomaly detection is enabled or disabled.</p>"
+        },
+        "ObservationMode":{
+          "shape":"ObservationMode",
+          "documentation":"<p>The observation mode for the evaluation run. Specifies how anomaly detection bounds are calculated.</p>"
+        },
+        "DataQualityRuleResults":{
+          "shape":"DataQualityRuleResultsOptions",
+          "documentation":"<p>The configuration for writing rule results to a Glue Data Catalog table.</p>"
+        },
+        "ObservationResults":{
+          "shape":"ObservationResultsOptions",
+          "documentation":"<p>The configuration for writing observation results to a Glue Data Catalog table.</p>"
         }
       },
       "documentation":"<p>Additional run options you can specify for an evaluation run.</p>"
+    },
+    "DataQualityFlagsEnabled":{
+      "type":"map",
+      "key":{"shape":"NameString"},
+      "value":{"shape":"NameString"},
+      "max":30,
+      "min":0
     },
     "DataQualityGlueTable":{
       "type":"structure",
@@ -11343,15 +12500,15 @@
         },
         "RuleResults":{
           "shape":"DataQualityRuleResults",
-          "documentation":"<p>A list of <code>DataQualityRuleResult</code> objects representing the results for each rule. </p>"
+          "documentation":"<p>A list of <code>DataQualityRuleResult</code> objects representing the results for each rule.</p>"
         },
         "AnalyzerResults":{
           "shape":"DataQualityAnalyzerResults",
-          "documentation":"<p>A list of <code>DataQualityAnalyzerResult</code> objects representing the results for each analyzer. </p>"
+          "documentation":"<p>A list of <code>DataQualityAnalyzerResult</code> objects representing the results for each analyzer.</p>"
         },
         "Observations":{
           "shape":"DataQualityObservations",
-          "documentation":"<p>A list of <code>DataQualityObservation</code> objects representing the observations generated after evaluating the rules and analyzers. </p>"
+          "documentation":"<p>A list of <code>DataQualityObservation</code> objects representing the anomaly detection observations generated after evaluating the rules and analyzers.</p>"
         },
         "AggregatedMetrics":{
           "shape":"DataQualityAggregatedMetrics",
@@ -11428,9 +12585,160 @@
       "max":100,
       "min":1
     },
+    "DataQualityResultV2IdList":{
+      "type":"list",
+      "member":{"shape":"HashString"},
+      "max":100,
+      "min":1
+    },
+    "DataQualityResultV2Item":{
+      "type":"structure",
+      "required":["ResultId"],
+      "members":{
+        "ResultId":{
+          "shape":"HashString",
+          "documentation":"<p>A unique result ID for the data quality result.</p>"
+        },
+        "DataSource":{
+          "shape":"DataSource",
+          "documentation":"<p>The table associated with the data quality result, if any.</p>"
+        },
+        "Dimensions":{
+          "shape":"PublishDataQualityResultDimensions",
+          "documentation":"<p>A map of platform-specific identifiers, such as cluster, application, workgroup, or project IDs, that identify where the data quality evaluation ran.</p>"
+        },
+        "Tags":{
+          "shape":"PublishDataQualityResultTags",
+          "documentation":"<p>A map of tags associated with the data quality result.</p>"
+        },
+        "ExecutionStartedOn":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time when this data quality run started.</p>"
+        },
+        "ExecutionCompletedOn":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time when this data quality run completed.</p>"
+        },
+        "ResultPublishedOn":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time when this data quality result was published.</p>"
+        },
+        "Score":{
+          "shape":"GenericBoundedDouble",
+          "documentation":"<p>An aggregate data quality score. Represents the ratio of rules that passed to the total number of rules.</p>"
+        },
+        "RuleResults":{
+          "shape":"DataQualityRuleResults",
+          "documentation":"<p>A list of <code>DataQualityRuleResult</code> objects representing the results for each rule.</p>"
+        },
+        "AnalyzerResults":{
+          "shape":"DataQualityAnalyzerResults",
+          "documentation":"<p>A list of <code>DataQualityAnalyzerResult</code> objects representing the results for each analyzer.</p>"
+        },
+        "Observations":{
+          "shape":"DataQualityObservations",
+          "documentation":"<p>A list of <code>DataQualityObservation</code> objects representing the anomaly detection observations generated after evaluating the rules and analyzers.</p>"
+        },
+        "EvaluationContext":{
+          "shape":"NameString",
+          "documentation":"<p>The evaluation context for the data quality result. This value identifies a specific data quality result, or a series of related results, within a run.</p>"
+        },
+        "Descriptors":{
+          "shape":"PublishDataQualityResultDescriptors",
+          "documentation":"<p>A map of user-provided descriptors that add contextual metadata and configuration to the data quality result, such as database name, table name, team, or environment.</p>"
+        },
+        "AggregatedMetrics":{
+          "shape":"DataQualityAggregatedMetrics",
+          "documentation":"<p>A summary of <code>DataQualityAggregatedMetrics</code> objects showing the total counts of processed rows and rules, including their pass/fail statistics based on row-level results.</p>"
+        },
+        "RulesetName":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the ruleset associated with the data quality result.</p>"
+        }
+      },
+      "documentation":"<p>Describes a data quality result returned by <code>BatchGetDataQualityResultV2</code>.</p>"
+    },
+    "DataQualityResultV2List":{
+      "type":"list",
+      "member":{"shape":"DataQualityResultV2Item"},
+      "max":100,
+      "min":0
+    },
     "DataQualityResultsList":{
       "type":"list",
       "member":{"shape":"DataQualityResult"}
+    },
+    "DataQualityResultsV2Description":{
+      "type":"structure",
+      "members":{
+        "ResultId":{
+          "shape":"HashString",
+          "documentation":"<p>The unique result ID for this data quality result.</p>"
+        },
+        "DataSource":{
+          "shape":"DataSource",
+          "documentation":"<p>The table associated with the data quality result, if any.</p>"
+        },
+        "ResultPublishedOn":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time when this data quality result was published.</p>"
+        },
+        "Dimensions":{
+          "shape":"PublishDataQualityResultDimensions",
+          "documentation":"<p>A map of platform-specific identifiers, such as cluster, application, workgroup, or project IDs, that identify where the data quality evaluation ran.</p>"
+        },
+        "EvaluationContext":{
+          "shape":"NameString",
+          "documentation":"<p>The evaluation context for the data quality result. This value identifies a specific data quality result, or a series of related results, within a run.</p>"
+        },
+        "Descriptors":{
+          "shape":"PublishDataQualityResultDescriptors",
+          "documentation":"<p>A map of user-provided descriptors that add contextual metadata and configuration to the data quality result, such as database name, table name, team, or environment.</p>"
+        }
+      },
+      "documentation":"<p>Describes a data quality result returned by <code>ListDataQualityResultsV2</code>.</p>"
+    },
+    "DataQualityResultsV2DescriptionList":{
+      "type":"list",
+      "member":{"shape":"DataQualityResultsV2Description"},
+      "max":1000,
+      "min":0
+    },
+    "DataQualityResultsV2FilterCriteria":{
+      "type":"structure",
+      "members":{
+        "DataSource":{
+          "shape":"DataSource",
+          "documentation":"<p>The data source used to filter the results. For example, you can retrieve all results for an Glue table. <code>DatabaseName</code> and <code>TableName</code> are required. If you omit <code>CatalogId</code>, the catalog of the calling account is used.</p> <p>When you filter by data source, a page of results can be empty but still include a <code>NextToken</code>. Keep requesting pages until <code>NextToken</code> is absent.</p>"
+        },
+        "PublishedAfter":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time after which to include published results.</p>"
+        },
+        "PublishedBefore":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time before which to include published results.</p>"
+        },
+        "Dimensions":{
+          "shape":"PublishDataQualityResultDimensions",
+          "documentation":"<p>The platform dimensions to filter results by.</p>"
+        },
+        "EvaluationContext":{
+          "shape":"NameString",
+          "documentation":"<p>The evaluation context to filter results by.</p>"
+        }
+      },
+      "documentation":"<p>Describes the criteria used to filter the data quality results returned by <code>ListDataQualityResultsV2</code>.</p>"
+    },
+    "DataQualityRuleRecommendationRunAdditionalRunOptions":{
+      "type":"structure",
+      "members":{
+        "CustomLogGroupPrefix":{
+          "shape":"GenericString",
+          "documentation":"<p>A custom prefix for the CloudWatch log group names. When specified, recommendation run logs are written to <code>&lt;CustomLogGroupPrefix&gt;/error</code> and <code>&lt;CustomLogGroupPrefix&gt;/output</code> instead of the default <code>/aws-glue/data-quality/error</code> and <code>/aws-glue/data-quality/output</code> log groups.</p>"
+        }
+      },
+      "documentation":"<p>Additional run options you can specify for a recommendation run.</p>"
     },
     "DataQualityRuleRecommendationRunDescription":{
       "type":"structure",
@@ -11450,6 +12758,14 @@
         "DataSource":{
           "shape":"DataSource",
           "documentation":"<p>The data source (Glue table) associated with the recommendation run.</p>"
+        },
+        "CreatedRulesetName":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the ruleset that was created by the recommendation run.</p>"
+        },
+        "RecommendationMode":{
+          "shape":"RecommendationMode",
+          "documentation":"<p>The mode that Glue Data Quality uses to recommend rules.</p> <p>The default is <code>BASIC</code>.</p>"
         }
       },
       "documentation":"<p>Describes the result of a data quality rule recommendation run.</p>"
@@ -11536,6 +12852,80 @@
       "max":2000,
       "min":0
     },
+    "DataQualityRuleResultsOptions":{
+      "type":"structure",
+      "members":{
+        "WriteDataQualityRuleResultsEnabled":{
+          "shape":"NullableBoolean",
+          "documentation":"<p>Set to true to write data quality rule results.</p>"
+        },
+        "CatalogTableConfig":{
+          "shape":"CatalogTableConfigOptions",
+          "documentation":"<p>The Glue Data Catalog table configuration for storing the rule results.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for writing data quality rule results.</p>"
+    },
+    "DataQualityRulesetEvaluationRun":{
+      "type":"structure",
+      "members":{
+        "RunId":{
+          "shape":"HashString",
+          "documentation":"<p>The unique run identifier associated with this run.</p>"
+        },
+        "DataSource":{"shape":"DataSource"},
+        "Role":{
+          "shape":"RoleString",
+          "documentation":"<p>An IAM role supplied to encrypt the results of the run.</p>"
+        },
+        "NumberOfWorkers":{
+          "shape":"NullableInteger",
+          "documentation":"<p>The number of <code>G.1X</code> workers to be used in the run. The default is 5.</p>"
+        },
+        "Timeout":{
+          "shape":"Timeout",
+          "documentation":"<p>The timeout for a run in minutes. This is the maximum time that a run can consume resources before it is terminated and enters <code>TIMEOUT</code> status. The default is 2,880 minutes (48 hours).</p>"
+        },
+        "AdditionalRunOptions":{"shape":"DataQualityEvaluationRunAdditionalRunOptions"},
+        "Status":{
+          "shape":"TaskStatusType",
+          "documentation":"<p>The status for this run.</p>"
+        },
+        "ErrorString":{
+          "shape":"GenericString",
+          "documentation":"<p>The error strings that are associated with the run.</p>"
+        },
+        "StartedOn":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time when this run started.</p>"
+        },
+        "LastModifiedOn":{
+          "shape":"Timestamp",
+          "documentation":"<p>A timestamp. The last point in time when this run was modified.</p>"
+        },
+        "CompletedOn":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time when this run was completed.</p>"
+        },
+        "ExecutionTime":{
+          "shape":"ExecutionTime",
+          "documentation":"<p>The amount of time (in seconds) that the run consumed resources.</p>"
+        },
+        "RulesetNames":{
+          "shape":"RulesetNames",
+          "documentation":"<p>A list of ruleset names for the run.</p>"
+        },
+        "ResultIds":{
+          "shape":"DataQualityResultIdList",
+          "documentation":"<p>A list of result IDs for the data quality results for the run.</p>"
+        },
+        "AdditionalDataSources":{
+          "shape":"DataSourceMap",
+          "documentation":"<p>A map of reference strings to additional data sources you can specify for an evaluation run.</p>"
+        }
+      },
+      "documentation":"<p>The details of a data quality ruleset evaluation run.</p>"
+    },
     "DataQualityRulesetEvaluationRunDescription":{
       "type":"structure",
       "members":{
@@ -11581,9 +12971,19 @@
       },
       "documentation":"<p>The filter criteria.</p>"
     },
+    "DataQualityRulesetEvaluationRunIdList":{
+      "type":"list",
+      "member":{"shape":"HashString"},
+      "max":100,
+      "min":1
+    },
     "DataQualityRulesetEvaluationRunList":{
       "type":"list",
       "member":{"shape":"DataQualityRulesetEvaluationRunDescription"}
+    },
+    "DataQualityRulesetEvaluationRunsList":{
+      "type":"list",
+      "member":{"shape":"DataQualityRulesetEvaluationRun"}
     },
     "DataQualityRulesetFilterCriteria":{
       "type":"structure",
@@ -11683,6 +13083,17 @@
         }
       },
       "documentation":"<p>An object representing an Glue table.</p>"
+    },
+    "DataQualityTelemetry":{
+      "type":"structure",
+      "members":{
+        "VcpuHours":{"shape":"NullableDouble"},
+        "FlagsEnabled":{"shape":"DataQualityFlagsEnabled"},
+        "LibraryVersion":{"shape":"NameString"},
+        "SparkVersion":{"shape":"NameString"},
+        "HostRuntimeVersion":{"shape":"NameString"},
+        "Engine":{"shape":"DataQualityEngine"}
+      }
     },
     "DataSource":{
       "type":"structure",
@@ -11944,6 +13355,76 @@
       "min":1,
       "pattern":".*[^<>&'\"].*"
     },
+    "DeleteAssetRequest":{
+      "type":"structure",
+      "required":["Identifier"],
+      "members":{
+        "Identifier":{
+          "shape":"AssetId",
+          "documentation":"<p>The unique identifier of the asset to delete.</p>"
+        }
+      }
+    },
+    "DeleteAssetResponse":{
+      "type":"structure",
+      "members":{}
+    },
+    "DeleteAssetTypeRequest":{
+      "type":"structure",
+      "required":["Identifier"],
+      "members":{
+        "Identifier":{
+          "shape":"AssetTypeId",
+          "documentation":"<p>The identifier of the asset type to delete.</p>"
+        }
+      }
+    },
+    "DeleteAssetTypeResponse":{
+      "type":"structure",
+      "members":{}
+    },
+    "DeleteAttachmentRequest":{
+      "type":"structure",
+      "required":[
+        "AssetIdentifier",
+        "AttachmentName"
+      ],
+      "members":{
+        "AssetIdentifier":{
+          "shape":"AssetId",
+          "documentation":"<p>The unique identifier of the asset from which to delete the attachment.</p>"
+        },
+        "IterableFormName":{
+          "shape":"IterableFormName",
+          "documentation":"<p>The name of the iterable form. When specified along with <code>itemIdentifier</code>, the attachment is deleted from an item within the iterable form rather than from the asset itself.</p>"
+        },
+        "ItemIdentifier":{
+          "shape":"ItemIdentifier",
+          "documentation":"<p>The identifier of the item within the iterable form. Required when <code>iterableFormName</code> is specified.</p>"
+        },
+        "AttachmentName":{
+          "shape":"AttachmentName",
+          "documentation":"<p>The name of the attachment to delete.</p>"
+        }
+      }
+    },
+    "DeleteAttachmentResponse":{
+      "type":"structure",
+      "members":{
+        "AssetIdentifier":{
+          "shape":"AssetId",
+          "documentation":"<p>The unique identifier of the asset.</p>"
+        },
+        "IterableFormName":{
+          "shape":"IterableFormName",
+          "documentation":"<p>The name of the iterable form, if the deletion targets an item.</p>"
+        },
+        "ItemIdentifier":{
+          "shape":"ItemIdentifier",
+          "documentation":"<p>The identifier of the item within the iterable form, if applicable.</p>"
+        }
+      }
+    },
     "DeleteBehavior":{
       "type":"string",
       "enum":[
@@ -12078,6 +13559,10 @@
         "TableName":{
           "shape":"NameString",
           "documentation":"<p>The name of the table for which to delete column statistics.</p>"
+        },
+        "CatalogID":{
+          "shape":"CatalogIdString",
+          "documentation":"<p>The ID of the Data Catalog where the table resides. If none is supplied, the Amazon Web Services account ID is used by default.</p>"
         }
       }
     },
@@ -12199,6 +13684,48 @@
       }
     },
     "DeleteDevEndpointResponse":{
+      "type":"structure",
+      "members":{}
+    },
+    "DeleteFormTypeRequest":{
+      "type":"structure",
+      "required":["Identifier"],
+      "members":{
+        "Identifier":{
+          "shape":"FormTypeId",
+          "documentation":"<p>The identifier of the form type to delete.</p>"
+        }
+      }
+    },
+    "DeleteFormTypeResponse":{
+      "type":"structure",
+      "members":{}
+    },
+    "DeleteGlossaryRequest":{
+      "type":"structure",
+      "required":["Identifier"],
+      "members":{
+        "Identifier":{
+          "shape":"GlossaryId",
+          "documentation":"<p>The unique identifier of the glossary to delete.</p>"
+        }
+      }
+    },
+    "DeleteGlossaryResponse":{
+      "type":"structure",
+      "members":{}
+    },
+    "DeleteGlossaryTermRequest":{
+      "type":"structure",
+      "required":["Identifier"],
+      "members":{
+        "Identifier":{
+          "shape":"GlossaryTermId",
+          "documentation":"<p>The unique identifier of the glossary term to delete.</p>"
+        }
+      }
+    },
+    "DeleteGlossaryTermResponse":{
       "type":"structure",
       "members":{}
     },
@@ -13195,10 +14722,93 @@
       },
       "documentation":"<p>A policy that specifies update behavior for the crawler.</p>"
     },
+    "DisassociateGlossaryTermsRequest":{
+      "type":"structure",
+      "required":[
+        "AssetIdentifier",
+        "GlossaryTermIdentifiers"
+      ],
+      "members":{
+        "AssetIdentifier":{
+          "shape":"AssetId",
+          "documentation":"<p>The unique identifier of the asset to disassociate glossary terms from.</p>"
+        },
+        "IterableFormName":{
+          "shape":"IterableFormName",
+          "documentation":"<p>The name of the iterable form. When specified along with <code>itemIdentifier</code>, the glossary terms are disassociated from an item within the iterable form rather than the asset itself.</p>"
+        },
+        "ItemIdentifier":{
+          "shape":"ItemIdentifier",
+          "documentation":"<p>The identifier of the item within the iterable form. Required when <code>iterableFormName</code> is specified.</p>"
+        },
+        "GlossaryTermIdentifiers":{
+          "shape":"GlossaryTermIdList",
+          "documentation":"<p>The list of glossary term identifiers to disassociate from the asset.</p>"
+        },
+        "ClientToken":{
+          "shape":"HashString",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "DisassociateGlossaryTermsResponse":{
+      "type":"structure",
+      "members":{
+        "AssetIdentifier":{
+          "shape":"AssetId",
+          "documentation":"<p>The unique identifier of the asset.</p>"
+        },
+        "IterableFormName":{
+          "shape":"IterableFormName",
+          "documentation":"<p>The name of the iterable form, if the disassociation targets an item.</p>"
+        },
+        "ItemIdentifier":{
+          "shape":"ItemIdentifier",
+          "documentation":"<p>The identifier of the item within the iterable form, if applicable.</p>"
+        },
+        "GlossaryTerms":{
+          "shape":"GlossaryTermIdList",
+          "documentation":"<p>The remaining glossary terms associated with the asset.</p>"
+        }
+      }
+    },
     "DisplayName":{
       "type":"string",
       "max":128,
       "min":1
+    },
+    "DistributionData":{
+      "type":"structure",
+      "members":{
+        "BinEdges":{
+          "shape":"BinEdges",
+          "documentation":"<p>The bin edge values for the distribution.</p>"
+        },
+        "Count":{
+          "shape":"Count",
+          "documentation":"<p>The frequency count for each bin in the distribution.</p>"
+        },
+        "DataType":{
+          "shape":"NameString",
+          "documentation":"<p>The data type of the column for the distribution.</p>"
+        }
+      },
+      "documentation":"<p>The distribution data for a statistic.</p>"
+    },
+    "DistributionResultsOptions":{
+      "type":"structure",
+      "members":{
+        "WriteDistributionResultsEnabled":{
+          "shape":"NullableBoolean",
+          "documentation":"<p>Set to true to write distribution results.</p>"
+        },
+        "CatalogTableConfig":{
+          "shape":"CatalogTableConfigOptions",
+          "documentation":"<p>The Glue Data Catalog table configuration for storing the distribution results.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for writing distribution results.</p>"
     },
     "Double":{"type":"double"},
     "DoubleColumnStatisticsData":{
@@ -13701,6 +15311,12 @@
       },
       "documentation":"<p>Specifies your data quality evaluation criteria.</p>"
     },
+    "EvaluatedDistributionsMap":{
+      "type":"map",
+      "key":{"shape":"NameString"},
+      "value":{"shape":"DistributionData"},
+      "sensitive":true
+    },
     "EvaluatedMetricsMap":{
       "type":"map",
       "key":{"shape":"NameString"},
@@ -13794,6 +15410,20 @@
         "NONE"
       ]
     },
+    "ExportEncryptionConfiguration":{
+      "type":"structure",
+      "members":{
+        "SseAlgorithm":{
+          "shape":"SseAlgorithm",
+          "documentation":"<p>The server-side encryption algorithm used for the exported data. Valid values are <code>AES256</code> and <code>aws:kms</code>.</p>"
+        },
+        "KmsKeyArn":{
+          "shape":"KmsKeyArnString",
+          "documentation":"<p>The ARN of the KMS key used to encrypt the exported data.</p>"
+        }
+      },
+      "documentation":"<p>The encryption configuration for exported data catalog metadata.</p>"
+    },
     "ExportLabelsTaskRunProperties":{
       "type":"structure",
       "members":{
@@ -13803,6 +15433,25 @@
         }
       },
       "documentation":"<p>Specifies configuration properties for an exporting labels task run.</p>"
+    },
+    "ExportSetting":{
+      "type":"string",
+      "documentation":"<p>The export setting for the data catalog.</p>",
+      "enum":[
+        "ENABLED",
+        "DISABLED"
+      ]
+    },
+    "ExportStatus":{
+      "type":"string",
+      "documentation":"<p>The current status of the data catalog export.</p>",
+      "enum":[
+        "ENABLING",
+        "ENABLED",
+        "DISABLING",
+        "DISABLED",
+        "FAILED"
+      ]
     },
     "ExtendedString":{
       "type":"string",
@@ -14065,6 +15714,30 @@
         "FieldDataType":{
           "shape":"FieldDataType",
           "documentation":"<p>The data type of the field.</p>"
+        },
+        "ResponseDateFormat":{
+          "shape":"String",
+          "documentation":"<p>The format pattern for parsing date values from API responses. Required when the API uses a non-ISO-8601 format. Accepts Java <code>DateTimeFormatter</code> patterns (for example, <code>EEE, d MMM yyyy HH:mm:ss Z</code>), <code>EPOCH_SECONDS</code> for Unix epoch seconds, or <code>EPOCH_MILLIS</code> for Unix epoch milliseconds.</p>"
+        },
+        "IsPartitionable":{
+          "shape":"Bool",
+          "documentation":"<p>Indicates whether this field can be used for partitioning queries to the data source.</p>"
+        },
+        "IsNullable":{
+          "shape":"Bool",
+          "documentation":"<p>Indicates whether this field can contain null values.</p>"
+        },
+        "IsQueryable":{
+          "shape":"Bool",
+          "documentation":"<p>Indicates whether this field can be used in filter predicates when querying data.</p>"
+        },
+        "IsOrderable":{
+          "shape":"Bool",
+          "documentation":"<p>Indicates whether this field can be used for ordering results.</p>"
+        },
+        "FilterOverrides":{
+          "shape":"FilterOverrides",
+          "documentation":"<p>Per-field overrides for filter behavior, allowing customization of how filters are applied to this specific field.</p>"
         }
       },
       "documentation":"<p>Defines a field in an entity schema for REST connector data sources, specifying the field name and data type.</p>"
@@ -14169,6 +15842,37 @@
       },
       "documentation":"<p>Specifies a transform that splits a dataset into two, based on a filter condition.</p>"
     },
+    "FilterConfiguration":{
+      "type":"structure",
+      "required":["FilterMode"],
+      "members":{
+        "FilterMode":{
+          "shape":"FilterMode",
+          "documentation":"<p>The strategy for applying filters to requests. Use <code>QUERY_PARAMS</code> to pass filters as individual query parameters, or <code>FILTER_STRING</code> to construct a single filter expression string.</p>"
+        },
+        "OperatorMappings":{
+          "shape":"ConnectionStringToStringMap",
+          "documentation":"<p>A map of logical filter operators to their API-specific string representations. Supported operator keys are: <code>EQUAL_TO</code>, <code>NOT_EQUAL_TO</code>, <code>LESS_THAN</code>, <code>GREATER_THAN</code>, <code>LESS_THAN_OR_EQUAL_TO</code>, <code>GREATER_THAN_OR_EQUAL_TO</code>, <code>CONTAINS</code>, <code>BETWEEN</code>, <code>AND</code>, and <code>OR</code>.</p>"
+        },
+        "DateTimeFormat":{
+          "shape":"String",
+          "documentation":"<p>The global date and time format for filter expressions. Accepts Java <code>DateTimeFormatter</code> patterns (for example, <code>EEE, d MMM yyyy HH:mm:ss Z</code>), <code>EPOCH_SECONDS</code> for Unix epoch seconds, or <code>EPOCH_MILLIS</code> for Unix epoch milliseconds. If not specified, values are passed as-is in ISO-8601 format.</p>"
+        },
+        "StripQuotes":{
+          "shape":"Bool",
+          "documentation":"<p>Indicates whether surrounding double quotes should be stripped from filter values before processing.</p>"
+        },
+        "BetweenConfiguration":{
+          "shape":"BetweenConfiguration",
+          "documentation":"<p>Configuration for handling BETWEEN range filter operations.</p>"
+        },
+        "FilterStringConfiguration":{
+          "shape":"FilterStringConfiguration",
+          "documentation":"<p>Configuration for constructing filter expressions when <code>FilterMode</code> is set to <code>FILTER_STRING</code>.</p>"
+        }
+      },
+      "documentation":"<p>Configuration that defines how filter predicates are applied to REST API requests, supporting both query parameter and filter string strategies.</p>"
+    },
     "FilterExpression":{
       "type":"structure",
       "required":[
@@ -14202,6 +15906,14 @@
         "OR"
       ]
     },
+    "FilterMode":{
+      "type":"string",
+      "documentation":"<p>The strategy used to apply filter predicates to REST API requests.</p>",
+      "enum":[
+        "QUERY_PARAMS",
+        "FILTER_STRING"
+      ]
+    },
     "FilterOperation":{
       "type":"string",
       "enum":[
@@ -14225,6 +15937,28 @@
         "NE"
       ]
     },
+    "FilterOverrides":{
+      "type":"structure",
+      "members":{
+        "FieldName":{
+          "shape":"String",
+          "documentation":"<p>An override for the field name to use in filter expressions, if different from the schema field name.</p>"
+        },
+        "OperatorMappings":{
+          "shape":"ConnectionStringToStringMap",
+          "documentation":"<p>A map of logical filter operators to their field-specific API representations, overriding the global operator mappings. Supported operator keys are: <code>EQUAL_TO</code>, <code>NOT_EQUAL_TO</code>, <code>LESS_THAN</code>, <code>GREATER_THAN</code>, <code>LESS_THAN_OR_EQUAL_TO</code>, <code>GREATER_THAN_OR_EQUAL_TO</code>, <code>CONTAINS</code>, <code>BETWEEN</code>, <code>AND</code>, and <code>OR</code>.</p>"
+        },
+        "BetweenConfiguration":{
+          "shape":"BetweenConfiguration",
+          "documentation":"<p>Field-specific configuration for handling BETWEEN range filter operations.</p>"
+        },
+        "DateTimeFormat":{
+          "shape":"String",
+          "documentation":"<p>The date and time format for filter expressions on this field, overriding the global <code>DateTimeFormat</code>. Accepts Java <code>DateTimeFormatter</code> patterns (for example, <code>EEE, d MMM yyyy HH:mm:ss Z</code>), <code>EPOCH_SECONDS</code> for Unix epoch seconds, or <code>EPOCH_MILLIS</code> for Unix epoch milliseconds.</p>"
+        }
+      },
+      "documentation":"<p>Configuration that defines per-field overrides for filter behavior, allowing individual fields to customize how filter operations are applied.</p>"
+    },
     "FilterPredicate":{
       "type":"string",
       "max":100000,
@@ -14235,6 +15969,25 @@
       "max":2048,
       "min":0,
       "pattern":"[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\t]*"
+    },
+    "FilterStringConfiguration":{
+      "type":"structure",
+      "required":["QueryParameterName"],
+      "members":{
+        "QueryParameterName":{
+          "shape":"String",
+          "documentation":"<p>The query parameter name used to send the constructed filter expression string in API requests.</p>"
+        },
+        "QuoteStringValues":{
+          "shape":"Bool",
+          "documentation":"<p>Indicates whether string and date values should be wrapped with a quote character in the filter expression.</p>"
+        },
+        "QuoteCharacter":{
+          "shape":"String",
+          "documentation":"<p>The character used to quote values when <code>QuoteStringValues</code> is true. Defaults to double quotes if not specified.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for constructing filter expression strings when using the <code>FILTER_STRING</code> filter mode.</p>"
     },
     "FilterValue":{
       "type":"structure",
@@ -14335,6 +16088,41 @@
       },
       "documentation":"<p>Specifies configuration properties for a Find Matches task run.</p>"
     },
+    "FormContent":{"type":"string"},
+    "FormTypeId":{
+      "type":"string",
+      "max":256,
+      "min":1
+    },
+    "FormTypeItem":{
+      "type":"structure",
+      "members":{
+        "Id":{
+          "shape":"FormTypeId",
+          "documentation":"<p>The identifier of the form type.</p>"
+        },
+        "Name":{
+          "shape":"FormTypeName",
+          "documentation":"<p>The name of the form type.</p>"
+        }
+      },
+      "documentation":"<p>A summary of a form type.</p>"
+    },
+    "FormTypeItemList":{
+      "type":"list",
+      "member":{"shape":"FormTypeItem"}
+    },
+    "FormTypeName":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"^[A-Z]\\w*$"
+    },
+    "FormTypeSchema":{
+      "type":"string",
+      "max":100000,
+      "min":1
+    },
     "FormatString":{
       "type":"string",
       "max":128,
@@ -14369,6 +16157,93 @@
       "value":{"shape":"GenericString"}
     },
     "GenericString":{"type":"string"},
+    "GetAssetInput":{
+      "type":"structure",
+      "required":["Identifier"],
+      "members":{
+        "Identifier":{
+          "shape":"AssetId",
+          "documentation":"<p>The unique identifier of the asset to retrieve.</p>"
+        }
+      }
+    },
+    "GetAssetOutput":{
+      "type":"structure",
+      "required":[
+        "Id",
+        "AssetTypeId"
+      ],
+      "members":{
+        "Id":{
+          "shape":"AssetId",
+          "documentation":"<p>The unique identifier of the asset.</p>"
+        },
+        "Name":{
+          "shape":"AssetName",
+          "documentation":"<p>The name of the asset.</p>"
+        },
+        "Description":{
+          "shape":"AssetDescription",
+          "documentation":"<p>The description of the asset.</p>"
+        },
+        "CreatedAt":{
+          "shape":"CreatedAt",
+          "documentation":"<p>The timestamp at which the asset was created.</p>"
+        },
+        "UpdatedAt":{
+          "shape":"UpdatedAt",
+          "documentation":"<p>The timestamp at which the asset was last updated.</p>"
+        },
+        "AssetTypeId":{
+          "shape":"AssetTypeId",
+          "documentation":"<p>The identifier of the asset type for this asset.</p>"
+        },
+        "GlossaryTerms":{
+          "shape":"GlossaryTermIdList",
+          "documentation":"<p>The identifiers of the glossary terms associated with the asset.</p>"
+        },
+        "Forms":{
+          "shape":"AssetFormMap",
+          "documentation":"<p>The forms on the asset, keyed by form name.</p>"
+        },
+        "Attachments":{
+          "shape":"AssetFormMap",
+          "documentation":"<p>Additional attachments on the asset for more context, keyed by attachment name.</p>"
+        },
+        "IterableForms":{
+          "shape":"IterableFormMap",
+          "documentation":"<p>The iterable forms available on the asset, keyed by form name (for example, <code>columns</code>). Use the form name with <code>ListIterableForms</code> or <code>BatchGetIterableForms</code> to retrieve the form's items.</p>"
+        }
+      },
+      "documentation":"<p>The asset metadata returned by the <code>GetAsset</code> operation.</p>"
+    },
+    "GetAssetTypeRequest":{
+      "type":"structure",
+      "required":["Identifier"],
+      "members":{
+        "Identifier":{
+          "shape":"AssetTypeId",
+          "documentation":"<p>The identifier of the asset type to retrieve.</p>"
+        }
+      }
+    },
+    "GetAssetTypeResponse":{
+      "type":"structure",
+      "members":{
+        "Id":{
+          "shape":"AssetTypeId",
+          "documentation":"<p>The identifier of the asset type.</p>"
+        },
+        "Name":{
+          "shape":"AssetTypeName",
+          "documentation":"<p>The name of the asset type.</p>"
+        },
+        "Forms":{
+          "shape":"AssetTypeFormsMap",
+          "documentation":"<p>The forms that make up the asset type, keyed by form name.</p>"
+        }
+      }
+    },
     "GetBlueprintRequest":{
       "type":"structure",
       "required":["Name"],
@@ -14708,6 +16583,10 @@
         "NextToken":{
           "shape":"Token",
           "documentation":"<p>A continuation token, if this is a continuation call.</p>"
+        },
+        "CatalogID":{
+          "shape":"CatalogIdString",
+          "documentation":"<p>The ID of the Data Catalog where the table resides. If none is supplied, the Amazon Web Services account ID is used by default.</p>"
         }
       }
     },
@@ -14738,6 +16617,10 @@
         "TableName":{
           "shape":"NameString",
           "documentation":"<p>The name of the table for which to retrieve column statistics.</p>"
+        },
+        "CatalogID":{
+          "shape":"CatalogIdString",
+          "documentation":"<p>The ID of the Data Catalog where the table resides. If none is supplied, the Amazon Web Services account ID is used by default.</p>"
         }
       }
     },
@@ -14939,6 +16822,37 @@
         }
       }
     },
+    "GetDashboardUrlRequest":{
+      "type":"structure",
+      "required":[
+        "ResourceId",
+        "ResourceType"
+      ],
+      "members":{
+        "ResourceId":{
+          "shape":"NameString",
+          "documentation":"<p>The unique identifier of the resource for which to retrieve the dashboard URL.</p>"
+        },
+        "ResourceType":{
+          "shape":"GlueResourceType",
+          "documentation":"<p>The type of the resource. Valid values are <code>SESSION</code> and <code>JOB</code>.</p>"
+        },
+        "RequestOrigin":{
+          "shape":"OrchestrationNameString",
+          "documentation":"<p>The origin of the request. </p>"
+        }
+      }
+    },
+    "GetDashboardUrlResponse":{
+      "type":"structure",
+      "required":["Url"],
+      "members":{
+        "Url":{
+          "shape":"SensitiveUrl",
+          "documentation":"<p>The URL for the Spark monitoring dashboard.</p>"
+        }
+      }
+    },
     "GetDataCatalogEncryptionSettingsRequest":{
       "type":"structure",
       "members":{
@@ -14956,6 +16870,40 @@
           "documentation":"<p>The requested security configuration.</p>"
         }
       }
+    },
+    "GetDataCatalogExportConfigurationInput":{
+      "type":"structure",
+      "members":{}
+    },
+    "GetDataCatalogExportConfigurationOutput":{
+      "type":"structure",
+      "members":{
+        "ExportSetting":{
+          "shape":"ExportSetting",
+          "documentation":"<p>The export setting for the data catalog. Valid values are <code>ENABLED</code> and <code>DISABLED</code>.</p>"
+        },
+        "Status":{
+          "shape":"ExportStatus",
+          "documentation":"<p>The current status of the export. Valid values are <code>ENABLING</code>, <code>ENABLED</code>, <code>DISABLING</code>, <code>DISABLED</code>, and <code>FAILED</code>.</p>"
+        },
+        "EncryptionConfiguration":{
+          "shape":"ExportEncryptionConfiguration",
+          "documentation":"<p>The encryption configuration for the exported data.</p>"
+        },
+        "S3TableBucketArn":{
+          "shape":"S3TableBucketArn",
+          "documentation":"<p>The ARN of the S3 Tables bucket where catalog metadata is exported.</p>"
+        },
+        "CreatedAt":{
+          "shape":"CreatedAt",
+          "documentation":"<p>The timestamp at which the export configuration was created.</p>"
+        },
+        "UpdatedAt":{
+          "shape":"UpdatedAt",
+          "documentation":"<p>The timestamp at which the export configuration was last updated.</p>"
+        }
+      },
+      "documentation":"<p>The export configuration returned by the <code>GetDataCatalogExportConfiguration</code> operation.</p>"
     },
     "GetDataQualityModelRequest":{
       "type":"structure",
@@ -15081,15 +17029,15 @@
         },
         "RuleResults":{
           "shape":"DataQualityRuleResults",
-          "documentation":"<p>A list of <code>DataQualityRuleResult</code> objects representing the results for each rule. </p>"
+          "documentation":"<p>A list of <code>DataQualityRuleResult</code> objects representing the results for each rule.</p>"
         },
         "AnalyzerResults":{
           "shape":"DataQualityAnalyzerResults",
-          "documentation":"<p>A list of <code>DataQualityAnalyzerResult</code> objects representing the results for each analyzer. </p>"
+          "documentation":"<p>A list of <code>DataQualityAnalyzerResult</code> objects representing the results for each analyzer.</p>"
         },
         "Observations":{
           "shape":"DataQualityObservations",
-          "documentation":"<p>A list of <code>DataQualityObservation</code> objects representing the observations generated after evaluating the rules and analyzers. </p>"
+          "documentation":"<p>A list of <code>DataQualityObservation</code> objects representing the anomaly detection observations generated after evaluating the rules and analyzers.</p>"
         },
         "AggregatedMetrics":{
           "shape":"DataQualityAggregatedMetrics",
@@ -15097,6 +17045,85 @@
         }
       },
       "documentation":"<p>The response for the data quality result.</p>"
+    },
+    "GetDataQualityResultV2Request":{
+      "type":"structure",
+      "required":["ResultId"],
+      "members":{
+        "ResultId":{
+          "shape":"HashString",
+          "documentation":"<p>A unique result ID for the data quality result.</p>"
+        }
+      }
+    },
+    "GetDataQualityResultV2Response":{
+      "type":"structure",
+      "members":{
+        "ResultId":{
+          "shape":"HashString",
+          "documentation":"<p>A unique result ID for the data quality result.</p>"
+        },
+        "DataSource":{
+          "shape":"DataSource",
+          "documentation":"<p>The table associated with the data quality result, if any.</p>"
+        },
+        "ProfileId":{
+          "shape":"HashString",
+          "documentation":"<p>The Profile ID for the data quality result.</p>"
+        },
+        "Dimensions":{
+          "shape":"PublishDataQualityResultDimensions",
+          "documentation":"<p>A map of platform-specific identifiers, such as cluster, application, workgroup, or project IDs, that identify where the data quality evaluation ran.</p>"
+        },
+        "Tags":{
+          "shape":"PublishDataQualityResultTags",
+          "documentation":"<p>A map of tags associated with the data quality result.</p>"
+        },
+        "ExecutionStartedOn":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time when this data quality run started.</p>"
+        },
+        "ExecutionCompletedOn":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time when this data quality run completed.</p>"
+        },
+        "ResultPublishedOn":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time when this data quality result was published.</p>"
+        },
+        "Score":{
+          "shape":"GenericBoundedDouble",
+          "documentation":"<p>An aggregate data quality score. Represents the ratio of rules that passed to the total number of rules.</p>"
+        },
+        "RuleResults":{
+          "shape":"DataQualityRuleResults",
+          "documentation":"<p>A list of <code>DataQualityRuleResult</code> objects representing the results for each rule.</p>"
+        },
+        "AnalyzerResults":{
+          "shape":"DataQualityAnalyzerResults",
+          "documentation":"<p>A list of <code>DataQualityAnalyzerResult</code> objects representing the results for each analyzer.</p>"
+        },
+        "Observations":{
+          "shape":"DataQualityObservations",
+          "documentation":"<p>A list of <code>DataQualityObservation</code> objects representing the anomaly detection observations generated after evaluating the rules and analyzers.</p>"
+        },
+        "EvaluationContext":{
+          "shape":"NameString",
+          "documentation":"<p>The evaluation context for the data quality result. This value identifies a specific data quality result, or a series of related results, within a run.</p>"
+        },
+        "Descriptors":{
+          "shape":"PublishDataQualityResultDescriptors",
+          "documentation":"<p>A map of user-provided descriptors that add contextual metadata and configuration to the data quality result, such as database name, table name, team, or environment.</p>"
+        },
+        "AggregatedMetrics":{
+          "shape":"DataQualityAggregatedMetrics",
+          "documentation":"<p>A summary of <code>DataQualityAggregatedMetrics</code> objects showing the total counts of processed rows and rules, including their pass/fail statistics based on row-level results.</p>"
+        },
+        "RulesetName":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the ruleset associated with the data quality result.</p>"
+        }
+      }
     },
     "GetDataQualityRuleRecommendationRunRequest":{
       "type":"structure",
@@ -15121,7 +17148,7 @@
         },
         "Role":{
           "shape":"RoleString",
-          "documentation":"<p>An IAM role supplied to encrypt the results of the run.</p>"
+          "documentation":"<p>The IAM role that Glue assumes to access resources for the run.</p>"
         },
         "NumberOfWorkers":{
           "shape":"NullableInteger",
@@ -15166,6 +17193,14 @@
         "DataQualitySecurityConfiguration":{
           "shape":"NameString",
           "documentation":"<p>The name of the security configuration created with the data quality encryption option.</p>"
+        },
+        "AdditionalRunOptions":{
+          "shape":"DataQualityRuleRecommendationRunAdditionalRunOptions",
+          "documentation":"<p>Additional run options you can specify for a recommendation run.</p>"
+        },
+        "RecommendationMode":{
+          "shape":"RecommendationMode",
+          "documentation":"<p>The mode that Glue Data Quality uses to recommend rules.</p> <p>The default is <code>BASIC</code>.</p>"
         }
       },
       "documentation":"<p>The response for the Data Quality rule recommendation run.</p>"
@@ -15481,6 +17516,95 @@
         "NextToken":{
           "shape":"NextToken",
           "documentation":"<p>A continuation token, present if the current segment is not the last.</p>"
+        }
+      }
+    },
+    "GetFormTypeRequest":{
+      "type":"structure",
+      "required":["Identifier"],
+      "members":{
+        "Identifier":{
+          "shape":"FormTypeId",
+          "documentation":"<p>The identifier of the form type to retrieve.</p>"
+        }
+      }
+    },
+    "GetFormTypeResponse":{
+      "type":"structure",
+      "members":{
+        "Id":{
+          "shape":"FormTypeId",
+          "documentation":"<p>The identifier of the form type.</p>"
+        },
+        "Name":{
+          "shape":"FormTypeName",
+          "documentation":"<p>The name of the form type.</p>"
+        },
+        "Schema":{
+          "shape":"FormTypeSchema",
+          "documentation":"<p>The Smithy IDL schema of the form type.</p>"
+        }
+      }
+    },
+    "GetGlossaryRequest":{
+      "type":"structure",
+      "required":["Identifier"],
+      "members":{
+        "Identifier":{
+          "shape":"GlossaryId",
+          "documentation":"<p>The unique identifier of the glossary to retrieve.</p>"
+        }
+      }
+    },
+    "GetGlossaryResponse":{
+      "type":"structure",
+      "members":{
+        "Id":{
+          "shape":"GlossaryId",
+          "documentation":"<p>The unique identifier of the glossary.</p>"
+        },
+        "Name":{
+          "shape":"GlossaryName",
+          "documentation":"<p>The name of the glossary.</p>"
+        },
+        "Description":{
+          "shape":"MetadataDescription",
+          "documentation":"<p>The description of the glossary.</p>"
+        }
+      }
+    },
+    "GetGlossaryTermRequest":{
+      "type":"structure",
+      "required":["Identifier"],
+      "members":{
+        "Identifier":{
+          "shape":"GlossaryTermId",
+          "documentation":"<p>The unique identifier of the glossary term to retrieve.</p>"
+        }
+      }
+    },
+    "GetGlossaryTermResponse":{
+      "type":"structure",
+      "members":{
+        "Id":{
+          "shape":"GlossaryTermId",
+          "documentation":"<p>The unique identifier of the glossary term.</p>"
+        },
+        "GlossaryId":{
+          "shape":"GlossaryId",
+          "documentation":"<p>The unique identifier of the glossary containing this term.</p>"
+        },
+        "Name":{
+          "shape":"GlossaryTermName",
+          "documentation":"<p>The name of the glossary term.</p>"
+        },
+        "ShortDescription":{
+          "shape":"GlossaryShortDescription",
+          "documentation":"<p>The short description of the glossary term.</p>"
+        },
+        "LongDescription":{
+          "shape":"GlossaryLongDescription",
+          "documentation":"<p>The long description of the glossary term.</p>"
         }
       }
     },
@@ -15972,7 +18096,7 @@
       ],
       "members":{
         "CatalogId":{
-          "shape":"NameString",
+          "shape":"CatalogIdString",
           "documentation":"<p>The ID of the Data Catalog where the table resides. If none is supplied, the account ID is used by default.</p>"
         },
         "MaterializedViewRefreshTaskRunId":{
@@ -16512,6 +18636,26 @@
         }
       }
     },
+    "GetSessionEndpointRequest":{
+      "type":"structure",
+      "required":["SessionId"],
+      "members":{
+        "SessionId":{
+          "shape":"NameString",
+          "documentation":"<p>The unique identifier of the interactive session.</p>"
+        }
+      }
+    },
+    "GetSessionEndpointResponse":{
+      "type":"structure",
+      "required":["SparkConnect"],
+      "members":{
+        "SparkConnect":{
+          "shape":"SessionEndpoint",
+          "documentation":"<p>The Spark Connect endpoint details for the session.</p>"
+        }
+      }
+    },
     "GetSessionRequest":{
       "type":"structure",
       "required":["Id"],
@@ -16562,6 +18706,51 @@
         "Statement":{
           "shape":"Statement",
           "documentation":"<p>Returns the statement.</p>"
+        }
+      }
+    },
+    "GetSystemLogsForJobRunRequest":{
+      "type":"structure",
+      "required":[
+        "JobName",
+        "RunId"
+      ],
+      "members":{
+        "JobName":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the job.</p>"
+        },
+        "RunId":{
+          "shape":"IdString",
+          "documentation":"<p>The ID of the job run.</p>"
+        }
+      }
+    },
+    "GetSystemLogsForJobRunResponse":{
+      "type":"structure",
+      "members":{
+        "SystemLogsUrl":{
+          "shape":"Url",
+          "documentation":"<p>The URL to download the system logs for the job run.</p>"
+        }
+      }
+    },
+    "GetSystemLogsForSessionRequest":{
+      "type":"structure",
+      "required":["Id"],
+      "members":{
+        "Id":{
+          "shape":"NameString",
+          "documentation":"<p>The ID of the session.</p>"
+        }
+      }
+    },
+    "GetSystemLogsForSessionResponse":{
+      "type":"structure",
+      "members":{
+        "SystemLogsUrl":{
+          "shape":"Url",
+          "documentation":"<p>The URL to download the system logs for the session.</p>"
         }
       }
     },
@@ -16647,6 +18836,10 @@
         "IncludeStatusDetails":{
           "shape":"BooleanNullable",
           "documentation":"<p>Specifies whether to include status details related to a request to create or update an Glue Data Catalog view.</p>"
+        },
+        "AttributesToGet":{
+          "shape":"TableAttributesList",
+          "documentation":"<p>Specifies the table fields returned by the <code>GetTable</code> call. This parameter doesn't accept an empty list.</p> <p>The following are the valid combinations of values:</p> <ul> <li> <p> <code>DEFAULT</code> - Returns the Hive-style table definition only.</p> </li> <li> <p> <code>LATEST_ICEBERG_METADATA</code> - Returns only the latest Apache Iceberg table metadata.</p> </li> <li> <p> <code>DEFAULT</code>, <code>LATEST_ICEBERG_METADATA</code> - Returns both the Hive-style table definition and the latest Apache Iceberg table metadata.</p> </li> </ul>"
         }
       }
     },
@@ -16776,6 +18969,10 @@
         "AuditContext":{
           "shape":"AuditContext",
           "documentation":"<p>A structure containing the Lake Formation <a href=\"https://docs.aws.amazon.com/glue/latest/webapi/API_AuditContext.html\">audit context</a>.</p>"
+        },
+        "ResourceShareType":{
+          "shape":"TableResourceShareType",
+          "documentation":"<p>Specifies which tables the <code>GetTables</code> call returns. The allowable values are <code>FEDERATED</code> or <code>ALL</code>. </p> <ul> <li> <p>If set to <code>FEDERATED</code>, returns only federated tables, which reference an entity outside the Glue Data Catalog.</p> </li> <li> <p>If set to <code>ALL</code>, returns all tables in the database, both federated and non-federated. </p> </li> </ul>"
         },
         "IncludeStatusDetails":{
           "shape":"BooleanNullable",
@@ -17323,6 +19520,78 @@
         }
       }
     },
+    "GlossaryId":{"type":"string"},
+    "GlossaryItem":{
+      "type":"structure",
+      "members":{
+        "Id":{
+          "shape":"GlossaryId",
+          "documentation":"<p>The unique identifier of the glossary.</p>"
+        },
+        "Name":{
+          "shape":"GlossaryName",
+          "documentation":"<p>The name of the glossary.</p>"
+        },
+        "Description":{
+          "shape":"MetadataDescription",
+          "documentation":"<p>The description of the glossary.</p>"
+        }
+      },
+      "documentation":"<p>A summary of a business glossary.</p>"
+    },
+    "GlossaryItemList":{
+      "type":"list",
+      "member":{"shape":"GlossaryItem"}
+    },
+    "GlossaryLongDescription":{
+      "type":"string",
+      "max":4096,
+      "min":1
+    },
+    "GlossaryName":{
+      "type":"string",
+      "max":256,
+      "min":1
+    },
+    "GlossaryShortDescription":{
+      "type":"string",
+      "max":1024,
+      "min":1
+    },
+    "GlossaryTermId":{"type":"string"},
+    "GlossaryTermIdList":{
+      "type":"list",
+      "member":{"shape":"GlossaryTermId"},
+      "max":10,
+      "min":1
+    },
+    "GlossaryTermItem":{
+      "type":"structure",
+      "members":{
+        "Id":{
+          "shape":"GlossaryTermId",
+          "documentation":"<p>The unique identifier of the glossary term.</p>"
+        },
+        "Name":{
+          "shape":"GlossaryTermName",
+          "documentation":"<p>The name of the glossary term.</p>"
+        },
+        "ShortDescription":{
+          "shape":"GlossaryShortDescription",
+          "documentation":"<p>The short description of the glossary term.</p>"
+        }
+      },
+      "documentation":"<p>A summary of a glossary term.</p>"
+    },
+    "GlossaryTermItemList":{
+      "type":"list",
+      "member":{"shape":"GlossaryTermItem"}
+    },
+    "GlossaryTermName":{
+      "type":"string",
+      "max":256,
+      "min":1
+    },
     "GlueEncryptionException":{
       "type":"structure",
       "members":{
@@ -17376,6 +19645,13 @@
       "max":10240,
       "min":1,
       "pattern":"arn:aws(-(cn|us-gov|iso(-[bef])?))?:glue:.*"
+    },
+    "GlueResourceType":{
+      "type":"string",
+      "enum":[
+        "JOB",
+        "SESSION"
+      ]
     },
     "GlueSchema":{
       "type":"structure",
@@ -17903,6 +20179,10 @@
       "type":"list",
       "member":{"shape":"IcebergPartitionField"}
     },
+    "IcebergPartitionSpecList":{
+      "type":"list",
+      "member":{"shape":"IcebergPartitionSpec"}
+    },
     "IcebergRetentionConfiguration":{
       "type":"structure",
       "members":{
@@ -17978,6 +20258,10 @@
       },
       "documentation":"<p>Defines the schema structure for an Iceberg table, including field definitions, data types, and schema metadata.</p>"
     },
+    "IcebergSchemaList":{
+      "type":"list",
+      "member":{"shape":"IcebergSchema"}
+    },
     "IcebergSortDirection":{
       "type":"string",
       "enum":[
@@ -18035,6 +20319,10 @@
       "type":"list",
       "member":{"shape":"IcebergSortField"}
     },
+    "IcebergSortOrderList":{
+      "type":"list",
+      "member":{"shape":"IcebergSortOrder"}
+    },
     "IcebergStructField":{
       "type":"structure",
       "required":[
@@ -18082,6 +20370,60 @@
     "IcebergStructTypeEnum":{
       "type":"string",
       "enum":["struct"]
+    },
+    "IcebergTableMetadata":{
+      "type":"structure",
+      "members":{
+        "FormatVersion":{
+          "shape":"VersionString",
+          "documentation":"<p>The Apache Iceberg table format version, such as <code>1</code> or <code>2</code>. Determines the set of features and on-disk layout supported by the table.</p>"
+        },
+        "TableUuid":{
+          "shape":"TableIdString",
+          "documentation":"<p>The unique identifier (UUID) for the Iceberg table, assigned when the table is created and used to track the table across metadata updates.</p>"
+        },
+        "Location":{
+          "shape":"LocationString",
+          "documentation":"<p>The base S3 location where the Iceberg table's data and metadata files are stored.</p>"
+        },
+        "Properties":{
+          "shape":"StringToStringMap",
+          "documentation":"<p>A map of key-value pairs that define table-level properties and configuration settings for the Iceberg table.</p>"
+        },
+        "Schemas":{
+          "shape":"IcebergSchemaList",
+          "documentation":"<p>The list of schemas that have been associated with the Iceberg table over its history, supporting schema evolution.</p>"
+        },
+        "CurrentSchemaId":{
+          "shape":"Integer",
+          "documentation":"<p>The identifier of the schema that is currently active for the Iceberg table. Matches an entry in <code>Schemas</code>.</p>"
+        },
+        "LastColumnId":{
+          "shape":"Integer",
+          "documentation":"<p>The highest column identifier that has been assigned in the Iceberg table's schema, used to ensure unique IDs as new columns are added.</p>"
+        },
+        "PartitionSpecs":{
+          "shape":"IcebergPartitionSpecList",
+          "documentation":"<p>The list of partition specifications that have been associated with the Iceberg table over its history, supporting partition evolution.</p>"
+        },
+        "DefaultSpecId":{
+          "shape":"Integer",
+          "documentation":"<p>The identifier of the partition specification that is currently used by default when writing new data to the Iceberg table.</p>"
+        },
+        "LastPartitionId":{
+          "shape":"Integer",
+          "documentation":"<p>The highest partition field identifier that has been assigned across the table's partition specifications.</p>"
+        },
+        "SortOrders":{
+          "shape":"IcebergSortOrderList",
+          "documentation":"<p>The list of sort order specifications that have been associated with the Iceberg table over its history.</p>"
+        },
+        "DefaultSortOrderId":{
+          "shape":"Integer",
+          "documentation":"<p>The identifier of the sort order that is currently used by default when writing new data to the Iceberg table.</p>"
+        }
+      },
+      "documentation":"<p>The Apache Iceberg table metadata, including format version, table identifier, schemas, partition specifications, sort orders, and table properties. This structure captures the current state of an Iceberg table's metadata as managed by the Glue Data Catalog.</p>"
     },
     "IcebergTableUpdate":{
       "type":"structure",
@@ -18429,6 +20771,10 @@
         "ContinuousSync":{
           "shape":"ContinuousSync",
           "documentation":"<p>Enables continuous synchronization for on-demand data extractions from SaaS applications to Amazon Web Services data services like Amazon Redshift and Amazon S3.</p>"
+        },
+        "TargetNamespace":{
+          "shape":"TargetNamespace",
+          "documentation":"<p>An optional custom namespace for the integration's target. Supply this parameter only when the target is an Amazon S3 Tables table bucket; it is not accepted for other target types. The integration replicates data into the namespace you specify, reusing it if it already exists. If you omit this parameter, the target namespace defaults to <code>zetl_</code> followed by the integration ID, with hyphens converted to underscores.</p> <p>The value is immutable after the integration is created; <code>ModifyIntegration</code> rejects changes to it. It must be a valid Amazon S3 Tables namespace name: 1 to 255 characters using lowercase letters, numbers, and underscores, with no leading or trailing underscore and no reserved <code>aws</code> prefix.</p>"
         }
       },
       "documentation":"<p>Properties associated with the integration.</p>"
@@ -18602,6 +20948,58 @@
       ]
     },
     "IntegrationString":{"type":"string"},
+    "IntegrationTableProperties":{
+      "type":"structure",
+      "required":[
+        "ResourceArn",
+        "TableName"
+      ],
+      "members":{
+        "ResourceArn":{
+          "shape":"String512",
+          "documentation":"<p>The connection ARN of the source, or the database ARN of the target.</p>"
+        },
+        "TableName":{
+          "shape":"String128",
+          "documentation":"<p>The name of the source table to be replicated.</p>"
+        },
+        "SourceTableConfig":{
+          "shape":"SourceTableConfig",
+          "documentation":"<p>A structure for the source table configuration.</p>"
+        },
+        "TargetTableConfig":{
+          "shape":"TargetTableConfig",
+          "documentation":"<p>A structure for the target table configuration.</p>"
+        }
+      },
+      "documentation":"<p>The properties of a single integration table, including the resource ARN, the table name, and the source or target table configuration.</p>"
+    },
+    "IntegrationTablePropertiesFilter":{
+      "type":"structure",
+      "members":{
+        "Name":{
+          "shape":"String128",
+          "documentation":"<p>The name of the filter. Supported filter keys are <code>SourceArn</code>, <code>TargetArn</code>, <code>SourceTableName</code>, and <code>TargetTableName</code>.</p>"
+        },
+        "Values":{
+          "shape":"IntegrationTablePropertiesFilterValues",
+          "documentation":"<p>A list of filter values.</p>"
+        }
+      },
+      "documentation":"<p>A key-value filter used to narrow the list of integration table properties returned by ListIntegrationTableProperties. Specify a filter key and one or more values to match.</p>"
+    },
+    "IntegrationTablePropertiesFilterList":{
+      "type":"list",
+      "member":{"shape":"IntegrationTablePropertiesFilter"}
+    },
+    "IntegrationTablePropertiesFilterValues":{
+      "type":"list",
+      "member":{"shape":"String128"}
+    },
+    "IntegrationTablePropertiesList":{
+      "type":"list",
+      "member":{"shape":"IntegrationTableProperties"}
+    },
     "IntegrationTagsList":{
       "type":"list",
       "member":{"shape":"Tag"}
@@ -18683,6 +21081,122 @@
     "Iso8601DateTime":{
       "type":"timestamp",
       "timestampFormat":"iso8601"
+    },
+    "ItemDescription":{"type":"string"},
+    "ItemError":{
+      "type":"structure",
+      "members":{
+        "ItemIdentifier":{
+          "shape":"ItemIdentifier",
+          "documentation":"<p>The identifier of the item that caused the error.</p>"
+        },
+        "Code":{
+          "shape":"ItemErrorCode",
+          "documentation":"<p>The error code.</p>"
+        },
+        "Message":{
+          "shape":"ItemErrorMessage",
+          "documentation":"<p>The error message.</p>"
+        }
+      },
+      "documentation":"<p>An error that occurred when retrieving an iterable form item.</p>"
+    },
+    "ItemErrorCode":{"type":"string"},
+    "ItemErrorList":{
+      "type":"list",
+      "member":{"shape":"ItemError"}
+    },
+    "ItemErrorMessage":{"type":"string"},
+    "ItemId":{"type":"string"},
+    "ItemIdentifier":{
+      "type":"string",
+      "max":1087,
+      "min":1
+    },
+    "ItemIdentifierList":{
+      "type":"list",
+      "member":{"shape":"ItemIdentifier"},
+      "max":100,
+      "min":1
+    },
+    "ItemName":{"type":"string"},
+    "IterableFormEntry":{
+      "type":"structure",
+      "members":{
+        "FormTypeId":{
+          "shape":"FormTypeId",
+          "documentation":"<p>The form type identifier of the iterable form (for example, <code>columns</code>), used to retrieve its items via <code>ListIterableForms</code> or <code>BatchGetIterableForms</code>.</p>"
+        }
+      },
+      "documentation":"<p>An iterable form available on an asset, identified by its form type.</p>"
+    },
+    "IterableFormItem":{
+      "type":"structure",
+      "members":{
+        "ItemId":{
+          "shape":"ItemId",
+          "documentation":"<p>The unique identifier of the item.</p>"
+        },
+        "ItemName":{
+          "shape":"ItemName",
+          "documentation":"<p>The name of the item.</p>"
+        },
+        "GlossaryTerms":{
+          "shape":"GlossaryTermIdList",
+          "documentation":"<p>The identifiers of the glossary terms associated with the item.</p>"
+        },
+        "Forms":{
+          "shape":"AssetFormMap",
+          "documentation":"<p>The forms on the item, keyed by form name.</p>"
+        },
+        "Attachments":{
+          "shape":"AssetFormMap",
+          "documentation":"<p>Additional attachments on the item for more context, keyed by attachment name.</p>"
+        }
+      },
+      "documentation":"<p>A full iterable form item with its forms.</p>"
+    },
+    "IterableFormItemList":{
+      "type":"list",
+      "member":{"shape":"IterableFormItem"}
+    },
+    "IterableFormKey":{"type":"string"},
+    "IterableFormListItem":{
+      "type":"structure",
+      "members":{
+        "ItemId":{
+          "shape":"ItemId",
+          "documentation":"<p>The unique identifier of the item.</p>"
+        },
+        "ItemName":{
+          "shape":"ItemName",
+          "documentation":"<p>The name of the item.</p>"
+        },
+        "Description":{
+          "shape":"ItemDescription",
+          "documentation":"<p>The description of the item.</p>"
+        },
+        "GlossaryTerms":{
+          "shape":"GlossaryTermIdList",
+          "documentation":"<p>The identifiers of the glossary terms associated with the item.</p>"
+        }
+      },
+      "documentation":"<p>A summary of an item in an iterable form.</p>"
+    },
+    "IterableFormListItemList":{
+      "type":"list",
+      "member":{"shape":"IterableFormListItem"}
+    },
+    "IterableFormMap":{
+      "type":"map",
+      "key":{"shape":"IterableFormKey"},
+      "value":{"shape":"IterableFormEntry"}
+    },
+    "IterableFormName":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"^[a-zA-Z][a-zA-Z0-9_]*(::[a-zA-Z][a-zA-Z0-9_]*)?$"
     },
     "JDBCConnectionType":{
       "type":"string",
@@ -19729,6 +22243,10 @@
       "type":"string",
       "pattern":"^$|arn:aws[a-z0-9-]*:kms:.*"
     },
+    "KmsKeyArnString":{
+      "type":"string",
+      "pattern":"arn:aws[-a-z0-9]*:kms:[-a-z0-9]*:[0-9]{12}:key/.+"
+    },
     "LabelCount":{"type":"integer"},
     "LabelingSetGenerationTaskRunProperties":{
       "type":"structure",
@@ -19861,6 +22379,32 @@
         }
       },
       "documentation":"<p>Specifies data lineage configuration settings for the crawler.</p>"
+    },
+    "ListAssetTypesRequest":{
+      "type":"structure",
+      "members":{
+        "MaxResults":{
+          "shape":"PageSize",
+          "documentation":"<p>The maximum number of results to return in the response.</p>"
+        },
+        "NextToken":{
+          "shape":"Token",
+          "documentation":"<p>A continuation token, if this is a continuation call.</p>"
+        }
+      }
+    },
+    "ListAssetTypesResponse":{
+      "type":"structure",
+      "members":{
+        "Items":{
+          "shape":"AssetTypeItemList",
+          "documentation":"<p>The list of asset type items.</p>"
+        },
+        "NextToken":{
+          "shape":"Token",
+          "documentation":"<p>A continuation token, present if the current segment is not the last.</p>"
+        }
+      }
     },
     "ListBlueprintsRequest":{
       "type":"structure",
@@ -20070,6 +22614,37 @@
         }
       }
     },
+    "ListDataQualityResultsV2Request":{
+      "type":"structure",
+      "members":{
+        "Filter":{
+          "shape":"DataQualityResultsV2FilterCriteria",
+          "documentation":"<p>The filter criteria.</p>"
+        },
+        "NextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>A pagination token to retrieve the next page of results.</p>"
+        },
+        "MaxResults":{
+          "shape":"PageSize",
+          "documentation":"<p>The maximum number of results to return. If you don't specify a value, the operation uses the default number of results.</p>"
+        }
+      }
+    },
+    "ListDataQualityResultsV2Response":{
+      "type":"structure",
+      "required":["Results"],
+      "members":{
+        "Results":{
+          "shape":"DataQualityResultsV2DescriptionList",
+          "documentation":"<p>A list of <code>DataQualityResultsV2Description</code> objects.</p>"
+        },
+        "NextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>A pagination token, if more results are available.</p>"
+        }
+      }
+    },
     "ListDataQualityRuleRecommendationRunsRequest":{
       "type":"structure",
       "members":{
@@ -20084,6 +22659,10 @@
         "MaxResults":{
           "shape":"PageSize",
           "documentation":"<p>The maximum number of results to return.</p>"
+        },
+        "Tags":{
+          "shape":"TagsMap",
+          "documentation":"<p>A list of key-value pair tags to filter recommendation runs.</p>"
         }
       }
     },
@@ -20308,11 +22887,95 @@
         }
       }
     },
+    "ListFormTypesRequest":{
+      "type":"structure",
+      "members":{
+        "MaxResults":{
+          "shape":"PageSize",
+          "documentation":"<p>The maximum number of results to return in the response.</p>"
+        },
+        "NextToken":{
+          "shape":"Token",
+          "documentation":"<p>A continuation token, if this is a continuation call.</p>"
+        }
+      }
+    },
+    "ListFormTypesResponse":{
+      "type":"structure",
+      "required":["Items"],
+      "members":{
+        "Items":{
+          "shape":"FormTypeItemList",
+          "documentation":"<p>The list of form type items.</p>"
+        },
+        "NextToken":{
+          "shape":"Token",
+          "documentation":"<p>A continuation token, present if the current segment is not the last.</p>"
+        }
+      }
+    },
+    "ListGlossariesRequest":{
+      "type":"structure",
+      "members":{
+        "MaxResults":{
+          "shape":"PageSize",
+          "documentation":"<p>The maximum number of results to return in the response.</p>"
+        },
+        "NextToken":{
+          "shape":"Token",
+          "documentation":"<p>A continuation token, if this is a continuation call.</p>"
+        }
+      }
+    },
+    "ListGlossariesResponse":{
+      "type":"structure",
+      "members":{
+        "Items":{
+          "shape":"GlossaryItemList",
+          "documentation":"<p>The list of glossary items.</p>"
+        },
+        "NextToken":{
+          "shape":"Token",
+          "documentation":"<p>A continuation token, present if the current segment is not the last.</p>"
+        }
+      }
+    },
+    "ListGlossaryTermsRequest":{
+      "type":"structure",
+      "required":["GlossaryIdentifier"],
+      "members":{
+        "GlossaryIdentifier":{
+          "shape":"GlossaryId",
+          "documentation":"<p>The unique identifier of the glossary whose terms to list.</p>"
+        },
+        "MaxResults":{
+          "shape":"PageSize",
+          "documentation":"<p>The maximum number of results to return in the response.</p>"
+        },
+        "NextToken":{
+          "shape":"Token",
+          "documentation":"<p>A continuation token, if this is a continuation call.</p>"
+        }
+      }
+    },
+    "ListGlossaryTermsResponse":{
+      "type":"structure",
+      "members":{
+        "Items":{
+          "shape":"GlossaryTermItemList",
+          "documentation":"<p>The list of glossary term items.</p>"
+        },
+        "NextToken":{
+          "shape":"Token",
+          "documentation":"<p>A continuation token, present if the current segment is not the last.</p>"
+        }
+      }
+    },
     "ListIntegrationResourcePropertiesRequest":{
       "type":"structure",
       "members":{
         "Marker":{
-          "shape":"String1024",
+          "shape":"String4096",
           "documentation":"<p>This is the pagination token for next page, initial value is <code>null</code>.</p>"
         },
         "Filters":{
@@ -20333,8 +22996,76 @@
           "documentation":"<p>A list of integration resource property meeting the filter criteria.</p>"
         },
         "Marker":{
-          "shape":"String1024",
+          "shape":"String4096",
           "documentation":"<p>This is the pagination token for the next page.</p>"
+        }
+      }
+    },
+    "ListIntegrationTablePropertiesRequest":{
+      "type":"structure",
+      "members":{
+        "Marker":{
+          "shape":"String4096",
+          "documentation":"<p>The pagination token for the next page of results. The initial value is <code>null</code>.</p>"
+        },
+        "Filters":{
+          "shape":"IntegrationTablePropertiesFilterList",
+          "documentation":"<p>A list of filters. Supported filter keys are <code>SourceArn</code>, <code>TargetArn</code>, <code>SourceTableName</code>, and <code>TargetTableName</code>.</p>"
+        },
+        "MaxRecords":{
+          "shape":"IntegrationInteger",
+          "documentation":"<p>The maximum number of records to return in the response.</p>"
+        }
+      }
+    },
+    "ListIntegrationTablePropertiesResponse":{
+      "type":"structure",
+      "members":{
+        "IntegrationTablePropertiesList":{
+          "shape":"IntegrationTablePropertiesList",
+          "documentation":"<p>A list of integration table properties meeting the filter criteria.</p>"
+        },
+        "Marker":{
+          "shape":"String4096",
+          "documentation":"<p>The pagination token for the next page. Returns <code>null</code> if there are no more results.</p>"
+        }
+      }
+    },
+    "ListIterableFormsRequest":{
+      "type":"structure",
+      "required":[
+        "AssetIdentifier",
+        "IterableFormName"
+      ],
+      "members":{
+        "AssetIdentifier":{
+          "shape":"AssetId",
+          "documentation":"<p>The unique identifier of the asset.</p>"
+        },
+        "IterableFormName":{
+          "shape":"IterableFormName",
+          "documentation":"<p>The name of the iterable form to list items from.</p>"
+        },
+        "MaxResults":{
+          "shape":"PageSize",
+          "documentation":"<p>The maximum number of results to return in the response.</p>"
+        },
+        "NextToken":{
+          "shape":"Token",
+          "documentation":"<p>A continuation token, if this is a continuation call.</p>"
+        }
+      }
+    },
+    "ListIterableFormsResponse":{
+      "type":"structure",
+      "members":{
+        "Items":{
+          "shape":"IterableFormListItemList",
+          "documentation":"<p>The list of iterable form items.</p>"
+        },
+        "NextToken":{
+          "shape":"Token",
+          "documentation":"<p>A continuation token, present if the current segment is not the last.</p>"
         }
       }
     },
@@ -20412,7 +23143,7 @@
       "required":["CatalogId"],
       "members":{
         "CatalogId":{
-          "shape":"NameString",
+          "shape":"CatalogIdString",
           "documentation":"<p>The ID of the Data Catalog where the table resides. If none is supplied, the account ID is used by default.</p>"
         },
         "DatabaseName":{
@@ -20421,7 +23152,7 @@
         },
         "TableName":{
           "shape":"NameString",
-          "documentation":"<p>The name of the table for which statistics is generated.</p>"
+          "documentation":"<p>The name of the materialized view.</p>"
         },
         "MaxResults":{
           "shape":"PageSize",
@@ -21065,7 +23796,10 @@
     "MaterializedViewRefreshTaskNotRunningException":{
       "type":"structure",
       "members":{
-        "Message":{"shape":"MessageString"}
+        "Message":{
+          "shape":"MessageString",
+          "documentation":"<p>A message describing the problem.</p>"
+        }
       },
       "documentation":"<p>Exception thrown when stopping a task that is not in running state.</p>",
       "exception":true
@@ -21087,7 +23821,7 @@
         },
         "TableName":{
           "shape":"TableName",
-          "documentation":"<p>The name of the table for which statistics is generated.</p>"
+          "documentation":"<p>The name of the materialized view.</p>"
         },
         "CatalogId":{
           "shape":"CatalogIdString",
@@ -21095,7 +23829,7 @@
         },
         "Role":{
           "shape":"Role",
-          "documentation":"<p>The IAM role that the service assumes to generate statistics.</p>"
+          "documentation":"<p>The IAM role that the service assumes to run the materialized view refresh task.</p>"
         },
         "Status":{
           "shape":"MaterializedViewRefreshState",
@@ -21139,7 +23873,10 @@
     "MaterializedViewRefreshTaskRunningException":{
       "type":"structure",
       "members":{
-        "Message":{"shape":"MessageString"}
+        "Message":{
+          "shape":"MessageString",
+          "documentation":"<p>A message describing the problem.</p>"
+        }
       },
       "documentation":"<p>Exception thrown when a task is already in running state.</p>",
       "exception":true
@@ -21151,7 +23888,10 @@
     "MaterializedViewRefreshTaskStoppingException":{
       "type":"structure",
       "members":{
-        "Message":{"shape":"MessageString"}
+        "Message":{
+          "shape":"MessageString",
+          "documentation":"<p>A message describing the problem.</p>"
+        }
       },
       "documentation":"<p>Exception thrown when a task is already in stopping state.</p>",
       "exception":true
@@ -21213,6 +23953,11 @@
       "pattern":"[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\t]*"
     },
     "MessageString":{"type":"string"},
+    "MetadataDescription":{
+      "type":"string",
+      "max":2048,
+      "min":1
+    },
     "MetadataInfo":{
       "type":"structure",
       "members":{
@@ -21678,6 +24423,10 @@
       "type":"integer",
       "box":true
     },
+    "NullableLong":{
+      "type":"long",
+      "box":true
+    },
     "NullableString":{
       "type":"string",
       "box":true
@@ -21724,7 +24473,8 @@
       "enum":[
         "AUTHORIZATION_CODE",
         "CLIENT_CREDENTIALS",
-        "JWT_BEARER"
+        "JWT_BEARER",
+        "REFRESH_TOKEN"
       ]
     },
     "OAuth2Properties":{
@@ -21732,7 +24482,7 @@
       "members":{
         "OAuth2GrantType":{
           "shape":"OAuth2GrantType",
-          "documentation":"<p>The OAuth2 grant type. For example, <code>AUTHORIZATION_CODE</code>, <code>JWT_BEARER</code>, or <code>CLIENT_CREDENTIALS</code>.</p>"
+          "documentation":"<p>The OAuth2 grant type. For example, <code>AUTHORIZATION_CODE</code>, <code>JWT_BEARER</code>, <code>REFRESH_TOKEN</code>, or <code>CLIENT_CREDENTIALS</code>.</p>"
         },
         "OAuth2ClientApplication":{
           "shape":"OAuth2ClientApplication",
@@ -21754,7 +24504,7 @@
       "members":{
         "OAuth2GrantType":{
           "shape":"OAuth2GrantType",
-          "documentation":"<p>The OAuth2 grant type in the CreateConnection request. For example, <code>AUTHORIZATION_CODE</code>, <code>JWT_BEARER</code>, or <code>CLIENT_CREDENTIALS</code>.</p>"
+          "documentation":"<p>The OAuth2 grant type in the CreateConnection request. For example, <code>AUTHORIZATION_CODE</code>, <code>JWT_BEARER</code>, <code>REFRESH_TOKEN</code>, or <code>CLIENT_CREDENTIALS</code>.</p>"
         },
         "OAuth2ClientApplication":{
           "shape":"OAuth2ClientApplication",
@@ -21778,6 +24528,34 @@
         }
       },
       "documentation":"<p>A structure containing properties for OAuth2 in the CreateConnection request.</p>"
+    },
+    "ObservationConfiguration":{
+      "type":"string",
+      "enum":[
+        "ALL",
+        "NONE"
+      ]
+    },
+    "ObservationMode":{
+      "type":"string",
+      "enum":[
+        "SCHEDULED",
+        "FIXED"
+      ]
+    },
+    "ObservationResultsOptions":{
+      "type":"structure",
+      "members":{
+        "WriteObservationResultsEnabled":{
+          "shape":"NullableBoolean",
+          "documentation":"<p>Set to true to write observation results.</p>"
+        },
+        "CatalogTableConfig":{
+          "shape":"CatalogTableConfigOptions",
+          "documentation":"<p>The Glue Data Catalog table configuration for storing the observation results.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for writing observation results.</p>"
     },
     "OffsetConfiguration":{
       "type":"structure",
@@ -22629,6 +25407,24 @@
       },
       "documentation":"<p>Specifies the job and session values that an admin configures in an Glue usage profile.</p>"
     },
+    "ProfilingResultsOptions":{
+      "type":"structure",
+      "members":{
+        "WriteProfilingResultsEnabled":{
+          "shape":"NullableBoolean",
+          "documentation":"<p>Set to true to write profiling results.</p>"
+        },
+        "CatalogTableConfig":{
+          "shape":"CatalogTableConfigOptions",
+          "documentation":"<p>The Glue Data Catalog table configuration for storing the profiling results.</p>"
+        },
+        "DistributionResults":{
+          "shape":"DistributionResultsOptions",
+          "documentation":"<p>The configuration for writing distribution results.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for writing profiling results.</p>"
+    },
     "PropertiesMap":{
       "type":"map",
       "key":{"shape":"PropertyName"},
@@ -22758,6 +25554,283 @@
       "member":{"shape":"GenericString"},
       "max":5
     },
+    "PublishDataQualityResultDescriptors":{
+      "type":"map",
+      "key":{"shape":"NameString"},
+      "value":{"shape":"NameString"},
+      "max":10,
+      "min":0
+    },
+    "PublishDataQualityResultDimensions":{
+      "type":"map",
+      "key":{"shape":"NameString"},
+      "value":{"shape":"NameString"},
+      "max":10,
+      "min":1
+    },
+    "PublishDataQualityResultTags":{
+      "type":"map",
+      "key":{"shape":"NameString"},
+      "value":{"shape":"NameString"},
+      "max":5,
+      "min":1
+    },
+    "PublishDataQualityResultV2Request":{
+      "type":"structure",
+      "required":[
+        "Dimensions",
+        "Score",
+        "RuleResults",
+        "EvaluationContext"
+      ],
+      "members":{
+        "Dimensions":{
+          "shape":"PublishDataQualityResultDimensions",
+          "documentation":"<p>The dimensions for the result.</p>"
+        },
+        "Tags":{
+          "shape":"PublishDataQualityResultTags",
+          "documentation":"<p>The tags for the result.</p>"
+        },
+        "ExecutionStartedOn":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time execution started for the result.</p>"
+        },
+        "ExecutionCompletedOn":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time execution completed for the result.</p>"
+        },
+        "Score":{
+          "shape":"GenericBoundedDouble",
+          "documentation":"<p>The score for the result.</p>"
+        },
+        "RuleResults":{
+          "shape":"DataQualityRuleResults",
+          "documentation":"<p>The rule level results.</p>"
+        },
+        "AnalyzerResults":{
+          "shape":"DataQualityAnalyzerResults",
+          "documentation":"<p>The analyzer level results.</p>"
+        },
+        "Observations":{
+          "shape":"DataQualityObservations",
+          "documentation":"<p>The observations for the result.</p>"
+        },
+        "AggregatedMetrics":{
+          "shape":"DataQualityAggregatedMetrics",
+          "documentation":"<p>The aggregated metrics for the result.</p>"
+        },
+        "Statistics":{
+          "shape":"StatisticSummaryList",
+          "documentation":"<p>The statistics for the result.</p>"
+        },
+        "RunConfiguration":{
+          "shape":"DataQualityConfigurationV2",
+          "documentation":"<p>The run configuration for the result.</p>"
+        },
+        "ClientToken":{
+          "shape":"ClientTokenString",
+          "documentation":"<p>The client token for the request.</p>",
+          "idempotencyToken":true
+        },
+        "EvaluationContext":{
+          "shape":"NameString",
+          "documentation":"<p>The evaluation context for the result.</p>"
+        },
+        "Descriptors":{
+          "shape":"PublishDataQualityResultDescriptors",
+          "documentation":"<p>The descriptors for the result.</p>"
+        },
+        "RulesetName":{
+          "shape":"HashString",
+          "documentation":"<p>The ruleset name for the result.</p>"
+        },
+        "DataQualitySecurityConfiguration":{
+          "shape":"NameString",
+          "documentation":"<p>The security configuration for the result.</p>"
+        },
+        "Telemetry":{"shape":"DataQualityTelemetry"}
+      }
+    },
+    "PublishDataQualityResultV2Response":{
+      "type":"structure",
+      "required":["ResultId"],
+      "members":{
+        "ResultId":{
+          "shape":"HashString",
+          "documentation":"<p>The ID of the result.</p>"
+        }
+      }
+    },
+    "PutAssetRequest":{
+      "type":"structure",
+      "required":[
+        "AssetTypeId",
+        "Identifier",
+        "Name",
+        "Forms"
+      ],
+      "members":{
+        "AssetTypeId":{
+          "shape":"AssetTypeId",
+          "documentation":"<p>The identifier of the asset type for the asset.</p>"
+        },
+        "Identifier":{
+          "shape":"AssetId",
+          "documentation":"<p>The unique identifier of the asset. If an asset with this identifier already exists, it is updated.</p>"
+        },
+        "Name":{
+          "shape":"AssetName",
+          "documentation":"<p>The name of the asset.</p>"
+        },
+        "Description":{
+          "shape":"AssetDescription",
+          "documentation":"<p>The description of the asset.</p>"
+        },
+        "Forms":{
+          "shape":"AssetFormMap",
+          "documentation":"<p>The forms to set on the asset, keyed by form name. Each entry specifies the form type and its JSON content.</p>"
+        },
+        "ClientToken":{
+          "shape":"HashString",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "PutAssetResponse":{
+      "type":"structure",
+      "required":[
+        "Id",
+        "Name"
+      ],
+      "members":{
+        "Id":{
+          "shape":"AssetId",
+          "documentation":"<p>The unique identifier of the asset.</p>"
+        },
+        "Name":{
+          "shape":"AssetName",
+          "documentation":"<p>The name of the asset.</p>"
+        },
+        "Description":{
+          "shape":"AssetDescription",
+          "documentation":"<p>The description of the asset.</p>"
+        },
+        "CreatedAt":{
+          "shape":"CreatedAt",
+          "documentation":"<p>The timestamp at which the asset was created.</p>"
+        },
+        "Forms":{
+          "shape":"AssetFormMap",
+          "documentation":"<p>The forms attached to the asset, keyed by form name.</p>"
+        }
+      }
+    },
+    "PutAssetTypeRequest":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Forms"
+      ],
+      "members":{
+        "Name":{
+          "shape":"AssetTypeName",
+          "documentation":"<p>The name of the asset type.</p>"
+        },
+        "Forms":{
+          "shape":"AssetTypeFormsMap",
+          "documentation":"<p>The forms that make up the asset type, keyed by form name. Each entry references the form type that defines the form's schema.</p>"
+        },
+        "ClientToken":{
+          "shape":"HashString",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "PutAssetTypeResponse":{
+      "type":"structure",
+      "members":{
+        "Id":{
+          "shape":"AssetTypeId",
+          "documentation":"<p>The identifier of the asset type.</p>"
+        },
+        "Name":{
+          "shape":"AssetTypeName",
+          "documentation":"<p>The name of the asset type.</p>"
+        },
+        "Forms":{
+          "shape":"AssetTypeFormsMap",
+          "documentation":"<p>The forms that make up the asset type, keyed by form name.</p>"
+        }
+      }
+    },
+    "PutAttachmentRequest":{
+      "type":"structure",
+      "required":[
+        "AssetIdentifier",
+        "AttachmentName",
+        "Content",
+        "FormTypeId"
+      ],
+      "members":{
+        "AssetIdentifier":{
+          "shape":"AssetId",
+          "documentation":"<p>The unique identifier of the asset to attach the form to.</p>"
+        },
+        "IterableFormName":{
+          "shape":"IterableFormName",
+          "documentation":"<p>The name of the iterable form. When specified along with <code>itemIdentifier</code>, the attachment targets an item within the iterable form rather than the asset itself.</p>"
+        },
+        "ItemIdentifier":{
+          "shape":"ItemIdentifier",
+          "documentation":"<p>The identifier of the item within the iterable form. Required when <code>iterableFormName</code> is specified.</p>"
+        },
+        "AttachmentName":{
+          "shape":"AttachmentName",
+          "documentation":"<p>The name of the attachment.</p>"
+        },
+        "Content":{
+          "shape":"FormContent",
+          "documentation":"<p>The JSON content of the form, conforming to the schema of the specified form type.</p>"
+        },
+        "FormTypeId":{
+          "shape":"FormTypeId",
+          "documentation":"<p>The identifier of the form type for this attachment.</p>"
+        },
+        "ClientToken":{
+          "shape":"HashString",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "PutAttachmentResponse":{
+      "type":"structure",
+      "members":{
+        "AssetIdentifier":{
+          "shape":"AssetId",
+          "documentation":"<p>The unique identifier of the asset.</p>"
+        },
+        "IterableFormName":{
+          "shape":"IterableFormName",
+          "documentation":"<p>The name of the iterable form, if the attachment targets an item.</p>"
+        },
+        "ItemIdentifier":{
+          "shape":"ItemIdentifier",
+          "documentation":"<p>The identifier of the item within the iterable form, if applicable.</p>"
+        },
+        "AttachmentName":{
+          "shape":"AttachmentName",
+          "documentation":"<p>The name of the attachment.</p>"
+        },
+        "FormTypeId":{
+          "shape":"FormTypeId",
+          "documentation":"<p>The identifier of the form type for this attachment.</p>"
+        }
+      }
+    },
     "PutDataCatalogEncryptionSettingsRequest":{
       "type":"structure",
       "required":["DataCatalogEncryptionSettings"],
@@ -22775,6 +25848,39 @@
     "PutDataCatalogEncryptionSettingsResponse":{
       "type":"structure",
       "members":{}
+    },
+    "PutDataCatalogExportConfigurationInput":{
+      "type":"structure",
+      "required":["ExportSetting"],
+      "members":{
+        "ExportSetting":{
+          "shape":"ExportSetting",
+          "documentation":"<p>The export setting for the data catalog. Specify <code>ENABLED</code> to start exporting catalog metadata to S3 Tables, or <code>DISABLED</code> to stop exporting. This field is required.</p>"
+        },
+        "EncryptionConfiguration":{
+          "shape":"ExportEncryptionConfiguration",
+          "documentation":"<p>The encryption configuration for the exported data. If not specified, the default encryption settings are used.</p>"
+        },
+        "ClientToken":{
+          "shape":"HashString",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "PutDataCatalogExportConfigurationOutput":{
+      "type":"structure",
+      "members":{
+        "ExportSetting":{
+          "shape":"ExportSetting",
+          "documentation":"<p>The export setting for the data catalog.</p>"
+        },
+        "EncryptionConfiguration":{
+          "shape":"ExportEncryptionConfiguration",
+          "documentation":"<p>The encryption configuration for the exported data.</p>"
+        }
+      },
+      "documentation":"<p>The export configuration returned by the <code>PutDataCatalogExportConfiguration</code> operation.</p>"
     },
     "PutDataQualityProfileAnnotationRequest":{
       "type":"structure",
@@ -22797,6 +25903,45 @@
       "type":"structure",
       "members":{},
       "documentation":"<p>Left blank.</p>"
+    },
+    "PutFormTypeRequest":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Schema"
+      ],
+      "members":{
+        "Name":{
+          "shape":"FormTypeName",
+          "documentation":"<p>The name of the form type. Must start with an uppercase letter.</p>"
+        },
+        "Schema":{
+          "shape":"FormTypeSchema",
+          "documentation":"<p>The Smithy IDL schema definition for the form type.</p>"
+        },
+        "ClientToken":{
+          "shape":"HashString",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "PutFormTypeResponse":{
+      "type":"structure",
+      "members":{
+        "Id":{
+          "shape":"FormTypeId",
+          "documentation":"<p>The identifier of the form type.</p>"
+        },
+        "Name":{
+          "shape":"FormTypeName",
+          "documentation":"<p>The name of the form type.</p>"
+        },
+        "Schema":{
+          "shape":"FormTypeSchema",
+          "documentation":"<p>The Smithy IDL schema of the form type.</p>"
+        }
+      }
     },
     "PutResourcePolicyRequest":{
       "type":"structure",
@@ -22998,7 +26143,7 @@
           "documentation":"<p>An opaque string-string map passed by the query engine.</p>"
         }
       },
-      "documentation":"<p>A structure used as a protocol between query engines and Lake Formation or Glue. Contains both a Lake Formation generated authorization identifier and information from the request's authorization context.</p>"
+      "documentation":"<p>A structure used as a protocol between query engines and Lake Formation or Glue. Contains both a Lake Formation generated authorization identifier and information from the request's authorization context.</p> <p>For more information about how to utilize QuerySessionContext, see <a href=\"https://docs.aws.amazon.com/lake-formation/latest/dg/api-overview.html\">Lake Formation workflow for application integration API operations</a> in the developer guide.</p>"
     },
     "QuoteChar":{
       "type":"string",
@@ -23008,6 +26153,16 @@
         "single_quote",
         "disabled"
       ]
+    },
+    "RLSProperties":{
+      "type":"structure",
+      "members":{
+        "DefaultRLSPolicy":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the default row-level security policy applied to the table.</p>"
+        }
+      },
+      "documentation":"<p>A structure that describes the default row-level security policy of a table.</p>"
     },
     "Recipe":{
       "type":"structure",
@@ -23091,6 +26246,14 @@
       "type":"string",
       "max":16,
       "min":1
+    },
+    "RecommendationMode":{
+      "type":"string",
+      "documentation":"<p>Specifies the mode for how Glue Data Quality recommends rules.</p> <ul> <li> <p> <code>BASIC</code> uses an Glue job to analyze table data and recommend rules. This value is the default.</p> </li> <li> <p> <code>ADVANCED</code> uses Amazon Athena to analyze table data and Amazon Bedrock to recommend rules.</p> </li> </ul>",
+      "enum":[
+        "BASIC",
+        "ADVANCED"
+      ]
     },
     "Record":{
       "type":"structure",
@@ -23622,6 +26785,14 @@
       },
       "documentation":"<p>Configuration that defines HTTP request and response handling, validation endpoints, and entity configurations for REST API interactions.</p>"
     },
+    "ResultTypeEnum":{
+      "type":"string",
+      "enum":[
+        "ALL",
+        "PASSED_ONLY",
+        "FAILED_ONLY"
+      ]
+    },
     "ResumeWorkflowRunRequest":{
       "type":"structure",
       "required":[
@@ -23705,6 +26876,24 @@
         }
       },
       "documentation":"<p>Specifies a route node that directs data to different output paths based on defined filtering conditions.</p>"
+    },
+    "RowLevelResultsOptions":{
+      "type":"structure",
+      "members":{
+        "MaxRowsToWrite":{
+          "shape":"NullableInteger",
+          "documentation":"<p>The maximum number of rows to write in the results.</p>"
+        },
+        "ResultType":{
+          "shape":"ResultTypeEnum",
+          "documentation":"<p>The result type to include in the row-level results output.</p>"
+        },
+        "CatalogTableConfig":{
+          "shape":"CatalogTableConfigOptions",
+          "documentation":"<p>The Glue Data Catalog table configuration for storing the results.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for writing row-level evaluation results.</p>"
     },
     "RowTag":{"type":"string"},
     "RuleMetricsMap":{
@@ -24787,6 +27976,7 @@
       },
       "documentation":"<p>Specifies additional connection options for the Amazon S3 data store.</p>"
     },
+    "S3TableBucketArn":{"type":"string"},
     "S3Target":{
       "type":"structure",
       "members":{
@@ -25115,9 +28305,235 @@
       "type":"string",
       "max":400000
     },
+    "SearchAssetsInput":{
+      "type":"structure",
+      "members":{
+        "SearchText":{
+          "shape":"SearchText",
+          "documentation":"<p>The text to search for. At least one of <code>searchText</code> or <code>filterClause</code> must be provided.</p>"
+        },
+        "MaxResults":{
+          "shape":"SearchMaxResults",
+          "documentation":"<p>The maximum number of results to return in the response.</p>"
+        },
+        "NextToken":{
+          "shape":"SearchNextToken",
+          "documentation":"<p>A continuation token, if this is a continuation call.</p>"
+        },
+        "Sort":{
+          "shape":"SearchSort",
+          "documentation":"<p>The sort criteria for the search results.</p>"
+        },
+        "FilterClause":{
+          "shape":"SearchFilterClause",
+          "documentation":"<p>The filter clause to apply to the search. Supports nested AND/OR logic with attribute-level and map-level filters.</p>"
+        }
+      }
+    },
+    "SearchAssetsOutput":{
+      "type":"structure",
+      "members":{
+        "Items":{
+          "shape":"SearchResultItemList",
+          "documentation":"<p>The list of assets matching the search criteria.</p>"
+        },
+        "NextToken":{
+          "shape":"SearchNextToken",
+          "documentation":"<p>A continuation token, present if the current segment is not the last.</p>"
+        }
+      },
+      "documentation":"<p>The search results returned by the <code>SearchAssets</code> operation.</p>"
+    },
+    "SearchAttribute":{
+      "type":"string",
+      "max":128,
+      "min":1
+    },
+    "SearchAttributeFilter":{
+      "type":"structure",
+      "required":[
+        "Attribute",
+        "Operator"
+      ],
+      "members":{
+        "Attribute":{
+          "shape":"SearchAttribute",
+          "documentation":"<p>The attribute name to filter on.</p>"
+        },
+        "Operator":{
+          "shape":"SearchFilterOperator",
+          "documentation":"<p>The comparison operator. Valid values are <code>equals</code>, <code>greaterThan</code>, <code>greaterThanOrEquals</code>, <code>lessThan</code>, <code>lessThanOrEquals</code>, and <code>notExists</code>.</p>"
+        },
+        "Value":{
+          "shape":"SearchFilterValue",
+          "documentation":"<p>The value to compare against.</p>"
+        }
+      },
+      "documentation":"<p>A filter that compares an attribute value using an operator.</p>"
+    },
+    "SearchFilterClause":{
+      "type":"structure",
+      "members":{
+        "AndAllFilters":{
+          "shape":"SearchFilterClauseList",
+          "documentation":"<p>A list of filter clauses that must all match (logical AND).</p>"
+        },
+        "OrAnyFilters":{
+          "shape":"SearchFilterClauseList",
+          "documentation":"<p>A list of filter clauses where at least one must match (logical OR).</p>"
+        },
+        "AttributeFilter":{
+          "shape":"SearchAttributeFilter",
+          "documentation":"<p>A filter on a single attribute value.</p>"
+        },
+        "MapFilter":{
+          "shape":"SearchMapFilter",
+          "documentation":"<p>A filter on a map attribute's key-value pair.</p>"
+        }
+      },
+      "documentation":"<p>A filter clause that supports nested boolean logic. Exactly one of <code>andAllFilters</code>, <code>orAnyFilters</code>, <code>attributeFilter</code>, or <code>mapFilter</code> must be specified.</p>",
+      "union":true
+    },
+    "SearchFilterClauseList":{
+      "type":"list",
+      "member":{"shape":"SearchFilterClause"},
+      "max":10,
+      "min":1
+    },
+    "SearchFilterLongValue":{"type":"long"},
+    "SearchFilterOperator":{
+      "type":"string",
+      "enum":[
+        "equals",
+        "greaterThan",
+        "greaterThanOrEquals",
+        "lessThan",
+        "lessThanOrEquals",
+        "notExists"
+      ]
+    },
+    "SearchFilterStringValue":{
+      "type":"string",
+      "max":256,
+      "min":0
+    },
+    "SearchFilterValue":{
+      "type":"structure",
+      "members":{
+        "StringValue":{
+          "shape":"SearchFilterStringValue",
+          "documentation":"<p>A string filter value.</p>"
+        },
+        "LongValue":{
+          "shape":"SearchFilterLongValue",
+          "documentation":"<p>A long integer filter value.</p>"
+        }
+      },
+      "documentation":"<p>A filter value. Exactly one of <code>stringValue</code> or <code>longValue</code> must be specified.</p>",
+      "union":true
+    },
+    "SearchMapFilter":{
+      "type":"structure",
+      "required":[
+        "Attribute",
+        "Key",
+        "Value"
+      ],
+      "members":{
+        "Attribute":{
+          "shape":"SearchAttribute",
+          "documentation":"<p>The map attribute name to filter on.</p>"
+        },
+        "Key":{
+          "shape":"SearchMapKey",
+          "documentation":"<p>The key within the map attribute to filter on.</p>"
+        },
+        "Value":{
+          "shape":"SearchMapFilterValue",
+          "documentation":"<p>The value to compare against.</p>"
+        }
+      },
+      "documentation":"<p>A filter on a map attribute's key-value pair.</p>"
+    },
+    "SearchMapFilterValue":{
+      "type":"structure",
+      "members":{
+        "StringValue":{
+          "shape":"SearchFilterStringValue",
+          "documentation":"<p>A string filter value.</p>"
+        }
+      },
+      "documentation":"<p>A map filter value. Currently supports string comparison only.</p>",
+      "union":true
+    },
+    "SearchMapKey":{
+      "type":"string",
+      "max":128,
+      "min":1
+    },
+    "SearchMaxResults":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "SearchNextToken":{"type":"string"},
     "SearchPropertyPredicates":{
       "type":"list",
       "member":{"shape":"PropertyPredicate"}
+    },
+    "SearchResultItem":{
+      "type":"structure",
+      "members":{
+        "Id":{
+          "shape":"AssetId",
+          "documentation":"<p>The unique identifier of the matched asset.</p>"
+        },
+        "AssetName":{
+          "shape":"SearchResultName",
+          "documentation":"<p>The name of the matched asset.</p>"
+        },
+        "AssetDescription":{
+          "shape":"AssetDescription",
+          "documentation":"<p>The description of the matched asset.</p>"
+        },
+        "UpdatedAt":{
+          "shape":"UpdatedAt",
+          "documentation":"<p>The timestamp at which the matched asset was last updated.</p>"
+        },
+        "AssetTypeId":{
+          "shape":"AssetTypeId",
+          "documentation":"<p>The identifier of the asset type for the matched asset.</p>"
+        }
+      },
+      "documentation":"<p>A single search result item representing a matched asset.</p>"
+    },
+    "SearchResultItemList":{
+      "type":"list",
+      "member":{"shape":"SearchResultItem"}
+    },
+    "SearchResultName":{"type":"string"},
+    "SearchSort":{
+      "type":"structure",
+      "required":["Attribute"],
+      "members":{
+        "Attribute":{
+          "shape":"SearchAttribute",
+          "documentation":"<p>The attribute to sort by.</p>"
+        },
+        "Order":{
+          "shape":"SearchSortOrder",
+          "documentation":"<p>The sort order. Valid values are <code>ASCENDING</code> and <code>DESCENDING</code>.</p>"
+        }
+      },
+      "documentation":"<p>The sort criteria for search results.</p>"
+    },
+    "SearchSortOrder":{
+      "type":"string",
+      "enum":[
+        "ASCENDING",
+        "DESCENDING"
+      ]
     },
     "SearchTablesRequest":{
       "type":"structure",
@@ -25168,6 +28584,11 @@
           "documentation":"<p>A list of the requested <code>Table</code> objects. The <code>SearchTables</code> response returns only the tables that you have access to.</p>"
         }
       }
+    },
+    "SearchText":{
+      "type":"string",
+      "max":1000,
+      "min":1
     },
     "SecretArn":{
       "type":"string",
@@ -25270,6 +28691,16 @@
       "member":{"shape":"EntityFieldName"},
       "max":1000,
       "min":1
+    },
+    "SensitiveString":{
+      "type":"string",
+      "max":16384,
+      "sensitive":true
+    },
+    "SensitiveUrl":{
+      "type":"string",
+      "max":40000,
+      "sensitive":true
     },
     "Separator":{
       "type":"string",
@@ -25381,9 +28812,24 @@
         "ProfileName":{
           "shape":"NameString",
           "documentation":"<p>The name of an Glue usage profile associated with the session.</p>"
+        },
+        "SessionType":{
+          "shape":"SessionType",
+          "documentation":"<p>The type of the session.</p>"
         }
       },
       "documentation":"<p>The period in which a remote Spark runtime environment is running.</p>"
+    },
+    "SessionBusyException":{
+      "type":"structure",
+      "members":{
+        "Message":{
+          "shape":"OrchestrationMessageString",
+          "documentation":"<p>A message describing the problem.</p>"
+        }
+      },
+      "documentation":"<p>The session is currently busy processing another request and cannot accept new operations.</p>",
+      "exception":true
     },
     "SessionCommand":{
       "type":"structure",
@@ -25398,6 +28844,29 @@
         }
       },
       "documentation":"<p>The <code>SessionCommand</code> that runs the job.</p>"
+    },
+    "SessionEndpoint":{
+      "type":"structure",
+      "required":[
+        "Url",
+        "AuthToken",
+        "AuthTokenExpirationTime"
+      ],
+      "members":{
+        "Url":{
+          "shape":"SparkConnectEndpointUrl",
+          "documentation":"<p>The Spark Connect endpoint URL for the session.</p>"
+        },
+        "AuthToken":{
+          "shape":"SensitiveString",
+          "documentation":"<p>The authentication token to include in requests to the Spark Connect endpoint.</p>"
+        },
+        "AuthTokenExpirationTime":{
+          "shape":"TimestampValue",
+          "documentation":"<p>The time at which the authentication token expires.</p>"
+        }
+      },
+      "documentation":"<p>Contains the Spark Connect endpoint details for an interactive session, including the URL and authentication credentials.</p>"
     },
     "SessionIdList":{
       "type":"list",
@@ -25416,6 +28885,13 @@
         "TIMEOUT",
         "STOPPING",
         "STOPPED"
+      ]
+    },
+    "SessionType":{
+      "type":"string",
+      "enum":[
+        "LIVY",
+        "SPARK_CONNECT"
       ]
     },
     "SettingSource":{
@@ -25633,6 +29109,10 @@
         "PaginationConfiguration":{
           "shape":"PaginationConfiguration",
           "documentation":"<p>Configuration for handling paginated responses from the REST API, supporting both cursor-based and offset-based pagination strategies.</p>"
+        },
+        "FilterConfiguration":{
+          "shape":"FilterConfiguration",
+          "documentation":"<p>Configuration for applying filter pushdown to REST API requests, defining how filter predicates are translated into query parameters or filter strings.</p>"
         }
       },
       "documentation":"<p>Configuration that defines how to make requests to endpoints, including request methods, paths, parameters, and response handling.</p>"
@@ -25727,6 +29207,11 @@
       "type":"list",
       "member":{"shape":"String128"}
     },
+    "SparkConnectEndpointUrl":{
+      "type":"string",
+      "max":2048,
+      "pattern":"^sc://.*$"
+    },
     "SparkConnectorSource":{
       "type":"structure",
       "required":[
@@ -25803,6 +29288,23 @@
         }
       },
       "documentation":"<p>Specifies a target that uses an Apache Spark connector.</p>"
+    },
+    "SparkPipelineInfoKey":{
+      "type":"string",
+      "max":128,
+      "min":1
+    },
+    "SparkPipelineInfoMap":{
+      "type":"map",
+      "key":{"shape":"SparkPipelineInfoKey"},
+      "value":{"shape":"SparkPipelineInfoValue"},
+      "max":50,
+      "min":0
+    },
+    "SparkPipelineInfoValue":{
+      "type":"string",
+      "max":2048,
+      "min":0
     },
     "SparkSQL":{
       "type":"structure",
@@ -25916,6 +29418,7 @@
       "type":"string",
       "pattern":"([\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\s])*"
     },
+    "SseAlgorithm":{"type":"string"},
     "StartBlueprintRunRequest":{
       "type":"structure",
       "required":[
@@ -25975,7 +29478,7 @@
           "documentation":"<p>The percentage of rows used to generate statistics. If none is supplied, the entire table will be used to generate stats.</p>"
         },
         "CatalogID":{
-          "shape":"NameString",
+          "shape":"CatalogIdString",
           "documentation":"<p>The ID of the Data Catalog where the table reside. If none is supplied, the Amazon Web Services account ID is used by default.</p>"
         },
         "SecurityConfiguration":{
@@ -26007,6 +29510,10 @@
         "TableName":{
           "shape":"NameString",
           "documentation":"<p>The name of the table for which to start a column statistic task run schedule.</p>"
+        },
+        "CatalogID":{
+          "shape":"CatalogIdString",
+          "documentation":"<p>The ID of the Data Catalog where the table resides. If none is supplied, the Amazon Web Services account ID is used by default.</p>"
         }
       }
     },
@@ -26055,7 +29562,7 @@
         },
         "Role":{
           "shape":"RoleString",
-          "documentation":"<p>An IAM role supplied to encrypt the results of the run.</p>"
+          "documentation":"<p>The IAM role that Glue assumes to access resources for the run.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/glue/latest/dg/data-quality-authorization.html\">Configure IAM permissions for Glue Data Quality</a>.</p>"
         },
         "NumberOfWorkers":{
           "shape":"NullableInteger",
@@ -26076,6 +29583,14 @@
         "ClientToken":{
           "shape":"HashString",
           "documentation":"<p>Used for idempotency and is recommended to be set to a random ID (such as a UUID) to avoid creating or starting multiple instances of the same resource.</p>"
+        },
+        "AdditionalRunOptions":{
+          "shape":"DataQualityRuleRecommendationRunAdditionalRunOptions",
+          "documentation":"<p>Additional run options you can specify for a recommendation run.</p>"
+        },
+        "RecommendationMode":{
+          "shape":"RecommendationMode",
+          "documentation":"<p>The mode that Glue Data Quality uses to recommend rules.</p> <p>The default is <code>BASIC</code>.</p>"
         }
       },
       "documentation":"<p>The request of the Data Quality rule recommendation request.</p>"
@@ -26319,7 +29834,7 @@
       ],
       "members":{
         "CatalogId":{
-          "shape":"NameString",
+          "shape":"CatalogIdString",
           "documentation":"<p>The ID of the Data Catalog where the table reside. If none is supplied, the account ID is used by default.</p>"
         },
         "DatabaseName":{
@@ -26328,7 +29843,7 @@
         },
         "TableName":{
           "shape":"NameString",
-          "documentation":"<p>The name of the table to generate run the materialized view refresh task.</p>"
+          "documentation":"<p>The name of the materialized view to run the refresh task for.</p>"
         },
         "FullRefresh":{
           "shape":"NullableBoolean",
@@ -26598,6 +30113,10 @@
           "shape":"double",
           "documentation":"<p>The value of the statistic.</p>"
         },
+        "DistributionValue":{
+          "shape":"DistributionData",
+          "documentation":"<p>The distribution value for the statistic.</p>"
+        },
         "EvaluationLevel":{
           "shape":"StatisticEvaluationLevel",
           "documentation":"<p>The evaluation level of the statistic. Possible values: <code>Dataset</code>, <code>Column</code>, <code>Multicolumn</code>.</p>"
@@ -26658,6 +30177,10 @@
         "TableName":{
           "shape":"NameString",
           "documentation":"<p>The name of the table.</p>"
+        },
+        "CatalogID":{
+          "shape":"CatalogIdString",
+          "documentation":"<p>The ID of the Data Catalog where the table resides. If none is supplied, the Amazon Web Services account ID is used by default.</p>"
         }
       }
     },
@@ -26679,6 +30202,10 @@
         "TableName":{
           "shape":"NameString",
           "documentation":"<p>The name of the table for which to stop a column statistic task run schedule.</p>"
+        },
+        "CatalogID":{
+          "shape":"CatalogIdString",
+          "documentation":"<p>The ID of the Data Catalog where the table resides. If none is supplied, the Amazon Web Services account ID is used by default.</p>"
         }
       }
     },
@@ -26723,7 +30250,7 @@
       ],
       "members":{
         "CatalogId":{
-          "shape":"NameString",
+          "shape":"CatalogIdString",
           "documentation":"<p>The ID of the Data Catalog where the table reside. If none is supplied, the account ID is used by default.</p>"
         },
         "DatabaseName":{
@@ -26732,7 +30259,7 @@
         },
         "TableName":{
           "shape":"NameString",
-          "documentation":"<p>The name of the table to generate statistics.</p>"
+          "documentation":"<p>The name of the materialized view.</p>"
         }
       }
     },
@@ -26880,11 +30407,6 @@
       "documentation":"<p>Specifies options related to data preview for viewing a sample of your data.</p>"
     },
     "String":{"type":"string"},
-    "String1024":{
-      "type":"string",
-      "max":1024,
-      "min":1
-    },
     "String128":{
       "type":"string",
       "max":128,
@@ -26893,6 +30415,11 @@
     "String2048":{
       "type":"string",
       "max":2048,
+      "min":1
+    },
+    "String4096":{
+      "type":"string",
+      "max":4096,
       "min":1
     },
     "String512":{
@@ -26936,6 +30463,49 @@
       "type":"map",
       "key":{"shape":"NullableString"},
       "value":{"shape":"NullableString"}
+    },
+    "SubObjectSourceType":{
+      "type":"string",
+      "enum":[
+        "HIVE_PARQUET",
+        "HIVE_ORC",
+        "HIVE_CSV",
+        "HIVE_JSON",
+        "PLAIN_PARQUET",
+        "ICEBERG"
+      ]
+    },
+    "SubObjectStatistics":{
+      "type":"structure",
+      "members":{
+        "SourceType":{
+          "shape":"SubObjectSourceType",
+          "documentation":"<p>The source type of the sub-object (for example, its table format), which identifies the sub-object.</p>"
+        },
+        "GlueVersionId":{
+          "shape":"NullableString",
+          "documentation":"<p>The Glue version ID of the sub-object that the statistics were captured for.</p>"
+        },
+        "PartitionCount":{
+          "shape":"NullableLong",
+          "documentation":"<p>The number of sub-object partitions selected for that refresh. Not present for unpartitioned sub-objects.</p>"
+        },
+        "FileCount":{
+          "shape":"NullableLong",
+          "documentation":"<p>The number of sub-object data files selected for that refresh.</p>"
+        },
+        "TotalFileBytes":{
+          "shape":"NullableLong",
+          "documentation":"<p>The total size, in bytes, of the data files counted by <code>FileCount</code>.</p>"
+        }
+      },
+      "documentation":"<p>Statistics for one sub-object referenced by a materialized view, recorded when the materialized view was created or last fully refreshed. These values describe what that refresh selected from the sub-object, which can be a subset of the table when the materialized view's definition limits the data it reads. The fields present depend on the sub-object's format.</p>"
+    },
+    "SubObjectsStatisticsList":{
+      "type":"list",
+      "member":{"shape":"SubObjectStatistics"},
+      "max":250,
+      "min":0
     },
     "SupportedDialect":{
       "type":"structure",
@@ -27051,9 +30621,17 @@
           "shape":"NullableBoolean",
           "documentation":"<p>Indicates a table is a <code>MaterializedView</code>.</p>"
         },
+        "IcebergTableMetadata":{
+          "shape":"IcebergTableMetadata",
+          "documentation":"<p>The latest Apache Iceberg table metadata for the table, including format version, schemas, partition specifications, and sort orders. This field is populated for Iceberg tables and reflects the current state of the table's Iceberg metadata.</p>"
+        },
         "Status":{
           "shape":"TableStatus",
           "documentation":"<p>Indicates the the state of an asynchronous change to a table.</p>"
+        },
+        "RLSProperties":{
+          "shape":"RLSProperties",
+          "documentation":"<p>A <code>RLSProperties</code> structure that describes the default row-level security policy of the table.</p>"
         }
       },
       "documentation":"<p>Represents a collection of related data organized in columns and rows.</p>"
@@ -27062,7 +30640,9 @@
       "type":"string",
       "enum":[
         "NAME",
-        "TABLE_TYPE"
+        "TABLE_TYPE",
+        "DEFAULT",
+        "LATEST_ICEBERG_METADATA"
       ]
     },
     "TableAttributesList":{
@@ -27086,6 +30666,11 @@
     "TableErrors":{
       "type":"list",
       "member":{"shape":"TableError"}
+    },
+    "TableIdString":{
+      "type":"string",
+      "max":100,
+      "pattern":"[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\t]*"
     },
     "TableIdentifier":{
       "type":"structure",
@@ -27164,6 +30749,10 @@
         "TargetTable":{
           "shape":"TableIdentifier",
           "documentation":"<p>A <code>TableIdentifier</code> structure that describes a target table for resource linking.</p>"
+        },
+        "FederatedTable":{
+          "shape":"FederatedTable",
+          "documentation":"<p>A <code>FederatedTable</code> structure that references an entity outside the Glue Data Catalog. Specify this field to create a federated table, which points to a table in an external metastore instead of describing data managed in the Glue Data Catalog.</p>"
         },
         "ViewDefinition":{
           "shape":"ViewDefinitionInput",
@@ -27310,6 +30899,13 @@
       "type":"string",
       "max":128,
       "min":0
+    },
+    "TableResourceShareType":{
+      "type":"string",
+      "enum":[
+        "FEDERATED",
+        "ALL"
+      ]
     },
     "TableStatus":{
       "type":"structure",
@@ -27471,6 +31067,12 @@
         "xml"
       ]
     },
+    "TargetNamespace":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"[a-z0-9]([a-z0-9_]*[a-z0-9])?"
+    },
     "TargetProcessingProperties":{
       "type":"structure",
       "members":{
@@ -27529,6 +31131,10 @@
         "TargetTableName":{
           "shape":"String128",
           "documentation":"<p>The optional name of a target table.</p>"
+        },
+        "IntegrationArn":{
+          "shape":"String128",
+          "documentation":"<p>The ARN of the integration that owns this target table configuration.</p>"
         }
       },
       "documentation":"<p>Properties used by the target leg to partition the data on the target.</p>"
@@ -28191,6 +31797,51 @@
       "type":"structure",
       "members":{}
     },
+    "UpdateAssetRequest":{
+      "type":"structure",
+      "required":["Identifier"],
+      "members":{
+        "Identifier":{
+          "shape":"AssetId",
+          "documentation":"<p>The unique identifier of the asset to update.</p>"
+        },
+        "Name":{
+          "shape":"AssetName",
+          "documentation":"<p>The new name of the asset.</p>"
+        },
+        "Description":{
+          "shape":"AssetDescription",
+          "documentation":"<p>The new description of the asset.</p>"
+        },
+        "ClientToken":{
+          "shape":"HashString",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "UpdateAssetResponse":{
+      "type":"structure",
+      "required":["Id"],
+      "members":{
+        "Id":{
+          "shape":"AssetId",
+          "documentation":"<p>The unique identifier of the asset.</p>"
+        },
+        "Name":{
+          "shape":"AssetName",
+          "documentation":"<p>The name of the asset.</p>"
+        },
+        "Description":{
+          "shape":"AssetDescription",
+          "documentation":"<p>The description of the asset.</p>"
+        },
+        "UpdatedAt":{
+          "shape":"UpdatedAt",
+          "documentation":"<p>The timestamp at which the asset was last updated.</p>"
+        }
+      }
+    },
     "UpdateBehavior":{
       "type":"string",
       "enum":[
@@ -28394,7 +32045,7 @@
           "documentation":"<p>The percentage of data to sample.</p>"
         },
         "CatalogID":{
-          "shape":"NameString",
+          "shape":"CatalogIdString",
           "documentation":"<p>The ID of the Data Catalog in which the database resides.</p>"
         },
         "SecurityConfiguration":{
@@ -28491,6 +32142,10 @@
         "CrawlerSecurityConfiguration":{
           "shape":"CrawlerSecurityConfiguration",
           "documentation":"<p>The name of the <code>SecurityConfiguration</code> structure to be used by this crawler.</p>"
+        },
+        "CatalogId":{
+          "shape":"CatalogIdString",
+          "documentation":"<p>The ID of the Data Catalog in which to store the crawler's output. If you omit this value, the existing value on the crawler is preserved.</p>"
         }
       }
     },
@@ -28664,6 +32319,98 @@
     "UpdateDevEndpointResponse":{
       "type":"structure",
       "members":{}
+    },
+    "UpdateGlossaryRequest":{
+      "type":"structure",
+      "required":["Identifier"],
+      "members":{
+        "Identifier":{
+          "shape":"GlossaryId",
+          "documentation":"<p>The unique identifier of the glossary to update.</p>"
+        },
+        "Name":{
+          "shape":"GlossaryName",
+          "documentation":"<p>The updated name of the glossary.</p>"
+        },
+        "Description":{
+          "shape":"MetadataDescription",
+          "documentation":"<p>The updated description of the glossary.</p>"
+        },
+        "ClientToken":{
+          "shape":"HashString",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "UpdateGlossaryResponse":{
+      "type":"structure",
+      "members":{
+        "Id":{
+          "shape":"GlossaryId",
+          "documentation":"<p>The unique identifier of the glossary.</p>"
+        },
+        "Name":{
+          "shape":"GlossaryName",
+          "documentation":"<p>The name of the glossary.</p>"
+        },
+        "Description":{
+          "shape":"MetadataDescription",
+          "documentation":"<p>The description of the glossary.</p>"
+        }
+      }
+    },
+    "UpdateGlossaryTermRequest":{
+      "type":"structure",
+      "required":["Identifier"],
+      "members":{
+        "Identifier":{
+          "shape":"GlossaryTermId",
+          "documentation":"<p>The unique identifier of the glossary term to update.</p>"
+        },
+        "Name":{
+          "shape":"GlossaryTermName",
+          "documentation":"<p>The updated name of the glossary term.</p>"
+        },
+        "ShortDescription":{
+          "shape":"GlossaryShortDescription",
+          "documentation":"<p>The updated short description of the glossary term.</p>"
+        },
+        "LongDescription":{
+          "shape":"GlossaryLongDescription",
+          "documentation":"<p>The updated long description of the glossary term.</p>"
+        },
+        "ClientToken":{
+          "shape":"HashString",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "UpdateGlossaryTermResponse":{
+      "type":"structure",
+      "members":{
+        "Id":{
+          "shape":"GlossaryTermId",
+          "documentation":"<p>The unique identifier of the glossary term.</p>"
+        },
+        "GlossaryId":{
+          "shape":"GlossaryId",
+          "documentation":"<p>The unique identifier of the glossary containing this term.</p>"
+        },
+        "Name":{
+          "shape":"GlossaryTermName",
+          "documentation":"<p>The name of the glossary term.</p>"
+        },
+        "ShortDescription":{
+          "shape":"GlossaryShortDescription",
+          "documentation":"<p>The short description of the glossary term.</p>"
+        },
+        "LongDescription":{
+          "shape":"GlossaryLongDescription",
+          "documentation":"<p>The long description of the glossary term.</p>"
+        }
+      }
     },
     "UpdateGlueIdentityCenterConfigurationRequest":{
       "type":"structure",
@@ -29333,6 +33080,7 @@
       },
       "documentation":"<p>Specifies an XML classifier to be updated.</p>"
     },
+    "UpdatedAt":{"type":"timestamp"},
     "UpdatedTimestamp":{"type":"string"},
     "UpsertRedshiftTargetOptions":{
       "type":"structure",
@@ -29353,6 +33101,10 @@
       "documentation":"<p>The options to configure an upsert operation when writing to a Redshift target .</p>"
     },
     "UriString":{"type":"string"},
+    "Url":{
+      "type":"string",
+      "max":40000
+    },
     "UrlString":{"type":"string"},
     "UsageProfileDefinition":{
       "type":"structure",
@@ -29533,6 +33285,10 @@
           "shape":"NullableBoolean",
           "documentation":"<p>You can set this flag as true to instruct the engine not to push user-provided operations into the logical plan of the view during query planning. However, setting this flag does not guarantee that the engine will comply. Refer to the engine's documentation to understand the guarantees provided, if any.</p>"
         },
+        "IsManaged":{
+          "shape":"NullableBoolean",
+          "documentation":"<p>Specifies whether the materialized view is managed by Glue.</p>"
+        },
         "Definer":{
           "shape":"ArnString",
           "documentation":"<p>The definer of a view in SQL.</p>"
@@ -29561,9 +33317,17 @@
           "shape":"ViewSubObjectVersionIdsList",
           "documentation":"<p>List of the Apache Iceberg table versions referenced by the materialized view.</p>"
         },
+        "SubObjectsStatistics":{
+          "shape":"SubObjectsStatisticsList",
+          "documentation":"<p>Statistics captured for each sub-object referenced by the materialized view as of its most recent refresh, such as the source type, Glue version ID, and the partition, file, and byte counts. Each entry describes one sub-object, identified by its source type.</p>"
+        },
         "Representations":{
           "shape":"ViewRepresentationList",
           "documentation":"<p>A list of representations.</p>"
+        },
+        "SparkPipelineInfo":{
+          "shape":"SparkPipelineInfoMap",
+          "documentation":"<p>A map of key-value pairs containing Spark Declarative Pipelines (SDP) information for the materialized view.</p>"
         }
       },
       "documentation":"<p>A structure containing details for representations.</p>"
@@ -29574,6 +33338,10 @@
         "IsProtected":{
           "shape":"NullableBoolean",
           "documentation":"<p>You can set this flag as true to instruct the engine not to push user-provided operations into the logical plan of the view during query planning. However, setting this flag does not guarantee that the engine will comply. Refer to the engine's documentation to understand the guarantees provided, if any.</p>"
+        },
+        "IsManaged":{
+          "shape":"NullableBoolean",
+          "documentation":"<p>Specifies whether the materialized view is managed by Glue.</p>"
         },
         "Definer":{
           "shape":"ArnString",
@@ -29606,6 +33374,14 @@
         "SubObjectVersionIds":{
           "shape":"ViewSubObjectVersionIdsList",
           "documentation":"<p>List of the Apache Iceberg table versions referenced by the materialized view.</p>"
+        },
+        "SubObjectsStatistics":{
+          "shape":"SubObjectsStatisticsList",
+          "documentation":"<p>Statistics for each sub-object referenced by the materialized view, such as the source type, Glue version ID, and the partition, file, and byte counts. Each entry describes one sub-object, identified by its source type.</p>"
+        },
+        "SparkPipelineInfo":{
+          "shape":"SparkPipelineInfoMap",
+          "documentation":"<p>A map of key-value pairs containing Spark Declarative Pipelines (SDP) information for the materialized view.</p>"
         }
       },
       "documentation":"<p>A structure containing details for creating or updating an Glue view.</p>"

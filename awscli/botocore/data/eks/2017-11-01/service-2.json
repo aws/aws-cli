@@ -15,6 +15,22 @@
     "auth":["aws.auth#sigv4"]
   },
   "operations":{
+    "ActivateCertificateAuthority":{
+      "name":"ActivateCertificateAuthority",
+      "http":{
+        "method":"POST",
+        "requestUri":"/clusters/{name}/certificate-authorities/{certificateAuthorityId}/activate"
+      },
+      "input":{"shape":"ActivateCertificateAuthorityRequest"},
+      "output":{"shape":"ActivateCertificateAuthorityResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ServerException"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p>Activates a successor certificate authority (CA) as the signing certificate authority for your cluster, completing a CA rotation.</p> <p>When you activate a successor CA, Amazon EKS promotes it to be the cluster's signer (its <code>signingStatus</code> becomes <code>IN_USE</code>) and the outgoing CA is retired (<code>NOT_USED</code>). The outgoing CA remains in the cluster's trust bundle but no longer signs certificates. The successor CA you activate must already be present on the cluster and fully distributed (its <code>distributionStatus</code> must be <code>COMPLETE</code>). This is an asynchronous operation that returns an <code>update</code> object you can track with <a href=\"https://docs.aws.amazon.com/eks/latest/APIReference/API_DescribeUpdate.html\"> <code>DescribeUpdate</code> </a>.</p> <p>Before you activate the successor CA, make sure the worker nodes you manage and your external clients have been updated to trust it, so they maintain connectivity to the API server after activation. For a limited period after activation, CA rollback is available to revert to the outgoing CA if needed. If you don't activate the successor CA yourself, Amazon EKS activates it automatically as the expiration deadline approaches. For more information, see <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/certificate-authority-rotation.html\">Rotate the Amazon EKS cluster certificate authority</a> in the <i>Amazon EKS User Guide</i>.</p>"
+    },
     "AssociateAccessPolicy":{
       "name":"AssociateAccessPolicy",
       "http":{
@@ -68,6 +84,26 @@
         {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Associates an identity provider configuration to a cluster.</p> <p>If you want to authenticate identities using an identity provider, you can create an identity provider configuration and associate it to your cluster. After configuring authentication to your cluster you can create Kubernetes <code>Role</code> and <code>ClusterRole</code> objects, assign permissions to them, and then bind them to the identities using Kubernetes <code>RoleBinding</code> and <code>ClusterRoleBinding</code> objects. For more information see <a href=\"https://kubernetes.io/docs/reference/access-authn-authz/rbac/\">Using RBAC Authorization</a> in the Kubernetes documentation.</p>"
+    },
+    "CancelUpdate":{
+      "name":"CancelUpdate",
+      "http":{
+        "method":"POST",
+        "requestUri":"/clusters/{name}/updates/{updateId}/cancel-update"
+      },
+      "input":{"shape":"CancelUpdateRequest"},
+      "output":{"shape":"CancelUpdateResponse"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"ClientException"},
+        {"shape":"ServerException"},
+        {"shape":"ResourceInUseException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidStateException"}
+      ],
+      "documentation":"<p>Cancels an in-progress update to an Amazon EKS cluster on a best-effort basis. Cancellation is only performed if the update can be cancelled. Currently, this is supported for <code>VersionRollback</code> update types on EKS Auto Mode clusters when nodes are rolling back.</p> <p>A successful cancellation stops the node rollback. After cancellation, nodes converge to the current cluster version honoring configured disruption controls. If the control plane rollback has already begun, the cancellation request fails.</p>"
     },
     "CreateAccessEntry":{
       "name":"CreateAccessEntry",
@@ -123,6 +159,24 @@
         {"shape":"ServerException"}
       ],
       "documentation":"<p>Creates a managed capability resource for an Amazon EKS cluster.</p> <p>Capabilities provide fully managed capabilities to build and scale with Kubernetes. When you create a capability, Amazon EKSprovisions and manages the infrastructure required to run the capability outside of your cluster. This approach reduces operational overhead and preserves cluster resources.</p> <p>You can only create one Capability of each type on a given Amazon EKS cluster. Valid types are Argo CD for declarative GitOps deployment, Amazon Web Services Controllers for Kubernetes (ACK) for resource management, and Kube Resource Orchestrator (KRO) for Kubernetes custom resource orchestration.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/capabilities.html\">EKS Capabilities</a> in the <i>Amazon EKS User Guide</i>.</p>"
+    },
+    "CreateCertificateAuthority":{
+      "name":"CreateCertificateAuthority",
+      "http":{
+        "method":"POST",
+        "requestUri":"/clusters/{name}/certificate-authorities"
+      },
+      "input":{"shape":"CreateCertificateAuthorityRequest"},
+      "output":{"shape":"CreateCertificateAuthorityResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ResourceLimitExceededException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceInUseException"},
+        {"shape":"ServerException"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p>Appends a successor certificate authority (CA) to your cluster, beginning the CA rotation process.</p> <p>A cluster certificate authority is the root of trust for your cluster's control plane. It signs the certificates that secure communication between the Kubernetes API server and its clients, and its public certificate is distributed to your cluster's trust bundle so that worker nodes and clients can verify the API server's identity. Each cluster can have at most two certificate authorities at a time: the outgoing CA that's currently signing (its <code>signingStatus</code> is <code>IN_USE</code>) and one successor CA (<code>signingStatus</code> of <code>NOT_USED</code>) that you can later activate to complete the rotation.</p> <p>Appending a successor CA adds its public certificate to the cluster's trust bundle so that the cluster trusts both CAs simultaneously (the dual trust period), but it doesn't begin signing certificates. Amazon EKS then distributes the successor CA to the Amazon Web Services managed components in your cluster; you can track this through the CA's <code>distributionStatus</code>. The successor CA can't be activated until its <code>distributionStatus</code> is <code>COMPLETE</code>. To activate it as the cluster's signer, use <a href=\"https://docs.aws.amazon.com/eks/latest/APIReference/API_ActivateCertificateAuthority.html\"> <code>ActivateCertificateAuthority</code> </a>. This is an asynchronous operation that returns an <code>update</code> object. If you don't append a successor CA yourself, Amazon EKS appends one automatically before the outgoing CA approaches expiration.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/certificate-authority-rotation.html\">Rotate the Amazon EKS cluster certificate authority</a> in the <i>Amazon EKS User Guide</i>.</p>"
     },
     "CreateCluster":{
       "name":"CreateCluster",
@@ -263,6 +317,23 @@
         {"shape":"ServerException"}
       ],
       "documentation":"<p>Deletes a managed capability from your Amazon EKS cluster. When you delete a capability, Amazon EKS removes the capability infrastructure but retains all resources that were managed by the capability.</p> <p>Before deleting a capability, you should delete all Kubernetes resources that were created by the capability. After the capability is deleted, these resources become difficult to manage because the controller that managed them is no longer available. To delete resources before removing the capability, use <code>kubectl delete</code> or remove them through your GitOps workflow.</p>"
+    },
+    "DeleteCertificateAuthority":{
+      "name":"DeleteCertificateAuthority",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/clusters/{name}/certificate-authorities/{certificateAuthorityId}"
+      },
+      "input":{"shape":"DeleteCertificateAuthorityRequest"},
+      "output":{"shape":"DeleteCertificateAuthorityResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceInUseException"},
+        {"shape":"ServerException"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p>Deletes a certificate authority (CA) from your cluster.</p> <p>Deleting a certificate authority removes its public certificate from the cluster's trust bundle. You can't delete the certificate authority that's currently signing certificates for the cluster (its <code>signingStatus</code> is <code>IN_USE</code>) — to remove the outgoing CA, first activate the successor CA with <a href=\"https://docs.aws.amazon.com/eks/latest/APIReference/API_ActivateCertificateAuthority.html\"> <code>ActivateCertificateAuthority</code> </a>. Amazon EKS also protects a successor CA from deletion in certain cases to keep a valid rotation path — for example, a successor that Amazon EKS appended can't be deleted while it's the only successor on the cluster. This is an asynchronous operation that returns an <code>update</code> object.</p>"
     },
     "DeleteCluster":{
       "name":"DeleteCluster",
@@ -443,6 +514,21 @@
         {"shape":"ServerException"}
       ],
       "documentation":"<p>Returns detailed information about a specific managed capability in your Amazon EKS cluster, including its current status, configuration, health information, and any issues that may be affecting its operation.</p>"
+    },
+    "DescribeCertificateAuthority":{
+      "name":"DescribeCertificateAuthority",
+      "http":{
+        "method":"GET",
+        "requestUri":"/clusters/{name}/certificate-authorities/{certificateAuthorityId}"
+      },
+      "input":{"shape":"DescribeCertificateAuthorityRequest"},
+      "output":{"shape":"DescribeCertificateAuthorityResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ServerException"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p>Returns detailed information about a certificate authority (CA) in your cluster, including its validity period, signing and distribution status, provenance, scheduled auto-activation events, and public certificate data.</p>"
     },
     "DescribeCluster":{
       "name":"DescribeCluster",
@@ -713,6 +799,22 @@
         {"shape":"ServerException"}
       ],
       "documentation":"<p>Lists all managed capabilities in your Amazon EKS cluster. You can use this operation to get an overview of all capabilities and their current status.</p>"
+    },
+    "ListCertificateAuthorities":{
+      "name":"ListCertificateAuthorities",
+      "http":{
+        "method":"GET",
+        "requestUri":"/clusters/{name}/certificate-authorities"
+      },
+      "input":{"shape":"ListCertificateAuthoritiesRequest"},
+      "output":{"shape":"ListCertificateAuthoritiesResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ServerException"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p>Lists the certificate authorities (CAs) for your cluster. A cluster has at most two certificate authorities: the outgoing CA that's currently signing and, during a rotation, one successor CA.</p>"
     },
     "ListClusters":{
       "name":"ListClusters",
@@ -1218,6 +1320,98 @@
         "namespace"
       ]
     },
+    "AckConfigRequest":{
+      "type":"structure",
+      "members":{
+        "enableCrossNamespace":{
+          "shape":"BoxedBoolean",
+          "documentation":"<p>Specifies whether ACK controllers resolve resource references to resources in a different Kubernetes namespace. Set this value to <code>true</code> to allow references to resolve to resources in another namespace. If you don't specify this value, or you omit the <code>ack</code> configuration entirely, the capability is created with this value set to <code>false</code> and references must remain within the same namespace.</p>"
+        },
+        "disabledServices":{
+          "shape":"AckDisabledServicesList",
+          "documentation":"<p>A list of ACK service names whose controllers are turned off for this capability, for example <code>s3</code>, <code>ec2</code>, and <code>iam</code>. Resources of a disabled service aren't reconciled until you re-enable the service. To keep all services enabled, omit this field or specify an empty list. An unrecognized service name is accepted and stored but turns nothing off, and <code>DescribeCapability</code> returns the list exactly as you supplied it. For more information, see <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/create-ack-capability.html#ack-configuration-options\">ACK capability configuration options</a> in the <i>Amazon EKS User Guide</i>.</p>"
+        }
+      },
+      "documentation":"<p>Configuration settings for an ACK (Amazon Web Services Controllers for Kubernetes) capability. This includes whether controllers can resolve cross-namespace resource references and which ACK service controllers are disabled.</p>"
+    },
+    "AckConfigResponse":{
+      "type":"structure",
+      "members":{
+        "enableCrossNamespace":{
+          "shape":"BoxedBoolean",
+          "documentation":"<p>Indicates whether ACK controllers resolve resource references to resources in a different Kubernetes namespace. This value reflects the setting that's in effect, and is <code>false</code> if you never specified a value. Capabilities that were using cross-namespace references before this setting became available have this value set to <code>true</code>, so their behavior is unchanged.</p>"
+        },
+        "disabledServices":{
+          "shape":"AckDisabledServicesList",
+          "documentation":"<p>The list of ACK service names whose controllers are turned off for this capability. Existing custom resource definitions remain installed, and resources of a disabled service aren't reconciled until the service is re-enabled.</p>"
+        }
+      },
+      "documentation":"<p>The response object containing configuration details for an ACK (Amazon Web Services Controllers for Kubernetes) capability.</p>"
+    },
+    "AckDisabledServicesList":{
+      "type":"list",
+      "member":{"shape":"AckServiceName"},
+      "max":200
+    },
+    "AckServiceName":{
+      "type":"string",
+      "max":63,
+      "min":1,
+      "pattern":"^[a-z][a-z0-9]*$"
+    },
+    "ActivateCertificateAuthorityRequest":{
+      "type":"structure",
+      "required":[
+        "clusterName",
+        "certificateAuthorityId"
+      ],
+      "members":{
+        "clusterName":{
+          "shape":"String",
+          "documentation":"<p>The name of your cluster.</p>",
+          "location":"uri",
+          "locationName":"name"
+        },
+        "certificateAuthorityId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the certificate authority to activate as the cluster's signing certificate authority. This certificate authority must already exist on the cluster and have a <code>distributionStatus</code> of <code>COMPLETE</code>.</p>",
+          "location":"uri",
+          "locationName":"certificateAuthorityId"
+        },
+        "clientRequestToken":{
+          "shape":"String",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "ActivateCertificateAuthorityResponse":{
+      "type":"structure",
+      "members":{
+        "update":{
+          "shape":"Update",
+          "documentation":"<p>An object representing the asynchronous update that promotes the certificate authority to be the cluster's signer.</p>"
+        },
+        "certificateAuthority":{
+          "shape":"CertificateAuthoritySummary",
+          "documentation":"<p>Summary information about the certificate authority that is being activated.</p>"
+        }
+      }
+    },
+    "ActiveCertificateAuthority":{
+      "type":"structure",
+      "members":{
+        "id":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the certificate authority that is currently signing certificates for the cluster.</p>"
+        },
+        "activatedBy":{
+          "shape":"CertificateAuthorityActivatedBy",
+          "documentation":"<p>The entity that activated the current signing certificate authority, either <code>CUSTOMER</code> or <code>EKS</code>.</p>"
+        }
+      },
+      "documentation":"<p>Identifies the certificate authority that is currently signing certificates for the cluster.</p>"
+    },
     "AdditionalInfoMap":{
       "type":"map",
       "key":{"shape":"String"},
@@ -1503,6 +1697,22 @@
       "type":"list",
       "member":{"shape":"AddonInfo"}
     },
+    "AllowedValuesConstraint":{
+      "type":"structure",
+      "members":{
+        "allowedValues":{
+          "shape":"AllowedValuesList",
+          "documentation":"<p>The list of allowed values.</p>"
+        }
+      },
+      "documentation":"<p>A constraint specifying the allowed values for a parameter.</p>"
+    },
+    "AllowedValuesList":{
+      "type":"list",
+      "member":{"shape":"String"},
+      "documentation":"<p>A list of allowed string values for a parameter constraint.</p>",
+      "max":20
+    },
     "ArgoCdAwsIdcConfigRequest":{
       "type":"structure",
       "required":["idcInstanceArn"],
@@ -1555,6 +1765,10 @@
         "networkAccess":{
           "shape":"ArgoCdNetworkAccessConfigRequest",
           "documentation":"<p>Configuration for network access to the Argo CD capability's managed API server endpoint. By default, the Argo CD server is accessible via a public endpoint. You can optionally specify one or more VPC endpoint IDs to enable private connectivity from your VPCs. When VPC endpoints are configured, public access is blocked and the Argo CD server is only accessible through the specified VPC endpoints.</p>"
+        },
+        "endpointPrefix":{
+          "shape":"ArgoCdEndpointPrefix",
+          "documentation":"<p>An optional prefix used to construct the hostname of the Argo CD server endpoint. If not specified, Amazon EKS automatically generates the endpoint. This value can't be changed after the capability is created.</p>"
         }
       },
       "documentation":"<p>Configuration settings for an Argo CD capability. This includes the Kubernetes namespace, IAM Identity CenterIAM; Identity Center integration, RBAC role mappings, and network access configuration.</p>"
@@ -1581,9 +1795,19 @@
         "serverUrl":{
           "shape":"String",
           "documentation":"<p>The URL of the Argo CD server. Use this URL to access the Argo CD web interface and API.</p>"
+        },
+        "endpointPrefix":{
+          "shape":"ArgoCdEndpointPrefix",
+          "documentation":"<p>The prefix that was configured for the hostname of the Argo CD server endpoint when the capability was created.</p>"
         }
       },
       "documentation":"<p>The response object containing Argo CD configuration details, including the server URL that you use to access the Argo CD web interface and API.</p>"
+    },
+    "ArgoCdEndpointPrefix":{
+      "type":"string",
+      "max":50,
+      "min":1,
+      "pattern":"^[a-z0-9]([a-z0-9-]*[a-z0-9])?$"
     },
     "ArgoCdNetworkAccessConfigRequest":{
       "type":"structure",
@@ -1830,6 +2054,63 @@
       "type":"integer",
       "box":true
     },
+    "CancelUpdateRequest":{
+      "type":"structure",
+      "required":[
+        "name",
+        "updateId"
+      ],
+      "members":{
+        "name":{
+          "shape":"String",
+          "documentation":"<p>The name of the Amazon EKS cluster associated with the update.</p>",
+          "location":"uri",
+          "locationName":"name"
+        },
+        "updateId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the update to cancel.</p>",
+          "location":"uri",
+          "locationName":"updateId"
+        },
+        "clientRequestToken":{
+          "shape":"String",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "CancelUpdateResponse":{
+      "type":"structure",
+      "members":{
+        "update":{
+          "shape":"Update",
+          "documentation":"<p>The full description of the specified update.</p>"
+        }
+      }
+    },
+    "Cancellation":{
+      "type":"structure",
+      "members":{
+        "status":{
+          "shape":"CancellationStatus",
+          "documentation":"<p>The current status of the cancellation. Valid values are <code>InProgress</code>, <code>Failed</code>, and <code>Successful</code>.</p>"
+        },
+        "reason":{
+          "shape":"String",
+          "documentation":"<p>A message providing additional details about the cancellation, such as the reason for the cancellation or failure details.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about the latest cancellation of an update to an Amazon EKS cluster.</p>"
+    },
+    "CancellationStatus":{
+      "type":"string",
+      "enum":[
+        "InProgress",
+        "Failed",
+        "Successful"
+      ]
+    },
     "Capability":{
       "type":"structure",
       "members":{
@@ -1891,6 +2172,10 @@
         "argoCd":{
           "shape":"ArgoCdConfigRequest",
           "documentation":"<p>Configuration settings specific to Argo CD capabilities. This field is only used when creating or updating an Argo CD capability.</p>"
+        },
+        "ack":{
+          "shape":"AckConfigRequest",
+          "documentation":"<p>Configuration settings specific to ACK (Amazon Web Services Controllers for Kubernetes) capabilities. This field is only used when creating or updating an ACK capability.</p>"
         }
       },
       "documentation":"<p>Configuration settings for a capability. The structure of this object varies depending on the capability type.</p>"
@@ -1901,6 +2186,10 @@
         "argoCd":{
           "shape":"ArgoCdConfigResponse",
           "documentation":"<p>Configuration settings for an Argo CD capability, including the server URL and other Argo CD-specific settings.</p>"
+        },
+        "ack":{
+          "shape":"AckConfigResponse",
+          "documentation":"<p>Configuration settings for an ACK (Amazon Web Services Controllers for Kubernetes) capability, including the cross-namespace reference setting and the list of disabled services.</p>"
         }
       },
       "documentation":"<p>The response object containing capability configuration details.</p>"
@@ -2019,7 +2308,8 @@
       "type":"string",
       "enum":[
         "UPGRADE_READINESS",
-        "MISCONFIGURATION"
+        "MISCONFIGURATION",
+        "ROLLBACK_READINESS"
       ]
     },
     "CategoryList":{
@@ -2032,9 +2322,166 @@
         "data":{
           "shape":"String",
           "documentation":"<p>The Base64-encoded certificate data required to communicate with your cluster. Add this to the <code>certificate-authority-data</code> section of the <code>kubeconfig</code> file for your cluster.</p>"
+        },
+        "active":{
+          "shape":"ActiveCertificateAuthority",
+          "documentation":"<p>An object identifying the certificate authority that is currently signing certificates for the cluster.</p>"
         }
       },
       "documentation":"<p>An object representing the <code>certificate-authority-data</code> for your cluster.</p>"
+    },
+    "CertificateAuthority":{
+      "type":"structure",
+      "members":{
+        "id":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the certificate authority.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The Unix epoch timestamp in seconds for when the certificate authority was created.</p>"
+        },
+        "createdBy":{
+          "shape":"CertificateAuthorityCreatedBy",
+          "documentation":"<p>The entity that created the certificate authority. Certificate authorities that you create are <code>CUSTOMER</code>; those that Amazon EKS provisions on your behalf, such as a cluster's initial certificate authority, are <code>EKS</code>.</p>"
+        },
+        "activatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The Unix epoch timestamp in seconds for when the certificate authority was last activated as the cluster's signer. This value is absent if the certificate authority has never been activated.</p>"
+        },
+        "activatedBy":{
+          "shape":"CertificateAuthorityActivatedBy",
+          "documentation":"<p>The entity that most recently activated the certificate authority. A value of <code>EKS</code> indicates that Amazon EKS activated it automatically; <code>CUSTOMER</code> indicates that you activated it.</p>"
+        },
+        "signingStatus":{
+          "shape":"CertificateAuthoritySigningStatus",
+          "documentation":"<p>The signing status of the certificate authority. <code>IN_USE</code> means the certificate authority is currently signing certificates for the cluster, <code>ACTIVATING</code> means it's being promoted to the signer, and <code>NOT_USED</code> means it's trusted by the cluster (for example, a successor CA during a rotation, or a retired outgoing CA) but isn't the signer.</p>"
+        },
+        "distributionStatus":{
+          "shape":"CertificateAuthorityDistributionStatus",
+          "documentation":"<p>The distribution status of the certificate authority, which tracks whether Amazon EKS has distributed its trust to the Amazon Web Services managed components in your cluster (the control plane, Amazon EKS Auto Mode instances, and Amazon Web Services Fargate nodes). Valid values are <code>IN_PROGRESS</code>, <code>COMPLETE</code>, <code>FAILED</code>, and <code>DELETING</code>. A successor CA can only be activated after its distribution status is <code>COMPLETE</code>.</p>"
+        },
+        "validity":{
+          "shape":"CertificateAuthorityValidity",
+          "documentation":"<p>The validity period of the certificate authority's certificate.</p>"
+        },
+        "scheduledEvents":{
+          "shape":"CertificateAuthorityScheduledEvents",
+          "documentation":"<p>The scheduled auto-activation events for the certificate authority, computed from its validity period.</p>"
+        },
+        "rollbackAvailable":{
+          "shape":"BoxedBoolean",
+          "documentation":"<p>Indicates whether CA rollback is still available for this certificate authority. After you activate a successor CA, rollback lets you revert to the outgoing CA for a limited period while you finish updating any worker nodes or clients that were missed.</p>"
+        },
+        "data":{
+          "shape":"String",
+          "documentation":"<p>The Base64-encoded public certificate of the certificate authority.</p>"
+        }
+      },
+      "documentation":"<p>An object representing a certificate authority (CA) for an Amazon EKS cluster.</p>"
+    },
+    "CertificateAuthorityActivatedBy":{
+      "type":"string",
+      "enum":[
+        "EKS",
+        "CUSTOMER"
+      ]
+    },
+    "CertificateAuthorityCreatedBy":{
+      "type":"string",
+      "enum":[
+        "EKS",
+        "CUSTOMER"
+      ]
+    },
+    "CertificateAuthorityDistributionStatus":{
+      "type":"string",
+      "enum":[
+        "IN_PROGRESS",
+        "COMPLETE",
+        "FAILED",
+        "DELETING"
+      ]
+    },
+    "CertificateAuthorityMaxResults":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "CertificateAuthorityScheduledEvents":{
+      "type":"structure",
+      "members":{
+        "firstAutoActivation":{
+          "shape":"Timestamp",
+          "documentation":"<p>The earliest Unix epoch timestamp in seconds at which Amazon EKS may automatically activate this certificate authority.</p>"
+        },
+        "finalAutoActivation":{
+          "shape":"Timestamp",
+          "documentation":"<p>The Unix epoch timestamp in seconds by which Amazon EKS will automatically activate this certificate authority if you haven't already activated it.</p>"
+        }
+      },
+      "documentation":"<p>The scheduled events during which Amazon EKS may automatically activate a certificate authority, computed from its validity period. These events help ensure that a cluster's signing certificate authority is rotated before its certificate expires.</p>"
+    },
+    "CertificateAuthoritySigningStatus":{
+      "type":"string",
+      "enum":[
+        "NOT_USED",
+        "ACTIVATING",
+        "IN_USE"
+      ]
+    },
+    "CertificateAuthoritySummary":{
+      "type":"structure",
+      "members":{
+        "id":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the certificate authority.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The Unix epoch timestamp in seconds for when the certificate authority was created.</p>"
+        },
+        "createdBy":{
+          "shape":"CertificateAuthorityCreatedBy",
+          "documentation":"<p>The entity that created the certificate authority, either <code>CUSTOMER</code> or <code>EKS</code>.</p>"
+        },
+        "activatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The Unix epoch timestamp in seconds for when the certificate authority was last activated. This value is absent if the certificate authority has never been activated.</p>"
+        },
+        "activatedBy":{
+          "shape":"CertificateAuthorityActivatedBy",
+          "documentation":"<p>The entity that most recently activated the certificate authority, either <code>CUSTOMER</code> or <code>EKS</code>.</p>"
+        },
+        "signingStatus":{
+          "shape":"CertificateAuthoritySigningStatus",
+          "documentation":"<p>The signing status of the certificate authority: <code>IN_USE</code>, <code>ACTIVATING</code>, or <code>NOT_USED</code>.</p>"
+        },
+        "distributionStatus":{
+          "shape":"CertificateAuthorityDistributionStatus",
+          "documentation":"<p>The distribution status of the certificate authority: <code>IN_PROGRESS</code>, <code>COMPLETE</code>, <code>FAILED</code>, or <code>DELETING</code>.</p>"
+        }
+      },
+      "documentation":"<p>Summary information about a certificate authority (CA) for an Amazon EKS cluster, returned by <a href=\"https://docs.aws.amazon.com/eks/latest/APIReference/API_ListCertificateAuthorities.html\"> <code>ListCertificateAuthorities</code> </a> and the certificate-authority write operations.</p>"
+    },
+    "CertificateAuthoritySummaryList":{
+      "type":"list",
+      "member":{"shape":"CertificateAuthoritySummary"}
+    },
+    "CertificateAuthorityValidity":{
+      "type":"structure",
+      "members":{
+        "notBefore":{
+          "shape":"Timestamp",
+          "documentation":"<p>The Unix epoch timestamp in seconds for the start of the certificate authority's validity period.</p>"
+        },
+        "notAfter":{
+          "shape":"Timestamp",
+          "documentation":"<p>The Unix epoch timestamp in seconds for the end of the certificate authority's validity period.</p>"
+        }
+      },
+      "documentation":"<p>The validity period of a certificate authority's certificate.</p>"
     },
     "ClientException":{
       "type":"structure",
@@ -2200,6 +2647,18 @@
         "controlPlaneScalingConfig":{
           "shape":"ControlPlaneScalingConfig",
           "documentation":"<p>The control plane scaling tier configuration. For more information, see EKS Provisioned Control Plane in the Amazon EKS User Guide.</p>"
+        },
+        "kubeApiServerConfig":{
+          "shape":"KubeApiServerConfigResponse",
+          "documentation":"<p>The Kubernetes API server configuration for the cluster.</p>"
+        },
+        "kubeSchedulerConfig":{
+          "shape":"KubeSchedulerConfigResponse",
+          "documentation":"<p>The Kubernetes scheduler configuration for the cluster.</p>"
+        },
+        "kubeControllerManagerConfig":{
+          "shape":"KubeControllerManagerConfigResponse",
+          "documentation":"<p>The Kubernetes controller manager configuration for the cluster.</p>"
         }
       },
       "documentation":"<p>An object representing an Amazon EKS cluster.</p>"
@@ -2319,6 +2778,14 @@
         "kubernetesPatchVersion":{
           "shape":"String",
           "documentation":"<p>The patch version of Kubernetes for this cluster version.</p>"
+        },
+        "controlPlaneScalingTiers":{
+          "shape":"ControlPlaneScalingTierList",
+          "documentation":"<p>The available provisioned control plane scaling tiers and their capabilities for this Kubernetes version.</p>"
+        },
+        "controlPlaneComponentConfig":{
+          "shape":"ControlPlaneConfigInfo",
+          "documentation":"<p>The default control plane component configuration and constraints for this Kubernetes version.</p>"
         }
       },
       "documentation":"<p>Contains details about a specific EKS cluster version.</p>"
@@ -2451,12 +2918,42 @@
       },
       "documentation":"<p>The full description of your connected cluster.</p>"
     },
+    "ControlPlaneConfigInfo":{
+      "type":"structure",
+      "members":{
+        "kubeApiServerConfig":{
+          "shape":"KubeApiServerVersionConfig",
+          "documentation":"<p>The Kubernetes API server configuration defaults and constraints.</p>"
+        },
+        "kubeSchedulerConfig":{
+          "shape":"KubeSchedulerVersionConfig",
+          "documentation":"<p>The Kubernetes scheduler configuration defaults and constraints.</p>"
+        },
+        "kubeControllerManagerConfig":{
+          "shape":"KubeControllerManagerVersionConfig",
+          "documentation":"<p>The Kubernetes controller manager configuration defaults and constraints.</p>"
+        }
+      },
+      "documentation":"<p>The control plane component configuration defaults and constraints.</p>"
+    },
+    "ControlPlaneEgressModeType":{
+      "type":"string",
+      "enum":[
+        "AWS_MANAGED",
+        "CUSTOMER_ROUTED",
+        "CUSTOMER_ISOLATED"
+      ]
+    },
     "ControlPlanePlacementRequest":{
       "type":"structure",
       "members":{
         "groupName":{
           "shape":"String",
           "documentation":"<p>The name of the placement group for the Kubernetes control plane instances. This setting can't be changed after cluster creation. </p>"
+        },
+        "spreadLevel":{
+          "shape":"SpreadLevel",
+          "documentation":"<p>Optional parameter to specify the placement group spread level for control plane instances. If not provided, Amazon EKS will deploy control plane instances without a placement group.</p>"
         }
       },
       "documentation":"<p>The placement configuration for all the control plane instances of your local Amazon EKS cluster on an Amazon Web Services Outpost. For more information, see <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/eks-outposts-capacity-considerations.html\">Capacity considerations</a> in the <i>Amazon EKS User Guide</i>.</p>"
@@ -2467,6 +2964,10 @@
         "groupName":{
           "shape":"String",
           "documentation":"<p>The name of the placement group for the Kubernetes control plane instances.</p>"
+        },
+        "spreadLevel":{
+          "shape":"SpreadLevel",
+          "documentation":"<p>The spread level used with the placement group for control plane instances on your local Amazon EKS cluster on Amazon Web Services Outposts.</p>"
         }
       },
       "documentation":"<p>The placement configuration for all the control plane instances of your local Amazon EKS cluster on an Amazon Web Services Outpost. For more information, see <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/eks-outposts-capacity-considerations.html\">Capacity considerations</a> in the <i>Amazon EKS User Guide</i>.</p>"
@@ -2480,6 +2981,38 @@
         }
       },
       "documentation":"<p>The control plane scaling tier configuration. For more information, see EKS Provisioned Control Plane in the Amazon EKS User Guide.</p>"
+    },
+    "ControlPlaneScalingTierInfo":{
+      "type":"structure",
+      "members":{
+        "tierName":{
+          "shape":"String",
+          "documentation":"<p>The name of the scaling tier.</p>"
+        },
+        "apiRequestConcurrency":{
+          "shape":"BoxedInteger",
+          "documentation":"<p>The maximum API request concurrency supported by this tier.</p>"
+        },
+        "podSchedulingRatePerSecond":{
+          "shape":"BoxedInteger",
+          "documentation":"<p>The maximum pod scheduling rate per second supported by this tier.</p>"
+        },
+        "clusterDatabaseSizeGb":{
+          "shape":"BoxedInteger",
+          "documentation":"<p>The maximum cluster database size in GB supported by this tier.</p>"
+        },
+        "controlPlaneComponentConfigOverrides":{
+          "shape":"ControlPlaneConfigInfo",
+          "documentation":"<p>The control plane component configuration overrides specific to this scaling tier.</p>"
+        }
+      },
+      "documentation":"<p>Information about a provisioned control plane scaling tier.</p>"
+    },
+    "ControlPlaneScalingTierList":{
+      "type":"list",
+      "member":{"shape":"ControlPlaneScalingTierInfo"},
+      "documentation":"<p>A list of available provisioned control plane scaling tiers.</p>",
+      "max":10
     },
     "CreateAccessConfigRequest":{
       "type":"structure",
@@ -2652,6 +3185,36 @@
         }
       }
     },
+    "CreateCertificateAuthorityRequest":{
+      "type":"structure",
+      "required":["clusterName"],
+      "members":{
+        "clusterName":{
+          "shape":"String",
+          "documentation":"<p>The name of your cluster.</p>",
+          "location":"uri",
+          "locationName":"name"
+        },
+        "clientRequestToken":{
+          "shape":"String",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "CreateCertificateAuthorityResponse":{
+      "type":"structure",
+      "members":{
+        "update":{
+          "shape":"Update",
+          "documentation":"<p>An object representing the asynchronous update that adds the certificate authority to the cluster's trust bundle.</p>"
+        },
+        "certificateAuthority":{
+          "shape":"CertificateAuthoritySummary",
+          "documentation":"<p>Summary information about the certificate authority that was created, including its ID and initial signing and distribution status.</p>"
+        }
+      }
+    },
     "CreateClusterRequest":{
       "type":"structure",
       "required":[
@@ -2736,6 +3299,18 @@
         "controlPlaneScalingConfig":{
           "shape":"ControlPlaneScalingConfig",
           "documentation":"<p>The control plane scaling tier configuration. For more information, see EKS Provisioned Control Plane in the Amazon EKS User Guide.</p>"
+        },
+        "kubeApiServerConfig":{
+          "shape":"KubeApiServerConfigRequest",
+          "documentation":"<p>The Kubernetes API server configuration for the new cluster.</p>"
+        },
+        "kubeSchedulerConfig":{
+          "shape":"KubeSchedulerConfigRequest",
+          "documentation":"<p>The Kubernetes scheduler configuration for the new cluster.</p>"
+        },
+        "kubeControllerManagerConfig":{
+          "shape":"KubeControllerManagerConfigRequest",
+          "documentation":"<p>The Kubernetes controller manager configuration for the new cluster.</p>"
         }
       }
     },
@@ -3092,6 +3667,47 @@
         "capability":{
           "shape":"Capability",
           "documentation":"<p>An object containing information about the deleted capability, including its final status and configuration.</p>"
+        }
+      }
+    },
+    "DeleteCertificateAuthorityRequest":{
+      "type":"structure",
+      "required":[
+        "clusterName",
+        "certificateAuthorityId"
+      ],
+      "members":{
+        "clusterName":{
+          "shape":"String",
+          "documentation":"<p>The name of your cluster.</p>",
+          "location":"uri",
+          "locationName":"name"
+        },
+        "certificateAuthorityId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the certificate authority to delete. You can't delete the certificate authority that's currently signing certificates for the cluster.</p>",
+          "location":"uri",
+          "locationName":"certificateAuthorityId"
+        },
+        "clientRequestToken":{
+          "shape":"String",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request.</p>",
+          "idempotencyToken":true,
+          "location":"querystring",
+          "locationName":"clientRequestToken"
+        }
+      }
+    },
+    "DeleteCertificateAuthorityResponse":{
+      "type":"structure",
+      "members":{
+        "update":{
+          "shape":"Update",
+          "documentation":"<p>An object representing the asynchronous update that removes the certificate authority from the cluster's trust bundle.</p>"
+        },
+        "certificateAuthority":{
+          "shape":"CertificateAuthoritySummary",
+          "documentation":"<p>Summary information about the certificate authority that is being deleted.</p>"
         }
       }
     },
@@ -3467,6 +4083,36 @@
         "capability":{
           "shape":"Capability",
           "documentation":"<p>An object containing detailed information about the capability, including its name, ARN, type, status, version, configuration, health status, and timestamps for when it was created and last modified.</p>"
+        }
+      }
+    },
+    "DescribeCertificateAuthorityRequest":{
+      "type":"structure",
+      "required":[
+        "clusterName",
+        "certificateAuthorityId"
+      ],
+      "members":{
+        "clusterName":{
+          "shape":"String",
+          "documentation":"<p>The name of your cluster.</p>",
+          "location":"uri",
+          "locationName":"name"
+        },
+        "certificateAuthorityId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the certificate authority to describe.</p>",
+          "location":"uri",
+          "locationName":"certificateAuthorityId"
+        }
+      }
+    },
+    "DescribeCertificateAuthorityResponse":{
+      "type":"structure",
+      "members":{
+        "certificateAuthority":{
+          "shape":"CertificateAuthority",
+          "documentation":"<p>An object containing detailed information about the certificate authority.</p>"
         }
       }
     },
@@ -3879,6 +4525,34 @@
         "update":{"shape":"Update"}
       }
     },
+    "DurationConstraints":{
+      "type":"structure",
+      "members":{
+        "min":{
+          "shape":"String",
+          "documentation":"<p>The minimum allowed duration value.</p>"
+        },
+        "max":{
+          "shape":"String",
+          "documentation":"<p>The maximum allowed duration value.</p>"
+        }
+      },
+      "documentation":"<p>Constraints for a duration parameter.</p>"
+    },
+    "DurationParameterConfig":{
+      "type":"structure",
+      "members":{
+        "defaultValue":{
+          "shape":"String",
+          "documentation":"<p>The default value for the duration parameter.</p>"
+        },
+        "constraints":{
+          "shape":"DurationConstraints",
+          "documentation":"<p>The constraints for the duration parameter.</p>"
+        }
+      },
+      "documentation":"<p>A duration parameter configuration with default value and constraints.</p>"
+    },
     "EksAnywhereSubscription":{
       "type":"structure",
       "members":{
@@ -3999,7 +4673,10 @@
       "members":{
         "resources":{
           "shape":"StringList",
-          "documentation":"<p>Specifies the resources to be encrypted. The only supported value is <code>secrets</code>.</p>"
+          "documentation":"<important> <p>Amazon EKS encrypts all Kubernetes API data with envelope encryption by default for clusters running Kubernetes version 1.28 or higher, so this field no longer affects which resources are encrypted.</p> </important> <p>Specifies the resources to be encrypted. The only supported value is <code>secrets</code>.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"Deprecated. Amazon EKS encrypts all Kubernetes API data by default, so this value no longer determines which resources are encrypted.",
+          "deprecatedSince":"2025-03-05"
         },
         "provider":{
           "shape":"Provider",
@@ -4056,6 +4733,26 @@
     "ErrorDetails":{
       "type":"list",
       "member":{"shape":"ErrorDetail"}
+    },
+    "EtcdPlacementRequest":{
+      "type":"structure",
+      "members":{
+        "spreadLevel":{
+          "shape":"SpreadLevel",
+          "documentation":"<p>Optional parameter to specify the placement group spread level for etcd instances. If not provided, Amazon EKS will deploy etcd instances without a placement group.</p>"
+        }
+      },
+      "documentation":"<p>The placement configuration for the etcd instances of your local Amazon EKS cluster on an Amazon Web Services Outpost. For more information, see <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/eks-outposts-capacity-considerations.html\">Capacity considerations</a> in the <i>Amazon EKS User Guide</i>.</p>"
+    },
+    "EtcdPlacementResponse":{
+      "type":"structure",
+      "members":{
+        "spreadLevel":{
+          "shape":"SpreadLevel",
+          "documentation":"<p>The spread level used with the placement group for etcd instances on your local Amazon EKS cluster on Amazon Web Services Outposts.</p>"
+        }
+      },
+      "documentation":"<p>The placement configuration for the etcd instances of your local Amazon EKS cluster on an Amazon Web Services Outpost. For more information, see <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/eks-outposts-capacity-considerations.html\">Capacity considerations</a> in the <i>Amazon EKS User Guide</i>.</p>"
     },
     "FargateProfile":{
       "type":"structure",
@@ -4182,6 +4879,36 @@
       "box":true,
       "max":100,
       "min":1
+    },
+    "HorizontalPodAutoscalerControllerConfigRequest":{
+      "type":"structure",
+      "members":{
+        "horizontalPodAutoscalerSyncPeriod":{
+          "shape":"String",
+          "documentation":"<p>The interval between each sync of the horizontal pod autoscaler. Valid values are single-unit durations such as <code>15s</code> or <code>1m</code>.</p>"
+        }
+      },
+      "documentation":"<p>The horizontal pod autoscaler controller configuration for the Kubernetes controller manager.</p>"
+    },
+    "HorizontalPodAutoscalerControllerConfigResponse":{
+      "type":"structure",
+      "members":{
+        "horizontalPodAutoscalerSyncPeriod":{
+          "shape":"String",
+          "documentation":"<p>The interval between each sync of the horizontal pod autoscaler.</p>"
+        }
+      },
+      "documentation":"<p>The horizontal pod autoscaler controller configuration for the Kubernetes controller manager.</p>"
+    },
+    "HorizontalPodAutoscalerControllerVersionConfig":{
+      "type":"structure",
+      "members":{
+        "horizontalPodAutoscalerSyncPeriod":{
+          "shape":"DurationParameterConfig",
+          "documentation":"<p>The HPA sync period configuration with default value and constraints.</p>"
+        }
+      },
+      "documentation":"<p>The horizontal pod autoscaler controller version configuration.</p>"
     },
     "Identity":{
       "type":"structure",
@@ -4415,6 +5142,48 @@
       ]
     },
     "Integer":{"type":"integer"},
+    "IntegerConstraints":{
+      "type":"structure",
+      "members":{
+        "min":{
+          "shape":"BoxedInteger",
+          "documentation":"<p>The minimum allowed value.</p>"
+        },
+        "max":{
+          "shape":"BoxedInteger",
+          "documentation":"<p>The maximum allowed value.</p>"
+        }
+      },
+      "documentation":"<p>Constraints for an integer parameter specifying allowed range.</p>"
+    },
+    "IntegerParameterConfig":{
+      "type":"structure",
+      "members":{
+        "defaultValue":{
+          "shape":"BoxedInteger",
+          "documentation":"<p>The default value for the integer parameter.</p>"
+        },
+        "constraints":{
+          "shape":"IntegerConstraints",
+          "documentation":"<p>The constraints for the integer parameter.</p>"
+        }
+      },
+      "documentation":"<p>An integer parameter configuration with default value and constraints.</p>"
+    },
+    "IntegerRangeConstraint":{
+      "type":"structure",
+      "members":{
+        "min":{
+          "shape":"BoxedInteger",
+          "documentation":"<p>The minimum allowed value.</p>"
+        },
+        "max":{
+          "shape":"BoxedInteger",
+          "documentation":"<p>The maximum allowed value.</p>"
+        }
+      },
+      "documentation":"<p>An integer range constraint specifying minimum and maximum allowed values.</p>"
+    },
     "InvalidParameterException":{
       "type":"structure",
       "members":{
@@ -4516,6 +5285,120 @@
     "IssueList":{
       "type":"list",
       "member":{"shape":"Issue"}
+    },
+    "KubeApiServerConfigRequest":{
+      "type":"structure",
+      "members":{
+        "eventTtl":{
+          "shape":"String",
+          "documentation":"<p>The duration that Kubernetes events are retained. Valid values are single-unit durations such as <code>30m</code> or <code>1h</code>.</p>"
+        },
+        "serviceNodePortRange":{
+          "shape":"ServiceNodePortRange",
+          "documentation":"<p>The port range for NodePort services.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for the Kubernetes API server on an Amazon EKS cluster.</p>"
+    },
+    "KubeApiServerConfigResponse":{
+      "type":"structure",
+      "members":{
+        "eventTtl":{
+          "shape":"String",
+          "documentation":"<p>The duration that Kubernetes events are retained.</p>"
+        },
+        "serviceNodePortRange":{
+          "shape":"ServiceNodePortRange",
+          "documentation":"<p>The port range for NodePort services.</p>"
+        }
+      },
+      "documentation":"<p>The Kubernetes API server configuration for an Amazon EKS cluster.</p>"
+    },
+    "KubeApiServerVersionConfig":{
+      "type":"structure",
+      "members":{
+        "eventTtl":{
+          "shape":"DurationParameterConfig",
+          "documentation":"<p>The event TTL configuration with default value and constraints.</p>"
+        },
+        "serviceNodePortRange":{
+          "shape":"PortRangeParameterConfig",
+          "documentation":"<p>The service node port range configuration with default value and constraints.</p>"
+        }
+      },
+      "documentation":"<p>The Kubernetes API server version-specific configuration defaults and constraints.</p>"
+    },
+    "KubeControllerManagerConfigRequest":{
+      "type":"structure",
+      "members":{
+        "podGcControllerConfig":{
+          "shape":"PodGcControllerConfigRequest",
+          "documentation":"<p>The pod garbage collection controller configuration.</p>"
+        },
+        "horizontalPodAutoscalerControllerConfig":{
+          "shape":"HorizontalPodAutoscalerControllerConfigRequest",
+          "documentation":"<p>The horizontal pod autoscaler controller configuration.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for the Kubernetes controller manager on an Amazon EKS cluster.</p>"
+    },
+    "KubeControllerManagerConfigResponse":{
+      "type":"structure",
+      "members":{
+        "podGcControllerConfig":{
+          "shape":"PodGcControllerConfigResponse",
+          "documentation":"<p>The pod garbage collection controller configuration.</p>"
+        },
+        "horizontalPodAutoscalerControllerConfig":{
+          "shape":"HorizontalPodAutoscalerControllerConfigResponse",
+          "documentation":"<p>The horizontal pod autoscaler controller configuration.</p>"
+        }
+      },
+      "documentation":"<p>The Kubernetes controller manager configuration for an Amazon EKS cluster.</p>"
+    },
+    "KubeControllerManagerVersionConfig":{
+      "type":"structure",
+      "members":{
+        "podGcControllerConfig":{
+          "shape":"PodGcControllerVersionConfig",
+          "documentation":"<p>The pod garbage collection controller configuration with default value and constraints.</p>"
+        },
+        "horizontalPodAutoscalerControllerConfig":{
+          "shape":"HorizontalPodAutoscalerControllerVersionConfig",
+          "documentation":"<p>The horizontal pod autoscaler controller configuration with default value and constraints.</p>"
+        }
+      },
+      "documentation":"<p>The Kubernetes controller manager version-specific configuration defaults and constraints.</p>"
+    },
+    "KubeSchedulerConfigRequest":{
+      "type":"structure",
+      "members":{
+        "nodeResourcesFit":{
+          "shape":"NodeResourcesFitConfig",
+          "documentation":"<p>The node resource fit scoring configuration for the scheduler.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for the Kubernetes scheduler on an Amazon EKS cluster.</p>"
+    },
+    "KubeSchedulerConfigResponse":{
+      "type":"structure",
+      "members":{
+        "nodeResourcesFit":{
+          "shape":"NodeResourcesFitConfig",
+          "documentation":"<p>The node resource fit scoring configuration for the scheduler.</p>"
+        }
+      },
+      "documentation":"<p>The Kubernetes scheduler configuration for an Amazon EKS cluster.</p>"
+    },
+    "KubeSchedulerVersionConfig":{
+      "type":"structure",
+      "members":{
+        "nodeResourcesFit":{
+          "shape":"NodeResourcesFitVersionConfig",
+          "documentation":"<p>The NodeResourcesFit configuration with default value and constraints.</p>"
+        }
+      },
+      "documentation":"<p>The Kubernetes scheduler version-specific configuration defaults and constraints.</p>"
     },
     "KubernetesNetworkConfigRequest":{
       "type":"structure",
@@ -4821,6 +5704,43 @@
         "nextToken":{
           "shape":"String",
           "documentation":"<p>The <code>nextToken</code> value to include in a future <code>ListCapabilities</code> request. When the results of a <code>ListCapabilities</code> request exceed <code>maxResults</code>, you can use this value to retrieve the next page of results. This value is null when there are no more results to return.</p>"
+        }
+      }
+    },
+    "ListCertificateAuthoritiesRequest":{
+      "type":"structure",
+      "required":["clusterName"],
+      "members":{
+        "clusterName":{
+          "shape":"String",
+          "documentation":"<p>The name of your cluster.</p>",
+          "location":"uri",
+          "locationName":"name"
+        },
+        "maxResults":{
+          "shape":"CertificateAuthorityMaxResults",
+          "documentation":"<p>The maximum number of results to return in a single call. To retrieve the remaining results, make another call with the returned <code>nextToken</code> value. If you don't specify a value, the default is 100 results.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>The <code>nextToken</code> value returned from a previous paginated request, where <code>maxResults</code> was used and the results exceeded the value of that parameter. Pagination continues from the end of the previous results that returned the <code>nextToken</code> value. This value is null when there are no more results to return.</p> <note> <p>This token should be treated as an opaque identifier that is used only to retrieve the next items in a list and not for other programmatic purposes.</p> </note>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListCertificateAuthoritiesResponse":{
+      "type":"structure",
+      "members":{
+        "certificateAuthorities":{
+          "shape":"CertificateAuthoritySummaryList",
+          "documentation":"<p>A list of certificate authority summary objects, each containing basic information about a certificate authority, including its ID, signing status, and distribution status.</p>"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>The <code>nextToken</code> value to include in a future <code>ListCertificateAuthorities</code> request. When the results of a <code>ListCertificateAuthorities</code> request exceed <code>maxResults</code>, you can use this value to retrieve the next page of results. This value is null when there are no more results to return.</p> <note> <p>This token should be treated as an opaque identifier that is used only to retrieve the next items in a list and not for other programmatic purposes.</p> </note>"
         }
       }
     },
@@ -5323,6 +6243,26 @@
       "type":"list",
       "member":{"shape":"NodeRepairConfigOverrides"}
     },
+    "NodeResourcesFitConfig":{
+      "type":"structure",
+      "members":{
+        "scoringStrategy":{
+          "shape":"ScoringStrategy",
+          "documentation":"<p>The scoring strategy used to rank nodes during scheduling.</p>"
+        }
+      },
+      "documentation":"<p>The NodeResourcesFit plugin configuration for the Kubernetes scheduler.</p>"
+    },
+    "NodeResourcesFitVersionConfig":{
+      "type":"structure",
+      "members":{
+        "scoringStrategy":{
+          "shape":"ScoringStrategyConfig",
+          "documentation":"<p>The scoring strategy configuration with default value and constraints.</p>"
+        }
+      },
+      "documentation":"<p>The NodeResourcesFit version configuration with default value and constraints.</p>"
+    },
     "Nodegroup":{
       "type":"structure",
       "members":{
@@ -5686,11 +6626,19 @@
         },
         "controlPlaneInstanceType":{
           "shape":"String",
-          "documentation":"<p>The Amazon EC2 instance type that you want to use for your local Amazon EKS cluster on Outposts. Choose an instance type based on the number of nodes that your cluster will have. For more information, see <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/eks-outposts-capacity-considerations.html\">Capacity considerations</a> in the <i>Amazon EKS User Guide</i>.</p> <p>The instance type that you specify is used for all Kubernetes control plane instances. The instance type can't be changed after cluster creation. The control plane is not automatically scaled by Amazon EKS.</p> <p> </p>"
+          "documentation":"<p>The Amazon EC2 instance type for the Kubernetes control plane instances of your local Amazon EKS cluster on Amazon Web Services Outposts. This instance type applies to all control plane instances and cannot be changed after cluster creation.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/eks-outposts-capacity-considerations.html\">Capacity considerations</a> in the <i>Amazon EKS User Guide</i>.</p> <p> </p>"
         },
         "controlPlanePlacement":{
           "shape":"ControlPlanePlacementRequest",
           "documentation":"<p>An object representing the placement configuration for all the control plane instances of your local Amazon EKS cluster on an Amazon Web Services Outpost. For more information, see <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/eks-outposts-capacity-considerations.html\">Capacity considerations</a> in the <i>Amazon EKS User Guide</i>.</p>"
+        },
+        "etcdInstanceType":{
+          "shape":"String",
+          "documentation":"<p>The Amazon EC2 instance type for etcd instances of your local Amazon EKS cluster on Amazon Web Services Outposts. This instance type applies to all etcd instances and cannot be changed after cluster creation.</p>"
+        },
+        "etcdPlacement":{
+          "shape":"EtcdPlacementRequest",
+          "documentation":"<p>An object representing the placement configuration for the etcd instances of your local Amazon EKS cluster on an Amazon Web Services Outpost. For more information, see <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/eks-outposts-capacity-considerations.html\">Capacity considerations</a> in the <i>Amazon EKS User Guide</i>.</p>"
         }
       },
       "documentation":"<p>The configuration of your local Amazon EKS cluster on an Amazon Web Services Outpost. Before creating a cluster on an Outpost, review <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/eks-outposts-local-cluster-create.html\">Creating a local cluster on an Outpost</a> in the <i>Amazon EKS User Guide</i>. This API isn't available for Amazon EKS clusters on the Amazon Web Services cloud.</p>"
@@ -5708,11 +6656,19 @@
         },
         "controlPlaneInstanceType":{
           "shape":"String",
-          "documentation":"<p>The Amazon EC2 instance type used for the control plane. The instance type is the same for all control plane instances.</p>"
+          "documentation":"<p>The Amazon EC2 instance type for the Kubernetes control plane instances of your local Amazon EKS cluster on Amazon Web Services Outposts. The instance type is the same for all control plane instances.</p>"
         },
         "controlPlanePlacement":{
           "shape":"ControlPlanePlacementResponse",
           "documentation":"<p>An object representing the placement configuration for all the control plane instances of your local Amazon EKS cluster on an Amazon Web Services Outpost. For more information, see <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/eks-outposts-capacity-considerations.html\">Capacity considerations</a> in the <i>Amazon EKS User Guide</i>.</p>"
+        },
+        "etcdInstanceType":{
+          "shape":"String",
+          "documentation":"<p>The Amazon EC2 instance type for etcd instances of your local Amazon EKS cluster on Amazon Web Services Outposts. The instance type is the same for all etcd instances.</p>"
+        },
+        "etcdPlacement":{
+          "shape":"EtcdPlacementResponse",
+          "documentation":"<p>An object representing the placement configuration for the etcd instances of your local Amazon EKS cluster on an Amazon Web Services Outpost. For more information, see <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/eks-outposts-capacity-considerations.html\">Capacity considerations</a> in the <i>Amazon EKS User Guide</i>.</p>"
         }
       },
       "documentation":"<p>An object representing the configuration of your local Amazon EKS cluster on an Amazon Web Services Outpost. This API isn't available for Amazon EKS clusters on the Amazon Web Services cloud.</p>"
@@ -5722,6 +6678,36 @@
       "box":true,
       "max":100,
       "min":1
+    },
+    "PodGcControllerConfigRequest":{
+      "type":"structure",
+      "members":{
+        "terminatedPodGcThreshold":{
+          "shape":"TerminatedPodGcThresholdValue",
+          "documentation":"<p>The number of terminated pods that can exist before the garbage collector starts deleting them.</p>"
+        }
+      },
+      "documentation":"<p>The pod garbage collection controller configuration for the Kubernetes controller manager.</p>"
+    },
+    "PodGcControllerConfigResponse":{
+      "type":"structure",
+      "members":{
+        "terminatedPodGcThreshold":{
+          "shape":"TerminatedPodGcThresholdValue",
+          "documentation":"<p>The number of terminated pods that can exist before the garbage collector starts deleting them.</p>"
+        }
+      },
+      "documentation":"<p>The pod garbage collection controller configuration for the Kubernetes controller manager.</p>"
+    },
+    "PodGcControllerVersionConfig":{
+      "type":"structure",
+      "members":{
+        "terminatedPodGcThreshold":{
+          "shape":"IntegerParameterConfig",
+          "documentation":"<p>The terminated pod garbage collection threshold configuration with default value and constraints.</p>"
+        }
+      },
+      "documentation":"<p>The pod garbage collection controller version configuration.</p>"
     },
     "PodIdentityAssociation":{
       "type":"structure",
@@ -5818,6 +6804,34 @@
         }
       },
       "documentation":"<p>The summarized description of the association.</p> <p>Each summary is simplified by removing these fields compared to the full <a href=\"https://docs.aws.amazon.com/eks/latest/APIReference/API_PodIdentityAssociation.html\"> <code>PodIdentityAssociation</code> </a>:</p> <ul> <li> <p>The IAM role: <code>roleArn</code> </p> </li> <li> <p>The timestamp that the association was created at: <code>createdAt</code> </p> </li> <li> <p>The most recent timestamp that the association was modified at:. <code>modifiedAt</code> </p> </li> <li> <p>The tags on the association: <code>tags</code> </p> </li> </ul>"
+    },
+    "PortRangeConstraints":{
+      "type":"structure",
+      "members":{
+        "minPort":{
+          "shape":"IntegerRangeConstraint",
+          "documentation":"<p>The constraints for the minimum port value.</p>"
+        },
+        "maxPort":{
+          "shape":"IntegerRangeConstraint",
+          "documentation":"<p>The constraints for the maximum port value.</p>"
+        }
+      },
+      "documentation":"<p>Constraints for a port range parameter.</p>"
+    },
+    "PortRangeParameterConfig":{
+      "type":"structure",
+      "members":{
+        "defaultValue":{
+          "shape":"ServiceNodePortRange",
+          "documentation":"<p>The default port range value.</p>"
+        },
+        "constraints":{
+          "shape":"PortRangeConstraints",
+          "documentation":"<p>The constraints for the port range parameter.</p>"
+        }
+      },
+      "documentation":"<p>A port range parameter configuration with default value and constraints.</p>"
     },
     "Provider":{
       "type":"structure",
@@ -5959,6 +6973,20 @@
         "PRESERVE"
       ]
     },
+    "ResourceConstraints":{
+      "type":"structure",
+      "members":{
+        "name":{
+          "shape":"AllowedValuesConstraint",
+          "documentation":"<p>The allowed values for resource names.</p>"
+        },
+        "weight":{
+          "shape":"IntegerRangeConstraint",
+          "documentation":"<p>The allowed range for resource weight values.</p>"
+        }
+      },
+      "documentation":"<p>Constraints for resource weight entries.</p>"
+    },
     "ResourceInUseException":{
       "type":"structure",
       "members":{
@@ -6051,10 +7079,103 @@
       "error":{"httpStatusCode":428},
       "exception":true
     },
+    "ResourceWeight":{
+      "type":"structure",
+      "members":{
+        "name":{
+          "shape":"ResourceWeightName",
+          "documentation":"<p>The name of the resource (for example, <code>cpu</code> or <code>memory</code>).</p>"
+        },
+        "weight":{
+          "shape":"ResourceWeightValue",
+          "documentation":"<p>The weight assigned to the resource for scoring. Must be between 1 and 100.</p>"
+        }
+      },
+      "documentation":"<p>A resource weight entry for the scheduler scoring strategy.</p>"
+    },
+    "ResourceWeightList":{
+      "type":"list",
+      "member":{"shape":"ResourceWeight"},
+      "documentation":"<p>A list of resource weights for the scoring strategy.</p>",
+      "max":100
+    },
+    "ResourceWeightName":{
+      "type":"string",
+      "documentation":"<p>The name of a resource used in the scheduler scoring strategy.</p>",
+      "max":253,
+      "min":1
+    },
+    "ResourceWeightValue":{
+      "type":"integer",
+      "documentation":"<p>The weight value for a resource in the scheduler scoring strategy. Must be between 1 and 100.</p>",
+      "box":true,
+      "max":100,
+      "min":1
+    },
     "RoleArn":{
       "type":"string",
       "max":255,
       "min":1
+    },
+    "RollbackConfig":{
+      "type":"structure",
+      "members":{
+        "timeoutMinutes":{
+          "shape":"BoxedInteger",
+          "documentation":"<p>The length of time in minutes to wait before cancelling the update. Timeout is a minimum-bound property, meaning the timeout occurs no sooner than the time you specify, but can occur shortly thereafter. This value can be between 120 (2 hours) and 10080 (7 days). Default: <code>720</code> (12 hours) if not specified.</p>"
+        }
+      },
+      "documentation":"<p>The rollback configuration for the cluster version rollback.</p>"
+    },
+    "ScoringStrategy":{
+      "type":"structure",
+      "members":{
+        "type":{
+          "shape":"ScoringStrategyType",
+          "documentation":"<p>The scoring strategy type. Valid values are <code>LeastAllocated</code> or <code>MostAllocated</code>.</p>"
+        },
+        "resources":{
+          "shape":"ResourceWeightList",
+          "documentation":"<p>The resource weights used for scoring nodes.</p>"
+        }
+      },
+      "documentation":"<p>The scoring strategy configuration for the NodeResourcesFit scheduler plugin.</p>"
+    },
+    "ScoringStrategyConfig":{
+      "type":"structure",
+      "members":{
+        "defaultValue":{
+          "shape":"ScoringStrategy",
+          "documentation":"<p>The default scoring strategy.</p>"
+        },
+        "constraints":{
+          "shape":"ScoringStrategyConstraints",
+          "documentation":"<p>The constraints for the scoring strategy.</p>"
+        }
+      },
+      "documentation":"<p>The scoring strategy configuration with default value and constraints.</p>"
+    },
+    "ScoringStrategyConstraints":{
+      "type":"structure",
+      "members":{
+        "scoringStrategy":{
+          "shape":"AllowedValuesConstraint",
+          "documentation":"<p>The allowed values for the scoring strategy type.</p>"
+        },
+        "resources":{
+          "shape":"ResourceConstraints",
+          "documentation":"<p>The constraints for resource weights.</p>"
+        }
+      },
+      "documentation":"<p>Constraints for the scoring strategy configuration.</p>"
+    },
+    "ScoringStrategyType":{
+      "type":"string",
+      "documentation":"<p>The scoring strategy type for the NodeResourcesFit scheduler plugin.</p>",
+      "enum":[
+        "LeastAllocated",
+        "MostAllocated"
+      ]
     },
     "ServerException":{
       "type":"structure",
@@ -6085,6 +7206,20 @@
       "exception":true,
       "fault":true
     },
+    "ServiceNodePortRange":{
+      "type":"structure",
+      "members":{
+        "minPort":{
+          "shape":"Integer",
+          "documentation":"<p>The minimum port number in the range.</p>"
+        },
+        "maxPort":{
+          "shape":"Integer",
+          "documentation":"<p>The maximum port number in the range.</p>"
+        }
+      },
+      "documentation":"<p>The port range for Kubernetes NodePort services.</p>"
+    },
     "ServiceUnavailableException":{
       "type":"structure",
       "members":{
@@ -6097,6 +7232,13 @@
       "error":{"httpStatusCode":503},
       "exception":true,
       "fault":true
+    },
+    "SpreadLevel":{
+      "type":"string",
+      "enum":[
+        "host",
+        "rack"
+      ]
     },
     "SsoIdentity":{
       "type":"structure",
@@ -6258,6 +7400,13 @@
         "PREFER_NO_SCHEDULE"
       ]
     },
+    "TerminatedPodGcThresholdValue":{
+      "type":"integer",
+      "documentation":"<p>The threshold for the number of terminated pods before garbage collection starts.</p>",
+      "box":true,
+      "max":1000000,
+      "min":1
+    },
     "ThrottlingException":{
       "type":"structure",
       "members":{
@@ -6347,6 +7496,10 @@
         "errors":{
           "shape":"ErrorDetails",
           "documentation":"<p>Any errors associated with a <code>Failed</code> update.</p>"
+        },
+        "cancellation":{
+          "shape":"Cancellation",
+          "documentation":"<p>The latest cancellation information for the update. This field is present only if any cancellation is attempted for the update.</p>"
         }
       },
       "documentation":"<p>An object representing an asynchronous update.</p>"
@@ -6403,6 +7556,20 @@
           "documentation":"<p>The ARN of the IAM principal for the <code>AccessEntry</code>.</p>"
         }
       }
+    },
+    "UpdateAckConfig":{
+      "type":"structure",
+      "members":{
+        "enableCrossNamespace":{
+          "shape":"BoxedBoolean",
+          "documentation":"<p>Specifies whether ACK controllers resolve resource references to resources in a different Kubernetes namespace. Set this value to <code>false</code> to require references to remain within the same namespace, or <code>true</code> to allow cross-namespace references. If you omit this field, the current value is unchanged.</p>"
+        },
+        "disabledServices":{
+          "shape":"AckDisabledServicesList",
+          "documentation":"<p>An updated list of ACK service names whose controllers are turned off for this capability. This list replaces the previous list instead of merging with it, so specify the complete set of services that you want turned off. If you omit this field, the previous list is unchanged. To turn all services back on, specify an empty list.</p>"
+        }
+      },
+      "documentation":"<p>Configuration updates for an ACK (Amazon Web Services Controllers for Kubernetes) capability. You only need to specify the fields that you want to update.</p>"
     },
     "UpdateAddonRequest":{
       "type":"structure",
@@ -6476,6 +7643,10 @@
         "argoCd":{
           "shape":"UpdateArgoCdConfig",
           "documentation":"<p>Configuration updates specific to Argo CD capabilities.</p>"
+        },
+        "ack":{
+          "shape":"UpdateAckConfig",
+          "documentation":"<p>Configuration updates specific to ACK (Amazon Web Services Controllers for Kubernetes) capabilities.</p>"
         }
       },
       "documentation":"<p>Configuration updates for a capability. The structure varies depending on the capability type.</p>"
@@ -6534,7 +7705,10 @@
           "location":"uri",
           "locationName":"name"
         },
-        "resourcesVpcConfig":{"shape":"VpcConfigRequest"},
+        "resourcesVpcConfig":{
+          "shape":"VpcConfigRequest",
+          "documentation":"<p>An object representing the VPC configuration to use for the cluster update. You can use this parameter to update the control plane egress mode, the subnets used by the cluster, the security groups, and the endpoint access settings.</p>"
+        },
         "logging":{
           "shape":"Logging",
           "documentation":"<p>Enable or disable exporting the Kubernetes control plane logs for your cluster to CloudWatch Logs . By default, cluster control plane logs aren't exported to CloudWatch Logs . For more information, see <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/control-plane-logs.html\">Amazon EKS cluster control plane logs</a> in the <i> <i>Amazon EKS User Guide</i> </i>.</p> <note> <p>CloudWatch Logs ingestion, archive storage, and data scanning rates apply to exported control plane logs. For more information, see <a href=\"http://aws.amazon.com/cloudwatch/pricing/\">CloudWatch Pricing</a>.</p> </note>"
@@ -6573,6 +7747,18 @@
         "controlPlaneScalingConfig":{
           "shape":"ControlPlaneScalingConfig",
           "documentation":"<p>The control plane scaling tier configuration. For more information, see EKS Provisioned Control Plane in the Amazon EKS User Guide.</p>"
+        },
+        "kubeApiServerConfig":{
+          "shape":"KubeApiServerConfigRequest",
+          "documentation":"<p>The Kubernetes API server configuration for the updated cluster.</p>"
+        },
+        "kubeSchedulerConfig":{
+          "shape":"KubeSchedulerConfigRequest",
+          "documentation":"<p>The Kubernetes scheduler configuration for the updated cluster.</p>"
+        },
+        "kubeControllerManagerConfig":{
+          "shape":"KubeControllerManagerConfigRequest",
+          "documentation":"<p>The Kubernetes controller manager configuration for the updated cluster.</p>"
         }
       }
     },
@@ -6606,7 +7792,11 @@
         },
         "force":{
           "shape":"Boolean",
-          "documentation":"<p>Set this value to <code>true</code> to override upgrade-blocking readiness checks when updating a cluster.</p>"
+          "documentation":"<p>Set this value to <code>true</code> to override upgrade-blocking or rollback-blocking readiness checks when updating a cluster.</p>"
+        },
+        "rollbackConfig":{
+          "shape":"RollbackConfig",
+          "documentation":"<p>The rollback configuration for the cluster version rollback.</p>"
         }
       }
     },
@@ -6825,14 +8015,28 @@
         "RemoteNetworkConfig",
         "DeletionProtection",
         "NodeRepairConfig",
+        "RoleArn",
+        "RoleMappingsToAddOrUpdate",
+        "RoleMappingsToRemove",
+        "NetworkAccess",
         "VendedLogs",
         "UpdatedTier",
         "PreviousTier",
+        "EnableCrossNamespace",
+        "DisabledServices",
         "WarmPoolEnabled",
         "WarmPoolMaxGroupPreparedCapacity",
         "WarmPoolMinSize",
         "WarmPoolState",
-        "WarmPoolReuseOnScaleIn"
+        "WarmPoolReuseOnScaleIn",
+        "ControlPlaneEgressMode",
+        "KubeApiServerConfig",
+        "KubeSchedulerConfig",
+        "KubeControllerManagerConfig",
+        "ActiveCertificateAuthority",
+        "TrustedCertificateAuthorities",
+        "CertificateAuthorityId",
+        "SigningStatus"
       ]
     },
     "UpdateParams":{
@@ -6945,8 +8149,13 @@
         "AutoModeUpdate",
         "RemoteNetworkConfigUpdate",
         "DeletionProtectionUpdate",
+        "CapabilityUpdate",
         "ControlPlaneScalingConfigUpdate",
-        "VendedLogsUpdate"
+        "VendedLogsUpdate",
+        "ControlPlaneEgressUpdate",
+        "VersionRollback",
+        "ControlPlaneComponentConfigUpdate",
+        "CertificateAuthorityUpdate"
       ]
     },
     "UpgradePolicyRequest":{
@@ -6999,6 +8208,10 @@
         "publicAccessCidrs":{
           "shape":"StringList",
           "documentation":"<p>The CIDR blocks that are allowed access to your cluster's public Kubernetes API server endpoint. Communication to the endpoint from addresses outside of the CIDR blocks that you specify is denied. The default value is <code>0.0.0.0/0</code> and additionally <code>::/0</code> for dual-stack `IPv6` clusters. If you've disabled private endpoint access, make sure that you specify the necessary CIDR blocks for every node and Fargate <code>Pod</code> in the cluster. For more information, see <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/cluster-endpoint.html\">Cluster API server endpoint</a> in the <i> <i>Amazon EKS User Guide</i> </i>.</p> <p>Note that the public endpoints are dual-stack for only <code>IPv6</code> clusters that are made after October 2024. You can't add <code>IPv6</code> CIDR blocks to <code>IPv4</code> clusters or <code>IPv6</code> clusters that were made before October 2024.</p>"
+        },
+        "controlPlaneEgressMode":{
+          "shape":"ControlPlaneEgressModeType",
+          "documentation":"<p>Specifies the control plane egress routing mode for the cluster. If the cluster is set to <code>AWS_MANAGED</code>, Amazon EKS manages the egress path from the control plane and you don't need to configure NAT gateways or other routing infrastructure for control plane traffic. If the cluster is set to <code>CUSTOMER_ROUTED</code>, you manage the egress path from the control plane in your VPC subnets. You are responsible for ensuring that the control plane can reach required endpoints such as webhook servers and OIDC providers. The default value is <code>AWS_MANAGED</code>. Once set to <code>CUSTOMER_ROUTED</code>, this setting cannot be changed back to <code>AWS_MANAGED</code> on the same cluster.</p> <p> <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/control-plane-egress.html\">Learn more about control plane egress routing in the <i>Amazon EKS User Guide</i>.</a> </p>"
         }
       },
       "documentation":"<p>An object representing the VPC configuration to use for an Amazon EKS cluster.</p>"
@@ -7033,6 +8246,10 @@
         "publicAccessCidrs":{
           "shape":"StringList",
           "documentation":"<p>The CIDR blocks that are allowed access to your cluster's public Kubernetes API server endpoint. Communication to the endpoint from addresses outside of the CIDR blocks that you specify is denied. The default value is <code>0.0.0.0/0</code> and additionally <code>::/0</code> for dual-stack `IPv6` clusters. If you've disabled private endpoint access, make sure that you specify the necessary CIDR blocks for every node and Fargate <code>Pod</code> in the cluster. For more information, see <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/cluster-endpoint.html\">Cluster API server endpoint</a> in the <i> <i>Amazon EKS User Guide</i> </i>.</p> <p>Note that the public endpoints are dual-stack for only <code>IPv6</code> clusters that are made after October 2024. You can't add <code>IPv6</code> CIDR blocks to <code>IPv4</code> clusters or <code>IPv6</code> clusters that were made before October 2024.</p>"
+        },
+        "controlPlaneEgressMode":{
+          "shape":"ControlPlaneEgressModeType",
+          "documentation":"<p>The current control plane egress routing mode for the cluster. If the cluster is set to <code>AWS_MANAGED</code>, Amazon EKS manages the egress path from the control plane. If the cluster is set to <code>CUSTOMER_ROUTED</code>, you manage the egress path from the control plane in your VPC subnets.</p> <p> <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/control-plane-egress.html\">Learn more about control plane egress routing in the <i>Amazon EKS User Guide</i>.</a> </p>"
         }
       },
       "documentation":"<p>An object representing an Amazon EKS cluster VPC configuration response.</p>"

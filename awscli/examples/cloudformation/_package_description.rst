@@ -54,3 +54,23 @@ command doesn't upload the artifacts. Use the ``--force-upload flag`` to skip th
 check and always upload the artifacts. The command uses MD5 checksums to compare
 files by default. If MD5 is not available in the environment, a SHA256 checksum is used.
 
+.. warning::
+
+   **Security considerations**
+
+   The ``package`` command treats the supplied CloudFormation template as
+   trusted build input. The properties listed above (for example,
+   ``CodeUri``, ``ContentUri``, ``TemplateURL``, and the ``Location`` parameter
+   for the ``AWS::Include`` transform) cause the CLI to read files from the
+   local filesystem at the paths the template specifies and upload them to the
+   S3 bucket you provide, using your own AWS credentials and operating-system
+   identity. Paths in the template are not constrained to the template's
+   directory; relative paths that traverse above the template directory (for
+   example, ``CodeUri: ../src/my-function``) are supported by design to enable
+   monorepo, shared-fragment, and nested-stack layouts.
+
+   Do not run ``aws cloudformation package`` against templates from sources
+   you do not trust. A malicious template author can cause arbitrary readable
+   files on your machine, such as credentials or other sensitive files, to be
+   uploaded to the configured S3 bucket.
+

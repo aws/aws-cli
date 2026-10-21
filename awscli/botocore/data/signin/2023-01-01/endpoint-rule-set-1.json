@@ -26,9 +26,1028 @@
             "required": false,
             "documentation": "The AWS region used to dispatch the request.",
             "type": "string"
+        },
+        "IsControlPlane": {
+            "required": false,
+            "documentation": "Indicates if the operation targets the control plane endpoint",
+            "type": "boolean"
+        },
+        "IsOAuthEndpoint": {
+            "required": false,
+            "documentation": "Indicates if the operation targets the OAuth token endpoint",
+            "type": "boolean"
         }
     },
     "rules": [
+        {
+            "conditions": [
+                {
+                    "fn": "isSet",
+                    "argv": [
+                        {
+                            "ref": "IsControlPlane"
+                        }
+                    ]
+                },
+                {
+                    "fn": "booleanEquals",
+                    "argv": [
+                        {
+                            "ref": "IsControlPlane"
+                        },
+                        true
+                    ]
+                },
+                {
+                    "fn": "isSet",
+                    "argv": [
+                        {
+                            "ref": "Region"
+                        }
+                    ]
+                },
+                {
+                    "fn": "aws.partition",
+                    "argv": [
+                        {
+                            "ref": "Region"
+                        }
+                    ],
+                    "assign": "PartitionResult"
+                }
+            ],
+            "rules": [
+                {
+                    "conditions": [
+                        {
+                            "fn": "stringEquals",
+                            "argv": [
+                                {
+                                    "fn": "getAttr",
+                                    "argv": [
+                                        {
+                                            "ref": "PartitionResult"
+                                        },
+                                        "name"
+                                    ]
+                                },
+                                "aws"
+                            ]
+                        }
+                    ],
+                    "endpoint": {
+                        "url": "https://signin.{Region}.api.aws",
+                        "properties": {
+                            "authSchemes": [
+                                {
+                                    "name": "sigv4",
+                                    "signingName": "signin",
+                                    "signingRegion": "{Region}"
+                                }
+                            ]
+                        },
+                        "headers": {}
+                    },
+                    "type": "endpoint"
+                },
+                {
+                    "conditions": [
+                        {
+                            "fn": "stringEquals",
+                            "argv": [
+                                {
+                                    "fn": "getAttr",
+                                    "argv": [
+                                        {
+                                            "ref": "PartitionResult"
+                                        },
+                                        "name"
+                                    ]
+                                },
+                                "aws-cn"
+                            ]
+                        }
+                    ],
+                    "endpoint": {
+                        "url": "https://signin.{Region}.api.amazonwebservices.com.cn",
+                        "properties": {
+                            "authSchemes": [
+                                {
+                                    "name": "sigv4",
+                                    "signingName": "signin",
+                                    "signingRegion": "{Region}"
+                                }
+                            ]
+                        },
+                        "headers": {}
+                    },
+                    "type": "endpoint"
+                },
+                {
+                    "conditions": [],
+                    "endpoint": {
+                        "url": "https://signin.{Region}.{PartitionResult#dualStackDnsSuffix}",
+                        "properties": {
+                            "authSchemes": [
+                                {
+                                    "name": "sigv4",
+                                    "signingName": "signin",
+                                    "signingRegion": "{Region}"
+                                }
+                            ]
+                        },
+                        "headers": {}
+                    },
+                    "type": "endpoint"
+                }
+            ],
+            "type": "tree"
+        },
+        {
+            "conditions": [
+                {
+                    "fn": "isSet",
+                    "argv": [
+                        {
+                            "ref": "IsOAuthEndpoint"
+                        }
+                    ]
+                },
+                {
+                    "fn": "booleanEquals",
+                    "argv": [
+                        {
+                            "ref": "IsOAuthEndpoint"
+                        },
+                        true
+                    ]
+                },
+                {
+                    "fn": "booleanEquals",
+                    "argv": [
+                        {
+                            "ref": "UseFIPS"
+                        },
+                        true
+                    ]
+                }
+            ],
+            "error": "FIPS endpoints are not supported for OAuth operations. Disable FIPS or use a non-OAuth operation.",
+            "type": "error"
+        },
+        {
+            "conditions": [
+                {
+                    "fn": "isSet",
+                    "argv": [
+                        {
+                            "ref": "IsOAuthEndpoint"
+                        }
+                    ]
+                },
+                {
+                    "fn": "booleanEquals",
+                    "argv": [
+                        {
+                            "ref": "IsOAuthEndpoint"
+                        },
+                        true
+                    ]
+                },
+                {
+                    "fn": "isSet",
+                    "argv": [
+                        {
+                            "ref": "Region"
+                        }
+                    ]
+                },
+                {
+                    "fn": "not",
+                    "argv": [
+                        {
+                            "fn": "isSet",
+                            "argv": [
+                                {
+                                    "ref": "Endpoint"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "fn": "aws.partition",
+                    "argv": [
+                        {
+                            "ref": "Region"
+                        }
+                    ],
+                    "assign": "PartitionResult"
+                },
+                {
+                    "fn": "stringEquals",
+                    "argv": [
+                        {
+                            "fn": "getAttr",
+                            "argv": [
+                                {
+                                    "ref": "PartitionResult"
+                                },
+                                "name"
+                            ]
+                        },
+                        "aws"
+                    ]
+                }
+            ],
+            "endpoint": {
+                "url": "https://{Region}.oauth.signin.aws",
+                "properties": {
+                    "authSchemes": [
+                        {
+                            "name": "sigv4",
+                            "signingName": "signin",
+                            "signingRegion": "{Region}"
+                        }
+                    ]
+                },
+                "headers": {}
+            },
+            "type": "endpoint"
+        },
+        {
+            "conditions": [
+                {
+                    "fn": "isSet",
+                    "argv": [
+                        {
+                            "ref": "Region"
+                        }
+                    ]
+                },
+                {
+                    "fn": "not",
+                    "argv": [
+                        {
+                            "fn": "isSet",
+                            "argv": [
+                                {
+                                    "ref": "Endpoint"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "fn": "booleanEquals",
+                    "argv": [
+                        {
+                            "ref": "UseFIPS"
+                        },
+                        false
+                    ]
+                },
+                {
+                    "fn": "booleanEquals",
+                    "argv": [
+                        {
+                            "ref": "UseDualStack"
+                        },
+                        false
+                    ]
+                },
+                {
+                    "fn": "aws.partition",
+                    "argv": [
+                        {
+                            "ref": "Region"
+                        }
+                    ],
+                    "assign": "PartitionResult"
+                },
+                {
+                    "fn": "stringEquals",
+                    "argv": [
+                        {
+                            "fn": "getAttr",
+                            "argv": [
+                                {
+                                    "ref": "PartitionResult"
+                                },
+                                "name"
+                            ]
+                        },
+                        "aws"
+                    ]
+                }
+            ],
+            "endpoint": {
+                "url": "https://{Region}.signin.aws.amazon.com",
+                "properties": {},
+                "headers": {}
+            },
+            "type": "endpoint"
+        },
+        {
+            "conditions": [
+                {
+                    "fn": "isSet",
+                    "argv": [
+                        {
+                            "ref": "Region"
+                        }
+                    ]
+                },
+                {
+                    "fn": "not",
+                    "argv": [
+                        {
+                            "fn": "isSet",
+                            "argv": [
+                                {
+                                    "ref": "Endpoint"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "fn": "booleanEquals",
+                    "argv": [
+                        {
+                            "ref": "UseFIPS"
+                        },
+                        false
+                    ]
+                },
+                {
+                    "fn": "booleanEquals",
+                    "argv": [
+                        {
+                            "ref": "UseDualStack"
+                        },
+                        false
+                    ]
+                },
+                {
+                    "fn": "aws.partition",
+                    "argv": [
+                        {
+                            "ref": "Region"
+                        }
+                    ],
+                    "assign": "PartitionResult"
+                },
+                {
+                    "fn": "stringEquals",
+                    "argv": [
+                        {
+                            "fn": "getAttr",
+                            "argv": [
+                                {
+                                    "ref": "PartitionResult"
+                                },
+                                "name"
+                            ]
+                        },
+                        "aws-cn"
+                    ]
+                }
+            ],
+            "endpoint": {
+                "url": "https://{Region}.signin.amazonaws.cn",
+                "properties": {},
+                "headers": {}
+            },
+            "type": "endpoint"
+        },
+        {
+            "conditions": [
+                {
+                    "fn": "isSet",
+                    "argv": [
+                        {
+                            "ref": "Region"
+                        }
+                    ]
+                },
+                {
+                    "fn": "not",
+                    "argv": [
+                        {
+                            "fn": "isSet",
+                            "argv": [
+                                {
+                                    "ref": "Endpoint"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "fn": "booleanEquals",
+                    "argv": [
+                        {
+                            "ref": "UseFIPS"
+                        },
+                        false
+                    ]
+                },
+                {
+                    "fn": "booleanEquals",
+                    "argv": [
+                        {
+                            "ref": "UseDualStack"
+                        },
+                        false
+                    ]
+                },
+                {
+                    "fn": "aws.partition",
+                    "argv": [
+                        {
+                            "ref": "Region"
+                        }
+                    ],
+                    "assign": "PartitionResult"
+                },
+                {
+                    "fn": "stringEquals",
+                    "argv": [
+                        {
+                            "fn": "getAttr",
+                            "argv": [
+                                {
+                                    "ref": "PartitionResult"
+                                },
+                                "name"
+                            ]
+                        },
+                        "aws-us-gov"
+                    ]
+                }
+            ],
+            "endpoint": {
+                "url": "https://{Region}.signin.amazonaws-us-gov.com",
+                "properties": {},
+                "headers": {}
+            },
+            "type": "endpoint"
+        },
+        {
+            "conditions": [
+                {
+                    "fn": "isSet",
+                    "argv": [
+                        {
+                            "ref": "Region"
+                        }
+                    ]
+                },
+                {
+                    "fn": "not",
+                    "argv": [
+                        {
+                            "fn": "isSet",
+                            "argv": [
+                                {
+                                    "ref": "Endpoint"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "fn": "booleanEquals",
+                    "argv": [
+                        {
+                            "ref": "UseFIPS"
+                        },
+                        false
+                    ]
+                },
+                {
+                    "fn": "booleanEquals",
+                    "argv": [
+                        {
+                            "ref": "UseDualStack"
+                        },
+                        false
+                    ]
+                },
+                {
+                    "fn": "aws.partition",
+                    "argv": [
+                        {
+                            "ref": "Region"
+                        }
+                    ],
+                    "assign": "PartitionResult"
+                },
+                {
+                    "fn": "stringEquals",
+                    "argv": [
+                        {
+                            "fn": "getAttr",
+                            "argv": [
+                                {
+                                    "ref": "PartitionResult"
+                                },
+                                "name"
+                            ]
+                        },
+                        "aws-iso"
+                    ]
+                }
+            ],
+            "endpoint": {
+                "url": "https://{Region}.signin.c2shome.ic.gov",
+                "properties": {},
+                "headers": {}
+            },
+            "type": "endpoint"
+        },
+        {
+            "conditions": [
+                {
+                    "fn": "isSet",
+                    "argv": [
+                        {
+                            "ref": "Region"
+                        }
+                    ]
+                },
+                {
+                    "fn": "not",
+                    "argv": [
+                        {
+                            "fn": "isSet",
+                            "argv": [
+                                {
+                                    "ref": "Endpoint"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "fn": "booleanEquals",
+                    "argv": [
+                        {
+                            "ref": "UseFIPS"
+                        },
+                        false
+                    ]
+                },
+                {
+                    "fn": "booleanEquals",
+                    "argv": [
+                        {
+                            "ref": "UseDualStack"
+                        },
+                        false
+                    ]
+                },
+                {
+                    "fn": "aws.partition",
+                    "argv": [
+                        {
+                            "ref": "Region"
+                        }
+                    ],
+                    "assign": "PartitionResult"
+                },
+                {
+                    "fn": "stringEquals",
+                    "argv": [
+                        {
+                            "fn": "getAttr",
+                            "argv": [
+                                {
+                                    "ref": "PartitionResult"
+                                },
+                                "name"
+                            ]
+                        },
+                        "aws-iso-b"
+                    ]
+                }
+            ],
+            "endpoint": {
+                "url": "https://{Region}.signin.sc2shome.sgov.gov",
+                "properties": {},
+                "headers": {}
+            },
+            "type": "endpoint"
+        },
+        {
+            "conditions": [
+                {
+                    "fn": "isSet",
+                    "argv": [
+                        {
+                            "ref": "Region"
+                        }
+                    ]
+                },
+                {
+                    "fn": "not",
+                    "argv": [
+                        {
+                            "fn": "isSet",
+                            "argv": [
+                                {
+                                    "ref": "Endpoint"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "fn": "booleanEquals",
+                    "argv": [
+                        {
+                            "ref": "UseFIPS"
+                        },
+                        false
+                    ]
+                },
+                {
+                    "fn": "booleanEquals",
+                    "argv": [
+                        {
+                            "ref": "UseDualStack"
+                        },
+                        false
+                    ]
+                },
+                {
+                    "fn": "aws.partition",
+                    "argv": [
+                        {
+                            "ref": "Region"
+                        }
+                    ],
+                    "assign": "PartitionResult"
+                },
+                {
+                    "fn": "stringEquals",
+                    "argv": [
+                        {
+                            "fn": "getAttr",
+                            "argv": [
+                                {
+                                    "ref": "PartitionResult"
+                                },
+                                "name"
+                            ]
+                        },
+                        "aws-iso-f"
+                    ]
+                }
+            ],
+            "endpoint": {
+                "url": "https://{Region}.signin.csphome.hci.ic.gov",
+                "properties": {},
+                "headers": {}
+            },
+            "type": "endpoint"
+        },
+        {
+            "conditions": [
+                {
+                    "fn": "isSet",
+                    "argv": [
+                        {
+                            "ref": "Region"
+                        }
+                    ]
+                },
+                {
+                    "fn": "not",
+                    "argv": [
+                        {
+                            "fn": "isSet",
+                            "argv": [
+                                {
+                                    "ref": "Endpoint"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "fn": "booleanEquals",
+                    "argv": [
+                        {
+                            "ref": "UseFIPS"
+                        },
+                        false
+                    ]
+                },
+                {
+                    "fn": "booleanEquals",
+                    "argv": [
+                        {
+                            "ref": "UseDualStack"
+                        },
+                        false
+                    ]
+                },
+                {
+                    "fn": "aws.partition",
+                    "argv": [
+                        {
+                            "ref": "Region"
+                        }
+                    ],
+                    "assign": "PartitionResult"
+                },
+                {
+                    "fn": "stringEquals",
+                    "argv": [
+                        {
+                            "fn": "getAttr",
+                            "argv": [
+                                {
+                                    "ref": "PartitionResult"
+                                },
+                                "name"
+                            ]
+                        },
+                        "aws-iso-e"
+                    ]
+                }
+            ],
+            "endpoint": {
+                "url": "https://{Region}.signin.csphome.adc-e.uk",
+                "properties": {},
+                "headers": {}
+            },
+            "type": "endpoint"
+        },
+        {
+            "conditions": [
+                {
+                    "fn": "isSet",
+                    "argv": [
+                        {
+                            "ref": "Region"
+                        }
+                    ]
+                },
+                {
+                    "fn": "not",
+                    "argv": [
+                        {
+                            "fn": "isSet",
+                            "argv": [
+                                {
+                                    "ref": "Endpoint"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "fn": "booleanEquals",
+                    "argv": [
+                        {
+                            "ref": "UseFIPS"
+                        },
+                        false
+                    ]
+                },
+                {
+                    "fn": "booleanEquals",
+                    "argv": [
+                        {
+                            "ref": "UseDualStack"
+                        },
+                        false
+                    ]
+                },
+                {
+                    "fn": "aws.partition",
+                    "argv": [
+                        {
+                            "ref": "Region"
+                        }
+                    ],
+                    "assign": "PartitionResult"
+                },
+                {
+                    "fn": "stringEquals",
+                    "argv": [
+                        {
+                            "fn": "getAttr",
+                            "argv": [
+                                {
+                                    "ref": "PartitionResult"
+                                },
+                                "name"
+                            ]
+                        },
+                        "aws-eusc"
+                    ]
+                }
+            ],
+            "endpoint": {
+                "url": "https://{Region}.signin.amazonaws-eusc.eu",
+                "properties": {},
+                "headers": {}
+            },
+            "type": "endpoint"
+        },
+        {
+            "conditions": [
+                {
+                    "fn": "isSet",
+                    "argv": [
+                        {
+                            "ref": "Region"
+                        }
+                    ]
+                },
+                {
+                    "fn": "not",
+                    "argv": [
+                        {
+                            "fn": "isSet",
+                            "argv": [
+                                {
+                                    "ref": "Endpoint"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "fn": "booleanEquals",
+                    "argv": [
+                        {
+                            "ref": "UseFIPS"
+                        },
+                        true
+                    ]
+                },
+                {
+                    "fn": "booleanEquals",
+                    "argv": [
+                        {
+                            "ref": "UseDualStack"
+                        },
+                        false
+                    ]
+                },
+                {
+                    "fn": "stringEquals",
+                    "argv": [
+                        {
+                            "ref": "Region"
+                        },
+                        "us-gov-west-1"
+                    ]
+                }
+            ],
+            "endpoint": {
+                "url": "https://signin-fips.amazonaws-us-gov.com",
+                "properties": {},
+                "headers": {}
+            },
+            "type": "endpoint"
+        },
+        {
+            "conditions": [
+                {
+                    "fn": "isSet",
+                    "argv": [
+                        {
+                            "ref": "Region"
+                        }
+                    ]
+                },
+                {
+                    "fn": "not",
+                    "argv": [
+                        {
+                            "fn": "isSet",
+                            "argv": [
+                                {
+                                    "ref": "Endpoint"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "fn": "booleanEquals",
+                    "argv": [
+                        {
+                            "ref": "UseFIPS"
+                        },
+                        true
+                    ]
+                },
+                {
+                    "fn": "booleanEquals",
+                    "argv": [
+                        {
+                            "ref": "UseDualStack"
+                        },
+                        false
+                    ]
+                },
+                {
+                    "fn": "aws.partition",
+                    "argv": [
+                        {
+                            "ref": "Region"
+                        }
+                    ],
+                    "assign": "PartitionResult"
+                },
+                {
+                    "fn": "stringEquals",
+                    "argv": [
+                        {
+                            "fn": "getAttr",
+                            "argv": [
+                                {
+                                    "ref": "PartitionResult"
+                                },
+                                "name"
+                            ]
+                        },
+                        "aws-us-gov"
+                    ]
+                }
+            ],
+            "endpoint": {
+                "url": "https://{Region}.signin-fips.amazonaws-us-gov.com",
+                "properties": {},
+                "headers": {}
+            },
+            "type": "endpoint"
+        },
+        {
+            "conditions": [
+                {
+                    "fn": "isSet",
+                    "argv": [
+                        {
+                            "ref": "Region"
+                        }
+                    ]
+                },
+                {
+                    "fn": "not",
+                    "argv": [
+                        {
+                            "fn": "isSet",
+                            "argv": [
+                                {
+                                    "ref": "Endpoint"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "fn": "booleanEquals",
+                    "argv": [
+                        {
+                            "ref": "UseFIPS"
+                        },
+                        false
+                    ]
+                },
+                {
+                    "fn": "booleanEquals",
+                    "argv": [
+                        {
+                            "ref": "UseDualStack"
+                        },
+                        false
+                    ]
+                },
+                {
+                    "fn": "aws.partition",
+                    "argv": [
+                        {
+                            "ref": "Region"
+                        }
+                    ],
+                    "assign": "PartitionResult"
+                }
+            ],
+            "endpoint": {
+                "url": "https://{Region}.signin.{PartitionResult#dnsSuffix}",
+                "properties": {},
+                "headers": {}
+            },
+            "type": "endpoint"
+        },
         {
             "conditions": [
                 {

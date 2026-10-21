@@ -66,6 +66,23 @@
       ],
       "documentation":"<p>Deletes a resource-based policy on an entity that is identified by its resource ARN.</p>"
     },
+    "DescribeAssessment":{
+      "name":"DescribeAssessment",
+      "http":{
+        "method":"POST",
+        "requestUri":"/DescribeAssessment"
+      },
+      "input":{"shape":"DescribeAssessmentRequest"},
+      "output":{"shape":"DescribeAssessmentResponse"},
+      "errors":[
+        {"shape":"InternalServiceException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Returns the metadata and detailed results of a single assessment, including the framework that was evaluated, the overall assessment result, and a paginated list of individual control evaluation results.</p> <p>To list available assessments before describing one, use the <code>ListAssessments</code> action.</p>"
+    },
     "DescribeChangeSet":{
       "name":"DescribeChangeSet",
       "http":{
@@ -117,6 +134,22 @@
         {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Gets a resource-based policy of an entity that is identified by its resource ARN.</p>"
+    },
+    "ListAssessments":{
+      "name":"ListAssessments",
+      "http":{
+        "method":"POST",
+        "requestUri":"/ListAssessments"
+      },
+      "input":{"shape":"ListAssessmentsRequest"},
+      "output":{"shape":"ListAssessmentsResponse"},
+      "errors":[
+        {"shape":"InternalServiceException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Returns a paginated list of assessments associated with an entity or change set in AWS Marketplace. An <i>assessment</i> is the result of evaluating a product or change set against a framework, such as AMI Security or Container Security.</p> <p>Use the <code>AssessmentTargetFilter</code> to scope results to a specific entity or change set, and use <code>FrameworkFilters</code> to scope results to a single framework. To retrieve detailed control-level results for an individual assessment, use the <code>DescribeAssessment</code> action.</p> <p>Results are sorted by assessment creation time in descending order.</p>"
     },
     "ListChangeSets":{
       "name":"ListChangeSets",
@@ -240,6 +273,26 @@
     }
   },
   "shapes":{
+    "AMISecurityFilters":{
+      "type":"structure",
+      "members":{
+        "DeliveryOptionId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique ID of the delivery option whose AMI Security assessments you want to list.</p>"
+        }
+      },
+      "documentation":"<p>Filters that apply to assessments performed against the AMI Security framework.</p>"
+    },
+    "AMISecuritySummary":{
+      "type":"structure",
+      "members":{
+        "DeliveryOptionId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique ID of the delivery option that was evaluated.</p>"
+        }
+      },
+      "documentation":"<p>The details of the resource assessed under the AMI Security framework.</p>"
+    },
     "ARN":{
       "type":"string",
       "max":2048,
@@ -411,6 +464,89 @@
         "Restricted",
         "Draft"
       ]
+    },
+    "AssessmentIdentifier":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "pattern":"^(assessment-[a-zA-Z0-9]+|arn:[a-zA-Z0-9-]+:[a-zA-Z0-9-]+:[a-zA-Z0-9-]*:[0-9]*:[a-zA-Z0-9-]+/Assessment/assessment-[a-zA-Z0-9]+)$"
+    },
+    "AssessmentResult":{
+      "type":"string",
+      "enum":[
+        "PASS",
+        "FAIL"
+      ]
+    },
+    "AssessmentSummary":{
+      "type":"structure",
+      "members":{
+        "AssessmentArn":{
+          "shape":"ARN",
+          "documentation":"<p>The ARN associated with the assessment.</p>"
+        },
+        "AssessmentId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique ID of the assessment.</p>"
+        },
+        "FrameworkId":{
+          "shape":"VersionedFrameworkId",
+          "documentation":"<p>The identifier of the framework that was evaluated by this assessment, in the format <code>frameworkId@version</code> (for example, <code>AMISecurity@1.0</code>).</p>"
+        },
+        "AssessmentTargetSummary":{
+          "shape":"AssessmentTargetSummary",
+          "documentation":"<p>Identifies the entity or change set that was assessed.</p>"
+        },
+        "FrameworkSummary":{
+          "shape":"FrameworkSummary",
+          "documentation":"<p>The framework-specific details of the assessed resource. The set member corresponds to the framework identified by <code>FrameworkId</code>.</p>"
+        },
+        "AssessmentResult":{
+          "shape":"AssessmentResult",
+          "documentation":"<p>The overall result of the assessment.</p>"
+        },
+        "CreatedAt":{
+          "shape":"DateTimeISO8601",
+          "documentation":"<p>The date and time the assessment was created, in ISO 8601 format (<code>2018-02-27T13:45:22Z</code>).</p>"
+        },
+        "ExpiresAt":{
+          "shape":"DateTimeISO8601",
+          "documentation":"<p>The date and time the assessment expires, in ISO 8601 format (<code>2018-02-27T13:45:22Z</code>).</p>"
+        }
+      },
+      "documentation":"<p>Summarized information about an assessment.</p>"
+    },
+    "AssessmentSummaryList":{
+      "type":"list",
+      "member":{"shape":"AssessmentSummary"}
+    },
+    "AssessmentTargetFilter":{
+      "type":"structure",
+      "members":{
+        "EntityId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique ID of the entity whose assessments you want to list.</p>"
+        },
+        "ChangeSetId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique ID of the change set that triggered the assessments you want to list.</p>"
+        }
+      },
+      "documentation":"<p>Filters assessment list results by the resource that was assessed. Provide an entity identifier, a change set identifier, or both.</p>"
+    },
+    "AssessmentTargetSummary":{
+      "type":"structure",
+      "members":{
+        "EntityId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique ID of the entity that was assessed.</p>"
+        },
+        "ChangeSetId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique ID of the change set that was assessed.</p>"
+        }
+      },
+      "documentation":"<p>Identifies the entity or change set that was assessed.</p>"
     },
     "BatchDescribeEntitiesRequest":{
       "type":"structure",
@@ -802,6 +938,79 @@
         "Draft"
       ]
     },
+    "ContainerSecurityFilters":{
+      "type":"structure",
+      "members":{
+        "DeliveryOptionId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique ID of the delivery option whose Container Security assessments you want to list.</p>"
+        }
+      },
+      "documentation":"<p>Filters that apply to assessments performed against the Container Security framework.</p>"
+    },
+    "ContainerSecuritySummary":{
+      "type":"structure",
+      "members":{
+        "DeliveryOptionId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique ID of the delivery option that was evaluated.</p>"
+        }
+      },
+      "documentation":"<p>The details of the resource assessed under the Container Security framework.</p>"
+    },
+    "ControlAssessment":{
+      "type":"structure",
+      "members":{
+        "ControlId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique ID of the control that was evaluated.</p>"
+        },
+        "ControlAssessmentResult":{
+          "shape":"ControlAssessmentResult",
+          "documentation":"<p>The result of the control evaluation.</p>"
+        },
+        "Errors":{
+          "shape":"ControlErrorList",
+          "documentation":"<p>An array of <code>ControlError</code> objects associated with the control evaluation.</p>"
+        }
+      },
+      "documentation":"<p>The result of evaluating a single control as part of an assessment.</p>"
+    },
+    "ControlAssessmentList":{
+      "type":"list",
+      "member":{"shape":"ControlAssessment"}
+    },
+    "ControlAssessmentResult":{
+      "type":"string",
+      "enum":[
+        "PASS",
+        "FAIL",
+        "NOT_EXECUTED",
+        "EXEMPTION_PASS"
+      ]
+    },
+    "ControlError":{
+      "type":"structure",
+      "members":{
+        "Code":{
+          "shape":"ErrorCode",
+          "documentation":"<p>The error code that identifies the type of error.</p>"
+        },
+        "Message":{
+          "shape":"ErrorMessage",
+          "documentation":"<p>The message for the error.</p>"
+        },
+        "Scope":{
+          "shape":"ErrorScopeList",
+          "documentation":"<p>The list of name-value pairs that identify the resource or attribute that the error applies to.</p>"
+        }
+      },
+      "documentation":"<p>An error reported during the evaluation of a single control.</p>"
+    },
+    "ControlErrorList":{
+      "type":"list",
+      "member":{"shape":"ControlError"}
+    },
     "DataProductEntityIdFilter":{
       "type":"structure",
       "members":{
@@ -980,6 +1189,82 @@
     "DeleteResourcePolicyResponse":{
       "type":"structure",
       "members":{}
+    },
+    "DescribeAssessmentMaxResultInteger":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "DescribeAssessmentRequest":{
+      "type":"structure",
+      "required":[
+        "Catalog",
+        "AssessmentIdentifier"
+      ],
+      "members":{
+        "Catalog":{
+          "shape":"Catalog",
+          "documentation":"<p>The catalog related to the request. Fixed value: <code>AWSMarketplace</code> </p>"
+        },
+        "AssessmentIdentifier":{
+          "shape":"AssessmentIdentifier",
+          "documentation":"<p>The unique identifier of the assessment to describe. You can provide either the assessment ID (for example, <code>assessment-12345</code>) or the full assessment ARN (for example, <code>arn:aws:aws-marketplace:us-east-1::AWSMarketplace/Assessment/assessment-12345</code>).</p>"
+        },
+        "MaxResults":{
+          "shape":"DescribeAssessmentMaxResultInteger",
+          "documentation":"<p>Specifies the upper limit of <code>ControlAssessment</code> elements returned on a single page. If a value isn't provided, the default value is 50. Valid values range from 1 to 100.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The value of the next token, if it exists. <code>null</code> if there are no more results.</p>"
+        }
+      }
+    },
+    "DescribeAssessmentResponse":{
+      "type":"structure",
+      "members":{
+        "AssessmentArn":{
+          "shape":"ARN",
+          "documentation":"<p>The ARN associated with the assessment.</p>"
+        },
+        "AssessmentId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique ID of the assessment.</p>"
+        },
+        "FrameworkId":{
+          "shape":"VersionedFrameworkId",
+          "documentation":"<p>The identifier of the framework that was evaluated by this assessment, in the format <code>frameworkId@version</code> (for example, <code>AMISecurity@1.0</code>).</p>"
+        },
+        "AssessmentTargetSummary":{
+          "shape":"AssessmentTargetSummary",
+          "documentation":"<p>Identifies the entity or change set that was assessed.</p>"
+        },
+        "FrameworkSummary":{
+          "shape":"FrameworkSummary",
+          "documentation":"<p>The framework-specific details of the assessed resource. The set member corresponds to the framework identified by <code>FrameworkId</code>.</p>"
+        },
+        "AssessmentResult":{
+          "shape":"AssessmentResult",
+          "documentation":"<p>The overall result of the assessment.</p>"
+        },
+        "CreatedAt":{
+          "shape":"DateTimeISO8601",
+          "documentation":"<p>The date and time the assessment was created, in ISO 8601 format (<code>2018-02-27T13:45:22Z</code>).</p>"
+        },
+        "ExpiresAt":{
+          "shape":"DateTimeISO8601",
+          "documentation":"<p>The date and time the assessment expires, in ISO 8601 format (<code>2018-02-27T13:45:22Z</code>).</p>"
+        },
+        "ControlAssessments":{
+          "shape":"ControlAssessmentList",
+          "documentation":"<p>An array of <code>ControlAssessment</code> objects, each containing the result of an individual control evaluated as part of the assessment.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The value of the next token, if it exists. <code>null</code> if there are no more results.</p>"
+        }
+      }
     },
     "DescribeChangeSetRequest":{
       "type":"structure",
@@ -1234,6 +1519,10 @@
         "OfferSetSummary":{
           "shape":"OfferSetSummary",
           "documentation":"<p>An object that contains summary information about the offer set.</p>"
+        },
+        "ExpressPrivateOfferConfigurationSummary":{
+          "shape":"ExpressPrivateOfferConfigurationSummary",
+          "documentation":"<p>An object that contains summary information about the express private offer configuration.</p>"
         }
       },
       "documentation":"<p>This object is a container for common summary information about the entity. The summary doesn't contain the whole entity structure, but it does contain information common across all entities.</p>"
@@ -1279,6 +1568,10 @@
         "OfferSetFilters":{
           "shape":"OfferSetFilters",
           "documentation":"<p>A filter for offer sets.</p>"
+        },
+        "ExpressPrivateOfferConfigurationFilters":{
+          "shape":"ExpressPrivateOfferConfigurationFilters",
+          "documentation":"<p>A filter for express private offer configurations.</p>"
         }
       },
       "documentation":"<p>Object containing all the filter fields per entity type.</p>",
@@ -1315,10 +1608,20 @@
         "OfferSetSort":{
           "shape":"OfferSetSort",
           "documentation":"<p>A sort for offer sets.</p>"
+        },
+        "ExpressPrivateOfferConfigurationSort":{
+          "shape":"ExpressPrivateOfferConfigurationSort",
+          "documentation":"<p>A sort for express private offer configurations.</p>"
         }
       },
       "documentation":"<p>Object containing all the sort fields per entity type.</p>",
       "union":true
+    },
+    "ErrorCode":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"^[A-Z_]+$"
     },
     "ErrorCodeString":{
       "type":"string",
@@ -1344,6 +1647,29 @@
       "type":"list",
       "member":{"shape":"ErrorDetail"}
     },
+    "ErrorMessage":{
+      "type":"string",
+      "max":2048,
+      "min":1
+    },
+    "ErrorScope":{
+      "type":"structure",
+      "members":{
+        "Name":{
+          "shape":"ScopeName",
+          "documentation":"<p>The name of the resource field the error applies to (for example, <code>AMI_ID</code>, <code>FILE_PATH</code>, or <code>PACKAGE_NAME</code>).</p>"
+        },
+        "Value":{
+          "shape":"ScopeValue",
+          "documentation":"<p>The value of the resource field the error applies to.</p>"
+        }
+      },
+      "documentation":"<p>A name-value pair that identifies the resource or attribute that a <code>ControlError</code> applies to.</p>"
+    },
+    "ErrorScopeList":{
+      "type":"list",
+      "member":{"shape":"ErrorScope"}
+    },
     "Errors":{
       "type":"map",
       "key":{"shape":"EntityId"},
@@ -1355,12 +1681,140 @@
       "min":1,
       "pattern":"^(.)+$"
     },
+    "ExpressPrivateOfferConfigurationEntityIdFilter":{
+      "type":"structure",
+      "members":{
+        "ValueList":{
+          "shape":"ExpressPrivateOfferConfigurationEntityIdFilterValueList",
+          "documentation":"<p>A list of <code>EntityId</code> values to filter on.</p>"
+        }
+      },
+      "documentation":"<p>The filter for the <code>EntityId</code> of an express private offer configuration.</p>"
+    },
+    "ExpressPrivateOfferConfigurationEntityIdFilterValueList":{
+      "type":"list",
+      "member":{"shape":"ExpressPrivateOfferConfigurationEntityIdString"},
+      "max":10,
+      "min":1
+    },
+    "ExpressPrivateOfferConfigurationEntityIdString":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"^[a-zA-Z0-9][.a-zA-Z0-9/-]+[a-zA-Z0-9]$"
+    },
+    "ExpressPrivateOfferConfigurationFilters":{
+      "type":"structure",
+      "members":{
+        "EntityId":{
+          "shape":"ExpressPrivateOfferConfigurationEntityIdFilter",
+          "documentation":"<p>You can filter on the <code>EntityId</code> of an express private offer configuration.</p>"
+        },
+        "ProductId":{
+          "shape":"ExpressPrivateOfferConfigurationProductIdFilter",
+          "documentation":"<p>You can filter on the <code>ProductId</code> of an express private offer configuration.</p>"
+        },
+        "State":{
+          "shape":"ExpressPrivateOfferConfigurationStateFilter",
+          "documentation":"<p>The state of the express private offer configuration to filter on. Valid values are the following:</p> <ul> <li> <p> <code>ACTIVE</code> – The configuration is active and you can use it to generate offers.</p> </li> <li> <p> <code>INACTIVE</code> – The configuration is deprecated or deleted.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>The filter fields for the express private offer configuration entity.</p>"
+    },
+    "ExpressPrivateOfferConfigurationProductIdFilter":{
+      "type":"structure",
+      "members":{
+        "ValueList":{
+          "shape":"ExpressPrivateOfferConfigurationProductIdFilterValueList",
+          "documentation":"<p>A list of <code>ProductId</code> values to filter on.</p>"
+        }
+      },
+      "documentation":"<p>The filter for the <code>ProductId</code> of an express private offer configuration.</p>"
+    },
+    "ExpressPrivateOfferConfigurationProductIdFilterValueList":{
+      "type":"list",
+      "member":{"shape":"ExpressPrivateOfferConfigurationProductIdString"},
+      "max":10,
+      "min":1
+    },
+    "ExpressPrivateOfferConfigurationProductIdString":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"^[a-zA-Z0-9][.a-zA-Z0-9/-]+[a-zA-Z0-9]$"
+    },
+    "ExpressPrivateOfferConfigurationSort":{
+      "type":"structure",
+      "members":{
+        "SortBy":{
+          "shape":"ExpressPrivateOfferConfigurationSortBy",
+          "documentation":"<p>The field to sort by. Valid values are <code>EntityId</code>, <code>LastModifiedDate</code>, <code>ProductId</code>, and <code>State</code>.</p>"
+        },
+        "SortOrder":{
+          "shape":"SortOrder",
+          "documentation":"<p>The sorting order. Valid values are <code>ASCENDING</code> and <code>DESCENDING</code>.</p>"
+        }
+      },
+      "documentation":"<p>The sort fields for express private offer configurations.</p>"
+    },
+    "ExpressPrivateOfferConfigurationSortBy":{
+      "type":"string",
+      "enum":[
+        "EntityId",
+        "LastModifiedDate",
+        "ProductId",
+        "State"
+      ]
+    },
+    "ExpressPrivateOfferConfigurationStateFilter":{
+      "type":"structure",
+      "members":{
+        "ValueList":{
+          "shape":"ExpressPrivateOfferConfigurationStateFilterValueList",
+          "documentation":"<p>A list of <code>State</code> values to filter on. Valid values are <code>ACTIVE</code> and <code>INACTIVE</code>.</p>"
+        }
+      },
+      "documentation":"<p>The filter for the <code>State</code> of an express private offer configuration.</p>"
+    },
+    "ExpressPrivateOfferConfigurationStateFilterValueList":{
+      "type":"list",
+      "member":{"shape":"ExpressPrivateOfferConfigurationStateString"},
+      "max":10,
+      "min":1
+    },
+    "ExpressPrivateOfferConfigurationStateString":{
+      "type":"string",
+      "enum":[
+        "ACTIVE",
+        "INACTIVE"
+      ]
+    },
+    "ExpressPrivateOfferConfigurationSummary":{
+      "type":"structure",
+      "members":{
+        "ProductId":{
+          "shape":"ExpressPrivateOfferConfigurationProductIdString",
+          "documentation":"<p>The product ID associated with the express private offer configuration.</p>"
+        },
+        "State":{
+          "shape":"ExpressPrivateOfferConfigurationStateString",
+          "documentation":"<p>The state of the express private offer configuration. Valid values are the following:</p> <ul> <li> <p> <code>ACTIVE</code> – The configuration is active and you can use it to generate offers.</p> </li> <li> <p> <code>INACTIVE</code> – The configuration is deprecated or deleted.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>Summarized information about an express private offer configuration.</p>"
+    },
     "FailureCode":{
       "type":"string",
       "enum":[
         "CLIENT_ERROR",
         "SERVER_FAULT"
       ]
+    },
+    "FieldName":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"^[a-zA-Z0-9\\-_\\.\\/]+$"
     },
     "Filter":{
       "type":"structure",
@@ -1393,6 +1847,42 @@
       "max":255,
       "min":1,
       "pattern":"^(.)+$"
+    },
+    "FrameworkFilters":{
+      "type":"structure",
+      "members":{
+        "AMISecurityFilters":{
+          "shape":"AMISecurityFilters",
+          "documentation":"<p>Filters that apply to assessments performed against the AMI Security framework.</p>"
+        },
+        "ContainerSecurityFilters":{
+          "shape":"ContainerSecurityFilters",
+          "documentation":"<p>Filters that apply to assessments performed against the Container Security framework.</p>"
+        }
+      },
+      "documentation":"<p>Framework-specific filters used to scope <code>ListAssessments</code> results. Set exactly one member, corresponding to the framework you want to filter by.</p>",
+      "union":true
+    },
+    "FrameworkId":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"^[\\w\\-@]+$"
+    },
+    "FrameworkSummary":{
+      "type":"structure",
+      "members":{
+        "AMISecuritySummary":{
+          "shape":"AMISecuritySummary",
+          "documentation":"<p>The details of the resource assessed under the AMI Security framework.</p>"
+        },
+        "ContainerSecuritySummary":{
+          "shape":"ContainerSecuritySummary",
+          "documentation":"<p>The details of the resource assessed under the Container Security framework.</p>"
+        }
+      },
+      "documentation":"<p>The framework-specific details of the assessed resource. Exactly one member is set, corresponding to the framework that was assessed.</p>",
+      "union":true
     },
     "GetResourcePolicyRequest":{
       "type":"structure",
@@ -1448,6 +1938,55 @@
       "type":"structure",
       "members":{},
       "document":true
+    },
+    "ListAssessmentsMaxResultInteger":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "ListAssessmentsRequest":{
+      "type":"structure",
+      "required":["Catalog"],
+      "members":{
+        "Catalog":{
+          "shape":"Catalog",
+          "documentation":"<p>The catalog related to the request. Fixed value: <code>AWSMarketplace</code> </p>"
+        },
+        "FrameworkId":{
+          "shape":"FrameworkId",
+          "documentation":"<p>The unique identifier of a framework. When specified, only assessments performed against this framework are returned. For example, <code>AMISecurity</code>.</p>"
+        },
+        "AssessmentTargetFilter":{
+          "shape":"AssessmentTargetFilter",
+          "documentation":"<p>Filters the list of assessments to those performed against a specific entity or change set.</p>"
+        },
+        "FrameworkFilters":{
+          "shape":"FrameworkFilters",
+          "documentation":"<p>Framework-specific filters. Set exactly one member to filter results to assessments performed against that framework.</p>"
+        },
+        "MaxResults":{
+          "shape":"ListAssessmentsMaxResultInteger",
+          "documentation":"<p>Specifies the upper limit of the elements on a single page. If a value isn't provided, the default value is 20. Valid values range from 1 to 100.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The value of the next token, if it exists. <code>null</code> if there are no more results.</p>"
+        }
+      }
+    },
+    "ListAssessmentsResponse":{
+      "type":"structure",
+      "members":{
+        "AssessmentSummaryList":{
+          "shape":"AssessmentSummaryList",
+          "documentation":"<p>An array of <code>AssessmentSummary</code> objects.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The value of the next token, if it exists. <code>null</code> if there are no more results.</p>"
+        }
+      }
     },
     "ListChangeSetsMaxResultInteger":{
       "type":"integer",
@@ -1746,9 +2285,9 @@
     },
     "NextToken":{
       "type":"string",
-      "max":2048,
+      "max":4096,
       "min":1,
-      "pattern":"^[\\w+=.:@\\-\\/]$"
+      "pattern":"^[\\w+=.:@\\-\\/]+$"
     },
     "OfferAvailabilityEndDateFilter":{
       "type":"structure",
@@ -1801,6 +2340,29 @@
       "max":12,
       "min":12,
       "pattern":"^\\d{12}$"
+    },
+    "OfferCreatedBySourceFilter":{
+      "type":"structure",
+      "members":{
+        "ValueList":{
+          "shape":"OfferCreatedBySourceFilterValueList",
+          "documentation":"<p>Allows filtering on the <code>CreatedBySource</code> of an offer with list input.</p>"
+        }
+      },
+      "documentation":"<p>Allows filtering on the <code>CreatedBySource</code> of an offer.</p>"
+    },
+    "OfferCreatedBySourceFilterValueList":{
+      "type":"list",
+      "member":{"shape":"OfferCreatedBySourceString"},
+      "max":2,
+      "min":1
+    },
+    "OfferCreatedBySourceString":{
+      "type":"string",
+      "enum":[
+        "Seller",
+        "AwsMarketplace"
+      ]
     },
     "OfferEntityIdFilter":{
       "type":"structure",
@@ -1870,6 +2432,18 @@
         "OfferSetId":{
           "shape":"OfferSetIdFilter",
           "documentation":"<p>Allows filtering on the <code>OfferSetId</code> of an offer.</p>"
+        },
+        "TargetAgreementId":{
+          "shape":"OfferTargetAgreementIdFilter",
+          "documentation":"<p>Allows filtering on the <code>TargetAgreementId</code> of an offer.</p>"
+        },
+        "TargetAgreementIntent":{
+          "shape":"OfferTargetAgreementIntentFilter",
+          "documentation":"<p>Allows filtering on the <code>TargetAgreementIntent</code> of an offer.</p>"
+        },
+        "CreatedBySource":{
+          "shape":"OfferCreatedBySourceFilter",
+          "documentation":"<p>Allows filtering on the <code>CreatedBySource</code> of an offer.</p>"
         }
       },
       "documentation":"<p>Object containing all the filter fields for offers entity. Client can add only one wildcard filter and a maximum of 8 filters in a single <code>ListEntities</code> request.</p>"
@@ -2291,7 +2865,10 @@
         "State",
         "Targeting",
         "LastModifiedDate",
-        "OfferSetId"
+        "OfferSetId",
+        "TargetAgreementId",
+        "TargetAgreementIntent",
+        "CreatedBySource"
       ]
     },
     "OfferStateFilter":{
@@ -2355,9 +2932,63 @@
         "OfferSetId":{
           "shape":"OfferSetIdString",
           "documentation":"<p>The offer set ID of the offer.</p>"
+        },
+        "TargetAgreementId":{
+          "shape":"OfferTargetAgreementIdString",
+          "documentation":"<p>The target agreement ID of the offer.</p>"
+        },
+        "TargetAgreementIntent":{
+          "shape":"OfferTargetAgreementIntentString",
+          "documentation":"<p>The target agreement intent of the offer.</p>"
+        },
+        "CreatedBySource":{
+          "shape":"OfferCreatedBySourceString",
+          "documentation":"<p>The creation source of the offer.</p>"
         }
       },
       "documentation":"<p>Summarized information about an offer.</p>"
+    },
+    "OfferTargetAgreementIdFilter":{
+      "type":"structure",
+      "members":{
+        "ValueList":{
+          "shape":"OfferTargetAgreementIdFilterValueList",
+          "documentation":"<p>Allows filtering on the <code>TargetAgreementId</code> of an offer with list input.</p>"
+        }
+      },
+      "documentation":"<p>Allows filtering on the <code>TargetAgreementId</code> of an offer.</p>"
+    },
+    "OfferTargetAgreementIdFilterValueList":{
+      "type":"list",
+      "member":{"shape":"OfferTargetAgreementIdString"},
+      "max":10,
+      "min":1
+    },
+    "OfferTargetAgreementIdString":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"^(.)+$"
+    },
+    "OfferTargetAgreementIntentFilter":{
+      "type":"structure",
+      "members":{
+        "ValueList":{
+          "shape":"OfferTargetAgreementIntentFilterValueList",
+          "documentation":"<p>Allows filtering on the <code>TargetAgreementIntent</code> of an offer with list input.</p>"
+        }
+      },
+      "documentation":"<p>Allows filtering on the <code>TargetAgreementIntent</code> of an offer.</p>"
+    },
+    "OfferTargetAgreementIntentFilterValueList":{
+      "type":"list",
+      "member":{"shape":"OfferTargetAgreementIntentString"},
+      "max":2,
+      "min":1
+    },
+    "OfferTargetAgreementIntentString":{
+      "type":"string",
+      "enum":["Renew"]
     },
     "OfferTargetingFilter":{
       "type":"structure",
@@ -2568,9 +3199,43 @@
         "LastModifiedDate":{
           "shape":"ResaleAuthorizationLastModifiedDateFilter",
           "documentation":"<p>Allows filtering on the <code>LastModifiedDate</code> of a ResaleAuthorization.</p>"
+        },
+        "ResellerRole":{
+          "shape":"ResaleAuthorizationResellerRoleFilter",
+          "documentation":"<p>Allows filtering on the <code>ResellerRole</code> of a ResaleAuthorization.</p>"
+        },
+        "SourceAuthorization":{
+          "shape":"ResaleAuthorizationSourceAuthorizationFilter",
+          "documentation":"<p>Allows filtering on the <code>SourceAuthorization</code> of a ResaleAuthorization.</p>"
+        },
+        "IssuerAccountId":{
+          "shape":"ResaleAuthorizationIssuerAccountIdFilter",
+          "documentation":"<p>Allows filtering on the <code>IssuerAccountId</code> of a ResaleAuthorization.</p>"
         }
       },
       "documentation":"<p>Object containing all the filter fields for resale authorization entity. Client can add only one wildcard filter and a maximum of 8 filters in a single <code>ListEntities</code> request.</p>"
+    },
+    "ResaleAuthorizationIssuerAccountIdFilter":{
+      "type":"structure",
+      "members":{
+        "ValueList":{
+          "shape":"ResaleAuthorizationIssuerAccountIdFilterValueList",
+          "documentation":"<p>Allows filtering on the <code>IssuerAccountId</code> of a ResaleAuthorization with list input.</p>"
+        }
+      },
+      "documentation":"<p>Allows filtering on the <code>IssuerAccountId</code> of a ResaleAuthorization.</p>"
+    },
+    "ResaleAuthorizationIssuerAccountIdFilterValueList":{
+      "type":"list",
+      "member":{"shape":"ResaleAuthorizationIssuerAccountIdString"},
+      "max":10,
+      "min":1
+    },
+    "ResaleAuthorizationIssuerAccountIdString":{
+      "type":"string",
+      "max":12,
+      "min":12,
+      "pattern":"^\\d{12}$"
     },
     "ResaleAuthorizationLastModifiedDateFilter":{
       "type":"structure",
@@ -2842,6 +3507,29 @@
       "min":1,
       "pattern":"^(.)+$"
     },
+    "ResaleAuthorizationResellerRoleFilter":{
+      "type":"structure",
+      "members":{
+        "ValueList":{
+          "shape":"ResaleAuthorizationResellerRoleFilterValueList",
+          "documentation":"<p>Allows filtering on the <code>ResellerRole</code> of a ResaleAuthorization with list input.</p>"
+        }
+      },
+      "documentation":"<p>Allows filtering on the <code>ResellerRole</code> of a ResaleAuthorization.</p>"
+    },
+    "ResaleAuthorizationResellerRoleFilterValueList":{
+      "type":"list",
+      "member":{"shape":"ResaleAuthorizationResellerRoleString"},
+      "max":10,
+      "min":1
+    },
+    "ResaleAuthorizationResellerRoleString":{
+      "type":"string",
+      "enum":[
+        "ChannelPartner",
+        "Distributor"
+      ]
+    },
     "ResaleAuthorizationSort":{
       "type":"structure",
       "members":{
@@ -2871,8 +3559,33 @@
         "OfferExtendedStatus",
         "CreatedDate",
         "AvailabilityEndDate",
-        "LastModifiedDate"
+        "LastModifiedDate",
+        "ResellerRole",
+        "SourceAuthorization",
+        "IssuerAccountId"
       ]
+    },
+    "ResaleAuthorizationSourceAuthorizationFilter":{
+      "type":"structure",
+      "members":{
+        "ValueList":{
+          "shape":"ResaleAuthorizationSourceAuthorizationFilterValueList",
+          "documentation":"<p>Allows filtering on the <code>SourceAuthorization</code> of a ResaleAuthorization with list input.</p>"
+        }
+      },
+      "documentation":"<p>Allows filtering on the <code>SourceAuthorization</code> of a ResaleAuthorization.</p>"
+    },
+    "ResaleAuthorizationSourceAuthorizationFilterValueList":{
+      "type":"list",
+      "member":{"shape":"ResaleAuthorizationSourceAuthorizationString"},
+      "max":10,
+      "min":1
+    },
+    "ResaleAuthorizationSourceAuthorizationString":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"^(.)+$"
     },
     "ResaleAuthorizationStatusFilter":{
       "type":"structure",
@@ -2944,6 +3657,18 @@
         "AvailabilityEndDate":{
           "shape":"DateTimeISO8601",
           "documentation":"<p>The availability end date of the ResaleAuthorization.</p>"
+        },
+        "ResellerRole":{
+          "shape":"ResaleAuthorizationResellerRoleString",
+          "documentation":"<p>The reseller role of the ResaleAuthorization.</p>"
+        },
+        "SourceAuthorization":{
+          "shape":"ResaleAuthorizationSourceAuthorizationString",
+          "documentation":"<p>The source authorization of the ResaleAuthorization.</p>"
+        },
+        "IssuerAccountId":{
+          "shape":"ResaleAuthorizationIssuerAccountIdString",
+          "documentation":"<p>The issuer account ID of the ResaleAuthorization.</p>"
         }
       },
       "documentation":"<p>Summarized information about a Resale Authorization.</p>"
@@ -3157,6 +3882,16 @@
         "Draft"
       ]
     },
+    "ScopeName":{
+      "type":"string",
+      "max":50,
+      "min":1
+    },
+    "ScopeValue":{
+      "type":"string",
+      "max":1024,
+      "min":1
+    },
     "ServiceQuotaExceededException":{
       "type":"structure",
       "members":{
@@ -3338,18 +4073,71 @@
     "ValidationException":{
       "type":"structure",
       "members":{
-        "Message":{"shape":"ExceptionMessageContent"}
+        "Message":{"shape":"ExceptionMessageContent"},
+        "ValidationExceptionFieldList":{
+          "shape":"ValidationExceptionFieldList",
+          "documentation":"<p>A list of detailed entries describing the request fields that failed validation. Present when the failure can be attributed to one or more specific fields.</p>"
+        }
       },
       "documentation":"<p>An error occurred during validation.</p> <p>HTTP status code: 422</p>",
       "error":{"httpStatusCode":422},
       "exception":true,
       "synthetic":true
     },
+    "ValidationExceptionField":{
+      "type":"structure",
+      "members":{
+        "Reason":{
+          "shape":"ValidationExceptionReason",
+          "documentation":"<p>The reason the field failed validation.</p>"
+        },
+        "EntityType":{
+          "shape":"EntityType",
+          "documentation":"<p>The entity type the failing field applies to, if the field is on a specific entity. For example, <code>AmiProduct@1.0</code>.</p>"
+        },
+        "EntityId":{
+          "shape":"EntityId",
+          "documentation":"<p>The entity identifier the failing field applies to, if the field is on a specific entity.</p>"
+        },
+        "ChangeType":{
+          "shape":"ChangeType",
+          "documentation":"<p>The change type the failing field applies to, if the field is part of a change request. For example, <code>AddDeliveryOptions</code>.</p>"
+        },
+        "Field":{
+          "shape":"FieldName",
+          "documentation":"<p>The name of the request field that failed validation, expressed as a JSON path (for example, <code>Details.DeliveryOptions[0].Type</code>).</p>"
+        },
+        "Message":{
+          "shape":"ExceptionMessageContent",
+          "documentation":"<p>A human-readable message describing why the field failed validation.</p>"
+        }
+      },
+      "documentation":"<p>Detailed information about a single request field that failed validation, including the field's location, the reason it failed, and a human-readable message.</p>"
+    },
+    "ValidationExceptionFieldList":{
+      "type":"list",
+      "member":{"shape":"ValidationExceptionField"}
+    },
+    "ValidationExceptionReason":{
+      "type":"string",
+      "enum":[
+        "UnknownOperation",
+        "CannotParse",
+        "FieldValidationFailed",
+        "Other"
+      ]
+    },
     "ValueList":{
       "type":"list",
       "member":{"shape":"FilterValueContent"},
       "max":10,
       "min":1
+    },
+    "VersionedFrameworkId":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"^[\\w\\-@.]+$"
     },
     "VisibilityValue":{
       "type":"string",

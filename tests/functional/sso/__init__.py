@@ -25,7 +25,7 @@ from awscli.testutils import (
 
 class BaseSSOTest(BaseAWSCommandParamsTest):
     def setUp(self):
-        super(BaseSSOTest, self).setUp()
+        super().setUp()
         self.files = FileCreator()
         self.start_url = 'https://mysigin.com'
         self.sso_region = 'us-west-2'
@@ -42,6 +42,14 @@ class BaseSSOTest(BaseAWSCommandParamsTest):
             self.token_cache_dir,
         )
         self.token_cache_dir_patch.start()
+        self._resolve_patch = mock.patch(
+            'awscli.customizations.sso.login.resolve_start_url',
+            side_effect=lambda start_url, session, **kwargs: (
+                start_url,
+                kwargs.get('configured_region', self.sso_region),
+            ),
+        )
+        self._resolve_patch.start()
         self.open_browser_mock = mock.Mock(spec=OpenBrowserHandler)
         self.open_browser_patch = mock.patch(
             'awscli.customizations.sso.utils.OpenBrowserHandler',
@@ -74,11 +82,12 @@ class BaseSSOTest(BaseAWSCommandParamsTest):
         self.expiration_time = time.time() + 1000
 
     def tearDown(self):
-        super(BaseSSOTest, self).tearDown()
+        super().tearDown()
         self.files.remove_all()
         self.open_browser_patch.stop()
         self.auth_code_fetcher_patch.stop()
         self.uuid_patch.stop()
+        self._resolve_patch.stop()
         self.token_cache_dir_patch.stop()
 
     def add_oidc_device_responses(
@@ -159,14 +168,17 @@ class BaseSSOTest(BaseAWSCommandParamsTest):
             verificationUriComplete, kwargs['verificationUriComplete']
         )
 
-    def assert_auth_browser_handler_called_with(self, expected_scopes):
+    def assert_auth_browser_handler_called_with(
+        self, expected_scopes, expected_redirect_port=55555
+    ):
         # The endpoint is subject to the endpoint rules, and the
         # code_challenge is not fixed so assert against the rest of the url
         expected_url = (
             'authorize?'
             'response_type=code'
             '&client_id=auth-client-id'
-            '&redirect_uri=http%3A%2F%2F127.0.0.1%3A55555%2Foauth%2Fcallback'
+            '&redirect_uri=http%3A%2F%2F127.0.0.1%3A'
+            f'{expected_redirect_port}%2Foauth%2Fcallback'
             '&state=00000000-0000-0000-0000-000000000000'
             '&code_challenge_method=S256'
             '&scopes=' + expected_scopes

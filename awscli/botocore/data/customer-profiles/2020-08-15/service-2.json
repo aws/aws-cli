@@ -32,6 +32,24 @@
       ],
       "documentation":"<p>Associates a new key value with a specific profile, such as a Contact Record ContactId.</p> <p>A profile object can have a single unique key and any number of additional keys that can be used to identify the profile that it belongs to.</p>"
     },
+    "AssociateStreamForSegments":{
+      "name":"AssociateStreamForSegments",
+      "http":{
+        "method":"POST",
+        "requestUri":"/domains/{DomainName}/segment-streams",
+        "responseCode":200
+      },
+      "input":{"shape":"AssociateStreamForSegmentsRequest"},
+      "output":{"shape":"AssociateStreamForSegmentsResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"BadRequestException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Associates an Amazon Kinesis data stream to receive segment membership events for a given domain. This is a domain-level configuration that applies to all segment subscriptions within the domain. A domain can have only one associated stream at a time. </p>"
+    },
     "BatchGetCalculatedAttributeForProfile":{
       "name":"BatchGetCalculatedAttributeForProfile",
       "http":{
@@ -588,6 +606,25 @@
       "documentation":"<p>Deletes a segment definition from the domain.</p>",
       "idempotent":true
     },
+    "DeleteSegmentSubscription":{
+      "name":"DeleteSegmentSubscription",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/domains/{DomainName}/segment-definitions/{SegmentDefinitionName}/subscriptions",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteSegmentSubscriptionRequest"},
+      "output":{"shape":"DeleteSegmentSubscriptionResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"BadRequestException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Deletes a segment subscription for membership events. All active event notifications for this segment are stopped. </p>",
+      "idempotent":true
+    },
     "DeleteWorkflow":{
       "name":"DeleteWorkflow",
       "http":{
@@ -621,6 +658,25 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>The process of detecting profile object type mapping by using given objects.</p>"
+    },
+    "DisassociateStreamForSegments":{
+      "name":"DisassociateStreamForSegments",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/domains/{DomainName}/segment-streams",
+        "responseCode":200
+      },
+      "input":{"shape":"DisassociateStreamForSegmentsRequest"},
+      "output":{"shape":"DisassociateStreamForSegmentsResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"BadRequestException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Disassociates the Amazon Kinesis data stream configured for segment membership events. All active segment subscriptions delivering events to this stream are eventually stopped. </p>",
+      "idempotent":true
     },
     "GetAutoMergingPreview":{
       "name":"GetAutoMergingPreview",
@@ -1023,6 +1079,25 @@
       ],
       "documentation":"<p>Retrieve the latest status of a segment snapshot.</p>"
     },
+    "GetSegmentSubscription":{
+      "name":"GetSegmentSubscription",
+      "http":{
+        "method":"GET",
+        "requestUri":"/domains/{DomainName}/segment-definitions/{SegmentDefinitionName}/subscriptions",
+        "responseCode":200
+      },
+      "input":{"shape":"GetSegmentSubscriptionRequest"},
+      "output":{"shape":"GetSegmentSubscriptionResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"BadRequestException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Returns the current subscription configuration, execution schedule, and status for segment membership events. </p>",
+      "readonly":true
+    },
     "GetSimilarProfiles":{
       "name":"GetSimilarProfiles",
       "http":{
@@ -1039,6 +1114,25 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Returns a set of profiles that belong to the same matching group using the <code>matchId</code> or <code>profileId</code>. You can also specify the type of matching that you want for finding similar profiles using either <code>RULE_BASED_MATCHING</code> or <code>ML_BASED_MATCHING</code>.</p>"
+    },
+    "GetStreamForSegments":{
+      "name":"GetStreamForSegments",
+      "http":{
+        "method":"GET",
+        "requestUri":"/domains/{DomainName}/segment-streams",
+        "responseCode":200
+      },
+      "input":{"shape":"GetStreamForSegmentsRequest"},
+      "output":{"shape":"GetStreamForSegmentsResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"BadRequestException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Returns information about the segment membership event stream configured for a specific domain, including the stream state and associated segments. </p>",
+      "readonly":true
     },
     "GetUploadJob":{
       "name":"GetUploadJob",
@@ -1512,6 +1606,25 @@
       "documentation":"<p>Lists all segment definitions under a domain.</p>",
       "readonly":true
     },
+    "ListSegmentSubscriptionEvents":{
+      "name":"ListSegmentSubscriptionEvents",
+      "http":{
+        "method":"GET",
+        "requestUri":"/domains/{DomainName}/segment-definitions/{SegmentDefinitionName}/subscription-events",
+        "responseCode":200
+      },
+      "input":{"shape":"ListSegmentSubscriptionEventsRequest"},
+      "output":{"shape":"ListSegmentSubscriptionEventsResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"BadRequestException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Returns the most recent membership events for a segment. Each event represents a profile that entered or exited the segment. </p> <p>This operation is paginated. </p>",
+      "readonly":true
+    },
     "ListTagsForResource":{
       "name":"ListTagsForResource",
       "http":{
@@ -1647,6 +1760,25 @@
       ],
       "documentation":"<p>Defines a ProfileObjectType.</p> <p>To add or remove tags on an existing ObjectType, see <a href=\"https://docs.aws.amazon.com/customerprofiles/latest/APIReference/API_TagResource.html\"> TagResource</a>/<a href=\"https://docs.aws.amazon.com/customerprofiles/latest/APIReference/API_UntagResource.html\">UntagResource</a>.</p>"
     },
+    "PutSegmentSubscription":{
+      "name":"PutSegmentSubscription",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/domains/{DomainName}/segment-definitions/{SegmentDefinitionName}/subscriptions",
+        "responseCode":200
+      },
+      "input":{"shape":"PutSegmentSubscriptionRequest"},
+      "output":{"shape":"PutSegmentSubscriptionResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"BadRequestException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Creates or updates a segment subscription for membership events. When a subscription is created, an initial snapshot is taken and the system begins monitoring for membership changes. </p> <p>You can optionally set a schedule configuration interval to control how often membership snapshots are run. The interval can be from 1 to 24 hours. If not set, the interval defaults to 24 hours. Scheduled snapshots run on a best-effort basis. If a scheduled snapshot takes longer than the configured interval, the next scheduled run does not start until the in-progress snapshot completes, so a run might be delayed or skipped and is not guaranteed to occur at exactly the requested time. </p> <p>For Classic segments, membership events are generated from these scheduled snapshots and also in near real-time as profile attribute changes occur. For SQL segments, membership events are generated only from the scheduled snapshots. </p>",
+      "idempotent":true
+    },
     "SearchProfiles":{
       "name":"SearchProfiles",
       "http":{
@@ -1663,6 +1795,23 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Searches for profiles within a specific domain using one or more predefined search keys (e.g., _fullName, _phone, _email, _account, etc.) and/or custom-defined search keys. A search key is a data type pair that consists of a <code>KeyName</code> and <code>Values</code> list.</p> <p>This operation supports searching for profiles with a minimum of 1 key-value(s) pair and up to 5 key-value(s) pairs using either <code>AND</code> or <code>OR</code> logic.</p>"
+    },
+    "SearchRecommendations":{
+      "name":"SearchRecommendations",
+      "http":{
+        "method":"POST",
+        "requestUri":"/domains/{DomainName}/recommendations"
+      },
+      "input":{"shape":"SearchRecommendationsRequest"},
+      "output":{"shape":"SearchRecommendationsResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Retrieves recommendations for a profile in a specific domain. The profile is identified using a search key, which consists of a <code>KeyName</code> and a <code>KeyValues</code> list. The <code>KeyName</code> can be a predefined key (for example, <code>_profileId</code>, <code>_phone</code>, <code>_email</code>) or a custom-defined key.</p> <p>The search key must match exactly one profile. If no profile matches the search key, the operation returns a <code>ResourceNotFoundException</code>. If more than one profile matches the search key, the operation returns a <code>BadRequestException</code>. You can use the SearchProfiles API to review the matching profiles.</p>"
     },
     "StartRecommender":{
       "name":"StartRecommender",
@@ -2163,6 +2312,59 @@
       "type":"string",
       "pattern":"arn:([a-z\\d-]+):profile:.*:.*:.+"
     },
+    "AssociateStreamForSegmentsRequest":{
+      "type":"structure",
+      "required":[
+        "DomainName",
+        "DestinationArn",
+        "DestinationRoleArn"
+      ],
+      "members":{
+        "DomainName":{
+          "shape":"name",
+          "documentation":"<p>The unique name of the domain.</p>",
+          "location":"uri",
+          "locationName":"DomainName"
+        },
+        "DestinationArn":{
+          "shape":"DestinationArnString",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon Kinesis data stream to deliver segment membership events to. For example, <code>arn:aws:kinesis:region:account-id:stream/stream-name</code>. </p>"
+        },
+        "DestinationRoleArn":{
+          "shape":"DestinationRoleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role that allows Customer Profiles service principal to assume the role for conducting AWS Key Management Service (KMS) and Amazon Kinesis operations. The role must grant the following Amazon Kinesis permissions to deliver segment membership events to the stream: </p> <ul> <li> <p> <code>kinesis:PutRecord</code> </p> </li> <li> <p> <code>kinesis:PutRecords</code> </p> </li> <li> <p> <code>kinesis:DescribeStream</code> </p> </li> </ul>"
+        }
+      }
+    },
+    "AssociateStreamForSegmentsResponse":{
+      "type":"structure",
+      "members":{}
+    },
+    "AssociatedSegment":{
+      "type":"structure",
+      "members":{
+        "SegmentName":{
+          "shape":"name",
+          "documentation":"<p>The unique name of the segment definition. </p>",
+          "locationName":"SegmentName"
+        },
+        "Status":{
+          "shape":"EventSubscriptionSegmentStatus",
+          "documentation":"<p>The subscription status of the segment. The following are valid values: </p> <ul> <li> <p> <b>STARTING</b>: The segment is being prepared to publish membership events. </p> </li> <li> <p> <b>RUNNING</b>: The segment is actively publishing membership events to the stream. </p> </li> <li> <p> <b>STOPPED</b>: The segment has stopped publishing membership events. </p> </li> <li> <p> <b>FAILED</b>: The segment failed to publish membership events. </p> </li> </ul>",
+          "locationName":"Status"
+        },
+        "Message":{
+          "shape":"string1To1000",
+          "documentation":"<p>An optional message providing context, such as a failure reason. </p>",
+          "locationName":"Message"
+        }
+      },
+      "documentation":"<p>Represents a segment associated with a membership event stream. </p>"
+    },
+    "AssociatedSegmentsList":{
+      "type":"list",
+      "member":{"shape":"AssociatedSegment"}
+    },
     "AttributeDetails":{
       "type":"structure",
       "required":[
@@ -2196,7 +2398,7 @@
         },
         "Values":{
           "shape":"Values",
-          "documentation":"<p>The values to apply the DimensionType on.</p>",
+          "documentation":"<p>The values to apply the DimensionType on. To reference a calculated attribute or profile attribute as a dynamic value, use handlebar notation: <code>{{_profile.ProfileAttributeName}}</code> or <code>{{_calculated_attribute.CalculatedAttributeName}}</code>.</p>",
           "locationName":"Values"
         }
       },
@@ -2219,7 +2421,9 @@
         "LESS_THAN",
         "GREATER_THAN_OR_EQUAL",
         "LESS_THAN_OR_EQUAL",
-        "EQUAL"
+        "EQUAL",
+        "LIST_CONTAINS",
+        "LIST_CONTAINS_ALL"
       ]
     },
     "AttributeItem":{
@@ -2637,7 +2841,7 @@
         },
         "Values":{
           "shape":"Values",
-          "documentation":"<p>The values to apply the DimensionType with.</p>",
+          "documentation":"<p>The values to apply the DimensionType with. To reference a calculated attribute or profile attribute as a dynamic value, use handlebar notation: <code>{{_profile.ProfileAttributeName}}</code> or <code>{{_calculated_attribute.CalculatedAttributeName}}</code>.</p>",
           "locationName":"Values"
         },
         "ConditionOverrides":{
@@ -3981,7 +4185,7 @@
         },
         "Values":{
           "shape":"DateValues",
-          "documentation":"<p>The values to apply the DimensionType on.</p>",
+          "documentation":"<p>The values to apply the DimensionType on. To reference a calculated attribute or profile attribute as a dynamic value, use handlebar notation: <code>{{_profile.ProfileAttributeName}}</code> or <code>{{_calculated_attribute.CalculatedAttributeName}}</code>.</p>",
           "locationName":"Values"
         }
       },
@@ -4443,6 +4647,37 @@
         }
       }
     },
+    "DeleteSegmentSubscriptionRequest":{
+      "type":"structure",
+      "required":[
+        "DomainName",
+        "SegmentDefinitionName"
+      ],
+      "members":{
+        "DomainName":{
+          "shape":"name",
+          "documentation":"<p>The unique name of the domain.</p>",
+          "location":"uri",
+          "locationName":"DomainName"
+        },
+        "SegmentDefinitionName":{
+          "shape":"name",
+          "documentation":"<p>The unique name of the segment definition. </p>",
+          "location":"uri",
+          "locationName":"SegmentDefinitionName"
+        }
+      }
+    },
+    "DeleteSegmentSubscriptionResponse":{
+      "type":"structure",
+      "members":{
+        "Message":{
+          "shape":"string1To1000",
+          "documentation":"<p>A confirmation message indicating the subscription was deleted successfully. </p>",
+          "locationName":"Message"
+        }
+      }
+    },
     "DeleteWorkflowRequest":{
       "type":"structure",
       "required":[
@@ -4468,10 +4703,21 @@
       "type":"structure",
       "members":{}
     },
+    "DestinationArnString":{
+      "type":"string",
+      "max":2048,
+      "min":1
+    },
     "DestinationField":{
       "type":"string",
       "max":256,
       "pattern":".*"
+    },
+    "DestinationRoleArn":{
+      "type":"string",
+      "max":512,
+      "min":1,
+      "pattern":".*arn:aws:iam:.*:[0-9]+:.*"
     },
     "DestinationSummary":{
       "type":"structure",
@@ -4565,6 +4811,97 @@
     "DimensionList":{
       "type":"list",
       "member":{"shape":"Dimension"}
+    },
+    "DisassociateStreamForSegmentsRequest":{
+      "type":"structure",
+      "required":["DomainName"],
+      "members":{
+        "DomainName":{
+          "shape":"name",
+          "documentation":"<p>The unique name of the domain.</p>",
+          "location":"uri",
+          "locationName":"DomainName"
+        }
+      }
+    },
+    "DisassociateStreamForSegmentsResponse":{
+      "type":"structure",
+      "members":{
+        "Message":{
+          "shape":"string1To1000",
+          "documentation":"<p>A confirmation message indicating the stream was disassociated successfully. </p>",
+          "locationName":"Message"
+        }
+      }
+    },
+    "DiversityCapType":{
+      "type":"string",
+      "enum":[
+        "PERCENTAGE",
+        "VALUE"
+      ]
+    },
+    "DiversityCapValue":{
+      "type":"integer",
+      "max":200,
+      "min":1
+    },
+    "DiversityColumn":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "CapType",
+        "Target"
+      ],
+      "members":{
+        "Name":{
+          "shape":"text",
+          "documentation":"<p>The name of the item catalog column on which to apply the diversity cap. The column must be defined in the recommender schema.</p>"
+        },
+        "CapType":{
+          "shape":"DiversityCapType",
+          "documentation":"<p>The type of diversity cap to apply. Valid values are <code>PERCENTAGE</code> (interpret <code>Target</code> as a percentage of returned items) and <code>VALUE</code> (interpret <code>Target</code> as an absolute count).</p>"
+        },
+        "Target":{
+          "shape":"DiversityTargetExpression",
+          "documentation":"<p>The diversity cap target. Either an integer literal (for example, <code>\"25\"</code>) or a placeholder expression of the form <code>$name</code> whose value is supplied at inference time through <code>GetProfileRecommendations</code>.</p>"
+        }
+      },
+      "documentation":"<p>Defines a diversity constraint for a single item column, specifying a cap type and a target value or placeholder that controls how many recommended items may share the same column value.</p>"
+    },
+    "DiversityColumnsList":{
+      "type":"list",
+      "member":{"shape":"DiversityColumn"},
+      "max":2,
+      "min":0
+    },
+    "DiversityConfig":{
+      "type":"structure",
+      "members":{
+        "DiversityColumns":{
+          "shape":"DiversityColumnsList",
+          "documentation":"<p>A list of up to two diversity columns. Each column defines a cap on the number or percentage of recommended items that share the same value for that column.</p>"
+        }
+      },
+      "documentation":"<p>Configuration that controls diversity of recommendation results by capping the representation of specified item columns.</p>"
+    },
+    "DiversityPlaceholderName":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"^[a-zA-Z][a-zA-Z0-9_]*$"
+    },
+    "DiversityTargetExpression":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"(\\d+|\\$[a-z_]+)"
+    },
+    "DiversityValuesMap":{
+      "type":"map",
+      "key":{"shape":"DiversityPlaceholderName"},
+      "value":{"shape":"DiversityCapValue"},
+      "max":2
     },
     "DomainList":{
       "type":"list",
@@ -4821,6 +5158,23 @@
       "type":"list",
       "member":{"shape":"EventStreamSummary"}
     },
+    "EventSubscriptionSegmentStatus":{
+      "type":"string",
+      "enum":[
+        "STARTING",
+        "RUNNING",
+        "STOPPED",
+        "FAILED"
+      ]
+    },
+    "EventSubscriptionState":{
+      "type":"string",
+      "enum":[
+        "RUNNING",
+        "UNHEALTHY",
+        "STOPPED"
+      ]
+    },
     "EventTriggerCondition":{
       "type":"structure",
       "required":[
@@ -4977,7 +5331,7 @@
         },
         "Values":{
           "shape":"ExtraLengthValues",
-          "documentation":"<p>The values to apply the DimensionType on.</p>",
+          "documentation":"<p>The values to apply the DimensionType on. To reference a calculated attribute or profile attribute as a dynamic value, use handlebar notation: <code>{{_profile.ProfileAttributeName}}</code> or <code>{{_calculated_attribute.CalculatedAttributeName}}</code>.</p>",
           "locationName":"Values"
         }
       },
@@ -6339,6 +6693,10 @@
         "MetadataConfig":{
           "shape":"MetadataConfig",
           "documentation":"<p>Configuration for including item metadata in the recommendation response. Use this to specify which metadata columns to return alongside recommended items.</p>"
+        },
+        "DiversityConfig":{
+          "shape":"RecommendationDiversityConfig",
+          "documentation":"<p>Runtime diversity configuration for this request. Enables diversity-aware recommendations and optionally supplies values for placeholder-based diversity caps configured on the recommender.</p>"
         }
       }
     },
@@ -6495,6 +6853,10 @@
         "LatestRecommenderUpdate":{
           "shape":"RecommenderUpdate",
           "documentation":"<p>Information about the most recent update performed on the recommender, including status and timestamp.</p>"
+        },
+        "ActiveRecommenderVersionName":{
+          "shape":"RecommenderVersionName",
+          "documentation":"<p>The name of the recommender version currently serving recommendations. Omitted when no active recommender version is set.</p>"
         },
         "TrainingMetrics":{
           "shape":"TrainingMetricsList",
@@ -6805,6 +7167,62 @@
         }
       }
     },
+    "GetSegmentSubscriptionRequest":{
+      "type":"structure",
+      "required":[
+        "DomainName",
+        "SegmentDefinitionName"
+      ],
+      "members":{
+        "DomainName":{
+          "shape":"name",
+          "documentation":"<p>The unique name of the domain.</p>",
+          "location":"uri",
+          "locationName":"DomainName"
+        },
+        "SegmentDefinitionName":{
+          "shape":"name",
+          "documentation":"<p>The unique name of the segment definition. </p>",
+          "location":"uri",
+          "locationName":"SegmentDefinitionName"
+        }
+      }
+    },
+    "GetSegmentSubscriptionResponse":{
+      "type":"structure",
+      "members":{
+        "Status":{
+          "shape":"SegmentSubscriptionStatus",
+          "documentation":"<p>The current lifecycle status of the subscription. The following are valid values: </p> <ul> <li> <p> <b>STARTING</b>: Initial snapshot is in progress. </p> </li> <li> <p> <b>RUNNING</b>: Notifications are active and running. </p> </li> <li> <p> <b>STOPPED</b>: Notifications have been stopped. </p> </li> <li> <p> <b>FAILED</b>: Notifications failed (for example, the Amazon Kinesis data stream became inaccessible). </p> </li> </ul>",
+          "locationName":"Status"
+        },
+        "Message":{
+          "shape":"string1To1000",
+          "documentation":"<p>A status message providing additional context, such as a failure reason. </p>",
+          "locationName":"Message"
+        },
+        "ScheduleConfiguration":{
+          "shape":"ScheduleConfiguration",
+          "documentation":"<p>The schedule configuration for periodic membership event notifications. </p>",
+          "locationName":"ScheduleConfiguration"
+        },
+        "ScheduledExecutions":{
+          "shape":"ScheduledExecutions",
+          "documentation":"<p>Information about scheduled execution timestamps. </p>",
+          "locationName":"ScheduledExecutions"
+        },
+        "StartedAt":{
+          "shape":"timestamp",
+          "documentation":"<p>The timestamp of when the subscription was first started. </p>",
+          "locationName":"StartedAt"
+        },
+        "LastUpdatedAt":{
+          "shape":"timestamp",
+          "documentation":"<p>The timestamp of the most recent configuration change. </p>",
+          "locationName":"LastUpdatedAt"
+        }
+      }
+    },
     "GetSimilarProfilesRequest":{
       "type":"structure",
       "required":[
@@ -6872,6 +7290,63 @@
         "NextToken":{
           "shape":"token",
           "documentation":"<p>The pagination token from the previous <code>GetSimilarProfiles</code> API call.</p>"
+        }
+      }
+    },
+    "GetStreamForSegmentsRequest":{
+      "type":"structure",
+      "required":["DomainName"],
+      "members":{
+        "DomainName":{
+          "shape":"name",
+          "documentation":"<p>The unique name of the domain.</p>",
+          "location":"uri",
+          "locationName":"DomainName"
+        }
+      }
+    },
+    "GetStreamForSegmentsResponse":{
+      "type":"structure",
+      "members":{
+        "AssociatedAt":{
+          "shape":"timestamp",
+          "documentation":"<p>The timestamp of when the stream was associated. </p>",
+          "locationName":"AssociatedAt"
+        },
+        "AssociatedSegments":{
+          "shape":"AssociatedSegmentsList",
+          "documentation":"<p>A list of segments currently associated with the stream and their subscription status. </p>",
+          "locationName":"AssociatedSegments"
+        },
+        "DomainName":{
+          "shape":"name",
+          "documentation":"<p>The unique name of the domain.</p>",
+          "locationName":"DomainName"
+        },
+        "DestinationArn":{
+          "shape":"DestinationArnString",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon Kinesis data stream receiving segment membership events. </p>",
+          "locationName":"DestinationArn"
+        },
+        "DestinationRoleArn":{
+          "shape":"DestinationRoleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role used for Amazon Kinesis and AWS Key Management Service (KMS) operations. </p>",
+          "locationName":"DestinationRoleArn"
+        },
+        "State":{
+          "shape":"EventSubscriptionState",
+          "documentation":"<p>The operational state of the destination stream. The following are valid values: </p> <ul> <li> <p> <b>RUNNING</b>: The stream is associated and healthy. Segment membership events are being published. </p> </li> <li> <p> <b>UNHEALTHY</b>: The stream is associated but events cannot currently be published. See <code>FailureReason</code> for details. </p> </li> <li> <p> <b>STOPPED</b>: The stream is no longer publishing segment membership events. </p> </li> </ul>",
+          "locationName":"State"
+        },
+        "DisassociatedAt":{
+          "shape":"timestamp",
+          "documentation":"<p>The timestamp of when the stream was disassociated. </p>",
+          "locationName":"DisassociatedAt"
+        },
+        "FailureReason":{
+          "shape":"string1To255",
+          "documentation":"<p>The reason why the stream is in an unhealthy state, if applicable. </p>",
+          "locationName":"FailureReason"
         }
       }
     },
@@ -7264,6 +7739,12 @@
       "exception":true,
       "fault":true
     },
+    "IntervalValue":{
+      "type":"integer",
+      "box":true,
+      "max":24,
+      "min":1
+    },
     "JobSchedule":{
       "type":"structure",
       "required":[
@@ -7322,6 +7803,13 @@
       "type":"map",
       "key":{"shape":"name"},
       "value":{"shape":"ObjectTypeKeyList"},
+      "sensitive":true
+    },
+    "KeyValuesList":{
+      "type":"list",
+      "member":{"shape":"string1To255"},
+      "max":10,
+      "min":1,
       "sensitive":true
     },
     "KmsArn":{
@@ -8543,6 +9031,54 @@
         }
       }
     },
+    "ListSegmentSubscriptionEventsRequest":{
+      "type":"structure",
+      "required":[
+        "DomainName",
+        "SegmentDefinitionName"
+      ],
+      "members":{
+        "DomainName":{
+          "shape":"name",
+          "documentation":"<p>The unique name of the domain.</p>",
+          "location":"uri",
+          "locationName":"DomainName"
+        },
+        "SegmentDefinitionName":{
+          "shape":"name",
+          "documentation":"<p>The unique name of the segment definition. </p>",
+          "location":"uri",
+          "locationName":"SegmentDefinitionName"
+        },
+        "MaxResults":{
+          "shape":"maxSize100",
+          "documentation":"<p>The maximum number of events to return per page. </p>",
+          "location":"querystring",
+          "locationName":"max-results"
+        },
+        "NextToken":{
+          "shape":"token",
+          "documentation":"<p>The pagination token from the previous call to retrieve the next page of results. </p>",
+          "location":"querystring",
+          "locationName":"next-token"
+        }
+      }
+    },
+    "ListSegmentSubscriptionEventsResponse":{
+      "type":"structure",
+      "members":{
+        "Events":{
+          "shape":"SubscriptionEventsList",
+          "documentation":"<p>A list of segment membership events. </p>",
+          "locationName":"Events"
+        },
+        "NextToken":{
+          "shape":"token",
+          "documentation":"<p>The pagination token to use to retrieve the next page of results. </p>",
+          "locationName":"NextToken"
+        }
+      }
+    },
     "ListTagsForResourceRequest":{
       "type":"structure",
       "required":["resourceArn"],
@@ -9408,7 +9944,7 @@
         },
         "Values":{
           "shape":"Values",
-          "documentation":"<p>The values to apply the DimensionType on.</p>",
+          "documentation":"<p>The values to apply the DimensionType on. To reference a calculated attribute or profile attribute as a dynamic value, use handlebar notation: <code>{{_profile.ProfileAttributeName}}</code> or <code>{{_calculated_attribute.CalculatedAttributeName}}</code>.</p>",
           "locationName":"Values"
         }
       },
@@ -9933,6 +10469,51 @@
         }
       }
     },
+    "PutSegmentSubscriptionRequest":{
+      "type":"structure",
+      "required":[
+        "DomainName",
+        "SegmentDefinitionName"
+      ],
+      "members":{
+        "DomainName":{
+          "shape":"name",
+          "documentation":"<p>The unique name of the domain.</p>",
+          "location":"uri",
+          "locationName":"DomainName"
+        },
+        "SegmentDefinitionName":{
+          "shape":"name",
+          "documentation":"<p>The unique name of the segment definition. </p>",
+          "location":"uri",
+          "locationName":"SegmentDefinitionName"
+        },
+        "ScheduleConfiguration":{
+          "shape":"ScheduleConfiguration",
+          "documentation":"<p>The optional schedule configuration that controls how often membership snapshots are run. If not provided, the subscription defaults to a 24-hour interval. </p>"
+        }
+      }
+    },
+    "PutSegmentSubscriptionResponse":{
+      "type":"structure",
+      "members":{
+        "Status":{
+          "shape":"SegmentSubscriptionStatus",
+          "documentation":"<p>The current lifecycle status of the subscription. The following are valid values: </p> <ul> <li> <p> <b>STARTING</b>: Initial snapshot is in progress. </p> </li> <li> <p> <b>RUNNING</b>: Notifications are active and running. </p> </li> <li> <p> <b>STOPPED</b>: Notifications have been stopped. </p> </li> <li> <p> <b>FAILED</b>: Notifications failed (for example, the Amazon Kinesis data stream became inaccessible). </p> </li> </ul>",
+          "locationName":"Status"
+        },
+        "ScheduleConfiguration":{
+          "shape":"ScheduleConfiguration",
+          "documentation":"<p>The schedule configuration for the subscription, if configured. </p>",
+          "locationName":"ScheduleConfiguration"
+        },
+        "StartedAt":{
+          "shape":"timestamp",
+          "documentation":"<p>The timestamp of when the subscription was started. </p>",
+          "locationName":"StartedAt"
+        }
+      }
+    },
     "QueryResult":{
       "type":"string",
       "enum":[
@@ -10029,10 +10610,54 @@
       },
       "documentation":"<p>Represents a single recommendation generated by the recommender system.</p>"
     },
+    "RecommendationDiversityConfig":{
+      "type":"structure",
+      "required":["Enabled"],
+      "members":{
+        "Enabled":{
+          "shape":"optionalBoolean",
+          "documentation":"<p>Whether diversity-aware recommendations are enabled for this request.</p>"
+        },
+        "Values":{
+          "shape":"DiversityValuesMap",
+          "documentation":"<p>An optional map of placeholder name to integer cap value used to resolve <code>$name</code> placeholders defined in the recommender's <code>DiversityConfig</code> at inference time. Up to 2 entries are supported.</p>"
+        }
+      },
+      "documentation":"<p>Runtime diversity configuration for a <code>GetProfileRecommendations</code> request.</p>"
+    },
+    "RecommendationMetadata":{
+      "type":"structure",
+      "members":{
+        "Columns":{
+          "shape":"MetadataColumnsList",
+          "documentation":"<p>A list of metadata column names from your Items dataset to include in the recommendation response.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for metadata to include in recommendation responses.</p>"
+    },
     "Recommendations":{
       "type":"list",
       "member":{"shape":"Recommendation"},
       "sensitive":true
+    },
+    "Recommender":{
+      "type":"structure",
+      "required":["Name"],
+      "members":{
+        "Name":{
+          "shape":"name",
+          "documentation":"<p>The unique name of the recommender.</p>"
+        },
+        "Filters":{
+          "shape":"RecommenderFilters",
+          "documentation":"<p>A list of filters to apply to the returned recommendations. Filters define criteria for including or excluding items from the recommendation results.</p>"
+        },
+        "PromotionalFilters":{
+          "shape":"RecommenderPromotionalFilters",
+          "documentation":"<p>A list of promotional filters to apply to the recommendations. Promotional filters allow you to promote specific items within a configurable subset of recommendation results.</p>"
+        }
+      },
+      "documentation":"<p>The recommender used to generate the recommendations.</p>"
     },
     "RecommenderConfig":{
       "type":"structure",
@@ -10056,6 +10681,10 @@
         "ExcludedColumns":{
           "shape":"IncludedColumns",
           "documentation":"<p>A map of dataset type to a list of column names to exclude from training. The <code>_webAnalytics</code> and <code>_catalogItem</code> keys are supported. The column names must be valid columns defined in the recommender schema. All columns in the schema except the listed columns will be used for training. The following columns are mandatory and cannot be excluded: <code>Item.Id</code>, <code>EventTimestamp</code>, and <code>EventType</code> for <code>_webAnalytics</code>; <code>Id</code> for <code>_catalogItem</code>. Mutually exclusive with IncludedColumns — both cannot be specified in the same request.</p>"
+        },
+        "DiversityConfig":{
+          "shape":"DiversityConfig",
+          "documentation":"<p>Configuration for diversity-aware recommendations. When set, the recommender applies diversity constraints defined per item column to reduce over-concentration of similar items in the results.</p>"
         }
       },
       "documentation":"<p>Configuration settings that define the behavior and parameters of a recommender.</p>"
@@ -10387,9 +11016,19 @@
         "FailureReason":{
           "shape":"String",
           "documentation":"<p>If the update operation failed, provides the reason for the failure.</p>"
+        },
+        "RecommenderVersionName":{
+          "shape":"RecommenderVersionName",
+          "documentation":"<p>The name of the recommender version associated with this update operation.</p>"
         }
       },
       "documentation":"<p>Contains information about an update operation performed on a recommender.</p>"
+    },
+    "RecommenderVersionName":{
+      "type":"string",
+      "max":100,
+      "min":1,
+      "pattern":"[a-zA-Z0-9_-]+/\\d{4}-\\d{2}-\\d{2}T\\d{2}-\\d{2}-\\d{2}Z"
     },
     "ResourceNotFoundException":{
       "type":"structure",
@@ -10614,6 +11253,27 @@
       },
       "documentation":"<p>The properties that are applied when Salesforce is being used as a source.</p>"
     },
+    "ScheduleConfiguration":{
+      "type":"structure",
+      "required":["Interval"],
+      "members":{
+        "Interval":{
+          "shape":"IntervalValue",
+          "documentation":"<p>The interval between scheduled executions. </p>",
+          "locationName":"Interval"
+        },
+        "Unit":{
+          "shape":"ScheduleConfigurationUnit",
+          "documentation":"<p>The unit for the interval. The following are valid values: </p> <ul> <li> <p> <b>HOURLY</b>: The interval is measured in hours. </p> </li> </ul>",
+          "locationName":"Unit"
+        }
+      },
+      "documentation":"<p>Configuration for scheduled segment membership event notifications. </p>"
+    },
+    "ScheduleConfigurationUnit":{
+      "type":"string",
+      "enum":["HOURLY"]
+    },
     "ScheduleExpression":{
       "type":"string",
       "max":256,
@@ -10623,6 +11283,22 @@
       "type":"long",
       "max":36000,
       "min":0
+    },
+    "ScheduledExecutions":{
+      "type":"structure",
+      "members":{
+        "NextExecutedAt":{
+          "shape":"timestamp",
+          "documentation":"<p>The timestamp of the next scheduled execution. </p>",
+          "locationName":"NextExecutedAt"
+        },
+        "LastExecutedAt":{
+          "shape":"timestamp",
+          "documentation":"<p>The timestamp of the last successful scheduled execution. </p>",
+          "locationName":"LastExecutedAt"
+        }
+      },
+      "documentation":"<p>Information about scheduled execution timestamps. </p>"
     },
     "ScheduledTriggerProperties":{
       "type":"structure",
@@ -10721,6 +11397,68 @@
         "NextToken":{
           "shape":"token",
           "documentation":"<p>The pagination token from the previous SearchProfiles API call.</p>"
+        }
+      }
+    },
+    "SearchRecommendationsRequest":{
+      "type":"structure",
+      "required":[
+        "DomainName",
+        "KeyName",
+        "KeyValues",
+        "Recommender"
+      ],
+      "members":{
+        "DomainName":{
+          "shape":"name",
+          "documentation":"<p>The unique name of the domain.</p>",
+          "location":"uri",
+          "locationName":"DomainName"
+        },
+        "KeyName":{
+          "shape":"name",
+          "documentation":"<p>A searchable identifier of a customer profile. You can use a predefined key, such as <code>_profileId</code>, <code>_phone</code>, or <code>_email</code>, or a custom-defined key.</p>"
+        },
+        "KeyValues":{
+          "shape":"KeyValuesList",
+          "documentation":"<p>A list of key values. Provide one value for each field of the search key.</p>"
+        },
+        "Recommender":{
+          "shape":"Recommender",
+          "documentation":"<p>The recommender used to generate the recommendations.</p>"
+        },
+        "CandidateIds":{
+          "shape":"CandidateIdList",
+          "documentation":"<p>A list of item IDs to rank for the user. Use this when you want to re-rank a specific set of items rather than getting recommendations from the full item catalog. Required for personalized-ranking use cases.</p>"
+        },
+        "Context":{
+          "shape":"RecommenderContext",
+          "documentation":"<p>The contextual metadata used to provide dynamic runtime information to tailor recommendations.</p>"
+        },
+        "Diversity":{
+          "shape":"RecommendationDiversityConfig",
+          "documentation":"<p>Runtime diversity configuration for this request. Enables diversity-aware recommendations and optionally supplies values for placeholder-based diversity caps configured on the recommender.</p>"
+        },
+        "Metadata":{
+          "shape":"RecommendationMetadata",
+          "documentation":"<p>Configuration for metadata to include in recommendation responses.</p>"
+        },
+        "MaxRecommendations":{
+          "shape":"maxSize500",
+          "documentation":"<p>The maximum number of recommendations to return. The default value is 5.</p>"
+        }
+      }
+    },
+    "SearchRecommendationsResponse":{
+      "type":"structure",
+      "members":{
+        "ProfileId":{
+          "shape":"uuid",
+          "documentation":"<p>The unique identifier of the profile for which to retrieve recommendations.</p>"
+        },
+        "Recommendations":{
+          "shape":"Recommendations",
+          "documentation":"<p>List of recommendations generated by the recommender.</p>"
         }
       }
     },
@@ -10843,6 +11581,15 @@
       "enum":[
         "ASC",
         "DESC"
+      ]
+    },
+    "SegmentSubscriptionStatus":{
+      "type":"string",
+      "enum":[
+        "STARTING",
+        "RUNNING",
+        "STOPPED",
+        "FAILED"
       ]
     },
     "SegmentType":{
@@ -11103,7 +11850,8 @@
         "MINIMUM",
         "MAXIMUM",
         "AVERAGE",
-        "MAX_OCCURRENCE"
+        "MAX_OCCURRENCE",
+        "RECENT_OCCURRENCES"
       ],
       "sensitive":true
     },
@@ -11187,6 +11935,50 @@
         "BEGINS_WITH",
         "ENDS_WITH"
       ]
+    },
+    "SubscriptionEvent":{
+      "type":"string",
+      "enum":[
+        "JOINED",
+        "LEFT"
+      ]
+    },
+    "SubscriptionEventItem":{
+      "type":"structure",
+      "members":{
+        "ProfileId":{
+          "shape":"uuid",
+          "documentation":"<p>The unique identifier of a customer profile.</p>",
+          "locationName":"ProfileId"
+        },
+        "UpdatedAt":{
+          "shape":"timestamp",
+          "documentation":"<p>The timestamp of when the membership change was detected. </p>",
+          "locationName":"UpdatedAt"
+        },
+        "EventType":{
+          "shape":"SubscriptionEventType",
+          "documentation":"<p>The type of event that triggered the membership change. The following are valid values: </p> <ul> <li> <p> <b>LIVE</b>: Real-time event triggered by a profile or calculated attribute change (Classic segments only). </p> </li> <li> <p> <b>SCHEDULE</b>: Event generated during a scheduled execution. </p> </li> </ul>",
+          "locationName":"EventType"
+        },
+        "Event":{
+          "shape":"SubscriptionEvent",
+          "documentation":"<p>Whether the profile joined or left the segment. The following are valid values: </p> <ul> <li> <p> <b>JOINED</b>: The profile joined the segment. </p> </li> <li> <p> <b>LEFT</b>: The profile left the segment. </p> </li> </ul>",
+          "locationName":"Event"
+        }
+      },
+      "documentation":"<p>Represents a single segment membership event. </p>"
+    },
+    "SubscriptionEventType":{
+      "type":"string",
+      "enum":[
+        "LIVE",
+        "SCHEDULE"
+      ]
+    },
+    "SubscriptionEventsList":{
+      "type":"list",
+      "member":{"shape":"SubscriptionEventItem"}
     },
     "TagArn":{
       "type":"string",
@@ -11350,6 +12142,10 @@
         "Metrics":{
           "shape":"Metrics",
           "documentation":"<p>A collection of performance metrics and statistics from the training process.</p>"
+        },
+        "RecommenderVersionName":{
+          "shape":"RecommenderVersionName",
+          "documentation":"<p>The name of the recommender version that produced these training metrics.</p>"
         }
       },
       "documentation":"<p>Contains metrics and performance indicators from the training of a recommender model.</p>"
@@ -11980,6 +12776,10 @@
         "RecommenderConfig":{
           "shape":"RecommenderConfig",
           "documentation":"<p>The new configuration settings to apply to the recommender, including updated parameters and settings that define its behavior.</p>"
+        },
+        "RecommenderVersionName":{
+          "shape":"RecommenderVersionName",
+          "documentation":"<p>The name of a specific recommender version to activate as part of this update (for example, to roll back to a previously trained version).</p>"
         }
       }
     },

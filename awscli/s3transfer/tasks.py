@@ -376,7 +376,7 @@ class CompleteMultipartUploadTask(Task):
         :param extra_args:  A dictionary of any extra arguments that may be
             used in completing the multipart transfer.
         """
-        client.complete_multipart_upload(
+        return client.complete_multipart_upload(
             Bucket=bucket,
             Key=key,
             UploadId=upload_id,

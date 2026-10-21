@@ -28,8 +28,6 @@ log = logging.getLogger(__name__)
 
 
 SPECIAL_CASES = [
-    'iam-get-user-policy.xml',  # Needs the JSON decode from handlers.py
-    'iam-list-roles.xml',  # Needs the JSON decode from handlers.py for the policy
     's3-get-bucket-location.xml',  # Confirmed, this will need a special handler
     #'s3-list-multipart-uploads.xml',  # Bug in model, missing delimeter
     'cloudformation-get-template.xml',  # Need to JSON decode the template body.

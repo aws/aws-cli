@@ -147,7 +147,9 @@
         {"shape":"ConflictException"},
         {"shape":"ValidationException"},
         {"shape":"ThrottlingException"},
-        {"shape":"InternalServerException"}
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"SubscriptionRequiredException"}
       ],
       "documentation":"<p>Create a new payment instrument for a connector.</p>",
       "idempotent":true
@@ -167,7 +169,8 @@
         {"shape":"ConflictException"},
         {"shape":"ValidationException"},
         {"shape":"ThrottlingException"},
-        {"shape":"InternalServerException"}
+        {"shape":"InternalServerException"},
+        {"shape":"SubscriptionRequiredException"}
       ],
       "documentation":"<p>Create a new payment session.</p>",
       "idempotent":true
@@ -212,6 +215,25 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Deletes a batch evaluation and its associated results.</p>",
+      "idempotent":true
+    },
+    "DeleteCapacityProviderSession":{
+      "name":"DeleteCapacityProviderSession",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/capacity-providers/{capacityProviderId}/sessions/{sessionId}",
+        "responseCode":202
+      },
+      "input":{"shape":"DeleteCapacityProviderSessionRequest"},
+      "output":{"shape":"DeleteCapacityProviderSessionResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Deletes a session associated with a capacity provider in Amazon Bedrock AgentCore and makes the session unavailable for further use. To delete a capacity provider session, specify both the capacity provider identifier and the session ID. After you delete a session, you cannot restart it.</p>",
       "idempotent":true
     },
     "DeleteEvent":{
@@ -365,6 +387,7 @@
       "output":{"shape":"GetAgentCardResponse"},
       "errors":[
         {"shape":"ServiceQuotaExceededException"},
+        {"shape":"RetryableConflictException"},
         {"shape":"ValidationException"},
         {"shape":"AccessDeniedException"},
         {"shape":"RuntimeClientError"},
@@ -667,6 +690,26 @@
       ],
       "documentation":"<p>Obtains a workload access token for agentic workloads acting on behalf of a user, using the user's ID.</p>"
     },
+    "IngestData":{
+      "name":"IngestData",
+      "http":{
+        "method":"POST",
+        "requestUri":"/memories/{memoryId}/ingest",
+        "responseCode":202
+      },
+      "input":{"shape":"IngestDataInput"},
+      "output":{"shape":"IngestDataOutput"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ThrottledException"},
+        {"shape":"ServiceException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Submits content directly for ingestion to generate long-term memory records in a AgentCore Memory resource.</p> <p>To use this operation, you must have the <code>bedrock-agentcore:IngestData</code> permission.</p>",
+      "idempotent":true
+    },
     "InvokeAgentRuntime":{
       "name":"InvokeAgentRuntime",
       "http":{
@@ -699,6 +742,7 @@
       "output":{"shape":"InvokeAgentRuntimeCommandResponse"},
       "errors":[
         {"shape":"ServiceQuotaExceededException"},
+        {"shape":"RetryableConflictException"},
         {"shape":"ValidationException"},
         {"shape":"AccessDeniedException"},
         {"shape":"RuntimeClientError"},
@@ -757,6 +801,7 @@
       "input":{"shape":"InvokeHarnessRequest"},
       "output":{"shape":"InvokeHarnessResponse"},
       "errors":[
+        {"shape":"ServiceQuotaExceededException"},
         {"shape":"AccessDeniedException"},
         {"shape":"RuntimeClientError"},
         {"shape":"ValidationException"},
@@ -1013,8 +1058,10 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ConflictException"},
         {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"},
-        {"shape":"InternalServerException"}
+        {"shape":"InternalServerException"},
+        {"shape":"SubscriptionRequiredException"}
       ],
       "documentation":"<p>Processes a payment using a payment instrument within a payment session.</p>",
       "idempotent":true
@@ -1485,6 +1532,44 @@
       "type":"list",
       "member":{"shape":"ActorSummary"}
     },
+    "AffectedSession":{
+      "type":"structure",
+      "required":[
+        "sessionId",
+        "explanation",
+        "fixType",
+        "recommendation",
+        "failureSpans"
+      ],
+      "members":{
+        "sessionId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the affected session.</p>"
+        },
+        "explanation":{
+          "shape":"String",
+          "documentation":"<p>An explanation of how the failure manifested in this session.</p>"
+        },
+        "fixType":{
+          "shape":"String",
+          "documentation":"<p>The type of fix recommended for this failure.</p>"
+        },
+        "recommendation":{
+          "shape":"String",
+          "documentation":"<p>The specific fix recommendation for this session.</p>"
+        },
+        "failureSpans":{
+          "shape":"FailureSpanDetailList",
+          "documentation":"<p>The list of spans where failures were detected in this session.</p>"
+        }
+      },
+      "documentation":"<p>A session affected by a detected failure pattern, including root cause details.</p>"
+    },
+    "AffectedSessionList":{
+      "type":"list",
+      "member":{"shape":"AffectedSession"},
+      "min":0
+    },
     "AgentCard":{
       "type":"structure",
       "members":{},
@@ -1529,6 +1614,14 @@
         "cloudwatchLogs":{
           "shape":"CloudWatchLogsTraceConfig",
           "documentation":"<p>Agent traces read from CloudWatch Logs.</p>"
+        },
+        "batchEvaluation":{
+          "shape":"BatchEvaluationTraceConfig",
+          "documentation":"<p>Use a completed batch evaluation as the source of agent traces.</p>"
+        },
+        "onlineEvaluation":{
+          "shape":"OnlineEvaluationTraceConfig",
+          "documentation":"<p>Agent traces from an online evaluation configuration over a specified time range.</p>"
         }
       },
       "documentation":"<p>The configuration specifying where to read agent traces from for recommendation analysis.</p>",
@@ -1657,6 +1750,10 @@
           "shape":"String",
           "documentation":"<p>A unique, case-sensitive identifier to ensure idempotent processing of the batch request.</p>",
           "idempotencyToken":true
+        },
+        "recordExpirySpecification":{
+          "shape":"RecordExpirySpecification",
+          "documentation":"<p>The record expiry (long-term memory time-to-live) applied to every record created by this request. Set <code>recordExpiryDurationDays</code> to the number of days after which the records expire. Only the expiry provided here is applied; the records' strategy association has no effect on their expiry. If you do not provide this value, the records do not expire. The <code>REMOVE</code> action does not apply when creating records.</p>"
         }
       }
     },
@@ -1784,6 +1881,10 @@
           "shape":"EvaluatorList",
           "documentation":"<p>The list of evaluators applied during the batch evaluation.</p>"
         },
+        "insights":{
+          "shape":"InsightList",
+          "documentation":"<p>The list of insight analyses applied during the batch evaluation.</p>"
+        },
         "evaluationResults":{
           "shape":"EvaluationJobResults",
           "documentation":"<p>The aggregated evaluation results.</p>"
@@ -1791,6 +1892,10 @@
         "errorDetails":{
           "shape":"ErrorDetailsList",
           "documentation":"<p>The error details if the batch evaluation encountered failures.</p>"
+        },
+        "kmsKeyArn":{
+          "shape":"KmsKeyArn",
+          "documentation":"<p>The ARN of the KMS key used to encrypt evaluation data.</p>"
         },
         "updatedAt":{
           "shape":"SyntheticTimestamp_date_time",
@@ -1802,6 +1907,17 @@
     "BatchEvaluationSummaryList":{
       "type":"list",
       "member":{"shape":"BatchEvaluationSummary"}
+    },
+    "BatchEvaluationTraceConfig":{
+      "type":"structure",
+      "required":["batchEvaluationArn"],
+      "members":{
+        "batchEvaluationArn":{
+          "shape":"BatchEvaluationArn",
+          "documentation":"<p>The ARN of the completed batch evaluation to use as the trace source.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for using a batch evaluation as the source of agent traces for recommendations.</p>"
     },
     "BatchUpdateMemoryRecordsInput":{
       "type":"structure",
@@ -1819,6 +1935,10 @@
         "records":{
           "shape":"MemoryRecordsUpdateInputList",
           "documentation":"<p>A list of memory record update inputs to be processed in the batch operation.</p>"
+        },
+        "recordExpirySpecification":{
+          "shape":"RecordExpirySpecification",
+          "documentation":"<p>The record expiry (long-term memory time-to-live) applied to every record updated by this request. Set <code>recordExpiryDurationDays</code> to configure or overwrite the number of days after which the records expire, or set <code>action</code> to <code>REMOVE</code> to clear a previously configured expiry so that the records no longer expire.</p> <p>When you do not provide this value, the service determines each record's expiry from its current state:</p> <ul> <li> <p>If the record already has an expiry configured, the service resets and reapplies the expiry based on the last applied <code>recordExpiryDurationDays</code>.</p> </li> <li> <p>If the record does not have an expiry configured, no expiry is applied and the record remains non-expiring. This is the outcome regardless of whether the record's strategy configures an expiry.</p> </li> </ul> <p>Providing an explicit <code>recordExpiryDurationDays</code> always takes precedence: it overwrites an existing expiry, or sets one on a record that previously had none.</p>"
         }
       }
     },
@@ -2121,6 +2241,28 @@
       "max":512,
       "min":10
     },
+    "CapacityProviderArn":{
+      "type":"string",
+      "pattern":"arn:aws(-[^:]+)?:bedrock-agentcore:[a-z0-9-]+:[0-9]{12}:capacity-provider/[a-zA-Z][a-zA-Z0-9_]{0,47}-[a-zA-Z0-9]{10}"
+    },
+    "CapacityProviderId":{
+      "type":"string",
+      "documentation":"<p>Capacity provider identifier. Pattern matches MiskiModel definition.</p>",
+      "max":59,
+      "min":12,
+      "pattern":"[a-zA-Z][a-zA-Z0-9_]{0,47}-[a-zA-Z0-9]{10}"
+    },
+    "CapacityProviderSessionStatus":{
+      "type":"string",
+      "enum":[
+        "Provisioning",
+        "Deprovisioning",
+        "Active",
+        "Deleting",
+        "Deleted",
+        "Stopped"
+      ]
+    },
     "Certificate":{
       "type":"structure",
       "required":["location"],
@@ -2165,6 +2307,10 @@
         "timeRange":{
           "shape":"SessionFilterConfig",
           "documentation":"<p>The time range filter for selecting sessions to evaluate.</p>"
+        },
+        "sessionTraceIds":{
+          "shape":"SessionTraceIdsList",
+          "documentation":"<p>A list of session and trace ID pairs that restrict evaluation to specific traces within a session. If specified, only the listed traces are evaluated instead of the entire session.</p>"
         }
       },
       "documentation":"<p>Filter configuration for narrowing down CloudWatch Logs sessions for evaluation.</p>"
@@ -2234,10 +2380,7 @@
     },
     "CloudWatchLogsSource":{
       "type":"structure",
-      "required":[
-        "serviceNames",
-        "logGroupNames"
-      ],
+      "required":["serviceNames"],
       "members":{
         "serviceNames":{
           "shape":"CloudWatchLogsSourceServiceNamesList",
@@ -2245,7 +2388,11 @@
         },
         "logGroupNames":{
           "shape":"CloudWatchLogsSourceLogGroupNamesList",
-          "documentation":"<p>The list of CloudWatch log group names to read agent traces from. Maximum of 5 log groups.</p>"
+          "documentation":"<p>The list of CloudWatch log group names to read agent traces from. Maximum of 10 log groups.</p>"
+        },
+        "logGroupNamePrefixes":{
+          "shape":"CloudWatchLogsSourceLogGroupNamePrefixesList",
+          "documentation":"<p>The list of CloudWatch log group name prefixes to read agent traces from. Specify this instead of <code>logGroupNames</code> to match log groups by prefix. Maximum of 5 prefixes. Specify either <code>logGroupNames</code> or <code>logGroupNamePrefixes</code>, not both. One of the two is required.</p>"
         },
         "filterConfig":{
           "shape":"CloudWatchFilterConfig",
@@ -2254,11 +2401,19 @@
       },
       "documentation":"<p>The configuration for reading agent traces from CloudWatch Logs.</p>"
     },
-    "CloudWatchLogsSourceLogGroupNamesList":{
+    "CloudWatchLogsSourceLogGroupNamePrefixesList":{
       "type":"list",
-      "member":{"shape":"String"},
+      "member":{"shape":"LogGroupNamePrefix"},
+      "documentation":"<p>List of CloudWatch Logs log group name prefixes to source trace data from.</p>",
       "max":5,
       "min":1
+    },
+    "CloudWatchLogsSourceLogGroupNamesList":{
+      "type":"list",
+      "member":{"shape":"LogGroupName"},
+      "documentation":"<p>Length is constrained per member, because members relaxed from @required carry @default([]).</p>",
+      "max":10,
+      "min":0
     },
     "CloudWatchLogsSourceServiceNamesList":{
       "type":"list",
@@ -2306,18 +2461,22 @@
     },
     "CloudWatchOutputConfig":{
       "type":"structure",
-      "required":[
-        "logGroupName",
-        "logStreamName"
-      ],
       "members":{
         "logGroupName":{
-          "shape":"String",
-          "documentation":"<p>The name of the CloudWatch log group where evaluation results will be written.</p>"
+          "shape":"OptionalLogGroupName",
+          "documentation":"<p>The name of the CloudWatch log group where evaluation results will be written. This value doesn't apply when <code>resultDestination</code> is <code>SOURCE_LOG_GROUP</code>, because results are written back to the trace source log group. The name can't be under the service-reserved <code>/aws/bedrock-agentcore/evaluations/</code> namespace, apart from the service-managed default group.</p>"
         },
         "logStreamName":{
-          "shape":"String",
+          "shape":"LogStreamName",
           "documentation":"<p>The name of the CloudWatch log stream where evaluation results will be written.</p>"
+        },
+        "metricsNamespace":{
+          "shape":"MetricsNamespace",
+          "documentation":"<p>The CloudWatch metrics namespace where evaluation result metrics are published. If you omit this value, the service publishes metrics to <code>Bedrock-AgentCore/Evaluations</code>. This value can't begin with <code>AWS/</code>.</p>"
+        },
+        "resultDestination":{
+          "shape":"ResultDestination",
+          "documentation":"<p>The destination where evaluation results are written. Valid values:</p> <ul> <li> <p> <code>DEDICATED_LOG_GROUP</code> (default) – Writes results to a dedicated result log group.</p> </li> <li> <p> <code>SOURCE_LOG_GROUP</code> – Writes results back to the log group that the agent traces were read from. If you use this value, don't specify <code>logGroupName</code>.</p> </li> </ul>"
         }
       },
       "documentation":"<p>CloudWatch Logs destination for batch evaluation results.</p>"
@@ -2515,7 +2674,7 @@
     },
     "ConfigurationBundleArn":{
       "type":"string",
-      "pattern":"arn:aws:bedrock-agentcore:[a-z0-9-]+:[0-9]{12}:configuration-bundle/[a-zA-Z][a-zA-Z0-9-_]{0,99}-[a-zA-Z0-9]{10}"
+      "pattern":"arn:aws[a-zA-Z-]*:bedrock-agentcore:[a-z0-9-]+:[0-9]{12}:configuration-bundle/[a-zA-Z][a-zA-Z0-9-_]{0,99}-[a-zA-Z0-9]{10}"
     },
     "ConfigurationBundleRef":{
       "type":"structure",
@@ -2655,6 +2814,17 @@
       },
       "documentation":"<p>An event that contains incremental output from a command execution. This event streams standard output and standard error content as it becomes available during command execution.</p>"
     },
+    "ContentSource":{
+      "type":"structure",
+      "members":{
+        "inline":{
+          "shape":"InlineMemoryContent",
+          "documentation":"<p>The content included directly in the request.</p>"
+        }
+      },
+      "documentation":"<p>The source of the content to ingest. Only inline content is supported.</p>",
+      "union":true
+    },
     "ContentStartEvent":{
       "type":"structure",
       "members":{},
@@ -2782,6 +2952,10 @@
           "shape":"ClientToken",
           "documentation":"<p>A unique, case-sensitive identifier to ensure that the API request completes no more than one time. If this token matches a previous request, the service ignores the request, but does not return an error.</p>",
           "idempotencyToken":true
+        },
+        "tags":{
+          "shape":"TagsMap",
+          "documentation":"<p>A map of tag keys and values to associate with the A/B test.</p>"
         }
       }
     },
@@ -2850,7 +3024,7 @@
         },
         "payload":{
           "shape":"PayloadTypeList",
-          "documentation":"<p>The content payload of the event. This can include conversational data or binary content.</p>"
+          "documentation":"<p>The content payload of the event. This can include conversational data, JSON data, or binary content.</p>"
         },
         "branch":{
           "shape":"Branch",
@@ -2864,6 +3038,14 @@
         "metadata":{
           "shape":"MetadataMap",
           "documentation":"<p>The key-value metadata to attach to the event.</p>"
+        },
+        "extractionMode":{
+          "shape":"ExtractionMode",
+          "documentation":"<p>Controls long-term memory extraction for this event. When set to <code>SKIP</code>, the event is stored in short-term memory but is excluded from long-term memory extraction. If not specified, the event is processed for extraction as usual.</p>"
+        },
+        "extractionConfig":{
+          "shape":"ExtractionConfig",
+          "documentation":"<p>The extraction configuration for long-term memory records. Use this parameter to specify namespace variable keys and their values for namespace substitution during extraction.</p>"
         }
       }
     },
@@ -3017,6 +3199,10 @@
         "payload":{
           "shape":"PaymentDocument",
           "documentation":"<p>The X402 payment payload.</p>"
+        },
+        "permit2AllowanceLimit":{
+          "shape":"Permit2AllowanceLimit",
+          "documentation":"<p>The maximum on-chain Permit2 allowance to grant before signing the payment authorization, in the asset's smallest denomination. This field is valid only for the <code>upto</code> (metered) scheme; supplying it for the <code>exact</code> scheme returns a validation error.</p> <p>When set, the service approves an ERC-20 allowance for this amount before processing the payment. The approval sets, rather than adds to, the wallet's allowance. Set this field only when the wallet needs approving, for example on its first <code>upto</code> payment, to avoid a redundant on-chain transaction. Omit the field to skip allowance handling. This is the default, and the only behavior for the <code>exact</code> scheme.</p>"
         }
       },
       "documentation":"<p>The input for a crypto X402 payment.</p>"
@@ -3077,6 +3263,10 @@
         "cloudWatchLogs":{
           "shape":"CloudWatchLogsSource",
           "documentation":"<p>Configuration for pulling agent session traces from CloudWatch Logs.</p>"
+        },
+        "onlineEvaluationConfigSource":{
+          "shape":"OnlineEvaluationConfigSource",
+          "documentation":"<p>Reference an existing OnlineEvaluationConfig as session source</p>"
         }
       },
       "documentation":"<p>Configuration for the data source used in evaluation.</p>",
@@ -3154,6 +3344,49 @@
         }
       }
     },
+    "DeleteCapacityProviderSessionRequest":{
+      "type":"structure",
+      "required":[
+        "capacityProviderId",
+        "sessionId"
+      ],
+      "members":{
+        "capacityProviderId":{
+          "shape":"CapacityProviderId",
+          "documentation":"<p>The unique identifier of the capacity provider associated with the session.</p>",
+          "location":"uri",
+          "locationName":"capacityProviderId"
+        },
+        "sessionId":{
+          "shape":"SessionId",
+          "documentation":"<p>The unique identifier of the capacity provider session to delete.</p>",
+          "location":"uri",
+          "locationName":"sessionId"
+        }
+      }
+    },
+    "DeleteCapacityProviderSessionResponse":{
+      "type":"structure",
+      "required":[
+        "capacityProviderArn",
+        "sessionId",
+        "status"
+      ],
+      "members":{
+        "capacityProviderArn":{
+          "shape":"CapacityProviderArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the capacity provider associated with the deleted session.</p>"
+        },
+        "sessionId":{
+          "shape":"SessionId",
+          "documentation":"<p>The unique identifier of the deleted capacity provider session.</p>"
+        },
+        "status":{
+          "shape":"CapacityProviderSessionStatus",
+          "documentation":"<p>The current status of the capacity provider session. When the status is <code>Deleting</code>, the session is being deleted and is not available. When the status is <code>Deleted</code>, the session is no longer available.</p>"
+        }
+      }
+    },
     "DeleteEventInput":{
       "type":"structure",
       "required":[
@@ -3217,6 +3450,12 @@
           "documentation":"<p>The identifier of the memory record to delete.</p>",
           "location":"uri",
           "locationName":"memoryRecordId"
+        },
+        "namespace":{
+          "shape":"Namespace",
+          "documentation":"<p>The namespace of the memory record to delete. This value is used for IAM condition key authorization.</p>",
+          "location":"querystring",
+          "locationName":"namespace"
         }
       }
     },
@@ -3404,6 +3643,42 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "EfsAccessPointArn":{
+      "type":"string",
+      "max":128,
+      "min":0,
+      "pattern":"arn:aws[-a-z]*:elasticfilesystem:[0-9a-z-:]+:access-point/fsap-[0-9a-f]{8,40}"
+    },
+    "EfsConfiguration":{
+      "type":"structure",
+      "required":[
+        "accessPointArn",
+        "mountPath",
+        "fileSystemArn"
+      ],
+      "members":{
+        "accessPointArn":{
+          "shape":"EfsAccessPointArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon Elastic File System (Amazon EFS) access point to mount.</p>"
+        },
+        "mountPath":{
+          "shape":"MountPath",
+          "documentation":"<p>The absolute path within the session at which the access point is mounted, for example <code>/mnt/efs</code>. Each mount path must be unique across all file system configurations in the session.</p>"
+        },
+        "fileSystemArn":{
+          "shape":"EfsFileSystemArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon Elastic File System (Amazon EFS) file system that owns the access point.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for mounting an Amazon Elastic File System (Amazon EFS) access point that you own into a session.</p>"
+    },
+    "EfsFileSystemArn":{
+      "type":"string",
+      "documentation":"<p>The Amazon Resource Name (ARN) of an Amazon Elastic File System (Amazon EFS) file system. The access points you specify must belong to this file system.</p>",
+      "max":256,
+      "min":0,
+      "pattern":"arn:aws[-a-z]*:elasticfilesystem:[a-z0-9-]+:[0-9]{12}:file-system/fs-[0-9a-f]{8,40}"
     },
     "Email":{
       "type":"string",
@@ -3719,15 +3994,17 @@
           "documentation":"<p>The unique identifier of the evaluator. Can reference built-in evaluators (e.g., <code>Builtin.Helpfulness</code>) or custom evaluators.</p>"
         }
       },
-      "documentation":"<p>An evaluator to run against sessions.</p>"
+      "documentation":"<p>An evaluator to run against sessions during batch evaluation.</p>"
     },
     "EvaluatorArn":{
       "type":"string",
-      "pattern":"arn:aws:bedrock-agentcore:[a-z0-9-]+:[0-9]{12}:evaluator\\/[a-zA-Z][a-zA-Z0-9-_]{0,99}-[a-zA-Z0-9]{10}$|^arn:aws:bedrock-agentcore:::evaluator/Builtin.[a-zA-Z0-9_-]+"
+      "pattern":"arn:aws[a-zA-Z-]*:bedrock-agentcore:[a-z0-9-]+:[0-9]{12}:evaluator\\/[a-zA-Z][a-zA-Z0-9-_]{0,99}-[a-zA-Z0-9]{10}$|^arn:aws[a-zA-Z-]*:bedrock-agentcore:::evaluator/(Builtin|ThirdParty)\\.[a-zA-Z0-9._-]+"
     },
     "EvaluatorId":{
       "type":"string",
-      "pattern":"(Builtin.[a-zA-Z0-9_-]+|[a-zA-Z][a-zA-Z0-9-_]{0,99}-[a-zA-Z0-9]{10})"
+      "max":111,
+      "min":1,
+      "pattern":"(Builtin\\.[a-zA-Z0-9._-]+|ThirdParty\\.[a-zA-Z0-9_-]+\\.[a-zA-Z0-9_-]+|[a-zA-Z][a-zA-Z0-9-_]{0,99}-[a-zA-Z0-9]{10})"
     },
     "EvaluatorList":{
       "type":"list",
@@ -3762,7 +4039,9 @@
     },
     "EvaluatorName":{
       "type":"string",
-      "pattern":"(Builtin.[a-zA-Z0-9_-]+|[a-zA-Z][a-zA-Z0-9_]{0,47})"
+      "max":48,
+      "min":1,
+      "pattern":"(Builtin\\.[a-zA-Z0-9._-]+|ThirdParty\\.[a-zA-Z0-9_-]+\\.[a-zA-Z0-9_-]+|[a-zA-Z][a-zA-Z0-9_]{0,47})"
     },
     "EvaluatorStatistics":{
       "type":"structure",
@@ -3887,6 +4166,83 @@
       "max":5,
       "min":1
     },
+    "ExecutionSummaryAffectedSession":{
+      "type":"structure",
+      "required":[
+        "sessionId",
+        "approachTaken",
+        "finalOutcome"
+      ],
+      "members":{
+        "sessionId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the session.</p>"
+        },
+        "approachTaken":{
+          "shape":"String",
+          "documentation":"<p>The approach taken by the agent during this session.</p>"
+        },
+        "finalOutcome":{
+          "shape":"String",
+          "documentation":"<p>The final outcome of the session.</p>"
+        }
+      },
+      "documentation":"<p>A session associated with an execution summary cluster.</p>"
+    },
+    "ExecutionSummaryAffectedSessionList":{
+      "type":"list",
+      "member":{"shape":"ExecutionSummaryAffectedSession"},
+      "min":0
+    },
+    "ExecutionSummaryCluster":{
+      "type":"structure",
+      "required":[
+        "clusterId",
+        "name",
+        "description",
+        "affectedSessionCount",
+        "affectedSessions"
+      ],
+      "members":{
+        "clusterId":{
+          "shape":"Integer",
+          "documentation":"<p>The unique identifier of the execution summary cluster.</p>"
+        },
+        "name":{
+          "shape":"String",
+          "documentation":"<p>The name of the execution pattern cluster.</p>"
+        },
+        "description":{
+          "shape":"String",
+          "documentation":"<p>A description of the execution pattern.</p>"
+        },
+        "affectedSessionCount":{
+          "shape":"Integer",
+          "documentation":"<p>The number of sessions with this execution pattern.</p>"
+        },
+        "affectedSessions":{
+          "shape":"ExecutionSummaryAffectedSessionList",
+          "documentation":"<p>The list of sessions with this execution pattern.</p>"
+        }
+      },
+      "documentation":"<p>A cluster of similar execution patterns identified across sessions.</p>"
+    },
+    "ExecutionSummaryClusterList":{
+      "type":"list",
+      "member":{"shape":"ExecutionSummaryCluster"},
+      "min":0
+    },
+    "ExecutionSummaryClusteringResultContent":{
+      "type":"structure",
+      "required":["executionSummaries"],
+      "members":{
+        "executionSummaries":{
+          "shape":"ExecutionSummaryClusterList",
+          "documentation":"<p>The list of execution summary clusters identified across analyzed sessions.</p>"
+        }
+      },
+      "documentation":"<p>The execution summary clustering result containing grouped execution patterns identified across evaluated sessions.</p>"
+    },
     "ExternalProxy":{
       "type":"structure",
       "required":[
@@ -3918,6 +4274,16 @@
       "box":true,
       "max":65535,
       "min":1
+    },
+    "ExtractionConfig":{
+      "type":"structure",
+      "members":{
+        "namespaceVariables":{
+          "shape":"NamespaceVariablesMap",
+          "documentation":"<p>A map of <code>namespaceKeys</code> to their values. The service substitutes these values into <code>namespaceTemplates</code> during long-term memory extraction to control namespace hierarchy.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for extraction behavior. Use this structure to specify namespace variable keys and their values for namespace substitution during long-term memory extraction.</p>"
     },
     "ExtractionJob":{
       "type":"structure",
@@ -4009,6 +4375,125 @@
       "type":"string",
       "enum":["FAILED"]
     },
+    "ExtractionMode":{
+      "type":"string",
+      "enum":["SKIP"]
+    },
+    "FailureAnalysisResultContent":{
+      "type":"structure",
+      "required":["failures"],
+      "members":{
+        "failures":{
+          "shape":"FailureCategoryClusterList",
+          "documentation":"<p>The list of failure category clusters identified across analyzed sessions.</p>"
+        }
+      },
+      "documentation":"<p>The failure analysis clustering result containing categorized failure clusters with root causes and remediation recommendations.</p>"
+    },
+    "FailureCategoryCluster":{
+      "type":"structure",
+      "required":[
+        "clusterId",
+        "name",
+        "description",
+        "affectedSessionCount",
+        "subCategories"
+      ],
+      "members":{
+        "clusterId":{
+          "shape":"Integer",
+          "documentation":"<p>The unique identifier of the failure category cluster.</p>"
+        },
+        "name":{
+          "shape":"String",
+          "documentation":"<p>The name of the failure category.</p>"
+        },
+        "description":{
+          "shape":"String",
+          "documentation":"<p>A description of the failure category pattern.</p>"
+        },
+        "affectedSessionCount":{
+          "shape":"Integer",
+          "documentation":"<p>The number of sessions affected by this failure category.</p>"
+        },
+        "subCategories":{
+          "shape":"FailureSubCategoryClusterList",
+          "documentation":"<p>The list of failure subcategories within this category.</p>"
+        }
+      },
+      "documentation":"<p>A top-level failure category identified by clustering similar failure patterns across sessions.</p>"
+    },
+    "FailureCategoryClusterList":{
+      "type":"list",
+      "member":{"shape":"FailureCategoryCluster"},
+      "min":0
+    },
+    "FailureSpanDetail":{
+      "type":"structure",
+      "required":[
+        "spanId",
+        "traceId",
+        "signals"
+      ],
+      "members":{
+        "spanId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the span where the failure occurred.</p>"
+        },
+        "traceId":{
+          "shape":"String",
+          "documentation":"<p>The trace identifier associated with the failure span.</p>"
+        },
+        "signals":{
+          "shape":"InsightsFailureSignalList",
+          "documentation":"<p>The failure signals detected in this span.</p>"
+        }
+      },
+      "documentation":"<p>Details about a specific span where a failure was detected.</p>"
+    },
+    "FailureSpanDetailList":{
+      "type":"list",
+      "member":{"shape":"FailureSpanDetail"},
+      "min":0
+    },
+    "FailureSubCategoryCluster":{
+      "type":"structure",
+      "required":[
+        "clusterId",
+        "name",
+        "description",
+        "affectedSessionCount",
+        "rootCauses"
+      ],
+      "members":{
+        "clusterId":{
+          "shape":"Integer",
+          "documentation":"<p>The unique identifier of the failure subcategory cluster.</p>"
+        },
+        "name":{
+          "shape":"String",
+          "documentation":"<p>The name of the failure subcategory.</p>"
+        },
+        "description":{
+          "shape":"String",
+          "documentation":"<p>A description of the failure subcategory pattern.</p>"
+        },
+        "affectedSessionCount":{
+          "shape":"Integer",
+          "documentation":"<p>The number of sessions affected by this failure subcategory.</p>"
+        },
+        "rootCauses":{
+          "shape":"RootCauseClusterList",
+          "documentation":"<p>The list of root cause clusters identified within this subcategory.</p>"
+        }
+      },
+      "documentation":"<p>A subcategory of failures within a top-level failure category.</p>"
+    },
+    "FailureSubCategoryClusterList":{
+      "type":"list",
+      "member":{"shape":"FailureSubCategoryCluster"},
+      "min":0
+    },
     "FilterInput":{
       "type":"structure",
       "members":{
@@ -4046,6 +4531,26 @@
       },
       "documentation":"<p>A value used in filter comparisons, supporting different data types.</p>",
       "union":true
+    },
+    "FindingDescription":{
+      "type":"string",
+      "max":500,
+      "min":1,
+      "sensitive":true
+    },
+    "FindingTargetId":{
+      "type":"string",
+      "max":50,
+      "min":1
+    },
+    "FindingTargetType":{
+      "type":"string",
+      "documentation":"<p>The type of location in a session that a finding points to: a span ID, a trace ID, or a span name.</p>",
+      "enum":[
+        "SPAN_ID",
+        "TRACE_ID",
+        "SPAN_NAME"
+      ]
     },
     "GatewayArn":{
       "type":"string",
@@ -4259,6 +4764,10 @@
           "shape":"EvaluatorList",
           "documentation":"<p>The list of evaluators applied during the batch evaluation.</p>"
         },
+        "insights":{
+          "shape":"InsightList",
+          "documentation":"<p>The list of insight analyses applied during the batch evaluation.</p>"
+        },
         "dataSourceConfig":{
           "shape":"DataSourceConfig",
           "documentation":"<p>The data source configuration specifying where agent traces are pulled from.</p>"
@@ -4271,6 +4780,22 @@
           "shape":"EvaluationJobResults",
           "documentation":"<p>The aggregated evaluation results, including session completion counts and evaluator score summaries.</p>"
         },
+        "insightResults":{
+          "shape":"InsightResultList",
+          "documentation":"<p>The insights generated when the batch evaluation includes the <code>Builtin.FailureAnalysis</code> evaluator. Each insight groups related failures found across the evaluated sessions. An empty list means that no failures were found. If the analysis fails, this field is omitted and <code>errorDetails</code> describes the error.</p>"
+        },
+        "failureAnalysisResult":{
+          "shape":"FailureAnalysisResultContent",
+          "documentation":"<p>The failure analysis results from insights, containing categorized failure clusters with root causes and recommendations.</p>"
+        },
+        "userIntentResult":{
+          "shape":"UserIntentClusteringResultContent",
+          "documentation":"<p>The user intent clustering results from insights, containing grouped user intents across evaluated sessions.</p>"
+        },
+        "executionSummaryResult":{
+          "shape":"ExecutionSummaryClusteringResultContent",
+          "documentation":"<p>The execution summary clustering results from insights, containing grouped execution patterns across evaluated sessions.</p>"
+        },
         "errorDetails":{
           "shape":"ErrorDetailsList",
           "documentation":"<p>The error details if the batch evaluation encountered failures.</p>"
@@ -4282,6 +4807,10 @@
         "updatedAt":{
           "shape":"SyntheticTimestamp_date_time",
           "documentation":"<p>The timestamp when the batch evaluation was last updated.</p>"
+        },
+        "kmsKeyArn":{
+          "shape":"KmsKeyArn",
+          "documentation":"<p>The ARN of the KMS key used to encrypt evaluation data.</p>"
         }
       }
     },
@@ -4363,6 +4892,10 @@
           "shape":"Certificates",
           "documentation":"<p>The list of certificates installed in the browser session.</p>"
         },
+        "filesystemConfigurations":{
+          "shape":"ToolsFileSystemConfigurations",
+          "documentation":"<p>The file system configurations for the browser session. Each entry describes an access point and its mount path.</p>"
+        },
         "sessionReplayArtifact":{
           "shape":"String",
           "documentation":"<p>The artifact containing the session replay information.</p>"
@@ -4429,6 +4962,10 @@
         "certificates":{
           "shape":"Certificates",
           "documentation":"<p>The list of certificates installed in the code interpreter session.</p>"
+        },
+        "filesystemConfigurations":{
+          "shape":"ToolsFileSystemConfigurations",
+          "documentation":"<p>The file system configurations for the code interpreter session. Each entry describes an access point and its mount path.</p>"
         }
       }
     },
@@ -4495,6 +5032,12 @@
           "documentation":"<p>The identifier of the memory record to retrieve.</p>",
           "location":"uri",
           "locationName":"memoryRecordId"
+        },
+        "namespace":{
+          "shape":"Namespace",
+          "documentation":"<p>The namespace of the memory record to retrieve. This value is used for IAM condition key authorization.</p>",
+          "location":"querystring",
+          "locationName":"namespace"
         }
       }
     },
@@ -4721,6 +5264,10 @@
         "recommendationResult":{
           "shape":"RecommendationResult",
           "documentation":"<p>The result of the recommendation, containing the optimized system prompt or tool descriptions. Only present when the recommendation status is <code>COMPLETED</code>.</p>"
+        },
+        "kmsKeyArn":{
+          "shape":"KmsKeyArn",
+          "documentation":"<p>The ARN of the KMS key used to encrypt recommendation data.</p>"
         }
       }
     },
@@ -5023,6 +5570,16 @@
       "type":"string",
       "pattern":"arn:([^:]+)?:bedrock-agentcore:[a-z0-9-]+:[0-9]{12}:harness/[a-zA-Z][a-zA-Z0-9_]{0,39}-[a-zA-Z0-9]{10}"
     },
+    "HarnessAwsSkillPath":{
+      "type":"string",
+      "max":4096,
+      "min":1,
+      "pattern":"([^*?\\[\\]]|\\*)+"
+    },
+    "HarnessAwsSkillPaths":{
+      "type":"list",
+      "member":{"shape":"HarnessAwsSkillPath"}
+    },
     "HarnessBedrockApiFormat":{
       "type":"string",
       "enum":[
@@ -5113,6 +5670,10 @@
         "reasoningContent":{
           "shape":"HarnessReasoningContentBlockDelta",
           "documentation":"<p>A reasoning content delta.</p>"
+        },
+        "toolResultMetadata":{
+          "shape":"HarnessToolResultMetadataBlockDelta",
+          "documentation":"<p>A tool result metadata delta.</p>"
         }
       },
       "documentation":"<p>A delta update to a content block.</p>",
@@ -5194,6 +5755,10 @@
         "assistant"
       ]
     },
+    "HarnessEndpointName":{
+      "type":"string",
+      "pattern":"[a-zA-Z][a-zA-Z0-9_]{0,47}"
+    },
     "HarnessGatewayOutboundAuth":{
       "type":"structure",
       "members":{
@@ -5207,7 +5772,7 @@
         },
         "oauth":{
           "shape":"OAuthCredentialProvider",
-          "documentation":"<p>OAuth 2.0 authentication via AgentCore Identity.</p>"
+          "documentation":"<p>OAuth 2.0 authentication via AgentCore Identity.</p> <p>The <code>AUTHORIZATION_CODE</code> grant type is not supported for outbound authentication from a harness to an AgentCore Gateway, even when <code>defaultReturnUrl</code> is specified.</p>"
         }
       },
       "documentation":"<p>Authentication method for calling a Gateway.</p>",
@@ -5243,9 +5808,76 @@
         "topK":{
           "shape":"TopK",
           "documentation":"<p>The topK set when calling the model.</p>"
+        },
+        "additionalParams":{
+          "shape":"Document",
+          "documentation":"<p>Provider-specific parameters passed through to the Gemini model provider unchanged.</p>"
         }
       },
       "documentation":"<p>Configuration for a Google Gemini model provider. Requires an API key stored in AgentCore Identity.</p>"
+    },
+    "HarnessHookDecision":{
+      "type":"string",
+      "enum":[
+        "allow",
+        "deny"
+      ]
+    },
+    "HarnessHookEvent":{
+      "type":"structure",
+      "required":[
+        "hookEventId",
+        "name",
+        "type"
+      ],
+      "members":{
+        "hookEventId":{
+          "shape":"HarnessHookEventId",
+          "documentation":"<p>The unique identifier for this hook event.</p>"
+        },
+        "name":{
+          "shape":"HarnessHookName",
+          "documentation":"<p>The name of the hook that ran.</p>"
+        },
+        "type":{
+          "shape":"HarnessHookEventType",
+          "documentation":"<p>The type of lifecycle hook event.</p>"
+        },
+        "decision":{
+          "shape":"HarnessHookDecision",
+          "documentation":"<p>The decision applied to the hook event. This field is present only for blocking Lambda targets.</p>"
+        },
+        "reason":{
+          "shape":"HarnessHookEventReasonString",
+          "documentation":"<p>The optional reason for the applied decision.</p>"
+        }
+      },
+      "documentation":"<p>A lifecycle hook event emitted in the invocation stream for visibility into hook decisions.</p>",
+      "event":true
+    },
+    "HarnessHookEventId":{
+      "type":"string",
+      "pattern":"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+    },
+    "HarnessHookEventReasonString":{
+      "type":"string",
+      "max":1024,
+      "min":0
+    },
+    "HarnessHookEventType":{
+      "type":"string",
+      "enum":[
+        "before_tool_call",
+        "after_tool_call",
+        "before_invocation",
+        "after_invocation"
+      ]
+    },
+    "HarnessHookName":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"[a-zA-Z0-9_-]+"
     },
     "HarnessInlineFunctionConfig":{
       "type":"structure",
@@ -5400,6 +6032,12 @@
       "documentation":"<p>Specification of which model to use.</p>",
       "union":true
     },
+    "HarnessOpenAiApiBase":{
+      "type":"string",
+      "max":16383,
+      "min":1,
+      "sensitive":true
+    },
     "HarnessOpenAiApiFormat":{
       "type":"string",
       "enum":[
@@ -5421,6 +6059,10 @@
         "apiKeyArn":{
           "shape":"ApiKeyArn",
           "documentation":"<p>The ARN of your OpenAI API key on AgentCore Identity.</p>"
+        },
+        "apiBase":{
+          "shape":"HarnessOpenAiApiBase",
+          "documentation":"<p>Optional custom endpoint URL for an OpenAI-compatible endpoint.</p>"
         },
         "maxTokens":{
           "shape":"MaxTokens",
@@ -5532,10 +6174,24 @@
         "git":{
           "shape":"HarnessSkillGitSource",
           "documentation":"<p>A git repository containing the skill.</p>"
+        },
+        "awsSkills":{
+          "shape":"HarnessSkillAwsSkillsSource",
+          "documentation":"<p>Amazon Web Services Skills baked into the Harness's underlying Runtime.</p>"
         }
       },
       "documentation":"<p>A skill available to the agent.</p>",
       "union":true
+    },
+    "HarnessSkillAwsSkillsSource":{
+      "type":"structure",
+      "members":{
+        "paths":{
+          "shape":"HarnessAwsSkillPaths",
+          "documentation":"<p>Optionally filter allowed skills with glob syntax, e.g., ['core-skills/*'].</p>"
+        }
+      },
+      "documentation":"<p>Passed to show that Amazon Web Services Skills should be included.</p>"
     },
     "HarnessSkillGitAuth":{
       "type":"structure",
@@ -5573,11 +6229,13 @@
     },
     "HarnessSkillGitUrl":{
       "type":"string",
+      "max":16383,
       "min":8,
-      "pattern":"https://.*"
+      "pattern":"https://[^#@]+"
     },
     "HarnessSkillPath":{
       "type":"string",
+      "max":4096,
       "min":1
     },
     "HarnessSkillS3Source":{
@@ -5593,6 +6251,7 @@
     },
     "HarnessSkillS3Uri":{
       "type":"string",
+      "max":16383,
       "min":5,
       "pattern":"s3://.*"
     },
@@ -5616,7 +6275,8 @@
         "model_context_window_exceeded",
         "max_iterations_exceeded",
         "max_output_tokens_exceeded",
-        "timeout_exceeded"
+        "timeout_exceeded",
+        "hook_stopped"
       ]
     },
     "HarnessStreamMetrics":{
@@ -5832,6 +6492,17 @@
       "type":"list",
       "member":{"shape":"HarnessToolResultContentBlock"}
     },
+    "HarnessToolResultMetadataBlockDelta":{
+      "type":"structure",
+      "required":["metadata"],
+      "members":{
+        "metadata":{
+          "shape":"SensitiveText",
+          "documentation":"<p>The partial JSON-string fragment of the tool result metadata.</p>"
+        }
+      },
+      "documentation":"<p>Delta payload for a tool result metadata.</p>"
+    },
     "HarnessToolType":{
       "type":"string",
       "enum":[
@@ -5975,6 +6646,83 @@
       "max":100,
       "min":0
     },
+    "IngestDataInput":{
+      "type":"structure",
+      "required":[
+        "memoryId",
+        "source",
+        "contentTimestamp",
+        "actorId"
+      ],
+      "members":{
+        "memoryId":{
+          "shape":"MemoryId",
+          "documentation":"<p>The identifier of the AgentCore Memory resource to ingest content into.</p>",
+          "location":"uri",
+          "locationName":"memoryId"
+        },
+        "source":{
+          "shape":"ContentSource",
+          "documentation":"<p>The content to ingest. Only inline content is supported.</p>"
+        },
+        "contentTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp of when the content occurred.</p>"
+        },
+        "actorId":{
+          "shape":"ActorId",
+          "documentation":"<p>The identifier of the actor associated with this content. An actor represents an entity that participates in sessions and generates content.</p>"
+        },
+        "sessionId":{
+          "shape":"SessionId",
+          "documentation":"<p>The identifier of the session that the content belongs to. If not provided, a session identifier is generated and returned in the response.</p>"
+        },
+        "extractionConfig":{
+          "shape":"ExtractionConfig",
+          "documentation":"<p>The extraction configuration for long-term memory records. Use this parameter to specify namespace variable keys and their values for namespace substitution during extraction.</p>"
+        },
+        "metadata":{
+          "shape":"MetadataMap",
+          "documentation":"<p>The key-value metadata to attach to the content.</p>"
+        },
+        "clientToken":{
+          "shape":"String",
+          "documentation":"<p>A unique, case-sensitive identifier to ensure that the operation completes no more than one time. If this token matches a previous request, AgentCore ignores the request, but does not return an error.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "IngestDataOutput":{
+      "type":"structure",
+      "required":["sessionId"],
+      "members":{
+        "sessionId":{
+          "shape":"SessionId",
+          "documentation":"<p>The identifier of the session that the service ingested the content into. This value echoes the session identifier from the request, or the identifier that the service generated when you did not provide one.</p>"
+        }
+      }
+    },
+    "IngestPayloadList":{
+      "type":"list",
+      "member":{"shape":"IngestPayloadType"},
+      "max":100,
+      "min":1
+    },
+    "IngestPayloadType":{
+      "type":"structure",
+      "members":{
+        "conversational":{
+          "shape":"Conversational",
+          "documentation":"<p>The conversational content for this payload item.</p>"
+        },
+        "json":{
+          "shape":"MemoryJsonData",
+          "documentation":"<p>The JSON content for this payload item.</p>"
+        }
+      },
+      "documentation":"<p>A single content payload item to ingest. A payload item contains either conversational or JSON content.</p>",
+      "union":true
+    },
     "InlineContent":{
       "type":"string",
       "max":409600,
@@ -6003,6 +6751,17 @@
       "member":{"shape":"GroundTruthTurn"},
       "min":1
     },
+    "InlineMemoryContent":{
+      "type":"structure",
+      "required":["payload"],
+      "members":{
+        "payload":{
+          "shape":"IngestPayloadList",
+          "documentation":"<p>The list of content payload items to ingest.</p>"
+        }
+      },
+      "documentation":"<p>The content included directly in the request as one or more payload items.</p>"
+    },
     "InputContentBlock":{
       "type":"structure",
       "required":["path"],
@@ -6025,6 +6784,200 @@
     "InputContentBlockList":{
       "type":"list",
       "member":{"shape":"InputContentBlock"}
+    },
+    "Insight":{
+      "type":"structure",
+      "required":["insightId"],
+      "members":{
+        "insightId":{
+          "shape":"InsightId",
+          "documentation":"<p>The unique identifier of the insight to run.</p>"
+        }
+      },
+      "documentation":"<p>A reference to an insight analysis to run against sessions during batch evaluation. Insights provide deeper analysis beyond individual evaluator scores, including failure detection, user intent clustering, and execution summarization.</p>"
+    },
+    "InsightDescription":{
+      "type":"string",
+      "max":4000,
+      "min":1,
+      "sensitive":true
+    },
+    "InsightId":{
+      "type":"string",
+      "documentation":"<p>Canonical insight identifiers using the Builtin.Insight.* naming convention. Used by BatchEvaluate, InternalEvaluate, and ServiceEngineEvaluate flows.</p>",
+      "pattern":"(Builtin\\.[a-zA-Z0-9._-]+|[a-zA-Z][a-zA-Z0-9-_]{0,99}-[a-zA-Z0-9]{10})"
+    },
+    "InsightList":{
+      "type":"list",
+      "member":{"shape":"Insight"},
+      "max":10,
+      "min":0
+    },
+    "InsightName":{
+      "type":"string",
+      "max":200,
+      "min":1,
+      "sensitive":true
+    },
+    "InsightResult":{
+      "type":"structure",
+      "required":[
+        "type",
+        "name",
+        "description",
+        "createdAt"
+      ],
+      "members":{
+        "type":{
+          "shape":"InsightType",
+          "documentation":"<p>The type of insight. <code>FAILURE</code> indicates a group of related failures.</p>"
+        },
+        "name":{
+          "shape":"InsightName",
+          "documentation":"<p>A generated label for the insight. The name is not an identifier and can differ between batch evaluations.</p>"
+        },
+        "description":{
+          "shape":"InsightDescription",
+          "documentation":"<p>A description of the failure pattern that the insight represents.</p>"
+        },
+        "createdAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The timestamp when the insight was generated.</p>"
+        },
+        "affectedSessionCount":{
+          "shape":"Integer",
+          "documentation":"<p>The number of distinct sessions affected by the insight.</p>"
+        },
+        "sampleSessions":{
+          "shape":"InsightSampleSessionList",
+          "documentation":"<p>A sample of up to 10 sessions affected by the insight. Returned only when the insight has no root causes. Otherwise, sample sessions are returned for each root cause.</p>"
+        },
+        "rootCauses":{
+          "shape":"InsightRootCauseList",
+          "documentation":"<p>The root causes identified for the insight.</p>"
+        }
+      },
+      "documentation":"<p>An insight that groups related failures found across the sessions in a batch evaluation.</p>"
+    },
+    "InsightResultList":{
+      "type":"list",
+      "member":{"shape":"InsightResult"},
+      "max":50,
+      "min":0
+    },
+    "InsightRootCause":{
+      "type":"structure",
+      "required":[
+        "name",
+        "explanation"
+      ],
+      "members":{
+        "name":{
+          "shape":"RootCauseName",
+          "documentation":"<p>A generated label for the root cause.</p>"
+        },
+        "explanation":{
+          "shape":"RootCauseExplanation",
+          "documentation":"<p>An explanation of how the root cause leads to the failures in the insight.</p>"
+        },
+        "affectedSessionCount":{
+          "shape":"Integer",
+          "documentation":"<p>The number of distinct sessions affected by the root cause. A session can be affected by more than one root cause of the same insight.</p>"
+        },
+        "suggestedFix":{
+          "shape":"SuggestedFix",
+          "documentation":"<p>A suggested change to the agent that addresses the root cause.</p>"
+        },
+        "sampleSessions":{
+          "shape":"InsightSampleSessionList",
+          "documentation":"<p>A sample of up to 10 sessions affected by the root cause.</p>"
+        }
+      },
+      "documentation":"<p>A root cause that contributes to an insight.</p>"
+    },
+    "InsightRootCauseList":{
+      "type":"list",
+      "member":{"shape":"InsightRootCause"},
+      "max":50,
+      "min":0
+    },
+    "InsightSampleSessionList":{
+      "type":"list",
+      "member":{"shape":"SampleSession"},
+      "max":10,
+      "min":0
+    },
+    "InsightType":{
+      "type":"string",
+      "documentation":"<p>The type of insight.</p>",
+      "enum":["FAILURE"]
+    },
+    "InsightsFailureCategory":{
+      "type":"string",
+      "documentation":"<p>Failure category taxonomy for agent session insights. Values must stay in sync with the category registry in AgentCoreLens (amzn_agentcore_lens.config.failure_detection.FAILURE_CATEGORIES).</p>",
+      "enum":[
+        "execution-error-category-authentication",
+        "execution-error-category-resource-not-found",
+        "execution-error-category-service-errors",
+        "execution-error-category-rate-limiting",
+        "execution-error-category-formatting",
+        "execution-error-category-timeout",
+        "execution-error-category-resource-exhaustion",
+        "execution-error-category-environment",
+        "execution-error-category-tool-schema",
+        "task-instruction-category-non-compliance",
+        "task-instruction-category-problem-id",
+        "incorrect-actions-category-tool-selection",
+        "incorrect-actions-category-poor-information-retrieval",
+        "incorrect-actions-category-clarification",
+        "incorrect-actions-category-inappropriate-info-request",
+        "context-handling-error-category-context-handling-failures",
+        "hallucination-category-hall-capabilities",
+        "hallucination-category-hall-misunderstand",
+        "hallucination-category-hall-usage",
+        "hallucination-category-hall-history",
+        "hallucination-category-hall-params",
+        "hallucination-category-fabricate-tool-outputs",
+        "repetitive-behavior-category-repetition-tool",
+        "repetitive-behavior-category-repetition-info",
+        "repetitive-behavior-category-step-repetition",
+        "orchestration-related-errors-category-reasoning-mismatch",
+        "orchestration-related-errors-category-goal-deviation",
+        "orchestration-related-errors-category-premature-termination",
+        "orchestration-related-errors-category-unaware-termination",
+        "llm-output-category-nonsensical",
+        "configuration-mismatch-category-tool-definition",
+        "coding-use-case-specific-failure-types-category-edge-case-oversights",
+        "coding-use-case-specific-failure-types-category-dependency-issues",
+        "other"
+      ]
+    },
+    "InsightsFailureSignal":{
+      "type":"structure",
+      "required":[
+        "category",
+        "evidence",
+        "confidence"
+      ],
+      "members":{
+        "category":{
+          "shape":"InsightsFailureCategory",
+          "documentation":"<p>The failure category classification for this signal.</p>"
+        },
+        "evidence":{
+          "shape":"String",
+          "documentation":"<p>The evidence supporting the failure detection.</p>"
+        },
+        "confidence":{
+          "shape":"Double",
+          "documentation":"<p>The confidence score of the failure detection.</p>"
+        }
+      },
+      "documentation":"<p>A signal indicating a detected failure within a span.</p>"
+    },
+    "InsightsFailureSignalList":{
+      "type":"list",
+      "member":{"shape":"InsightsFailureSignal"}
     },
     "InstrumentBalanceToken":{
       "type":"string",
@@ -6292,6 +7245,18 @@
           "documentation":"<p>The version of the MCP protocol being used.</p>",
           "location":"header",
           "locationName":"Mcp-Protocol-Version"
+        },
+        "mcpMethod":{
+          "shape":"StringType",
+          "documentation":"<p>The MCP method being invoked. For example, <code>tools/call</code>, <code>resources/read</code>, or <code>prompts/get</code>.</p>",
+          "location":"header",
+          "locationName":"Mcp-Method"
+        },
+        "mcpName":{
+          "shape":"StringType",
+          "documentation":"<p>The name of the MCP resource, tool, or prompt being accessed. The value depends on the method:</p> <ul> <li> <p> <code>tools/call</code> – The tool name.</p> </li> <li> <p> <code>resources/read</code> – The resource URI.</p> </li> <li> <p> <code>prompts/get</code> – The prompt name.</p> </li> </ul>",
+          "location":"header",
+          "locationName":"Mcp-Name"
         },
         "runtimeUserId":{
           "shape":"StringType",
@@ -6565,6 +7530,12 @@
           "location":"querystring",
           "locationName":"harnessArn"
         },
+        "qualifier":{
+          "shape":"HarnessEndpointName",
+          "documentation":"<p>The endpoint name to invoke. If omitted, the DEFAULT endpoint is used.</p>",
+          "location":"querystring",
+          "locationName":"qualifier"
+        },
         "runtimeSessionId":{
           "shape":"InvokeHarnessRequestRuntimeSessionIdString",
           "documentation":"<p>The session ID for the invocation. Use the same session ID across requests to continue a conversation.</p>",
@@ -6576,6 +7547,30 @@
           "documentation":"<p>An identifier for the end user making the request. This value is passed through to the runtime container.</p>",
           "location":"header",
           "locationName":"X-Amzn-Bedrock-AgentCore-Runtime-User-Id"
+        },
+        "traceParent":{
+          "shape":"InvokeHarnessRequestTraceParentString",
+          "documentation":"<p>W3C trace context parent header containing version, trace ID, parent span ID, and trace flags.</p>",
+          "location":"header",
+          "locationName":"traceparent"
+        },
+        "traceState":{
+          "shape":"InvokeHarnessRequestTraceStateString",
+          "documentation":"<p>W3C trace context state header for vendor-specific trace information.</p>",
+          "location":"header",
+          "locationName":"tracestate"
+        },
+        "traceId":{
+          "shape":"InvokeHarnessRequestTraceIdString",
+          "documentation":"<p>Trace ID for maintaining observability through the operation.</p>",
+          "location":"header",
+          "locationName":"X-Amzn-Trace-Id"
+        },
+        "baggage":{
+          "shape":"InvokeHarnessRequestBaggageString",
+          "documentation":"<p>W3C Baggage header for user-defined context propagation. Format: key1=value1,key2=value2</p>",
+          "location":"header",
+          "locationName":"baggage"
         },
         "messages":{
           "shape":"HarnessMessages",
@@ -6619,11 +7614,31 @@
         }
       }
     },
+    "InvokeHarnessRequestBaggageString":{
+      "type":"string",
+      "max":8192,
+      "min":0
+    },
     "InvokeHarnessRequestRuntimeSessionIdString":{
       "type":"string",
       "max":100,
       "min":33,
       "pattern":"[a-zA-Z0-9][a-zA-Z0-9-_]*"
+    },
+    "InvokeHarnessRequestTraceIdString":{
+      "type":"string",
+      "max":1024,
+      "min":0
+    },
+    "InvokeHarnessRequestTraceParentString":{
+      "type":"string",
+      "max":1024,
+      "min":0
+    },
+    "InvokeHarnessRequestTraceStateString":{
+      "type":"string",
+      "max":512,
+      "min":0
     },
     "InvokeHarnessResponse":{
       "type":"structure",
@@ -6668,6 +7683,10 @@
         "runtimeClientError":{
           "shape":"RuntimeClientError",
           "documentation":"<p>An error returned by the runtime container during agent execution.</p>"
+        },
+        "hookEvent":{
+          "shape":"HarnessHookEvent",
+          "documentation":"<p>A lifecycle hook event emitted when a configured hook runs.</p>"
         }
       },
       "documentation":"<p>The streaming events returned by a harness invocation.</p>",
@@ -6779,6 +7798,12 @@
         }
       },
       "documentation":"<p>The result of a key type action.</p>"
+    },
+    "KmsKeyArn":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "pattern":"arn:aws(|-cn|-us-gov):kms:[a-zA-Z0-9-]*:[0-9]{12}:key/[a-zA-Z0-9-]{36}"
     },
     "LanguageRuntime":{
       "type":"string",
@@ -7202,7 +8227,7 @@
         },
         "namespace":{
           "shape":"Namespace",
-          "documentation":"<p>The namespace prefix to filter memory records by. Returns all memory records in namespaces that start with the provided prefix. Either <code>namespace</code> or <code>namespacePath</code> is required.</p>"
+          "documentation":"<p>The exact namespace to filter memory records by. Returns all memory records that matches the provided namespace. Either <code>namespace</code> or <code>namespacePath</code> is required.</p>"
         },
         "namespacePath":{
           "shape":"Namespace",
@@ -7436,6 +8461,22 @@
       },
       "documentation":"<p>The configuration for a stream that provides a visual representation of a browser session in Amazon Bedrock AgentCore. This stream enables agents to observe the current state of the browser, including rendered web pages, visual elements, and the results of interactions.</p>"
     },
+    "LogGroupName":{
+      "type":"string",
+      "pattern":"[.\\-_/#A-Za-z0-9]+"
+    },
+    "LogGroupNamePrefix":{
+      "type":"string",
+      "documentation":"<p>Prefix of a CloudWatch Logs log group name.</p>",
+      "max":512,
+      "min":1,
+      "pattern":"[.\\-_/#A-Za-z0-9]+"
+    },
+    "LogStreamName":{
+      "type":"string",
+      "documentation":"<p>A log stream name. The pattern is CloudWatch Logs' own log stream name pattern, which already admits the empty string; empty is the @default of members relaxed from @required and means &quot;no log stream&quot;. No @length is applied, because CloudWatch's min of 1 would reject that default.</p>",
+      "pattern":"[^:*]*"
+    },
     "Long":{
       "type":"long",
       "box":true
@@ -7500,7 +8541,25 @@
     "MemoryId":{
       "type":"string",
       "min":12,
-      "pattern":"[a-zA-Z][a-zA-Z0-9-_]{0,99}-[a-zA-Z0-9]{10}"
+      "pattern":"(arn:(aws|aws-cn|aws-us-gov):bedrock-agentcore:[a-z0-9-]+:[0-9]{12}:memory/)?[a-zA-Z][a-zA-Z0-9-_]{0,99}-[a-zA-Z0-9]{10}"
+    },
+    "MemoryJsonData":{
+      "type":"structure",
+      "required":["content"],
+      "members":{
+        "content":{
+          "shape":"MemoryJsonDataContent",
+          "documentation":"<p>The JSON content of the payload. Accepts any JSON value, including objects, arrays, strings, numbers, booleans, and null. The maximum size is 100 KB.</p>"
+        }
+      },
+      "documentation":"<p>Contains non-conversational, JSON-formatted content for an event payload. JSON payloads are extracted into long-term memory.</p>",
+      "sensitive":true
+    },
+    "MemoryJsonDataContent":{
+      "type":"structure",
+      "members":{},
+      "document":true,
+      "sensitive":true
     },
     "MemoryMetadataFilterExpression":{
       "type":"structure",
@@ -7560,9 +8619,17 @@
           "shape":"Timestamp",
           "documentation":"<p>The timestamp when the memory record was created.</p>"
         },
+        "timestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp based on which the memory record was ingested. This reflects the time of the source content that the record was derived from, which can differ from <code>createdAt</code>, the time the record itself was written.</p>"
+        },
         "metadata":{
           "shape":"MemoryRecordMetadataMap",
           "documentation":"<p>A map of metadata key-value pairs associated with a memory record.</p>"
+        },
+        "expiresAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp at which the memory record expires and becomes eligible for deletion. This value is set when a record expiry (long-term memory time-to-live) applies to the record, either from the strategy the record belongs to or from a record expiry provided on the batch request that created or updated it. If the record has no expiry configured, this value is not present and the record does not expire.</p>"
         }
       },
       "documentation":"<p>Contains information about a memory record in an AgentCore Memory resource.</p>"
@@ -7610,6 +8677,10 @@
         "memoryRecordId":{
           "shape":"MemoryRecordId",
           "documentation":"<p>The unique ID of the memory record to be deleted.</p>"
+        },
+        "namespace":{
+          "shape":"Namespace",
+          "documentation":"<p>The namespace of the memory record being deleted. This value is used for IAM condition key authorization.</p>"
         }
       },
       "documentation":"<p>Input structure to delete an existing memory record.</p>"
@@ -7758,6 +8829,10 @@
           "shape":"Double",
           "documentation":"<p>The relevance score of the memory record when returned as part of a search result. Higher values indicate greater relevance to the search query.</p>"
         },
+        "timestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp based on which the memory record was ingested. This reflects the time of the source content that the record was derived from, which can differ from <code>createdAt</code>, the time the record itself was written.</p>"
+        },
         "metadata":{
           "shape":"MemoryRecordMetadataMap",
           "documentation":"<p>A map of metadata key-value pairs associated with a memory record.</p>"
@@ -7791,6 +8866,10 @@
         "namespaces":{
           "shape":"NamespacesList",
           "documentation":"<p>The updated list of namespace identifiers for categorizing the memory record.</p>"
+        },
+        "sourceNamespaces":{
+          "shape":"NamespacesList",
+          "documentation":"<p>The namespaces of the source memory record being updated. This value is used for IAM condition key authorization.</p>"
         },
         "memoryStrategyId":{
           "shape":"MemoryStrategyId",
@@ -7889,12 +8968,25 @@
       "min":0,
       "pattern":"[a-zA-Z0-9\\s._:/=+@-]*"
     },
+    "MetricsNamespace":{
+      "type":"string",
+      "documentation":"<p>CloudWatch metrics namespace for evaluation result metrics.</p>",
+      "max":255,
+      "min":1,
+      "pattern":"[a-zA-Z0-9._#/:-]+"
+    },
     "MimeType":{
       "type":"string",
       "max":256,
       "min":1
     },
     "ModelId":{"type":"string"},
+    "MountPath":{
+      "type":"string",
+      "max":200,
+      "min":6,
+      "pattern":"/mnt/[a-zA-Z0-9._-]+/?"
+    },
     "MouseButton":{
       "type":"string",
       "documentation":"<p>The mouse button to use for a browser mouse action.</p>",
@@ -8084,6 +9176,63 @@
       },
       "documentation":"<p>The result of a mouse scroll action.</p>"
     },
+    "MppPaymentCredential":{
+      "type":"string",
+      "documentation":"<p>Ready-to-send <code>Authorization: Payment &lt;base64url-token&gt;</code> value. This is a bearer-like payment credential and must not appear in logs, traces, or error messages.</p>",
+      "max":32768,
+      "min":1,
+      "sensitive":true
+    },
+    "MppPaymentInput":{
+      "type":"structure",
+      "required":[
+        "version",
+        "wwwAuthenticateHeaders"
+      ],
+      "members":{
+        "version":{
+          "shape":"Version",
+          "documentation":"<p>The MPP protocol version, for example \"1\" or \"2\".</p>"
+        },
+        "wwwAuthenticateHeaders":{
+          "shape":"WwwAuthenticateHeaderList",
+          "documentation":"<p>The raw <code>WWW-Authenticate: Payment</code> header value from the 402 response, passed verbatim. Provide exactly one entry. The service uses this value to generate the payment credential.</p>"
+        },
+        "buyerPaysGasFees":{
+          "shape":"Boolean",
+          "documentation":"<p>Authorizes the service to sign a payment whose blockchain network (gas) fees are charged to your wallet, on top of the payment amount.</p> <p>The challenge indicates who sponsors the network fees. When the challenge does not sponsor them, the service signs the payment only if this field is <code>true</code>. Otherwise it returns a validation error, so you can decide whether to pay the fees or obtain a challenge that sponsors them.</p> <p>Optional. When omitted or <code>false</code>, you decline to pay network fees. This field has no effect on challenges that already sponsor the fees.</p>"
+        }
+      },
+      "documentation":"<p>Contains the payment challenge from a 402 Payment Required response. Forward the raw <code>WWW-Authenticate: Payment</code> header value verbatim. In response, you receive a payment credential that satisfies the challenge. Provide exactly one challenge per request.</p>"
+    },
+    "MppPaymentOutput":{
+      "type":"structure",
+      "required":[
+        "version",
+        "selectedPaymentId",
+        "paymentCredential"
+      ],
+      "members":{
+        "version":{
+          "shape":"Version",
+          "documentation":"<p>The MPP protocol version, for example \"1\" or \"2\".</p>"
+        },
+        "selectedPaymentId":{
+          "shape":"MppPaymentOutputSelectedPaymentIdString",
+          "documentation":"<p>The id of the challenge that was paid, echoed from the input challenge so you can correlate the result without decoding the credential.</p>"
+        },
+        "paymentCredential":{
+          "shape":"MppPaymentCredential",
+          "documentation":"<p>Ready-to-send value for the <code>Authorization</code> header, in the form \"Payment &lt;base64url-token&gt;\". Attach this header and retry the original request. To inspect the full credential, base64url-decode the token.</p>"
+        }
+      },
+      "documentation":"<p>Contains the payment credential, ready to retry the request.</p>"
+    },
+    "MppPaymentOutputSelectedPaymentIdString":{
+      "type":"string",
+      "max":512,
+      "min":1
+    },
     "Name":{
       "type":"string",
       "max":100,
@@ -8094,6 +9243,28 @@
       "max":1024,
       "min":1,
       "pattern":"[a-zA-Z0-9/*][a-zA-Z0-9-_/*]*(?::[a-zA-Z0-9-_/*]+)*[a-zA-Z0-9-_/*]*"
+    },
+    "NamespaceVariableName":{
+      "type":"string",
+      "documentation":"<p>The name of the namespace variable key. The name cannot be a built-in variable name (<code>actorId</code>, <code>sessionId</code>, or <code>memoryStrategyId</code>).</p>",
+      "max":32,
+      "min":1,
+      "pattern":"(?!memoryStrategyId$|actorId$|sessionId$)[a-z][a-z0-9]*"
+    },
+    "NamespaceVariableValue":{
+      "type":"string",
+      "documentation":"<p>The value of a namespace variable key.</p>",
+      "max":64,
+      "min":1,
+      "pattern":"[a-z0-9][a-z0-9-_]*"
+    },
+    "NamespaceVariablesMap":{
+      "type":"map",
+      "key":{"shape":"NamespaceVariableName"},
+      "value":{"shape":"NamespaceVariableValue"},
+      "documentation":"<p>A map of <code>namespaceKeys</code> to their values for namespace substitution.</p>",
+      "max":5,
+      "min":1
     },
     "NamespacesList":{
       "type":"list",
@@ -8237,7 +9408,45 @@
     },
     "OnlineEvaluationConfigArn":{
       "type":"string",
-      "pattern":"arn:aws:bedrock-agentcore:[a-z0-9-]+:[0-9]{12}:online-evaluation-config\\/[a-zA-Z][a-zA-Z0-9-_]{0,99}-[a-zA-Z0-9]{10}"
+      "pattern":"arn:aws[a-zA-Z-]*:bedrock-agentcore:[a-z0-9-]+:[0-9]{12}:online-evaluation-config\\/[a-zA-Z][a-zA-Z0-9-_]{0,99}-[a-zA-Z0-9]{10}"
+    },
+    "OnlineEvaluationConfigSource":{
+      "type":"structure",
+      "required":["onlineEvaluationConfigArn"],
+      "members":{
+        "onlineEvaluationConfigArn":{
+          "shape":"OnlineEvaluationConfigArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the online evaluation configuration to use as the session source.</p>"
+        },
+        "timeRange":{
+          "shape":"SessionFilterConfig",
+          "documentation":"<p>Optional session filter configuration to narrow down which sessions from the online evaluation configuration to include.</p>"
+        }
+      },
+      "documentation":"<p>A reference to an existing online evaluation configuration to use as the data source for batch evaluation.</p>"
+    },
+    "OnlineEvaluationTraceConfig":{
+      "type":"structure",
+      "required":[
+        "onlineEvaluationConfigArn",
+        "startTime",
+        "endTime"
+      ],
+      "members":{
+        "onlineEvaluationConfigArn":{
+          "shape":"OnlineEvaluationConfigArn",
+          "documentation":"<p>The ARN of the online evaluation configuration to reuse sessions from.</p>"
+        },
+        "startTime":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The start time of the time range. Only sessions evaluated at or after this timestamp are included.</p>"
+        },
+        "endTime":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The end time of the time range. Only sessions evaluated before this timestamp are included.</p>"
+        }
+      },
+      "documentation":"<p>Contains the configuration for reusing agent traces from an online evaluation configuration for recommendation analysis. Because online evaluation is a continuous stream, a time range specifies which evaluated sessions the recommendation includes.</p>"
     },
     "OperatorType":{
       "type":"string",
@@ -8246,6 +9455,11 @@
         "EXISTS",
         "NOT_EXISTS"
       ]
+    },
+    "OptionalLogGroupName":{
+      "type":"string",
+      "documentation":"<p>A log group name that may also be empty. The empty string is the @default of members that were relaxed from @required, and carries the meaning &quot;no log group&quot; for that member.</p>",
+      "pattern":"$|^[.\\-_/#A-Za-z0-9]+"
     },
     "OutputConfig":{
       "type":"structure",
@@ -8274,6 +9488,10 @@
         "blob":{
           "shape":"MemoryDocument",
           "documentation":"<p>The binary content of the payload.</p>"
+        },
+        "json":{
+          "shape":"MemoryJsonData",
+          "documentation":"<p>The JSON content of the payload. Use this type to store non-conversational, JSON-formatted data, such as behavioral events, activity logs, or system events.</p>"
         }
       },
       "documentation":"<p>Contains the payload content for an event.</p>",
@@ -8320,7 +9538,8 @@
         "cryptoX402":{
           "shape":"CryptoX402PaymentInput",
           "documentation":"<p>Input for a crypto X402 payment.</p>"
-        }
+        },
+        "mpp":{"shape":"MppPaymentInput"}
       },
       "documentation":"<p>The payment input details, which vary by payment type.</p>",
       "union":true
@@ -8402,7 +9621,8 @@
         "INITIATED",
         "ACTIVE",
         "FAILED",
-        "DELETED"
+        "DELETED",
+        "BLOCKED"
       ]
     },
     "PaymentInstrumentSummary":{
@@ -8474,7 +9694,8 @@
         "cryptoX402":{
           "shape":"CryptoX402PaymentOutput",
           "documentation":"<p>Output from a crypto X402 payment.</p>"
-        }
+        },
+        "mpp":{"shape":"MppPaymentOutput"}
       },
       "documentation":"<p>The payment output details, which vary by payment type.</p>",
       "union":true
@@ -8632,7 +9853,10 @@
     "PaymentType":{
       "type":"string",
       "documentation":"<p>Payment type enum.</p>",
-      "enum":["CRYPTO_X402"]
+      "enum":[
+        "CRYPTO_X402",
+        "MPP"
+      ]
     },
     "PerVariantOnlineEvaluationConfig":{
       "type":"structure",
@@ -8657,6 +9881,13 @@
       "member":{"shape":"PerVariantOnlineEvaluationConfig"},
       "max":2,
       "min":2
+    },
+    "Permit2AllowanceLimit":{
+      "type":"string",
+      "documentation":"<p>The maximum on-chain Permit2 allowance to grant, in the asset's smallest denomination. Pass the value as a numeric string. For example, \"1000000\" is 1 USDC at 6 decimals. To grant an unlimited allowance, pass the uint256 maximum, which is a 78-digit number.</p>",
+      "max":78,
+      "min":1,
+      "pattern":"[0-9]+"
     },
     "PhoneNumber":{
       "type":"string",
@@ -8898,6 +10129,11 @@
       },
       "documentation":"<p>A reference to an evaluator used for recommendation assessment.</p>"
     },
+    "RecommendationExplanation":{
+      "type":"string",
+      "max":4096,
+      "min":0
+    },
     "RecommendationId":{
       "type":"string",
       "pattern":"[0-9a-zA-Z_-]{1,48}-[0-9A-Z]{10}"
@@ -9016,6 +10252,31 @@
         "SYSTEM_PROMPT_RECOMMENDATION",
         "TOOL_DESCRIPTION_RECOMMENDATION"
       ]
+    },
+    "RecordExpiryAction":{
+      "type":"string",
+      "documentation":"<p>The action to apply to an existing record expiry (long-term memory time-to-live) configuration. <code>REMOVE</code> removes a previously configured expiry so that the records no longer expire.</p>",
+      "enum":["REMOVE"]
+    },
+    "RecordExpiryDurationDays":{
+      "type":"integer",
+      "box":true,
+      "min":31
+    },
+    "RecordExpirySpecification":{
+      "type":"structure",
+      "members":{
+        "recordExpiryDurationDays":{
+          "shape":"RecordExpiryDurationDays",
+          "documentation":"<p>The duration, in days, after which the records in this request expire. The minimum is 31 days.</p>"
+        },
+        "action":{
+          "shape":"RecordExpiryAction",
+          "documentation":"<p>The action to apply to the existing record expiry configuration. Set to <code>REMOVE</code> to remove a previously configured expiry so that the records no longer expire. This value does not apply when creating records.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the record expiry (long-term memory time-to-live) applied to the records in a batch request. Provide exactly one of <code>recordExpiryDurationDays</code> or <code>action</code>. Set <code>recordExpiryDurationDays</code> to configure or update the expiry, or set <code>action</code> to <code>REMOVE</code> to remove a previously configured expiry.</p>",
+      "union":true
     },
     "RegistryArn":{
       "type":"string",
@@ -9238,6 +10499,14 @@
       "sensitive":true,
       "streaming":true
     },
+    "ResultDestination":{
+      "type":"string",
+      "documentation":"<p>Where evaluation results are written: dedicated results log group (default) or the source log group.</p>",
+      "enum":[
+        "DEDICATED_LOG_GROUP",
+        "SOURCE_LOG_GROUP"
+      ]
+    },
     "RetrieveMemoryRecordsInput":{
       "type":"structure",
       "required":[
@@ -9253,7 +10522,7 @@
         },
         "namespace":{
           "shape":"Namespace",
-          "documentation":"<p>The namespace prefix to filter memory records by. Searches for memory records in namespaces that start with the provided prefix. Either <code>namespace</code> or <code>namespacePath</code> is required.</p>"
+          "documentation":"<p>The exact namespace to filter memory records by. Searches for memory records that matches the provided namespace value. Either <code>namespace</code> or <code>namespacePath</code> is required.</p>"
         },
         "namespacePath":{
           "shape":"Namespace",
@@ -9327,6 +10596,61 @@
       "min":1,
       "pattern":"arn:aws(-[^:]+)?:iam::([0-9]{12})?:role/.+"
     },
+    "RootCauseCluster":{
+      "type":"structure",
+      "required":[
+        "clusterId",
+        "name",
+        "rootCause",
+        "recommendation",
+        "affectedSessionCount",
+        "affectedSessions"
+      ],
+      "members":{
+        "clusterId":{
+          "shape":"Integer",
+          "documentation":"<p>The unique identifier of the root cause cluster.</p>"
+        },
+        "name":{
+          "shape":"String",
+          "documentation":"<p>The name of the root cause cluster.</p>"
+        },
+        "rootCause":{
+          "shape":"String",
+          "documentation":"<p>The root cause explanation for this cluster of failures.</p>"
+        },
+        "recommendation":{
+          "shape":"String",
+          "documentation":"<p>The recommended fix for this root cause.</p>"
+        },
+        "affectedSessionCount":{
+          "shape":"Integer",
+          "documentation":"<p>The number of sessions affected by this root cause.</p>"
+        },
+        "affectedSessions":{
+          "shape":"AffectedSessionList",
+          "documentation":"<p>The list of sessions affected by this root cause.</p>"
+        }
+      },
+      "documentation":"<p>A cluster of similar root causes identified within a failure subcategory.</p>"
+    },
+    "RootCauseClusterList":{
+      "type":"list",
+      "member":{"shape":"RootCauseCluster"},
+      "min":0
+    },
+    "RootCauseExplanation":{
+      "type":"string",
+      "max":4000,
+      "min":1,
+      "sensitive":true
+    },
+    "RootCauseName":{
+      "type":"string",
+      "max":200,
+      "min":1,
+      "sensitive":true
+    },
     "RuntimeClientError":{
       "type":"structure",
       "members":{
@@ -9338,6 +10662,42 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "S3FilesAccessPointArn":{
+      "type":"string",
+      "max":256,
+      "min":0,
+      "pattern":"arn:aws[-a-z]*:s3files:[0-9a-z-:]+:file-system/fs-[0-9a-f]{17,40}/access-point/fsap-[0-9a-f]{17,40}"
+    },
+    "S3FilesConfiguration":{
+      "type":"structure",
+      "required":[
+        "accessPointArn",
+        "mountPath",
+        "fileSystemArn"
+      ],
+      "members":{
+        "accessPointArn":{
+          "shape":"S3FilesAccessPointArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon Simple Storage Service (Amazon S3) Files access point to mount.</p>"
+        },
+        "mountPath":{
+          "shape":"MountPath",
+          "documentation":"<p>The absolute path within the session at which the access point is mounted, for example <code>/mnt/s3data</code>. Each mount path must be unique across all file system configurations in the session.</p>"
+        },
+        "fileSystemArn":{
+          "shape":"S3FilesFileSystemArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon Simple Storage Service (Amazon S3) Files file system that owns the access point.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for mounting an Amazon Simple Storage Service (Amazon S3) Files access point that you own into a session.</p>"
+    },
+    "S3FilesFileSystemArn":{
+      "type":"string",
+      "documentation":"<p>The Amazon Resource Name (ARN) of an Amazon Simple Storage Service (Amazon S3) Files file system. The access points you specify must belong to this file system.</p>",
+      "max":256,
+      "min":0,
+      "pattern":"arn:aws[-a-z]*:s3files:[a-z0-9-]+:[0-9]{12}:file-system/fs-[0-9a-f]{17,40}"
     },
     "S3Location":{
       "type":"structure",
@@ -9376,6 +10736,25 @@
       "type":"string",
       "max":1024,
       "min":1
+    },
+    "SampleSession":{
+      "type":"structure",
+      "required":["sessionId"],
+      "members":{
+        "sessionId":{
+          "shape":"SessionId",
+          "documentation":"<p>The unique identifier of the session.</p>"
+        },
+        "lastSeenAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The latest timestamp observed for the session in the batch evaluation input.</p>"
+        },
+        "findings":{
+          "shape":"SessionFindingList",
+          "documentation":"<p>The failures found in the session that belong to the insight or root cause, up to 10.</p>"
+        }
+      },
+      "documentation":"<p>A session affected by an insight or root cause. Use the session ID to find the per-session evaluation results in CloudWatch Logs.</p>"
     },
     "SaveBrowserSessionProfileRequest":{
       "type":"structure",
@@ -9643,6 +11022,8 @@
     },
     "ServiceName":{
       "type":"string",
+      "max":256,
+      "min":1,
       "pattern":"[a-zA-Z0-9._-]+"
     },
     "ServiceNameList":{
@@ -9686,6 +11067,50 @@
         }
       },
       "documentation":"<p>A time range filter for selecting sessions. Specifies the start and end times to narrow down which sessions are included.</p>"
+    },
+    "SessionFinding":{
+      "type":"structure",
+      "required":["description"],
+      "members":{
+        "targetId":{
+          "shape":"FindingTargetId",
+          "documentation":"<p>The identifier or name of the location in the session where the failure was found, interpreted according to <code>targetType</code>.</p>"
+        },
+        "targetType":{
+          "shape":"FindingTargetType",
+          "documentation":"<p>The type of location that <code>targetId</code> refers to.</p>"
+        },
+        "description":{
+          "shape":"FindingDescription",
+          "documentation":"<p>A description of the failure.</p>"
+        },
+        "category":{
+          "shape":"SessionFindingCategoryString",
+          "documentation":"<p>The category of the failure.</p>"
+        },
+        "confidence":{
+          "shape":"SessionFindingConfidenceDouble",
+          "documentation":"<p>The confidence that the finding is a failure, from 0 to 1.</p>"
+        }
+      },
+      "documentation":"<p>A failure found in a session.</p>"
+    },
+    "SessionFindingCategoryString":{
+      "type":"string",
+      "max":100,
+      "min":1
+    },
+    "SessionFindingConfidenceDouble":{
+      "type":"double",
+      "box":true,
+      "max":1,
+      "min":0
+    },
+    "SessionFindingList":{
+      "type":"list",
+      "member":{"shape":"SessionFinding"},
+      "max":10,
+      "min":0
     },
     "SessionId":{
       "type":"string",
@@ -9767,6 +11192,30 @@
       "type":"list",
       "member":{"shape":"SessionSummary"}
     },
+    "SessionTraceIds":{
+      "type":"structure",
+      "required":[
+        "sessionId",
+        "traceIds"
+      ],
+      "members":{
+        "sessionId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the session that contains the traces to evaluate.</p>"
+        },
+        "traceIds":{
+          "shape":"TraceIdList",
+          "documentation":"<p>The list of trace IDs within the session to evaluate.</p>"
+        }
+      },
+      "documentation":"<p>A pairing of a session with the specific trace IDs to evaluate within that session. Use this to evaluate individual traces rather than an entire session.</p>"
+    },
+    "SessionTraceIdsList":{
+      "type":"list",
+      "member":{"shape":"SessionTraceIds"},
+      "max":500,
+      "min":1
+    },
     "SessionType":{
       "type":"string",
       "max":256,
@@ -9834,7 +11283,7 @@
     "Spans":{
       "type":"list",
       "member":{"shape":"Span"},
-      "max":1000,
+      "max":20000,
       "min":1,
       "sensitive":true
     },
@@ -9853,6 +11302,10 @@
           "shape":"StartBatchEvaluationRequestEvaluatorsList",
           "documentation":"<p>The list of evaluators to apply during the batch evaluation. Can include both built-in evaluators and custom evaluators. Maximum of 10 evaluators.</p>"
         },
+        "insights":{
+          "shape":"StartBatchEvaluationRequestInsightsList",
+          "documentation":"<p>The list of insight analyses to run against sessions during the batch evaluation. Maximum of 10 insights.</p>"
+        },
         "dataSourceConfig":{
           "shape":"DataSourceConfig",
           "documentation":"<p>The data source configuration that specifies where to pull agent session traces from for evaluation.</p>"
@@ -9866,15 +11319,30 @@
           "shape":"EvaluationMetadata",
           "documentation":"<p>Optional metadata for the evaluation, including session-specific ground truth data and test scenario identifiers.</p>"
         },
+        "tags":{
+          "shape":"TagsMap",
+          "documentation":"<p>A map of tag keys and values to associate with the batch evaluation.</p>"
+        },
+        "kmsKeyArn":{
+          "shape":"KmsKeyArn",
+          "documentation":"<p>The ARN of the KMS key used to encrypt evaluation data. If provided, customer data is encrypted at rest with the specified key.</p>"
+        },
         "description":{
           "shape":"BatchEvaluationDescription",
           "documentation":"<p>The description of the batch evaluation.</p>"
-        }
+        },
+        "outputConfig":{"shape":"OutputConfig"}
       }
     },
     "StartBatchEvaluationRequestEvaluatorsList":{
       "type":"list",
       "member":{"shape":"Evaluator"},
+      "max":10,
+      "min":0
+    },
+    "StartBatchEvaluationRequestInsightsList":{
+      "type":"list",
+      "member":{"shape":"Insight"},
       "max":10,
       "min":0
     },
@@ -9904,6 +11372,10 @@
           "shape":"EvaluatorList",
           "documentation":"<p>The list of evaluators applied during the batch evaluation.</p>"
         },
+        "insights":{
+          "shape":"InsightList",
+          "documentation":"<p>The list of insight analyses applied during the batch evaluation.</p>"
+        },
         "status":{
           "shape":"BatchEvaluationStatus",
           "documentation":"<p>The status of the batch evaluation.</p>"
@@ -9915,6 +11387,14 @@
         "outputConfig":{
           "shape":"OutputConfig",
           "documentation":"<p>The output configuration specifying where evaluation results are written.</p>"
+        },
+        "tags":{
+          "shape":"TagsMap",
+          "documentation":"<p>The tags associated with the batch evaluation.</p>"
+        },
+        "kmsKeyArn":{
+          "shape":"KmsKeyArn",
+          "documentation":"<p>The ARN of the KMS key used to encrypt evaluation data.</p>"
         },
         "description":{
           "shape":"BatchEvaluationDescription",
@@ -9975,6 +11455,10 @@
         "certificates":{
           "shape":"Certificates",
           "documentation":"<p>A list of certificates to install in the browser session.</p>"
+        },
+        "filesystemConfigurations":{
+          "shape":"ToolsFileSystemConfigurations",
+          "documentation":"<p>The file system configurations to mount into the browser session. Use these configurations to mount your own Amazon Simple Storage Service (Amazon S3) Files or Amazon Elastic File System (Amazon EFS) access points. Your session can then read and write your data. If you don't specify this field, no additional file systems are mounted.</p>"
         },
         "clientToken":{
           "shape":"ClientToken",
@@ -10052,6 +11536,10 @@
         "certificates":{
           "shape":"Certificates",
           "documentation":"<p>A list of certificates to install in the code interpreter session.</p>"
+        },
+        "filesystemConfigurations":{
+          "shape":"ToolsFileSystemConfigurations",
+          "documentation":"<p>The file system configurations to mount into the code interpreter session. Use these configurations to mount your own Amazon Simple Storage Service (Amazon S3) Files or Amazon Elastic File System (Amazon EFS) access points. Your session can then read and write your data. If you don't specify this field, no additional file systems are mounted.</p>"
         },
         "clientToken":{
           "shape":"ClientToken",
@@ -10150,10 +11638,18 @@
           "shape":"RecommendationConfig",
           "documentation":"<p>The configuration for the recommendation, including the input to optimize, agent traces to analyze, and evaluation settings.</p>"
         },
+        "kmsKeyArn":{
+          "shape":"KmsKeyArn",
+          "documentation":"<p>The ARN of the KMS key used to encrypt recommendation data. If provided, customer data is encrypted at rest with the specified key.</p>"
+        },
         "clientToken":{
           "shape":"ClientToken",
           "documentation":"<p>A unique, case-sensitive identifier to ensure that the API request completes no more than one time. If this token matches a previous request, the service ignores the request, but does not return an error.</p>",
           "idempotencyToken":true
+        },
+        "tags":{
+          "shape":"TagsMap",
+          "documentation":"<p>A map of tag keys and values to associate with the recommendation.</p>"
         }
       }
     },
@@ -10573,6 +12069,43 @@
       },
       "documentation":"<p>Stripe Privy token response containing appId, basicAuthToken, and optionally authorizationSignature.</p>"
     },
+    "SubscriptionRequiredException":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{"shape":"String"},
+        "subscriptionUrl":{
+          "shape":"SubscriptionRequiredExceptionSubscriptionUrlString",
+          "documentation":"<p>The URL to the Marketplace listing where you can subscribe.</p>"
+        },
+        "productName":{
+          "shape":"SubscriptionRequiredExceptionProductNameString",
+          "documentation":"<p>The name of the product that requires a Marketplace subscription.</p>"
+        }
+      },
+      "documentation":"<p>Returned when you attempt a wallet operation against a Coinbase Marketplace connector whose account does not hold an active Marketplace subscription and is not within the legacy exception period. Subscribe to the Marketplace listing before you retry the operation.</p>",
+      "error":{
+        "httpStatusCode":403,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "SubscriptionRequiredExceptionProductNameString":{
+      "type":"string",
+      "max":256,
+      "min":1
+    },
+    "SubscriptionRequiredExceptionSubscriptionUrlString":{
+      "type":"string",
+      "max":2048,
+      "min":1
+    },
+    "SuggestedFix":{
+      "type":"string",
+      "max":4000,
+      "min":1,
+      "sensitive":true
+    },
     "SyntheticTimestamp_date_time":{
       "type":"timestamp",
       "timestampFormat":"iso8601"
@@ -10619,8 +12152,7 @@
       "type":"structure",
       "required":[
         "systemPrompt",
-        "agentTraces",
-        "evaluationConfig"
+        "agentTraces"
       ],
       "members":{
         "systemPrompt":{
@@ -10649,6 +12181,10 @@
           "shape":"RecommendationResultConfigurationBundle",
           "documentation":"<p>The configuration bundle containing the recommended system prompt, if the input was sourced from a configuration bundle.</p>"
         },
+        "explanation":{
+          "shape":"RecommendationExplanation",
+          "documentation":"<p>An explanation of why the recommendation was generated and what patterns were identified in the agent traces.</p>"
+        },
         "errorCode":{
           "shape":"RecommendationErrorCode",
           "documentation":"<p>The error code if the recommendation failed.</p>"
@@ -10665,6 +12201,25 @@
       "max":20000,
       "min":1,
       "sensitive":true
+    },
+    "TagKey":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"[a-zA-Z0-9\\s._:/=+@-]*"
+    },
+    "TagValue":{
+      "type":"string",
+      "max":256,
+      "min":0,
+      "pattern":"[a-zA-Z0-9\\s._:/=+@-]*"
+    },
+    "TagsMap":{
+      "type":"map",
+      "key":{"shape":"TagKey"},
+      "value":{"shape":"TagValue"},
+      "max":50,
+      "min":0
     },
     "TargetName":{
       "type":"string",
@@ -10894,6 +12449,10 @@
         "recommendedToolDescription":{
           "shape":"ToolDescriptionText",
           "documentation":"<p>The optimized tool description text generated by the recommendation.</p>"
+        },
+        "explanation":{
+          "shape":"RecommendationExplanation",
+          "documentation":"<p>An explanation of why the recommendation was generated for this tool and what patterns were identified in the agent traces.</p>"
         }
       },
       "documentation":"<p>The output for a single tool description recommendation.</p>"
@@ -11032,6 +12591,28 @@
       },
       "documentation":"<p> The MCP tools definition with a protocol version and inline content. The <code>protocolVersion</code> identifies the MCP protocol version that the tools conform to. This differs from <code>schemaVersion</code> in the server definition, which identifies the server configuration schema format.</p>"
     },
+    "ToolsFileSystemConfiguration":{
+      "type":"structure",
+      "members":{
+        "s3FilesConfiguration":{
+          "shape":"S3FilesConfiguration",
+          "documentation":"<p>The configuration for mounting your own Amazon Simple Storage Service (Amazon S3) Files access point into the session.</p>"
+        },
+        "efsConfiguration":{
+          "shape":"EfsConfiguration",
+          "documentation":"<p>The configuration for mounting your own Amazon Elastic File System (Amazon EFS) access point into the session.</p>"
+        }
+      },
+      "documentation":"<p>Specifies a file system to mount into the session by providing exactly one of the following:</p> <ul> <li> <p> <code>s3FilesConfiguration</code> - Mounts an Amazon Simple Storage Service (Amazon S3) Files access point.</p> </li> <li> <p> <code>efsConfiguration</code> - Mounts an Amazon Elastic File System (Amazon EFS) access point.</p> </li> </ul>",
+      "union":true
+    },
+    "ToolsFileSystemConfigurations":{
+      "type":"list",
+      "member":{"shape":"ToolsFileSystemConfiguration"},
+      "documentation":"<p>The file system configurations to mount into the session. Each configuration maps an access point to a path inside the session. You can specify up to 4 configurations. The maximum is 2 Amazon Simple Storage Service (Amazon S3) Files access points and 2 Amazon Elastic File System (Amazon EFS) access points.</p>",
+      "max":10,
+      "min":0
+    },
     "TopK":{
       "type":"integer",
       "box":true,
@@ -11048,6 +12629,12 @@
       "type":"string",
       "max":32,
       "min":32
+    },
+    "TraceIdList":{
+      "type":"list",
+      "member":{"shape":"TraceId"},
+      "max":100,
+      "min":1
     },
     "TraceIds":{
       "type":"list",
@@ -11228,6 +12815,82 @@
       "documentation":"<p>The OAuth2.0 token or user ID that was used to generate the workload access token used for initiating the user authorization flow to retrieve OAuth2.0 tokens.</p>",
       "union":true
     },
+    "UserIntentAffectedSession":{
+      "type":"structure",
+      "required":[
+        "sessionId",
+        "userMessages"
+      ],
+      "members":{
+        "sessionId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the session.</p>"
+        },
+        "userMessages":{
+          "shape":"UserIntentList",
+          "documentation":"<p>The user messages from this session that contributed to the intent cluster.</p>"
+        }
+      },
+      "documentation":"<p>A session associated with a user intent cluster.</p>"
+    },
+    "UserIntentAffectedSessionList":{
+      "type":"list",
+      "member":{"shape":"UserIntentAffectedSession"},
+      "min":0
+    },
+    "UserIntentCluster":{
+      "type":"structure",
+      "required":[
+        "clusterId",
+        "name",
+        "description",
+        "affectedSessionCount",
+        "affectedSessions"
+      ],
+      "members":{
+        "clusterId":{
+          "shape":"Integer",
+          "documentation":"<p>The unique identifier of the user intent cluster.</p>"
+        },
+        "name":{
+          "shape":"String",
+          "documentation":"<p>The name of the user intent cluster.</p>"
+        },
+        "description":{
+          "shape":"String",
+          "documentation":"<p>A description of the user intent pattern.</p>"
+        },
+        "affectedSessionCount":{
+          "shape":"Integer",
+          "documentation":"<p>The number of sessions with this user intent.</p>"
+        },
+        "affectedSessions":{
+          "shape":"UserIntentAffectedSessionList",
+          "documentation":"<p>The list of sessions with this user intent.</p>"
+        }
+      },
+      "documentation":"<p>A cluster of similar user intents identified across sessions.</p>"
+    },
+    "UserIntentClusterList":{
+      "type":"list",
+      "member":{"shape":"UserIntentCluster"},
+      "min":0
+    },
+    "UserIntentClusteringResultContent":{
+      "type":"structure",
+      "required":["userIntents"],
+      "members":{
+        "userIntents":{
+          "shape":"UserIntentClusterList",
+          "documentation":"<p>The list of user intent clusters identified across analyzed sessions.</p>"
+        }
+      },
+      "documentation":"<p>The user intent clustering result containing grouped user intents identified across evaluated sessions.</p>"
+    },
+    "UserIntentList":{
+      "type":"list",
+      "member":{"shape":"String"}
+    },
     "UserTokenType":{
       "type":"string",
       "max":131072,
@@ -11388,6 +13051,13 @@
       "max":100,
       "min":1
     },
+    "Version":{
+      "type":"string",
+      "documentation":"<p>A protocol version identifier, as a bare numeric string. For example, \"1\" or \"2\".</p>",
+      "max":10,
+      "min":1,
+      "pattern":"[0-9]+"
+    },
     "ViewPort":{
       "type":"structure",
       "required":[
@@ -11429,6 +13099,19 @@
       "max":131072,
       "min":1,
       "sensitive":true
+    },
+    "WwwAuthenticateHeader":{
+      "type":"string",
+      "documentation":"<p>A raw <code>WWW-Authenticate: Payment</code> header value from a 402 response, containing RFC 9110 auth-params such as <code>id</code>, <code>realm</code>, <code>method</code>, <code>intent</code>, and <code>request</code>. Pass this value in the request body, not as an HTTP header.</p>",
+      "max":16384,
+      "min":1
+    },
+    "WwwAuthenticateHeaderList":{
+      "type":"list",
+      "member":{"shape":"WwwAuthenticateHeader"},
+      "documentation":"<p>The raw WWW-Authenticate header value to fulfill. Provide exactly one entry.</p>",
+      "max":1,
+      "min":1
     }
   },
   "documentation":"<p>Welcome to the Amazon Bedrock AgentCore Data Plane API reference. Data Plane actions process and handle data or workloads within Amazon Web Services services. </p>"

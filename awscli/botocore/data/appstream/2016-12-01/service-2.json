@@ -4,8 +4,11 @@
     "apiVersion":"2016-12-01",
     "endpointPrefix":"appstream2",
     "jsonVersion":"1.1",
-    "protocol":"json",
-    "protocols":["json"],
+    "protocol":"smithy-rpc-v2-cbor",
+    "protocols":[
+      "smithy-rpc-v2-cbor",
+      "json"
+    ],
     "serviceFullName":"Amazon AppStream",
     "serviceId":"AppStream",
     "signatureVersion":"v4",
@@ -1536,6 +1539,10 @@
         "ScreenImageFormat":{
           "shape":"ScreenImageFormat",
           "documentation":"<p>The image format for agent screen captures.</p>"
+        },
+        "UserControlMode":{
+          "shape":"UserControlMode",
+          "documentation":"<p>The user control mode for agent sessions. This setting determines how users can interact with agent sessions.</p>"
         }
       },
       "documentation":"<p>The configuration for agent access on a stack. Agent access enables AI agents to interact with desktop applications during streaming sessions.</p>"
@@ -1562,6 +1569,10 @@
         "ScreenImageFormat":{
           "shape":"ScreenImageFormat",
           "documentation":"<p>The image format for agent screen captures.</p>"
+        },
+        "UserControlMode":{
+          "shape":"UserControlMode",
+          "documentation":"<p>The user control mode for agent sessions. This setting determines how users can interact with agent sessions.</p>"
         }
       },
       "documentation":"<p>The configuration for updating agent access on a stack. This type supports partial updates, so you only need to specify the fields you want to change.</p>"
@@ -1575,7 +1586,7 @@
       "members":{
         "AgentAction":{
           "shape":"AgentAction",
-          "documentation":"<p>The agent action to configure. Valid values are COMPUTER_VISION and COMPUTER_INPUT. If you enable COMPUTER_INPUT, you must also enable COMPUTER_VISION.</p>"
+          "documentation":"<p>The agent action to configure. Valid values are COMPUTER_VISION, COMPUTER_INPUT, and FORWARD_MCP_TOOLS. If you enable COMPUTER_INPUT, you must also enable COMPUTER_VISION.</p>"
         },
         "Permission":{
           "shape":"Permission",
@@ -1592,15 +1603,16 @@
     },
     "AgentAction":{
       "type":"string",
-      "documentation":"<p>The type of agent action.</p> <ul> <li> <p>COMPUTER_VISION - Allows agents to take screenshots of the desktop.</p> </li> <li> <p>COMPUTER_INPUT - Allows agents to click, type, and scroll on the desktop. Requires COMPUTER_VISION to also be enabled.</p> </li> </ul>",
+      "documentation":"<p>The type of agent action.</p> <ul> <li> <p>COMPUTER_VISION - Allows agents to take screenshots of the desktop.</p> </li> <li> <p>COMPUTER_INPUT - Allows agents to click, type, and scroll on the desktop. Requires COMPUTER_VISION to also be enabled.</p> </li> <li> <p>FORWARD_MCP_TOOLS - Allows agents to interact with applications and the desktop operating system through direct MCP calls rather than using computer use tools. Forwards MCP tools configured on the WorkSpaces application session to the agent.</p> </li> </ul>",
       "enum":[
         "COMPUTER_VISION",
-        "COMPUTER_INPUT"
+        "COMPUTER_INPUT",
+        "FORWARD_MCP_TOOLS"
       ]
     },
     "AgentSoftwareVersion":{
       "type":"string",
-      "documentation":"The image type is the type of AppStream image resource.",
+      "documentation":"<p>The image type is the type of AppStream image resource.</p>",
       "enum":[
         "CURRENT_LATEST",
         "ALWAYS_LATEST"
@@ -1828,11 +1840,13 @@
     "AppDisplayName":{
       "type":"string",
       "max":100,
+      "min":0,
       "pattern":"^[a-zA-Z0-9][a-zA-Z0-9_. -]{0,99}$"
     },
     "AppName":{
       "type":"string",
       "max":100,
+      "min":0,
       "pattern":"^[a-zA-Z0-9][a-zA-Z0-9_.-]{0,99}$"
     },
     "AppVisibility":{
@@ -2305,6 +2319,7 @@
         "Message":{"shape":"ErrorMessage"}
       },
       "documentation":"<p>An API error occurred. Wait a few minutes and try again.</p>",
+      "error":{"httpStatusCode":400},
       "exception":true
     },
     "ContentRedirection":{
@@ -3005,6 +3020,10 @@
         "AgentAccessConfig":{
           "shape":"AgentAccessConfig",
           "documentation":"<p>The configuration for agent access on the stack. If specified, agent access is enabled for the stack.</p>"
+        },
+        "StorageConnectorAuthentication":{
+          "shape":"StorageConnectorAuthentication",
+          "documentation":"<p>Specifies whether users' cloud storage authentication persists across streaming sessions. When you specify FORCE_REAUTHENTICATION, WorkSpaces Applications removes the stored authentication for the stack's OneDrive and Google Drive connectors when a user's session ends. The user links their cloud storage again on their next session. The default is REUSE_CREDENTIALS.</p>"
         }
       }
     },
@@ -4247,6 +4266,7 @@
         "Message":{"shape":"ErrorMessage"}
       },
       "documentation":"<p>The exception that is thrown when a dry run operation is requested. This indicates that the validation checks have been performed successfully, but no actual resources were created or modified.</p>",
+      "error":{"httpStatusCode":412},
       "exception":true
     },
     "DynamicAppProvidersEnabled":{
@@ -4350,6 +4370,7 @@
         "Message":{"shape":"ErrorMessage"}
       },
       "documentation":"<p>The entitlement already exists.</p>",
+      "error":{"httpStatusCode":400},
       "exception":true
     },
     "EntitlementAttribute":{
@@ -4385,6 +4406,7 @@
         "Message":{"shape":"ErrorMessage"}
       },
       "documentation":"<p>The entitlement can't be found.</p>",
+      "error":{"httpStatusCode":400},
       "exception":true
     },
     "ErrorDetails":{
@@ -4491,6 +4513,7 @@
     "FilePath":{
       "type":"string",
       "max":32767,
+      "min":0,
       "sensitive":true
     },
     "Filter":{
@@ -4856,6 +4879,10 @@
         "ImageType":{
           "shape":"ImageType",
           "documentation":"<p>The type of the image. Images created through AMI import have type \"custom\", while WorkSpaces Applications provided images have type \"native\". Custom images support additional instance types including GeneralPurpose, MemoryOptimized, ComputeOptimized, and Accelerated instance families.</p>"
+        },
+        "ImageSoftwareMetadata":{
+          "shape":"ImageSoftwareMetadata",
+          "documentation":"<p>The software metadata associated with the image.</p>"
         }
       },
       "documentation":"<p>Describes an image.</p>"
@@ -4995,11 +5022,13 @@
     "ImageImportDescription":{
       "type":"string",
       "max":256,
+      "min":0,
       "pattern":"^[a-zA-Z0-9_.() -]+$"
     },
     "ImageImportDisplayName":{
       "type":"string",
       "max":100,
+      "min":0,
       "pattern":"^[a-zA-Z0-9_.() -]+$"
     },
     "ImageList":{
@@ -5026,6 +5055,16 @@
         "TRUE",
         "FALSE"
       ]
+    },
+    "ImageSoftwareMetadata":{
+      "type":"structure",
+      "members":{
+        "nvidiaGridDriverVersion":{
+          "shape":"NvidiaGridDriverVersion",
+          "documentation":"<p>The version of the NVIDIA GRID driver installed on the image. This field is empty if no NVIDIA GRID driver is installed.</p>"
+        }
+      },
+      "documentation":"<p>Describes the software metadata for an image, such as the installed NVIDIA GRID driver version.</p>"
     },
     "ImageState":{
       "type":"string",
@@ -5066,7 +5105,7 @@
     },
     "ImageType":{
       "type":"string",
-      "documentation":"The image type is the type of AppStream image resource.",
+      "documentation":"<p>The image type is the type of AppStream image resource.</p>",
       "enum":[
         "CUSTOM",
         "NATIVE",
@@ -5079,6 +5118,7 @@
         "Message":{"shape":"ErrorMessage"}
       },
       "documentation":"<p>The image can't be updated because it's not compatible for updates.</p>",
+      "error":{"httpStatusCode":400},
       "exception":true
     },
     "InstanceDrainStatus":{
@@ -5101,6 +5141,7 @@
         "Message":{"shape":"ErrorMessage"}
       },
       "documentation":"<p>The resource cannot be created because your AWS account is suspended. For assistance, contact AWS Support. </p>",
+      "error":{"httpStatusCode":400},
       "exception":true
     },
     "InvalidParameterCombinationException":{
@@ -5109,6 +5150,7 @@
         "Message":{"shape":"ErrorMessage"}
       },
       "documentation":"<p>Indicates an incorrect combination of parameters, or a missing parameter.</p>",
+      "error":{"httpStatusCode":400},
       "exception":true
     },
     "InvalidRoleException":{
@@ -5117,6 +5159,7 @@
         "Message":{"shape":"ErrorMessage"}
       },
       "documentation":"<p>The specified role is invalid.</p>",
+      "error":{"httpStatusCode":400},
       "exception":true
     },
     "LastReportGenerationExecutionError":{
@@ -5147,7 +5190,8 @@
     "LaunchParameters":{
       "type":"string",
       "max":1024,
-      "pattern":"[^\\x00]+",
+      "min":0,
+      "pattern":"^[^\\x00]+$",
       "sensitive":true
     },
     "LimitExceededException":{
@@ -5156,6 +5200,7 @@
         "Message":{"shape":"ErrorMessage"}
       },
       "documentation":"<p>The requested limit exceeds the permitted limit for an account.</p>",
+      "error":{"httpStatusCode":400},
       "exception":true
     },
     "ListAssociatedFleetsRequest":{
@@ -5340,12 +5385,19 @@
       },
       "documentation":"<p>Describes the network details of the fleet or image builder instance.</p>"
     },
+    "NvidiaGridDriverVersion":{
+      "type":"string",
+      "max":32,
+      "min":1,
+      "pattern":"^[0-9]+(\\.[0-9]+){1,2}$"
+    },
     "OperationNotPermittedException":{
       "type":"structure",
       "members":{
         "Message":{"shape":"ErrorMessage"}
       },
       "documentation":"<p>The attempted operation is not permitted.</p>",
+      "error":{"httpStatusCode":400},
       "exception":true
     },
     "OrganizationalUnitDistinguishedName":{
@@ -5415,6 +5467,7 @@
         "Message":{"shape":"ErrorMessage"}
       },
       "documentation":"<p>WorkSpaces Applications can’t process the request right now because the Describe calls from your AWS account are being throttled by Amazon EC2. Try again later.</p>",
+      "error":{"httpStatusCode":400},
       "exception":true
     },
     "ResourceAlreadyExistsException":{
@@ -5423,6 +5476,7 @@
         "Message":{"shape":"ErrorMessage"}
       },
       "documentation":"<p>The specified resource already exists.</p>",
+      "error":{"httpStatusCode":400},
       "exception":true
     },
     "ResourceError":{
@@ -5459,6 +5513,7 @@
         "Message":{"shape":"ErrorMessage"}
       },
       "documentation":"<p>The specified resource is in use.</p>",
+      "error":{"httpStatusCode":400},
       "exception":true
     },
     "ResourceNotAvailableException":{
@@ -5467,6 +5522,7 @@
         "Message":{"shape":"ErrorMessage"}
       },
       "documentation":"<p>The specified resource exists and is not in use, but isn't available.</p>",
+      "error":{"httpStatusCode":400},
       "exception":true
     },
     "ResourceNotFoundException":{
@@ -5475,6 +5531,7 @@
         "Message":{"shape":"ErrorMessage"}
       },
       "documentation":"<p>The specified resource was not found.</p>",
+      "error":{"httpStatusCode":404},
       "exception":true
     },
     "RuntimeValidationConfig":{
@@ -5790,13 +5847,17 @@
         "AgentAccessConfig":{
           "shape":"AgentAccessConfig",
           "documentation":"<p>The agent access configuration of the stack, if agent access is enabled.</p>"
+        },
+        "StorageConnectorAuthentication":{
+          "shape":"StorageConnectorAuthentication",
+          "documentation":"<p>Indicates whether users' cloud storage authentication persists across streaming sessions. When this attribute is FORCE_REAUTHENTICATION, WorkSpaces Applications removes the stored authentication for the stack's OneDrive and Google Drive connectors when a user's session ends. The user links their cloud storage again on their next session. The default is REUSE_CREDENTIALS.</p>"
         }
       },
       "documentation":"<p>Describes a stack.</p>"
     },
     "StackAttribute":{
       "type":"string",
-      "documentation":"<p>The stack attributes to delete.</p> <ul> <li> <p>STORAGE_CONNECTORS</p> </li> <li> <p>STORAGE_CONNECTOR_HOMEFOLDERS</p> </li> <li> <p>STORAGE_CONNECTOR_GOOGLE_DRIVE</p> </li> <li> <p>STORAGE_CONNECTOR_ONE_DRIVE</p> </li> <li> <p>REDIRECT_URL</p> </li> <li> <p>FEEDBACK_URL</p> </li> <li> <p>THEME_NAME</p> </li> <li> <p>USER_SETTINGS</p> </li> <li> <p>EMBED_HOST_DOMAINS</p> </li> <li> <p>IAM_ROLE_ARN</p> </li> <li> <p>ACCESS_ENDPOINTS</p> </li> <li> <p>STREAMING_EXPERIENCE_SETTINGS</p> </li> <li> <p>AGENT_ACCESS_CONFIG</p> </li> </ul>",
+      "documentation":"<p>The stack attributes to delete.</p> <ul> <li> <p>STORAGE_CONNECTORS</p> </li> <li> <p>STORAGE_CONNECTOR_HOMEFOLDERS</p> </li> <li> <p>STORAGE_CONNECTOR_GOOGLE_DRIVE</p> </li> <li> <p>STORAGE_CONNECTOR_ONE_DRIVE</p> </li> <li> <p>REDIRECT_URL</p> </li> <li> <p>FEEDBACK_URL</p> </li> <li> <p>THEME_NAME</p> </li> <li> <p>USER_SETTINGS</p> </li> <li> <p>EMBED_HOST_DOMAINS</p> </li> <li> <p>IAM_ROLE_ARN</p> </li> <li> <p>ACCESS_ENDPOINTS</p> </li> <li> <p>STREAMING_EXPERIENCE_SETTINGS</p> </li> <li> <p>AGENT_ACCESS_CONFIG</p> </li> <li> <p>STORAGE_CONNECTOR_AUTHENTICATION</p> </li> </ul>",
       "enum":[
         "STORAGE_CONNECTORS",
         "STORAGE_CONNECTOR_HOMEFOLDERS",
@@ -5811,7 +5872,8 @@
         "ACCESS_ENDPOINTS",
         "STREAMING_EXPERIENCE_SETTINGS",
         "CONTENT_REDIRECTION",
-        "AGENT_ACCESS_CONFIG"
+        "AGENT_ACCESS_CONFIG",
+        "STORAGE_CONNECTOR_AUTHENTICATION"
       ]
     },
     "StackAttributes":{
@@ -5991,6 +6053,14 @@
         }
       },
       "documentation":"<p>Describes a connector that enables persistent storage for users.</p>"
+    },
+    "StorageConnectorAuthentication":{
+      "type":"string",
+      "documentation":"<p>Specifies whether users' cloud storage authentication persists across streaming sessions.</p>",
+      "enum":[
+        "FORCE_REAUTHENTICATION",
+        "REUSE_CREDENTIALS"
+      ]
     },
     "StorageConnectorList":{
       "type":"list",
@@ -6188,7 +6258,7 @@
     "Timestamp":{"type":"timestamp"},
     "UUID":{
       "type":"string",
-      "pattern":"[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}"
+      "pattern":"^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$"
     },
     "UntagResourceRequest":{
       "type":"structure",
@@ -6582,6 +6652,10 @@
         "AgentAccessConfig":{
           "shape":"AgentAccessConfigForUpdate",
           "documentation":"<p>The configuration for agent access on the stack. Specify this to update agent access settings. To remove agent access, use AttributesToDelete with the AGENT_ACCESS_CONFIG value.</p>"
+        },
+        "StorageConnectorAuthentication":{
+          "shape":"StorageConnectorAuthentication",
+          "documentation":"<p>Specifies whether users' cloud storage authentication persists across streaming sessions. When you specify FORCE_REAUTHENTICATION, WorkSpaces Applications removes the stored authentication for the stack's OneDrive and Google Drive connectors when a user's session ends. The user links their cloud storage again on their next session. To clear this attribute, add STORAGE_CONNECTOR_AUTHENTICATION to AttributesToDelete.</p>"
         }
       }
     },
@@ -6766,6 +6840,15 @@
       "pattern":"^[A-Za-z0-9_\\-\\s]+$",
       "sensitive":true
     },
+    "UserControlMode":{
+      "type":"string",
+      "documentation":"<p>The user control mode for agent sessions.</p> <ul> <li> <p>VIEW_ONLY - Users can view and observe agent actions as they happen.</p> </li> <li> <p>VIEW_STOP - Users can view agent actions and stop the agent if needed.</p> </li> <li> <p>DISABLED - Users cannot view or stop the agent session.</p> </li> </ul>",
+      "enum":[
+        "VIEW_ONLY",
+        "VIEW_STOP",
+        "DISABLED"
+      ]
+    },
     "UserId":{
       "type":"string",
       "max":128,
@@ -6907,6 +6990,7 @@
     },
     "WorkspaceImageId":{
       "type":"string",
+      "documentation":"<p>WorkspaceImageId type with validation pattern</p>",
       "max":67,
       "min":12,
       "pattern":"^wsi-[0-9a-z]{8,63}$"

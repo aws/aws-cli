@@ -58,7 +58,7 @@
       ]
     },
     "ChannelStopped": {
-      "description": "Wait until a channel has is stopped",
+      "description": "Wait until a channel is not running",
       "operation": "DescribeChannel",
       "delay": 5,
       "maxAttempts": 60,
@@ -79,6 +79,23 @@
           "state": "retry",
           "matcher": "status",
           "expected": 500
+        },
+        {
+          "state": "success",
+          "matcher": "path",
+          "argument": "State",
+          "expected": "DELETING"
+        },
+        {
+          "state": "success",
+          "matcher": "path",
+          "argument": "State",
+          "expected": "DELETED"
+        },
+        {
+          "state": "failure",
+          "matcher": "error",
+          "expected": "NotFoundException"
         }
       ]
     },

@@ -64,11 +64,13 @@ from awscli.errorhandler import (
     construct_entry_point_handlers_chain,
 )
 from awscli.formatter import get_formatter
+from awscli.handlers_registry import MAIN_COMMAND_TABLE_OPS
 from awscli.help import (
     OperationHelpCommand,
     ProviderHelpCommand,
     ServiceHelpCommand,
 )
+from awscli.lazy_emitter import LazyInitEmitter
 from awscli.logger import (
     disable_crt_logging,
     enable_crt_logging,
@@ -76,7 +78,7 @@ from awscli.logger import (
     set_stream_logger,
 )
 from awscli.plugin import load_plugins
-from awscli.telemetry import add_session_id_component_to_user_agent_extra
+from awscli.telemetry import register_session_id_event
 from awscli.utils import (
     IMDSRegionProvider,
     OutputStreamFactory,
@@ -91,6 +93,7 @@ LOG_FORMAT = (
 )
 HISTORY_RECORDER = get_global_history_recorder()
 METADATA_FILENAME = 'metadata.json'
+INSTALL_FILENAME = 'install.json'
 _NO_AUTO_PROMPT_ARGS = ['help', '--version']
 _CLI_AUTO_PROMPT_OPTION = '--cli-auto-prompt'
 _NO_CLI_AUTO_PROMPT_OPTION = '--no-cli-auto-prompt'
@@ -117,6 +120,10 @@ def create_clidriver(args=None, event_hooks=None):
         parser = FirstPassGlobalArgParser()
         args, _ = parser.parse_known_args(args)
         debug = args.debug
+    if event_hooks is None:
+        event_hooks = LazyInitEmitter(
+            main_command_table_ops=MAIN_COMMAND_TABLE_OPS
+        )
     session = botocore.session.Session(event_hooks=event_hooks)
     _set_user_agent_for_session(session)
     load_plugins(
@@ -160,16 +167,17 @@ def resolve_auto_prompt_mode(args, session):
         return 'off'
 
 
-def _get_distribution_source():
-    metadata_file = os.path.join(
-        os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data'),
-        METADATA_FILENAME,
-    )
-    metadata = {}
-    if os.path.isfile(metadata_file):
-        with open(metadata_file) as f:
-            metadata = json.load(f)
-    return metadata.get('distribution_source', 'other')
+def get_distribution_source():
+    data_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data')
+    for name in (INSTALL_FILENAME, METADATA_FILENAME):
+        path = os.path.join(data_dir, name)
+        if not os.path.isfile(path):
+            continue
+        with open(path) as f:
+            data = json.load(f)
+        if 'distribution_source' in data:
+            return data['distribution_source']
+    return 'other'
 
 
 def _get_distribution():
@@ -193,7 +201,7 @@ def _get_linux_distribution():
 
 def _add_distribution_source_to_user_agent(session):
     add_metadata_component_to_user_agent_extra(
-        session, 'installer', _get_distribution_source()
+        session, 'installer', get_distribution_source()
     )
 
 
@@ -211,7 +219,13 @@ def _set_user_agent_for_session(session):
     session.user_agent_version = __version__
     _add_distribution_source_to_user_agent(session)
     _add_linux_distribution_to_user_agent(session)
-    add_session_id_component_to_user_agent_extra(session)
+
+
+def register_no_pager_handler(event_emitter):
+    event_emitter.register(
+        'session-initialized',
+        no_pager_handler,
+    )
 
 
 def no_pager_handler(session, parsed_args, **kwargs):
@@ -283,6 +297,7 @@ class CLIDriver:
             _set_user_agent_for_session(self.session)
         else:
             self.session = session
+        register_session_id_event(self.session)
         self._error_handler = error_handler
         if self._error_handler is None:
             self._error_handler = construct_cli_error_handlers_chain(
@@ -541,7 +556,7 @@ class CLIDriver:
                 f' exec-env/{os.environ.get("AWS_EXECUTION_ENV")}'
             )
 
-        version_string += f' {_get_distribution_source()}/{platform.machine()}'
+        version_string += f' {get_distribution_source()}/{platform.machine()}'
 
         if linux_distribution := _get_distribution():
             version_string += f'.{linux_distribution}'

@@ -414,6 +414,27 @@
       "documentation":"<p>Creates an Amazon DataZone data source.</p>",
       "idempotent":true
     },
+    "CreateDesignation":{
+      "name":"CreateDesignation",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v2/domains/{domainIdentifier}/designations",
+        "responseCode":201
+      },
+      "input":{"shape":"CreateDesignationInput"},
+      "output":{"shape":"CreateDesignationOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"UnauthorizedException"}
+      ],
+      "documentation":"<p>Creates a new user-defined designation with a Cedar permit policy. The designation defines a named role that can be assigned to project members.</p>"
+    },
     "CreateDomain":{
       "name":"CreateDomain",
       "http":{
@@ -994,6 +1015,27 @@
       "documentation":"<p>Deletes a data source in Amazon DataZone.</p>",
       "idempotent":true
     },
+    "DeleteDesignation":{
+      "name":"DeleteDesignation",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/v2/domains/{domainIdentifier}/designations/{identifier}",
+        "responseCode":204
+      },
+      "input":{"shape":"DeleteDesignationInput"},
+      "output":{"shape":"DeleteDesignationOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"UnauthorizedException"}
+      ],
+      "documentation":"<p>Deletes a designation. Managed designations cannot be deleted. This operation is idempotent.</p>",
+      "idempotent":true
+    },
     "DeleteDomain":{
       "name":"DeleteDomain",
       "http":{
@@ -1193,6 +1235,26 @@
         {"shape":"UnauthorizedException"}
       ],
       "documentation":"<p>Deletes a business glossary term in Amazon DataZone.</p> <p>Prerequisites:</p> <ul> <li> <p>Glossary term must exist and be active. </p> </li> <li> <p>The term must not be linked to other assets or child terms.</p> </li> <li> <p>Caller must have delete permissions in the domain/glossary.</p> </li> <li> <p>Ensure all associations (such as to assets or parent terms) are removed before deletion.</p> </li> </ul>",
+      "idempotent":true
+    },
+    "DeleteLineageEvent":{
+      "name":"DeleteLineageEvent",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/v2/domains/{domainIdentifier}/lineage/events/{identifier}",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteLineageEventInput"},
+      "output":{"shape":"DeleteLineageEventOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"UnauthorizedException"}
+      ],
+      "documentation":"<p>Deletes the specified lineage event.</p>",
       "idempotent":true
     },
     "DeleteListing":{
@@ -1618,6 +1680,26 @@
         {"shape":"UnauthorizedException"}
       ],
       "documentation":"<p>Gets an Amazon DataZone data source run.</p>",
+      "readonly":true
+    },
+    "GetDesignation":{
+      "name":"GetDesignation",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v2/domains/{domainIdentifier}/designations/{identifier}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetDesignationInput"},
+      "output":{"shape":"GetDesignationOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"UnauthorizedException"}
+      ],
+      "documentation":"<p>Gets the details of a designation, including its Cedar policy.</p>",
       "readonly":true
     },
     "GetDomain":{
@@ -2403,6 +2485,26 @@
         {"shape":"UnauthorizedException"}
       ],
       "documentation":"<p>Lists data sources in Amazon DataZone.</p>",
+      "readonly":true
+    },
+    "ListDesignations":{
+      "name":"ListDesignations",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v2/domains/{domainIdentifier}/designations",
+        "responseCode":200
+      },
+      "input":{"shape":"ListDesignationsInput"},
+      "output":{"shape":"ListDesignationsOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"UnauthorizedException"}
+      ],
+      "documentation":"<p>Lists the designations in a domain. Returns system-managed designations first, followed by user-created designations sorted alphabetically by name.</p>",
       "readonly":true
     },
     "ListDomainUnitsForParent":{
@@ -3324,6 +3426,28 @@
       "documentation":"<p>Starts a notebook run in Amazon SageMaker Unified Studio. A notebook run represents the execution of an <a href=\"https://docs.aws.amazon.com/sagemaker-unified-studio/latest/userguide/notebooks.html\">Amazon SageMaker notebook</a> within a project. You can configure compute, network, timeout, and environment settings for the run.</p>",
       "idempotent":true
     },
+    "StartNotebookSync":{
+      "name":"StartNotebookSync",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v2/domains/{domainIdentifier}/notebook-syncs",
+        "responseCode":201
+      },
+      "input":{"shape":"StartNotebookSyncInput"},
+      "output":{"shape":"StartNotebookSyncOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"UnauthorizedException"}
+      ],
+      "documentation":"<p>Starts a notebook sync in Amazon SageMaker Unified Studio. This operation syncs a notebook from a Git repository into a project.</p>",
+      "idempotent":true
+    },
     "StopNotebookRun":{
       "name":"StopNotebookRun",
       "http":{
@@ -3469,6 +3593,26 @@
       ],
       "documentation":"<p>Updates the specified data source in Amazon DataZone.</p>",
       "idempotent":true
+    },
+    "UpdateDesignation":{
+      "name":"UpdateDesignation",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/v2/domains/{domainIdentifier}/designations/{identifier}",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateDesignationInput"},
+      "output":{"shape":"UpdateDesignationOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"UnauthorizedException"}
+      ],
+      "documentation":"<p>Updates an existing designation. Managed designations cannot be modified.</p>"
     },
     "UpdateDomain":{
       "name":"UpdateDomain",
@@ -4948,6 +5092,10 @@
           "shape":"String",
           "documentation":"<p>The status of the asset scope.</p>"
         },
+        "scopeName":{
+          "shape":"String",
+          "documentation":"<p>The name of the materialized asset scope.</p>"
+        },
         "errorMessage":{
           "shape":"String",
           "documentation":"<p>The error message of the asset scope.</p>"
@@ -5622,6 +5770,10 @@
         }
       }
     },
+    "BlueprintCategory":{
+      "type":"string",
+      "enum":["TOOLING"]
+    },
     "Boolean":{
       "type":"boolean",
       "box":true
@@ -5741,6 +5893,12 @@
         }
       }
     },
+    "CedarDesignationPolicy":{
+      "type":"string",
+      "documentation":"<p>A Cedar permit policy that defines what actions designation holders can perform.</p>",
+      "max":10000,
+      "min":1
+    },
     "CellInformation":{
       "type":"structure",
       "members":{},
@@ -5789,6 +5947,18 @@
     "ColumnNameList":{
       "type":"list",
       "member":{"shape":"String"}
+    },
+    "CommitHash":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"[a-zA-Z0-9]+"
+    },
+    "CommitMessage":{
+      "type":"string",
+      "max":2048,
+      "min":0,
+      "sensitive":true
     },
     "CompletedAt":{"type":"timestamp"},
     "ComputeConfig":{
@@ -5988,6 +6158,10 @@
           "shape":"S3PropertiesInput",
           "documentation":"<p>The Amazon S3 properties of a connection.</p>"
         },
+        "snowflakeProperties":{
+          "shape":"SnowflakePropertiesInput",
+          "documentation":"<p>The Snowflake-specific connection properties to use when creating the connection.</p>"
+        },
         "amazonQProperties":{
           "shape":"AmazonQPropertiesInput",
           "documentation":"<p>The Amazon Q properties of the connection.</p>"
@@ -6011,6 +6185,10 @@
         "vpcProperties":{
           "shape":"VpcPropertiesInput",
           "documentation":"<p>The VPC properties of a connection.</p>"
+        },
+        "gitProperties":{
+          "shape":"GitPropertiesInput",
+          "documentation":"<p>The Git properties of a connection.</p>"
         }
       },
       "documentation":"<p>The properties of a connection.</p>",
@@ -6051,6 +6229,10 @@
           "shape":"S3PropertiesOutput",
           "documentation":"<p>The Amazon S3 properties of a connection.</p>"
         },
+        "snowflakeProperties":{
+          "shape":"SnowflakePropertiesOutput",
+          "documentation":"<p>The Snowflake-specific connection properties for an existing connection.</p>"
+        },
         "amazonQProperties":{
           "shape":"AmazonQPropertiesOutput",
           "documentation":"<p>The Amazon Q properties of the connection.</p>"
@@ -6074,6 +6256,10 @@
         "vpcProperties":{
           "shape":"VpcPropertiesOutput",
           "documentation":"<p>The VPC properties of a connection.</p>"
+        },
+        "gitProperties":{
+          "shape":"GitPropertiesOutput",
+          "documentation":"<p>The Git properties of a connection.</p>"
         }
       },
       "documentation":"<p>The properties of a connection.</p>",
@@ -6106,6 +6292,10 @@
           "shape":"S3PropertiesPatch",
           "documentation":"<p>The Amazon S3 properties of a connection properties patch.</p>"
         },
+        "snowflakeProperties":{
+          "shape":"SnowflakePropertiesPatch",
+          "documentation":"<p>The Snowflake-specific connection properties to update.</p>"
+        },
         "amazonQProperties":{
           "shape":"AmazonQPropertiesPatch",
           "documentation":"<p>The Amazon Q properties of the connection.</p>"
@@ -6121,6 +6311,10 @@
         "vpcProperties":{
           "shape":"VpcPropertiesPatch",
           "documentation":"<p>The VPC properties of a connection properties patch.</p>"
+        },
+        "gitProperties":{
+          "shape":"GitPropertiesPatch",
+          "documentation":"<p>The Git properties of a connection properties patch.</p>"
         }
       },
       "documentation":"<p>The connection properties patch.</p>",
@@ -6238,8 +6432,94 @@
         "WORKFLOWS_MWAA",
         "AMAZON_Q",
         "MLFLOW",
-        "VPC"
+        "VPC",
+        "GIT",
+        "ICEBERGRESTCATALOG",
+        "SNOWFLAKEICEBERGRESTCATALOG",
+        "DATABRICKSICEBERGRESTCATALOG"
       ]
+    },
+    "ConnectivityProperties":{
+      "type":"structure",
+      "members":{
+        "connectionProperties":{
+          "shape":"ConnectionProperties",
+          "documentation":"<p>The connection properties for this configuration.</p>"
+        },
+        "physicalConnectionRequirements":{
+          "shape":"PhysicalConnectionRequirements",
+          "documentation":"<p>The physical network requirements for the connection, such as the subnet, security group, and VPC settings needed to reach the data source.</p>"
+        },
+        "name":{
+          "shape":"ConnectivityPropertiesNameString",
+          "documentation":"<p>The name of the connectivity configuration.</p>"
+        },
+        "description":{
+          "shape":"ConnectivityPropertiesDescriptionString",
+          "documentation":"<p>The description of the connectivity configuration.</p>"
+        },
+        "validateCredentials":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether to validate credentials for the connectivity configuration. Defaults to true if not specified.</p>"
+        },
+        "validateForComputeEnvironments":{
+          "shape":"ComputeEnvironmentsList",
+          "documentation":"<p>The compute environments to use when validating connectivity. The service validates that the connection is reachable from each specified environment.</p>"
+        },
+        "sparkProperties":{
+          "shape":"PropertyMap",
+          "documentation":"<p>The Spark properties for this configuration.</p>"
+        },
+        "athenaProperties":{
+          "shape":"PropertyMap",
+          "documentation":"<p>The Athena properties for this configuration.</p>"
+        },
+        "pythonProperties":{
+          "shape":"PropertyMap",
+          "documentation":"<p>The Python properties for this configuration.</p>"
+        },
+        "authenticationConfiguration":{
+          "shape":"AuthenticationConfigurationInput",
+          "documentation":"<p>The authentication settings for this configuration.</p>"
+        }
+      },
+      "documentation":"<p>Contains the network and authentication settings for a connection, including connection credentials, physical network requirements, and compute-environment validation options.</p>"
+    },
+    "ConnectivityPropertiesDescriptionString":{
+      "type":"string",
+      "max":2048,
+      "min":0,
+      "pattern":"[\\u0020-\\uD7FF\\uE000-\\uFFFF\\r\\n\\t]*"
+    },
+    "ConnectivityPropertiesNameString":{
+      "type":"string",
+      "max":41,
+      "min":1,
+      "pattern":"[\\u0020-\\uD7FF\\uE000-\\uFFFF\\t]*"
+    },
+    "ConnectivityPropertiesPatch":{
+      "type":"structure",
+      "members":{
+        "description":{
+          "shape":"ConnectivityPropertiesPatchDescriptionString",
+          "documentation":"<p>A description of the connectivity properties update.</p>"
+        },
+        "connectionProperties":{
+          "shape":"ConnectionProperties",
+          "documentation":"<p>The connection properties to update.</p>"
+        },
+        "authenticationConfiguration":{
+          "shape":"AuthenticationConfigurationPatch",
+          "documentation":"<p>The authentication settings to update.</p>"
+        }
+      },
+      "documentation":"<p>Contains the connectivity settings to update on an existing connection. Include only the fields you want to change.</p>"
+    },
+    "ConnectivityPropertiesPatchDescriptionString":{
+      "type":"string",
+      "max":2048,
+      "min":0,
+      "pattern":"[\\S\\s]*"
     },
     "CreateAccountPoolInput":{
       "type":"structure",
@@ -7362,6 +7642,93 @@
         }
       }
     },
+    "CreateDesignationInput":{
+      "type":"structure",
+      "required":[
+        "domainIdentifier",
+        "name",
+        "policy"
+      ],
+      "members":{
+        "domainIdentifier":{
+          "shape":"DomainId",
+          "documentation":"<p>The identifier of the Amazon DataZone domain in which the designation is created.</p>",
+          "location":"uri",
+          "locationName":"domainIdentifier"
+        },
+        "name":{
+          "shape":"DesignationName",
+          "documentation":"<p>The name of the designation. The name must be unique within the domain.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>A human-readable description of the designation and its intended use.</p>"
+        },
+        "policy":{
+          "shape":"CedarDesignationPolicy",
+          "documentation":"<p>The Cedar permit policy that defines what actions holders of this designation are allowed to perform.</p>"
+        },
+        "deletionProtection":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether deletion protection is enabled for this designation. Defaults to true when omitted.</p>"
+        }
+      }
+    },
+    "CreateDesignationOutput":{
+      "type":"structure",
+      "required":[
+        "domainId",
+        "id",
+        "name",
+        "designationType",
+        "policy",
+        "deletionProtection",
+        "createdBy"
+      ],
+      "members":{
+        "domainId":{
+          "shape":"DomainId",
+          "documentation":"<p>The identifier of the Amazon DataZone domain in which the designation was created.</p>"
+        },
+        "id":{
+          "shape":"DesignationId",
+          "documentation":"<p>The unique ID of the designation.</p>"
+        },
+        "name":{
+          "shape":"DesignationName",
+          "documentation":"<p>The name of the designation. The name is unique within the domain.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>A human-readable description of the designation and its intended use.</p>"
+        },
+        "designationType":{
+          "shape":"DesignationType",
+          "documentation":"<p>The classification of this designation. MANAGED designations are system-defined and cannot be modified or deleted.</p>"
+        },
+        "policy":{
+          "shape":"CedarDesignationPolicy",
+          "documentation":"<p>The Cedar permit policy that governs what actions holders of this designation are allowed to perform.</p>"
+        },
+        "deletionProtection":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether deletion protection is enabled for this designation. When true, DeleteDesignation is rejected until protection is disabled via UpdateDesignation.</p>"
+        },
+        "createdBy":{
+          "shape":"CreatedBy",
+          "documentation":"<p>The identifier of the Amazon DataZone user who created the designation.</p>"
+        },
+        "createdAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time when the designation was created.</p>"
+        },
+        "lastUpdatedAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time when the designation was last updated.</p>"
+        }
+      },
+      "documentation":"<p>A designation defines a named role with a Cedar permit policy that controls what actions members holding this designation can perform within a project.</p>"
+    },
     "CreateDomainInput":{
       "type":"structure",
       "required":["name"],
@@ -7654,6 +8021,10 @@
         "userParameters":{
           "shape":"CustomParameterList",
           "documentation":"<p>The user parameters of this Amazon DataZone blueprint.</p>"
+        },
+        "blueprintCategory":{
+          "shape":"BlueprintCategory",
+          "documentation":"<p>The category of the Amazon DataZone blueprint. The only valid value is <code>TOOLING</code>, which creates a blueprint that provisions the tooling resources of a project.</p>"
         }
       }
     },
@@ -7697,6 +8068,10 @@
         "glossaryTerms":{
           "shape":"GlossaryTerms",
           "documentation":"<p>The glossary terms attached to this Amazon DataZone blueprint.</p>"
+        },
+        "blueprintCategory":{
+          "shape":"BlueprintCategory",
+          "documentation":"<p>The category of the Amazon DataZone blueprint. The only valid value is <code>TOOLING</code>, which indicates a blueprint that provisions the tooling resources of a project.</p>"
         },
         "createdAt":{
           "shape":"SyntheticTimestamp_date_time",
@@ -7756,7 +8131,7 @@
         },
         "environmentBlueprintIdentifier":{
           "shape":"String",
-          "documentation":"<p>The ID of the blueprint with which the environment is being created.</p>"
+          "documentation":"<p>The ID of the blueprint with which the environment is being created.</p> <note> <p>This parameter is only valid for V1 domains. If provided for a V2 domain, the service returns a ValidationException.</p> </note>"
         },
         "deploymentOrder":{
           "shape":"Integer",
@@ -8399,6 +8774,10 @@
           "shape":"Description",
           "documentation":"<p>The description of the notebook.</p>"
         },
+        "type":{
+          "shape":"NotebookType",
+          "documentation":"<p>The type of the notebook.</p>"
+        },
         "metadata":{
           "shape":"Metadata",
           "documentation":"<p>The metadata for the notebook, specified as key-value pairs. You can specify up to 50 entries, with keys up to 128 characters and values up to 1024 characters.</p>"
@@ -8448,6 +8827,10 @@
         "status":{
           "shape":"NotebookStatus",
           "documentation":"<p>The status of the notebook.</p>"
+        },
+        "type":{
+          "shape":"NotebookType",
+          "documentation":"<p>The type of the notebook.</p>"
         },
         "description":{
           "shape":"Description",
@@ -8500,6 +8883,10 @@
         "error":{
           "shape":"NotebookError",
           "documentation":"<p>The error details if the notebook creation failed.</p>"
+        },
+        "gitMetadata":{
+          "shape":"GitMetadata",
+          "documentation":"<p>The Git metadata associated with the notebook.</p>"
         }
       }
     },
@@ -8607,6 +8994,10 @@
         "designation":{
           "shape":"UserDesignation",
           "documentation":"<p>The designation of the project membership.</p>"
+        },
+        "userCreatedDesignationId":{
+          "shape":"DesignationId",
+          "documentation":"<p>The ID of the user-created designation to assign to the project member. Required when <code>designation</code> is <code>USER_CREATED_DESIGNATION</code>; must not be provided otherwise.</p>"
         }
       }
     },
@@ -10359,6 +10750,31 @@
         }
       }
     },
+    "DeleteDesignationInput":{
+      "type":"structure",
+      "required":[
+        "domainIdentifier",
+        "identifier"
+      ],
+      "members":{
+        "domainIdentifier":{
+          "shape":"DomainId",
+          "documentation":"<p>The identifier of the Amazon DataZone domain that contains the designation to delete.</p>",
+          "location":"uri",
+          "locationName":"domainIdentifier"
+        },
+        "identifier":{
+          "shape":"DesignationId",
+          "documentation":"<p>The unique ID of the designation to delete.</p>",
+          "location":"uri",
+          "locationName":"identifier"
+        }
+      }
+    },
+    "DeleteDesignationOutput":{
+      "type":"structure",
+      "members":{}
+    },
     "DeleteDomainInput":{
       "type":"structure",
       "required":["identifier"],
@@ -10378,9 +10794,15 @@
         },
         "skipDeletionCheck":{
           "shape":"Boolean",
-          "documentation":"<p>Specifies the optional flag to delete all child entities within the domain.</p>",
+          "documentation":"<p>Specifies whether to skip the check that prevents deletion of a domain that still contains resources. When you use this parameter, Amazon DataZone deletes the domain but might not remove its associated resources, which can leave orphaned resources behind. To delete a domain and fully clean up its associated resources, use <code>cascadeDelete</code> instead. You can't use this parameter together with <code>cascadeDelete</code>.</p>",
           "location":"querystring",
           "locationName":"skipDeletionCheck"
+        },
+        "cascadeDelete":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether to delete the domain along with all of its associated resources. When you use this parameter, Amazon DataZone deletes the domain and cleanly removes its associated resources without leaving orphaned resources behind. Amazon DataZone reports deletion progress in the <code>deleteProgress</code> field. Amazon DataZone reports any resources that it can't delete in the <code>failureReasons</code> field of the <code>GetDomain</code> response. You can't use this parameter together with <code>skipDeletionCheck</code>. If you don't specify a value, the default is <code>false</code>.</p>",
+          "location":"querystring",
+          "locationName":"cascadeDelete"
         }
       }
     },
@@ -10610,6 +11032,44 @@
       "type":"structure",
       "members":{}
     },
+    "DeleteLineageEventInput":{
+      "type":"structure",
+      "required":[
+        "domainIdentifier",
+        "identifier"
+      ],
+      "members":{
+        "domainIdentifier":{
+          "shape":"DomainId",
+          "documentation":"<p>The ID of the domain.</p>",
+          "location":"uri",
+          "locationName":"domainIdentifier"
+        },
+        "identifier":{
+          "shape":"LineageEventIdentifier",
+          "documentation":"<p>The ID of the lineage event.</p>",
+          "location":"uri",
+          "locationName":"identifier"
+        }
+      }
+    },
+    "DeleteLineageEventOutput":{
+      "type":"structure",
+      "members":{
+        "id":{
+          "shape":"LineageEventIdentifier",
+          "documentation":"<p>The ID of the lineage event.</p>"
+        },
+        "domainId":{
+          "shape":"DomainId",
+          "documentation":"<p>The ID of the domain.</p>"
+        },
+        "processingStatus":{
+          "shape":"LineageEventProcessingStatus",
+          "documentation":"<p>The progressing status of the lineage event.</p>"
+        }
+      }
+    },
     "DeleteListingInput":{
       "type":"structure",
       "required":[
@@ -10659,6 +11119,16 @@
     "DeleteNotebookOutput":{
       "type":"structure",
       "members":{}
+    },
+    "DeleteProgress":{
+      "type":"structure",
+      "members":{
+        "successfullyDeletedProjectCount":{
+          "shape":"Integer",
+          "documentation":"<p>The number of projects that Amazon DataZone successfully deleted during the domain deletion.</p>"
+        }
+      },
+      "documentation":"<p>The progress of a domain deletion, including the number of projects that Amazon DataZone successfully deleted. Amazon DataZone returns this structure in the response to a <code>GetDomain</code> request while a cascade deletion is in progress.</p>"
     },
     "DeleteProjectInput":{
       "type":"structure",
@@ -11048,6 +11518,77 @@
       "max":2048,
       "min":0,
       "sensitive":true
+    },
+    "DesignationId":{
+      "type":"string",
+      "pattern":"[a-zA-Z0-9_-]{1,36}"
+    },
+    "DesignationName":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"[\\w -]+"
+    },
+    "DesignationSummaries":{
+      "type":"list",
+      "member":{"shape":"DesignationSummary"}
+    },
+    "DesignationSummary":{
+      "type":"structure",
+      "required":[
+        "domainId",
+        "id",
+        "name",
+        "deletionProtection",
+        "createdBy"
+      ],
+      "members":{
+        "domainId":{
+          "shape":"DomainId",
+          "documentation":"<p>The identifier of the Amazon DataZone domain that contains the designation.</p>"
+        },
+        "id":{
+          "shape":"DesignationId",
+          "documentation":"<p>The unique ID of the designation.</p>"
+        },
+        "name":{
+          "shape":"DesignationName",
+          "documentation":"<p>The name of the designation. The name is unique within the domain.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>A human-readable description of the designation and its intended use.</p>"
+        },
+        "designationType":{
+          "shape":"DesignationType",
+          "documentation":"<p>The classification of this designation.</p>"
+        },
+        "deletionProtection":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether deletion protection is enabled for this designation.</p>"
+        },
+        "createdBy":{
+          "shape":"CreatedBy",
+          "documentation":"<p>The identifier of the Amazon DataZone user who created the designation.</p>"
+        },
+        "createdAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time when the designation was created.</p>"
+        },
+        "updatedAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time when the designation was last updated.</p>"
+        }
+      },
+      "documentation":"<p>Summary representation of a designation returned by list operations.</p>"
+    },
+    "DesignationType":{
+      "type":"string",
+      "documentation":"<p>The classification of a designation.</p>",
+      "enum":[
+        "MANAGED",
+        "USER_CREATED"
+      ]
     },
     "DetailedGlossaryTerm":{
       "type":"structure",
@@ -11620,6 +12161,10 @@
         "updatedAt":{
           "shape":"SyntheticTimestamp_date_time",
           "documentation":"<p>The timestamp of when the blueprint was enabled.</p>"
+        },
+        "blueprintCategory":{
+          "shape":"BlueprintCategory",
+          "documentation":"<p>The category of the environment blueprint. The only valid value is <code>TOOLING</code>.</p>"
         }
       },
       "documentation":"<p>The details of an environment blueprint summary.</p>"
@@ -12085,9 +12630,28 @@
       },
       "documentation":"<p>Specifies the error message that is returned if the operation cannot be successfully completed.</p>"
     },
+    "FailureReason":{
+      "type":"structure",
+      "members":{
+        "id":{
+          "shape":"String",
+          "documentation":"<p>The identifier of the resource that failed to delete.</p>"
+        },
+        "message":{
+          "shape":"String",
+          "documentation":"<p>The error message associated with the resource that failed to delete.</p>"
+        }
+      },
+      "documentation":"<p>The details of a resource deletion failure during a cascade deletion of the domain.</p>"
+    },
     "FailureReasons":{
       "type":"list",
       "member":{"shape":"ProjectDeletionError"}
+    },
+    "FailureReasonsList":{
+      "type":"list",
+      "member":{"shape":"FailureReason"},
+      "documentation":"<p>A list of <code>FailureReason</code> objects that describe the resources that Amazon DataZone could not delete during a cascade deletion. Amazon DataZone returns this list in the <code>failureReasons</code> field of the <code>GetDomain</code> response.</p>"
     },
     "FileFormat":{
       "type":"string",
@@ -12096,6 +12660,11 @@
         "PDF",
         "IPYNB"
       ]
+    },
+    "FileName":{
+      "type":"string",
+      "max":255,
+      "min":1
     },
     "Filter":{
       "type":"structure",
@@ -13258,6 +13827,82 @@
         }
       }
     },
+    "GetDesignationInput":{
+      "type":"structure",
+      "required":[
+        "domainIdentifier",
+        "identifier"
+      ],
+      "members":{
+        "domainIdentifier":{
+          "shape":"DomainId",
+          "documentation":"<p>The identifier of the Amazon DataZone domain that contains the designation.</p>",
+          "location":"uri",
+          "locationName":"domainIdentifier"
+        },
+        "identifier":{
+          "shape":"DesignationId",
+          "documentation":"<p>The unique ID of the designation to retrieve.</p>",
+          "location":"uri",
+          "locationName":"identifier"
+        }
+      }
+    },
+    "GetDesignationOutput":{
+      "type":"structure",
+      "required":[
+        "domainId",
+        "id",
+        "name",
+        "designationType",
+        "policy",
+        "deletionProtection",
+        "createdBy"
+      ],
+      "members":{
+        "domainId":{
+          "shape":"DomainId",
+          "documentation":"<p>The identifier of the Amazon DataZone domain that contains the designation.</p>"
+        },
+        "id":{
+          "shape":"DesignationId",
+          "documentation":"<p>The unique ID of the designation.</p>"
+        },
+        "name":{
+          "shape":"DesignationName",
+          "documentation":"<p>The name of the designation. The name is unique within the domain.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>A human-readable description of the designation and its intended use.</p>"
+        },
+        "designationType":{
+          "shape":"DesignationType",
+          "documentation":"<p>The classification of this designation. MANAGED designations are system-defined and cannot be modified or deleted.</p>"
+        },
+        "policy":{
+          "shape":"CedarDesignationPolicy",
+          "documentation":"<p>The Cedar permit policy that governs what actions holders of this designation are allowed to perform.</p>"
+        },
+        "deletionProtection":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether deletion protection is enabled for this designation. When true, DeleteDesignation is rejected until protection is disabled via UpdateDesignation.</p>"
+        },
+        "createdBy":{
+          "shape":"CreatedBy",
+          "documentation":"<p>The identifier of the Amazon DataZone user who created the designation.</p>"
+        },
+        "createdAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time when the designation was created.</p>"
+        },
+        "lastUpdatedAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time when the designation was last updated.</p>"
+        }
+      },
+      "documentation":"<p>A designation defines a named role with a Cedar permit policy that controls what actions members holding this designation can perform within a project.</p>"
+    },
     "GetDomainInput":{
       "type":"structure",
       "required":["identifier"],
@@ -13337,6 +13982,14 @@
         "serviceRole":{
           "shape":"RoleArn",
           "documentation":"<p>The service role of the domain.</p>"
+        },
+        "failureReasons":{
+          "shape":"FailureReasonsList",
+          "documentation":"<p>The list of failure reasons for resources that Amazon DataZone could not delete during a cascade deletion of the domain.</p>"
+        },
+        "deleteProgress":{
+          "shape":"DeleteProgress",
+          "documentation":"<p>The progress of the current domain deletion, including the number of projects that Amazon DataZone successfully deleted.</p>"
         }
       }
     },
@@ -13615,6 +14268,10 @@
         "glossaryTerms":{
           "shape":"GlossaryTerms",
           "documentation":"<p>The glossary terms attached to this Amazon DataZone blueprint.</p>"
+        },
+        "blueprintCategory":{
+          "shape":"BlueprintCategory",
+          "documentation":"<p>The category of this Amazon DataZone blueprint. The only valid value is <code>TOOLING</code>, which indicates a blueprint that provisions the tooling resources of a project.</p>"
         },
         "createdAt":{
           "shape":"SyntheticTimestamp_date_time",
@@ -14732,6 +15389,10 @@
           "shape":"NotebookStatus",
           "documentation":"<p>The status of the notebook.</p>"
         },
+        "type":{
+          "shape":"NotebookType",
+          "documentation":"<p>The type of the notebook.</p>"
+        },
         "description":{
           "shape":"Description",
           "documentation":"<p>The description of the notebook.</p>"
@@ -14783,6 +15444,10 @@
         "error":{
           "shape":"NotebookError",
           "documentation":"<p>The error details if the notebook is in a failed state.</p>"
+        },
+        "gitMetadata":{
+          "shape":"GitMetadata",
+          "documentation":"<p>The Git metadata associated with the notebook.</p>"
         }
       }
     },
@@ -14872,6 +15537,10 @@
         "storageConfiguration":{
           "shape":"StorageConfig",
           "documentation":"<p>The storage configuration of the notebook run, including the Amazon Simple Storage Service path and KMS key ARN.</p>"
+        },
+        "notificationConfiguration":{
+          "shape":"NotificationConfig",
+          "documentation":"<p>The notification configuration of the notebook run, including the notebook run states that trigger notifications.</p>"
         },
         "triggerSource":{
           "shape":"TriggerSource",
@@ -15701,6 +16370,180 @@
         }
       }
     },
+    "GitBranch":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "sensitive":true
+    },
+    "GitConnectionId":{
+      "type":"string",
+      "max":40,
+      "min":1,
+      "pattern":"[a-zA-Z0-9_-]+"
+    },
+    "GitMetadata":{
+      "type":"structure",
+      "required":[
+        "connectionId",
+        "repository",
+        "branch",
+        "commitHash"
+      ],
+      "members":{
+        "connectionId":{
+          "shape":"GitConnectionId",
+          "documentation":"<p>The identifier of the Git connection.</p>"
+        },
+        "repository":{
+          "shape":"GitRepository",
+          "documentation":"<p>The name of the Git repository.</p>"
+        },
+        "branch":{
+          "shape":"GitBranch",
+          "documentation":"<p>The name of the Git branch.</p>"
+        },
+        "commitHash":{
+          "shape":"CommitHash",
+          "documentation":"<p>The commit hash in the Git repository.</p>"
+        },
+        "fileName":{
+          "shape":"FileName",
+          "documentation":"<p>The name of the file in the Git repository.</p>"
+        },
+        "committedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp of when the commit was made.</p>"
+        },
+        "commitMessage":{
+          "shape":"CommitMessage",
+          "documentation":"<p>The commit message associated with the Git commit.</p>"
+        }
+      },
+      "documentation":"<p>The Git metadata for a notebook sync operation in Amazon SageMaker Unified Studio. Contains information about the Git repository, branch, and commit associated with the notebook.</p>"
+    },
+    "GitPropertiesInput":{
+      "type":"structure",
+      "required":[
+        "codeConnectionArn",
+        "repositoryId",
+        "defaultBranch"
+      ],
+      "members":{
+        "codeConnectionArn":{
+          "shape":"GitPropertiesInputCodeConnectionArnString",
+          "documentation":"<p>The ARN of the CodeConnections connection used to connect to the Git repository.</p>"
+        },
+        "repositoryId":{
+          "shape":"GitPropertiesInputRepositoryIdString",
+          "documentation":"<p>The ID of the Git repository. This is the owner and repository name, for example, owner/repo-name.</p>"
+        },
+        "defaultBranch":{
+          "shape":"GitPropertiesInputDefaultBranchString",
+          "documentation":"<p>The default branch of the Git repository.</p>"
+        }
+      },
+      "documentation":"<p>Contains the Git connection properties that you specify when creating a Git connection.</p>"
+    },
+    "GitPropertiesInputCodeConnectionArnString":{
+      "type":"string",
+      "max":256,
+      "min":0,
+      "pattern":"arn:aws[^:]*:(codeconnections|codestar-connections):[a-z0-9\\-]+:\\d{12}:connection/[a-f0-9\\-]+"
+    },
+    "GitPropertiesInputDefaultBranchString":{
+      "type":"string",
+      "max":256,
+      "min":0,
+      "pattern":"[a-zA-Z0-9._\\-/]+"
+    },
+    "GitPropertiesInputRepositoryIdString":{
+      "type":"string",
+      "max":256,
+      "min":0,
+      "pattern":"[a-zA-Z0-9._\\-]+(/[a-zA-Z0-9._\\-]+)+"
+    },
+    "GitPropertiesOutput":{
+      "type":"structure",
+      "required":[
+        "codeConnectionArn",
+        "repositoryId",
+        "defaultBranch"
+      ],
+      "members":{
+        "codeConnectionArn":{
+          "shape":"GitPropertiesOutputCodeConnectionArnString",
+          "documentation":"<p>The ARN of the CodeConnections connection used to connect to the Git repository.</p>"
+        },
+        "repositoryId":{
+          "shape":"GitPropertiesOutputRepositoryIdString",
+          "documentation":"<p>The ID of the Git repository. This is the owner and repository name, for example, owner/repo-name.</p>"
+        },
+        "defaultBranch":{
+          "shape":"GitPropertiesOutputDefaultBranchString",
+          "documentation":"<p>The default branch of the Git repository.</p>"
+        },
+        "status":{
+          "shape":"ConnectionStatus",
+          "documentation":"<p>The status of the Git connection.</p>"
+        },
+        "errorMessage":{
+          "shape":"String",
+          "documentation":"<p>The error message that describes why the Git connection failed. This member is populated when the connection status is CREATE_FAILED or UPDATE_FAILED.</p>"
+        }
+      },
+      "documentation":"<p>The properties of a Git connection returned by get and list operations, including connection status and any error details.</p>"
+    },
+    "GitPropertiesOutputCodeConnectionArnString":{
+      "type":"string",
+      "max":256,
+      "min":0,
+      "pattern":"arn:aws[^:]*:(codeconnections|codestar-connections):[a-z0-9\\-]+:\\d{12}:connection/[a-f0-9\\-]+"
+    },
+    "GitPropertiesOutputDefaultBranchString":{
+      "type":"string",
+      "max":256,
+      "min":0,
+      "pattern":"[a-zA-Z0-9._\\-/]+"
+    },
+    "GitPropertiesOutputRepositoryIdString":{
+      "type":"string",
+      "max":256,
+      "min":0,
+      "pattern":"[a-zA-Z0-9._\\-]+(/[a-zA-Z0-9._\\-]+)+"
+    },
+    "GitPropertiesPatch":{
+      "type":"structure",
+      "members":{
+        "codeConnectionArn":{
+          "shape":"GitPropertiesPatchCodeConnectionArnString",
+          "documentation":"<p>The ARN of the CodeConnections connection used to connect to the Git repository.</p>"
+        },
+        "defaultBranch":{
+          "shape":"GitPropertiesPatchDefaultBranchString",
+          "documentation":"<p>The default branch of the Git repository.</p>"
+        }
+      },
+      "documentation":"<p>The properties used to update an existing Git connection, such as the CodeConnections ARN or the default branch.</p>"
+    },
+    "GitPropertiesPatchCodeConnectionArnString":{
+      "type":"string",
+      "max":256,
+      "min":0,
+      "pattern":"arn:aws[^:]*:(codeconnections|codestar-connections):[a-z0-9\\-]+:\\d{12}:connection/[a-f0-9\\-]+"
+    },
+    "GitPropertiesPatchDefaultBranchString":{
+      "type":"string",
+      "max":256,
+      "min":0,
+      "pattern":"[a-zA-Z0-9._\\-/]+"
+    },
+    "GitRepository":{
+      "type":"string",
+      "max":512,
+      "min":1,
+      "sensitive":true
+    },
     "GlobalParameterMap":{
       "type":"map",
       "key":{"shape":"String"},
@@ -16130,7 +16973,10 @@
         "SAPHANA",
         "SQLSERVER",
         "TERADATA",
-        "VERTICA"
+        "VERTICA",
+        "ICEBERGRESTCATALOG",
+        "SNOWFLAKEICEBERGRESTCATALOG",
+        "DATABRICKSICEBERGRESTCATALOG"
       ]
     },
     "GlueOAuth2Credentials":{
@@ -16532,6 +17378,10 @@
         "glueLineageSyncEnabled":{
           "shape":"Boolean",
           "documentation":"<p>Specifies whether Amazon Web Services Glue lineage sync is enabled for a connection.</p>"
+        },
+        "roleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>The ARN of the IAM role to associate with the connection as the project user role. To use this operation, you must have <code>iam:PassRole</code> permission for this role.</p>"
         }
       },
       "documentation":"<p>The IAM properties of a connection.</p>"
@@ -16585,6 +17435,21 @@
         }
       },
       "documentation":"<p>The details of the IAM user profile.</p>"
+    },
+    "IdentityMapping":{
+      "type":"structure",
+      "required":["usernameAttribute"],
+      "members":{
+        "usernameAttribute":{
+          "shape":"String",
+          "documentation":"<p>The username attribute used for the identity mapping.</p>"
+        },
+        "prefix":{
+          "shape":"String",
+          "documentation":"<p>The prefix used for the identity mapping.</p>"
+        }
+      },
+      "documentation":"<p>Contains the configuration for mapping user identities to Snowflake users, including the username attribute and optional prefix applied during the mapping.</p>"
     },
     "Import":{
       "type":"structure",
@@ -17236,6 +18101,47 @@
       },
       "documentation":"<p>The SQL query run details of a data lineage run.</p>"
     },
+    "LineageSyncInput":{
+      "type":"structure",
+      "required":["enabled"],
+      "members":{
+        "timezone":{
+          "shape":"Timezone",
+          "documentation":"<p>The timezone of the lineage sync schedule.</p>"
+        },
+        "enabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether lineage sync is enabled.</p>"
+        },
+        "schedule":{
+          "shape":"LineageSyncScheduleCronString",
+          "documentation":"<p>The schedule of the lineage sync.</p>"
+        }
+      },
+      "documentation":"<p>Contains the settings for configuring lineage sync on a Snowflake connection, including the schedule, timezone, and enabled state.</p>"
+    },
+    "LineageSyncOutput":{
+      "type":"structure",
+      "members":{
+        "lineageJobId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the lineage sync job.</p>"
+        },
+        "timezone":{
+          "shape":"Timezone",
+          "documentation":"<p>The timezone of the lineage sync schedule.</p>"
+        },
+        "enabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether lineage sync is enabled.</p>"
+        },
+        "schedule":{
+          "shape":"LineageSyncScheduleCronString",
+          "documentation":"<p>The schedule of the lineage sync.</p>"
+        }
+      },
+      "documentation":"<p>Contains the current state of lineage sync for a Snowflake connection, including the schedule, timezone, enabled state, and the ID of the associated lineage job.</p>"
+    },
     "LineageSyncSchedule":{
       "type":"structure",
       "members":{
@@ -17245,6 +18151,13 @@
         }
       },
       "documentation":"<p>The lineage sync schedule.</p>"
+    },
+    "LineageSyncScheduleCronString":{
+      "type":"string",
+      "documentation":"<p>The cron expression for the lineage sync schedule.</p>",
+      "max":256,
+      "min":1,
+      "pattern":"cron\\((\\b[0-5]?[0-9]\\b) ([*]|\\b2[0-3]\\b|\\b[0-1]?[0-9]\\b) ([-?*,/\\dLW]){1,83} ([-*,/\\d]|[a-zA-Z]{3}){1,23} ([-?#*,/\\dL]|[a-zA-Z]{3}){1,13} ([^\\)]+)\\)"
     },
     "LineageSyncScheduleScheduleString":{
       "type":"string",
@@ -17757,6 +18670,50 @@
         "nextToken":{
           "shape":"PaginationToken",
           "documentation":"<p>When the number of data sources is greater than the default value for the <code>MaxResults</code> parameter, or if you explicitly specify a value for <code>MaxResults</code> that is less than the number of data sources, the response includes a pagination token named <code>NextToken</code>. You can specify this <code>NextToken</code> value in a subsequent call to <code>ListDataSources</code> to list the next set of data sources.</p>"
+        }
+      }
+    },
+    "ListDesignationsInput":{
+      "type":"structure",
+      "required":["domainIdentifier"],
+      "members":{
+        "domainIdentifier":{
+          "shape":"DomainId",
+          "documentation":"<p>The identifier of the Amazon DataZone domain that contains the designations to list.</p>",
+          "location":"uri",
+          "locationName":"domainIdentifier"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>If the results exceed the value of <code>MaxResults</code>, the previous call returns a pagination token. Specify this token in a subsequent call to <code>ListDesignations</code> to retrieve the next set of results. If not specified, the operation returns the first page of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "maxResults":{
+          "shape":"ListDesignationsMaxResults",
+          "documentation":"<p>The maximum number of designations to return in a single call to <code>ListDesignations</code>. If the number of designations exceeds <code>MaxResults</code>, the response includes a <code>NextToken</code> value. Use that token in a subsequent call to <code>ListDesignations</code> to retrieve the next set of designations. The default value is 20.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        }
+      }
+    },
+    "ListDesignationsMaxResults":{
+      "type":"integer",
+      "documentation":"<p>Maximum number of results for ListDesignations. Minimum 10 ensures built-in designations always fit on the first page.</p>",
+      "box":true,
+      "max":50,
+      "min":10
+    },
+    "ListDesignationsOutput":{
+      "type":"structure",
+      "members":{
+        "items":{
+          "shape":"DesignationSummaries",
+          "documentation":"<p>The designation summaries that <code>ListDesignations</code> returned. Each item contains summary information about a designation in the domain.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>A pagination token that indicates that more results are available. Pass this token to a subsequent call to <code>ListDesignations</code> to retrieve the next page of results. If there are no more results, this value is null.</p>"
         }
       }
     },
@@ -18552,6 +19509,12 @@
           "documentation":"<p>The status to filter notebooks by.</p>",
           "location":"querystring",
           "locationName":"status"
+        },
+        "type":{
+          "shape":"NotebookType",
+          "documentation":"<p>The type to filter notebooks by.</p>",
+          "location":"querystring",
+          "locationName":"type"
         },
         "nextToken":{
           "shape":"PaginationToken",
@@ -20230,7 +21193,9 @@
       "documentation":"<p>The status of a notebook in Amazon SageMaker Unified Studio.</p>",
       "enum":[
         "ACTIVE",
-        "ARCHIVED"
+        "ARCHIVED",
+        "SYNC_IN_PROGRESS",
+        "SYNC_FAILED"
       ]
     },
     "NotebookSummary":{
@@ -20263,6 +21228,10 @@
           "shape":"NotebookStatus",
           "documentation":"<p>The status of the notebook.</p>"
         },
+        "type":{
+          "shape":"NotebookType",
+          "documentation":"<p>The type of the notebook.</p>"
+        },
         "description":{
           "shape":"Description",
           "documentation":"<p>The description of the notebook.</p>"
@@ -20289,6 +21258,25 @@
     "NotebookSummaryList":{
       "type":"list",
       "member":{"shape":"NotebookSummary"}
+    },
+    "NotebookType":{
+      "type":"string",
+      "documentation":"<p>The type of a notebook in Amazon SageMaker Unified Studio.</p>",
+      "enum":[
+        "DATA",
+        "SQL"
+      ]
+    },
+    "NotificationConfig":{
+      "type":"structure",
+      "required":["notifyOn"],
+      "members":{
+        "notifyOn":{
+          "shape":"NotifyOnStates",
+          "documentation":"<p>The notebook run states that trigger notifications. You can specify up to 7 states, and the ordering of the states is not significant.</p>"
+        }
+      },
+      "documentation":"<p>The notification configuration for a notebook run in Amazon SageMaker Unified Studio.</p>"
     },
     "NotificationOutput":{
       "type":"structure",
@@ -20401,6 +21389,25 @@
     "NotificationsList":{
       "type":"list",
       "member":{"shape":"NotificationOutput"}
+    },
+    "NotifyOnState":{
+      "type":"string",
+      "documentation":"<p>A notebook run state that triggers a notification in Amazon SageMaker Unified Studio.</p>",
+      "enum":[
+        "SUCCEEDED",
+        "FAILED",
+        "STOPPED",
+        "QUEUED",
+        "STARTING",
+        "RUNNING",
+        "STOPPING"
+      ]
+    },
+    "NotifyOnStates":{
+      "type":"list",
+      "member":{"shape":"NotifyOnState"},
+      "max":7,
+      "min":0
     },
     "OAuth2ClientApplication":{
       "type":"structure",
@@ -21014,7 +22021,8 @@
       "enum":[
         "OWNER",
         "CONTRIBUTOR",
-        "PROJECT_CATALOG_STEWARD"
+        "PROJECT_CATALOG_STEWARD",
+        "USER_CREATED_DESIGNATION"
       ]
     },
     "ProjectGrantFilter":{
@@ -21050,6 +22058,10 @@
         "designation":{
           "shape":"UserDesignation",
           "documentation":"<p>The designated role of a project member.</p>"
+        },
+        "userCreatedDesignationId":{
+          "shape":"DesignationId",
+          "documentation":"<p>The ID of the user-created designation held by the project member when <code>designation</code> is <code>USER_CREATED_DESIGNATION</code>.</p>"
         }
       },
       "documentation":"<p>The details of a project member.</p>"
@@ -21072,6 +22084,10 @@
         "designation":{
           "shape":"UserDesignation",
           "documentation":"<p>The designation of the project membership.</p>"
+        },
+        "userCreatedDesignationId":{
+          "shape":"DesignationId",
+          "documentation":"<p>The ID of the user-created designation to assign to this member when creating the project. Required when <code>designation</code> is <code>USER_CREATED_DESIGNATION</code>; must not be provided otherwise.</p>"
         }
       },
       "documentation":"<p>A map of user or group profiles to designations that need to be assigned in the project.</p>"
@@ -21094,6 +22110,10 @@
         "projectDesignation":{
           "shape":"ProjectDesignation",
           "documentation":"<p>The project designation of the project policy grant principal.</p>"
+        },
+        "userCreatedDesignationId":{
+          "shape":"DesignationId",
+          "documentation":"<p>The ID of the user-created designation granted to the project principal. Required when <code>projectDesignation</code> is <code>USER_CREATED_DESIGNATION</code>; must not be provided otherwise.</p>"
         },
         "projectIdentifier":{
           "shape":"ProjectId",
@@ -22853,6 +23873,13 @@
       "min":0,
       "pattern":"[a-zA-Z0-9\\-]+"
     },
+    "S3BucketName":{
+      "type":"string",
+      "max":63,
+      "min":3,
+      "pattern":"[a-z0-9][a-z0-9.-]{1,61}[a-z0-9]",
+      "sensitive":true
+    },
     "S3Destination":{
       "type":"structure",
       "members":{
@@ -22862,6 +23889,41 @@
         }
       },
       "documentation":"<p>The Amazon Simple Storage Service destination for a notebook export in Amazon SageMaker Unified Studio.</p>"
+    },
+    "S3File":{
+      "type":"structure",
+      "required":["key"],
+      "members":{
+        "key":{
+          "shape":"S3ObjectKey",
+          "documentation":"<p>The key of the Amazon Simple Storage Service object to import.</p>"
+        }
+      },
+      "documentation":"<p>A single Amazon Simple Storage Service object to import as a notebook cell.</p>"
+    },
+    "S3FileList":{
+      "type":"list",
+      "member":{"shape":"S3File"},
+      "max":100,
+      "min":1
+    },
+    "S3FilesLocation":{
+      "type":"structure",
+      "required":[
+        "bucket",
+        "fileList"
+      ],
+      "members":{
+        "bucket":{
+          "shape":"S3BucketName",
+          "documentation":"<p>The name of the Amazon Simple Storage Service bucket that contains the files to import.</p>"
+        },
+        "fileList":{
+          "shape":"S3FileList",
+          "documentation":"<p>The files to import. Cells are created in the order in which you list the files. You can specify between 1 and 100 files.</p>"
+        }
+      },
+      "documentation":"<p>The Amazon Simple Storage Service objects to import as the cells of a notebook, specified as a bucket and an ordered list of object keys.</p>"
     },
     "S3Location":{
       "type":"string",
@@ -22874,6 +23936,12 @@
       "member":{"shape":"S3Location"},
       "max":20,
       "min":0
+    },
+    "S3ObjectKey":{
+      "type":"string",
+      "max":1024,
+      "min":1,
+      "sensitive":true
     },
     "S3Path":{
       "type":"string",
@@ -23586,6 +24654,89 @@
       "max":100000,
       "min":1
     },
+    "SnowflakePropertiesInput":{
+      "type":"structure",
+      "required":[
+        "snowflakeRole",
+        "identityMapping"
+      ],
+      "members":{
+        "connectivityProperties":{
+          "shape":"ConnectivityProperties",
+          "documentation":"<p>The connectivity properties of the Snowflake connection.</p>"
+        },
+        "snowflakeRole":{
+          "shape":"SnowflakeRole",
+          "documentation":"<p>The Snowflake role used to access Snowflake resources.</p>"
+        },
+        "identityMapping":{
+          "shape":"IdentityMapping",
+          "documentation":"<p>The identity mapping configuration for the Snowflake connection.</p>"
+        },
+        "lineageSync":{
+          "shape":"LineageSyncInput",
+          "documentation":"<p>The lineage sync configuration for the Snowflake connection.</p>"
+        }
+      },
+      "documentation":"<p>Contains the Snowflake-specific settings required when creating or updating a connection, including the Snowflake role, identity mapping, and lineage sync configuration.</p>"
+    },
+    "SnowflakePropertiesOutput":{
+      "type":"structure",
+      "required":[
+        "snowflakeRole",
+        "identityMapping",
+        "lineageSync",
+        "status"
+      ],
+      "members":{
+        "snowflakeRole":{
+          "shape":"SnowflakeRole",
+          "documentation":"<p>The Snowflake role used to access Snowflake resources.</p>"
+        },
+        "identityMapping":{
+          "shape":"IdentityMapping",
+          "documentation":"<p>The identity mapping configuration for the Snowflake connection.</p>"
+        },
+        "lineageSync":{
+          "shape":"LineageSyncOutput",
+          "documentation":"<p>The lineage sync configuration for the Snowflake connection.</p>"
+        },
+        "status":{
+          "shape":"ConnectionStatus",
+          "documentation":"<p>The status of the Snowflake connection.</p>"
+        },
+        "errorMessage":{
+          "shape":"String",
+          "documentation":"<p>An error message returned if the Snowflake connection failed to establish or validate.</p>"
+        }
+      },
+      "documentation":"<p>Contains the Snowflake-specific settings returned for an existing connection, including the current role, identity mapping, lineage sync state, and connection status.</p>"
+    },
+    "SnowflakePropertiesPatch":{
+      "type":"structure",
+      "members":{
+        "connectivityPropertiesPatch":{
+          "shape":"ConnectivityPropertiesPatch",
+          "documentation":"<p>The connectivity properties patch of the Snowflake connection.</p>"
+        },
+        "snowflakeRole":{
+          "shape":"SnowflakeRole",
+          "documentation":"<p>The Snowflake role used to access Snowflake resources.</p>"
+        },
+        "lineageSync":{
+          "shape":"LineageSyncInput",
+          "documentation":"<p>The lineage sync configuration for the Snowflake connection.</p>"
+        }
+      },
+      "documentation":"<p>Contains the Snowflake-specific settings to update on an existing connection. Include only the fields you want to change.</p>"
+    },
+    "SnowflakeRole":{
+      "type":"string",
+      "documentation":"<p>The name of the Snowflake role to use for the connection.</p>",
+      "max":255,
+      "min":1,
+      "pattern":"[a-zA-Z0-9_$]+"
+    },
     "SortFieldAccountPool":{
       "type":"string",
       "enum":["NAME"]
@@ -23618,6 +24769,10 @@
         "s3":{
           "shape":"S3SourceLocation",
           "documentation":"<p>The Amazon Simple Storage Service URI of the notebook source file.</p>"
+        },
+        "s3Files":{
+          "shape":"S3FilesLocation",
+          "documentation":"<p>The Amazon Simple Storage Service objects to import as the notebook's cells. One cell is created for each object, in the order in which you list them.</p>"
         }
       },
       "documentation":"<p>The source location for a notebook import in Amazon SageMaker Unified Studio.</p>",
@@ -24260,7 +25415,7 @@
         },
         "sourceLocation":{
           "shape":"SourceLocation",
-          "documentation":"<p>The source location of the notebook to import. This specifies the Amazon Simple Storage Service URI of the notebook file.</p>"
+          "documentation":"<p>The source location of the notebook to import. Specify either a single Amazon Simple Storage Service URI, or a list of objects to import as the notebook's cells.</p>"
         },
         "name":{
           "shape":"NotebookName",
@@ -24269,6 +25424,10 @@
         "description":{
           "shape":"Description",
           "documentation":"<p>The description of the imported notebook.</p>"
+        },
+        "type":{
+          "shape":"NotebookType",
+          "documentation":"<p>The type of the notebook to import. If not specified, defaults to <code>DATA</code>.</p>"
         },
         "clientToken":{
           "shape":"ClientToken",
@@ -24303,6 +25462,10 @@
         "description":{
           "shape":"Description",
           "documentation":"<p>The description of the imported notebook.</p>"
+        },
+        "type":{
+          "shape":"NotebookType",
+          "documentation":"<p>The type of the imported notebook.</p>"
         },
         "sourceLocation":{
           "shape":"SourceLocation",
@@ -24355,6 +25518,10 @@
         "timeoutConfiguration":{
           "shape":"TimeoutConfig",
           "documentation":"<p>The timeout configuration for the notebook run. The default timeout is 720 minutes (12 hours) and the maximum is 1440 minutes (24 hours).</p>"
+        },
+        "notificationConfiguration":{
+          "shape":"NotificationConfig",
+          "documentation":"<p>The notification configuration for the notebook run. Use this to specify the notebook run states that trigger notifications.</p>"
         },
         "triggerSource":{
           "shape":"TriggerSource",
@@ -24441,6 +25608,10 @@
           "shape":"StorageConfig",
           "documentation":"<p>The storage configuration of the notebook run, including the Amazon Simple Storage Service path and KMS key ARN.</p>"
         },
+        "notificationConfiguration":{
+          "shape":"NotificationConfig",
+          "documentation":"<p>The notification configuration of the notebook run, including the notebook run states that trigger notifications.</p>"
+        },
         "triggerSource":{
           "shape":"TriggerSource",
           "documentation":"<p>The source that triggered the notebook run.</p>"
@@ -24472,6 +25643,96 @@
         "completedAt":{
           "shape":"Timestamp",
           "documentation":"<p>The timestamp of when the notebook run completed.</p>"
+        }
+      }
+    },
+    "StartNotebookSyncInput":{
+      "type":"structure",
+      "required":[
+        "domainIdentifier",
+        "owningProjectIdentifier",
+        "sourceLocation"
+      ],
+      "members":{
+        "domainIdentifier":{
+          "shape":"DomainId",
+          "documentation":"<p>The identifier of the Amazon SageMaker Unified Studio domain in which to sync the notebook.</p>",
+          "location":"uri",
+          "locationName":"domainIdentifier"
+        },
+        "owningProjectIdentifier":{
+          "shape":"ProjectId",
+          "documentation":"<p>The identifier of the project that will own the synced notebook.</p>"
+        },
+        "sourceLocation":{
+          "shape":"SourceLocation",
+          "documentation":"<p>The source location of the notebook to sync. This specifies the Amazon Simple Storage Service URI of the notebook file.</p>"
+        },
+        "gitMetadata":{
+          "shape":"GitMetadata",
+          "documentation":"<p>The Git metadata for the notebook sync, including repository, branch, and commit information.</p>"
+        },
+        "notebookId":{
+          "shape":"NotebookId",
+          "documentation":"<p>The identifier of an existing notebook to sync. If not specified, a new notebook is created.</p>"
+        },
+        "name":{
+          "shape":"NotebookName",
+          "documentation":"<p>The name of the notebook. The name must be between 1 and 256 characters.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>The description of the notebook.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier to ensure idempotency of the request. This field is automatically populated if not provided.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "StartNotebookSyncOutput":{
+      "type":"structure",
+      "members":{
+        "notebookId":{
+          "shape":"NotebookId",
+          "documentation":"<p>The identifier of the synced notebook.</p>"
+        },
+        "status":{
+          "shape":"NotebookStatus",
+          "documentation":"<p>The status of the notebook sync.</p>"
+        },
+        "domainId":{
+          "shape":"DomainId",
+          "documentation":"<p>The identifier of the Amazon SageMaker Unified Studio domain.</p>"
+        },
+        "owningProjectId":{
+          "shape":"ProjectId",
+          "documentation":"<p>The identifier of the project that owns the synced notebook.</p>"
+        },
+        "sourceLocation":{
+          "shape":"SourceLocation",
+          "documentation":"<p>The source location from which the notebook was synced.</p>"
+        },
+        "gitMetadata":{
+          "shape":"GitMetadata",
+          "documentation":"<p>The Git metadata associated with the synced notebook.</p>"
+        },
+        "name":{
+          "shape":"NotebookName",
+          "documentation":"<p>The name of the synced notebook.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>The description of the synced notebook.</p>"
+        },
+        "createdAt":{
+          "shape":"CreatedAt",
+          "documentation":"<p>The timestamp of when the notebook sync was started.</p>"
+        },
+        "createdBy":{
+          "shape":"CreatedBy",
+          "documentation":"<p>The identifier of the user who started the notebook sync.</p>"
         }
       }
     },
@@ -26251,6 +27512,98 @@
         }
       }
     },
+    "UpdateDesignationInput":{
+      "type":"structure",
+      "required":[
+        "domainIdentifier",
+        "identifier"
+      ],
+      "members":{
+        "domainIdentifier":{
+          "shape":"DomainId",
+          "documentation":"<p>The identifier of the Amazon DataZone domain that contains the designation to update.</p>",
+          "location":"uri",
+          "locationName":"domainIdentifier"
+        },
+        "identifier":{
+          "shape":"DesignationId",
+          "documentation":"<p>The unique ID of the designation to update.</p>",
+          "location":"uri",
+          "locationName":"identifier"
+        },
+        "name":{
+          "shape":"DesignationName",
+          "documentation":"<p>The updated name of the designation. The name must be unique within the domain.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>The updated human-readable description of the designation and its intended use.</p>"
+        },
+        "policy":{
+          "shape":"CedarDesignationPolicy",
+          "documentation":"<p>The updated Cedar permit policy.</p>"
+        },
+        "deletionProtection":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether deletion protection is enabled for this designation. Omit to keep the existing value.</p>"
+        }
+      }
+    },
+    "UpdateDesignationOutput":{
+      "type":"structure",
+      "required":[
+        "domainId",
+        "id",
+        "name",
+        "designationType",
+        "policy",
+        "deletionProtection",
+        "createdBy"
+      ],
+      "members":{
+        "domainId":{
+          "shape":"DomainId",
+          "documentation":"<p>The identifier of the Amazon DataZone domain that contains the designation.</p>"
+        },
+        "id":{
+          "shape":"DesignationId",
+          "documentation":"<p>The unique ID of the designation.</p>"
+        },
+        "name":{
+          "shape":"DesignationName",
+          "documentation":"<p>The name of the designation. The name is unique within the domain.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>A human-readable description of the designation and its intended use.</p>"
+        },
+        "designationType":{
+          "shape":"DesignationType",
+          "documentation":"<p>The classification of this designation. MANAGED designations are system-defined and cannot be modified or deleted.</p>"
+        },
+        "policy":{
+          "shape":"CedarDesignationPolicy",
+          "documentation":"<p>The Cedar permit policy that governs what actions holders of this designation are allowed to perform.</p>"
+        },
+        "deletionProtection":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether deletion protection is enabled for this designation. When true, DeleteDesignation is rejected until protection is disabled via UpdateDesignation.</p>"
+        },
+        "createdBy":{
+          "shape":"CreatedBy",
+          "documentation":"<p>The identifier of the Amazon DataZone user who created the designation.</p>"
+        },
+        "createdAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time when the designation was created.</p>"
+        },
+        "lastUpdatedAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time when the designation was last updated.</p>"
+        }
+      },
+      "documentation":"<p>A designation defines a named role with a Cedar permit policy that controls what actions members holding this designation can perform within a project.</p>"
+    },
     "UpdateDomainInput":{
       "type":"structure",
       "required":["identifier"],
@@ -26514,6 +27867,10 @@
         "userParameters":{
           "shape":"CustomParameterList",
           "documentation":"<p>The user parameters to be updated as part of the <code>UpdateEnvironmentBlueprint</code> action.</p>"
+        },
+        "blueprintCategory":{
+          "shape":"BlueprintCategory",
+          "documentation":"<p>The category to update. The only valid value is <code>TOOLING</code>.</p>"
         }
       }
     },
@@ -26557,6 +27914,10 @@
         "glossaryTerms":{
           "shape":"GlossaryTerms",
           "documentation":"<p>The glossary terms to be updated as part of the <code>UpdateEnvironmentBlueprint</code> action.</p>"
+        },
+        "blueprintCategory":{
+          "shape":"BlueprintCategory",
+          "documentation":"<p>The category of the environment blueprint. The only valid value is <code>TOOLING</code>.</p>"
         },
         "createdAt":{
           "shape":"SyntheticTimestamp_date_time",
@@ -27078,6 +28439,10 @@
           "shape":"CellOrder",
           "documentation":"<p>The updated ordered list of cells in the notebook.</p>"
         },
+        "type":{
+          "shape":"NotebookType",
+          "documentation":"<p>The updated type of the notebook.</p>"
+        },
         "metadata":{
           "shape":"Metadata",
           "documentation":"<p>The updated metadata for the notebook, specified as key-value pairs.</p>"
@@ -27132,6 +28497,10 @@
           "shape":"NotebookStatus",
           "documentation":"<p>The status of the notebook.</p>"
         },
+        "type":{
+          "shape":"NotebookType",
+          "documentation":"<p>The type of the notebook.</p>"
+        },
         "description":{
           "shape":"Description",
           "documentation":"<p>The description of the notebook.</p>"
@@ -27183,6 +28552,10 @@
         "error":{
           "shape":"NotebookError",
           "documentation":"<p>The error details if the notebook is in a failed state.</p>"
+        },
+        "gitMetadata":{
+          "shape":"GitMetadata",
+          "documentation":"<p>The Git metadata associated with the notebook.</p>"
         }
       }
     },
@@ -28027,7 +29400,8 @@
         "PROJECT_CONTRIBUTOR",
         "PROJECT_CATALOG_VIEWER",
         "PROJECT_CATALOG_CONSUMER",
-        "PROJECT_CATALOG_STEWARD"
+        "PROJECT_CATALOG_STEWARD",
+        "USER_CREATED_DESIGNATION"
       ]
     },
     "UserDetails":{

@@ -371,7 +371,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Creates a cross-account shared resource. The resource owner makes an offer to share the resource with the principal subscriber (an AWS user with a different account than the resource owner).</p> <p>The following resources support cross-account sharing:</p> <ul> <li> <p>HealthOmics variant stores</p> </li> <li> <p>HealthOmics annotation stores</p> </li> <li> <p>Private workflows</p> </li> </ul>",
+      "documentation":"<p>Creates a cross-account shared resource. The resource owner makes an offer to share the resource with the principal subscriber (an Amazon Web Services user with a different account than the resource owner).</p> <p>The following resources support cross-account sharing:</p> <ul> <li> <p>HealthOmics variant stores</p> </li> <li> <p>HealthOmics annotation stores</p> </li> <li> <p>Private workflows</p> </li> </ul>",
       "endpoint":{"hostPrefix":"analytics-"}
     },
     "CreateVariantStore":{
@@ -500,7 +500,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"RequestTimeoutException"}
       ],
-      "documentation":"<p>Deletes a run batch resource and its associated metadata. This operation does not delete the individual workflow runs. To delete the runs, call <code>DeleteRunBatch</code> before calling <code>DeleteBatch</code>.</p> <p> <code>DeleteBatch</code> requires the batch to be in a terminal state: <code>PROCESSED</code>, <code>FAILED</code>, <code>CANCELLED</code>, or <code>RUNS_DELETED</code>. After <code>DeleteBatch</code> completes, the batch metadata is no longer accessible. You cannot call <code>GetBatch</code>, <code>ListRunsInBatch</code>, <code>DeleteRunBatch</code>, or <code>CancelRunBatch</code> on a deleted batch.</p>",
+      "documentation":"<p>Deletes a run batch resource and its associated metadata. This operation does not delete the individual workflow runs. To delete the runs, call <code>DeleteRunBatch</code> before calling <code>DeleteBatch</code>.</p> <p> <code>DeleteBatch</code> requires the batch to be in a terminal state: <code>PROCESSED</code>, <code>FAILED</code>, <code>CANCELLED</code>, <code>RUNS_DELETE_FAILED</code>, or <code>RUNS_DELETED</code>. After <code>DeleteBatch</code> completes, the batch metadata is no longer accessible. You cannot call <code>GetBatch</code>, <code>ListRunsInBatch</code>, <code>DeleteRunBatch</code>, or <code>CancelRunBatch</code> on a deleted batch.</p>",
       "endpoint":{"hostPrefix":"workflows-"},
       "idempotent":true
     },
@@ -1949,7 +1949,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"RequestTimeoutException"}
       ],
-      "documentation":"<p>Activates an archived read set and returns its metadata in a JSON formatted output. AWS HealthOmics automatically archives unused read sets after 30 days. To monitor the status of your read set activation job, use the <code>GetReadSetActivationJob</code> operation.</p> <p>To learn more, see <a href=\"https://docs.aws.amazon.com/omics/latest/dev/activating-read-sets.html\">Activating read sets</a> in the <i>Amazon Web Services HealthOmics User Guide</i>.</p>",
+      "documentation":"<p>Activates an archived read set and returns its metadata in a JSON formatted output. Amazon Web Services HealthOmics automatically archives unused read sets after 30 days. To monitor the status of your read set activation job, use the <code>GetReadSetActivationJob</code> operation.</p> <p>To learn more, see <a href=\"https://docs.aws.amazon.com/omics/latest/dev/activating-read-sets.html\">Activating read sets</a> in the <i>Amazon Web Services HealthOmics User Guide</i>.</p>",
       "endpoint":{"hostPrefix":"control-storage-"}
     },
     "StartReadSetExportJob":{
@@ -2863,6 +2863,7 @@
         "FAILED",
         "PROCESSED",
         "RUNS_DELETING",
+        "RUNS_DELETE_FAILED",
         "RUNS_DELETED"
       ],
       "max":64,
@@ -4178,7 +4179,7 @@
         },
         "roleArn":{
           "shape":"RunRoleArn",
-          "documentation":"<p>The IAM role ARN that grants HealthOmics permissions to access required AWS resources such as Amazon S3 and CloudWatch. The role must have the same permissions required for individual <code>StartRun</code> calls.</p>"
+          "documentation":"<p>The IAM role ARN that grants HealthOmics permissions to access required Amazon Web Services resources such as Amazon S3 and CloudWatch. The role must have the same permissions required for individual <code>StartRun</code> calls.</p>"
         },
         "name":{
           "shape":"RunName",
@@ -4218,7 +4219,7 @@
         },
         "runTags":{
           "shape":"TagMap",
-          "documentation":"<p>AWS tags to associate with each workflow run. Merged with per-run <code>runTags</code>; run-specific values take precedence when keys overlap.</p>"
+          "documentation":"<p>Amazon Web Services tags to associate with each workflow run. Merged with per-run <code>runTags</code>; run-specific values take precedence when keys overlap.</p>"
         },
         "retentionMode":{
           "shape":"RunRetentionMode",
@@ -4230,11 +4231,11 @@
         },
         "workflowOwnerId":{
           "shape":"WorkflowOwnerId",
-          "documentation":"<p>The AWS account ID of the workflow owner, used for cross-account workflow sharing.</p>"
+          "documentation":"<p>The Amazon Web Services account ID of the workflow owner, used for cross-account workflow sharing.</p>"
         },
         "outputBucketOwnerId":{
           "shape":"AwsAccountId",
-          "documentation":"<p>The expected AWS account ID of the owner of the output S3 bucket. Can be overridden per run.</p>"
+          "documentation":"<p>The expected Amazon Web Services account ID of the owner of the output S3 bucket. Can be overridden per run.</p>"
         },
         "workflowVersionName":{
           "shape":"WorkflowVersionName",
@@ -4247,6 +4248,18 @@
         "configurationName":{
           "shape":"ConfigurationName",
           "documentation":"<p>Optional configuration name to use for the workflow run.</p>"
+        },
+        "sessionPolicy":{
+          "shape":"SessionPolicy",
+          "documentation":"<p>Optional inline policy json for scoping down permissions via a session policy on the IAM role provided in the roleArn parameter.</p>"
+        },
+        "engineSettings":{
+          "shape":"EngineSettings",
+          "documentation":"<p>Engine-specific settings for the workflow run. Use this field to specify configuration options that are specific to the workflow engine (for example, Nextflow profiles).</p>"
+        },
+        "scratchStorageMode":{
+          "shape":"ScratchStorageMode",
+          "documentation":"<p>Optional configuration for enabling scratch ephemeral storage mounted at /tmp. If not specified, this will default to SHARED. This configuration is applicable only for CPU tasks. For tasks using GPUs, scratch storage is always LOCAL.</p>"
         }
       },
       "documentation":"<p>Shared configuration applied to all runs in a batch. Fields specified in a per-run <code>InlineSetting</code> entry override the corresponding fields in this object for that run. The <code>parameters</code> and <code>runTags</code> fields are merged rather than replaced — run-specific values take precedence when keys overlap.</p>"
@@ -5207,11 +5220,11 @@
         },
         "status":{
           "shape":"BatchStatus",
-          "documentation":"<p>The current status of the run batch. Possible values: <code>CREATING</code> (initial setup), <code>PENDING</code> (ready to submit runs), <code>SUBMITTING</code> (submitting runs), <code>INPROGRESS</code> (runs executing), <code>STOPPING</code> (cancellation in progress), <code>PROCESSED</code> (all runs completed), <code>CANCELLED</code> (batch cancelled), <code>FAILED</code> (batch failed), <code>RUNS_DELETING</code> (deleting runs), <code>RUNS_DELETED</code> (runs deleted).</p>"
+          "documentation":"<p>The current status of the run batch. Possible values: <code>CREATING</code> (initial setup), <code>PENDING</code> (ready to submit runs), <code>SUBMITTING</code> (submitting runs), <code>INPROGRESS</code> (runs executing), <code>STOPPING</code> (cancellation in progress), <code>PROCESSED</code> (all runs completed), <code>CANCELLED</code> (batch cancelled), <code>FAILED</code> (batch failed), <code>RUNS_DELETING</code> (deleting runs), <code>RUNS_DELETE_FAILED</code> (run deletion failed for some or all runs), <code>RUNS_DELETED</code> (runs deleted).</p>"
         },
         "tags":{
           "shape":"TagMap",
-          "documentation":"<p>AWS tags associated with the run batch.</p>"
+          "documentation":"<p>Amazon Web Services tags associated with the run batch.</p>"
         },
         "totalRuns":{
           "shape":"Integer",
@@ -6200,6 +6213,10 @@
           "shape":"NetworkingMode",
           "documentation":"<p>Configuration for run networking behavior. If absent, this will default to RESTRICTED.</p>"
         },
+        "scratchStorageMode":{
+          "shape":"ScratchStorageMode",
+          "documentation":"<p>Optional configuration for enabling scratch ephemeral storage mounted at /tmp. If absent, this will default to SHARED. This configuration is applicable only for CPU tasks. For tasks using GPUs, scratch storage is always LOCAL.</p>"
+        },
         "configuration":{
           "shape":"ConfigurationDetails",
           "documentation":"<p>Configuration details for the workflow run.</p>"
@@ -6211,6 +6228,10 @@
         "engineSettings":{
           "shape":"EngineSettings",
           "documentation":"<p>The engine-specific settings for the workflow run.</p>"
+        },
+        "sessionPolicy":{
+          "shape":"SessionPolicy",
+          "documentation":"<p>Inline policy json for scoping down permissions via a session policy on the IAM role.</p>"
         }
       }
     },
@@ -6313,6 +6334,10 @@
         "imageDetails":{
           "shape":"ImageDetails",
           "documentation":"<p>Details about the container image that this task uses.</p>"
+        },
+        "uuid":{
+          "shape":"TaskUuid",
+          "documentation":"<p>The universally unique identifier (UUID) for the workflow task.</p>"
         }
       }
     },
@@ -7202,11 +7227,15 @@
         },
         "outputBucketOwnerId":{
           "shape":"AwsAccountId",
-          "documentation":"<p>The expected AWS account ID of the owner of the output S3 bucket for this run.</p>"
+          "documentation":"<p>The expected Amazon Web Services account ID of the owner of the output S3 bucket for this run.</p>"
         },
         "runTags":{
           "shape":"TagMap",
-          "documentation":"<p>Per-run AWS tags. Merged with <code>defaultRunSetting.runTags</code>; values in this object take precedence when keys overlap.</p>"
+          "documentation":"<p>Per-run Amazon Web Services tags. Merged with <code>defaultRunSetting.runTags</code>; values in this object take precedence when keys overlap.</p>"
+        },
+        "engineSettings":{
+          "shape":"EngineSettings",
+          "documentation":"<p>Per-run engine-specific settings. Use this field to specify configuration options that are specific to the workflow engine (for example, Nextflow profiles). Overrides <code>defaultRunSetting.engineSettings</code> for this run.</p>"
         }
       },
       "documentation":"<p>A per-run configuration that overrides or merges with fields from <code>DefaultRunSetting</code> for a specific run.</p>"
@@ -9439,6 +9468,10 @@
     },
     "RegistryMapping":{
       "type":"structure",
+      "required":[
+        "upstreamRegistryUrl",
+        "ecrRepositoryPrefix"
+      ],
       "members":{
         "upstreamRegistryUrl":{
           "shape":"Uri",
@@ -9455,6 +9488,10 @@
         "ecrAccountId":{
           "shape":"AwsAccountId",
           "documentation":"<p>Account ID of the account that owns the upstream container image.</p>"
+        },
+        "credentialArn":{
+          "shape":"SecretArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon Web Services Secrets Manager secret that holds the credentials for the upstream registry. You must specify this value when Amazon Elastic Container Registry (Amazon ECR) doesn't support pull through cache for the upstream registry. HealthOmics supports only some of these registries. The workflow role must have permission to call the <code>secretsmanager:GetSecretValue</code> operation on the secret. For more information about the supported registries, see <a href=\"https://docs.aws.amazon.com/omics/latest/dev/workflows-ecr.html\">Container images</a> in the <i>Amazon Web Services HealthOmics User Guide</i>.</p>"
         }
       },
       "documentation":"<p>If you are using the ECR pull through cache feature, the registry mapping maps between the ECR repository and the upstream registry where container images are pulled and synchronized.</p>"
@@ -9828,6 +9865,10 @@
         "workflowVersionName":{
           "shape":"WorkflowVersionName",
           "documentation":"<p>The name of the workflow version.</p>"
+        },
+        "workflowName":{
+          "shape":"WorkflowName",
+          "documentation":"<p>The name of the workflow.</p>"
         }
       },
       "documentation":"<p>A workflow run.</p>"
@@ -10084,6 +10125,21 @@
         "BOOLEAN"
       ]
     },
+    "ScratchStorageMode":{
+      "type":"string",
+      "enum":[
+        "LOCAL",
+        "SHARED"
+      ],
+      "max":64,
+      "min":1
+    },
+    "SecretArn":{
+      "type":"string",
+      "max":2048,
+      "min":20,
+      "pattern":"arn:aws(-\\w+)*:secretsmanager:[a-z0-9-]+:[0-9]{12}:secret:[a-zA-Z0-9\\/_+=.@-]+"
+    },
     "SecurityGroupId":{
       "type":"string",
       "max":128,
@@ -10280,6 +10336,12 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "SessionPolicy":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "pattern":"[\\p{L}\\p{M}\\p{Z}\\p{S}\\p{N}\\p{P}\\t\\n\\r]+"
     },
     "ShareDetails":{
       "type":"structure",
@@ -10830,7 +10892,7 @@
         },
         "tags":{
           "shape":"TagMap",
-          "documentation":"<p>AWS tags to associate with the batch resource. These tags are not inherited by individual runs. To tag individual runs, use <code>defaultRunSetting.runTags</code>.</p>"
+          "documentation":"<p>Amazon Web Services tags to associate with the batch resource. These tags are not inherited by individual runs. To tag individual runs, use <code>defaultRunSetting.runTags</code>.</p>"
         },
         "defaultRunSetting":{
           "shape":"DefaultRunSetting",
@@ -10863,7 +10925,7 @@
         },
         "tags":{
           "shape":"TagMap",
-          "documentation":"<p>AWS tags associated with the run batch.</p>"
+          "documentation":"<p>Amazon Web Services tags associated with the run batch.</p>"
         }
       }
     },
@@ -10889,7 +10951,7 @@
         },
         "roleArn":{
           "shape":"RunRoleArn",
-          "documentation":"<p>A service role for the run. The <code>roleArn</code> requires access to Amazon Web Services HealthOmics, S3, Cloudwatch logs, and EC2. An example <code>roleArn</code> is <code>arn:aws:iam::123456789012:role/omics-service-role-serviceRole-W8O1XMPL7QZ</code>. In this example, the AWS account ID is <code>123456789012</code> and the role name is <code>omics-service-role-serviceRole-W8O1XMPL7QZ</code>.</p>"
+          "documentation":"<p>A service role for the run. The <code>roleArn</code> requires access to Amazon Web Services HealthOmics, S3, Cloudwatch logs, and EC2. An example <code>roleArn</code> is <code>arn:aws:iam::123456789012:role/omics-service-role-serviceRole-W8O1XMPL7QZ</code>. In this example, the Amazon Web Services account ID is <code>123456789012</code> and the role name is <code>omics-service-role-serviceRole-W8O1XMPL7QZ</code>.</p>"
         },
         "name":{
           "shape":"RunName",
@@ -10956,9 +11018,17 @@
           "shape":"NetworkingMode",
           "documentation":"<p>Optional configuration for run networking behavior. If not specified, this will default to RESTRICTED.</p>"
         },
+        "scratchStorageMode":{
+          "shape":"ScratchStorageMode",
+          "documentation":"<p>Optional configuration for enabling scratch ephemeral storage mounted at /tmp. If not specified, this will default to SHARED. This configuration is applicable only for CPU tasks. For tasks using GPUs, scratch storage is always LOCAL.</p>"
+        },
         "configurationName":{
           "shape":"ConfigurationName",
           "documentation":"<p>Optional configuration name to use for the workflow run.</p>"
+        },
+        "sessionPolicy":{
+          "shape":"SessionPolicy",
+          "documentation":"<p>Optional inline policy json for scoping down permissions via a session policy on the IAM role provided in the roleArn parameter.</p>"
         },
         "engineSettings":{
           "shape":"EngineSettings",
@@ -11334,6 +11404,10 @@
         "instanceType":{
           "shape":"TaskInstanceType",
           "documentation":"<p> The instance type for a task.</p>"
+        },
+        "uuid":{
+          "shape":"TaskUuid",
+          "documentation":"<p>The universally unique identifier (UUID) for the workflow task.</p>"
         }
       },
       "documentation":"<p>A workflow run task.</p>"
@@ -11389,6 +11463,12 @@
     "TaskTimestamp":{
       "type":"timestamp",
       "timestampFormat":"iso8601"
+    },
+    "TaskUuid":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"[\\p{L}||\\p{M}||\\p{Z}||\\p{S}||\\p{N}||\\p{P}]+"
     },
     "ThrottlingException":{
       "type":"structure",
@@ -12040,7 +12120,7 @@
       "members":{
         "message":{"shape":"String"}
       },
-      "documentation":"<p>The input fails to satisfy the constraints specified by an AWS service.</p>",
+      "documentation":"<p>The input fails to satisfy the constraints specified by an Amazon Web Services service.</p>",
       "error":{
         "httpStatusCode":400,
         "senderFault":true
@@ -12290,6 +12370,10 @@
         "subnetIds":{
           "shape":"VpcConfigSubnetIdsList",
           "documentation":"<p>List of subnet IDs. Maximum of 16 subnets allowed.</p>"
+        },
+        "vpcOwnerAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The Amazon Web Services account ID of the cross-account VPC owner for RAM-shared VPC configurations.</p>"
         }
       },
       "documentation":"<p>VPC configuration for workflow runs.</p>"
@@ -12308,6 +12392,10 @@
         "vpcId":{
           "shape":"VpcId",
           "documentation":"<p>VPC ID computed from the provided subnet IDs.</p>"
+        },
+        "vpcOwnerAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The Amazon Web Services account ID of the cross-account VPC owner for RAM-shared VPC configurations.</p>"
         }
       },
       "documentation":"<p>VPC configuration for workflow runs with computed VPC ID.</p>"

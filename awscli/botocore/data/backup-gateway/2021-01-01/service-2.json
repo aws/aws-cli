@@ -5,8 +5,11 @@
     "auth":["aws.auth#sigv4"],
     "endpointPrefix":"backup-gateway",
     "jsonVersion":"1.0",
-    "protocol":"json",
-    "protocols":["json"],
+    "protocol":"smithy-rpc-v2-cbor",
+    "protocols":[
+      "smithy-rpc-v2-cbor",
+      "json"
+    ],
     "serviceFullName":"AWS Backup Gateway",
     "serviceId":"Backup Gateway",
     "signatureVersion":"v4",
@@ -113,7 +116,8 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Retrieves the bandwidth rate limit schedule for a specified gateway. By default, gateways do not have bandwidth rate limit schedules, which means no bandwidth rate limiting is in effect. Use this to get a gateway's bandwidth rate limit schedule.</p>"
+      "documentation":"<p>Retrieves the bandwidth rate limit schedule for a specified gateway. By default, gateways do not have bandwidth rate limit schedules, which means no bandwidth rate limiting is in effect. Use this to get a gateway's bandwidth rate limit schedule.</p>",
+      "readonly":true
     },
     "GetGateway":{
       "name":"GetGateway",
@@ -129,7 +133,8 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>By providing the ARN (Amazon Resource Name), this API returns the gateway.</p>"
+      "documentation":"<p>By providing the ARN (Amazon Resource Name), this API returns the gateway.</p>",
+      "readonly":true
     },
     "GetHypervisor":{
       "name":"GetHypervisor",
@@ -145,7 +150,8 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>This action requests information about the specified hypervisor to which the gateway will connect. A hypervisor is hardware, software, or firmware that creates and manages virtual machines, and allocates resources to them.</p>"
+      "documentation":"<p>This action requests information about the specified hypervisor to which the gateway will connect. A hypervisor is hardware, software, or firmware that creates and manages virtual machines, and allocates resources to them.</p>",
+      "readonly":true
     },
     "GetHypervisorPropertyMappings":{
       "name":"GetHypervisorPropertyMappings",
@@ -161,7 +167,8 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>This action retrieves the property mappings for the specified hypervisor. A hypervisor property mapping displays the relationship of entity properties available from the hypervisor to the properties available in Amazon Web Services.</p>"
+      "documentation":"<p>This action retrieves the property mappings for the specified hypervisor. A hypervisor property mapping displays the relationship of entity properties available from the hypervisor to the properties available in Amazon Web Services.</p>",
+      "readonly":true
     },
     "GetVirtualMachine":{
       "name":"GetVirtualMachine",
@@ -177,7 +184,8 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>By providing the ARN (Amazon Resource Name), this API returns the virtual machine.</p>"
+      "documentation":"<p>By providing the ARN (Amazon Resource Name), this API returns the virtual machine.</p>",
+      "readonly":true
     },
     "ImportHypervisorConfiguration":{
       "name":"ImportHypervisorConfiguration",
@@ -209,7 +217,8 @@
         {"shape":"InternalServerException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Lists backup gateways owned by an Amazon Web Services account in an Amazon Web Services Region. The returned list is ordered by gateway Amazon Resource Name (ARN).</p>"
+      "documentation":"<p>Lists backup gateways owned by an Amazon Web Services account in an Amazon Web Services Region. The returned list is ordered by gateway Amazon Resource Name (ARN).</p>",
+      "readonly":true
     },
     "ListHypervisors":{
       "name":"ListHypervisors",
@@ -224,7 +233,8 @@
         {"shape":"InternalServerException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Lists your hypervisors.</p>"
+      "documentation":"<p>Lists your hypervisors.</p>",
+      "readonly":true
     },
     "ListTagsForResource":{
       "name":"ListTagsForResource",
@@ -255,7 +265,8 @@
         {"shape":"InternalServerException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Lists your virtual machines.</p>"
+      "documentation":"<p>Lists your virtual machines.</p>",
+      "readonly":true
     },
     "PutBandwidthRateLimitSchedule":{
       "name":"PutBandwidthRateLimitSchedule",
@@ -440,6 +451,10 @@
         "Message":{"shape":"string"}
       },
       "documentation":"<p>The operation cannot proceed because you have insufficient permissions.</p>",
+      "error":{
+        "httpStatusCode":403,
+        "senderFault":true
+      },
       "exception":true
     },
     "ActivationKey":{
@@ -534,6 +549,10 @@
         "Message":{"shape":"string"}
       },
       "documentation":"<p>The operation cannot proceed because it is not supported.</p>",
+      "error":{
+        "httpStatusCode":409,
+        "senderFault":true
+      },
       "exception":true
     },
     "CreateGatewayInput":{
@@ -995,6 +1014,7 @@
         "Message":{"shape":"string"}
       },
       "documentation":"<p>The operation did not succeed because an internal error occurred. Try again later.</p>",
+      "error":{"httpStatusCode":500},
       "exception":true,
       "fault":true
     },
@@ -1289,6 +1309,10 @@
         "Message":{"shape":"string"}
       },
       "documentation":"<p>A resource that is required for the action wasn't found.</p>",
+      "error":{
+        "httpStatusCode":404,
+        "senderFault":true
+      },
       "exception":true
     },
     "ServerArn":{
@@ -1417,8 +1441,7 @@
     },
     "TestHypervisorConfigurationOutput":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "ThrottlingException":{
       "type":"structure",
@@ -1431,6 +1454,10 @@
         "Message":{"shape":"string"}
       },
       "documentation":"<p>TPS has been limited to protect against intentional or unintentional high request volumes.</p>",
+      "error":{
+        "httpStatusCode":429,
+        "senderFault":true
+      },
       "exception":true
     },
     "Time":{"type":"timestamp"},
@@ -1558,6 +1585,10 @@
         "Message":{"shape":"string"}
       },
       "documentation":"<p>The operation did not succeed because a validation error occurred.</p>",
+      "error":{
+        "httpStatusCode":400,
+        "senderFault":true
+      },
       "exception":true
     },
     "VirtualMachine":{

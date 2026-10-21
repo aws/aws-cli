@@ -12,6 +12,7 @@
 # language governing permissions and limitations under the License.
 import datetime
 import errno
+import io
 import logging
 import os
 import shutil
@@ -29,6 +30,7 @@ from awscli.customizations.s3 import utils
 from awscli.customizations.s3.fileinfo import FileInfo
 from awscli.customizations.s3.results import WarningResult
 from awscli.customizations.s3.subscribers import (
+    AnnotationCopyError,
     CaseConflictCleanupSubscriber,
     CopyPropsSubscriberFactory,
     CreateDirectoryError,
@@ -36,6 +38,7 @@ from awscli.customizations.s3.subscribers import (
     DeleteSourceFileSubscriber,
     DeleteSourceObjectSubscriber,
     DirectoryCreatorSubscriber,
+    ExcludeAnnotationDirectiveSubscriber,
     OnDoneFilteredSubscriber,
     ProvideETagSubscriber,
     ProvideFullObjectChecksumSubscriber,
@@ -44,6 +47,7 @@ from awscli.customizations.s3.subscribers import (
     ProvideUploadContentTypeSubscriber,
     ReplaceMetadataDirectiveSubscriber,
     ReplaceTaggingDirectiveSubscriber,
+    SetAnnotationsSubscriber,
     SetMetadataDirectivePropsSubscriber,
     SetTagsSubscriber,
 )
@@ -446,6 +450,7 @@ class TestCopyPropsSubscriberFactory(BaseCopyPropsSubscriberTest):
             [
                 ReplaceMetadataDirectiveSubscriber,
                 ReplaceTaggingDirectiveSubscriber,
+                ExcludeAnnotationDirectiveSubscriber,
             ],
         )
 
@@ -457,6 +462,7 @@ class TestCopyPropsSubscriberFactory(BaseCopyPropsSubscriberTest):
             [
                 SetMetadataDirectivePropsSubscriber,
                 ReplaceTaggingDirectiveSubscriber,
+                ExcludeAnnotationDirectiveSubscriber,
             ],
         )
 
@@ -468,6 +474,19 @@ class TestCopyPropsSubscriberFactory(BaseCopyPropsSubscriberTest):
             [
                 SetMetadataDirectivePropsSubscriber,
                 SetTagsSubscriber,
+                ExcludeAnnotationDirectiveSubscriber,
+            ],
+        )
+
+    def test_get_subscribers_for_copy_props_all(self):
+        self.set_copy_props('all')
+        subscribers = self.factory.get_subscribers(self.fileinfo)
+        self.assert_subscriber_classes(
+            subscribers,
+            [
+                SetMetadataDirectivePropsSubscriber,
+                SetTagsSubscriber,
+                SetAnnotationsSubscriber,
             ],
         )
 
@@ -492,6 +511,12 @@ class TestReplaceTaggingDirectiveSubscriber(BaseCopyPropsSubscriberTest):
     def test_on_queued(self):
         ReplaceTaggingDirectiveSubscriber().on_queued(self.future)
         self.assert_extra_args(self.future, {'TaggingDirective': 'REPLACE'})
+
+
+class TestExcludeAnnotationDirectiveSubscriber(BaseCopyPropsSubscriberTest):
+    def test_on_queued(self):
+        ExcludeAnnotationDirectiveSubscriber().on_queued(self.future)
+        self.assert_extra_args(self.future, {'AnnotationDirective': 'EXCLUDE'})
 
 
 class TestSetMetadataDirectivePropsSubscriber(BaseCopyPropsSubscriberTest):
@@ -817,6 +842,154 @@ class TestSetTagsSubscriber(BaseCopyPropsSubscriberTest):
 
         self.client.delete_object.assert_called_once_with(
             Bucket=self.bucket, Key=self.key, RequestPayer='requester'
+        )
+
+
+class AnnotationException(Exception):
+    pass
+
+
+class TestSetAnnotationsSubscriber(BaseCopyPropsSubscriberTest):
+    def setUp(self):
+        super(TestSetAnnotationsSubscriber, self).setUp()
+        self.source_client = mock.Mock()
+        self.paginator = mock.Mock()
+        self.source_client.get_paginator.return_value = self.paginator
+        self.subscriber = SetAnnotationsSubscriber(
+            client=self.client,
+            transfer_config=self.transfer_config,
+            cli_params=self.cli_params,
+            source_client=self.source_client,
+        )
+        self.dest_etag = '"dest-etag"'
+        self.dest_version_id = 'dest-version-id'
+
+    def set_source_annotations(self, names):
+        # Split the names into two pages to also exercise pagination.
+        pages = [
+            {'Annotations': [{'AnnotationName': n} for n in names[:1]]},
+            {'Annotations': [{'AnnotationName': n} for n in names[1:]]},
+        ]
+        self.paginator.paginate.return_value = pages
+        from botocore.response import StreamingBody
+        self.source_client.get_object_annotation.side_effect = [
+            {'AnnotationPayload': StreamingBody(
+                io.BytesIO(f'payload-{n}'.encode()),
+                len(f'payload-{n}'),
+            )} for n in names
+        ]
+
+    def get_completed_future(self, size):
+        future = self.get_transfer_future(size=size)
+        future._result = {
+            'ETag': self.dest_etag,
+            'VersionId': self.dest_version_id,
+        }
+        return future
+
+    def test_does_not_copy_annotations_for_copy_object(self):
+        # Non-multipart copies carry annotations server-side.
+        self.subscriber.on_queued(self.future)
+        self.assertFalse(self.source_client.get_paginator.called)
+
+    def test_does_not_copy_when_no_source_annotations(self):
+        future = self.get_completed_future(size=10 * (1024**2))
+        self.paginator.paginate.return_value = [{'Annotations': []}]
+        self.subscriber.on_queued(future)
+        self.subscriber.on_done(future)
+        self.assertFalse(self.source_client.get_object_annotation.called)
+        self.assertFalse(self.client.put_object_annotation.called)
+
+    def test_copies_annotations_for_mp_copy(self):
+        future = self.get_completed_future(size=10 * (1024**2))
+        self.set_source_annotations(['ann1', 'ann2'])
+        self.subscriber.on_queued(future)
+        self.source_client.get_object_annotation.assert_any_call(
+            Bucket=self.source_bucket,
+            Key=self.source_key,
+            AnnotationName='ann1',
+        )
+        self.subscriber.on_done(future)
+        self.assertEqual(self.client.put_object_annotation.call_count, 2)
+        self.client.put_object_annotation.assert_any_call(
+            Bucket=self.bucket,
+            Key=self.key,
+            AnnotationName='ann1',
+            AnnotationPayload=b'payload-ann1',
+            ObjectIfMatch=self.dest_etag,
+            VersionId=self.dest_version_id,
+        )
+
+    def test_does_not_put_annotations_if_transfer_fails(self):
+        future = self.get_completed_future(size=10 * (1024**2))
+        self.set_source_annotations(['ann1'])
+        self.subscriber.on_queued(future)
+        future.set_exception(Exception())
+        self.subscriber.on_done(future)
+        self.assertFalse(self.client.put_object_annotation.called)
+
+    def test_partial_failure_leaves_object_and_reports(self):
+        future = self.get_completed_future(size=10 * (1024**2))
+        self.set_source_annotations(['ann1', 'ann2'])
+        self.subscriber.on_queued(future)
+        self.client.put_object_annotation.side_effect = [
+            None,
+            AnnotationException('boom'),
+        ]
+        self.subscriber.on_done(future)
+        # The destination object is not deleted on partial failure.
+        self.assertFalse(self.client.delete_object.called)
+        with self.assertRaises(AnnotationCopyError) as ctx:
+            future.result()
+        message = str(ctx.exception)
+        self.assertIn('ann1', message)
+        self.assertIn('ann2', message)
+        self.assertIn('boom', message)
+
+    def test_with_request_payer(self):
+        self.cli_params['request_payer'] = 'requester'
+        future = self.get_completed_future(size=10 * (1024**2))
+        self.set_source_annotations(['ann1'])
+        self.subscriber.on_queued(future)
+        self.source_client.get_object_annotation.assert_called_with(
+            Bucket=self.source_bucket,
+            Key=self.source_key,
+            AnnotationName='ann1',
+            RequestPayer='requester',
+        )
+        self.subscriber.on_done(future)
+        self.client.put_object_annotation.assert_called_with(
+            Bucket=self.bucket,
+            Key=self.key,
+            AnnotationName='ann1',
+            AnnotationPayload=b'payload-ann1',
+            ObjectIfMatch=self.dest_etag,
+            VersionId=self.dest_version_id,
+            RequestPayer='requester',
+        )
+
+    def test_passes_version_id_to_list_and_get_annotations(self):
+        source_version_id = 'source-version-id'
+        self.subscriber = SetAnnotationsSubscriber(
+            client=self.client,
+            transfer_config=self.transfer_config,
+            cli_params=self.cli_params,
+            source_client=self.source_client,
+            head_object_response={'VersionId': source_version_id},
+        )
+        future = self.get_completed_future(size=10 * (1024**2))
+        self.set_source_annotations(['ann1'])
+        self.subscriber.on_queued(future)
+        self.paginator.paginate.assert_called_with(
+            Bucket=self.source_bucket,
+            Key=self.source_key,
+            VersionId=source_version_id,
+        )
+        self.source_client.get_object_annotation.assert_called_with(
+            Bucket=self.source_bucket,
+            Key=self.source_key,
+            AnnotationName='ann1',
+            VersionId=source_version_id,
         )
 
 

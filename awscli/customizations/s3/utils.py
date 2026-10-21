@@ -513,6 +513,21 @@ class RequestParamsMapper:
         cls._set_request_payer_param(request_params, cli_params)
 
     @classmethod
+    def map_list_object_annotations_params(cls, request_params, cli_params):
+        """Map CLI params to ListObjectAnnotations request params"""
+        cls._set_request_payer_param(request_params, cli_params)
+
+    @classmethod
+    def map_get_object_annotation_params(cls, request_params, cli_params):
+        """Map CLI params to GetObjectAnnotation request params"""
+        cls._set_request_payer_param(request_params, cli_params)
+
+    @classmethod
+    def map_put_object_annotation_params(cls, request_params, cli_params):
+        """Map CLI params to PutObjectAnnotation request params"""
+        cls._set_request_payer_param(request_params, cli_params)
+
+    @classmethod
     def map_copy_object_params(cls, request_params, cli_params):
         """Map CLI params to CopyObject request params"""
         cls._set_general_object_params(request_params, cli_params)

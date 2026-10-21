@@ -21,6 +21,7 @@ import os
 from botocore import utils
 from botocore.exceptions import InvalidConfigError
 
+
 def _resolve_new_retries():
     _env_new_retries = os.environ.get('AWS_NEW_RETRIES_2026')
     if _env_new_retries is not None:
@@ -451,6 +452,24 @@ class ConfigValueStore:
         provider = self._mapping[logical_name]
         return provider.provide()
 
+    def is_explicitly_set(self, logical_name):
+        """
+        Determine whether a value was configured for the specified
+        logical_name, as opposed to resolving to a built-in default.
+
+        :type logical_name: str
+        :param logical_name: The logical name of the session variable
+            you want to check.
+
+        :returns: True if a value was configured, False otherwise.
+        """
+        if logical_name in self._overrides:
+            return True
+        if logical_name not in self._mapping:
+            return False
+        resolved = self._mapping[logical_name].resolve()
+        return resolved is not None and resolved.is_configured
+
     def get_config_provider(self, logical_name):
         """
         Retrieve the provider associated with the specified logical_name.
@@ -525,6 +544,14 @@ class ConfigValueStore:
         self._mapping[logical_name] = provider
 
 
+class ConfigValue:
+    """A resolved config value and whether it came from a configured source."""
+
+    def __init__(self, value, is_configured=True):
+        self.value = value
+        self.is_configured = is_configured
+
+
 class BaseProvider:
     """Base class for configuration value providers.
 
@@ -535,6 +562,17 @@ class BaseProvider:
     def provide(self):
         """Provide a config value."""
         raise NotImplementedError('provide')
+
+    def resolve(self):
+        """Provide a config value along with where it came from.
+
+        :rtype: Optional[ConfigValue]
+        :returns: The resolved value, or None if this provider has none.
+        """
+        value = self.provide()
+        if value is None:
+            return None
+        return ConfigValue(value)
 
 
 class ChainProvider(BaseProvider):
@@ -568,10 +606,16 @@ class ChainProvider(BaseProvider):
         one in the chain to return a non-None value is the returned from the
         ChainProvider. When no non-None value is found, None is returned.
         """
+        resolved = self.resolve()
+        return resolved.value if resolved is not None else None
+
+    def resolve(self):
         for provider in self._providers:
-            value = provider.provide()
-            if value is not None:
-                return self._convert_type(value)
+            resolved = provider.resolve()
+            if resolved is not None:
+                return ConfigValue(
+                    self._convert_type(resolved.value), resolved.is_configured
+                )
         return None
 
     def _convert_type(self, value):
@@ -716,6 +760,9 @@ class ConstantProvider(BaseProvider):
     def provide(self):
         """Provide the constant value given during initialization."""
         return self._value
+
+    def resolve(self):
+        return ConfigValue(self._value, is_configured=False)
 
     def __repr__(self):
         return f'ConstantProvider(value={self._value})'

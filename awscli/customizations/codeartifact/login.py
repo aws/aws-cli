@@ -2,6 +2,7 @@ import errno
 import os
 import platform
 import re
+import secrets
 import subprocess
 import sys
 from configparser import RawConfigParser
@@ -460,6 +461,14 @@ class NpmLogin(BaseLogin):
         commands = self.get_commands(
             self.repository_endpoint, self.auth_token, scope=scope
         )
+
+        if not dry_run:
+            repo_uri = urlsplit(self.repository_endpoint)
+            auth_token_key = f'//{repo_uri.netloc}{repo_uri.path}:_authToken'
+            self._write_npmrc_value(
+                auth_token_key, self.auth_token, self.get_npmrc_path()
+            )
+
         self._run_commands('npm', commands, dry_run)
 
     def _run_command(self, tool, command):
@@ -489,6 +498,69 @@ class NpmLogin(BaseLogin):
         return scope
 
     @classmethod
+    def get_npmrc_path(cls):
+        custom = os.environ.get('NPM_CONFIG_USERCONFIG')
+        if custom:
+            return os.path.expanduser(custom)
+        return os.path.join(os.path.expanduser('~'), '.npmrc')
+
+    def _write_npmrc_value(self, key, value, npmrc_path):
+        new_entry = f'{key}={value}'
+        pattern = re.compile(
+            r'^' + re.escape(key) + r'=.*$', re.M
+        )
+        if not os.path.isfile(npmrc_path):
+            self._create_npmrc_file(npmrc_path, new_entry)
+        else:
+            with open(npmrc_path) as f:
+                contents = f.read()
+
+            if pattern.search(contents):
+                new_contents = pattern.sub(lambda _: new_entry, contents)
+            else:
+                new_contents = self._append_npmrc_entry(
+                    contents, new_entry
+                )
+
+            dirname = os.path.dirname(npmrc_path) or '.'
+            fd, tmp_path = self._create_tmp_file(dirname)
+
+            try:
+                with os.fdopen(fd, 'w') as f:
+                    f.write(new_contents)
+                os.replace(tmp_path, npmrc_path)
+            except BaseException:
+                if os.path.exists(tmp_path):
+                    os.unlink(tmp_path)
+                raise
+
+    def _create_tmp_file(self, dirname):
+        for _ in range(10):
+            suffix = secrets.token_hex(8)
+            tmp_path = os.path.join(dirname, f'.npmrc.tmp.{suffix}')
+            try:
+                fd = os.open(tmp_path,
+                             os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
+                return fd, tmp_path
+            except FileExistsError:
+                continue
+        raise RuntimeError('Unable to create temporary file for .npmrc')
+
+    def _create_npmrc_file(self, npmrc_path, new_entry):
+        dirname = os.path.split(npmrc_path)[0] or '.'
+        os.makedirs(dirname, exist_ok=True)
+        with os.fdopen(
+            os.open(npmrc_path, os.O_WRONLY | os.O_CREAT, 0o600), 'w'
+        ) as f:
+            f.write(new_entry + '\n')
+
+    def _append_npmrc_entry(self, contents, new_entry):
+        if contents.endswith('\n'):
+            return contents + new_entry + '\n'
+        else:
+            return contents + '\n' + new_entry + '\n'
+
+    @classmethod
     def get_commands(cls, endpoint, auth_token, **kwargs):
         commands = []
         scope = kwargs.get('scope')
@@ -505,12 +577,6 @@ class NpmLogin(BaseLogin):
         always_auth_config = f'//{repo_uri.netloc}{repo_uri.path}:always-auth'
         commands.append(
             [cls.NPM_CMD, 'config', 'set', always_auth_config, 'true']
-        )
-
-        # set auth info for the repository.
-        auth_token_config = f'//{repo_uri.netloc}{repo_uri.path}:_authToken'
-        commands.append(
-            [cls.NPM_CMD, 'config', 'set', auth_token_config, auth_token]
         )
 
         return commands

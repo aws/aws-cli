@@ -104,6 +104,23 @@
       ],
       "documentation":"<p>Attaches <a>ProxyRuleGroup</a> resources to a <a>ProxyConfiguration</a> </p> <p>A Proxy Configuration defines the monitoring and protection behavior for a Proxy. The details of the behavior are defined in the rule groups that you add to your configuration. </p>"
     },
+    "CreateContainerAssociation":{
+      "name":"CreateContainerAssociation",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateContainerAssociationRequest"},
+      "output":{"shape":"CreateContainerAssociationResponse"},
+      "errors":[
+        {"shape":"LimitExceededException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerError"},
+        {"shape":"InsufficientCapacityException"}
+      ],
+      "documentation":"<p>Creates a Network Firewall container association. The association monitors container lifecycle events in your Amazon ECS or Amazon EKS clusters and resolves running container addresses for use in firewall rules.</p>"
+    },
     "CreateFirewall":{
       "name":"CreateFirewall",
       "http":{
@@ -135,7 +152,8 @@
         {"shape":"InvalidRequestException"},
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerError"},
-        {"shape":"InsufficientCapacityException"}
+        {"shape":"InsufficientCapacityException"},
+        {"shape":"InvalidOperationException"}
       ],
       "documentation":"<p>Creates the firewall policy for the firewall according to the specifications. </p> <p>An Network Firewall firewall policy defines the behavior of a firewall, in a collection of stateless and stateful rule groups and other settings. You can use one firewall policy for multiple firewalls. </p>"
     },
@@ -257,6 +275,23 @@
         {"shape":"InvalidOperationException"}
       ],
       "documentation":"<p>Creates a firewall endpoint for an Network Firewall firewall. This type of firewall endpoint is independent of the firewall endpoints that you specify in the <code>Firewall</code> itself, and you define it in addition to those endpoints after the firewall has been created. You can define a VPC endpoint association using a different VPC than the one you used in the firewall specifications. </p>"
+    },
+    "DeleteContainerAssociation":{
+      "name":"DeleteContainerAssociation",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteContainerAssociationRequest"},
+      "output":{"shape":"DeleteContainerAssociationResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InternalServerError"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidOperationException"}
+      ],
+      "documentation":"<p>Deletes a container association. The resource transitions to a <code>DELETING</code> state. Deletion is asynchronous - Network Firewall returns immediately while cleanup proceeds in the background. You can't delete a container association while a rule group references it.</p>"
     },
     "DeleteFirewall":{
       "name":"DeleteFirewall",
@@ -443,6 +478,22 @@
         {"shape":"InvalidOperationException"}
       ],
       "documentation":"<p>Deletes the specified <a>VpcEndpointAssociation</a>.</p> <p>You can check whether an endpoint association is in use by reviewing the route tables for the Availability Zones where you have the endpoint subnet mapping. You can retrieve the subnet mapping by calling <a>DescribeVpcEndpointAssociation</a>. You define and update the route tables through Amazon VPC. As needed, update the route tables for the Availability Zone to remove the firewall endpoint for the association. When the route tables no longer use the firewall endpoint, you can remove the endpoint association safely.</p>"
+    },
+    "DescribeContainerAssociation":{
+      "name":"DescribeContainerAssociation",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeContainerAssociationRequest"},
+      "output":{"shape":"DescribeContainerAssociationResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InternalServerError"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Retrieves the configuration and status of a container association.</p>"
     },
     "DescribeFirewall":{
       "name":"DescribeFirewall",
@@ -768,6 +819,21 @@
       ],
       "documentation":"<p>Returns a list of all traffic analysis reports generated within the last 30 days.</p>"
     },
+    "ListContainerAssociations":{
+      "name":"ListContainerAssociations",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListContainerAssociationsRequest"},
+      "output":{"shape":"ListContainerAssociationsResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InternalServerError"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Lists the container associations in your account and Region. Use the <code>NextToken</code> parameter in subsequent requests to retrieve additional results.</p>"
+    },
     "ListFirewallPolicies":{
       "name":"ListFirewallPolicies",
       "http":{
@@ -1069,6 +1135,24 @@
       ],
       "documentation":"<p>Modifies the <code>AvailabilityZoneChangeProtection</code> setting for a transit gateway-attached firewall. When enabled, this setting prevents accidental changes to the firewall's Availability Zone configuration. This helps protect against disrupting traffic flow in production environments.</p> <p>When enabled, you must disable this protection before using <a>AssociateAvailabilityZones</a> or <a>DisassociateAvailabilityZones</a> to modify the firewall's Availability Zone configuration.</p>"
     },
+    "UpdateContainerAssociation":{
+      "name":"UpdateContainerAssociation",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateContainerAssociationRequest"},
+      "output":{"shape":"UpdateContainerAssociationResponse"},
+      "errors":[
+        {"shape":"LimitExceededException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerError"},
+        {"shape":"InvalidTokenException"}
+      ],
+      "documentation":"<p>Updates the monitoring configurations and description of a container association. You can't change the container type after creation. Provide an update token to enable optimistic concurrency control.</p>"
+    },
     "UpdateFirewallAnalysisSettings":{
       "name":"UpdateFirewallAnalysisSettings",
       "http":{
@@ -1152,7 +1236,8 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerError"},
-        {"shape":"InvalidTokenException"}
+        {"shape":"InvalidTokenException"},
+        {"shape":"InvalidOperationException"}
       ],
       "documentation":"<p>Updates the properties of the specified firewall policy.</p>"
     },
@@ -1272,6 +1357,25 @@
         {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Updates proxy rule priorities within a proxy rule group.</p>"
+    },
+    "UpdateProxySettings":{
+      "name":"UpdateProxySettings",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateProxySettingsRequest"},
+      "output":{"shape":"UpdateProxySettingsResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InternalServerError"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ResourceOwnerCheckException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidTokenException"},
+        {"shape":"InvalidOperationException"}
+      ],
+      "documentation":"<p>Modifies the proxy listener configuration of a proxy mode firewall. Proxy mode firewalls are created with <code>NoSourcePreservation</code> set to <code>TRUE</code>. Use this operation to change the ports and protocols on which the firewall's proxy listens for traffic. </p>"
     },
     "UpdateRuleGroup":{
       "name":"UpdateRuleGroup",
@@ -1688,6 +1792,10 @@
         "StatusMessage":{
           "shape":"StatusMessage",
           "documentation":"<p>If Network Firewall fails to create or delete the firewall endpoint in the subnet, it populates this with the reason for the error or failure and how to resolve it. A <code>FAILED</code> status indicates a non-recoverable state, and a <code>ERROR</code> status indicates an issue that you can fix. Depending on the error, it can take as many as 15 minutes to populate this field. For more information about the causes for failiure or errors and solutions available for this field, see <a href=\"https://docs.aws.amazon.com/network-firewall/latest/developerguide/firewall-troubleshooting-endpoint-failures.html\">Troubleshooting firewall endpoint failures</a> in the <i>Network Firewall Developer Guide</i>.</p>"
+        },
+        "DnsName":{
+          "shape":"DnsName",
+          "documentation":"<p>The DNS name that resolves to the firewall endpoint in the subnet. This is populated for proxy mode firewalls, where clients direct traffic to the firewall's proxy using this name. </p>"
         }
       },
       "documentation":"<p>The definition and status of the firewall endpoint for a single subnet. In each configured subnet, Network Firewall instantiates a firewall endpoint to handle network traffic. </p> <p>This data type is used for any firewall endpoint type: </p> <ul> <li> <p>For <code>Firewall.SubnetMappings</code>, this <code>Attachment</code> is part of the <code>FirewallStatus</code> sync states information. You define firewall subnets using <code>CreateFirewall</code> and <code>AssociateSubnets</code>. </p> </li> <li> <p>For <code>VpcEndpointAssociation</code>, this <code>Attachment</code> is part of the <code>VpcEndpointAssociationStatus</code> sync states information. You define these subnets using <code>CreateVpcEndpointAssociation</code>. </p> </li> </ul>"
@@ -1705,6 +1813,7 @@
       ]
     },
     "AvailabilityZone":{"type":"string"},
+    "AvailabilityZoneId":{"type":"string"},
     "AvailabilityZoneMapping":{
       "type":"structure",
       "required":["AvailabilityZone"],
@@ -1810,7 +1919,162 @@
         "CAPACITY_CONSTRAINED"
       ]
     },
+    "ContainerAssociationLastUpdatedTime":{"type":"timestamp"},
+    "ContainerAssociationStatus":{
+      "type":"string",
+      "enum":[
+        "ACTIVE",
+        "CREATING",
+        "DELETING",
+        "UPDATING"
+      ]
+    },
+    "ContainerAssociationSummary":{
+      "type":"structure",
+      "members":{
+        "Arn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the container association.</p>"
+        },
+        "Name":{
+          "shape":"ResourceName",
+          "documentation":"<p>The descriptive name of the container association.</p>"
+        }
+      },
+      "documentation":"<p>The metadata for a container association returned by <code>ListContainerAssociations</code>. Contains the ARN and name that you use to identify the container association in other operations.</p>"
+    },
+    "ContainerAssociations":{
+      "type":"list",
+      "member":{"shape":"ContainerAssociationSummary"}
+    },
+    "ContainerAttribute":{
+      "type":"structure",
+      "required":[
+        "Key",
+        "Value"
+      ],
+      "members":{
+        "Key":{
+          "shape":"ContainerAttributeKey",
+          "documentation":"<p>The attribute key to filter on. For Amazon EKS, specify <code>namespace</code> to filter by namespace, or specify a Kubernetes label key. For Amazon ECS, specify a container instance attribute name. Keys don't support wildcards.</p> <p>Valid characters are letters, numbers, spaces, hyphens (<code>-</code>), underscores (<code>_</code>), periods (<code>.</code>), forward slashes (<code>/</code>), and colons (<code>:</code>).</p>"
+        },
+        "Value":{
+          "shape":"ContainerAttributeValue",
+          "documentation":"<p>The attribute value to match. You can specify an exact value, such as <code>payments-api</code>, or a wildcard pattern, such as <code>payments-*</code>.</p> <p>Valid characters are letters, numbers, spaces, hyphens (<code>-</code>), underscores (<code>_</code>), periods (<code>.</code>), forward slashes (<code>/</code>), colons (<code>:</code>), asterisks (<code>*</code>), and backslashes (<code>\\</code>).</p> <p>Network Firewall evaluates the value using the following rules:</p> <ul> <li> <p>An asterisk (<code>*</code>) matches zero or more characters. For example, <code>payments-*</code> matches <code>payments-</code>, <code>payments-api</code>, and <code>payments-api-v2</code>, and <code>*-prod</code> matches <code>web-prod</code>.</p> </li> <li> <p>The pattern must match the entire value. For example, <code>payments-*</code> doesn't match <code>my-payments-api</code>. To match a value that contains <code>payments</code> anywhere, use <code>*payments*</code>.</p> </li> <li> <p>Matching is case sensitive. For example, <code>Payments-*</code> doesn't match <code>payments-api</code>.</p> </li> <li> <p>To match a literal asterisk, escape it with a backslash (<code>\\*</code>). To match a literal backslash, use <code>\\\\</code>. A backslash followed by any other character matches a literal backslash followed by that character.</p> </li> <li> <p>A wildcard pattern matches only containers that have the attribute. For example, a filter with key <code>app</code> and value <code>*</code> matches every container that has an <code>app</code> label, but doesn't match a container without an <code>app</code> label.</p> </li> <li> <p>A value that doesn't contain <code>*</code> or <code>\\</code> matches only that exact value.</p> </li> </ul> <p>A value can contain at most 10 unescaped asterisks. Escaped asterisks (<code>\\*</code>) don't count toward this limit. A value can't end with a single unescaped backslash.</p>"
+        }
+      },
+      "documentation":"<p>A key-value filter pair used in container association monitoring configurations to narrow which containers are tracked. The key must match exactly. The value can be an exact value or a wildcard pattern.</p>"
+    },
+    "ContainerAttributeKey":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"\\S+"
+    },
+    "ContainerAttributeValue":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"\\S+"
+    },
+    "ContainerAttributes":{
+      "type":"list",
+      "member":{"shape":"ContainerAttribute"}
+    },
+    "ContainerMonitoringConfiguration":{
+      "type":"structure",
+      "required":["ClusterArn"],
+      "members":{
+        "ClusterArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The ARN of the Amazon ECS or Amazon EKS cluster to monitor. The cluster must be in the same Region and account as the container association.</p>"
+        },
+        "AttributeFilters":{
+          "shape":"ContainerAttributes",
+          "documentation":"<p>Key-value pairs that filter which containers are tracked. For Amazon EKS, you can filter by namespace and Kubernetes labels. For Amazon ECS, you can filter by container instance attributes (EC2 launch type only).</p> <p>Attribute values can contain wildcard patterns, for example <code>payments-*</code>. Attribute keys must match exactly.</p>"
+        }
+      },
+      "documentation":"<p>Contains the monitoring configuration for a single cluster in a container association. Specifies the cluster ARN and optional attribute filters to narrow which containers are tracked.</p>"
+    },
+    "ContainerMonitoringConfigurations":{
+      "type":"list",
+      "member":{"shape":"ContainerMonitoringConfiguration"}
+    },
+    "ContainerMonitoringType":{
+      "type":"string",
+      "enum":[
+        "ECS",
+        "EKS"
+      ]
+    },
     "Count":{"type":"integer"},
+    "CreateContainerAssociationRequest":{
+      "type":"structure",
+      "required":[
+        "ContainerAssociationName",
+        "Type",
+        "ContainerMonitoringConfigurations"
+      ],
+      "members":{
+        "ContainerAssociationName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The descriptive name of the container association. You can't change the name of a container association after you create it.</p>"
+        },
+        "Description":{
+          "shape":"Description",
+          "documentation":"<p>A description of the container association.</p>"
+        },
+        "Type":{
+          "shape":"ContainerMonitoringType",
+          "documentation":"<p>The type of containers to monitor. You can't change the container type after creation. Valid values:</p> <ul> <li> <p> <code>ECS</code> - Amazon Elastic Container Service</p> </li> <li> <p> <code>EKS</code> - Amazon Elastic Kubernetes Service</p> </li> </ul>"
+        },
+        "ContainerMonitoringConfigurations":{
+          "shape":"ContainerMonitoringConfigurations",
+          "documentation":"<p>The monitoring configurations for the container association. Each configuration specifies an Amazon ECS or Amazon EKS cluster to monitor and optional attribute filters to narrow which containers are tracked.</p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>The key:value pairs to associate with the resource.</p>"
+        }
+      }
+    },
+    "CreateContainerAssociationResponse":{
+      "type":"structure",
+      "members":{
+        "ContainerAssociationName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The descriptive name of the container association.</p>"
+        },
+        "ContainerAssociationArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the container association.</p>"
+        },
+        "Description":{
+          "shape":"Description",
+          "documentation":"<p>A description of the container association.</p>"
+        },
+        "Type":{
+          "shape":"ContainerMonitoringType",
+          "documentation":"<p>The container type. Valid values:</p> <ul> <li> <p> <code>ECS</code> - Amazon Elastic Container Service</p> </li> <li> <p> <code>EKS</code> - Amazon Elastic Kubernetes Service</p> </li> </ul>"
+        },
+        "ContainerMonitoringConfigurations":{
+          "shape":"ContainerMonitoringConfigurations",
+          "documentation":"<p>The monitoring configurations for the container association.</p>"
+        },
+        "Status":{
+          "shape":"ContainerAssociationStatus",
+          "documentation":"<p>The current status of the container association. For a new container association, the status is <code>CREATING</code>.</p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>The key:value pairs to associate with the resource.</p>"
+        },
+        "UpdateToken":{
+          "shape":"UpdateToken",
+          "documentation":"<p>A token used for optimistic locking. Network Firewall returns a token to your requests that access the container association. The token marks the state of the container association resource at the time of the request.</p> <p>To make changes to the container association, you provide the token in your request. Network Firewall uses the token to ensure that the container association hasn't changed since you last retrieved it. If it has changed, the operation fails with an <code>InvalidTokenException</code>. If this happens, retrieve the container association again to get a current copy of it with a current token. Reapply your changes as needed, then try the operation again using the new token.</p>"
+        }
+      }
+    },
     "CreateFirewallPolicyRequest":{
       "type":"structure",
       "required":[
@@ -1923,6 +2187,22 @@
         "AvailabilityZoneChangeProtection":{
           "shape":"Boolean",
           "documentation":"<p>Optional. A setting indicating whether the firewall is protected against changes to its Availability Zone configuration. When set to <code>TRUE</code>, you cannot add or remove Availability Zones without first disabling this protection using <a>UpdateAvailabilityZoneChangeProtection</a>.</p> <p>Default value: <code>FALSE</code> </p>"
+        },
+        "NatGatewayMappings":{
+          "shape":"NatGatewayMappingsList",
+          "documentation":"<p>The NAT gateways that the firewall uses to proxy traffic when <code>NoSourcePreservation</code> is <code>TRUE</code>. Network Firewall attaches the firewall to each NAT gateway that you specify, so that egress traffic is proxied through the NAT gateway. </p>"
+        },
+        "ProxySettings":{
+          "shape":"ProxySettings",
+          "documentation":"<p>The listener configuration for a proxy mode firewall, used when <code>NoSourcePreservation</code> is <code>TRUE</code>. This specifies the ports and protocols on which the firewall's proxy listens for traffic. </p>"
+        },
+        "NoSourcePreservation":{
+          "shape":"Boolean",
+          "documentation":"<p>Optional. Indicates whether the firewall operates in proxy mode, in which the source IP address of the traffic is not preserved. When set to <code>TRUE</code>, the firewall proxies traffic through a NAT gateway and the traffic reaching the destination uses the NAT gateway's IP address as the source. </p> <p>When you set this to <code>TRUE</code>, you must specify <code>NatGatewayMappings</code> and <code>VpcEndpoint</code> instead of a top-level <code>VpcId</code> and <code>SubnetMappings</code>. </p> <p>You can't change this setting after you create the firewall. </p> <p>Default value: <code>FALSE</code> </p>"
+        },
+        "VpcEndpoint":{
+          "shape":"VpcEndpoint",
+          "documentation":"<p>The VPC and subnets for the firewall endpoint, used when <code>NoSourcePreservation</code> is <code>TRUE</code>. Network Firewall creates the firewall endpoint in the subnets that you specify here. </p> <p>For proxy mode firewalls, provide the firewall's VPC and endpoint subnets through this parameter instead of the top-level <code>VpcId</code> and <code>SubnetMappings</code>. </p>"
         }
       }
     },
@@ -2333,7 +2613,51 @@
       "type":"list",
       "member":{"shape":"CustomAction"}
     },
+    "DNSExpiryExceptionPolicy":{
+      "type":"string",
+      "enum":[
+        "REJECT",
+        "DROP",
+        "CONTINUE"
+      ]
+    },
+    "DNSFirewallRuleGroupId":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"^rslvr-frg-[0-9a-f]+$"
+    },
     "DeepThreatInspection":{"type":"boolean"},
+    "DeleteContainerAssociationRequest":{
+      "type":"structure",
+      "members":{
+        "ContainerAssociationName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The descriptive name of the container association.</p> <p>You must specify the ARN or the name, and you can specify both. </p>"
+        },
+        "ContainerAssociationArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the container association.</p> <p>You must specify the ARN or the name, and you can specify both. </p>"
+        }
+      }
+    },
+    "DeleteContainerAssociationResponse":{
+      "type":"structure",
+      "members":{
+        "ContainerAssociationName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The descriptive name of the container association.</p>"
+        },
+        "ContainerAssociationArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the container association.</p>"
+        },
+        "Status":{
+          "shape":"ContainerAssociationStatus",
+          "documentation":"<p>The current status of the container association. After deletion is initiated, the status is <code>DELETING</code>.</p>"
+        }
+      }
+    },
     "DeleteFirewallPolicyRequest":{
       "type":"structure",
       "members":{
@@ -2606,6 +2930,64 @@
         }
       }
     },
+    "DescribeContainerAssociationRequest":{
+      "type":"structure",
+      "members":{
+        "ContainerAssociationName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The descriptive name of the container association.</p> <p>You must specify the ARN or the name, and you can specify both. </p>"
+        },
+        "ContainerAssociationArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the container association.</p> <p>You must specify the ARN or the name, and you can specify both. </p>"
+        }
+      }
+    },
+    "DescribeContainerAssociationResponse":{
+      "type":"structure",
+      "members":{
+        "ContainerAssociationName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The descriptive name of the container association.</p>"
+        },
+        "ContainerAssociationArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the container association.</p>"
+        },
+        "Description":{
+          "shape":"Description",
+          "documentation":"<p>A description of the container association.</p>"
+        },
+        "Type":{
+          "shape":"ContainerMonitoringType",
+          "documentation":"<p>The container type. Valid values:</p> <ul> <li> <p> <code>ECS</code> - Amazon Elastic Container Service</p> </li> <li> <p> <code>EKS</code> - Amazon Elastic Kubernetes Service</p> </li> </ul>"
+        },
+        "ContainerMonitoringConfigurations":{
+          "shape":"ContainerMonitoringConfigurations",
+          "documentation":"<p>The monitoring configurations for the container association.</p>"
+        },
+        "Status":{
+          "shape":"ContainerAssociationStatus",
+          "documentation":"<p>The current status of the container association.</p>"
+        },
+        "ResolvedCidrCount":{
+          "shape":"CIDRCount",
+          "documentation":"<p>The number of CIDR blocks resolved from the monitored containers.</p>"
+        },
+        "LastUpdatedTime":{
+          "shape":"ContainerAssociationLastUpdatedTime",
+          "documentation":"<p>The most recent time that Network Firewall updated the container association.</p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>The key:value pairs to associate with the resource.</p>"
+        },
+        "UpdateToken":{
+          "shape":"UpdateToken",
+          "documentation":"<p>A token used for optimistic locking. Network Firewall returns a token to your requests that access the container association. The token marks the state of the container association resource at the time of the request.</p> <p>To make changes to the container association, you provide the token in your request. Network Firewall uses the token to ensure that the container association hasn't changed since you last retrieved it. If it has changed, the operation fails with an <code>InvalidTokenException</code>. If this happens, retrieve the container association again to get a current copy of it with a current token. Reapply your changes as needed, then try the operation again using the new token.</p>"
+        }
+      }
+    },
     "DescribeFirewallMetadataRequest":{
       "type":"structure",
       "members":{
@@ -2721,7 +3103,11 @@
         },
         "AvailabilityZone":{
           "shape":"AvailabilityZone",
-          "documentation":"<p>The ID of the Availability Zone where the firewall is located. For example, <code>us-east-2a</code>.</p> <p>Defines the scope a flow operation. You can use up to 20 filters to configure a single flow operation.</p>"
+          "documentation":"<p>The name of the Availability Zone where the firewall is located. For example, <code>us-east-2a</code>.</p> <p>Defines the scope a flow operation. You can use up to 20 filters to configure a single flow operation.</p>"
+        },
+        "AvailabilityZoneId":{
+          "shape":"AvailabilityZoneId",
+          "documentation":"<p>The ID of the Availability Zone where the firewall is located. For example, <code>use2-az1</code>. Availability Zone IDs are the same in every Amazon Web Services account, so use this parameter when you coordinate resources across accounts. Specify either <code>AvailabilityZone</code> or <code>AvailabilityZoneId</code>, not both. If you specify both, the request fails.</p>"
         },
         "VpcEndpointAssociationArn":{
           "shape":"ResourceArn",
@@ -2746,7 +3132,11 @@
         },
         "AvailabilityZone":{
           "shape":"AvailabilityZone",
-          "documentation":"<p>The ID of the Availability Zone where the firewall is located. For example, <code>us-east-2a</code>.</p> <p>Defines the scope a flow operation. You can use up to 20 filters to configure a single flow operation.</p>"
+          "documentation":"<p>The name of the Availability Zone where the firewall is located. For example, <code>us-east-2a</code>.</p> <p>Defines the scope a flow operation. You can use up to 20 filters to configure a single flow operation.</p>"
+        },
+        "AvailabilityZoneId":{
+          "shape":"AvailabilityZoneId",
+          "documentation":"<p>The ID of the Availability Zone where the firewall is located. For example, <code>use2-az1</code>.</p>"
         },
         "VpcEndpointAssociationArn":{
           "shape":"ResourceArn",
@@ -3367,6 +3757,7 @@
         }
       }
     },
+    "DnsName":{"type":"string"},
     "Domain":{"type":"string"},
     "EnableMonitoringDashboard":{"type":"boolean"},
     "EnableTLSSessionHolding":{"type":"boolean"},
@@ -3488,6 +3879,22 @@
         "AvailabilityZoneChangeProtection":{
           "shape":"Boolean",
           "documentation":"<p>A setting indicating whether the firewall is protected against changes to its Availability Zone configuration. When set to <code>TRUE</code>, you must first disable this protection before adding or removing Availability Zones.</p>"
+        },
+        "NatGatewayMappings":{
+          "shape":"NatGatewayMappingsList",
+          "documentation":"<p>The NAT gateways that the firewall uses to proxy traffic. This is set for proxy mode firewalls, where <code>NoSourcePreservation</code> is <code>TRUE</code>. </p>"
+        },
+        "ProxySettings":{
+          "shape":"ProxySettings",
+          "documentation":"<p>The listener configuration for the firewall's proxy. This is set for proxy mode firewalls, where <code>NoSourcePreservation</code> is <code>TRUE</code>. </p>"
+        },
+        "NoSourcePreservation":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether the firewall operates in proxy mode, in which the source IP address of the traffic is not preserved. When this value is <code>TRUE</code>, the firewall proxies traffic through a NAT gateway and uses the NAT gateway's IP address as the source for traffic reaching the destination. </p>"
+        },
+        "VpcEndpoint":{
+          "shape":"VpcEndpoint",
+          "documentation":"<p>The VPC and subnets for the firewall endpoint. This is set for proxy mode firewalls, where <code>NoSourcePreservation</code> is <code>TRUE</code>. </p>"
         }
       },
       "documentation":"<p>A firewall defines the behavior of a firewall, the main VPC where the firewall is used, the Availability Zones where the firewall can be used, and one subnet to use for a firewall endpoint within each of the Availability Zones. The Availability Zones are defined implicitly in the subnet specifications.</p> <p>In addition to the firewall endpoints that you define in this <code>Firewall</code> specification, you can create firewall endpoints in <code>VpcEndpointAssociation</code> resources for any VPC, in any Availability Zone where the firewall is already in use. </p> <p>The status of the firewall, for example whether it's ready to filter network traffic, is provided in the corresponding <a>FirewallStatus</a>. You can retrieve both the firewall and firewall status by calling <a>DescribeFirewall</a>.</p>"
@@ -3543,7 +3950,7 @@
         },
         "StatefulDefaultActions":{
           "shape":"StatefulActions",
-          "documentation":"<p>The default actions to take on a packet that doesn't match any stateful rules. The stateful default action is optional, and is only valid when using the strict rule order.</p> <p>Valid values of the stateful default action:</p> <ul> <li> <p>aws:drop_strict</p> </li> <li> <p>aws:drop_established</p> </li> <li> <p>aws:alert_strict</p> </li> <li> <p>aws:alert_established</p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/network-firewall/latest/developerguide/suricata-rule-evaluation-order.html#suricata-strict-rule-evaluation-order.html\">Strict evaluation order</a> in the <i>Network Firewall Developer Guide</i>. </p>"
+          "documentation":"<p>The default actions to take on a packet that doesn't match any stateful rules. The stateful default action is optional, and is only valid when using the strict rule order.</p> <p>Valid values of the stateful default action:</p> <ul> <li> <p>aws:drop_strict</p> </li> <li> <p>aws:drop_established</p> </li> <li> <p>aws:alert_strict</p> </li> <li> <p>aws:alert_established</p> </li> <li> <p>aws:drop_established_app_layer</p> </li> <li> <p>aws:alert_established_app_layer</p> </li> <li> <p>aws:drop_established_app_layer_to_server</p> </li> <li> <p>aws:alert_established_app_layer_to_server</p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/network-firewall/latest/developerguide/suricata-rule-evaluation-order.html#suricata-strict-rule-evaluation-order.html\">Strict evaluation order</a> in the <i>Network Firewall Developer Guide</i>. </p>"
         },
         "StatefulEngineOptions":{
           "shape":"StatefulEngineOptions",
@@ -3560,9 +3967,54 @@
         "EnableTLSSessionHolding":{
           "shape":"EnableTLSSessionHolding",
           "documentation":"<p>When true, prevents TCP and TLS packets from reaching destination servers until TLS Inspection has evaluated Server Name Indication (SNI) rules. Requires an associated TLS Inspection configuration.</p>"
+        },
+        "Route53ResolvedIPValidation":{
+          "shape":"Route53ResolvedIPValidation",
+          "documentation":"<p>The settings that enable resolved IP validation for the policy. Resolved IP validation verifies that a connection's destination IP address is one that the Amazon Route 53 Resolver returned in a DNS response for a domain. The response must come from a VPC that's associated with the Route 53 Resolver DNS Firewall rule group that you specify. This checks how the destination IP address was obtained, instead of relying only on the domain that the client asserts in its TLS Server Name Indication (SNI) or HTTP <code>Host</code> header. For more information, see <a>Route53ResolvedIPValidation</a>.</p>"
         }
       },
       "documentation":"<p>The firewall policy defines the behavior of a firewall using a collection of stateless and stateful rule groups and other settings. You can use one firewall policy for multiple firewalls. </p> <p>This, along with <a>FirewallPolicyResponse</a>, define the policy. You can retrieve all objects for a firewall policy by calling <a>DescribeFirewallPolicy</a>.</p>"
+    },
+    "FirewallPolicyError":{
+      "type":"structure",
+      "required":[
+        "Code",
+        "Message"
+      ],
+      "members":{
+        "Code":{
+          "shape":"FirewallPolicyErrorCode",
+          "documentation":"<p>The error code identifies the type of error. Valid values are the following:</p> <ul> <li> <p> <code>DNS_FIREWALL_RULE_GROUP_UNAVAILABLE</code> – The Amazon Route 53 Resolver DNS Firewall rule group that resolved IP validation references is unavailable, for example, because it was deleted or is no longer accessible from your account. Update the rule group ID or remove the resolved IP validation configuration.</p> </li> <li> <p> <code>ROUTE53_RESOLVED_IP_VALIDATION_MISSING</code> – An associated stateful rule group uses the <code>aws_route_53_resolved_domain</code> keyword, but the policy doesn't have resolved IP validation configured. The affected rules are inactive until you add resolved IP validation to the policy or remove the keyword rules.</p> </li> </ul>"
+        },
+        "Message":{
+          "shape":"StatusReason",
+          "documentation":"<p>A description of the error and how to resolve it.</p>"
+        },
+        "ResourceId":{
+          "shape":"FirewallPolicyErrorResourceId",
+          "documentation":"<p>The ID of the resource that the error relates to, when applicable. For example, for <code>DNS_FIREWALL_RULE_GROUP_UNAVAILABLE</code> this is the Amazon Route 53 Resolver DNS Firewall rule group ID.</p>"
+        }
+      },
+      "documentation":"<p>A configuration error that Network Firewall detected for a firewall policy.</p>"
+    },
+    "FirewallPolicyErrorCode":{
+      "type":"string",
+      "enum":[
+        "DNS_FIREWALL_RULE_GROUP_UNAVAILABLE",
+        "ROUTE53_RESOLVED_IP_VALIDATION_MISSING"
+      ]
+    },
+    "FirewallPolicyErrorResourceId":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "pattern":"^[a-zA-Z0-9:/_.-]+$"
+    },
+    "FirewallPolicyErrors":{
+      "type":"list",
+      "member":{"shape":"FirewallPolicyError"},
+      "max":10,
+      "min":0
     },
     "FirewallPolicyMetadata":{
       "type":"structure",
@@ -3606,6 +4058,10 @@
           "shape":"ResourceStatus",
           "documentation":"<p>The current status of the firewall policy. You can retrieve this for a firewall policy by calling <a>DescribeFirewallPolicy</a> and providing the firewall policy's name or ARN.</p>"
         },
+        "StatusMessage":{
+          "shape":"ResourceStatusMessage",
+          "documentation":"<p>Additional detail about the firewall policy's current status, when applicable. For example, while an Amazon Route 53 Resolver DNS Firewall rule group change is in progress, the status is <code>UPDATING</code> and this message is \"A DNS Firewall rule group change is in progress.\"</p>"
+        },
         "Tags":{
           "shape":"TagList",
           "documentation":"<p>The key:value pairs to associate with the resource.</p>"
@@ -3629,6 +4085,10 @@
         "EncryptionConfiguration":{
           "shape":"EncryptionConfiguration",
           "documentation":"<p>A complex type that contains the Amazon Web Services KMS encryption configuration settings for your firewall policy.</p>"
+        },
+        "Errors":{
+          "shape":"FirewallPolicyErrors",
+          "documentation":"<p>Any configuration errors that apply to the firewall policy. Network Firewall detects these errors asynchronously, after you create or update the policy, so an error can appear after the request that caused it has already succeeded. Each entry describes the problem and how to resolve it, and Network Firewall clears it automatically after you resolve the problem.</p>"
         },
         "LastModifiedTime":{
           "shape":"LastUpdateTime",
@@ -3672,7 +4132,8 @@
       "enum":[
         "PROVISIONING",
         "DELETING",
-        "READY"
+        "READY",
+        "FAILED"
       ]
     },
     "Firewalls":{
@@ -3811,7 +4272,7 @@
           "documentation":"<p>The number of seconds that can pass without any TCP traffic sent through the firewall before the firewall determines that the connection is idle. After the idle timeout passes, data packets are dropped, however, the next TCP SYN packet is considered a new flow and is processed by the firewall. Clients or targets can use TCP keepalive packets to reset the idle timeout. </p> <p>You can define the <code>TcpIdleTimeoutSeconds</code> value to be between 60 and 6000 seconds. If no value is provided, it defaults to 350 seconds. </p>"
         }
       },
-      "documentation":"<p>Describes the amount of time that can pass without any traffic sent through the firewall before the firewall determines that the connection is idle and Network Firewall removes the flow entry from its flow table. Existing connections and flows are not impacted when you update this value. Only new connections after you update this value are impacted. </p>"
+      "documentation":"<p>Describes the amount of time that can pass without any traffic sent through the firewall before the firewall determines that the connection is idle and Network Firewall removes the flow entry from its flow table. When you update this value, existing connections will be treated according to your stream exception policy configuration. </p>"
     },
     "Flows":{
       "type":"list",
@@ -4120,6 +4581,32 @@
         }
       }
     },
+    "ListContainerAssociationsRequest":{
+      "type":"structure",
+      "members":{
+        "MaxResults":{
+          "shape":"PaginationMaxResults",
+          "documentation":"<p>The maximum number of objects that you want Network Firewall to return for this request. If more objects are available, in the response, Network Firewall provides a <code>NextToken</code> value that you can use in a subsequent call to get the next batch of objects.</p>"
+        },
+        "NextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>When you request a list of objects with a <code>MaxResults</code> setting, if the number of objects that are still available for retrieval exceeds the maximum you requested, Network Firewall returns a <code>NextToken</code> value in the response. To retrieve the next batch of objects, use the token returned from the prior request in your next request.</p>"
+        }
+      }
+    },
+    "ListContainerAssociationsResponse":{
+      "type":"structure",
+      "members":{
+        "ContainerAssociations":{
+          "shape":"ContainerAssociations",
+          "documentation":"<p>The container association metadata objects for the account and Region.</p>"
+        },
+        "NextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>When you request a list of objects with a <code>MaxResults</code> setting, if the number of objects that are still available for retrieval exceeds the maximum you requested, Network Firewall returns a <code>NextToken</code> value in the response. To retrieve the next batch of objects, use the token returned from the prior request in your next request.</p>"
+        }
+      }
+    },
     "ListFirewallPoliciesRequest":{
       "type":"structure",
       "members":{
@@ -4201,7 +4688,11 @@
         },
         "AvailabilityZone":{
           "shape":"AvailabilityZone",
-          "documentation":"<p>The ID of the Availability Zone where the firewall is located. For example, <code>us-east-2a</code>.</p> <p>Defines the scope a flow operation. You can use up to 20 filters to configure a single flow operation.</p>"
+          "documentation":"<p>The name of the Availability Zone where the firewall is located. For example, <code>us-east-2a</code>.</p> <p>Defines the scope a flow operation. You can use up to 20 filters to configure a single flow operation.</p>"
+        },
+        "AvailabilityZoneId":{
+          "shape":"AvailabilityZoneId",
+          "documentation":"<p>The ID of the Availability Zone where the firewall is located. For example, <code>use2-az1</code>. Availability Zone IDs are the same in every Amazon Web Services account, so use this parameter when you coordinate resources across accounts. Specify either <code>AvailabilityZone</code> or <code>AvailabilityZoneId</code>, not both. If you specify both, the request fails.</p>"
         },
         "VpcEndpointId":{
           "shape":"VpcEndpointId",
@@ -4222,7 +4713,11 @@
         },
         "AvailabilityZone":{
           "shape":"AvailabilityZone",
-          "documentation":"<p>The ID of the Availability Zone where the firewall is located. For example, <code>us-east-2a</code>.</p> <p>Defines the scope a flow operation. You can use up to 20 filters to configure a single flow operation.</p>"
+          "documentation":"<p>The name of the Availability Zone where the firewall is located. For example, <code>us-east-2a</code>.</p> <p>Defines the scope a flow operation. You can use up to 20 filters to configure a single flow operation.</p>"
+        },
+        "AvailabilityZoneId":{
+          "shape":"AvailabilityZoneId",
+          "documentation":"<p>The ID of the Availability Zone where the firewall is located. For example, <code>use2-az1</code>.</p>"
         },
         "VpcEndpointAssociationArn":{
           "shape":"ResourceArn",
@@ -4268,7 +4763,11 @@
         },
         "AvailabilityZone":{
           "shape":"AvailabilityZone",
-          "documentation":"<p>The ID of the Availability Zone where the firewall is located. For example, <code>us-east-2a</code>.</p> <p>Defines the scope a flow operation. You can use up to 20 filters to configure a single flow operation.</p>"
+          "documentation":"<p>The name of the Availability Zone where the firewall is located. For example, <code>us-east-2a</code>.</p> <p>Defines the scope a flow operation. You can use up to 20 filters to configure a single flow operation.</p>"
+        },
+        "AvailabilityZoneId":{
+          "shape":"AvailabilityZoneId",
+          "documentation":"<p>The ID of the Availability Zone where the firewall is located. For example, <code>use2-az1</code>. Availability Zone IDs are the same in every Amazon Web Services account, so use this parameter when you coordinate resources across accounts. Specify either <code>AvailabilityZone</code> or <code>AvailabilityZoneId</code>, not both. If you specify both, the request fails.</p>"
         },
         "VpcEndpointAssociationArn":{
           "shape":"ResourceArn",
@@ -4662,9 +5161,64 @@
       },
       "documentation":"<p>Criteria for Network Firewall to use to inspect an individual packet in stateless rule inspection. Each match attributes set can include one or more items such as IP address, CIDR range, port number, protocol, and TCP flags. </p>"
     },
+    "NatGatewayAttachment":{
+      "type":"structure",
+      "required":[
+        "NatGatewayId",
+        "Status"
+      ],
+      "members":{
+        "NatGatewayId":{
+          "shape":"NatGatewayId",
+          "documentation":"<p>A unique identifier for the NAT gateway to use with proxy resources.</p>"
+        },
+        "Status":{
+          "shape":"NatGatewayAttachmentStatus",
+          "documentation":"<p>The current status of the NAT gateway attachment. </p> <p>When this value is <code>READY</code>, the attachment is available to proxy traffic. Otherwise, this value reflects its state, for example <code>CREATING</code> or <code>DELETING</code>.</p>"
+        },
+        "StatusMessage":{
+          "shape":"StatusReason",
+          "documentation":"<p>If Network Firewall encounters an issue with the NAT gateway attachment, it populates this with an explanation of the problem. </p>"
+        },
+        "DnsName":{
+          "shape":"DnsName",
+          "documentation":"<p>The DNS name that resolves to the firewall's proxy for traffic sent through this NAT gateway attachment. </p>"
+        }
+      },
+      "documentation":"<p>The definition and status of the attachment between a proxy mode firewall and a NAT gateway that proxies its traffic. </p>"
+    },
+    "NatGatewayAttachmentStatus":{
+      "type":"string",
+      "enum":[
+        "CREATING",
+        "READY",
+        "UPDATING",
+        "FAILED",
+        "DELETING"
+      ]
+    },
+    "NatGatewayAttachmentsList":{
+      "type":"list",
+      "member":{"shape":"NatGatewayAttachment"}
+    },
     "NatGatewayId":{
       "type":"string",
       "min":1
+    },
+    "NatGatewayMapping":{
+      "type":"structure",
+      "required":["NatGatewayId"],
+      "members":{
+        "NatGatewayId":{
+          "shape":"NatGatewayId",
+          "documentation":"<p>A unique identifier for the NAT gateway to use with proxy resources.</p>"
+        }
+      },
+      "documentation":"<p>A NAT gateway that a proxy mode firewall uses to proxy traffic. This is used in <a>CreateFirewall</a> when <code>NoSourcePreservation</code> is <code>TRUE</code>. </p>"
+    },
+    "NatGatewayMappingsList":{
+      "type":"list",
+      "member":{"shape":"NatGatewayMapping"}
     },
     "NatGatewayPort":{"type":"integer"},
     "NumberOfAssociations":{"type":"integer"},
@@ -5196,6 +5750,17 @@
       },
       "documentation":"<p>Evaluation points in the traffic flow where rules are applied. There are three phases in a traffic where the rule match is applied. </p>"
     },
+    "ProxySettings":{
+      "type":"structure",
+      "required":["ListenerProperties"],
+      "members":{
+        "ListenerProperties":{
+          "shape":"ListenerProperties",
+          "documentation":"<p>Listener properties for HTTP and HTTPS traffic. </p>"
+        }
+      },
+      "documentation":"<p>The listener configuration for a proxy mode firewall. This specifies the ports and protocols on which the firewall's proxy listens for traffic. </p>"
+    },
     "ProxyState":{
       "type":"string",
       "enum":[
@@ -5340,8 +5905,14 @@
       "enum":[
         "ACTIVE",
         "DELETING",
-        "ERROR"
+        "ERROR",
+        "UPDATING"
       ]
+    },
+    "ResourceStatusMessage":{
+      "type":"string",
+      "max":8192,
+      "min":1
     },
     "RevocationCheckAction":{
       "type":"string",
@@ -5350,6 +5921,51 @@
         "DROP",
         "REJECT"
       ]
+    },
+    "Route53ResolvedIPValidation":{
+      "type":"structure",
+      "required":[
+        "Action",
+        "DNSFirewallRuleGroupId",
+        "DNSExpiryExceptionPolicy"
+      ],
+      "members":{
+        "Action":{
+          "shape":"Route53ResolvedIPValidationAction",
+          "documentation":"<p>The action that Network Firewall takes for a connection whose destination IP address fails resolved IP validation. A destination IP address fails validation when the Route 53 Resolver didn't return it in a DNS response in an associated VPC. Valid values are the following:</p> <ul> <li> <p> <code>ALERT</code> – Tags the matching connection in the firewall's flow logs without blocking it, when you enable logging. Use this to observe the effect of resolved IP validation before you enforce it.</p> </li> <li> <p> <code>DROP</code> – Silently blocks the connection without sending any response to the client.</p> </li> <li> <p> <code>REJECT</code> – Blocks the connection and sends a TCP reset (RST) to the client. Because a TCP reset applies only to TCP connections, Network Firewall drops non-TCP traffic instead of resetting it.</p> </li> </ul>"
+        },
+        "DNSFirewallRuleGroupId":{
+          "shape":"DNSFirewallRuleGroupId",
+          "documentation":"<p>The ID of the Route 53 Resolver DNS Firewall rule group that determines which VPCs' DNS resolutions count for resolved IP validation. A destination IP address counts as resolved for a domain only when the Route 53 Resolver returned it in a DNS response within a VPC that's associated with this rule group. Associate the rule group with the VPCs that send traffic to the firewall. The ID must match the pattern <code>^rslvr-frg-[0-9a-f]+$</code>. It must also exist and be accessible from your account. Network Firewall validates this when you create or update the policy.</p> <p>Changing this value swaps the managed rule group association. Network Firewall processes the swap asynchronously. Each policy can have only one managed Route 53 Resolver DNS Firewall association. While a swap is in progress, Network Firewall rejects further changes to this setting. Wait until the swap completes, then retry.</p>"
+        },
+        "DNSExpiryExceptionPolicy":{
+          "shape":"DNSExpiryExceptionPolicy",
+          "documentation":"<p>The action that Network Firewall takes when the DNS resolution recorded for a destination IP address has expired from the resolved IP cache. This applies when Network Firewall still sees traffic to that IP address after the expiry. Network Firewall keeps a resolution for longer than the DNS record's time to live (TTL). Valid values are the following:</p> <ul> <li> <p> <code>CONTINUE</code> – Treats the expired resolution as still valid and doesn't block the connection because of expiry.</p> </li> <li> <p> <code>DROP</code> – Silently blocks traffic to the IP address after its resolution has expired, without sending any response to the client.</p> </li> <li> <p> <code>REJECT</code> – Blocks traffic to the IP address after its resolution has expired and sends a TCP reset (RST) to the client. Network Firewall drops non-TCP traffic instead of resetting it.</p> </li> </ul>"
+        },
+        "BypassDestinationValidationIPRanges":{
+          "shape":"Route53ResolvedIPValidationAddresses",
+          "documentation":"<p>The destination IP address ranges that are exempt from the policy-level resolved IP check. Network Firewall doesn't apply the <code>Action</code> in this configuration to a connection whose destination falls in these ranges, even if the Route 53 Resolver didn't return that IP address in an associated VPC. Specify each entry as an IPv4 or IPv6 address or CIDR range, up to 100 entries.</p> <p>This exemption applies only to the policy-level check. Stateful rules that use the <code>AWS_ROUTE_53_RESOLVED_DOMAIN</code> target type or the <code>aws_route_53_resolved_domain</code> keyword still evaluate connections to these destinations and match them independently of this list.</p>"
+        },
+        "SourceIPRanges":{
+          "shape":"Route53ResolvedIPValidationAddresses",
+          "documentation":"<p>The client source IP address ranges whose connections are subject to resolved IP validation. Specify each entry as an IPv4 or IPv6 address or CIDR range, up to 100 entries. If you omit this field, resolved IP validation applies to the CIDR ranges of the firewall's VPC and of any additional VPCs attached to the firewall. Specifying an empty list is not the same as omitting the field: an empty list means that Network Firewall doesn't validate any source addresses.</p> <p>This scope applies to the policy-level check only. Stateful rules that use the <code>AWS_ROUTE_53_RESOLVED_DOMAIN</code> target type or the <code>aws_route_53_resolved_domain</code> keyword still evaluate their destinations regardless of <code>SourceIPRanges</code>.</p>"
+        }
+      },
+      "documentation":"<p>The policy-level configuration for resolved IP validation. When you set this on a firewall policy, you require that the destination IP address of a connection is one that the Amazon Route 53 Resolver returned in a DNS response for a domain. The Route 53 Resolver must have returned the response in a VPC that's associated with the Route 53 Resolver DNS Firewall rule group identified by <code>DNSFirewallRuleGroupId</code>. At the policy level, this verifies that the destination IP address was resolved for some domain. To match specific domains, also configure stateful rule groups that use the <code>AWS_ROUTE_53_RESOLVED_DOMAIN</code> target type or the <code>aws_route_53_resolved_domain</code> rule keyword.</p>"
+    },
+    "Route53ResolvedIPValidationAction":{
+      "type":"string",
+      "enum":[
+        "REJECT",
+        "DROP",
+        "ALERT"
+      ]
+    },
+    "Route53ResolvedIPValidationAddresses":{
+      "type":"list",
+      "member":{"shape":"Address"},
+      "max":100,
+      "min":0
     },
     "RuleCapacity":{"type":"integer"},
     "RuleDefinition":{
@@ -5516,11 +6132,11 @@
       "members":{
         "Keyword":{
           "shape":"Keyword",
-          "documentation":"<p>The keyword for the Suricata compatible rule option. You must include a <code>sid</code> (signature ID), and can optionally include other keywords. For information about Suricata compatible keywords, see <a href=\"https://suricata.readthedocs.io/en/suricata-7.0.3/rules/intro.html#rule-options\">Rule options</a> in the Suricata documentation.</p>"
+          "documentation":"<p>The keyword for the Suricata compatible rule option. You must include a <code>sid</code> (signature ID), and can optionally include other keywords. For information about Suricata compatible keywords, see <a href=\"https://suricata.readthedocs.io/en/suricata-8.0.3/rules/intro.html#rule-options\">Rule options</a> in the Suricata documentation.</p>"
         },
         "Settings":{
           "shape":"Settings",
-          "documentation":"<p>The settings of the Suricata compatible rule option. Rule options have zero or more setting values, and the number of possible and required settings depends on the <code>Keyword</code>. For more information about the settings for specific options, see <a href=\"https://suricata.readthedocs.io/en/suricata-7.0.3/rules/intro.html#rule-options\">Rule options</a>.</p>"
+          "documentation":"<p>The settings of the Suricata compatible rule option. Rule options have zero or more setting values, and the number of possible and required settings depends on the <code>Keyword</code>. For more information about the settings for specific options, see <a href=\"https://suricata.readthedocs.io/en/suricata-8.0.3/rules/intro.html#rule-options\">Rule options</a>.</p>"
         }
       },
       "documentation":"<p>Additional settings for a stateful rule. This is part of the <a>StatefulRule</a> configuration.</p>"
@@ -5595,7 +6211,7 @@
         },
         "StatefulRules":{
           "shape":"StatefulRules",
-          "documentation":"<p>An array of individual stateful rules inspection criteria to be used together in a stateful rule group. Use this option to specify simple Suricata rules with protocol, source and destination, ports, direction, and rule options. For information about the Suricata <code>Rules</code> format, see <a href=\"https://suricata.readthedocs.io/en/suricata-7.0.3/rules/intro.html\">Rules Format</a>. </p>"
+          "documentation":"<p>An array of individual stateful rules inspection criteria to be used together in a stateful rule group. Use this option to specify simple Suricata rules with protocol, source and destination, ports, direction, and rule options. For information about the Suricata <code>Rules</code> format, see <a href=\"https://suricata.readthedocs.io/en/suricata-8.0.3/rules/intro.html\">Rules Format</a>. </p>"
         },
         "StatelessRulesAndCustomActions":{
           "shape":"StatelessRulesAndCustomActions",
@@ -5618,7 +6234,7 @@
         },
         "TargetTypes":{
           "shape":"TargetTypes",
-          "documentation":"<p>The protocols you want to inspect. Specify <code>TLS_SNI</code> for <code>HTTPS</code>. Specify <code>HTTP_HOST</code> for <code>HTTP</code>. You can specify either or both. </p>"
+          "documentation":"<p>The types of matching to perform against the domains in <code>Targets</code>. You can specify any combination of the following:</p> <ul> <li> <p> <code>AWS_ROUTE_53_RESOLVED_DOMAIN</code> – Match the domain against the domain that the Amazon Route 53 Resolver resolved the connection's destination IP address for.</p> </li> <li> <p> <code>HTTP_HOST</code> – Match the domain against the <code>Host</code> header of HTTP traffic.</p> </li> <li> <p> <code>TLS_SNI</code> – Match the domain against the Server Name Indication (SNI) of HTTPS traffic.</p> </li> </ul> <p> <code>AWS_ROUTE_53_RESOLVED_DOMAIN</code> matches on how the destination IP address was resolved, rather than on the domain that the client asserts in its TLS SNI or HTTP <code>Host</code> header. This target type takes effect when you configure resolved IP validation on the firewall policy. For more information, see <a>Route53ResolvedIPValidation</a>.</p> <p>Whether you include <code>AWS_ROUTE_53_RESOLVED_DOMAIN</code> changes what the generated rules match, together with <code>GeneratedRulesType</code>:</p> <ul> <li> <p>Combining <code>AWS_ROUTE_53_RESOLVED_DOMAIN</code> with <code>TLS_SNI</code> or <code>HTTP_HOST</code> in an <code>ALLOWLIST</code> requires both conditions to match. The SNI or <code>Host</code> header must match the domain, <b>and</b> the Route 53 Resolver must have resolved the destination IP address for that domain. Network Firewall allows traffic only in that case. Traffic that matches one condition, such as a spoofed <code>Host</code> header sent to an unresolved IP address, is not allowed.</p> </li> <li> <p>In a <code>DENYLIST</code>, or when <code>AWS_ROUTE_53_RESOLVED_DOMAIN</code> is the only target type, Network Firewall evaluates each condition independently: a match on either the domain (SNI or <code>Host</code>) or the resolved destination IP address triggers the rule.</p> </li> <li> <p>When you don't include <code>AWS_ROUTE_53_RESOLVED_DOMAIN</code>, the generated rules match only on the SNI or <code>Host</code> header, without checking how the destination IP address was resolved.</p> </li> </ul> <p>An <code>ALLOWLIST</code> whose only target type is <code>AWS_ROUTE_53_RESOLVED_DOMAIN</code> is additive: it allows matching traffic but doesn't generate a default rule that drops non-matching traffic. Only the <code>TLS_SNI</code> and <code>HTTP_HOST</code> target types generate that default drop. To allow only the resolved domains and drop all other traffic, include a protocol target type as well.</p>"
         },
         "GeneratedRulesType":{
           "shape":"GeneratedRulesType",
@@ -5773,7 +6389,11 @@
         },
         "AvailabilityZone":{
           "shape":"AvailabilityZone",
-          "documentation":"<p>The ID of the Availability Zone where the firewall is located. For example, <code>us-east-2a</code>.</p> <p>Defines the scope a flow operation. You can use up to 20 filters to configure a single flow operation.</p>"
+          "documentation":"<p>The name of the Availability Zone where the firewall is located. For example, <code>us-east-2a</code>.</p> <p>Defines the scope a flow operation. You can use up to 20 filters to configure a single flow operation.</p>"
+        },
+        "AvailabilityZoneId":{
+          "shape":"AvailabilityZoneId",
+          "documentation":"<p>The ID of the Availability Zone where the firewall is located. For example, <code>use2-az1</code>. Availability Zone IDs are the same in every Amazon Web Services account, so use this parameter when you coordinate resources across accounts. Specify either <code>AvailabilityZone</code> or <code>AvailabilityZoneId</code>, not both. If you specify both, the request fails.</p>"
         },
         "VpcEndpointAssociationArn":{
           "shape":"ResourceArn",
@@ -5823,7 +6443,11 @@
         },
         "AvailabilityZone":{
           "shape":"AvailabilityZone",
-          "documentation":"<p>The ID of the Availability Zone where the firewall is located. For example, <code>us-east-2a</code>.</p> <p>Defines the scope a flow operation. You can use up to 20 filters to configure a single flow operation.</p>"
+          "documentation":"<p>The name of the Availability Zone where the firewall is located. For example, <code>us-east-2a</code>.</p> <p>Defines the scope a flow operation. You can use up to 20 filters to configure a single flow operation.</p>"
+        },
+        "AvailabilityZoneId":{
+          "shape":"AvailabilityZoneId",
+          "documentation":"<p>The ID of the Availability Zone where the firewall is located. For example, <code>use2-az1</code>. Availability Zone IDs are the same in every Amazon Web Services account, so use this parameter when you coordinate resources across accounts. Specify either <code>AvailabilityZone</code> or <code>AvailabilityZoneId</code>, not both. If you specify both, the request fails.</p>"
         },
         "VpcEndpointAssociationArn":{
           "shape":"ResourceArn",
@@ -5890,7 +6514,7 @@
           "documentation":"<p>Configures the amount of time that can pass without any traffic sent through the firewall before the firewall determines that the connection is idle. </p>"
         }
       },
-      "documentation":"<p>Configuration settings for the handling of the stateful rule groups in a firewall policy. </p>"
+      "documentation":"<p>Configuration settings for the handling of the stateful rule groups in a firewall policy. </p> <important> <p>Updating any setting in <code>StatefulEngineOptions</code> may require a restart of the stateful engine in order to apply the changes. When this occurs, existing connections will be treated according to your stream exception policy configuration.</p> </important>"
     },
     "StatefulRule":{
       "type":"structure",
@@ -5913,7 +6537,7 @@
           "documentation":"<p>Additional options for the rule. These are the Suricata <code>RuleOptions</code> settings.</p>"
         }
       },
-      "documentation":"<p>A single Suricata rules specification, for use in a stateful rule group. Use this option to specify a simple Suricata rule with protocol, source and destination, ports, direction, and rule options. For information about the Suricata <code>Rules</code> format, see <a href=\"https://suricata.readthedocs.io/en/suricata-7.0.3/rules/intro.html\">Rules Format</a>. </p>"
+      "documentation":"<p>A single Suricata rules specification, for use in a stateful rule group. Use this option to specify a simple Suricata rule with protocol, source and destination, ports, direction, and rule options. For information about the Suricata <code>Rules</code> format, see <a href=\"https://suricata.readthedocs.io/en/suricata-8.0.3/rules/intro.html\">Rules Format</a>. </p>"
     },
     "StatefulRuleDirection":{
       "type":"string",
@@ -6152,6 +6776,10 @@
         "Config":{
           "shape":"SyncStateConfig",
           "documentation":"<p>The configuration status of the firewall endpoint in a single VPC subnet. Network Firewall provides each endpoint with the rules that are configured in the firewall policy. Each time you add a subnet or modify the associated firewall policy, Network Firewall synchronizes the rules in the endpoint, so it can properly filter network traffic. </p>"
+        },
+        "NatGatewayAttachments":{
+          "shape":"NatGatewayAttachmentsList",
+          "documentation":"<p>The status of the NAT gateway attachments for a proxy mode firewall in the Availability Zone. This reflects the attachment of the firewall to each NAT gateway that proxies its traffic. </p>"
         }
       },
       "documentation":"<p>The status of the firewall endpoint and firewall policy configuration for a single VPC subnet. This is part of the <a>FirewallStatus</a>. </p> <p>For each VPC subnet that you associate with a firewall, Network Firewall does the following: </p> <ul> <li> <p>Instantiates a firewall endpoint in the subnet, ready to take traffic.</p> </li> <li> <p>Configures the endpoint with the current firewall policy settings, to provide the filtering behavior for the endpoint.</p> </li> </ul> <p>When you update a firewall, for example to add a subnet association or change a rule group in the firewall policy, the affected sync states reflect out-of-sync or not ready status until the changes are complete. </p>"
@@ -6350,7 +6978,8 @@
       "type":"string",
       "enum":[
         "TLS_SNI",
-        "HTTP_HOST"
+        "HTTP_HOST",
+        "AWS_ROUTE_53_RESOLVED_DOMAIN"
       ]
     },
     "TargetTypes":{
@@ -6547,6 +7176,81 @@
         "AvailabilityZoneChangeProtection":{
           "shape":"Boolean",
           "documentation":"<p>A setting indicating whether the firewall is protected against changes to the subnet associations. Use this setting to protect against accidentally modifying the subnet associations for a firewall that is in use. When you create a firewall, the operation initializes this setting to <code>TRUE</code>.</p>"
+        }
+      }
+    },
+    "UpdateContainerAssociationRequest":{
+      "type":"structure",
+      "required":[
+        "Type",
+        "ContainerMonitoringConfigurations",
+        "UpdateToken"
+      ],
+      "members":{
+        "ContainerAssociationName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The descriptive name of the container association.</p> <p>You must specify the ARN or the name, and you can specify both. </p>"
+        },
+        "ContainerAssociationArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the container association.</p> <p>You must specify the ARN or the name, and you can specify both. </p>"
+        },
+        "Description":{
+          "shape":"Description",
+          "documentation":"<p>A description of the container association. When omitted, the existing description remains unchanged. To clear the description, pass an empty string.</p>"
+        },
+        "Type":{
+          "shape":"ContainerMonitoringType",
+          "documentation":"<p>The container type. This value must match the existing type and can't be changed. Valid values:</p> <ul> <li> <p> <code>ECS</code> - Amazon Elastic Container Service</p> </li> <li> <p> <code>EKS</code> - Amazon Elastic Kubernetes Service</p> </li> </ul>"
+        },
+        "ContainerMonitoringConfigurations":{
+          "shape":"ContainerMonitoringConfigurations",
+          "documentation":"<p>The updated monitoring configurations for the container association. Each configuration specifies an Amazon ECS or Amazon EKS cluster to monitor and optional attribute filters.</p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>The key:value pairs to associate with the resource.</p>"
+        },
+        "UpdateToken":{
+          "shape":"UpdateToken",
+          "documentation":"<p>A token used for optimistic locking. Network Firewall returns a token to your requests that access the container association. The token marks the state of the container association resource at the time of the request.</p> <p>To make changes to the container association, you provide the token in your request. Network Firewall uses the token to ensure that the container association hasn't changed since you last retrieved it. If it has changed, the operation fails with an <code>InvalidTokenException</code>. If this happens, retrieve the container association again to get a current copy of it with a current token. Reapply your changes as needed, then try the operation again using the new token.</p>"
+        }
+      }
+    },
+    "UpdateContainerAssociationResponse":{
+      "type":"structure",
+      "members":{
+        "ContainerAssociationName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The descriptive name of the container association.</p>"
+        },
+        "ContainerAssociationArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the container association.</p>"
+        },
+        "Description":{
+          "shape":"Description",
+          "documentation":"<p>A description of the container association.</p>"
+        },
+        "Type":{
+          "shape":"ContainerMonitoringType",
+          "documentation":"<p>The container type. Valid values:</p> <ul> <li> <p> <code>ECS</code> - Amazon Elastic Container Service</p> </li> <li> <p> <code>EKS</code> - Amazon Elastic Kubernetes Service</p> </li> </ul>"
+        },
+        "ContainerMonitoringConfigurations":{
+          "shape":"ContainerMonitoringConfigurations",
+          "documentation":"<p>The monitoring configurations for the container association.</p>"
+        },
+        "Status":{
+          "shape":"ContainerAssociationStatus",
+          "documentation":"<p>The current status of the container association.</p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>The key:value pairs to associate with the resource.</p>"
+        },
+        "UpdateToken":{
+          "shape":"UpdateToken",
+          "documentation":"<p>A token used for optimistic locking. Network Firewall returns a token to your requests that access the container association. The token marks the state of the container association resource at the time of the request.</p> <p>To make changes to the container association, you provide the token in your request. Network Firewall uses the token to ensure that the container association hasn't changed since you last retrieved it. If it has changed, the operation fails with an <code>InvalidTokenException</code>. If this happens, retrieve the container association again to get a current copy of it with a current token. Reapply your changes as needed, then try the operation again using the new token.</p>"
         }
       }
     },
@@ -7088,6 +7792,48 @@
         }
       }
     },
+    "UpdateProxySettingsRequest":{
+      "type":"structure",
+      "members":{
+        "FirewallArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the firewall.</p> <p>You must specify the ARN or the name, and you can specify both. </p>"
+        },
+        "FirewallName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The descriptive name of the firewall. You can't change the name of a firewall after you create it.</p> <p>You must specify the ARN or the name, and you can specify both. </p>"
+        },
+        "UpdateToken":{
+          "shape":"UpdateToken",
+          "documentation":"<p>An optional token that you can use for optimistic locking. Network Firewall returns a token to your requests that access the firewall. The token marks the state of the firewall resource at the time of the request. </p> <p>To make an unconditional change to the firewall, omit the token in your update request. Without the token, Network Firewall performs your updates regardless of whether the firewall has changed since you last retrieved it.</p> <p>To make a conditional change to the firewall, provide the token in your update request. Network Firewall uses the token to ensure that the firewall hasn't changed since you last retrieved it. If it has changed, the operation fails with an <code>InvalidTokenException</code>. If this happens, retrieve the firewall again to get a current copy of it with a new token. Reapply your changes as needed, then try the operation again using the new token. </p>"
+        },
+        "ProxySettings":{
+          "shape":"ProxySettings",
+          "documentation":"<p>The proxy listener configuration to set on the firewall. This specifies the ports and protocols on which the firewall's proxy listens for traffic. </p>"
+        }
+      }
+    },
+    "UpdateProxySettingsResponse":{
+      "type":"structure",
+      "members":{
+        "FirewallArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the firewall.</p>"
+        },
+        "FirewallName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The descriptive name of the firewall. You can't change the name of a firewall after you create it.</p>"
+        },
+        "UpdateToken":{
+          "shape":"UpdateToken",
+          "documentation":"<p>An optional token that you can use for optimistic locking. Network Firewall returns a token to your requests that access the firewall. The token marks the state of the firewall resource at the time of the request. </p> <p>To make an unconditional change to the firewall, omit the token in your update request. Without the token, Network Firewall performs your updates regardless of whether the firewall has changed since you last retrieved it.</p> <p>To make a conditional change to the firewall, provide the token in your update request. Network Firewall uses the token to ensure that the firewall hasn't changed since you last retrieved it. If it has changed, the operation fails with an <code>InvalidTokenException</code>. If this happens, retrieve the firewall again to get a current copy of it with a new token. Reapply your changes as needed, then try the operation again using the new token. </p>"
+        },
+        "ProxySettings":{
+          "shape":"ProxySettings",
+          "documentation":"<p>The updated proxy listener configuration on the firewall. </p>"
+        }
+      }
+    },
     "UpdateRuleGroupRequest":{
       "type":"structure",
       "required":["UpdateToken"],
@@ -7269,6 +8015,24 @@
       "member":{"shape":"VariableDefinition"}
     },
     "VendorName":{"type":"string"},
+    "VpcEndpoint":{
+      "type":"structure",
+      "required":[
+        "VpcId",
+        "SubnetMappings"
+      ],
+      "members":{
+        "VpcId":{
+          "shape":"VpcId",
+          "documentation":"<p>The unique identifier of the VPC where Network Firewall creates the proxy mode firewall endpoint. </p>"
+        },
+        "SubnetMappings":{
+          "shape":"SubnetMappings",
+          "documentation":"<p>The subnets in which Network Firewall creates the firewall endpoint for a proxy mode firewall. Each subnet must belong to a different Availability Zone in the VPC. </p>"
+        }
+      },
+      "documentation":"<p>The VPC and subnets for a proxy mode firewall endpoint. This is used in <a>CreateFirewall</a> when <code>NoSourcePreservation</code> is <code>TRUE</code>, to specify where Network Firewall creates the firewall endpoint. </p> <p>This differs from <a>VpcEndpointAssociation</a>, which defines additional secondary endpoints for a firewall in other VPCs. </p>"
+    },
     "VpcEndpointAssociation":{
       "type":"structure",
       "required":[
@@ -7353,5 +8117,5 @@
       "member":{"shape":"VpcId"}
     }
   },
-  "documentation":"<p>This is the API Reference for Network Firewall. This guide is for developers who need detailed information about the Network Firewall API actions, data types, and errors. </p> <p>The REST API requires you to handle connection details, such as calculating signatures, handling request retries, and error handling. For general information about using the Amazon Web Services REST APIs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-apis.html\">Amazon Web Services APIs</a>. </p> <p>To view the complete list of Amazon Web Services Regions where Network Firewall is available, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/network-firewall.html\">Service endpoints and quotas</a> in the <i>Amazon Web Services General Reference</i>. </p> <p>To access Network Firewall using the IPv4 REST API endpoint: <code>https://network-firewall.&lt;region&gt;.amazonaws.com </code> </p> <p>To access Network Firewall using the Dualstack (IPv4 and IPv6) REST API endpoint: <code>https://network-firewall.&lt;region&gt;.aws.api </code> </p> <p>Alternatively, you can use one of the Amazon Web Services SDKs to access an API that's tailored to the programming language or platform that you're using. For more information, see <a href=\"http://aws.amazon.com/tools/#SDKs\">Amazon Web Services SDKs</a>.</p> <p>For descriptions of Network Firewall features, including and step-by-step instructions on how to use them through the Network Firewall console, see the <a href=\"https://docs.aws.amazon.com/network-firewall/latest/developerguide/\">Network Firewall Developer Guide</a>.</p> <p>Network Firewall is a stateful, managed, network firewall and intrusion detection and prevention service for Amazon Virtual Private Cloud (Amazon VPC). With Network Firewall, you can filter traffic at the perimeter of your VPC. This includes filtering traffic going to and coming from an internet gateway, NAT gateway, or over VPN or Direct Connect. Network Firewall uses rules that are compatible with Suricata, a free, open source network analysis and threat detection engine. Network Firewall supports Suricata version 7.0.3. For information about Suricata, see the <a href=\"https://suricata.io/\">Suricata website</a> and the <a href=\"https://suricata.readthedocs.io/en/suricata-7.0.3/\">Suricata User Guide</a>. </p> <p>You can use Network Firewall to monitor and protect your VPC traffic in a number of ways. The following are just a few examples: </p> <ul> <li> <p>Allow domains or IP addresses for known Amazon Web Services service endpoints, such as Amazon S3, and block all other forms of traffic.</p> </li> <li> <p>Use custom lists of known bad domains to limit the types of domain names that your applications can access.</p> </li> <li> <p>Perform deep packet inspection on traffic entering or leaving your VPC.</p> </li> <li> <p>Use stateful protocol detection to filter protocols like HTTPS, regardless of the port used.</p> </li> </ul> <p>To enable Network Firewall for your VPCs, you perform steps in both Amazon VPC and in Network Firewall. For information about using Amazon VPC, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/\">Amazon VPC User Guide</a>.</p> <p>To start using Network Firewall, do the following: </p> <ol> <li> <p>(Optional) If you don't already have a VPC that you want to protect, create it in Amazon VPC. </p> </li> <li> <p>In Amazon VPC, in each Availability Zone where you want to have a firewall endpoint, create a subnet for the sole use of Network Firewall. </p> </li> <li> <p>In Network Firewall, define the firewall behavior as follows: </p> <ol> <li> <p>Create stateless and stateful rule groups, to define the components of the network traffic filtering behavior that you want your firewall to have. </p> </li> <li> <p>Create a firewall policy that uses your rule groups and specifies additional default traffic filtering behavior. </p> </li> </ol> </li> <li> <p>In Network Firewall, create a firewall and specify your new firewall policy and VPC subnets. Network Firewall creates a firewall endpoint in each subnet that you specify, with the behavior that's defined in the firewall policy.</p> </li> <li> <p>In Amazon VPC, use ingress routing enhancements to route traffic through the new firewall endpoints.</p> </li> </ol> <p>After your firewall is established, you can add firewall endpoints for new Availability Zones by following the prior steps for the Amazon VPC setup and firewall subnet definitions. You can also add endpoints to Availability Zones that you're using in the firewall, either for the same VPC or for another VPC, by following the prior steps for the Amazon VPC setup, and defining the new VPC subnets as VPC endpoint associations. </p>"
+  "documentation":"<p>This is the API Reference for Network Firewall. This guide is for developers who need detailed information about the Network Firewall API actions, data types, and errors. </p> <p>The REST API requires you to handle connection details, such as calculating signatures, handling request retries, and error handling. For general information about using the Amazon Web Services REST APIs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-apis.html\">Amazon Web Services APIs</a>. </p> <p>To view the complete list of Amazon Web Services Regions where Network Firewall is available, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/network-firewall.html\">Service endpoints and quotas</a> in the <i>Amazon Web Services General Reference</i>. </p> <p>To access Network Firewall using the IPv4 REST API endpoint: <code>https://network-firewall.&lt;region&gt;.amazonaws.com </code> </p> <p>To access Network Firewall using the Dualstack (IPv4 and IPv6) REST API endpoint: <code>https://network-firewall.&lt;region&gt;.aws.api </code> </p> <p>Alternatively, you can use one of the Amazon Web Services SDKs to access an API that's tailored to the programming language or platform that you're using. For more information, see <a href=\"http://aws.amazon.com/tools/#SDKs\">Amazon Web Services SDKs</a>.</p> <p>For descriptions of Network Firewall features, including and step-by-step instructions on how to use them through the Network Firewall console, see the <a href=\"https://docs.aws.amazon.com/network-firewall/latest/developerguide/\">Network Firewall Developer Guide</a>.</p> <p>Network Firewall is a stateful, managed, network firewall and intrusion detection and prevention service for Amazon Virtual Private Cloud (Amazon VPC). With Network Firewall, you can filter traffic at the perimeter of your VPC. This includes filtering traffic going to and coming from an internet gateway, NAT gateway, or over VPN or Direct Connect. Network Firewall uses rules that are compatible with Suricata, a free, open source network analysis and threat detection engine. Network Firewall supports Suricata version 8.0.3. For information about Suricata, see the <a href=\"https://suricata.io/\">Suricata website</a> and the <a href=\"https://suricata.readthedocs.io/en/suricata-8.0.3/\">Suricata User Guide</a>. </p> <p>You can use Network Firewall to monitor and protect your VPC traffic in a number of ways. The following are just a few examples: </p> <ul> <li> <p>Allow domains or IP addresses for known Amazon Web Services service endpoints, such as Amazon S3, and block all other forms of traffic.</p> </li> <li> <p>Use custom lists of known bad domains to limit the types of domain names that your applications can access.</p> </li> <li> <p>Perform deep packet inspection on traffic entering or leaving your VPC.</p> </li> <li> <p>Use stateful protocol detection to filter protocols like HTTPS, regardless of the port used.</p> </li> </ul> <p>To enable Network Firewall for your VPCs, you perform steps in both Amazon VPC and in Network Firewall. For information about using Amazon VPC, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/\">Amazon VPC User Guide</a>.</p> <p>To start using Network Firewall, do the following: </p> <ol> <li> <p>(Optional) If you don't already have a VPC that you want to protect, create it in Amazon VPC. </p> </li> <li> <p>In Amazon VPC, in each Availability Zone where you want to have a firewall endpoint, create a subnet for the sole use of Network Firewall. </p> </li> <li> <p>In Network Firewall, define the firewall behavior as follows: </p> <ol> <li> <p>Create stateless and stateful rule groups, to define the components of the network traffic filtering behavior that you want your firewall to have. </p> </li> <li> <p>Create a firewall policy that uses your rule groups and specifies additional default traffic filtering behavior. </p> </li> </ol> </li> <li> <p>In Network Firewall, create a firewall and specify your new firewall policy and VPC subnets. Network Firewall creates a firewall endpoint in each subnet that you specify, with the behavior that's defined in the firewall policy.</p> </li> <li> <p>In Amazon VPC, use ingress routing enhancements to route traffic through the new firewall endpoints.</p> </li> </ol> <p>After your firewall is established, you can add firewall endpoints for new Availability Zones by following the prior steps for the Amazon VPC setup and firewall subnet definitions. You can also add endpoints to Availability Zones that you're using in the firewall, either for the same VPC or for another VPC, by following the prior steps for the Amazon VPC setup, and defining the new VPC subnets as VPC endpoint associations. </p>"
 }

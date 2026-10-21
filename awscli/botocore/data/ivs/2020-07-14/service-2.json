@@ -679,6 +679,27 @@
       "documentation":"<p>Removes tags from the resource with the specified ARN.</p>",
       "idempotent":true
     },
+    "UpdateAdConfiguration":{
+      "name":"UpdateAdConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/UpdateAdConfiguration",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateAdConfigurationRequest"},
+      "output":{"shape":"UpdateAdConfigurationResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"PendingVerification"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"ServiceQuotaExceededException"}
+      ],
+      "documentation":"<p>Updates a specified ad configuration.</p>"
+    },
     "UpdateChannel":{
       "name":"UpdateChannel",
       "http":{
@@ -773,7 +794,7 @@
           "documentation":"<p>User does not have sufficient access to perform this action.</p>"
         }
       },
-      "documentation":"<p/>",
+      "documentation":"<p>User does not have sufficient access to perform this action.</p>",
       "error":{
         "httpStatusCode":403,
         "senderFault":true
@@ -803,7 +824,11 @@
         },
         "mediaTailorPlaybackConfigurations":{
           "shape":"MediaTailorPlaybackConfigurationsList",
-          "documentation":"<p>List of integration configurations with media tailor resources.</p>"
+          "documentation":"<p>List of integration configurations with MediaTailor resources. The first item in the list is the default playback configuration used for the ad configuration. To select a different configuration per viewing session, see <a href=\"https://docs.aws.amazon.com/ivs/latest/LowLatencyUserGuide/private-channels-generate-tokens.html\">Generate and Sign IVS Playback Tokens</a>.</p>"
+        },
+        "postRollConfiguration":{
+          "shape":"PostRollConfiguration",
+          "documentation":"<p>Configuration for the post-roll ad break to use for this ad configuration.</p>"
         },
         "tags":{
           "shape":"Tags",
@@ -845,7 +870,11 @@
         },
         "mediaTailorPlaybackConfigurations":{
           "shape":"MediaTailorPlaybackConfigurationsList",
-          "documentation":"<p>List of integration configurations with media tailor resources.</p>"
+          "documentation":"<p>List of integration configurations with MediaTailor resources. The first item in the list is the default playback configuration used for the ad configuration. To select a different configuration per viewing session, see <a href=\"https://docs.aws.amazon.com/ivs/latest/LowLatencyUserGuide/private-channels-generate-tokens.html\">Generate and Sign IVS Playback Tokens</a>.</p>"
+        },
+        "postRollConfiguration":{
+          "shape":"PostRollConfiguration",
+          "documentation":"<p>Configuration for the post-roll ad break to use for this ad configuration.</p>"
         },
         "tags":{
           "shape":"Tags",
@@ -1179,7 +1208,7 @@
         },
         "type":{
           "shape":"ChannelType",
-          "documentation":"<p>Channel type, which determines the allowable resolution and bitrate. <i>If you exceed the allowable input resolution or bitrate, the stream probably will disconnect immediately.</i> Default: <code>STANDARD</code>. For details, see <a href=\"https://docs.aws.amazon.com/ivs/latest/LowLatencyAPIReference/channel-types.html\">Channel Types</a>.</p>"
+          "documentation":"<p>Channel type, which determines the allowable resolution and bitrate. <i>If you exceed the allowable input resolution or bitrate, the stream probably will disconnect immediately.</i> Default: <code>STANDARD</code>. For details, see <a href=\"https://docs.aws.amazon.com/ivs/latest/LowLatencyUserGuide/channel-types.html\">Channel Types</a>.</p>"
         },
         "recordingConfigurationArn":{
           "shape":"ChannelRecordingConfigurationArn",
@@ -1323,7 +1352,7 @@
           "documentation":"<p>The stream is offline for the given channel ARN.</p>"
         }
       },
-      "documentation":"<p/>",
+      "documentation":"<p>The stream is offline for the given channel ARN.</p>",
       "error":{
         "httpStatusCode":404,
         "senderFault":true
@@ -1375,7 +1404,7 @@
         },
         "type":{
           "shape":"ChannelType",
-          "documentation":"<p>Channel type, which determines the allowable resolution and bitrate. <i>If you exceed the allowable input resolution or bitrate, the stream probably will disconnect immediately.</i> Default: <code>STANDARD</code>. For details, see <a href=\"https://docs.aws.amazon.com/ivs/latest/LowLatencyAPIReference/channel-types.html\">Channel Types</a>.</p>"
+          "documentation":"<p>Channel type, which determines the allowable resolution and bitrate. <i>If you exceed the allowable input resolution or bitrate, the stream probably will disconnect immediately.</i> Default: <code>STANDARD</code>. For details, see <a href=\"https://docs.aws.amazon.com/ivs/latest/LowLatencyUserGuide/channel-types.html\">Channel Types</a>.</p>"
         },
         "preset":{
           "shape":"TranscodePreset",
@@ -1461,7 +1490,7 @@
           "documentation":"<p>Updating or deleting a resource can cause an inconsistent state.</p>"
         }
       },
-      "documentation":"<p/>",
+      "documentation":"<p>Updating or deleting a resource can cause an inconsistent state.</p>",
       "error":{
         "httpStatusCode":409,
         "senderFault":true
@@ -1485,7 +1514,11 @@
         },
         "mediaTailorPlaybackConfigurations":{
           "shape":"MediaTailorPlaybackConfigurationsList",
-          "documentation":"<p>List of integration configurations with media tailor resources.</p>"
+          "documentation":"<p>List of integration configurations with MediaTailor resources. The first item in the list is the default playback configuration used for the ad configuration. To select a different configuration per viewing session, see <a href=\"https://docs.aws.amazon.com/ivs/latest/LowLatencyUserGuide/private-channels-generate-tokens.html\">Generate and Sign IVS Playback Tokens</a>.</p>"
+        },
+        "postRollConfiguration":{
+          "shape":"PostRollConfiguration",
+          "documentation":"<p>Configuration for the post-roll ad break to use for this ad configuration. Default: disabled (<code>enabled</code> set to false, <code>durationSeconds</code> set to 15).</p>"
         },
         "tags":{
           "shape":"Tags",
@@ -1516,7 +1549,7 @@
         },
         "type":{
           "shape":"ChannelType",
-          "documentation":"<p>Channel type, which determines the allowable resolution and bitrate. <i>If you exceed the allowable input resolution or bitrate, the stream probably will disconnect immediately.</i> Default: <code>STANDARD</code>. For details, see <a href=\"https://docs.aws.amazon.com/ivs/latest/LowLatencyAPIReference/channel-types.html\">Channel Types</a>.</p>"
+          "documentation":"<p>Channel type, which determines the allowable resolution and bitrate. <i>If you exceed the allowable input resolution or bitrate, the stream probably will disconnect immediately.</i> Default: <code>STANDARD</code>. For details, see <a href=\"https://docs.aws.amazon.com/ivs/latest/LowLatencyUserGuide/channel-types.html\">Channel Types</a>.</p>"
         },
         "authorized":{
           "shape":"Boolean",
@@ -1969,7 +2002,7 @@
         },
         "durationSeconds":{
           "shape":"AdDurationSeconds",
-          "documentation":"<p>Maximum duration of the ad break, in seconds.</p>"
+          "documentation":"<p>Duration of the ad break, in seconds.</p>"
         }
       }
     },
@@ -2039,7 +2072,7 @@
           "documentation":"<p>Unexpected error during processing of request.</p>"
         }
       },
-      "documentation":"<p/>",
+      "documentation":"<p>Unexpected error during processing of request.</p>",
       "error":{"httpStatusCode":500},
       "exception":true,
       "fault":true
@@ -2473,7 +2506,7 @@
           "documentation":"<p> Your account is pending verification. </p>"
         }
       },
-      "documentation":"<p/>",
+      "documentation":"<p>Your account is pending verification.</p>",
       "error":{
         "httpStatusCode":403,
         "senderFault":true
@@ -2647,6 +2680,24 @@
       "documentation":"<p>Summary information about a PlaybackRestrictionPolicy.</p>"
     },
     "PlaybackURL":{"type":"string"},
+    "PostRollConfiguration":{
+      "type":"structure",
+      "required":[
+        "durationSeconds",
+        "enabled"
+      ],
+      "members":{
+        "durationSeconds":{
+          "shape":"AdDurationSeconds",
+          "documentation":"<p>Duration of the post-roll ad break, in seconds.</p>"
+        },
+        "enabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether the post-roll ad configuration is enabled.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for the post-roll ad break to use for this ad configuration.</p>"
+    },
     "PutMetadataRequest":{
       "type":"structure",
       "required":[
@@ -2871,7 +2922,7 @@
           "documentation":"<p>Request references a resource which does not exist.</p>"
         }
       },
-      "documentation":"<p/>",
+      "documentation":"<p>Request references a resource which does not exist.</p>",
       "error":{
         "httpStatusCode":404,
         "senderFault":true
@@ -2951,7 +3002,7 @@
           "documentation":"<p>Request would cause a service quota to be exceeded.</p>"
         }
       },
-      "documentation":"<p/>",
+      "documentation":"<p>Request would cause a service quota to be exceeded.</p>",
       "error":{
         "httpStatusCode":402,
         "senderFault":true
@@ -3011,10 +3062,10 @@
         },
         "exceptionMessage":{
           "shape":"errorMessage",
-          "documentation":"<p/>"
+          "documentation":"<p>The service is temporarily unavailable.</p>"
         }
       },
-      "documentation":"<p/>",
+      "documentation":"<p>The service is temporarily unavailable.</p>",
       "error":{"httpStatusCode":503},
       "exception":true,
       "fault":true
@@ -3397,7 +3448,7 @@
           "documentation":"<p>The stream is temporarily unavailable.</p>"
         }
       },
-      "documentation":"<p/>",
+      "documentation":"<p>The stream is temporarily unavailable.</p>",
       "error":{"httpStatusCode":503},
       "exception":true,
       "fault":true
@@ -3514,7 +3565,7 @@
           "documentation":"<p>Request was denied due to request throttling.</p>"
         }
       },
-      "documentation":"<p/>",
+      "documentation":"<p>Request was denied due to request throttling.</p>",
       "error":{
         "httpStatusCode":429,
         "senderFault":true
@@ -3599,6 +3650,38 @@
       "type":"structure",
       "members":{}
     },
+    "UpdateAdConfigurationRequest":{
+      "type":"structure",
+      "required":["arn"],
+      "members":{
+        "arn":{
+          "shape":"AdConfigurationArn",
+          "documentation":"<p>ARN of the ad configuration to be updated.</p>"
+        },
+        "name":{
+          "shape":"AdConfigurationName",
+          "documentation":"<p>Ad configuration name. The value does not need to be unique.</p>"
+        },
+        "mediaTailorPlaybackConfigurations":{
+          "shape":"MediaTailorPlaybackConfigurationsList",
+          "documentation":"<p>List of integration configurations with MediaTailor resources. The first item in the list is the default playback configuration used for the ad configuration. To select a different configuration per viewing session, see <a href=\"https://docs.aws.amazon.com/ivs/latest/LowLatencyUserGuide/private-channels-generate-tokens.html\">Generate and Sign IVS Playback Tokens</a>.</p>"
+        },
+        "postRollConfiguration":{
+          "shape":"PostRollConfiguration",
+          "documentation":"<p>Configuration for the post-roll ad break to use for this ad configuration.</p>"
+        }
+      }
+    },
+    "UpdateAdConfigurationResponse":{
+      "type":"structure",
+      "required":["adConfiguration"],
+      "members":{
+        "adConfiguration":{
+          "shape":"AdConfiguration",
+          "documentation":"<p>Object specifying the updated ad configuration.</p>"
+        }
+      }
+    },
     "UpdateChannelRequest":{
       "type":"structure",
       "required":["arn"],
@@ -3617,7 +3700,7 @@
         },
         "type":{
           "shape":"ChannelType",
-          "documentation":"<p>Channel type, which determines the allowable resolution and bitrate. <i>If you exceed the allowable input resolution or bitrate, the stream probably will disconnect immediately.</i> Default: <code>STANDARD</code>. For details, see <a href=\"https://docs.aws.amazon.com/ivs/latest/LowLatencyAPIReference/channel-types.html\">Channel Types</a>.</p>"
+          "documentation":"<p>Channel type, which determines the allowable resolution and bitrate. <i>If you exceed the allowable input resolution or bitrate, the stream probably will disconnect immediately.</i> Default: <code>STANDARD</code>. For details, see <a href=\"https://docs.aws.amazon.com/ivs/latest/LowLatencyUserGuide/channel-types.html\">Channel Types</a>.</p>"
         },
         "authorized":{
           "shape":"Boolean",
@@ -3753,7 +3836,7 @@
           "documentation":"<p>The input fails to satisfy the constraints specified by an Amazon Web Services service.</p>"
         }
       },
-      "documentation":"<p/>",
+      "documentation":"<p>The input fails to satisfy the constraints specified by an Amazon Web Services service.</p>",
       "error":{
         "httpStatusCode":400,
         "senderFault":true

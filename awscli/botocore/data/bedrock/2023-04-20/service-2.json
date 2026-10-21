@@ -784,6 +784,24 @@
       "documentation":"<p>Exports the policy definition for an Automated Reasoning policy version. Returns the complete policy definition including rules, variables, and custom variable types in a structured format.</p>",
       "readonly":true
     },
+    "GetAccountDataRetention":{
+      "name":"GetAccountDataRetention",
+      "http":{
+        "method":"GET",
+        "requestUri":"/data-retention",
+        "responseCode":200
+      },
+      "input":{"shape":"GetAccountDataRetentionRequest"},
+      "output":{"shape":"GetAccountDataRetentionResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Returns the account-wide data retention mode for Amazon Bedrock.</p>",
+      "readonly":true
+    },
     "GetAdvancedPromptOptimizationJob":{
       "name":"GetAdvancedPromptOptimizationJob",
       "http":{
@@ -1681,6 +1699,24 @@
       ],
       "documentation":"<p>List the tags associated with the specified resource.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/what-is-service.html\">Tagging resources</a> in the <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/what-is-service.html\">Amazon Bedrock User Guide</a>.</p>"
     },
+    "PutAccountDataRetention":{
+      "name":"PutAccountDataRetention",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/data-retention",
+        "responseCode":200
+      },
+      "input":{"shape":"PutAccountDataRetentionRequest"},
+      "output":{"shape":"PutAccountDataRetentionResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Sets the account-wide data retention mode for Amazon Bedrock.</p>",
+      "idempotent":true
+    },
     "PutEnforcedGuardrailConfiguration":{
       "name":"PutEnforcedGuardrailConfiguration",
       "http":{
@@ -2294,6 +2330,12 @@
         }
       },
       "documentation":"<p>Contains a summary of an advanced prompt optimization job.</p>"
+    },
+    "AdvancedPromptOptimizationModelIdentifier":{
+      "type":"string",
+      "max":2048,
+      "min":0,
+      "pattern":"(([a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}([a-z0-9-]{1,63}[.]){0,2}[a-z0-9-]{1,63}([:][a-z0-9-]{1,63}){0,2}(/[a-z0-9]{12}|))|(arn:aws(|-us-gov|-cn|-iso|-iso-b|-iso-f):bedrock:[a-z0-9-]{1,20}:[0-9]{12}:application-inference-profile/[a-zA-Z0-9-:.]+)|(arn:aws(|-us-gov|-cn|-iso|-iso-b|-iso-f):bedrock:[a-z0-9-]{1,20}:([0-9]{12})?:inference-profile/[a-zA-Z0-9-:.]+)|(arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}::foundation-model/[a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}([.:]?[a-z0-9-]{1,63})))"
     },
     "AdvancedPromptOptimizationOutputConfig":{
       "type":"structure",
@@ -3596,7 +3638,7 @@
       "type":"string",
       "max":64,
       "min":1,
-      "pattern":"[A-Za-z][A-Za-z0-9_]*",
+      "pattern":"\\p{L}[\\p{L}\\p{M}0-9_]*( [\\p{L}\\p{M}0-9_]+)*",
       "sensitive":true
     },
     "AutomatedReasoningPolicyDefinitionTypeNameList":{
@@ -3637,7 +3679,7 @@
       "type":"string",
       "max":64,
       "min":1,
-      "pattern":"[A-Za-z][A-Za-z0-9_]*"
+      "pattern":"\\p{L}[\\p{L}\\p{M}0-9_]*( [\\p{L}\\p{M}0-9_]+)*"
     },
     "AutomatedReasoningPolicyDefinitionTypeValuePair":{
       "type":"structure",
@@ -3703,7 +3745,7 @@
       "type":"string",
       "max":64,
       "min":1,
-      "pattern":"[A-Za-z][A-Za-z0-9_]*",
+      "pattern":"\\p{L}[\\p{L}\\p{M}0-9_]*( [\\p{L}\\p{M}0-9_]+)*",
       "sensitive":true
     },
     "AutomatedReasoningPolicyDefinitionVariableNameList":{
@@ -6244,6 +6286,17 @@
       },
       "documentation":"<p>For a Distillation job, the status details for the data processing sub-task of the job.</p>"
     },
+    "DataRetentionMode":{
+      "type":"string",
+      "documentation":"<p>The data retention mode for the account. Valid values are:</p> <ul> <li> <p> <code>default</code> – The standard data handling for the model applies.</p> </li> <li> <p> <code>none</code> – Zero data retention.</p> </li> <li> <p> <code>aws_review</code> – Amazon Web Services may review the request data. The data is not shared with the model provider. A model must support this mode to be invoked under it.</p> </li> <li> <p> <code>provider_data_share</code> – Data may be shared with the model provider.</p> </li> <li> <p> <code>inherit</code> – No data retention mode is set at this scope.</p> </li> </ul>",
+      "enum":[
+        "default",
+        "none",
+        "aws_review",
+        "provider_data_share",
+        "inherit"
+      ]
+    },
     "DeleteAutomatedReasoningPolicyBuildWorkflowRequest":{
       "type":"structure",
       "required":[
@@ -7416,6 +7469,24 @@
         }
       },
       "documentation":"<p>The configuration details for response generation based on retrieved text chunks.</p>"
+    },
+    "GetAccountDataRetentionRequest":{
+      "type":"structure",
+      "members":{}
+    },
+    "GetAccountDataRetentionResponse":{
+      "type":"structure",
+      "required":["mode"],
+      "members":{
+        "mode":{
+          "shape":"DataRetentionMode",
+          "documentation":"<p>The data retention mode configured for the account.</p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time at which the data retention mode was last updated.</p>"
+        }
+      }
     },
     "GetAdvancedPromptOptimizationJobRequest":{
       "type":"structure",
@@ -9333,6 +9404,10 @@
         "filters":{
           "shape":"GuardrailContextualGroundingFilters",
           "documentation":"<p>The filter details for the guardrails contextual grounding policy.</p>"
+        },
+        "tier":{
+          "shape":"GuardrailContextualGroundingTier",
+          "documentation":"<p>The tier that your guardrail uses for contextual grounding.</p>"
         }
       },
       "documentation":"<p>The details for the guardrails contextual grounding policy.</p>"
@@ -9344,9 +9419,43 @@
         "filtersConfig":{
           "shape":"GuardrailContextualGroundingFiltersConfig",
           "documentation":"<p>The filter configuration details for the guardrails contextual grounding policy.</p>"
+        },
+        "tierConfig":{
+          "shape":"GuardrailContextualGroundingTierConfig",
+          "documentation":"<p>The tier that your guardrail uses for contextual grounding.</p>"
         }
       },
       "documentation":"<p>The policy configuration details for the guardrails contextual grounding policy.</p>"
+    },
+    "GuardrailContextualGroundingTier":{
+      "type":"structure",
+      "required":["tierName"],
+      "members":{
+        "tierName":{
+          "shape":"GuardrailContextualGroundingTierName",
+          "documentation":"<p>The tier that your guardrail uses for contextual grounding. Valid values include:</p> <ul> <li> <p> <code>CLASSIC</code> tier – Provides established contextual grounding functionality supporting English, French, and Spanish languages.</p> </li> <li> <p> <code>STANDARD</code> tier – Provides a more robust solution than the <code>CLASSIC</code> tier, with support for reasoning, conversational content and more comprehensive language support. This tier requires that your guardrail use <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/guardrails-cross-region.html\">cross-Region inference</a>.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>Specifies the tier that your guardrail uses for contextual grounding checks.</p>"
+    },
+    "GuardrailContextualGroundingTierConfig":{
+      "type":"structure",
+      "required":["tierName"],
+      "members":{
+        "tierName":{
+          "shape":"GuardrailContextualGroundingTierName",
+          "documentation":"<p>The tier that your guardrail uses for contextual grounding. Valid values include:</p> <ul> <li> <p> <code>CLASSIC</code> tier – Provides established contextual grounding functionality supporting English, French, and Spanish languages.</p> </li> <li> <p> <code>STANDARD</code> tier – Provides a more robust solution than the <code>CLASSIC</code> tier, with support for reasoning, conversational content and more comprehensive language support. This tier requires that your guardrail use <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/guardrails-cross-region.html\">cross-Region inference</a>.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>Specifies the tier that your guardrail uses for contextual grounding checks.</p>"
+    },
+    "GuardrailContextualGroundingTierName":{
+      "type":"string",
+      "enum":[
+        "CLASSIC",
+        "STANDARD"
+      ],
+      "sensitive":true
     },
     "GuardrailCrossRegionConfig":{
       "type":"structure",
@@ -9764,7 +9873,7 @@
     "GuardrailRegexesConfig":{
       "type":"list",
       "member":{"shape":"GuardrailRegexConfig"},
-      "max":10,
+      "max":30,
       "min":1
     },
     "GuardrailSensitiveInformationAction":{
@@ -12105,8 +12214,8 @@
       "required":["modelId"],
       "members":{
         "modelId":{
-          "shape":"BedrockModelId",
-          "documentation":"<p>The ID of the model to use for optimization.</p>"
+          "shape":"AdvancedPromptOptimizationModelIdentifier",
+          "documentation":"<p>The model to use for optimization. The value depends on the resource that you use:</p> <ul> <li> <p>If you use a base model, specify the model ID or its ARN. For a list of model IDs, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/model-cards.html\">Models at a glance</a> in the Amazon Bedrock User Guide.</p> </li> <li> <p>If you use a cross-Region (system-defined) inference profile, specify the inference profile ID or its ARN. For a list of inference profile IDs, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/cross-region-inference-support.html\">Supported Regions and models for inference profiles</a> in the Amazon Bedrock User Guide.</p> </li> <li> <p>If you use an application inference profile, specify its full ARN, including the account ID and Region.</p> </li> </ul>"
         },
         "inferenceConfig":{
           "shape":"InferenceConfiguration",
@@ -12997,6 +13106,30 @@
         }
       },
       "documentation":"<p>A summary of information about a Provisioned Throughput.</p> <p>This data type is used in the following API operations:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_ListProvisionedModelThroughputs.html#API_ListProvisionedModelThroughputs_ResponseSyntax\">ListProvisionedThroughputs response</a> </p> </li> </ul>"
+    },
+    "PutAccountDataRetentionRequest":{
+      "type":"structure",
+      "required":["mode"],
+      "members":{
+        "mode":{
+          "shape":"DataRetentionMode",
+          "documentation":"<p>The data retention mode to set for the account.</p>"
+        }
+      }
+    },
+    "PutAccountDataRetentionResponse":{
+      "type":"structure",
+      "required":["mode"],
+      "members":{
+        "mode":{
+          "shape":"DataRetentionMode",
+          "documentation":"<p>The data retention mode set for the account.</p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time at which the data retention mode was last updated.</p>"
+        }
+      }
     },
     "PutEnforcedGuardrailConfigurationRequest":{
       "type":"structure",

@@ -13,6 +13,21 @@
     "uid":"application-signals-2024-04-15"
   },
   "operations":{
+    "BatchDeleteInstrumentationConfigurations":{
+      "name":"BatchDeleteInstrumentationConfigurations",
+      "http":{
+        "method":"POST",
+        "requestUri":"/batch-delete-instrumentation-configurations",
+        "responseCode":200
+      },
+      "input":{"shape":"BatchDeleteInstrumentationConfigurationsRequest"},
+      "output":{"shape":"BatchDeleteInstrumentationConfigurationsResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Deletes multiple instrumentation configurations in a single request. Supports two mutually exclusive selection methods:</p> <ul> <li>By scope: Delete all configurations matching a Service + Environment + InstrumentationType</li> <li>By ARN list: Delete specific configurations by providing a list of resource ARNs</li> </ul>"
+    },
     "BatchGetServiceLevelObjectiveBudgetReport":{
       "name":"BatchGetServiceLevelObjectiveBudgetReport",
       "http":{
@@ -43,6 +58,23 @@
         {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Add or remove time window exclusions for one or more Service Level Objectives (SLOs).</p>"
+    },
+    "CreateInstrumentationConfiguration":{
+      "name":"CreateInstrumentationConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/create-instrumentation-configuration",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateInstrumentationConfigurationRequest"},
+      "output":{"shape":"CreateInstrumentationConfigurationResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Creates a dynamic instrumentation configuration for a specific code or endpoint location within a service and environment. Configurations are immutable after creation.</p> <p>For <code>BREAKPOINT</code> type configurations, they expire after 24 hours unless a shorter expiration is provided. For <code>PROBE</code> type configurations, they persist until explicitly deleted; an expiration cannot be set for <code>PROBE</code> configurations.</p> <p>If a configuration already exists for the same service, environment, signal type, and location, this operation returns a conflict instead of overwriting it. Use attribute filters and capture settings to control where the instrumentation runs and which data is collected.</p>"
     },
     "CreateServiceLevelObjective":{
       "name":"CreateServiceLevelObjective",
@@ -78,6 +110,22 @@
       "documentation":"<p>Deletes the grouping configuration for this account. This removes all custom grouping attribute definitions that were previously configured.</p>",
       "idempotent":true
     },
+    "DeleteInstrumentationConfiguration":{
+      "name":"DeleteInstrumentationConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/delete-instrumentation-configuration",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteInstrumentationConfigurationRequest"},
+      "output":{"shape":"DeleteInstrumentationConfigurationResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Deletes the specified instrumentation configuration. SDKs remove the instrumentation during their next sync after the configuration is deleted or expires.</p>"
+    },
     "DeleteServiceLevelObjective":{
       "name":"DeleteServiceLevelObjective",
       "http":{
@@ -94,6 +142,39 @@
       ],
       "documentation":"<p>Deletes the specified service level objective.</p>",
       "idempotent":true
+    },
+    "GetInstrumentationConfiguration":{
+      "name":"GetInstrumentationConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/get-instrumentation-configuration",
+        "responseCode":200
+      },
+      "input":{"shape":"GetInstrumentationConfigurationRequest"},
+      "output":{"shape":"GetInstrumentationConfigurationResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Returns the details of a single instrumentation configuration identified by service, environment, signal type, and location. Use this to audit or display configuration details.</p>"
+    },
+    "GetInstrumentationConfigurationStatus":{
+      "name":"GetInstrumentationConfigurationStatus",
+      "http":{
+        "method":"POST",
+        "requestUri":"/get-instrumentation-configuration-status",
+        "responseCode":200
+      },
+      "input":{"shape":"GetInstrumentationConfigurationStatusRequest"},
+      "output":{"shape":"GetInstrumentationConfigurationStatusResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Retrieves the status history for a single instrumentation configuration during a specified time range. The response lists when the configuration was ACTIVE, READY, ERROR, or DISABLED.</p> <p>If no status or time window is provided, the operation defaults to ACTIVE events from the last hour.</p>",
+      "readonly":true
     },
     "GetService":{
       "name":"GetService",
@@ -176,6 +257,22 @@
       ],
       "documentation":"<p>Returns the current grouping configuration for this account, including all custom grouping attribute definitions that have been configured. These definitions determine how services are logically grouped based on telemetry attributes, Amazon Web Services tags, or predefined mappings.</p>",
       "readonly":true
+    },
+    "ListInstrumentationConfigurations":{
+      "name":"ListInstrumentationConfigurations",
+      "http":{
+        "method":"POST",
+        "requestUri":"/list-instrumentation-configurations",
+        "responseCode":200
+      },
+      "input":{"shape":"ListInstrumentationConfigurationsRequest"},
+      "output":{"shape":"InstrumentationConfigurationsPage"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Returns all active instrumentation configurations for a service and environment. SDKs use this operation to sync configurations and apply client-side filters locally.</p> <p>Include the previous <code>SyncedAt</code> value to perform incremental syncs. When no changes are detected, the response sets <code>Changed</code> to <code>false</code> and omits configuration details.</p>"
     },
     "ListServiceDependencies":{
       "name":"ListServiceDependencies",
@@ -320,6 +417,22 @@
         {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Creates or updates the grouping configuration for this account. This operation allows you to define custom grouping attributes that determine how services are logically grouped based on telemetry attributes, Amazon Web Services tags, or predefined mappings. These grouping attributes can then be used to organize and filter services in the Application Signals console and APIs.</p>",
+      "idempotent":true
+    },
+    "ReportInstrumentationConfigurationStatus":{
+      "name":"ReportInstrumentationConfigurationStatus",
+      "http":{
+        "method":"POST",
+        "requestUri":"/report-instrumentation-configuration-status",
+        "responseCode":200
+      },
+      "input":{"shape":"ReportInstrumentationConfigurationStatusRequest"},
+      "output":{"shape":"ReportInstrumentationConfigurationStatusResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Reports the status of one or more instrumentation configurations from SDK instances. Use this to record when configurations become ready, hit errors, become active, or are disabled by limits.</p> <p>Report <code>READY</code>, <code>ERROR</code>, and <code>DISABLED</code> when the status changes. Report <code>ACTIVE</code> periodically (for example, every minute) while instrumentation is running.</p>",
       "idempotent":true
     },
     "StartDiscovery":{
@@ -596,6 +709,178 @@
       "type":"string",
       "pattern":"[0-9]{12}"
     },
+    "BatchDeleteByResourceArns":{
+      "type":"structure",
+      "required":[
+        "ResourceArns",
+        "InstrumentationType"
+      ],
+      "members":{
+        "ResourceArns":{
+          "shape":"BatchDeleteByResourceArnsResourceArnsList",
+          "documentation":"<p>List of resource ARNs to delete.</p>"
+        },
+        "InstrumentationType":{
+          "shape":"InstrumentationType",
+          "documentation":"<p>Instrumentation type: BREAKPOINT or PROBE.</p>"
+        }
+      },
+      "documentation":"<p>Parameters for targeted delete by ARN list.</p>"
+    },
+    "BatchDeleteByResourceArnsResourceArnsList":{
+      "type":"list",
+      "member":{"shape":"BatchDeleteByResourceArnsResourceArnsListMemberString"},
+      "documentation":"<p>List of resource ARNs for batch delete by ARN list. Maximum 50 ARNs per request.</p>",
+      "max":50,
+      "min":1
+    },
+    "BatchDeleteByResourceArnsResourceArnsListMemberString":{
+      "type":"string",
+      "max":2048,
+      "min":20
+    },
+    "BatchDeleteDeletionTarget":{
+      "type":"structure",
+      "members":{
+        "Scope":{
+          "shape":"BatchDeleteScope",
+          "documentation":"<p>Delete all configurations matching the specified scope.</p>"
+        },
+        "ResourceArns":{
+          "shape":"BatchDeleteByResourceArns",
+          "documentation":"<p>Delete specific configurations by ARN list.</p>"
+        }
+      },
+      "documentation":"<p>Union type for batch delete target selection. Exactly one of the two modes must be specified.</p>",
+      "union":true
+    },
+    "BatchDeleteError":{
+      "type":"structure",
+      "required":[
+        "ResourceArn",
+        "Code",
+        "Message"
+      ],
+      "members":{
+        "ResourceArn":{
+          "shape":"String",
+          "documentation":"<p>ARN of the configuration that failed to delete.</p>"
+        },
+        "Code":{
+          "shape":"BatchDeleteErrorCode",
+          "documentation":"<p>Error code indicating the type of failure.</p>"
+        },
+        "Message":{
+          "shape":"String",
+          "documentation":"<p>Descriptive error message.</p>"
+        }
+      },
+      "documentation":"<p>Represents an error that occurred when attempting to delete a configuration.</p>"
+    },
+    "BatchDeleteErrorCode":{
+      "type":"string",
+      "documentation":"<p>Error codes for batch delete item-level failures.</p>",
+      "enum":[
+        "ResourceNotFoundException",
+        "AccessDeniedException",
+        "InternalServiceException"
+      ]
+    },
+    "BatchDeleteErrorList":{
+      "type":"list",
+      "member":{"shape":"BatchDeleteError"},
+      "documentation":"<p>List of errors in batch delete response.</p>"
+    },
+    "BatchDeleteInstrumentationConfigurationsRequest":{
+      "type":"structure",
+      "required":["DeletionTarget"],
+      "members":{
+        "DeletionTarget":{
+          "shape":"BatchDeleteDeletionTarget",
+          "documentation":"<p>The deletion target - either bulk by scope or targeted by ARN list.</p>"
+        }
+      }
+    },
+    "BatchDeleteInstrumentationConfigurationsResponse":{
+      "type":"structure",
+      "required":[
+        "DeletedCount",
+        "SuccessfulDeletions",
+        "Errors"
+      ],
+      "members":{
+        "DeletedCount":{
+          "shape":"Integer",
+          "documentation":"<p>Number of configurations successfully deleted. When deleting by scope, this is the total count of deleted items. When deleting by ARN list, this equals the length of SuccessfulDeletions.</p>"
+        },
+        "SuccessfulDeletions":{
+          "shape":"BatchDeleteSuccessfulDeletionList",
+          "documentation":"<p>List of successfully deleted configurations. Deleting by scope populates SignalType and LocationHash per item. Deleting by ARN list populates ResourceArn per item.</p>"
+        },
+        "Errors":{
+          "shape":"BatchDeleteErrorList",
+          "documentation":"<p>List of configurations that failed to delete.</p>"
+        }
+      }
+    },
+    "BatchDeleteScope":{
+      "type":"structure",
+      "required":[
+        "Service",
+        "Environment",
+        "InstrumentationType"
+      ],
+      "members":{
+        "Service":{
+          "shape":"BatchDeleteScopeServiceString",
+          "documentation":"<p>Service name for the instrumentation configurations.</p>"
+        },
+        "Environment":{
+          "shape":"BatchDeleteScopeEnvironmentString",
+          "documentation":"<p>Environment identifier for the instrumentation configurations.</p>"
+        },
+        "InstrumentationType":{
+          "shape":"InstrumentationType",
+          "documentation":"<p>Instrumentation type: BREAKPOINT or PROBE.</p>"
+        }
+      },
+      "documentation":"<p>Scope parameters for bulk delete by scope.</p>"
+    },
+    "BatchDeleteScopeEnvironmentString":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"[A-Za-z0-9:/+=,.@_-]+"
+    },
+    "BatchDeleteScopeServiceString":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"[A-Za-z0-9:/+=,.@_-]+"
+    },
+    "BatchDeleteSuccessfulDeletion":{
+      "type":"structure",
+      "members":{
+        "ResourceArn":{
+          "shape":"String",
+          "documentation":"<p>ARN of the deleted configuration (populated only when deleting by ARN list).</p>"
+        },
+        "SignalType":{
+          "shape":"String",
+          "documentation":"<p>Signal type of the deleted configuration (populated only when deleting by scope).</p>"
+        },
+        "LocationHash":{
+          "shape":"String",
+          "documentation":"<p>Location hash of the deleted configuration (populated only when deleting by scope).</p>"
+        }
+      },
+      "documentation":"<p>Represents a successfully deleted instrumentation configuration.</p>"
+    },
+    "BatchDeleteSuccessfulDeletionList":{
+      "type":"list",
+      "member":{"shape":"BatchDeleteSuccessfulDeletion"},
+      "documentation":"<p>List of successful deletions in batch delete response.</p>"
+    },
     "BatchGetServiceLevelObjectiveBudgetReportInput":{
       "type":"structure",
       "required":[
@@ -773,6 +1058,103 @@
       },
       "documentation":"<p>A structure that contains identifying information for a CloudWatch Synthetics canary entity used in audit targeting.</p>"
     },
+    "CaptureConfiguration":{
+      "type":"structure",
+      "members":{
+        "CodeCapture":{
+          "shape":"CodeCaptureConfiguration",
+          "documentation":"<p>Capture settings for code-level instrumentation, including arguments, return values, stack traces, local variables, and safety limits.</p>"
+        }
+      },
+      "documentation":"<p>A union that defines what data to capture when the instrumentation point is hit. Specify <code>CodeCapture</code> for code-level capture settings.</p>",
+      "union":true
+    },
+    "CaptureLimitsConfig":{
+      "type":"structure",
+      "members":{
+        "MaxHits":{
+          "shape":"CaptureLimitsConfigMaxHitsInteger",
+          "documentation":"<p>The maximum number of times the instrumentation point can be hit before it is automatically disabled. Defaults to 100.</p>"
+        },
+        "MaxStringLength":{
+          "shape":"CaptureLimitsConfigMaxStringLengthInteger",
+          "documentation":"<p>The maximum length of captured string values in characters. Strings longer than this are truncated. Defaults to 128.</p>"
+        },
+        "MaxCollectionWidth":{
+          "shape":"CaptureLimitsConfigMaxCollectionWidthInteger",
+          "documentation":"<p>The maximum number of items to capture from any collection to prevent large payloads. Defaults to 10.</p>"
+        },
+        "MaxCollectionDepth":{
+          "shape":"CaptureLimitsConfigMaxCollectionDepthInteger",
+          "documentation":"<p>The maximum nesting depth to traverse inside collections. Defaults to 3.</p>"
+        },
+        "MaxStackFrames":{
+          "shape":"CaptureLimitsConfigMaxStackFramesInteger",
+          "documentation":"<p>The maximum number of stack frames to capture in stack traces. Defaults to 2.</p>"
+        },
+        "MaxStackTraceSize":{
+          "shape":"CaptureLimitsConfigMaxStackTraceSizeInteger",
+          "documentation":"<p>The maximum total size, in bytes, of a captured stack trace. Defaults to 1000.</p>"
+        },
+        "MaxObjectDepth":{
+          "shape":"CaptureLimitsConfigMaxObjectDepthInteger",
+          "documentation":"<p>The maximum depth for nested object traversal when capturing structured data. Defaults to 3.</p>"
+        },
+        "MaxFieldsPerObject":{
+          "shape":"CaptureLimitsConfigMaxFieldsPerObjectInteger",
+          "documentation":"<p>The maximum number of fields to capture for any object. Defaults to 10.</p>"
+        }
+      },
+      "documentation":"<p>Guardrails that prevent instrumentation from impacting application performance by limiting how much data is captured.</p>"
+    },
+    "CaptureLimitsConfigMaxCollectionDepthInteger":{
+      "type":"integer",
+      "box":true,
+      "max":5,
+      "min":1
+    },
+    "CaptureLimitsConfigMaxCollectionWidthInteger":{
+      "type":"integer",
+      "box":true,
+      "max":20,
+      "min":1
+    },
+    "CaptureLimitsConfigMaxFieldsPerObjectInteger":{
+      "type":"integer",
+      "box":true,
+      "max":20,
+      "min":1
+    },
+    "CaptureLimitsConfigMaxHitsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":1000,
+      "min":1
+    },
+    "CaptureLimitsConfigMaxObjectDepthInteger":{
+      "type":"integer",
+      "box":true,
+      "max":5,
+      "min":1
+    },
+    "CaptureLimitsConfigMaxStackFramesInteger":{
+      "type":"integer",
+      "box":true,
+      "max":20,
+      "min":1
+    },
+    "CaptureLimitsConfigMaxStackTraceSizeInteger":{
+      "type":"integer",
+      "box":true,
+      "max":1000,
+      "min":1
+    },
+    "CaptureLimitsConfigMaxStringLengthInteger":{
+      "type":"integer",
+      "box":true,
+      "max":255,
+      "min":1
+    },
     "ChangeEvent":{
       "type":"structure",
       "required":[
@@ -832,6 +1214,114 @@
       "max":250,
       "min":0
     },
+    "CodeCaptureConfiguration":{
+      "type":"structure",
+      "required":["CaptureLimits"],
+      "members":{
+        "CaptureArguments":{
+          "shape":"CodeCaptureConfigurationCaptureArgumentsList",
+          "documentation":"<p>The function arguments to capture. Omit to capture defaults, use an empty list to capture none, use <code>[\"*\"]</code> to capture all arguments, or specify argument names to capture selectively (up to 10 entries).</p>"
+        },
+        "CaptureReturn":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether to capture the return value. Defaults to false.</p>"
+        },
+        "CaptureStackTrace":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether to capture a stack trace when the instrumentation point is hit. Defaults to true.</p>"
+        },
+        "CaptureLocals":{
+          "shape":"CodeCaptureConfigurationCaptureLocalsList",
+          "documentation":"<p>The local variables to capture by name. Omit or pass an empty list to capture none. You can specify up to 20 names.</p>"
+        },
+        "CaptureLimits":{
+          "shape":"CaptureLimitsConfig",
+          "documentation":"<p>Safety limits that bound what is captured, including hit counts, string length, collection depth, and stack trace size.</p>"
+        }
+      },
+      "documentation":"<p>Defines what data to capture for code-level instrumentation, including arguments, return values, stack traces, local variables, and safety limits.</p>"
+    },
+    "CodeCaptureConfigurationCaptureArgumentsList":{
+      "type":"list",
+      "member":{"shape":"CodeCaptureConfigurationCaptureArgumentsListMemberString"},
+      "max":10,
+      "min":0
+    },
+    "CodeCaptureConfigurationCaptureArgumentsListMemberString":{
+      "type":"string",
+      "max":80,
+      "min":1
+    },
+    "CodeCaptureConfigurationCaptureLocalsList":{
+      "type":"list",
+      "member":{"shape":"CodeCaptureConfigurationCaptureLocalsListMemberString"},
+      "max":20,
+      "min":0
+    },
+    "CodeCaptureConfigurationCaptureLocalsListMemberString":{
+      "type":"string",
+      "max":80,
+      "min":1
+    },
+    "CodeLocation":{
+      "type":"structure",
+      "required":[
+        "Language",
+        "FilePath"
+      ],
+      "members":{
+        "Language":{
+          "shape":"ProgrammingLanguage",
+          "documentation":"<p>The programming language for this instrumentation point, such as Java, Python, or JavaScript.</p>"
+        },
+        "CodeUnit":{
+          "shape":"CodeLocationCodeUnitString",
+          "documentation":"<p>The package, module, or namespace that contains the target code, for example <code>com.amazon.payment</code> or <code>payment_service</code>.</p>"
+        },
+        "ClassName":{
+          "shape":"CodeLocationClassNameString",
+          "documentation":"<p>The class or type name that contains the method. This is required for Java and optional for Python module-level functions.</p>"
+        },
+        "MethodName":{
+          "shape":"CodeLocationMethodNameString",
+          "documentation":"<p>The method or function name to instrument, such as <code>validateCreditCard</code> or <code>__init__</code>.</p>"
+        },
+        "FilePath":{
+          "shape":"CodeLocationFilePathString",
+          "documentation":"<p>The source file path relative to the project or source root, such as <code>src/payment/PaymentProcessor.java</code> or <code>src/payment/PaymentProcessor.py</code>.</p>"
+        },
+        "LineNumber":{
+          "shape":"CodeLocationLineNumberInteger",
+          "documentation":"<p>The line number to instrument. Provide this to disambiguate overloaded methods and to target a specific line when needed.</p>"
+        }
+      },
+      "documentation":"<p>Identifies a code location to instrument, including the programming language, code unit, class, method, file path, and optional line number.</p>"
+    },
+    "CodeLocationClassNameString":{
+      "type":"string",
+      "max":128,
+      "min":1
+    },
+    "CodeLocationCodeUnitString":{
+      "type":"string",
+      "max":128,
+      "min":1
+    },
+    "CodeLocationFilePathString":{
+      "type":"string",
+      "max":1024,
+      "min":1
+    },
+    "CodeLocationLineNumberInteger":{
+      "type":"integer",
+      "box":true,
+      "min":1
+    },
+    "CodeLocationMethodNameString":{
+      "type":"string",
+      "max":80,
+      "min":1
+    },
     "CompositeSliComponent":{
       "type":"structure",
       "members":{
@@ -884,6 +1374,155 @@
         "INDIRECT",
         "DIRECT"
       ]
+    },
+    "CreateInstrumentationConfigurationRequest":{
+      "type":"structure",
+      "required":[
+        "InstrumentationType",
+        "Service",
+        "Environment",
+        "SignalType",
+        "Location",
+        "CaptureConfiguration"
+      ],
+      "members":{
+        "InstrumentationType":{
+          "shape":"InstrumentationType",
+          "documentation":"<p>Type of instrumentation: BREAKPOINT (temporary) or PROBE (permanent)</p>"
+        },
+        "Service":{
+          "shape":"CreateInstrumentationConfigurationRequestServiceString",
+          "documentation":"<p>The name of the service to instrument. This should match the <code>service.name</code> resource attribute reported by the application.</p>"
+        },
+        "Environment":{
+          "shape":"CreateInstrumentationConfigurationRequestEnvironmentString",
+          "documentation":"<p>The environment that the service is running in, such as <code>eks:cluster-prod/namespace</code> or <code>ec2:production</code>.</p>"
+        },
+        "SignalType":{
+          "shape":"DynamicInstrumentationSignalType",
+          "documentation":"<p>The telemetry signal type to emit for this instrumentation. The supported value is <code>SNAPSHOT</code>.</p>"
+        },
+        "Location":{
+          "shape":"Location",
+          "documentation":"<p>The location where instrumentation should be applied. Specify a <code>CodeLocation</code> for code-level instrumentation.</p>"
+        },
+        "Description":{
+          "shape":"CreateInstrumentationConfigurationRequestDescriptionString",
+          "documentation":"<p>An optional short description (up to 50 characters) that explains the purpose of this instrumentation.</p>"
+        },
+        "ExpiresAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>For BREAKPOINT: optional, defaults to 24 hours, must be between 5 min and 24 hours. For PROBE: not supported. PROBE configurations are permanent and persist until explicitly deleted.</p>"
+        },
+        "AttributeFilters":{
+          "shape":"DynamicInstrumentationAttributeFilters",
+          "documentation":"<p>Client-side filters that target specific instances. Each object in the array is AND-matched on its keys, and multiple objects are OR-matched to decide where to apply the instrumentation.</p>"
+        },
+        "CaptureConfiguration":{
+          "shape":"CaptureConfiguration",
+          "documentation":"<p>Specifies what to capture when the instrumentation point is hit. Specify <code>CodeCapture</code> for code-level capture settings.</p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>An optional list of key-value pairs to associate with the instrumentation configuration. Tags can help you organize and categorize your resources.</p>"
+        }
+      }
+    },
+    "CreateInstrumentationConfigurationRequestDescriptionString":{
+      "type":"string",
+      "max":50,
+      "min":1
+    },
+    "CreateInstrumentationConfigurationRequestEnvironmentString":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"[A-Za-z0-9:/+=,.@_-]+"
+    },
+    "CreateInstrumentationConfigurationRequestServiceString":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"[A-Za-z0-9:/+=,.@_-]+"
+    },
+    "CreateInstrumentationConfigurationResponse":{
+      "type":"structure",
+      "required":[
+        "InstrumentationType",
+        "Service",
+        "Environment",
+        "SignalType",
+        "Location",
+        "LocationHash",
+        "CaptureConfiguration",
+        "CreatedAt",
+        "ARN"
+      ],
+      "members":{
+        "InstrumentationType":{
+          "shape":"InstrumentationType",
+          "documentation":"<p>The type of instrumentation that was created, echoed from the request.</p>"
+        },
+        "Service":{
+          "shape":"CreateInstrumentationConfigurationResponseServiceString",
+          "documentation":"<p>The service name for the instrumentation configuration, echoed from the request.</p>"
+        },
+        "Environment":{
+          "shape":"CreateInstrumentationConfigurationResponseEnvironmentString",
+          "documentation":"<p>The environment for the instrumentation configuration, echoed from the request.</p>"
+        },
+        "SignalType":{
+          "shape":"DynamicInstrumentationSignalType",
+          "documentation":"<p>The telemetry signal type for the instrumentation configuration, echoed from the request.</p>"
+        },
+        "Location":{
+          "shape":"Location",
+          "documentation":"<p>The location where instrumentation is applied, echoed from the request.</p>"
+        },
+        "LocationHash":{
+          "shape":"CreateInstrumentationConfigurationResponseLocationHashString",
+          "documentation":"<p>A stable hash computed from the location that uniquely identifies this instrumentation point within the service, environment, and signal type.</p>"
+        },
+        "Description":{
+          "shape":"String",
+          "documentation":"<p>The optional description that was stored with the instrumentation configuration.</p>"
+        },
+        "ExpiresAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp after which this configuration is no longer served to clients. Present only for <code>BREAKPOINT</code> configurations; <code>PROBE</code> configurations do not expire.</p>"
+        },
+        "AttributeFilters":{
+          "shape":"DynamicInstrumentationAttributeFilters",
+          "documentation":"<p>The attribute filters returned with the configuration so SDKs can perform client-side targeting.</p>"
+        },
+        "CaptureConfiguration":{
+          "shape":"CaptureConfiguration",
+          "documentation":"<p>The capture settings that were stored for this instrumentation configuration.</p>"
+        },
+        "CreatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The server-generated creation timestamp for this instrumentation configuration.</p>"
+        },
+        "ARN":{
+          "shape":"InstrumentationConfigurationArn",
+          "documentation":"<p>ARN for the created instrumentation configuration</p>"
+        }
+      }
+    },
+    "CreateInstrumentationConfigurationResponseEnvironmentString":{
+      "type":"string",
+      "max":255,
+      "min":1
+    },
+    "CreateInstrumentationConfigurationResponseLocationHashString":{
+      "type":"string",
+      "max":16,
+      "min":16
+    },
+    "CreateInstrumentationConfigurationResponseServiceString":{
+      "type":"string",
+      "max":255,
+      "min":1
     },
     "CreateServiceLevelObjectiveInput":{
       "type":"structure",
@@ -945,6 +1584,58 @@
     "DeleteGroupingConfigurationOutput":{
       "type":"structure",
       "members":{}
+    },
+    "DeleteInstrumentationConfigurationRequest":{
+      "type":"structure",
+      "required":[
+        "InstrumentationType",
+        "Service",
+        "Environment",
+        "SignalType",
+        "LocationIdentifier"
+      ],
+      "members":{
+        "InstrumentationType":{
+          "shape":"InstrumentationType",
+          "documentation":"<p>Type of instrumentation configuration (BREAKPOINT or PROBE). Required to identify the configuration to delete.</p>"
+        },
+        "Service":{
+          "shape":"DeleteInstrumentationConfigurationRequestServiceString",
+          "documentation":"<p>Service name for the instrumentation configuration.</p>"
+        },
+        "Environment":{
+          "shape":"DeleteInstrumentationConfigurationRequestEnvironmentString",
+          "documentation":"<p>Environment name for the instrumentation configuration.</p>"
+        },
+        "SignalType":{
+          "shape":"DynamicInstrumentationSignalType",
+          "documentation":"<p>Signal type for the instrumentation configuration.</p>"
+        },
+        "LocationIdentifier":{
+          "shape":"LocationIdentifier",
+          "documentation":"<p>Location identifier - either full code location or a pre-computed hash.</p>"
+        }
+      }
+    },
+    "DeleteInstrumentationConfigurationRequestEnvironmentString":{
+      "type":"string",
+      "max":255,
+      "min":1
+    },
+    "DeleteInstrumentationConfigurationRequestServiceString":{
+      "type":"string",
+      "max":255,
+      "min":1
+    },
+    "DeleteInstrumentationConfigurationResponse":{
+      "type":"structure",
+      "required":["DeletionStatus"],
+      "members":{
+        "DeletionStatus":{
+          "shape":"DynamicInstrumentationDeletionStatus",
+          "documentation":"<p>The result of the delete request. The value is <code>DELETED</code> when the configuration has been removed.</p>"
+        }
+      }
     },
     "DeleteServiceLevelObjectiveInput":{
       "type":"structure",
@@ -1048,6 +1739,39 @@
         "MONTH"
       ]
     },
+    "DynamicInstrumentationAttributeFilterGroup":{
+      "type":"map",
+      "key":{"shape":"DynamicInstrumentationAttributeFilterGroupKeyString"},
+      "value":{"shape":"DynamicInstrumentationAttributeFilterGroupValueString"},
+      "documentation":"<p>A string-to-string map of OpenTelemetry resource attributes and values that must all match for the instrumentation to run on an instance.</p>"
+    },
+    "DynamicInstrumentationAttributeFilterGroupKeyString":{
+      "type":"string",
+      "max":50,
+      "min":1
+    },
+    "DynamicInstrumentationAttributeFilterGroupValueString":{
+      "type":"string",
+      "max":100,
+      "min":1
+    },
+    "DynamicInstrumentationAttributeFilters":{
+      "type":"list",
+      "member":{"shape":"DynamicInstrumentationAttributeFilterGroup"},
+      "documentation":"<p>An array of attribute filter groups used to target specific instances. Each filter group must match all of its keys (AND), and multiple groups are OR-matched to decide whether an instance applies the instrumentation. Filters are evaluated client-side by the SDK.</p>",
+      "max":10,
+      "min":1
+    },
+    "DynamicInstrumentationDeletionStatus":{
+      "type":"string",
+      "documentation":"<p>The status of a delete request for an instrumentation configuration. The value is <code>DELETED</code> after a successful deletion.</p>",
+      "enum":["DELETED"]
+    },
+    "DynamicInstrumentationSignalType":{
+      "type":"string",
+      "documentation":"<p>The telemetry signal type for instrumentation.</p> <ul> <li> <p> <code>SNAPSHOT</code> - Captures a snapshot of the instrumentation point.</p> </li> </ul>",
+      "enum":["SNAPSHOT"]
+    },
     "Edge":{
       "type":"structure",
       "members":{
@@ -1128,6 +1852,177 @@
       "min":1
     },
     "FaultDescription":{"type":"string"},
+    "GetInstrumentationConfigurationRequest":{
+      "type":"structure",
+      "required":[
+        "InstrumentationType",
+        "Service",
+        "Environment",
+        "SignalType",
+        "LocationIdentifier"
+      ],
+      "members":{
+        "InstrumentationType":{
+          "shape":"InstrumentationType",
+          "documentation":"<p>Type of instrumentation configuration (BREAKPOINT or PROBE). Required to identify the configuration to retrieve.</p>"
+        },
+        "Service":{
+          "shape":"GetInstrumentationConfigurationRequestServiceString",
+          "documentation":"<p>Service name for the instrumentation configuration.</p>"
+        },
+        "Environment":{
+          "shape":"GetInstrumentationConfigurationRequestEnvironmentString",
+          "documentation":"<p>Environment name for the instrumentation configuration.</p>"
+        },
+        "SignalType":{
+          "shape":"DynamicInstrumentationSignalType",
+          "documentation":"<p>Signal type for the instrumentation configuration.</p>"
+        },
+        "LocationIdentifier":{
+          "shape":"LocationIdentifier",
+          "documentation":"<p>Location identifier - either full code location or a pre-computed hash.</p>"
+        }
+      }
+    },
+    "GetInstrumentationConfigurationRequestEnvironmentString":{
+      "type":"string",
+      "max":255,
+      "min":1
+    },
+    "GetInstrumentationConfigurationRequestServiceString":{
+      "type":"string",
+      "max":255,
+      "min":1
+    },
+    "GetInstrumentationConfigurationResponse":{
+      "type":"structure",
+      "required":["Configuration"],
+      "members":{
+        "Configuration":{
+          "shape":"InstrumentationConfiguration",
+          "documentation":"<p>The complete instrumentation configuration, including its location hash, capture settings, filters, expiration, and creation time.</p>"
+        }
+      }
+    },
+    "GetInstrumentationConfigurationStatusRequest":{
+      "type":"structure",
+      "required":[
+        "InstrumentationType",
+        "Service",
+        "Environment",
+        "SignalType",
+        "LocationIdentifier"
+      ],
+      "members":{
+        "InstrumentationType":{
+          "shape":"InstrumentationType",
+          "documentation":"<p>Type of instrumentation configuration (BREAKPOINT or PROBE). Required to identify the configuration to retrieve.</p>"
+        },
+        "Service":{
+          "shape":"GetInstrumentationConfigurationStatusRequestServiceString",
+          "documentation":"<p>Service name for the instrumentation configuration.</p>"
+        },
+        "Environment":{
+          "shape":"GetInstrumentationConfigurationStatusRequestEnvironmentString",
+          "documentation":"<p>Environment name for the instrumentation configuration.</p>"
+        },
+        "SignalType":{
+          "shape":"DynamicInstrumentationSignalType",
+          "documentation":"<p>Signal type for the instrumentation configuration.</p>"
+        },
+        "LocationIdentifier":{
+          "shape":"LocationIdentifier",
+          "documentation":"<p>Location identifier - either full code location or a pre-computed hash.</p>"
+        },
+        "Status":{
+          "shape":"InstrumentationConfigurationStatus",
+          "documentation":"<p>The single status to query for. If omitted, only <code>ACTIVE</code> status events are returned.</p>"
+        },
+        "StartTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The start of the time range to retrieve status events for. <code>StartTime</code> and <code>EndTime</code> must both be provided together or both be omitted. When both are omitted, the time range defaults to the last hour.</p>"
+        },
+        "EndTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The end of the time range to retrieve status events for. <code>StartTime</code> and <code>EndTime</code> must both be provided together or both be omitted. When both are omitted, the time range defaults to the last hour.</p>"
+        },
+        "MaxResults":{
+          "shape":"GetInstrumentationConfigurationStatusRequestMaxResultsInteger",
+          "documentation":"<p>The maximum number of status events to return in one call. The default is 60.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>Use the token returned by a previous call to retrieve the next page of status events.</p>"
+        }
+      }
+    },
+    "GetInstrumentationConfigurationStatusRequestEnvironmentString":{
+      "type":"string",
+      "max":255,
+      "min":1
+    },
+    "GetInstrumentationConfigurationStatusRequestMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "GetInstrumentationConfigurationStatusRequestServiceString":{
+      "type":"string",
+      "max":255,
+      "min":1
+    },
+    "GetInstrumentationConfigurationStatusResponse":{
+      "type":"structure",
+      "required":[
+        "Service",
+        "Environment",
+        "SignalType",
+        "Location",
+        "Status",
+        "Events"
+      ],
+      "members":{
+        "Service":{
+          "shape":"GetInstrumentationConfigurationStatusResponseServiceString",
+          "documentation":"<p>The service name echoed from the request.</p>"
+        },
+        "Environment":{
+          "shape":"GetInstrumentationConfigurationStatusResponseEnvironmentString",
+          "documentation":"<p>The environment echoed from the request.</p>"
+        },
+        "SignalType":{
+          "shape":"DynamicInstrumentationSignalType",
+          "documentation":"<p>The telemetry signal type echoed from the request.</p>"
+        },
+        "Location":{
+          "shape":"Location",
+          "documentation":"<p>The code location echoed from the request.</p>"
+        },
+        "Status":{
+          "shape":"InstrumentationConfigurationStatus",
+          "documentation":"<p>The status that was queried. If not specified in the request, this is <code>ACTIVE</code>.</p>"
+        },
+        "Events":{
+          "shape":"InstrumentationStatusEventList",
+          "documentation":"<p>The list of status events within the requested time window, sorted with the most recent first. Error events include an error cause.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>Pagination token to continue retrieving status events.</p>"
+        }
+      }
+    },
+    "GetInstrumentationConfigurationStatusResponseEnvironmentString":{
+      "type":"string",
+      "max":255,
+      "min":1
+    },
+    "GetInstrumentationConfigurationStatusResponseServiceString":{
+      "type":"string",
+      "max":255,
+      "min":1
+    },
     "GetServiceInput":{
       "type":"structure",
       "required":[
@@ -1290,6 +2185,316 @@
       "max":128,
       "min":1,
       "pattern":"[a-zA-Z0-9\\s+\\-=\\._:/@]*"
+    },
+    "InstrumentationConfiguration":{
+      "type":"structure",
+      "required":[
+        "InstrumentationType",
+        "Service",
+        "Environment",
+        "SignalType",
+        "Location",
+        "LocationHash",
+        "CaptureConfiguration",
+        "CreatedAt",
+        "ARN"
+      ],
+      "members":{
+        "InstrumentationType":{
+          "shape":"InstrumentationType",
+          "documentation":"<p>The type of instrumentation for this configuration.</p>"
+        },
+        "Service":{
+          "shape":"InstrumentationConfigurationServiceString",
+          "documentation":"<p>The service that this instrumentation configuration targets.</p>"
+        },
+        "Environment":{
+          "shape":"InstrumentationConfigurationEnvironmentString",
+          "documentation":"<p>The environment where the service is running.</p>"
+        },
+        "SignalType":{
+          "shape":"DynamicInstrumentationSignalType",
+          "documentation":"<p>The telemetry signal type for this instrumentation configuration.</p>"
+        },
+        "Location":{
+          "shape":"Location",
+          "documentation":"<p>The location where this instrumentation is applied.</p>"
+        },
+        "LocationHash":{
+          "shape":"InstrumentationConfigurationLocationHashString",
+          "documentation":"<p>The stable hash derived from the location that uniquely identifies this instrumentation point within the service and environment.</p>"
+        },
+        "Description":{
+          "shape":"InstrumentationConfigurationDescriptionString",
+          "documentation":"<p>An optional short description of the instrumentation configuration.</p>"
+        },
+        "ExpiresAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when this configuration expires.</p>"
+        },
+        "AttributeFilters":{
+          "shape":"DynamicInstrumentationAttributeFilters",
+          "documentation":"<p>Client-side filters that determine which instances apply this instrumentation.</p>"
+        },
+        "CaptureConfiguration":{
+          "shape":"CaptureConfiguration",
+          "documentation":"<p>The capture settings for this instrumentation configuration.</p>"
+        },
+        "CreatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when this instrumentation configuration was created.</p>"
+        },
+        "ARN":{
+          "shape":"InstrumentationConfigurationArn",
+          "documentation":"<p>ARN for the instrumentation configuration</p>"
+        }
+      },
+      "documentation":"<p>The full instrumentation configuration, including the instrumentation type, service, environment, signal type, location details, stable location hash, capture settings, filters, expiration, creation time, and ARN.</p>"
+    },
+    "InstrumentationConfigurationArn":{
+      "type":"string",
+      "documentation":"<p>ARN for an instrumentation configuration Format: arn:${Partition}:application-signals:${Region}:${Account}:instrumentationConfig/${service}/${environment}/${signalType}/${locationHash} Note: service and environment can contain '/' and ':', so we use a permissive pattern that only validates the ARN prefix structure and the 16-character lowercase hex locationHash suffix.</p>",
+      "pattern":"arn:[^:]+:application-signals:[^:]+:[0-9]{12}:instrumentationConfig/.+/[0-9a-f]{16}"
+    },
+    "InstrumentationConfigurationDescriptionString":{
+      "type":"string",
+      "max":50,
+      "min":1
+    },
+    "InstrumentationConfigurationEnvironmentString":{
+      "type":"string",
+      "max":255,
+      "min":1
+    },
+    "InstrumentationConfigurationLocationHashString":{
+      "type":"string",
+      "max":16,
+      "min":16
+    },
+    "InstrumentationConfigurationServiceString":{
+      "type":"string",
+      "max":255,
+      "min":1
+    },
+    "InstrumentationConfigurationStatus":{
+      "type":"string",
+      "documentation":"<p>The status of an instrumentation configuration on a host.</p> <ul> <li> <p> <code>READY</code> - The configuration has been applied but has not been hit yet.</p> </li> <li> <p> <code>ERROR</code> - Applying the configuration failed; see the error cause.</p> </li> <li> <p> <code>ACTIVE</code> - The configuration has been hit and is capturing data.</p> </li> <li> <p> <code>DISABLED</code> - The configuration was disabled, for example because a limit was reached.</p> </li> </ul>",
+      "enum":[
+        "READY",
+        "ERROR",
+        "ACTIVE",
+        "DISABLED"
+      ]
+    },
+    "InstrumentationConfigurationStatusReport":{
+      "type":"structure",
+      "required":[
+        "InstrumentationType",
+        "SignalType",
+        "LocationHash",
+        "Status",
+        "Time"
+      ],
+      "members":{
+        "InstrumentationType":{
+          "shape":"InstrumentationType",
+          "documentation":"<p>The type of instrumentation configuration being reported.</p>"
+        },
+        "SignalType":{
+          "shape":"DynamicInstrumentationSignalType",
+          "documentation":"<p>The telemetry signal type for this instrumentation configuration.</p>"
+        },
+        "LocationHash":{
+          "shape":"InstrumentationConfigurationStatusReportLocationHashString",
+          "documentation":"<p>The stable hash of the instrumentation location that identifies the configuration being reported.</p>"
+        },
+        "Status":{
+          "shape":"InstrumentationConfigurationStatus",
+          "documentation":"<p>The status of the instrumentation configuration: <code>READY</code>, <code>ERROR</code>, <code>ACTIVE</code>, or <code>DISABLED</code>.</p>"
+        },
+        "Time":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the status event occurred.</p>"
+        },
+        "ErrorCause":{
+          "shape":"InstrumentationErrorCause",
+          "documentation":"<p>The error cause when the status is <code>ERROR</code>, such as the file or method not being found.</p>"
+        }
+      },
+      "documentation":"<p>The status of a single instrumentation configuration reported by an SDK instance.</p>"
+    },
+    "InstrumentationConfigurationStatusReportLocationHashString":{
+      "type":"string",
+      "max":16,
+      "min":16
+    },
+    "InstrumentationConfigurationWithoutServiceEnv":{
+      "type":"structure",
+      "required":[
+        "InstrumentationType",
+        "SignalType",
+        "Location",
+        "LocationHash",
+        "CaptureConfiguration",
+        "CreatedAt",
+        "ARN"
+      ],
+      "members":{
+        "InstrumentationType":{
+          "shape":"InstrumentationType",
+          "documentation":"<p>The type of instrumentation for this configuration.</p>"
+        },
+        "SignalType":{
+          "shape":"DynamicInstrumentationSignalType",
+          "documentation":"<p>The telemetry signal type for this instrumentation configuration.</p>"
+        },
+        "Location":{
+          "shape":"Location",
+          "documentation":"<p>The location where this instrumentation is applied.</p>"
+        },
+        "LocationHash":{
+          "shape":"InstrumentationConfigurationWithoutServiceEnvLocationHashString",
+          "documentation":"<p>The stable hash derived from the location that identifies this instrumentation point.</p>"
+        },
+        "Description":{
+          "shape":"InstrumentationConfigurationWithoutServiceEnvDescriptionString",
+          "documentation":"<p>An optional short description of the instrumentation configuration.</p>"
+        },
+        "ExpiresAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when this configuration expires.</p>"
+        },
+        "AttributeFilters":{
+          "shape":"DynamicInstrumentationAttributeFilters",
+          "documentation":"<p>Client-side filters that determine which instances apply this instrumentation.</p>"
+        },
+        "CaptureConfiguration":{
+          "shape":"CaptureConfiguration",
+          "documentation":"<p>The capture settings for this instrumentation configuration.</p>"
+        },
+        "CreatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when this instrumentation configuration was created.</p>"
+        },
+        "ARN":{
+          "shape":"InstrumentationConfigurationArn",
+          "documentation":"<p>ARN for the instrumentation configuration</p>"
+        }
+      },
+      "documentation":"<p>An instrumentation configuration that omits service and environment because they are provided at a higher level, such as in a list response.</p>"
+    },
+    "InstrumentationConfigurationWithoutServiceEnvDescriptionString":{
+      "type":"string",
+      "max":50,
+      "min":1
+    },
+    "InstrumentationConfigurationWithoutServiceEnvLocationHashString":{
+      "type":"string",
+      "max":16,
+      "min":16
+    },
+    "InstrumentationConfigurationsPage":{
+      "type":"structure",
+      "required":[
+        "Service",
+        "Environment",
+        "Changed",
+        "SyncedAt",
+        "SyncInterval"
+      ],
+      "members":{
+        "Service":{
+          "shape":"InstrumentationConfigurationsPageServiceString",
+          "documentation":"<p>The service name associated with the returned configurations.</p>"
+        },
+        "Environment":{
+          "shape":"InstrumentationConfigurationsPageEnvironmentString",
+          "documentation":"<p>The environment associated with the returned configurations.</p>"
+        },
+        "Changed":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether there are configuration changes since the provided <code>SyncedAt</code> timestamp.</p>"
+        },
+        "LatestConfigurations":{
+          "shape":"InstrumentationConfigurationsWithoutServiceEnv",
+          "documentation":"<p>The current set of active instrumentation configurations for the service and environment. Items omit service and environment because they are provided in the request.</p>"
+        },
+        "SyncedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The server timestamp to supply on the next sync call.</p>"
+        },
+        "SyncInterval":{
+          "shape":"InstrumentationConfigurationsPageSyncIntervalInteger",
+          "documentation":"<p>The suggested number of seconds to wait before the next sync request. This is at least 60 seconds to prevent excessive polling.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>Pagination token to continue listing configurations when more results are available.</p>"
+        }
+      }
+    },
+    "InstrumentationConfigurationsPageEnvironmentString":{
+      "type":"string",
+      "max":255,
+      "min":1
+    },
+    "InstrumentationConfigurationsPageServiceString":{
+      "type":"string",
+      "max":255,
+      "min":1
+    },
+    "InstrumentationConfigurationsPageSyncIntervalInteger":{
+      "type":"integer",
+      "box":true,
+      "min":60
+    },
+    "InstrumentationConfigurationsWithoutServiceEnv":{
+      "type":"list",
+      "member":{"shape":"InstrumentationConfigurationWithoutServiceEnv"},
+      "documentation":"<p>An array of instrumentation configurations that omit service and environment, used when those values are provided elsewhere in the response.</p>"
+    },
+    "InstrumentationErrorCause":{
+      "type":"string",
+      "documentation":"<p>The reason why applying an instrumentation configuration failed.</p> <ul> <li> <p> <code>FILE_NOT_FOUND</code> - The specified file or file location could not be located.</p> </li> <li> <p> <code>METHOD_NOT_FOUND</code> - The specified method or function does not exist.</p> </li> <li> <p> <code>LINE_NOT_EXECUTABLE</code> - The specified line does not contain executable code.</p> </li> <li> <p> <code>OVERLOADED_METHODS</code> - Multiple overloaded methods were found; provide a line number to disambiguate.</p> </li> <li> <p> <code>LANGUAGE_MISMATCH</code> - The language specified in the configuration does not match the service.</p> </li> <li> <p> <code>RUNTIME_ERROR</code> - A runtime error occurred while applying the instrumentation.</p> </li> </ul>",
+      "enum":[
+        "FILE_NOT_FOUND",
+        "METHOD_NOT_FOUND",
+        "LINE_NOT_EXECUTABLE",
+        "OVERLOADED_METHODS",
+        "LANGUAGE_MISMATCH",
+        "RUNTIME_ERROR"
+      ]
+    },
+    "InstrumentationStatusEvent":{
+      "type":"structure",
+      "required":["Time"],
+      "members":{
+        "Time":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the status was reported, rounded to the nearest minute.</p>"
+        },
+        "ErrorCause":{
+          "shape":"InstrumentationErrorCause",
+          "documentation":"<p>The error cause when the status is <code>ERROR</code>.</p>"
+        }
+      },
+      "documentation":"<p>A status event for an instrumentation configuration returned by <code>GetInstrumentationConfigurationStatus</code>. Events include the timestamp and, for errors, an error cause.</p>"
+    },
+    "InstrumentationStatusEventList":{
+      "type":"list",
+      "member":{"shape":"InstrumentationStatusEvent"}
+    },
+    "InstrumentationType":{
+      "type":"string",
+      "documentation":"<p>Type of instrumentation configuration</p>",
+      "enum":[
+        "BREAKPOINT",
+        "PROBE"
+      ]
+    },
+    "Integer":{
+      "type":"integer",
+      "box":true
     },
     "Interval":{
       "type":"structure",
@@ -1498,6 +2703,58 @@
           "documentation":"<p>Include this value in your next use of this API to get the next set of grouping attribute definitions.</p>"
         }
       }
+    },
+    "ListInstrumentationConfigurationsRequest":{
+      "type":"structure",
+      "required":[
+        "Service",
+        "Environment",
+        "InstrumentationType"
+      ],
+      "members":{
+        "Service":{
+          "shape":"ListInstrumentationConfigurationsRequestServiceString",
+          "documentation":"<p>The name of the service to retrieve instrumentation configurations for.</p>"
+        },
+        "Environment":{
+          "shape":"ListInstrumentationConfigurationsRequestEnvironmentString",
+          "documentation":"<p>The environment that the service is running in.</p>"
+        },
+        "InstrumentationType":{
+          "shape":"InstrumentationType",
+          "documentation":"<p>Type of instrumentation configuration (BREAKPOINT or PROBE). Required to determine which backing store to query.</p>"
+        },
+        "SyncedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp from the last successful sync. When provided, the response returns <code>Changed</code> as <code>false</code> if nothing is new since this time, or returns the latest configurations when changes exist.</p>"
+        },
+        "MaxResults":{
+          "shape":"ListInstrumentationConfigurationsRequestMaxResultsInteger",
+          "documentation":"<p>The maximum number of configurations to return in one call. The default is 50 and the maximum is 100.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>Use the token returned by a previous call to retrieve the next page of configurations.</p>"
+        }
+      }
+    },
+    "ListInstrumentationConfigurationsRequestEnvironmentString":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"[A-Za-z0-9:/+=,.@_-]+"
+    },
+    "ListInstrumentationConfigurationsRequestMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "ListInstrumentationConfigurationsRequestServiceString":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"[A-Za-z0-9:/+=,.@_-]+"
     },
     "ListServiceDependenciesInput":{
       "type":"structure",
@@ -1989,6 +3246,37 @@
         }
       }
     },
+    "Location":{
+      "type":"structure",
+      "members":{
+        "CodeLocation":{
+          "shape":"CodeLocation",
+          "documentation":"<p>A code location for code-level instrumentation, including language, code unit, class, method, file path, and optional line number.</p>"
+        }
+      },
+      "documentation":"<p>A union that identifies the location to instrument. Specify a <code>CodeLocation</code> for code-level instrumentation.</p>",
+      "union":true
+    },
+    "LocationIdentifier":{
+      "type":"structure",
+      "members":{
+        "CodeLocation":{
+          "shape":"CodeLocation",
+          "documentation":"<p>The full code location specification (will be hashed internally)</p>"
+        },
+        "LocationHash":{
+          "shape":"LocationIdentifierLocationHashString",
+          "documentation":"<p>The pre-computed location hash (16-character hex string)</p>"
+        }
+      },
+      "documentation":"<p>Union type for identifying an instrumentation configuration by code location or locationHash. Used in Get/Delete/GetStatus operations to allow flexible identification.</p>",
+      "union":true
+    },
+    "LocationIdentifierLocationHashString":{
+      "type":"string",
+      "max":16,
+      "min":16
+    },
     "LogGroupReferences":{
       "type":"list",
       "member":{"shape":"Attributes"}
@@ -2259,6 +3547,15 @@
       "box":true,
       "min":1
     },
+    "ProgrammingLanguage":{
+      "type":"string",
+      "documentation":"<p>The programming language of the instrumentation point. Java, Python, and JavaScript are currently supported.</p>",
+      "enum":[
+        "Java",
+        "Python",
+        "Javascript"
+      ]
+    },
     "PutGroupingConfigurationInput":{
       "type":"structure",
       "required":["GroupingAttributeDefinitions"],
@@ -2289,6 +3586,76 @@
         }
       },
       "documentation":"<p>The recurrence rule for the SLO time window exclusion .</p>"
+    },
+    "ReportInstrumentationConfigurationStatusRequest":{
+      "type":"structure",
+      "required":[
+        "Service",
+        "Environment",
+        "Configurations"
+      ],
+      "members":{
+        "Service":{
+          "shape":"ReportInstrumentationConfigurationStatusRequestServiceString",
+          "documentation":"<p>The service that the reported configurations belong to.</p>"
+        },
+        "Environment":{
+          "shape":"ReportInstrumentationConfigurationStatusRequestEnvironmentString",
+          "documentation":"<p>The environment that the service is running in.</p>"
+        },
+        "Configurations":{
+          "shape":"ReportInstrumentationConfigurationStatusRequestConfigurationsList",
+          "documentation":"<p>An array of configuration status reports (up to 100) that include the instrumentation type, signal type, location hash, status, timestamp, and optional error cause.</p>"
+        }
+      }
+    },
+    "ReportInstrumentationConfigurationStatusRequestConfigurationsList":{
+      "type":"list",
+      "member":{"shape":"InstrumentationConfigurationStatusReport"},
+      "max":100,
+      "min":1
+    },
+    "ReportInstrumentationConfigurationStatusRequestEnvironmentString":{
+      "type":"string",
+      "max":255,
+      "min":1
+    },
+    "ReportInstrumentationConfigurationStatusRequestServiceString":{
+      "type":"string",
+      "max":255,
+      "min":1
+    },
+    "ReportInstrumentationConfigurationStatusResponse":{
+      "type":"structure",
+      "required":[
+        "Service",
+        "Environment",
+        "UnprocessedStatusEvents"
+      ],
+      "members":{
+        "Service":{
+          "shape":"ReportInstrumentationConfigurationStatusResponseServiceString",
+          "documentation":"<p>The service name echoed from the request.</p>"
+        },
+        "Environment":{
+          "shape":"ReportInstrumentationConfigurationStatusResponseEnvironmentString",
+          "documentation":"<p>The environment echoed from the request.</p>"
+        },
+        "UnprocessedStatusEvents":{
+          "shape":"UnprocessedStatusEventList",
+          "documentation":"<p>Status events that failed to be processed. Each entry includes the configuration identifiers, status, timestamp, and a reason for the failure.</p>"
+        }
+      }
+    },
+    "ReportInstrumentationConfigurationStatusResponseEnvironmentString":{
+      "type":"string",
+      "max":255,
+      "min":1
+    },
+    "ReportInstrumentationConfigurationStatusResponseServiceString":{
+      "type":"string",
+      "max":255,
+      "min":1
     },
     "RequestBasedServiceLevelIndicator":{
       "type":"structure",
@@ -3300,6 +4667,62 @@
     "TotalBudgetSeconds":{
       "type":"integer",
       "box":true
+    },
+    "UnprocessedStatusEvent":{
+      "type":"structure",
+      "required":[
+        "InstrumentationType",
+        "SignalType",
+        "LocationHash",
+        "Status",
+        "Time",
+        "FailedReason"
+      ],
+      "members":{
+        "InstrumentationType":{
+          "shape":"InstrumentationType",
+          "documentation":"<p>The type of instrumentation configuration for the unprocessed status event.</p>"
+        },
+        "SignalType":{
+          "shape":"DynamicInstrumentationSignalType",
+          "documentation":"<p>The telemetry signal type for the unprocessed status event.</p>"
+        },
+        "LocationHash":{
+          "shape":"UnprocessedStatusEventLocationHashString",
+          "documentation":"<p>The stable hash of the instrumentation location for the unprocessed event.</p>"
+        },
+        "Status":{
+          "shape":"InstrumentationConfigurationStatus",
+          "documentation":"<p>The status that failed to be processed.</p>"
+        },
+        "Time":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp of the status event that failed to be processed.</p>"
+        },
+        "FailedReason":{
+          "shape":"UnprocessedStatusEventFailureReason",
+          "documentation":"<p>The reason why this status event could not be processed, such as throttling or validation errors.</p>"
+        }
+      },
+      "documentation":"<p>A status event that could not be processed by the service.</p>"
+    },
+    "UnprocessedStatusEventFailureReason":{
+      "type":"string",
+      "documentation":"<p>The reason an instrumentation status event could not be processed.</p> <ul> <li> <p> <code>THROTTLED</code> - The request exceeded allowed throughput.</p> </li> <li> <p> <code>INTERNAL_ERROR</code> - An internal server error occurred while processing the event.</p> </li> <li> <p> <code>VALIDATION_ERROR</code> - The event failed validation.</p> </li> </ul>",
+      "enum":[
+        "THROTTLED",
+        "INTERNAL_ERROR",
+        "VALIDATION_ERROR"
+      ]
+    },
+    "UnprocessedStatusEventList":{
+      "type":"list",
+      "member":{"shape":"UnprocessedStatusEvent"}
+    },
+    "UnprocessedStatusEventLocationHashString":{
+      "type":"string",
+      "max":16,
+      "min":16
     },
     "UntagResourceRequest":{
       "type":"structure",

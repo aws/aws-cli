@@ -91,7 +91,7 @@
       "errors":[
         {"shape":"TokenAlreadyExistsException"}
       ],
-      "documentation":"<p>Continues rolling back a stack from <code>UPDATE_ROLLBACK_FAILED</code> to <code>UPDATE_ROLLBACK_COMPLETE</code> state. Depending on the cause of the failure, you can manually fix the error and continue the rollback. By continuing the rollback, you can return your stack to a working state (the <code>UPDATE_ROLLBACK_COMPLETE</code> state) and then try to update the stack again.</p> <p>A stack enters the <code>UPDATE_ROLLBACK_FAILED</code> state when CloudFormation can't roll back all changes after a failed stack update. For example, this might occur when a stack attempts to roll back to an old database that was deleted outside of CloudFormation. Because CloudFormation doesn't know the instance was deleted, it assumes the instance still exists and attempts to roll back to it, causing the update rollback to fail.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-updating-stacks-continueupdaterollback.html\">Continue rolling back an update</a> in the <i>CloudFormation User Guide</i>. For information for troubleshooting a failed update rollback, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/troubleshooting.html#troubleshooting-errors-update-rollback-failed\">Update rollback failed</a>.</p>"
+      "documentation":"<p>Continues rolling back a stack from <code>UPDATE_ROLLBACK_FAILED</code> to <code>UPDATE_ROLLBACK_COMPLETE</code> state. Depending on the cause of the failure, you can manually fix the error and continue the rollback. By continuing the rollback, you can return your stack to a working state (the <code>UPDATE_ROLLBACK_COMPLETE</code> state) and then try to update the stack again.</p> <p>A stack enters the <code>UPDATE_ROLLBACK_FAILED</code> state when CloudFormation can't roll back all changes after a failed stack update. For example, this might occur when a stack attempts to roll back to an old database that was deleted outside of CloudFormation. Because CloudFormation doesn't know the instance was deleted, it assumes the instance still exists and attempts to roll back to it, causing the update rollback to fail.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-updating-stacks-continueupdaterollback.html\">Continue rolling back an update</a> in the <i>CloudFormation User Guide</i>. For information for troubleshooting a failed update rollback, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/troubleshooting.html#troubleshooting-errors-update-rollback-failed\">Update rollback failed</a>.</p> <p> <code>ForceRollback</code> and <code>ResourcesToSkip</code> are mutually exclusive. For details, see <a>ContinueUpdateRollbackInput$ForceRollback</a>.</p>"
     },
     "CreateChangeSet":{
       "name":"CreateChangeSet",
@@ -2101,6 +2101,10 @@
         "ClientRequestToken":{
           "shape":"ClientRequestToken",
           "documentation":"<p>A unique identifier for this <code>ContinueUpdateRollback</code> request. Specify this token if you plan to retry requests so that CloudFormation knows that you're not attempting to continue the rollback to a stack with the same name. You might retry <code>ContinueUpdateRollback</code> requests to ensure that CloudFormation successfully received them.</p>"
+        },
+        "ForceRollback":{
+          "shape":"ForceRollback",
+          "documentation":"<p>Specifies whether CloudFormation forces the rollback to continue by skipping resources currently in the <code>UPDATE_FAILED</code> state. Use this instead of listing each resource individually in <code>ResourcesToSkip</code>. Only resources that entered the <code>UPDATE_FAILED</code> state because a rollback failed are skipped. If you don't specify a value, the default is <code>false</code> and CloudFormation doesn't skip any resources.</p> <p> <code>ForceRollback</code> and <code>ResourcesToSkip</code> are mutually exclusive. Specifying both in the same request returns a validation error.</p> <important> <p>We recommend that you <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/troubleshooting.html#troubleshooting-errors-update-rollback-failed\">troubleshoot</a> resources before skipping them. CloudFormation sets the status of the skipped resources to <code>UPDATE_COMPLETE</code> and continues to roll back the stack, including resources in nested stacks. After the rollback completes, the skipped resources no longer match the resources in the stack template. Before performing another stack update, you must update the stack or resources to be consistent with each other. If you don't, subsequent stack updates might fail, and the stack will become unrecoverable.</p> <p>Drift detection reports skipped resources as <code>NOT_CHECKED</code>. For guidance, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-updating-stacks-continueupdaterollback.html\">Continue rolling back an update</a> in the <i>CloudFormation User Guide</i>.</p> </important>"
         }
       },
       "documentation":"<p>The input for the <a>ContinueUpdateRollback</a> action.</p>"
@@ -2196,6 +2200,14 @@
         "DeploymentMode":{
           "shape":"DeploymentMode",
           "documentation":"<p>Determines how CloudFormation handles configuration drift during deployment.</p> <ul> <li> <p> <code>REVERT_DRIFT</code> – Creates a drift-aware change set that brings actual resource states in line with template definitions. Provides a three-way comparison between actual state, previous deployment state, and desired state.</p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/drift-aware-change-sets.html\">Using drift-aware change sets</a> in the <i>CloudFormation User Guide</i>.</p>"
+        },
+        "DeploymentConfig":{
+          "shape":"DeploymentConfig",
+          "documentation":"<p>The deployment configuration for this stack operation, including the deployment mode.</p>"
+        },
+        "DisableValidation":{
+          "shape":"DisableValidation",
+          "documentation":"<p> Set to <code>true</code> to disable pre-deployment validations in changeset or stack operations. </p> <p> Default: <code>false</code> </p>"
         }
       },
       "documentation":"<p>The input for the <a>CreateChangeSet</a> action.</p>"
@@ -2320,6 +2332,14 @@
         "RetainExceptOnCreate":{
           "shape":"RetainExceptOnCreate",
           "documentation":"<p>When set to <code>true</code>, newly created resources are deleted when the operation rolls back. This includes newly created resources marked with a deletion policy of <code>Retain</code>.</p> <p>Default: <code>false</code> </p>"
+        },
+        "DeploymentConfig":{
+          "shape":"DeploymentConfig",
+          "documentation":"<p>The deployment configuration for this stack operation, including the deployment mode.</p>"
+        },
+        "DisableValidation":{
+          "shape":"DisableValidation",
+          "documentation":"<p> Set to <code>true</code> to disable pre-deployment validations in changeset or stack operations. </p> <p> Default: <code>false</code> </p>"
         }
       },
       "documentation":"<p>The input for <a>CreateStack</a> action.</p>"
@@ -2591,6 +2611,10 @@
         "DeletionMode":{
           "shape":"DeletionMode",
           "documentation":"<p>Specifies the deletion mode for the stack. Possible values are:</p> <ul> <li> <p> <code>STANDARD</code> - Use the standard behavior. Specifying this value is the same as not specifying this parameter.</p> </li> <li> <p> <code>FORCE_DELETE_STACK</code> - Delete the stack if it's stuck in a <code>DELETE_FAILED</code> state due to resource deletion failure.</p> </li> </ul>"
+        },
+        "DeploymentConfig":{
+          "shape":"DeploymentConfig",
+          "documentation":"<p>The deployment configuration for this stack operation, including the deployment mode.</p>"
         }
       },
       "documentation":"<p>The input for <a>DeleteStack</a> action.</p>"
@@ -2673,6 +2697,27 @@
       ]
     },
     "DeletionTime":{"type":"timestamp"},
+    "DeploymentConfig":{
+      "type":"structure",
+      "members":{
+        "Mode":{
+          "shape":"DeploymentConfigMode",
+          "documentation":"<p>Specifies the deployment mode for the stack operation. Possible values are:</p> <ul> <li> <p> <code>STANDARD</code> - Use the standard deployment behavior, ensuring resources are ready to serve traffic before completing the operation. This is the default. You do not need to specify this value explicitly.</p> </li> <li> <p> <code>EXPRESS</code> - Complete the stack operation when resource configuration is applied, without waiting for resources to become ready to serve traffic. Resources continue becoming ready in the background.</p> </li> </ul>"
+        },
+        "DisableRollback":{
+          "shape":"DisableRollback",
+          "documentation":"<p>Specifies whether to disable rollback of the stack if the stack operation fails.</p> <p>Default: <code>false</code> </p>"
+        }
+      },
+      "documentation":"<p>The deployment configuration for a stack operation, including the deployment mode.</p>"
+    },
+    "DeploymentConfigMode":{
+      "type":"string",
+      "enum":[
+        "STANDARD",
+        "EXPRESS"
+      ]
+    },
     "DeploymentMode":{
       "type":"string",
       "enum":["REVERT_DRIFT"]
@@ -2927,6 +2972,10 @@
         "DeploymentMode":{
           "shape":"DeploymentMode",
           "documentation":"<p>The deployment mode specified when the change set was created. Valid value is <code>REVERT_DRIFT</code>. Only present for drift-aware change sets.</p>"
+        },
+        "DeploymentConfig":{
+          "shape":"DeploymentConfig",
+          "documentation":"<p>The deployment configuration specified when the change set was created.</p>"
         }
       },
       "documentation":"<p>The output for the <a>DescribeChangeSet</a> action.</p>"
@@ -2936,7 +2985,7 @@
       "members":{
         "StackName":{
           "shape":"StackNameOrId",
-          "documentation":"<p>The name or unique stack ID for which you want to retrieve events.</p>"
+          "documentation":"<p>The name or unique stack ID for which you want to retrieve events. If you specified the name of a change set, specify the stack name or ID (ARN) of the change set you want to describe.</p>"
         },
         "ChangeSetName":{
           "shape":"ChangeSetNameOrId",
@@ -3738,11 +3787,16 @@
       ]
     },
     "DisableRollback":{"type":"boolean"},
+    "DisableValidation":{
+      "type":"boolean",
+      "documentation":"<p>Boolean to enable or disable pre-deployment validations in changeset and stack operations:</p> <ul> <li> <p> <code>true</code>: disable pre-deployment validations.</p> </li> <li> <p> <code>false</code>: enable pre-deployment validations.</p> </li> </ul>"
+    },
     "DriftIgnoredReason":{
       "type":"string",
       "enum":[
         "MANAGED_BY_AWS",
-        "WRITE_ONLY_PROPERTY"
+        "WRITE_ONLY_PROPERTY",
+        "SENSITIVE_PROPERTY"
       ]
     },
     "DriftedStackInstancesCount":{
@@ -3915,6 +3969,7 @@
       "max":100,
       "min":0
     },
+    "ForceRollback":{"type":"boolean"},
     "GeneratedTemplateDeletionPolicy":{
       "type":"string",
       "enum":[
@@ -6373,7 +6428,7 @@
         },
         "Reason":{
           "shape":"DriftIgnoredReason",
-          "documentation":"<p>Reason why drift was ignored for the attribute, can have 2 possible values:</p> <ul> <li> <p> <code>WRITE_ONLY_PROPERTY</code> - Property is not included in read response for the resource’s live state.</p> </li> <li> <p> <code>MANAGED_BY_AWS</code> - Property is managed by an Amazon Web Services service and is expected to be dynamically modified.</p> </li> </ul>"
+          "documentation":"<p>Reason why drift was ignored for the attribute, can have 3 possible values:</p> <ul> <li> <p> <code>WRITE_ONLY_PROPERTY</code> – Property is not included in read response for the resource’s live state.</p> </li> <li> <p> <code>MANAGED_BY_AWS</code> – Property is managed by an Amazon Web Services service and is expected to be dynamically modified.</p> </li> <li> <p> <code>SENSITIVE_PROPERTY</code> – Property has a sensitive value, such as an Amazon Web Services Secrets Manager value.</p> </li> </ul>"
         }
       },
       "documentation":"<p>The <code>ResourceDriftIgnoredAttribute</code> data type.</p>"
@@ -6778,6 +6833,10 @@
         "RetainExceptOnCreate":{
           "shape":"RetainExceptOnCreate",
           "documentation":"<p>When set to <code>true</code>, newly created resources are deleted when the operation rolls back. This includes newly created resources marked with a deletion policy of <code>Retain</code>.</p> <p>Default: <code>false</code> </p>"
+        },
+        "DeploymentConfig":{
+          "shape":"DeploymentConfig",
+          "documentation":"<p>The deployment configuration for this stack operation, including the deployment mode.</p>"
         }
       }
     },
@@ -6997,7 +7056,7 @@
         },
         "UniqueId":{
           "shape":"ResourceSignalUniqueId",
-          "documentation":"<p>A unique ID of the signal. When you signal Amazon EC2 instances or Amazon EC2 Auto Scaling groups, specify the instance ID that you are signaling as the unique ID. If you send multiple signals to a single resource (such as signaling a wait condition), each signal requires a different unique ID.</p>"
+          "documentation":"<p>A unique ID of the signal. When you signal Amazon EC2 instances or Auto Scaling groups, specify the instance ID that you are signaling as the unique ID. If you send multiple signals to a single resource (such as signaling a wait condition), each signal requires a different unique ID.</p>"
         },
         "Status":{
           "shape":"ResourceSignalStatus",
@@ -7061,6 +7120,10 @@
         "DisableRollback":{
           "shape":"DisableRollback",
           "documentation":"<p>Boolean to enable or disable rollback on stack creation failures:</p> <ul> <li> <p> <code>true</code>: disable rollback.</p> </li> <li> <p> <code>false</code>: enable rollback.</p> </li> </ul>"
+        },
+        "DeploymentConfig":{
+          "shape":"DeploymentConfig",
+          "documentation":"<p>The deployment configuration for the stack, including the deployment mode used for stack operations.</p>"
         },
         "NotificationARNs":{
           "shape":"NotificationARNs",
@@ -7926,7 +7989,7 @@
       "members":{
         "StackResourceDriftStatus":{
           "shape":"StackResourceDriftStatus",
-          "documentation":"<p>Status of the resource's actual configuration compared to its expected configuration.</p> <ul> <li> <p> <code>DELETED</code>: The resource differs from its expected configuration in that it has been deleted.</p> </li> <li> <p> <code>MODIFIED</code>: The resource differs from its expected configuration.</p> </li> <li> <p> <code>NOT_CHECKED</code>: CloudFormation hasn't checked if the resource differs from its expected configuration.</p> <p>Any resources that don't currently support drift detection have a status of <code>NOT_CHECKED</code>. For more information, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/resource-import-supported-resources.html\">Resource type support for imports and drift detection</a>. If you performed an <a>ContinueUpdateRollback</a> operation on a stack, any resources included in <code>ResourcesToSkip</code> will also have a status of <code>NOT_CHECKED</code>. For more information about skipping resources during rollback operations, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-updating-stacks-continueupdaterollback.html\">Continue rolling back an update</a> in the <i>CloudFormation User Guide</i>.</p> </li> <li> <p> <code>IN_SYNC</code>: The resource's actual configuration matches its expected configuration.</p> </li> </ul>"
+          "documentation":"<p>Status of the resource's actual configuration compared to its expected configuration.</p> <ul> <li> <p> <code>DELETED</code>: The resource differs from its expected configuration in that it has been deleted.</p> </li> <li> <p> <code>MODIFIED</code>: The resource differs from its expected configuration.</p> </li> <li> <p> <code>NOT_CHECKED</code>: CloudFormation hasn't checked if the resource differs from its expected configuration.</p> <p>Any resources that don't currently support drift detection have a status of <code>NOT_CHECKED</code>. For more information, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/resource-import-supported-resources.html\">Resource type support for imports and drift detection</a>. If you performed a <a>ContinueUpdateRollback</a> operation on a stack, resources skipped using <code>ResourcesToSkip</code> or <code>ForceRollback</code> also have a status of <code>NOT_CHECKED</code>. To detect whether a skipped resource actually differs from the template, run <a>DetectStackResourceDrift</a>. For more information about skipping resources during rollback operations, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-updating-stacks-continueupdaterollback.html\">Continue rolling back an update</a> in the <i>CloudFormation User Guide</i>.</p> </li> <li> <p> <code>IN_SYNC</code>: The resource's actual configuration matches its expected configuration.</p> </li> </ul>"
         },
         "LastCheckTimestamp":{
           "shape":"Timestamp",
@@ -9273,6 +9336,14 @@
         "RetainExceptOnCreate":{
           "shape":"RetainExceptOnCreate",
           "documentation":"<p>When set to <code>true</code>, newly created resources are deleted when the operation rolls back. This includes newly created resources marked with a deletion policy of <code>Retain</code>.</p> <p>Default: <code>false</code> </p>"
+        },
+        "DeploymentConfig":{
+          "shape":"DeploymentConfig",
+          "documentation":"<p>The deployment configuration for this stack operation, including the deployment mode.</p>"
+        },
+        "DisableValidation":{
+          "shape":"DisableValidation",
+          "documentation":"<p> Set to <code>true</code> to disable pre-deployment validations in changeset or stack operations. </p> <p> Default: <code>false</code> </p>"
         }
       },
       "documentation":"<p>The input for an <a>UpdateStack</a> action.</p>"
@@ -9590,5 +9661,5 @@
       "documentation":"<p>Contains any warnings returned by the <code>GetTemplateSummary</code> API action.</p>"
     }
   },
-  "documentation":"<fullname>CloudFormation</fullname> <p>CloudFormation allows you to create and manage Amazon Web Services infrastructure deployments predictably and repeatedly. You can use CloudFormation to leverage Amazon Web Services products, such as Amazon Elastic Compute Cloud, Amazon Elastic Block Store, Amazon Simple Notification Service, ELB, and Amazon EC2 Auto Scaling to build highly reliable, highly scalable, cost-effective applications without creating or configuring the underlying Amazon Web Services infrastructure.</p> <p>With CloudFormation, you declare all your resources and dependencies in a template file. The template defines a collection of resources as a single unit called a stack. CloudFormation creates and deletes all member resources of the stack together and manages all dependencies between the resources for you.</p> <p>For more information about CloudFormation, see the <a href=\"http://aws.amazon.com/cloudformation/\">CloudFormation product page</a>.</p> <p>CloudFormation makes use of other Amazon Web Services products. If you need additional technical information about a specific Amazon Web Services product, you can find the product's technical documentation at <a href=\"https://docs.aws.amazon.com/\">docs.aws.amazon.com</a>.</p>"
+  "documentation":"<fullname>CloudFormation</fullname> <p>CloudFormation allows you to create and manage Amazon Web Services infrastructure deployments predictably and repeatedly. You can use CloudFormation to leverage Amazon Web Services products, such as Amazon Elastic Compute Cloud, Amazon Elastic Block Store, Amazon Simple Notification Service, Elastic Load Balancing, and Amazon EC2 Auto Scaling to build highly reliable, highly scalable, cost-effective applications without creating or configuring the underlying Amazon Web Services infrastructure.</p> <p>With CloudFormation, you declare all your resources and dependencies in a template file. The template defines a collection of resources as a single unit called a stack. CloudFormation creates and deletes all member resources of the stack together and manages all dependencies between the resources for you.</p> <p>For more information about CloudFormation, see the <a href=\"http://aws.amazon.com/cloudformation/\">CloudFormation product page</a>.</p> <p>CloudFormation makes use of other Amazon Web Services products. If you need additional technical information about a specific Amazon Web Services product, you can find the product's technical documentation at <a href=\"https://docs.aws.amazon.com/\">docs.aws.amazon.com</a>.</p>"
 }

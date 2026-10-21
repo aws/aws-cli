@@ -310,6 +310,17 @@
       "documentation":"<p>You do not have sufficient permission to perform this action.</p>",
       "exception":true
     },
+    "Code":{
+      "type":"structure",
+      "members":{
+        "S3Location":{
+          "shape":"S3Location",
+          "documentation":"<p>The Amazon S3 location of the code artifacts that your workflow tasks use during execution.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the Amazon S3 location of code artifacts that workflows use during execution.</p>",
+      "union":true
+    },
     "ConflictException":{
       "type":"structure",
       "required":[
@@ -351,6 +362,10 @@
         "DefinitionS3Location":{
           "shape":"DefinitionS3Location",
           "documentation":"<p>The Amazon S3 location where the workflow definition file is stored. This must point to a valid YAML file that defines the workflow structure using supported Amazon Web Services operators and tasks. Amazon Managed Workflows for Apache Airflow Serverless takes a snapshot of the definition at creation time, so subsequent changes to the Amazon S3 object will not affect the workflow unless you create a new version. In your YAML definition, include task dependencies, scheduling information, and operator configurations that are compatible with the Amazon Managed Workflows for Apache Airflow Serverless execution environment.</p>"
+        },
+        "Code":{
+          "shape":"Code",
+          "documentation":"<p>The location of code artifacts in Amazon S3 for the workflow. The service copies the code from this location at the time of the request.</p>"
         },
         "RoleArn":{
           "shape":"RoleARN",
@@ -677,6 +692,14 @@
         "DefinitionS3Location":{
           "shape":"DefinitionS3Location",
           "documentation":"<p>The Amazon S3 location of the workflow definition file.</p>"
+        },
+        "Code":{
+          "shape":"Code",
+          "documentation":"<p>The Amazon S3 location of the code artifacts provided during workflow creation or update.</p>"
+        },
+        "CodeSnapshottedAt":{
+          "shape":"TimestampValue",
+          "documentation":"<p>The time at which the code artifacts were copied for this workflow, in ISO 8601 date-time format.</p>"
         },
         "ScheduleConfiguration":{
           "shape":"ScheduleConfiguration",
@@ -1057,6 +1080,43 @@
         "SCHEDULED"
       ]
     },
+    "S3Location":{
+      "type":"structure",
+      "required":[
+        "Bucket",
+        "ObjectKey"
+      ],
+      "members":{
+        "Bucket":{
+          "shape":"S3LocationBucketString",
+          "documentation":"<p>The name of the Amazon S3 bucket.</p>"
+        },
+        "ObjectKey":{
+          "shape":"S3LocationObjectKeyString",
+          "documentation":"<p>The key of the code artifact within the Amazon S3 bucket.</p>"
+        },
+        "VersionId":{
+          "shape":"S3LocationVersionIdString",
+          "documentation":"<p>The version ID of the object in Amazon S3. If not specified, the latest version is used.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the Amazon S3 location of code artifacts that workflows use during execution.</p>"
+    },
+    "S3LocationBucketString":{
+      "type":"string",
+      "max":63,
+      "min":3
+    },
+    "S3LocationObjectKeyString":{
+      "type":"string",
+      "max":1024,
+      "min":1
+    },
+    "S3LocationVersionIdString":{
+      "type":"string",
+      "max":1024,
+      "min":1
+    },
     "ScheduleConfiguration":{
       "type":"structure",
       "members":{
@@ -1376,6 +1436,10 @@
         "DefinitionS3Location":{
           "shape":"DefinitionS3Location",
           "documentation":"<p>The Amazon S3 location where the updated workflow definition file is stored.</p>"
+        },
+        "Code":{
+          "shape":"Code",
+          "documentation":"<p>The location of code artifacts in Amazon S3 for the updated workflow. The service copies the code from this location at the time of the request.</p>"
         },
         "RoleArn":{
           "shape":"RoleARN",

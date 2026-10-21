@@ -1,0 +1,60 @@
+{
+    "version": "1.0",
+    "parameters": {
+        "Endpoint": {
+            "type": "String",
+            "builtIn": "SDK::Endpoint",
+            "required": false,
+            "documentation": "Override the endpoint URL"
+        },
+        "Region": {
+            "required": true,
+            "type": "String",
+            "builtIn": "AWS::Region",
+            "documentation": "AWS region"
+        }
+    },
+    "rules": [
+        {
+            "documentation": "Use custom endpoint if provided",
+            "type": "endpoint",
+            "conditions": [
+                {
+                    "fn": "isSet",
+                    "argv": [
+                        {
+                            "ref": "Endpoint"
+                        }
+                    ]
+                }
+            ],
+            "endpoint": {
+                "url": "{Endpoint}"
+            }
+        },
+        {
+            "documentation": "Default endpoint for us-east-1",
+            "type": "endpoint",
+            "conditions": [
+                {
+                    "fn": "stringEquals",
+                    "argv": [
+                        {
+                            "ref": "Region"
+                        },
+                        "us-east-1"
+                    ]
+                }
+            ],
+            "endpoint": {
+                "url": "https://agent-toolkit.us-east-1.api.aws"
+            }
+        },
+        {
+            "documentation": "Error for unsupported regions",
+            "type": "error",
+            "conditions": [],
+            "error": "AgentToolkit is only available in us-east-1"
+        }
+    ]
+}

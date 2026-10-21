@@ -10,7 +10,11 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from awscli.customizations.s3.s3 import add_s3, awscli_initialize
+from awscli.customizations.s3.s3 import (
+    add_s3,
+    register_s3_main,
+    register_s3_sync_strategies,
+)
 from awscli.testutils import BaseAWSCommandParamsTest, mock, unittest
 
 
@@ -24,7 +28,8 @@ class AWSInitializeTest(unittest.TestCase):
         self.cli = mock.Mock()
 
     def test_initialize(self):
-        awscli_initialize(self.cli)
+        register_s3_main(self.cli)
+        register_s3_sync_strategies(self.cli)
         reference = []
         reference.append("building-command-table.main")
         reference.append("building-command-table.s3_sync")

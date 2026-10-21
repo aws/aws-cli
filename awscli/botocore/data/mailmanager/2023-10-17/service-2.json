@@ -5,8 +5,11 @@
     "auth":["aws.auth#sigv4"],
     "endpointPrefix":"mail-manager",
     "jsonVersion":"1.0",
-    "protocol":"json",
-    "protocols":["json"],
+    "protocol":"smithy-rpc-v2-cbor",
+    "protocols":[
+      "smithy-rpc-v2-cbor",
+      "json"
+    ],
     "serviceFullName":"MailManager",
     "serviceId":"MailManager",
     "signatureVersion":"v4",
@@ -1000,6 +1003,10 @@
         "Message":{"shape":"ErrorMessage"}
       },
       "documentation":"<p>Occurs when a user is denied access to a specific resource or action.</p>",
+      "error":{
+        "httpStatusCode":403,
+        "senderFault":true
+      },
       "exception":true
     },
     "ActionFailurePolicy":{
@@ -1466,6 +1473,10 @@
         "Message":{"shape":"ErrorMessage"}
       },
       "documentation":"<p>The request configuration has conflicts. For details, see the accompanying error message.</p>",
+      "error":{
+        "httpStatusCode":409,
+        "senderFault":true
+      },
       "exception":true
     },
     "CreateAddonInstanceRequest":{
@@ -4116,6 +4127,10 @@
         "Message":{"shape":"ErrorMessage"}
       },
       "documentation":"<p>Occurs when a requested resource is not found.</p>",
+      "error":{
+        "httpStatusCode":404,
+        "senderFault":true
+      },
       "exception":true
     },
     "ResultField":{
@@ -4961,6 +4976,10 @@
         "Message":{"shape":"ErrorMessage"}
       },
       "documentation":"<p>Occurs when an operation exceeds a predefined service quota or limit.</p>",
+      "error":{
+        "httpStatusCode":402,
+        "senderFault":true
+      },
       "exception":true
     },
     "SmtpPassword":{
@@ -5275,6 +5294,10 @@
         "Message":{"shape":"ErrorMessage"}
       },
       "documentation":"<p>Occurs when a service's request rate limit is exceeded, resulting in throttling of further requests.</p>",
+      "error":{
+        "httpStatusCode":429,
+        "senderFault":true
+      },
       "exception":true
     },
     "Timestamp":{"type":"timestamp"},
@@ -5533,6 +5556,10 @@
         "Message":{"shape":"ErrorMessage"}
       },
       "documentation":"<p>The request validation has failed. For details, see the accompanying error message.</p>",
+      "error":{
+        "httpStatusCode":400,
+        "senderFault":true
+      },
       "exception":true
     },
     "VpcEndpointId":{

@@ -45,6 +45,7 @@
       "errors":[
         {"shape":"InvalidParameterValueException"},
         {"shape":"ResourceConflictException"},
+        {"shape":"PublicPolicyException"},
         {"shape":"ServiceException"},
         {"shape":"TooManyRequestsException"},
         {"shape":"PolicyLengthExceededException"},
@@ -64,8 +65,12 @@
       "output":{"shape":"CheckpointDurableExecutionResponse"},
       "errors":[
         {"shape":"InvalidParameterValueException"},
+        {"shape":"KMSInvalidStateException"},
+        {"shape":"ServiceException"},
         {"shape":"TooManyRequestsException"},
-        {"shape":"ServiceException"}
+        {"shape":"KMSNotFoundException"},
+        {"shape":"KMSAccessDeniedException"},
+        {"shape":"KMSDisabledException"}
       ],
       "documentation":"<p>Saves the progress of a <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/durable-functions.html\">durable function</a> execution during runtime. This API is used by the Lambda durable functions SDK to checkpoint completed steps and schedule asynchronous operations. You typically don't need to call this API directly as the SDK handles checkpointing automatically.</p> <p>Each checkpoint operation consumes the current checkpoint token and returns a new one for the next checkpoint. This ensures that checkpoints are applied in the correct order and prevents duplicate or out-of-order state updates.</p>",
       "idempotent":true
@@ -84,9 +89,10 @@
         {"shape":"ResourceConflictException"},
         {"shape":"ServiceException"},
         {"shape":"TooManyRequestsException"},
+        {"shape":"AliasLimitExceededException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Creates an <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/configuration-aliases.html\">alias</a> for a Lambda function version. Use aliases to provide clients with a function identifier that you can update to invoke a different version.</p> <p>You can also map an alias to split invocation requests between two versions. Use the <code>RoutingConfig</code> parameter to specify a second version and the percentage of invocation requests that it receives.</p>",
+      "documentation":"<p>Creates an <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/configuration-aliases.html\">alias</a> for a Lambda Event Function version. Use aliases to provide clients with a function identifier that you can update to invoke a different version.</p> <p>You can also map an alias to split invocation requests between two versions. Use the <code>RoutingConfig</code> parameter to specify a second version and the percentage of invocation requests that it receives.</p>",
       "idempotent":true
     },
     "CreateCapacityProvider":{
@@ -105,7 +111,7 @@
         {"shape":"TooManyRequestsException"},
         {"shape":"CapacityProviderLimitExceededException"}
       ],
-      "documentation":"<p>Creates a capacity provider that manages compute resources for Lambda functions</p>",
+      "documentation":"<p>Creates a capacity provider that manages compute resources for Lambda Event Functions</p>",
       "idempotent":true
     },
     "CreateCodeSigningConfig":{
@@ -139,7 +145,7 @@
         {"shape":"TooManyRequestsException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Creates a mapping between an event source and an Lambda function. Lambda reads items from the event source and invokes the function.</p> <p>For details about how to configure different event sources, see the following topics. </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/with-ddb.html#services-dynamodb-eventsourcemapping\"> Amazon DynamoDB Streams</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/with-kinesis.html#services-kinesis-eventsourcemapping\"> Amazon Kinesis</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/with-sqs.html#events-sqs-eventsource\"> Amazon SQS</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/with-mq.html#services-mq-eventsourcemapping\"> Amazon MQ and RabbitMQ</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/with-msk.html\"> Amazon MSK</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/kafka-smaa.html\"> Apache Kafka</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/with-documentdb.html\"> Amazon DocumentDB</a> </p> </li> </ul> <p>The following error handling options are available for stream sources (DynamoDB, Kinesis, Amazon MSK, and self-managed Apache Kafka):</p> <ul> <li> <p> <code>BisectBatchOnFunctionError</code> – If the function returns an error, split the batch in two and retry.</p> </li> <li> <p> <code>MaximumRecordAgeInSeconds</code> – Discard records older than the specified age. The default value is infinite (-1). When set to infinite (-1), failed records are retried until the record expires</p> </li> <li> <p> <code>MaximumRetryAttempts</code> – Discard records after the specified number of retries. The default value is infinite (-1). When set to infinite (-1), failed records are retried until the record expires.</p> </li> <li> <p> <code>OnFailure</code> – Send discarded records to an Amazon SQS queue, Amazon SNS topic, Kafka topic, or Amazon S3 bucket. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/invocation-async-retain-records.html#invocation-async-destinations\">Adding a destination</a>.</p> </li> </ul> <p>The following option is available only for DynamoDB and Kinesis event sources:</p> <ul> <li> <p> <code>ParallelizationFactor</code> – Process multiple batches from each shard concurrently.</p> </li> </ul> <p>For information about which configuration parameters apply to each event source, see the following topics.</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/with-ddb.html#services-ddb-params\"> Amazon DynamoDB Streams</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/with-kinesis.html#services-kinesis-params\"> Amazon Kinesis</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/with-sqs.html#services-sqs-params\"> Amazon SQS</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/with-mq.html#services-mq-params\"> Amazon MQ and RabbitMQ</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/with-msk.html#services-msk-parms\"> Amazon MSK</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/with-kafka.html#services-kafka-parms\"> Apache Kafka</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/with-documentdb.html#docdb-configuration\"> Amazon DocumentDB</a> </p> </li> </ul>"
+      "documentation":"<p>Creates a mapping between an event source and an Lambda Event Function. Lambda reads items from the event source and invokes the function.</p> <p>For details about how to configure different event sources, see the following topics. </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/with-ddb.html#services-dynamodb-eventsourcemapping\"> Amazon DynamoDB Streams</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/with-kinesis.html#services-kinesis-eventsourcemapping\"> Amazon Kinesis</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/with-sqs.html#events-sqs-eventsource\"> Amazon SQS</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/with-mq.html#services-mq-eventsourcemapping\"> Amazon MQ and RabbitMQ</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/with-msk.html\"> Amazon MSK</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/kafka-smaa.html\"> Apache Kafka</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/with-documentdb.html\"> Amazon DocumentDB</a> </p> </li> </ul> <p>The following error handling options are available for stream sources (DynamoDB, Kinesis, Amazon MSK, and self-managed Apache Kafka):</p> <ul> <li> <p> <code>BisectBatchOnFunctionError</code> – If the function returns an error, split the batch in two and retry.</p> </li> <li> <p> <code>MaximumRecordAgeInSeconds</code> – Discard records older than the specified age. The default value is infinite (-1). When set to infinite (-1), failed records are retried until the record expires</p> </li> <li> <p> <code>MaximumRetryAttempts</code> – Discard records after the specified number of retries. The default value is infinite (-1). When set to infinite (-1), failed records are retried until the record expires.</p> </li> <li> <p> <code>OnFailure</code> – Send discarded records to an Amazon SQS queue, Amazon SNS topic, Kafka topic, or Amazon S3 bucket. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/invocation-async-retain-records.html#invocation-async-destinations\">Adding a destination</a>.</p> </li> </ul> <p>The following option is available only for DynamoDB and Kinesis event sources:</p> <ul> <li> <p> <code>ParallelizationFactor</code> – Process multiple batches from each shard concurrently.</p> </li> </ul> <p>For information about which configuration parameters apply to each event source, see the following topics.</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/with-ddb.html#services-ddb-params\"> Amazon DynamoDB Streams</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/with-kinesis.html#services-kinesis-params\"> Amazon Kinesis</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/with-sqs.html#services-sqs-params\"> Amazon SQS</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/with-mq.html#services-mq-params\"> Amazon MQ and RabbitMQ</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/with-msk.html#services-msk-parms\"> Amazon MSK</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/with-kafka.html#services-kafka-parms\"> Apache Kafka</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/with-documentdb.html#docdb-configuration\"> Amazon DocumentDB</a> </p> </li> </ul>"
     },
     "CreateFunction":{
       "name":"CreateFunction",
@@ -162,7 +168,7 @@
         {"shape":"CodeStorageExceededException"},
         {"shape":"FunctionVersionsPerCapacityProviderLimitExceededException"}
       ],
-      "documentation":"<p>Creates a Lambda function. To create a function, you need a <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/gettingstarted-package.html\">deployment package</a> and an <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/intro-permission-model.html#lambda-intro-execution-role\">execution role</a>. The deployment package is a .zip file archive or container image that contains your function code. The execution role grants the function permission to use Amazon Web Services services, such as Amazon CloudWatch Logs for log streaming and X-Ray for request tracing.</p> <p>If the deployment package is a <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/lambda-images.html\">container image</a>, then you set the package type to <code>Image</code>. For a container image, the code property must include the URI of a container image in the Amazon ECR registry. You do not need to specify the handler and runtime properties.</p> <p>If the deployment package is a <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/gettingstarted-package.html#gettingstarted-package-zip\">.zip file archive</a>, then you set the package type to <code>Zip</code>. For a .zip file archive, the code property specifies the location of the .zip file. You must also specify the handler and runtime properties. The code in the deployment package must be compatible with the target instruction set architecture of the function (<code>x86-64</code> or <code>arm64</code>). If you do not specify the architecture, then the default value is <code>x86-64</code>.</p> <p>When you create a function, Lambda provisions an instance of the function and its supporting resources. If your function connects to a VPC, this process can take a minute or so. During this time, you can't invoke or modify the function. The <code>State</code>, <code>StateReason</code>, and <code>StateReasonCode</code> fields in the response from <a>GetFunctionConfiguration</a> indicate when the function is ready to invoke. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/functions-states.html\">Lambda function states</a>.</p> <p>A function has an unpublished version, and can have published versions and aliases. The unpublished version changes when you update your function's code and configuration. A published version is a snapshot of your function code and configuration that can't be changed. An alias is a named resource that maps to a version, and can be changed to map to a different version. Use the <code>Publish</code> parameter to create version <code>1</code> of your function from its initial configuration.</p> <p>The other parameters let you configure version-specific and function-level settings. You can modify version-specific settings later with <a>UpdateFunctionConfiguration</a>. Function-level settings apply to both the unpublished and published versions of the function, and include tags (<a>TagResource</a>) and per-function concurrency limits (<a>PutFunctionConcurrency</a>).</p> <p>You can use code signing if your deployment package is a .zip file archive. To enable code signing for this function, specify the ARN of a code-signing configuration. When a user attempts to deploy a code package with <a>UpdateFunctionCode</a>, Lambda checks that the code package has a valid signature from a trusted publisher. The code-signing configuration includes set of signing profiles, which define the trusted publishers for this function.</p> <p>If another Amazon Web Services account or an Amazon Web Services service invokes your function, use <a>AddPermission</a> to grant permission by creating a resource-based Identity and Access Management (IAM) policy. You can grant permissions at the function level, on a version, or on an alias.</p> <p>To invoke your function directly, use <a>Invoke</a>. To invoke your function in response to events in other Amazon Web Services services, create an event source mapping (<a>CreateEventSourceMapping</a>), or configure a function trigger in the other service. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/lambda-invocation.html\">Invoking Lambda functions</a>.</p>",
+      "documentation":"<p>Creates a Lambda Event Function. To create a function, you need a <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/gettingstarted-package.html\">deployment package</a> and an <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/intro-permission-model.html#lambda-intro-execution-role\">execution role</a>. The deployment package is a .zip file archive or container image that contains your function code. The execution role grants the function permission to use Amazon Web Services services, such as Amazon CloudWatch Logs for log streaming and X-Ray for request tracing.</p> <p>If the deployment package is a <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/lambda-images.html\">container image</a>, then you set the package type to <code>Image</code>. For a container image, the code property must include the URI of a container image in the Amazon ECR registry. You do not need to specify the handler and runtime properties.</p> <p>If the deployment package is a <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/gettingstarted-package.html#gettingstarted-package-zip\">.zip file archive</a>, then you set the package type to <code>Zip</code>. For a .zip file archive, the code property specifies the location of the .zip file. You must also specify the handler and runtime properties. The code in the deployment package must be compatible with the target instruction set architecture of the function (<code>x86-64</code> or <code>arm64</code>). If you do not specify the architecture, then the default value is <code>x86-64</code>.</p> <p>When you create a function, Lambda provisions an instance of the function and its supporting resources. If your function connects to a VPC, this process can take a minute or so. During this time, you can't invoke or modify the function. The <code>State</code>, <code>StateReason</code>, and <code>StateReasonCode</code> fields in the response from <a>GetFunctionConfiguration</a> indicate when the function is ready to invoke. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/functions-states.html\">Lambda function states</a>.</p> <p>A function has an unpublished version, and can have published versions and aliases. The unpublished version changes when you update your function's code and configuration. A published version is a snapshot of your function code and configuration that can't be changed. An alias is a named resource that maps to a version, and can be changed to map to a different version. Use the <code>Publish</code> parameter to create version <code>1</code> of your function from its initial configuration.</p> <p>The other parameters let you configure version-specific and function-level settings. You can modify version-specific settings later with <a>UpdateFunctionConfiguration</a>. Function-level settings apply to both the unpublished and published versions of the function, and include tags (<a>TagResource</a>) and per-function concurrency limits (<a>PutFunctionConcurrency</a>).</p> <p>You can use code signing if your deployment package is a .zip file archive. To enable code signing for this function, specify the ARN of a code-signing configuration. When a user attempts to deploy a code package with <a>UpdateFunctionCode</a>, Lambda checks that the code package has a valid signature from a trusted publisher. The code-signing configuration includes set of signing profiles, which define the trusted publishers for this function.</p> <p>If another Amazon Web Services account or an Amazon Web Services service invokes your function, use <a>AddPermission</a> to grant permission by creating a resource-based Identity and Access Management (IAM) policy. You can grant permissions at the function level, on a version, or on an alias.</p> <p>To invoke your function directly, use <a>Invoke</a>. To invoke your function in response to events in other Amazon Web Services services, create an event source mapping (<a>CreateEventSourceMapping</a>), or configure a function trigger in the other service. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/lambda-invocation.html\">Invoking Lambda functions</a>.</p>",
       "idempotent":true
     },
     "CreateFunctionUrlConfig":{
@@ -195,9 +201,10 @@
         {"shape":"InvalidParameterValueException"},
         {"shape":"ResourceConflictException"},
         {"shape":"ServiceException"},
-        {"shape":"TooManyRequestsException"}
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Deletes a Lambda function <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/configuration-aliases.html\">alias</a>.</p>",
+      "documentation":"<p>Deletes a Lambda Event Function <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/configuration-aliases.html\">alias</a>.</p>",
       "idempotent":true
     },
     "DeleteCapacityProvider":{
@@ -273,7 +280,7 @@
         {"shape":"TooManyRequestsException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Deletes a Lambda function. To delete a specific function version, use the <code>Qualifier</code> parameter. Otherwise, all versions and aliases are deleted. This doesn't require the user to have explicit permissions for <a>DeleteAlias</a>.</p> <note> <p>A deleted Lambda function cannot be recovered. Ensure that you specify the correct function name and version before deleting.</p> </note> <p>To delete Lambda event source mappings that invoke a function, use <a>DeleteEventSourceMapping</a>. For Amazon Web Services services and resources that invoke your function directly, delete the trigger in the service where you originally configured it.</p>",
+      "documentation":"<p>Deletes a Lambda Event Function. To delete a specific function version, use the <code>Qualifier</code> parameter. Otherwise, all versions and aliases are deleted. This doesn't require the user to have explicit permissions for <a>DeleteAlias</a>.</p> <note> <p>A deleted Lambda function cannot be recovered. Ensure that you specify the correct function name and version before deleting.</p> </note> <p>To delete Lambda event source mappings that invoke a function, use <a>DeleteEventSourceMapping</a>. For Amazon Web Services services and resources that invoke your function directly, delete the trigger in the service where you originally configured it.</p>",
       "idempotent":true
     },
     "DeleteFunctionCodeSigningConfig":{
@@ -337,6 +344,7 @@
       },
       "input":{"shape":"DeleteFunctionUrlConfigRequest"},
       "errors":[
+        {"shape":"InvalidParameterValueException"},
         {"shape":"ResourceConflictException"},
         {"shape":"ServiceException"},
         {"shape":"TooManyRequestsException"},
@@ -353,8 +361,10 @@
       },
       "input":{"shape":"DeleteLayerVersionRequest"},
       "errors":[
+        {"shape":"InvalidParameterValueException"},
         {"shape":"ServiceException"},
-        {"shape":"TooManyRequestsException"}
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Deletes a version of an <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/configuration-layers.html\">Lambda layer</a>. Deleted versions can no longer be viewed or added to functions. To avoid breaking functions, a copy of the version remains in Lambda until no functions refer to it.</p>",
       "idempotent":true
@@ -375,6 +385,25 @@
         {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Deletes the provisioned concurrency configuration for a function.</p>",
+      "idempotent":true
+    },
+    "DeleteResourcePolicy":{
+      "name":"DeleteResourcePolicy",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/2026-07-09/resource-policy/{ResourceArn}",
+        "responseCode":204
+      },
+      "input":{"shape":"DeleteResourcePolicyRequest"},
+      "errors":[
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ResourceConflictException"},
+        {"shape":"ServiceException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"PreconditionFailedException"}
+      ],
+      "documentation":"<p>Deletes a <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/access-control-resource-based.html\">resource-based policy</a> from a Lambda resource.</p>",
       "idempotent":true
     },
     "GetAccountSettings":{
@@ -408,7 +437,7 @@
         {"shape":"TooManyRequestsException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Returns details about a Lambda function <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/configuration-aliases.html\">alias</a>.</p>",
+      "documentation":"<p>Returns details about a Lambda Event Function <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/configuration-aliases.html\">alias</a>.</p>",
       "readonly":true
     },
     "GetCapacityProvider":{
@@ -457,9 +486,13 @@
       "output":{"shape":"GetDurableExecutionResponse"},
       "errors":[
         {"shape":"InvalidParameterValueException"},
-        {"shape":"TooManyRequestsException"},
+        {"shape":"KMSInvalidStateException"},
         {"shape":"ServiceException"},
-        {"shape":"ResourceNotFoundException"}
+        {"shape":"TooManyRequestsException"},
+        {"shape":"KMSNotFoundException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"KMSAccessDeniedException"},
+        {"shape":"KMSDisabledException"}
       ],
       "documentation":"<p>Retrieves detailed information about a specific <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/durable-functions.html\">durable execution</a>, including its current status, input payload, result or error information, and execution metadata such as start time and usage statistics.</p>",
       "readonly":true
@@ -475,9 +508,13 @@
       "output":{"shape":"GetDurableExecutionHistoryResponse"},
       "errors":[
         {"shape":"InvalidParameterValueException"},
-        {"shape":"TooManyRequestsException"},
+        {"shape":"KMSInvalidStateException"},
         {"shape":"ServiceException"},
-        {"shape":"ResourceNotFoundException"}
+        {"shape":"TooManyRequestsException"},
+        {"shape":"KMSNotFoundException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"KMSAccessDeniedException"},
+        {"shape":"KMSDisabledException"}
       ],
       "documentation":"<p>Retrieves the execution history for a <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/durable-functions.html\">durable execution</a>, showing all the steps, callbacks, and events that occurred during the execution. This provides a detailed audit trail of the execution's progress over time.</p> <p>The history is available while the execution is running and for a retention period after it completes (1-90 days, default 30 days). You can control whether to include execution data such as step results and callback payloads.</p>",
       "readonly":true
@@ -493,8 +530,12 @@
       "output":{"shape":"GetDurableExecutionStateResponse"},
       "errors":[
         {"shape":"InvalidParameterValueException"},
+        {"shape":"KMSInvalidStateException"},
+        {"shape":"ServiceException"},
         {"shape":"TooManyRequestsException"},
-        {"shape":"ServiceException"}
+        {"shape":"KMSNotFoundException"},
+        {"shape":"KMSAccessDeniedException"},
+        {"shape":"KMSDisabledException"}
       ],
       "documentation":"<p>Retrieves the current execution state required for the replay process during <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/durable-functions.html\">durable function</a> execution. This API is used by the Lambda durable functions SDK to get state information needed for replay. You typically don't need to call this API directly as the SDK handles state management automatically.</p> <p>The response contains operations ordered by start sequence number in ascending order. Completed operations with children don't include child operation details since they don't need to be replayed.</p>",
       "readonly":true
@@ -548,7 +589,8 @@
         {"shape":"InvalidParameterValueException"},
         {"shape":"ServiceException"},
         {"shape":"TooManyRequestsException"},
-        {"shape":"ResourceNotFoundException"}
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"CodeSigningConfigNotFoundException"}
       ],
       "documentation":"<p>Returns the code signing configuration for the specified function.</p>",
       "readonly":true
@@ -586,7 +628,7 @@
         {"shape":"TooManyRequestsException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Returns the version-specific settings of a Lambda function or version. The output includes only options that can vary between versions of a function. To modify these settings, use <a>UpdateFunctionConfiguration</a>.</p> <p>To get all of a function's details, including function-level settings, use <a>GetFunction</a>.</p>",
+      "documentation":"<p>Returns the version-specific settings of a Lambda Event Function or version. The output includes only options that can vary between versions of a function. To modify these settings, use <a>UpdateFunctionConfiguration</a>.</p> <p>To get all of a function's details, including function-level settings, use <a>GetFunction</a>.</p>",
       "readonly":true
     },
     "GetFunctionEventInvokeConfig":{
@@ -752,6 +794,24 @@
       "documentation":"<p>Retrieves the provisioned concurrency configuration for a function's alias or version.</p>",
       "readonly":true
     },
+    "GetResourcePolicy":{
+      "name":"GetResourcePolicy",
+      "http":{
+        "method":"GET",
+        "requestUri":"/2026-07-09/resource-policy/{ResourceArn}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetResourcePolicyRequest"},
+      "output":{"shape":"GetResourcePolicyResponse"},
+      "errors":[
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ServiceException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Retrieves the <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/access-control-resource-based.html\">resource-based policy</a> attached to a Lambda resource.</p>",
+      "readonly":true
+    },
     "GetRuntimeManagementConfig":{
       "name":"GetRuntimeManagementConfig",
       "http":{
@@ -780,7 +840,9 @@
       "input":{"shape":"InvocationRequest"},
       "output":{"shape":"InvocationResponse"},
       "errors":[
+        {"shape":"CodeArtifactUserDeletedException"},
         {"shape":"ResourceNotReadyException"},
+        {"shape":"ServiceQuotaExceededException"},
         {"shape":"InvalidSecurityGroupIDException"},
         {"shape":"SnapStartTimeoutException"},
         {"shape":"TooManyRequestsException"},
@@ -806,18 +868,23 @@
         {"shape":"ENILimitReachedException"},
         {"shape":"SnapStartNotReadyException"},
         {"shape":"ServiceException"},
+        {"shape":"CodeArtifactUserPendingException"},
         {"shape":"SnapStartException"},
         {"shape":"RecursiveInvocationException"},
         {"shape":"S3FilesMountFailureException"},
         {"shape":"EFSMountTimeoutException"},
+        {"shape":"ENINotReadyException"},
         {"shape":"S3FilesMountTimeoutException"},
+        {"shape":"CodeArtifactUserFailedException"},
+        {"shape":"ModeNotSupportedException"},
         {"shape":"ResourceNotFoundException"},
         {"shape":"InvalidRequestContentException"},
+        {"shape":"SnapStartRegenerationFailureException"},
         {"shape":"DurableExecutionAlreadyStartedException"},
         {"shape":"InvalidZipFileException"},
         {"shape":"EFSMountFailureException"}
       ],
-      "documentation":"<p>Invokes a Lambda function. You can invoke a function synchronously (and wait for the response), or asynchronously. By default, Lambda invokes your function synchronously (i.e. the<code>InvocationType</code> is <code>RequestResponse</code>). To invoke a function asynchronously, set <code>InvocationType</code> to <code>Event</code>. Lambda passes the <code>ClientContext</code> object to your function for synchronous invocations only.</p> <p>For synchronous invocations, the maximum payload size is 6 MB. For asynchronous invocations, the maximum payload size is 1 MB.</p> <p>For <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/invocation-sync.html\">synchronous invocation</a>, details about the function response, including errors, are included in the response body and headers. For either invocation type, you can find more information in the <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/monitoring-functions.html\">execution log</a> and <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/lambda-x-ray.html\">trace</a>.</p> <p>When an error occurs, your function may be invoked multiple times. Retry behavior varies by error type, client, event source, and invocation type. For example, if you invoke a function asynchronously and it returns an error, Lambda executes the function up to two more times. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/invocation-retries.html\">Error handling and automatic retries in Lambda</a>.</p> <p>For <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/invocation-async.html\">asynchronous invocation</a>, Lambda adds events to a queue before sending them to your function. If your function does not have enough capacity to keep up with the queue, events may be lost. Occasionally, your function may receive the same event multiple times, even if no error occurs. To retain events that were not processed, configure your function with a <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/invocation-async.html#invocation-dlq\">dead-letter queue</a>.</p> <p>The status code in the API response doesn't reflect function errors. Error codes are reserved for errors that prevent your function from executing, such as permissions errors, <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/gettingstarted-limits.html\">quota</a> errors, or issues with your function's code and configuration. For example, Lambda returns <code>TooManyRequestsException</code> if running the function would cause you to exceed a concurrency limit at either the account level (<code>ConcurrentInvocationLimitExceeded</code>) or function level (<code>ReservedFunctionConcurrentInvocationLimitExceeded</code>).</p> <p>For functions with a long timeout, your client might disconnect during synchronous invocation while it waits for a response. Configure your HTTP client, SDK, firewall, proxy, or operating system to allow for long connections with timeout or keep-alive settings.</p> <p>This operation requires permission for the <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/list_awslambda.html\">lambda:InvokeFunction</a> action. For details on how to set up permissions for cross-account invocations, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/access-control-resource-based.html#permissions-resource-xaccountinvoke\">Granting function access to other accounts</a>.</p>"
+      "documentation":"<p>Invokes a Lambda Event Function. You can invoke a function synchronously (and wait for the response), or asynchronously. By default, Lambda invokes your function synchronously (i.e. the<code>InvocationType</code> is <code>RequestResponse</code>). To invoke a function asynchronously, set <code>InvocationType</code> to <code>Event</code>. Lambda passes the <code>ClientContext</code> object to your function for synchronous invocations only.</p> <p>For synchronous invocations, the maximum payload size is 6 MB. For asynchronous invocations, the maximum payload size is 1 MB.</p> <p>For <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/invocation-sync.html\">synchronous invocation</a>, details about the function response, including errors, are included in the response body and headers. For either invocation type, you can find more information in the <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/monitoring-functions.html\">execution log</a> and <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/lambda-x-ray.html\">trace</a>.</p> <p>When an error occurs, your function may be invoked multiple times. Retry behavior varies by error type, client, event source, and invocation type. For example, if you invoke a function asynchronously and it returns an error, Lambda executes the function up to two more times. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/invocation-retries.html\">Error handling and automatic retries in Lambda</a>.</p> <p>For <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/invocation-async.html\">asynchronous invocation</a>, Lambda adds events to a queue before sending them to your function. If your function does not have enough capacity to keep up with the queue, events may be lost. Occasionally, your function may receive the same event multiple times, even if no error occurs. To retain events that were not processed, configure your function with a <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/invocation-async.html#invocation-dlq\">dead-letter queue</a>.</p> <p>The status code in the API response doesn't reflect function errors. Error codes are reserved for errors that prevent your function from executing, such as permissions errors, <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/gettingstarted-limits.html\">quota</a> errors, or issues with your function's code and configuration. For example, Lambda returns <code>TooManyRequestsException</code> if running the function would cause you to exceed a concurrency limit at either the account level (<code>ConcurrentInvocationLimitExceeded</code>) or function level (<code>ReservedFunctionConcurrentInvocationLimitExceeded</code>).</p> <p>For functions with a long timeout, your client might disconnect during synchronous invocation while it waits for a response. Configure your HTTP client, SDK, firewall, proxy, or operating system to allow for long connections with timeout or keep-alive settings.</p> <p>This operation requires permission for the <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/list_awslambda.html\">lambda:InvokeFunction</a> action. For details on how to set up permissions for cross-account invocations, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/access-control-resource-based.html#permissions-resource-xaccountinvoke\">Granting function access to other accounts</a>.</p>"
     },
     "InvokeAsync":{
       "name":"InvokeAsync",
@@ -829,11 +896,35 @@
       "input":{"shape":"InvokeAsyncRequest"},
       "output":{"shape":"InvokeAsyncResponse"},
       "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"InvalidSecurityGroupIDException"},
+        {"shape":"SnapStartTimeoutException"},
+        {"shape":"EC2ThrottledException"},
+        {"shape":"EFSMountConnectivityException"},
+        {"shape":"SubnetIPAddressLimitReachedException"},
+        {"shape":"KMSAccessDeniedException"},
+        {"shape":"KMSDisabledException"},
+        {"shape":"S3FilesMountConnectivityException"},
         {"shape":"InvalidRuntimeException"},
+        {"shape":"EC2UnexpectedException"},
+        {"shape":"InvalidSubnetIDException"},
+        {"shape":"KMSNotFoundException"},
+        {"shape":"EC2AccessDeniedException"},
+        {"shape":"EFSIOException"},
+        {"shape":"KMSInvalidStateException"},
         {"shape":"ResourceConflictException"},
+        {"shape":"ENILimitReachedException"},
+        {"shape":"SnapStartNotReadyException"},
         {"shape":"ServiceException"},
+        {"shape":"SnapStartException"},
+        {"shape":"S3FilesMountFailureException"},
+        {"shape":"EFSMountTimeoutException"},
+        {"shape":"S3FilesMountTimeoutException"},
+        {"shape":"ModeNotSupportedException"},
         {"shape":"ResourceNotFoundException"},
-        {"shape":"InvalidRequestContentException"}
+        {"shape":"InvalidRequestContentException"},
+        {"shape":"SnapStartRegenerationFailureException"},
+        {"shape":"EFSMountFailureException"}
       ],
       "documentation":"<p><note> <p>For asynchronous function invocation, use <a>Invoke</a>.</p> </note> <p>Invokes a function asynchronously.</p> <note> <p>The payload limit is 256KB. For larger payloads, for up to 1MB, use <a>Invoke</a>.</p> </note> <note> <p>If you do use the InvokeAsync action, note that it doesn't support the use of X-Ray active tracing. Trace ID is not propagated to the function, even if X-Ray active tracing is turned on.</p> </note></p>",
       "deprecated":true
@@ -848,7 +939,9 @@
       "input":{"shape":"InvokeWithResponseStreamRequest"},
       "output":{"shape":"InvokeWithResponseStreamResponse"},
       "errors":[
+        {"shape":"CodeArtifactUserDeletedException"},
         {"shape":"ResourceNotReadyException"},
+        {"shape":"ServiceQuotaExceededException"},
         {"shape":"InvalidSecurityGroupIDException"},
         {"shape":"SnapStartTimeoutException"},
         {"shape":"TooManyRequestsException"},
@@ -874,17 +967,20 @@
         {"shape":"ENILimitReachedException"},
         {"shape":"SnapStartNotReadyException"},
         {"shape":"ServiceException"},
+        {"shape":"CodeArtifactUserPendingException"},
         {"shape":"SnapStartException"},
         {"shape":"RecursiveInvocationException"},
         {"shape":"S3FilesMountFailureException"},
         {"shape":"EFSMountTimeoutException"},
         {"shape":"S3FilesMountTimeoutException"},
+        {"shape":"CodeArtifactUserFailedException"},
         {"shape":"ResourceNotFoundException"},
         {"shape":"InvalidRequestContentException"},
+        {"shape":"SnapStartRegenerationFailureException"},
         {"shape":"InvalidZipFileException"},
         {"shape":"EFSMountFailureException"}
       ],
-      "documentation":"<p>Configure your Lambda functions to stream response payloads back to clients. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/configuration-response-streaming.html\">Configuring a Lambda function to stream responses</a>.</p> <p>This operation requires permission for the <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/list_awslambda.html\">lambda:InvokeFunction</a> action. For details on how to set up permissions for cross-account invocations, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/access-control-resource-based.html#permissions-resource-xaccountinvoke\">Granting function access to other accounts</a>.</p>"
+      "documentation":"<p>Configure your Lambda Event Functions to stream response payloads back to clients. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/configuration-response-streaming.html\">Configuring a Lambda function to stream responses</a>.</p> <p>This operation requires permission for the <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/list_awslambda.html\">lambda:InvokeFunction</a> action. For details on how to set up permissions for cross-account invocations, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/access-control-resource-based.html#permissions-resource-xaccountinvoke\">Granting function access to other accounts</a>.</p>"
     },
     "ListAliases":{
       "name":"ListAliases",
@@ -901,7 +997,7 @@
         {"shape":"TooManyRequestsException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Returns a list of <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/configuration-aliases.html\">aliases</a> for a Lambda function.</p>",
+      "documentation":"<p>Returns a list of <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/configuration-aliases.html\">aliases</a> for a Lambda Event Function.</p>",
       "readonly":true
     },
     "ListCapacityProviders":{
@@ -948,8 +1044,8 @@
       "output":{"shape":"ListDurableExecutionsByFunctionResponse"},
       "errors":[
         {"shape":"InvalidParameterValueException"},
-        {"shape":"TooManyRequestsException"},
         {"shape":"ServiceException"},
+        {"shape":"TooManyRequestsException"},
         {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Returns a list of <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/durable-functions.html\">durable executions</a> for a specified Lambda function. You can filter the results by execution name, status, and start time range. This API supports pagination for large result sets.</p>",
@@ -1041,7 +1137,7 @@
         {"shape":"ServiceException"},
         {"shape":"TooManyRequestsException"}
       ],
-      "documentation":"<p>Returns a list of Lambda functions, with the version-specific configuration of each. Lambda returns up to 50 functions per call.</p> <p>Set <code>FunctionVersion</code> to <code>ALL</code> to include all published versions of each function in addition to the unpublished version.</p> <note> <p>The <code>ListFunctions</code> operation returns a subset of the <a>FunctionConfiguration</a> fields. To get the additional fields (State, StateReasonCode, StateReason, LastUpdateStatus, LastUpdateStatusReason, LastUpdateStatusReasonCode, RuntimeVersionConfig) for a function or version, use <a>GetFunction</a>.</p> </note>",
+      "documentation":"<p>Returns a list of Lambda Event Functions, with the version-specific configuration of each. Lambda returns up to 50 functions per call.</p> <p>Set <code>FunctionVersion</code> to <code>ALL</code> to include all published versions of each function in addition to the unpublished version.</p> <note> <p>The <code>ListFunctions</code> operation returns a subset of the <a>FunctionConfiguration</a> fields. To get the additional fields (State, StateReasonCode, StateReason, LastUpdateStatus, LastUpdateStatusReason, LastUpdateStatusReasonCode, RuntimeVersionConfig) for a function or version, use <a>GetFunction</a>.</p> </note>",
       "readonly":true
     },
     "ListFunctionsByCodeSigningConfig":{
@@ -1184,8 +1280,8 @@
         {"shape":"TooManyRequestsException"},
         {"shape":"ResourceNotFoundException"},
         {"shape":"CodeStorageExceededException"},
-        {"shape":"PreconditionFailedException"},
-        {"shape":"FunctionVersionsPerCapacityProviderLimitExceededException"}
+        {"shape":"FunctionVersionsPerCapacityProviderLimitExceededException"},
+        {"shape":"PreconditionFailedException"}
       ],
       "documentation":"<p>Creates a <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/versioning-aliases.html\">version</a> from the current code and configuration of a function. Use versions to create a snapshot of your function code and configuration that doesn't change.</p> <p>Lambda doesn't publish a version if the function's configuration and code haven't changed since the last version. Use <a>UpdateFunctionCode</a> or <a>UpdateFunctionConfiguration</a> to update the function before publishing a version.</p> <p>Clients can invoke versions directly or with an alias. To create an alias, use <a>CreateAlias</a>.</p>"
     },
@@ -1299,6 +1395,28 @@
       "documentation":"<p>Adds a provisioned concurrency configuration to a function's alias or version.</p>",
       "idempotent":true
     },
+    "PutResourcePolicy":{
+      "name":"PutResourcePolicy",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/2026-07-09/resource-policy/{ResourceArn}",
+        "responseCode":200
+      },
+      "input":{"shape":"PutResourcePolicyRequest"},
+      "output":{"shape":"PutResourcePolicyResponse"},
+      "errors":[
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ResourceConflictException"},
+        {"shape":"PublicPolicyException"},
+        {"shape":"ServiceException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"PolicyLengthExceededException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"PreconditionFailedException"}
+      ],
+      "documentation":"<p>Adds a <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/access-control-resource-based.html\">resource-based policy</a> to a Lambda resource. Resource-based policies grant access to other <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/permissions-function-cross-account.html\">Amazon Web Services accounts</a>, <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/permissions-function-organization.html\">organizations</a>, or <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/permissions-function-services.html\">services</a>. Resource-based policies apply to a single Lambda resource (for example, a function, function version, or function alias).</p> <important> <p>This operation replaces any existing policy on the Lambda resource. If you previously added permissions using the <a>AddPermission</a> operation, the new policy overwrites those permissions.</p> </important>",
+      "idempotent":true
+    },
     "PutRuntimeManagementConfig":{
       "name":"PutRuntimeManagementConfig",
       "http":{
@@ -1344,6 +1462,7 @@
       "input":{"shape":"RemovePermissionRequest"},
       "errors":[
         {"shape":"InvalidParameterValueException"},
+        {"shape":"PublicPolicyException"},
         {"shape":"ServiceException"},
         {"shape":"TooManyRequestsException"},
         {"shape":"ResourceNotFoundException"},
@@ -1362,9 +1481,14 @@
       "output":{"shape":"SendDurableExecutionCallbackFailureResponse"},
       "errors":[
         {"shape":"InvalidParameterValueException"},
-        {"shape":"TooManyRequestsException"},
+        {"shape":"KMSInvalidStateException"},
         {"shape":"ServiceException"},
-        {"shape":"CallbackTimeoutException"}
+        {"shape":"TooManyRequestsException"},
+        {"shape":"KMSNotFoundException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"CallbackTimeoutException"},
+        {"shape":"KMSAccessDeniedException"},
+        {"shape":"KMSDisabledException"}
       ],
       "documentation":"<p>Sends a failure response for a callback operation in a durable execution. Use this API when an external system cannot complete a callback operation successfully.</p>"
     },
@@ -1379,8 +1503,9 @@
       "output":{"shape":"SendDurableExecutionCallbackHeartbeatResponse"},
       "errors":[
         {"shape":"InvalidParameterValueException"},
-        {"shape":"TooManyRequestsException"},
         {"shape":"ServiceException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ResourceNotFoundException"},
         {"shape":"CallbackTimeoutException"}
       ],
       "documentation":"<p>Sends a heartbeat signal for a long-running callback operation to prevent timeout. Use this API to extend the callback timeout period while the external operation is still in progress.</p>"
@@ -1396,9 +1521,14 @@
       "output":{"shape":"SendDurableExecutionCallbackSuccessResponse"},
       "errors":[
         {"shape":"InvalidParameterValueException"},
-        {"shape":"TooManyRequestsException"},
+        {"shape":"KMSInvalidStateException"},
         {"shape":"ServiceException"},
-        {"shape":"CallbackTimeoutException"}
+        {"shape":"TooManyRequestsException"},
+        {"shape":"KMSNotFoundException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"CallbackTimeoutException"},
+        {"shape":"KMSAccessDeniedException"},
+        {"shape":"KMSDisabledException"}
       ],
       "documentation":"<p>Sends a successful completion response for a callback operation in a durable execution. Use this API when an external system has successfully completed a callback operation.</p>"
     },
@@ -1413,9 +1543,13 @@
       "output":{"shape":"StopDurableExecutionResponse"},
       "errors":[
         {"shape":"InvalidParameterValueException"},
-        {"shape":"TooManyRequestsException"},
+        {"shape":"KMSInvalidStateException"},
         {"shape":"ServiceException"},
-        {"shape":"ResourceNotFoundException"}
+        {"shape":"TooManyRequestsException"},
+        {"shape":"KMSNotFoundException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"KMSAccessDeniedException"},
+        {"shape":"KMSDisabledException"}
       ],
       "documentation":"<p>Stops a running <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/durable-functions.html\">durable execution</a>. The execution transitions to STOPPED status and cannot be resumed. Any in-progress operations are terminated.</p>"
     },
@@ -1470,7 +1604,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"PreconditionFailedException"}
       ],
-      "documentation":"<p>Updates the configuration of a Lambda function <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/configuration-aliases.html\">alias</a>.</p>"
+      "documentation":"<p>Updates the configuration of a Lambda Event Function <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/configuration-aliases.html\">alias</a>.</p>"
     },
     "UpdateCapacityProvider":{
       "name":"UpdateCapacityProvider",
@@ -1546,7 +1680,7 @@
         {"shape":"CodeStorageExceededException"},
         {"shape":"PreconditionFailedException"}
       ],
-      "documentation":"<p>Updates a Lambda function's code. If code signing is enabled for the function, the code package must be signed by a trusted publisher. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/configuration-codesigning.html\">Configuring code signing for Lambda</a>.</p> <p>If the function's package type is <code>Image</code>, then you must specify the code package in <code>ImageUri</code> as the URI of a <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/lambda-images.html\">container image</a> in the Amazon ECR registry.</p> <p>If the function's package type is <code>Zip</code>, then you must specify the deployment package as a <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/gettingstarted-package.html#gettingstarted-package-zip\">.zip file archive</a>. Enter the Amazon S3 bucket and key of the code .zip file location. You can also provide the function code inline using the <code>ZipFile</code> field.</p> <p>The code in the deployment package must be compatible with the target instruction set architecture of the function (<code>x86-64</code> or <code>arm64</code>).</p> <p>The function's code is locked when you publish a version. You can't modify the code of a published version, only the unpublished version.</p> <note> <p>For a function defined as a container image, Lambda resolves the image tag to an image digest. In Amazon ECR, if you update the image tag to a new image, Lambda does not automatically update the function.</p> </note>"
+      "documentation":"<p>Updates a Lambda Event Function's code. If code signing is enabled for the function, the code package must be signed by a trusted publisher. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/configuration-codesigning.html\">Configuring code signing for Lambda</a>.</p> <p>If the function's package type is <code>Image</code>, then you must specify the code package in <code>ImageUri</code> as the URI of a <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/lambda-images.html\">container image</a> in the Amazon ECR registry.</p> <p>If the function's package type is <code>Zip</code>, then you must specify the deployment package as a <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/gettingstarted-package.html#gettingstarted-package-zip\">.zip file archive</a>. Enter the Amazon S3 bucket and key of the code .zip file location. You can also provide the function code inline using the <code>ZipFile</code> field.</p> <p>The code in the deployment package must be compatible with the target instruction set architecture of the function (<code>x86-64</code> or <code>arm64</code>).</p> <p>The function's code is locked when you publish a version. You can't modify the code of a published version, only the unpublished version.</p> <note> <p>For a function defined as a container image, Lambda resolves the image tag to an image digest. In Amazon ECR, if you update the image tag to a new image, Lambda does not automatically update the function.</p> </note>"
     },
     "UpdateFunctionConfiguration":{
       "name":"UpdateFunctionConfiguration",
@@ -1568,7 +1702,7 @@
         {"shape":"CodeSigningConfigNotFoundException"},
         {"shape":"PreconditionFailedException"}
       ],
-      "documentation":"<p>Modify the version-specific settings of a Lambda function.</p> <p>When you update a function, Lambda provisions an instance of the function and its supporting resources. If your function connects to a VPC, this process can take a minute. During this time, you can't modify the function, but you can still invoke it. The <code>LastUpdateStatus</code>, <code>LastUpdateStatusReason</code>, and <code>LastUpdateStatusReasonCode</code> fields in the response from <a>GetFunctionConfiguration</a> indicate when the update is complete and the function is processing events with the new configuration. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/functions-states.html\">Lambda function states</a>.</p> <p>These settings can vary between versions of a function and are locked when you publish a version. You can't modify the configuration of a published version, only the unpublished version.</p> <p>To configure function concurrency, use <a>PutFunctionConcurrency</a>. To grant invoke permissions to an Amazon Web Services account or Amazon Web Services service, use <a>AddPermission</a>.</p>"
+      "documentation":"<p>Modifies the version-specific settings of a Lambda Event Function.</p> <p>When you update a function, Lambda provisions an instance of the function and its supporting resources. If your function connects to a VPC, this process can take a minute. During this time, you can't modify the function, but you can still invoke it. The <code>LastUpdateStatus</code>, <code>LastUpdateStatusReason</code>, and <code>LastUpdateStatusReasonCode</code> fields in the response from <a>GetFunctionConfiguration</a> indicate when the update is complete and the function is processing events with the new configuration. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/functions-states.html\">Lambda function states</a>.</p> <p>These settings can vary between versions of a function and are locked when you publish a version. You can't modify the configuration of a published version, only the unpublished version.</p> <p>To configure function concurrency, use <a>PutFunctionConcurrency</a>. To grant invoke permissions to an Amazon Web Services account or Amazon Web Services service, use <a>AddPermission</a>.</p>"
     },
     "UpdateFunctionEventInvokeConfig":{
       "name":"UpdateFunctionEventInvokeConfig",
@@ -1650,6 +1784,8 @@
     },
     "Action":{
       "type":"string",
+      "max":10000,
+      "min":0,
       "pattern":"(lambda:[*]|lambda:[a-zA-Z]+|[*])"
     },
     "AddLayerVersionPermissionRequest":{
@@ -1742,6 +1878,14 @@
           "shape":"Arn",
           "documentation":"<p>For Amazon Web Services services, the ARN of the Amazon Web Services resource that invokes the function. For example, an Amazon S3 bucket or Amazon SNS topic.</p> <p>Note that Lambda configures the comparison using the <code>StringLike</code> operator.</p>"
         },
+        "FunctionUrlAuthType":{
+          "shape":"FunctionUrlAuthType",
+          "documentation":"<p>The type of authentication that your function URL uses. Set to <code>AWS_IAM</code> if you want to restrict access to authenticated users only. Set to <code>NONE</code> if you want to bypass IAM authentication to create a public endpoint. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/urls-auth.html\">Control access to Lambda function URLs</a>.</p>"
+        },
+        "InvokedViaFunctionUrl":{
+          "shape":"InvokedViaFunctionUrl",
+          "documentation":"<p>Indicates whether the permission applies when the function is invoked through a function URL. </p>"
+        },
         "SourceAccount":{
           "shape":"SourceOwner",
           "documentation":"<p>For Amazon Web Services service, the ID of the Amazon Web Services account that owns the resource. Use this together with <code>SourceArn</code> to ensure that the specified account owns the resource. It is possible for an Amazon S3 bucket to be deleted by its owner and recreated by another account.</p>"
@@ -1763,14 +1907,6 @@
         "PrincipalOrgID":{
           "shape":"PrincipalOrgID",
           "documentation":"<p>The identifier for your organization in Organizations. Use this to grant permissions to all the Amazon Web Services accounts under this organization.</p>"
-        },
-        "FunctionUrlAuthType":{
-          "shape":"FunctionUrlAuthType",
-          "documentation":"<p>The type of authentication that your function URL uses. Set to <code>AWS_IAM</code> if you want to restrict access to authenticated users only. Set to <code>NONE</code> if you want to bypass IAM authentication to create a public endpoint. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/urls-auth.html\">Control access to Lambda function URLs</a>.</p>"
-        },
-        "InvokedViaFunctionUrl":{
-          "shape":"InvokedViaFunctionUrl",
-          "documentation":"<p>Indicates whether the permission applies when the function is invoked through a function URL. </p>"
         }
       }
     },
@@ -1829,6 +1965,25 @@
         }
       },
       "documentation":"<p>Provides configuration information about a Lambda function <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/configuration-aliases.html\">alias</a>.</p>"
+    },
+    "AliasLimitExceededException":{
+      "type":"structure",
+      "members":{
+        "Type":{
+          "shape":"String",
+          "documentation":"<p>The exception type.</p>"
+        },
+        "message":{
+          "shape":"String",
+          "documentation":"<p>The exception message.</p>"
+        }
+      },
+      "documentation":"<p>Lambda couldn't create the alias because your Amazon Web Services account has exceeded the maximum number of aliases allowed per Lambda function. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/gettingstarted-limits.html\">Lambda quotas</a>.</p>",
+      "error":{
+        "httpStatusCode":400,
+        "senderFault":true
+      },
+      "exception":true
     },
     "AliasList":{
       "type":"list",
@@ -1911,7 +2066,9 @@
     },
     "Arn":{
       "type":"string",
-      "pattern":"arn:(aws[a-zA-Z0-9-]*):([a-zA-Z0-9\\-])+:([a-z]{2}(-gov)?-[a-z]+-\\d{1})?:(\\d{12})?:(.*)"
+      "max":10000,
+      "min":0,
+      "pattern":"arn:(aws[a-zA-Z0-9-]*):([a-zA-Z0-9\\-])+:((eusc-)?[a-z]{2}((-gov)|(-iso([a-z]?)))?-[a-z]+-\\d{1})?:(\\d{12})?:(.*)"
     },
     "AttemptCount":{
       "type":"integer",
@@ -1925,7 +2082,7 @@
     },
     "BinaryOperationPayload":{
       "type":"blob",
-      "max":262144,
+      "max":1048576,
       "min":0,
       "sensitive":true
     },
@@ -1981,15 +2138,27 @@
       "type":"structure",
       "members":{
         "TimeoutSeconds":{
-          "shape":"DurationSeconds",
+          "shape":"CallbackOptionsTimeoutSecondsInteger",
           "documentation":"<p>The timeout for the callback operation in seconds. If not specified or set to 0, the callback has no timeout.</p>"
         },
         "HeartbeatTimeoutSeconds":{
-          "shape":"DurationSeconds",
+          "shape":"CallbackOptionsHeartbeatTimeoutSecondsInteger",
           "documentation":"<p>The heartbeat timeout for the callback operation, in seconds. If not specified or set to 0, heartbeat timeout is disabled.</p>"
         }
       },
       "documentation":"<p>Configuration options for callback operations in durable executions, including timeout settings and retry behavior.</p>"
+    },
+    "CallbackOptionsHeartbeatTimeoutSecondsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":99999999,
+      "min":0
+    },
+    "CallbackOptionsTimeoutSecondsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":99999999,
+      "min":0
     },
     "CallbackStartedDetails":{
       "type":"structure",
@@ -2089,7 +2258,11 @@
           "shape":"Timestamp",
           "documentation":"<p>The date and time when the capacity provider was last modified.</p>"
         },
-        "PropagateTags":{"shape":"PropagateTags"}
+        "PropagateTags":{"shape":"PropagateTags"},
+        "TelemetryConfig":{
+          "shape":"CapacityProviderTelemetryConfig",
+          "documentation":"<p>The telemetry configuration for the capacity provider, including logging settings.</p>"
+        }
       },
       "documentation":"<p>A capacity provider manages compute resources for Lambda functions.</p>"
     },
@@ -2097,7 +2270,7 @@
       "type":"string",
       "max":140,
       "min":1,
-      "pattern":"arn:aws[a-zA-Z-]*:lambda:[a-z]{2}((-gov)|(-iso([a-z]?)))?-[a-z]+-\\d{1}:\\d{12}:capacity-provider:[a-zA-Z0-9-_]+"
+      "pattern":"arn:aws[a-zA-Z-]*:lambda:(eusc-)?[a-z]{2}((-gov)|(-iso([a-z]?)))?-[a-z]+-\\d{1}:\\d{12}:capacity-provider:[a-zA-Z0-9-_]+"
     },
     "CapacityProviderConfig":{
       "type":"structure",
@@ -2126,6 +2299,20 @@
       },
       "exception":true
     },
+    "CapacityProviderLoggingConfig":{
+      "type":"structure",
+      "members":{
+        "SystemLogLevel":{
+          "shape":"SystemLogLevel",
+          "documentation":"<p>Set this property to filter the system logs for your capacity provider that Lambda sends to CloudWatch. Lambda only sends system logs at the selected level of detail and lower, where <code>DEBUG</code> is the highest level and <code>WARN</code> is the lowest.</p>"
+        },
+        "LogGroup":{
+          "shape":"LogGroup",
+          "documentation":"<p>The name of the Amazon CloudWatch log group the capacity provider sends logs to. By default, Lambda capacity providers send logs to a default log group named <code>/aws/lambda/capacity-provider/&lt;capacity provider name&gt;</code>. To use a different log group, enter an existing log group or enter a new log group name.</p>"
+        }
+      },
+      "documentation":"<p>The capacity provider's Amazon CloudWatch Logs configuration settings.</p>"
+    },
     "CapacityProviderMaxVCpuCount":{
       "type":"integer",
       "box":true,
@@ -2136,7 +2323,7 @@
       "type":"string",
       "max":140,
       "min":1,
-      "pattern":"(arn:aws[a-zA-Z-]*:lambda:[a-z]{2}((-gov)|(-iso([a-z]?)))?-[a-z]+-\\d{1}:\\d{12}:capacity-provider:[a-zA-Z0-9-_]+)|[a-zA-Z0-9-_]+"
+      "pattern":"(arn:aws[a-zA-Z-]*:lambda:(eusc-)?[a-z]{2}((-gov)|(-iso([a-z]?)))?-[a-z]+-\\d{1}:\\d{12}:capacity-provider:[a-zA-Z0-9-_]+)|[a-zA-Z0-9-_]+"
     },
     "CapacityProviderPermissionsConfig":{
       "type":"structure",
@@ -2205,6 +2392,16 @@
       "max":16,
       "min":1
     },
+    "CapacityProviderTelemetryConfig":{
+      "type":"structure",
+      "members":{
+        "LoggingConfig":{
+          "shape":"CapacityProviderLoggingConfig",
+          "documentation":"<p>The capacity provider's Amazon CloudWatch Logs configuration settings.</p>"
+        }
+      },
+      "documentation":"<p>Configuration that specifies the telemetry collection for the capacity provider.</p>"
+    },
     "CapacityProviderVpcConfig":{
       "type":"structure",
       "required":[
@@ -2265,6 +2462,10 @@
         "TenantId":{
           "shape":"TenantId",
           "documentation":"<p>The tenant identifier for the chained invocation.</p>"
+        },
+        "XAmznTraceId":{
+          "shape":"XAmznTraceId",
+          "documentation":"<p>The optional X-Ray trace header to use when starting the chained invocation. If you omit this value, the child invocation inherits the parent durable execution's trace header.</p> <p>Specify this value on the <code>START</code> update for the chained invocation operation. For more information about the header format, see <a href=\"https://docs.aws.amazon.com/xray/latest/devguide/xray-concepts.html#xray-concepts-tracingheader\">Tracing header</a> in the <i>X-Ray Developer Guide</i>.</p>"
         }
       },
       "documentation":"<p>Configuration options for chained function invocations in durable executions, including retry settings and timeout configuration.</p>"
@@ -2398,6 +2599,63 @@
       "min":1,
       "pattern":"[\\x21-\\x7E]+"
     },
+    "CodeArtifactUserDeletedException":{
+      "type":"structure",
+      "members":{
+        "Type":{
+          "shape":"String",
+          "documentation":"<p>The exception type.</p>"
+        },
+        "message":{
+          "shape":"String",
+          "documentation":"<p>The exception message.</p>"
+        }
+      },
+      "documentation":"<p>The Lambda function couldn't be invoked because its code artifact user has been deleted. Wait for Lambda to provision a new code artifact user, or update the function's code package to recreate it.</p>",
+      "error":{
+        "httpStatusCode":409,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "CodeArtifactUserFailedException":{
+      "type":"structure",
+      "members":{
+        "Type":{
+          "shape":"String",
+          "documentation":"<p>The exception type.</p>"
+        },
+        "message":{
+          "shape":"String",
+          "documentation":"<p>The exception message.</p>"
+        }
+      },
+      "documentation":"<p>The Lambda function couldn't be invoked because provisioning of its code artifact user failed. Update the function's code package or check the Lambda function's <code>State</code> and <code>StateReasonCode</code> for additional context.</p>",
+      "error":{
+        "httpStatusCode":409,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "CodeArtifactUserPendingException":{
+      "type":"structure",
+      "members":{
+        "Type":{
+          "shape":"String",
+          "documentation":"<p>The exception type.</p>"
+        },
+        "message":{
+          "shape":"String",
+          "documentation":"<p>The exception message.</p>"
+        }
+      },
+      "documentation":"<p>The Lambda function couldn't be invoked because its code artifact user is still being provisioned. Wait for the function's <code>State</code> to become <code>Active</code> and try the request again.</p>",
+      "error":{
+        "httpStatusCode":409,
+        "senderFault":true
+      },
+      "exception":true
+    },
     "CodeSigningConfig":{
       "type":"structure",
       "required":[
@@ -2439,7 +2697,7 @@
       "type":"string",
       "max":200,
       "min":0,
-      "pattern":"arn:(aws[a-zA-Z-]*)?:lambda:[a-z]{2}((-gov)|(-iso(b?)))?-[a-z]+-\\d{1}:\\d{12}:code-signing-config:csc-[a-z0-9]{17}"
+      "pattern":"arn:(aws[a-zA-Z-]*)?:lambda:(eusc-)?[a-z]{2}((-gov)|(-iso([a-z]?)))?-[a-z]+-\\d{1}:\\d{12}:code-signing-config:csc-[a-z0-9]{17}"
     },
     "CodeSigningConfigId":{
       "type":"string",
@@ -2691,6 +2949,10 @@
         "PropagateTags":{
           "shape":"PropagateTags",
           "documentation":"<p>The tag propagation configuration for the capacity provider. Specifies tags to apply to managed resources at launch.</p>"
+        },
+        "TelemetryConfig":{
+          "shape":"CapacityProviderTelemetryConfig",
+          "documentation":"<p>The telemetry configuration for the capacity provider. Specifies logging settings for managed resources.</p>"
         }
       }
     },
@@ -2760,6 +3022,22 @@
           "shape":"FilterCriteria",
           "documentation":"<p>An object that defines the filter criteria that determine whether Lambda should process an event. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/invocation-eventfiltering.html\">Lambda event filtering</a>.</p>"
         },
+        "KMSKeyArn":{
+          "shape":"KMSKeyArn",
+          "documentation":"<p> The ARN of the Key Management Service (KMS) customer managed key that Lambda uses to encrypt your function's <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/invocation-eventfiltering.html#filtering-basics\">filter criteria</a>. By default, Lambda does not encrypt your filter criteria object. Specify this property to encrypt data using your own customer managed key. </p>"
+        },
+        "MetricsConfig":{
+          "shape":"EventSourceMappingMetricsConfig",
+          "documentation":"<p>The metrics configuration for your event source. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/monitoring-metrics-types.html#event-source-mapping-metrics\">Event source mapping metrics</a>.</p>"
+        },
+        "LoggingConfig":{
+          "shape":"EventSourceMappingLoggingConfig",
+          "documentation":"<p>(Amazon MSK, and self-managed Apache Kafka only) The logging configuration for your event source. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/esm-logging.html\">Event source mapping logging</a>.</p>"
+        },
+        "ScalingConfig":{
+          "shape":"ScalingConfig",
+          "documentation":"<p>(Amazon SQS only) The scaling configuration for the event source. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/with-sqs.html#events-sqs-max-concurrency\">Configuring maximum concurrency for Amazon SQS event sources</a>.</p>"
+        },
         "MaximumBatchingWindowInSeconds":{
           "shape":"MaximumBatchingWindowInSeconds",
           "documentation":"<p>The maximum amount of time, in seconds, that Lambda spends gathering records before invoking the function. You can configure <code>MaximumBatchingWindowInSeconds</code> to any value from 0 seconds to 300 seconds in increments of seconds.</p> <p>For Kinesis, DynamoDB, and Amazon SQS event sources, the default batching window is 0 seconds. For Amazon MSK, Self-managed Apache Kafka, Amazon MQ, and DocumentDB event sources, the default batching window is 500 ms. Note that because you can only change <code>MaximumBatchingWindowInSeconds</code> in increments of seconds, you cannot revert back to the 500 ms default batching window after you have changed it. To restore the default batching window, you must create a new event source mapping.</p> <p>Related setting: For Kinesis, DynamoDB, and Amazon SQS event sources, when you set <code>BatchSize</code> to a value greater than 10, you must set <code>MaximumBatchingWindowInSeconds</code> to at least 1.</p>"
@@ -2828,25 +3106,9 @@
           "shape":"SelfManagedKafkaEventSourceConfig",
           "documentation":"<p>Specific configuration settings for a self-managed Apache Kafka event source.</p>"
         },
-        "ScalingConfig":{
-          "shape":"ScalingConfig",
-          "documentation":"<p>(Amazon SQS only) The scaling configuration for the event source. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/with-sqs.html#events-sqs-max-concurrency\">Configuring maximum concurrency for Amazon SQS event sources</a>.</p>"
-        },
         "DocumentDBEventSourceConfig":{
           "shape":"DocumentDBEventSourceConfig",
           "documentation":"<p>Specific configuration settings for a DocumentDB event source.</p>"
-        },
-        "KMSKeyArn":{
-          "shape":"KMSKeyArn",
-          "documentation":"<p> The ARN of the Key Management Service (KMS) customer managed key that Lambda uses to encrypt your function's <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/invocation-eventfiltering.html#filtering-basics\">filter criteria</a>. By default, Lambda does not encrypt your filter criteria object. Specify this property to encrypt data using your own customer managed key. </p>"
-        },
-        "MetricsConfig":{
-          "shape":"EventSourceMappingMetricsConfig",
-          "documentation":"<p>The metrics configuration for your event source. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/monitoring-metrics-types.html#event-source-mapping-metrics\">Event source mapping metrics</a>.</p>"
-        },
-        "LoggingConfig":{
-          "shape":"EventSourceMappingLoggingConfig",
-          "documentation":"<p>(Amazon MSK, and self-managed Apache Kafka only) The logging configuration for your event source. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/esm-logging.html\">Event source mapping logging</a>.</p>"
         },
         "ProvisionedPollerConfig":{
           "shape":"ProvisionedPollerConfig",
@@ -2888,7 +3150,7 @@
         },
         "Timeout":{
           "shape":"Timeout",
-          "documentation":"<p>The amount of time (in seconds) that Lambda allows a function to run before stopping it. The default is 3 seconds. The maximum allowed value is 900 seconds. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/runtimes-context.html\">Lambda execution environment</a>.</p>"
+          "documentation":"<p>The amount of time (in seconds) that Lambda allows a function to run before stopping it. The default is 3 seconds, and the maximum allowed value is 900 seconds. For functions using Lambda Managed Instances, asynchronous invocations and event source mapping invocations (except Amazon MQ and Amazon DocumentDB) support a maximum allowed value of 5,400 seconds (90 minutes). For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/runtimes-context.html\">Lambda execution environment</a>.</p>"
         },
         "MemorySize":{
           "shape":"MemorySize",
@@ -2897,6 +3159,10 @@
         "Publish":{
           "shape":"Boolean",
           "documentation":"<p>Set to true to publish the first version of the function during creation.</p>"
+        },
+        "PublishTo":{
+          "shape":"FunctionVersionLatestPublished",
+          "documentation":"<p>Specifies where to publish the function version or configuration.</p>"
         },
         "VpcConfig":{
           "shape":"VpcConfig",
@@ -2934,13 +3200,13 @@
           "shape":"FileSystemConfigList",
           "documentation":"<p>Connection settings for an Amazon EFS file system or an Amazon S3 Files file system.</p>"
         },
-        "ImageConfig":{
-          "shape":"ImageConfig",
-          "documentation":"<p>Container image <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/images-create.html#images-parms\">configuration values</a> that override the values in the container image Dockerfile.</p>"
-        },
         "CodeSigningConfigArn":{
           "shape":"CodeSigningConfigArn",
           "documentation":"<p>To enable code signing for this function, specify the ARN of a code-signing configuration. A code-signing configuration includes a set of signing profiles, which define the trusted publishers for this function.</p>"
+        },
+        "ImageConfig":{
+          "shape":"ImageConfig",
+          "documentation":"<p>Container image <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/images-create.html#images-parms\">configuration values</a> that override the values in the container image Dockerfile.</p>"
         },
         "Architectures":{
           "shape":"ArchitecturesList",
@@ -2958,21 +3224,17 @@
           "shape":"LoggingConfig",
           "documentation":"<p>The function's Amazon CloudWatch Logs configuration settings.</p>"
         },
+        "TenancyConfig":{
+          "shape":"TenancyConfig",
+          "documentation":"<p>Configuration for multi-tenant applications that use Lambda functions. Defines tenant isolation settings and resource allocations. Required for functions supporting multiple tenants.</p>"
+        },
         "CapacityProviderConfig":{
           "shape":"CapacityProviderConfig",
           "documentation":"<p>Configuration for the capacity provider that manages compute resources for Lambda functions.</p>"
         },
-        "PublishTo":{
-          "shape":"FunctionVersionLatestPublished",
-          "documentation":"<p>Specifies where to publish the function version or configuration.</p>"
-        },
         "DurableConfig":{
           "shape":"DurableConfig",
           "documentation":"<p>Configuration settings for durable functions. Enables creating functions with durability that can remember their state and continue execution even after interruptions.</p>"
-        },
-        "TenancyConfig":{
-          "shape":"TenancyConfig",
-          "documentation":"<p>Configuration for multi-tenant applications that use Lambda functions. Defines tenant isolation settings and resource allocations. Required for functions supporting multiple tenants.</p>"
         }
       }
     },
@@ -2984,7 +3246,7 @@
       ],
       "members":{
         "FunctionName":{
-          "shape":"FunctionName",
+          "shape":"FunctionUrlFunctionName",
           "documentation":"<p>The name or ARN of the Lambda function.</p> <p class=\"title\"> <b>Name formats</b> </p> <ul> <li> <p> <b>Function name</b> – <code>my-function</code>.</p> </li> <li> <p> <b>Function ARN</b> – <code>arn:aws:lambda:us-west-2:123456789012:function:my-function</code>.</p> </li> <li> <p> <b>Partial ARN</b> – <code>123456789012:function:my-function</code>.</p> </li> </ul> <p>The length constraint applies only to the full ARN. If you specify only the function name, it is limited to 64 characters in length.</p>",
           "location":"uri",
           "locationName":"FunctionName"
@@ -3125,7 +3387,7 @@
       "required":["UUID"],
       "members":{
         "UUID":{
-          "shape":"String",
+          "shape":"UUIDString",
           "documentation":"<p>The identifier of the event source mapping.</p>",
           "location":"uri",
           "locationName":"UUID"
@@ -3207,7 +3469,7 @@
       "required":["FunctionName"],
       "members":{
         "FunctionName":{
-          "shape":"FunctionName",
+          "shape":"FunctionUrlFunctionName",
           "documentation":"<p>The name or ARN of the Lambda function.</p> <p class=\"title\"> <b>Name formats</b> </p> <ul> <li> <p> <b>Function name</b> – <code>my-function</code>.</p> </li> <li> <p> <b>Function ARN</b> – <code>arn:aws:lambda:us-west-2:123456789012:function:my-function</code>.</p> </li> <li> <p> <b>Partial ARN</b> – <code>123456789012:function:my-function</code>.</p> </li> </ul> <p>The length constraint applies only to the full ARN. If you specify only the function name, it is limited to 64 characters in length.</p>",
           "location":"uri",
           "locationName":"FunctionName"
@@ -3262,6 +3524,24 @@
         }
       }
     },
+    "DeleteResourcePolicyRequest":{
+      "type":"structure",
+      "required":["ResourceArn"],
+      "members":{
+        "ResourceArn":{
+          "shape":"PolicyResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Lambda resource you want to delete the policy from. You can use a qualified or an unqualified ARN. The value must be a complete ARN, and the operation does not accept wildcard characters.</p>",
+          "location":"uri",
+          "locationName":"ResourceArn"
+        },
+        "RevisionId":{
+          "shape":"RevisionId",
+          "documentation":"<p>The revision ID that the existing policy must match for the deletion to proceed. If the revision ID doesn't match, the operation fails with a <code>PreconditionFailedException</code> error. To retrieve the current revision ID, use the <a>GetResourcePolicy</a> operation.</p>",
+          "location":"querystring",
+          "locationName":"RevisionId"
+        }
+      }
+    },
     "Description":{
       "type":"string",
       "max":256,
@@ -3271,7 +3551,7 @@
       "type":"string",
       "max":350,
       "min":0,
-      "pattern":"$|kafka://([^.]([a-zA-Z0-9\\-_.]{0,248}))|arn:(aws[a-zA-Z0-9-]*):([a-zA-Z0-9\\-])+:([a-z]{2}((-gov)|(-iso([a-z]?)))?-[a-z]+-\\d{1})?:(\\d{12})?:(.*)"
+      "pattern":"$|kafka://([^.]([a-zA-Z0-9\\-_.]{0,248}))|arn:(aws[a-zA-Z0-9-]*):([a-zA-Z0-9\\-])+:((eusc-)?[a-z]{2}((-gov)|(-iso([a-z]?)))?-[a-z]+-\\d{1})?:(\\d{12})?:(.*)"
     },
     "DestinationConfig":{
       "type":"structure",
@@ -3286,6 +3566,14 @@
         }
       },
       "documentation":"<p>A configuration object that specifies the destination of an event after Lambda processes it. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/invocation-async-retain-records.html#invocation-async-destinations\">Adding a destination</a>.</p>"
+    },
+    "DirectS3Read":{
+      "type":"string",
+      "enum":[
+        "ENABLED",
+        "DISABLED",
+        "AUTO"
+      ]
     },
     "DocumentDBEventSourceConfig":{
       "type":"structure",
@@ -3308,6 +3596,10 @@
     "DurableConfig":{
       "type":"structure",
       "members":{
+        "KMSKeyArn":{
+          "shape":"KMSKeyArn",
+          "documentation":"<p>The ARN of the Key Management Service (KMS) customer managed key that is used to encrypt your durable execution's payload data, including input, output, and error payloads.</p>"
+        },
         "RetentionPeriodInDays":{
           "shape":"RetentionPeriodInDays",
           "documentation":"<p>The number of days to retain execution history after a durable execution completes. After this period, execution history is no longer available through the GetDurableExecutionHistory API.</p>"
@@ -3317,7 +3609,7 @@
           "documentation":"<p>The maximum time (in seconds) that a durable execution can run before timing out. This timeout applies to the entire durable execution, not individual function invocations.</p>"
         }
       },
-      "documentation":"<p>Configuration settings for <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/durable-functions.html\">durable functions</a>, including execution timeout and retention period for execution history.</p>"
+      "documentation":"<p>Configuration settings for <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/durable-functions.html\">durable functions</a>, including execution timeout, retention period for execution history, and an optional ARN of the Key Management Service (KMS) customer managed key that is used to encrypt your durable execution's payload data, including input, output, and error payloads.</p>"
     },
     "DurableExecutionAlreadyStartedException":{
       "type":"structure",
@@ -3453,6 +3745,23 @@
       "exception":true,
       "fault":true
     },
+    "ENINotReadyException":{
+      "type":"structure",
+      "members":{
+        "Type":{
+          "shape":"String",
+          "documentation":"<p>The exception type.</p>"
+        },
+        "Message":{
+          "shape":"String",
+          "documentation":"<p>The exception message.</p>"
+        }
+      },
+      "documentation":"<p>Lambda couldn't invoke the Lambda function because the elastic network interface (ENI) configured for its VPC connection isn't ready yet. Wait a few moments and try the request again. For more information about VPC configuration, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/configuration-vpc.html\">Configuring a Lambda function to access resources in a VPC</a>.</p>",
+      "error":{"httpStatusCode":502},
+      "exception":true,
+      "fault":true
+    },
     "Enabled":{
       "type":"boolean",
       "box":true
@@ -3547,7 +3856,7 @@
     "EphemeralStorageSize":{
       "type":"integer",
       "box":true,
-      "max":10240,
+      "max":32768,
       "min":512
     },
     "ErrorData":{
@@ -3747,13 +4056,13 @@
       "type":"string",
       "max":120,
       "min":85,
-      "pattern":"arn:(aws[a-zA-Z-]*)?:lambda:[a-z]{2}((-gov)|(-iso([a-z]?)))?-[a-z]+-\\d{1}:\\d{12}:event-source-mapping:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}"
+      "pattern":"arn:(aws[a-zA-Z-]*)?:lambda:(eusc-)?[a-z]{2}((-gov)|(-iso([a-z]?)))?-[a-z]+-\\d{1}:\\d{12}:event-source-mapping:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}"
     },
     "EventSourceMappingConfiguration":{
       "type":"structure",
       "members":{
         "UUID":{
-          "shape":"String",
+          "shape":"UUIDString",
           "documentation":"<p>The identifier of the event source mapping.</p>"
         },
         "StartingPosition":{
@@ -3783,6 +4092,26 @@
         "FilterCriteria":{
           "shape":"FilterCriteria",
           "documentation":"<p>An object that defines the filter criteria that determine whether Lambda should process an event. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/invocation-eventfiltering.html\">Lambda event filtering</a>.</p> <p>If filter criteria is encrypted, this field shows up as <code>null</code> in the response of ListEventSourceMapping API calls. You can view this field in plaintext in the response of GetEventSourceMapping and DeleteEventSourceMapping calls if you have <code>kms:Decrypt</code> permissions for the correct KMS key.</p>"
+        },
+        "FilterCriteriaError":{
+          "shape":"FilterCriteriaError",
+          "documentation":"<p>An object that contains details about an error related to filter criteria encryption.</p>"
+        },
+        "KMSKeyArn":{
+          "shape":"KMSKeyArn",
+          "documentation":"<p> The ARN of the Key Management Service (KMS) customer managed key that Lambda uses to encrypt your function's <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/invocation-eventfiltering.html#filtering-basics\">filter criteria</a>.</p>"
+        },
+        "MetricsConfig":{
+          "shape":"EventSourceMappingMetricsConfig",
+          "documentation":"<p>The metrics configuration for your event source. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/monitoring-metrics-types.html#event-source-mapping-metrics\">Event source mapping metrics</a>.</p>"
+        },
+        "LoggingConfig":{
+          "shape":"EventSourceMappingLoggingConfig",
+          "documentation":"<p>(Amazon MSK, and self-managed Apache Kafka only) The logging configuration for your event source. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/esm-logging.html\">Event source mapping logging</a>.</p>"
+        },
+        "ScalingConfig":{
+          "shape":"ScalingConfig",
+          "documentation":"<p>(Amazon SQS only) The scaling configuration for the event source. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/with-sqs.html#events-sqs-max-concurrency\">Configuring maximum concurrency for Amazon SQS event sources</a>.</p>"
         },
         "FunctionArn":{
           "shape":"FunctionArn",
@@ -3852,33 +4181,13 @@
           "shape":"SelfManagedKafkaEventSourceConfig",
           "documentation":"<p>Specific configuration settings for a self-managed Apache Kafka event source.</p>"
         },
-        "ScalingConfig":{
-          "shape":"ScalingConfig",
-          "documentation":"<p>(Amazon SQS only) The scaling configuration for the event source. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/with-sqs.html#events-sqs-max-concurrency\">Configuring maximum concurrency for Amazon SQS event sources</a>.</p>"
-        },
         "DocumentDBEventSourceConfig":{
           "shape":"DocumentDBEventSourceConfig",
           "documentation":"<p>Specific configuration settings for a DocumentDB event source.</p>"
         },
-        "KMSKeyArn":{
-          "shape":"KMSKeyArn",
-          "documentation":"<p> The ARN of the Key Management Service (KMS) customer managed key that Lambda uses to encrypt your function's <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/invocation-eventfiltering.html#filtering-basics\">filter criteria</a>.</p>"
-        },
-        "FilterCriteriaError":{
-          "shape":"FilterCriteriaError",
-          "documentation":"<p>An object that contains details about an error related to filter criteria encryption.</p>"
-        },
         "EventSourceMappingArn":{
           "shape":"EventSourceMappingArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the event source mapping.</p>"
-        },
-        "MetricsConfig":{
-          "shape":"EventSourceMappingMetricsConfig",
-          "documentation":"<p>The metrics configuration for your event source. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/monitoring-metrics-types.html#event-source-mapping-metrics\">Event source mapping metrics</a>.</p>"
-        },
-        "LoggingConfig":{
-          "shape":"EventSourceMappingLoggingConfig",
-          "documentation":"<p>(Amazon MSK, and self-managed Apache Kafka only) The logging configuration for your event source. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/esm-logging.html\">Event source mapping logging</a>.</p>"
         },
         "ProvisionedPollerConfig":{
           "shape":"ProvisionedPollerConfig",
@@ -4013,9 +4322,17 @@
         "EndTimestamp":{
           "shape":"ExecutionTimestamp",
           "documentation":"<p>The date and time when the durable execution ended, in <a href=\"https://www.w3.org/TR/NOTE-datetime\">ISO-8601 format</a> (YYYY-MM-DDThh:mm:ss.sTZD).</p>"
+        },
+        "KMSKeyArn":{
+          "shape":"KMSKeyArn",
+          "documentation":"<p>The ARN of the Key Management Service (KMS) customer managed key that is used to encrypt your durable execution's payload data, including input, output, and error payloads.</p>"
         }
       },
       "documentation":"<p>Information about a <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/durable-functions.html\">durable execution</a>.</p>"
+    },
+    "ExecutionDataIncluded":{
+      "type":"boolean",
+      "box":true
     },
     "ExecutionDetails":{
       "type":"structure",
@@ -4030,8 +4347,8 @@
     "ExecutionEnvironmentMemoryGiBPerVCpu":{
       "type":"double",
       "box":true,
-      "max":8.0,
-      "min":2.0
+      "max":8,
+      "min":2
     },
     "ExecutionFailedDetails":{
       "type":"structure",
@@ -4121,7 +4438,7 @@
       "type":"string",
       "max":256,
       "min":0,
-      "pattern":"arn:aws[a-zA-Z-]*:elasticfilesystem:[a-z]{2}((-gov)|(-iso(b?)))?-[a-z]+-\\d{1}:\\d{12}:access-point/fsap-[a-f0-9]{17}$|^arn:aws[-a-z]*:s3files:[0-9a-z-:]+:file-system/fs-[0-9a-f]{17,40}/access-point/fsap-[0-9a-f]{17,40}"
+      "pattern":"arn:aws[a-zA-Z-]*:elasticfilesystem:(eusc-)?[a-z]{2}((-gov)|(-iso([a-z]?)))?-[a-z]+-\\d{1}:\\d{12}:access-point/fsap-[a-f0-9]{17}$|^arn:aws[-a-z]*:s3files:[0-9a-z-:]+:file-system/fs-[0-9a-f]{17,40}/access-point/fsap-[0-9a-f]{17,40}"
     },
     "FileSystemConfig":{
       "type":"structure",
@@ -4137,9 +4454,13 @@
         "LocalMountPath":{
           "shape":"LocalMountPath",
           "documentation":"<p>The path where the function can access the file system, starting with <code>/mnt/</code>.</p>"
+        },
+        "S3FilesConfig":{
+          "shape":"S3FilesConfig",
+          "documentation":"<p>The configuration for how your function accesses data on an Amazon S3 file system. Valid only when the file system access point ARN is an Amazon S3 Files access point. If you specify a different access point type (for example, Amazon Elastic File System), the operation returns an <code>InvalidParameterException</code>.</p>"
         }
       },
-      "documentation":"<p>Details about the connection between a Lambda function and an <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/configuration-filesystem.html\">Amazon EFS file system</a> or an <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/configuration-filesystem.html\">Amazon S3 Files file system</a>.</p>"
+      "documentation":"<p>Details about the connection between a Lambda function and an <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/configuration-filesystem.html\">Amazon EFS file system</a> or an <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/configuration-filesystem.html\">Amazon S3 file system</a>.</p>"
     },
     "FileSystemConfigList":{
       "type":"list",
@@ -4208,7 +4529,7 @@
       "type":"string",
       "max":10000,
       "min":0,
-      "pattern":"arn:(aws[a-zA-Z-]*)?:lambda:[a-z]{2}((-gov)|(-iso([a-z]?)))?-[a-z]+-\\d{1}:\\d{12}:function:[a-zA-Z0-9-_]+(:(\\$LATEST|[a-zA-Z0-9-_]+))?"
+      "pattern":"arn:(aws[a-zA-Z-]*)?:lambda:(eusc-)?[a-z]{2}((-gov)|(-iso([a-z]?)))?-[a-z]+-\\d{1}:\\d{12}:function:[a-zA-Z0-9-_]+(:(\\$LATEST|[a-zA-Z0-9-_]+))?"
     },
     "FunctionArnList":{
       "type":"list",
@@ -4233,6 +4554,10 @@
           "shape":"S3ObjectVersion",
           "documentation":"<p>For versioned objects, the version of the deployment package object to use.</p>"
         },
+        "S3ObjectStorageMode":{
+          "shape":"S3ObjectStorageMode",
+          "documentation":"<p>Specifies how the deployment package is stored. Valid values:</p> <ul> <li> <p> <code>COPY</code> (default) – Uploads a copy of your deployment package to Lambda.</p> </li> <li> <p> <code>REFERENCE</code> – Lambda references the deployment package from the specified Amazon S3 bucket.</p> </li> </ul>"
+        },
         "ImageUri":{
           "shape":"String",
           "documentation":"<p>URI of a <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/lambda-images.html\">container image</a> in the Amazon ECR registry.</p>"
@@ -4252,7 +4577,7 @@
           "documentation":"<p>The service that's hosting the file.</p>"
         },
         "Location":{
-          "shape":"String",
+          "shape":"SensitiveStringOnServerOnly",
           "documentation":"<p>A presigned URL that you can use to download the deployment package.</p>"
         },
         "ImageUri":{
@@ -4263,12 +4588,34 @@
           "shape":"String",
           "documentation":"<p>The resolved URI for the image.</p>"
         },
+        "ResolvedS3Object":{
+          "shape":"ResolvedS3Object",
+          "documentation":"<p>The resolved Amazon S3 object that contains the deployment package.</p>"
+        },
         "SourceKMSKeyArn":{
-          "shape":"String",
+          "shape":"KMSKeyArn",
           "documentation":"<p>The ARN of the Key Management Service (KMS) customer managed key that's used to encrypt your function's .zip deployment package. If you don't provide a customer managed key, Lambda uses an <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#aws-owned-cmk\">Amazon Web Services owned key</a>.</p>"
+        },
+        "Error":{
+          "shape":"FunctionCodeLocationError",
+          "documentation":"<p>An object that contains details about an error related to function deployment package retrieval.</p>"
         }
       },
       "documentation":"<p>Details about a function's deployment package.</p>"
+    },
+    "FunctionCodeLocationError":{
+      "type":"structure",
+      "members":{
+        "ErrorCode":{
+          "shape":"String",
+          "documentation":"<p>The error code that identifies why Lambda failed to retrieve the deployment package.</p>"
+        },
+        "Message":{
+          "shape":"SensitiveString",
+          "documentation":"<p>The human-readable message that describes why Lambda failed to retrieve the deployment package.</p>"
+        }
+      },
+      "documentation":"<p>Contains details about an error that occurred when Lambda attempted to retrieve a function's deployment package.</p>"
     },
     "FunctionConfiguration":{
       "type":"structure",
@@ -4379,15 +4726,7 @@
         },
         "FileSystemConfigs":{
           "shape":"FileSystemConfigList",
-          "documentation":"<p>Connection settings for an <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/configuration-filesystem.html\">Amazon EFS file system</a> or an <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/configuration-filesystem.html\">Amazon S3 Files file system</a>.</p>"
-        },
-        "PackageType":{
-          "shape":"PackageType",
-          "documentation":"<p>The type of deployment package. Set to <code>Image</code> for container image and set <code>Zip</code> for .zip file archive.</p>"
-        },
-        "ImageConfigResponse":{
-          "shape":"ImageConfigResponse",
-          "documentation":"<p>The function's image configuration values.</p>"
+          "documentation":"<p>Connection settings for an <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/configuration-filesystem.html\">Amazon EFS file system</a> or an <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/configuration-filesystem.html\">Amazon S3 file system</a>.</p>"
         },
         "SigningProfileVersionArn":{
           "shape":"Arn",
@@ -4396,6 +4735,14 @@
         "SigningJobArn":{
           "shape":"Arn",
           "documentation":"<p>The ARN of the signing job.</p>"
+        },
+        "PackageType":{
+          "shape":"PackageType",
+          "documentation":"<p>The type of deployment package. Set to <code>Image</code> for container image and set <code>Zip</code> for .zip file archive.</p>"
+        },
+        "ImageConfigResponse":{
+          "shape":"ImageConfigResponse",
+          "documentation":"<p>The function's image configuration values.</p>"
         },
         "Architectures":{
           "shape":"ArchitecturesList",
@@ -4417,6 +4764,10 @@
           "shape":"LoggingConfig",
           "documentation":"<p>The function's Amazon CloudWatch Logs configuration settings.</p>"
         },
+        "TenancyConfig":{
+          "shape":"TenancyConfig",
+          "documentation":"<p>The function's tenant isolation configuration settings. Determines whether the Lambda function runs on a shared or dedicated infrastructure per unique tenant.</p>"
+        },
         "CapacityProviderConfig":{
           "shape":"CapacityProviderConfig",
           "documentation":"<p>Configuration for the capacity provider that manages compute resources for Lambda functions.</p>"
@@ -4428,10 +4779,6 @@
         "DurableConfig":{
           "shape":"DurableConfig",
           "documentation":"<p>The function's durable execution configuration settings, if the function is configured for durability.</p>"
-        },
-        "TenancyConfig":{
-          "shape":"TenancyConfig",
-          "documentation":"<p>The function's tenant isolation configuration settings. Determines whether the Lambda function runs on a shared or dedicated infrastructure per unique tenant.</p>"
         }
       },
       "documentation":"<p>Details about a function's configuration.</p>"
@@ -4473,7 +4820,7 @@
       "type":"string",
       "max":140,
       "min":1,
-      "pattern":"(arn:(aws[a-zA-Z-]*)?:lambda:)?([a-z]{2}((-gov)|(-iso([a-z]?)))?-[a-z]+-\\d{1}:)?(\\d{12}:)?(function:)?([a-zA-Z0-9-_]+)(:(\\$LATEST|[a-zA-Z0-9-_]+))?"
+      "pattern":"(arn:(aws[a-zA-Z-]*)?:lambda:)?((eusc-)?[a-z]{2}((-gov)|(-iso([a-z]?)))?-[a-z]+-\\d{1}:)?(\\d{12}:)?(function:)?([a-zA-Z0-9-_]+)(:(\\$LATEST|[a-zA-Z0-9-_]+))?"
     },
     "FunctionResponseType":{
       "type":"string",
@@ -4561,6 +4908,12 @@
     "FunctionUrlConfigList":{
       "type":"list",
       "member":{"shape":"FunctionUrlConfig"}
+    },
+    "FunctionUrlFunctionName":{
+      "type":"string",
+      "max":140,
+      "min":1,
+      "pattern":"(arn:(aws[a-zA-Z-]*)?:lambda:)?((eusc-)?[a-z]{2}((-gov)|(-iso([a-z]?)))?-[a-z]+-\\d{1}:)?(\\d{12}:)?(function:)?([a-zA-Z0-9-_]{1,64})(:((?!\\d+$)[0-9a-zA-Z-_]+))?"
     },
     "FunctionUrlQualifier":{
       "type":"string",
@@ -4758,6 +5111,12 @@
           "documentation":"<p>The Amazon Resource Name (ARN) of the durable execution.</p>",
           "location":"uri",
           "locationName":"DurableExecutionArn"
+        },
+        "IncludeExecutionData":{
+          "shape":"IncludeExecutionData",
+          "documentation":"<p>Specifies whether to include execution data such as input payload, result, and error information in the response. Set to <code>false</code> for a more compact response that includes only execution metadata. The default value is set to <code>true</code>.</p>",
+          "location":"querystring",
+          "locationName":"IncludeExecutionData"
         }
       }
     },
@@ -4814,6 +5173,14 @@
         "TraceHeader":{
           "shape":"TraceHeader",
           "documentation":"<p>The trace headers associated with the durable execution.</p>"
+        },
+        "ExecutionDataIncluded":{
+          "shape":"ExecutionDataIncluded",
+          "documentation":"<p>Indicates whether execution data is included in this response. Returns <code>false</code> when <code>IncludeExecutionData</code> is set to <code>false</code> in the request.</p>"
+        },
+        "DurableConfig":{
+          "shape":"DurableConfig",
+          "documentation":"<p>Configuration settings for the durable execution, including execution timeout, retention period for execution history, and an optional ARN of the Key Management Service (KMS) customer managed key that is used to encrypt your durable execution's payload data, including input, output, and error payloads.</p>"
         }
       },
       "documentation":"<p>The response from the GetDurableExecution operation, containing detailed information about the durable execution.</p>"
@@ -4871,7 +5238,7 @@
       "required":["UUID"],
       "members":{
         "UUID":{
-          "shape":"String",
+          "shape":"UUIDString",
           "documentation":"<p>The identifier of the event source mapping.</p>",
           "location":"uri",
           "locationName":"UUID"
@@ -5071,7 +5438,7 @@
       "required":["FunctionName"],
       "members":{
         "FunctionName":{
-          "shape":"FunctionName",
+          "shape":"FunctionUrlFunctionName",
           "documentation":"<p>The name or ARN of the Lambda function.</p> <p class=\"title\"> <b>Name formats</b> </p> <ul> <li> <p> <b>Function name</b> – <code>my-function</code>.</p> </li> <li> <p> <b>Function ARN</b> – <code>arn:aws:lambda:us-west-2:123456789012:function:my-function</code>.</p> </li> <li> <p> <b>Partial ARN</b> – <code>123456789012:function:my-function</code>.</p> </li> </ul> <p>The length constraint applies only to the full ARN. If you specify only the function name, it is limited to 64 characters in length.</p>",
           "location":"uri",
           "locationName":"FunctionName"
@@ -5218,6 +5585,10 @@
           "shape":"LayerVersionNumber",
           "documentation":"<p>The version number.</p>"
         },
+        "CompatibleArchitectures":{
+          "shape":"CompatibleArchitectures",
+          "documentation":"<p>A list of compatible <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/foundation-arch.html\">instruction set architectures</a>.</p>"
+        },
         "CompatibleRuntimes":{
           "shape":"CompatibleRuntimes",
           "documentation":"<p>The layer's compatible runtimes.</p> <p>The following list includes deprecated runtimes. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html#runtime-deprecation-levels\">Runtime use after deprecation</a>.</p> <p>For a list of all currently supported runtimes, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html#runtimes-supported\">Supported runtimes</a>.</p>"
@@ -5225,10 +5596,6 @@
         "LicenseInfo":{
           "shape":"LicenseInfo",
           "documentation":"<p>The layer's software license.</p>"
-        },
-        "CompatibleArchitectures":{
-          "shape":"CompatibleArchitectures",
-          "documentation":"<p>A list of compatible <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/foundation-arch.html\">instruction set architectures</a>.</p>"
         }
       }
     },
@@ -5313,6 +5680,31 @@
         }
       }
     },
+    "GetResourcePolicyRequest":{
+      "type":"structure",
+      "required":["ResourceArn"],
+      "members":{
+        "ResourceArn":{
+          "shape":"PolicyResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Lambda resource you want to retrieve the policy for. You can use a qualified or an unqualified ARN. The value must be a complete ARN, and the operation does not accept wildcard characters.</p>",
+          "location":"uri",
+          "locationName":"ResourceArn"
+        }
+      }
+    },
+    "GetResourcePolicyResponse":{
+      "type":"structure",
+      "members":{
+        "Policy":{
+          "shape":"ResourcePolicy",
+          "documentation":"<p>The resource-based policy attached to the Lambda resource you specified.</p>"
+        },
+        "RevisionId":{
+          "shape":"RevisionId",
+          "documentation":"<p>The revision ID of the policy. Pass this value as the <code>RevisionId</code> in a <a>PutResourcePolicy</a> or <a>DeleteResourcePolicy</a> request. Doing so ensures the operation acts on the expected version of the policy.</p>"
+        }
+      }
+    },
     "GetRuntimeManagementConfigRequest":{
       "type":"structure",
       "required":["FunctionName"],
@@ -5338,13 +5730,13 @@
           "shape":"UpdateRuntimeOn",
           "documentation":"<p>The current runtime update mode of the function.</p>"
         },
-        "RuntimeVersionArn":{
-          "shape":"RuntimeVersionArn",
-          "documentation":"<p>The ARN of the runtime the function is configured to use. If the runtime update mode is <b>Manual</b>, the ARN is returned, otherwise <code>null</code> is returned.</p>"
-        },
         "FunctionArn":{
           "shape":"NameSpacedFunctionArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of your function.</p>"
+        },
+        "RuntimeVersionArn":{
+          "shape":"RuntimeVersionArn",
+          "documentation":"<p>The ARN of the runtime the function is configured to use. If the runtime update mode is <b>Manual</b>, the ARN is returned, otherwise <code>null</code> is returned.</p>"
         }
       }
     },
@@ -5445,7 +5837,7 @@
       "type":"string",
       "max":30,
       "min":1,
-      "pattern":"[a-zA-Z0-9\\.\\-]+"
+      "pattern":"[a-zA-Z0-9\\.\\*\\-]+"
     },
     "InstanceTypeSet":{
       "type":"list",
@@ -5606,7 +5998,7 @@
         },
         "DurableExecutionName":{
           "shape":"DurableExecutionName",
-          "documentation":"<p>Optional unique name for the durable execution. When you start your special function, you can give it a unique name to identify this specific execution. It's like giving a nickname to a task.</p>",
+          "documentation":"<p>A unique name for the durable execution. If you invoke a durable function using a name that already exists with the same payload, Lambda returns the existing execution instead of creating a duplicate. If the payload differs, Lambda returns a <code>DurableExecutionAlreadyStartedException</code> error.</p> <p>If not specified, Lambda generates a unique identifier automatically. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/durable-execution-idempotency.html#durable-idempotency-execution-names\">Execution names</a>.</p>",
           "location":"header",
           "locationName":"X-Amz-Durable-Execution-Name"
         },
@@ -5757,12 +6149,6 @@
           "location":"uri",
           "locationName":"FunctionName"
         },
-        "InvocationType":{
-          "shape":"ResponseStreamingInvocationType",
-          "documentation":"<p>Use one of the following options:</p> <ul> <li> <p> <code>RequestResponse</code> (default) – Invoke the function synchronously. Keep the connection open until the function returns a response or times out. The API operation response includes the function response and additional data.</p> </li> <li> <p> <code>DryRun</code> – Validate parameter values and verify that the IAM user or role has permission to invoke the function.</p> </li> </ul>",
-          "location":"header",
-          "locationName":"X-Amz-Invocation-Type"
-        },
         "LogType":{
           "shape":"LogType",
           "documentation":"<p>Set to <code>Tail</code> to include the execution log in the response. Applies to synchronously invoked functions only.</p>",
@@ -5790,6 +6176,12 @@
           "documentation":"<p>The identifier of the tenant in a multi-tenant Lambda function.</p>",
           "location":"header",
           "locationName":"X-Amz-Tenant-Id"
+        },
+        "InvocationType":{
+          "shape":"ResponseStreamingInvocationType",
+          "documentation":"<p>Use one of the following options:</p> <ul> <li> <p> <code>RequestResponse</code> (default) – Invoke the function synchronously. Keep the connection open until the function returns a response or times out. The API operation response includes the function response and additional data.</p> </li> <li> <p> <code>DryRun</code> – Validate parameter values and verify that the IAM user or role has permission to invoke the function.</p> </li> </ul>",
+          "location":"header",
+          "locationName":"X-Amz-Invocation-Type"
         }
       },
       "payload":"Payload"
@@ -5880,6 +6272,8 @@
     },
     "KMSKeyArn":{
       "type":"string",
+      "max":10000,
+      "min":0,
       "pattern":"(arn:(aws[a-zA-Z-]*)?:[a-z0-9-.]+:.*)|()"
     },
     "KMSKeyArnNonEmpty":{
@@ -5904,7 +6298,7 @@
       "members":{
         "Type":{
           "shape":"KafkaSchemaRegistryAuthType",
-          "documentation":"<p> The type of authentication Lambda uses to access your schema registry. </p>"
+          "documentation":"<p> The type of authentication Lambda uses to access your schema registry. </p> <ul> <li> <p> <code>BASIC_AUTH</code> – The Secrets Manager ARN of your secret key used for basic authentication with your Confluent schema registry.</p> </li> <li> <p> <code>CLIENT_CERTIFICATE_TLS_AUTH</code> – The Secrets Manager ARN of your secret key containing the certificate chain (X.509 PEM), private key (PKCS#8 PEM), and private key password (optional) used for mutual TLS authentication with your Confluent schema registry.</p> </li> <li> <p> <code>SERVER_ROOT_CA_CERTIFICATE</code> – The Secrets Manager ARN of your secret key containing the root CA certificate (X.509 PEM) used for TLS encryption with your Confluent schema registry.</p> </li> <li> <p> <code>OAUTHBEARER_AUTH</code> – The Secrets Manager ARN of your secret key containing the OAuth 2.0 credentials that Lambda uses to acquire an access token for your Confluent schema registry. For the contents of the secret, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/kafka-cluster-auth.html#smaa-auth-oauth-secret\">Configuring the OAuth secret</a>.</p> </li> </ul>"
         },
         "URI":{
           "shape":"Arn",
@@ -5922,7 +6316,8 @@
       "enum":[
         "BASIC_AUTH",
         "CLIENT_CERTIFICATE_TLS_AUTH",
-        "SERVER_ROOT_CA_CERTIFICATE"
+        "SERVER_ROOT_CA_CERTIFICATE",
+        "OAUTHBEARER_AUTH"
       ]
     },
     "KafkaSchemaRegistryConfig":{
@@ -6020,6 +6415,7 @@
         "InvalidRuntime",
         "InvalidZipFileException",
         "FunctionError",
+        "ServiceQuotaExceededException",
         "VcpuLimitExceeded",
         "CapacityProviderScalingLimitExceeded",
         "InsufficientCapacity",
@@ -6032,7 +6428,8 @@
         "FunctionError.PermissionDenied",
         "FunctionError.TooManyExtensions",
         "FunctionError.InitResourceExhausted",
-        "DisallowedByVpcEncryptionControl"
+        "DisallowedByVpcEncryptionControl",
+        "DependencyError"
       ]
     },
     "Layer":{
@@ -6059,9 +6456,9 @@
     },
     "LayerArn":{
       "type":"string",
-      "max":140,
+      "max":2048,
       "min":1,
-      "pattern":"arn:[a-zA-Z0-9-]+:lambda:[a-zA-Z0-9-]+:\\d{12}:layer:[a-zA-Z0-9-_]+"
+      "pattern":"arn:(aws[a-zA-Z-]*)?:lambda:(eusc-)?[a-z]{2}((-gov)|(-iso([a-z]?)))?-[a-z]+-\\d{1}:\\d{12}:layer:[a-zA-Z0-9-_]+"
     },
     "LayerList":{
       "type":"list",
@@ -6071,7 +6468,7 @@
       "type":"string",
       "max":140,
       "min":1,
-      "pattern":"(arn:[a-zA-Z0-9-]+:lambda:[a-zA-Z0-9-]+:\\d{12}:layer:[a-zA-Z0-9-_]+)|[a-zA-Z0-9-_]+"
+      "pattern":"(arn:(aws[a-zA-Z-]*)?:lambda:(eusc-)?[a-z]{2}((-gov)|(-iso([a-z]?)))?-[a-z]+-\\d{1}:\\d{12}:layer:[a-zA-Z0-9-_]+)|[a-zA-Z0-9-_]+"
     },
     "LayerPermissionAllowedAction":{
       "type":"string",
@@ -6081,13 +6478,15 @@
     },
     "LayerPermissionAllowedPrincipal":{
       "type":"string",
+      "max":10000,
+      "min":0,
       "pattern":"\\d{12}|\\*|arn:(aws[a-zA-Z-]*):iam::\\d{12}:root"
     },
     "LayerVersionArn":{
       "type":"string",
-      "max":140,
+      "max":2048,
       "min":1,
-      "pattern":"arn:[a-zA-Z0-9-]+:lambda:[a-zA-Z0-9-]+:\\d{12}:layer:[a-zA-Z0-9-_]+:[0-9]+"
+      "pattern":"((arn:(aws[a-zA-Z-]*)?:lambda:(eusc-)?[a-z]{2}((-gov)|(-iso([a-z]?)))?-[a-z]+-\\d{1}:\\d{12}:layer:[a-zA-Z0-9-_]+:[0-9]+)|(arn:[a-zA-Z0-9-]+:lambda:::awslayer:[a-zA-Z0-9-_]+))"
     },
     "LayerVersionContentInput":{
       "type":"structure",
@@ -6104,6 +6503,10 @@
           "shape":"S3ObjectVersion",
           "documentation":"<p>For versioned objects, the version of the layer archive object to use.</p>"
         },
+        "S3ObjectStorageMode":{
+          "shape":"S3ObjectStorageMode",
+          "documentation":"<p>Specifies how the layer archive is stored. Valid values:</p> <ul> <li> <p> <code>COPY</code> (default) – Uploads a copy of your layer archive to Lambda.</p> </li> <li> <p> <code>REFERENCE</code> – Lambda references the layer archive from the specified Amazon S3 bucket.</p> </li> </ul>"
+        },
         "ZipFile":{
           "shape":"Blob",
           "documentation":"<p>The base64-encoded contents of the layer archive. Amazon Web Services SDK and Amazon Web Services CLI clients handle the encoding for you.</p>"
@@ -6115,7 +6518,7 @@
       "type":"structure",
       "members":{
         "Location":{
-          "shape":"String",
+          "shape":"SensitiveStringOnServerOnly",
           "documentation":"<p>A link to the layer archive in Amazon S3 that is valid for 10 minutes.</p>"
         },
         "CodeSha256":{
@@ -6127,12 +6530,16 @@
           "documentation":"<p>The size of the layer archive in bytes.</p>"
         },
         "SigningProfileVersionArn":{
-          "shape":"String",
+          "shape":"Arn",
           "documentation":"<p>The Amazon Resource Name (ARN) for a signing profile version.</p>"
         },
         "SigningJobArn":{
-          "shape":"String",
+          "shape":"Arn",
           "documentation":"<p>The Amazon Resource Name (ARN) of a signing job.</p>"
+        },
+        "ResolvedS3Object":{
+          "shape":"ResolvedS3Object",
+          "documentation":"<p>The resolved Amazon S3 object that contains the layer archive.</p>"
         }
       },
       "documentation":"<p>Details about a version of an <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/configuration-layers.html\">Lambda layer</a>.</p>"
@@ -6161,6 +6568,10 @@
           "shape":"Timestamp",
           "documentation":"<p>The date that the version was created, in ISO 8601 format. For example, <code>2018-11-27T15:10:45.123+0000</code>.</p>"
         },
+        "CompatibleArchitectures":{
+          "shape":"CompatibleArchitectures",
+          "documentation":"<p>A list of compatible <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/foundation-arch.html\">instruction set architectures</a>.</p>"
+        },
         "CompatibleRuntimes":{
           "shape":"CompatibleRuntimes",
           "documentation":"<p>The layer's compatible runtimes.</p> <p>The following list includes deprecated runtimes. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html#runtime-deprecation-levels\">Runtime use after deprecation</a>.</p> <p>For a list of all currently supported runtimes, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html#runtimes-supported\">Supported runtimes</a>.</p>"
@@ -6168,10 +6579,6 @@
         "LicenseInfo":{
           "shape":"LicenseInfo",
           "documentation":"<p>The layer's open-source license.</p>"
-        },
-        "CompatibleArchitectures":{
-          "shape":"CompatibleArchitectures",
-          "documentation":"<p>A list of compatible <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/foundation-arch.html\">instruction set architectures</a>.</p>"
         }
       },
       "documentation":"<p>Details about a version of an <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/configuration-layers.html\">Lambda layer</a>.</p>"
@@ -6205,7 +6612,8 @@
     "LicenseInfo":{
       "type":"string",
       "max":512,
-      "min":0
+      "min":0,
+      "pattern":".*"
     },
     "ListAliasesRequest":{
       "type":"structure",
@@ -6329,7 +6737,7 @@
         },
         "Qualifier":{
           "shape":"NumericLatestPublishedOrAliasQualifier",
-          "documentation":"<p>The function version or alias. If not specified, lists executions for the $LATEST version.</p>",
+          "documentation":"<p>The function version to filter executions by. If you don't specify a qualifier, this operation returns executions across all versions of the Lambda function.</p>",
           "location":"querystring",
           "locationName":"Qualifier"
         },
@@ -6359,7 +6767,7 @@
         },
         "ReverseOrder":{
           "shape":"ReverseOrder",
-          "documentation":"<p>Set to true to return results in reverse chronological order (newest first). Default is false.</p>",
+          "documentation":"<p>Set to true to return results in chronological order (oldest first). Default is false.</p>",
           "location":"querystring",
           "locationName":"ReverseOrder"
         },
@@ -6475,7 +6883,7 @@
       "required":["FunctionName"],
       "members":{
         "FunctionName":{
-          "shape":"FunctionName",
+          "shape":"FunctionUrlFunctionName",
           "documentation":"<p>The name or ARN of the Lambda function.</p> <p class=\"title\"> <b>Name formats</b> </p> <ul> <li> <p> <b>Function name</b> – <code>my-function</code>.</p> </li> <li> <p> <b>Function ARN</b> – <code>arn:aws:lambda:us-west-2:123456789012:function:my-function</code>.</p> </li> <li> <p> <b>Partial ARN</b> – <code>123456789012:function:my-function</code>.</p> </li> </ul> <p>The length constraint applies only to the full ARN. If you specify only the function name, it is limited to 64 characters in length.</p>",
           "location":"uri",
           "locationName":"FunctionName"
@@ -6637,6 +7045,12 @@
       "type":"structure",
       "required":["LayerName"],
       "members":{
+        "CompatibleArchitecture":{
+          "shape":"Architecture",
+          "documentation":"<p>The compatible <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/foundation-arch.html\">instruction set architecture</a>.</p>",
+          "location":"querystring",
+          "locationName":"CompatibleArchitecture"
+        },
         "CompatibleRuntime":{
           "shape":"Runtime",
           "documentation":"<p>A runtime identifier.</p> <p>The following list includes deprecated runtimes. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html#runtime-deprecation-levels\">Runtime use after deprecation</a>.</p> <p>For a list of all currently supported runtimes, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html#runtimes-supported\">Supported runtimes</a>.</p>",
@@ -6660,12 +7074,6 @@
           "documentation":"<p>The maximum number of versions to return.</p>",
           "location":"querystring",
           "locationName":"MaxItems"
-        },
-        "CompatibleArchitecture":{
-          "shape":"Architecture",
-          "documentation":"<p>The compatible <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/foundation-arch.html\">instruction set architecture</a>.</p>",
-          "location":"querystring",
-          "locationName":"CompatibleArchitecture"
         }
       }
     },
@@ -6685,6 +7093,12 @@
     "ListLayersRequest":{
       "type":"structure",
       "members":{
+        "CompatibleArchitecture":{
+          "shape":"Architecture",
+          "documentation":"<p>The compatible <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/foundation-arch.html\">instruction set architecture</a>.</p>",
+          "location":"querystring",
+          "locationName":"CompatibleArchitecture"
+        },
         "CompatibleRuntime":{
           "shape":"Runtime",
           "documentation":"<p>A runtime identifier.</p> <p>The following list includes deprecated runtimes. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html#runtime-deprecation-levels\">Runtime use after deprecation</a>.</p> <p>For a list of all currently supported runtimes, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html#runtimes-supported\">Supported runtimes</a>.</p>",
@@ -6702,12 +7116,6 @@
           "documentation":"<p>The maximum number of layers to return.</p>",
           "location":"querystring",
           "locationName":"MaxItems"
-        },
-        "CompatibleArchitecture":{
-          "shape":"Architecture",
-          "documentation":"<p>The compatible <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/foundation-arch.html\">instruction set architecture</a>.</p>",
-          "location":"querystring",
-          "locationName":"CompatibleArchitecture"
         }
       }
     },
@@ -6870,7 +7278,9 @@
     "Long":{"type":"long"},
     "MasterRegion":{
       "type":"string",
-      "pattern":"ALL|[a-z]{2}(-gov)?-[a-z]+-\\d{1}"
+      "max":50,
+      "min":1,
+      "pattern":"ALL|(eusc-)?[a-z]{2}((-gov)|(-iso([a-z]?)))?-[a-z]+-\\d{1}"
     },
     "MaxAge":{
       "type":"integer",
@@ -6935,7 +7345,7 @@
     "MaximumNumberOfPollers":{
       "type":"integer",
       "box":true,
-      "max":2000,
+      "max":10000,
       "min":1
     },
     "MaximumRecordAgeInSeconds":{
@@ -6971,8 +7381,8 @@
     "MetricTargetValue":{
       "type":"double",
       "box":true,
-      "max":100.0,
-      "min":0.0
+      "max":100,
+      "min":0
     },
     "MinimumNumberOfPollers":{
       "type":"integer",
@@ -6980,17 +7390,36 @@
       "max":200,
       "min":1
     },
+    "ModeNotSupportedException":{
+      "type":"structure",
+      "members":{
+        "Type":{
+          "shape":"String",
+          "documentation":"<p>The exception type.</p>"
+        },
+        "message":{
+          "shape":"String",
+          "documentation":"<p>The exception message.</p>"
+        }
+      },
+      "documentation":"<p>The Lambda function doesn't support the invocation mode requested. For example, calling <code>Invoke</code> with <code>InvocationType=RequestResponse</code> on a function configured for asynchronous-only invocation, or vice versa. For more information about invocation types, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/invocation-options.html\">Invoking Lambda functions</a>.</p>",
+      "error":{
+        "httpStatusCode":400,
+        "senderFault":true
+      },
+      "exception":true
+    },
     "NameSpacedFunctionArn":{
       "type":"string",
       "max":10000,
       "min":0,
-      "pattern":"arn:(aws[a-zA-Z-]*)?:lambda:[a-z]{2}((-gov)|(-iso([a-z]?)))?-[a-z]+-\\d{1}:\\d{12}:function:[a-zA-Z0-9-_\\.]+(:(\\$LATEST(\\.PUBLISHED)?|[a-zA-Z0-9-_]+))?"
+      "pattern":"arn:(aws[a-zA-Z-]*)?:lambda:(eusc-)?[a-z]{2}((-gov)|(-iso([a-z]?)))?-[a-z]+-\\d{1}:\\d{12}:function:[a-zA-Z0-9-_\\.]+(:(\\$LATEST(\\.PUBLISHED)?|[a-zA-Z0-9-_]+))?"
     },
     "NamespacedFunctionName":{
       "type":"string",
       "max":256,
       "min":1,
-      "pattern":"(arn:(aws[a-zA-Z-]*)?:lambda:)?([a-z]{2}((-gov)|(-iso([a-z]?)))?-[a-z]+-\\d{1}:)?(\\d{12}:)?(function:)?([a-zA-Z0-9-_\\.]+)(:(\\$LATEST(\\.PUBLISHED)?|[a-zA-Z0-9-_]+))?"
+      "pattern":"(arn:(aws[a-zA-Z-]*)?:lambda:)?((eusc-)?[a-z]{2}((-gov)|(-iso([a-z]?)))?-[a-z]+-\\d{1}:)?(\\d{12}:)?(function:)?([a-zA-Z0-9-_\\.]+)(:(\\$LATEST(\\.PUBLISHED)?|[a-zA-Z0-9-_]+))?"
     },
     "NamespacedStatementId":{
       "type":"string",
@@ -7203,7 +7632,7 @@
         },
         "Payload":{
           "shape":"OperationPayload",
-          "documentation":"<p>The payload for successful operations.</p>"
+          "documentation":"<p>The payload for successful operations. The maximum payload size is 6 MB for synchronous <code>EXECUTION</code> operations (RequestResponse invocationType), 1 MB for asynchronous <code>EXECUTION</code> (Event invocationType) and <code>CHAINED_INVOKE</code> operations, and 256 KB for <code>CONTEXT</code>, <code>STEP</code>, <code>WAIT</code>, and <code>CALLBACK</code> operations.</p>"
         },
         "Error":{
           "shape":"ErrorObject",
@@ -7269,7 +7698,7 @@
       "type":"string",
       "max":4096,
       "min":0,
-      "pattern":".*"
+      "pattern":"[\\s\\S]*"
     },
     "PerExecutionEnvironmentMaxConcurrency":{
       "type":"integer",
@@ -7289,6 +7718,12 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "PolicyResourceArn":{
+      "type":"string",
+      "max":256,
+      "min":0,
+      "pattern":"arn:(aws[a-zA-Z-]*)?:lambda:(eusc-)?[a-z]{2}((-gov)|(-iso([a-z]?)))?-[a-z]+-\\d{1}:\\d{12}:(runtime/|function:)[a-zA-Z0-9-_]+(:(\\$LATEST(\\.PUBLISHED)?|[a-zA-Z0-9-_])+)?"
     },
     "PositiveInteger":{
       "type":"integer",
@@ -7316,6 +7751,8 @@
     },
     "Principal":{
       "type":"string",
+      "max":2048,
+      "min":0,
       "pattern":"[^\\s]+"
     },
     "PrincipalOrgID":{
@@ -7420,7 +7857,7 @@
         },
         "MaximumPollers":{
           "shape":"MaximumNumberOfPollers",
-          "documentation":"<p>The maximum number of event pollers this event source can scale up to. For Amazon SQS events source mappings, default is 200, and minimum value allowed is 2. For Amazon MSK and self-managed Apache Kafka event source mappings, default is 200, and minimum value allowed is 1.</p>"
+          "documentation":"<p>The maximum number of event pollers this event source can scale up to. For Amazon SQS event source mappings, the accepted range is between 2 and 10,000, with a default of 200. For Amazon MSK and self-managed Apache Kafka event source mappings, the accepted range is between 1 and 2,000, with a default of 200.</p>"
         },
         "PollerGroupName":{
           "shape":"ProvisionedPollerGroupName",
@@ -7434,6 +7871,25 @@
       "max":128,
       "min":0,
       "pattern":"[a-zA-Z0-9-_]*"
+    },
+    "PublicPolicyException":{
+      "type":"structure",
+      "members":{
+        "Type":{
+          "shape":"String",
+          "documentation":"<p>The exception type.</p>"
+        },
+        "Message":{
+          "shape":"String",
+          "documentation":"<p>The exception message.</p>"
+        }
+      },
+      "documentation":"<p>The resource-based policy you tried to add to the Lambda resource would grant public access to it, which isn't allowed.</p>",
+      "error":{
+        "httpStatusCode":400,
+        "senderFault":true
+      },
+      "exception":true
     },
     "PublishLayerVersionRequest":{
       "type":"structure",
@@ -7456,6 +7912,10 @@
           "shape":"LayerVersionContentInput",
           "documentation":"<p>The function layer archive.</p>"
         },
+        "CompatibleArchitectures":{
+          "shape":"CompatibleArchitectures",
+          "documentation":"<p>A list of compatible <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/foundation-arch.html\">instruction set architectures</a>.</p>"
+        },
         "CompatibleRuntimes":{
           "shape":"CompatibleRuntimes",
           "documentation":"<p>A list of compatible <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html\">function runtimes</a>. Used for filtering with <a>ListLayers</a> and <a>ListLayerVersions</a>.</p> <p>The following list includes deprecated runtimes. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html#runtime-support-policy\">Runtime deprecation policy</a>.</p>"
@@ -7463,10 +7923,6 @@
         "LicenseInfo":{
           "shape":"LicenseInfo",
           "documentation":"<p>The layer's software license. It can be any of the following:</p> <ul> <li> <p>An <a href=\"https://spdx.org/licenses/\">SPDX license identifier</a>. For example, <code>MIT</code>.</p> </li> <li> <p>The URL of a license hosted on the internet. For example, <code>https://opensource.org/licenses/MIT</code>.</p> </li> <li> <p>The full text of the license.</p> </li> </ul>"
-        },
-        "CompatibleArchitectures":{
-          "shape":"CompatibleArchitectures",
-          "documentation":"<p>A list of compatible <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/foundation-arch.html\">instruction set architectures</a>.</p>"
         }
       }
     },
@@ -7497,6 +7953,10 @@
           "shape":"LayerVersionNumber",
           "documentation":"<p>The version number.</p>"
         },
+        "CompatibleArchitectures":{
+          "shape":"CompatibleArchitectures",
+          "documentation":"<p>A list of compatible <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/foundation-arch.html\">instruction set architectures</a>.</p>"
+        },
         "CompatibleRuntimes":{
           "shape":"CompatibleRuntimes",
           "documentation":"<p>The layer's compatible runtimes.</p> <p>The following list includes deprecated runtimes. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html#runtime-deprecation-levels\">Runtime use after deprecation</a>.</p> <p>For a list of all currently supported runtimes, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html#runtimes-supported\">Supported runtimes</a>.</p>"
@@ -7504,10 +7964,6 @@
         "LicenseInfo":{
           "shape":"LicenseInfo",
           "documentation":"<p>The layer's software license.</p>"
-        },
-        "CompatibleArchitectures":{
-          "shape":"CompatibleArchitectures",
-          "documentation":"<p>A list of compatible <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/foundation-arch.html\">instruction set architectures</a>.</p>"
         }
       }
     },
@@ -7725,13 +8181,13 @@
           "shape":"PositiveInteger",
           "documentation":"<p>The amount of provisioned concurrency requested.</p>"
         },
-        "AvailableProvisionedConcurrentExecutions":{
-          "shape":"NonNegativeInteger",
-          "documentation":"<p>The amount of provisioned concurrency available.</p>"
-        },
         "AllocatedProvisionedConcurrentExecutions":{
           "shape":"NonNegativeInteger",
           "documentation":"<p>The amount of provisioned concurrency allocated. When a weighted alias is used during linear and canary deployments, this value fluctuates depending on the amount of concurrency that is provisioned for the function versions.</p>"
+        },
+        "AvailableProvisionedConcurrentExecutions":{
+          "shape":"NonNegativeInteger",
+          "documentation":"<p>The amount of provisioned concurrency available.</p>"
         },
         "Status":{
           "shape":"ProvisionedConcurrencyStatusEnum",
@@ -7744,6 +8200,42 @@
         "LastModified":{
           "shape":"Timestamp",
           "documentation":"<p>The date and time that a user last updated the configuration, in <a href=\"https://www.iso.org/iso-8601-date-and-time-format.html\">ISO 8601 format</a>.</p>"
+        }
+      }
+    },
+    "PutResourcePolicyRequest":{
+      "type":"structure",
+      "required":[
+        "ResourceArn",
+        "Policy"
+      ],
+      "members":{
+        "ResourceArn":{
+          "shape":"PolicyResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Lambda resource you want to add the policy to. You can use a qualified or an unqualified ARN. The value must be a complete ARN, and the operation does not accept wildcard characters.</p>",
+          "location":"uri",
+          "locationName":"ResourceArn"
+        },
+        "Policy":{
+          "shape":"ResourcePolicy",
+          "documentation":"<p>The policy document you want to add to your Lambda resource. This is formatted as a JSON string.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/access-control-resource-based.html\">Working with resource-based policies in Lambda</a> in the <i>Lambda Developer Guide</i>.</p>"
+        },
+        "RevisionId":{
+          "shape":"RevisionId",
+          "documentation":"<p>The revision ID that the existing policy must match for the replacement to proceed. If the revision ID doesn't match, the operation fails with a <code>PreconditionFailedException</code> error. To retrieve the current revision ID, use the <a>GetResourcePolicy</a> operation.</p>"
+        }
+      }
+    },
+    "PutResourcePolicyResponse":{
+      "type":"structure",
+      "members":{
+        "Policy":{
+          "shape":"ResourcePolicy",
+          "documentation":"<p>The resource-based policy that Lambda adds to the resource.</p>"
+        },
+        "RevisionId":{
+          "shape":"RevisionId",
+          "documentation":"<p>The revision ID of the policy that Lambda adds to your Lambda resource.</p>"
         }
       }
     },
@@ -7930,8 +8422,28 @@
       "box":true,
       "min":0
     },
+    "ResolvedS3Object":{
+      "type":"structure",
+      "members":{
+        "S3Bucket":{
+          "shape":"S3Bucket",
+          "documentation":"<p>The Amazon S3 bucket that contains the deployment package.</p>"
+        },
+        "S3Key":{
+          "shape":"S3Key",
+          "documentation":"<p>The Amazon S3 key of the deployment package.</p>"
+        },
+        "S3ObjectVersion":{
+          "shape":"S3ObjectVersion",
+          "documentation":"<p>The version of the deployment package object.</p>"
+        }
+      },
+      "documentation":"<p>Details about the resolved Amazon S3 object that contains a function's deployment package.</p>"
+    },
     "ResourceArn":{
       "type":"string",
+      "max":10000,
+      "min":0,
       "pattern":"(arn:(aws[a-zA-Z-]*)?:[a-z0-9-.]+:.*)|()"
     },
     "ResourceConflictException":{
@@ -7996,6 +8508,12 @@
       "exception":true,
       "fault":true
     },
+    "ResourcePolicy":{
+      "type":"string",
+      "max":20480,
+      "min":1,
+      "pattern":"[\\s\\S]+"
+    },
     "ResponseStreamingInvocationType":{
       "type":"string",
       "enum":[
@@ -8027,8 +8545,16 @@
       "type":"boolean",
       "box":true
     },
+    "RevisionId":{
+      "type":"string",
+      "max":36,
+      "min":36,
+      "pattern":"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+    },
     "RoleArn":{
       "type":"string",
+      "max":10000,
+      "min":0,
       "pattern":"arn:(aws[a-zA-Z-]*)?:iam::\\d{12}:role/?[a-zA-Z_0-9+=,.@\\-_/]+"
     },
     "Runtime":{
@@ -8042,51 +8568,56 @@
         "nodejs12.x",
         "nodejs14.x",
         "nodejs16.x",
+        "nodejs18.x",
+        "nodejs20.x",
+        "nodejs22.x",
+        "nodejs24.x",
         "java8",
         "java8.al2",
         "java11",
+        "java17",
+        "java21",
+        "java25",
         "python2.7",
         "python3.6",
         "python3.7",
         "python3.8",
         "python3.9",
+        "python3.10",
+        "python3.11",
+        "python3.12",
+        "python3.13",
+        "python3.14",
         "dotnetcore1.0",
         "dotnetcore2.0",
         "dotnetcore2.1",
         "dotnetcore3.1",
         "dotnet6",
         "dotnet8",
+        "dotnet10",
         "nodejs4.3-edge",
         "go1.x",
         "ruby2.5",
         "ruby2.7",
-        "provided",
-        "provided.al2",
-        "nodejs18.x",
-        "python3.10",
-        "java17",
         "ruby3.2",
         "ruby3.3",
         "ruby3.4",
-        "python3.11",
-        "nodejs20.x",
+        "ruby4.0",
+        "provided",
+        "provided.al2",
         "provided.al2023",
-        "python3.12",
-        "java21",
-        "python3.13",
-        "nodejs22.x",
-        "nodejs24.x",
-        "python3.14",
-        "java25",
-        "dotnet10",
-        "ruby4.0"
+        "nodejs26.x",
+        "python3.15",
+        "java8.al2023",
+        "java11.al2023",
+        "java17.al2023"
       ]
     },
     "RuntimeVersionArn":{
       "type":"string",
       "max":2048,
       "min":26,
-      "pattern":"arn:(aws[a-zA-Z-]*):lambda:[a-z]{2}((-gov)|(-iso(b?)))?-[a-z]+-\\d{1}::runtime:.+"
+      "pattern":"((arn:(aws[a-zA-Z-]*):lambda:(eusc-)?[a-z]{2}((-gov)|(-iso([a-z]?)))?-[a-z]+-\\d{1}::runtime:.+)|(arn:(aws[a-zA-Z-]*):lambda:(eusc-)?[a-z]{2}((-gov)|(-iso([a-z]?)))?-[a-z]+-\\d{1}:\\d{12}:runtime/[A-Za-z0-9_.-]{1,128}/version/[A-Za-z0-9_.-]{1,128}))"
     },
     "RuntimeVersionConfig":{
       "type":"structure",
@@ -8121,6 +8652,16 @@
       "max":63,
       "min":3,
       "pattern":"[0-9A-Za-z\\.\\-_]*(?<!\\.)"
+    },
+    "S3FilesConfig":{
+      "type":"structure",
+      "members":{
+        "DirectS3Read":{
+          "shape":"DirectS3Read",
+          "documentation":"<p>Specifies if a function reads from the file system for the lowest latency, or through Amazon S3 Files feature \"direct Amazon S3 bucket reads\" for the highest throughput. Valid values:</p> <ul> <li> <p> <code>AUTO</code> (default) – Direct reads are active for functions you configure with 512 MB or more of memory.</p> </li> <li> <p> <code>ENABLED</code> – Enforces all reads are directly from the Amazon S3 bucket, regardless of available memory (less than 512 MB).</p> </li> <li> <p> <code>DISABLED</code> – Routes all reads through the file system, regardless of memory configuration.</p> </li> </ul> <p>To use direct reads, you must grant the execution role the <code>s3:GetObject</code> and <code>s3:GetObjectVersion</code> permissions. If a direct read fails, Lambda automatically falls back to reading through the file system.</p>"
+        }
+      },
+      "documentation":"<p>Setting controls how your function accesses data from an Amazon S3 file system.</p>"
     },
     "S3FilesMountConnectivityException":{
       "type":"structure",
@@ -8182,12 +8723,22 @@
     "S3Key":{
       "type":"string",
       "max":1024,
-      "min":1
+      "min":1,
+      "pattern":".*"
+    },
+    "S3ObjectStorageMode":{
+      "type":"string",
+      "documentation":"<p>The method Lambda uses to store a function's deployment package — either by copying the package into Lambda-managed storage (<code>COPY</code>) or by referencing it directly from the source Amazon S3 bucket (<code>REFERENCE</code>).</p>",
+      "enum":[
+        "COPY",
+        "REFERENCE"
+      ]
     },
     "S3ObjectVersion":{
       "type":"string",
       "max":1024,
-      "min":1
+      "min":1,
+      "pattern":".*"
     },
     "ScalingConfig":{
       "type":"structure",
@@ -8212,7 +8763,12 @@
       "min":1,
       "pattern":"[a-zA-Z0-9-\\/*:_+=.@-]*"
     },
-    "SecurityGroupId":{"type":"string"},
+    "SecurityGroupId":{
+      "type":"string",
+      "max":1024,
+      "min":0,
+      "pattern":"sg-[0-9a-zA-Z]*"
+    },
     "SecurityGroupIds":{
       "type":"list",
       "member":{"shape":"SecurityGroupId"},
@@ -8305,6 +8861,11 @@
       "type":"string",
       "sensitive":true
     },
+    "SensitiveStringOnServerOnly":{
+      "type":"string",
+      "max":10000,
+      "min":0
+    },
     "SerializedRequestEntityTooLargeException":{
       "type":"structure",
       "members":{
@@ -8331,6 +8892,25 @@
       "error":{"httpStatusCode":500},
       "exception":true,
       "fault":true
+    },
+    "ServiceQuotaExceededException":{
+      "type":"structure",
+      "members":{
+        "Type":{
+          "shape":"String",
+          "documentation":"<p>The exception type.</p>"
+        },
+        "Message":{
+          "shape":"String",
+          "documentation":"<p>The exception message.</p>"
+        }
+      },
+      "documentation":"<p>The request would exceed a service quota. For more information about Lambda service quotas, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/gettingstarted-limits.html\">Lambda quotas</a>. To request a quota increase, see <a href=\"https://docs.aws.amazon.com/servicequotas/latest/userguide/request-quota-increase.html\">Requesting a quota increase</a> in the <i>Service Quotas User Guide</i>.</p>",
+      "error":{
+        "httpStatusCode":402,
+        "senderFault":true
+      },
+      "exception":true
     },
     "SigningProfileVersionArns":{
       "type":"list",
@@ -8388,6 +8968,25 @@
         "Off"
       ]
     },
+    "SnapStartRegenerationFailureException":{
+      "type":"structure",
+      "members":{
+        "Type":{
+          "shape":"String",
+          "documentation":"<p>The exception type.</p>"
+        },
+        "Message":{
+          "shape":"String",
+          "documentation":"<p>The exception message.</p>"
+        }
+      },
+      "documentation":"<p>Lambda couldn't regenerate the SnapStart snapshot for the function. SnapStart-enabled functions periodically regenerate snapshots when their underlying runtime or dependencies change; this regeneration failed. Wait for Lambda to retry, or update the function's configuration to trigger a new snapshot. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/snapstart.html\">Lambda SnapStart</a>.</p>",
+      "error":{
+        "httpStatusCode":409,
+        "senderFault":true
+      },
+      "exception":true
+    },
     "SnapStartResponse":{
       "type":"structure",
       "members":{
@@ -8420,7 +9019,7 @@
       "members":{
         "Type":{
           "shape":"SourceAccessType",
-          "documentation":"<p>The type of authentication protocol, VPC components, or virtual host for your event source. For example: <code>\"Type\":\"SASL_SCRAM_512_AUTH\"</code>.</p> <ul> <li> <p> <code>BASIC_AUTH</code> – (Amazon MQ) The Secrets Manager secret that stores your broker credentials.</p> </li> <li> <p> <code>BASIC_AUTH</code> – (Self-managed Apache Kafka) The Secrets Manager ARN of your secret key used for SASL/PLAIN authentication of your Apache Kafka brokers.</p> </li> <li> <p> <code>VPC_SUBNET</code> – (Self-managed Apache Kafka) The subnets associated with your VPC. Lambda connects to these subnets to fetch data from your self-managed Apache Kafka cluster.</p> </li> <li> <p> <code>VPC_SECURITY_GROUP</code> – (Self-managed Apache Kafka) The VPC security group used to manage access to your self-managed Apache Kafka brokers.</p> </li> <li> <p> <code>SASL_SCRAM_256_AUTH</code> – (Self-managed Apache Kafka) The Secrets Manager ARN of your secret key used for SASL SCRAM-256 authentication of your self-managed Apache Kafka brokers.</p> </li> <li> <p> <code>SASL_SCRAM_512_AUTH</code> – (Amazon MSK, Self-managed Apache Kafka) The Secrets Manager ARN of your secret key used for SASL SCRAM-512 authentication of your self-managed Apache Kafka brokers.</p> </li> <li> <p> <code>VIRTUAL_HOST</code> –- (RabbitMQ) The name of the virtual host in your RabbitMQ broker. Lambda uses this RabbitMQ host as the event source. This property cannot be specified in an UpdateEventSourceMapping API call.</p> </li> <li> <p> <code>CLIENT_CERTIFICATE_TLS_AUTH</code> – (Amazon MSK, self-managed Apache Kafka) The Secrets Manager ARN of your secret key containing the certificate chain (X.509 PEM), private key (PKCS#8 PEM), and private key password (optional) used for mutual TLS authentication of your MSK/Apache Kafka brokers.</p> </li> <li> <p> <code>SERVER_ROOT_CA_CERTIFICATE</code> – (Self-managed Apache Kafka) The Secrets Manager ARN of your secret key containing the root CA certificate (X.509 PEM) used for TLS encryption of your Apache Kafka brokers. </p> </li> </ul>"
+          "documentation":"<p>The type of authentication protocol, VPC components, or virtual host for your event source. For example: <code>\"Type\":\"SASL_SCRAM_512_AUTH\"</code>.</p> <ul> <li> <p> <code>BASIC_AUTH</code> – (Amazon MQ) The Secrets Manager secret that stores your broker credentials.</p> </li> <li> <p> <code>BASIC_AUTH</code> – (Self-managed Apache Kafka) The Secrets Manager ARN of your secret key used for SASL/PLAIN authentication of your Apache Kafka brokers.</p> </li> <li> <p> <code>VPC_SUBNET</code> – (Self-managed Apache Kafka) The subnets associated with your VPC. Lambda connects to these subnets to fetch data from your self-managed Apache Kafka cluster.</p> </li> <li> <p> <code>VPC_SECURITY_GROUP</code> – (Self-managed Apache Kafka) The VPC security group used to manage access to your self-managed Apache Kafka brokers.</p> </li> <li> <p> <code>SASL_SCRAM_256_AUTH</code> – (Self-managed Apache Kafka) The Secrets Manager ARN of your secret key used for SASL SCRAM-256 authentication of your self-managed Apache Kafka brokers.</p> </li> <li> <p> <code>SASL_SCRAM_512_AUTH</code> – (Amazon MSK, Self-managed Apache Kafka) The Secrets Manager ARN of your secret key used for SASL SCRAM-512 authentication of your self-managed Apache Kafka brokers.</p> </li> <li> <p> <code>VIRTUAL_HOST</code> –- (RabbitMQ) The name of the virtual host in your RabbitMQ broker. Lambda uses this RabbitMQ host as the event source. This property cannot be specified in an UpdateEventSourceMapping API call.</p> </li> <li> <p> <code>CLIENT_CERTIFICATE_TLS_AUTH</code> – (Amazon MSK, self-managed Apache Kafka) The Secrets Manager ARN of your secret key containing the certificate chain (X.509 PEM), private key (PKCS#8 PEM), and private key password (optional) used for mutual TLS authentication of your MSK/Apache Kafka brokers.</p> </li> <li> <p> <code>SERVER_ROOT_CA_CERTIFICATE</code> – (Self-managed Apache Kafka) The Secrets Manager ARN of your secret key containing the root CA certificate (X.509 PEM) used for TLS encryption of your Apache Kafka brokers. </p> </li> <li> <p> <code>OAUTHBEARER_AUTH</code> – (Self-managed Apache Kafka) The Secrets Manager ARN of your secret key containing the OAuth 2.0 credentials that Lambda uses for SASL/OAUTHBEARER authentication with your Apache Kafka brokers. For the contents of the secret, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/kafka-cluster-auth.html#smaa-auth-oauth-secret\">Configuring the OAuth secret</a>.</p> </li> <li> <p> <code>OAUTHBEARER_SCOPE</code> – (Self-managed Apache Kafka) The OAuth 2.0 scope that Lambda requests when it acquires an access token. The <code>URI</code> field holds the scope value, not a secret ARN. This type requires <code>OAUTHBEARER_AUTH</code>.</p> </li> <li> <p> <code>OAUTHBEARER_AUDIENCE</code> – (Self-managed Apache Kafka) The OAuth 2.0 audience that Lambda requests when it acquires an access token. The <code>URI</code> field holds the audience value, not a secret ARN. This type requires either <code>OAUTHBEARER_AUTH</code> or <code>IAM_OAUTHBEARER_AUTH</code>.</p> </li> <li> <p> <code>OAUTHBEARER_LOGICAL_CLUSTER</code> – (Self-managed Apache Kafka) The logical cluster identifier that Lambda sends to a Confluent Cloud broker. The <code>URI</code> field holds the identifier, not a secret ARN. This type requires <code>OAUTHBEARER_AUTH</code>.</p> </li> <li> <p> <code>OAUTHBEARER_IDENTITY_POOL</code> – (Self-managed Apache Kafka) The identity pool identifier that Lambda sends to a Confluent Cloud broker. The <code>URI</code> field holds the identifier, not a secret ARN. This type requires <code>OAUTHBEARER_AUTH</code>.</p> </li> <li> <p> <code>IAM_AUTH</code> – (Self-managed Apache Kafka) Authenticate with Identity and Access Management (IAM). Your function's execution role signs each connection, so there is no secret to provide. Omit the <code>URI</code> field for this type.</p> </li> <li> <p> <code>IAM_OAUTHBEARER_AUTH</code> – (Self-managed Apache Kafka) Authenticate with an Amazon Web Services web identity token over SASL/OAUTHBEARER. Lambda requests the token for your function's execution role, so there is no secret to provide. Omit the <code>URI</code> field for this type. This type requires <code>OAUTHBEARER_AUDIENCE</code> and does not support the other <code>OAUTHBEARER</code> types.</p> </li> </ul>"
         },
         "URI":{
           "shape":"URI",
@@ -8432,7 +9031,7 @@
     "SourceAccessConfigurations":{
       "type":"list",
       "member":{"shape":"SourceAccessConfiguration"},
-      "max":22,
+      "max":23,
       "min":0
     },
     "SourceAccessType":{
@@ -8445,7 +9044,14 @@
         "SASL_SCRAM_256_AUTH",
         "VIRTUAL_HOST",
         "CLIENT_CERTIFICATE_TLS_AUTH",
-        "SERVER_ROOT_CA_CERTIFICATE"
+        "SERVER_ROOT_CA_CERTIFICATE",
+        "OAUTHBEARER_AUTH",
+        "OAUTHBEARER_SCOPE",
+        "OAUTHBEARER_AUDIENCE",
+        "OAUTHBEARER_LOGICAL_CLUSTER",
+        "OAUTHBEARER_IDENTITY_POOL",
+        "IAM_AUTH",
+        "IAM_OAUTHBEARER_AUTH"
       ]
     },
     "SourceOwner":{
@@ -8503,7 +9109,7 @@
         "InvalidRuntime",
         "InvalidZipFileException",
         "FunctionError",
-        "DrainingDurableExecutions",
+        "ServiceQuotaExceededException",
         "VcpuLimitExceeded",
         "CapacityProviderScalingLimitExceeded",
         "InsufficientCapacity",
@@ -8516,7 +9122,9 @@
         "FunctionError.PermissionDenied",
         "FunctionError.TooManyExtensions",
         "FunctionError.InitResourceExhausted",
-        "DisallowedByVpcEncryptionControl"
+        "DisallowedByVpcEncryptionControl",
+        "DrainingDurableExecutions",
+        "DependencyError"
       ]
     },
     "StatementId":{
@@ -8649,7 +9257,12 @@
       "exception":true,
       "fault":true
     },
-    "SubnetId":{"type":"string"},
+    "SubnetId":{
+      "type":"string",
+      "max":1024,
+      "min":0,
+      "pattern":"subnet-[0-9a-z]*"
+    },
     "SubnetIds":{
       "type":"list",
       "member":{"shape":"SubnetId"},
@@ -8664,7 +9277,12 @@
         "WARN"
       ]
     },
-    "TagKey":{"type":"string"},
+    "TagKey":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"([\\p{L}\\p{Z}\\p{N}_.:/=+\\-@]*)"
+    },
     "TagKeyList":{
       "type":"list",
       "member":{"shape":"TagKey"}
@@ -8688,12 +9306,17 @@
         }
       }
     },
-    "TagValue":{"type":"string"},
-    "TaggableResource":{
+    "TagValue":{
       "type":"string",
       "max":256,
+      "min":0,
+      "pattern":"([\\p{L}\\p{Z}\\p{N}_.:/=+\\-@]*)"
+    },
+    "TaggableResource":{
+      "type":"string",
+      "max":10000,
       "min":1,
-      "pattern":"arn:(aws[a-zA-Z-]*):lambda:[a-z]{2}((-gov)|(-iso([a-z]?)))?-[a-z]+-\\d{1}:\\d{12}:(function:[a-zA-Z0-9-_]+(:(\\$LATEST|[a-zA-Z0-9-_]+))?|code-signing-config:csc-[a-z0-9]{17}|event-source-mapping:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}|capacity-provider:[a-zA-Z0-9-_]+)"
+      "pattern":"arn:(aws[a-zA-Z-]*):lambda:(eusc-)?[a-z]{2}((-gov)|(-iso([a-z]?)))?-[a-z]+-\\d{1}:\\d{12}:(function:[a-zA-Z0-9-_]+(:(\\$LATEST|[a-zA-Z0-9-_]+))?|code-signing-config:csc-[a-z0-9]{17}|event-source-mapping:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}|(capacity-provider|network-connector):[a-zA-Z0-9-_]{1,64})"
     },
     "Tags":{
       "type":"map",
@@ -8783,9 +9406,15 @@
     "Timeout":{
       "type":"integer",
       "box":true,
+      "max":5400,
       "min":1
     },
-    "Timestamp":{"type":"string"},
+    "Timestamp":{
+      "type":"string",
+      "max":100,
+      "min":0,
+      "pattern":".*"
+    },
     "TooManyRequestsException":{
       "type":"structure",
       "members":{
@@ -8869,13 +9498,18 @@
       "type":"string",
       "max":200,
       "min":1,
-      "pattern":"[a-zA-Z0-9-\\/*:_+=.@-]*"
+      "pattern":"[ a-zA-Z0-9-\\/*:_+=.@-]*"
+    },
+    "UUIDString":{
+      "type":"string",
+      "max":36,
+      "min":36
     },
     "UnqualifiedFunctionName":{
       "type":"string",
       "max":140,
       "min":1,
-      "pattern":"(arn:(aws[a-zA-Z-]*)?:lambda:)?([a-z]{2}((-gov)|(-iso([a-z]?)))?-[a-z]+-\\d{1}:)?(\\d{12}:)?(function:)?([a-zA-Z0-9-_]+)"
+      "pattern":"(arn:(aws[a-zA-Z-]*)?:lambda:)?((eusc-)?[a-z]{2}((-gov)|(-iso([a-z]?)))?-[a-z]+-\\d{1}:)?(\\d{12}:)?(function:)?([a-zA-Z0-9-_]+)"
     },
     "UnreservedConcurrentExecutions":{
       "type":"integer",
@@ -8967,7 +9601,11 @@
           "shape":"CapacityProviderScalingConfig",
           "documentation":"<p>The updated scaling configuration for the capacity provider.</p>"
         },
-        "PropagateTags":{"shape":"PropagateTags"}
+        "PropagateTags":{"shape":"PropagateTags"},
+        "TelemetryConfig":{
+          "shape":"CapacityProviderTelemetryConfig",
+          "documentation":"<p>The updated telemetry configuration for the capacity provider.</p>"
+        }
       }
     },
     "UpdateCapacityProviderResponse":{
@@ -9019,7 +9657,7 @@
       "required":["UUID"],
       "members":{
         "UUID":{
-          "shape":"String",
+          "shape":"UUIDString",
           "documentation":"<p>The identifier of the event source mapping.</p>",
           "location":"uri",
           "locationName":"UUID"
@@ -9040,9 +9678,26 @@
           "shape":"FilterCriteria",
           "documentation":"<p>An object that defines the filter criteria that determine whether Lambda should process an event. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/invocation-eventfiltering.html\">Lambda event filtering</a>.</p>"
         },
+        "KMSKeyArn":{
+          "shape":"KMSKeyArn",
+          "documentation":"<p> The ARN of the Key Management Service (KMS) customer managed key that Lambda uses to encrypt your function's <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/invocation-eventfiltering.html#filtering-basics\">filter criteria</a>. By default, Lambda does not encrypt your filter criteria object. Specify this property to encrypt data using your own customer managed key. </p>"
+        },
+        "MetricsConfig":{
+          "shape":"EventSourceMappingMetricsConfig",
+          "documentation":"<p>The metrics configuration for your event source. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/monitoring-metrics-types.html#event-source-mapping-metrics\">Event source mapping metrics</a>.</p>"
+        },
+        "LoggingConfig":{"shape":"EventSourceMappingLoggingConfig"},
+        "ScalingConfig":{
+          "shape":"ScalingConfig",
+          "documentation":"<p>(Amazon SQS only) The scaling configuration for the event source. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/with-sqs.html#events-sqs-max-concurrency\">Configuring maximum concurrency for Amazon SQS event sources</a>.</p>"
+        },
         "MaximumBatchingWindowInSeconds":{
           "shape":"MaximumBatchingWindowInSeconds",
           "documentation":"<p>The maximum amount of time, in seconds, that Lambda spends gathering records before invoking the function. You can configure <code>MaximumBatchingWindowInSeconds</code> to any value from 0 seconds to 300 seconds in increments of seconds.</p> <p>For Kinesis, DynamoDB, and Amazon SQS event sources, the default batching window is 0 seconds. For Amazon MSK, Self-managed Apache Kafka, Amazon MQ, and DocumentDB event sources, the default batching window is 500 ms. Note that because you can only change <code>MaximumBatchingWindowInSeconds</code> in increments of seconds, you cannot revert back to the 500 ms default batching window after you have changed it. To restore the default batching window, you must create a new event source mapping.</p> <p>Related setting: For Kinesis, DynamoDB, and Amazon SQS event sources, when you set <code>BatchSize</code> to a value greater than 10, you must set <code>MaximumBatchingWindowInSeconds</code> to at least 1.</p>"
+        },
+        "ParallelizationFactor":{
+          "shape":"ParallelizationFactor",
+          "documentation":"<p>(Kinesis and DynamoDB Streams only) The number of batches to process from each shard concurrently.</p>"
         },
         "DestinationConfig":{
           "shape":"DestinationConfig",
@@ -9060,25 +9715,17 @@
           "shape":"MaximumRetryAttemptsEventSourceMapping",
           "documentation":"<p>(Kinesis, DynamoDB Streams, Amazon MSK, and self-managed Apache Kafka) Discard records after the specified number of retries. The default value is infinite (-1). When set to infinite (-1), failed records are retried until the record expires.</p>"
         },
-        "ParallelizationFactor":{
-          "shape":"ParallelizationFactor",
-          "documentation":"<p>(Kinesis and DynamoDB Streams only) The number of batches to process from each shard concurrently.</p>"
+        "TumblingWindowInSeconds":{
+          "shape":"TumblingWindowInSeconds",
+          "documentation":"<p>(Kinesis and DynamoDB Streams only) The duration in seconds of a processing window for DynamoDB and Kinesis Streams event sources. A value of 0 seconds indicates no tumbling window.</p>"
         },
         "SourceAccessConfigurations":{
           "shape":"SourceAccessConfigurations",
           "documentation":"<p>An array of authentication protocols or VPC components required to secure your event source.</p>"
         },
-        "TumblingWindowInSeconds":{
-          "shape":"TumblingWindowInSeconds",
-          "documentation":"<p>(Kinesis and DynamoDB Streams only) The duration in seconds of a processing window for DynamoDB and Kinesis Streams event sources. A value of 0 seconds indicates no tumbling window.</p>"
-        },
         "FunctionResponseTypes":{
           "shape":"FunctionResponseTypeList",
           "documentation":"<p>(Kinesis, DynamoDB Streams, Amazon MSK, self-managed Apache Kafka, and Amazon SQS) A list of current response type enums applied to the event source mapping.</p>"
-        },
-        "ScalingConfig":{
-          "shape":"ScalingConfig",
-          "documentation":"<p>(Amazon SQS only) The scaling configuration for the event source. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/with-sqs.html#events-sqs-max-concurrency\">Configuring maximum concurrency for Amazon SQS event sources</a>.</p>"
         },
         "AmazonManagedKafkaEventSourceConfig":{"shape":"AmazonManagedKafkaEventSourceConfig"},
         "SelfManagedKafkaEventSourceConfig":{"shape":"SelfManagedKafkaEventSourceConfig"},
@@ -9086,15 +9733,6 @@
           "shape":"DocumentDBEventSourceConfig",
           "documentation":"<p>Specific configuration settings for a DocumentDB event source.</p>"
         },
-        "KMSKeyArn":{
-          "shape":"KMSKeyArn",
-          "documentation":"<p> The ARN of the Key Management Service (KMS) customer managed key that Lambda uses to encrypt your function's <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/invocation-eventfiltering.html#filtering-basics\">filter criteria</a>. By default, Lambda does not encrypt your filter criteria object. Specify this property to encrypt data using your own customer managed key. </p>"
-        },
-        "MetricsConfig":{
-          "shape":"EventSourceMappingMetricsConfig",
-          "documentation":"<p>The metrics configuration for your event source. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/monitoring-metrics-types.html#event-source-mapping-metrics\">Event source mapping metrics</a>.</p>"
-        },
-        "LoggingConfig":{"shape":"EventSourceMappingLoggingConfig"},
         "ProvisionedPollerConfig":{
           "shape":"ProvisionedPollerConfig",
           "documentation":"<p>(Amazon SQS, Amazon MSK, and self-managed Apache Kafka only) The provisioned mode configuration for the event source. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/invocation-eventsourcemapping.html#invocation-eventsourcemapping-provisioned-mode\">provisioned mode</a>.</p>"
@@ -9127,13 +9765,25 @@
           "shape":"S3ObjectVersion",
           "documentation":"<p>For versioned objects, the version of the deployment package object to use.</p>"
         },
+        "S3ObjectStorageMode":{
+          "shape":"S3ObjectStorageMode",
+          "documentation":"<p>Specifies how the deployment package is stored. Valid values:</p> <ul> <li> <p> <code>COPY</code> (default) – Uploads a copy of your deployment package to Lambda.</p> </li> <li> <p> <code>REFERENCE</code> – Lambda references the deployment package from the specified Amazon S3 bucket.</p> </li> </ul>"
+        },
         "ImageUri":{
           "shape":"String",
           "documentation":"<p>URI of a container image in the Amazon ECR registry. Do not use for a function defined with a .zip file archive.</p>"
         },
+        "Architectures":{
+          "shape":"ArchitecturesList",
+          "documentation":"<p>The instruction set architecture that the function supports. Enter a string array with one of the valid values (arm64 or x86_64). The default value is <code>x86_64</code>.</p>"
+        },
         "Publish":{
           "shape":"Boolean",
           "documentation":"<p>Set to true to publish a new version of the function after updating the code. This has the same effect as calling <a>PublishVersion</a> separately.</p>"
+        },
+        "PublishTo":{
+          "shape":"FunctionVersionLatestPublished",
+          "documentation":"<p>Specifies where to publish the function version or configuration.</p>"
         },
         "DryRun":{
           "shape":"Boolean",
@@ -9143,17 +9793,9 @@
           "shape":"String",
           "documentation":"<p>Update the function only if the revision ID matches the ID that's specified. Use this option to avoid modifying a function that has changed since you last read it.</p>"
         },
-        "Architectures":{
-          "shape":"ArchitecturesList",
-          "documentation":"<p>The instruction set architecture that the function supports. Enter a string array with one of the valid values (arm64 or x86_64). The default value is <code>x86_64</code>.</p>"
-        },
         "SourceKMSKeyArn":{
           "shape":"KMSKeyArn",
           "documentation":"<p>The ARN of the Key Management Service (KMS) customer managed key that's used to encrypt your function's .zip deployment package. If you don't provide a customer managed key, Lambda uses an Amazon Web Services managed key.</p>"
-        },
-        "PublishTo":{
-          "shape":"FunctionVersionLatestPublished",
-          "documentation":"<p>Specifies where to publish the function version or configuration.</p>"
         }
       }
     },
@@ -9181,7 +9823,7 @@
         },
         "Timeout":{
           "shape":"Timeout",
-          "documentation":"<p>The amount of time (in seconds) that Lambda allows a function to run before stopping it. The default is 3 seconds. The maximum allowed value is 900 seconds. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/runtimes-context.html\">Lambda execution environment</a>.</p>"
+          "documentation":"<p>The amount of time (in seconds) that Lambda allows a function to run before stopping it. The default is 3 seconds, and the maximum allowed value is 900 seconds. For functions using Lambda Managed Instances, asynchronous invocations and event source mapping invocations (except Amazon MQ and Amazon DocumentDB) support a maximum allowed value of 5,400 seconds (90 minutes). For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/runtimes-context.html\">Lambda execution environment</a>.</p>"
         },
         "MemorySize":{
           "shape":"MemorySize",
@@ -9245,7 +9887,7 @@
         },
         "DurableConfig":{
           "shape":"DurableConfig",
-          "documentation":"<p>Configuration settings for durable functions. Allows updating execution timeout and retention period for functions with durability enabled.</p>"
+          "documentation":"<p>Configuration settings for <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/durable-functions.html\">durable functions</a>, including execution timeout, retention period for execution history, and an optional ARN of the Key Management Service (KMS) customer managed key that is used to encrypt your durable execution's payload data, including input, output, and error payloads.</p>"
         }
       }
     },
@@ -9284,7 +9926,7 @@
       "required":["FunctionName"],
       "members":{
         "FunctionName":{
-          "shape":"FunctionName",
+          "shape":"FunctionUrlFunctionName",
           "documentation":"<p>The name or ARN of the Lambda function.</p> <p class=\"title\"> <b>Name formats</b> </p> <ul> <li> <p> <b>Function name</b> – <code>my-function</code>.</p> </li> <li> <p> <b>Function ARN</b> – <code>arn:aws:lambda:us-west-2:123456789012:function:my-function</code>.</p> </li> <li> <p> <b>Partial ARN</b> – <code>123456789012:function:my-function</code>.</p> </li> </ul> <p>The length constraint applies only to the full ARN. If you specify only the function name, it is limited to 64 characters in length.</p>",
           "location":"uri",
           "locationName":"FunctionName"
@@ -9490,5 +10132,5 @@
       "min":0
     }
   },
-  "documentation":"<p><fullname>Lambda</fullname> <p> <b>Overview</b> </p> <p>Lambda is a compute service that lets you run code without provisioning or managing servers. Lambda runs your code on a high-availability compute infrastructure and performs all of the administration of the compute resources, including server and operating system maintenance, capacity provisioning and automatic scaling, code monitoring and logging. With Lambda, you can run code for virtually any type of application or backend service. For more information about the Lambda service, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/welcome.html\">What is Lambda</a> in the <b>Lambda Developer Guide</b>.</p> <p>The <i>Lambda API Reference</i> provides information about each of the API methods, including details about the parameters in each API request and response. </p> <p/> <p>You can use Software Development Kits (SDKs), Integrated Development Environment (IDE) Toolkits, and command line tools to access the API. For installation instructions, see <a href=\"http://aws.amazon.com/tools/\">Tools for Amazon Web Services</a>. </p> <p>For a list of Region-specific endpoints that Lambda supports, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/lambda-service.html\">Lambda endpoints and quotas </a> in the <i>Amazon Web Services General Reference.</i>. </p> <p>When making the API calls, you will need to authenticate your request by providing a signature. Lambda supports signature version 4. For more information, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/signature-version-4.html\">Signature Version 4 signing process</a> in the <i>Amazon Web Services General Reference.</i>. </p> <p> <b>CA certificates</b> </p> <p>Because Amazon Web Services SDKs use the CA certificates from your computer, changes to the certificates on the Amazon Web Services servers can cause connection failures when you attempt to use an SDK. You can prevent these failures by keeping your computer's CA certificates and operating system up-to-date. If you encounter this issue in a corporate environment and do not manage your own computer, you might need to ask an administrator to assist with the update process. The following list shows minimum operating system and Java versions:</p> <ul> <li> <p>Microsoft Windows versions that have updates from January 2005 or later installed contain at least one of the required CAs in their trust list. </p> </li> <li> <p>Mac OS X 10.4 with Java for Mac OS X 10.4 Release 5 (February 2007), Mac OS X 10.5 (October 2007), and later versions contain at least one of the required CAs in their trust list. </p> </li> <li> <p>Red Hat Enterprise Linux 5 (March 2007), 6, and 7 and CentOS 5, 6, and 7 all contain at least one of the required CAs in their default trusted CA list. </p> </li> <li> <p>Java 1.4.2_12 (May 2006), 5 Update 2 (March 2005), and all later versions, including Java 6 (December 2006), 7, and 8, contain at least one of the required CAs in their default trusted CA list. </p> </li> </ul> <p>When accessing the Lambda management console or Lambda API endpoints, whether through browsers or programmatically, you will need to ensure your client machines support any of the following CAs: </p> <ul> <li> <p>Amazon Root CA 1</p> </li> <li> <p>Starfield Services Root Certificate Authority - G2</p> </li> <li> <p>Starfield Class 2 Certification Authority</p> </li> </ul> <p>Root certificates from the first two authorities are available from <a href=\"https://www.amazontrust.com/repository/\">Amazon trust services</a>, but keeping your computer up-to-date is the more straightforward solution. To learn more about ACM-provided certificates, see <a href=\"http://aws.amazon.com/certificate-manager/faqs/#certificates\">Amazon Web Services Certificate Manager FAQs.</a> </p></p>"
+  "documentation":"<p><fullname>Lambda</fullname> <p> <b>Overview</b> </p> <p>Lambda is a compute service that lets you run code without provisioning or managing servers. Lambda runs your code on a high-availability compute infrastructure and performs all of the administration of the compute resources, including server and operating system maintenance, capacity provisioning and automatic scaling, code monitoring and logging. With Lambda, you can run code for virtually any type of application or backend service. For more information about the Lambda service, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/welcome.html\">What is Lambda</a> in the <b>Lambda Developer Guide</b>.</p> <p>Lambda Event Functions, previously known as Lambda functions, run your code in response to events and API calls. Event Functions is a documentation name only. In this API, the Amazon Web Services SDKs, and the CLI, Event Functions are still called <i>functions</i>, for example in <code>CreateFunction</code> and <code>Invoke</code>. You don't need to change any code.</p> <p>The <i>Lambda API Reference</i> provides information about each of the API methods, including details about the parameters in each API request and response. </p> <p/> <p>You can use Software Development Kits (SDKs), Integrated Development Environment (IDE) Toolkits, and command line tools to access the API. For installation instructions, see <a href=\"http://aws.amazon.com/tools/\">Tools for Amazon Web Services</a>. </p> <p>For a list of Region-specific endpoints that Lambda supports, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/lambda-service.html\">Lambda endpoints and quotas </a> in the <i>Amazon Web Services General Reference.</i>. </p> <p>When making the API calls, you will need to authenticate your request by providing a signature. Lambda supports signature version 4. For more information, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/signature-version-4.html\">Signature Version 4 signing process</a> in the <i>Amazon Web Services General Reference.</i>. </p> <p> <b>CA certificates</b> </p> <p>Because Amazon Web Services SDKs use the CA certificates from your computer, changes to the certificates on the Amazon Web Services servers can cause connection failures when you attempt to use an SDK. You can prevent these failures by keeping your computer's CA certificates and operating system up-to-date. If you encounter this issue in a corporate environment and do not manage your own computer, you might need to ask an administrator to assist with the update process. The following list shows minimum operating system and Java versions:</p> <ul> <li> <p>Microsoft Windows versions that have updates from January 2005 or later installed contain at least one of the required CAs in their trust list. </p> </li> <li> <p>Mac OS X 10.4 with Java for Mac OS X 10.4 Release 5 (February 2007), Mac OS X 10.5 (October 2007), and later versions contain at least one of the required CAs in their trust list. </p> </li> <li> <p>Red Hat Enterprise Linux 5 (March 2007), 6, and 7 and CentOS 5, 6, and 7 all contain at least one of the required CAs in their default trusted CA list. </p> </li> <li> <p>Java 1.4.2_12 (May 2006), 5 Update 2 (March 2005), and all later versions, including Java 6 (December 2006), 7, and 8, contain at least one of the required CAs in their default trusted CA list. </p> </li> </ul> <p>When accessing the Lambda management console or Lambda API endpoints, whether through browsers or programmatically, you will need to ensure your client machines support any of the following CAs: </p> <ul> <li> <p>Amazon Root CA 1</p> </li> <li> <p>Starfield Services Root Certificate Authority - G2</p> </li> <li> <p>Starfield Class 2 Certification Authority</p> </li> </ul> <p>Root certificates from the first two authorities are available from <a href=\"https://www.amazontrust.com/repository/\">Amazon trust services</a>, but keeping your computer up-to-date is the more straightforward solution. To learn more about ACM-provided certificates, see <a href=\"http://aws.amazon.com/certificate-manager/faqs/#certificates\">Amazon Web Services Certificate Manager FAQs.</a> </p></p>"
 }

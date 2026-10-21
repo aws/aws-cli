@@ -44,7 +44,7 @@ def _generate_index_if_needed(db_connection):
             [indexer.ModelIndexer(db_connection)],
         )
         driver = create_clidriver()
-        driver.session.register(
+        driver.session.get_component('event_emitter').register_last(
             'building-command-table.main', _cloudwatch_only_command_table
         )
         index_generator.generate_index(driver)

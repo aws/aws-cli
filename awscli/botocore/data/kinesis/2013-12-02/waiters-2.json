@@ -25,6 +25,43 @@
           "state": "success"
         }
       ]
+    },
+    "ChannelActive": {
+      "delay": 10,
+      "operation": "DescribeChannel",
+      "maxAttempts": 18,
+      "acceptors": [
+        {
+          "expected": "ACTIVE",
+          "matcher": "path",
+          "state": "success",
+          "argument": "ChannelDescription.ChannelStatus"
+        },
+        {
+          "expected": "CREATING",
+          "matcher": "path",
+          "state": "retry",
+          "argument": "ChannelDescription.ChannelStatus"
+        },
+        {
+          "expected": "UPDATING",
+          "matcher": "path",
+          "state": "retry",
+          "argument": "ChannelDescription.ChannelStatus"
+        },
+        {
+          "expected": "DELETING",
+          "matcher": "path",
+          "state": "failure",
+          "argument": "ChannelDescription.ChannelStatus"
+        },
+        {
+          "expected": "FAILED",
+          "matcher": "path",
+          "state": "failure",
+          "argument": "ChannelDescription.ChannelStatus"
+        }
+      ]
     }
   }
 }

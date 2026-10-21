@@ -10,16 +10,20 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import datetime
 import io
 import socket
 
+import botocore.endpoint
 import pytest
 from botocore.awsrequest import AWSRequest
+from botocore.config import Config
 from botocore.endpoint import DEFAULT_TIMEOUT, Endpoint, EndpointCreator
 from botocore.exceptions import (
     ConnectionClosedError,
     EndpointConnectionError,
     HTTPClientError,
+    InvalidConfigError,
 )
 from botocore.httpsession import URLLib3Session
 from botocore.model import (
@@ -137,6 +141,34 @@ class TestEndpointFeatures(TestEndpointBase):
         request = prepare.call_args[0][0]
         self.assertEqual(request.context['signing']['region'], 'us-west-2')
 
+    def test_make_request_sets_retries_config_in_context(self):
+        r = request_dict()
+        r['context'] = {'signing': {'region': 'us-west-2'}}
+        with mock.patch(
+            'botocore.endpoint.Endpoint.prepare_request'
+        ) as prepare:
+            self.endpoint.make_request(self.op, r)
+        request = prepare.call_args[0][0]
+        self.assertIn('retries', request.context)
+
+    def test_exception_caught_when_constructing_retries_context(self):
+        r = request_dict()
+        datetime_patcher = mock.patch.object(
+            botocore.endpoint.datetime,
+            'datetime',
+            mock.Mock(wraps=datetime.datetime),
+        )
+        r['context'] = {'signing': {'region': 'us-west-2'}}
+        with mock.patch(
+            'botocore.endpoint.Endpoint.prepare_request'
+        ) as prepare:
+            mocked_datetime = datetime_patcher.start()
+            mocked_datetime.side_effect = Exception()
+            self.endpoint.make_request(self.op, r)
+            datetime_patcher.stop()
+        request = prepare.call_args[0][0]
+        self.assertIn('retries', request.context)
+
     def test_parses_modeled_exception_fields(self):
         # Setup the service model to have exceptions to generate the mapping
         self.service_model = mock.Mock(spec=ServiceModel)
@@ -204,7 +236,9 @@ class TestRetryInterface(TestEndpointBase):
         self.event_emitter.emit.side_effect = self.get_emitter_responses(
             num_retries=1
         )
-        self.endpoint.make_request(self._operation, request_dict())
+        r = request_dict()
+        r['context']['client_config'] = Config()
+        self.endpoint.make_request(self._operation, r)
         self.assert_events_emitted(
             self.event_emitter,
             expected_events=[
@@ -242,7 +276,9 @@ class TestRetryInterface(TestEndpointBase):
         parser = mock.Mock()
         parser.parse.return_value = {'ResponseMetadata': {}}
         self.factory.return_value.create_parser.return_value = parser
-        response = self.endpoint.make_request(self._operation, request_dict())
+        r = request_dict()
+        r['context']['client_config'] = Config()
+        response = self.endpoint.make_request(self._operation, r)
         self.assertEqual(response[1]['ResponseMetadata']['RetryAttempts'], 1)
 
     def test_retry_attempts_is_zero_when_not_retried(self):
@@ -279,6 +315,7 @@ class TestS3ResetStreamOnRetry(TestEndpointBase):
         op.metadata = {'protocol': 'rest-xml'}
         request = request_dict()
         request['body'] = body
+        request['context']['client_config'] = Config()
         self.event_emitter.emit.side_effect = self.get_emitter_responses(
             num_retries=2
         )
@@ -430,6 +467,36 @@ class TestEndpointCreator(unittest.TestCase):
         session_args = self.mock_session.call_args[1]
         # /path/cacerts.pem wins over the value from the env var.
         self.assertEqual(session_args.get('verify'), '/path/cacerts.pem')
+
+    def test_empty_verify_value_raises(self):
+        with self.assertRaises(InvalidConfigError):
+            self.creator.create_endpoint(
+                self.service_model,
+                region_name='us-west-2',
+                endpoint_url='https://example.com',
+                verify='',
+                http_session_cls=self.mock_session,
+            )
+
+    def test_whitespace_verify_value_raises(self):
+        with self.assertRaises(InvalidConfigError):
+            self.creator.create_endpoint(
+                self.service_model,
+                region_name='us-west-2',
+                endpoint_url='https://example.com',
+                verify='   ',
+                http_session_cls=self.mock_session,
+            )
+
+    def test_empty_cert_bundle_env_var_raises(self):
+        self.environ['REQUESTS_CA_BUNDLE'] = ''
+        with self.assertRaises(InvalidConfigError):
+            self.creator.create_endpoint(
+                self.service_model,
+                region_name='us-west-2',
+                endpoint_url='https://example.com',
+                http_session_cls=self.mock_session,
+            )
 
     def test_can_specify_max_pool_conns(self):
         self.creator.create_endpoint(

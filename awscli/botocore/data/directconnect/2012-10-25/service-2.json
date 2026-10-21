@@ -70,6 +70,7 @@
       "errors":[
         {"shape":"DuplicateTagKeysException"},
         {"shape":"TooManyTagsException"},
+        {"shape":"LimitExceededException"},
         {"shape":"DirectConnectServerException"},
         {"shape":"DirectConnectClientException"}
       ],
@@ -86,6 +87,7 @@
       "errors":[
         {"shape":"DuplicateTagKeysException"},
         {"shape":"TooManyTagsException"},
+        {"shape":"LimitExceededException"},
         {"shape":"DirectConnectServerException"},
         {"shape":"DirectConnectClientException"}
       ],
@@ -102,6 +104,7 @@
       "errors":[
         {"shape":"DuplicateTagKeysException"},
         {"shape":"TooManyTagsException"},
+        {"shape":"LimitExceededException"},
         {"shape":"DirectConnectServerException"},
         {"shape":"DirectConnectClientException"}
       ],
@@ -116,10 +119,26 @@
       "input":{"shape":"AssociateConnectionWithLagRequest"},
       "output":{"shape":"Connection"},
       "errors":[
+        {"shape":"LimitExceededException"},
         {"shape":"DirectConnectServerException"},
         {"shape":"DirectConnectClientException"}
       ],
       "documentation":"<p>Associates an existing connection with a link aggregation group (LAG). The connection is interrupted and re-established as a member of the LAG (connectivity to Amazon Web Services is interrupted). The connection must be hosted on the same Direct Connect endpoint as the LAG, and its bandwidth must match the bandwidth for the LAG. You can re-associate a connection that's currently associated with a different LAG; however, if removing the connection would cause the original LAG to fall below its setting for minimum number of operational connections, the request fails.</p> <p>Any virtual interfaces that are directly associated with the connection are automatically re-associated with the LAG. If the connection was originally associated with a different LAG, the virtual interfaces remain associated with the original LAG.</p> <p>For interconnects, any hosted connections are automatically re-associated with the LAG. If the interconnect was originally associated with a different LAG, the hosted connections remain associated with the original LAG.</p>"
+    },
+    "AssociateConnectionsToResiliencyGroup":{
+      "name":"AssociateConnectionsToResiliencyGroup",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"AssociateConnectionsToResiliencyGroupRequest"},
+      "output":{"shape":"AssociateConnectionsToResiliencyGroupResult"},
+      "errors":[
+        {"shape":"LimitExceededException"},
+        {"shape":"DirectConnectServerException"},
+        {"shape":"DirectConnectClientException"}
+      ],
+      "documentation":"<p>Associates one or more connections with the specified resiliency group. This operation is atomic: either all of the specified connections are associated, or the operation fails and no changes are made.</p>"
     },
     "AssociateHostedConnection":{
       "name":"AssociateHostedConnection",
@@ -348,6 +367,7 @@
       "errors":[
         {"shape":"DuplicateTagKeysException"},
         {"shape":"TooManyTagsException"},
+        {"shape":"LimitExceededException"},
         {"shape":"DirectConnectServerException"},
         {"shape":"DirectConnectClientException"}
       ],
@@ -364,10 +384,28 @@
       "errors":[
         {"shape":"DuplicateTagKeysException"},
         {"shape":"TooManyTagsException"},
+        {"shape":"LimitExceededException"},
         {"shape":"DirectConnectServerException"},
         {"shape":"DirectConnectClientException"}
       ],
       "documentation":"<p>Creates a public virtual interface. A virtual interface is the VLAN that transports Direct Connect traffic. A public virtual interface supports sending traffic to public services of Amazon Web Services such as Amazon S3.</p> <p>When creating an IPv6 public virtual interface (<code>addressFamily</code> is <code>ipv6</code>), leave the <code>customer</code> and <code>amazon</code> address fields blank to use auto-assigned IPv6 space. Custom IPv6 addresses are not supported.</p>"
+    },
+    "CreateResiliencyGroup":{
+      "name":"CreateResiliencyGroup",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateResiliencyGroupRequest"},
+      "output":{"shape":"CreateResiliencyGroupResult"},
+      "errors":[
+        {"shape":"DuplicateTagKeysException"},
+        {"shape":"TooManyTagsException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"DirectConnectServerException"},
+        {"shape":"DirectConnectClientException"}
+      ],
+      "documentation":"<p>Creates a resiliency group. A resiliency group lets you group Direct Connect connections together and manage them as a single unit to meet a target resiliency model.</p>"
     },
     "CreateTransitVirtualInterface":{
       "name":"CreateTransitVirtualInterface",
@@ -380,6 +418,7 @@
       "errors":[
         {"shape":"DuplicateTagKeysException"},
         {"shape":"TooManyTagsException"},
+        {"shape":"LimitExceededException"},
         {"shape":"DirectConnectServerException"},
         {"shape":"DirectConnectClientException"}
       ],
@@ -482,6 +521,20 @@
         {"shape":"DirectConnectClientException"}
       ],
       "documentation":"<p>Deletes the specified link aggregation group (LAG). You cannot delete a LAG if it has active virtual interfaces or hosted connections.</p>"
+    },
+    "DeleteResiliencyGroup":{
+      "name":"DeleteResiliencyGroup",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteResiliencyGroupRequest"},
+      "output":{"shape":"DeleteResiliencyGroupResult"},
+      "errors":[
+        {"shape":"DirectConnectServerException"},
+        {"shape":"DirectConnectClientException"}
+      ],
+      "documentation":"<p>Deletes the specified resiliency group. Deletion is asynchronous: the resiliency group transitions through the <code>deleting</code> state before it reaches the <code>deleted</code> state. The response returns the resiliency group so you can observe its current state without a subsequent <a>GetResiliencyGroup</a> call.</p>"
     },
     "DeleteVirtualInterface":{
       "name":"DeleteVirtualInterface",
@@ -747,7 +800,7 @@
         {"shape":"DirectConnectServerException"},
         {"shape":"DirectConnectClientException"}
       ],
-      "documentation":"<p>Displays all virtual interfaces for an Amazon Web Services account. Virtual interfaces deleted fewer than 15 minutes before you make the request are also returned. If you specify a connection ID, only the virtual interfaces associated with the connection are returned. If you specify a virtual interface ID, then only a single virtual interface is returned.</p> <p>A virtual interface (VLAN) transmits the traffic between the Direct Connect location and the customer network.</p> <ul> <li> <p>If you're using an <code>asn</code>, the response includes ASN value in both the <code>asn</code> and <code>asnLong</code> fields.</p> </li> <li> <p>If you're using <code>asnLong</code>, the response returns a value of <code>0</code> (zero) for the <code>asn</code> attribute because it exceeds the highest ASN value of 2,147,483,647 that it can support</p> </li> </ul>"
+      "documentation":"<p>Displays all virtual interfaces for an Amazon Web Services account. Virtual interfaces deleted fewer than 15 minutes before you make the request are also returned. If you specify a connection ID, only the virtual interfaces associated with the connection are returned. If you specify a virtual interface ID, then only a single virtual interface is returned.</p> <p>A virtual interface (VLAN) transmits the traffic between the Direct Connect location and the customer network.</p> <ul> <li> <p>If you're using an <code>asn</code>, the response includes the ASN value in both the <code>asn</code> and <code>asnLong</code> fields.</p> </li> <li> <p>If you're using <code>asnLong</code>, the response returns a value of <code>0</code> (zero) for the <code>asn</code> attribute because it exceeds the highest ASN value of 2,147,483,647 that it can support</p> </li> </ul>"
     },
     "DisassociateConnectionFromLag":{
       "name":"DisassociateConnectionFromLag",
@@ -763,6 +816,20 @@
       ],
       "documentation":"<p>Disassociates a connection from a link aggregation group (LAG). The connection is interrupted and re-established as a standalone connection (the connection is not deleted; to delete the connection, use the <a>DeleteConnection</a> request). If the LAG has associated virtual interfaces or hosted connections, they remain associated with the LAG. A disassociated connection owned by an Direct Connect Partner is automatically converted to an interconnect.</p> <p>If disassociating the connection would cause the LAG to fall below its setting for minimum number of operational connections, the request fails, except when it's the last member of the LAG. If all connections are disassociated, the LAG continues to exist as an empty LAG with no physical connections. </p>"
     },
+    "DisassociateConnectionsFromResiliencyGroup":{
+      "name":"DisassociateConnectionsFromResiliencyGroup",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DisassociateConnectionsFromResiliencyGroupRequest"},
+      "output":{"shape":"DisassociateConnectionsFromResiliencyGroupResult"},
+      "errors":[
+        {"shape":"DirectConnectServerException"},
+        {"shape":"DirectConnectClientException"}
+      ],
+      "documentation":"<p>Disassociates one or more connections from the specified resiliency group. This operation is atomic: either all of the specified connections are disassociated, or the operation fails and no changes are made.</p>"
+    },
     "DisassociateMacSecKey":{
       "name":"DisassociateMacSecKey",
       "http":{
@@ -776,6 +843,62 @@
         {"shape":"DirectConnectClientException"}
       ],
       "documentation":"<p>Removes the association between a MAC Security (MACsec) security key and a Direct Connect connection.</p>"
+    },
+    "GetResiliencyGroup":{
+      "name":"GetResiliencyGroup",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetResiliencyGroupRequest"},
+      "output":{"shape":"GetResiliencyGroupResult"},
+      "errors":[
+        {"shape":"DirectConnectServerException"},
+        {"shape":"DirectConnectClientException"}
+      ],
+      "documentation":"<p>Gets information about the specified resiliency group.</p>"
+    },
+    "ListResiliencyGroupAssociations":{
+      "name":"ListResiliencyGroupAssociations",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListResiliencyGroupAssociationsRequest"},
+      "output":{"shape":"ListResiliencyGroupAssociationsResult"},
+      "errors":[
+        {"shape":"DirectConnectServerException"},
+        {"shape":"DirectConnectClientException"}
+      ],
+      "documentation":"<p>Lists the connection associations for the specified resiliency group.</p>"
+    },
+    "ListResiliencyGroups":{
+      "name":"ListResiliencyGroups",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListResiliencyGroupsRequest"},
+      "output":{"shape":"ListResiliencyGroupsResult"},
+      "errors":[
+        {"shape":"DirectConnectServerException"},
+        {"shape":"DirectConnectClientException"}
+      ],
+      "documentation":"<p>Lists the resiliency groups owned by your Amazon Web Services account in the current Amazon Web Services Region.</p>"
+    },
+    "ListVirtualInterfaceRoutes":{
+      "name":"ListVirtualInterfaceRoutes",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListVirtualInterfaceRoutesRequest"},
+      "output":{"shape":"ListVirtualInterfaceRoutesResponse"},
+      "errors":[
+        {"shape":"DirectConnectServerException"},
+        {"shape":"DirectConnectClientException"}
+      ],
+      "documentation":"<p>Lists the routes for the specified virtual interface.</p> <p>Use the <code>routeDirection</code> filter to control which routes are returned:</p> <ul> <li> <p> <code>accepted</code>: routes received from the customer network over the virtual interface.</p> </li> <li> <p> <code>advertised</code>: routes advertised to the customer network over the virtual interface.</p> </li> </ul>"
     },
     "ListVirtualInterfaceTestHistory":{
       "name":"ListVirtualInterfaceTestHistory",
@@ -863,6 +986,20 @@
       ],
       "documentation":"<p>Updates the Direct Connect connection configuration.</p> <p>You can update the following parameters for a connection:</p> <ul> <li> <p>The connection name</p> </li> <li> <p>The connection's MAC Security (MACsec) encryption mode.</p> </li> </ul>"
     },
+    "UpdateConnectionsBillingMode":{
+      "name":"UpdateConnectionsBillingMode",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateConnectionsBillingModeRequest"},
+      "output":{"shape":"UpdateConnectionsBillingModeResponse"},
+      "errors":[
+        {"shape":"DirectConnectServerException"},
+        {"shape":"DirectConnectClientException"}
+      ],
+      "documentation":"<p>Updates the billing mode for the specified Direct Connect connections. You can update the billing mode for up to 200 connections in a single request.</p>"
+    },
     "UpdateDirectConnectGateway":{
       "name":"UpdateDirectConnectGateway",
       "http":{
@@ -904,6 +1041,20 @@
         {"shape":"DirectConnectClientException"}
       ],
       "documentation":"<p>Updates the attributes of the specified link aggregation group (LAG).</p> <p>You can update the following LAG attributes:</p> <ul> <li> <p>The name of the LAG.</p> </li> <li> <p>The value for the minimum number of connections that must be operational for the LAG itself to be operational. </p> </li> <li> <p>The LAG's MACsec encryption mode.</p> <p>Amazon Web Services assigns this value to each connection which is part of the LAG.</p> </li> <li> <p>The tags</p> </li> </ul> <note> <p>If you adjust the threshold value for the minimum number of operational connections, ensure that the new value does not cause the LAG to fall below the threshold and become non-operational.</p> </note>"
+    },
+    "UpdateResiliencyGroup":{
+      "name":"UpdateResiliencyGroup",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateResiliencyGroupRequest"},
+      "output":{"shape":"UpdateResiliencyGroupResult"},
+      "errors":[
+        {"shape":"DirectConnectServerException"},
+        {"shape":"DirectConnectClientException"}
+      ],
+      "documentation":"<p>Updates the name of the specified resiliency group.</p>"
     },
     "UpdateVirtualInterfaceAttributes":{
       "name":"UpdateVirtualInterfaceAttributes",
@@ -1116,6 +1267,35 @@
       }
     },
     "AmazonAddress":{"type":"string"},
+    "AsPathList":{
+      "type":"list",
+      "member":{"shape":"LongAsn"}
+    },
+    "AsPathSegment":{
+      "type":"structure",
+      "members":{
+        "pathType":{
+          "shape":"AsPathType",
+          "documentation":"<p>The type of the AS path segment.</p> <p>The valid values are <code>seq</code> (an ordered <code>AS_SEQUENCE</code>) and <code>set</code> (an unordered <code>AS_SET</code>).</p>"
+        },
+        "path":{
+          "shape":"AsPathList",
+          "documentation":"<p>The autonomous system (AS) numbers in the segment.</p>"
+        }
+      },
+      "documentation":"<p>A segment of an autonomous system (AS) path.</p>"
+    },
+    "AsPathSegmentList":{
+      "type":"list",
+      "member":{"shape":"AsPathSegment"}
+    },
+    "AsPathType":{
+      "type":"string",
+      "enum":[
+        "seq",
+        "set"
+      ]
+    },
     "AssociateConnectionWithLagRequest":{
       "type":"structure",
       "required":[
@@ -1130,6 +1310,36 @@
         "lagId":{
           "shape":"LagId",
           "documentation":"<p>The ID of the LAG with which to associate the connection.</p>"
+        }
+      }
+    },
+    "AssociateConnectionsToResiliencyGroupRequest":{
+      "type":"structure",
+      "required":[
+        "connectionIdentifiers",
+        "resiliencyGroupId"
+      ],
+      "members":{
+        "connectionIdentifiers":{
+          "shape":"ConnectionIdentifierList",
+          "documentation":"<p>The IDs or ARNs of the connections to associate with the resiliency group.</p>"
+        },
+        "resiliencyGroupId":{
+          "shape":"ResiliencyGroupId",
+          "documentation":"<p>The ID of the resiliency group.</p>"
+        },
+        "clientToken":{
+          "shape":"IdempotencyToken",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request.</p>"
+        }
+      }
+    },
+    "AssociateConnectionsToResiliencyGroupResult":{
+      "type":"structure",
+      "members":{
+        "resiliencyGroupAssociations":{
+          "shape":"ResiliencyGroupAssociationList",
+          "documentation":"<p>The connection associations for the resiliency group.</p>"
         }
       }
     },
@@ -1243,6 +1453,28 @@
       "documentation":"<p>Information about the associated gateway.</p>"
     },
     "AssociatedGatewayId":{"type":"string"},
+    "AvailableBillingMode":{
+      "type":"structure",
+      "members":{
+        "billingMode":{
+          "shape":"BillingMode",
+          "documentation":"<p>The billing mode.</p>"
+        },
+        "availablePortSpeeds":{
+          "shape":"AvailablePortSpeeds",
+          "documentation":"<p>The port speeds available for the billing mode.</p>"
+        },
+        "includedRegions":{
+          "shape":"IncludedRegionList",
+          "documentation":"<p>The Amazon Web Services Regions included with the billing mode.</p>"
+        }
+      },
+      "documentation":"<p>Information about a billing mode available at an Direct Connect location.</p>"
+    },
+    "AvailableBillingModeList":{
+      "type":"list",
+      "member":{"shape":"AvailableBillingMode"}
+    },
     "AvailableMacSecPortSpeeds":{
       "type":"list",
       "member":{"shape":"PortSpeed"}
@@ -1267,11 +1499,11 @@
         },
         "asn":{
           "shape":"ASN",
-          "documentation":"<p>The autonomous system number (ASN). The valid range is from 1 to 2147483646 for Border Gateway Protocol (BGP) configuration. If you provide a number greater than the maximum, an error is returned. Use <code>asnLong</code> instead.</p> <note> <p>You can use <code>asnLong</code> or <code>asn</code>, but not both. We recommend using <code>asnLong</code> as it supports a greater pool of numbers. </p> <ul> <li> <p>The <code>asnLong</code> attribute accepts both ASN and long ASN ranges.</p> </li> <li> <p>If you provide a value in the same API call for both <code>asn</code> and <code>asnLong</code>, the API will only accept the value for <code>asnLong</code>.</p> </li> </ul> </note>"
+          "documentation":"<p>The autonomous system number (ASN). The valid range is from 1 to 2147483646 for Border Gateway Protocol (BGP) configuration. If you provide a number greater than the maximum, an error is returned. Use <code>asnLong</code> instead.</p> <ul> <li> <p>You can use <code>asnLong</code> or <code>asn</code>, but not both. We recommend using <code>asnLong</code> as it supports a greater pool of numbers. </p> </li> <li> <p>If you provide a value in the same API call for both <code>asn</code> and <code>asnLong</code>, the API will only accept the value for <code>asnLong</code>. </p> </li> <li> <p>If you enter a 4-byte ASN for the <code>asn</code> parameter, the API returns an error. </p> </li> <li> <p>If you are using a 2-byte ASN, the API response will include the 2-byte value for both the <code>asn</code> and <code>asnLong</code> fields.</p> </li> </ul>"
         },
         "asnLong":{
           "shape":"LongAsn",
-          "documentation":"<p>The long ASN for the BGP peer. The valid range is from 1 to 4294967294 for BGP configuration. </p> <note> <p>You can use <code>asnLong</code> or <code>asn</code>, but not both. We recommend using <code>asnLong</code> as it supports a greater pool of numbers. </p> <ul> <li> <p>The <code>asnLong</code> attribute accepts both ASN and long ASN ranges.</p> </li> <li> <p>If you provide a value in the same API call for both <code>asn</code> and <code>asnLong</code>, the API will only accept the value for <code>asnLong</code>.</p> </li> </ul> </note>"
+          "documentation":"<p>The long ASN for the BGP peer. The valid range is from 1 to 4294967294 for BGP configuration. </p> <p>Note the following limitations when using <code>asnLong</code>:</p> <ul> <li> <p>You can use <code>asnLong</code> or <code>asn</code>, but not both. We recommend using <code>asnLong</code> as it supports a greater pool of numbers. </p> </li> <li> <p> <code>asnLong</code> accepts any valid ASN value, regardless if it's 2-byte or 4-byte. </p> </li> <li> <p>When using a 4-byte <code>asnLong</code>, the API response returns <code>0</code> for the legacy <code>asn</code> attribute since 4-byte ASN values exceed the maximum supported value of 2,147,483,647.</p> </li> <li> <p>If you are using a 2-byte ASN, the API response will include the 2-byte value for both the <code>asn</code> and <code>asnLong</code> fields.</p> </li> <li> <p>If you provide a value in the same API call for both <code>asn</code> and <code>asnLong</code>, the API will only accept the value for <code>asnLong</code>.</p> </li> </ul>"
         },
         "authKey":{
           "shape":"BGPAuthKey",
@@ -1336,10 +1568,31 @@
       ]
     },
     "Bandwidth":{"type":"string"},
+    "BillingMode":{
+      "type":"string",
+      "enum":[
+        "PayAsYouGo",
+        "FlatRateTier1",
+        "FlatRateTier2",
+        "FlatRateTier3",
+        "FlatRateTier4",
+        "FlatRateTier5",
+        "PortPairFlatRateTier1",
+        "PortPairFlatRateTier2",
+        "PortPairFlatRateTier3",
+        "PortPairFlatRateTier4",
+        "PortPairFlatRateTier5"
+      ]
+    },
     "BooleanFlag":{"type":"boolean"},
     "CIDR":{"type":"string"},
     "Cak":{"type":"string"},
     "Ckn":{"type":"string"},
+    "CommunityEntry":{"type":"string"},
+    "CommunityList":{
+      "type":"list",
+      "member":{"shape":"CommunityEntry"}
+    },
     "ConfirmConnectionRequest":{
       "type":"structure",
       "required":["connectionId"],
@@ -1540,14 +1793,60 @@
           "shape":"MacSecKeyList",
           "documentation":"<p>The MAC Security (MACsec) security keys associated with the connection.</p>"
         },
+        "rateLimiterStatus":{
+          "shape":"RateLimiterStatus",
+          "documentation":"<p>The rate limiter status for the connection, including how many rate limiters are in use and the maximum allowed.</p>"
+        },
         "partnerInterconnectMacSecCapable":{
           "shape":"PartnerInterconnectMacSecCapable",
           "documentation":"<p>Indicates whether the interconnect hosting this connection supports MAC Security (MACsec).</p>"
+        },
+        "prefixPoolSizeIpv4":{
+          "shape":"PrefixPoolSize",
+          "documentation":"<p>The total number of inbound IPv4 route prefixes you can allocate across the virtual interfaces on the connection. Not applicable to hosted connections or interconnects.</p>"
+        },
+        "prefixPoolSizeIpv6":{
+          "shape":"PrefixPoolSize",
+          "documentation":"<p>The total number of inbound IPv6 route prefixes you can allocate across the virtual interfaces on the connection. Not applicable to hosted connections or interconnects.</p>"
+        },
+        "prefixPoolUnallocatedCountIpv4":{
+          "shape":"PrefixPoolUnallocatedCount",
+          "documentation":"<p>The number of inbound IPv4 route prefixes in the connection prefix pool not yet allocated to a virtual interface. Not applicable to hosted connections or interconnects.</p>"
+        },
+        "prefixPoolUnallocatedCountIpv6":{
+          "shape":"PrefixPoolUnallocatedCount",
+          "documentation":"<p>The number of inbound IPv6 route prefixes in the connection prefix pool not yet allocated to a virtual interface. Not applicable to hosted connections or interconnects.</p>"
+        },
+        "billingMode":{
+          "shape":"BillingMode",
+          "documentation":"<p>The billing mode of the connection.</p>"
         }
       },
       "documentation":"<p>Information about an Direct Connect connection.</p>"
     },
+    "ConnectionArn":{
+      "type":"string",
+      "max":1024,
+      "min":1
+    },
     "ConnectionId":{"type":"string"},
+    "ConnectionIdList":{
+      "type":"list",
+      "member":{"shape":"ConnectionId"},
+      "max":200,
+      "min":1
+    },
+    "ConnectionIdentifier":{
+      "type":"string",
+      "max":1024,
+      "min":1
+    },
+    "ConnectionIdentifierList":{
+      "type":"list",
+      "member":{"shape":"ConnectionIdentifier"},
+      "max":50,
+      "min":1
+    },
     "ConnectionList":{
       "type":"list",
       "member":{"shape":"Connection"}
@@ -1650,6 +1949,10 @@
         "requestMACSec":{
           "shape":"RequestMACSec",
           "documentation":"<p>Indicates whether you want the connection to support MAC Security (MACsec).</p> <p>MAC Security (MACsec) is unavailable on hosted connections. For information about MAC Security (MACsec) prerequisites, see <a href=\"https://docs.aws.amazon.com/directconnect/latest/UserGuide/MACSec.html\">MAC Security in Direct Connect</a> in the <i>Direct Connect User Guide</i>.</p>"
+        },
+        "billingMode":{
+          "shape":"RequestBillingMode",
+          "documentation":"<p>The billing mode for the connection.</p>"
         }
       }
     },
@@ -1832,6 +2135,10 @@
         "requestMACSec":{
           "shape":"RequestMACSec",
           "documentation":"<p>Indicates whether the connection will support MAC Security (MACsec).</p> <note> <p>All connections in the LAG must be capable of supporting MAC Security (MACsec). For information about MAC Security (MACsec) prerequisties, see <a href=\"https://docs.aws.amazon.com/directconnect/latest/UserGuide/direct-connect-mac-sec-getting-started.html#mac-sec-prerequisites\">MACsec prerequisties</a> in the <i>Direct Connect User Guide</i>.</p> </note>"
+        },
+        "billingMode":{
+          "shape":"RequestBillingMode",
+          "documentation":"<p>The billing mode for the LAG.</p>"
         }
       }
     },
@@ -1866,6 +2173,40 @@
         "newPublicVirtualInterface":{
           "shape":"NewPublicVirtualInterface",
           "documentation":"<p>Information about the public virtual interface.</p>"
+        }
+      }
+    },
+    "CreateResiliencyGroupRequest":{
+      "type":"structure",
+      "required":[
+        "resiliencyGroupName",
+        "intendedResiliencyModel"
+      ],
+      "members":{
+        "resiliencyGroupName":{
+          "shape":"ResiliencyGroupName",
+          "documentation":"<p>The name of the resiliency group.</p>"
+        },
+        "intendedResiliencyModel":{
+          "shape":"ResiliencyModel",
+          "documentation":"<p>The resiliency model that the resiliency group is intended to meet. The valid values are <code>maximum-resiliency</code>, <code>high-resiliency</code>, and <code>basic-resiliency</code>.</p>"
+        },
+        "clientToken":{
+          "shape":"IdempotencyToken",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request.</p>"
+        },
+        "tags":{
+          "shape":"TagList",
+          "documentation":"<p>The tags to associate with the resiliency group.</p>"
+        }
+      }
+    },
+    "CreateResiliencyGroupResult":{
+      "type":"structure",
+      "members":{
+        "resiliencyGroup":{
+          "shape":"ResiliencyGroup",
+          "documentation":"<p>Information about the resiliency group.</p>"
         }
       }
     },
@@ -1919,11 +2260,11 @@
         },
         "asn":{
           "shape":"ASN",
-          "documentation":"<p>The autonomous system number (ASN). The valid range is from 1 to 2147483646 for Border Gateway Protocol (BGP) configuration. If you provide a number greater than the maximum, an error is returned. Use <code>asnLong</code> instead.</p> <note> <p>You can use <code>asnLong</code> or <code>asn</code>, but not both. We recommend using <code>asnLong</code> as it supports a greater pool of numbers. </p> <ul> <li> <p>The <code>asnLong</code> attribute accepts both ASN and long ASN ranges.</p> </li> <li> <p>If you provide a value in the same API call for both <code>asn</code> and <code>asnLong</code>, the API will only accept the value for <code>asnLong</code>.</p> </li> </ul> </note>"
+          "documentation":"<p>The autonomous system number (ASN). The valid range is from 1 to 2147483646 for Border Gateway Protocol (BGP) configuration. If you provide a number greater than the maximum, an error is returned. Use <code>asnLong</code> instead.</p> <ul> <li> <p>You can use <code>asnLong</code> or <code>asn</code>, but not both. We recommend using <code>asnLong</code> as it supports a greater pool of numbers. </p> </li> <li> <p>If you provide a value in the same API call for both <code>asn</code> and <code>asnLong</code>, the API will only accept the value for <code>asnLong</code>. </p> </li> <li> <p>If you enter a 4-byte ASN for the <code>asn</code> parameter, the API returns an error. </p> </li> <li> <p>If you are using a 2-byte ASN, the API response will include the 2-byte value for both the <code>asn</code> and <code>asnLong</code> fields.</p> </li> </ul>"
         },
         "asnLong":{
           "shape":"LongAsn",
-          "documentation":"<p>The long ASN for the BGP peer to be deleted from a Direct Connect virtual interface. The valid range is from 1 to 4294967294 for BGP configuration. </p> <note> <p>You can use <code>asnLong</code> or <code>asn</code>, but not both. We recommend using <code>asnLong</code> as it supports a greater pool of numbers. </p> <ul> <li> <p>The <code>asnLong</code> attribute accepts both ASN and long ASN ranges.</p> </li> <li> <p>If you provide a value in the same API call for both <code>asn</code> and <code>asnLong</code>, the API will only accept the value for <code>asnLong</code>.</p> </li> </ul> </note>"
+          "documentation":"<p>The long ASN for the BGP peer to be deleted from a Direct Connect virtual interface. The valid range is from 1 to 4294967294 for BGP configuration. </p> <p>Note the following limitations when using <code>asnLong</code>:</p> <ul> <li> <p>You can use <code>asnLong</code> or <code>asn</code>, but not both. We recommend using <code>asnLong</code> as it supports a greater pool of numbers. </p> </li> <li> <p> <code>asnLong</code> accepts any valid ASN value, regardless if it's 2-byte or 4-byte. </p> </li> <li> <p>When using a 4-byte <code>asnLong</code>, the API response returns <code>0</code> for the legacy <code>asn</code> attribute since 4-byte ASN values exceed the maximum supported value of 2,147,483,647.</p> </li> <li> <p>If you are using a 2-byte ASN, the API response will include the 2-byte value for both the <code>asn</code> and <code>asnLong</code> fields.</p> </li> <li> <p>If you provide a value in the same API call for both <code>asn</code> and <code>asnLong</code>, the API will only accept the value for <code>asnLong</code>.</p> </li> </ul>"
         },
         "customerAddress":{
           "shape":"CustomerAddress",
@@ -2044,6 +2385,25 @@
         "lagId":{
           "shape":"LagId",
           "documentation":"<p>The ID of the LAG.</p>"
+        }
+      }
+    },
+    "DeleteResiliencyGroupRequest":{
+      "type":"structure",
+      "required":["resiliencyGroupId"],
+      "members":{
+        "resiliencyGroupId":{
+          "shape":"ResiliencyGroupId",
+          "documentation":"<p>The ID of the resiliency group.</p>"
+        }
+      }
+    },
+    "DeleteResiliencyGroupResult":{
+      "type":"structure",
+      "members":{
+        "resiliencyGroup":{
+          "shape":"ResiliencyGroup",
+          "documentation":"<p>Information about the resiliency group.</p>"
         }
       }
     },
@@ -2485,6 +2845,10 @@
           "shape":"StateChangeError",
           "documentation":"<p>The error message if the state of an object failed to advance.</p>"
         },
+        "totalPrefixPoolAllocations":{
+          "shape":"PrefixPoolAllocatedCount",
+          "documentation":"<p>The total number of inbound route prefixes allocated to the attachments on the Direct Connect gateway. The count combines the IPv4 and IPv6 address families.</p>"
+        },
         "tags":{
           "shape":"TagList",
           "documentation":"<p>Information about a tag.</p>"
@@ -2698,6 +3062,36 @@
         }
       }
     },
+    "DisassociateConnectionsFromResiliencyGroupRequest":{
+      "type":"structure",
+      "required":[
+        "connectionIdentifiers",
+        "resiliencyGroupId"
+      ],
+      "members":{
+        "connectionIdentifiers":{
+          "shape":"ConnectionIdentifierList",
+          "documentation":"<p>The IDs or ARNs of the connections to disassociate from the resiliency group.</p>"
+        },
+        "resiliencyGroupId":{
+          "shape":"ResiliencyGroupId",
+          "documentation":"<p>The ID of the resiliency group.</p>"
+        },
+        "clientToken":{
+          "shape":"IdempotencyToken",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request.</p>"
+        }
+      }
+    },
+    "DisassociateConnectionsFromResiliencyGroupResult":{
+      "type":"structure",
+      "members":{
+        "resiliencyGroupAssociations":{
+          "shape":"ResiliencyGroupAssociationList",
+          "documentation":"<p>The connection associations for the resiliency group.</p>"
+        }
+      }
+    },
     "DisassociateMacSecKeyRequest":{
       "type":"structure",
       "required":[
@@ -2748,6 +3142,25 @@
         "transitGateway"
       ]
     },
+    "GetResiliencyGroupRequest":{
+      "type":"structure",
+      "required":["resiliencyGroupId"],
+      "members":{
+        "resiliencyGroupId":{
+          "shape":"ResiliencyGroupId",
+          "documentation":"<p>The ID of the resiliency group.</p>"
+        }
+      }
+    },
+    "GetResiliencyGroupResult":{
+      "type":"structure",
+      "members":{
+        "resiliencyGroup":{
+          "shape":"ResiliencyGroup",
+          "documentation":"<p>Information about the resiliency group.</p>"
+        }
+      }
+    },
     "HasLogicalRedundancy":{
       "type":"string",
       "enum":[
@@ -2755,6 +3168,15 @@
         "yes",
         "no"
       ]
+    },
+    "IdempotencyToken":{
+      "type":"string",
+      "max":128,
+      "min":1
+    },
+    "IncludedRegionList":{
+      "type":"list",
+      "member":{"shape":"Region"}
     },
     "Interconnect":{
       "type":"structure",
@@ -2956,6 +3378,30 @@
         "macSecKeys":{
           "shape":"MacSecKeyList",
           "documentation":"<p>The MAC Security (MACsec) security keys associated with the LAG.</p>"
+        },
+        "prefixPoolSizeIpv4":{
+          "shape":"PrefixPoolSize",
+          "documentation":"<p>The total number of inbound IPv4 route prefixes you can allocate across the virtual interfaces on the LAG. Not applicable to LAGs that are interconnects and support hosted connections.</p>"
+        },
+        "prefixPoolSizeIpv6":{
+          "shape":"PrefixPoolSize",
+          "documentation":"<p>The total number of inbound IPv6 route prefixes you can allocate across the virtual interfaces on the LAG. Not applicable to LAGs that are interconnects and support hosted connections.</p>"
+        },
+        "prefixPoolUnallocatedCountIpv4":{
+          "shape":"PrefixPoolUnallocatedCount",
+          "documentation":"<p>The number of inbound IPv4 route prefixes in the LAG prefix pool not yet allocated to a virtual interface. Not applicable to LAGs that are interconnects and support hosted connections.</p>"
+        },
+        "prefixPoolUnallocatedCountIpv6":{
+          "shape":"PrefixPoolUnallocatedCount",
+          "documentation":"<p>The number of inbound IPv6 route prefixes in the LAG prefix pool not yet allocated to a virtual interface. Not applicable to LAGs that are interconnects and support hosted connections.</p>"
+        },
+        "rateLimiterStatus":{
+          "shape":"RateLimiterStatus",
+          "documentation":"<p>The rate limiter status for the LAG, including how many rate limiters are in use and the maximum allowed.</p>"
+        },
+        "billingMode":{
+          "shape":"BillingMode",
+          "documentation":"<p>The billing mode of the LAG.</p>"
         }
       },
       "documentation":"<p>Information about a link aggregation group (LAG).</p>"
@@ -2984,6 +3430,107 @@
         "lags":{
           "shape":"LagList",
           "documentation":"<p>The LAGs.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The token to use to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.</p>"
+        }
+      }
+    },
+    "LimitExceededException":{
+      "type":"structure",
+      "members":{},
+      "documentation":"<p>The rate limiter limit has been exceeded for the connection. You cannot add more rate limiters to virtual interfaces on this connection.</p>",
+      "exception":true
+    },
+    "ListResiliencyGroupAssociationsRequest":{
+      "type":"structure",
+      "required":["resiliencyGroupId"],
+      "members":{
+        "resiliencyGroupId":{
+          "shape":"ResiliencyGroupId",
+          "documentation":"<p>The ID of the resiliency group.</p>"
+        },
+        "maxResults":{
+          "shape":"MaxResultSetSize",
+          "documentation":"<p>The maximum number of results to return with a single call. To retrieve the remaining results, make another call with the returned <code>nextToken</code> value.</p> <p>If <code>MaxResults</code> is given a value larger than 100, only 100 results are returned.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The token for the next page of results.</p>"
+        }
+      }
+    },
+    "ListResiliencyGroupAssociationsResult":{
+      "type":"structure",
+      "members":{
+        "items":{
+          "shape":"ResiliencyGroupAssociationList",
+          "documentation":"<p>The connection associations for the resiliency group.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The token to use to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.</p>"
+        }
+      }
+    },
+    "ListResiliencyGroupsRequest":{
+      "type":"structure",
+      "members":{
+        "maxResults":{
+          "shape":"MaxResultSetSize",
+          "documentation":"<p>The maximum number of results to return with a single call. To retrieve the remaining results, make another call with the returned <code>nextToken</code> value.</p> <p>If <code>MaxResults</code> is given a value larger than 100, only 100 results are returned.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The token for the next page of results.</p>"
+        }
+      }
+    },
+    "ListResiliencyGroupsResult":{
+      "type":"structure",
+      "members":{
+        "items":{
+          "shape":"ResiliencyGroupSummaryList",
+          "documentation":"<p>Summary information about the resiliency groups.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The token to use to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.</p>"
+        }
+      }
+    },
+    "ListVirtualInterfaceRoutesRequest":{
+      "type":"structure",
+      "members":{
+        "virtualInterfaceId":{
+          "shape":"VirtualInterfaceId",
+          "documentation":"<p>The ID of the virtual interface.</p>"
+        },
+        "filters":{
+          "shape":"RouteFilters",
+          "documentation":"<p>The filters to apply to the routes returned.</p>"
+        },
+        "maxResults":{
+          "shape":"MaxResultSetSize",
+          "documentation":"<p>The maximum number of results to return with a single call. To retrieve the remaining results, make another call with the returned <code>nextToken</code> value.</p> <p>If <code>MaxResults</code> is given a value larger than 100, only 100 results are returned.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The token for the next page of results.</p>"
+        }
+      }
+    },
+    "ListVirtualInterfaceRoutesResponse":{
+      "type":"structure",
+      "members":{
+        "virtualInterfaceId":{
+          "shape":"VirtualInterfaceId",
+          "documentation":"<p>The ID of the virtual interface.</p>"
+        },
+        "routes":{
+          "shape":"RouteList",
+          "documentation":"<p>The routes for the virtual interface.</p>"
         },
         "nextToken":{
           "shape":"PaginationToken",
@@ -3079,6 +3626,10 @@
         "availableMacSecPortSpeeds":{
           "shape":"AvailableMacSecPortSpeeds",
           "documentation":"<p>The available MAC Security (MACsec) port speeds for the location.</p>"
+        },
+        "availableBillingModes":{
+          "shape":"AvailableBillingModeList",
+          "documentation":"<p>The billing modes available at the location, including the port speeds and Amazon Web Services Regions supported by each mode.</p>"
         }
       },
       "documentation":"<p>Information about an Direct Connect location.</p>"
@@ -3178,11 +3729,11 @@
         },
         "asn":{
           "shape":"ASN",
-          "documentation":"<p>The autonomous system number (ASN). The valid range is from 1 to 2147483646 for Border Gateway Protocol (BGP) configuration. If you provide a number greater than the maximum, an error is returned. Use <code>asnLong</code> instead.</p> <note> <p>You can use <code>asnLong</code> or <code>asn</code>, but not both. We recommend using <code>asnLong</code> as it supports a greater pool of numbers. </p> <ul> <li> <p>The <code>asnLong</code> attribute accepts both ASN and long ASN ranges.</p> </li> <li> <p>If you provide a value in the same API call for both <code>asn</code> and <code>asnLong</code>, the API will only accept the value for <code>asnLong</code>.</p> </li> </ul> </note> <p>The valid values are 1-2147483646.</p>"
+          "documentation":"<p>The autonomous system number (ASN). The valid range is from 1 to 2147483646 for Border Gateway Protocol (BGP) configuration. If you provide a number greater than the maximum, an error is returned. Use <code>asnLong</code> instead.</p> <ul> <li> <p>You can use <code>asnLong</code> or <code>asn</code>, but not both. We recommend using <code>asnLong</code> as it supports a greater pool of numbers. </p> </li> <li> <p>If you provide a value in the same API call for both <code>asn</code> and <code>asnLong</code>, the API will only accept the value for <code>asnLong</code>. </p> </li> <li> <p>If you enter a 4-byte ASN for the <code>asn</code> parameter, the API returns an error. </p> </li> <li> <p>If you are using a 2-byte ASN, the API response will include the 2-byte value for both the <code>asn</code> and <code>asnLong</code> fields.</p> </li> </ul> <p>The valid values are 1-2147483646.</p>"
         },
         "asnLong":{
           "shape":"LongAsn",
-          "documentation":"<p>The long ASN for a new private virtual interface. The valid range is from 1 to 4294967294 for BGP configuration.</p> <note> <p>You can use <code>asnLong</code> or <code>asn</code>, but not both. We recommend using <code>asnLong</code> as it supports a greater pool of numbers. </p> <ul> <li> <p>The <code>asnLong</code> attribute accepts both ASN and long ASN ranges.</p> </li> <li> <p>If you provide a value in the same API call for both <code>asn</code> and <code>asnLong</code>, the API will only accept the value for <code>asnLong</code>.</p> </li> </ul> </note>"
+          "documentation":"<p>The long ASN for a new private virtual interface. The valid range is from 1 to 4294967294 for BGP configuration.</p> <p>Note the following limitations when using <code>asnLong</code>:</p> <ul> <li> <p>You can use <code>asnLong</code> or <code>asn</code>, but not both. We recommend using <code>asnLong</code> as it supports a greater pool of numbers. </p> </li> <li> <p> <code>asnLong</code> accepts any valid ASN value, regardless if it's 2-byte or 4-byte. </p> </li> <li> <p>When using a 4-byte <code>asnLong</code>, the API response returns <code>0</code> for the legacy <code>asn</code> attribute since 4-byte ASN values exceed the maximum supported value of 2,147,483,647.</p> </li> <li> <p>If you are using a 2-byte ASN, the API response will include the 2-byte value for both the <code>asn</code> and <code>asnLong</code> fields.</p> </li> <li> <p>If you provide a value in the same API call for both <code>asn</code> and <code>asnLong</code>, the API will only accept the value for <code>asnLong</code>.</p> </li> </ul>"
         },
         "mtu":{
           "shape":"MTU",
@@ -3219,6 +3770,18 @@
         "enableSiteLink":{
           "shape":"EnableSiteLink",
           "documentation":"<p>Indicates whether to enable or disable SiteLink.</p>"
+        },
+        "prefixPoolAllocatedCountIpv4":{
+          "shape":"PrefixPoolAllocatedCount",
+          "documentation":"<p>The number of inbound IPv4 route prefixes to allocate to the virtual interface.</p>"
+        },
+        "prefixPoolAllocatedCountIpv6":{
+          "shape":"PrefixPoolAllocatedCount",
+          "documentation":"<p>The number of inbound IPv6 route prefixes to allocate to the virtual interface.</p>"
+        },
+        "rateLimit":{
+          "shape":"RateLimit",
+          "documentation":"<p>The rate limit (bandwidth allocation) to apply to the virtual interface. The rate limit restricts the maximum bandwidth that the virtual interface can use on the parent connection.</p>"
         }
       },
       "documentation":"<p>Information about a private virtual interface.</p>"
@@ -3240,11 +3803,11 @@
         },
         "asn":{
           "shape":"ASN",
-          "documentation":"<p>The autonomous system number (ASN). The valid range is from 1 to 2147483646 for Border Gateway Protocol (BGP) configuration. If you provide a number greater than the maximum, an error is returned. Use <code>asnLong</code> instead.</p> <note> <p>You can use <code>asnLong</code> or <code>asn</code>, but not both. We recommend using <code>asnLong</code> as it supports a greater pool of numbers. </p> <ul> <li> <p>The <code>asnLong</code> attribute accepts both ASN and long ASN ranges.</p> </li> <li> <p>If you provide a value in the same API call for both <code>asn</code> and <code>asnLong</code>, the API will only accept the value for <code>asnLong</code>.</p> </li> </ul> </note> <p>The valid values are 1-2147483646.</p>"
+          "documentation":"<p>The autonomous system number (ASN). The valid range is from 1 to 2147483646 for Border Gateway Protocol (BGP) configuration. If you provide a number greater than the maximum, an error is returned. Use <code>asnLong</code> instead.</p> <ul> <li> <p>You can use <code>asnLong</code> or <code>asn</code>, but not both. We recommend using <code>asnLong</code> as it supports a greater pool of numbers. </p> </li> <li> <p>If you provide a value in the same API call for both <code>asn</code> and <code>asnLong</code>, the API will only accept the value for <code>asnLong</code>. </p> </li> <li> <p>If you enter a 4-byte ASN for the <code>asn</code> parameter, the API returns an error. </p> </li> <li> <p>If you are using a 2-byte ASN, the API response will include the 2-byte value for both the <code>asn</code> and <code>asnLong</code> fields.</p> </li> </ul> <p>The valid values are 1-2147483646.</p>"
         },
         "asnLong":{
           "shape":"LongAsn",
-          "documentation":"<p>The ASN when allocating a new private virtual interface. The valid range is from 1 to 4294967294 for BGP configuration.</p> <note> <p>You can use <code>asnLong</code> or <code>asn</code>, but not both. We recommend using <code>asnLong</code> as it supports a greater pool of numbers. </p> <ul> <li> <p>The <code>asnLong</code> attribute accepts both ASN and long ASN ranges.</p> </li> <li> <p>If you provide a value in the same API call for both <code>asn</code> and <code>asnLong</code>, the API will only accept the value for <code>asnLong</code>.</p> </li> </ul> </note>"
+          "documentation":"<p>The ASN when allocating a new private virtual interface. The valid range is from 1 to 4294967294 for BGP configuration.</p> <p>Note the following limitations when using <code>asnLong</code>:</p> <ul> <li> <p>You can use <code>asnLong</code> or <code>asn</code>, but not both. We recommend using <code>asnLong</code> as it supports a greater pool of numbers. </p> </li> <li> <p> <code>asnLong</code> accepts any valid ASN value, regardless if it's 2-byte or 4-byte. </p> </li> <li> <p>When using a 4-byte <code>asnLong</code>, the API response returns <code>0</code> for the legacy <code>asn</code> attribute since 4-byte ASN values exceed the maximum supported value of 2,147,483,647.</p> </li> <li> <p>If you are using a 2-byte ASN, the API response will include the 2-byte value for both the <code>asn</code> and <code>asnLong</code> fields.</p> </li> <li> <p>If you provide a value in the same API call for both <code>asn</code> and <code>asnLong</code>, the API will only accept the value for <code>asnLong</code>.</p> </li> </ul>"
         },
         "mtu":{
           "shape":"MTU",
@@ -3269,6 +3832,10 @@
         "tags":{
           "shape":"TagList",
           "documentation":"<p>The tags associated with the private virtual interface.</p>"
+        },
+        "rateLimit":{
+          "shape":"RateLimit",
+          "documentation":"<p>The rate limit (bandwidth allocation) to apply to the virtual interface. The rate limit restricts the maximum bandwidth that the virtual interface can use on the parent connection.</p>"
         }
       },
       "documentation":"<p>Information about a private virtual interface to be provisioned on a connection.</p>"
@@ -3290,11 +3857,11 @@
         },
         "asn":{
           "shape":"ASN",
-          "documentation":"<p>The autonomous system number (ASN). The valid range is from 1 to 2147483646 for Border Gateway Protocol (BGP) configuration. If you provide a number greater than the maximum, an error is returned. Use <code>asnLong</code> instead.</p> <note> <p>You can use <code>asnLong</code> or <code>asn</code>, but not both. We recommend using <code>asnLong</code> as it supports a greater pool of numbers. </p> <ul> <li> <p>The <code>asnLong</code> attribute accepts both ASN and long ASN ranges.</p> </li> <li> <p>If you provide a value in the same API call for both <code>asn</code> and <code>asnLong</code>, the API will only accept the value for <code>asnLong</code>.</p> </li> </ul> </note>"
+          "documentation":"<p>The autonomous system number (ASN). The valid range is from 1 to 2147483646 for Border Gateway Protocol (BGP) configuration. If you provide a number greater than the maximum, an error is returned. Use <code>asnLong</code> instead.</p> <ul> <li> <p>You can use <code>asnLong</code> or <code>asn</code>, but not both. We recommend using <code>asnLong</code> as it supports a greater pool of numbers. </p> </li> <li> <p>If you provide a value in the same API call for both <code>asn</code> and <code>asnLong</code>, the API will only accept the value for <code>asnLong</code>. </p> </li> <li> <p>If you enter a 4-byte ASN for the <code>asn</code> parameter, the API returns an error. </p> </li> <li> <p>If you are using a 2-byte ASN, the API response will include the 2-byte value for both the <code>asn</code> and <code>asnLong</code> fields.</p> </li> </ul>"
         },
         "asnLong":{
           "shape":"LongAsn",
-          "documentation":"<p>The long ASN for a new public virtual interface. The valid range is from 1 to 4294967294 for BGP configuration.</p> <note> <p>You can use <code>asnLong</code> or <code>asn</code>, but not both. We recommend using <code>asnLong</code> as it supports a greater pool of numbers. </p> <ul> <li> <p>The <code>asnLong</code> attribute accepts both ASN and long ASN ranges.</p> </li> <li> <p>If you provide a value in the same API call for both <code>asn</code> and <code>asnLong</code>, the API will only accept the value for <code>asnLong</code>.</p> </li> </ul> </note>"
+          "documentation":"<p>The long ASN for a new public virtual interface. The valid range is from 1 to 4294967294 for BGP configuration.</p> <p>Note the following limitations when using <code>asnLong</code>:</p> <ul> <li> <p>You can use <code>asnLong</code> or <code>asn</code>, but not both. We recommend using <code>asnLong</code> as it supports a greater pool of numbers. </p> </li> <li> <p> <code>asnLong</code> accepts any valid ASN value, regardless if it's 2-byte or 4-byte. </p> </li> <li> <p>When using a 4-byte <code>asnLong</code>, the API response returns <code>0</code> for the legacy <code>asn</code> attribute since 4-byte ASN values exceed the maximum supported value of 2,147,483,647.</p> </li> <li> <p>If you are using a 2-byte ASN, the API response will include the 2-byte value for both the <code>asn</code> and <code>asnLong</code> fields.</p> </li> <li> <p>If you provide a value in the same API call for both <code>asn</code> and <code>asnLong</code>, the API will only accept the value for <code>asnLong</code>.</p> </li> </ul>"
         },
         "authKey":{
           "shape":"BGPAuthKey",
@@ -3319,6 +3886,10 @@
         "tags":{
           "shape":"TagList",
           "documentation":"<p>The tags associated with the public virtual interface.</p>"
+        },
+        "rateLimit":{
+          "shape":"RateLimit",
+          "documentation":"<p>The rate limit (bandwidth allocation) to apply to the virtual interface. The rate limit restricts the maximum bandwidth that the virtual interface can use on the parent connection.</p>"
         }
       },
       "documentation":"<p>Information about a public virtual interface.</p>"
@@ -3340,11 +3911,11 @@
         },
         "asn":{
           "shape":"ASN",
-          "documentation":"<p>The autonomous system number (ASN). The valid range is from 1 to 2147483646 for Border Gateway Protocol (BGP) configuration. If you provide a number greater than the maximum, an error is returned. Use <code>asnLong</code> instead.</p> <note> <p>You can use <code>asnLong</code> or <code>asn</code>, but not both. We recommend using <code>asnLong</code> as it supports a greater pool of numbers. </p> <ul> <li> <p>The <code>asnLong</code> attribute accepts both ASN and long ASN ranges.</p> </li> <li> <p>If you provide a value in the same API call for both <code>asn</code> and <code>asnLong</code>, the API will only accept the value for <code>asnLong</code>.</p> </li> </ul> </note> <p>The valid values are 1-2147483646.</p>"
+          "documentation":"<p>The autonomous system number (ASN). The valid range is from 1 to 2147483646 for Border Gateway Protocol (BGP) configuration. If you provide a number greater than the maximum, an error is returned. Use <code>asnLong</code> instead.</p> <ul> <li> <p>You can use <code>asnLong</code> or <code>asn</code>, but not both. We recommend using <code>asnLong</code> as it supports a greater pool of numbers. </p> </li> <li> <p>If you provide a value in the same API call for both <code>asn</code> and <code>asnLong</code>, the API will only accept the value for <code>asnLong</code>. </p> </li> <li> <p>If you enter a 4-byte ASN for the <code>asn</code> parameter, the API returns an error. </p> </li> <li> <p>If you are using a 2-byte ASN, the API response will include the 2-byte value for both the <code>asn</code> and <code>asnLong</code> fields.</p> </li> </ul> <p>The valid values are 1-2147483646.</p>"
         },
         "asnLong":{
           "shape":"LongAsn",
-          "documentation":"<p>The ASN when allocating a new public virtual interface. The valid range is from 1 to 4294967294 for BGP configuration.</p> <note> <p>You can use <code>asnLong</code> or <code>asn</code>, but not both. We recommend using <code>asnLong</code> as it supports a greater pool of numbers. </p> <ul> <li> <p>The <code>asnLong</code> attribute accepts both ASN and long ASN ranges.</p> </li> <li> <p>If you provide a value in the same API call for both <code>asn</code> and <code>asnLong</code>, the API will only accept the value for <code>asnLong</code>.</p> </li> </ul> </note>"
+          "documentation":"<p>The ASN when allocating a new public virtual interface. The valid range is from 1 to 4294967294 for BGP configuration.</p> <p>Note the following limitations when using <code>asnLong</code>:</p> <ul> <li> <p>You can use <code>asnLong</code> or <code>asn</code>, but not both. We recommend using <code>asnLong</code> as it supports a greater pool of numbers. </p> </li> <li> <p> <code>asnLong</code> accepts any valid ASN value, regardless if it's 2-byte or 4-byte. </p> </li> <li> <p>When using a 4-byte <code>asnLong</code>, the API response returns <code>0</code> for the legacy <code>asn</code> attribute since 4-byte ASN values exceed the maximum supported value of 2,147,483,647.</p> </li> <li> <p>If you are using a 2-byte ASN, the API response will include the 2-byte value for both the <code>asn</code> and <code>asnLong</code> fields.</p> </li> <li> <p>If you provide a value in the same API call for both <code>asn</code> and <code>asnLong</code>, the API will only accept the value for <code>asnLong</code>.</p> </li> </ul>"
         },
         "authKey":{
           "shape":"BGPAuthKey",
@@ -3369,6 +3940,10 @@
         "tags":{
           "shape":"TagList",
           "documentation":"<p>The tags associated with the public virtual interface.</p>"
+        },
+        "rateLimit":{
+          "shape":"RateLimit",
+          "documentation":"<p>The rate limit (bandwidth allocation) to apply to the virtual interface. The rate limit restricts the maximum bandwidth that the virtual interface can use on the parent connection.</p>"
         }
       },
       "documentation":"<p>Information about a public virtual interface to be provisioned on a connection.</p>"
@@ -3386,11 +3961,11 @@
         },
         "asn":{
           "shape":"ASN",
-          "documentation":"<p>The autonomous system number (ASN). The valid range is from 1 to 2147483646 for Border Gateway Protocol (BGP) configuration. If you provide a number greater than the maximum, an error is returned. Use <code>asnLong</code> instead.</p> <note> <p>You can use <code>asnLong</code> or <code>asn</code>, but not both. We recommend using <code>asnLong</code> as it supports a greater pool of numbers. </p> <ul> <li> <p>The <code>asnLong</code> attribute accepts both ASN and long ASN ranges.</p> </li> <li> <p>If you provide a value in the same API call for both <code>asn</code> and <code>asnLong</code>, the API will only accept the value for <code>asnLong</code>.</p> </li> </ul> </note>"
+          "documentation":"<p>The autonomous system number (ASN). The valid range is from 1 to 2147483646 for Border Gateway Protocol (BGP) configuration. If you provide a number greater than the maximum, an error is returned. Use <code>asnLong</code> instead.</p> <ul> <li> <p>You can use <code>asnLong</code> or <code>asn</code>, but not both. We recommend using <code>asnLong</code> as it supports a greater pool of numbers. </p> </li> <li> <p>If you provide a value in the same API call for both <code>asn</code> and <code>asnLong</code>, the API will only accept the value for <code>asnLong</code>. </p> </li> <li> <p>If you enter a 4-byte ASN for the <code>asn</code> parameter, the API returns an error. </p> </li> <li> <p>If you are using a 2-byte ASN, the API response will include the 2-byte value for both the <code>asn</code> and <code>asnLong</code> fields.</p> </li> </ul>"
         },
         "asnLong":{
           "shape":"LongAsn",
-          "documentation":"<p>The long ASN for a new transit virtual interface.The valid range is from 1 to 4294967294 for BGP configuration.</p> <note> <p>You can use <code>asnLong</code> or <code>asn</code>, but not both. We recommend using <code>asnLong</code> as it supports a greater pool of numbers. </p> <ul> <li> <p>The <code>asnLong</code> attribute accepts both ASN and long ASN ranges.</p> </li> <li> <p>If you provide a value in the same API call for both <code>asn</code> and <code>asnLong</code>, the API will only accept the value for <code>asnLong</code>.</p> </li> </ul> </note>"
+          "documentation":"<p>The long ASN for a new transit virtual interface.The valid range is from 1 to 4294967294 for BGP configuration.</p> <p>Note the following limitations when using <code>asnLong</code>:</p> <ul> <li> <p>You can use <code>asnLong</code> or <code>asn</code>, but not both. We recommend using <code>asnLong</code> as it supports a greater pool of numbers. </p> </li> <li> <p> <code>asnLong</code> accepts any valid ASN value, regardless if it's 2-byte or 4-byte. </p> </li> <li> <p>When using a 4-byte <code>asnLong</code>, the API response returns <code>0</code> for the legacy <code>asn</code> attribute since 4-byte ASN values exceed the maximum supported value of 2,147,483,647.</p> </li> <li> <p>If you are using a 2-byte ASN, the API response will include the 2-byte value for both the <code>asn</code> and <code>asnLong</code> fields.</p> </li> <li> <p>If you provide a value in the same API call for both <code>asn</code> and <code>asnLong</code>, the API will only accept the value for <code>asnLong</code>.</p> </li> </ul>"
         },
         "mtu":{
           "shape":"MTU",
@@ -3423,6 +3998,18 @@
         "enableSiteLink":{
           "shape":"EnableSiteLink",
           "documentation":"<p>Indicates whether to enable or disable SiteLink.</p>"
+        },
+        "prefixPoolAllocatedCountIpv4":{
+          "shape":"PrefixPoolAllocatedCount",
+          "documentation":"<p>The number of inbound IPv4 route prefixes to allocate to the virtual interface.</p>"
+        },
+        "prefixPoolAllocatedCountIpv6":{
+          "shape":"PrefixPoolAllocatedCount",
+          "documentation":"<p>The number of inbound IPv6 route prefixes to allocate to the virtual interface.</p>"
+        },
+        "rateLimit":{
+          "shape":"RateLimit",
+          "documentation":"<p>The rate limit (bandwidth allocation) to apply to the virtual interface. The rate limit restricts the maximum bandwidth that the virtual interface can use on the parent connection.</p>"
         }
       },
       "documentation":"<p>Information about a transit virtual interface.</p>"
@@ -3440,11 +4027,11 @@
         },
         "asn":{
           "shape":"ASN",
-          "documentation":"<p>The autonomous system number (ASN). The valid range is from 1 to 2147483646 for Border Gateway Protocol (BGP) configuration. If you provide a number greater than the maximum, an error is returned. Use <code>asnLong</code> instead.</p> <note> <p>You can use <code>asnLong</code> or <code>asn</code>, but not both. We recommend using <code>asnLong</code> as it supports a greater pool of numbers. </p> <ul> <li> <p>The <code>asnLong</code> attribute accepts both ASN and long ASN ranges.</p> </li> <li> <p>If you provide a value in the same API call for both <code>asn</code> and <code>asnLong</code>, the API will only accept the value for <code>asnLong</code>.</p> </li> </ul> </note> <p>The valid values are 1-2147483646.</p>"
+          "documentation":"<p>The autonomous system number (ASN). The valid range is from 1 to 2147483646 for Border Gateway Protocol (BGP) configuration. If you provide a number greater than the maximum, an error is returned. Use <code>asnLong</code> instead.</p> <ul> <li> <p>You can use <code>asnLong</code> or <code>asn</code>, but not both. We recommend using <code>asnLong</code> as it supports a greater pool of numbers. </p> </li> <li> <p>If you provide a value in the same API call for both <code>asn</code> and <code>asnLong</code>, the API will only accept the value for <code>asnLong</code>. </p> </li> <li> <p>If you enter a 4-byte ASN for the <code>asn</code> parameter, the API returns an error. </p> </li> <li> <p>If you are using a 2-byte ASN, the API response will include the 2-byte value for both the <code>asn</code> and <code>asnLong</code> fields.</p> </li> </ul> <p>The valid values are 1-2147483646.</p>"
         },
         "asnLong":{
           "shape":"LongAsn",
-          "documentation":"<p>The ASN when allocating a new transit virtual interface. The valid range is from 1 to 4294967294 for BGP configuration.</p> <note> <p>You can use <code>asnLong</code> or <code>asn</code>, but not both. We recommend using <code>asnLong</code> as it supports a greater pool of numbers. </p> <ul> <li> <p>The <code>asnLong</code> attribute accepts both ASN and long ASN ranges.</p> </li> <li> <p>If you provide a value in the same API call for both <code>asn</code> and <code>asnLong</code>, the API will only accept the value for <code>asnLong</code>.</p> </li> </ul> </note>"
+          "documentation":"<p>The ASN when allocating a new transit virtual interface. The valid range is from 1 to 4294967294 for BGP configuration.</p> <p>Note the following limitations when using <code>asnLong</code>:</p> <ul> <li> <p>You can use <code>asnLong</code> or <code>asn</code>, but not both. We recommend using <code>asnLong</code> as it supports a greater pool of numbers. </p> </li> <li> <p> <code>asnLong</code> accepts any valid ASN value, regardless if it's 2-byte or 4-byte. </p> </li> <li> <p>When using a 4-byte <code>asnLong</code>, the API response returns <code>0</code> for the legacy <code>asn</code> attribute since 4-byte ASN values exceed the maximum supported value of 2,147,483,647.</p> </li> <li> <p>If you are using a 2-byte ASN, the API response will include the 2-byte value for both the <code>asn</code> and <code>asnLong</code> fields.</p> </li> <li> <p>If you provide a value in the same API call for both <code>asn</code> and <code>asnLong</code>, the API will only accept the value for <code>asnLong</code>.</p> </li> </ul>"
         },
         "mtu":{
           "shape":"MTU",
@@ -3469,6 +4056,10 @@
         "tags":{
           "shape":"TagList",
           "documentation":"<p>The tags associated with the transitive virtual interface.</p>"
+        },
+        "rateLimit":{
+          "shape":"RateLimit",
+          "documentation":"<p>The rate limit (bandwidth allocation) to apply to the virtual interface. The rate limit restricts the maximum bandwidth that the virtual interface can use on the parent connection.</p>"
         }
       },
       "documentation":"<p>Information about a transit virtual interface to be provisioned on a connection.</p>"
@@ -3488,13 +4079,197 @@
     "Platform":{"type":"string"},
     "PortEncryptionStatus":{"type":"string"},
     "PortSpeed":{"type":"string"},
+    "PrefixPoolAllocatedCount":{
+      "type":"integer",
+      "min":0
+    },
+    "PrefixPoolSize":{
+      "type":"integer",
+      "min":0
+    },
+    "PrefixPoolUnallocatedCount":{
+      "type":"integer",
+      "min":0
+    },
     "ProviderList":{
       "type":"list",
       "member":{"shape":"ProviderName"}
     },
     "ProviderName":{"type":"string"},
+    "RateLimit":{"type":"string"},
+    "RateLimiterStatus":{
+      "type":"structure",
+      "members":{
+        "maxAllowed":{
+          "shape":"Count",
+          "documentation":"<p>The maximum number of rate limiters allowed on the connection.</p>"
+        },
+        "inUse":{
+          "shape":"Count",
+          "documentation":"<p>The number of rate limiters currently in use on the connection.</p>"
+        },
+        "remaining":{
+          "shape":"Count",
+          "documentation":"<p>The number of rate limiters remaining (available) on the connection.</p>"
+        },
+        "totalBandwidth":{
+          "shape":"Bandwidth",
+          "documentation":"<p>The total bandwidth allocated across all rate limiters on the connection.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about the rate limiter status for a connection, including the maximum number of rate limiters allowed, the number currently in use, and the remaining capacity.</p>"
+    },
     "Region":{"type":"string"},
+    "RequestBillingMode":{
+      "type":"string",
+      "enum":[
+        "PayAsYouGo",
+        "FlatRateTier1",
+        "FlatRateTier2",
+        "FlatRateTier3",
+        "FlatRateTier4",
+        "FlatRateTier5"
+      ]
+    },
     "RequestMACSec":{"type":"boolean"},
+    "ResiliencyGroup":{
+      "type":"structure",
+      "members":{
+        "resiliencyGroupId":{
+          "shape":"ResiliencyGroupId",
+          "documentation":"<p>The ID of the resiliency group.</p>"
+        },
+        "resiliencyGroupArn":{
+          "shape":"ResiliencyGroupArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resiliency group.</p>"
+        },
+        "resiliencyGroupName":{
+          "shape":"ResiliencyGroupName",
+          "documentation":"<p>The name of the resiliency group.</p>"
+        },
+        "resiliencyGroupType":{
+          "shape":"ResiliencyGroupType",
+          "documentation":"<p>The type of the resiliency group. The valid value is <code>Managed</code>.</p>"
+        },
+        "ownerAccount":{
+          "shape":"OwnerAccount",
+          "documentation":"<p>The ID of the Amazon Web Services account that owns the resiliency group.</p>"
+        },
+        "state":{
+          "shape":"ResiliencyGroupState",
+          "documentation":"<p>The state of the resiliency group. The valid values are <code>pending</code>, <code>available</code>, <code>deleting</code>, and <code>deleted</code>.</p>"
+        },
+        "tags":{
+          "shape":"TagList",
+          "documentation":"<p>The tags associated with the resiliency group.</p>"
+        }
+      },
+      "documentation":"<p>Information about a resiliency group.</p>"
+    },
+    "ResiliencyGroupArn":{
+      "type":"string",
+      "max":1024,
+      "min":1,
+      "pattern":"^arn:(aws|aws-cn|aws-us-gov):directconnect::[0-9]{12}:dx-resiliency-group/dxrg-[0-9a-z]{17}$"
+    },
+    "ResiliencyGroupAssociation":{
+      "type":"structure",
+      "members":{
+        "resiliencyGroupId":{
+          "shape":"ResiliencyGroupId",
+          "documentation":"<p>The ID of the resiliency group.</p>"
+        },
+        "connectionArn":{
+          "shape":"ConnectionArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the associated connection.</p>"
+        },
+        "state":{
+          "shape":"ResiliencyGroupAssociationState",
+          "documentation":"<p>The state of the association. The valid values are <code>associating</code>, <code>associated</code>, <code>disassociating</code>, and <code>disassociated</code>.</p>"
+        }
+      },
+      "documentation":"<p>Information about an association between a connection and a resiliency group.</p>"
+    },
+    "ResiliencyGroupAssociationList":{
+      "type":"list",
+      "member":{"shape":"ResiliencyGroupAssociation"}
+    },
+    "ResiliencyGroupAssociationState":{
+      "type":"string",
+      "enum":[
+        "associating",
+        "associated",
+        "disassociating",
+        "disassociated"
+      ]
+    },
+    "ResiliencyGroupId":{
+      "type":"string",
+      "max":22,
+      "min":22,
+      "pattern":"^(dxrg|DXRG)-[0-9a-zA-Z]{17}$"
+    },
+    "ResiliencyGroupName":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"^[a-zA-Z0-9_\\-]+$"
+    },
+    "ResiliencyGroupState":{
+      "type":"string",
+      "enum":[
+        "pending",
+        "available",
+        "deleting",
+        "deleted"
+      ]
+    },
+    "ResiliencyGroupSummary":{
+      "type":"structure",
+      "members":{
+        "resiliencyGroupId":{
+          "shape":"ResiliencyGroupId",
+          "documentation":"<p>The ID of the resiliency group.</p>"
+        },
+        "resiliencyGroupArn":{
+          "shape":"ResiliencyGroupArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resiliency group.</p>"
+        },
+        "resiliencyGroupName":{
+          "shape":"ResiliencyGroupName",
+          "documentation":"<p>The name of the resiliency group.</p>"
+        },
+        "resiliencyGroupType":{
+          "shape":"ResiliencyGroupType",
+          "documentation":"<p>The type of the resiliency group. The valid value is <code>Managed</code>.</p>"
+        },
+        "ownerAccount":{
+          "shape":"OwnerAccount",
+          "documentation":"<p>The ID of the Amazon Web Services account that owns the resiliency group.</p>"
+        },
+        "state":{
+          "shape":"ResiliencyGroupState",
+          "documentation":"<p>The state of the resiliency group.</p>"
+        }
+      },
+      "documentation":"<p>Summary information about a resiliency group.</p>"
+    },
+    "ResiliencyGroupSummaryList":{
+      "type":"list",
+      "member":{"shape":"ResiliencyGroupSummary"}
+    },
+    "ResiliencyGroupType":{
+      "type":"string",
+      "enum":["Managed"]
+    },
+    "ResiliencyModel":{
+      "type":"string",
+      "enum":[
+        "maximum-resiliency",
+        "high-resiliency",
+        "basic-resiliency"
+      ]
+    },
     "ResourceArn":{"type":"string"},
     "ResourceArnList":{
       "type":"list",
@@ -3518,6 +4293,55 @@
       "type":"list",
       "member":{"shape":"ResourceTag"}
     },
+    "Route":{
+      "type":"structure",
+      "members":{
+        "cidr":{
+          "shape":"RouteCidr",
+          "documentation":"<p>The CIDR (prefix) of the route.</p>"
+        },
+        "routeDirection":{
+          "shape":"RouteDirection",
+          "documentation":"<p>The direction of the route.</p> <p>The valid values are <code>accepted</code> (received from the customer network) and <code>advertised</code> (advertised to the customer network).</p>"
+        },
+        "addressFamily":{
+          "shape":"AddressFamily",
+          "documentation":"<p>The address family of the route.</p> <p>The valid values are <code>ipv4</code> and <code>ipv6</code>.</p>"
+        },
+        "asPath":{
+          "shape":"AsPathSegmentList",
+          "documentation":"<p>The autonomous system (AS) path of the route.</p>"
+        },
+        "communities":{
+          "shape":"CommunityList",
+          "documentation":"<p>The BGP communities associated with the route.</p>"
+        },
+        "awsLogicalDeviceId":{
+          "shape":"AwsLogicalDeviceId",
+          "documentation":"<p>The Direct Connect endpoint that terminates the logical connection. This device might be different than the device that terminates the physical connection.</p>"
+        },
+        "routeInstalledAt":{
+          "shape":"RouteInstalledAt",
+          "documentation":"<p>The time when the route was installed. The value is displayed in UTC format.</p>"
+        }
+      },
+      "documentation":"<p>Information about a route for a virtual interface.</p>"
+    },
+    "RouteCidr":{"type":"string"},
+    "RouteDirection":{
+      "type":"string",
+      "enum":[
+        "accepted",
+        "advertised"
+      ]
+    },
+    "RouteFilterCidrString":{"type":"string"},
+    "RouteFilterCidrStringList":{
+      "type":"list",
+      "member":{"shape":"RouteFilterCidrString"},
+      "max":10,
+      "min":1
+    },
     "RouteFilterPrefix":{
       "type":"structure",
       "members":{
@@ -3531,6 +4355,37 @@
     "RouteFilterPrefixList":{
       "type":"list",
       "member":{"shape":"RouteFilterPrefix"}
+    },
+    "RouteFilters":{
+      "type":"structure",
+      "members":{
+        "routeDirection":{
+          "shape":"RouteDirection",
+          "documentation":"<p>The direction of the routes to return.</p> <p>The valid values are <code>accepted</code> (routes received from the customer network) and <code>advertised</code> (routes advertised to the customer network).</p>"
+        },
+        "addressFamily":{
+          "shape":"AddressFamily",
+          "documentation":"<p>The address family of the routes to return.</p> <p>The valid values are <code>ipv4</code> and <code>ipv6</code>.</p>"
+        },
+        "cidrs":{
+          "shape":"RouteFilterCidrStringList",
+          "documentation":"<p>The CIDRs (prefixes) used to filter the routes. You can specify up to 10 CIDRs.</p>"
+        },
+        "asPath":{
+          "shape":"AsPathList",
+          "documentation":"<p>The autonomous system (AS) numbers used to filter the routes by their AS path.</p>"
+        },
+        "communities":{
+          "shape":"CommunityList",
+          "documentation":"<p>The BGP communities used to filter the routes.</p>"
+        }
+      },
+      "documentation":"<p>The filters used to limit the routes returned by <a>ListVirtualInterfaceRoutes</a>.</p>"
+    },
+    "RouteInstalledAt":{"type":"timestamp"},
+    "RouteList":{
+      "type":"list",
+      "member":{"shape":"Route"}
     },
     "RouterConfig":{"type":"string"},
     "RouterType":{
@@ -3728,6 +4583,36 @@
         }
       }
     },
+    "UpdateConnectionsBillingModeRequest":{
+      "type":"structure",
+      "required":[
+        "connectionIds",
+        "billingMode"
+      ],
+      "members":{
+        "connectionIds":{
+          "shape":"ConnectionIdList",
+          "documentation":"<p>The IDs of the connections to update. You can specify from 1 to 200 connections.</p>"
+        },
+        "billingMode":{
+          "shape":"RequestBillingMode",
+          "documentation":"<p>The billing mode to apply to the specified connections. The valid values are <code>PayAsYouGo</code>, <code>FlatRateTier1</code>, <code>FlatRateTier2</code>, <code>FlatRateTier3</code>, <code>FlatRateTier4</code>, and <code>FlatRateTier5</code>.</p>"
+        }
+      }
+    },
+    "UpdateConnectionsBillingModeResponse":{
+      "type":"structure",
+      "members":{
+        "billingMode":{
+          "shape":"BillingMode",
+          "documentation":"<p>The billing mode applied to the connections.</p>"
+        },
+        "connections":{
+          "shape":"ConnectionList",
+          "documentation":"<p>The connections with the updated billing mode.</p>"
+        }
+      }
+    },
     "UpdateDirectConnectGatewayAssociationRequest":{
       "type":"structure",
       "members":{
@@ -3802,6 +4687,36 @@
         }
       }
     },
+    "UpdateResiliencyGroupRequest":{
+      "type":"structure",
+      "required":[
+        "resiliencyGroupId",
+        "resiliencyGroupName"
+      ],
+      "members":{
+        "resiliencyGroupId":{
+          "shape":"ResiliencyGroupId",
+          "documentation":"<p>The ID of the resiliency group.</p>"
+        },
+        "resiliencyGroupName":{
+          "shape":"ResiliencyGroupName",
+          "documentation":"<p>The new name of the resiliency group.</p>"
+        },
+        "clientToken":{
+          "shape":"IdempotencyToken",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request.</p>"
+        }
+      }
+    },
+    "UpdateResiliencyGroupResult":{
+      "type":"structure",
+      "members":{
+        "resiliencyGroup":{
+          "shape":"ResiliencyGroup",
+          "documentation":"<p>Information about the resiliency group.</p>"
+        }
+      }
+    },
     "UpdateVirtualInterfaceAttributesRequest":{
       "type":"structure",
       "required":["virtualInterfaceId"],
@@ -3821,6 +4736,18 @@
         "virtualInterfaceName":{
           "shape":"VirtualInterfaceName",
           "documentation":"<p>The name of the virtual private interface.</p>"
+        },
+        "prefixPoolAllocatedCountIpv4":{
+          "shape":"PrefixPoolAllocatedCount",
+          "documentation":"<p>The number of inbound IPv4 route prefixes to allocate to the virtual interface. Not applicable to public virtual interfaces.</p>"
+        },
+        "prefixPoolAllocatedCountIpv6":{
+          "shape":"PrefixPoolAllocatedCount",
+          "documentation":"<p>The number of inbound IPv6 route prefixes to allocate to the virtual interface. Not applicable to public virtual interfaces.</p>"
+        },
+        "rateLimit":{
+          "shape":"RateLimit",
+          "documentation":"<p>The rate limit (bandwidth allocation) to apply to the virtual interface. Use this to update the bandwidth allocation on an existing virtual interface.</p>"
         }
       }
     },
@@ -3892,11 +4819,11 @@
         },
         "asn":{
           "shape":"ASN",
-          "documentation":"<p>The autonomous system number (ASN). The valid range is from 1 to 2147483646 for Border Gateway Protocol (BGP) configuration. If you provide a number greater than the maximum, an error is returned. Use <code>asnLong</code> instead.</p> <note> <p>You can use <code>asnLong</code> or <code>asn</code>, but not both. We recommend using <code>asnLong</code> as it supports a greater pool of numbers. </p> <ul> <li> <p>The <code>asnLong</code> attribute accepts both ASN and long ASN ranges.</p> </li> <li> <p>If you provide a value in the same API call for both <code>asn</code> and <code>asnLong</code>, the API will only accept the value for <code>asnLong</code>.</p> </li> </ul> </note>"
+          "documentation":"<p>The autonomous system number (ASN). The valid range is from 1 to 2147483646 for Border Gateway Protocol (BGP) configuration. If you provide a number greater than the maximum, an error is returned. Use <code>asnLong</code> instead.</p> <ul> <li> <p>You can use <code>asnLong</code> or <code>asn</code>, but not both. We recommend using <code>asnLong</code> as it supports a greater pool of numbers. </p> </li> <li> <p>If you provide a value in the same API call for both <code>asn</code> and <code>asnLong</code>, the API will only accept the value for <code>asnLong</code>. </p> </li> <li> <p>If you enter a 4-byte ASN for the <code>asn</code> parameter, the API returns an error. </p> </li> <li> <p>If you are using a 2-byte ASN, the API response will include the 2-byte value for both the <code>asn</code> and <code>asnLong</code> fields.</p> </li> </ul>"
         },
         "asnLong":{
           "shape":"LongAsn",
-          "documentation":"<p>The long ASN for the virtual interface. The valid range is from 1 to 4294967294 for BGP configuration.</p> <note> <p>You can use <code>asnLong</code> or <code>asn</code>, but not both. We recommend using <code>asnLong</code> as it supports a greater pool of numbers. </p> <ul> <li> <p>The <code>asnLong</code> attribute accepts both ASN and long ASN ranges.</p> </li> <li> <p>If you provide a value in the same API call for both <code>asn</code> and <code>asnLong</code>, the API will only accept the value for <code>asnLong</code>.</p> </li> </ul> </note>"
+          "documentation":"<p>The long ASN for the virtual interface. The valid range is from 1 to 4294967294 for BGP configuration.</p> <p>Note the following limitations when using <code>asnLong</code>:</p> <ul> <li> <p>You can use <code>asnLong</code> or <code>asn</code>, but not both. We recommend using <code>asnLong</code> as it supports a greater pool of numbers. </p> </li> <li> <p> <code>asnLong</code> accepts any valid ASN value, regardless if it's 2-byte or 4-byte. </p> </li> <li> <p>When using a 4-byte <code>asnLong</code>, the API response returns <code>0</code> for the legacy <code>asn</code> attribute since 4-byte ASN values exceed the maximum supported value of 2,147,483,647.</p> </li> <li> <p>If you are using a 2-byte ASN, the API response will include the 2-byte value for both the <code>asn</code> and <code>asnLong</code> fields.</p> </li> <li> <p>If you provide a value in the same API call for both <code>asn</code> and <code>asnLong</code>, the API will only accept the value for <code>asnLong</code>.</p> </li> </ul>"
         },
         "amazonSideAsn":{
           "shape":"LongAsn",
@@ -3969,6 +4896,18 @@
         "siteLinkEnabled":{
           "shape":"SiteLinkEnabled",
           "documentation":"<p>Indicates whether SiteLink is enabled.</p>"
+        },
+        "prefixPoolAllocatedCountIpv4":{
+          "shape":"PrefixPoolAllocatedCount",
+          "documentation":"<p>The number of inbound IPv4 route prefixes allocated to the virtual interface. Not applicable to public virtual interfaces.</p>"
+        },
+        "prefixPoolAllocatedCountIpv6":{
+          "shape":"PrefixPoolAllocatedCount",
+          "documentation":"<p>The number of inbound IPv6 route prefixes allocated to the virtual interface. Not applicable to public virtual interfaces.</p>"
+        },
+        "rateLimit":{
+          "shape":"RateLimit",
+          "documentation":"<p>The rate limit (bandwidth allocation) applied to the virtual interface. The value must be one of the supported bandwidth values and cannot exceed the bandwidth of the parent connection or LAG. Supported values: <code>50Mbps</code>, <code>100Mbps</code>, <code>200Mbps</code>, <code>300Mbps</code>, <code>400Mbps</code>, <code>500Mbps</code>, <code>600Mbps</code>, <code>700Mbps</code>, <code>800Mbps</code>, <code>900Mbps</code>, <code>1Gbps</code>, <code>1.2Gbps</code>, <code>1.5Gbps</code>, <code>1.8Gbps</code>, <code>2Gbps</code>, <code>2.1Gbps</code>, <code>2.4Gbps</code>, <code>2.7Gbps</code>, <code>3Gbps</code>, <code>3.2Gbps</code>, <code>3.6Gbps</code>, <code>4Gbps</code>, <code>5Gbps</code>, <code>6Gbps</code>, <code>7Gbps</code>, <code>8Gbps</code>, <code>9Gbps</code>, <code>10Gbps</code>, <code>12Gbps</code>, <code>15Gbps</code>, <code>18Gbps</code>, <code>20Gbps</code>, <code>21Gbps</code>, <code>24Gbps</code>, <code>27Gbps</code>, <code>30Gbps</code>, <code>32Gbps</code>, <code>36Gbps</code>, <code>40Gbps</code>, <code>50Gbps</code>, <code>60Gbps</code>, <code>70Gbps</code>, <code>80Gbps</code>, <code>100Gbps</code>, <code>120Gbps</code>, <code>150Gbps</code>, <code>180Gbps</code>, <code>200Gbps</code>, <code>210Gbps</code>, <code>240Gbps</code>, <code>270Gbps</code>, <code>300Gbps</code>, <code>320Gbps</code>, <code>360Gbps</code>, <code>400Gbps</code>, <code>450Gbps</code>, <code>480Gbps</code>, <code>500Gbps</code>, <code>540Gbps</code>, <code>600Gbps</code>, <code>700Gbps</code>, <code>800Gbps</code>, <code>900Gbps</code>, <code>1Tbps</code>, <code>1.1Tbps</code>, <code>1.2Tbps</code>, <code>1.3Tbps</code>, <code>1.4Tbps</code>, <code>1.5Tbps</code>, <code>1.6Tbps</code>.</p>"
         }
       },
       "documentation":"<p>Information about a virtual interface.</p>"

@@ -10,15 +10,19 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import importlib
 import logging
 import os
 import sys
+from functools import singledispatch
 
 from botocore.hooks import HierarchicalEmitter
 
+from awscli.handlers_registry import PLUGIN_REGISTRY
+from awscli.lazy_emitter import LazyInitEmitter
+
 log = logging.getLogger('awscli.plugin')
 
-BUILTIN_PLUGINS = {'__builtin__': 'awscli.handlers'}
 CLI_LEGACY_PLUGIN_PATH = 'cli_legacy_plugin_path'
 
 
@@ -31,23 +35,21 @@ def load_plugins(plugin_mapping, event_hooks=None, include_builtins=True):
 
     :type event_hooks: ``EventHooks``
     :param event_hooks: Event hook emitter.  If one if not provided,
-        an emitter will be created and returned.  Otherwise, the
+        a LazyInitEmitter will be created and returned.  Otherwise, the
         passed in ``event_hooks`` will be used to initialize plugins.
 
     :type include_builtins: bool
-    :param include_builtins: If True, the builtin awscli plugins (specified in
-        ``BUILTIN_PLUGINS``) will be included in the list of plugins to load.
+    :param include_builtins: If True, the built-in plugin registry will be
+        loaded into the emitter.
 
-    :rtype: HierarchicalEmitter
+    :rtype: LazyInitEmitter
     :return: An event emitter object.
 
     """
     if event_hooks is None:
-        event_hooks = HierarchicalEmitter()
+        event_hooks = LazyInitEmitter()
     if include_builtins:
-        event_hooks.emit('before-load-plugins')
-        _load_plugins(BUILTIN_PLUGINS, event_hooks)
-        event_hooks.emit('after-load-plugins')
+        _load_registry(event_hooks)
     plugin_path = plugin_mapping.pop(CLI_LEGACY_PLUGIN_PATH, None)
     if plugin_path is not None:
         _add_plugin_path_to_sys_path(plugin_path)
@@ -58,6 +60,32 @@ def load_plugins(plugin_mapping, event_hooks=None, include_builtins=True):
             "importing additional plugins."
         )
     return event_hooks
+
+
+@singledispatch
+def _load_registry(event_hooks):
+    raise NotImplementedError(
+        f'No _load_registry implementation for '
+        f'{type(event_hooks).__name__}'
+    )
+
+
+@_load_registry.register
+def _(event_hooks: HierarchicalEmitter):
+    seen = set()
+    for event_pattern, entries in PLUGIN_REGISTRY.items():
+        for entry in entries:
+            if entry not in seen:
+                seen.add(entry)
+                module_path, fn_name = entry
+                mod = importlib.import_module(module_path)
+                fn = getattr(mod, fn_name)
+                fn(event_hooks)
+
+
+@_load_registry.register
+def _(event_hooks: LazyInitEmitter):
+    event_hooks.load_registry(PLUGIN_REGISTRY)
 
 
 def _load_plugins(plugin_mapping, event_hooks):

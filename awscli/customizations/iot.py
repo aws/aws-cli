@@ -26,6 +26,20 @@ file. This customization adds the following options:
 from awscli.customizations.arguments import QueryOutFileArgument
 
 
+def register_iot_create_keys_from_csr(event_emitter):
+    event_emitter.register(
+        'building-argument-table.iot.create-certificate-from-csr',
+        register_create_keys_from_csr_arguments,
+    )
+
+
+def register_iot_create_keys_and_cert_args(event_emitter):
+    event_emitter.register(
+        'building-argument-table.iot.create-keys-and-certificate',
+        register_create_keys_and_cert_arguments,
+    )
+
+
 def register_create_keys_and_cert_arguments(session, argument_table, **kwargs):
     """Add outfile save arguments to create-keys-and-certificate
 

@@ -54,7 +54,7 @@ class TestPlugins(unittest.TestCase):
         )
 
     def test_event_hooks_can_be_passed_in(self):
-        hooks = plugin.HierarchicalEmitter()
+        hooks = plugin.LazyInitEmitter()
         emitter = plugin.load_plugins(self.plugin_mapping, event_hooks=hooks)
         emitter.emit('before_operation')
         self.assertEqual(len(self.fake_module.events_seen), 1)

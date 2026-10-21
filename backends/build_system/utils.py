@@ -202,6 +202,9 @@ class Utils:
     def isdir(self, path: str) -> bool:
         return os.path.isdir(path)
 
+    def listdir(self, path: str) -> List[str]:
+        return os.listdir(path)
+
     def islink(self, path: str) -> bool:
         return os.path.islink(path)
 

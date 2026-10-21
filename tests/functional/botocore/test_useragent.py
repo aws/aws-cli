@@ -57,6 +57,27 @@ class UACapHTTPStubber(ClientHTTPStubber):
         return None
 
 
+_AGENTIC_CALLER_ENV_FEATURE_MAPPINGS = (
+    ('CLAUDECODE', '1', 'AN'),
+    ('GEMINI_CLI', '1', 'AO'),
+    ('CODEX_THREAD_ID', 'thread-id', 'AP'),
+    ('KIRO_SESSION_ID', 'session-id', 'AQ'),
+    ('OPENCODE', '1', 'AR'),
+    ('ANTIGRAVITY_AGENT', '1', 'AS'),
+    ('AMP_CURRENT_THREAD_ID', 'thread-id', 'AT'),
+    ('PI_CODING_AGENT', 'true', 'AU'),
+    ('COPILOT_CLI', '1', 'AV'),
+    ('CURSOR_AGENT', '1', 'AW'),
+)
+
+
+@pytest.fixture(autouse=True)
+def clear_agentic_caller_env(monkeypatch):
+    """Unset agentic tool env vars that could affect user-agent tests."""
+    for env_var, _, _ in _AGENTIC_CALLER_ENV_FEATURE_MAPPINGS:
+        monkeypatch.delenv(env_var, raising=False)
+
+
 @pytest.mark.parametrize(
     'sess_name, sess_version, sess_extra, cfg_extra, cfg_appid',
     # Produce every combination of User-Agent related config settings other
@@ -227,6 +248,22 @@ def test_user_agent_has_registered_feature_id(patched_session):
     feature_field = [field for field in uafields if field.startswith('m/')][0]
     feature_list = feature_field[2:].split(',')
     assert 'C' in feature_list
+
+
+@pytest.mark.parametrize(
+    'env_var, env_value, expected_feature',
+    _AGENTIC_CALLER_ENV_FEATURE_MAPPINGS,
+)
+def test_user_agent_has_agentic_caller_feature_id(
+    patched_session, monkeypatch, env_var, env_value, expected_feature
+):
+    monkeypatch.setenv(env_var, env_value)
+    client_s3 = patched_session.create_client('s3')
+    with UACapHTTPStubber(client_s3) as stub_client:
+        client_s3.list_buckets()
+
+    feature_list = parse_registered_feature_ids(stub_client.captured_ua_string)
+    assert expected_feature in feature_list
 
 
 def test_registered_feature_ids_dont_bleed_between_requests(patched_session):

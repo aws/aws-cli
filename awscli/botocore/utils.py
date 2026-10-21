@@ -25,6 +25,7 @@ import re
 import secrets
 import socket
 import string
+import threading
 import time
 import uuid
 import warnings
@@ -78,6 +79,7 @@ from botocore.exceptions import (
     UnsupportedS3ControlArnError,
     UnsupportedS3ControlConfigurationError,
 )
+from botocore.useragent import register_feature_id
 from dateutil.tz import tzutc
 from urllib3.exceptions import LocationParseError
 
@@ -1483,10 +1485,15 @@ class S3ExpressIdentityCache(IdentityCache):
     def __init__(self, client, credential_cls):
         self._client = client
         self._credential_cls = credential_cls
+        self._lock = threading.Lock()
 
     @functools.lru_cache(maxsize=100)
-    def get_credentials(self, bucket):
+    def _get_credentials_cached(self, bucket):
         return super().get_credentials(bucket=bucket)
+
+    def get_credentials(self, bucket):
+        with self._lock:
+            return self._get_credentials_cached(bucket)
 
     def build_refresh_callback(self, bucket):
         def refresher():
@@ -1576,7 +1583,7 @@ class S3RegionRedirectorv2:
     """
 
     def __init__(self, endpoint_bridge, client, cache=None):
-        self._cache = cache or {}
+        self._cache = {} if cache is None else cache
         self._client = weakref.proxy(client)
 
     def register(self, event_emitter=None):
@@ -1616,48 +1623,13 @@ class S3RegionRedirectorv2:
             )
             return
 
-        error = response[1].get('Error', {})
-        error_code = error.get('Code')
-        response_metadata = response[1].get('ResponseMetadata', {})
-
-        # We have to account for 400 responses because
-        # if we sign a Head* request with the wrong region,
-        # we'll get a 400 Bad Request but we won't get a
-        # body saying it's an "AuthorizationHeaderMalformed".
-        is_special_head_object = (
-            error_code in ('301', '400') and operation.name == 'HeadObject'
-        )
-        is_special_head_bucket = (
-            error_code in ('301', '400')
-            and operation.name == 'HeadBucket'
-            and 'x-amz-bucket-region'
-            in response_metadata.get('HTTPHeaders', {})
-        )
-        is_wrong_signing_region = (
-            error_code == 'AuthorizationHeaderMalformed' and 'Region' in error
-        )
-        is_redirect_status = response[0] is not None and response[
-            0
-        ].status_code in (301, 302, 307)
-        is_permanent_redirect = error_code == 'PermanentRedirect'
-        is_opt_in_region_redirect = (
-            error_code == 'IllegalLocationConstraintException'
-            and operation.name != 'CreateBucket'
-        )
-        if not any(
-            [
-                is_special_head_object,
-                is_wrong_signing_region,
-                is_permanent_redirect,
-                is_special_head_bucket,
-                is_redirect_status,
-                is_opt_in_region_redirect,
-            ]
-        ):
+        bucket = redirect_ctx.get('bucket')
+        if bucket is None:
+            return
+        if not self.is_redirect_response(response, operation):
             return
 
-        bucket = request_dict['context']['s3_redirect']['bucket']
-        client_region = request_dict['context'].get('client_region')
+        client_region = request_dict.get('context', {}).get('client_region')
         new_region = self.get_bucket_region(bucket, response)
 
         if new_region is None:
@@ -1699,8 +1671,59 @@ class S3RegionRedirectorv2:
                 **signing_context,
             }
 
+        register_feature_id('S3_REDIRECT')
+
         # Return 0 so it doesn't wait to retry
         return 0
+
+    def get_redirect_region(self, bucket, response, operation):
+        """Return the region a response redirects a bucket to, if any."""
+        if bucket is None or ArnParser.is_arn(bucket):
+            return None
+        if not self.is_redirect_response(response, operation):
+            return None
+        return self.get_bucket_region(bucket, response)
+
+    def is_redirect_response(self, response, operation):
+        """Return whether a response says the bucket is in another region."""
+        error = response[1].get('Error', {})
+        error_code = error.get('Code')
+        response_metadata = response[1].get('ResponseMetadata', {})
+
+        # We have to account for 400 responses because
+        # if we sign a Head* request with the wrong region,
+        # we'll get a 400 Bad Request but we won't get a
+        # body saying it's an "AuthorizationHeaderMalformed".
+        is_special_head_object = (
+            error_code in ('301', '400') and operation.name == 'HeadObject'
+        )
+        is_special_head_bucket = (
+            error_code in ('301', '400')
+            and operation.name == 'HeadBucket'
+            and 'x-amz-bucket-region'
+            in response_metadata.get('HTTPHeaders', {})
+        )
+        is_wrong_signing_region = (
+            error_code == 'AuthorizationHeaderMalformed' and 'Region' in error
+        )
+        is_redirect_status = response[0] is not None and response[
+            0
+        ].status_code in (301, 302, 307)
+        is_permanent_redirect = error_code == 'PermanentRedirect'
+        is_opt_in_region_redirect = (
+            error_code == 'IllegalLocationConstraintException'
+            and operation.name != 'CreateBucket'
+        )
+        return any(
+            [
+                is_special_head_object,
+                is_wrong_signing_region,
+                is_permanent_redirect,
+                is_special_head_bucket,
+                is_redirect_status,
+                is_opt_in_region_redirect,
+            ]
+        )
 
     def get_bucket_region(self, bucket, response):
         """
@@ -1752,6 +1775,7 @@ class S3RegionRedirectorv2:
         if bucket is not None and bucket in self._cache:
             new_region = self._cache.get(bucket)
             builtins['AWS::Region'] = new_region
+            register_feature_id('S3_REDIRECT')
 
     def annotate_request_context(self, params, context, **kwargs):
         """Store the bucket name in context for later use when redirecting.
@@ -3411,13 +3435,22 @@ class SSOTokenFetcher(BaseSSOTokenFetcher):
             authorization['interval'] = response['interval']
         return authorization
 
-    def _poll_for_token(self, start_url, session_name, registration_scopes):
+    def _poll_for_token(
+        self,
+        start_url,
+        session_name,
+        registration_scopes,
+        resolved_start_url=None,
+    ):
+        resolved_start_url = resolved_start_url or start_url
         registration = self._registration(
             start_url,
             session_name,
             registration_scopes,
         )
-        authorization = self._authorize_client(start_url, registration)
+        authorization = self._authorize_client(
+            resolved_start_url, registration
+        )
 
         interval = authorization.get('interval', self._DEFAULT_INTERVAL)
 
@@ -3491,7 +3524,9 @@ class SSOTokenFetcher(BaseSSOTokenFetcher):
         force_refresh,
         registration_scopes,
         session_name,
+        resolved_start_url=None,
     ):
+        resolved_start_url = resolved_start_url or start_url
         cache_key = self._token_cache_key(start_url, session_name)
         # Only obey the token cache if we are not forcing a refresh.
         if not force_refresh and cache_key in self._cache:
@@ -3504,6 +3539,7 @@ class SSOTokenFetcher(BaseSSOTokenFetcher):
             start_url,
             session_name,
             registration_scopes,
+            resolved_start_url=resolved_start_url,
         )
         self._cache[cache_key] = token
         return token
@@ -3514,12 +3550,14 @@ class SSOTokenFetcher(BaseSSOTokenFetcher):
         force_refresh=False,
         registration_scopes=None,
         session_name=None,
+        resolved_start_url=None,
     ):
         return self._token(
             start_url,
             force_refresh,
             registration_scopes,
             session_name,
+            resolved_start_url=resolved_start_url,
         )
 
 
@@ -3590,7 +3628,9 @@ class SSOTokenFetcherAuth(BaseSSOTokenFetcher):
         session_name,
         scopes,
         force_refresh=False,
+        resolved_start_url=None,
     ):
+        resolved_start_url = resolved_start_url or start_url
         cache_key = self._registration_cache_key(
             start_url,
             session_name,
@@ -3607,7 +3647,7 @@ class SSOTokenFetcherAuth(BaseSSOTokenFetcher):
             session_name,
             scopes,
             self._auth_code_fetcher.redirect_uri_without_port(),
-            start_url,
+            resolved_start_url,
         )
         self._cache[cache_key] = registration
         return registration
@@ -3664,11 +3704,19 @@ class SSOTokenFetcherAuth(BaseSSOTokenFetcher):
             f'&code_challenge={self.code_challenge[:-1]}'  # trim final '='
         )
 
-    def _get_new_token(self, start_url, session_name, registration_scopes):
+    def _get_new_token(
+        self,
+        start_url,
+        session_name,
+        registration_scopes,
+        resolved_start_url=None,
+    ):
+        resolved_start_url = resolved_start_url or start_url
         registration = self._registration(
             start_url,
             session_name,
             registration_scopes,
+            resolved_start_url=resolved_start_url,
         )
 
         expected_state = uuid.uuid4()
@@ -3738,7 +3786,9 @@ class SSOTokenFetcherAuth(BaseSSOTokenFetcher):
         force_refresh=False,
         registration_scopes=None,
         session_name=None,
+        resolved_start_url=None,
     ):
+        resolved_start_url = resolved_start_url or start_url
         cache_key = self._token_cache_key(start_url, session_name)
         # Only obey the token cache if we are not forcing a refresh.
         if not force_refresh and cache_key in self._cache:
@@ -3747,7 +3797,10 @@ class SSOTokenFetcherAuth(BaseSSOTokenFetcher):
                 return token
 
         token = self._get_new_token(
-            start_url, session_name, registration_scopes
+            start_url,
+            session_name,
+            registration_scopes,
+            resolved_start_url=resolved_start_url,
         )
         self._cache[cache_key] = token
         return token
@@ -3951,7 +4004,7 @@ class JSONFileCache:
                 f"JSON serializable: {value}"
             )
         if not os.path.isdir(self._working_dir):
-            os.makedirs(self._working_dir)
+            os.makedirs(self._working_dir, exist_ok=True)
         with os.fdopen(
             os.open(full_key, os.O_WRONLY | os.O_CREAT, 0o600), 'w'
         ) as f:
@@ -4101,8 +4154,6 @@ CLIENT_NAME_TO_HYPHENIZED_SERVICE_ID_OVERRIDES = {
     'globalaccelerator': 'global-accelerator',
     'iot-data': 'iot-data-plane',
     'iot-jobs-data': 'iot-jobs-data-plane',
-    'iotevents-data': 'iot-events-data',
-    'iotevents': 'iot-events',
     'iotwireless': 'iot-wireless',
     'kinesisanalytics': 'kinesis-analytics',
     'kinesisanalyticsv2': 'kinesis-analytics-v2',

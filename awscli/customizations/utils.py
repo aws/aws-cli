@@ -21,6 +21,7 @@ import sys
 import xml
 
 from botocore.exceptions import ClientError
+from botocore.loaders import Loader
 
 from awscli.customizations.exceptions import ParamValidationError
 
@@ -203,6 +204,13 @@ def uni_print(statement, out_file=None):
         )
         out_file.write(new_statement)
     out_file.flush()
+
+
+def load_all_regions():
+    """Loads all regions from all partitions via partitions.json"""
+    loader = Loader()
+    for partition in loader.load_data('partitions')['partitions']:
+        yield from partition['regions'].keys()
 
 
 def get_policy_arn_suffix(region):

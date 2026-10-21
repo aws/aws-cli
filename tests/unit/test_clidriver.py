@@ -12,6 +12,7 @@
 # language governing permissions and limitations under the License.
 import contextlib
 import io
+import json
 import logging
 import os
 import platform
@@ -44,6 +45,7 @@ from awscli.clidriver import (
     ServiceOperation,
     construct_cli_error_handlers_chain,
     create_clidriver,
+    get_distribution_source,
     resolve_auto_prompt_mode,
     validate_auto_prompt_args_are_mutually_exclusive,
 )
@@ -313,12 +315,6 @@ class FakeCommandVerify(FakeCommand):
         # structure from a custom schema.
         assert args.bar[0]['Name'] == 'test'
         return 0
-
-
-class FakeCLISessionOrchestrator:
-    @property
-    def session_id(self):
-        return 'mysessionid'
 
 
 class TestCliDriver:
@@ -663,7 +659,10 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
         mock_handler.return_value = mock_paramfile
 
         driver = create_clidriver()
-        driver.session.register(
+        # We use register_last to ensure unknown-arg is added to the argument
+        # table after all plugin-added arguments, so that its load-cli-arg
+        # event fires last in call_args_list.
+        driver.session.get_component('event_emitter').register_last(
             'building-argument-table', self.inject_new_param
         )
 
@@ -846,19 +845,13 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
         self.assertEqual(rc, 252)
         self.assertNotIn('--idempotency-token', self.stderr.getvalue())
 
-    @mock.patch(
-        'awscli.telemetry._get_cli_session_orchestrator',
-        return_value=FakeCLISessionOrchestrator(),
-    )
     @mock.patch('awscli.clidriver.platform.system', return_value='Linux')
     @mock.patch('awscli.clidriver.platform.machine', return_value='x86_64')
     @mock.patch('awscli.clidriver.distro.id', return_value='amzn')
     @mock.patch('awscli.clidriver.distro.major_version', return_value='1')
     def test_user_agent_for_linux(self, *args):
         driver = create_clidriver()
-        expected_user_agent = (
-            'md/installer#source md/distrib#amzn.1 sid/mysessionid'
-        )
+        expected_user_agent = 'md/installer#source md/distrib#amzn.1'
         self.assertEqual(expected_user_agent, driver.session.user_agent_extra)
 
     def test_user_agent(self, *args):
@@ -1252,6 +1245,67 @@ class TextCreateCLIDriver(unittest.TestCase):
         with contextlib.redirect_stderr(stderr):
             create_clidriver()
         self.assertIn('', stderr.getvalue())
+
+
+class TestGetDistributionSource:
+    @pytest.fixture
+    def data_dir(self, tmp_path, monkeypatch):
+        data = tmp_path / 'data'
+        data.mkdir()
+        monkeypatch.setattr(
+            awscli.clidriver, '__file__', str(tmp_path / 'clidriver.py')
+        )
+        return data
+
+    def _write_json(self, path, contents):
+        path.write_text(json.dumps(contents))
+
+    def test_defaults_to_other_when_no_files(self, data_dir):
+        assert get_distribution_source() == 'other'
+
+    def test_read_from_metadata(self, data_dir):
+        self._write_json(
+            data_dir / 'metadata.json', {'distribution_source': 'source'}
+        )
+
+        assert get_distribution_source() == 'source'
+
+    def test_read_from_install_json(self, data_dir):
+        self._write_json(
+            data_dir / 'install.json', {'distribution_source': 'script-exe'}
+        )
+
+        assert get_distribution_source() == 'script-exe'
+
+    def test_install_json_takes_precedence_over_metadata(self, data_dir):
+        self._write_json(
+            data_dir / 'metadata.json', {'distribution_source': 'exe'}
+        )
+        self._write_json(
+            data_dir / 'install.json', {'distribution_source': 'update-exe'}
+        )
+
+        assert get_distribution_source() == 'update-exe'
+
+    def test_falls_back_to_metadata_when_install_json_lacks_source(
+        self, data_dir
+    ):
+        self._write_json(
+            data_dir / 'install.json', {'install_dir': '/opt/aws-cli'}
+        )
+        self._write_json(
+            data_dir / 'metadata.json', {'distribution_source': 'exe'}
+        )
+
+        assert get_distribution_source() == 'exe'
+
+    def test_falls_back_to_other_when_no_source_field_anywhere(self, data_dir):
+        self._write_json(
+            data_dir / 'install.json', {'install_dir': '/opt/aws-cli'}
+        )
+        self._write_json(data_dir / 'metadata.json', {'version': '2.0.0'})
+
+        assert get_distribution_source() == 'other'
 
 
 if __name__ == '__main__':

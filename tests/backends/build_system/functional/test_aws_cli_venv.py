@@ -136,6 +136,38 @@ class TestAwsCliVenv:
         for required_file in required_files:
             assert required_file in venv_dirs
 
+    def _touch(self, path):
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.touch()
+
+    def test_remove_packages_being_replaced(self, tmp_path):
+        venv_path = tmp_path / "venv"
+        venv = AwsCliVenv(venv_path)
+        venv.create()
+        site_packages = pathlib.Path(self._site_packages_dir(venv_path))
+
+        # The venv has pip from when it was created, along with its metadata
+        # directory carrying that version.
+        assert (site_packages / "pip").is_dir()
+        assert len(list(site_packages.glob("pip-*.dist-info"))) == 1
+        self._touch(site_packages / "unrelated" / "__init__.py")
+
+        # The directory we are about to copy in has a different version of
+        # pip, whose files do not all have the same names.
+        parent = tmp_path / "parent-site-packages"
+        self._touch(parent / "pip" / "_internal" / "build_env.py")
+        self._touch(parent / "pip-25.3.dist-info" / "METADATA")
+
+        venv._remove_packages_being_replaced(str(parent))
+
+        # Nothing is left of the version being replaced, including metadata
+        # that is named after it.
+        assert not (site_packages / "pip").exists()
+        assert list(site_packages.glob("pip-*.dist-info")) == []
+
+        # Distributions the parent environment does not provide are untouched.
+        assert (site_packages / "unrelated" / "__init__.py").is_file()
+
     @skip_if_windows("Posix bootstrap")
     def test_bootstrap(self, cli_venv, venv_path):
         site_package_path = self._site_packages_dir(venv_path)

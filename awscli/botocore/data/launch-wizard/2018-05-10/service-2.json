@@ -268,6 +268,21 @@
     }
   },
   "shapes":{
+    "AccountConstraint":{
+      "type":"structure",
+      "members":{
+        "managementAccount":{"shape":"ManagementAccountConstraint"},
+        "delegatedAdmin":{"shape":"DelegatedAdminConstraint"}
+      },
+      "documentation":"<p>A constraint on which AWS account a deployment can be initiated from. Specify one of the supported constraint types.</p>",
+      "union":true
+    },
+    "AccountConstraintsList":{
+      "type":"list",
+      "member":{"shape":"AccountConstraint"},
+      "max":10,
+      "min":0
+    },
     "AllowedValues":{
       "type":"list",
       "member":{"shape":"ValueString"}
@@ -319,6 +334,17 @@
           "documentation":"<p>The ID of the deployment.</p>"
         }
       }
+    },
+    "DelegatedAdminConstraint":{
+      "type":"structure",
+      "required":["servicePrincipal"],
+      "members":{
+        "servicePrincipal":{
+          "shape":"ServicePrincipalType",
+          "documentation":"<p>The service principal for which the account must be a delegated administrator. For example, <code>stacksets.cloudformation.amazonaws.com</code>.</p>"
+        }
+      },
+      "documentation":"<p>The deployment must be initiated from a delegated administrator account for the specified service principal.</p>"
     },
     "DeleteDeploymentInput":{
       "type":"structure",
@@ -475,13 +501,33 @@
         "timestamp":{
           "shape":"Timestamp",
           "documentation":"<p>The timestamp of the deployment event.</p>"
-        }
+        },
+        "metadata":{"shape":"DeploymentEventMetadata"}
       },
       "documentation":"<p>A summary of the deployment event data.</p>"
     },
     "DeploymentEventDataSummaryList":{
       "type":"list",
       "member":{"shape":"DeploymentEventDataSummary"}
+    },
+    "DeploymentEventMetadata":{
+      "type":"map",
+      "key":{"shape":"DeploymentEventMetadataKey"},
+      "value":{"shape":"DeploymentEventMetadataValue"},
+      "documentation":"<p>A map of metadata key-value pairs associated with a deployment event. For error detection events, contains workload context and log excerpts used for troubleshooting.</p>",
+      "max":25,
+      "min":0
+    },
+    "DeploymentEventMetadataKey":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"[a-zA-Z0-9_.-]+"
+    },
+    "DeploymentEventMetadataValue":{
+      "type":"string",
+      "max":4096,
+      "min":0
     },
     "DeploymentFilter":{
       "type":"structure",
@@ -973,6 +1019,11 @@
         }
       }
     },
+    "ManagementAccountConstraint":{
+      "type":"structure",
+      "members":{},
+      "documentation":"<p>The deployment must be initiated from the AWS Organizations management account.</p>"
+    },
     "MaxDeploymentEventResults":{
       "type":"integer",
       "box":true,
@@ -1026,6 +1077,12 @@
       },
       "exception":true
     },
+    "ServicePrincipalType":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"[a-z0-9.-]+\\.amazonaws\\.com(\\.cn)?"
+    },
     "SpecificationsConditionalData":{
       "type":"list",
       "member":{"shape":"DeploymentConditionalField"},
@@ -1037,7 +1094,7 @@
       "type":"string",
       "max":128,
       "min":1,
-      "pattern":"(?!aws:)[a-zA-Z+-=._:/]+"
+      "pattern":"[a-zA-Z0-9 _.:/=+@-]+"
     },
     "TagKeyList":{
       "type":"list",
@@ -1072,7 +1129,7 @@
       "type":"string",
       "max":256,
       "min":0,
-      "pattern":"[a-zA-Z+-=._:/]*"
+      "pattern":"[a-zA-Z0-9 _.:/=+@-]*"
     },
     "Tags":{
       "type":"map",
@@ -1181,6 +1238,10 @@
           "shape":"WorkloadStatus",
           "documentation":"<p>The status of a workload.</p> <p> <i>You can list deployments in the <code>DISABLED</code> status.</i> </p>"
         },
+        "accountConstraints":{
+          "shape":"AccountConstraintsList",
+          "documentation":"<p>Optional list of constraints describing what kind of AWS account is allowed to deploy this workload or deployment pattern. Within a single list the semantics are OR: an account satisfies the list if it satisfies any entry. Workload-level and pattern-level lists combine with AND at deployment time. An absent or empty list at this level means no constraint at this level.</p>"
+        },
         "description":{
           "shape":"String",
           "documentation":"<p>The description of a workload.</p>"
@@ -1214,6 +1275,10 @@
         "status":{
           "shape":"WorkloadStatus",
           "documentation":"<p>The status of the workload.</p>"
+        },
+        "accountConstraints":{
+          "shape":"AccountConstraintsList",
+          "documentation":"<p>Optional list of constraints describing what kind of AWS account is allowed to deploy this workload or deployment pattern. Within a single list the semantics are OR: an account satisfies the list if it satisfies any entry. Workload-level and pattern-level lists combine with AND at deployment time. An absent or empty list at this level means no constraint at this level.</p>"
         }
       },
       "documentation":"<p>Describes workload data.</p>"
@@ -1257,6 +1322,10 @@
           "shape":"String",
           "documentation":"<p>The status message of the deployment pattern.</p>"
         },
+        "accountConstraints":{
+          "shape":"AccountConstraintsList",
+          "documentation":"<p>Optional list of constraints describing what kind of AWS account is allowed to deploy this workload or deployment pattern. Within a single list the semantics are OR: an account satisfies the list if it satisfies any entry. Workload-level and pattern-level lists combine with AND at deployment time. An absent or empty list at this level means no constraint at this level.</p>"
+        },
         "specifications":{
           "shape":"DeploymentSpecificationsData",
           "documentation":"<p>The settings specified for the deployment. These settings define how to deploy and configure your resources created by the deployment. For more information about the specifications required for creating a deployment for a SAP workload, see <a href=\"https://docs.aws.amazon.com/launchwizard/latest/APIReference/launch-wizard-specifications-sap.html\">SAP deployment specifications</a>. To retrieve the specifications required to create a deployment for other workloads, use the <a href=\"https://docs.aws.amazon.com/launchwizard/latest/APIReference/API_GetWorkloadDeploymentPattern.html\"> <code>GetWorkloadDeploymentPattern</code> </a> operation.</p>"
@@ -1298,6 +1367,10 @@
         "statusMessage":{
           "shape":"String",
           "documentation":"<p>A message about a workload deployment pattern's status.</p>"
+        },
+        "accountConstraints":{
+          "shape":"AccountConstraintsList",
+          "documentation":"<p>Optional list of constraints describing what kind of AWS account is allowed to deploy this workload or deployment pattern. Within a single list the semantics are OR: an account satisfies the list if it satisfies any entry. Workload-level and pattern-level lists combine with AND at deployment time. An absent or empty list at this level means no constraint at this level.</p>"
         }
       },
       "documentation":"<p>Describes a workload deployment pattern.</p>"

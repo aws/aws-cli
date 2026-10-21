@@ -1,0 +1,57 @@
+{
+  "version" : 2,
+  "waiters" : {
+    "RegistryReady" : {
+      "delay" : 30,
+      "maxAttempts" : 5,
+      "operation" : "GetRegistry",
+      "acceptors" : [ {
+        "matcher" : "path",
+        "argument" : "status",
+        "state" : "success",
+        "expected" : "READY"
+      }, {
+        "matcher" : "path",
+        "argument" : "status",
+        "state" : "failure",
+        "expected" : "CREATE_FAILED"
+      }, {
+        "matcher" : "path",
+        "argument" : "status",
+        "state" : "failure",
+        "expected" : "UPDATE_FAILED"
+      }, {
+        "matcher" : "path",
+        "argument" : "status",
+        "state" : "failure",
+        "expected" : "DELETE_FAILED"
+      } ]
+    },
+    "RegistryRecordApproved" : {
+      "delay" : 30,
+      "maxAttempts" : 5,
+      "operation" : "GetRegistryRecord",
+      "acceptors" : [ {
+        "matcher" : "path",
+        "argument" : "status",
+        "state" : "success",
+        "expected" : "APPROVED"
+      }, {
+        "matcher" : "path",
+        "argument" : "status",
+        "state" : "failure",
+        "expected" : "REJECTED"
+      }, {
+        "matcher" : "path",
+        "argument" : "status",
+        "state" : "failure",
+        "expected" : "CREATE_FAILED"
+      }, {
+        "matcher" : "path",
+        "argument" : "status",
+        "state" : "failure",
+        "expected" : "UPDATE_FAILED"
+      } ]
+    }
+  }
+}

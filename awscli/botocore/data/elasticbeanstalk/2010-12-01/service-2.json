@@ -53,7 +53,7 @@
       "errors":[
         {"shape":"InsufficientPrivilegesException"}
       ],
-      "documentation":"<p>Add or change the operations role used by an environment. After this call is made, Elastic Beanstalk uses the associated operations role for permissions to downstream services during subsequent calls acting on this environment. For more information, see <a href=\"https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/iam-operationsrole.html\">Operations roles</a> in the <i>AWS Elastic Beanstalk Developer Guide</i>.</p>"
+      "documentation":"<important> <p>The operations role feature of Elastic Beanstalk is in beta release and is subject to change.</p> </important> <p>Add or change the operations role used by an environment. After this call is made, Elastic Beanstalk uses the associated operations role for permissions to downstream services during subsequent calls acting on this environment.</p>"
     },
     "CheckDNSAvailability":{
       "name":"CheckDNSAvailability",
@@ -119,7 +119,7 @@
         {"shape":"S3LocationNotInServiceRegionException"},
         {"shape":"CodeBuildNotInServiceRegionException"}
       ],
-      "documentation":"<p>Creates an application version for the specified application. You can create an application version from a source bundle in Amazon S3, a commit in AWS CodeCommit, or the output of an AWS CodeBuild build as follows:</p> <p>Specify a commit in an AWS CodeCommit repository with <code>SourceBuildInformation</code>.</p> <p>Specify a build in an AWS CodeBuild with <code>SourceBuildInformation</code> and <code>BuildConfiguration</code>.</p> <p>Specify a source bundle in S3 with <code>SourceBundle</code> </p> <p>Omit both <code>SourceBuildInformation</code> and <code>SourceBundle</code> to use the default sample application.</p> <note> <p>After you create an application version with a specified Amazon S3 bucket and key location, you can't change that Amazon S3 location. If you change the Amazon S3 location, you receive an exception when you attempt to launch an environment from the application version.</p> </note>"
+      "documentation":"<p>Creates an application version for the specified application. You can create an application version from a source bundle in Amazon S3, a commit in CodeCommit, or the output of an CodeBuild build as follows:</p> <p>Specify a commit in an CodeCommit repository with <code>SourceBuildInformation</code>.</p> <p>Specify a build in an CodeBuild with <code>SourceBuildInformation</code> and <code>BuildConfiguration</code>.</p> <p>Specify a source bundle in Amazon S3 with <code>SourceBundle</code> </p> <p>Omit both <code>SourceBuildInformation</code> and <code>SourceBundle</code> to use the default sample application.</p> <note> <p>After you create an application version with a specified Amazon S3 bucket and key location, you can't change that Amazon S3 location. If you change the Amazon S3 location, you receive an exception when you attempt to launch an environment from the application version.</p> </note>"
     },
     "CreateConfigurationTemplate":{
       "name":"CreateConfigurationTemplate",
@@ -137,7 +137,7 @@
         {"shape":"TooManyBucketsException"},
         {"shape":"TooManyConfigurationTemplatesException"}
       ],
-      "documentation":"<p>Creates an AWS Elastic Beanstalk configuration template, associated with a specific Elastic Beanstalk application. You define application configuration settings in a configuration template. You can then use the configuration template to deploy different versions of the application with the same configuration settings.</p> <p>Templates aren't associated with any environment. The <code>EnvironmentName</code> response element is always <code>null</code>.</p> <p>Related Topics</p> <ul> <li> <p> <a>DescribeConfigurationOptions</a> </p> </li> <li> <p> <a>DescribeConfigurationSettings</a> </p> </li> <li> <p> <a>ListAvailableSolutionStacks</a> </p> </li> </ul>"
+      "documentation":"<p>Creates an Elastic Beanstalk configuration template, associated with a specific Elastic Beanstalk application. You define application configuration settings in a configuration template. You can then use the configuration template to deploy different versions of the application with the same configuration settings.</p> <p>Templates aren't associated with any environment. The <code>EnvironmentName</code> response element is always <code>null</code>.</p> <p>Related Topics</p> <ul> <li> <p> <a>DescribeConfigurationOptions</a> </p> </li> <li> <p> <a>DescribeConfigurationSettings</a> </p> </li> <li> <p> <a>ListAvailableSolutionStacks</a> </p> </li> </ul>"
     },
     "CreateEnvironment":{
       "name":"CreateEnvironment",
@@ -154,7 +154,7 @@
         {"shape":"TooManyEnvironmentsException"},
         {"shape":"InsufficientPrivilegesException"}
       ],
-      "documentation":"<p>Launches an AWS Elastic Beanstalk environment for the specified application using the specified configuration.</p>"
+      "documentation":"<p>Launches an Elastic Beanstalk environment for the specified application using the specified configuration.</p>"
     },
     "CreatePlatformVersion":{
       "name":"CreatePlatformVersion",
@@ -271,7 +271,7 @@
       "errors":[
         {"shape":"InsufficientPrivilegesException"}
       ],
-      "documentation":"<p>Returns attributes related to AWS Elastic Beanstalk that are associated with the calling AWS account.</p> <p>The result currently has one set of attributes—resource quotas.</p>"
+      "documentation":"<p>Returns attributes related to Elastic Beanstalk that are associated with the calling Amazon Web Services account.</p> <p>The result currently has one set of attributes—resource quotas.</p> <p>This action only returns information about resources that the calling principle has IAM permissions to access. For example, consider a case where a user only has permission to access one of three resources. When the user calls the this action, the response will only include the one resource that the user has permission to access instead of all three resources. If the user doesn’t have access to any of the resources an empty result is returned.</p> <note> <p>The <a href=\"https://docs.aws.amazon.com/aws-managed-policy/latest/reference/AWSElasticBeanstalkReadOnly.html\">AWSElasticBeanstalkReadOnly</a> managed policy allows operators to view information about resources related to Elastic Beanstalk. For more information, see <a href=\"https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/AWSHowTo.iam.managed-policies.html\"> Managing Elastic Beanstalk user policies</a> in the <i>Elastic Beanstalk Developer Guide</i>. For detailed instructions to attach a policy to a user or group, see the section <a href=\"https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/AWSHowTo.iam.managed-policies.html#iam-userpolicies-managed\"> Controlling access with managed policies</a> in the same topic.</p> </note>"
     },
     "DescribeApplicationVersions":{
       "name":"DescribeApplicationVersions",
@@ -284,7 +284,7 @@
         "shape":"ApplicationVersionDescriptionsMessage",
         "resultWrapper":"DescribeApplicationVersionsResult"
       },
-      "documentation":"<p>Retrieve a list of application versions.</p>"
+      "documentation":"<p>Retrieve a list of application versions.</p> <p>This action only returns information about resources that the calling principle has IAM permissions to access. For example, consider a case where a user only has permission to access one of three resources. When the user calls the this action, the response will only include the one resource that the user has permission to access instead of all three resources. If the user doesn’t have access to any of the resources an empty result is returned.</p> <note> <p>The <a href=\"https://docs.aws.amazon.com/aws-managed-policy/latest/reference/AWSElasticBeanstalkReadOnly.html\">AWSElasticBeanstalkReadOnly</a> managed policy allows operators to view information about resources related to Elastic Beanstalk. For more information, see <a href=\"https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/AWSHowTo.iam.managed-policies.html\"> Managing Elastic Beanstalk user policies</a> in the <i>Elastic Beanstalk Developer Guide</i>. For detailed instructions to attach a policy to a user or group, see the section <a href=\"https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/AWSHowTo.iam.managed-policies.html#iam-userpolicies-managed\"> Controlling access with managed policies</a> in the same topic.</p> </note>"
     },
     "DescribeApplications":{
       "name":"DescribeApplications",
@@ -297,7 +297,7 @@
         "shape":"ApplicationDescriptionsMessage",
         "resultWrapper":"DescribeApplicationsResult"
       },
-      "documentation":"<p>Returns the descriptions of existing applications.</p>"
+      "documentation":"<p>Returns the descriptions of existing applications.</p> <p>This action only returns information about applications that the calling principle has IAM permissions to access. For example, consider a case where a user only has permission to access two of three applications. When the user calls the <i>DescribeApplications</i> action, the response will only include the two applications that the user has permission to access instead of all three applications. If the user doesn’t have access to any of the applications an empty result is returned.</p> <note> <p>The <i>AWSElasticBeanstalkReadOnly</i> managed policy allows operators to view information about resources related to Elastic Beanstalk environments. For more information, see <a href=\"https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/AWSHowTo.iam.managed-policies.html\"> Managing Elastic Beanstalk user policies</a> in the <i>Elastic Beanstalk Developer Guide</i>. For detailed instructions to attach a policy to a user or group, see the section <a href=\"https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/AWSHowTo.iam.managed-policies.html#iam-userpolicies-managed\"> Controlling access with managed policies</a> in the same topic.</p> </note>"
     },
     "DescribeConfigurationOptions":{
       "name":"DescribeConfigurationOptions",
@@ -313,7 +313,7 @@
       "errors":[
         {"shape":"TooManyBucketsException"}
       ],
-      "documentation":"<p>Describes the configuration options that are used in a particular configuration template or environment, or that a specified solution stack defines. The description includes the values the options, their default values, and an indication of the required action on a running environment if an option value is changed.</p>"
+      "documentation":"<p>Describes the configuration options that are used in a particular configuration template or environment, or that a specified solution stack defines. The description includes the values the options, their default values, and an indication of the required action on a running environment if an option value is changed.</p> <p>This action only returns information about resources that the calling principle has IAM permissions to access. For example, consider a case where a user only has permission to access one of three resources. When the user calls the this action, the response will only include the one resource that the user has permission to access instead of all three resources. If the user doesn’t have access to any of the resources an empty result is returned.</p> <note> <p>The <a href=\"https://docs.aws.amazon.com/aws-managed-policy/latest/reference/AWSElasticBeanstalkReadOnly.html\">AWSElasticBeanstalkReadOnly</a> managed policy allows operators to view information about resources related to Elastic Beanstalk. For more information, see <a href=\"https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/AWSHowTo.iam.managed-policies.html\"> Managing Elastic Beanstalk user policies</a> in the <i>Elastic Beanstalk Developer Guide</i>. For detailed instructions to attach a policy to a user or group, see the section <a href=\"https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/AWSHowTo.iam.managed-policies.html#iam-userpolicies-managed\"> Controlling access with managed policies</a> in the same topic.</p> </note>"
     },
     "DescribeConfigurationSettings":{
       "name":"DescribeConfigurationSettings",
@@ -329,7 +329,7 @@
       "errors":[
         {"shape":"TooManyBucketsException"}
       ],
-      "documentation":"<p>Returns a description of the settings for the specified configuration set, that is, either a configuration template or the configuration set associated with a running environment.</p> <p>When describing the settings for the configuration set associated with a running environment, it is possible to receive two sets of setting descriptions. One is the deployed configuration set, and the other is a draft configuration of an environment that is either in the process of deployment or that failed to deploy.</p> <p>Related Topics</p> <ul> <li> <p> <a>DeleteEnvironmentConfiguration</a> </p> </li> </ul>"
+      "documentation":"<p>Returns a description of the settings for the specified configuration set, that is, either a configuration template or the configuration set associated with a running environment.</p> <p>When describing the settings for the configuration set associated with a running environment, it is possible to receive two sets of setting descriptions. One is the deployed configuration set, and the other is a draft configuration of an environment that is either in the process of deployment or that failed to deploy.</p> <p>This action only returns information about resources that the calling principle has IAM permissions to access. For example, consider a case where a user only has permission to access one of three resources. When the user calls the this action, the response will only include the one resource that the user has permission to access instead of all three resources. If the user doesn’t have access to any of the resources an empty result is returned.</p> <note> <p>The <a href=\"https://docs.aws.amazon.com/aws-managed-policy/latest/reference/AWSElasticBeanstalkReadOnly.html\">AWSElasticBeanstalkReadOnly</a> managed policy allows operators to view information about resources related to Elastic Beanstalk. For more information, see <a href=\"https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/AWSHowTo.iam.managed-policies.html\"> Managing Elastic Beanstalk user policies</a> in the <i>Elastic Beanstalk Developer Guide</i>. For detailed instructions to attach a policy to a user or group, see the section <a href=\"https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/AWSHowTo.iam.managed-policies.html#iam-userpolicies-managed\"> Controlling access with managed policies</a> in the same topic.</p> </note> <p>Related Topics</p> <ul> <li> <p> <a>DeleteEnvironmentConfiguration</a> </p> </li> </ul>"
     },
     "DescribeEnvironmentHealth":{
       "name":"DescribeEnvironmentHealth",
@@ -346,7 +346,7 @@
         {"shape":"InvalidRequestException"},
         {"shape":"ElasticBeanstalkServiceException"}
       ],
-      "documentation":"<p>Returns information about the overall health of the specified environment. The <b>DescribeEnvironmentHealth</b> operation is only available with AWS Elastic Beanstalk Enhanced Health.</p>"
+      "documentation":"<p>Returns information about the overall health of the specified environment. The <b>DescribeEnvironmentHealth</b> operation is only available with Elastic Beanstalk Enhanced Health.</p> <p>This action only returns information about environments that the calling principle has IAM permissions to access. For example, consider a case where a user only has permission to access one of three environments. When the user calls this action, the response will only include the one environment that the user has permission to access instead of all three environments. If the user doesn’t have access to any of the environments an empty result is returned.</p> <note> <p>The <a href=\"https://docs.aws.amazon.com/aws-managed-policy/latest/reference/AWSElasticBeanstalkReadOnly.html\">AWSElasticBeanstalkReadOnly</a> managed policy allows operators to view information about resources related to Elastic Beanstalk environments. For more information, see <a href=\"https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/AWSHowTo.iam.managed-policies.html\"> Managing Elastic Beanstalk user policies</a> in the <i>Elastic Beanstalk Developer Guide</i>. For detailed instructions to attach a policy to a user or group, see the section <a href=\"https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/AWSHowTo.iam.managed-policies.html#iam-userpolicies-managed\"> Controlling access with managed policies</a> in the same topic.</p> </note>"
     },
     "DescribeEnvironmentManagedActionHistory":{
       "name":"DescribeEnvironmentManagedActionHistory",
@@ -378,7 +378,7 @@
       "errors":[
         {"shape":"ElasticBeanstalkServiceException"}
       ],
-      "documentation":"<p>Lists an environment's upcoming and in-progress managed actions.</p>"
+      "documentation":"<p>Lists an environment's upcoming and in-progress managed actions.</p> <p>This action only returns information about environments that the calling principle has IAM permissions to access. For example, consider a case where a user only has permission to access one of three environments. When the user calls this action, the response will only include the one environment that the user has permission to access instead of all three environments. If the user doesn’t have access to any of the environments an empty result is returned.</p> <note> <p>The <a href=\"https://docs.aws.amazon.com/aws-managed-policy/latest/reference/AWSElasticBeanstalkReadOnly.html\">AWSElasticBeanstalkReadOnly</a> managed policy allows operators to view information about resources related to Elastic Beanstalk environments. For more information, see <a href=\"https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/AWSHowTo.iam.managed-policies.html\"> Managing Elastic Beanstalk user policies</a> in the <i>Elastic Beanstalk Developer Guide</i>. For detailed instructions to attach a policy to a user or group, see the section <a href=\"https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/AWSHowTo.iam.managed-policies.html#iam-userpolicies-managed\"> Controlling access with managed policies</a> in the same topic.</p> </note>"
     },
     "DescribeEnvironmentResources":{
       "name":"DescribeEnvironmentResources",
@@ -394,7 +394,7 @@
       "errors":[
         {"shape":"InsufficientPrivilegesException"}
       ],
-      "documentation":"<p>Returns AWS resources for this environment.</p>"
+      "documentation":"<p>Returns Amazon Web Services resources for this environment.</p>"
     },
     "DescribeEnvironments":{
       "name":"DescribeEnvironments",
@@ -407,7 +407,7 @@
         "shape":"EnvironmentDescriptionsMessage",
         "resultWrapper":"DescribeEnvironmentsResult"
       },
-      "documentation":"<p>Returns descriptions for existing environments.</p>"
+      "documentation":"<p>Returns descriptions for existing environments.</p> <p>This action only returns information about environments that the calling principle has IAM permissions to access. For example, consider a case where a user only has permission to access one of three environments. When the user calls the <i>DescribeEnvironments</i> action, the response will only include the one environment that the user has permission to access instead of all three environments. If the user doesn’t have access to any of the environments an empty result is returned.</p> <note> <p>The <a href=\"https://docs.aws.amazon.com/aws-managed-policy/latest/reference/AWSElasticBeanstalkReadOnly.html\">AWSElasticBeanstalkReadOnly</a> managed policy allows operators to view information about resources related to Elastic Beanstalk environments. For more information, see <a href=\"https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/AWSHowTo.iam.managed-policies.html\"> Managing Elastic Beanstalk user policies</a> in the <i>Elastic Beanstalk Developer Guide</i>. For detailed instructions to attach a policy to a user or group, see the section <a href=\"https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/AWSHowTo.iam.managed-policies.html#iam-userpolicies-managed\"> Controlling access with managed policies</a> in the same topic.</p> </note>"
     },
     "DescribeEvents":{
       "name":"DescribeEvents",
@@ -420,7 +420,7 @@
         "shape":"EventDescriptionsMessage",
         "resultWrapper":"DescribeEventsResult"
       },
-      "documentation":"<p>Returns list of event descriptions matching criteria up to the last 6 weeks.</p> <note> <p>This action returns the most recent 1,000 events from the specified <code>NextToken</code>.</p> </note>"
+      "documentation":"<p>Returns list of event descriptions matching criteria up to the last 6 weeks.</p> <p>This action returns the most recent 1,000 events from the specified <code>NextToken</code>.</p> <p>This action only returns information about resources that the calling principle has IAM permissions to access. For example, consider a case where a user only has permission to access one of three resources. When the user calls the this action, the response will only include the one resource that the user has permission to access instead of all three resources. If the user doesn’t have access to any of the resources an empty result is returned.</p> <note> <p>The <a href=\"https://docs.aws.amazon.com/aws-managed-policy/latest/reference/AWSElasticBeanstalkReadOnly.html\">AWSElasticBeanstalkReadOnly</a> managed policy allows operators to view information about resources related to Elastic Beanstalk. For more information, see <a href=\"https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/AWSHowTo.iam.managed-policies.html\"> Managing Elastic Beanstalk user policies</a> in the <i>Elastic Beanstalk Developer Guide</i>. For detailed instructions to attach a policy to a user or group, see the section <a href=\"https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/AWSHowTo.iam.managed-policies.html#iam-userpolicies-managed\"> Controlling access with managed policies</a> in the same topic.</p> </note>"
     },
     "DescribeInstancesHealth":{
       "name":"DescribeInstancesHealth",
@@ -437,7 +437,7 @@
         {"shape":"InvalidRequestException"},
         {"shape":"ElasticBeanstalkServiceException"}
       ],
-      "documentation":"<p>Retrieves detailed information about the health of instances in your AWS Elastic Beanstalk. This operation requires <a href=\"https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/health-enhanced.html\">enhanced health reporting</a>.</p>"
+      "documentation":"<p>Retrieves detailed information about the health of instances in your Elastic Beanstalk environments. This operation requires <a href=\"https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/health-enhanced.html\">enhanced health reporting</a>.</p> <p>This action only returns information about environments that the calling principle has IAM permissions to access. For example, consider a case where a user only has permission to access one of three environments. When the user calls this action, the response will only include the one environment that the user has permission to access instead of all three environments. If the user doesn’t have access to any of the environments an empty result is returned.</p> <note> <p>The <a href=\"https://docs.aws.amazon.com/aws-managed-policy/latest/reference/AWSElasticBeanstalkReadOnly.html\">AWSElasticBeanstalkReadOnly</a> managed policy allows operators to view information about resources related to Elastic Beanstalk environments. For more information, see <a href=\"https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/AWSHowTo.iam.managed-policies.html\"> Managing Elastic Beanstalk user policies</a> in the <i>Elastic Beanstalk Developer Guide</i>. For detailed instructions to attach a policy to a user or group, see the section <a href=\"https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/AWSHowTo.iam.managed-policies.html#iam-userpolicies-managed\"> Controlling access with managed policies</a> in the same topic.</p> </note>"
     },
     "DescribePlatformVersion":{
       "name":"DescribePlatformVersion",
@@ -454,7 +454,7 @@
         {"shape":"InsufficientPrivilegesException"},
         {"shape":"ElasticBeanstalkServiceException"}
       ],
-      "documentation":"<p>Describes a platform version. Provides full details. Compare to <a>ListPlatformVersions</a>, which provides summary information about a list of platform versions.</p> <p>For definitions of platform version and other platform-related terms, see <a href=\"https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/platforms-glossary.html\">AWS Elastic Beanstalk Platforms Glossary</a>.</p>"
+      "documentation":"<p>Describes a platform version. Provides full details. Compare to <a>ListPlatformVersions</a>, which provides summary information about a list of platform versions.</p> <p>For definitions of platform version and other platform-related terms, see <a href=\"https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/platforms-glossary.html\">Elastic Beanstalk Platforms Glossary</a>.</p> <p>This action only returns information about resources that the calling principle has IAM permissions to access. For example, consider a case where a user only has permission to access one of three resources. When the user calls the this action, the response will only include the one resource that the user has permission to access instead of all three resources. If the user doesn’t have access to any of the resources an empty result is returned.</p> <note> <p>The <a href=\"https://docs.aws.amazon.com/aws-managed-policy/latest/reference/AWSElasticBeanstalkReadOnly.html\">AWSElasticBeanstalkReadOnly</a> managed policy allows operators to view information about resources related to Elastic Beanstalk. For more information, see <a href=\"https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/AWSHowTo.iam.managed-policies.html\"> Managing Elastic Beanstalk user policies</a> in the <i>Elastic Beanstalk Developer Guide</i>. For detailed instructions to attach a policy to a user or group, see the section <a href=\"https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/AWSHowTo.iam.managed-policies.html#iam-userpolicies-managed\"> Controlling access with managed policies</a> in the same topic.</p> </note>"
     },
     "DisassociateEnvironmentOperationsRole":{
       "name":"DisassociateEnvironmentOperationsRole",
@@ -466,7 +466,7 @@
       "errors":[
         {"shape":"InsufficientPrivilegesException"}
       ],
-      "documentation":"<p>Disassociate the operations role from an environment. After this call is made, Elastic Beanstalk uses the caller's permissions for permissions to downstream services during subsequent calls acting on this environment. For more information, see <a href=\"https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/iam-operationsrole.html\">Operations roles</a> in the <i>AWS Elastic Beanstalk Developer Guide</i>.</p>"
+      "documentation":"<important> <p>The operations role feature of Elastic Beanstalk is in beta release and is subject to change.</p> </important> <p>Disassociate the operations role from an environment. After this call is made, Elastic Beanstalk uses the caller's permissions for permissions to downstream services during subsequent calls acting on this environment.</p>"
     },
     "ListAvailableSolutionStacks":{
       "name":"ListAvailableSolutionStacks",
@@ -478,7 +478,7 @@
         "shape":"ListAvailableSolutionStacksResultMessage",
         "resultWrapper":"ListAvailableSolutionStacksResult"
       },
-      "documentation":"<p>Returns a list of the available solution stack names, with the public version first and then in reverse chronological order.</p>"
+      "documentation":"<p>Returns a list of the available solution stack names, with the public version first and then in reverse chronological order.</p> <p>This action only returns information about resources that the calling principle has IAM permissions to access. For example, consider a case where a user only has permission to access one of three resources. When the user calls the this action, the response will only include the one resource that the user has permission to access instead of all three resources. If the user doesn’t have access to any of the resources an empty result is returned.</p> <note> <p>The <a href=\"https://docs.aws.amazon.com/aws-managed-policy/latest/reference/AWSElasticBeanstalkReadOnly.html\">AWSElasticBeanstalkReadOnly</a> managed policy allows operators to view information about resources related to Elastic Beanstalk. For more information, see <a href=\"https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/AWSHowTo.iam.managed-policies.html\"> Managing Elastic Beanstalk user policies</a> in the <i>Elastic Beanstalk Developer Guide</i>. For detailed instructions to attach a policy to a user or group, see the section <a href=\"https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/AWSHowTo.iam.managed-policies.html#iam-userpolicies-managed\"> Controlling access with managed policies</a> in the same topic.</p> </note>"
     },
     "ListPlatformBranches":{
       "name":"ListPlatformBranches",
@@ -491,7 +491,7 @@
         "shape":"ListPlatformBranchesResult",
         "resultWrapper":"ListPlatformBranchesResult"
       },
-      "documentation":"<p>Lists the platform branches available for your account in an AWS Region. Provides summary information about each platform branch.</p> <p>For definitions of platform branch and other platform-related terms, see <a href=\"https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/platforms-glossary.html\">AWS Elastic Beanstalk Platforms Glossary</a>.</p>"
+      "documentation":"<p>Lists the platform branches available for your account in an Amazon Web Services Region. Provides summary information about each platform branch.</p> <p>For definitions of platform branch and other platform-related terms, see <a href=\"https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/platforms-glossary.html\">Elastic Beanstalk Platforms Glossary</a>.</p> <p>This action only returns information about resources that the calling principle has IAM permissions to access. For example, consider a case where a user only has permission to access one of three resources. When the user calls the this action, the response will only include the one resource that the user has permission to access instead of all three resources. If the user doesn’t have access to any of the resources an empty result is returned.</p> <note> <p>The <a href=\"https://docs.aws.amazon.com/aws-managed-policy/latest/reference/AWSElasticBeanstalkReadOnly.html\">AWSElasticBeanstalkReadOnly</a> managed policy allows operators to view information about resources related to Elastic Beanstalk. For more information, see <a href=\"https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/AWSHowTo.iam.managed-policies.html\"> Managing Elastic Beanstalk user policies</a> in the <i>Elastic Beanstalk Developer Guide</i>. For detailed instructions to attach a policy to a user or group, see the section <a href=\"https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/AWSHowTo.iam.managed-policies.html#iam-userpolicies-managed\"> Controlling access with managed policies</a> in the same topic.</p> </note>"
     },
     "ListPlatformVersions":{
       "name":"ListPlatformVersions",
@@ -508,7 +508,7 @@
         {"shape":"InsufficientPrivilegesException"},
         {"shape":"ElasticBeanstalkServiceException"}
       ],
-      "documentation":"<p>Lists the platform versions available for your account in an AWS Region. Provides summary information about each platform version. Compare to <a>DescribePlatformVersion</a>, which provides full details about a single platform version.</p> <p>For definitions of platform version and other platform-related terms, see <a href=\"https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/platforms-glossary.html\">AWS Elastic Beanstalk Platforms Glossary</a>.</p>"
+      "documentation":"<p>Lists the platform versions available for your account in an Amazon Web Services Region. Provides summary information about each platform version. Compare to <a>DescribePlatformVersion</a>, which provides full details about a single platform version.</p> <p>This action only returns information about platform versions that the calling principle has IAM permissions to access. For example, consider a case where a user only has permission to access one of ten platform versions. When the user calls the <i>ListPlatformVersions</i> action, the response will only include the one platform version that the user has permission to access instead of all ten platform versions. If the user doesn’t have access to any of the platform versions an empty result is returned.</p> <note> <p>The <i>AWSElasticBeanstalkReadOnly</i> managed policy allows operators to view information about resources related to Elastic Beanstalk environments. For more information, see <a href=\"https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/AWSHowTo.iam.managed-policies.html\"> Managing Elastic Beanstalk user policies</a> in the <i>Elastic Beanstalk Developer Guide</i>. For detailed instructions to attach a policy to a user or group, see the section <a href=\"https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/AWSHowTo.iam.managed-policies.html#iam-userpolicies-managed\"> Controlling access with managed policies</a> in the same topic.</p> </note> <p>For definitions of platform version and other platform-related terms, see <a href=\"https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/platforms-glossary.html\">Elastic Beanstalk Platforms Glossary</a>.</p>"
     },
     "ListTagsForResource":{
       "name":"ListTagsForResource",
@@ -526,7 +526,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ResourceTypeNotSupportedException"}
       ],
-      "documentation":"<p>Return the tags applied to an AWS Elastic Beanstalk resource. The response contains a list of tag key-value pairs.</p> <p>Elastic Beanstalk supports tagging of all of its resources. For details about resource tagging, see <a href=\"https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/applications-tagging-resources.html\">Tagging Application Resources</a>.</p>"
+      "documentation":"<p>Return the tags applied to an Elastic Beanstalk resource. The response contains a list of tag key-value pairs.</p> <p>Elastic Beanstalk supports tagging of all of its resources. For details about resource tagging, see <a href=\"https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/applications-tagging-resources.html\">Tagging Application Resources</a>.</p> <p>This action only returns information about resources that the calling principle has IAM permissions to access. For example, consider a case where a user only has permission to access one of three resources. When the user calls the this action, the response will only include the one resource that the user has permission to access instead of all three resources. If the user doesn’t have access to any of the resources an empty result is returned.</p> <note> <p>The <a href=\"https://docs.aws.amazon.com/aws-managed-policy/latest/reference/AWSElasticBeanstalkReadOnly.html\">AWSElasticBeanstalkReadOnly</a> managed policy allows operators to view information about resources related to Elastic Beanstalk. For more information, see <a href=\"https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/AWSHowTo.iam.managed-policies.html\"> Managing Elastic Beanstalk user policies</a> in the <i>Elastic Beanstalk Developer Guide</i>. For detailed instructions to attach a policy to a user or group, see the section <a href=\"https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/AWSHowTo.iam.managed-policies.html#iam-userpolicies-managed\"> Controlling access with managed policies</a> in the same topic.</p> </note>"
     },
     "RebuildEnvironment":{
       "name":"RebuildEnvironment",
@@ -538,7 +538,7 @@
       "errors":[
         {"shape":"InsufficientPrivilegesException"}
       ],
-      "documentation":"<p>Deletes and recreates all of the AWS resources (for example: the Auto Scaling group, load balancer, etc.) for a specified environment and forces a restart.</p>"
+      "documentation":"<p>Deletes and recreates all of the Amazon Web Services resources (for example: the Auto Scaling group, load balancer, etc.) for a specified environment and forces a restart.</p>"
     },
     "RequestEnvironmentInfo":{
       "name":"RequestEnvironmentInfo",
@@ -670,7 +670,7 @@
         {"shape":"InsufficientPrivilegesException"},
         {"shape":"TooManyBucketsException"}
       ],
-      "documentation":"<p>Updates the environment description, deploys a new application version, updates the configuration settings to an entirely new configuration template, or updates select configuration option values in the running environment.</p> <p> Attempting to update both the release and configuration is not allowed and AWS Elastic Beanstalk returns an <code>InvalidParameterCombination</code> error. </p> <p> When updating the configuration settings to a new template or individual settings, a draft configuration is created and <a>DescribeConfigurationSettings</a> for this environment returns two setting descriptions with different <code>DeploymentStatus</code> values. </p>"
+      "documentation":"<p>Updates the environment description, deploys a new application version, updates the configuration settings to an entirely new configuration template, or updates select configuration option values in the running environment.</p> <p> Attempting to update both the release and configuration is not allowed and Elastic Beanstalk returns an <code>InvalidParameterCombination</code> error. </p> <p> When updating the configuration settings to a new template or individual settings, a draft configuration is created and <a>DescribeConfigurationSettings</a> for this environment returns two setting descriptions with different <code>DeploymentStatus</code> values. </p>"
     },
     "UpdateTagsForResource":{
       "name":"UpdateTagsForResource",
@@ -686,7 +686,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ResourceTypeNotSupportedException"}
       ],
-      "documentation":"<p>Update the list of tags applied to an AWS Elastic Beanstalk resource. Two lists can be passed: <code>TagsToAdd</code> for tags to add or update, and <code>TagsToRemove</code>.</p> <p>Elastic Beanstalk supports tagging of all of its resources. For details about resource tagging, see <a href=\"https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/applications-tagging-resources.html\">Tagging Application Resources</a>.</p> <p>If you create a custom IAM user policy to control permission to this operation, specify one of the following two virtual actions (or both) instead of the API operation name:</p> <dl> <dt>elasticbeanstalk:AddTags</dt> <dd> <p>Controls permission to call <code>UpdateTagsForResource</code> and pass a list of tags to add in the <code>TagsToAdd</code> parameter.</p> </dd> <dt>elasticbeanstalk:RemoveTags</dt> <dd> <p>Controls permission to call <code>UpdateTagsForResource</code> and pass a list of tag keys to remove in the <code>TagsToRemove</code> parameter.</p> </dd> </dl> <p>For details about creating a custom user policy, see <a href=\"https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/AWSHowTo.iam.managed-policies.html#AWSHowTo.iam.policies\">Creating a Custom User Policy</a>.</p>"
+      "documentation":"<p>Update the list of tags applied to an Elastic Beanstalk resource. Two lists can be passed: <code>TagsToAdd</code> for tags to add or update, and <code>TagsToRemove</code>.</p> <p>Elastic Beanstalk supports tagging of all of its resources. For details about resource tagging, see <a href=\"https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/applications-tagging-resources.html\">Tagging Application Resources</a>.</p> <p>If you create a custom policy to control permission to this operation, specify one of the following two virtual actions (or both) instead of the API operation name:</p> <dl> <dt>elasticbeanstalk:AddTags</dt> <dd> <p>Controls permission to call <code>UpdateTagsForResource</code> and pass a list of tags to add in the <code>TagsToAdd</code> parameter.</p> </dd> <dt>elasticbeanstalk:RemoveTags</dt> <dd> <p>Controls permission to call <code>UpdateTagsForResource</code> and pass a list of tag keys to remove in the <code>TagsToRemove</code> parameter.</p> </dd> </dl> <p>For details about creating a custom user policy, see <a href=\"https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/AWSHowTo.iam.managed-policies.html#AWSHowTo.iam.policies\">Creating a Custom User Policy</a>.</p>"
     },
     "ValidateConfigurationSettings":{
       "name":"ValidateConfigurationSettings",
@@ -831,7 +831,7 @@
           "documentation":"<p>Represents the average latency for the slowest X percent of requests over the last 10 seconds. Latencies are in seconds with one millisecond resolution.</p>"
         }
       },
-      "documentation":"<p>Application request metrics for an AWS Elastic Beanstalk environment.</p>"
+      "documentation":"<p>Application request metrics for an Elastic Beanstalk environment.</p>"
     },
     "ApplicationName":{
       "type":"string",
@@ -854,7 +854,7 @@
           "documentation":"<p>Defines lifecycle settings for application versions.</p>"
         }
       },
-      "documentation":"<p>The resource lifecycle configuration for an application. Defines lifecycle settings for resources that belong to the application, and the service role that AWS Elastic Beanstalk assumes in order to apply lifecycle settings. The version lifecycle configuration defines lifecycle settings for application versions.</p>"
+      "documentation":"<p>The resource lifecycle configuration for an application. Defines lifecycle settings for resources that belong to the application, and the service role that Elastic Beanstalk assumes in order to apply lifecycle settings. The version lifecycle configuration defines lifecycle settings for application versions.</p>"
     },
     "ApplicationResourceLifecycleDescriptionMessage":{
       "type":"structure",
@@ -891,15 +891,27 @@
         },
         "SourceBuildInformation":{
           "shape":"SourceBuildInformation",
-          "documentation":"<p>If the version's source code was retrieved from AWS CodeCommit, the location of the source code for the application version.</p>"
+          "documentation":"<p>If the version's source code was retrieved from CodeCommit, the location of the source code for the application version.</p>"
         },
         "BuildArn":{
           "shape":"String",
-          "documentation":"<p>Reference to the artifact from the AWS CodeBuild build.</p>"
+          "documentation":"<p>Reference to the artifact from the CodeBuild build.</p>"
         },
         "SourceBundle":{
           "shape":"S3Location",
           "documentation":"<p>The storage location of the application version's source bundle in Amazon S3.</p>"
+        },
+        "ImageSource":{
+          "shape":"ImageSource",
+          "documentation":"<p>The location of the container image for the application version.</p> <p>For an application version created from an image you provide, this is that image. For one that Elastic Beanstalk builds from your source bundle, Elastic Beanstalk fills this in with the image it pushed after the build succeeds.</p>"
+        },
+        "ImageBuildConfiguration":{
+          "shape":"ImageBuildConfiguration",
+          "documentation":"<p>The settings that Elastic Beanstalk uses to build a container image from the source bundle of the application version. Not present for an application version created from an image you provide.</p>"
+        },
+        "Process":{
+          "shape":"ApplicationVersionProccess",
+          "documentation":"<p>Indicates whether Elastic Beanstalk pre-processed and validated the environment manifest (<code>env.yaml</code>) and configuration files (<code>*.config</code> files in the <code>.ebextensions</code> folder) in the source bundle of the application version.</p>"
         },
         "DateCreated":{
           "shape":"CreationDate",
@@ -911,7 +923,7 @@
         },
         "Status":{
           "shape":"ApplicationVersionStatus",
-          "documentation":"<p>The processing status of the application version. Reflects the state of the application version during its creation. Many of the values are only applicable if you specified <code>True</code> for the <code>Process</code> parameter of the <code>CreateApplicationVersion</code> action. The following list describes the possible values.</p> <ul> <li> <p> <code>Unprocessed</code> – Application version wasn't pre-processed or validated. Elastic Beanstalk will validate configuration files during deployment of the application version to an environment.</p> </li> <li> <p> <code>Processing</code> – Elastic Beanstalk is currently processing the application version.</p> </li> <li> <p> <code>Building</code> – Application version is currently undergoing an AWS CodeBuild build.</p> </li> <li> <p> <code>Processed</code> – Elastic Beanstalk was successfully pre-processed and validated.</p> </li> <li> <p> <code>Failed</code> – Either the AWS CodeBuild build failed or configuration files didn't pass validation. This application version isn't usable.</p> </li> </ul>"
+          "documentation":"<p>The processing status of the application version. Reflects the state of the application version during its creation. Many of the values are only applicable if you specified <code>True</code> for the <code>Process</code> parameter of the <code>CreateApplicationVersion</code> action. The following list describes the possible values.</p> <ul> <li> <p> <code>Unprocessed</code> – Application version wasn't pre-processed or validated. Elastic Beanstalk will validate configuration files during deployment of the application version to an environment.</p> </li> <li> <p> <code>Processing</code> – Elastic Beanstalk is currently processing the application version.</p> </li> <li> <p> <code>Building</code> – Application version is currently undergoing an CodeBuild build.</p> </li> <li> <p> <code>Processed</code> – Elastic Beanstalk was successfully pre-processed and validated.</p> </li> <li> <p> <code>Failed</code> – Either the CodeBuild build failed or configuration files didn't pass validation. This application version isn't usable.</p> </li> </ul>"
         }
       },
       "documentation":"<p>Describes the properties of an application version.</p>"
@@ -1010,6 +1022,13 @@
       },
       "documentation":"<p>The result message containing information about the managed action.</p>"
     },
+    "ArchitectureType":{
+      "type":"string",
+      "enum":[
+        "amd64",
+        "arm64"
+      ]
+    },
     "AssociateEnvironmentOperationsRoleMessage":{
       "type":"structure",
       "required":[
@@ -1068,7 +1087,7 @@
         },
         "CodeBuildServiceRole":{
           "shape":"NonEmptyString",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS Identity and Access Management (IAM) role that enables AWS CodeBuild to interact with dependent AWS services on behalf of the AWS account.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Identity and Access Management (IAM) role that enables CodeBuild to interact with dependent Amazon Web Services service on behalf of the Amazon Web Services account.</p>"
         },
         "ComputeType":{
           "shape":"ComputeType",
@@ -1080,10 +1099,10 @@
         },
         "TimeoutInMinutes":{
           "shape":"BoxedInt",
-          "documentation":"<p>How long in minutes, from 5 to 480 (8 hours), for AWS CodeBuild to wait until timing out any related build that does not get marked as completed. The default is 60 minutes.</p>"
+          "documentation":"<p>How long in minutes, from 5 to 480 (8 hours), for CodeBuild to wait until timing out any related build that does not get marked as completed. The default is 60 minutes.</p>"
         }
       },
-      "documentation":"<p>Settings for an AWS CodeBuild build.</p>"
+      "documentation":"<p>Settings for an CodeBuild build.</p>"
     },
     "Builder":{
       "type":"structure",
@@ -1167,11 +1186,21 @@
       },
       "documentation":"<p>Indicates if the specified CNAME is available.</p>"
     },
+    "Cluster":{
+      "type":"structure",
+      "members":{
+        "ClusterArn":{
+          "shape":"ResourceId",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon EKS cluster.</p>"
+        }
+      },
+      "documentation":"<p>Describes the Amazon EKS cluster that an environment runs on.</p>"
+    },
     "CnameAvailability":{"type":"boolean"},
     "CodeBuildNotInServiceRegionException":{
       "type":"structure",
       "members":{},
-      "documentation":"<p>AWS CodeBuild is not available in the specified region.</p>",
+      "documentation":"<p>CodeBuild is not available in the specified region.</p>",
       "error":{
         "code":"CodeBuildNotInServiceRegionException",
         "httpStatusCode":400,
@@ -1219,7 +1248,7 @@
       "members":{
         "Namespace":{
           "shape":"OptionNamespace",
-          "documentation":"<p>A unique namespace identifying the option's associated AWS resource.</p>"
+          "documentation":"<p>A unique namespace identifying the option's associated Amazon Web Services resource.</p>"
         },
         "Name":{
           "shape":"ConfigurationOptionName",
@@ -1231,7 +1260,7 @@
         },
         "ChangeSeverity":{
           "shape":"ConfigurationOptionSeverity",
-          "documentation":"<p>An indication of which action is required if the value for this configuration option changes:</p> <ul> <li> <p> <code>NoInterruption</code> : There is no interruption to the environment or application availability.</p> </li> <li> <p> <code>RestartEnvironment</code> : The environment is entirely restarted, all AWS resources are deleted and recreated, and the environment is unavailable during the process.</p> </li> <li> <p> <code>RestartApplicationServer</code> : The environment is available the entire time. However, a short application outage occurs when the application servers on the running Amazon EC2 instances are restarted.</p> </li> </ul>"
+          "documentation":"<p>An indication of which action is required if the value for this configuration option changes:</p> <ul> <li> <p> <code>NoInterruption</code> : There is no interruption to the environment or application availability.</p> </li> <li> <p> <code>RestartEnvironment</code> : The environment is entirely restarted, all A resources are deleted and recreated, and the environment is unavailable during the process.</p> </li> <li> <p> <code>RestartApplicationServer</code> : The environment is available the entire time. However, a short application outage occurs when the application servers on the running Amazon EC2 instances are restarted.</p> </li> </ul>"
         },
         "UserDefined":{
           "shape":"UserDefinedOption",
@@ -1283,7 +1312,7 @@
         },
         "Namespace":{
           "shape":"OptionNamespace",
-          "documentation":"<p>A unique namespace that identifies the option's associated AWS resource.</p>"
+          "documentation":"<p>A unique namespace that identifies the option's associated Amazon Web Services resource.</p>"
         },
         "OptionName":{
           "shape":"ConfigurationOptionName",
@@ -1294,7 +1323,7 @@
           "documentation":"<p>The current value for the configuration option.</p>"
         }
       },
-      "documentation":"<p>A specification identifying an individual configuration option along with its current value. For a list of possible namespaces and option values, see <a href=\"https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/command-options.html\">Option Values</a> in the <i>AWS Elastic Beanstalk Developer Guide</i>. </p>"
+      "documentation":"<p>A specification identifying an individual configuration option along with its current value. For a list of possible namespaces and option values, see <a href=\"https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/command-options.html\">Option Values</a> in the <i>Elastic Beanstalk Developer Guide</i>. </p>"
     },
     "ConfigurationOptionSettingsList":{
       "type":"list",
@@ -1442,7 +1471,7 @@
         },
         "VersionLabel":{
           "shape":"VersionLabel",
-          "documentation":"<p>A label identifying this version.</p> <p>Constraint: Must be unique per application. If an application version already exists with this label for the specified application, AWS Elastic Beanstalk returns an <code>InvalidParameterValue</code> error. </p>"
+          "documentation":"<p>A label identifying this version.</p> <p>Constraint: Must be unique per application. If an application version already exists with this label for the specified application, Elastic Beanstalk returns an <code>InvalidParameterValue</code> error. </p>"
         },
         "Description":{
           "shape":"Description",
@@ -1450,15 +1479,15 @@
         },
         "SourceBuildInformation":{
           "shape":"SourceBuildInformation",
-          "documentation":"<p>Specify a commit in an AWS CodeCommit Git repository to use as the source code for the application version.</p>"
+          "documentation":"<p>Specify a commit in an CodeCommit Git repository to use as the source code for the application version.</p>"
         },
         "SourceBundle":{
           "shape":"S3Location",
-          "documentation":"<p>The Amazon S3 bucket and key that identify the location of the source bundle for this version.</p> <note> <p>The Amazon S3 bucket must be in the same region as the environment.</p> </note> <p>Specify a source bundle in S3 or a commit in an AWS CodeCommit repository (with <code>SourceBuildInformation</code>), but not both. If neither <code>SourceBundle</code> nor <code>SourceBuildInformation</code> are provided, Elastic Beanstalk uses a sample application.</p>"
+          "documentation":"<p>The Amazon S3 bucket and key that identify the location of the source bundle for this version.</p> <note> <p>The Amazon S3 bucket must be in the same region as the environment.</p> <p>Unless you're specifying a source bundle in the bucket that Elastic Beanstalk manages in your account, you must assign a custom policy to your user, and grant <code>Allow</code> permission to the <code>s3:Get*</code> actions on your S3 object resource, for example, <code>arn:aws:s3:::your-bucket/your-source-bundle-object</code>.</p> </note> <p>Specify a source bundle in Amazon S3 or a commit in an CodeCommit repository (with <code>SourceBuildInformation</code>), but not both. If neither <code>SourceBundle</code> nor <code>SourceBuildInformation</code> are provided, Elastic Beanstalk uses a sample application.</p>"
         },
         "BuildConfiguration":{
           "shape":"BuildConfiguration",
-          "documentation":"<p>Settings for an AWS CodeBuild build.</p>"
+          "documentation":"<p>Settings for an CodeBuild build.</p> <p>Don't specify <code>BuildConfiguration</code> together with <code>ImageConfiguration</code>, which configures a container image build instead.</p>"
         },
         "AutoCreateApplication":{
           "shape":"AutoCreateApplication",
@@ -1466,11 +1495,15 @@
         },
         "Process":{
           "shape":"ApplicationVersionProccess",
-          "documentation":"<p>Pre-processes and validates the environment manifest (<code>env.yaml</code>) and configuration files (<code>*.config</code> files in the <code>.ebextensions</code> folder) in the source bundle. Validating configuration files can identify issues prior to deploying the application version to an environment.</p> <p>You must turn processing on for application versions that you create using AWS CodeBuild or AWS CodeCommit. For application versions built from a source bundle in Amazon S3, processing is optional.</p> <note> <p>The <code>Process</code> option validates Elastic Beanstalk configuration files. It doesn't validate your application's configuration files, like proxy server or Docker configuration.</p> </note>"
+          "documentation":"<p>Pre-processes and validates the environment manifest (<code>env.yaml</code>) and configuration files (<code>*.config</code> files in the <code>.ebextensions</code> folder) in the source bundle. Validating configuration files can identify issues prior to deploying the application version to an environment.</p> <p>You must turn processing on for application versions that you create using CodeBuild or CodeCommit. For application versions built from a source bundle in Amazon S3, processing is optional.</p> <note> <p>The <code>Process</code> option validates Elastic Beanstalk configuration files. It doesn't validate your application's configuration files, like proxy server or Docker configuration.</p> </note>"
         },
         "Tags":{
           "shape":"Tags",
           "documentation":"<p>Specifies the tags applied to the application version.</p> <p>Elastic Beanstalk applies these tags only to the application version. Environments that use the application version don't inherit the tags.</p>"
+        },
+        "ImageConfiguration":{
+          "shape":"ImageConfiguration",
+          "documentation":"<p>The source of the container image for this application version. You can specify an image that you built and pushed to a container registry yourself, or settings for Elastic Beanstalk to build one from your source bundle. Specify exactly one of the <code>Source</code> and <code>Build</code> members.</p> <p>Don't specify <code>ImageConfiguration</code> together with <code>BuildConfiguration</code>, which configures an CodeBuild build instead.</p>"
         }
       },
       "documentation":"<p/>"
@@ -1492,11 +1525,11 @@
         },
         "SolutionStackName":{
           "shape":"SolutionStackName",
-          "documentation":"<p>The name of an Elastic Beanstalk solution stack (platform version) that this configuration uses. For example, <code>64bit Amazon Linux 2013.09 running Tomcat 7 Java 7</code>. A solution stack specifies the operating system, runtime, and application server for a configuration template. It also determines the set of configuration options as well as the possible and default values. For more information, see <a href=\"https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/concepts.platforms.html\">Supported Platforms</a> in the <i>AWS Elastic Beanstalk Developer Guide</i>.</p> <p>You must specify <code>SolutionStackName</code> if you don't specify <code>PlatformArn</code>, <code>EnvironmentId</code>, or <code>SourceConfiguration</code>.</p> <p>Use the <a href=\"https://docs.aws.amazon.com/elasticbeanstalk/latest/api/API_ListAvailableSolutionStacks.html\"> <code>ListAvailableSolutionStacks</code> </a> API to obtain a list of available solution stacks.</p>"
+          "documentation":"<p>The name of an Elastic Beanstalk solution stack (platform version) that this configuration uses. For example, <code>64bit Amazon Linux 2013.09 running Tomcat 7 Java 7</code>. A solution stack specifies the operating system, runtime, and application server for a configuration template. It also determines the set of configuration options as well as the possible and default values. For more information, see <a href=\"https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/concepts.platforms.html\">Supported Platforms</a> in the <i>Elastic Beanstalk Developer Guide</i>.</p> <p>You must specify <code>SolutionStackName</code> if you don't specify <code>PlatformArn</code>, <code>EnvironmentId</code>, or <code>SourceConfiguration</code>.</p> <p>Use the <a href=\"https://docs.aws.amazon.com/elasticbeanstalk/latest/api/API_ListAvailableSolutionStacks.html\"> <code>ListAvailableSolutionStacks</code> </a> API to obtain a list of available solution stacks.</p>"
         },
         "PlatformArn":{
           "shape":"PlatformArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the custom platform. For more information, see <a href=\"https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/custom-platforms.html\"> Custom Platforms</a> in the <i>AWS Elastic Beanstalk Developer Guide</i>.</p> <note> <p>If you specify <code>PlatformArn</code>, then don't specify <code>SolutionStackName</code>.</p> </note>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the custom platform. For more information, see <a href=\"https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/custom-platforms.html\"> Custom Platforms</a> in the <i>Elastic Beanstalk Developer Guide</i>.</p> <note> <p>If you specify <code>PlatformArn</code>, then don't specify <code>SolutionStackName</code>.</p> </note>"
         },
         "SourceConfiguration":{
           "shape":"SourceConfiguration",
@@ -1512,7 +1545,7 @@
         },
         "OptionSettings":{
           "shape":"ConfigurationOptionSettingsList",
-          "documentation":"<p>Option values for the Elastic Beanstalk configuration, such as the instance type. If specified, these values override the values obtained from the solution stack or the source configuration template. For a complete list of Elastic Beanstalk configuration options, see <a href=\"https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/command-options.html\">Option Values</a> in the <i>AWS Elastic Beanstalk Developer Guide</i>.</p>"
+          "documentation":"<p>Option values for the Elastic Beanstalk configuration, such as the instance type. If specified, these values override the values obtained from the solution stack or the source configuration template. For a complete list of Elastic Beanstalk configuration options, see <a href=\"https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/command-options.html\">Option Values</a> in the <i>Elastic Beanstalk Developer Guide</i>.</p>"
         },
         "Tags":{
           "shape":"Tags",
@@ -1547,7 +1580,7 @@
         },
         "Tier":{
           "shape":"EnvironmentTier",
-          "documentation":"<p>Specifies the tier to use in creating this environment. The environment tier that you choose determines whether Elastic Beanstalk provisions resources to support a web application that handles HTTP(S) requests or a web application that handles background-processing tasks.</p>"
+          "documentation":"<p>Specifies the tier to use in creating this environment. The environment tier that you choose determines whether Elastic Beanstalk provisions resources on Amazon EC2 instances or on an Amazon EKS cluster, and, for Amazon EC2, whether the environment serves HTTP(S) requests or processes background tasks from a queue.</p>"
         },
         "Tags":{
           "shape":"Tags",
@@ -1563,15 +1596,15 @@
         },
         "SolutionStackName":{
           "shape":"SolutionStackName",
-          "documentation":"<p>The name of an Elastic Beanstalk solution stack (platform version) to use with the environment. If specified, Elastic Beanstalk sets the configuration values to the default values associated with the specified solution stack. For a list of current solution stacks, see <a href=\"https://docs.aws.amazon.com/elasticbeanstalk/latest/platforms/platforms-supported.html\">Elastic Beanstalk Supported Platforms</a> in the <i>AWS Elastic Beanstalk Platforms</i> guide.</p> <note> <p>If you specify <code>SolutionStackName</code>, don't specify <code>PlatformArn</code> or <code>TemplateName</code>.</p> </note>"
+          "documentation":"<p>The name of an Elastic Beanstalk solution stack (platform version) to use with the environment. If specified, Elastic Beanstalk sets the configuration values to the default values associated with the specified solution stack. For a list of current solution stacks, see <a href=\"https://docs.aws.amazon.com/elasticbeanstalk/latest/platforms/platforms-supported.html\">Elastic Beanstalk Supported Platforms</a> in the <i>Elastic Beanstalk Platforms</i> guide.</p> <note> <p>If you specify <code>SolutionStackName</code>, don't specify <code>PlatformArn</code> or <code>TemplateName</code>.</p> </note>"
         },
         "PlatformArn":{
           "shape":"PlatformArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the custom platform to use with the environment. For more information, see <a href=\"https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/custom-platforms.html\">Custom Platforms</a> in the <i>AWS Elastic Beanstalk Developer Guide</i>.</p> <note> <p>If you specify <code>PlatformArn</code>, don't specify <code>SolutionStackName</code>.</p> </note>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the custom platform to use with the environment. For more information, see <a href=\"https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/custom-platforms.html\">Custom Platforms</a> in the <i>Elastic Beanstalk Developer Guide</i>.</p> <note> <p>If you specify <code>PlatformArn</code>, don't specify <code>SolutionStackName</code>.</p> </note>"
         },
         "OptionSettings":{
           "shape":"ConfigurationOptionSettingsList",
-          "documentation":"<p>If specified, AWS Elastic Beanstalk sets the specified configuration options to the requested value in the configuration set for the new environment. These override the values obtained from the solution stack or the configuration template.</p>"
+          "documentation":"<p>If specified, Elastic Beanstalk sets the specified configuration options to the requested value in the configuration set for the new environment. These override the values obtained from the solution stack or the configuration template.</p>"
         },
         "OptionsToRemove":{
           "shape":"OptionsSpecifierList",
@@ -1579,7 +1612,7 @@
         },
         "OperationsRole":{
           "shape":"OperationsRole",
-          "documentation":"<p>The Amazon Resource Name (ARN) of an existing IAM role to be used as the environment's operations role. If specified, Elastic Beanstalk uses the operations role for permissions to downstream services during this call and during subsequent calls acting on this environment. To specify an operations role, you must have the <code>iam:PassRole</code> permission for the role. For more information, see <a href=\"https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/iam-operationsrole.html\">Operations roles</a> in the <i>AWS Elastic Beanstalk Developer Guide</i>.</p>"
+          "documentation":"<important> <p>The operations role feature of Elastic Beanstalk is in beta release and is subject to change.</p> </important> <p>The Amazon Resource Name (ARN) of an existing IAM role to be used as the environment's operations role. If specified, Elastic Beanstalk uses the operations role for permissions to downstream services during this call and during subsequent calls acting on this environment. To specify an operations role, you must have the <code>iam:PassRole</code> permission for the role.</p>"
         }
       },
       "documentation":"<p/>"
@@ -1791,7 +1824,7 @@
       "members":{
         "ResourceQuotas":{
           "shape":"ResourceQuotas",
-          "documentation":"<p>The Elastic Beanstalk resource quotas associated with the calling AWS account.</p>"
+          "documentation":"<p>The Elastic Beanstalk resource quotas associated with the calling Amazon Web Services account.</p>"
         }
       }
     },
@@ -1822,7 +1855,7 @@
       "members":{
         "ApplicationNames":{
           "shape":"ApplicationNamesList",
-          "documentation":"<p>If specified, AWS Elastic Beanstalk restricts the returned descriptions to only include those with the specified names.</p>"
+          "documentation":"<p>If specified, Elastic Beanstalk restricts the returned descriptions to only include those with the specified names.</p>"
         }
       },
       "documentation":"<p>Request to describe one or more applications.</p>"
@@ -1867,11 +1900,11 @@
         },
         "TemplateName":{
           "shape":"ConfigurationTemplateName",
-          "documentation":"<p>The name of the configuration template to describe.</p> <p> Conditional: You must specify either this parameter or an EnvironmentName, but not both. If you specify both, AWS Elastic Beanstalk returns an <code>InvalidParameterCombination</code> error. If you do not specify either, AWS Elastic Beanstalk returns a <code>MissingRequiredParameter</code> error. </p>"
+          "documentation":"<p>The name of the configuration template to describe.</p> <p> Conditional: You must specify either this parameter or an EnvironmentName, but not both. If you specify both, Elastic Beanstalk returns an <code>InvalidParameterCombination</code> error. If you do not specify either, Elastic Beanstalk returns a <code>MissingRequiredParameter</code> error. </p>"
         },
         "EnvironmentName":{
           "shape":"EnvironmentName",
-          "documentation":"<p>The name of the environment to describe.</p> <p> Condition: You must specify either this or a TemplateName, but not both. If you specify both, AWS Elastic Beanstalk returns an <code>InvalidParameterCombination</code> error. If you do not specify either, AWS Elastic Beanstalk returns <code>MissingRequiredParameter</code> error. </p>"
+          "documentation":"<p>The name of the environment to describe.</p> <p> Condition: You must specify either this or a TemplateName, but not both. If you specify both, Elastic Beanstalk returns an <code>InvalidParameterCombination</code> error. If you do not specify either, Elastic Beanstalk returns <code>MissingRequiredParameter</code> error. </p>"
         }
       },
       "documentation":"<p>Result message containing all of the configuration settings for a specified solution stack or configuration template.</p>"
@@ -1930,7 +1963,7 @@
           "documentation":"<p>The date and time that the health information was retrieved.</p>"
         }
       },
-      "documentation":"<p>Health details for an AWS Elastic Beanstalk environment.</p>"
+      "documentation":"<p>Health details for an Elastic Beanstalk environment.</p>"
     },
     "DescribeEnvironmentManagedActionHistoryRequest":{
       "type":"structure",
@@ -2001,11 +2034,11 @@
       "members":{
         "EnvironmentId":{
           "shape":"EnvironmentId",
-          "documentation":"<p>The ID of the environment to retrieve AWS resource usage data.</p> <p> Condition: You must specify either this or an EnvironmentName, or both. If you do not specify either, AWS Elastic Beanstalk returns <code>MissingRequiredParameter</code> error. </p>"
+          "documentation":"<p>The ID of the environment to retrieve Amazon Web Services resource usage data.</p> <p> Condition: You must specify either this or an EnvironmentName, or both. If you do not specify either, Elastic Beanstalk returns <code>MissingRequiredParameter</code> error. </p>"
         },
         "EnvironmentName":{
           "shape":"EnvironmentName",
-          "documentation":"<p>The name of the environment to retrieve AWS resource usage data.</p> <p> Condition: You must specify either this or an EnvironmentId, or both. If you do not specify either, AWS Elastic Beanstalk returns <code>MissingRequiredParameter</code> error. </p>"
+          "documentation":"<p>The name of the environment to retrieve Amazon Web Services resource usage data.</p> <p> Condition: You must specify either this or an EnvironmentId, or both. If you do not specify either, Elastic Beanstalk returns <code>MissingRequiredParameter</code> error. </p>"
         }
       },
       "documentation":"<p>Request to describe the resources in an environment.</p>"
@@ -2015,19 +2048,19 @@
       "members":{
         "ApplicationName":{
           "shape":"ApplicationName",
-          "documentation":"<p>If specified, AWS Elastic Beanstalk restricts the returned descriptions to include only those that are associated with this application.</p>"
+          "documentation":"<p>If specified, Elastic Beanstalk restricts the returned descriptions to include only those that are associated with this application.</p>"
         },
         "VersionLabel":{
           "shape":"VersionLabel",
-          "documentation":"<p>If specified, AWS Elastic Beanstalk restricts the returned descriptions to include only those that are associated with this application version.</p>"
+          "documentation":"<p>If specified, Elastic Beanstalk restricts the returned descriptions to include only those that are associated with this application version.</p>"
         },
         "EnvironmentIds":{
           "shape":"EnvironmentIdList",
-          "documentation":"<p>If specified, AWS Elastic Beanstalk restricts the returned descriptions to include only those that have the specified IDs.</p>"
+          "documentation":"<p>If specified, Elastic Beanstalk restricts the returned descriptions to include only those that have the specified IDs.</p>"
         },
         "EnvironmentNames":{
           "shape":"EnvironmentNamesList",
-          "documentation":"<p>If specified, AWS Elastic Beanstalk restricts the returned descriptions to include only those that have the specified names.</p>"
+          "documentation":"<p>If specified, Elastic Beanstalk restricts the returned descriptions to include only those that have the specified names.</p>"
         },
         "IncludeDeleted":{
           "shape":"IncludeDeleted",
@@ -2053,31 +2086,31 @@
       "members":{
         "ApplicationName":{
           "shape":"ApplicationName",
-          "documentation":"<p>If specified, AWS Elastic Beanstalk restricts the returned descriptions to include only those associated with this application.</p>"
+          "documentation":"<p>If specified, Elastic Beanstalk restricts the returned descriptions to include only those associated with this application.</p>"
         },
         "VersionLabel":{
           "shape":"VersionLabel",
-          "documentation":"<p>If specified, AWS Elastic Beanstalk restricts the returned descriptions to those associated with this application version.</p>"
+          "documentation":"<p>If specified, Elastic Beanstalk restricts the returned descriptions to those associated with this application version.</p>"
         },
         "TemplateName":{
           "shape":"ConfigurationTemplateName",
-          "documentation":"<p>If specified, AWS Elastic Beanstalk restricts the returned descriptions to those that are associated with this environment configuration.</p>"
+          "documentation":"<p>If specified, Elastic Beanstalk restricts the returned descriptions to those that are associated with this environment configuration.</p>"
         },
         "EnvironmentId":{
           "shape":"EnvironmentId",
-          "documentation":"<p>If specified, AWS Elastic Beanstalk restricts the returned descriptions to those associated with this environment.</p>"
+          "documentation":"<p>If specified, Elastic Beanstalk restricts the returned descriptions to those associated with this environment.</p>"
         },
         "EnvironmentName":{
           "shape":"EnvironmentName",
-          "documentation":"<p>If specified, AWS Elastic Beanstalk restricts the returned descriptions to those associated with this environment.</p>"
+          "documentation":"<p>If specified, Elastic Beanstalk restricts the returned descriptions to those associated with this environment.</p>"
         },
         "PlatformArn":{
           "shape":"PlatformArn",
-          "documentation":"<p>The ARN of a custom platform version. If specified, AWS Elastic Beanstalk restricts the returned descriptions to those associated with this custom platform version.</p>"
+          "documentation":"<p>The ARN of a custom platform version. If specified, Elastic Beanstalk restricts the returned descriptions to those associated with this custom platform version.</p>"
         },
         "RequestId":{
           "shape":"RequestId",
-          "documentation":"<p>If specified, AWS Elastic Beanstalk restricts the described events to include only those associated with this request ID.</p>"
+          "documentation":"<p>If specified, Elastic Beanstalk restricts the described events to include only those associated with this request ID.</p>"
         },
         "Severity":{
           "shape":"EventSeverity",
@@ -2085,11 +2118,11 @@
         },
         "StartTime":{
           "shape":"TimeFilterStart",
-          "documentation":"<p>If specified, AWS Elastic Beanstalk restricts the returned descriptions to those that occur on or after this time.</p>"
+          "documentation":"<p>If specified, Elastic Beanstalk restricts the returned descriptions to those that occur on or after this time.</p>"
         },
         "EndTime":{
           "shape":"TimeFilterEnd",
-          "documentation":"<p> If specified, AWS Elastic Beanstalk restricts the returned descriptions to those that occur up to, but not including, the <code>EndTime</code>. </p>"
+          "documentation":"<p> If specified, Elastic Beanstalk restricts the returned descriptions to those that occur up to, but not including, the <code>EndTime</code>. </p>"
         },
         "MaxRecords":{
           "shape":"MaxRecords",
@@ -2107,11 +2140,11 @@
       "members":{
         "EnvironmentName":{
           "shape":"EnvironmentName",
-          "documentation":"<p>Specify the AWS Elastic Beanstalk environment by name.</p>"
+          "documentation":"<p>Specify the Elastic Beanstalk environment by name.</p>"
         },
         "EnvironmentId":{
           "shape":"EnvironmentId",
-          "documentation":"<p>Specify the AWS Elastic Beanstalk environment by ID.</p>"
+          "documentation":"<p>Specify the Elastic Beanstalk environment by ID.</p>"
         },
         "AttributeNames":{
           "shape":"InstancesHealthAttributes",
@@ -2140,7 +2173,7 @@
           "documentation":"<p>Pagination token for the next page of results, if available.</p>"
         }
       },
-      "documentation":"<p>Detailed health information about the Amazon EC2 instances in an AWS Elastic Beanstalk environment.</p>"
+      "documentation":"<p>Detailed health information about the Amazon EC2 instances in an Elastic Beanstalk environment.</p>"
     },
     "DescribePlatformVersionRequest":{
       "type":"structure",
@@ -2242,7 +2275,7 @@
         },
         "Status":{
           "shape":"EnvironmentStatus",
-          "documentation":"<p>The current operational status of the environment:</p> <ul> <li> <p> <code>Launching</code>: Environment is in the process of initial deployment.</p> </li> <li> <p> <code>Updating</code>: Environment is in the process of updating its configuration settings or application version.</p> </li> <li> <p> <code>Ready</code>: Environment is available to have an action performed on it, such as update or terminate.</p> </li> <li> <p> <code>Terminating</code>: Environment is in the shut-down process.</p> </li> <li> <p> <code>Terminated</code>: Environment is not running.</p> </li> </ul>"
+          "documentation":"<p>The current operational status of the environment:</p> <ul> <li> <p> <code>Aborting</code>: Environment is in the process of aborting a deployment.</p> </li> <li> <p> <code>Launching</code>: Environment is in the process of initial deployment.</p> </li> <li> <p> <code>LinkingFrom</code>: Environment is in the process of being linked to by another environment. See <a href=\"https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/environment-cfg-links.html\">Environment links</a> for details.</p> </li> <li> <p> <code>LinkingTo</code>: Environment is in the process of linking to another environment. See <a href=\"https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/environment-cfg-links.html\">Environment links</a> for details.</p> </li> <li> <p> <code>Updating</code>: Environment is in the process of updating its configuration settings or application version.</p> </li> <li> <p> <code>Ready</code>: Environment is available to have an action performed on it, such as update or terminate.</p> </li> <li> <p> <code>Terminating</code>: Environment is in the shut-down process.</p> </li> <li> <p> <code>Terminated</code>: Environment is not running.</p> </li> </ul>"
         },
         "AbortableOperationInProgress":{
           "shape":"AbortableOperationInProgress",
@@ -2250,7 +2283,7 @@
         },
         "Health":{
           "shape":"EnvironmentHealth",
-          "documentation":"<p>Describes the health status of the environment. AWS Elastic Beanstalk indicates the failure levels for a running environment:</p> <ul> <li> <p> <code>Red</code>: Indicates the environment is not responsive. Occurs when three or more consecutive failures occur for an environment.</p> </li> <li> <p> <code>Yellow</code>: Indicates that something is wrong. Occurs when two consecutive failures occur for an environment.</p> </li> <li> <p> <code>Green</code>: Indicates the environment is healthy and fully functional.</p> </li> <li> <p> <code>Grey</code>: Default health for a new environment. The environment is not fully launched and health checks have not started or health checks are suspended during an <code>UpdateEnvironment</code> or <code>RestartEnvironment</code> request.</p> </li> </ul> <p> Default: <code>Grey</code> </p>"
+          "documentation":"<p>Describes the health status of the environment. Elastic Beanstalk indicates the failure levels for a running environment:</p> <ul> <li> <p> <code>Red</code>: Indicates the environment is not responsive. Occurs when three or more consecutive failures occur for an environment.</p> </li> <li> <p> <code>Yellow</code>: Indicates that something is wrong. Occurs when two consecutive failures occur for an environment.</p> </li> <li> <p> <code>Green</code>: Indicates the environment is healthy and fully functional.</p> </li> <li> <p> <code>Grey</code>: Default health for a new environment. The environment is not fully launched and health checks have not started or health checks are suspended during an <code>UpdateEnvironment</code> or <code>RestartEnvironment</code> request.</p> </li> </ul> <p> Default: <code>Grey</code> </p>"
         },
         "HealthStatus":{
           "shape":"EnvironmentHealthStatus",
@@ -2258,7 +2291,7 @@
         },
         "Resources":{
           "shape":"EnvironmentResourcesDescription",
-          "documentation":"<p>The description of the AWS resources used by this environment.</p>"
+          "documentation":"<p>The description of the Amazon Web Services resources used by this environment.</p>"
         },
         "Tier":{
           "shape":"EnvironmentTier",
@@ -2274,7 +2307,7 @@
         },
         "OperationsRole":{
           "shape":"OperationsRole",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the environment's operations role. For more information, see <a href=\"https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/iam-operationsrole.html\">Operations roles</a> in the <i>AWS Elastic Beanstalk Developer Guide</i>.</p>"
+          "documentation":"<important> <p>The operations role feature of Elastic Beanstalk is in beta release and is subject to change.</p> </important> <p>The Amazon Resource Name (ARN) of the environment's operations role.</p>"
         }
       },
       "documentation":"<p>Describes the properties of an environment.</p>"
@@ -2414,6 +2447,10 @@
           "shape":"AutoScalingGroupList",
           "documentation":"<p> The <code>AutoScalingGroups</code> used by this environment. </p>"
         },
+        "Cluster":{
+          "shape":"Cluster",
+          "documentation":"<p>The Amazon EKS cluster that this environment runs on. This member is present only for environments in the <i>Cluster</i> tier.</p>"
+        },
         "Instances":{
           "shape":"InstanceList",
           "documentation":"<p>The Amazon EC2 instances used by this environment.</p>"
@@ -2439,7 +2476,7 @@
           "documentation":"<p>The queues used by this environment.</p>"
         }
       },
-      "documentation":"<p>Describes the AWS resources in use by this environment. This data is live.</p>"
+      "documentation":"<p>Describes the Amazon Web Services resources in use by this environment. This data is live.</p>"
     },
     "EnvironmentResourceDescriptionsMessage":{
       "type":"structure",
@@ -2459,7 +2496,7 @@
           "documentation":"<p>Describes the LoadBalancer.</p>"
         }
       },
-      "documentation":"<p>Describes the AWS resources in use by this environment. This data is not live data.</p>"
+      "documentation":"<p>Describes the Amazon Web Services resources in use by this environment. This data is not live data.</p>"
     },
     "EnvironmentStatus":{
       "type":"string",
@@ -2479,11 +2516,11 @@
       "members":{
         "Name":{
           "shape":"String",
-          "documentation":"<p>The name of this environment tier.</p> <p>Valid values:</p> <ul> <li> <p>For <i>Web server tier</i> – <code>WebServer</code> </p> </li> <li> <p>For <i>Worker tier</i> – <code>Worker</code> </p> </li> </ul>"
+          "documentation":"<p>The name of this environment tier.</p> <p>Valid values:</p> <ul> <li> <p>For <i>Standard-mode EC2-based web server</i> – <code>WebServer</code> </p> </li> <li> <p>For <i>Standard-mode EC2-based backend application with Amazon SQS</i> – <code>Worker</code> </p> </li> <li> <p>For <i>Cluster-mode Amazon EKS-based applications</i> – <code>Cluster</code> </p> </li> </ul>"
         },
         "Type":{
           "shape":"String",
-          "documentation":"<p>The type of this environment tier.</p> <p>Valid values:</p> <ul> <li> <p>For <i>Web server tier</i> – <code>Standard</code> </p> </li> <li> <p>For <i>Worker tier</i> – <code>SQS/HTTP</code> </p> </li> </ul>"
+          "documentation":"<p>The type of this environment tier.</p> <p>Valid values:</p> <ul> <li> <p>For <i>Web server tier</i> – <code>Standard</code> </p> </li> <li> <p>For <i>Worker tier</i> – <code>SQS/HTTP</code> </p> </li> <li> <p>For <i>Cluster tier</i> – <code>EKS</code> </p> </li> </ul>"
         },
         "Version":{
           "shape":"String",
@@ -2589,7 +2626,72 @@
       "max":19,
       "min":1
     },
+    "ImageBuildConfiguration":{
+      "type":"structure",
+      "members":{
+        "Type":{
+          "shape":"ImageBuildType",
+          "documentation":"<p>How Elastic Beanstalk builds the container image. Elastic Beanstalk rejects a <code>Build</code> that doesn't specify it.</p> <p>Valid values:</p> <ul> <li> <p> <code>docker</code> – Elastic Beanstalk builds the image from a Dockerfile in your source bundle. Specify the Dockerfile with <code>DockerfileLocation</code>.</p> </li> <li> <p> <code>buildpack</code> – Elastic Beanstalk builds the image with a Cloud Native Buildpacks builder. Specify the builder with <code>Buildpack</code>.</p> </li> </ul>"
+        },
+        "DockerfileLocation":{
+          "shape":"String",
+          "documentation":"<p>The path to the Dockerfile within the source bundle, relative to the root of the source bundle. For example, <code>backend/Dockerfile</code>.</p> <p>Elastic Beanstalk uses this member only when <code>Type</code> is <code>docker</code>. If you don't specify it, Elastic Beanstalk uses the Dockerfile at the root of the source bundle.</p>"
+        },
+        "Buildpack":{
+          "shape":"String",
+          "documentation":"<p>The Cloud Native Buildpacks builder image that Elastic Beanstalk uses to build the container image. For example, <code>paketobuildpacks/builder-jammy-base</code>.</p> <p>This member is required when <code>Type</code> is <code>buildpack</code>. Elastic Beanstalk doesn't provide a default builder.</p>"
+        },
+        "Architecture":{
+          "shape":"ArchitectureType",
+          "documentation":"<p>The processor architecture that Elastic Beanstalk builds the container image for. The architecture must match the architecture of the instances in the environment that you deploy the application version to.</p> <p>Valid values:</p> <ul> <li> <p> <code>amd64</code> – x86-64 instances. This is the default.</p> </li> <li> <p> <code>arm64</code> – Amazon Web Services Graviton instances.</p> </li> </ul>"
+        },
+        "CodeBuildServiceRole":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Identity and Access Management (IAM) role that CodeBuild assumes to run the build in your Amazon Web Services account. Elastic Beanstalk rejects a <code>Build</code> that doesn't specify this role.</p>"
+        },
+        "ComputeType":{
+          "shape":"ComputeType",
+          "documentation":"<p>The size of the compute resources that run the build. If you don't specify it, Elastic Beanstalk uses <code>BUILD_GENERAL1_MEDIUM</code>.</p> <p>Valid values:</p> <ul> <li> <p> <code>BUILD_GENERAL1_SMALL</code> – Use up to 3 GB memory and 2 vCPUs for builds.</p> </li> <li> <p> <code>BUILD_GENERAL1_MEDIUM</code> – Use up to 7 GB memory and 4 vCPUs for builds.</p> </li> <li> <p> <code>BUILD_GENERAL1_LARGE</code> – Use up to 15 GB memory and 8 vCPUs for builds.</p> </li> </ul>"
+        },
+        "TimeoutInMinutes":{
+          "shape":"BoxedInt",
+          "documentation":"<p>How long, in minutes from 5 to 480 (8 hours), Elastic Beanstalk waits before stopping a build that hasn't completed. The default is 60 minutes.</p>"
+        }
+      },
+      "documentation":"<p>Settings that Elastic Beanstalk uses to build a container image from the source bundle of an application version.</p>"
+    },
+    "ImageBuildType":{
+      "type":"string",
+      "enum":[
+        "docker",
+        "buildpack"
+      ]
+    },
+    "ImageConfiguration":{
+      "type":"structure",
+      "members":{
+        "Source":{
+          "shape":"ImageSource",
+          "documentation":"<p>The location of a container image that you built and pushed to a container registry yourself. Elastic Beanstalk deploys the image without a build step.</p> <p>If you specify <code>Source</code>, don't specify <code>Build</code> or the request's <code>SourceBundle</code> parameter.</p>"
+        },
+        "Build":{
+          "shape":"ImageBuildConfiguration",
+          "documentation":"<p>Settings that Elastic Beanstalk uses to build a container image from the source bundle of the application version.</p> <p>If you specify <code>Build</code>, also specify the request's <code>SourceBundle</code> parameter, and don't specify <code>Source</code>.</p>"
+        }
+      },
+      "documentation":"<p>The source of the container image for an application version: an image that you built and pushed to a container registry yourself, or settings for Elastic Beanstalk to build one from your source bundle.</p>"
+    },
     "ImageId":{"type":"string"},
+    "ImageSource":{
+      "type":"structure",
+      "members":{
+        "Uri":{
+          "shape":"String",
+          "documentation":"<p>The URI of the container image, including the registry, the repository, and the image tag or digest. For example, <code>111122223333.dkr.ecr.us-east-1.amazonaws.com/my-repository:latest</code>.</p>"
+        }
+      },
+      "documentation":"<p>The location of a container image.</p>"
+    },
     "IncludeDeleted":{"type":"boolean"},
     "IncludeDeletedBackTo":{"type":"timestamp"},
     "Instance":{
@@ -2611,11 +2713,11 @@
       "members":{
         "NoData":{
           "shape":"NullableInteger",
-          "documentation":"<p> <b>Grey.</b> AWS Elastic Beanstalk and the health agent are reporting no data on an instance.</p>"
+          "documentation":"<p> <b>Grey.</b> Elastic Beanstalk and the health agent are reporting no data on an instance.</p>"
         },
         "Unknown":{
           "shape":"NullableInteger",
-          "documentation":"<p> <b>Grey.</b> AWS Elastic Beanstalk and the health agent are reporting an insufficient amount of data on an instance.</p>"
+          "documentation":"<p> <b>Grey.</b> Elastic Beanstalk and the health agent are reporting an insufficient amount of data on an instance.</p>"
         },
         "Pending":{
           "shape":"NullableInteger",
@@ -2676,7 +2778,7 @@
     "InsufficientPrivilegesException":{
       "type":"structure",
       "members":{},
-      "documentation":"<p>The specified account does not have sufficient privileges for one or more AWS services.</p>",
+      "documentation":"<p>The specified account does not have sufficient privileges for one or more Amazon Web Services services.</p>",
       "error":{
         "code":"InsufficientPrivilegesException",
         "httpStatusCode":403,
@@ -2775,7 +2877,7 @@
           "documentation":"<p> A list of available solution stacks and their <a>SolutionStackDescription</a>. </p>"
         }
       },
-      "documentation":"<p>A list of available AWS Elastic Beanstalk solution stacks.</p>"
+      "documentation":"<p>A list of available Elastic Beanstalk solution stacks.</p>"
     },
     "ListPlatformBranchesRequest":{
       "type":"structure",
@@ -3096,7 +3198,7 @@
         },
         "Namespace":{
           "shape":"OptionNamespace",
-          "documentation":"<p>A unique namespace identifying the option's associated AWS resource.</p>"
+          "documentation":"<p>A unique namespace identifying the option's associated Amazon Web Services resource.</p>"
         },
         "OptionName":{
           "shape":"ConfigurationOptionName",
@@ -3155,7 +3257,7 @@
         },
         "PlatformOwner":{
           "shape":"PlatformOwner",
-          "documentation":"<p>The AWS account ID of the person who created the platform version.</p>"
+          "documentation":"<p>The Amazon Web Services account ID of the person who created the platform version.</p>"
         },
         "PlatformName":{
           "shape":"PlatformName",
@@ -3327,7 +3429,7 @@
         },
         "PlatformOwner":{
           "shape":"PlatformOwner",
-          "documentation":"<p>The AWS account ID of the person who created the platform version.</p>"
+          "documentation":"<p>The Amazon Web Services account ID of the person who created the platform version.</p>"
         },
         "PlatformStatus":{
           "shape":"PlatformStatus",
@@ -3411,11 +3513,11 @@
       "members":{
         "EnvironmentId":{
           "shape":"EnvironmentId",
-          "documentation":"<p>The ID of the environment to rebuild.</p> <p> Condition: You must specify either this or an EnvironmentName, or both. If you do not specify either, AWS Elastic Beanstalk returns <code>MissingRequiredParameter</code> error. </p>"
+          "documentation":"<p>The ID of the environment to rebuild.</p> <p> Condition: You must specify either this or an EnvironmentName, or both. If you do not specify either, Elastic Beanstalk returns <code>MissingRequiredParameter</code> error. </p>"
         },
         "EnvironmentName":{
           "shape":"EnvironmentName",
-          "documentation":"<p>The name of the environment to rebuild.</p> <p> Condition: You must specify either this or an EnvironmentId, or both. If you do not specify either, AWS Elastic Beanstalk returns <code>MissingRequiredParameter</code> error. </p>"
+          "documentation":"<p>The name of the environment to rebuild.</p> <p> Condition: You must specify either this or an EnvironmentId, or both. If you do not specify either, Elastic Beanstalk returns <code>MissingRequiredParameter</code> error. </p>"
         }
       },
       "documentation":"<p/>"
@@ -3430,11 +3532,11 @@
       "members":{
         "EnvironmentId":{
           "shape":"EnvironmentId",
-          "documentation":"<p>The ID of the environment of the requested data.</p> <p>If no such environment is found, <code>RequestEnvironmentInfo</code> returns an <code>InvalidParameterValue</code> error. </p> <p>Condition: You must specify either this or an EnvironmentName, or both. If you do not specify either, AWS Elastic Beanstalk returns <code>MissingRequiredParameter</code> error. </p>"
+          "documentation":"<p>The ID of the environment of the requested data.</p> <p>If no such environment is found, <code>RequestEnvironmentInfo</code> returns an <code>InvalidParameterValue</code> error. </p> <p>Condition: You must specify either this or an EnvironmentName, or both. If you do not specify either, Elastic Beanstalk returns <code>MissingRequiredParameter</code> error. </p>"
         },
         "EnvironmentName":{
           "shape":"EnvironmentName",
-          "documentation":"<p>The name of the environment of the requested data.</p> <p>If no such environment is found, <code>RequestEnvironmentInfo</code> returns an <code>InvalidParameterValue</code> error. </p> <p>Condition: You must specify either this or an EnvironmentId, or both. If you do not specify either, AWS Elastic Beanstalk returns <code>MissingRequiredParameter</code> error. </p>"
+          "documentation":"<p>The name of the environment of the requested data.</p> <p>If no such environment is found, <code>RequestEnvironmentInfo</code> returns an <code>InvalidParameterValue</code> error. </p> <p>Condition: You must specify either this or an EnvironmentId, or both. If you do not specify either, Elastic Beanstalk returns <code>MissingRequiredParameter</code> error. </p>"
         },
         "InfoType":{
           "shape":"EnvironmentInfoType",
@@ -3467,36 +3569,36 @@
       "members":{
         "Maximum":{
           "shape":"BoxedInt",
-          "documentation":"<p>The maximum number of instances of this Elastic Beanstalk resource type that an AWS account can use.</p>"
+          "documentation":"<p>The maximum number of instances of this Elastic Beanstalk resource type that an Amazon Web Services account can use.</p>"
         }
       },
-      "documentation":"<p>The AWS Elastic Beanstalk quota information for a single resource type in an AWS account. It reflects the resource's limits for this account.</p>"
+      "documentation":"<p>The Elastic Beanstalk quota information for a single resource type in an Amazon Web Services account. It reflects the resource's limits for this account.</p>"
     },
     "ResourceQuotas":{
       "type":"structure",
       "members":{
         "ApplicationQuota":{
           "shape":"ResourceQuota",
-          "documentation":"<p>The quota for applications in the AWS account.</p>"
+          "documentation":"<p>The quota for applications in the Amazon Web Services account.</p>"
         },
         "ApplicationVersionQuota":{
           "shape":"ResourceQuota",
-          "documentation":"<p>The quota for application versions in the AWS account.</p>"
+          "documentation":"<p>The quota for application versions in the Amazon Web Services account.</p>"
         },
         "EnvironmentQuota":{
           "shape":"ResourceQuota",
-          "documentation":"<p>The quota for environments in the AWS account.</p>"
+          "documentation":"<p>The quota for environments in the Amazon Web Services account.</p>"
         },
         "ConfigurationTemplateQuota":{
           "shape":"ResourceQuota",
-          "documentation":"<p>The quota for configuration templates in the AWS account.</p>"
+          "documentation":"<p>The quota for configuration templates in the Amazon Web Services account.</p>"
         },
         "CustomPlatformQuota":{
           "shape":"ResourceQuota",
-          "documentation":"<p>The quota for custom platforms in the AWS account.</p>"
+          "documentation":"<p>The quota for custom platforms in the Amazon Web Services account.</p>"
         }
       },
-      "documentation":"<p>A set of per-resource AWS Elastic Beanstalk quotas associated with an AWS account. They reflect Elastic Beanstalk resource limits for this account.</p>"
+      "documentation":"<p>A set of per-resource Elastic Beanstalk quotas associated with an Amazon Web Services account. They reflect Elastic Beanstalk resource limits for this account.</p>"
     },
     "ResourceTagsDescriptionMessage":{
       "type":"structure",
@@ -3527,11 +3629,11 @@
       "members":{
         "EnvironmentId":{
           "shape":"EnvironmentId",
-          "documentation":"<p>The ID of the environment to restart the server for.</p> <p> Condition: You must specify either this or an EnvironmentName, or both. If you do not specify either, AWS Elastic Beanstalk returns <code>MissingRequiredParameter</code> error. </p>"
+          "documentation":"<p>The ID of the environment to restart the server for.</p> <p> Condition: You must specify either this or an EnvironmentName, or both. If you do not specify either, Elastic Beanstalk returns <code>MissingRequiredParameter</code> error. </p>"
         },
         "EnvironmentName":{
           "shape":"EnvironmentName",
-          "documentation":"<p>The name of the environment to restart the server for.</p> <p> Condition: You must specify either this or an EnvironmentId, or both. If you do not specify either, AWS Elastic Beanstalk returns <code>MissingRequiredParameter</code> error. </p>"
+          "documentation":"<p>The name of the environment to restart the server for.</p> <p> Condition: You must specify either this or an EnvironmentId, or both. If you do not specify either, Elastic Beanstalk returns <code>MissingRequiredParameter</code> error. </p>"
         }
       },
       "documentation":"<p/>"
@@ -3542,11 +3644,11 @@
       "members":{
         "EnvironmentId":{
           "shape":"EnvironmentId",
-          "documentation":"<p>The ID of the data's environment.</p> <p>If no such environment is found, returns an <code>InvalidParameterValue</code> error.</p> <p>Condition: You must specify either this or an EnvironmentName, or both. If you do not specify either, AWS Elastic Beanstalk returns <code>MissingRequiredParameter</code> error.</p>"
+          "documentation":"<p>The ID of the data's environment.</p> <p>If no such environment is found, returns an <code>InvalidParameterValue</code> error.</p> <p>Condition: You must specify either this or an EnvironmentName, or both. If you do not specify either, Elastic Beanstalk returns <code>MissingRequiredParameter</code> error.</p>"
         },
         "EnvironmentName":{
           "shape":"EnvironmentName",
-          "documentation":"<p>The name of the data's environment.</p> <p> If no such environment is found, returns an <code>InvalidParameterValue</code> error. </p> <p> Condition: You must specify either this or an EnvironmentId, or both. If you do not specify either, AWS Elastic Beanstalk returns <code>MissingRequiredParameter</code> error. </p>"
+          "documentation":"<p>The name of the data's environment.</p> <p> If no such environment is found, returns an <code>InvalidParameterValue</code> error. </p> <p> Condition: You must specify either this or an EnvironmentId, or both. If you do not specify either, Elastic Beanstalk returns <code>MissingRequiredParameter</code> error. </p>"
         },
         "InfoType":{
           "shape":"EnvironmentInfoType",
@@ -3883,15 +3985,15 @@
       "members":{
         "EnvironmentId":{
           "shape":"EnvironmentId",
-          "documentation":"<p>The ID of the environment to terminate.</p> <p> Condition: You must specify either this or an EnvironmentName, or both. If you do not specify either, AWS Elastic Beanstalk returns <code>MissingRequiredParameter</code> error. </p>"
+          "documentation":"<p>The ID of the environment to terminate.</p> <p> Condition: You must specify either this or an EnvironmentName, or both. If you do not specify either, Elastic Beanstalk returns <code>MissingRequiredParameter</code> error. </p>"
         },
         "EnvironmentName":{
           "shape":"EnvironmentName",
-          "documentation":"<p>The name of the environment to terminate.</p> <p> Condition: You must specify either this or an EnvironmentId, or both. If you do not specify either, AWS Elastic Beanstalk returns <code>MissingRequiredParameter</code> error. </p>"
+          "documentation":"<p>The name of the environment to terminate.</p> <p> Condition: You must specify either this or an EnvironmentId, or both. If you do not specify either, Elastic Beanstalk returns <code>MissingRequiredParameter</code> error. </p>"
         },
         "TerminateResources":{
           "shape":"TerminateEnvironmentResources",
-          "documentation":"<p>Indicates whether the associated AWS resources should shut down when the environment is terminated:</p> <ul> <li> <p> <code>true</code>: The specified environment as well as the associated AWS resources, such as Auto Scaling group and LoadBalancer, are terminated.</p> </li> <li> <p> <code>false</code>: AWS Elastic Beanstalk resource management is removed from the environment, but the AWS resources continue to operate.</p> </li> </ul> <p> For more information, see the <a href=\"https://docs.aws.amazon.com/elasticbeanstalk/latest/ug/\"> AWS Elastic Beanstalk User Guide. </a> </p> <p> Default: <code>true</code> </p> <p> Valid Values: <code>true</code> | <code>false</code> </p>"
+          "documentation":"<p>Indicates whether the associated Amazon Web Services resources should shut down when the environment is terminated:</p> <ul> <li> <p> <code>true</code>: The specified environment as well as the associated Amazon Web Services resources, such as Auto Scaling group and LoadBalancer, are terminated.</p> </li> <li> <p> <code>false</code>: Elastic Beanstalk resource management is removed from the environment, but the Amazon Web Services resources continue to operate.</p> </li> </ul> <p> For more information, see the <a href=\"https://docs.aws.amazon.com/elasticbeanstalk/latest/ug/\"> Elastic Beanstalk User Guide. </a> </p> <p> Default: <code>true</code> </p> <p> Valid Values: <code>true</code> | <code>false</code> </p>"
         },
         "ForceTerminate":{
           "shape":"ForceTerminate",
@@ -4001,7 +4103,7 @@
         },
         "Description":{
           "shape":"Description",
-          "documentation":"<p>A new description for the application.</p> <p>Default: If not specified, AWS Elastic Beanstalk does not update the description.</p>"
+          "documentation":"<p>A new description for the application.</p> <p>Default: If not specified, Elastic Beanstalk does not update the description.</p>"
         }
       },
       "documentation":"<p>Request to update an application.</p>"
@@ -4085,11 +4187,11 @@
         },
         "EnvironmentId":{
           "shape":"EnvironmentId",
-          "documentation":"<p>The ID of the environment to update.</p> <p>If no environment with this ID exists, AWS Elastic Beanstalk returns an <code>InvalidParameterValue</code> error.</p> <p>Condition: You must specify either this or an EnvironmentName, or both. If you do not specify either, AWS Elastic Beanstalk returns <code>MissingRequiredParameter</code> error. </p>"
+          "documentation":"<p>The ID of the environment to update.</p> <p>If no environment with this ID exists, Elastic Beanstalk returns an <code>InvalidParameterValue</code> error.</p> <p>Condition: You must specify either this or an EnvironmentName, or both. If you do not specify either, Elastic Beanstalk returns <code>MissingRequiredParameter</code> error. </p>"
         },
         "EnvironmentName":{
           "shape":"EnvironmentName",
-          "documentation":"<p>The name of the environment to update. If no environment with this name exists, AWS Elastic Beanstalk returns an <code>InvalidParameterValue</code> error. </p> <p>Condition: You must specify either this or an EnvironmentId, or both. If you do not specify either, AWS Elastic Beanstalk returns <code>MissingRequiredParameter</code> error. </p>"
+          "documentation":"<p>The name of the environment to update. If no environment with this name exists, Elastic Beanstalk returns an <code>InvalidParameterValue</code> error. </p> <p>Condition: You must specify either this or an EnvironmentId, or both. If you do not specify either, Elastic Beanstalk returns <code>MissingRequiredParameter</code> error. </p>"
         },
         "GroupName":{
           "shape":"GroupName",
@@ -4097,19 +4199,19 @@
         },
         "Description":{
           "shape":"Description",
-          "documentation":"<p>If this parameter is specified, AWS Elastic Beanstalk updates the description of this environment.</p>"
+          "documentation":"<p>If this parameter is specified, Elastic Beanstalk updates the description of this environment.</p>"
         },
         "Tier":{
           "shape":"EnvironmentTier",
-          "documentation":"<p>This specifies the tier to use to update the environment.</p> <p>Condition: At this time, if you change the tier version, name, or type, AWS Elastic Beanstalk returns <code>InvalidParameterValue</code> error. </p>"
+          "documentation":"<p>This specifies the tier to use to update the environment.</p> <p>Condition: At this time, if you change the tier version, name, or type, Elastic Beanstalk returns <code>InvalidParameterValue</code> error. </p>"
         },
         "VersionLabel":{
           "shape":"VersionLabel",
-          "documentation":"<p>If this parameter is specified, AWS Elastic Beanstalk deploys the named application version to the environment. If no such application version is found, returns an <code>InvalidParameterValue</code> error. </p>"
+          "documentation":"<p>If this parameter is specified, Elastic Beanstalk deploys the named application version to the environment. If no such application version is found, returns an <code>InvalidParameterValue</code> error. </p>"
         },
         "TemplateName":{
           "shape":"ConfigurationTemplateName",
-          "documentation":"<p>If this parameter is specified, AWS Elastic Beanstalk deploys this configuration template to the environment. If no such configuration template is found, AWS Elastic Beanstalk returns an <code>InvalidParameterValue</code> error. </p>"
+          "documentation":"<p>If this parameter is specified, Elastic Beanstalk deploys this configuration template to the environment. If no such configuration template is found, Elastic Beanstalk returns an <code>InvalidParameterValue</code> error. </p>"
         },
         "SolutionStackName":{
           "shape":"SolutionStackName",
@@ -4121,7 +4223,7 @@
         },
         "OptionSettings":{
           "shape":"ConfigurationOptionSettingsList",
-          "documentation":"<p>If specified, AWS Elastic Beanstalk updates the configuration set associated with the running environment and sets the specified configuration options to the requested value.</p>"
+          "documentation":"<p>If specified, Elastic Beanstalk updates the configuration set associated with the running environment and sets the specified configuration options to the requested value.</p>"
         },
         "OptionsToRemove":{
           "shape":"OptionsSpecifierList",
@@ -4224,5 +4326,5 @@
     },
     "VirtualizationType":{"type":"string"}
   },
-  "documentation":"<fullname>AWS Elastic Beanstalk</fullname> <p>AWS Elastic Beanstalk makes it easy for you to create, deploy, and manage scalable, fault-tolerant applications running on the Amazon Web Services cloud.</p> <p>For more information about this product, go to the <a href=\"http://aws.amazon.com/elasticbeanstalk/\">AWS Elastic Beanstalk</a> details page. The location of the latest AWS Elastic Beanstalk WSDL is <a href=\"https://elasticbeanstalk.s3.amazonaws.com/doc/2010-12-01/AWSElasticBeanstalk.wsdl\">https://elasticbeanstalk.s3.amazonaws.com/doc/2010-12-01/AWSElasticBeanstalk.wsdl</a>. To install the Software Development Kits (SDKs), Integrated Development Environment (IDE) Toolkits, and command line tools that enable you to access the API, go to <a href=\"http://aws.amazon.com/tools/\">Tools for Amazon Web Services</a>.</p> <p> <b>Endpoints</b> </p> <p>For a list of region-specific endpoints that AWS Elastic Beanstalk supports, go to <a href=\"https://docs.aws.amazon.com/general/latest/gr/rande.html#elasticbeanstalk_region\">Regions and Endpoints</a> in the <i>Amazon Web Services Glossary</i>.</p>"
+  "documentation":"<fullname>Elastic Beanstalk</fullname> <p>Elastic Beanstalk makes it easy for you to create, deploy, and manage scalable, fault-tolerant applications running on the Amazon Web Services Cloud.</p> <p>For more information about this product, go to the <a href=\"http://aws.amazon.com/elasticbeanstalk/\">Elastic Beanstalk</a> details page. The location of the latest Elastic Beanstalk WSDL is <a href=\"https://elasticbeanstalk.s3.amazonaws.com/doc/2010-12-01/AWSElasticBeanstalk.wsdl\">https://elasticbeanstalk.s3.amazonaws.com/doc/2010-12-01/AWSElasticBeanstalk.wsdl</a>. To install the Software Development Kits (SDKs), Integrated Development Environment (IDE) Toolkits, and command line tools that enable you to access the API, go to <a href=\"http://aws.amazon.com/tools/\">Tools for Amazon Web Services</a>.</p> <p> <b>Endpoints</b> </p> <p>For a list of region-specific endpoints that Elastic Beanstalk supports, go to <a href=\"https://docs.aws.amazon.com/general/latest/gr/rande.html#elasticbeanstalk_region\">Regions and Endpoints</a> in the <i>Amazon Web Services Glossary</i>.</p>"
 }

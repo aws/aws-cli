@@ -51,7 +51,9 @@ def _do_generate_index(filename):
     driver = clidriver.create_clidriver()
     index_gen = IndexGenerator(indexers=indexers)
     try:
+        db_connection.execute('BEGIN')
         index_gen.generate_index(driver)
+        db_connection.execute('COMMIT')
     finally:
         db_connection.close()
 
@@ -70,5 +72,5 @@ class IndexGenerator:
         self._indexers = indexers
 
     def generate_index(self, clidriver):
-        for indexer in self._indexers:
-            indexer.generate_index(clidriver)
+        for index_builder in self._indexers:
+            index_builder.generate_index(clidriver)

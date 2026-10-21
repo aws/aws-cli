@@ -705,6 +705,36 @@
     }
   },
   "shapes":{
+    "AbandonmentRatePacingConfig":{
+      "type":"structure",
+      "required":[
+        "targetRate",
+        "connectionStartPoint",
+        "connectionThresholdSeconds",
+        "evaluationWindow"
+      ],
+      "members":{
+        "targetRate":{"shape":"TargetRate"},
+        "connectionStartPoint":{
+          "shape":"ConnectionStartPoint",
+          "documentation":"<p>Event from which connectionThresholdSeconds is measured.</p>"
+        },
+        "connectionThresholdSeconds":{
+          "shape":"AbandonmentRatePacingConfigConnectionThresholdSecondsInteger",
+          "documentation":"<p>Seconds after connectionStartPoint before a contact counts as abandoned.</p>"
+        },
+        "evaluationWindow":{
+          "shape":"EvaluationWindow",
+          "documentation":"<p>Rolling window over which abandonmentRate is computed.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for abandonment-rate-based dialer throttling.</p>"
+    },
+    "AbandonmentRatePacingConfigConnectionThresholdSecondsInteger":{
+      "type":"integer",
+      "box":true,
+      "min":1
+    },
     "AccessDeniedException":{
       "type":"structure",
       "required":["message"],
@@ -785,12 +815,18 @@
       "type":"double",
       "documentation":"<p>The bandwidth allocation of a queue resource.</p>",
       "box":true,
-      "max":1,
+      "max":2,
       "min":0
     },
     "Boolean":{
       "type":"boolean",
       "box":true
+    },
+    "BrowserId":{
+      "type":"string",
+      "documentation":"<p>Browser Id for web notification event trigger</p>",
+      "max":36,
+      "min":1
     },
     "Campaign":{
       "type":"structure",
@@ -896,6 +932,13 @@
       "box":true,
       "max":1,
       "min":0.01
+    },
+    "ChannelContext":{
+      "type":"structure",
+      "members":{
+        "webNotificationContext":{"shape":"WebNotificationContext"}
+      },
+      "documentation":"<p>Additional metadata related to the event trigger context</p>"
     },
     "ChannelSubtype":{
       "type":"string",
@@ -1043,6 +1086,15 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "ConnectionStartPoint":{
+      "type":"string",
+      "documentation":"<p>Reference point against which the connection threshold is measured.</p>",
+      "enum":[
+        "CONNECTED_TO_SYSTEM",
+        "GREETING_START",
+        "GREETING_END"
+      ]
     },
     "ContactFlowId":{
       "type":"string",
@@ -1405,12 +1457,27 @@
       "box":true,
       "min":0
     },
+    "EvaluationWindow":{
+      "type":"string",
+      "documentation":"<p>Rolling window over which abandonmentRate is computed. Range PT1H to PT24H.</p>",
+      "max":5,
+      "min":0,
+      "pattern":"PT([1-9]|1[0-9]|2[0-4])H"
+    },
     "EventTrigger":{
       "type":"structure",
       "members":{
         "customerProfilesDomainArn":{"shape":"Arn"}
       },
       "documentation":"<p>Event trigger of the campaign</p>"
+    },
+    "EventTriggerContext":{
+      "type":"structure",
+      "members":{
+        "sourceEvent":{"shape":"SourceEvent"},
+        "channelContext":{"shape":"ChannelContext"}
+      },
+      "documentation":"<p>Event trigger context data</p>"
     },
     "EventType":{
       "type":"string",
@@ -1420,7 +1487,8 @@
         "Campaign-SMS",
         "Campaign-Telephony",
         "Campaign-Orchestration",
-        "Campaign-WhatsApp"
+        "Campaign-WhatsApp",
+        "Campaign-WebNotification"
       ]
     },
     "ExternalCampaignType":{
@@ -1972,6 +2040,21 @@
       "max":25,
       "min":1
     },
+    "PacingStrategy":{
+      "type":"structure",
+      "members":{
+        "abandonmentRate":{"shape":"AbandonmentRatePacingConfig"}
+      },
+      "documentation":"<p>Pacing constraint the dialer may enforce.</p>",
+      "union":true
+    },
+    "PacingStrategyList":{
+      "type":"list",
+      "member":{"shape":"PacingStrategy"},
+      "documentation":"<p>List of pacing strategies the dialer enforces simultaneously.</p>",
+      "max":1,
+      "min":1
+    },
     "PauseCampaignRequest":{
       "type":"structure",
       "required":["id"],
@@ -1988,7 +2071,11 @@
       "type":"structure",
       "required":["bandwidthAllocation"],
       "members":{
-        "bandwidthAllocation":{"shape":"BandwidthAllocation"}
+        "bandwidthAllocation":{"shape":"BandwidthAllocation"},
+        "pacingStrategies":{
+          "shape":"PacingStrategyList",
+          "documentation":"<p>Pacing strategies the dialer enforces simultaneously.</p>"
+        }
       },
       "documentation":"<p>Predictive config</p>"
     },
@@ -2019,7 +2106,8 @@
       "members":{
         "clientToken":{"shape":"ClientToken"},
         "profileId":{"shape":"ProfileId"},
-        "expirationTime":{"shape":"TimeStamp"}
+        "expirationTime":{"shape":"TimeStamp"},
+        "eventTriggerContext":{"shape":"EventTriggerContext"}
       },
       "documentation":"<p>Information about a profile outbound request</p>"
     },
@@ -2272,6 +2360,12 @@
       },
       "exception":true
     },
+    "SessionId":{
+      "type":"string",
+      "documentation":"<p>Session Id for web notification event trigger</p>",
+      "max":36,
+      "min":1
+    },
     "SmsChannelSubtypeConfig":{
       "type":"structure",
       "required":[
@@ -2327,6 +2421,11 @@
       },
       "documentation":"<p>Source of the campaign</p>",
       "union":true
+    },
+    "SourceEvent":{
+      "type":"string",
+      "documentation":"<p>Source event object for event triggers</p>",
+      "min":1
     },
     "SourcePhoneNumber":{
       "type":"string",
@@ -2468,6 +2567,13 @@
       "documentation":"<p>The value of tag.</p>",
       "max":256,
       "min":0
+    },
+    "TargetRate":{
+      "type":"double",
+      "documentation":"<p>Target abandonment rate.</p>",
+      "box":true,
+      "max":1.0,
+      "min":0.0
     },
     "TelephonyChannelSubtypeConfig":{
       "type":"structure",
@@ -2757,6 +2863,14 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "WebNotificationContext":{
+      "type":"structure",
+      "members":{
+        "sessionId":{"shape":"SessionId"},
+        "browserId":{"shape":"BrowserId"}
+      },
+      "documentation":"<p>Context metadata for the web notification type channel</p>"
     },
     "WhatsAppChannelSubtypeConfig":{
       "type":"structure",

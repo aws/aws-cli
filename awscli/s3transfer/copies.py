@@ -69,6 +69,7 @@ class CopySubmissionTask(SubmissionTask):
         'CopySourceSSECustomerKeyMD5',
         'MetadataDirective',
         'TaggingDirective',
+        'AnnotationDirective',
         'IfNoneMatch',
     ]
 
@@ -80,7 +81,6 @@ class CopySubmissionTask(SubmissionTask):
         'ExpectedBucketOwner',
         'IfNoneMatch',
     ]
-
 
     def _submit(
         self, client, config, osutil, request_executor, transfer_future

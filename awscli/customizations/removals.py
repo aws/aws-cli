@@ -81,6 +81,7 @@ def register_removals(event_handler):
     cmd_remover.remove(
         on_event='building-command-table.bedrock-agent-runtime',
         remove_commands=[
+            'agentic-retrieve-stream',
             'invoke-agent',
             'invoke-flow',
             'invoke-inline-agent',
@@ -119,6 +120,14 @@ def register_removals(event_handler):
     cmd_remover.remove(
         on_event='building-command-table.devops-agent',
         remove_commands=['send-message'],
+    )
+    cmd_remover.remove(
+        on_event='building-command-table.sagemakertrainingsessionruntime',
+        remove_commands=['sample-training-session-with-response-stream'],
+    )
+    cmd_remover.remove(
+        on_event='building-command-table.healthlake',
+        remove_commands=['update-profile-with-agent'],
     )
 
 

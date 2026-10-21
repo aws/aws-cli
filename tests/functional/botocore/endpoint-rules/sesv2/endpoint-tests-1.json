@@ -696,6 +696,219 @@
                 "Region": "us-east-1",
                 "Endpoint": "https://example.com"
             }
+        },
+        {
+            "documentation": "Gov IPv4 only: us-gov-west-1 primary, dualstack and FIPS disabled",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "signingName": "ses",
+                                "name": "sigv4a",
+                                "signingRegionSet": [
+                                    "*"
+                                ]
+                            }
+                        ]
+                    },
+                    "url": "https://abc123.456def.endpoints.email.us-gov.amazonaws.com"
+                }
+            },
+            "params": {
+                "EndpointId": "abc123.456def",
+                "UseDualStack": false,
+                "UseFIPS": false,
+                "Region": "us-gov-west-1"
+            }
+        },
+        {
+            "documentation": "Gov IPv4 only: us-gov-east-1, dualstack and FIPS disabled (proves both gov regions resolve identically)",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "signingName": "ses",
+                                "name": "sigv4a",
+                                "signingRegionSet": [
+                                    "*"
+                                ]
+                            }
+                        ]
+                    },
+                    "url": "https://abc123.456def.endpoints.email.us-gov.amazonaws.com"
+                }
+            },
+            "params": {
+                "EndpointId": "abc123.456def",
+                "UseDualStack": false,
+                "UseFIPS": false,
+                "Region": "us-gov-east-1"
+            }
+        },
+        {
+            "documentation": "Gov dualstack: us-gov-west-1, dualstack enabled, FIPS disabled (no global. prefix; api.aws not global.api.aws)",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "signingName": "ses",
+                                "name": "sigv4a",
+                                "signingRegionSet": [
+                                    "*"
+                                ]
+                            }
+                        ]
+                    },
+                    "url": "https://abc123.456def.endpoints.email.us-gov.api.aws"
+                }
+            },
+            "params": {
+                "EndpointId": "abc123.456def",
+                "UseDualStack": true,
+                "UseFIPS": false,
+                "Region": "us-gov-west-1"
+            }
+        },
+        {
+            "documentation": "Gov FIPS: us-gov-west-1, FIPS enabled, dualstack disabled — FIPS not supported with multi-region endpoints",
+            "expect": {
+                "error": "Invalid Configuration: FIPS is not supported with multi-region endpoints"
+            },
+            "params": {
+                "EndpointId": "abc123.456def",
+                "UseDualStack": false,
+                "UseFIPS": true,
+                "Region": "us-gov-west-1"
+            }
+        },
+        {
+            "documentation": "Gov FIPS+dualstack: us-gov-west-1, both FIPS and dualstack enabled — FIPS check precedes dualstack branch selection",
+            "expect": {
+                "error": "Invalid Configuration: FIPS is not supported with multi-region endpoints"
+            },
+            "params": {
+                "EndpointId": "abc123.456def",
+                "UseDualStack": true,
+                "UseFIPS": true,
+                "Region": "us-gov-west-1"
+            }
+        },
+        {
+            "documentation": "Gov custom SDK endpoint: us-gov-west-1, EndpointId set, custom Endpoint — passes through unchanged with SigV4a",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "signingName": "ses",
+                                "name": "sigv4a",
+                                "signingRegionSet": [
+                                    "*"
+                                ]
+                            }
+                        ]
+                    },
+                    "url": "https://example.com"
+                }
+            },
+            "params": {
+                "EndpointId": "abc123.456def",
+                "UseDualStack": false,
+                "UseFIPS": false,
+                "Region": "us-gov-west-1",
+                "Endpoint": "https://example.com"
+            }
+        },
+        {
+            "documentation": "China IPv4 regression: cn-north-1, dualstack disabled — endpoint uses aws-cn dnsSuffix (amazonaws.com.cn)",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "signingName": "ses",
+                                "name": "sigv4a",
+                                "signingRegionSet": [
+                                    "*"
+                                ]
+                            }
+                        ]
+                    },
+                    "url": "https://abc123.456def.endpoints.email.amazonaws.com.cn"
+                }
+            },
+            "params": {
+                "EndpointId": "abc123.456def",
+                "UseDualStack": false,
+                "UseFIPS": false,
+                "Region": "cn-north-1"
+            }
+        },
+        {
+            "documentation": "China dualstack regression: cn-north-1, dualstack enabled — uses global. prefix with aws-cn dualStackDnsSuffix (api.amazonwebservices.com.cn)",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "signingName": "ses",
+                                "name": "sigv4a",
+                                "signingRegionSet": [
+                                    "*"
+                                ]
+                            }
+                        ]
+                    },
+                    "url": "https://abc123.456def.endpoints.email.global.api.amazonwebservices.com.cn"
+                }
+            },
+            "params": {
+                "EndpointId": "abc123.456def",
+                "UseDualStack": true,
+                "UseFIPS": false,
+                "Region": "cn-north-1"
+            }
+        },
+        {
+            "documentation": "Gov custom SDK endpoint with FIPS: FIPS guard sits above the SDK passthrough, so error wins",
+            "expect": {
+                "error": "Invalid Configuration: FIPS is not supported with multi-region endpoints"
+            },
+            "params": {
+                "EndpointId": "abc123.456def",
+                "UseDualStack": false,
+                "UseFIPS": true,
+                "Region": "us-gov-west-1",
+                "Endpoint": "https://example.com"
+            }
+        },
+        {
+            "documentation": "Gov dualstack OSU (us-gov-east-1) matches PDT dualstack output (us-gov.api.aws, no global. prefix)",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "signingName": "ses",
+                                "name": "sigv4a",
+                                "signingRegionSet": [
+                                    "*"
+                                ]
+                            }
+                        ]
+                    },
+                    "url": "https://abc123.456def.endpoints.email.us-gov.api.aws"
+                }
+            },
+            "params": {
+                "EndpointId": "abc123.456def",
+                "UseDualStack": true,
+                "UseFIPS": false,
+                "Region": "us-gov-east-1"
+            }
         }
     ],
     "version": "1.0"

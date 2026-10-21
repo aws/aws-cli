@@ -146,6 +146,7 @@ class TestURLLib3Session(unittest.TestCase):
             preload_content=False,
             decode_content=False,
             chunked=chunked,
+            enforce_content_length=False,
         )
 
     def _assert_manager_call(self, manager, *assert_args, **assert_kwargs):

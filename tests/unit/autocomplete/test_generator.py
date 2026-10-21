@@ -23,3 +23,15 @@ class TestGenerateCompletionIndex(unittest.TestCase):
         index = generator.IndexGenerator([model_index])
         index.generate_index(clidriver)
         model_index.generate_index.assert_called_with(clidriver)
+
+    @mock.patch('awscli.autocomplete.generator.IndexGenerator')
+    @mock.patch('awscli.autocomplete.generator.clidriver.create_clidriver')
+    @mock.patch('awscli.autocomplete.generator.db.DatabaseConnection')
+    def test_generates_index_in_transaction(
+        self, database_connection, _create_clidriver, _index_generator
+    ):
+        generator._do_generate_index('index.db')
+
+        database_connection.return_value.execute.assert_has_calls(
+            [mock.call('BEGIN'), mock.call('COMMIT')]
+        )

@@ -32,6 +32,24 @@
       ],
       "documentation":"<p>Creates a centralization rule that applies across an Amazon Web Services Organization. This operation can only be called by the organization's management account or a delegated administrator account.</p>"
     },
+    "CreateDatasetIntegration":{
+      "name":"CreateDatasetIntegration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/CreateDatasetIntegration",
+        "responseCode":201
+      },
+      "input":{"shape":"CreateDatasetIntegrationInput"},
+      "output":{"shape":"CreateDatasetIntegrationOutput"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"TooManyRequestsException"}
+      ],
+      "documentation":"<p>Creates a dataset integration for the caller's account in the current region and returns its ARN.</p> <p>To use this operation, you must have permission to access the dataset integration resources through the IAM role specified in the <code>RoleArn</code> parameter.</p> <p>If a dataset integration already exists for the account, this operation fails with a <code>ConflictException</code>.</p>"
+    },
     "CreateS3TableIntegration":{
       "name":"CreateS3TableIntegration",
       "http":{
@@ -125,6 +143,24 @@
       ],
       "documentation":"<p>Deletes an organization-wide centralization rule. This operation can only be called by the organization's management account or a delegated administrator account.</p>"
     },
+    "DeleteDatasetIntegration":{
+      "name":"DeleteDatasetIntegration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/DeleteDatasetIntegration",
+        "responseCode":204
+      },
+      "input":{"shape":"DeleteDatasetIntegrationInput"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"TooManyRequestsException"}
+      ],
+      "documentation":"<p>Deletes a dataset integration for the caller's account in the current region. This operation is idempotent; if you submit the same delete more than once, each call succeeds.</p>",
+      "idempotent":true
+    },
     "DeleteS3TableIntegration":{
       "name":"DeleteS3TableIntegration",
       "http":{
@@ -214,6 +250,25 @@
         {"shape":"TooManyRequestsException"}
       ],
       "documentation":"<p>Retrieves the details of a specific organization centralization rule. This operation can only be called by the organization's management account or a delegated administrator account.</p>",
+      "readonly":true
+    },
+    "GetDatasetIntegration":{
+      "name":"GetDatasetIntegration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/GetDatasetIntegration",
+        "responseCode":200
+      },
+      "input":{"shape":"GetDatasetIntegrationInput"},
+      "output":{"shape":"GetDatasetIntegrationOutput"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"TooManyRequestsException"}
+      ],
+      "documentation":"<p>Returns the dataset integration for the caller's account in the current region.</p>",
       "readonly":true
     },
     "GetS3TableIntegration":{
@@ -358,6 +413,24 @@
         {"shape":"TooManyRequestsException"}
       ],
       "documentation":"<p>Lists all centralization rules in your organization. This operation can only be called by the organization's management account or a delegated administrator account.</p>",
+      "readonly":true
+    },
+    "ListDatasetIntegrations":{
+      "name":"ListDatasetIntegrations",
+      "http":{
+        "method":"POST",
+        "requestUri":"/ListDatasetIntegrations",
+        "responseCode":200
+      },
+      "input":{"shape":"ListDatasetIntegrationsInput"},
+      "output":{"shape":"ListDatasetIntegrationsOutput"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"TooManyRequestsException"}
+      ],
+      "documentation":"<p>Returns the dataset integrations in your account.</p>",
       "readonly":true
     },
     "ListResourceTelemetry":{
@@ -652,6 +725,25 @@
       ],
       "documentation":"<p>Updates an existing centralization rule that applies across an Amazon Web Services Organization. This operation can only be called by the organization's management account or a delegated administrator account.</p>"
     },
+    "UpdateDatasetIntegration":{
+      "name":"UpdateDatasetIntegration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/UpdateDatasetIntegration",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateDatasetIntegrationInput"},
+      "output":{"shape":"UpdateDatasetIntegrationOutput"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"TooManyRequestsException"}
+      ],
+      "documentation":"<p>Updates a dataset integration for the caller's account in the current region. This operation is idempotent; if you submit the same update more than once, each call succeeds.</p>",
+      "idempotent":true
+    },
     "UpdateTelemetryPipeline":{
       "name":"UpdateTelemetryPipeline",
       "http":{
@@ -889,6 +981,10 @@
         "DestinationLogsConfiguration":{
           "shape":"DestinationLogsConfiguration",
           "documentation":"<p>Log specific configuration for centralization destination log groups.</p>"
+        },
+        "DestinationMetricsConfiguration":{
+          "shape":"DestinationMetricsConfiguration",
+          "documentation":"<p>Metric specific configuration for centralization destination metrics.</p>"
         }
       },
       "documentation":"<p>Configuration specifying the primary destination for centralized telemetry data.</p>"
@@ -908,6 +1004,14 @@
         "SourceLogsConfiguration":{
           "shape":"SourceLogsConfiguration",
           "documentation":"<p>Log specific configuration for centralization source log groups.</p>"
+        },
+        "SourceMetricsConfiguration":{
+          "shape":"SourceMetricsConfiguration",
+          "documentation":"<p>Metric specific configuration for centralization source metrics.</p>"
+        },
+        "SourceContextGraphConfiguration":{
+          "shape":"SourceContextGraphConfiguration",
+          "documentation":"<p>Configuration that enables centralization of the context graph for the selected sources. Including this configuration in a rule's source opts the rule into centralizing the context graph for the selected sources.</p>"
         }
       },
       "documentation":"<p>Configuration specifying the source of telemetry data to be centralized.</p>"
@@ -950,6 +1054,18 @@
         "FailureReason":{
           "shape":"CentralizationFailureReason",
           "documentation":"<p>The reason why an organization centralization rule is marked UNHEALTHY.</p>"
+        },
+        "TagPropagationStatus":{
+          "shape":"TagPropagationStatus",
+          "documentation":"<p>The health status of tag propagation for this rule. This status is independent of the overall <code>RuleHealth</code> for log delivery. Returns <code>Healthy</code> when the most recent tag-propagation attempt succeeded, or <code>Unhealthy</code> when the most recent attempt failed.</p>"
+        },
+        "TagPropagationFailureReason":{
+          "shape":"TagPropagationFailureReason",
+          "documentation":"<p>The reason tag propagation is unhealthy for this rule. Only present when <code>TagPropagationStatus</code> is <code>Unhealthy</code>.</p>"
+        },
+        "ContextGraphStatus":{
+          "shape":"ContextGraphStatus",
+          "documentation":"<p>The status of context graph centralization for this rule. Returns <code>Provisioning</code> while the context graph is being set up, <code>Healthy</code> once it is active, or <code>Unhealthy</code> if provisioning failed. This status is independent of the overall <code>RuleHealth</code> for log delivery.</p>"
         },
         "DestinationAccountId":{
           "shape":"String",
@@ -1039,6 +1155,15 @@
       },
       "exception":true
     },
+    "ContextGraphStatus":{
+      "type":"string",
+      "documentation":"<p>The status of context graph centralization for a centralization rule. This status is independent of the overall <code>RuleHealth</code> for log delivery. Returns <code>Provisioning</code> while the context graph is being set up, <code>Healthy</code> once it is active, or <code>Unhealthy</code> if provisioning failed.</p>",
+      "enum":[
+        "Healthy",
+        "Unhealthy",
+        "Provisioning"
+      ]
+    },
     "CreateCentralizationRuleForOrganizationInput":{
       "type":"structure",
       "required":[
@@ -1066,6 +1191,47 @@
         "RuleArn":{
           "shape":"ResourceArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the created organization centralization rule.</p>"
+        }
+      }
+    },
+    "CreateDatasetIntegrationInput":{
+      "type":"structure",
+      "required":["RoleArn"],
+      "members":{
+        "RoleArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role that grants Amazon CloudWatch permission to access the resources needed for the dataset integration.</p>"
+        },
+        "Tags":{
+          "shape":"TagMapInput",
+          "documentation":"<p>The key-value pairs to associate with the dataset integration resource for categorization and management purposes.</p>"
+        }
+      }
+    },
+    "CreateDatasetIntegrationOutput":{
+      "type":"structure",
+      "required":[
+        "Arn",
+        "RoleArn",
+        "CreatedAt",
+        "UpdatedAt"
+      ],
+      "members":{
+        "Arn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the created dataset integration.</p>"
+        },
+        "RoleArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role associated with the dataset integration.</p>"
+        },
+        "CreatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the dataset integration was created.</p>"
+        },
+        "UpdatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the dataset integration was last updated.</p>"
         }
       }
     },
@@ -1212,6 +1378,33 @@
       "type":"list",
       "member":{"shape":"DataSource"}
     },
+    "DatasetIntegrationSummaries":{
+      "type":"list",
+      "member":{"shape":"DatasetIntegrationSummary"}
+    },
+    "DatasetIntegrationSummary":{
+      "type":"structure",
+      "required":["Arn"],
+      "members":{
+        "Arn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the dataset integration.</p>"
+        },
+        "RoleArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role associated with the dataset integration.</p>"
+        },
+        "CreatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the dataset integration was created.</p>"
+        },
+        "UpdatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the dataset integration was last updated.</p>"
+        }
+      },
+      "documentation":"<p>Contains summary information about a dataset integration, including its ARN, associated IAM role, and creation and update timestamps, as returned by <code>ListDatasetIntegrations</code>.</p>"
+    },
     "DeleteCentralizationRuleForOrganizationInput":{
       "type":"structure",
       "required":["RuleIdentifier"],
@@ -1219,6 +1412,16 @@
         "RuleIdentifier":{
           "shape":"RuleIdentifier",
           "documentation":"<p>The identifier (name or ARN) of the organization centralization rule to delete.</p>"
+        }
+      }
+    },
+    "DeleteDatasetIntegrationInput":{
+      "type":"structure",
+      "required":["Arn"],
+      "members":{
+        "Arn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the dataset integration to delete.</p>"
         }
       }
     },
@@ -1266,6 +1469,11 @@
         }
       }
     },
+    "DeletionProtection":{
+      "type":"string",
+      "documentation":"<p>Specifies the deletion protection setting that a rule applies to the log groups that it creates. If you don't specify a value, the rule doesn't enable deletion protection. The following value is supported:</p> <ul> <li> <p> <code>ENABLED</code> – The rule enables deletion protection on log groups that it creates.</p> </li> </ul>",
+      "enum":["ENABLED"]
+    },
     "DestinationLogsConfiguration":{
       "type":"structure",
       "members":{
@@ -1280,9 +1488,27 @@
         "LogGroupNameConfiguration":{
           "shape":"LogGroupNameConfiguration",
           "documentation":"<p>Configuration that specifies a naming pattern for destination log groups created during centralization. The pattern supports static text and dynamic variables that are replaced with source attributes when log groups are created.</p>"
+        },
+        "TagPropagationConfiguration":{
+          "shape":"TagPropagationConfiguration",
+          "documentation":"<p>Specifies the tag propagation configuration for this centralization rule. When present, <code>LogGroupNameConfiguration</code> must use a <code>LogGroupNamePattern</code> that contains <code>${source.logGroup}</code>, <code>${source.accountId}</code>, and <code>${source.region}</code>.</p>"
+        },
+        "LogGroupDeletionProtection":{
+          "shape":"DeletionProtection",
+          "documentation":"<p>Specifies whether this centralization rule enables deletion protection on the destination log groups that it creates. If you don't specify this setting, the rule doesn't enable deletion protection on the log groups that it creates. If you specify a backup Region in <code>BackupConfiguration</code>, the setting also applies to the log groups that the rule creates in the backup Region.</p> <p>When you set this to <code>ENABLED</code>, the rule enables deletion protection only on log groups that it creates after you enable the setting. It does not add deletion protection to log groups the rule created before you enabled the setting.</p> <p>If you remove this setting from the rule or delete the rule, deletion protection stays enabled on log groups that already have it. To delete one of these log groups, first disable deletion protection on the log group in the destination account.</p>"
         }
       },
       "documentation":"<p>Configuration for centralization destination log groups, including encryption and backup settings.</p>"
+    },
+    "DestinationMetricsConfiguration":{
+      "type":"structure",
+      "members":{
+        "BackupConfiguration":{
+          "shape":"MetricsBackupConfiguration",
+          "documentation":"<p>Configuration defining the backup region for the metrics backup destination.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for centralization destination metrics, including backup settings.</p>"
     },
     "DestinationType":{
       "type":"string",
@@ -1329,6 +1555,14 @@
       "enum":[
         "ALLOW",
         "SKIP"
+      ]
+    },
+    "EncryptionScope":{
+      "type":"string",
+      "documentation":"<p>Determines which newly created destination log groups are encrypted with the configured KMS key.</p>",
+      "enum":[
+        "ENCRYPTED_SOURCE_ONLY",
+        "NEW_DESTINATION_LOG_GROUPS"
       ]
     },
     "EncryptionStrategy":{
@@ -1455,9 +1689,52 @@
           "shape":"CentralizationFailureReason",
           "documentation":"<p>The reason why an organization centralization rule is marked UNHEALTHY.</p>"
         },
+        "TagPropagationStatus":{
+          "shape":"TagPropagationStatus",
+          "documentation":"<p>The health status of tag propagation for this rule. This status is independent of the overall <code>RuleHealth</code> for log delivery. Returns <code>Healthy</code> when the most recent tag-propagation attempt succeeded, or <code>Unhealthy</code> when the most recent attempt failed.</p>"
+        },
+        "TagPropagationFailureReason":{
+          "shape":"TagPropagationFailureReason",
+          "documentation":"<p>The reason tag propagation is unhealthy for this rule. Only present when <code>TagPropagationStatus</code> is <code>Unhealthy</code>.</p>"
+        },
+        "ContextGraphStatus":{
+          "shape":"ContextGraphStatus",
+          "documentation":"<p>The status of context graph centralization for this rule. Returns <code>Provisioning</code> while the context graph is being set up, <code>Healthy</code> once it is active, or <code>Unhealthy</code> if provisioning failed. This status is independent of the overall <code>RuleHealth</code> for log delivery.</p>"
+        },
         "CentralizationRule":{
           "shape":"CentralizationRule",
           "documentation":"<p>The configuration details for the organization centralization rule.</p>"
+        }
+      }
+    },
+    "GetDatasetIntegrationInput":{
+      "type":"structure",
+      "required":["Arn"],
+      "members":{
+        "Arn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the dataset integration to retrieve.</p>"
+        }
+      }
+    },
+    "GetDatasetIntegrationOutput":{
+      "type":"structure",
+      "members":{
+        "Arn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the dataset integration.</p>"
+        },
+        "RoleArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role associated with the dataset integration.</p>"
+        },
+        "CreatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the dataset integration was created.</p>"
+        },
+        "UpdatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the dataset integration was last updated.</p>"
         }
       }
     },
@@ -1668,6 +1945,12 @@
         }
       }
     },
+    "IamRoleArn":{
+      "type":"string",
+      "max":2048,
+      "min":20,
+      "pattern":"arn:aws[a-zA-Z-]*:iam::\\d{12}:role/[\\w+=,.@/-]+"
+    },
     "Integer":{
       "type":"integer",
       "box":true
@@ -1735,6 +2018,12 @@
       "type":"boolean",
       "box":true
     },
+    "KmsKeyArn":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "pattern":"arn:aws[a-zA-Z-]*:kms:[a-z0-9-]+:\\d{12}:key/(mrk-)?[a-f0-9-]+"
+    },
     "LabelNameCondition":{
       "type":"structure",
       "members":{
@@ -1796,6 +2085,39 @@
         }
       }
     },
+    "ListDatasetIntegrationsInput":{
+      "type":"structure",
+      "members":{
+        "MaxResults":{
+          "shape":"ListDatasetIntegrationsMaxResults",
+          "documentation":"<p>The maximum number of results to return in a single call.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of results. A previous call generates this token.</p>"
+        }
+      }
+    },
+    "ListDatasetIntegrationsMaxResults":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "ListDatasetIntegrationsOutput":{
+      "type":"structure",
+      "required":["DatasetIntegrationSummaries"],
+      "members":{
+        "DatasetIntegrationSummaries":{
+          "shape":"DatasetIntegrationSummaries",
+          "documentation":"<p>The dataset integrations in your account.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token to resume pagination of results.</p>"
+        }
+      }
+    },
     "ListResourceTelemetryForOrganizationInput":{
       "type":"structure",
       "members":{
@@ -1809,7 +2131,7 @@
         },
         "ResourceTypes":{
           "shape":"ResourceTypes",
-          "documentation":"<p> A list of resource types used to filter resources in the organization. If this parameter is provided, the resources will be returned in the same order used in the request. </p>"
+          "documentation":"<p> A list of resource types used to filter resources in the organization. If this parameter is provided, the service returns the resources in the same order as specified in the request. Currently supported resource types for discovery are:</p> <ul> <li> <p> <code>AWS::EC2::Instance</code> </p> </li> <li> <p> <code>AWS::EC2::VPC</code> </p> </li> <li> <p> <code>AWS::Lambda::Function</code> </p> </li> <li> <p> <code>AWS::EKS::Cluster</code> </p> </li> <li> <p> <code>AWS::WAFv2::WebACL</code> </p> </li> <li> <p> <code>AWS::ElasticLoadBalancingV2::LoadBalancer</code> (Network Load Balancers only)</p> </li> </ul>"
         },
         "TelemetryConfigurationState":{
           "shape":"TelemetryConfigurationState",
@@ -1857,7 +2179,7 @@
         },
         "ResourceTypes":{
           "shape":"ResourceTypes",
-          "documentation":"<p> A list of resource types used to filter resources supported by telemetry config. If this parameter is provided, the resources will be returned in the same order used in the request. </p>"
+          "documentation":"<p> A list of resource types used to filter resources supported by telemetry config. If this parameter is provided, the service returns the resources in the same order as specified in the request. Currently supported resource types for discovery are:</p> <ul> <li> <p> <code>AWS::EC2::Instance</code> </p> </li> <li> <p> <code>AWS::EC2::VPC</code> </p> </li> <li> <p> <code>AWS::Lambda::Function</code> </p> </li> <li> <p> <code>AWS::EKS::Cluster</code> </p> </li> <li> <p> <code>AWS::WAFv2::WebACL</code> </p> </li> <li> <p> <code>AWS::ElasticLoadBalancingV2::LoadBalancer</code> (Network Load Balancers only)</p> </li> </ul>"
         },
         "TelemetryConfigurationState":{
           "shape":"TelemetryConfigurationState",
@@ -2065,10 +2387,10 @@
       "members":{
         "LogTypes":{
           "shape":"LogTypes",
-          "documentation":"<p>The type of log that the source is sending.</p>"
+          "documentation":"<p>The types of logs to collect from the resource.</p>"
         }
       },
-      "documentation":"<p>Configuration parameters for Amazon Bedrock AgentCore logging, including <code>logType</code> settings.</p>"
+      "documentation":"<p>The configuration parameters for log delivery, including <code>logType</code> settings. Applies to resource types that support configurable log delivery, such as Amazon Bedrock Knowledge Bases, Amazon Bedrock AgentCore payment managers, and Elastic Load Balancing Application Load Balancers.</p>"
     },
     "LogGroupNameConfiguration":{
       "type":"structure",
@@ -2090,12 +2412,17 @@
     },
     "LogType":{
       "type":"string",
+      "documentation":"<p>The following log types are supported for log delivery configuration:</p> <ul> <li> <p>APPLICATION_LOGS – Application-level logs.</p> </li> <li> <p>USAGE_LOGS – Resource usage logs.</p> </li> <li> <p>SECURITY_FINDING_LOGS – Security finding logs.</p> </li> <li> <p>ACCESS_LOGS – Access logs (such as Elastic Load Balancing access logs).</p> </li> <li> <p>CONNECTION_LOGS – Connection logs.</p> </li> <li> <p>S3_SERVER_ACCESS_LOGS – Amazon S3 server access logs.</p> </li> </ul>",
       "enum":[
         "APPLICATION_LOGS",
         "USAGE_LOGS",
         "SECURITY_FINDING_LOGS",
         "ACCESS_LOGS",
-        "CONNECTION_LOGS"
+        "CONNECTION_LOGS",
+        "S3_SERVER_ACCESS_LOGS",
+        "ALB_ACCESS_LOGS",
+        "ALB_CONNECTION_LOGS",
+        "ALB_HEALTH_CHECK_LOGS"
       ]
     },
     "LogTypes":{
@@ -2146,9 +2473,13 @@
         "EncryptionConflictResolutionStrategy":{
           "shape":"EncryptionConflictResolutionStrategy",
           "documentation":"<p>Conflict resolution strategy for centralization if the encryption strategy is set to CUSTOMER_MANAGED and the destination log group is encrypted with an AWS_OWNED KMS Key. ALLOW lets centralization go through while SKIP prevents centralization into the destination log group.</p>"
+        },
+        "EncryptionScope":{
+          "shape":"EncryptionScope",
+          "documentation":"<p>Determines which newly created destination log groups are encrypted with the configured <code>KmsKeyArn</code> when <code>EncryptionStrategy</code> is <code>CUSTOMER_MANAGED</code>.</p> <p>If you set this to <code>ENCRYPTED_SOURCE_ONLY</code> (the default), only destination log groups whose source log group is encrypted with a customer managed KMS key use the configured <code>KmsKeyArn</code>. Destination log groups derived from Amazon Web Services owned encrypted source log groups remain Amazon Web Services owned encrypted.</p> <p>If you set this to <code>NEW_DESTINATION_LOG_GROUPS</code>, every new destination log group created by this rule uses the configured <code>KmsKeyArn</code>, regardless of the source log group's encryption posture.</p> <p>This field is not valid when <code>EncryptionStrategy</code> is <code>AWS_OWNED</code>.</p>"
         }
       },
-      "documentation":"<p>Configuration for encrypting centralized log groups. This configuration is only applied to destination log groups for which the corresponding source log groups are encrypted using Customer Managed KMS Keys.</p>"
+      "documentation":"<p>Configuration for encrypting centralized destination log groups. By default, this configuration applies only to destination log groups whose corresponding source log groups are encrypted using customer managed KMS keys. To encrypt all destination log groups created by the rule, set <code>EncryptionScope</code> to <code>NEW_DESTINATION_LOG_GROUPS</code>.</p>"
     },
     "LogsFilterString":{
       "type":"string",
@@ -2158,6 +2489,22 @@
     "Long":{
       "type":"long",
       "box":true
+    },
+    "MetricsBackupConfiguration":{
+      "type":"structure",
+      "required":["Region"],
+      "members":{
+        "Region":{
+          "shape":"Region",
+          "documentation":"<p>Metrics specific backup destination region within the primary destination account to which metrics data should be centralized.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for backing up centralized metrics data to a secondary region.</p>"
+    },
+    "MetricsFilterString":{
+      "type":"string",
+      "max":2000,
+      "min":1
     },
     "MskEnhancedMonitoringLevel":{
       "type":"string",
@@ -2345,11 +2692,15 @@
         "AWS::BedrockAgentCore::Gateway",
         "AWS::BedrockAgentCore::Memory",
         "AWS::BedrockAgentCore::WorkloadIdentity",
+        "AWS::BedrockAgentCore::PaymentManager",
         "AWS::SecurityHub::Hub",
         "AWS::CloudFront::Distribution",
         "AWS::SecurityHub::HubV2",
         "AWS::CloudWatch::OTelEnrichment",
-        "AWS::MSK::Cluster"
+        "AWS::MSK::Cluster",
+        "AWS::S3::Bucket",
+        "AWS::Bedrock::KnowledgeBase",
+        "AWS::XRay::TransactionSearchConfig"
       ]
     },
     "ResourceTypes":{
@@ -2424,6 +2775,13 @@
       },
       "exception":true
     },
+    "SignalType":{
+      "type":"string",
+      "enum":[
+        "LOG",
+        "METRIC"
+      ]
+    },
     "SingleHeader":{
       "type":"structure",
       "members":{
@@ -2453,6 +2811,11 @@
       },
       "documentation":"<p>A list of source plugin types used in the pipeline configuration (such as <code>cloudwatch_logs</code> or <code>s3</code>). Currently supports a single source per pipeline, but is structured as a list to accommodate multiple pipelines in the configuration.</p>"
     },
+    "SourceContextGraphConfiguration":{
+      "type":"structure",
+      "members":{},
+      "documentation":"<p>Configuration that enables centralization of the context graph for the selected sources. Including this configuration in a rule's source opts the rule into centralizing the context graph for the selected sources.</p>"
+    },
     "SourceFilterString":{
       "type":"string",
       "max":2000,
@@ -2476,6 +2839,16 @@
         }
       },
       "documentation":"<p>Configuration for selecting and handling source log groups for centralization.</p>"
+    },
+    "SourceMetricsConfiguration":{
+      "type":"structure",
+      "members":{
+        "MetricsSelectionCriteria":{
+          "shape":"MetricsFilterString",
+          "documentation":"<p>The filter expression that selects which source metrics to centralize. Currently, only <code>*</code> (all metrics) is supported. Other values return a validation error.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for selecting source metrics for centralization.</p>"
     },
     "Sources":{
       "type":"list",
@@ -2546,6 +2919,15 @@
       "type":"list",
       "member":{"shape":"String"}
     },
+    "TagConflictResolutionStrategy":{
+      "type":"string",
+      "documentation":"<p>The strategy for resolving tag conflicts between source and destination log groups.</p> <ul> <li> <p> <code>ADD_ONLY</code> – Only adds new tags from the source without modifying existing destination tags.</p> </li> <li> <p> <code>UPDATE_SYNC</code> – Adds new tags and updates existing tags from the source. Does not remove destination tags that are absent from the source.</p> </li> <li> <p> <code>IN_SYNC</code> – Keeps destination tags fully synchronized with source tags, including removing destination tags that do not exist on the source.</p> </li> </ul>",
+      "enum":[
+        "IN_SYNC",
+        "ADD_ONLY",
+        "UPDATE_SYNC"
+      ]
+    },
     "TagKey":{
       "type":"string",
       "max":128,
@@ -2569,6 +2951,37 @@
       "type":"map",
       "key":{"shape":"String"},
       "value":{"shape":"String"}
+    },
+    "TagPropagationConfiguration":{
+      "type":"structure",
+      "required":["DestinationRoleArn"],
+      "members":{
+        "DestinationRoleArn":{
+          "shape":"IamRoleArn",
+          "documentation":"<p>The ARN of a customer-managed IAM role in the destination account. The service assumes this role to propagate tags to destination log groups. You must have <code>iam:PassRole</code> permission on this role.</p>"
+        },
+        "TagConflictResolutionStrategy":{
+          "shape":"TagConflictResolutionStrategy",
+          "documentation":"<p>The strategy for resolving conflicts when a tag key exists on both the source and destination log groups. If not specified, defaults to <code>UPDATE_SYNC</code>.</p> <ul> <li> <p> <code>ADD_ONLY</code> – Only adds new tags from the source without modifying existing destination tags.</p> </li> <li> <p> <code>UPDATE_SYNC</code> – Adds new tags and updates existing tags from the source. Does not remove destination tags that are absent from the source.</p> </li> <li> <p> <code>IN_SYNC</code> – Keeps destination tags fully synchronized with source tags, including removing destination tags that do not exist on the source.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>Specifies configuration for propagating resource tags from source log groups to centralized destination log groups. The service uses a customer-managed IAM role in the destination account to add, update, and remove tags on destination log groups.</p>"
+    },
+    "TagPropagationFailureReason":{
+      "type":"string",
+      "documentation":"<p>The reason tag propagation is unhealthy for a centralization rule.</p> <ul> <li> <p> <code>RoleNotAssumable</code> – The service cannot assume the destination role due to a trust policy or external ID misconfiguration.</p> </li> <li> <p> <code>RoleLacksPermissions</code> – The role was assumed successfully but the tag API call was denied by the role's permissions policy.</p> </li> </ul>",
+      "enum":[
+        "RoleNotAssumable",
+        "RoleLacksPermissions"
+      ]
+    },
+    "TagPropagationStatus":{
+      "type":"string",
+      "documentation":"<p>The health status of tag propagation for a centralization rule. This status is independent of the overall <code>RuleHealth</code> for log delivery.</p>",
+      "enum":[
+        "Healthy",
+        "Unhealthy"
+      ]
     },
     "TagResourceInput":{
       "type":"structure",
@@ -2666,11 +3079,15 @@
         },
         "LogDeliveryParameters":{
           "shape":"LogDeliveryParameters",
-          "documentation":"<p>Configuration parameters specific to Amazon Bedrock AgentCore logging when Amazon Bedrock AgentCore is the resource type.</p>"
+          "documentation":"<p>The configuration parameters for log delivery when the resource type supports configurable log types, such as Amazon Bedrock Knowledge Bases, Amazon Bedrock AgentCore payment managers, or Elastic Load Balancing Application Load Balancers.</p>"
         },
         "MskMonitoringParameters":{
           "shape":"MskMonitoringParameters",
           "documentation":"<p> Configuration parameters specific to MSK monitoring when MSK is the resource type. </p>"
+        },
+        "KmsKeyArn":{
+          "shape":"KmsKeyArn",
+          "documentation":"<p> The Amazon Resource Name (ARN) of the customer-managed Amazon Web Services KMS key used to encrypt the log groups created during telemetry rule remediation. </p>"
         }
       },
       "documentation":"<p> Configuration specifying where and how telemetry data should be delivered for Amazon Web Services resources. </p>"
@@ -2813,7 +3230,7 @@
       "members":{
         "ResourceType":{
           "shape":"ResourceType",
-          "documentation":"<p> The type of Amazon Web Services resource to configure telemetry for (e.g., \"AWS::EC2::VPC\", \"AWS::EKS::Cluster\", \"AWS::WAFv2::WebACL\"). </p>"
+          "documentation":"<p> The type of Amazon Web Services resource to configure telemetry for (for example, <code>AWS::EC2::VPC</code>, <code>AWS::EKS::Cluster</code>, <code>AWS::ElasticLoadBalancingV2::LoadBalancer</code>, <code>AWS::Bedrock::KnowledgeBase</code>, <code>AWS::BedrockAgentCore::PaymentManager</code>, or <code>AWS::XRay::TransactionSearchConfig</code>). </p>"
         },
         "TelemetryType":{
           "shape":"TelemetryType",
@@ -2919,7 +3336,8 @@
       "enum":[
         "Logs",
         "Metrics",
-        "Traces"
+        "Traces",
+        "Insights"
       ]
     },
     "TestTelemetryPipelineInput":{
@@ -2936,6 +3354,10 @@
         "Configuration":{
           "shape":"TelemetryPipelineConfiguration",
           "documentation":"<p>The pipeline configuration to test with the provided sample records.</p>"
+        },
+        "SignalType":{
+          "shape":"SignalType",
+          "documentation":"<p>The type of telemetry signal to test. If not specified, defaults to log processing.</p>"
         }
       }
     },
@@ -2948,6 +3370,7 @@
         }
       }
     },
+    "Timestamp":{"type":"timestamp"},
     "TooManyRequestsException":{
       "type":"structure",
       "members":{
@@ -3000,6 +3423,50 @@
         "RuleArn":{
           "shape":"ResourceArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the updated organization centralization rule.</p>"
+        }
+      }
+    },
+    "UpdateDatasetIntegrationInput":{
+      "type":"structure",
+      "required":[
+        "Arn",
+        "RoleArn"
+      ],
+      "members":{
+        "Arn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the dataset integration to update.</p>"
+        },
+        "RoleArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role to associate with the dataset integration.</p>"
+        }
+      }
+    },
+    "UpdateDatasetIntegrationOutput":{
+      "type":"structure",
+      "required":[
+        "Arn",
+        "RoleArn",
+        "CreatedAt",
+        "UpdatedAt"
+      ],
+      "members":{
+        "Arn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the updated dataset integration.</p>"
+        },
+        "RoleArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role associated with the updated dataset integration.</p>"
+        },
+        "CreatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the dataset integration was created.</p>"
+        },
+        "UpdatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the dataset integration was last updated.</p>"
         }
       }
     },

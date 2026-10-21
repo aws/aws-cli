@@ -27,6 +27,13 @@ the instance (e.g. windows-keypair.pem).  If this is supplied, the
 password data sent from EC2 will be decrypted before display.</p>"""
 
 
+def register_ec2_add_priv_launch_key(event_emitter, **kwargs):
+    event_emitter.register(
+        'building-argument-table.ec2.get-password-data',
+        ec2_add_priv_launch_key,
+    )
+
+
 def ec2_add_priv_launch_key(
     argument_table, operation_model, session, **kwargs
 ):

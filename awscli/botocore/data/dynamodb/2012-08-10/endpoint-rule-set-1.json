@@ -48,6 +48,11 @@
             "required": false,
             "documentation": "ResourceArnList containing list of resource arns",
             "type": "stringArray"
+        },
+        "IsSearchOperation": {
+            "required": false,
+            "documentation": "Set to true for SearchVectors to route to the Search FQDN",
+            "type": "boolean"
         }
     },
     "rules": [
@@ -77,6 +82,15 @@
                         }
                     ],
                     "assign": "PartitionResult"
+                },
+                {
+                    "fn": "parseURL",
+                    "argv": [
+                        {
+                            "ref": "Endpoint"
+                        }
+                    ],
+                    "assign": "parsedEndpoint"
                 }
             ],
             "rules": [
@@ -116,9 +130,36 @@
                             "fn": "stringEquals",
                             "argv": [
                                 {
-                                    "ref": "Endpoint"
+                                    "fn": "getAttr",
+                                    "argv": [
+                                        {
+                                            "ref": "parsedEndpoint"
+                                        },
+                                        "authority"
+                                    ]
                                 },
-                                "https://dynamodb.{Region}.{PartitionResult#dualStackDnsSuffix}"
+                                "dynamodb.{Region}.{PartitionResult#dualStackDnsSuffix}"
+                            ]
+                        }
+                    ],
+                    "error": "Endpoint override is not supported for dual-stack endpoints. Please enable dual-stack functionality by enabling the configuration. For more details, see: https://docs.aws.amazon.com/sdkref/latest/guide/feature-endpoints.html",
+                    "type": "error"
+                },
+                {
+                    "conditions": [
+                        {
+                            "fn": "stringEquals",
+                            "argv": [
+                                {
+                                    "fn": "getAttr",
+                                    "argv": [
+                                        {
+                                            "ref": "parsedEndpoint"
+                                        },
+                                        "authority"
+                                    ]
+                                },
+                                "search-dynamodb.{Region}.{PartitionResult#dualStackDnsSuffix}"
                             ]
                         }
                     ],
@@ -266,9 +307,9 @@
                                         "properties": {
                                             "authSchemes": [
                                                 {
+                                                    "signingRegion": "us-east-1",
                                                     "name": "sigv4",
-                                                    "signingName": "dynamodb",
-                                                    "signingRegion": "us-east-1"
+                                                    "signingName": "dynamodb"
                                                 }
                                             ]
                                         },
@@ -355,14 +396,154 @@
                                                     ]
                                                 }
                                             ],
+                                            "error": "Invalid Configuration: AccountIdEndpointMode is required and FIPS is enabled, but FIPS account endpoints are not supported",
+                                            "type": "error"
+                                        },
+                                        {
+                                            "conditions": [
+                                                {
+                                                    "fn": "not",
+                                                    "argv": [
+                                                        {
+                                                            "fn": "stringEquals",
+                                                            "argv": [
+                                                                {
+                                                                    "fn": "getAttr",
+                                                                    "argv": [
+                                                                        {
+                                                                            "ref": "PartitionResult"
+                                                                        },
+                                                                        "name"
+                                                                    ]
+                                                                },
+                                                                "aws"
+                                                            ]
+                                                        }
+                                                    ]
+                                                },
+                                                {
+                                                    "fn": "not",
+                                                    "argv": [
+                                                        {
+                                                            "fn": "stringEquals",
+                                                            "argv": [
+                                                                {
+                                                                    "ref": "Region"
+                                                                },
+                                                                "us-gov-east-1"
+                                                            ]
+                                                        }
+                                                    ]
+                                                },
+                                                {
+                                                    "fn": "not",
+                                                    "argv": [
+                                                        {
+                                                            "fn": "stringEquals",
+                                                            "argv": [
+                                                                {
+                                                                    "ref": "Region"
+                                                                },
+                                                                "us-gov-west-1"
+                                                            ]
+                                                        }
+                                                    ]
+                                                },
+                                                {
+                                                    "fn": "not",
+                                                    "argv": [
+                                                        {
+                                                            "fn": "stringEquals",
+                                                            "argv": [
+                                                                {
+                                                                    "ref": "Region"
+                                                                },
+                                                                "cn-north-1"
+                                                            ]
+                                                        }
+                                                    ]
+                                                },
+                                                {
+                                                    "fn": "not",
+                                                    "argv": [
+                                                        {
+                                                            "fn": "stringEquals",
+                                                            "argv": [
+                                                                {
+                                                                    "ref": "Region"
+                                                                },
+                                                                "cn-northwest-1"
+                                                            ]
+                                                        }
+                                                    ]
+                                                }
+                                            ],
                                             "rules": [
                                                 {
+                                                    "conditions": [
+                                                        {
+                                                            "fn": "isSet",
+                                                            "argv": [
+                                                                {
+                                                                    "ref": "IsSearchOperation"
+                                                                }
+                                                            ]
+                                                        },
+                                                        {
+                                                            "fn": "booleanEquals",
+                                                            "argv": [
+                                                                {
+                                                                    "ref": "IsSearchOperation"
+                                                                },
+                                                                true
+                                                            ]
+                                                        }
+                                                    ],
+                                                    "endpoint": {
+                                                        "url": "https://search-dynamodb-fips.{Region}.{PartitionResult#dualStackDnsSuffix}",
+                                                        "properties": {},
+                                                        "headers": {}
+                                                    },
+                                                    "type": "endpoint"
+                                                },
+                                                {
                                                     "conditions": [],
-                                                    "error": "Invalid Configuration: AccountIdEndpointMode is required and FIPS is enabled, but FIPS account endpoints are not supported",
-                                                    "type": "error"
+                                                    "endpoint": {
+                                                        "url": "https://dynamodb-fips.{Region}.{PartitionResult#dualStackDnsSuffix}",
+                                                        "properties": {},
+                                                        "headers": {}
+                                                    },
+                                                    "type": "endpoint"
                                                 }
                                             ],
                                             "type": "tree"
+                                        },
+                                        {
+                                            "conditions": [
+                                                {
+                                                    "fn": "isSet",
+                                                    "argv": [
+                                                        {
+                                                            "ref": "IsSearchOperation"
+                                                        }
+                                                    ]
+                                                },
+                                                {
+                                                    "fn": "booleanEquals",
+                                                    "argv": [
+                                                        {
+                                                            "ref": "IsSearchOperation"
+                                                        },
+                                                        true
+                                                    ]
+                                                }
+                                            ],
+                                            "endpoint": {
+                                                "url": "https://search-dynamodb-fips.{Region}.{PartitionResult#dualStackDnsSuffix}",
+                                                "properties": {},
+                                                "headers": {}
+                                            },
+                                            "type": "endpoint"
                                         },
                                         {
                                             "conditions": [],
@@ -419,6 +600,29 @@
                                         {
                                             "conditions": [
                                                 {
+                                                    "fn": "isSet",
+                                                    "argv": [
+                                                        {
+                                                            "ref": "AccountIdEndpointMode"
+                                                        }
+                                                    ]
+                                                },
+                                                {
+                                                    "fn": "stringEquals",
+                                                    "argv": [
+                                                        {
+                                                            "ref": "AccountIdEndpointMode"
+                                                        },
+                                                        "required"
+                                                    ]
+                                                }
+                                            ],
+                                            "error": "Invalid Configuration: AccountIdEndpointMode is required and FIPS is enabled, but FIPS account endpoints are not supported",
+                                            "type": "error"
+                                        },
+                                        {
+                                            "conditions": [
+                                                {
                                                     "fn": "stringEquals",
                                                     "argv": [
                                                         {
@@ -438,31 +642,148 @@
                                                 {
                                                     "conditions": [
                                                         {
-                                                            "fn": "isSet",
+                                                            "fn": "not",
                                                             "argv": [
                                                                 {
-                                                                    "ref": "AccountIdEndpointMode"
+                                                                    "fn": "stringEquals",
+                                                                    "argv": [
+                                                                        {
+                                                                            "fn": "getAttr",
+                                                                            "argv": [
+                                                                                {
+                                                                                    "ref": "PartitionResult"
+                                                                                },
+                                                                                "name"
+                                                                            ]
+                                                                        },
+                                                                        "aws"
+                                                                    ]
                                                                 }
                                                             ]
                                                         },
                                                         {
-                                                            "fn": "stringEquals",
+                                                            "fn": "not",
                                                             "argv": [
                                                                 {
-                                                                    "ref": "AccountIdEndpointMode"
-                                                                },
-                                                                "required"
+                                                                    "fn": "stringEquals",
+                                                                    "argv": [
+                                                                        {
+                                                                            "ref": "Region"
+                                                                        },
+                                                                        "us-gov-east-1"
+                                                                    ]
+                                                                }
+                                                            ]
+                                                        },
+                                                        {
+                                                            "fn": "not",
+                                                            "argv": [
+                                                                {
+                                                                    "fn": "stringEquals",
+                                                                    "argv": [
+                                                                        {
+                                                                            "ref": "Region"
+                                                                        },
+                                                                        "us-gov-west-1"
+                                                                    ]
+                                                                }
+                                                            ]
+                                                        },
+                                                        {
+                                                            "fn": "not",
+                                                            "argv": [
+                                                                {
+                                                                    "fn": "stringEquals",
+                                                                    "argv": [
+                                                                        {
+                                                                            "ref": "Region"
+                                                                        },
+                                                                        "cn-north-1"
+                                                                    ]
+                                                                }
+                                                            ]
+                                                        },
+                                                        {
+                                                            "fn": "not",
+                                                            "argv": [
+                                                                {
+                                                                    "fn": "stringEquals",
+                                                                    "argv": [
+                                                                        {
+                                                                            "ref": "Region"
+                                                                        },
+                                                                        "cn-northwest-1"
+                                                                    ]
+                                                                }
                                                             ]
                                                         }
                                                     ],
                                                     "rules": [
                                                         {
+                                                            "conditions": [
+                                                                {
+                                                                    "fn": "isSet",
+                                                                    "argv": [
+                                                                        {
+                                                                            "ref": "IsSearchOperation"
+                                                                        }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "fn": "booleanEquals",
+                                                                    "argv": [
+                                                                        {
+                                                                            "ref": "IsSearchOperation"
+                                                                        },
+                                                                        true
+                                                                    ]
+                                                                }
+                                                            ],
+                                                            "endpoint": {
+                                                                "url": "https://search-dynamodb.{Region}.{PartitionResult#dnsSuffix}",
+                                                                "properties": {},
+                                                                "headers": {}
+                                                            },
+                                                            "type": "endpoint"
+                                                        },
+                                                        {
                                                             "conditions": [],
-                                                            "error": "Invalid Configuration: AccountIdEndpointMode is required and FIPS is enabled, but FIPS account endpoints are not supported",
-                                                            "type": "error"
+                                                            "endpoint": {
+                                                                "url": "https://dynamodb.{Region}.{PartitionResult#dnsSuffix}",
+                                                                "properties": {},
+                                                                "headers": {}
+                                                            },
+                                                            "type": "endpoint"
                                                         }
                                                     ],
                                                     "type": "tree"
+                                                },
+                                                {
+                                                    "conditions": [
+                                                        {
+                                                            "fn": "isSet",
+                                                            "argv": [
+                                                                {
+                                                                    "ref": "IsSearchOperation"
+                                                                }
+                                                            ]
+                                                        },
+                                                        {
+                                                            "fn": "booleanEquals",
+                                                            "argv": [
+                                                                {
+                                                                    "ref": "IsSearchOperation"
+                                                                },
+                                                                true
+                                                            ]
+                                                        }
+                                                    ],
+                                                    "endpoint": {
+                                                        "url": "https://search-dynamodb.{Region}.{PartitionResult#dnsSuffix}",
+                                                        "properties": {},
+                                                        "headers": {}
+                                                    },
+                                                    "type": "endpoint"
                                                 },
                                                 {
                                                     "conditions": [],
@@ -479,31 +800,148 @@
                                         {
                                             "conditions": [
                                                 {
-                                                    "fn": "isSet",
+                                                    "fn": "not",
                                                     "argv": [
                                                         {
-                                                            "ref": "AccountIdEndpointMode"
+                                                            "fn": "stringEquals",
+                                                            "argv": [
+                                                                {
+                                                                    "fn": "getAttr",
+                                                                    "argv": [
+                                                                        {
+                                                                            "ref": "PartitionResult"
+                                                                        },
+                                                                        "name"
+                                                                    ]
+                                                                },
+                                                                "aws"
+                                                            ]
                                                         }
                                                     ]
                                                 },
                                                 {
-                                                    "fn": "stringEquals",
+                                                    "fn": "not",
                                                     "argv": [
                                                         {
-                                                            "ref": "AccountIdEndpointMode"
-                                                        },
-                                                        "required"
+                                                            "fn": "stringEquals",
+                                                            "argv": [
+                                                                {
+                                                                    "ref": "Region"
+                                                                },
+                                                                "us-gov-east-1"
+                                                            ]
+                                                        }
+                                                    ]
+                                                },
+                                                {
+                                                    "fn": "not",
+                                                    "argv": [
+                                                        {
+                                                            "fn": "stringEquals",
+                                                            "argv": [
+                                                                {
+                                                                    "ref": "Region"
+                                                                },
+                                                                "us-gov-west-1"
+                                                            ]
+                                                        }
+                                                    ]
+                                                },
+                                                {
+                                                    "fn": "not",
+                                                    "argv": [
+                                                        {
+                                                            "fn": "stringEquals",
+                                                            "argv": [
+                                                                {
+                                                                    "ref": "Region"
+                                                                },
+                                                                "cn-north-1"
+                                                            ]
+                                                        }
+                                                    ]
+                                                },
+                                                {
+                                                    "fn": "not",
+                                                    "argv": [
+                                                        {
+                                                            "fn": "stringEquals",
+                                                            "argv": [
+                                                                {
+                                                                    "ref": "Region"
+                                                                },
+                                                                "cn-northwest-1"
+                                                            ]
+                                                        }
                                                     ]
                                                 }
                                             ],
                                             "rules": [
                                                 {
+                                                    "conditions": [
+                                                        {
+                                                            "fn": "isSet",
+                                                            "argv": [
+                                                                {
+                                                                    "ref": "IsSearchOperation"
+                                                                }
+                                                            ]
+                                                        },
+                                                        {
+                                                            "fn": "booleanEquals",
+                                                            "argv": [
+                                                                {
+                                                                    "ref": "IsSearchOperation"
+                                                                },
+                                                                true
+                                                            ]
+                                                        }
+                                                    ],
+                                                    "endpoint": {
+                                                        "url": "https://search-dynamodb-fips.{Region}.{PartitionResult#dnsSuffix}",
+                                                        "properties": {},
+                                                        "headers": {}
+                                                    },
+                                                    "type": "endpoint"
+                                                },
+                                                {
                                                     "conditions": [],
-                                                    "error": "Invalid Configuration: AccountIdEndpointMode is required and FIPS is enabled, but FIPS account endpoints are not supported",
-                                                    "type": "error"
+                                                    "endpoint": {
+                                                        "url": "https://dynamodb-fips.{Region}.{PartitionResult#dnsSuffix}",
+                                                        "properties": {},
+                                                        "headers": {}
+                                                    },
+                                                    "type": "endpoint"
                                                 }
                                             ],
                                             "type": "tree"
+                                        },
+                                        {
+                                            "conditions": [
+                                                {
+                                                    "fn": "isSet",
+                                                    "argv": [
+                                                        {
+                                                            "ref": "IsSearchOperation"
+                                                        }
+                                                    ]
+                                                },
+                                                {
+                                                    "fn": "booleanEquals",
+                                                    "argv": [
+                                                        {
+                                                            "ref": "IsSearchOperation"
+                                                        },
+                                                        true
+                                                    ]
+                                                }
+                                            ],
+                                            "endpoint": {
+                                                "url": "https://search-dynamodb-fips.{Region}.{PartitionResult#dnsSuffix}",
+                                                "properties": {},
+                                                "headers": {}
+                                            },
+                                            "type": "endpoint"
                                         },
                                         {
                                             "conditions": [],
@@ -560,6 +998,148 @@
                                         {
                                             "conditions": [
                                                 {
+                                                    "fn": "not",
+                                                    "argv": [
+                                                        {
+                                                            "fn": "stringEquals",
+                                                            "argv": [
+                                                                {
+                                                                    "fn": "getAttr",
+                                                                    "argv": [
+                                                                        {
+                                                                            "ref": "PartitionResult"
+                                                                        },
+                                                                        "name"
+                                                                    ]
+                                                                },
+                                                                "aws"
+                                                            ]
+                                                        }
+                                                    ]
+                                                },
+                                                {
+                                                    "fn": "not",
+                                                    "argv": [
+                                                        {
+                                                            "fn": "stringEquals",
+                                                            "argv": [
+                                                                {
+                                                                    "ref": "Region"
+                                                                },
+                                                                "us-gov-east-1"
+                                                            ]
+                                                        }
+                                                    ]
+                                                },
+                                                {
+                                                    "fn": "not",
+                                                    "argv": [
+                                                        {
+                                                            "fn": "stringEquals",
+                                                            "argv": [
+                                                                {
+                                                                    "ref": "Region"
+                                                                },
+                                                                "us-gov-west-1"
+                                                            ]
+                                                        }
+                                                    ]
+                                                },
+                                                {
+                                                    "fn": "not",
+                                                    "argv": [
+                                                        {
+                                                            "fn": "stringEquals",
+                                                            "argv": [
+                                                                {
+                                                                    "ref": "Region"
+                                                                },
+                                                                "cn-north-1"
+                                                            ]
+                                                        }
+                                                    ]
+                                                },
+                                                {
+                                                    "fn": "not",
+                                                    "argv": [
+                                                        {
+                                                            "fn": "stringEquals",
+                                                            "argv": [
+                                                                {
+                                                                    "ref": "Region"
+                                                                },
+                                                                "cn-northwest-1"
+                                                            ]
+                                                        }
+                                                    ]
+                                                }
+                                            ],
+                                            "rules": [
+                                                {
+                                                    "conditions": [
+                                                        {
+                                                            "fn": "isSet",
+                                                            "argv": [
+                                                                {
+                                                                    "ref": "AccountIdEndpointMode"
+                                                                }
+                                                            ]
+                                                        },
+                                                        {
+                                                            "fn": "stringEquals",
+                                                            "argv": [
+                                                                {
+                                                                    "ref": "AccountIdEndpointMode"
+                                                                },
+                                                                "required"
+                                                            ]
+                                                        }
+                                                    ],
+                                                    "error": "Invalid Configuration: AccountIdEndpointMode is required but account endpoints are not supported in this region",
+                                                    "type": "error"
+                                                },
+                                                {
+                                                    "conditions": [
+                                                        {
+                                                            "fn": "isSet",
+                                                            "argv": [
+                                                                {
+                                                                    "ref": "IsSearchOperation"
+                                                                }
+                                                            ]
+                                                        },
+                                                        {
+                                                            "fn": "booleanEquals",
+                                                            "argv": [
+                                                                {
+                                                                    "ref": "IsSearchOperation"
+                                                                },
+                                                                true
+                                                            ]
+                                                        }
+                                                    ],
+                                                    "endpoint": {
+                                                        "url": "https://search-dynamodb.{Region}.{PartitionResult#dualStackDnsSuffix}",
+                                                        "properties": {},
+                                                        "headers": {}
+                                                    },
+                                                    "type": "endpoint"
+                                                },
+                                                {
+                                                    "conditions": [],
+                                                    "endpoint": {
+                                                        "url": "https://dynamodb.{Region}.{PartitionResult#dualStackDnsSuffix}",
+                                                        "properties": {},
+                                                        "headers": {}
+                                                    },
+                                                    "type": "endpoint"
+                                                }
+                                            ],
+                                            "type": "tree"
+                                        },
+                                        {
+                                            "conditions": [
+                                                {
                                                     "fn": "isSet",
                                                     "argv": [
                                                         {
@@ -579,21 +1159,6 @@
                                                                 "disabled"
                                                             ]
                                                         }
-                                                    ]
-                                                },
-                                                {
-                                                    "fn": "stringEquals",
-                                                    "argv": [
-                                                        {
-                                                            "fn": "getAttr",
-                                                            "argv": [
-                                                                {
-                                                                    "ref": "PartitionResult"
-                                                                },
-                                                                "name"
-                                                            ]
-                                                        },
-                                                        "aws"
                                                     ]
                                                 },
                                                 {
@@ -688,16 +1253,53 @@
                                                     ]
                                                 }
                                             ],
-                                            "endpoint": {
-                                                "url": "https://{ParsedArn#accountId}.ddb.{Region}.{PartitionResult#dualStackDnsSuffix}",
-                                                "properties": {
-                                                    "metricValues": [
-                                                        "O"
-                                                    ]
+                                            "rules": [
+                                                {
+                                                    "conditions": [
+                                                        {
+                                                            "fn": "isSet",
+                                                            "argv": [
+                                                                {
+                                                                    "ref": "IsSearchOperation"
+                                                                }
+                                                            ]
+                                                        },
+                                                        {
+                                                            "fn": "booleanEquals",
+                                                            "argv": [
+                                                                {
+                                                                    "ref": "IsSearchOperation"
+                                                                },
+                                                                true
+                                                            ]
+                                                        }
+                                                    ],
+                                                    "endpoint": {
+                                                        "url": "https://{ParsedArn#accountId}.search-ddb.{Region}.{PartitionResult#dualStackDnsSuffix}",
+                                                        "properties": {
+                                                            "metricValues": [
+                                                                "O"
+                                                            ]
+                                                        },
+                                                        "headers": {}
+                                                    },
+                                                    "type": "endpoint"
                                                 },
-                                                "headers": {}
-                                            },
-                                            "type": "endpoint"
+                                                {
+                                                    "conditions": [],
+                                                    "endpoint": {
+                                                        "url": "https://{ParsedArn#accountId}.ddb.{Region}.{PartitionResult#dualStackDnsSuffix}",
+                                                        "properties": {
+                                                            "metricValues": [
+                                                                "O"
+                                                            ]
+                                                        },
+                                                        "headers": {}
+                                                    },
+                                                    "type": "endpoint"
+                                                }
+                                            ],
+                                            "type": "tree"
                                         },
                                         {
                                             "conditions": [
@@ -721,21 +1323,6 @@
                                                                 "disabled"
                                                             ]
                                                         }
-                                                    ]
-                                                },
-                                                {
-                                                    "fn": "stringEquals",
-                                                    "argv": [
-                                                        {
-                                                            "fn": "getAttr",
-                                                            "argv": [
-                                                                {
-                                                                    "ref": "PartitionResult"
-                                                                },
-                                                                "name"
-                                                            ]
-                                                        },
-                                                        "aws"
                                                     ]
                                                 },
                                                 {
@@ -840,16 +1427,53 @@
                                                     ]
                                                 }
                                             ],
-                                            "endpoint": {
-                                                "url": "https://{ParsedArn#accountId}.ddb.{Region}.{PartitionResult#dualStackDnsSuffix}",
-                                                "properties": {
-                                                    "metricValues": [
-                                                        "O"
-                                                    ]
+                                            "rules": [
+                                                {
+                                                    "conditions": [
+                                                        {
+                                                            "fn": "isSet",
+                                                            "argv": [
+                                                                {
+                                                                    "ref": "IsSearchOperation"
+                                                                }
+                                                            ]
+                                                        },
+                                                        {
+                                                            "fn": "booleanEquals",
+                                                            "argv": [
+                                                                {
+                                                                    "ref": "IsSearchOperation"
+                                                                },
+                                                                true
+                                                            ]
+                                                        }
+                                                    ],
+                                                    "endpoint": {
+                                                        "url": "https://{ParsedArn#accountId}.search-ddb.{Region}.{PartitionResult#dualStackDnsSuffix}",
+                                                        "properties": {
+                                                            "metricValues": [
+                                                                "O"
+                                                            ]
+                                                        },
+                                                        "headers": {}
+                                                    },
+                                                    "type": "endpoint"
                                                 },
-                                                "headers": {}
-                                            },
-                                            "type": "endpoint"
+                                                {
+                                                    "conditions": [],
+                                                    "endpoint": {
+                                                        "url": "https://{ParsedArn#accountId}.ddb.{Region}.{PartitionResult#dualStackDnsSuffix}",
+                                                        "properties": {
+                                                            "metricValues": [
+                                                                "O"
+                                                            ]
+                                                        },
+                                                        "headers": {}
+                                                    },
+                                                    "type": "endpoint"
+                                                }
+                                            ],
+                                            "type": "tree"
                                         },
                                         {
                                             "conditions": [
@@ -873,21 +1497,6 @@
                                                                 "disabled"
                                                             ]
                                                         }
-                                                    ]
-                                                },
-                                                {
-                                                    "fn": "stringEquals",
-                                                    "argv": [
-                                                        {
-                                                            "fn": "getAttr",
-                                                            "argv": [
-                                                                {
-                                                                    "ref": "PartitionResult"
-                                                                },
-                                                                "name"
-                                                            ]
-                                                        },
-                                                        "aws"
                                                     ]
                                                 },
                                                 {
@@ -927,6 +1536,37 @@
                                                         }
                                                     ],
                                                     "rules": [
+                                                        {
+                                                            "conditions": [
+                                                                {
+                                                                    "fn": "isSet",
+                                                                    "argv": [
+                                                                        {
+                                                                            "ref": "IsSearchOperation"
+                                                                        }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "fn": "booleanEquals",
+                                                                    "argv": [
+                                                                        {
+                                                                            "ref": "IsSearchOperation"
+                                                                        },
+                                                                        true
+                                                                    ]
+                                                                }
+                                                            ],
+                                                            "endpoint": {
+                                                                "url": "https://{AccountId}.search-ddb.{Region}.{PartitionResult#dualStackDnsSuffix}",
+                                                                "properties": {
+                                                                    "metricValues": [
+                                                                        "O"
+                                                                    ]
+                                                                },
+                                                                "headers": {}
+                                                            },
+                                                            "type": "endpoint"
+                                                        },
                                                         {
                                                             "conditions": [],
                                                             "endpoint": {
@@ -971,67 +1611,35 @@
                                                     ]
                                                 }
                                             ],
-                                            "rules": [
+                                            "error": "AccountIdEndpointMode is required but no AccountID was provided or able to be loaded",
+                                            "type": "error"
+                                        },
+                                        {
+                                            "conditions": [
                                                 {
-                                                    "conditions": [
+                                                    "fn": "isSet",
+                                                    "argv": [
                                                         {
-                                                            "fn": "not",
-                                                            "argv": [
-                                                                {
-                                                                    "fn": "booleanEquals",
-                                                                    "argv": [
-                                                                        {
-                                                                            "ref": "UseFIPS"
-                                                                        },
-                                                                        true
-                                                                    ]
-                                                                }
-                                                            ]
+                                                            "ref": "IsSearchOperation"
                                                         }
-                                                    ],
-                                                    "rules": [
-                                                        {
-                                                            "conditions": [
-                                                                {
-                                                                    "fn": "stringEquals",
-                                                                    "argv": [
-                                                                        {
-                                                                            "fn": "getAttr",
-                                                                            "argv": [
-                                                                                {
-                                                                                    "ref": "PartitionResult"
-                                                                                },
-                                                                                "name"
-                                                                            ]
-                                                                        },
-                                                                        "aws"
-                                                                    ]
-                                                                }
-                                                            ],
-                                                            "rules": [
-                                                                {
-                                                                    "conditions": [],
-                                                                    "error": "AccountIdEndpointMode is required but no AccountID was provided or able to be loaded",
-                                                                    "type": "error"
-                                                                }
-                                                            ],
-                                                            "type": "tree"
-                                                        },
-                                                        {
-                                                            "conditions": [],
-                                                            "error": "Invalid Configuration: AccountIdEndpointMode is required but account endpoints are not supported in this partition",
-                                                            "type": "error"
-                                                        }
-                                                    ],
-                                                    "type": "tree"
+                                                    ]
                                                 },
                                                 {
-                                                    "conditions": [],
-                                                    "error": "Invalid Configuration: AccountIdEndpointMode is required and FIPS is enabled, but FIPS account endpoints are not supported",
-                                                    "type": "error"
+                                                    "fn": "booleanEquals",
+                                                    "argv": [
+                                                        {
+                                                            "ref": "IsSearchOperation"
+                                                        },
+                                                        true
+                                                    ]
                                                 }
                                             ],
-                                            "type": "tree"
+                                            "endpoint": {
+                                                "url": "https://search-dynamodb.{Region}.{PartitionResult#dualStackDnsSuffix}",
+                                                "properties": {},
+                                                "headers": {}
+                                            },
+                                            "type": "endpoint"
                                         },
                                         {
                                             "conditions": [],
@@ -1049,6 +1657,148 @@
                                     "conditions": [],
                                     "error": "DualStack is enabled but this partition does not support DualStack",
                                     "type": "error"
+                                }
+                            ],
+                            "type": "tree"
+                        },
+                        {
+                            "conditions": [
+                                {
+                                    "fn": "not",
+                                    "argv": [
+                                        {
+                                            "fn": "stringEquals",
+                                            "argv": [
+                                                {
+                                                    "fn": "getAttr",
+                                                    "argv": [
+                                                        {
+                                                            "ref": "PartitionResult"
+                                                        },
+                                                        "name"
+                                                    ]
+                                                },
+                                                "aws"
+                                            ]
+                                        }
+                                    ]
+                                },
+                                {
+                                    "fn": "not",
+                                    "argv": [
+                                        {
+                                            "fn": "stringEquals",
+                                            "argv": [
+                                                {
+                                                    "ref": "Region"
+                                                },
+                                                "us-gov-east-1"
+                                            ]
+                                        }
+                                    ]
+                                },
+                                {
+                                    "fn": "not",
+                                    "argv": [
+                                        {
+                                            "fn": "stringEquals",
+                                            "argv": [
+                                                {
+                                                    "ref": "Region"
+                                                },
+                                                "us-gov-west-1"
+                                            ]
+                                        }
+                                    ]
+                                },
+                                {
+                                    "fn": "not",
+                                    "argv": [
+                                        {
+                                            "fn": "stringEquals",
+                                            "argv": [
+                                                {
+                                                    "ref": "Region"
+                                                },
+                                                "cn-north-1"
+                                            ]
+                                        }
+                                    ]
+                                },
+                                {
+                                    "fn": "not",
+                                    "argv": [
+                                        {
+                                            "fn": "stringEquals",
+                                            "argv": [
+                                                {
+                                                    "ref": "Region"
+                                                },
+                                                "cn-northwest-1"
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ],
+                            "rules": [
+                                {
+                                    "conditions": [
+                                        {
+                                            "fn": "isSet",
+                                            "argv": [
+                                                {
+                                                    "ref": "AccountIdEndpointMode"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "fn": "stringEquals",
+                                            "argv": [
+                                                {
+                                                    "ref": "AccountIdEndpointMode"
+                                                },
+                                                "required"
+                                            ]
+                                        }
+                                    ],
+                                    "error": "Invalid Configuration: AccountIdEndpointMode is required but account endpoints are not supported in this region",
+                                    "type": "error"
+                                },
+                                {
+                                    "conditions": [
+                                        {
+                                            "fn": "isSet",
+                                            "argv": [
+                                                {
+                                                    "ref": "IsSearchOperation"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "fn": "booleanEquals",
+                                            "argv": [
+                                                {
+                                                    "ref": "IsSearchOperation"
+                                                },
+                                                true
+                                            ]
+                                        }
+                                    ],
+                                    "endpoint": {
+                                        "url": "https://search-dynamodb.{Region}.{PartitionResult#dnsSuffix}",
+                                        "properties": {},
+                                        "headers": {}
+                                    },
+                                    "type": "endpoint"
+                                },
+                                {
+                                    "conditions": [],
+                                    "endpoint": {
+                                        "url": "https://dynamodb.{Region}.{PartitionResult#dnsSuffix}",
+                                        "properties": {},
+                                        "headers": {}
+                                    },
+                                    "type": "endpoint"
                                 }
                             ],
                             "type": "tree"
@@ -1075,21 +1825,6 @@
                                                 "disabled"
                                             ]
                                         }
-                                    ]
-                                },
-                                {
-                                    "fn": "stringEquals",
-                                    "argv": [
-                                        {
-                                            "fn": "getAttr",
-                                            "argv": [
-                                                {
-                                                    "ref": "PartitionResult"
-                                                },
-                                                "name"
-                                            ]
-                                        },
-                                        "aws"
                                     ]
                                 },
                                 {
@@ -1184,16 +1919,53 @@
                                     ]
                                 }
                             ],
-                            "endpoint": {
-                                "url": "https://{ParsedArn#accountId}.ddb.{Region}.{PartitionResult#dnsSuffix}",
-                                "properties": {
-                                    "metricValues": [
-                                        "O"
-                                    ]
+                            "rules": [
+                                {
+                                    "conditions": [
+                                        {
+                                            "fn": "isSet",
+                                            "argv": [
+                                                {
+                                                    "ref": "IsSearchOperation"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "fn": "booleanEquals",
+                                            "argv": [
+                                                {
+                                                    "ref": "IsSearchOperation"
+                                                },
+                                                true
+                                            ]
+                                        }
+                                    ],
+                                    "endpoint": {
+                                        "url": "https://{ParsedArn#accountId}.search-ddb.{Region}.{PartitionResult#dnsSuffix}",
+                                        "properties": {
+                                            "metricValues": [
+                                                "O"
+                                            ]
+                                        },
+                                        "headers": {}
+                                    },
+                                    "type": "endpoint"
                                 },
-                                "headers": {}
-                            },
-                            "type": "endpoint"
+                                {
+                                    "conditions": [],
+                                    "endpoint": {
+                                        "url": "https://{ParsedArn#accountId}.ddb.{Region}.{PartitionResult#dnsSuffix}",
+                                        "properties": {
+                                            "metricValues": [
+                                                "O"
+                                            ]
+                                        },
+                                        "headers": {}
+                                    },
+                                    "type": "endpoint"
+                                }
+                            ],
+                            "type": "tree"
                         },
                         {
                             "conditions": [
@@ -1217,21 +1989,6 @@
                                                 "disabled"
                                             ]
                                         }
-                                    ]
-                                },
-                                {
-                                    "fn": "stringEquals",
-                                    "argv": [
-                                        {
-                                            "fn": "getAttr",
-                                            "argv": [
-                                                {
-                                                    "ref": "PartitionResult"
-                                                },
-                                                "name"
-                                            ]
-                                        },
-                                        "aws"
                                     ]
                                 },
                                 {
@@ -1336,16 +2093,53 @@
                                     ]
                                 }
                             ],
-                            "endpoint": {
-                                "url": "https://{ParsedArn#accountId}.ddb.{Region}.{PartitionResult#dnsSuffix}",
-                                "properties": {
-                                    "metricValues": [
-                                        "O"
-                                    ]
+                            "rules": [
+                                {
+                                    "conditions": [
+                                        {
+                                            "fn": "isSet",
+                                            "argv": [
+                                                {
+                                                    "ref": "IsSearchOperation"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "fn": "booleanEquals",
+                                            "argv": [
+                                                {
+                                                    "ref": "IsSearchOperation"
+                                                },
+                                                true
+                                            ]
+                                        }
+                                    ],
+                                    "endpoint": {
+                                        "url": "https://{ParsedArn#accountId}.search-ddb.{Region}.{PartitionResult#dnsSuffix}",
+                                        "properties": {
+                                            "metricValues": [
+                                                "O"
+                                            ]
+                                        },
+                                        "headers": {}
+                                    },
+                                    "type": "endpoint"
                                 },
-                                "headers": {}
-                            },
-                            "type": "endpoint"
+                                {
+                                    "conditions": [],
+                                    "endpoint": {
+                                        "url": "https://{ParsedArn#accountId}.ddb.{Region}.{PartitionResult#dnsSuffix}",
+                                        "properties": {
+                                            "metricValues": [
+                                                "O"
+                                            ]
+                                        },
+                                        "headers": {}
+                                    },
+                                    "type": "endpoint"
+                                }
+                            ],
+                            "type": "tree"
                         },
                         {
                             "conditions": [
@@ -1369,21 +2163,6 @@
                                                 "disabled"
                                             ]
                                         }
-                                    ]
-                                },
-                                {
-                                    "fn": "stringEquals",
-                                    "argv": [
-                                        {
-                                            "fn": "getAttr",
-                                            "argv": [
-                                                {
-                                                    "ref": "PartitionResult"
-                                                },
-                                                "name"
-                                            ]
-                                        },
-                                        "aws"
                                     ]
                                 },
                                 {
@@ -1423,6 +2202,37 @@
                                         }
                                     ],
                                     "rules": [
+                                        {
+                                            "conditions": [
+                                                {
+                                                    "fn": "isSet",
+                                                    "argv": [
+                                                        {
+                                                            "ref": "IsSearchOperation"
+                                                        }
+                                                    ]
+                                                },
+                                                {
+                                                    "fn": "booleanEquals",
+                                                    "argv": [
+                                                        {
+                                                            "ref": "IsSearchOperation"
+                                                        },
+                                                        true
+                                                    ]
+                                                }
+                                            ],
+                                            "endpoint": {
+                                                "url": "https://{AccountId}.search-ddb.{Region}.{PartitionResult#dnsSuffix}",
+                                                "properties": {
+                                                    "metricValues": [
+                                                        "O"
+                                                    ]
+                                                },
+                                                "headers": {}
+                                            },
+                                            "type": "endpoint"
+                                        },
                                         {
                                             "conditions": [],
                                             "endpoint": {
@@ -1467,67 +2277,35 @@
                                     ]
                                 }
                             ],
-                            "rules": [
+                            "error": "AccountIdEndpointMode is required but no AccountID was provided or able to be loaded",
+                            "type": "error"
+                        },
+                        {
+                            "conditions": [
                                 {
-                                    "conditions": [
+                                    "fn": "isSet",
+                                    "argv": [
                                         {
-                                            "fn": "not",
-                                            "argv": [
-                                                {
-                                                    "fn": "booleanEquals",
-                                                    "argv": [
-                                                        {
-                                                            "ref": "UseFIPS"
-                                                        },
-                                                        true
-                                                    ]
-                                                }
-                                            ]
+                                            "ref": "IsSearchOperation"
                                         }
-                                    ],
-                                    "rules": [
-                                        {
-                                            "conditions": [
-                                                {
-                                                    "fn": "stringEquals",
-                                                    "argv": [
-                                                        {
-                                                            "fn": "getAttr",
-                                                            "argv": [
-                                                                {
-                                                                    "ref": "PartitionResult"
-                                                                },
-                                                                "name"
-                                                            ]
-                                                        },
-                                                        "aws"
-                                                    ]
-                                                }
-                                            ],
-                                            "rules": [
-                                                {
-                                                    "conditions": [],
-                                                    "error": "AccountIdEndpointMode is required but no AccountID was provided or able to be loaded",
-                                                    "type": "error"
-                                                }
-                                            ],
-                                            "type": "tree"
-                                        },
-                                        {
-                                            "conditions": [],
-                                            "error": "Invalid Configuration: AccountIdEndpointMode is required but account endpoints are not supported in this partition",
-                                            "type": "error"
-                                        }
-                                    ],
-                                    "type": "tree"
+                                    ]
                                 },
                                 {
-                                    "conditions": [],
-                                    "error": "Invalid Configuration: AccountIdEndpointMode is required and FIPS is enabled, but FIPS account endpoints are not supported",
-                                    "type": "error"
+                                    "fn": "booleanEquals",
+                                    "argv": [
+                                        {
+                                            "ref": "IsSearchOperation"
+                                        },
+                                        true
+                                    ]
                                 }
                             ],
-                            "type": "tree"
+                            "endpoint": {
+                                "url": "https://search-dynamodb.{Region}.{PartitionResult#dnsSuffix}",
+                                "properties": {},
+                                "headers": {}
+                            },
+                            "type": "endpoint"
                         },
                         {
                             "conditions": [],

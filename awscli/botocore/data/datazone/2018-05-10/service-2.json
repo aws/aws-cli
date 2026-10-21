@@ -414,6 +414,27 @@
       "documentation":"<p>Creates an Amazon DataZone data source.</p>",
       "idempotent":true
     },
+    "CreateDesignation":{
+      "name":"CreateDesignation",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v2/domains/{domainIdentifier}/designations",
+        "responseCode":201
+      },
+      "input":{"shape":"CreateDesignationInput"},
+      "output":{"shape":"CreateDesignationOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"UnauthorizedException"}
+      ],
+      "documentation":"<p>Creates a new user-defined designation with a Cedar permit policy. The designation defines a named role that can be assigned to project members.</p>"
+    },
     "CreateDomain":{
       "name":"CreateDomain",
       "http":{
@@ -992,6 +1013,27 @@
         {"shape":"UnauthorizedException"}
       ],
       "documentation":"<p>Deletes a data source in Amazon DataZone.</p>",
+      "idempotent":true
+    },
+    "DeleteDesignation":{
+      "name":"DeleteDesignation",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/v2/domains/{domainIdentifier}/designations/{identifier}",
+        "responseCode":204
+      },
+      "input":{"shape":"DeleteDesignationInput"},
+      "output":{"shape":"DeleteDesignationOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"UnauthorizedException"}
+      ],
+      "documentation":"<p>Deletes a designation. Managed designations cannot be deleted. This operation is idempotent.</p>",
       "idempotent":true
     },
     "DeleteDomain":{
@@ -1638,6 +1680,26 @@
         {"shape":"UnauthorizedException"}
       ],
       "documentation":"<p>Gets an Amazon DataZone data source run.</p>",
+      "readonly":true
+    },
+    "GetDesignation":{
+      "name":"GetDesignation",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v2/domains/{domainIdentifier}/designations/{identifier}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetDesignationInput"},
+      "output":{"shape":"GetDesignationOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"UnauthorizedException"}
+      ],
+      "documentation":"<p>Gets the details of a designation, including its Cedar policy.</p>",
       "readonly":true
     },
     "GetDomain":{
@@ -2423,6 +2485,26 @@
         {"shape":"UnauthorizedException"}
       ],
       "documentation":"<p>Lists data sources in Amazon DataZone.</p>",
+      "readonly":true
+    },
+    "ListDesignations":{
+      "name":"ListDesignations",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v2/domains/{domainIdentifier}/designations",
+        "responseCode":200
+      },
+      "input":{"shape":"ListDesignationsInput"},
+      "output":{"shape":"ListDesignationsOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"UnauthorizedException"}
+      ],
+      "documentation":"<p>Lists the designations in a domain. Returns system-managed designations first, followed by user-created designations sorted alphabetically by name.</p>",
       "readonly":true
     },
     "ListDomainUnitsForParent":{
@@ -3511,6 +3593,26 @@
       ],
       "documentation":"<p>Updates the specified data source in Amazon DataZone.</p>",
       "idempotent":true
+    },
+    "UpdateDesignation":{
+      "name":"UpdateDesignation",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/v2/domains/{domainIdentifier}/designations/{identifier}",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateDesignationInput"},
+      "output":{"shape":"UpdateDesignationOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"UnauthorizedException"}
+      ],
+      "documentation":"<p>Updates an existing designation. Managed designations cannot be modified.</p>"
     },
     "UpdateDomain":{
       "name":"UpdateDomain",
@@ -5791,6 +5893,12 @@
         }
       }
     },
+    "CedarDesignationPolicy":{
+      "type":"string",
+      "documentation":"<p>A Cedar permit policy that defines what actions designation holders can perform.</p>",
+      "max":10000,
+      "min":1
+    },
     "CellInformation":{
       "type":"structure",
       "members":{},
@@ -7534,6 +7642,93 @@
         }
       }
     },
+    "CreateDesignationInput":{
+      "type":"structure",
+      "required":[
+        "domainIdentifier",
+        "name",
+        "policy"
+      ],
+      "members":{
+        "domainIdentifier":{
+          "shape":"DomainId",
+          "documentation":"<p>The identifier of the Amazon DataZone domain in which the designation is created.</p>",
+          "location":"uri",
+          "locationName":"domainIdentifier"
+        },
+        "name":{
+          "shape":"DesignationName",
+          "documentation":"<p>The name of the designation. The name must be unique within the domain.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>A human-readable description of the designation and its intended use.</p>"
+        },
+        "policy":{
+          "shape":"CedarDesignationPolicy",
+          "documentation":"<p>The Cedar permit policy that defines what actions holders of this designation are allowed to perform.</p>"
+        },
+        "deletionProtection":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether deletion protection is enabled for this designation. Defaults to true when omitted.</p>"
+        }
+      }
+    },
+    "CreateDesignationOutput":{
+      "type":"structure",
+      "required":[
+        "domainId",
+        "id",
+        "name",
+        "designationType",
+        "policy",
+        "deletionProtection",
+        "createdBy"
+      ],
+      "members":{
+        "domainId":{
+          "shape":"DomainId",
+          "documentation":"<p>The identifier of the Amazon DataZone domain in which the designation was created.</p>"
+        },
+        "id":{
+          "shape":"DesignationId",
+          "documentation":"<p>The unique ID of the designation.</p>"
+        },
+        "name":{
+          "shape":"DesignationName",
+          "documentation":"<p>The name of the designation. The name is unique within the domain.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>A human-readable description of the designation and its intended use.</p>"
+        },
+        "designationType":{
+          "shape":"DesignationType",
+          "documentation":"<p>The classification of this designation. MANAGED designations are system-defined and cannot be modified or deleted.</p>"
+        },
+        "policy":{
+          "shape":"CedarDesignationPolicy",
+          "documentation":"<p>The Cedar permit policy that governs what actions holders of this designation are allowed to perform.</p>"
+        },
+        "deletionProtection":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether deletion protection is enabled for this designation. When true, DeleteDesignation is rejected until protection is disabled via UpdateDesignation.</p>"
+        },
+        "createdBy":{
+          "shape":"CreatedBy",
+          "documentation":"<p>The identifier of the Amazon DataZone user who created the designation.</p>"
+        },
+        "createdAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time when the designation was created.</p>"
+        },
+        "lastUpdatedAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time when the designation was last updated.</p>"
+        }
+      },
+      "documentation":"<p>A designation defines a named role with a Cedar permit policy that controls what actions members holding this designation can perform within a project.</p>"
+    },
     "CreateDomainInput":{
       "type":"structure",
       "required":["name"],
@@ -8799,6 +8994,10 @@
         "designation":{
           "shape":"UserDesignation",
           "documentation":"<p>The designation of the project membership.</p>"
+        },
+        "userCreatedDesignationId":{
+          "shape":"DesignationId",
+          "documentation":"<p>The ID of the user-created designation to assign to the project member. Required when <code>designation</code> is <code>USER_CREATED_DESIGNATION</code>; must not be provided otherwise.</p>"
         }
       }
     },
@@ -10551,6 +10750,31 @@
         }
       }
     },
+    "DeleteDesignationInput":{
+      "type":"structure",
+      "required":[
+        "domainIdentifier",
+        "identifier"
+      ],
+      "members":{
+        "domainIdentifier":{
+          "shape":"DomainId",
+          "documentation":"<p>The identifier of the Amazon DataZone domain that contains the designation to delete.</p>",
+          "location":"uri",
+          "locationName":"domainIdentifier"
+        },
+        "identifier":{
+          "shape":"DesignationId",
+          "documentation":"<p>The unique ID of the designation to delete.</p>",
+          "location":"uri",
+          "locationName":"identifier"
+        }
+      }
+    },
+    "DeleteDesignationOutput":{
+      "type":"structure",
+      "members":{}
+    },
     "DeleteDomainInput":{
       "type":"structure",
       "required":["identifier"],
@@ -11294,6 +11518,77 @@
       "max":2048,
       "min":0,
       "sensitive":true
+    },
+    "DesignationId":{
+      "type":"string",
+      "pattern":"[a-zA-Z0-9_-]{1,36}"
+    },
+    "DesignationName":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"[\\w -]+"
+    },
+    "DesignationSummaries":{
+      "type":"list",
+      "member":{"shape":"DesignationSummary"}
+    },
+    "DesignationSummary":{
+      "type":"structure",
+      "required":[
+        "domainId",
+        "id",
+        "name",
+        "deletionProtection",
+        "createdBy"
+      ],
+      "members":{
+        "domainId":{
+          "shape":"DomainId",
+          "documentation":"<p>The identifier of the Amazon DataZone domain that contains the designation.</p>"
+        },
+        "id":{
+          "shape":"DesignationId",
+          "documentation":"<p>The unique ID of the designation.</p>"
+        },
+        "name":{
+          "shape":"DesignationName",
+          "documentation":"<p>The name of the designation. The name is unique within the domain.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>A human-readable description of the designation and its intended use.</p>"
+        },
+        "designationType":{
+          "shape":"DesignationType",
+          "documentation":"<p>The classification of this designation.</p>"
+        },
+        "deletionProtection":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether deletion protection is enabled for this designation.</p>"
+        },
+        "createdBy":{
+          "shape":"CreatedBy",
+          "documentation":"<p>The identifier of the Amazon DataZone user who created the designation.</p>"
+        },
+        "createdAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time when the designation was created.</p>"
+        },
+        "updatedAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time when the designation was last updated.</p>"
+        }
+      },
+      "documentation":"<p>Summary representation of a designation returned by list operations.</p>"
+    },
+    "DesignationType":{
+      "type":"string",
+      "documentation":"<p>The classification of a designation.</p>",
+      "enum":[
+        "MANAGED",
+        "USER_CREATED"
+      ]
     },
     "DetailedGlossaryTerm":{
       "type":"structure",
@@ -13531,6 +13826,82 @@
           "documentation":"<p>The timestamp of when this data source run stopped.</p>"
         }
       }
+    },
+    "GetDesignationInput":{
+      "type":"structure",
+      "required":[
+        "domainIdentifier",
+        "identifier"
+      ],
+      "members":{
+        "domainIdentifier":{
+          "shape":"DomainId",
+          "documentation":"<p>The identifier of the Amazon DataZone domain that contains the designation.</p>",
+          "location":"uri",
+          "locationName":"domainIdentifier"
+        },
+        "identifier":{
+          "shape":"DesignationId",
+          "documentation":"<p>The unique ID of the designation to retrieve.</p>",
+          "location":"uri",
+          "locationName":"identifier"
+        }
+      }
+    },
+    "GetDesignationOutput":{
+      "type":"structure",
+      "required":[
+        "domainId",
+        "id",
+        "name",
+        "designationType",
+        "policy",
+        "deletionProtection",
+        "createdBy"
+      ],
+      "members":{
+        "domainId":{
+          "shape":"DomainId",
+          "documentation":"<p>The identifier of the Amazon DataZone domain that contains the designation.</p>"
+        },
+        "id":{
+          "shape":"DesignationId",
+          "documentation":"<p>The unique ID of the designation.</p>"
+        },
+        "name":{
+          "shape":"DesignationName",
+          "documentation":"<p>The name of the designation. The name is unique within the domain.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>A human-readable description of the designation and its intended use.</p>"
+        },
+        "designationType":{
+          "shape":"DesignationType",
+          "documentation":"<p>The classification of this designation. MANAGED designations are system-defined and cannot be modified or deleted.</p>"
+        },
+        "policy":{
+          "shape":"CedarDesignationPolicy",
+          "documentation":"<p>The Cedar permit policy that governs what actions holders of this designation are allowed to perform.</p>"
+        },
+        "deletionProtection":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether deletion protection is enabled for this designation. When true, DeleteDesignation is rejected until protection is disabled via UpdateDesignation.</p>"
+        },
+        "createdBy":{
+          "shape":"CreatedBy",
+          "documentation":"<p>The identifier of the Amazon DataZone user who created the designation.</p>"
+        },
+        "createdAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time when the designation was created.</p>"
+        },
+        "lastUpdatedAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time when the designation was last updated.</p>"
+        }
+      },
+      "documentation":"<p>A designation defines a named role with a Cedar permit policy that controls what actions members holding this designation can perform within a project.</p>"
     },
     "GetDomainInput":{
       "type":"structure",
@@ -18302,6 +18673,50 @@
         }
       }
     },
+    "ListDesignationsInput":{
+      "type":"structure",
+      "required":["domainIdentifier"],
+      "members":{
+        "domainIdentifier":{
+          "shape":"DomainId",
+          "documentation":"<p>The identifier of the Amazon DataZone domain that contains the designations to list.</p>",
+          "location":"uri",
+          "locationName":"domainIdentifier"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>If the results exceed the value of <code>MaxResults</code>, the previous call returns a pagination token. Specify this token in a subsequent call to <code>ListDesignations</code> to retrieve the next set of results. If not specified, the operation returns the first page of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "maxResults":{
+          "shape":"ListDesignationsMaxResults",
+          "documentation":"<p>The maximum number of designations to return in a single call to <code>ListDesignations</code>. If the number of designations exceeds <code>MaxResults</code>, the response includes a <code>NextToken</code> value. Use that token in a subsequent call to <code>ListDesignations</code> to retrieve the next set of designations. The default value is 20.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        }
+      }
+    },
+    "ListDesignationsMaxResults":{
+      "type":"integer",
+      "documentation":"<p>Maximum number of results for ListDesignations. Minimum 10 ensures built-in designations always fit on the first page.</p>",
+      "box":true,
+      "max":50,
+      "min":10
+    },
+    "ListDesignationsOutput":{
+      "type":"structure",
+      "members":{
+        "items":{
+          "shape":"DesignationSummaries",
+          "documentation":"<p>The designation summaries that <code>ListDesignations</code> returned. Each item contains summary information about a designation in the domain.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>A pagination token that indicates that more results are available. Pass this token to a subsequent call to <code>ListDesignations</code> to retrieve the next page of results. If there are no more results, this value is null.</p>"
+        }
+      }
+    },
     "ListDomainUnitsForParentInput":{
       "type":"structure",
       "required":[
@@ -20858,7 +21273,7 @@
       "members":{
         "notifyOn":{
           "shape":"NotifyOnStates",
-          "documentation":"<p>Notebook run states that trigger notifications. Ordering is not significant.</p>"
+          "documentation":"<p>The notebook run states that trigger notifications. You can specify up to 7 states, and the ordering of the states is not significant.</p>"
         }
       },
       "documentation":"<p>The notification configuration for a notebook run in Amazon SageMaker Unified Studio.</p>"
@@ -21606,7 +22021,8 @@
       "enum":[
         "OWNER",
         "CONTRIBUTOR",
-        "PROJECT_CATALOG_STEWARD"
+        "PROJECT_CATALOG_STEWARD",
+        "USER_CREATED_DESIGNATION"
       ]
     },
     "ProjectGrantFilter":{
@@ -21642,6 +22058,10 @@
         "designation":{
           "shape":"UserDesignation",
           "documentation":"<p>The designated role of a project member.</p>"
+        },
+        "userCreatedDesignationId":{
+          "shape":"DesignationId",
+          "documentation":"<p>The ID of the user-created designation held by the project member when <code>designation</code> is <code>USER_CREATED_DESIGNATION</code>.</p>"
         }
       },
       "documentation":"<p>The details of a project member.</p>"
@@ -21664,6 +22084,10 @@
         "designation":{
           "shape":"UserDesignation",
           "documentation":"<p>The designation of the project membership.</p>"
+        },
+        "userCreatedDesignationId":{
+          "shape":"DesignationId",
+          "documentation":"<p>The ID of the user-created designation to assign to this member when creating the project. Required when <code>designation</code> is <code>USER_CREATED_DESIGNATION</code>; must not be provided otherwise.</p>"
         }
       },
       "documentation":"<p>A map of user or group profiles to designations that need to be assigned in the project.</p>"
@@ -21686,6 +22110,10 @@
         "projectDesignation":{
           "shape":"ProjectDesignation",
           "documentation":"<p>The project designation of the project policy grant principal.</p>"
+        },
+        "userCreatedDesignationId":{
+          "shape":"DesignationId",
+          "documentation":"<p>The ID of the user-created designation granted to the project principal. Required when <code>projectDesignation</code> is <code>USER_CREATED_DESIGNATION</code>; must not be provided otherwise.</p>"
         },
         "projectIdentifier":{
           "shape":"ProjectId",
@@ -27084,6 +27512,98 @@
         }
       }
     },
+    "UpdateDesignationInput":{
+      "type":"structure",
+      "required":[
+        "domainIdentifier",
+        "identifier"
+      ],
+      "members":{
+        "domainIdentifier":{
+          "shape":"DomainId",
+          "documentation":"<p>The identifier of the Amazon DataZone domain that contains the designation to update.</p>",
+          "location":"uri",
+          "locationName":"domainIdentifier"
+        },
+        "identifier":{
+          "shape":"DesignationId",
+          "documentation":"<p>The unique ID of the designation to update.</p>",
+          "location":"uri",
+          "locationName":"identifier"
+        },
+        "name":{
+          "shape":"DesignationName",
+          "documentation":"<p>The updated name of the designation. The name must be unique within the domain.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>The updated human-readable description of the designation and its intended use.</p>"
+        },
+        "policy":{
+          "shape":"CedarDesignationPolicy",
+          "documentation":"<p>The updated Cedar permit policy.</p>"
+        },
+        "deletionProtection":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether deletion protection is enabled for this designation. Omit to keep the existing value.</p>"
+        }
+      }
+    },
+    "UpdateDesignationOutput":{
+      "type":"structure",
+      "required":[
+        "domainId",
+        "id",
+        "name",
+        "designationType",
+        "policy",
+        "deletionProtection",
+        "createdBy"
+      ],
+      "members":{
+        "domainId":{
+          "shape":"DomainId",
+          "documentation":"<p>The identifier of the Amazon DataZone domain that contains the designation.</p>"
+        },
+        "id":{
+          "shape":"DesignationId",
+          "documentation":"<p>The unique ID of the designation.</p>"
+        },
+        "name":{
+          "shape":"DesignationName",
+          "documentation":"<p>The name of the designation. The name is unique within the domain.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>A human-readable description of the designation and its intended use.</p>"
+        },
+        "designationType":{
+          "shape":"DesignationType",
+          "documentation":"<p>The classification of this designation. MANAGED designations are system-defined and cannot be modified or deleted.</p>"
+        },
+        "policy":{
+          "shape":"CedarDesignationPolicy",
+          "documentation":"<p>The Cedar permit policy that governs what actions holders of this designation are allowed to perform.</p>"
+        },
+        "deletionProtection":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether deletion protection is enabled for this designation. When true, DeleteDesignation is rejected until protection is disabled via UpdateDesignation.</p>"
+        },
+        "createdBy":{
+          "shape":"CreatedBy",
+          "documentation":"<p>The identifier of the Amazon DataZone user who created the designation.</p>"
+        },
+        "createdAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time when the designation was created.</p>"
+        },
+        "lastUpdatedAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time when the designation was last updated.</p>"
+        }
+      },
+      "documentation":"<p>A designation defines a named role with a Cedar permit policy that controls what actions members holding this designation can perform within a project.</p>"
+    },
     "UpdateDomainInput":{
       "type":"structure",
       "required":["identifier"],
@@ -28880,7 +29400,8 @@
         "PROJECT_CONTRIBUTOR",
         "PROJECT_CATALOG_VIEWER",
         "PROJECT_CATALOG_CONSUMER",
-        "PROJECT_CATALOG_STEWARD"
+        "PROJECT_CATALOG_STEWARD",
+        "USER_CREATED_DESIGNATION"
       ]
     },
     "UserDetails":{

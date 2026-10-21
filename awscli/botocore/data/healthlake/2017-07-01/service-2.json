@@ -6,6 +6,7 @@
     "endpointPrefix":"healthlake",
     "jsonVersion":"1.0",
     "protocol":"json",
+    "protocolSettings":{"h2":"optional"},
     "protocols":["json"],
     "serviceAbbreviation":"HealthLake",
     "serviceFullName":"Amazon HealthLake",
@@ -459,16 +460,11 @@
       "input":{"shape":"UpdateProfileWithAgentRequest"},
       "output":{"shape":"UpdateProfileWithAgentResponse"},
       "errors":[
-        {"shape":"NotImplementedOperationException"},
-        {"shape":"ConversationNotFoundException"},
         {"shape":"ThrottlingException"},
-        {"shape":"AgentMessageOutOfContextException"},
         {"shape":"AccessDeniedException"},
         {"shape":"ResourceNotFoundException"},
-        {"shape":"UnsupportedMIMETypeException"},
         {"shape":"ValidationException"},
-        {"shape":"InternalServerException"},
-        {"shape":"UnauthorizedException"}
+        {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Updates a data transformation profile using chat-based interaction with an agent. Supports multi-turn conversations for iteratively customizing profiles.</p>",
       "endpoint":{"hostPrefix":"datatransformation."}
@@ -482,6 +478,16 @@
       },
       "documentation":"<p>Access is denied. Your account is not authorized to perform this operation.</p>",
       "exception":true
+    },
+    "AgentErrorType":{
+      "type":"string",
+      "enum":[
+        "InternalServerException",
+        "ResourceNotFoundException",
+        "ValidationException",
+        "AccessDeniedException",
+        "ThrottlingException"
+      ]
     },
     "AgentInputMessage":{
       "type":"structure",
@@ -508,54 +514,38 @@
         "confirmation_response"
       ]
     },
-    "AgentMessageOutOfContextException":{
-      "type":"structure",
-      "required":["Message"],
-      "members":{
-        "Message":{"shape":"String"}
-      },
-      "documentation":"<p>The agent message does not fit within the current conversation context. Start a new conversation or provide a message that relates to the current profile customization session.</p>",
-      "exception":true
-    },
     "AgentMessageString":{
       "type":"string",
       "max":40960,
       "min":1,
       "sensitive":true
     },
-    "AgentOutputMessage":{
+    "AgentOutputMessageStream":{
       "type":"structure",
-      "required":[
-        "Body",
-        "Type"
-      ],
       "members":{
-        "Body":{
-          "shape":"AgentMessageString",
-          "documentation":"<p>The text of the agent's response.</p>"
+        "TextMessageEvent":{
+          "shape":"TextMessageEvent",
+          "documentation":"<p>An incremental text update from the agent.</p>"
         },
-        "Type":{
-          "shape":"AgentOutputMessageType",
-          "documentation":"<p>The type of output message, which indicates how to interpret the agent's response.</p>"
+        "ProgressEvent":{
+          "shape":"ProgressEvent",
+          "documentation":"<p>An incremental progress update from the agent.</p>"
         },
-        "OptionsList":{
-          "shape":"DataTransformationChatOptionsList",
-          "documentation":"<p>A list of selectable options presented when the response type is <code>options</code>.</p>"
+        "HeartbeatEvent":{
+          "shape":"HeartbeatEvent",
+          "documentation":"<p>Periodically emitted event to keep the connection alive.</p>"
+        },
+        "ErrorEvent":{
+          "shape":"ErrorEvent",
+          "documentation":"<p>An exception encountered while serving the request.</p>"
+        },
+        "EndOfOutputEvent":{
+          "shape":"EndOfOutputEvent",
+          "documentation":"<p>The final event in the response stream from the agent during chat-based profile customization. The caller can assume that the stream has ended upon receiving this event.</p>"
         }
       },
-      "documentation":"<p>Represents a response message from the agent during chat-based profile customization.</p>"
-    },
-    "AgentOutputMessageType":{
-      "type":"string",
-      "enum":[
-        "INITIAL_GREETING",
-        "normal",
-        "confirmation",
-        "complete",
-        "error",
-        "options",
-        "choices"
-      ]
+      "documentation":"<p>Represents the response stream type from the agent during chat-based profile customization.</p>",
+      "eventstream":true
     },
     "AmazonResourceName":{
       "type":"string",
@@ -695,15 +685,6 @@
       "type":"string",
       "max":36,
       "min":1
-    },
-    "ConversationNotFoundException":{
-      "type":"structure",
-      "required":["Message"],
-      "members":{
-        "Message":{"shape":"String"}
-      },
-      "documentation":"<p>The specified conversation identifier does not exist. Verify the conversation ID or omit it to start a new conversation.</p>",
-      "exception":true
     },
     "CreateDataTransformationProfileRequest":{
       "type":"structure",
@@ -1381,6 +1362,26 @@
       "min":1,
       "pattern":"(arn:aws((-us-gov)|(-iso)|(-iso-b)|(-cn))?:kms:)?([a-z]{2}-[a-z]+(-[a-z]+)?-\\d:)?(\\d{12}:)?(((key/)?[a-zA-Z0-9-_]+)|(alias/[a-zA-Z0-9:/_-]+))"
     },
+    "EndOfOutputEvent":{
+      "type":"structure",
+      "required":["FinalResponseMessage"],
+      "members":{
+        "FinalResponseMessage":{
+          "shape":"AgentMessageString",
+          "documentation":"<p>The final response message from the agent.</p>"
+        },
+        "Options":{
+          "shape":"DataTransformationChatOptionsList",
+          "documentation":"<p>The response options that you can use to easily answer follow-up questions from the agent.</p>"
+        },
+        "ConversationId":{
+          "shape":"ConversationIdString",
+          "documentation":"<p>The conversation ID of the request. You can use this ID to continue the profile mapping based on this request's context at a later time.</p>"
+        }
+      },
+      "documentation":"<p>Contains the final response event from the agent, including the response message, response options, and conversation ID.</p>",
+      "event":true
+    },
     "ErrorCategory":{
       "type":"string",
       "enum":[
@@ -1401,6 +1402,25 @@
         }
       },
       "documentation":"<p>The error information for <code>CreateFHIRDatastore</code> and <code>DeleteFHIRDatastore</code> actions.</p>"
+    },
+    "ErrorEvent":{
+      "type":"structure",
+      "required":[
+        "Error",
+        "Message"
+      ],
+      "members":{
+        "Error":{
+          "shape":"AgentErrorType",
+          "documentation":"<p>The type of the exception.</p>"
+        },
+        "Message":{
+          "shape":"AgentMessageString",
+          "documentation":"<p>The exception message.</p>"
+        }
+      },
+      "documentation":"<p>The type of an event that returns an exception encountered while serving the request.</p>",
+      "event":true
     },
     "ErrorMessage":{
       "type":"string",
@@ -1583,6 +1603,12 @@
     "HealthLakeTimestamp":{
       "type":"timestamp",
       "documentation":"<p>A timestamp value.</p>"
+    },
+    "HeartbeatEvent":{
+      "type":"structure",
+      "members":{},
+      "documentation":"<p>The type for a periodically emitted event to keep the connection alive.</p>",
+      "event":true
     },
     "IamRoleArn":{
       "type":"string",
@@ -2139,16 +2165,6 @@
         "DISABLING"
       ]
     },
-    "NotImplementedOperationException":{
-      "type":"structure",
-      "required":["Message"],
-      "members":{
-        "Message":{"shape":"String"}
-      },
-      "documentation":"<p>The requested operation is not yet available. Check the service documentation for a list of supported operations.</p>",
-      "exception":true,
-      "fault":true
-    },
     "OutputDataConfig":{
       "type":"structure",
       "members":{
@@ -2237,6 +2253,18 @@
       "box":true,
       "max":99,
       "min":0
+    },
+    "ProgressEvent":{
+      "type":"structure",
+      "required":["Message"],
+      "members":{
+        "Message":{
+          "shape":"AgentMessageString",
+          "documentation":"<p>An incremental progress update message by the agent</p>"
+        }
+      },
+      "documentation":"<p>The type for an incremental progress update from the agent.</p>",
+      "event":true
     },
     "PublishDataTransformationProfileRequest":{
       "type":"structure",
@@ -2749,6 +2777,18 @@
       "type":"string",
       "enum":["FHIR_R4"]
     },
+    "TextMessageEvent":{
+      "type":"structure",
+      "required":["Message"],
+      "members":{
+        "Message":{
+          "shape":"AgentMessageString",
+          "documentation":"<p>An incremental text update from the agent.</p>"
+        }
+      },
+      "documentation":"<p>The type for an incremental text update from the agent.</p>",
+      "event":true
+    },
     "ThrottlingException":{
       "type":"structure",
       "members":{
@@ -2935,24 +2975,6 @@
       },
       "documentation":"<p>The Amazon S3 output location and encryption configuration for a transformation job.</p>"
     },
-    "UnauthorizedException":{
-      "type":"structure",
-      "required":["Message"],
-      "members":{
-        "Message":{"shape":"String"}
-      },
-      "documentation":"<p>You are not authorized to make this request. Verify that your Amazon Web Services credentials are valid and that you have the required permissions.</p>",
-      "exception":true
-    },
-    "UnsupportedMIMETypeException":{
-      "type":"structure",
-      "required":["Message"],
-      "members":{
-        "Message":{"shape":"String"}
-      },
-      "documentation":"<p>The content type in your request is not supported. Use a supported content type for this operation.</p>",
-      "exception":true
-    },
     "UntagResourceRequest":{
       "type":"structure",
       "required":[
@@ -3076,17 +3098,12 @@
       "type":"structure",
       "required":[
         "ProfileId",
-        "SourceFormat",
         "InputMessage"
       ],
       "members":{
         "ProfileId":{
           "shape":"ProfileIdString",
           "documentation":"<p>The unique identifier of the profile to update via the agent.</p>"
-        },
-        "SourceFormat":{
-          "shape":"SourceFormat",
-          "documentation":"<p>The source data format for the transformation.</p>"
         },
         "InputMessage":{
           "shape":"AgentInputMessage",
@@ -3101,18 +3118,11 @@
     },
     "UpdateProfileWithAgentResponse":{
       "type":"structure",
-      "required":[
-        "AgentResponse",
-        "ConversationId"
-      ],
+      "required":["AgentResponse"],
       "members":{
         "AgentResponse":{
-          "shape":"AgentOutputMessage",
-          "documentation":"<p>The response message from the agent.</p>"
-        },
-        "ConversationId":{
-          "shape":"ConversationIdString",
-          "documentation":"<p>The conversation identifier to use for follow-up messages in this conversation.</p>"
+          "shape":"AgentOutputMessageStream",
+          "documentation":"<p>The streaming response from the agent.</p>"
         }
       },
       "documentation":"<p>The response from the <code>UpdateProfileWithAgent</code> operation.</p>"

@@ -3081,7 +3081,8 @@
       "documentation":"<p>Defines the operational mode for Assisted Natural Language Understanding. This enum determines how the enhanced NLU capabilities integrate with standard intent recognition.</p>",
       "enum":[
         "Primary",
-        "Fallback"
+        "Fallback",
+        "DialogManager"
       ]
     },
     "AssociatedTranscript":{
@@ -5570,7 +5571,7 @@
         },
         "qnAIntentConfiguration":{
           "shape":"QnAIntentConfiguration",
-          "documentation":"<p>Specifies the configuration of the built-in <code>Amazon.QnAIntent</code>. The <code>AMAZON.QnAIntent</code> intent is called when Amazon Lex can't determine another intent to invoke. If you specify this field, you can't specify the <code>kendraConfiguration</code> field.</p>"
+          "documentation":"<p>Specifies the configuration of the built-in <code>Amazon.QnAIntent</code>. The <code>AMAZON.QnAIntent</code> intent is called when Amazon Lex V2 can't determine another intent to invoke. If you specify this field, you can't specify the <code>kendraConfiguration</code> field.</p>"
         },
         "qInConnectIntentConfiguration":{
           "shape":"QInConnectIntentConfiguration",
@@ -9209,11 +9210,10 @@
     },
     "IntentConfirmationSetting":{
       "type":"structure",
-      "required":["promptSpecification"],
       "members":{
         "promptSpecification":{
           "shape":"PromptSpecification",
-          "documentation":"<p>Prompts the user to confirm the intent. This question should have a yes or no answer.</p> <p>Amazon Lex uses this prompt to ensure that the user acknowledges that the intent is ready for fulfillment. For example, with the <code>OrderPizza</code> intent, you might want to confirm that the order is correct before placing it. For other intents, such as intents that simply respond to user questions, you might not need to ask the user for confirmation before providing the information. </p>"
+          "documentation":"<p>Prompts the user to confirm the intent. This question should have a yes or no answer.</p> <p>Amazon Lex uses this prompt to ensure that the user acknowledges that the intent is ready for fulfillment. For example, with the <code>OrderPizza</code> intent, you might want to confirm that the order is correct before placing it. For other intents, such as intents that simply respond to user questions, you might not need to ask the user for confirmation before providing the information. </p> <p>Required unless the bot locale's <code>assistedNluMode</code> is <code>DialogManager</code>, in which case Amazon Lex generates the confirmation prompt.</p>"
         },
         "declinationResponse":{
           "shape":"ResponseSpecification",
@@ -11419,7 +11419,7 @@
         },
         "assistedNluMode":{
           "shape":"AssistedNluMode",
-          "documentation":"<p>Specifies the mode for Assisted NLU operation. Use <code>Primary</code> to make Assisted NLU the primary intent recognition method, or <code>Fallback</code> to use it only when standard NLU confidence is low.</p>"
+          "documentation":"<p>Specifies the mode for Assisted NLU operation. Use <code>Primary</code> to make Assisted NLU the primary intent recognition method, <code>Fallback</code> to use it only when standard NLU confidence is low, or <code>DialogManager</code> to use a large language model to manage the conversation, including intent recognition, slot elicitation, and confirmation.</p>"
         },
         "intentDisambiguationSettings":{
           "shape":"IntentDisambiguationSettings",
@@ -12572,7 +12572,7 @@
       "members":{
         "slotResolutionStrategy":{
           "shape":"SlotResolutionStrategy",
-          "documentation":"<p>Specifies whether assisted slot resolution is turned on for the slot or not. If the value is <code>EnhancedFallback</code>, assisted slot resolution is activated when Amazon Lex defaults to the <code>AMAZON.FallbackIntent</code>. If the value is <code>Default</code>, assisted slot resolution is turned off.</p>"
+          "documentation":"<p>Specifies whether assisted slot resolution is turned on for the slot or not. If the value is <code>EnhancedFallback</code>, assisted slot resolution is activated when Amazon Lex V2 defaults to the <code>AMAZON.FallbackIntent</code>. If the value is <code>Default</code>, assisted slot resolution is turned off.</p>"
         }
       },
       "documentation":"<p>Contains information about whether assisted slot resolution is turned on for the slot or not.</p>"
@@ -14963,7 +14963,7 @@
         },
         "qnAIntentConfiguration":{
           "shape":"QnAIntentConfiguration",
-          "documentation":"<p>Specifies the configuration of the built-in <code>Amazon.QnAIntent</code>. The <code>AMAZON.QnAIntent</code> intent is called when Amazon Lex can't determine another intent to invoke. If you specify this field, you can't specify the <code>kendraConfiguration</code> field.</p>"
+          "documentation":"<p>Specifies the configuration of the built-in <code>Amazon.QnAIntent</code>. The <code>AMAZON.QnAIntent</code> intent is called when Amazon Lex V2 can't determine another intent to invoke. If you specify this field, you can't specify the <code>kendraConfiguration</code> field.</p>"
         },
         "qInConnectIntentConfiguration":{
           "shape":"QInConnectIntentConfiguration",
@@ -15819,18 +15819,14 @@
     },
     "WaitAndContinueSpecification":{
       "type":"structure",
-      "required":[
-        "waitingResponse",
-        "continueResponse"
-      ],
       "members":{
         "waitingResponse":{
           "shape":"ResponseSpecification",
-          "documentation":"<p>The response that Amazon Lex sends to indicate that the bot is waiting for the conversation to continue.</p>"
+          "documentation":"<p>The response that Amazon Lex sends to indicate that the bot is waiting for the conversation to continue. Required unless the bot locale's <code>assistedNluMode</code> is <code>DialogManager</code>.</p>"
         },
         "continueResponse":{
           "shape":"ResponseSpecification",
-          "documentation":"<p>The response that Amazon Lex sends to indicate that the bot is ready to continue the conversation.</p>"
+          "documentation":"<p>The response that Amazon Lex sends to indicate that the bot is ready to continue the conversation. Required unless the bot locale's <code>assistedNluMode</code> is <code>DialogManager</code>.</p>"
         },
         "stillWaitingResponse":{
           "shape":"StillWaitingResponseSpecification",

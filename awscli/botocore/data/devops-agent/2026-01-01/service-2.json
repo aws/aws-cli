@@ -7617,6 +7617,66 @@
       "type": "string",
       "pattern": "[a-zA-Z0-9_-]+"
     },
+    "MSTeamsChannel": {
+      "type": "structure",
+      "required": [
+        "channelName",
+        "channelId"
+      ],
+      "members": {
+        "channelName": {
+          "shape": "String",
+          "documentation": "<p>The name of the Microsoft Teams channel.</p>"
+        },
+        "channelId": {
+          "shape": "MSTeamsChannelId",
+          "documentation": "<p>The unique identifier of the Microsoft Teams channel, for example 19:abc123def456@thread.tacv2.</p>"
+        }
+      },
+      "documentation": "<p>Represents a channel in a Microsoft Teams team that the DevOps Agent service can send notifications to.</p>"
+    },
+    "MSTeamsChannelId": {
+      "type": "string",
+      "max": 256,
+      "min": 1
+    },
+    "MSTeamsConfiguration": {
+      "type": "structure",
+      "required": [
+        "teamId",
+        "teamName",
+        "transmissionTarget"
+      ],
+      "members": {
+        "teamId": {
+          "shape": "Guid",
+          "documentation": "<p>The identifier of the Microsoft Teams team to connect to the DevOps Agent service.</p>"
+        },
+        "teamName": {
+          "shape": "String",
+          "documentation": "<p>The name of the Microsoft Teams team to connect to the DevOps Agent service.</p>"
+        },
+        "transmissionTarget": {
+          "shape": "MSTeamsTransmissionTarget",
+          "documentation": "<p>The Microsoft Teams channels that receive agent notifications.</p>"
+        }
+      },
+      "documentation": "<p>Configuration for connecting a Microsoft Teams team to the DevOps Agent service. Use this configuration to specify which team to connect and how to route agent notifications to channels within that team.</p>"
+    },
+    "MSTeamsTransmissionTarget": {
+      "type": "structure",
+      "members": {
+        "opsOncallTarget": {
+          "shape": "MSTeamsChannel",
+          "documentation": "<p>The Microsoft Teams channel that receives notifications from the On-call Agent.</p>"
+        },
+        "opsSRETarget": {
+          "shape": "MSTeamsChannel",
+          "documentation": "<p>The Microsoft Teams channel that receives notifications from the SRE Agent.</p>"
+        }
+      },
+      "documentation": "<p>Specifies the Microsoft Teams channels that receive different types of agent notifications.</p>"
+    },
     "MaxIpv4AddressesPerEni": {
       "type": "integer",
       "documentation": "<p>The number of IPv4 addresses in each ENI for the Resource Gateway.</p>",
@@ -9586,6 +9646,7 @@
         "slack",
         "azure",
         "azuredevops",
+        "msteams",
         "dynatrace",
         "servicenow",
         "pagerduty",
@@ -9680,6 +9741,10 @@
         "remoteagentsigv4": {
           "shape": "RemoteAgentSigV4Configuration",
           "documentation": "<p>Remote A2A agent integration configuration (SigV4 auth).</p>"
+        },
+        "msteams": {
+          "shape": "MSTeamsConfiguration",
+          "documentation": "<p>The configuration for connecting a Microsoft Teams team to the DevOps Agent service.</p>"
         },
         "releaseManagement": {
           "shape": "ReleaseManagementConfiguration",

@@ -6126,6 +6126,11 @@
       "min":0,
       "sensitive":true
     },
+    "AdminAccountEmail":{
+      "type":"string",
+      "max":256,
+      "min":1
+    },
     "Agent":{
       "type":"structure",
       "required":[
@@ -13168,6 +13173,11 @@
       "type":"string",
       "enum":["PLAIN_CREDENTIALS"]
     },
+    "ClientEmail":{
+      "type":"string",
+      "max":256,
+      "min":1
+    },
     "ClientId":{
       "type":"string",
       "max":1024,
@@ -19112,6 +19122,12 @@
       "min":0,
       "pattern":"arn:[a-z0-9-\\.]{1,63}:[a-z0-9-\\.]{0,63}:[a-z0-9-\\.]{0,63}:[a-z0-9-\\.]{0,63}:[^/].{0,1023}"
     },
+    "DataSourceCertThumbprint":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "sensitive":true
+    },
     "DataSourceCredentials":{
       "type":"structure",
       "members":{
@@ -19138,6 +19154,18 @@
         "OAuthClientCredentials":{
           "shape":"OAuthClientCredentials",
           "documentation":"<p>The OAuth client credentials for connecting to a data source using OAuth 2.0 client credentials (2LO) authentication. For more information, see <code> <a href=\"https://docs.aws.amazon.com/quicksight/latest/APIReference/API_OAuthClientCredentials.html\">OAuthClientCredentials</a> </code>.</p>"
+        },
+        "ServiceAccountCredentials":{
+          "shape":"ServiceAccountCredentials",
+          "documentation":"<p>The service account credentials for connecting to a data source that uses Google Workspace domain-wide delegation.</p>"
+        },
+        "SharePointClientCredentials":{
+          "shape":"SharePointClientCredentials",
+          "documentation":"<p>The client credentials for connecting to a Microsoft SharePoint data source using two-legged OAuth (2LO) certificate-based authentication.</p>"
+        },
+        "OneDriveClientCredentials":{
+          "shape":"OneDriveClientCredentials",
+          "documentation":"<p>The client credentials for connecting to a Microsoft OneDrive data source using two-legged OAuth (2LO) certificate-based authentication.</p>"
         }
       },
       "documentation":"<p>Data source credentials. This is a variant type structure. For this structure to be valid, only one of the attributes can be non-null.</p>",
@@ -19178,6 +19206,13 @@
         "DIRECT_QUICKSIGHT_SOLE_OWNER",
         "DATASOURCE_NAME"
       ]
+    },
+    "DataSourceKmsKeyArn":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "pattern":"^arn:[-a-z0-9]*:kms:[-a-z0-9]*:[0-9]{12}:key/.+",
+      "sensitive":true
     },
     "DataSourceList":{
       "type":"list",
@@ -37218,6 +37253,24 @@
       "max":512,
       "min":1
     },
+    "OneDriveClientCredentials":{
+      "type":"structure",
+      "required":[
+        "KmsKeyArn",
+        "CertThumbprint"
+      ],
+      "members":{
+        "KmsKeyArn":{
+          "shape":"DataSourceKmsKeyArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS Key Management Service (AWS KMS) key used to encrypt the OneDrive certificate credentials. This field is required.</p>"
+        },
+        "CertThumbprint":{
+          "shape":"DataSourceCertThumbprint",
+          "documentation":"<p>The thumbprint of the certificate used for two-legged OAuth (2LO) authentication to OneDrive. This field is required.</p>"
+        }
+      },
+      "documentation":"<p>The client credentials for connecting to a Microsoft OneDrive data source using two-legged OAuth (2LO) certificate-based authentication. OneDrive connections access files stored in your OneDrive storage. The tenant ID and client ID are supplied through <code>OneDriveParameters</code>.</p>"
+    },
     "OneDriveClientId":{
       "type":"string",
       "max":100,
@@ -42942,6 +42995,29 @@
       "member":{"shape":"SeriesItem"},
       "max":2000
     },
+    "ServiceAccountCredentials":{
+      "type":"structure",
+      "required":[
+        "AdminAccountEmail",
+        "ServiceAccountPrivateKey",
+        "ClientEmail"
+      ],
+      "members":{
+        "AdminAccountEmail":{
+          "shape":"AdminAccountEmail",
+          "documentation":"<p>The email address of the Google Workspace administrator account that the service account impersonates through domain-wide delegation. This field is required.</p>"
+        },
+        "ServiceAccountPrivateKey":{
+          "shape":"PrivateKey",
+          "documentation":"<p>The private key of the Google service account used for domain-wide delegation. This field is required.</p>"
+        },
+        "ClientEmail":{
+          "shape":"ClientEmail",
+          "documentation":"<p>The client email address of the Google service account used for domain-wide delegation. This field is required.</p>"
+        }
+      },
+      "documentation":"<p>The service account credentials used for Google Workspace domain-wide delegation. Use this structure when you authenticate a data source connection using domain-wide delegation across your Google Workspace domain.</p>"
+    },
     "ServiceNowParameters":{
       "type":"structure",
       "required":["SiteBaseUrl"],
@@ -43052,6 +43128,24 @@
         }
       },
       "documentation":"<p>The shape conditional formatting of a filled map visual.</p>"
+    },
+    "SharePointClientCredentials":{
+      "type":"structure",
+      "required":[
+        "KmsKeyArn",
+        "CertThumbprint"
+      ],
+      "members":{
+        "KmsKeyArn":{
+          "shape":"DataSourceKmsKeyArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS Key Management Service (AWS KMS) key used to encrypt the SharePoint certificate credentials. This field is required.</p>"
+        },
+        "CertThumbprint":{
+          "shape":"DataSourceCertThumbprint",
+          "documentation":"<p>The thumbprint of the certificate used for two-legged OAuth (2LO) authentication to SharePoint. This field is required.</p>"
+        }
+      },
+      "documentation":"<p>The client credentials for connecting to a Microsoft SharePoint data source using two-legged OAuth (2LO) certificate-based authentication. SharePoint connections access documents stored in SharePoint sites and libraries. The tenant ID and client ID are supplied through <code>SharePointParameters</code>.</p>"
     },
     "SharePointClientId":{
       "type":"string",

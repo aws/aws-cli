@@ -138,7 +138,7 @@
         {"shape":"ServiceFailureException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Synthesizes UTF-8 input, plain text, or SSML over a bidirectional streaming connection. Specify synthesis parameters in HTTP/2 headers, send text incrementally as events on the input stream, and receive synthesized audio as it becomes available.</p> <p>This operation serves as a bidirectional counterpart to <code>SynthesizeSpeech</code>:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/polly/latest/API/API_SynthesizeSpeech.html\">SynthesizeSpeech</a> </p> </li> </ul>"
+      "documentation":"<p>Synthesizes UTF-8 input, plain text, or SSML over a bidirectional streaming connection. Specify synthesis parameters in HTTP/2 headers, send text incrementally as events on the input stream, and receive synthesized audio as it becomes available.</p> <p>This operation serves as a bidirectional counterpart to <code>SynthesizeSpeech</code>:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/polly/latest/dg/API_SynthesizeSpeech.html\">SynthesizeSpeech</a> </p> </li> </ul>"
     },
     "StartSpeechSynthesisTask":{
       "name":"StartSpeechSynthesisTask",
@@ -519,7 +519,7 @@
       "members":{
         "Alphabet":{
           "shape":"Alphabet",
-          "documentation":"<p>Phonetic alphabet used in the lexicon. Valid values are <code>ipa</code> and <code>x-sampa</code>.</p>"
+          "documentation":"<p>Phonetic alphabet used in the lexicon. Valid values are <code>ipa</code>, <code>x-sampa</code>, <code>x-amazon-pinyin</code>, <code>x-amazon-jyutping</code>, <code>x-amazon-pron-kana</code>, and <code>x-amazon-yomigana</code>.</p>"
         },
         "LanguageCode":{
           "shape":"LanguageCode",
@@ -782,7 +782,7 @@
     "Size":{"type":"integer"},
     "SnsTopicArn":{
       "type":"string",
-      "pattern":"^arn:aws(-(cn|iso(-b)?|us-gov))?:sns:[a-z0-9_-]{1,50}:\\d{12}:[a-zA-Z0-9_-]{1,251}([a-zA-Z0-9_-]{0,5}|\\.fifo)$"
+      "pattern":"^arn:aws(-(cn|iso(-b)?|us-gov|eusc))?:sns:[a-z0-9_-]{1,50}:\\d{12}:[a-zA-Z0-9_-]{1,251}([a-zA-Z0-9_-]{0,5}|\\.fifo)$"
     },
     "SpeechMarkType":{
       "type":"string",
@@ -890,7 +890,7 @@
         },
         "VoiceId":{
           "shape":"VoiceId",
-          "documentation":"<p>The voice to use in synthesis. To get a list of available voice IDs, use the <a href=\"https://docs.aws.amazon.com/polly/latest/API/API_DescribeVoices.html\">DescribeVoices</a> operation.</p>",
+          "documentation":"<p>The voice to use in synthesis. To get a list of available voice IDs, use the <a href=\"https://docs.aws.amazon.com/polly/latest/dg/API_DescribeVoices.html\">DescribeVoices</a> operation.</p>",
           "location":"header",
           "locationName":"x-amzn-VoiceId"
         },
@@ -1225,7 +1225,7 @@
       "members":{
         "message":{"shape":"ErrorMessage"}
       },
-      "documentation":"<p>The alphabet specified by the lexicon is not a supported alphabet. Valid values are <code>x-sampa</code> and <code>ipa</code>.</p>",
+      "documentation":"<p>The alphabet specified by the lexicon is not a supported alphabet. Valid values are <code>ipa</code>, <code>x-sampa</code>, <code>x-amazon-pinyin</code>, <code>x-amazon-jyutping</code>, <code>x-amazon-pron-kana</code>, and <code>x-amazon-yomigana</code>. Replace the unsupported alphabet with one of the valid values and resubmit your request.</p>",
       "error":{"httpStatusCode":400},
       "exception":true
     },
@@ -1434,7 +1434,17 @@
         "Florian",
         "Lennart",
         "Lorenzo",
-        "Tiffany"
+        "Tiffany",
+        "Arjun",
+        "Carlos",
+        "Carolina",
+        "Curtis",
+        "Hyunduk",
+        "Kenneth",
+        "Kiara",
+        "Leo",
+        "Nate",
+        "Tina"
       ]
     },
     "VoiceList":{
@@ -1443,5 +1453,5 @@
     },
     "VoiceName":{"type":"string"}
   },
-  "documentation":"<p>Amazon Polly is a web service that makes it easy to synthesize speech from text.</p> <p>The Amazon Polly service provides API operations for synthesizing high-quality speech from plain text and Speech Synthesis Markup Language (SSML), along with managing pronunciations lexicons that enable you to get the best results for your application domain.</p>"
+  "documentation":"<p>Amazon Polly is a web service that makes it easy to synthesize speech from text.</p> <p>The Amazon Polly service provides API operations for synthesizing high-quality speech from plain text and Speech Synthesis Markup Language (SSML), along with managing pronunciations lexicons that enable you to get the best results for your application domain.</p> <p>Authenticated API calls must be signed using the Signature Version 4 Signing Process. For more information, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_sigv.html\">Signing Amazon Web Services API Requests</a> in the <i>IAM User Guide</i>.</p>"
 }

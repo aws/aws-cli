@@ -9752,6 +9752,47 @@
         "failed"
       ]
     },
+    "AnalysisTransitGatewayPolicyTableEntry":{
+      "type":"structure",
+      "members":{
+        "RuleNumber":{
+          "shape":"Integer",
+          "documentation":"<p>The rule number for the policy table entry. Entries are evaluated in ascending order of rule number.</p>",
+          "locationName":"ruleNumber"
+        },
+        "Protocol":{
+          "shape":"String",
+          "documentation":"<p>The protocol number. A value of <code>-1</code> means that the entry matches all protocols.</p>",
+          "locationName":"protocol"
+        },
+        "SourceCidr":{
+          "shape":"String",
+          "documentation":"<p>The source CIDR block. If this value is not present, the entry matches any source address.</p>",
+          "locationName":"sourceCidr"
+        },
+        "DestinationCidr":{
+          "shape":"String",
+          "documentation":"<p>The destination CIDR block. If this value is not present, the entry matches any destination address.</p>",
+          "locationName":"destinationCidr"
+        },
+        "SourcePortRange":{
+          "shape":"PortRange",
+          "documentation":"<p>The source port range. If this value is not present, the entry matches any source port.</p>",
+          "locationName":"sourcePortRange"
+        },
+        "DestinationPortRange":{
+          "shape":"PortRange",
+          "documentation":"<p>The destination port range. If this value is not present, the entry matches any destination port.</p>",
+          "locationName":"destinationPortRange"
+        },
+        "TargetRouteTableId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the transit gateway route table to which the entry routes matching traffic.</p>",
+          "locationName":"targetRouteTableId"
+        }
+      },
+      "documentation":"<p>Describes an entry in a transit gateway policy table.</p>"
+    },
     "ApplianceModeSupportValue":{
       "type":"string",
       "enum":[
@@ -38693,6 +38734,16 @@
           "documentation":"<p>The transit gateway route table route.</p>",
           "locationName":"transitGatewayRouteTableRoute"
         },
+        "TransitGatewayPolicyTable":{
+          "shape":"AnalysisComponent",
+          "documentation":"<p>The transit gateway policy table.</p>",
+          "locationName":"transitGatewayPolicyTable"
+        },
+        "TransitGatewayPolicyTableEntry":{
+          "shape":"AnalysisTransitGatewayPolicyTableEntry",
+          "documentation":"<p>The transit gateway policy table entry.</p>",
+          "locationName":"transitGatewayPolicyTableEntry"
+        },
         "TransitGatewayAttachment":{
           "shape":"AnalysisComponent",
           "documentation":"<p>The transit gateway attachment.</p>",
@@ -48984,9 +49035,14 @@
           "shape":"ApplicationStatusSummary",
           "documentation":"<p>Reports the application-level health status for the instance.</p>",
           "locationName":"applicationStatus"
+        },
+        "PerformanceStatus":{
+          "shape":"PerformanceStatusSummary",
+          "documentation":"<p>Reports the performance-related health status for the instance. This information is returned only when performance status checks are enabled for the instance.</p>",
+          "locationName":"performanceStatus"
         }
       },
-      "documentation":"<p>Describes the status of an instance, including system status, instance status, attached EBS status, and application status.</p>"
+      "documentation":"<p>Describes the status of an instance, including system status, instance status, attached EBS status, application status, and performance status.</p>"
     },
     "InstanceStatusDetails":{
       "type":"structure",
@@ -57961,7 +58017,7 @@
         },
         "DevicePostureOptions":{
           "shape":"DevicePostureOptions",
-          "documentation":"<p>The device posture options for the Client VPN endpoint. Specifying this parameter replaces the entire device posture configuration for the endpoint. To remove all device trust providers, specify an empty list.</p>"
+          "documentation":"<p>The device posture options for the Client VPN endpoint. Specifying this parameter replaces the entire device posture configuration for the endpoint. To disable device posture and remove all device trust providers, specify <code>false</code> for <code>Enabled</code>.</p>"
         }
       }
     },
@@ -63887,6 +63943,11 @@
           "documentation":"<p>The route in a transit gateway route table.</p>",
           "locationName":"transitGatewayRouteTableRoute"
         },
+        "TransitGatewayPolicyTableEntry":{
+          "shape":"AnalysisTransitGatewayPolicyTableEntry",
+          "documentation":"<p>The entry in a transit gateway policy table.</p>",
+          "locationName":"transitGatewayPolicyTableEntry"
+        },
         "Explanations":{
           "shape":"ExplanationList",
           "documentation":"<p>The explanation codes.</p>",
@@ -64188,6 +64249,27 @@
         "shape":"PerformanceFactorReferenceRequest",
         "locationName":"item"
       }
+    },
+    "PerformanceStatusSummary":{
+      "type":"structure",
+      "members":{
+        "Status":{
+          "shape":"SummaryStatus",
+          "documentation":"<p>The current status.</p>",
+          "locationName":"status"
+        },
+        "ImpairedSince":{
+          "shape":"MillisecondDateTime",
+          "documentation":"<p>The date and time when the performance status became impaired.</p>",
+          "locationName":"impairedSince"
+        },
+        "Remediation":{
+          "shape":"String",
+          "documentation":"<p>The recommended action to remediate the impaired instance, if one is available. This value is returned only when the instance is impaired.</p>",
+          "locationName":"remediation"
+        }
+      },
+      "documentation":"<p>Provides a summary of the performance status check results for an instance.</p>"
     },
     "Period":{
       "type":"integer",

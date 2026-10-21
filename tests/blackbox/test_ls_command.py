@@ -46,6 +46,35 @@ async def test_errors_out_with_extra_arguments(aws_cli: str) -> None:
     )
     assert rc == 252
     assert b"--extra-argument-foo" in stderr
+    assert b"Maybe you meant" not in stderr
+
+
+@pytest.mark.asyncio
+async def test_suggests_option_for_misspelled_option(aws_cli: str) -> None:
+    async with mock_server() as (server, proxy):
+        stdout, stderr, rc = await run_cli(
+            aws_cli,
+            ["s3", "ls", "s3://bucket/", "--recurisve"],
+            cli_env(proxy),
+        )
+
+    assert rc == 252
+    assert b"* --recursive (instead of --recurisve)" in stderr
+
+
+@pytest.mark.asyncio
+async def test_suggests_global_option_for_misspelled_option(
+    aws_cli: str,
+) -> None:
+    async with mock_server() as (server, proxy):
+        stdout, stderr, rc = await run_cli(
+            aws_cli,
+            ["s3", "ls", "s3://bucket/", "--regoin", "us-west-2"],
+            cli_env(proxy),
+        )
+
+    assert rc == 252
+    assert b"* --region (instead of --regoin)" in stderr
 
 
 @pytest.mark.asyncio

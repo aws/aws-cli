@@ -53,6 +53,22 @@ class TestLSCommand(BaseS3TransferCommandTest):
         stderr = self.run_cmd('s3 ls --extra-argument-foo', expected_rc=252)[1]
         self.assertIn('Unknown options', stderr)
         self.assertIn('--extra-argument-foo', stderr)
+        self.assertNotIn('Maybe you meant', stderr)
+
+    def test_suggests_option_for_misspelled_option(self):
+        stderr = self.run_cmd(
+            's3 ls s3://bucket --recurisve', expected_rc=252
+        )[1]
+        self.assertIn(
+            'Maybe you meant:\n  * --recursive (instead of --recurisve)',
+            stderr,
+        )
+
+    def test_suggests_global_option_for_misspelled_option(self):
+        stderr = self.run_cmd(
+            's3 ls s3://bucket --regoin us-west-2', expected_rc=252
+        )[1]
+        self.assertIn('  * --region (instead of --regoin)', stderr)
 
     def test_list_buckets_use_page_size(self):
         stdout, _, _ = self.run_cmd('s3 ls --page-size 8', expected_rc=0)

@@ -125,6 +125,10 @@ def register_removals(event_handler):
         on_event='building-command-table.sagemakertrainingsessionruntime',
         remove_commands=['sample-training-session-with-response-stream'],
     )
+    cmd_remover.remove(
+        on_event='building-command-table.healthlake',
+        remove_commands=['update-profile-with-agent'],
+    )
 
 
 class CommandRemover:

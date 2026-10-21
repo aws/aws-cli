@@ -67,7 +67,10 @@ def format_unknown_options_error(unknown, candidates):
         # Compare without the shared '--' prefix, which would otherwise
         # inflate the similarity of every candidate.
         for match in get_close_matches(name, candidates, cutoff=0.8):
-            suggestions.append(f'  * --{match} (instead of --{name})')
+            suggestion = f'  * --{match} (instead of --{name})'
+            # The same unknown option may be passed more than once.
+            if suggestion not in suggestions:
+                suggestions.append(suggestion)
     if suggestions:
         msg += '\n\nMaybe you meant:\n' + '\n'.join(suggestions)
     return msg

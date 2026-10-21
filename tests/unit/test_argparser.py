@@ -119,6 +119,17 @@ class TestFormatUnknownOptionsError(unittest.TestCase):
         self.assertIn('  * --region (instead of --regoin)', msg)
         self.assertIn('  * --instance-ids (instead of --instance-idz)', msg)
 
+    def test_deduplicates_repeated_unknown_option(self):
+        msg = format_unknown_options_error(
+            ['--regoin', 'a', '--regoin', 'b'], self.candidates
+        )
+        self.assertEqual(
+            msg,
+            'Unknown options: --regoin, a, --regoin, b\n\n'
+            'Maybe you meant:\n'
+            '  * --region (instead of --regoin)',
+        )
+
     def test_ignores_value_after_equals(self):
         msg = format_unknown_options_error(
             ['--regoin=us-west-2'], self.candidates

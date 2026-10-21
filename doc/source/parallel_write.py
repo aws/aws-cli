@@ -13,7 +13,7 @@ process's builder before the search index and images are written out.
 This is the approach proposed upstream in
 https://github.com/sphinx-doc/sphinx/pull/11746, specialised for the HTML
 builder. It overrides a private Sphinx method, so it must be re-validated
-when upgrading Sphinx.
+when upgrading Sphinx (see tests/unit/test_doc_extensions.py).
 """
 
 import types

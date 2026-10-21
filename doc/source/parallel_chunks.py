@@ -12,6 +12,9 @@ forked while the environment is still small and only sends back the documents
 it read. Documents are interleaved across chunks so that expensive services,
 which are adjacent alphabetically, are spread across all processes. The
 chunking used for writing is unchanged.
+
+It patches Sphinx internals, so it must be re-validated when
+upgrading Sphinx (see tests/unit/test_doc_extensions.py).
 """
 
 import sphinx.builders

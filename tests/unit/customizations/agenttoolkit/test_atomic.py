@@ -12,11 +12,13 @@
 # language governing permissions and limitations under the License.
 import errno
 import os
-from unittest.mock import patch
+import stat
+from unittest.mock import Mock, patch
 
 import pytest
 
 from awscli.customizations.agenttoolkit import atomic
+from tests.unit.customizations.agenttoolkit.utils import requires_symlinks
 
 
 def _make_dir(path, files):
@@ -176,6 +178,7 @@ def test_recover_leaves_unrelated_entries_alone(live):
     assert sorted(_leftovers(live.parent)) == sorted(keep)
 
 
+@requires_symlinks
 def test_recover_does_not_follow_symlinks(tmp_path):
     target = _make_dir(tmp_path / 'elsewhere', {'SKILL.md': 'keep'})
     skills = tmp_path / 'skills'
@@ -296,6 +299,45 @@ def test_remove_dir(live):
     atomic.remove_dir(str(live))
     assert not live.exists()
     assert _leftovers(live.parent) == []
+
+
+def test_remove_dir_with_read_only_file(live):
+    os.chmod(live / 'old.md', stat.S_IREAD)
+    atomic.remove_dir(str(live))
+    assert not live.exists()
+    assert _leftovers(live.parent) == []
+
+
+def test_swap_removes_read_only_old_files(live, swap_mode):
+    os.chmod(live / 'old.md', stat.S_IREAD)
+    staging = _staging_for(live, {'SKILL.md': 'new'})
+    atomic.swap_into_place(staging, str(live))
+    assert _contents(live) == {'SKILL.md': 'new'}
+    assert _leftovers(live.parent) == []
+
+
+def test_remove_tree_clears_read_only_flag_on_windows(tmp_path):
+    path = tmp_path / 'f'
+    path.write_text('x')
+    remove = Mock()
+    with (
+        patch.object(atomic, 'is_windows', True),
+        patch.object(atomic.os, 'chmod') as chmod,
+    ):
+        atomic._clear_readonly_and_retry(remove, str(path), None)
+    chmod.assert_called_once_with(str(path), stat.S_IWRITE)
+    remove.assert_called_once_with(str(path))
+
+
+def test_remove_tree_does_not_chmod_on_posix(tmp_path):
+    remove = Mock()
+    with (
+        patch.object(atomic, 'is_windows', False),
+        patch.object(atomic.os, 'chmod') as chmod,
+    ):
+        atomic._clear_readonly_and_retry(remove, str(tmp_path), None)
+    chmod.assert_not_called()
+    remove.assert_not_called()
 
 
 def test_recover_finishes_interrupted_remove(live):

@@ -33,6 +33,7 @@ from tests.unit.customizations.agenttoolkit.utils import (
     make_config,
     make_session,
     make_skill_zip,
+    requires_symlinks,
 )
 
 
@@ -376,6 +377,7 @@ def test_update_skill_missing_marker_skipped(tmp_path):
         _run_update(configs, ['--skill-name', 'aws-s3'], remote_version='v2')
 
 
+@requires_symlinks
 def test_update_skill_through_symlinked_dir(tmp_path):
     # A user symlinks the per-skill dir into a shared location. update-skill
     # must follow the link and overwrite the target in place (shutil.rmtree
@@ -545,7 +547,7 @@ def test_update_skill_replaces_whole_directory(tmp_path):
     )
     assert rc == 0
     assert sorted(
-        str(p.relative_to(skill_dir)) for p in skill_dir.rglob('*')
+        p.relative_to(skill_dir).as_posix() for p in skill_dir.rglob('*')
     ) == sorted(['SKILL.md', SKILL_METADATA_FILENAME, 'ref', 'ref/a.md'])
     assert _hidden_entries(skill_dir.parent) == []
 
@@ -557,6 +559,9 @@ def test_update_skill_replaces_whole_directory(tmp_path):
         (b'not a zip file', 'Could not read the archive'),
         (_corrupt_zip({'SKILL.md': 'corrupt-me'}), 'is corrupt'),
     ],
+    # The zip bytes include a timestamp, so they can't be used as test IDs:
+    # pytest-xdist workers would collect different tests.
+    ids=['no-skill-md', 'not-a-zip', 'corrupt-zip'],
 )
 def test_update_skill_bad_archive_leaves_installed_version(
     tmp_path, zip_bytes, match

@@ -24,6 +24,7 @@ from awscli.customizations.exceptions import ParamValidationError
 from tests.unit.customizations.agenttoolkit.utils import (
     make_config,
     make_skill,
+    requires_symlinks,
 )
 
 
@@ -220,6 +221,7 @@ def test_remove_skill_leaves_no_partial_directory(tmp_path):
     assert list(skills.iterdir()) == []
 
 
+@requires_symlinks
 def test_remove_skill_from_skills_root_shared_by_symlink(tmp_path):
     make_skill(tmp_path, '.agent-a', 'aws-s3')
     (tmp_path / '.agent-b').mkdir()

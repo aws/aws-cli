@@ -4004,7 +4004,7 @@ class JSONFileCache:
                 f"JSON serializable: {value}"
             )
         if not os.path.isdir(self._working_dir):
-            os.makedirs(self._working_dir)
+            os.makedirs(self._working_dir, exist_ok=True)
         with os.fdopen(
             os.open(full_key, os.O_WRONLY | os.O_CREAT, 0o600), 'w'
         ) as f:

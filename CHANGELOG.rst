@@ -6,6 +6,7 @@ CHANGELOG
 ======
 
 * bugfix:``credentials``: Include the web identity token in the credential cache key to prevent collisions across different tokens for the same role.
+* bugfix:TLS: Removes the ``AAA Certificate Services`` root from the vendored CA bundle in response to the eMudhra/emSign CA incident. Sectigo used this root to cross-sign eMudhra intermediate CAs whose private keys were compromised. See `#10790 <https://github.com/aws/aws-cli/pull/10790>`__.
 
 
 1.46.1

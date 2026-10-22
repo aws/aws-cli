@@ -2,6 +2,27 @@
 CHANGELOG
 =========
 
+2.38.5
+======
+
+* api-change:``networkmanager``: AWS Cloud WAN now provides managed one-to-one NAT directly on it's core network attachments, through integration with Regional Private NAT Gateway. Use UpdateAttachmentNatConfiguration to enable NAT and configure NAT rules, and ListAttachmentNatConfigurations to view them.
+* enhancement:Python: Upgraded the Python interpreter that is bundled with AWS CLI v2 installers to version ``3.14.8``.
+* api-change:``lambda``: AWS Lambda durable functions now supports payloads up to 1 MB for checkpoints, callback completion, and error details.
+* api-change:``connect``: Adds support for customer queryable replication errors.
+* api-change:``kafkaconnect``: Amazon MSK Connect now supports pausing and resuming connectors via the asynchronous PauseConnector and ResumeConnector APIs. Paused connectors keep their configuration and committed offsets and resume where they left off. Each call returns an operation ARN to track with DescribeConnectorOperation.
+* api-change:``continuum``: Releasing Continuum for Code Vulnerabilities APIs for SDKs
+* api-change:``opensearchserverless``: Adds APIs to create, get, list, and cancel ingestion jobs, and to create, get, list, and delete ingestion streams, for ingesting data from Amazon S3 into OpenSearch Serverless collections.
+* api-change:``ivs-realtime``: Adds RevokeConnectionToken operation for Amazon IVS Real-Time Streaming.
+* enhancement:OpenSSL: Update bundled OpenSSL version to ``3.5.9`` for all installers.
+* api-change:``bedrock-agentcore-control``: Adds model-based routing and fallback to AgentCore Gateway rules. Rules can match the requested model, route to a specific model, and fall back across inference targets with an optional circuit breaker. Adds multi-dimensional rating scales for AgentCore Evaluations LLM-as-a-Judge evaluators.
+* api-change:``glue``: Add support for large worker types in AWS Glue
+* enhancement:configure: Adds Devin (Cognition) to the AI coding agents supported by ``aws configure agent-toolkit``.
+* api-change:``ec2``: AWS Transit Gateway now provides managed one-to-one NAT directly on its attachments, through integration with Regional Private NAT Gateway. Use ModifyTransitGatewayAttachmentNatConfiguration to enable NAT and configure NAT rules, and GetTransitGatewayAttachmentNatConfiguration to view them.
+* enhancement:arguments: Suggest similar option names when an unrecognized option is passed to a command
+* api-change:``bedrock-agentcore``: Adds the dimension name to evaluation results and batch evaluation summaries. For multi-dimensional LLM-as-a-Judge evaluators, each result and summary now identifies which dimension it corresponds to.
+* api-change:``elementalinference``: Elemental Inference now supports feed scheduling, letting you apply feed configuration changes at a time you choose instead of building your own automation.
+
+
 2.38.4
 ======
 

@@ -453,10 +453,9 @@ class RSASigner(_KeySigner):
             ):
                 raise ValueError(
                     "Failed to sign the URL using the SHA1 hash algorithm: "
-                    f"{e} CloudFront signed URLs require RSA PKCS1 v1.5 "
-                    "signing with SHA1, which may be disabled by default on "
-                    "your platform. Enable SHA1 support in your system's "
-                    "crypto provider and try again."
+                    f"{e} SHA1 may be disabled on your platform. Use "
+                    "--hash-algorithm SHA256 instead, or enable SHA1 support "
+                    "in your system's crypto provider."
                 ) from e
             raise
 

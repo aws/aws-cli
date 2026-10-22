@@ -33,6 +33,7 @@ extensions = [
     'crosslinker',
     'parallel_chunks',
     'parallel_write',
+    'markdown_output',
 ]
 notfound_context = {
     'title': 'Page not found',

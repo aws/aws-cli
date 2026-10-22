@@ -30,7 +30,6 @@ from awscli.customizations.agenttoolkit.hooks import (
     HOOK_ERROR_MESSAGE,
     format_hook_message,
     format_hook_output,
-    hook_config_path,
 )
 from awscli.customizations.agenttoolkit.state import (
     StateFileError,
@@ -280,7 +279,7 @@ class UpdateSkillCommand(BasicCommand):
             return self._run_hook_locked(agent_id, parsed_globals)
 
     def _hook_ran_recently(self, agent_id):
-        run = get_last_hook_run(hook_config_path(self._hook_config(agent_id)))
+        run = get_last_hook_run(agent_id)
         if run is None:
             return False
         age = datetime.datetime.now(datetime.timezone.utc) - parse_timestamp(
@@ -330,19 +329,10 @@ class UpdateSkillCommand(BasicCommand):
         self._record_hook_run(agent_id, is_successful, summary)
         return 0
 
-    def _hook_config(self, agent_id):
-        # The hook's agent may not be detected, or not in a custom config
-        # list, but every hook id has a config in AGENT_CONFIGS.
-        return next(
-            c
-            for c in [*self._agent_configs, *AGENT_CONFIGS]
-            if c.id == agent_id
-        )
-
     def _record_hook_run(self, agent_id, is_successful, summary):
         try:
             record_hook_run(
-                hook_config_path(self._hook_config(agent_id)),
+                agent_id,
                 is_successful=is_successful,
                 summary=summary,
             )

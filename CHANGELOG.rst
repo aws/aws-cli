@@ -24,6 +24,7 @@ CHANGELOG
 * api-change:``finspace-data``: The finspace-data client has been removed following the deprecation of the service.
 * enhancement:awscrt: Update awscrt to version 0.38.0
 * api-change:``polly``: Added support for the new voices - Kenneth (en-US), Nate (en-US), Tina (de-DE), Carlos (es-US), Carolina (pt-BR), Leo (pt-BR), Curtis (en-AU), Kiara (en-IN), Arjun (en-IN) and Hyunduk (ko-KR). They are available as a Generative voices only.
+* bugfix:TLS: Removes the ``AAA Certificate Services`` root from the vendored CA bundle in response to the eMudhra/emSign CA incident. Sectigo used this root to cross-sign eMudhra intermediate CAs whose private keys were compromised. See `#10786 <https://github.com/aws/aws-cli/pull/10786>`__.
 
 
 2.38.3

@@ -140,9 +140,10 @@ HOOK_CLIENT_CONFIG = Config(
     connect_timeout=5, read_timeout=10, retries={'max_attempts': 1}
 )
 
-# Several sessions can start at once, and an agent may run more than one
-# hook at session start. Hook runs take turns, so a run that starts right
-# after another finds its skills roots already checked and does nothing.
+# Several sessions can start at once, and Kiro V3 runs both the standalone
+# hook and the default agent's agentSpawn hook at session start. Hook runs
+# take turns, so a run that starts right after another finds its skills
+# roots already checked and does nothing.
 HOOK_LOCK_FILENAME = 'hook.lock'
 HOOK_LOCK_TIMEOUT = 30
 

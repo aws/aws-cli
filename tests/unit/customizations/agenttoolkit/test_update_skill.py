@@ -1230,15 +1230,7 @@ def test_hook_command_ignores_auto_prompt_setting(
     for name in ('AWS_PROFILE', 'AWS_DEFAULT_PROFILE'):
         monkeypatch.delenv(name, raising=False)
     state.set_auto_update(False)
-    args = [
-        'agent-toolkit',
-        'update-skill',
-        '--all',
-        '--hook',
-        '--agent',
-        'codex',
-        '--no-cli-auto-prompt',
-    ]
+    args = hooks.hook_command('codex').split()[1:]
     assert AWSCLIEntryPoint().main(args) == 0
     assert capsys.readouterr() == ('', '')
 
@@ -1479,7 +1471,7 @@ def test_update_all_does_not_install_core_skills(tmp_path):
 
 
 def test_hook_run_right_after_another_does_nothing(tmp_path, auto_update_on):
-    # An agent can start the hook twice for one session.
+    # Kiro V3 runs both its standalone hook and the agent's agentSpawn hook.
     _install_skill_at_version(tmp_path, '.test-agent', 'aws-s3', 'v1')
     _, output = _run_hook(tmp_path, 'kiro', _make_skill_client())
     assert output == 'AWS agent skills updated: aws-s3.\n'

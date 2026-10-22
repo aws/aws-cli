@@ -11,17 +11,31 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import json
+import os
 from io import StringIO
 from unittest.mock import MagicMock, patch
 
 import pytest
 
 from awscli.customizations.agenttoolkit import state
-from awscli.customizations.agenttoolkit.agents import AgentConfig
+from awscli.customizations.agenttoolkit.agents import (
+    AgentConfig,
+    collapse_home,
+)
 from awscli.customizations.agenttoolkit.configure import (
     AUTO_UPDATE_KEEP_PROMPT,
     AUTO_UPDATE_PROMPT,
     ConfigureAgentToolkitCommand,
+)
+from awscli.customizations.agenttoolkit.hooks import (
+    CODEX_TRUST_NOTE,
+    KIRO_AGENT_NOTE,
+    KIRO_NO_AGENT_NOTE,
+    KIRO_VERSION_NOTE,
+    format_kiro_agent_manual_entry,
+    format_manual_entry,
+    hook_command,
+    hook_shell_command,
 )
 from awscli.customizations.exceptions import ConfigurationError
 from tests.unit.customizations.agenttoolkit.utils import (
@@ -453,3 +467,262 @@ def test_auto_update_not_prompted_when_no_agents_selected(
         cmd._run_main(parsed_args, None)
     assert not yes_no.called
     assert not state_file.exists()
+
+
+def _hook_agent_configs(tmp_path, agent_ids, detected=True):
+    configs = []
+    for agent_id in agent_ids:
+        agent_dir = tmp_path / f'.{agent_id}'
+        if detected:
+            agent_dir.mkdir()
+        configs.append(
+            make_config(
+                tmp_path,
+                id=agent_id,
+                display_name=agent_id.title(),
+                detection_path=str(agent_dir),
+            )
+        )
+    return configs
+
+
+def _hook_file(tmp_path, agent_id):
+    return (
+        tmp_path
+        / f'.{agent_id}'
+        / {
+            'claude-code': 'settings.json',
+            'codex': 'hooks.json',
+            'cursor': 'hooks.json',
+        }.get(agent_id, os.path.join('hooks', 'aws-agent-toolkit.json'))
+    )
+
+
+def _collapse(path):
+    return collapse_home(str(path))
+
+
+def _run_selecting(configs, selected_ids, yes_no_return=True):
+    stream = StringIO()
+    cmd = ConfigureAgentToolkitCommand(
+        make_session(),
+        stream=stream,
+        agent_configs=configs,
+        client=_make_client(),
+    )
+    parsed_args = MagicMock()
+    parsed_args.yes = False
+    with (
+        patch(
+            'awscli.customizations.agenttoolkit.configure.multiselect_choice',
+            side_effect=lambda msg, items, **kw: [
+                a for a in items if a.config.id in selected_ids
+            ],
+        ),
+        patch(
+            'awscli.customizations.agenttoolkit.configure.yes_no_choice',
+            return_value=yes_no_return,
+        ),
+    ):
+        cmd._run_main(parsed_args, None)
+    return stream.getvalue()
+
+
+def test_auto_update_installs_hooks_for_selected_agents(tmp_path):
+    configs = _hook_agent_configs(
+        tmp_path, ['claude-code', 'codex', 'kiro', 'cline']
+    )
+    _, stream = _run(configs, yes_no_return=True)
+    output = stream.getvalue()
+    for agent_id in ('claude-code', 'codex', 'kiro'):
+        path = _hook_file(tmp_path, agent_id)
+        assert hook_command(agent_id) in path.read_text()
+        assert (
+            f'  ✓ {agent_id.title()} — {_collapse(path)}: hook installed\n'
+        ) in output
+    assert '  ✗ Cline (automatic updates not supported yet)\n' in output
+    assert f'    {CODEX_TRUST_NOTE}\n' in output
+    assert f'    {KIRO_VERSION_NOTE}\n' in output
+    assert os.listdir(tmp_path / '.cline') == []
+
+
+def test_auto_update_kept_reports_already_installed(tmp_path, state_file):
+    _write_state(state_file, {'agent_toolkit_auto_update': True})
+    configs = _hook_agent_configs(tmp_path, ['claude-code'])
+    _run(configs, yes_no_return=True)
+    path = _hook_file(tmp_path, 'claude-code')
+    before = path.read_bytes()
+    _, stream = _run(configs, yes_no_return=True)
+    assert path.read_bytes() == before
+    assert f'{_collapse(path)}: already installed\n' in stream.getvalue()
+
+
+def test_auto_update_yes_flag_installs_hooks(tmp_path):
+    configs = _hook_agent_configs(tmp_path, ['cursor'])
+    _run(configs, yes=True)
+    assert hook_command('cursor') in _hook_file(tmp_path, 'cursor').read_text()
+
+
+def test_auto_update_installs_only_for_selected_agents(tmp_path):
+    configs = _hook_agent_configs(tmp_path, ['claude-code', 'cursor'])
+    _run_selecting(configs, {'cursor'})
+    assert _hook_file(tmp_path, 'cursor').exists()
+    assert not _hook_file(tmp_path, 'claude-code').exists()
+
+
+def test_auto_update_unreadable_file_prints_manual_entry(tmp_path):
+    configs = _hook_agent_configs(tmp_path, ['claude-code'])
+    path = _hook_file(tmp_path, 'claude-code')
+    path.write_text('{\n  // my settings\n}\n')
+    _, stream = _run(configs, yes_no_return=True)
+    output = stream.getvalue()
+    assert path.read_text() == '{\n  // my settings\n}\n'
+    assert f'  ✗ Claude-Code — {_collapse(path)}: could not' in (output)
+    assert format_manual_entry('claude-code', _collapse(path)) in output
+
+
+def test_auto_update_hook_error_is_reported(tmp_path):
+    configs = _hook_agent_configs(tmp_path, ['claude-code', 'codex'])
+    with patch(
+        'awscli.customizations.agenttoolkit.hooks.write_file_atomic',
+        side_effect=[OSError('disk full'), None],
+    ):
+        rc, stream = _run(configs, yes_no_return=True)
+    assert rc == 0
+    path = _hook_file(tmp_path, 'claude-code')
+    assert (
+        f'  ✗ Claude-Code — {_collapse(path)}: could not install '
+        'the hook (disk full)\n'
+    ) in stream.getvalue()
+    assert 'Codex —' in stream.getvalue()
+
+
+def test_auto_update_off_removes_hooks_from_all_detected_agents(
+    tmp_path, state_file
+):
+    _write_state(state_file, {'agent_toolkit_auto_update': True})
+    configs = _hook_agent_configs(tmp_path, ['claude-code', 'kiro', 'cline'])
+    _run(configs, yes_no_return=True)
+    settings = _hook_file(tmp_path, 'claude-code')
+
+    output = _run_selecting(configs, {'cline'}, yes_no_return=False)
+
+    assert not state.is_auto_update_enabled()
+    assert json.loads(settings.read_text()) == {}
+    assert not _hook_file(tmp_path, 'kiro').exists()
+    assert (
+        f'  ✓ Claude-Code — {_collapse(settings)}: hook removed\n'
+    ) in output
+    assert 'Kiro —' in output
+    assert (
+        'Cline' not in output.split('Automatic skill updates turned off.')[1]
+    )
+
+
+def test_auto_update_declined_prints_nothing_without_hooks(tmp_path):
+    configs = _hook_agent_configs(tmp_path, ['claude-code'])
+    settings = _hook_file(tmp_path, 'claude-code')
+    settings.write_text('{\n  // comments\n}\n')
+    _, stream = _run(configs, yes_no_return=False)
+    assert 'hook' not in stream.getvalue()
+    assert settings.read_text() == '{\n  // comments\n}\n'
+
+
+def test_auto_update_state_error_changes_no_hooks(tmp_path, state_file):
+    configs = _hook_agent_configs(tmp_path, ['claude-code'])
+    with patch(
+        'awscli.customizations.agenttoolkit.configure.set_auto_update',
+        side_effect=state.StateFileError('/x/state.json: disk full'),
+    ):
+        _, stream = _run(configs, yes_no_return=True)
+    assert not _hook_file(tmp_path, 'claude-code').exists()
+    assert 'hook' not in stream.getvalue()
+
+
+def test_auto_update_state_error_keeps_hooks_when_disabling(
+    tmp_path, state_file
+):
+    _write_state(state_file, {'agent_toolkit_auto_update': True})
+    configs = _hook_agent_configs(tmp_path, ['claude-code'])
+    _run(configs, yes_no_return=True)
+    with patch(
+        'awscli.customizations.agenttoolkit.configure.set_auto_update',
+        side_effect=state.StateFileError('/x/state.json: disk full'),
+    ):
+        _run(configs, yes_no_return=False)
+    assert hook_command('claude-code') in (
+        _hook_file(tmp_path, 'claude-code').read_text()
+    )
+
+
+def _kiro_default_agent(tmp_path, content=None):
+    settings = tmp_path / '.kiro' / 'settings' / 'cli.json'
+    settings.parent.mkdir(parents=True)
+    settings.write_text(json.dumps({'chat.defaultAgent': 'my-agent'}))
+    path = tmp_path / '.kiro' / 'agents' / 'my-agent.json'
+    path.parent.mkdir()
+    if content is None:
+        content = json.dumps({'name': 'my-agent'}, indent=2) + '\n'
+    path.write_text(content)
+    return path
+
+
+def test_auto_update_adds_hook_to_kiro_default_agent(tmp_path):
+    configs = _hook_agent_configs(tmp_path, ['kiro'])
+    agent_file = _kiro_default_agent(tmp_path)
+    _, stream = _run(configs, yes_no_return=True)
+    output = stream.getvalue()
+    assert json.loads(agent_file.read_text())['hooks'] == {
+        'agentSpawn': [
+            {'command': hook_shell_command('kiro'), 'timeout_ms': 60000}
+        ]
+    }
+    assert (
+        f'  ✓ Kiro — {_collapse(_hook_file(tmp_path, "kiro"))}: '
+        'hook installed\n'
+        f'    {KIRO_VERSION_NOTE}\n'
+        f'  ✓ Kiro — {_collapse(agent_file)}: hook installed\n'
+        f'    {KIRO_AGENT_NOTE}\n'
+    ) in output
+
+
+def test_auto_update_kiro_without_default_agent_prints_manual_entry(
+    tmp_path,
+):
+    configs = _hook_agent_configs(tmp_path, ['kiro'])
+    _, stream = _run(configs, yes_no_return=True)
+    output = stream.getvalue()
+    assert f'  ✗ Kiro — {KIRO_NO_AGENT_NOTE}\n' in output
+    assert (
+        format_kiro_agent_manual_entry(
+            _collapse(tmp_path / '.kiro' / 'agents' / '<agent>.json')
+        )
+        in output
+    )
+    assert not (tmp_path / '.kiro' / 'agents').exists()
+
+
+def test_auto_update_kiro_agent_with_kept_formatting_prints_manual_entry(
+    tmp_path,
+):
+    configs = _hook_agent_configs(tmp_path, ['kiro'])
+    content = '{\n  "name" : "my-agent"\n}'
+    agent_file = _kiro_default_agent(tmp_path, content)
+    _, stream = _run(configs, yes_no_return=True)
+    output = stream.getvalue()
+    assert agent_file.read_text() == content
+    assert f'  ✗ Kiro — {_collapse(agent_file)}: could not' in output
+    assert format_kiro_agent_manual_entry(_collapse(agent_file)) in output
+
+
+def test_auto_update_off_removes_hook_from_kiro_agents(tmp_path, state_file):
+    _write_state(state_file, {'agent_toolkit_auto_update': True})
+    configs = _hook_agent_configs(tmp_path, ['kiro'])
+    agent_file = _kiro_default_agent(tmp_path)
+    before = agent_file.read_text()
+    _run(configs, yes_no_return=True)
+    _, stream = _run(configs, yes_no_return=False)
+    assert agent_file.read_text() == before
+    assert f'  ✓ Kiro — {_collapse(agent_file)}: hook removed\n' in (
+        stream.getvalue()
+    )

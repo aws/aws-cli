@@ -116,18 +116,24 @@ def _rename(src, dst):
     _call_with_windows_retry(os.rename, src, dst)
 
 
-def write_file_atomic(path, content, prefix):
+def write_file_atomic(path, content, prefix, mode=None):
     """Replace ``path`` with ``content`` without ever leaving it partial.
 
     The temporary file is created as ``<prefix>*.tmp`` next to ``path``
-    with owner-only permissions, and removed if anything fails.
+    with owner-only permissions, and removed if anything fails. ``content``
+    is written as is, without newline translation.
+
+    :param mode: Permission bits to give the file, such as those of the file
+        being replaced. Defaults to owner-only.
     """
     fd, tmp_path = tempfile.mkstemp(
         dir=os.path.dirname(path), prefix=prefix, suffix='.tmp'
     )
     try:
-        with os.fdopen(fd, 'w', encoding='utf-8') as f:
+        with os.fdopen(fd, 'w', encoding='utf-8', newline='') as f:
             f.write(content)
+        if mode is not None:
+            os.chmod(tmp_path, mode)
         _call_with_windows_retry(os.replace, tmp_path, path)
     except BaseException:
         with contextlib.suppress(OSError):

@@ -321,24 +321,30 @@ class WindowsUpdateCommand(BaseUpdateCommand):
         is_elevated=None,
         runner=None,
         powershell_path=None,
+        system_directory=None,
         **kwargs,
     ):
         super().__init__(session, **kwargs)
         self._is_elevated = is_elevated
         self._run_update = runner or self._run_install
         self._powershell_path = powershell_path
+        self._system_directory = system_directory
 
     def _do_update(self):
         is_system = self._is_system_install(self._install_metadata)
         if is_system:
             self._assert_elevated()
 
+        # The update may run elevated, so every executable is launched by an
+        # absolute path and never resolved from the current working
+        # directory, which may contain a planted executable.
+        system_dir = self._get_system_directory()
         tmp = tempfile.mkdtemp()
         script_path = os.path.join(tmp, 'install.ps1')
         self._download(self.SCRIPT_URL, script_path)
 
         wrapper_path = os.path.join(tmp, 'aws-update.cmd')
-        ps_exe = self._powershell_path or self._find_powershell()
+        ps_exe = self._powershell_path or self._find_powershell(system_dir)
         self._verify_script(script_path, ps_exe)
         ps_args = f'-NoProfile -File "{script_path}"'
         if is_system:
@@ -355,6 +361,7 @@ class WindowsUpdateCommand(BaseUpdateCommand):
             # running the installation to ensure the parent isn't holding onto
             # the lock.
             f.write('@echo off\n')
+            f.write('set NoDefaultCurrentDirectoryInExePath=1\n')
             f.write('set AWS_CLI_DISTRIBUTION_SOURCE_OVERRIDE=update-exe\n')
             if self._no_color:
                 f.write('set NO_COLOR=1\n')
@@ -362,18 +369,27 @@ class WindowsUpdateCommand(BaseUpdateCommand):
             # rebuilds its own default.
             # https://github.com/aws/aws-cli/issues/10532
             f.write('set PSModulePath=\n')
-            f.write('ping -n 3 127.0.0.1 >nul 2>&1\n')
+            ping_exe = os.path.join(system_dir, 'PING.EXE')
+            f.write(f'"{ping_exe}" -n 3 127.0.0.1 >nul 2>&1\n')
             f.write(f'"{ps_exe}" {ps_args}\n')
 
-        self._run_update(['cmd', '/c', wrapper_path])
+        cmd_exe = os.path.join(system_dir, 'cmd.exe')
+        self._run_update([cmd_exe, '/c', wrapper_path], tmp)
         uni_print(
             'Update started. This process will exit and the '
             'update will complete shortly.\n'
         )
 
-    def _run_install(self, cmd):
+    def _run_install(self, cmd, cwd):
+        # Run from the private temp directory with the current directory
+        # excluded from executable lookups, so nothing launched by name can
+        # be picked up from the caller's working directory.
+        env = os.environ.copy()
+        env['NoDefaultCurrentDirectoryInExePath'] = '1'
         subprocess.Popen(
             cmd,
+            cwd=cwd,
+            env=env,
             creationflags=subprocess.DETACHED_PROCESS
             | subprocess.CREATE_NEW_PROCESS_GROUP,
         )
@@ -455,13 +471,50 @@ class WindowsUpdateCommand(BaseUpdateCommand):
             )
         uni_print('Install script signature verified.\n')
 
-    def _find_powershell(self):
-        for name in ('powershell', 'pwsh'):
-            path = shutil.which(name)
-            if path:
-                return path
+    def _get_system_directory(self):
+        if self._system_directory is not None:
+            return self._system_directory
+        # Ask the OS rather than trusting %SystemRoot% from the environment.
+        buf = ctypes.create_unicode_buffer(260)
+        length = ctypes.windll.kernel32.GetSystemDirectoryW(buf, len(buf))
+        if not length or length > len(buf):
+            raise UpdateError('Unable to locate the Windows system directory.')
+        return buf.value
+
+    def _is_absolute_path(self, path):
+        # Before Python 3.13, isabs() on Windows also accepts root-relative
+        # paths such as "\tools", which resolve against the current drive, so
+        # a drive letter or UNC share is required as well.
+        if not os.path.isabs(path):
+            return False
+        return os.name != 'nt' or bool(os.path.splitdrive(path)[0])
+
+    def _find_powershell(self, system_dir):
+        # Search PATH ourselves instead of using shutil.which(), which on
+        # Windows also checks the current working directory. Only absolute
+        # PATH entries are considered, since empty or relative entries resolve
+        # against the cwd, and only real .exe files are accepted so a planted
+        # .cmd or .bat cannot be picked up through PATHEXT.
+        directories = [
+            d.strip('"') for d in os.environ.get('PATH', '').split(os.pathsep)
+        ]
+        for name in ('powershell.exe', 'pwsh.exe'):
+            for directory in directories:
+                if not self._is_absolute_path(directory):
+                    continue
+                path = os.path.join(directory, name)
+                if os.path.isfile(path):
+                    return path
+        # PATH may be empty, trimmed, or contain unexpanded entries, so fall
+        # back to the Windows PowerShell that ships in the system directory.
+        path = os.path.join(
+            system_dir, 'WindowsPowerShell', 'v1.0', 'powershell.exe'
+        )
+        if os.path.isfile(path):
+            return path
         raise UpdateError(
-            'Neither powershell.exe nor pwsh.exe was found on PATH.'
+            'Neither powershell.exe nor pwsh.exe was found on PATH or in the '
+            'Windows system directory.'
         )
 
     def _is_system_install(self, install_metadata):

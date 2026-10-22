@@ -21,6 +21,7 @@ from unittest.mock import Mock, patch
 
 import pytest
 from botocore.exceptions import (
+    ClientError,
     EndpointConnectionError,
     NoCredentialsError,
     ReadTimeoutError,
@@ -489,6 +490,50 @@ def _make_update_command(tmp_path, client):
         agent_configs=[make_config(tmp_path)],
     )
     return cmd, stream, error_stream
+
+
+def _not_found(operation_name):
+    return ClientError(
+        {
+            'Error': {'Code': '404', 'Message': 'Not Found'},
+            'ResponseMetadata': {'HTTPStatusCode': 404},
+        },
+        operation_name,
+    )
+
+
+def _drop_from_catalog(client, dropped):
+    def get_latest_skill_version(name, **kwargs):
+        if name == dropped:
+            raise _not_found('GetLatestSkillVersion')
+        return {'body': 'v2'}
+
+    client.get_latest_skill_version.side_effect = get_latest_skill_version
+
+
+def test_update_all_leaves_skill_dropped_from_catalog(tmp_path):
+    _install_skill_at_version(tmp_path, '.test-agent', 'aws-gone', 'v1')
+    _install_skill_at_version(tmp_path, '.test-agent', 'aws-s3', 'v1')
+    client = _make_skill_client()
+    _drop_from_catalog(client, 'aws-gone')
+    cmd, stream, error_stream = _make_update_command(tmp_path, client)
+    assert cmd(args=['--all'], parsed_globals=Mock()) == 0
+    assert 'aws-gone' not in stream.getvalue() + error_stream.getvalue()
+    assert stream.getvalue().endswith(
+        '1 updated, 0 skipped, 0 failed, 0 already up to date.\n'
+    )
+    marker = _skill_dir(tmp_path, 'aws-gone') / SKILL_METADATA_FILENAME
+    assert json.loads(marker.read_text()) == {'version': 'v1'}
+
+
+def test_update_all_fails_skill_missing_after_version_lookup(tmp_path):
+    # Only a missing latest version means the skill left the catalog.
+    _install_skill_at_version(tmp_path, '.test-agent', 'aws-s3', 'v1')
+    client = _make_skill_client()
+    client.get_skill_file.side_effect = _not_found('GetSkillFile')
+    cmd, _, error_stream = _make_update_command(tmp_path, client)
+    assert cmd(args=['--all'], parsed_globals=Mock()) == 1
+    assert 'Failed to update aws-s3' in error_stream.getvalue()
 
 
 def test_update_all_continues_after_skill_failure(tmp_path):
@@ -1484,6 +1529,21 @@ def test_hook_records_failure_only_for_root_with_failed_skill(
     _run_hook(tmp_path, 'claude-code', client)
     assert _last_run(tmp_path)['is_successful'] is False
     assert _last_run(tmp_path, '.claude')['is_successful'] is True
+
+
+def test_hook_leaves_skill_dropped_from_catalog(tmp_path, auto_update_on):
+    _install_skill_at_version(tmp_path, '.test-agent', 'aws-gone', 'v1')
+    _install_skill_at_version(tmp_path, '.test-agent', 'aws-s3', 'v2')
+    client = _make_skill_client()
+    _drop_from_catalog(client, 'aws-gone')
+    assert _run_hook(tmp_path, 'codex', client) == (0, '')
+    run = _last_run(tmp_path)
+    assert run['is_successful'] is True
+    assert run['summary'] == (
+        '0 updated, 0 skipped, 0 failed, 1 already up to date'
+    )
+    marker = _skill_dir(tmp_path, 'aws-gone') / SKILL_METADATA_FILENAME
+    assert json.loads(marker.read_text()) == {'version': 'v1'}
 
 
 def test_hook_records_failure_for_every_root_on_error(

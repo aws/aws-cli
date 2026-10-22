@@ -158,6 +158,16 @@ HOOK_CHECK_INTERVAL = datetime.timedelta(hours=24)
 HOOK_RETRY_INTERVAL = datetime.timedelta(hours=1)
 
 
+def _is_dropped_from_catalog(error):
+    """Whether ``error`` means the catalog no longer has the skill."""
+    return (
+        isinstance(error, ClientError)
+        and error.operation_name == 'GetLatestSkillVersion'
+        and error.response.get('ResponseMetadata', {}).get('HTTPStatusCode')
+        == 404
+    )
+
+
 def _is_check_due(last_run, now):
     if last_run is None:
         return True
@@ -438,6 +448,9 @@ class UpdateSkillCommand(BasicCommand):
                     client, skill_name, remote_version, outdated, stream
                 )
             except (AgentToolkitServiceError, ClientError) as e:
+                if _is_dropped_from_catalog(e):
+                    # Left as installed and not reported.
+                    continue
                 results.failed.append((skill_name, e))
                 continue
             if skill_skipped:

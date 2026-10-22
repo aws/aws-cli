@@ -388,7 +388,6 @@ class UpdateSkillCommand(BasicCommand):
             agents_by_skill.setdefault(skill.name, []).append(skill.agent)
 
         client = self._create_client(parsed_globals, client_config)
-        updated, up_to_date, skipped, failed = results[:4]
         for skill_name in sorted(agents_by_skill):
             # One bad skill should not block updates to the remaining skills.
             try:
@@ -396,18 +395,20 @@ class UpdateSkillCommand(BasicCommand):
                     agents_by_skill[skill_name], client, skill_name
                 )
                 if not outdated:
-                    up_to_date.append(skill_name)
+                    results.up_to_date.append(skill_name)
                     continue
                 skill_skipped = self._install_version(
                     client, skill_name, remote_version, outdated, stream
                 )
             except (AgentToolkitServiceError, ClientError) as e:
-                failed.append((skill_name, e))
+                results.failed.append((skill_name, e))
                 continue
             if skill_skipped:
-                skipped.extend((skill_name, *s) for s in skill_skipped)
+                results.skipped.extend(
+                    (skill_name, *s) for s in skill_skipped
+                )
             else:
-                updated.append(skill_name)
+                results.updated.append(skill_name)
         return True
 
     def _install_new_core_skills(self, agents, client, results):

@@ -82,6 +82,10 @@ AGENT_ARG = {
 }
 
 
+# The catalog category the setup wizard installs by default, and that
+# automatic updates keep installed.
+CORE_CATEGORY = 'aws-core'
+
 # The Agent Toolkit API is served from a single region today,
 # Default there unless the caller passes an explicit ``--region``,
 # otherwise a user whose configured region is elsewhere would hit
@@ -89,10 +93,12 @@ AGENT_ARG = {
 AGENT_TOOLKIT_REGION = 'us-east-1'
 
 
-def create_client(session, parsed_globals):
+def create_client(session, parsed_globals, config=None):
     overrides = {}
     if not getattr(parsed_globals, 'region', None):
         overrides['region_name'] = AGENT_TOOLKIT_REGION
+    if config is not None:
+        overrides['config'] = config
     return create_client_from_parsed_globals(
         session,
         'agenttoolkit',
@@ -104,6 +110,15 @@ def create_client(session, parsed_globals):
 def resolve_latest_version(client, skill_name):
     response = client.get_latest_skill_version(name=skill_name)
     return response['body'].strip()
+
+
+def list_core_skills(client):
+    """Return the catalog's skill summaries in the core category."""
+    paginator = client.get_paginator('list_skills')
+    skills = []
+    for page in paginator.paginate(categoryFilter=CORE_CATEGORY):
+        skills.extend(page.get('skills', []))
+    return skills
 
 
 def get_skill_download(client, skill_name, version=None):

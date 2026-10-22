@@ -19,7 +19,7 @@ from unittest.mock import patch
 import pytest
 
 from awscli.customizations.agenttoolkit import filelock, state
-from tests.markers import skip_if_windows
+from awscli.testutils import skip_if_windows
 
 
 @pytest.fixture
@@ -299,7 +299,7 @@ def test_parse_timestamp_round_trip():
     assert state.parse_timestamp(state._format_timestamp(ts)) == ts
 
 
-@skip_if_windows
+@skip_if_windows("POSIX file permissions are not enforced on Windows.")
 def test_lock_file_is_owner_only(state_file):
     state.update_state(lambda s: s.update({'a': 1}))
     mode = os.stat(state_file.parent / state.LOCK_FILENAME).st_mode & 0o777

@@ -79,6 +79,11 @@ class AgentConfig:
     """Environment variable name that overrides ``detection_path`` when
     set (e.g. ``CLAUDE_CONFIG_DIR``)."""
 
+    home_env_override: Optional[str] = None
+    """Environment variable naming the home directory the agent uses in
+    place of ``~`` (e.g. ``GEMINI_CLI_HOME``). When set, every
+    tilde-prefixed path of this agent is resolved against it."""
+
     skills_dir: str = 'skills'
     """Subdirectory of the resolved base directory where skills live.
     Ignored when ``skills_path_override`` is set."""
@@ -141,11 +146,18 @@ class AgentConfig:
             return None
         return expanded
 
+    def expand_path(self, path):
+        """Expand a leading ``~`` to the home directory the agent uses."""
+        home = os.environ.get(self.home_env_override or '')
+        if home and (path == '~' or path.startswith('~/')):
+            return os.path.join(os.path.expanduser(home), path[2:])
+        return os.path.expanduser(path)
+
     def resolve_base_dir(self):
         override = self.resolved_override_dir()
         if override is not None:
             return override
-        expanded = os.path.expanduser(self.detection_path).rstrip(os.sep)
+        expanded = self.expand_path(self.detection_path).rstrip(os.sep)
         if os.path.isdir(expanded):
             return expanded
         return None
@@ -175,7 +187,7 @@ class DetectedAgent:
     @property
     def skills_path(self):
         if self.config.skills_path_override:
-            return os.path.expanduser(self.config.skills_path_override)
+            return self.config.expand_path(self.config.skills_path_override)
         return os.path.join(self.base_dir, self.config.skills_dir)
 
     @property
@@ -187,7 +199,7 @@ class DetectedAgent:
             if override is not None:
                 relative = self.config.mcp_config_path.removeprefix('~/')
                 return os.path.join(override, relative)
-            return os.path.expanduser(self.config.mcp_config_path)
+            return self.config.expand_path(self.config.mcp_config_path)
         return os.path.join(self.base_dir, self.config.mcp_config_path)
 
     def get_installed_skills(self):
@@ -330,6 +342,7 @@ AGENT_CONFIGS = [
         id='gemini-cli',
         display_name='Gemini CLI',
         detection_path='~/.gemini/',
+        home_env_override='GEMINI_CLI_HOME',
         skills_path_override='~/.agents/skills/',
         mcp_config_path='settings.json',
         mcp_servers_key='mcpServers',

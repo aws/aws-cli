@@ -30,6 +30,7 @@ from awscli.customizations.agenttoolkit.utils import (
     create_client,
     get_skill_download,
     install_skill,
+    list_core_skills,
 )
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.exceptions import ConfigurationError
@@ -151,10 +152,7 @@ class ConfigureAgentToolkitCommand(BasicCommand):
 
     def _install_default_skills(self, selected_agents, client, yes=False):
         uni_print('\nFetching default AWS skills...\n', self._stream)
-        paginator = client.get_paginator('list_skills')
-        default_skills = []
-        for page in paginator.paginate(categoryFilter='aws-core'):
-            default_skills.extend(page.get('skills', []))
+        default_skills = list_core_skills(client)
 
         if not default_skills:
             return

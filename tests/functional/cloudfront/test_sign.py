@@ -153,6 +153,7 @@ class TestSign(BaseAWSCommandParamsTest):
             stdout, stderr, rc = self.run_cmd(cmdline, expected_rc=255)
         self.assertNotEqual(rc, 0)
         self.assertIn('SHA1', stderr)
+        self.assertIn('--hash-algorithm SHA256', stderr)
 
     def test_unrelated_signing_error_is_not_reported_as_sha1(self):
         cmdline = (

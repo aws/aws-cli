@@ -30,12 +30,12 @@ from awscli.customizations.agenttoolkit.hooks import (
     HOOK_ERROR_MESSAGE,
     format_hook_message,
     format_hook_output,
-    hook_config_path,
 )
 from awscli.customizations.agenttoolkit.state import (
     StateFileError,
     get_last_hook_run,
     is_auto_update_enabled,
+    load_state,
     parse_timestamp,
     record_hook_run,
     toolkit_dir,
@@ -78,8 +78,9 @@ HOOK_ARG = {
         '``--all`` and '
         'also installs new skills in the ``aws-core`` category into agents '
         'that already have AWS skills. Does nothing unless automatic skill '
-        'updates are turned on, prints only what the agent expects and '
-        'always succeeds.'
+        'updates are turned on, checks each skills directory once a day, '
+        'or an hour after a failed check, prints only what the agent '
+        'expects and always succeeds.'
     ),
     'action': 'store',
     'cli_type_name': 'string',
@@ -138,19 +139,48 @@ class _UpdateResults(
 
 
 # Agents stop a hook after 60 seconds and report it as an error. A failed
-# check is tried again at the next session start, so fail fast instead of
+# check is tried again after HOOK_RETRY_INTERVAL, so fail fast instead of
 # retrying.
 HOOK_CLIENT_CONFIG = Config(
     connect_timeout=5, read_timeout=10, retries={'max_attempts': 1}
 )
 
 # Several sessions can start at once, and an agent may run more than one
-# hook at session start. Hook runs take turns, and a run that starts right
-# after another for the same agent finished does nothing, so the agent hears
-# about an update once.
+# hook at session start. Hook runs take turns, so a run that starts right
+# after another finds its skills roots already checked and does nothing.
 HOOK_LOCK_FILENAME = 'hook.lock'
 HOOK_LOCK_TIMEOUT = 30
-HOOK_RECENT_RUN_SECONDS = 10
+
+# A hook run checks a skills root again once this long has passed since its
+# last check, or sooner if that check failed. Each root is tracked on its own,
+# so a check through one agent covers every agent sharing the root.
+HOOK_CHECK_INTERVAL = datetime.timedelta(hours=24)
+HOOK_RETRY_INTERVAL = datetime.timedelta(hours=1)
+
+
+def _is_check_due(last_run, now):
+    if last_run is None:
+        return True
+    checked = parse_timestamp(last_run['timestamp'])
+    if checked > now:
+        # The clock moved back, so the record can't be trusted.
+        return True
+    if last_run['is_successful']:
+        return now - checked >= HOOK_CHECK_INTERVAL
+    return now - checked >= HOOK_RETRY_INTERVAL
+
+
+def _root_succeeded(root, results):
+    """Whether no skill failed to update or install in skills ``root``."""
+    for name in results.failed_names:
+        # Still installed here, so its update was due here.
+        if os.path.exists(os.path.join(root, name, SKILL_METADATA_FILENAME)):
+            return False
+    for name in results.failed_install_names:
+        # Still missing here, so the install was meant for here.
+        if not os.path.lexists(os.path.join(root, name)):
+            return False
+    return True
 
 
 class UpdateSkillCommand(BasicCommand):
@@ -275,26 +305,40 @@ class UpdateSkillCommand(BasicCommand):
                 return 0
             except OSError as e:
                 LOG.debug('Could not lock the hook run: %s', e)
-            if self._hook_ran_recently(agent_id):
-                return 0
             return self._run_hook_locked(agent_id, parsed_globals)
 
-    def _hook_ran_recently(self, agent_id):
-        run = get_last_hook_run(hook_config_path(self._hook_config(agent_id)))
-        if run is None:
-            return False
-        age = datetime.datetime.now(datetime.timezone.utc) - parse_timestamp(
-            run['timestamp']
-        )
-        return age.total_seconds() < HOOK_RECENT_RUN_SECONDS
+    def _agents_due_for_check(self, agents):
+        """Return the agents with AWS skills whose skills root is due a check,
+        and those roots."""
+        now = datetime.datetime.now(datetime.timezone.utc)
+        state = load_state()
+        is_due_by_root = {}
+        due_agents = []
+        for agent in agents:
+            if not agent.get_installed_skills():
+                continue
+            root = os.path.realpath(agent.skills_path)
+            if root not in is_due_by_root:
+                is_due_by_root[root] = _is_check_due(
+                    get_last_hook_run(root, state), now
+                )
+            if is_due_by_root[root]:
+                due_agents.append(agent)
+        due_roots = [root for root, is_due in is_due_by_root.items() if is_due]
+        return due_agents, due_roots
 
     def _run_hook_locked(self, agent_id, parsed_globals):
         # The agent shows or acts on whatever is printed, and a failing hook
         # is reported as an error, so nothing escapes and it always succeeds.
         results = _UpdateResults.empty()
         error = None
+        due_roots = []
         try:
-            agents = resolve_agents(None, self._agent_configs)
+            agents, due_roots = self._agents_due_for_check(
+                resolve_agents(None, self._agent_configs)
+            )
+            if not agents:
+                return 0
             if self._collect_updates(
                 agents, parsed_globals, None, results, HOOK_CLIENT_CONFIG
             ):
@@ -314,11 +358,9 @@ class UpdateSkillCommand(BasicCommand):
             results.failed_install_names,
         )
         if error is None:
-            is_successful = not (results.failed or results.failed_installs)
             summary = results.summary()
         else:
             message = f'{message} {HOOK_ERROR_MESSAGE}'.lstrip()
-            is_successful = False
             summary = f'Could not check for updates: {error}'
         self._stream.write(
             format_hook_output(
@@ -327,27 +369,22 @@ class UpdateSkillCommand(BasicCommand):
                 skills_updated=bool(results.updated or results.installed),
             )
         )
-        self._record_hook_run(agent_id, is_successful, summary)
+        self._record_hook_runs(due_roots, results, error, summary)
         return 0
 
-    def _hook_config(self, agent_id):
-        # The hook's agent may not be detected, or not in a custom config
-        # list, but every hook id has a config in AGENT_CONFIGS.
-        return next(
-            c
-            for c in [*self._agent_configs, *AGENT_CONFIGS]
-            if c.id == agent_id
-        )
-
-    def _record_hook_run(self, agent_id, is_successful, summary):
-        try:
-            record_hook_run(
-                hook_config_path(self._hook_config(agent_id)),
-                is_successful=is_successful,
-                summary=summary,
-            )
-        except StateFileError as e:
-            LOG.debug('Could not record the hook run: %s', e)
+    def _record_hook_runs(self, roots, results, error, summary):
+        timestamp = datetime.datetime.now(datetime.timezone.utc)
+        for root in roots:
+            is_successful = error is None and _root_succeeded(root, results)
+            try:
+                record_hook_run(
+                    root,
+                    is_successful=is_successful,
+                    summary=summary,
+                    timestamp=timestamp,
+                )
+            except StateFileError as e:
+                LOG.debug('Could not record the hook run: %s', e)
 
     def _update_all_skills(self, agents, parsed_globals):
         results = _UpdateResults.empty()
@@ -404,9 +441,7 @@ class UpdateSkillCommand(BasicCommand):
                 results.failed.append((skill_name, e))
                 continue
             if skill_skipped:
-                results.skipped.extend(
-                    (skill_name, *s) for s in skill_skipped
-                )
+                results.skipped.extend((skill_name, *s) for s in skill_skipped)
             else:
                 results.updated.append(skill_name)
         return True

@@ -150,7 +150,9 @@ class AgentConfig:
         """Expand a leading ``~`` to the home directory the agent uses."""
         home = os.environ.get(self.home_env_override or '')
         if home and (path == '~' or path.startswith('~/')):
-            return os.path.join(os.path.expanduser(home), path[2:])
+            return os.path.join(
+                os.path.expanduser(home), path[2:].replace('/', os.sep)
+            )
         return os.path.expanduser(path)
 
     def resolve_base_dir(self):

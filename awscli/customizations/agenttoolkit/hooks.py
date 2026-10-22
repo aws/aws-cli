@@ -12,14 +12,50 @@
 # language governing permissions and limitations under the License.
 
 import json
+import os
 
 HOOK_ERROR_MESSAGE = (
     'AWS agent skills could not be checked for updates; run '
     '"aws agent-toolkit update-skill --all" for details.'
 )
 
-# Agents ``update-skill --hook`` can run as the session start hook of.
-HOOK_AGENT_IDS = ('claude-code', 'gemini-cli', 'codex', 'cursor', 'kiro')
+# The file each agent's session start hook lives in, relative to the agent's
+# base directory. Hook runs are recorded against it.
+_HOOK_FILENAMES = {
+    # https://code.claude.com/docs/en/hooks
+    'claude-code': 'settings.json',
+    # https://github.com/google-gemini/gemini-cli/blob/main/docs/hooks/reference.md
+    'gemini-cli': 'settings.json',
+    # https://developers.openai.com/codex/hooks
+    'codex': 'hooks.json',
+    # https://cursor.com/docs/agent/hooks
+    'cursor': 'hooks.json',
+    # https://kiro.dev/docs/hooks/
+    'kiro': os.path.join('hooks', 'aws-agent-toolkit.json'),
+}
+
+HOOK_AGENT_IDS = tuple(_HOOK_FILENAMES)
+
+
+def is_hook_supported(agent_id):
+    return agent_id in HOOK_AGENT_IDS
+
+
+def hook_config_path(agent_config, base_dir=None):
+    """Return the file the agent's hook lives in, or ``None`` if unsupported.
+
+    :param base_dir: The detected agent's base directory. Resolved from the
+        config when not given, even if the agent is not installed.
+    """
+    if not is_hook_supported(agent_config.id):
+        return None
+    if base_dir is None:
+        base_dir = agent_config.resolve_base_dir() or (
+            agent_config.expand_path(agent_config.detection_path).rstrip(
+                os.sep
+            )
+        )
+    return os.path.join(base_dir, _HOOK_FILENAMES[agent_config.id])
 
 
 def format_hook_message(

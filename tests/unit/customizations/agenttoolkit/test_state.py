@@ -167,12 +167,13 @@ def test_dismiss_hint(state_file):
     assert _read(state_file) == {'hint_dismissed': True}
 
 
-def test_record_hook_run(state_file):
+def test_record_hook_run(state_file, tmp_path):
+    hook_path = str(tmp_path / '.claude' / 'settings.json')
     ts = datetime.datetime(2026, 10, 20, 12, 0, 5, 123, datetime.timezone.utc)
-    state.record_hook_run('claude-code', True, '2 updated, 0 failed', ts)
+    state.record_hook_run(hook_path, True, '2 updated, 0 failed', ts)
     assert _read(state_file) == {
         'last_hook_run': {
-            'claude-code': {
+            hook_path: {
                 'timestamp': '2026-10-20T12:00:05Z',
                 'is_successful': True,
                 'summary': '2 updated, 0 failed',
@@ -181,41 +182,57 @@ def test_record_hook_run(state_file):
     }
 
 
-def test_record_hook_run_keeps_other_agents(state_file):
-    state.record_hook_run('claude-code', True, 'ok')
-    state.record_hook_run('kiro', False, 'network error')
-    state.record_hook_run('claude-code', False, 'failed')
+def test_record_hook_run_keeps_other_hooks(state_file, tmp_path):
+    first = str(tmp_path / 'a.json')
+    second = str(tmp_path / 'b.json')
+    state.record_hook_run(first, True, 'ok')
+    state.record_hook_run(second, False, 'network error')
+    state.record_hook_run(first, False, 'failed')
     runs = state.get_last_hook_runs()
-    assert set(runs) == {'claude-code', 'kiro'}
-    assert runs['claude-code']['is_successful'] is False
-    assert runs['claude-code']['summary'] == 'failed'
-    assert runs['kiro']['summary'] == 'network error'
+    assert set(runs) == {first, second}
+    assert runs[first]['is_successful'] is False
+    assert runs[first]['summary'] == 'failed'
+    assert runs[second]['summary'] == 'network error'
 
 
-def test_record_hook_run_default_timestamp_is_now(state_file):
+def test_record_hook_run_normalizes_path(state_file, tmp_path):
+    with patch.dict(
+        os.environ, {'HOME': str(tmp_path), 'USERPROFILE': str(tmp_path)}
+    ):
+        state.record_hook_run('~/settings.json', True, 'ok')
+        expected = os.path.abspath(
+            os.path.join(str(tmp_path), 'settings.json')
+        )
+        assert list(state.get_last_hook_runs()) == [expected]
+        assert state.get_last_hook_run('~/settings.json')['summary'] == 'ok'
+
+
+def test_record_hook_run_default_timestamp_is_now(state_file, tmp_path):
     before = datetime.datetime.now(datetime.timezone.utc).replace(
         microsecond=0
     )
-    state.record_hook_run('codex', True, 'ok')
+    state.record_hook_run(str(tmp_path / 'a.json'), True, 'ok')
     after = datetime.datetime.now(datetime.timezone.utc)
-    run = state.get_last_hook_run('codex')
+    run = state.get_last_hook_run(str(tmp_path / 'a.json'))
     assert before <= state.parse_timestamp(run['timestamp']) <= after
 
 
-def test_record_hook_run_converts_timestamp_to_utc(state_file):
+def test_record_hook_run_converts_timestamp_to_utc(state_file, tmp_path):
     tz = datetime.timezone(datetime.timedelta(hours=-4))
     ts = datetime.datetime(2026, 10, 20, 8, 0, 0, tzinfo=tz)
-    state.record_hook_run('codex', True, 'ok', ts)
-    run = state.get_last_hook_run('codex')
+    state.record_hook_run(str(tmp_path / 'a.json'), True, 'ok', ts)
+    run = state.get_last_hook_run(str(tmp_path / 'a.json'))
     assert run['timestamp'] == '2026-10-20T12:00:00Z'
 
 
-def test_record_hook_run_replaces_malformed_last_hook_run(state_file):
+def test_record_hook_run_replaces_malformed_last_hook_run(
+    state_file, tmp_path
+):
     _write(state_file, {'last_hook_run': 'garbage', 'hint_dismissed': True})
-    state.record_hook_run('codex', True, 'ok')
+    state.record_hook_run(str(tmp_path / 'a.json'), True, 'ok')
     data = _read(state_file)
     assert data['hint_dismissed'] is True
-    assert list(data['last_hook_run']) == ['codex']
+    assert list(data['last_hook_run']) == [str(tmp_path / 'a.json')]
 
 
 def test_get_last_hook_runs_skips_malformed_entries(state_file):
@@ -244,9 +261,11 @@ def test_get_last_hook_runs_skips_malformed_entries(state_file):
 @pytest.mark.parametrize(
     'summary, expected', [(None, 'None'), (3, '3'), (['x'], "['x']")]
 )
-def test_record_hook_run_stores_summary_as_str(state_file, summary, expected):
-    state.record_hook_run('codex', True, summary)
-    run = state.get_last_hook_run('codex')
+def test_record_hook_run_stores_summary_as_str(
+    state_file, tmp_path, summary, expected
+):
+    state.record_hook_run(str(tmp_path / 'a.json'), True, summary)
+    run = state.get_last_hook_run(str(tmp_path / 'a.json'))
     assert run['summary'] == expected
 
 
@@ -269,8 +288,8 @@ def test_get_last_hook_runs_skips_malformed_timestamp(state_file, timestamp):
     assert state.get_last_hook_runs() == {}
 
 
-def test_get_last_hook_run_missing(state_file):
-    assert state.get_last_hook_run('codex') is None
+def test_get_last_hook_run_missing(state_file, tmp_path):
+    assert state.get_last_hook_run(str(tmp_path / 'a.json')) is None
 
 
 def test_parse_timestamp_round_trip():

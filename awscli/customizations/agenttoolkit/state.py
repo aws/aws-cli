@@ -117,18 +117,18 @@ def set_auto_update(enabled):
     update_state(lambda state: state.update({AUTO_UPDATE_KEY: bool(enabled)}))
 
 
+def _hook_key(path):
+    return os.path.abspath(os.path.expanduser(path))
+
+
 def get_last_hook_runs(state=None):
-    """Return ``{agent_id: {timestamp, is_successful, summary}}``."""
+    """Return ``{path: {timestamp, is_successful, summary}}``."""
     if state is None:
         state = load_state()
     runs = state.get(LAST_HOOK_RUN_KEY)
     if not isinstance(runs, dict):
         return {}
-    return {
-        agent_id: run
-        for agent_id, run in runs.items()
-        if _is_valid_hook_run(run)
-    }
+    return {path: run for path, run in runs.items() if _is_valid_hook_run(run)}
 
 
 def _is_valid_hook_run(run):
@@ -146,15 +146,15 @@ def _is_valid_hook_run(run):
     return True
 
 
-def get_last_hook_run(agent_id, state=None):
-    """Return the last hook run recorded for ``agent_id``, or ``None``."""
-    return get_last_hook_runs(state).get(agent_id)
+def get_last_hook_run(path, state=None):
+    """Return the last run recorded for the hook at ``path``, or ``None``."""
+    return get_last_hook_runs(state).get(_hook_key(path))
 
 
-def record_hook_run(agent_id, is_successful, summary, timestamp=None):
-    """Record the outcome of an automatic update run by an agent's hook.
+def record_hook_run(path, is_successful, summary, timestamp=None):
+    """Record the outcome of an automatic update run by the hook at ``path``.
 
-    :param agent_id: The agent whose session start hook ran.
+    :param path: Harness config file the hook is installed in.
     :param timestamp: Aware ``datetime`` of the run. Defaults to now.
     """
     if timestamp is None:
@@ -170,7 +170,7 @@ def record_hook_run(agent_id, is_successful, summary, timestamp=None):
         if not isinstance(runs, dict):
             runs = {}
             state[LAST_HOOK_RUN_KEY] = runs
-        runs[agent_id] = run
+        runs[_hook_key(path)] = run
 
     update_state(mutate)
 

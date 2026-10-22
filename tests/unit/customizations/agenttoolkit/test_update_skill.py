@@ -959,8 +959,13 @@ def _run_hook(tmp_path, agent_id, client, configs=None, extra_args=()):
     return rc, stream.getvalue()
 
 
-def _last_run(agent_id='claude-code'):
-    return state.get_last_hook_run(agent_id)
+def _last_run(tmp_path, agent_id='claude-code'):
+    path = tmp_path / '.claude' / 'settings.json'
+    if agent_id != 'claude-code':
+        path = hooks.hook_config_path(
+            next(c for c in AGENT_CONFIGS if c.id == agent_id)
+        )
+    return state.get_last_hook_run(str(path))
 
 
 def test_hook_does_nothing_when_auto_update_off(tmp_path):
@@ -985,7 +990,7 @@ def test_hook_claude_code_output(tmp_path, auto_update_on):
     )
     marker = _skill_dir(tmp_path) / SKILL_METADATA_FILENAME
     assert json.loads(marker.read_text()) == {'version': 'v2'}
-    run = _last_run()
+    run = _last_run(tmp_path)
     assert run['is_successful'] is True
     assert run['summary'] == (
         '1 updated, 0 skipped, 0 failed, 1 already up to date'
@@ -1023,15 +1028,15 @@ def test_hook_output_per_agent(tmp_path, auto_update_on, agent_id, expected):
         assert json.loads(output) == expected
     else:
         assert output == expected
-    # Recorded for the agent even though it isn't detected.
-    assert _last_run(agent_id)['is_successful'] is True
+    # Recorded against the agent's hook file even though it isn't detected.
+    assert _last_run(tmp_path, agent_id)['is_successful'] is True
 
 
 def test_hook_prints_nothing_when_up_to_date(tmp_path, auto_update_on):
     _install_skill_at_version(tmp_path, '.test-agent', 'aws-s3', 'v2')
     rc, output = _run_hook(tmp_path, 'claude-code', _make_skill_client())
     assert (rc, output) == (0, '')
-    assert _last_run()['summary'] == (
+    assert _last_run(tmp_path)['summary'] == (
         '0 updated, 0 skipped, 0 failed, 1 already up to date'
     )
 
@@ -1041,7 +1046,7 @@ def test_hook_prints_nothing_without_skills_or_agents(
 ):
     rc, output = _run_hook(tmp_path, 'claude-code', _make_skill_client())
     assert (rc, output) == (0, '')
-    assert _last_run()['is_successful'] is True
+    assert _last_run(tmp_path)['is_successful'] is True
 
 
 def test_hook_reports_failures(tmp_path, auto_update_on):
@@ -1054,7 +1059,7 @@ def test_hook_reports_failures(tmp_path, auto_update_on):
         'AWS agent skills updated: aws-cdk. Could not update aws-s3; run '
         '"aws agent-toolkit update-skill --all" for details.\n'
     )
-    run = _last_run('codex')
+    run = _last_run(tmp_path, 'codex')
     assert run['is_successful'] is False
     assert run['summary'] == (
         '1 updated, 0 skipped, 1 failed, 0 already up to date'
@@ -1098,7 +1103,7 @@ def test_hook_unexpected_error_still_succeeds(tmp_path, auto_update_on, error):
     rc, output = _run_hook(tmp_path, 'claude-code', client)
     assert rc == 0
     assert json.loads(output)['systemMessage'] == hooks.HOOK_ERROR_MESSAGE
-    assert _last_run()['is_successful'] is False
+    assert _last_run(tmp_path)['is_successful'] is False
 
 
 def test_hook_error_creating_client_still_succeeds(tmp_path, auto_update_on):
@@ -1139,7 +1144,7 @@ def test_hook_error_keeps_skills_already_updated(
         },
         'systemMessage': msg,
     }
-    assert _last_run()['is_successful'] is False
+    assert _last_run(tmp_path)['is_successful'] is False
 
 
 def test_hook_client_fails_fast(tmp_path, auto_update_on):
@@ -1270,7 +1275,7 @@ def test_hook_installs_new_core_skills(tmp_path, auto_update_on):
     assert [
         c.kwargs['name'] for c in client.get_skill_file.call_args_list
     ] == ['aws-iam']
-    assert _last_run()['summary'] == (
+    assert _last_run(tmp_path)['summary'] == (
         '1 installed, 0 updated, 0 skipped, 0 failed, 1 already up to date'
     )
 
@@ -1315,7 +1320,7 @@ def test_hook_leaves_skill_it_did_not_install(tmp_path, auto_update_on):
     assert (rc, output) == (0, '')
     assert (mine / 'SKILL.md').read_text() == 'mine'
     assert not client.get_skill_file.called
-    assert _last_run()['summary'] == (
+    assert _last_run(tmp_path)['summary'] == (
         '0 updated, 1 skipped, 0 failed, 1 already up to date'
     )
 
@@ -1331,7 +1336,7 @@ def test_hook_reports_core_skill_install_failure(tmp_path, auto_update_on):
         '--skill-name aws-iam" for details.\n'
     )
     assert not _skill_dir(tmp_path, 'aws-iam').exists()
-    run = _last_run('codex')
+    run = _last_run(tmp_path, 'codex')
     assert run['is_successful'] is False
     assert run['summary'] == (
         '0 updated, 0 skipped, 1 failed, 1 already up to date'
@@ -1394,13 +1399,13 @@ def test_hook_run_right_after_another_does_nothing(tmp_path, auto_update_on):
     _install_skill_at_version(tmp_path, '.test-agent', 'aws-s3', 'v1')
     _, output = _run_hook(tmp_path, 'kiro', _make_skill_client())
     assert output == 'AWS agent skills updated: aws-s3.\n'
-    first = _last_run('kiro')
+    first = _last_run(tmp_path, 'kiro')
     _install_skill_at_version(tmp_path, '.test-agent', 'aws-s3', 'v1')
     client = _make_skill_client()
     rc, output = _run_hook(tmp_path, 'kiro', client)
     assert (rc, output) == (0, '')
     assert not client.get_latest_skill_version.called
-    assert _last_run('kiro') == first
+    assert _last_run(tmp_path, 'kiro') == first
 
 
 def test_hook_run_for_another_agent_is_not_skipped(tmp_path, auto_update_on):
@@ -1413,8 +1418,9 @@ def test_hook_run_for_another_agent_is_not_skipped(tmp_path, auto_update_on):
 
 def test_hook_runs_again_once_last_run_is_old(tmp_path, auto_update_on):
     _install_skill_at_version(tmp_path, '.test-agent', 'aws-s3', 'v1')
+    config = next(c for c in AGENT_CONFIGS if c.id == 'kiro')
     state.record_hook_run(
-        'kiro',
+        hooks.hook_config_path(config),
         is_successful=True,
         summary='old',
         timestamp=datetime.datetime.now(datetime.timezone.utc)

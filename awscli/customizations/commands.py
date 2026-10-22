@@ -7,7 +7,12 @@ from botocore.compat import OrderedDict
 from botocore.validate import validate_parameters
 
 import awscli
-from awscli.argparser import ArgTableArgParser, SubCommandArgParser
+from awscli.argparser import (
+    ArgTableArgParser,
+    SubCommandArgParser,
+    format_unknown_options_error,
+    get_option_suggestion_candidates,
+)
 from awscli.argprocess import unpack_argument, unpack_cli_arg
 from awscli.arguments import CustomArgument, create_argument_model_from_schema
 from awscli.bcdoc import docevents
@@ -202,7 +207,12 @@ class BasicCommand(CLICommand):
             # function for this top level command.
             if remaining:
                 raise ParamValidationError(
-                    f"Unknown options: {','.join(remaining)}"
+                    format_unknown_options_error(
+                        remaining,
+                        get_option_suggestion_candidates(
+                            self.arg_table, self._session
+                        ),
+                    )
                 )
             rc = self._run_main(parsed_args, parsed_globals)
             if rc is None:

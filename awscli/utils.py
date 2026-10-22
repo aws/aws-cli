@@ -124,13 +124,7 @@ def find_service_and_method_in_event_name(event_name):
     event.service.operation.
     """
     split_event = event_name.split('.')[1:]
-    service_name = None
-    if len(split_event) > 0:
-        service_name = split_event[0]
-
-    operation_name = None
-    if len(split_event) > 1:
-        operation_name = split_event[1]
+    service_name, operation_name = (split_event + [None, None])[:2]
     return service_name, operation_name
 
 

@@ -17,6 +17,7 @@ from awscrt.s3 import S3RequestTlsMode, S3RequestType, S3ResponseError
 from botocore.response import StreamingBody
 
 from awscli.compat import BytesIO, OrderedDict
+from awscli.customizations.s3.factory import MAX_CRT_CONNECT_TIMEOUT_MS
 from awscli.customizations.s3.utils import relative_path
 from awscli.testutils import (
     BaseAWSCommandParamsTest,
@@ -3623,6 +3624,45 @@ class TestCpWithCRTClient(BaseCRTTransferClientTest):
         self.assertEqual(len(crt_requests), 1)
         tls_context_options = mock_client_tls_context_options.call_args[0][0]
         self.assertFalse(tls_context_options.verify_peer)
+
+    def test_uses_default_connect_timeout(self):
+        filename = self.files.create_file('myfile', 'mycontent')
+        cmdline = ['s3', 'cp', filename, 's3://bucket/key']
+        self.run_command(cmdline)
+        self.assertEqual(
+            self.mock_crt_client.call_args[1]['connect_timeout_ms'], 60_000
+        )
+
+    def test_respects_cli_connect_timeout_parameter(self):
+        filename = self.files.create_file('myfile', 'mycontent')
+        cmdline = [
+            's3',
+            'cp',
+            filename,
+            's3://bucket/key',
+            '--cli-connect-timeout',
+            '5',
+        ]
+        self.run_command(cmdline)
+        self.assertEqual(
+            self.mock_crt_client.call_args[1]['connect_timeout_ms'], 5_000
+        )
+
+    def test_cli_connect_timeout_of_zero_disables_timeout(self):
+        filename = self.files.create_file('myfile', 'mycontent')
+        cmdline = [
+            's3',
+            'cp',
+            filename,
+            's3://bucket/key',
+            '--cli-connect-timeout',
+            '0',
+        ]
+        self.run_command(cmdline)
+        self.assertEqual(
+            self.mock_crt_client.call_args[1]['connect_timeout_ms'],
+            MAX_CRT_CONNECT_TIMEOUT_MS,
+        )
 
 
 class TestCpRecursiveCaseConflict(TestSyncCaseConflict):

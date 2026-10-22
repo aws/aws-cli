@@ -1097,7 +1097,7 @@ def test_hook_reports_failures(tmp_path, auto_update_on):
         _install_skill_at_version(tmp_path, '.test-agent', name, 'v1')
     client = _make_skill_client(bad_checksum_skill='aws-s3')
     rc, output = _run_hook(tmp_path, 'codex', client)
-    assert rc == 0
+    assert rc == 1
     assert output == (
         'AWS agent skills updated: aws-cdk. Could not update aws-s3; run '
         '"aws agent-toolkit update-skill --all" for details.\n'
@@ -1139,24 +1139,26 @@ def test_hook_reports_skipped(tmp_path, auto_update_on):
 @pytest.mark.parametrize(
     'error', [NoCredentialsError(), RuntimeError('boom'), OSError('nope')]
 )
-def test_hook_unexpected_error_still_succeeds(tmp_path, auto_update_on, error):
+def test_hook_unexpected_error_exits_with_error(
+    tmp_path, auto_update_on, error
+):
     _install_skill_at_version(tmp_path, '.test-agent', 'aws-s3', 'v1')
     client = _make_skill_client()
     client.get_latest_skill_version.side_effect = error
     rc, output = _run_hook(tmp_path, 'claude-code', client)
-    assert rc == 0
+    assert rc == 1
     assert json.loads(output)['systemMessage'] == hooks.HOOK_ERROR_MESSAGE
     assert _last_run(tmp_path)['is_successful'] is False
 
 
-def test_hook_error_creating_client_still_succeeds(tmp_path, auto_update_on):
+def test_hook_error_creating_client_exits_with_error(tmp_path, auto_update_on):
     _install_skill_at_version(tmp_path, '.test-agent', 'aws-s3', 'v1')
     with patch(
         'awscli.customizations.agenttoolkit.update_skill.create_client',
         side_effect=NoCredentialsError(),
     ):
         rc, output = _run_hook(tmp_path, 'cursor', None)
-    assert rc == 0
+    assert rc == 1
     assert json.loads(output) == {
         'additional_context': hooks.HOOK_ERROR_MESSAGE
     }
@@ -1177,7 +1179,7 @@ def test_hook_error_keeps_skills_already_updated(
     client = _make_skill_client()
     client.get_latest_skill_version.side_effect = [{'body': 'v2'}, error]
     rc, output = _run_hook(tmp_path, 'claude-code', client)
-    assert rc == 0
+    assert rc == 1
     msg = f'AWS agent skills updated: aws-cdk. {hooks.HOOK_ERROR_MESSAGE}'
     assert json.loads(output) == {
         'hookSpecificOutput': {
@@ -1238,13 +1240,15 @@ def test_hook_command_ignores_auto_prompt_setting(
     assert capsys.readouterr() == ('', '')
 
 
-def test_hook_error_resolving_agents_still_succeeds(tmp_path, auto_update_on):
+def test_hook_error_resolving_agents_exits_with_error(
+    tmp_path, auto_update_on
+):
     with patch(
         'awscli.customizations.agenttoolkit.update_skill.resolve_agents',
         side_effect=ValueError('bad'),
     ):
         rc, output = _run_hook(tmp_path, 'kiro', _make_skill_client())
-    assert (rc, output) == (0, f'{hooks.HOOK_ERROR_MESSAGE}\n')
+    assert (rc, output) == (1, f'{hooks.HOOK_ERROR_MESSAGE}\n')
 
 
 def test_hook_record_failure_is_ignored(tmp_path, auto_update_on):

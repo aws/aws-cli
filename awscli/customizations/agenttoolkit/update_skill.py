@@ -79,8 +79,8 @@ HOOK_ARG = {
         'also installs new skills in the ``aws-core`` category into agents '
         'that already have AWS skills. Does nothing unless automatic skill '
         'updates are turned on, checks each skills directory once a day, '
-        'or an hour after a failed check, prints only what the agent '
-        'expects and always succeeds.'
+        'or an hour after a failed check, and prints only what the agent '
+        'expects.'
     ),
     'action': 'store',
     'cli_type_name': 'string',
@@ -338,8 +338,6 @@ class UpdateSkillCommand(BasicCommand):
         return due_agents, due_roots
 
     def _run_hook_locked(self, agent_id, parsed_globals):
-        # The agent shows or acts on whatever is printed, and a failing hook
-        # is reported as an error, so nothing escapes and it always succeeds.
         results = _UpdateResults.empty()
         error = None
         due_roots = []
@@ -380,6 +378,8 @@ class UpdateSkillCommand(BasicCommand):
             )
         )
         self._record_hook_runs(due_roots, results, error, summary)
+        if error is not None or results.failed or results.failed_installs:
+            return 1
         return 0
 
     def _record_hook_runs(self, roots, results, error, summary):

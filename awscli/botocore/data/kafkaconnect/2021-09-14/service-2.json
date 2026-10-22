@@ -329,6 +329,28 @@
       "documentation":"<p>Returns a list of all of the worker configurations in this account and Region.</p>",
       "readonly":true
     },
+    "PauseConnector":{
+      "name":"PauseConnector",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/v1/connectors/{connectorArn}/pause",
+        "responseCode":200
+      },
+      "input":{"shape":"PauseConnectorRequest"},
+      "output":{"shape":"PauseConnectorResponse"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"NotFoundException"},
+        {"shape":"BadRequestException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"UnauthorizedException"},
+        {"shape":"InternalServerErrorException"}
+      ],
+      "documentation":"<p>Pauses the specified connector. The operation runs asynchronously. To track the pause, pass the connector operation ARN from the response to <code>DescribeConnectorOperation</code>.</p>",
+      "idempotent":true
+    },
     "RestartConnector":{
       "name":"RestartConnector",
       "http":{
@@ -348,6 +370,28 @@
         {"shape":"InternalServerErrorException"}
       ],
       "documentation":"<p>Restarts the specified connector. By default, this operation restarts the connector and all of its tasks. This operation is asynchronous and returns a connector operation ARN that you can pass to <code>DescribeConnectorOperation</code> to track the state of the restart.</p>"
+    },
+    "ResumeConnector":{
+      "name":"ResumeConnector",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/v1/connectors/{connectorArn}/resume",
+        "responseCode":200
+      },
+      "input":{"shape":"ResumeConnectorRequest"},
+      "output":{"shape":"ResumeConnectorResponse"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"NotFoundException"},
+        {"shape":"BadRequestException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"UnauthorizedException"},
+        {"shape":"InternalServerErrorException"}
+      ],
+      "documentation":"<p>Resumes the specified paused connector. The operation runs asynchronously. To track the resume, pass the connector operation ARN from the response to <code>DescribeConnectorOperation</code>.</p>",
+      "idempotent":true
     },
     "TagResource":{
       "name":"TagResource",
@@ -666,6 +710,12 @@
         "ROLLBACK_IN_PROGRESS",
         "ROLLBACK_FAILED",
         "ROLLBACK_COMPLETE",
+        "PAUSE_COMPLETE",
+        "PAUSE_FAILED",
+        "RESUME_COMPLETE",
+        "RESUME_FAILED",
+        "PAUSE_IN_PROGRESS",
+        "RESUME_IN_PROGRESS",
         "RESTART_IN_PROGRESS",
         "RESTART_COMPLETE",
         "RESTART_FAILED"
@@ -738,7 +788,9 @@
         "UPDATE_CONNECTOR_CONFIGURATION",
         "ISOLATE_CONNECTOR",
         "RESTORE_CONNECTOR",
-        "RESTART_CONNECTOR"
+        "RESTART_CONNECTOR",
+        "PAUSE_CONNECTOR",
+        "RESUME_CONNECTOR"
       ]
     },
     "ConnectorState":{
@@ -749,7 +801,10 @@
         "UPDATING",
         "DELETING",
         "FAILED",
-        "RESTARTING"
+        "PAUSED",
+        "RESTARTING",
+        "PAUSING",
+        "RESUMING"
       ]
     },
     "ConnectorSummary":{
@@ -1816,6 +1871,31 @@
       },
       "exception":true
     },
+    "PauseConnectorRequest":{
+      "type":"structure",
+      "required":["connectorArn"],
+      "members":{
+        "connectorArn":{
+          "shape":"__string",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the connector that you want to pause.</p>",
+          "location":"uri",
+          "locationName":"connectorArn"
+        }
+      }
+    },
+    "PauseConnectorResponse":{
+      "type":"structure",
+      "members":{
+        "connectorArn":{
+          "shape":"__string",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the connector.</p>"
+        },
+        "connectorOperationArn":{
+          "shape":"__string",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the connector operation created to perform the pause.</p>"
+        }
+      }
+    },
     "Plugin":{
       "type":"structure",
       "required":["customPlugin"],
@@ -1915,6 +1995,31 @@
         "connectorOperationArn":{
           "shape":"__string",
           "documentation":"<p>The Amazon Resource Name (ARN) of the connector operation created to perform the restart.</p>"
+        }
+      }
+    },
+    "ResumeConnectorRequest":{
+      "type":"structure",
+      "required":["connectorArn"],
+      "members":{
+        "connectorArn":{
+          "shape":"__string",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the connector that you want to resume.</p>",
+          "location":"uri",
+          "locationName":"connectorArn"
+        }
+      }
+    },
+    "ResumeConnectorResponse":{
+      "type":"structure",
+      "members":{
+        "connectorArn":{
+          "shape":"__string",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the connector.</p>"
+        },
+        "connectorOperationArn":{
+          "shape":"__string",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the connector operation created to perform the resume.</p>"
         }
       }
     },
@@ -2192,6 +2297,10 @@
         "connectorConfiguration":{
           "shape":"ConnectorConfigurationUpdate",
           "documentation":"<p>A map of keys to values that represent the configuration for the connector.</p>"
+        },
+        "skipHealthValidation":{
+          "shape":"__boolean",
+          "documentation":"<p>Specifies whether the update bypasses connector-level and task-level health checks. If <code>true</code>, the update skips the health checks. The update stays in effect even if the connector or its tasks are unhealthy, and Amazon MSK Connect doesn't roll it back. If <code>false</code> or not specified, the health checks run. If they fail, MSK Connect automatically rolls the connector back to its previous configuration, and the update doesn't take effect. To update a connector that is in the <code>PAUSED</code> state, you must set this parameter to <code>true</code>.</p>"
         },
         "connectorArn":{
           "shape":"__string",

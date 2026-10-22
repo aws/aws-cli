@@ -74,6 +74,27 @@
       "documentation":"<p>Creates a feed. The feed is the target for the live media stream that is being sent by the calling application. An example of a calling application is AWS Elemental MediaLive. </p> <p>The key contents of the feed is an array of outputs. Each output represents an Elemental Inference feature. After you create the feed, you must associate a resource with the feed. At that point, you will have a useable feed: resource - feed - output or outputs. </p>",
       "idempotent":true
     },
+    "CreateScheduleAction":{
+      "name":"CreateScheduleAction",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v1/feed/{id}/schedule-actions",
+        "responseCode":201
+      },
+      "input":{"shape":"CreateScheduleActionRequest"},
+      "output":{"shape":"CreateScheduleActionResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerErrorException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"TooManyRequestException"},
+        {"shape":"ConflictException"},
+        {"shape":"ServiceQuotaExceededException"}
+      ],
+      "documentation":"<p>Creates a schedule action on a feed. A schedule action applies configuration changes to the feed at a time that you specify, in the same way as an UpdateFeed request. </p> <p>Elemental Inference validates the targets of the action when you create it.</p>",
+      "idempotent":true
+    },
     "DeleteDictionary":{
       "name":"DeleteDictionary",
       "http":{
@@ -130,6 +151,26 @@
         {"shape":"TooManyRequestException"}
       ],
       "documentation":"<p>Deletes the resource-based policy attached to the specified feed. After you delete the policy, the operation revokes the cross-account access that the policy granted. </p>",
+      "idempotent":true
+    },
+    "DeleteScheduleAction":{
+      "name":"DeleteScheduleAction",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/v1/feed/{id}/schedule-actions",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteScheduleActionRequest"},
+      "output":{"shape":"DeleteScheduleActionResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerErrorException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"TooManyRequestException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Deletes a schedule action from a feed. A deleted action never runs.</p> <p>You can delete only an action whose status is PENDING. Deleting an action doesn't reverse changes that the action already made to the feed. When you delete or archive a feed, Elemental Inference deletes all the schedule actions on that feed. </p>",
       "idempotent":true
     },
     "DisassociateFeed":{
@@ -283,6 +324,25 @@
         {"shape":"TooManyRequestException"}
       ],
       "documentation":"<p>Displays a list of feeds that belong to this AWS account.</p>",
+      "readonly":true
+    },
+    "ListScheduleActions":{
+      "name":"ListScheduleActions",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v1/feed/{id}/schedule-actions",
+        "responseCode":200
+      },
+      "input":{"shape":"ListScheduleActionsRequest"},
+      "output":{"shape":"ListScheduleActionsResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerErrorException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"TooManyRequestException"}
+      ],
+      "documentation":"<p>Displays a list of the schedule actions on a feed, including the status of each action and, for a failed action, information about why it failed. </p> <p>Elemental Inference keeps an action whose status is COMPLETED or FAILED for about 48 hours after its scheduled time, and then deletes it automatically. </p>",
       "readonly":true
     },
     "ListTagsForResource":{
@@ -743,6 +803,66 @@
       "type":"list",
       "member":{"shape":"CreateOutput"}
     },
+    "CreateScheduleActionRequest":{
+      "type":"structure",
+      "required":[
+        "id",
+        "actionName",
+        "startConfiguration",
+        "operations"
+      ],
+      "members":{
+        "id":{
+          "shape":"FeedId",
+          "documentation":"<p>Specifies the ID of the feed that you want to add the schedule action to.</p>",
+          "location":"uri",
+          "locationName":"id"
+        },
+        "actionName":{
+          "shape":"ResourceName",
+          "documentation":"<p>A name for the schedule action. The name must be unique within the feed. You can reuse the name of an action that you deleted. </p>"
+        },
+        "startConfiguration":{
+          "shape":"ScheduleActionStartConfiguration",
+          "documentation":"<p>Specifies when the action runs.</p>"
+        },
+        "operations":{
+          "shape":"ScheduleActionOperations",
+          "documentation":"<p>Specifies the list of configuration changes that you want to make to the feed. Elemental Inference applies all the operations in an action together, in the order that you specify them. If any operation fails, Elemental Inference doesn't apply any of them. </p>"
+        }
+      }
+    },
+    "CreateScheduleActionResponse":{
+      "type":"structure",
+      "required":[
+        "actionName",
+        "startConfiguration",
+        "operations",
+        "status"
+      ],
+      "members":{
+        "actionName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name that you specified.</p>"
+        },
+        "startConfiguration":{
+          "shape":"ScheduleActionStartConfiguration",
+          "documentation":"<p>Specifies when the action runs.</p>"
+        },
+        "operations":{
+          "shape":"ScheduleActionOperations",
+          "documentation":"<p>The configuration changes that the action makes to the feed.</p>"
+        },
+        "status":{
+          "shape":"ScheduleActionStatus",
+          "documentation":"<p>The status of the action. After you create the action successfully, Elemental Inference sets the status to PENDING. </p>"
+        },
+        "error":{
+          "shape":"ScheduleActionError",
+          "documentation":"<p>A description of why the action failed. Elemental Inference returns this property only when the status is FAILED. </p>"
+        }
+      }
+    },
     "CroppingConfig":{
       "type":"structure",
       "members":{
@@ -848,6 +968,37 @@
         "status":{
           "shape":"FeedStatus",
           "documentation":"<p>The current status of the feed. When deletion of the feed has succeeded, the status will be DELETED. </p>"
+        }
+      }
+    },
+    "DeleteScheduleActionRequest":{
+      "type":"structure",
+      "required":[
+        "id",
+        "actionName"
+      ],
+      "members":{
+        "id":{
+          "shape":"FeedId",
+          "documentation":"<p>The ID of the feed that holds the schedule action.</p>",
+          "location":"uri",
+          "locationName":"id"
+        },
+        "actionName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the schedule action that you want to delete.</p>",
+          "location":"querystring",
+          "locationName":"actionName"
+        }
+      }
+    },
+    "DeleteScheduleActionResponse":{
+      "type":"structure",
+      "required":["actionName"],
+      "members":{
+        "actionName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the schedule action that Elemental Inference deleted.</p>"
         }
       }
     },
@@ -1072,6 +1223,17 @@
       "member":{"shape":"FilterValue"},
       "max":10,
       "min":0
+    },
+    "FixedModeScheduleActionStartSettings":{
+      "type":"structure",
+      "required":["scheduledAt"],
+      "members":{
+        "scheduledAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The UTC time at which the action runs. Specify the time in whole seconds. For the range of times that you can specify, see the AWS Elemental Inference User Guide. </p> <p>This time is approximate. The change can take a few minutes to take effect on the media that the feed is processing. </p>"
+        }
+      },
+      "documentation":"<p>Sets the time at which a schedule action runs once. This is a type of ScheduleActionStartConfiguration. </p>"
     },
     "FixtureDate":{
       "type":"string",
@@ -1447,6 +1609,50 @@
         }
       }
     },
+    "ListScheduleActionsRequest":{
+      "type":"structure",
+      "required":["id"],
+      "members":{
+        "id":{
+          "shape":"FeedId",
+          "documentation":"<p>The ID of the feed that you want to query.</p>",
+          "location":"uri",
+          "locationName":"id"
+        },
+        "maxResults":{
+          "shape":"ListScheduleActionsRequestMaxResultsInteger",
+          "documentation":"<p>The maximum number of results to return for each API request. If you don't specify MaxResults, Elemental Inference returns a maximum of 10 results for each page. </p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>The token that identifies the batch of results that you want to see. To see the next batch, submit the request a second time and specify the NextToken value that Elemental Inference returned. </p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListScheduleActionsRequestMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "ListScheduleActionsResponse":{
+      "type":"structure",
+      "required":["scheduleActions"],
+      "members":{
+        "scheduleActions":{
+          "shape":"ScheduleActionList",
+          "documentation":"<p>A list of the schedule actions on the feed.</p>"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>The token that identifies the next batch of results. Elemental Inference returns it only when more results are available. </p>"
+        }
+      }
+    },
     "ListTagsForResourceRequest":{
       "type":"structure",
       "required":["resourceArn"],
@@ -1534,9 +1740,20 @@
       "type":"structure",
       "members":{}
     },
+    "RemoveClippingDataSourceConfiguration":{
+      "type":"structure",
+      "required":["outputName"],
+      "members":{
+        "outputName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the output that you want to remove the game from.</p>"
+        }
+      },
+      "documentation":"<p>Removes the game from an event clipping output at the action's scheduled time. This is a type of ScheduleActionOperation, and the output must be an event clipping output. </p>"
+    },
     "ResourceArn":{
       "type":"string",
-      "pattern":"arn:aws[a-z\\-]*:elemental-inference[a-z\\-]*:[a-z0-9\\-]+:[0-9]{12}:(feed|dictionary)/[a-zA-Z0-9]{1,19}"
+      "pattern":"arn:aws[a-z\\-]*:elemental-inference[a-z\\-]*:[a-z0-9\\-]+:[0-9]{12}:[a-z]+/[a-zA-Z0-9]{1,19}"
     },
     "ResourceDescription":{
       "type":"string",
@@ -1566,6 +1783,113 @@
       "max":255,
       "min":10,
       "pattern":"s3://[a-z0-9][a-z0-9.-]{1,61}[a-z0-9]/.+"
+    },
+    "ScheduleAction":{
+      "type":"structure",
+      "required":[
+        "actionName",
+        "startConfiguration",
+        "operations",
+        "status"
+      ],
+      "members":{
+        "actionName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the schedule action. The name is unique within the feed.</p>"
+        },
+        "startConfiguration":{
+          "shape":"ScheduleActionStartConfiguration",
+          "documentation":"<p>Specifies when the action runs.</p>"
+        },
+        "operations":{
+          "shape":"ScheduleActionOperations",
+          "documentation":"<p>The configuration changes that the action makes to the feed.</p>"
+        },
+        "status":{
+          "shape":"ScheduleActionStatus",
+          "documentation":"<p>The status of the action. Valid values are the following:</p> <dl> <dt>PENDING</dt> <dd> <p>The action is waiting for its scheduled time.</p> </dd> <dt>COMPLETED</dt> <dd> <p>Elemental Inference applied all the action's operations to the feed.</p> </dd> <dt>FAILED</dt> <dd> <p>Elemental Inference couldn't apply the action.</p> </dd> </dl>"
+        },
+        "error":{
+          "shape":"ScheduleActionError",
+          "documentation":"<p>A description of why the action failed. Elemental Inference returns this property only when the status is FAILED. </p>"
+        }
+      },
+      "documentation":"<p>Describes one schedule action on a feed, including the changes it makes and whether it has run yet. Elemental Inference returns this structure in the ListScheduleActions operation. </p>"
+    },
+    "ScheduleActionError":{
+      "type":"structure",
+      "required":[
+        "errorCode",
+        "errorMessage"
+      ],
+      "members":{
+        "errorCode":{
+          "shape":"ScheduleActionErrorCode",
+          "documentation":"<p>The type of failure. Valid values are the following:</p> <dl> <dt>INVALID_ACTION_TARGET</dt> <dd> <p>The action referred to something that didn't exist or wasn't valid at the scheduled time, for example an output that you deleted. </p> </dd> <dt>INTERNAL_ERROR</dt> <dd> <p>An unexpected error prevented the action from completing.</p> </dd> </dl>"
+        },
+        "errorMessage":{
+          "shape":"String",
+          "documentation":"<p>A description of the failure.</p>"
+        }
+      },
+      "documentation":"<p>Describes the cause of a schedule action failure, including the failure type and a description of what went wrong. </p>"
+    },
+    "ScheduleActionErrorCode":{
+      "type":"string",
+      "enum":[
+        "INVALID_ACTION_TARGET",
+        "INTERNAL_ERROR"
+      ]
+    },
+    "ScheduleActionList":{
+      "type":"list",
+      "member":{"shape":"ScheduleAction"},
+      "max":100,
+      "min":0
+    },
+    "ScheduleActionOperation":{
+      "type":"structure",
+      "members":{
+        "updateOutputStatus":{
+          "shape":"UpdateOutputStatus",
+          "documentation":"<p>The operation type that enables or disables an output.</p>"
+        },
+        "updateClippingDataSourceConfiguration":{
+          "shape":"UpdateClippingDataSourceConfiguration",
+          "documentation":"<p>The operation type that attaches a game to an event clipping output.</p>"
+        },
+        "removeClippingDataSourceConfiguration":{
+          "shape":"RemoveClippingDataSourceConfiguration",
+          "documentation":"<p>The operation type that removes the game from an event clipping output.</p>"
+        }
+      },
+      "documentation":"<p>Holds one typed configuration change that a schedule action makes to a feed. Each operation must contain exactly one property. </p>",
+      "union":true
+    },
+    "ScheduleActionOperations":{
+      "type":"list",
+      "member":{"shape":"ScheduleActionOperation"},
+      "max":10,
+      "min":1
+    },
+    "ScheduleActionStartConfiguration":{
+      "type":"structure",
+      "members":{
+        "fixedModeScheduleActionStartSettings":{
+          "shape":"FixedModeScheduleActionStartSettings",
+          "documentation":"<p>The start settings type for an action that runs once, at a fixed time.</p>"
+        }
+      },
+      "documentation":"<p>Holds the typed start settings that determine when a schedule action runs. Currently, only fixed mode is supported. </p>",
+      "union":true
+    },
+    "ScheduleActionStatus":{
+      "type":"string",
+      "enum":[
+        "PENDING",
+        "COMPLETED",
+        "FAILED"
+      ]
     },
     "SearchFilter":{
       "type":"structure",
@@ -1776,6 +2100,7 @@
       "max":2,
       "min":1
     },
+    "Timestamp":{"type":"timestamp"},
     "TooManyRequestException":{
       "type":"structure",
       "required":["message"],
@@ -1824,6 +2149,24 @@
           "locationName":"tagKeys"
         }
       }
+    },
+    "UpdateClippingDataSourceConfiguration":{
+      "type":"structure",
+      "required":[
+        "outputName",
+        "dataSourceConfiguration"
+      ],
+      "members":{
+        "outputName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the output that you want to attach the game to.</p>"
+        },
+        "dataSourceConfiguration":{
+          "shape":"DataSourceConfiguration",
+          "documentation":"<p>The game that you want to attach to the output.</p>"
+        }
+      },
+      "documentation":"<p>Attaches a game to an event clipping output at the action's scheduled time. This is a type of ScheduleActionOperation, and the output must be an event clipping output. </p>"
     },
     "UpdateDictionaryRequest":{
       "type":"structure",
@@ -2000,6 +2343,24 @@
     "UpdateOutputList":{
       "type":"list",
       "member":{"shape":"UpdateOutput"}
+    },
+    "UpdateOutputStatus":{
+      "type":"structure",
+      "required":[
+        "outputName",
+        "status"
+      ],
+      "members":{
+        "outputName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the output that you want to enable or disable. The output must exist in the feed when you create the action. </p>"
+        },
+        "status":{
+          "shape":"OutputStatus",
+          "documentation":"<p>Specifies whether the output is enabled or disabled after the action runs.</p>"
+        }
+      },
+      "documentation":"<p>Enables or disables an output at the action's scheduled time. This is a type of ScheduleActionOperation. </p>"
     },
     "ValidationException":{
       "type":"structure",

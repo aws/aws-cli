@@ -2542,7 +2542,7 @@
       },
       "input":{"shape":"DeleteTransitGatewayRouteTableRequest"},
       "output":{"shape":"DeleteTransitGatewayRouteTableResult"},
-      "documentation":"<p>Deletes the specified transit gateway route table. If there are any route tables associated with the transit gateway route table, you must first run <a>DisassociateRouteTable</a> before you can delete the transit gateway route table. This removes any route tables associated with the transit gateway route table.</p>"
+      "documentation":"<p>Deletes the specified transit gateway route table. Before you can delete a transit gateway route table, you must disassociate all attachments from it by using <a>DisassociateTransitGatewayRouteTable</a> and wait for the disassociations to complete. You can't delete a transit gateway route table that is the default association route table or default propagation route table for the transit gateway. To change the default route tables, use <a>ModifyTransitGateway</a>.</p>"
     },
     "DeleteTransitGatewayRouteTableAnnouncement":{
       "name":"DeleteTransitGatewayRouteTableAnnouncement",
@@ -6131,6 +6131,16 @@
       "output":{"shape":"GetSubnetCidrReservationsResult"},
       "documentation":"<p>Gets information about the subnet CIDR reservations.</p>"
     },
+    "GetTransitGatewayAttachmentNatConfiguration":{
+      "name":"GetTransitGatewayAttachmentNatConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetTransitGatewayAttachmentNatConfigurationRequest"},
+      "output":{"shape":"GetTransitGatewayAttachmentNatConfigurationResult"},
+      "documentation":"<p>Describes the NAT configuration for the specified transit gateway attachment. Only the owner of the transit gateway can describe the NAT configuration.</p>"
+    },
     "GetTransitGatewayAttachmentPropagations":{
       "name":"GetTransitGatewayAttachmentPropagations",
       "http":{
@@ -6933,6 +6943,16 @@
       "input":{"shape":"ModifyTransitGatewayRequest"},
       "output":{"shape":"ModifyTransitGatewayResult"},
       "documentation":"<p>Modifies the specified transit gateway. When you modify a transit gateway, the modified options are applied to new transit gateway attachments only. Your existing transit gateway attachments are not modified.</p>"
+    },
+    "ModifyTransitGatewayAttachmentNatConfiguration":{
+      "name":"ModifyTransitGatewayAttachmentNatConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ModifyTransitGatewayAttachmentNatConfigurationRequest"},
+      "output":{"shape":"ModifyTransitGatewayAttachmentNatConfigurationResult"},
+      "documentation":"<p>Modifies the NAT configuration for the specified transit gateway attachment. Use this operation to do the following:</p> <ul> <li> <p>Enable or disable NAT gateway support for the attachment.</p> </li> <li> <p>Specify whether the transit gateway installs routes for the NAT CIDRs.</p> </li> <li> <p>Replace the NAT gateway rules for the attachment.</p> </li> </ul> <p>Only the owner of the transit gateway can modify the NAT configuration.</p> <p>With NAT gateway support enabled, the transit gateway translates addresses in each rule's <code>MatchSourceCidr</code> range to the corresponding addresses in its <code>NatCidr</code> range.</p> <p>The transit gateway applies changes asynchronously. To check the result, use <code>GetTransitGatewayAttachmentNatConfiguration</code>.</p>"
     },
     "ModifyTransitGatewayMeteringPolicy":{
       "name":"ModifyTransitGatewayMeteringPolicy",
@@ -43270,6 +43290,45 @@
         }
       }
     },
+    "GetTransitGatewayAttachmentNatConfigurationRequest":{
+      "type":"structure",
+      "required":["TransitGatewayAttachmentId"],
+      "members":{
+        "TransitGatewayAttachmentId":{
+          "shape":"TransitGatewayAttachmentId",
+          "documentation":"<p>The ID of the transit gateway attachment.</p>"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "GetTransitGatewayAttachmentNatConfigurationResult":{
+      "type":"structure",
+      "members":{
+        "TransitGatewayAttachmentId":{
+          "shape":"TransitGatewayAttachmentId",
+          "documentation":"<p>The ID of the transit gateway attachment.</p>",
+          "locationName":"transitGatewayAttachmentId"
+        },
+        "NatGatewaySupport":{
+          "shape":"TransitGatewayAttachmentNatGatewaySupportState",
+          "documentation":"<p>The state of NAT gateway support for the attachment.</p>",
+          "locationName":"natGatewaySupport"
+        },
+        "NatSystemRouteSupport":{
+          "shape":"TransitGatewayAttachmentNatSystemRouteSupportValue",
+          "documentation":"<p>Specifies whether the transit gateway installs routes for the NAT CIDRs in the route tables to which the attachment propagates.</p>",
+          "locationName":"natSystemRouteSupport"
+        },
+        "NatGatewayRules":{
+          "shape":"TransitGatewayNatRuleList",
+          "documentation":"<p>The NAT gateway rules for the attachment.</p>",
+          "locationName":"natGatewayRuleSet"
+        }
+      }
+    },
     "GetTransitGatewayAttachmentPropagationsRequest":{
       "type":"structure",
       "required":["TransitGatewayAttachmentId"],
@@ -60029,6 +60088,62 @@
         }
       }
     },
+    "ModifyTransitGatewayAttachmentNatConfigurationRequest":{
+      "type":"structure",
+      "required":["TransitGatewayAttachmentId"],
+      "members":{
+        "TransitGatewayAttachmentId":{
+          "shape":"TransitGatewayAttachmentId",
+          "documentation":"<p>The ID of the transit gateway attachment.</p>"
+        },
+        "NatGatewaySupport":{
+          "shape":"TransitGatewayAttachmentNatGatewaySupportValue",
+          "documentation":"<p>Specifies whether to enable or disable NAT gateway support for the attachment. To enable NAT gateway support, the attachment must have at least one NAT gateway rule. You can't modify the NAT configuration while NAT gateway support is <code>enabling</code> or <code>disabling</code>. If you omit this parameter, the current value doesn't change.</p>"
+        },
+        "NatSystemRouteSupport":{
+          "shape":"TransitGatewayAttachmentNatSystemRouteSupportValue",
+          "documentation":"<p>Specifies whether the transit gateway installs routes for the NAT CIDRs in the route tables to which the attachment propagates. For VPC attachments, the transit gateway always installs these routes. You can enable or disable this option only for Amazon Web Services Direct Connect gateway attachments and Site-to-Site VPN attachments that use dynamic routing. For these attachments, the default is <code>enable</code>. If you omit this parameter, the current value doesn't change.</p>"
+        },
+        "NatGatewayRules":{
+          "shape":"TransitGatewayNatRuleRequestList",
+          "documentation":"<p>The NAT gateway rules for the attachment. The rules that you specify replace all existing NAT gateway rules for the attachment. You can specify up to 50 rules for an attachment. If you omit this parameter, the existing rules don't change. To remove all rules, use <code>ResetNatGatewayRules</code>.</p>",
+          "locationName":"NatGatewayRule"
+        },
+        "ResetNatGatewayRules":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether to remove all NAT gateway rules from the attachment. If you omit this parameter, the transit gateway doesn't remove any rules. You can't specify this parameter together with <code>NatGatewayRules</code>. Because you can't enable NAT gateway support without rules, also set <code>NatGatewaySupport</code> to <code>disable</code> in the same request if NAT gateway support is currently enabled.</p>"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "ModifyTransitGatewayAttachmentNatConfigurationResult":{
+      "type":"structure",
+      "members":{
+        "TransitGatewayAttachmentId":{
+          "shape":"TransitGatewayAttachmentId",
+          "documentation":"<p>The ID of the transit gateway attachment.</p>",
+          "locationName":"transitGatewayAttachmentId"
+        },
+        "NatGatewaySupport":{
+          "shape":"TransitGatewayAttachmentNatGatewaySupportState",
+          "documentation":"<p>The state of NAT gateway support for the attachment.</p>",
+          "locationName":"natGatewaySupport"
+        },
+        "NatSystemRouteSupport":{
+          "shape":"TransitGatewayAttachmentNatSystemRouteSupportValue",
+          "documentation":"<p>Specifies whether the transit gateway installs routes for the NAT CIDRs in the route tables to which the attachment propagates.</p>",
+          "locationName":"natSystemRouteSupport"
+        },
+        "NatGatewayRules":{
+          "shape":"TransitGatewayNatRuleList",
+          "documentation":"<p>The NAT gateway rules for the attachment.</p>",
+          "locationName":"natGatewayRuleSet"
+        }
+      }
+    },
     "ModifyTransitGatewayMeteringPolicyRequest":{
       "type":"structure",
       "required":["TransitGatewayMeteringPolicyId"],
@@ -76085,6 +76200,11 @@
           "shape":"TagList",
           "documentation":"<p>The tags for the attachment.</p>",
           "locationName":"tagSet"
+        },
+        "NatGatewaySupport":{
+          "shape":"TransitGatewayAttachmentNatGatewaySupportState",
+          "documentation":"<p>The state of NAT gateway support for the attachment. Only the owner of the transit gateway receives this parameter.</p>",
+          "locationName":"natGatewaySupport"
         }
       },
       "documentation":"<p>Describes an attachment between a resource and a transit gateway.</p>"
@@ -76159,6 +76279,29 @@
         "shape":"TransitGatewayAttachment",
         "locationName":"item"
       }
+    },
+    "TransitGatewayAttachmentNatGatewaySupportState":{
+      "type":"string",
+      "enum":[
+        "enabled",
+        "disabled",
+        "enabling",
+        "disabling"
+      ]
+    },
+    "TransitGatewayAttachmentNatGatewaySupportValue":{
+      "type":"string",
+      "enum":[
+        "enable",
+        "disable"
+      ]
+    },
+    "TransitGatewayAttachmentNatSystemRouteSupportValue":{
+      "type":"string",
+      "enum":[
+        "enable",
+        "disable"
+      ]
     },
     "TransitGatewayAttachmentPropagation":{
       "type":"structure",
@@ -76993,6 +77136,77 @@
         }
       },
       "documentation":"<p>Describes the members registered with the transit gateway multicast group.</p>"
+    },
+    "TransitGatewayNatRule":{
+      "type":"structure",
+      "members":{
+        "RuleNumber":{
+          "shape":"Integer",
+          "documentation":"<p>The rule number.</p>",
+          "locationName":"ruleNumber"
+        },
+        "MatchSourceCidr":{
+          "shape":"String",
+          "documentation":"<p>The IPv4 CIDR block of the source addresses to translate.</p>",
+          "locationName":"matchSourceCidr"
+        },
+        "NatCidr":{
+          "shape":"String",
+          "documentation":"<p>The IPv4 CIDR block that the transit gateway translates the source addresses to.</p>",
+          "locationName":"natCidr"
+        },
+        "State":{
+          "shape":"TransitGatewayNatRuleState",
+          "documentation":"<p>The state of the NAT gateway rule. The possible values are:</p> <ul> <li> <p> <code>pending</code> - The transit gateway is applying a change to the rule.</p> </li> <li> <p> <code>activated</code> - The rule is in effect because NAT gateway support is enabled for the attachment.</p> </li> <li> <p> <code>deactivated</code> - The rule isn't in effect because NAT gateway support is disabled for the attachment.</p> </li> </ul>",
+          "locationName":"state"
+        }
+      },
+      "documentation":"<p>Contains information about a NAT gateway rule for a transit gateway attachment, including the rule number, the source CIDR block, the translated CIDR block, and the state of the rule.</p>"
+    },
+    "TransitGatewayNatRuleList":{
+      "type":"list",
+      "member":{
+        "shape":"TransitGatewayNatRule",
+        "locationName":"item"
+      },
+      "max":50,
+      "min":0
+    },
+    "TransitGatewayNatRuleRequest":{
+      "type":"structure",
+      "members":{
+        "RuleNumber":{
+          "shape":"Integer",
+          "documentation":"<p>The rule number. Valid values are 1 to 32766. Each rule number must be unique within the request.</p>"
+        },
+        "MatchSourceCidr":{
+          "shape":"String",
+          "documentation":"<p>The IPv4 CIDR block of the source addresses to translate. The CIDR block can't overlap the multicast range (<code>224.0.0.0/4</code>) or the link-local range (<code>169.254.0.0/16</code>).</p>"
+        },
+        "NatCidr":{
+          "shape":"String",
+          "documentation":"<p>The IPv4 CIDR block to translate the source addresses to. The CIDR block must be in a private (RFC 1918) or shared address space (RFC 6598) range, and must have the same prefix length as <code>MatchSourceCidr</code>. The CIDR blocks in the rules for an attachment can't overlap each other.</p>"
+        }
+      },
+      "documentation":"<p>Describes a NAT gateway rule to apply to a transit gateway attachment. A NAT gateway rule translates source addresses in the <code>MatchSourceCidr</code> range to the corresponding addresses in the <code>NatCidr</code> range.</p>"
+    },
+    "TransitGatewayNatRuleRequestList":{
+      "type":"list",
+      "member":{
+        "shape":"TransitGatewayNatRuleRequest",
+        "locationName":"item"
+      },
+      "max":50,
+      "min":0
+    },
+    "TransitGatewayNatRuleState":{
+      "type":"string",
+      "enum":[
+        "pending",
+        "activated",
+        "deactivated",
+        "deleting"
+      ]
     },
     "TransitGatewayNetworkInterfaceIdList":{
       "type":"list",
@@ -77881,7 +78095,8 @@
       "type":"string",
       "enum":[
         "static",
-        "propagated"
+        "propagated",
+        "system"
       ]
     },
     "TransitGatewayState":{

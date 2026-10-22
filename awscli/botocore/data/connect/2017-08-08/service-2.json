@@ -4222,6 +4222,23 @@
       ],
       "documentation":"<p>Provides a list of analysis segments for a real-time chat analysis session. This API supports CHAT channels only. </p> <important> <p>This API does not support VOICE. If you attempt to use it for VOICE, an <code>InvalidRequestException</code> occurs.</p> </important>"
     },
+    "ListReplicationFindings":{
+      "name":"ListReplicationFindings",
+      "http":{
+        "method":"GET",
+        "requestUri":"/replication-findings/{InstanceId}"
+      },
+      "input":{"shape":"ListReplicationFindingsRequest"},
+      "output":{"shape":"ListReplicationFindingsResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Lists replication findings for resources of a specified resource type in a specified Connect Customer instance. A replication finding describes a single resource whose replication to one or more Regions is incomplete or has encountered an error. Results are returned in pages. This operation is available only for instances that are set up for Global Resiliency.</p>"
+    },
     "ListRoutingProfileManualAssignmentQueues":{
       "name":"ListRoutingProfileManualAssignmentQueues",
       "http":{
@@ -8067,6 +8084,35 @@
       "type":"list",
       "member":{"shape":"Application"},
       "max":10
+    },
+    "ApproximateDriftedResourceCount":{
+      "type":"structure",
+      "required":[
+        "Region",
+        "Count",
+        "Timestamp"
+      ],
+      "members":{
+        "Region":{
+          "shape":"AwsRegion",
+          "documentation":"<p>The Amazon Web Services Region that the count applies to.</p>"
+        },
+        "Count":{
+          "shape":"ApproximateTotalCount",
+          "documentation":"<p>The approximate number of resources of the requested type that are not yet in sync in the Region. A value of zero means the resources are in sync.</p>"
+        },
+        "Timestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time, in Unix epoch time, when the count was last calculated.</p>"
+        }
+      },
+      "documentation":"<p>Contains an approximate count of the resources of a given type that are not yet in sync in a Region, along with the time the count was last calculated.</p>"
+    },
+    "ApproximateDriftedResourceCounts":{
+      "type":"list",
+      "member":{"shape":"ApproximateDriftedResourceCount"},
+      "max":2,
+      "min":1
     },
     "ApproximateTotalCount":{"type":"long"},
     "ArtifactId":{
@@ -22461,6 +22507,10 @@
         "AgentConfig":{
           "shape":"AgentConfig",
           "documentation":"<p>The distribution of agents between the instance and its replica(s).</p>"
+        },
+        "LastFailoverTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp of the most recent failover for the traffic distribution group. This value is updated each time <code>UpdateTrafficDistribution</code> is called to change the traffic distribution.</p>"
         }
       }
     },
@@ -26193,6 +26243,62 @@
         "NextToken":{
           "shape":"LargeNextToken",
           "documentation":"<p>If there are additional results, this is the token for the next set of results.</p>"
+        }
+      }
+    },
+    "ListReplicationFindingsRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "ResourceType"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceIdOrArn",
+          "documentation":"<p>The identifier of the Connect Customer instance. You can provide either the instance ID or the full instance ARN. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "ResourceType":{
+          "shape":"ReplicationFindingResourceType",
+          "documentation":"<p>The type of resource to list replication findings for. The following values are currently supported: <code>AGENT</code>, <code>AGENT_GROUP</code>, <code>AGENT_GROUP_LEVEL</code>, <code>AGENT_STATE</code>, <code>ATTRIBUTE</code>, <code>CONTACT_FLOW</code>, <code>DATA_TABLE</code>, <code>DATA_TABLE_ATTRIBUTE</code>, <code>DATA_TABLE_RECORD</code>, <code>DATA_TABLE_VALUE</code>, <code>FLOW_MODULE</code>, <code>FLOW_MODULE_ALIAS</code>, <code>FLOW_MODULE_VERSION</code>, <code>METRIC</code>, <code>NOTIFICATION</code>, <code>OPERATING_HOURS</code>, <code>PHONE_NUMBER</code>, <code>PROMPT</code>, <code>QUEUE</code>, <code>REPORT</code>, <code>ROUTING_PROFILE</code>, <code>SECURITY_PROFILE</code>, <code>TASK_TEMPLATE</code>, <code>TEST_CASE</code>, <code>TRANSFER_DESTINATION</code>, <code>VIEW</code>, and <code>WORKSPACE</code>. Additional resource types can be supported over time. Specifying a value that is not currently supported returns an <code>InvalidRequestException</code>.</p>",
+          "location":"querystring",
+          "locationName":"resourceType"
+        },
+        "MaxResults":{
+          "shape":"MaxResult100",
+          "documentation":"<p>The maximum number of results to return per page.</p>",
+          "box":true,
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "NextToken":{
+          "shape":"LargeNextToken",
+          "documentation":"<p>The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListReplicationFindingsResponse":{
+      "type":"structure",
+      "required":["ReplicationFindingsList"],
+      "members":{
+        "ReplicationFindingsList":{
+          "shape":"ReplicationFindingsList",
+          "documentation":"<p>A list of replication findings for the requested resource type. Only findings that require your action are returned, so this list can be empty even when a drift count is nonzero. Results are paginated.</p>"
+        },
+        "ApproximateDriftedResourceCounts":{
+          "shape":"ApproximateDriftedResourceCounts",
+          "documentation":"<p>The approximate number of resources of the requested type that are not yet in sync, reported per Amazon Web Services Region. This count is independent of <code>ReplicationFindingsList</code> and can be higher than the number of findings returned. It is eventually consistent and can lag the current state of the instance. Each entry is the <code>ApproximateDriftedResourceCount</code> for one Region; a Region appears only when its count has been computed.</p>"
+        },
+        "NextToken":{
+          "shape":"LargeNextToken",
+          "documentation":"<p>If there are additional results, this is the token for retrieving the next page of <code>ReplicationFindingsList</code>.</p>"
+        },
+        "ResourceReplicationStatuses":{
+          "shape":"ResourceReplicationStatuses",
+          "documentation":"<p>The replication status of the requested resource type in each Amazon Web Services Region across which the Connect Customer instance is deployed for Global Resiliency, with one entry per Region. This set describes the overall replication state for the request and is returned in full on every page of results, so it does not change as you paginate.</p>"
         }
       }
     },
@@ -31911,6 +32017,77 @@
       },
       "documentation":"<p>Details about the status of the replication of a source Connect Customer instance across Amazon Web Services Regions. Use these details to understand the general status of a given replication. For information about why a replication process may fail, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/create-replica-connect-instance.html#why-replicateinstance-fails\">Why a ReplicateInstance call fails</a> in the <i>Create a replica of your existing Connect Customer instance</i> topic in the <i>Connect Customer Administrator Guide</i>. </p>"
     },
+    "ReplicationFinding":{
+      "type":"structure",
+      "required":[
+        "Arn",
+        "Id",
+        "ResourceType"
+      ],
+      "members":{
+        "Arn":{
+          "shape":"ARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource that the finding is for.</p>"
+        },
+        "Id":{
+          "shape":"ResourceId",
+          "documentation":"<p>The identifier of the resource that the finding is for.</p>"
+        },
+        "Region":{
+          "shape":"AwsRegion",
+          "documentation":"<p>The Amazon Web Services Region that the finding was detected in.</p>"
+        },
+        "ResourceType":{
+          "shape":"ReplicationFindingResourceType",
+          "documentation":"<p>The type of resource that the finding is for, such as <code>QUEUE</code> or <code>ROUTING_PROFILE</code>.</p>"
+        },
+        "Name":{
+          "shape":"ReplicationFindingResourceName",
+          "documentation":"<p>The name of the resource that the finding is for.</p>"
+        },
+        "Operation":{
+          "shape":"ReplicationFindingOperation",
+          "documentation":"<p>The replication operation that produced the finding, such as a create, update, or delete of the resource.</p>"
+        },
+        "ReferenceCode":{
+          "shape":"ReplicationFindingReferenceCode",
+          "documentation":"<p>A stable code that identifies the class of the finding. Use this code to look up the recommended steps to resolve the finding.</p>"
+        },
+        "Message":{
+          "shape":"ReplicationFindingMessage",
+          "documentation":"<p>A human-readable description of the finding and the action, if any, required to resolve it.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about a resource that could not be replicated across the Regions of a Global Resiliency deployment, including the reason and any action required to resolve it.</p>"
+    },
+    "ReplicationFindingMessage":{
+      "type":"string",
+      "max":4096
+    },
+    "ReplicationFindingOperation":{
+      "type":"string",
+      "max":256,
+      "min":1
+    },
+    "ReplicationFindingReferenceCode":{
+      "type":"string",
+      "max":256,
+      "min":1
+    },
+    "ReplicationFindingResourceName":{
+      "type":"string",
+      "max":512,
+      "min":1
+    },
+    "ReplicationFindingResourceType":{
+      "type":"string",
+      "max":128,
+      "min":1
+    },
+    "ReplicationFindingsList":{
+      "type":"list",
+      "member":{"shape":"ReplicationFinding"}
+    },
     "ReplicationStatusReason":{
       "type":"string",
       "max":1024,
@@ -32014,6 +32191,35 @@
       "documentation":"<p>The resource is not ready.</p>",
       "error":{"httpStatusCode":409},
       "exception":true
+    },
+    "ResourceReplicationStatus":{
+      "type":"structure",
+      "required":[
+        "Region",
+        "Status"
+      ],
+      "members":{
+        "Region":{
+          "shape":"AwsRegion",
+          "documentation":"<p>The Amazon Web Services Region that the replication status applies to.</p>"
+        },
+        "Status":{
+          "shape":"ResourceReplicationStatusValue",
+          "documentation":"<p>The replication status of the resource type in the Region, such as <code>ENABLED</code>, <code>BLOCKED</code>, or <code>DISABLED</code>.</p>"
+        }
+      },
+      "documentation":"<p>Indicates whether a resource type is being replicated and kept in sync in a specific Amazon Web Services Region of a Global Resiliency deployment.</p>"
+    },
+    "ResourceReplicationStatusValue":{
+      "type":"string",
+      "max":128,
+      "min":1
+    },
+    "ResourceReplicationStatuses":{
+      "type":"list",
+      "member":{"shape":"ResourceReplicationStatus"},
+      "max":2,
+      "min":1
     },
     "ResourceTagsSearchCriteria":{
       "type":"structure",

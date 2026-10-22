@@ -3042,7 +3042,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Updates an existing gateway.</p>",
+      "documentation":"<p>Updates an existing gateway.</p> <p>Replaces the entire gateway configuration. Any optional field that you omit, including fields in <code>protocolConfiguration</code>, is reset. For information about retrieving the current configuration, see <a href=\"https://docs.aws.amazon.com/bedrock-agentcore-control/latest/APIReference/API_GetGateway.html\">GetGateway</a>.</p>",
       "idempotent":true
     },
     "UpdateGatewayRateLimit":{
@@ -4733,6 +4733,23 @@
       "max":200,
       "min":1
     },
+    "CircuitBreakerConfiguration":{
+      "type":"structure",
+      "members":{
+        "mode":{
+          "shape":"CircuitBreakerMode",
+          "documentation":"<p>Specifies whether you want the circuit breaker turned on. To turn it off, set this value to <code>DISABLED</code>. The default is <code>ENABLED</code>.</p>"
+        }
+      },
+      "documentation":"<p>Specifies whether the circuit breaker monitors failures for the targets in a fallback chain.</p>"
+    },
+    "CircuitBreakerMode":{
+      "type":"string",
+      "enum":[
+        "ENABLED",
+        "DISABLED"
+      ]
+    },
     "ClaimMatchOperatorType":{
       "type":"string",
       "enum":[
@@ -5136,6 +5153,12 @@
       "documentation":"<p>The compute configuration for a capacity provider. This structure defines the type and settings of the compute resources used to launch instances.</p>",
       "union":true
     },
+    "ConcreteModelId":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "pattern":"[a-zA-Z0-9][a-zA-Z0-9\\-._/@:]*"
+    },
     "ConcurrentModificationException":{
       "type":"structure",
       "required":["message"],
@@ -5159,15 +5182,19 @@
         "matchPaths":{
           "shape":"MatchPaths",
           "documentation":"<p>A condition that matches on the request path.</p>"
+        },
+        "matchModels":{
+          "shape":"MatchModels",
+          "documentation":"<p>A condition that matches on the model requested in an inference request.</p>"
         }
       },
-      "documentation":"<p>A condition that determines when a gateway rule applies. Conditions can match on principals or request paths.</p>",
+      "documentation":"<p>A condition that determines when a gateway rule applies. Conditions can match on principals, request paths, or the requested model.</p>",
       "union":true
     },
     "Conditions":{
       "type":"list",
       "member":{"shape":"Condition"},
-      "max":2,
+      "max":3,
       "min":0
     },
     "ConfigurationBundleAction":{
@@ -9796,6 +9823,22 @@
       "max":10,
       "min":1
     },
+    "DimensionRatingScale":{
+      "type":"structure",
+      "members":{
+        "numerical":{
+          "shape":"NumericalScaleDefinitions",
+          "documentation":"<p> The numerical rating scale with defined score values and descriptions for quantitative evaluation of the dimension. </p>"
+        },
+        "categorical":{
+          "shape":"CategoricalScaleDefinitions",
+          "documentation":"<p> The categorical rating scale with named categories and definitions for qualitative evaluation of the dimension. </p>"
+        }
+      },
+      "documentation":"<p> The rating scale for one dimension of an LLM-as-a-judge evaluator, supporting either a numerical or a categorical scale. </p>",
+      "sensitive":true,
+      "union":true
+    },
     "DimensionValue":{
       "type":"string",
       "documentation":"<p>A dimension value in a rule entry (exact value or <code>*</code> wildcard).</p>",
@@ -10355,6 +10398,10 @@
       },
       "documentation":"<p>Contains configurations to override the default reflection step for the episodic memory strategy.</p>"
     },
+    "ErrorStatusCodePattern":{
+      "type":"string",
+      "pattern":"[4-5]([0-9]{2}|XX)"
+    },
     "EvaluationConfigDescription":{
       "type":"string",
       "max":200,
@@ -10365,6 +10412,48 @@
     "EvaluationConfigName":{
       "type":"string",
       "pattern":"[a-zA-Z][a-zA-Z0-9_]{0,47}"
+    },
+    "EvaluationDimension":{
+      "type":"structure",
+      "required":[
+        "dimensionName",
+        "dimensionInstruction",
+        "dimensionRatingScale"
+      ],
+      "members":{
+        "dimensionName":{
+          "shape":"EvaluationDimensionName",
+          "documentation":"<p> The name of the dimension. This name is unique within the evaluator and identifies the dimension's results. </p>"
+        },
+        "dimensionInstruction":{
+          "shape":"EvaluationDimensionInstruction",
+          "documentation":"<p> The instruction to the evaluator model for this dimension, describing what the model should judge when scoring the dimension. </p>"
+        },
+        "dimensionRatingScale":{
+          "shape":"DimensionRatingScale",
+          "documentation":"<p> The rating scale for this dimension, which can be numerical or categorical. A dimension's rating scale cannot itself be multi-dimensional. </p>"
+        }
+      },
+      "documentation":"<p> A single dimension of an LLM-as-a-judge evaluator, defining what the evaluator model should judge for that dimension and how it should be scored. </p>"
+    },
+    "EvaluationDimensionInstruction":{
+      "type":"string",
+      "documentation":"<p> The instruction to the evaluator model for one dimension of an LLM-as-a-judge evaluator, describing what the model should judge for that dimension. </p>",
+      "max":4000,
+      "min":1,
+      "sensitive":true
+    },
+    "EvaluationDimensionName":{
+      "type":"string",
+      "documentation":"<p> The name of a dimension in an LLM-as-a-judge evaluator. </p>",
+      "pattern":"[a-zA-Z][a-zA-Z0-9_]{0,47}"
+    },
+    "EvaluationDimensions":{
+      "type":"list",
+      "member":{"shape":"EvaluationDimension"},
+      "documentation":"<p> The list of dimensions for an LLM-as-a-judge evaluator that uses a multi-dimensional rating scale. The service enforces a lower limit than the model's maximum; see the AgentCore Evaluation quotas for the current effective limit. </p>",
+      "max":50,
+      "min":1
     },
     "EvaluatorArn":{
       "type":"string",
@@ -10586,6 +10675,104 @@
         "LLM_INFERRED",
         "STRICTLY_CONSISTENT"
       ]
+    },
+    "Fallback":{
+      "type":"structure",
+      "required":["targetFallback"],
+      "members":{
+        "triggerOn":{
+          "shape":"FallbackTriggers",
+          "documentation":"<p>The status codes and errors from the route's target that cause the gateway to send the request to the first fallback target. If you omit <code>triggerOn</code>, the gateway falls back on <code>5XX</code> status codes and on the <code>CONNECTION_ERROR</code>, <code>FIRST_BYTE_TIMEOUT</code>, and <code>UNROUTABLE</code> errors. If you specify <code>triggerOn</code>, only the status codes and errors that you list trigger a fallback.</p>"
+        },
+        "firstByteTimeoutMilliseconds":{
+          "shape":"FallbackFirstByteTimeoutMillisecondsInteger",
+          "documentation":"<p>The maximum time, in milliseconds, from sending the request to the route's target until the first byte of the response body arrives. If the time expires, the gateway abandons the request and treats it as a <code>FIRST_BYTE_TIMEOUT</code> error. If you don't specify a value, no timeout is enforced.</p>"
+        },
+        "circuitBreaker":{
+          "shape":"CircuitBreakerConfiguration",
+          "documentation":"<p>Specifies whether the gateway temporarily stops sending your requests to a failing target. The circuit breaker tracks each combination of target and model separately. With the circuit breaker enabled, the gateway skips one or more targets and models that fail repeatedly, and your requests go to the next target in the chain. The gateway always tries the last remaining target in the chain. The gateway enables the circuit breaker by default.</p>"
+        },
+        "targetFallback":{
+          "shape":"FallbackTargetFallbackList",
+          "documentation":"<p>The ordered list of fallback targets. The gateway tries each target in order until a response doesn't match that target's triggers, and returns that response to the caller. If every target fails, the gateway returns the last response. You can specify up to two fallback targets. Each combination of target and model, including the route's target, can appear only once.</p>"
+        }
+      },
+      "documentation":"<p>The fallback configuration for a route to an inference target. Defines an ordered list of fallback targets to try when a request to the route's target fails, and the conditions that trigger a fallback. A fallback can occur only before the gateway sends the first byte of the response to the caller. After a streaming response starts, the gateway doesn't fall back.</p>"
+    },
+    "FallbackError":{
+      "type":"string",
+      "enum":[
+        "CONNECTION_ERROR",
+        "FIRST_BYTE_TIMEOUT",
+        "UNROUTABLE"
+      ]
+    },
+    "FallbackFirstByteTimeoutMillisecondsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":900000,
+      "min":50
+    },
+    "FallbackTarget":{
+      "type":"structure",
+      "required":["targetName"],
+      "members":{
+        "targetName":{
+          "shape":"TargetName",
+          "documentation":"<p>The name of the gateway target to fall back to. The target must be an inference target.</p>"
+        },
+        "model":{
+          "shape":"ConcreteModelId",
+          "documentation":"<p>The model ID to send to this fallback target. If you don't specify a model, the gateway sends the model from the original request.</p>"
+        },
+        "triggerOn":{
+          "shape":"FallbackTriggers",
+          "documentation":"<p>The status codes and errors from this target that cause the gateway to send the request to the next fallback target. This setting isn't inherited from the route. If you omit it, the gateway uses the default triggers: <code>5XX</code> status codes and the <code>CONNECTION_ERROR</code>, <code>FIRST_BYTE_TIMEOUT</code>, and <code>UNROUTABLE</code> errors.</p>"
+        },
+        "firstByteTimeoutMilliseconds":{
+          "shape":"FallbackTargetFirstByteTimeoutMillisecondsInteger",
+          "documentation":"<p>The maximum time, in milliseconds, from sending the request to this target until the first byte of the response body arrives. This setting isn't inherited from the route. If you don't specify a value, no timeout is enforced.</p>"
+        }
+      },
+      "documentation":"<p>Specifies a target to send the request to when the previous target in the fallback chain fails. Includes the target name, the model to send, and the conditions that trigger a fallback from this target to the next one.</p>"
+    },
+    "FallbackTargetFallbackList":{
+      "type":"list",
+      "member":{"shape":"FallbackTarget"},
+      "max":2,
+      "min":1
+    },
+    "FallbackTargetFirstByteTimeoutMillisecondsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":900000,
+      "min":50
+    },
+    "FallbackTriggers":{
+      "type":"structure",
+      "members":{
+        "statusCodes":{
+          "shape":"FallbackTriggersStatusCodesList",
+          "documentation":"<p>The HTTP status codes returned by the target that trigger a fallback. You can specify the following:</p> <ul> <li> <p>An exact status code – A three-digit code, such as <code>429</code>.</p> </li> <li> <p>A class of status codes – The first digit followed by <code>XX</code>, such as <code>5XX</code>, which matches every code from 500 to 599.</p> </li> </ul> <p>Only 4XX and 5XX codes are supported. Throttling by the gateway itself doesn't trigger a fallback.</p>"
+        },
+        "errors":{
+          "shape":"FallbackTriggersErrorsList",
+          "documentation":"<p>The errors that trigger a fallback. You can specify the following:</p> <ul> <li> <p> <code>CONNECTION_ERROR</code> – The gateway couldn't connect to the target because the connection was refused, reset, or timed out. The request didn't reach the target.</p> </li> <li> <p> <code>FIRST_BYTE_TIMEOUT</code> – The target accepted the connection but didn't return the first byte of the response within <code>firstByteTimeoutMilliseconds</code>. The gateway abandons the request before any of the response reaches you.</p> </li> <li> <p> <code>UNROUTABLE</code> – The gateway couldn't route the request to the target, for example because the target doesn't exist or doesn't support the request path. These errors don't count toward the circuit breaker.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>The conditions that trigger a fallback to the next target. A fallback occurs if the response matches any of the specified status codes or errors.</p>"
+    },
+    "FallbackTriggersErrorsList":{
+      "type":"list",
+      "member":{"shape":"FallbackError"},
+      "max":3,
+      "min":1
+    },
+    "FallbackTriggersStatusCodesList":{
+      "type":"list",
+      "member":{"shape":"ErrorStatusCodePattern"},
+      "max":10,
+      "min":1
     },
     "FilesystemConfiguration":{
       "type":"structure",
@@ -15345,7 +15532,7 @@
       "type":"string",
       "max":256,
       "min":1,
-      "pattern":"/[a-zA-Z0-9\\-\\._/]+"
+      "pattern":"/[a-zA-Z0-9\\-\\._/{}]+"
     },
     "InferenceProviderTargetConfiguration":{
       "type":"structure",
@@ -17500,7 +17687,7 @@
         },
         "disableMcpListToolsPagination":{
           "shape":"Boolean",
-          "documentation":"<p>Specifies whether pagination is disabled for the Model Context Protocol (MCP) <code>tools/list</code> operation. When set to <code>true</code>, the gateway returns the complete list of tools in a single response without a pagination cursor. When set to <code>false</code> or omitted, the gateway returns tools in paginated responses.</p>"
+          "documentation":"<p>Specifies whether the gateway disables pagination for the Model Context Protocol (MCP) <code>tools/list</code> operation. When set to <code>true</code>, the gateway returns the complete list of tools in a single response without a pagination cursor. When set to <code>false</code> or omitted, the gateway returns tools in paginated responses. For information about changing this value on an existing gateway, see <a href=\"https://docs.aws.amazon.com/bedrock-agentcore-control/latest/APIReference/API_UpdateGateway.html\">UpdateGateway</a>.</p>"
         }
       },
       "documentation":"<p>The configuration for a Model Context Protocol (MCP) gateway. This structure defines how the gateway implements the MCP protocol.</p>"
@@ -17557,6 +17744,45 @@
         }
       },
       "documentation":"<p>Configuration for a managed VPC Lattice resource. The gateway creates and manages the VPC Lattice resource gateway and resource configuration on your behalf using a service-linked role.</p>"
+    },
+    "MatchModelEntry":{
+      "type":"structure",
+      "required":["value"],
+      "members":{
+        "value":{
+          "shape":"ModelPattern",
+          "documentation":"<p>The model ID or pattern to match. With the <code>StringLike</code> operator, you can use <code>*</code> and <code>?</code> as wildcards, for example <code>anthropic.claude-*</code>.</p>"
+        },
+        "operator":{
+          "shape":"MatchOperator",
+          "documentation":"<p>The operator to use when comparing the requested model to the value:</p> <ul> <li> <p> <code>StringEquals</code> – Requires an exact match.</p> </li> <li> <p> <code>StringLike</code> – Supports wildcard patterns using <code>*</code> and <code>?</code>. This is the default.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>A model ID or pattern to match against the requested model, and the operator to use for the comparison.</p>"
+    },
+    "MatchModels":{
+      "type":"structure",
+      "required":["anyOf"],
+      "members":{
+        "anyOf":{
+          "shape":"MatchModelsAnyOfList",
+          "documentation":"<p>A list of model entries. The condition is met if the requested model matches any of the entries.</p>"
+        }
+      },
+      "documentation":"<p>A condition that matches inference requests based on the requested model.</p>"
+    },
+    "MatchModelsAnyOfList":{
+      "type":"list",
+      "member":{"shape":"MatchModelEntry"},
+      "max":100,
+      "min":1
+    },
+    "MatchOperator":{
+      "type":"string",
+      "enum":[
+        "StringEquals",
+        "StringLike"
+      ]
     },
     "MatchPathPattern":{
       "type":"string",
@@ -18201,9 +18427,9 @@
     },
     "ModelPattern":{
       "type":"string",
-      "max":256,
+      "max":2048,
       "min":1,
-      "pattern":"[a-zA-Z0-9\\-\\._\\*\\?@]+(/[a-zA-Z0-9\\-\\._\\*\\?@]+)*"
+      "pattern":"[a-zA-Z0-9\\-\\._\\*\\?@:]+(/[a-zA-Z0-9\\-\\._\\*\\?@:]+)*"
     },
     "ModifyConsolidationConfiguration":{
       "type":"structure",
@@ -20082,6 +20308,10 @@
         "categorical":{
           "shape":"CategoricalScaleDefinitions",
           "documentation":"<p> The categorical rating scale with named categories and definitions for qualitative evaluation. </p>"
+        },
+        "multiDimensional":{
+          "shape":"EvaluationDimensions",
+          "documentation":"<p> A list of dimensions that lets an LLM-as-a-judge evaluator score several dimensions of the same target in a single evaluation. Each dimension has its own instruction and rating scale, and produces its own result. </p>"
         }
       },
       "documentation":"<p> The rating scale that defines how evaluators should score agent performance, supporting both numerical and categorical scales. </p>",
@@ -21687,6 +21917,14 @@
         "targetName":{
           "shape":"TargetName",
           "documentation":"<p>The name of the target to route requests to.</p>"
+        },
+        "model":{
+          "shape":"ConcreteModelId",
+          "documentation":"<p>The model ID to send to the target. Supported only for inference targets. If you don't specify a model, the gateway sends the model from the original request.</p>"
+        },
+        "fallback":{
+          "shape":"Fallback",
+          "documentation":"<p>The fallback configuration for this route. Supported only for inference targets.</p>"
         }
       },
       "documentation":"<p>A static route to a single gateway target.</p>"
@@ -22360,11 +22598,23 @@
     "TargetTrafficSplitEntry":{
       "type":"structure",
       "required":[
+        "targetName",
         "name",
-        "weight",
-        "targetName"
+        "weight"
       ],
       "members":{
+        "targetName":{
+          "shape":"TargetName",
+          "documentation":"<p>The name of the target to route traffic to.</p>"
+        },
+        "model":{
+          "shape":"ConcreteModelId",
+          "documentation":"<p>The model ID to send to the target for this variant. Supported only for inference targets. If you don't specify a model, the gateway sends the model from the original request.</p>"
+        },
+        "fallback":{
+          "shape":"Fallback",
+          "documentation":"<p>The fallback configuration for this variant. Supported only for inference targets.</p>"
+        },
         "name":{
           "shape":"TargetTrafficSplitEntryNameString",
           "documentation":"<p>The name of this traffic split variant.</p>"
@@ -22372,10 +22622,6 @@
         "weight":{
           "shape":"TargetTrafficSplitEntryWeightInteger",
           "documentation":"<p>The percentage of traffic to route to this variant.</p>"
-        },
-        "targetName":{
-          "shape":"TargetName",
-          "documentation":"<p>The name of the target to route traffic to.</p>"
         },
         "description":{
           "shape":"TargetTrafficSplitEntryDescriptionString",

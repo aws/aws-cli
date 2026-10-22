@@ -3789,6 +3789,10 @@
       "max":100000,
       "min":1
     },
+    "EvaluationDimensionName":{
+      "type":"string",
+      "pattern":"[a-zA-Z][a-zA-Z0-9_]{0,47}"
+    },
     "EvaluationErrorCode":{
       "type":"string",
       "max":1024,
@@ -3918,6 +3922,10 @@
         "evaluatorName":{
           "shape":"EvaluatorName",
           "documentation":"<p> The human-readable name of the evaluator used for this evaluation. For built-in evaluators, this is the descriptive name (e.g., \"Helpfulness\", \"Correctness\"); for custom evaluators, this is the user-defined name. </p>"
+        },
+        "evaluationDimensionName":{
+          "shape":"EvaluationDimensionName",
+          "documentation":"<p> The name of the dimension that this result scores. This field is set only on results produced by an evaluator that uses a multi-dimensional rating scale, where each dimension is scored independently. For evaluators with a single rating scale, this field is absent. </p>"
         },
         "explanation":{
           "shape":"EvaluationExplanation",
@@ -4059,6 +4067,10 @@
         "evaluatorId":{
           "shape":"String",
           "documentation":"<p>The unique identifier of the evaluator.</p>"
+        },
+        "evaluationDimensionName":{
+          "shape":"String",
+          "documentation":"<p>The name of the dimension that this summary covers. This field is set only for evaluators that use a multi-dimensional rating scale, where each dimension is summarized separately. For single-scale evaluators, this field is not set.</p>"
         },
         "statistics":{
           "shape":"EvaluatorStatistics",

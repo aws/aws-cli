@@ -235,6 +235,22 @@ class TestSignECDSAWithECParameters(BaseAWSCommandParamsTest):
         policy = _url_b64decode(params['Policy'][0]).decode('utf8')
         self._assert_signature_verifies(params, policy)
 
+    def test_custom_policy_with_date_greater_than(self):
+        cmdline = (
+            self.prefix
+            + '--private-key file://'
+            + self.private_key_file
+            + ' --date-less-than 2016-1-1 --date-greater-than 2015-1-1'
+        )
+        params = self._run_and_parse(cmdline)
+        self.assertNotIn('Expires', params)
+        policy = _url_b64decode(params['Policy'][0]).decode('utf8')
+        self.assertEqual(
+            json.loads(policy)['Statement'][0]['Condition']['DateGreaterThan'],
+            {'AWS:EpochTime': 1420070400},
+        )
+        self._assert_signature_verifies(params, policy)
+
 
 class BaseSigningCommandTest(BaseAWSCommandParamsTest):
     private_key = TestSign.private_key
@@ -403,6 +419,35 @@ class TestSignBackwardCompatibility(BaseSigningCommandTest):
             policy['Statement'][0]['Condition']['IpAddress'],
             {'AWS:SourceIp': '12.34.56.78/32'},
         )
+
+    def test_custom_policy_with_date_greater_than_and_ip_address(self):
+        # Pin the exact policy so the existing Condition key order is kept.
+        _, params = self.sign_url(
+            '--url',
+            'http://example.com/hi',
+            '--date-greater-than',
+            '2015-1-1',
+            '--ip-address',
+            '12.34.56.78/24',
+        )
+        self.assertEqual(
+            _url_b64decode(params['Policy'][0]).decode('utf8'),
+            '{"Statement":[{"Resource":"http://example.com/hi",'
+            '"Condition":{"DateLessThan":{"AWS:EpochTime":1451606400},'
+            '"IpAddress":{"AWS:SourceIp":"12.34.56.78/24"},'
+            '"DateGreaterThan":{"AWS:EpochTime":1420070400}}}]}',
+        )
+
+    def test_signs_url_with_userinfo_as_before(self):
+        url = 'https://user:pw@d111111abcdef8.cloudfront.net/a'
+        signed_url, _ = self.sign_url('--url', url)
+        self.assertTrue(signed_url.startswith(url + '?Expires=1451606400&'))
+
+    def test_signs_url_ending_in_question_mark_as_before(self):
+        # The URL already contains "?", so signing parameters follow "&".
+        url = 'https://d111111abcdef8.cloudfront.net/a.jpg?'
+        signed_url, _ = self.sign_url('--url', url)
+        self.assertTrue(signed_url.startswith(url + '&Expires=1451606400&'))
 
     def test_invalid_date_error(self):
         for arg_name in ['--date-less-than', '--date-greater-than']:
@@ -656,6 +701,20 @@ class TestSignKeyErrors(BaseSigningCommandTest):
                     self.assert_key_error(
                         'Unsupported key type or invalid private key'
                     )
+
+    def test_truncated_key_without_end_line(self):
+        for label in ['RSA PRIVATE KEY', 'EC PRIVATE KEY', 'PRIVATE KEY']:
+            with self.subTest(label=label):
+                self.use_private_key(
+                    f'-----BEGIN {label}-----\nMIIEowIBAAKCAQEAu6o2+Jc8UINw\n'
+                )
+                _, stderr, _ = self.sign(
+                    '--url', 'http://example.com/hi', expected_rc=255
+                )
+                self.assertIn(
+                    'Unsupported key type or invalid private key', stderr
+                )
+                self.assertNotIn('Traceback', stderr)
 
     def test_error_does_not_expose_key_material(self):
         body = 'MIIC5TBfBgkqhkiG9w0BBQ0wUjAxBgkqhkiG9w0BBQwwJAQQ4VOg5sq9YVA9'

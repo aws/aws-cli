@@ -11,6 +11,7 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import codecs
 import configparser
 import copy
 import os
@@ -145,7 +146,7 @@ def raw_config_parse(config_filename, parse_subsections=True):
             raise botocore.exceptions.ConfigNotFound(path=_unicode_path(path))
         cp = configparser.RawConfigParser()
         try:
-            cp.read([path])
+            cp.read([path], encoding=_get_file_encoding(path))
         except (configparser.Error, UnicodeDecodeError):
             raise botocore.exceptions.ConfigParseError(
                 path=_unicode_path(path)
@@ -167,6 +168,22 @@ def raw_config_parse(config_filename, parse_subsections=True):
                             )
                     config[section][option] = config_value
     return config
+
+
+def _get_file_encoding(path):
+    # Some editors (Notepad++ with "UTF-8 BOM", for example) start a UTF-8
+    # file with a byte order mark, which configparser would otherwise read
+    # as part of the first section header. Such a file is UTF-8, so read it
+    # as 'utf-8-sig', which drops the mark. Any other file is read with the
+    # default encoding, as before.
+    try:
+        with open(path, 'rb') as f:
+            if f.read(len(codecs.BOM_UTF8)) == codecs.BOM_UTF8:
+                return 'utf-8-sig'
+    except OSError:
+        # configparser skips a file it can't open; leave that to it.
+        pass
+    return None
 
 
 def _unicode_path(path):

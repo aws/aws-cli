@@ -65,6 +65,12 @@ AUTO_UPDATE_KEEP_PROMPT = (
 )
 
 
+_INSTALL_STATUS = {
+    HookAction.INSTALLED: 'hook installed',
+    HookAction.ALREADY_INSTALLED: 'already installed',
+}
+
+
 class ConfigureAgentToolkitCommand(BasicCommand):
     NAME = 'agent-toolkit'
     DESCRIPTION = (
@@ -286,12 +292,9 @@ class ConfigureAgentToolkitCommand(BasicCommand):
                     self._stream,
                 )
                 continue
-            status = (
-                'already installed'
-                if action is HookAction.ALREADY_INSTALLED
-                else 'hook installed'
+            self._print_hook_line(
+                '\u2713', agent, path, _INSTALL_STATUS[action]
             )
-            self._print_hook_line('\u2713', agent, path, status)
             if agent.config.id == 'codex':
                 uni_print(f'    {CODEX_TRUST_NOTE}\n', self._stream)
             elif agent.config.id == 'kiro':
@@ -344,12 +347,9 @@ class ConfigureAgentToolkitCommand(BasicCommand):
             )
             return
         else:
-            status = (
-                'already installed'
-                if action is HookAction.ALREADY_INSTALLED
-                else 'hook installed'
+            self._print_hook_line(
+                '\u2713', agent, path, _INSTALL_STATUS[action]
             )
-            self._print_hook_line('\u2713', agent, path, status)
         uni_print(f'    {KIRO_AGENT_NOTE}\n', self._stream)
 
     def _remove_hooks(self):

@@ -219,13 +219,7 @@ def hook_config_path(agent_config, base_dir=None):
 
 
 def install_hook(agent):
-    """Install the session start hook for a detected agent.
-
-    Returns a tuple of (action, path) where action is a member of
-    HookAction and path is the hook file, or ``None`` if unsupported.
-
-    :raises OSError: if the hook file can't be read or written.
-    """
+    """Install the session start hook for a detected agent."""
     agent_id = agent.config.id
     path = hook_config_path(agent.config, agent.base_dir)
     if path is None:
@@ -235,11 +229,11 @@ def install_hook(agent):
     hook_format = _HOOK_FORMATS[agent_id]
     try:
         text, data, style = _read_json(path)
-        changed = _add_entry(data, hook_format, _handler(agent_id))
+        action = _add_entry(data, hook_format, _handler(agent_id))
     except _UnreadableError:
         return HookAction.UNREADABLE, path
-    if not changed:
-        return HookAction.ALREADY_INSTALLED, path
+    if action is not HookAction.INSTALLED:
+        return action, path
     if text is None:
         _make_parent_dir(agent, path)
     _write(path, style.dump(data))
@@ -247,24 +241,13 @@ def install_hook(agent):
 
 
 def remove_hook(agent):
-    """Remove the session start hook from a detected agent.
-
-    Returns a tuple of (action, path) like :func:`install_hook`. A file that
-    can't be edited is only reported as ``UNREADABLE`` if it mentions our
-    command.
-
-    :raises OSError: if the hook file can't be read or written.
-    """
+    """Remove the session start hook from a detected agent."""
     agent_id = agent.config.id
     path = hook_config_path(agent.config, agent.base_dir)
     if path is None:
         return HookAction.NOT_SUPPORTED, None
     if agent_id == _KIRO_ID:
-        try:
-            os.remove(path)
-        except FileNotFoundError:
-            return HookAction.NOT_INSTALLED, path
-        return HookAction.REMOVED, path
+        return _remove_kiro_hook(path), path
     try:
         text, data, style = _read_json(path)
         removed = _remove_entries(data, _HOOK_FORMATS[agent_id])
@@ -281,11 +264,7 @@ def remove_hook(agent):
 
 
 def kiro_default_agent_path(agent):
-    """Return the config file of Kiro's default agent, or ``None``.
-
-    The default agent is the ``chat.defaultAgent`` setting. Without it
-    kiro-cli uses its built-in agent, which has no file.
-    """
+    """Return the config file of Kiro's default agent, or ``None``."""
     name = _kiro_default_agent_name(agent.base_dir)
     if name is None:
         return None
@@ -302,14 +281,7 @@ def kiro_default_agent_path(agent):
 
 
 def install_kiro_agent_hook(agent):
-    """Add the hook to Kiro's default agent, for kiro-cli 2.x.
-
-    Returns a tuple of (action, path) like :func:`install_hook`. The path is
-    ``None`` if there is no default agent file. An agent in the V3 format is
-    ``NOT_NEEDED``, as V3 runs the standalone hook.
-
-    :raises OSError: if the agent file can't be read or written.
-    """
+    """Add the hook to Kiro's default agent, for kiro-cli 2.x."""
     path = kiro_default_agent_path(agent)
     if path is None:
         return HookAction.NOT_SUPPORTED, None
@@ -317,27 +289,20 @@ def install_kiro_agent_hook(agent):
         text, data, style = _read_json(path)
         if isinstance(data.get('hooks'), list):
             return HookAction.NOT_NEEDED, path
-        changed = _add_entry(data, _KIRO_AGENT_FORMAT, _kiro_agent_handler())
+        action = _add_entry(data, _KIRO_AGENT_FORMAT, _kiro_agent_handler())
     except _UnreadableError:
         return HookAction.UNREADABLE, path
     if text is None:
         # Removed since it was found. A new file would not be an agent.
         return HookAction.NOT_SUPPORTED, None
-    if not changed:
-        return HookAction.ALREADY_INSTALLED, path
+    if action is not HookAction.INSTALLED:
+        return action, path
     _write(path, style.dump(data))
     return HookAction.INSTALLED, path
 
 
 def remove_kiro_agent_hooks(agent):
-    """Remove the hook from every Kiro agent config that has it.
-
-    The default agent may have changed since the hook was added, so every
-    global agent is checked. Returns a list of (action, path) for the files
-    that have the hook, with ``REMOVED`` or ``UNREADABLE``.
-
-    :raises OSError: if an agent file can't be read or written.
-    """
+    """Remove the hook from every Kiro agent config that has it."""
     results = []
     for path in _kiro_agent_paths(agent):
         if not _mentions_hook(path):
@@ -345,7 +310,8 @@ def remove_kiro_agent_hooks(agent):
         try:
             _, data, style = _read_json(path)
             if isinstance(data.get('hooks'), list):
-                raise _UnreadableError('hooks are in the V3 format')
+                # We never add the hook to V3 agents.
+                continue
             removed = _remove_entries(data, _KIRO_AGENT_FORMAT)
         except _UnreadableError:
             results.append((HookAction.UNREADABLE, path))
@@ -446,11 +412,7 @@ def format_hook_message(
 
 
 def format_hook_output(agent_id, message, skills_updated=False):
-    """Return what the hook prints for ``agent_id``, or ``''`` if nothing.
-
-    :param skills_updated: Whether any skill changed on disk, so the agent
-        should load them again.
-    """
+    """Return what the hook prints for ``agent_id``, or ``''`` if nothing."""
     if not message:
         return ''
     if agent_id == 'claude-code':
@@ -497,9 +459,11 @@ def _is_ours(handler):
     if not isinstance(handler, dict):
         return False
     command = handler.get('command')
-    return isinstance(command, str) and all(
-        marker in command for marker in _COMMAND_MARKERS
-    )
+    return isinstance(command, str) and _has_markers(command)
+
+
+def _has_markers(text):
+    return all(marker in text for marker in _COMMAND_MARKERS)
 
 
 def _has_handlers(group):
@@ -520,118 +484,78 @@ def _entries(data, event):
     return hooks, entries
 
 
-def _is_installed(data, hook_format, handler):
-    _, entries = _entries(data, hook_format.event)
-    if not entries:
-        return False
+def _handlers(entries, hook_format):
     if hook_format.matcher is None:
-        ours = [h for h in entries if _is_ours(h)]
-        return ours == [handler] and (
-            hook_format.version is None or 'version' in data
-        )
-    ours = [
-        (group, h)
-        for group in entries
-        if _has_handlers(group)
-        for h in group['hooks']
-        if _is_ours(h)
-    ]
-    return len(ours) == 1 and ours[0] == (
-        _group(hook_format, handler),
-        handler,
-    )
+        return entries
+    return [h for g in entries if _has_handlers(g) for h in g['hooks']]
 
 
 def _add_entry(data, hook_format, handler):
-    """Add or update our handler in ``data``. Returns whether it changed."""
-    if _is_installed(data, hook_format, handler):
-        return False
-    if hook_format.version is not None:
-        data.setdefault('version', hook_format.version)
-    hooks, entries = _entries(data, hook_format.event)
-    if hooks is None:
-        hooks = data['hooks'] = {}
-    if entries is None:
-        entries = hooks[hook_format.event] = []
-    _replace_ours(entries, hook_format, handler)
-    return True
+    """Add our handler to ``data`` unless one of ours is there."""
+    _, entries = _entries(data, hook_format.event)
+    installed = any(_is_ours(h) for h in _handlers(entries or [], hook_format))
+    needs_version = hook_format.version is not None and 'version' not in data
+    if installed and not needs_version:
+        return HookAction.ALREADY_INSTALLED
+    if needs_version:
+        data['version'] = hook_format.version
+    if not installed:
+        hooks, entries = _entries(data, hook_format.event)
+        if hooks is None:
+            hooks = data['hooks'] = {}
+        if entries is None:
+            entries = hooks[hook_format.event] = []
+        if hook_format.matcher is None:
+            entries.append(handler)
+        else:
+            entries.append(_group(hook_format, handler))
+    return HookAction.INSTALLED
 
 
 def _remove_entries(data, hook_format):
-    """Remove our handlers from ``data``. Returns whether any were found."""
+    """Remove every handler of ours, and groups left empty. Returns whether
+    any were removed."""
     hooks, entries = _entries(data, hook_format.event)
-    if not entries or not _replace_ours(entries, hook_format, None):
-        return False
     if not entries:
+        return False
+    removed = False
+    kept = []
+    for entry in entries:
+        if hook_format.matcher is None:
+            if _is_ours(entry):
+                removed = True
+            else:
+                kept.append(entry)
+            continue
+        if not _has_handlers(entry):
+            kept.append(entry)
+            continue
+        others = [h for h in entry['hooks'] if not _is_ours(h)]
+        if len(others) == len(entry['hooks']):
+            kept.append(entry)
+            continue
+        removed = True
+        if others:
+            entry['hooks'] = others
+            kept.append(entry)
+    if not removed:
+        return False
+    if kept:
+        hooks[hook_format.event] = kept
+    else:
         del hooks[hook_format.event]
     if not hooks:
         del data['hooks']
     return True
 
 
-def _replace_ours(entries, hook_format, handler):
-    """Replace the first of our handlers with ``handler`` and drop the rest.
-
-    Our handler is appended if there is none. With ``handler`` set to
-    ``None`` all of ours are dropped, along with groups left empty. Returns
-    whether any of ours were found.
-    """
-    placed = handler is None
-    found = False
-    kept = []
-    for entry in entries:
-        if hook_format.matcher is None:
-            if not _is_ours(entry):
-                kept.append(entry)
-                continue
-            found = True
-            if not placed:
-                kept.append(handler)
-                placed = True
-            continue
-        if not _has_handlers(entry) or not any(
-            _is_ours(h) for h in entry['hooks']
-        ):
-            kept.append(entry)
-            continue
-        found = True
-        if not placed and all(_is_ours(h) for h in entry['hooks']):
-            # The whole group is ours, so its matcher is too.
-            kept.append(_group(hook_format, handler))
-            placed = True
-            continue
-        group_handlers = []
-        for h in entry['hooks']:
-            if not _is_ours(h):
-                group_handlers.append(h)
-            elif not placed:
-                group_handlers.append(handler)
-                placed = True
-        entry['hooks'] = group_handlers
-        if group_handlers:
-            kept.append(entry)
-    if not placed:
-        if hook_format.matcher is None:
-            kept.append(handler)
-        else:
-            kept.append(_group(hook_format, handler))
-    entries[:] = kept
-    return found
-
-
 def _mentions_hook(path):
     with open(path, encoding='utf-8', errors='replace') as f:
-        return _COMMAND_MARKERS[0] in f.read()
+        return _has_markers(f.read())
 
 
 def _read_json(path):
-    """Return ``(text, data, style)`` for the JSON file at ``path``.
-
-    ``text`` is ``None`` if the file is missing.
-
-    :raises _UnreadableError: if the file isn't a JSON object that can be
-        written back exactly as it was.
-    """
+    """Return ``(text, data, style)`` for the JSON file at ``path``."""
     try:
         with open(path, encoding='utf-8', newline='') as f:
             text = f.read()
@@ -668,8 +592,8 @@ def _detect_style(text):
     )
 
 
-def _install_kiro_hook(agent, path):
-    content = _JsonStyle().dump(
+def _kiro_hook_content():
+    return _JsonStyle().dump(
         {
             'version': 'v1',
             'hooks': [
@@ -689,17 +613,27 @@ def _install_kiro_hook(agent, path):
             ],
         }
     )
+
+
+def _install_kiro_hook(agent, path):
+    # The file is named for us, so it is ours. It is left alone while it
+    # runs our command.
     try:
-        with open(path, encoding='utf-8', newline='') as f:
-            if f.read() == content:
+        with open(path, encoding='utf-8', errors='replace', newline='') as f:
+            if _has_markers(f.read()):
                 return HookAction.ALREADY_INSTALLED
     except FileNotFoundError:
         _make_parent_dir(agent, path)
-    except UnicodeDecodeError:
-        # The file is ours, so it is safe to replace.
-        pass
-    _write(path, content)
+    _write(path, _kiro_hook_content())
     return HookAction.INSTALLED
+
+
+def _remove_kiro_hook(path):
+    try:
+        os.remove(path)
+    except FileNotFoundError:
+        return HookAction.NOT_INSTALLED
+    return HookAction.REMOVED
 
 
 def _make_parent_dir(agent, path):

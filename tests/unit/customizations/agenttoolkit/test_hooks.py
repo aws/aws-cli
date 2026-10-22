@@ -309,78 +309,85 @@ def test_install_keeps_raw_unicode(tmp_path):
     assert path.read_text(encoding='utf-8') == original
 
 
+def _change_our_group(group, change):
+    if change == 'matcher':
+        group['matcher'] = 'startup|resume|clear'
+    elif change == 'timeout':
+        group['hooks'][0]['timeout'] = 10
+    else:
+        group['hooks'].insert(0, {'type': 'command', 'command': 'echo mine'})
+    return group
+
+
 @pytest.mark.parametrize('agent_id', ['claude-code', 'gemini-cli', 'codex'])
-def test_install_replaces_outdated_entry_in_place(tmp_path, agent_id):
+@pytest.mark.parametrize('change', ['matcher', 'timeout', 'shared group'])
+def test_hook_running_our_command_is_ours(tmp_path, agent_id, change):
     agent = _agent(tmp_path, agent_id)
     path = tmp_path / f'.{agent_id}' / _HOOK_FILES[agent_id]
     other = {'hooks': [{'type': 'command', 'command': 'echo other'}]}
-    outdated = {
-        'matcher': 'resume',
-        'hooks': [
-            {
-                'type': 'command',
-                'command': f'{hook_command(agent_id)} || true',
-                'timeout': 10,
-            }
-        ],
-    }
+    changed = _change_our_group(_our_group(agent_id), change)
     path.write_text(
-        json.dumps({'hooks': {'SessionStart': [outdated, other]}}, indent=2)
+        json.dumps({'hooks': {'SessionStart': [changed, other]}}, indent=2)
         + '\n'
     )
-    assert install_hook(agent)[0] is HookAction.INSTALLED
-    assert json.loads(path.read_text())['hooks']['SessionStart'] == [
-        _our_group(agent_id),
-        other,
-    ]
-
-
-def test_install_replaces_our_handler_in_shared_group(tmp_path):
-    agent = _agent(tmp_path, 'claude-code')
-    path = tmp_path / '.claude-code' / 'settings.json'
-    mine = {'type': 'command', 'command': 'echo mine'}
-    old = {'type': 'command', 'command': hook_command('claude-code')}
-    group = {'matcher': 'startup|resume', 'hooks': [mine, old]}
-    path.write_text(json.dumps({'hooks': {'SessionStart': [group]}}))
-    install_hook(agent)
-    handler = _our_group('claude-code')['hooks'][0]
-    assert json.loads(path.read_text())['hooks']['SessionStart'] == [
-        {'matcher': 'startup|resume', 'hooks': [mine, handler]}
-    ]
-    # Ours is in a shared group, so it is rewritten each time, but to the
-    # same bytes.
     before = path.read_bytes()
-    install_hook(agent)
+    assert install_hook(agent)[0] is HookAction.ALREADY_INSTALLED
     assert path.read_bytes() == before
-    remove_hook(agent)
-    assert json.loads(path.read_text())['hooks']['SessionStart'] == [
-        {'matcher': 'startup|resume', 'hooks': [mine]}
-    ]
+    assert remove_hook(agent)[0] is HookAction.REMOVED
+    left = json.loads(path.read_text())['hooks']['SessionStart']
+    if change == 'shared group':
+        assert left == [{**changed, 'hooks': changed['hooks'][:1]}, other]
+    else:
+        assert left == [other]
 
 
-def test_install_collapses_duplicates(tmp_path):
+def test_cursor_handler_running_our_command_is_ours(tmp_path):
+    agent = _agent(tmp_path, 'cursor')
+    path = tmp_path / '.cursor' / 'hooks.json'
+    changed = dict(_expected_entry('cursor')['hooks']['sessionStart'][0])
+    changed['timeout'] = 10
+    path.write_text(
+        json.dumps({'version': 1, 'hooks': {'sessionStart': [changed]}})
+    )
+    before = path.read_bytes()
+    assert install_hook(agent)[0] is HookAction.ALREADY_INSTALLED
+    assert path.read_bytes() == before
+    assert remove_hook(agent)[0] is HookAction.REMOVED
+    assert json.loads(path.read_text()) == {'version': 1}
+
+
+def test_remove_keeps_handlers_running_other_commands(tmp_path):
     agent = _agent(tmp_path, 'claude-code')
     path = tmp_path / '.claude-code' / 'settings.json'
     ours = _our_group('claude-code')
-    mine = {'hooks': [{'type': 'command', 'command': 'echo mine'}]}
+    variant = _our_group('claude-code')
+    variant['hooks'][0]['command'] += ' --debug'
+    theirs = {'hooks': [{'type': 'command', 'command': 'aws s3 ls'}]}
     path.write_text(
-        json.dumps({'hooks': {'SessionStart': [ours, mine, ours]}}, indent=2)
+        json.dumps({'hooks': {'SessionStart': [ours, variant, theirs]}})
     )
-    assert install_hook(agent)[0] is HookAction.INSTALLED
-    assert json.loads(path.read_text())['hooks']['SessionStart'] == [
-        ours,
-        mine,
-    ]
+    assert remove_hook(agent)[0] is HookAction.REMOVED
+    assert json.loads(path.read_text())['hooks']['SessionStart'] == [theirs]
 
 
-def test_cursor_install_collapses_duplicates_and_adds_version(tmp_path):
+def test_install_leaves_duplicates(tmp_path):
+    agent = _agent(tmp_path, 'claude-code')
+    path = tmp_path / '.claude-code' / 'settings.json'
+    ours = _our_group('claude-code')
+    path.write_text(json.dumps({'hooks': {'SessionStart': [ours, ours]}}))
+    before = path.read_bytes()
+    assert install_hook(agent)[0] is HookAction.ALREADY_INSTALLED
+    assert path.read_bytes() == before
+    assert remove_hook(agent)[0] is HookAction.REMOVED
+    assert json.loads(path.read_text()) == {}
+
+
+def test_cursor_install_adds_missing_version(tmp_path):
     agent = _agent(tmp_path, 'cursor')
     path = tmp_path / '.cursor' / 'hooks.json'
     ours = _expected_entry('cursor')['hooks']['sessionStart'][0]
     mine = {'command': 'echo mine'}
-    path.write_text(
-        json.dumps({'hooks': {'sessionStart': [mine, ours, ours]}})
-    )
+    path.write_text(json.dumps({'hooks': {'sessionStart': [mine, ours]}}))
     assert install_hook(agent)[0] is HookAction.INSTALLED
     assert json.loads(path.read_text()) == {
         'hooks': {'sessionStart': [mine, ours]},
@@ -438,7 +445,7 @@ def test_remove_reports_unreadable_file_with_our_hook(tmp_path):
     path = tmp_path / '.gemini-cli' / 'settings.json'
     content = (
         '{\n  // added by hand\n  "hooks": {"SessionStart": [{"hooks": '
-        f'[{{"command": "{hook_command("gemini-cli")}"}}]}}]}}\n}}\n'
+        f'[{{"command": "{hook_shell_command("gemini-cli")}"}}]}}]}}\n}}\n'
     )
     path.write_text(content)
     assert remove_hook(agent)[0] is HookAction.UNREADABLE
@@ -597,13 +604,27 @@ def test_kiro_owns_its_file(tmp_path):
     assert remove_hook(agent)[0] is HookAction.NOT_INSTALLED
 
 
-def test_kiro_rewrites_changed_file(tmp_path):
+def test_kiro_rewrites_file_without_our_command(tmp_path):
     agent = _agent(tmp_path, 'kiro')
     path = tmp_path / '.kiro' / 'hooks' / 'aws-agent-toolkit.json'
     path.parent.mkdir()
     path.write_text('old')
     assert install_hook(agent)[0] is HookAction.INSTALLED
     assert json.loads(path.read_text())['version'] == 'v1'
+
+
+def test_kiro_leaves_file_running_our_command(tmp_path):
+    agent = _agent(tmp_path, 'kiro')
+    install_hook(agent)
+    path = tmp_path / '.kiro' / 'hooks' / 'aws-agent-toolkit.json'
+    data = json.loads(path.read_text())
+    data['hooks'][0]['timeout'] = 10
+    path.write_text(json.dumps(data))
+    before = path.read_bytes()
+    assert install_hook(agent)[0] is HookAction.ALREADY_INSTALLED
+    assert path.read_bytes() == before
+    assert remove_hook(agent)[0] is HookAction.REMOVED
+    assert not path.exists()
 
 
 def test_kiro_leaves_other_hooks_alone(tmp_path):
@@ -716,21 +737,57 @@ def test_kiro_agent_hook_install_then_remove_restores_file(tmp_path):
     assert path.read_text() == before
 
 
-def test_kiro_agent_hook_replaces_outdated_entry(tmp_path):
-    outdated = {'command': hook_command('kiro'), 'timeout_ms': 10}
+def test_kiro_agent_handler_running_our_command_is_ours(tmp_path):
+    changed = {'command': hook_shell_command('kiro'), 'timeout_ms': 10}
     agent = _kiro_with_agents(
         tmp_path,
         {
             'my-agent.json': {
                 'name': 'my-agent',
-                'hooks': {'agentSpawn': [outdated, outdated]},
+                'hooks': {'agentSpawn': [changed]},
             }
         },
     )
-    install_kiro_agent_hook(agent)
+    path = tmp_path / '.kiro' / 'agents' / 'my-agent.json'
+    before = path.read_bytes()
+    assert install_kiro_agent_hook(agent) == (
+        HookAction.ALREADY_INSTALLED,
+        str(path),
+    )
+    assert path.read_bytes() == before
+    assert remove_kiro_agent_hooks(agent) == [(HookAction.REMOVED, str(path))]
+    assert json.loads(path.read_text()) == {'name': 'my-agent'}
+
+
+def test_kiro_remove_skips_v3_agent(tmp_path):
+    hook = {
+        'trigger': 'AgentSpawn',
+        'action': {'type': 'command', 'command': hook_shell_command('kiro')},
+    }
+    agent = _kiro_with_agents(
+        tmp_path, {'my-agent.json': {'name': 'my-agent', 'hooks': [hook]}}
+    )
+    path = tmp_path / '.kiro' / 'agents' / 'my-agent.json'
+    before = path.read_bytes()
+    assert remove_kiro_agent_hooks(agent) == []
+    assert path.read_bytes() == before
+
+
+def test_kiro_agent_hook_adds_ours_next_to_other_commands(tmp_path):
+    theirs = {'command': 'echo mine', 'timeout_ms': 10}
+    agent = _kiro_with_agents(
+        tmp_path,
+        {
+            'my-agent.json': {
+                'name': 'my-agent',
+                'hooks': {'agentSpawn': [theirs]},
+            }
+        },
+    )
+    assert install_kiro_agent_hook(agent)[0] is HookAction.INSTALLED
     path = tmp_path / '.kiro' / 'agents' / 'my-agent.json'
     assert json.loads(path.read_text())['hooks'] == {
-        'agentSpawn': [_kiro_agent_handler()]
+        'agentSpawn': [theirs, _kiro_agent_handler()]
     }
 
 
@@ -756,7 +813,7 @@ def test_kiro_agent_hooks_removed_from_every_agent(tmp_path):
     ours = {'hooks': {'agentSpawn': [_kiro_agent_handler()]}}
     unreadable = (
         '{\n  "hooks" : {"agentSpawn" : [{"command" : '
-        f'{json.dumps(hook_command("kiro"))}}}]}}\n}}'
+        f'{json.dumps(hook_shell_command("kiro"))}}}]}}\n}}'
     )
     agent = _kiro_with_agents(
         tmp_path,
@@ -845,29 +902,41 @@ def test_hook_shell_command_always_exits_zero(agent_id, windows, suffix):
         assert hook_shell_command(agent_id) == hook_command(agent_id) + suffix
 
 
-def test_install_replaces_unwrapped_entry(tmp_path):
+@pytest.mark.parametrize(
+    'command',
+    [
+        # Earlier forms of our command, and one the customer changed.
+        'aws agent-toolkit update-skill --all --hook claude-code',
+        'aws agent-toolkit update-skill --all --hook claude-code '
+        '--no-cli-auto-prompt',
+        '/opt/aws/bin/aws agent-toolkit update-skill --hook claude-code '
+        '--debug',
+    ],
+)
+def test_handler_running_update_skill_hook_is_ours(tmp_path, command):
     agent = _agent(tmp_path, 'claude-code')
     path = tmp_path / '.claude-code' / 'settings.json'
-    previous = _our_group('claude-code')
-    previous['hooks'][0]['command'] = hook_command('claude-code')
-    path.write_text(json.dumps({'hooks': {'SessionStart': [previous]}}))
-    assert install_hook(agent)[0] is HookAction.INSTALLED
-    assert json.loads(path.read_text())['hooks']['SessionStart'] == [
-        _our_group('claude-code')
-    ]
+    variant = _our_group('claude-code')
+    variant['hooks'][0]['command'] = command
+    path.write_text(json.dumps({'hooks': {'SessionStart': [variant]}}))
+    before = path.read_bytes()
+    assert install_hook(agent)[0] is HookAction.ALREADY_INSTALLED
+    assert path.read_bytes() == before
+    assert remove_hook(agent)[0] is HookAction.REMOVED
+    assert json.loads(path.read_text()) == {}
 
 
-def test_install_replaces_entry_without_auto_prompt_flag(tmp_path):
+def test_handler_running_other_command_is_not_ours(tmp_path):
     agent = _agent(tmp_path, 'claude-code')
     path = tmp_path / '.claude-code' / 'settings.json'
-    previous = _our_group('claude-code')
-    previous['hooks'][0]['command'] = (
-        'aws agent-toolkit update-skill --all --hook claude-code'
-    )
-    path.write_text(json.dumps({'hooks': {'SessionStart': [previous]}}))
+    theirs = _our_group('claude-code')
+    theirs['hooks'][0]['command'] = 'aws agent-toolkit update-skill --all'
+    path.write_text(json.dumps({'hooks': {'SessionStart': [theirs]}}))
+    assert remove_hook(agent)[0] is HookAction.NOT_INSTALLED
     assert install_hook(agent)[0] is HookAction.INSTALLED
     assert json.loads(path.read_text())['hooks']['SessionStart'] == [
-        _our_group('claude-code')
+        theirs,
+        _our_group('claude-code'),
     ]
 
 

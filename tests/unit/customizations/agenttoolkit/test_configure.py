@@ -557,6 +557,39 @@ def test_auto_update_kept_reports_already_installed(tmp_path, state_file):
     assert f'{_collapse(path)}: already installed\n' in stream.getvalue()
 
 
+def _change_claude_hook(path):
+    data = json.loads(path.read_text())
+    data['hooks']['SessionStart'][0]['matcher'] = '*'
+    path.write_text(json.dumps(data, indent=2) + '\n')
+    return path.read_bytes()
+
+
+def test_auto_update_keeps_our_hook_changed_by_customer(tmp_path, state_file):
+    _write_state(state_file, {'agent_toolkit_auto_update': True})
+    configs = _hook_agent_configs(tmp_path, ['claude-code'])
+    _run(configs, yes_no_return=True)
+    path = _hook_file(tmp_path, 'claude-code')
+    before = _change_claude_hook(path)
+    _, stream = _run(configs, yes_no_return=True)
+    assert path.read_bytes() == before
+    assert f'{_collapse(path)}: already installed\n' in stream.getvalue()
+
+
+def test_auto_update_off_removes_our_hook_changed_by_customer(
+    tmp_path, state_file
+):
+    _write_state(state_file, {'agent_toolkit_auto_update': True})
+    configs = _hook_agent_configs(tmp_path, ['claude-code'])
+    _run(configs, yes_no_return=True)
+    path = _hook_file(tmp_path, 'claude-code')
+    _change_claude_hook(path)
+    _, stream = _run(configs, yes_no_return=False)
+    assert json.loads(path.read_text()) == {}
+    assert (
+        f'  ✓ Claude-Code — {_collapse(path)}: hook removed\n'
+    ) in stream.getvalue()
+
+
 def test_auto_update_yes_flag_installs_hooks(tmp_path):
     configs = _hook_agent_configs(tmp_path, ['cursor'])
     _run(configs, yes=True)

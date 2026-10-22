@@ -16,6 +16,7 @@ from unittest.mock import patch
 
 from awscli.customizations.agenttoolkit.agents import (
     AGENT_CONFIGS,
+    DEFAULT_MCP_SERVER_CONFIG,
     UNIVERSAL_ROW_ID,
     AgentConfig,
     DetectedAgent,
@@ -343,3 +344,39 @@ def test_configure_mcp_preserves_existing_permissions(tmp_path):
 def test_agent_configs_sorted_alphabetically():
     ids = [c.id for c in AGENT_CONFIGS if c.id != 'universal']
     assert ids == sorted(ids)
+
+
+def _get_agent_config(agent_id):
+    return next(c for c in AGENT_CONFIGS if c.id == agent_id)
+
+
+def test_devin_config():
+    devin = _get_agent_config('devin')
+    assert devin.display_name == 'Devin'
+    assert devin.detection_path == '~/.config/devin/'
+    assert devin.detection_path_env_override is None
+    assert devin.skills_path_override == '~/.agents/skills/'
+    assert devin.mcp_config_path == 'mcp_config.json'
+    assert devin.mcp_servers_key == 'mcpServers'
+    assert devin.mcp_extra_config == {}
+    assert devin.mcp_server_entry is None
+    assert devin.mcp_shell_command is None
+    assert 'Devin' in _get_agent_config(UNIVERSAL_ROW_ID).display_name
+
+
+def test_devin_configure_mcp_writes_default_entry(tmp_path, monkeypatch):
+    monkeypatch.setenv('HOME', str(tmp_path))
+    monkeypatch.setenv('USERPROFILE', str(tmp_path))
+    devin_dir = tmp_path / '.config' / 'devin'
+    devin_dir.mkdir(parents=True)
+    agent = _get_agent_config('devin').detect()
+    assert os.path.normpath(agent.skills_path) == os.path.normpath(
+        str(tmp_path / '.agents' / 'skills')
+    )
+    action, path = agent.configure_mcp_server()
+    assert action is McpConfigureAction.CONFIGURED
+    assert os.path.normpath(path) == os.path.normpath(
+        str(devin_dir / 'mcp_config.json')
+    )
+    data = json.loads((devin_dir / 'mcp_config.json').read_text())
+    assert data == {'mcpServers': {'aws-mcp': DEFAULT_MCP_SERVER_CONFIG}}

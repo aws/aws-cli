@@ -2001,10 +2001,16 @@ class TestHonorsEndpointUrl(BaseParameterizedS3ClientTest):
         # be in the debug logs.  The other alternative is to actually
         # watch what connections are made in the process, which is not
         # easy.
+        # Nothing is listening on the endpoint, so don't retry the
+        # connection errors; only the debug logs are checked.
+        env_vars = os.environ.copy()
+        env_vars['AWS_DEFAULT_REGION'] = 'us-west-2'
+        env_vars['AWS_MAX_ATTEMPTS'] = '1'
         p = aws(
             's3 ls s3://dnscompat/ '
             '--endpoint-url http://localhost:51515 '
-            '--debug'
+            '--debug',
+            env_vars=env_vars,
         )
         debug_logs = p.stderr
         original_hostname = 'dnscompat.s3.amazonaws.com'
@@ -2292,7 +2298,7 @@ class TestSSECRelatedParams(BaseParameterizedS3ClientTest):
         )
         p = aws('s3 rm s3://%s/%s' % (shared_bucket, key))
         self.assert_no_errors(p)
-        assert not s3_utils.key_exists(shared_bucket, key)
+        assert s3_utils.key_not_exists(shared_bucket, key)
 
     def test_sse_c_upload_and_download_large_file(
         self, files, s3_utils, encrypt_key, shared_bucket

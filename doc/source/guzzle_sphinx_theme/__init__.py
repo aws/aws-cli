@@ -18,6 +18,10 @@ def setup(app):
     app.connect('build-finished', create_sitemap)
     app.sitemap_links = []
     app.set_translator('html', HTMLTranslator)
+    return {
+        'parallel_read_safe': True,
+        'parallel_write_safe': True,
+    }
 
 
 def add_html_link(app, pagename, templatename, context, doctree):
@@ -27,11 +31,37 @@ def add_html_link(app, pagename, templatename, context, doctree):
         app.sitemap_links.append(base_url + pagename + ".html")
 
 
+def _get_sitemap_links(app):
+    """Returns the sitemap links, including pages written by parallel workers
+
+    With parallel writes (``sphinx-build -j``), source documents are written
+    in worker processes, so their ``html-page-context`` events never reach
+    ``app.sitemap_links`` in the main process. Only pages written by the main
+    process (e.g. genindex, search, 404) are collected there, so fill in the
+    rest from the environment's list of documents.
+
+    Links are ordered the way a serial build writes pages: source documents
+    in sorted order, followed by any additional pages.
+    """
+    base_url = app.config['html_theme_options'].get('base_url', '')
+    links = [
+        base_url + docname + ".html" for docname in sorted(app.env.found_docs)
+    ]
+    seen = set(links)
+    for link in app.sitemap_links:
+        if link not in seen:
+            links.append(link)
+            seen.add(link)
+    return links
+
+
 def create_sitemap(app, exception):
     """Generates the sitemap.xml from the collected HTML page links"""
     if (not app.config['html_theme_options'].get('base_url', '') or
-           exception is not None or
-           not app.sitemap_links):
+           exception is not None):
+        return
+    sitemap_links = _get_sitemap_links(app)
+    if not sitemap_links:
         return
 
     filename = app.outdir + "/sitemap.xml"
@@ -40,7 +70,7 @@ def create_sitemap(app, exception):
     root = ET.Element("urlset")
     root.set("xmlns", "http://www.sitemaps.org/schemas/sitemap/0.9")
 
-    for link in app.sitemap_links:
+    for link in sitemap_links:
         url = ET.SubElement(root, "url")
         ET.SubElement(url, "loc").text = link
 

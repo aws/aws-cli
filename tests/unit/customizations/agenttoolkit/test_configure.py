@@ -630,26 +630,29 @@ def test_auto_update_hook_error_is_reported(tmp_path):
     assert 'Codex —' in stream.getvalue()
 
 
-def test_auto_update_off_removes_hooks_from_all_detected_agents(
+def test_auto_update_off_removes_hooks_only_from_selected_agents(
     tmp_path, state_file
 ):
     _write_state(state_file, {'agent_toolkit_auto_update': True})
     configs = _hook_agent_configs(tmp_path, ['claude-code', 'kiro', 'cline'])
     _run(configs, yes_no_return=True)
     settings = _hook_file(tmp_path, 'claude-code')
+    kiro_hook = _hook_file(tmp_path, 'kiro')
+    kiro_before = kiro_hook.read_bytes()
 
-    output = _run_selecting(configs, {'cline'}, yes_no_return=False)
+    output = _run_selecting(
+        configs, {'claude-code', 'cline'}, yes_no_return=False
+    )
 
     assert not state.is_auto_update_enabled()
     assert json.loads(settings.read_text()) == {}
-    assert not _hook_file(tmp_path, 'kiro').exists()
+    assert kiro_hook.read_bytes() == kiro_before
     assert (
         f'  ✓ Claude-Code — {_collapse(settings)}: hook removed\n'
     ) in output
-    assert 'Kiro —' in output
-    assert (
-        'Cline' not in output.split('Automatic skill updates turned off.')[1]
-    )
+    after = output.split('Automatic skill updates turned off.')[1]
+    assert 'Kiro —' not in after
+    assert 'Cline' not in after
 
 
 def test_auto_update_declined_prints_nothing_without_hooks(tmp_path):
@@ -735,11 +738,11 @@ def test_auto_update_kiro_without_default_agent_prints_manual_entry(
     assert not (tmp_path / '.kiro' / 'agents').exists()
 
 
-def test_auto_update_kiro_agent_with_kept_formatting_prints_manual_entry(
+def test_auto_update_kiro_agent_with_comments_prints_manual_entry(
     tmp_path,
 ):
     configs = _hook_agent_configs(tmp_path, ['kiro'])
-    content = '{\n  "name" : "my-agent"\n}'
+    content = '{\n  // mine\n  "name": "my-agent"\n}\n'
     agent_file = _kiro_default_agent(tmp_path, content)
     _, stream = _run(configs, yes_no_return=True)
     output = stream.getvalue()

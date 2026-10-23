@@ -17,7 +17,6 @@ import errno
 import glob
 import json
 import os
-import re
 import stat
 from typing import Callable, Optional
 
@@ -147,22 +146,6 @@ class _UnreadableError(Exception):
     pass
 
 
-@dataclasses.dataclass(frozen=True)
-class _JsonStyle:
-    indent: object = 2
-    newline: str = '\n'
-    trailing_newline: bool = True
-    ensure_ascii: bool = False
-
-    def dump(self, data):
-        text = json.dumps(
-            data, indent=self.indent, ensure_ascii=self.ensure_ascii
-        )
-        if self.trailing_newline:
-            text += '\n'
-        return text.replace('\n', self.newline)
-
-
 def is_hook_supported(agent_id):
     return agent_id in HOOK_AGENT_IDS
 
@@ -228,7 +211,7 @@ def install_hook(agent):
         return _install_kiro_hook(agent, path), path
     hook_format = _HOOK_FORMATS[agent_id]
     try:
-        text, data, style = _read_json(path)
+        text, data = _read_json(path)
         action = _add_entry(data, hook_format, _handler(agent_id))
     except _UnreadableError:
         return HookAction.UNREADABLE, path
@@ -236,7 +219,7 @@ def install_hook(agent):
         return action, path
     if text is None:
         _make_parent_dir(agent, path)
-    _write(path, style.dump(data))
+    _write(path, _dump_json(data))
     return HookAction.INSTALLED, path
 
 
@@ -249,7 +232,7 @@ def remove_hook(agent):
     if agent_id == _KIRO_ID:
         return _remove_kiro_hook(path), path
     try:
-        text, data, style = _read_json(path)
+        text, data = _read_json(path)
         removed = _remove_entries(data, _HOOK_FORMATS[agent_id])
     except _UnreadableError:
         # Most files we can't edit never had our hook, such as a Gemini
@@ -259,7 +242,7 @@ def remove_hook(agent):
         return HookAction.NOT_INSTALLED, path
     if not removed:
         return HookAction.NOT_INSTALLED, path
-    _write(path, style.dump(data))
+    _write(path, _dump_json(data))
     return HookAction.REMOVED, path
 
 
@@ -286,7 +269,7 @@ def install_kiro_agent_hook(agent):
     if path is None:
         return HookAction.NOT_SUPPORTED, None
     try:
-        text, data, style = _read_json(path)
+        text, data = _read_json(path)
         if isinstance(data.get('hooks'), list):
             return HookAction.NOT_NEEDED, path
         action = _add_entry(data, _KIRO_AGENT_FORMAT, _kiro_agent_handler())
@@ -297,7 +280,7 @@ def install_kiro_agent_hook(agent):
         return HookAction.NOT_SUPPORTED, None
     if action is not HookAction.INSTALLED:
         return action, path
-    _write(path, style.dump(data))
+    _write(path, _dump_json(data))
     return HookAction.INSTALLED, path
 
 
@@ -308,7 +291,7 @@ def remove_kiro_agent_hooks(agent):
         if not _mentions_hook(path):
             continue
         try:
-            _, data, style = _read_json(path)
+            _, data = _read_json(path)
             if isinstance(data.get('hooks'), list):
                 # We never add the hook to V3 agents.
                 continue
@@ -317,7 +300,7 @@ def remove_kiro_agent_hooks(agent):
             results.append((HookAction.UNREADABLE, path))
             continue
         if removed:
-            _write(path, style.dump(data))
+            _write(path, _dump_json(data))
             results.append((HookAction.REMOVED, path))
     return results
 
@@ -555,45 +538,32 @@ def _mentions_hook(path):
 
 
 def _read_json(path):
-    """Return ``(text, data, style)`` for the JSON file at ``path``."""
+    """Return ``(text, data)`` for the JSON file at ``path``."""
     try:
-        with open(path, encoding='utf-8', newline='') as f:
+        with open(path, encoding='utf-8') as f:
             text = f.read()
     except FileNotFoundError:
-        return None, {}, _JsonStyle()
+        return None, {}
     except UnicodeDecodeError as e:
         raise _UnreadableError(str(e)) from e
     if not text.strip():
-        return text, {}, _JsonStyle()
+        return text, {}
     try:
         data = json.loads(text)
     except ValueError as e:
         raise _UnreadableError(str(e)) from e
     if not isinstance(data, dict):
         raise _UnreadableError('not a JSON object')
-    style = _detect_style(text)
-    # We never reformat a customer's file, so it must come back unchanged.
-    if style.dump(data) != text:
-        raise _UnreadableError('formatting can not be preserved')
-    if style.indent is None and not data:
-        style = dataclasses.replace(style, indent=2)
-    return text, data, style
+    return text, data
 
 
-def _detect_style(text):
-    newline = '\r\n' if '\r\n' in text else '\n'
-    match = re.search(r'^([ \t]+)\S', text, re.MULTILINE)
-    return _JsonStyle(
-        indent=match.group(1) if match else None,
-        newline=newline,
-        trailing_newline=text.endswith(newline),
-        ensure_ascii=text.isascii()
-        and re.search(r'\\u[0-9a-fA-F]{4}', text) is not None,
-    )
+def _dump_json(data):
+    # Written like the MCP server config.
+    return json.dumps(data, indent=2) + '\n'
 
 
 def _kiro_hook_content():
-    return _JsonStyle().dump(
+    return _dump_json(
         {
             'version': 'v1',
             'hooks': [

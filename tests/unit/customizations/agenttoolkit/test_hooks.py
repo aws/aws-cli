@@ -205,19 +205,19 @@ def _existing_settings(agent_id, indent, newline):
     [(2, '\n'), (4, '\n'), ('\t', '\n'), (2, '\r\n')],
     ids=['2-spaces', '4-spaces', 'tab', 'crlf'],
 )
-def test_install_then_remove_restores_file(
+def test_install_then_remove_keeps_settings(
     tmp_path, agent_id, indent, newline
 ):
     agent = _agent(tmp_path, agent_id)
     path = tmp_path / f'.{agent_id}' / _HOOK_FILES[agent_id]
-    original = _existing_settings(agent_id, indent, newline).encode()
-    path.write_bytes(original)
+    original = _existing_settings(agent_id, indent, newline)
+    path.write_bytes(original.encode())
 
     assert install_hook(agent)[0] is HookAction.INSTALLED
     installed = path.read_bytes()
     text = installed.decode()
-    expected_text = json.dumps(json.loads(text), indent=indent) + '\n'
-    assert text == expected_text.replace('\n', newline)
+    # Files are written like the MCP server config.
+    assert text == json.dumps(json.loads(text), indent=2) + '\n'
     data = json.loads(text)
     if agent_id == 'cursor':
         assert data['hooks']['sessionStart'] == [
@@ -241,7 +241,7 @@ def test_install_then_remove_restores_file(
     assert install_hook(agent)[0] is HookAction.ALREADY_INSTALLED
     assert path.read_bytes() == installed
     assert remove_hook(agent)[0] is HookAction.REMOVED
-    assert path.read_bytes() == original
+    assert json.loads(path.read_text()) == json.loads(original)
 
 
 @pytest.mark.parametrize('agent_id', sorted(_HOOK_FILES))
@@ -258,16 +258,16 @@ def test_remove_drops_empty_containers(tmp_path, agent_id):
     assert json.loads(path.read_text()) == expected
 
 
-def test_install_into_empty_object_uses_default_style(tmp_path):
+def test_install_into_empty_object(tmp_path):
     agent = _agent(tmp_path, 'claude-code')
     path = tmp_path / '.claude-code' / 'settings.json'
     path.write_text('{}')
     install_hook(agent)
     assert path.read_text() == (
-        json.dumps(_expected_entry('claude-code'), indent=2)
+        json.dumps(_expected_entry('claude-code'), indent=2) + '\n'
     )
     remove_hook(agent)
-    assert path.read_text() == '{}'
+    assert path.read_text() == '{}\n'
 
 
 def test_install_into_empty_file(tmp_path):
@@ -278,14 +278,26 @@ def test_install_into_empty_file(tmp_path):
     assert json.loads(path.read_text()) == _expected_entry('codex')
 
 
-def test_install_preserves_one_line_file(tmp_path):
+@pytest.mark.parametrize(
+    'content',
+    [
+        '{"model": "x"}\n',
+        '{\n  "model":"x"\n}\n',
+        '{\n  "model" : "x"\n}',
+        '{\n      "model": "x"\n}\n\n',
+    ],
+    ids=['one-line', 'compact-separators', 'jackson', 'extra-newline'],
+)
+def test_install_reformats_file(tmp_path, content):
     agent = _agent(tmp_path, 'claude-code')
     path = tmp_path / '.claude-code' / 'settings.json'
-    path.write_text('{"model": "x"}\n')
-    install_hook(agent)
-    assert '\n' not in path.read_text()[:-1]
+    path.write_text(content)
+    assert install_hook(agent)[0] is HookAction.INSTALLED
+    text = path.read_text()
+    assert text == json.dumps(json.loads(text), indent=2) + '\n'
+    assert json.loads(text)['model'] == 'x'
     remove_hook(agent)
-    assert path.read_text() == '{"model": "x"}\n'
+    assert path.read_text() == '{\n  "model": "x"\n}\n'
 
 
 def test_install_keeps_unicode_escapes(tmp_path):
@@ -299,14 +311,13 @@ def test_install_keeps_unicode_escapes(tmp_path):
     assert path.read_text() == original
 
 
-def test_install_keeps_raw_unicode(tmp_path):
+def test_install_escapes_raw_unicode(tmp_path):
     agent = _agent(tmp_path, 'claude-code')
     path = tmp_path / '.claude-code' / 'settings.json'
-    original = '{\n  "name": "café"\n}\n'
-    path.write_text(original, encoding='utf-8')
+    path.write_text('{\n  "name": "café"\n}\n', encoding='utf-8')
     install_hook(agent)
     remove_hook(agent)
-    assert path.read_text(encoding='utf-8') == original
+    assert path.read_text(encoding='utf-8') == '{\n  "name": "caf\\u00e9"\n}\n'
 
 
 def _change_our_group(group, change):
@@ -408,9 +419,6 @@ def test_cursor_keeps_existing_version(tmp_path):
     [
         '{\n  // comment\n  "a": 1\n}\n',
         '{ not json',
-        '{\n  "a":1\n}\n',
-        '{\n  "a": 1,\n    "b": 2\n}\n',
-        '{\n  "a": 1\n}\n\n',
         '[]\n',
         '{\n  "hooks": []\n}\n',
         '{\n  "hooks": {\n    "SessionStart": {}\n  }\n}\n',
@@ -419,9 +427,6 @@ def test_cursor_keeps_existing_version(tmp_path):
     ids=[
         'comments',
         'invalid',
-        'compact-separators',
-        'mixed-indent',
-        'extra-newline',
         'root-list',
         'hooks-list',
         'event-object',
@@ -791,17 +796,20 @@ def test_kiro_agent_hook_adds_ours_next_to_other_commands(tmp_path):
     }
 
 
-def test_kiro_agent_keeps_formatting_it_can_not_preserve(tmp_path):
-    # Formatting written by tools such as Jackson can't be reproduced.
-    content = '{\n  "name" : "my-agent"\n}'
+def test_kiro_agent_with_comments_is_left_untouched(tmp_path):
+    content = '{\n  // mine\n  "name": "my-agent"\n}\n'
     agent = _kiro_with_agents(tmp_path, {'my-agent.json': content})
     path = tmp_path / '.kiro' / 'agents' / 'my-agent.json'
     assert install_kiro_agent_hook(agent) == (HookAction.UNREADABLE, str(path))
     assert path.read_text() == content
 
 
-def test_kiro_v3_agent_is_not_needed(tmp_path):
+@pytest.mark.parametrize('jackson', [False, True])
+def test_kiro_v3_agent_is_not_needed(tmp_path, jackson):
     content = {'name': 'my-agent', 'hooks': [{'trigger': 'SessionStart'}]}
+    if jackson:
+        # Formatting written by tools such as Jackson.
+        content = json.dumps(content, indent=2).replace('": ', '" : ')
     agent = _kiro_with_agents(tmp_path, {'my-agent.json': content})
     path = tmp_path / '.kiro' / 'agents' / 'my-agent.json'
     before = path.read_text()
@@ -812,7 +820,7 @@ def test_kiro_v3_agent_is_not_needed(tmp_path):
 def test_kiro_agent_hooks_removed_from_every_agent(tmp_path):
     ours = {'hooks': {'agentSpawn': [_kiro_agent_handler()]}}
     unreadable = (
-        '{\n  "hooks" : {"agentSpawn" : [{"command" : '
+        '{\n  // mine\n  "hooks": {"agentSpawn": [{"command": '
         f'{json.dumps(hook_shell_command("kiro"))}}}]}}\n}}'
     )
     agent = _kiro_with_agents(

@@ -262,7 +262,7 @@ class ConfigureAgentToolkitCommand(BasicCommand):
         if enabled:
             self._install_hooks(agents)
         else:
-            self._remove_hooks()
+            self._remove_hooks(agents)
 
     def _install_hooks(self, agents):
         uni_print('\nAutomatic update hooks:\n', self._stream)
@@ -284,8 +284,7 @@ class ConfigureAgentToolkitCommand(BasicCommand):
                     '\u2717',
                     agent,
                     path,
-                    'could not be updated because it is not plain JSON or '
-                    'its formatting can not be kept',
+                    'could not be updated because it is not plain JSON',
                 )
                 uni_print(
                     format_manual_entry(agent.config.id, collapse_home(path)),
@@ -334,8 +333,7 @@ class ConfigureAgentToolkitCommand(BasicCommand):
                 '\u2717',
                 agent,
                 path,
-                'could not be updated because it is not plain JSON or '
-                'its formatting can not be kept',
+                'could not be updated because it is not plain JSON',
             )
             uni_print(
                 format_kiro_agent_manual_entry(collapse_home(path)),
@@ -352,15 +350,11 @@ class ConfigureAgentToolkitCommand(BasicCommand):
             )
         uni_print(f'    {KIRO_AGENT_NOTE}\n', self._stream)
 
-    def _remove_hooks(self):
-        # Hooks may have been installed for agents that weren't selected this
-        # time, so every detected agent is cleaned up.
+    def _remove_hooks(self, agents):
         lines = []
-        for config in self._agent_configs:
+        for agent in agents:
+            config = agent.config
             if not is_hook_supported(config.id):
-                continue
-            agent = config.detect()
-            if agent is None:
                 continue
             try:
                 results = [remove_hook(agent)]

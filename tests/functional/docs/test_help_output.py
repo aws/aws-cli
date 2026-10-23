@@ -26,7 +26,7 @@ import os
 
 import pytest
 
-from awscli.alias import AliasLoader
+from awscli.alias import AliasLoader, register_alias_commands
 from awscli.compat import StringIO
 from awscli.testutils import (
     BaseAWSHelpOutputTest,
@@ -313,7 +313,11 @@ class TestHelpFlagOutput(BaseAWSHelpOutputTest):
                 "--help",
             ]
         )
-        self.assert_contains('delete-object')
+        # Assert the operation-level title, not just a substring that
+        # could also appear in the parent service's command listing.
+        self.assert_contains(
+            '*************\ndelete-object\n*************'
+        )
 
     def test_help_flag_abbreviation(self):
         self.driver.main(['--hel'])
@@ -338,6 +342,22 @@ class TestHelpFlagOutput(BaseAWSHelpOutputTest):
         )
         self.assert_contains('cp')
 
+    def test_help_flag_with_global_flag_value(self):
+        # Flag values (e.g. "us-east-1" for --region) must not be
+        # misinterpreted as unknown commands.
+        self.driver.main(['ec2', '--region', 'us-east-1', '--help'])
+        self.assert_contains('***\nec2\n***')
+
+    def test_help_flag_with_global_flag_before_service(self):
+        # --region before the service should not prevent --help from
+        # resolving the deepest command.
+        self.driver.main(
+            ['--region', 'us-west-2', 'ec2', 'describe-instances', '--help']
+        )
+        self.assert_contains(
+            '******************\ndescribe-instances\n******************'
+        )
+
     def test_help_flag_before_modeled_operation(self):
         # --help before the operation should still show operation help.
         self.driver.main(['s3api', '--help', 'put-object'])
@@ -348,6 +368,12 @@ class TestHelpFlagOutput(BaseAWSHelpOutputTest):
         # recognized command's help.
         self.driver.main(['--help', 's3api', 'put-object'])
         self.assert_contains('put-object')
+
+    def test_help_flag_with_help_subcommand(self):
+        # "aws help --help" should collapse to top-level help,
+        # matching the behavior of other double-help forms.
+        self.driver.main(['help', '--help'])
+        self.assert_contains('***\naws\n***')
 
     def test_help_flag_with_invalid_top_level_command(self):
         stderr = StringIO()
@@ -636,6 +662,15 @@ class TestAliases(BaseAWSHelpOutputTest):
         self.files = FileCreator()
         self.alias_file = self.files.create_file('alias', '[toplevel]\n')
         self.driver.alias_loader = AliasLoader(self.alias_file)
+        self.event_emitter = self.driver.session.get_component(
+            'event_emitter'
+        )
+        self.event_emitter.unregister(
+            'building-command-table', unique_id='cli-alias-injector'
+        )
+        register_alias_commands(
+            self.event_emitter, alias_filename=self.alias_file
+        )
 
     def tearDown(self):
         super().tearDown()
@@ -645,10 +680,25 @@ class TestAliases(BaseAWSHelpOutputTest):
         with open(self.alias_file, 'a+') as f:
             f.write(f'{alias_name} = {alias_value}\n')
 
+    def add_subcommand_alias(self, command, alias_name, alias_value):
+        with open(self.alias_file, 'a+') as f:
+            f.write(f'[command {command}]\n')
+            f.write(f'{alias_name} = {alias_value}\n')
+
     def test_alias_not_in_main_help(self):
         self.add_alias('my-alias', 'ec2 describe-regions')
         self.driver.main(['help'])
         self.assert_not_contains('my-alias')
+
+    def test_toplevel_alias_help_flag(self):
+        self.add_alias('whoami', 'sts get-caller-identity')
+        self.driver.main(['whoami', '--help'])
+        self.assert_contains('get-caller-identity')
+
+    def test_subcommand_alias_help_flag(self):
+        self.add_subcommand_alias('ec2', 'regions', 'describe-regions')
+        self.driver.main(['ec2', 'regions', '--help'])
+        self.assert_contains('describe-regions')
 
 
 class TestStreamingOutputHelp(BaseAWSHelpOutputTest):

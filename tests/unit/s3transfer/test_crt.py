@@ -809,6 +809,16 @@ class TestCreateS3CRTClient:
         s3transfer.crt.create_s3_crt_client('us-west-2')
         assert mock_s3_crt_client.call_args[1]['enable_s3express'] is True
 
+    def test_connect_timeout_defaults_to_crt_default(self, mock_s3_crt_client):
+        s3transfer.crt.create_s3_crt_client('us-west-2')
+        assert mock_s3_crt_client.call_args[1]['connect_timeout_ms'] is None
+
+    def test_connect_timeout(self, mock_s3_crt_client):
+        s3transfer.crt.create_s3_crt_client(
+            'us-west-2', connect_timeout_ms=5_000
+        )
+        assert mock_s3_crt_client.call_args[1]['connect_timeout_ms'] == 5_000
+
     def test_empty_verify_value_raises(self, mock_s3_crt_client):
         with pytest.raises(InvalidConfigError):
             s3transfer.crt.create_s3_crt_client('us-west-2', verify='')

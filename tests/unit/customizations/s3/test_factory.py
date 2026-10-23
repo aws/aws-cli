@@ -28,6 +28,7 @@ from awscli.customizations.s3 import constants
 from awscli.customizations.s3.factory import (
     ADAPTIVE_RETRY_MODE,
     CRT_PART_SIZE_EXCEEDS_MEMORY_LIMIT,
+    MAX_CRT_CONNECT_TIMEOUT_MS,
     MAX_CRT_MAX_ATTEMPTS,
     MIN_CRT_MAX_ATTEMPTS,
     MINIMUM_TARGET_THROUGHPUT_GBPS,
@@ -89,6 +90,11 @@ def stub_endpoint_url(session, endpoint_url):
     session.create_client.return_value.meta.endpoint_url = endpoint_url
 
 
+def stub_client_config(session, **config_kwargs):
+    """Sets the config of botocore clients the session creates"""
+    session.create_client.return_value.meta.config = Config(**config_kwargs)
+
+
 @pytest.fixture
 def transfer_manager_factory():
     session = mock.Mock(Session)
@@ -97,6 +103,7 @@ def transfer_manager_factory():
     session.get_default_client_config.return_value = None
     session.get_scoped_config.return_value = {}
     stub_endpoint_url(session, 'https://s3.us-west-2.amazonaws.com')
+    stub_client_config(session)
     return TransferManagerFactory(session)
 
 
@@ -203,6 +210,7 @@ class TestTransferManagerFactory(unittest.TestCase):
         self.session.get_default_client_config.return_value = None
         self.session.get_scoped_config.return_value = {}
         stub_endpoint_url(self.session, 'https://s3.us-west-2.amazonaws.com')
+        stub_client_config(self.session)
         self.factory = TransferManagerFactory(self.session)
         self.params = {
             'region': 'us-west-2',
@@ -474,6 +482,7 @@ class TestTransferManagerFactory(unittest.TestCase):
         )
         botocore_client = mock.Mock()
         botocore_client.meta.endpoint_url = 'http://localhost:4566'
+        botocore_client.meta.config = Config()
         transfer_manager = self.factory.create_transfer_manager(
             self.params, self.runtime_config, botocore_client=botocore_client
         )
@@ -854,6 +863,7 @@ def auto_resolve_session():
     session.get_default_client_config.return_value = None
     session.get_scoped_config.return_value = {}
     stub_endpoint_url(session, 'https://s3.us-west-2.amazonaws.com')
+    stub_client_config(session)
     return session
 
 
@@ -1409,6 +1419,88 @@ class TestMaxAttempts:
         assert kwargs['retry_options'] == {'max_retries': 4}
 
 
+class TestConnectTimeout:
+    @pytest.fixture
+    def create_crt_manager(
+        self,
+        auto_resolve_factory,
+        s3_params,
+        mock_crt_is_optimized_for_system,
+        mock_crt_recommended_throughput,
+        mock_crt_s3_client,
+        mock_crt_process_lock,
+    ):
+        def _create(botocore_client=None):
+            return auto_resolve_factory._create_crt_transfer_manager(
+                s3_params, RuntimeConfig().build_config(), botocore_client
+            )
+
+        return _create
+
+    def test_uses_default_connect_timeout(self, crt_s3_client_kwargs):
+        assert crt_s3_client_kwargs()['connect_timeout_ms'] == 60_000
+
+    @pytest.mark.parametrize(
+        'connect_timeout,expected_ms',
+        [
+            (5, 5_000),
+            (1.5, 1_500),
+            (0.0001, 1),
+            (2**32, MAX_CRT_CONNECT_TIMEOUT_MS),
+        ],
+    )
+    def test_converts_connect_timeout_to_milliseconds(
+        self,
+        connect_timeout,
+        expected_ms,
+        crt_s3_client_kwargs,
+        auto_resolve_session,
+    ):
+        stub_client_config(
+            auto_resolve_session, connect_timeout=connect_timeout
+        )
+        assert crt_s3_client_kwargs()['connect_timeout_ms'] == expected_ms
+
+    def test_disabled_connect_timeout_uses_max_crt_timeout(
+        self, crt_s3_client_kwargs, auto_resolve_session
+    ):
+        stub_client_config(auto_resolve_session, connect_timeout=None)
+        assert (
+            crt_s3_client_kwargs()['connect_timeout_ms']
+            == MAX_CRT_CONNECT_TIMEOUT_MS
+        )
+
+    @pytest.mark.parametrize('connect_timeout', [-1, -0.5])
+    def test_rejects_negative_connect_timeout(
+        self, connect_timeout, crt_s3_client_kwargs, auto_resolve_session
+    ):
+        stub_client_config(
+            auto_resolve_session, connect_timeout=connect_timeout
+        )
+        with pytest.raises(InvalidTransferConfigError, match='timeout'):
+            crt_s3_client_kwargs()
+
+    def test_uses_connect_timeout_of_provided_botocore_client(
+        self, create_crt_manager, mock_crt_s3_client
+    ):
+        botocore_client = mock.Mock()
+        botocore_client.meta.endpoint_url = (
+            'https://s3.us-west-2.amazonaws.com'
+        )
+        botocore_client.meta.config = Config(connect_timeout=7)
+        create_crt_manager(botocore_client)
+        assert mock_crt_s3_client.call_args[1]['connect_timeout_ms'] == 7_000
+
+    def test_uses_connect_timeout_for_redirected_region_clients(
+        self, create_crt_manager, auto_resolve_session, mock_crt_s3_client
+    ):
+        stub_client_config(auto_resolve_session, connect_timeout=5)
+        transfer_manager = create_crt_manager()
+        transfer_manager.get_crt_client('eu-west-1')
+        assert mock_crt_s3_client.call_args[1]['region'] == 'eu-west-1'
+        assert mock_crt_s3_client.call_args[1]['connect_timeout_ms'] == 5_000
+
+
 class TestTargetThroughput:
     def test_targets_less_when_crt_has_no_recommendation(
         self, crt_s3_client_kwargs
@@ -1485,6 +1577,7 @@ class TestChunksizeExceedingCrtMemoryPool:
             botocore_client.meta.endpoint_url = (
                 'https://s3.us-west-2.amazonaws.com'
             )
+            botocore_client.meta.config = Config()
             return auto_resolve_factory.create_transfer_manager(
                 s3_params, runtime_config, botocore_client
             )

@@ -26,7 +26,6 @@ from awscli.customizations.agenttoolkit.agents import (
 )
 from awscli.customizations.agenttoolkit.filelock import file_lock
 from awscli.customizations.agenttoolkit.hooks import (
-    HOOK_AGENT_IDS,
     HOOK_ERROR_MESSAGE,
     format_hook_message,
     format_hook_output,
@@ -47,6 +46,7 @@ from awscli.customizations.agenttoolkit.utils import (
     agents_with_skill,
     collect_installed_skills,
     create_client,
+    find_agent_config,
     get_skill_download,
     install_skill,
     list_core_skills,
@@ -74,17 +74,12 @@ ALL_SKILLS_ARG = {
 HOOK_ARG = {
     'name': 'hook',
     'help_text': (
-        'Run as the session start hook of the given agent. Implies '
-        '``--all`` and '
-        'also installs new skills in the ``aws-core`` category into agents '
-        'that already have AWS skills. Does nothing unless automatic skill '
-        'updates are turned on, checks each skills directory once a day, '
-        'or an hour after a failed check, and prints only what the agent '
-        'expects.'
+        'Run as an agent\'s session start hook: update all skills and '
+        'install new core skills, at most once a day, only when automatic '
+        'skill updates are turned on. The output is formatted for the '
+        'agent given with ``--agent``.'
     ),
-    'action': 'store',
-    'cli_type_name': 'string',
-    'choices': list(HOOK_AGENT_IDS),
+    'action': 'store_true',
     'required': False,
 }
 
@@ -235,18 +230,19 @@ class UpdateSkillCommand(BasicCommand):
         skill_name = parsed_args.skill_name
         update_all = getattr(parsed_args, 'all', False)
         agent_filter = getattr(parsed_args, 'agent', None)
-        hook = getattr(parsed_args, 'hook', None)
+        hook = getattr(parsed_args, 'hook', False)
 
         if hook:
             if skill_name:
                 raise ParamValidationError(
                     'Cannot use --skill-name together with --hook.'
                 )
+            agent_id = None
             if agent_filter:
-                raise ParamValidationError(
-                    'Cannot use --agent together with --hook.'
-                )
-            return self._run_hook(hook, parsed_globals)
+                agent_id = find_agent_config(
+                    agent_filter, self._agent_configs
+                ).id
+            return self._run_hook(agent_id, parsed_globals)
         if update_all and skill_name:
             raise ParamValidationError(
                 'Cannot use --skill-name together with --all.'
@@ -343,7 +339,7 @@ class UpdateSkillCommand(BasicCommand):
         due_roots = []
         try:
             agents, due_roots = self._agents_due_for_check(
-                resolve_agents(None, self._agent_configs)
+                resolve_agents(agent_id, self._agent_configs)
             )
             if not agents:
                 return 0

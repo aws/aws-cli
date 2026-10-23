@@ -382,19 +382,26 @@ class AgentToolkitServiceError(Exception):
     pass
 
 
+def find_agent_config(agent_id, agent_configs=None):
+    """Return the config of the agent with ``agent_id``, ignoring case."""
+    if agent_configs is None:
+        agent_configs = AGENT_CONFIGS
+    by_id = {c.id.lower(): c for c in agent_configs}
+    config = by_id.get(agent_id.lower())
+    if config is None:
+        raise ParamValidationError(
+            f'Invalid agent "{agent_id}". Valid values: '
+            f'{", ".join(sorted(c.id for c in agent_configs))}.'
+        )
+    return config
+
+
 def resolve_agents(agent_filter, agent_configs=None):
     """Resolve agents, optionally filtered by agent id."""
     if agent_configs is None:
         agent_configs = AGENT_CONFIGS
     if agent_filter:
-        by_id = {c.id.lower(): c for c in agent_configs}
-        config = by_id.get(agent_filter.lower())
-        if config is None:
-            raise ParamValidationError(
-                f'Invalid agent "{agent_filter}". Valid values: '
-                f'{", ".join(sorted(c.id for c in agent_configs))}.'
-            )
-        agent = config.detect()
+        agent = find_agent_config(agent_filter, agent_configs).detect()
         agents = [agent] if agent is not None else []
     else:
         agents = get_detected_agents(agent_configs=agent_configs)

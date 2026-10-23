@@ -27,7 +27,6 @@ from botocore.exceptions import (
     ReadTimeoutError,
 )
 
-from awscli.argparser import ArgParseException
 from awscli.clidriver import AWSCLIEntryPoint
 from awscli.customizations.agenttoolkit import (
     atomic,
@@ -977,16 +976,16 @@ def auto_update_on():
     state.set_auto_update(True)
 
 
-def _hook_configs(tmp_path):
-    # A hook-capable agent and an agent that only has skills installed.
+def _hook_configs(tmp_path, agent_id='claude-code'):
+    # The agent whose hook runs, and another agent with its own skills.
     return [
+        make_config(tmp_path, id=agent_id),
         make_config(
             tmp_path,
-            id='claude-code',
-            display_name='Claude Code',
-            detection_path=str(tmp_path / '.claude'),
+            id='other-agent',
+            display_name='Other Agent',
+            detection_path=str(tmp_path / '.other'),
         ),
-        make_config(tmp_path),
     ]
 
 
@@ -997,9 +996,12 @@ def _run_hook(tmp_path, agent_id, client, configs=None, extra_args=()):
         stream=stream,
         error_stream=error_stream,
         client=client,
-        agent_configs=configs or _hook_configs(tmp_path),
+        agent_configs=configs or _hook_configs(tmp_path, agent_id or 'cline'),
     )
-    rc = cmd(args=['--hook', agent_id, *extra_args], parsed_globals=Mock())
+    args = ['--hook', *extra_args]
+    if agent_id is not None:
+        args += ['--agent', agent_id]
+    rc = cmd(args=args, parsed_globals=Mock())
     assert error_stream.getvalue() == ''
     return rc, stream.getvalue()
 
@@ -1020,7 +1022,7 @@ def test_hook_does_nothing_when_auto_update_off(tmp_path):
 
 def test_hook_claude_code_output(tmp_path, auto_update_on):
     _install_skill_at_version(tmp_path, '.test-agent', 'aws-s3', 'v1')
-    _install_skill_at_version(tmp_path, '.claude', 'aws-cdk', 'v2')
+    _install_skill_at_version(tmp_path, '.test-agent', 'aws-cdk', 'v2')
     rc, output = _run_hook(tmp_path, 'claude-code', _make_skill_client())
     assert rc == 0
     msg = 'AWS agent skills updated: aws-s3.'
@@ -1233,6 +1235,7 @@ def test_hook_command_ignores_auto_prompt_setting(
         'update-skill',
         '--all',
         '--hook',
+        '--agent',
         'codex',
         '--no-cli-auto-prompt',
     ]
@@ -1288,20 +1291,48 @@ def test_hook_rejects_skill_name(tmp_path):
         )
 
 
-def test_hook_rejects_agent_filter(tmp_path):
-    with pytest.raises(ParamValidationError, match='--agent together'):
-        _run_hook(tmp_path, 'codex', Mock(), extra_args=['--agent', 'codex'])
+def test_hook_without_agent_updates_every_agent(tmp_path, auto_update_on):
+    _install_skill_at_version(tmp_path, '.test-agent', 'aws-s3', 'v1')
+    _install_skill_at_version(tmp_path, '.other', 'aws-cdk', 'v1')
+    rc, output = _run_hook(tmp_path, None, _make_skill_client())
+    assert rc == 0
+    # Without an agent, the summary is plain text.
+    assert output == 'AWS agent skills updated: aws-cdk, aws-s3.\n'
+    assert _last_run(tmp_path)['is_successful'] is True
+    assert _last_run(tmp_path, '.other')['is_successful'] is True
+
+
+def test_hook_agent_without_hook_format_gets_plain_text(
+    tmp_path, auto_update_on
+):
+    _install_skill_at_version(tmp_path, '.test-agent', 'aws-s3', 'v1')
+    rc, output = _run_hook(tmp_path, 'cline', _make_skill_client())
+    assert (rc, output) == (0, 'AWS agent skills updated: aws-s3.\n')
+
+
+def test_hook_agent_is_case_insensitive(tmp_path, auto_update_on):
+    _install_skill_at_version(tmp_path, '.test-agent', 'aws-s3', 'v1')
+    configs = _hook_configs(tmp_path, 'cursor')
+    rc, output = _run_hook(
+        tmp_path, 'Cursor', _make_skill_client(), configs=configs
+    )
+    assert rc == 0
+    assert json.loads(output) == {
+        'additional_context': 'AWS agent skills updated: aws-s3.'
+    }
 
 
 def test_hook_rejects_unknown_agent(tmp_path):
-    with pytest.raises(ArgParseException, match='invalid choice'):
-        _run_hook(tmp_path, 'cline', Mock())
+    client = Mock()
+    with pytest.raises(ParamValidationError, match='Invalid agent "nope"'):
+        _run_hook(tmp_path, 'nope', client, configs=_hook_configs(tmp_path))
+    assert not client.mock_calls
 
 
 def test_hook_installs_new_core_skills(tmp_path, auto_update_on):
     _install_skill_at_version(tmp_path, '.test-agent', 'aws-s3', 'v2')
-    # An agent without AWS skills was never set up with the toolkit.
-    (tmp_path / '.claude').mkdir()
+    # Another agent's skills are left alone.
+    (tmp_path / '.other').mkdir()
     client = _make_skill_client(core_skills=['aws-s3', 'aws-iam'])
     rc, output = _run_hook(tmp_path, 'claude-code', client)
     assert rc == 0
@@ -1316,7 +1347,7 @@ def test_hook_installs_new_core_skills(tmp_path, auto_update_on):
     }
     marker = _skill_dir(tmp_path, 'aws-iam') / SKILL_METADATA_FILENAME
     assert json.loads(marker.read_text()) == {'version': 'v2'}
-    assert not (tmp_path / '.claude' / 'skills').exists()
+    assert not (tmp_path / '.other' / 'skills').exists()
     client.get_paginator.assert_called_once_with('list_skills')
     client.get_paginator.return_value.paginate.assert_called_once_with(
         categoryFilter='aws-core'
@@ -1330,18 +1361,21 @@ def test_hook_installs_new_core_skills(tmp_path, auto_update_on):
     )
 
 
-def test_hook_installs_core_skill_into_each_agent_missing_it(
-    tmp_path, auto_update_on
-):
-    _install_skill_at_version(tmp_path, '.test-agent', 'aws-s3', 'v2')
-    _install_skill_at_version(tmp_path, '.claude', 'aws-s3', 'v2')
-    _install_skill_at_version(tmp_path, '.claude', 'aws-iam', 'v2')
+def test_hook_leaves_other_agents_alone(tmp_path, auto_update_on):
+    _install_skill_at_version(tmp_path, '.test-agent', 'aws-s3', 'v1')
+    _install_skill_at_version(tmp_path, '.other', 'aws-s3', 'v1')
     client = _make_skill_client(core_skills=['aws-iam'])
     _, output = _run_hook(tmp_path, 'kiro', client)
-    assert output == 'New AWS core skills installed: aws-iam.\n'
+    assert output == (
+        'AWS agent skills updated: aws-s3. '
+        'New AWS core skills installed: aws-iam.\n'
+    )
     assert (_skill_dir(tmp_path, 'aws-iam') / 'SKILL.md').read_text() == 'new'
-    claude_skill = tmp_path / '.claude' / 'skills' / 'aws-iam' / 'SKILL.md'
-    assert claude_skill.read_text() == 'name: aws-iam\n'
+    other = tmp_path / '.other' / 'skills'
+    marker = other / 'aws-s3' / SKILL_METADATA_FILENAME
+    assert json.loads(marker.read_text()) == {'version': 'v1'}
+    assert not (other / 'aws-iam').exists()
+    assert _last_run(tmp_path, '.other') is None
 
 
 def test_hook_reinstalls_removed_core_skill(tmp_path, auto_update_on):
@@ -1511,28 +1545,54 @@ def test_hook_checks_root_once_interval_passed(
 
 def test_hook_checks_only_roots_that_are_due(tmp_path, auto_update_on):
     _install_skill_at_version(tmp_path, '.test-agent', 'aws-s3', 'v1')
-    _install_skill_at_version(tmp_path, '.claude', 'aws-cdk', 'v1')
+    _install_skill_at_version(tmp_path, '.other', 'aws-cdk', 'v1')
     _record_check(tmp_path, datetime.timedelta(minutes=1))
-    _, output = _run_hook(tmp_path, 'claude-code', _make_skill_client())
-    assert json.loads(output)['systemMessage'] == (
-        'AWS agent skills updated: aws-cdk.'
-    )
+    _, output = _run_hook(tmp_path, None, _make_skill_client())
+    assert output == 'AWS agent skills updated: aws-cdk.\n'
     # The root that wasn't due keeps its record and its old skill.
     assert _last_run(tmp_path)['summary'] == 'old'
     marker = _skill_dir(tmp_path) / SKILL_METADATA_FILENAME
     assert json.loads(marker.read_text()) == {'version': 'v1'}
-    assert _last_run(tmp_path, '.claude')['is_successful'] is True
+    assert _last_run(tmp_path, '.other')['is_successful'] is True
 
 
 def test_hook_records_failure_only_for_root_with_failed_skill(
     tmp_path, auto_update_on
 ):
     _install_skill_at_version(tmp_path, '.test-agent', 'aws-s3', 'v1')
-    _install_skill_at_version(tmp_path, '.claude', 'aws-cdk', 'v1')
+    _install_skill_at_version(tmp_path, '.other', 'aws-cdk', 'v1')
     client = _make_skill_client(bad_checksum_skill='aws-s3')
-    _run_hook(tmp_path, 'claude-code', client)
+    _run_hook(tmp_path, None, client)
     assert _last_run(tmp_path)['is_successful'] is False
-    assert _last_run(tmp_path, '.claude')['is_successful'] is True
+    assert _last_run(tmp_path, '.other')['is_successful'] is True
+
+
+def test_hook_records_failure_for_every_root_on_error(
+    tmp_path, auto_update_on
+):
+    _install_skill_at_version(tmp_path, '.test-agent', 'aws-s3', 'v1')
+    _install_skill_at_version(tmp_path, '.other', 'aws-cdk', 'v1')
+    client = _make_skill_client()
+    client.get_latest_skill_version.side_effect = EndpointConnectionError(
+        endpoint_url='https://example.com'
+    )
+    _run_hook(tmp_path, None, client)
+    assert _last_run(tmp_path)['is_successful'] is False
+    assert _last_run(tmp_path, '.other')['is_successful'] is False
+
+
+def test_hook_installs_core_skill_into_each_agent_missing_it(
+    tmp_path, auto_update_on
+):
+    _install_skill_at_version(tmp_path, '.test-agent', 'aws-s3', 'v2')
+    _install_skill_at_version(tmp_path, '.other', 'aws-s3', 'v2')
+    _install_skill_at_version(tmp_path, '.other', 'aws-iam', 'v2')
+    client = _make_skill_client(core_skills=['aws-iam'])
+    _, output = _run_hook(tmp_path, None, client)
+    assert output == 'New AWS core skills installed: aws-iam.\n'
+    assert (_skill_dir(tmp_path, 'aws-iam') / 'SKILL.md').read_text() == 'new'
+    other_skill = tmp_path / '.other' / 'skills' / 'aws-iam' / 'SKILL.md'
+    assert other_skill.read_text() == 'name: aws-iam\n'
 
 
 def test_hook_leaves_skill_dropped_from_catalog(tmp_path, auto_update_on):
@@ -1548,20 +1608,6 @@ def test_hook_leaves_skill_dropped_from_catalog(tmp_path, auto_update_on):
     )
     marker = _skill_dir(tmp_path, 'aws-gone') / SKILL_METADATA_FILENAME
     assert json.loads(marker.read_text()) == {'version': 'v1'}
-
-
-def test_hook_records_failure_for_every_root_on_error(
-    tmp_path, auto_update_on
-):
-    _install_skill_at_version(tmp_path, '.test-agent', 'aws-s3', 'v1')
-    _install_skill_at_version(tmp_path, '.claude', 'aws-cdk', 'v1')
-    client = _make_skill_client()
-    client.get_latest_skill_version.side_effect = EndpointConnectionError(
-        endpoint_url='https://example.com'
-    )
-    _run_hook(tmp_path, 'claude-code', client)
-    assert _last_run(tmp_path)['is_successful'] is False
-    assert _last_run(tmp_path, '.claude')['is_successful'] is False
 
 
 def test_hook_does_nothing_while_another_run_holds_the_lock(

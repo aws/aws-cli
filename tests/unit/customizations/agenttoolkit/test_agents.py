@@ -187,6 +187,70 @@ def test_mcp_config_path_falls_back_when_env_override_dir_missing(
     assert agent.mcp_config_file == os.path.expanduser('~/.test-agent.json')
 
 
+def _home_override_config(tmp_path, monkeypatch, **kwargs):
+    home = tmp_path / 'agent-home'
+    (home / '.test-agent').mkdir(parents=True)
+    monkeypatch.setenv('TEST_AGENT_HOME', str(home))
+    config = AgentConfig(
+        id='test-agent',
+        display_name='Test Agent',
+        detection_path='~/.test-agent/',
+        home_env_override='TEST_AGENT_HOME',
+        **kwargs,
+    )
+    return home, config
+
+
+def test_home_env_override_moves_every_tilde_path(tmp_path, monkeypatch):
+    home, config = _home_override_config(
+        tmp_path,
+        monkeypatch,
+        skills_path_override='~/.agents/skills/',
+        mcp_config_path='settings.json',
+    )
+    agent = config.detect()
+    assert agent.base_dir == str(home / '.test-agent')
+    assert agent.skills_path == str(home / '.agents' / 'skills') + os.sep
+    assert agent.mcp_config_file == str(home / '.test-agent' / 'settings.json')
+
+
+def test_home_env_override_applies_to_tilde_mcp_path(tmp_path, monkeypatch):
+    home, config = _home_override_config(
+        tmp_path, monkeypatch, mcp_config_path='~/.test-agent.json'
+    )
+    assert config.detect().mcp_config_file == str(home / '.test-agent.json')
+
+
+def test_home_env_override_not_detected_without_agent_dir(
+    tmp_path, monkeypatch
+):
+    monkeypatch.setenv('TEST_AGENT_HOME', str(tmp_path / 'empty-home'))
+    config = AgentConfig(
+        id='test-agent',
+        display_name='Test Agent',
+        detection_path='~/.test-agent/',
+        home_env_override='TEST_AGENT_HOME',
+    )
+    assert config.detect() is None
+
+
+def test_expand_path_without_home_env_override(monkeypatch):
+    monkeypatch.delenv('TEST_AGENT_HOME', raising=False)
+    config = AgentConfig(
+        id='test-agent',
+        display_name='Test Agent',
+        detection_path='~/.test-agent/',
+        home_env_override='TEST_AGENT_HOME',
+    )
+    assert config.expand_path('~/.x') == os.path.expanduser('~/.x')
+    assert config.expand_path('/abs/path') == '/abs/path'
+
+
+def test_gemini_uses_gemini_cli_home():
+    gemini = next(c for c in AGENT_CONFIGS if c.id == 'gemini-cli')
+    assert gemini.home_env_override == 'GEMINI_CLI_HOME'
+
+
 def test_mcp_config_path_falls_back_to_home_without_env_override(tmp_path):
     (tmp_path / '.test-agent').mkdir()
     config = make_config(tmp_path, mcp_config_path='~/.test-agent.json')

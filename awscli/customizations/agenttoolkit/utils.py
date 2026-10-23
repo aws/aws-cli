@@ -82,6 +82,10 @@ AGENT_ARG = {
 }
 
 
+# The catalog category the setup wizard installs by default, and that
+# automatic updates keep installed.
+CORE_CATEGORY = 'aws-core'
+
 # The Agent Toolkit API is served from a single region today,
 # Default there unless the caller passes an explicit ``--region``,
 # otherwise a user whose configured region is elsewhere would hit
@@ -89,10 +93,12 @@ AGENT_ARG = {
 AGENT_TOOLKIT_REGION = 'us-east-1'
 
 
-def create_client(session, parsed_globals):
+def create_client(session, parsed_globals, config=None):
     overrides = {}
     if not getattr(parsed_globals, 'region', None):
         overrides['region_name'] = AGENT_TOOLKIT_REGION
+    if config is not None:
+        overrides['config'] = config
     return create_client_from_parsed_globals(
         session,
         'agenttoolkit',
@@ -104,6 +110,15 @@ def create_client(session, parsed_globals):
 def resolve_latest_version(client, skill_name):
     response = client.get_latest_skill_version(name=skill_name)
     return response['body'].strip()
+
+
+def list_core_skills(client):
+    """Return the catalog's skill summaries in the core category."""
+    paginator = client.get_paginator('list_skills')
+    skills = []
+    for page in paginator.paginate(categoryFilter=CORE_CATEGORY):
+        skills.extend(page.get('skills', []))
+    return skills
 
 
 def get_skill_download(client, skill_name, version=None):
@@ -367,19 +382,26 @@ class AgentToolkitServiceError(Exception):
     pass
 
 
+def find_agent_config(agent_id, agent_configs=None):
+    """Return the config of the agent with ``agent_id``, ignoring case."""
+    if agent_configs is None:
+        agent_configs = AGENT_CONFIGS
+    by_id = {c.id.lower(): c for c in agent_configs}
+    config = by_id.get(agent_id.lower())
+    if config is None:
+        raise ParamValidationError(
+            f'Invalid agent "{agent_id}". Valid values: '
+            f'{", ".join(sorted(c.id for c in agent_configs))}.'
+        )
+    return config
+
+
 def resolve_agents(agent_filter, agent_configs=None):
     """Resolve agents, optionally filtered by agent id."""
     if agent_configs is None:
         agent_configs = AGENT_CONFIGS
     if agent_filter:
-        by_id = {c.id.lower(): c for c in agent_configs}
-        config = by_id.get(agent_filter.lower())
-        if config is None:
-            raise ParamValidationError(
-                f'Invalid agent "{agent_filter}". Valid values: '
-                f'{", ".join(sorted(c.id for c in agent_configs))}.'
-            )
-        agent = config.detect()
+        agent = find_agent_config(agent_filter, agent_configs).detect()
         agents = [agent] if agent is not None else []
     else:
         agents = get_detected_agents(agent_configs=agent_configs)

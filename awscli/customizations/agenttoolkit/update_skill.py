@@ -344,6 +344,7 @@ class UpdateSkillCommand(BasicCommand):
             )
             if not agents:
                 return 0
+            self._record_check_started(due_roots)
             if self._collect_updates(
                 agents, parsed_globals, None, results, HOOK_CLIENT_CONFIG
             ):
@@ -378,6 +379,20 @@ class UpdateSkillCommand(BasicCommand):
         if error is not None or results.failed or results.failed_installs:
             return 1
         return 0
+
+    def _record_check_started(self, roots):
+        # Agents kill a hook that runs past their timeout, before it records
+        # anything. Recording the check as failed up front means it's tried
+        # again after HOOK_RETRY_INTERVAL rather than in every new session.
+        for root in roots:
+            try:
+                record_hook_run(
+                    root,
+                    is_successful=False,
+                    summary='The check did not finish',
+                )
+            except StateFileError as e:
+                LOG.debug('Could not record the hook run: %s', e)
 
     def _record_hook_runs(self, roots, results, error, summary):
         timestamp = datetime.datetime.now(datetime.timezone.utc)

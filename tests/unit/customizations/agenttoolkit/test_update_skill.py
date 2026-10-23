@@ -1230,15 +1230,7 @@ def test_hook_command_ignores_auto_prompt_setting(
     for name in ('AWS_PROFILE', 'AWS_DEFAULT_PROFILE'):
         monkeypatch.delenv(name, raising=False)
     state.set_auto_update(False)
-    args = [
-        'agent-toolkit',
-        'update-skill',
-        '--all',
-        '--hook',
-        '--agent',
-        'codex',
-        '--no-cli-auto-prompt',
-    ]
+    args = hooks.hook_command('codex').split()[1:]
     assert AWSCLIEntryPoint().main(args) == 0
     assert capsys.readouterr() == ('', '')
 
@@ -1479,7 +1471,7 @@ def test_update_all_does_not_install_core_skills(tmp_path):
 
 
 def test_hook_run_right_after_another_does_nothing(tmp_path, auto_update_on):
-    # An agent can start the hook twice for one session.
+    # Kiro V3 runs both its standalone hook and the agent's agentSpawn hook.
     _install_skill_at_version(tmp_path, '.test-agent', 'aws-s3', 'v1')
     _, output = _run_hook(tmp_path, 'kiro', _make_skill_client())
     assert output == 'AWS agent skills updated: aws-s3.\n'
@@ -1593,6 +1585,49 @@ def test_hook_installs_core_skill_into_each_agent_missing_it(
     assert (_skill_dir(tmp_path, 'aws-iam') / 'SKILL.md').read_text() == 'new'
     other_skill = tmp_path / '.other' / 'skills' / 'aws-iam' / 'SKILL.md'
     assert other_skill.read_text() == 'name: aws-iam\n'
+
+
+def test_hook_records_unfinished_check_before_running(
+    tmp_path, auto_update_on
+):
+    _install_skill_at_version(tmp_path, '.test-agent', 'aws-s3', 'v1')
+    client = _make_skill_client()
+    seen = []
+
+    def get_latest_skill_version(**kwargs):
+        seen.append(_last_run(tmp_path))
+        return {'body': 'v2'}
+
+    client.get_latest_skill_version.side_effect = get_latest_skill_version
+    _run_hook(tmp_path, 'kiro', client)
+    assert seen[0]['is_successful'] is False
+    assert seen[0]['summary'] == 'The check did not finish'
+    # The finished run replaces it.
+    assert _last_run(tmp_path)['is_successful'] is True
+
+
+def test_hook_killed_mid_run_is_retried_after_retry_interval(
+    tmp_path, auto_update_on
+):
+    _install_skill_at_version(tmp_path, '.test-agent', 'aws-s3', 'v1')
+    client = _make_skill_client()
+    # Stands in for the agent killing the hook at its timeout.
+    client.get_latest_skill_version.side_effect = SystemExit()
+    with pytest.raises(SystemExit):
+        _run_hook(tmp_path, 'kiro', client)
+    run = _last_run(tmp_path)
+    assert run['is_successful'] is False
+    assert run['summary'] == 'The check did not finish'
+
+    client = _make_skill_client()
+    assert _run_hook(tmp_path, 'kiro', client) == (0, '')
+    assert not client.get_latest_skill_version.called
+
+    _record_check(
+        tmp_path, update_skill.HOOK_RETRY_INTERVAL, is_successful=False
+    )
+    _, output = _run_hook(tmp_path, 'kiro', client)
+    assert output == 'AWS agent skills updated: aws-s3.\n'
 
 
 def test_hook_leaves_skill_dropped_from_catalog(tmp_path, auto_update_on):

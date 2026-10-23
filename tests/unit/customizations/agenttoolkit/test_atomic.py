@@ -346,3 +346,23 @@ def test_recover_finishes_interrupted_remove(live):
     atomic.recover(str(live))
     assert not trash.exists()
     assert not live.exists()
+
+
+def test_write_file_atomic_new_file_is_owner_only(tmp_path):
+    path = tmp_path / 'f.json'
+    atomic.write_file_atomic(str(path), 'new', prefix='.f-')
+    if os.name != 'nt':
+        assert path.stat().st_mode & 0o777 == 0o600
+
+
+def test_write_file_atomic_sets_mode(tmp_path):
+    path = tmp_path / 'f.json'
+    atomic.write_file_atomic(str(path), 'new', prefix='.f-', mode=0o644)
+    if os.name != 'nt':
+        assert path.stat().st_mode & 0o777 == 0o644
+
+
+def test_write_file_atomic_keeps_newlines(tmp_path):
+    path = tmp_path / 'f.json'
+    atomic.write_file_atomic(str(path), 'a\r\nb\n', prefix='.f-')
+    assert path.read_bytes() == b'a\r\nb\n'

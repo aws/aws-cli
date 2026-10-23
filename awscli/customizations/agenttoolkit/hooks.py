@@ -275,8 +275,9 @@ def install_kiro_agent_hook(agent):
         action = _add_entry(data, _KIRO_AGENT_FORMAT, _kiro_agent_handler())
     except _UnreadableError:
         return HookAction.UNREADABLE, path
-    if text is None:
-        # Removed since it was found. A new file would not be an agent.
+    if text is None or not text.strip():
+        # Removed since it was found, or empty. Adding only our hook would
+        # not make it an agent.
         return HookAction.NOT_SUPPORTED, None
     if action is not HookAction.INSTALLED:
         return action, path

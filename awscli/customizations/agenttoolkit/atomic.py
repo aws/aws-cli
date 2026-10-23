@@ -122,9 +122,6 @@ def write_file_atomic(path, content, prefix, mode=None):
     The temporary file is created as ``<prefix>*.tmp`` next to ``path``
     with owner-only permissions, and removed if anything fails. ``content``
     is written as is, without newline translation.
-
-    :param mode: Permission bits to give the file, such as those of the file
-        being replaced. Defaults to owner-only.
     """
     fd, tmp_path = tempfile.mkstemp(
         dir=os.path.dirname(path), prefix=prefix, suffix='.tmp'

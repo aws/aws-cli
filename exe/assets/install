@@ -75,7 +75,12 @@ set_global_vars() {
   INSTALLER_DIR="$( cd "$( dirname "$0" )" >/dev/null 2>&1 && pwd )"
   INSTALLER_DIST_DIR="$INSTALLER_DIR/dist"
   INSTALLER_EXE="$INSTALLER_DIST_DIR/$EXE_NAME"
-  AWS_EXE_VERSION=$($INSTALLER_EXE --version | cut -d ' ' -f 1 | cut -d '/' -f 2)
+  if ! AWS_EXE_VERSION_OUTPUT=$("$INSTALLER_EXE" --version 2>&1); then
+    die "Failed to run $INSTALLER_EXE. Error:
+$AWS_EXE_VERSION_OUTPUT
+If you are running on a musl-based Linux system (e.g. Alpine), this is likely because the AWS CLI v2 binaries require glibc. You may need to install a compatibility layer like gcompat or libc6-compat, or build the AWS CLI from source. See https://docs.aws.amazon.com/cli/latest/userguide/getting-started-source-install.html"
+  fi
+  AWS_EXE_VERSION=$(echo "$AWS_EXE_VERSION_OUTPUT" | cut -d ' ' -f 1 | cut -d '/' -f 2)
 
   INSTALL_DIR="$ROOT_INSTALL_DIR/v2/$AWS_EXE_VERSION"
   INSTALL_DIR="$INSTALL_DIR"

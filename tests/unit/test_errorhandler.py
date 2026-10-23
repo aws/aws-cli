@@ -10,7 +10,9 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import errno
 import io
+import signal
 from collections import namedtuple
 
 import pytest
@@ -32,8 +34,11 @@ from awscli.customizations.exceptions import (
     ConfigurationError,
     ParamValidationError,
 )
+from awscli.testutils import mock
 
 Case = namedtuple('Case', ['exception', 'rc', 'stderr', 'stdout'])
+
+BROKEN_PIPE_RC = 128 + 13
 
 
 def _assert_rc_and_error_message(case, error_handler):
@@ -127,3 +132,88 @@ def test_cli_error_handling_chain_injection(case):
 def test_entry_point_error_handling_chain(case):
     error_handler = errorhandler.construct_entry_point_handlers_chain()
     _assert_rc_and_error_message(case, error_handler)
+
+
+@pytest.fixture
+def broken_pipe_error():
+    return BrokenPipeError(errno.EPIPE, 'Broken pipe')
+
+
+@pytest.fixture
+def no_stdout_redirect():
+    # The handler replaces the process wide stdout file descriptor, which
+    # would swallow the output of the test runner itself.  Tests that care
+    # about the redirect exercise it directly instead.
+    with mock.patch.object(
+        errorhandler, '_redirect_stdout_to_devnull'
+    ) as patched:
+        yield patched
+
+
+@pytest.mark.parametrize(
+    "chain_factory",
+    [
+        errorhandler.construct_entry_point_handlers_chain,
+        errorhandler.construct_cli_error_handlers_chain,
+    ],
+)
+def test_broken_pipe_is_handled_quietly(
+    chain_factory, broken_pipe_error, no_stdout_redirect
+):
+    # A closed downstream pipe is a normal way for a command to end, so it
+    # should not produce any error output.  See aws/aws-cli#5899.
+    stdout = io.StringIO()
+    stderr = io.StringIO()
+
+    rc = chain_factory().handle_exception(broken_pipe_error, stdout, stderr)
+
+    assert rc == BROKEN_PIPE_RC
+    assert stderr.getvalue() == ''
+    assert stdout.getvalue() == ''
+
+
+def test_broken_pipe_rc_matches_sigpipe():
+    # 128 + SIGPIPE is what standard Unix utilities report for a closed pipe.
+    assert errorhandler.BROKEN_PIPE_RC == 128 + signal.SIGPIPE
+
+
+def test_broken_pipe_redirects_stdout(broken_pipe_error, no_stdout_redirect):
+    errorhandler.BrokenPipeExceptionHandler().handle_exception(
+        broken_pipe_error, io.StringIO(), io.StringIO()
+    )
+    no_stdout_redirect.assert_called_once_with()
+
+
+def test_unrelated_os_error_still_reported(no_stdout_redirect):
+    # BrokenPipeError is an OSError subclass, so make sure the new handler
+    # does not start silencing other OSErrors.
+    stdout = io.StringIO()
+    stderr = io.StringIO()
+    error = OSError(errno.EACCES, 'Permission denied')
+
+    rc = errorhandler.construct_entry_point_handlers_chain().handle_exception(
+        error, stdout, stderr
+    )
+
+    assert rc == 255
+    assert 'Permission denied' in stderr.getvalue()
+    no_stdout_redirect.assert_not_called()
+
+
+def test_redirect_stdout_to_devnull_discards_writes(tmp_path):
+    # Use a real file as a stand in for stdout so that the file descriptor
+    # belonging to the test runner is never touched.
+    path = tmp_path / 'stdout.txt'
+    with open(path, 'w') as fake_stdout:
+        with mock.patch('sys.stdout', fake_stdout):
+            errorhandler._redirect_stdout_to_devnull()
+        fake_stdout.write('discarded')
+
+    assert path.read_text() == ''
+
+
+def test_redirect_stdout_to_devnull_without_fileno():
+    # capture_output() and friends replace stdout with an in memory stream
+    # that has no file descriptor, which must not raise.
+    with mock.patch('sys.stdout', io.StringIO()):
+        errorhandler._redirect_stdout_to_devnull()

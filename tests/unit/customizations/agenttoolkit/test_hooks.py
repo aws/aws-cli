@@ -706,6 +706,14 @@ def test_kiro_missing_default_agent_file_is_not_supported(tmp_path):
     assert os.listdir(tmp_path / '.kiro' / 'agents') == ['other.json']
 
 
+@pytest.mark.parametrize('content', ['', '  \n'])
+def test_kiro_empty_default_agent_file_is_not_supported(tmp_path, content):
+    agent = _kiro_with_agents(tmp_path, {'my-agent.json': content})
+    path = tmp_path / '.kiro' / 'agents' / 'my-agent.json'
+    assert install_kiro_agent_hook(agent) == (HookAction.NOT_SUPPORTED, None)
+    assert path.read_text() == content
+
+
 def test_kiro_agent_hook_added_to_default_agent(tmp_path):
     spawn = {'command': 'git status'}
     other = {'matcher': 'fs_write', 'command': 'lint'}

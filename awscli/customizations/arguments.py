@@ -71,8 +71,11 @@ class OverrideRequiredArgsArgument(CustomArgument):
     def override_required_args(self, argument_table, args, **kwargs):
         name_in_cmdline = '--' + self.name
         # Set all ``Argument`` objects in ``argument_table`` to not required
-        # if this argument's name is present in the command line.
-        if name_in_cmdline in args:
+        # if this argument's name is present in the command line. argparse
+        # also accepts ``--opt=value``, so match that spelling too.
+        if name_in_cmdline in args or any(
+            arg.startswith(name_in_cmdline + '=') for arg in args
+        ):
             for arg_name in argument_table.keys():
                 argument_table[arg_name].required = False
 

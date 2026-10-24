@@ -163,7 +163,8 @@ class IMDSRegionProvider(BaseProvider):
 
 
 class InstanceMetadataRegionFetcher(IMDSFetcher):
-    _URL_PATH = 'latest/meta-data/placement/availability-zone/'
+    _URL_PATH = 'latest/meta-data/placement/region/'
+    _AZ_URL_PATH = 'latest/meta-data/placement/availability-zone/'
 
     def retrieve_region(self):
         """Get the current region from the instance metadata service.
@@ -199,14 +200,33 @@ class InstanceMetadataRegionFetcher(IMDSFetcher):
 
     def _get_region(self):
         token = self._fetch_metadata_token()
-        response = self._get_request(
-            url_path=self._URL_PATH,
-            retry_func=self._default_retry,
-            token=token,
-        )
-        availability_zone = response.text
-        region = availability_zone[:-1]
-        return region
+        try:
+            response = self._get_request(
+                url_path=self._URL_PATH,
+                retry_func=self._default_retry,
+                token=token,
+            )
+            return response.text
+        except (self._RETRIES_EXCEEDED_ERROR_CLS, BadIMDSRequestError):
+            # The placement/region endpoint may be unavailable on older or
+            # third-party IMDS implementations. Fall back to deriving the
+            # region from the availability zone. Note this heuristic is wrong
+            # for Local Zones and Wavelength Zones (e.g. the AZ
+            # ``us-east-2-sbn-1a`` belongs to region ``us-east-2``, not
+            # ``us-east-2-sbn-1``), which is why placement/region is preferred.
+            logger.debug(
+                "Failed to retrieve region from IMDS placement/region "
+                "endpoint, falling back to deriving it from the "
+                "availability zone."
+            )
+            response = self._get_request(
+                url_path=self._AZ_URL_PATH,
+                retry_func=self._default_retry,
+                token=token,
+            )
+            availability_zone = response.text
+            region = availability_zone[:-1]
+            return region
 
 
 def split_on_commas(value):

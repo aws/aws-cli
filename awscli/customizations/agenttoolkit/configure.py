@@ -11,6 +11,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import io
+import subprocess
 import sys
 
 from awscli.customizations.agenttoolkit.agents import (
@@ -204,9 +205,28 @@ class ConfigureAgentToolkitCommand(BasicCommand):
         uni_print('\nAWS MCP server configured for:\n', self._stream)
         skipped = []
         for agent in agents:
-            action, detail = agent.configure_mcp_server()
+            try:
+                action, detail = agent.configure_mcp_server()
+            except (ValueError, OSError) as e:
+                path = (
+                    collapse_home(agent.mcp_config_file)
+                    if agent.mcp_config_file
+                    else ''
+                )
+                reason = f'{path}: {e}' if path else str(e)
+                skipped.append((agent, reason))
+                continue
+            except subprocess.SubprocessError as e:
+                skipped.append((agent, str(e)))
+                continue
+
             if action is McpConfigureAction.SKIPPED:
-                skipped.append((agent, detail))
+                reason = (
+                    f'requires {detail!r} on PATH'
+                    if detail
+                    else 'no automated setup'
+                )
+                skipped.append((agent, reason))
             elif action is McpConfigureAction.ALREADY_CONFIGURED:
                 uni_print(
                     f'  \u2713 {agent.display_name} \u2014 '
@@ -227,12 +247,7 @@ class ConfigureAgentToolkitCommand(BasicCommand):
                 'for manual setup instructions.\n',
                 self._stream,
             )
-            for agent, detail in skipped:
-                reason = (
-                    f'requires {detail!r} on PATH'
-                    if detail
-                    else 'no automated setup'
-                )
+            for agent, reason in skipped:
                 uni_print(
                     f'  \u2717 {agent.display_name} ({reason})\n',
                     self._stream,

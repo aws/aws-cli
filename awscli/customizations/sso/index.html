@@ -121,8 +121,8 @@
                     </path>
                 </svg>
                 <div class="success-text">
-                    Your credentials have been shared successfully and can be used until your session expires. You can
-                    now close this tab.
+                    Your credentials have been shared successfully and can be used until your session expires. This tab
+                    will try to close automatically&mdash;if it is still open, you can safely close it now.
                 </div>
             </div>
             <div id="error-message" class="error-content hidden">
@@ -146,6 +146,12 @@
                 document.getElementById('success-message').classList.add('hidden');
                 document.getElementById('error-message').classList.remove('hidden');
                 document.getElementById('error-text').innerText = error;
+            } else {
+                // Best-effort tab close. Browsers only allow window.close() on
+                // tabs opened by script or with a single history entry, so this
+                // is a no-op after an interactive login. When it is blocked the
+                // success message above tells the user to close the tab.
+                window.setTimeout(() => window.close(), 300);
             }
         };
     </script>

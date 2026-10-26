@@ -138,6 +138,18 @@ def _install(app):
     app.builder.write_doc = write_doc
 
 
+def _add_markdown_url(app, pagename, templatename, context, doctree):
+    # Only pages built from a source document have a Markdown copy, not
+    # generated pages such as genindex, search, or 404.
+    if app.builder.name != 'html' or doctree is None:
+        return
+    # The Markdown file is written next to the HTML page, so the link is
+    # relative to the page's own directory.
+    context['markdown_url'] = (
+        posixpath.basename(pagename) + app.config.markdown_file_suffix
+    )
+
+
 def setup(app):
     app.setup_extension('sphinx_markdown_builder')
     # The translator does not handle meta nodes and would warn for every
@@ -148,6 +160,7 @@ def setup(app):
         nodes.problematic, override=True, markdown=(_visit_problematic, None)
     )
     app.connect('builder-inited', _install)
+    app.connect('html-page-context', _add_markdown_url)
     return {
         'version': '1.0',
         'parallel_read_safe': True,

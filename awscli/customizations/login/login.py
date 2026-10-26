@@ -147,8 +147,11 @@ class LoginCommand(BasicCommand):
 
         # Record where we signed in. Refresh tokens are regional, so the
         # refresh has to go back to the same region rather than whatever
-        # region is configured when it runs.
-        access_token['signInRegion'] = region
+        # region is configured when it runs. An endpoint override supplies
+        # the host instead, so the region no longer says where the request
+        # went and we leave it out for the refresh to resolve itself.
+        if not parsed_globals.endpoint_url:
+            access_token['signInRegion'] = region
 
         # Cache the access token to disk
         self._token_loader.save_token(session_id, access_token)

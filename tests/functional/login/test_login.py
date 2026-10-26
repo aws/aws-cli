@@ -392,3 +392,34 @@ def test_no_agent_toolkit_prompt_for_existing_profile(
 
     mock_login_command._run_main(DEFAULT_ARGS, DEFAULT_GLOBAL_ARGS)
     mock_prompt.assert_not_called()
+
+
+@mock.patch('awscli.customizations.login.utils.get_base_sign_in_uri')
+@mock.patch(
+    'awscli.customizations.login.utils.SameDeviceLoginTokenFetcher.fetch_token'
+)
+def test_no_sign_in_region_with_endpoint_override(
+    mock_token_fetcher,
+    mock_base_sign_in_uri,
+    mock_login_command,
+    mock_token_loader,
+):
+    mock_base_sign_in_uri.return_value = 'https://foo'
+    mock_token_fetcher.return_value = (
+        {
+            'accessToken': 'access_token',
+            'idToken': SAMPLE_ID_TOKEN,
+            'expiresIn': 3600,
+        },
+        'arn:aws:iam::0123456789012:user/Admin',
+    )
+
+    # An endpoint override supplies the host, so the resolved region no
+    # longer describes where the login went and isn't recorded.
+    global_args = Namespace(**vars(DEFAULT_GLOBAL_ARGS))
+    global_args.endpoint_url = 'https://signin.example.com'
+
+    mock_login_command._run_main(DEFAULT_ARGS, global_args)
+
+    saved_token = mock_token_loader.save_token.call_args[0][1]
+    assert 'signInRegion' not in saved_token

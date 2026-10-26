@@ -242,8 +242,8 @@ class OutputStreamFactory:
     @contextlib.contextmanager
     def get_pager_stream(self, preferred_pager=None):
         popen_kwargs = self._get_process_pager_kwargs(preferred_pager)
+        process = self._popen(**popen_kwargs)
         try:
-            process = self._popen(**popen_kwargs)
             yield process.stdin
         except OSError:
             # Ignore IOError since this can commonly be raised when a pager

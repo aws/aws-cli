@@ -181,11 +181,19 @@ class WizardPromptCompletionAnswer(WizardPromptAnswer):
 
     def _get_key_bindings(self):
         kb = KeyBindings()
+        # Tracks whether a completion session exists, even with no selection.
         is_completing = Condition(
-            lambda: getattr(self._buffer, 'complete_state', False)
+            lambda: self._buffer.complete_state is not None
+        )
+        # Tracks whether Enter has a selected completion it can safely apply.
+        has_selected_completion = Condition(
+            lambda: (
+                self._buffer.complete_state is not None
+                and self._buffer.complete_state.current_completion is not None
+            )
         )
 
-        @kb.add(Keys.Enter, filter=is_completing)
+        @kb.add(Keys.Enter, filter=has_selected_completion)
         def apply_completion(event):
             current_completion = self._buffer.complete_state.current_completion
             self._buffer.apply_completion(current_completion)

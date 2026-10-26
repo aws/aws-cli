@@ -422,6 +422,20 @@ the services or their limitations, you may find the `Amazon Web Services
 Discussion Forums <https://forums.aws.amazon.com/>`__ helpful.
 
 
+Git Bash on Windows
+-------------------
+
+Git Bash may rewrite command-line arguments that look like Unix paths before
+the AWS CLI receives them. For example, a literal `/` can be converted to
+the Git Bash installation path. To pass arguments unchanged for a single
+command, set ``MSYS_NO_PATHCONV=1``:
+
+.. code-block:: bash
+
+    MSYS_NO_PATHCONV=1 aws s3api list-objects-v2 \\
+        --bucket example-bucket --prefix a/ --delimiter '/'
+
+
 --------------
 More Resources
 --------------

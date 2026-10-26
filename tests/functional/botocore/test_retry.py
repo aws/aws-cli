@@ -164,17 +164,21 @@ class BaseRetryTest(BaseSessionTest):
             client.list_tables()
 
     def test_can_exhaust_default_retry_quota(self):
-        # Quota of 500 / 5 retry costs == 100 retry attempts
-        # 100 retry attempts / 2 retries per API call == 50 client calls
+        # Quota of 500 / 14 retry cost == 35 retry attempts (with 10 left).
+        # 35 retry attempts / 2 retries per API call == 17 client calls,
+        # which consumes 476 and leaves 24 in the quota.
         client = self.create_client_with_retry_config(
             'dynamodb', retry_mode='standard'
         )
-        for i in range(50):
+        for i in range(17):
             with self.assert_will_retry_n_times(client, 2, status=502):
                 client.list_tables()
-        # Now on the 51th attempt we should see quota errors, which we can
-        # verify by looking at the request metadata.
+        # On the 18th call, the first retry consumes 14 of the remaining 24.
+        # The second retry needs 14 but only 10 is left, so we should see
+        # quota errors, which we can verify by looking at the request
+        # metadata.
         with ClientHTTPStubber(client) as http_stubber:
+            http_stubber.add_response(status=502, body=b'{}')
             http_stubber.add_response(status=502, body=b'{}')
             with self.assertRaises(ClientError) as e:
                 client.list_tables()

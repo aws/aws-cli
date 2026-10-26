@@ -2,6 +2,28 @@
 CHANGELOG
 =========
 
+2.38.6
+======
+
+* api-change:``deadline``: fix the sdk documenation issue only
+* api-change:``billing``: Adds support for managing private pricing contracts and contractual investments including listing and associating contracts, retrieving contractual investments and their summaries, and creating, listing, and canceling contractual investment attestations
+* api-change:``sso-admin``: Added support for the RegionScope parameter on ListInstances, allowing you to list IAM Identity Center instances in the current Region or across all Regions.
+* api-change:``appstream``: Add Windows 11 to PlatformType enum
+* api-change:``sagemaker``: Amazon SageMaker HyperPod adds the MultiNodeTrainingValidation deep health check for clusters orchestrated by Amazon EKS. It validates NVIDIA GPU instances by running a short multi-node training workload and flags instances that produce numerical errors or fall behind expected training time.
+* api-change:``lightsail``: This release adds Web Application Firewall (WAF) support for Lightsail distribution.
+* api-change:``marketplace-catalog``: This release adds support for the SubsidiaryAuthorization entity type in the ListEntities operation, including entity-type filters with partial name search, sort options, and a summary returned for each subsidiary authorization.
+* api-change:``mediaconnect``: This release adds support for managing and sharing endpoint across accounts in AWS Elemental MediaConnect. You can now register endpoints to represent external or service-managed sources and destinations, and share them across AWS accounts.
+* api-change:``ivs``: The release adds failover slate configurations, which show viewers a slate during temporary broadcaster network disruptions to reduce viewer drop-off and refresh storms.
+* api-change:``ecr``: Add support for ECR replication backfill
+* api-change:``signin``: Adds support for the OAuth 2.0 Token Exchange grant (RFC 8693), enabling applications to exchange identity provider issued JSON Web Tokens (JWTs) for short-lived OAuth access tokens to access supported AWS services without managing separate AWS credentials.
+* api-change:``kms``: This release adds support for ML-KEM (Module-Lattice-Based Key-Encapsulation Mechanism) keys in AWS KMS. ML-KEM, as specified in NIST FIPS 203, is a post-quantum key encapsulation mechanism that can be used to establish a shared secret between two parties.
+* api-change:``connect``: Amazon Connect now automatically saves agents' in-progress email drafts preserving the message, recipients, and subject during browser or network interruptions so agents can return to the mail and continue instead of starting over.
+* api-change:``odb``: Adds support for Exascale storage with Oracle Exadata Database Service on Dedicated Infrastructure
+* api-change:``eks``: This release adds support for EKS management of Gateway API CRDs (Custom Resource Definitions)
+* api-change:``taxsettings``: Add Mexico Additional Info changes
+* api-change:``medialive``: AWS Elemental MediaLive now lets you control whether explicit weighted prediction is applied to H.264 outputs. It also introduces Perceptual Filter, a new noise reduction filter designed to improve video quality by increasing VMAF scores, now with Auto, None, and strength options.
+
+
 2.38.5
 ======
 
